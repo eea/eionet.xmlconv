@@ -93,7 +93,10 @@ private void handleError(HttpServletRequest req, HttpServletResponse res, Except
 			schemaOrDTD = analyser.getSchemaOrDTD();
 			if (schemaOrDTD!=null){
 				String sch_id = dbM.getSchemaID(schemaOrDTD);
-				schemas = dbM.getSchemas(sch_id);
+				
+				if (sch_id!=null){	//the schema was found from the db and there are probably conversions for that file
+					schemas = dbM.getSchemas(sch_id);
+				}
 			}
 			// did not find schema or dtd from xml header
 			else{
@@ -106,7 +109,7 @@ private void handleError(HttpServletRequest req, HttpServletResponse res, Except
 	}
 	if (validation!=null && schemas!=null && xml_url!=null){
 		for (int k=0; k<schemas.size();k++){
-			schema = (HashMap)schemas.get(0);
+			schema = (HashMap)schemas.get(k);
 
 			if (schemaOrDTD!=null){			//schema defined in header
 				valid = validate(xml_url);
@@ -211,78 +214,91 @@ private void handleError(HttpServletRequest req, HttpServletResponse res, Except
 				} 
 				%>
 				<tr height="10"><td colspan="2"></td></tr>
-				<tr height="10"><td colspan="2">Select one of the conversion types and click Convert button</td></tr>
 				<%
-				for (int i=0;i<schemas.size();i++){
-					HashMap xsd = (HashMap)schemas.get(i);
-					Vector xsl = (Vector)xsd.get("stylesheets");
-					String schema_name = (String)xsd.get("xml_schema");
-					//if (xsl==null) continue;
-					
-				%>
-					<tr valign="top">
-						<td align="right" style="padding-right:5">
-							<label for="schemafield">XML Schema</label>
-						<td align="left">	
-							<a id="schemafield" target="blank" href="<%=schema_name%>"><%=schema_name%></a>
-						</td>
-					</tr>
-					<%
-					
-					if (xsl==null) {
+				if (schemas.size()==0){
 					%>
+					<tr height="10"><td colspan="2">Could not find matching XML Schemas! Please select the xml schema before.</td></tr>
+					<%
+					if (schemaOrDTD != null){
+						%>
+						<tr height="10"><td colspan="2"></td></tr>
 						<tr valign="top">
-							<td align="right" style="padding-right:5">&#160;</td>
-							<td align="left">
-								No stylesheets found for this XML schema
+							<td align="right" style="padding-right:5">
+								<label for="schemafield">XML Schema</label>
+							<td align="left">	
+								<a id="schemafield" target="blank" href="<%=schemaOrDTD%>"><%=schemaOrDTD%></a>
 							</td>
 						</tr>
 						<%
-						
-					}
-					else{
-						for (int j=0;j<xsl.size();j++){
-							HashMap _xsl = (HashMap)xsl.get(j);
-							String output_type= (String)_xsl.get("content_type_out");
-							String description=(String)_xsl.get("description");
-							String xsl_file=(String)_xsl.get("xsl");
-							String convert_id = (String)_xsl.get("convert_id");
-						%>
-							<tr valign="top">
-								<td align="right" style="padding-right:5">
-									<input type="radio" name="format" value="<%=convert_id%>" <% if (j == 0) %>checked="true"<%;%>/>
-								</td>
-								<td align="left">
-									<a target="blank" href="<%=Names.XSL_FOLDER%><%=xsl_file%>" title="open XSL file"><%=output_type%></a> - <%=description%>
-								</td>
-							</tr>
-						<%
+						if (validation!=null && xml_url!=null){
+							String validation_result = validate(xml_url);
+							if (validation_result!=null){
+								if (validation_result.equals("OK")) validation_result="The source file is valid";
+								%>
+								<tr valign="top">
+									<td align="right" style="padding-right:5">Validation results:</td>
+									<td align="left"><%=validation_result%></td>
+								</tr>
+								<%
+							}
 						}
 					}
+				}
+				else{
 					%>
-					<%
-					if (validation!=null && xml_url!=null){
-						String validation_result = (String)xsd.get("validation");
-						if (validation_result!=null){
-							if (validation_result.equals("OK")) validation_result="The source file is valid";
-							%>
-							<tr valign="top">
-								<td align="right" style="padding-right:5">Validation results:</td>
-								<td align="left"><%=validation_result%></td>
-							</tr>
-							<%
-						}
-					}
-					%>
+					<tr height="10"><td colspan="2">Select one of the conversion types and click Convert button</td></tr>
 					<tr height="10"><td colspan="2"></td></tr>
 					<%
-				}
-				%>
-				<tr height="10"><td colspan="2"></td></tr>
-				<%
-					boolean convPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_TESTCONVERSION_PATH, "x");
-					//if (convPrm){
+					for (int i=0;i<schemas.size();i++){
+						HashMap xsd = (HashMap)schemas.get(i);
+						Vector xsl = (Vector)xsd.get("stylesheets");
+						String schema_name = (String)xsd.get("xml_schema");
+						//if (xsl==null) continue;
+					
 						%>
+						<tr valign="top">
+							<td align="right" style="padding-right:5">
+								<label for="schemafield">XML Schema</label>
+							<td align="left">	
+								<a id="schemafield" target="blank" href="<%=schema_name%>"><%=schema_name%></a>
+							</td>
+						</tr>
+						<%
+					
+						if (xsl==null) {
+						%>
+							<tr valign="top">
+								<td align="right" style="padding-right:5">&#160;</td>
+								<td align="left">
+									No stylesheets found for this XML schema
+								</td>
+							</tr>
+							<%
+							
+						}
+						else{
+							for (int j=0;j<xsl.size();j++){
+								HashMap _xsl = (HashMap)xsl.get(j);
+								String output_type= (String)_xsl.get("content_type_out");
+								String description=(String)_xsl.get("description");
+								String xsl_file=(String)_xsl.get("xsl");
+								String convert_id = (String)_xsl.get("convert_id");
+							%>
+								<tr valign="top">
+									<td align="right" style="padding-right:5">
+										<input type="radio" name="format" value="<%=convert_id%>" <% if (j == 0) %>checked="true"<%;%>/>
+									</td>
+									<td align="left">
+										<a target="blank" href="<%=Names.XSL_FOLDER%><%=xsl_file%>" title="open XSL file"><%=output_type%></a> - <%=description%>
+									</td>
+								</tr>
+							<%
+							}
+						}
+						boolean convPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_TESTCONVERSION_PATH, "x");
+						//if (convPrm){
+						%>
+						<tr height="10"><td colspan="2"></td></tr>
 						<tr>
 							<td></td>
 							<td align="left">
@@ -290,7 +306,27 @@ private void handleError(HttpServletRequest req, HttpServletResponse res, Except
 								<!--input name="TEST" type="button" class="mediumbuttonb" value="Convert" onclick="convert()"></input-->&#160;&#160;
 							</td>
 						</tr>
-					<%//}%>
+						<%
+						//}
+						if (validation!=null && xml_url!=null){
+							String validation_result = (String)xsd.get("validation");
+							if (validation_result!=null){
+								if (validation_result.equals("OK")) validation_result="The source file is valid";
+								%>
+								<tr valign="top">
+									<td align="right" style="padding-right:5">Validation results:</td>
+									<td align="left"><%=validation_result%></td>
+								</tr>
+								<%
+							}
+						}
+						%>
+						<tr height="10"><td colspan="2"></td></tr>
+						<%
+					}
+				}
+				%>
+				
 			</table>
 			<input type="hidden" name="ACTION" value="<%=Names.EXECUTE_TESTCONVERSION_ACTION%>"/>
 		</form>	

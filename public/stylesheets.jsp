@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@ page import="java.util.HashMap, java.util.Vector, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names" %>
+<%@ page import="java.io.File,java.util.Date,java.text.DateFormat,java.util.HashMap, java.util.Vector, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names,eionet.gdem.Properties" %>
 
 <%!private HashMap schema=null;%>
 
@@ -86,8 +86,6 @@
         <input type="hidden" name="ACTION" value="<%=Names.SHOW_SCHEMA_ACTION%>" />
     </form>
 
-    <br/><br/>
-
     <div id="main_table">
         <table border="0" cellspacing="1" cellpadding="2" width="100%">
             <thead>
@@ -100,10 +98,8 @@
                   <th align="middle" width="40">Type</th>
                   <th align="left">Description</th>
                   <th align="left" width="200">Stylesheet</th>
-                       <%
-                    if (ssdPrm){%>
-                         <th align="middle" width="20">&#160;</th>
-                    <%}%>                         
+                  <th align="left" width="140">Last modified</th>
+                  <th align="middle" width="20">&#160;</th>
                 </tr>
             </thead>
            <tbody>
@@ -115,20 +111,24 @@
                     String convert_id = (String)hash.get("convert_id");
                     String xsl = (String)hash.get("xsl");
                     String type = (String)hash.get("content_type_out");
-                       String description = (String)hash.get("description");
+                    String description = (String)hash.get("description");
+
+                    File f=new File(Properties.xslFolder + xsl);	
+					String last_modified="";
+					
+					if (f!=null)
+						last_modified = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM).format(new Date(f.lastModified()));
                        %>
                     <tr height="5">
                         <td align="middle" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
-                             <%
-                            if (convPrm){%>
-                                <a title="Test conversion" href="main?ACTION=<%=Names.SHOW_TESTCONVERSION_ACTION%>&amp;ID=<%=convert_id%>&amp;SCHEMA_ID=<%=id%>"><%=type%></a>
-                            <%}else{%>
-                                <%=type%>
-                            <%}%>
+	                        <a href="<%=Names.STYLESHEET_JSP%>?ID=<%=convert_id%>" title="Edit/View stylesheet metadata"><%=type%></a>
                         </td>
                         <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><%=description%></td>
                         <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><a target="blank" href="<%=Names.XSL_FOLDER%><%=xsl%>"><%=xsl%></a></td>
-                          <td align="middle" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
+                        <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><%=last_modified%></td>
+                        <td align="middle" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
+                             <a title="Test conversion" href="main?ACTION=<%=Names.SHOW_TESTCONVERSION_ACTION%>&amp;ID=<%=convert_id%>&amp;SCHEMA_ID=<%=id%>"><img height="15" width="24" src="images/run.png"></img></a>
+                             
                              <%
                             if (ssdPrm){%>
                                 <img onclick="ss_<%=convert_id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete stylesheet"></img>

@@ -2,8 +2,8 @@
 <div id="pagehead">
   <div id="identification">
     <a href="/"><img src="images/logo.png" alt="Logo" id="logo" border="0" /></a>
-    <div class="sitetitle">GDEM Stylesheet Repository</div>
-    <div class="sitetagline">Ver 1.0  beta.</div>
+    <div class="sitetitle">GDEM Services</div>
+    <div class="sitetagline">Conversion and QA Service</div>
   </div>
   <div class="breadcrumbtrail">
    <div class="breadcrumbhead">You are here:</div>
@@ -12,10 +12,10 @@
   <%
      String oHName=request.getParameter("name");
      if (oHName==null) {  %>
-   <div class="breadcrumbitemlast">Stylesheet Repository</div>
+   <div class="breadcrumbitemlast">GDEM Services</div>
   <% } %>
   <%  if (oHName!=null) { %>
-   <div class="breadcrumbitem"><a href='main'>Stylesheet Repository</a></div>
+   <div class="breadcrumbitem"><a href='main'>GDEM Services</a></div>
    <div class="breadcrumbitemlast"><%=oHName%></div>
   <% } %>
    <div class="breadcrumbtail"></div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@ page import="java.util.HashMap, java.util.Vector, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names" %>
+<%@ page import="java.io.File,java.util.Date,java.text.DateFormat,java.util.HashMap, java.util.Vector, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.Properties" %>
 
 <%!private HashMap schema=null;%>
 
@@ -22,12 +22,16 @@
     String name = "";
     String schema_desc = null;
     Vector queries = null;
+    String validate = "0";
+    String schema_id = "0";
 
     if (list.size()>0){
     
         schema = (HashMap)list.get(0);
         name = (String)schema.get("xml_schema");
         schema_desc = (String)schema.get("description");
+        validate = (String)schema.get("validate");
+        schema_id = (String)schema.get("schema_id");
         queries = (Vector)schema.get("queries");
     }
     if (queries==null) queries=new Vector();
@@ -67,14 +71,16 @@
 
     <%
     boolean ssiPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "i");
-    if (ssiPrm){%>
+	boolean xsduPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "u");
+	%>
     <div id="operations">
     <ul>
-        <li><a href="<%=Names.ADD_QUERY_JSP%>?ID=<%=id%>"
-        title="Add a new XQuery">Add Query</a></li>
+		<% if (ssiPrm){%>
+        	<li><a href="<%=Names.ADD_QUERY_JSP%>?ID=<%=id%>" title="Add a new XQuery">Add Query</a></li>
+		<%}%>
+        <li><a href="<%=Names.SANDBOX_JSP%>?SCHEMA_ID=<%=id%>" title="Run all XQuery scripts for this schema">Run QA Service</a></li>
     </ul>
     </div>
-    <%}%>
     
     <h1>Queries of <%=name%></h1>
     <a href="schema.jsp?ID=<%=id%>">View schema info</a>
@@ -83,8 +89,34 @@
         <input type="hidden" name="ACTION" value="<%=Names.SHOW_SCHEMA_ACTION%>" />
     </form>
 
-    <br/><br/>
-
+	<form name="upd_xsd" action="main" method="post">
+		<table cellspacing="0">
+			<tr>
+				<td align="right" style="padding-right:5">
+					<label for="validatefield">XML Schema validation is a part of QA Service for this type of XML files:</label>
+				</td>
+				<td align="left">
+					<%	if (xsduPrm){ %>
+						<input type="checkbox" class="textfield" value="1" name="VALIDATE" <%if (validate.equals("1")){%>checked="true"<%}%> id="validatefield" />
+					<%} else {
+						String str_validate = validate.equals("1")  ? "yes" : "no";
+						%>
+						<%=str_validate%>
+						<%
+					} %>
+				</td>
+				<td>
+				<%	if (xsduPrm){ %>
+					<input name="SUBMIT" type="submit" value="Save" class="smallbutton"></input>
+				<%}
+				%>
+ 				</td>
+			</tr>
+		</table>
+		<input type="hidden" name="ACTION" value="<%=Names.XSD_UPDVAL_ACTION%>" />
+		<input type="hidden" name="<%=Names.SCHEMA_ID%>" value="<%=schema_id%>" />
+	</form>
+		
     <div id="main_table">
         <table border="0" cellspacing="1" cellpadding="2" width="100%">
             <thead>
@@ -93,9 +125,10 @@
                 boolean ssdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "d");
             %>
                 <tr>
-                  <th align="left" width="200">Short name</th>
+                  <th align="left" width="180">Short name</th>
                   <th align="left">Description</th>
-                  <th align="left" width="200">Query</th>
+                  <th align="left" width="180">Query</th>
+                  <th align="left" width="140">Last modified</th>
                   <th align="middle" width="50">&#160;</th>
                 </tr>
             </thead>
@@ -109,14 +142,22 @@
                     String query = (String)hash.get("query");
                     String short_name = (String)hash.get("short_name");
                     String description = (String)hash.get("description");
-                       %>
+					
+                    File f=new File(Properties.queriesFolder + query);	
+					String last_modified="";
+					
+					if (f!=null)
+						last_modified = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM).format(new Date(f.lastModified()));
+
+					%>
                     <tr height="5">
                         <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
-                        <%=short_name%>
+                        <a href="<%=Names.QUERY_JSP%>?query_id=<%=query_id%>" title="Edit/View query metadata">&#160;<%=short_name%></a>
                         </td>
                         <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><%=description%></td>
                         <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><a target="blank" href="<%=Names.QUERY_FOLDER%><%=query%>"><%=query%></a></td>
-                          <td align="middle" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
+                        <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><%=last_modified%></td>
+	                    <td align="middle" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
                              <a href="<%=Names.SANDBOX_JSP%>?ID=<%=query_id%>"><img height="15" width="24" src="images/run.png" title="Run this query in XQuery Sandbox"></img></a>
                              <%
                             if (ssdPrm){%>

@@ -73,7 +73,8 @@
 		   <tbody>
 				<%
 						
-						
+				int r = 0;
+				
 				for (int i=0; i<list.size(); i++){
 					HashMap schema = (HashMap)list.get(i);
 					String name = (String)schema.get("xml_schema");
@@ -87,10 +88,10 @@
 						
 					%>
 					<tr>
-						<td align="left" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
+						<td align="left" style="padding-left:5;padding-right:10" <% if (r % 2 != 0) %>class="zebradark"<%;%>>
 							<a href="javascript:openXSD('<%=Names.SHOW_QUERIES_ACTION%>', <%=id%>)" title="<%=schema_descr%>"><%=name%></a>
 						</td>
-						<td align="left" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
+						<td align="left" style="padding-left:5;padding-right:10" <% if (r % 2 != 0) %>class="zebradark"<%;%>>
 						<%
 						for (int j=0; j<queries.size(); j++){
 							HashMap q = (HashMap)queries.get(j);
@@ -104,7 +105,7 @@
 						}
 						%>
 						</td>
- 	         			<td align="middle" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
+ 	         			<td align="middle" <% if (r % 2 != 0) %>class="zebradark"<%;%>>
  	         				<%
 							if (ssdPrm){%>
 								<img onclick="ss_<%=id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete schema and all it's queries"></img>
@@ -116,7 +117,7 @@
 						</form></td>
 					</tr>
 					<%
-
+					r++;
 				}
 				%>
 			</tbody>

@@ -56,7 +56,7 @@
 			<%
 			}
 			%>
-			<h1>Stylesheets</h1>
+			<h1>Stylesheet Repository</h1>
 		
 		<div id="main_table">
 			<table border="0" cellspacing="1" cellpadding="2" width="100%">

@@ -25,6 +25,7 @@
 
 			String[][] list = dbM.getJobData();
 			String tmpFolder = Constants.TMP_FOLDER;
+			String queriesFolder = Constants.QUERIES_FOLDER;
 		%>
 			<% if (err!=null){
 				%>
@@ -62,11 +63,34 @@
 				for (int i=0; i<list.length; i++){
 					String jobId = list[i][0]; 
 					String url = list[i][1];
+					String xqLongFileName = list[i][2];
 					String xqFile = list[i][2].substring(list[i][2].lastIndexOf("/")+1);
 					String resultFile = list[i][3].substring(list[i][3].lastIndexOf("/")+1);
 					int status = Integer.parseInt(list[i][4]); 
 					String timeStamp = list[i][5]; 
-
+					String xqStringID = list[i][6]; 
+					
+			       	int xqID =0;
+          			try { 
+            			xqID=Integer.parseInt(xqStringID);
+          			} catch(NumberFormatException n) {
+            			xqID = 0;
+          			}           
+					
+					String xqFileURL = "";
+					String xqText = "Show script";
+					if (xqID == Constants.JOB_VALIDATION){
+						xqText = "Show XML Schema";
+						xqFileURL = xqLongFileName;
+					}
+					else if (xqID == Constants.JOB_FROMSTRING){
+						xqFileURL = tmpFolder + xqFile;
+					}
+					else{
+						xqFileURL = queriesFolder + xqFile;
+					}
+					
+					
 					if (status==Constants.XQ_RECEIVED || status==Constants.XQ_DOWNLOADING_SRC || status==Constants.XQ_PROCESSING) 
 						resultFile = null;
 					//TODO change this constant (100)
@@ -78,9 +102,9 @@
 					if (status==Constants.XQ_RECEIVED)
 						statusName="JOB RECEIVED";
 					if (status==Constants.XQ_DOWNLOADING_SRC)
-						statusName="JOB RECEIVED";
-					if (status==Constants.XQ_RECEIVED)
-						statusName="JOB RECEIVED";
+						statusName="DOWNLOADING SOURCE";
+					if (status==Constants.XQ_PROCESSING)
+						statusName="PROCESSING";
 					if (status==Constants.XQ_READY)
 						statusName="READY";
 					if (status==Constants.XQ_FATAL_ERR)
@@ -99,7 +123,7 @@
 							<a title="<%=url%>" href="<%=url%>" target="_blank"><%=urlName%></a>
 						</td>
   					<td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
-							<a href="<%=tmpFolder + xqFile%>" target="_blank">Show script</a>
+							<a href="<%=xqFileURL%>" target="_blank"><%=xqText%></a>
 						</td>
 						<td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
 							<% if (resultFile != null) { %>

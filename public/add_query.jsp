@@ -109,6 +109,18 @@
 						<textarea class="small" rows="2" cols="55" name="DESCRIPTION" id="descriptionfield"></textarea>
 					</td>
 				</tr>
+				<tr valign="top">
+					<td align="right" style="padding-right:5">
+						<label for="contenttypefield">Content type</label>
+					</td>
+					<td align="left">	
+						<select class="small" name="CONTENT_TYPE" id="contenttypefield" title="rrr" alt="jjj">
+							<option value="HTML">HTML</option>
+							<option value="XML">XML</option>
+							<option value="TXT">TEXT</option>
+						</select>
+					</td>
+				</tr>
 				<tr>
 					<td align="right" style="padding-right:5">
 						<label for="filefield">XQuery File</label>
