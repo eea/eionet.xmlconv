@@ -138,6 +138,14 @@ th {
 	text-align: left;
 /*	vertical-align: top;  */
 }
+
+.zebradark {
+	background-color: #D3D3D3;
+}
+
+.zebralight {
+	background-color: transparent;
+}
 /* Tables end */
 
 /*
@@ -233,6 +241,15 @@ th {
 	padding: 2px 0px 0px 10px;   /* T   R   B   L */
 }
 
+#pagefoot {
+	clear:right;
+	border-top: 1px solid black;
+	margin-left: 150px;
+	padding-left:0px;
+	padding-right: 2px;
+	font-style: italic;
+	font-size: 0.8em;
+}
 
 /* Breadcrumb trail */
 .breadcrumbtrail {
@@ -352,3 +369,4 @@ font-size: 8pt;
 font-style: normal; 
 line-height: normal;
 text-decoration: none; }
+
