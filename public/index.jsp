@@ -32,7 +32,6 @@
     </script>
 </head>
 <body>
-<body>
 <jsp:include page="location.jsp" flush='true'>
   <jsp:param name="name" value="Stylesheets"/>
 </jsp:include>
@@ -69,7 +68,7 @@
               <th align="left" width="50%">Stylesheets</th>
 			  <%
 				if (ssdPrm){%>
-     			  <th align="middle" width="15">&#160;</th>
+     			  <th align="center" width="15">&#160;</th>
      		  <%}%>
 		    </tr>
 		   </thead>
@@ -107,16 +106,18 @@
 						}
 						%>
 						</td>
- 	         			<td align="middle" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
  	         				<%
 							if (ssdPrm){%>
+ 		         			<td align="center" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
 								<img onclick="ss_<%=id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete schema and all it's stylesheets"></img>
+	 	         			</td>
 							<%}%>
- 	         			</td>
-						<form name="ss_<%=id%>" action="main" method="post">
-							<input type="hidden" name="ACTION" value="<%=Names.XSD_DEL_ACTION%>" />
-							<input type="hidden" name="XSD_DEL_ID" value="<%=id%>" />
-						</form>
+ 	         			<td style="display:none">
+							<form name="ss_<%=id%>" action="main" method="post">
+								<input type="hidden" name="ACTION" value="<%=Names.XSD_DEL_ACTION%>" />
+								<input type="hidden" name="XSD_DEL_ID" value="<%=id%>" />
+							</form>
+						</td>
 					</tr>
 					<%
 
