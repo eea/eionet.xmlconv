@@ -95,11 +95,14 @@
                 boolean convPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_TESTCONVERSION_PATH, "x");
             %>
                 <tr>
-                  <th align="middle" width="40">Type</th>
+                  <th align="center" width="40">Type</th>
                   <th align="left">Description</th>
                   <th align="left" width="200">Stylesheet</th>
                   <th align="left" width="140">Last modified</th>
-                  <th align="middle" width="20">&#160;</th>
+                  <th align="center" width="20">&#160;</th>
+                  <%if (ssdPrm){ %>
+	                  <th align="center" width="15">&#160;</th>
+	              <% } %>
                 </tr>
             </thead>
            <tbody>
@@ -119,26 +122,28 @@
 					if (f!=null)
 						last_modified = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM).format(new Date(f.lastModified()));
                        %>
-                    <tr height="5">
-                        <td align="middle" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
+                    <tr>
+                    	<td align="center" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
 	                        <a href="<%=Names.STYLESHEET_JSP%>?ID=<%=convert_id%>" title="Edit/View stylesheet metadata"><%=type%></a>
                         </td>
                         <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><%=description%></td>
                         <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><a target="blank" href="<%=Names.XSL_FOLDER%><%=xsl%>"><%=xsl%></a></td>
                         <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><%=last_modified%></td>
-                        <td align="middle" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
-                             <a title="Test conversion" href="main?ACTION=<%=Names.SHOW_TESTCONVERSION_ACTION%>&amp;ID=<%=convert_id%>&amp;SCHEMA_ID=<%=id%>"><img height="15" width="24" src="images/run.png"></img></a>
-                             
-                             <%
-                            if (ssdPrm){%>
-                                <img onclick="ss_<%=convert_id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete stylesheet"></img>
-                            <%}%>
-                          </td>
-                        <form name="ss_<%=convert_id%>" action="main" method="post">
-                            <input type="hidden" name="ACTION" value="<%=Names.XSL_DEL_ACTION%>"/>
-                            <input type="hidden" name="XSL_DEL_ID" value="<%=convert_id%>"/>
-                            <input type="hidden" name="ID" value="<%=id%>"/>
-                        </form>        
+                        <td <% if (i % 2 != 0) %>class="zebradark"<%;%>>
+                             <a title="Test conversion" href="main?ACTION=<%=Names.SHOW_TESTCONVERSION_ACTION%>&amp;ID=<%=convert_id%>&amp;SCHEMA_ID=<%=id%>"><img height="15" width="24" src="images/run.png" alt="Run"/></a>
+                        </td>
+                        <%if (ssdPrm){%>
+    	                    <td <% if (i % 2 != 0) %>class="zebradark"<%;%>>
+                                <img onclick="ss_<%=convert_id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete stylesheet" alt="x"/>
+                          	</td>
+                          	<td style="display:none">
+                        		<form name="ss_<%=convert_id%>" action="main" method="post">
+                        	    	<input type="hidden" name="ACTION" value="<%=Names.XSL_DEL_ACTION%>"/>
+                    	        	<input type="hidden" name="XSL_DEL_ID" value="<%=convert_id%>"/>
+                	            	<input type="hidden" name="ID" value="<%=id%>"/>
+            	            	</form>        
+        	                </td>
+                        <%}%>
                     </tr>
                     <%
                    }

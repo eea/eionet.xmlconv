@@ -75,7 +75,7 @@
 		<form name="upd_xsd" action="main" method="post">
 			<table cellspacing="0">
 				<%	/*if (xsduPrm){ %>
-					<tr height="10"><td colspan="2" align="right">
+					<tr><td colspan="2" align="right">
 						<img onclick="upd_xsd.submit();" height="15" width="15" src="images/edit.png" title="Save changes"></img>
 					</td></tr>
 				<% } */%>
@@ -112,7 +112,7 @@
 					</td>
 				</tr>
 				<% }%>
-				<tr height="10"><td colspan="2"></td></tr>
+				<tr><td colspan="2"></td></tr>
 				<tr>
 					<td align="left" style="padding-right:5" colspan="2">
 						<b>Root elements</b>
@@ -123,14 +123,14 @@
 			<input type="hidden" name="<%=Names.SCHEMA_ID%>" value="<%=id%>" />
 		</form>		
 	    <table cellspacing="5">
-    	   	<head>
+    	   	<thead>
 					
         		<tr>
-			  		<th align="middle" width="150">Element name</th>
+			  		<th align="center" width="150">Element name</th>
           			<th align="left" width="355">Namespace</th>
        				<%
 					if (xsduPrm){%>
-    	     			<th align="middle">&#160;</th>
+    	     			<th align="center">&#160;</th>
 					<%}%>    	     			
 				</tr>
     	   	</thead>
@@ -144,12 +144,12 @@
 					String ns = (String)hash.get("namespace");
 					String elem_name = (String)hash.get("elem_name");
     	   			%>
-					<tr height="5">
-						<td align="middle" style="padding-left:5;padding-right:10"  <% if (i % 2 != 0) %>class="zebradark"<%;%>>
+					<tr>
+						<td align="center" style="padding-left:5;padding-right:10"  <% if (i % 2 != 0) %>class="zebradark"<%;%>>
 							<%=elem_name%>
 						</td>
 						<td align="left" style="padding-left:5;padding-right:10"  <% if (i % 2 != 0) %>class="zebradark"<%;%>><%=ns%></td>
- 	         			<td align="middle">
+ 	         			<td align="center">
 	         				<%
 							if (xsduPrm){%>
 								<img onclick="del_elem_<%=elem_id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete root element"></img>
@@ -168,7 +168,7 @@
 				if (xsduPrm){
 				%>
 					<form name="add_elem" action="main" method="post">
-						<tr height="10"><td colspan="3"></td></tr>
+						<tr><td colspan="3"></td></tr>
 						<tr>
 							<td>
 								<input type="text" name="ELEM_NAME" size="20" />

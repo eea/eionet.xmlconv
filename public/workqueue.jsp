@@ -115,7 +115,7 @@
 
 
    		%>
-					<tr height="5">
+					<tr>
 						<td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
 							<%=jobId%>
 						</td>

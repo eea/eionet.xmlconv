@@ -1,9 +1,12 @@
 <%@ page import="eionet.gdem.conversion.ssr.Names" %>
+<%
+		String display_name =(String)getServletConfig().getServletContext().getServletContextName();
+%>
 <div id="pagehead">
   <div id="identification">
     <a href="/"><img src="images/logo.png" alt="Logo" id="logo" border="0" /></a>
     <div class="sitetitle">GDEM Services</div>
-    <div class="sitetagline">Conversion and QA Service</div>
+    <div class="sitetagline"><%=display_name%></div>
   </div>
   <div class="breadcrumbtrail">
    <div class="breadcrumbhead">You are here:</div>

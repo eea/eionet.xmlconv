@@ -32,7 +32,6 @@
     </script>
 </head>
 <body>
-<body>
 <jsp:include page="location.jsp" flush='true'>
   <jsp:param name="name" value="Queries"/>
 </jsp:include>
@@ -66,7 +65,7 @@
               <th align="left" width="50%">Queries</th>
 			  <%
 				if (ssdPrm){%>
-     			  <th align="middle" width="15">&#160;</th>
+     			  <th align="center" width="15">&#160;</th>
      		  <%}%>
 		    </tr>
 		   </thead>
@@ -105,7 +104,7 @@
 						}
 						%>
 						</td>
- 	         			<td align="middle" <% if (r % 2 != 0) %>class="zebradark"<%;%>>
+ 	         			<td align="center" <% if (r % 2 != 0) %>class="zebradark"<%;%>>
  	         				<%
 							if (ssdPrm){%>
 								<img onclick="ss_<%=id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete schema and all it's queries"></img>

@@ -132,35 +132,6 @@ private void handleError(HttpServletRequest req, HttpServletResponse res, Except
     <link rel="stylesheet" type="text/css" href="layout-handheld.css" media="handheld" />
     <link rel="stylesheet" type="text/css" href="layout-screen.css" media="screen" title="EIONET style" />
     <script type="text/javascript" src="util.js"></script>
-    <script type="text/javascript">
-		/*
-		function convert(){
-			var file = document.forms["TestConversion"].elements["XML_FILE"].value;
-			var format_buttons = document.forms["TestConversion"].elements["FORMAT"];
-
-			alert(document.forms["TestConversion"].elements["FORMAT"].value);
-			if (file == ""){
-				alert("File location is not specified!");
-				return;
-			}
-			var format="";
-			for (i=0; i<format_buttons.length;i++){
-				_format = format_buttons[i];
-				if (_format.checked==true)
-					format = _format.value;
-			}
-			
-			if (format == ""){
-				alert("Conversion type is not selected!");
-				return;
-			}
-			sUrl = "main?ACTION=<%=Names.EXECUTE_TESTCONVERSION_ACTION%>&format=" + format + "&url=" + file;
-			//alert(sUrl);
-			window.open(sUrl,"conversion","height=600,width=800,status=yes,toolbar=yes,scrollbars=yes,resizable=yes,menubar=yes,location=yes");
-		}
-
-		*/			
-	</script>
 
 </head>
 <body>
@@ -213,18 +184,19 @@ private void handleError(HttpServletRequest req, HttpServletResponse res, Except
 				<% 
 				} 
 				%>
-				<tr height="10"><td colspan="2"></td></tr>
+				<tr><td colspan="2"></td></tr>
 				<%
 				if (schemas.size()==0){
 					%>
-					<tr height="10"><td colspan="2">Could not find matching XML Schemas! Please select the xml schema before.</td></tr>
+					<tr><td colspan="2">Could not find matching XML Schemas! Please select the xml schema before.</td></tr>
 					<%
 					if (schemaOrDTD != null){
 						%>
-						<tr height="10"><td colspan="2"></td></tr>
+						<tr><td colspan="2"></td></tr>
 						<tr valign="top">
 							<td align="right" style="padding-right:5">
 								<label for="schemafield">XML Schema</label>
+							</td>
 							<td align="left">	
 								<a id="schemafield" target="blank" href="<%=schemaOrDTD%>"><%=schemaOrDTD%></a>
 							</td>
@@ -246,8 +218,8 @@ private void handleError(HttpServletRequest req, HttpServletResponse res, Except
 				}
 				else{
 					%>
-					<tr height="10"><td colspan="2">Select one of the conversion types and click Convert button</td></tr>
-					<tr height="10"><td colspan="2"></td></tr>
+					<tr><td colspan="2">Select one of the conversion types and click Convert button</td></tr>
+					<tr><td colspan="2"></td></tr>
 					<%
 					for (int i=0;i<schemas.size();i++){
 						HashMap xsd = (HashMap)schemas.get(i);
@@ -259,6 +231,7 @@ private void handleError(HttpServletRequest req, HttpServletResponse res, Except
 						<tr valign="top">
 							<td align="right" style="padding-right:5">
 								<label for="schemafield">XML Schema</label>
+							</td>
 							<td align="left">	
 								<a id="schemafield" target="blank" href="<%=schema_name%>"><%=schema_name%></a>
 							</td>
@@ -286,7 +259,7 @@ private void handleError(HttpServletRequest req, HttpServletResponse res, Except
 							%>
 								<tr valign="top">
 									<td align="right" style="padding-right:5">
-										<input type="radio" name="format" value="<%=convert_id%>" <% if (j == 0) %>checked="true"<%;%>/>
+										<input type="radio" name="format" value="<%=convert_id%>" <% if (j == 0) %>checked="checked"<%;%>/>
 									</td>
 									<td align="left">
 										<a target="blank" href="<%=Names.XSL_FOLDER%><%=xsl_file%>" title="open XSL file"><%=output_type%></a> - <%=description%>
@@ -298,12 +271,11 @@ private void handleError(HttpServletRequest req, HttpServletResponse res, Except
 						boolean convPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_TESTCONVERSION_PATH, "x");
 						//if (convPrm){
 						%>
-						<tr height="10"><td colspan="2"></td></tr>
+						<tr><td colspan="2"></td></tr>
 						<tr>
 							<td></td>
 							<td align="left">
-								<input name="TEST" type="submit" class="mediumbuttonb" value="Convert" ></input>
-								<!--input name="TEST" type="button" class="mediumbuttonb" value="Convert" onclick="convert()"></input-->&#160;&#160;
+								<input name="TEST" type="submit" class="mediumbuttonb" value="Convert" />&#160;&#160;
 							</td>
 						</tr>
 						<%
@@ -321,7 +293,7 @@ private void handleError(HttpServletRequest req, HttpServletResponse res, Except
 							}
 						}
 						%>
-						<tr height="10"><td colspan="2"></td></tr>
+						<tr><td colspan="2"></td></tr>
 						<%
 					}
 				}

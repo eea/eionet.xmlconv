@@ -88,7 +88,7 @@
 					<td align="left">	
 						<label for="schemafield">XML Schema:&#160;</label>
 					</td>
-					<td align="left"><%=xml_schema%>
+					<td align="left"><div id="schemafield"><%=xml_schema%></div>
 					</td>
 				</tr>
 				<tr valign="top">
@@ -99,18 +99,19 @@
 						<%if(!mode.equals("view")){%>
 							<input type="text" id="shortnamefield" class="textfield" size="64" name="SHORT_NAME" value="<%=short_name%>" />
 						<%}else{%>
-							<%=short_name%>
+							<div id="shortnamefield"><%=short_name%></div>
 						<%}%>
 					</td>
 				</tr>
 				<tr valign="top">
 					<td align="right">
 						<label for="descriptionfield">Description:&#160;</label>
+					</td>
 					<td align="left">	
 						<%if(!mode.equals("view")){%>
 							<textarea class="small" rows="2" cols="55" name="DESCRIPTION" id="descriptionfield"><%=description%></textarea>
 						<%}else{%>
-							<%=description%>
+							<div id="descriptionfield"><%=description%></div>
 						<%}%>
 					</td>
 				</tr>
@@ -126,7 +127,7 @@
 								<option value="TXT" <% if (content_type.equals("TXT")) %>selected="true"<%;%>>TEXT</option>
 							</select>
 						<%}else{%>
-							<%=content_type%>
+							<div id="contenttypefield"><%=content_type%></div>
 						<%}%>
 					</td>
 				</tr>
@@ -140,10 +141,12 @@
 						<%if(!mode.equals("view")){%>
 							<input type="hidden" name="FILE_NAME" value="<%=file%>"/><br/><br/>
 							<input type="file" class="textfield" name="FILE_INPUT" id="filefield" size="53" title="Add a new XQuery file"/>
-						<% } %>
+						<% } else {%>
+							<div id="filefield"></div>						
+						<% }%>
 					</td>
 				</tr>
-				<tr height="10"><td colspan="2"></td></tr>
+				<tr><td colspan="2"></td></tr>
 				<%if(!mode.equals("view")){%>
 					<tr>
 						<td></td>
@@ -153,7 +156,7 @@
 					</tr>
 				<% } %>
 			</table>
-			<input TYPE="hidden" name="ACTION" value="<%=Names.QUERY_UPD_ACTION%>"/>
+			<input type="hidden" name="ACTION" value="<%=Names.QUERY_UPD_ACTION%>"/>
 		</form>	
 
 	</div>

@@ -101,7 +101,7 @@
 					<%} else {
 						String str_validate = validate.equals("1")  ? "yes" : "no";
 						%>
-						<%=str_validate%>
+						<div id="validatefield"><%=str_validate%></div>
 						<%
 					} %>
 				</td>
@@ -129,7 +129,7 @@
                   <th align="left">Description</th>
                   <th align="left" width="180">Query</th>
                   <th align="left" width="140">Last modified</th>
-                  <th align="middle" width="50">&#160;</th>
+                  <th align="center" width="50">&#160;</th>
                 </tr>
             </thead>
            <tbody>
@@ -150,15 +150,15 @@
 						last_modified = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM).format(new Date(f.lastModified()));
 
 					%>
-                    <tr height="5">
+                    <tr>
                         <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
                         <a href="<%=Names.QUERY_JSP%>?query_id=<%=query_id%>" title="Edit/View query metadata">&#160;<%=short_name%></a>
                         </td>
                         <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><%=description%></td>
                         <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><a target="blank" href="<%=Names.QUERY_FOLDER%><%=query%>"><%=query%></a></td>
                         <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><%=last_modified%></td>
-	                    <td align="middle" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
-                             <a href="<%=Names.SANDBOX_JSP%>?ID=<%=query_id%>"><img height="15" width="24" src="images/run.png" title="Run this query in XQuery Sandbox"></img></a>
+	                    <td align="center" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
+                             <a href="<%=Names.SANDBOX_JSP%>?ID=<%=query_id%>"><img height="15" width="24" src="images/run.png" alt="Run" title="Run this query in XQuery Sandbox"></img></a>
                              <%
                             if (ssdPrm){%>
                                 <img onclick="ss_<%=query_id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete query"></img>

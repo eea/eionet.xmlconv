@@ -18,7 +18,7 @@
     }
     </script>
 </head>
-<body bgcolor="#f0f0f0" leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" onload="setFocus()">
+<body bgcolor="#f0f0f0" onload="setFocus()">
 		<form name="f" action="main" method="post">
 			<input name="ACTION" type="hidden" value="<%=Names.LOGIN_ACTION%>" />
 			<% if (err!= null) { %>
@@ -36,13 +36,15 @@
 				<tr>
 					<td width="200"></td><td><b>Password:</b></td><td><input type="password" name="j_passwd" /></td>
 				</tr>
-				<tr height="30"><td colspan="3"></td>
+				<tr>
+					<td colspan="3"></td>
 				</tr>
 				<tr>
-					<td width="200"></td><td>
-						<input type="submit" name="ok_btn" value="  OK  " /></td>
+					<td width="200"></td>
+					<td>
+						<input type="submit" name="ok_btn" value="  OK  " />
 					</td>
-					<td><input type="button" name="cancel_btn" value="  Cancel  " onclick="javascript:window.close()" /></td></td>
+					<td><input type="button" name="cancel_btn" value="  Cancel  " onclick="javascript:window.close()" /></td>
 				</tr>
 			</table>
 		</form>

@@ -1,6 +1,22 @@
-<%@ page import="eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.SecurityUtil,com.tee.uit.security.AppUser" %>
-<%
+<%@ page import="eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.SecurityUtil,com.tee.uit.security.AppUser, eionet.gdem.Properties" %>
+<%!
+	//
+    private boolean serviceInstalled(int service){
 
+		int services_installed = Properties.services_installed;
+
+        // we divide displayWhen with the type's weight
+        // and if the result is an odd number, we return true
+        // if not, we return false
+        int div = services_installed/service;
+        
+        if (div % 2 != 0)
+            return true;
+        else
+            return false;
+    }
+%>
+<%
 	AppUser user = SecurityUtil.getUser(request, Names.USER_ATT);
 	String user_name=null;
 	if (user!=null)
@@ -12,11 +28,15 @@
 <div id="globalnav">
  <h2>Contents</h2>
   <ul>
-  <li><a href="<%=Names.INDEX_JSP%>">Stylesheets</a></li>
-  <li><a href="<%=Names.LIST_CONVERSION_JSP%>">Converter</a></li>
-  <li><a href="<%=Names.LIST_WORKQUEUE_JSP%>">QA Jobs</a></li>
-  <li><a href="<%=Names.QUERIESINDEX_JSP%>">Queries</a></li>
-  <li><a href="<%=Names.SANDBOX_JSP%>">XQ Sandbox</a></li>
+  <%if (serviceInstalled(Properties.CONV_SERVICE)){%>
+  	<li><a href="<%=Names.INDEX_JSP%>">Stylesheets</a></li>
+  	<li><a href="<%=Names.LIST_CONVERSION_JSP%>">Converter</a></li>
+  <%}%>
+  <%if (serviceInstalled(Properties.QA_SERVICE)){%>
+	<li><a href="<%=Names.LIST_WORKQUEUE_JSP%>">QA Jobs</a></li>
+ 	<li><a href="<%=Names.QUERIESINDEX_JSP%>">Queries</a></li>
+	<li><a href="<%=Names.SANDBOX_JSP%>">XQ Sandbox</a></li>
+  <%}%>
   <%
   if (hovPrm){
 	  %>

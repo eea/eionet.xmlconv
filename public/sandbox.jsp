@@ -66,7 +66,7 @@
 	<!--table border="0" cellspacing="1" cellpadding="2" width="100%"><tr><td-->
 	<form name="f" action="sandbox" method="post">
 		<label for="dataurlfield">URL to data file </label>
-			<input type="text" class="textfield" name="source_url" size="75" value="<%=Utils.isNullStr(source_url) ? "" : source_url%>"/>
+			<input type="text" class="textfield" name="source_url" size="75" id="dataurlfield" value="<%=Utils.isNullStr(source_url) ? "" : source_url%>"/>
 			<input type="submit" name="findscripts" value=" Find scripts " title="Reads the XML Schema from the header of XML file and search the scripts from the repository"/>
 		<br/><br/>
 		<%
@@ -87,7 +87,7 @@
         			query_file = (String)querie.get("query");			
         			String name = (String)querie.get("short_name");
         			%>
-        				<input type="radio" name="script" value="<%=Properties.queriesFolder%><%=query_file%>" <% if (j == 0) %>checked="true"<%;%>/>
+        				<input type="radio" name="script" value="<%=Properties.queriesFolder%><%=query_file%>" <% if (j == 0) %>checked="checked"<%;%>/>
         				<%=name%> - <a target="blank" href="<%=Names.QUERY_FOLDER%><%=query_file%>"><%=query_file%></a><br/>
         			<%
 				}
@@ -96,8 +96,6 @@
 							XML Schema validation<%
 				}
         		%>
-				<br/><br/>
-				<input type="submit" name="runnow" value=" Run now " />
         		<%
     		}
 		}
@@ -105,10 +103,10 @@
 		%>
 			<input type="hidden" name="sandboxtype" value="SCRIPT"/>
 			<label for="scriptarea">XQuery script</label>
-			<textarea name="XQSCRIPT" align="left" rows="25" style="width:99%" wrap="soft" id="scriptarea"> <%=qText%></textarea>
-			<br/><br/>
-			<input type="submit" name="runnow" value=" Run now " />
+			<textarea name="XQSCRIPT" rows="25" cols="100" style="width:99%" id="scriptarea"><%=qText%></textarea>
 		<%}%>
+		<br/><br/>
+		<input type="submit" name="runnow" value=" Run now " />
 		<%
 		boolean wqPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "i");
 		boolean wquPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "u");

@@ -74,14 +74,14 @@
 				</tr>
 				<%
 				%>
-				<tr height="10"><td colspan="2"></td></tr>
+				<tr><td colspan="2"></td></tr>
 				<tr><td colspan ="2">Select an XML schema from the list or leave it blank to find out all possible conversion types</td></tr>
 				<tr valign="top">
 					<td align="right" style="padding-right:5">
 						<label for="xmlschemafield">XML Schema</label>
 					</td>
 					<td align="left">
-						<select name="SCHEMA_ID" rows="5" id="xmlschemafield">
+						<select name="SCHEMA_ID" id="xmlschemafield">
 								<option value="" selected="selected">--</option>
 						<%
 						for (int i=0; i<schemas.size();i++){
@@ -101,17 +101,17 @@
 						</select>
 					</td>
 				</tr>
-				<tr height="10"><td colspan="2"></td></tr>
+				<tr><td colspan="2"></td></tr>
 				<tr><td colspan="2">If you want to validate the specified XML file against found XML Schemas, please check the following box. (It might take some more time, if you choose to validate!)</td></tr>
 				<tr>
 					<td align="right" style="padding-right:5">
 						<label for="validatefield">Validate</label>
 					</td>
 					<td align="left">
-						<input type="checkbox" name="VALIDATE" id="validatefield">
+						<input type="checkbox" name="VALIDATE" id="validatefield"/>
 					</td>
 				</tr>
-				<tr height="10"><td colspan="2"></td></tr>
+				<tr><td colspan="2"></td></tr>
 				<tr>
 					<td></td>
 					<td align="left">

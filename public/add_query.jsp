@@ -39,36 +39,6 @@
     <link rel="stylesheet" type="text/css" href="layout-screen.css" media="screen" title="EIONET style" />
 
     <script type="text/javascript" src="util.js"></script>
-    <script type="text/javascript">
-		
-	
-		function submitForm(){
-
-			var file = document.forms["Upload"].elements["FILE_INPUT"].value;
-			var schema = document.forms["Upload"].elements["SCHEMA"].value;
-			var description = document.forms["Upload"].elements["DESCRIPTION"].value;
-			var short_name = document.forms["Upload"].elements["SHORT_NAME"].value;
-			var action = document.forms["Upload"].elements["ACTION"].value;
-			var ok = true;
-
-		
-			if (file == ""){
-				alert("File location is not specified!");
-				ok = false;
-			}
-		
-	
-			if (ok == true){
-			
-				var qryStr = "?SCHEMA=" + schema + "&DESCRIPTION=" + description + "&SHORT_NAME=" + short_name + "&ACTION=" + action;
-			
-				document.forms["Upload"].action = document.forms["Upload"].action + qryStr;
-				//alert(document.forms["Upload"].action);
-				document.forms["Upload"].submit();
-			}
-		}
-		
-	</script>
 </head>
 <body>
 
@@ -83,7 +53,7 @@
 		<% } %>
 			<h1>Add a new query</h1>
 
-		<form name="Upload" action="main" method="post" enctype="multipart/form-data">
+		<form name="Upload" action="main?ACTION=<%=Names.QUERY_ADD_ACTION%>" method="post" enctype="multipart/form-data">
 				
 			<table cellspacing="0">
 				<tr valign="top">
@@ -105,6 +75,7 @@
 				<tr valign="top">
 					<td align="right" style="padding-right:5">
 						<label for="descriptionfield">Description</label>
+					</td>
 					<td align="left">	
 						<textarea class="small" rows="2" cols="55" name="DESCRIPTION" id="descriptionfield"></textarea>
 					</td>
@@ -114,7 +85,7 @@
 						<label for="contenttypefield">Content type</label>
 					</td>
 					<td align="left">	
-						<select class="small" name="CONTENT_TYPE" id="contenttypefield" title="rrr" alt="jjj">
+						<select class="small" name="CONTENT_TYPE" id="contenttypefield" title="content type of resilt file">
 							<option value="HTML">HTML</option>
 							<option value="XML">XML</option>
 							<option value="TXT">TEXT</option>
@@ -129,16 +100,16 @@
 						<input type="file" class="textfield" name="FILE_INPUT" id="filefield" size="53"/>
 					</td>
 				</tr>
-				<tr height="10"><td colspan="2"></td></tr>
+				<tr><td colspan="2"></td></tr>
 				<tr>
 					<td></td>
 					<td align="left">
-						<input name="SUBMIT" type="button" class="mediumbuttonb" value="Upload" onclick="submitForm()" />&#160;&#160;
+						<input name="SUBMIT" type="submit" class="mediumbuttonb" value="Upload"/>&#160;&#160;
 						<input name="RESET" type="reset" class="mediumbuttonb" value="Clear" />
 					</td>
 				</tr>
 			</table>
-			<input TYPE="hidden" name="ACTION" value="<%=Names.QUERY_ADD_ACTION%>"/>
+			<input type="hidden" name="ACTION" value="<%=Names.QUERY_ADD_ACTION%>"/>
 		</form>	
 
 	</div>

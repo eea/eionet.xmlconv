@@ -43,14 +43,14 @@
 				<tr><td colspan ="2">Insert the url of source MS Excel file</td></tr>
 				<tr>
 					<td align="right" style="padding-right:5">
-						<label for="xmlurlfield">URL of Excel File</label>
+						<label for="excelurlfield">URL of Excel File</label>
 					</td>
 					<td align="left">
 						<input type="text" class="textfield" name="url" size="53" id="excelurlfield" />
 					</td>
 				</tr>
 
-				<tr height="10"><td colspan="2"></td></tr>
+				<tr><td colspan="2"></td></tr>
 				<tr>
 					<td></td>
 					<td align="left">
