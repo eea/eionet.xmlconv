@@ -9,7 +9,7 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * The Original Code is "EINRC-6 / AIT project".
+ * The Original Code is "EINRC-7 / GDEM project".
  *
  * The Initial Developer of the Original Code is TietoEnator.
  * The Original Code code was developed for the European
@@ -18,7 +18,7 @@
  * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Kaido Laine (TietoEnator)
+ * Original Code: Kaido Laine, Enriko Käsper (TietoEnator)
  */
 
 package eionet.gdem.services;
@@ -111,7 +111,7 @@ public class DbModule implements DbModuleIF, Constants {
           " ON " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD;
 
     if (xmlSchema != null)
-      sql +=  " WHERE " + XML_SCHEMA_FLD +  "='" + xmlSchema + "'";
+      sql +=  " WHERE " + XML_SCHEMA_FLD +  "=" + Utils.strLiteral(xmlSchema);
 
     sql += " ORDER BY " + XML_SCHEMA_FLD + ", " + RESULT_TYPE_FLD;
 
@@ -139,12 +139,12 @@ public class DbModule implements DbModuleIF, Constants {
     
     String sql = "INSERT INTO " + XSL_TABLE + " ( " + XSL_SCHEMA_ID_FLD + ", " + RESULT_TYPE_FLD +
       ", " + XSL_FILE_FLD + ", " + DESCR_FLD + ") VALUES ('" + xmlSchemaID + "', '" +
-      resultType + "', '" + xslFileName + "', '" + description + "')";
+      resultType + "', " + Utils.strLiteral(xslFileName) + ", " + Utils.strLiteral(description) + ")";
 
     _executeUpdate(sql);
 
-    sql = "SELECT " + CNV_ID_FLD + " FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD + "= '" +
-      xslFileName + "'";
+    sql = "SELECT " + CNV_ID_FLD + " FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD + "=" +
+      Utils.strLiteral(xslFileName);
 
     String[][] r = _executeStringQuery(sql);
 
@@ -161,7 +161,7 @@ public class DbModule implements DbModuleIF, Constants {
     description = (description == null ? "" : description );
     
     String sql = "INSERT INTO " + SCHEMA_TABLE + " ( " + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD + ", " + DTD_PUBLIC_ID_FLD +
-          ") VALUES ('" + xmlSchema + "', '" +  description + "', '" + public_id + "')";
+          ") VALUES (" + Utils.strLiteral(xmlSchema) + ", " +  Utils.strLiteral(description) + ", " + Utils.strLiteral(public_id) + ")";
 
     _executeUpdate(sql);
 
@@ -181,8 +181,8 @@ public class DbModule implements DbModuleIF, Constants {
     description = (description == null ? "" : description );
     public_id = (public_id == null ? "" : public_id );
     
-    String sql = "UPDATE  " + SCHEMA_TABLE + " SET " + XML_SCHEMA_FLD + "='" + xmlSchema + "', " +
-          SCHEMA_DESCR_FLD + "='" + description + "', " + DTD_PUBLIC_ID_FLD + "='" + public_id + "'" +
+    String sql = "UPDATE  " + SCHEMA_TABLE + " SET " + XML_SCHEMA_FLD + "=" + Utils.strLiteral(xmlSchema) + ", " +
+          SCHEMA_DESCR_FLD + "=" + Utils.strLiteral(description) + ", " + DTD_PUBLIC_ID_FLD + "=" + Utils.strLiteral(public_id) + "" +
           " WHERE " + SCHEMA_ID_FLD + "=" + schema_id;
 
     _executeUpdate(sql);
@@ -199,7 +199,7 @@ public class DbModule implements DbModuleIF, Constants {
     namespace = (namespace == null ? "" : namespace );
     
     String sql = "INSERT INTO " + ROOTELEM_TABLE + " ( " + ELEM_SCHEMA_ID_FLD + ", " + ELEM_NAME_FLD +
-      ", " + NAMESPACE_FLD + ") VALUES ('" + xmlSchemaID + "', '" + elemName + "', '" + namespace + "')";
+      ", " + NAMESPACE_FLD + ") VALUES (" + Utils.strLiteral(xmlSchemaID) + ", " + Utils.strLiteral(elemName) + ", " + Utils.strLiteral(namespace) + ")";
 
     _executeUpdate(sql);
 
@@ -431,7 +431,7 @@ public class DbModule implements DbModuleIF, Constants {
 
     
     String sql="SELECT " + SCHEMA_ID_FLD + " FROM " + SCHEMA_TABLE +
-        " WHERE " + XML_SCHEMA_FLD + "='" + schema + "'";
+        " WHERE " + XML_SCHEMA_FLD + "=" + Utils.strLiteral(schema);
          
     String [][] r = _executeStringQuery(sql);
 
@@ -511,10 +511,10 @@ public class DbModule implements DbModuleIF, Constants {
 
     StringBuffer sql= new StringBuffer("SELECT ");
     sql.append(ELEM_SCHEMA_ID_FLD);  
-    sql.append(" FROM " + ROOTELEM_TABLE + " WHERE " + ELEM_NAME_FLD + "='" + rootElem + "'");
+    sql.append(" FROM " + ROOTELEM_TABLE + " WHERE " + ELEM_NAME_FLD + "=" + Utils.strLiteral(rootElem));
 
     if (!Utils.isNullStr(namespace))    
-        sql.append(" AND " + NAMESPACE_FLD + "='" + namespace + "'");
+        sql.append(" AND " + NAMESPACE_FLD + "=" + Utils.strLiteral(namespace));
 
     String [][] r = _executeStringQuery(sql.toString());
 
@@ -635,7 +635,7 @@ public class DbModule implements DbModuleIF, Constants {
         sql = "SELECT " + FILE_ID_FLD  + ", " + XML_SCHEMA_FLD  + ", " + FILE_NAME_FLD  + ", " + FILE_TITLE_FLD  +   ", " + FILE_TABLE + "." + FILE_DESCRIPTION_FLD  + 
         " FROM " + FILE_TABLE  + " LEFT OUTER JOIN " + SCHEMA_TABLE +
           " ON " + FILE_TABLE + "." + FILE_PARENTID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD +
-          " WHERE " + XML_SCHEMA_FLD + " = '" +	XMLSchema + "'" +
+          " WHERE " + XML_SCHEMA_FLD + " =" +	Utils.strLiteral(XMLSchema) + 
           " AND " + FILE_PARENTTYPE_FLD + "='" + SCHEMA_FILE_PARENT + "'" +
           " AND " + FILE_TYPE_FLD + "='" + XFORM_FILE_TYPE + "'";
       }
@@ -801,7 +801,7 @@ public class DbModule implements DbModuleIF, Constants {
     
     String sql = "INSERT INTO " + FILE_TABLE + " ( " + FILE_NAME_FLD + ", " + FILE_TITLE_FLD +
       ", " + FILE_TYPE_FLD + ", " + FILE_PARENTTYPE_FLD + ", " + FILE_PARENTID_FLD + ", " + FILE_DESCRIPTION_FLD + ", " + FILE_DEFAULT_FLD + 
-      ") VALUES ('" + fileName + "', '" +  title + "', '" + type +  "', '" + parent_type +  "', " + parent_id +  ", '" + description + "', 'Y')";
+      ") VALUES (" + Utils.strLiteral(fileName) + ", " +  Utils.strLiteral(title) + ", '" + type +  "', '" + parent_type +  "', " + parent_id +  ", " + Utils.strLiteral(description) + ", 'Y')";
 
     _executeUpdate(sql);
 
@@ -819,9 +819,9 @@ public class DbModule implements DbModuleIF, Constants {
     
     title = (title == null ? "" : title );
     
-    String sql = "UPDATE  " + FILE_TABLE + " SET " + FILE_NAME_FLD + "='" + fileName + "', " +
-          FILE_TITLE_FLD + "='" + title + "', " + FILE_PARENTTYPE_FLD + "='" + parent_type + "', " +
-          FILE_PARENTID_FLD + "=" + parent_id + ", " + FILE_DESCRIPTION_FLD + "='" + description + "'" +
+    String sql = "UPDATE  " + FILE_TABLE + " SET " + FILE_NAME_FLD + "=" + Utils.strLiteral(fileName) + ", " +
+          FILE_TITLE_FLD + "='" + Utils.strLiteral(title) + "', " + FILE_PARENTTYPE_FLD + "='" + parent_type + "', " +
+          FILE_PARENTID_FLD + "=" + parent_id + ", " + FILE_DESCRIPTION_FLD + "=" + Utils.strLiteral(description) + "" +
           " WHERE " + FILE_ID_FLD + "=" + file_id;
 
     _executeUpdate(sql);
@@ -839,7 +839,7 @@ public class DbModule implements DbModuleIF, Constants {
     hostName = (hostName == null ? "" : hostName );
     
     String sql = "INSERT INTO " + HOST_TABLE + " ( " + HOST_NAME_FLD + ", " + USER_FLD +
-      ", " + PWD_FLD + ") VALUES ('" + hostName + "', '" + userName + "', '" + pwd + "')";
+      ", " + PWD_FLD + ") VALUES (" + Utils.strLiteral(hostName) + ", " + Utils.strLiteral(userName) + ", " + Utils.strLiteral(pwd) + ")";
 
     _executeUpdate(sql);
 
@@ -856,8 +856,8 @@ public class DbModule implements DbModuleIF, Constants {
 
     hostName = (hostName == null ? "" : hostName );
     
-    String sql = "UPDATE " + HOST_TABLE + " SET " + HOST_NAME_FLD + "='" + hostName + "', " + USER_FLD +
-      "='" + userName + "', " + PWD_FLD + "='" + pwd + "' " +
+    String sql = "UPDATE " + HOST_TABLE + " SET " + HOST_NAME_FLD + "=" + Utils.strLiteral(hostName) + ", " + USER_FLD +
+      "=" + Utils.strLiteral(userName) + ", " + PWD_FLD + "=" + Utils.strLiteral(pwd) + 
       " WHERE " + HOST_ID_FLD + "=" + hostId;
 
     _executeUpdate(sql);

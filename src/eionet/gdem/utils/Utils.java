@@ -258,5 +258,23 @@ public class Utils {
       String auth = user + ":" + pwd;
       return new BASE64Encoder().encode(auth.getBytes());
     }   
+	  /**
+     * A method for escaping apostrophes
+     */
+    public static String strLiteral(String in) {
+    in = (in != null ? in : "");
+    StringBuffer ret = new StringBuffer("'");
+
+    for (int i = 0; i < in.length(); i++) {
+      char c = in.charAt(i);
+      if (c == '\'')
+        ret.append("''");
+      else
+        ret.append(c);
+    }
+    ret.append('\'');
+
+    return ret.toString();
+  }
   }
   
