@@ -26,6 +26,15 @@
 				</Parameters>
 				<Value Type="STRING"/>
 			</Method>
+			<Method Name="getResult" Auth="false">
+				<Parameters>
+					<Parameter Name="jobId" Type="STRING"/>
+				</Parameters>
+				<Value Type="STRUCT"/>
+					<!--Member Name="CODE" Type="INT"/>
+					<Member Name="RESULT" Type="STRING"/>
+				</Value-->
+			</Method>
 		</Methods>		
 	</Service>
 	<Service Name="ValidationService" Provider="eionet.gdem.ValidationService">
