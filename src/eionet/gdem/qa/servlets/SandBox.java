@@ -23,6 +23,7 @@
 
 package eionet.gdem.qa.servlets;
 import eionet.gdem.Constants;
+import eionet.gdem.qa.XQueryService;
 import java.io.IOException;
 
 import javax.servlet.ServletConfig;
@@ -45,22 +46,40 @@ public class SandBox  extends HttpServlet implements Constants {
  public void doPost(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException    {
 
     String xqScript = req.getParameter(XQ_SCRIPT_PARAM);
+    String dataURL = req.getParameter(XQ_SOURCE_PARAM_NAME);
+    
+    String[] pars = new String[1];
+    pars[0] = XQ_SOURCE_PARAM_NAME + "=" + dataURL;
 
     XQScript xq = null;
     String result = null;
-    if (!Utils.isNullStr(xqScript)) {
-      xq = new XQScript(xqScript, null);
-      try {
-        result = xq.getResult();
-      } catch (GDEMException ge){
-        result = ge.getMessage();
+    if(!Utils.isNullStr(xqScript) || !Utils.isNullStr(dataURL)) {
+      // Run immediately
+      //
+      if(!Utils.isNullStr(req.getParameter("runnow"))) {
+         xq = new XQScript(xqScript, pars);
+         try {
+            result = xq.getResult();
+         } catch (GDEMException ge){
+            result = ge.getMessage();
+         }
+         res.getWriter().write(result);
       }
-
-     res.getWriter().write(result);
-     
+      // Add job to workqueue engine
+      //
+      else {
+         XQueryService xqE = new XQueryService(); 
+         try {
+            result = xqE.analyze(dataURL, xqScript);
+            res.getWriter().write("<html>Job (id: " + result + ") successfully added to the <a href='workqueue.jsp'>workqueue</a>.");
+         } catch (GDEMException ge){
+            result = ge.getMessage();
+            res.getWriter().write(result);
+         }
+      }
     }
     else
-       res.getWriter().write("<html>The script cannot be empty</html>");    
+       res.getWriter().write("<html>The script or data URL cannot be empty!</html>");
   }
 
 /*private static void _l(String s ){

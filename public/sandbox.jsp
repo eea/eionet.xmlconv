@@ -24,9 +24,13 @@
 <div id="main_table">
 	<table border="0" cellspacing="1" cellpadding="2" width="100%"><tr><td>
 	<form name="f" action="sandbox" method="post">
-		<textarea name="XQSCRIPT" align="left" rows="25" style="width:99%" wrap="soft"></textarea>
-		<br/>
-		<input type="submit" value=" GO " />
+		<label for="dataurlfield">URL to data file </label><input type="text" class="textfield" name="source_url" size="75" id="dataurlfield" />
+		<br/><br/>
+		<label for="scriptarea">XQuery script</label>
+		<textarea name="XQSCRIPT" align="left" rows="25" style="width:99%" wrap="soft" id="scriptarea"></textarea>
+		<br/><br/>
+		<input type="submit" name="runnow" value=" Run now " />
+		<input type="submit" name="queue" value=" Add to workqueue " />
 	</form>
 	</td></tr></table>
 </div>
