@@ -54,7 +54,7 @@
 	<target name="cleanup">
 		<delete>
 			<fileset dir=".">
-				<include name="**/*.class">
+				<include name="**/*.class"/>
 			</fileset>
 		</delete>
 	</target>
