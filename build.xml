@@ -57,7 +57,7 @@
 	
 	<!-- if it is installed under webapps folder under existing virtual host -->
 	<target name="webapp_context" unless="vhost">
-		<copy file="gdem.xml" todir="${prefix}" overwrite="true"/>			
+		<copy file="gdem.xml" todir="${prefix}/gdem" overwrite="true"/>			
 	</target>
 
 	<target name="create_context" depends="webapp_context,root_context"/>
@@ -99,7 +99,6 @@
 	<target name="install" depends="copyfiles">
 		<antcall target="checkProps"/>
 		<antcall target="create_context"/>
-		<antcall target="clean"/>
 	</target>
 
 
@@ -111,7 +110,7 @@
 
 
 		<copy todir="${prefix}/gdem/public" overwrite="true">
-			<fileset dir="gdem/public">
+			<fileset dir="public">
 				<exclude name="**/*.java"/>
 				<exclude name="**/*.properties"/>
 			</fileset>
@@ -119,7 +118,7 @@
 		
 		<!-- should take care of not overwriting them -->
 		<copy todir="${prefix}/gdem/xsl">
-			<fileset dir="gdem/xsl"/>
+			<fileset dir="xsl"/>
 		</copy>
 
 		<condition property="uit.needed">
