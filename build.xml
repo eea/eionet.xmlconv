@@ -24,7 +24,7 @@
 	</target>
 
 	<target name="make_package" depends="make_gzip,make_zip">
-		<antcall target="cleanup"/>
+		<antcall target="clean"/>
 	</target>
 
 
@@ -51,12 +51,8 @@
 	<target name="clean_zip" if="is_win">
 		<!--delete file="gdem.zip"/-->				
 	</target>
-	<target name="cleanup">
-		<delete>
-			<fileset dir=".">
-				<include name="**/*.class"/>
-			</fileset>
-		</delete>
+	<target name="clean">
+		<delete dir="${classes.dir}"/>
 	</target>
 	
 	<!-- if it is installed under webapps folder under existing virtual host -->
@@ -81,7 +77,15 @@
 		<!-- Compile the java code from ${src} into ${build} -->
 		<javac debug="on" deprecation="off" srcdir="${src}"
 		    destdir="${classes.dir}"
-		    classpath="${lib}/avalon.jar;${lib}/batik.jar;${lib}/fop.jar;${lib}/servlet.jar;${lib}/saxon7.jar;${lib}/log4j.jar;${lib}/xerces.jar;${lib}/xalan.jar"/>
+		    classpath="${lib}/avalon.jar;
+		       ${lib}/poi-2.0-RC1-20031102.jar;
+		       ${lib}/batik.jar;
+		       ${lib}/fop.jar;
+		       ${lib}/servlet.jar;
+		       ${lib}/saxon7.jar;
+		       ${lib}/log4j.jar;
+		       ${lib}/xerces.jar;
+		       ${lib}/xalan.jar"/>
 	</target>
 	
 	<!-- build gdem.jar -->
@@ -96,7 +100,7 @@
 	<target name="install" depends="copyfiles">
 		<antcall target="checkProps"/>
 		<antcall target="create_context"/>
-		<antcall target="cleanup"/>
+		<antcall target="clean"/>
 	</target>
 
 
