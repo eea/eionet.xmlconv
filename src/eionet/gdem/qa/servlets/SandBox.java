@@ -57,6 +57,7 @@ public class SandBox  extends HttpServlet implements Constants {
       String q_id = req.getParameter("ID");
       String xqFileName = req.getParameter("file_name");
       String xqScript = req.getParameter(XQ_SCRIPT_PARAM);
+      res.setContentType("text/html");
       
       if(Utils.isNullStr(xqScript)) {
          res.getWriter().write("<html>The script cannot be empty!</html>");
