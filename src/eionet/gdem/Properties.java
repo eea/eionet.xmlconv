@@ -40,7 +40,7 @@ public class Properties {
   
   public static String xslFolder="/xsl/";
 
-  public static String xformsFolder="/xforms/";
+  //public static String xformsFolder="/xforms/";
 
   //Database settings from the properties file
   public static String dbUrl=null;
@@ -66,7 +66,7 @@ public class Properties {
       try {
         tmpFolder=props.getString("tmp.folder");
         xslFolder=props.getString("xsl.folder");
-        xformsFolder=props.getString("xforms.folder");
+        //xformsFolder=props.getString("xforms.folder");
 
         //DB connection settings
         dbDriver=props.getString("db.driver");
