@@ -31,13 +31,13 @@ public class SchemaFinder extends DefaultHandler{
         startTag = (localName==null) ? name : localName; //we want the tag name without ns prefix, if ns processing is turned off, them we use name
         startTagNamespace = uri;        
 
-        String schema_location_attr = (Utils.isNullStr(startTagNamespace))? NO_NS_SCHEMA_REFERENCE:SCHEMA_REFERENCE;
+      //  String schema_location_attr = (Utils.isNullStr(startTagNamespace))? NO_NS_SCHEMA_REFERENCE:SCHEMA_REFERENCE;
         
         //System.out.println("("+name);
         int length = attrs != null ? attrs.getLength() : 0;
         for (int i = 0; i < length; i++) {
             String attrName =  attrs.getLocalName(i);
-            if (attrName.equalsIgnoreCase(schema_location_attr))
+            if (attrName.equalsIgnoreCase(NO_NS_SCHEMA_REFERENCE)||attrName.equalsIgnoreCase(SCHEMA_REFERENCE))
                 schemaLocation=attrs.getValue(i);
         }
         throw new SAXException("OK");

@@ -37,6 +37,11 @@ import javax.xml.transform.Source;
 import javax.xml.transform.Result;
 import javax.xml.transform.sax.SAXResult;
 
+import org.apache.xalan.xslt.*;
+import org.apache.xalan.*;
+ import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+import org.apache.xerces.parsers.DOMParser;
 import java.io.OutputStream;
 import javax.servlet.http.HttpServletResponse;
 
@@ -61,6 +66,7 @@ public class ConversionService {
   
   private String cnvContentType = null;
   private String cnvFileExt = null;
+  private String cnvTypeOut = null;
 
   private OutputStream result = null;
 
@@ -169,7 +175,7 @@ public class ConversionService {
     String sourceFile=null;
     String xslFile=null;
     String outputFileName=null;
-    String cnvTypeOut=null;
+    //String cnvTypeOut=null;
     InputFile src= null;
 
     try {
@@ -253,13 +259,13 @@ public class ConversionService {
       //outputFileName=convertXML(sourceFile, xslFile);
       //h.put("content-type", "text/xml");
     }
-    else  if (cnvTypeOut.equals("SQL")){
-      outputFileName=convertSQL(src.getSrcInputStream(), xslFile);
+    else{
+      outputFileName=convertTextOutput(src.getSrcInputStream(), xslFile);
       //outputFileName=convertXML(sourceFile, xslFile);
       //h.put("content-type", "text/xml");
     }
-    else
-      throw new GDEMException("Unknown conversion type or converter not  implemented: " + cnvTypeOut);
+    //else
+    //  throw new GDEMException("Unknown conversion type or converter not  implemented: " + cnvTypeOut);
 
     } 
     catch (MalformedURLException mfe ) {
@@ -430,26 +436,7 @@ public class ConversionService {
       //System.out.println("======= html OK");
       return xmlFile;
   }
-  private String convertSQL(InputStream source, String xslt) throws GDEMException {
-
-      String sqlFile=tmpFolder + "gdem_out" + System.currentTimeMillis() + "." + cnvFileExt;
-      //String args[]={"-in", source, "-xsl", xslt, "-out", xmlFile  };
-      if (result!=null)
-        runXalanTransformation(source, xslt, result);
-      else
-        try{
-          runXalanTransformation(source, xslt,  new FileOutputStream(sqlFile));
-        } catch (IOException e ) {
-          _logger.error("Error " + e.toString());
-          throw new GDEMException("Error creating SQL output file " + e.toString());
-        }
-        //org.apache.xalan.xslt.Process.main(args);
-        //log("conversion done");
-  
-      //System.out.println("======= html OK");
-      return sqlFile;
-  }
-  private String convertOthers(InputStream source, String xslt) throws GDEMException {
+  private String convertTextOutput(InputStream source, String xslt) throws GDEMException {
 
       String outFile=tmpFolder + "gdem_out" + System.currentTimeMillis() + "." + cnvFileExt;
       if (result!=null)
@@ -459,7 +446,7 @@ public class ConversionService {
           runXalanTransformation(source, xslt,  new FileOutputStream(outFile));
         } catch (IOException e ) {
           _logger.error("Error " + e.toString());
-          throw new GDEMException("Error creating output file with Xalan:" + e.toString());
+          throw new GDEMException("Error creating " + cnvTypeOut + " output file with Xalan:" + e.toString());
         }
         //org.apache.xalan.xslt.Process.main(args);
         //log("conversion done");
@@ -467,6 +454,9 @@ public class ConversionService {
       //System.out.println("======= html OK");
       return outFile;
   }
+  
+  
+        
   private void runXalanTransformation(InputStream in, String xsl, OutputStream  out) throws GDEMException {
     try{
       // 1. Instantiate a TransformerFactory.
@@ -475,7 +465,6 @@ public class ConversionService {
       // 2. Use the TransformerFactory to process the stylesheet Source and
       //    generate a Transformer.
       Transformer transformer = tFactory.newTransformer(new StreamSource(xsl));
-
       // 3. Use the Transformer to transform an XML Source and send the
       //    output to a Result object.
 
