@@ -28,27 +28,47 @@ public class ConversionServlet extends HttpServlet {
       ConversionService cnv = new ConversionService();
       Vector conversions;
       Hashtable xslD;
-      
+
+
       //do the conversion
       if (Utils.isNullStr(list)) {
 
-        Hashtable result = cnv.convert(url, format);
+      // For testing 
+     //System.out.println("Start: " + Long.toString(System.currentTimeMillis()));
 
-        String contentType=(String)result.get("content-type");
+        String save = req.getParameter("save");
+        boolean save_src =false;
 
-        byte[] content = (byte[])result.get("content");
+        if (save!=null)
+            save_src=true;
+        Hashtable result=null;
+        if (!save_src){
+           System.out.println("Response ");
+          result = cnv.convert(url, format, res);
+          
+        }
+        else{
+         System.out.println("File ");
+          result = cnv.convert(url, format);
 
-        res.setContentType(contentType);
+          String contentType=(String)result.get("content-type");
+
+          byte[] content = (byte[])result.get("content");
+
+          res.setContentType(contentType);
       
-        ByteArrayInputStream byteIn = new ByteArrayInputStream(content);
+          ByteArrayInputStream byteIn = new ByteArrayInputStream(content);
       
-        int bufLen = 0;
-        byte[] buf = new byte[1024];
+          int bufLen = 0;
+          byte[] buf = new byte[1024];
       
-        while ( (bufLen=byteIn.read( buf ))!= -1 )
-          res.getOutputStream().write(buf, 0, bufLen );
+          while ( (bufLen=byteIn.read( buf ))!= -1 )
+            res.getOutputStream().write(buf, 0, bufLen );
       
-        byteIn.close();
+          byteIn.close();
+        }
+        //For testing
+        //System.out.println("End: " + Long.toString(System.currentTimeMillis()));
       }
       else {
         conversions = cnv.listConversions(list);

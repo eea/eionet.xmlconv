@@ -3,6 +3,8 @@ package eionet.gdem;
 import eionet.gdem.excel.*;
 import org.xml.sax.*;
 import javax.xml.parsers.*;
+import java.io.OutputStream;
+import java.io.FileOutputStream;
 
 
 /**
@@ -15,14 +17,29 @@ public class ExcelProcessor  {
   public ExcelProcessor() {
   }
   public void makeExcel(String sIn, String sOut) throws GDEMException {
+    try
+    {     
+        FileOutputStream outStream = new FileOutputStream(sOut);
+        makeExcel(sIn, outStream);
+        outStream.close();
+
+        InputSource is = new InputSource(
+
+    }
+    catch(Exception e)
+    {
+       throw new GDEMException("ErrorConversionHandler - couldn't save the Excel file: " + e.toString());
+    }
+  }
+  public void makeExcel(String sIn, OutputStream sOut) throws GDEMException {
     
       if (sIn == null) return;
       if (sOut == null) return;
       
-      ExcelConversionHandler excel = new ExcelConversionHandler();
-      excel.setFileName(sOut);
-
       try{
+        ExcelConversionHandlerIF excel = ExcelUtils.getExcelConversionHandler();
+        //excel.setFileName(sOut);
+
         ExcelXMLHandler handler=new ExcelXMLHandler(excel);
         SAXParserFactory spfact = SAXParserFactory.newInstance();
         SAXParser parser = spfact.newSAXParser();
@@ -31,7 +48,7 @@ public class ExcelProcessor  {
 
         reader.setContentHandler(handler);
         reader.parse(sIn);
-        excel.writeToFile();
+        excel.writeToFile(sOut);
       }
       catch (Exception e){
         throw new GDEMException("Error generating Excel file: " + e.toString());
