@@ -31,6 +31,7 @@ import eionet.gdem.Properties;
 
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.MalformedURLException;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -50,7 +51,7 @@ public class InputFile  {
   private URL url=null;
   private InputStream is = null;
   
-  public InputFile(String str_url) throws IOException{
+  public InputFile(String str_url) throws IOException, MalformedURLException{
       _logger = GDEMServices.getLogger();
       
       this.url = new URL(str_url);
