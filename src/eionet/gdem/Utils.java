@@ -32,7 +32,7 @@ public class Utils {
   
   public static String tmpFolder="/tmp";
 
-  public static String urlPrefix="http://conversions.eionet.eu.int/";
+  //public static String urlPrefix="http://conversions.eionet.eu.int/";
   
   public static String xslFolder="/xsl/";
 
@@ -67,12 +67,22 @@ public class Utils {
         dbUrl=props.getString("db.url");
         dbUser=props.getString("db.user");
         dbPwd=props.getString("db.pwd");
+				
+				//period in seconds 
+	      String frequency = props.getString("wq.check.interval");
+		    Float f = new Float(frequency);
+			  wqCheckInterval = (long)(f.floatValue() * 1000);
 
-        wqCheckInterval= Long.valueOf(props.getString("wq.check.interval")).longValue();
-        urlPrefix=props.getString("url.prefix"); //URL where the files can be downloaded
+        //wqCheckInterval= (Long.getLong(props.getString("wq.check.interval"))).longValue();
+
+
+        //urlPrefix=props.getString("url.prefix"); //URL where the files can be downloaded
       } catch (MissingResourceException mse) {
-        //no error handling?
-      }
+
+        //no error handling? go with the default values??
+      } catch (Exception e ) {
+					System.out.println("error " + e.toString());
+			}
     }
   }
   /**

@@ -23,7 +23,8 @@ public class XQueryServlet extends HttpServlet {
   
     try {
       //!! from the props file
-      (new Timer()).scheduleAtFixedRate( new WQChecker(), 0, 20000L );
+      //(new Timer()).scheduleAtFixedRate( new WQChecker(), 0, 20000L );
+			(new Timer()).scheduleAtFixedRate( new WQChecker(), 0, Utils.wqCheckInterval );
     } catch (Exception e) {
       //better error handling here!!
       throw new ServletException(e.getMessage(), e);

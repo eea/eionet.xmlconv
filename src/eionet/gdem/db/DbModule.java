@@ -58,7 +58,7 @@ public class DbModule implements DbModuleIF {
     }
 
     if (dbUrl==null || dbDriver==null || dbUser==null || dbPwd==null )
-      throw new GDEMException("Database connection settings are not specified in gdem.properties.");
+      throw new GDEMException( "Database connection settings are not specified in gdem.properties.");
       
     dbPool = new DBPool( dbUrl, dbDriver, dbUser, dbPwd ) ;        
 

@@ -23,34 +23,34 @@ public class WQChecker extends TimerTask {
       }
 
   }
-  public void run() {
+	/**
+	* override of Thread run() method
+	*/
 
+	public void run() {
 
     //getting new received jobs from the DB
     String[] newJobs=null;
     try {
       newJobs=_db.getJobs(Utils.XQ_RECEIVED);
     } catch(SQLException e ) {
-          System.out.println("*** error getting jobs from DB: " + e.toString());
+			//!! improve me
+		   System.out.println("*** error getting jobs from DB: " + e.toString());
     }
     
     XQueryTask xq;
+		//long a, b;
     if (newJobs!=null)
       for (int i=0; i<newJobs.length; i++) {
           System.out.println("*** waiting job: " + newJobs[i]);
           xq = new XQueryTask(newJobs[i]);
           xq.start();
       }
-  //  else
-//      System.out.println("== no jobs waiting ");
+    /*else {
+      System.out.println("***************** no jobs waiting: " + System.currentTimeMillis() );
+		} */
   }
 
 
-  /*private String[] checkForNewJobs() {
-    return new String[1];
-  } */
-  //public WQChecker()  {  }
 
-  /*private void changeStatus(String jobId, int status) {
-  } */
 }

@@ -103,11 +103,14 @@ public class XQueryService {
 		
 
 		Hashtable ret =  result(status, jobData);      
-		try {
-      db.endXQJob(jobId);
-    } catch (SQLException sqle) {
-      throw new GDEMException("Error gettign XQJob data from DB: " + sqle.toString());
-    }
+
+		//remove the job from the queue / DB when the status won't change= FATAL or READY
+		if (status == Utils.XQ_FATAL_ERR || status == Utils.XQ_READY)
+			try {
+				db.endXQJob(jobId);
+			} catch (SQLException sqle) {
+				throw new GDEMException("Error gettign XQJob data from DB: " + sqle.toString());
+			}
 
 
 		return ret;
@@ -147,24 +150,6 @@ public class XQueryService {
 	
 	}
 
-  /**
-  * Confirms that the client has receievd the result and it may be removed from the workqueue
-  * @param String jobId
-  */
-	/*
-  public String jobReceived(String jobId) throws GDEMException {
-    try {
-      //all done, remove the job from the queue
-      if(db==null)
-        db=DbUtils.getDbModule();    
-      
-      db.endXQJob(jobId);
-    } catch (SQLException sql) {
-      throw new GDEMException("*** Error ending the job = " + sql.toString());
-    }
-    return "OK";
-  } 
-*/
 /*
   public static void main(String [] a) throws Exception {
     XQueryService x = new XQueryService();
@@ -179,12 +164,12 @@ public class XQueryService {
   * Converts the full file path of temporary result file to XML/RPC client
   * understandable URL
   */
-  private String composeUrl(String fullFilePath) {
+  /*private String composeUrl(String fullFilePath) {
     int lastSlash = fullFilePath.lastIndexOf("/");
 
     if (lastSlash !=-1)
       fullFilePath = fullFilePath.substring(lastSlash+1);
 
     return Utils.urlPrefix + fullFilePath;
-  }
+  } */
 }

@@ -104,19 +104,16 @@ public class XQueryTask extends Thread {
     _db.changeJobStatus(_jobId, Utils.XQ_PROCESSING);
 _l("** job " + _jobId + " processing started");     
 
-    //CHANGE ME TO USE QUERYPROCESSOR
-//String xqParam=Utils.XQ_SOURCE_PARAM_NAME + "=" + srcFile;
-//String[] args = {"-o", _resultFile, _scriptFile, xqParam};
 
-String[] xqParam={Utils.XQ_SOURCE_PARAM_NAME + "=" + srcFile};
+			String[] xqParam={Utils.XQ_SOURCE_PARAM_NAME + "=" + srcFile};
 
 
 
       try {
 _l("** query starts: " + _jobId + " params: " + _resultFile + " " + xqParam);
 
-//FIX ME using main() is not correct and does not handle errors!!
-//net.sf.saxon.Query.main(args);
+				//FIX ME using main() is not correct and does not handle errors!!
+				//net.sf.saxon.Query.main(args);
 
 				runQuery(srcFile, _scriptFile, _resultFile, xqParam);
         
@@ -336,104 +333,5 @@ private static void _l(String s ){
    //}
   }
 
-/*
-  private void o_runQuery(String in, String script, String out) {
 
-    boolean wrap=false;
-    Source sourceInput = null;
-    StringBuffer err_buf = new StringBuffer();
-    try{
-
-      Configuration config = new Configuration();
-      config.setHostLanguage(config.XQUERY);
-      StaticQueryContext staticEnv = new StaticQueryContext();
-      staticEnv.setConfiguration(config);
-      DynamicQueryContext dynamicEnv = new DynamicQueryContext();
-      Properties outputProps = new Properties();
-      outputProps.setProperty(OutputKeys.INDENT, "yes");
-
-    //query script
-        Reader queryReader = new FileReader(script);
-        //FileInputStream fin = new FileInputStream(script);
-        //BufferedReader queryReader = new BufferedReader(new InputStreamReader(fin));
-        staticEnv.setBaseURI(new File(script).toURI().toString());
-    //source file
-        File sourceFile = new File(in);
-        InputSource eis = new InputSource(sourceFile.toURI().toString());
-        sourceInput = new SAXSource(eis);
-
-    //result file
-        OutputStream destination = new FileOutputStream(out);
-
-        QueryProcessor xquery = new QueryProcessor(config, staticEnv);
-    //compile Query
-        XQueryExpression exp;
-        try {
-          exp = xquery.compileQuery(queryReader);
-		  queryReader.close(); //KL040218
-        } 
-        catch (XPathException err) {
-          int line = -1;
-          if (err.getLocator() != null) {
-            line = err.getLocator().getLineNumber();
-          }
-          if (line == -1) {
-            err_buf.append("Failed to compile query: ");
-          } else {
-            err_buf.append("Syntax error at line " + line + ":");
-          }
-          throw new TransformerException(err);
-        }
-
-        if (sourceInput != null) {
-          DocumentInfo doc = xquery.buildDocument(sourceInput);
-          dynamicEnv.setContextNode(doc);
-        }
-        try {
-          // The next line actually executes the query
-          //List querylist = exp.evaluate(dynamicEnv);
-          // now get a java.util iterator
-          //System.out.println("Number Nodes =  " +  querylist.size());        
-          SequenceIterator results = exp.iterator(dynamicEnv);
-
-          if (wrap) {
-            DocumentInfo resultDoc = QueryResult.wrap(results, NamePool.getDefaultNamePool());
-            QueryResult.serialize(resultDoc,
-                 new StreamResult(destination),
-                      outputProps);
-            destination.close();
-          } else {
-            PrintWriter writer = new PrintWriter(destination);
-            while (results.hasNext()) {
-              Item item = results.next();
-              switch (item.getItemType()) {
-                case Type.DOCUMENT:
-                case Type.ELEMENT:
-                  QueryResult.serialize((NodeInfo)item,
-                    new StreamResult(writer), outputProps);
-                  writer.println("");
-                  break;
-                default:
-                  writer.println(item.getStringValue());
-              }
-            }
-            writer.close();
-          }
-        }
-        catch (TerminationException err) {
-          throw err;
-        } catch (TransformerException err) {
-         // The message will already have been displayed; don't do it twice
-          throw new TransformerException("Run-time errors were reported");
-        }
-        catch (Exception err) {
-          err.printStackTrace();
-          throw err;
-        }
-                  
-    } catch (Exception e ) {
-       err_buf.append("Query processing failed: " + e.toString());
-       handleError(err_buf.toString(), true);
-   }
-  } */
 }
