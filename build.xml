@@ -92,9 +92,14 @@
 				<exclude name="**/*.properties"/>
 			</fileset>
 		</copy>
+		<copy todir="${prefix}/gdem/${classes.dir}" overwrite="false">
+			<fileset dir="${classes.dir}" includes="**/*.properties">
+				<exclude name="**/*.class"/>
+			</fileset>
+		</copy>
 		<!-- should take care of not overwriting them -->
-		<copy todir="${prefix}/gdem/xsl">
-			<fileset dir="xsl"/>
+		<copy todir="${prefix}/gdem/public/xsl">
+			<fileset dir="public/xsl"/>
 		</copy>
 		<condition property="uit.needed">
 			<not>
