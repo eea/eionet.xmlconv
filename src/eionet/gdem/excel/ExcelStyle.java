@@ -9,12 +9,7 @@ import org.apache.poi.hssf.usermodel.*;
 * @author Enriko Käsper
 */
   
-public class ExcelStyle  {
-
-  public static final String STYLE_FAMILY_TABLE="table";
-  public static final String STYLE_FAMILY_TABLE_COLUMN="table-column";
-  public static final String STYLE_FAMILY_TABLE_ROW="table-row";
-  public static final String STYLE_FAMILY_TABLE_CELL="table-cell";
+public class ExcelStyle implements ExcelStyleIF {
 
   private String name=null;
   private String family=null;
@@ -25,7 +20,9 @@ public class ExcelStyle  {
   private short text_align=HSSFCellStyle.ALIGN_GENERAL;
   private short workbook_index=-1;
   
-  public ExcelStyle(String name, String family) {
+  public ExcelStyle() {
+  }
+  public void setExcelStyle(String name, String family) {
       //These are style unique id's 
       this.name=name;
       this.family=family;
@@ -103,7 +100,7 @@ public class ExcelStyle  {
     else
         text_align=HSSFCellStyle.ALIGN_GENERAL;
   }
-  public boolean equals(ExcelStyle style){
+  public boolean equals(ExcelStyleIF style){
   
     String compare_name=  style.getName();
     String compare_family=  style.getFamily();

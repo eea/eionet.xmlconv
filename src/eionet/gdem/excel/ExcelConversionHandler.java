@@ -4,9 +4,12 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.*;
 
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Vector;
 import java.util.Date;
 import java.util.HashMap;
+
+import eionet.gdem.GDEMException;
 
 /**
 * The main class, which is calling POI HSSF methods for creating Excel fiile and adding data into it
@@ -14,7 +17,7 @@ import java.util.HashMap;
 * @author Enriko Käsper
 */
 
-public class ExcelConversionHandler 
+public class ExcelConversionHandler implements ExcelConversionHandlerIF
 {
   private String fileName=null;
   private HSSFWorkbook wb=null;
@@ -60,7 +63,7 @@ public class ExcelConversionHandler
 
      if (rows==null) rows = new Vector();
 
-     short idx = getStyleIdxByName(def_style, ExcelStyle.STYLE_FAMILY_TABLE_CELL);
+     short idx = getStyleIdxByName(def_style, ExcelStyleIF.STYLE_FAMILY_TABLE_CELL);
      Short short_idx=new Short(idx);
 
      HashMap row = new HashMap();
@@ -80,7 +83,7 @@ public class ExcelConversionHandler
   {
      if (columns==null) columns = new Vector();
 
-     short idx = getStyleIdxByName(def_style, ExcelStyle.STYLE_FAMILY_TABLE_CELL);
+     short idx = getStyleIdxByName(def_style, ExcelStyleIF.STYLE_FAMILY_TABLE_CELL);
      Short short_idx=new Short(idx);
 
      HashMap column = new HashMap();
@@ -204,7 +207,7 @@ public class ExcelConversionHandler
 
      short idx=-1;
      if (style_name!=null){
-       idx = getStyleIdxByName(style_name, ExcelStyle.STYLE_FAMILY_TABLE_CELL);
+       idx = getStyleIdxByName(style_name, ExcelStyleIF.STYLE_FAMILY_TABLE_CELL);
      }
      
      if (idx<0){
@@ -228,18 +231,18 @@ public class ExcelConversionHandler
       }
   }
 
-  public void addStyle(ExcelStyle style){
+  public void addStyle(ExcelStyleIF style){
      if (style==null) return;
      if (styles==null) styles=new Vector();
      if (cell_style_map==null) cell_style_map= new HashMap();
 
      if (!styleExists(style))
         styles.add(style);
-     if (style.getFamily().equals(ExcelStyle.STYLE_FAMILY_TABLE_CELL)){
+     if (style.getFamily().equals(ExcelStyleIF.STYLE_FAMILY_TABLE_CELL)){
         addStyleToWorkbook(style);  
      }
   }
-  private void addStyleToWorkbook(ExcelStyle style){
+  private void addStyleToWorkbook(ExcelStyleIF style){
       HSSFFont font = wb.createFont();
       // Font Size eg.12
       short height = style.getFontSize();
@@ -265,22 +268,22 @@ public class ExcelConversionHandler
       style.setWorkbookIndex((short)HSSFStyle.getIndex());
       
   }
-  private boolean styleExists(ExcelStyle style){
+  private boolean styleExists(ExcelStyleIF style){
       if (style==null) return false;
 
       for (int i=0; i<styles.size();i++){
-        if (style.equals((ExcelStyle)styles.get(i)))
+        if (style.equals((ExcelStyleIF)styles.get(i)))
             return true;
       }
       return false;
   }
-  public ExcelStyle getStyleByName(String name, String family){
+  public ExcelStyleIF getStyleByName(String name, String family){
 
       if (styles ==null) return null;
       if (name==null || family==null) return null;
 
       for (int i=0; i<styles.size();i++){
-        ExcelStyle style=(ExcelStyle)styles.get(i);
+        ExcelStyleIF style=(ExcelStyleIF)styles.get(i);
         if (name.equals(style.getName()) && family.equals(style.getFamily()))
             return style;
       }
@@ -292,7 +295,7 @@ public class ExcelConversionHandler
       if (name==null || family==null) return -1;
       
       for (int i=0; i<styles.size();i++){
-        ExcelStyle style=(ExcelStyle)styles.get(i);
+        ExcelStyleIF style=(ExcelStyleIF)styles.get(i);
         if (name.equals(style.getName()) && family.equals(style.getFamily()))
             return style.getWorkbookIndex();
       }
@@ -328,7 +331,7 @@ public class ExcelConversionHandler
 
     return null;
   }
-  public void writeToFile(){
+  public void writeToFile() throws GDEMException{
       // Write the output to a file
     try
     {     
@@ -340,7 +343,18 @@ public class ExcelConversionHandler
     }
     catch(Exception e)
     {
-        System.out.println(e.toString());
+       throw new GDEMException("ErrorConversionHandler - couldn't save the Excel file: " + e.toString());
+    }
+  }
+  public void writeToFile(OutputStream outstream) throws GDEMException{
+      // Write the output to  Outputstream
+    try
+    {     
+        wb.write(outstream);
+    }
+    catch(Exception e)
+    {
+       throw new GDEMException("ErrorConversionHandler - couldn't save the Excel file: " + e.toString());
     }
   }
 

@@ -21,7 +21,7 @@ import java.util.*;
 
 public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags{
 
-   protected ExcelConversionHandler excel;
+   protected ExcelConversionHandlerIF excel;
 
   private StringBuffer fieldData = new StringBuffer(); // buffer for collecting characters
 
@@ -32,7 +32,7 @@ public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags{
   private String cell_type=null;
   private String cell_style=null;
 
-  private ExcelStyle style=null;
+  private ExcelStyleIF style=null;
 
 
    private static final int   root_level = 0;
@@ -44,7 +44,7 @@ public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags{
  
   private boolean             bOK=false;
 
-  public ExcelXMLHandler(ExcelConversionHandler excel)
+  public ExcelXMLHandler(ExcelConversionHandlerIF excel)
   {
       this.excel = excel;
   }
@@ -104,7 +104,8 @@ public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags{
           String style_name = attributes.getValue(STYLE_NAME_ATTR);
           String style_family = attributes.getValue(STYLE_FAMILY_ATTR);
 
-          style = new ExcelStyle(style_name, style_family);
+          style = ExcelUtils.getExcelStyle();
+          style.setExcelStyle(style_name, style_family);
       }          
       else if (name.equals(STYLE_PROP_TAG)){
           style.setFontWeight(attributes.getValue(FONT_WEIGHT_ATTR));
