@@ -64,6 +64,10 @@ public interface DbModuleIF {
   public static final String HOST_TABLE="T_HOST";
 
   /**
+  * Table for conversion types
+  */
+  public static final String CONVTYPE_TABLE="T_CONVTYPE";
+  /**
   * Field names in XSL table
   */
   public static final String CNV_ID_FLD="CONVERT_ID";
@@ -139,6 +143,14 @@ public interface DbModuleIF {
   public static final String HOST_NAME_FLD="HOST_NAME";
   public static final String USER_FLD="USER";
   public static final String PWD_FLD="PWD";
+
+  /**
+  * Field names in CONVTYPE table
+  */
+  public static final String CONV_TYPE_FLD="CONV_TYPE";
+  public static final String CONTENT_TYPE_FLD="CONTENT_TYPE";
+  public static final String FILE_EXT_FLD="FILE_EXT";
+  public static final String CONVTYPE_DESCRIPTION_FLD="DESCRIPTION";
 
   /**
   * Adds a new Stylesheet to the database
@@ -389,4 +401,20 @@ public interface DbModuleIF {
   */
 
   public Vector getHosts(String host) throws SQLException;
+
+/**
+  * returns conversion types from database
+  * @param host - if empty, then all fields will be returned
+  *             - conv_ty as string - wildcard search is performed
+  * @return Vector contining all fields as HashMaps from T_CONVTYPET table
+  */
+
+  public Vector getConvTypes() throws SQLException;
+/**
+  * returns one row of conversion type from database
+  * @param conv_type as string
+  * @return HashMap contining all fields as HashMap from T_CONVTYPE table
+  */
+
+  public Hashtable getConvType(String conv_type) throws SQLException;
 }

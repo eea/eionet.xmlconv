@@ -74,17 +74,26 @@ public class DbModule implements DbModuleIF, Constants {
   public HashMap getStylesheetInfo(String convertId) throws SQLException {
 
     int id = 0;
-
+    String xslName=null;
     try { 
       id=Integer.parseInt(convertId);
     } catch(NumberFormatException n) {
-      throw new SQLException("not numeric ID " + convertId);
+      if (convertId.endsWith("xsl"))
+        xslName = convertId;
+      else
+        throw new SQLException("not numeric ID or xsl file name: " + convertId);
     }
     
     String sql="SELECT " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD + "," + XSL_FILE_FLD + ", " + XSL_TABLE + "." + DESCR_FLD + "," +
       RESULT_TYPE_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + " FROM " + XSL_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE +
-          " ON " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD +
-          " WHERE " + CNV_ID_FLD + "=" + id;
+          " ON " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD;
+      if (xslName!=null){
+        sql += " WHERE " + XSL_FILE_FLD + "=" + Utils.strLiteral(xslName);
+
+      }
+      else{
+          sql += " WHERE " + CNV_ID_FLD + "=" + id;
+      }
         
 
     String r[][] = _executeStringQuery(sql);
@@ -820,7 +829,7 @@ public class DbModule implements DbModuleIF, Constants {
     title = (title == null ? "" : title );
     
     String sql = "UPDATE  " + FILE_TABLE + " SET " + FILE_NAME_FLD + "=" + Utils.strLiteral(fileName) + ", " +
-          FILE_TITLE_FLD + "='" + Utils.strLiteral(title) + "', " + FILE_PARENTTYPE_FLD + "='" + parent_type + "', " +
+          FILE_TITLE_FLD + "=" + Utils.strLiteral(title) + ", " + FILE_PARENTTYPE_FLD + "='" + parent_type + "', " +
           FILE_PARENTID_FLD + "=" + parent_id + ", " + FILE_DESCRIPTION_FLD + "=" + Utils.strLiteral(description) + "" +
           " WHERE " + FILE_ID_FLD + "=" + file_id;
 
@@ -893,6 +902,41 @@ public class DbModule implements DbModuleIF, Constants {
 
     return v;
   }
-     
+  public Vector getConvTypes() throws SQLException{
+    String sql = "SELECT " + CONV_TYPE_FLD  + ", " + CONTENT_TYPE_FLD  + ", " + FILE_EXT_FLD  + ", " + CONVTYPE_DESCRIPTION_FLD  +  
+      " FROM " + CONVTYPE_TABLE + " ORDER BY " + CONV_TYPE_FLD;
+    
+		String r[][] = _executeStringQuery(sql);
+      
+    Vector v = new Vector();
+
+    for (int i =0; i< r.length; i++) {
+      Hashtable h = new Hashtable();
+      h.put("conv_type", r[i][0]);
+      h.put("coontent_type", r[i][1]);
+      h.put("file_ext", r[i][2]);
+      h.put("description", r[i][3]);      
+      v.add(h);      
+    }
+    return v;
+  } 
+  public Hashtable getConvType(String conv_type) throws SQLException{
+
+    String sql = "SELECT " + CONV_TYPE_FLD  + ", " + CONTENT_TYPE_FLD  + ", " + FILE_EXT_FLD  + ", " + CONVTYPE_DESCRIPTION_FLD  +  
+      " FROM " + CONVTYPE_TABLE + " WHERE " + CONV_TYPE_FLD + "=" + Utils.strLiteral(conv_type);
+ 			
+      String r[][] = _executeStringQuery(sql);
+      
+      if (r.length==0)return null;
+      
+      Hashtable h = new Hashtable();
+      h.put("conv_type", r[0][0]);
+      h.put("content_type", r[0][1]);
+      h.put("file_ext", r[0][2]);
+      h.put("description", r[0][3]);      
+
+			return h;
+ } 
+   
   
 }
