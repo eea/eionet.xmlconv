@@ -2,46 +2,54 @@
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
     "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
-  <display-name>XQuery Utils</display-name>
-  <servlet>
-    <servlet-name>Main</servlet-name>
-    <servlet-class>eionet.gdem.conversion.ssr.Main</servlet-class>
-  </servlet>
+	<display-name>Conversion and Quality Assessment Service</display-name>
 	<servlet>
-    <servlet-name>SandBox</servlet-name>
-    <servlet-class>eionet.gdem.qa.servlets.SandBox</servlet-class>
-  </servlet>
+		<servlet-name>Main</servlet-name>
+		<servlet-class>eionet.gdem.conversion.ssr.Main</servlet-class>
+	</servlet>
 	<servlet>
-    <servlet-name>XQueryServlet</servlet-name>
-    <servlet-class>eionet.gdem.qa.servlets.WQCheckerServlet</servlet-class>
-		<load-on-startup></load-on-startup>
-  </servlet>
+		<servlet-name>SandBox</servlet-name>
+		<servlet-class>eionet.gdem.qa.servlets.SandBox</servlet-class>
+	</servlet>
 	<servlet>
-    <servlet-name>ConversionServlet</servlet-name>
-    <servlet-class>eionet.gdem.conversion.ConversionServlet</servlet-class>
-  </servlet>
+		<servlet-name>XQueryServlet</servlet-name>
+		<servlet-class>eionet.gdem.qa.servlets.WQCheckerServlet</servlet-class>
+		<load-on-startup/>
+	</servlet>
 	<servlet>
-    <servlet-name>RpcRouter</servlet-name>
-    <servlet-class>com.tee.uit.servlets.XmlRpcRouter</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Main</servlet-name>
-    <url-pattern>/main</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>SandBox</servlet-name>
-    <url-pattern>/sandbox</url-pattern>
-  </servlet-mapping>
+		<servlet-name>ConversionServlet</servlet-name>
+		<servlet-class>eionet.gdem.conversion.ConversionServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>RpcRouter</servlet-name>
+		<servlet-class>com.tee.uit.servlets.XmlRpcRouter</servlet-class>
+	</servlet>
 	<servlet-mapping>
-    <servlet-name>ConversionServlet</servlet-name>
-    <url-pattern>/convert</url-pattern>
-  </servlet-mapping>
+		<servlet-name>Main</servlet-name>
+		<url-pattern>/main</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
-    <servlet-name>XQueryServlet</servlet-name>
-    <url-pattern>/XQueryServlet</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>RpcRouter</servlet-name>
-    <url-pattern>/RpcRouter</url-pattern>
-  </servlet-mapping>
+		<servlet-name>SandBox</servlet-name>
+		<url-pattern>/sandbox</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ConversionServlet</servlet-name>
+		<url-pattern>/convert</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>XQueryServlet</servlet-name>
+		<url-pattern>/XQueryServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>RpcRouter</servlet-name>
+		<url-pattern>/RpcRouter</url-pattern>
+	</servlet-mapping>
+	<session-config>
+		<session-timeout>60</session-timeout>
+		<!-- minutes -->
+	</session-config>
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>queriesindex.jsp</welcome-file>
+	</welcome-file-list>
 </web-app>
