@@ -10,6 +10,8 @@ import org.xml.sax.InputSource;
 import java.net.URL;
 import java.net.MalformedURLException;
 
+import eionet.gdem.utils.InputFile;
+
 import java.io.IOException;
 
 //import eionet.gdem.utils.Utils;
@@ -26,8 +28,12 @@ public class ValidationService {
   private ErrorHandler errHandler;
   
   public String validateSchema (String srcUrl, String schema) throws GDEMException {
+    
+    InputFile src=null;
     try {
-      URL url = new URL(srcUrl);
+      src = new InputFile(srcUrl);
+      
+      //URL url = new URL(srcUrl);
 
       SAXParser parser = new SAXParser();
       parser.setErrorHandler(errHandler);
@@ -41,7 +47,8 @@ public class ValidationService {
      if (schema != null)
       parser.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation", schema);      
       
-      InputSource is = new InputSource( url.openStream());
+      InputSource is = new InputSource( src.getSrcInputStream());
+      //InputSource is = new InputSource( url.openStream());
       parser.parse(is);
 
       //log("OK");      
@@ -62,6 +69,9 @@ public class ValidationService {
       else
         e.printStackTrace(System.err);    
       throw new GDEMException("Error parsing: " + e.toString());
+    }
+    finally{
+      src.close();
     }
 
     //we have errors!

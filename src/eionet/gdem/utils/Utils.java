@@ -29,6 +29,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.util.Vector;
 import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 /**
  * Several common methods for file handling etc
@@ -249,6 +250,13 @@ public class Utils {
         return str_decoded.substring(sep +1);
       else
         return null;
+    }   
+	  /**
+     * A method for encoding the BASIC auth for request header
+     */
+    public static String getEncodedAuthentication(String user, String pwd)  throws java.io.IOException {
+      String auth = user + ":" + pwd;
+      return new BASE64Encoder().encode(auth.getBytes());
     }   
   }
   

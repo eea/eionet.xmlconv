@@ -7,6 +7,7 @@ import org.xml.sax.*;
 import javax.xml.parsers.*;
 import eionet.gdem.GDEMException;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.utils.InputFile;
 
 import java.net.URL;
 import java.net.MalformedURLException;
@@ -25,9 +26,15 @@ public class InputAnalyser
   public String parseXML(String srcUrl) throws GDEMException
   {
     String dtd=null;
+    InputFile src = null;
     try{
-      URL url = new URL(srcUrl);
-      InputSource is = new InputSource( url.openStream());
+      //URL url = new URL(srcUrl);
+      //InputSource is = new InputSource( url.openStream());
+      src = new InputFile(srcUrl);
+      
+      InputSource is = new InputSource( src.getSrcInputStream());
+      
+      
       //Defaulthandler handler = new DefaultHandler();
       //InputAnalyserDTD dtd_handler = new InputAnalyserDTD();
       SchemaFinder handler=new SchemaFinder();
@@ -97,6 +104,9 @@ public class InputAnalyser
       else
         e.printStackTrace(System.err);    
       throw new GDEMException("Error parsing: " + e.toString());
+    }
+    finally{
+      src.close();
     }
   
   return "OK";

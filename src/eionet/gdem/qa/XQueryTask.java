@@ -33,6 +33,7 @@ import eionet.gdem.services.DbModuleIF;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.utils.InputFile;
 import eionet.gdem.Properties;
 
 import java.sql.SQLException;
@@ -92,7 +93,9 @@ public class XQueryTask extends Thread implements Constants {
 			String srcFile=null;
       
 			try {
-				srcFile=Utils.saveSrcFile(_url);
+        InputFile inputfile = new InputFile(_url);
+        srcFile=inputfile.saveSrcFile();
+				//srcFile=Utils.saveSrcFile(_url);
 
         if(_logger.enable(_logger.DEBUG))
           _logger.debug("==== Source XML was stored to " + srcFile);

@@ -13,6 +13,7 @@ import java.util.Vector;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.conversion.ssr.Names;
 
 public class ConversionServlet extends HttpServlet {
 
@@ -23,8 +24,14 @@ public class ConversionServlet extends HttpServlet {
 
     String list = req.getParameter("list");
 
-    if ( Utils.isNullStr(list) && ( Utils.isNullStr(url)&& Utils.isNullStr(format))   )
-      throw new ServletException("Parameter 'list' or parameters 'format' and 'url' are missing");
+    if ( Utils.isNullStr(list) && ( Utils.isNullStr(url) || Utils.isNullStr(format))   ){
+      
+      req.setAttribute(Names.ERROR_ATT, "Some of the following parameters is missing: 'list' or 'format' or 'file url'!");
+      //throw new ServletException("Parameter 'list' or parameters 'format' and 'url' are missing");
+      req.getRequestDispatcher(Names.INDEX_JSP).forward(req,res);
+      //res.sendRedirect(Names.INDEX_JSP);
+      return;
+    }
 
     try {
       ConversionService cnv = new ConversionService();
@@ -95,6 +102,12 @@ public class ConversionServlet extends HttpServlet {
     }
     
 
+  }
+  /**
+  * doPost()
+  */
+  public void doPost( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException {
+    doGet(req, res);
   }
 
 }

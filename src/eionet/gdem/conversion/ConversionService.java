@@ -6,7 +6,8 @@ import java.io.*;
 //import org.apache.log4j.Category;
 //import org.apache.log4j.Priority;
 
-import java.net.URL;
+//import java.net.URL;
+import java.net.MalformedURLException;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -17,6 +18,9 @@ import eionet.gdem.services.*;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.utils.InputFile;
+
+import eionet.gdem.services.LoggerIF;
 
 import java.util.HashMap;
 
@@ -36,6 +40,8 @@ import javax.xml.transform.sax.SAXResult;
 import java.io.OutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+//import org.apache.commons.httpclient.*;
+//import org.apache.commons.httpclient.methods.*;
 
 
 /**
@@ -55,7 +61,9 @@ public class ConversionService {
 
   private OutputStream result = null;
 
-  
+  private static LoggerIF _logger;
+
+    
   //private static final String xslFolder="C:/einrc/webs/gdem/xsl/";
   //private static final String tmpFolder="C:/einrc/webs/gdem/tmp/";
   
@@ -75,6 +83,8 @@ public class ConversionService {
   }
 
   public ConversionService()  {
+      _logger=GDEMServices.getLogger();
+  
       xslFolder=Properties.xslFolder; //props.getString("xsl.folder");
       tmpFolder=Properties.tmpFolder;  //props.getString("tmp.folder");
 
@@ -156,18 +166,21 @@ public class ConversionService {
     String xslFile=null;
     String outputFileName=null;
     String cnvTypeOut=null;
+    InputFile src= null;
 
     try {
+    
+      src = new InputFile(sourceURL);
       //sourceFile=saveSourceFile(sourceURL);
-      if (res==null)
+      /*if (res==null)
         sourceFile=Utils.saveSrcFile(sourceURL);
       else
-        sourceFile=sourceURL;
+        sourceFile=sourceURL;*/
     //} catch (IOException  ioe ) {
-    } catch (Exception  ioe ) {
-      throw new GDEMException("Error reading from URL and saving tmp file: " + sourceURL + "\n"
-        + ioe.toString());
-    }
+    //} catch (Exception  ioe ) {
+    //  throw new GDEMException("Error reading from URL: " + sourceURL + "\n"
+     //   + ioe.toString());
+   // }
     
     //xslFile=xslFolder + convertId + ".xsl";
     if (db==null)
@@ -196,24 +209,42 @@ public class ConversionService {
         }
       }
     if (cnvTypeOut.equals("HTML")){
-      outputFileName=convertHTML(sourceFile, xslFile);
+      outputFileName=convertHTML(src.getSrcInputStream(), xslFile);
+      //outputFileName=convertHTML(sourceFile, xslFile);
       //htmlFileName=convertHTML(sourceURL, xslFile);      
       //h.put("content-type", "text/html");
     }
     else if (cnvTypeOut.equals("PDF")){
-      outputFileName=convertPDF(sourceFile, xslFile);
+      outputFileName=convertPDF(src.getSrcInputStream(), xslFile);
+      //outputFileName=convertPDF(sourceFile, xslFile);
       //h.put("content-type", "application/pdf");
     }
     else if (cnvTypeOut.equals("EXCEL")){
-      outputFileName=convertExcel(sourceFile, xslFile);
+      outputFileName=convertExcel(src.getSrcInputStream(), xslFile);
+      //outputFileName=convertExcel(sourceFile, xslFile);
       //h.put("content-type", "application/vnd.ms-excel");
     }
     else  if (cnvTypeOut.equals("XML")){
-      outputFileName=convertXML(sourceFile, xslFile);
+      outputFileName=convertXML(src.getSrcInputStream(), xslFile);
+      //outputFileName=convertXML(sourceFile, xslFile);
       //h.put("content-type", "text/xml");
     }
     else
       throw new GDEMException("Unknown conversion type or converter not  implemented: " + cnvTypeOut);
+
+    } 
+    catch (MalformedURLException mfe ) {
+      throw new GDEMException("Bad URL : " + mfe.toString());
+    } 
+    catch (IOException ioe ) {
+      throw new GDEMException("Error opening URL " + ioe.toString());
+    } 
+    catch (Exception e ) {
+      throw new GDEMException("Error converting: " + e.toString());
+    }
+    finally{
+      src.close();
+    }
 
 
     h.put("content-type", (String)convTypes.get(cnvTypeOut));
@@ -273,7 +304,7 @@ public class ConversionService {
     }    
       return baos.toByteArray();    
   }
-  private String convertPDF(String source, String xslt) throws GDEMException {
+  private String convertPDF(InputStream source, String xslt) throws GDEMException {
 
       String pdfFile=tmpFolder + "gdem_" + System.currentTimeMillis() + ".pdf";
       //String args[]={"-xml", source, "-xsl", xslt, "-pdf", pdfFile  };
@@ -284,7 +315,7 @@ public class ConversionService {
         try{
           runFOPTransformation(source, xslt,  new FileOutputStream(pdfFile));
         } catch (IOException e ) {
-          log("Error " + e.toString());
+          _logger.error("Error " + e.toString());
           throw new GDEMException("Error creating PDF output file " + e.toString());
         }
       }
@@ -295,7 +326,7 @@ public class ConversionService {
 
 
 
-  private String convertHTML(String source, String xslt) throws GDEMException {
+  private String convertHTML(InputStream source, String xslt) throws GDEMException {
 
       String htmlFile=tmpFolder + "gdem_" + System.currentTimeMillis() + ".html";
       //String args[]={"-in", source, "-xsl", xslt, "-out", htmlFile  };
@@ -308,7 +339,7 @@ public class ConversionService {
         try{
           runXalanTransformation(source, xslt,  new FileOutputStream(htmlFile));
         } catch (IOException e ) {
-          log("Error " + e.toString());
+          _logger.error("Error " + e.toString());
           throw new GDEMException("Error creating HTML output file " + e.toString());
         }
       }
@@ -320,7 +351,7 @@ public class ConversionService {
       return htmlFile;
   }
 
-  private String convertExcel(String source, String xslt) throws GDEMException {
+  private String convertExcel(InputStream source, String xslt) throws GDEMException {
 
       String xmlFile=tmpFolder + "gdem_out" + System.currentTimeMillis() + ".xml";
       String excelFile=tmpFolder + "gdem_" + System.currentTimeMillis() + ".xls";
@@ -340,7 +371,7 @@ public class ConversionService {
       Utils.deleteFile(xmlFile);
 
     } catch (Exception e ) {
-      log("Error " + e.toString());
+      _logger.error("Error " + e.toString());
       e.printStackTrace(System.out);    
       throw new GDEMException("Error transforming Excel " + e.toString());
     }
@@ -351,7 +382,7 @@ public class ConversionService {
       return excelFile;
   }
   
-  private String convertXML(String source, String xslt) throws GDEMException {
+  private String convertXML(InputStream source, String xslt) throws GDEMException {
 
       String xmlFile=tmpFolder + "gdem_out" + System.currentTimeMillis() + ".xml";
       //String args[]={"-in", source, "-xsl", xslt, "-out", xmlFile  };
@@ -361,7 +392,7 @@ public class ConversionService {
         try{
           runXalanTransformation(source, xslt,  new FileOutputStream(xmlFile));
         } catch (IOException e ) {
-          log("Error " + e.toString());
+          _logger.error("Error " + e.toString());
           throw new GDEMException("Error creating XML output file " + e.toString());
         }
         //org.apache.xalan.xslt.Process.main(args);
@@ -370,7 +401,7 @@ public class ConversionService {
       //System.out.println("======= html OK");
       return xmlFile;
   }
-  private void runXalanTransformation(String in, String xsl, OutputStream  out) throws GDEMException {
+  private void runXalanTransformation(InputStream in, String xsl, OutputStream  out) throws GDEMException {
     try{
       // 1. Instantiate a TransformerFactory.
       TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -392,12 +423,12 @@ public class ConversionService {
       //System.out.println("Transform End: " + Long.toString(System.currentTimeMillis()));
       
     } catch (Throwable e ) {
-        log("Error " + e.toString());
+        _logger.error("Error " + e.toString());
         e.printStackTrace(System.out);    
         throw new GDEMException("Error transforming XML " + e.toString());
     }
   }
-  private void runFOPTransformation(String in, String xsl, OutputStream out) throws GDEMException {
+  private void runFOPTransformation(InputStream in, String xsl, OutputStream out) throws GDEMException {
 
     try{
       Driver driver = new Driver();
@@ -421,13 +452,11 @@ public class ConversionService {
       //Start the transformation and rendering process
       transformer.transform(src, res); 
     } catch (Throwable e ) {
-        log("Error " + e.toString());
+        _logger.error("Error " + e.toString());
         e.printStackTrace(System.out);    
         throw new GDEMException("Error transforming XML to PDF " + e.toString());
     }
   }
-
-
   /**
   * Saves the source file temporarily
   */
@@ -461,20 +490,5 @@ public class ConversionService {
     System.out.println("================================");    
   } 
 
-
-/*  public static void main(String ar[]) {
-    try {
-      ConversionService c = new ConversionService();
-      Utils.log("x=" + c.listConversions());    
-      //Utils.log("x=" + db.
-      DbModuleIF d = DbUtils.getDbModule();
-
-      //Utils.log("x=" + d.addStylesheet("xxx", "XML", "/tmp/y-file", null));
-
-      //d.removeStyleSheet("3");
-    } catch (Exception e ) {
-      Utils.log("error " + e.toString());
-    }
-  } */
 
 }
