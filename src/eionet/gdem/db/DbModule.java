@@ -422,7 +422,7 @@ public class DbModule implements DbModuleIF {
     return s;
   }
 
-   public void startXQJob(String url, String xqFile, String resultFile) throws SQLException {
+   public String startXQJob(String url, String xqFile, String resultFile) throws SQLException {
       String sql = "INSERT INTO " + WQ_TABLE + " (" + URL_FLD + "," + XQ_FILE_FLD +
         ", " + RESULT_FILE_FLD +
         "," + STATUS_FLD + "," + TIMESTAMP_FLD +
@@ -430,6 +430,13 @@ public class DbModule implements DbModuleIF {
         Utils.XQ_RECEIVED + ", NOW())";
         
       _executeUpdate(sql);
+
+			sql = "SELECT " + JOB_ID_FLD  + " FROM " + WQ_TABLE + " WHERE " + XQ_FILE_FLD + " = '" +
+				xqFile + "' AND " + RESULT_FILE_FLD + " = '" + resultFile + "'";
+
+			String r[][] = _executeStringQuery(sql);
+
+			return r[0][0];
    }
 
    public void changeJobStatus(String jobId, int status) throws SQLException {

@@ -24,7 +24,7 @@ public class WQChecker extends TimerTask {
 
   }
   public void run() {
-    //System.out.println("*** WQ priority= " + Thread.currentThread().getPriority());
+
 
     //getting new received jobs from the DB
     String[] newJobs=null;
@@ -41,8 +41,8 @@ public class WQChecker extends TimerTask {
           xq = new XQueryTask(newJobs[i]);
           xq.start();
       }
-    else
-      System.out.println("== no jobs waiting ");
+  //  else
+//      System.out.println("== no jobs waiting ");
   }
 
 

@@ -26,6 +26,8 @@ package eionet.gdem;
 //import net.sf.saxon.Query;
 import java.io.IOException;
 
+import java.util.Hashtable;
+
 import eionet.gdem.db.*;
 import java.sql.SQLException;
 import java.io.FileNotFoundException;
@@ -61,28 +63,28 @@ public class XQueryService {
       
       //name for temporary output file where the esult is stored:
       String resultFile=Utils.tmpFolder + "gdem_" + System.currentTimeMillis() + ".txt";
-
+			String newId="-1"; //should not be returned with value -1;
       //init DBModule
       if(db==null)
         db=DbUtils.getDbModule();
       
       //start a job in the Workqueue
       try {
-        db.startXQJob(sourceURL, xqFile, resultFile);
+        newId=db.startXQJob(sourceURL, xqFile, resultFile);
       } catch (SQLException sqe ) {
         throw new GDEMException("DB operation failed: " + sqe.toString());
       }
 
-      return "OK"; //XML/RPC does not support null that's why we return a STRING
+      return newId; 
   }
 
   /**
   * Checks if the job is ready (or error) and returns the result (or error message)
   * @param String jobId
   * @return String fileName where the client can download the result   
-  * Returns an empty String if not ready yet
+  * Returns a Hash including code and result
   */
-  public String getResult(String jobId) throws GDEMException {
+  public Hashtable getResult(String jobId) throws GDEMException {
     //init DBModule
     if(db==null)
       db=DbUtils.getDbModule();    
@@ -98,21 +100,52 @@ public class XQueryService {
       throw new GDEMException("** No such job with ID=" + jobId + " in the queue.");
 
     int status= Integer.valueOf(jobData[3]).intValue();
+		
 
-    //if the job is ready (or error happened, return the URL of the result where the
-    //XML/RPC client can download the file(s) from
-    if (status==Utils.XQ_READY) {
-      //try {
-        //db.changeJobStatus(jobId, Utils.XQ_PULLED);
-      /*} catch (SQLException sql) {
-        throw new GDEMException("*** Error changing status = " + sql.toString());
-      } */
-      return composeUrl(jobData[2]); //valid url of the result file
+		Hashtable ret =  result(status, jobData);      
+		try {
+      db.endXQJob(jobId);
+    } catch (SQLException sqle) {
+      throw new GDEMException("Error gettign XQJob data from DB: " + sqle.toString());
     }
-    else
-      return ""; //job is not ready, let's wait...
-      
+
+
+		return ret;
   } 
+	
+	//Hashtable to be composed for the getResult() method return value
+	private Hashtable result(int status, String[] jobData) {
+		Hashtable h = new Hashtable();
+		int resultCode;
+		String resultValue;
+		if (status==Utils.XQ_RECEIVED || status==Utils.XQ_DOWNLOADING_SRC || status==Utils.XQ_PROCESSING) {
+			resultCode=Utils.JOB_NOT_READY;
+			resultValue="";
+		}
+		else  {
+			if (status==Utils.XQ_READY)
+				resultCode=Utils.JOB_READY;
+			else if (status==Utils.XQ_FATAL_ERR)
+				resultCode=Utils.JOB_FATAL_ERROR;
+			else if (status==Utils.XQ_LIGHT_ERR)
+				resultCode=Utils.JOB_LIGHT_ERROR;
+			else
+				resultCode=-1; //not expected to reach here
+			try {
+				resultValue=Utils.readStrFromFile(jobData[2]);	
+			} catch (Exception ioe ) {
+				resultCode=Utils.JOB_FATAL_ERROR;
+				resultValue= "<error>Error reading the XQ value from the file:" + jobData[2] + "</error>";
+			}
+			
+		}
+
+		h.put(Utils.RESULT_CODE_PRM, Integer.toString(resultCode));
+		h.put(Utils.RESULT_VALUE_PRM, resultValue);
+
+		return h;
+	
+	}
 
   /**
   * Confirms that the client has receievd the result and it may be removed from the workqueue

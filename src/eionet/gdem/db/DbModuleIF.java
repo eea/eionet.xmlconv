@@ -143,7 +143,7 @@ public interface DbModuleIF {
   * XQ Script is saved earlier in the 
   * @param String url, String xqFile, String resultFile
   */
-  public void startXQJob(String url, String xqFile, String resultFile) throws SQLException;
+  public String startXQJob(String url, String xqFile, String resultFile) throws SQLException;
 
   /**
   * Changes the status of the job in the table

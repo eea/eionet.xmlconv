@@ -26,6 +26,9 @@ public class Utils {
   public static final int JOB_FATAL_ERROR=2;
   public static final int JOB_LIGHT_ERROR=3;
 
+	//key names for te getResult() STRUCT
+	public static final String RESULT_CODE_PRM = "CODE";
+	public static final String RESULT_VALUE_PRM = "VALUE";
   
   public static String tmpFolder="/tmp";
 
@@ -122,7 +125,7 @@ public class Utils {
     return fileName;
   }
 
-  static String readStrFromFile(String fileName) throws java.io.IOException {
+  public static String readStrFromFile(String fileName) throws java.io.IOException {
 
     BufferedReader fis = new BufferedReader(new FileReader(fileName)); 
     StringBuffer s = new StringBuffer();

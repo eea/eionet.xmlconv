@@ -123,17 +123,17 @@ _l("** query starts: " + _jobId + " params: " + _resultFile + " " + xqParam);
       } catch (Exception e ) {
         handleError("Error processing XQ:" + e.toString(), true);
         return;
+
       }
 
-     _db.changeJobStatus(_jobId, Utils.XQ_READY);
-_l("** job " + _jobId + " done");     
+			_db.changeJobStatus(_jobId, Utils.XQ_READY);
+			_l("** job " + _jobId + " succeeded");     
       //all done, thread stops here, job is waiting for pulling from the client side      
   
       //Thread.sleep(_sleepTime);
-_l("End of = " + _jobId);      
+
     } catch (Exception ee) {
       handleError("Error in thread run():" + ee.toString(), true);
-      
     }
   }
   
@@ -187,9 +187,9 @@ private static void _l(String s ){
 			else
 				_resultFile= _resultFile.substring(0, _resultFile.lastIndexOf("."));
       
-      System.out.println("******* The result is stored to: " + _resultFile);
-        
-      Utils.saveStrToFile(_resultFile, "<error>" + error + "</error>", "txt");
+      _l("******* The result is stored to: " + _resultFile);
+      if(error!=null)
+		      Utils.saveStrToFile(_resultFile, "<error>" + error + "</error>", "txt");
 
       //change the name in the DB?
             
@@ -211,12 +211,12 @@ private static void _l(String s ){
   * excetues :)
   * executes
   */
-  private void runQuery(String in, String script, String out, String xqParams[]) {
+  private void runQuery(String in, String script, String out, String xqParams[]) throws Exception {
 
     boolean wrap=false;
     Source sourceInput = null;
     StringBuffer err_buf = new StringBuffer();
-    try{
+//    try{
 
       Configuration config = new Configuration();
       config.setHostLanguage(config.XQUERY);
@@ -236,7 +236,8 @@ private static void _l(String s ){
           String arg = xqParams[p];
           int eq = arg.indexOf("=");
           if (eq<1 || eq>=arg.length()-1) {
-              handleError("Bad param=value pair", true);
+							throw new Exception("Bad param=value pair");
+              //handleError("Bad param=value pair", true);
           }
           String argname = arg.substring(0,eq);
           if (argname.startsWith("!")) {
@@ -267,7 +268,7 @@ private static void _l(String s ){
           exp = xquery.compileQuery(queryReader);
 					queryReader.close(); //KL 040218
         } catch (XPathException err) {
-_l("E 0");
+
           int line = -1;
           if (err.getLocator() != null) {
             line = err.getLocator().getLineNumber();
@@ -276,12 +277,11 @@ _l("E 0");
             err_buf.append("Failed to compile query: ");
           } else {
             err_buf.append("Syntax error at line " + line + ":");
-_l("E 1");
           }
-_l("E 1.5");
+
           throw new TransformerException(err);
         }
-_l("E 1.6");
+
         if (sourceInput != null) {
           DocumentInfo doc = xquery.buildDocument(sourceInput);
           dynamicEnv.setContextNode(doc);
@@ -314,25 +314,26 @@ _l("E 1.6");
             }
             writer.close();
           }
-        }
-        catch (TerminationException err) {
-_l("E 1.7");
+        }        catch (TerminationException err) {
+
           throw err;
         } catch (TransformerException err) {
-_l("E 2");
+
          // The message will already have been displayed; don't do it twice
           throw new TransformerException("Run-time errors were reported");
         }  catch (Exception err) {
-_l("E 3");
+
           err.printStackTrace();
           throw err;
         }
                  
-    } catch (Exception e ) {
-_l("E 4");
-       err_buf.append("Query processing failed: " + e.toString());
-       handleError(err_buf.toString(), true);
-   }
+//    } catch (Exception e ) {
+//_l("E 4");
+//       err_buf.append("Query processing failed: " + e.toString());
+       //handleError(err_buf.toString(), true);
+
+	//		 throw e; //KL040218
+   //}
   }
 
 /*
