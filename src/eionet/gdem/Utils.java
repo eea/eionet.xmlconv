@@ -11,14 +11,21 @@ import java.util.MissingResourceException;
 public class Utils {
 
   //constants:
-  //XQuery job statuses:
-  public static final int XQ_RECEIVED=0;
-  public static final int XQ_DONWLOADING_SRC=1;
-  public static final int XQ_PROCESSING=2;
-  public static final int XQ_READY=3;
-  public static final int XQ_PULLED=4;    
+  //XQuery job statuses in the DB: (internal)
+  public static final int XQ_RECEIVED=0; //waiting for the engine to begin processing
+  public static final int XQ_DOWNLOADING_SRC=1; //downloading from the server to be stored locally
+  public static final int XQ_PROCESSING=2; //XQEngine is processing
+  public static final int XQ_READY=3; //waiting for pulling by the client
+	public static final int XQ_FATAL_ERR=4; //fatal error
+	public static final int XQ_LIGHT_ERR=5; //error, can be tried again
 
-  public static final int XQ_ERROR=9;  
+
+	//status values for reportek getResult() method (external)
+  public static final int JOB_READY=0;
+  public static final int JOB_NOT_READY=1;
+  public static final int JOB_FATAL_ERROR=2;
+  public static final int JOB_LIGHT_ERROR=3;
+
   
   public static String tmpFolder="/tmp";
 
@@ -36,7 +43,10 @@ public class Utils {
   public static long wqCheckInterval=20000L;
   
   public static final String XQ_SOURCE_PARAM_NAME="source_url";
-  private static ResourceBundle props;
+
+	
+	
+	private static ResourceBundle props;
   private static Category logger;
 
   static {

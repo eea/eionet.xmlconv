@@ -52,7 +52,7 @@ public class XQueryService {
 
       //save XQScript in a text file for the WQ
       try {
-        xqFile=Utils.saveStrToFile(xqScript, "xq");
+        xqFile=Utils.saveStrToFile(xqScript, "xql");
       } catch (FileNotFoundException fne) {
         throw new GDEMException("Folder does not exist: :" + fne.toString());
       } catch (IOException ioe ) {
@@ -101,12 +101,12 @@ public class XQueryService {
 
     //if the job is ready (or error happened, return the URL of the result where the
     //XML/RPC client can download the file(s) from
-    if (status==Utils.XQ_READY || status==Utils.XQ_ERROR) {
-      try {
-        db.changeJobStatus(jobId, Utils.XQ_PULLED);
-      } catch (SQLException sql) {
+    if (status==Utils.XQ_READY) {
+      //try {
+        //db.changeJobStatus(jobId, Utils.XQ_PULLED);
+      /*} catch (SQLException sql) {
         throw new GDEMException("*** Error changing status = " + sql.toString());
-      }
+      } */
       return composeUrl(jobData[2]); //valid url of the result file
     }
     else
@@ -118,6 +118,7 @@ public class XQueryService {
   * Confirms that the client has receievd the result and it may be removed from the workqueue
   * @param String jobId
   */
+	/*
   public String jobReceived(String jobId) throws GDEMException {
     try {
       //all done, remove the job from the queue
@@ -130,7 +131,7 @@ public class XQueryService {
     }
     return "OK";
   } 
-
+*/
 /*
   public static void main(String [] a) throws Exception {
     XQueryService x = new XQueryService();
