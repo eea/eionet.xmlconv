@@ -20,7 +20,7 @@
 </head>
 <body bgcolor="#f0f0f0" leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" onload="setFocus()">
 		<form name="f" action="main" method="post">
-			<input name="ACTION" type="hidden" value="<%=Names.LOGIN_ACTION%>"></input>
+			<input name="ACTION" type="hidden" value="<%=Names.LOGIN_ACTION%>" />
 			<% if (err!= null) { %>
 		  		<h4><%=err%></h4>
 			<% } 
@@ -31,18 +31,18 @@
 			<table>
 				<tr>
 					<td width="200"></td><td><b>UserName:</b></td>			
-					<td><input type="text" name="j_username" id="j_username"></input></td>
+					<td><input type="text" name="j_username" id="j_username" /></td>
 				</tr>
 				<tr>
-					<td width="200"></td><td><b>Password:</b></td><td><input type="password" name="j_passwd"></input></td>
+					<td width="200"></td><td><b>Password:</b></td><td><input type="password" name="j_passwd" /></td>
 				</tr>
 				<tr height="30"><td colspan="3"></td>
 				</tr>
 				<tr>
 					<td width="200"></td><td>
-						<input type="submit" name="ok_btn" value="  OK  "></input></td>
+						<input type="submit" name="ok_btn" value="  OK  " /></td>
 					</td>
-					<td><input type="button" name="cancel_btn" value="  Cancel  " onclick="javascript:window.close()"></input></td></td>
+					<td><input type="button" name="cancel_btn" value="  Cancel  " onclick="javascript:window.close()" /></td></td>
 				</tr>
 			</table>
 		</form>

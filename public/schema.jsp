@@ -78,27 +78,27 @@
 				<% } */%>
 				<tr>
 					<td align="right" style="padding-right:5">
-						<span class="smallfont"><b>Location</b>&#160;</span>
+						<label for="locationfield">Location</label>
 					</td>
 					<td align="left">
-						<input type="text" class="smalltext" name="XML_SCHEMA" size="70" value="<%=name%>"/>
+						<input type="text" class="textfield" name="XML_SCHEMA" size="70" value="<%=name%>" id="locationfield" />
 					</td>
 				</tr>
 				<tr>
 					<td align="right" style="padding-right:5">
-						<span class="smallfont"><b>Description</b>&#160;</span>
+						<label for="descriptionfield">Description</label>
 					</td>
 					<td align="left">
-						<input type="text" class="smalltext" name="DESCRIPTION" size="70" value="<%=schema_desc%>"/>
+						<input type="text" class="textfield" name="DESCRIPTION" size="70" value="<%=schema_desc%>" id="descriptionfield" />
 					</td>
 				</tr>
 				<% if (isDTD) {%>
 					<tr>
 						<td align="right" style="padding-right:5">
-							<span class="smallfont"><b>DTD Public Id</b>&#160;</span>
+							<label for="dtdfield">DTD Public Id</label>
 						</td>	
 						<td align="left">
-							<input type="text" class="smalltext" name="DTD_PUBLIC_ID" size="70" value="<%=dtd_public_id%>"/>
+							<input type="text" class="textfield" name="DTD_PUBLIC_ID" id="dtdfield" size="70" value="<%=dtd_public_id%>"/>
 						</td>
 					</tr>
 				<% }%>
@@ -112,7 +112,7 @@
 				<tr height="10"><td colspan="2"></td></tr>
 				<tr>
 					<td align="left" style="padding-right:5" colspan="2">
-						<span class="smallfont"><b>Root elements</b></span>
+						<b>Root elements</b>
 					</td>
 				</tr>
 			</table>

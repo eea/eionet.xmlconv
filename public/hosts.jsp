@@ -99,8 +99,8 @@
 							<%}%>
  	         	</td>
 						<form name="ho_<%=host_id%>" action="main" method="post">
-							<input type="hidden" name="ACTION" value="<%=Names.HOST_DEL_ACTION%>"></input>
-							<input type="hidden" name="ID" value="<%=host_id%>"></input>
+							<input type="hidden" name="ACTION" value="<%=Names.HOST_DEL_ACTION%>" />
+							<input type="hidden" name="ID" value="<%=host_id%>" />
 						</form>		
 					</tr>
 					<%

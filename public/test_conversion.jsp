@@ -177,10 +177,10 @@ private String validateSchema(String url, String schema){
 					<tr><td colspan ="2">Insert the url of source xml file</td></tr>
 					<tr>
 						<td align="right" style="padding-right:5">
-							<span class="smallfont"><b>URL of XML File</b>&#160;</span>
+							<label for="urlfield">URL of XML File</label>
 						</td>
 						<td align="left">
-							<input type="text" class="smalltext" name="url" size="53"/>
+							<input type="text" class="textfield" name="url" id="urlfield" size="53"/>
 						</td>
 					</tr>
 				<%
@@ -188,11 +188,11 @@ private String validateSchema(String url, String schema){
 				else{%>
 					<tr>
 						<td align="right" style="padding-right:5">
-							<span class="smallfont"><b>URL of XML File</b>&#160;</span>
+							<label for="urlfield">URL of XML File</label>
 						</td>
 						<td align="left">
-							<span class="smallfont"><a target="blank" href="<%=xml_url%>"><%=xml_url%></a></span>
-							<input type="hidden" class="smalltext" name="url" size="53" value="<%=xml_url%>"/>
+							<b><a target="blank" href="<%=xml_url%>"><%=xml_url%></a></b>
+							<input type="hidden" class="textfield" name="url" id="urlfield" size="53" value="<%=xml_url%>"/>
 						</td>
 					</tr>
 				<% 
@@ -210,9 +210,9 @@ private String validateSchema(String url, String schema){
 				%>
 					<tr valign="top">
 						<td align="right" style="padding-right:5">
-							<span class="smallfont"><b>XML Schema</b>&#160;</span>
+							<label for="schemafield">XML Schema</label>
 						<td align="left">	
-							<a target="blank" href="<%=schema_name%>"><%=schema_name%></a>
+							<a id="schemafield" target="blank" href="<%=schema_name%>"><%=schema_name%></a>
 						</td>
 					</tr>
 					<%

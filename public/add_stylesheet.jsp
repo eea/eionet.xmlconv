@@ -86,18 +86,18 @@
 			<table cellspacing="0">
 				<tr valign="top">
 					<td align="left">	
-						<span class="smallfont"><b>XML Schema</b>&#160;
+						<label for="schemafield">XML Schema</label>
 					</td>
 					<td align="left">	
-						<input type="text" class="smalltext" size="64" name="SCHEMA" value="<% if (schema_name != null) %><%=schema_name%><%;%>"></input>
+						<input type="text" id="schemafield" class="textfield" size="64" name="SCHEMA" value="<% if (schema_name != null) %><%=schema_name%><%;%>" />
 					</td>
 				</tr>
 				<tr valign="top">
 					<td align="right" style="padding-right:5">
-						<span class="smallfont"><b>Output type</b>&#160;</span>
+						<label for="contenttypefield">Output type</label>
 					</td>
 					<td align="left">	
-						<select class="small" name="CONTENT_TYPE">
+						<select class="small" name="CONTENT_TYPE" id="contenttypefield">
 							<option value="HTML">HTML</option>
 							<option value="PDF">PDF</option>
 							<option value="EXCEL">EXCEL</option>
@@ -107,25 +107,25 @@
 				</tr>
 				<tr valign="top">
 					<td align="right" style="padding-right:5">
-						<span class="smallfont"><b>Description</b>&#160;</span>
+						<label for="descriptionfield">Description</label>
 					<td align="left">	
-						<textarea class="small" rows="2" cols="55" name="DESCRIPTION"></textarea>
+						<textarea class="small" rows="2" cols="55" name="DESCRIPTION" id="descriptionfield"></textarea>
 					</td>
 				</tr>
 				<tr>
 					<td align="right" style="padding-right:5">
-						<span class="smallfont"><b>XSL File</b>&#160;</span>
+						<label for="filefield">XSL File</label>
 					</td>
 					<td align="left">
-						<input type="file" class="smalltext" name="FILE_INPUT" size="53"/>
+						<input type="file" class="textfield" name="FILE_INPUT" id="filefield" size="53"/>
 					</td>
 				</tr>
 				<tr height="10"><td colspan="2"></td></tr>
 				<tr>
 					<td></td>
 					<td align="left">
-						<input name="SUBMIT" type="button" class="mediumbuttonb" value="Upload" onclick="submitForm()"></input>&#160;&#160;
-						<input name="RESET" type="reset" class="mediumbuttonb" value="Clear"></input>
+						<input name="SUBMIT" type="button" class="mediumbuttonb" value="Upload" onclick="submitForm()" />&#160;&#160;
+						<input name="RESET" type="reset" class="mediumbuttonb" value="Clear" />
 					</td>
 				</tr>
 			</table>

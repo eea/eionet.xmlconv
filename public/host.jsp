@@ -86,32 +86,32 @@
 			<table cellspacing="0">
 				<tr>
 					<td align="right" style="padding-right:5">
-						<span class="smallfont"><b>Host name</b>&#160;</span>
+						<label for="hostnamefield">Host name</label>
 					</td>
 					<td align="left">
-							<input type="text" class="smalltext" name="HOST_NAME" size="70" value="<%=host_name%>"/>
+							<input type="text" class="textfield" name="HOST_NAME" size="70" id="hostnamefield" value="<%=host_name%>"/>
 					</td>
 				</tr>		
 				<tr>
 					<td align="right" style="padding-right:5">
-						<span class="smallfont"><b>User name</b>&#160;</span>
+						<label for="usenamefield">User name</label>
 					</td>
 					<td align="left">
-						<input type="text" class="smalltext" name="USER_NAME" size="70" value="<%=user_n%>"/>
+						<input type="text" class="textfield" name="USER_NAME" size="70" id="usenamefield" value="<%=user_n%>"/>
 					</td>
 				</tr>		
 				<tr>
 					<td align="right" style="padding-right:5">
-						<span class="smallfont"><b>Password</b>&#160;</span>
+						<label for="passwordfield">Password</label>
 					</td>
 					<td align="left">
-						<input type="text" class="smalltext" name="PASSWORD" size="70" value="<%=pwd%>"/>
+						<input type="text" class="textfield" name="PASSWORD" size="70" id="passwordfield" value="<%=pwd%>"/>
 					</td>
 				</tr>		
 				<tr><td>&#160;</td><td>&#160;</td></tr>
 				<tr>
 					<td>&#160;</td>
-					<td><input name="SUBMIT" type="submit" value="Save" class="mediumbuttonb"></input></td>
+					<td><input name="SUBMIT" type="submit" value="Save" class="mediumbuttonb" /></td>
 				</tr>
 			</table>
 			<input type="hidden" name="HOST_ID" value="<%=host_id%>"/>

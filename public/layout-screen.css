@@ -319,12 +319,14 @@ th {
        font-size: 20pt;
 }
 
-smallfont {  font-family: Verdana, Arial, "MS Sans Serif", sans-serif; 
-font-size: 7pt;
-font-style: normal; 
-line-height: normal;
-font-weight: bold;
-text-decoration: none; }
+label {
+	font-family: Verdana, Arial, "MS Sans Serif", sans-serif; 
+	font-size: 7pt;
+	font-style: normal; 
+	line-height: normal;
+	font-weight: bold;
+	text-decoration: none;
+}
 
 input.smallbutton {  font-family: Verdana, Arial, "MS Sans Serif", sans-serif; 
 font-size: 7pt;
@@ -352,7 +354,7 @@ line-height: normal;
 font-weight: bold;
 text-decoration: none; }
 
-input.smalltext {  font-family: Verdana, Arial, "MS Sans Serif", sans-serif; 
+input.textfield {  font-family: Verdana, Arial, "MS Sans Serif", sans-serif; 
 font-size: 8pt;
 font-style: normal; 
 line-height: normal;

@@ -111,8 +111,8 @@
 							<%}%>
  	         			</td>
 						<form name="ss_<%=id%>" action="main" method="post">
-							<input type="hidden" name="ACTION" value="<%=Names.XSD_DEL_ACTION%>"></input>
-							<input type="hidden" name="XSD_DEL_ID" value="<%=id%>"></input>
+							<input type="hidden" name="ACTION" value="<%=Names.XSD_DEL_ACTION%>" />
+							<input type="hidden" name="XSD_DEL_ID" value="<%=id%>" />
 						</form>
 					</tr>
 					<%

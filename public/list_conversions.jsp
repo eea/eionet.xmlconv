@@ -57,10 +57,10 @@
 				<tr><td colspan ="2">Insert the url of source xml file</td></tr>
 				<tr>
 					<td align="right" style="padding-right:5">
-						<span class="smallfont"><b>URL of XML File</b>&#160;</span>
+						<label for="xmlurlfield">URL of XML File</label>
 					</td>
 					<td align="left">
-						<input type="text" class="smalltext" name="XML_URL" size="53"/>
+						<input type="text" class="textfield" name="XML_URL" size="53" id="xmlurlfield" />
 					</td>
 				</tr>
 				<%
@@ -69,10 +69,10 @@
 				<tr><td colspan ="2">Select an XML schema from the list or leave it blank to find out all possible conversion types</td></tr>
 				<tr valign="top">
 					<td align="right" style="padding-right:5">
-						<span class="smallfont"><b>XML Schema</b>&#160;</span>
+						<label for="xmlschemafield">XML Schema</label>
 					</td>
 					<td align="left">
-						<select name="SCHEMA_ID" rows="5">
+						<select name="SCHEMA_ID" rows="5" id="xmlschemafield">
 								<option value="" selected="selected">--</option>
 						<%
 						for (int i=0; i<schemas.size();i++){
@@ -96,17 +96,17 @@
 				<tr><td colspan="2">If you want to validate the specified XML file against found XML Schemas, please check the following box. (It might take some more time, if you choose to validate!)</td></tr>
 				<tr>
 					<td align="right" style="padding-right:5">
-						<span class="smallfont"><b>Validate</b>&#160;</span>
+						<label for="validatefield">Validate</label>
 					</td>
 					<td align="left">
-						<input type="checkbox" name="VALIDATE">
+						<input type="checkbox" name="VALIDATE" id="validatefield">
 					</td>
 				</tr>
 				<tr height="10"><td colspan="2"></td></tr>
 				<tr>
 					<td></td>
 					<td align="left">
-						<input name="LIST" type="submit" class="mediumbuttonb" value="List"></input>&#160;&#160;
+						<input name="LIST" type="submit" class="mediumbuttonb" value="List" />&#160;&#160;
 					</td>
 				</tr>
 			</table>

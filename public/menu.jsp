@@ -33,7 +33,7 @@
         if (user!=null ){
         %>
         <form name="logout" action="main" method="post">
-            <input name="ACTION" type="hidden" value="<%=Names.LOGOUT_ACTION%>"></input>
+            <input name="ACTION" type="hidden" value="<%=Names.LOGOUT_ACTION%>" />
             <ul>
             <li><a href="javascript:logout()">Logout</a></li>
             </ul>

@@ -132,9 +132,9 @@
                             <%}%>
                           </td>
                         <form name="ss_<%=convert_id%>" action="main" method="post">
-                            <input type="hidden" name="ACTION" value="<%=Names.XSL_DEL_ACTION%>"></input>
-                            <input type="hidden" name="XSL_DEL_ID" value="<%=convert_id%>"></input>
-                            <input type="hidden" name="ID" value="<%=id%>"></input>
+                            <input type="hidden" name="ACTION" value="<%=Names.XSL_DEL_ACTION%>"/>
+                            <input type="hidden" name="XSL_DEL_ID" value="<%=convert_id%>"/>
+                            <input type="hidden" name="ID" value="<%=id%>"/>
                         </form>        
                     </tr>
                     <%
