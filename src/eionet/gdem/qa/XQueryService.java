@@ -32,6 +32,7 @@ import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.services.*;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.services.LoggerIF;
 
 import java.sql.SQLException;
 import java.io.FileNotFoundException;
@@ -45,7 +46,12 @@ public class XQueryService  implements Constants {
 
   private static DbModuleIF db; //DbModule
  
+  private static LoggerIF _logger;
   
+  
+  public XQueryService()  {
+    _logger=GDEMServices.getLogger();
+  }  
   /**
   * Request from XML/RPC client
   * Stores the xqScript and starts a job in the workqueue
@@ -55,6 +61,7 @@ public class XQueryService  implements Constants {
   public String analyze(String sourceURL, String xqScript) throws GDEMException {
     String  xqFile="";
 
+    _logger.debug("XML/RPC call for analyze xml: " + sourceURL);
     //save XQScript in a text file for the WQ
     try {
       xqFile=Utils.saveStrToFile(xqScript, "xql");
@@ -87,6 +94,9 @@ public class XQueryService  implements Constants {
   * Returns a Hash including code and result
   */
   public Hashtable getResult(String jobId) throws GDEMException {
+
+    _logger.debug("XML/RPC call for getting result with JOB ID: " + jobId);
+
     //init DBModule
     db=GDEMServices.getDbModule();    
 
@@ -101,6 +111,8 @@ public class XQueryService  implements Constants {
       throw new GDEMException("** No such job with ID=" + jobId + " in the queue.");
 
     int status= Integer.valueOf(jobData[3]).intValue();
+
+    _logger.debug("XQuerySrevice found status for job: " + String.valueOf(status));
 
 		Hashtable ret =  result(status, jobData);      
 
