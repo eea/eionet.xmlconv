@@ -37,6 +37,7 @@ public interface Names {
   //JSP names
   public static final String INDEX_JSP = "index.jsp";
   public static final String ERROR_JSP = "error.jsp";  
+  public static final String STYLESHEET_JSP = "stylesheet.jsp";
   public static final String STYLESHEETS_JSP = "stylesheets.jsp";
   public static final String ADD_XSL_JSP = "add_stylesheet.jsp";
   public static final String TEST_CONVERSION_JSP = "test_conversion.jsp";
@@ -51,13 +52,16 @@ public interface Names {
   public static final String QUERIESINDEX_JSP = "queriesindex.jsp";
   public static final String QUERIES_JSP = "queries.jsp";
   public static final String ADD_QUERY_JSP = "add_query.jsp";
+  public static final String QUERY_JSP = "query.jsp";
 
   //actions
   public static final String XSD_UPD_ACTION = "B";
   public static final String XSDQ_DEL_ACTION = "QD";
   public static final String XSD_DEL_ACTION = "D";
+  public static final String XSD_UPDVAL_ACTION = "QV";
   public static final String XSL_ADD_ACTION = "O";
   public static final String XSL_DEL_ACTION = "Q";
+  public static final String XSL_UPD_ACTION = "XU";
   public static final String ELEM_DEL_ACTION = "P";
   public static final String ELEM_ADD_ACTION = "U";
   public static final String LOGIN_ACTION = "F";  
@@ -76,6 +80,7 @@ public interface Names {
   public static final String WQ_DEL_ACTION = "X";
   public static final String QUERY_ADD_ACTION = "QA";
   public static final String QUERY_DEL_ACTION = "QX";
+  public static final String QUERY_UPD_ACTION = "QU";
 
   //public static final String ERROR_ACTION = "XXX";
   //Parameters

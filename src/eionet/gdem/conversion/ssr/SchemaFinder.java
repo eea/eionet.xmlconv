@@ -23,6 +23,7 @@ public class SchemaFinder extends DefaultHandler{
   private String startTag=null;
   private String startTagNamespace=null;
   private String schemaLocation=null;
+  private boolean hasNamespace = false;
 
   
   public void startElement(String uri, String localName, String name, Attributes attrs) throws SAXException {
@@ -37,8 +38,17 @@ public class SchemaFinder extends DefaultHandler{
         int length = attrs != null ? attrs.getLength() : 0;
         for (int i = 0; i < length; i++) {
             String attrName =  attrs.getLocalName(i);
-            if (attrName.equalsIgnoreCase(NO_NS_SCHEMA_REFERENCE)||attrName.equalsIgnoreCase(SCHEMA_REFERENCE))
+            if (attrName.equalsIgnoreCase(NO_NS_SCHEMA_REFERENCE)){
                 schemaLocation=attrs.getValue(i);
+            }
+            else if(attrName.equalsIgnoreCase(SCHEMA_REFERENCE)){
+                String sch_val = attrs.getValue(i);
+                if (!Utils.isNullStr(sch_val)){
+                   int l = sch_val.indexOf(" ");
+                   schemaLocation=sch_val.substring(l+1);
+                   hasNamespace = true;
+                }
+            }
         }
         throw new SAXException("OK");
         
@@ -55,6 +65,9 @@ public class SchemaFinder extends DefaultHandler{
   }
   public String getStartTagNamespace(){
     return this.startTagNamespace;
+  }
+  public boolean hasNamespace(){
+    return this.hasNamespace;
   }
   public String getSchemaLocation(){
     return this.schemaLocation;

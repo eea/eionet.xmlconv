@@ -185,7 +185,6 @@ public class Main extends HttpServlet implements Names {
     private void dispatch(HttpServletRequest req, HttpServletResponse res, String action) throws ServletException, IOException  {
 
     String jspName=INDEX_JSP;
-
      if ( action.equals( SHOW_SCHEMAS_ACTION ))
         jspName= INDEX_JSP;
       else if ( action.equals( SHOW_STYLESHEETS_ACTION ))
@@ -200,6 +199,18 @@ public class Main extends HttpServlet implements Names {
       }
       else  if ( action.equals( QUERY_ADD_ACTION ) || action.equals( QUERY_DEL_ACTION )){
         SaveHandler.handleQueries(req,action);
+        jspName=QUERIES_JSP;
+      }
+      else if ( action.equals(QUERY_UPD_ACTION)){
+        SaveHandler.handleQueries(req,action);
+        jspName=QUERY_JSP;
+      }
+      else if ( action.equals(XSL_UPD_ACTION)){
+        SaveHandler.handleStylesheets(req,action);
+        jspName=STYLESHEET_JSP;
+      }
+      else  if ( action.equals( XSD_UPDVAL_ACTION )){
+        SaveHandler.handleSchemas(req,action);
         jspName=QUERIES_JSP;
       }
       else  if ( action.equals( XSD_DEL_ACTION )){

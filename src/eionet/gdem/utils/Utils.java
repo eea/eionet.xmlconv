@@ -140,8 +140,10 @@ public class Utils {
 
     if (fileName==null)
       fileName=Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + "." + extension;
-    else
-      fileName=fileName+"."+extension;
+    else{
+      if (extension!=null)
+        fileName=fileName+"."+extension;
+    }
       
     FileWriter fos = new FileWriter(new File(fileName));
     fos.write(str);

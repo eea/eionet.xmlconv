@@ -96,6 +96,7 @@ public interface DbModuleIF {
   public static final String XML_SCHEMA_FLD="XML_SCHEMA";
   public static final String SCHEMA_DESCR_FLD="DESCRIPTION";
   public static final String DTD_PUBLIC_ID_FLD="DTD_PUBLIC_ID";
+  public static final String SCHEMA_VALIDATE_FLD="VALIDATE";
 
   /**
   * Field names in ROOT ELEMENTS table
@@ -114,6 +115,8 @@ public interface DbModuleIF {
   public static final String XQ_FILE_FLD="XQ_FILE";
   public static final String STATUS_FLD="N_STATUS";
   public static final String TIMESTAMP_FLD="TIME_STAMP";
+  public static final String XQ_ID_FLD="QUERY_ID";
+  public static final String SRC_FILE_FLD="SRC_FILE";
   
   /**
   * Field names in FILE table
@@ -171,10 +174,11 @@ public interface DbModuleIF {
   * @param resultType - conversion type out: EXCEL, HTML, PDF, XML
   * @param xslFileName - xslFileName in the folder
   * @param xslDescription - text describing the stylesheet
+  * @param content_type - result file content_type
   * @return The ID of the added stylesheet
   */
   public String addStylesheet(String xmlSchemaID, String resultType, String xslFileName, String description) throws SQLException;
-  public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description) throws SQLException;
+  public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description, String content_type) throws SQLException;
 
   /**
   * Adds a new Schema to the database
@@ -193,6 +197,34 @@ public interface DbModuleIF {
   * @param public_id - dtd public id
   */
   public void updateSchema(String schema_id, String xmlSchema,  String description, String public_id) throws SQLException;
+
+  /**
+  * Updates a Query properties in the database
+  * @param String query_id - id from database, used as a constraint 
+  * @param String schema_id - schema id
+  * @param String short_name - db field for title
+  * @param String description - text describing the query
+  * @param String fileName - query file name
+  * @param String content_type - result content type
+  */
+  public void updateQuery(String query_id, String schema_id, String short_name, String description, String fileName, String content_type) throws SQLException;
+
+  /**
+  * Updates stylesheet properties in the database
+  * @param String xsl_id - id from database, used as a constraint 
+  * @param String schema_id - schema id
+  * @param String description - text describing the query
+  * @param String fileName - query file name
+  * @param String content_type - result content type
+  */
+  public void updateStylesheet(String xsl_id, String schema_id, String description, String fileName, String content_type) throws SQLException;
+
+  /**
+  * Updates a Schema validate properties in the database
+  * @param String schema_id - id from database, used as a constraint 
+  * @param String validate - validate property
+  */
+  public void updateSchemaValidate(String schema_id, String validate) throws SQLException;
 
   public String addSchema(String xmlSchema,  String description) throws SQLException;
 
@@ -270,17 +302,24 @@ public interface DbModuleIF {
 
   /**
   * Creates a new job in the queue
-  * XQ Script is saved earlier in the 
+  * XQ Script is saved earlier in the db
   * @param String url, String xqFile, String resultFile
+  * @param String xqID - query id from db
   */
   public String startXQJob(String url, String xqFile, String resultFile) throws SQLException;
+  public String startXQJob(String url, String xqFile, String resultFile, int xqID) throws SQLException;
 
   /**
   * Changes the status of the job in the table
   * also changes the time_stamp showing when the new task was started
   */
   public void changeJobStatus(String jobId, int status) throws SQLException;
-
+  /**
+  * Changes the status of the jobs in the table and sets the downloaded file local src
+  * THe jobs should have the sam source url.
+  * also changes the time_stamp showing when the new task was started
+  */ 
+  public void changeFileJobsStatus(String url, String savedFile, int status) throws SQLException;
   /**
   * Returns job IDs in the Workqueue with the given status
   * @return String[]
@@ -444,5 +483,11 @@ public interface DbModuleIF {
    */
 
    public String[][] getJobData() throws SQLException;
-
+  
+  /**
+  * returns all records from T_QUERY WHERE XML_SCHEMA=xmlSchema
+  * @param String xmlSchema - xmlSchema as an URL
+  * @return Vector contining all fields as Hashtable from T_QUERY table
+  */
+  public Vector listQueries(String xmlSchema) throws SQLException;
 }

@@ -33,6 +33,9 @@ public interface Constants {
 	public static final int XQ_FATAL_ERR=4; //fatal error
 	public static final int XQ_LIGHT_ERR=5; //error, can be tried again
 
+  public static final int JOB_VALIDATION=-1;
+  public static final int JOB_FROMSTRING=0;
+
 
 	//status values for reportek getResult() method (external)
   public static final int JOB_READY=0;
@@ -43,6 +46,8 @@ public interface Constants {
 	//key names for te getResult() STRUCT
 	public static final String RESULT_CODE_PRM = "CODE";
 	public static final String RESULT_VALUE_PRM = "VALUE";
+	public static final String RESULT_METATYPE_PRM = "METATYPE";
+	public static final String RESULT_SCRIPTTITLE_PRM = "SCRIPT_TILE";
 
   /**
    * Default parameter name of the source URL
@@ -54,4 +59,5 @@ public interface Constants {
   
   //Folder for temporary files - to be placed under public
   public static final String TMP_FOLDER = "tmp/";
+  public static final String QUERIES_FOLDER = "queries/";
 }

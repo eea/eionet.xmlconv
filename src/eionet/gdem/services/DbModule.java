@@ -167,8 +167,12 @@ public class DbModule implements DbModuleIF, Constants {
     }
     
     String sql="SELECT " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "," + QUERY_FILE_FLD + ", " + QUERY_TABLE + "." + DESCR_FLD + "," +
-      SHORT_NAME_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + " FROM " + QUERY_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE +
-          " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD;
+      SHORT_NAME_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + "," + QUERY_TABLE + "." + RESULT_TYPE_FLD +
+          ", " + CONVTYPE_TABLE + "." + CONTENT_TYPE_FLD + 
+          " FROM " + QUERY_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE +
+          " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD +
+          " LEFT OUTER JOIN " + CONVTYPE_TABLE + " ON " + QUERY_TABLE + "." + RESULT_TYPE_FLD + "="+
+          CONVTYPE_TABLE + "." + CONV_TYPE_FLD;
       if (queryName!=null){
         sql += " WHERE " + QUERY_FILE_FLD + "=" + Utils.strLiteral(queryName);
 
@@ -190,9 +194,43 @@ public class DbModule implements DbModuleIF, Constants {
       h.put("description", r[0][2]);
       h.put("short_name", r[0][3]);      
       h.put("xml_schema", r[0][4]);
+      h.put("content_type", r[0][5]);
+      h.put("meat_type", r[0][6]);
     }
 
     return h;
+  }
+
+  public Vector listQueries(String xmlSchema) throws SQLException {
+
+    String sql="SELECT " + QUERY_TABLE + "." + QUERY_ID_FLD + ", " + SHORT_NAME_FLD +  ", " +
+      QUERY_FILE_FLD + ", " + QUERY_TABLE + "." + DESCR_FLD + "," + SCHEMA_TABLE + "." + SCHEMA_ID_FLD +
+      "," + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ", " + QUERY_TABLE + "." + RESULT_TYPE_FLD + 
+        " FROM " + QUERY_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE +
+        " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD;
+
+    if (xmlSchema != null)
+      sql +=  " WHERE " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD +  "=" + Utils.strLiteral(xmlSchema);
+
+
+    String [][] r = _executeStringQuery(sql);
+
+    Vector v = new Vector();
+
+    for (int i =0; i< r.length; i++) {
+      Hashtable h = new Hashtable();
+      h.put("query_id", r[i][0]);
+      h.put("short_name", r[i][1]);
+      h.put("query", r[i][2]);
+      h.put("description", r[i][3]);
+      h.put("schema_id", r[i][4]);
+      h.put("xml_schema", r[i][5]);
+      h.put("content_type_out", r[i][6]);
+      v.add(h);      
+    }
+
+    return v;
+    
   }
 
   public Vector listConversions(String xmlSchema) throws SQLException {
@@ -245,13 +283,14 @@ public class DbModule implements DbModuleIF, Constants {
     return r[0][0];
   }
 
-  public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description) throws SQLException {
+  public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description, String content_type) throws SQLException {
 
     description = (description == null ? "" : description );
     
     String sql = "INSERT INTO " + QUERY_TABLE + " ( " + XSL_SCHEMA_ID_FLD + ", " + SHORT_NAME_FLD +
-      ", " + QUERY_FILE_FLD + ", " + DESCR_FLD + ") VALUES ('" + xmlSchemaID + "', '" +
-      shortName + "', " + Utils.strLiteral(queryFileName) + ", " + Utils.strLiteral(description) + ")";
+      ", " + QUERY_FILE_FLD + ", " + DESCR_FLD + ", " + RESULT_TYPE_FLD + ") VALUES ('" + xmlSchemaID + "', '" +
+      shortName + "', " + Utils.strLiteral(queryFileName) + ", " + Utils.strLiteral(description) + ", " + 
+      Utils.strLiteral(content_type) + ")";
 
     _executeUpdate(sql);
 
@@ -301,12 +340,48 @@ public class DbModule implements DbModuleIF, Constants {
     _executeUpdate(sql);
 
   }
-  public void updateXForm(String xform_id, String schema_id,  String title, String xform_name, String description) throws SQLException{
+  public void updateSchemaValidate(String schema_id, String validate) throws SQLException{
+    
+    validate = (validate == null ? "0" : validate );
+    if (!validate.equals("1")) validate="0";
+    
+    String sql = "UPDATE  " + SCHEMA_TABLE + " SET " + SCHEMA_VALIDATE_FLD + "=" + Utils.strLiteral(validate) + 
+          " WHERE " + SCHEMA_ID_FLD + "=" + schema_id;
+
+    _executeUpdate(sql);
+
+  }  public void updateXForm(String xform_id, String schema_id,  String title, String xform_name, String description) throws SQLException{
     
     
     updateFile(xform_id, xform_name, title, XFORM_FILE_TYPE, SCHEMA_FILE_PARENT, schema_id, description);
 
   }
+  public void updateQuery(String query_id, String schema_id, String short_name, String description, String fileName, String content_type) throws SQLException{
+    
+    short_name = (short_name == null ? "" : short_name );
+    description = (description == null ? "" : description );
+    
+    String sql = "UPDATE  " + QUERY_TABLE + " SET " + QUERY_FILE_FLD + "=" + Utils.strLiteral(fileName) + ", " +
+          SHORT_NAME_FLD + "=" + Utils.strLiteral(short_name) + ", " + DESCR_FLD + "=" + Utils.strLiteral(description) + ", " +
+          XSL_SCHEMA_ID_FLD+ "=" + schema_id + ", " + RESULT_TYPE_FLD + "=" + Utils.strLiteral(content_type) + 
+          " WHERE " + QUERY_ID_FLD + "=" + query_id;
+
+    _executeUpdate(sql);
+
+  }
+  public void updateStylesheet(String xsl_id, String schema_id, String description, String fileName, String content_type) throws SQLException{
+    
+    description = (description == null ? "" : description );
+    
+    String sql = "UPDATE  " + XSL_TABLE + " SET " + XSL_FILE_FLD + "=" + Utils.strLiteral(fileName) + ", " +
+          DESCR_FLD + "=" + Utils.strLiteral(description) + ", " + XSL_SCHEMA_ID_FLD+ "=" + schema_id + ", " + 
+          RESULT_TYPE_FLD + "=" + Utils.strLiteral(content_type) + 
+          " WHERE " + CNV_ID_FLD + "=" + xsl_id;
+
+    _executeUpdate(sql);
+
+  }
+  
   public String addRootElem(String xmlSchemaID, String elemName, String namespace) throws SQLException {
 
     namespace = (namespace == null ? "" : namespace );
@@ -527,8 +602,8 @@ public class DbModule implements DbModuleIF, Constants {
       }
     }  
     
-    String sql="SELECT " + SCHEMA_ID_FLD + "," + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD + ", " + DTD_PUBLIC_ID_FLD +
-      " FROM " + SCHEMA_TABLE;
+    String sql="SELECT " + SCHEMA_ID_FLD + "," + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD + ", " + 
+    DTD_PUBLIC_ID_FLD + ", " + SCHEMA_VALIDATE_FLD + " FROM " + SCHEMA_TABLE;
     if (schemaId!=null)
       sql +=  " WHERE " + SCHEMA_ID_FLD + "=" + id;
          
@@ -545,6 +620,7 @@ public class DbModule implements DbModuleIF, Constants {
       h.put("xml_schema", r[i][1]);
       h.put("description", r[i][2]);
       h.put("dtd_public_id", r[i][3]);
+      h.put("validate", r[i][4]);
 
       if (stylesheets){
         Vector v_xls=getSchemaStylesheets(r[i][0]);
@@ -680,10 +756,11 @@ public class DbModule implements DbModuleIF, Constants {
 
     if (!Utils.isNullStr(namespace))    
         sql.append(" AND " + NAMESPACE_FLD + "=" + Utils.strLiteral(namespace));
-
+System.out.println(sql.toString());
     String [][] r = _executeStringQuery(sql.toString());
 
     Vector v = new Vector();
+System.out.println(r.length);
 
     for (int i =0; i< r.length; i++) {
       HashMap h = getSchema(r[i][0],true);
@@ -702,7 +779,7 @@ public class DbModule implements DbModuleIF, Constants {
 
   public String[] getXQJobData(String jobId) throws SQLException {
     String sql = "SELECT " + URL_FLD + "," + XQ_FILE_FLD + "," + RESULT_FILE_FLD +
-      ", " + STATUS_FLD +
+      ", " + STATUS_FLD + ", " + SRC_FILE_FLD + ", " + XQ_ID_FLD +
       " FROM " +  WQ_TABLE + " WHERE " + JOB_ID_FLD + "=" + jobId;
 
 
@@ -718,11 +795,14 @@ public class DbModule implements DbModuleIF, Constants {
   }
 
    public String startXQJob(String url, String xqFile, String resultFile) throws SQLException {
+      return startXQJob(url, xqFile, resultFile, JOB_FROMSTRING);
+   }
+   public String startXQJob(String url, String xqFile, String resultFile, int xqID) throws SQLException {
     String sql = "INSERT INTO " + WQ_TABLE + " (" + URL_FLD + "," + XQ_FILE_FLD +
         ", " + RESULT_FILE_FLD +
-        "," + STATUS_FLD + "," + TIMESTAMP_FLD +
+        "," + STATUS_FLD + "," + TIMESTAMP_FLD + "," + XQ_ID_FLD +
         ") VALUES ('" + url + "', '" + xqFile + "','" + resultFile + "', " +
-          XQ_RECEIVED + ", NOW())";
+          XQ_RECEIVED + ", NOW()," + xqID + ")";
         
       _executeUpdate(sql);
 
@@ -742,6 +822,17 @@ public class DbModule implements DbModuleIF, Constants {
       _executeUpdate(sql);
    }
 
+   public void changeFileJobsStatus(String url, String savedFile, int status) throws SQLException {
+    String sql="UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "=" + status + ", " +
+        SRC_FILE_FLD + "=" + Utils.strLiteral(savedFile) + 
+    //String sql="UPDATE " + WQ_TABLE + " SET STATUS=" + status +
+        ", " + TIMESTAMP_FLD + "= NOW()" +
+        " WHERE " + URL_FLD + "=" + Utils.strLiteral(url) + 
+        " AND " + STATUS_FLD + "<" + status;
+      _executeUpdate(sql);
+   }
+
+  //jobs in the queue with the given status
   //jobs in the queue with the given status
   public String[] getJobs(int status) throws SQLException {
     String sql = "SELECT " + JOB_ID_FLD + " FROM " + WQ_TABLE + " WHERE " +
@@ -1069,7 +1160,7 @@ public class DbModule implements DbModuleIF, Constants {
     for (int i =0; i< r.length; i++) {
       Hashtable h = new Hashtable();
       h.put("conv_type", r[i][0]);
-      h.put("coontent_type", r[i][1]);
+      h.put("content_type", r[i][1]);
       h.put("file_ext", r[i][2]);
       h.put("description", r[i][3]);      
       v.add(h);      
@@ -1097,7 +1188,7 @@ public class DbModule implements DbModuleIF, Constants {
   public String[][] getJobData() throws SQLException{
   	String sql = "SELECT " + JOB_ID_FLD + ", " + URL_FLD + ","  
 		+ XQ_FILE_FLD + 
-  	  ", " + RESULT_FILE_FLD + ", " + STATUS_FLD + ", " + TIMESTAMP_FLD +
+  	  ", " + RESULT_FILE_FLD + ", " + STATUS_FLD + ", " + TIMESTAMP_FLD + ", " + XQ_ID_FLD + 
 		 	" FROM " + WQ_TABLE + " ORDER BY " + JOB_ID_FLD;
   	
   	return _executeStringQuery(sql);

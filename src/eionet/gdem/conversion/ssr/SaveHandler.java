@@ -127,7 +127,69 @@ public class SaveHandler {
           return;          
        }
    }
-   else if (action.equals( Names.XSL_DEL_ACTION) ) {
+   else if (action.equals( Names.XSL_UPD_ACTION) ) {
+        HashMap req_params=null;
+        try{
+          if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "u")){
+             req.setAttribute(Names.ERROR_ATT, "You don't have permissions to update stylesheets!");
+             return;                   
+          }
+        }
+        catch (Exception e){
+           req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
+           return;          
+        }
+        try{
+          MultipartFileUpload fu = new MultipartFileUpload(false);
+          fu.processMultiPartRequest(req);
+          req_params = fu.getRequestParams();
+		  	  fu.setFolder(xslFolder);
+		  	  fileName=fu.saveFile();
+          
+          //FileUpload fu = new FileUpload(xformFolder);
+          //fu.uploadFile(req);
+          //fileName=fu.getFileName();
+        }
+        catch (Exception e){
+           req.setAttribute(Names.ERROR_ATT, "Uploading file: " + e.toString());
+           return;          
+        }
+
+
+       if (req_params==null){
+         req.setAttribute(Names.ERROR_ATT, "Cannot read request parameters.");
+         return;
+       }
+
+
+       String schema_id= (String)req_params.get("SCHEMA_ID");
+       String xsl_id= (String)req_params.get("XSL_ID");
+       String descr= (String)req_params.get("DESCRIPTION");
+       String content_type= (String)req_params.get("CONTENT_TYPE");
+       String current_file= (String)req_params.get("FILE_NAME");
+
+       if (Utils.isNullStr(schema_id)){
+         req.setAttribute(Names.ERROR_ATT, "XML schema id cannot be empty.");
+         return;
+       }
+       if (Utils.isNullStr(xsl_id)){
+         req.setAttribute(Names.ERROR_ATT, "Stylesheet id cannot be empty.");
+         return;
+       }
+       fileName = (fileName==null)?current_file:fileName;
+
+       try{
+         dbM= GDEMServices.getDbModule();
+         
+
+         dbM.updateStylesheet(xsl_id, schema_id, descr, fileName, content_type);
+       }
+       catch (Exception e){
+          req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
+          return;          
+       }
+
+   }   else if (action.equals( Names.XSL_DEL_ACTION) ) {
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "d")){
            req.setAttribute(Names.ERROR_ATT, "You don't have permissions to delete stylesheets!");
@@ -221,6 +283,7 @@ public class SaveHandler {
        String schema= (String)req_params.get("SCHEMA");
        String name= (String)req_params.get("SHORT_NAME");
        String descr= (String)req_params.get("DESCRIPTION");
+       String content_type= (String)req_params.get("CONTENT_TYPE");
 
        if (Utils.isNullStr(schema)){
          req.setAttribute(Names.ERROR_ATT, "XML schema cannot be empty.");
@@ -233,12 +296,76 @@ public class SaveHandler {
          if (schemaID==null)
             schemaID=dbM.addSchema(schema, null);
 
-         dbM.addQuery(schemaID, name, fileName, descr);
+         dbM.addQuery(schemaID, name, fileName, descr, content_type);
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
           return;          
        }
+   }
+   else if (action.equals( Names.QUERY_UPD_ACTION) ) {
+        HashMap req_params=null;
+        try{
+          if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "u")){
+             req.setAttribute(Names.ERROR_ATT, "You don't have permissions to update queries!");
+             return;                   
+          }
+        }
+        catch (Exception e){
+           req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
+           return;          
+        }
+        try{
+          MultipartFileUpload fu = new MultipartFileUpload(false);
+          fu.processMultiPartRequest(req);
+          req_params = fu.getRequestParams();
+		  	  fu.setFolder(queriesFolder);
+		  	  fileName=fu.saveFile();
+          
+          //FileUpload fu = new FileUpload(xformFolder);
+          //fu.uploadFile(req);
+          //fileName=fu.getFileName();
+        }
+        catch (Exception e){
+           req.setAttribute(Names.ERROR_ATT, "Uploading file: " + e.toString());
+           return;          
+        }
+
+
+       if (req_params==null){
+         req.setAttribute(Names.ERROR_ATT, "Cannot read request parameters.");
+         return;
+       }
+
+
+       String schema_id= (String)req_params.get("SCHEMA_ID");
+       String query_id= (String)req_params.get("QUERY_ID");
+       String name= (String)req_params.get("SHORT_NAME");
+       String descr= (String)req_params.get("DESCRIPTION");
+       String content_type= (String)req_params.get("CONTENT_TYPE");
+       String current_file= (String)req_params.get("FILE_NAME");
+
+       if (Utils.isNullStr(schema_id)){
+         req.setAttribute(Names.ERROR_ATT, "XML schema idcannot be empty.");
+         return;
+       }
+       if (Utils.isNullStr(query_id)){
+         req.setAttribute(Names.ERROR_ATT, "Query id cannot be empty.");
+         return;
+       }
+       fileName = (fileName==null)?current_file:fileName;
+
+       try{
+         dbM= GDEMServices.getDbModule();
+         
+
+         dbM.updateQuery(query_id, schema_id,name,descr, fileName, content_type);
+       }
+       catch (Exception e){
+          req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
+          return;          
+       }
+
    }
    else if (action.equals( Names.QUERY_DEL_ACTION) ) {
         try{
@@ -367,7 +494,8 @@ public class SaveHandler {
         if (err_buf.length()>0)
           req.setAttribute(Names.ERROR_ATT, err_buf.toString());
       }
-      else if (action.equals( Names.XSD_UPD_ACTION) ) {
+      else if (action.equals( Names.XSD_UPD_ACTION)
+              || action.equals(Names.XSD_UPDVAL_ACTION)) {
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "u")){
            req.setAttribute(Names.ERROR_ATT, "You don't have permissions to update schema!");
@@ -384,18 +512,26 @@ public class SaveHandler {
          req.setAttribute(Names.ERROR_ATT, "XML schema id cannot be empty.");
          return;
        }
-       String schema_name= (String)req.getParameter("XML_SCHEMA");
-       String description= (String)req.getParameter("DESCRIPTION");
-       String dtd_public_id= (String)req.getParameter("DTD_PUBLIC_ID");
+        try{
+          dbM= GDEMServices.getDbModule();
+          if (action.equals(Names.XSD_UPDVAL_ACTION)){
+            String validate= (String)req.getParameter("VALIDATE");
 
-       try{
-         dbM= GDEMServices.getDbModule();
-         dbM.updateSchema(schema_id, schema_name, description, dtd_public_id);   
-        }
-        catch (Exception e){
-          req.setAttribute(Names.ERROR_ATT, "Cannot update Schema: " + e.toString() + schema_id);
-          return;
-        }
+            dbM.updateSchemaValidate(schema_id, validate);
+          }
+          else{
+            String schema_name= (String)req.getParameter("XML_SCHEMA");
+            String description= (String)req.getParameter("DESCRIPTION");
+            String dtd_public_id= (String)req.getParameter("DTD_PUBLIC_ID");
+      
+            dbM.updateSchema(schema_id, schema_name, description, dtd_public_id);
+          }
+        
+       }
+       catch (Exception e){
+         req.setAttribute(Names.ERROR_ATT, "Cannot update Schema: " + e.toString() + schema_id);
+         return;
+       }
       }
   }
   /**

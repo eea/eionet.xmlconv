@@ -18,21 +18,40 @@ public class InputAnalyser
   private String rootElement = null;
   private String namespace = null;
   private String dtdPublicId = null;
+  private boolean hasNamespace = false;
 
   public InputAnalyser()
   {
   
   }
-  public String parseXML(String srcUrl) throws GDEMException
+  public String parseXML(String srcUrl) throws GDEMException{
+    InputFile src=null;
+    InputStream input = null;
+    try{
+      src = new InputFile(srcUrl);
+      input = src.getSrcInputStream();
+      return parseXML(input);
+    } catch (MalformedURLException mfe ) {
+      throw new GDEMException("Bad URL : " + mfe.toString());
+    } catch (IOException ioe ) {
+      throw new GDEMException("Error opening URL " + ioe.toString());
+    }
+    finally{
+      try{
+        if (input!=null) input.close();
+	    }
+	    catch(Exception e){}
+    }
+    
+  }
+  public String parseXML(InputStream input) throws GDEMException
   {
     String dtd=null;
-    InputFile src = null;
     try{
       //URL url = new URL(srcUrl);
       //InputSource is = new InputSource( url.openStream());
-      src = new InputFile(srcUrl);
       
-      InputSource is = new InputSource( src.getSrcInputStream());
+      InputSource is = new InputSource( input);
       
       
       //Defaulthandler handler = new DefaultHandler();
@@ -77,6 +96,7 @@ public class InputAnalyser
       schemaOrDTD=Utils.isURL(handler.getSchemaLocation())? handler.getSchemaLocation():null;
       rootElement = handler.getStartTag();
       namespace = handler.getStartTagNamespace();
+      hasNamespace = handler.hasNamespace();
       
        //Find DTD
       if (schemaOrDTD==null){
@@ -84,12 +104,6 @@ public class InputAnalyser
         dtdPublicId=doctype_reader.getDTDPublicId();
       }
 
-    } 
-    catch (MalformedURLException mfe ) {
-      throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
-    } 
-    catch (IOException ioe ) {
-      throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
     } 
     catch ( SAXParseException se ) {
       //ignore
@@ -105,12 +119,6 @@ public class InputAnalyser
         e.printStackTrace(System.err);    
       throw new GDEMException("Error parsing: " + e.toString(), e);
     }
-    finally{
-      try{
-        if (src!=null) src.close();
-	    }
-	    catch(Exception e){}
-    }
   
   return "OK";
   }
@@ -123,11 +131,14 @@ public class InputAnalyser
   public String getNamespace(){
     return this.namespace;
   }
+  public boolean hasNamespace(){
+    return this.hasNamespace;
+  }
     public static void main(String[] argv) {
         InputAnalyser sch = new InputAnalyser();//
         try{
           //sch.parseXML("http://localhost:8080/gdem/xml/meta.xml");
-          sch.parseXML("http://localhost:8080/gdem/water1.xml");
+          sch.parseXML("http://localhost:8080/gdem/test/MT_bodies.xml");
           //sch.parseXML("http://195.250.186.59:8080/gdem/countrynames.tmx");
         }
         catch(GDEMException e){
@@ -135,5 +146,6 @@ public class InputAnalyser
         }
          System.out.println("start tag: " + sch.getRootElement());
          System.out.println("schema or dtd: " + sch.getSchemaOrDTD());
+         System.out.println("ns: " + sch.getNamespace());
      }
 }

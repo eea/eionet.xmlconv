@@ -23,9 +23,14 @@
 
 package eionet.gdem.qa.servlets;
 import eionet.gdem.Constants;
+import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.qa.XQueryService;
+import eionet.gdem.validation.ValidationService;
 import java.io.IOException;
+import java.io.PrintWriter;
 
+import java.util.Hashtable;
+import java.util.Vector;
 import javax.servlet.ServletConfig;
 
 import javax.servlet.http.HttpServlet;
@@ -45,41 +50,147 @@ public class SandBox  extends HttpServlet implements Constants {
  }
  public void doPost(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException    {
 
-    String xqScript = req.getParameter(XQ_SCRIPT_PARAM);
-    String dataURL = req.getParameter(XQ_SOURCE_PARAM_NAME);
-    
-    String[] pars = new String[1];
-    pars[0] = XQ_SOURCE_PARAM_NAME + "=" + dataURL;
+    String result=null;
 
-    XQScript xq = null;
-    String result = null;
-    if(!Utils.isNullStr(xqScript) && !Utils.isNullStr(dataURL)) {
-      // Run immediately
-      //
-      if(!Utils.isNullStr(req.getParameter("runnow"))) {
-         xq = new XQScript(xqScript, pars);
-         try {
-            result = xq.getResult();
-         } catch (GDEMException ge){
-            result = ge.getMessage();
-         }
-         res.getWriter().write(result);
+    //save changes in XQ script to repository
+    if(!Utils.isNullStr(req.getParameter("save"))) {
+      String q_id = req.getParameter("ID");
+      String xqFileName = req.getParameter("file_name");
+      String xqScript = req.getParameter(XQ_SCRIPT_PARAM);
+      
+      if(Utils.isNullStr(xqScript)) {
+         res.getWriter().write("<html>The script cannot be empty!</html>");
+         return;
       }
-      // Add job to workqueue engine
-      //
-      else {
-         XQueryService xqE = new XQueryService(); 
-         try {
-            result = xqE.analyze(dataURL, xqScript);
-            res.getWriter().write("<html>Job (id: " + result + ") successfully added to the <a href='workqueue.jsp'>workqueue</a>.");
-         } catch (GDEMException ge){
-            result = ge.getMessage();
-            res.getWriter().write(result);
-         }
+      try{
+        Utils.saveStrToFile(xqFileName, xqScript, null);
+        res.sendRedirect(Names.SANDBOX_JSP + "?ID=" + q_id);
+      } catch (Exception ge){
+        result = "<html>Error occured during saving file: " + xqFileName + "<br/>"+ ge.getMessage() + "</html>";
+        res.getWriter().write(result);
       }
+      return;
     }
-    else
-       res.getWriter().write("<html>The script or data URL cannot be empty!</html>");
+
+    String dataURL = req.getParameter(XQ_SOURCE_PARAM_NAME);
+    if (Utils.isNullStr(dataURL)){
+         res.getWriter().write("<html>The data URL cannot be empty!</html>");
+         return;
+    }
+    String sandboxtype = req.getParameter("sandboxtype");
+    if (Utils.isNullStr(sandboxtype)){
+         res.getWriter().write("<html>Sandbox type cannot be empty!</html>");
+         return;
+    }
+    //search all scripts according to XML Schema and send back to sandbox
+    if(!Utils.isNullStr(req.getParameter("findscripts"))) {
+       res.sendRedirect(Names.SANDBOX_JSP + "?SOURCE_URL=" + dataURL);
+       return;
+    }
+    if (sandboxtype.equals("SCHEMA")){ //execute all the scripts for 1 schema
+      String xml_schema = req.getParameter("xml_schema");
+      
+      if (Utils.isNullStr(xml_schema)){
+         res.getWriter().write("<html>XML Schema cannot be empty!</html>");
+         return;
+      }
+        // Run immediately
+      //
+        if(!Utils.isNullStr(req.getParameter("runnow"))) {
+          String xqScriptFile = req.getParameter("script");
+          String xqScript=null;
+          if (xqScriptFile.equals(String.valueOf(JOB_VALIDATION))){
+            try{
+              ValidationService vs = new ValidationService();
+              result = vs.validateSchema(dataURL, xml_schema);
+            } catch (GDEMException ge){
+              result = ge.getMessage();
+            }
+          }
+          else{
+            try{
+              xqScript = Utils.readStrFromFile(xqScriptFile);
+            }
+            catch(Exception e){
+              res.getWriter().write("<html>Could not read script from file: " + xqScriptFile + "</html>");
+              return;            
+            }
+
+            String[] pars = new String[1];
+            pars[0] = XQ_SOURCE_PARAM_NAME + "=" + dataURL;
+
+            XQScript xq = new XQScript(xqScript, pars);
+            try {
+             result = xq.getResult();
+            } catch (GDEMException ge){
+              result = ge.getMessage();
+            }
+          }
+          res.getWriter().write(result);
+        }
+        // Add jobs to workqueue engine
+        //
+        else {
+          XQueryService xqE = new XQueryService(); 
+          try {
+            Hashtable h = new Hashtable();
+            Vector files = new Vector();
+            files.add(dataURL);
+            h.put(xml_schema, files);
+            Vector v_result = xqE.analyzeXMLFiles(h);
+            PrintWriter writer = res.getWriter();
+            if (Utils.isNullVector(v_result)){
+              writer.write("<html>No jobs has been added to the workqueue!</html>");
+             }
+            else{
+              writer.write("<html>The following jobs has  been added to the <a href='workqueue.jsp'>workqueue</a>.");
+              for (int i=0;i<v_result.size();i++){
+                Vector v = (Vector)v_result.get(i);
+                writer.write("<br/>" + String.valueOf(i+1) + ". job ID: " + (String)v.get(0));
+              }
+            }
+           } catch (GDEMException ge){
+              result = ge.getMessage();
+              res.getWriter().write(result);
+           }
+        }
+    }
+    else if(sandboxtype.equals("SCRIPT")){  //execute only 1 script from textarea
+      String xqScript = req.getParameter(XQ_SCRIPT_PARAM);
+
+      String[] pars = new String[1];
+      pars[0] = XQ_SOURCE_PARAM_NAME + "=" + dataURL;
+
+      XQScript xq = null;
+      if(!Utils.isNullStr(xqScript)) {
+        // Run immediately
+      //
+        if(!Utils.isNullStr(req.getParameter("runnow"))) {
+  
+          xq = new XQScript(xqScript, pars);
+           try {
+              result = xq.getResult();
+           } catch (GDEMException ge){
+              result = ge.getMessage();
+           }
+          res.getWriter().write(result);
+        }
+        // Add job to workqueue engine
+        //
+        else {
+          XQueryService xqE = new XQueryService(); 
+          try {             
+              result = xqE.analyze(dataURL, xqScript);
+              res.getWriter().write("<html>Job (id: " + result + ") successfully added to the <a href='workqueue.jsp'>workqueue</a>.</html>");
+           } catch (GDEMException ge){
+              result = ge.getMessage();
+              res.getWriter().write(result);
+           }
+        }
+      }
+      else
+         res.getWriter().write("<html>The script cannot be empty!</html>");
+    }
   }
 
 /*private static void _l(String s ){

@@ -36,6 +36,8 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.Properties;
 
+import eionet.gdem.validation.ValidationService;
+import java.io.FileInputStream;
 import java.sql.SQLException;
 import java.util.Iterator;
 
@@ -51,6 +53,8 @@ public class XQueryTask extends Thread implements Constants {
   private String _scriptFile;
   private String _resultFile;
   private String _jobId;
+  private String _savedSrcFile;
+  private String _queryID;
 
   private String _url; //source url for XML
 
@@ -85,34 +89,79 @@ public class XQueryTask extends Thread implements Constants {
     try {
       if (_logger.enable(_logger.INFO))
   			_logger.info("Job ID=  " + _jobId + " started getting source file.");      
-
-    	//Status to DOWNLOADING source:
-      changeStatus(XQ_DOWNLOADING_SRC);
-
-			//read source from the URL and store it:
-			String srcFile=null;
+      String srcFile=null;
       
-			try {
-        InputFile inputfile = new InputFile(_url);
-        srcFile=inputfile.saveSrcFile();
-				//srcFile=Utils.saveSrcFile(_url);
+      
+      if (Utils.isNullStr(_savedSrcFile)){
+        //Status to DOWNLOADING source:
+        changeStatus(XQ_DOWNLOADING_SRC);
 
-        if(_logger.enable(_logger.DEBUG))
-          _logger.debug("==== Source XML was stored to " + srcFile);
+        //read source from the URL and store it:
+        
+      
+        try {
+          InputFile inputfile = new InputFile(_url);
+          srcFile=inputfile.saveSrcFile();
+      		//srcFile=Utils.saveSrcFile(_url);
+
+          if(_logger.enable(_logger.DEBUG))
+            _logger.debug("==== Source XML was stored to " + srcFile);
           
-			//if the URL is not responding, set the status to easy_err and try again in 2 hrs or smth...
-			} catch (Exception e ) {
-				handleError(e.toString(), true);
-				return;
-			}
+          changeFileJobsStatus(srcFile, XQ_DOWNLOADING_SRC);
+        //if the URL is not responding, set the status to easy_err and try again in 2 hrs or smth...
+        } catch (Exception e ) {
+  				handleError(e.toString(), true);
+    			return;
+      	}
+      }
+      else{
+        //The source file is stored already before
+        srcFile = _savedSrcFile;
+      }
     //saved ok:
     
     //status to -processing
-     changeStatus(XQ_PROCESSING);    
-     if (_logger.enable(_logger.INFO))
-      _logger.info("Job ID=" + _jobId + " XQ processing started");     
+     changeStatus(XQ_PROCESSING);
+     
+     //Do validation
+    if (_queryID.equals(String.valueOf(JOB_VALIDATION))){
+      if (_logger.enable(_logger.INFO))
+        _logger.info("Job ID=" + _jobId + " Validation started");     
+      
+      FileInputStream fis = null;
+      try {
+        if (_logger.enable(_logger.DEBUG))
+          _logger.debug("** XQuery starts, ID=" + _jobId + 
+            " schema: "  + _scriptFile +
+            " result will be stored to " + _resultFile );
+        ValidationService vs = new ValidationService();
+        
+        fis = new FileInputStream(srcFile);
+        String result = vs.validateSchema(fis, _scriptFile);
+        
+        if (_logger.enable(_logger.DEBUG))
+          _logger.debug("Validation proceeded, now store to the result file");
+        
 
-			String[] xqParam={XQ_SOURCE_PARAM_NAME + "=" + srcFile};
+        Utils.saveStrToFile(_resultFile, result,null);        
+      } catch (Exception e ) {
+        handleError("Error during validation:" + e.toString(), true);
+        return;
+      }
+      finally{
+        if (fis!=null){
+          try{
+            fis.close();
+          }catch(Exception e){};
+        }
+      }
+    }
+    else{//Do xq job
+      if (_logger.enable(_logger.INFO))
+        _logger.info("Job ID=" + _jobId + " XQ processing started");     
+
+
+      String[] xqParam={XQ_SOURCE_PARAM_NAME + "=" + srcFile};
 
 
       try {
@@ -134,8 +183,8 @@ public class XQueryTask extends Thread implements Constants {
         if (_logger.enable(_logger.DEBUG))
           _logger.debug("Script proceeded, now store to the result file");
         
-
-        Utils.saveStrToFile(_resultFile.substring(0, _resultFile.lastIndexOf(".")), result, "txt");        
+        Utils.saveStrToFile(_resultFile, result, null);
+        //Utils.saveStrToFile(_resultFile.substring(0, _resultFile.lastIndexOf(".")), result, "txt");        
         
         
       } catch (Exception e ) {
@@ -143,7 +192,8 @@ public class XQueryTask extends Thread implements Constants {
         return;
 
       }
-
+    }
+    
       changeStatus(XQ_READY);
         if (_logger.enable(_logger.DEBUG))
           _logger.debug("Job ID=" + _jobId + " succeeded");
@@ -174,7 +224,8 @@ public class XQueryTask extends Thread implements Constants {
       _url=jobData[0];          
       _scriptFile=jobData[1];
       _resultFile=jobData[2]; //just a file name, file is not created yet
-
+      _savedSrcFile=jobData[4];  //if the source file is saved loally already, we won't ownload it again
+      _queryID=jobData[5]; 
     } catch (SQLException sqe ){
       handleError("Error getting WQ data from the DB: " + sqe.toString(), true);
     }
@@ -202,9 +253,9 @@ public class XQueryTask extends Thread implements Constants {
 
       //if result file already ok, store the error message in the file:
       if (_resultFile==null) 
-        _resultFile= Properties.tmpFolder + "gdem_error" + _jobId;
-			else
-				_resultFile= _resultFile.substring(0, _resultFile.lastIndexOf("."));
+        _resultFile= Properties.tmpFolder + "gdem_error" + _jobId + ".txt";
+			//else
+			//	_resultFile= _resultFile.substring(0, _resultFile.lastIndexOf("."));
       
       if (_logger.enable(_logger.INFO))
         _logger.info("******* The error message is stored to: " + _resultFile);
@@ -212,7 +263,8 @@ public class XQueryTask extends Thread implements Constants {
       if(error==null)
         error="No error message for job=" + _jobId;
 
-      Utils.saveStrToFile(_resultFile, "<error>" + error + "</error>", "txt");
+      //Utils.saveStrToFile(_resultFile, "<error>" + error + "</error>", "txt");
+      Utils.saveStrToFile(_resultFile, "<error>" + error + "</error>", null);
 
             
     } catch (Exception e) {
@@ -235,6 +287,13 @@ public class XQueryTask extends Thread implements Constants {
 			_db.changeJobStatus(_jobId, status);  
     } catch (Exception e ) {
       handleError(e.toString(), true);
+    }
+  }
+  private void changeFileJobsStatus(String savedFile, int status)  {
+    try {
+			_db.changeFileJobsStatus(_url, savedFile, status);
+    } catch (Exception e ) {
+      handleError(e.toString(), false);
     }
   }
 

@@ -70,7 +70,8 @@
                         ${lib}/saxon7.jar;
                         ${lib}/log4j.jar;
                         ${lib}/xalan.jar;
-                        ${lib}/xerces.jar;"/>
+                        ${lib}/xml-apis.jar;
+                        ${lib}/xercesImpl.jar;"/>
 	</target>
 	<!-- build gdem.jar -->
 	<target name="buildjar" depends="compile">
@@ -124,6 +125,11 @@
 				<isset property="xsl.folder"/>
 			</not>
 		</condition>
+		<condition property="queries.needed">
+			<not>
+				<isset property="queries.folder"/>
+			</not>
+		</condition>
 		<loadproperties srcFile="${prefix}/gdem/public/WEB-INF/classes/uit.properties"/>
 		<condition property="srvdef.not.available">
 			<not>
@@ -138,14 +144,30 @@
 				</not>
 			</and>
 		</condition>
+		<condition property="queriesfolder.not.exist">
+			<and>
+				<isset property="queries.folder"/>
+				<not>
+					<available file="${queries.folder}" type="dir"/>
+				</not>
+			</and>
+		</condition>
 		<fail if="tmp.needed" message="Property 'tmp.folder'  is missing from ${prefix}/gdem/public/WEB-INF/classes/gdem.properties"/>
 		<fail if="xsl.needed" message="Property 'xsl.folder'  is missing from ${prefix}/gdem/public/WEB-INF/classes/gdem.properties"/>
+		<fail if="queries.needed" message="Property 'queries.folder'  is missing from ${prefix}/gdem/public/WEB-INF/classes/gdem.properties"/>
 		<antcall target="warn_definition"/>
 		<antcall target="warn_xsl"/>
 	</target>
 	<target name="warn_xsl" if="xslfolder.not.exist">
 		<echo message="========================================================================="/>
 		<echo message="XSL folder was not available at: ${xsl.folder}"/>
+		<echo message="Create the folder or make a change in gdem.properties"/>
+		<echo message="========================================================================="/>
+		<!--mkdir dir="${xsl.folder}"/-->
+	</target>
+	<target name="warn_queries" if="queriesfolder.not.exist">
+		<echo message="========================================================================="/>
+		<echo message="Queries folder was not available at: ${queries.folder}"/>
 		<echo message="Create the folder or make a change in gdem.properties"/>
 		<echo message="========================================================================="/>
 		<!--mkdir dir="${xsl.folder}"/-->
