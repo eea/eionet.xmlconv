@@ -99,7 +99,7 @@
 		<!--fail unless="prefix" message="Usage: ant install -Dprefix={directory to install}"/-->
     <!-- Compile the java code from ${src} into ${build} -->
     <javac debug="on" deprecation="off" srcdir="${src}" destdir="${classes.dir}"
-		   classpath="${lib}/avalon.jar;${lib}/batik.jar;${lib}/fop.jar;${lib}/servlet.jar;${lib}/saxon7.jar;${lib}/log4j.jar;${lib}/xerces.jar"/>
+		   classpath="${lib}/avalon.jar;${lib}/batik.jar;${lib}/fop.jar;${lib}/servlet.jar;${lib}/saxon7.jar;${lib}/log4j.jar;${lib}/xerces.jar;${lib}/xalan.jar"/>
   </target>
 	
 	<!-- build gdem.jar -->
