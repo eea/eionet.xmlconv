@@ -57,6 +57,9 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ConversionService {
 
+  private static final String DEFAULT_CONTENT_TYPE= "text/plain";
+  private static final String DEFAULT_FILE_EXT= "txt";
+
   private String xslFolder;
   private String tmpFolder;
 
@@ -72,15 +75,9 @@ public class ConversionService {
 
   private static LoggerIF _logger;
 
-    
-  //private static final String xslFolder="C:/einrc/webs/gdem/xsl/";
-  //private static final String tmpFolder="C:/einrc/webs/gdem/tmp/";
-  
-  //Category logger;
-
-
   /***
   * Constant values for HttpResponse content types
+  * deprecated
   */
   private void initCnvTypes() {
     convTypes=new HashMap();
@@ -129,37 +126,7 @@ public class ConversionService {
 
     return v;
     
-    /*
-    Vector v = new Vector();
 
-    if ( schema.equals("http://roddev.eionet.eu.int/waterdemo/water_measurements.xsd")) {
-      Hashtable h = new Hashtable();
-      h.put("xsl", "simpletablehtml");
-      h.put("description", "Simple table");
-      v.add(h);
-
-      h= new Hashtable();      
-      h.put("xsl", "averagephhtml");
-      h.put("description", "Average Ph");
-
-      v.add(h);      
-    }
-    else if ( schema.equals("http://roddev.eionet.eu.int/eper/eper_examples.xsd")) {
-
-      Hashtable h = new Hashtable();
-      h.put("xsl", "eper2html");
-      h.put("description", "EPER html example");
-      v.add(h);
-
-      h= new Hashtable();
-      h.put("xsl", "eper2pdf");
-      h.put("description", "EPER pdf example");
-      v.add(h);      
-   
-    }
-    
-    return v;
-  */
   }
 
   /**
@@ -171,7 +138,6 @@ public class ConversionService {
   }
   public Hashtable convert (String sourceURL, String convertId, HttpServletResponse res) throws GDEMException {
     Hashtable h = new Hashtable();
-    
     String sourceFile=null;
     String xslFile=null;
     String outputFileName=null;
@@ -180,19 +146,7 @@ public class ConversionService {
 
     try {
     
-      src = new InputFile(sourceURL);
-      //sourceFile=saveSourceFile(sourceURL);
-      /*if (res==null)
-        sourceFile=Utils.saveSrcFile(sourceURL);
-      else
-        sourceFile=sourceURL;*/
-    //} catch (IOException  ioe ) {
-    //} catch (Exception  ioe ) {
-    //  throw new GDEMException("Error reading from URL: " + sourceURL + "\n"
-     //   + ioe.toString());
-   // }
-    
-    //xslFile=xslFolder + convertId + ".xsl";
+    src = new InputFile(sourceURL);
     if (db==null)
       db = GDEMServices.getDbModule();
 
@@ -201,13 +155,11 @@ public class ConversionService {
 
       if (styleSheetData==null)
         throw new GDEMException("No stylesheet info for convertID= " + convertId);
-
       xslFile= xslFolder + (String)styleSheetData.get("xsl");
       cnvTypeOut= (String)styleSheetData.get("content_type_out");
       
       Hashtable convType=db.getConvType(cnvTypeOut);
-      System.out.println(cnvTypeOut);
-      System.out.println(convType.toString());
+
       if (convType!=null){
         try{
           cnvContentType = (String)convType.get("content_type");
@@ -217,9 +169,6 @@ public class ConversionService {
           //Take no action, use default params
         }
       }
-      System.out.println(cnvTypeOut);
-      System.out.println(cnvContentType);
-      System.out.println(cnvFileExt);
       if (cnvContentType == null)
         cnvContentType = "text/plain";
       if (cnvFileExt == null)
@@ -240,29 +189,18 @@ public class ConversionService {
       }
     if (cnvTypeOut.equals("HTML")){
       outputFileName=convertHTML(src.getSrcInputStream(), xslFile);
-      //outputFileName=convertHTML(sourceFile, xslFile);
-      //htmlFileName=convertHTML(sourceURL, xslFile);      
-      //h.put("content-type", "text/html");
     }
     else if (cnvTypeOut.equals("PDF")){
       outputFileName=convertPDF(src.getSrcInputStream(), xslFile);
-      //outputFileName=convertPDF(sourceFile, xslFile);
-      //h.put("content-type", "application/pdf");
     }
     else if (cnvTypeOut.equals("EXCEL")){
       outputFileName=convertExcel(src.getSrcInputStream(), xslFile);
-      //outputFileName=convertExcel(sourceFile, xslFile);
-      //h.put("content-type", "application/vnd.ms-excel");
     }
     else  if (cnvTypeOut.equals("XML")){
       outputFileName=convertXML(src.getSrcInputStream(), xslFile);
-      //outputFileName=convertXML(sourceFile, xslFile);
-      //h.put("content-type", "text/xml");
     }
     else{
       outputFileName=convertTextOutput(src.getSrcInputStream(), xslFile);
-      //outputFileName=convertXML(sourceFile, xslFile);
-      //h.put("content-type", "text/xml");
     }
     //else
     //  throw new GDEMException("Unknown conversion type or converter not  implemented: " + cnvTypeOut);
@@ -298,10 +236,14 @@ public class ConversionService {
     //log("========= bytes ok");
 
     h.put("content", file);
-
-    Utils.deleteFile(sourceFile);
-    //deleteFile(htmlFileName);
-    Utils.deleteFile(outputFileName);
+    try{
+      //Utils.deleteFile(sourceFile);
+      //deleteFile(htmlFileName);
+      Utils.deleteFile(outputFileName);
+    }
+    catch(Exception e){
+      _logger.error("Couldn't delete the result file");
+    }
     
     
     return h;
@@ -403,7 +345,12 @@ public class ConversionService {
       else
         ep.makeExcel(xmlFile, excelFile);
 
-      Utils.deleteFile(xmlFile);
+      try{
+        Utils.deleteFile(xmlFile);
+      }
+      catch(Exception e){
+        _logger.error("Couldn't delete the result file");
+      }
 
     } catch (Exception e ) {
       _logger.error("Error " + e.toString());
@@ -544,6 +491,15 @@ public class ConversionService {
     System.out.println(msg);
     System.out.println("================================");    
   } 
-
+  public static void main(String args[]) {
+    try{
+      ConversionService cs = new ConversionService();
+      Hashtable h = cs.convert("http://cdr-ewn.eionet.eu.int/ee/eea/ewn3/envqrnu8a/bodies_IE.xml","gw_gc2htmltable_1637.xsl");
+    }
+    catch(Exception e ){
+      System.out.println(e.toString());
+    }
+    
+}
 
 }
