@@ -44,12 +44,6 @@
 	<script type="text/javascript">
 		
 	
-		function openApp(appName) {
-			document.forms["f"].app.value=appName;
-			document.forms["f"].ACTION.value="";
-			document.forms["f"].ACL.value="/";
-			document.forms["f"].submit();
-		}
 		function doLogin(appName) {
 			window.open("appLogin.jsp?app=" + appName,"login","height=200,width=300,status=no,toolbar=no,scrollbars=no,resizable=no,menubar=no,location=no");
 		}
@@ -77,11 +71,11 @@
 
 		<form name="upd_xsd" action="main" method="post">
 			<table cellspacing="0">
-				<%	if (xsduPrm){ %>
+				<%	/*if (xsduPrm){ %>
 					<tr height="10"><td colspan="2" align="right">
 						<img onclick="upd_xsd.submit();" height="15" width="15" src="images/edit.png" title="Save changes"></img>
 					</td></tr>
-				<% } %>
+				<% } */%>
 				<tr>
 					<td align="right" style="padding-right:5">
 						<span class="smallfont"><b>Location</b>&#160;</span>
@@ -108,6 +102,13 @@
 						</td>
 					</tr>
 				<% }%>
+				<%	if (xsduPrm){ %>
+				<tr>
+					<td align="right" colspan="2">
+						<input name="save" type="submit" class="mediumbuttonb" value="Save" ></input>
+					</td>
+				</tr>
+				<% }%>
 				<tr height="10"><td colspan="2"></td></tr>
 				<tr>
 					<td align="left" style="padding-right:5" colspan="2">
@@ -122,7 +123,7 @@
     	   	<head>
 					
         		<tr>
-			  		<th align="middle" width="100">Element name</th>
+			  		<th align="middle" width="150">Element name</th>
           			<th align="left" width="355">Namespace</th>
        				<%
 					if (xsduPrm){%>
@@ -173,7 +174,8 @@
 								<input type="text" name="NAMESPACE" size="65"></input>
 							</td>
 							<td>
-								<img onclick="add_elem.submit();" height="15" width="15" src="images/edit.png" title="Add a new root element"></img>
+								<input name="add" type="submit" class="mediumbuttonb" value="Add" ></input>
+								<!--img onclick="add_elem.submit();" height="15" width="15" src="images/edit.png" title="Add a new root element"></img-->
 							</td>
 						</tr>
 						<input type="hidden" name="ACTION" value="<%=Names.ELEM_ADD_ACTION%>"></input>
