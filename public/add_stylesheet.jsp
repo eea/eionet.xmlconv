@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@ page import="java.util.HashMap, java.util.Vector, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names" %>
+<%@ page import="java.util.HashMap, java.util.Vector, java.util.Hashtable, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names" %>
 
 
 
@@ -25,6 +25,9 @@
 		HashMap schema = (HashMap)list.get(0);
 		schema_name = (String)schema.get("xml_schema");
 	}
+
+	Vector convTypes = dbM.getConvTypes();
+	if (convTypes==null) convTypes = new Vector();
 	
 %>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
@@ -98,10 +101,20 @@
 					</td>
 					<td align="left">	
 						<select class="small" name="CONTENT_TYPE" id="contenttypefield">
-							<option value="HTML">HTML</option>
+							<%
+							for (int j=0;j<convTypes.size();j++){
+								Hashtable convtype=(Hashtable)convTypes.get(j);
+								String conv_type=(String)convtype.get("conv_type");
+								%>
+								<option value="<%=conv_type%>" <% if (conv_type.equals("HTML")) %>selected="true"<% ; %>><%=conv_type%></option>
+								<%
+							}
+							%>
+							<!--option value="HTML">HTML</option>
 							<option value="PDF">PDF</option>
 							<option value="EXCEL">EXCEL</option>
 							<option value="XML">XML</option>
+							<option value="SQL">SQL</option-->
 						</select>
 					</td>
 				</tr>
