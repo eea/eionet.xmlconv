@@ -78,7 +78,8 @@
 		<javac debug="on" deprecation="off" srcdir="${src}"
 		    destdir="${classes.dir}"
 		    classpath="${lib}/avalon.jar;
-		       ${lib}/batik.jar;
+		       ${lib}/uit-security.jar;
+					 ${lib}/batik.jar;
 		       ${lib}/fop.jar;
 		       ${lib}/poi-2.0-RC1-20031102.jar;
 		       ${lib}/servlet.jar;
