@@ -51,4 +51,7 @@ public interface Constants {
   public static final String XQ_SOURCE_PARAM_NAME="source_url";
 
   public static final String XQ_SCRIPT_PARAM="XQSCRIPT"; //field name for XQscript in the sandbox
+  
+  //Folder for temporary files - to be placed under public
+  public static final String TMP_FOLDER = "tmp/";
 }

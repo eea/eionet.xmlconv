@@ -264,12 +264,14 @@ public interface DbModuleIF {
   public void changeJobStatus(String jobId, int status) throws SQLException;
 
   /**
-  * Returns jobs in the Workqueue with the given status
+  * Returns job IDs in the Workqueue with the given status
+  * @return String[]
   */
   public String[] getJobs(int status) throws SQLException;
 
   /**
-  * Removes the XQJob when done or "dead"
+  * Removes the XQJob 
+  * No checking performed by this method
   */
   public void endXQJob(String jobId) throws SQLException;
 
@@ -410,11 +412,19 @@ public interface DbModuleIF {
   */
 
   public Vector getConvTypes() throws SQLException;
-/**
+
+  /**
   * returns one row of conversion type from database
   * @param conv_type as string
-  * @return HashMap contining all fields as HashMap from T_CONVTYPE table
+  * @return HashMap containing all fields as HashMap from T_CONVTYPE table
   */
 
   public Hashtable getConvType(String conv_type) throws SQLException;
+  /**
+   * returns all the job data in the WQ table
+   * @return String[][] containing all fields as HashMap from T_CONVTYPE table
+   */
+
+   public String[][] getJobData() throws SQLException;
+
 }

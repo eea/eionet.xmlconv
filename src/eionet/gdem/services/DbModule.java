@@ -48,7 +48,7 @@ import eionet.gdem.GDEMException;
 
 public class DbModule implements DbModuleIF, Constants {
 
-  private LoggerIF _l;
+  private static LoggerIF _l;
 
   DBPool dbPool=null;
   //ResourceBundle props;
@@ -937,6 +937,15 @@ public class DbModule implements DbModuleIF, Constants {
 
 			return h;
  } 
-   
+  
+  public String[][] getJobData() throws SQLException{
+  	String sql = "SELECT " + JOB_ID_FLD + ", " + URL_FLD + ","  
+		+ XQ_FILE_FLD + 
+  	  ", " + RESULT_FILE_FLD + ", " + STATUS_FLD + ", " + TIMESTAMP_FLD +
+		 	" FROM " + WQ_TABLE + " ORDER BY " + JOB_ID_FLD;
+  	
+  	return _executeStringQuery(sql);
+  
+  }
   
 }
