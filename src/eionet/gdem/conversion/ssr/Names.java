@@ -48,6 +48,7 @@ public interface Names {
   public static final String HOST_JSP = "host.jsp";
   public static final String LIST_WORKQUEUE_JSP = "workqueue.jsp";
   public static final String SANDBOX_JSP = "sandbox.jsp";
+  public static final String EXCEL_CONVERSION_JSP = "excel2xml_conversion.jsp";
 
   //actions
   public static final String XSD_ADD_ACTION = "A";
@@ -83,6 +84,8 @@ public interface Names {
   public static final String ACL_SCHEMA_PATH = "schema";
   public static final String ACL_HOST_PATH = "host";
   public static final String ACL_WQ_PATH = "workqueue";
+
+  public static final String EXCEL2XML_CONV_PARAM = "excel2dd_xml";
 
   public static final String RPC_SERVICE_NAME="XService";
   

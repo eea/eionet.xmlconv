@@ -61,9 +61,12 @@
 <%@ include file="menu.jsp" %>
 <div id="workarea">
 
-    <% if (err!= null) { %>
-            <h4><%=err%></h4>
-    <% } %>
+			<% if (err!=null){
+				%>
+				<span id="errormessage"><%=err%></span>
+			<%
+			}
+			%>
 
     <%
     boolean ssiPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "i");

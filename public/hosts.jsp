@@ -36,9 +36,12 @@
 				boolean houPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_HOST_PATH, "u");
 		%>
 		
-		<% if (err!= null) { %>
-			<h4><%=err%></h4>
-		<% } %>
+			<% if (err!=null){
+				%>
+				<span id="errormessage"><%=err%></span>
+			<%
+			}
+			%>
 	
 		<h1>Hosts</h1>
 		<%

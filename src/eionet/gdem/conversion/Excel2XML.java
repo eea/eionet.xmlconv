@@ -5,17 +5,20 @@ import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.excel.*;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-
 import eionet.gdem.utils.Utils;
-import java.io.PrintWriter;
-import org.xml.sax.*;
-import javax.xml.parsers.*;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.InputStream;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.MalformedURLException;
+
+import org.xml.sax.*;
+import javax.xml.parsers.*;
 
 /**
 * This class is creating handlers for creating XML file from MS Excel
@@ -45,30 +48,28 @@ import java.net.MalformedURLException;
        return "ErrorConversionHandler - couldn't save the Excel file: " + e.toString();
     }
   }
-public String convertDD_XML(InputStream inStream, OutputStream outStream){
+public String convertDD_XML(InputStream inStream, OutputStream outStream) throws GDEMException{
     
       if (inStream == null) return "Could not find InputStream";
       if (outStream == null) return "Could not find OutputStream";
-      PrintWriter writer = null;
       try{
         ExcelReaderIF excel = ExcelUtils.getExcelReader();
         excel.initReader(inStream);
         String xml_schema = excel.getXMLSchema();
-        
         if (xml_schema==null){
           throw new Exception("Excel file is not generated from Data Dictionary " +
                 "or it has been modified later. Could not find XML Schema!");
         }
         String instance_url = getInstanceUrl(xml_schema);
         
-        writer = new PrintWriter(outStream);
-        DD_XMLInstance instance = new DD_XMLInstance(writer);
+        DD_XMLInstance instance = new DD_XMLInstance();
         DD_XMLInstanceHandler handler=new DD_XMLInstanceHandler(instance);
         
         SAXParserFactory spfact = SAXParserFactory.newInstance();
         SAXParser parser = spfact.newSAXParser();
         XMLReader reader = parser.getXMLReader();
         spfact.setValidating(false);
+        spfact.setNamespaceAware(true);
         reader.setFeature("http://xml.org/sax/features/validation", false); 
         reader.setFeature("http://apache.org/xml/features/validation/schema", false);
         reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
@@ -76,20 +77,21 @@ public String convertDD_XML(InputStream inStream, OutputStream outStream){
 
         reader.setContentHandler(handler);
         reader.parse(instance_url);
-        
+
+        if (Utils.isNullStr(instance.getEncoding())){
+          String enc_url = getEncodingFromStream(instance_url);
+          if (!Utils.isNullStr(enc_url)) instance.setEncoding(enc_url);
+        }
         excel.readDocumentToInstance(instance);
-        instance.flush();
+        instance.flush(outStream);
         
-        writer.flush();
       }
       catch (Exception e){
-        return "Error generating XML file from Excel file: " + e.toString();
+        throw new GDEMException("Error generating XML file from Excel file: " + e.toString(), e);
       }
 	    finally{
 	        try{
-      				if (writer != null) writer.close();
 	            if (inStream != null) inStream.close();
-	            if (outStream != null) outStream.close();
 	        }
 	        catch(Exception e){}
 	    }
@@ -124,8 +126,48 @@ public String convertDD_XML(InputStream inStream, OutputStream outStream){
           e.toString() + " - " + schema_url);      
     }
   }
+  //Reads the XML declaration from instance file
+  // It is called only, when SAX coudn't read it
+  protected String getEncodingFromStream(String str_url){
+    BufferedReader br = null;
+    try{
+      URL url = new URL(str_url);
+      //ins = new DataInputStream(url.openStream());
+      br = new BufferedReader(new InputStreamReader(url.openStream()));
+      String xml_decl = br.readLine();
+      
+      if (xml_decl==null) return null;
+      if (!xml_decl.startsWith("<?xml version=") && !xml_decl.endsWith("?>")) return null;  
+      int idx = xml_decl.indexOf("encoding=");
+      if (idx==-1) return null;
+      String start = xml_decl.substring(idx+10);
+      int end_idx = start.indexOf("\"");
+      if (end_idx==-1) return null;
+      String enc = start.substring(0,end_idx);
+      
+      return enc;
+    }
+    catch(MalformedURLException e){
+      _logger.debug("It is not url: " + str_url + "; " + e.toString());
+    return null;
+    }
+    catch(IOException e){
+      _logger.debug("could not read encoding from url: " + str_url + "; " + e.toString());
+      return null;
+  }
+    catch(Exception e){
+      return null;
+      //couldn't read encoding
+    }
+    finally{
+      try{
+        if (br != null) br.close();
+	    }
+	    catch(IOException e){}
+    }
+  }
   public static void main(String[] args){
-    String excelFile = "E:\\Projects\\gdem\\exelToXML\\CDDA_Siteboundaries.xls";
+    String excelFile = "E:\\Projects\\gdem\\public\\tmp\\convert-5.xls";
     //String excelFile = "E:\\Projects\\gdem\\exelToXML\\Groundwater_GG_CCxxx.xls";
     String outFile = "E:\\Projects\\gdem\\exelToXml\\Instance2508_.xml";
     try{
@@ -135,4 +177,5 @@ public String convertDD_XML(InputStream inStream, OutputStream outStream){
     catch(Exception e){
       System.out.println(e.toString());
     }
-  }}
+  }
+}

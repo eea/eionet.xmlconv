@@ -243,6 +243,53 @@ th {
 	height: 17px;
 }
 
+/* Tabbed menus - as used on the front page */
+#tabbedmenu {
+	float:left;
+	width:100%;
+	border-bottom: thin solid #ff9400;
+	font-size: 1.1em;
+	line-height:normal;
+}
+#tabbedmenu ul {
+	margin:0;
+	padding:10px 10px 0;
+	list-style:none;
+}
+#tabbedmenu li {
+	float:left;
+	background:url("images/tableft.gif") no-repeat left top;
+	margin:0;
+	padding:0 0 0 9px;
+	white-space: nowrap;
+}
+#tabbedmenu a {
+	display:block;
+	text-decoration: none;
+	font-weight: bold;
+	color: black;
+	background:url("images/tabright.gif") no-repeat right top;
+	padding:5px 15px 4px 6px;
+}
+#tabbedmenu #currenttab {
+	background-image:url("images/tableft_on.gif");
+}
+#tabbedmenu #currenttab a {
+	text-decoration: none;
+	font-weight: bold;
+	background-image:url("images/tabright_on.gif");
+	padding-bottom:5px;
+}
+#tabbedmenu #currenttab span {
+	display:block;
+	text-decoration: none;
+	font-weight: bold;
+	background:url("images/tabright_on.gif") no-repeat right top;
+	padding:5px 15px 4px 6px;
+}
+
+
+
 #pagefoot {
 	clear:right;
 	border-top: 1px solid black;
@@ -313,7 +360,6 @@ th {
  
 #errormessage {
        color: #A10000;
-       border: 4px dotted;
 }
 
 #errormessage h1 {

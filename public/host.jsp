@@ -61,9 +61,12 @@
 	}
 	%>
 
-		<% if (err!= null) { %>
-			<h4><%=err%></h4>
-		<% } %>
+			<% if (err!=null){
+				%>
+				<span id="errormessage"><%=err%></span>
+			<%
+			}
+			%>
 		<%
 		if(mode.equals("add")){%>
 			<h1>Add a new host and credentials</h1>

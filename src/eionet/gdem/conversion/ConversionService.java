@@ -27,6 +27,8 @@ import java.util.HashMap;
 //KL 040427 not used?
 //import org.apache.avalon.framework.logger.Logger; 
 //import org.apache.avalon.framework.logger.ConsoleLogger;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import org.apache.fop.apps.Driver;
 
 import javax.xml.transform.TransformerFactory;
@@ -121,7 +123,7 @@ public class ConversionService {
     try {
       v=db.listConversions(schema);
     } catch (Exception e ) {
-      throw new GDEMException("Error getting data from the DB " + e.toString());
+      throw new GDEMException("Error getting data from the DB " + e.toString(), e);
     }
 
     return v;
@@ -144,7 +146,6 @@ public class ConversionService {
     InputFile src= null;
 
     try {
-    
     src = new InputFile(sourceURL);
     if (db==null)
       db = GDEMServices.getDbModule();
@@ -176,14 +177,14 @@ public class ConversionService {
       
               
     } catch (Exception e ) {
-      throw new GDEMException("Error getting stylesheet info from repository for " + convertId);
+      throw new GDEMException("Error getting stylesheet info from repository for " + convertId, e);
     }
       if (res!=null){  
         try {
           this.result = res.getOutputStream();
           res.setContentType(cnvContentType);
         } catch (IOException e ) {
-          throw new GDEMException("Error getting response outputstream " + e.toString());
+          throw new GDEMException("Error getting response outputstream " + e.toString(), e);
         }
       }
     if (cnvTypeOut.equals("HTML")){
@@ -206,16 +207,19 @@ public class ConversionService {
 
     } 
     catch (MalformedURLException mfe ) {
-      throw new GDEMException("Bad URL : " + mfe.toString());
+      throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
     } 
     catch (IOException ioe ) {
-      throw new GDEMException("Error opening URL " + ioe.toString());
+      throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
     } 
     catch (Exception e ) {
-      throw new GDEMException("Error converting: " + e.toString());
+      throw new GDEMException("Error converting: " + e.toString(), e);
     }
     finally{
-      src.close();
+      try{
+        if (src!=null) src.close();
+	    }
+	    catch(Exception e){}
     }
 
 
@@ -224,7 +228,7 @@ public class ConversionService {
       try{
         result.close();
       } catch (IOException e ) {
-        throw new GDEMException("Error closing result ResponseOutputStream " + convertId);
+        //throw new GDEMException("Error closing result ResponseOutputStream " + convertId);
       }
       return h;
     }
@@ -241,7 +245,7 @@ public class ConversionService {
       Utils.deleteFile(outputFileName);
     }
     catch(Exception e){
-      _logger.error("Couldn't delete the result file");
+      _logger.error("Couldn't delete the result file: " + outputFileName);
     }
     
     
@@ -270,16 +274,16 @@ public class ConversionService {
     Vector v_result = new Vector();
     String str_result = null;
     String outFileName=tmpFolder + "gdem_" + System.currentTimeMillis() + ".xml";
-
+    String error_mess = null;
+    
     try {
     
       src = new InputFile(sourceURL);
       if (res!=null){  
         try {
-          this.result = res.getOutputStream();
-          res.setContentType("text/xml");
+          result = res.getOutputStream();
         } catch (IOException e ) {
-          throw new GDEMException("Error getting response outputstream " + e.toString());
+          throw new GDEMException("Error getting response outputstream " + e.toString(), e);
         }
       }
       if (result==null)
@@ -289,23 +293,45 @@ public class ConversionService {
       str_result = converter.convertDD_XML(src.getSrcInputStream(), result);
     }
     catch (MalformedURLException mfe ) {
-      throw new GDEMException("Bad URL : " + mfe.toString());
+      if (res!=null){
+        throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
+      }
+      else{
+        error_mess = "Bad URL : " + mfe.toString();
+      }
     } 
     catch (IOException ioe ) {
-      throw new GDEMException("Error opening URL " + ioe.toString());
+      if (res!=null){
+        throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
+      }
+      else{
+        error_mess = "Error opening URL " + ioe.toString();
+      }
     } 
     catch (Exception e ) {
-      throw new GDEMException(e.toString());
+      if (res!=null){
+            System.out.println("Nonii");
+
+        throw new GDEMException(e.toString(), e);
+      }
+      else{
+        error_mess = e.toString();
+      }
     }
     finally{
-      src.close();
+      try{
+        if (src!=null) src.close();
+      //  if (result!=null) result.close();
+	    }
+	    catch(Exception e){}
     }
     
     if (res!=null){
       try{
+        res.setContentType("text/xml");
         result.close();
       } catch (IOException e ) {
-        throw new GDEMException("Error closing result ResponseOutputStream ");
+        throw new GDEMException("Error closing result ResponseOutputStream ", e);
       }
       return v_result;
     }
@@ -321,7 +347,7 @@ public class ConversionService {
     if (result_code==0)
       v_result.add(file);
     else
-      v_result.add(str_result);
+      v_result.add(error_mess);
 
     try{
       Utils.deleteFile(outFileName);
@@ -357,9 +383,9 @@ public class ConversionService {
       fis.close();
       
     } catch (FileNotFoundException fne) {
-      throw new GDEMException("File not found " + fileName);
+      throw new GDEMException("File not found " + fileName, fne);
     } catch (Exception e) {
-      throw new GDEMException("Exception " + e.toString());
+      throw new GDEMException("Exception " + e.toString(), e);
     }    
       return baos.toByteArray();    
   }
@@ -375,7 +401,7 @@ public class ConversionService {
           runFOPTransformation(source, xslt,  new FileOutputStream(pdfFile));
         } catch (IOException e ) {
           _logger.error("Error " + e.toString());
-          throw new GDEMException("Error creating PDF output file " + e.toString());
+          throw new GDEMException("Error creating PDF output file " + e.toString(), e);
         }
       }
         
@@ -391,7 +417,7 @@ public class ConversionService {
       //String args[]={"-in", source, "-xsl", xslt, "-out", htmlFile  };
       //[-xsl stylesheet] [-o dest] file1.xml file2.xml ...       
       //String args[]={"-xsl", xslt, "-o", htmlFile, source  };
-
+      
       if (result!=null)
         runXalanTransformation(source, xslt, result);
       else{
@@ -399,9 +425,10 @@ public class ConversionService {
           runXalanTransformation(source, xslt,  new FileOutputStream(htmlFile));
         } catch (IOException e ) {
           _logger.error("Error " + e.toString());
-          throw new GDEMException("Error creating HTML output file " + e.toString());
+          throw new GDEMException("Error creating HTML output file " + e.toString(), e);
         }
       }
+      
       //org.apache.xalan.xslt.Process.main(args);
       //log("conversion done");
 
@@ -431,13 +458,12 @@ public class ConversionService {
         Utils.deleteFile(xmlFile);
       }
       catch(Exception e){
-        _logger.error("Couldn't delete the result file");
+        _logger.error("Couldn't delete the result file: " + xmlFile);
       }
 
-    } catch (Exception e ) {
+    } catch (FileNotFoundException e ) {
       _logger.error("Error " + e.toString());
-      e.printStackTrace(System.out);    
-      throw new GDEMException("Error transforming Excel " + e.toString());
+        throw new GDEMException("Error transforming Excel " + e.toString(), e);
     }
 
 
@@ -457,7 +483,7 @@ public class ConversionService {
           runXalanTransformation(source, xslt,  new FileOutputStream(xmlFile));
         } catch (IOException e ) {
           _logger.error("Error " + e.toString());
-          throw new GDEMException("Error creating XML output file " + e.toString());
+          throw new GDEMException("Error creating XML output file " + e.toString(), e);
         }
         //org.apache.xalan.xslt.Process.main(args);
         //log("conversion done");
@@ -475,7 +501,7 @@ public class ConversionService {
           runXalanTransformation(source, xslt,  new FileOutputStream(outFile));
         } catch (IOException e ) {
           _logger.error("Error " + e.toString());
-          throw new GDEMException("Error creating " + cnvTypeOut + " output file with Xalan:" + e.toString());
+          throw new GDEMException("Error creating " + cnvTypeOut + " output file with Xalan:" + e.toString(), e);
         }
         //org.apache.xalan.xslt.Process.main(args);
         //log("conversion done");
@@ -505,11 +531,20 @@ public class ConversionService {
 
       //For testing
       //System.out.println("Transform End: " + Long.toString(System.currentTimeMillis()));
-      
-    } catch (Throwable e ) {
+    }  
+    catch (TransformerConfigurationException tce ) {
+        throw new GDEMException("Error transforming XML - incorrect stylesheet file: " + tce.toString(), tce);
+        //throw new GDEMException(e);
+    }
+    catch (TransformerException tfe ) {
+        throw new GDEMException("Error transforming XML - it's not probably well-formed xml file: " + tfe.toString(), tfe);
+        //throw new GDEMException(e);
+    }
+    catch (Throwable e ) {
         _logger.error("Error " + e.toString());
         e.printStackTrace(System.out);    
         throw new GDEMException("Error transforming XML " + e.toString());
+        //throw new GDEMException(e);
     }
   }
   private void runFOPTransformation(InputStream in, String xsl, OutputStream out) throws GDEMException {

@@ -86,10 +86,10 @@ public class InputAnalyser
 
     } 
     catch (MalformedURLException mfe ) {
-      throw new GDEMException("Bad URL : " + mfe.toString());
+      throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
     } 
     catch (IOException ioe ) {
-      throw new GDEMException("Error opening URL " + ioe.toString());
+      throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
     } 
     catch ( SAXParseException se ) {
       //ignore
@@ -103,10 +103,13 @@ public class InputAnalyser
         se.printStackTrace(System.err);
       else
         e.printStackTrace(System.err);    
-      throw new GDEMException("Error parsing: " + e.toString());
+      throw new GDEMException("Error parsing: " + e.toString(), e);
     }
     finally{
-      src.close();
+      try{
+        if (src!=null) src.close();
+	    }
+	    catch(Exception e){}
     }
   
   return "OK";

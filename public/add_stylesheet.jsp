@@ -79,9 +79,12 @@
     <%@ include file="menu.jsp" %>
 <div id="workarea">
 
-		<% if (err!= null) { %>
-			<h1><font color="#FF0000"><%=err%></font></h1>
-		<% } %>
+			<% if (err!=null){
+				%>
+				<span id="errormessage"><%=err%></span>
+			<%
+			}
+			%>
 			<h1>Add a new stylesheet</h1>
 
 		<form name="Upload" action="main" method="post" enctype="multipart/form-data">
@@ -100,7 +103,7 @@
 						<label for="contenttypefield">Output type</label>
 					</td>
 					<td align="left">	
-						<select class="small" name="CONTENT_TYPE" id="contenttypefield">
+						<select class="small" name="CONTENT_TYPE" id="contenttypefield" title="rrr" alt="jjj">
 							<%
 							for (int j=0;j<convTypes.size();j++){
 								Hashtable convtype=(Hashtable)convTypes.get(j);

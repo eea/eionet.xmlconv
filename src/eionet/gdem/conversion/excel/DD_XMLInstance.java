@@ -1,18 +1,21 @@
 package eionet.gdem.conversion.excel;
 
 import eionet.gdem.utils.Utils;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.io.File;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 
 public class DD_XMLInstance  {
 
   private static final String DST_TYPE = "DST";
   private static final String TBL_TYPE = "TBL";
+  private static final String DEFAULT_ENCODING = "UTF-8";
 	
   protected String lineTerminator = "\n";
-	private PrintWriter writer = null;
+	private OutputStreamWriter writer = null;
   
   private String type = TBL_TYPE;//by default it's table
   private Hashtable root_tag=new Hashtable();
@@ -25,9 +28,9 @@ public class DD_XMLInstance  {
 
   private String cur_row_name = "";
   private String cur_row_attrs = "";
+  private String encoding = null;
   
-  public DD_XMLInstance(PrintWriter writer) {
-    this.writer = writer;
+  public DD_XMLInstance() {
     this.lineTerminator = File.separator.equals("/") ? "\r\n" : "\n";
   }
   /*
@@ -109,6 +112,12 @@ public class DD_XMLInstance  {
 	
     this.type = TBL_TYPE;
   }
+  public void setEncoding(String encoding){
+    this.encoding = encoding;
+  }
+  public String getEncoding(){
+    return this.encoding;
+  }
   public Hashtable getRootTag(){
     return this.root_tag;
   }
@@ -128,16 +137,25 @@ public class DD_XMLInstance  {
 	/**
 	* Flush the written content into the output stream.
 	*/
-	public void flush() throws Exception{
-		
-		writeHeader();
-		startRootElement();
-        
-		// write content
-		for (int i=0; i<content.size(); i++){
-			writer.print((String)content.get(i));
-		} 
-		endRootElement();
+	public void flush(OutputStream outStream) throws Exception{
+    
+    try{		
+      this.writer = new OutputStreamWriter(outStream, getEncoding());
+      writeHeader();
+      startRootElement();
+      // write content
+      for (int i=0; i<content.size(); i++){
+  			writer.write((String)content.get(i));
+    	} 
+  		endRootElement();
+      writer.flush();
+    }
+	  finally{
+	      try{
+    				if (writer != null) writer.close();
+       }
+       catch(Exception e){}
+   }
 	}
   public void writeElement(String elem_name, String attributes, String data){
 		addString(getLead("elm") + "<" + elem_name + attributes + ">");
@@ -177,17 +195,26 @@ public class DD_XMLInstance  {
 	protected void newLine(){
 		content.add(lineTerminator);
 	}
-	private void writeHeader(){
+	private void writeHeader() throws IOException{
 		//writer.print("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>");
-		writer.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		writer.print(lineTerminator);
+    String enc = (Utils.isNullStr(getEncoding())) ? DEFAULT_ENCODING : encoding;
+		writer.write("<?xml version=\"1.0\" encoding=\"" + enc + "\"?>");
+		writer.write(lineTerminator);
 	}
-  private void startRootElement(){
-		writer.print("<" + getRootTagName() + namespaces.toString() + getRootTagAttributes() + ">");
-    writer.print(lineTerminator);
+  private void startRootElement() throws IOException{
+    String root_attributes = getRootTagAttributes();
+    if (root_attributes == null) root_attributes="";
+    String rootTagOut = getRootTagName();
+    
+    if (root_attributes.indexOf("xmlns:xsi")>-1)
+      rootTagOut +=  root_attributes;
+    else
+      rootTagOut +=  namespaces.toString() + root_attributes;
+		writer.write("<" + rootTagOut + ">");
+    writer.write(lineTerminator);
   }
-  private void endRootElement(){
-		writer.print("</" + getRootTagName() + ">");
+  private void endRootElement() throws IOException{
+		writer.write("</" + getRootTagName() + ">");
   }
 	protected String escape(String s){
         

@@ -50,9 +50,12 @@
     <%}%>
 
 
-		<% if (err!= null) { %>
-			<h4><%=err%></h4>
-	  	<% } %>
+			<% if (err!=null){
+				%>
+				<span id="errormessage"><%=err%></span>
+			<%
+			}
+			%>
 			<h1>Stylesheets</h1>
 		
 		<div id="main_table">

@@ -164,12 +164,22 @@ public class Main extends HttpServlet implements Names {
   */
   protected void handleError(HttpServletRequest req, HttpServletResponse res, String errMsg, String action) throws ServletException, IOException  {
 
-    req.setAttribute(ERROR_ATT, errMsg);
-    String jspName = INDEX_JSP;  //default
-    if (action.equals(LOGIN_ACTION))
+    //req.setAttribute(ERROR_ATT, errMsg);
+    String jspName = ERROR_JSP;  //default
+    if (action.equals(LOGIN_ACTION)){
+      req.setAttribute(ERROR_ATT, errMsg);
       jspName = LOGIN_JSP;
-    req.getRequestDispatcher(jspName).forward(req,res);
-    
+      req.getRequestDispatcher(jspName).forward(req,res);
+    }
+    else{
+      HttpSession sess = req.getSession(true);
+      Exception err= new Exception(errMsg);
+        sess.setAttribute("gdem.exception", err);
+      if (Utils.isNullStr(jspName)) jspName = Names.ERROR_JSP;
+      
+      //req.getRequestDispatcher(jspName).forward(req,res);
+      res.sendRedirect(res.encodeRedirectURL(req.getContextPath() + "/" + jspName));
+    }
   }
 
     private void dispatch(HttpServletRequest req, HttpServletResponse res, String action) throws ServletException, IOException  {

@@ -15,7 +15,7 @@ public class ExcelStyle implements ExcelStyleIF {
   private String family=null;
   private boolean italic=false;
   private short font_weight=HSSFFont.BOLDWEIGHT_NORMAL;
-  private short font_size=0;
+  private short font_size=12;
   private String font_name=null;
   private short text_align=HSSFCellStyle.ALIGN_GENERAL;
   private short workbook_index=-1;

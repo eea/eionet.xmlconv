@@ -2,19 +2,15 @@ package eionet.gdem.conversion.excel;
 
 // Copyright (c) 2000 TietoEnator
 
+import eionet.gdem.utils.Utils;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
-import java.util.HashMap;
-import java.util.Vector;
-import java.util.Iterator;
-import javax.xml.parsers.*;
-import java.util.*;
-
+import java.lang.reflect.Method;
 
 /**
 * Handler for parsing xml instance document from datadictionary
-* extening SAX BaseHandler
+* extening SAX helpers DefaultHandler
 * @author Enriko Käsper
 */
 
@@ -31,13 +27,13 @@ public class DD_XMLInstanceHandler extends DefaultHandler{
   private int                level=0;
   private String             cur_table=null;
 
+
   public DD_XMLInstanceHandler(DD_XMLInstance instance)
   {
       this.instance = instance;
   }
-
   public void startPrefixMapping(String prefix, String uri){
-      instance.addNamespace(prefix, uri);;           
+      instance.addNamespace(prefix, uri);           
   }
   public void startElement(String uri, String localName, String name, Attributes attributes){
 
@@ -91,5 +87,25 @@ public class DD_XMLInstanceHandler extends DefaultHandler{
       return buf.toString();
     
   }
-
+  public void setDocumentLocator (Locator locator)
+  {
+     Locator startloc = new LocatorImpl(locator);
+     String encoding = getEncoding(startloc);
+     if (!Utils.isNullStr(encoding))
+        instance.setEncoding(encoding);
+}
+  private String getEncoding(Locator locator) {
+    String encoding = null;
+    Method getEncoding = null;
+    try {
+        getEncoding = locator.getClass().getMethod("getEncoding", new Class[]{});
+        if(getEncoding != null) {
+            encoding = (String)getEncoding.invoke(locator, null);
+        }
+    } catch (Exception e) {
+        // either this locator object doesn't have this
+        // method, or we're on an old JDK
+    }
+    return encoding;
+  }  
 }

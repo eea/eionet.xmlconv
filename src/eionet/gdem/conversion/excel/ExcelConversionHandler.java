@@ -49,15 +49,16 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
       HSSFSheet sheet = wb.createSheet(sheetName);
       currentSheet=wb.getNumberOfSheets()-1;
      // System.out.println("Worksheet" + currentSheet);
-      currentRow=0;
+      currentRow=-1;
       currentCell=0;
       
  }
   public void addRow(String def_style, String def_type)
   {
      HSSFSheet sh = wb.getSheetAt(currentSheet);
+     currentRow++;
      HSSFRow HSSFrow = sh.createRow(currentRow);
-     currentRow=sh.getPhysicalNumberOfRows();
+     currentRow=sh.getPhysicalNumberOfRows()-1;
 
      currentCell=0;
 
@@ -99,16 +100,13 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
       }
   }
   public void addCell(String type, String str_value, String style_name){
-     HSSFRow _row = wb.getSheetAt(currentSheet).createRow(currentRow);
+     HSSFSheet _sheet = wb.getSheetAt(currentSheet);
+     HSSFRow _row = _sheet.getRow(currentRow);
      HSSFCell _cell = _row.createCell((short)(currentCell));
 
-//     int i_value=0;
      Double number_value=null;
      Boolean boolean_value=null;
-//     long l_value=0;
-  //   boolean isInt=false;
      boolean isNumber=false;
-    // boolean isLong=false;
      boolean isBoolean=false;
      boolean isDate=false;
      if (type==null){
@@ -197,9 +195,6 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
          _cell.setCellValue(boolean_value.booleanValue());
        _cell.setCellType(_cell.CELL_TYPE_BOOLEAN);
      }
-     else if (isDate){
-       
-     }
      else{
        _cell.setCellType(_cell.CELL_TYPE_STRING);
        _cell.setCellValue(str_value);
@@ -219,7 +214,15 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
 
       if (idx>-1)
         _cell.setCellStyle(wb.getCellStyleAt(idx));
-
+    //calculates the col with according to the first row
+    if (currentRow==0 && idx>-1){
+      HSSFCellStyle style = wb.getCellStyleAt(idx);
+      int f_i = style.getFontIndex();
+      HSSFFont font = wb.getFontAt((short)f_i);
+      int size = (int)font.getFontHeightInPoints();
+  		short width = (short)(str_value.length() * size * 50);
+    	_sheet.setColumnWidth((short)currentCell, width);
+     }
      currentCell = _cell.getCellNum()+1;
   //    System.out.println("Cell" + currentCell+ "-" + value);
   }
@@ -309,7 +312,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
     if (columns.size()<currentCell) return null;
 
     //Find default value defined at row level
-    HashMap row_map = (HashMap)rows.get(currentRow-1);
+    HashMap row_map = (HashMap)rows.get(currentRow);
     if (row_map.containsKey(param)){
       Object value = row_map.get(param);
       if (value!=null){
@@ -331,7 +334,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
 
     return null;
   }
-  public void writeToFile() throws GDEMException{
+ public void writeToFile() throws GDEMException{
       // Write the output to a file
     try
     {     

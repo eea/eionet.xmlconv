@@ -58,9 +58,12 @@
 <%@ include file="menu.jsp" %>
 <div id="workarea">
 
-		<% if (err!= null) { %>
-			<h4><%=err%></h4>
-		<% } %>
+			<% if (err!=null){
+				%>
+				<span id="errormessage"><%=err%></span>
+			<%
+			}
+			%>
 	
 		<h2>XML Schema or DTD information</h2>
 

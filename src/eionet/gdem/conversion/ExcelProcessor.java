@@ -30,7 +30,7 @@ public class ExcelProcessor  {
     }
     catch(Exception e)
     {
-       throw new GDEMException("ErrorConversionHandler - couldn't save the Excel file: " + e.toString());
+       throw new GDEMException("ErrorConversionHandler - couldn't save the Excel file: " + e.toString(), e);
     }
   }
   public void makeExcel(String sIn, OutputStream sOut) throws GDEMException {
@@ -53,13 +53,16 @@ public class ExcelProcessor  {
         excel.writeToFile(sOut);
       }
       catch (Exception e){
-        throw new GDEMException("Error generating Excel file: " + e.toString());
+        throw new GDEMException("Error generating Excel file: " + e.toString(), e);
       }
+      
       return;
   }
   public static void main(String[] args){
-    String excelFile = "F:\\Projects\\gdem\\test\\test1.xls";
-    String srcFile = "F:\\Projects\\gdem\\test\\content2.xml";
+    String srcFile = "E:\\Projects\\gdem\\tmp\\medium.xml";
+    String excelFile = "E:\\Projects\\gdem\\tmp\\medium.xls";
+    //String srcFile = "F:\\Projects\\gdem\\test\\content2.xml";
+    //String srcFile = "http://reportek2.eionet.eu.int/AAAcolqv1nta/envqwkktq/EE_bodies.xml";
     try{
       ExcelProcessor processor = new ExcelProcessor();
       processor.makeExcel(srcFile, excelFile);  

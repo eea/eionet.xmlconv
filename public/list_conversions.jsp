@@ -43,11 +43,20 @@
 <%@ include file="menu.jsp" %>
 <div id="workarea">
 
-	  <% if (err!= null) { %>
- 	  	<h4><%=err%></h4>
-	  <% } %>
+	<div id="tabbedmenu">
+    <ul>
+	    <li id="currenttab"><a href="list_conversions.jsp">XML converters</a></li>
+    	<li><a href="excel2xml_conversion.jsp">MS Excel to XML</a></li>
+  	</ul>
+	</div>	  
+			<% if (err!=null){
+				%>
+				<span id="errormessage"><%=err%></span>
+			<%
+			}
+			%>
   	  
-	  <h2>Find converters</h2>
+	  <h1>Find XML converters</h1>
 
 	  <br/>	
 

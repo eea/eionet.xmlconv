@@ -26,6 +26,12 @@
 			String[][] list = dbM.getJobData();
 			String tmpFolder = Constants.TMP_FOLDER;
 		%>
+			<% if (err!=null){
+				%>
+				<span id="errormessage"><%=err%></span>
+			<%
+			}
+			%>
 		<h1>Jobs</h1>
 		<div id="operations">
 			<!--ul>

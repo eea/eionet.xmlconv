@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@ page import="java.util.HashMap, java.util.Vector, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices"%>
+<%@ page import="java.util.HashMap, java.util.Vector, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, java.io.IOException"%>
 <%@ page import="eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.Utils, eionet.gdem.conversion.ssr.InputAnalyser, eionet.gdem.validation.ValidationService, eionet.gdem.GDEMException" %>
 
 
@@ -27,6 +27,16 @@ private String validateSchema(String url, String schema){
 		return "Error occured while validating the file: " + e.toString();
 	}
 }
+private void handleError(HttpServletRequest req, HttpServletResponse res, Exception err) throws ServletException, IOException {
+
+      HttpSession sess = req.getSession(true);
+      sess.setAttribute("gdem.exception", err);
+      System.out.println(err.toString());
+      //req.getRequestDispatcher(jspName).forward(req,res);
+      res.sendRedirect(res.encodeRedirectURL(req.getContextPath() + "/" + Names.ERROR_JSP));
+
+    
+  }
 %>
 
 <%	//get stylesheet id from parameter
@@ -74,8 +84,10 @@ private String validateSchema(String url, String schema){
 			try{
 				analyser.parseXML(xml_url);
 			}
-			catch(GDEMException e){
-				err_mess = e.toString();
+			catch(Exception e){
+				//err_mess = e.toString();
+				handleError(request, response, e);
+				return;
 			}
 			// schema or dtd found from header
 			schemaOrDTD = analyser.getSchemaOrDTD();
@@ -166,7 +178,7 @@ private String validateSchema(String url, String schema){
 		<form name="TestConversion" action="<%=Names.TEST_CONVERSION_SERVLET%>" method="get">
 			<% if (err_mess!=null){
 				%>
-				<span class="error"><%=err_mess%></span>
+				<span id="errormessage"><%=err_mess%></span>
 			<%
 			}
 			%>
@@ -269,7 +281,7 @@ private String validateSchema(String url, String schema){
 				<tr height="10"><td colspan="2"></td></tr>
 				<%
 					boolean convPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_TESTCONVERSION_PATH, "x");
-					if (convPrm){
+					//if (convPrm){
 						%>
 						<tr>
 							<td></td>
@@ -278,7 +290,7 @@ private String validateSchema(String url, String schema){
 								<!--input name="TEST" type="button" class="mediumbuttonb" value="Convert" onclick="convert()"></input-->&#160;&#160;
 							</td>
 						</tr>
-					<%}%>
+					<%//}%>
 			</table>
 			<input type="hidden" name="ACTION" value="<%=Names.EXECUTE_TESTCONVERSION_ACTION%>"/>
 		</form>	
