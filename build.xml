@@ -85,7 +85,7 @@
 		       ${lib}/servlet.jar;
 		       ${lib}/saxon7.jar;
 		       ${lib}/log4j.jar;
-		       ${lib}/xalan.jar
+		       ${lib}/xalan.jar;
 		       ${lib}/xerces.jar;"/>
 	</target>
 	<!-- build gdem.jar -->
