@@ -47,7 +47,7 @@
  	  	<h4><%=err%></h4>
 	  <% } %>
   	  
-	  <h2>List conversion types</h2>
+	  <h2>Find converters</h2>
 
 	  <br/>	
 
@@ -79,7 +79,9 @@
 							HashMap schema = (HashMap)schemas.get(i);
 							String xsd_id = (String)schema.get("schema_id");
 							String xsd_name = (String)schema.get("xml_schema");
-							
+							Vector stylesheets = (Vector)schema.get("stylesheets");
+							if (stylesheets.size() ==0) continue;
+					
 							if (xsd_name==null) continue;
 							
 							%>

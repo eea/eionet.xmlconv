@@ -6,14 +6,24 @@
 	if (user!=null)
 		user_name = user.getUserName();
 	String err = (String)request.getAttribute(Names.ERROR_ATT);
+  boolean hovPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_HOST_PATH, "v");
 
 %>
 <div id="globalnav">
  <h2>Contents</h2>
   <ul>
-  <li><a href="javascript:openPage('<%=Names.SHOW_SCHEMAS_ACTION%>">Show Conversions</a></li>
-  <li><a href="javascript:openPage('<%=Names.SHOW_LISTCONVERSION_ACTION%>">Conversions</a></li>
-  </ul>
+  <li><a href="<%=Names.INDEX_JSP%>">Stylesheets</a></li>
+  <li><a href="<%=Names.LIST_CONVERSION_JSP%>">Converter</a></li>
+  <%
+  if (hovPrm){
+	  %>
+  	<li><a href="<%=Names.HOSTS_JSP%>">Hosts</a></li>
+  	<%
+  	}
+  %>
+  
+
+    </ul>
 
  <h2>Manage</h2>
         <%

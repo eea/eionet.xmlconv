@@ -34,7 +34,7 @@
 <body>
 <body>
 <jsp:include page="location.jsp" flush='true'>
-  <jsp:param name="name" value="Conversions"/>
+  <jsp:param name="name" value="Stylesheets"/>
 </jsp:include>
 <%@ include file="menu.jsp" %>
 <div id="workarea">
@@ -43,11 +43,9 @@
     if (ssiPrm){
     %>
     <div id="operations">
-    <img onclick="add_stylesheet.submit();" height="18" width="38" src="images/add.png" alt="Add new Stylesheet">
-    <form name="add_stylesheet" action="main" method="post">
-            <input type="hidden" name="ID"></input>
-            <input type="hidden" name="ACTION" value="<%=Names.SHOW_ADDXSL_ACTION%>"></input>
-    </form>
+				<ul>
+					<li><a href="<%=Names.ADD_XSL_JSP%>" title="Add a new Stylesheet">Add Stylesheet</a></li>
+ 				</ul>
     </div>
     <%}%>
 
@@ -55,16 +53,17 @@
 		<% if (err!= null) { %>
 			<h4><%=err%></h4>
 	  	<% } %>
-			<h1>Conversions</h1>
+			<h1>Stylesheets</h1>
 		
-        <table cellspacing="5">
-          <thead>
+		<div id="main_table">
+			<table border="0" cellspacing="1" cellpadding="2" width="100%">
+				<thead>
             <%
 			boolean ssdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "d");
 			%>
             <tr>
 		      <th align="left" width="*">XML Schema</th>
-              <th align="left" width="200">Stylesheets</th>
+              <th align="left" width="50%">Stylesheets</th>
 			  <%
 				if (ssdPrm){%>
      			  <th align="middle" width="15">&#160;</th>
@@ -83,13 +82,15 @@
 					if (schema_descr==null) schema_descr="";
 					if (!schema.containsKey("stylesheets")) continue;
 					Vector stylesheets = (Vector)schema.get("stylesheets");
+					
+					if (stylesheets.size() ==0) continue;
 						
 					%>
 					<tr>
-						<td align="left" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %> bgcolor="#D3D3D3" <%;%>>
+						<td align="left" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
 							<a href="javascript:openXSD('<%=Names.SHOW_STYLESHEETS_ACTION%>', <%=id%>)" title="<%=schema_descr%>"><%=name%></a>
 						</td>
-						<td align="left" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %> bgcolor="#D3D3D3" <%;%>>
+						<td align="left" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
 						<%
 						for (int j=0; j<stylesheets.size(); j++){
 							HashMap stylesheet = (HashMap)stylesheets.get(j);
@@ -103,7 +104,7 @@
 						}
 						%>
 						</td>
- 	         			<td align="middle">
+ 	         			<td align="middle" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
  	         				<%
 							if (ssdPrm){%>
 								<img onclick="ss_<%=id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete schema and all it's stylesheets"></img>
@@ -120,7 +121,7 @@
 				%>
 			</tbody>
 		</table>
-
+		</div>
 	</div>
 
 	<form name="f" action="main" method="get">

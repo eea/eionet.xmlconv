@@ -66,7 +66,7 @@
 			<h4><%=err%></h4>
 		<% } %>
 	
-		<h2>Stylesheets of <%=name%></h2>
+		<h1>Stylesheets of <%=name%></h1>
 			<a href="schema.jsp?ID=<%=id%>">View schema info</a>
 			<form name="view_schema_info" action="main" method="post">
 				<input type="hidden" name="ID" value="<%=id%>"></input>
@@ -76,18 +76,17 @@
 		<%
 		boolean ssiPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "i");
 		if (ssiPrm){%>
-			<div style="float:right">
-				<img onclick="add_stylesheet.submit();" height="18" width="38" src="images/add.png" alt="Add new stylesheet">
-				<form name="add_stylesheet" action="main" method="post">
-					<input type="hidden" name="ID" value="<%=id%>"></input>
-					<input type="hidden" name="ACTION" value="<%=Names.SHOW_ADDXSL_ACTION%>"></input>
-				</form>
+	    <div id="operations">
+				<ul>
+					<li><a href="<%=Names.ADD_XSL_JSP%>?ID=<%=id%>" title="Add a new Stylesheet">Add Stylesheet</a></li>
+ 				</ul>
 			</div>
 		<%}%>
 		
-		<br/>
+		<br/><br/>
 
-	    <table cellSpacing="5">
+			<div id="main_table">
+				<table border="0" cellspacing="1" cellpadding="2" width="100%">
     	   	<thead>
 					
     	   	<%
@@ -95,12 +94,12 @@
 				boolean convPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_TESTCONVERSION_PATH, "x");
 			%>
         		<tr>
-			  		<th align="middle" width="40">Type</th>
-          			<th align="left" width="355">Description</th>
-          			<th align="left" width="200">Stylesheet</th>
+			  			<th align="middle" width="40">Type</th>
+          		<th align="left">Description</th>
+          		<th align="left" width="200">Stylesheet</th>
        				<%
 					if (ssdPrm){%>
-    	     			<th align="middle">&#160;</th>
+    	     			<th align="middle" width="20">&#160;</th>
 					<%}%>    	     			
 				</tr>
     	   	</thead>
@@ -116,7 +115,7 @@
     	   			String description = (String)hash.get("description");
     	   			%>
 					<tr height="5">
-						<td align="middle" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %> bgcolor="#D3D3D3" <%;%>>
+						<td align="middle" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
 	         				<%
 							if (convPrm){%>
 								<a title="Test conversion" href="main?ACTION=<%=Names.SHOW_TESTCONVERSION_ACTION%>&amp;ID=<%=convert_id%>&amp;SCHEMA_ID=<%=id%>"><%=type%></a>
@@ -124,9 +123,9 @@
 								<%=type%>
 							<%}%>
 						</td>
-						<td align="left" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %> bgcolor="#D3D3D3" <%;%>><%=description%></td>
-						<td align="left" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %> bgcolor="#D3D3D3" <%;%>><a target="blank" href="<%=Names.XSL_FOLDER%><%=xsl%>"><%=xsl%></a></td>
- 	         			<td align="middle">
+						<td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><%=description%></td>
+						<td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><a target="blank" href="<%=Names.XSL_FOLDER%><%=xsl%>"><%=xsl%></a></td>
+ 	         			<td align="middle" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
 	         				<%
 							if (ssdPrm){%>
 								<img onclick="ss_<%=convert_id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete stylesheet"></img>
@@ -141,10 +140,10 @@
 					<%
     	   		}
     	   	%>
-			</tbody>
-		 </table>
-		 
-  	  </div>
+				</tbody>
+		 	</table>
+		</div> 
+  </div>
 
 <form name="f" action="main" method="post">
 	<input type="hidden" name="ACTION" value=""/>
