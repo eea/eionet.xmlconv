@@ -183,6 +183,19 @@ public class Utils {
     return false;
   } 
   /**
+  * Checks if the given string is a well-formed URL
+  */
+  public static boolean isURL(String s){
+      try {
+          URL url = new URL(s);
+      }
+      catch (MalformedURLException e){
+          return false;
+      }
+        
+      return true;
+  }
+  /**
   * Checks if the given string is number
   */
   public static boolean isNum(String s){
