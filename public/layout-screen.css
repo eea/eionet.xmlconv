@@ -1,0 +1,354 @@
+/* Page head styles */
+#pagehead {
+	height: 138px;
+	background-image:url('images/treeyellow.png');
+	background-repeat: no-repeat;
+}
+ 
+/* Site title and site tagline start */
+#identification {
+	position: absolute;
+	left: 150px;
+	top: 35px;
+	right: 50px
+}
+
+#logo {
+	float:right
+}
+
+.sitetitle {
+	color: #006666;
+	font-size: 14pt;
+	font-weight: bold;
+}
+
+.sitetagline {
+	color: #006666;
+	font-size: 10pt;
+	font-weight: bold;
+}
+/* Site title and site tagline end */
+
+/* The box where the content is */
+#workarea {
+	margin-left: 150px;
+	padding-left:0px;
+	padding-right: 2px;
+}
+
+/* fonts, colour-schemes etc. */
+body {
+        margin:0px;
+	padding:0px;
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: 80%; 
+	font-style: normal; 
+	line-height: normal; 
+	background-color: #F0F0F0;
+        background-image: url("images/eionet_background.jpg");
+        background-repeat: repeat-y;
+}
+
+/* barfont is obsolete Use <small> instead */
+.barfont {
+	font-family: Arial, MS Sans Serif; 
+	font-size: 8pt; 
+	font-style: normal; 
+	line-height: normal; 
+	text-decoration: none;
+}
+
+/* Anchors */
+a:link {
+	color: #024176
+}
+
+a:visited {
+	color: #A30A21
+}
+
+a:active {
+	color: #A30A21
+} 
+
+/* Remove the border around images */
+
+a img {
+	border: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: Arial, Helvetica, sans-serif; 
+	font-style: normal; 
+	font-weight: bold; 
+	text-decoration: none
+}
+
+h1 {
+	font-size: 1.4em; 
+	line-height: 120%; 
+}
+
+h2 {
+	font-size: 1.3em; 
+	line-height: normal; 
+}
+
+h3 {
+	font-size: 1.2em; 
+	line-height: normal; 
+}
+
+h4, h5, h6 {
+	line-height: normal; 
+}
+
+kbd {
+	font-weight: bold;
+}
+
+
+
+/* Tables */
+table {
+        empty-cells: show;
+}
+
+td {
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: 1em; 
+	font-style: normal; 
+	line-height: normal; 
+	text-decoration: none;
+}
+
+th {
+	background: #868686;
+	color: #FFFFFF;
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: 1em; 
+	font-style: normal; 
+	font-weight: bold; 
+	line-height: normal; 
+	padding:0em 1em;
+	text-decoration: none;
+	text-align: left;
+/*	vertical-align: top;  */
+}
+/* Tables end */
+
+/*
+ * The globalnav is for buttons that exist on all pages.
+ * They are shown on the left
+ */
+#globalnav {
+	position: absolute;
+	left: 0;
+	top: 163px;
+	width: 130px;
+	margin: 0px;
+}
+
+#globalnav h2 {
+	color: white;
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: 9pt; 
+	font-style: normal; 
+	line-height: normal; 
+	padding-top:10px;
+	margin-bottom: 0px;
+	font-weight: bold;
+	text-align: center; 
+	text-decoration: none;
+}
+
+#globalnav ul {
+	list-style: none;
+	padding-left: 5px;
+	margin:0px 0px 0px 10px;            /* T   R   B   L */
+}
+
+#globalnav li {
+	font-size:.75em;
+	font-family: sans-serif;
+	font-weight: bold;
+	width:100px;
+	height:13px;
+	line-height: 100%;
+	vertical-align: bottom;
+	color:#ffffff;
+	border: none;
+	margin: 0px;
+	white-space: nowrap;
+}
+#globalnav li a {
+	display:block;
+	font-weight: bold;
+	text-decoration: none;
+	color:#ffffff;
+	width:80px;
+	height:13px;
+	padding: 0px 6px 0px 20px;
+	background: url('images/greybutton.gif') no-repeat left top;
+	border: none;
+	margin: 0px;
+}
+
+#globalnav li a:hover {
+	background: url('images/greybuttonon.gif') no-repeat left top;
+}
+
+/* The .operations is for the blue buttons to the right of the page */
+
+#operations {
+	float: right;
+	top: 0px;
+	margin: 0px 0px 0px 15px;  /* T   R   B   L */
+}
+
+#operations ul {
+	list-style: none;
+	margin: 0px;
+}
+
+#operations li {
+	font-size:.75em;
+	font-family: AvenirLight, sans-serif;
+	font-weight: bold;
+	width: 120px;
+	height: 17px;
+	color: #ffffff;
+	background: url('images/emptybluebutton.png') no-repeat;
+	white-space: nowrap;
+}
+
+#operations li a {
+	display:block;
+	font-weight: bold;
+	text-decoration: none;
+	color: #ffffff;
+	padding: 2px 0px 0px 10px;   /* T   R   B   L */
+}
+
+
+/* Breadcrumb trail */
+.breadcrumbtrail {
+	position: absolute;
+	left: 130px;
+	right:0;
+	top: 113px;
+	font-size: 0.8em;
+	font-family: verdana, arial, helvetica, sans-serif;
+	color: black;
+	height: 25px;
+	background: url('images/bar_filled.jpg');
+	background-repeat: repeat-x;
+}
+
+
+.breadcrumbhead {
+	float: left;
+	width: 20px;
+	visibility: hidden;
+}
+
+.breadcrumbtail {
+	float:right;
+	width:1px;
+}
+
+.breadcrumbitem {
+	float: left;
+	padding-right: 28px;
+	height: 13px;
+	margin-right: 3px;
+	background-image: url("images/bar_hole.jpg");
+	background-repeat: no-repeat;
+	background-position: 100% 0px;
+	padding-top: 12px;
+}
+
+.breadcrumbitemlast {
+	float: left;
+	padding-right: 28px;
+	height: 13px;
+	margin-right: 3px;
+	background-image: url("images/bar_dot.jpg");
+	background-repeat: no-repeat;
+	background-position: 100% 0px;
+	padding-top: 12px;
+}
+
+.breadcrumbtrail a {
+	font-weight: bold;
+	color: black;
+	text-decoration: none;
+}
+
+.breadcrumbtrail a:hover {
+	color: #707070;
+}
+ 
+#errormessage {
+       color: #A10000;
+       border: 4px dotted;
+}
+
+#errormessage h1 {
+       text-align: center;
+       font-size: 20pt;
+}
+
+smallfont {  font-family: Verdana, Arial, "MS Sans Serif", sans-serif; 
+font-size: 7pt;
+font-style: normal; 
+line-height: normal;
+font-weight: bold;
+text-decoration: none; }
+
+input.smallbutton {  font-family: Verdana, Arial, "MS Sans Serif", sans-serif; 
+font-size: 7pt;
+font-style: normal; 
+line-height: normal;
+text-decoration: none; }
+
+input.smallbuttonb {  font-family: Verdana, Arial, "MS Sans Serif", sans-serif; 
+font-size: 7pt;
+font-style: normal; 
+line-height: normal;
+font-weight: bold;
+text-decoration: none; }
+
+input.mediumbutton {  font-family: Arial, "MS Sans Serif", sans-serif; 
+font-size: 8pt;
+font-style: normal; 
+line-height: normal;
+text-decoration: none; }
+
+input.mediumbuttonb {  font-family: Arial, "MS Sans Serif", sans-serif; 
+font-size: 8pt;
+font-style: normal; 
+line-height: normal;
+font-weight: bold;
+text-decoration: none; }
+
+input.smalltext {  font-family: Verdana, Arial, "MS Sans Serif", sans-serif; 
+font-size: 8pt;
+font-style: normal; 
+line-height: normal;
+text-decoration: none; }
+
+textarea.small {  font-family: Verdana, Arial, "MS Sans Serif", sans-serif; 
+font-size: 8pt;
+font-style: normal; 
+line-height: normal;
+text-decoration: none; }
+
+select.small {  font-family: Verdana, Arial, "MS Sans Serif", sans-serif; 
+font-size: 8pt;
+font-style: normal; 
+line-height: normal;
+text-decoration: none; }

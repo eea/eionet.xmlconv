@@ -34,14 +34,14 @@
 %>
 <html lang=en>
 <head>
-	<title>Stylesheets</title>
-   	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <link type="text/css" rel="stylesheet" href="eionet.css">
-	<script type="text/javascript" src="util.js"></script>
-	<script type="text/javascript">
+    <title>Stylesheets</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <link rel="stylesheet" type="text/css" href="layout-print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="layout-handheld.css" media="handheld" />
+    <link rel="stylesheet" type="text/css" href="layout-screen.css" media="screen" title="EIONET style" />
+    <script type="text/javascript" src="util.js"></script>
+    <script type="text/javascript">
 		
-		detectBrowser();	
-	
 		function openApp(appName) {
 			document.forms["f"].app.value=appName;
 			document.forms["f"].ACTION.value="";
@@ -56,34 +56,19 @@
 	</script>
 </head>
 <body>
+<jsp:include page="location.jsp" flush='true'>
+<jsp:param name="name" value="Stylesheets"/>
+</jsp:include>
+<%@ include file="menu.jsp" %>
+<div id="workarea">
 
-<%@ include file="header.jsp" %>
-
-
-<table cellSpacing="0" cellPadding="0" border="0">
-  <tbody>
-  <tr valign="top">
-	<td nowrap="true" width="130">
-      	<p><center>
-  	      <%@ include file="menu.jsp" %>
-        </center></P>
-	</td>
-    <td width="100%">
-		<jsp:include page="location.jsp" flush='true'>
-        	<jsp:param name="name" value="Stylesheets"/>
-        </jsp:include>
-
-    	<div style="MARGIN-LEFT: 13px">
-
-		<br/>
-		
 		<% if (err!= null) { %>
 			<h4><%=err%></h4>
 		<% } %>
 	
 		<h2>Stylesheets of <%=name%></h2>
 			<a href="schema.jsp?ID=<%=id%>">View schema info</a>
-			<form name="view_schema_info" action="main" method="POST">
+			<form name="view_schema_info" action="main" method="post">
 				<input type="hidden" name="ID" value="<%=id%>"></input>
 				<input type="hidden" name="ACTION" value="<%=Names.SHOW_SCHEMA_ACTION%>"></input>
 			</form>
@@ -92,8 +77,8 @@
 		boolean ssiPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "i");
 		if (ssiPrm){%>
 			<div style="float:right">
-				<img onClick="add_stylesheet.submit();" height="18" width="38" src="images/add.png" alt="Add new stylesheet">
-				<form name="add_stylesheet" action="main" method="POST">
+				<img onclick="add_stylesheet.submit();" height="18" width="38" src="images/add.png" alt="Add new stylesheet">
+				<form name="add_stylesheet" action="main" method="post">
 					<input type="hidden" name="ID" value="<%=id%>"></input>
 					<input type="hidden" name="ACTION" value="<%=Names.SHOW_ADDXSL_ACTION%>"></input>
 				</form>
@@ -144,10 +129,10 @@
  	         			<td align="middle">
 	         				<%
 							if (ssdPrm){%>
-								<img onClick="ss_<%=convert_id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete stylesheet"></img>
+								<img onclick="ss_<%=convert_id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete stylesheet"></img>
 							<%}%>
  	         			</td>
-						<form name="ss_<%=convert_id%>" action="main" method="POST">
+						<form name="ss_<%=convert_id%>" action="main" method="post">
 							<input type="hidden" name="ACTION" value="<%=Names.XSL_DEL_ACTION%>"></input>
 							<input type="hidden" name="XSL_DEL_ID" value="<%=convert_id%>"></input>
 							<input type="hidden" name="ID" value="<%=id%>"></input>
@@ -160,15 +145,11 @@
 		 </table>
 		 
   	  </div>
-    </td>
-  </tr>
-  </tbody>
-</table>
 
-<form name="f" action="main" method="POST">
+<form name="f" action="main" method="post">
 	<input type="hidden" name="ACTION" value=""/>
 	<input type="hidden" name="PARAM" value=""/>
 </form>
-
+<%@ include file="footer.jsp" %>
 </body>
 </html>

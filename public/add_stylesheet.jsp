@@ -29,13 +29,15 @@
 %>
 <html lang="en">
 <head>
-	<title>Stylesheets</title>
-   	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <link type="text/css" rel="stylesheet" href="eionet.css">
-	<script type="text/javascript" src="util.js"></script>
-	<script type="text/javascript">
+    <title>Stylesheets</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <link rel="stylesheet" type="text/css" href="layout-print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="layout-handheld.css" media="handheld" />
+    <link rel="stylesheet" type="text/css" href="layout-screen.css" media="screen" title="EIONET style" />
+
+    <script type="text/javascript" src="util.js"></script>
+    <script type="text/javascript">
 		
-		detectBrowser();	
 	
 		function submitForm(){
 
@@ -68,33 +70,20 @@
 </head>
 <body>
 
-<%@ include file="header.jsp" %>
+<jsp:include page="location.jsp" flush='true'>
+<jsp:param name="name" value="Add stylesheet"/>
+</jsp:include>
+    <%@ include file="menu.jsp" %>
+<div id="workarea">
 
-
-<table cellSpacing="0" cellPadding="0" border="0">
-  <tr valign="top">
-   	<td nowrap="true" width="130">
-      	<p><center>
-  	      <%@ include file="menu.jsp" %>
-        </center></P>
-    </td>
-    <td width="100%">
-	   	<jsp:include page="location.jsp" flush='true'>
-        	<jsp:param name="name" value="Add stylesheet"/>
-       	</jsp:include>
-
-		<div style="MARGIN-LEFT: 13px">
-
-	   <br/>
 		<% if (err!= null) { %>
-			<h2><font color="#FF0000"><%=err%></font></h2>
+			<h1><font color="#FF0000"><%=err%></font></h1>
 		<% } %>
-			<h2>Add a new stylesheet</h2>
-		<br>
+			<h1>Add a new stylesheet</h1>
 
-		<form name="Upload" action="main" method="POST" enctype="multipart/form-data">
+		<form name="Upload" action="main" method="post" enctype="multipart/form-data">
 				
-			<table cellSpacing="0">
+			<table cellspacing="0">
 				<tr valign="top">
 					<td align="left">	
 						<span class="smallfont"><b>XML Schema</b>&#160;
@@ -143,11 +132,10 @@
 			<input TYPE="hidden" name="ACTION" value="<%=Names.XSL_ADD_ACTION%>"/>
 		</form>	
 
-		 
-	</div></td></tr></tbody></table>
-<form name="f" action="main" method="POST">
+	</div>
+<form name="f" action="main" method="post">
 	<input type="hidden" name="ACTION" value=""/>
 	<input type="hidden" name="PARAM" value=""/>
 </form>
-
+<%@ include file="footer.jsp" %>
 </body></html>

@@ -13,14 +13,14 @@
 %>
 <html lang=en>
 <head>
-	<title>Stylesheets</title>
-   	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <link type="text/css" rel="stylesheet" href="eionet.css">
-	<script type="text/javascript" src="util.js"></script>
-	<script type="text/javascript">
+    <title>Stylesheets</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <link rel="stylesheet" type="text/css" href="layout-print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="layout-handheld.css" media="handheld" />
+    <link rel="stylesheet" type="text/css" href="layout-screen.css" media="screen" title="EIONET style" />
+    <script type="text/javascript" src="util.js"></script>
+    <script type="text/javascript">
 		
-		detectBrowser();	
-	
 		function convert(){
 			var file = document.forms["TestConversion"].elements["XML_FILE"].value;
 			if (file == ""){
@@ -37,26 +37,11 @@
 
 </head>
 <body>
-
-<%@ include file="header.jsp" %>
-
-
-<table cellSpacing="0" cellPadding="0" border="0">
-  <tbody>
-  <tr valign="top">
-	<td nowrap="true" width="130">
-      	<p><center>
-  	      <%@ include file="menu.jsp" %>
-        </center></P>
-	</td>
-    <td width="100%">
-	   <jsp:include page="location.jsp" flush='true'>
-          <jsp:param name="name" value="Find conversion"/>
-       </jsp:include>
-
-      <div style="MARGIN-LEFT: 13px">
-
-	  <br/>
+<jsp:include page="location.jsp" flush='true'>
+<jsp:param name="name" value="Find conversion"/>
+</jsp:include>
+<%@ include file="menu.jsp" %>
+<div id="workarea">
 
 	  <% if (err!= null) { %>
  	  	<h4><%=err%></h4>
@@ -66,7 +51,7 @@
 
 	  <br/>	
 
-		<form name="FindConversion" action="main" method="POST">
+		<form name="FindConversion" action="main" method="post">
 				
 			<table cellspacing="0">
 				<tr><td colspan ="2">Insert the url of source xml file</td></tr>
@@ -88,7 +73,7 @@
 					</td>
 					<td align="left">
 						<select name="SCHEMA_ID" rows="5">
-								<option value="" selected="true">--</option>
+								<option value="" selected="selected">--</option>
 						<%
 						for (int i=0; i<schemas.size();i++){
 							HashMap schema = (HashMap)schemas.get(i);
@@ -128,14 +113,10 @@
 
 		 
 		</div>
-	  </td>
-	</tr>
-	</tbody>
-</table>
-<form name="f" action="main" method="POST">
+<form name="f" action="main" method="post">
 	<input type="hidden" name="ACTION" value=""/>
 	<input type="hidden" name="PARAM" value=""/>
 </form>
-
+<%@ include file="footer.jsp" %>
 </body>
 </html>

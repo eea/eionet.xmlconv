@@ -33,15 +33,16 @@
 	Vector root_elems = (Vector)dbM.getSchemaRootElems(id);
 	if (root_elems==null) root_elems=new Vector();
 %>
-<html lang=en>
+<html lang="en">
 <head>
 	<title>XML Schema or DTD</title>
    	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <link type="text/css" rel="stylesheet" href="eionet.css">
+    <link rel="stylesheet" type="text/css" href="layout-print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="layout-handheld.css" media="handheld" />
+    <link rel="stylesheet" type="text/css" href="layout-screen.css" media="screen" title="EIONET style" />
 	<script type="text/javascript" src="util.js"></script>
 	<script type="text/javascript">
 		
-		detectBrowser();	
 	
 		function openApp(appName) {
 			document.forms["f"].app.value=appName;
@@ -57,25 +58,12 @@
 	</script>
 </head>
 <body>
+<jsp:include page="location.jsp" flush='true'>
+<jsp:param name="name" value="XML Schema or DTD"/>
+</jsp:include>
+<%@ include file="menu.jsp" %>
+<div id="workarea">
 
-<%@ include file="header.jsp" %>
-<table cellSpacing="0" cellPadding="0" border="0">
-  <tbody>
-  <tr valign="top">
-	<td nowrap="true" width="130">
-      	<p><center>
-  	      <%@ include file="menu.jsp" %>
-        </center></P>
-	</td>
-    <td width="100%">
-		<jsp:include page="location.jsp" flush='true'>
-        	<jsp:param name="name" value="XML Schema or DTD"/>
-        </jsp:include>
-
-    	<div style="MARGIN-LEFT: 13px">
-
-		<br/>
-		
 		<% if (err!= null) { %>
 			<h4><%=err%></h4>
 		<% } %>
@@ -87,11 +75,11 @@
 		%>		
 		<br/>
 
-		<form name="upd_xsd" action="main" method="POST">
+		<form name="upd_xsd" action="main" method="post">
 			<table cellspacing="0">
 				<%	if (xsduPrm){ %>
 					<tr height="10"><td colspan="2" align="right">
-						<img onClick="upd_xsd.submit();" height="15" width="15" src="images/edit.png" title="Save changes"></img>
+						<img onclick="upd_xsd.submit();" height="15" width="15" src="images/edit.png" title="Save changes"></img>
 					</td></tr>
 				<% } %>
 				<tr>
@@ -160,10 +148,10 @@
  	         			<td align="middle">
 	         				<%
 							if (xsduPrm){%>
-								<img onClick="del_elem_<%=elem_id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete root element"></img>
+								<img onclick="del_elem_<%=elem_id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete root element"></img>
 							<%}%>
  	         			</td>
-						<form name="del_elem_<%=elem_id%>" action="main" method="POST">
+						<form name="del_elem_<%=elem_id%>" action="main" method="post">
 							<input type="hidden" name="ACTION" value="<%=Names.ELEM_DEL_ACTION%>"></input>
 							<input type="hidden" name="ELEM_DEL_ID" value="<%=elem_id%>"></input>
 							<input type="hidden" name="<%=Names.SCHEMA_ID%>" value="<%=id%>"></input>
@@ -175,7 +163,7 @@
   				<%
 				if (xsduPrm){
 				%>
-					<form name="add_elem" action="main" method="POST">
+					<form name="add_elem" action="main" method="post">
 						<tr height="10"><td colspan="3"></td></tr>
 						<tr>
 							<td>
@@ -185,7 +173,7 @@
 								<input type="text" name="NAMESPACE" size="65"></input>
 							</td>
 							<td>
-								<img onClick="add_elem.submit();" height="15" width="15" src="images/edit.png" title="Add a new root element"></img>
+								<img onclick="add_elem.submit();" height="15" width="15" src="images/edit.png" title="Add a new root element"></img>
 							</td>
 						</tr>
 						<input type="hidden" name="ACTION" value="<%=Names.ELEM_ADD_ACTION%>"></input>
@@ -199,15 +187,11 @@
 		 </table>
 		 
   	  </div>
-    </td>
-  </tr>
-  </tbody>
-</table>
 
-<form name="f" action="main" method="POST">
+<form name="f" action="main" method="post">
 	<input type="hidden" name="ACTION" value=""/>
 	<input type="hidden" name="PARAM" value=""/>
 </form>
-
+<%@ include file="footer.jsp" %>
 </body>
 </html>

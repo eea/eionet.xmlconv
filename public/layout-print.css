@@ -1,0 +1,152 @@
+}
+
+#pagehead {
+	width: 100%;
+	height: 100px;
+}
+
+#logo {
+	float:right
+}
+
+html, body {
+	margin:0px;
+	padding:0px;
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: 10pt; 
+	font-style: normal; 
+	line-height: normal; 
+	background-color: #FFFFFF;
+}
+ 
+.sitetitle {
+	color: #006666;
+	font-size: 14pt;
+	font-weight: bold;
+}
+
+.sitetagline {
+	color: #006666;
+	font-size: 10pt;
+	font-weight: bold;
+}
+
+.breadcrumbtrail {
+	display:none;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:link {
+	color: #000000 }
+a:visited {
+	color: #000000 }
+a:active {
+	color: #000000 } 
+
+/* Remove the border around images */
+
+a img {
+	border: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+h1 {
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: 14pt; 
+	font-style: normal; 
+	line-height: 120%; 
+	font-weight: bold; 
+	text-decoration: none
+}
+
+h2 {
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: 12pt; 
+	font-style: normal; 
+	line-height: normal; 
+	font-weight: bold; 
+	text-decoration: none;
+}
+
+h3 {
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: 11pt; 
+	font-style: normal; 
+	line-height: normal; 
+	font-weight: bold; 
+	text-decoration: none;
+}
+
+h4, h5, h6 {
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: 10pt; 
+	font-style: normal; 
+	line-height: normal; 
+	font-weight: bold; 
+	text-decoration: none;
+}
+
+table {
+	empty-cells: show;
+}
+
+td {
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: 10pt; 
+	font-style: normal; 
+	line-height: normal; 
+	text-decoration: none;
+}
+
+th {
+	color: #666666;
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: 10pt; 
+	font-style: normal; 
+	font-weight: bold; 
+	line-height: normal; 
+	text-decoration: none;
+	text-align: left;
+/*
+     vertical-align: top;
+ */
+}
+
+kbd {
+	font-weight: bold;
+}
+
+#identification {
+	position: absolute;
+	left: 50px;
+	top: 15px;
+	right: 50px
+}
+
+#workarea {
+	padding-left:2px;
+	padding-right: 2px;
+	position: absolute;
+	width: auto;
+	height: auto;
+	left: 0px;
+	top: 100px;
+	right: 0px;
+}
+
+/*
+ * The globalnav is for buttons that exist on all pages.
+ * They are shown on the left
+ */
+#globalnav {
+	display:none;
+}
+
+/* The #operations is for the blue buttons to the right of the page */
+#operations {
+	display:none;
+}

@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page import="java.util.Hashtable, java.util.Vector, java.util.HashMap, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.SecurityUtil,com.tee.uit.security.AppUser" %>
 
 <%
@@ -10,16 +10,16 @@
 	if (list==null) list=new Vector();
 	
 %>
-<html lang=en>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-	<title>Stylesheets</title>
-   	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <link type="text/css" rel="stylesheet" href="eionet.css">
-	<script type="text/javascript" src="util.js"></script>
-	<script type="text/javascript">
+    <title>Stylesheets</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="layout-print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="layout-handheld.css" media="handheld" />
+    <link rel="stylesheet" type="text/css" href="layout-screen.css" media="screen" title="EIONET style" />
+    <script type="text/javascript" src="util.js"></script>
+    <script type="text/javascript">
 	
-		detectBrowser();	
-
 		function openPage(action) {
 			document.forms["f"].ACTION.value=action;
 			document.forms["f"].submit();
@@ -29,48 +29,35 @@
 			document.forms["f"].ID.value=id;
 			document.forms["f"].submit();
 		}			
-	</script>
+    </script>
 </head>
 <body>
+<body>
+<jsp:include page="location.jsp" flush='true'>
+  <jsp:param name="name" value="Conversions"/>
+</jsp:include>
+<%@ include file="menu.jsp" %>
+<div id="workarea">
+    <%
+    boolean ssiPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "i");
+    if (ssiPrm){
+    %>
+    <div id="operations">
+    <img onclick="add_stylesheet.submit();" height="18" width="38" src="images/add.png" alt="Add new Stylesheet">
+    <form name="add_stylesheet" action="main" method="post">
+            <input type="hidden" name="ID"></input>
+            <input type="hidden" name="ACTION" value="<%=Names.SHOW_ADDXSL_ACTION%>"></input>
+    </form>
+    </div>
+    <%}%>
 
-<%@ include file="header.jsp" %>
 
-<table cellSpacing="0" cellPadding="0" border="0">
-  <tbody>
-  <tr valign="top">
-	<td nowrap="true" width="130">
-      	<p><center>
-  	      <%@ include file="menu.jsp" %>
-        </center></P>
-	</td>
-    <td width="100%">
-		<jsp:include page="location.jsp" flush='true'>
-          <jsp:param name="name" value="Conversions"/>
-        </jsp:include>
-
-      
-    	<div style="MARGIN-LEFT: 13px">
-		<br/>
-	  
 		<% if (err!= null) { %>
 			<h4><%=err%></h4>
 	  	<% } %>
-			<h2>Conversions</h2>
-		<%
-		boolean ssiPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "i");
-		if (ssiPrm){
-		%>
-			<div style="float:right">
-				<img onClick="add_stylesheet.submit();" height="18" width="38" src="images/add.png" alt="Add new Stylesheet">
-				<form name="add_stylesheet" action="main" method="POST">
-					<input type="hidden" name="ID"></input>
-					<input type="hidden" name="ACTION" value="<%=Names.SHOW_ADDXSL_ACTION%>"></input>
-				</form>
-			</div>
-		<%}%>
-		<br/>
+			<h1>Conversions</h1>
 		
-		<table cellSpacing="5">
+        <table cellspacing="5">
           <thead>
             <%
 			boolean ssdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "d");
@@ -119,10 +106,10 @@
  	         			<td align="middle">
  	         				<%
 							if (ssdPrm){%>
-								<img onClick="ss_<%=id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete schema and all it's stylesheets"></img>
+								<img onclick="ss_<%=id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete schema and all it's stylesheets"></img>
 							<%}%>
  	         			</td>
-						<form name="ss_<%=id%>" action="main" method="POST">
+						<form name="ss_<%=id%>" action="main" method="post">
 							<input type="hidden" name="ACTION" value="<%=Names.XSD_DEL_ACTION%>"></input>
 							<input type="hidden" name="XSD_DEL_ID" value="<%=id%>"></input>
 						</form>
@@ -134,12 +121,12 @@
 			</tbody>
 		</table>
 
-	</div></td></tr></tbody></table>
+	</div>
 
-	<form name="f" action="main" method="GET">
+	<form name="f" action="main" method="get">
 		<input type="hidden" name="ACTION" value=""/>
 		<input type="hidden" name="ID" value=""/>
 	</form>
-
+<%@ include file="footer.jsp" %>
 	</body>
 </html>
