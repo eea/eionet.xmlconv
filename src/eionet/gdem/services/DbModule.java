@@ -371,10 +371,12 @@ public class DbModule implements DbModuleIF, Constants {
 /*  private static void _ll(String s ){
     System.out.println("==== " + s);
   } */
-
   public HashMap getSchema(String schema_id) throws SQLException {
+    return getSchema(schema_id, false); 
+  }
+  public HashMap getSchema(String schema_id, boolean stylesheets) throws SQLException {
 
-		Vector schemas = getSchemas(schema_id, false);
+		Vector schemas = getSchemas(schema_id, stylesheets);
 
 		if (schemas==null) return null;
 		if (schemas.size()==0) return null;
@@ -519,7 +521,7 @@ public class DbModule implements DbModuleIF, Constants {
     Vector v = new Vector();
 
     for (int i =0; i< r.length; i++) {
-      HashMap h = getSchema(r[i][0]);
+      HashMap h = getSchema(r[i][0],true);
       v.add(h);      
     }
 
