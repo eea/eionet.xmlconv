@@ -123,7 +123,7 @@ public class XQueryService {
 		String resultValue;
 		if (status==Utils.XQ_RECEIVED || status==Utils.XQ_DOWNLOADING_SRC || status==Utils.XQ_PROCESSING) {
 			resultCode=Utils.JOB_NOT_READY;
-			resultValue="";
+			resultValue="*** Not ready ***";
 		}
 		else  {
 			if (status==Utils.XQ_READY)
