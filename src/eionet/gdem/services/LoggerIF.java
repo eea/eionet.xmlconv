@@ -9,13 +9,13 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * The Original Code is "GDEM project".
+ * The Original Code is "EINRC-7 / GDEM project".
  *
  * The Initial Developer of the Original Code is TietoEnator.
  * The Original Code code was developed for the European
  * Environment Agency (EEA) under the IDA/EINRC framework contract.
  *
- * Copyright (C) 2000-2002 by European Environment Agency.  All
+ * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
  * Original Code: Kaido Laine (TietoEnator)

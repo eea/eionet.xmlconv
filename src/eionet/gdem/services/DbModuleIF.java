@@ -9,7 +9,7 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * The Original Code is "EINRC-6 / AIT project".
+ * The Original Code is "EINRC-7 / GDEM project".
  *
  * The Initial Developer of the Original Code is TietoEnator.
  * The Original Code code was developed for the European
