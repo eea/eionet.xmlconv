@@ -78,15 +78,16 @@
 		<javac debug="on" deprecation="off" srcdir="${src}"
 		    destdir="${classes.dir}"
 		    classpath="${lib}/avalon.jar;
-		       ${lib}/uit-security.jar;
-					 ${lib}/batik.jar;
-		       ${lib}/fop.jar;
-		       ${lib}/poi-2.0-RC1-20031102.jar;
-		       ${lib}/servlet.jar;
-		       ${lib}/saxon7.jar;
-		       ${lib}/log4j.jar;
-		       ${lib}/xalan.jar;
-		       ${lib}/xerces.jar;"/>
+                        ${lib}/uit-security.jar;
+                        ${lib}/commons-fileupload-1.0.jar;
+                        ${lib}/batik.jar;
+                        ${lib}/fop.jar;
+                        ${lib}/poi-2.0-RC1-20031102.jar;
+                        ${lib}/servlet.jar;
+                        ${lib}/saxon7.jar;
+                        ${lib}/log4j.jar;
+                        ${lib}/xalan.jar;
+                        ${lib}/xerces.jar;"/>
 	</target>
 	<!-- build gdem.jar -->
 	<target name="buildjar" depends="compile"> 
