@@ -160,4 +160,16 @@ CREATE TABLE T_XQJOBS (
 --
 
 
+--
+-- Table structure for table `T_HOST`
+--
+
+CREATE TABLE T_HOST (
+  HOST_ID int(11) unsigned NOT NULL auto_increment,
+  HOST_NAME varchar(255) NOT NULL default '',
+  USER varchar(255) NOT NULL default '',
+  PWD varchar(255) NOT NULL default '',
+  PRIMARY KEY  (HOST_ID)
+) TYPE=MyISAM;
+
 
