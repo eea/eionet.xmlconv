@@ -113,13 +113,15 @@ public class XQueryService  implements Constants {
     int status= Integer.valueOf(jobData[3]).intValue();
 
     _logger.debug("XQuerySrevice found status for job: " + String.valueOf(status));
-
+    
 		Hashtable ret =  result(status, jobData);      
+    _logger.debug("result: " + ret.toString());
 
 		//remove the job from the queue / DB when the status won't change= FATAL or READY
 		if (status == XQ_FATAL_ERR || status == XQ_READY)
 			try {
 				db.endXQJob(jobId);
+        _logger.debug("Delete the job: " + jobId);
 			} catch (SQLException sqle) {
 				throw new GDEMException("Error gettign XQJob data from DB: " + sqle.toString());
 			}
