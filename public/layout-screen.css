@@ -320,7 +320,7 @@ th {
 .breadcrumbhead {
 	float: left;
 	width: 20px;
-	font-size: 0px;
+	font-size: 1px;
 	visibility: hidden;
 }
 
