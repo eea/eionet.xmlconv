@@ -52,7 +52,7 @@
 		<!--delete file="gdem.zip"/-->				
 	</target>
 	<target name="clean">
-		<delete dir="${classes.dir}"/>
+		<delete dir="${classes.dir}/eionet"/>
 	</target>
 	
 	<!-- if it is installed under webapps folder under existing virtual host -->
@@ -78,16 +78,15 @@
 		<javac debug="on" deprecation="off" srcdir="${src}"
 		    destdir="${classes.dir}"
 		    classpath="${lib}/avalon.jar;
-		       ${lib}/poi-2.0-RC1-20031102.jar;
 		       ${lib}/batik.jar;
 		       ${lib}/fop.jar;
+		       ${lib}/poi-2.0-RC1-20031102.jar;
 		       ${lib}/servlet.jar;
 		       ${lib}/saxon7.jar;
 		       ${lib}/log4j.jar;
-		       ${lib}/xerces.jar;
-		       ${lib}/xalan.jar"/>
+		       ${lib}/xalan.jar
+		       ${lib}/xerces.jar;"/>
 	</target>
-	
 	<!-- build gdem.jar -->
 	<target name="buildjar" depends="compile"> 
 		<jar basedir="${classes.dir}"
