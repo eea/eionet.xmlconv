@@ -1,10 +1,11 @@
 <project name="webrod" default="buildjar" basedir=".">
 
-  <!-- set global properties for this build -->
+	<!-- set global properties for this build -->
+
 	<property name="src.dest" value="/tmp"/>
 
 	
-  <property name="src" value="${src.dest}/gdem/src"/>
+	<property name="src" value="${src.dest}/gdem/src"/>
 	<property name="lib" value="${src.dest}/gdem/public/WEB-INF/lib"/>
 
 	<property name="classes.dir" value="${src.dest}/gdem/public/WEB-INF/classes"/>
@@ -35,7 +36,7 @@
 	</target>
 
 	<target name="make_package" depends="make_gzip,make_zip">
-			<antcall target="cleanup"/>
+		<antcall target="cleanup"/>
 	</target>
 
 
@@ -67,13 +68,13 @@
 	</target>
 	
 	<!-- if it is installed under webapps folder under existing virtual host -->
-  <target name="webapp_context" unless="vhost">
+	<target name="webapp_context" unless="vhost">
 		<copy file="${src.dest}/gdem/gdem.xml" todir="${prefix}" overwrite="true"/>			
 	</target>
 
-  <target name="create_context" depends="webapp_context,root_context"/>
+	<target name="create_context" depends="webapp_context,root_context"/>
 
-  <target name="check_os">
+	<target name="check_os">
 		<!--fail unless="prefix" message="Usage: ant install -Dprefix={directory to install}"/-->
 		<condition property="is_win">
 			<os family="windows"/>
@@ -83,28 +84,32 @@
 		</condition>
 	</target>
 
-  <target name="unpack_zip" depends="check_os" if="is_win">
+	<target name="unpack_zip" depends="check_os" if="is_win">
 		<unzip src="gdem.zip" dest="${src.dest}"/>
 	</target>
 
-  <target name="unpack_gzip" depends="check_os" if="is_unix">
+	<target name="unpack_gzip" depends="check_os" if="is_unix">
 		<gunzip src="gdem.tar.gz"/>
 		<untar src="gdem.tar" dest="${src.dest}"/>
 	</target>
 	<!--target name="unpack">
-			<antcall target="unpack_zip"/>
-			<antcall target="unpack_gzip"/>
+		<antcall target="unpack_zip"/>
+		<antcall target="unpack_gzip"/>
 	</target-->
-  <target name="compile" depends="unpack_zip,unpack_gzip">
+
+	<target name="compile" depends="unpack_zip,unpack_gzip">
 		<!--fail unless="prefix" message="Usage: ant install -Dprefix={directory to install}"/-->
-    <!-- Compile the java code from ${src} into ${build} -->
-    <javac debug="on" deprecation="off" srcdir="${src}" destdir="${classes.dir}"
-		   classpath="${lib}/avalon.jar;${lib}/batik.jar;${lib}/fop.jar;${lib}/servlet.jar;${lib}/saxon7.jar;${lib}/log4j.jar;${lib}/xerces.jar;${lib}/xalan.jar"/>
-  </target>
+		<!-- Compile the java code from ${src} into ${build} -->
+		<javac debug="on" deprecation="off" srcdir="${src}"
+		    destdir="${classes.dir}"
+		    classpath="${lib}/avalon.jar;${lib}/batik.jar;${lib}/fop.jar;${lib}/servlet.jar;${lib}/saxon7.jar;${lib}/log4j.jar;${lib}/xerces.jar;${lib}/xalan.jar"/>
+	</target>
 	
 	<!-- build gdem.jar -->
 	<target name="buildjar" depends="compile"> 
-    <jar basedir="${classes.dir}" jarfile="${src.dest}/gdem/public/WEB-INF/lib/gdem.jar" includes="**/*.class"/>
+		<jar basedir="${classes.dir}"
+		    jarfile="${src.dest}/gdem/public/WEB-INF/lib/gdem.jar"
+		    includes="**/*.class"/>
 		<!--delete dir="${classes.dir}/eionet"/-->
 	</target>
 
@@ -153,25 +158,25 @@
 		
 		<antcall target="copy_props"/>
 
-</target>
+	</target>
 
 	<target name="checkProps">
-	  <loadproperties srcFile="${prefix}/gdem/public/WEB-INF/classes/gdem.properties"/>
+		<loadproperties srcFile="${prefix}/gdem/public/WEB-INF/classes/gdem.properties"/>
 
 		<condition property="tmp.needed">
 			<not>
-		    <isset property="tmp.folder"/>
+				<isset property="tmp.folder"/>
 			</not>
 		</condition>
 
 		<condition property="xsl.needed">
 			<not>
-		    <isset property="xsl.folder"/>
+				<isset property="xsl.folder"/>
 			</not>
 		</condition>
 
 		
-	  <loadproperties srcFile="${prefix}/gdem/public/WEB-INF/classes/uit.properties"/>
+		<loadproperties srcFile="${prefix}/gdem/public/WEB-INF/classes/uit.properties"/>
 		<condition property="srvdef.not.available">
 			<not>
 				<available file="${services.definition.file}"/>
@@ -180,7 +185,7 @@
 
 		<condition property="xslfolder.not.exist">
 			<and>
-		    <isset property="xsl.folder"/>
+				<isset property="xsl.folder"/>
 				<not>
 					<available file="${xsl.folder}" type="dir"/>
 				</not>
