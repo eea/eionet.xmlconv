@@ -141,10 +141,10 @@
 					String elem_name = (String)hash.get("elem_name");
     	   			%>
 					<tr height="5">
-						<td align="middle" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %> bgcolor="#D3D3D3" <%;%>>
+						<td align="middle" style="padding-left:5;padding-right:10"  <% if (i % 2 != 0) %>class="zebradark"<%;%>>
 							<%=elem_name%>
 						</td>
-						<td align="left" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %> bgcolor="#D3D3D3" <%;%>><%=ns%></td>
+						<td align="left" style="padding-left:5;padding-right:10"  <% if (i % 2 != 0) %>class="zebradark"<%;%>><%=ns%></td>
  	         			<td align="middle">
 	         				<%
 							if (xsduPrm){%>
