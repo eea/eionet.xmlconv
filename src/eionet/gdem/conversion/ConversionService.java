@@ -58,6 +58,9 @@ public class ConversionService {
   private DbModuleIF db;
   
   private HashMap convTypes;
+  
+  private String cnvContentType = null;
+  private String cnvFileExt = null;
 
   private OutputStream result = null;
 
@@ -80,6 +83,7 @@ public class ConversionService {
     convTypes.put("PDF", "application/pdf");
     convTypes.put("HTML", "text/html");
     convTypes.put("XML", "text/xml");    
+    convTypes.put("SQL", "text/plain");
   }
 
   public ConversionService()  {
@@ -195,6 +199,26 @@ public class ConversionService {
       xslFile= xslFolder + (String)styleSheetData.get("xsl");
       cnvTypeOut= (String)styleSheetData.get("content_type_out");
       
+      Hashtable convType=db.getConvType(cnvTypeOut);
+      System.out.println(cnvTypeOut);
+      System.out.println(convType.toString());
+      if (convType!=null){
+        try{
+          cnvContentType = (String)convType.get("content_type");
+          cnvFileExt = (String)convType.get("file_ext");
+        }
+        catch (Exception e){
+          //Take no action, use default params
+        }
+      }
+      System.out.println(cnvTypeOut);
+      System.out.println(cnvContentType);
+      System.out.println(cnvFileExt);
+      if (cnvContentType == null)
+        cnvContentType = "text/plain";
+      if (cnvFileExt == null)
+        cnvFileExt = "txt";
+      
       
               
     } catch (Exception e ) {
@@ -203,7 +227,7 @@ public class ConversionService {
       if (res!=null){  
         try {
           this.result = res.getOutputStream();
-          res.setContentType((String)convTypes.get(cnvTypeOut));
+          res.setContentType(cnvContentType);
         } catch (IOException e ) {
           throw new GDEMException("Error getting response outputstream " + e.toString());
         }
@@ -229,6 +253,11 @@ public class ConversionService {
       //outputFileName=convertXML(sourceFile, xslFile);
       //h.put("content-type", "text/xml");
     }
+    else  if (cnvTypeOut.equals("SQL")){
+      outputFileName=convertSQL(src.getSrcInputStream(), xslFile);
+      //outputFileName=convertXML(sourceFile, xslFile);
+      //h.put("content-type", "text/xml");
+    }
     else
       throw new GDEMException("Unknown conversion type or converter not  implemented: " + cnvTypeOut);
 
@@ -247,7 +276,7 @@ public class ConversionService {
     }
 
 
-    h.put("content-type", (String)convTypes.get(cnvTypeOut));
+    h.put("content-type", cnvContentType);
     if (res!=null){
       try{
         result.close();
@@ -384,7 +413,7 @@ public class ConversionService {
   
   private String convertXML(InputStream source, String xslt) throws GDEMException {
 
-      String xmlFile=tmpFolder + "gdem_out" + System.currentTimeMillis() + ".xml";
+      String xmlFile=tmpFolder + "gdem_out" + System.currentTimeMillis() + "." + cnvFileExt;
       //String args[]={"-in", source, "-xsl", xslt, "-out", xmlFile  };
       if (result!=null)
         runXalanTransformation(source, xslt, result);
@@ -400,6 +429,43 @@ public class ConversionService {
   
       //System.out.println("======= html OK");
       return xmlFile;
+  }
+  private String convertSQL(InputStream source, String xslt) throws GDEMException {
+
+      String sqlFile=tmpFolder + "gdem_out" + System.currentTimeMillis() + "." + cnvFileExt;
+      //String args[]={"-in", source, "-xsl", xslt, "-out", xmlFile  };
+      if (result!=null)
+        runXalanTransformation(source, xslt, result);
+      else
+        try{
+          runXalanTransformation(source, xslt,  new FileOutputStream(sqlFile));
+        } catch (IOException e ) {
+          _logger.error("Error " + e.toString());
+          throw new GDEMException("Error creating SQL output file " + e.toString());
+        }
+        //org.apache.xalan.xslt.Process.main(args);
+        //log("conversion done");
+  
+      //System.out.println("======= html OK");
+      return sqlFile;
+  }
+  private String convertOthers(InputStream source, String xslt) throws GDEMException {
+
+      String outFile=tmpFolder + "gdem_out" + System.currentTimeMillis() + "." + cnvFileExt;
+      if (result!=null)
+        runXalanTransformation(source, xslt, result);
+      else
+        try{
+          runXalanTransformation(source, xslt,  new FileOutputStream(outFile));
+        } catch (IOException e ) {
+          _logger.error("Error " + e.toString());
+          throw new GDEMException("Error creating output file with Xalan:" + e.toString());
+        }
+        //org.apache.xalan.xslt.Process.main(args);
+        //log("conversion done");
+  
+      //System.out.println("======= html OK");
+      return outFile;
   }
   private void runXalanTransformation(InputStream in, String xsl, OutputStream  out) throws GDEMException {
     try{
