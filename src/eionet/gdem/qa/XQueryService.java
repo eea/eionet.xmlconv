@@ -226,7 +226,7 @@ public class XQueryService  implements Constants {
 
     _logger.debug("XQuerySrevice found status for job: " + String.valueOf(status));
     
-		Hashtable ret =  result(status, jobData, scriptData);      
+    Hashtable ret =  result(status, jobData, scriptData, jobId);
     _logger.debug("result: " + ret.toString());
 
 		//remove the job from the queue / DB when the status won't change= FATAL or READY
@@ -242,7 +242,7 @@ public class XQueryService  implements Constants {
   } 
 	
 	//Hashtable to be composed for the getResult() method return value
-	private Hashtable result(int status, String[] jobData, HashMap scriptData) {
+	private Hashtable result(int status, String[] jobData, HashMap scriptData, String jobId) throws GDEMException{
 		Hashtable h = new Hashtable();
 		int resultCode;
 		String resultValue;
@@ -285,11 +285,17 @@ public class XQueryService  implements Constants {
 			}
 			
 		}
-
-		h.put(RESULT_CODE_PRM, Integer.toString(resultCode));
-		h.put(RESULT_VALUE_PRM, resultValue);
-		h.put(RESULT_METATYPE_PRM, metatype);
-		h.put(RESULT_SCRIPTTITLE_PRM, script_title);
+    try{
+      h.put(RESULT_CODE_PRM, Integer.toString(resultCode));
+      h.put(RESULT_VALUE_PRM, resultValue);
+      h.put(RESULT_METATYPE_PRM, metatype);
+      h.put(RESULT_SCRIPTTITLE_PRM, script_title);
+    }
+    catch(Exception e){
+      String err_mess="JobID: " + jobId + "; Creating result Hashtable for getResult method failed result: " + e.toString();
+      _logger.error(err_mess);
+      throw new GDEMException(err_mess, e);
+    }
 
 		return h;
 	

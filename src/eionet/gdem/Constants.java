@@ -47,7 +47,7 @@ public interface Constants {
 	public static final String RESULT_CODE_PRM = "CODE";
 	public static final String RESULT_VALUE_PRM = "VALUE";
 	public static final String RESULT_METATYPE_PRM = "METATYPE";
-	public static final String RESULT_SCRIPTTITLE_PRM = "SCRIPT_TILE";
+	public static final String RESULT_SCRIPTTITLE_PRM = "SCRIPT_TITLE";
 
   /**
    * Default parameter name of the source URL

@@ -195,7 +195,7 @@ public class DbModule implements DbModuleIF, Constants {
       h.put("short_name", r[0][3]);      
       h.put("xml_schema", r[0][4]);
       h.put("content_type", r[0][5]);
-      h.put("meat_type", r[0][6]);
+      h.put("meta_type", r[0][6]);
     }
 
     return h;
