@@ -3,10 +3,12 @@ Name: gdem
 Version: 1.0
 Release: 1
 Source0: %{name}.tgz
-License: MPL
-Group: GDEM components
+License: GNU
+Group: System Environment/Applications
 BuildRoot: %{_topdir}/tmp_gdem_root
+BuildRequires: ant
 Prefix: /prj
+BuildArch: noarch
 
 %description
 GDEM demo services
