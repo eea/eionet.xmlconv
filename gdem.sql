@@ -89,7 +89,7 @@ INSERT INTO T_SCHEMA VALUES (35,'http://213.35.204.178:81/datadict/public/GetSch
 CREATE TABLE T_STYLESHEET (
   CONVERT_ID int(11) NOT NULL auto_increment,
   DESCRIPTION varchar(255) default NULL,
-  RESULT_TYPE enum('EXCEL','HTML','PDF','XML') NOT NULL default 'EXCEL',
+  RESULT_TYPE varchar(50) NOT NULL default 'HTML',
   XSL_FILENAME varchar(255) NOT NULL default '',
   SCHEMA_ID int(11) NOT NULL default '0',
   PRIMARY KEY  (CONVERT_ID),
@@ -118,7 +118,6 @@ INSERT INTO T_STYLESHEET VALUES (71,'simple table width table layout','HTML','si
 --
 -- Table structure for table `T_XFBROWSER`
 --
-
 CREATE TABLE T_XFBROWSER (
   BROWSER_ID int(11) NOT NULL auto_increment,
   BROWSER_TYPE varchar(100) NOT NULL default '',
@@ -173,3 +172,27 @@ CREATE TABLE T_HOST (
 ) TYPE=MyISAM;
 
 
+--
+-- Table structure for table `T_CONV_TYPE`
+--
+
+
+
+CREATE TABLE T_CONVTYPE ( 
+  CONV_TYPE varchar(50) NOT NULL default '', 
+  CONTENT_TYPE varchar(100) NOT NULL default 'text/plain', 
+  FILE_EXT varchar(20) NOT NULL default 'txt', 
+  DESCRIPTION varchar (255) default '', 
+  UNIQUE KEY CONV_TYPE (CONV_TYPE)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table `T_CONV_TYPE`
+--
+
+
+INSERT INTO T_CONVTYPE VALUES ('HTML','text/html','html','');
+INSERT INTO T_CONVTYPE VALUES ('XML','text/xml','xml','');
+INSERT INTO T_CONVTYPE VALUES ('EXCEL','application/vnd.ms-excel','xls','');
+INSERT INTO T_CONVTYPE VALUES ('PDF','application/pdf','pdf','');
+INSERT INTO T_CONVTYPE VALUES ('SQL','text/plain','sql','');
