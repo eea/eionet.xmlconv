@@ -1,0 +1,188 @@
+<!-- The Body settings -->
+BODY { background-color: #F0F0F0;
+font-family: Arial, Helvetica, sans-serif; 
+font-size: 10pt; 
+} 
+
+table.box {
+    background-color: #F0F0F0;
+}
+
+.Mainfont {  font-family: Arial, Helvetica, sans-serif; 
+font-size: 10pt; 
+font-style: normal; 
+line-height: normal; 
+text-decoration: none; }
+
+.barfont {  font-family: Arial, MS Sans Serif; 
+font-size: 8pt; 
+font-style: normal; 
+line-height: normal; 
+text-decoration: none; }
+
+smallfont {  font-family: Verdana, Arial, MS Sans Serif; 
+font-size: 7pt;
+font-style: normal; 
+line-height: normal;
+font-weight: bold;
+text-decoration: none; }
+
+.title1 { font-family: Arial, Helvetica, sans-serif;
+font-size: 16pt; 
+font-style: normal; 
+line-height: normal; 
+font-weight: bold; 
+text-decoration: none; 
+color: #006666; } 
+
+.title2 { font-family: Arial, Helvetica, sans-serif;
+font-size: 12pt; 
+font-style: normal; 
+line-height: normal; 
+font-weight: bold; 
+text-decoration: none; 
+color: #006666; } 
+
+.head0 {  font-family: Arial, Helvetica, sans-serif; 
+font-size: 9pt; 
+font-style: normal; 
+line-height: normal; 
+font-weight: bold; 
+text-decoration: none; }
+
+.head0n {  font-family: Arial, Helvetica, sans-serif; 
+font-size: 9pt; 
+font-style: normal; 
+line-height: normal; 
+font-weight: normal; 
+text-decoration: none; }
+
+.head1 {  font-family: Arial, Helvetica, sans-serif; 
+font-size: 12pt; 
+font-style: normal; 
+line-height: normal; 
+font-weight: bold; 
+text-decoration: none; }
+
+.head1w {  font-family: Arial, Helvetica, sans-serif; 
+font-size: 12pt; 
+font-style: normal; 
+line-height: normal; 
+font-weight: bold; 
+color: #FFFFFF;
+text-decoration: none; }
+
+.head2 { font-family: Arial, Helvetica, sans-serif; 
+font-size: 16pt; 
+font-style: normal; 
+line-height: normal; 
+font-weight: bold; 
+text-decoration: none }
+
+A:link { color: #024176 }
+A:visited { color: #A30A21 }
+A:active { color: #A30A21 } 
+
+h1 { font-family: Arial, Helvetica, sans-serif; 
+font-size: 16pt; 
+font-style: normal; 
+line-height: normal; 
+font-weight: bold; 
+text-decoration: none }
+
+h2 {  font-family: Arial, Helvetica, sans-serif; 
+font-size: 12pt; 
+font-style: normal; 
+line-height: normal; 
+font-weight: bold; 
+text-decoration: none; }
+
+h3 {  font-family: Arial, Helvetica, sans-serif; 
+font-size: 11pt; 
+font-style: normal; 
+line-height: normal; 
+font-weight: bold; 
+text-decoration: none; }
+
+td {  font-family: Arial, Helvetica, sans-serif; 
+font-size: 10pt; 
+font-style: normal; 
+line-height: normal; 
+text-decoration: none; }
+
+th {  font-family: Arial, Helvetica, sans-serif; 
+font-size: 10pt; 
+font-style: normal; 
+line-height: normal; 
+font-weight: bold; 
+color: #FFFFFF;
+background: #646666;
+text-decoration: none; }
+
+th a:link { color: #8080ff }
+th a:visited { color: #ff8080 }
+th a:active { color: #ff8080 } 
+
+kbd { font-weight: bold }
+
+.step1 {  font-family:  Arial, Helvetica, sans-serif; 
+font-size: 13px; 
+font-style: normal; 
+font-weight: bold; 
+color: #FFFFFF; 
+text-decoration: none}
+
+.step2 {  font-family:  Arial, Helvetica, sans-serif; 
+font-size: 12px;  
+color: #000000 }
+
+.step3 {  font-family:  Arial, Helvetica, sans-serif; 
+font-size: 12px;  
+font-style: normal; 
+line-height: normal; 
+font-weight: bold; 
+color: #ffffff }
+
+input.smallbutton {  font-family: Verdana, Arial, MS Sans Serif; 
+font-size: 7pt;
+font-style: normal; 
+line-height: normal;
+text-decoration: none; }
+
+input.smallbuttonb {  font-family: Verdana, Arial, MS Sans Serif; 
+font-size: 7pt;
+font-style: normal; 
+line-height: normal;
+font-weight: bold;
+text-decoration: none; }
+
+input.mediumbutton {  font-family: Arial, MS Sans Serif; 
+font-size: 8pt;
+font-style: normal; 
+line-height: normal;
+text-decoration: none; }
+
+input.mediumbuttonb {  font-family: Arial, MS Sans Serif; 
+font-size: 8pt;
+font-style: normal; 
+line-height: normal;
+font-weight: bold;
+text-decoration: none; }
+
+input.smalltext {  font-family: Verdana, Arial, MS Sans Serif; 
+font-size: 8pt;
+font-style: normal; 
+line-height: normal;
+text-decoration: none; }
+
+textarea.small {  font-family: Verdana, Arial, MS Sans Serif; 
+font-size: 8pt;
+font-style: normal; 
+line-height: normal;
+text-decoration: none; }
+
+select.small {  font-family: Verdana, Arial, MS Sans Serif; 
+font-size: 8pt;
+font-style: normal; 
+line-height: normal;
+text-decoration: none; }

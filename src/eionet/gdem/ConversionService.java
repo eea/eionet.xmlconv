@@ -13,38 +13,92 @@ import java.util.Vector;
 import java.util.ResourceBundle;
 import java.util.MissingResourceException;
 
+import eionet.gdem.db.*;
+import java.util.HashMap;
+
+import org.apache.avalon.framework.logger.Logger; 
+import org.apache.avalon.framework.logger.ConsoleLogger;
+import org.apache.fop.apps.Driver;
+
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.Source;
+import javax.xml.transform.Result;
+import javax.xml.transform.sax.SAXResult;
+
+
 
 /**
 * Container for different conversions
-* Can be used through XML/RPC
+* for being used through XML/RPC
 * @author Kaido Laine
 */
 
 public class ConversionService {
 
-  /*
-  * FIXME!! Properties to be held in props'file or XML
-  */
-
   private String xslFolder;
   private String tmpFolder;
+
+  private DbModuleIF db;
+  
+  private HashMap convTypes;
   
   //private static final String xslFolder="C:/einrc/webs/gdem/xsl/";
   //private static final String tmpFolder="C:/einrc/webs/gdem/tmp/";
   
   //Category logger;
 
+
+  /***
+  * Constant values for HttpResponse content types
+  */
+  private void initCnvTypes() {
+    convTypes=new HashMap();
+
+    convTypes.put("EXCEL", "application/vnd.ms-excel");
+    convTypes.put("PDF", "application/pdf");
+    convTypes.put("HTML", "text/html");
+    convTypes.put("XML", "text/xml");    
+  }
+
   public ConversionService()  {
       xslFolder=Utils.xslFolder; //props.getString("xsl.folder");
       tmpFolder=Utils.tmpFolder;  //props.getString("tmp.folder");
+
+      initCnvTypes();
+
   }
+
+
+  /**
+  * List all possible conversions 
+  */
+
+  public Vector listConversions() throws GDEMException {
+      return listConversions(null);
+  }
+
 
   /**
   * List all possible conversions for this namespace
-  * This is a dummy implementation for Sofia demo
   */
+  public Vector listConversions(String schema) throws GDEMException {
 
-  public Vector listConversions(String schema) {
+    if (db==null)
+      db = DbUtils.getDbModule();
+
+    Vector v = null;
+    try {
+      v=db.listConversions(schema);
+    } catch (Exception e ) {
+      throw new GDEMException("Error getting data from the DB " + e.toString());
+    }
+
+    return v;
+    
+    /*
     Vector v = new Vector();
 
     if ( schema.equals("http://roddev.eionet.eu.int/waterdemo/water_measurements.xsd")) {
@@ -74,6 +128,7 @@ public class ConversionService {
     }
     
     return v;
+  */
   }
 
   /**
@@ -85,7 +140,8 @@ public class ConversionService {
     
     String sourceFile=null;
     String xslFile=null;
-    String htmlFileName=null;
+    String outputFileName=null;
+    String cnvTypeOut=null;
     
     try {
       //sourceFile=saveSourceFile(sourceURL);
@@ -94,36 +150,61 @@ public class ConversionService {
       throw new GDEMException("Error reading from URL and saving tmp file: " + sourceURL + "\n"
         + ioe.toString());
     }
+    
+    //xslFile=xslFolder + convertId + ".xsl";
+    if (db==null)
+      db = DbUtils.getDbModule();
 
-    xslFile=xslFolder + convertId + ".xsl";
+    try {
+      HashMap styleSheetData=db.getStylesheetInfo(convertId);
 
+      if (styleSheetData==null)
+        throw new GDEMException("No stylesheet info for convertID= " + convertId);
+
+      xslFile= xslFolder + (String)styleSheetData.get("xsl");
+      cnvTypeOut= (String)styleSheetData.get("content_type_out");
+      
+      
+              
+    } catch (Exception e ) {
+      throw new GDEMException("Error getting stylesheet info from repository for " + convertId);
+    }
+        
+    
     //!!! QUICK FIX!! CORRECT ME IF MAPPINGS ARE OK !!
-    if (convertId.indexOf("html") != -1) {
-      htmlFileName=convertHTML(sourceFile, xslFile);
+    //if (convertId.indexOf("html") != -1) {
+    if (cnvTypeOut.equals("HTML")){
+      outputFileName=convertHTML(sourceFile, xslFile);
       //htmlFileName=convertHTML(sourceURL, xslFile);      
-      h.put("content-type", "text/html");
+      //h.put("content-type", "text/html");
     }
-    else if (convertId.indexOf("pdf") != -1) {
-      htmlFileName=convertPDF(sourceFile, xslFile);
-      h.put("content-type", "application/pdf");
+    else if (cnvTypeOut.equals("PDF")){
+      outputFileName=convertPDF(sourceFile, xslFile);
+      //h.put("content-type", "application/pdf");
     }
-    else if (convertId.indexOf("excel") != -1) {
-      htmlFileName=convertExcel(sourceFile, xslFile);
-      h.put("content-type", "application/vnd.ms-excel");
+    else if (cnvTypeOut.equals("EXCEL")){
+      outputFileName=convertExcel(sourceFile, xslFile);
+      //h.put("content-type", "application/vnd.ms-excel");
     }
-    else if (convertId.indexOf("xml") != -1) {
-      htmlFileName=convertXML(sourceFile, xslFile);
-      h.put("content-type", "text/xml");
+    else  if (cnvTypeOut.equals("XML")){
+      outputFileName=convertXML(sourceFile, xslFile);
+      //h.put("content-type", "text/xml");
     }
+    else
+      throw new GDEMException("Unknown conversion type or converter not  implemented: " + cnvTypeOut);
+
+
+    h.put("content-type", (String)convTypes.get(cnvTypeOut));
 
     //log("========= going to bytes " + htmlFileName);
-    byte[] file = fileToBytes(htmlFileName);
+    byte[] file = fileToBytes(outputFileName);
     //log("========= bytes ok");
 
     h.put("content", file);
 
     Utils.deleteFile(sourceFile);
     //deleteFile(htmlFileName);
+    Utils.deleteFile(outputFileName);
     
     
     return h;
@@ -164,8 +245,9 @@ public class ConversionService {
   private String convertPDF(String source, String xslt) throws GDEMException {
 
       String pdfFile=tmpFolder + "gdem_" + System.currentTimeMillis() + ".pdf";
-      String args[]={"-xml", source, "-xsl", xslt, "-pdf", pdfFile  };
-      org.apache.fop.apps.Fop.main(args);
+      //String args[]={"-xml", source, "-xsl", xslt, "-pdf", pdfFile  };
+      //org.apache.fop.apps.Fop.main(args);
+      runFOPTransformation(source, xslt, pdfFile);
         
       
       return pdfFile;
@@ -176,20 +258,15 @@ public class ConversionService {
   private String convertHTML(String source, String xslt) throws GDEMException {
 
       String htmlFile=tmpFolder + "gdem_" + System.currentTimeMillis() + ".html";
-      String args[]={"-in", source, "-xsl", xslt, "-out", htmlFile  };
+      //String args[]={"-in", source, "-xsl", xslt, "-out", htmlFile  };
       //[-xsl stylesheet] [-o dest] file1.xml file2.xml ...       
       //String args[]={"-xsl", xslt, "-o", htmlFile, source  };
-    try {
 
-    org.apache.xalan.xslt.Process.main(args);
-    //log("conversion done");
+      runXalanTransformation(source, xslt, htmlFile);
+      //org.apache.xalan.xslt.Process.main(args);
+      //log("conversion done");
 
     
-    } catch (Throwable e ) {
-      log("Error " + e.toString());
-      e.printStackTrace(System.out);    
-      throw new GDEMException("Error transforming HTML " + e.toString());
-    }
       //System.out.println("======= html OK");
       return htmlFile;
   }
@@ -198,19 +275,21 @@ public class ConversionService {
 
       String xmlFile=tmpFolder + "gdem_out" + System.currentTimeMillis() + ".xml";
       String excelFile=tmpFolder + "gdem_" + System.currentTimeMillis() + ".xls";
-      String args[]={"-in", source, "-xsl", xslt, "-out", xmlFile  };
+      //String args[]={"-in", source, "-xsl", xslt, "-out", xmlFile  };
       //String excel_args[]={"-in", xmlFile, "-out", excelFile  };
       //[-xsl stylesheet] [-o dest] file1.xml file2.xml ...       
       //String args[]={"-xsl", xslt, "-o", htmlFile, source  };
     try {
 
-      org.apache.xalan.xslt.Process.main(args);
+      runXalanTransformation(source, xslt, xmlFile);
+      //org.apache.xalan.xslt.Process.main(args);
 
       ExcelProcessor ep = new ExcelProcessor();
       ep.makeExcel(xmlFile, excelFile);
 
-    
-    } catch (Throwable e ) {
+      Utils.deleteFile(xmlFile);
+
+    } catch (Exception e ) {
       log("Error " + e.toString());
       e.printStackTrace(System.out);    
       throw new GDEMException("Error transforming Excel " + e.toString());
@@ -225,22 +304,65 @@ public class ConversionService {
   private String convertXML(String source, String xslt) throws GDEMException {
 
       String xmlFile=tmpFolder + "gdem_out" + System.currentTimeMillis() + ".xml";
-      String args[]={"-in", source, "-xsl", xslt, "-out", xmlFile  };
-    try {
-
-    org.apache.xalan.xslt.Process.main(args);
-   //log("conversion done");
-
-    
-    } catch (Throwable e ) {
-      log("Error " + e.toString());
-      e.printStackTrace(System.out);    
-      throw new GDEMException("Error transforming XML " + e.toString());
-    }
+      //String args[]={"-in", source, "-xsl", xslt, "-out", xmlFile  };
+        runXalanTransformation(source, xslt, xmlFile);
+        //org.apache.xalan.xslt.Process.main(args);
+        //log("conversion done");
+  
       //System.out.println("======= html OK");
       return xmlFile;
   }
- 
+  private void runXalanTransformation(String in, String xsl, String out) throws GDEMException {
+    try{
+      // 1. Instantiate a TransformerFactory.
+      TransformerFactory tFactory = TransformerFactory.newInstance();
+
+      // 2. Use the TransformerFactory to process the stylesheet Source and
+      //    generate a Transformer.
+      Transformer transformer = tFactory.newTransformer(new StreamSource(xsl));
+
+      // 3. Use the Transformer to transform an XML Source and send the
+      //    output to a Result object.
+      transformer.transform(new StreamSource(in), 
+                   new StreamResult( new FileOutputStream(out)));
+                   
+    } catch (Throwable e ) {
+        log("Error " + e.toString());
+        e.printStackTrace(System.out);    
+        throw new GDEMException("Error transforming XML " + e.toString());
+    }
+  }
+  private void runFOPTransformation(String in, String xsl, String out) throws GDEMException {
+
+    try{
+      Driver driver = new Driver();
+      //Setup logging here: driver.setLogger(...
+      driver.setRenderer(Driver.RENDER_PDF);
+
+      //Setup the OutputStream for FOP
+      driver.setOutputStream(new java.io.FileOutputStream(out));
+
+      //Make sure the XSL transformation's result is piped through to FOP
+      Result res = new SAXResult(driver.getContentHandler());
+
+      //Setup XML input
+      Source src = new StreamSource(in);
+
+      //Setup Transformer
+      Source xsltSrc = new StreamSource(xsl);
+      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      Transformer transformer = transformerFactory.newTransformer(xsltSrc);
+
+      //Start the transformation and rendering process
+      transformer.transform(src, res); 
+    } catch (Throwable e ) {
+        log("Error " + e.toString());
+        e.printStackTrace(System.out);    
+        throw new GDEMException("Error transforming XML to PDF " + e.toString());
+    }
+  }
+
+
   /**
   * Saves the source file temporarily
   */
@@ -271,5 +393,21 @@ public class ConversionService {
   private void log(String msg) {
     Utils.log(msg);
   }
- 
+
+
+/*  public static void main(String ar[]) {
+    try {
+      ConversionService c = new ConversionService();
+      Utils.log("x=" + c.listConversions());    
+      //Utils.log("x=" + db.
+      DbModuleIF d = DbUtils.getDbModule();
+
+      //Utils.log("x=" + d.addStylesheet("xxx", "XML", "/tmp/y-file", null));
+
+      //d.removeStyleSheet("3");
+    } catch (Exception e ) {
+      Utils.log("error " + e.toString());
+    }
+  } */
+
 }

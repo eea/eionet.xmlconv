@@ -1,60 +1,45 @@
 package eionet.gdem;
 
+import java.io.IOException;
+
+import javax.servlet.ServletConfig;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.saxon.Query;
-
 import javax.servlet.ServletException;
+import java.util.Timer;
+import eionet.gdem.qa.WQChecker;
 
-import java.io.IOException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.DataOutputStream;
-import java.io.FileWriter;
-
+/**
+* Servlet started automatically when the servlet engine starts
+* Runs the scheduled Workqueue checker - checks if new jobs received
+*/
 
 public class XQueryServlet extends HttpServlet {
 
-  public void service(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException     {        String source = req.getParameter("source");
-
-    res.setContentType("text/html");
-    //res.getWriter().write("<html><body>hei!</body></html>");
-    
-    String xQuery = req.getParameter("q");
-    String inFileName = "C:\\TEMP\\qwerty.xq";
-    //File file = new File(inFileName);
-    FileWriter fos = new FileWriter(new File(inFileName));
-
-    fos.write(xQuery);
-
-    //dos.flush(); dos.close();
-    fos.flush(); fos.close();
-   
-    String outFileName = "C:\\TEMP\\qwerty.html";
-
-   String[] args = {"-o", outFileName, inFileName};
- 
+  public void init(ServletConfig config) throws ServletException {
+  
     try {
-      Query.main(args);
-    } catch (Exception e ) {
-      res.getWriter().write("<error>" + e.toString() + "</error>");
+      //!! from the props file
+      (new Timer()).scheduleAtFixedRate( new WQChecker(), 0, 20000L );
+    } catch (Exception e) {
+      //better error handling here!!
+      throw new ServletException(e.getMessage(), e);
     }
-
-  //read file from FileInputsream and write by buffers to the ServletOutputstream
-      FileInputStream fis = new FileInputStream( outFileName );
-      
-      int bufLen = 0;
-      byte[] buf = new byte[1024];
-      
-      while ( (bufLen=fis.read( buf ))!= -1 )
-        res.getOutputStream().write(buf, 0, bufLen );
-     
-      fis.close();    
-
   }
 
+private static void _l(String s ){
+  System.out.println ("=========================================");
+  System.out.println (s);
+  System.out.println ("=========================================");  
+
+}
+
+
+  public void doGet(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException    {
+
+  }
 
 }

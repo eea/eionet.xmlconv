@@ -9,8 +9,32 @@ import java.util.ResourceBundle;
 import java.util.MissingResourceException;
 
 public class Utils {
-  static String tmpFolder="/tmp";
-  static String xslFolder="/tmp/";
+
+  //constants:
+  //XQuery job statuses:
+  public static final int XQ_RECEIVED=0;
+  public static final int XQ_DONWLOADING_SRC=1;
+  public static final int XQ_PROCESSING=2;
+  public static final int XQ_READY=3;
+  public static final int XQ_PULLED=4;    
+
+  public static final int XQ_ERROR=9;  
+  
+  public static String tmpFolder="/tmp";
+
+  public static String urlPrefix="http://conversions.eionet.eu.int/";
+  
+  public static String xslFolder="/xsl/";
+
+  //Database settings from the properties file
+  public static String dbUrl=null;
+  public static String dbDriver=null;
+  public static String dbUser=null;
+  public static String dbPwd=null;
+
+  //period for checking new jobs in the workqueue in milliseconds, default 20sec
+  public static long wqCheckInterval=20000L;
+  
   public static final String XQ_SOURCE_PARAM_NAME="source_url";
   private static ResourceBundle props;
   private static Category logger;
@@ -24,16 +48,24 @@ public class Utils {
       try {
         tmpFolder=props.getString("tmp.folder");
         xslFolder=props.getString("xsl.folder");
+
+        //DB connection settings
+        dbDriver=props.getString("db.driver");
+        dbUrl=props.getString("db.url");
+        dbUser=props.getString("db.user");
+        dbPwd=props.getString("db.pwd");
+
+        wqCheckInterval= Long.valueOf(props.getString("wq.check.interval")).longValue();
+        urlPrefix=props.getString("url.prefix"); //URL where the files can be downloaded
       } catch (MissingResourceException mse) {
-        
+        //no error handling?
       }
-      
     }
-
-    
   }
-
-  static String saveSrcFile(String srcUrl )throws IOException {
+  /**
+  * saving an URL stream to the specified text file
+  */
+  public static String saveSrcFile(String srcUrl)throws IOException {
 
      URL url = new URL(srcUrl);      
      InputStream is = url.openStream();
@@ -58,15 +90,26 @@ public class Utils {
 
   }
 
- /**
-  * Stores String in a file
+  static String saveStrToFile(String str, String extension) throws IOException {
+    return saveStrToFile(null, str, extension);
+  }
+   /**
+  * Stores a String in a text file 
+  * @param String fileName: 
+  * @param String str: text to be stored
+  * @param String ext: file extension
   */
-  static String saveStrToFile(String str, String ext) throws IOException {
-    String tmpFileName=tmpFolder + "gdem_" + System.currentTimeMillis() + "." + ext;
-    FileWriter fos = new FileWriter(new File(tmpFileName));
+  public static String saveStrToFile(String fileName, String str, String extension) throws IOException {
+
+    if (fileName==null)
+      fileName=tmpFolder + "gdem_" + System.currentTimeMillis() + "." + extension;
+    else
+      fileName=fileName+"."+extension;
+      
+    FileWriter fos = new FileWriter(new File(fileName));
     fos.write(str);
     fos.flush(); fos.close();
-    return tmpFileName;
+    return fileName;
   }
 
   static String readStrFromFile(String fileName) throws java.io.IOException {
@@ -88,12 +131,11 @@ public class Utils {
 
   }
 
-
-   static void log(Object msg) {
+  static void log(Object msg) {
     logger.info(msg);
   }
 
-  static boolean isNullStr(String s ) {
+  public static boolean isNullStr(String s ) {
     if (s==null || s.trim().equals(""))
       return true;
     else

@@ -3,18 +3,19 @@
     "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
   <display-name>XQuery Utils</display-name>
-  <!--servlet>
-    <servlet-name>SaxonServlet</servlet-name>
-    <servlet-class>SaxonServlet</servlet-class>
-  </servlet-->
-  <!--servlet>
+  <servlet>
+    <servlet-name>Main</servlet-name>
+    <servlet-class>eionet.gdem.ssr.Main</servlet-class>
+  </servlet>
+	<servlet>
     <servlet-name>TestServlet</servlet-name>
     <servlet-class>eionet.gdem.TestServlet</servlet-class>
-  </servlet-->
-	<!--servlet>
+  </servlet>
+	<servlet>
     <servlet-name>XQueryServlet</servlet-name>
     <servlet-class>eionet.gdem.XQueryServlet</servlet-class>
-  </servlet-->
+		<load-on-startup></load-on-startup>
+  </servlet>
 	<servlet>
     <servlet-name>ConversionServlet</servlet-name>
     <servlet-class>eionet.gdem.ConversionServlet</servlet-class>
@@ -23,22 +24,22 @@
     <servlet-name>RpcRouter</servlet-name>
     <servlet-class>com.tee.uit.servlets.XmlRpcRouter</servlet-class>
   </servlet>
-  <!--servlet-mapping>
-    <servlet-name>SaxonServlet</servlet-name>
-    <url-pattern>/SaxonServlet</url-pattern>
-  </servlet-mapping-->
-  <!--servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Main</servlet-name>
+    <url-pattern>/main</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
     <servlet-name>TestServlet</servlet-name>
     <url-pattern>/TestServlet</url-pattern>
-  </servlet-mapping-->
+  </servlet-mapping>
 	<servlet-mapping>
     <servlet-name>ConversionServlet</servlet-name>
     <url-pattern>/convert</url-pattern>
   </servlet-mapping>
-	<!--servlet-mapping>
+	<servlet-mapping>
     <servlet-name>XQueryServlet</servlet-name>
     <url-pattern>/XQueryServlet</url-pattern>
-  </servlet-mapping-->
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>RpcRouter</servlet-name>
     <url-pattern>/RpcRouter</url-pattern>
