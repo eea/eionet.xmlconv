@@ -1,6 +1,8 @@
-package eionet.gdem;
+package eionet.gdem.conversion;
 
-import eionet.gdem.excel.*;
+import eionet.gdem.GDEMException;
+import eionet.gdem.conversion.excel.*;
+
 import org.xml.sax.*;
 import javax.xml.parsers.*;
 import java.io.OutputStream;

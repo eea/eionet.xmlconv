@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-<%@ page import="java.util.HashMap, java.util.Vector, eionet.gdem.db.DbModuleIF, eionet.gdem.db.DbUtils, eionet.gdem.ssr.Names" %>
+<%@ page import="java.util.HashMap, java.util.Vector, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names" %>
 
 
 
@@ -10,7 +10,7 @@
 	
 	
 
-	DbModuleIF dbM= DbUtils.getDbModule();
+	DbModuleIF dbM= GDEMServices.getDbModule();
 
 	String schema_name=null;
 
@@ -32,8 +32,8 @@
 	<title>Stylesheets</title>
    	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <link type="text/css" rel="stylesheet" href="eionet.css">
-	<script language="JavaScript" src="util.js"></script>
-	<script language="JavaScript">
+	<script type="text/javascript" src="util.js"></script>
+	<script type="text/javascript">
 		
 		detectBrowser();	
 	

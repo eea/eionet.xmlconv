@@ -1,11 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-<%@ page import="java.util.Hashtable, java.util.Vector, java.util.HashMap, eionet.gdem.db.DbModuleIF, eionet.gdem.db.DbUtils, eionet.gdem.ssr.Names, eionet.gdem.ssr.SecurityUtil,com.tee.uit.security.AppUser" %>
+<%@ page import="java.util.Hashtable, java.util.Vector, java.util.HashMap, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.SecurityUtil,com.tee.uit.security.AppUser" %>
 
 <%
 	//AppUser user = SecurityUtil.getUser(request);
 	
 	
-	DbModuleIF dbM= DbUtils.getDbModule();
+	DbModuleIF dbM= GDEMServices.getDbModule();
 	Vector list = dbM.getSchemas(null);
 	if (list==null) list=new Vector();
 	
@@ -15,8 +15,8 @@
 	<title>Stylesheets</title>
    	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <link type="text/css" rel="stylesheet" href="eionet.css">
-	<script language="JavaScript" src="util.js"></script>
-	<script language="JavaScript">
+	<script type="text/javascript" src="util.js"></script>
+	<script type="text/javascript">
 	
 		detectBrowser();	
 

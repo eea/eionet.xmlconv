@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-<%@ page import="java.util.HashMap, java.util.Vector, eionet.gdem.db.DbModuleIF, eionet.gdem.db.DbUtils, eionet.gdem.ssr.Names" %>
+<%@ page import="java.util.HashMap, java.util.Vector, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names" %>
 
 <%!private HashMap schema=null;%>
 
@@ -14,7 +14,7 @@
 		}
 		
 	}
-	DbModuleIF dbM= DbUtils.getDbModule();
+	DbModuleIF dbM= GDEMServices.getDbModule();
 
 	Vector list = dbM.getSchemas(id);
 	if (list==null) list=new Vector();
@@ -37,15 +37,11 @@
 	<title>Stylesheets</title>
    	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <link type="text/css" rel="stylesheet" href="eionet.css">
-	<script language="JavaScript" src="util.js"></script>
-	<script language="JavaScript">
+	<script type="text/javascript" src="util.js"></script>
+	<script type="text/javascript">
 		
 		detectBrowser();	
 	
-		function openPage(action) {
-			document.forms["f"].ACTION.value=action;
-			document.forms["f"].submit();
-		}
 		function openApp(appName) {
 			document.forms["f"].app.value=appName;
 			document.forms["f"].ACTION.value="";
@@ -86,7 +82,12 @@
 		<% } %>
 	
 		<h2>Stylesheets of <%=name%></h2>
-
+			<a href="schema.jsp?ID=<%=id%>">View schema info</a>
+			<form name="view_schema_info" action="main" method="POST">
+				<input type="hidden" name="ID" value="<%=id%>"></input>
+				<input type="hidden" name="ACTION" value="<%=Names.SHOW_SCHEMA_ACTION%>"></input>
+			</form>
+		
 		<%
 		boolean ssiPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "i");
 		if (ssiPrm){%>
@@ -102,7 +103,7 @@
 		<br/>
 
 	    <table cellSpacing="5">
-    	   	<head>
+    	   	<thead>
 					
     	   	<%
 				boolean ssdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "d");
@@ -110,8 +111,8 @@
 			%>
         		<tr>
 			  		<th align="middle" width="40">Type</th>
-          			<th align="left" width="355"Description</th>
-          			<th align="left" width="200"Stylesheet</th>
+          			<th align="left" width="355">Description</th>
+          			<th align="left" width="200">Stylesheet</th>
        				<%
 					if (ssdPrm){%>
     	     			<th align="middle">&#160;</th>
@@ -133,7 +134,7 @@
 						<td align="middle" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %> bgcolor="#D3D3D3" <%;%>>
 	         				<%
 							if (convPrm){%>
-								<a title="Test conversion" href="main?ACTION=<%=Names.SHOW_TESTCONVERSION_ACTION%>&amp;ID=<%=convert_id%>"><%=type%></a>
+								<a title="Test conversion" href="main?ACTION=<%=Names.SHOW_TESTCONVERSION_ACTION%>&amp;ID=<%=convert_id%>&amp;SCHEMA_ID=<%=id%>"><%=type%></a>
 							<%}else{%>
 								<%=type%>
 							<%}%>

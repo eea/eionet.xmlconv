@@ -1,6 +1,6 @@
 
 
-package eionet.gdem;
+package eionet.gdem.conversion;
 import java.io.*;
 
 //import org.apache.log4j.Category;
@@ -13,11 +13,16 @@ import java.util.Vector;
 import java.util.ResourceBundle;
 import java.util.MissingResourceException;
 
-import eionet.gdem.db.*;
+import eionet.gdem.services.*;
+import eionet.gdem.GDEMException;
+import eionet.gdem.Properties;
+import eionet.gdem.utils.Utils;
+
 import java.util.HashMap;
 
-import org.apache.avalon.framework.logger.Logger; 
-import org.apache.avalon.framework.logger.ConsoleLogger;
+//KL 040427 not used?
+//import org.apache.avalon.framework.logger.Logger; 
+//import org.apache.avalon.framework.logger.ConsoleLogger;
 import org.apache.fop.apps.Driver;
 
 import javax.xml.transform.TransformerFactory;
@@ -70,8 +75,8 @@ public class ConversionService {
   }
 
   public ConversionService()  {
-      xslFolder=Utils.xslFolder; //props.getString("xsl.folder");
-      tmpFolder=Utils.tmpFolder;  //props.getString("tmp.folder");
+      xslFolder=Properties.xslFolder; //props.getString("xsl.folder");
+      tmpFolder=Properties.tmpFolder;  //props.getString("tmp.folder");
 
       initCnvTypes();
 
@@ -93,7 +98,7 @@ public class ConversionService {
   public Vector listConversions(String schema) throws GDEMException {
 
     if (db==null)
-      db = DbUtils.getDbModule();
+      db = GDEMServices.getDbModule();
 
     Vector v = null;
     try {
@@ -166,7 +171,7 @@ public class ConversionService {
     
     //xslFile=xslFolder + convertId + ".xsl";
     if (db==null)
-      db = DbUtils.getDbModule();
+      db = GDEMServices.getDbModule();
 
     try {
       HashMap styleSheetData=db.getStylesheetInfo(convertId);
@@ -451,8 +456,10 @@ public class ConversionService {
   } */
 
   private void log(String msg) {
-    Utils.log(msg);
-  }
+    System.out.println("================================");
+    System.out.println(msg);
+    System.out.println("================================");    
+  } 
 
 
 /*  public static void main(String ar[]) {

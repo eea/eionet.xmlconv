@@ -1,35 +1,40 @@
-package eionet.gdem;
+/**
+ * The contents of this file are subject to the Mozilla Public
+ * License Version 1.1 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of
+ * the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS
+ * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+ * implied. See the License for the specific language governing
+ * rights and limitations under the License.
+ *
+ * The Original Code is "GDEM project".
+ *
+ * The Initial Developer of the Original Code is TietoEnator.
+ * The Original Code code was developed for the European
+ * Environment Agency (EEA) under the IDA/EINRC framework contract.
+ *
+ * Copyright (C) 2000-2002 by European Environment Agency.  All
+ * Rights Reserved.
+ *
+ * Original Code: Kaido Laine (TietoEnator)
+ */
 
-import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
+package eionet.gdem.utils;
 
+import eionet.gdem.Properties;
 import java.net.URL;
 import java.io.*;
-import java.util.ResourceBundle;
-import java.util.MissingResourceException;
+import java.net.MalformedURLException;
 
+/**
+ * Several common methods for file handling etc
+ */
 public class Utils {
 
-  //constants:
-  //XQuery job statuses in the DB: (internal)
-  public static final int XQ_RECEIVED=0; //waiting for the engine to begin processing
-  public static final int XQ_DOWNLOADING_SRC=1; //downloading from the server to be stored locally
-  public static final int XQ_PROCESSING=2; //XQEngine is processing
-  public static final int XQ_READY=3; //waiting for pulling by the client
-	public static final int XQ_FATAL_ERR=4; //fatal error
-	public static final int XQ_LIGHT_ERR=5; //error, can be tried again
-
-
-	//status values for reportek getResult() method (external)
-  public static final int JOB_READY=0;
-  public static final int JOB_NOT_READY=1;
-  public static final int JOB_FATAL_ERROR=2;
-  public static final int JOB_LIGHT_ERROR=3;
-
-	//key names for te getResult() STRUCT
-	public static final String RESULT_CODE_PRM = "CODE";
-	public static final String RESULT_VALUE_PRM = "VALUE";
-  
+ 
+  /*
   public static String tmpFolder="/tmp";
 
   //public static String urlPrefix="http://conversions.eionet.eu.int/";
@@ -45,16 +50,16 @@ public class Utils {
   //period for checking new jobs in the workqueue in milliseconds, default 20sec
   public static long wqCheckInterval=20000L;
   
-  public static final String XQ_SOURCE_PARAM_NAME="source_url";
-
-	
+   //NB Saxon is the default value, not hard-coded!
+	public static String engineClass="eionet.gdem.qa.engines.SaxonImpl";
 	
 	private static ResourceBundle props;
   private static Category logger;
-
+  */
+/*
   static {
     if(logger == null)
-      logger = Category.getInstance("gdem");
+        logger = Category.getInstance("gdem");
       
     if (props==null) {
       props=ResourceBundle.getBundle("gdem");
@@ -67,7 +72,9 @@ public class Utils {
         dbUrl=props.getString("db.url");
         dbUser=props.getString("db.user");
         dbPwd=props.getString("db.pwd");
-				
+
+        engineClass=props.getString("xq.engine.implementator");
+        
 				//period in seconds 
 	      String frequency = props.getString("wq.check.interval");
 		    Float f = new Float(frequency);
@@ -85,6 +92,7 @@ public class Utils {
 			}
     }
   }
+  */
   /**
   * saving an URL stream to the specified text file
   */
@@ -94,7 +102,7 @@ public class Utils {
      InputStream is = url.openStream();
 
      String fileName=null;
-     String tmpFileName=tmpFolder + "gdem_" + System.currentTimeMillis() + ".xml";
+     String tmpFileName=Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + ".xml";
 
      File file =new File(tmpFileName);
      FileOutputStream fos=new FileOutputStream(file);
@@ -113,7 +121,7 @@ public class Utils {
 
   }
 
-  static String saveStrToFile(String str, String extension) throws IOException {
+  public static String saveStrToFile(String str, String extension) throws IOException {
     return saveStrToFile(null, str, extension);
   }
    /**
@@ -125,7 +133,7 @@ public class Utils {
   public static String saveStrToFile(String fileName, String str, String extension) throws IOException {
 
     if (fileName==null)
-      fileName=tmpFolder + "gdem_" + System.currentTimeMillis() + "." + extension;
+      fileName=Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + "." + extension;
     else
       fileName=fileName+"."+extension;
       
@@ -148,14 +156,14 @@ public class Utils {
   }
 
 
-  static void deleteFile(String fName) {
+  public static void deleteFile(String fName) {
     File f = new File(fName);
     f.delete();
 
   }
 
   static void log(Object msg) {
-    logger.info(msg);
+    Properties.logger.info(msg);
   }
 
   public static boolean isNullStr(String s ) {
@@ -164,4 +172,17 @@ public class Utils {
     else
       return false;
   } 
+  /**
+  * Checks if the given string is number
+  */
+  public static boolean isNum(String s){
+      try {
+          int i = Integer.parseInt(s);
+      }
+      catch (Exception e){
+          return false;
+      }
+        
+      return true;
+  }
 }

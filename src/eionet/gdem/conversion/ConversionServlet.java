@@ -1,4 +1,4 @@
-package eionet.gdem;
+package eionet.gdem.conversion;
 
 import java.io.IOException;
 
@@ -11,6 +11,8 @@ import java.util.Hashtable;
 import java.io.ByteArrayInputStream;
 import java.util.Vector;
 
+import eionet.gdem.GDEMException;
+import eionet.gdem.utils.Utils;
 
 public class ConversionServlet extends HttpServlet {
 

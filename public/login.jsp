@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-<%@page contentType="text/html" import="eionet.gdem.ssr.Names"%>
+<%@page contentType="text/html" import="eionet.gdem.conversion.ssr.Names"%>
 <%
 
 	String err = (String)request.getAttribute(Names.ERROR_ATT);
@@ -10,7 +10,7 @@
 	<head>
 		<title>Login</title>
     	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<script language=JavaScript>
+		<script type="text/javascript">
 			function setFocus(){
 				var t;
 				t=document.getElementById("j_username");

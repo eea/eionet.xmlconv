@@ -1,54 +1,51 @@
+/**
+ * The contents of this file are subject to the Mozilla Public
+ * License Version 1.1 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of
+ * the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS
+ * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+ * implied. See the License for the specific language governing
+ * rights and limitations under the License.
+ *
+ * The Original Code is "EINRC-7 / GDEM project".
+ *
+ * The Initial Developer of the Original Code is TietoEnator.
+ * The Original Code code was developed for the European
+ * Environment Agency (EEA) under the IDA/EINRC framework contract.
+ *
+ * Copyright (C) 2000-2004 by European Environment Agency.  All
+ * Rights Reserved.
+ *
+ * Original Code: Kaido Laine (TietoEnator)
+ */
+
+
+/**
+* XQuery job in the workqueue
+*/
+
 package eionet.gdem.qa;
-import eionet.gdem.db.DbModuleIF;
-import eionet.gdem.db.DbUtils;
-import eionet.gdem.Utils;
+
+import eionet.gdem.Constants;
+import eionet.gdem.services.DbModuleIF;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.Utils;
+import eionet.gdem.Properties;
+
 import java.sql.SQLException;
-import java.io.IOException;
-import java.io.File;
-import java.io.Reader;
-import java.io.FileReader;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.Properties;
-import java.util.List;
 import java.util.Iterator;
 
-import net.sf.saxon.Configuration;
-import net.sf.saxon.Transform;
-import net.sf.saxon.value.StringValue;
-import net.sf.saxon.query.StaticQueryContext;
-import net.sf.saxon.query.DynamicQueryContext;
-import net.sf.saxon.query.QueryProcessor;
-import net.sf.saxon.query.XQueryExpression;
-import net.sf.saxon.query.QueryResult;
-import net.sf.saxon.om.Item;
-import net.sf.saxon.om.NamePool;
-import net.sf.saxon.om.DocumentInfo;
-import net.sf.saxon.om.SequenceIterator;
-import net.sf.saxon.om.NodeInfo;
-import net.sf.saxon.value.Type;
-import net.sf.saxon.xpath.XPathException;
-
-import org.xml.sax.InputSource;
-import javax.xml.transform.Source;
-import net.sf.saxon.instruct.TerminationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.URIResolver;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.OutputKeys;
 
 /**
 * A task executing the XQuery task and storing the result of processing
 */
-public class XQueryTask extends Thread {
+public class XQueryTask extends Thread implements Constants {
 
   private static DbModuleIF _db;
+  private LoggerIF _logger;
 
   private String _scriptFile;
   private String _resultFile;
@@ -60,39 +57,46 @@ public class XQueryTask extends Thread {
 
   public XQueryTask(String jobId)  {
     _jobId=jobId;
-
+    _logger=GDEMServices.getLogger();
+    
     try {
-      if(_db==null)
-        _db = DbUtils.getDbModule();
-
+     _db = GDEMServices.getDbModule();
     } catch (Exception e ) {
+      _logger.fatal("** Initializing DB module failed " + e.toString());
       _db=null; //fix me!!!!
     }
+
     //inits variables from DB where the waiting task is stored
     //URL, XQ_FILE, RESULT_FILE
     initVariables();
 
     //set MIN priority for this thread->
     setPriority(MIN_PRIORITY);
-    
   }
 
   /**
-  * run XQuery: consists of steps:
+  * run XQuery script: steps:
   * - download the source from URL
   * - run XQuery
   * - store the result in a text file
   */
   public void run() {
     try {
-			_l("job " + _jobId + " started getting source file.");      
+      if (_logger.enable(_logger.INFO))
+  			_logger.info("Job ID=  " + _jobId + " started getting source file.");      
 
-	//Status to DOWNLOADING source:
-			_db.changeJobStatus(_jobId, Utils.XQ_DOWNLOADING_SRC);
+    	//Status to DOWNLOADING source:
+      changeStatus(XQ_DOWNLOADING_SRC);
+
 			//read source from the URL and store it:
 			String srcFile=null;
+      
 			try {
 				srcFile=Utils.saveSrcFile(_url);
+
+        if(_logger.enable(_logger.DEBUG))
+          _logger.debug("==== Source XML was stored to " + srcFile);
+          
 			//if the URL is not responding, set the status to easy_err and try again in 2 hrs or smth...
 			} catch (Exception e ) {
 				handleError(e.toString(), true);
@@ -101,21 +105,35 @@ public class XQueryTask extends Thread {
     //saved ok:
     
     //status to -processing
-    _db.changeJobStatus(_jobId, Utils.XQ_PROCESSING);
-_l("** job " + _jobId + " processing started");     
+     changeStatus(XQ_PROCESSING);    
+     if (_logger.enable(_logger.INFO))
+      _logger.info("Job ID=" + _jobId + " XQ processing started");     
 
-
-			String[] xqParam={Utils.XQ_SOURCE_PARAM_NAME + "=" + srcFile};
-
+			String[] xqParam={XQ_SOURCE_PARAM_NAME + "=" + srcFile};
 
 
       try {
-_l("** query starts: " + _jobId + " params: " + _resultFile + " " + xqParam);
+        if (_logger.enable(_logger.DEBUG))
+          _logger.debug("** XQuery starts, ID=" + _jobId + 
+            " params: "  + (xqParam==null ? "<< no params >>" : xqParam[0]) +
+            " result will be stored to " + _resultFile );
 
-				//FIX ME using main() is not correct and does not handle errors!!
-				//net.sf.saxon.Query.main(args);
 
-				runQuery(srcFile, _scriptFile, _resultFile, xqParam);
+        String xqScript = Utils.readStrFromFile(_scriptFile);
+
+        if (_logger.enable(_logger.DEBUG))
+          _logger.debug("Script: \n" + xqScript );
+        
+        XQScript xq = new XQScript(xqScript, xqParam);
+
+        String result = xq.getResult();
+        
+        if (_logger.enable(_logger.DEBUG))
+          _logger.debug("Script proceeded, now store to the result file");
+        
+
+        Utils.saveStrToFile(_resultFile.substring(0, _resultFile.lastIndexOf(".")), result, "txt");        
+        
         
       } catch (Exception e ) {
         handleError("Error processing XQ:" + e.toString(), true);
@@ -123,23 +141,23 @@ _l("** query starts: " + _jobId + " params: " + _resultFile + " " + xqParam);
 
       }
 
-			_db.changeJobStatus(_jobId, Utils.XQ_READY);
-			_l("** job " + _jobId + " succeeded");     
+      changeStatus(XQ_READY);
+        if (_logger.enable(_logger.DEBUG))
+          _logger.debug("Job ID=" + _jobId + " succeeded");
+
       //all done, thread stops here, job is waiting for pulling from the client side      
   
-      //Thread.sleep(_sleepTime);
 
     } catch (Exception ee) {
       handleError("Error in thread run():" + ee.toString(), true);
     }
   }
   
-private static void _l(String s ){
+/*private static void _l(String s ){
   System.out.println ("=========================================");
   System.out.println (s);
   System.out.println ("=========================================");  
-
-}
+} */
   //read data from the DB where it is stored for further processing
   private void initVariables()  {
     try {
@@ -152,10 +170,8 @@ private static void _l(String s ){
 
       _url=jobData[0];          
       _scriptFile=jobData[1];
-      _resultFile=jobData[2]; //just a file name file is not created yet
+      _resultFile=jobData[2]; //just a file name, file is not created yet
 
-      
-      //_resultFile=Utils.tmpFolder + "gdem_" + System.currentTimeMillis() + ".txt";
     } catch (SQLException sqe ){
       handleError("Error getting WQ data from the DB: " + sqe.toString(), true);
     }
@@ -168,169 +184,55 @@ private static void _l(String s ){
   */
   private void handleError(String error, boolean fatal) {
 
+    _logger.error("Error handling started: <<< " + error + " >>> ");
+
     try {
 			int err_status;
 
-			if (fatal)
-				err_status=Utils.XQ_FATAL_ERR;
+      if (fatal)
+				err_status=XQ_FATAL_ERR;
 			else
-				err_status=Utils.XQ_LIGHT_ERR;
+				err_status=XQ_LIGHT_ERR;
 
-			_db.changeJobStatus(_jobId, err_status);
+			//_db.changeJobStatus(_jobId, err_status);
+      changeStatus(err_status);
 
       //if result file already ok, store the error message in the file:
       if (_resultFile==null) 
-        _resultFile= Utils.tmpFolder + "gdem_error" + _jobId;
+        _resultFile= Properties.tmpFolder + "gdem_error" + _jobId;
 			else
 				_resultFile= _resultFile.substring(0, _resultFile.lastIndexOf("."));
       
-      _l("******* The result is stored to: " + _resultFile);
-      if(error!=null)
-		      Utils.saveStrToFile(_resultFile, "<error>" + error + "</error>", "txt");
+      if (_logger.enable(_logger.INFO))
+        _logger.info("******* The error message is stored to: " + _resultFile);
+      
+      if(error==null)
+        error="No error message for job=" + _jobId;
 
-      //change the name in the DB?
+      Utils.saveStrToFile(_resultFile, "<error>" + error + "</error>", "txt");
+
             
     } catch (Exception e) {
       //what to do if exception occurs here...
-      System.out.println("=============================================================================");
-      System.out.println("** EXTREMELY FATAL ERROR OCCURED WHEN HANDLING ERROR: " + e.toString());
-      System.out.println("=============================================================================");
+      _logger.fatal("** Error occured when handling XQ error: " + e.toString());
+      
+      //probably not needed -> 3 rows
+      System.err.println("=============================================================================");
+      System.err.println("** EXTREMELY FATAL ERROR OCCURED WHEN HANDLING ERROR: " + e.toString());
+      System.err.println("=============================================================================");
     }
   }
 
   //possible clear temporary files
   private void cleanup() {
   }
-
-
-
-  /**
-  * excetues :)
-  * executes
-  */
-  private void runQuery(String in, String script, String out, String xqParams[]) throws Exception {
-
-    boolean wrap=false;
-    Source sourceInput = null;
-    StringBuffer err_buf = new StringBuffer();
-//    try{
-
-      Configuration config = new Configuration();
-      config.setHostLanguage(config.XQUERY);
-      StaticQueryContext staticEnv = new StaticQueryContext();
-      staticEnv.setConfiguration(config);
-      DynamicQueryContext dynamicEnv = new DynamicQueryContext();
-      Properties outputProps = new Properties();
-      outputProps.setProperty(OutputKeys.INDENT, "yes");
-
-    //query script
-        Reader queryReader = new FileReader(script);
-        //FileInputStream fin = new FileInputStream(script);
-        //BufferedReader queryReader = new BufferedReader(new InputStreamReader(fin));
-        staticEnv.setBaseURI(new File(script).toURI().toString());
-    //handle xq Parameters
-        for (int p=0; p<xqParams.length; p++) {
-          String arg = xqParams[p];
-          int eq = arg.indexOf("=");
-          if (eq<1 || eq>=arg.length()-1) {
-							throw new Exception("Bad param=value pair");
-              //handleError("Bad param=value pair", true);
-          }
-          String argname = arg.substring(0,eq);
-          if (argname.startsWith("!")) {
-              // parameters starting with "!" are taken as output properties
-              outputProps.setProperty(argname.substring(1), arg.substring(eq+1));
-          } else if (argname.startsWith("+")) {
-              // parameters starting with "+" are taken as inputdocuments
-              List sources = Transform.loadDocuments(arg.substring(eq+1), true, config);
-              dynamicEnv.setParameter(argname.substring(1), sources);
-          } else {
-              dynamicEnv.setParameter(argname, new StringValue(arg.substring(eq+1)));
-          }
-        }
-
-
-    //source file
-        File sourceFile = new File(in);
-        InputSource eis = new InputSource(sourceFile.toURI().toString());
-        sourceInput = new SAXSource(eis);
-
-    //result file
-        OutputStream destination = new FileOutputStream(out);
-
-        QueryProcessor xquery = new QueryProcessor(config, staticEnv);
-    //compile Query
-        XQueryExpression exp;
-        try {
-          exp = xquery.compileQuery(queryReader);
-					queryReader.close(); //KL 040218
-        } catch (XPathException err) {
-
-          int line = -1;
-          if (err.getLocator() != null) {
-            line = err.getLocator().getLineNumber();
-          }
-          if (line == -1) {
-            err_buf.append("Failed to compile query: ");
-          } else {
-            err_buf.append("Syntax error at line " + line + ":");
-          }
-
-          throw new TransformerException(err);
-        }
-
-        if (sourceInput != null) {
-          DocumentInfo doc = xquery.buildDocument(sourceInput);
-          dynamicEnv.setContextNode(doc);
-        }
-        try {
-          // The next line actually executes the query
-          //List querylist = exp.evaluate(dynamicEnv);
-          // now get a java.util iterator
-          //System.out.println("Number Nodes =  " +  querylist.size());       
-          SequenceIterator results = exp.iterator(dynamicEnv);
-
-          if (wrap) {
-            DocumentInfo resultDoc = QueryResult.wrap(results, NamePool.getDefaultNamePool());
-            QueryResult.serialize(resultDoc, new StreamResult(destination), outputProps);
-            destination.close();
-          } else {
-            PrintWriter writer = new PrintWriter(destination);
-            while (results.hasNext()) {
-              Item item = results.next();
-              switch (item.getItemType()) {
-                case Type.DOCUMENT:
-                case Type.ELEMENT:
-                  QueryResult.serialize((NodeInfo)item,
-                    new StreamResult(writer), outputProps);
-                  writer.println("");
-                  break;
-                default:
-                  writer.println(item.getStringValue());
-              }
-            }
-            writer.close();
-          }
-        }        catch (TerminationException err) {
-
-          throw err;
-        } catch (TransformerException err) {
-
-         // The message will already have been displayed; don't do it twice
-          throw new TransformerException("Run-time errors were reported");
-        }  catch (Exception err) {
-
-          err.printStackTrace();
-          throw err;
-        }
-                 
-//    } catch (Exception e ) {
-//_l("E 4");
-//       err_buf.append("Query processing failed: " + e.toString());
-       //handleError(err_buf.toString(), true);
-
-	//		 throw e; //KL040218
-   //}
+  
+  private void changeStatus(int status)  {
+    try {
+			_db.changeJobStatus(_jobId, status);  
+    } catch (Exception e ) {
+      handleError(e.toString(), true);
+    }
   }
 
 

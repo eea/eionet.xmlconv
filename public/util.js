@@ -85,3 +85,8 @@ function Out(Target) {
 		 gTarget = 'img1';
 		}
 	}
+
+	function openPage(action) {
+		document.forms["f"].ACTION.value=action;
+		document.forms["f"].submit();
+	}

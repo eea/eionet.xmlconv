@@ -1,7 +1,7 @@
-<%@ page import="eionet.gdem.ssr.Names, eionet.gdem.ssr.SecurityUtil,com.tee.uit.security.AppUser" %>
+<%@ page import="eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.SecurityUtil,com.tee.uit.security.AppUser" %>
 <%
 
-	AppUser user = SecurityUtil.getUser(request);
+	AppUser user = SecurityUtil.getUser(request, Names.USER_ATT);
 	String user_name=null;
 	if (user!=null)
 		user_name = user.getUserName();
@@ -15,8 +15,17 @@
 		</tr>
 		<tr>
 			<td align="right">
-				<a onmouseover="Over('img1')" onmouseout="Out('img1')" href="main" onclick="Click('img1')">
+				<a onmouseover="Over('img1')" onmouseout="Out('img1')"
+            href="javascript:openPage('<%=Names.SHOW_SCHEMAS_ACTION%>')">
 					<img height="13" alt="" src="images/off.gif" width="16" border="0" name="img1"><img height="13" alt="Show Conversions" src="images/button_Conversions.gif" width="84" border="0">
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<a onmouseover="Over('img2')" onmouseout="Out('img2')"
+            href="javascript:openPage('<%=Names.SHOW_LISTCONVERSION_ACTION%>')">
+					<img height="13" alt="" src="images/off.gif" width="16" border="0" name="img2"><img height="13" alt="Conversions" src="images/button_Conversions.gif" width="84" border="0">
 				</a>
 			</td>
 		</tr>

@@ -1,5 +1,5 @@
 
-<%@ page import="eionet.gdem.ssr.Names" %>
+<%@ page import="eionet.gdem.conversion.ssr.Names" %>
 
   <table cellSpacing="0" cellPadding="0" border="0" width="100%">
       <tr>

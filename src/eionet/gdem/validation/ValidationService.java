@@ -1,4 +1,4 @@
-package eionet.gdem;
+package eionet.gdem.validation;
 
 import org.apache.xerces.parsers.SAXParser;
 
@@ -11,6 +11,9 @@ import java.net.URL;
 import java.net.MalformedURLException;
 
 import java.io.IOException;
+
+//import eionet.gdem.utils.Utils;
+import eionet.gdem.GDEMException;
 
 
 public class ValidationService {
@@ -39,7 +42,6 @@ public class ValidationService {
       parser.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation", schema);      
       
       InputSource is = new InputSource( url.openStream());
-
       parser.parse(is);
 
       //log("OK");      
@@ -74,7 +76,28 @@ public class ValidationService {
     return validateSchema(srcUrl, null);
   }
 
-  private void log(String s ) {
+  /*private void log(String s ) {
     Utils.log(s);
+  } */
+
+  public static void main(String[] s) {
+
+try {
+    //String xml = "http://reportek2.eionet.eu.int/colqaj8nw/envqe8zva/countrynames.tmx";
+    String xml = "http://localhost:8080/gdemxf/forms/data/data30.xml";
+    //String sch = "http://dd.eionet.eu.int/GetSchema?comp_id=1752&comp_type=TBL";
+    // String sch = "http://www.lisa.org/tmx/tmx14.dtd";
+    //String sch = "http://roddev.eionet.eu.int/waterdemo/water_measurements.xsd";
+    
+    ValidationService v = new ValidationService();
+  //  v.log(v.validateSchema(xml,sch));
+  //System.out.println(v.validateSchema(xml,sch));
+  System.out.println(v.validate(xml));
+    //v.log(v.validate(xml));
+    
+} catch (Exception e) {
+System.out.println("===== " + e.toString());
+}
+
   }
 }

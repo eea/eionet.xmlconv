@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./services.xsd">
-	<Service Name="ConversionService" Provider="eionet.gdem.ConversionService">
+	<Service Name="ConversionService" Provider="eionet.gdem.conversion.ConversionService">
 	<Methods>
 			<Method Name="convert" Auth="false">
 				<Parameters>
@@ -17,7 +17,7 @@
 			</Method>
 		</Methods>		
 	</Service>
-	<Service Name="XQueryService" Provider="eionet.gdem.XQueryService">
+	<Service Name="XQueryService" Provider="eionet.gdem.qa.XQueryService">
 	<Methods>
 			<Method Name="analyze" Auth="false">
 				<Parameters>
@@ -37,7 +37,7 @@
 			</Method>
 		</Methods>		
 	</Service>
-	<Service Name="ValidationService" Provider="eionet.gdem.ValidationService">
+	<Service Name="ValidationService" Provider="eionet.gdem.validation.ValidationService">
 	<Methods>
 			<Method Name="validate" Auth="false">
 				<Parameters>

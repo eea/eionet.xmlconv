@@ -1,4 +1,4 @@
-package eionet.gdem;
+package eionet.gdem.validation;
 
 import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;

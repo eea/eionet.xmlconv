@@ -21,12 +21,29 @@
  * Original Code: Kaido Laine (TietoEnator)
  */
 
-package eionet.gdem;
+package eionet.gdem.qa;
+import eionet.gdem.GDEMException;
 
-public class GDEMException extends Exception {
-  public GDEMException(String msg)  {
-      super(msg);
-      System.err.println("GDEMException occured with reason <<" + msg + ">>");
-    }
+/**
+* Interface for XQuery Engine implementation
+*/
+
+public interface XQEngineIF {
+  /**
+   * processes the XQuery
+   * @param xqScript the XQuery script
+   * @param params XQuery parameter name value pairs
+   * in format {name1=value1, name2=value2, ... , nameN=valueN}
+   * @return the result of XQuery
+   * @throws eionet.gdem.GDEMException
+   */
+  public String getResult(String xqScript, String params[]) throws GDEMException;
+  /**
+   * processes the XQuery
+   * @param xqScript the XQuery script
+   * @return the result of XQuery
+   * @throws eionet.gdem.GDEMException
+   */
+  public String getResult(String xqScript) throws GDEMException;
   
 }
