@@ -46,7 +46,7 @@ body {
 	font-style: normal; 
 	line-height: normal; 
 	background-color: #F0F0F0;
-        background-image: url("images/eionet_background.jpg");
+        background-image: url("images/background_yellow.png");
         background-repeat: repeat-y;
 }
 
@@ -214,11 +214,12 @@ th {
 #operations {
 	float: right;
 	top: 0px;
-	margin: 0px 0px 0px 15px;  /* T   R   B   L */
+	margin: 0px 0px 0px 15px;
 }
 
 #operations ul {
 	list-style: none;
+	list-style-image: none;
 	margin: 0px;
 }
 
@@ -226,10 +227,8 @@ th {
 	font-size:.75em;
 	font-family: AvenirLight, sans-serif;
 	font-weight: bold;
-	width: 120px;
-	height: 17px;
 	color: #ffffff;
-	background: url('images/emptybluebutton.png') no-repeat;
+	line-height: 100%;
 	white-space: nowrap;
 }
 
@@ -238,7 +237,10 @@ th {
 	font-weight: bold;
 	text-decoration: none;
 	color: #ffffff;
-	padding: 2px 0px 0px 10px;   /* T   R   B   L */
+	background: url('images/emptybluebutton.png') no-repeat;
+	padding: 4px 0px 0px 9px;
+	width: 111px;
+	height: 17px;
 }
 
 #pagefoot {
@@ -261,7 +263,7 @@ th {
 	font-family: verdana, arial, helvetica, sans-serif;
 	color: black;
 	height: 25px;
-	background: url('images/bar_filled.jpg');
+	background: url('images/bar_filled.png');
 	background-repeat: repeat-x;
 }
 
@@ -282,7 +284,7 @@ th {
 	padding-right: 28px;
 	height: 13px;
 	margin-right: 3px;
-	background-image: url("images/bar_hole.jpg");
+	background-image: url("images/bar_hole.png");
 	background-repeat: no-repeat;
 	background-position: 100% 0px;
 	padding-top: 12px;
@@ -293,7 +295,7 @@ th {
 	padding-right: 28px;
 	height: 13px;
 	margin-right: 3px;
-	background-image: url("images/bar_dot.jpg");
+	background-image: url("images/bar_dot.png");
 	background-repeat: no-repeat;
 	background-position: 100% 0px;
 	padding-top: 12px;
