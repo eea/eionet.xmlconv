@@ -270,7 +270,7 @@ public class DbModule implements DbModuleIF {
 
    private int _executeUpdate(String sql) throws SQLException {
 
-//     _log(sql_stmt);
+     _ll(sql);
 
       Connection con = null; // Connection object
       Statement stmt = null; // Statement object
