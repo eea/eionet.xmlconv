@@ -12,7 +12,7 @@
 		<tar tarfile="gdem.tar">
 			<tarfileset dir=".." prefix="gdem"/>
 		</tar>
-	  <gzip zipfile="gdem.tar.gz" src="../gdem.tar"/>
+		<gzip zipfile="gdem.tar.gz" src="../gdem.tar"/>
 		<!--delete file="gdem.tar"/-->		
 	</target>
 
@@ -51,8 +51,12 @@
 	<target name="clean_zip" if="is_win">
 		<!--delete file="gdem.zip"/-->				
 	</target>
-	<target name="cleanup" depends="clean_zip,clean_tar">
-		<!-- <delete dir="."/>		 -->
+	<target name="cleanup">
+		<delete>
+			<fileset dir=".">
+				<include name="**/*.class">
+			</fileset>
+		</delete>
 	</target>
 	
 	<!-- if it is installed under webapps folder under existing virtual host -->
