@@ -1,5 +1,4 @@
-
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <%@ page import="java.util.HashMap, java.util.Vector, eionet.gdem.db.DbModuleIF, eionet.gdem.db.DbUtils, eionet.gdem.ssr.Names" %>
 
 <%!private HashMap schema=null;%>
@@ -33,91 +32,95 @@
 	}
 	if (stylesheets==null) stylesheets=new Vector();
 %>
-<HTML lang=en><HEAD><TITLE>Stylesheets</TITLE>
-
-<META http-equiv=Content-Type content="text/html; charset=UTF-8"><LINK href="eionet.css" type=text/css rel=stylesheet>
-<SCRIPT language=JavaScript>
+<html lang=en>
+<head>
+	<title>Stylesheets</title>
+   	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <link type="text/css" rel="stylesheet" href="eionet.css">
+	<script language="JavaScript" src="util.js"></script>
+	<script language="JavaScript">
+		
+		detectBrowser();	
 	
-	function openPage(action) {
-		document.forms["f"].ACTION.value=action;
-		document.forms["f"].submit();
-	}
-	function openApp(appName) {
-		document.forms["f"].app.value=appName;
-		document.forms["f"].ACTION.value="";
-		document.forms["f"].ACL.value="/";
-		document.forms["f"].submit();
-	}
-	function doLogin(appName) {
-		window.open("appLogin.jsp?app=" + appName,"login","height=200,width=300,status=no,toolbar=no,scrollbars=no,resizable=no,menubar=no,location=no");
-	}
+		function openPage(action) {
+			document.forms["f"].ACTION.value=action;
+			document.forms["f"].submit();
+		}
+		function openApp(appName) {
+			document.forms["f"].app.value=appName;
+			document.forms["f"].ACTION.value="";
+			document.forms["f"].ACL.value="/";
+			document.forms["f"].submit();
+		}
+		function doLogin(appName) {
+			window.open("appLogin.jsp?app=" + appName,"login","height=200,width=300,status=no,toolbar=no,scrollbars=no,resizable=no,menubar=no,location=no");
+		}
 
 				
-</SCRIPT>
-
-<META content="MSHTML 5.50.4522.1800" name=GENERATOR></HEAD>
-<BODY bgColor=#f0f0f0 leftMargin=0 topMargin=0 marginheight="0" marginwidth="0">
+	</script>
+</head>
+<body>
 
 <%@ include file="header.jsp" %>
 
 
-<TABLE cellSpacing=0 cellPadding=0 border=0 background=images/eionet_background.jpg>
-  <TBODY>
-  <TR vAlign=top height=500>
-    <TD noWrap width=130>
-      <P>
-      <CENTER>		
-		<%@ include file="menu.jsp" %>
-	  </CENTER>
-      <P></P>
-      <P></P></TD>
-    <TD>
-	   <jsp:include page="location.jsp" flush='true'>
-          <jsp:param name="name" value="Stylesheets"/>
-       </jsp:include>
+<table cellSpacing="0" cellPadding="0" border="0">
+  <tbody>
+  <tr valign="top">
+	<td nowrap="true" width="130">
+      	<p><center>
+  	      <%@ include file="menu.jsp" %>
+        </center></P>
+	</td>
+    <td width="100%">
+		<jsp:include page="location.jsp" flush='true'>
+        	<jsp:param name="name" value="Stylesheets"/>
+        </jsp:include>
 
-      <DIV style="MARGIN-LEFT: 13px">
+    	<div style="MARGIN-LEFT: 13px">
 
-	  <BR>
-		<table width=618>
-	  		<tr valign="TOP">
-				<td>
-					<% if (err!= null) { %>
-						<h2><FONT color="#FF0000"><%=err%></FONT></h2>
-					<% } %>
-					<h2>Stylesheets of <%=name%></h2>
-				</td>
-				<%
-				boolean ssiPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "i");
-				if (ssiPrm){%>
-					<td align="right">
-						<FORM name="add_stylesheet" action="main" method="POST">
-							<INPUT TYPE=hidden NAME="ID" value=<%=id%>></INPUT><IMG onClick="add_stylesheet.submit();" height=18 width=38 src="images/add.png" alt="Add new stylesheet">
-							<INPUT TYPE=hidden NAME="ACTION" value="<%=Names.SHOW_ADDXSL_ACTION%>"></INPUT>
-						</FORM>
-					<td>
-				<%}%>
-			</tr>
-		</table>
-		<BR>
+		<br/>
+		
+		<% if (err!= null) { %>
+			<h4><%=err%></h4>
+		<% } %>
+	
+		<h2>Stylesheets of <%=name%></h2>
 
-	    <TABLE cellSpacing=5 width=615>
-    	   	<TBODY>
+		<%
+		boolean ssiPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "i");
+		if (ssiPrm){%>
+			<div style="float:right">
+				<img onClick="add_stylesheet.submit();" height="18" width="38" src="images/add.png" alt="Add new stylesheet">
+				<form name="add_stylesheet" action="main" method="POST">
+					<input type="hidden" name="ID" value="<%=id%>"></input>
+					<input type="hidden" name="ACTION" value="<%=Names.SHOW_ADDXSL_ACTION%>"></input>
+				</form>
+			</div>
+		<%}%>
+		
+		<br/>
+
+	    <table cellSpacing="5">
+    	   	<head>
 					
     	   	<%
 				boolean ssdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "d");
 				boolean convPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_TESTCONVERSION_PATH, "x");
 			%>
-        		<TR>
-			  		<TD align=middle width=40 bgColor=#646666 style="padding-left:5;padding-right:10"><SPAN class=head0 ><FONT   color=#ffffff>Type</FONT></SPAN></TD>
-          			<TD align=left width=355 bgColor=#646666 style="padding-left:5;padding-right:10"><SPAN class=head0 ><FONT   color=#ffffff>Description</FONT></SPAN></TD>
-          			<TD align=left width=200 bgColor=#646666 style="padding-left:5;padding-right:10"><SPAN class=head0 ><FONT   color=#ffffff>Stylesheet</FONT></SPAN></TD>
+        		<tr>
+			  		<th align="middle" width="40">Type</th>
+          			<th align="left" width="355"Description</th>
+          			<th align="left" width="200"Stylesheet</th>
        				<%
 					if (ssdPrm){%>
-    	     			<TD align=middle bgColor=#646666>&#160;</TD>
+    	     			<th align="middle">&#160;</th>
 					<%}%>    	     			
-				</TR>
+				</tr>
+    	   	</thead>
+    	   	<tbody>
     	   	<%
+    	   	
 
 				for (int i=0; i<stylesheets.size(); i++){
 					HashMap hash = (HashMap)stylesheets.get(i);
@@ -126,40 +129,45 @@
 					String type = (String)hash.get("content_type_out");
     	   			String description = (String)hash.get("description");
     	   			%>
-					<TR height=5>
-						<TD align="middle" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %> bgcolor="#D3D3D3" <%;%>>
+					<tr height="5">
+						<td align="middle" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %> bgcolor="#D3D3D3" <%;%>>
 	         				<%
 							if (convPrm){%>
-								<a title="Test conversion" href="main?ACTION=<%=Names.SHOW_TESTCONVERSION_ACTION%>&ID=<%=convert_id%>"><%=type%></a>
+								<a title="Test conversion" href="main?ACTION=<%=Names.SHOW_TESTCONVERSION_ACTION%>&amp;ID=<%=convert_id%>"><%=type%></a>
 							<%}else{%>
 								<%=type%>
 							<%}%>
-						</TD>
-						<TD align="left" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %> bgcolor="#D3D3D3" <%;%>><%=description%></TD>
-						<TD align="left" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %> bgcolor="#D3D3D3" <%;%>><a target="blank" href="<%=Names.XSL_FOLDER%><%=xsl%>"><%=xsl%></a></TD>
- 	         			<TD align=middle>
+						</td>
+						<td align="left" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %> bgcolor="#D3D3D3" <%;%>><%=description%></td>
+						<td align="left" style="padding-left:5;padding-right:10" <% if (i % 2 != 0) %> bgcolor="#D3D3D3" <%;%>><a target="blank" href="<%=Names.XSL_FOLDER%><%=xsl%>"><%=xsl%></a></td>
+ 	         			<td align="middle">
 	         				<%
 							if (ssdPrm){%>
-								<img onClick="ss_<%=convert_id%>.submit();" height=15 width=15 src="images/delete.png" title="Delete stylesheet"></img>
+								<img onClick="ss_<%=convert_id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete stylesheet"></img>
 							<%}%>
- 	         			</TD>
-						<FORM name="ss_<%=convert_id%>" ACTION="main" method="POST">
-							<INPUT type="hidden" name="ACTION" value="<%=Names.XSL_DEL_ACTION%>"></INPUT>
-							<INPUT type="hidden" name="XSL_DEL_ID" value="<%=convert_id%>"></INPUT>
-							<INPUT type="hidden" name="ID" value="<%=id%>"></INPUT>
-						</FORM>		
-					</TR>
+ 	         			</td>
+						<form name="ss_<%=convert_id%>" action="main" method="POST">
+							<input type="hidden" name="ACTION" value="<%=Names.XSL_DEL_ACTION%>"></input>
+							<input type="hidden" name="XSL_DEL_ID" value="<%=convert_id%>"></input>
+							<input type="hidden" name="ID" value="<%=id%>"></input>
+						</form>		
+					</tr>
 					<%
     	   		}
     	   	%>
-			</TBODY>
-		 </TABLE>
+			</tbody>
+		 </table>
 		 
-	</DIV></TD></TR></TBODY></TABLE>
+  	  </div>
+    </td>
+  </tr>
+  </tbody>
+</table>
 
-<FORM name="f" ACTION="main" METHOD="POST">
-	<INPUT TYPE="hidden" name="ACTION" value=""/>
-	<INPUT TYPE="hidden" name="PARAM" value=""/>
-</FORM>
+<form name="f" action="main" method="POST">
+	<input type="hidden" name="ACTION" value=""/>
+	<input type="hidden" name="PARAM" value=""/>
+</form>
 
-</BODY></HTML>
+</body>
+</html>

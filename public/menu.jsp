@@ -9,74 +9,44 @@
 
 %>
 
-<SCRIPT language="JavaScript" src="util.js"></SCRIPT>
-<SCRIPT language=JavaScript>
-		Net=1;
-
-		if ((navigator.appName.substring(0,5) == "Netsc"
-			&& navigator.appVersion.charAt(0) > 2)
-			|| (navigator.appName.substring(0,5) == "Micro"
-			&& navigator.appVersion.charAt(0) > 3)) {
-		 Net=0;
-
-		 over = new Image;
-		 out = new Image;
-		 gammel = new Image;
-
-		 over.src = "images/on.gif";
-		 out.src = "images/off.gif";
-		 
-		 gTarget = 'img1';
-		}
-
-		//var browser = document.all ? 'E' : 'N';
-		//var picklist = new Array();
-
-				
-		function logout() {
-			document.forms["logout"].submit();		
-		}
-		function login() {
-			window.open("<%=Names.LOGIN_JSP%>","login","height=200,width=300,status=no,toolbar=no,scrollbars=no,resizable=no,menubar=no,location=no");
-		}
-</SCRIPT>
-			<TABLE cellSpacing=0 cellPadding=0 border=0>
-        <TR>
-          <TD align=center><SPAN class=head0>Contents</SPAN>
-					</TD>
-				</TR>
-				<TR>
-					<TD align=right><A onmouseover="Over('img1')" onmouseout="Out('img1')" href="main" onclick="Click('img1')">
-						<IMG height=13 alt="" src="images/off.gif" width=16 border=0 name="img1"><IMG height=13 alt="Show Conversions" src="images/button_Conversions.gif" width=84 border=0></A></TD>
-				</TR>
-				<TR><TD>&nbsp;</TD></TR>
+	<table cellSpacing="0" cellPadding="0" border="0">
+        <tr>
+          <td align="center"><span class="head0">Contents</span></tr>
+		</tr>
+		<tr>
+			<td align="right">
+				<a onmouseover="Over('img1')" onmouseout="Out('img1')" href="main" onclick="Click('img1')">
+					<img height="13" alt="" src="images/off.gif" width="16" border="0" name="img1"><img height="13" alt="Show Conversions" src="images/button_Conversions.gif" width="84" border="0">
+				</a>
+			</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<%
+			//AppUser user = SecurityUtil.getUser(request);
+		%>
+		<tr>
+			<td align="right">
 				<%
-				//AppUser user = SecurityUtil.getUser(request);
+				if (user!=null ){
 				%>
-				<tr>
-					<td align="right">
-						<%
-						if (user!=null ){
-							%>
-		        			<FORM name="logout" action="main" method="POST">
-								<INPUT name="ACTION" type="hidden" value="<%=Names.LOGOUT_ACTION%>"></INPUT>
-								<a onMouseOut="Out('img3')" onMouseOver="Over('img3')" href="javascript:logout()">
-		        					<img alt="" border="0" src="images/off.gif" name="img3" width="16" height="13"><img alt="Login" height="13" width="84" border="0" src="images/button_logout.gif">
-				 				</a>
-				 			</FORM>
-							<%
-						}
-						else{
-							%>
-			    		    <a onMouseOut="Out('img3')" onMouseOver="Over('img3')" href="javascript:login()">
-					        	<img alt="" border="0" src="images/off.gif" name="img3" width="16" height="13"><img alt="Login" height="13" width="84" border="0" src="images/button_login.gif">
-					        </a>
-		    			    <%
-				    	}
-				    	%>
-					</td>
-				</tr>
-				<TR><TD>&nbsp;</TD></TR>
-	
-		</TABLE>
+		        	<form name="logout" action="main" method="POST">
+						<input name="ACTION" type="hidden" value="<%=Names.LOGOUT_ACTION%>"></input>
+						<a onMouseOut="Out('img3')" onMouseOver="Over('img3')" href="javascript:logout()">
+		        			<img alt="" border="0" src="images/off.gif" name="img3" width="16" height="13"><img alt="Login" height="13" width="84" border="0" src="images/button_logout.gif">
+				 		</a>
+				 	</form>
+				<%
+				}
+				else{
+				%>
+			    	<a onMouseOut="Out('img3')" onMouseOver="Over('img3')" href="javascript:login()">
+						<img alt="" border="0" src="images/off.gif" name="img3" width="16" height="13"><img alt="Login" height="13" width="84" border="0" src="images/button_login.gif">
+					</a>
+   			    <%
+		    	}
+		    	%>
+			</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+	</table>
 

@@ -60,3 +60,28 @@ function Out(Target) {
 		document.location=url;
 
 	}
+	function logout() {
+		document.forms["logout"].submit();		
+	}
+	function login() {
+		window.open("login.jsp","login","height=230,width=400,status=no,toolbar=no,scrollbars=no,resizable=no,menubar=no,location=no");
+	}
+	function detectBrowser(){
+		Net=1;
+
+		if ((navigator.appName.substring(0,5) == "Netsc"
+			&& navigator.appVersion.charAt(0) > 2)
+			|| (navigator.appName.substring(0,5) == "Micro"
+			&& navigator.appVersion.charAt(0) > 3)) {
+		 Net=0;
+
+		 over = new Image;
+		 out = new Image;
+		 gammel = new Image;
+
+		 over.src = "images/on.gif";
+		 out.src = "images/off.gif";
+		 
+		 gTarget = 'img1';
+		}
+	}

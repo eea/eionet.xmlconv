@@ -1,5 +1,4 @@
-
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <%@ page import="java.util.Hashtable, java.util.Vector, java.util.HashMap, eionet.gdem.db.DbModuleIF, eionet.gdem.db.DbUtils, eionet.gdem.ssr.Names, eionet.gdem.ssr.SecurityUtil,com.tee.uit.security.AppUser" %>
 
 <%
@@ -11,85 +10,81 @@
 	if (list==null) list=new Vector();
 	
 %>
-<HTML lang=en><HEAD><TITLE>Stylesheets</TITLE>
-
-<META http-equiv=Content-Type content="text/html; charset=UTF-8"><LINK href="eionet.css" type=text/css rel=stylesheet>
-<SCRIPT language=JavaScript>
+<html lang=en>
+<head>
+	<title>Stylesheets</title>
+   	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <link type="text/css" rel="stylesheet" href="eionet.css">
+	<script language="JavaScript" src="util.js"></script>
+	<script language="JavaScript">
 	
-	function openPage(action) {
-		document.forms["f"].ACTION.value=action;
-		document.forms["f"].submit();
-	}
-	function openXSD(action, id) {
-		document.forms["f"].ACTION.value=action;
-		document.forms["f"].ID.value=id;
-		document.forms["f"].submit();
-	}
+		detectBrowser();	
 
-				
-</SCRIPT>
-
-<META content="MSHTML 5.50.4522.1800" name=GENERATOR></HEAD>
-<BODY bgColor=#f0f0f0 leftMargin=0 topMargin=0 marginheight="0" marginwidth="0">
+		function openPage(action) {
+			document.forms["f"].ACTION.value=action;
+			document.forms["f"].submit();
+		}
+		function openXSD(action, id) {
+			document.forms["f"].ACTION.value=action;
+			document.forms["f"].ID.value=id;
+			document.forms["f"].submit();
+		}			
+	</script>
+</head>
+<body>
 
 <%@ include file="header.jsp" %>
 
-
-<TABLE cellSpacing=0 cellPadding=0 border=0 background=images/eionet_background.jpg>
-  <TBODY>
-  <TR vAlign=top height=500>
-    <TD noWrap width=130>
-      <P>
-      <CENTER>		
-		<%@ include file="menu.jsp" %>
-	  </CENTER>
-      <P></P>
-      <P></P>
-    </TD>
-    <TD>
-	    <jsp:include page="location.jsp" flush='true'>
+<table cellSpacing="0" cellPadding="0" border="0">
+  <tbody>
+  <tr valign="top">
+	<td nowrap="true" width="130">
+      	<p><center>
+  	      <%@ include file="menu.jsp" %>
+        </center></P>
+	</td>
+    <td width="100%">
+		<jsp:include page="location.jsp" flush='true'>
           <jsp:param name="name" value="Conversions"/>
         </jsp:include>
 
       
-      <DIV style="MARGIN-LEFT: 13px">
-
-	  <BR>
-
-	    <table width=615>
-		  <tr valign="TOP">
-			<td>
-				<% if (err!= null) { %>
-					<h2><FONT color="#FF0000"><%=err%></FONT></h2>
-				<% } %>
-				<h2>Conversions</h2>
-			</td>
-			<%
-			boolean ssiPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "i");
-			if (ssiPrm){
-				%><td align="right">
-					<FORM name="add_stylesheet" action="main" method="POST">
-						<INPUT TYPE=hidden NAME="ID"></INPUT><IMG onClick="add_stylesheet.submit();" height=18 width=38 src="images/add.png" alt="Add new Stylesheet">
-						<INPUT TYPE=hidden NAME="ACTION" value="<%=Names.SHOW_ADDXSL_ACTION%>"></INPUT>
-					</FORM>
-				<td>
-			<%}%>
-		  </tr>
-		</table>
-		<br>
-		<TABLE cellSpacing=5 width=615>
-          <TBODY>
+    	<div style="MARGIN-LEFT: 13px">
+		<br/>
+	  
+		<% if (err!= null) { %>
+			<h4><%=err%></h4>
+	  	<% } %>
+			<h2>Conversions</h2>
+		<%
+		boolean ssiPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "i");
+		if (ssiPrm){
+		%>
+			<div style="float:right">
+				<img onClick="add_stylesheet.submit();" height="18" width="38" src="images/add.png" alt="Add new Stylesheet">
+				<form name="add_stylesheet" action="main" method="POST">
+					<input type="hidden" name="ID"></input>
+					<input type="hidden" name="ACTION" value="<%=Names.SHOW_ADDXSL_ACTION%>"></input>
+				</form>
+			</div>
+		<%}%>
+		<br/>
+		
+		<table cellSpacing="5">
+          <thead>
             <%
 			boolean ssdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "d");
 			%>
-            <TR>
-		      <TD align=left width=* bgColor=#646666><SPAN class=head0 ><FONT   color=#ffffff>XML Schema</FONT></SPAN></TD>
-              <TD align=left width=200 bgColor=#646666><SPAN class=head0 ><FONT   color=#ffffff>Stylesheets</FONT></SPAN></TD>
+            <tr>
+		      <th align="left" width="*">XML Schema</th>
+              <th align="left" width="200">Stylesheets</th>
 			  <%
 				if (ssdPrm){%>
-     			  <TD align=middle bgColor=#646666>&#160;</TD>
+     			  <th align="middle" width="15">&#160;</th>
      		  <%}%>
-		    </TR>
+		    </tr>
+		   </thead>
+		   <tbody>
 				<%
 						
 						
@@ -121,31 +116,30 @@
 						}
 						%>
 						</td>
- 	         			<TD align=middle>
+ 	         			<td align="middle">
  	         				<%
 							if (ssdPrm){%>
-								<img onClick="ss_<%=id%>.submit();" height=15 width=15 src="images/delete.png" title="Delete schema and all it's stylesheets"></img>
+								<img onClick="ss_<%=id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete schema and all it's stylesheets"></img>
 							<%}%>
- 	         			</TD>
-						<FORM name="ss_<%=id%>" ACTION="main" method="POST">
-							<INPUT type="hidden" name="ACTION" value="<%=Names.XSD_DEL_ACTION%>"></INPUT>
-							<INPUT type="hidden" name="XSD_DEL_ID" value="<%=id%>"></INPUT>
-						</FORM>		
+ 	         			</td>
+						<form name="ss_<%=id%>" action="main" method="POST">
+							<input type="hidden" name="ACTION" value="<%=Names.XSD_DEL_ACTION%>"></input>
+							<input type="hidden" name="XSD_DEL_ID" value="<%=id%>"></input>
+						</form>
 					</tr>
 					<%
 
 				}
 				%>
-			</TBODY>
-		</TABLE>
+			</tbody>
+		</table>
 
+	</div></td></tr></tbody></table>
 
+	<form name="f" action="main" method="GET">
+		<input type="hidden" name="ACTION" value=""/>
+		<input type="hidden" name="ID" value=""/>
+	</form>
 
-</DIV></TD></TR></TBODY></TABLE>
-
-<FORM name="f" ACTION="main" METHOD="GET">
-	<INPUT TYPE="hidden" name="ACTION" value=""/>
-	<INPUT TYPE="hidden" name="ID" value=""/>
-</FORM>
-
-</BODY></HTML>
+	</body>
+</html>

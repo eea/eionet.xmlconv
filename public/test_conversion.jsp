@@ -1,5 +1,4 @@
-
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <%@ page import="java.util.HashMap, eionet.gdem.db.DbModuleIF, eionet.gdem.db.DbUtils, eionet.gdem.ssr.Names" %>
 
 
@@ -32,64 +31,65 @@
 	}
 	
 %>
-<HTML lang=en><HEAD><TITLE>Stylesheets</TITLE>
-
-<META http-equiv=Content-Type content="text/html; charset=UTF-8"><LINK href="eionet.css" type=text/css rel=stylesheet>
-<SCRIPT language=JavaScript>
-	function convert(){
-		var file = document.forms["TestConversion"].elements["XML_FILE"].value;
-		if (file == ""){
-			alert("File location is not specified!");
-			return;
-		}
+<html lang=en>
+<head>
+	<title>Stylesheets</title>
+   	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <link type="text/css" rel="stylesheet" href="eionet.css">
+	<script language="JavaScript" src="util.js"></script>
+	<script language="JavaScript">
 		
-		sUrl = "main?ACTION=<%=Names.EXECUTE_TESTCONVERSION_ACTION%>&format=<%=id%>&url=" + file;
-		window.open(sUrl,"conversion","height=600,width=800,status=yes,toolbar=yes,scrollbars=yes,resizable=yes,menubar=yes,location=yes");
-	}
+		detectBrowser();	
+	
+		function convert(){
+			var file = document.forms["TestConversion"].elements["XML_FILE"].value;
+			if (file == ""){
+				alert("File location is not specified!");
+				return;
+			}
+		
+			sUrl = "main?ACTION=<%=Names.EXECUTE_TESTCONVERSION_ACTION%>&format=<%=id%>&url=" + file;
+			//alert(sUrl);
+			window.open(sUrl,"conversion","height=600,width=800,status=yes,toolbar=yes,scrollbars=yes,resizable=yes,menubar=yes,location=yes");
+		}
 
 			
-</SCRIPT>
+	</script>
 
-<META content="MSHTML 5.50.4522.1800" name=GENERATOR></HEAD>
-<BODY bgColor=#f0f0f0 leftMargin=0 topMargin=0 marginheight="0" marginwidth="0">
+</head>
+<body>
 
 <%@ include file="header.jsp" %>
 
 
-<TABLE cellSpacing=0 cellPadding=0 border=0 background=images/eionet_background.jpg>
-  <TBODY>
-  <TR vAlign=top height=500>
-    <TD noWrap width=130>
-      <P>
-      <CENTER>		
-		<%@ include file="menu.jsp" %>
-	  </CENTER>
-      <P></P>
-      <P></P></TD>
-    <TD>
+<table cellSpacing="0" cellPadding="0" border="0">
+  <tbody>
+  <tr valign="top">
+	<td nowrap="true" width="130">
+      	<p><center>
+  	      <%@ include file="menu.jsp" %>
+        </center></P>
+	</td>
+    <td width="100%">
 	   <jsp:include page="location.jsp" flush='true'>
           <jsp:param name="name" value="Test conversion"/>
        </jsp:include>
 
-      <DIV style="MARGIN-LEFT: 13px">
+      <div style="MARGIN-LEFT: 13px">
 
-	  <BR>
-		<table width=618>
-	  		<tr valign="TOP">
-				<td>
-					<% if (err!= null) { %>
-						<h2><FONT color="#FF0000"><%=err%></FONT></h2>
-					<% } %>
-					<h2>Test conversion</h2>
-				</td>
-				<td align="right"><td>
-			</tr>
-		</table>
-		<BR>
+	  <br/>
 
-		<FORM NAME="TestConversion" ACTION="main" METHOD="POST">
+	  <% if (err!= null) { %>
+ 	  	<h4><%=err%></h4>
+	  <% } %>
+  	  
+	  <h2>Test conversion</h2>
+
+	  <br/>	
+
+		<form name="TestConversion" action="main" method="POST">
 				
-			<table width="auto" cellspacing="0">
+			<table cellspacing="0">
 				<tr valign="top">
 					<td align="right" style="padding-right:5">
 						<span class="smallfont"><b>XML Schema</b>&#160;</span>
@@ -139,10 +139,15 @@
 						</tr>
 					<%}%>
 			</table>
-			<INPUT TYPE="hidden" name="ACTION" value="<%=Names.SHOW_TESTCONVERSION_ACTION%>"/>
-		</FORM>	
+			<input type="hidden" name="ACTION" value="<%=Names.SHOW_TESTCONVERSION_ACTION%>"/>
+		</form>	
 
 		 
-	</DIV></TD></TR></TBODY></TABLE>
+		</div>
+	  </td>
+	</tr>
+	</tbody>
+</table>
 
-</BODY></HTML>
+</body>
+</html>

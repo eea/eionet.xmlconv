@@ -1,5 +1,4 @@
-
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <%@ page import="java.util.HashMap, java.util.Vector, eionet.gdem.db.DbModuleIF, eionet.gdem.db.DbUtils, eionet.gdem.ssr.Names" %>
 
 
@@ -28,84 +27,78 @@
 	}
 	
 %>
-<HTML lang=en><HEAD><TITLE>Stylesheets</TITLE>
-
-<META http-equiv=Content-Type content="text/html; charset=UTF-8"><LINK href="eionet.css" type=text/css rel=stylesheet>
-<SCRIPT language=JavaScript>
+<html lang="en">
+<head>
+	<title>Stylesheets</title>
+   	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <link type="text/css" rel="stylesheet" href="eionet.css">
+	<script language="JavaScript" src="util.js"></script>
+	<script language="JavaScript">
+		
+		detectBrowser();	
 	
-	function submitForm(){
+		function submitForm(){
 
 		
-		var file = document.forms["Upload"].elements["FILE_INPUT"].value;
-		var schema = document.forms["Upload"].elements["SCHEMA"].value;
-		var description = document.forms["Upload"].elements["DESCRIPTION"].value;
-		var content_type = document.forms["Upload"].elements["CONTENT_TYPE"].value;
-		var action = document.forms["Upload"].elements["ACTION"].value;
-		var ok = true;
+			var file = document.forms["Upload"].elements["FILE_INPUT"].value;
+			var schema = document.forms["Upload"].elements["SCHEMA"].value;
+			var description = document.forms["Upload"].elements["DESCRIPTION"].value;
+			var content_type = document.forms["Upload"].elements["CONTENT_TYPE"].value;
+			var action = document.forms["Upload"].elements["ACTION"].value;
+			var ok = true;
 
 		
-		if (file == ""){
-			alert("File location is not specified!");
-			ok = false;
+			if (file == ""){
+				alert("File location is not specified!");
+				ok = false;
+			}
+		
+	
+			if (ok == true){
+			
+				var qryStr = "?SCHEMA=" + schema + "&DESCRIPTION=" + description + "&CONTENT_TYPE=" + content_type + "&ACTION=" + action;
+			
+				document.forms["Upload"].action = document.forms["Upload"].action + qryStr;
+				//alert(document.forms["Upload"].action);
+				document.forms["Upload"].submit();
+			}
 		}
 		
-
-		if (ok == true){
-			
-			var qryStr = "?SCHEMA=" + schema + "&DESCRIPTION=" + description + "&CONTENT_TYPE=" + content_type + "&ACTION=" + action;
-			
-			document.forms["Upload"].action = document.forms["Upload"].action + qryStr;
-			//alert(document.forms["Upload"].action);
-			document.forms["Upload"].submit();
-		}
-	}
-
-				
-</SCRIPT>
-
-<META content="MSHTML 5.50.4522.1800" name=GENERATOR></HEAD>
-<BODY bgColor=#f0f0f0 leftMargin=0 topMargin=0 marginheight="0" marginwidth="0">
+	</script>
+</head>
+<body>
 
 <%@ include file="header.jsp" %>
 
 
-<TABLE cellSpacing=0 cellPadding=0 border=0 background=images/eionet_background.jpg>
-  <TBODY>
-  <TR vAlign=top height=500>
-    <TD noWrap width=130>
-      <P>
-      <CENTER>		
-		<%@ include file="menu.jsp" %>
-	  </CENTER>
-      <P></P>
-      <P></P></TD>
-    <TD>
-	   <jsp:include page="location.jsp" flush='true'>
-          <jsp:param name="name" value="Add stylesheet"/>
-       </jsp:include>
+<table cellSpacing="0" cellPadding="0" border="0">
+  <tr valign="top">
+   	<td nowrap="true" width="130">
+      	<p><center>
+  	      <%@ include file="menu.jsp" %>
+        </center></P>
+    </td>
+    <td width="100%">
+	   	<jsp:include page="location.jsp" flush='true'>
+        	<jsp:param name="name" value="Add stylesheet"/>
+       	</jsp:include>
 
-      <DIV style="MARGIN-LEFT: 13px">
+		<div style="MARGIN-LEFT: 13px">
 
-	  <BR>
-		<table width=618>
-	  		<tr valign="TOP">
-				<td>
-					<% if (err!= null) { %>
-						<h2><FONT color="#FF0000"><%=err%></FONT></h2>
-					<% } %>
-					<h2>Add a new stylesheets</h2>
-				</td>
-				<td align="right"><td>
-			</tr>
-		</table>
-		<BR>
+	   <br/>
+		<% if (err!= null) { %>
+			<h2><font color="#FF0000"><%=err%></font></h2>
+		<% } %>
+			<h2>Add a new stylesheet</h2>
+		<br>
 
-		<FORM NAME="Upload" ACTION="main" METHOD="POST" ENCTYPE="multipart/form-data">
+		<form name="Upload" action="main" method="POST" enctype="multipart/form-data">
 				
-			<table width="auto" cellspacing="0">
+			<table cellSpacing="0">
 				<tr valign="top">
-					<td align="right" style="padding-right:5">
-						<span class="smallfont"><b>XML Schema</b>&#160;</span>
+					<td align="left">	
+						<span class="smallfont"><b>XML Schema</b>&#160;
+					</td>
 					<td align="left">	
 						<input type="text" class="smalltext" size="64" name="SCHEMA" value="<% if (schema_name != null) %><%=schema_name%><%;%>"></input>
 					</td>
@@ -113,6 +106,7 @@
 				<tr valign="top">
 					<td align="right" style="padding-right:5">
 						<span class="smallfont"><b>Output type</b>&#160;</span>
+					</td>
 					<td align="left">	
 						<select class="small" name="CONTENT_TYPE">
 							<option value="HTML">HTML</option>
@@ -146,14 +140,14 @@
 					</td>
 				</tr>
 			</table>
-			<INPUT TYPE="hidden" name="ACTION" value="<%=Names.XSL_ADD_ACTION%>"/>
-		</FORM>	
+			<input TYPE="hidden" name="ACTION" value="<%=Names.XSL_ADD_ACTION%>"/>
+		</form>	
 
 		 
-	</DIV></TD></TR></TBODY></TABLE>
-<FORM name="f" ACTION="main" METHOD="POST">
-	<INPUT TYPE="hidden" name="ACTION" value=""/>
-	<INPUT TYPE="hidden" name="PARAM" value=""/>
-</FORM>
+	</div></td></tr></tbody></table>
+<form name="f" action="main" method="POST">
+	<input type="hidden" name="ACTION" value=""/>
+	<input type="hidden" name="PARAM" value=""/>
+</form>
 
-</BODY></HTML>
+</body></html>
