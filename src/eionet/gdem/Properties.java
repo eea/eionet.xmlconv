@@ -41,6 +41,11 @@ public class Properties {
   public static String xslFolder="/xsl/";
 
   public static String queriesFolder="/queries/";
+  
+  
+  public static final int CONV_SERVICE=1; //Conversion service weight
+  public static final int QA_SERVICE=2; //QA service weight
+  public static int services_installed=3; //by default the both services are installed
 
   //public static String xformsFolder="/xforms/";
 
@@ -84,6 +89,11 @@ public class Properties {
 		    Float f = new Float(frequency);
 			  wqCheckInterval = (long)(f.floatValue() * 1000);
 
+        try{
+          services_installed = Integer.parseInt(props.getString("gdem.services"));  
+        }
+        catch(Exception e){ //ignore, use default
+        }
         //wqCheckInterval= (Long.getLong(props.getString("wq.check.interval"))).longValue();
 
 

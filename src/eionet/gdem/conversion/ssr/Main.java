@@ -23,6 +23,7 @@
 
 package eionet.gdem.conversion.ssr;
 
+import java.util.Enumeration;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,6 +40,7 @@ import java.util.MissingResourceException;
 import com.tee.uit.security.*;
 //import com.tee.uit.security.SignOnException;
 
+import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.SecurityUtil;
 
@@ -57,6 +59,7 @@ public class Main extends HttpServlet implements Names {
   protected String authUser;
   protected String unauthUser;
   protected HttpSession session;
+  protected String index_jsp = INDEX_JSP;
 
   private boolean userChanged=false;
 
@@ -75,6 +78,8 @@ public class Main extends HttpServlet implements Names {
     String action=req.getParameter("ACTION");
     action = (action == null ? "" : action);
     HttpSession sess = req.getSession();
+
+    index_jsp = getWelcomeFile();
 
     if (action.equals(LOGOUT_ACTION)) {
       doLogout(req);
@@ -184,9 +189,10 @@ public class Main extends HttpServlet implements Names {
 
     private void dispatch(HttpServletRequest req, HttpServletResponse res, String action) throws ServletException, IOException  {
 
-    String jspName=INDEX_JSP;
+    String jspName=index_jsp;
+    
      if ( action.equals( SHOW_SCHEMAS_ACTION ))
-        jspName= INDEX_JSP;
+        jspName= index_jsp;
       else if ( action.equals( SHOW_STYLESHEETS_ACTION ))
         jspName=STYLESHEETS_JSP;
       else if ( action.equals( SHOW_QUERIES_ACTION ))
@@ -215,7 +221,7 @@ public class Main extends HttpServlet implements Names {
       }
       else  if ( action.equals( XSD_DEL_ACTION )){
         SaveHandler.handleSchemas(req,action);
-        jspName=INDEX_JSP;
+        jspName=index_jsp;
       }
       else  if ( action.equals( XSDQ_DEL_ACTION )){
         SaveHandler.handleSchemas(req,action);
@@ -226,7 +232,7 @@ public class Main extends HttpServlet implements Names {
         jspName=SCHEMA_JSP;
       }
       else if ( action.equals( LOGOUT_ACTION ))
-        jspName=INDEX_JSP;
+        jspName=index_jsp;
       else if ( action.equals( LOGIN_ACTION )){
           //login has succeeded and we close login window
         res.setContentType("text/html");
@@ -276,5 +282,43 @@ public class Main extends HttpServlet implements Names {
       else
         return true;
     }
+    private String getWelcomeFile(){
+    
+    String welcomefile = null;
+    String[] files=(String[])getServletConfig().getServletContext().getAttribute("org.apache.catalina.WELCOME_FILES");
+
+      if (files!=null){
+        if (files.length>0){
+          welcomefile = files[0];
+        }
+      }
+      if (welcomefile==null){
+        if (serviceInstalled(Properties.CONV_SERVICE)){
+          welcomefile=INDEX_JSP;
+        }
+        if (serviceInstalled(Properties.QA_SERVICE)){
+          welcomefile=QUERIESINDEX_JSP;
+        }
+        else {
+          welcomefile=INDEX_JSP;
+        }
         
+      }
+      return welcomefile;
+    }
+    private boolean serviceInstalled(int service){
+
+    		int services_installed = Properties.services_installed;
+
+        // we divide displayWhen with the type's weight
+        // and if the result is an odd number, we return true
+        // if not, we return false
+        int div = services_installed/service;
+        
+        if (div % 2 != 0)
+            return true;
+        else
+            return false;
+    }
+
 }

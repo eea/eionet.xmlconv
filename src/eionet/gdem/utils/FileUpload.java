@@ -20,7 +20,7 @@
  *
  * Original Code: Kaido Laine (TietoEnator)
  *
- * $Id: FileUpload.java,v 1.1 2004/06/28 15:31:46 te-ee Exp $
+ * $Id$
  */
 
 package eionet.gdem.utils;

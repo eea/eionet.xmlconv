@@ -310,7 +310,6 @@ public class ConversionService {
     } 
     catch (Exception e ) {
       if (res!=null){
-            System.out.println("Nonii");
 
         throw new GDEMException(e.toString(), e);
       }

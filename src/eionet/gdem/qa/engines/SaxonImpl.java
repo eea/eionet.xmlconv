@@ -227,7 +227,7 @@ public class SaxonImpl implements XQEngineIF {
     //listener.error(e);
   } finally {
   		if (listener.hasErrors() || dynamicListener.hasErrors() )
-  			throw new GDEMException (listener.getErrors() + dynamicListener.getErrors()  );
+  			throw new GDEMException (listener.getErrors() + dynamicListener.getErrors());
   	}
   return s;
   }

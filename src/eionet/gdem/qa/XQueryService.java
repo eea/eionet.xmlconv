@@ -316,10 +316,10 @@ public class XQueryService  implements Constants {
   public static void main(String args[]) {
     try{
       XQueryService xqs = new XQueryService();
-      //Vector v = xqs.listQueries("http://dd.eionet.eu.int/GetSchema?id=TBL2552");
-      Hashtable h = xqs.getResult("383");
-      System.out.println(h.toString());
-      System.out.println("h.toString()");
+      Vector v = xqs.listQueries("http://dd.eionet.eu.int/GetSchema?id=TBL2552");
+      //Hashtable h = xqs.getResult("383");
+      System.out.println(v.toString());
+      //System.out.println("h.toString()");
     }
     catch(Exception e ){
       System.out.println(e.toString());
