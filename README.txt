@@ -1,3 +1,10 @@
+Documentation:
+
+XMLConv was part of the GDEM project. Therefore the user guide and installation
+guide is located in the /gdem part of the source code repository.
+
+
+
 How to install the GDEM package
 ================================
 
