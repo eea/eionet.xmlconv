@@ -107,6 +107,14 @@ public class ConversionService {
       htmlFileName=convertPDF(sourceFile, xslFile);
       h.put("content-type", "application/pdf");
     }
+    else if (convertId.indexOf("excel") != -1) {
+      htmlFileName=convertExcel(sourceFile, xslFile);
+      h.put("content-type", "application/vnd.ms-excel");
+    }
+    else if (convertId.indexOf("xml") != -1) {
+      htmlFileName=convertXML(sourceFile, xslFile);
+      h.put("content-type", "text/xml");
+    }
 
     //log("========= going to bytes " + htmlFileName);
     byte[] file = fileToBytes(htmlFileName);
@@ -186,6 +194,52 @@ public class ConversionService {
       return htmlFile;
   }
 
+  private String convertExcel(String source, String xslt) throws GDEMException {
+
+      String xmlFile=tmpFolder + "gdem_out" + System.currentTimeMillis() + ".xml";
+      String excelFile=tmpFolder + "gdem_" + System.currentTimeMillis() + ".xls";
+      String args[]={"-in", source, "-xsl", xslt, "-out", xmlFile  };
+      //String excel_args[]={"-in", xmlFile, "-out", excelFile  };
+      //[-xsl stylesheet] [-o dest] file1.xml file2.xml ...       
+      //String args[]={"-xsl", xslt, "-o", htmlFile, source  };
+    try {
+
+      org.apache.xalan.xslt.Process.main(args);
+
+      ExcelProcessor ep = new ExcelProcessor();
+      ep.makeExcel(xmlFile, excelFile);
+
+    
+    } catch (Throwable e ) {
+      log("Error " + e.toString());
+      e.printStackTrace(System.out);    
+      throw new GDEMException("Error transforming Excel " + e.toString());
+    }
+
+
+    
+      //System.out.println("======= html OK");
+      return excelFile;
+  }
+  
+  private String convertXML(String source, String xslt) throws GDEMException {
+
+      String xmlFile=tmpFolder + "gdem_out" + System.currentTimeMillis() + ".xml";
+      String args[]={"-in", source, "-xsl", xslt, "-out", xmlFile  };
+    try {
+
+    org.apache.xalan.xslt.Process.main(args);
+   //log("conversion done");
+
+    
+    } catch (Throwable e ) {
+      log("Error " + e.toString());
+      e.printStackTrace(System.out);    
+      throw new GDEMException("Error transforming XML " + e.toString());
+    }
+      //System.out.println("======= html OK");
+      return xmlFile;
+  }
  
   /**
   * Saves the source file temporarily
@@ -217,4 +271,5 @@ public class ConversionService {
   private void log(String msg) {
     Utils.log(msg);
   }
+ 
 }
