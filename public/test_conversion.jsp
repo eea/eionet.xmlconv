@@ -118,11 +118,12 @@ private String validateSchema(String url, String schema){
     <link rel="stylesheet" type="text/css" href="layout-screen.css" media="screen" title="EIONET style" />
     <script type="text/javascript" src="util.js"></script>
     <script type="text/javascript">
-		
+		/*
 		function convert(){
 			var file = document.forms["TestConversion"].elements["XML_FILE"].value;
 			var format_buttons = document.forms["TestConversion"].elements["FORMAT"];
-			
+
+			alert(document.forms["TestConversion"].elements["FORMAT"].value);
 			if (file == ""){
 				alert("File location is not specified!");
 				return;
@@ -143,7 +144,7 @@ private String validateSchema(String url, String schema){
 			window.open(sUrl,"conversion","height=600,width=800,status=yes,toolbar=yes,scrollbars=yes,resizable=yes,menubar=yes,location=yes");
 		}
 
-			
+		*/			
 	</script>
 
 </head>
@@ -153,16 +154,16 @@ private String validateSchema(String url, String schema){
 </jsp:include>
 <%@ include file="menu.jsp" %>
 <div id="workarea">
-
 	  <% if (err!= null) { %>
  	  	<h4><%=err%></h4>
 	  <% } %>
   	  
-	  <h2>Test conversion</h2>
+	  <h1>Test conversion</h1>
 
 	  <br/>	
 
-		<form name="TestConversion" action="<%=Names.SHOW_TESTCONVERSION_ACTION%>" method="post">
+		<!--form name="TestConversion" action="<%=Names.SHOW_TESTCONVERSION_ACTION%>" method="post"-->
+		<form name="TestConversion" action="<%=Names.TEST_CONVERSION_SERVLET%>" method="get">
 			<% if (err_mess!=null){
 				%>
 				<span class="error"><%=err_mess%></span>
@@ -179,7 +180,7 @@ private String validateSchema(String url, String schema){
 							<span class="smallfont"><b>URL of XML File</b>&#160;</span>
 						</td>
 						<td align="left">
-							<input type="text" class="smalltext" name="XML_FILE" size="53"/>
+							<input type="text" class="smalltext" name="url" size="53"/>
 						</td>
 					</tr>
 				<%
@@ -191,7 +192,7 @@ private String validateSchema(String url, String schema){
 						</td>
 						<td align="left">
 							<span class="smallfont"><a target="blank" href="<%=xml_url%>"><%=xml_url%></a></span>
-							<input type="hidden" class="smalltext" name="XML_FILE" size="53" value="<%=xml_url%>"/>
+							<input type="hidden" class="smalltext" name="url" size="53" value="<%=xml_url%>"/>
 						</td>
 					</tr>
 				<% 
@@ -237,7 +238,7 @@ private String validateSchema(String url, String schema){
 						%>
 							<tr valign="top">
 								<td align="right" style="padding-right:5">
-									<input type="radio" name="FORMAT" value="<%=convert_id%>"/>
+									<input type="radio" name="format" value="<%=convert_id%>" <% if (j == 0) %>checked="true"<%;%>/>
 								</td>
 								<td align="left">
 									<a target="blank" href="<%=Names.XSL_FOLDER%><%=xsl_file%>" title="open XSL file"><%=output_type%></a> - <%=description%>
@@ -273,12 +274,13 @@ private String validateSchema(String url, String schema){
 						<tr>
 							<td></td>
 							<td align="left">
-								<input name="TEST" type="button" class="mediumbuttonb" value="Convert" onclick="convert()"></input>&#160;&#160;
+								<input name="TEST" type="submit" class="mediumbuttonb" value="Convert" ></input>
+								<!--input name="TEST" type="button" class="mediumbuttonb" value="Convert" onclick="convert()"></input-->&#160;&#160;
 							</td>
 						</tr>
 					<%}%>
 			</table>
-			<input type="hidden" name="ACTION" value="<%=Names.SHOW_TESTCONVERSION_ACTION%>"/>
+			<input type="hidden" name="ACTION" value="<%=Names.EXECUTE_TESTCONVERSION_ACTION%>"/>
 		</form>	
 
 		 
