@@ -23,7 +23,7 @@
 
 package eionet.gdem.qa.engines;
 import eionet.gdem.services.GDEMServices;
-import javax.xml.transform.ErrorListener;
+//import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 
 import net.sf.saxon.StandardErrorListener;
@@ -40,11 +40,8 @@ public class SaxonListener extends StandardErrorListener {
   private LoggerIF _logger;
   
 
-/*private static void _l(String s) {
-System.out.println("=============== " + s);
-}  */
   public SaxonListener()  {
-    _logger= GDEMServices.getLogger();
+  	_logger= GDEMServices.getLogger();
     _errBuf=new StringBuffer();
   }
 
@@ -59,7 +56,6 @@ System.out.println("=============== " + s);
   public String getErrors() {
     return _errBuf.toString();
   }
-  
   public void error(TransformerException exception) throws TransformerException {
     _hasErrors=true;
     String message = "Error " +
@@ -72,7 +68,7 @@ System.out.println("=============== " + s);
   }
   
   public void warning(TransformerException exception)  throws TransformerException {
-    _hasErrors=true;
+  	_hasErrors=true;
      String message = "";
        if (exception.getLocator()!=null) {
             message = getLocationMessage(exception) + "\n  ";
@@ -83,5 +79,4 @@ System.out.println("=============== " + s);
 
       super.warning(exception);     
   }
-  
 }

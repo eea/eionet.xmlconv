@@ -27,24 +27,27 @@ import java.util.Properties;
 import java.util.List;
 
 import java.io.Reader;
-import java.io.FileReader;
+/*import java.io.FileReader;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.PrintWriter; */
 import java.io.File;
 
+/*
 import org.xml.sax.InputSource;
 
 import javax.xml.transform.Source;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.URIResolver;
-import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.sax.SAXSource; */
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.OutputKeys;
+
+import org.w3c.css.sac.SACMediaList;
 
 import eionet.gdem.qa.XQEngineIF;
 import eionet.gdem.GDEMException;
@@ -70,13 +73,15 @@ import net.sf.saxon.value.Type;
 import net.sf.saxon.xpath.XPathException;
 import java.io.StringReader;
 import java.io.StringWriter;
+/*
 import net.sf.saxon.StandardErrorListener;
 import java.io.PrintStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import javax.xml.transform.ErrorListener;
-import net.sf.saxon.om.EmptyIterator;
+*/
 
+//import net.sf.saxon.om.EmptyIterator;
 
 public class SaxonImpl implements XQEngineIF {
   
@@ -125,10 +130,16 @@ public class SaxonImpl implements XQEngineIF {
     SaxonListener listener = new SaxonListener();
     config.setErrorListener(listener);
     
+    //config.setRecoveryPolicy(Configuration.DO_NOT_RECOVER);
+    
     config.setHostLanguage(config.XQUERY);
     StaticQueryContext staticEnv = new StaticQueryContext();
     staticEnv.setConfiguration(config);
     DynamicQueryContext dynamicEnv = new DynamicQueryContext();
+    
+    SaxonListener dynamicListener = new SaxonListener();
+    dynamicEnv.setErrorListener(dynamicListener);
+    
     Properties outputProps = new Properties();
     outputProps.setProperty(OutputKeys.INDENT, "yes");
 
@@ -178,12 +189,7 @@ public class SaxonImpl implements XQEngineIF {
       try {
         // The next line actually executes the query
         SequenceIterator results = exp.iterator(dynamicEnv);
-  
-        //small hack here otherwise no error thrown KL
-        if (results instanceof EmptyIterator)
-          throw new TransformerException("Error in parsing query: The query script must include " +
-            " at least one ';'");
-  
+
         if (wrap) {
           DocumentInfo resultDoc = QueryResult.wrap(results, NamePool.getDefaultNamePool());
           QueryResult.serialize(resultDoc, new StreamResult(result), outputProps);
@@ -206,7 +212,6 @@ public class SaxonImpl implements XQEngineIF {
       } catch (TransformerException err) {
         listener.error(err);
        // The message will already have been displayed; don't do it twice
-       
         throw new TransformerException("Run-time errors were reported");
       }  catch (Exception err) {
         err.printStackTrace();
@@ -216,11 +221,14 @@ public class SaxonImpl implements XQEngineIF {
       result.close(); //??
       
   } catch (Exception e) {
-  
+  	_logger.debug("==== CATCHED EXCEPTION " + e.toString() );
     String errMsg = (listener.hasErrors() ? listener.getErrors() : e.toString());
-  
     throw new GDEMException (errMsg);
-  }
+    //listener.error(e);
+  } finally {
+  		if (listener.hasErrors() || dynamicListener.hasErrors() )
+  			throw new GDEMException (listener.getErrors() + dynamicListener.getErrors()  );
+  	}
   return s;
   }
 /*
