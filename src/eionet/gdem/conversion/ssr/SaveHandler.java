@@ -168,18 +168,132 @@ public class SaveHandler {
      req.setAttribute(Names.SCHEMA_ID, schemaID);
 
   }
+
+  /**
+  * queries handling 
+  * 
+  */
+  static void handleQueries(HttpServletRequest req, String action) {
+
+     String schemaID=null;
+     String queriesFolder=null;
+     String fileName=null;
+     
+     AppUser user = SecurityUtil.getUser(req, Names.USER_ATT);
+  	 String user_name=null;
+	   if (user!=null)
+        user_name = user.getUserName();
+        
+     queriesFolder=Properties.queriesFolder;
+     if (!queriesFolder.endsWith(File.separator))
+        queriesFolder = queriesFolder + File.separator;
+
+     if (action.equals( Names.QUERY_ADD_ACTION) ) {
+        HashMap req_params=null;
+        try{
+          if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "i")){
+             req.setAttribute(Names.ERROR_ATT, "You don't have permissions to insert queries!");
+             return;                   
+          }
+        }
+        catch (Exception e){
+           req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
+           return;          
+        }
+        try{
+          MultipartFileUpload fu = new MultipartFileUpload(false);
+          fu.processMultiPartRequest(req);
+
+          req_params = fu.getRequestParams();
+  	  	    fu.setFolder(queriesFolder);
+		  	 fileName=fu.saveFile();
+        }
+        catch (Exception e){
+           req.setAttribute(Names.ERROR_ATT, "Uploading file: " + e.toString());
+           return;          
+        }
+
+        if (fileName==null){
+           req.setAttribute(Names.ERROR_ATT, "Filename is not defined");
+           return;
+        }
+
+       String schema= (String)req_params.get("SCHEMA");
+       String name= (String)req_params.get("SHORT_NAME");
+       String descr= (String)req_params.get("DESCRIPTION");
+
+       if (Utils.isNullStr(schema)){
+         req.setAttribute(Names.ERROR_ATT, "XML schema cannot be empty.");
+         return;
+       }
+       try{
+         dbM= GDEMServices.getDbModule();
+         
+         schemaID=dbM.getSchemaID(schema);
+         if (schemaID==null)
+            schemaID=dbM.addSchema(schema, null);
+
+         dbM.addQuery(schemaID, name, fileName, descr);
+       }
+       catch (Exception e){
+          req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
+          return;          
+       }
+   }
+   else if (action.equals( Names.QUERY_DEL_ACTION) ) {
+        try{
+          if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "d")){
+           req.setAttribute(Names.ERROR_ATT, "You don't have permissions to delete queries!");
+           return;                   
+          }
+        }
+        catch (Exception e){
+           req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
+           return;          
+        }
+       String del_id= (String)req.getParameter(Names.QUERY_DEL_ID);
+       
+       if (Utils.isNullStr(del_id)){
+         req.setAttribute(Names.ERROR_ATT, "Query ID cannot be empty.");
+         return;
+       }
+       try{
+         dbM= GDEMServices.getDbModule();
+         HashMap hash = dbM.getQueryInfo(del_id);
+         fileName = (String)hash.get("query");
+         schemaID= (String)req.getParameter("schema_id");
+         dbM.removeQuery(del_id);
+       }
+       catch (Exception e){
+          req.setAttribute(Names.ERROR_ATT, "Error while deleting query from database: " + e.toString());
+          return;          
+       }
+       try{
+          Utils.deleteFile(queriesFolder + fileName);
+       }
+       catch (Exception e){
+         req.setAttribute(Names.ERROR_ATT, "Cannot delete XSL file: " + e.toString());
+         return;
+       }
+       
+     }
+     req.setAttribute(Names.SCHEMA_ID, schemaID);
+  }
+
   /**
   * schemas handling 
   * 
   */
   static void handleSchemas(HttpServletRequest req, String action) {
 
+    boolean hasOtherStuff = false;
+    
      AppUser user = SecurityUtil.getUser(req, Names.USER_ATT);
   	 String user_name=null;
 	   if (user!=null)
         user_name = user.getUserName();
 
-    if (action.equals( Names.XSD_DEL_ACTION) ) {
+    if (action.equals( Names.XSD_DEL_ACTION) || action.equals( Names.XSDQ_DEL_ACTION) ) {
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "d")){
            req.setAttribute(Names.ERROR_ATT, "You don't have permissions to delete schemas!");
@@ -195,33 +309,61 @@ public class SaveHandler {
 
        try{
          dbM= GDEMServices.getDbModule();
-         Vector stylesheets = dbM.getSchemaStylesheets(del_id);
-         if (stylesheets!=null){
-      		 for (int i=0; i<stylesheets.size(); i++){
-        			HashMap hash = (HashMap)stylesheets.get(i);
-          		String xslFile = (String)hash.get("xsl");
-
-              String xslFolder=Properties.xslFolder; //props.getString("xsl.folder");
-              if (!xslFolder.endsWith(File.separator))
-                 xslFolder = xslFolder + File.separator;
-          
-              try{
-                Utils.deleteFile(xslFolder + xslFile);
-              }
-              catch (Exception e){
-                err_buf.append("Cannot delete XSL file: " + xslFile + "; " + e.toString() + "<BR>");
-                //req.setAttribute(Names.ERROR_ATT, "Cannot delete XSL file: " + xslFile + "; " + e.toString());
-                continue;
-              }
-           }        
-        	}
-          dbM.removeSchema(del_id);              
+         if(action.equals( Names.XSD_DEL_ACTION)) {
+            Vector stylesheets = dbM.getSchemaStylesheets(del_id);
+            if (stylesheets!=null){
+         		 for (int i=0; i<stylesheets.size(); i++){
+           			HashMap hash = (HashMap)stylesheets.get(i);
+             		String xslFile = (String)hash.get("xsl");
+   
+                 String xslFolder=Properties.xslFolder;
+                 if (!xslFolder.endsWith(File.separator))
+                    xslFolder = xslFolder + File.separator;
+            
+                 try{
+                   Utils.deleteFile(xslFolder + xslFile);
+                 }
+                 catch (Exception e){
+                   err_buf.append("Cannot delete XSL file: " + xslFile + "; " + e.toString() + "<BR>");
+                   continue;
+                 }
+              }        
+           	}
+            if(dbM.getSchemaQueries(del_id) != null)
+               hasOtherStuff = true;
+         }
+         else {  // action.equals( Names.XSDQ_DEL_ACTION ) 
+            Vector queries = dbM.getSchemaQueries(del_id);
+            if (queries!=null){
+         		 for (int i=0; i<queries.size(); i++){
+           			HashMap hash = (HashMap)queries.get(i);
+             		String queryFile = (String)hash.get("query");
+   
+                 String queriesFolder=Properties.queriesFolder;
+                 if (!queriesFolder.endsWith(File.separator))
+                    queriesFolder = queriesFolder + File.separator;
+            
+                 try{
+                   Utils.deleteFile(queriesFolder + queryFile);
+                 }
+                 catch (Exception e){
+                   err_buf.append("Cannot delete XQuery file: " + queryFile + "; " + e.toString() + "<BR>");
+                   continue;
+                 }
+              }        
+           	}
+            if(dbM.getSchemaStylesheets(del_id) != null)
+               hasOtherStuff = true;
+         }
+         dbM.removeSchema(del_id, action.equals(Names.XSD_DEL_ACTION), action.equals(Names.XSDQ_DEL_ACTION), !hasOtherStuff);              
         }
         catch (Exception e){
           err_buf.append("Cannot delete Schema: " + e.toString() + del_id);
           //req.setAttribute(Names.ERROR_ATT, "Cannot delete Schema: " + e.toString() + del_id);
           //return;
         }
+        
+        
         if (err_buf.length()>0)
           req.setAttribute(Names.ERROR_ATT, err_buf.toString());
       }

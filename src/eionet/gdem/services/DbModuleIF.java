@@ -49,6 +49,12 @@ public interface DbModuleIF {
   * Table for stylesheets in the DB
   */
   public static final String XSL_TABLE="T_STYLESHEET";
+
+  /**
+  * Table for queries in the DB
+  */
+  public static final String QUERY_TABLE="T_QUERY";
+
   /**
   * Table for xml schemas in the DB
   */
@@ -75,6 +81,13 @@ public interface DbModuleIF {
   public static final String DESCR_FLD="DESCRIPTION";
   public static final String RESULT_TYPE_FLD="RESULT_TYPE";
   public static final String XSL_FILE_FLD="XSL_FILENAME";  
+
+  /**
+  * Field names in QUERY table
+  */
+  public static final String QUERY_ID_FLD="QUERY_ID";
+  public static final String SHORT_NAME_FLD="SHORT_NAME";
+  public static final String QUERY_FILE_FLD="QUERY_FILENAME";  
 
   /**
   * Field names in SCHEMA table
@@ -161,6 +174,7 @@ public interface DbModuleIF {
   * @return The ID of the added stylesheet
   */
   public String addStylesheet(String xmlSchemaID, String resultType, String xslFileName, String description) throws SQLException;
+  public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description) throws SQLException;
 
   /**
   * Adds a new Schema to the database
@@ -192,12 +206,13 @@ public interface DbModuleIF {
   * @param - convert ID
   */
   public void removeStylesheet(String convertId) throws SQLException;
+  public void removeQuery(String queryId) throws SQLException;
 
   /**
   * Removes the schema and all it's stylesheets
   * @param - schema ID
   */
-  public void removeSchema(String schemaId) throws SQLException;
+  public void removeSchema(String schemaId, boolean del_stylesheets, boolean del_queries, boolean del_self) throws SQLException;
 
   /**
   * Removes the xform from the xformss table
@@ -209,6 +224,8 @@ public interface DbModuleIF {
   * Gets the data of the stylesheet from the repository
   */
   public HashMap getStylesheetInfo(String convertId) throws SQLException;
+  public HashMap getQueryInfo(String queryId) throws SQLException;
+  public String getQueryText(String queryId) throws SQLException;
   
   /**
   * Gets the data of one or several schemas from the repository
@@ -242,6 +259,7 @@ public interface DbModuleIF {
   */
 
   public Vector getSchemaStylesheets(String schemaId) throws SQLException;
+  public Vector getSchemaQueries(String schemaId) throws SQLException;
   
   /**
   * Gets information about the received job in Workqueue

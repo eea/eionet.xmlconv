@@ -190,15 +190,25 @@ public class Main extends HttpServlet implements Names {
         jspName= INDEX_JSP;
       else if ( action.equals( SHOW_STYLESHEETS_ACTION ))
         jspName=STYLESHEETS_JSP;
+      else if ( action.equals( SHOW_QUERIES_ACTION ))
+        jspName=QUERIES_JSP;
       else  if ( action.equals( SHOW_ADDXSL_ACTION ))
         jspName= ADD_XSL_JSP;
       else  if ( action.equals( XSL_ADD_ACTION ) || action.equals( XSL_DEL_ACTION )){
         SaveHandler.handleStylesheets(req,action);
         jspName=STYLESHEETS_JSP;
       }
-      else  if ( action.equals( XSD_ADD_ACTION ) || action.equals( XSD_DEL_ACTION )){
+      else  if ( action.equals( QUERY_ADD_ACTION ) || action.equals( QUERY_DEL_ACTION )){
+        SaveHandler.handleQueries(req,action);
+        jspName=QUERIES_JSP;
+      }
+      else  if ( action.equals( XSD_DEL_ACTION )){
         SaveHandler.handleSchemas(req,action);
         jspName=INDEX_JSP;
+      }
+      else  if ( action.equals( XSDQ_DEL_ACTION )){
+        SaveHandler.handleSchemas(req,action);
+        jspName=QUERIESINDEX_JSP;
       }
       else  if ( action.equals( XSD_UPD_ACTION )){
         SaveHandler.handleSchemas(req,action);

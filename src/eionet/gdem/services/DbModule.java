@@ -27,6 +27,8 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Vector;
 import java.util.Hashtable;
 
@@ -113,6 +115,86 @@ public class DbModule implements DbModuleIF, Constants {
     return h;
   }
 
+  public String getQueryText(String queryId) throws SQLException {
+    int id = 0;
+    String queryName=null;
+    try { 
+      id=Integer.parseInt(queryId);
+    } catch(NumberFormatException n) {
+      if (queryId.endsWith("xql"))
+        queryName = queryId;
+      else
+        throw new SQLException("not numeric ID or xql file name: " + queryId);
+    }
+    
+    String sql="SELECT " + QUERY_FILE_FLD + " FROM " + QUERY_TABLE;
+    if (queryName!=null){
+      sql += " WHERE " + QUERY_FILE_FLD + "=" + Utils.strLiteral(queryName);
+    }
+    else {
+      sql += " WHERE " + QUERY_ID_FLD + "=" + id;
+    }
+        
+    String r[][] = _executeStringQuery(sql);
+    
+    String qText = "";
+    if(r.length > 0) {
+       String queriesFolder=Properties.queriesFolder;
+       if(!queriesFolder.endsWith(File.separator))
+         queriesFolder = queriesFolder + File.separator;
+       try {
+          qText = Utils.readStrFromFile(queriesFolder + r[0][0]);
+       }
+       catch (IOException e) {
+          qText = "Unable to read file: " + queriesFolder + r[0][0] + "\n " + e.toString();
+       }
+    }
+    
+    return qText;
+  }
+
+  public HashMap getQueryInfo(String queryId) throws SQLException {
+
+    int id = 0;
+    String queryName=null;
+    try { 
+      id=Integer.parseInt(queryId);
+    } catch(NumberFormatException n) {
+      if (queryId.endsWith("xql"))
+        queryName = queryId;
+      else
+        throw new SQLException("not numeric ID or xql file name: " + queryId);
+    }
+    
+    String sql="SELECT " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "," + QUERY_FILE_FLD + ", " + QUERY_TABLE + "." + DESCR_FLD + "," +
+      SHORT_NAME_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + " FROM " + QUERY_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE +
+          " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD;
+      if (queryName!=null){
+        sql += " WHERE " + QUERY_FILE_FLD + "=" + Utils.strLiteral(queryName);
+
+      }
+      else{
+          sql += " WHERE " + QUERY_ID_FLD + "=" + id;
+      }
+        
+
+    String r[][] = _executeStringQuery(sql);
+
+    HashMap h = null;
+
+    if (r.length>0){
+      h = new HashMap();    
+      h.put("query_id", queryId);
+      h.put("schema_id", r[0][0]);
+      h.put("query", r[0][1]);
+      h.put("description", r[0][2]);
+      h.put("short_name", r[0][3]);      
+      h.put("xml_schema", r[0][4]);
+    }
+
+    return h;
+  }
+
   public Vector listConversions(String xmlSchema) throws SQLException {
 
     String sql="SELECT " + XSL_TABLE + "." + CNV_ID_FLD + "," + XSL_TABLE + "." + XSL_FILE_FLD + ", " + XSL_TABLE + "." + DESCR_FLD + "," +
@@ -162,6 +244,28 @@ public class DbModule implements DbModuleIF, Constants {
       
     return r[0][0];
   }
+
+  public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description) throws SQLException {
+
+    description = (description == null ? "" : description );
+    
+    String sql = "INSERT INTO " + QUERY_TABLE + " ( " + XSL_SCHEMA_ID_FLD + ", " + SHORT_NAME_FLD +
+      ", " + QUERY_FILE_FLD + ", " + DESCR_FLD + ") VALUES ('" + xmlSchemaID + "', '" +
+      shortName + "', " + Utils.strLiteral(queryFileName) + ", " + Utils.strLiteral(description) + ")";
+
+    _executeUpdate(sql);
+
+    sql = "SELECT " + QUERY_ID_FLD + " FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD + "=" +
+      Utils.strLiteral(queryFileName);
+
+    String[][] r = _executeStringQuery(sql);
+
+    if (r.length==0)
+      throw new SQLException("Error when returning id  for " + queryFileName + " ");
+      
+    return r[0][0];
+  }
+
   public String addSchema(String xmlSchema,  String description) throws SQLException{
       return addSchema(xmlSchema, description, null);
   }
@@ -222,25 +326,40 @@ public class DbModule implements DbModuleIF, Constants {
     _executeUpdate(sql);    
     
   }
+
+  public void removeQuery(String queryId) throws SQLException {
+    String sql = "DELETE FROM " + QUERY_TABLE + " WHERE " + QUERY_ID_FLD + "=" + queryId;
+    _executeUpdate(sql);    
+  }
+
   public void removeRootElem(String rootElemId) throws SQLException {
 
     String sql = "DELETE FROM " + ROOTELEM_TABLE + " WHERE " + ROOTELEM_ID_FLD + "=" + rootElemId;
     _executeUpdate(sql);    
     
   }
-  public void removeSchema(String schemaId) throws SQLException {
+  public void removeSchema(String schemaId, boolean del_stylesheets, boolean del_queries, boolean del_self) throws SQLException {
 
 
     //delete all stylesheets at first
-    String sql_xsl = "DELETE FROM " + XSL_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "=" + schemaId;
-    _executeUpdate(sql_xsl);
+    if(del_stylesheets) {
+       String sql_xsl = "DELETE FROM " + XSL_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "=" + schemaId;
+       _executeUpdate(sql_xsl);
+    }
 
-    //delete all root element mappings at first
-    String sql_elem = "DELETE FROM " + ROOTELEM_TABLE + " WHERE " + ELEM_SCHEMA_ID_FLD + "=" + schemaId;
-    _executeUpdate(sql_elem);
+    if(del_queries) {
+       String sql_xsl = "DELETE FROM " + QUERY_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "=" + schemaId;
+       _executeUpdate(sql_xsl);
+    }
 
-    String sql = "DELETE FROM " + SCHEMA_TABLE + " WHERE " + SCHEMA_ID_FLD + "=" + schemaId;
-    _executeUpdate(sql);
+    if(del_self) {
+       //delete all root element mappings at first
+       String sql_elem = "DELETE FROM " + ROOTELEM_TABLE + " WHERE " + ELEM_SCHEMA_ID_FLD + "=" + schemaId;
+       _executeUpdate(sql_elem);
+   
+       String sql = "DELETE FROM " + SCHEMA_TABLE + " WHERE " + SCHEMA_ID_FLD + "=" + schemaId;
+       _executeUpdate(sql);
+    }
     
   }
   public void removeXForm(String xformId) throws SQLException {
@@ -430,6 +549,8 @@ public class DbModule implements DbModuleIF, Constants {
       if (stylesheets){
         Vector v_xls=getSchemaStylesheets(r[i][0]);
         h.put("stylesheets", v_xls);
+        Vector v_queries=getSchemaQueries(r[i][0]);
+        h.put("queries", v_queries);
       }
       v.add(h);
     }
@@ -483,6 +604,41 @@ public class DbModule implements DbModuleIF, Constants {
 
     return v;
   }
+
+  public Vector getSchemaQueries(String schemaId) throws SQLException {
+
+    int id = 0;
+
+    if (schemaId==null)
+        throw new SQLException("Schema ID not defined");
+    try { 
+       id=Integer.parseInt(schemaId);
+     } catch(NumberFormatException n) {
+       throw new SQLException("not numeric ID " + schemaId);
+   }
+    
+     String sql="SELECT " + QUERY_ID_FLD + ", " + QUERY_FILE_FLD + ", " + DESCR_FLD + "," + SHORT_NAME_FLD + 
+          " FROM " + QUERY_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + 
+        "=" + id;
+        
+      sql += " ORDER BY " + SHORT_NAME_FLD;
+
+    String [][] r = _executeStringQuery(sql);
+
+    Vector v = new Vector();
+
+    for (int i =0; i< r.length; i++) {
+      HashMap h = new HashMap();
+      h.put("query_id", r[i][0]);
+      h.put("query", r[i][1]);
+      h.put("description", r[i][2]);
+      h.put("short_name", r[i][3]);      
+      v.add(h);      
+    }
+
+    return v;
+  }
+
   public Vector getSchemaRootElems(String schemaId) throws SQLException {
 
     int id = 0;

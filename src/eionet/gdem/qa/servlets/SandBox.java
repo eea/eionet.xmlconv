@@ -53,7 +53,7 @@ public class SandBox  extends HttpServlet implements Constants {
 
     XQScript xq = null;
     String result = null;
-    if(!Utils.isNullStr(xqScript) || !Utils.isNullStr(dataURL)) {
+    if(!Utils.isNullStr(xqScript) && !Utils.isNullStr(dataURL)) {
       // Run immediately
       //
       if(!Utils.isNullStr(req.getParameter("runnow"))) {

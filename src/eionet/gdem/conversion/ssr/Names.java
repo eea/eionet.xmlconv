@@ -48,11 +48,13 @@ public interface Names {
   public static final String HOST_JSP = "host.jsp";
   public static final String LIST_WORKQUEUE_JSP = "workqueue.jsp";
   public static final String SANDBOX_JSP = "sandbox.jsp";
-  public static final String EXCEL_CONVERSION_JSP = "excel2xml_conversion.jsp";
+  public static final String QUERIESINDEX_JSP = "queriesindex.jsp";
+  public static final String QUERIES_JSP = "queries.jsp";
+  public static final String ADD_QUERY_JSP = "add_query.jsp";
 
   //actions
-  public static final String XSD_ADD_ACTION = "A";
   public static final String XSD_UPD_ACTION = "B";
+  public static final String XSDQ_DEL_ACTION = "QD";
   public static final String XSD_DEL_ACTION = "D";
   public static final String XSL_ADD_ACTION = "O";
   public static final String XSL_DEL_ACTION = "Q";
@@ -62,6 +64,7 @@ public interface Names {
   public static final String LOGOUT_ACTION = "I";    
   public static final String SHOW_SCHEMAS_ACTION = "S";
   public static final String SHOW_STYLESHEETS_ACTION = "C";  
+  public static final String SHOW_QUERIES_ACTION = "QC";  
   public static final String SHOW_ADDXSL_ACTION = "H";  
   public static final String SHOW_TESTCONVERSION_ACTION = "J";
   public static final String SHOW_LISTCONVERSION_ACTION = "L";
@@ -71,23 +74,27 @@ public interface Names {
   public static final String HOST_ADD_ACTION = "E";
   public static final String HOST_UPD_ACTION = "G";
   public static final String WQ_DEL_ACTION = "X";
+  public static final String QUERY_ADD_ACTION = "QA";
+  public static final String QUERY_DEL_ACTION = "QX";
 
   //public static final String ERROR_ACTION = "XXX";
   //Parameters
   public static final String XSL_FOLDER = "xsl/";  
+  public static final String QUERY_FOLDER = "queries/";  
   public static final String SCHEMA_ID = "ID";  
   public static final String XSL_DEL_ID = "XSL_DEL_ID";  
   public static final String XSD_DEL_ID = "XSD_DEL_ID";  
+  public static final String QUERY_DEL_ID = "QUERY_DEL_ID";  
 
   public static final String ACL_STYLESHEETS_PATH = "stylesheets";
   public static final String ACL_TESTCONVERSION_PATH = "testconversion";
   public static final String ACL_SCHEMA_PATH = "schema";
   public static final String ACL_HOST_PATH = "host";
   public static final String ACL_WQ_PATH = "workqueue";
-
-  public static final String EXCEL2XML_CONV_PARAM = "excel2dd_xml";
+  public static final String ACL_QUERIES_PATH = "queries";
 
   public static final String RPC_SERVICE_NAME="XService";
-  
+  public static final String EXCEL_CONVERSION_JSP = "excel2xml_conversion.jsp";
+  public static final String EXCEL2XML_CONV_PARAM = "excel2dd_xml";  
 
 }

@@ -15,6 +15,7 @@
   <li><a href="<%=Names.INDEX_JSP%>">Stylesheets</a></li>
   <li><a href="<%=Names.LIST_CONVERSION_JSP%>">Converter</a></li>
   <li><a href="<%=Names.LIST_WORKQUEUE_JSP%>">QA Jobs</a></li>
+  <li><a href="<%=Names.QUERIESINDEX_JSP%>">Queries</a></li>
   <li><a href="<%=Names.SANDBOX_JSP%>">XQ Sandbox</a></li>
   <%
   if (hovPrm){

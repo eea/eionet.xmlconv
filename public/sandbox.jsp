@@ -1,7 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page import="eionet.gdem.Constants, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices"%>
 <%
-	DbModuleIF dbM= GDEMServices.getDbModule();
+   String q_id = (String)request.getParameter("ID");
+   String qText = "";
+	if(q_id != null) {
+		DbModuleIF dbM= GDEMServices.getDbModule();
+		qText = dbM.getQueryText(q_id);
+	}
+	
 %>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
@@ -27,10 +33,15 @@
 		<label for="dataurlfield">URL to data file </label><input type="text" class="textfield" name="source_url" size="75" id="dataurlfield" />
 		<br/><br/>
 		<label for="scriptarea">XQuery script</label>
-		<textarea name="XQSCRIPT" align="left" rows="25" style="width:99%" wrap="soft" id="scriptarea"></textarea>
+		<textarea name="XQSCRIPT" align="left" rows="25" style="width:99%" wrap="soft" id="scriptarea"> <%=qText%></textarea>
 		<br/><br/>
 		<input type="submit" name="runnow" value=" Run now " />
-		<input type="submit" name="queue" value=" Add to workqueue " />
+		<%
+		boolean wqPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "i");
+		if(wqPrm) {
+		%>		
+			<input type="submit" name="queue" value=" Add to workqueue " />
+		<% } %>
 	</form>
 	</td></tr></table>
 </div>
