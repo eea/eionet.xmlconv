@@ -2,36 +2,24 @@
 
 	<!-- set global properties for this build -->
 
-	<property name="src.dest" value="/tmp"/>
+	<property name="src" value="src"/>
+	<property name="lib" value="public/WEB-INF/lib"/>
 
-	
-	<property name="src" value="${src.dest}/gdem/src"/>
-	<property name="lib" value="${src.dest}/gdem/public/WEB-INF/lib"/>
-
-	<property name="classes.dir" value="${src.dest}/gdem/public/WEB-INF/classes"/>
+	<property name="classes.dir" value="public/WEB-INF/classes"/>
 
 
-	<target name="export_current" unless="cvs.version">
-		<cvs dest="${src.dest}" command="export -D today -d gdem gdem" />
-	</target>
-
-	<target name="export_release" if="cvs.version">
-		<cvs dest="${src.dest}" command="export -r ${cvs.version} -d gdem gdem" />
-	</target>
-	
-	<target name="make_gzip" depends="check_os,export_current,export_release" if="is_unix">
-	<!--target name="make_gzip" depends="check_os" if="is_unix"-->
+	<target name="make_gzip" depends="check_os" if="is_unix">
 		<tar tarfile="gdem.tar">
-			<tarfileset dir="${src.dest}/gdem" prefix="gdem"/>
+			<tarfileset dir=".." prefix="gdem"/>
 		</tar>
-	  <gzip zipfile="gdem.tar.gz" src="gdem.tar"/>
+	  <gzip zipfile="gdem.tar.gz" src="../gdem.tar"/>
 		<!--delete file="gdem.tar"/-->		
 	</target>
 
-	<target name="make_zip" depends="check_os,export_current,export_release" if="is_win">
+	<target name="make_zip" depends="check_os" if="is_win">
 	<!--target name="make_zip" depends="check_os" if="is_win"-->
 		<zip destfile="gdem.zip">
-			<zipfileset dir="${src.dest}/gdem" prefix="gdem"/>
+			<zipfileset dir=".." prefix="gdem"/>
 		</zip>
 	</target>
 
@@ -42,8 +30,8 @@
 
 	<!-- if it is installed as a new virtual host -->
 	<target name="root_context" if="vhost">
-		<copy file="${src.dest}/gdem/ROOT.xml" todir="${prefix}/gdem" overwrite="true"/>			
-		<copy file="${src.dest}/gdem/gdem_vhost_server.xml" todir="${prefix}/gdem" overwrite="true"/>			
+		<copy file="ROOT.xml" todir="${prefix}/gdem" overwrite="true"/>			
+		<copy file="gdem_vhost_server.xml" todir="${prefix}/gdem" overwrite="true"/>			
 		<echo>==================================================================</echo>
 		<echo>=== You are installing GDEM application as a virtual host</echo>
 		<echo>=== Remember to add a virtual host TAG into  the server.xml</echo>
@@ -64,12 +52,12 @@
 		<!--delete file="gdem.zip"/-->				
 	</target>
 	<target name="cleanup" depends="clean_zip,clean_tar">
-		<delete dir="${src.dest}/gdem"/>		
+		<!-- <delete dir="."/>		 -->
 	</target>
 	
 	<!-- if it is installed under webapps folder under existing virtual host -->
 	<target name="webapp_context" unless="vhost">
-		<copy file="${src.dest}/gdem/gdem.xml" todir="${prefix}" overwrite="true"/>			
+		<copy file="gdem.xml" todir="${prefix}" overwrite="true"/>			
 	</target>
 
 	<target name="create_context" depends="webapp_context,root_context"/>
@@ -84,20 +72,7 @@
 		</condition>
 	</target>
 
-	<target name="unpack_zip" depends="check_os" if="is_win">
-		<unzip src="gdem.zip" dest="${src.dest}"/>
-	</target>
-
-	<target name="unpack_gzip" depends="check_os" if="is_unix">
-		<gunzip src="gdem.tar.gz"/>
-		<untar src="gdem.tar" dest="${src.dest}"/>
-	</target>
-	<!--target name="unpack">
-		<antcall target="unpack_zip"/>
-		<antcall target="unpack_gzip"/>
-	</target-->
-
-	<target name="compile" depends="unpack_zip,unpack_gzip">
+	<target name="compile">
 		<!--fail unless="prefix" message="Usage: ant install -Dprefix={directory to install}"/-->
 		<!-- Compile the java code from ${src} into ${build} -->
 		<javac debug="on" deprecation="off" srcdir="${src}"
@@ -108,7 +83,7 @@
 	<!-- build gdem.jar -->
 	<target name="buildjar" depends="compile"> 
 		<jar basedir="${classes.dir}"
-		    jarfile="${src.dest}/gdem/public/WEB-INF/lib/gdem.jar"
+		    jarfile="public/WEB-INF/lib/gdem.jar"
 		    includes="**/*.class"/>
 		<!--delete dir="${classes.dir}/eionet"/-->
 	</target>
@@ -125,11 +100,11 @@
 	<target name="copyfiles" depends="buildjar">
 		
 		<!-- we do not care about these files older versions -->
-		<copy file="${src.dest}/gdem/GDEMServices.xml" tofile="${prefix}/gdem/GDEMServices.xml" overwrite="true"/>
+		<copy file="GDEMServices.xml" tofile="${prefix}/gdem/GDEMServices.xml" overwrite="true"/>
 
 
 		<copy todir="${prefix}/gdem/public" overwrite="true">
-			<fileset dir="${src.dest}/gdem/public">
+			<fileset dir="gdem/public">
 				<exclude name="**/*.java"/>
 				<exclude name="**/*.properties"/>
 			</fileset>
@@ -137,7 +112,7 @@
 		
 		<!-- should take care of not overwriting them -->
 		<copy todir="${prefix}/gdem/xsl">
-			<fileset dir="${src.dest}/gdem/xsl"/>
+			<fileset dir="gdem/xsl"/>
 		</copy>
 
 		<condition property="uit.needed">
@@ -222,13 +197,13 @@
 	</target>
 
 	<target name="cp_uit" if="uit.needed">
-		<copy file="${src.dest}/gdem/public/WEB-INF/classes/uit.properties" tofile="${prefix}/gdem/public/WEB-INF/classes/uit.properties"/>
+		<copy file="public/WEB-INF/classes/uit.properties" tofile="${prefix}/gdem/public/WEB-INF/classes/uit.properties"/>
 	</target>
 	<target name="cp_log4j" if="log4j.needed">
-		<copy file="${src.dest}/gdem/public/WEB-INF/classes/log4j.properties" tofile="${prefix}/gdem/public/WEB-INF/classes/log4j.properties"/>
+		<copy file="public/WEB-INF/classes/log4j.properties" tofile="${prefix}/gdem/public/WEB-INF/classes/log4j.properties"/>
 	</target>
 	<target name="cp_gdem" if="gdem.needed">
-		<copy file="${src.dest}/gdem/public/WEB-INF/classes/gdem.properties" tofile="${prefix}/gdem/public/WEB-INF/classes/gdem.properties"/>
+		<copy file="public/WEB-INF/classes/gdem.properties" tofile="${prefix}/gdem/public/WEB-INF/classes/gdem.properties"/>
 	</target>
 </project>
 
