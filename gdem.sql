@@ -49,21 +49,6 @@ INSERT INTO T_STYLESHEET VALUES (42,'convert EPER data report for Ireland to PDF
 INSERT INTO T_STYLESHEET VALUES (40,'Simple excel table','EXCEL','water_excel.xsl',1);
 INSERT INTO T_STYLESHEET VALUES (41,'Intermediate XML file format for Excel conversion','XML','water_xls_xml.xsl',1);
 
---
--- Table structure for table `T_XQHISTORY`
---
-
-CREATE TABLE T_XQHISTORY (
-  JOB_ID int(10) default NULL,
-  STATUS int(1) default NULL,
-  TIME_STAMP time default NULL,
-  UNIQUE KEY JOB_ID (JOB_ID,STATUS)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `T_XQHISTORY`
---
-
 
 --
 -- Table structure for table `T_XQJOBS`
