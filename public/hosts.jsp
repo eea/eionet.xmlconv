@@ -60,7 +60,7 @@
 				%>
 		</div>
 		<br/>
-		<span>GDEM Services are using the following credentials for accessing to defined hosts.</span>
+		<span>XML Services are using the following credentials for accessing to defined hosts.</span>
 		<br/>
 		<div id="main_table">
 		<table border="0" cellspacing="1" cellpadding="2" width="100%">

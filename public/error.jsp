@@ -8,7 +8,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>GDEM</title>
+    <title>XML Services</title>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
     <link rel="stylesheet" type="text/css" href="layout-print.css" media="print" />
     <link rel="stylesheet" type="text/css" href="layout-handheld.css" media="handheld" />
@@ -21,7 +21,7 @@
 		<%@ include file="header.jsp" %>
 
    	<jsp:include page="location.jsp" flush='true'>
-       	<jsp:param name="name" value="GDEM error"/>
+       	<jsp:param name="name" value="XML Services error"/>
    	</jsp:include>
 	</div>
 	<%@ include file="menu.jsp" %>
