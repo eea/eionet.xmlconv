@@ -15,4 +15,10 @@ public class ExcelUtils {
   public static ExcelStyleIF getExcelStyle(){
     return new ExcelStyle();
   }
+  /**
+  * returns a valid ExcelReaderIF
+  */
+  public static ExcelReaderIF getExcelReader(){
+    return new ExcelReader();
+  }
 }

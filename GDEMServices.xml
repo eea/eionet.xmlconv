@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./services.xsd">
 	<Service Name="ConversionService" Provider="eionet.gdem.conversion.ConversionService">
-	<Methods>
+		<Methods>
 			<Method Name="convert" Auth="false">
 				<Parameters>
 					<Parameter Name="url" Type="STRING"/>
@@ -15,10 +15,16 @@
 				</Parameters>
 				<Value Type="ARRAY"/>
 			</Method>
-		</Methods>		
+			<Method Name="convertDD_XML" Auth="false">
+				<Parameters>
+					<Parameter Name="url" Type="STRING"/>
+				</Parameters>
+				<Value Type="ARRAY"/>
+			</Method>
+		</Methods>
 	</Service>
 	<Service Name="XQueryService" Provider="eionet.gdem.qa.XQueryService">
-	<Methods>
+		<Methods>
 			<Method Name="analyze" Auth="false">
 				<Parameters>
 					<Parameter Name="url" Type="STRING"/>
@@ -31,14 +37,14 @@
 					<Parameter Name="jobId" Type="STRING"/>
 				</Parameters>
 				<Value Type="STRUCT"/>
-					<!--Member Name="CODE" Type="INT"/>
+				<!--Member Name="CODE" Type="INT"/>
 					<Member Name="RESULT" Type="STRING"/>
 				</Value-->
 			</Method>
-		</Methods>		
+		</Methods>
 	</Service>
 	<Service Name="ValidationService" Provider="eionet.gdem.validation.ValidationService">
-	<Methods>
+		<Methods>
 			<Method Name="validate" Auth="false">
 				<Parameters>
 					<Parameter Name="url" Type="STRING"/>
@@ -52,6 +58,6 @@
 				</Parameters>
 				<Value Type="STRING"/>
 			</Method>
-		</Methods>		
+		</Methods>
 	</Service>
 </Services>

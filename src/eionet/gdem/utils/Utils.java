@@ -27,6 +27,8 @@ import eionet.gdem.Properties;
 import java.net.URL;
 import java.io.*;
 import java.net.MalformedURLException;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Vector;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -37,6 +39,7 @@ import sun.misc.BASE64Encoder;
 public class Utils {
 
  
+	private static Hashtable xmlEscapes = null;
   /*
   public static String tmpFolder="/tmp";
 
@@ -276,5 +279,61 @@ public class Utils {
 
     return ret.toString();
   }
-  }
+	public static String escapeXML(String text){
+		
+		if (text==null) return null;
+		if (text.length()==0) return text;
+		
+		StringBuffer buf = new StringBuffer();
+		for (int i=0; i<text.length(); i++)
+			buf.append(escapeXML(i, text));
+		
+		return buf.toString();
+	}
+	
+	public static String escapeXML(int pos, String text){
+		
+		if (xmlEscapes==null) setXmlEscapes();
+		Character c = new Character(text.charAt(pos));
+		for (Enumeration e=xmlEscapes.elements(); e.hasMoreElements(); ){
+			String esc = (String)e.nextElement();
+			if (pos+esc.length() < text.length()){
+				String sub = text.substring(pos, pos+esc.length());
+				if (sub.equals(esc))
+					return c.toString();
+			}
+		}
+		
+		if (pos+1 < text.length() && text.charAt(pos+1)=='#'){
+			int semicolonPos = text.indexOf(';', pos+1);
+			if (semicolonPos!=-1){
+				String sub = text.substring(pos+2, semicolonPos);
+				if (sub!=null){
+					try{
+						// if the string between # and ; is a number then return true,
+						// because it is most probably an escape sequence
+						if (Integer.parseInt(sub)>=0)
+							return c.toString();
+					}
+					catch (NumberFormatException nfe){}
+				}
+			}
+		}
+		
+		String esc = (String)xmlEscapes.get(c);
+		if (esc!=null)
+			return esc;
+		else
+			return c.toString();
+	}
+	
+	private static void setXmlEscapes(){
+		xmlEscapes = new Hashtable();
+		xmlEscapes.put(new Character('&'), "&amp;");
+		xmlEscapes.put(new Character('<'), "&lt;");
+		xmlEscapes.put(new Character('>'), "&gt;");
+		xmlEscapes.put(new Character('"'), "&quot;");
+		xmlEscapes.put(new Character('\''), "&apos;");
+	}
+}
   

@@ -131,7 +131,6 @@ public class ConversionService {
 
   /**
   * Converts the XML file to a specific format
-  * TODO MAppings between conversion ids and XSL's
   */
   public Hashtable convert (String sourceURL, String convertId) throws GDEMException {
     return convert(sourceURL, convertId, null);
@@ -249,8 +248,91 @@ public class ConversionService {
     return h;
     
   }
+  /**
+  * Request from XML/RPC client
+  * Converts DataDictionary MS Excel file to XML
+  * @param String url: URL of the srouce Excel file
+  * @return Vector result: error_code, xml_url, error_message
+  */
+  public Vector convertDD_XML(String sourceURL) throws GDEMException {
+    return convertDD_XML(sourceURL, null);
+  }
+  /**
+  * Request from WebBrowser
+  * Converts DataDictionary MS Excel file to XML
+  * @param String url: URL of the srouce Excel file
+  * @param HttpServletResponse res: Servlet response
+  * @return Vector result: error_code, xml_url, error_message
+  */
+  public Vector convertDD_XML(String sourceURL, HttpServletResponse res) throws GDEMException {
 
- 
+    InputFile src= null;
+    Vector v_result = new Vector();
+    String str_result = null;
+    String outFileName=tmpFolder + "gdem_" + System.currentTimeMillis() + ".xml";
+
+    try {
+    
+      src = new InputFile(sourceURL);
+      if (res!=null){  
+        try {
+          this.result = res.getOutputStream();
+          res.setContentType("text/xml");
+        } catch (IOException e ) {
+          throw new GDEMException("Error getting response outputstream " + e.toString());
+        }
+      }
+      if (result==null)
+        result = new FileOutputStream(outFileName);
+
+      Excel2XML converter = new Excel2XML();
+      str_result = converter.convertDD_XML(src.getSrcInputStream(), result);
+    }
+    catch (MalformedURLException mfe ) {
+      throw new GDEMException("Bad URL : " + mfe.toString());
+    } 
+    catch (IOException ioe ) {
+      throw new GDEMException("Error opening URL " + ioe.toString());
+    } 
+    catch (Exception e ) {
+      throw new GDEMException(e.toString());
+    }
+    finally{
+      src.close();
+    }
+    
+    if (res!=null){
+      try{
+        result.close();
+      } catch (IOException e ) {
+        throw new GDEMException("Error closing result ResponseOutputStream ");
+      }
+      return v_result;
+    }
+//Creates response Vector    
+    int result_code = 1;
+    if (!Utils.isNullStr(str_result)){
+      if (str_result.equals("OK"))
+        result_code=0;
+    }
+    byte[] file = fileToBytes(outFileName);
+    
+    v_result.add(String.valueOf(result_code));
+    if (result_code==0)
+      v_result.add(file);
+    else
+      v_result.add(str_result);
+
+    try{
+      Utils.deleteFile(outFileName);
+    }
+    catch(Exception e){
+      _logger.error("Couldn't delete the result file");
+    }
+    
+    
+    return v_result;  
+}
   /** 
   * reads temporary file from dis and returs as a bytearray
   */
