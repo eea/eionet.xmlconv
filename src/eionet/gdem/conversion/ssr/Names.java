@@ -46,6 +46,7 @@ public interface Names {
   public static final String SCHEMA_JSP = "schema.jsp";
   public static final String HOSTS_JSP = "hosts.jsp";
   public static final String HOST_JSP = "host.jsp";
+  public static final String LIST_WORKQUEUE_JSP = "workqueue.jsp";
 
   //actions
   public static final String XSD_ADD_ACTION = "A";
