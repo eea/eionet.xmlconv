@@ -1,7 +1,8 @@
 <project name="webrod" default="buildjar" basedir=".">
 
   <!-- set global properties for this build -->
-	<property name="tmp.dest" value="."/>
+	<property name="tmp.dest" value="/tmp"/>
+
 	
   <property name="src" value="${tmp.dest}/gdem/src"/>
 	<property name="lib" value="${tmp.dest}/gdem/public/WEB-INF/lib"/>
@@ -9,27 +10,57 @@
 	<property name="classes.dir" value="${tmp.dest}/gdem/public/WEB-INF/classes"/>
 
 
+	<target name="export_current" unless="cvs.version">
+		<cvs dest="${tmp.dest}" command="export -D today -d gdem gdem" />
+	</target>
+
+	<target name="export_release" if="cvs.version">
+		<cvs dest="${tmp.dest}" command="export -r ${cvs.version} -d gdem gdem" />
+	</target>
+	
+	<target name="make_gzip" depends="check_os,export_current,export_release" if="is_unix">
+	<!--target name="make_gzip" depends="check_os" if="is_unix"-->
+		<tar tarfile="gdem.tar">
+			<tarfileset dir="${tmp.dest}/gdem" prefix="gdem"/>
+		</tar>
+	  <gzip zipfile="gdem.tar.gz" src="gdem.tar"/>
+		<!--delete file="gdem.tar"/-->		
+	</target>
+
+	<target name="make_zip" depends="check_os,export_current,export_release" if="is_win">
+	<!--target name="make_zip" depends="check_os" if="is_win"-->
+		<zip destfile="gdem.zip">
+			<zipfileset dir="${tmp.dest}/gdem" prefix="gdem"/>
+		</zip>
+	</target>
+
+	<target name="make_package" depends="make_gzip,make_zip">
+			<antcall target="cleanup"/>
+	</target>
+
+
 	<!-- if it is installed as a new virtual host -->
 	<target name="root_context" if="vhost">
 		<copy file="${tmp.dest}/gdem/ROOT.xml" todir="${prefix}/gdem" overwrite="true"/>			
 		<copy file="${tmp.dest}/gdem/gdem_vhost_server.xml" todir="${prefix}/gdem" overwrite="true"/>			
-		<echo>====================================================================</echo>
-		<echo>=== You are installing GDEM application as a virtual host        ===</echo>
-		<echo>=== Remember to add a virtual host TAG into  the server.xml      ===</echo>
-		<echo>=== if not existing yet                                          ===</echo>
-		<echo>=== Look example at: ${prefix}/gdem/gdem_vhost_server.xml        ===</echo>
-		<echo>====================================================================</echo>
-		<echo>=== NB! NO CONTEXT TAG IS NEEDED inside Host tag at server.xml   ===</echo>
-		<echo>=== Tomcat loads it from ${prefix}/gdem/ROOT.xml                 ===</echo>
-		<echo>====================================================================</echo>
+		<echo>==================================================================</echo>
+		<echo>=== You are installing GDEM application as a virtual host</echo>
+		<echo>=== Remember to add a virtual host TAG into  the server.xml</echo>
+		<echo>=== if not existing yet																		</echo>
+		<echo>=== Look example at: ${prefix}/gdem/gdem_vhost_server.xml	</echo>
+		<echo>==================================================================</echo>
+		<echo>=== NB! NO CONTEXT TAG IS NEEDED inside Host tag at server.xml</echo>
+		<echo>=== Tomcat loads it from ${prefix}/gdem/ROOT.xml							</echo>
+		<echo>==================================================================</echo>
 	</target>
 
 	<target name="clean_tar" if="is_unix">
+		<!--delete file="gdem.tar.gz"/-->
 		<delete file="gdem.tar"/>
 	</target>
 
 	<target name="clean_zip" if="is_win">
-		<delete file="gdem.zip"/>				
+		<!--delete file="gdem.zip"/-->				
 	</target>
 	<target name="cleanup" depends="clean_zip,clean_tar">
 		<delete dir="${tmp.dest}/gdem"/>		
@@ -43,7 +74,7 @@
   <target name="create_context" depends="webapp_context,root_context"/>
 
   <target name="check_os">
-		<fail unless="prefix" message="Usage: ant install -Dprefix={directory to install}"/>
+		<!--fail unless="prefix" message="Usage: ant install -Dprefix={directory to install}"/-->
 		<condition property="is_win">
 			<os family="windows"/>
 		</condition>
@@ -163,11 +194,9 @@
 	<target name="warn_xsl" if="xslfolder.not.exist">
 		<echo message="========================================================================="/>
 		<echo message="XSL folder was not available at: ${xsl.folder}"/>
-		<echo message="Trying to create..."/>
+		<echo message="Create the folder or make a change in gdem.properties"/>
 		<echo message="========================================================================="/>
-		<mkdir dir="${xsl.folder}"/>
-		<echo message="======================  Success                  ========================"/>
-		<echo message="========================================================================="/>
+		<!--mkdir dir="${xsl.folder}"/-->
 	</target>
 
 
