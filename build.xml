@@ -1,0 +1,197 @@
+<project name="webrod" default="buildjar" basedir=".">
+
+  <!-- set global properties for this build -->
+	<property name="tmp.dest" value="."/>
+	
+  <property name="src" value="${tmp.dest}/gdem/src"/>
+	<property name="lib" value="${tmp.dest}/gdem/public/WEB-INF/lib"/>
+
+	<property name="classes.dir" value="${tmp.dest}/gdem/public/WEB-INF/classes"/>
+
+
+	<!-- if it is installed as a new virtual host -->
+	<target name="root_context" if="vhost">
+		<copy file="${tmp.dest}/gdem/ROOT.xml" todir="${prefix}/gdem" overwrite="true"/>			
+		<copy file="${tmp.dest}/gdem/gdem_vhost_server.xml" todir="${prefix}/gdem" overwrite="true"/>			
+		<echo>====================================================================</echo>
+		<echo>=== You are installing GDEM application as a virtual host        ===</echo>
+		<echo>=== Remember to add a virtual host TAG into  the server.xml      ===</echo>
+		<echo>=== if not existing yet                                          ===</echo>
+		<echo>=== Look example at: ${prefix}/gdem/gdem_vhost_server.xml        ===</echo>
+		<echo>====================================================================</echo>
+		<echo>=== NB! NO CONTEXT TAG IS NEEDED inside Host tag at server.xml   ===</echo>
+		<echo>=== Tomcat loads it from ${prefix}/gdem/ROOT.xml                 ===</echo>
+		<echo>====================================================================</echo>
+	</target>
+
+	<target name="clean_tar" if="is_unix">
+		<delete file="gdem.tar"/>
+	</target>
+
+	<target name="clean_zip" if="is_win">
+		<delete file="gdem.zip"/>				
+	</target>
+	<target name="cleanup" depends="clean_zip,clean_tar">
+		<delete dir="${tmp.dest}/gdem"/>		
+	</target>
+	
+	<!-- if it is installed under webapps folder under existing virtual host -->
+  <target name="webapp_context" unless="vhost">
+		<copy file="${tmp.dest}/gdem/gdem.xml" todir="${prefix}" overwrite="true"/>			
+	</target>
+
+  <target name="create_context" depends="webapp_context,root_context"/>
+
+  <target name="check_os">
+		<fail unless="prefix" message="Usage: ant install -Dprefix={directory to install}"/>
+		<condition property="is_win">
+			<os family="windows"/>
+		</condition>
+		<condition property="is_unix">
+			<os family="unix"/>
+		</condition>
+	</target>
+
+  <target name="unpack_zip" depends="check_os" if="is_win">
+		<unzip src="gdem.zip" dest="${tmp.dest}"/>
+	</target>
+
+  <target name="unpack_gzip" depends="check_os" if="is_unix">
+		<gunzip src="gdem.tar.gz"/>
+		<untar src="gdem.tar" dest="${tmp.dest}"/>
+	</target>
+
+  <target name="compile" depends="unpack_zip,unpack_gzip">
+		<!--fail unless="prefix" message="Usage: ant install -Dprefix={directory to install}"/-->
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac debug="on" deprecation="off" srcdir="${src}" destdir="${classes.dir}"
+		   classpath="${lib}/avalon.jar;${lib}/batik.jar;${lib}/fop.jar;${lib}/servlet.jar;${lib}/saxon7.jar;${lib}/log4j.jar;${lib}/xerces.jar"/>
+  </target>
+	
+	<!-- build gdem.jar -->
+	<target name="buildjar" depends="compile"> 
+    <jar basedir="${classes.dir}" jarfile="${tmp.dest}/gdem/public/WEB-INF/lib/gdem.jar" includes="**/*.class"/>
+		<!--delete dir="${classes.dir}/eionet"/-->
+	</target>
+
+
+	<target name="install" depends="copyfiles">
+		<antcall target="checkProps"/>
+		<antcall target="create_context"/>
+		<antcall target="cleanup"/>
+	</target>
+
+
+<!-- put buildjar back -->
+	<target name="copyfiles" depends="buildjar">
+		
+		<!-- we do not care about these files older versions -->
+		<copy file="${tmp.dest}/gdem/GDEMServices.xml" tofile="${prefix}/gdem/GDEMServices.xml" overwrite="true"/>
+
+
+		<copy todir="${prefix}/gdem/public" overwrite="true">
+			<fileset dir="${tmp.dest}/gdem/public">
+				<exclude name="**/*.java"/>
+				<exclude name="**/*.properties"/>
+			</fileset>
+		</copy>
+		
+		<!-- should take care of not overwriting them -->
+		<copy todir="${prefix}/gdem/xsl">
+			<fileset dir="${tmp.dest}/gdem/xsl"/>
+		</copy>
+
+		<condition property="uit.needed">
+			<not>
+				<available file="${prefix}/gdem/public/WEB-INF/classes/uit.properties"/>
+			</not>
+		</condition>
+		<condition property="gdem.needed">
+			<not>
+				<available file="${prefix}/gdem/public/WEB-INF/classes/gdem.properties"/>
+			</not>
+		</condition>
+		<condition property="log4j.needed">
+			<not>
+				<available file="${prefix}/gdem/public/WEB-INF/classes/log4j.properties"/>
+			</not>
+		</condition>
+		
+		<antcall target="copy_props"/>
+
+</target>
+
+	<target name="checkProps">
+	  <loadproperties srcFile="${prefix}/gdem/public/WEB-INF/classes/gdem.properties"/>
+
+		<condition property="tmp.needed">
+			<not>
+		    <isset property="tmp.folder"/>
+			</not>
+		</condition>
+
+		<condition property="xsl.needed">
+			<not>
+		    <isset property="xsl.folder"/>
+			</not>
+		</condition>
+
+		
+	  <loadproperties srcFile="${prefix}/gdem/public/WEB-INF/classes/uit.properties"/>
+		<condition property="srvdef.not.available">
+			<not>
+				<available file="${services.definition.file}"/>
+			</not>
+		</condition>
+
+		<condition property="xslfolder.not.exist">
+			<and>
+		    <isset property="xsl.folder"/>
+				<not>
+					<available file="${xsl.folder}" type="dir"/>
+				</not>
+			</and>
+		</condition>
+		
+		<fail if="tmp.needed" message="Property 'tmp.folder'  is missing from ${prefix}/gdem/public/WEB-INF/classes/gdem.properties"/>
+		<fail if="xsl.needed" message="Property 'xsl.folder'  is missing from ${prefix}/gdem/public/WEB-INF/classes/gdem.properties"/>
+		<antcall target="warn_definition"/>
+		<antcall target="warn_xsl"/>
+
+	</target>
+
+	<target name="warn_xsl" if="xslfolder.not.exist">
+		<echo message="========================================================================="/>
+		<echo message="XSL folder was not available at: ${xsl.folder}"/>
+		<echo message="Trying to create..."/>
+		<echo message="========================================================================="/>
+		<mkdir dir="${xsl.folder}"/>
+		<echo message="======================  Success                  ========================"/>
+		<echo message="========================================================================="/>
+	</target>
+
+
+	<target name="warn_definition" if="srvdef.not.available">
+		<echo message="========================================================================="/>
+		<echo message="Services definition file is not available at: ${services.definition.file}"/>
+		<echo message="Please specify the correct location in uit.properties"/>
+		<echo message="========================================================================="/>
+	</target>
+
+	<target name="copy_props">
+		<antcall target="cp_uit"/>
+		<antcall target="cp_gdem"/>
+		<antcall target="cp_log4j"/>
+	</target>
+
+	<target name="cp_uit" if="uit.needed">
+		<copy file="${tmp.dest}/gdem/public/WEB-INF/classes/uit.properties" tofile="${prefix}/gdem/public/WEB-INF/classes/uit.properties"/>
+	</target>
+	<target name="cp_log4j" if="log4j.needed">
+		<copy file="${tmp.dest}/gdem/public/WEB-INF/classes/log4j.properties" tofile="${prefix}/gdem/public/WEB-INF/classes/log4j.properties"/>
+	</target>
+	<target name="cp_gdem" if="gdem.needed">
+		<copy file="${tmp.dest}/gdem/public/WEB-INF/classes/gdem.properties" tofile="${prefix}/gdem/public/WEB-INF/classes/gdem.properties"/>
+	</target>
+</project>
+
