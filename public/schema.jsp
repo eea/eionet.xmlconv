@@ -105,7 +105,7 @@
 				<%	if (xsduPrm){ %>
 				<tr>
 					<td align="right" colspan="2">
-						<input name="save" type="submit" class="mediumbuttonb" value="Save" ></input>
+						<input name="save" type="submit" class="mediumbuttonb" value="Save" />
 					</td>
 				</tr>
 				<% }%>
@@ -116,10 +116,10 @@
 					</td>
 				</tr>
 			</table>
-			<input type="hidden" name="ACTION" value="<%=Names.XSD_UPD_ACTION%>"></input>
-			<input type="hidden" name="<%=Names.SCHEMA_ID%>" value="<%=id%>"></input>
+			<input type="hidden" name="ACTION" value="<%=Names.XSD_UPD_ACTION%>" />
+			<input type="hidden" name="<%=Names.SCHEMA_ID%>" value="<%=id%>" />
 		</form>		
-	    <table cellSpacing="5">
+	    <table cellspacing="5">
     	   	<head>
 					
         		<tr>
@@ -153,9 +153,9 @@
 							<%}%>
  	         			</td>
 						<form name="del_elem_<%=elem_id%>" action="main" method="post">
-							<input type="hidden" name="ACTION" value="<%=Names.ELEM_DEL_ACTION%>"></input>
-							<input type="hidden" name="ELEM_DEL_ID" value="<%=elem_id%>"></input>
-							<input type="hidden" name="<%=Names.SCHEMA_ID%>" value="<%=id%>"></input>
+							<input type="hidden" name="ACTION" value="<%=Names.ELEM_DEL_ACTION%>" />
+							<input type="hidden" name="ELEM_DEL_ID" value="<%=elem_id%>" />
+							<input type="hidden" name="<%=Names.SCHEMA_ID%>" value="<%=id%>" />
 						</form>		
 					</tr>
 					<%
@@ -168,18 +168,18 @@
 						<tr height="10"><td colspan="3"></td></tr>
 						<tr>
 							<td>
-								<input type="text" name="ELEM_NAME" size="20"></input>
+								<input type="text" name="ELEM_NAME" size="20" />
 							</td>
 							<td>
-								<input type="text" name="NAMESPACE" size="65"></input>
+								<input type="text" name="NAMESPACE" size="65" />
 							</td>
 							<td>
-								<input name="add" type="submit" class="mediumbuttonb" value="Add" ></input>
+								<input name="add" type="submit" class="mediumbuttonb" value="Add" />
 								<!--img onclick="add_elem.submit();" height="15" width="15" src="images/edit.png" title="Add a new root element"></img-->
 							</td>
 						</tr>
-						<input type="hidden" name="ACTION" value="<%=Names.ELEM_ADD_ACTION%>"></input>
-						<input type="hidden" name="<%=Names.SCHEMA_ID%>" value="<%=id%>"></input>
+						<input type="hidden" name="ACTION" value="<%=Names.ELEM_ADD_ACTION%>" />
+						<input type="hidden" name="<%=Names.SCHEMA_ID%>" value="<%=id%>" />
 					</form>
 				<%
 				}
