@@ -215,6 +215,10 @@ public class Main extends HttpServlet implements Names {
         SaveHandler.handleRootElems(req,action);
         jspName=SCHEMA_JSP;
       }
+      else  if ( action.equals( HOST_ADD_ACTION ) || action.equals( HOST_DEL_ACTION ) || action.equals( HOST_UPD_ACTION )){
+        SaveHandler.handleHosts(req,action);
+        jspName=HOSTS_JSP;
+      }
 
       req.getRequestDispatcher(jspName).forward(req,res);
     }

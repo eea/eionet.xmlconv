@@ -27,6 +27,8 @@ import eionet.gdem.Properties;
 import java.net.URL;
 import java.io.*;
 import java.net.MalformedURLException;
+import java.util.Vector;
+import sun.misc.BASE64Decoder;
 
 /**
  * Several common methods for file handling etc
@@ -172,6 +174,14 @@ public class Utils {
     else
       return false;
   } 
+  public static boolean isNullVector(Vector v ) {
+    if (v==null)
+      return true;
+    else
+      if (v.size()==0) return true;
+    
+    return false;
+  } 
   /**
   * Checks if the given string is number
   */
@@ -185,4 +195,47 @@ public class Utils {
         
       return true;
   }
-}
+    /**
+     * A method for replacing substrings in string
+     */
+    public static String Replace(String str, String oldStr, String replace) {
+        str = (str != null ? str : "");
+
+        StringBuffer buf = new StringBuffer();
+        int found = 0;
+        int last=0;
+
+        while ((found = str.indexOf(oldStr, last)) >= 0) {
+            buf.append(str.substring(last, found));
+            buf.append(replace);
+            last = found+oldStr.length();
+        }
+        buf.append(str.substring(last));
+        return buf.toString();
+    }
+	  /**
+     * A method for decoding the BASIC auth from request header
+     */
+    public static String getEncodedUsername(String str)  throws java.io.IOException {
+      byte[] b_decoded = new BASE64Decoder().decodeBuffer(str);
+      String str_decoded = new String(b_decoded);
+      int sep =str_decoded.indexOf(":");
+      if (sep>0)
+        return str_decoded.substring(0,sep);
+      else
+        return null;
+    }
+	  /**
+     * A method for decoding the BASIC auth from request header
+     */
+    public static String getEncodedPwd(String str)  throws java.io.IOException {
+      byte[] b_decoded = new BASE64Decoder().decodeBuffer(str);
+      String str_decoded = new String(b_decoded);
+      int sep =str_decoded.indexOf(":");
+      if (sep>0)
+        return str_decoded.substring(sep +1);
+      else
+        return null;
+    }   
+  }
+  

@@ -59,6 +59,11 @@ public interface DbModuleIF {
   public static final String ROOTELEM_TABLE="T_ROOT_ELEM";
 
   /**
+  * Table for hosts with usernames and passwords in the DB
+  */
+  public static final String HOST_TABLE="T_HOST";
+
+  /**
   * Field names in XSL table
   */
   public static final String CNV_ID_FLD="CONVERT_ID";
@@ -102,6 +107,8 @@ public interface DbModuleIF {
   public static final String FILE_TYPE_FLD="TYPE";
   public static final String FILE_PARENTTYPE_FLD="PARENT_TYPE";
   public static final String FILE_PARENTID_FLD="PARENT_ID";
+  public static final String FILE_DESCRIPTION_FLD="DESCRIPTION";
+  public static final String FILE_DEFAULT_FLD="F_DEFAULT";
 
 /**
  * TYPE values in FILE table
@@ -125,7 +132,14 @@ public interface DbModuleIF {
   public static final String BROWSER_PRIORITY_FLD="PRIORITY";
   
   
-  
+  /**
+  * Field names in HOSTS table
+  */
+  public static final String HOST_ID_FLD="HOST_ID";
+  public static final String HOST_NAME_FLD="HOST_NAME";
+  public static final String USER_FLD="USER";
+  public static final String PWD_FLD="PWD";
+
   /**
   * Adds a new Stylesheet to the database
   * @param xmlSchemaID - xml schema ID
@@ -316,7 +330,7 @@ public interface DbModuleIF {
 
   public Hashtable getXForms() throws SQLException;
 /**
-  * returns XForma capable browser types 
+  * returns XForms capable browser types 
   * @return Vector contining all fields from BROWSER table
   */
 
@@ -327,16 +341,52 @@ public interface DbModuleIF {
   * @param xmlSchemaID - xml schema ID
   * @param xform - xform file name in the folder
   * @param title - title describing the xform
+  * @param description - describes the xform
   * @return The ID of the added xform
   */
-  public String addXForm(String xmlSchemaID, String xform, String title) throws SQLException;
+  public String addXForm(String xmlSchemaID, String xform, String title, String description) throws SQLException;
 
   /**
   * Updates a XForm properties in the database
   * @param xform_id - id from database, used as a constraint 
   * @param schema_id - xml schema id
-  * @param title - text describing the xform
+  * @param title - title describing the xform shortly
+  * @param description - text describes the xform
   * @param xform_name - xform file name
   */
-  public void updateXForm(String xform_id, String schema_id,  String title, String xform_name) throws SQLException;
+  public void updateXForm(String xform_id, String schema_id,  String title, String xform_name, String description) throws SQLException;
+
+  /**
+  * Adds a new Host to the database
+  * @param hostName - host name  (http://eionet.eea.eu.int"
+  * @param userName - username
+  * @param pwd - password
+  * @return The ID of the added host
+  */
+  public String addHost(String hostName,  String userName, String pwd) throws SQLException;
+
+  /**
+  * Updates a Host properties in the database
+  * @param host_id - id from database, used as a constraint 
+  * @param hostName - host name  (http://eionet.eea.eu.int"
+  * @param userName - username
+  * @param pwd - password
+  */
+  public void updateHost(String hostId, String hostName,  String userName, String pwd) throws SQLException;
+
+  /**
+  * Deletes the Host from the database
+  * @param host_id - id from database, used as a constraint 
+  */
+  public void removeHost(String hostId) throws SQLException;
+
+/**
+  * returns hosts from database
+  * @param host - if empty, then all fields are return
+  *             - numeric id from database 
+  *             - host name as string - wildcard search is performed
+  * @return Vector contining all fields from T_HOST table
+  */
+
+  public Vector getHosts(String host) throws SQLException;
 }

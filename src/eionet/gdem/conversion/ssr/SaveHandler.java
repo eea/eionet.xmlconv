@@ -33,6 +33,7 @@ import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.FileUpload;
+import eionet.gdem.utils.MultipartFileUpload;
 
 
 import eionet.gdem.services.DbModuleIF;
@@ -69,6 +70,7 @@ public class SaveHandler {
         xslFolder = xslFolder + File.separator;
 
      if (action.equals( Names.XSL_ADD_ACTION) ) {
+        HashMap req_params=null;
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "i")){
              req.setAttribute(Names.ERROR_ATT, "You don't have permissions to insert stylesheets!");
@@ -80,9 +82,16 @@ public class SaveHandler {
            return;          
         }
         try{
-          FileUpload fu = new FileUpload(xslFolder);
-          fu.uploadFile(req);
-          fileName=fu.getFileName();
+          MultipartFileUpload fu = new MultipartFileUpload(false);
+          fu.processMultiPartRequest(req);
+
+          req_params = fu.getRequestParams();
+		  	  fu.setFolder(xslFolder);
+		  	  fileName=fu.saveFile();
+          
+          //FileUpload fu = new FileUpload(xslFolder);
+          //fu.uploadFile(req);
+          //fileName=fu.getFileName();
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Uploading file: " + e.toString());
@@ -95,9 +104,9 @@ public class SaveHandler {
            return;
         }
 
-       String schema= (String)req.getParameter("SCHEMA");
-       String type= (String)req.getParameter("CONTENT_TYPE");
-       String descr= (String)req.getParameter("DESCRIPTION");
+       String schema= (String)req_params.get("SCHEMA");
+       String type= (String)req_params.get("CONTENT_TYPE");
+       String descr= (String)req_params.get("DESCRIPTION");
 
        if (Utils.isNullStr(schema)){
          req.setAttribute(Names.ERROR_ATT, "XML schema cannot be empty.");
@@ -173,7 +182,7 @@ public class SaveHandler {
     if (action.equals( Names.XSD_DEL_ACTION) ) {
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "d")){
-           req.setAttribute(Names.ERROR_ATT, "You don't have permissions to delete sschemas!");
+           req.setAttribute(Names.ERROR_ATT, "You don't have permissions to delete schemas!");
            return;                   
           }
         }
@@ -267,7 +276,7 @@ public class SaveHandler {
 
      if (action.equals( Names.ELEM_ADD_ACTION) ) {
         try{
-          if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "u")){
+          if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "i")){
              req.setAttribute(Names.ERROR_ATT, "You don't have permissions to insert root elements!");
              return;                   
           }
@@ -325,5 +334,98 @@ public class SaveHandler {
      req.setAttribute(Names.SCHEMA_ID, schema_id);
 
   }
+  /**
+  * hosts handling 
+  * 
+  */
+  static void handleHosts(HttpServletRequest req, String action) {
 
+     AppUser user = SecurityUtil.getUser(req, Names.USER_ATT);
+  	 String user_name=null;
+	   if (user!=null)
+        user_name = user.getUserName();
+
+    if (action.equals( Names.HOST_DEL_ACTION) ) {
+        try{
+          if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_HOST_PATH, "d")){
+           req.setAttribute(Names.ERROR_ATT, "You don't have permissions to delete hosts!");
+           return;                   
+          }
+        }
+        catch (Exception e){
+           req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
+           return;          
+        }
+       StringBuffer err_buf = new StringBuffer();
+       String del_id= (String)req.getParameter("ID");
+
+       try{
+         dbM= GDEMServices.getDbModule();
+          dbM.removeHost(del_id);              
+        }
+        catch (Exception e){
+          err_buf.append("Cannot delete host: " + e.toString() + del_id);
+          //req.setAttribute(Names.ERROR_ATT, "Cannot delete Schema: " + e.toString() + del_id);
+          //return;
+        }
+        if (err_buf.length()>0)
+          req.setAttribute(Names.ERROR_ATT, err_buf.toString());
+      }
+      else if (action.equals( Names.HOST_UPD_ACTION) ) {
+        try{
+          if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_HOST_PATH, "u")){
+           req.setAttribute(Names.ERROR_ATT, "You don't have permissions to update host!");
+           return;                   
+          }
+        }
+        catch (Exception e){
+           req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
+           return;          
+        }
+       String host_id= (String)req.getParameter("HOST_ID");
+
+       if (Utils.isNullStr(host_id)){
+         req.setAttribute(Names.ERROR_ATT, "HOST id cannot be empty.");
+         return;
+       }
+       String host_name= (String)req.getParameter("HOST_NAME");
+       String user_n= (String)req.getParameter("USER_NAME");
+       String pwd= (String)req.getParameter("PASSWORD");
+
+       try{
+         dbM= GDEMServices.getDbModule();
+         dbM.updateHost(host_id, host_name, user_n, pwd);
+        }
+        catch (Exception e){
+          req.setAttribute(Names.ERROR_ATT, "Cannot update host: " + e.toString() + host_id);
+          return;
+        }
+      }
+     if (action.equals( Names.HOST_ADD_ACTION) ) {
+        try{
+          if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_HOST_PATH, "i")){
+             req.setAttribute(Names.ERROR_ATT, "You don't have permissions to insert new hosts!");
+             return;                   
+          }
+        }
+        catch (Exception e){
+           req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
+           return;          
+        }
+
+       String host_name= (String)req.getParameter("HOST_NAME");
+       String user_n= (String)req.getParameter("USER_NAME");
+       String pwd= (String)req.getParameter("PASSWORD");
+
+       try{
+         dbM= GDEMServices.getDbModule();
+
+         dbM.addHost(host_name, user_n, pwd);
+       }
+       catch (Exception e){
+          req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
+          return;          
+       }
+   }
+  }
  }

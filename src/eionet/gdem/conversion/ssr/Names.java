@@ -44,6 +44,8 @@ public interface Names {
   public static final String TEST_CONVERSION_SERVLET = "convert";
   public static final String LOGIN_JSP = "login.jsp";
   public static final String SCHEMA_JSP = "schema.jsp";
+  public static final String HOSTS_JSP = "hosts.jsp";
+  public static final String HOST_JSP = "host.jsp";
 
   //actions
   public static final String XSD_ADD_ACTION = "A";
@@ -62,6 +64,9 @@ public interface Names {
   public static final String SHOW_LISTCONVERSION_ACTION = "L";
   public static final String SHOW_SCHEMA_ACTION = "T";
   public static final String EXECUTE_TESTCONVERSION_ACTION = "K";
+  public static final String HOST_DEL_ACTION = "M";
+ public static final String HOST_ADD_ACTION = "E";
+ public static final String HOST_UPD_ACTION = "G";
 
   //public static final String ERROR_ACTION = "XXX";
   //Parameters
@@ -73,7 +78,8 @@ public interface Names {
   public static final String ACL_STYLESHEETS_PATH = "stylesheets";
   public static final String ACL_TESTCONVERSION_PATH = "testconversion";
   public static final String ACL_SCHEMA_PATH = "schema";
-  
+  public static final String ACL_HOST_PATH = "host";
+
   public static final String RPC_SERVICE_NAME="XService";
   
 

@@ -188,10 +188,10 @@ public class DbModule implements DbModuleIF, Constants {
     _executeUpdate(sql);
 
   }
-  public void updateXForm(String xform_id, String schema_id,  String title, String xform_name) throws SQLException{
+  public void updateXForm(String xform_id, String schema_id,  String title, String xform_name, String description) throws SQLException{
     
     
-    updateFile(xform_id, xform_name, title, XFORM_FILE_TYPE, SCHEMA_FILE_PARENT, schema_id);
+    updateFile(xform_id, xform_name, title, XFORM_FILE_TYPE, SCHEMA_FILE_PARENT, schema_id, description);
 
   }
   public String addRootElem(String xmlSchemaID, String elemName, String namespace) throws SQLException {
@@ -622,7 +622,7 @@ public class DbModule implements DbModuleIF, Constants {
       String sql=null;
       
       if (Utils.isNum(XMLSchema)){
-        sql = "SELECT " + FILE_ID_FLD  + ", " + XML_SCHEMA_FLD  + ", " + FILE_NAME_FLD  + ", " + FILE_TITLE_FLD  + 
+        sql = "SELECT " + FILE_ID_FLD  + ", " + XML_SCHEMA_FLD  + ", " + FILE_NAME_FLD  + ", " + FILE_TITLE_FLD  +  ", " + FILE_TABLE + "." + FILE_DESCRIPTION_FLD  + 
         " FROM " + FILE_TABLE  + " LEFT OUTER JOIN " + SCHEMA_TABLE +
           " ON " + FILE_TABLE + "." + FILE_PARENTID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD +
           " WHERE " + SCHEMA_TABLE + "." + SCHEMA_ID_FLD + " = " +	XMLSchema + 
@@ -630,7 +630,7 @@ public class DbModule implements DbModuleIF, Constants {
           " AND " + FILE_TYPE_FLD + "='" + XFORM_FILE_TYPE + "'";
       }
       else{
-        sql = "SELECT " + FILE_ID_FLD  + ", " + XML_SCHEMA_FLD  + ", " + FILE_NAME_FLD  + ", " + FILE_TITLE_FLD  + 
+        sql = "SELECT " + FILE_ID_FLD  + ", " + XML_SCHEMA_FLD  + ", " + FILE_NAME_FLD  + ", " + FILE_TITLE_FLD  +   ", " + FILE_TABLE + "." + FILE_DESCRIPTION_FLD  + 
         " FROM " + FILE_TABLE  + " LEFT OUTER JOIN " + SCHEMA_TABLE +
           " ON " + FILE_TABLE + "." + FILE_PARENTID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD +
           " WHERE " + XML_SCHEMA_FLD + " = '" +	XMLSchema + "'" +
@@ -648,6 +648,7 @@ public class DbModule implements DbModuleIF, Constants {
       h.put("xml_schema", r[0][1]);
       h.put("xform_name", r[0][2]);
       h.put("xform_title", r[0][3]);
+      h.put("xform_description", r[0][4]);
 
 			return h;
   }
@@ -669,16 +670,30 @@ public class DbModule implements DbModuleIF, Constants {
   }
  public Hashtable getXFormNames(Vector XMLSchemas) throws SQLException{
       
-      if (XMLSchemas==null) return null;
+      boolean all_schemas=false;
+      if (Utils.isNullVector(XMLSchemas)){
+        XMLSchemas = getSchemas(null,false);
+        all_schemas=true;
+      }
 
       Hashtable h = new Hashtable();
       
       for (int i=0;i<XMLSchemas.size();i++){
-        String schema = (String)XMLSchemas.get(i);
+        String schema="";
+        if (all_schemas){
+          HashMap schema_table = (HashMap)XMLSchemas.get(i);
+          schema = (String)schema_table.get("xml_schema");
+        }
+        else
+          schema = (String)XMLSchemas.get(i);
+        if (schema==null) continue;
+        
         Hashtable h_xform = getXForm(schema);
+        if (h_xform==null) continue;
+        
         String xform = (String)h_xform.get("xform_name");
         
-        if (xform!=null)
+        if (xform!=null && !h.containsKey(schema))
           h.put(schema, xform);      
         
       }        
@@ -728,9 +743,9 @@ public class DbModule implements DbModuleIF, Constants {
 		return r[0][0];
   
   }
-  public String addXForm(String schema_id, String xform, String title) throws SQLException {
+  public String addXForm(String schema_id, String xform, String title, String description) throws SQLException {
 
-    return addFile(xform, title, XFORM_FILE_TYPE, SCHEMA_FILE_PARENT, schema_id);
+    return addFile(xform, title, XFORM_FILE_TYPE, SCHEMA_FILE_PARENT, schema_id, description);
 
   }
   public Hashtable getXFormByID(String xform_id) throws SQLException{
@@ -739,7 +754,7 @@ public class DbModule implements DbModuleIF, Constants {
       if (!Utils.isNum(xform_id))
           throw new SQLException("XForm id is not numeric");
 
-      String sql = "SELECT " + FILE_ID_FLD  + ", " + XML_SCHEMA_FLD  + ", " + FILE_NAME_FLD  + ", " + FILE_TITLE_FLD  + 
+      String sql = "SELECT " + FILE_ID_FLD  + ", " + XML_SCHEMA_FLD  + ", " + FILE_NAME_FLD  + ", " + FILE_TITLE_FLD  + ", " + FILE_TABLE + "." + FILE_DESCRIPTION_FLD  + 
         " FROM " + FILE_TABLE  + " LEFT OUTER JOIN " + SCHEMA_TABLE +
           " ON " + FILE_TABLE + "." + FILE_PARENTID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD +
           " WHERE " + FILE_ID_FLD + " = " +	xform_id + " AND " + FILE_PARENTTYPE_FLD + "='" + SCHEMA_FILE_PARENT + "'";
@@ -753,6 +768,7 @@ public class DbModule implements DbModuleIF, Constants {
       h.put("xml_schema", r[0][1]);
       h.put("xform_name", r[0][2]);
       h.put("xform_title", r[0][3]);
+      h.put("xform_description", r[0][4]);
 
 			return h;
   }  public Vector getBrowsers() throws SQLException{
@@ -776,13 +792,14 @@ public class DbModule implements DbModuleIF, Constants {
     }
     return v; 
   }
-  private String addFile(String fileName, String title, String type, String parent_type, String parent_id) throws SQLException {
+  private String addFile(String fileName, String title, String type, String parent_type, String parent_id, String description) throws SQLException {
 
     title = (title == null ? "" : title );
+    description = (description == null ? "" : description );
     
     String sql = "INSERT INTO " + FILE_TABLE + " ( " + FILE_NAME_FLD + ", " + FILE_TITLE_FLD +
-      ", " + FILE_TYPE_FLD + ", " + FILE_PARENTTYPE_FLD + ", " + FILE_PARENTID_FLD + 
-      ") VALUES ('" + fileName + "', '" +  title + "', '" + type +  "', '" + parent_type +  "', " + parent_id + ")";
+      ", " + FILE_TYPE_FLD + ", " + FILE_PARENTTYPE_FLD + ", " + FILE_PARENTID_FLD + ", " + FILE_DESCRIPTION_FLD + ", " + FILE_DEFAULT_FLD + 
+      ") VALUES ('" + fileName + "', '" +  title + "', '" + type +  "', '" + parent_type +  "', " + parent_id +  ", '" + description + "', 'Y')";
 
     _executeUpdate(sql);
 
@@ -796,13 +813,14 @@ public class DbModule implements DbModuleIF, Constants {
       
     return r[0][0];
   }
-  public void updateFile(String file_id, String fileName, String title, String type, String parent_type, String parent_id) throws SQLException{
+  public void updateFile(String file_id, String fileName, String title, String type, String parent_type, String parent_id, String description) throws SQLException{
     
     title = (title == null ? "" : title );
     
     String sql = "UPDATE  " + FILE_TABLE + " SET " + FILE_NAME_FLD + "='" + fileName + "', " +
           FILE_TITLE_FLD + "='" + title + "', " + FILE_PARENTTYPE_FLD + "='" + parent_type + "', " +
-          FILE_PARENTID_FLD + "=" + parent_id + " WHERE " + FILE_ID_FLD + "=" + file_id;
+          FILE_PARENTID_FLD + "=" + parent_id + ", " + FILE_DESCRIPTION_FLD + "='" + description + "'" +
+          " WHERE " + FILE_ID_FLD + "=" + file_id;
 
     _executeUpdate(sql);
 
@@ -814,6 +832,65 @@ public class DbModule implements DbModuleIF, Constants {
     
   }
   
+  public String addHost(String hostName, String userName, String pwd) throws SQLException {
+
+    hostName = (hostName == null ? "" : hostName );
     
+    String sql = "INSERT INTO " + HOST_TABLE + " ( " + HOST_NAME_FLD + ", " + USER_FLD +
+      ", " + PWD_FLD + ") VALUES ('" + hostName + "', '" + userName + "', '" + pwd + "')";
+
+    _executeUpdate(sql);
+
+      
+    return _getLastInsertID();
+  }
+ public void removeHost(String hostId) throws SQLException {
+
+    String sql = "DELETE FROM " + HOST_TABLE + " WHERE " + HOST_ID_FLD + "=" + hostId;
+    _executeUpdate(sql);    
+    
+  }
+  public void updateHost(String hostId, String hostName, String userName, String pwd) throws SQLException {
+
+    hostName = (hostName == null ? "" : hostName );
+    
+    String sql = "UPDATE " + HOST_TABLE + " SET " + HOST_NAME_FLD + "='" + hostName + "', " + USER_FLD +
+      "='" + userName + "', " + PWD_FLD + "='" + pwd + "' " +
+      " WHERE " + HOST_ID_FLD + "=" + hostId;
+
+    _executeUpdate(sql);
+
+  }
+  public Vector getHosts(String host) throws SQLException{
+  
+      
+    StringBuffer sql_buf = new StringBuffer("SELECT " + HOST_ID_FLD  + ", " + HOST_NAME_FLD  + ", " + USER_FLD  + ", " + PWD_FLD  +  
+      " FROM " + HOST_TABLE);
+    if (!Utils.isNullStr(host)){
+      if (Utils.isNum(host)){
+        sql_buf.append(" WHERE " + HOST_ID_FLD + "=" + host);
+      }
+      else{
+        sql_buf.append(" WHERE " + HOST_NAME_FLD + " like '%" + host + "%'");
+      }
+    }
+    sql_buf.append(" ORDER BY " + HOST_NAME_FLD);
+    
+		String r[][] = _executeStringQuery(sql_buf.toString());
+      
+    Vector v = new Vector();
+
+    for (int i =0; i< r.length; i++) {
+      Hashtable h = new Hashtable();
+      h.put("host_id", r[i][0]);
+      h.put("host_name", r[i][1]);
+      h.put("user_name", r[i][2]);
+      h.put("pwd", r[i][3]);      
+      v.add(h);      
+    }
+
+    return v;
+  }
+     
   
 }

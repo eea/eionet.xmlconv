@@ -26,7 +26,7 @@ import eionet.gdem.GDEMException;
  * File content is transferred using MIME-multipart HTTP request.
  *
  * @author Enriko Käsper
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class MultipartFileUpload{
   
@@ -194,7 +194,7 @@ public class MultipartFileUpload{
           try {
             _fileItem.write(file);
           } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new GDEMException(e.toString());
           }
         }
         return fileName;
