@@ -1,0 +1,13 @@
+<!-- !!!!!!!!!!! GDEM !!!!!!!!!!!!!!!! -->
+            <Host name="gdem.eionet.eu.int"
+                debug="0" appBase="/prj/gdem"
+                unpackWARs="true">
+               <Context path="" docBase="/prj/gdem/public" debug="0"
+                        reloadable="true" crossContext="true">
+                    <Logger className="org.apache.catalina.logger.FileLogger"
+                        prefix="gdem." suffix=".log" timestamp="true"/>
+
+                </Context>
+
+            </Host>
+<!-- !!! GDEM END !!! -->

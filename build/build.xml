@@ -1,0 +1,21 @@
+<project name="gdem" default="buildjar" basedir=".">
+
+  <!-- set global properties for this build -->
+  <property name="src" value="../src"/>
+	<property name="lib" value="../public/WEB-INF/lib"/>
+  <property name="classes.dir" value="../public/WEB-INF/classes"/>
+
+
+  <target name="compile">
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac debug="on" deprecation="off" srcdir="${src}" destdir="${classes.dir}"
+		   classpath="${lib}/avalon.jar;${lib}/batik.jar;${lib}/fop.jar;${lib}/servlet.jar;${lib}/saxon7.jar;${lib}/log4j.jar;${lib}/xerces.jar"/>
+  </target>
+
+	<target name="buildjar" depends="compile"> 
+    <jar basedir="${classes.dir}" jarfile="../public/WEB-INF/lib/gdem.jar" includes="**/*.class"/>
+		<delete dir="${classes.dir}/eionet"/>
+	</target>
+
+</project>
+
