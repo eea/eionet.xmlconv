@@ -428,4 +428,38 @@ public class SaveHandler {
        }
    }
   }
- }
+
+   static void handleWorkqueue(HttpServletRequest req, String action) {
+      AppUser user = SecurityUtil.getUser(req, Names.USER_ATT);
+      String user_name = null;
+	   if(user != null)
+         user_name = user.getUserName();
+
+      if(action.equals(Names.WQ_DEL_ACTION)) {
+         try {
+            if(!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "d")) {
+               req.setAttribute(Names.ERROR_ATT, "You don't have permissions to delete jobs!");
+               return;                   
+            }
+         }
+         catch (Exception e) {
+            req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
+            return;          
+         }
+
+         StringBuffer err_buf = new StringBuffer();
+         String del_id = (String)req.getParameter("ID");
+
+         try {
+            dbM = GDEMServices.getDbModule();
+            if(del_id != null)
+               dbM.endXQJob(del_id);
+         }
+         catch (Exception e) {
+            err_buf.append("Cannot delete job: " + e.toString() + del_id);
+         }
+         if(err_buf.length() > 0)
+            req.setAttribute(Names.ERROR_ATT, err_buf.toString());
+      }
+   }
+}

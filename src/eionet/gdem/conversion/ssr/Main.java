@@ -219,6 +219,10 @@ public class Main extends HttpServlet implements Names {
         SaveHandler.handleHosts(req,action);
         jspName=HOSTS_JSP;
       }
+      else  if ( action.equals( WQ_DEL_ACTION )){
+        SaveHandler.handleWorkqueue(req,action);
+        jspName=LIST_WORKQUEUE_JSP;
+      }
 
       req.getRequestDispatcher(jspName).forward(req,res);
     }

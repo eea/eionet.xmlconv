@@ -40,7 +40,7 @@ import eionet.gdem.GDEMException;
 public class SandBox  extends HttpServlet implements Constants { 
 
  public void doGet(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException    {
-  res.sendRedirect("sandbox.html"); //GET redirects to HTML
+  res.sendRedirect("sandbox.jsp"); //GET redirects to JSP
  }
  public void doPost(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException    {
 

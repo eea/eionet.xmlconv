@@ -2,15 +2,6 @@
 <%@ page import="eionet.gdem.Constants, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices"%>
 <%
 	DbModuleIF dbM= GDEMServices.getDbModule();
-
-	//How the job has to be deleted but it should not happen in HTTP GET
-	/*
-	String action = request.getParameter("ACTION");
-	String id = request.getParameter("ID");
-
-	if (action != null && action.equals("D") && id != null)
-		dbM.endXQJob(id);
-	*/
 %>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
@@ -42,8 +33,7 @@
  			</ul-->
 		</div>
 		<br/>
-		<span>Currently there are following jobs in the queue.</span>
-		<br/>
+		<span>Currently there are following jobs in the queue...</span>
 		<div id="main_table">
 		<table border="0" cellspacing="1" cellpadding="2" width="100%">
 		<thead>
@@ -54,7 +44,11 @@
 				<th width="15%">Job Result</th>
 				<th width="10%">status</th>
 				<th	width="20%">Started at</th>
-				<th>&#160;</th>
+				<%
+			    boolean wqdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "d");
+			    if (wqdPrm){%>
+					<th>&#160;</th>
+			    <%}%>
 			</tr>
 		</thead>
 		<tbody>
@@ -112,14 +106,16 @@
 						<td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
 							<%=timeStamp%>
 						</td>
+						<%
+					    if (wqdPrm){%>
 						<td align="middle" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
 	   					<img onclick="job_<%=jobId%>.submit();" height="15" width="15" src="images/delete.png" title="Delete job"></img>
- 	         	</td>
-						<!-- dummy form at the moment does not do anything -->
-						<form name="job_<%=jobId%>" action="workqueue.jsp" method="get">
-							<input type="hidden" name="ACTION" value="D" />
+						<form name="job_<%=jobId%>" action="main" method="post">
+                            <input type="hidden" name="ACTION" value="<%=Names.WQ_DEL_ACTION%>"/>
 							<input type="hidden" name="ID" value="<%=jobId%>" />
 						</form>		
+						</td>
+					    <%}%>
 					</tr>
 					<%
     	   		}
