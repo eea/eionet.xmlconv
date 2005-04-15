@@ -50,7 +50,7 @@
 				<th width="15%">XQuery script</th>
 				<th width="15%">Job Result</th>
 				<th width="10%">status</th>
-				<th	width="20%">Started at</th>
+				<th width="20%">Started at</th>
 				<%
 			    boolean wqdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "d");
 			    if (wqdPrm){%>
@@ -120,14 +120,14 @@
 							<%=jobId%>
 						</td>
 						<td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
-							<a title="<%=url%>" href="<%=url%>" target="_blank"><%=urlName%></a>
+							<a title="<%=url%>" href="<%=url%>"><%=urlName%></a>
 						</td>
   					<td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
-							<a href="<%=xqFileURL%>" target="_blank"><%=xqText%></a>
+							<a href="<%=xqFileURL%>"><%=xqText%></a>
 						</td>
 						<td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
 							<% if (resultFile != null) { %>
-							<a href="<%=tmpFolder + resultFile%>" target="_blank">Show result</a>
+							<a href="<%=tmpFolder + resultFile%>">Show result</a>
 							<% } else { out.println("*** Not ready ***"); } %>
 						</td>
 						<td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
