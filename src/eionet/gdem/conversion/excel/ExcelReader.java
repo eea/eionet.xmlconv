@@ -201,7 +201,8 @@ public class ExcelReader implements ExcelReaderIF
       case HSSFCell.CELL_TYPE_ERROR :
         break;
       }
-    return value;
+      
+    return value.trim();
   }
   /*
    * DD can generate additional "-meta" sheets with GIS elements for one DD table.

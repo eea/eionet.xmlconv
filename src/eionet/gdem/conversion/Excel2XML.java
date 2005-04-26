@@ -190,9 +190,9 @@ public String convertDD_XML(InputStream inStream, OutputStream outStream) throws
     }
   }
   public static void main(String[] args){
-    String excelFile = "E:\\Projects\\gdem\\public\\tmp\\convert-5.xls";
+    String excelFile = "D:/Projects/gdemxf/doc/Monthly_ozone_Station_DD.xls";
     //String excelFile = "E:\\Projects\\gdem\\exelToXML\\Groundwater_GG_CCxxx.xls";
-    String outFile = "E:\\Projects\\gdem\\exelToXml\\Instance2508_.xml";
+    String outFile = "D:\\Projects\\gdemxf\\doc\\Instance1925_.xml";
     try{
       Excel2XML processor = new Excel2XML();
       processor.convertDD_XML(excelFile,outFile);  
