@@ -21,6 +21,13 @@
 				</Parameters>
 				<Value Type="ARRAY"/>
 			</Method>
+			<Method Name="convertDD_XML_split" Auth="false">
+				<Parameters>
+					<Parameter Name="url" Type="STRING"/>
+					<Parameter Name="sheet_name" Type="STRING"/>
+				</Parameters>
+				<Value Type="ARRAY"/>
+			</Method>
 		</Methods>
 	</Service>
 	<Service Name="XQueryService" Provider="eionet.gdem.qa.XQueryService">
