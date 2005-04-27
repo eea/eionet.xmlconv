@@ -32,8 +32,6 @@ import java.net.MalformedURLException;
 
 import java.util.Hashtable;
 import java.util.Vector;
-import java.util.ResourceBundle;
-import java.util.MissingResourceException;
 
 import eionet.gdem.services.*;
 import eionet.gdem.GDEMException;
@@ -45,9 +43,6 @@ import eionet.gdem.services.LoggerIF;
 
 import java.util.HashMap;
 
-//KL 040427 not used?
-//import org.apache.avalon.framework.logger.Logger; 
-//import org.apache.avalon.framework.logger.ConsoleLogger;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.apache.fop.apps.Driver;
@@ -60,11 +55,6 @@ import javax.xml.transform.Source;
 import javax.xml.transform.Result;
 import javax.xml.transform.sax.SAXResult;
 
-import org.apache.xalan.xslt.*;
-import org.apache.xalan.*;
- import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-import org.apache.xerces.parsers.DOMParser;
 import java.io.OutputStream;
 import javax.servlet.http.HttpServletResponse;
 
@@ -256,7 +246,7 @@ public class ConversionService {
     //log("========= going to bytes " + htmlFileName);
 
 
-    byte[] file = fileToBytes(outputFileName);
+    byte[] file = Utils.fileToBytes(outputFileName);
     //log("========= bytes ok");
 
     h.put("content", file);
@@ -361,7 +351,7 @@ public class ConversionService {
       if (str_result.equals("OK"))
         result_code=0;
     }
-    byte[] file = fileToBytes(outFileName);
+    byte[] file = Utils.fileToBytes(outFileName);
     
     v_result.add(String.valueOf(result_code));
     if (result_code==0)
@@ -379,36 +369,97 @@ public class ConversionService {
     
     return v_result;  
 }
-  /** 
-  * reads temporary file from dis and returs as a bytearray
-  */
-  private byte[] fileToBytes(String fileName) throws GDEMException {
-
-    ByteArrayOutputStream baos = null;
-    try {
-
-      //log("========= open fis " + fileName);
-      FileInputStream fis = new     FileInputStream(fileName);
-      //log("========= fis opened");
-      
-      baos = new ByteArrayOutputStream();
-    
-      int bufLen = 0;
-      byte[] buf = new byte[1024];
-
   
-     while ( (bufLen=fis.read( buf ))!= -1 )
-          baos.write(buf, 0, bufLen );
+  
+  /**
+   * Request from XML/RPC client
+   * Converts DataDictionary MS Excel sheets to different XML files, where one xml file is dataset table.
+   * @param String url: URL of the srouce Excel file
+   * @return Vector result: error_code, xml_url, error_message
+   */
+   public Vector convertDD_XML_split(String sourceURL, String sheet_param) throws GDEMException {
+     return convertDD_XML_split(sourceURL, sheet_param, null);
+   }
+   /**
+    * Request from WebBrowser
+   * Converts DataDictionary MS Excel sheets to different XML files, where one xml file is dataset table.
+    * @param String url: URL of the srouce Excel file
+    * @param HttpServletResponse res: Servlet response
+    * @return Vector result: error_code, xml_url, error_message
+    */
+    public Vector convertDD_XML_split(String sourceURL, String sheet_param, HttpServletResponse res) throws GDEMException {
 
-      fis.close();
+      InputFile src= null;
+      String error_mess = null;
+      Vector v_result = null;
       
-    } catch (FileNotFoundException fne) {
-      throw new GDEMException("File not found " + fileName, fne);
-    } catch (Exception e) {
-      throw new GDEMException("Exception " + e.toString(), e);
-    }    
-      return baos.toByteArray();    
+      try {
+      
+        src = new InputFile(sourceURL);
+        if (res!=null){  
+          try {
+            result = res.getOutputStream();
+          } catch (IOException e ) {
+            throw new GDEMException("Error getting response outputstream " + e.toString(), e);
+          }
+        }
+
+        Excel2XML converter = new Excel2XML();
+        v_result = converter.convertDD_XML_split(src.getSrcInputStream(), result, sheet_param);
+      }
+      catch (MalformedURLException mfe ) {
+        if (res!=null){
+          throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
+        }
+        else{
+          error_mess = "Bad URL : " + mfe.toString();
+        }
+      } 
+      catch (IOException ioe ) {
+        if (res!=null){
+          throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
+        }
+        else{
+          error_mess = "Error opening URL " + ioe.toString();
+        }
+      } 
+      catch (Exception e ) {
+        if (res!=null){
+
+          throw new GDEMException(e.toString(), e);
+        }
+        else{
+          error_mess = e.toString();
+        }
+      }
+      finally{
+        try{
+          if (src!=null) src.close();
+        //  if (result!=null) result.close();
+  	    }
+  	    catch(Exception e){}
+      }
+      if (res!=null){
+        try{
+          res.setContentType("text/xml");
+          result.close();
+        } catch (IOException e ) {
+          throw new GDEMException("Error closing result ResponseOutputStream ", e);
+        }
+        return v_result;
+      }
+//  Creates response Vector    
+      
+      if (Utils.isNullVector(v_result) && !Utils.isNullStr(error_mess)){
+        v_result.add("1");
+        v_result.add(error_mess);
+      }
+      
+      
+      return v_result;  
   }
+    
+
   private String convertPDF(InputStream source, String xslt) throws GDEMException {
 
       String pdfFile=tmpFolder + "gdem_" + System.currentTimeMillis() + ".pdf";

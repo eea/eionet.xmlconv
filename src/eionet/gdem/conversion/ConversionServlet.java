@@ -46,7 +46,10 @@ public class ConversionServlet extends HttpServlet {
     String url = req.getParameter("url");
     String format = req.getParameter("format");
     String save = req.getParameter("save");
-
+    String split = req.getParameter("split");
+    String sheet_param = req.getParameter("sheet_name");
+    if (split==null) split="all";
+    
     String list = req.getParameter("list");
 
     if ( Utils.isNullStr(list) && ( Utils.isNullStr(url) || Utils.isNullStr(format))   ){
@@ -61,7 +64,12 @@ public class ConversionServlet extends HttpServlet {
       // For testing 
      //System.out.println("Start: " + Long.toString(System.currentTimeMillis()));
         if (format.equalsIgnoreCase(Names.EXCEL2XML_CONV_PARAM)){
-          convertExcel2XML(res, url, format, save);
+        	if(split.equals("split")){
+        		convertExcel2XML_split(res, url, sheet_param);        		
+        	}
+        	else{
+        		convertExcel2XML(res, url, format, save);
+        	}
         }
         else {
           convertXML(res, url, format, save);
@@ -109,9 +117,47 @@ public class ConversionServlet extends HttpServlet {
           byteIn.close();
         }
   }  
+  private void convertExcel2XML_split(HttpServletResponse res, String url, String sheet_param) throws GDEMException{
+    ConversionService cnv = new ConversionService();
+    boolean show_array =false;
+    Vector result=null;
+
+    if (sheet_param!=null){
+    	//hidden value for sheet_param, that returns the array of result. Returns all sheets.
+    	if (sheet_param.equals("showarray")) {
+    		show_array=true; 
+        	sheet_param=null;
+    	}
+    }
+    
+    if (!show_array){
+    	//System.out.println("Response");
+      result = cnv.convertDD_XML_split(url,sheet_param, res);
+    }
+    else{
+        result = cnv.convertDD_XML_split(url,sheet_param);
+        String str_result = result.toString();
+    	//System.out.println(str_result);
+        
+        byte[] content = (byte[])str_result.getBytes();
+        try{
+            res.setContentType("text/plain");
+            ByteArrayInputStream byteIn = new ByteArrayInputStream(content);      
+            int bufLen = 0;
+            byte[] buf = new byte[1024];
+        
+            while ( (bufLen=byteIn.read( buf ))!= -1 )
+              res.getOutputStream().write(buf, 0, bufLen );
+            byteIn.close();
+          }
+          catch(IOException e){
+            throw new GDEMException(e.toString(), e);
+          }
+    }
+  }
   private void convertExcel2XML(HttpServletResponse res, String url, String format, String save) throws GDEMException{
     ConversionService cnv = new ConversionService();
-    boolean save_src =true;
+    boolean save_src =false;
     Vector result=null;
 
     if (save!=null)

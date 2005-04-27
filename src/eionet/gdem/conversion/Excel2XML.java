@@ -25,6 +25,7 @@ package eionet.gdem.conversion;
 
 
 import eionet.gdem.GDEMException;
+import eionet.gdem.Properties;
 import eionet.gdem.conversion.excel.*;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
@@ -39,6 +40,9 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.util.Enumeration;
+import java.util.Vector;
+import java.util.Hashtable;
 
 import org.xml.sax.*;
 import javax.xml.parsers.*;
@@ -71,7 +75,7 @@ import javax.xml.parsers.*;
        return "ErrorConversionHandler - couldn't save the Excel file: " + e.toString();
     }
   }
-public String convertDD_XML(InputStream inStream, OutputStream outStream) throws GDEMException{
+   public String convertDD_XML(InputStream inStream, OutputStream outStream) throws GDEMException{
     
       if (inStream == null) return "Could not find InputStream";
       if (outStream == null) return "Could not find OutputStream";
@@ -83,7 +87,8 @@ public String convertDD_XML(InputStream inStream, OutputStream outStream) throws
           throw new Exception("Excel file is not generated from Data Dictionary " +
                 "or it has been modified later. Could not find XML Schema!");
         }
-        String instance_url = getInstanceUrl(xml_schema);
+   		doConversion(xml_schema, outStream, excel);
+        /*String instance_url = getInstanceUrl(xml_schema);
         
         DD_XMLInstance instance = new DD_XMLInstance();
         DD_XMLInstanceHandler handler=new DD_XMLInstanceHandler(instance);
@@ -107,7 +112,7 @@ public String convertDD_XML(InputStream inStream, OutputStream outStream) throws
         }
         excel.readDocumentToInstance(instance);
         instance.flush(outStream);
-        
+        */
       }
       catch (Exception e){
         throw new GDEMException("Error generating XML file from Excel file: " + e.toString(), e);
@@ -119,6 +124,185 @@ public String convertDD_XML(InputStream inStream, OutputStream outStream) throws
 	        catch(Exception e){}
 	    }
       return "OK";
+  }
+   public Vector convertDD_XML_split(String sIn, String sheet_param) throws GDEMException{
+    try
+    {     
+        FileInputStream inStream = new FileInputStream(sIn);
+        return convertDD_XML_split(inStream, null, sheet_param);
+
+    }
+    catch(Exception e)
+    {
+    	Vector result = new Vector();
+    	result.add("ErrorConversionHandler convertDD_XML_split- couldn't save the Excel file: " + e.toString());
+		return result;
+    }
+   	
+   }
+   public Vector convertDD_XML_split(InputStream inStream) throws GDEMException{
+   		return convertDD_XML_split(inStream, null, null);
+   }
+   public Vector convertDD_XML_split(InputStream inStream, OutputStream outStream, String sheet_param) throws GDEMException{
+    
+   	  boolean http_response = (outStream==null)? false:true;
+   	  Vector result = new Vector(); 
+   	  String outFileName=null;
+      if (inStream == null) throw new GDEMException("Could not find InputStream");
+      try{
+        ExcelReaderIF excel = ExcelUtils.getExcelReader();
+        excel.initReader(inStream);
+        String xml_schema = excel.getXMLSchema();
+        
+        if (xml_schema==null){
+    		if (http_response)
+                throw new Exception("Excel file is not generated from Data Dictionary " +
+                "or it has been modified later. Could not find XML Schema!");
+    		else{
+            	result.add(createResultForSheet("1","Workbook","Excel file is not generated from Data Dictionary " +
+                        "or it has been modified later. Could not find XML Schema!"));
+            	return result;
+    		}
+          }
+
+        Hashtable sheet_schemas = excel.getSheetSchemas();
+		String first_sheet_name=excel.getFirstSheetName();
+        
+        //could not find sheet schemas
+        if (Utils.isNullHashtable(sheet_schemas)){
+        	//maybe it's Excel file for DD table
+        	if (xml_schema.toLowerCase().indexOf("type=tbl")>-1
+        			|| xml_schema.toLowerCase().indexOf("=tbl")>-1){
+        		sheet_schemas.put(first_sheet_name,xml_schema);
+        	}
+        	else{
+        		if (http_response)
+                    throw new GDEMException("Excel file is not generated from Data Dictionary " +
+                    "or it has been modified later. Could not find XML Schemas for sheets!");        		
+        		else{
+                	result.add(createResultForSheet("1","Workbook","Excel file is not generated from Data Dictionary " +
+                            "or it has been modified later. Could not find XML Schemas for sheets!"));
+                	return result;
+        		}
+        	}
+        }
+        if (!Utils.isNullStr(sheet_param)){
+        	if (!Utils.containsKeyIgnoreCase(sheet_schemas,sheet_param)){
+        		if (http_response)
+        			throw new GDEMException("Could not find sheet with specified name or the XML schema reference was missing on DO_NOT_DELETE_THIS_SHEET: " + sheet_param);
+        		else{
+                	result.add(createResultForSheet("1",sheet_param,"Could not find sheet with specified name or the XML schema reference was missing on DO_NOT_DELETE_THIS_SHEET: " + sheet_param));
+                	return result;
+        		}
+        	}
+        }
+        if (http_response && Utils.isNullStr(sheet_param))
+        	sheet_param=first_sheet_name;
+        
+        int i = 1;
+  		Enumeration sheets = sheet_schemas.keys();
+        while (sheets.hasMoreElements()){
+            String sheet_name = sheets.nextElement().toString();
+            String sheet_schema = (String)sheet_schemas.get(sheet_name);
+            if (sheet_schema==null){
+            	result.add(createResultForSheet("1",sheet_name,"could not find xml schema for this sheet!"));
+            	continue;
+            }
+            	if (!Utils.isNullStr(sheet_param)){
+                	//Only 1 sheet is needed.
+            		if (!sheet_param.equalsIgnoreCase(sheet_name)){
+            			continue;
+            		}
+            	}
+            
+            	try{
+            		if (!http_response){
+            			outFileName=Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + ".xml";
+            	        outStream = new FileOutputStream(outFileName);
+            		}
+            		doConversion(sheet_schema, outStream, excel);
+            		
+            		// if the respponse is http stream, then it is already written there and no file available
+            		if (!http_response){
+            			byte[] file = Utils.fileToBytes(outFileName);
+            			Vector sheet_result = new Vector();
+            			sheet_result.add("0");
+            			sheet_result.add(sheet_name + ".xml");
+            			sheet_result.add(file);
+            			result.add(sheet_result);
+            			try{
+            				Utils.deleteFile(outFileName);
+            			}
+            			catch(Exception e){
+            				_logger.error("Couldn't delete the result file" + outFileName);
+            			}
+            		}
+            	}
+            	catch(Exception e){
+                	result.add(createResultForSheet("1",sheet_name,"Could not find xml schema for this sheet " + sheet_name + "! " + e.toString()));
+            	}
+            	finally{
+            		if(!http_response){
+            			if (outStream!=null) outStream.close();
+            		}
+            	}
+            	if (!Utils.isNullStr(sheet_param)){
+            		break;
+            	}
+            }
+            
+        //}
+        
+        
+        
+        
+        
+      }
+      catch (Exception e){
+        throw new GDEMException("Error generating XML files from Excel file: " + e.toString(), e);
+      }
+	    finally{
+	        try{
+	            if (inStream != null) inStream.close();
+	        }
+	        catch(Exception e){}
+	    }
+      return result;
+  }
+  private Vector createResultForSheet(String code, String sheet_name, String error_mess){
+  	Vector sheet_result = new Vector();
+  	
+  	sheet_result.add(code);
+  	sheet_result.add(sheet_name);
+  	sheet_result.add(error_mess);
+  	
+  	return sheet_result;
+  }
+  private void doConversion(String xml_schema, OutputStream outStream, ExcelReaderIF excel) throws Exception{
+	String instance_url = getInstanceUrl(xml_schema);
+  
+  	DD_XMLInstance instance = new DD_XMLInstance();
+  	DD_XMLInstanceHandler handler=new DD_XMLInstanceHandler(instance);
+  
+  	SAXParserFactory spfact = SAXParserFactory.newInstance();
+  	SAXParser parser = spfact.newSAXParser();
+  	XMLReader reader = parser.getXMLReader();
+  	spfact.setValidating(false);
+  	spfact.setNamespaceAware(true);
+  	reader.setFeature("http://xml.org/sax/features/validation", false); 
+  	reader.setFeature("http://apache.org/xml/features/validation/schema", false);
+  	reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+  	reader.setFeature("http://xml.org/sax/features/namespaces", true);
+
+  	reader.setContentHandler(handler);
+  	reader.parse(instance_url);
+
+  	if (Utils.isNullStr(instance.getEncoding())){
+  		String enc_url = getEncodingFromStream(instance_url);
+  		if (!Utils.isNullStr(enc_url)) instance.setEncoding(enc_url);
+  	}
+  	excel.readDocumentToInstance(instance);
+  	instance.flush(outStream);
   }
   private String getInstanceUrl(String schema_url) throws GDEMException{
   
@@ -190,12 +374,12 @@ public String convertDD_XML(InputStream inStream, OutputStream outStream) throws
     }
   }
   public static void main(String[] args){
-    String excelFile = "D:/Projects/gdemxf/doc/Monthly_ozone_Station_DD.xls";
+    String excelFile = "E:/Projects/gdemxf/doc/Monthly_ozone.xls";
     //String excelFile = "E:\\Projects\\gdem\\exelToXML\\Groundwater_GG_CCxxx.xls";
-    String outFile = "D:\\Projects\\gdemxf\\doc\\Instance1925_.xml";
+    String outFile = "E:\\Projects\\gdemxf\\doc\\Instance1925_.xml";
     try{
       Excel2XML processor = new Excel2XML();
-      processor.convertDD_XML(excelFile,outFile);  
+      processor.convertDD_XML_split(excelFile,null);  
     }
     catch(Exception e){
       System.out.println(e.toString());

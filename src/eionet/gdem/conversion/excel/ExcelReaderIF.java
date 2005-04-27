@@ -23,11 +23,9 @@
 
 package eionet.gdem.conversion.excel;
 
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.hssf.util.*;
-
 import java.io.InputStream;
 import eionet.gdem.GDEMException;
+import java.util.Hashtable;
 
 /**
 * The main class, which is calling POI HSSF methods for reading Excel file
@@ -55,4 +53,15 @@ public void initReader(InputStream input) throws GDEMException;
 * @param DD_XMLInstance instance - XML instance file, where the structure xml has been efined before
 */
 public void readDocumentToInstance(DD_XMLInstance instance)throws GDEMException;
+/**
+* Finds the first sheet name, that is not DO_NOT_DELETE_THIS_SHEET 
+* @return - Excel sheet name
+*/
+public String getFirstSheetName();
+/**
+* If the excel file is generated from Data Dictionary,
+* then it finds the XML Shemas for each Excel sheet
+* @return - Excel sheet name
+*/
+public Hashtable getSheetSchemas();
 }

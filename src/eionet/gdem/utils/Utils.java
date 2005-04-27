@@ -22,6 +22,7 @@
  */
 package eionet.gdem.utils;
 
+import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import java.net.URL;
 import java.io.*;
@@ -187,6 +188,14 @@ public class Utils {
     
     return false;
   } 
+  public static boolean isNullHashtable(Hashtable h ) {
+    if (h==null)
+      return true;
+    else
+      if (h.isEmpty()) return true;
+    
+    return false;
+  } 
   /**
   * Checks if the given string is a well-formed URL
   */
@@ -336,5 +345,43 @@ public class Utils {
 		xmlEscapes.put(new Character('"'), "&quot;");
 		xmlEscapes.put(new Character('\''), "&apos;");
 	}
+	   /** 
+	  * reads temporary file from dis and returs as a bytearray
+	  */
+	  public static byte[] fileToBytes(String fileName) throws GDEMException {
+
+	    ByteArrayOutputStream baos = null;
+	    try {
+
+	      //log("========= open fis " + fileName);
+	      FileInputStream fis = new     FileInputStream(fileName);
+	      //log("========= fis opened");
+	      
+	      baos = new ByteArrayOutputStream();
+	    
+	      int bufLen = 0;
+	      byte[] buf = new byte[1024];
+
+	  
+	     while ( (bufLen=fis.read( buf ))!= -1 )
+	          baos.write(buf, 0, bufLen );
+
+	      fis.close();
+	      
+	    } catch (FileNotFoundException fne) {
+	      throw new GDEMException("File not found " + fileName, fne);
+	    } catch (Exception e) {
+	      throw new GDEMException("Exception " + e.toString(), e);
+	    }    
+	      return baos.toByteArray();    
+	  }
+	  public static boolean containsKeyIgnoreCase(Hashtable hash, String val){
+		Enumeration keys = hash.keys();
+        while (keys.hasMoreElements()){
+            String key = keys.nextElement().toString();
+            if (key.equalsIgnoreCase(val))return true;
+        }
+        return false;
+      }
 }
   

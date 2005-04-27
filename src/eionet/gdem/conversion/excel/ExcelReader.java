@@ -78,6 +78,40 @@ public class ExcelReader implements ExcelReaderIF
     }
     return null;
   }
+  public String getFirstSheetName(){
+
+  	if (wb==null) return null;
+  	
+    for (int i=0; i<wb.getNumberOfSheets();i++){
+    	String sheet_name = wb.getSheetName(i);
+    	if (sheet_name.equalsIgnoreCase(SCHEMA_SHEET_NAME))
+			continue;
+    	return sheet_name;
+    }
+    return null;
+    
+  }
+  public Hashtable getSheetSchemas(){
+    
+      if (wb==null) return null;
+      
+      HSSFSheet schema_sheet = wb.getSheet(SCHEMA_SHEET_NAME);
+      
+      if (schema_sheet == null){
+        for (int i=0; i<wb.getNumberOfSheets();i++){
+          schema_sheet = wb.getSheetAt(i);
+          Hashtable schemas = findSheetSchemas(schema_sheet);
+          if (schemas!=null){
+          	if (!schemas.isEmpty())
+            return schemas;
+          }
+        }
+      }
+      else{
+        return findSheetSchemas(schema_sheet);
+      }
+      return null;
+    }
   public void readDocumentToInstance(DD_XMLInstance instance)throws GDEMException{
     Vector tables = instance.getTables();
     if (tables == null)
@@ -166,7 +200,44 @@ public class ExcelReader implements ExcelReaderIF
     }
     return null;
   }
-  private HSSFSheet getSheet(String name){
+  /*
+   * method goes through rows after XML Schema and finds schemas for Excel sheets (DataDict tables).
+   *  cell(0) =sheet name; cell(1)= XML schema
+   */
+  private Hashtable findSheetSchemas(HSSFSheet schema_sheet){
+    
+  	String xml_schema = null;
+    
+    HSSFRow schema_row = null;
+    HSSFCell schema_cell = null;
+    HSSFCell sheet_cell = null;
+    
+    Hashtable result = new Hashtable();
+    if (schema_sheet.getLastRowNum()<1)return null;
+    
+    for (int i=0; i<=schema_sheet.getLastRowNum(); i++){
+      schema_row = schema_sheet.getRow(i);
+      if (schema_row==null) continue;
+      if (schema_row.getLastCellNum()<1) continue;
+      schema_cell = schema_row.getCell((short)1);
+      if(schema_cell==null)continue;
+      String schema_val = schema_cell.getStringCellValue();
+    
+      if (schema_val.startsWith("http://") && 
+      		schema_val.toLowerCase().indexOf("/getschema")>0 &&
+            Utils.isURL(schema_val)){
+      		
+      		sheet_cell = schema_row.getCell((short)0);
+      		String sheet_val = sheet_cell.getStringCellValue();
+      		if (sheet_val==null)continue;
+      	    HSSFSheet sheet = wb.getSheet(sheet_val);
+      	    if (sheet!=null && !result.containsKey(sheet_val))
+      	    	result.put(sheet_val,schema_val);
+      }
+    }
+    return result;
+  }
+    private HSSFSheet getSheet(String name){
       HSSFSheet sheet = wb.getSheet(name);  
       
       if (sheet == null){
