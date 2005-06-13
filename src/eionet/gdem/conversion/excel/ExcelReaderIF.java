@@ -18,7 +18,7 @@
  * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Enriko Käsper (TietoEnator)
+ * Original Code: Enriko Kï¿½sper (TietoEnator)
  */
 
 package eionet.gdem.conversion.excel;
@@ -29,7 +29,7 @@ import java.util.Hashtable;
 
 /**
 * The main class, which is calling POI HSSF methods for reading Excel file
-* @author Enriko Käsper
+* @author Enriko Kï¿½sper
 */
 public interface ExcelReaderIF 
 {
@@ -64,4 +64,12 @@ public String getFirstSheetName();
 * @return - Excel sheet name
 */
 public Hashtable getSheetSchemas();
+
+/**
+* Check if sheet has data or not
+* @param sheet_name - Excel sheet name
+* @return boolean - true if has data
+*/
+public boolean isEmptySheet(String sheet_name);
+	  
 }

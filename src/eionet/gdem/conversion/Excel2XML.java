@@ -18,7 +18,7 @@
  * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Enriko Käsper (TietoEnator)
+ * Original Code: Enriko Kï¿½sper (TietoEnator)
  */
 
 package eionet.gdem.conversion;
@@ -50,7 +50,7 @@ import javax.xml.parsers.*;
 /**
 * This class is creating handlers for creating XML file from MS Excel
 * called from ConversionService
-* @author Enriko Käsper
+* @author Enriko Kï¿½sper
 */public class Excel2XML 
 {
   private static LoggerIF _logger;
@@ -216,6 +216,9 @@ import javax.xml.parsers.*;
             	}
             
             	try{
+            		//Do not return empty sheets.
+            		if (excel.isEmptySheet(sheet_name))continue;
+            			
             		if (!http_response){
             			outFileName=Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + ".xml";
             	        outStream = new FileOutputStream(outFileName);
@@ -230,12 +233,12 @@ import javax.xml.parsers.*;
             			sheet_result.add(sheet_name + ".xml");
             			sheet_result.add(file);
             			result.add(sheet_result);
-            			try{
+            			/*try{
             				Utils.deleteFile(outFileName);
             			}
             			catch(Exception e){
             				_logger.error("Couldn't delete the result file" + outFileName);
-            			}
+            			}*/
             		}
             	}
             	catch(Exception e){
@@ -374,12 +377,14 @@ import javax.xml.parsers.*;
     }
   }
   public static void main(String[] args){
-    String excelFile = "E:/Projects/gdemxf/doc/Monthly_ozone.xls";
-    //String excelFile = "E:\\Projects\\gdem\\exelToXML\\Groundwater_GG_CCxxx.xls";
-    String outFile = "E:\\Projects\\gdemxf\\doc\\Instance1925_.xml";
+    //String excelFile = "E:/Projects/gdem/public/test.xls";
+  	String excelFile = "E:/Projects/gdem/tmp/Monthly_ozone.xls";
+    //String excelFile = E\\Projects\\gdem\\exelToXML\\Groundwater_GG_CCxxx.xls";
+    String outFile = "E:\\Projects\\gdem\\tmp\\Instance1925_.xml";
     try{
       Excel2XML processor = new Excel2XML();
-      processor.convertDD_XML_split(excelFile,null);  
+      //processor.convertDD_XML_split(excelFile,outFile);  
+      processor.convertDD_XML_split(excelFile, "Information");
     }
     catch(Exception e){
       System.out.println(e.toString());

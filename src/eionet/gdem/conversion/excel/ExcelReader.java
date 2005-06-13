@@ -18,7 +18,7 @@
  * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Enriko Käsper (TietoEnator)
+ * Original Code: Enriko Kï¿½sper (TietoEnator)
  */
 
 package eionet.gdem.conversion.excel;
@@ -40,7 +40,7 @@ import eionet.gdem.GDEMException;
 
 /**
 * The main class, which is calling POI HSSF methods for reading Excel file
-* @author Enriko Käsper
+* @author Enriko Kï¿½sper
 */
 
 public class ExcelReader implements ExcelReaderIF
@@ -174,7 +174,26 @@ public class ExcelReader implements ExcelReaderIF
     }
     
   }
-  
+  public boolean isEmptySheet(String sheet_name){
+ 
+  	HSSFSheet sheet = getSheet(sheet_name);
+  	int row_count =sheet.getLastRowNum(); 
+  	if (row_count<1) return true;
+  	
+  	//check if the first row has any data
+  	for (int i=1; i<=row_count;i++){
+  		HSSFRow row = sheet.getRow(i);
+  		if (row==null) continue;
+  		for (int j=0; j<=row.getLastCellNum();j++){
+  	  		HSSFCell cell = row.getCell((short)j);
+  	  		if (cell==null) continue;
+  			if (!Utils.isNullStr(cellValueToString(cell)))
+  				return false;
+  		}
+  	}
+
+  	return true;
+  }
   /*
    * method goes through 4 rows and search the best fit of XML Schema.
    * The deault row is 4.
