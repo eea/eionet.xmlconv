@@ -178,11 +178,11 @@ th {
 #globalnav ul {
 	list-style: none;
 	padding-left: 5px;
-	margin:0px 0px 0px 10px;            /* T   R   B   L */
+	margin: 0px 0px 0px 10px;
 }
 
 #globalnav li {
-	font-size:.75em;
+	font-size: 9px;
 	font-family: sans-serif;
 	font-weight: bold;
 	width:100px;
@@ -195,20 +195,21 @@ th {
 	white-space: nowrap;
 }
 #globalnav li a {
-	display:block;
+	display: block;
 	font-weight: bold;
 	text-decoration: none;
-	color:#ffffff;
-	width:80px;
-	height:13px;
+	color: #ffffff;
+	width: 80px;
+	height: 13px;
 	padding: 0px 6px 0px 20px;
-	background: url('images/greybutton.gif') no-repeat left top;
+	background: url('images/greybuttonred.gif') no-repeat left top;
 	border: none;
 	margin: 0px;
 }
 
 #globalnav li a:hover {
-	background: url('images/greybuttonon.gif') no-repeat left top;
+	background: url('images/greybuttonred.gif') no-repeat left top;
+        background-position:0% -26px;
 }
 
 /* The .operations is for the blue buttons to the right of the page */
@@ -226,7 +227,7 @@ th {
 }
 
 #operations li {
-	font-size:.75em;
+	font-size: .75em;
 	font-family: AvenirLight, sans-serif;
 	font-weight: bold;
 	color: #ffffff;
@@ -235,7 +236,7 @@ th {
 }
 
 #operations li a {
-	display:block;
+	display: block;
 	font-weight: bold;
 	text-decoration: none;
 	color: #ffffff;
@@ -247,56 +248,56 @@ th {
 
 /* Tabbed menus - as used on the front page */
 #tabbedmenu {
-	float:left;
-	width:100%;
+	float: left;
+	width: 100%;
 	border-bottom: thin solid #ff9400;
 	font-size: 1.1em;
-	line-height:normal;
+	line-height: normal;
 }
 #tabbedmenu ul {
-	margin:0;
-	padding:10px 10px 0;
-	list-style:none;
+	margin: 0;
+	padding: 10px 10px 0;
+	list-style: none;
 }
 #tabbedmenu li {
-	float:left;
-	background:url("images/tableft.gif") no-repeat left top;
-	margin:0;
-	padding:0 0 0 9px;
+	float: left;
+	background: url("images/tableft.gif") no-repeat left top;
+	margin: 0;
+	padding: 0 0 0 9px;
 	white-space: nowrap;
 }
 #tabbedmenu a {
-	display:block;
+	display: block;
 	text-decoration: none;
 	font-weight: bold;
 	color: black;
-	background:url("images/tabright.gif") no-repeat right top;
-	padding:5px 15px 4px 6px;
+	background: url("images/tabright.gif") no-repeat right top;
+	padding: 5px 15px 4px 6px;
 }
 #tabbedmenu #currenttab {
-	background-image:url("images/tableft_on.gif");
+	background-image: url("images/tableft_on.gif");
 }
 #tabbedmenu #currenttab a {
 	text-decoration: none;
 	font-weight: bold;
-	background-image:url("images/tabright_on.gif");
-	padding-bottom:5px;
+	background-image: url("images/tabright_on.gif");
+	padding-bottom: 5px;
 }
 #tabbedmenu #currenttab span {
-	display:block;
+	display: block;
 	text-decoration: none;
 	font-weight: bold;
-	background:url("images/tabright_on.gif") no-repeat right top;
-	padding:5px 15px 4px 6px;
+	background: url("images/tabright_on.gif") no-repeat right top;
+	padding: 5px 15px 4px 6px;
 }
 
 
 
 #pagefoot {
-	clear:right;
+	clear: right;
 	border-top: 1px solid black;
 	margin-left: 150px;
-	padding-left:0px;
+	padding-left: 0px;
 	padding-right: 2px;
 	font-style: italic;
 	font-size: 0.8em;
@@ -306,7 +307,7 @@ th {
 .breadcrumbtrail {
 	position: absolute;
 	left: 130px;
-	right:0;
+	right: 0;
 	top: 113px;
 	font-size: 0.8em;
 	font-family: verdana, arial, helvetica, sans-serif;
@@ -325,8 +326,8 @@ th {
 }
 
 .breadcrumbtail {
-	float:right;
-	width:1px;
+	float: right;
+	width: 1px;
 }
 
 .breadcrumbitem {
