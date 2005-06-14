@@ -84,8 +84,8 @@ import javax.xml.parsers.*;
         excel.initReader(inStream);
         String xml_schema = excel.getXMLSchema();
         if (xml_schema==null){
-          throw new Exception("Excel file is not generated from Data Dictionary " +
-                "or it has been modified later. Could not find XML Schema!");
+          throw new Exception("The MS-Excel file must be based on a template generated " + 
+          			"from Data Dictionary for conversion to work. Could not find XML Schema!");
         }
    		doConversion(xml_schema, outStream, excel);
         /*String instance_url = getInstanceUrl(xml_schema);
@@ -156,11 +156,11 @@ import javax.xml.parsers.*;
         
         if (xml_schema==null){
     		if (http_response)
-                throw new Exception("Excel file is not generated from Data Dictionary " +
-                "or it has been modified later. Could not find XML Schema!");
+                throw new Exception("The MS-Excel file must be based on a template generated " + 
+              			"from Data Dictionary for conversion to work. Could not find XML Schema!");
     		else{
-            	result.add(createResultForSheet("1","Workbook","Excel file is not generated from Data Dictionary " +
-                        "or it has been modified later. Could not find XML Schema!"));
+            	result.add(createResultForSheet("1","Workbook","The MS-Excel file must be based on a template generated " + 
+              			"from Data Dictionary for conversion to work. Could not find XML Schema!"));
             	return result;
     		}
           }
@@ -177,11 +177,11 @@ import javax.xml.parsers.*;
         	}
         	else{
         		if (http_response)
-                    throw new GDEMException("Excel file is not generated from Data Dictionary " +
-                    "or it has been modified later. Could not find XML Schemas for sheets!");        		
+                    throw new GDEMException("The MS-Excel file must be based on a template generated " + 
+                  			"from Data Dictionary for conversion to work. Could not find XML Schemas for sheets!");        		
         		else{
-                	result.add(createResultForSheet("1","Workbook","Excel file is not generated from Data Dictionary " +
-                            "or it has been modified later. Could not find XML Schemas for sheets!"));
+                	result.add(createResultForSheet("1","Workbook","The MS-Excel file must be based on a template generated " + 
+                  			"from Data Dictionary for conversion to work. Could not find XML Schemas for sheets!"));
                 	return result;
         		}
         	}
@@ -378,13 +378,13 @@ import javax.xml.parsers.*;
   }
   public static void main(String[] args){
     //String excelFile = "E:/Projects/gdem/public/test.xls";
-  	String excelFile = "E:/Projects/gdem/tmp/Monthly_ozone.xls";
+  	String excelFile = "E:/Projects/gdem/tmp/Summer_ozone.xls";
     //String excelFile = E\\Projects\\gdem\\exelToXML\\Groundwater_GG_CCxxx.xls";
     String outFile = "E:\\Projects\\gdem\\tmp\\Instance1925_.xml";
     try{
       Excel2XML processor = new Excel2XML();
       //processor.convertDD_XML_split(excelFile,outFile);  
-      processor.convertDD_XML_split(excelFile, "Information");
+      processor.convertDD_XML_split(excelFile, null);
     }
     catch(Exception e){
       System.out.println(e.toString());
