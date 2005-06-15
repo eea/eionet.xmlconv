@@ -18,7 +18,7 @@
  * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Enriko Käsper (TietoEnator)
+ * Original Code: Enriko Kï¿½sper (TietoEnator)
  */
 
 package eionet.gdem.conversion.excel;
@@ -37,7 +37,7 @@ import eionet.gdem.GDEMException;
 /**
 * The main class, which is calling POI HSSF methods for creating Excel fiile and adding data into it
 * works together with ExcelXMLHandler
-* @author Enriko Käsper
+* @author Enriko Kï¿½sper
 */
 
 public class ExcelConversionHandler implements ExcelConversionHandlerIF
@@ -220,6 +220,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
      }
      else{
        _cell.setCellType(_cell.CELL_TYPE_STRING);
+       _cell.setEncoding(HSSFCell.ENCODING_UTF_16 );//
        _cell.setCellValue(str_value);
      }
 
