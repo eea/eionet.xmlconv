@@ -217,7 +217,13 @@ import javax.xml.parsers.*;
             
             	try{
             		//Do not return empty sheets.
-            		if (excel.isEmptySheet(sheet_name))continue;
+            		if (excel.isEmptySheet(sheet_name)){
+            			if (http_response)
+                			throw new GDEMException("The sheet is empty: " + sheet_name + "!");
+            			else
+            				result.add(createResultForSheet("1",sheet_name,"The sheet is empty: " + sheet_name + "!"));
+            			continue;
+            		}
             			
             		if (!http_response){
             			outFileName=Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + ".xml";
@@ -242,7 +248,10 @@ import javax.xml.parsers.*;
             		}
             	}
             	catch(Exception e){
-                	result.add(createResultForSheet("1",sheet_name,"Could not find xml schema for this sheet " + sheet_name + "! " + e.toString()));
+            		if (http_response)
+            			throw new GDEMException(e.toString());
+            		else
+            			result.add(createResultForSheet("1",sheet_name,"Could not find xml schema for this sheet " + sheet_name + "! " + e.toString()));
             	}
             	finally{
             		if(!http_response){
@@ -378,8 +387,9 @@ import javax.xml.parsers.*;
   }
   public static void main(String[] args){
     //String excelFile = "E:/Projects/gdem/public/test.xls";
-  	String excelFile = "E:/Projects/gdem/tmp/Summer_ozone.xls";
+  	//String excelFile = "E:/Projects/gdem/tmp/Summer_ozone.xls";
     //String excelFile = E\\Projects\\gdem\\exelToXML\\Groundwater_GG_CCxxx.xls";
+  	String excelFile = "E:/Projects/gdem/public/tmp/Rivers.xls";
     String outFile = "E:\\Projects\\gdem\\tmp\\Instance1925_.xml";
     try{
       Excel2XML processor = new Excel2XML();
