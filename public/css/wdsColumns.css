@@ -1,0 +1,57 @@
+body {
+min-width: 70em;
+}
+#portal-columns {
+width: auto;
+margin: 0;
+}
+#visual-column-wrapper {
+float: left;
+width: 100%;
+margin-right: -0em;
+}
+#portal-column-content {
+width: 100%;
+float: right;
+margin-left: -130px;
+}
+
+#portal-column-content #content {
+margin: 0 0em 0 130px;
+}
+
+#portal-column-one {
+float: left;
+width: 130px;
+overflow: hidden;
+}
+
+#portal-column-two {
+float: right;
+width: 0em;
+overflow: hidden;
+}
+
+/* padding - thanks to the w3c box model :P */
+
+#portal-column-one .visualPadding {
+padding: 0.5em 0em 1em 0;
+}
+#portal-column-two .visualPadding {
+padding: 0.5em 0.5em 1em 0em;
+}
+
+/* hide columns */
+
+.visualColumnHideOneTwo #portal-column-content #content {
+margin: 0;
+}
+
+.visualColumnHideOne #portal-column-content #content {
+margin: 0 0em 0 0;
+}
+
+.visualColumnHideTwo #portal-column-content #content {
+margin: 0 0 0 130px;
+}
+
