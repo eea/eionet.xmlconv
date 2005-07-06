@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+    <form-beans>
+	    <form-bean name="loginForm" type="eionet.gdem.web.struts.login.LoginForm" />
+        <form-bean name="stylesheetForm" type="eionet.gdem.web.struts.stylesheet.StylesheetForm" />
+        <form-bean name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemForm" />        
+    </form-beans>
+
+    <global-forwards>
+        <forward name="home" path="/stylesheetList.do" redirect="true" />
+        <forward name="loginForm" path="/login.jsp" redirect="true" />
+        <forward name="error" path="/error.jsp" redirect="true" />
+    </global-forwards>
+    
+    <action-mappings>
+        <action path="/start" type="eionet.gdem.web.struts.StartAction">
+            <forward name="login" path="/login.do" />            
+        </action>
+        <action path="/login" input="/login.jsp" name="loginForm" scope="request" type="eionet.gdem.web.struts.login.LoginAction" validate="true">           
+        </action>        
+        <action path="/stylesheetList" type="eionet.gdem.web.struts.stylesheet.StylesheetListAction">
+            <forward name="success" path="/stylesheetList.jsp"/>            
+        </action>
+        <action path="/deleteSchema"  scope="request" type="eionet.gdem.web.struts.stylesheet.SchemaDeleteAction">           
+        	<forward name="success" path="/stylesheetList.do"  />            
+        </action>        
+        <action path="/schemaStylesheets" type="eionet.gdem.web.struts.stylesheet.SchemaStylesheetAction">   
+	        <forward name="success" path="/schemaStylesheets.jsp" />                      
+        </action>
+        <action path="/deleteStylesheet"  scope="request" type="eionet.gdem.web.struts.stylesheet.StylesheetDeleteAction">           
+        	<forward name="success" path="/schemaStylesheets.do" />            
+        </action>        
+        <action path="/addStylesheetForm" type="eionet.gdem.web.struts.stylesheet.ConvTypeAction">   
+	        <forward name="success" path="/addStylesheet.jsp" />                      
+        </action>
+        <action path="/stylesheetAdd" input="/addStylesheet.jsp" name="stylesheetForm"
+            type="eionet.gdem.web.struts.stylesheet.AddStylesheetAction" scope="request">
+            <forward name="success" path="/schemaStylesheets.do" />
+        </action>
+        <action path="/stylesheetEditForm" name="stylesheetForm" type="eionet.gdem.web.struts.stylesheet.EditStylesheetFormAction" input="/editStylesheet.jsp" scope="request">
+            <forward name="success" path="/editStylesheet.jsp" />
+        </action>
+        <action path="/stylesheetEdit" input="/editStylesheet.jsp" name="stylesheetForm"
+            type="eionet.gdem.web.struts.stylesheet.EditStylesheetAction" scope="request">
+            <forward name="success" path="/schemaStylesheets.do" />
+             <forward name="fail" path="/editStylesheet.jsp"/>
+        </action>
+        <action path="/schemaElemForm" name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemFormAction" input="/schema.jsp" scope="request">
+            <forward name="success" path="/schema.jsp" redirect="true"/>
+        </action>
+        <action path="/deleteElem"  scope="request" type="eionet.gdem.web.struts.schema.DeleteRootElemAction">           
+        	<forward name="success" path="/schemaElemForm.do"  />            
+        </action>        
+        <action path="/elementAdd" name="schemaForm" scope="request" type="eionet.gdem.web.struts.schema.AddElemAction">           
+        	<forward name="success" path="/schemaElemForm.do" redirect="true" />            
+        </action>        
+        <action path="/schemaUpdate" name="schemaForm" scope="request" type="eionet.gdem.web.struts.schema.EditSchemaAction">           
+        	<forward name="success" path="/schemaElemForm.do" redirect="true" />            
+        </action>        
+
+
+
+        
+    </action-mappings>
+    <controller processorClass="eionet.gdem.web.struts.RequestProcessor" />
+    <message-resources null="true" parameter="ApplicationResources" />
+    <plug-in className="org.apache.struts.tiles.TilesPlugin">
+        <set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml" />
+    </plug-in>
+</struts-config>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+<tiles-definitions>
+  <definition name="MainFooter" path="/tiles/MainFooter.jsp">
+    <put name="showFooter" type="string" value="true"/>
+    <put name="environment" value="Data Conversion Module" />
+    <put name="buildNo" value="20050614" />
+  </definition>
+  <definition name="MainHeader" path="/tiles/MainHeader.jsp" />
+  <definition name="Error" path="/tiles/Error.jsp" />
+  <definition name="Login" path="/tiles/Login.jsp" />
+  <definition name="Stylesheet" path="/tiles/stylesheet/Stylesheet.jsp" />
+  <definition name="schemaStylesheets" path="/tiles/stylesheet/SchemaStylesheets.jsp" />
+  <definition name="editStylesheet" path="/tiles/stylesheet/EditStylesheet.jsp" />
+  <definition name="addStylesheet" path="/tiles/stylesheet/AddStylesheet.jsp" />
+  <definition name="schema" path="/tiles/schema/Schema.jsp" />
+
+
+
+
+  <definition name="base" path="/layout.jsp">
+    <put name="header" type="definition" value="MainHeader"/>
+    <put name="error" type="definition" value="Error"/>
+    <put name="body" type="definition" value=""/>
+    <put name="showFooter" type="string" value="true"/>
+    <put name="footer" type="definition" value="MainFooter"/>
+  </definition>
+
+  <definition name="/test.jsp" extends="base">
+    <put name="body" type="definition" value="Error"/>
+  </definition>
+  <definition name="/login.jsp" extends="base">
+    <put name="body" type="definition" value="Login"/>
+  </definition>
+  <definition name="/stylesheetList.jsp" extends="base">
+    <put name="body" type="definition" value="Stylesheet"/>
+  </definition>
+  <definition name="/schemaStylesheets.jsp" extends="base">
+    <put name="body" type="definition" value="schemaStylesheets"/>
+  </definition>
+  <definition name="/addStylesheet.jsp" extends="base">
+    <put name="body" type="definition" value="addStylesheet"/>
+  </definition>
+  <definition name="/editStylesheet.jsp" extends="base">
+    <put name="body" type="definition" value="editStylesheet"/>
+  </definition>
+  <definition name="/schema.jsp" extends="base">
+    <put name="body" type="definition" value="schema"/>
+  </definition>
+
+
+
+ </tiles-definitions>
