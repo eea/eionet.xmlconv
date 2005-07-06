@@ -30,6 +30,9 @@ import eionet.gdem.utils.Utils;
 import org.xml.sax.*;
 import javax.xml.parsers.*;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.*;
+
 import java.net.URL;
 import java.net.MalformedURLException;
 
@@ -45,6 +48,7 @@ import eionet.gdem.GDEMException;
 public class ValidationService {
   private StringBuffer errors;
   private StringBuffer htmlErrors;
+  private String uriXml;  
   public ValidationService()  {
     errors=new StringBuffer()  ;
     htmlErrors=new StringBuffer()  ;
@@ -56,6 +60,7 @@ public class ValidationService {
   public String validateSchema (String srcUrl, String schema) throws GDEMException {
     InputFile src=null;
     InputStream src_stream = null;
+	uriXml= srcUrl;	
     try{
       src = new InputFile(srcUrl);
       src_stream = src.getSrcInputStream();
@@ -75,7 +80,8 @@ public class ValidationService {
     
   }
   public String validateSchema (InputStream src_stream, String schema) throws GDEMException {
-    
+	String newSchema = null;
+
     try {
         
       //URL url = new URL(srcUrl);
@@ -104,7 +110,42 @@ public class ValidationService {
       }
       
       InputSource is = new InputSource( src_stream);
-      
+
+/////////////////////////////////////////
+
+	  DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+	  //Document doc = builder.parse( src_stream);
+	  Document doc = builder.parse( uriXml);
+	  
+	  			  
+	  Element root = doc.getDocumentElement();
+	  String rootName = root.getTagName();
+	          
+	  
+
+	  //root
+	  System.out.println("ROOT = " + rootName);
+	          
+	  String attName1 = "xmlns:" + rootName.substring(0, rootName.indexOf(":")) ;
+	  String namespace = root.getAttribute(attName1);    
+	          
+	  //namespace xmlns dnnn
+	  System.out.println(attName1 + " => " + namespace);    
+	  
+///////////////////////////////////////////
+      	 
+		
+	
+//      parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
+      if (schema != null){
+		newSchema = namespace + " " +schema  ;
+		
+		
+		System.out.println("newSchema="+newSchema);
+        reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", newSchema);      
+//      reader.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation", schema)     
+      }
+	  
       //InputSource is = new InputSource( url.openStream());
       reader.parse(is);
 

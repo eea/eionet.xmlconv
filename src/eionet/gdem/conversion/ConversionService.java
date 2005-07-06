@@ -58,6 +58,71 @@ import javax.xml.transform.sax.SAXResult;
 import java.io.OutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import eionet.gdem.GDEMException;
+import eionet.gdem.Properties;
+import eionet.gdem.dcm.business.DDServiceClient;
+import eionet.gdem.dcm.xsl.Conversion;
+import eionet.gdem.dcm.xsl.ConversionDto;
+import eionet.gdem.services.DbModuleIF;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.InputFile;
+import eionet.gdem.utils.Utils;
+
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+
+
+
+
+
+
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+
+
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.fop.apps.Driver;
+
+
+
+
+
+
+import eionet.gdem.GDEMException;
+import eionet.gdem.Properties;
+import eionet.gdem.dcm.business.DDServiceClient;
+import eionet.gdem.dcm.xsl.Conversion;
+import eionet.gdem.dcm.xsl.ConversionDto;
+import eionet.gdem.services.DbModuleIF;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.InputFile;
+import eionet.gdem.utils.Utils;
+
+
+
 //import org.apache.commons.httpclient.*;
 //import org.apache.commons.httpclient.methods.*;
 
@@ -131,11 +196,70 @@ public class ConversionService {
       db = GDEMServices.getDbModule();
 
     Vector v = null;
-    try {
-      v=db.listConversions(schema);
-    } catch (Exception e ) {
-      throw new GDEMException("Error getting data from the DB " + e.toString(), e);
-    }
+	v = new Vector();
+	
+	
+	if (schema!= null && schema.startsWith(Properties.ddURL)) {
+
+		// schema is from DD
+		// parse tbl id
+		// check tbl id
+		//
+		
+		String tblId = schema.substring(schema.indexOf("id=TBL") + 6,
+				schema.length());
+		System.out.println(tblId);
+		List convs =  Conversion.getConversions();
+		
+		for (int i = 0; i < convs.size(); i++){
+			Hashtable h = new Hashtable();
+			h.put("convert_id", "DD_TBL" + tblId + "_CONV" + ((ConversionDto) convs.get(i)).getConvId());
+			h.put("xsl", Properties.gdemURL + "GetStylesheet?id=" + tblId + "&conv=" + ((ConversionDto) convs.get(i)).getConvId());
+			h.put("description", ((ConversionDto) convs.get(i)).getDescription());
+			h.put("content_type_out", ((ConversionDto) convs.get(i)).getResultType());
+			h.put("xml_schema", schema);
+			v.add(h);
+		}			
+		
+	}
+	//
+	if (schema == null){ 
+		List ddTables = DDServiceClient.getDDTables();
+		List convs =  Conversion.getConversions();
+		
+		for (int i=0; i<ddTables.size(); i++){
+			Hashtable schemaDD = (Hashtable)ddTables.get(i);
+			String tblId = (String)schemaDD.get("tblId");
+			String schemaUrl = Properties.ddURL + "GetSchema?id=TBL" + tblId;
+
+			for (int j = 0; j < convs.size(); j++){
+				Hashtable h = new Hashtable();
+				h.put("convert_id", "DD_TBL" + tblId + "_CONV" + ((ConversionDto) convs.get(j)).getConvId());
+				h.put("xsl", Properties.gdemURL + "GetStylesheet?id=" + tblId + "&conv=" + ((ConversionDto) convs.get(j)).getConvId());
+				h.put("description", ((ConversionDto) convs.get(j)).getDescription());
+				h.put("content_type_out", ((ConversionDto) convs.get(j)).getResultType());
+				h.put("xml_schema", schemaUrl);
+				v.add(h);
+			}			
+			
+		}
+	}
+	
+	
+	//retriving handocoded transformations
+	try {
+		Vector vDb = db.listConversions(schema);
+		
+		for (int i = 0; i < vDb.size(); i++){
+			v.add(vDb.get(i));
+		}			
+		
+	} catch (Exception e) {
+		throw new GDEMException("Error getting data from the DB "
+				+ e.toString(), e);
+	}
+
+	
 
     return v;
     
@@ -148,121 +272,391 @@ public class ConversionService {
   public Hashtable convert (String sourceURL, String convertId) throws GDEMException {
     return convert(sourceURL, convertId, null);
   }
-  public Hashtable convert (String sourceURL, String convertId, HttpServletResponse res) throws GDEMException {
-    Hashtable h = new Hashtable();
-    String sourceFile=null;
-    String xslFile=null;
-    String outputFileName=null;
-    //String cnvTypeOut=null;
-    InputFile src= null;
+	public Hashtable convert(String sourceURL, String convertId,HttpServletResponse res) throws GDEMException {
+		_logger.error("sourceURL=" + sourceURL+"convertId=" + convertId+"res=" + res);
+		if (convertId.startsWith("DD")) {
+			return convertDDTable(sourceURL, convertId,res);
+		}else
+		{
+		
+		
+		Hashtable h = new Hashtable();
+		String sourceFile = null;
+		String xslFile = null;
+		String outputFileName = null;
+		// String cnvTypeOut=null;
+		InputFile src = null;
 
-    try {
-    src = new InputFile(sourceURL);
-    if (db==null)
-      db = GDEMServices.getDbModule();
+		try {
+			src = new InputFile(sourceURL);
+			if (db == null)
+				db = GDEMServices.getDbModule();
 
-    try {
-      HashMap styleSheetData=db.getStylesheetInfo(convertId);
+			try {
+				HashMap styleSheetData = db.getStylesheetInfo(convertId);
 
-      if (styleSheetData==null)
-        throw new GDEMException("No stylesheet info for convertID= " + convertId);
-      xslFile= xslFolder + (String)styleSheetData.get("xsl");
-      cnvTypeOut= (String)styleSheetData.get("content_type_out");
-      
-      Hashtable convType=db.getConvType(cnvTypeOut);
+				if (styleSheetData == null)
+					throw new GDEMException(
+							"No stylesheet info for convertID= " + convertId);
+				xslFile = xslFolder + (String) styleSheetData.get("xsl");
+				cnvTypeOut = (String) styleSheetData.get("content_type_out");
 
-      if (convType!=null){
-        try{
-          cnvContentType = (String)convType.get("content_type");
-          cnvFileExt = (String)convType.get("file_ext");
-        }
-        catch (Exception e){
-          //Take no action, use default params
-        }
-      }
-      if (cnvContentType == null)
-        cnvContentType = "text/plain";
-      if (cnvFileExt == null)
-        cnvFileExt = "txt";
-      
-      
-              
-    } catch (Exception e ) {
-      throw new GDEMException("Error getting stylesheet info from repository for " + convertId, e);
-    }
-      if (res!=null){  
-        try {
-          this.result = res.getOutputStream();
-          res.setContentType(cnvContentType);
-        } catch (IOException e ) {
-          throw new GDEMException("Error getting response outputstream " + e.toString(), e);
-        }
-      }
-    if (cnvTypeOut.equals("HTML")){
-      outputFileName=convertHTML(src.getSrcInputStream(), xslFile);
-    }
-    else if (cnvTypeOut.equals("PDF")){
-      outputFileName=convertPDF(src.getSrcInputStream(), xslFile);
-    }
-    else if (cnvTypeOut.equals("EXCEL")){
-      outputFileName=convertExcel(src.getSrcInputStream(), xslFile);
-    }
-    else  if (cnvTypeOut.equals("XML")){
-      outputFileName=convertXML(src.getSrcInputStream(), xslFile);
-    }
-    else{
-      outputFileName=convertTextOutput(src.getSrcInputStream(), xslFile);
-    }
-    //else
-    //  throw new GDEMException("Unknown conversion type or converter not  implemented: " + cnvTypeOut);
+				Hashtable convType = db.getConvType(cnvTypeOut);
 
-    } 
-    catch (MalformedURLException mfe ) {
-      throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
-    } 
-    catch (IOException ioe ) {
-      throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
-    } 
-    catch (Exception e ) {
-      throw new GDEMException("Error converting: " + e.toString(), e);
-    }
-    finally{
-      try{
-        if (src!=null) src.close();
-	    }
-	    catch(Exception e){}
-    }
+				if (convType != null) {
+					try {
+						cnvContentType = (String) convType.get("content_type");
+						cnvFileExt = (String) convType.get("file_ext");
+					} catch (Exception e) {
+						// Take no action, use default params
+					}
+				}
+				if (cnvContentType == null)
+					cnvContentType = "text/plain";
+				if (cnvFileExt == null)
+					cnvFileExt = "txt";
+
+			} catch (Exception e) {
+				throw new GDEMException(
+						"Error getting stylesheet info from repository for "
+								+ convertId, e);
+			}
+			if (res != null) {
+				try {
+					this.result = res.getOutputStream();
+					res.setContentType(cnvContentType);
+				} catch (IOException e) {
+					throw new GDEMException(
+							"Error getting response outputstream "
+									+ e.toString(), e);
+				}
+			}
+			if (cnvTypeOut.equals("HTML")) {
+				outputFileName = convertHTML(src.getSrcInputStream(), xslFile);
+			} else if (cnvTypeOut.equals("PDF")) {
+				outputFileName = convertPDF(src.getSrcInputStream(), xslFile);
+			} else if (cnvTypeOut.equals("EXCEL")) {
+				outputFileName = convertExcel(src.getSrcInputStream(), xslFile);
+			} else if (cnvTypeOut.equals("XML")) {
+				outputFileName = convertXML(src.getSrcInputStream(), xslFile);
+			} else {
+				outputFileName = convertTextOutput(src.getSrcInputStream(),
+						xslFile);
+			}
+			// else
+			// throw new GDEMException("Unknown conversion type or converter not
+			// implemented: " + cnvTypeOut);
+
+		} catch (MalformedURLException mfe) {
+			throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
+		} catch (IOException ioe) {
+			throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
+		} catch (Exception e) {
 
 
-    h.put("content-type", cnvContentType);
-    if (res!=null){
-      try{
-        result.close();
-      } catch (IOException e ) {
-        //throw new GDEMException("Error closing result ResponseOutputStream " + convertId);
-      }
-      return h;
-    }
-    //log("========= going to bytes " + htmlFileName);
+
+			throw new GDEMException("Error converting: " + e.toString(), e);
+		} finally {
+			try {
+				if (src != null)
+					src.close();
+			} catch (Exception e) {
+			}
+		}
 
 
-    byte[] file = Utils.fileToBytes(outputFileName);
-    //log("========= bytes ok");
+		h.put("content-type", cnvContentType);
+		if (res != null) {
+			try {
+				result.close();
+			} catch (IOException e) {
+				// throw new GDEMException("Error closing result
+				// ResponseOutputStream " + convertId);
+			}
+			return h;
+		}
+		// log("========= going to bytes " + htmlFileName);
 
-    h.put("content", file);
-    try{
-      //Utils.deleteFile(sourceFile);
-      //deleteFile(htmlFileName);
-      Utils.deleteFile(outputFileName);
-    }
-    catch(Exception e){
-      _logger.error("Couldn't delete the result file: " + outputFileName);
-    }
+		byte[] file = fileToBytes(outputFileName);
+		// log("========= bytes ok");
+
+		h.put("content", file);
+		try {
+			// Utils.deleteFile(sourceFile);
+			// deleteFile(htmlFileName);
+			Utils.deleteFile(outputFileName);
+		} catch (Exception e) {
+
+			_logger.error("Couldn't delete the result file: " + outputFileName);
+		}
+
+		return h;
+		}
+	}
+
+	public Hashtable convertDDTable(String sourceURL, String convertId,HttpServletResponse res) throws GDEMException {
+		Hashtable h = new Hashtable();
+		String sourceFile = null;
+		String xslFile = null;
+		String outputFileName = null;
+		// String cnvTypeOut=null;
+		InputFile src = null;
+		InputFile xsl = null;
+		String tblId = "";
+		String convId = "";
+		String xslURL;
+
+		System.out.println("sourceURL="+sourceURL);
+		System.out.println("convertId="+convertId);
+		
+		// prase idtable and id conversion
+		if (convertId.startsWith("DD")) {
+			tblId = convertId.substring(6, convertId.indexOf("_CONV"));
+			convId = convertId.substring(convertId.indexOf("_CONV") + 5,convertId.length());
+		}
+
+		//xslFile = "http://rubi:8080/gdem/GetStylesheet?id=" + tblId + "&conv=" + convId;
+		xslFile = Properties.gdemURL+"GetStylesheet?id=" + tblId + "&conv=" + convId;
+
+		
+		
+		// pozvati konverziju za sourceURL i xslURL
+
+		try {
+			//src = new InputFile(sourceURL);
+			src = new InputFile(sourceURL);
+			//xsl = new InputFile(xslURL);
+			if (db == null)
+				db = GDEMServices.getDbModule();
+
+			try {
+				//HashMap styleSheetData = db.getStylesheetInfo(convertId);
+
+				//if (styleSheetData == null)
+				//	throw new GDEMException(
+				//			"No stylesheet info for convertID= " + convertId);
+				//xslFile = xslFolder + (String) styleSheetData.get("xsl");
+				//cnvTypeOut = (String) styleSheetData.get("content_type_out");
+
+				ConversionDto conv =  Conversion.getConversionById(convId);
+				cnvTypeOut = conv.getResultType();
+				
+				Hashtable convType = db.getConvType(cnvTypeOut);
+
+				if (convType != null) {
+					try {
+						cnvContentType = (String) convType.get("content_type");
+						cnvFileExt = (String) convType.get("file_ext");
+					} catch (Exception e) {
+						// Take no action, use default params
+					}
+				}
+				
+				if (cnvContentType == null)
+					cnvContentType = "text/plain";
+				if (cnvFileExt == null)
+					cnvFileExt = "txt";
+					
+				
+			} catch (Exception e) {
+				throw new GDEMException(
+						"Error getting stylesheet info from repository for "
+								+ convertId, e);
+			}
+			if (res != null) {
+				try {
+					this.result = res.getOutputStream();
+					res.setContentType(cnvContentType);
+				} catch (IOException e) {
+					throw new GDEMException(
+							"Error getting response outputstream "
+									+ e.toString(), e);
+				}
+			}
+			if (cnvTypeOut.equals("HTML")) {
+				outputFileName = convertHTML(src.getSrcInputStream(), xslFile);
+			} else if (cnvTypeOut.equals("PDF")) {
+				outputFileName = convertPDF(src.getSrcInputStream(), xslFile);
+			} else if (cnvTypeOut.equals("EXCEL")) {
+				outputFileName = convertExcel(src.getSrcInputStream(), xslFile);
+			} else if (cnvTypeOut.equals("XML")) {
+				outputFileName = convertXML(src.getSrcInputStream(), xslFile);
+			} else {
+				outputFileName = convertTextOutput(src.getSrcInputStream(),
+						xslFile);
+			}
+			// else
+			// throw new GDEMException("Unknown conversion type or converter not
+			// implemented: " + cnvTypeOut);
+
+		} catch (MalformedURLException mfe) {
+			throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
+		} catch (IOException ioe) {
+			throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
+		} catch (Exception e) {
+			throw new GDEMException("Error converting: " + e.toString(), e);
+		} finally {
+			try {
+				if (src != null)
+					src.close();
+			} catch (Exception e) {
+			}
+		}
+
+		h.put("content-type", cnvContentType);
+		if (res != null) {
+			try {
+				result.close();
+			} catch (IOException e) {
+				// throw new GDEMException("Error closing result
+				// ResponseOutputStream " + convertId);
+			}
+			return h;
+		}
+		// log("========= going to bytes " + htmlFileName);
+
+		byte[] file = fileToBytes(outputFileName);
+		// log("========= bytes ok");
+
+		h.put("content", file);
+		try {
+			// Utils.deleteFile(sourceFile);
+			// deleteFile(htmlFileName);
+			Utils.deleteFile(outputFileName);
+		} catch (Exception e) {
+			_logger.error("Couldn't delete the result file: " + outputFileName);
+		}
+
+		return h;
+
+	}
+
     
-    
-    return h;
-    
-  }
+  public Hashtable makeDynamicXSL(String sourceURL, String xslFile,HttpServletResponse res) throws GDEMException {
+		Hashtable h = new Hashtable();
+		String sourceFile = null;
+		//String xslFile = null;
+		String outputFileName = null;
+		// String cnvTypeOut=null;
+		InputFile src = null;
+		InputFile xsl = null;
+		String tblId = "";
+		String convId = "";
+		String xslURL;
+
+		//xslFile = convertId;		
+
+		try {
+			//src = new InputFile(sourceURL);
+			src = new InputFile(sourceURL);
+			//xsl = new InputFile(xslURL);
+			if (db == null)
+				db = GDEMServices.getDbModule();
+
+			try {
+				//HashMap styleSheetData = db.getStylesheetInfo(convertId);
+
+				//if (styleSheetData == null)
+				//	throw new GDEMException(
+				//			"No stylesheet info for convertID= " + convertId);
+				//xslFile = xslFolder + (String) styleSheetData.get("xsl");
+				//cnvTypeOut = (String) styleSheetData.get("content_type_out");
+
+				cnvTypeOut="XML";
+				
+				Hashtable convType = db.getConvType(cnvTypeOut);
+
+				if (convType != null) {
+					try {
+						cnvContentType = (String) convType.get("content_type");
+						cnvFileExt = (String) convType.get("file_ext");
+					} catch (Exception e) {
+						// Take no action, use default params
+					}
+				}
+				
+				if (cnvContentType == null)
+					cnvContentType = "text/plain";
+				if (cnvFileExt == null)
+					cnvFileExt = "txt";
+					
+				
+			} catch (Exception e) {
+				throw new GDEMException(
+						"Error getting stylesheet info from repository for "
+								+ xslFile, e);
+			}
+			if (res != null) {
+				try {
+					this.result = res.getOutputStream();
+					res.setContentType(cnvContentType);
+				} catch (IOException e) {
+					throw new GDEMException(
+							"Error getting response outputstream "
+									+ e.toString(), e);
+				}
+			}
+			if (cnvTypeOut.equals("HTML")) {
+				outputFileName = convertHTML(src.getSrcInputStream(), xslFile);
+			} else if (cnvTypeOut.equals("PDF")) {
+				outputFileName = convertPDF(src.getSrcInputStream(), xslFile);
+			} else if (cnvTypeOut.equals("EXCEL")) {
+				outputFileName = convertExcel(src.getSrcInputStream(), xslFile);
+			} else if (cnvTypeOut.equals("XML")) {
+				outputFileName = convertXML(src.getSrcInputStream(), xslFile);
+			} else {
+				outputFileName = convertTextOutput(src.getSrcInputStream(),
+						xslFile);
+			}
+			// else
+			// throw new GDEMException("Unknown conversion type or converter not
+			// implemented: " + cnvTypeOut);
+
+		} catch (MalformedURLException mfe) {
+			throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
+		} catch (IOException ioe) {
+			throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
+		} catch (Exception e) {
+			throw new GDEMException("Error converting: " + e.toString(), e);
+		} finally {
+			try {
+				if (src != null)
+					src.close();
+			} catch (Exception e) {
+			}
+		}
+
+		h.put("content-type", cnvContentType);
+		if (res != null) {
+			try {
+				result.close();
+			} catch (IOException e) {
+				// throw new GDEMException("Error closing result
+				// ResponseOutputStream " + convertId);
+			}
+			return h;
+		}
+		// log("========= going to bytes " + htmlFileName);
+
+		byte[] file = fileToBytes(outputFileName);
+		// log("========= bytes ok");
+
+		h.put("content", file);
+		try {
+			// Utils.deleteFile(sourceFile);
+			// deleteFile(htmlFileName);
+			Utils.deleteFile(outputFileName);
+		} catch (Exception e) {
+			_logger.error("Couldn't delete the result file: " + outputFileName);
+		}
+
+		return h;
+
+	}
+
+  
+  
+
   /**
   * Request from XML/RPC client
   * Converts DataDictionary MS Excel file to XML
@@ -369,6 +763,38 @@ public class ConversionService {
     
     return v_result;  
 }
+
+  /** 
+   * reads temporary file from dis and returs as a bytearray
+   */
+   private byte[] fileToBytes(String fileName) throws GDEMException {
+
+     ByteArrayOutputStream baos = null;
+     try {
+
+       //log("========= open fis " + fileName);
+       FileInputStream fis = new     FileInputStream(fileName);
+       //log("========= fis opened");
+       
+       baos = new ByteArrayOutputStream();
+     
+       int bufLen = 0;
+       byte[] buf = new byte[1024];
+
+   
+      while ( (bufLen=fis.read( buf ))!= -1 )
+           baos.write(buf, 0, bufLen );
+
+       fis.close();
+       
+     } catch (FileNotFoundException fne) {
+       throw new GDEMException("File not found " + fileName, fne);
+     } catch (Exception e) {
+       throw new GDEMException("Exception " + e.toString(), e);
+     }    
+       return baos.toByteArray();    
+   }
+  
   
   
   /**
@@ -679,6 +1105,27 @@ public class ConversionService {
     System.out.println(msg);
     System.out.println("================================");    
   } 
+  
+  public ArrayList getXMLSchemas() throws GDEMException {
+	  Vector conv = listConversions();
+	  ArrayList schemas = new ArrayList();
+	  
+	  for (int i = 0; i < conv.size(); i++){
+		  Hashtable schema = (Hashtable)conv.get(i);
+		  //System.out.println( i + " - " + schema.get("xml_schema") );		  
+		  if(!schemas.contains(schema.get("xml_schema"))){
+			  schemas.add(schema.get("xml_schema"));
+		  }
+	  }
+	  
+      return schemas;
+  }
+  
+  public boolean existsXMLSchema(String xmlSchema) throws GDEMException {	  	 	  
+	  ArrayList schemas = getXMLSchemas();	  
+	  return schemas.contains(xmlSchema);
+  }
+
   public static void main(String args[]) {
     try{
       ConversionService cs = new ConversionService();

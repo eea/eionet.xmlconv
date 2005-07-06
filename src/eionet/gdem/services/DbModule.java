@@ -372,11 +372,19 @@ public class DbModule implements DbModuleIF, Constants {
   public void updateStylesheet(String xsl_id, String schema_id, String description, String fileName, String content_type) throws SQLException{
     
     description = (description == null ? "" : description );
-    
-    String sql = "UPDATE  " + XSL_TABLE + " SET " + XSL_FILE_FLD + "=" + Utils.strLiteral(fileName) + ", " +
+	String sql;
+	if(fileName== null || fileName.equals("")){
+		 sql = "UPDATE  " + XSL_TABLE + " SET " +
+         DESCR_FLD + "=" + Utils.strLiteral(description) + ", " + XSL_SCHEMA_ID_FLD+ "=" + schema_id + ", " + 
+         RESULT_TYPE_FLD + "=" + Utils.strLiteral(content_type) + 
+         " WHERE " + CNV_ID_FLD + "=" + xsl_id;		
+	}else{			
+		 sql = "UPDATE  " + XSL_TABLE + " SET " + XSL_FILE_FLD + "=" + Utils.strLiteral(fileName) + ", " +
           DESCR_FLD + "=" + Utils.strLiteral(description) + ", " + XSL_SCHEMA_ID_FLD+ "=" + schema_id + ", " + 
           RESULT_TYPE_FLD + "=" + Utils.strLiteral(content_type) + 
           " WHERE " + CNV_ID_FLD + "=" + xsl_id;
+		 
+	}
 
     _executeUpdate(sql);
 

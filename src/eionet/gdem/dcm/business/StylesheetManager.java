@@ -23,7 +23,7 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.MultipartFileUpload;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.web.stylesheet.ConvTypeHolder;
+import eionet.gdem.web.struts.stylesheet.ConvTypeHolder;
 
 public class StylesheetManager {
 	private static LoggerIF _logger=GDEMServices.getLogger();

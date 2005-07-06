@@ -60,6 +60,17 @@ public class Properties {
   
    //NB Saxon is the default value, not hard-coded!
 	public static String engineClass="eionet.gdem.qa.engines.SaxonImpl";
+
+	
+	  //DCM settings from the properties file
+	  public static String convFile=null;
+	  public static String metaXSLFolder=null;
+	  public static String ddURL=null;
+	  public static String gdemURL=null;
+		
+	  //DCM settings from the properties file of incoming services from DD
+	  public static String invServUrl=null;
+	  public static String invServName=null;
 	
 	private static ResourceBundle props;
   public static Category logger;
@@ -83,7 +94,17 @@ public class Properties {
         dbPwd=props.getString("db.pwd");
 
         engineClass=props.getString("xq.engine.implementator");
-        
+        //DCM settings 
+		convFile=props.getString("dcm.conversions.file");
+		metaXSLFolder=props.getString("dcm.conversions.folder");
+		ddURL=props.getString("dcm.conversions.dd.url");
+		gdemURL=props.getString("dcm.conversions.gdem.url");
+
+        //settings for incoming services from DD 
+		invServUrl=props.getString("inserv.dd.url");
+		invServName=props.getString("inserv.dd.name");
+		
+		
 				//period in seconds 
 	      String frequency = props.getString("wq.check.interval");
 		    Float f = new Float(frequency);

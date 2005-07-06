@@ -27,8 +27,8 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.web.schema.SchemaElemHolder;
-import eionet.gdem.web.stylesheet.StylesheetListHolder;
+import eionet.gdem.web.struts.schema.SchemaElemHolder;
+import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
 
 public class SchemaManager {
 
