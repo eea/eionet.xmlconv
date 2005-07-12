@@ -55,18 +55,15 @@
         <%
         if (user!=null ){
         %>
-        <form name="logout" action="main" method="post">
-            <input name="ACTION" type="hidden" value="<%=Names.LOGOUT_ACTION%>" />
             <ul>
-            <li><a href="javascript:logout()">Logout</a></li>
+            <li><a href="start.do?logout=true">Logout</a></li>
             </ul>
-        </form>
         <%
         }
         else{
         %>
         <ul>
-        <li><a href="javascript:login()">Login</a></li>
+        <li><a href="start.do?login=true">Login</a></li>
         </ul>
     <%
 }

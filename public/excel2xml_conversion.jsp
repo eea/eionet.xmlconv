@@ -22,7 +22,7 @@
 
 	<div id="tabbedmenu">
     <ul>
-	    <li><a href="list_conversions.jsp">XML converters</a></li>
+	    <li><a href="listConvForm.do">XML converters</a></li>
     	<li id="currenttab"><a href="excel2xml_conversion.jsp">MS Excel to XML</a></li>
   	</ul>
 	</div>
