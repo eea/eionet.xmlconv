@@ -27,7 +27,7 @@ import="java.util.List" %>
 											<ed:menuItem action="/stylesheetList.do" title="Stylesheets">
 												<bean:message key="label.menu.stylesheets"/>
 											</ed:menuItem>
-											<ed:menuItem action="/list_conversions.jsp" title="Converter">
+											<ed:menuItem action="/listConvForm.do" title="Converter">
 												<bean:message key="label.menu.converter"/>
 											</ed:menuItem>
 											<ed:menuItem action="/workqueue.jsp" title="QA jobs">
