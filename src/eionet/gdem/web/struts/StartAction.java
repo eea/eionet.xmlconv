@@ -8,6 +8,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import eionet.gdem.conversion.ssr.Names;
+
 
 
 public class StartAction extends Action {
@@ -38,6 +40,7 @@ public class StartAction extends Action {
 		if (httpServletRequest.getParameter("logout")!= null)
 		{
 			httpServletRequest.getSession().setAttribute("user", null);
+			httpServletRequest.getSession().setAttribute(Names.USER_ATT, null);
 			return actionMapping.findForward("home");	//home page
 		}
 		 

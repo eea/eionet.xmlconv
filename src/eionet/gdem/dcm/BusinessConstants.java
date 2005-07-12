@@ -10,7 +10,8 @@ public class BusinessConstants {
 	 public static final String EXCEPTION_AUTORIZATION_SCHEMA_UPDATE = "label.autorization.schema.update";
 	 public static final String EXCEPTION_AUTORIZATION_ELEMENT_DELETE = "label.autorization.element.delete";
 	 public static final String EXCEPTION_AUTORIZATION_ELEMENT_INSERT = "label.autorization.element.insert";
-	 
+	 public static final String EXCEPTION_SCHEMA_NOT_EXIST = "label.schema.notexists";
+	 public static final String EXCEPTION_VALIDATION_ERROR = "label.validation.error";
 	 
 	 
 	 

@@ -376,6 +376,83 @@ public class SchemaManager {
 		return se;
 		
 	}
+
+	
+	public ArrayList getSchemas() throws DCMException{
+		
+		ArrayList schemas=new ArrayList();
+		ArrayList schemasChk=new ArrayList();
+		
+		
+		try {
+
+			  ConversionService cs = new ConversionService(); 
+			  Vector conv = cs.listConversions();
+			  
+			  for (int i = 0; i < conv.size(); i++){
+				  Hashtable schema = (Hashtable)conv.get(i);
+				  //System.out.println( i + " - " + schema.get("xml_schema") );		  
+				  if(!schemasChk.contains(schema.get("xml_schema"))){
+					  	Schema sc = new Schema();						
+						sc.setSchema((String)schema.get("xml_schema"));						
+					    schemas.add(sc);
+						schemasChk.add(schema.get("xml_schema"));
+				  }
+			  }			
+			
+		} catch (Exception e) {			
+			_logger.debug(e.toString());
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
+		}
+		return schemas;
+		
+	}
+	
+	public ArrayList getSchemaStylesheets(String schema) throws DCMException{
+
+		Vector hcSchemas;
+		ArrayList stls = new ArrayList();
+		
+		
+		try {
+			DbModuleIF dbM= GDEMServices.getDbModule();
+			ConversionService cs = new ConversionService();
+			Vector stylesheets=cs.listConversions(schema);
+						
+            for (int i=0; i<stylesheets.size(); i++){
+                Hashtable hash = (Hashtable)stylesheets.get(i);
+                String convert_id = (String)hash.get("convert_id");
+                String xsl = (String)hash.get("xsl");
+                String type = (String)hash.get("content_type_out");
+                String description = (String)hash.get("description");
+				String last_modified="";
+				boolean	ddConv = false;
+				String  xslUrl;
+				
+				if(!xsl.startsWith(Properties.gdemURL + "GetStylesheet?id=")){				
+					xslUrl = Names.XSL_FOLDER + (String)hash.get("xsl");
+				}else{
+					xslUrl = (String)hash.get("xsl");
+					ddConv = true;
+				}
+
+				Stylesheet stl = new Stylesheet();
+				//st.setConvId(1);
+				stl.setType((String)hash.get("content_type_out"));				
+				stl.setXsl(xslUrl);
+				stl.setXsl_descr((String)hash.get("description"));
+				stl.setConvId((String)hash.get("convert_id"));
+				stl.setDdConv(ddConv);
+				stls.add(stl);	
+            }			
+			
+		} catch (Exception e) {			
+			_logger.debug(e.toString());
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
+		}
+		return stls;
+	}
+
 	
 	
 	 public static void main(String[] args) throws DCMException

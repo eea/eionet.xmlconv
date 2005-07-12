@@ -41,7 +41,7 @@ public interface Names {
   public static final String STYLESHEETS_JSP = "stylesheets.jsp";
   public static final String ADD_XSL_JSP = "add_stylesheet.jsp";
   public static final String TEST_CONVERSION_JSP = "test_conversion.jsp";
-  public static final String LIST_CONVERSION_JSP = "list_conversions.jsp";
+  public static final String LIST_CONVERSION_JSP = "listConvForm.do";
   public static final String TEST_CONVERSION_SERVLET = "convert";
   public static final String LOGIN_JSP = "login.jsp";
   public static final String SCHEMA_JSP = "schema.jsp";

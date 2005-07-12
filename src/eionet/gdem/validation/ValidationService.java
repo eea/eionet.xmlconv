@@ -26,6 +26,9 @@ package eionet.gdem.validation;
 //import javax.xml.parsers.SAXParser;
 //import org.apache.xerces.parsers.SAXParser;
 import eionet.gdem.conversion.ssr.InputAnalyser;
+import eionet.gdem.conversion.ssr.Names;
+import eionet.gdem.dto.Stylesheet;
+import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.utils.Utils;
 import org.xml.sax.*;
 import javax.xml.parsers.*;
@@ -35,6 +38,8 @@ import org.w3c.dom.*;
 
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import eionet.gdem.utils.InputFile;
 
@@ -48,14 +53,21 @@ import eionet.gdem.GDEMException;
 public class ValidationService {
   private StringBuffer errors;
   private StringBuffer htmlErrors;
-  private String uriXml;  
+  private String uriXml;
+  private ArrayList errorsList;
+  private ErrorHandler errHandler;
+  
   public ValidationService()  {
     errors=new StringBuffer()  ;
     htmlErrors=new StringBuffer()  ;
     errHandler = new GErrorHandler(errors, htmlErrors);
   }
 
-  private ErrorHandler errHandler;
+  public ValidationService(boolean list)  {
+	  
+	    errorsList = new ArrayList(); 
+	    errHandler = new ValidatorErrorHandler(errorsList);
+	  }
   
   public String validateSchema (String srcUrl, String schema) throws GDEMException {
     InputFile src=null;
@@ -166,7 +178,7 @@ public class ValidationService {
     }
 
     //we have errors!
-    if (errors.length()>0){
+    if (errors!= null && errors.length()>0){
       //return errors.toString();
       htmlErrors.append("</table></html>");
       return htmlErrors.toString();
@@ -179,11 +191,26 @@ public class ValidationService {
   public String validate (String srcUrl) throws GDEMException {
     return validateSchema(srcUrl, null);
   }
+  
+  public ArrayList getErrorList(){
+	  return errorsList;
+  }
 
   /*private void log(String s ) {
     Utils.log(s);
   } */
 
+  public void printList(){
+	  for (int j=0; j<errorsList.size(); j++){
+		  	ValidateDto val = (ValidateDto)errorsList.get(j);
+			System.out.println("type=" + val.getType());
+			System.out.println("description=" + val.getDescription());
+			System.out.println("line=" + val.getLine());
+			System.out.println("column=" + val.getColumn());
+		}	  
+  }
+  
+  
   public static void main(String[] s) {
 
 try {
@@ -193,13 +220,15 @@ try {
     // String sch = "http://www.lisa.org/tmx/tmx14.dtd";
     //String sch = "http://roddev.eionet.eu.int/waterdemo/water_measurements.xsd";
     
-    ValidationService v = new ValidationService();
-    String result = v.validateSchema(xml,"mingi jama");
+    ValidationService v = new ValidationService(true);
+	
+    String result = v.validate("http://reporter.ceetel.net:18180/nl/eea/ewn3/envqyyafg/BG_bodies_Rubi.xml");
   //System.out.println(v.validateSchema(xml,sch));
-  System.out.println(result);
+  //System.out.println(result);
     //v.log(v.validate(xml));
     
 } catch (Exception e) {
+	e.printStackTrace();
 System.out.println("===== " + e.toString());
 }
 
