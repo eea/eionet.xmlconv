@@ -14,9 +14,8 @@
   <definition name="editStylesheet" path="/tiles/stylesheet/EditStylesheet.jsp" />
   <definition name="addStylesheet" path="/tiles/stylesheet/AddStylesheet.jsp" />
   <definition name="schema" path="/tiles/schema/Schema.jsp" />
-
-
-
+  <definition name="listConversion" path="/tiles/conversion/ListConversions.jsp" />
+  <definition name="testConversion" path="/tiles/conversion/TestConversion.jsp" />
 
   <definition name="base" path="/layout.jsp">
     <put name="header" type="definition" value="MainHeader"/>
@@ -46,6 +45,12 @@
   </definition>
   <definition name="/schema.jsp" extends="base">
     <put name="body" type="definition" value="schema"/>
+  </definition>
+  <definition name="/listConv.jsp" extends="base">
+    <put name="body" type="definition" value="listConversion"/>
+  </definition>
+  <definition name="/testConv.jsp" extends="base">
+    <put name="body" type="definition" value="testConversion"/>
   </definition>
 
 

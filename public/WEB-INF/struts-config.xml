@@ -4,7 +4,9 @@
     <form-beans>
 	    <form-bean name="loginForm" type="eionet.gdem.web.struts.login.LoginForm" />
         <form-bean name="stylesheetForm" type="eionet.gdem.web.struts.stylesheet.StylesheetForm" />
-        <form-bean name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemForm" />        
+        <form-bean name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemForm" />     
+        <form-bean name="ListConvForm" type="eionet.gdem.web.struts.conversion.ListConvForm" />   
+        <form-bean name="TestConvForm" type="eionet.gdem.web.struts.conversion.TestConvForm" />           
     </form-beans>
 
     <global-forwards>
@@ -58,7 +60,18 @@
         <action path="/schemaUpdate" name="schemaForm" scope="request" type="eionet.gdem.web.struts.schema.EditSchemaAction">           
         	<forward name="success" path="/schemaElemForm.do" redirect="true" />            
         </action>        
-
+        <action path="/listConvForm" name="ListConvForm" type="eionet.gdem.web.struts.conversion.ListConvFormAction" input="/listConv.jsp" scope="request">
+            <forward name="success" path="/listConv.jsp" redirect="true"/>
+        </action>
+        <action path="/testConversion" name="ListConvForm" type="eionet.gdem.web.struts.conversion.ListConvFormAction" input="/listConv.jsp" scope="request">
+            <forward name="success" path="/listConv.jsp" redirect="true"/>
+        </action>
+        <action path="/listConv" name="ListConvForm" type="eionet.gdem.web.struts.conversion.ListConvAction" input="/listConv.jsp" scope="request">
+            <forward name="success" path="/testConversionForm.do" />
+        </action>
+        <action path="/testConversionForm" name="TestConvForm" type="eionet.gdem.web.struts.conversion.TestConvFormAction" input="/testConv.jsp" scope="request">
+            <forward name="success" path="/testConv.jsp" redirect="true"/>
+        </action>
 
 
         
