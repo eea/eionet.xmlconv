@@ -65,7 +65,7 @@
 
 
 
-        <xsl:text disable-output-escaping="yes">            &lt;xsl:call-template name="create-table"/&gt;&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">            &lt;xsl:call-template name="header"/&gt;&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">        &lt;/xsl:if&gt;&#xd;&#xa;</xsl:text> 
         <xsl:text disable-output-escaping="yes">&lt;tr&gt;</xsl:text>
         
@@ -76,9 +76,9 @@
 
         <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;&#xd;&#xa;</xsl:text>
         
-   <!--   TEMPLATE name="create-table"  -->
+   <!--   TEMPLATE name="header"  -->
         <xsl:text disable-output-escaping="yes">&#xd;&#xa;</xsl:text>     
-        <xsl:text disable-output-escaping="yes">&lt;xsl:template name="create-table"&gt;&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">&lt;xsl:template name="header"&gt;&#xd;&#xa;</xsl:text>
 
         <xsl:text disable-output-escaping="yes">&lt;tr&gt;</xsl:text>
         <xsl:value-of select="identifier"/>
@@ -93,30 +93,7 @@
                
         <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;&#xd;&#xa;</xsl:text>
         
- <!--   TEMPLATE name ="getFieldType"  -->
-        <xsl:text disable-output-escaping="yes">&#xd;&#xa;</xsl:text>       
-        <xsl:text disable-output-escaping="yes">&lt;xsl:template name="getFieldType"&gt;&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">&lt;xsl:param name="name" select="''"/&gt;&#xd;&#xa;</xsl:text>        
-        <xsl:text disable-output-escaping="yes">&lt;xsl:choose&gt;&#xd;&#xa;</xsl:text>
-        
-        <xsl:for-each select="//elements/element">            
-            <xsl:text disable-output-escaping="yes">&lt;xsl:when test="$name = '</xsl:text>
-            <xsl:value-of select="identifier"/>
-            <xsl:text disable-output-escaping="yes">'"&gt;&#xd;&#xa;</xsl:text>
-            <xsl:text disable-output-escaping="yes">&lt;xsl:variable name="type"&gt;</xsl:text><xsl:value-of select="type"/><xsl:text disable-output-escaping="yes">&lt;/xsl:variable&gt;&#xd;&#xa;</xsl:text>
-            <xsl:text disable-output-escaping="yes">&lt;xsl:choose&gt;&#xd;&#xa;</xsl:text>
-            <xsl:text disable-output-escaping="yes">&lt;xsl:when test="$type = 'integer'"&gt;int&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>
-            <xsl:text disable-output-escaping="yes">&lt;xsl:when test="$type = 'string'"&gt;varchar(255)&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>
-            <xsl:text disable-output-escaping="yes">&lt;xsl:when test="$type = 'float'"&gt;float&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>
-            <xsl:text disable-output-escaping="yes">&lt;xsl:when test="$type = 'double'"&gt;float&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text> 
-            <xsl:text disable-output-escaping="yes">&lt;xsl:otherwise&gt;varchar(255)&lt;/xsl:otherwise&gt;&#xd;&#xa;</xsl:text>
-            <xsl:text disable-output-escaping="yes">&lt;/xsl:choose&gt;&#xd;&#xa;</xsl:text> 
-            <xsl:text disable-output-escaping="yes">&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>            
-        </xsl:for-each>
-        
-        <xsl:text disable-output-escaping="yes">&lt;xsl:otherwise&gt;varchar(255)&lt;/xsl:otherwise&gt;&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">&lt;/xsl:choose&gt;&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;&#xd;&#xa;</xsl:text>
+
         <xsl:text disable-output-escaping="yes">&lt;/xsl:stylesheet&gt;&#xd;&#xa;</xsl:text>       
         
     </xsl:template> 
