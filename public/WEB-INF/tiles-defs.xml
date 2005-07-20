@@ -16,6 +16,7 @@
   <definition name="schema" path="/tiles/schema/Schema.jsp" />
   <definition name="listConversion" path="/tiles/conversion/ListConversions.jsp" />
   <definition name="testConversion" path="/tiles/conversion/TestConversion.jsp" />
+  <definition name="testic" path="/queriesindex.jsp" />
 
   <definition name="base" path="/layout.jsp">
     <put name="header" type="definition" value="MainHeader"/>
@@ -53,6 +54,9 @@
     <put name="body" type="definition" value="testConversion"/>
   </definition>
 
+  <definition name="/testic.jsp" extends="base">
+    <put name="body" type="definition" value="testic"/>
+  </definition>
 
 
  </tiles-definitions>
