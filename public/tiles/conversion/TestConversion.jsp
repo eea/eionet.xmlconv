@@ -63,11 +63,16 @@
 		    <tr>
 		      <td>&nbsp;</td>
 		    </tr>
-
+		    <bean:define id="idConv" name="idConv" scope="request" type="java.lang.String"/>	    
 		    <logic:iterate indexId="index" id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">						
 		    <tr>
 		      <td align=right>
-				<input type="radio" name="format" value="<bean:write name="stylesheet" property="convId" />" />
+		      <logic:equal name="stylesheet" property="convId" value="<%=idConv%>">
+						<input type="radio" checked="checked" name="format" value="<bean:write name="stylesheet" property="convId" />" />
+				</logic:equal>
+				<logic:notEqual name="stylesheet" property="convId" value="<%=idConv%>">
+						<input type="radio" name="format" value="<bean:write name="stylesheet" property="convId" />" />
+				</logic:notEqual>
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>

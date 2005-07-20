@@ -1,4 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles"%>
+<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
 <%@ page import="java.io.File,java.util.Date,java.text.DateFormat,java.util.HashMap, java.util.Vector, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.Properties" %>
 
 <%!private HashMap schema=null;%>
@@ -36,13 +38,10 @@
     }
     if (queries==null) queries=new Vector();
 %>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head>
-    <title>Queries of <%=name%></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-    <link rel="stylesheet" type="text/css" href="layout-print.css" media="print" />
-    <link rel="stylesheet" type="text/css" href="layout-handheld.css" media="handheld" />
-    <link rel="stylesheet" type="text/css" href="layout-screen.css" media="screen" title="EIONET style" />
+
+<ed:breadcrumbs-push label="Queries" level="1" />
+<tiles:insert definition="MainHeader"/>
+
     <script type="text/javascript" src="util.js"></script>
     <script type="text/javascript">
         
@@ -57,12 +56,13 @@
         }
 
     </script>
-</head>
-<body>
-<jsp:include page="location.jsp" flush='true'>
-<jsp:param name="name" value="Queries"/>
-</jsp:include>
+
+
+
+
 <%@ include file="menu.jsp" %>
+
+    
 <div id="workarea">
 
     <% if (err!= null) { %>
@@ -83,7 +83,7 @@
     </div>
     
     <h1>Queries of <%=name%></h1>
-    <a href="schema.jsp?ID=<%=id%>">View schema info</a>
+    <a href="schemaElemForm.do?schemaId=<%=id%>">View schema info</a>
     <form name="view_schema_info" action="main" method="post">
         <input type="hidden" name="ID" value="<%=id%>" />
         <input type="hidden" name="ACTION" value="<%=Names.SHOW_SCHEMA_ACTION%>" />
@@ -118,18 +118,18 @@
 	</form>
 		
     <div id="main_table">
-        <table border="0" cellspacing="1" cellpadding="2" width="100%">
+        <table class="sortable" border="0" cellspacing="1" cellpadding="2" width="100%">
             <thead>
                     
                <%
                 boolean ssdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "d");
             %>
                 <tr>
-                  <th align="left" width="180">Short name</th>
-                  <th align="left">Description</th>
-                  <th align="left" width="180">Query</th>
-                  <th align="left" width="140">Last modified</th>
-                  <th align="center" width="50">&#160;</th>
+                  <th scope="col" align="left" width="180">Short name</th>
+                  <th scope="col" align="left">Description</th>
+                  <th scope="col" align="left" width="180">Query</th>
+                  <th scope="col" align="left" width="140">Last modified</th>
+                  <th scope="col" align="center" width="50">&#160;</th>
                 </tr>
             </thead>
            <tbody>
@@ -184,6 +184,4 @@
     <input type="hidden" name="ACTION" value=""/>
     <input type="hidden" name="PARAM" value=""/>
 </form>
-<%@ include file="footer.jsp" %>
-</body>
-</html>
+<tiles:insert definition="MainFooter"/>

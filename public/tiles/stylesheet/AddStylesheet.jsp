@@ -30,7 +30,7 @@
 		      <td>&nbsp;</td>
 		      <td>
 				<logic:present name="schema" scope="session">
-		        <input type="text" name="schema" maxlength="50" value="<bean:write name="schema" scope="session"/>" style="width: 30em;" />
+		        <input type="text" name="schema" value="<bean:write name="schema" scope="session"/>" style="width: 30em;" />
 		        </logic:present>
 		        <logic:notPresent name="schema" scope="session">
 		        <input type="text" name="schema" maxlength="50"  style="width: 30em;" />

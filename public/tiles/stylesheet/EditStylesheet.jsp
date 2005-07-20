@@ -29,7 +29,7 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
-		        <html:text property="schema" maxlength="50" style="width: 30em;" />		        
+		        <html:text property="schema"  style="width: 30em;" />		        
 		      </td>
 		    </tr>
 		    <tr>

@@ -67,7 +67,7 @@
 						<bean:write name="stylesheet" property="modified" />															
 					</td>
 					<td width="10%">
-						<a href="testConversionForm.do?schema=<bean:write name="schema" property="schema" />&amp;id=<bean:write name="stylesheet" property="convId" />"  >
+						<a href="testConversionForm.do?schema=<bean:write name="schema" property="schema" />&amp;idConv=<bean:write name="stylesheet" property="convId" />"  >
 							<img height="15" width="24" src="images/run.png" alt="Run"/>
 						</a>			
 						<logic:equal name="ssdPrm" value="true"  name="schema.stylesheets" scope="session" property="ssdPrm" >

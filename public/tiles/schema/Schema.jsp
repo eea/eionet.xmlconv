@@ -106,7 +106,7 @@
 						 <html:text property="elemName" maxlength="50" style="width: 30em;" />
 					</td>
 					<td width="45%">					
-						  <html:text property="namespace" maxlength="50" style="width: 30em;" />
+						  <html:text property="namespace" style="width: 30em;" />
 					</td>
 					<td width="10%">
 						<input type="button" styleClass="button" class="button" value="<bean:message key="label.element.add"/>" onclick="return submitAction('elementAdd.do');">
