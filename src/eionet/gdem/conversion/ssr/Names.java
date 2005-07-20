@@ -37,14 +37,14 @@ public interface Names {
   //JSP names
   public static final String INDEX_JSP = "index.jsp";
   public static final String ERROR_JSP = "error.jsp";  
-  public static final String STYLESHEET_JSP = "stylesheet.jsp";
-  public static final String STYLESHEETS_JSP = "stylesheets.jsp";
-  public static final String ADD_XSL_JSP = "add_stylesheet.jsp";
-  public static final String TEST_CONVERSION_JSP = "test_conversion.jsp";
+  public static final String STYLESHEET_JSP = "stylesheetEditForm.do";
+  public static final String STYLESHEETS_JSP = "schemaStylesheets.do";
+  public static final String ADD_XSL_JSP = "addStylesheetForm.do";
+  public static final String TEST_CONVERSION_JSP = "testConversionForm.do";
   public static final String LIST_CONVERSION_JSP = "listConvForm.do";
   public static final String TEST_CONVERSION_SERVLET = "convert";
-  public static final String LOGIN_JSP = "login.jsp";
-  public static final String SCHEMA_JSP = "schema.jsp";
+  public static final String LOGIN_JSP = "start.do?login=true";
+  public static final String SCHEMA_JSP = "schemaElemForm.do";
   public static final String HOSTS_JSP = "hosts.jsp";
   public static final String HOST_JSP = "host.jsp";
   public static final String LIST_WORKQUEUE_JSP = "workqueue.jsp";

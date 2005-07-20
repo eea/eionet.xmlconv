@@ -492,6 +492,7 @@ public class ConversionService {
 		} catch (MalformedURLException mfe) {
 			throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
 		} catch (IOException ioe) {
+			ioe.printStackTrace();
 			throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
 		} catch (Exception e) {
 			throw new GDEMException("Error converting: " + e.toString(), e);

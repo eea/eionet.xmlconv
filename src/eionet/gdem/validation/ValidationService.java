@@ -138,11 +138,15 @@ public class ValidationService {
 	  //root
 	  System.out.println("ROOT = " + rootName);
 	          
-	  String attName1 = "xmlns:" + rootName.substring(0, rootName.indexOf(":")) ;
-	  String namespace = root.getAttribute(attName1);    
+	  String namespace=null;
+	  
+	  if(rootName.indexOf(":")>0){
+		  String attName1 = "xmlns:" + rootName.substring(0, rootName.indexOf(":")) ;
+		  namespace = root.getAttribute(attName1);    
 	          
 	  //namespace xmlns dnnn
-	  System.out.println(attName1 + " => " + namespace);    
+		  System.out.println(attName1 + " => " + namespace);
+	  }
 	  
 ///////////////////////////////////////////
       	 

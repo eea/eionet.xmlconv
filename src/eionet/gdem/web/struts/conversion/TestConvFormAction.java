@@ -20,6 +20,7 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.dto.Schema;
+import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.DbModuleIF;
 import eionet.gdem.services.GDEMServices;
@@ -51,6 +52,13 @@ public class TestConvFormAction  extends Action{
 				xmlUrl= (String)httpServletRequest.getParameter("xmlUrl");
 			}
 
+			String idConv= (String)httpServletRequest.getParameter("idConv");
+			
+
+			
+			httpServletRequest.setAttribute("idConv", idConv);
+			//httpServletRequest.setAttribute("idConv", "TBL2551");
+			
 			
 			TestConvForm form=(TestConvForm)actionForm;
 			form.setUrl(xmlUrl);
@@ -62,6 +70,7 @@ public class TestConvFormAction  extends Action{
 			System.out.println("schema="+schema);
 			System.out.println("xmlUrl="+xmlUrl);
 			System.out.println("validate="+validate);
+			System.out.println("idConv="+idConv);
 						
 			
 			try{
@@ -89,6 +98,8 @@ public class TestConvFormAction  extends Action{
 						// schema or dtd found from header
 						String schemaOrDTD = analyser.getSchemaOrDTD();
 						
+						System.out.println("schemaOrDTD="+schemaOrDTD);
+						
 						if (schemaOrDTD!=null){
 							ArrayList stylesheets = null;
 							stylesheets = sm.getSchemaStylesheets(schemaOrDTD);
@@ -100,7 +111,14 @@ public class TestConvFormAction  extends Action{
 						// did not find schema or dtd from xml header
 						else{
 							String root_elem = analyser.getRootElement();
+							
+							
+							
 							String namespace = analyser.getNamespace();
+							
+							System.out.println("root_elem="+root_elem);
+							System.out.println("namespace="+namespace);
+							
 							
 							DbModuleIF dbM= GDEMServices.getDbModule();
 							Vector matchedSchemas = dbM.getRootElemMatching(root_elem, namespace);
@@ -119,7 +137,17 @@ public class TestConvFormAction  extends Action{
 					}
 					
 				}
-			
+				
+				if(idConv==null && schemas.size()>0 && ((Schema)schemas.get(0)).getStylesheets().size()>0){
+					idConv = ((Stylesheet)(((Schema)schemas.get(0)).getStylesheets().get(0))).getConvId();
+				}
+				if(idConv==null ){
+					idConv="-1";
+				}
+				
+				httpServletRequest.setAttribute("idConv", idConv);
+				
+				
 				if(validate != null){
 					ArrayList valid;
 					if (schema==null){			//schema defined in header
