@@ -86,7 +86,7 @@
             <xsl:text disable-output-escaping="yes">&lt;xsl:variable name="type"&gt;</xsl:text><xsl:value-of select="type"/><xsl:text disable-output-escaping="yes">&lt;/xsl:variable&gt;&#xd;&#xa;</xsl:text>
             <xsl:text disable-output-escaping="yes">&lt;xsl:choose&gt;&#xd;&#xa;</xsl:text>
             <xsl:text disable-output-escaping="yes">&lt;xsl:when test="$type = 'integer'"&gt;int&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>
-            <xsl:text disable-output-escaping="yes">&lt;xsl:when test="$type = 'string'"&gt;text(</xsl:text><xsl:value-of select="length"/><xsl:text disable-output-escaping="yes">) WITH COMP&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;xsl:when test="$type = 'string'"&gt;memo WITH COMP&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>
             <xsl:text disable-output-escaping="yes">&lt;xsl:when test="$type = 'float'"&gt;double&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>
             <xsl:text disable-output-escaping="yes">&lt;xsl:otherwise&gt;text WITH COMP&lt;/xsl:otherwise&gt;&#xd;&#xa;</xsl:text>
             <xsl:text disable-output-escaping="yes">&lt;/xsl:choose&gt;&#xd;&#xa;</xsl:text> 

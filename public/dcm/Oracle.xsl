@@ -101,12 +101,12 @@
             <xsl:text disable-output-escaping="yes">&lt;xsl:when test="$type = 'string'"&gt;NVARCHAR2(</xsl:text><xsl:value-of select="length"/><xsl:text disable-output-escaping="yes">)&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>
             <xsl:text disable-output-escaping="yes">&lt;xsl:when test="$type = 'float'"&gt;float&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>
             <xsl:text disable-output-escaping="yes">&lt;xsl:when test="$type = 'double'"&gt;float&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text> 
-            <xsl:text disable-output-escaping="yes">&lt;xsl:otherwise&gt;NVARCHAR2(4000)&lt;/xsl:otherwise&gt;&#xd;&#xa;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;xsl:otherwise&gt;NVARCHAR2(2000)&lt;/xsl:otherwise&gt;&#xd;&#xa;</xsl:text>
             <xsl:text disable-output-escaping="yes">&lt;/xsl:choose&gt;&#xd;&#xa;</xsl:text> 
             <xsl:text disable-output-escaping="yes">&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>            
         </xsl:for-each>
         
-        <xsl:text disable-output-escaping="yes">&lt;xsl:otherwise&gt;NVARCHAR2(4000)&lt;/xsl:otherwise&gt;&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">&lt;xsl:otherwise&gt;NVARCHAR2(2000)&lt;/xsl:otherwise&gt;&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">&lt;/xsl:choose&gt;&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">&lt;/xsl:stylesheet&gt;&#xd;&#xa;</xsl:text>       
