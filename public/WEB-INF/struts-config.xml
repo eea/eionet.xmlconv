@@ -17,42 +17,42 @@
     
     <action-mappings>
         <action path="/start" type="eionet.gdem.web.struts.StartAction">
-            <forward name="login" path="/login.do" />            
+            <forward name="login" path="/login.do" redirect="true"/>            
         </action>
         <action path="/login" input="/login.jsp" name="loginForm" scope="request" type="eionet.gdem.web.struts.login.LoginAction" validate="true">           
         </action>        
         <action path="/stylesheetList" type="eionet.gdem.web.struts.stylesheet.StylesheetListAction">
-            <forward name="success" path="/stylesheetList.jsp"/>            
+            <forward name="success" path="/stylesheetList.jsp" redirect="true"/>            
         </action>
         <action path="/deleteSchema"  scope="request" type="eionet.gdem.web.struts.stylesheet.SchemaDeleteAction">           
-        	<forward name="success" path="/stylesheetList.do"  />            
+        	<forward name="success" path="/stylesheetList.do"  redirect="true"/>            
         </action>        
         <action path="/schemaStylesheets" type="eionet.gdem.web.struts.stylesheet.SchemaStylesheetAction">   
-	        <forward name="success" path="/schemaStylesheets.jsp" />                      
+	        <forward name="success" path="/schemaStylesheets.jsp" redirect="true"/>                      
         </action>
         <action path="/deleteStylesheet"  scope="request" type="eionet.gdem.web.struts.stylesheet.StylesheetDeleteAction">           
-        	<forward name="success" path="/schemaStylesheets.do" />            
+        	<forward name="success" path="/schemaStylesheets.do" redirect="true"/>            
         </action>        
         <action path="/addStylesheetForm" type="eionet.gdem.web.struts.stylesheet.ConvTypeAction">   
-	        <forward name="success" path="/addStylesheet.jsp" />                      
+	        <forward name="success" path="/addStylesheet.jsp" redirect="true"/>                      
         </action>
         <action path="/stylesheetAdd" input="/addStylesheet.jsp" name="stylesheetForm"
             type="eionet.gdem.web.struts.stylesheet.AddStylesheetAction" scope="request">
-            <forward name="success" path="/schemaStylesheets.do" />
+            <forward name="success" path="/schemaStylesheets.do" redirect="true"/>
         </action>
         <action path="/stylesheetEditForm" name="stylesheetForm" type="eionet.gdem.web.struts.stylesheet.EditStylesheetFormAction" input="/editStylesheet.jsp" scope="request">
-            <forward name="success" path="/editStylesheet.jsp" />
+            <forward name="success" path="/editStylesheet.jsp" redirect="true" />
         </action>
         <action path="/stylesheetEdit" input="/editStylesheet.jsp" name="stylesheetForm"
             type="eionet.gdem.web.struts.stylesheet.EditStylesheetAction" scope="request">
-            <forward name="success" path="/schemaStylesheets.do" />
-             <forward name="fail" path="/editStylesheet.jsp"/>
+            <forward name="success" path="/schemaStylesheets.do" redirect="true"/>
+             <forward name="fail" path="/editStylesheet.jsp" redirect="true"/>
         </action>
         <action path="/schemaElemForm" name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemFormAction" input="/schema.jsp" scope="request">
             <forward name="success" path="/schema.jsp" redirect="true"/>
         </action>
         <action path="/deleteElem"  scope="request" type="eionet.gdem.web.struts.schema.DeleteRootElemAction">           
-        	<forward name="success" path="/schemaElemForm.do"  />            
+        	<forward name="success" path="/schemaElemForm.do"  redirect="true"/>            
         </action>        
         <action path="/elementAdd" name="schemaForm" scope="request" type="eionet.gdem.web.struts.schema.AddElemAction">           
         	<forward name="success" path="/schemaElemForm.do" redirect="true" />            
@@ -67,10 +67,10 @@
             <forward name="success" path="/listConv.jsp" redirect="true"/>
         </action>
         <action path="/listConv" name="ListConvForm" type="eionet.gdem.web.struts.conversion.ListConvAction" input="/listConv.jsp" scope="request">
-            <forward name="success" path="/testConversionForm.do" />
+            <forward name="success" path="/testConversionForm.do"/>
         </action>
         <action path="/testConversionForm" name="TestConvForm" type="eionet.gdem.web.struts.conversion.TestConvFormAction" input="/testConv.jsp" scope="request">
-            <forward name="success" path="/testConv.jsp" redirect="true"/>
+            <forward name="success" path="/testConv.jsp" />
         </action>
 
 
