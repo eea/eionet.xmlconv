@@ -36,6 +36,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import com.tee.uit.security.AppUser;
@@ -71,13 +72,13 @@ public class LoginAction extends Action {
 			httpServletRequest.getSession().setAttribute("user", username);
 		}catch(Exception e){
 			_logger.debug("Fail login");
-            errors.add("username", new ActionError("label.login.error.invalid"));
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("label.login.error.invalid"));
             ret = actionMapping.getInputForward();	        		
 		}
 		
-
-        saveMessages(httpServletRequest, loginMessages);
-        saveErrors(httpServletRequest, errors);
+		httpServletRequest.getSession().setAttribute("dcm.messages", loginMessages);
+        httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+		
         return ret;
 
 

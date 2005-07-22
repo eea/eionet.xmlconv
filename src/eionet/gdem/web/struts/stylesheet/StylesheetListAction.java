@@ -3,10 +3,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
@@ -20,10 +22,8 @@ public class StylesheetListAction extends Action {
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
 		StylesheetListHolder st = new StylesheetListHolder();
-		ActionErrors errors = new ActionErrors();
+		ActionMessages errors = new ActionMessages();
 		String user_name = (String)httpServletRequest.getSession().getAttribute("user");		
-
-		System.out.println("user="+user_name);
 		
 		try{
 			SchemaManager sm = new SchemaManager();
@@ -32,15 +32,11 @@ public class StylesheetListAction extends Action {
 		}catch(DCMException e){			
 			System.out.println(e.toString());
 			_logger.debug(e.toString());
-			//errors.add("schema", new ActionError(e.getErrorCode()));
+			errors.add("schema", new ActionError("label.exception.unknown"));
+			saveErrors(httpServletRequest, errors);			
 		}
-        //saveErrors(httpServletRequest, errors);
-		
         httpServletRequest.getSession().setAttribute("stylesheet.stylesheetList", st);
-		System.out.println("-------------StylesheetListAction---------------");
         return actionMapping.findForward("success");
-		
-		
     }
 }
 	

@@ -13,6 +13,8 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ssr.InputAnalyser;
@@ -33,38 +35,26 @@ public class TestConvFormAction  extends Action{
 	private static LoggerIF _logger=GDEMServices.getLogger();
 	
 	   public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
-			
 			ActionErrors errors = new ActionErrors();
-
-			System.out.println("-------------TestConvFormAction-  start--------------");
-			
 			ArrayList schemas = new ArrayList();
-			
 			String schema= (String)httpServletRequest.getAttribute("schema");
-			//getParameter("schema");
 			if (schema == null){
 				schema= (String)httpServletRequest.getParameter("schema");
 			}
 			String xmlUrl= (String)httpServletRequest.getAttribute("xmlUrl");
-			// getParameter("xmlUrl");
+
 			if(xmlUrl==null){
 				xmlUrl= (String)httpServletRequest.getParameter("xmlUrl");
 			}
 
 			String idConv= (String)httpServletRequest.getParameter("idConv");
-			
-
-			
 			httpServletRequest.setAttribute("idConv", idConv);
-			//httpServletRequest.setAttribute("idConv", "TBL2551");
-			
-			
+
 			TestConvForm form=(TestConvForm)actionForm;
 			form.setUrl(xmlUrl);
 			
 			
-			if(schema.equals("")){schema=null;}
+			if(schema!=null && schema.equals("")){schema=null;}
 			
 			String validate= (String)httpServletRequest.getAttribute("validate");
 			System.out.println("schema="+schema);
@@ -163,25 +153,23 @@ public class TestConvFormAction  extends Action{
 				
 				
 			}catch(DCMException e){			
-				System.out.println(e.toString());
 				e.printStackTrace();
 				_logger.debug(e.toString());
-				errors.add("conversion", new ActionError(e.getErrorCode()));
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError(e.getErrorCode()));
+				saveErrors(httpServletRequest, errors);				
+				
 			}catch(Exception e){
 				System.out.println(e.toString());
 				e.printStackTrace();
 				_logger.debug(e.toString());				
-				errors.add("conversion", new ActionError(BusinessConstants.EXCEPTION_GENERAL));				
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError(BusinessConstants.EXCEPTION_GENERAL));
+				saveErrors(httpServletRequest, errors);				
+				
 			}
 	        saveErrors(httpServletRequest, errors);
 			
 	        httpServletRequest.getSession().setAttribute("conversion.schemas", schemas);
-			System.out.println("-------------TestConvFormAction---------------");
-			
-			
 	        return actionMapping.findForward("success");
-			
-			
 	    }
 
 	   private ArrayList validate(String url) throws DCMException{

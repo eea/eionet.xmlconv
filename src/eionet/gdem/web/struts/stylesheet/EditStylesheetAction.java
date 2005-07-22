@@ -9,6 +9,8 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 import org.apache.struts.upload.FormFile;
 
 
@@ -23,15 +25,14 @@ public class EditStylesheetAction extends Action {
 	private static LoggerIF _logger=GDEMServices.getLogger();
 
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-		ActionErrors errors = new ActionErrors();
-		System.out.println("-------------EditStylesheetAction--- start ------------");
+		
+		ActionMessages errors = new ActionMessages();
+        ActionMessages messages = new ActionMessages();		
 		
 		if (isCancelled(httpServletRequest)){
-			System.out.println("-------------EditStylesheetAction--- is cancelled ------------");
 			return actionMapping.findForward("success");
 		}
-		
-		
+				
 		StylesheetForm form=(StylesheetForm)actionForm;
 		String desc= form.getDescription();
 		String schema=form.getSchema();
@@ -45,21 +46,16 @@ public class EditStylesheetAction extends Action {
 			StylesheetManager st = new StylesheetManager();
 			
 			st.update( user,stylesheetId, schema,xslFile, type, desc);
-			errors.add("stylesheet", new ActionError("label.stylesheet.updated"));
+			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.updated"));
 		}catch(DCMException e){			
 			System.out.println(e.toString());
 			_logger.debug(e.toString());
-			errors.add("stylesheet", new ActionError(e.getErrorCode()));			
-			saveErrors(httpServletRequest, errors);
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+			saveErrors(httpServletRequest,errors);
 			return actionMapping.findForward("fail");
 		}
-        saveErrors(httpServletRequest, errors);
-		
-		System.out.println("-------------EditStylesheetAction---------------");
+        httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+        httpServletRequest.getSession().setAttribute("dcm.messages", messages);						
         return actionMapping.findForward("success");
-
-
-	
-	}
-		
+	}		
 }

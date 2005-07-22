@@ -11,6 +11,7 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessages;
 import org.apache.struts.tiles.TilesRequestProcessor;
 
 import eionet.gdem.services.GDEMServices;
@@ -42,6 +43,24 @@ public class RequestProcessor extends TilesRequestProcessor {
 
 		request.setAttribute("servletPath", request.getServletPath());
 		_logger.debug("servletPath ----- " +request.getServletPath());
+
+        //Remove messages from session and add to page context
+        ActionMessages errors = (ActionMessages) request.getSession().getAttribute("dcm.errors");
+        if (errors != null) {
+            request.getSession().setAttribute("dcm.errors", null);
+            if (!errors.isEmpty()) {
+					request.setAttribute("dcm.errors", errors); 
+			};
+        }
+
+        ActionMessages messages = (ActionMessages) request.getSession().getAttribute("dcm.messages");
+        if (messages != null) {			
+            request.getSession().setAttribute("dcm.messages", null);
+            if (!messages.isEmpty()) request.setAttribute("dcm.messages", messages);
+        }
+
+		 
+		
 		return true;
 	}
 

@@ -9,6 +9,8 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
@@ -21,34 +23,24 @@ public class SchemaDeleteAction extends Action {
 
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         
-		//StylesheetListHolder st = new StylesheetListHolder();
-		ActionErrors errors = new ActionErrors();
 		String schemaId = (String)httpServletRequest.getParameter("schemaId");
-
-		String user_name = (String)httpServletRequest.getSession().getAttribute("user");		
-		
-		////////////////////////////
-
-		 //SaveHandler.handleSchemas(httpServletRequest,Names.XSD_DEL_ACTION);		
-		
-		////////////////////////////		
-		
-		System.out.println("schemaId="+schemaId);
-		System.out.println("user="+user_name);
-		
+		String user_name = (String)httpServletRequest.getSession().getAttribute("user");				
+		ActionMessages errors = new ActionMessages();
+        ActionMessages messages = new ActionMessages();		
 		
 		try{
 			SchemaManager sm = new SchemaManager();
 			sm.delete(user_name, schemaId);
-			errors.add("schema", new ActionError("label.schema.deleted"));
+			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.deleted"));
 		}catch(DCMException e){			
-			System.out.println(e.toString());
 			_logger.debug(e.toString());
-			errors.add("schema", new ActionError(e.getErrorCode()));
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 		}
-        saveErrors(httpServletRequest, errors);
+        //saveErrors(httpServletRequest, errors);
+
+        httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+        httpServletRequest.getSession().setAttribute("dcm.messages", messages);				
 		
-		System.out.println("-------------SchemaDeleteAction---------------");
         return actionMapping.findForward("success");
     }
 

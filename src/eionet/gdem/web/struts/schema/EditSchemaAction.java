@@ -9,6 +9,8 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 import org.apache.struts.upload.FormFile;
 
 
@@ -23,7 +25,9 @@ public class EditSchemaAction extends Action {
 	private static LoggerIF _logger=GDEMServices.getLogger();
 
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-		ActionErrors errors = new ActionErrors();
+		ActionMessages errors = new ActionMessages();
+        ActionMessages messages = new ActionMessages();		
+
 		SchemaElemForm form=(SchemaElemForm)actionForm;
 		String schemaId=form.getSchemaId();
 		String schema=form.getSchema(); 
@@ -31,25 +35,19 @@ public class EditSchemaAction extends Action {
 		String dtdId=form.getDtdId();
 		
 		String user = (String)httpServletRequest.getSession().getAttribute("user");
-		//httpServletRequest.getSession().setAttribute("schema", schema);
 		
 		try{
 			SchemaManager sm = new SchemaManager();
 			sm.update( user, schemaId, schema, description, dtdId);
-			errors.add("schema", new ActionError("label.schema.inserted"));
+			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.updated"));
 		}catch(DCMException e){			
 			System.out.println(e.toString());
 			_logger.debug(e.toString());
-			errors.add("schema", new ActionError(e.getErrorCode()));
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 		}
-    
-        saveErrors(httpServletRequest, errors);
+        httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+        httpServletRequest.getSession().setAttribute("dcm.messages", messages);						
 		
-		System.out.println("-------------EditSchemaAction---------------");
         return actionMapping.findForward("success");
-
-
-	
-	}
-		
+	}		
 }

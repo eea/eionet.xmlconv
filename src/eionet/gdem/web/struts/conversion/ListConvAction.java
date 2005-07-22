@@ -32,18 +32,6 @@ public class ListConvAction  extends Action{
 	private static LoggerIF _logger=GDEMServices.getLogger();
 	
 	   public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
-			
-			ActionErrors errors = new ActionErrors();
-
-			System.out.println("-------------ListConvAction-  start--------------");
-			
-			//ArrayList schemas = new ArrayList();
-			
-			//String schema= (String)httpServletRequest.getParameter("schema");
-			//String xmlUrl= (String)httpServletRequest.getParameter("xmlUrl");
-								
-
 			ListConvForm form=(ListConvForm)actionForm;
 			String validate=form.getValidate();
 			String schema=form.getXmlSchema(); 
@@ -53,20 +41,8 @@ public class ListConvAction  extends Action{
 			httpServletRequest.setAttribute("url", xml);
 			if (validate != null) {
 				httpServletRequest.setAttribute("validate", validate);
-			}
-			
-						
-			System.out.println("schema="+schema);
-			System.out.println("xmlUrl="+xml);
-			System.out.println("validate="+validate);
-
-			
-			System.out.println("-------------ListConvAction---------------");
-			
-			
+			}			
 	        return actionMapping.findForward("success");
-			
-			
 	    }
 
 

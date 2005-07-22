@@ -8,6 +8,9 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
+
 import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
@@ -19,7 +22,9 @@ public class EditStylesheetFormAction  extends Action {
 	private static LoggerIF _logger=GDEMServices.getLogger();
 
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-		ActionErrors errors = new ActionErrors();
+		
+		ActionMessages errors = new ActionMessages();
+        
 		StylesheetForm form=(StylesheetForm)actionForm;
 		String stylesheetId= (String)httpServletRequest.getParameter("stylesheetId");
 		ConvTypeHolder ctHolder = new ConvTypeHolder();
@@ -35,26 +40,15 @@ public class EditStylesheetFormAction  extends Action {
 
 			ctHolder =st.getConvTypes();
 
-			System.out.println("stylesheet.outputtypeSel="+stylesheet.getType());
 			httpServletRequest.getSession().setAttribute("stylesheet.outputtypeSel", stylesheet.getType());
-			
-			
-			System.out.println("stylesheetId-----"+stylesheet.getConvId());
-			
 		}catch(DCMException e){			
 			System.out.println(e.toString());
 			_logger.debug(e.toString());
-			errors.add("stylesheet", new ActionError(e.getErrorCode()));
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+			saveErrors(httpServletRequest, errors);
 		}
-        saveErrors(httpServletRequest, errors);
 		httpServletRequest.getSession().setAttribute("stylesheet.outputtype", ctHolder);
 		
-		System.out.println("-------------EditStylesheetFormAction---------------");
         return actionMapping.findForward("success");
-
-
-	
 	}
-
-
 }

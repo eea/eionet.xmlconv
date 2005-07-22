@@ -11,6 +11,8 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.business.StylesheetManager;
@@ -23,11 +25,7 @@ public class ListConvFormAction  extends Action{
 	private static LoggerIF _logger=GDEMServices.getLogger();
 	
 	   public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
-			
 			ActionErrors errors = new ActionErrors();
-
-			System.out.println("-------------ListConvFormAction-  start--------------");
 			ArrayList schemas = null;
 			
 			try{
@@ -37,18 +35,12 @@ public class ListConvFormAction  extends Action{
 			}catch(DCMException e){			
 				System.out.println(e.toString());
 				_logger.debug(e.toString());
-				errors.add("schema", new ActionError(e.getErrorCode()));
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+				saveErrors(httpServletRequest, errors);				
 			}
 	        saveErrors(httpServletRequest, errors);
 			
 	        httpServletRequest.getSession().setAttribute("converson.schemas", schemas);
-			System.out.println("-------------ListConvFormAction---------------");
-			
-			
 	        return actionMapping.findForward("success");
-			
-			
 	    }
-
-
 }

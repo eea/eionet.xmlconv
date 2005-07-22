@@ -9,6 +9,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
@@ -22,20 +23,13 @@ public class SchemaStylesheetAction extends Action{
 	   public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
 			StylesheetListHolder st = new StylesheetListHolder();
-			ActionErrors errors = new ActionErrors();
+			ActionMessages messages = new ActionMessages();
 			String user_name = (String)httpServletRequest.getSession().getAttribute("user");		
 			String schema= (String)httpServletRequest.getParameter("schema");
 
-			System.out.println("-------------SchemaStylesheetAction-  start--------------");
-			System.out.println("user="+user_name);
-			System.out.println("schema request="+schema);
-			System.out.println("schema sessija="+(String)httpServletRequest.getSession().getAttribute("schema"));
-			
 			if (schema!=null && schema!=""){
-				System.out.println("-------------schema is requesta "+schema+"--------------");
 				httpServletRequest.getSession().setAttribute("schema", schema);
 			}else{
-				System.out.println("-------------schema is sesije "+schema+"--------------");
 				schema=(String)httpServletRequest.getSession().getAttribute("schema");
 			}
 			
@@ -46,18 +40,11 @@ public class SchemaStylesheetAction extends Action{
 			}catch(DCMException e){			
 				System.out.println(e.toString());
 				_logger.debug(e.toString());
-				errors.add("schema", new ActionError(e.getErrorCode()));
+				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionError(e.getErrorCode()));
 			}
-	        saveErrors(httpServletRequest, errors);
+	        saveErrors(httpServletRequest, messages);
 			
 	        httpServletRequest.getSession().setAttribute("schema.stylesheets", st);
-			System.out.println("-------------SchemaStylesheetAction---------------");
-			
-			
-			
 	        return actionMapping.findForward("success");
-			
-			
 	    }
-
 }

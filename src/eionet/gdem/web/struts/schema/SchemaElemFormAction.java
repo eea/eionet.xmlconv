@@ -25,16 +25,12 @@ public class SchemaElemFormAction  extends Action {
 		SchemaElemForm form=(SchemaElemForm)actionForm;
 		String schemaId= (String)httpServletRequest.getParameter("schemaId");
 		String user = (String)httpServletRequest.getSession().getAttribute("user");
-
 		
 		if (schemaId!=null && schemaId!=""){
-			System.out.println("-------------schema is requesta "+schemaId+"--------------");
 			httpServletRequest.getSession().setAttribute("schemaId", schemaId);
 		}else{
-			System.out.println("-------------schema is sesije "+schemaId+"--------------");
 			schemaId=(String)httpServletRequest.getSession().getAttribute("schemaId");
 		}
-		
 		
 		SchemaElemHolder seHolder = new SchemaElemHolder();
 		
@@ -47,25 +43,17 @@ public class SchemaElemFormAction  extends Action {
 			form.setDtdId(seHolder.getSchema().getDtdPublicId());
 			
 			httpServletRequest.getSession().setAttribute("schema.rootElemets", seHolder);
-			
-			
-			System.out.println("schemaId-----"+seHolder.getSchema().getId());
-			
+						
 		}catch(DCMException e){			
 			System.out.println(e.toString());
 			e.printStackTrace();
 			_logger.debug(e.toString());
 			errors.add("stylesheet", new ActionError(e.getErrorCode()));
+			saveErrors(httpServletRequest, errors);
 		}
-        saveErrors(httpServletRequest, errors);
-		httpServletRequest.getSession().setAttribute("stylesheet.outputtype", seHolder);
-		
-		System.out.println("-------------SchemaElemFormAction---------------");
+        
+		httpServletRequest.getSession().setAttribute("stylesheet.outputtype", seHolder);		
         return actionMapping.findForward("success");
-
-
 	
 	}
-
-
 }

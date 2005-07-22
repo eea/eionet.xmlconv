@@ -9,6 +9,8 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 import org.apache.struts.upload.FormFile;
 
 
@@ -24,10 +26,10 @@ public class AddElemAction extends Action {
 	private static LoggerIF _logger=GDEMServices.getLogger();
 
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-		ActionErrors errors = new ActionErrors();
+		ActionMessages errors = new ActionMessages();
+        ActionMessages messages = new ActionMessages();		
 		SchemaElemForm form=(SchemaElemForm)actionForm;
-		
-		
+				
 		String elem= form.getElemName();
 		String namespace=form.getNamespace();
 		String schemaId=form.getSchemaId();
@@ -40,19 +42,15 @@ public class AddElemAction extends Action {
 			form.setElemName("");
 			form.setNamespace("");
 			
-			errors.add("element", new ActionError("label.elem.inserted"));
+			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.elem.inserted"));
 		}catch(DCMException e){			
 			System.out.println(e.toString());
 			_logger.debug(e.toString());
-			errors.add("element", new ActionError(e.getErrorCode()));
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 		}
-        saveErrors(httpServletRequest, errors);
+        httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+        httpServletRequest.getSession().setAttribute("dcm.messages", messages);						
 		
-		System.out.println("-------------AddElemAction---------------");
         return actionMapping.findForward("success");
-
-
-	
-	}
-		
+	}		
 }

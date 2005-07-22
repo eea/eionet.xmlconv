@@ -9,6 +9,8 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.business.SchemaManager;
@@ -23,38 +25,22 @@ public class StylesheetDeleteAction extends Action {
 
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         
-		ActionErrors errors = new ActionErrors();
+		ActionMessages errors = new ActionMessages();
+		ActionMessages messages = new ActionMessages();
 		String stylesheetId = (String)httpServletRequest.getParameter("stylesheetId");
-
 		String user_name = (String)httpServletRequest.getSession().getAttribute("user");		
-		
-		
-		System.out.println("stylesheetId="+stylesheetId);
-		System.out.println("user="+user_name);
-		
-		
-		
-				
-		
 		try{
 			StylesheetManager sm = new StylesheetManager();
 			sm.delete(user_name, stylesheetId);
-			errors.add("stylesheet", new ActionError("label.stylesheet.deleted"));
+			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.deleted"));			
 		}catch(DCMException e){			
-			System.out.println(e.toString());
 			_logger.debug(e.toString());
-			errors.add("stylesheet", new ActionError(e.getErrorCode()));
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError(e.getErrorCode()));
 		}
 		
-//		httpServletRequest.s .setParameter("schema","yuyuuggre");
-		
-		
-        saveErrors(httpServletRequest, errors);
-		
-		
-		
-		
-		System.out.println("-------------StylesheetDeleteAction---------------");
+        httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+        httpServletRequest.getSession().setAttribute("dcm.messages", messages);				
+        
         return actionMapping.findForward("success");
     }
 
