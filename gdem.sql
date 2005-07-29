@@ -196,3 +196,15 @@ INSERT INTO T_CONVTYPE VALUES ('XML','text/xml','xml','');
 INSERT INTO T_CONVTYPE VALUES ('EXCEL','application/vnd.ms-excel','xls','');
 INSERT INTO T_CONVTYPE VALUES ('PDF','application/pdf','pdf','');
 INSERT INTO T_CONVTYPE VALUES ('SQL','text/plain','sql','');
+
+
+--
+-- Table structure for table `UPL_SCHEMA`
+--
+
+CREATE TABLE `UPL_SCHEMA` 
+(`SCHEMA_ID` INT (11) UNSIGNED  NOT NULL AUTO_INCREMENT, 
+`SCHEMA` VARCHAR (255) DEFAULT '0' NOT NULL, 
+PRIMARY KEY(`SCHEMA_ID`), 
+UNIQUE(`SCHEMA`), 
+INDEX(`SCHEMA_ID`,`SCHEMA`))  TYPE=MyISAM;
