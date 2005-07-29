@@ -24,14 +24,14 @@ public class StylesheetListAction extends Action {
 		StylesheetListHolder st = new StylesheetListHolder();
 		ActionMessages errors = new ActionMessages();
 		String user_name = (String)httpServletRequest.getSession().getAttribute("user");		
-		
+
 		try{
 			SchemaManager sm = new SchemaManager();
 			st =sm.getSchemas(user_name);
 			
 		}catch(DCMException e){			
-			System.out.println(e.toString());
-			_logger.debug(e.toString());
+			e.printStackTrace();
+			_logger.error(e);
 			errors.add("schema", new ActionError("label.exception.unknown"));
 			saveErrors(httpServletRequest, errors);			
 		}
