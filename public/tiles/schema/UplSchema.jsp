@@ -19,9 +19,10 @@
 	<div class="visualClear">&nbsp;</div>
 
 	<div style="width: 97%">
-		<table class="sortable" align="center" width="60%">
+		<table class="sortable" align="center" width="80%">
 			<tr>
 				<th scope="col"><span title="Schema"><bean:message key="label.table.uplSchema.schema"/></span></th>
+				<th scope="col"><span title="Schema"><bean:message key="label.table.uplSchema.stylesheets"/></span></th>				
 				<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >				
 				<th scope="col"><span title="Action"><bean:message key="label.table.uplSchema.action"/></span></th>
 				</logic:equal>
@@ -31,6 +32,11 @@
 					<td width="55%">
 						<a href="<bean:write name="schema" property="schema" />">
 							<bean:write name="schema" property="schema" />
+						</a>
+					</td>
+					<td width="45%">
+						<a href="schemaStylesheets.do?schema=<bean:write name="schema" property="schema" />">
+							Stylesheets
 						</a>
 					</td>
 					<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >
