@@ -28,13 +28,14 @@ public class ListConvFormAction  extends Action{
 			ActionErrors errors = new ActionErrors();
 			ArrayList schemas = null;
 			
+
 			try{
 				SchemaManager sm = new SchemaManager();
 				schemas = sm.getSchemas(); 
 				
 			}catch(DCMException e){			
-				System.out.println(e.toString());
-				_logger.debug(e.toString());
+				e.printStackTrace();
+				_logger.error(e);
 				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 				saveErrors(httpServletRequest, errors);				
 			}

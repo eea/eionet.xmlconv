@@ -36,7 +36,7 @@ public class ListConvAction  extends Action{
 			String validate=form.getValidate();
 			String schema=form.getXmlSchema(); 
 			String xml = form.getXmlUrl();
-			
+						
 			httpServletRequest.setAttribute("schema", schema);
 			httpServletRequest.setAttribute("url", xml);
 			if (validate != null) {

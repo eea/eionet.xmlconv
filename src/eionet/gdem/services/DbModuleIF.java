@@ -59,6 +59,13 @@ public interface DbModuleIF {
   * Table for xml schemas in the DB
   */
   public static final String SCHEMA_TABLE="T_SCHEMA";
+
+  /**
+   * Table for uploaded xml schemas in the DB
+   */
+   public static final String UPL_SCHEMA_TABLE="UPL_SCHEMA";
+  
+  
   /**
   * Table for root element mappings for schemas in the DB
   */
@@ -98,6 +105,13 @@ public interface DbModuleIF {
   public static final String DTD_PUBLIC_ID_FLD="DTD_PUBLIC_ID";
   public static final String SCHEMA_VALIDATE_FLD="VALIDATE";
 
+  /**
+   * Field names in UPL_SCHEMA table
+   */
+   public static final String UPL_SCHEMA_ID_FLD="SCHEMA_ID";
+   public static final String UPL_SCHEMA_FLD="SCHEMA";
+  
+  
   /**
   * Field names in ROOT ELEMENTS table
   */
@@ -490,4 +504,33 @@ public interface DbModuleIF {
   * @return Vector contining all fields as Hashtable from T_QUERY table
   */
   public Vector listQueries(String xmlSchema) throws SQLException;
+  
+  /**
+   * returns all uploaded schemas
+   * @return Vector containing all fields as HashMap from UPL_SCHEMA table
+   */
+
+   public Vector getUplSchema() throws SQLException;  
+   
+   /**
+    * Adds a new uploaded Schema to the database
+    * @param schema - xml schema name
+    * @return The ID of the added schema
+    */    
+    public String addUplSchema(String schema) throws SQLException;
+
+	 /**
+	  * Removes the uploaded xml schema from the uploaded schema table
+	  * @param uplSchemaId - schema Id
+	  */
+	 public void removeUplSchema(String uplSchemaId) throws SQLException;
+	 
+	 /**
+	  * returns schema for requested schema id
+	  * @param uplSchemaId
+	  * @return
+	  * @throws SQLException
+	  */
+	 public String getUplSchema(String uplSchemaId) throws SQLException; 
+	
 }

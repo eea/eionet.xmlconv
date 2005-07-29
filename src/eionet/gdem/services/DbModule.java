@@ -1202,5 +1202,56 @@ System.out.println(r.length);
   	return _executeStringQuery(sql);
   
   }
+
+  public Vector getUplSchema() throws SQLException {
+
+	    
+	String sql = "SELECT " + UPL_SCHEMA_ID_FLD + ", " + UPL_SCHEMA_FLD +  
+		 	" FROM " + UPL_SCHEMA_TABLE + " ORDER BY " + UPL_SCHEMA_FLD;
+  	
+	String r[][] = _executeStringQuery(sql);
+    
+	Vector v = new Vector();
+
+    for (int i =0; i< r.length; i++) {
+      Hashtable h = new Hashtable();
+      h.put("id", r[i][0]);
+      h.put("schema", r[i][1]);
+      v.add(h);      
+    }
+    return v;
+  }  
+
+  public String addUplSchema(String schema) throws SQLException {
+	    
+	    String sql = "INSERT INTO " + UPL_SCHEMA_TABLE + " ( " + UPL_SCHEMA_FLD + ") VALUES (" + Utils.strLiteral(schema) + ")";
+
+		_executeUpdate(sql);
+	    
+		return _getLastInsertID();
+	  }
+
+  public void removeUplSchema(String uplSchemaId) throws SQLException {
+
+	    String sql = "DELETE FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_SCHEMA_ID_FLD + "=" + uplSchemaId;
+	    _executeUpdate(sql);  
+		System.out.println(sql);
+	    
+	  }
+
+  public String getUplSchema(String uplSchemaId) throws SQLException {
+
+	    
+	    String sql="SELECT " + UPL_SCHEMA_FLD + " FROM " + UPL_SCHEMA_TABLE +
+	        " WHERE " + UPL_SCHEMA_ID_FLD + "=" + uplSchemaId;
+	         
+	    String [][] r = _executeStringQuery(sql);
+
+	    if (r.length==0)
+	      return null;
+
+	    return r[0][0];
+	  }
+  
   
 }

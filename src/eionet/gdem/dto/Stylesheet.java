@@ -12,6 +12,7 @@ public class Stylesheet implements Serializable {
 	private String modified;
 	private boolean ddConv;
 	private String schema;
+
 	
 	public String getConvId() {
 		return convId;
@@ -71,11 +72,7 @@ public class Stylesheet implements Serializable {
 	public void setSchema(String schema) {
 		this.schema = schema;
 	}
-	
-	
-	
-	
-	
+
 	
 	
 }

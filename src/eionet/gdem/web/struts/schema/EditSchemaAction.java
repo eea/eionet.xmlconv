@@ -34,15 +34,22 @@ public class EditSchemaAction extends Action {
 		String description = form.getDescription();
 		String dtdId=form.getDtdId();
 		
-		String user = (String)httpServletRequest.getSession().getAttribute("user");
+		if(schema == null || schema.equals("")){
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.validation"));
+			httpServletRequest.getSession().setAttribute("dcm.errors", errors);						
+			return actionMapping.findForward("success");
+		}
 		
+		
+		String user = (String)httpServletRequest.getSession().getAttribute("user");
+
 		try{
 			SchemaManager sm = new SchemaManager();
 			sm.update( user, schemaId, schema, description, dtdId);
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.updated"));
 		}catch(DCMException e){			
-			System.out.println(e.toString());
-			_logger.debug(e.toString());
+			e.printStackTrace();
+			_logger.error(e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 		}
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);

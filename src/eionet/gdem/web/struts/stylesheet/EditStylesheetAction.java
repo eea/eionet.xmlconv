@@ -29,9 +29,6 @@ public class EditStylesheetAction extends Action {
 		ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();		
 		
-		if (isCancelled(httpServletRequest)){
-			return actionMapping.findForward("success");
-		}
 				
 		StylesheetForm form=(StylesheetForm)actionForm;
 		String desc= form.getDescription();
@@ -40,7 +37,22 @@ public class EditStylesheetAction extends Action {
 		FormFile xslFile=form.getXslfile();
 		String stylesheetId=form.getStylesheetId();
 		String user = (String)httpServletRequest.getSession().getAttribute("user");
-		httpServletRequest.getSession().setAttribute("schema", schema);
+
+		
+		if(schema == null || schema.equals("")){
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.validation"));
+			httpServletRequest.getSession().setAttribute("dcm.errors", errors);						
+			return actionMapping.findForward("success");
+		}
+		
+		
+		httpServletRequest.setAttribute("schema", schema);
+
+		if (isCancelled(httpServletRequest)){
+			return actionMapping.findForward("success");
+		}
+		
+		
 		
 		try{
 			StylesheetManager st = new StylesheetManager();
@@ -48,8 +60,8 @@ public class EditStylesheetAction extends Action {
 			st.update( user,stylesheetId, schema,xslFile, type, desc);
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.updated"));
 		}catch(DCMException e){			
-			System.out.println(e.toString());
-			_logger.debug(e.toString());
+			e.printStackTrace();
+			_logger.error(e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			saveErrors(httpServletRequest,errors);
 			return actionMapping.findForward("fail");

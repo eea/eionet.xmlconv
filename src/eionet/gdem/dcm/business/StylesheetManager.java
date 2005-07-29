@@ -16,6 +16,7 @@ import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.ConvType;
 import eionet.gdem.dto.Stylesheet;
+import eionet.gdem.dto.UplSchema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.DbModuleIF;
 import eionet.gdem.services.GDEMServices;
@@ -152,7 +153,7 @@ public class StylesheetManager {
 				st.setSchema((String)xsl.get("xml_schema"));
 				st.setXsl_descr((String)xsl.get("description"));
 				st.setType((String)xsl.get("content_type_out"));
-				st.setXsl((String)xsl.get("xsl"));
+				st.setXsl(Names.XSL_FOLDER + xsl.get("xsl"));
 				st.setConvId(stylesheetId);
 			}
 			
@@ -167,7 +168,6 @@ public class StylesheetManager {
 		
 
 	public void update(String user,String xsl_id,String schema, FormFile file, String type, String descr) throws DCMException{
-       System.out.println("---------------update-----start--------------");
         try{
           if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "u")){
 			 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_STYLEHEET_UPDATE);
@@ -227,10 +227,9 @@ public class StylesheetManager {
 			_logger.debug(e.toString());
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
        }
-       System.out.println("---------------update-----end--------------");
 		
 	}
-	
+
 	
 
 }

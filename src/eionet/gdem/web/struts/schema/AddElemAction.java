@@ -35,6 +35,14 @@ public class AddElemAction extends Action {
 		String schemaId=form.getSchemaId();
 		
 		String user = (String)httpServletRequest.getSession().getAttribute("user");
+
+		
+		if(elem == null || elem.equals("") || namespace == null || namespace.equals("")){
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.elem.validation"));
+			httpServletRequest.getSession().setAttribute("dcm.errors", errors);						
+			return actionMapping.findForward("success");
+		}
+		
 		
 		try{
 			RootElemManager rm = new RootElemManager();
@@ -44,8 +52,8 @@ public class AddElemAction extends Action {
 			
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.elem.inserted"));
 		}catch(DCMException e){			
-			System.out.println(e.toString());
-			_logger.debug(e.toString());
+			e.printStackTrace();
+			_logger.error(e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 		}
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);

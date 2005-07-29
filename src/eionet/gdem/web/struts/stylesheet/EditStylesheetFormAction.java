@@ -28,7 +28,7 @@ public class EditStylesheetFormAction  extends Action {
 		StylesheetForm form=(StylesheetForm)actionForm;
 		String stylesheetId= (String)httpServletRequest.getParameter("stylesheetId");
 		ConvTypeHolder ctHolder = new ConvTypeHolder();
-		
+
 		try{
 			StylesheetManager st = new StylesheetManager();
 			Stylesheet stylesheet=st.getStylesheet(stylesheetId);
@@ -42,8 +42,8 @@ public class EditStylesheetFormAction  extends Action {
 
 			httpServletRequest.getSession().setAttribute("stylesheet.outputtypeSel", stylesheet.getType());
 		}catch(DCMException e){			
-			System.out.println(e.toString());
-			_logger.debug(e.toString());
+			e.printStackTrace();
+			_logger.error(e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			saveErrors(httpServletRequest, errors);
 		}

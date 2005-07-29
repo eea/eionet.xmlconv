@@ -50,6 +50,7 @@ public class TestConvFormAction  extends Action{
 			String idConv= (String)httpServletRequest.getParameter("idConv");
 			httpServletRequest.setAttribute("idConv", idConv);
 
+						
 			TestConvForm form=(TestConvForm)actionForm;
 			form.setUrl(xmlUrl);
 			
@@ -61,7 +62,7 @@ public class TestConvFormAction  extends Action{
 			System.out.println("xmlUrl="+xmlUrl);
 			System.out.println("validate="+validate);
 			System.out.println("idConv="+idConv);
-						
+
 			
 			try{
 				SchemaManager sm = new SchemaManager();
@@ -154,14 +155,13 @@ public class TestConvFormAction  extends Action{
 				
 			}catch(DCMException e){			
 				e.printStackTrace();
-				_logger.debug(e.toString());
+				_logger.error(e);
 				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError(e.getErrorCode()));
 				saveErrors(httpServletRequest, errors);				
 				
 			}catch(Exception e){
-				System.out.println(e.toString());
 				e.printStackTrace();
-				_logger.debug(e.toString());				
+				_logger.error(e);
 				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError(BusinessConstants.EXCEPTION_GENERAL));
 				saveErrors(httpServletRequest, errors);				
 				

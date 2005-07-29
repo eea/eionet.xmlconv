@@ -42,8 +42,9 @@ public class RequestProcessor extends TilesRequestProcessor {
 			HttpServletResponse response) {
 
 		request.setAttribute("servletPath", request.getServletPath());
-		_logger.debug("servletPath ----- " +request.getServletPath());
-
+		 
+		logReq(request); 
+		
         //Remove messages from session and add to page context
         ActionMessages errors = (ActionMessages) request.getSession().getAttribute("dcm.errors");
         if (errors != null) {
@@ -72,5 +73,27 @@ public class RequestProcessor extends TilesRequestProcessor {
 		_logger.debug("servletPath ----- " +request.getServletPath());
 
 		return super.processActionPerform(request, response, action, form, mapping);
+	}
+	
+	private void logReq(HttpServletRequest request){
+		_logger.debug("servletPath ----- " +request.getServletPath());
+
+		Enumeration att= request.getAttributeNames();
+		String name;
+		
+	     for (Enumeration e= request.getAttributeNames(); e.hasMoreElements() ;) {
+			 name = e.nextElement().toString();
+			 _logger.debug("attribute ----- " +  name + "="+ request.getAttribute(name));
+	     }
+
+	     for (Enumeration e= request.getParameterNames(); e.hasMoreElements() ;) {
+			 name = e.nextElement().toString();
+			 _logger.debug("parameter ----- " +  name + "="+ request.getParameter(name));
+	     }
+
+	     for (Enumeration e= request.getSession().getAttributeNames(); e.hasMoreElements() ;) {
+			 name = e.nextElement().toString();
+			 _logger.debug("session attribute ----- " +  name + "="+request.getSession().getAttribute(name));
+	     }		
 	}
 }

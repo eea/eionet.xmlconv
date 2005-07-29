@@ -42,7 +42,8 @@ public class Properties {
 
   public static String queriesFolder="/queries/";
   
-  
+  public static String schemaFolder="/schema/";
+      
   public static final int CONV_SERVICE=1; //Conversion service weight
   public static final int QA_SERVICE=2; //QA service weight
   public static int services_installed=3; //by default the both services are installed
@@ -85,6 +86,8 @@ public class Properties {
         tmpFolder=props.getString("tmp.folder");
         xslFolder=props.getString("xsl.folder");
         queriesFolder=props.getString("queries.folder");
+        schemaFolder=props.getString("schema.folder");		
+		
         //xformsFolder=props.getString("xforms.folder");
 
         //DB connection settings

@@ -28,13 +28,17 @@ public class StylesheetDeleteAction extends Action {
 		ActionMessages errors = new ActionMessages();
 		ActionMessages messages = new ActionMessages();
 		String stylesheetId = (String)httpServletRequest.getParameter("stylesheetId");
-		String user_name = (String)httpServletRequest.getSession().getAttribute("user");		
+		String user_name = (String)httpServletRequest.getSession().getAttribute("user");
+
+		httpServletRequest.setAttribute("schema", httpServletRequest.getParameter("schema"));
+		
 		try{
 			StylesheetManager sm = new StylesheetManager();
 			sm.delete(user_name, stylesheetId);
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.deleted"));			
-		}catch(DCMException e){			
-			_logger.debug(e.toString());
+		}catch(DCMException e){
+			e.printStackTrace();
+			_logger.error(e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError(e.getErrorCode()));
 		}
 		

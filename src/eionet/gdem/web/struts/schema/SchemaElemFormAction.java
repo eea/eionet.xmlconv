@@ -31,6 +31,7 @@ public class SchemaElemFormAction  extends Action {
 		}else{
 			schemaId=(String)httpServletRequest.getSession().getAttribute("schemaId");
 		}
+
 		
 		SchemaElemHolder seHolder = new SchemaElemHolder();
 		
@@ -45,9 +46,8 @@ public class SchemaElemFormAction  extends Action {
 			httpServletRequest.getSession().setAttribute("schema.rootElemets", seHolder);
 						
 		}catch(DCMException e){			
-			System.out.println(e.toString());
 			e.printStackTrace();
-			_logger.debug(e.toString());
+			_logger.error(e);
 			errors.add("stylesheet", new ActionError(e.getErrorCode()));
 			saveErrors(httpServletRequest, errors);
 		}

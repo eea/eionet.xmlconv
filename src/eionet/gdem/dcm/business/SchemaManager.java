@@ -1,6 +1,9 @@
 package eionet.gdem.dcm.business;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,6 +11,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
+
+import org.apache.struts.upload.FormFile;
 
 import com.tee.uit.security.AppUser;
 
@@ -20,6 +25,7 @@ import eionet.gdem.dcm.xsl.ConversionDto;
 import eionet.gdem.dto.RootElem;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
+import eionet.gdem.dto.UplSchema;
 import eionet.gdem.exceptions.AuthorizationException;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.DbModuleIF;
@@ -28,6 +34,7 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.schema.SchemaElemHolder;
+import eionet.gdem.web.struts.schema.UplSchemaHolder;
 import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
 
 public class SchemaManager {
@@ -453,6 +460,159 @@ public class SchemaManager {
 		return stls;
 	}
 
+	public UplSchemaHolder getUplSchemas(String user_name) throws DCMException{
+		
+		UplSchemaHolder sc = new UplSchemaHolder();
+		ArrayList schemas;
+
+		boolean ssiPrm = false;
+		boolean ssdPrm = false;
+		
+
+		
+		try {
+
+			ssiPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "i");
+			ssdPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "d");
+
+			sc.setSsdPrm(ssdPrm);
+			sc.setSsiPrm(ssiPrm);			
+			
+			schemas = new ArrayList();
+			
+			DbModuleIF dbM= GDEMServices.getDbModule();
+			Vector schemaVec = dbM.getUplSchema();
+			
+            for (int i=0; i<schemaVec.size(); i++){
+                Hashtable hash = (Hashtable)schemaVec.get(i);
+				String id =(String)hash.get("id");
+				String schema =Properties.gdemURL + "schema/"  + (String)hash.get("schema");
+				
+				UplSchema uplSchema= new UplSchema();
+				uplSchema.setId(id);
+				uplSchema.setSchema(schema);
+				schemas.add(uplSchema);				
+            }
+			sc.setSchemas(schemas);
+			
+		} catch (Exception e) {			
+			_logger.debug(e.toString());
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
+		}
+		return sc;
+		
+	}
+	
+	public void addUplSchema(String user, FormFile file) throws DCMException{
+        
+        try{
+          if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "i")){
+			 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_INSERT);
+          }
+        }
+        catch (DCMException e){					    
+			throw e;
+        }
+		catch (Exception e){			
+			_logger.debug(e.toString());
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
+        }
+		try{
+			String fileName=file.getFileName();
+			InputStream in=file.getInputStream();
+			String filepath=new String(Properties.schemaFolder +"/"+file.getFileName());
+			OutputStream w= new FileOutputStream(filepath);
+			int bytesRead = 0;
+	        byte[] buffer = new byte[8192];
+	        while ((bytesRead = in.read(buffer, 0, 8192)) != -1) {
+	               w.write(buffer, 0, bytesRead);
+			}
+			w.close();
+	        in.close();
+			file.destroy(); 
+		
+	        DbModuleIF dbM = GDEMServices.getDbModule();
+	         
+	        dbM.addUplSchema(fileName);
+       }
+       catch (Exception e){
+			_logger.debug(e.toString());
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
+       }
+		
+	}
+
+	
+	public void deleteUplSchema(String user, String uplSchemaId) throws DCMException{
+		
+	    boolean hasOtherStuff = false;
+	    
+	        try{
+	          if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "d")){
+				  _logger.debug("You don't have permissions to delete schemas!");
+				  throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_DELETE);                              
+	          }
+	        }
+	        catch (DCMException e){					    
+				throw e;
+	        }
+			catch (Exception e){			
+				_logger.debug(e.toString());
+				throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
+	        }
+			
+
+	       try{
+			   DbModuleIF dbM= GDEMServices.getDbModule();
+			   
+			   String schema = dbM.getUplSchema(uplSchemaId);
+			   
+			   if(schema != null){
+				   
+				   String schemaId = dbM.getSchemaID(Properties.gdemURL + "schema/" +  schema);
+				   
+				   if(schemaId!=null){
+					   Vector stylesheets = dbM.getSchemaStylesheets(schemaId);
+			            if (stylesheets!=null){
+			         		 for (int i=0; i<stylesheets.size(); i++){
+			           			HashMap hash = (HashMap)stylesheets.get(i);
+			             		String xslFile = (String)hash.get("xsl");
+			   
+			                 String xslFolder=Properties.xslFolder;
+			                 if (!xslFolder.endsWith(File.separator))
+			                    xslFolder = xslFolder + File.separator;
+			            
+			                 try{
+			                   Utils.deleteFile(xslFolder + xslFile);
+			                 }
+			                 catch (Exception e){
+									_logger.debug(e.toString());
+									throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
+			                 }
+			              }        
+			           	}
+			            if(dbM.getSchemaQueries(schemaId) != null)
+			               hasOtherStuff = true;
+			         
+			         dbM.removeSchema( schemaId, true, false, !hasOtherStuff);
+				   }
+			   }
+             try{
+                 Utils.deleteFile(Properties.schemaFolder + "/" + schema);
+               }
+               catch (Exception e){
+						_logger.debug(e.toString());
+						throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
+               }
+			 dbM.removeUplSchema(uplSchemaId);
+	        }
+	        catch (Exception e){
+				_logger.debug(e.toString());
+				throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
+	        }
+	        
+	        
+	      }
 	
 	
 	 public static void main(String[] args) throws DCMException

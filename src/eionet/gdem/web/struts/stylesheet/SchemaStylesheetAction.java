@@ -27,19 +27,31 @@ public class SchemaStylesheetAction extends Action{
 			String user_name = (String)httpServletRequest.getSession().getAttribute("user");		
 			String schema= (String)httpServletRequest.getParameter("schema");
 
-			if (schema!=null && schema!=""){
+			/*if (schema!=null && schema!=""){
 				httpServletRequest.getSession().setAttribute("schema", schema);
 			}else{
 				schema=(String)httpServletRequest.getSession().getAttribute("schema");
 			}
+
+			*/
+			if (schema==null || schema.equals("")){
+				schema= (String)httpServletRequest.getAttribute("schema");
+			}
+			
+			
+			if(schema==null || schema.equals("")){
+				return actionMapping.findForward("home");
+			}
+			
+			httpServletRequest.setAttribute("schema",schema);
 			
 			try{
 				SchemaManager sm = new SchemaManager();
 				st =sm.getSchemaStylesheets( schema,user_name);
 				
 			}catch(DCMException e){			
-				System.out.println(e.toString());
-				_logger.debug(e.toString());
+				e.printStackTrace();
+				_logger.error(e);
 				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionError(e.getErrorCode()));
 			}
 	        saveErrors(httpServletRequest, messages);

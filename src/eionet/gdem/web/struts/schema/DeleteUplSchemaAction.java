@@ -13,11 +13,12 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.RootElemManager;
+import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
-public class DeleteRootElemAction extends Action {
+public class DeleteUplSchemaAction extends Action {
 
 	private static LoggerIF _logger=GDEMServices.getLogger();
 
@@ -25,13 +26,16 @@ public class DeleteRootElemAction extends Action {
 		ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();		
 
-		String elemId = (String)httpServletRequest.getParameter("elemId");
-		String user_name = (String)httpServletRequest.getSession().getAttribute("user");				
+		String schemaId = (String)httpServletRequest.getParameter("schemaId");
+		String user_name = (String)httpServletRequest.getSession().getAttribute("user");		
 
+		System.out.println("schemaId=" +schemaId);
+		System.out.println("user_name=" +user_name);
+		
 		try{
-			RootElemManager rm = new RootElemManager();
-			rm.delete( user_name, elemId);
-			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.elem.deleted"));
+			SchemaManager sm = new SchemaManager();
+			sm.deleteUplSchema(user_name, schemaId);
+			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.deleted"));
 		}catch(DCMException e){			
 			e.printStackTrace();
 			_logger.debug(e);

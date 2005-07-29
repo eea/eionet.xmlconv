@@ -1,4 +1,6 @@
-package eionet.gdem.web.struts.stylesheet;
+package eionet.gdem.web.struts.schema;
+
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,30 +20,29 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
-public class ConvTypeAction  extends Action{
+public class UplSchemaFormAction  extends Action{
 
 	private static LoggerIF _logger=GDEMServices.getLogger();
 	
 	   public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
-			ConvTypeHolder ctHolder = new ConvTypeHolder();
-			ActionMessages errors = new ActionMessages();
-	        ActionMessages messages = new ActionMessages();		
-
-			String schema= (String)httpServletRequest.getParameter("schema");
-			httpServletRequest.setAttribute("schema",schema);
+			ActionErrors errors = new ActionErrors();
+			UplSchemaHolder holder = null;
+			
+			String user = (String)httpServletRequest.getSession().getAttribute("user");
 			
 			try{
-				StylesheetManager sm = new StylesheetManager();
-				ctHolder =sm.getConvTypes();				
-			}catch(DCMException e){
+				SchemaManager sm = new SchemaManager();
+				holder = sm.getUplSchemas(user);
+				
+			}catch(DCMException e){			
 				e.printStackTrace();
 				_logger.error(e);
 				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-				saveErrors(httpServletRequest, errors);
+				saveErrors(httpServletRequest, errors);				
 			}
-	        httpServletRequest.getSession().setAttribute("stylesheet.outputtype", ctHolder);
+	        saveErrors(httpServletRequest, errors);
+			
+	        httpServletRequest.getSession().setAttribute("schemas.uploaded", holder);
 	        return actionMapping.findForward("success");
 	    }
-
 }

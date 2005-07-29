@@ -27,13 +27,15 @@ public class SchemaDeleteAction extends Action {
 		String user_name = (String)httpServletRequest.getSession().getAttribute("user");				
 		ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();		
+
 		
 		try{
 			SchemaManager sm = new SchemaManager();
 			sm.delete(user_name, schemaId);
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.deleted"));
-		}catch(DCMException e){			
-			_logger.debug(e.toString());
+		}catch(DCMException e){
+			e.printStackTrace();
+			_logger.debug(e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 		}
         //saveErrors(httpServletRequest, errors);
