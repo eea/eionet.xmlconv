@@ -73,7 +73,7 @@
 						<logic:equal name="ssdPrm" value="true"  name="schema.stylesheets" scope="session" property="ssdPrm" >
 						<logic:equal name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >
 						&nbsp;
-						<a href="deleteStylesheet.do?stylesheetId=<bean:write name="stylesheet" property="convId" />"
+						<a href="deleteStylesheet.do?stylesheetId=<bean:write name="stylesheet" property="convId" />&schema=<bean:write name="schema" property="schema"/>"
 						onclick='return stylesheetDelete("<bean:write name="stylesheet" property="xsl" />");'>
 							<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete stylesheet" width="15" height="15"/>
 						</a>	
@@ -97,6 +97,9 @@
 		
 	<div class="boxbottombuttons">
 	<form action="addStylesheetForm.do">
+		<logic:present name="schema" scope="request">
+		    <input type="hidden" name="schema" value="<bean:write name="schema" scope="request"/>" />
+		</logic:present>
 		<input class="button" type="submit" value="<bean:message key="label.stylesheet.add" />"/>
 	</form>
 	</div>

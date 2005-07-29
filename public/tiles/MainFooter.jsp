@@ -24,6 +24,9 @@ import="java.util.List" %>
 								<div class="portletContent odd">
 	   								<div>
 										<ul class="portal-subnav">	
+											<ed:menuItem action="/uplSchemas.do" title="Schemas">
+												<bean:message key="label.menu.schemas"/>
+											</ed:menuItem>
 											<ed:menuItem action="/stylesheetList.do" title="Stylesheets">
 												<bean:message key="label.menu.stylesheets"/>
 											</ed:menuItem>

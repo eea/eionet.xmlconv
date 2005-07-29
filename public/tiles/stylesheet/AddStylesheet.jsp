@@ -29,11 +29,11 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
-				<logic:present name="schema" scope="session">
-		        <input type="text" name="schema" value="<bean:write name="schema" scope="session"/>" style="width: 30em;" />
+				<logic:present name="schema" scope="request">
+		        <input type="text" name="schema" value="<bean:write name="schema" scope="request"/>" style="width: 30em;" />
 		        </logic:present>
-		        <logic:notPresent name="schema" scope="session">
-		        <input type="text" name="schema" maxlength="50"  style="width: 30em;" />
+		        <logic:notPresent name="schema" scope="request">
+		        <input type="text" name="schema" maxlength="255"  style="width: 30em;" />
 		        </logic:notPresent>
 		      </td>
 		    </tr>
@@ -64,7 +64,7 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
-		        <html:textarea property="description" style="width: 33em;"/>
+		        <html:textarea property="description"  style="width: 33em;"/>
 		      </td>
 		    </tr>
 		    <tr>

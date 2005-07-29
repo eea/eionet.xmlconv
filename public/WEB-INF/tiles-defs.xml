@@ -16,7 +16,9 @@
   <definition name="schema" path="/tiles/schema/Schema.jsp" />
   <definition name="listConversion" path="/tiles/conversion/ListConversions.jsp" />
   <definition name="testConversion" path="/tiles/conversion/TestConversion.jsp" />
-  <definition name="testic" path="/queriesindex.jsp" />
+  <definition name="uplSchema" path="/tiles/schema/UplSchema.jsp" />  
+  <definition name="addUplSchema" path="/tiles/schema/AddUplSchema.jsp" />
+  
 
   <definition name="base" path="/layout.jsp">
     <put name="header" type="definition" value="MainHeader"/>
@@ -53,9 +55,11 @@
   <definition name="/testConv.jsp" extends="base">
     <put name="body" type="definition" value="testConversion"/>
   </definition>
-
-  <definition name="/testic.jsp" extends="base">
-    <put name="body" type="definition" value="testic"/>
+  <definition name="/uplSchema.jsp" extends="base">
+    <put name="body" type="definition" value="uplSchema"/>
+  </definition>
+  <definition name="/addUplSchema.jsp" extends="base">
+    <put name="body" type="definition" value="addUplSchema"/>
   </definition>
 
 

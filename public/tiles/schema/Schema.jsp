@@ -30,7 +30,14 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
-		        <html:text property="schema" maxlength="50" style="width: 30em;" />		        
+	    		    <logic:present name="user">
+			        	<html:text property="schema" maxlength="255" style="width: 30em;" />		        
+    		        </logic:present>
+    		        <logic:notPresent name="user">
+						<a target="blank" href="<bean:write name="schemaForm" property="schema" />" title="<bean:write name="schemaForm" property="schema" />">						
+							<bean:write name="schemaForm" property="schema" />
+						</a>&#160;		        	      		        	
+    		        </logic:notPresent>
 		      </td>
 		    </tr>
 		    <tr>
@@ -42,7 +49,12 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
-		        <html:text property="description" maxlength="50" style="width: 30em;" />		        
+	    		    <logic:present name="user">		      	
+				        <html:text property="description" maxlength="255" style="width: 30em;" />		        
+				    </logic:present>
+    		        <logic:notPresent name="user">
+							<bean:write name="schemaForm" property="description" />    		        
+    		        </logic:notPresent>				    
 		      </td>
 		    </tr>
 		    <tr>
@@ -78,7 +90,9 @@
 			<tr>
 				<th scope="col"><span title="Element name"><bean:message key="label.schema.table.element"/></span></th>
 				<th scope="col"><span title="Namespace"><bean:message key="label.schema.table.namespace"/></span></th>
+				<logic:present name="user">
 				<th scope="col"><span title="Action"><bean:message key="label.schema.table.action"/></span></th>				
+				</logic:present>
 			</tr>
 			
 				<logic:iterate indexId="index" id="elem" name="schema.rootElemets" scope="session" property="rootElem" type="RootElem">						
@@ -90,6 +104,7 @@
 					<td width="45%">					
 							<bean:write name="elem" property="namespace" />					
 					</td>
+					<logic:present name="user">
 					<td width="10%">
 						<logic:equal name="ssdPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
 						<a href="deleteElem.do?elemId=<bean:write name="elem" property="elemId" />"
@@ -98,15 +113,16 @@
 						</a>	
 						</logic:equal>		
 					</td>
+					</logic:present>
 				</tr>
 				</logic:iterate>				
 				<logic:equal name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
 				<tr>
 					<td width="45%">
-						 <html:text property="elemName" maxlength="50" style="width: 30em;" />
+						 <html:text property="elemName" maxlength="255" style="width: 30em;" />
 					</td>
 					<td width="45%">					
-						  <html:text property="namespace" style="width: 30em;" />
+						  <html:text property="namespace" maxlength="255" style="width: 30em;" />
 					</td>
 					<td width="10%">
 						<input type="button" styleClass="button" class="button" value="<bean:message key="label.element.add"/>" onclick="return submitAction('elementAdd.do');">
