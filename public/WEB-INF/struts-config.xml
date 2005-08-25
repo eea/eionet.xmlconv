@@ -32,7 +32,7 @@
 	        <forward name="success" path="/schemaStylesheets.jsp"/>                      
         </action>
         <action path="/deleteStylesheet"  scope="request" type="eionet.gdem.web.struts.stylesheet.StylesheetDeleteAction">           
-        	<forward name="success" path="/schemaStylesheets.do" redirect="true"/>            
+        	<forward name="success" path="/schemaStylesheets.do" />            
         </action>        
         <action path="/addStylesheetForm" type="eionet.gdem.web.struts.stylesheet.ConvTypeAction">   
 	        <forward name="success" path="/addStylesheet.jsp" redirect="true"/>                      
