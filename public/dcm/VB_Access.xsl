@@ -40,50 +40,39 @@
         <xsl:text disable-output-escaping="yes">:Row"&gt;&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">        &lt;xsl:if test="position()=1"&gt;&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">            &lt;xsl:call-template name="create-table"/&gt;&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">--\n\r&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">-- Dumping data for table&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">--\n\r&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">        &lt;/xsl:if&gt;&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">INSERT INTO "</xsl:text>
+        <xsl:text disable-output-escaping="yes">'\n\r&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">' Dumping data for table&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">'\n\r&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">        &lt;/xsl:if&gt;&#xd;&#xa;</xsl:text>                      
+        <xsl:text disable-output-escaping="yes">query = "INSERT INTO </xsl:text>
         <xsl:value-of select="identifier"/>
-        <xsl:text disable-output-escaping="yes">" VALUES ('&lt;xsl:value-of select="@status"/&gt;',&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">&lt;xsl:for-each select="*"&gt;&lt;xsl:if test=".=''"&gt;null&lt;/xsl:if&gt;&lt;xsl:if test=".!=''"&gt;'&lt;xsl:value-of select='replace(.,"&amp;apos;","&amp;apos;&amp;apos;")'</xsl:text>
-        <xsl:text disable-output-escaping="yes"> /&gt;'&lt;/xsl:if&gt;&lt;xsl:if test="position()!=last()"&gt;,&lt;/xsl:if&gt;&lt;/xsl:for-each&gt;&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">);&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes"> VALUES ('&lt;xsl:value-of select="@status"/&gt;',</xsl:text>
+        <xsl:text disable-output-escaping="yes">&lt;xsl:for-each select="*"&gt;&lt;xsl:if test=".=''"&gt;null&lt;/xsl:if&gt;&lt;xsl:if test=".!=''"&gt;'&lt;xsl:value-of select='replace(replace(.,"&amp;apos;","&amp;apos;&amp;apos;"), "&amp;quot;&amp;quot;","&amp;quot;&amp;quot;&amp;quot;&amp;quot;")'</xsl:text>
+        <xsl:text disable-output-escaping="yes"> /&gt;'&lt;/xsl:if&gt;&lt;xsl:if test="position()!=last()"&gt;,&lt;/xsl:if&gt;&lt;/xsl:for-each&gt;</xsl:text>
+        <xsl:text disable-output-escaping="yes">); " &#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">conn.Execute (query) &#xd;&#xa;</xsl:text>                              
         <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;&#xd;&#xa;</xsl:text>
         
    <!--   TEMPLATE name="create-table"  -->
         <xsl:text disable-output-escaping="yes">&#xd;&#xa;</xsl:text>     
         <xsl:text disable-output-escaping="yes">&lt;xsl:template name="create-table"&gt;&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">--&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">-- SQL scripts for Oracle&#xd;&#xa;</xsl:text>        
-        <xsl:text disable-output-escaping="yes">-- Table structure for table&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">--&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">CREATE TABLE "</xsl:text>
-        <xsl:value-of select="substring(identifier,0,30)"/>
-        <xsl:text disable-output-escaping="yes">" (status nvarchar2(10), &#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">    &lt;xsl:for-each select="*"&gt;&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">  &lt;xsl:if test="string-length(local-name())     </xsl:text>
-        <xsl:text disable-output-escaping="no">    &gt;     </xsl:text>
-        <xsl:text disable-output-escaping="yes">   30"&gt;    </xsl:text>
-        <xsl:text disable-output-escaping="yes">   "</xsl:text>
-        <xsl:text disable-output-escaping="yes">&lt;xsl:value-of select="substring(local-name(),0,28)" /&gt; </xsl:text>
-        <xsl:text disable-output-escaping="yes">&lt;xsl:number value="position()" format="01" /&gt;</xsl:text>
-        <xsl:text disable-output-escaping="yes">"</xsl:text>
-        <xsl:text disable-output-escaping="yes">  &lt;/xsl:if&gt;                                              </xsl:text>
-        <xsl:text disable-output-escaping="yes">  &lt;xsl:if test="string-length(local-name()) </xsl:text>
-        <xsl:text disable-output-escaping="no">   &lt;    </xsl:text>
-        <xsl:text disable-output-escaping="yes">   31"&gt;    </xsl:text>                
-        <xsl:text disable-output-escaping="yes">  "</xsl:text>
-        <xsl:text disable-output-escaping="yes">&lt;xsl:value-of select="local-name()" /&gt;</xsl:text>
-        <xsl:text disable-output-escaping="yes">"</xsl:text>
-        <xsl:text disable-output-escaping="yes">  &lt;/xsl:if&gt;                                              </xsl:text>
-        <xsl:text disable-output-escaping="yes">  &lt;xsl:value-of select="' '"/&gt;&lt;xsl:call-template name="getFieldType"&gt;&lt;xsl:with-param name="name" select="local-name()"/&gt;&lt;/xsl:call-template&gt;&#xd;&#xa;</xsl:text>         
-
-
-        <xsl:text disable-output-escaping="yes">&lt;xsl:if test="position()!=last()"&gt;,&#xd;&#xa;&lt;/xsl:if&gt;&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">&lt;/xsl:for-each&gt;&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">);&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">'&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">' SQL scripts for MS Access&#xd;&#xa;</xsl:text>        
+        <xsl:text disable-output-escaping="yes">' Table structure for table&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">'&#xd;&#xa;</xsl:text>       
+        <xsl:text disable-output-escaping="yes">query = "CREATE TABLE [</xsl:text>
+        <xsl:value-of select="identifier"/>
+        <xsl:text disable-output-escaping="yes">] (status text(10), " </xsl:text>
+        <xsl:text disable-output-escaping="no">&amp; _ &#xd;&#xa;</xsl:text>        
+        
+        <xsl:text disable-output-escaping="yes">&lt;xsl:for-each select="*"&gt;</xsl:text>
+    <!--      <xsl:text disable-output-escaping="yes">[&lt;xsl:value-of select="local-name()" /&gt;]&lt;xsl:value-of select="' '"/&gt;&lt;xsl:call-template name="getFieldType"&gt;&lt;xsl:with-param name="name" select="local-name()"/&gt;&lt;/xsl:call-template&gt;&#xd;&#xa;</xsl:text>-->
+        <xsl:text disable-output-escaping="yes">" [&lt;xsl:value-of select="translate(local-name(),'.','_')" /&gt;]&lt;xsl:value-of select="' '"/&gt;&lt;xsl:call-template name="getFieldType"&gt;&lt;xsl:with-param name="name" select="local-name()"/&gt;&lt;/xsl:call-template&gt;&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">&lt;xsl:if test="position()!=last()"&gt;,&lt;/xsl:if&gt;  " </xsl:text>
+        <xsl:text disable-output-escaping="no">&amp; _ &#xd;&#xa;</xsl:text> 
+        <xsl:text disable-output-escaping="yes">&lt;/xsl:for-each&gt;</xsl:text>
+        <xsl:text disable-output-escaping="yes">");"&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">conn.Execute (query) &#xd;&#xa;</xsl:text>        
         <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;&#xd;&#xa;</xsl:text>
         
  <!--   TEMPLATE name ="getFieldType"  -->
@@ -98,33 +87,24 @@
             <xsl:text disable-output-escaping="yes">'"&gt;&#xd;&#xa;</xsl:text>
             <xsl:text disable-output-escaping="yes">&lt;xsl:variable name="type"&gt;</xsl:text><xsl:value-of select="type"/><xsl:text disable-output-escaping="yes">&lt;/xsl:variable&gt;&#xd;&#xa;</xsl:text>
             <xsl:text disable-output-escaping="yes">&lt;xsl:choose&gt;&#xd;&#xa;</xsl:text>
-            
             <xsl:text disable-output-escaping="yes">&lt;xsl:when test="$type = 'integer'"&gt;</xsl:text>            
-            <xsl:if test="length=''">number(38)</xsl:if><xsl:if test="length!=''"><xsl:if test="length &gt; 38">number(38)</xsl:if><xsl:if test="length &lt;= 38">number(<xsl:value-of select="length"/>)</xsl:if></xsl:if>
+            <xsl:if test="length=''">numeric(28)</xsl:if><xsl:if test="length!=''"><xsl:if test="length &gt; 28">numeric(28)</xsl:if><xsl:if test="length &lt;= 28">numeric(<xsl:value-of select="length"/>)</xsl:if></xsl:if>
             <xsl:text disable-output-escaping="yes">&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>
-            
-            
             <xsl:text disable-output-escaping="yes">&lt;xsl:when test="$type = 'string'"&gt;</xsl:text>            
-            <xsl:if test="length=''">clob</xsl:if><xsl:if test="length!=''"><xsl:if test="length &gt; 2000">clob</xsl:if><xsl:if test="length &lt;= 2000">nvarchar2(<xsl:value-of select="length"/>)</xsl:if></xsl:if>
+            <xsl:if test="length=''">memo WITH COMP</xsl:if><xsl:if test="length!=''"><xsl:if test="length &gt; 255">memo WITH COMP</xsl:if><xsl:if test="length &lt;= 255">text(<xsl:value-of select="length"/>) WITH COMP</xsl:if></xsl:if>
             <xsl:text disable-output-escaping="yes">&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>
-            
             <xsl:text disable-output-escaping="yes">&lt;xsl:when test="$type = 'float'"&gt;</xsl:text>            
-            <xsl:if test="length=''">number(38<xsl:if test="precision!=''">,<xsl:value-of select="precision"/></xsl:if>)</xsl:if><xsl:if test="length!=''"><xsl:if test="length &gt; 38">number(38<xsl:if test="precision!=''">,<xsl:value-of select="precision"/></xsl:if>)</xsl:if><xsl:if test="length &lt;= 38">number(<xsl:value-of select="length"/><xsl:if test="precision!=''">,<xsl:value-of select="precision"/></xsl:if>)</xsl:if></xsl:if>
+            <xsl:if test="length=''">numeric(28<xsl:if test="precision!=''">,<xsl:value-of select="precision"/></xsl:if>)</xsl:if><xsl:if test="length!=''"><xsl:if test="length &gt; 28">numeric(28<xsl:if test="precision!=''">,<xsl:value-of select="precision"/></xsl:if>)</xsl:if><xsl:if test="length &lt;= 28">numeric(<xsl:value-of select="length"/><xsl:if test="precision!=''">,<xsl:value-of select="precision"/></xsl:if>)</xsl:if></xsl:if>
             <xsl:text disable-output-escaping="yes">&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>
-            
-            
-
             <xsl:text disable-output-escaping="yes">&lt;xsl:when test="$type = 'double'"&gt;</xsl:text>            
-            <xsl:if test="length=''">number(38<xsl:if test="precision!=''">,<xsl:value-of select="precision"/></xsl:if>)</xsl:if><xsl:if test="length!=''"><xsl:if test="length &gt; 38">number(38<xsl:if test="precision!=''">,<xsl:value-of select="precision"/></xsl:if>)</xsl:if><xsl:if test="length &lt;= 38">number(<xsl:value-of select="length"/><xsl:if test="precision!=''">,<xsl:value-of select="precision"/></xsl:if>)</xsl:if></xsl:if>
+            <xsl:if test="length=''">numeric(28<xsl:if test="precision!=''">,<xsl:value-of select="precision"/></xsl:if>)</xsl:if><xsl:if test="length!=''"><xsl:if test="length &gt; 28">numeric(28<xsl:if test="precision!=''">,<xsl:value-of select="precision"/></xsl:if>)</xsl:if><xsl:if test="length &lt;= 28">numeric(<xsl:value-of select="length"/><xsl:if test="precision!=''">,<xsl:value-of select="precision"/></xsl:if>)</xsl:if></xsl:if>
             <xsl:text disable-output-escaping="yes">&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>
-
-            
-            <xsl:text disable-output-escaping="yes">&lt;xsl:otherwise&gt;clob&lt;/xsl:otherwise&gt;&#xd;&#xa;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;xsl:otherwise&gt;memo WITH COMP&lt;/xsl:otherwise&gt;&#xd;&#xa;</xsl:text>
             <xsl:text disable-output-escaping="yes">&lt;/xsl:choose&gt;&#xd;&#xa;</xsl:text> 
             <xsl:text disable-output-escaping="yes">&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>            
         </xsl:for-each>
         
-        <xsl:text disable-output-escaping="yes">&lt;xsl:otherwise&gt;clob&lt;/xsl:otherwise&gt;&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">&lt;xsl:otherwise&gt;memo WITH COMP&lt;/xsl:otherwise&gt;&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">&lt;/xsl:choose&gt;&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">&lt;/xsl:stylesheet&gt;&#xd;&#xa;</xsl:text>       

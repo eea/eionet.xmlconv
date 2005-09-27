@@ -9,11 +9,11 @@
     <xsl:template match="table">
         <xsl:text  xml:space="default" disable-output-escaping="yes">&#xd;&#xa;&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"&#xd;&#xa;    xmlns:dd</xsl:text>
         <xsl:value-of select="parentNS"/>
-        <xsl:text disable-output-escaping="yes">="http://rubi:8080/dd/namespace.jsp?ns_id=</xsl:text>
+        <xsl:text disable-output-escaping="yes">="http://rubi:8080/eidd/namespace.jsp?ns_id=</xsl:text>
         <xsl:value-of select="parentNS"/>
         <xsl:text disable-output-escaping="yes">" xmlns:dd</xsl:text>
         <xsl:value-of select="correspondingNS"/>
-        <xsl:text disable-output-escaping="yes">="http://rubi:8080/dd/namespace.jsp?ns_id=</xsl:text>
+        <xsl:text disable-output-escaping="yes">="http://rubi:8080/eidd/namespace.jsp?ns_id=</xsl:text>
         <xsl:value-of select="correspondingNS"/>
         <xsl:text disable-output-escaping="yes">"&gt;&#xd;&#xa;    &lt;xsl:output method="html"/&gt;&#xd;&#xa;</xsl:text>
  

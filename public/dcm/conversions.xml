@@ -8,7 +8,7 @@
         </conversion>
         <conversion>
                 <id>2</id>
-                <description>MS SQL Server</description>
+                <description>SQL for MS SQL Server</description>
                 <result_type>SQL</result_type>
                 <stylesheet>SQLServer.xsl</stylesheet>
         </conversion>
@@ -29,5 +29,17 @@
                 <description>Simple HTML table</description>
                 <result_type>HTML</result_type>
                 <stylesheet>SimpleHTML.xsl</stylesheet>
+        </conversion>
+        <conversion>
+                <id>6</id>
+                <description>Excel</description>
+                <result_type>EXCEL</result_type>
+                <stylesheet>Excel.xsl</stylesheet>
+        </conversion> 
+        <conversion>
+                <id>7</id>
+                <description>VB for MS Access</description>
+                <result_type>SQL</result_type>
+                <stylesheet>VB_Access.xsl</stylesheet>
         </conversion>
 </conversions>
