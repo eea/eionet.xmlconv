@@ -10,6 +10,9 @@ public class Schema implements Serializable {
     private List stylesheets;
 	boolean isDTD = false;
 	private String dtdPublicId; 
+    private String table;
+	private String dataset;
+
 	
     public Schema() {
         
@@ -71,6 +74,26 @@ public class Schema implements Serializable {
 	public void setDtdPublicId(String dtdPublicId) {
 		this.dtdPublicId = dtdPublicId;
 	}
+
+	public String getDataset() {
+		return dataset;
+	}
+	
+
+	public void setDataset(String dataset) {
+		this.dataset = dataset;
+	}
+	
+
+	public String getTable() {
+		return table;
+	}
+	
+
+	public void setTable(String table) {
+		this.table = table;
+	}
+	
 	
 	
 	

@@ -183,7 +183,7 @@ public class StylesheetManager {
 		try{
 			String fileName=file.getFileName().trim();
 	        DbModuleIF dbM = GDEMServices.getDbModule();
-			System.out.println("fileName===="+fileName);
+			
 			if(fileName!=null && !fileName.equals("")){		 
 				InputStream in=file.getInputStream();
 				String filepath=new String(Properties.xslFolder+"/"+fileName);
@@ -205,7 +205,6 @@ public class StylesheetManager {
 		        //if (!xslFolder.endsWith(File.separator))
 		        //    xslFolder = xslFolder + File.separator;		
 				
-				System.out.println("file name = === "+ xslFolder + fileNameOld);
 				
 				 Utils.deleteFile(xslFolder + fileNameOld);
 				
@@ -216,9 +215,7 @@ public class StylesheetManager {
 	        String schemaID=dbM.getSchemaID(schema);
 	        if (schemaID==null)
 	            schemaID=dbM.addSchema(schema, null);
-			System.out.println("xsl_id="+xsl_id);
-			System.out.println("schemaID="+schemaID);
-
+			
 			dbM.updateStylesheet(xsl_id, schemaID, descr, fileName, type);
 	        
        }

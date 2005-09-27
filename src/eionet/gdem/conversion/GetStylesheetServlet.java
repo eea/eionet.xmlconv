@@ -47,9 +47,6 @@ public class GetStylesheetServlet extends HttpServlet {
     //hardcoded for test
     String format = metaXSLFolder + conv.getStylesheet(); 
     String url = tableDefURL + "GetTableDef?id=" + id;
-
-	System.out.println("dd-url=" + url);
-	System.out.println("format=" + format);
 	
     if ( Utils.isNullStr(id) && Utils.isNullStr(convId) ){
       String err_message = "Some of the following parameters are missing: 'id' or 'conv'!";

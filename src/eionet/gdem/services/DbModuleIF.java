@@ -532,5 +532,12 @@ public interface DbModuleIF {
 	  * @throws SQLException
 	  */
 	 public String getUplSchema(String uplSchemaId) throws SQLException; 
-	
+
+	 /**
+	  * retturns all schemas which have stylesheets
+	  * @return
+	  * @throws SQLException
+	  */
+	 public Vector getSchemasWithStl() throws SQLException;
+	 
 }

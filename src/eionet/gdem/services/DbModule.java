@@ -235,33 +235,40 @@ public class DbModule implements DbModuleIF, Constants {
 
   public Vector listConversions(String xmlSchema) throws SQLException {
 
-    String sql="SELECT " + XSL_TABLE + "." + CNV_ID_FLD + "," + XSL_TABLE + "." + XSL_FILE_FLD + ", " + XSL_TABLE + "." + DESCR_FLD + "," +
-      RESULT_TYPE_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD +  " FROM " + XSL_TABLE + " LEFT JOIN " + SCHEMA_TABLE +
-          " ON " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD;
 
-    if (xmlSchema != null)
-      sql +=  " WHERE " + XML_SCHEMA_FLD +  "=" + Utils.strLiteral(xmlSchema);
+	  	String sql="SELECT " + XSL_TABLE + "." + CNV_ID_FLD + "," + XSL_TABLE + "." + XSL_FILE_FLD + ", " + XSL_TABLE + "." + DESCR_FLD + "," +
+	      RESULT_TYPE_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD +  ", " +
+	      CONVTYPE_TABLE + "." + CONTENT_TYPE_FLD +
+				" FROM " + XSL_TABLE + " LEFT JOIN " + SCHEMA_TABLE +
+	      " ON " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD +
+	      " LEFT JOIN " + CONVTYPE_TABLE + " ON " + XSL_TABLE + "." + RESULT_TYPE_FLD + "="+
+		    CONVTYPE_TABLE + "." + CONV_TYPE_FLD;
 
-    sql += " ORDER BY " + XML_SCHEMA_FLD + ", " + RESULT_TYPE_FLD;
+	    
+	    if (xmlSchema != null)
+	      sql +=  " WHERE " + XML_SCHEMA_FLD +  "=" + Utils.strLiteral(xmlSchema);
 
-    String [][] r = _executeStringQuery(sql);
+	    sql += " ORDER BY " + XML_SCHEMA_FLD + ", " + RESULT_TYPE_FLD;
 
-    Vector v = new Vector();
+	    //System.out.println(sql);
+	    String [][] r = _executeStringQuery(sql);
 
-    for (int i =0; i< r.length; i++) {
-      Hashtable h = new Hashtable();
-      h.put("convert_id", r[i][0]);
-      h.put("xsl", r[i][1]);
-      h.put("description", r[i][2]);
-      h.put("content_type_out", r[i][3]);      
-      h.put("xml_schema", r[i][4]);
-      v.add(h);      
-    }
+	    Vector v = new Vector();
 
-    return v;
-    
+	    for (int i =0; i< r.length; i++) {
+	      Hashtable h = new Hashtable();
+	      h.put("convert_id", r[i][0]);
+	      h.put("xsl", r[i][1]);
+	      h.put("description", r[i][2]);
+	      h.put("content_type_out", r[i][5]);
+	      h.put("xml_schema", r[i][4]);
+	      v.add(h);      
+	    }
+
+	    return v;
+	    
   }
-
+  
   public String addStylesheet(String xmlSchemaID, String resultType, String xslFileName, String description) throws SQLException {
 
     description = (description == null ? "" : description );
@@ -1252,6 +1259,29 @@ System.out.println(r.length);
 
 	    return r[0][0];
 	  }
+  public Vector getSchemasWithStl() throws SQLException {
+
+	    
+	    String sql= "SELECT DISTINCT S." + SCHEMA_ID_FLD + ", S." + XML_SCHEMA_FLD + ", S." + SCHEMA_DESCR_FLD  + " FROM " + SCHEMA_TABLE + " S"
+		 + " JOIN " + XSL_TABLE + " ST ON S." + SCHEMA_ID_FLD + " = ST." + XSL_SCHEMA_ID_FLD + 	         
+		  " ORDER BY S." + XML_SCHEMA_FLD;
+			
+	    String [][] r = _executeStringQuery(sql);
+
+	    Vector v = new Vector();
+
+	    for (int i =0; i<   r.length; i++) {
+
+	      HashMap h = new HashMap();    
+	      h.put("schema_id", r[i][0]);
+	      h.put("xml_schema", r[i][1]);
+	      h.put("description", r[i][2]);
+	      v.add(h);
+	    }
+
+	    return v;
+	  }
+
   
   
 }

@@ -208,7 +208,7 @@ public class ConversionService {
 		
 		String tblId = schema.substring(schema.indexOf("id=TBL") + 6,
 				schema.length());
-		System.out.println(tblId);
+		
 		List convs =  Conversion.getConversions();
 		
 		for (int i = 0; i < convs.size(); i++){

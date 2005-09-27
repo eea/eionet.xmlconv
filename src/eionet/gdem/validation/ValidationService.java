@@ -135,8 +135,6 @@ public class ValidationService {
 	          
 	  
 
-	  //root
-	  System.out.println("ROOT = " + rootName);
 	          
 	  String namespace=null;
 	  
@@ -144,8 +142,6 @@ public class ValidationService {
 		  String attName1 = "xmlns:" + rootName.substring(0, rootName.indexOf(":")) ;
 		  namespace = root.getAttribute(attName1);    
 	          
-	  //namespace xmlns dnnn
-		  System.out.println(attName1 + " => " + namespace);
 	  }
 	  
 ///////////////////////////////////////////
@@ -207,10 +203,6 @@ public class ValidationService {
   public void printList(){
 	  for (int j=0; j<errorsList.size(); j++){
 		  	ValidateDto val = (ValidateDto)errorsList.get(j);
-			System.out.println("type=" + val.getType());
-			System.out.println("description=" + val.getDescription());
-			System.out.println("line=" + val.getLine());
-			System.out.println("column=" + val.getColumn());
 		}	  
   }
   

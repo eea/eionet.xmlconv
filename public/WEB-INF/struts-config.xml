@@ -35,7 +35,7 @@
         	<forward name="success" path="/schemaStylesheets.do" />            
         </action>        
         <action path="/addStylesheetForm" type="eionet.gdem.web.struts.stylesheet.ConvTypeAction">   
-	        <forward name="success" path="/addStylesheet.jsp" redirect="true"/>                      
+	        <forward name="success" path="/addStylesheet.jsp" />                      
         </action>
         <action path="/stylesheetAdd" input="/addStylesheet.jsp" name="stylesheetForm"
             type="eionet.gdem.web.struts.stylesheet.AddStylesheetAction" scope="request">

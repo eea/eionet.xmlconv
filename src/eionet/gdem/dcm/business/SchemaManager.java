@@ -168,8 +168,8 @@ public class SchemaManager {
 				Schema sc = new Schema();
 				sc.setId("TBL" + tblId);
 				sc.setSchema(schemaUrl);
-				sc.setDescription((String)schema.get("shortName"));
-
+				sc.setTable((String)schema.get("shortName"));
+				sc.setDataset((String)schema.get("dataSet"));
 				
 				List ddStylesheets = Conversion.getConversions();
 				ArrayList stls = new ArrayList();
@@ -389,11 +389,11 @@ public class SchemaManager {
 		
 		ArrayList schemas=new ArrayList();
 		ArrayList schemasChk=new ArrayList();
-		
+		Vector hcSchemas;
 		
 		try {
 
-			  ConversionService cs = new ConversionService(); 
+/*			  ConversionService cs = new ConversionService(); 
 			  Vector conv = cs.listConversions();
 			  
 			  for (int i = 0; i < conv.size(); i++){
@@ -401,11 +401,54 @@ public class SchemaManager {
 				  //System.out.println( i + " - " + schema.get("xml_schema") );		  
 				  if(!schemasChk.contains(schema.get("xml_schema"))){
 					  	Schema sc = new Schema();						
-						sc.setSchema((String)schema.get("xml_schema"));						
+						sc.setSchema((String)schema.get("xml_schema"));	
+						sc.setTable((String)schema.get("table"));
+						sc.setDataset((String)schema.get("dataset"));
 					    schemas.add(sc);
 						schemasChk.add(schema.get("xml_schema"));
 				  }
 			  }			
+	*/
+			
+			
+			//retrive conversions for DD tables
+			List ddTables = DDServiceClient.getDDTables();
+			
+			for (int i=0; i<ddTables.size(); i++){
+				Hashtable schema = (Hashtable)ddTables.get(i);
+				String tblId = (String)schema.get("tblId");
+				String schemaUrl = Properties.ddURL + "GetSchema?id=TBL" + tblId;
+
+				Schema sc = new Schema();
+				sc.setId("TBL" + tblId);
+				sc.setSchema(schemaUrl);
+				sc.setTable((String)schema.get("shortName"));
+				sc.setDataset((String)schema.get("dataSet"));								
+				schemas.add(sc);
+				schemasChk.add(schema.get("xml_schema"));
+							
+			}
+
+			
+			DbModuleIF dbM= GDEMServices.getDbModule();
+			//hcSchemas = dbM.getSchemas(null);
+			hcSchemas = dbM.getSchemasWithStl();
+			
+			if (hcSchemas==null) hcSchemas=new Vector();
+			
+			for (int i=0; i<hcSchemas.size(); i++){
+				HashMap schema = (HashMap)hcSchemas.get(i);
+				  if(!schemasChk.contains(schema.get("xml_schema"))){
+						Schema sc = new Schema();
+						sc.setId((String)schema.get("schema_id"));
+						sc.setSchema((String)schema.get("xml_schema"));
+						sc.setDescription((String)schema.get("description"));
+						schemas.add(sc);
+						schemasChk.add(schema.get("xml_schema"));
+				  }
+			}
+
+			
 			
 		} catch (Exception e) {			
 			_logger.debug(e.toString());
@@ -613,6 +656,41 @@ public class SchemaManager {
 	        
 	        
 	      }
+
+	public ArrayList getDDSchemas() throws DCMException{
+		
+		ArrayList schemas=new ArrayList();
+		ArrayList schemasChk=new ArrayList();
+		Vector hcSchemas;
+		
+		try {
+						
+			//retrive conversions for DD tables
+			List ddTables = DDServiceClient.getDDTables();
+			
+			for (int i=0; i<ddTables.size(); i++){
+				Hashtable schema = (Hashtable)ddTables.get(i);
+				String tblId = (String)schema.get("tblId");
+				String schemaUrl = Properties.ddURL + "GetSchema?id=TBL" + tblId;
+
+				Schema sc = new Schema();
+				sc.setId("TBL" + tblId);
+				sc.setSchema(schemaUrl);
+				sc.setTable((String)schema.get("shortName"));
+				sc.setDataset((String)schema.get("dataSet"));								
+				schemas.add(sc);
+				schemasChk.add(schema.get("xml_schema"));
+							
+			}
+
+						
+		} catch (Exception e) {			
+			_logger.debug(e.toString());
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
+		}
+		return schemas;
+		
+	}
 	
 	
 	 public static void main(String[] args) throws DCMException

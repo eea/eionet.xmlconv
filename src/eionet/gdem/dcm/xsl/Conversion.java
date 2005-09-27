@@ -29,31 +29,25 @@ public class Conversion {
 		    for (int i = 0; i < nodes.getLength(); i++) {
 		       Element element = (Element) nodes.item(i);
 			   ConversionDto resObject = new ConversionDto();
-		       System.out.println("-----------------------------------");
 		       
 		       // Process the conversion tag
 		       NodeList id = element.getElementsByTagName("id");
 		       Element eId = (Element)id.item(0);                
-		       System.out.println("id          = " + eId.getFirstChild());
-			   resObject.setConvId(eId.getFirstChild().getNodeValue());
+		       resObject.setConvId(eId.getFirstChild().getNodeValue());
 		       
 		       NodeList desc = element.getElementsByTagName("description");
 		       Element eDesc = (Element)desc.item(0);                
-		       System.out.println("description = " + eDesc.getFirstChild());
-			   resObject.setDescription(eDesc.getFirstChild().getNodeValue());
+		       resObject.setDescription(eDesc.getFirstChild().getNodeValue());
 			   
 		       NodeList type = element.getElementsByTagName("result_type");
 		       Element eType = (Element)type.item(0);                
-		       System.out.println("result_type = " + eType.getFirstChild());
-			   resObject.setResultType(eType.getFirstChild().getNodeValue());
+		       resObject.setResultType(eType.getFirstChild().getNodeValue());
 		       
 		       NodeList ss = element.getElementsByTagName("stylesheet");
 		       Element eSs = (Element)ss.item(0);                
-		       System.out.println("stylesheet  = " + eSs.getFirstChild());
-			   resObject.setStylesheet(eSs.getFirstChild().getNodeValue());
+		       resObject.setStylesheet(eSs.getFirstChild().getNodeValue());
 			   
-		       System.out.println("-----------------------------------");
-			   conversions.add(resObject);
+		       conversions.add(resObject);
 			   
 		    }
 

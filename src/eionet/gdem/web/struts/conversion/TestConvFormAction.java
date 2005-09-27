@@ -58,10 +58,6 @@ public class TestConvFormAction  extends Action{
 			if(schema!=null && schema.equals("")){schema=null;}
 			
 			String validate= (String)httpServletRequest.getAttribute("validate");
-			System.out.println("schema="+schema);
-			System.out.println("xmlUrl="+xmlUrl);
-			System.out.println("validate="+validate);
-			System.out.println("idConv="+idConv);
 
 			
 			try{
@@ -89,7 +85,6 @@ public class TestConvFormAction  extends Action{
 						// schema or dtd found from header
 						String schemaOrDTD = analyser.getSchemaOrDTD();
 						
-						System.out.println("schemaOrDTD="+schemaOrDTD);
 						
 						if (schemaOrDTD!=null){
 							ArrayList stylesheets = null;
@@ -106,9 +101,6 @@ public class TestConvFormAction  extends Action{
 							
 							
 							String namespace = analyser.getNamespace();
-							
-							System.out.println("root_elem="+root_elem);
-							System.out.println("namespace="+namespace);
 							
 							
 							DbModuleIF dbM= GDEMServices.getDbModule();

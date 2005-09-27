@@ -41,7 +41,7 @@ public class ListConvFormAction  extends Action{
 			}
 	        saveErrors(httpServletRequest, errors);
 			
-	        httpServletRequest.getSession().setAttribute("converson.schemas", schemas);
+	        httpServletRequest.getSession().setAttribute("conversion.schemas", schemas);
 	        return actionMapping.findForward("success");
 	    }
 }

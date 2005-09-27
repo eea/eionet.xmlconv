@@ -18,7 +18,6 @@ public class ListConvForm extends ActionForm{
 	
 	
 	  public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
-		  System.out.println("ListConvForm --------validate");
 		  ActionErrors errors = new ActionErrors();
 	        if (xmlUrl.equals("") && xmlSchema.equals("")) {
 	            errors.add("displayType", new ActionError("label.conversion.validation"));

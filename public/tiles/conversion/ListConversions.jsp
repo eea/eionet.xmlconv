@@ -61,18 +61,23 @@
 		      <td>&nbsp;</td>
 		    </tr>		    
 		    <tr>
-		      <td align=right>
+		      <td align=right valign=top>
 		        <B><bean:message key="label.conversion.xmlSchema"/>:</B>
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
-		        <select name="xmlSchema" style="width:400px;">
+		        <select name="xmlSchema"  size="6">
 									<option selected value="">
 										--
 									</option>		        
-					<logic:iterate id="schema" name="converson.schemas" scope="session"  type="Schema">
+					<logic:iterate id="schema" name="conversion.schemas" scope="session"  type="Schema">
 									<option value="<bean:write name="schema" property="schema" />">
 										<bean:write name="schema" property="schema" />
+										<logic:notEqual name="schema" property="table" value="">
+											&nbsp;-&nbsp;
+											<bean:write name="schema" property="table" />&nbsp;(
+											<bean:write name="schema" property="dataset" />)
+										</logic:notEqual>										
 									</option>
 					</logic:iterate>
 		        </select>

@@ -9,6 +9,7 @@ public class ConversionDto implements Serializable {
    private String description;
    private String resultType;
    private String stylesheet;
+   
 	/**
 	 * @param args
 	 */
@@ -51,4 +52,5 @@ public class ConversionDto implements Serializable {
 	public String toString(){
 		return "convId=" + convId  + " description=" + description+ " resultType="+ resultType +" stylesheet=" + stylesheet;
 	}
+	
 }

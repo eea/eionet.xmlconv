@@ -1,5 +1,7 @@
 package eionet.gdem.web.struts.stylesheet;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.Action;
@@ -11,7 +13,9 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
+import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.business.StylesheetManager;
+import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
@@ -41,6 +45,12 @@ public class EditStylesheetFormAction  extends Action {
 			ctHolder =st.getConvTypes();
 
 			httpServletRequest.getSession().setAttribute("stylesheet.outputtypeSel", stylesheet.getType());
+			
+			SchemaManager schema = new SchemaManager();
+			ArrayList schemas = schema.getDDSchemas(); 
+			
+			httpServletRequest.getSession().setAttribute("stylesheet.DDSchemas", schemas);
+			
 		}catch(DCMException e){			
 			e.printStackTrace();
 			_logger.error(e);

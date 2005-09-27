@@ -43,6 +43,41 @@
 		    <tr>
 		      <td>&nbsp;</td>
 		    </tr>
+		    <logic:present name="user">
+		    <tr>
+		      <td colspan=3>
+		        <bean:message key="label.stylesheet.selectDDSchema"/>:
+		      </td>
+		    </tr>		    
+		    <tr>
+		      <td>&nbsp;</td>
+		    </tr>		    
+		    <tr>
+			  <td>
+		      </td>
+		      <td>&nbsp;</td>
+		      <td>		    
+		          <select name="xmlSchema"  size="6" onChange="setSchema()">>
+									<option selected value="">
+										--
+									</option>		        
+					<logic:iterate id="schema" name="stylesheet.DDSchemas" scope="session"  type="Schema">
+									<option value="<bean:write name="schema" property="schema" />">
+										<bean:write name="schema" property="schema" />
+										<logic:notEqual name="schema" property="table" value="">
+											&nbsp;-&nbsp;
+											<bean:write name="schema" property="table" />&nbsp;(
+											<bean:write name="schema" property="dataset" />)
+										</logic:notEqual>										
+									</option>
+					</logic:iterate>
+		        </select>
+		       </td>
+		    </tr>
+		    <tr>
+		      <td>&nbsp;</td>
+		    </tr>		    
+		    </logic:present>		        
 		    <tr>
 		      <td>
 		        <bean:message key="label.stylesheet.outputtype"/>:
@@ -116,7 +151,7 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
-		        <html:file property="xslfile" style="width: 30em;" />
+		        <html:file property="xslfile"  />
 		      </td>
 		    </tr>
 		    </logic:present>

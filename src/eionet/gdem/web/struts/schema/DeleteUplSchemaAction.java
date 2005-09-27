@@ -28,9 +28,6 @@ public class DeleteUplSchemaAction extends Action {
 
 		String schemaId = (String)httpServletRequest.getParameter("schemaId");
 		String user_name = (String)httpServletRequest.getSession().getAttribute("user");		
-
-		System.out.println("schemaId=" +schemaId);
-		System.out.println("user_name=" +user_name);
 		
 		try{
 			SchemaManager sm = new SchemaManager();

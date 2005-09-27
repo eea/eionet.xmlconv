@@ -85,17 +85,29 @@
 	<div style="width: 97%">
 		<table class="sortable" align="center" width="100%">
 			<tr>
-				<th scope="col"><span title="Title"><bean:message key="label.table.stylesheet.title"/></span></th>
+				<th scope="col"><span title="Table"><bean:message key="label.table.stylesheet.table"/></span></th>
+				<th scope="col"><span title="Dataset"><bean:message key="label.table.stylesheet.dataset"/></span></th>
+				<th scope="col"><span title="Title"><bean:message key="label.table.stylesheet.title"/></span></th>								
 				<th scope="col"><span title="Stylesheets"><bean:message key="label.table.stylesheet.stylesheets"/></span></th>
 			</tr>
 				<logic:iterate indexId="index" id="schema" name="stylesheet.stylesheetList" scope="session" property="ddStylesheets" type="Schema">				
 				<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
-					<td width="55%">
-						<a href="schemaStylesheets.do?schema=<bean:write name="schema" property="schema" />">
-							<bean:write name="schema" property="schema" />
+					<td width="10%">
+						<a href="schemaStylesheets.do?schema=<bean:write name="schema" property="schema" />">							
+							<bean:write name="schema" property="table" />
 						</a>
 					</td>
-					<td width="45%">
+					<td width="20%">
+						<a href="schemaStylesheets.do?schema=<bean:write name="schema" property="schema" />">
+							<bean:write name="schema" property="dataset" />
+						</a>
+					</td>
+					<td width="35%">
+						<a href="schemaStylesheets.do?schema=<bean:write name="schema" property="schema" />">
+							<bean:write name="schema" property="schema" /> 
+						</a>
+					</td>
+					<td width="35%">
 						<logic:iterate id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">						
 						<a target="blank" href="<bean:write name="stylesheet" property="xsl" />" title="<bean:write name="stylesheet" property="xsl_descr" />">						
 							<bean:write name="stylesheet" property="xsl_descr" />

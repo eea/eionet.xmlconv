@@ -1,5 +1,7 @@
 package eionet.gdem.web.struts.stylesheet;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,7 +35,12 @@ public class ConvTypeAction  extends Action{
 			
 			try{
 				StylesheetManager sm = new StylesheetManager();
-				ctHolder =sm.getConvTypes();				
+				ctHolder =sm.getConvTypes();	
+				SchemaManager schemaMan = new SchemaManager();
+				ArrayList schemas = schemaMan.getDDSchemas(); 
+				
+				httpServletRequest.getSession().setAttribute("stylesheet.DDSchemas", schemas);
+
 			}catch(DCMException e){
 				e.printStackTrace();
 				_logger.error(e);
