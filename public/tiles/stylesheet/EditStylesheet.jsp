@@ -170,7 +170,7 @@
 		        </logic:present>
 		        <logic:notPresent name="user">
 			        <html:cancel styleClass="button">
-			        	<bean:message key="label.back"/>
+			        	<bean:message key="label.ok"/>
 			        </html:cancel>		        
 		        </logic:notPresent>
 		      </td>

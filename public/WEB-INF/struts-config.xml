@@ -8,6 +8,12 @@
         <form-bean name="ListConvForm" type="eionet.gdem.web.struts.conversion.ListConvForm" />   
         <form-bean name="TestConvForm" type="eionet.gdem.web.struts.conversion.TestConvForm" />           
         <form-bean name="UplSchemaForm" type="eionet.gdem.web.struts.schema.UplSchemaForm" />                   
+   		<form-bean name="dynamicItemForm" type="org.apache.struts.validator.DynaValidatorForm">
+            <form-property name="temp" type="java.util.HashMap"/>
+        </form-bean>
+        <form-bean name="imageForm" type="eionet.gdem.web.struts.uimanage.ImageManagerForm"/>
+        <form-bean name="ldapForm" type="eionet.gdem.web.struts.config.LdapForm"/>
+        <form-bean name="dbForm" type="eionet.gdem.web.struts.config.DbForm"/>        
     </form-beans>
 
     <global-forwards>
@@ -38,16 +44,16 @@
 	        <forward name="success" path="/addStylesheet.jsp" />                      
         </action>
         <action path="/stylesheetAdd" input="/addStylesheet.jsp" name="stylesheetForm"
-            type="eionet.gdem.web.struts.stylesheet.AddStylesheetAction" scope="request">
+            type="eionet.gdem.web.struts.stylesheet.AddStylesheetAction">
             <forward name="success" path="/schemaStylesheets.do"/>
-            <forward name="fail" path="/stylesheetAdd.do"/>
+            <forward name="fail" path="/addStylesheetForm.do" redirect="true"/>						   
         </action>
         <action path="/stylesheetEditForm" name="stylesheetForm" type="eionet.gdem.web.struts.stylesheet.EditStylesheetFormAction" input="/editStylesheet.jsp" scope="request">
             <forward name="success" path="/editStylesheet.jsp" redirect="true" />
         </action>
         <action path="/stylesheetEdit" input="/editStylesheet.jsp" name="stylesheetForm"
             type="eionet.gdem.web.struts.stylesheet.EditStylesheetAction" scope="request">
-            <forward name="success" path="/schemaStylesheets.do"/>
+             <forward name="success" path="/schemaStylesheets.do"/>
              <forward name="fail" path="/editStylesheet.jsp" redirect="true"/>
         </action>
         <action path="/schemaElemForm" name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemFormAction" input="/schema.jsp" scope="request">
@@ -60,7 +66,7 @@
         	<forward name="success" path="/schemaElemForm.do" redirect="true" />            
         </action>        
         <action path="/schemaUpdate" name="schemaForm" scope="request" type="eionet.gdem.web.struts.schema.EditSchemaAction">           
-        	<forward name="success" path="/schemaElemForm.do" redirect="true" />            
+        	<forward name="success" path="/schemaStylesheets.do"/>
         </action>        
         <action path="/listConvForm"  type="eionet.gdem.web.struts.conversion.ListConvFormAction" input="/listConv.jsp" scope="request">
             <forward name="success" path="/listConv.jsp" redirect="true"/>
@@ -87,6 +93,44 @@
         	<forward name="success" path="/uplSchemas.do"  redirect="true"/>            
         </action>        
 
+ <!-- Edit UI -->
+        <action path="/editUI/imageManagerSetup" type="eionet.gdem.web.struts.uimanage.ImageManagerSetupAction"
+        name="imageForm" scope="request">
+        <forward name="success" path="/editUI/ImageManager.jsp"/>
+        </action>
+        <action path="/editUI/imageManager" type="eionet.gdem.web.struts.uimanage.ImageManagerAction"
+        name="imageForm" scope="request">
+        <forward name="uploaded" path="/editUI/ImageManager.jsp"/>
+        </action>
+       <action path="/editUI/viewFooter" type="eionet.gdem.web.struts.uimanage.ViewTemplateAction"
+        name="dynamicItemForm" parameter="footer" scope="request" validate="false">
+            <forward name="footer" path="/editUI/FooterManager.jsp"/>
+        </action>
+        <action path="/editUI/viewHeader" type="eionet.gdem.web.struts.uimanage.ViewTemplateAction"
+        name="dynamicItemForm" parameter="header" scope="request" validate="false" >
+            <forward name="header" path="/editUI/HeaderManager.jsp"/>
+        </action>
+        <action path="/editUI/processTemplate" type="eionet.gdem.web.struts.uimanage.ProcessTemplateAction"
+    	name="dynamicItemForm" scope="request" validate="false">
+    		<forward name="footer" path="/editUI/viewFooter.do" redirect="true"/>
+    		<forward name="header" path="/editUI/viewHeader.do" redirect="true"/>
+    	</action>
+        <action path="/ldapForm" type="eionet.gdem.web.struts.config.LdapFormAction"
+    	name="ldapForm" scope="request" validate="false">
+    		<forward name="success" path="/configLdap.jsp" redirect="true"/>
+    	</action>
+        <action path="/ldap" input="/configLdap.jsp" name="ldapForm"
+            type="eionet.gdem.web.struts.config.LdapAction" scope="request">
+             <forward name="success" path="/ldapForm.do" redirect="true"/>
+        </action>
+        <action path="/dbForm" type="eionet.gdem.web.struts.config.DbFormAction"
+    	name="dbForm" scope="request" validate="false">
+    		<forward name="success" path="/configDb.jsp" redirect="true"/>
+    	</action>
+        <action path="/db" input="/configDb.jsp" name="dbForm"
+            type="eionet.gdem.web.struts.config.DbAction" scope="request">
+             <forward name="success" path="/dbForm.do" redirect="true"/>
+        </action>
 
         
     </action-mappings>

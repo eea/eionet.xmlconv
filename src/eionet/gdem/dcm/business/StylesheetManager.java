@@ -58,6 +58,16 @@ public class StylesheetManager {
             xslFolder = xslFolder + File.separator;		 
 		 Utils.deleteFile(xslFolder + fileName);
 		 dbM.removeStylesheet(stylesheetId);
+		 String schema = (String)hash.get("xml_schema");
+		 String schemaId = (String)hash.get("schema_id");
+		 //remove schema if there is no stylesheets
+		 System.out.println("schema="+schema);
+		 System.out.println("schemaId="+schemaId);
+		Vector vDb = dbM.listConversions(schema);
+		System.out.println("size="+vDb.size());
+		if(vDb.size()==0) {
+			dbM.removeSchema( schemaId, true, true, true);           
+		}				
 		 
        }
        catch (Exception e){
@@ -74,8 +84,7 @@ public class StylesheetManager {
 		ArrayList convs;
 		
 		
-		try {
-			
+		try {			
 			convs = new ArrayList();
 			
 			DbModuleIF dbM= GDEMServices.getDbModule();
@@ -90,7 +99,8 @@ public class StylesheetManager {
 				convs.add(conv);				
             }			
 			ctHolder.setConvTypes(convs);
-		} catch (Exception e) {			
+		} catch (Exception e) {
+			e.printStackTrace();
 			_logger.debug(e.toString());
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
 		}
@@ -227,6 +237,14 @@ public class StylesheetManager {
 		
 	}
 
+	public static void main(String[] args){
+		StylesheetManager g = new StylesheetManager();
+		try{
+			ConvTypeHolder ctHolder=g.getConvTypes();
+		}catch(Exception e)
+		{e.printStackTrace();}
+	}
 	
+
 
 }

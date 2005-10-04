@@ -97,6 +97,8 @@ public interface Names {
   public static final String ACL_HOST_PATH = "host";
   public static final String ACL_WQ_PATH = "workqueue";
   public static final String ACL_QUERIES_PATH = "queries";
+  public static final String ACL_CONFIG_PATH = "config";
+  
 
   public static final String RPC_SERVICE_NAME="XService";
   public static final String EXCEL_CONVERSION_JSP = "excel2xml_conversion.jsp";

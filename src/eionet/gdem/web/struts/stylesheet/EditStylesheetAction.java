@@ -42,12 +42,13 @@ public class EditStylesheetAction extends Action {
 		if(schema == null || schema.equals("")){
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.validation"));
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);						
-			return actionMapping.findForward("success");
+			return actionMapping.findForward("fail");
 		}
 		
 		
+		
 		httpServletRequest.setAttribute("schema", schema);
-
+		
 		if (isCancelled(httpServletRequest)){
 			return actionMapping.findForward("success");
 		}

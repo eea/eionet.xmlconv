@@ -26,6 +26,7 @@ package eionet.gdem;
 import org.apache.log4j.Category;
 import org.apache.log4j.Priority;
 
+import java.io.File;
 import java.util.ResourceBundle;
 import java.util.MissingResourceException;
 
@@ -34,6 +35,8 @@ import java.util.MissingResourceException;
  */
 public class Properties {
 
+  public static String appHome=null;	
+	
   public static String tmpFolder="/tmp";
 
   //public static String urlPrefix="http://conversions.eionet.eu.int/";
@@ -55,6 +58,10 @@ public class Properties {
   public static String dbDriver=null;
   public static String dbUser=null;
   public static String dbPwd=null;
+  
+  //Edit UI
+  public static String uiFolder=null;
+  
 
   //period for checking new jobs in the workqueue in milliseconds, default 20sec
   public static long wqCheckInterval=20000L;
@@ -72,17 +79,24 @@ public class Properties {
 	  //DCM settings from the properties file of incoming services from DD
 	  public static String invServUrl=null;
 	  public static String invServName=null;
+	  
+	  //ldap url
+	  public static String ldapUrl=null;
 	
 	private static ResourceBundle props;
+	private static ResourceBundle ldapProps;
   public static Category logger;
 
   static {
+	  	  
     if(logger == null)
       logger = Category.getInstance("gdem");
       
     if (props==null) {
       props=ResourceBundle.getBundle("gdem");
       try {
+		appHome=props.getString("app.home"); 
+		  
         tmpFolder=props.getString("tmp.folder");
         xslFolder=props.getString("xsl.folder");
         queriesFolder=props.getString("queries.folder");
@@ -103,6 +117,11 @@ public class Properties {
 		ddURL=props.getString("dcm.conversions.dd.url");
 		gdemURL=props.getString("dcm.conversions.gdem.url");
 
+        //Edit UI settings 
+		uiFolder=props.getString("ui.folder");
+		
+		
+		
         //settings for incoming services from DD 
 		invServUrl=props.getString("inserv.dd.url");
 		invServName=props.getString("inserv.dd.name");
@@ -129,5 +148,15 @@ public class Properties {
 					System.out.println("error " + e.toString());
 			}
     }
+
+	if (ldapProps==null) {
+		ldapProps=ResourceBundle.getBundle("eionetdir");
+	      try {
+			  ldapUrl=ldapProps.getString("ldap.url"); 
+	      }catch (Exception e) {
+			  	e.printStackTrace();
+			  }	
+	      }
+	
   }
 }

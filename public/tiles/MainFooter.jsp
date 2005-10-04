@@ -4,6 +4,7 @@ import="java.util.List" %>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+
 <% String a=request.getContextPath(); session.setAttribute("webRoot",a==null?"":a); %>
 <logic:present name="user">
 </logic:present>
@@ -45,6 +46,12 @@ import="java.util.List" %>
 											<logic:present name="user">
 												<ed:menuItem action="/hosts.jsp"  title="Hosts">
 													<bean:message key="label.menu.hosts"/>
+												</ed:menuItem>
+												<ed:menuItem action="/editUI/viewHeader.do"  title="Manage User Interface">
+													<bean:message key="label.menu.editUI"/>
+												</ed:menuItem>
+												<ed:menuItem action="/ldapForm.do"  title="Edit application configurations">
+													<bean:message key="label.menu.config"/>
 												</ed:menuItem>
 											</logic:present>
 
@@ -122,21 +129,13 @@ import="java.util.List" %>
 <tiles:useAttribute id="showFooter" name="showFooter"/>
 <logic:equal name="showFooter" value="true">
 	<div id="portal-footer">
-		<logic:present name="FOOTER">
-			<div>
-				<table width="100%" border="0" cellpadding="0" cellspacing="0">	
-					<logic:iterate id="rows" name="FOOTER" type="List">
-						<tr>
-							<logic:iterate id="cols" name="rows">
-								<td width="20%" align="center"><bean:write name="cols" filter="false"/></td>
-							</logic:iterate>
-						</tr>			
-					</logic:iterate>
-				</table>
-			</div>
-		</logic:present>
-	</div>
+		<!-- <div style="text-align: center; ">PROTOTYPE v1.0 - Deployed on: 25/07/2005</div>-->
+    	<div style="width:100%">
+		<ed:ui-renderer id="footer"/>
+		</div>
+		</div>
 </logic:equal>
+
 
 		</div>
 		<!-- end column wrapper -->

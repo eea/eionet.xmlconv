@@ -26,7 +26,7 @@ public class SchemaStylesheetAction extends Action{
 			ActionMessages messages = new ActionMessages();
 			String user_name = (String)httpServletRequest.getSession().getAttribute("user");		
 			String schema= (String)httpServletRequest.getParameter("schema");
-
+		
 			/*if (schema!=null && schema!=""){
 				httpServletRequest.getSession().setAttribute("schema", schema);
 			}else{
@@ -34,6 +34,9 @@ public class SchemaStylesheetAction extends Action{
 			}
 
 			*/
+			System.out.println("==============================");
+			System.out.println("schema=" + schema);
+			System.out.println("==============================");
 			if (schema==null || schema.equals("")){
 				schema= (String)httpServletRequest.getAttribute("schema");
 			}

@@ -250,7 +250,7 @@ public class DbModule implements DbModuleIF, Constants {
 
 	    sql += " ORDER BY " + XML_SCHEMA_FLD + ", " + RESULT_TYPE_FLD;
 
-	    //System.out.println(sql);
+	    System.out.println(sql);
 	    String [][] r = _executeStringQuery(sql);
 
 	    Vector v = new Vector();
@@ -262,6 +262,7 @@ public class DbModule implements DbModuleIF, Constants {
 	      h.put("description", r[i][2]);
 	      h.put("content_type_out", r[i][5]);
 	      h.put("xml_schema", r[i][4]);
+		  h.put("result_type", r[i][3]);
 	      v.add(h);      
 	    }
 
@@ -1168,7 +1169,7 @@ System.out.println(r.length);
     String sql = "SELECT " + CONV_TYPE_FLD  + ", " + CONTENT_TYPE_FLD  + ", " + FILE_EXT_FLD  + ", " + CONVTYPE_DESCRIPTION_FLD  +  
       " FROM " + CONVTYPE_TABLE + " ORDER BY " + CONV_TYPE_FLD;
     
-		String r[][] = _executeStringQuery(sql);
+	String r[][] = _executeStringQuery(sql);
       
     Vector v = new Vector();
 
@@ -1282,6 +1283,5 @@ System.out.println(r.length);
 	    return v;
 	  }
 
-  
   
 }

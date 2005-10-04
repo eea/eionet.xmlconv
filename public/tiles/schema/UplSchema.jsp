@@ -18,44 +18,41 @@
 	
 	<div class="visualClear">&nbsp;</div>
 
-	<div style="width: 97%">
-		<table class="sortable" align="center" width="80%">
-			<tr>
-				<th scope="col"><span title="Schema"><bean:message key="label.table.uplSchema.schema"/></span></th>
-				<th scope="col"><span title="Schema"><bean:message key="label.table.uplSchema.stylesheets"/></span></th>				
-				<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >				
-				<th scope="col"><span title="Action"><bean:message key="label.table.uplSchema.action"/></span></th>
-				</logic:equal>
-			</tr>
-				<logic:iterate indexId="index" id="schema" name="schemas.uploaded" scope="session" property="schemas" type="UplSchema">
-				<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
-					<td width="55%">
-						<a href="<bean:write name="schema" property="schema" />">
-							<bean:write name="schema" property="schema" />
-						</a>
-					</td>
-					<td width="45%">
-						<a href="schemaStylesheets.do?schema=<bean:write name="schema" property="schema" />">
-							Stylesheets
-						</a>
-					</td>
-					<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >
-					<td width="5%" align="center">
-						<a href="deleteUplSchema.do?schemaId=<bean:write name="schema" property="id" />"
-						onclick='return schemaDelete("<bean:write name="schema" property="schema" />");'>
-							<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete schema" width="15" height="15"/>
-						</a>
-					</td>
-    				</logic:equal>
-				</tr>
-				</logic:iterate>
+	<logic:present name="schemas" name="schemas.uploaded" scope="session" property="schemas" >	
+		<div style="width: 97%">							
+			<table class="sortable" align="center" width="80%">
 				<tr>
-					<td valign="top" colspan="2">
-					</td>
+					<th scope="col"><span title="Schema"><bean:message key="label.table.uplSchema.schema"/></span></th>
+					<th scope="col"><span title="Action"><bean:message key="label.table.uplSchema.action"/></span></th>
 				</tr>
-		</table>
-	</div>
+					<logic:iterate indexId="index" id="schema" name="schemas.uploaded" scope="session" property="schemas" type="UplSchema">
+					<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
+						<td width="95%">
+							<a target="blank" href="<bean:write name="schema" property="schema" />">						
+								<bean:write name="schema" property="schema" />
+							</a>						
+						</td>
 	
+						<td width="5%" align="center">
+							<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >
+								<a href="deleteUplSchema.do?schemaId=<bean:write name="schema" property="id" />"
+								onclick='return schemaDelete("<bean:write name="schema" property="schema" />");'>
+									<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete schema" width="15" height="15"/>
+								</a>
+								</logic:equal>
+							<a href="schemaStylesheets.do?schema=<bean:write name="schema" property="schema" />">							
+								<img src="<bean:write name="webRoot"/>/images/properties.gif" alt="<bean:message key="label.table.stylesheet" />" title="view stylesheets" width="16" height="16"/>
+							</a>												
+						</td>    				
+					</tr>
+					</logic:iterate>
+					<tr>
+						<td valign="top" colspan="2">
+						</td>
+					</tr>
+			</table>
+		</div>
+	</logic:present>
 	<div class="visualClear">&nbsp;</div>
 	
 

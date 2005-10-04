@@ -19,9 +19,9 @@
 			<ed:breadcrumbs-push label="XML Schema or DTD" level="1" />
 			<h4><bean:message key="label.schema.edit"/></h4> 
 
-		<div class="boxcontent">
+		<div class="boxcontent" align="center">
 
-		<html:form action="/schemaElemForm" method="post" >
+		<html:form action="/schemaUpdate" method="post" >
 		  <table cellpadding="0" cellspacing="0" border="0" align="center">
 		    <tr>
 		      <td>
@@ -41,6 +41,8 @@
 		      </td>
 		    </tr>
 		    <tr>
+		      <td>&nbsp;</td>
+		      <td>&nbsp;</td>
 		      <td>&nbsp;</td>
 		    </tr>
 		    <tr>
@@ -73,6 +75,8 @@
 		    </tr>
 		    <tr>
 		      <td>&nbsp;</td>
+		      <td>&nbsp;</td>
+		      <td>&nbsp;</td>
 		    </tr>
 		    </logic:equal>	
 		  </table>
@@ -82,59 +86,98 @@
 			<logic:equal name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >				
 			<div class="boxbottombuttons">
    			    <input type="button" styleClass="button" class="button" value="<bean:message key="label.schema.save"/>" onclick="return submitAction('schemaUpdate.do');">
+		        &nbsp;
+		        <html:cancel styleClass="button">
+			      	<bean:message key="label.stylesheet.cancel"/>
+  			    </html:cancel>
 			</div>
-		    </logic:equal>	
+		    </logic:equal>
+		    <logic:notEqual name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
+				<div class="boxbottombuttons">
+			        <html:cancel styleClass="button">
+				      	<bean:message key="label.ok"/>
+	  			    </html:cancel>
+				</div>
+		    </logic:notEqual>	
+		    
 		  <div class="visualClear">&nbsp;</div>
 		  
-		  <table class="sortable" align="center" width="80%">
-			<tr>
-				<th scope="col"><span title="Element name"><bean:message key="label.schema.table.element"/></span></th>
-				<th scope="col"><span title="Namespace"><bean:message key="label.schema.table.namespace"/></span></th>
-				<logic:present name="user">
-				<th scope="col"><span title="Action"><bean:message key="label.schema.table.action"/></span></th>				
-				</logic:present>
-			</tr>
-			
-				<logic:iterate indexId="index" id="elem" name="schema.rootElemets" scope="session" property="rootElem" type="RootElem">						
+		 
 
-				<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
-					<td width="45%">
-						<bean:write name="elem" property="name" />
-					</td>
-					<td width="45%">					
-							<bean:write name="elem" property="namespace" />					
-					</td>
-					<logic:present name="user">
-					<td width="10%">
-						<logic:equal name="ssdPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
-						<a href="deleteElem.do?elemId=<bean:write name="elem" property="elemId" />"
-						onclick='return elementDelete("<bean:write name="elem" property="name" />");'>
-							<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete root element" width="15" height="15"/>
-						</a>	
-						</logic:equal>		
-					</td>
-					</logic:present>
-				</tr>
-				</logic:iterate>				
-				<logic:equal name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
+			<logic:present name="user">
+			  <table class="sortable" align="center" width="80%">
 				<tr>
-					<td width="45%">
-						 <html:text property="elemName" maxlength="255" style="width: 30em;" />
-					</td>
-					<td width="45%">					
-						  <html:text property="namespace" maxlength="255" style="width: 30em;" />
-					</td>
-					<td width="10%">
-						<input type="button" styleClass="button" class="button" value="<bean:message key="label.element.add"/>" onclick="return submitAction('elementAdd.do');">
-					</td>
+					<th scope="col"><span title="Element name"><bean:message key="label.schema.table.element"/></span></th>
+					<th scope="col"><span title="Namespace"><bean:message key="label.schema.table.namespace"/></span></th>
+					<th scope="col"><span title="Action"><bean:message key="label.schema.table.action"/></span></th>				
 				</tr>
+				
+				  <logic:present name="rootElem"  name="schema.rootElemets" scope="session" property="rootElem" >						
+					<logic:iterate indexId="index" id="elem" name="schema.rootElemets" scope="session" property="rootElem" type="RootElem">						
+	
+					<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
+						<td width="45%">
+							<bean:write name="elem" property="name" />
+						</td>
+						<td width="45%">					
+								<bean:write name="elem" property="namespace" />					
+						</td>
+						<td width="10%">
+							<logic:equal name="ssdPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
+							<a href="deleteElem.do?elemId=<bean:write name="elem" property="elemId" />"
+							onclick='return elementDelete("<bean:write name="elem" property="name" />");'>
+								<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete root element" width="15" height="15"/>
+							</a>	
+							</logic:equal>		
+						</td>
+					</tr>
+					</logic:iterate>				
+				</logic:present>
+					<logic:equal name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
+					<tr>
+						<td width="45%">
+							 <html:text property="elemName" maxlength="255" style="width: 30em;" />
+						</td>
+						<td width="45%">					
+							  <html:text property="namespace" maxlength="255" style="width: 30em;" />
+						</td>
+						<td width="10%">
+							<input type="button" styleClass="button" class="button" value="<bean:message key="label.element.add"/>" onclick="return submitAction('elementAdd.do');">
+						</td>
+					</tr>
+					<tr>
+						<td valign="top" colspan="2">
+						</td>
+					</tr>
+					</logic:equal>				   	
+			</table>
+		</logic:present>
+
+
+			  <logic:notPresent name="user">
+			  <logic:present name="rootElem"  name="schema.rootElemets" scope="session" property="rootElem" >							  
+			  <table class="sortable" align="center" width="80%">
 				<tr>
-					<td valign="top" colspan="2">
-					</td>
+					<th scope="col"><span title="Element name"><bean:message key="label.schema.table.element"/></span></th>
+					<th scope="col"><span title="Namespace"><bean:message key="label.schema.table.namespace"/></span></th>
 				</tr>
-			   </logic:equal>	
-		</table>
-		  
+				
+				
+					<logic:iterate indexId="index" id="elem" name="schema.rootElemets" scope="session" property="rootElem" type="RootElem">						
+	
+					<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
+						<td width="45%">
+							<bean:write name="elem" property="name" />
+						</td>
+						<td width="45%">					
+								<bean:write name="elem" property="namespace" />					
+						</td>
+					</tr>
+					</logic:iterate>				
+			</table>
+		</logic:present>
+		</logic:notPresent>
+
 		</html:form>
 		
 		</div>

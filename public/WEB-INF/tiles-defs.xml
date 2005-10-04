@@ -18,7 +18,12 @@
   <definition name="testConversion" path="/tiles/conversion/TestConversion.jsp" />
   <definition name="uplSchema" path="/tiles/schema/UplSchema.jsp" />  
   <definition name="addUplSchema" path="/tiles/schema/AddUplSchema.jsp" />
+  <definition name="confLdap" path="/tiles/config/Ldap.jsp" />
+    <definition name="confDb" path="/tiles/config/Db.jsp" />
   
+  <definition name="/editUI/ImageManager.jsp" path="/tiles/editUI/ImageManager.jsp"/>
+  <definition name="HeaderManager" path="/tiles/editUI/HeaderManager.jsp"/>
+  <definition name="FooterManager" path="/tiles/editUI/FooterManager.jsp"/>
 
   <definition name="base" path="/layout.jsp">
     <put name="header" type="definition" value="MainHeader"/>
@@ -61,6 +66,17 @@
   <definition name="/addUplSchema.jsp" extends="base">
     <put name="body" type="definition" value="addUplSchema"/>
   </definition>
-
+   <definition name="/editUI/HeaderManager.jsp" extends="base">
+  	<put name="body" type="definition" value="HeaderManager"/>
+   </definition>
+   <definition name="/editUI/FooterManager.jsp" extends="base">
+  	<put name="body" type="definition" value="FooterManager"/>
+   </definition>
+   <definition name="/configLdap.jsp" extends="base">   
+  	<put name="body" type="definition" value="confLdap"/>   
+   </definition>
+   <definition name="/configDb.jsp" extends="base">   
+  	<put name="body" type="definition" value="confDb"/>   
+   </definition>
 
  </tiles-definitions>

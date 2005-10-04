@@ -92,7 +92,8 @@ public class SchemaManager {
             if(dbM.getSchemaQueries(schemaId) != null)
                hasOtherStuff = true;
          
-         dbM.removeSchema( schemaId, true, false, !hasOtherStuff);              
+         //dbM.removeSchema( schemaId, true, false, !hasOtherStuff);              
+		dbM.removeSchema( schemaId, true, true, true);
         }
         catch (Exception e){
 			_logger.debug(e.toString());
@@ -244,7 +245,7 @@ public class SchemaManager {
                 Hashtable hash = (Hashtable)stylesheets.get(i);
                 String convert_id = (String)hash.get("convert_id");
                 String xsl = (String)hash.get("xsl");
-                String type = (String)hash.get("content_type_out");
+                String type;
                 String description = (String)hash.get("description");
 				String last_modified="";
 				boolean	ddConv = false;
@@ -256,14 +257,16 @@ public class SchemaManager {
 					if (f!=null)
 						last_modified = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM).format(new Date(f.lastModified()));
 					xslUrl = Names.XSL_FOLDER + (String)hash.get("xsl");
+					type = (String)hash.get("result_type");					
 				}else{
 					xslUrl = (String)hash.get("xsl");
 					ddConv = true;
+					type = (String)hash.get("content_type_out");
 				}
 
 				Stylesheet stl = new Stylesheet();
 				//st.setConvId(1);
-				stl.setType((String)hash.get("content_type_out"));				
+				stl.setType(type);				
 				stl.setXsl(xslUrl);
 				stl.setXsl_descr((String)hash.get("description"));
 				stl.setModified(last_modified);				
@@ -273,8 +276,9 @@ public class SchemaManager {
 
 				
             }			
-			
-			sc.setStylesheets(stls);
+			if(stls.size()>0){
+				sc.setStylesheets(stls);
+			}
 			schemas.add(sc);
 			st.setHandCodedStylesheets(schemas);
 		} catch (Exception e) {			
@@ -352,8 +356,10 @@ public class SchemaManager {
 				schema.setDtdPublicId((String)schemaHash.get("dtd_public_id"));
 				name=(String)schemaHash.get("xml_schema");
 				int name_len = name.length();
-				String schema_end = name.substring((name_len-3), (name_len)).toLowerCase();
-				if (schema_end.equals("dtd")) isDTD=true;				
+				if(name_len>3){
+					String schema_end = name.substring((name_len-3), (name_len)).toLowerCase();
+					if (schema_end.equals("dtd")) isDTD=true;
+				}
 				schema.setIsDTD(isDTD);
 				se.setSchema(schema);
 			}
@@ -372,8 +378,10 @@ public class SchemaManager {
 				rElem.setName((String)hash.get("elem_name"));
 				rElem.setNamespace((String)hash.get("namespace"));
 				elems.add(rElem);
-			}			
-			se.setRootElem(elems);
+			}
+			if(elems.size()>0){
+				se.setRootElem(elems);
+			}
 			
 		} catch (Exception e) {			
 			e.printStackTrace();
@@ -473,22 +481,26 @@ public class SchemaManager {
                 Hashtable hash = (Hashtable)stylesheets.get(i);
                 String convert_id = (String)hash.get("convert_id");
                 String xsl = (String)hash.get("xsl");
-                String type = (String)hash.get("content_type_out");
+                String type;
                 String description = (String)hash.get("description");
 				String last_modified="";
 				boolean	ddConv = false;
 				String  xslUrl;
+			
 				
 				if(!xsl.startsWith(Properties.gdemURL + "GetStylesheet?id=")){				
 					xslUrl = Names.XSL_FOLDER + (String)hash.get("xsl");
+					type = (String)hash.get("result_type");
 				}else{
 					xslUrl = (String)hash.get("xsl");
 					ddConv = true;
-				}
-
+					type = (String)hash.get("content_type_out");
+				}				
+				
+				
 				Stylesheet stl = new Stylesheet();
 				//st.setConvId(1);
-				stl.setType((String)hash.get("content_type_out"));				
+				stl.setType(type);				
 				stl.setXsl(xslUrl);
 				stl.setXsl_descr((String)hash.get("description"));
 				stl.setConvId((String)hash.get("convert_id"));
@@ -536,7 +548,9 @@ public class SchemaManager {
 				uplSchema.setSchema(schema);
 				schemas.add(uplSchema);				
             }
-			sc.setSchemas(schemas);
+			if(schemas.size()>0){
+				sc.setSchemas(schemas);
+			}
 			
 		} catch (Exception e) {			
 			_logger.debug(e.toString());
@@ -690,6 +704,29 @@ public class SchemaManager {
 		}
 		return schemas;
 		
+	}
+	
+
+	public Schema getSchema(String schemaId) throws DCMException{
+
+		 HashMap sch = null;
+		 Schema schema = null;
+		 
+		try {
+			DbModuleIF dbM= GDEMServices.getDbModule();
+			sch = dbM.getSchema(schemaId);
+			
+			schema = new Schema();
+			schema.setId(schemaId);
+			schema.setSchema((String)sch.get("xml_schema"));
+			schema.setDescription((String)sch.get("description"));
+			schema.setDtdPublicId((String)sch.get("dtd_public_id"));
+			
+		} catch (Exception e) {			
+			_logger.debug(e.toString());
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
+		}
+		return schema;
 	}
 	
 	

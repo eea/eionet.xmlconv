@@ -111,7 +111,7 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
-		        <html:file property="xslfile" style="width: 30em;" />
+		        <html:file property="xslfile"  />
 		      </td>
 		    </tr>
 		    <tr>
