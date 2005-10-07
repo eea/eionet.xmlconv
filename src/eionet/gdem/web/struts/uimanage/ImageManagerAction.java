@@ -32,9 +32,14 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 import org.apache.struts.upload.FormFile;
 
 import com.eurodyn.web.util.uimanage.FSUtil;
+
+import eionet.gdem.conversion.ssr.Names;
+import eionet.gdem.utils.SecurityUtil;
 /**
 * <p>Implementation of Struts <strong>Action</strong> </p>
 * 
@@ -46,6 +51,23 @@ public class ImageManagerAction extends Action {
 	
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		ServletContext context = servlet.getServletContext();
+		ActionMessages errors = new ActionMessages();
+        ActionMessages messages = new ActionMessages();		
+
+		String user = (String)request.getSession().getAttribute("user");		
+		
+		try {
+			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_CONFIG_PATH, "u")){
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.autorization.config.update"));
+				request.getSession().setAttribute("dcm.errors", errors);						
+				return mapping.findForward("home");				
+			}
+		} catch (Exception e) {			
+			e.printStackTrace();
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
+			request.getSession().setAttribute("dcm.errors", errors);						
+			return mapping.findForward("home");							
+		}
 		
 		FSUtil fileOp = new FSUtil();
 		String path = context.getRealPath("/images/gallery/");

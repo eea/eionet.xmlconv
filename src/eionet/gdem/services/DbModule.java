@@ -250,7 +250,7 @@ public class DbModule implements DbModuleIF, Constants {
 
 	    sql += " ORDER BY " + XML_SCHEMA_FLD + ", " + RESULT_TYPE_FLD;
 
-	    System.out.println(sql);
+	    //System.out.println(sql);
 	    String [][] r = _executeStringQuery(sql);
 
 	    Vector v = new Vector();
@@ -772,11 +772,11 @@ public class DbModule implements DbModuleIF, Constants {
 
     if (!Utils.isNullStr(namespace))    
         sql.append(" AND " + NAMESPACE_FLD + "=" + Utils.strLiteral(namespace));
-System.out.println(sql.toString());
+//System.out.println(sql.toString());
     String [][] r = _executeStringQuery(sql.toString());
 
     Vector v = new Vector();
-System.out.println(r.length);
+//System.out.println(r.length);
 
     for (int i =0; i< r.length; i++) {
       HashMap h = getSchema(r[i][0],true);
@@ -1243,7 +1243,7 @@ System.out.println(r.length);
 
 	    String sql = "DELETE FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_SCHEMA_ID_FLD + "=" + uplSchemaId;
 	    _executeUpdate(sql);  
-		System.out.println(sql);
+		//System.out.println(sql);
 	    
 	  }
 

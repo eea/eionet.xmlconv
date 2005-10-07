@@ -31,6 +31,8 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
@@ -46,6 +48,8 @@ import com.eurodyn.web.util.xml.IXmlSerializer;
 import com.eurodyn.web.util.xml.XmlContext;
 
 import eionet.gdem.Properties;
+import eionet.gdem.conversion.ssr.Names;
+import eionet.gdem.utils.SecurityUtil;
 /**
 * <p>Implementation of Struts <strong>Action</strong> </p>
 * 
@@ -59,6 +63,27 @@ public class ProcessTemplateAction extends Action {
 		DynaValidatorForm df = (DynaValidatorForm) form;
 		HashMap hm = (HashMap) df.get("temp");
 		IXmlCtx ctx = new XmlContext();
+		
+		
+		ActionMessages errors = new ActionMessages();
+        ActionMessages messages = new ActionMessages();		
+
+		String user = (String)request.getSession().getAttribute("user");		
+		
+		try {
+			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_CONFIG_PATH, "u")){
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.autorization.config.update"));
+				request.getSession().setAttribute("dcm.errors", errors);						
+				return mapping.findForward("home");				
+			}
+		} catch (Exception e) {			
+			e.printStackTrace();
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
+			request.getSession().setAttribute("dcm.errors", errors);						
+			return mapping.findForward("home");							
+		}
+		
+		
 		// get template name (hidden parameter named template on jsp page)
 		String temp=request.getParameter("template");
 		try {

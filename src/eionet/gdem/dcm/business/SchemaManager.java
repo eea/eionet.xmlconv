@@ -489,7 +489,7 @@ public class SchemaManager {
 			
 				
 				if(!xsl.startsWith(Properties.gdemURL + "GetStylesheet?id=")){				
-					xslUrl = Names.XSL_FOLDER + (String)hash.get("xsl");
+					xslUrl = Properties.gdemURL + Names.XSL_FOLDER + (String)hash.get("xsl");
 					type = (String)hash.get("result_type");
 				}else{
 					xslUrl = (String)hash.get("xsl");

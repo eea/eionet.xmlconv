@@ -348,14 +348,17 @@ public class ConversionService {
 			// implemented: " + cnvTypeOut);
 
 		} catch (MalformedURLException mfe) {
-			throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
+			//throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
+			throw new GDEMException("Bad URL" , mfe);
 		} catch (IOException ioe) {
-			throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
+			//throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
+			throw new GDEMException("Error opening URL", ioe);
 		} catch (Exception e) {
 
 
 
-			throw new GDEMException("Error converting: " + e.toString(), e);
+			//throw new GDEMException("Error converting: " + e.toString(), e);
+			throw new GDEMException("Error converting", e);
 		} finally {
 			try {
 				if (src != null)
@@ -406,8 +409,6 @@ public class ConversionService {
 		String convId = "";
 		String xslURL;
 
-		System.out.println("sourceURL="+sourceURL);
-		System.out.println("convertId="+convertId);
 		
 		// prase idtable and id conversion
 		if (convertId.startsWith("DD")) {
@@ -490,12 +491,15 @@ public class ConversionService {
 			// implemented: " + cnvTypeOut);
 
 		} catch (MalformedURLException mfe) {
-			throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
+			//throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
+			throw new GDEMException("Bad URL", mfe);
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
-			throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
+			//throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
+			throw new GDEMException("Error opening URL", ioe);
 		} catch (Exception e) {
-			throw new GDEMException("Error converting: " + e.toString(), e);
+			//throw new GDEMException("Error converting: " + e.toString(), e);
+			throw new GDEMException("Error converting", e);
 		} finally {
 			try {
 				if (src != null)

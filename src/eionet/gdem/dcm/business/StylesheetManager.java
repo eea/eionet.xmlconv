@@ -61,10 +61,10 @@ public class StylesheetManager {
 		 String schema = (String)hash.get("xml_schema");
 		 String schemaId = (String)hash.get("schema_id");
 		 //remove schema if there is no stylesheets
-		 System.out.println("schema="+schema);
-		 System.out.println("schemaId="+schemaId);
+		 //System.out.println("schema="+schema);
+		 //System.out.println("schemaId="+schemaId);
 		Vector vDb = dbM.listConversions(schema);
-		System.out.println("size="+vDb.size());
+		//System.out.println("size="+vDb.size());
 		if(vDb.size()==0) {
 			dbM.removeSchema( schemaId, true, true, true);           
 		}				

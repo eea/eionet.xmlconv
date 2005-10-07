@@ -40,7 +40,7 @@ public class EditSchemaAction extends Action {
 				SchemaManager sm = new SchemaManager();
 				Schema sch =  sm.getSchema(schemaId);
 				httpServletRequest.setAttribute("schema", sch.getSchema());
-				return actionMapping.findForward("success");
+				return actionMapping.findForward("back");
 			}catch(DCMException e){			
 				e.printStackTrace();
 				_logger.error(e);

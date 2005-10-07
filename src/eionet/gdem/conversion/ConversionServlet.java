@@ -38,11 +38,13 @@ import java.util.Vector;
 import eionet.gdem.GDEMException;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.conversion.ssr.Names;
+import eionet.gdem.exceptions.DCMException;
 
 public class ConversionServlet extends HttpServlet {
 
   public void doGet(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException    {
 
+	  
     String url = req.getParameter("url");
     String format = req.getParameter("format");
     String save = req.getParameter("save");
@@ -54,7 +56,7 @@ public class ConversionServlet extends HttpServlet {
 
     if ( Utils.isNullStr(list) && ( Utils.isNullStr(url) || Utils.isNullStr(format))   ){
       String err_message = "Some of the following parameters are missing: 'list' or 'format' or 'file url'!";
-      handleError(req,res, new GDEMException(err_message), Names.ERROR_JSP);
+      handleError(req,res, new GDEMException(err_message), Names.ERROR_JSP);	  
       return;
     }
 
@@ -226,11 +228,16 @@ public class ConversionServlet extends HttpServlet {
       //System.out.println(errMsg);
       HttpSession sess = req.getSession(true);
       //GDEMException err= new GDEMException(errMsg);
+	  
+	  
       sess.setAttribute("gdem.exception", err);
       if (Utils.isNullStr(jspName)) jspName = Names.ERROR_JSP;
       
+	  
       //req.getRequestDispatcher(jspName).forward(req,res);
-      res.sendRedirect(res.encodeRedirectURL(req.getContextPath() + "/" + jspName));
+
+	  res.sendRedirect(res.encodeRedirectURL(req.getContextPath() + "/" + jspName));
+
       return;
   }  /**
   * doPost()
