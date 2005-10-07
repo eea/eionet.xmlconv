@@ -93,7 +93,7 @@ public class Properties {
       logger = Category.getInstance("gdem");
       
     if (props==null) {
-      props=ResourceBundle.getBundle("gdem");
+	  props=ResourceBundle.getBundle("gdem");
       try {
 		appHome=props.getString("app.home"); 
 		  
@@ -145,7 +145,8 @@ public class Properties {
 
         //no error handling? go with the default values??
       } catch (Exception e ) {
-					System.out.println("error " + e.toString());
+					//System.out.println("error " + e.toString());
+					e.printStackTrace();
 			}
     }
 
