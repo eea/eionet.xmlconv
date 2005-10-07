@@ -28,16 +28,16 @@
 				<logic:iterate indexId="index" id="schema" name="stylesheet.stylesheetList" scope="session" property="handCodedStylesheets" type="Schema">
 				<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
 					<td width="7%" align="center">
-						<a href="schemaStylesheets.do?schema=<bean:write name="schema" property="schema" />">							
-							<img src="<bean:write name="webRoot"/>/images/properties.gif" alt="<bean:message key="label.table.stylesheet" />" title="view stylesheets" width="16" height="16"/>
+						<a href="schemaStylesheets?schema=<bean:write name="schema" property="schema" />">							
+							<img src="<bean:write name="webRoot"/>/images/properties.gif" alt="<bean:message key="label.table.stylesheet" />" title="view stylesheets" />
 						</a>
-						<a href="schemaElemForm.do?schemaId=<bean:write name="schema" property="id" />">							
-							<img src="<bean:write name="webRoot"/>/images/info_icon.gif" alt="<bean:message key="label.table.schemainfo" />" title="view schema info" width="16" height="16"/>
+						<a href="schemaElemForm?schemaId=<bean:write name="schema" property="id" />">							
+							<img src="<bean:write name="webRoot"/>/images/info_icon.gif" alt="<bean:message key="label.table.schemainfo" />" title="view schema info" />
 						</a>
 						<logic:equal name="ssdPrm" value="true"  name="stylesheet.stylesheetList" scope="session" property="ssdPrm" >
-							<a href="deleteSchema.do?schemaId=<bean:write name="schema" property="id" />"
+							<a href="deleteSchema?schemaId=<bean:write name="schema" property="id" />"
 								onclick='return schemaDelete("<bean:write name="schema" property="schema" />");'>
-									<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete schema" width="15" height="15"/>
+									<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete schema" />
 							</a>
 	    				</logic:equal>
 					</td>				
@@ -46,7 +46,7 @@
 					</td>
 					<td width="38%">
 						<logic:iterate id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">						
-						<a target="blank" href="<bean:write name="stylesheet" property="xsl" />" title="<bean:write name="stylesheet" property="xsl_descr" />">						
+						<a target="blank" href="<bean:write name="webRoot"/>/<bean:write name="stylesheet" property="xsl" />" title="<bean:write name="stylesheet" property="xsl_descr" />">						
 							<bean:write name="stylesheet" property="type" />
 						</a>&#160;
 						</logic:iterate>
@@ -66,7 +66,7 @@
 	<logic:equal name="ssdPrm" value="true"  name="stylesheet.stylesheetList" scope="session" property="ssiPrm" >
 		
 	<div class="boxbottombuttons">
-	<form action="addStylesheetForm.do">
+	<form action="addStylesheetForm">
 		<input class="button" type="submit" value="<bean:message key="label.stylesheet.add" />"/>
 	</form>
 	</div>
@@ -91,8 +91,8 @@
 				<logic:iterate indexId="index" id="schema" name="stylesheet.stylesheetList" scope="session" property="ddStylesheets" type="Schema">				
 				<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
 					<td width="7%" align="center">
-						<a href="schemaStylesheets.do?schema=<bean:write name="schema" property="schema" />">							
-							<img src="<bean:write name="webRoot"/>/images/properties.gif" alt="<bean:message key="label.table.stylesheet" />" title="view stylesheets" width="16" height="16"/>
+						<a href="schemaStylesheets?schema=<bean:write name="schema" property="schema" />">							
+							<img src="<bean:write name="webRoot"/>/images/properties.gif" alt="<bean:message key="label.table.stylesheet" />" title="view stylesheets" />
 						</a>
 					</td>					
 					<td width="10%">

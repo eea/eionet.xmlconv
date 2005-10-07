@@ -10,11 +10,14 @@
 
 <script type="text/javascript" src="<c:url value="/scripts/editUI.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/scripts/picker.js"/>"></script>
+
+
+<ed:breadcrumbs-push label="UI Manage" level="1" />
 <div style="width:100%">
 <div id="tabbedmenu">
 		<ul>
 			<li><a style="color:black;text-decoration: none;" title="Header Design"
-           href="<c:url value="/editUI/viewHeader.do"/>"><bean:message key="label.editUI.headereditor"/></a></li>
+           href="<c:url value="/do/editUI/viewHeader"/>"><bean:message key="label.editUI.headereditor"/></a></li>
 				
 				<li class="currenttab"><span
     style="color:black;text-decoration: none;"
@@ -139,7 +142,7 @@
     	
 	</table>
     <br/>
-	<html:form action="/editUI/processTemplate.do" method="post" styleId="matrix">
+	<html:form action="/editUI/processTemplate" method="post" styleId="matrix">
 		
 		<html:xhtml/>
 		<input type="hidden" name="template" value="footer"/>

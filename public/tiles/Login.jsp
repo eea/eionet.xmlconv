@@ -17,7 +17,7 @@
 			
 		<div class="boxcontent">
 		
-			<html:form action="/login.do" method="post" focus="username">
+			<html:form action="login" method="post" focus="username">
 			  <table width="100%" cellpadding="0" cellspacing="0" border="0" align="center">
 			    <tr>
 			      <td>

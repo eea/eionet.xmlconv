@@ -10,7 +10,7 @@
 	<div style="width:100%;">
 		<div id="tabbedmenu">
 			<ul>
-				<li><a onclick="return submitTab(this);" style="color: black; text-decoration: none;" title="<bean:message key="label.config.ldap"/>" href="<bean:write name="webRoot" />/ldapForm.do"><bean:message key="label.config.ldap"/></a></li>
+				<li><a onclick="return submitTab(this);" style="color: black; text-decoration: none;" title="<bean:message key="label.config.ldap"/>" href="<bean:write name="webRoot" />/do/ldapForm"><bean:message key="label.config.ldap"/></a></li>
 				<li class="currenttab"><span style="color: black; text-decoration: none;" title="<bean:message key="label.config.db"/>"><bean:message key="label.config.db"/></span></li>
 			</ul>
 		</div>
@@ -27,11 +27,11 @@
 
 		<div class="boxcontent">
 
-		<html:form action="/db.do" method="post" >
+		<html:form action="/db" method="post" >
 		  <table cellpadding="0" cellspacing="0" border="0" align="center">
 		    <tr>
-		      <td align=right> 
-		       <B> <bean:message key="label.config.db.url"/>: </B>
+		      <td align="right"> 
+		       <h6> <bean:message key="label.config.db.url"/>: </h6>
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
@@ -42,8 +42,8 @@
 		      <td>&nbsp;</td>
 		    </tr>
 		    <tr>
-		      <td align=right> 
-		       <B> <bean:message key="label.config.db.user"/>: </B>
+		      <td align="right"> 
+		       <h6> <bean:message key="label.config.db.user"/>: </h6>
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
@@ -54,8 +54,8 @@
 		      <td>&nbsp;</td>
 		    </tr>
 		    <tr>
-		      <td align=right> 
-		       <B> <bean:message key="label.config.db.password"/>: </B>
+		      <td align="right"> 
+		       <h6> <bean:message key="label.config.db.password"/>: </h6>
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>

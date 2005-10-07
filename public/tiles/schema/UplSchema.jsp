@@ -35,13 +35,13 @@
 	
 						<td width="5%" align="center">
 							<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >
-								<a href="deleteUplSchema.do?schemaId=<bean:write name="schema" property="id" />"
+								<a href="deleteUplSchema?schemaId=<bean:write name="schema" property="id" />"
 								onclick='return schemaDelete("<bean:write name="schema" property="schema" />");'>
-									<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete schema" width="15" height="15"/>
+									<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete schema" />
 								</a>
 								</logic:equal>
-							<a href="schemaStylesheets.do?schema=<bean:write name="schema" property="schema" />">							
-								<img src="<bean:write name="webRoot"/>/images/properties.gif" alt="<bean:message key="label.table.stylesheet" />" title="view stylesheets" width="16" height="16"/>
+							<a href="schemaStylesheets?schema=<bean:write name="schema" property="schema" />">							
+								<img src="<bean:write name="webRoot"/>/images/properties.gif" alt="<bean:message key="label.table.stylesheet" />" title="view stylesheets" />
 							</a>												
 						</td>    				
 					</tr>
@@ -59,7 +59,7 @@
 	<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssiPrm" >
 		
 	<div class="boxbottombuttons">
-	<form action="addUplSchemaForm.do">
+	<form action="addUplSchemaForm">
 		<input class="button" type="submit" value="<bean:message key="label.uplSchema.add" />"/>
 	</form>
 	</div>

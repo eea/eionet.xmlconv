@@ -42,7 +42,7 @@
 		    </tr>
 		    <logic:present name="user">
 		    <tr>
-		      <td colspan=3>
+		      <td colspan="3">
 		        <bean:message key="label.stylesheet.selectDDSchema"/>:
 		      </td>
 		    </tr>		    
@@ -54,8 +54,8 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>		    
-		          <select name="xmlSchema"  size="6" onChange="setSchema()">>
-									<option selected value="">
+		          <select name="xmlSchema"  size="6" onchange="setSchema()">
+									<option selected="selected" value="">
 										--
 									</option>		        
 					<logic:iterate id="schema" name="stylesheet.DDSchemas" scope="session"  type="Schema">
@@ -99,7 +99,7 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
-		        <html:textarea property="description"  style="width: 33em;"/>
+		        <html:textarea property="description"  rows="3" cols="20"/>
 		      </td>
 		    </tr>
 		    <tr>

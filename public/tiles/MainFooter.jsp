@@ -25,13 +25,13 @@ import="java.util.List" %>
 								<div class="portletContent odd">
 	   								<div>
 										<ul class="portal-subnav">	
-											<ed:menuItem action="/uplSchemas.do" title="Schemas">
+											<ed:menuItem action="/do/uplSchemas" title="Schemas">
 												<bean:message key="label.menu.schemas"/>
 											</ed:menuItem>
-											<ed:menuItem action="/stylesheetList.do" title="Stylesheets">
+											<ed:menuItem action="/do/stylesheetList" title="Stylesheets">
 												<bean:message key="label.menu.stylesheets"/>
 											</ed:menuItem>
-											<ed:menuItem action="/listConvForm.do" title="Converter">
+											<ed:menuItem action="/do/listConvForm" title="Converter">
 												<bean:message key="label.menu.converter"/>
 											</ed:menuItem>
 											<ed:menuItem action="/workqueue.jsp" title="QA jobs">
@@ -47,10 +47,10 @@ import="java.util.List" %>
 												<ed:menuItem action="/hosts.jsp"  title="Hosts">
 													<bean:message key="label.menu.hosts"/>
 												</ed:menuItem>
-												<ed:menuItem action="/editUI/viewHeader.do"  title="Manage User Interface">
+												<ed:menuItem action="/do/editUI/viewHeader"  title="Manage User Interface">
 													<bean:message key="label.menu.editUI"/>
 												</ed:menuItem>
-												<ed:menuItem action="/ldapForm.do"  title="Edit application configurations">
+												<ed:menuItem action="/do/ldapForm"  title="Edit application configurations">
 													<bean:message key="label.menu.config"/>
 												</ed:menuItem>
 											</logic:present>
@@ -71,7 +71,7 @@ import="java.util.List" %>
 								<div class="portletBody">
 									<div class="portletContent odd">									
 										<ul class="portal-subnav">										
-											<li><a href="<bean:write name="webRoot"/>/start.do?login=true" title="login">Login</a></li>
+											<li><a href="<bean:write name="webRoot"/>/do/start?login=true" title="login">Login</a></li>
 										</ul>
 									</div>
 								</div>
@@ -92,7 +92,7 @@ import="java.util.List" %>
 								<div class="portletBody">
 									<div class="portletContent odd">									
 										<ul class="portal-subnav">										
-											<li><a href="<bean:write name="webRoot"/>/start.do?logout=true" title="logout">Logout</a></li>
+											<li><a href="<bean:write name="webRoot"/>/do/start?logout=true" title="logout">Logout</a></li>
 										</ul>
 									</div>
 								</div>

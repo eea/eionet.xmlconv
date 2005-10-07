@@ -23,7 +23,7 @@
 
 <logic:equal  value="true"  name="schema.stylesheets" scope="session" property="handcoded" >
 	<div>
-		<a href="schemaElemForm.do?schemaId=<bean:write name="schema" property="id"/>">
+		<a href="schemaElemForm?schemaId=<bean:write name="schema" property="id"/>">
 			<bean:message key="label.schema.info"/>
 		</a>
 	</div>
@@ -45,19 +45,19 @@
 
 				<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
 					<td width="10%">
-						<a href="testConversionForm.do?schema=<bean:write name="schema" property="schema" />&amp;idConv=<bean:write name="stylesheet" property="convId" />"  >
-							<img height="15" width="24" src="images/run.png" alt="<bean:message key="label.stylesheet.run" />" title="run conversion"/>							
+						<a href="testConversionForm?schema=<bean:write name="schema" property="schema" />&amp;idConv=<bean:write name="stylesheet" property="convId" />"  >
+							<img  src="<bean:write name="webRoot"/>/images/run.png" alt="<bean:message key="label.stylesheet.run" />" title="run conversion"/>							
 						</a>			
 						<logic:equal name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >
 						&nbsp;
-						<a href="stylesheetEditForm.do?stylesheetId=<bean:write name="stylesheet" property="convId" />">
-							<img src="<bean:write name="webRoot"/>/images/edit.gif" alt="<bean:message key="label.stylesheet.edit" />" title="edit stylesheet" width="13" height="13"/>
+						<a href="stylesheetEditForm?stylesheetId=<bean:write name="stylesheet" property="convId" />">
+							<img src="<bean:write name="webRoot"/>/images/edit.gif" alt="<bean:message key="label.stylesheet.edit" />" title="edit stylesheet" />
 						</a>						
 						<logic:equal name="ssdPrm" value="true"  name="schema.stylesheets" scope="session" property="ssdPrm" >						
 						&nbsp;
-						<a href="deleteStylesheet.do?stylesheetId=<bean:write name="stylesheet" property="convId" />&schema=<bean:write name="schema" property="schema"/>"
+						<a href="deleteStylesheet?stylesheetId=<bean:write name="stylesheet" property="convId" />&amp;schema=<bean:write name="schema" property="schema"/>"
 							onclick='return stylesheetDelete("<bean:write name="stylesheet" property="xsl" />");'>
-							<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete stylesheet" width="15" height="15"/>
+							<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete stylesheet" />
 						</a>	
 						</logic:equal>								
 						</logic:equal>		
@@ -68,10 +68,17 @@
 					<td width="20%">
 						<bean:write name="stylesheet" property="xsl_descr" />
 					</td>
-					<td width="45%">					
-						<a target="blank" href="<bean:write name="stylesheet" property="xsl" />">						
-							<bean:write name="stylesheet" property="xsl" />
-						</a>&#160;												
+					<td width="45%">
+						<logic:notEqual name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >
+							<a target="blank" href="<bean:write name="stylesheet" property="xsl" />">						
+								<bean:write name="stylesheet" property="xsl" />
+							</a>&#160;												
+						</logic:notEqual>
+						<logic:equal name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >																
+							<a target="blank" href="<bean:write name="webRoot"/>/<bean:write name="stylesheet" property="xsl" />">						
+								<bean:write name="webRoot"/>/<bean:write name="stylesheet" property="xsl" />
+							</a>&#160;												
+						</logic:equal>						
 					</td>
 					<td width="20%" align="center">
 						<bean:write name="stylesheet" property="modified" />															
@@ -95,7 +102,7 @@
 	<table align="center">
 	<tr>
 	<td>
-	<form action="addStylesheetForm.do">
+	<form action="addStylesheetForm">
 		<logic:present name="schema" scope="request">
 		    <input type="hidden" name="schema" value="<bean:write name="schema" scope="request"/>" />
 		</logic:present>
@@ -104,7 +111,7 @@
 	</form>
 	</td>
 	<td>
-	<form action="stylesheetList.do">
+	<form action="stylesheetList">
 		<input type="submit" class="button" value="<bean:message key="label.ok"/>" />		
 	</form>	
 	</td>
@@ -112,7 +119,7 @@
 	</table>
 	</logic:equal>
 	<logic:notEqual name="ssiPrm" value="true"  name="schema.stylesheets" scope="session" property="ssiPrm" >		
-		<form action="stylesheetList.do">
+		<form action="stylesheetList">
 			<input type="submit" class="button" value="<bean:message key="label.ok"/>" />		
 		</form>
 	</logic:notEqual>

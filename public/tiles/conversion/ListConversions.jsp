@@ -30,10 +30,10 @@
 
 		<div class="boxcontent">
 
-		<html:form action="/listConv.do" method="post" >
+		<html:form action="/listConv" method="post" >
 		  <table cellpadding="0" cellspacing="0" border="0" align="center">
 		    <tr>
-		      <td colspan=3>
+		      <td colspan="3">
 		        <bean:message key="label.conversion.insertURL"/>
 		      </td>
 		    </tr>
@@ -41,8 +41,8 @@
 		      <td>&nbsp;</td>
 		    </tr>
 		    <tr>
-		      <td align=right> 
-		       <B> <bean:message key="label.conversion.url"/>: </B>
+		      <td align="right"> 
+		       <h6> <bean:message key="label.conversion.url"/>: </h6>
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
@@ -53,7 +53,7 @@
 		      <td>&nbsp;</td>
 		    </tr>
 		    <tr>
-		      <td colspan=3>
+		      <td colspan="3">
 		        <bean:message key="label.conversion.selectSchema"/>
 		      </td>
 		    </tr>
@@ -61,13 +61,13 @@
 		      <td>&nbsp;</td>
 		    </tr>		    
 		    <tr>
-		      <td align=right valign=top>
-		        <B><bean:message key="label.conversion.xmlSchema"/>:</B>
+		      <td align="right" valign="top">
+		        <h6><bean:message key="label.conversion.xmlSchema"/>:</h6>
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
 		        <select name="xmlSchema"  size="6">
-									<option selected value="">
+									<option selected="selected" value="">
 										--
 									</option>		        
 					<logic:iterate id="schema" name="conversion.schemas" scope="session"  type="Schema">
@@ -87,7 +87,7 @@
 		      <td>&nbsp;</td>
 		    </tr>
 		    <tr>
-		      <td colspan=3>
+		      <td colspan="3">
 		        <bean:message key="label.conversion.validateSchema"/>
 		      </td>
 		    </tr>
@@ -95,12 +95,12 @@
 		      <td>&nbsp;</td>
 		    </tr>		    
 		    <tr>
-		      <td align=right>
-		      	<B><bean:message key="label.conversion.validate"/>:</B>
+		      <td align="right">
+		      	<h6><bean:message key="label.conversion.validate"/>:</h6>
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
-					<input type="checkbox" name=validate id="validatefield"/>
+					<input type="checkbox" name="validate" id="validatefield"/>
 		      </td>
 		    </tr>
 		    <tr>

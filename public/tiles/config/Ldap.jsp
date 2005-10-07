@@ -11,7 +11,7 @@
 		<div id="tabbedmenu">
 			<ul>
 				<li class="currenttab"><span style="color: black; text-decoration: none;" title="<bean:message key="label.config.ldap"/>"><bean:message key="label.config.ldap"/></span></li>
-				<li><a onclick="return submitTab(this);" style="color: black; text-decoration: none;" title="<bean:message key="label.config.db"/>" href="<bean:write name="webRoot" />/dbForm.do"><bean:message key="label.config.db"/></a></li>
+				<li><a onclick="return submitTab(this);" style="color: black; text-decoration: none;" title="<bean:message key="label.config.db"/>" href="<bean:write name="webRoot" />/do/dbForm"><bean:message key="label.config.db"/></a></li>
 			</ul>
 		</div>
 		<p>&nbsp;</p>
@@ -27,11 +27,11 @@
 
 		<div class="boxcontent">
 
-		<html:form action="/ldap.do" method="post" >
+		<html:form action="/ldap" method="post" >
 		  <table cellpadding="0" cellspacing="0" border="0" align="center">
 		    <tr>
-		      <td align=right> 
-		       <B> <bean:message key="label.config.ldap.url"/>: </B>
+		      <td align="right"> 
+		       <h6> <bean:message key="label.config.ldap.url"/>: </h6>
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>

@@ -16,7 +16,7 @@
 	<div style="width:100%;">
 		<div id="tabbedmenu">
 			<ul>
-				<li><a onclick="return submitTab(this);" style="color: black; text-decoration: none;" title="<bean:message key="label.profile.edit"/>" href="<bean:write name="webRoot" />/profile/edit.do"><bean:message key="label.profile.edit"/></a></li>
+				<li><a onclick="return submitTab(this);" style="color: black; text-decoration: none;" title="<bean:message key="label.profile.edit"/>" href="<bean:write name="webRoot" />/do/profile/edit"><bean:message key="label.profile.edit"/></a></li>
 				<li class="currenttab"><span style="color: black; text-decoration: none;" title="<bean:message key="label.profile.channels.title"/>"><bean:message key="label.profile.channels.title"/></span></li>
 			</ul>
 		</div>
@@ -24,7 +24,7 @@
 				
 		<logic:present name="profile.channels">
 		<logic:notEmpty name="profile.channels">
-			<html:form action="/profile/save.do" method="post">
+			<html:form action="/do/profile/save" method="post">
 			  <table width="90%" cellpadding="0" cellspacing="0" border="0" align="left">
 			    <tr>
 			      <td width="100%" colspan="3">

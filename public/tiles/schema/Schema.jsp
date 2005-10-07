@@ -34,6 +34,7 @@
 			        	<html:text property="schema" maxlength="255" style="width: 30em;" />		        
     		        </logic:present>
     		        <logic:notPresent name="user">
+    		        	<html:hidden property="schema" />
 						<a target="blank" href="<bean:write name="schemaForm" property="schema" />" title="<bean:write name="schemaForm" property="schema" />">						
 							<bean:write name="schemaForm" property="schema" />
 						</a>&#160;		        	      		        	
@@ -85,7 +86,7 @@
 		  
 			<logic:equal name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >				
 			<div class="boxbottombuttons">
-   			    <input type="button" styleClass="button" class="button" value="<bean:message key="label.schema.save"/>" onclick="return submitAction('schemaUpdate.do');">
+   			    <input type="button"  class="button" value="<bean:message key="label.schema.save"/>" onclick="return submitAction('schemaUpdate');" />
 		        &nbsp;
 		        <html:cancel styleClass="button">
 			      	<bean:message key="label.stylesheet.cancel"/>
@@ -124,7 +125,7 @@
 						</td>
 						<td width="10%">
 							<logic:equal name="ssdPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
-							<a href="deleteElem.do?elemId=<bean:write name="elem" property="elemId" />"
+							<a href="deleteElem?elemId=<bean:write name="elem" property="elemId" />"
 							onclick='return elementDelete("<bean:write name="elem" property="name" />");'>
 								<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete root element" width="15" height="15"/>
 							</a>	
@@ -142,7 +143,7 @@
 							  <html:text property="namespace" maxlength="255" style="width: 30em;" />
 						</td>
 						<td width="10%">
-							<input type="button" styleClass="button" class="button" value="<bean:message key="label.element.add"/>" onclick="return submitAction('elementAdd.do');">
+							<input type="button"  class="button" value="<bean:message key="label.element.add"/>" onclick="return submitAction('elementAdd');" />
 						</td>
 					</tr>
 					<tr>

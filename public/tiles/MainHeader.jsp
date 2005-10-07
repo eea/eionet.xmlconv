@@ -22,7 +22,7 @@ response.setDateHeader("Expires", 0);
 <title>XML Services</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <logic:present name="user" property="pageRefreshDelay">
-	<logic:equal name="servletPath" value="/viewDashboard.do">
+	<logic:equal name="servletPath" value="/do/viewDashboard">
 		<meta http-equiv="refresh" content="<bean:write name="user" property="pageRefreshDelay"/>" />
 	</logic:equal>
 </logic:present>
@@ -51,7 +51,6 @@ response.setDateHeader("Expires", 0);
 <![endif]-->
 <!-- <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" /> -->
 
-<script type="text/javascript" src="<bean:write name="webRoot"/>/scripts/mm.js"></script>
 <script type="text/javascript" src="<bean:write name="webRoot"/>/scripts/admin.js"></script>
 <script type="text/javascript" src="<bean:write name="webRoot"/>/scripts/user.js"></script>
 <script type="text/javascript">
@@ -59,7 +58,7 @@ response.setDateHeader("Expires", 0);
    	applicationRoot='<%=request.getContextPath()%>';
 </script>
 </head>
-<body onload="MM_preloadImages('images/edit_on.png','images/up_on.png','images/down_on.png','images/min_on.png','images/max_on.png','images/restore_on.png')">
+<body>
 <div id="visual-portal-wrapper">
 	<div id="portal-top">
 		<div id="portal-logo">

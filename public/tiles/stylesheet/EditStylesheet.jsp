@@ -19,7 +19,7 @@
 			<ed:breadcrumbs-push label="Edit Stylesheet" level="1" />
 			<h4><bean:message key="label.stylesheet.edit"/></h4> 
 
-		<div class="boxcontent">
+		<div class="boxcontent" align="center">
 
 		<html:form action="/stylesheetEdit" method="post" enctype="multipart/form-data">
 		  <table cellpadding="0" cellspacing="0" border="0" align="center">
@@ -45,7 +45,7 @@
 		    </tr>
 		    <logic:present name="user">
 		    <tr>
-		      <td colspan=3>
+		      <td colspan="3">
 		        <bean:message key="label.stylesheet.selectDDSchema"/>:
 		      </td>
 		    </tr>		    
@@ -57,8 +57,8 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>		    
-		          <select name="xmlSchema"  size="6" onChange="setSchema()">>
-									<option selected value="">
+		          <select name="xmlSchema"  size="6" onchange="setSchema()">
+									<option selected="selected" value="">
 										--
 									</option>		        
 					<logic:iterate id="schema" name="stylesheet.DDSchemas" scope="session"  type="Schema">
@@ -91,7 +91,7 @@
 					<logic:iterate id="opt" name="stylesheet.outputtype" scope="session"  property="convTypes" type="ConvType">
 					         <logic:equal name="opt" property="convType" value="<%=oType%>">
 						         <logic:present name="user">						         
-									<option selected value="<bean:write name="opt" property="convType" />">
+									<option selected="selected" value="<bean:write name="opt" property="convType" />">
 										<bean:write name="opt" property="convType" />
 									</option>
 								 </logic:present>
@@ -107,7 +107,9 @@
 								 </logic:present>
 							 </logic:notEqual>							 						
 					</logic:iterate>
-		        </select>
+				<logic:present name="user">			
+			        </select>
+		       </logic:present>
 		      </td>
 		    </tr>
 		    <tr>
@@ -120,7 +122,7 @@
 		      <td>&nbsp;</td>
 		      <td>
 			      <logic:present name="user">
-				        <html:textarea property="description"  style="width: 33em;"/>
+				        <html:textarea property="description"  rows="3" cols="20"/>
 			      </logic:present>
 			      <logic:notPresent name="user">
 					    <bean:write name="stylesheetForm" property="description"/>

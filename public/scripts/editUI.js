@@ -399,7 +399,7 @@
 			function imageManage() {
 				var w = 550 , h = 450;
 				move = screen ? ',left=' + ((screen.width - w) >> 1) + ',top=' + ((screen.height - h) >> 1) : '', 
-				childWin = window.open(applicationRoot+'/editUI/imageManagerSetup.do', null, "help=no,status=no,scrollbars=yes,resizable=yes" + move + ",width=" + w + ",height=" + h + ",dependent=yes", true);
+				childWin = window.open(applicationRoot+'/do/editUI/imageManagerSetup', null, "help=no,status=no,scrollbars=yes,resizable=yes" + move + ",width=" + w + ",height=" + h + ",dependent=yes", true);
 				childWin.opener = window;
 				childWin.focus();
 			}			

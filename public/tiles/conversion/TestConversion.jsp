@@ -25,7 +25,7 @@
 
 <logic:iterate id="schema" name="conversion.schemas" scope="session" type="Schema">
 
-		<html:form action="/testConversionForm.do" method="post" >
+		<html:form action="/testConversionForm" method="post" >
 		  <table cellpadding="0" cellspacing="0" border="0" align="center">
 		    <tr>
 		      <td align=right> 
@@ -90,7 +90,7 @@
 		    </tr>
 		    <tr>
 		      <td colspan="3" align="center">
-		        <input type="button" styleClass="button" class="button" value="<bean:message key="label.conversion.convert"/>" onclick="return submitAction('convert');">	        
+		        <input type="button" styleClass="button" class="button" value="<bean:message key="label.conversion.convert"/>" onclick="return submitAction('<bean:write name="webRoot" />/convert');">	        
 		      </td>
 		    </tr>
 		  </table>

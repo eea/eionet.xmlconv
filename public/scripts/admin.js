@@ -34,12 +34,6 @@ function submitAction(act)
 
 function setSchema()
 {
-/*	if(document.forms[0].xmlSchema.options[document.forms[0].xmlSchema.selectedIndex].value!=""){
-		alert(document.forms[0].xmlSchema.options[document.forms[0].xmlSchema.selectedIndex].value);
-	}else{
-		alert("prazan!");
-	}
-	*/
 	document.forms[0].schema.value = document.forms[0].xmlSchema.options[document.forms[0].xmlSchema.selectedIndex].value;
 
 	return true;
