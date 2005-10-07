@@ -18,7 +18,7 @@
 
 		<div id="tabbedmenu">
 			<ul>
-				<li><a onclick="return submitTab(listConvForm.do);" style="color: black; text-decoration: none;" title="<bean:message key="label.conversion.converters"/>" href="<bean:write name="webRoot" />/listConvForm.do"><bean:message key="label.conversion.converters"/></a></li>
+				<li><a onclick="return submitTab(do/listConvForm);" style="color: black; text-decoration: none;" title="<bean:message key="label.conversion.converters"/>" href="<bean:write name="webRoot" />/do/listConvForm"><bean:message key="label.conversion.converters"/></a></li>
 				<li class="currenttab"><a onclick="return submitTab(this);" style="color: black; text-decoration: none;" title="<bean:message key="label.conversion.excel2xml"/>" href="<bean:write name="webRoot" />/excel2xml_conversion.jsp"><bean:message key="label.conversion.excel2xml"/></a></li>
 			</ul>
 		</div>

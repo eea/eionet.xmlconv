@@ -24,7 +24,8 @@
     		message="unknown error";
     	}
     	else{
-				message=e.toString();
+				//message=e.toString();
+				message = e.getMessage();
 				if (message!=null && message.length()>0) {
 			}
 			%>
@@ -33,8 +34,9 @@
 					<%=message%>
 			</span>
 			<br/><br/>
-			<div class="sub_title">Stack Trace:</div><br>
-	    <pre><% e.printStackTrace(new PrintWriter(out)); %></pre>
+			<!--  <div class="sub_title">Stack Trace:</div><br>-->
+	    <!--<pre><%// e.printStackTrace(new PrintWriter(out)); %></pre>-->
+	    
 			<%}%>
 	</div>
 <tiles:insert definition="MainFooter"/>

@@ -83,7 +83,7 @@
     </div>
     
     <h1>Queries of <%=name%></h1>
-    <a href="schemaElemForm.do?schemaId=<%=id%>">View schema info</a>
+    <a href="do/schemaElemForm?schemaId=<%=id%>">View schema info</a>
     <form name="view_schema_info" action="main" method="post">
         <input type="hidden" name="ID" value="<%=id%>" />
         <input type="hidden" name="ACTION" value="<%=Names.SHOW_SCHEMA_ACTION%>" />

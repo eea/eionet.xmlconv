@@ -34,12 +34,11 @@
 		//document.URL=url;
 		document.location=url;
 
-	}
 	function logout() {
 		document.forms["logout"].submit();		
 	}
 	function login() {
-		window.open("start.do?login=true","login","height=230,width=400,status=no,toolbar=no,scrollbars=no,resizable=no,menubar=no,location=no");
+		window.open("do/start?login=true","login","height=230,width=400,status=no,toolbar=no,scrollbars=no,resizable=no,menubar=no,location=no");
 	}
 
 	function openPage(action) {
