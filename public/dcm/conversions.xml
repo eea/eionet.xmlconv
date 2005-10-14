@@ -42,4 +42,11 @@
                 <result_type>SQL</result_type>
                 <stylesheet>VB_Access.xsl</stylesheet>
         </conversion>
+        <conversion>
+                <id>8</id>
+                <description>XML</description>
+                <result_type>XML</result_type>
+                <stylesheet>XML.xsl</stylesheet>
+        </conversion>
+
 </conversions>

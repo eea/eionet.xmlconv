@@ -21,7 +21,7 @@
  
  
  
-<!--blabla-->
+
 <xsl:text disable-output-escaping="yes">&lt;xsl:template match="dd</xsl:text>
 <xsl:value-of select="parentNS"/>
 <xsl:text disable-output-escaping="yes">:</xsl:text>
@@ -150,7 +150,7 @@
 <xsl:text disable-output-escaping="yes">			&lt;/table:table-rows&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">		&lt;/table:table&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;</xsl:text>
-<!--blabla--> 
+
         <xsl:text disable-output-escaping="yes">&lt;/xsl:stylesheet&gt;&#xd;&#xa;</xsl:text>       
         
     </xsl:template> 
