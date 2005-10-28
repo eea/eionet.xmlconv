@@ -25,6 +25,7 @@ package eionet.gdem.services;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.dto.Schema;
 import eionet.gdem.utils.Utils;
 
 import java.io.File;
@@ -346,7 +347,20 @@ public class DbModule implements DbModuleIF, Constants {
           " WHERE " + SCHEMA_ID_FLD + "=" + schema_id;
 
     _executeUpdate(sql);
+	
 
+	if(xmlSchema.startsWith(Properties.gdemURL + "schema/")){
+
+		 String url =Properties.gdemURL+ "schema/";
+		 String schema =  xmlSchema.substring(url.length(), xmlSchema.length());
+				
+		
+		sql = "UPDATE  " + UPL_SCHEMA_TABLE + " SET " + SCHEMA_DESCR_FLD + "=" + Utils.strLiteral(description) +
+	    " WHERE " + UPL_SCHEMA_FLD + "=" + Utils.strLiteral(schema);
+
+		_executeUpdate(sql);			
+	}
+	
   }
   public void updateSchemaValidate(String schema_id, String validate) throws SQLException{
     
@@ -1214,7 +1228,7 @@ public class DbModule implements DbModuleIF, Constants {
   public Vector getUplSchema() throws SQLException {
 
 	    
-	String sql = "SELECT " + UPL_SCHEMA_ID_FLD + ", " + UPL_SCHEMA_FLD +  
+	String sql = "SELECT " + UPL_SCHEMA_ID_FLD + ", " + UPL_SCHEMA_FLD +  ", " + UPL_SCHEMA_DESC + 
 		 	" FROM " + UPL_SCHEMA_TABLE + " ORDER BY " + UPL_SCHEMA_FLD;
   	
 	String r[][] = _executeStringQuery(sql);
@@ -1225,14 +1239,15 @@ public class DbModule implements DbModuleIF, Constants {
       Hashtable h = new Hashtable();
       h.put("id", r[i][0]);
       h.put("schema", r[i][1]);
+	  h.put("description", r[i][2]);
       v.add(h);      
     }
     return v;
   }  
 
-  public String addUplSchema(String schema) throws SQLException {
+  public String addUplSchema(String schema, String description) throws SQLException {
 	    
-	    String sql = "INSERT INTO " + UPL_SCHEMA_TABLE + " ( " + UPL_SCHEMA_FLD + ") VALUES (" + Utils.strLiteral(schema) + ")";
+	    String sql = "INSERT INTO " + UPL_SCHEMA_TABLE + " ( " + UPL_SCHEMA_FLD + " ," +UPL_SCHEMA_DESC+ ") VALUES (" + Utils.strLiteral(schema) + ", " +Utils.strLiteral(description)+ ")";
 
 		_executeUpdate(sql);
 	    
@@ -1283,5 +1298,57 @@ public class DbModule implements DbModuleIF, Constants {
 	    return v;
 	  }
 
+  public void updateUplSchema(String schema_id, String description) throws SQLException{
+	    
+	    description = (description == null ? "" : description );
+	    
+	    String sql = "UPDATE  " + UPL_SCHEMA_TABLE + " SET " + SCHEMA_DESCR_FLD + "=" + Utils.strLiteral(description) +
+	          " WHERE " + UPL_SCHEMA_ID_FLD + "=" + schema_id;
+
+	    _executeUpdate(sql);
+		
+		
+		Hashtable sch = getUplSchemaById(schema_id);
+		String schema = (String)sch.get("schema");
+
+	    sql = "UPDATE  " + SCHEMA_TABLE + " SET " + SCHEMA_DESCR_FLD + "=" + Utils.strLiteral(description) + 
+        " WHERE " + XML_SCHEMA_FLD + "=" + Utils.strLiteral(Properties.gdemURL + "schema/" + schema);
+
+		_executeUpdate(sql);
+		
+
+	  }
+
+  public Hashtable getUplSchemaById(String schemaId) throws SQLException {
+
+	    int id = 0;
+
+	    if (schemaId==null)
+	        throw new SQLException("Schema ID not defined");
+	    try { 
+	       id=Integer.parseInt(schemaId);
+	     } catch(NumberFormatException n) {
+	       throw new SQLException("not numeric ID " + schemaId);
+	   }
+	    
+	     String sql="SELECT " + SCHEMA_ID_FLD + ", " + UPL_SCHEMA_FLD + "," + UPL_SCHEMA_DESC + 
+	          " FROM " + UPL_SCHEMA_TABLE + " WHERE " + SCHEMA_ID_FLD + 
+	        "=" + id;
+	        
+	      
+
+	    String [][] r = _executeStringQuery(sql);
+
+
+		Hashtable h = new Hashtable();
+	      h.put("schema_id", r[0][0]);
+	      h.put("schema", r[0][1]);
+	      h.put("description", r[0][2]);      
+
+	    return h;
+	  }
   
+  
+
+
 }

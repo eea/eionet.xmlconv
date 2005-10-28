@@ -49,7 +49,7 @@ response.setDateHeader("Expires", 0);
 	@import url(<bean:write name="webRoot"/>/css/portlet-ie5.css);
 </style>
 <![endif]-->
-<!-- <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" /> -->
+<!-- <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" ></link> -->
 
 <script type="text/javascript" src="<bean:write name="webRoot"/>/scripts/admin.js"></script>
 <script type="text/javascript" src="<bean:write name="webRoot"/>/scripts/user.js"></script>

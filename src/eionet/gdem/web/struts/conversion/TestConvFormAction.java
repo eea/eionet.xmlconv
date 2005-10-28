@@ -79,6 +79,9 @@ public class TestConvFormAction  extends Action{
 						try{
 							analyser.parseXML(xmlUrl);
 						}
+						catch(DCMException e){
+							throw e;
+						}
 						catch(Exception e){
 							throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);        
 						}

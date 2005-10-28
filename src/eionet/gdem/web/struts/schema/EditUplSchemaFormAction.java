@@ -1,8 +1,9 @@
 package eionet.gdem.web.struts.schema;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
@@ -11,54 +12,50 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
-import org.apache.struts.upload.FormFile;
 
-
-import eionet.gdem.dcm.business.RootElemManager;
+import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.business.StylesheetManager;
+import eionet.gdem.dto.Schema;
+import eionet.gdem.dto.Stylesheet;
+import eionet.gdem.dto.UplSchema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
-public class AddUplSchemaAction extends Action {
+public class EditUplSchemaFormAction  extends Action {
 
 	private static LoggerIF _logger=GDEMServices.getLogger();
 
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+		
 		ActionMessages errors = new ActionMessages();
-        ActionMessages messages = new ActionMessages();		
-		UplSchemaForm form=(UplSchemaForm)actionForm;
-				
-		FormFile schema= form.getSchema();
-		String desc = form.getDescription();
+        
+		EditUplSchemaForm form=(EditUplSchemaForm)actionForm;
+		String schemaId= (String)httpServletRequest.getParameter("schemaId");
 		
-		String user = (String)httpServletRequest.getSession().getAttribute("user");
-
-		if (isCancelled(httpServletRequest)){
-			
-			return actionMapping.findForward("success");
-		}
-		
-
-		if(schema == null || schema.getFileSize()==0){
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.validation"));
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward("fail");
-		}		
+		System.out.println("-------schemaId---------" +schemaId);
 		
 		try{
 			SchemaManager sm = new SchemaManager();
-			sm.addUplSchema(user, schema, desc);			
-			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.inserted"));
+			UplSchema schema = sm.getUplSchemasById(schemaId);
+
+			System.out.println("-------id---------" +schema.getId());
+			
+			form.setIdSchema(schema.getId());
+			form.setSchema(Properties.gdemURL + "schema/" + schema.getSchema());
+			
+			form.setDescription(schema.getDescription());
+			
+			System.out.println("-------description---------" +schema.getDescription());
+			
 		}catch(DCMException e){			
 			e.printStackTrace();
 			_logger.error(e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+			saveErrors(httpServletRequest, errors);
 		}
-        httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-        httpServletRequest.getSession().setAttribute("dcm.messages", messages);						
 		
         return actionMapping.findForward("success");
-	}		
+	}
 }

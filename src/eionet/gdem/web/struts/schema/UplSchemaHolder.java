@@ -6,6 +6,7 @@ public class UplSchemaHolder {
 	private List schemas;
 	boolean ssiPrm;
 	boolean ssdPrm;
+	boolean ssuPrm;
 
 	public UplSchemaHolder() {
 	}
@@ -37,6 +38,15 @@ public class UplSchemaHolder {
 
 	public void setSsiPrm(boolean ssiPrm) {
 		this.ssiPrm = ssiPrm;
+	}
+
+	public boolean isSsuPrm() {
+		return ssiPrm;
+	}
+	
+
+	public void setSsuPrm(boolean ssuPrm) {
+		this.ssuPrm = ssuPrm;
 	}
 	
 

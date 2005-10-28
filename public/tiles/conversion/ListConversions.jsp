@@ -33,7 +33,7 @@
 		<html:form action="/listConv" method="post" >
 		  <table cellpadding="0" cellspacing="0" border="0" align="center">
 		    <tr>
-		      <td colspan="3">
+		      <td>
 		        <bean:message key="label.conversion.insertURL"/>
 		      </td>
 		    </tr>
@@ -41,10 +41,11 @@
 		      <td>&nbsp;</td>
 		    </tr>
 		    <tr>
-		      <td align="right"> 
-		       <h6> <bean:message key="label.conversion.url"/>: </h6>
+		      <td > 
+		       <h6> <bean:message key="label.conversion.url"/>: </h6> <br/>
 		      </td>
-		      <td>&nbsp;</td>
+		     </tr>
+		     <tr>
 		      <td>
 		        <html:text property="xmlUrl"  style="width: 30em;" />		        
 		      </td>
@@ -53,7 +54,7 @@
 		      <td>&nbsp;</td>
 		    </tr>
 		    <tr>
-		      <td colspan="3">
+		      <td>
 		        <bean:message key="label.conversion.selectSchema"/>
 		      </td>
 		    </tr>
@@ -61,12 +62,13 @@
 		      <td>&nbsp;</td>
 		    </tr>		    
 		    <tr>
-		      <td align="right" valign="top">
-		        <h6><bean:message key="label.conversion.xmlSchema"/>:</h6>
-		      </td>
-		      <td>&nbsp;</td>
 		      <td>
-		        <select name="xmlSchema"  size="6">
+		        <h6><bean:message key="label.conversion.xmlSchema"/>:</h6> <br/>
+		      </td>
+		    </tr>
+		    <tr>
+		      <td>
+		        <select name="xmlSchema"  size="6" >
 									<option selected="selected" value="">
 										--
 									</option>		        
@@ -87,7 +89,7 @@
 		      <td>&nbsp;</td>
 		    </tr>
 		    <tr>
-		      <td colspan="3">
+		      <td>
 		        <bean:message key="label.conversion.validateSchema"/>
 		      </td>
 		    </tr>
@@ -95,19 +97,24 @@
 		      <td>&nbsp;</td>
 		    </tr>		    
 		    <tr>
-		      <td align="right">
-		      	<h6><bean:message key="label.conversion.validate"/>:</h6>
-		      </td>
-		      <td>&nbsp;</td>
 		      <td>
-					<input type="checkbox" name="validate" id="validatefield"/>
+		      	<table>
+		      		<tr>
+		      			<td>
+				      		<h6 style="padding-bottom:8px"><bean:message key="label.conversion.validate"/>:</h6>
+				        </td>
+				        <td>
+							<input type="checkbox" name="validate" id="validatefield"/>
+						</td>
+				     </tr>
+			    </table>
 		      </td>
 		    </tr>
 		    <tr>
 		      <td>&nbsp;</td>
 		    </tr>
 		    <tr>
-		      <td colspan="3" align="center">
+		      <td align="center">
 		        <html:submit styleClass="button">
 		        	<bean:message key="label.conversion.list"/>
 		        </html:submit>		        

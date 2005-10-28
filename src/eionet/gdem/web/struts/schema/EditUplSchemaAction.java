@@ -14,43 +14,36 @@ import org.apache.struts.action.ActionMessages;
 import org.apache.struts.upload.FormFile;
 
 
-import eionet.gdem.dcm.business.RootElemManager;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.business.StylesheetManager;
+import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
-public class AddUplSchemaAction extends Action {
+public class EditUplSchemaAction extends Action {
 
 	private static LoggerIF _logger=GDEMServices.getLogger();
 
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 		ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();		
-		UplSchemaForm form=(UplSchemaForm)actionForm;
-				
-		FormFile schema= form.getSchema();
-		String desc = form.getDescription();
+
+		EditUplSchemaForm form=(EditUplSchemaForm)actionForm;
+		String schemaId=form.getIdSchema();		 
+		String description = form.getDescription();
+		
+		if (isCancelled(httpServletRequest)){						
+			return actionMapping.findForward("success");
+		}		
 		
 		String user = (String)httpServletRequest.getSession().getAttribute("user");
 
-		if (isCancelled(httpServletRequest)){
-			
-			return actionMapping.findForward("success");
-		}
-		
-
-		if(schema == null || schema.getFileSize()==0){
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.validation"));
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward("fail");
-		}		
-		
 		try{
 			SchemaManager sm = new SchemaManager();
-			sm.addUplSchema(user, schema, desc);			
-			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.inserted"));
+			//sm.uplUpdate( user, schemaId, description);
+			sm.updateUplSchema( user, schemaId, description);
+			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.updated"));
 		}catch(DCMException e){			
 			e.printStackTrace();
 			_logger.error(e);

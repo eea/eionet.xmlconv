@@ -110,6 +110,7 @@ public interface DbModuleIF {
    */
    public static final String UPL_SCHEMA_ID_FLD="SCHEMA_ID";
    public static final String UPL_SCHEMA_FLD="SCHEMA";
+   public static final String UPL_SCHEMA_DESC="DESCRIPTION";
   
   
   /**
@@ -517,7 +518,7 @@ public interface DbModuleIF {
     * @param schema - xml schema name
     * @return The ID of the added schema
     */    
-    public String addUplSchema(String schema) throws SQLException;
+    public String addUplSchema(String schema, String description) throws SQLException;
 
 	 /**
 	  * Removes the uploaded xml schema from the uploaded schema table
@@ -539,5 +540,9 @@ public interface DbModuleIF {
 	  * @throws SQLException
 	  */
 	 public Vector getSchemasWithStl() throws SQLException;
+	 
+	 public Hashtable getUplSchemaById(String schemaId) throws SQLException;
+	 
+	 public void updateUplSchema(String schema_id, String description) throws SQLException;
 	 
 }

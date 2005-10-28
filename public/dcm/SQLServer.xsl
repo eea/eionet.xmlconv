@@ -44,9 +44,9 @@
         <xsl:text disable-output-escaping="yes">-- Dumping data for table&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">--\n\r&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">        &lt;/xsl:if&gt;&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">INSERT INTO </xsl:text>
+        <xsl:text disable-output-escaping="yes">INSERT INTO [</xsl:text>
         <xsl:value-of select="identifier"/>
-        <xsl:text disable-output-escaping="yes"> VALUES (N'&lt;xsl:value-of select="@status"/&gt;',&#xd;&#xa;</xsl:text>        
+        <xsl:text disable-output-escaping="yes">] VALUES (N'&lt;xsl:value-of select="@status"/&gt;',&#xd;&#xa;</xsl:text>        
         <xsl:text disable-output-escaping="yes">&lt;xsl:for-each select="*"&gt;&lt;xsl:if test=".=''"&gt;null&lt;/xsl:if&gt;&lt;xsl:if test=".!=''"&gt;'&lt;xsl:value-of select='replace(.,"&amp;apos;","&amp;apos;&amp;apos;")'</xsl:text>
         <xsl:text disable-output-escaping="yes"> /&gt;'&lt;/xsl:if&gt;&lt;xsl:if test="position()!=last()"&gt;,&lt;/xsl:if&gt;&lt;/xsl:for-each&gt;&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">);&#xd;&#xa;</xsl:text>

@@ -36,17 +36,21 @@ public class AddStylesheetAction extends Action {
 		httpServletRequest.setAttribute("schema", schema);
 		
 		
-		if (isCancelled(httpServletRequest)){
-			
+		if (isCancelled(httpServletRequest)){			
 			return actionMapping.findForward("success");
 		}
-		
-		
-		
 		
 		ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();		
 
+		
+		if(xslFile == null || xslFile.getFileSize()==0){
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.validation"));
+			httpServletRequest.getSession().setAttribute("dcm.errors", errors);						
+			return actionMapping.findForward("fail");
+		}
+
+		
 		if(schema == null || schema.equals("")){
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.validation"));
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);						

@@ -14,6 +14,8 @@
         <form-bean name="imageForm" type="eionet.gdem.web.struts.uimanage.ImageManagerForm"/>
         <form-bean name="ldapForm" type="eionet.gdem.web.struts.config.LdapForm"/>
         <form-bean name="dbForm" type="eionet.gdem.web.struts.config.DbForm"/>        
+        <form-bean name="EditUplSchemaForm" type="eionet.gdem.web.struts.schema.EditUplSchemaForm"/>   
+             
     </form-beans>
 
     <global-forwards>
@@ -92,7 +94,15 @@
         </action>        
         <action path="/addUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.AddUplSchemaAction" name="UplSchemaForm">           
         	<forward name="success" path="/do/uplSchemas"  redirect="true"/>            
+        	<forward name="fail" path="/do/addUplSchemaForm"  redirect="true"/>
         </action>        
+        <action path="/editUplSchemaForm" name="EditUplSchemaForm" type="eionet.gdem.web.struts.schema.EditUplSchemaFormAction" input="/editUplSchema.jsp" scope="request">
+            <forward name="success" path="/editUplSchema.jsp" redirect="true" />
+        </action>
+        <action path="/editUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.EditUplSchemaAction" name="EditUplSchemaForm">           
+        	<forward name="success" path="/do/uplSchemas"  redirect="true"/>            
+        </action>        
+
 
  <!-- Edit UI -->
         <action path="/editUI/imageManagerSetup" type="eionet.gdem.web.struts.uimanage.ImageManagerSetupAction"

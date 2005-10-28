@@ -16,12 +16,12 @@
 		</div>
 	</div> 
 
-			<ed:breadcrumbs-push label="Upload Schema" level="1" />
-			<h4><bean:message key="label.title.uplSchema.add"/></h4> 
+			<ed:breadcrumbs-push label="Edit Schema" level="1" />
+			<h4><bean:message key="label.title.uplSchema.edit"/></h4> 
 
 		<div class="boxcontent">
 
-		<html:form action="/addUplSchema" method="post" enctype="multipart/form-data">
+		<html:form action="/editUplSchema" method="post">
 		  <table cellpadding="0" cellspacing="0" border="0" align="center">
 		    <tr>
 		      <td>
@@ -29,7 +29,10 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
-		        <html:file property="schema"  />
+					<a target="blank" href="<bean:write name="EditUplSchemaForm" property="schema" />" title="<bean:write name="EditUplSchemaForm" property="schema" />">						
+						<bean:write name="EditUplSchemaForm" property="schema" />
+					</a>&#160;		        	  		        
+					<html:hidden  property="idSchema" />
 		      </td>
 		    </tr>
 		    <tr>
@@ -50,7 +53,7 @@
 		    <tr>
 		      <td colspan="3" align="center">
 		        <html:submit styleClass="button">
-		        	<bean:message key="label.uplSchema.upload"/>
+		        	<bean:message key="label.ok"/>
 		        </html:submit>
 		        <html:cancel styleClass="button">
 		        	<bean:message key="label.cancel"/>

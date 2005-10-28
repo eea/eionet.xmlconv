@@ -7,9 +7,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 
-public class UplSchemaForm extends ActionForm{
+public class EditUplSchemaForm extends ActionForm{
 
-	private FormFile schema;
+	private String schema;
+	private String idSchema;
 	private String description;
 	
 	
@@ -18,21 +19,31 @@ public class UplSchemaForm extends ActionForm{
 		  }
 	  public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
 			schema=null;
+			idSchema=null;
 			description=null;
 		  }
-	public FormFile getSchema() {
-		return schema;
-	}
-	
-	public void setSchema(FormFile schema) {
-		this.schema = schema;
-	}
 	public String getDescription() {
 		return description;
 	}
 	
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public String getIdSchema() {
+		return idSchema;
+	}
+	
+	public void setIdSchema(String idSchema) {
+		this.idSchema = idSchema;
+	}
+	
+	public String getSchema() {
+		return schema;
+	}
+	
+	public void setSchema(String schema) {
+		this.schema = schema;
 	}
 	
 	

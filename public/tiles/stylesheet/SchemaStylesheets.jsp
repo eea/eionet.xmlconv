@@ -92,6 +92,11 @@
 		</table>
 	</div>
 	</logic:present>
+	<logic:notPresent name="stylesheets" name="schema" scope="page" property="stylesheets" >
+		<div class="success">
+			<bean:message key="label.schema.noStylesheets"/>
+		</div>
+	</logic:notPresent>
 </logic:iterate>
 
 	<div class="visualClear">&nbsp;</div>

@@ -22,7 +22,8 @@
 		<div class="boxcontent">
 
 		<html:form action="/stylesheetAdd" method="post" enctype="multipart/form-data">
-		  <table cellpadding="0" cellspacing="0" border="0" align="center">
+		<div style="padding-left:50px">
+		  <table cellpadding="0" cellspacing="0" border="0">
 		    <tr>
 		      <td>
 		        <bean:message key="label.stylesheet.schema"/>:
@@ -30,15 +31,15 @@
 		      <td>&nbsp;</td>
 		      <td>
 				<logic:present name="schema" scope="request">
-		        <input type="text" name="schema" value="<bean:write name="schema" scope="request"/>" style="width: 30em;" />
+		        <input type="text" name="schema" value="<bean:write name="schema" scope="request"/>" style="width:400px" />
 		        </logic:present>
 		        <logic:notPresent name="schema" scope="request">
-		        <input type="text" name="schema" maxlength="255"  style="width: 30em;" />
+		        <input type="text" name="schema" maxlength="255"  style="width:400px" />
 		        </logic:notPresent>
 		      </td>
 		    </tr>
 		    <tr>
-		      <td>&nbsp;</td>
+		      <td colspan="3">&nbsp;</td>
 		    </tr>
 		    <logic:present name="user">
 		    <tr>
@@ -47,13 +48,10 @@
 		      </td>
 		    </tr>		    
 		    <tr>
-		      <td>&nbsp;</td>
+		      <td colspan="3">&nbsp;</td>
 		    </tr>		    
 		    <tr>
-			  <td>
-		      </td>
-		      <td>&nbsp;</td>
-		      <td>		    
+		      <td colspan="3">		    
 		          <select name="xmlSchema"  size="6" onchange="setSchema()">
 									<option selected="selected" value="">
 										--
@@ -72,7 +70,7 @@
 		       </td>
 		    </tr>
 		    <tr>
-		      <td>&nbsp;</td>
+		      <td colspan="3">&nbsp;</td>
 		    </tr>		    
 		    </logic:present>		    
 		    <tr>
@@ -91,7 +89,7 @@
 		      </td>
 		    </tr>
 		    <tr>
-		      <td>&nbsp;</td>
+		      <td colspan="3">&nbsp;</td>
 		    </tr>
 		    <tr>
 		      <td>
@@ -99,11 +97,11 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
-		        <html:textarea property="description"  rows="3" cols="20"/>
+		        <html:textarea property="description"  rows="3" style="width:400px"/>
 		      </td>
 		    </tr>
 		    <tr>
-		      <td>&nbsp;</td>
+		      <td colspan="3">&nbsp;</td>
 		    </tr>
 		    <tr>
 		      <td>
@@ -115,7 +113,7 @@
 		      </td>
 		    </tr>
 		    <tr>
-		      <td>&nbsp;</td>
+		      <td colspan="3">&nbsp;</td>
 		    </tr>
 		    <tr>
 		      <td colspan="3" align="center">
@@ -129,6 +127,7 @@
 		      </td>
 		    </tr>
 		  </table>
+		 </div>
 		</html:form>
 		
 		</div>

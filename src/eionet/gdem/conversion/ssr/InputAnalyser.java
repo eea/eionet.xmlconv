@@ -29,6 +29,8 @@ import org.xml.sax.*;
 //import org.xml.sax.SAXException;
 import javax.xml.parsers.*;
 import eionet.gdem.GDEMException;
+import eionet.gdem.dcm.BusinessConstants;
+import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.InputFile;
 
@@ -47,7 +49,7 @@ public class InputAnalyser
   {
   
   }
-  public String parseXML(String srcUrl) throws GDEMException{
+  public String parseXML(String srcUrl) throws DCMException{
     InputFile src=null;
     InputStream input = null;
     try{
@@ -55,10 +57,16 @@ public class InputAnalyser
       input = src.getSrcInputStream();
       return parseXML(input);
     } catch (MalformedURLException mfe ) {
-      throw new GDEMException("Bad URL : " + mfe.toString());
+      //throw new GDEMException("Bad URL : " + mfe.toString());
+		throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED);
     } catch (IOException ioe ) {
-      throw new GDEMException("Error opening URL " + ioe.toString());
+      //throw new GDEMException("Error opening URL " + ioe.toString());
+		throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_ERROR);	
+    } catch (GDEMException e ) {
+		e.printStackTrace();
+		throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
     }
+	
     finally{
       try{
         if (input!=null) input.close();
@@ -159,14 +167,15 @@ public class InputAnalyser
   }
     public static void main(String[] argv) {
         InputAnalyser sch = new InputAnalyser();//
-        try{
+        /*try{
           //sch.parseXML("http://localhost:8080/gdem/xml/meta.xml");
-          sch.parseXML("http://localhost:8080/gdem/test/MT_bodies.xml");
+          //sch.parseXML("http://reporter.ceetel.net:18180/ro/eea/ewn3/envqhw5eg/test.xml");
           //sch.parseXML("http://195.250.186.59:8080/gdem/countrynames.tmx");
         }
         catch(GDEMException e){
           System.out.println(e.toString());
         }
+        */
          System.out.println("start tag: " + sch.getRootElement());
          System.out.println("schema or dtd: " + sch.getSchemaOrDTD());
          System.out.println("ns: " + sch.getNamespace());

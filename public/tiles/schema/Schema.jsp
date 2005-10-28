@@ -10,6 +10,8 @@
 <%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
 
 <html:xhtml/>
+
+
 <div id="schema" class="box"> 
 	<div class="boxleft"> 
 		<div class="boxtop"><div>
@@ -24,14 +26,14 @@
 		<html:form action="/schemaUpdate" method="post" >
 		  <table cellpadding="0" cellspacing="0" border="0" align="center">
 		    <tr>
-		      <td>
+		      <td align="right">
     		    <html:hidden property="schemaId" />
 		        <bean:message key="label.schema.location"/>:
 		      </td>
 		      <td>&nbsp;</td>
-		      <td>
+		      <td align="left">
 	    		    <logic:present name="user">
-			        	<html:text property="schema" maxlength="255" style="width: 30em;" />		        
+			        	<html:text property="schema" maxlength="255" size="50" />		        
     		        </logic:present>
     		        <logic:notPresent name="user">
     		        	<html:hidden property="schema" />
@@ -47,13 +49,13 @@
 		      <td>&nbsp;</td>
 		    </tr>
 		    <tr>
-		      <td>
+		      <td align="right">
 		        <bean:message key="label.schema.description"/>:
 		      </td>
 		      <td>&nbsp;</td>
-		      <td>
+		      <td align="left">
 	    		    <logic:present name="user">		      	
-				        <html:text property="description" maxlength="255" style="width: 30em;" />		        
+				        <html:text property="description" maxlength="255" size="50" />		        
 				    </logic:present>
     		        <logic:notPresent name="user">
 							<bean:write name="schemaForm" property="description" />    		        
@@ -66,12 +68,12 @@
 		    <bean:define id="schemaProp" name="schema.rootElemets" scope="session" property="schema" />
 		    <logic:equal  value="true"  name="schemaProp" scope="page" property="isDTD" >
 		    <tr>
-		      <td>
+		      <td align="right">
 		        <bean:message key="label.elem.dtdid"/>:
 		      </td>
 		      <td>&nbsp;</td>
-		      <td>
-		        <html:text property="dtdId" maxlength="50" style="width: 30em;" />		        
+		      <td align="left">
+		        <html:text property="dtdId" maxlength="50" size="50" />		        
 		      </td>
 		    </tr>
 		    <tr>
@@ -82,7 +84,7 @@
 		    </logic:equal>	
 		  </table>
 		  
-		  <div class="visualClear">&nbsp;</div>
+		   <p>&nbsp;</p>
 		  
 			<logic:equal name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >				
 			<div class="boxbottombuttons">
@@ -101,12 +103,13 @@
 				</div>
 		    </logic:notEqual>	
 		    
-		  <div class="visualClear">&nbsp;</div>
+		  <p>&nbsp;</p>
 		  
 		 
 
 			<logic:present name="user">
-			  <table class="sortable" align="center" width="80%">
+
+			  <table class="sortable" align="center" >
 				<tr>
 					<th scope="col"><span title="Element name"><bean:message key="label.schema.table.element"/></span></th>
 					<th scope="col"><span title="Namespace"><bean:message key="label.schema.table.namespace"/></span></th>
@@ -117,13 +120,13 @@
 					<logic:iterate indexId="index" id="elem" name="schema.rootElemets" scope="session" property="rootElem" type="RootElem">						
 	
 					<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
-						<td width="45%">
+						<td>
 							<bean:write name="elem" property="name" />
 						</td>
-						<td width="45%">					
+						<td>					
 								<bean:write name="elem" property="namespace" />					
 						</td>
-						<td width="10%">
+						<td>
 							<logic:equal name="ssdPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
 							<a href="deleteElem?elemId=<bean:write name="elem" property="elemId" />"
 							onclick='return elementDelete("<bean:write name="elem" property="name" />");'>
@@ -136,22 +139,23 @@
 				</logic:present>
 					<logic:equal name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
 					<tr>
-						<td width="45%">
-							 <html:text property="elemName" maxlength="255" style="width: 30em;" />
+						<td  align="left">
+							 <html:text property="elemName" maxlength="255"  style="width:250px"/>
 						</td>
-						<td width="45%">					
-							  <html:text property="namespace" maxlength="255" style="width: 30em;" />
+						<td  align="left">					
+							  <html:text property="namespace" maxlength="255"   style="width:250px"/>
 						</td>
-						<td width="10%">
-							<input type="button"  class="button" value="<bean:message key="label.element.add"/>" onclick="return submitAction('elementAdd');" />
+						<td >
+							<input type="button"  class="button" style="width:50px" value="<bean:message key="label.element.add"/>" onclick="return submitAction('elementAdd');" />
 						</td>
 					</tr>
 					<tr>
-						<td valign="top" colspan="2">
+						<td valign="top" colspan="3">
 						</td>
 					</tr>
 					</logic:equal>				   	
 			</table>
+
 		</logic:present>
 
 

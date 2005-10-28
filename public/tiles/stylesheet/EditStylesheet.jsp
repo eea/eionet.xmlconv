@@ -19,10 +19,11 @@
 			<ed:breadcrumbs-push label="Edit Stylesheet" level="1" />
 			<h4><bean:message key="label.stylesheet.edit"/></h4> 
 
-		<div class="boxcontent" align="center">
+		<div class="boxcontent" >
 
 		<html:form action="/stylesheetEdit" method="post" enctype="multipart/form-data">
-		  <table cellpadding="0" cellspacing="0" border="0" align="center">
+		  <div style="padding-left:50px">
+		  <table cellpadding="0" cellspacing="0" border="0" >
 		    <tr>
 		      <td>
 		        <bean:message key="label.stylesheet.schema"/>:
@@ -30,7 +31,7 @@
 		      <td>&nbsp;</td>
 		      <td>
 		      	<logic:present name="user">
-		        	<html:text property="schema"  maxlength="255" style="width: 30em;" />		        
+		        	<html:text property="schema"  maxlength="255" style="width:400px" />		        
 		        </logic:present>
 		        <logic:notPresent name="user">
 		        		<html:hidden name="stylesheetForm" property="schema" />
@@ -53,11 +54,8 @@
 		      <td>&nbsp;</td>
 		    </tr>		    
 		    <tr>
-			  <td>
-		      </td>
-		      <td>&nbsp;</td>
-		      <td>		    
-		          <select name="xmlSchema"  size="6" onchange="setSchema()">
+		      <td colspan="3">		    
+		          <select name="xmlSchema"  size="6" onchange="setSchema()" >
 									<option selected="selected" value="">
 										--
 									</option>		        
@@ -86,7 +84,7 @@
 		      <td>
 					<bean:define id="oType" name="stylesheet.outputtypeSel" scope="session" type="java.lang.String" />	
 			   <logic:present name="user">		
-		        	<select name="outputtype" style="width:100px;">
+		        	<select name="outputtype" style="width:100px">
 		       </logic:present>
 					<logic:iterate id="opt" name="stylesheet.outputtype" scope="session"  property="convTypes" type="ConvType">
 					         <logic:equal name="opt" property="convType" value="<%=oType%>">
@@ -113,7 +111,7 @@
 		      </td>
 		    </tr>
 		    <tr>
-		      <td>&nbsp;</td>
+		      <td colspan="3">&nbsp;</td>
 		    </tr>
 		    <tr>
 		      <td>
@@ -122,7 +120,7 @@
 		      <td>&nbsp;</td>
 		      <td>
 			      <logic:present name="user">
-				        <html:textarea property="description"  rows="3" cols="20"/>
+				        <html:textarea property="description"  rows="3" style="width:400px"/>
 			      </logic:present>
 			      <logic:notPresent name="user">
 					    <bean:write name="stylesheetForm" property="description"/>
@@ -131,7 +129,7 @@
 		      </td>
 		    </tr>
 		    <tr>
-		      <td>&nbsp;</td>
+		      <td colspan="3">&nbsp;</td>
 		    </tr>
 		    <tr>
 		      <td>
@@ -145,7 +143,7 @@
 		      </td>
 		    </tr>
 		    <tr>
-		      <td>&nbsp;</td>
+		      <td colspan="3">&nbsp;</td>
 		    </tr>
 		    <logic:present name="user">
 		    <tr>
@@ -158,7 +156,7 @@
 		    </tr>
 		    </logic:present>
 		    <tr>
-		      <td>&nbsp;</td>
+		      <td colspan="3">&nbsp;</td>
 		    </tr>
 		    <tr>
 		      <td colspan="3" align="center">
@@ -178,6 +176,7 @@
 		      </td>
 		    </tr>
 		  </table>
+		</div>  
 		</html:form>
 		
 		</div>

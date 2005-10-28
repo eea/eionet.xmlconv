@@ -54,6 +54,11 @@ public class EditStylesheetAction extends Action {
 		}
 		
 		
+		if(xslFile == null || xslFile.getFileSize()==0){
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.validation"));
+			httpServletRequest.getSession().setAttribute("dcm.errors", errors);						
+			return actionMapping.findForward("fail");
+		}
 		
 		try{
 			StylesheetManager st = new StylesheetManager();

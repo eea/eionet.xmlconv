@@ -18,8 +18,10 @@
   <definition name="testConversion" path="/tiles/conversion/TestConversion.jsp" />
   <definition name="uplSchema" path="/tiles/schema/UplSchema.jsp" />  
   <definition name="addUplSchema" path="/tiles/schema/AddUplSchema.jsp" />
+  <definition name="editUplSchema" path="/tiles/schema/EditUplSchema.jsp" />
+  
   <definition name="confLdap" path="/tiles/config/Ldap.jsp" />
-    <definition name="confDb" path="/tiles/config/Db.jsp" />
+  <definition name="confDb" path="/tiles/config/Db.jsp" />
   
   <definition name="/editUI/ImageManager.jsp" path="/tiles/editUI/ImageManager.jsp"/>
   <definition name="HeaderManager" path="/tiles/editUI/HeaderManager.jsp"/>
@@ -62,9 +64,12 @@
   </definition>
   <definition name="/uplSchema.jsp" extends="base">
     <put name="body" type="definition" value="uplSchema"/>
-  </definition>
+  </definition>  
   <definition name="/addUplSchema.jsp" extends="base">
     <put name="body" type="definition" value="addUplSchema"/>
+  </definition>
+  <definition name="/editUplSchema.jsp" extends="base">
+    <put name="body" type="definition" value="editUplSchema"/>
   </definition>
    <definition name="/editUI/HeaderManager.jsp" extends="base">
   	<put name="body" type="definition" value="HeaderManager"/>

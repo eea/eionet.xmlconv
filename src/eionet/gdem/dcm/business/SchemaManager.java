@@ -522,16 +522,20 @@ public class SchemaManager {
 
 		boolean ssiPrm = false;
 		boolean ssdPrm = false;
+		boolean ssuPrm = false;
 		
 
 		
 		try {
 
-			ssiPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "i");
-			ssdPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "d");
+			ssiPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "i");
+			ssdPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "d");
+			ssuPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "u");
+					
 
 			sc.setSsdPrm(ssdPrm);
-			sc.setSsiPrm(ssiPrm);			
+			sc.setSsiPrm(ssiPrm);
+			sc.setSsuPrm(ssuPrm);
 			
 			schemas = new ArrayList();
 			
@@ -542,10 +546,12 @@ public class SchemaManager {
                 Hashtable hash = (Hashtable)schemaVec.get(i);
 				String id =(String)hash.get("id");
 				String schema =Properties.gdemURL + "schema/"  + (String)hash.get("schema");
+				String desc =(String)hash.get("description");
 				
 				UplSchema uplSchema= new UplSchema();
 				uplSchema.setId(id);
 				uplSchema.setSchema(schema);
+				uplSchema.setDescription(desc);
 				schemas.add(uplSchema);				
             }
 			if(schemas.size()>0){
@@ -560,7 +566,7 @@ public class SchemaManager {
 		
 	}
 	
-	public void addUplSchema(String user, FormFile file) throws DCMException{
+	public void addUplSchema(String user, FormFile file, String desc) throws DCMException{
         
         try{
           if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "i")){
@@ -590,7 +596,7 @@ public class SchemaManager {
 		
 	        DbModuleIF dbM = GDEMServices.getDbModule();
 	         
-	        dbM.addUplSchema(fileName);
+	        dbM.addUplSchema(fileName, desc);
        }
        catch (Exception e){
 			_logger.debug(e.toString());
@@ -728,12 +734,72 @@ public class SchemaManager {
 		}
 		return schema;
 	}
+
+	public void updateUplSchema(String user, String schemaId, String description) throws DCMException{
+		
+	        try{
+	          if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")){
+				  _logger.debug("You don't have permissions to update schemas!");
+				  throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_UPDATE);                              
+	          }
+	        }
+	        catch (DCMException e){					    
+				throw e;
+	        }
+			catch (Exception e){			
+				_logger.debug(e.toString());
+				throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
+	        }
+			
+
+	       try{
+			   DbModuleIF dbM= GDEMServices.getDbModule();
+    		   //dbM.updateSchema(schemaId, schema, description, dtdPublicId);
+			   dbM.updateUplSchema(schemaId, description);
+	        }
+	        catch (Exception e){
+				_logger.debug(e.toString());
+				throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
+	        }
+				
+	}
+	
+	public UplSchema getUplSchemasById(String schemaId) throws DCMException{
+
+		UplSchema sc = new UplSchema();		
+		try{
+			DbModuleIF dbM= GDEMServices.getDbModule();
+			Hashtable ht = dbM.getUplSchemaById(schemaId);
+			String schema = (String)ht.get("schema");
+			String desc = (String)ht.get("description");
+			
+			sc.setDescription(desc);
+			sc.setId(schemaId);
+			sc.setSchema(schema);					
+        }
+        catch (Exception e){
+			e.printStackTrace();
+			_logger.debug(e.toString());
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
+        }
+		return sc;
+
+	}
 	
 	
 	 public static void main(String[] args) throws DCMException
      {
-		 SchemaManager s = new SchemaManager();
-		 SchemaElemHolder d = s.getSchemaElems( "_admin","37");
+	String xmlSchema ="http://rubi:8080/xmlconv/schema/install_wizard.log";
+		 if(xmlSchema.startsWith(Properties.gdemURL + "schema/")){
+			 int i = xmlSchema.indexOf(Properties.gdemURL+ "schema/");
+			 String url =Properties.gdemURL+ "schema/";
+			 String schema =  xmlSchema.substring(url.length(), xmlSchema.length());
+			 System.out.println(schema);
+		 }
+				//xmlSchema.substring(xmlSchema.indexOf(Properties.gdemURL))
+			
+		 //SchemaManager s = new SchemaManager();
+		 //SchemaElemHolder d = s.getSchemaElems( "_admin","37");
      }
 	
 	

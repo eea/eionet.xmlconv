@@ -7,6 +7,7 @@ public class UplSchema implements Serializable{
 
 	private String id;
 	private String schema;
+	private String description;
 	
     public UplSchema() {
         
@@ -30,6 +31,16 @@ public class UplSchema implements Serializable{
 	public void setSchema(String schema) {
 		this.schema = schema;
 	}
+
+	public String getDescription() {
+		return description;
+	}
+	
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 	
 
 

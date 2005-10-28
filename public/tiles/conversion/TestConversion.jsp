@@ -33,7 +33,7 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
-		        <html:text property="url"  style="width: 30em;" />		        
+		        <html:text property="url"  style="width:300px" />		        
 		      </td>
 		    </tr>
 		    <tr>
