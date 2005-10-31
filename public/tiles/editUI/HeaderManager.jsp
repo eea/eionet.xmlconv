@@ -10,7 +10,7 @@
 
 <script type="text/javascript" src="<c:url value="/scripts/editUI.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/scripts/picker.js"/>"></script>
-<ed:breadcrumbs-push label="UI Manage" level="1" />
+<ed:breadcrumbs-push label="Edit header" level="1" />
 <div style="width:100%">
 <div id="tabbedmenu">
 		<ul>

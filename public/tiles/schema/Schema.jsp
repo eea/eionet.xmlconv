@@ -18,7 +18,7 @@
 		</div>
 	</div> 
 
-			<ed:breadcrumbs-push label="XML Schema or DTD" level="1" />
+			<ed:breadcrumbs-push label="XML Schema or DTD" level="3" />
 			<h4><bean:message key="label.schema.edit"/></h4> 
 
 		<div class="boxcontent" align="center">

@@ -18,7 +18,7 @@
 		</div>
 	</div> 
 
-			<ed:breadcrumbs-push label="Test conversion" level="1" />
+			<ed:breadcrumbs-push label="Test conversion" level="3" />
 			<h4><bean:message key="label.conversion.testconversion"/></h4> 
 
 		<div class="boxcontent">

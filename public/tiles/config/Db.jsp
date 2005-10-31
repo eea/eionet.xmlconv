@@ -22,7 +22,7 @@
 		</div>
 	</div> 
 
-			<ed:breadcrumbs-push label="Configuration" level="1" />
+			<ed:breadcrumbs-push label="DB configuration" level="1" />
 			<h4><bean:message key="label.config.db.admin"/></h4> 
 
 		<div class="boxcontent">
