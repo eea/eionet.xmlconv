@@ -1,5 +1,7 @@
 package eionet.gdem.web.struts.stylesheet;
 
+import java.io.ByteArrayInputStream;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,6 +17,8 @@ import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.xml.IXmlCtx;
+import eionet.gdem.utils.xml.XmlContext;
 
 public class EditStylesheetAction extends Action {
 
@@ -55,6 +59,16 @@ public class EditStylesheetAction extends Action {
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);						
 			return actionMapping.findForward("fail");
 		}
+		
+		IXmlCtx x = new XmlContext();
+      try {
+          x.setWellFormednessChecking();
+          x.checkFromInputStream(new ByteArrayInputStream(xslFile.getFileData()));
+      } catch (Exception e) {
+      	errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.notvalid"));
+      	httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+			return actionMapping.findForward("fail");
+      }
 		
 		try{
 			StylesheetManager st = new StylesheetManager();
