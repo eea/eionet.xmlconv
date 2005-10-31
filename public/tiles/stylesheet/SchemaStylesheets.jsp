@@ -9,7 +9,7 @@
 <%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
 
-<ed:breadcrumbs-push label="Stylesheets" level="1" />
+<ed:breadcrumbs-push label="Schema stylesheets" level="2" />
 
 <logic:present name="schema.stylesheets">
 
