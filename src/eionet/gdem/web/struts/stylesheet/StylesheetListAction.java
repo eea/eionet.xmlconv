@@ -3,11 +3,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionError;
-import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.SchemaManager;
@@ -32,7 +31,7 @@ public class StylesheetListAction extends Action {
 		}catch(DCMException e){			
 			e.printStackTrace();
 			_logger.error(e);
-			errors.add("schema", new ActionError("label.exception.unknown"));
+			errors.add("schema", new ActionMessage("label.exception.unknown"));
 			saveErrors(httpServletRequest, errors);			
 		}
         httpServletRequest.getSession().setAttribute("stylesheet.stylesheetList", st);

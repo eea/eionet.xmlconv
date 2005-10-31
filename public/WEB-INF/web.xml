@@ -1,32 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
-  <display-name>Conversion and Quality Assessment Service</display-name>
-  <filter >
-	<filter-name>Set Character Encoding</filter-name>
-	<filter-class>eionet.gdem.web.filters.SetCharacterEncodingFilter</filter-class>
-	<init-param>
-		<param-name >encoding</param-name>
-		<param-value >UTF-8</param-value>
-	</init-param>
-  </filter>
-  <filter-mapping>
-	<filter-name>Set Character Encoding</filter-name>
-	<servlet-name>action</servlet-name>
-  </filter-mapping>
-  <servlet>
-    <servlet-name>action</servlet-name>
-    <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
-    <init-param>
-      <param-name>config</param-name>
-      <param-value>/WEB-INF/struts-config.xml</param-value>
-    </init-param>
-    <init-param>
-      <param-name>debug</param-name>
-      <param-value>2</param-value>
-    </init-param>
-    <load-on-startup>2</load-on-startup>
-  </servlet>
+	<display-name>
+		Conversion and Quality Assessment Service
+	</display-name>
+	<filter>
+		<filter-name>Set Character Encoding</filter-name>
+		<filter-class>
+			eionet.gdem.web.filters.SetCharacterEncodingFilter
+		</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>Set Character Encoding</filter-name>
+		<servlet-name>action</servlet-name>
+	</filter-mapping>
+	<servlet>
+		<servlet-name>action</servlet-name>
+		<servlet-class>
+			org.apache.struts.action.ActionServlet
+		</servlet-class>
+		<init-param>
+			<param-name>config</param-name>
+			<param-value>/WEB-INF/struts-config.xml</param-value>
+		</init-param>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>2</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
 	<servlet>
 		<servlet-name>Main</servlet-name>
 		<servlet-class>eionet.gdem.conversion.ssr.Main</servlet-class>
@@ -37,12 +43,16 @@
 	</servlet>
 	<servlet>
 		<servlet-name>XQueryServlet</servlet-name>
-		<servlet-class>eionet.gdem.qa.servlets.WQCheckerServlet</servlet-class>
-		<load-on-startup/>
+		<servlet-class>
+			eionet.gdem.qa.servlets.WQCheckerServlet
+		</servlet-class>
+		<load-on-startup />
 	</servlet>
 	<servlet>
 		<servlet-name>ConversionServlet</servlet-name>
-		<servlet-class>eionet.gdem.conversion.ConversionServlet</servlet-class>
+		<servlet-class>
+			eionet.gdem.conversion.ConversionServlet
+		</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>RpcRouter</servlet-name>
@@ -50,9 +60,11 @@
 	</servlet>
 	<servlet>
 		<servlet-name>GetStylesheetServlet</servlet-name>
-		<servlet-class>eionet.gdem.conversion.GetStylesheetServlet</servlet-class>
+		<servlet-class>
+			eionet.gdem.conversion.GetStylesheetServlet
+		</servlet-class>
 	</servlet>
-		
+
 	<servlet-mapping>
 		<servlet-name>Main</servlet-name>
 		<url-pattern>/main</url-pattern>
@@ -77,50 +89,50 @@
 		<servlet-name>GetStylesheetServlet</servlet-name>
 		<url-pattern>/GetStylesheet</url-pattern>
 	</servlet-mapping>
-	  <servlet-mapping>
-	    <servlet-name>action</servlet-name>
-	    <url-pattern>/do/*</url-pattern>
-	  </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>action</servlet-name>
+		<url-pattern>/do/*</url-pattern>
+	</servlet-mapping>
 
-	  <error-page>
-	     <error-code>500</error-code>
-	     <location>/error/500.jsp</location>
-	  </error-page>
-	  <error-page>
-	    <error-code>404</error-code>
-	    <location>/error/404.jsp</location>
-	  </error-page>  
-	  
-  <taglib>
-    <taglib-uri>/WEB-INF/struts-bean.tld</taglib-uri>
-    <taglib-location>/WEB-INF/struts-bean.tld</taglib-location>
-  </taglib>
-  <taglib>
-    <taglib-uri>/WEB-INF/struts-html.tld</taglib-uri>
-    <taglib-location>/WEB-INF/struts-html.tld</taglib-location>
-  </taglib>
-  <taglib>
-    <taglib-uri>/WEB-INF/struts-logic.tld</taglib-uri>
-    <taglib-location>/WEB-INF/struts-logic.tld</taglib-location>
-  </taglib>
-  <taglib>
-    <taglib-uri>/WEB-INF/struts-template.tld</taglib-uri>
-    <taglib-location>/WEB-INF/struts-template.tld</taglib-location>
-  </taglib>
-  <taglib>
-    <taglib-uri>/WEB-INF/struts-tiles.tld</taglib-uri>
-    <taglib-location>/WEB-INF/struts-tiles.tld</taglib-location>
-  </taglib>
-  <taglib>
-    <taglib-uri>/WEB-INF/struts-nested.tld</taglib-uri>
-    <taglib-location>/WEB-INF/struts-nested.tld</taglib-location>
-  </taglib>
-  <taglib>
-    <taglib-uri>/WEB-INF/eurodyn.tld</taglib-uri>
-    <taglib-location>/WEB-INF/eurodyn.tld</taglib-location>
-  </taglib>
- <taglib>
-    <taglib-uri>/WEB-INF/c.tld</taglib-uri>
-    <taglib-location>/WEB-INF/c.tld</taglib-location>
-  </taglib>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/error/500.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error/404.jsp</location>
+	</error-page>
+
+	<taglib>
+		<taglib-uri>/WEB-INF/struts-bean.tld</taglib-uri>
+		<taglib-location>/WEB-INF/tlds/struts-bean.tld</taglib-location>
+	</taglib>
+	<taglib>
+		<taglib-uri>/WEB-INF/struts-html.tld</taglib-uri>
+		<taglib-location>/WEB-INF/tlds/struts-html.tld</taglib-location>
+	</taglib>
+	<taglib>
+		<taglib-uri>/WEB-INF/struts-logic.tld</taglib-uri>
+		<taglib-location>/WEB-INF/tlds/struts-logic.tld</taglib-location>
+	</taglib>
+	<taglib>
+		<taglib-uri>/WEB-INF/struts-tiles.tld</taglib-uri>
+		<taglib-location>/WEB-INF/tlds/struts-tiles.tld</taglib-location>
+	</taglib>
+	<taglib>
+		<taglib-uri>/WEB-INF/struts-nested.tld</taglib-uri>
+		<taglib-location>/WEB-INF/tlds/struts-nested.tld</taglib-location>
+	</taglib>
+	<taglib>
+		<taglib-uri>/WEB-INF/struts-template.tld</taglib-uri>
+		<taglib-location>/WEB-INF/tlds/struts-template.tld</taglib-location>
+	</taglib>
+	<taglib>
+		<taglib-uri>/WEB-INF/eurodyn.tld</taglib-uri>
+		<taglib-location>/WEB-INF/tlds/eurodyn.tld</taglib-location>
+	</taglib>
+	<taglib>
+		<taglib-uri>/WEB-INF/c.tld</taglib-uri>
+		<taglib-location>/WEB-INF/tlds/c.tld</taglib-location>
+	</taglib>
 </web-app>

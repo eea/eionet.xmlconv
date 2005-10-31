@@ -4,11 +4,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionError;
-import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.SchemaManager;
@@ -53,7 +52,7 @@ public class SchemaStylesheetAction extends Action{
 			}catch(DCMException e){			
 				e.printStackTrace();
 				_logger.error(e);
-				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionError(e.getErrorCode()));
+				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			}
 	        saveErrors(httpServletRequest, messages);
 			
