@@ -10,7 +10,7 @@
 
   <tag>
     <name>hasRole</name>
-    <tag-class>com.eurodyn.web.tags.HasRole</tag-class>
+    <tag-class>eionet.gdem.web.tags.HasRole</tag-class>
     <description>
        display content only if user has got the specified role
     </description>
@@ -32,7 +32,7 @@
   </tag>
   <tag>
     <name>menuItem</name>
-    <tag-class>com.eurodyn.web.tags.MenuItem</tag-class>
+    <tag-class>eionet.gdem.web.tags.MenuItem</tag-class>
     <description>
        display (selected) menu item
     </description>
@@ -60,7 +60,7 @@
 
   <tag>
     <name>breadcrumbs-list</name>
-    <tag-class>com.eurodyn.web.tags.breadcrumbs.ListTag</tag-class>
+    <tag-class>eionet.gdem.web.tags.breadcrumbs.ListTag</tag-class>
     <body-content>JSP</body-content>
     <description>ListTag is used to display the trail, either the whole trail or more likely the normalized version. </description> 
     <attribute>
@@ -81,7 +81,6 @@
       <rtexprvalue>true</rtexprvalue>
       <description>CSS class style to display last bread-crumb</description>
     </attribute>
-
     <attribute>
       <name>var</name>
       <required>false</required>
@@ -98,7 +97,7 @@
   
   <tag>
     <name>breadcrumbs-push</name>
-    <tag-class>com.eurodyn.web.tags.breadcrumbs.PushTag</tag-class>
+    <tag-class>eionet.gdem.web.tags.breadcrumbs.PushTag</tag-class>
     <body-content>JSP</body-content>
     <description>Place a page on the trail. </description>
     <attribute>
@@ -122,7 +121,7 @@
   </tag>
    <tag>
     <name>ui-renderer</name>
-    <tag-class>com.eurodyn.web.tags.UIRendererTag</tag-class>
+    <tag-class>eionet.gdem.web.tags.UIRendererTag</tag-class>
     <description>
        Render UI templates
     </description>
