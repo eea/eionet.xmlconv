@@ -63,11 +63,6 @@ response.setDateHeader("Expires", 0);
 	<div id="portal-top">
 		<div id="portal-logo">
 			<div style="width:100%">	
-				<!-- <a href="/" title="Front Page">
-				<img class="logo" src="<bean:write name="webRoot"/>/images/logo.gif" alt="Front Page" />
-			</a>
-			<div id="sitetitle" title="XML Services">XML Services</div>
-			<div id="sitetagline">Conversion and Quality Assessment Service</div>-->			
 				<ed:ui-renderer id="header"/>
 			</div>
 		</div>

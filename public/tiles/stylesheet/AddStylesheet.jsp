@@ -16,7 +16,7 @@
 		</div>
 	</div> 
 
-			<ed:breadcrumbs-push label="Add Stylesheet" level="1" />
+			<ed:breadcrumbs-push label="Add Stylesheet" level="2" />
 			<h4><bean:message key="label.stylesheet.add"/></h4> 
 
 		<div class="boxcontent">
