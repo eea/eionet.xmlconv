@@ -10,5 +10,10 @@
 				<arg0 key="label.config.db.url.error"/>
 			</field>
 		</form>
+		<form name="ldapForm">
+			<field property="url" depends="required">
+				<arg0 key="label.config.ldap.url.error"/>
+			</field>
+		</form>
 	</formset>
 </form-validation>

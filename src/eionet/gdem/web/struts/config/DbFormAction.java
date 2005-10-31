@@ -1,7 +1,5 @@
 package eionet.gdem.web.struts.config;
 
-import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,38 +10,32 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
+import org.apache.struts.validator.DynaValidatorForm;
 
 import eionet.gdem.Properties;
-import eionet.gdem.dcm.business.SchemaManager;
-import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-import eionet.gdem.web.struts.stylesheet.StylesheetForm;
 
-public class DbFormAction extends Action{
+public class DbFormAction extends Action {
 
-	private static LoggerIF _logger=GDEMServices.getLogger();
-	
-	   public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-			ActionErrors errors = new ActionErrors();
-			ArrayList schemas = null;
-			
-			DbForm form=(DbForm)actionForm;
+	private static LoggerIF _logger = GDEMServices.getLogger();
 
-			try{
-				form.setDbUrl(Properties.dbUrl);
-				form.setUser(Properties.dbUser);
-				form.setPassword(Properties.dbPwd);
-			}catch(Exception e){			
-				e.printStackTrace();
-				_logger.error(e.getMessage());
-				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
-				saveErrors(httpServletRequest, errors);				
-			}
-	        saveErrors(httpServletRequest, errors);
-			
-	        return actionMapping.findForward("success");
-	    }
 
+	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+		ActionErrors errors = new ActionErrors();
+		try {
+			DynaValidatorForm form = (DynaValidatorForm) actionForm;
+			form.set("dbUrl", Properties.dbUrl);
+			form.set("user", Properties.dbUser);
+			form.set("password", Properties.dbPwd);
+		} catch (Exception e) {
+			_logger.error(e);
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
+			saveMessages(httpServletRequest, errors);
+		}
+		saveMessages(httpServletRequest, errors);
+
+		return actionMapping.findForward("success");
+	}
 
 }

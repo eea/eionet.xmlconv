@@ -1,7 +1,5 @@
 package eionet.gdem.web.struts.config;
 
-import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,13 +10,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
+import org.apache.struts.validator.DynaValidatorForm;
 
 import eionet.gdem.Properties;
-import eionet.gdem.dcm.business.SchemaManager;
-import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-import eionet.gdem.web.struts.stylesheet.StylesheetForm;
 
 public class LdapFormAction extends Action{
 
@@ -26,19 +22,17 @@ public class LdapFormAction extends Action{
 	
 	   public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 			ActionErrors errors = new ActionErrors();
-			ArrayList schemas = null;
-			
-			LdapForm form=(LdapForm)actionForm;
-
+			DynaValidatorForm form=(DynaValidatorForm) actionForm;
 			try{				
-				form.setUrl(Properties.ldapUrl);				
+				form.set("url", Properties.ldapUrl);
+			
 			}catch(Exception e){			
 				e.printStackTrace();
 				_logger.error(e.getMessage());
 				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
-				saveErrors(httpServletRequest, errors);				
+				saveMessages(httpServletRequest, errors);				
 			}
-	        saveErrors(httpServletRequest, errors);
+			saveMessages(httpServletRequest, errors);
 			
 	        return actionMapping.findForward("success");
 	    }
