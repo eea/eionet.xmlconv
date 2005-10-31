@@ -36,10 +36,10 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.upload.FormFile;
 
-import com.eurodyn.web.util.uimanage.FSUtil;
 
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.utils.SecurityUtil;
+import eionet.gdem.utils.uimanage.FSUtil;
 /**
 * <p>Implementation of Struts <strong>Action</strong> </p>
 * 

@@ -34,12 +34,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.validator.DynaValidatorForm;
 
-import com.eurodyn.web.util.common.AppConfigurator;
-import com.eurodyn.web.util.xml.IXQuery;
-import com.eurodyn.web.util.xml.IXmlCtx;
-import com.eurodyn.web.util.xml.XmlContext;
 
 import eionet.gdem.Properties;
+import eionet.gdem.utils.xml.IXQuery;
+import eionet.gdem.utils.xml.IXmlCtx;
+import eionet.gdem.utils.xml.XmlContext;
 /**
 * <p>Implementation of Struts <strong>Action</strong> </p>
 * 

@@ -30,7 +30,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.eurodyn.web.util.uimanage.FSUtil;
+import eionet.gdem.utils.uimanage.FSUtil;
 
 /**
 * <p>Implementation of Struts <strong>Action</strong> </p>

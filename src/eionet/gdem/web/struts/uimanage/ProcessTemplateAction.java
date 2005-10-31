@@ -20,7 +20,6 @@
  */
 package eionet.gdem.web.struts.uimanage;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -39,17 +38,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.eurodyn.web.tags.UIRendererTag;
-import com.eurodyn.web.util.common.AppConfigurator;
-import com.eurodyn.web.util.uimanage.IUIManager;
-import com.eurodyn.web.util.uimanage.UIManager;
-import com.eurodyn.web.util.xml.IXmlCtx;
-import com.eurodyn.web.util.xml.IXmlSerializer;
-import com.eurodyn.web.util.xml.XmlContext;
 
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.utils.SecurityUtil;
+import eionet.gdem.utils.uimanage.IUIManager;
+import eionet.gdem.utils.uimanage.UIManager;
+import eionet.gdem.utils.xml.IXmlCtx;
+import eionet.gdem.utils.xml.IXmlSerializer;
+import eionet.gdem.utils.xml.XmlContext;
+import eionet.gdem.web.tags.UIRendererTag;
 /**
 * <p>Implementation of Struts <strong>Action</strong> </p>
 * 
