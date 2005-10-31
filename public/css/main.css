@@ -206,7 +206,7 @@ padding: 0;
 
 /* Logo properties */
 #portal-logo {
-padding: 2.5em 1em 2.5em 141px;
+padding: 2.5em 1em 1.0em 141px;
 margin: 0;
 font-size: 150%;
 font-weight: bold;
