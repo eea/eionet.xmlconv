@@ -2,13 +2,10 @@ package eionet.gdem.web.struts.conversion;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
-import org.apache.struts.upload.FormFile;
 
 public class ListConvForm extends ActionForm{
 
@@ -20,7 +17,7 @@ public class ListConvForm extends ActionForm{
 	  public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
 		  ActionErrors errors = new ActionErrors();
 	        if (xmlUrl.equals("") && xmlSchema.equals("")) {
-	            errors.add("displayType", new ActionError("label.conversion.validation"));
+	            errors.add("displayType", new ActionMessage("label.conversion.validation"));
 	        } else
 	            return super.validate(actionMapping, httpServletRequest);
 	        return errors;
