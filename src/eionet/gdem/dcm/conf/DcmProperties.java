@@ -2,6 +2,7 @@ package eionet.gdem.dcm.conf;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -18,9 +19,7 @@ public class DcmProperties {
 	
 	public void setDbParams(String url, String user, String psw) throws DCMException { 
 
-		String record = null; 
-        int recCount = 0; 
-		String filePath = Properties.appHome + "gdem.properties";
+		String filePath = Properties.appHome + File.separatorChar + "gdem.properties";
 		
         try { 
 			
@@ -49,9 +48,7 @@ public class DcmProperties {
 
 	public void setLdapParams(String url) throws DCMException { 
 
-		String record = null; 
-        int recCount = 0; 
-		String filePath = Properties.appHome + "eionetdir.properties";
+		String filePath = Properties.appHome + File.separatorChar + "eionetdir.properties";
 		
         try { 
 			

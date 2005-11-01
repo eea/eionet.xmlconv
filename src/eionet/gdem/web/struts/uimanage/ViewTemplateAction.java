@@ -21,6 +21,7 @@
 
 package eionet.gdem.web.struts.uimanage;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -55,7 +56,7 @@ public class ViewTemplateAction extends Action {
 		String template=mapping.getParameter();
 		try{
 		//String file = AppConfigurator.getInstance().getApplicationHome() + File.separatorChar + "xsl" + File.separatorChar + "UITemplate.xml";
-		String file = Properties.uiFolder + "UITemplate.xml";
+		String file = Properties.uiFolder + File.separatorChar + "UITemplate.xml";
 			
 		ctx.checkFromFile(file);
 		IXQuery xq=ctx.getQueryManager();

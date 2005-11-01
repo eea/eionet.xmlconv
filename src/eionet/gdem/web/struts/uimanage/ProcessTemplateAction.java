@@ -20,6 +20,7 @@
  */
 package eionet.gdem.web.struts.uimanage;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -82,7 +83,7 @@ public class ProcessTemplateAction extends Action {
 		try {
 			// get UITemplate.xml
 			//String file = AppConfigurator.getInstance().getApplicationHome() + File.separatorChar + "xsl" + File.separatorChar + "UITemplate.xml";
-			String file = Properties.uiFolder + "UITemplate.xml";
+			String file = Properties.uiFolder + File.separatorChar + "UITemplate.xml";
 			ctx.checkFromFile(file);
 			Document doc = ctx.getDocument();
 			IUIManager manager = new UIManager(doc);

@@ -24,6 +24,7 @@
 package eionet.gdem.conversion;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -109,8 +110,8 @@ public class ConversionService {
 	public ConversionService() {
 		_logger = GDEMServices.getLogger();
 
-		xslFolder = Properties.xslFolder; //props.getString("xsl.folder");
-		tmpFolder = Properties.tmpFolder; //props.getString("tmp.folder");
+		xslFolder = Properties.xslFolder+ File.separatorChar; //props.getString("xsl.folder");
+		tmpFolder = Properties.tmpFolder+ File.separatorChar; //props.getString("tmp.folder");
 
 		initCnvTypes();
 

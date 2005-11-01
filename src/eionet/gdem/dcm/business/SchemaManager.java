@@ -509,7 +509,7 @@ public class SchemaManager {
 			for (int i = 0; i < schemaVec.size(); i++) {
 				Hashtable hash = (Hashtable) schemaVec.get(i);
 				String id = (String) hash.get("id");
-				String schema = Properties.gdemURL + "schema/" + (String) hash.get("schema");
+				String schema = Properties.gdemURL + "/schema/" + (String) hash.get("schema");
 				String desc = (String) hash.get("description");
 
 				UplSchema uplSchema = new UplSchema();
@@ -546,7 +546,7 @@ public class SchemaManager {
 		try {
 			String fileName = file.getFileName();
 			InputStream in = file.getInputStream();
-			String filepath = new String(Properties.schemaFolder + "/" + file.getFileName());
+			String filepath = new String(Properties.schemaFolder + File.separatorChar + file.getFileName());
 			OutputStream w = new FileOutputStream(filepath);
 			int bytesRead = 0;
 			byte[] buffer = new byte[8192];

@@ -21,10 +21,11 @@
 
 package eionet.gdem.web.listeners;
 
-import java.util.Enumeration;
+import java.io.File;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
 
 import eionet.gdem.Properties;
 
@@ -47,11 +48,40 @@ public class AppServletContextListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
 		System.out.println("Application started !");
 		try {
+			String pathPrefix = servletContextEvent.getServletContext().getRealPath("/");
+			checkHomeDirectories(pathPrefix);
 			Properties.metaXSLFolder=servletContextEvent.getServletContext().getRealPath("/dcm");
 			Properties.convFile=servletContextEvent.getServletContext().getRealPath("/dcm/conversions.xml");
+			Properties.xslFolder=servletContextEvent.getServletContext().getRealPath("/xsl");
+			Properties.schemaFolder=servletContextEvent.getServletContext().getRealPath("/schema");
+			Properties.tmpFolder=servletContextEvent.getServletContext().getRealPath("/tmp");
+			Properties.uiFolder=servletContextEvent.getServletContext().getRealPath("/uixsl");
+			Properties.appHome=servletContextEvent.getServletContext().getRealPath("/WEB-INF/classes");
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
+	}
+	
+	
+	/**
+	 * Checks persistence of all home directories needed for correct WDS work.
+	 * Home directory must be present. Rest directories will be created in case
+	 * that they don't exist.
+	 */
+	private void checkHomeDirectories(String pathPrefix) throws Exception {
+			File tmp = new File(pathPrefix + File.separatorChar + "tmp");
+			File uixsl = new File(pathPrefix + File.separatorChar + "uixsl");
+			File schema = new File(pathPrefix + File.separatorChar + "schema");
+			File xsl = new File(pathPrefix + File.separatorChar + "xsl");
+			File[] dcmDirs={tmp, uixsl, schema, xsl};
+			
+			for (int i = 0; i < dcmDirs.length; i++) {
+				if (!dcmDirs[i].exists()) {
+					if (!dcmDirs[i].mkdir()) {
+						System.out.println("ERROR !!!! While creating directory "+dcmDirs[i].getName());
+					}
+				}			
+			}
 	}
 
 

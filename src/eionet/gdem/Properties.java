@@ -90,12 +90,7 @@ public class Properties {
 		if (props == null) {
 			props = ResourceBundle.getBundle("gdem");
 			try {
-				appHome = props.getString("app.home");
-
-				tmpFolder = props.getString("tmp.folder");
-				xslFolder = props.getString("xsl.folder");
 				queriesFolder = props.getString("queries.folder");
-				schemaFolder = props.getString("schema.folder");
 
 				//xformsFolder=props.getString("xforms.folder");
 
@@ -109,9 +104,6 @@ public class Properties {
 				//DCM settings 
 				ddURL = props.getString("dcm.conversions.dd.url");
 				gdemURL = props.getString("dcm.conversions.gdem.url");
-
-				//Edit UI settings 
-				uiFolder = props.getString("ui.folder");
 
 				//settings for incoming services from DD 
 				invServUrl = props.getString("inserv.dd.url");

@@ -22,6 +22,7 @@
 package eionet.gdem.web.tags;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -48,17 +49,8 @@ public class UIRendererTag extends TagSupport {
 	static {
 		synchronized (mutex) {
 			MemCache = new MemoryCache(100, 10);
-			//try {
-				//String base = AppConfigurator.getInstance().getApplicationHome() + File.separatorChar + "uixsl" + File.separatorChar;
-				//UI_DEFINITION = base + "UITemplate.xml";
-				//UI_XSL = base + "UITemplate.xsl";
-				//UI_DEFINITION="C:/projects/reportnet/DCM/code/xmlconv/public/uixsl/UITemplate.xml";
-				UI_DEFINITION=Properties.uiFolder + "UITemplate.xml";
-				UI_XSL=Properties.uiFolder + "UITemplate.xsl"; 
-				//UI_XSL="C:/projects/reportnet/DCM/code/xmlconv/public/uixsl/UITemplate.xsl";
-			//} catch (ConfiguratorException e) {
-			//	e.printStackTrace();
-			//}
+			UI_DEFINITION=Properties.uiFolder + File.separatorChar + "UITemplate.xml";
+			UI_XSL=Properties.uiFolder + File.separatorChar + "UITemplate.xsl"; 
 		}
 	}
 
