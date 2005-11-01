@@ -3,11 +3,11 @@
   import="java.util.Iterator"
   import="eionet.gdem.dto.*"
 %>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
-<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
-<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
-<%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html"%>
+<%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
+<%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed"%>
 
 <ed:breadcrumbs-push label="Schema stylesheets" level="2" />
 
@@ -46,18 +46,18 @@
 				<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
 					<td width="10%">
 						<a href="testConversionForm?schema=<bean:write name="schema" property="schema" />&amp;idConv=<bean:write name="stylesheet" property="convId" />"  >
-							<img  src="<bean:write name="webRoot"/>/images/run.png" alt="<bean:message key="label.stylesheet.run" />" title="run conversion"/>							
+							<html:img page="/images/run.png" altKey="label.stylesheet.run" title="run conversion"/>
 						</a>			
 						<logic:equal name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >
 						&nbsp;
 						<a href="stylesheetEditForm?stylesheetId=<bean:write name="stylesheet" property="convId" />">
-							<img src="<bean:write name="webRoot"/>/images/edit.gif" alt="<bean:message key="label.stylesheet.edit" />" title="edit stylesheet" />
+							<html:img page="/images/edit.gif" altKey="label.stylesheet.edit" title="edit stylesheet"/>
 						</a>						
 						<logic:equal name="ssdPrm" value="true"  name="schema.stylesheets" scope="session" property="ssdPrm" >						
 						&nbsp;
 						<a href="deleteStylesheet?stylesheetId=<bean:write name="stylesheet" property="convId" />&amp;schema=<bean:write name="schema" property="schema"/>"
 							onclick='return stylesheetDelete("<bean:write name="stylesheet" property="xsl" />");'>
-							<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete stylesheet" />
+							<html:img page="/images/delete.gif" altKey="label.delete" title="delete stylesheet"/>
 						</a>	
 						</logic:equal>								
 						</logic:equal>		
