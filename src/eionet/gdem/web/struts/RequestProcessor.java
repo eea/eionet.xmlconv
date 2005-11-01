@@ -14,6 +14,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.tiles.TilesRequestProcessor;
 
+import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
@@ -23,27 +24,18 @@ public class RequestProcessor extends TilesRequestProcessor {
 
 
 	public RequestProcessor() {
-
 		super();
-
 	}
 
 
 	/**
 	 * Preprocess every action that is called from struts framework
 	 * 
-	 * @param request
-	 *            HttpServletRequest
-	 * @param response
-	 *            HttpServletResponse
-	 * @return boolean
 	 */
 	public boolean processPreprocess(HttpServletRequest request, HttpServletResponse response) {
-
+		_logger.info(Properties.gdemURL);
 		request.setAttribute("servletPath", request.getServletPath());
-
-		logReq(request);
-
+		//logReq(request);
 		//Remove messages from session and add to page context
 		ActionMessages errors = (ActionMessages) request.getSession().getAttribute("dcm.errors");
 		if (errors != null) {
@@ -51,23 +43,18 @@ public class RequestProcessor extends TilesRequestProcessor {
 			if (!errors.isEmpty()) {
 				request.setAttribute("dcm.errors", errors);
 			}
-			;
 		}
-
 		ActionMessages messages = (ActionMessages) request.getSession().getAttribute("dcm.messages");
 		if (messages != null) {
 			request.getSession().setAttribute("dcm.messages", null);
 			if (!messages.isEmpty()) request.setAttribute("dcm.messages", messages);
 		}
-
 		return true;
 	}
 
 
 	protected ActionForward processActionPerform(HttpServletRequest request, HttpServletResponse response, Action action, ActionForm form, ActionMapping mapping) throws IOException, ServletException {
-
 		_logger.debug("servletPath ----- " + request.getServletPath());
-
 		return super.processActionPerform(request, response, action, form, mapping);
 	}
 

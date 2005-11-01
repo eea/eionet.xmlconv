@@ -18,7 +18,7 @@
  * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Kaido Laine, Enriko Käsper (TietoEnator)
+ * Original Code: Kaido Laine, Enriko Kï¿½sper (TietoEnator)
  */
 
 package eionet.gdem.services;
@@ -349,9 +349,9 @@ public class DbModule implements DbModuleIF, Constants {
     _executeUpdate(sql);
 	
 
-	if(xmlSchema.startsWith(Properties.gdemURL + "schema/")){
+	if(xmlSchema.startsWith(Properties.gdemURL + "/schema/")){
 
-		 String url =Properties.gdemURL+ "schema/";
+		 String url =Properties.gdemURL+ "/schema/";
 		 String schema =  xmlSchema.substring(url.length(), xmlSchema.length());
 				
 		

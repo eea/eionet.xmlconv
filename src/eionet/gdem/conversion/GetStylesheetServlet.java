@@ -41,6 +41,7 @@ import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.utils.Utils;
 
 public class GetStylesheetServlet extends HttpServlet {
+	
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
@@ -53,7 +54,7 @@ public class GetStylesheetServlet extends HttpServlet {
 
 		//hardcoded for test
 		String format = metaXSLFolder + File.separatorChar+ conv.getStylesheet();
-		String url = tableDefURL + "GetTableDef?id=" + id;
+		String url = tableDefURL + "/GetTableDef?id=" + id;
 
 		if (Utils.isNullStr(id) && Utils.isNullStr(convId)) {
 			String err_message = "Some of the following parameters are missing: 'id' or 'conv'!";

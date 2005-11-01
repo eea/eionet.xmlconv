@@ -37,7 +37,7 @@ public class EditUplSchemaFormAction  extends Action {
 			System.out.println("-------id---------" +schema.getId());
 			
 			form.setIdSchema(schema.getId());
-			form.setSchema(Properties.gdemURL + "schema/" + schema.getSchema());
+			form.setSchema(httpServletRequest.getContextPath() + "/schema/" + schema.getSchema());
 			
 			form.setDescription(schema.getDescription());
 			

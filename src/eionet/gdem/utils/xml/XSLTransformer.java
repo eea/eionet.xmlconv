@@ -92,24 +92,6 @@ public class XSLTransformer {
 
     private static SAXTransformerFactory transformerFactory = null;
 
-    //
-    // JAXP Service Configuration
-    //
-    /*
-     private final static String CONFIG_JAX_FACTORY_SAX = "jax.factory.sax";
-
-     private final static String jaxSaxFactoryProp = "org.apache.xerces.jaxp.SAXParserFactoryImpl";
-
-     private final static String CONFIG_JAX_FACTORY_DOM = "jax.factory.dom";
-
-     private final static String jaxDomFactoryProp = "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl";
-
-     private final static String CONFIG_JAX_FACTORY_TRANSFORM = "jax.factory.transform";
-
-     //private final static String jaxTransformFactoryProp = "org.apache.xalan.processor.TransformerFactoryImpl";
-     private final static String jaxTransformFactoryProp = "net.sf.saxon.TransformerFactoryImpl";
-     */
-
     private final static Object mutex = new Object();
 
     //
@@ -191,37 +173,6 @@ public class XSLTransformer {
         if (xslt == null) {
             throw new TransformException("Invalid Transform, no stylesheet set!");
         }
-        /*
-         try
-         {
-         java.io.FileInputStream is = new java.io.FileInputStream(xslt);
-         StreamSource ss = new StreamSource(is, xslt );
-         
-         Transformer transformer = transformerFactory.newTransformer(ss);
-         transformer.setURIResolver(this);
-         //
-         // Get the transform variables (parameters)
-         //
-         Iterator keys = parameters.keySet().iterator();
-         while (keys.hasNext())
-         {
-         String name = (String) keys.next();
-         String value = (String) parameters.get(name);
-         transformer.setParameter(name, value); 
-         }
-         
-         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-         URL url = new URL(inputSource.getSystemId());
-         Streams.drain(url.openStream(), baos);
-         
-         transformer.transform(new StreamSource(new ByteArrayInputStream(baos.toByteArray())), streamResult);
-         }
-         catch (Exception e)
-         {
-         throw new TransformException("Error in Stylesheet: " + e.toString());
-         }
-         */
-
         //
         // create a new document builder to load the XML file for transformation
         //
