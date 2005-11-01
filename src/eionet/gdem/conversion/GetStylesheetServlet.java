@@ -30,7 +30,7 @@ import eionet.gdem.GDEMException;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.xsl.Conversion;
-import eionet.gdem.dcm.xsl.ConversionDto;
+import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.Properties;
 
 public class GetStylesheetServlet extends HttpServlet {

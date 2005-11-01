@@ -1,7 +1,6 @@
-package eionet.gdem.dcm.xsl;
+package eionet.gdem.dto;
 
-import java.io.*;	
-import java.util.*;
+import java.io.Serializable;
 
 
 public class ConversionDto implements Serializable {

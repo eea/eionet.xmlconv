@@ -14,19 +14,16 @@ import java.util.Vector;
 
 import org.apache.struts.upload.FormFile;
 
-import com.tee.uit.security.AppUser;
-
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.xsl.Conversion;
-import eionet.gdem.dcm.xsl.ConversionDto;
+import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.dto.RootElem;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.dto.UplSchema;
-import eionet.gdem.exceptions.AuthorizationException;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.DbModuleIF;
 import eionet.gdem.services.GDEMServices;
