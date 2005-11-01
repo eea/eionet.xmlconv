@@ -21,7 +21,9 @@
 
 package eionet.gdem.utils.xml;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.transform.TransformerException;
@@ -29,6 +31,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class XmlQuery implements IXQuery {
 	
@@ -101,6 +104,21 @@ public class XmlQuery implements IXQuery {
 		try {
 			result = XPathAPI.selectSingleNode(ctx.getDocument(), xpath);
 		} catch (TransformerException e) {
+			throw new XmlException(e);
+		}
+		return result;
+	}
+	
+	public List getElementIdentifiers(String elementName) throws XmlException {
+		String xpath = "//"+elementName;
+		List result = new ArrayList();
+		try {
+			NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
+			for (int i = 0; i < nodes.getLength(); i++) {
+				String id=nodes.item(i).getAttributes().getNamedItem("id").getNodeValue();
+				if(id!=null) result.add(id);
+			}
+		} catch (Exception e) {
 			throw new XmlException(e);
 		}
 		return result;

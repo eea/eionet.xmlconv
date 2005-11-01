@@ -21,6 +21,7 @@
 
 package eionet.gdem.utils.xml;
 
+import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Node;
@@ -52,5 +53,15 @@ public interface IXQuery {
 	 *
 	 */
 	public Node findElementById(String id) throws XmlException;
+	
+	
+	/**
+	 * Retruns list of all identifiers for the specifed element
+	 * 
+	 * @param elementName
+	 * @return
+	 * @throws XmlException
+	 */
+	public List getElementIdentifiers(String elementName) throws XmlException;
 
 }

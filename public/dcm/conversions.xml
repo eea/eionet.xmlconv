@@ -1,52 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <conversions>
-        <conversion>
-                <id>1</id>
+        <conversion id="1">
                 <description>SQL for MySQL</description>
                 <result_type>SQL</result_type>
                 <stylesheet>MySQL.xsl</stylesheet>
         </conversion>
-        <conversion>
-                <id>2</id>
+        <conversion id="2">
                 <description>SQL for MS SQL Server</description>
                 <result_type>SQL</result_type>
                 <stylesheet>SQLServer.xsl</stylesheet>
         </conversion>
-        <conversion>
-                <id>3</id>
+        <conversion id="3">
                 <description>SQL for Oracle</description>
                 <result_type>SQL</result_type>
                 <stylesheet>Oracle.xsl</stylesheet>
         </conversion>
-        <conversion>
-                <id>4</id>
+        <conversion id="4">
                 <description>SQL for MS Access</description>
                 <result_type>SQL</result_type>
                 <stylesheet>Access.xsl</stylesheet>
         </conversion>
-        <conversion>
-                <id>5</id>
+        <conversion id="5">
                 <description>Simple HTML table</description>
                 <result_type>HTML</result_type>
                 <stylesheet>SimpleHTML.xsl</stylesheet>
         </conversion>
-        <conversion>
-                <id>6</id>
+        <conversion id="6">
                 <description>Excel</description>
                 <result_type>EXCEL</result_type>
                 <stylesheet>Excel.xsl</stylesheet>
         </conversion> 
-        <conversion>
-                <id>7</id>
+        <conversion id="7">
                 <description>VB for MS Access</description>
                 <result_type>SQL</result_type>
                 <stylesheet>VB_Access.xsl</stylesheet>
         </conversion>
-        <conversion>
-                <id>8</id>
+        <conversion id="8">
                 <description>XML</description>
                 <result_type>XML</result_type>
                 <stylesheet>XML.xsl</stylesheet>
         </conversion>
-
 </conversions>
