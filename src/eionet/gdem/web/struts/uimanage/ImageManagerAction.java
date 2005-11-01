@@ -36,50 +36,49 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.upload.FormFile;
 
-
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.uimanage.FSUtil;
+
 /**
-* <p>Implementation of Struts <strong>Action</strong> </p>
-* 
-* <p>Uploads or deletes image file</p>
-*/
+ * <p>Implementation of Struts <strong>Action</strong> </p>
+ * 
+ * <p>Uploads or deletes image file</p>
+ */
 public class ImageManagerAction extends Action {
 
 	//private static final WDSLogger logger = WDSLogger.getLogger(ImageManagerAction.class);
-	
+
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		ServletContext context = servlet.getServletContext();
 		ActionMessages errors = new ActionMessages();
-        ActionMessages messages = new ActionMessages();		
 
-		String user = (String)request.getSession().getAttribute("user");		
-		
+		String user = (String) request.getSession().getAttribute("user");
+
 		try {
-			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_CONFIG_PATH, "u")){
+			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_CONFIG_PATH, "u")) {
 				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.autorization.config.update"));
-				request.getSession().setAttribute("dcm.errors", errors);						
-				return mapping.findForward("home");				
+				request.getSession().setAttribute("dcm.errors", errors);
+				return mapping.findForward("home");
 			}
-		} catch (Exception e) {			
+		} catch (Exception e) {
 			e.printStackTrace();
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
-			request.getSession().setAttribute("dcm.errors", errors);						
-			return mapping.findForward("home");							
+			request.getSession().setAttribute("dcm.errors", errors);
+			return mapping.findForward("home");
 		}
-		
+
 		FSUtil fileOp = new FSUtil();
 		String path = context.getRealPath("/images/gallery/");
 		ImageManagerForm myForm = (ImageManagerForm) form;
-		String deletePic=myForm.getDeletePic();
-		if((myForm.getPicFile()!=null)&&(!myForm.getPicFile().getFileName().equalsIgnoreCase(""))){			
+		String deletePic = myForm.getDeletePic();
+		if ((myForm.getPicFile() != null) && (!myForm.getPicFile().getFileName().equalsIgnoreCase(""))) {
 			FormFile upload = myForm.getPicFile();
 			fileOp.uploadFile(path, upload.getFileName(), upload.getInputStream());
 			//logger.debug("Uploaded image:"+upload.getFileName());
 			upload.destroy();
-		}else if(!deletePic.equals("")){
-			fileOp.deleteFile(path,deletePic);
+		} else if (!deletePic.equals("")) {
+			fileOp.deleteFile(path, deletePic);
 			//logger.debug("Deleted image:"+deletePic);
 		}
 		request.setAttribute("fileList", fileOp.listFiles(context.getRealPath("/images/gallery/")));

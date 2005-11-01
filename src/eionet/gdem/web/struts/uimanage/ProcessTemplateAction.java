@@ -38,7 +38,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.utils.SecurityUtil;
@@ -48,42 +47,38 @@ import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.IXmlSerializer;
 import eionet.gdem.utils.xml.XmlContext;
 import eionet.gdem.web.tags.UIRendererTag;
+
 /**
-* <p>Implementation of Struts <strong>Action</strong> </p>
-* 
-* <p>Creates footer or header element depending on parameter template</p>
-*/
+ * <p>Implementation of Struts <strong>Action</strong> </p>
+ * 
+ * <p>Creates footer or header element depending on parameter template</p>
+ */
 
 public class ProcessTemplateAction extends Action {
 	//private static final WDSLogger logger = WDSLogger.getLogger(ProcessTemplateAction.class);
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) 
-	throws IOException, NullPointerException {
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws IOException, NullPointerException {
 		DynaValidatorForm df = (DynaValidatorForm) form;
 		HashMap hm = (HashMap) df.get("temp");
 		IXmlCtx ctx = new XmlContext();
-		
-		
-		ActionMessages errors = new ActionMessages();
-        ActionMessages messages = new ActionMessages();		
 
-		String user = (String)request.getSession().getAttribute("user");		
-		
+		ActionMessages errors = new ActionMessages();
+		String user = (String) request.getSession().getAttribute("user");
+
 		try {
-			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_CONFIG_PATH, "u")){
+			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_CONFIG_PATH, "u")) {
 				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.autorization.config.update"));
-				request.getSession().setAttribute("dcm.errors", errors);						
-				return mapping.findForward("home");				
+				request.getSession().setAttribute("dcm.errors", errors);
+				return mapping.findForward("home");
 			}
-		} catch (Exception e) {			
+		} catch (Exception e) {
 			e.printStackTrace();
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
-			request.getSession().setAttribute("dcm.errors", errors);						
-			return mapping.findForward("home");							
+			request.getSession().setAttribute("dcm.errors", errors);
+			return mapping.findForward("home");
 		}
-		
-		
+
 		// get template name (hidden parameter named template on jsp page)
-		String temp=request.getParameter("template");
+		String temp = request.getParameter("template");
 		try {
 			// get UITemplate.xml
 			//String file = AppConfigurator.getInstance().getApplicationHome() + File.separatorChar + "xsl" + File.separatorChar + "UITemplate.xml";
@@ -91,12 +86,12 @@ public class ProcessTemplateAction extends Action {
 			ctx.checkFromFile(file);
 			Document doc = ctx.getDocument();
 			IUIManager manager = new UIManager(doc);
-			Element template = (Element) XPathAPI.selectSingleNode(doc, "ui-templates/template[@id='"+temp+"']");
+			Element template = (Element) XPathAPI.selectSingleNode(doc, "ui-templates/template[@id='" + temp + "']");
 			//create element newTemplate with  id, rows and columns attributes
 			Element newTemplate = doc.createElement("template");
 			newTemplate.setAttribute("id", temp);
-			newTemplate.setAttribute("rows",template.getAttribute("rows"));
-			newTemplate.setAttribute("columns",template.getAttribute("columns"));
+			newTemplate.setAttribute("rows", template.getAttribute("rows"));
+			newTemplate.setAttribute("columns", template.getAttribute("columns"));
 			int rows = Integer.parseInt(template.getAttribute("rows"));
 			int cols = Integer.parseInt(template.getAttribute("columns"));
 			//logger.debug("Creating "+temp);				
@@ -190,13 +185,12 @@ public class ProcessTemplateAction extends Action {
 			ui_template.replaceChild(newTemplate, template);
 			IXmlSerializer s = ctx.getSerializer();
 			s.serializeToFs(file);
-			UIRendererTag.invalidateCache();				
-			
+			UIRendererTag.invalidateCache();
+
 		} catch (Exception e) {
 			//logger.error(e.getMessage());
 		}
 		return mapping.findForward(temp);
-	
+
 	}
 }
-

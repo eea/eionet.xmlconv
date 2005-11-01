@@ -21,7 +21,6 @@
 
 package eionet.gdem.web.struts.uimanage;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -33,7 +32,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.validator.DynaValidatorForm;
-
 
 import eionet.gdem.Properties;
 import eionet.gdem.utils.xml.IXQuery;
