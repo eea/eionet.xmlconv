@@ -18,7 +18,7 @@ import eionet.gdem.Properties;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.dcm.xsl.Conversion;
+import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.dto.RootElem;
 import eionet.gdem.dto.Schema;

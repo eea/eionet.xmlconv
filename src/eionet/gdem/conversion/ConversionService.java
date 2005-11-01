@@ -53,8 +53,8 @@ import org.apache.fop.apps.Driver;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
+import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dcm.business.DDServiceClient;
-import eionet.gdem.dcm.xsl.Conversion;
 import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.services.DbModuleIF;
 import eionet.gdem.services.GDEMServices;
