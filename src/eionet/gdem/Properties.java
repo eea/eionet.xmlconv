@@ -18,17 +18,15 @@
  * Copyright (C) 2000-2002 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Enriko Käsper (TietoEnator)
+ * Original Code: Enriko Kï¿½sper (TietoEnator)
  */
 
 package eionet.gdem;
 
-import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
-
-import java.io.File;
-import java.util.ResourceBundle;
 import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
+import org.apache.log4j.Category;
 
 /**
  * Several settings and properties for GDEM
