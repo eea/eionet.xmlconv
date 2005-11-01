@@ -22,11 +22,6 @@ response.setDateHeader("Expires", 0);
 <head>
 <title>XML Services</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<logic:present name="user" property="pageRefreshDelay">
-	<logic:equal name="servletPath" value="/do/viewDashboard">
-		<meta http-equiv="refresh" content="<bean:write name="user" property="pageRefreshDelay"/>" />
-	</logic:equal>
-</logic:present>
 <style type="text/css" media="screen">
 	<!-- @import url(<c:url value="/css/main.css"/>); -->
 </style>
@@ -50,7 +45,7 @@ response.setDateHeader("Expires", 0);
 	@import url(<c:url value="/css/portlet-ie5.css"/>);
 </style>
 <![endif]-->
-<!-- <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" ></link> -->
+<link rel="shortcut icon" href="<c:url value="/images/favicon.ico"/>" type="image/x-icon" ></link>
 <script type="text/javascript" src="<c:url value="/scripts/admin.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/scripts/user.js"/>"></script>
 <script type="text/javascript">
