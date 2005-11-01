@@ -17,15 +17,20 @@
  * 
  * Contributors(s):
  *    Original code: Kolundzija Dusko (ED)
+ *                         Nedeljko Pavlovic (ED)
  */
 
 
 package eionet.gdem.conversion;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -33,14 +38,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.xml.sax.InputSource;
+
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dto.ConversionDto;
+import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.utils.xml.XSLTransformer;
 
 public class GetStylesheetServlet extends HttpServlet {
+	public static XSLTransformer transform=new XSLTransformer();
 	
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -75,22 +85,45 @@ public class GetStylesheetServlet extends HttpServlet {
 
 
 	private void convertXML(HttpServletResponse res, String url, String format) throws GDEMException, IOException {
-		ConversionService cnv = new ConversionService();
-
 		Hashtable result = null;
-
-		result = cnv.makeDynamicXSL(url, format, res);
+		result = makeDynamicXSL(url, format);
 		String contentType = (String) result.get("content-type");
 		byte[] content = (byte[]) result.get("content");
 		res.setContentType(contentType);
 		ByteArrayInputStream byteIn = new ByteArrayInputStream(content);
 		int bufLen = 0;
 		byte[] buf = new byte[1024];
-
 		while ((bufLen = byteIn.read(buf)) != -1)
 			res.getOutputStream().write(buf, 0, bufLen);
 		byteIn.close();
-		/*}*/
+	}
+	
+	
+	private Hashtable makeDynamicXSL(String sourceURL, String xslFile) throws GDEMException {
+		Hashtable h = new Hashtable();
+		InputFile src = null;
+		try {
+			src = new InputFile(sourceURL);
+			h.put("content-type", "text/xml");
+			ByteArrayOutputStream os=new ByteArrayOutputStream();
+			Map parameters = new HashMap();
+			parameters.put("dd_domain", Properties.ddURL);
+			transform.transform(xslFile, new InputSource(src.getSrcInputStream()), os,parameters);
+			byte[] file = os.toByteArray();
+			h.put("content", file);
+		} catch (MalformedURLException mfe) {
+			throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
+		} catch (IOException ioe) {
+			throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
+		} catch (Exception e) {
+			throw new GDEMException("Error converting: " + e.toString(), e);
+		} finally {
+			try {
+				if (src != null) src.close();
+			} catch (Exception e) {
+			}
+		}
+		return h;
 	}
 
 
