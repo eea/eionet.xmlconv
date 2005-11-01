@@ -14,6 +14,9 @@
 		<filter-name>Set Character Encoding</filter-name>
 		<servlet-name>action</servlet-name>
 	</filter-mapping>
+	<listener>
+  <listener-class>eionet.gdem.web.listeners.AppServletContextListener</listener-class>
+  </listener>
 	<servlet>
 		<servlet-name>action</servlet-name>
 		<servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
