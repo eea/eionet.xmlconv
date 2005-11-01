@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
     <xsl:output  method="xml"/>
+    <xsl:param name="dd_domain" select="'true'"/>
+    <xsl:param name="dd_ns_url" select="concat('=&quot;',$dd_domain,'/namespace.jsp?ns_id=')"/>
+    <xsl:param name="dd_schema_url" select="concat($dd_domain,'/GetSchema?id=TBL')"/>
     
     <xsl:template match="/">
         <xsl:apply-templates select="table"/>
@@ -9,11 +12,11 @@
     <xsl:template match="table">
         <xsl:text  xml:space="default" disable-output-escaping="yes">&#xd;&#xa;&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"&#xd;&#xa;xmlns:office='http://openoffice.org/2000/office'&#xd;&#xa; 	xmlns:table='http://openoffice.org/2000/table'&#xd;&#xa; xmlns:text='http://openoffice.org/2000/text'&#xd;&#xa;    xmlns:dd</xsl:text>
         <xsl:value-of select="parentNS"/>
-        <xsl:text disable-output-escaping="yes">="http://rubi:8080/eidd/namespace.jsp?ns_id=</xsl:text>
+        <xsl:value-of select="$dd_ns_url"/>
         <xsl:value-of select="parentNS"/>
         <xsl:text disable-output-escaping="yes">" xmlns:dd</xsl:text>
         <xsl:value-of select="correspondingNS"/>
-        <xsl:text disable-output-escaping="yes">="http://rubi:8080/eidd/namespace.jsp?ns_id=</xsl:text>
+        <xsl:value-of select="$dd_ns_url"/>
         <xsl:value-of select="correspondingNS"/>
 
 
@@ -135,7 +138,8 @@
 <xsl:text disable-output-escaping="yes">				&lt;table:table-row&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">					&lt;table:table-cell&gt;</xsl:text>
 
-<xsl:text disable-output-escaping="yes">						&lt;text:p&gt;http://rubi:8080/eidd/GetSchema?id=TBL</xsl:text>
+<xsl:text disable-output-escaping="yes">						&lt;text:p&gt;</xsl:text>
+<xsl:value-of select="$dd_schema_url"/>
 <xsl:value-of select="tableid"/>
 <xsl:text disable-output-escaping="yes">&lt;/text:p&gt;</xsl:text>
 

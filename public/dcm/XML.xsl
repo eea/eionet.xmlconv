@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
     <xsl:output  method="xml"/>
+    <xsl:param name="dd_domain" select="'true'"/>
+    <xsl:param name="dd_ns_url" select="concat('=&quot;',$dd_domain,'/namespace.jsp?ns_id=')"/>
     
     <xsl:template match="/">
         <xsl:apply-templates select="table"/>
@@ -9,11 +11,11 @@
     <xsl:template match="table">
         <xsl:text  xml:space="default" disable-output-escaping="yes">&#xd;&#xa;&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"&#xd;&#xa;    xmlns:dd</xsl:text>
         <xsl:value-of select="parentNS"/>
-        <xsl:text disable-output-escaping="yes">="http://rubi:8080/eidd/namespace.jsp?ns_id=</xsl:text>
+        <xsl:value-of select="$dd_ns_url"/>
         <xsl:value-of select="parentNS"/>
         <xsl:text disable-output-escaping="yes">" xmlns:dd</xsl:text>
         <xsl:value-of select="correspondingNS"/>
-        <xsl:text disable-output-escaping="yes">="http://rubi:8080/eidd/namespace.jsp?ns_id=</xsl:text>
+        <xsl:value-of select="$dd_ns_url"/>
         <xsl:value-of select="correspondingNS"/>
         <xsl:text disable-output-escaping="yes">"&gt;&#xd;&#xa;    &lt;xsl:output method="xml"/&gt;&#xd;&#xa;</xsl:text>
  
