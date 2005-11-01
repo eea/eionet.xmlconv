@@ -396,7 +396,7 @@ public class SchemaManager {
 			for (int i = 0; i < ddTables.size(); i++) {
 				Hashtable schema = (Hashtable) ddTables.get(i);
 				String tblId = (String) schema.get("tblId");
-				String schemaUrl = Properties.ddURL + "GetSchema?id=TBL" + tblId;
+				String schemaUrl = Properties.ddURL + "/GetSchema?id=TBL" + tblId;
 
 				Schema sc = new Schema();
 				sc.setId("TBL" + tblId);
@@ -645,7 +645,7 @@ public class SchemaManager {
 			for (int i = 0; i < ddTables.size(); i++) {
 				Hashtable schema = (Hashtable) ddTables.get(i);
 				String tblId = (String) schema.get("tblId");
-				String schemaUrl = Properties.ddURL + "GetSchema?id=TBL" + tblId;
+				String schemaUrl = Properties.ddURL + "/GetSchema?id=TBL" + tblId;
 
 				Schema sc = new Schema();
 				sc.setId("TBL" + tblId);
