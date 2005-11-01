@@ -130,7 +130,7 @@
 							<logic:equal name="ssdPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
 							<a href="deleteElem?elemId=<bean:write name="elem" property="elemId" />"
 							onclick='return elementDelete("<bean:write name="elem" property="name" />");'>
-								<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete root element" width="15" height="15"/>
+							<html:img page="/images/delete.gif" altKey="label.delete" title="delete root element" width="15" height="15" />
 							</a>	
 							</logic:equal>		
 						</td>

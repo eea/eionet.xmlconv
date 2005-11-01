@@ -6,6 +6,7 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+<%@ taglib uri="/WEB-INF/tlds/c.tld" prefix="c"%>
 
 <ed:breadcrumbs-push label="XML Services" url="/index.jsp" level="0"/>
 <%
@@ -27,32 +28,31 @@ response.setDateHeader("Expires", 0);
 	</logic:equal>
 </logic:present>
 <style type="text/css" media="screen">
-	<!-- @import url(<bean:write name="webRoot"/>/css/main.css); -->
+	<!-- @import url(<c:url value="/css/main.css"/>); -->
 </style>
 <style type="text/css" media="screen">
-	<!-- @import url(<bean:write name="webRoot"/>/css/portlet.css); -->
+	<!-- @import url(<c:url value="/css/portlet.css"/>); -->
 </style>
 <style type="text/css" media="screen">
-	<!-- @import url(<bean:write name="webRoot"/>/css/wdsColumns.css); -->
+	<!-- @import url(<c:url value="/css/wdsColumns.css"/>); -->
 </style>
-<link type="text/css" media="print" href="<bean:write name="webRoot"/>/css/print.css" rel="stylesheet"></link>
+<link type="text/css" media="print" href="<c:url value="/css/print.css"/>" rel="stylesheet"></link>
 <!--[if IE]>
 <style type="text/css" media="screen">
-	@import url(<bean:write name="webRoot"/>/css/portlet-ie.css);
+	@import url(<c:url value="/css/portlet-ie.css"/>);
 </style>
-<link type="text/css" media="print" href="<bean:write name="webRoot"/>/css/print-ie.css" rel="stylesheet"></link>
-<script type="text/javascript" src="<bean:write name="webRoot"/>/scripts/ie_minwidth.js"></script>
+<link type="text/css" media="print" href="<c:url value="/css/print-ie.css"/>" rel="stylesheet"></link>
+<script type="text/javascript" src="<c:url value="/scripts/ie_minwidth.js"/>"></script>
 <![endif]-->
 
 <!--[if IE 5]>
 <style type="text/css" media="screen">
-	@import url(<bean:write name="webRoot"/>/css/portlet-ie5.css);
+	@import url(<c:url value="/css/portlet-ie5.css"/>);
 </style>
 <![endif]-->
 <!-- <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" ></link> -->
-
-<script type="text/javascript" src="<bean:write name="webRoot"/>/scripts/admin.js"></script>
-<script type="text/javascript" src="<bean:write name="webRoot"/>/scripts/user.js"></script>
+<script type="text/javascript" src="<c:url value="/scripts/admin.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/scripts/user.js"/>"></script>
 <script type="text/javascript">
 	parentLocation='<%=request.getRequestURI()%>';
    	applicationRoot='<%=request.getContextPath()%>';
