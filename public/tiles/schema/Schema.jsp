@@ -1,13 +1,9 @@
-<%@ page contentType="text/html; charset=UTF-8" 
-  import="java.util.List"
-  import="java.util.Iterator"
-  import="eionet.gdem.dto.*"
-%>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
-<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
-<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
-<%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*"%>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html"%>
+<%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
+<%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed"%>
 
 <html:xhtml/>
 
@@ -18,7 +14,7 @@
 		</div>
 	</div> 
 
-			<ed:breadcrumbs-push label="XML Schema or DTD" level="3" />
+			<ed:breadcrumbs-push label="XML Schema or DTD" level="2" />
 			<h4><bean:message key="label.schema.edit"/></h4> 
 
 		<div class="boxcontent" align="center">
@@ -130,7 +126,7 @@
 							<logic:equal name="ssdPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
 							<a href="deleteElem?elemId=<bean:write name="elem" property="elemId" />"
 							onclick='return elementDelete("<bean:write name="elem" property="name" />");'>
-							<html:img page="/images/delete.gif" altKey="label.delete" title="delete root element" width="15" height="15" />
+							<html:img page="/images/delete.gif" altKey="label.delete" title="delete root element"/>
 							</a>	
 							</logic:equal>		
 						</td>
