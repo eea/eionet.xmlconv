@@ -102,9 +102,9 @@
 							<bean:write name="schema" property="dataset" />
 					</td>
 					<td width="15%">							
-						<a href="<bean:write name="schema" property="schema" />" title="<bean:write name="schema" property="schema" />">
-							<bean:write name="schema" property="id" />							
-						</a>							
+						<a target="blank" href="<bean:write name="schema" property="schema" />" title="<bean:write name="schema" property="schema" />">						
+							<bean:write name="schema" property="id" />
+						</a>													
 					</td>
 					<td width="48%">
 						<logic:iterate id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">						
