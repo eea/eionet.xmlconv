@@ -51,10 +51,6 @@
 		<servlet-name>RpcRouter</servlet-name>
 		<servlet-class>com.tee.uit.servlets.XmlRpcRouter</servlet-class>
 	</servlet>
-	<servlet>
-		<servlet-name>GetStylesheetServlet</servlet-name>
-		<servlet-class>eionet.gdem.conversion.GetStylesheetServlet</servlet-class>
-	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>Main</servlet-name>
@@ -75,10 +71,6 @@
 	<servlet-mapping>
 		<servlet-name>RpcRouter</servlet-name>
 		<url-pattern>/RpcRouter</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>GetStylesheetServlet</servlet-name>
-		<url-pattern>/GetStylesheet</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>action</servlet-name>

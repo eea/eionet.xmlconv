@@ -164,7 +164,7 @@ public class SchemaManager {
 					ConversionDto ddConv = ((ConversionDto) ddStylesheets.get(j));
 
 					String convId = ddConv.getConvId();
-					String xsl_url = Properties.gdemURL + "/GetStylesheet?id=" + tblId + "&conv=" + convId;
+					String xsl_url = Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv=" + convId;
 
 					Stylesheet stl = new Stylesheet();
 					stl.setType(ddConv.getResultType());

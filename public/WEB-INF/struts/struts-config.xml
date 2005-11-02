@@ -24,6 +24,10 @@
         	<form-property name="password" type="java.lang.String"/>
         </form-bean>   
         <form-bean name="EditUplSchemaForm" type="eionet.gdem.web.struts.schema.EditUplSchemaForm"/>   
+        <form-bean name="getXslForm" type="org.apache.struts.validator.DynaValidatorForm">
+	        <form-property name="id" type="java.lang.String"/>
+        	<form-property name="conv" type="java.lang.String"/>
+        </form-bean>
              
     </form-beans>
 
@@ -111,6 +115,7 @@
         <action path="/editUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.EditUplSchemaAction" name="EditUplSchemaForm">           
         	<forward name="success" path="/do/uplSchemas"  redirect="true"/>            
         </action>        
+        <action path="/getStylesheet"  scope="request" type="eionet.gdem.web.struts.stylesheet.GetStylesheetAction" name="getXslForm"/>           
 
 
  <!-- Edit UI -->
