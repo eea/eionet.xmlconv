@@ -233,7 +233,7 @@ public class SchemaManager {
 				boolean ddConv = false;
 				String xslUrl;
 
-				if (!xsl.startsWith(Properties.gdemURL + "/GetStylesheet?id=")) {
+				if (!xsl.startsWith(Properties.gdemURL + "/do/getStylesheet?id=")) {
 
 					File f = new File(Properties.xslFolder + xsl);
 					if (f != null) last_modified = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(f.lastModified()));
@@ -455,7 +455,7 @@ public class SchemaManager {
 				boolean ddConv = false;
 				String xslUrl;
 
-				if (!xsl.startsWith(Properties.gdemURL + "/GetStylesheet?id=")) {
+				if (!xsl.startsWith(Properties.gdemURL + "/do/getStylesheet?id=")) {
 					xslUrl = Properties.gdemURL + "/" + Names.XSL_FOLDER + (String) hash.get("xsl");
 					
 					type = (String) hash.get("result_type");
