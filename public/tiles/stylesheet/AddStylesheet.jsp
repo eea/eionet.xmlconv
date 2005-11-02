@@ -1,22 +1,15 @@
-<%@ page contentType="text/html; charset=UTF-8" 
-  import="java.util.List"
-  import="java.util.Iterator"
-  import="eionet.gdem.dto.*"
-%>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
-<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
-<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
-<%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+<%@ page contentType="text/html; charset=UTF-8"  import="eionet.gdem.dto.*"%>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html"%>
+<%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
+<%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed"%>
 
 <html:xhtml/>
 <div id="stylesheet" class="box"> 
 	<div class="boxleft"> 
-		<div class="boxtop"><div>
-		</div>
-	</div> 
-
-			<ed:breadcrumbs-push label="Add Stylesheet" level="3" />
+		<div class="boxtop"><div></div>	</div> 
+			<ed:breadcrumbs-push label="Add Stylesheet" level="2" />
 			<h4><bean:message key="label.stylesheet.add"/></h4> 
 
 		<div class="boxcontent">
@@ -31,10 +24,10 @@
 		      <td>&nbsp;</td>
 		      <td>
 				<logic:present name="schema" scope="request">
-		        <input type="text" name="schema" value="<bean:write name="schema" scope="request"/>" style="width:400px" />
+		          <input type="text" name="schema" value="<bean:write name="schema" scope="request"/>" style="width:400px" />
 		        </logic:present>
 		        <logic:notPresent name="schema" scope="request">
-		        <input type="text" name="schema" maxlength="255"  style="width:400px" />
+		          <input type="text" name="schema" maxlength="255"  style="width:400px" />
 		        </logic:notPresent>
 		      </td>
 		    </tr>
