@@ -233,7 +233,7 @@ public class SchemaManager {
 				boolean ddConv = false;
 				String xslUrl;
 
-				if (!xsl.startsWith(Properties.gdemURL + "GetStylesheet?id=")) {
+				if (!xsl.startsWith(Properties.gdemURL + "/GetStylesheet?id=")) {
 
 					File f = new File(Properties.xslFolder + xsl);
 					if (f != null) last_modified = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(f.lastModified()));
@@ -456,7 +456,8 @@ public class SchemaManager {
 				String xslUrl;
 
 				if (!xsl.startsWith(Properties.gdemURL + "/GetStylesheet?id=")) {
-					xslUrl = Properties.gdemURL + Names.XSL_FOLDER + (String) hash.get("xsl");
+					xslUrl = Properties.gdemURL + "/" + Names.XSL_FOLDER + (String) hash.get("xsl");
+					
 					type = (String) hash.get("result_type");
 				} else {
 					xslUrl = (String) hash.get("xsl");
@@ -591,8 +592,9 @@ public class SchemaManager {
 
 			if (schema != null) {
 
-				String schemaId = dbM.getSchemaID(Properties.gdemURL + "schema/" + schema);
+				String schemaId = dbM.getSchemaID(Properties.gdemURL + "/schema/" + schema);
 
+				
 				if (schemaId != null) {
 					Vector stylesheets = dbM.getSchemaStylesheets(schemaId);
 					if (stylesheets != null) {

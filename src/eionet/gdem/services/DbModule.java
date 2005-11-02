@@ -1312,7 +1312,7 @@ public class DbModule implements DbModuleIF, Constants {
 		String schema = (String)sch.get("schema");
 
 	    sql = "UPDATE  " + SCHEMA_TABLE + " SET " + SCHEMA_DESCR_FLD + "=" + Utils.strLiteral(description) + 
-        " WHERE " + XML_SCHEMA_FLD + "=" + Utils.strLiteral(Properties.gdemURL + "schema/" + schema);
+        " WHERE " + XML_SCHEMA_FLD + "=" + Utils.strLiteral(Properties.gdemURL + "/schema/" + schema);
 
 		_executeUpdate(sql);
 		
