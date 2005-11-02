@@ -455,7 +455,7 @@ public class SchemaManager {
 				boolean ddConv = false;
 				String xslUrl;
 
-				if (!xsl.startsWith(Properties.gdemURL + "GetStylesheet?id=")) {
+				if (!xsl.startsWith(Properties.gdemURL + "/GetStylesheet?id=")) {
 					xslUrl = Properties.gdemURL + Names.XSL_FOLDER + (String) hash.get("xsl");
 					type = (String) hash.get("result_type");
 				} else {
