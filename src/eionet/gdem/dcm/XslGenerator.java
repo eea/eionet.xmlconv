@@ -12,17 +12,23 @@ import org.xml.sax.InputSource;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.utils.InputFile;
+import eionet.gdem.utils.cache.MemoryCache;
 import eionet.gdem.utils.xml.XSLTransformer;
 
 public class XslGenerator {
 
 	public static XSLTransformer transform = new XSLTransformer();
+	public static MemoryCache MemCache = new MemoryCache(10000, 10);
 
 
 	public static ByteArrayInputStream convertXML(String xmlURL, String conversionURL) throws GDEMException, Exception {
-		byte[] result = makeDynamicXSL(xmlURL, conversionURL);
-		ByteArrayInputStream byteIn = new ByteArrayInputStream(result);
-		return byteIn;
+		String cacheId = xmlURL + "_" + conversionURL;
+		byte[] result = (byte[]) MemCache.getContent(cacheId);
+		if (result == null) {
+			result = makeDynamicXSL(xmlURL, conversionURL);
+			MemCache.put(cacheId, result, Integer.MAX_VALUE);
+		}
+		return new ByteArrayInputStream(result);
 	}
 
 
