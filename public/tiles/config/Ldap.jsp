@@ -38,9 +38,39 @@
             </td>
             <td>&nbsp;</td>
             <td><html:text property="url" maxlength="255" style="width: 30em;" /></td>
+		</tr>
+        <tr>
+            <td colspan="3">&nbsp;</td>
+        </tr>
+		<tr>
+            <td align="right">
+            <h6><bean:message key="label.config.ldap.context" />:</h6>
+            </td>
+            <td>&nbsp;</td>
+            <td><html:text property="context" maxlength="255" style="width: 30em;" /></td>
+		</tr>
+        <tr>
+            <td colspan="3">&nbsp;</td>
+        </tr>
+		<tr>
+            <td align="right">
+            <h6><bean:message key="label.config.ldap.userDir" />:</h6>
+            </td>
+            <td>&nbsp;</td>
+            <td><html:text property="userDir" maxlength="255" style="width: 30em;" /></td>
+		</tr>
+        <tr>
+            <td colspan="3">&nbsp;</td>
+        </tr>
+		<tr>
+            <td align="right">
+            <h6><bean:message key="label.config.ldap.attrUid" />:</h6>
+            </td>
+            <td>&nbsp;</td>
+            <td><html:text property="attrUid" maxlength="255" style="width: 30em;" /></td>
         </tr>
         <tr>
-            <td>&nbsp;</td>
+            <td colspan="3">&nbsp;</td>
         </tr>
         <tr>
             <td colspan="3" align="center">

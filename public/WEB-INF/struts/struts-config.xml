@@ -118,7 +118,9 @@
         <action path="/editUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.EditUplSchemaAction" name="EditUplSchemaForm">           
         	<forward name="success" path="/do/uplSchemas"  redirect="true"/>            
         </action>        
-        <action path="/getStylesheet"  scope="request" type="eionet.gdem.web.struts.stylesheet.GetStylesheetAction" name="getXslForm"/>           
+        <action path="/getStylesheet"  scope="request" type="eionet.gdem.web.struts.stylesheet.GetStylesheetAction" name="getXslForm">           
+	        <forward name="fail" path="/error/StylesheetError.jsp" />
+        </action>
 
 
  <!-- Edit UI -->

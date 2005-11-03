@@ -35,8 +35,8 @@ public class RequestProcessor extends TilesRequestProcessor {
 	public boolean processPreprocess(HttpServletRequest request, HttpServletResponse response) {
 		_logger.info(Properties.gdemURL);
 		request.setAttribute("servletPath", request.getServletPath());
-		//logReq(request);
-		//Remove messages from session and add to page context
+
+		// Remove messages from session and add to page context
 		ActionMessages errors = (ActionMessages) request.getSession().getAttribute("dcm.errors");
 		if (errors != null) {
 			request.getSession().setAttribute("dcm.errors", null);
@@ -55,6 +55,23 @@ public class RequestProcessor extends TilesRequestProcessor {
 
 	protected ActionForward processActionPerform(HttpServletRequest request, HttpServletResponse response, Action action, ActionForm form, ActionMapping mapping) throws IOException, ServletException {
 		_logger.debug("servletPath ----- " + request.getServletPath());
+
+		String path = request.getPathInfo();
+		String query = request.getQueryString();
+		if (query != null && query.length() > 0) path += "?" + query;
+
+		boolean loggedIn = false;
+		Object objUser = request.getSession().getAttribute("user");
+
+		if (objUser == null && (
+				path.indexOf("/editUI") == 0 || 
+				path.indexOf("/ldapForm") == 0 || 
+				path.indexOf("/dbForm") == 0 || 
+				path.indexOf("/addUplSchemaForm") == 0 || 
+				path.indexOf("/addStylesheetForm") == 0)) {
+			return mapping.findForward("loginForm");
+		}
+
 		return super.processActionPerform(request, response, action, form, mapping);
 	}
 

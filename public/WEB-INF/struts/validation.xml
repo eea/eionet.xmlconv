@@ -24,13 +24,5 @@
 				<arg0 key="label.config.ldap.url.error.AttrUid"/>
 			</field>
 		</form>
-		<form name="getXslForm">
-			<field property="id" depends="required">
-				<arg0 key="label.config.ldap.url.error"/>
-			</field>
-			<field property="conv" depends="required">
-				<arg0 key="label.config.ldap.url.error"/>
-			</field>
-		</form>
 	</formset>
 </form-validation>

@@ -122,7 +122,7 @@
 						<td>					
 								<bean:write name="elem" property="namespace" />					
 						</td>
-						<td>
+						<td align="center">
 							<logic:equal name="ssdPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
 							<a href="deleteElem?elemId=<bean:write name="elem" property="elemId" />"
 							onclick='return elementDelete("<bean:write name="elem" property="name" />");'>

@@ -31,12 +31,15 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
 
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dcm.XslGenerator;
 import eionet.gdem.dto.ConversionDto;
+import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.xml.XSLTransformer;
@@ -49,6 +52,8 @@ public class GetStylesheetAction extends Action {
 
 
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse response) {
+		
+		ActionMessages errors = new ActionMessages();
 		String metaXSLFolder = Properties.metaXSLFolder;
 		String tableDefURL = Properties.ddURL;
 		DynaValidatorForm loginForm=(DynaValidatorForm) actionForm;
@@ -60,17 +65,28 @@ public class GetStylesheetAction extends Action {
 			String format = metaXSLFolder + File.separatorChar+ conv.getStylesheet();
 			String url = tableDefURL + "/GetTableDef?id=" + id;
 			ByteArrayInputStream byteIn=XslGenerator.convertXML(url, format);
-			response.setContentType("text/xml");
 			int bufLen = 0;
 			byte[] buf = new byte[1024];
+			
+			//byteIn.re
+			
+			response.setContentType("text/xml");
 			while ((bufLen = byteIn.read(buf)) != -1)
 				response.getOutputStream().write(buf, 0, bufLen);
+			
 			byteIn.close();
-		} catch (Exception ge) {
+			return null;
+			
+				
+		} catch (Exception ge) {			
 			_logger.error(ge);
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.generation"));
+			//request.getSession().setAttribute("dcm.errors", errors);
+			request.setAttribute("dcm.errors", errors);
+			return actionMapping.findForward("fail");
 		}
 		
-		return null;
+		//return null;
 		
 	}
 
