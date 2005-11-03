@@ -104,12 +104,13 @@
 	padding: 0px;
 	margin: 0px;
 }
+/*
 .box table {
 	margin: 4px 0 0;
 	font: 1em/1 Verdana, Geneva, Arial, Helvetica, sans-serif;
 	border-collapse: collapse;
 }
-
+*/
 .button {
 	background: url(../images/button.png);
 	border: 1px solid #FFCE7B;
