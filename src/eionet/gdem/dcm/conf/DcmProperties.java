@@ -46,7 +46,7 @@ public class DcmProperties {
         }      
      }
 
-	public void setLdapParams(String url) throws DCMException { 
+	public void setLdapParams(String url,String context,String userDir,String attrUid) throws DCMException { 
 
 		String filePath = Properties.appHome + File.separatorChar + "eionetdir.properties";
 		
@@ -59,6 +59,9 @@ public class DcmProperties {
 			   while((line = reader.readLine()) != null) {
 			    // process the line 
 				   line = findSetProp(line,"ldap.url", url);
+				   line = findSetProp(line,"ldap.context", context);
+				   line = findSetProp(line,"ldap.user.dir", userDir);
+				   line = findSetProp(line,"ldap.attr.uid", attrUid);
 				   st.append(line);
 				   st.append("\n");
 			   }

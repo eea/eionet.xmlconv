@@ -78,6 +78,9 @@ public class Properties {
 
 	//ldap url
 	public static String ldapUrl = null;
+	public static String ldapContext = null;
+	public static String ldapUserDir = null;
+	public static String ldapAttrUid = null;
 
 	private static ResourceBundle props;
 	private static ResourceBundle ldapProps;
@@ -134,6 +137,10 @@ public class Properties {
 			ldapProps = ResourceBundle.getBundle("eionetdir");
 			try {
 				ldapUrl = ldapProps.getString("ldap.url");
+				ldapContext = ldapProps.getString("ldap.context");
+				ldapUserDir = ldapProps.getString("ldap.user.dir");
+				ldapAttrUid = ldapProps.getString("ldap.attr.uid");
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

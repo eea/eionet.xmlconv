@@ -14,6 +14,15 @@
 			<field property="url" depends="required">
 				<arg0 key="label.config.ldap.url.error"/>
 			</field>
+			<field property="context" depends="required">
+				<arg0 key="label.config.ldap.url.error.Context"/>
+			</field>
+			<field property="userDir" depends="required">
+				<arg0 key="label.config.ldap.url.error.UserDir"/>
+			</field>
+			<field property="attrUid" depends="required">
+				<arg0 key="label.config.ldap.url.error.AttrUid"/>
+			</field>
 		</form>
 		<form name="getXslForm">
 			<field property="id" depends="required">

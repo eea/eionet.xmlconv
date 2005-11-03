@@ -29,8 +29,12 @@ public class LdapAction extends Action {
 		ActionMessages errors = new ActionMessages();
 		ActionMessages messages = new ActionMessages();
 
-		DynaValidatorForm form=(DynaValidatorForm) actionForm;
-   	String url = (String) form.get("url");
+		DynaValidatorForm form = (DynaValidatorForm) actionForm;
+		String url = (String) form.get("url");
+		String context = (String) form.get("context");
+		String userDir = (String) form.get("userDir");
+		String attrUid = (String) form.get("attrUid");
+
 		String user = (String) httpServletRequest.getSession().getAttribute("user");
 
 		try {
@@ -56,7 +60,7 @@ public class LdapAction extends Action {
 
 			DcmProperties dcmProp = new DcmProperties();
 
-			dcmProp.setLdapParams(url);
+			dcmProp.setLdapParams(url, context, userDir, attrUid);
 		} catch (DCMException e) {
 			e.printStackTrace();
 			_logger.error(e);

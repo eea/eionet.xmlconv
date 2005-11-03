@@ -17,6 +17,9 @@
         <form-bean name="imageForm" type="eionet.gdem.web.struts.uimanage.ImageManagerForm"/>
         <form-bean name="ldapForm" type="org.apache.struts.validator.DynaValidatorForm">
 	        <form-property name="url" type="java.lang.String"/>
+	        <form-property name="context" type="java.lang.String"/>
+	        <form-property name="userDir" type="java.lang.String"/>
+	        <form-property name="attrUid" type="java.lang.String"/>
         </form-bean>   
         <form-bean name="dbForm" type="org.apache.struts.validator.DynaValidatorForm">
 	        <form-property name="dbUrl" type="java.lang.String"/>

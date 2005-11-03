@@ -25,7 +25,9 @@ public class LdapFormAction extends Action{
 			DynaValidatorForm form=(DynaValidatorForm) actionForm;
 			try{				
 				form.set("url", Properties.ldapUrl);
-			
+				form.set("context", Properties.ldapContext);
+				form.set("userDir", Properties.ldapUserDir);
+				form.set("attrUid", Properties.ldapAttrUid);
 			}catch(Exception e){			
 				e.printStackTrace();
 				_logger.error(e.getMessage());
