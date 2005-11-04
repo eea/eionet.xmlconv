@@ -22,20 +22,12 @@
 		<div style="width: 97%">							
 			<table class="sortable" align="center" width="80%">
 				<tr>
-					<th scope="col"><span title="Schema"><bean:message key="label.table.uplSchema.schema"/></span></th>
-					<th scope="col"><span title="Description"><bean:message key="label.table.uplSchema.description"/></span></th>					
 					<th scope="col"><span title="Action"><bean:message key="label.table.uplSchema.action"/></span></th>
+					<th scope="col"><span title="Schema"><bean:message key="label.table.uplSchema.schema"/></span></th>
+					<th scope="col"><span title="Description"><bean:message key="label.table.uplSchema.description"/></span></th>										
 				</tr>
 					<logic:iterate indexId="index" id="schema" name="schemas.uploaded" scope="session" property="schemas" type="UplSchema">
 					<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
-						<td width="45%">
-							<a target="blank" href="<bean:write name="schema" property="schema" />">						
-								<bean:write name="schema" property="schema" />
-							</a>						
-						</td>
-						<td width="45%">							
-								<bean:write name="schema" property="description" />							
-						</td>	
 						<td width="10%" align="center">
 							<a href="schemaStylesheets?schema=<bean:write name="schema" property="schema" />">							
 								<img src="<bean:write name="webRoot"/>/images/properties.gif" alt="<bean:message key="label.table.stylesheet" />" title="view stylesheets" />
@@ -52,6 +44,14 @@
 								</a>
 							</logic:equal>
 						</td>    				
+						<td width="45%">
+							<a target="blank" href="<bean:write name="schema" property="schema" />">						
+								<bean:write name="schema" property="schema" />
+							</a>						
+						</td>
+						<td width="45%">							
+								<bean:write name="schema" property="description" />							
+						</td>	
 					</tr>
 					</logic:iterate>
 					<tr>
