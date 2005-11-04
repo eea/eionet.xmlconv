@@ -3,7 +3,6 @@
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 
-
 <logic:present name="org.apache.struts.action.ACTION_MESSAGE">
 <table cellpadding="0" cellspacing="0" border="0" align="center">
   <tr>

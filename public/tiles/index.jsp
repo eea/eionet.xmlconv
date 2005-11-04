@@ -9,7 +9,6 @@
 <%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
 
-
 <ed:breadcrumbs-push label="Visible Channels" level="1"/>
 
 <html:xhtml/>

@@ -5,6 +5,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed"%>
 
+
 <html:xhtml/>
 <div id="stylesheet" class="box"> 
 	<div class="boxleft"> 

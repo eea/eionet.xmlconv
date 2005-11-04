@@ -5,7 +5,7 @@
 
 <ed:breadcrumbs-push label="Login" level="1"/>
 <html:xhtml/>
-<br />
+<br/>
 
 <table width="300" align="center">
 <tr>
