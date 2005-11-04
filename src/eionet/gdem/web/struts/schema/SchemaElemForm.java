@@ -14,6 +14,7 @@ public class SchemaElemForm extends ActionForm{
 	private String elemName;
 	private String namespace;
 	private String dtdId;
+	private String backToConv;
 	
 	
 	  public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
@@ -70,6 +71,14 @@ public class SchemaElemForm extends ActionForm{
 	public void setDtdId(String dtdId) {
 		this.dtdId = dtdId;
 	}
+	public String getBackToConv() {
+		return backToConv;
+	}
+	
+	public void setBackToConv(String backToConv) {
+		this.backToConv = backToConv;
+	}
+	
 	
 	
 	

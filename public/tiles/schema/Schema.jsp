@@ -13,6 +13,8 @@
 		<div class="boxtop"><div>
 		</div>
 	</div> 
+	
+
 
 			<ed:breadcrumbs-push label="XML Schema or DTD" level="2" />
 			<h4><bean:message key="label.schema.edit"/></h4> 
@@ -28,11 +30,13 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td align="left">
+		            <html:hidden property="backToConv" />
 	    		    <logic:present name="user">
 			        	<html:text property="schema" maxlength="255" size="50" />		        
     		        </logic:present>
     		        <logic:notPresent name="user">
-    		        	<html:hidden property="schema" />
+    		        	<html:hidden property="schema" />   
+    		        	<bean:write name="schemaForm" property="backToConv" /> 		        	
 						<a target="blank" href="<bean:write name="schemaForm" property="schema" />" title="<bean:write name="schemaForm" property="schema" />">						
 							<bean:write name="schemaForm" property="schema" />
 						</a>&#160;		        	      		        	
@@ -86,9 +90,15 @@
 			<div class="boxbottombuttons">
    			    <input type="button"  class="button" value="<bean:message key="label.schema.save"/>" onclick="return submitAction('schemaUpdate');" />
 		        &nbsp;
-		        <html:cancel styleClass="button">
-			      	<bean:message key="label.stylesheet.cancel"/>
-  			    </html:cancel>
+		        <logic:notPresent name="schemaForm" property="backToConv">		        	
+			        <html:cancel styleClass="button">
+				      	<bean:message key="label.cancel"/>
+	  			    </html:cancel>
+  			    </logic:notPresent>
+  			   <logic:present name="schemaForm" property="backToConv">
+	  			   <input type="button"  value="<bean:message key="label.cancel"/>"  class="button" onClick="location.href='<bean:write name="webRoot"/>/do/stylesheetList'" >
+  			   </logic:present>
+  			    
 			</div>
 		    </logic:equal>
 		    <logic:notEqual name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >

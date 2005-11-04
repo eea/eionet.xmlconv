@@ -24,6 +24,12 @@ public class SchemaElemFormAction  extends Action {
 		SchemaElemForm form=(SchemaElemForm)actionForm;
 		String schemaId= (String)httpServletRequest.getParameter("schemaId");
 		String user = (String)httpServletRequest.getSession().getAttribute("user");
+		String backToConv=null;
+		if(httpServletRequest.getParameter("backToConv")!=null && !httpServletRequest.getParameter("backToConv").toString().equals("")){
+				backToConv= (String)httpServletRequest.getParameter("backToConv");		
+		}
+		
+		System.out.println("backToConv="+backToConv);
 		
 		if (schemaId!=null && schemaId!=""){
 			httpServletRequest.getSession().setAttribute("schemaId", schemaId);
@@ -41,9 +47,12 @@ public class SchemaElemFormAction  extends Action {
 			form.setDescription(seHolder.getSchema().getDescription());
 			form.setSchemaId(schemaId);
 			form.setDtdId(seHolder.getSchema().getDtdPublicId());
+			form.setBackToConv(backToConv);
+			form.setElemName("");
+			form.setNamespace("");
 			
 			httpServletRequest.getSession().setAttribute("schema.rootElemets", seHolder);
-						
+			 			
 		}catch(DCMException e){			
 			e.printStackTrace();
 			_logger.error(e);

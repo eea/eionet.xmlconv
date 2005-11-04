@@ -114,10 +114,14 @@
 		        <html:submit styleClass="button">
 		        	<bean:message key="label.stylesheet.upload"/>
 		        </html:submit>
+		        <logic:present name="schema" scope="request">
 		        <html:cancel styleClass="button">
 		        	<bean:message key="label.stylesheet.cancel"/>
 		        </html:cancel>
-		        
+		        </logic:present>
+		        <logic:notPresent name="schema" scope="request">
+		        	<input type="button"  value="<bean:message key="label.stylesheet.cancel"/>"  class="button" onClick="location.href='<bean:write name="webRoot"/>/do/stylesheetList'" >
+		        </logic:notPresent>		        
 		      </td>
 		    </tr>
 		  </table>

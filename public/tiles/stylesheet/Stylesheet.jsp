@@ -27,7 +27,7 @@
     					<html:link page="/do/schemaStylesheets" paramId="schema" paramName="schema" paramProperty="schema">
 							<html:img page="/images/properties.gif" altKey="label.table.stylesheet" title="view stylesheets" />
 						</html:link>
-						<a href="schemaElemForm?schemaId=<bean:write name="schema" property="id" />">		
+						<a href="schemaElemForm?backToConv=yes&schemaId=<bean:write name="schema" property="id" />">		
 							<html:img page="/images/info_icon.gif" altKey="label.table.schemainfo" title="view schema info"/>
 						</a>
 						<logic:equal name="ssdPrm" value="true"  name="stylesheet.stylesheetList" scope="session" property="ssdPrm" >
