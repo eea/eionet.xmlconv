@@ -545,4 +545,8 @@ public interface DbModuleIF {
 	 
 	 public void updateUplSchema(String schema_id, String description) throws SQLException;
 	 
+	 public boolean checkStylesheetFile(String xslFileName) throws SQLException;
+	 
+	 boolean checkUplSchemaFile(String schemaFileName) throws SQLException;
+	 
 }

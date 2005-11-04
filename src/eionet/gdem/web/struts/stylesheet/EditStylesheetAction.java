@@ -44,11 +44,13 @@ public class EditStylesheetAction extends Action {
 		}
 		
 		
-		if (schema == null || schema.equals("")) {
+		/*if (schema == null || schema.equals("")) {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.validation"));
 		} else if (xslFile == null || xslFile.getFileSize() == 0) {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.validation"));
 		} else {
+		*/
+		if (xslFile != null && xslFile.getFileSize() != 0) {
 			try {
 				IXmlCtx x = new XmlContext();
 				x.setWellFormednessChecking();

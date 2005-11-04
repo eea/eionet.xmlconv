@@ -72,7 +72,6 @@ public class SetCharacterEncodingFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain)
 	throws IOException, ServletException {
-
         // Conditionally select and set the character encoding to be used
         if (ignore || (request.getCharacterEncoding() == null)) {
             String encoding = selectEncoding(request);

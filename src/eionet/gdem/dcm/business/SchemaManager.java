@@ -55,8 +55,8 @@ public class SchemaManager {
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
-		//StringBuffer err_buf = new StringBuffer();
-		//String del_id= (String)req.getParameter(Names.XSD_DEL_ID);
+		// StringBuffer err_buf = new StringBuffer();
+		// String del_id= (String)req.getParameter(Names.XSD_DEL_ID);
 
 		try {
 			DbModuleIF dbM = GDEMServices.getDbModule();
@@ -80,7 +80,7 @@ public class SchemaManager {
 			}
 			if (dbM.getSchemaQueries(schemaId) != null) hasOtherStuff = true;
 
-			//dbM.removeSchema( schemaId, true, false, !hasOtherStuff);              
+			// dbM.removeSchema( schemaId, true, false, !hasOtherStuff);
 			dbM.removeSchema(schemaId, true, true, true);
 		} catch (Exception e) {
 			_logger.debug(e.toString());
@@ -127,7 +127,7 @@ public class SchemaManager {
 				for (int j = 0; j < stylesheets.size(); j++) {
 					HashMap stylesheet = (HashMap) stylesheets.get(j);
 					Stylesheet stl = new Stylesheet();
-					//st.setConvId(1);
+					// st.setConvId(1);
 					stl.setType((String) stylesheet.get("content_type_out"));
 					stl.setXsl(Names.XSL_FOLDER + (String) stylesheet.get("xsl"));
 					stl.setXsl_descr((String) stylesheet.get("description"));
@@ -135,14 +135,14 @@ public class SchemaManager {
 					stls.add(stl);
 				}
 
-				if (stls.size() > 0) {
-					sc.setStylesheets(stls);
-					schemas.add(sc);
-				}
+				// if (stls.size() > 0) {
+				sc.setStylesheets(stls);
+				schemas.add(sc);
+				// }
 			}
 			st.setHandCodedStylesheets(schemas);
 
-			//retrive conversions for DD tables
+			// retrive conversions for DD tables
 			List ddTables = DDServiceClient.getDDTables();
 			schemas = new ArrayList();
 
@@ -246,7 +246,7 @@ public class SchemaManager {
 				}
 
 				Stylesheet stl = new Stylesheet();
-				//st.setConvId(1);
+				// st.setConvId(1);
 				stl.setType(type);
 				stl.setXsl(xslUrl);
 				stl.setXsl_descr((String) hash.get("description"));
@@ -283,8 +283,8 @@ public class SchemaManager {
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
-		//StringBuffer err_buf = new StringBuffer();
-		//String del_id= (String)req.getParameter(Names.XSD_DEL_ID);
+		// StringBuffer err_buf = new StringBuffer();
+		// String del_id= (String)req.getParameter(Names.XSD_DEL_ID);
 
 		try {
 			DbModuleIF dbM = GDEMServices.getDbModule();
@@ -373,24 +373,21 @@ public class SchemaManager {
 
 		try {
 
-			/*			  ConversionService cs = new ConversionService(); 
-			 Vector conv = cs.listConversions();
-			 
-			 for (int i = 0; i < conv.size(); i++){
-			 Hashtable schema = (Hashtable)conv.get(i);
-			 //System.out.println( i + " - " + schema.get("xml_schema") );		  
-			 if(!schemasChk.contains(schema.get("xml_schema"))){
-			 Schema sc = new Schema();						
-			 sc.setSchema((String)schema.get("xml_schema"));	
-			 sc.setTable((String)schema.get("table"));
-			 sc.setDataset((String)schema.get("dataset"));
-			 schemas.add(sc);
-			 schemasChk.add(schema.get("xml_schema"));
-			 }
-			 }			
+			/*
+			 * ConversionService cs = new ConversionService(); Vector conv =
+			 * cs.listConversions();
+			 * 
+			 * for (int i = 0; i < conv.size(); i++){ Hashtable schema =
+			 * (Hashtable)conv.get(i); //System.out.println( i + " - " +
+			 * schema.get("xml_schema") );
+			 * if(!schemasChk.contains(schema.get("xml_schema"))){ Schema sc = new
+			 * Schema(); sc.setSchema((String)schema.get("xml_schema"));
+			 * sc.setTable((String)schema.get("table"));
+			 * sc.setDataset((String)schema.get("dataset")); schemas.add(sc);
+			 * schemasChk.add(schema.get("xml_schema")); } }
 			 */
 
-			//retrive conversions for DD tables
+			// retrive conversions for DD tables
 			List ddTables = DDServiceClient.getDDTables();
 
 			for (int i = 0; i < ddTables.size(); i++) {
@@ -409,7 +406,7 @@ public class SchemaManager {
 			}
 
 			DbModuleIF dbM = GDEMServices.getDbModule();
-			//hcSchemas = dbM.getSchemas(null);
+			// hcSchemas = dbM.getSchemas(null);
 			hcSchemas = dbM.getSchemasWithStl();
 
 			if (hcSchemas == null) hcSchemas = new Vector();
@@ -457,7 +454,7 @@ public class SchemaManager {
 
 				if (!xsl.startsWith(Properties.gdemURL + "/do/getStylesheet?id=")) {
 					xslUrl = Properties.gdemURL + "/" + Names.XSL_FOLDER + (String) hash.get("xsl");
-					
+
 					type = (String) hash.get("result_type");
 				} else {
 					xslUrl = (String) hash.get("xsl");
@@ -466,7 +463,7 @@ public class SchemaManager {
 				}
 
 				Stylesheet stl = new Stylesheet();
-				//st.setConvId(1);
+				// st.setConvId(1);
 				stl.setType(type);
 				stl.setXsl(xslUrl);
 				stl.setXsl_descr((String) hash.get("description"));
@@ -546,6 +543,12 @@ public class SchemaManager {
 		}
 		try {
 			String fileName = file.getFileName();
+			DbModuleIF dbM = GDEMServices.getDbModule();
+
+			if (dbM.checkUplSchemaFile(fileName)) {
+				throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_FILE_EXISTS);
+			}
+
 			InputStream in = file.getInputStream();
 			String filepath = new String(Properties.schemaFolder + File.separatorChar + file.getFileName());
 			OutputStream w = new FileOutputStream(filepath);
@@ -558,9 +561,9 @@ public class SchemaManager {
 			in.close();
 			file.destroy();
 
-			DbModuleIF dbM = GDEMServices.getDbModule();
-
 			dbM.addUplSchema(fileName, desc);
+		} catch (DCMException e) {
+			throw e;
 		} catch (Exception e) {
 			_logger.debug(e.toString());
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
@@ -594,7 +597,6 @@ public class SchemaManager {
 
 				String schemaId = dbM.getSchemaID(Properties.gdemURL + "/schema/" + schema);
 
-				
 				if (schemaId != null) {
 					Vector stylesheets = dbM.getSchemaStylesheets(schemaId);
 					if (stylesheets != null) {
@@ -641,7 +643,7 @@ public class SchemaManager {
 
 		try {
 
-			//retrive conversions for DD tables
+			// retrive conversions for DD tables
 			List ddTables = DDServiceClient.getDDTables();
 
 			for (int i = 0; i < ddTables.size(); i++) {
@@ -707,7 +709,7 @@ public class SchemaManager {
 
 		try {
 			DbModuleIF dbM = GDEMServices.getDbModule();
-			//dbM.updateSchema(schemaId, schema, description, dtdPublicId);
+			// dbM.updateSchema(schemaId, schema, description, dtdPublicId);
 			dbM.updateUplSchema(schemaId, description);
 		} catch (Exception e) {
 			_logger.debug(e.toString());
@@ -747,10 +749,10 @@ public class SchemaManager {
 			String schema = xmlSchema.substring(url.length(), xmlSchema.length());
 			System.out.println(schema);
 		}
-		//xmlSchema.substring(xmlSchema.indexOf(Properties.gdemURL))
+		// xmlSchema.substring(xmlSchema.indexOf(Properties.gdemURL))
 
-		//SchemaManager s = new SchemaManager();
-		//SchemaElemHolder d = s.getSchemaElems( "_admin","37");
+		// SchemaManager s = new SchemaManager();
+		// SchemaElemHolder d = s.getSchemaElems( "_admin","37");
 	}
 
 }

@@ -22,4 +22,6 @@ public class BusinessConstants {
 	 //public static final String EXCEPTION_PARAM_LDAP_TEST_FAILED = "label.editParam.ldap.testFailed";
 	 public static final String EXCEPTION_CONVERT_URL_MALFORMED  = "label.conversion.url.malformed";
 	 public static final String EXCEPTION_CONVERT_URL_ERROR = "label.conversion.url.error";
+	 public static final String EXCEPTION_STYLEHEET_FILE_EXISTS = "label.stylesheet.error.fileExists";
+	 public static final String EXCEPTION_UPLSCHEMA_FILE_EXISTS = "label.uplSchema.error.fileExists";
 }

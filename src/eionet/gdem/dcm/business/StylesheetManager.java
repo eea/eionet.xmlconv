@@ -27,224 +27,220 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.stylesheet.ConvTypeHolder;
 
 public class StylesheetManager {
-	private static LoggerIF _logger=GDEMServices.getLogger();
-	
-	public void delete(String user, String stylesheetId) throws DCMException{
-	
-    
-		
-        try{
-          if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "d")){
-			  _logger.debug("You don't have permissions to delete stylesheet!");
-			  throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_STYLEHEET_DELETE);                              
-          }
-        }
-        catch (DCMException e){					    
-			throw e;
-        }
-		catch (Exception e){			
-			_logger.debug(e.toString());
-			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
-        }
+	private static LoggerIF _logger = GDEMServices.getLogger();
 
-		       
-       try{
-         DbModuleIF dbM= GDEMServices.getDbModule();
-         dbM= GDEMServices.getDbModule();
-         HashMap hash = dbM.getStylesheetInfo(stylesheetId);
-         String fileName = (String)hash.get("xsl");
-         String xslFolder=Properties.xslFolder;
-         if (!xslFolder.endsWith(File.separator))
-            xslFolder = xslFolder + File.separator;		 
-		 Utils.deleteFile(xslFolder + fileName);
-		 dbM.removeStylesheet(stylesheetId);
-		 String schema = (String)hash.get("xml_schema");
-		 String schemaId = (String)hash.get("schema_id");
-		 //remove schema if there is no stylesheets
-		 //System.out.println("schema="+schema);
-		 //System.out.println("schemaId="+schemaId);
-		Vector vDb = dbM.listConversions(schema);
-		//System.out.println("size="+vDb.size());
-		if(vDb.size()==0) {
-			dbM.removeSchema( schemaId, true, true, true);           
-		}				
-		 
-       }
-       catch (Exception e){
+
+	public void delete(String user, String stylesheetId) throws DCMException {
+
+		try {
+			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "d")) {
+				_logger.debug("You don't have permissions to delete stylesheet!");
+				throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_STYLEHEET_DELETE);
+			}
+		} catch (DCMException e) {
+			throw e;
+		} catch (Exception e) {
 			_logger.debug(e.toString());
-			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
-       }
-       
-     }		
-		
-	public ConvTypeHolder getConvTypes() throws DCMException{
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+
+		try {
+			DbModuleIF dbM = GDEMServices.getDbModule();
+			dbM = GDEMServices.getDbModule();
+			HashMap hash = dbM.getStylesheetInfo(stylesheetId);
+			String fileName = (String) hash.get("xsl");
+			String xslFolder = Properties.xslFolder;
+			if (!xslFolder.endsWith(File.separator)) xslFolder = xslFolder + File.separator;
+			Utils.deleteFile(xslFolder + fileName);
+			dbM.removeStylesheet(stylesheetId);
+
+			/*
+			 * //removing schema if it doesnt have stylesheets String schema =
+			 * (String)hash.get("xml_schema"); String schemaId =
+			 * (String)hash.get("schema_id");
+			 * 
+			 * Vector vDb = dbM.listConversions(schema);
+			 * 
+			 * if(vDb.size()==0) { dbM.removeSchema( schemaId, true, true, true); }
+			 */
+		} catch (Exception e) {
+			_logger.debug(e.toString());
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+
+	}
+
+
+	public ConvTypeHolder getConvTypes() throws DCMException {
 		ConvTypeHolder ctHolder = new ConvTypeHolder();
 
 		Vector hcSchemas;
 		ArrayList convs;
-		
-		
-		try {			
+
+		try {
 			convs = new ArrayList();
-			
-			DbModuleIF dbM= GDEMServices.getDbModule();
+
+			DbModuleIF dbM = GDEMServices.getDbModule();
 			Vector convTypes = dbM.getConvTypes();
-			
-            for (int i=0; i<convTypes.size(); i++){
-                Hashtable hash = (Hashtable)convTypes.get(i);
-				String conv_type=(String)hash.get("conv_type");
-				
+
+			for (int i = 0; i < convTypes.size(); i++) {
+				Hashtable hash = (Hashtable) convTypes.get(i);
+				String conv_type = (String) hash.get("conv_type");
+
 				ConvType conv = new ConvType();
 				conv.setConvType(conv_type);
-				convs.add(conv);				
-            }			
+				convs.add(conv);
+			}
 			ctHolder.setConvTypes(convs);
 		} catch (Exception e) {
 			e.printStackTrace();
 			_logger.debug(e.toString());
-			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return ctHolder;
-		
+
 	}
-	
-	public void add(String user,String schema, FormFile file, String type, String descr) throws DCMException{
-        
-        try{
-          if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "i")){
-			 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_STYLEHEET_INSERT);
-          }
-        }
-        catch (DCMException e){					    
+
+
+	public void add(String user, String schema, FormFile file, String type, String descr) throws DCMException {
+
+		try {
+			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "i")) {
+				throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_STYLEHEET_INSERT);
+			}
+		} catch (DCMException e) {
 			throw e;
-        }
-		catch (Exception e){			
+		} catch (Exception e) {
 			_logger.debug(e.toString());
-			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
-        }
-		try{
-			String fileName=file.getFileName();
-			InputStream in=file.getInputStream();
-			String filepath=new String(Properties.xslFolder+"/"+file.getFileName());
-			OutputStream w= new FileOutputStream(filepath);
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+		try {
+			String fileName = file.getFileName();
+
+			DbModuleIF dbM = GDEMServices.getDbModule();
+			if (dbM.checkStylesheetFile(fileName)) {			
+				throw new DCMException(BusinessConstants.EXCEPTION_STYLEHEET_FILE_EXISTS);
+			}
+				
+
+			InputStream in = file.getInputStream();
+			String filepath = new String(Properties.xslFolder + "/" + file.getFileName());
+			OutputStream w = new FileOutputStream(filepath);
 			int bytesRead = 0;
-	        byte[] buffer = new byte[8192];
-	        while ((bytesRead = in.read(buffer, 0, 8192)) != -1) {
-	               w.write(buffer, 0, bytesRead);
+			byte[] buffer = new byte[8192];
+			while ((bytesRead = in.read(buffer, 0, 8192)) != -1) {
+				w.write(buffer, 0, bytesRead);
 			}
 			w.close();
-	        in.close();
-			file.destroy(); 
-		
-	        DbModuleIF dbM = GDEMServices.getDbModule();
-	         
-	        String schemaID=dbM.getSchemaID(schema);
-	        if (schemaID==null)
-	            schemaID=dbM.addSchema(schema, null);
-	        dbM.addStylesheet(schemaID, type, fileName, descr);
-       }
-       catch (Exception e){
+			in.close();
+			file.destroy();
+
+			String schemaID = dbM.getSchemaID(schema);
+			if (schemaID == null) schemaID = dbM.addSchema(schema, null);
+			dbM.addStylesheet(schemaID, type, fileName, descr);
+		} catch (DCMException e) {
+			throw e;
+		} catch (Exception e) {
 			_logger.debug(e.toString());
-			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
-       }
-		
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+
 	}
-	
-	public Stylesheet getStylesheet(String stylesheetId) throws DCMException{
+
+
+	public Stylesheet getStylesheet(String stylesheetId) throws DCMException {
 		Stylesheet st = new Stylesheet();
 
-		
 		try {
-			DbModuleIF dbM= GDEMServices.getDbModule();
-			if (!stylesheetId.equals("")){
+			DbModuleIF dbM = GDEMServices.getDbModule();
+			if (!stylesheetId.equals("")) {
 				HashMap xsl = dbM.getStylesheetInfo(stylesheetId);
-				if (xsl==null) xsl=new HashMap();
+				if (xsl == null) xsl = new HashMap();
 
-				st.setSchema((String)xsl.get("xml_schema"));
-				st.setXsl_descr((String)xsl.get("description"));
-				st.setType((String)xsl.get("content_type_out"));
+				st.setSchema((String) xsl.get("xml_schema"));
+				st.setXsl_descr((String) xsl.get("description"));
+				st.setType((String) xsl.get("content_type_out"));
 				st.setXsl(Names.XSL_FOLDER + xsl.get("xsl"));
 				st.setConvId(stylesheetId);
 			}
-			
 
-		} catch (Exception e) {			
+		} catch (Exception e) {
 			_logger.debug(e.toString());
-			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return st;
-		
-	}
-		
 
-	public void update(String user,String xsl_id,String schema, FormFile file, String type, String descr) throws DCMException{
-        try{
-          if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "u")){
-			 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_STYLEHEET_UPDATE);
-          }
-        }
-        catch (DCMException e){					    
+	}
+
+
+	public void update(String user, String xsl_id, String schema, FormFile file, String type, String descr) throws DCMException {
+		try {
+			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "u")) {
+				throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_STYLEHEET_UPDATE);
+			}
+		} catch (DCMException e) {
 			throw e;
-        }
-		catch (Exception e){			
+		} catch (Exception e) {
 			_logger.debug(e.toString());
-			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
-        }
-		try{
-			String fileName=file.getFileName().trim();
-	        DbModuleIF dbM = GDEMServices.getDbModule();
-			
-			if(fileName!=null && !fileName.equals("")){		 
-				InputStream in=file.getInputStream();
-				String filepath=new String(Properties.xslFolder+"/"+fileName);
-				OutputStream w= new FileOutputStream(filepath);
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+		try {
+			String fileName = file.getFileName().trim();
+			DbModuleIF dbM = GDEMServices.getDbModule();
+
+			if (fileName != null && !fileName.equals("")) {
+				
+				if (dbM.checkStylesheetFile(fileName)) {			
+					throw new DCMException(BusinessConstants.EXCEPTION_STYLEHEET_FILE_EXISTS);
+				}
+
+				
+				InputStream in = file.getInputStream();
+				String filepath = new String(Properties.xslFolder + "/" + fileName);
+				OutputStream w = new FileOutputStream(filepath);
 				int bytesRead = 0;
-		        byte[] buffer = new byte[8192];
-		        while ((bytesRead = in.read(buffer, 0, 8192)) != -1) {
-		               w.write(buffer, 0, bytesRead);
+				byte[] buffer = new byte[8192];
+				while ((bytesRead = in.read(buffer, 0, 8192)) != -1) {
+					w.write(buffer, 0, bytesRead);
 				}
 				w.close();
-		        in.close();
-				file.destroy(); 
+				in.close();
+				file.destroy();
 
-				//delete Old xsl
+				// delete Old xsl
 				HashMap hash = dbM.getStylesheetInfo(xsl_id);
-				
-		        String fileNameOld = (String)hash.get("xsl");
-		        String xslFolder=Properties.xslFolder;
-		        //if (!xslFolder.endsWith(File.separator))
-		        //    xslFolder = xslFolder + File.separator;		
-				
-				
-				 Utils.deleteFile(xslFolder + fileNameOld);
-				
-				
+
+				String fileNameOld = (String) hash.get("xsl");
+				String xslFolder = Properties.xslFolder;
+				// if (!xslFolder.endsWith(File.separator))
+				// xslFolder = xslFolder + File.separator;
+
+				Utils.deleteFile(xslFolder + fileNameOld);
+
 			}
-			
-	         
-	        String schemaID=dbM.getSchemaID(schema);
-	        if (schemaID==null)
-	            schemaID=dbM.addSchema(schema, null);
-			
+
+			String schemaID = dbM.getSchemaID(schema);
+			if (schemaID == null) schemaID = dbM.addSchema(schema, null);
+
 			dbM.updateStylesheet(xsl_id, schemaID, descr, fileName, type);
-	        
-       }
-       catch (Exception e){
-		   e.printStackTrace();
+		} catch (DCMException e) {
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
 			_logger.debug(e.toString());
-			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);          
-       }
-		
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+
 	}
 
-	public static void main(String[] args){
+
+	public static void main(String[] args) {
 		StylesheetManager g = new StylesheetManager();
-		try{
-			ConvTypeHolder ctHolder=g.getConvTypes();
-		}catch(Exception e)
-		{e.printStackTrace();}
+		try {
+			ConvTypeHolder ctHolder = g.getConvTypes();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-	
-
 
 }
