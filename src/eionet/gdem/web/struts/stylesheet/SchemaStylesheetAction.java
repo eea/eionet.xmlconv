@@ -9,6 +9,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
+import org.apache.struts.action.DynaActionForm;
 
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
@@ -23,8 +24,13 @@ public class SchemaStylesheetAction extends Action{
 
 			StylesheetListHolder st = new StylesheetListHolder();
 			ActionMessages messages = new ActionMessages();
-			String user_name = (String)httpServletRequest.getSession().getAttribute("user");		
-			String schema= (String)httpServletRequest.getParameter("schema");
+			String user_name = (String)httpServletRequest.getSession().getAttribute("user");
+			
+			
+			//String schema= (String)httpServletRequest.getParameter("schema");
+			
+			DynaActionForm df=(DynaActionForm) actionForm;
+			String schema= (String) df.get("schema");
 		
 			/*if (schema!=null && schema!=""){
 				httpServletRequest.getSession().setAttribute("schema", schema);

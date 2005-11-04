@@ -19,71 +19,62 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
+import eionet.gdem.utils.xml.XmlException;
 
 public class EditStylesheetAction extends Action {
 
-	private static LoggerIF _logger=GDEMServices.getLogger();
+	private static LoggerIF _logger = GDEMServices.getLogger();
 
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-		
+
+	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+
 		ActionMessages errors = new ActionMessages();
-        ActionMessages messages = new ActionMessages();		
-		
-				
-		StylesheetForm form=(StylesheetForm)actionForm;
-		String desc= form.getDescription();
-		String schema=form.getSchema();
-		String type=form.getOutputtype();
-		FormFile xslFile=form.getXslfile();
-		String stylesheetId=form.getStylesheetId();
-		String user = (String)httpServletRequest.getSession().getAttribute("user");
+		ActionMessages messages = new ActionMessages();
 
-		
-		if(schema == null || schema.equals("")){
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.validation"));
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);						
-			return actionMapping.findForward("fail");
-		}
-		
-		
-		
-		httpServletRequest.setAttribute("schema", schema);
-		
-		if (isCancelled(httpServletRequest)){
+		StylesheetForm form = (StylesheetForm) actionForm;
+		String desc = form.getDescription();
+		String schema = form.getSchema();
+		String type = form.getOutputtype();
+		FormFile xslFile = form.getXslfile();
+		String stylesheetId = form.getStylesheetId();
+		String user = (String) httpServletRequest.getSession().getAttribute("user");
+
+		if (isCancelled(httpServletRequest)) {
 			return actionMapping.findForward("success");
 		}
 		
 		
-		if(xslFile == null || xslFile.getFileSize()==0){
+		if (schema == null || schema.equals("")) {
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.validation"));
+		} else if (xslFile == null || xslFile.getFileSize() == 0) {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.validation"));
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);						
-			return actionMapping.findForward("fail");
+		} else {
+			try {
+				IXmlCtx x = new XmlContext();
+				x.setWellFormednessChecking();
+				x.checkFromInputStream(new ByteArrayInputStream(xslFile.getFileData()));			
+			} catch (Exception e) {
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.notvalid"));
+			}
+		}
+
+		if(errors.isEmpty()) {
+			try {
+				StylesheetManager st = new StylesheetManager();
+				st.update(user, stylesheetId, schema, xslFile, type, desc);
+				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.updated"));
+			}catch (DCMException e) {
+				_logger.error(e);
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+			}
 		}
 		
-		IXmlCtx x = new XmlContext();
-      try {
-          x.setWellFormednessChecking();
-          x.checkFromInputStream(new ByteArrayInputStream(xslFile.getFileData()));
-      } catch (Exception e) {
-      	errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.notvalid"));
-      	httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward("fail");
-      }
-		
-		try{
-			StylesheetManager st = new StylesheetManager();
-			
-			st.update( user,stylesheetId, schema,xslFile, type, desc);
-			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.updated"));
-		}catch(DCMException e){			
-			e.printStackTrace();
-			_logger.error(e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-			saveErrors(httpServletRequest,errors);
+		if(!errors.isEmpty()) {
+			saveErrors(httpServletRequest, errors);
 			return actionMapping.findForward("fail");
 		}
-        httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-        httpServletRequest.getSession().setAttribute("dcm.messages", messages);						
-        return actionMapping.findForward("success");
-	}		
+		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
+		httpServletRequest.setAttribute("schema", schema);
+		return actionMapping.findForward("success");
+	}
 }

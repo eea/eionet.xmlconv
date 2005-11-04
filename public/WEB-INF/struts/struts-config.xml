@@ -31,6 +31,9 @@
 	        <form-property name="id" type="java.lang.String"/>
         	<form-property name="conv" type="java.lang.String"/>
         </form-bean>
+        <form-bean name="schemaStyleForm" type="org.apache.struts.action.DynaActionForm">
+	        <form-property name="schema" type="java.lang.String"/>
+	       </form-bean>
              
     </form-beans>
 
@@ -52,7 +55,7 @@
         <action path="/deleteSchema"  scope="request" type="eionet.gdem.web.struts.stylesheet.SchemaDeleteAction">           
         	<forward name="success" path="/do/stylesheetList"  />            
         </action>        
-        <action path="/schemaStylesheets" type="eionet.gdem.web.struts.stylesheet.SchemaStylesheetAction">   
+        <action path="/schemaStylesheets" type="eionet.gdem.web.struts.stylesheet.SchemaStylesheetAction" name="schemaStyleForm">   
 	        <forward name="success" path="/schemaStylesheets.jsp"/>                      
         </action>
         <action path="/deleteStylesheet"  scope="request" type="eionet.gdem.web.struts.stylesheet.StylesheetDeleteAction">           
@@ -71,8 +74,8 @@
         </action>
         <action path="/stylesheetEdit" input="/editStylesheet.jsp" name="stylesheetForm"
             type="eionet.gdem.web.struts.stylesheet.EditStylesheetAction" scope="request">
-             <forward name="success" path="/do/schemaStylesheets"/>
-             <forward name="fail" path="/editStylesheet.jsp" redirect="true"/>
+             <forward name="success" path="/do/schemaStylesheets" redirect="true"/>
+             <forward name="fail" path="/editStylesheet.jsp" redirect="false"/>
         </action>
         <action path="/schemaElemForm" name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemFormAction" input="/schema.jsp" scope="request">
             <forward name="success" path="/schema.jsp" redirect="true"/>
