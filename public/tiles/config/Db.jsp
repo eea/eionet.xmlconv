@@ -32,8 +32,8 @@
 <html:form action="/db" method="post">
     <table cellpadding="0" cellspacing="0" border="0" align="center">
         <tr>
-            <td align="right">
-            <h6><bean:message key="label.config.db.url" />:</h6>
+            <td align="left">
+            <bean:message key="label.config.db.url" />:
             </td>
             <td>&nbsp;</td>
             <td><html:text property="dbUrl" maxlength="255" style="width: 30em;" /></td>
@@ -42,8 +42,8 @@
             <td>&nbsp;</td>
         </tr>
         <tr>
-            <td align="right">
-            <h6><bean:message key="label.config.db.user" />:</h6>
+            <td align="left">
+            <bean:message key="label.config.db.user" />:
             </td>
             <td>&nbsp;</td>
             <td><html:text property="user" maxlength="255" style="width: 30em;" /></td>
@@ -52,8 +52,8 @@
             <td>&nbsp;</td>
         </tr>
         <tr>
-            <td align="right">
-            <h6><bean:message key="label.config.db.password" />:</h6>
+            <td align="left">
+            <bean:message key="label.config.db.password" />:
             </td>
             <td>&nbsp;</td>
             <td><html:password property="password" maxlength="255" style="width: 30em;" /></td>
