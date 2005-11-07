@@ -40,8 +40,7 @@
 			        	<html:text property="schema" maxlength="255" size="50" />		        
     		        </logic:present>
     		        <logic:notPresent name="user">
-    		        	<html:hidden property="schema" />   
-    		        	<bean:write name="schemaForm" property="backToConv" /> 		        	
+    		        	<html:hidden property="schema" />       		        	 		        	
 						<a target="blank" href="<bean:write name="schemaForm" property="schema" />" title="<bean:write name="schemaForm" property="schema" />">						
 							<bean:write name="schemaForm" property="schema" />
 						</a>&#160;		        	      		        	
