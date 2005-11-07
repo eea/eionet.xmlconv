@@ -51,11 +51,11 @@ public class LoginAction extends Action {
 		ActionMessages loginMessages = new ActionMessages();
 		ActionErrors errors = new ActionErrors();
 		ActionForward ret = null;
-		DynaValidatorForm loginForm=(DynaValidatorForm) actionForm;
+		DynaValidatorForm loginForm = (DynaValidatorForm) actionForm;
 
 		String username = (String) loginForm.get("username");
 		String password = (String) loginForm.get("password");
-		
+
 		try {
 			doLogin(username, password, httpServletRequest);
 			_logger.debug("Success login");
@@ -68,7 +68,7 @@ public class LoginAction extends Action {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.login.error.invalid"));
 			ret = actionMapping.getInputForward();
 		}
-		
+
 		httpServletRequest.getSession().setAttribute("dcm.messages", loginMessages);
 		httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 
@@ -77,15 +77,14 @@ public class LoginAction extends Action {
 	}
 
 
-
 	private void doLogin(String username, String password, HttpServletRequest httpServletRequest) throws Exception {
 		try {
 			AppUser aclUser = new AppUser();
 			if (!Utils.isNullStr(username)) aclUser.authenticate(username, password);
-			if (!SecurityUtil.hasPerm(username, GDEM_SSAclName, "v")) //GDEM_readPermission))
+			if (!SecurityUtil.hasPerm(username, GDEM_SSAclName, "v")) // GDEM_readPermission))
 				throw new Exception("Not allowed to use the Styelsheet Repository");
-			//session.setAttribute(Names.USER_ATT, aclUser);
-			//add object into session becouse of old bussines ligic
+			// session.setAttribute(Names.USER_ATT, aclUser);
+			// add object into session becouse of old bussines ligic
 			httpServletRequest.getSession().setAttribute(Names.USER_ATT, aclUser);
 		} catch (Exception dire) {
 			_logger.debug("Authentication failed " + dire.toString());

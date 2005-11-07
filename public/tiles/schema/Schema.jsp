@@ -29,7 +29,7 @@
 		<html:form action="/schemaUpdate" method="post" >
 		  <table cellpadding="0" cellspacing="0" border="0" align="center">
 		    <tr>
-		      <td align="right">
+		      <td align="left">
     		    <html:hidden property="schemaId" />
 		        <bean:message key="label.schema.location"/>:
 		      </td>
@@ -53,7 +53,7 @@
 		      <td>&nbsp;</td>
 		    </tr>
 		    <tr>
-		      <td align="right">
+		      <td align="left">
 		        <bean:message key="label.schema.description"/>:
 		      </td>
 		      <td>&nbsp;</td>
