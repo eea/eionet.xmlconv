@@ -15,8 +15,13 @@
 	</div> 
 	
 
-
+		<logic:notPresent name="schemaForm" property="backToConv">
+			<ed:breadcrumbs-push label="XML Schema or DTD" level="3" />
+		</logic:notPresent>
+		<logic:present name="schemaForm" property="backToConv">
 			<ed:breadcrumbs-push label="XML Schema or DTD" level="2" />
+		</logic:present>
+		
 			<h4><bean:message key="label.schema.edit"/></h4> 
 
 		<div class="boxcontent" align="center">
@@ -103,9 +108,14 @@
 		    </logic:equal>
 		    <logic:notEqual name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
 				<div class="boxbottombuttons">
+		        <logic:notPresent name="schemaForm" property="backToConv">		        					
 			        <html:cancel styleClass="button">
 				      	<bean:message key="label.ok"/>
 	  			    </html:cancel>
+	  			</logic:notPresent>
+  			   <logic:present name="schemaForm" property="backToConv">
+	  			   <input type="button"  value="<bean:message key="label.ok"/>"  class="button" onClick="location.href='<bean:write name="webRoot"/>/do/stylesheetList'" >
+  			   </logic:present>
 				</div>
 		    </logic:notEqual>	
 		    
