@@ -30,10 +30,10 @@
 		        	<html:text property="schema"  maxlength="255" style="width:400px" />		        
 		        </logic:present>
 		        <logic:notPresent name="user">
-		        		<html:hidden name="stylesheetForm" property="schema" />
-						<a target="blank" href="<bean:write name="stylesheetForm" property="schema" />" title="<bean:write name="stylesheetForm" property="schema" />">						
-							<bean:write name="stylesheetForm" property="schema" />
-						</a>&#160;		        	  
+	        		<html:hidden name="stylesheetForm" property="schema" />
+					<a target="blank" href="<bean:write name="stylesheetForm" property="schema" />" title="<bean:write name="stylesheetForm" property="schema" />">						
+						<bean:write name="stylesheetForm" property="schema" />
+					</a>&#160;		        	  
 		        </logic:notPresent>
 		      </td>
 		    </tr>
@@ -41,36 +41,36 @@
 		      <td>&nbsp;</td>
 		    </tr>
 		    <logic:present name="user">
-		    <tr>
-		      <td colspan="3">
-		        <bean:message key="label.stylesheet.selectDDSchema"/>:
-		      </td>
-		    </tr>		    
-		    <tr>
-		      <td>&nbsp;</td>
-		    </tr>		    
-		    <tr>
-		      <td colspan="3">		    
-		          <select name="xmlSchema"  size="6" onchange="setSchema()" >
-									<option selected="selected" value="">
-										--
-									</option>		        
-					<logic:iterate id="schema" name="stylesheet.DDSchemas" scope="session"  type="Schema">
-									<option value="<bean:write name="schema" property="schema" />">
-										<bean:write name="schema" property="schema" />
-										<logic:notEqual name="schema" property="table" value="">
-											&nbsp;-&nbsp;
-											<bean:write name="schema" property="table" />&nbsp;(
-											<bean:write name="schema" property="dataset" />)
-										</logic:notEqual>										
-									</option>
-					</logic:iterate>
-		        </select>
-		       </td>
-		    </tr>
-		    <tr>
-		      <td>&nbsp;</td>
-		    </tr>		    
+			    <tr>
+			      <td colspan="3">
+			        <bean:message key="label.stylesheet.selectDDSchema"/>:
+			      </td>
+			    </tr>		    
+			    <tr>
+			      <td>&nbsp;</td>
+			    </tr>		    
+			    <tr>
+			      <td colspan="3">		    
+			          <select name="xmlSchema"  size="6" onchange="setSchema()" >
+						<option selected="selected" value="">
+							--
+						</option>		        
+						<logic:iterate id="schema" name="stylesheet.DDSchemas" scope="session"  type="Schema">
+							<option value="<bean:write name="schema" property="schema" />">
+								<bean:write name="schema" property="schema" />
+								<logic:notEqual name="schema" property="table" value="">
+									&nbsp;-&nbsp;
+									<bean:write name="schema" property="table" />&nbsp;(
+									<bean:write name="schema" property="dataset" />)
+								</logic:notEqual>										
+							</option>
+						</logic:iterate>
+			        </select>
+			       </td>
+			    </tr>
+			    <tr>
+			      <td>&nbsp;</td>
+			    </tr>		    
 		    </logic:present>		        
 		    <tr>
 		      <td>
@@ -82,25 +82,25 @@
 			   <logic:present name="user">		
 		        	<select name="outputtype" style="width:100px">
 		       </logic:present>
-					<logic:iterate id="opt" name="stylesheet.outputtype" scope="session"  property="convTypes" type="ConvType">
-					         <logic:equal name="opt" property="convType" value="<%=oType%>">
-						         <logic:present name="user">						         
-									<option selected="selected" value="<bean:write name="opt" property="convType" />">
-										<bean:write name="opt" property="convType" />
-									</option>
-								 </logic:present>
-						         <logic:notPresent name="user">									 								 
-         						         <bean:write name="opt" property="convType" />
-						         </logic:notPresent>
-							 </logic:equal>
-					         <logic:notEqual name="opt" property="convType" value="<%=oType%>">
-						         <logic:present name="user">						         
-									<option value="<bean:write name="opt" property="convType" />">
-										<bean:write name="opt" property="convType" />
-								 	</option>
-								 </logic:present>
-							 </logic:notEqual>							 						
-					</logic:iterate>
+				<logic:iterate id="opt" name="stylesheet.outputtype" scope="session"  property="convTypes" type="ConvType">
+				         <logic:equal name="opt" property="convType" value="<%=oType%>">
+					         <logic:present name="user">						         
+								<option selected="selected" value="<bean:write name="opt" property="convType" />">
+									<bean:write name="opt" property="convType" />
+								</option>
+							 </logic:present>
+					         <logic:notPresent name="user">									 								 
+     						         <bean:write name="opt" property="convType" />
+					         </logic:notPresent>
+						 </logic:equal>
+				         <logic:notEqual name="opt" property="convType" value="<%=oType%>">
+					         <logic:present name="user">						         
+								<option value="<bean:write name="opt" property="convType" />">
+									<bean:write name="opt" property="convType" />
+							 	</option>
+							 </logic:present>
+						 </logic:notEqual>							 						
+				</logic:iterate>
 				<logic:present name="user">			
 			        </select>
 		       </logic:present>
@@ -116,7 +116,7 @@
 		      <td>&nbsp;</td>
 		      <td>
 			      <logic:present name="user">
-				        <html:textarea property="description"  rows="3" style="width:400px"/>
+				        <html:textarea property="description"  rows="3" cols="30" style="width:400px"/>
 			      </logic:present>
 			      <logic:notPresent name="user">
 					    <bean:write name="stylesheetForm" property="description"/>

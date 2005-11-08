@@ -16,64 +16,70 @@
             </li>
             <li class="currenttab"><span style="color: black; text-decoration: none;" title='<bean:message key="label.config.db"/>'><bean:message key="label.config.db" /></span></li>
         </ul>
-</div>
-<p>&nbsp;</p>
+	</div>
+	<p>&nbsp;</p>
 
-<div id="stylesheet" class="box">
-<div class="boxleft">
-<div class="boxtop">
-<div></div>
-</div>
+	<div id="stylesheet" class="box">
+		<div class="boxleft">
+			<div class="boxtop">
+				<div></div>
+			</div>
 
-<ed:breadcrumbs-push label="DB configuration" level="1" />
-<h4><bean:message key="label.config.db.admin" /></h4>
+		<ed:breadcrumbs-push label="DB configuration" level="1" />
+		<h4><bean:message key="label.config.db.admin" /></h4>
 
-<div class="boxcontent">
-<html:form action="/db" method="post">
-    <table cellpadding="0" cellspacing="0" border="0" align="center">
-        <tr>
-            <td align="left">
-            <bean:message key="label.config.db.url" />:
-            </td>
-            <td>&nbsp;</td>
-            <td><html:text property="dbUrl" maxlength="255" style="width: 30em;" /></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-        </tr>
-        <tr>
-            <td align="left">
-            <bean:message key="label.config.db.user" />:
-            </td>
-            <td>&nbsp;</td>
-            <td><html:text property="user" maxlength="255" style="width: 30em;" /></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-        </tr>
-        <tr>
-            <td align="left">
-            <bean:message key="label.config.db.password" />:
-            </td>
-            <td>&nbsp;</td>
-            <td><html:password property="password" maxlength="255" style="width: 30em;" /></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-        </tr>
-        <tr>
-            <td colspan="3" align="center">
-                <html:submit styleClass="button"><bean:message key="label.config.db.update" /></html:submit>
-            </td>
-        </tr>
-    </table>
-</html:form>
-</div>
+		<div class="boxcontent">
+			<html:form action="/db" method="post">
+			    <table cellpadding="0" cellspacing="0" border="0" align="center">
+			        <tr>
+			            <td align="left">
+			            	<bean:message key="label.config.db.url" />:
+			            </td>
+			            <td>&nbsp;</td>
+			            <td>
+			            	<html:text property="dbUrl" maxlength="255" style="width: 30em;" />
+			            </td>
+			        </tr>
+			        <tr>
+			            <td colspan="3">&nbsp;</td>
+			        </tr>
+			        <tr>
+			            <td align="left">
+			            	<bean:message key="label.config.db.user" />:
+			            </td>
+			            <td>&nbsp;</td>
+			            <td>
+			            	<html:text property="user" maxlength="255" style="width: 30em;" />
+			            </td>
+			        </tr>
+			        <tr>
+			            <td colspan="3">&nbsp;</td>
+			        </tr>
+			        <tr>
+			            <td align="left">
+			            	<bean:message key="label.config.db.password" />:
+			            </td>
+			            <td>&nbsp;</td>
+			            <td>
+			            	<html:password property="password" maxlength="255" style="width: 30em;" />
+			            </td>
+			        </tr>
+			        <tr>
+			            <td colspan="3">&nbsp;</td>
+			        </tr>
+			        <tr>
+			            <td colspan="3" align="center">
+			                <html:submit styleClass="button"><bean:message key="label.config.db.update" /></html:submit>
+			            </td>
+			        </tr>
+			    </table>
+			</html:form>
+		</div>
 
-<div class="boxbottom">
-<div></div>
-</div>
-</div>
-</div>
+		<div class="boxbottom">
+			<div></div>
+		</div>
+		</div>
+	</div>
 
 </div>
