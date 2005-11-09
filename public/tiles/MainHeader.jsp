@@ -37,9 +37,7 @@ response.setDateHeader("Expires", 0);
 	@import url(<c:url value="/css/portlet-ie.css"/>);
 </style>
 <link type="text/css" media="print" href="<c:url value="/css/print-ie.css"/>" rel="stylesheet"></link>
-<script type="text/javascript" src="<c:url value="/scripts/ie_minwidth.js"/>"></script>
 <![endif]-->
-
 <!--[if IE 5]>
 <style type="text/css" media="screen">
 	@import url(<c:url value="/css/portlet-ie5.css"/>);
