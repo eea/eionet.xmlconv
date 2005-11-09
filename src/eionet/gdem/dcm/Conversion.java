@@ -66,17 +66,15 @@ public class Conversion {
 
 
 	public static ConversionDto getConversionById(String convId) {
+		ConversionDto conversion=null;
 		for (int i = 0; i < conversions.size(); i++) {
 			if (((ConversionDto) conversions.get(i)).getConvId().compareTo(convId) == 0) {
-				return (ConversionDto) conversions.get(i);
+				conversion=(ConversionDto) conversions.get(i);
+				break;
 			}
 		}
-		return null;
+		return conversion;
 	}
 	
-	public static void main(String[] args) {
-		System.out.print(getConversionById("5"));
-	}
-
 
 }
