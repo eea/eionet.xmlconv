@@ -48,11 +48,11 @@
 											<html:img page="/images/run.png" altKey="label.stylesheet.run" title="run conversion"/>
 										</a>			
 										<logic:equal name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >
-											&nbsp;
-											<a href="stylesheetEditForm?stylesheetId=<bean:write name="stylesheet" property="convId" />">
-												<html:img page="/images/edit.gif" altKey="label.stylesheet.edit" title="edit stylesheet"/>
-											</a>						
 											<logic:equal name="ssdPrm" value="true"  name="schema.stylesheets" scope="session" property="ssdPrm" >						
+												&nbsp;
+												<a href="stylesheetEditForm?stylesheetId=<bean:write name="stylesheet" property="convId" />">
+													<html:img page="/images/edit.gif" altKey="label.stylesheet.edit" title="edit stylesheet"/>
+												</a>						
 												&nbsp;
 												<a href="deleteStylesheet?stylesheetId=<bean:write name="stylesheet" property="convId" />&amp;schema=<bean:write name="schema" property="schema"/>"
 													onclick='return stylesheetDelete("<bean:write name="stylesheet" property="xsl" />");'>
