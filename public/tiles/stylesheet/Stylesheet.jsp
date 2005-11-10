@@ -27,7 +27,7 @@
 			<tbody>
 				<logic:iterate indexId="index" id="schema" name="stylesheet.stylesheetList" scope="session" property="handCodedStylesheets" type="Schema">
 				<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
-					<td width="7%" align="center">
+					<td width="7%" align="center" nowrap="nowrap">
     					<html:link page="/do/schemaStylesheets" paramId="schema" paramName="schema" paramProperty="schema">
 							<html:img page="/images/properties.gif" altKey="label.table.stylesheet" title="view stylesheets" />
 						</html:link>

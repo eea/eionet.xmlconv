@@ -43,7 +43,7 @@
 						<tbody>
 							<logic:iterate indexId="index" id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">										
 								<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
-									<td width="10%" align="center">
+									<td width="10%" align="center" nowrap="nowrap">
 										<a href="testConversionForm?schema=<bean:write name="schema" property="schema" />&amp;idConv=<bean:write name="stylesheet" property="convId" />"  >
 											<html:img page="/images/run.png" altKey="label.stylesheet.run" title="run conversion"/>
 										</a>			
