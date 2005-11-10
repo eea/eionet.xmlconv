@@ -49,7 +49,7 @@
 						alt="<bean:write name="filelist"/>" onclick="window.opener.document.getElementById('slika').value=this.alt;window.close()"/>
 					</td>
 					<td style="text-align:center;"><input type="image" title="Delete <bean:write name="filelist"/>?" src="<c:url value="/images/delete.gif"/>"
-					 onclick="if(confirm('Do you really want to delete <bean:write name="filelist"/>')){document.getElementById('picToDelete').value='<bean:write name="filelist"/>';document.forms[0].submit;}else{return false;}"/></td>
+					 onclick="if(confirm('Are you sure you want to delete <bean:write name="filelist"/>')){document.getElementById('picToDelete').value='<bean:write name="filelist"/>';document.forms[0].submit;}else{return false;}"/></td>
  				</tr>
 				</c:forEach>
 			</table>

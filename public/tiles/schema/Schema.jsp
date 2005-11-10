@@ -57,7 +57,7 @@
 			      <td>&nbsp;</td>
 			      <td align="left">
 	    		    <logic:present name="user">		      	
-				        <html:text property="description" maxlength="255" size="50" />		        
+				        <html:textarea property="description"  rows="3" cols="30" style="width:400px"/>	        
 				    </logic:present>
 	   		        <logic:notPresent name="user">
 						<bean:write name="schemaForm" property="description" />    		        

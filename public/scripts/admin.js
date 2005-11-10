@@ -1,5 +1,5 @@
 function stylesheetDelete(title) {
-	if(confirm('Do you want to delete stylesheet "' + title + '"')){
+	if(confirm('Are you sure you want to delete stylesheet "' + title + '"')){
 		return true;
 	}
 	else {
@@ -9,7 +9,7 @@ function stylesheetDelete(title) {
 
 
 function schemaDelete(title) {
-	if(confirm('Do you want to delete schema "' + title + '"')){
+	if(confirm('Are you sure you want to delete schema "' + title + '"')){
 		return true;
 	}
 	else {
@@ -17,7 +17,7 @@ function schemaDelete(title) {
 	}
 }
 function elementDelete(title) {
-	if(confirm('Do you want to delete root element "' + title + '"')){
+	if(confirm('Are you sure you want to delete root element "' + title + '"')){
 		return true;
 	}
 	else {
