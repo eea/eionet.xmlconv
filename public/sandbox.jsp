@@ -61,7 +61,7 @@
 	<form name="f" action="sandbox" method="post">
 		<label for="dataurlfield">URL to data file </label>
 			<input type="text" class="textfield" name="source_url" size="75" id="dataurlfield" value="<%=Utils.isNullStr(source_url) ? "" : source_url%>"/>
-			<input type="submit" name="findscripts" value=" Find scripts " title="Reads the XML Schema from the header of XML file and search the scripts from the repository"/>
+			<input type="submit" name="findscripts" value=" Find scripts " title="Reads the XML Schema from the header of XML file and search the scripts from the repository" class="button"/>
 		<br/><br/>
 		<%
 		// Run all scripts for one schema.
@@ -100,13 +100,13 @@
 			<textarea name="XQSCRIPT" rows="25" cols="100" style="width:99%" id="scriptarea"><%=qText%></textarea>
 		<%}%>
 		<br/><br/>
-		<input type="submit" name="runnow" value=" Run now " />
+		<input type="submit" name="runnow" value=" Run now " class="button" />
 		<%
 		boolean wqPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "i");
 		boolean wquPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "u");
 		if(wqPrm) {
 		%>		
-			<input type="submit" name="queue" value=" Add to workqueue " />
+			<input type="submit" name="queue" value=" Add to workqueue " class="button"/>
 		<% } 
 		if(wquPrm && !Utils.isNullStr(q_id)) {
 		%>		

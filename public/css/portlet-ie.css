@@ -3,7 +3,9 @@ body {
 width:expression(document.body.clientWidth < 756? "756px" : "auto");
 }
 */
-
+#visual-column-wrapper {
+width:expression(document.body.clientWidth < 756? "755px" : "100%");
+}
 body {
 	_width: expression(((document.body.clientWidth)) < 800? "780px": "auto" );
 }

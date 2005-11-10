@@ -43,19 +43,6 @@
 <tiles:insert definition="MainHeader"/>
 
     <script type="text/javascript" src="util.js"></script>
-    <script type="text/javascript">
-        
-        function openApp(appName) {
-            document.forms["f"].app.value=appName;
-            document.forms["f"].ACTION.value="";
-            document.forms["f"].ACL.value="/";
-            document.forms["f"].submit();
-        }
-        function doLogin(appName) {
-            window.open("appLogin.jsp?app=" + appName,"login","height=200,width=300,status=no,toolbar=no,scrollbars=no,resizable=no,menubar=no,location=no");
-        }
-
-    </script>
 
 
 

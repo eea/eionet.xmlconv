@@ -105,7 +105,7 @@
 				<tr><td>&#160;</td><td>&#160;</td></tr>
 				<tr>
 					<td>&#160;</td>
-					<td><input name="SUBMIT" type="submit" value="Save" class="mediumbuttonb" /></td>
+					<td><input name="SUBMIT" type="submit" value="Save" class="button" /></td>
 				</tr>
 			</table>
 			<input type="hidden" name="HOST_ID" value="<%=host_id%>"/>

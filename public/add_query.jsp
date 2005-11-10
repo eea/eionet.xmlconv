@@ -97,8 +97,8 @@
 				<tr>
 					<td></td>
 					<td align="left">
-						<input name="SUBMIT" type="submit" styleClass="button" value="Upload"/>&#160;&#160;
-						<input name="RESET" type="reset" styleClass="button" value="Clear" />
+						<input name="SUBMIT" type="submit" class="button" value="Upload"/>&#160;&#160;
+						<input name="RESET" type="reset" class="button" value="Clear" />
 					</td>
 				</tr>
 			</table>

@@ -8,7 +8,6 @@ margin: 0;
 #visual-column-wrapper {
 float: left;
 width: 100%;
-width:expression(document.body.clientWidth < 756? "755px" : "100%");
 margin-right: -0em;
 }
 #portal-column-content {
