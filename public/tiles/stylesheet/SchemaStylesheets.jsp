@@ -1,8 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" 
-  import="java.util.List"
-  import="java.util.Iterator"
-  import="eionet.gdem.dto.*"
-%>
+<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
