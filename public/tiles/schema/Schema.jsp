@@ -35,7 +35,7 @@
 			      <td align="left">
 			        <html:hidden property="backToConv" />
 		    		<logic:present name="user">
-				       	<html:text property="schema" maxlength="255" size="50" />		        
+				       	<html:text property="schema" maxlength="255" style="width:400px"/>    
 	    		    </logic:present>
 	    		    <logic:notPresent name="user">
 		    		    <html:hidden property="schema" />       		        	 		        	

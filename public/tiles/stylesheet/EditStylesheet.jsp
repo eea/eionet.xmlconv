@@ -147,7 +147,7 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
-		        <html:file property="xslfile"  />
+		        <html:file property="xslfile" style="width:400px" />
 		      </td>
 		    </tr>
 		    </logic:present>
