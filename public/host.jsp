@@ -24,7 +24,7 @@
 
 	
 %>
-<ed:breadcrumbs-push label="Hosts" level="1" />
+<ed:breadcrumbs-push label="Host details" level="2" />
 <tiles:insert definition="MainHeader"/>
 
 

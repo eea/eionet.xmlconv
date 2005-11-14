@@ -32,7 +32,7 @@
 	if (convTypes==null) convTypes = new Vector();
 	
 %>
-<ed:breadcrumbs-push label="Add query" level="1" />
+<ed:breadcrumbs-push label="Add query" level="2" />
 <tiles:insert definition="MainHeader"/>
 
 
