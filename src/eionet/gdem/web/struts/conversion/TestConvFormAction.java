@@ -164,17 +164,20 @@ public class TestConvFormAction extends Action {
 			e.printStackTrace();
 			_logger.error("Error testing conversion",e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-			saveMessages(httpServletRequest, errors);
-
+			//saveMessages(httpServletRequest, errors);
+			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+			return actionMapping.findForward("error");
 		} catch (Exception e) {
 			e.printStackTrace();
 			_logger.error("Error testing conversion",e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(BusinessConstants.EXCEPTION_GENERAL));
-			saveMessages(httpServletRequest, errors);
-
+			//saveMessages(httpServletRequest, errors);
+			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+			return actionMapping.findForward("error");
 		}
-		saveMessages(httpServletRequest, errors);
+		//saveMessages(httpServletRequest, errors);
 
+		//httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 		httpServletRequest.getSession().setAttribute("conversion.schemas", schemas);
 		return actionMapping.findForward("success");
 	}

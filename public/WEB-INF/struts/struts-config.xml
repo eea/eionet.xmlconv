@@ -101,7 +101,8 @@
             <forward name="back" path="/do/listConvForm" redirect="true"/>
         </action>
         <action path="/testConversionForm" name="TestConvForm" type="eionet.gdem.web.struts.conversion.TestConvFormAction" input="/testConv.jsp" scope="request">
-            <forward name="success" path="/testConv.jsp" />
+            <forward name="success" path="/testConv.jsp"/>
+            <forward name="error" path="/do/testConversionForm" redirect="true"/>
         </action>
         <action path="/uplSchemas"  type="eionet.gdem.web.struts.schema.UplSchemaFormAction" input="/testConv.jsp" scope="request">
             <forward name="success" path="/uplSchema.jsp" />

@@ -15,7 +15,7 @@
 	<div id="workarea">
 		<h1>Error page!</h1>
 		<% if (err!= null) { %>
-			<div id="errormessage"><%=err%></div>
+			<div id="errormessage" class="error"><%=err%></div>
 		<% } %>
 		<%
     	Exception e=(Exception)session.getAttribute("gdem.exception");
@@ -29,10 +29,17 @@
 				if (message!=null && message.length()>0) {
 			}
 			%>
-			<span id="errormessage">
-					Message:<br>
-					<%=message%>
-			</span>
+			<table cellpadding="0" cellspacing="0" border="0" align="center">
+				  <tr>
+					    <td>			
+							<div class="error">
+							<span id="errormessage">
+									<%=message%>
+							</span>
+							</div>
+						</td>
+					</tr>
+			</table>
 			<br/><br/>
 			<!--  <div class="sub_title">Stack Trace:</div><br>-->
 	    <!--<pre><%// e.printStackTrace(new PrintWriter(out)); %></pre>-->
