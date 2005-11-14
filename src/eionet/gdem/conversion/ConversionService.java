@@ -195,10 +195,20 @@ public class ConversionService {
 
 
 	/**
-	 * Converts the XML file to a specific format
+	 * Converts the XML file to a specific format.
+	 * 
+	 * @param sourceURL	URL of the XML file to be converted
+	 * @param convertId		ID of desired conversion as the follows:
+	 * 									- If conversion ID begins with the DD DCM will generate appropriate stylesheet on the fly.
+	 * 									- If conversion ID is number the DCM will consider consider hand coded conversion
+	 * @return				   Hashtable containing two elements:
+	 * 									- content-type (String)
+	 * 									- content	     (Byte array)
+	 * @throws GDEMException Thrown in case of errors
 	 */
 	public Hashtable convert(String sourceURL, String convertId) throws GDEMException {
 		return convert(sourceURL, convertId, null);
+		
 	}
 
 
