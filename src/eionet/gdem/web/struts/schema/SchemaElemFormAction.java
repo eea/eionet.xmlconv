@@ -76,7 +76,7 @@ public class SchemaElemFormAction extends Action {
 
 		} catch (DCMException e) {
 			e.printStackTrace();
-			_logger.error(e);
+			_logger.error("Schema element form error",e);
 			errors.add("stylesheet", new ActionMessage(e.getErrorCode()));
 			saveErrors(httpServletRequest, errors);
 		}

@@ -162,13 +162,13 @@ public class TestConvFormAction extends Action {
 
 		} catch (DCMException e) {
 			e.printStackTrace();
-			_logger.error(e);
+			_logger.error("Error testing conversion",e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			saveMessages(httpServletRequest, errors);
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			_logger.error(e);
+			_logger.error("Error testing conversion",e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(BusinessConstants.EXCEPTION_GENERAL));
 			saveMessages(httpServletRequest, errors);
 

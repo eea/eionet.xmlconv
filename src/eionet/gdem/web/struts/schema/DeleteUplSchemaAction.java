@@ -54,7 +54,7 @@ public class DeleteUplSchemaAction extends Action {
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.deleted"));
 		} catch (DCMException e) {
 			e.printStackTrace();
-			_logger.debug(e);
+			_logger.error("Error deleting root schema",e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 		}
 		httpServletRequest.getSession().setAttribute("dcm.errors", errors);

@@ -82,8 +82,7 @@ public class AddUplSchemaAction extends Action {
 			sm.addUplSchema(user, schema, desc);
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.inserted"));
 		} catch (DCMException e) {
-			e.printStackTrace();
-			_logger.error(e);
+			_logger.error("Error adding upload schema",e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 		}
 		httpServletRequest.getSession().setAttribute("dcm.errors", errors);

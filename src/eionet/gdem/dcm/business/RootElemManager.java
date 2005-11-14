@@ -44,7 +44,7 @@ public class RootElemManager {
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.debug(e.toString(), e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
@@ -55,7 +55,7 @@ public class RootElemManager {
 			DbModuleIF dbM = GDEMServices.getDbModule();
 			dbM.removeRootElem(elemId);
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.debug(e.toString(), e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 	}
@@ -71,7 +71,7 @@ public class RootElemManager {
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.debug(e.toString(), e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
@@ -79,7 +79,7 @@ public class RootElemManager {
 			DbModuleIF dbM = GDEMServices.getDbModule();
 			dbM.addRootElem(schemaId, elemName, namespace);
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.debug(e.toString(), e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 	}

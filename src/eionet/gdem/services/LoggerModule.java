@@ -116,7 +116,7 @@ class LoggerModule implements LoggerIF {
   }
   
   public void error(Object msg, Throwable t)  {
-    logger.error(msg);
+    logger.error(msg,t);
   }
   
 /**
@@ -127,7 +127,7 @@ class LoggerModule implements LoggerIF {
   }
   
   public void fatal(Object msg, Throwable t)  {
-    logger.fatal(msg);
+    logger.fatal(msg, t);
   }
 }
 

@@ -72,7 +72,7 @@ public class SchemaManager {
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.debug(e.toString(), e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
@@ -91,7 +91,7 @@ public class SchemaManager {
 					try {
 						Utils.deleteFile(xslFolder + xslFile);
 					} catch (Exception e) {
-						_logger.debug(e.toString());
+						_logger.debug("Error deleting file", e);
 						throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 					}
 				}
@@ -101,7 +101,7 @@ public class SchemaManager {
 			// dbM.removeSchema( schemaId, true, false, !hasOtherStuff);
 			dbM.removeSchema(schemaId, true, true, true);
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.debug("Error removing schema", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
@@ -199,7 +199,7 @@ public class SchemaManager {
 			st.setDdStylesheets(schemas);
 
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.debug("Error getting schema",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return st;
@@ -253,7 +253,7 @@ public class SchemaManager {
 
 				if (!xsl.startsWith(Properties.gdemURL + "/do/getStylesheet?id=")) {
 
-					File f = new File(Properties.xslFolder + xsl);
+					File f = new File(Properties.xslFolder + File.separatorChar +  xsl);
 					if (f != null) last_modified = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(f.lastModified()));
 					xslUrl = Names.XSL_FOLDER + (String) hash.get("xsl");
 					type = (String) hash.get("result_type");
@@ -280,7 +280,7 @@ public class SchemaManager {
 			schemas.add(sc);
 			st.setHandCodedStylesheets(schemas);
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.debug("Errror getting schema stylesheets",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return st;
@@ -297,7 +297,7 @@ public class SchemaManager {
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.debug("Error updating schema", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
@@ -308,7 +308,7 @@ public class SchemaManager {
 			DbModuleIF dbM = GDEMServices.getDbModule();
 			dbM.updateSchema(schemaId, schema, description, dtdPublicId);
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.debug("Error updating schema", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
@@ -375,7 +375,7 @@ public class SchemaManager {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			_logger.debug(e.toString());
+			_logger.error("Error getting root elements", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return se;
@@ -442,7 +442,7 @@ public class SchemaManager {
 			}
 
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.debug("Error getting schema",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return schemas;
@@ -491,7 +491,7 @@ public class SchemaManager {
 			}
 
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.error("Error getting schema stylesheets",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return stls;
@@ -539,7 +539,7 @@ public class SchemaManager {
 			}
 
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.error("Error getting uploaded schema",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return sc;
@@ -556,7 +556,7 @@ public class SchemaManager {
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.error("Error adding upoaded schema",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		try {
@@ -583,7 +583,7 @@ public class SchemaManager {
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.error("Error adding upoaded schema",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
@@ -602,7 +602,7 @@ public class SchemaManager {
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.error("Error deleting upoaded schema", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
@@ -628,7 +628,7 @@ public class SchemaManager {
 							try {
 								Utils.deleteFile(xslFolder + xslFile);
 							} catch (Exception e) {
-								_logger.debug(e.toString());
+								_logger.error("Error deleting stylesheet files",e);
 								throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 							}
 						}
@@ -641,12 +641,12 @@ public class SchemaManager {
 			try {
 				Utils.deleteFile(Properties.schemaFolder + "/" + schema);
 			} catch (Exception e) {
-				_logger.debug(e.toString());
+				_logger.error("Error deleting upoladed schema file",e);
 				throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 			}
 			dbM.removeUplSchema(uplSchemaId);
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.error("Error deleting uploaded schema",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
@@ -680,7 +680,7 @@ public class SchemaManager {
 			}
 
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.error("Error getting DD schemas",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return schemas;
@@ -704,7 +704,7 @@ public class SchemaManager {
 			schema.setDtdPublicId((String) sch.get("dtd_public_id"));
 
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.error("Error getting schema",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return schema;
@@ -721,7 +721,7 @@ public class SchemaManager {
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.error("Error updating uploaded schema", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
@@ -730,7 +730,7 @@ public class SchemaManager {
 			// dbM.updateSchema(schemaId, schema, description, dtdPublicId);
 			dbM.updateUplSchema(schemaId, description);
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.error("Error updating uploaded schema", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
@@ -751,7 +751,7 @@ public class SchemaManager {
 			sc.setSchema(schema);
 		} catch (Exception e) {
 			e.printStackTrace();
-			_logger.debug(e.toString());
+			_logger.error("Error getting uploaded schema", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return sc;

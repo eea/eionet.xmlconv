@@ -79,7 +79,7 @@ public class GetStylesheetAction extends Action {
 			
 				
 		} catch (Exception ge) {			
-			_logger.error(ge);
+			_logger.error("Error getting stylesheet",ge);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.generation"));
 			//request.getSession().setAttribute("dcm.errors", errors);
 			request.setAttribute("dcm.errors", errors);

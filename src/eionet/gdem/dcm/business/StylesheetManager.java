@@ -61,7 +61,7 @@ public class StylesheetManager {
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.error("Error deleting stylesheet", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
@@ -85,7 +85,7 @@ public class StylesheetManager {
 			 * if(vDb.size()==0) { dbM.removeSchema( schemaId, true, true, true); }
 			 */
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.error("Error deleting stylesheet", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
@@ -115,7 +115,7 @@ public class StylesheetManager {
 			ctHolder.setConvTypes(convs);
 		} catch (Exception e) {
 			e.printStackTrace();
-			_logger.debug(e.toString());
+			_logger.error("Error getting conv types", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return ctHolder;
@@ -132,7 +132,7 @@ public class StylesheetManager {
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.error("Error adding stylesheet", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		try {
@@ -161,7 +161,7 @@ public class StylesheetManager {
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.error("Error adding stylesheet", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
@@ -185,7 +185,7 @@ public class StylesheetManager {
 			}
 
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.error("Error getting stylesheet", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return st;
@@ -201,7 +201,7 @@ public class StylesheetManager {
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
-			_logger.debug(e.toString());
+			_logger.error("Error updating stylesheet", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		try {
@@ -246,7 +246,7 @@ public class StylesheetManager {
 			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
-			_logger.debug(e.toString());
+			_logger.error("Error updating stylesheet", e);			
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 

@@ -52,7 +52,7 @@ public class StylesheetListAction extends Action {
 
 		} catch (DCMException e) {
 			e.printStackTrace();
-			_logger.error(e);
+			_logger.error("Error getting stylesheet list", e);
 			errors.add("schema", new ActionMessage("label.exception.unknown"));
 			saveErrors(httpServletRequest, errors);
 		}

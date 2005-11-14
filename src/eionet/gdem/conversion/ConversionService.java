@@ -186,6 +186,7 @@ public class ConversionService {
 			}
 
 		} catch (Exception e) {
+			_logger.error("Error getting data from the DB", e);
 			throw new GDEMException("Error getting data from the DB " + e.toString(), e);
 		}
 
@@ -242,6 +243,7 @@ public class ConversionService {
 							cnvContentType = (String) convType.get("content_type");
 							cnvFileExt = (String) convType.get("file_ext");
 						} catch (Exception e) {
+							_logger.error("error getting con types",e);
 							// Take no action, use default params
 						}
 					}
@@ -249,6 +251,7 @@ public class ConversionService {
 					if (cnvFileExt == null) cnvFileExt = "txt";
 
 				} catch (Exception e) {
+					_logger.error("error getting con types",e);
 					throw new GDEMException("Error getting stylesheet info from repository for " + convertId, e);
 				}
 				if (response != null) {
@@ -256,6 +259,7 @@ public class ConversionService {
 						result = response.getOutputStream();
 						response.setContentType(cnvContentType);
 					} catch (IOException e) {
+						_logger.error("Error getting response outputstream ",e);
 						throw new GDEMException("Error getting response outputstream " + e.toString(), e);
 					}
 				}
@@ -264,12 +268,14 @@ public class ConversionService {
 
 			} catch (MalformedURLException mfe) {
 				//throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
+				_logger.error("Bad URL", mfe);
 				throw new GDEMException("Bad URL", mfe);
 			} catch (IOException ioe) {
 				//throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
+				_logger.error("Error opening URL", ioe);
 				throw new GDEMException("Error opening URL", ioe);
 			} catch (Exception e) {
-
+				_logger.error("Error converting", e);
 				//throw new GDEMException("Error converting: " + e.toString(), e);
 				throw new GDEMException("Error converting", e);
 			} finally {
@@ -284,6 +290,7 @@ public class ConversionService {
 				try {
 					result.close();
 				} catch (IOException e) {
+					throw new GDEMException("Error closing result", e);
 				}
 				return h;
 			}
@@ -294,7 +301,7 @@ public class ConversionService {
 				Utils.deleteFile(outputFileName);
 			} catch (Exception e) {
 
-				_logger.error("Couldn't delete the result file: " + outputFileName);
+				_logger.error("Couldn't delete the result file: " + outputFileName, e);
 			}
 
 			return h;
@@ -336,6 +343,7 @@ public class ConversionService {
 						cnvContentType = (String) convType.get("content_type");
 						cnvFileExt = (String) convType.get("file_ext");
 					} catch (Exception e) {
+						_logger.error("Error getting conversion types ",e);
 						// Take no action, use default params
 					}
 				}
@@ -343,6 +351,7 @@ public class ConversionService {
 				if (cnvFileExt == null) cnvFileExt = "txt";
 
 			} catch (Exception e) {
+				_logger.error("Error getting stylesheet info from repository for " + convertId,e);
 				throw new GDEMException("Error getting stylesheet info from repository for " + convertId, e);
 			}
 			if (res != null) {
@@ -350,6 +359,7 @@ public class ConversionService {
 					result = res.getOutputStream();
 					res.setContentType(cnvContentType);
 				} catch (IOException e) {
+					_logger.error("Error getting response outputstream ",e);
 					throw new GDEMException("Error getting response outputstream " + e.toString(), e);
 				}
 			}
@@ -357,15 +367,19 @@ public class ConversionService {
 			outputFileName = executeConversion(src.getSrcInputStream(), byteIn, result);
 
 		} catch (MalformedURLException mfe) {
+			_logger.error("Bad URL", mfe);
 			throw new GDEMException("Bad URL", mfe);
 		} catch (IOException ioe) {
+			_logger.error("Error opening URL", ioe);
 			throw new GDEMException("Error opening URL", ioe);
 		} catch (Exception e) {
+			_logger.error("Error converting", e);
 			throw new GDEMException("Error converting", e);
 		} finally {
 			try {
 				if (src != null) src.close();
 			} catch (Exception e) {
+				_logger.error("Error converting", e);
 			}
 		}
 
@@ -374,6 +388,7 @@ public class ConversionService {
 			try {
 				result.close();
 			} catch (IOException e) {
+				_logger.error("Error closing result", e);
 				// throw new GDEMException("Error closing result
 				// ResponseOutputStream " + convertId);
 			}
@@ -390,7 +405,7 @@ public class ConversionService {
 			// deleteFile(htmlFileName);
 			Utils.deleteFile(outputFileName);
 		} catch (Exception e) {
-			_logger.error("Couldn't delete the result file: " + outputFileName);
+			_logger.error("Couldn't delete the result file: " + outputFileName, e);
 		}
 
 		return h;
@@ -432,6 +447,7 @@ public class ConversionService {
 				try {
 					result = res.getOutputStream();
 				} catch (IOException e) {
+					_logger.error("Error getting response outputstream ", e);
 					throw new GDEMException("Error getting response outputstream " + e.toString(), e);
 				}
 			}
@@ -440,18 +456,21 @@ public class ConversionService {
 			Excel2XML converter = new Excel2XML();
 			str_result = converter.convertDD_XML(src.getSrcInputStream(), result);
 		} catch (MalformedURLException mfe) {
+			_logger.error("Bad URL ", mfe);
 			if (res != null) {
 				throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
 			} else {
 				error_mess = "Bad URL : " + mfe.toString();
 			}
 		} catch (IOException ioe) {
+			_logger.error("Error opening URL ", ioe);
 			if (res != null) {
 				throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
 			} else {
 				error_mess = "Error opening URL " + ioe.toString();
 			}
 		} catch (Exception e) {
+			_logger.error("", e);
 			if (res != null) {
 
 				throw new GDEMException(e.toString(), e);
@@ -463,6 +482,7 @@ public class ConversionService {
 				if (src != null) src.close();
 				//  if (result!=null) result.close();
 			} catch (Exception e) {
+				_logger.error("", e);
 			}
 		}
 
@@ -471,6 +491,7 @@ public class ConversionService {
 				res.setContentType("text/xml");
 				result.close();
 			} catch (IOException e) {
+				_logger.error("Error closing result ResponseOutputStream ", e);
 				throw new GDEMException("Error closing result ResponseOutputStream ", e);
 			}
 			return v_result;
@@ -491,7 +512,7 @@ public class ConversionService {
 		try {
 			Utils.deleteFile(outFileName);
 		} catch (Exception e) {
-			_logger.error("Couldn't delete the result file");
+			_logger.error("Couldn't delete the result file", e);
 		}
 
 		return v_result;
@@ -521,8 +542,10 @@ public class ConversionService {
 			fis.close();
 
 		} catch (FileNotFoundException fne) {
+			_logger.error("File not found " + fileName, fne);
 			throw new GDEMException("File not found " + fileName, fne);
 		} catch (Exception e) {
+			_logger.error("", e);
 			throw new GDEMException("Exception " + e.toString(), e);
 		}
 		return baos.toByteArray();
@@ -561,6 +584,7 @@ public class ConversionService {
 				try {
 					result = res.getOutputStream();
 				} catch (IOException e) {
+					_logger.error("Error getting response outputstream " , e);
 					throw new GDEMException("Error getting response outputstream " + e.toString(), e);
 				}
 			}
@@ -568,20 +592,22 @@ public class ConversionService {
 			Excel2XML converter = new Excel2XML();
 			v_result = converter.convertDD_XML_split(src.getSrcInputStream(), result, sheet_param);
 		} catch (MalformedURLException mfe) {
+			_logger.error("Bad URL " , mfe);
 			if (res != null) {
 				throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
 			} else {
 				error_mess = "Bad URL : " + mfe.toString();
 			}
-		} catch (IOException ioe) {
+		} catch (IOException ioe) {			
+			_logger.error("Error opening URL " , ioe);
 			if (res != null) {
 				throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
 			} else {
 				error_mess = "Error opening URL " + ioe.toString();
 			}
 		} catch (Exception e) {
+			_logger.error("" , e);
 			if (res != null) {
-
 				throw new GDEMException(e.toString(), e);
 			} else {
 				error_mess = e.toString();
@@ -598,6 +624,7 @@ public class ConversionService {
 				res.setContentType("text/xml");
 				result.close();
 			} catch (IOException e) {
+				_logger.error("Error closing result ResponseOutputStream ", e);
 				throw new GDEMException("Error closing result ResponseOutputStream ", e);
 			}
 			return v_result;

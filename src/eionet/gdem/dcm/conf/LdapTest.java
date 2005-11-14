@@ -70,9 +70,7 @@ public class LdapTest {
 			closeContext(ctx);
 			return true;
 		} catch (Exception e) {
-			_logger.debug("Testing ldap connection failed!");
-			_logger.debug(e.getMessage());
-			e.printStackTrace();
+			_logger.error("Testing ldap connection failed!", e);
 			return false;
 		}
 	}

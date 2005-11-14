@@ -54,7 +54,7 @@ public class ListConvFormAction extends Action {
 
 		} catch (DCMException e) {
 			e.printStackTrace();
-			_logger.error(e);
+			_logger.error("List conversion error",e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			saveMessages(httpServletRequest, errors);
 		}

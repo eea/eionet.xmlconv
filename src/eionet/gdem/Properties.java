@@ -96,7 +96,11 @@ public class Properties {
 				queriesFolder = props.getString("queries.folder");
 
 				//xformsFolder=props.getString("xforms.folder");
-
+				
+				
+				xslFolder=checkPath(props.getString("xsl.folder"));
+				tmpFolder=props.getString("tmp.folder");
+				
 				//DB connection settings
 				dbDriver = props.getString("db.driver");
 				dbUrl = props.getString("db.url");
@@ -146,6 +150,13 @@ public class Properties {
 			}
 		}
 
+	}
+	
+	private static String checkPath(String path){
+		if(path.endsWith("/")){
+			path=path.substring(0, path.length() -1);
+		}
+		return path;
 	}
 	
 }

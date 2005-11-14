@@ -54,7 +54,7 @@ public class Conversion {
 				conversions.add(resObject);
 			}
 		} catch (Exception ex) {
-			_logger.error(ex);
+			_logger.error("Error reading conversions.xml file ", ex);
 		}
 
 	}

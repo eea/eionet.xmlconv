@@ -52,14 +52,14 @@ public class AppServletContextListener implements ServletContextListener {
 			checkHomeDirectories(pathPrefix);
 			Properties.metaXSLFolder=servletContextEvent.getServletContext().getRealPath("/dcm");
 			Properties.convFile=servletContextEvent.getServletContext().getRealPath("/dcm/conversions.xml");
-			Properties.xslFolder=servletContextEvent.getServletContext().getRealPath("/xsl");
+			//Properties.xslFolder=servletContextEvent.getServletContext().getRealPath("/xsl");
 			Properties.schemaFolder=servletContextEvent.getServletContext().getRealPath("/schema");
-			Properties.tmpFolder=servletContextEvent.getServletContext().getRealPath("/tmp");
+			//Properties.tmpFolder=servletContextEvent.getServletContext().getRealPath("/tmp");
 			Properties.uiFolder=servletContextEvent.getServletContext().getRealPath("/uixsl");
 			Properties.appHome=servletContextEvent.getServletContext().getRealPath("/WEB-INF/classes");
 		} catch (Exception e1) {
 			e1.printStackTrace();
-		}
+		}		
 	}
 	
 	
@@ -69,11 +69,11 @@ public class AppServletContextListener implements ServletContextListener {
 	 * that they don't exist.
 	 */
 	private void checkHomeDirectories(String pathPrefix) throws Exception {
-			File tmp = new File(pathPrefix + File.separatorChar + "tmp");
+			//File tmp = new File(pathPrefix + File.separatorChar + "tmp");
 			File uixsl = new File(pathPrefix + File.separatorChar + "uixsl");
 			File schema = new File(pathPrefix + File.separatorChar + "schema");
-			File xsl = new File(pathPrefix + File.separatorChar + "xsl");
-			File[] dcmDirs={tmp, uixsl, schema, xsl};
+			//File xsl = new File(pathPrefix + File.separatorChar + "xsl");
+			File[] dcmDirs={uixsl, schema};
 			
 			for (int i = 0; i < dcmDirs.length; i++) {
 				if (!dcmDirs[i].exists()) {

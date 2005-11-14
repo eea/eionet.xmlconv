@@ -80,7 +80,7 @@ public class EditStylesheetAction extends Action {
 				st.update(user, stylesheetId, schema, xslFile, type, desc);
 				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.updated"));
 			} catch (DCMException e) {
-				_logger.error(e);
+				_logger.error("Edit stylesheet error",e);
 				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			}
 		}

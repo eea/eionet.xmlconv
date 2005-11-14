@@ -75,7 +75,7 @@ public class RequestProcessor extends TilesRequestProcessor {
 
 
 	protected ActionForward processActionPerform(HttpServletRequest request, HttpServletResponse response, Action action, ActionForm form, ActionMapping mapping) throws IOException, ServletException {
-		_logger.debug("servletPath ----- " + request.getServletPath());
+		_logger.info("servletPath ----- " + request.getServletPath());
 
 		String path = request.getPathInfo();
 		String query = request.getQueryString();
@@ -93,23 +93,23 @@ public class RequestProcessor extends TilesRequestProcessor {
 
 
 	private void logReq(HttpServletRequest request) {
-		_logger.debug("servletPath ----- " + request.getServletPath());
+		_logger.info("servletPath ----- " + request.getServletPath());
 
 		String name;
 
 		for (Enumeration e = request.getAttributeNames(); e.hasMoreElements();) {
 			name = e.nextElement().toString();
-			_logger.debug("attribute ----- " + name + "=" + request.getAttribute(name));
+			_logger.info("attribute ----- " + name + "=" + request.getAttribute(name));
 		}
 
 		for (Enumeration e = request.getParameterNames(); e.hasMoreElements();) {
 			name = e.nextElement().toString();
-			_logger.debug("parameter ----- " + name + "=" + request.getParameter(name));
+			_logger.info("parameter ----- " + name + "=" + request.getParameter(name));
 		}
 
 		for (Enumeration e = request.getSession().getAttributeNames(); e.hasMoreElements();) {
 			name = e.nextElement().toString();
-			_logger.debug("session attribute ----- " + name + "=" + request.getSession().getAttribute(name));
+			_logger.info("session attribute ----- " + name + "=" + request.getSession().getAttribute(name));
 		}
 	}
 }

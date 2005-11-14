@@ -53,8 +53,7 @@ public class DbTest {
 			rset = stmt.executeQuery(sql);
 
 		} catch (Exception e) {
-			_logger.debug("Testing database connection failed!");
-			_logger.debug(e.getMessage());
+			_logger.debug("Testing database connection failed!", e);
 			e.printStackTrace();
 			throw new DCMException(BusinessConstants.EXCEPTION_PARAM_DB_TEST_FAILED);
 		} finally {

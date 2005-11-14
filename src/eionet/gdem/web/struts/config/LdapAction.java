@@ -84,12 +84,12 @@ public class LdapAction extends Action {
 			dcmProp.setLdapParams(url, context, userDir, attrUid);
 		} catch (DCMException e) {
 			e.printStackTrace();
-			_logger.error(e);
+			_logger.error("Ldap parameters saving error", e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			saveErrors(httpServletRequest, errors);
 		} catch (Exception e) {
 			e.printStackTrace();
-			_logger.error(e);
+			_logger.error("Ldap parameters saving error", e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
 			saveErrors(httpServletRequest, errors);
 		}

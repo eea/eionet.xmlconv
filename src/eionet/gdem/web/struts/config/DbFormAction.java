@@ -50,7 +50,7 @@ public class DbFormAction extends Action {
 			form.set("user", Properties.dbUser);
 			form.set("password", Properties.dbPwd);
 		} catch (Exception e) {
-			_logger.error(e);
+			_logger.error("Error setting db form", e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
 			saveMessages(httpServletRequest, errors);
 		}

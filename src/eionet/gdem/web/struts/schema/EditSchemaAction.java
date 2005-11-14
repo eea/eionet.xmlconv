@@ -60,7 +60,7 @@ public class EditSchemaAction extends Action {
 				return actionMapping.findForward("back");
 			} catch (DCMException e) {
 				e.printStackTrace();
-				_logger.error(e);
+				_logger.error("Error editing schema",e);
 				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			}
 		}
@@ -80,7 +80,7 @@ public class EditSchemaAction extends Action {
 			httpServletRequest.setAttribute("schema", schema);
 		} catch (DCMException e) {
 			e.printStackTrace();
-			_logger.error(e);
+			_logger.error("Error editing schema",e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 		}
 		httpServletRequest.getSession().setAttribute("dcm.errors", errors);

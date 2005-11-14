@@ -54,7 +54,7 @@ public class UplSchemaFormAction extends Action {
 
 		} catch (DCMException e) {
 			e.printStackTrace();
-			_logger.error(e);
+			_logger.error("Uplaod schema form error",e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			saveMessages(httpServletRequest, errors);
 		}

@@ -61,7 +61,7 @@ public abstract class ConvertStartegy {
 		} catch (TransformerException tfe) {
 			throw new GDEMException("Error transforming XML - it's not probably well-formed xml file: " + tfe.toString(), tfe);
 		} catch (Throwable e) {
-			_logger.error("Error " + e.toString());
+			_logger.error("Error " + e.toString(), e);
 			e.printStackTrace(System.out);
 			throw new GDEMException("Error transforming XML " + e.toString());
 		}
@@ -80,7 +80,7 @@ public abstract class ConvertStartegy {
 			Transformer transformer = transformerFactory.newTransformer(xsltSrc);
 			transformer.transform(src, res);
 		} catch (Throwable e) {
-			_logger.error("Error " + e.toString());
+			_logger.error("Error " + e.toString(), e);
 			throw new GDEMException("Error transforming XML to PDF " + e.toString());
 		}
 	}

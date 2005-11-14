@@ -64,7 +64,7 @@ public class LoginAction extends Action {
 			loginForm.getMap().clear();
 		} catch (Exception e) {
 			loginForm.set("password", null);
-			_logger.error("Fail login");
+			_logger.error("Fail login", e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.login.error.invalid"));
 			ret = actionMapping.getInputForward();
 		}
@@ -87,7 +87,7 @@ public class LoginAction extends Action {
 			// add object into session becouse of old bussines ligic
 			httpServletRequest.getSession().setAttribute(Names.USER_ATT, aclUser);
 		} catch (Exception dire) {
-			_logger.debug("Authentication failed " + dire.toString());
+			_logger.debug("Authentication failed " + dire.toString(), dire);
 			throw new Exception("Authentication failed ");
 		}
 

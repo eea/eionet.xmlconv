@@ -62,7 +62,7 @@ public class DcmProperties {
 			out.write(st.toString());
 			out.close();
 		} catch (IOException e) {
-			_logger.debug("Saving database parameters failed!");
+			_logger.error("Saving database parameters failed!", e);
 			e.printStackTrace();
 			throw new DCMException(BusinessConstants.EXCEPTION_PARAM_DB_FAILED);
 		}
@@ -93,7 +93,7 @@ public class DcmProperties {
 			out.write(st.toString());
 			out.close();
 		} catch (IOException e) {
-			_logger.debug("Saving ldap parameters failed!");
+			_logger.error("Saving ldap parameters failed!", e);
 			e.printStackTrace();
 			throw new DCMException(BusinessConstants.EXCEPTION_PARAM_LDAP_FAILED);
 		}

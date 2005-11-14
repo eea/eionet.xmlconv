@@ -61,7 +61,7 @@ public class EditUplSchemaFormAction extends Action {
 
 		} catch (DCMException e) {
 			e.printStackTrace();
-			_logger.error(e);
+			_logger.error("Error editing uploaded schema", e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			saveErrors(httpServletRequest, errors);
 		}

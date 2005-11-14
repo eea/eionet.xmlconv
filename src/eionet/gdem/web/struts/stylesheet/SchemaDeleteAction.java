@@ -54,7 +54,7 @@ public class SchemaDeleteAction extends Action {
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.deleted"));
 		} catch (DCMException e) {
 			e.printStackTrace();
-			_logger.debug(e);
+			_logger.error("Error deleting schema",e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 		}
 		// saveErrors(httpServletRequest, errors);

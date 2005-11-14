@@ -50,11 +50,11 @@ public class ExcelConverter extends ConvertStartegy {
 			try {
 				Utils.deleteFile(xmlFile);
 			} catch (Exception e) {
-				_logger.error("Couldn't delete the result file: " + xmlFile);
+				_logger.error("Couldn't delete the result file: " + xmlFile, e);
 			}
 
 		} catch (FileNotFoundException e) {
-			_logger.error("Error " + e.toString());
+			_logger.error("Error " + e.toString(), e);
 			throw new GDEMException("Error transforming Excel " + e.toString(), e);
 		}
 		return excelFile;

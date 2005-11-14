@@ -73,7 +73,7 @@ public class EditStylesheetFormAction extends Action {
 
 		} catch (DCMException e) {
 			e.printStackTrace();
-			_logger.error(e);
+			_logger.error("Edit stylesheet error",e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			saveErrors(httpServletRequest, errors);
 		}

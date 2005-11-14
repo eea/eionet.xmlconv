@@ -52,7 +52,7 @@ public class LdapFormAction extends Action {
 			form.set("attrUid", Properties.ldapAttrUid);
 		} catch (Exception e) {
 			e.printStackTrace();
-			_logger.error(e.getMessage());
+			_logger.error("Error getting ldap parameters", e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
 			saveMessages(httpServletRequest, errors);
 		}

@@ -480,6 +480,7 @@ public class DbModule implements DbModuleIF, Constants {
 			}
 		} catch (SQLException e) {
 			// logger.error("Error occurred when processing result set: " + sql,e);
+			_l.error(sql,e);
 			throw new SQLException("Error occurred when processing result set: " + sql);
 		} finally {
 			// Close connection
@@ -508,11 +509,13 @@ public class DbModule implements DbModuleIF, Constants {
 				if (!con.getAutoCommit()) con.commit();
 			}
 		} catch (Exception e) {
+			_l.error("Error closing connection",e);
 			throw new SQLException("Error" + e.getMessage());
 		} finally {
 			try {
 				con.close();
 			} catch (SQLException e) {
+				_l.error("Error closing connection",e);
 				throw new SQLException("Error" + e.getMessage());
 			}
 		}
@@ -549,6 +552,7 @@ public class DbModule implements DbModuleIF, Constants {
 			// Error handling
 			// logger.error( "UpdateStatement failed: " + e.toString());
 			// Free resources
+			_l.error(sql,e);
 			try {
 				_close(con, stmt, null);
 			} catch (Throwable exc) {
@@ -563,6 +567,7 @@ public class DbModule implements DbModuleIF, Constants {
 			rval = stmt.executeUpdate(sql);
 		} catch (Exception e) {
 			// Error handling
+			_l.error(sql,e);
 			throw new SQLException("Statement.executeUpdate(" + sql + ") failed" + e.getMessage());
 		} finally {
 			// Free resources

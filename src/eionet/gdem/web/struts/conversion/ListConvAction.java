@@ -25,14 +25,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 
 public class ListConvAction extends Action {
 
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 		ListConvForm form = (ListConvForm) actionForm;
+		ActionErrors errors = new ActionErrors();
+		
 		String validate = form.getValidate();
 		String schema = form.getXmlSchema();
 		String xml = form.getXmlUrl();
@@ -42,6 +47,14 @@ public class ListConvAction extends Action {
 		if (validate != null) {
 			httpServletRequest.setAttribute("validate", validate);
 		}
+		
+
+		if (xml.equals("") && schema.equals("")) {
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.validation"));
+			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+			return actionMapping.findForward("back");
+		}
+		
 		return actionMapping.findForward("success");
 	}
 

@@ -36,13 +36,7 @@ public class ListConvForm extends ActionForm {
 
 
 	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
-		ActionErrors errors = new ActionErrors();
-		if (xmlUrl.equals("") && xmlSchema.equals("")) {
-			errors.add("displayType", new ActionMessage("label.conversion.validation"));
-		} else
-			return super.validate(actionMapping, httpServletRequest);
-		return errors;
-
+			return null;
 	}
 
 

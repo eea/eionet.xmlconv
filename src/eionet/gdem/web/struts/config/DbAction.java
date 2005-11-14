@@ -80,14 +80,14 @@ public class DbAction extends Action {
 
 		} catch (DCMException e) {
 			e.printStackTrace();
-			_logger.error(e);
+			_logger.error("DbAction error", e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			saveErrors(httpServletRequest, errors);
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 			return actionMapping.findForward("success");
 		} catch (Exception e) {
 			e.printStackTrace();
-			_logger.error(e);
+			_logger.error("DbAction error", e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
 			saveErrors(httpServletRequest, errors);
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
