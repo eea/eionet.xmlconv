@@ -109,12 +109,12 @@ public class Properties {
 
 				engineClass = props.getString("xq.engine.implementator");
 				//DCM settings 
-				ddURL = props.getString("dcm.conversions.dd.url");
-				gdemURL = props.getString("dcm.conversions.gdem.url");
+				ddURL = props.getString("dd.url");
+				gdemURL = props.getString("gdem.url");
 
 				//settings for incoming services from DD 
-				invServUrl = props.getString("inserv.dd.url");
-				invServName = props.getString("inserv.dd.name");
+				invServUrl = props.getString("dd.rpc.url");
+				invServName = props.getString("dd.rpcservice.name");
 
 				//period in seconds 
 				String frequency = props.getString("wq.check.interval");
