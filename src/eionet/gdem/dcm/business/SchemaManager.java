@@ -158,7 +158,9 @@ public class SchemaManager {
 				schemas.add(sc);
 				// }
 			}
-			st.setHandCodedStylesheets(schemas);
+			if(schemas.size()>0){
+				st.setHandCodedStylesheets(schemas);
+			}
 
 			// retrive conversions for DD tables
 			List ddTables = DDServiceClient.getDDTables();
