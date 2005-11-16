@@ -63,7 +63,7 @@ public interface DbModuleIF {
   /**
    * Table for uploaded xml schemas in the DB
    */
-   public static final String UPL_SCHEMA_TABLE="UPL_SCHEMA";
+   public static final String UPL_SCHEMA_TABLE="T_UPL_SCHEMA";
   
   
   /**
