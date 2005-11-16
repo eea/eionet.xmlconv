@@ -49,7 +49,9 @@
         <xsl:text disable-output-escaping="yes">query = "INSERT INTO </xsl:text>
         <xsl:value-of select="identifier"/>
         <xsl:text disable-output-escaping="yes"> VALUES ('&lt;xsl:value-of select="@status"/&gt;',</xsl:text>
-        <xsl:text disable-output-escaping="yes">&lt;xsl:for-each select="*"&gt;&lt;xsl:if test=".=''"&gt;null&lt;/xsl:if&gt;&lt;xsl:if test=".!=''"&gt;'&lt;xsl:value-of select='replace(replace(.,"&amp;apos;","&amp;apos;&amp;apos;"), "&amp;quot;&amp;quot;","&amp;quot;&amp;quot;&amp;quot;&amp;quot;")'</xsl:text>
+        <xsl:text disable-output-escaping="yes">&lt;xsl:for-each select="*"&gt;&lt;xsl:if test=".=''"&gt;null&lt;/xsl:if&gt;&lt;xsl:if test=".!=''"&gt;'&lt;xsl:value-of select='replace(replace(replace(.,"&amp;apos;","&amp;apos;&amp;apos;"), "&amp;quot;&amp;quot;","&amp;quot;&amp;quot;&amp;quot;&amp;quot;"), "&amp;#13;", "&amp;quot;&amp;quot; </xsl:text>
+        <xsl:text disable-output-escaping="no"> &amp; vbCrLf  &amp; </xsl:text>
+        <xsl:text disable-output-escaping="yes">&amp;quot;&amp;quot;")'</xsl:text>
         <xsl:text disable-output-escaping="yes"> /&gt;'&lt;/xsl:if&gt;&lt;xsl:if test="position()!=last()"&gt;,&lt;/xsl:if&gt;&lt;/xsl:for-each&gt;</xsl:text>
         <xsl:text disable-output-escaping="yes">); " &#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">conn.Execute (query) &#xd;&#xa;</xsl:text>                              
@@ -65,14 +67,16 @@
         <xsl:text disable-output-escaping="yes">query = "CREATE TABLE [</xsl:text>
         <xsl:value-of select="identifier"/>
         <xsl:text disable-output-escaping="yes">] (status text(10), " </xsl:text>
-        <xsl:text disable-output-escaping="no">&amp; _ &#xd;&#xa;</xsl:text>        
+        <xsl:text disable-output-escaping="no"> &#xd;&#xa;</xsl:text>        
         
         <xsl:text disable-output-escaping="yes">&lt;xsl:for-each select="*"&gt;</xsl:text>
     <!--      <xsl:text disable-output-escaping="yes">[&lt;xsl:value-of select="local-name()" /&gt;]&lt;xsl:value-of select="' '"/&gt;&lt;xsl:call-template name="getFieldType"&gt;&lt;xsl:with-param name="name" select="local-name()"/&gt;&lt;/xsl:call-template&gt;&#xd;&#xa;</xsl:text>-->
+        <xsl:text disable-output-escaping="no">query = query &amp; </xsl:text>         
         <xsl:text disable-output-escaping="yes">" [&lt;xsl:value-of select="translate(local-name(),'.','_')" /&gt;]&lt;xsl:value-of select="' '"/&gt;&lt;xsl:call-template name="getFieldType"&gt;&lt;xsl:with-param name="name" select="local-name()"/&gt;&lt;/xsl:call-template&gt;&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">&lt;xsl:if test="position()!=last()"&gt;,&lt;/xsl:if&gt;  " </xsl:text>
-        <xsl:text disable-output-escaping="no">&amp; _ &#xd;&#xa;</xsl:text> 
+        <xsl:text disable-output-escaping="no">&#xd;&#xa;</xsl:text> 
         <xsl:text disable-output-escaping="yes">&lt;/xsl:for-each&gt;</xsl:text>
+        <xsl:text disable-output-escaping="no">query = query &amp; </xsl:text> 
         <xsl:text disable-output-escaping="yes">");"&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">conn.Execute (query) &#xd;&#xa;</xsl:text>        
         <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;&#xd;&#xa;</xsl:text>
