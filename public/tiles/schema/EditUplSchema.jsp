@@ -1,10 +1,9 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*"
-%>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
-<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
-<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
-<%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*"%>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
+<%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 
 <html:xhtml/>
 <div id="stylesheet" class="box"> 
@@ -13,7 +12,7 @@
 			<div></div>
 		</div> 
 
-		<ed:breadcrumbs-push label="Edit Schema" level="1" />
+		<ed:breadcrumbs-push label="Edit Schema" level="2" />
 		<h4><bean:message key="label.title.uplSchema.edit"/></h4> 
 
 		<div class="boxcontent">
