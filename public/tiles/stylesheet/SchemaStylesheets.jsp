@@ -41,19 +41,16 @@
 								<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
 									<td width="10%" align="center" nowrap="nowrap">
 										<a href="testConversionForm?schema=<bean:write name="schema" property="schema" />&amp;idConv=<bean:write name="stylesheet" property="convId" />"  >
-											<html:img page="/images/run.png" altKey="label.stylesheet.run" title="run conversion"/>
-										</a>			
+											<html:img page="/images/run.png" altKey="label.stylesheet.run" title="run conversion"/></a>			
 										<logic:equal name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >
 											<logic:equal name="ssdPrm" value="true"  name="schema.stylesheets" scope="session" property="ssdPrm" >						
 												&nbsp;
 												<a href="stylesheetEditForm?stylesheetId=<bean:write name="stylesheet" property="convId" />">
-													<html:img page="/images/edit.gif" altKey="label.stylesheet.edit" title="edit stylesheet"/>
-												</a>						
+													<html:img page="/images/edit.gif" altKey="label.stylesheet.edit" title="edit stylesheet"/></a>						
 												&nbsp;
 												<a href="deleteStylesheet?stylesheetId=<bean:write name="stylesheet" property="convId" />&amp;schema=<bean:write name="schema" property="schema"/>"
 													onclick='return stylesheetDelete("<bean:write name="stylesheet" property="xsl" />");'>
-													<html:img page="/images/delete.gif" altKey="label.delete" title="delete stylesheet"/>
-												</a>	
+													<html:img page="/images/delete.gif" altKey="label.delete" title="delete stylesheet"/></a>	
 											</logic:equal>								
 										</logic:equal>		
 									</td>

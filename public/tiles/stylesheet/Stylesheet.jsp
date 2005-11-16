@@ -33,13 +33,11 @@
 								<html:img page="/images/properties.gif" altKey="label.table.stylesheet" title="view stylesheets" />
 							</html:link>
 							<a href="schemaElemForm?backToConv=yes&amp;schemaId=<bean:write name="schema" property="id" />">		
-								<html:img page="/images/info_icon.gif" altKey="label.table.schemainfo" title="view schema info"/>
-							</a>
+								<html:img page="/images/info_icon.gif" altKey="label.table.schemainfo" title="view schema info"/></a>
 							<logic:equal name="ssdPrm" value="true"  name="stylesheet.stylesheetList" scope="session" property="ssdPrm" >
 								<a href="deleteSchema?schemaId=<bean:write name="schema" property="id" />"
 									onclick='return schemaDelete("<bean:write name="schema" property="schema" />");'>
-									<html:img page="/images/delete.gif" altKey="label.delete" title="delete schema" />
-								</a>
+									<html:img page="/images/delete.gif" altKey="label.delete" title="delete schema" /></a>
 		    				</logic:equal>
 						</td>				
 						<td width="55%">						
