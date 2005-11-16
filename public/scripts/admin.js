@@ -38,3 +38,16 @@ function setSchema()
 
 	return true;
 }
+
+function openWindow(theURL, winName) {
+   var h, w;
+   h = screen.height;
+   w = screen.width;
+   var l, t;
+   l = parseInt((w - 795)/2);
+   t = parseInt((h - 550)/2);
+
+   WinId = window.open(theURL, 'HelpWindow', 'toolbar=no,menubar=no,location=no,status=no,scrollbars=yes,resizable=yes,width=795,height=550,left=' + l + ',top=' + t);
+   WinId.focus();
+   WinId.document.location =theURL;
+}

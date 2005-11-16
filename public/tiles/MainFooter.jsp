@@ -1,8 +1,9 @@
 <%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java"%>
-<%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles"%>
-<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
+<%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
+<%@ taglib uri="/WEB-INF/tlds/c.tld" prefix="c"%>
 
 <% String a=request.getContextPath(); session.setAttribute("webRoot",a==null?"":a); %>
 <logic:present name="user">
@@ -23,6 +24,7 @@
 							<div class="portletBody">
 								<div class="portletContent odd">
 	   								<div>
+	   								
 										<ul class="portal-subnav">	
 											<ed:menuItem action="/do/uplSchemas" title="Schemas">
 												<bean:message key="label.menu.schemas"/>
@@ -53,8 +55,11 @@
 													<bean:message key="label.menu.config"/>
 												</ed:menuItem>
 											</logic:present>
-
+											<ed:menuItem action="#" onclick="javascript:openWindow(applicationRoot+'/help/index.jsp','olinehelp');" title="Help">
+												<bean:message key="label.menu.help"/>
+											</ed:menuItem>
 										</ul>
+
 									</div>
 								</div>
 							</div>
@@ -70,7 +75,7 @@
 								<div class="portletBody">
 									<div class="portletContent odd">									
 										<ul class="portal-subnav">										
-											<li><a href="<bean:write name="webRoot"/>/do/start?login=true" title="login">Login</a></li>
+											<li><a href="<c:url value="/do/start?login"/>" title="login">Login</a></li>
 										</ul>
 									</div>
 								</div>
@@ -91,7 +96,7 @@
 								<div class="portletBody">
 									<div class="portletContent odd">									
 										<ul class="portal-subnav">										
-											<li><a href="<bean:write name="webRoot"/>/do/start?logout=true" title="logout">Logout</a></li>
+											<li><a href="<c:url value="/do/start?logout"/>" title="login">Logout</a></li>
 										</ul>
 									</div>
 								</div>
