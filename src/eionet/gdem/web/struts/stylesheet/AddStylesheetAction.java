@@ -38,6 +38,7 @@ import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 
@@ -79,6 +80,19 @@ public class AddStylesheetAction extends Action {
 			return actionMapping.findForward("fail");
 		}
 
+		try {
+			IXmlCtx xml = new XmlContext();
+			xml.setWellFormednessChecking();
+			xml.checkFromInputStream((new InputFile(schema)).getSrcInputStream());
+		} catch (Exception e) {
+			_logger.error("schema not valid",e);
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.error.notvalid"));
+			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+			return actionMapping.findForward("fail");
+		}
+		
+		
+		
 		if (schema == null || schema.equals("")) {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.validation"));
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);

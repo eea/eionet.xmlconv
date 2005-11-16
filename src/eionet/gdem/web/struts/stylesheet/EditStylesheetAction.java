@@ -38,6 +38,7 @@ import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 import eionet.gdem.utils.xml.XmlException;
@@ -70,9 +71,20 @@ public class EditStylesheetAction extends Action {
 				x.setWellFormednessChecking();
 				x.checkFromInputStream(new ByteArrayInputStream(xslFile.getFileData()));
 			} catch (Exception e) {
+				_logger.error("stylesheet not valid",e);
 				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.notvalid"));
 			}
 		}
+		
+		try {
+			IXmlCtx x = new XmlContext();
+			x.setWellFormednessChecking();
+			x.checkFromInputStream((new InputFile(schema)).getSrcInputStream());
+		} catch (Exception e) {
+			_logger.error("schema not valid",e);
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.error.notvalid"));
+		}
+
 
 		if (errors.isEmpty()) {
 			try {
