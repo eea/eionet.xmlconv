@@ -1,0 +1,64 @@
+BODY {
+font: 69% Verdana, Geneva, Arial, Helvetica, sans-serif;
+background-color: #fff;
+color: #000000;
+}
+
+TD, TH, ADDRESS, PRE, CODE  {
+	font: 69% Verdana, Geneva, Arial, Helvetica, sans-serif;
+    color: #000000;
+}
+
+A:link { color: #024176; text-decoration: none; }
+A:active { color: #cc0000;  }
+A:visited { color: #666666; text-decoration: none; }
+A:hover { text-decoration: underline;  }
+
+TD.link { padding-top: 1em; }
+
+H1, H2, H3, H4, H5, H6 { font-family: "Trebuchet MS",Verdana,Geneva,Arial,Helvetica,sans-serif; color: #006E6F;}
+h1 {font-size: 160%; margin: 0; padding: 0;}
+h2 {font-size: 140%; }
+h3 {font-size: 120%; }
+
+P, H3, H4, H5, H6, DL, PRE, TABLE.optionDef { margin-left: 0; margin-right: 1%; }
+BLOCKQUOTE {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+P, LI, TD, TH, BLOCKQUOTE, DD, DT {
+  font-family: Geneva, Verdana, Arial, Helvetica, sans-serif;
+  line-height: 115%;
+}
+
+PRE, CODE { font-family: "Courier New", courier, monospace; font-size: 100%; margin: 0.5em 0}
+
+.footer {
+          width: 100%;
+          font-size: 69%;
+          font-family: Geneva, Verdana, Arial, Helvetica, sans-serif;
+          font-style: normal;
+          line-height: 125%;
+          text-align: left;
+          border-width: 1px 0 0 0;
+          border-style: solid;
+          border-color: #000000;
+          padding-top: 0.25em;
+          margin-top: 2em;
+}
+
+.footer #noframes {
+            float: right;
+            text-align: right;
+            width: 25%;
+}
+
+th {text-align: left;}
+
+table.optionDef tr { vertical-align: top;}
+
+ul {margin: 0px 0px 4px 0px; padding-left: 18px; list-style-type: square;}
+li p {margin: 0.5em 0;}
+
+

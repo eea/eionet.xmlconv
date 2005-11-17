@@ -1,0 +1,16 @@
+body {
+background: #f0f0f0;
+color: #000000;
+font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+font-size: 11px;
+}
+a, a:link, a:visited, a:active {color: #000000;text-decoration: none;}
+a:hover {text-decoration: underline;
+}
+p, tr, td, ul, li {
+color: #000000;
+font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+font-size: 11px;
+}
+ul {margin: 0px 0px 4px 0px; padding-left: 18px;}
+li {list-style-type: square;}

@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>[insert your title here]</title>
+<link href="main.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+body {
+	margin: 0;
+	padding: 0;
+	background-color:#f0f0f0;}
+h1 {
+	margin: 0;
+	margin-left: 4px;
+	background-image: url(images/logo.gif);
+	background-repeat: no-repeat;
+	height: 25px;
+	padding: 6px 0 0 36px;}
+.button {
+	padding: 0 4px;}
+.button a { 
+	display:block; 
+	width:16px;
+	height:16px;
+	border:1px solid ButtonFace;
+	vertical-align:middle;}
+.button a:hover { 
+	border-top:1px solid ButtonHighlight; 
+	border-left:1px solid ButtonHighlight; 
+	border-right:1px solid ButtonShadow; 
+	border-bottom:1px solid ButtonShadow;}
+</style>
+<script>
+// (C) 2004 www.CodeLifter.com
+// Free for all users, but leave in this header
+function framePrint(whichFrame){
+parent[whichFrame].focus();
+parent[whichFrame].print();
+}
+</script>
+</head>
+<body>
+<div style=" height: 31px; border-bottom: 1px solid #FFB755;">
+  <h1 style="float:left;">Data Conversion Module Online Help</h1>
+  <table style="float:right; margin: 6px 16px 0 0;" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td class="button"><a href="javascript:parent['text'].history.back();" title="Go Back"><img src="images/back.gif" alt="Go Back" width="16" height="16" border="0" id="back"> </a></td>
+      <td class="button"><a href="javascript:parent['text'].history.forward();" title="Go Forward"><img src="images/forward.gif" alt="Go Forward" width="16" height="16" border="0" id="forward"></a></td>
+      <td class="button"><a href="javascript:framePrint('text');" title="Print Page"><img src="images/print.gif" alt="Print Page" width="16" height="16" border="0" id="print"></a></td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

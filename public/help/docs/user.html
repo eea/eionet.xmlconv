@@ -1,0 +1,465 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>DCM User FEATURES</title>
+<link rel="stylesheet" type="text/css" href="../main.css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+<h1><a name="_Toc119909604"></a>4. DCM User FEATURES</h1>
+<h2><a name="_Toc119909605"></a>4.1 General Principles</h2>
+<p>The user module section describes the set of DCM operations and functions, which are available to simple non-administrator users. This set of functions allows REPORTNET users to access XML Schema and stylesheet information and perform adhoc conversions of XML documents. This set of functions is comprised of the following:</p>
+<ul>
+	<li>Consult/Test Stylesheets</li>
+	<li>Converter function
+		<ul>
+			<li>XML Converter</li>
+			<li>Excel to XML conversion</li>
+		</ul>
+	</li>
+</ul>
+<h2><a name="_Toc119909606"></a>4.2 Consult XML Schemas</h2>
+<h3><a name="_Toc119909607"></a>4.2.1 Access XML Schemas</h3>
+<p>In the “Schemas” section, the user may view all the XML Schemas that are not directly imported by the Data Dictionary and their corresponding XSL Stylesheets. </p>
+<p align="center"><img
+border=0 width=642 height=376 src="../images/image023.gif"></p>
+<p align=center>Figure 19: A user can access the Schemas section without being logged in.</p>
+<h3><a name="_Toc119909608"></a>4.2.2 Download XML Schemas</h3>
+<p>The user may download the XML schemas presented in this section. This can be accomplished by selecting the corresponding schema URL. A new window with the contents of the XML file will be displayed. Subsequently, the user may choose to save the schema info.</p>
+<p align="center"><img
+border=0 width=642 height=378 src="../images/image024.gif"></p>
+<p align=center>Figure 20: XML Schema download </p>
+<h2><a name="_Toc119909609"></a>4.3 Consult/Test Stylesheets</h2>
+<p>For each of the XML Schemas that are encoded in DCM, the administrators can upload one or more XSL stylesheets. These stylesheets are responsible for the conversion of submitted files in a specified output type. </p>
+<p>DCM directly imports predefined XML Schemas along with their Stylesheets from the REPORTNET Data Dictionary. In addition to those imported elements, the system also allows the definition of user defined XML Schemas and Stylesheets. Both types of information are available in the Stylesheets section of DCM. The user-defined conversions are denoted as “Handcoded conversions” whereas the predefined schemas are found under the heading “Generated conversions from Data Dictionary tables” </p>
+<p align=center><img border=0 width=642 height=370 src="../images/image025.gif"></p>
+<p align=center>Figure 21: Handcoded Vs Data Dictionary generated conversions</p>
+<p>For both types of conversions, the user may view the following information:</p>
+<ul>
+	<li>XML Schema. The schema according to which the data conversion is based on.</li>
+	<li>Stylesheets. The list of existing stylesheets for each XML schema is displayed </li>
+	<li>Actions. The simple user has the option to take a more detailed view on the stylesheets or get more details on the schema information<a href="#_ftn1" name="_ftnref1" title="">[*]</a></li>
+</ul>
+<p>In addition to this information, the Data Dictionary conversions include additional data such as the Data Dictionary Table name and Dataset of the XML Schema. This information helps the user to better identify the XML schemas.</p>
+<h3><a name="_Toc119909610"></a>4.3.1 View Stylesheets</h3>
+<p>For each XML Schema entry appearing in the Stylesheets section of DCM either imported from DD or Handcoded, the user has the possibility to get a detailed view of the stylesheets assigned to it.</p>
+<p>In order to do this, the user must perform the following steps:</p>
+<p>STEP 1 – Browse to Data Conversion Module</p>
+<blockquote>
+	<p>This feature does not require user authentication.</p>
+</blockquote>
+<p>STEP 2 – Click on “Stylesheets” button on the navigation bar.</p>
+<p>STEP 3 – Click the “View Stylesheets” button.</p>
+<blockquote>
+	<p>For each entry in the Stylesheets section, the user may click on the “view stylesheets” icon <img
+border=0 width=16 height=16 src="../images/image011.gif"> in order to receive more details regarding the available stylesheets.</p>
+</blockquote>
+<p align="center"><img
+border=0 width=642 height=376 src="../images/image026.gif"></p>
+<p align=center>Figure 22: Schema Stylesheets page</p>
+<p>Step 4 – View Stylesheet information</p>
+<blockquote>
+	<p>The information available in this section for the user is:</p>
+	<ul>
+		<li>Output type. This indicates the result of the conversion</li>
+		<li>Description. Some additional text related to the purpose and usage of the stylesheet.</li>
+		<li>Stylesheet. The URL of the XSL file. By clicking this URL, the user can download the selected stylesheet.</li>
+		<li>Date of last modification</li>
+	</ul>
+	<p>In addition, the user can perform the following set of actions:</p>
+	<ul>
+		<li>Run a conversion (see section <a href="#_Toc119909611">4.3.2</a>)</li>
+		<li>View schema information (this is only available for Handcoded conversions).</li>
+	</ul>
+</blockquote>
+<p>Step 5 – Return to Stylesheets section</p>
+<blockquote>
+	<p>By pressing the OK button, the user will be redirected to the Stylesheets section.</p>
+</blockquote>
+<p>In summary:</p>
+<table border=1 cellspacing=0 cellpadding=0>
+	<thead>
+		<tr>
+			<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+   background:#CCCCCC;padding:0in 5.4pt 0in 5.4pt'><p>Step</p></td>
+			<td width="87%" valign=top style='width:87.28%;border:solid black 1.0pt;
+   border-left:none;background:#CCCCCC;padding:0in 5.4pt 0in 5.4pt'><p>View Stylesheets</p></td>
+		</tr>
+	</thead>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>1</p></td>
+		<td width="87%" valign=top style='width:87.28%;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Browse to DCM</p></td>
+	</tr>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>2</p></td>
+		<td width="87%" valign=top style='width:87.28%;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Click on “Stylesheets” button</p></td>
+	</tr>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>3</p></td>
+		<td width="87%" valign=top style='width:87.28%;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Click on “view stylesheets” action</p></td>
+	</tr>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>4</p></td>
+		<td width="87%" valign=top style='width:87.28%;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>View stylesheet information</p></td>
+	</tr>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center><i>5</i></p></td>
+		<td width="87%" valign=top style='width:87.28%;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Return to “Stylesheets” section</p></td>
+	</tr>
+</table>
+<h3><a name="_Toc119909611"></a>4.3.2 Test Run Stylesheets</h3>
+<p>The DCM allows the user to perform adhoc conversions of XML files by running any of the available stylesheets.</p>
+<p>In order to do this, the user must perform the following steps:</p>
+<p>STEP 1 – Browse to Data Conversion Module</p>
+<blockquote>
+	<p>This feature does not require user authentication.</p>
+</blockquote>
+<p>STEP 2 – Click on “Stylesheets” button on the navigation bar.</p>
+<p>STEP 3 – Click the “View Stylesheets” button.</p>
+<blockquote>
+	<p>For each entry in the Stylesheets section, the user may click on the “view stylesheets” icon <img
+width=16 height=16 src="../images/image011.gif"> in order to receive more details regarding the available stylesheets.</p>
+</blockquote>
+<p align="center"><img
+width=642 height=376 src="../images/image026.gif"></p>
+<p align=center>Figure 23: Schema Stylesheets page</p>
+<p>Step 4 – Select “Run stylesheet”</p>
+<blockquote>
+	<p>By selecting the “run stylesheet” icon <img width=24 height=15
+src="../images/image027.gif" alt="Run conversion">, the user may perform a test conversion of an XML file according to the selected stylesheet.</p>
+</blockquote>
+<p>Step 5 – Insert XML URL and select Stylesheet</p>
+<blockquote>
+	<p>The user arrives at the “Test conversion” page where he/she must insert the URL of the XML file that is to be converted and select the stylesheet according to which the conversion will be performed. </p>
+	<p>All the stylesheets of the XML schema are available, but by default, the stylesheet which was selected in STEP 4 will be selected initially.</p>
+</blockquote>
+<p>Step 6 – Run test conversion</p>
+<blockquote>
+	<p>By selecting the “Convert” button, the user invokes the conversion and the result of this operation will be displayed in a new browser window.</p>
+	<p><b>Important Note</b>: In case of mismatch of the XML file and the selected stylesheet, an error message will be displayed to the user notifying that the conversion could not be completed.</p>
+</blockquote>
+<p align="center"><img
+width=642 height=376 src="../images/image028.gif"></p>
+<p align=center>Figure 24: Test conversion functionality</p>
+<p>In summary:</p>
+<table border=1 cellspacing=0 cellpadding=0>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  background:#CCCCCC;padding:0in 5.4pt 0in 5.4pt'><p>Step</p></td>
+		<td width="87%" valign=top style='width:87.28%;border:solid black 1.0pt;
+  border-left:none;background:#CCCCCC;padding:0in 5.4pt 0in 5.4pt'><p>Test Run Stylesheets</p></td>
+	</tr>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>1</p></td>
+		<td width="87%" valign=top style='width:87.28%;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Browse to DCM</p></td>
+	</tr>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>2</p></td>
+		<td width="87%" valign=top style='width:87.28%;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Click on “Stylesheets” button</p></td>
+	</tr>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>3</p></td>
+		<td width="87%" valign=top style='width:87.28%;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Click on “view stylesheets” action</p></td>
+	</tr>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>4</p></td>
+		<td width="87%" valign=top style='width:87.28%;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Select “Run Stylesheet”</p></td>
+	</tr>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center><i>5</i></p></td>
+		<td width="87%" valign=top style='width:87.28%;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Insert XML URL and select Stylesheet</p></td>
+	</tr>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center><i>6</i></p></td>
+		<td width="87%" valign=top style='width:87.28%;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Run test conversion</p></td>
+	</tr>
+</table>
+<h3><a name="_Toc119909612"></a>4.3.3 View XML schema information</h3>
+<p>The user has the ability to view some extra information regarding the XML schema accessed while viewing the list of stylesheets. In this page the user may view the schema’s URL, its description as well as its user-defined root elements. This option is only available for Handcoded conversions since the stylesheets imported from the Data Dictionary do not have such information.</p>
+<p>In order to view this XML Schema information, the user must perform the following steps:</p>
+<p>STEP 1 – Browse to Data Conversion Module</p>
+<blockquote>
+	<p>This feature does not require user authentication.</p>
+</blockquote>
+<p>STEP 2 – Click on “Stylesheets” button on the navigation bar.</p>
+<p>STEP 3 – Click the “View Stylesheets” button.</p>
+<blockquote>
+	<p>For each entry in the Stylesheets section, the user may click on the “view stylesheets” icon <img
+width=16 height=16 src="../images/image011.gif" alt="View stylesheets"> in order to receive more details regarding the available stylesheets.</p>
+</blockquote>
+<p align="center"><img
+width=642 height=376 src="../images/image029.gif"></p>
+<p align=center>Figure 25: XML Schema or DTD information page</p>
+<p>Step 4 – View Schema information</p>
+<blockquote>
+	<p>By selecting the “View Schema info” option, the user is redirected to the “XML Schema or DTD” page where the following information is displayed:</p>
+	<ul>
+		<li>Schema location: The URL of the XML schema</li>
+		<li>Description: A short description of the XML schema</li>
+		<li>DTD information: This displays a list of the user-defined root elements of the XML Schema.</li>
+	</ul>
+</blockquote>
+<p>In summary:</p>
+<table border=1 cellspacing=0 cellpadding=0>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  background:#CCCCCC;padding:0in 5.4pt 0in 5.4pt'><p>Step</p></td>
+		<td width="87%" valign=top style='width:87.28%;border:solid black 1.0pt;
+  border-left:none;background:#CCCCCC;padding:0in 5.4pt 0in 5.4pt'><p>View XML Schema Information</p></td>
+	</tr>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>1</p></td>
+		<td width="87%" valign=top style='width:87.28%;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Browse to DCM</p></td>
+	</tr>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>2</p></td>
+		<td width="87%" valign=top style='width:87.28%;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Click on “Stylesheets” button</p></td>
+	</tr>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>3</p></td>
+		<td width="87%" valign=top style='width:87.28%;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Click on “view stylesheets” action</p></td>
+	</tr>
+	<tr>
+		<td width="12%" valign=top style='width:12.72%;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>4</p></td>
+		<td width="87%" valign=top style='width:87.28%;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>View Schema information</p></td>
+	</tr>
+</table>
+<h2><a name="_Toc119909613"></a>4.4 Converter</h2>
+<h3><a name="_Toc119909614"></a>4.4.1 General Principles</h3>
+<p>The “Converter” functionality allows the DCM users to perform conversions of XML files to any format available through the defined stylesheets or convert Excel files generated by the Data Dictionary to XML.</p>
+<p>In the case of XML files conversion, the system supports the conversion according to both uploaded XML Schemas and schemas imported by the Data Dictionary. In addition, it supports the validation of the submitted XML file against the selected XML schema. By using the validation functionality, the user may check if the submitted XML matches the selected XML schema. In order for the conversion to be completed successfully, the validation operation should return no errors. In case however such errors occur, the user should reconsider the XML schema selection, as it is very possible that the conversion will not yield the expected output or it will not be completed successfully.</p>
+<h3><a name="_Toc119909615"></a>4.4.2 XML Conversion</h3>
+<p>As mentioned in section 4.4.1, the XML converter functionality allows the DCM users to perform conversions of XML files against all XML schemas and their associated stylesheets.</p>
+<p>In order to do so, the DCM user must go through the following steps: </p>
+<p>STEP 1 – Click on “Converter” button on the navigation bar.</p>
+<blockquote>
+	<p>In order to perform an XML file conversion, the user must select the “XML Converters” tab.</p>
+</blockquote>
+<p>STEP 2 – Insert conversion parameters</p>
+<blockquote>
+	<p>The user must specify the following information:</p>
+	<ul>
+		<li>URL of XML file. This is the URL of the file to be converted</li>
+		<li>Select the XML Schema according to which the conversion is going to be performed. </li>
+		<li>Select to validate the file before conversion or not.</li>
+	</ul>
+	<p>The validation option will check for the consistency of the submitted XML file against the selected XML Schema. </p>
+</blockquote>
+<p align=center><img width=642 height=405 src="../images/image030.gif"></p>
+<p align=center>Figure 26: Profile Channels</p>
+<p>STEP 3 – Get available conversions</p>
+<blockquote>
+	<p>After the submission of the required parameters, the user receives a list of the available conversions. This list corresponds to the available stylesheets for the XML schema, which was selected. </p>
+	<p>The user must subsequently select the desired output type and press the “Convert” button. </p>
+</blockquote>
+<p align="center"><img
+width=642 height=376 src="../images/image031.gif"></p>
+<p align=center>Figure 27: Available XML file conversions</p>
+<p>STEP 4 – Get converted file</p>
+<blockquote>
+	<p>After the “Convert” button has been selected, the user will receive the XML file converted to the output type selected in STEP 4.</p>
+	<p>However, if the submitted XML file did not match the XML Schema’s expected structure, it is very possible that the conversion will either be erroneous or will create an error such as the one in Figure 28. </p>
+	<p>In order to avoid such errors the users may choose to validate their XML files before proceeding with the actual conversion. For more information on validation, please see section <a href="#_Toc119909616">4.4.3.</a> </p>
+</blockquote>
+<p align="center"><img
+width=642 height=376 src="../images/image032.gif"></p>
+<p align=center>Figure 28: XML file conversion error</p>
+<p>In summary,</p>
+<table border=1 cellspacing=0 cellpadding=0>
+	<tr>
+		<td width=59 valign=top style='width:44.25pt;border:solid black 1.0pt;
+  background:#CCCCCC;padding:0in 5.4pt 0in 5.4pt'><p>Step</p></td>
+		<td width=405 valign=top style='width:303.75pt;border:solid black 1.0pt;
+  border-left:none;background:#CCCCCC;padding:0in 5.4pt 0in 5.4pt'><p>XML Conversion</p></td>
+	</tr>
+	<tr>
+		<td width=59 valign=top style='width:44.25pt;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>1</p></td>
+		<td width=405 valign=top style='width:303.75pt;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Click on “Converter” button on the navigation bar.</p></td>
+	</tr>
+	<tr>
+		<td width=59 valign=top style='width:44.25pt;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>2</p></td>
+		<td width=405 valign=top style='width:303.75pt;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Insert conversion parameters</p></td>
+	</tr>
+	<tr>
+		<td width=59 valign=top style='width:44.25pt;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>3</p></td>
+		<td width=405 valign=top style='width:303.75pt;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Get available conversions</p></td>
+	</tr>
+	<tr>
+		<td width=59 valign=top style='width:44.25pt;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>4</p></td>
+		<td width=405 valign=top style='width:303.75pt;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Get converted file</p></td>
+	</tr>
+</table>
+<h3><a name="_Toc119909616"></a>4.4.3 Validation of XML file </h3>
+<p>As mentioned in section 4.4.1, DCM offers validation functionality for the XML files which are to be converted. The validation of the XML file indicates whether the XML file under question can be converted according to the specified XML Schema.</p>
+<p>In order to perform an XML file validation, the DCM user must go through the following steps:</p>
+<p>STEP 1 – Click on “Converter” button on the navigation bar.</p>
+<blockquote>
+	<p>In order to perform an XML file conversion, the user must select the “XML Converters” tab.</p>
+</blockquote>
+<p>STEP 2 – Insert conversion parameters</p>
+<blockquote>
+	<p>Insert the URL of the XML file, select the XML Schema for the conversion and also select the “validate” option.</p>
+</blockquote>
+<p align="center"><img
+width=642 height=424 src="../images/image033.gif"></p>
+<p align=center>Figure 29: XML conversion dialogue with enabled validation</p>
+<p>STEP 3 – Receive results of Validation</p>
+<blockquote>
+	<p>After selecting the “List” button on the “Find conversions” page, the system will begin the validation process of the submitted XML file. This may take more time to complete than a standard conversion but finally, the user will be redirected to the list with the available conversions for the selected XML schema.</p>
+	<p>If the validation of the XML file was successful, then the user will be allowed to proceed normally with the XML conversion. </p>
+	<p>However, if the file validation returns errors, these will be displayed to the user as in Figure 30. </p>
+</blockquote>
+<p align="center"><img
+width=642 height=757 src="../images/image034.gif"></p>
+<p align=center><a name="_Toc119301043"></a>Figure 30: Validation errors</p>
+<p>In summary,</p>
+<table border=1 cellspacing=0 cellpadding=0>
+	<tr>
+		<td width=59 valign=top style='width:44.25pt;border:solid black 1.0pt;
+  background:#CCCCCC;padding:0in 5.4pt 0in 5.4pt'><p>Step</p></td>
+		<td width=405 valign=top style='width:303.75pt;border:solid black 1.0pt;
+  border-left:none;background:#CCCCCC;padding:0in 5.4pt 0in 5.4pt'><p>Validation of XML file</p></td>
+	</tr>
+	<tr>
+		<td width=59 valign=top style='width:44.25pt;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>1</p></td>
+		<td width=405 valign=top style='width:303.75pt;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Click on “Converter” button</p></td>
+	</tr>
+	<tr>
+		<td width=59 valign=top style='width:44.25pt;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>2</p></td>
+		<td width=405 valign=top style='width:303.75pt;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Insert conversion parameters</p></td>
+	</tr>
+	<tr>
+		<td width=59 valign=top style='width:44.25pt;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>3</p></td>
+		<td width=405 valign=top style='width:303.75pt;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Receive results of Validation</p></td>
+	</tr>
+</table>
+<h3><a name="_Toc119909617"></a>4.4.4 Excel to XML conversion</h3>
+<p>DCM offers the possibility to the user to convert MS Excel files to XML.</p>
+<p>In order to perform this conversion, the DCM user must go through the following steps:</p>
+<p>STEP 1 – Click on “Converter” button on the navigation bar.</p>
+<blockquote>
+	<p>In order to perform an XML file conversion, the user must select the “MS Excel to XML” tab.</p>
+</blockquote>
+<p>STEP 2 – Insert conversion parameters</p>
+<blockquote>
+	<p>The DCM user must insert the following values:</p>
+	<ul>
+		<li>URL of Excel file. The source file to be converted to XML</li>
+		<li>Select whether to convert all Excel sheets or just one of them (in case just one sheet needs to be converted, its name is required).</li>
+	</ul>
+</blockquote>
+<p align="center"><img
+width=642 height=376 src="../images/image035.gif"></p>
+<p align=center>Figure 31: Excel file conversion</p>
+<p>STEP 3 – Press “Convert” button</p>
+<blockquote>
+	<p>After all the conversion parameters have been set, the user may select the “Convert” button in order for the operation to be completed.</p>
+	<p><b>Important Note</b>: This functionality is designed to parse and convert only files which are generated by the Data Dictionary. If the submitted Excel file does not meet this requirement, the conversion procedure will be terminated with an error.</p>
+</blockquote>
+<p align="center"><img
+width=642 height=389 src="../images/image036.gif"></p>
+<p align=center>Figure 32: Example Excel to XML conversion</p>
+<p>In summary,</p>
+<table border=1 cellspacing=0 cellpadding=0>
+	<tr>
+		<td width=59 valign=top style='width:44.25pt;border:solid black 1.0pt;
+  background:#CCCCCC;padding:0in 5.4pt 0in 5.4pt'><p>Step</p></td>
+		<td width=405 valign=top style='width:303.75pt;border:solid black 1.0pt;
+  border-left:none;background:#CCCCCC;padding:0in 5.4pt 0in 5.4pt'><p>Excel to XML conversion</p></td>
+	</tr>
+	<tr>
+		<td width=59 valign=top style='width:44.25pt;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>1</p></td>
+		<td width=405 valign=top style='width:303.75pt;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Click on “Converter” button</p></td>
+	</tr>
+	<tr>
+		<td width=59 valign=top style='width:44.25pt;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>2</p></td>
+		<td width=405 valign=top style='width:303.75pt;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Insert conversion parameters</p></td>
+	</tr>
+	<tr>
+		<td width=59 valign=top style='width:44.25pt;border:solid black 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'><p align=center>3</p></td>
+		<td width=405 valign=top style='width:303.75pt;border-top:none;border-left:
+  none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><p>Press “Convert” button</p></td>
+	</tr>
+</table>
+<div><br clear=all>
+	<hr align=left size=1 width="33%">
+	<div id=ftn1>
+		<p><a href="#_ftnref1" name="_ftn1" title="">[*]</a> Only for Handcoded conversions</p>
+	</div>
+</div>
+</body>
+</html>
