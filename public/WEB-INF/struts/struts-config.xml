@@ -95,6 +95,7 @@
         </action>
         <action path="/testConversion" name="ListConvForm" type="eionet.gdem.web.struts.conversion.ListConvFormAction" input="/listConv.jsp" scope="request">
             <forward name="success" path="/listConv.jsp" redirect="true"/>
+                      
         </action>
         <action path="/listConv" name="ListConvForm" type="eionet.gdem.web.struts.conversion.ListConvAction" input="/listConv.jsp" scope="request">
             <forward name="success" path="/do/testConversionForm"/>
@@ -103,6 +104,7 @@
         <action path="/testConversionForm" name="TestConvForm" type="eionet.gdem.web.struts.conversion.TestConvFormAction" input="/testConv.jsp" scope="request">
             <forward name="success" path="/testConv.jsp"/>
             <forward name="error" path="/do/testConversionForm" redirect="true"/>
+             <forward name="noconversion" path="/do/listConvForm" redirect="true"/> 
         </action>
         <action path="/uplSchemas"  type="eionet.gdem.web.struts.schema.UplSchemaFormAction" input="/testConv.jsp" scope="request">
             <forward name="success" path="/uplSchema.jsp" />

@@ -178,8 +178,14 @@ public class TestConvFormAction extends Action {
 		//saveMessages(httpServletRequest, errors);
 
 		//httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-		httpServletRequest.getSession().setAttribute("conversion.schemas", schemas);
-		return actionMapping.findForward("success");
+		if(schemas.size()>0){
+			httpServletRequest.getSession().setAttribute("conversion.schemas", schemas);
+			return actionMapping.findForward("success");
+		}else{
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.noconversion"));
+			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+			return actionMapping.findForward("noconversion");
+		}
 	}
 
 
