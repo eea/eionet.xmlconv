@@ -15,7 +15,7 @@
 		</div>
 	</div> 
 
-	<ed:breadcrumbs-push label="Test conversion" level="3" />
+	<ed:breadcrumbs-push label="Test conversion" level="1" />
 	<h4><bean:message key="label.conversion.testconversion"/></h4> 
 	<div class="boxcontent">
 		<logic:iterate id="schema" name="conversion.schemas" scope="session" type="Schema">	
