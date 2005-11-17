@@ -52,7 +52,7 @@ public class ConversionServlet extends HttpServlet {
 		String list = req.getParameter("list");
 
 		if (Utils.isNullStr(list) && (Utils.isNullStr(url) || Utils.isNullStr(format))) {
-			String err_message = "Some of the following parameters are missing: 'list' or 'format' or 'file url'!";
+			String err_message = "Some of the following parameters are missing: <br/>'list' or 'format' or 'file url'";
 			handleError(req, res, new GDEMException(err_message), Names.ERROR_JSP);
 			return;
 		}
