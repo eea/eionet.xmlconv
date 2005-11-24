@@ -63,11 +63,12 @@ public class XSLTransformer {
                 String jaxSaxFactoryProp = props.getString(JAX_SAX_PARSER_PROPERTY);
                 String jaxDomFactoryProp = props.getString(JAX_DOM_PARSER_PROPERTY);
                 String jaxTransformFactoryProp = props.getString(JAX_TRANSFORM_PROPERTY);
+                String saxDriverProp = props.getString(SAX_DRIVER);
                 if (transformerFactory == null) {
                     System.setProperty(JAX_TRANSFORM_PROPERTY, jaxTransformFactoryProp);
                     System.setProperty(JAX_SAX_PARSER_PROPERTY, jaxSaxFactoryProp);
                     System.setProperty(JAX_DOM_PARSER_PROPERTY, jaxDomFactoryProp);
-
+                    System.setProperty(SAX_DRIVER, saxDriverProp);
                     TransformerFactory tFactory = TransformerFactory.newInstance();
                     domFactory = DocumentBuilderFactory.newInstance();
                     domFactory.setValidating(false);
@@ -102,6 +103,8 @@ public class XSLTransformer {
     private static final String JAX_SAX_PARSER_PROPERTY = "javax.xml.parsers.SAXParserFactory";
 
     private static final String JAX_DOM_PARSER_PROPERTY = "javax.xml.parsers.DocumentBuilderFactory";
+    
+    private static final String SAX_DRIVER = "org.xml.sax.driver";
 
     // DTD Map
     static private Map dtds = new HashMap();
