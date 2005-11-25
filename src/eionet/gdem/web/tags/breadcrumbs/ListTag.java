@@ -70,7 +70,7 @@ public class ListTag extends TagSupport {
 
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("<script type=\"text/javascript\">\n");
-		buffer.append("<!--\n");
+		buffer.append("//<!--\n");
 		buffer.append("var bc = document.getElementById(\"");
 		buffer.append(htmlid);
 		buffer.append("\");\n");
@@ -88,20 +88,20 @@ public class ListTag extends TagSupport {
 					buffer.append(" class=\"" + classStyle + "\"");
 				buffer.append(" href=\"" + url + "\">");
 				buffer.append(label);
-				buffer.append("</a>");
+				buffer.append("<\\/a>");
 			} else {
 				buffer.append("<span");
 				if (classStyleEnd != null && classStyleEnd.length() > 0)
 					buffer.append(" class=\"" + classStyleEnd + "\"");
 				buffer.append(">");
 				buffer.append(label);
-				buffer.append("</span>");
+				buffer.append("<\\/span>");
 			}
 			buffer.append(this.delimiter);
 		}
 		buffer.append("';\n");
 		buffer.append("}\n");
-		buffer.append("-->\n");
+		buffer.append("//-->\n");
 		buffer.append("</script>\n");
 
 		if (this.var == null) {
