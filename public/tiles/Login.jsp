@@ -12,7 +12,7 @@
 <td>
 <div class="box"> 
 	<div class="boxleft"> 
-		<div class="boxtop"><div></div></div> 
+		<div class="boxtop"><div>&nbsp;</div></div> 
 		<h4><bean:message key="label.login.message"/></h4>			
 			
 		<div class="boxcontent">
@@ -53,7 +53,7 @@
 			  </table>
 			</html:form>
 		</div>
-		<div class="boxbottom"><div></div></div> 
+		<div class="boxbottom"><div>&nbsp;</div></div> 
 	</div>
 </div>
 </td>

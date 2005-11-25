@@ -9,7 +9,7 @@
 <html:xhtml/>
 <div id="stylesheet" class="box"> 
 	<div class="boxleft"> 
-		<div class="boxtop"><div></div>	</div> 
+		<div class="boxtop"><div>&nbsp;</div>	</div> 
 			<ed:breadcrumbs-push label="Add Stylesheet" level="2" />
 			<h4><bean:message key="label.stylesheet.add"/></h4> 
 
@@ -127,7 +127,7 @@
 				 </div>
 			</html:form>		
 		</div>
-		<div class="boxbottom"><div></div></div> 
+		<div class="boxbottom"><div>&nbsp;</div></div> 
 	</div>
 </div>
 

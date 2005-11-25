@@ -10,7 +10,7 @@
 <div id="stylesheet" class="box"> 
 	<div class="boxleft"> 
 		<div class="boxtop">
-			<div></div>
+			<div>&nbsp;</div>
 		</div> 
 
 		<ed:breadcrumbs-push label="Upload Schema" level="1" />
@@ -57,7 +57,7 @@
 			</html:form>		
 		</div>
 		<div class="boxbottom">
-			<div></div>
+			<div>&nbsp;</div>
 		</div> 
 	</div>
 </div>

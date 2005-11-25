@@ -9,7 +9,7 @@
 <div id="stylesheet" class="box"> 
 	<div class="boxleft"> 
 		<div class="boxtop">
-			<div></div>
+			<div>&nbsp;</div>
 		</div> 
 
 		<ed:breadcrumbs-push label="Edit Schema" level="2" />
@@ -61,7 +61,7 @@
 			
 		</div>
 	<div class="boxbottom">
-		<div></div>
+		<div>&nbsp;</div>
 	</div> 
 	</div>
 </div>

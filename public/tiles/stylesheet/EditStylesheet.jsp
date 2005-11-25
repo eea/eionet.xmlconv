@@ -8,8 +8,7 @@
 <html:xhtml/>
 <div id="stylesheet" class="box"> 
 	<div class="boxleft"> 
-		<div class="boxtop"><div>
-		</div>
+		<div class="boxtop"><div>&nbsp;</div>
 	</div> 
 
 			<ed:breadcrumbs-push label="Edit Stylesheet" level="3" />
@@ -176,7 +175,7 @@
 		</html:form>
 		
 		</div>
-		<div class="boxbottom"><div></div></div> 
+		<div class="boxbottom"><div>&nbsp;</div></div> 
 	</div>
 </div>
 

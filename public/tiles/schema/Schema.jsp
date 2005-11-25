@@ -11,7 +11,7 @@
 <div id="schema" class="box"> 
 	<div class="boxleft"> 
 		<div class="boxtop"> 
-			<div></div>
+			<div>&nbsp;</div>
 		</div> 
 	
 		<logic:notPresent name="schemaForm" property="backToConv">
@@ -196,7 +196,7 @@
 		
 	</div>
 	<div class="boxbottom">
-		<div></div>
+		<div>&nbsp;</div>
 	</div> 
 	</div>
 </div>

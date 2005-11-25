@@ -11,8 +11,7 @@
 				
 <div id="stylesheet" class="box"> 
 	<div class="boxleft"> 
-		<div class="boxtop"><div>
-		</div>
+		<div class="boxtop"><div>&nbsp;</div>
 	</div> 
 
 	<ed:breadcrumbs-push label="Test conversion" level="1" />
@@ -80,7 +79,7 @@
 				    </tr>
 				    <tr>
 				      <td colspan="3" align="center">
-				        <input type="button" styleClass="button" class="button" value="<bean:message key="label.conversion.convert"/>" onclick="return submitAction('<bean:write name="webRoot" />/convert');">	        
+				        <input type="button" class="button" value="<bean:message key="label.conversion.convert"/>" onclick="return submitAction('<bean:write name="webRoot" />/convert');"/>	        
 				      </td>
 				    </tr>
 				    <tr>
@@ -123,7 +122,7 @@
 					</div>	
 				</logic:present>
 	</div>
-	<div class="boxbottom"><div></div></div> 
+	<div class="boxbottom"><div>&nbsp;</div></div> 
 	</div>
 </div>
 
