@@ -53,7 +53,7 @@
 	<tr>
     			<td style="text-align:right;"><bean:message key="label.editUI.fontSize"/></td>
     			<td><select id="size" style="width:17em;">
-		    			<option value=""></option>
+		    			<option value="">&nbsp;</option>
 	    				<option value="xx-small">xx-small</option>
 	    				<option value="x-small">x-small</option>
 
@@ -69,7 +69,7 @@
     		<tr>
     			<td style="text-align:right;"><bean:message key="label.editUI.fontFamily"/></td>
     			<td><select id="tip" style="width:17em;">
-			    		<option value=""></option>
+			    		<option value="">&nbsp;</option>
 			    		<option value="arial,sans-serif" style="font-family:arial,sans-serif">arial sans-serif</option>
 			    		<option value="verdana,sans-serif" style="font-family:verdana,sans-serif">verdana sans-serif</option>
 
