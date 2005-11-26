@@ -46,17 +46,16 @@ import java.io.*;
 public class InputFile  {
 
   private static LoggerIF _logger;
-  private String user = null;
-  private String pwd = null;
+  private String ticket = null;
+  //private String pwd = null;
   private URL url=null;
   private InputStream is = null;
+  private boolean isTrustedMode = false;
   
   public InputFile(String str_url) throws IOException, MalformedURLException{
       _logger = GDEMServices.getLogger();
       
       this.url = new URL(str_url);
-      String host=url.getHost();
-      getHostCredentials(host);
   }
   /*
    * Get Host credentials from database. There could be restriciton for accesing files in differemnt servers.
@@ -72,8 +71,9 @@ public class InputFile  {
       if (v==null) return;
       if (v.size()>0){
         Hashtable h = (Hashtable)v.get(0);
-        this.user = (String)h.get("user_name");
-        this.pwd = (String)h.get("pwd");
+        String user = (String)h.get("user_name");
+        String pwd = (String)h.get("pwd");
+        this.ticket =Utils.getEncodedAuthentication(user,pwd);
         
       }
     } catch (Exception e ) {
@@ -95,9 +95,14 @@ public class InputFile  {
     
     URLConnection uc = url.openConnection();
     
-    if (user!=null){
-      String auth = Utils.getEncodedAuthentication(user,pwd);
-      uc.addRequestProperty("Authorization", " Basic " + auth);
+	if (ticket==null && isTrustedMode){
+		String host=url.getHost();
+		getHostCredentials(host);
+	}
+
+    if (ticket!=null){
+      //String auth = Utils.getEncodedAuthentication(user,pwd);
+      uc.addRequestProperty("Authorization", " Basic " + ticket);
       
     }
     
@@ -140,4 +145,10 @@ public class InputFile  {
     }
     
   }
-}
+  public void setAuthentication(String _ticket){
+  	this.ticket = _ticket;
+  }
+  public void setTrustedMode(boolean mode){
+  	this.isTrustedMode=mode;
+  }
+  }
