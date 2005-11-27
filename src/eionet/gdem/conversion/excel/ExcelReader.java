@@ -25,6 +25,9 @@ package eionet.gdem.conversion.excel;
 
 
 import eionet.gdem.utils.Utils;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Hashtable;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.hssf.usermodel.*;
@@ -153,6 +156,9 @@ public class ExcelReader implements ExcelReaderIF
       for (int j=first_row;j<=last_row;j++){
         row = (first_row==0) ? null:sheet.getRow(j);
         meta_row = (meta_sheet!=null && first_row!=0) ? meta_sheet.getRow(j):null;
+        //don't convert empty rows.
+        if (isEmptyRow(row)) continue;
+        
         instance.writeRowStart();
         for (int k=0;k<elements.size();k++){
           Hashtable elem = (Hashtable)elements.get(k);
@@ -174,6 +180,17 @@ public class ExcelReader implements ExcelReaderIF
     }
     
   }
+  public boolean isEmptyRow(HSSFRow row){
+  	if (row==null) return true;
+
+  	for (int j=0; j<=row.getLastCellNum();j++){
+  		HSSFCell cell = row.getCell((short)j);
+  		if (cell==null) continue;
+  		if (!Utils.isNullStr(cellValueToString(cell)))
+  			return false;
+  	}
+  	return true;
+  }
   public boolean isEmptySheet(String sheet_name){
  
   	HSSFSheet sheet = getSheet(sheet_name);
@@ -183,12 +200,10 @@ public class ExcelReader implements ExcelReaderIF
   	//check if the first row has any data
   	for (int i=1; i<=row_count;i++){
   		HSSFRow row = sheet.getRow(i);
-  		if (row==null) continue;
-  		for (int j=0; j<=row.getLastCellNum();j++){
-  	  		HSSFCell cell = row.getCell((short)j);
-  	  		if (cell==null) continue;
-  			if (!Utils.isNullStr(cellValueToString(cell)))
-  				return false;
+  		if (isEmptyRow(row))
+  				continue;
+  		else{
+  			return false;
   		}
   	}
 
@@ -275,12 +290,11 @@ public class ExcelReader implements ExcelReaderIF
   }
   private String cellValueToString(HSSFCell cell){
     String   value = "";
-
     switch (cell.getCellType()){
       case HSSFCell.CELL_TYPE_FORMULA :
         break;
       case HSSFCell.CELL_TYPE_NUMERIC :
-        value = POINumericToString(cell.getNumericCellValue());
+      	value = POINumericToString(cell.getNumericCellValue());
         break;
       case HSSFCell.CELL_TYPE_STRING :
         value = cell.getStringCellValue();
@@ -334,10 +348,12 @@ public class ExcelReader implements ExcelReaderIF
   *      small hack to change 2.0 value to 2
   */
   private String POINumericToString(double d_val){
-    int int_val = (int)d_val;
+  	Double d = new Double(d_val);
+ 
+  	int int_val = (int)d_val;
     
     if (d_val - int_val>0 || d_val - int_val<0){
-      return  Double.toString(d_val);
+			return  Double.toString(d_val);
     }
     else{
       return  Integer.toString(int_val);
