@@ -18,7 +18,7 @@
  * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Enriko Käsper (TietoEnator)
+ * Original Code: Enriko Kï¿½Ã¤sper (TietoEnator)
  */
 
 package eionet.gdem.conversion.ssr;
@@ -34,7 +34,7 @@ import eionet.gdem.utils.Utils;
 * Handler for parsing xml document
 * extening SAX DefaultHandler
 * This class is calling different ExcelConversionhandler methods, which is actuially creating Excel file
-* @author Enriko Käsper
+* @author Enriko Kï¿½sper
 */
 
 public class SchemaFinder extends DefaultHandler{
@@ -65,9 +65,11 @@ public class SchemaFinder extends DefaultHandler{
             }
             else if(attrName.equalsIgnoreCase(SCHEMA_REFERENCE)){
                 String sch_val = attrs.getValue(i);
+                
                 if (!Utils.isNullStr(sch_val)){
-                   int l = sch_val.indexOf(" ");
-                   schemaLocation=sch_val.substring(l+1);
+                   //int l = sch_val.indexOf(" ");
+                   //schemaLocation=sch_val.substring(l+1);
+                   schemaLocation=attrs.getValue(i);
                    hasNamespace = true;
                 }
             }

@@ -33,6 +33,8 @@ public interface Names {
   public static final String USER_ATT         = "GDEM_ACL_USR_ATT"; 
   public static final String ERROR_ATT        = "GDEM_ERROR_ATT";  
   public static final String STYLESHEETS_ATT  = "GDEM_ACL_SS_ATT"; 
+  public static final String TICKET_ATT  = "GDEM_TICKET"; 
+
 
   //JSP names
   public static final String INDEX_JSP = "index.jsp";

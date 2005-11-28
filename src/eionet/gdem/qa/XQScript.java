@@ -22,6 +22,8 @@
  */
 
 package eionet.gdem.qa;
+import java.io.OutputStream;
+
 import eionet.gdem.GDEMException;
 
 
@@ -32,6 +34,7 @@ import eionet.gdem.GDEMException;
 public class XQScript {
   private String _script; //XQuery script
   private String[] _xqParams; //parameter name + value pairs
+  private String strResultFile;
 
   //XQ Engine instance
   private static XQEngineIF _engine;
@@ -60,6 +63,13 @@ public class XQScript {
   public String getResult() throws GDEMException {
     initEngine();
     return _engine.getResult(_script, _xqParams);
+  }
+  public void getResult(OutputStream out) throws GDEMException {
+    initEngine();
+    _engine.getResult(_script, _xqParams, out);
+  }
+  public void setResulFile(String fileName){
+  	strResultFile = fileName;
   }
  
 }

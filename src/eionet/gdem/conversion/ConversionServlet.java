@@ -59,17 +59,18 @@ public class ConversionServlet extends HttpServlet {
 
 		try {
 			//do the conversion
+			String ticket = getTicket(req);
 			if (Utils.isNullStr(list)) {
 				// For testing 
 				//System.out.println("Start: " + Long.toString(System.currentTimeMillis()));
 				if (format.equalsIgnoreCase(Names.EXCEL2XML_CONV_PARAM)) {
 					if (split.equals("split")) {
-						convertExcel2XML_split(res, url, sheet_param);
+						convertExcel2XML_split(res, url, sheet_param, ticket);
 					} else {
-						convertExcel2XML(res, url, format, save);
+						convertExcel2XML(res, url, format, save, ticket);
 					}
 				} else {
-					convertXML(res, url, format, save);
+					convertXML(res, url, format, save, ticket);
 				}
 				//For testing
 				//System.out.println("End: " + Long.toString(System.currentTimeMillis()));
@@ -86,9 +87,12 @@ public class ConversionServlet extends HttpServlet {
 	}
 
 
-	private void convertXML(HttpServletResponse response, String url, String format, String save) throws GDEMException, IOException {
-		ConversionService cnv = new ConversionService();
-		boolean save_src = false;
+	private void convertXML(HttpServletResponse response, String url, String format, String save, String ticket) throws GDEMException, IOException{
+	    ConversionService cnv = new ConversionService();
+	    cnv.setTrustedMode(false);
+	    cnv.setTicket(ticket);
+	    
+	    boolean save_src =false;
 		if (save != null) save_src = true;
 		Hashtable result = null;
 		
@@ -112,8 +116,11 @@ public class ConversionServlet extends HttpServlet {
 	}
 
 
-	private void convertExcel2XML_split(HttpServletResponse res, String url, String sheet_param) throws GDEMException {
-		ConversionService cnv = new ConversionService();
+	private void convertExcel2XML_split(HttpServletResponse res, String url, String sheet_param, String ticket) throws GDEMException{
+	    ConversionService cnv = new ConversionService();
+		cnv.setTrustedMode(false);
+		cnv.setTicket(ticket);
+		
 		boolean show_array = false;
 		Vector result = null;
 
@@ -150,8 +157,11 @@ public class ConversionServlet extends HttpServlet {
 	}
 
 
-	private void convertExcel2XML(HttpServletResponse res, String url, String format, String save) throws GDEMException {
-		ConversionService cnv = new ConversionService();
+	private void convertExcel2XML(HttpServletResponse res, String url, String format, String save, String ticket) throws GDEMException{
+	    ConversionService cnv = new ConversionService();
+		cnv.setTrustedMode(false);
+		cnv.setTicket(ticket);
+		
 		boolean save_src = false;
 		Vector result = null;
 
@@ -230,6 +240,16 @@ public class ConversionServlet extends HttpServlet {
 		res.sendRedirect(res.encodeRedirectURL(req.getContextPath() + "/" + jspName));
 
 		return;
+	}
+	
+	private String getTicket(HttpServletRequest req){
+	  	String ticket=null;
+		HttpSession httpSession = req.getSession(false);
+		if (httpSession != null) {
+			ticket = (String)httpSession.getAttribute(Names.TICKET_ATT);
+		}	
+				
+		return ticket;
 	}
 
 

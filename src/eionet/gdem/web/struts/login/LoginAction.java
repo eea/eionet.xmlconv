@@ -86,6 +86,7 @@ public class LoginAction extends Action {
 			// session.setAttribute(Names.USER_ATT, aclUser);
 			// add object into session becouse of old bussines ligic
 			httpServletRequest.getSession().setAttribute(Names.USER_ATT, aclUser);
+			httpServletRequest.getSession().setAttribute(Names.TICKET_ATT, Utils.getEncodedAuthentication(username, password));
 		} catch (Exception dire) {
 			_logger.debug("Authentication failed " + dire.toString(), dire);
 			throw new Exception("Authentication failed ");

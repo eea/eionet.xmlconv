@@ -41,7 +41,6 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
-import eionet.gdem.utils.xml.XmlException;
 
 public class EditStylesheetAction extends Action {
 

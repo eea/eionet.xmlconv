@@ -60,6 +60,19 @@
 					<Member Name="RESULT" Type="STRING"/>
 				</Value-->
 			</Method>
+			<Method Name="listQAScripts" Auth="false">
+				<Parameters>
+					<Parameter Name="schema" Type="STRING"/>
+				</Parameters>
+				<Value Type="ARRAY"/>
+			</Method>
+			<Method Name="runQAScript" Auth="false">
+				<Parameters>
+					<Parameter Name="file_url" Type="STRING"/>
+					<Parameter Name="script_id" Type="STRING"/>
+				</Parameters>
+				<Value Type="ARRAY"/>
+			</Method>
 		</Methods>
 	</Service>
 	<Service Name="ValidationService" Provider="eionet.gdem.validation.ValidationService">

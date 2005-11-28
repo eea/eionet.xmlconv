@@ -56,6 +56,8 @@ public class ValidationService {
   private String uriXml;
   private ArrayList errorsList;
   private ErrorHandler errHandler;
+  private String ticket = null;
+  private boolean trustedMode=true;//false for web clients
   
   public ValidationService()  {
     errors=new StringBuffer()  ;
@@ -75,6 +77,8 @@ public class ValidationService {
 	uriXml= srcUrl;	
     try{
       src = new InputFile(srcUrl);
+      src.setTrustedMode(trustedMode);
+      src.setAuthentication(ticket);
       src_stream = src.getSrcInputStream();
       return validateSchema(src_stream, schema);
     } catch (MalformedURLException mfe ) {
@@ -186,6 +190,15 @@ public class ValidationService {
     else
       return "OK - XML Schema validation passed without errors.";
   }
+  
+  
+  public void setTicket(String _ticket){
+		this.ticket =  _ticket;	
+	  }
+	  public void setTrustedMode(boolean mode){
+		  this.trustedMode=mode;
+		}
+
 
 
   public String validate (String srcUrl) throws GDEMException {

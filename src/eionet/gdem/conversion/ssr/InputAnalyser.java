@@ -23,19 +23,25 @@
 
 package eionet.gdem.conversion.ssr;
 
-import java.io.*;
-import java.util.*;
-import org.xml.sax.*;
-//import org.xml.sax.SAXException;
-import javax.xml.parsers.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+
 import eionet.gdem.GDEMException;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.InputFile;
-
-import java.net.URL;
-import java.net.MalformedURLException;
+import eionet.gdem.utils.Utils;
 
 public class InputAnalyser
 {
@@ -54,6 +60,7 @@ public class InputAnalyser
     InputStream input = null;
     try{
       src = new InputFile(srcUrl);
+      src.setTrustedMode(true);
       input = src.getSrcInputStream();
       return parseXML(input);
     } catch (MalformedURLException mfe ) {

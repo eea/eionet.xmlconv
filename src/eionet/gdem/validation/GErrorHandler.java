@@ -18,7 +18,7 @@
  * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Enriko Käsper (TietoEnator)
+ * Original Code: Enriko KÃ¤ï¿½sper (TietoEnator)
  */
 
 package eionet.gdem.validation;
@@ -64,8 +64,12 @@ public class GErrorHandler extends DefaultHandler {
   }
   private void writeRowStart(){
     if (htmlErrContainer.length()==0){
-      htmlErrContainer.append("<html>"); 
-      htmlErrContainer.append("<table border='1'><tr>"); 
+      htmlErrContainer.append("<html>");
+      htmlErrContainer.append("<hwad>");
+      htmlErrContainer.append("<title>XML Schema validation</title>");
+      htmlErrContainer.append("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>");
+      htmlErrContainer.append("</head>");
+			htmlErrContainer.append("<table border='1'><tr>"); 
       htmlErrContainer.append("<th>Type</th>");
       htmlErrContainer.append("<th>Position</th>"); 
       htmlErrContainer.append("<th>Error message</th>");

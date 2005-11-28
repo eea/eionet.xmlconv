@@ -143,11 +143,12 @@ public class Main extends HttpServlet implements Names {
         if(!Utils.isNullStr(u))
           aclUser.authenticate(u,p);
 
-        if (!SecurityUtil.hasPerm(u,GDEM_SSAclName, "v"))//GDEM_readPermission))
-          throw new ServletException("Not allowed to use the Styelsheet Repository");
+        //if (!SecurityUtil.hasPerm(u,GDEM_SSAclName, "v"))//GDEM_readPermission))
+        //  throw new ServletException("Not allowed to use the Styelsheet Repository");
 
 
         session.setAttribute(USER_ATT, aclUser);
+        session.setAttribute(TICKET_ATT, Utils.getEncodedAuthentication(u,p));
 
          
     } catch (Exception dire ){
@@ -272,7 +273,9 @@ public class Main extends HttpServlet implements Names {
         appClients.clear();
       
       req.getSession().removeAttribute(USER_ATT);
+	  req.getSession().removeAttribute(TICKET_ATT);
       req.removeAttribute(SESS_ATT);
+      
 
   }
 

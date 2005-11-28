@@ -23,7 +23,7 @@
 
 package eionet.gdem.qa;
 import eionet.gdem.GDEMException;
-
+import java.io.OutputStream;
 /**
 * Interface for XQuery Engine implementation
 */
@@ -46,4 +46,5 @@ public interface XQEngineIF {
    */
   public String getResult(String xqScript) throws GDEMException;
   
+  public void getResult(String xqScript, String params[], OutputStream out) throws GDEMException;
 }

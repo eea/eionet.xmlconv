@@ -83,6 +83,9 @@ public class ConversionService {
 	private String cnvContentType = null;
 	private String cnvFileExt = null;
 	private String cnvTypeOut = null;
+	
+	private String ticket = null;
+	private boolean trustedMode=true;//false for web clients
 
 	private static LoggerIF _logger;
 
@@ -227,6 +230,9 @@ public class ConversionService {
 
 			try {
 				src = new InputFile(sourceURL);
+				src.setAuthentication(ticket);
+				src.setTrustedMode(trustedMode);
+				
 				if (db == null) db = GDEMServices.getDbModule();
 
 				try {
@@ -443,6 +449,8 @@ public class ConversionService {
 		try {
 
 			src = new InputFile(sourceURL);
+			src.setAuthentication(ticket);
+			src.setTrustedMode(trustedMode);
 			if (res != null) {
 				try {
 					result = res.getOutputStream();
@@ -580,6 +588,8 @@ public class ConversionService {
 		try {
 
 			src = new InputFile(sourceURL);
+			src.setAuthentication(ticket);
+			src.setTrustedMode(trustedMode);
 			if (res != null) {
 				try {
 					result = res.getOutputStream();
@@ -677,6 +687,13 @@ public class ConversionService {
 		ArrayList schemas = getXMLSchemas();
 		return schemas.contains(xmlSchema);
 	}
+	
+	public void setTicket(String _ticket){
+	   	this.ticket =  _ticket;	
+	  }
+	  public void setTrustedMode(boolean mode){
+		  this.trustedMode=mode;
+		}
 
 
 }

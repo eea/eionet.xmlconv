@@ -23,6 +23,7 @@ package eionet.gdem.web.struts;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -37,14 +38,16 @@ public class StartAction extends Action {
 
 		System.out.println("------------StartAction-----------");
 		System.out.println(httpServletRequest.getQueryString());
+		HttpSession session=httpServletRequest.getSession();
 
 		for (java.util.Enumeration e = httpServletRequest.getParameterNames(); e.hasMoreElements();) {
 			System.out.println(e.nextElement());
 		}
 
 		if (httpServletRequest.getParameter("logout") != null) {
-			httpServletRequest.getSession().setAttribute("user", null);
-			httpServletRequest.getSession().setAttribute(Names.USER_ATT, null);
+			session.setAttribute("user", null);
+			session.setAttribute(Names.USER_ATT, null);
+			session.removeAttribute(Names.TICKET_ATT);
 			return actionMapping.findForward("home"); // home page
 		}
 

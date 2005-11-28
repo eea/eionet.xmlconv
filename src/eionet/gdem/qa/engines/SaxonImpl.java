@@ -71,6 +71,8 @@ import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.value.Type;
 import net.sf.saxon.xpath.XPathException;
+
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 /*
@@ -104,6 +106,14 @@ public class SaxonImpl implements XQEngineIF {
   
     return res;
   }
+  public void getResult(String xqScript, String[] params, OutputStream out) throws GDEMException  {
+    try {
+      runQuery(xqScript, params, out);
+      
+     } catch(Exception e) {
+        throw new GDEMException(e.toString());
+    }
+  }
   public String getResult(String xqScript) throws GDEMException  {
     return getResult(xqScript, null);
   }
@@ -119,6 +129,17 @@ public class SaxonImpl implements XQEngineIF {
   */
   private String runQuery(String script, String xqParams[]) throws GDEMException  {
     StringWriter result = new StringWriter();
+    String s="";
+   // runQuery(script,xqParams, result);
+    try{
+    	s = result.getBuffer().toString();
+    	result.close(); //??
+    } catch (Exception e) {
+    	_logger.debug("==== CATCHED EXCEPTION " + e.toString() );
+    }
+    return s;
+  }
+  private void runQuery(String script, String xqParams[], OutputStream result) throws GDEMException  {
 
     boolean wrap=false;
     //Source sourceInput = null;
@@ -203,7 +224,7 @@ public class SaxonImpl implements XQEngineIF {
               QueryResult.serialize((NodeInfo)item, new StreamResult(result), outputProps);                  
               break;
             default:
-              result.write(item.getStringValue());
+              //result.write(item.getStringValue());
             }
           }
         }
@@ -217,8 +238,8 @@ public class SaxonImpl implements XQEngineIF {
         err.printStackTrace();
         throw err;
       }
-      s = result.getBuffer().toString();
-      result.close(); //??
+      //s = result.getBuffer().toString();
+      //result.close(); //??
       
   } catch (Exception e) {
   	_logger.debug("==== CATCHED EXCEPTION " + e.toString() );
@@ -229,7 +250,7 @@ public class SaxonImpl implements XQEngineIF {
   		if (listener.hasErrors() || dynamicListener.hasErrors() )
   			throw new GDEMException (listener.getErrors() + dynamicListener.getErrors());
   	}
-  return s;
+  //return s;
   }
 /*
   public static void main(String [] a) throws Exception {

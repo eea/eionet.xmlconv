@@ -29,6 +29,7 @@
 package eionet.gdem.qa;
 
 import eionet.gdem.Constants;
+import eionet.gdem.GDEMException;
 import eionet.gdem.services.DbModuleIF;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
@@ -37,7 +38,11 @@ import eionet.gdem.utils.InputFile;
 import eionet.gdem.Properties;
 
 import eionet.gdem.validation.ValidationService;
+
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Iterator;
 
@@ -101,6 +106,7 @@ public class XQueryTask extends Thread implements Constants {
       
         try {
           InputFile inputfile = new InputFile(_url);
+          inputfile.setTrustedMode(true);
           srcFile=inputfile.saveSrcFile();
       		//srcFile=Utils.saveSrcFile(_url);
 
@@ -137,6 +143,7 @@ public class XQueryTask extends Thread implements Constants {
         ValidationService vs = new ValidationService();
         
         fis = new FileInputStream(srcFile);
+        //XML Schema shoul be in schemaLocation attribute
         String result = vs.validateSchema(fis, _scriptFile);
         
         if (_logger.enable(_logger.DEBUG))
@@ -173,17 +180,36 @@ public class XQueryTask extends Thread implements Constants {
 
         String xqScript = Utils.readStrFromFile(_scriptFile);
 
-        if (_logger.enable(_logger.DEBUG))
-          _logger.debug("Script: \n" + xqScript );
+        if (_logger.enable(_logger.DEBUG)) 
+        		_logger.debug("Script: \n" + xqScript );
         
         XQScript xq = new XQScript(xqScript, xqParam);
-
-        String result = xq.getResult();
+        FileOutputStream out=null;
+        System.out.println("==>filename " + _resultFile);
+        try{
+           out = new FileOutputStream(new File(_resultFile));
+           xq.getResult(out);
+        }
+        catch(IOException ioe){
+          throw new GDEMException(ioe.toString());    	
+        }
+        finally{
+        	if (out!=null){
+        		try{
+        			out.close();
+        		}
+        		catch(Exception e){
+        			
+        		}
+        	}
+        		
+        }
+           
         
         if (_logger.enable(_logger.DEBUG))
           _logger.debug("Script proceeded, now store to the result file");
         
-        Utils.saveStrToFile(_resultFile, result, null);
+        //Utils.saveStrToFile(_resultFile, result, null);
         //Utils.saveStrToFile(_resultFile.substring(0, _resultFile.lastIndexOf(".")), result, "txt");        
         
         

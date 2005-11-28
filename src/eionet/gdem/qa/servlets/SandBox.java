@@ -27,15 +27,16 @@ import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.qa.XQueryService;
 import eionet.gdem.validation.ValidationService;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import java.util.Hashtable;
 import java.util.Vector;
-import javax.servlet.ServletConfig;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import javax.servlet.ServletException;
 import eionet.gdem.utils.Utils;
@@ -103,10 +104,15 @@ public class SandBox  extends HttpServlet implements Constants {
           if (xqScriptFile.equals(String.valueOf(JOB_VALIDATION))){
             try{
               ValidationService vs = new ValidationService();
-              result = vs.validateSchema(dataURL, xml_schema);
+			  vs.setTrustedMode(false);
+			  vs.setTicket(getTicket(req));
+    
+              //result = vs.validateSchema(dataURL, xml_schema);
+              result = vs.validate(dataURL);
             } catch (GDEMException ge){
               result = ge.getMessage();
             }
+            res.getWriter().write(result);
           }
           else{
             try{
@@ -121,13 +127,15 @@ public class SandBox  extends HttpServlet implements Constants {
             pars[0] = XQ_SOURCE_PARAM_NAME + "=" + dataURL;
 
             XQScript xq = new XQScript(xqScript, pars);
+          	OutputStream outstream = res.getOutputStream();
             try {
-             result = xq.getResult();
+            		System.out.println("siin");
+            	xq.getResult(outstream);
             } catch (GDEMException ge){
               result = ge.getMessage();
+              outstream.write(result.getBytes());
             }
           }
-          res.getWriter().write(result);
         }
         // Add jobs to workqueue engine
         //
@@ -169,12 +177,15 @@ public class SandBox  extends HttpServlet implements Constants {
         if(!Utils.isNullStr(req.getParameter("runnow"))) {
   
           xq = new XQScript(xqScript, pars);
+        	OutputStream outstream = res.getOutputStream();
            try {
-              result = xq.getResult();
+        		//System.out.println("siin2");
+          	xq.getResult(outstream);
+          	//result = xq.getResult();
            } catch (GDEMException ge){
               result = ge.getMessage();
+              outstream.write(result.getBytes());
            }
-          res.getWriter().write(result);
         }
         // Add job to workqueue engine
         //
@@ -192,6 +203,15 @@ public class SandBox  extends HttpServlet implements Constants {
       else
          res.getWriter().write("<html>The script cannot be empty!</html>");
     }
+  }
+  private String getTicket(HttpServletRequest req){
+	String ticket=null;
+	HttpSession httpSession = req.getSession(false);
+	if (httpSession != null) {
+		ticket = (String)httpSession.getAttribute(Names.TICKET_ATT);
+	}	
+			
+	return ticket;
   }
 
 /*private static void _l(String s ){
