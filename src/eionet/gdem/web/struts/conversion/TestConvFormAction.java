@@ -38,6 +38,7 @@ import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ssr.InputAnalyser;
+import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
@@ -55,6 +56,8 @@ public class TestConvFormAction extends Action {
 
 
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+		String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
+		
 		ActionErrors errors = new ActionErrors();
 		ArrayList schemas = new ArrayList();
 		String schema = (String) httpServletRequest.getAttribute("schema");
@@ -149,14 +152,10 @@ public class TestConvFormAction extends Action {
 			if (validate != null) {
 				ArrayList valid;
 				if (schema == null) { // schema defined in header
-					valid = validate(xmlUrl);
+					valid = validate(xmlUrl, ticket);
 				} else {
-					valid = validateSchema(xmlUrl, schema);
+					valid = validateSchema(xmlUrl, schema, ticket);
 				}
-				// httpServletRequest.getSession().setAttribute("conversion.valid",
-				// valid);
-				// httpServletRequest.getSession().setAttribute("conversion.valid",
-				// valid);
 				httpServletRequest.setAttribute("conversion.valid", valid);
 			}
 
@@ -189,30 +188,29 @@ public class TestConvFormAction extends Action {
 	}
 
 
-	private ArrayList validate(String url) throws DCMException {
+	private ArrayList validate(String url, String ticket) throws DCMException {
 
 		try {
-			// ValidationService v = new ValidationService();
 			ValidationService v = new ValidationService(true);
+			v.setTrustedMode(false);
+	    	v.setTicket(ticket);
 			v.validate(url);
 			return v.getErrorList();
-
 		} catch (Exception e) {
 			throw new DCMException(BusinessConstants.EXCEPTION_VALIDATION_ERROR);
 		}
 	}
 
 
-	private ArrayList validateSchema(String url, String schema) throws DCMException {
+	private ArrayList validateSchema(String url, String schema, String ticket) throws DCMException {
 
 		try {
 
-			// ValidationService v = new ValidationService();
 			ValidationService v = new ValidationService(true);
+			v.setTrustedMode(false);
+	    	v.setTicket(ticket);
 			v.validateSchema(url, schema);
-			// return v.validateSchema(url, schema);
 			v.printList();
-			// return ret;
 			return v.getErrorList();
 
 		} catch (Exception e) {

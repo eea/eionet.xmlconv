@@ -33,7 +33,6 @@ import eionet.gdem.utils.Utils;
 import org.xml.sax.*;
 import javax.xml.parsers.*;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.*;
 
 import java.net.URL;
@@ -42,6 +41,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import eionet.gdem.utils.InputFile;
+import eionet.gdem.utils.xml.IXmlCtx;
+import eionet.gdem.utils.xml.XmlContext;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -130,18 +131,16 @@ public class ValidationService {
 /////////////////////////////////////////
 
 	  DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-	  //Document doc = builder.parse( src_stream);
-	  Document doc = builder.parse( uriXml);
+	  InputFile src = new InputFile(uriXml);
+      src.setTrustedMode(trustedMode);
+      src.setAuthentication(ticket);
+	  Document doc = builder.parse(src.getSrcInputStream());
 	  
 	  			  
 	  Element root = doc.getDocumentElement();
 	  String rootName = root.getTagName();
-	          
-	  
 
-	          
 	  String namespace=null;
-	  
 	  if(rootName.indexOf(":")>0){
 		  String attName1 = "xmlns:" + rootName.substring(0, rootName.indexOf(":")) ;
 		  namespace = root.getAttribute(attName1);    

@@ -339,6 +339,9 @@ public class ConversionService {
 		try {
 			ByteArrayInputStream byteIn=XslGenerator.convertXML(url, format);
 			src = new InputFile(sourceURL);
+			src.setAuthentication(ticket);
+			src.setTrustedMode(trustedMode);
+			
 			if (db == null) db = GDEMServices.getDbModule();
 			try {
 				cnvTypeOut = conv.getResultType();
