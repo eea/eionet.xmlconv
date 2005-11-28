@@ -8,8 +8,14 @@
         </form-bean>
         <form-bean name="stylesheetForm" type="eionet.gdem.web.struts.stylesheet.StylesheetForm" />
         <form-bean name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemForm" />     
-        <form-bean name="ListConvForm" type="eionet.gdem.web.struts.conversion.ListConvForm" />   
-        <form-bean name="TestConvForm" type="eionet.gdem.web.struts.conversion.TestConvForm" />           
+        
+        <form-bean name="ConversionForm" type="org.apache.struts.validator.DynaValidatorForm">
+	        <form-property name="url" type="java.lang.String"/>
+	        <form-property name="schemaUrl" type="java.lang.String"/>
+	        <form-property name="conversionId" type="java.lang.String"/>
+	        <form-property name="validate" type="java.lang.String"/>
+        </form-bean>   
+	
         <form-bean name="UplSchemaForm" type="eionet.gdem.web.struts.schema.UplSchemaForm" />                   
    		<form-bean name="dynamicItemForm" type="org.apache.struts.validator.DynaValidatorForm">
             <form-property name="temp" type="java.util.HashMap"/>
@@ -95,17 +101,10 @@
         <action path="/listConvForm"  type="eionet.gdem.web.struts.conversion.ListConvFormAction" input="/listConv.jsp" scope="request">
             <forward name="success" path="/listConv.jsp" redirect="true"/>
         </action>
-        <action path="/listConv" name="ListConvForm" type="eionet.gdem.web.struts.conversion.ListConvAction" input="/listConv.jsp" scope="request">
-            <forward name="success" path="/do/testConversionForm"/>
-            <forward name="back" path="/do/listConvForm" redirect="true"/>
-        </action>
-        <action path="/testConversion" name="ListConvForm" type="eionet.gdem.web.struts.conversion.ListConvFormAction" input="/listConv.jsp" scope="request">
-            <forward name="success" path="/listConv.jsp" redirect="true"/>
-        </action>
-        <action path="/testConversionForm" name="TestConvForm" type="eionet.gdem.web.struts.conversion.TestConvFormAction" input="/testConv.jsp" scope="request">
-            <forward name="success" path="/testConv.jsp"/>
+        <action path="/testConversionForm" name="ConversionForm" type="eionet.gdem.web.struts.conversion.TestConvFormAction" input="/testConv.jsp" scope="request">
+            <forward name="success" path="/testConv.jsp" redirect="true"/>
             <forward name="error" path="/do/testConversionForm" redirect="true"/>
-             <forward name="noconversion" path="/do/listConvForm" redirect="true"/> 
+            <forward name="back" path="/do/listConvForm" redirect="true"/> 
         </action>
         
         <!-- Manually defined schemas -->

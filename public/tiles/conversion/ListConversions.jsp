@@ -24,7 +24,7 @@
 		<h4><bean:message key="label.conversion.find"/></h4> 
 	
 		<div class="boxcontent">
-			<html:form action="/listConv" method="post" >
+			<html:form action="/testConversionForm" method="get" >
 			  <table cellpadding="0" cellspacing="0" border="0" align="center">
 			    <tr>
 			      <td>
@@ -41,7 +41,7 @@
 			     </tr>
 			     <tr>
 			      <td>
-			        <html:text property="xmlUrl"  style="width: 30em;" />		        
+			        <html:text property="url"  style="width: 30em;" />		        
 			      </td>
 			    </tr>
 			    <tr>
@@ -62,7 +62,7 @@
 			    </tr>
 			    <tr>
 			      <td>
-			        <select name="xmlSchema"  size="6" >
+			        <select name="schemaUrl"  size="6" >
 										<option selected="selected" value="">
 											--
 										</option>		        

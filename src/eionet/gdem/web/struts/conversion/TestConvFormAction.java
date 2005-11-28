@@ -35,6 +35,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
+import org.apache.struts.validator.DynaValidatorForm;
 
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ssr.InputAnalyser;
@@ -57,30 +58,23 @@ public class TestConvFormAction extends Action {
 
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 		String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
-		
 		ActionErrors errors = new ActionErrors();
 		ArrayList schemas = new ArrayList();
-		String schema = (String) httpServletRequest.getAttribute("schema");
-		if (schema == null) {
-			schema = (String) httpServletRequest.getParameter("schema");
-		}
-		String xmlUrl = (String) httpServletRequest.getAttribute("xmlUrl");
-
-		if (xmlUrl == null) {
-			xmlUrl = (String) httpServletRequest.getParameter("xmlUrl");
-		}
-
-		String idConv = (String) httpServletRequest.getParameter("idConv");
-		httpServletRequest.setAttribute("idConv", idConv);
-
-		TestConvForm form = (TestConvForm) actionForm;
-		form.setUrl(xmlUrl);
-
-		if (schema != null && schema.equals("")) {
-			schema = null;
+		
+		DynaValidatorForm cForm = (DynaValidatorForm) actionForm;
+		String schema = processFormStr((String) cForm.get("schemaUrl"));
+		String xmlUrl = processFormStr((String) cForm.get("url"));
+		String idConv = processFormStr((String) cForm.get("conversionId"));
+		String validate = processFormStr((String) cForm.get("validate"));
+		
+		_logger.debug(schema); _logger.debug(xmlUrl); _logger.debug(idConv); _logger.debug(validate);
+		
+		if (xmlUrl==null && schema==null) {
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.validation"));
+			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+			return actionMapping.findForward("back");
 		}
 
-		String validate = (String) httpServletRequest.getAttribute("validate");
 
 		try {
 			SchemaManager sm = new SchemaManager();
@@ -146,8 +140,8 @@ public class TestConvFormAction extends Action {
 			if (idConv == null) {
 				idConv = "-1";
 			}
-
-			httpServletRequest.setAttribute("idConv", idConv);
+			
+			cForm.set("conversionId", idConv);
 
 			if (validate != null) {
 				ArrayList valid;
@@ -183,13 +177,12 @@ public class TestConvFormAction extends Action {
 		}else{
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.noconversion"));
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward("noconversion");
+			return actionMapping.findForward("back");
 		}
 	}
 
 
 	private ArrayList validate(String url, String ticket) throws DCMException {
-
 		try {
 			ValidationService v = new ValidationService(true);
 			v.setTrustedMode(false);
@@ -203,9 +196,7 @@ public class TestConvFormAction extends Action {
 
 
 	private ArrayList validateSchema(String url, String schema, String ticket) throws DCMException {
-
 		try {
-
 			ValidationService v = new ValidationService(true);
 			v.setTrustedMode(false);
 	    	v.setTicket(ticket);
@@ -216,6 +207,16 @@ public class TestConvFormAction extends Action {
 		} catch (Exception e) {
 			throw new DCMException(BusinessConstants.EXCEPTION_VALIDATION_ERROR);
 		}
+	}
+	
+	private String processFormStr(String arg) {
+		String result=null;
+		if(arg!=null) {
+			if(!arg.trim().equalsIgnoreCase("")) {
+				result=arg.trim();
+			}
+		}
+		return result;
 	}
 
 }

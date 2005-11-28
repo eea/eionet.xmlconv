@@ -53,7 +53,9 @@
 				    <tr>
 				      <td colspan="3">&nbsp;</td>
 				    </tr>
-				    <bean:define id="idConv" name="idConv" scope="request" type="java.lang.String"/>	    
+				    
+				    <bean:define id="idConv" name="ConversionForm" property="conversionId"  type="java.lang.String"/>	    
+				    
 				    <logic:iterate indexId="index" id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">						
 					    <tr>
 					      <td align="right">
