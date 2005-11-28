@@ -221,13 +221,18 @@ public class DbModule implements DbModuleIF, Constants {
 
 	public Vector listConversions(String xmlSchema) throws SQLException {
 
-		String sql = "SELECT " + XSL_TABLE + "." + CNV_ID_FLD + "," + XSL_TABLE + "." + XSL_FILE_FLD + ", " + XSL_TABLE + "." + DESCR_FLD + "," + RESULT_TYPE_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ", " + CONVTYPE_TABLE + "." + CONTENT_TYPE_FLD + " FROM " + XSL_TABLE + " LEFT JOIN " + SCHEMA_TABLE + " ON " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD
-				+ "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD + " LEFT JOIN " + CONVTYPE_TABLE + " ON " + XSL_TABLE + "." + RESULT_TYPE_FLD + "=" + CONVTYPE_TABLE + "." + CONV_TYPE_FLD;
-
-		if (xmlSchema != null) sql += " WHERE " + XML_SCHEMA_FLD + "=" + Utils.strLiteral(xmlSchema);
+		String sql = "SELECT " + XSL_TABLE + "." + CNV_ID_FLD + "," + XSL_TABLE + "." + XSL_FILE_FLD + ", " + XSL_TABLE + "." + DESCR_FLD + "," + 
+		RESULT_TYPE_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ", " + 
+		CONVTYPE_TABLE + "." + CONTENT_TYPE_FLD + 
+		" FROM " + XSL_TABLE + " LEFT JOIN " + SCHEMA_TABLE + 
+		" ON " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD + 
+		" LEFT JOIN " + CONVTYPE_TABLE + " ON " + XSL_TABLE + "." + RESULT_TYPE_FLD + "=" + 
+		CONVTYPE_TABLE + "." + CONV_TYPE_FLD;
+		
+		if (xmlSchema != null) sql +=  " WHERE " + XML_SCHEMA_FLD +  "=" + Utils.strLiteral(xmlSchema);
 
 		sql += " ORDER BY " + XML_SCHEMA_FLD + ", " + RESULT_TYPE_FLD;
-
+		 
 		// System.out.println(sql);
 		String[][] r = _executeStringQuery(sql);
 
@@ -245,7 +250,7 @@ public class DbModule implements DbModuleIF, Constants {
 		}
 
 		return v;
-
+		
 	}
 
 
@@ -604,45 +609,42 @@ public class DbModule implements DbModuleIF, Constants {
 
 
 	public Vector getSchemas(String schemaId, boolean stylesheets) throws SQLException {
+	    String sql="SELECT " + SCHEMA_ID_FLD + "," + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD + ", " + 
+	    DTD_PUBLIC_ID_FLD + ", " + SCHEMA_VALIDATE_FLD + " FROM " + SCHEMA_TABLE;
+	    if (schemaId!=null){
+	      if (Utils.isNum(schemaId)){
+	        sql += " WHERE " + SCHEMA_ID_FLD + " = " +	schemaId;
+	      }
+	      else{
+	         sql+=" WHERE " + XML_SCHEMA_FLD + " =" +	Utils.strLiteral(schemaId);
+	      }
+	    }
+	         
+	    sql +=  " ORDER BY " + XML_SCHEMA_FLD;
 
-		int id = 0;
+	    String [][] r = _executeStringQuery(sql);
 
-		if (schemaId != null) {
-			try {
-				id = Integer.parseInt(schemaId);
-			} catch (NumberFormatException n) {
-				throw new SQLException("not numeric ID " + schemaId);
-			}
-		}
+	    Vector v = new Vector();
 
-		String sql = "SELECT " + SCHEMA_ID_FLD + "," + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD + ", " + DTD_PUBLIC_ID_FLD + ", " + SCHEMA_VALIDATE_FLD + " FROM " + SCHEMA_TABLE;
-		if (schemaId != null) sql += " WHERE " + SCHEMA_ID_FLD + "=" + id;
+	    for (int i =0; i<   r.length; i++) {
 
-		sql += " ORDER BY " + XML_SCHEMA_FLD;
+	      HashMap h = new HashMap();    
+	      h.put("schema_id", r[i][0]);
+	      h.put("xml_schema", r[i][1]);
+	      h.put("description", r[i][2]);
+	      h.put("dtd_public_id", r[i][3]);
+	      h.put("validate", r[i][4]);
 
-		String[][] r = _executeStringQuery(sql);
+	      if (stylesheets){
+	        Vector v_xls=getSchemaStylesheets(r[i][0]);
+	        h.put("stylesheets", v_xls);
+	        Vector v_queries=getSchemaQueries(r[i][0]);
+	        h.put("queries", v_queries);
+	      }
+	      v.add(h);
+	    }
 
-		Vector v = new Vector();
-
-		for (int i = 0; i < r.length; i++) {
-
-			HashMap h = new HashMap();
-			h.put("schema_id", r[i][0]);
-			h.put("xml_schema", r[i][1]);
-			h.put("description", r[i][2]);
-			h.put("dtd_public_id", r[i][3]);
-			h.put("validate", r[i][4]);
-
-			if (stylesheets) {
-				Vector v_xls = getSchemaStylesheets(r[i][0]);
-				h.put("stylesheets", v_xls);
-				Vector v_queries = getSchemaQueries(r[i][0]);
-				h.put("queries", v_queries);
-			}
-			v.add(h);
-		}
-
-		return v;
+	    return v;
 	}
 
 
