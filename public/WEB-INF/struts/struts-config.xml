@@ -112,9 +112,7 @@
         <action path="/deleteUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.DeleteUplSchemaAction">           
         	<forward name="success" path="/do/uplSchemas"  redirect="true"/>            
         </action>        
-        <action path="/addUplSchemaForm"  scope="request" type="eionet.gdem.web.struts.schema.AddUplSchemaFormAction">           
-        	<forward name="success" path="/addUplSchema.jsp"  redirect="true"/>            
-        </action>        
+        <action path="/addUplSchemaForm"  parameter="/addUplSchema.jsp" scope="request" validate="false" type="org.apache.struts.actions.ForwardAction"/>           
         <action path="/addUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.AddUplSchemaAction" name="UplSchemaForm">           
         	<forward name="success" path="/do/uplSchemas"  redirect="true"/>            
         	<forward name="fail" path="/do/addUplSchemaForm"  redirect="true"/>
