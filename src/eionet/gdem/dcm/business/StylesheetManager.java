@@ -37,12 +37,10 @@ import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.ConvType;
 import eionet.gdem.dto.Stylesheet;
-import eionet.gdem.dto.UplSchema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.DbModuleIF;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-import eionet.gdem.utils.MultipartFileUpload;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.stylesheet.ConvTypeHolder;
@@ -94,10 +92,7 @@ public class StylesheetManager {
 
 	public ConvTypeHolder getConvTypes() throws DCMException {
 		ConvTypeHolder ctHolder = new ConvTypeHolder();
-
-		Vector hcSchemas;
 		ArrayList convs;
-
 		try {
 			convs = new ArrayList();
 
@@ -250,16 +245,6 @@ public class StylesheetManager {
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 
-	}
-
-
-	public static void main(String[] args) {
-		StylesheetManager g = new StylesheetManager();
-		try {
-			ConvTypeHolder ctHolder = g.getConvTypes();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 }

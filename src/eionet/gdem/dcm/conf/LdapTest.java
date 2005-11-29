@@ -22,7 +22,6 @@
 package eionet.gdem.dcm.conf;
 
 import java.util.Hashtable;
-import java.util.ResourceBundle;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -49,9 +48,6 @@ public class LdapTest {
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 		env.put(Context.PROVIDER_URL, url);
 		env.put(Context.SECURITY_AUTHENTICATION, "simple");
-
-		// env.put(Context.SECURITY_PRINCIPAL, username);
-		// env.put(Context.SECURITY_CREDENTIALS, password);
 		DirContext ctx = new InitialDirContext(env);
 		return ctx;
 	}
@@ -75,18 +71,5 @@ public class LdapTest {
 		}
 	}
 
-
-	/**
-	 * @param args
-	 * @throws Exception
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		// ldapTest
-		// LdapTest lt = new LdapTest("ldap://192.168.0.80:389/");
-
-		// boolean t = lt.test();
-
-	}
 
 }
