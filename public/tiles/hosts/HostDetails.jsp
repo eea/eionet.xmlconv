@@ -15,7 +15,12 @@
 		<div class="boxtop"><div>&nbsp;</div></div> 
 		<ed:breadcrumbs-push label="Host details" level="2" />
 		<h4 class="documentFirstHeading">
-			<bean:message key="label.hosts.add_title"/>
+			<logic:empty name="HostForm" property="id">
+				<bean:message key="label.hosts.add_title"/>
+			</logic:empty>
+			<logic:notEmpty name="HostForm" property="id">
+				<bean:message key="label.hosts.edit"/>
+			</logic:notEmpty>
 		</h4>
 	
 		<div class="boxcontent" >
