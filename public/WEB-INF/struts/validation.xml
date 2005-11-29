@@ -24,5 +24,10 @@
 				<arg0 key="label.config.ldap.url.error.AttrUid"/>
 			</field>
 		</form>
+		<form name="HostForm">
+			<field property="host" depends="required">
+				<arg0 key="label.hosts.host"/>
+			</field>
+		</form>
 	</formset>
 </form-validation>

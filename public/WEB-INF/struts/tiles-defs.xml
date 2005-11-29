@@ -26,6 +26,9 @@
   <definition name="/editUI/ImageManager.jsp" path="/tiles/editUI/ImageManager.jsp"/>
   <definition name="HeaderManager" path="/tiles/editUI/HeaderManager.jsp"/>
   <definition name="FooterManager" path="/tiles/editUI/FooterManager.jsp"/>
+  
+  <definition name="hosts" path="/tiles/hosts/HostsList.jsp" />
+  <definition name="hostDetails" path="/tiles/hosts/HostDetails.jsp" />
 
   <definition name="base" path="/layout.jsp">
     <put name="header" type="definition" value="MainHeader"/>
@@ -82,6 +85,13 @@
    </definition>
    <definition name="/configDb.jsp" extends="base">   
   	<put name="body" type="definition" value="confDb"/>   
+   </definition>
+   
+   <definition name="/hosts/list.jsp" extends="base">   
+  	<put name="body" type="definition" value="hosts"/>   
+   </definition>
+   <definition name="/hosts/details.jsp" extends="base">   
+  	<put name="body" type="definition" value="hostDetails"/>   
    </definition>
 
  </tiles-definitions>

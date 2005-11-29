@@ -39,7 +39,14 @@
         </form-bean>
         <form-bean name="schemaStyleForm" type="org.apache.struts.action.DynaActionForm">
 	        <form-property name="schema" type="java.lang.String"/>
-	       </form-bean>
+	    </form-bean>
+	    <form-bean name="HostForm" type="org.apache.struts.validator.DynaValidatorForm">
+	    	<form-property name="id" type="java.lang.String"/>
+	        <form-property name="host" type="java.lang.String"/>
+        	<form-property name="username" type="java.lang.String"/>
+        	<form-property name="password" type="java.lang.String"/>
+        </form-bean>
+	       
              
     </form-beans>
 
@@ -95,7 +102,10 @@
         <action path="/schemaUpdate" name="schemaForm" scope="request" type="eionet.gdem.web.struts.schema.EditSchemaAction">           
         	<forward name="back" path="/do/stylesheetEdit"/>
         	<forward name="success" path="/do/schemaElemForm"/>
-        </action>        
+        </action>    
+        <action path="/getStylesheet"  scope="request" type="eionet.gdem.web.struts.stylesheet.GetStylesheetAction" name="getXslForm">           
+	        <forward name="fail" path="/error/StylesheetError.jsp" />
+        </action>    
         
         <!-- Converter -->
         <action path="/listConvForm"  type="eionet.gdem.web.struts.conversion.ListConvFormAction" input="/listConv.jsp" scope="request">
@@ -125,10 +135,26 @@
         <action path="/editUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.EditUplSchemaAction" name="EditUplSchemaForm">           
         	<forward name="success" path="/do/uplSchemas"  redirect="true"/>            
         </action>
-                
-        <action path="/getStylesheet"  scope="request" type="eionet.gdem.web.struts.stylesheet.GetStylesheetAction" name="getXslForm">           
-	        <forward name="fail" path="/error/StylesheetError.jsp" />
+        
+        <!--  Hosts module -->
+        <action path="/hosts/list"  scope="request" type="eionet.gdem.web.struts.hosts.ListHostsAction">           
+        	<forward name="success" path="/hosts/list.jsp" />           
+        </action>        
+        <action path="/hosts/add" name="HostForm" validate="false" type="eionet.gdem.web.struts.hosts.AddHostAction">           
+        	<forward name="success" path="/hosts/details.jsp" />
         </action>
+        <action path="/hosts/edit" name="HostForm" input="/hosts/list.jsp"  scope="session" validate="false" type="eionet.gdem.web.struts.hosts.HostDetailsAction">           
+        	<forward name="success" path="/hosts/details.jsp" />
+        </action>
+        <action path="/hosts/delete" name="HostForm" input="/hosts/list.jsp"  validate="false" type="eionet.gdem.web.struts.hosts.DeleteHostAction">           
+        	<forward name="success" path="/do/hosts/list" redirect="true" />         
+        </action>
+        <action path="/hosts/save" name="HostForm" input="/hosts/details.jsp" scope="session" type="eionet.gdem.web.struts.hosts.SaveHostAction">           
+        	<forward name="success" path="/do/hosts/list" redirect="true" />
+        </action>
+        
+       
+        
 
 
  <!-- Edit UI -->

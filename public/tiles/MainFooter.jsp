@@ -7,6 +7,7 @@
 
 <% String a=request.getContextPath(); session.setAttribute("webRoot",a==null?"":a); %>
 <logic:present name="user">
+	<bean:define id="username" name="user" scope="session"/>
 </logic:present>
 
 							</div>
@@ -44,10 +45,12 @@
 											<ed:menuItem action="/sandbox.jsp" title="XQ Sandbox">
 												<bean:message key="label.menu.xqsendbox"/>
 											</ed:menuItem>
-											<logic:present name="user">
-												<ed:menuItem action="/hosts.jsp"  title="Hosts">
+											<ed:hasPermission username="username" acl="host" permission="v">
+												<ed:menuItem action="/do/hosts/list"  title="Hosts">
 													<bean:message key="label.menu.hosts"/>
 												</ed:menuItem>
+											</ed:hasPermission>
+											<logic:present name="user">
 												<ed:menuItem action="/do/editUI/viewHeader"  title="Manage User Interface">
 													<bean:message key="label.menu.editUI"/>
 												</ed:menuItem>

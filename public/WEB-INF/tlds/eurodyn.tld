@@ -9,10 +9,10 @@
   <uri>http://www.eurodyn.com</uri>
 
   <tag>
-    <name>hasRole</name>
-    <tag-class>eionet.gdem.web.tags.HasRole</tag-class>
+    <name>hasPermission</name>
+    <tag-class>eionet.gdem.web.tags.HasPermission</tag-class>
     <description>
-       display content only if user has got the specified role
+       display content only if user has appropriate permissions
     </description>
     <attribute>
         <name>username</name>
@@ -25,7 +25,7 @@
         <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-        <name>role</name>
+        <name>permission</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
     </attribute>
