@@ -53,7 +53,7 @@ public class DeleteHostAction extends BaseAction {
 				dbM.removeHost(hostId);
 				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.deleted"));
 			} else {
-				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.dnoperm", "label.hosts"));
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.dnoperm", translate(actionMapping, request, "label.hosts")));
 			}
 		} catch (Exception e) {
 			_logger.error("", e);
