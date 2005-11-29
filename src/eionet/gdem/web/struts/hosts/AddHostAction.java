@@ -27,20 +27,39 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
 
+import eionet.gdem.conversion.ssr.Names;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.LoggerIF;
 import eionet.gdem.web.struts.BaseAction;
 
 public class AddHostAction extends BaseAction {
+	private static LoggerIF _logger = GDEMServices.getLogger();
 	
 	
 	/**
 	 * Purpose of this action is to forward user to Add host form and clean up form bean that might be filled up in previous edit actions.
 	 */
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
+	public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
+		ActionMessages errors = new ActionMessages();
 		DynaValidatorForm hostForm = (DynaValidatorForm) actionForm;
 		hostForm.getMap().clear();
-		return actionMapping.findForward("success");
+		try {
+			if(	!checkPermission(request, Names.ACL_HOST_PATH, "i")) {
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.inoperm", translate(map, request, "label.hosts")));
+			}
+		} catch (Exception e) {
+			_logger.error("", e);
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
+		}
+		if(errors.size()>0)	{
+			saveErrors(request, errors);
+			return map.findForward("fail");
+		}
+		return map.findForward("success");
 	}
 
 }

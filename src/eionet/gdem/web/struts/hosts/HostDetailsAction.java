@@ -27,7 +27,6 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -45,7 +44,7 @@ public class HostDetailsAction extends BaseAction {
 	private static LoggerIF _logger = GDEMServices.getLogger();
 	
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
-		ActionErrors errors = new ActionErrors();
+		ActionMessages errors = new ActionMessages();
 		DynaValidatorForm hostForm = (DynaValidatorForm) actionForm;
 		String hostId = (String) hostForm.get("id");
 		
@@ -63,14 +62,18 @@ public class HostDetailsAction extends BaseAction {
 					hostForm.set("password", (String)host.get("pwd"));
 				}
 			} else {
-				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.error.vnoperm"));
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.unoperm", translate(actionMapping, request, "label.hosts")));
 			}
 		} catch (Exception e) {
 			_logger.error("", e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
 		}
 		
-		if(errors.size()>0)	request.getSession().setAttribute("dcm.errors", errors);
+		if(errors.size()>0)	{
+			//request.getSession().setAttribute("dcm.errors", errors);
+			saveErrors(request, errors);
+			return actionMapping.getInputForward();
+		}
 		return actionMapping.findForward("success");
 	}
 

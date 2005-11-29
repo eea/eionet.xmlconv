@@ -28,6 +28,12 @@
 			<field property="host" depends="required">
 				<arg0 key="label.hosts.host"/>
 			</field>
+			<field property="username" depends="required">
+				<arg0 key="label.hosts.username"/>
+			</field>
+			<field property="password" depends="required">
+				<arg0 key="label.hosts.password"/>
+			</field>
 		</form>
 	</formset>
 </form-validation>

@@ -142,6 +142,7 @@
         </action>        
         <action path="/hosts/add" name="HostForm" validate="false" type="eionet.gdem.web.struts.hosts.AddHostAction">           
         	<forward name="success" path="/hosts/details.jsp" />
+        	<forward name="fail" path="/hosts/list.jsp" />
         </action>
         <action path="/hosts/edit" name="HostForm" input="/hosts/list.jsp"  scope="session" validate="false" type="eionet.gdem.web.struts.hosts.HostDetailsAction">           
         	<forward name="success" path="/hosts/details.jsp" />

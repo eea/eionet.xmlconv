@@ -21,41 +21,43 @@
 </ed:hasPermission>
 	
 <div class="visualClear">&nbsp;</div>	
-			
-<div style="width: 80%">
-	<table class="sortable" align="center" width="100%">
-		<thead>
-			<tr>
-				<th scope="col"><span title="Action">&nbsp;</span></th>
-				<th scope="col"><span title="Host name"><bean:message key="label.hosts.host"/></span></th>
-				<th scope="col"><span title="User name"><bean:message key="label.hosts.username"/></span></th>
-			</tr>
-		</thead>
-		<tbody>
-			<logic:iterate indexId="index" id="host" name="hosts.list">
-				<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
-					<td width="5%" align="center">
-						<ed:hasPermission username="username" acl="host" permission="d">
-							<html:link page="/do/hosts/delete" paramId="id" paramName="host" paramProperty="id" titleKey="label.hosts.delete">
-								<html:img page="/images/delete.gif" altKey="label.delete" title="Delete host credentials" />
-							</html:link>
-						</ed:hasPermission>
-					</td>
-					<td>
-						<ed:hasPermission username="username" acl="host" permission="u">
-							<html:link page="/do/hosts/edit" paramId="id" paramName="host" paramProperty="id" titleKey="label.hosts.edit">
-								<bean:write name="host" property="hostname" />
-							</html:link>
-						</ed:hasPermission>
-					</td>
-					<td>
-						<bean:write name="host" property="username" />
-					</td>
+
+<logic:present name="hosts.list">
+	<div style="width: 80%">
+		<table class="sortable" align="center" width="100%">
+			<thead>
+				<tr>
+					<th scope="col"><span title="Action">&nbsp;</span></th>
+					<th scope="col"><span title="Host name"><bean:message key="label.hosts.host"/></span></th>
+					<th scope="col"><span title="User name"><bean:message key="label.hosts.username"/></span></th>
 				</tr>
-			</logic:iterate>
-		</tbody>
-	</table>
-</div>	
-	
+			</thead>
+			<tbody>
+				<logic:iterate indexId="index" id="host" name="hosts.list">
+					<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
+						<td width="5%" align="center">
+							<ed:hasPermission username="username" acl="host" permission="d">
+								<html:link page="/do/hosts/delete" paramId="id" paramName="host" paramProperty="id" titleKey="label.hosts.delete">
+									<html:img page="/images/delete.gif" altKey="label.delete" title="Delete host credentials" />
+								</html:link>
+							</ed:hasPermission>
+						</td>
+						<td>
+							<ed:hasPermission username="username" acl="host" permission="u">
+								<html:link page="/do/hosts/edit" paramId="id" paramName="host" paramProperty="id" titleKey="label.hosts.edit">
+									<bean:write name="host" property="hostname" />
+								</html:link>
+							</ed:hasPermission>
+						</td>
+						<td>
+							<bean:write name="host" property="username" />
+						</td>
+					</tr>
+				</logic:iterate>
+			</tbody>
+		</table>
+	</div>	
+</logic:present>
+
 <div class="visualClear">&nbsp;</div>	
 			

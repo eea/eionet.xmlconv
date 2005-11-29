@@ -35,12 +35,14 @@ import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.services.DbModuleIF;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.InputFile;
+import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.BaseAction;
 
 public class SaveHostAction extends BaseAction {
 	private static LoggerIF _logger = GDEMServices.getLogger();
 	
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
+	public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
 		ActionMessages messages = new ActionMessages();
 		ActionMessages errors = new ActionMessages();
 		DynaValidatorForm hostForm = (DynaValidatorForm) actionForm;
@@ -49,41 +51,59 @@ public class SaveHostAction extends BaseAction {
 		String username= (String) hostForm.get("username");
 		String password= (String) hostForm.get("password");
 		
-		try {
-			if(hostId==null) { //Add new host
-				_logger.debug("ADDING NEW HOST !!!");
-				if(	checkPermission(request, Names.ACL_HOST_PATH, "i")) {
-					DbModuleIF dbM= GDEMServices.getDbModule();
-					dbM.addHost(host, username, password);
-					hostForm.getMap().clear();
-					messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.inserted"));
-				} else {
-					errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.error.vnoperm"));
+		if(checkConnection(host, username, password)) {
+			try {
+				if(hostId==null) { //Add new host
+					_logger.debug("ADDING NEW HOST !!!");
+					if(	checkPermission(request, Names.ACL_HOST_PATH, "i")) {
+						DbModuleIF dbM= GDEMServices.getDbModule();
+						dbM.addHost(host, username, password);
+						hostForm.getMap().clear();
+						messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.inserted"));
+					} else {
+						errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.inoperm", translate(map, request, "label.hosts")));
+					}
+				} else { //Update host
+					_logger.debug("UPDATE HOST !!!");
+					if(	checkPermission(request, Names.ACL_HOST_PATH, "u")) {
+						DbModuleIF dbM= GDEMServices.getDbModule();
+						dbM.updateHost(hostId, host, username, password);
+						hostForm.getMap().clear();
+						messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.updated"));
+					} else {
+						errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.unoperm", translate(map, request, "label.hosts")));
+					}
 				}
-			} else { //Update host
-				_logger.debug("UPDATE HOST !!!");
-				if(	checkPermission(request, Names.ACL_HOST_PATH, "u")) {
-					DbModuleIF dbM= GDEMServices.getDbModule();
-					dbM.updateHost(hostId, host, username, password);
-					hostForm.getMap().clear();
-					messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.updated"));
-				} else {
-					errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.error.vnoperm"));
-				}
+			} catch (Exception e) {
+				_logger.error("", e);
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
 			}
-		} catch (Exception e) {
-			_logger.error("", e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
+		} else {
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.error.url"));
 		}
 		
 		if(errors.size()>0)	{
 			request.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.getInputForward();
+			return map.getInputForward();
 		}
 		if(messages.size()>0) request.getSession().setAttribute("dcm.messages", messages);
 		
-		return actionMapping.findForward("success");
+		return map.findForward("success");
 		
+	}
+	
+	private boolean checkConnection(String url, String username, String password) {
+		boolean result=false;
+		try {
+			InputFile src = new InputFile(url);
+			src.setAuthentication(Utils.getEncodedAuthentication(username, password));
+			src.setTrustedMode(false);
+			src.getSrcInputStream();
+			result=true;
+		} catch(Exception e) {
+			_logger.error("", e);
+		}
+		return result;
 	}
 
 }

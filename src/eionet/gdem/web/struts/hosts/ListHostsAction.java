@@ -49,7 +49,7 @@ public class ListHostsAction extends BaseAction {
 	protected final String GDEM_SSAclName = "/stylesheets";
 
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
+	public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
 		ActionErrors errors = new ActionErrors();
 		List result=new ArrayList();
 
@@ -66,7 +66,7 @@ public class ListHostsAction extends BaseAction {
 					result.add(h);
 				}
 			} else {
-				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.error.vnoperm"));
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.vnoperm", translate(map, request, "label.hosts")));
 			}
 		} catch (Exception e) {
 			_logger.error("", e);
@@ -76,7 +76,7 @@ public class ListHostsAction extends BaseAction {
 		if(errors.size()>0)	request.getSession().setAttribute("dcm.errors", errors);
 		request.setAttribute("hosts.list",result);
 
-		return actionMapping.findForward("success");
+		return map.findForward("success");
 
 	}
 	
