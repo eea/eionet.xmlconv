@@ -51,35 +51,31 @@ public class SaveHostAction extends BaseAction {
 		String username= (String) hostForm.get("username");
 		String password= (String) hostForm.get("password");
 		
-		if(checkConnection(host, username, password)) {
-			try {
-				if(hostId==null) { //Add new host
-					_logger.debug("ADDING NEW HOST !!!");
-					if(	checkPermission(request, Names.ACL_HOST_PATH, "i")) {
-						DbModuleIF dbM= GDEMServices.getDbModule();
-						dbM.addHost(host, username, password);
-						hostForm.getMap().clear();
-						messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.inserted"));
-					} else {
-						errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.inoperm", translate(map, request, "label.hosts")));
-					}
-				} else { //Update host
-					_logger.debug("UPDATE HOST !!!");
-					if(	checkPermission(request, Names.ACL_HOST_PATH, "u")) {
-						DbModuleIF dbM= GDEMServices.getDbModule();
-						dbM.updateHost(hostId, host, username, password);
-						hostForm.getMap().clear();
-						messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.updated"));
-					} else {
-						errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.unoperm", translate(map, request, "label.hosts")));
-					}
+		try {
+			if(hostId==null) { //Add new host
+				_logger.debug("ADDING NEW HOST !!!");
+				if(	checkPermission(request, Names.ACL_HOST_PATH, "i")) {
+					DbModuleIF dbM= GDEMServices.getDbModule();
+					dbM.addHost(host, username, password);
+					hostForm.getMap().clear();
+					messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.inserted"));
+				} else {
+					errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.inoperm", translate(map, request, "label.hosts")));
 				}
-			} catch (Exception e) {
-				_logger.error("", e);
-				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
+			} else { //Update host
+				_logger.debug("UPDATE HOST !!!");
+				if(	checkPermission(request, Names.ACL_HOST_PATH, "u")) {
+					DbModuleIF dbM= GDEMServices.getDbModule();
+					dbM.updateHost(hostId, host, username, password);
+					hostForm.getMap().clear();
+					messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.updated"));
+				} else {
+					errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.unoperm", translate(map, request, "label.hosts")));
+				}
 			}
-		} else {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.error.url"));
+		} catch (Exception e) {
+			_logger.error("", e);
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
 		}
 		
 		if(errors.size()>0)	{
