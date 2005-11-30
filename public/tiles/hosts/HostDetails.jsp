@@ -25,7 +25,7 @@
 	
 		<div class="boxcontent" >
 			<html:form action="/hosts/save" method="post">
-				<div style="padding-left:50px"><br/>
+				<br/>
 				<table cellspacing="0">
 					<tr>
 						<td align="right" style="padding-right:5">
@@ -59,7 +59,6 @@
 						</td>
 					</tr>
 				</table>
-				</div>
 			</html:form>	
 		</div>
 		<div class="boxbottom"><div>&nbsp;</div></div> 
