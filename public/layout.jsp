@@ -1,6 +1,6 @@
 <%@ page buffer="100kb" pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java" %>
-<%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%
 response.setHeader("Pragma", "No-cache");
 response.setHeader("Cache-Control", "no-cache");

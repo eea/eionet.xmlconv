@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 
 <ed:breadcrumbs-push label="Login" level="1"/>
 <html:xhtml/>
