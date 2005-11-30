@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
 <tiles-definitions>
-  <definition name="MainFooter" path="/tiles/MainFooter.jsp">
+  <definition name="MainFooter" path="/WEB-INF/tiles/MainFooter.jsp">
     <put name="showFooter" type="string" value="true"/>
     <put name="environment" value="Data Conversion Module" />
     <put name="buildNo" value="20050614" />
   </definition>
-  <definition name="MainHeader" path="/tiles/MainHeader.jsp" />
-  <definition name="Error" path="/tiles/Error.jsp" />
-  <definition name="Login" path="/tiles/Login.jsp" />
-  <definition name="Stylesheet" path="/tiles/stylesheet/Stylesheet.jsp" />
-  <definition name="schemaStylesheets" path="/tiles/stylesheet/SchemaStylesheets.jsp" />
-  <definition name="editStylesheet" path="/tiles/stylesheet/EditStylesheet.jsp" />
-  <definition name="addStylesheet" path="/tiles/stylesheet/AddStylesheet.jsp" />
-  <definition name="schema" path="/tiles/schema/Schema.jsp" />
-  <definition name="listConversion" path="/tiles/conversion/ListConversions.jsp" />
-  <definition name="testConversion" path="/tiles/conversion/TestConversion.jsp" />
-  <definition name="uplSchema" path="/tiles/schema/UplSchema.jsp" />  
-  <definition name="addUplSchema" path="/tiles/schema/AddUplSchema.jsp" />
-  <definition name="editUplSchema" path="/tiles/schema/EditUplSchema.jsp" />
+  <definition name="MainHeader" path="/WEB-INF/tiles/MainHeader.jsp" />
+  <definition name="Error" path="/WEB-INF/tiles/Error.jsp" />
+  <definition name="Login" path="/WEB-INF/tiles/Login.jsp" />
+  <definition name="Stylesheet" path="/WEB-INF/tiles/stylesheet/Stylesheet.jsp" />
+  <definition name="schemaStylesheets" path="/WEB-INF/tiles/stylesheet/SchemaStylesheets.jsp" />
+  <definition name="editStylesheet" path="/WEB-INF/tiles/stylesheet/EditStylesheet.jsp" />
+  <definition name="addStylesheet" path="/WEB-INF/tiles/stylesheet/AddStylesheet.jsp" />
+  <definition name="schema" path="/WEB-INF/tiles/schema/Schema.jsp" />
+  <definition name="listConversion" path="/WEB-INF/tiles/conversion/ListConversions.jsp" />
+  <definition name="testConversion" path="/WEB-INF/tiles/conversion/TestConversion.jsp" />
+  <definition name="uplSchema" path="/WEB-INF/tiles/schema/UplSchema.jsp" />  
+  <definition name="addUplSchema" path="/WEB-INF/tiles/schema/AddUplSchema.jsp" />
+  <definition name="editUplSchema" path="/WEB-INF/tiles/schema/EditUplSchema.jsp" />
   
-  <definition name="confLdap" path="/tiles/config/Ldap.jsp" />
-  <definition name="confDb" path="/tiles/config/Db.jsp" />
+  <definition name="confLdap" path="/WEB-INF/tiles/config/Ldap.jsp" />
+  <definition name="confDb" path="/WEB-INF/tiles/config/Db.jsp" />
   
-  <definition name="/editUI/ImageManager.jsp" path="/tiles/editUI/ImageManager.jsp"/>
-  <definition name="HeaderManager" path="/tiles/editUI/HeaderManager.jsp"/>
-  <definition name="FooterManager" path="/tiles/editUI/FooterManager.jsp"/>
+  <definition name="/editUI/ImageManager.jsp" path="/WEB-INF/tiles/editUI/ImageManager.jsp"/>
+  <definition name="HeaderManager" path="/WEB-INF/tiles/editUI/HeaderManager.jsp"/>
+  <definition name="FooterManager" path="/WEB-INF/tiles/editUI/FooterManager.jsp"/>
   
-  <definition name="hosts" path="/tiles/hosts/HostsList.jsp" />
-  <definition name="hostDetails" path="/tiles/hosts/HostDetails.jsp" />
+  <definition name="hosts" path="/WEB-INF/tiles/hosts/HostsList.jsp" />
+  <definition name="hostDetails" path="/WEB-INF/tiles/hosts/HostDetails.jsp" />
 
-  <definition name="base" path="/layout.jsp">
+  <definition name="base" path="/WEB-INF/tiles/layout.jsp">
     <put name="header" type="definition" value="MainHeader"/>
     <put name="error" type="definition" value="Error"/>
     <put name="body" type="definition" value=""/>
