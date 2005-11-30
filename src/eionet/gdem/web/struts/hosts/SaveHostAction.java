@@ -45,6 +45,11 @@ public class SaveHostAction extends BaseAction {
 	public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
 		ActionMessages messages = new ActionMessages();
 		ActionMessages errors = new ActionMessages();
+		
+		if (isCancelled(request)) {
+			return map.findForward("success");
+		}
+		
 		DynaValidatorForm hostForm = (DynaValidatorForm) actionForm;
 		String hostId = processFormStr((String) hostForm.get("id"));
 		String host= (String) hostForm.get("host");

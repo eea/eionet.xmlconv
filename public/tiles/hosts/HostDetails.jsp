@@ -56,6 +56,9 @@
 						<td>&#160;</td>
 						<td>
 							<html:submit styleClass="button">Save</html:submit>
+							<html:cancel styleClass="button">
+					        	<bean:message key="label.cancel"/>
+					        </html:cancel>
 						</td>
 					</tr>
 				</table>
