@@ -1,8 +1,3 @@
-/*
-	Feel free to use your custom icons for the tree. Make sure they are all of the same size.
-	User icons collections are welcome, we'll publish them giving all regards.
-*/
-
 var TREE_TPL = {
 	'target'  : 'text',	// name of the frame links will be opened in
 						// other possible values are: _blank, _parent, _search, _self and _top

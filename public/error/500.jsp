@@ -1,6 +1,6 @@
 <%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java" %>
-<%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
 
 <%-- include header --%>
 <tiles:insert page="/tiles/MainHeader.jsp" />

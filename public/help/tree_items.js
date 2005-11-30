@@ -1,10 +1,3 @@
-/* 
-	the format of the tree definition file is simple,
-	you can find specification in the Tigra Menu documentation at:
-	
-	http://www.softcomplex.com/products/tigra_tree_menu/docs/index.html#hierarchy
-*/
-
 var TREE4ADMIN = [
 	["Table of Contents", null,
 		["General Principles", "docs/index.html",
