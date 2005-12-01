@@ -33,7 +33,7 @@
 	
 %>
 <ed:breadcrumbs-push label="Add query" level="2" />
-<tiles:insert definition="MainHeader"/>
+<tiles:insert definition="TmpHeader"/>
 
 
 
@@ -110,4 +110,4 @@
 	<input type="hidden" name="ACTION" value=""/>
 	<input type="hidden" name="PARAM" value=""/>
 </form>
-<tiles:insert definition="MainFooter"/>
+<tiles:insert definition="TmpFooter"/>

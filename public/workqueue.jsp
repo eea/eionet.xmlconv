@@ -7,7 +7,7 @@
 %>
 
 <ed:breadcrumbs-push label="Workqueue" level="1" />
-<tiles:insert definition="MainHeader"/>
+<tiles:insert definition="TmpHeader"/>
 
 
 
@@ -151,4 +151,4 @@
 		 	<br/>
 	</div>					
 	</div>
-<tiles:insert definition="MainFooter"/>
+<tiles:insert definition="TmpFooter"/>

@@ -7,7 +7,7 @@
 	
 %>
 <ed:breadcrumbs-push label="XML Services error" level="1" />
-<tiles:insert definition="MainHeader"/>
+<tiles:insert definition="TmpHeader"/>
 
 	<%@ include file="menu.jsp" %>
 
@@ -45,4 +45,4 @@
 	    
 			<%}%>
 	</div>
-<tiles:insert definition="MainFooter"/>
+<tiles:insert definition="TmpFooter"/>

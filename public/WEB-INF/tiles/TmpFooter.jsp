@@ -152,3 +152,5 @@
 	
 </div>
 <!-- end visual-portal-wrapper -->
+</body>
+</html>

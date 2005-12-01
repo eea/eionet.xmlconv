@@ -3,7 +3,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
 
 <%-- include header --%>
-<tiles:insert page="/WEB-INF/tiles/MainHeader.jsp" />
+<tiles:insert page="/WEB-INF/tiles/TmpHeader.jsp" />
 
 <table cellpadding="0" cellspacing="0" border="0" align="center">
   <tr>
@@ -16,7 +16,7 @@
 </table>
 
 <%-- include footer --%>
-<tiles:insert page="/WEB-INF/tiles/MainFooter.jsp">
+<tiles:insert page="/WEB-INF/tiles/TmpFooter.jsp">
 	<tiles:put name="showFooter" type="string" value="true"/>
 </tiles:insert>
 

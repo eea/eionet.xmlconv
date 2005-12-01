@@ -28,7 +28,7 @@
     </script>
 
 <ed:breadcrumbs-push label="Queries" level="1" />
-<tiles:insert definition="MainHeader"/>
+<tiles:insert definition="TmpHeader"/>
 
 
 
@@ -128,4 +128,4 @@
 		<input type="hidden" name="ACTION" value=""/>
 		<input type="hidden" name="ID" value=""/>
 	</form>
-<tiles:insert definition="MainFooter"/>
+<tiles:insert definition="TmpFooter"/>

@@ -38,7 +38,7 @@
 %>
 
 <ed:breadcrumbs-push label="Query" level="1" />
-<tiles:insert definition="MainHeader"/>
+<tiles:insert definition="TmpHeader"/>
 
 
 
@@ -154,5 +154,5 @@
 		</form>	
 
 	</div>
-<tiles:insert definition="MainFooter"/>
+<tiles:insert definition="TmpFooter"/>
 	

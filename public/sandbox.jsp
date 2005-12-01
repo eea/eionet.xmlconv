@@ -48,7 +48,7 @@
 %>
 
 <ed:breadcrumbs-push label="XQuery Sandbox" level="1" />
-<tiles:insert definition="MainHeader"/>
+<tiles:insert definition="TmpHeader"/>
 
 
 
@@ -118,4 +118,4 @@
 	<!--/td></tr></table-->
 </div>
 </div>
-<tiles:insert definition="MainFooter"/>
+<tiles:insert definition="TmpFooter"/>

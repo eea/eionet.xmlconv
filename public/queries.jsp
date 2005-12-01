@@ -40,7 +40,7 @@
 %>
 
 <ed:breadcrumbs-push label="Queries" level="1" />
-<tiles:insert definition="MainHeader"/>
+<tiles:insert definition="TmpHeader"/>
 
     <script type="text/javascript" src="util.js"></script>
 
@@ -171,4 +171,4 @@
     <input type="hidden" name="ACTION" value=""/>
     <input type="hidden" name="PARAM" value=""/>
 </form>
-<tiles:insert definition="MainFooter"/>
+<tiles:insert definition="TmpFooter"/>

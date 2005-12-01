@@ -6,7 +6,11 @@
     <put name="environment" value="Data Conversion Module" />
     <put name="buildNo" value="20050614" />
   </definition>
-  <definition name="MainHeader" path="/WEB-INF/tiles/MainHeader.jsp" />
+  <definition name="MainHeader" path="/WEB-INF/tiles/MainHeader.jsp"/>
+  <definition name="TmpFooter" path="/WEB-INF/tiles/TmpFooter.jsp">
+    <put name="showFooter" type="string" value="true"/>
+  </definition>
+  <definition name="TmpHeader" path="/WEB-INF/tiles/TmpHeader.jsp" />
   <definition name="Error" path="/WEB-INF/tiles/Error.jsp" />
   <definition name="Login" path="/WEB-INF/tiles/Login.jsp" />
   <definition name="Stylesheet" path="/WEB-INF/tiles/stylesheet/Stylesheet.jsp" />
@@ -31,6 +35,7 @@
   <definition name="hostDetails" path="/WEB-INF/tiles/hosts/HostDetails.jsp" />
 
   <definition name="base" path="/WEB-INF/tiles/layout.jsp">
+    <put name="title"  value="label.gdem.title"/>
     <put name="header" type="definition" value="MainHeader"/>
     <put name="error" type="definition" value="Error"/>
     <put name="body" type="definition" value=""/>
@@ -41,12 +46,14 @@
   <definition name="/test.jsp" extends="base">
     <put name="body" type="definition" value="Error"/>
   </definition>
-  <definition name="/login.jsp" extends="base">
-    <put name="body" type="definition" value="Login"/>
-  </definition>
-  <definition name="/stylesheetList.jsp" extends="base">
-    <put name="body" type="definition" value="Stylesheet"/>
-  </definition>
+	<definition name="/login.jsp" extends="base">
+		<put name="title"  value="label.login.title"/>
+    	<put name="body" type="definition" value="Login"/>
+	</definition>
+  	<definition name="/stylesheetList.jsp" extends="base">
+  		<put name="title"  value="label.stylesheet.title"/>
+	    <put name="body" type="definition" value="Stylesheet"/>
+  	</definition>
   <definition name="/schemaStylesheets.jsp" extends="base">
     <put name="body" type="definition" value="schemaStylesheets"/>
   </definition>
@@ -59,12 +66,14 @@
   <definition name="/schema.jsp" extends="base">
     <put name="body" type="definition" value="schema"/>
   </definition>
-  <definition name="/listConv.jsp" extends="base">
-    <put name="body" type="definition" value="listConversion"/>
-  </definition>
-  <definition name="/testConv.jsp" extends="base">
-    <put name="body" type="definition" value="testConversion"/>
-  </definition>
+ 	<definition name="/listConv.jsp" extends="base">
+ 		<put name="title"  value="label.conversion.title"/>
+ 		<put name="body" type="definition" value="listConversion"/>
+	</definition>
+ 	<definition name="/testConv.jsp" extends="base">
+ 		<put name="title"  value="label.conversiontest.title"/>
+ 		<put name="body" type="definition" value="testConversion"/>
+  	</definition>
   <definition name="/uplSchema.jsp" extends="base">
     <put name="body" type="definition" value="uplSchema"/>
   </definition>  

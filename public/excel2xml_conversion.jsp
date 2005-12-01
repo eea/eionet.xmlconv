@@ -7,7 +7,7 @@
 
 
 <ed:breadcrumbs-push label="MS Excel to XML" level="1" />
-<tiles:insert definition="MainHeader"/>
+<tiles:insert definition="TmpHeader"/>
 
 
 
@@ -74,4 +74,4 @@
 
 		 
 		</div>
-<tiles:insert definition="MainFooter"/>
+<tiles:insert definition="TmpFooter"/>
