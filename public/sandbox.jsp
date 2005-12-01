@@ -48,7 +48,9 @@
 %>
 
 <ed:breadcrumbs-push label="XQuery Sandbox" level="1" />
-<tiles:insert definition="TmpHeader"/>
+<tiles:insert definition="TmpHeader">
+	<tiles:put name="title" value="XQuery Sandbox"/>
+</tiles:insert>
 
 
 

@@ -40,7 +40,9 @@
 %>
 
 <ed:breadcrumbs-push label="Queries" level="1" />
-<tiles:insert definition="TmpHeader"/>
+<tiles:insert definition="TmpHeader">
+	<tiles:put name="title" value="Queries"/>
+</tiles:insert>
 
     <script type="text/javascript" src="util.js"></script>
 

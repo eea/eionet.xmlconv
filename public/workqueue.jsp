@@ -7,7 +7,9 @@
 %>
 
 <ed:breadcrumbs-push label="Workqueue" level="1" />
-<tiles:insert definition="TmpHeader"/>
+<tiles:insert definition="TmpHeader">
+	<tiles:put name="title" value="QA Jobs"/>
+</tiles:insert>
 
 
 

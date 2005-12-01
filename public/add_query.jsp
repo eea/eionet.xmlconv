@@ -33,8 +33,9 @@
 	
 %>
 <ed:breadcrumbs-push label="Add query" level="2" />
-<tiles:insert definition="TmpHeader"/>
-
+<tiles:insert definition="TmpHeader">
+	<tiles:put name="title" value="Add a new query"/>
+</tiles:insert>
 
 
 <%@ include file="menu.jsp" %>

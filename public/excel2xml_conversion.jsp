@@ -7,8 +7,10 @@
 
 
 <ed:breadcrumbs-push label="MS Excel to XML" level="1" />
-<tiles:insert definition="TmpHeader"/>
 
+<tiles:insert definition="TmpHeader">
+	<tiles:put name="title" value="MS Excel to XML conversion"/>
+</tiles:insert>
 
 
 <%@ include file="menu.jsp" %>
