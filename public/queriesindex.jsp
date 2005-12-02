@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ page import="java.util.Hashtable, java.util.Vector, java.util.HashMap, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.SecurityUtil,com.tee.uit.security.AppUser" %>
@@ -12,6 +11,13 @@
 	if (list==null) list=new Vector();
 	
 %>
+
+
+<ed:breadcrumbs-push label="Queries" level="1" />
+<tiles:insert definition="TmpHeader">
+	<tiles:put name="title" value="Queries"/>
+</tiles:insert>
+
 
     <script type="text/javascript" src="util.js"></script>
     <script type="text/javascript">
@@ -27,10 +33,6 @@
 		}			
     </script>
 
-<ed:breadcrumbs-push label="Queries" level="1" />
-<tiles:insert definition="TmpHeader">
-	<tiles:put name="title" value="Queries"/>
-</tiles:insert>
 
 
 
