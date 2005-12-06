@@ -75,14 +75,14 @@ public class EditStylesheetAction extends Action {
 			}
 		}
 		
-		try {
+		/*try {
 			IXmlCtx x = new XmlContext();
 			x.setWellFormednessChecking();
 			x.checkFromInputStream((new InputFile(schema)).getSrcInputStream());
 		} catch (Exception e) {
 			_logger.error("schema not valid",e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.error.notvalid"));
-		}
+		}*/
 
 
 		if (errors.isEmpty()) {

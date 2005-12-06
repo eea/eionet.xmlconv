@@ -67,7 +67,7 @@ public class AddUplSchemaAction extends Action {
 			return actionMapping.findForward("fail");
 		}
 
-		IXmlCtx x = new XmlContext();
+		/*IXmlCtx x = new XmlContext();
 		try {
 			x.setWellFormednessChecking();
 			x.checkFromInputStream(new ByteArrayInputStream(schema.getFileData()));
@@ -75,7 +75,7 @@ public class AddUplSchemaAction extends Action {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.error.notvalid"));
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 			return actionMapping.findForward("fail");
-		}
+		}*/
 
 		try {
 			SchemaManager sm = new SchemaManager();

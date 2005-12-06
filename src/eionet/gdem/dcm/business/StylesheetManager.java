@@ -204,9 +204,10 @@ public class StylesheetManager {
 			DbModuleIF dbM = GDEMServices.getDbModule();
 
 			if (fileName != null && !fileName.equals("")) {
-
-				if (dbM.checkStylesheetFile(fileName)) {
-					throw new DCMException(BusinessConstants.EXCEPTION_STYLEHEET_FILE_EXISTS);
+				if(!dbM.checkStylesheetFile(xsl_id, fileName)) {
+					if (dbM.checkStylesheetFile(fileName)) {
+						throw new DCMException(BusinessConstants.EXCEPTION_STYLEHEET_FILE_EXISTS);
+					}
 				}
 
 				InputStream in = file.getInputStream();

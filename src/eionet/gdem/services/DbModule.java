@@ -1325,6 +1325,23 @@ public class DbModule implements DbModuleIF, Constants {
 		}
 
 	}
+	
+	
+	public boolean checkStylesheetFile(String xsl_id, String xslFileName) throws SQLException {
+		int id = 0;
+
+		String sql = "SELECT COUNT(*) FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD + "=" + Utils.strLiteral(xslFileName) 
+		+ "and " +CNV_ID_FLD+"="+xsl_id;
+
+		String r[][] = _executeStringQuery(sql);
+
+		String count = r[0][0];
+		if (count.equals("0")) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 
 
 	public boolean checkUplSchemaFile(String schemaFileName) throws SQLException {

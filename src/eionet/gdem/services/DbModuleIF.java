@@ -547,6 +547,8 @@ public interface DbModuleIF {
 	 
 	 public boolean checkStylesheetFile(String xslFileName) throws SQLException;
 	 
+	 public boolean checkStylesheetFile(String xsl_id, String xslFileName) throws SQLException;
+	 
 	 boolean checkUplSchemaFile(String schemaFileName) throws SQLException;
 	 
 }

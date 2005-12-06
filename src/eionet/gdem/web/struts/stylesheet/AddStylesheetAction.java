@@ -80,7 +80,7 @@ public class AddStylesheetAction extends Action {
 			return actionMapping.findForward("fail");
 		}
 
-		try {
+		/*try {
 			IXmlCtx xml = new XmlContext();
 			xml.setWellFormednessChecking();
 			xml.checkFromInputStream((new InputFile(schema)).getSrcInputStream());
@@ -89,7 +89,7 @@ public class AddStylesheetAction extends Action {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.error.notvalid"));
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 			return actionMapping.findForward("fail");
-		}
+		}*/
 		
 		
 		

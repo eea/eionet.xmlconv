@@ -132,7 +132,7 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
-					<a target="blank" href="<bean:write property="xsl" name="stylesheetForm"/>" title="<bean:write property="xsl" name="stylesheetForm"/>">						
+					<a target="blank" href="<bean:write name="webRoot"/>/<bean:write property="xsl" name="stylesheetForm"/>" title="<bean:write property="xsl" name="stylesheetForm"/>">						
 								<bean:write property="xsl" name="stylesheetForm"/>
 					</a>&#160;		        	  		        
 		      </td>
