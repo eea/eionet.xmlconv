@@ -38,7 +38,6 @@ import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 
@@ -111,7 +110,7 @@ public class AddStylesheetAction extends Action {
 		httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
 
-		return actionMapping.findForward("success");
+		return new ActionForward("/do/schemaStylesheets?schema="+schema,true);  //actionMapping.findForward("success");
 	}
 
 }

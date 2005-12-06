@@ -66,13 +66,13 @@
             <forward name="success" path="/stylesheetList.jsp" redirect="true"/>            
         </action>
         <action path="/deleteSchema"  scope="request" type="eionet.gdem.web.struts.stylesheet.SchemaDeleteAction">           
-        	<forward name="success" path="/do/stylesheetList"  />            
+        	<forward name="success" path="/do/stylesheetList"  redirect="true"/>            
         </action>        
         <action path="/schemaStylesheets" type="eionet.gdem.web.struts.stylesheet.SchemaStylesheetAction" name="schemaStyleForm">   
 	        <forward name="success" path="/schemaStylesheets.jsp" redirect="true"/>                      
         </action>
         <action path="/deleteStylesheet"  scope="request" type="eionet.gdem.web.struts.stylesheet.StylesheetDeleteAction">           
-        	<forward name="success" path="/do/schemaStylesheets" />            
+        	<forward name="success" path="/do/schemaStylesheets" redirect="true"/>            
         </action>        
         <action path="/addStylesheetForm" type="eionet.gdem.web.struts.stylesheet.ConvTypeAction">   
 	        <forward name="success" path="/addStylesheet.jsp" />                      
