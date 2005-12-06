@@ -36,9 +36,6 @@ import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-import eionet.gdem.utils.InputFile;
-import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
 
 public class EditSchemaAction extends Action {
 
@@ -74,7 +71,7 @@ public class EditSchemaAction extends Action {
 			return actionMapping.findForward("success");
 		}
 
-		try {
+		/*try {
 			IXmlCtx xml = new XmlContext();
 			xml.setWellFormednessChecking();
 			xml.checkFromInputStream((new InputFile(schema)).getSrcInputStream());
@@ -83,7 +80,7 @@ public class EditSchemaAction extends Action {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.error.notvalid"));
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 			return actionMapping.findForward("success");
-		}
+		}*/
 		
 		
 		String user = (String) httpServletRequest.getSession().getAttribute("user");
