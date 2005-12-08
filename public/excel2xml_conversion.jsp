@@ -15,18 +15,10 @@
 <%@ include file="menu.jsp" %>
 
 <div id="workarea">
-
-
 		<div id="tabbedmenu">
 			<ul>
-
-
-				<li><a onclick="return submitTab('do/listConvForm');" style="color: black; text-decoration: none;" title="<bean:message key="label.conversion.converters"/>" href="<bean:write name="webRoot" />/do/listConvForm"><bean:message key="label.conversion.converters"/></a></li>
+				<li><a style="color: black; text-decoration: none;" title="<bean:message key="label.conversion.converters"/>" href="<bean:write name="webRoot" />/do/listConvForm"><bean:message key="label.conversion.converters"/></a></li>
 				<li class="currenttab"><span style="color: black; text-decoration: none;" title="<bean:message key="label.conversion.excel2xml"/>" href="<bean:write name="webRoot" />/excel2xml_conversion.jsp"><bean:message key="label.conversion.excel2xml"/></span></li>
-
-
-
-				
 			</ul>
 		</div>
 	
