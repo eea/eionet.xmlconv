@@ -61,7 +61,7 @@
 			    </tr>
 			    <tr>
 			      <td>
-			        <select name="schemaUrl"  size="6" >
+			        <select name="schemaUrl"  size="10" >
 										<option selected="selected" value="">
 											--
 										</option>		        

@@ -27,12 +27,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.commons.beanutils.BeanComparator;
 import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.Properties;
@@ -193,11 +195,13 @@ public class SchemaManager {
 					stl.setDdConv(true);
 					stls.add(stl);
 				}
-
 				sc.setStylesheets(stls);
 				schemas.add(sc);
-
 			}
+			
+			BeanComparator comp = new BeanComparator("table");
+			Collections.sort(schemas, comp);
+
 			st.setDdStylesheets(schemas);
 
 		} catch (Exception e) {
@@ -656,21 +660,17 @@ public class SchemaManager {
 
 
 	public ArrayList getDDSchemas() throws DCMException {
-
 		ArrayList schemas = new ArrayList();
 		ArrayList schemasChk = new ArrayList();
-		Vector hcSchemas;
 
 		try {
 
 			// retrive conversions for DD tables
 			List ddTables = DDServiceClient.getDDTables();
-
 			for (int i = 0; i < ddTables.size(); i++) {
 				Hashtable schema = (Hashtable) ddTables.get(i);
 				String tblId = (String) schema.get("tblId");
 				String schemaUrl = Properties.ddURL + "/GetSchema?id=TBL" + tblId;
-
 				Schema sc = new Schema();
 				sc.setId("TBL" + tblId);
 				sc.setSchema(schemaUrl);
@@ -678,15 +678,14 @@ public class SchemaManager {
 				sc.setDataset((String) schema.get("dataSet"));
 				schemas.add(sc);
 				schemasChk.add(schema.get("xml_schema"));
-
 			}
-
+			BeanComparator comp = new BeanComparator("table");
+			Collections.sort(schemas, comp);
 		} catch (Exception e) {
 			_logger.error("Error getting DD schemas",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return schemas;
-
 	}
 
 

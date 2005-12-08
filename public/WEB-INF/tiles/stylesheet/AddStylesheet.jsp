@@ -15,7 +15,6 @@
 
 		<div class="boxcontent">
 			<html:form action="/stylesheetAdd" method="post" enctype="multipart/form-data">
-				<div style="padding-left:50px">
 					  <table cellpadding="0" cellspacing="0" border="0">
 					    <tr>
 					      <td>
@@ -45,7 +44,7 @@
 						    </tr>		    
 						    <tr>
 						      <td colspan="3">		    
-						      		<select name="xmlSchema"  size="6" onchange="setSchema()">
+						      		<select name="xmlSchema"  size="10" onchange="setSchema()">
 													<option selected="selected" value="">
 														--
 													</option>		        
@@ -124,7 +123,6 @@
 					      </td>
 					    </tr>
 					  </table>
-				 </div>
 			</html:form>		
 		</div>
 		<div class="boxbottom"><div>&nbsp;</div></div> 
