@@ -24,7 +24,7 @@
 	
 		<div class="boxcontent">
 			<html:form action="/testConversionForm" method="get" >
-			  <table cellpadding="0" cellspacing="0" border="0" align="center">
+			  <table cellpadding="0" cellspacing="0" border="0">
 			    <tr>
 			      <td>
 			        <bean:message key="label.conversion.insertURL"/>
