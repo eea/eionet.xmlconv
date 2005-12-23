@@ -45,16 +45,19 @@
         <xsl:text disable-output-escaping="yes">'\n\r&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">' Dumping data for table&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">'\n\r&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">        &lt;/xsl:if&gt;&#xd;&#xa;</xsl:text>                      
-        <xsl:text disable-output-escaping="yes">query = "INSERT INTO </xsl:text>
+        <xsl:text disable-output-escaping="yes">        &lt;/xsl:if&gt;&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">' Start SQL command &#xd;&#xa;</xsl:text>                               
+        <xsl:text disable-output-escaping="yes">query = "INSERT INTO [</xsl:text>
         <xsl:value-of select="identifier"/>
+        <xsl:text disable-output-escaping="yes">]"            &lt;xsl:call-template name="fields"/&gt;</xsl:text> 
         <xsl:text disable-output-escaping="yes"> VALUES ('&lt;xsl:value-of select="@status"/&gt;',</xsl:text>
         <xsl:text disable-output-escaping="yes">&lt;xsl:for-each select="*"&gt;&lt;xsl:if test=".=''"&gt;null&lt;/xsl:if&gt;&lt;xsl:if test=".!=''"&gt;'&lt;xsl:value-of select='replace(replace(replace(.,"&amp;apos;","&amp;apos;&amp;apos;"), "&amp;quot;&amp;quot;","&amp;quot;&amp;quot;&amp;quot;&amp;quot;"), "&amp;#13;", "&amp;quot;&amp;quot; </xsl:text>
         <xsl:text disable-output-escaping="no"> &amp; vbCrLf  &amp; </xsl:text>
         <xsl:text disable-output-escaping="yes">&amp;quot;&amp;quot;")'</xsl:text>
         <xsl:text disable-output-escaping="yes"> /&gt;'&lt;/xsl:if&gt;&lt;xsl:if test="position()!=last()"&gt;,&lt;/xsl:if&gt;&lt;/xsl:for-each&gt;</xsl:text>
-        <xsl:text disable-output-escaping="yes">); " &#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">); " &#xd;&#xa;</xsl:text>                 
         <xsl:text disable-output-escaping="yes">conn.Execute (query) &#xd;&#xa;</xsl:text>                              
+        <xsl:text disable-output-escaping="yes">' End SQL command &#xd;&#xa;</xsl:text>               
         <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;&#xd;&#xa;</xsl:text>
         
    <!--   TEMPLATE name="create-table"  -->
@@ -63,7 +66,8 @@
         <xsl:text disable-output-escaping="yes">'&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">' SQL scripts for MS Access&#xd;&#xa;</xsl:text>        
         <xsl:text disable-output-escaping="yes">' Table structure for table&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">'&#xd;&#xa;</xsl:text>       
+        <xsl:text disable-output-escaping="yes">'&#xd;&#xa;</xsl:text> 
+        <xsl:text disable-output-escaping="yes">' Start SQL command &#xd;&#xa;</xsl:text>                     
         <xsl:text disable-output-escaping="yes">query = "CREATE TABLE [</xsl:text>
         <xsl:value-of select="identifier"/>
         <xsl:text disable-output-escaping="yes">] (status text(10), " </xsl:text>
@@ -77,9 +81,29 @@
         <xsl:text disable-output-escaping="no">&#xd;&#xa;</xsl:text> 
         <xsl:text disable-output-escaping="yes">&lt;/xsl:for-each&gt;</xsl:text>
         <xsl:text disable-output-escaping="no">query = query &amp; </xsl:text> 
-        <xsl:text disable-output-escaping="yes">");"&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">");"&#xd;&#xa;</xsl:text>                
         <xsl:text disable-output-escaping="yes">conn.Execute (query) &#xd;&#xa;</xsl:text>        
+        <xsl:text disable-output-escaping="yes">' End SQL command &#xd;&#xa;</xsl:text>         
         <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;&#xd;&#xa;</xsl:text>
+       
+       
+   <!--   TEMPLATE name="fields"  -->
+        <xsl:text disable-output-escaping="yes">&#xd;&#xa;</xsl:text>     
+        <xsl:text disable-output-escaping="yes">&lt;xsl:template name="fields"&gt;&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="no">query = query &amp; </xsl:text>           
+        <xsl:text disable-output-escaping="yes">"(status, "&#xd;&#xa;</xsl:text>
+        <xsl:text disable-output-escaping="yes">&lt;xsl:for-each select="*"&gt;</xsl:text>
+        <xsl:text disable-output-escaping="no">query = query &amp; </xsl:text>   
+        <xsl:text disable-output-escaping="yes">"[</xsl:text>
+        <xsl:text disable-output-escaping="yes">&lt;xsl:value-of select="local-name()" /&gt;</xsl:text>
+        <xsl:text disable-output-escaping="yes">]</xsl:text>
+        <xsl:text disable-output-escaping="yes">&lt;xsl:if test="position()!=last()"&gt;,&lt;/xsl:if&gt;</xsl:text>
+        <xsl:text disable-output-escaping="yes">"&#xd;&#xa;</xsl:text>        
+        <xsl:text disable-output-escaping="yes">&lt;/xsl:for-each&gt;</xsl:text>
+        <xsl:text disable-output-escaping="no">query = query &amp; </xsl:text>   
+        <xsl:text disable-output-escaping="yes">") </xsl:text>
+        <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;&#xd;&#xa;</xsl:text>
+       
         
  <!--   TEMPLATE name ="getFieldType"  -->
         <xsl:text disable-output-escaping="yes">&#xd;&#xa;</xsl:text>       
