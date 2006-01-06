@@ -18,7 +18,7 @@
  * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Enriko K�sper (TietoEnator)
+ * Original Code: Enriko Käsper (TietoEnator)
  */
 
 package eionet.gdem.conversion.excel;
@@ -29,7 +29,7 @@ import java.util.Hashtable;
 
 /**
 * The main class, which is calling POI HSSF methods for reading Excel file
-* @author Enriko K�sper
+* @author Enriko Käsper
 */
 public interface ExcelReaderIF 
 {

@@ -18,7 +18,7 @@
  * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Enriko Käsper (TietoEnator)
+ * Original Code: Enriko KÃ¤sper (TietoEnator)
  */
 
 package eionet.gdem.conversion.excel;
@@ -33,7 +33,7 @@ import java.lang.reflect.Method;
 /**
 * Handler for parsing xml instance document from datadictionary
 * extening SAX helpers DefaultHandler
-* @author Enriko Käsper
+* @author Enriko KÃ¤sper
 */
 
 public class DD_XMLInstanceHandler extends DefaultHandler{

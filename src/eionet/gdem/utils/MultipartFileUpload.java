@@ -18,7 +18,7 @@
  * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Enriko Käsper (TietoEnator)
+ * Original Code: Enriko KÃ¤sper (TietoEnator)
  */
 
 package eionet.gdem.utils;
@@ -47,7 +47,7 @@ import eionet.gdem.GDEMException;
  * File is uploaded to the same computer, where the servlet engine is running.
  * File content is transferred using MIME-multipart HTTP request.
  *
- * @author Enriko Käsper
+ * @author Enriko KÃ¤sper
  * @version $Revision: 1.2 $
  */
 public class MultipartFileUpload{

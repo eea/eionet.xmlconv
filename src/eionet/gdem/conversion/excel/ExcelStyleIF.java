@@ -18,7 +18,7 @@
  * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Enriko Käsper (TietoEnator)
+ * Original Code: Enriko KÃ¤sper (TietoEnator)
  */
 
 package eionet.gdem.conversion.excel;
@@ -28,7 +28,7 @@ public interface ExcelStyleIF  {
 /**
 * This interface is defing the methods for mapping styles between xml (fo:style) and sytles defined in Excel tool
 * 
-* @author Enriko Käsper
+* @author Enriko KÃ¤sper
 */
   
 

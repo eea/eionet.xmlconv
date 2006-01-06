@@ -18,7 +18,7 @@
  * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Enriko Käsper (TietoEnator)
+ * Original Code: Enriko KÃ¤sper (TietoEnator)
  */
 
 package eionet.gdem.conversion.excel;
@@ -26,7 +26,7 @@ package eionet.gdem.conversion.excel;
 /**
  * Defines XML tag names and attributes used in intermedite XML file.<BR><BR>
  * ExcelXML is implementing a small part of  OpenOffice XML 
- * @author  Enriko Käsper
+ * @author  Enriko KÃ¤sper
  */
 
 public interface ExcelXMLTags {

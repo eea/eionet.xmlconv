@@ -10,7 +10,7 @@ How to install the GDEM package
 
 + Get the build.xml file needed for all the actions
 ---------------------------------------------------
-#cvs export -D today gdem/build.xml
+#svn export http://svn.eionet.eu.int/repositories/Reportnet/xmlconv/trunk/build.xml
 
 + Make a tgz or zip package
 -----------------------------

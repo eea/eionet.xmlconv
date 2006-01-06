@@ -18,7 +18,7 @@
  * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Enriko K�äsper (TietoEnator)
+ * Original Code: Enriko Käsper (TietoEnator)
  */
 
 package eionet.gdem.conversion.ssr;

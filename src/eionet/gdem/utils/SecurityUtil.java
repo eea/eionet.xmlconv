@@ -39,11 +39,11 @@ import com.tee.uit.security.AccessControlListIF;
  * This is a class containing some utility methods for keeping
  * security.
  *
- * @author Enriko Käsper
+ * @author Enriko KÃ¤sper
  */
 public class SecurityUtil {
     
-    
+
     /**
     * Returns current user, or 'null', if the current session
     * does not have user attached to it.

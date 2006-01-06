@@ -18,7 +18,7 @@
  * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Enriko Käsper (TietoEnator)
+ * Original Code: Enriko KÃ¤sper (TietoEnator)
  */
 
 package eionet.gdem.conversion;
@@ -35,7 +35,7 @@ import java.io.FileOutputStream;
 /**
 * This class is creating handlers for creating Excel file from xml
 * called from ConversionService
-* @author Enriko Käsper
+* @author Enriko KÃ¤sper
 */
 
 public class ExcelProcessor  {

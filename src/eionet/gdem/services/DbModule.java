@@ -18,7 +18,7 @@
  * Copyright (C) 2000-2004 by European Environment Agency.  All
  * Rights Reserved.
  *
- * Original Code: Kaido Laine, Enriko K�sper (TietoEnator)
+ * Original Code: Kaido Laine, Enriko Käsper (TietoEnator)
  */
 
 package eionet.gdem.services;
