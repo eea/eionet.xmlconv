@@ -60,7 +60,7 @@
     <target name="compile">
         <!--fail unless="prefix" message="Usage: ant install -Dprefix={directory to install}"/-->
         <!-- Compile the java code from ${src} into ${build} -->
-        <echo message="Using java verison ${ant.java.version}"/> 
+        <echo message="Using java version ${ant.java.version}"/> 
         <mkdir dir="${classes.dir}" />
         <javac debug="on" deprecation="off" srcdir="${src}" destdir="${classes.dir}" classpath="${lib}/avalon.jar;
 						            ${lib}/uit-security.jar;
