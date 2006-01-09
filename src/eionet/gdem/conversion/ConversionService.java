@@ -37,6 +37,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -131,37 +132,40 @@ public class ConversionService {
 	public Vector listConversions(String schema) throws GDEMException {
 
 		if (db == null) db = GDEMServices.getDbModule();
-
-		Vector v = null;
-		v = new Vector();
+		Vector v = new Vector();
+		List ddTables = DDServiceClient.getDDTables();
+		List convs = Conversion.getConversions();
 
 		if (schema != null && schema.startsWith(Properties.ddURL)) {
-
 			// schema is from DD
 			// parse tbl id
 			// check tbl id
-			//
-
 			String tblId = schema.substring(schema.indexOf("id=TBL") + 6, schema.length());
-
-			List convs = Conversion.getConversions();
-
-			for (int i = 0; i < convs.size(); i++) {
-				Hashtable h = new Hashtable();
-				h.put("convert_id", "DD_TBL" + tblId + "_CONV" + ((ConversionDto) convs.get(i)).getConvId());
-				h.put("xsl", Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv=" + ((ConversionDto) convs.get(i)).getConvId());
-				h.put("description", ((ConversionDto) convs.get(i)).getDescription());
-				h.put("content_type_out", ((ConversionDto) convs.get(i)).getContentType());
-				h.put("result_type", ((ConversionDto) convs.get(i)).getResultType());
-				h.put("xml_schema", schema);
-				v.add(h);
+			boolean existsInDD=false;
+			for (Iterator iter = ddTables.iterator(); iter.hasNext();) {
+				Hashtable element = (Hashtable) iter.next();
+				if(((String) element.get("tblId")).equalsIgnoreCase(tblId)) {
+					existsInDD=true;
+					break;
+				}
+			}
+			
+			if(existsInDD) {
+				for (int i = 0; i < convs.size(); i++) {
+					Hashtable h = new Hashtable();
+					h.put("convert_id", "DD_TBL" + tblId + "_CONV" + ((ConversionDto) convs.get(i)).getConvId());
+					h.put("xsl", Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv=" + ((ConversionDto) convs.get(i)).getConvId());
+					h.put("description", ((ConversionDto) convs.get(i)).getDescription());
+					h.put("content_type_out", ((ConversionDto) convs.get(i)).getContentType());
+					h.put("result_type", ((ConversionDto) convs.get(i)).getResultType());
+					h.put("xml_schema", schema);
+					v.add(h);
+				}
 			}
 
 		}
 		//
 		if (schema == null) {
-			List ddTables = DDServiceClient.getDDTables();
-			List convs = Conversion.getConversions();
 
 			for (int i = 0; i < ddTables.size(); i++) {
 				Hashtable schemaDD = (Hashtable) ddTables.get(i);
@@ -185,7 +189,6 @@ public class ConversionService {
 		//retriving handocoded transformations
 		try {
 			Vector vDb = db.listConversions(schema);
-
 			for (int i = 0; i < vDb.size(); i++) {
 				v.add(vDb.get(i));
 			}

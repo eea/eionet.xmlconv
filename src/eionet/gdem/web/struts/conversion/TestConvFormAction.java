@@ -168,9 +168,7 @@ public class TestConvFormAction extends Action {
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 			return actionMapping.findForward("error");
 		}
-		//saveMessages(httpServletRequest, errors);
 
-		//httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 		if(schemas.size()>0){
 			httpServletRequest.getSession().setAttribute("conversion.schemas", schemas);
 			return actionMapping.findForward("success");

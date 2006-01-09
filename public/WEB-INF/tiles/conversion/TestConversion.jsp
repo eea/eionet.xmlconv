@@ -80,7 +80,14 @@
 				    </tr>
 				    <tr>
 				      <td colspan="3" align="center">
-				        <input type="button" class="button" value="<bean:message key="label.conversion.convert"/>" onclick="return submitAction('<bean:write name="webRoot" />/convert');"/>	        
+				      		<bean:size name="schema" id="count" property="stylesheets"/>
+					      	<logic:greaterThan name="count" value="0">
+						        <input type="button" class="button" value="<bean:message key="label.conversion.convert"/>" onclick="return submitAction('<bean:write name="webRoot" />/convert');"/>	        
+					        </logic:greaterThan>
+					        <logic:equal name="count" value="0">
+					        <p style="color: red; font-weight: bold;"><bean:message key="label.conversion.noconversion"/></p>
+					        </logic:equal>
+
 				      </td>
 				    </tr>
 				    <tr>
