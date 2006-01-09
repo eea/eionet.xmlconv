@@ -151,7 +151,8 @@ public class ConversionService {
 				h.put("convert_id", "DD_TBL" + tblId + "_CONV" + ((ConversionDto) convs.get(i)).getConvId());
 				h.put("xsl", Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv=" + ((ConversionDto) convs.get(i)).getConvId());
 				h.put("description", ((ConversionDto) convs.get(i)).getDescription());
-				h.put("content_type_out", ((ConversionDto) convs.get(i)).getResultType());
+				h.put("content_type_out", ((ConversionDto) convs.get(i)).getContentType());
+				h.put("result_type", ((ConversionDto) convs.get(i)).getResultType());
 				h.put("xml_schema", schema);
 				v.add(h);
 			}
@@ -172,7 +173,8 @@ public class ConversionService {
 					h.put("convert_id", "DD_TBL" + tblId + "_CONV" + ((ConversionDto) convs.get(j)).getConvId());
 					h.put("xsl", Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv=" + ((ConversionDto) convs.get(j)).getConvId());
 					h.put("description", ((ConversionDto) convs.get(j)).getDescription());
-					h.put("content_type_out", ((ConversionDto) convs.get(j)).getResultType());
+					h.put("content_type_out", ((ConversionDto) convs.get(j)).getContentType());
+					h.put("result_type", ((ConversionDto) convs.get(j)).getResultType());
 					h.put("xml_schema", schemaUrl);
 					v.add(h);
 				}

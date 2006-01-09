@@ -22,10 +22,12 @@
 package eionet.gdem.dcm;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import eionet.gdem.Properties;
 import eionet.gdem.dto.ConversionDto;
+import eionet.gdem.services.DbModuleIF;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.xml.IXQuery;
@@ -40,6 +42,7 @@ public class Conversion {
 
 	static {
 		try {
+			DbModuleIF db = GDEMServices.getDbModule();
 			IXmlCtx ctx=new XmlContext();
 			ctx.checkFromFile(Properties.convFile);
 			IXQuery xQuery=ctx.getQueryManager();
@@ -51,6 +54,8 @@ public class Conversion {
 				resObject.setDescription(xQuery.getElementValue(id, "description"));
 				resObject.setResultType(xQuery.getElementValue(id, "result_type"));
 				resObject.setStylesheet(xQuery.getElementValue(id, "stylesheet"));
+				Hashtable convType = db.getConvType(resObject.getResultType());
+				resObject.setContentType((String) convType.get("content_type"));
 				conversions.add(resObject);
 			}
 		} catch (Exception ex) {

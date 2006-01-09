@@ -266,7 +266,7 @@ public class SchemaManager {
 				} else {
 					xslUrl = (String) hash.get("xsl");
 					ddConv = true;
-					type = (String) hash.get("content_type_out");
+					type = (String) hash.get("result_type");
 				}
 
 				Stylesheet stl = new Stylesheet();
@@ -397,20 +397,6 @@ public class SchemaManager {
 
 		try {
 
-			/*
-			 * ConversionService cs = new ConversionService(); Vector conv =
-			 * cs.listConversions();
-			 * 
-			 * for (int i = 0; i < conv.size(); i++){ Hashtable schema =
-			 * (Hashtable)conv.get(i); //System.out.println( i + " - " +
-			 * schema.get("xml_schema") );
-			 * if(!schemasChk.contains(schema.get("xml_schema"))){ Schema sc = new
-			 * Schema(); sc.setSchema((String)schema.get("xml_schema"));
-			 * sc.setTable((String)schema.get("table"));
-			 * sc.setDataset((String)schema.get("dataset")); schemas.add(sc);
-			 * schemasChk.add(schema.get("xml_schema")); } }
-			 */
-
 			// retrive conversions for DD tables
 			List ddTables = DDServiceClient.getDDTables();
 
@@ -426,11 +412,13 @@ public class SchemaManager {
 				sc.setDataset((String) schema.get("dataSet"));
 				schemas.add(sc);
 				schemasChk.add(schema.get("xml_schema"));
-
 			}
+			
+			BeanComparator comp = new BeanComparator("table");
+			Collections.sort(schemas, comp);
 
+			// append handcoded conversions
 			DbModuleIF dbM = GDEMServices.getDbModule();
-			// hcSchemas = dbM.getSchemas(null);
 			hcSchemas = dbM.getSchemasWithStl();
 
 			if (hcSchemas == null) hcSchemas = new Vector();
@@ -451,6 +439,7 @@ public class SchemaManager {
 			_logger.debug("Error getting schema",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
+		
 		return schemas;
 
 	}
@@ -483,7 +472,7 @@ public class SchemaManager {
 				} else {
 					xslUrl = (String) hash.get("xsl");
 					ddConv = true;
-					type = (String) hash.get("content_type_out");
+					type = (String) hash.get("result_type");
 				}
 
 				Stylesheet stl = new Stylesheet();

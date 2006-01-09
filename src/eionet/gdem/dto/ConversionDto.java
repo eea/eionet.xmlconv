@@ -28,6 +28,7 @@ public class ConversionDto implements Serializable {
 	private String description;
 	private String resultType;
 	private String stylesheet;
+	private String contentType;
 
 
 	/**
@@ -76,6 +77,18 @@ public class ConversionDto implements Serializable {
 
 	public void setStylesheet(String stylesheet) {
 		this.stylesheet = stylesheet;
+	}
+	
+	
+
+
+	public String getContentType() {
+		return contentType;
+	}
+
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 
 

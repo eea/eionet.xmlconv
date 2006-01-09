@@ -51,7 +51,6 @@ public class ListConvFormAction extends Action {
 		try {
 			SchemaManager sm = new SchemaManager();
 			schemas = sm.getSchemas();
-
 		} catch (DCMException e) {
 			e.printStackTrace();
 			_logger.error("List conversion error",e);
