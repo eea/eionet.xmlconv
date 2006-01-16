@@ -269,6 +269,8 @@ margin-bottom: 2px;
 }
 ul.portal-subnav li a, ul.portal-subnav li a:visited {
 display:block;
+font-family: sans-serif;
+font-size:9px;
 font-weight: bold;
 text-decoration: none;
 text-align:left;	
@@ -525,7 +527,7 @@ border: 0;
 font-weight: bold;
 background: transparent;
 padding: 1px 5px 0px 0; /*mda*/
-color: #000;
+color: #fff;
 }
 .portletBody {
 position: relative;
