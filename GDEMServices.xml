@@ -28,6 +28,15 @@
 				</Parameters>
 				<Value Type="ARRAY"/>
 			</Method>
+			<Method Name="convert" Auth="false">
+				<Parameters>
+					<Parameter Name="url" Type="STRING"/>
+					<Parameter Name="convertId" Type="STRING"/>
+					<Parameter Name="username" Type="STRING"/>
+					<Parameter Name="password" Type="STRING"/>										
+				</Parameters>
+				<Value Type="STRUCT"/>
+			</Method>			
 		</Methods>
 	</Service>
 	<Service Name="XQueryService" Provider="eionet.gdem.qa.XQueryService">

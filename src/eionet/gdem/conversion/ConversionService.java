@@ -113,7 +113,6 @@ public class ConversionService {
 		tmpFolder = Properties.tmpFolder+ File.separatorChar; //props.getString("tmp.folder");
 
 		initCnvTypes();
-
 	}
 
 
@@ -220,7 +219,17 @@ public class ConversionService {
 		
 	}
 
-
+	public Hashtable convert(String sourceURL, String convertId, String username, String password) throws GDEMException {
+		try{
+			this.trustedMode = false;
+			this.ticket = Utils.getEncodedAuthentication(username, password);
+			return convert(sourceURL, convertId, null);
+		}catch(IOException ex){
+			_logger.error("Error creating ticket " , ex);
+			throw new GDEMException("Error creating ticket", ex);
+		}
+	}
+	
 	public Hashtable convert(String sourceURL, String convertId, HttpServletResponse response) throws GDEMException {
 		OutputStream result=null;
 		_logger.debug("sourceURL=" + sourceURL + "convertId=" + convertId + "res=" + response);
