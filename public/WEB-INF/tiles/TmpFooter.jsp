@@ -51,9 +51,6 @@
 												</ed:menuItem>
 											</ed:hasPermission>
 											<logic:present name="user">
-												<ed:menuItem action="/do/editUI/viewHeader"  title="Manage User Interface">
-													<bean:message key="label.menu.editUI"/>
-												</ed:menuItem>
 												<ed:menuItem action="/do/ldapForm"  title="Edit application configurations">
 													<bean:message key="label.menu.config"/>
 												</ed:menuItem>

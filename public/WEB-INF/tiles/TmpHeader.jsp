@@ -56,7 +56,9 @@ response.setDateHeader("Expires", 0);
 	<div id="portal-top">
 		<div id="portal-logo">
 			<div style="width:100%">	
-				<ed:ui-renderer id="header"/>
+                                <a href="/"><img src="/images/logo.png" alt="Logo" class="logo" border="0" /></a>
+                                <div id="sitetitle">XML Services</div>
+                                <div id="sitetagline">Conversion and Quality Assessment Service</div>
 			</div>
 		</div>
 		<h5 class="hiddenStructure">Navigation</h5>
