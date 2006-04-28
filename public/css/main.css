@@ -748,6 +748,38 @@ padding: 1px;
 	padding:3px; 
 }
 
+/* The .operations is for the blue buttons to the right of the page */
+
+#operations {
+        float: right;
+        margin: 20px 0px 0px 15px;
+}
+
+#operations ul {
+        list-style: none;
+        list-style-image: none;
+        margin: 0 0 0 0;
+}
+
+#operations li {
+        font-size:.75em;
+        font-family: AvenirLight, sans-serif;
+        font-weight: bold;
+        color: #ffffff;
+        line-height: 100%;
+        white-space: nowrap;
+}
+
+#operations li a {
+        display:block;
+        font-weight: bold;
+        text-decoration: none;
+        color: #ffffff;
+        background: url('../images/emptybluebutton.png') no-repeat;
+        padding: 4px 0px 0px 9px;
+        width: 111px;
+        height: 17px;
+}
 
 
 
