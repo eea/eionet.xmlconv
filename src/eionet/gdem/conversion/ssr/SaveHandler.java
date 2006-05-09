@@ -270,8 +270,13 @@ public class SaveHandler {
 
           req_params = fu.getRequestParams();
           fu.setFolder(queriesFolder);
+          fileName = fu.getFileName();
+          if (Utils.isNullStr(fileName)){
+    	    req.setAttribute(Names.ERROR_ATT, "No file found to upload.");
+		    return;
+          }
           //check if file exists in filesystem or in database
-  		  if (fu.getFileExists() || dbM.checkQueryFile(fu.getFileName())){
+  		  if (fu.getFileExists() || dbM.checkQueryFile(fileName)){
   	        req.setAttribute(Names.ERROR_ATT, "File already exists. Rename the file and upload it again.");
   		    return;
   		  }
@@ -347,19 +352,21 @@ public class SaveHandler {
             content_type= (String)req_params.get("CONTENT_TYPE");
             current_file= (String)req_params.get("FILE_NAME");
 
-            //Don't have filename in database
-            if (Utils.isNullStr(current_file)){
-            	current_file = fu.getFileName();
-            	//check if file exists
-            	if (fu.getFileExists() || dbM.checkQueryFile(current_file)){
-            		req.setAttribute(Names.ERROR_ATT, "File already exists. Rename the file and upload it again.");
-            		return;
-      		  	}
-            }
-            fu.setFolder(queriesFolder);
-            fu.saveFileAs(current_file,true);
-//		  	fileName=fu.saveFile();
 
+        	if (!Utils.isNullStr(fu.getFileName())){
+        		//upload file
+        		if (Utils.isNullStr(current_file)){
+            		//	Didn't have filename in database
+        			current_file = fu.getFileName();
+        			//	check if file exists
+        			if (fu.getFileExists() || dbM.checkQueryFile(current_file)){
+        				req.setAttribute(Names.ERROR_ATT, "File already exists. Rename the file and upload it again.");
+        				return;
+      		  		}
+        		}
+        		fu.setFolder(queriesFolder);
+        		fu.saveFileAs(current_file,true);
+        	}
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Uploading file: " + e.toString());
