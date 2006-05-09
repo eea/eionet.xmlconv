@@ -32,15 +32,12 @@ import com.tee.uit.security.AppUser;
 import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.SecurityUtil;
-import eionet.gdem.utils.FileUpload;
 import eionet.gdem.utils.MultipartFileUpload;
 
 
 import eionet.gdem.services.DbModuleIF;
 import eionet.gdem.services.GDEMServices;
 import java.io.File;
-
-import java.io.IOException;
 
 /**
 * Handler of storing methods for the GDEM
@@ -51,20 +48,20 @@ public class SaveHandler {
   private static DbModuleIF dbM=null;
 
   /**
-  * stylesheets handling 
-  * 
+  * stylesheets handling
+  *
   */
   static void handleStylesheets(HttpServletRequest req, String action) {
 
      String schemaID=null;
      String xslFolder=null;
      String fileName=null;
-     
+
      AppUser user = SecurityUtil.getUser(req, Names.USER_ATT);
   	 String user_name=null;
 	   if (user!=null)
         user_name = user.getUserName();
-        
+
      xslFolder=Properties.xslFolder; //props.getString("xsl.folder");
      if (!xslFolder.endsWith(File.separator))
         xslFolder = xslFolder + File.separator;
@@ -74,12 +71,12 @@ public class SaveHandler {
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "i")){
              req.setAttribute(Names.ERROR_ATT, "You don't have permissions to insert stylesheets!");
-             return;                   
+             return;
           }
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
-           return;          
+           return;
         }
         try{
           MultipartFileUpload fu = new MultipartFileUpload(false);
@@ -88,14 +85,14 @@ public class SaveHandler {
           req_params = fu.getRequestParams();
 		  	  fu.setFolder(xslFolder);
 		  	  fileName=fu.saveFile();
-          
+
           //FileUpload fu = new FileUpload(xslFolder);
           //fu.uploadFile(req);
           //fileName=fu.getFileName();
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Uploading file: " + e.toString());
-           return;          
+           return;
         }
 
 
@@ -114,7 +111,7 @@ public class SaveHandler {
        }
        try{
          dbM= GDEMServices.getDbModule();
-         
+
          schemaID=dbM.getSchemaID(schema);
          if (schemaID==null)
             schemaID=dbM.addSchema(schema, null);
@@ -124,7 +121,7 @@ public class SaveHandler {
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
-          return;          
+          return;
        }
    }
    else if (action.equals( Names.XSL_UPD_ACTION) ) {
@@ -132,27 +129,27 @@ public class SaveHandler {
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "u")){
              req.setAttribute(Names.ERROR_ATT, "You don't have permissions to update stylesheets!");
-             return;                   
+             return;
           }
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
-           return;          
+           return;
         }
         try{
           MultipartFileUpload fu = new MultipartFileUpload(false);
           fu.processMultiPartRequest(req);
           req_params = fu.getRequestParams();
-		  	  fu.setFolder(xslFolder);
-		  	  fileName=fu.saveFile();
-          
+		  fu.setFolder(xslFolder);
+		  fileName=fu.saveFile();
+
           //FileUpload fu = new FileUpload(xformFolder);
           //fu.uploadFile(req);
           //fileName=fu.getFileName();
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Uploading file: " + e.toString());
-           return;          
+           return;
         }
 
 
@@ -180,29 +177,29 @@ public class SaveHandler {
 
        try{
          dbM= GDEMServices.getDbModule();
-         
+
 
          dbM.updateStylesheet(xsl_id, schema_id, descr, fileName, content_type);
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
-          return;          
+          return;
        }
 
    }   else if (action.equals( Names.XSL_DEL_ACTION) ) {
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "d")){
            req.setAttribute(Names.ERROR_ATT, "You don't have permissions to delete stylesheets!");
-           return;                   
+           return;
           }
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
-           return;          
+           return;
         }
        String del_id= (String)req.getParameter(Names.XSL_DEL_ID);
        //schemaID= (String)req.getParameter(Names.SCHEMA_ID);
-       
+
        if (Utils.isNullStr(del_id)){
          req.setAttribute(Names.ERROR_ATT, "Stylesheet ID cannot be empty.");
          return;
@@ -216,7 +213,7 @@ public class SaveHandler {
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while deleting stylesheet from database: " + e.toString());
-          return;          
+          return;
        }
        try{
           Utils.deleteFile(xslFolder + fileName);
@@ -225,54 +222,64 @@ public class SaveHandler {
          req.setAttribute(Names.ERROR_ATT, "Cannot delete XSL file: " + e.toString());
          return;
        }
-       
+
      }
      req.setAttribute(Names.SCHEMA_ID, schemaID);
 
   }
 
   /**
-  * queries handling 
-  * 
+  * queries handling
+  *
   */
   static void handleQueries(HttpServletRequest req, String action) {
 
      String schemaID=null;
      String queriesFolder=null;
      String fileName=null;
-     
+
      AppUser user = SecurityUtil.getUser(req, Names.USER_ATT);
   	 String user_name=null;
 	   if (user!=null)
         user_name = user.getUserName();
-        
+
      queriesFolder=Properties.queriesFolder;
      if (!queriesFolder.endsWith(File.separator))
         queriesFolder = queriesFolder + File.separator;
 
+     /*
+      * Handle add query
+      */
      if (action.equals( Names.QUERY_ADD_ACTION) ) {
         HashMap req_params=null;
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "i")){
              req.setAttribute(Names.ERROR_ATT, "You don't have permissions to insert queries!");
-             return;                   
+             return;
           }
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
-           return;          
+           return;
         }
         try{
+          dbM= GDEMServices.getDbModule();
+
           MultipartFileUpload fu = new MultipartFileUpload(false);
           fu.processMultiPartRequest(req);
 
           req_params = fu.getRequestParams();
-  	  	    fu.setFolder(queriesFolder);
-		  	 fileName=fu.saveFile();
+          fu.setFolder(queriesFolder);
+          //check if file exists in filesystem or in database
+  		  if (fu.getFileExists() || dbM.checkQueryFile(fu.getFileName())){
+  	        req.setAttribute(Names.ERROR_ATT, "File already exists. Rename the file and upload it again.");
+  		    return;
+  		  }
+		  fileName=fu.saveFile();
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Uploading file: " + e.toString());
-           return;          
+           return;
         }
 
         if (fileName==null){
@@ -291,7 +298,7 @@ public class SaveHandler {
        }
        try{
          dbM= GDEMServices.getDbModule();
-         
+
          schemaID=dbM.getSchemaID(schema);
          if (schemaID==null)
             schemaID=dbM.addSchema(schema, null);
@@ -300,35 +307,63 @@ public class SaveHandler {
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
-          return;          
+          return;
        }
    }
+     /*
+      * Update query page
+      */
    else if (action.equals( Names.QUERY_UPD_ACTION) ) {
         HashMap req_params=null;
+        String schema_id=null;
+        String query_id= null;
+        String name= null;
+        String descr= null;
+        String content_type= null;
+        String current_file= null;
+
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "u")){
              req.setAttribute(Names.ERROR_ATT, "You don't have permissions to update queries!");
-             return;                   
+             return;
           }
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
-           return;          
+           return;
         }
+
         try{
-          MultipartFileUpload fu = new MultipartFileUpload(false);
-          fu.processMultiPartRequest(req);
-          req_params = fu.getRequestParams();
-		  	  fu.setFolder(queriesFolder);
-		  	  fileName=fu.saveFile();
-          
-          //FileUpload fu = new FileUpload(xformFolder);
-          //fu.uploadFile(req);
-          //fileName=fu.getFileName();
+            dbM= GDEMServices.getDbModule();
+
+            MultipartFileUpload fu = new MultipartFileUpload(false);
+            fu.processMultiPartRequest(req);
+
+            req_params = fu.getRequestParams();
+            schema_id= (String)req_params.get("SCHEMA_ID");
+            query_id= (String)req_params.get("QUERY_ID");
+            name= (String)req_params.get("SHORT_NAME");
+            descr= (String)req_params.get("DESCRIPTION");
+            content_type= (String)req_params.get("CONTENT_TYPE");
+            current_file= (String)req_params.get("FILE_NAME");
+
+            //Don't have filename in database
+            if (Utils.isNullStr(current_file)){
+            	current_file = fu.getFileName();
+            	//check if file exists
+            	if (fu.getFileExists() || dbM.checkQueryFile(current_file)){
+            		req.setAttribute(Names.ERROR_ATT, "File already exists. Rename the file and upload it again.");
+            		return;
+      		  	}
+            }
+            fu.setFolder(queriesFolder);
+            fu.saveFileAs(current_file,true);
+//		  	fileName=fu.saveFile();
+
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Uploading file: " + e.toString());
-           return;          
+           return;
         }
 
 
@@ -338,12 +373,6 @@ public class SaveHandler {
        }
 
 
-       String schema_id= (String)req_params.get("SCHEMA_ID");
-       String query_id= (String)req_params.get("QUERY_ID");
-       String name= (String)req_params.get("SHORT_NAME");
-       String descr= (String)req_params.get("DESCRIPTION");
-       String content_type= (String)req_params.get("CONTENT_TYPE");
-       String current_file= (String)req_params.get("FILE_NAME");
 
        if (Utils.isNullStr(schema_id)){
          req.setAttribute(Names.ERROR_ATT, "XML schema idcannot be empty.");
@@ -353,17 +382,15 @@ public class SaveHandler {
          req.setAttribute(Names.ERROR_ATT, "Query id cannot be empty.");
          return;
        }
-       fileName = (fileName==null)?current_file:fileName;
 
        try{
-         dbM= GDEMServices.getDbModule();
-         
 
-         dbM.updateQuery(query_id, schema_id,name,descr, fileName, content_type);
+
+         dbM.updateQuery(query_id, schema_id,name,descr, current_file, content_type);
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
-          return;          
+          return;
        }
 
    }
@@ -371,15 +398,15 @@ public class SaveHandler {
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "d")){
            req.setAttribute(Names.ERROR_ATT, "You don't have permissions to delete queries!");
-           return;                   
+           return;
           }
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
-           return;          
+           return;
         }
        String del_id= (String)req.getParameter(Names.QUERY_DEL_ID);
-       
+
        if (Utils.isNullStr(del_id)){
          req.setAttribute(Names.ERROR_ATT, "Query ID cannot be empty.");
          return;
@@ -393,7 +420,7 @@ public class SaveHandler {
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while deleting query from database: " + e.toString());
-          return;          
+          return;
        }
        try{
           Utils.deleteFile(queriesFolder + fileName);
@@ -402,19 +429,19 @@ public class SaveHandler {
          req.setAttribute(Names.ERROR_ATT, "Cannot delete XSL file: " + e.toString());
          return;
        }
-       
+
      }
      req.setAttribute(Names.SCHEMA_ID, schemaID);
   }
 
   /**
-  * schemas handling 
-  * 
+  * schemas handling
+  *
   */
   static void handleSchemas(HttpServletRequest req, String action) {
 
     boolean hasOtherStuff = false;
-    
+
      AppUser user = SecurityUtil.getUser(req, Names.USER_ATT);
   	 String user_name=null;
 	   if (user!=null)
@@ -424,12 +451,12 @@ public class SaveHandler {
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "d")){
            req.setAttribute(Names.ERROR_ATT, "You don't have permissions to delete schemas!");
-           return;                   
+           return;
           }
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
-           return;          
+           return;
         }
        StringBuffer err_buf = new StringBuffer();
        String del_id= (String)req.getParameter(Names.XSD_DEL_ID);
@@ -442,11 +469,11 @@ public class SaveHandler {
          		 for (int i=0; i<stylesheets.size(); i++){
            			HashMap hash = (HashMap)stylesheets.get(i);
              		String xslFile = (String)hash.get("xsl");
-   
+
                  String xslFolder=Properties.xslFolder;
                  if (!xslFolder.endsWith(File.separator))
                     xslFolder = xslFolder + File.separator;
-            
+
                  try{
                    Utils.deleteFile(xslFolder + xslFile);
                  }
@@ -454,22 +481,22 @@ public class SaveHandler {
                    err_buf.append("Cannot delete XSL file: " + xslFile + "; " + e.toString() + "<BR>");
                    continue;
                  }
-              }        
+              }
            	}
             if(dbM.getSchemaQueries(del_id) != null)
                hasOtherStuff = true;
          }
-         else {  // action.equals( Names.XSDQ_DEL_ACTION ) 
+         else {  // action.equals( Names.XSDQ_DEL_ACTION )
             Vector queries = dbM.getSchemaQueries(del_id);
             if (queries!=null){
          		 for (int i=0; i<queries.size(); i++){
            			HashMap hash = (HashMap)queries.get(i);
              		String queryFile = (String)hash.get("query");
-   
+
                  String queriesFolder=Properties.queriesFolder;
                  if (!queriesFolder.endsWith(File.separator))
                     queriesFolder = queriesFolder + File.separator;
-            
+
                  try{
                    Utils.deleteFile(queriesFolder + queryFile);
                  }
@@ -477,20 +504,20 @@ public class SaveHandler {
                    err_buf.append("Cannot delete XQuery file: " + queryFile + "; " + e.toString() + "<BR>");
                    continue;
                  }
-              }        
+              }
            	}
             if(dbM.getSchemaStylesheets(del_id) != null)
                hasOtherStuff = true;
          }
-         dbM.removeSchema(del_id, action.equals(Names.XSD_DEL_ACTION), action.equals(Names.XSDQ_DEL_ACTION), !hasOtherStuff);              
+         dbM.removeSchema(del_id, action.equals(Names.XSD_DEL_ACTION), action.equals(Names.XSDQ_DEL_ACTION), !hasOtherStuff);
         }
         catch (Exception e){
           err_buf.append("Cannot delete Schema: " + e.toString() + del_id);
           //req.setAttribute(Names.ERROR_ATT, "Cannot delete Schema: " + e.toString() + del_id);
           //return;
         }
-        
-        
+
+
         if (err_buf.length()>0)
           req.setAttribute(Names.ERROR_ATT, err_buf.toString());
       }
@@ -499,12 +526,12 @@ public class SaveHandler {
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "u")){
            req.setAttribute(Names.ERROR_ATT, "You don't have permissions to update schema!");
-           return;                   
+           return;
           }
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
-           return;          
+           return;
         }
        String schema_id= (String)req.getParameter(Names.SCHEMA_ID);
 
@@ -523,10 +550,10 @@ public class SaveHandler {
             String schema_name= (String)req.getParameter("XML_SCHEMA");
             String description= (String)req.getParameter("DESCRIPTION");
             String dtd_public_id= (String)req.getParameter("DTD_PUBLIC_ID");
-      
+
             dbM.updateSchema(schema_id, schema_name, description, dtd_public_id);
           }
-        
+
        }
        catch (Exception e){
          req.setAttribute(Names.ERROR_ATT, "Cannot update Schema: " + e.toString() + schema_id);
@@ -535,8 +562,8 @@ public class SaveHandler {
       }
   }
   /**
-  * root elements handling 
-  * 
+  * root elements handling
+  *
   */
   static void handleRootElems(HttpServletRequest req, String action) {
 
@@ -550,18 +577,18 @@ public class SaveHandler {
   	 String user_name=null;
 	   if (user!=null)
         user_name = user.getUserName();
-        
+
 
      if (action.equals( Names.ELEM_ADD_ACTION) ) {
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "i")){
              req.setAttribute(Names.ERROR_ATT, "You don't have permissions to insert root elements!");
-             return;                   
+             return;
           }
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
-           return;          
+           return;
         }
 
        String elem_name= (String)req.getParameter("ELEM_NAME");
@@ -578,23 +605,23 @@ public class SaveHandler {
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
-          return;          
+          return;
        }
    }
    else if (action.equals(Names.ELEM_DEL_ACTION) ) {
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "d")){
            req.setAttribute(Names.ERROR_ATT, "You don't have permissions to delete root element!");
-           return;                   
+           return;
           }
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
-           return;          
+           return;
         }
        String del_id= (String)req.getParameter("ELEM_DEL_ID");
        //schemaID= (String)req.getParameter(Names.SCHEMA_ID);
-       
+
        if (Utils.isNullStr(del_id)){
          req.setAttribute(Names.ERROR_ATT, "Root element ID cannot be empty.");
          return;
@@ -605,16 +632,16 @@ public class SaveHandler {
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while deleting root element from database: " + e.toString());
-          return;          
+          return;
        }
-       
+
      }
      req.setAttribute(Names.SCHEMA_ID, schema_id);
 
   }
   /**
-  * hosts handling 
-  * 
+  * hosts handling
+  *
   */
   static void handleHosts(HttpServletRequest req, String action) {
 
@@ -627,19 +654,19 @@ public class SaveHandler {
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_HOST_PATH, "d")){
            req.setAttribute(Names.ERROR_ATT, "You don't have permissions to delete hosts!");
-           return;                   
+           return;
           }
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
-           return;          
+           return;
         }
        StringBuffer err_buf = new StringBuffer();
        String del_id= (String)req.getParameter("ID");
 
        try{
          dbM= GDEMServices.getDbModule();
-          dbM.removeHost(del_id);              
+          dbM.removeHost(del_id);
         }
         catch (Exception e){
           err_buf.append("Cannot delete host: " + e.toString() + del_id);
@@ -653,12 +680,12 @@ public class SaveHandler {
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_HOST_PATH, "u")){
            req.setAttribute(Names.ERROR_ATT, "You don't have permissions to update host!");
-           return;                   
+           return;
           }
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
-           return;          
+           return;
         }
        String host_id= (String)req.getParameter("HOST_ID");
 
@@ -683,12 +710,12 @@ public class SaveHandler {
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_HOST_PATH, "i")){
              req.setAttribute(Names.ERROR_ATT, "You don't have permissions to insert new hosts!");
-             return;                   
+             return;
           }
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
-           return;          
+           return;
         }
 
        String host_name= (String)req.getParameter("HOST_NAME");
@@ -702,7 +729,7 @@ public class SaveHandler {
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
-          return;          
+          return;
        }
    }
   }
@@ -717,12 +744,12 @@ public class SaveHandler {
          try {
             if(!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "d")) {
                req.setAttribute(Names.ERROR_ATT, "You don't have permissions to delete jobs!");
-               return;                   
+               return;
             }
          }
          catch (Exception e) {
             req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
-            return;          
+            return;
          }
 
          StringBuffer err_buf = new StringBuffer();

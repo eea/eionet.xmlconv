@@ -221,18 +221,18 @@ public class DbModule implements DbModuleIF, Constants {
 
 	public Vector listConversions(String xmlSchema) throws SQLException {
 
-		String sql = "SELECT " + XSL_TABLE + "." + CNV_ID_FLD + "," + XSL_TABLE + "." + XSL_FILE_FLD + ", " + XSL_TABLE + "." + DESCR_FLD + "," + 
-		RESULT_TYPE_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ", " + 
-		CONVTYPE_TABLE + "." + CONTENT_TYPE_FLD + 
-		" FROM " + XSL_TABLE + " LEFT JOIN " + SCHEMA_TABLE + 
-		" ON " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD + 
-		" LEFT JOIN " + CONVTYPE_TABLE + " ON " + XSL_TABLE + "." + RESULT_TYPE_FLD + "=" + 
+		String sql = "SELECT " + XSL_TABLE + "." + CNV_ID_FLD + "," + XSL_TABLE + "." + XSL_FILE_FLD + ", " + XSL_TABLE + "." + DESCR_FLD + "," +
+		RESULT_TYPE_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ", " +
+		CONVTYPE_TABLE + "." + CONTENT_TYPE_FLD +
+		" FROM " + XSL_TABLE + " LEFT JOIN " + SCHEMA_TABLE +
+		" ON " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD +
+		" LEFT JOIN " + CONVTYPE_TABLE + " ON " + XSL_TABLE + "." + RESULT_TYPE_FLD + "=" +
 		CONVTYPE_TABLE + "." + CONV_TYPE_FLD;
-		
+
 		if (xmlSchema != null) sql +=  " WHERE " + XML_SCHEMA_FLD +  "=" + Utils.strLiteral(xmlSchema);
 
 		sql += " ORDER BY " + XML_SCHEMA_FLD + ", " + RESULT_TYPE_FLD;
-		 
+
 		// System.out.println(sql);
 		String[][] r = _executeStringQuery(sql);
 
@@ -250,7 +250,7 @@ public class DbModule implements DbModuleIF, Constants {
 		}
 
 		return v;
-		
+
 	}
 
 
@@ -307,12 +307,12 @@ public class DbModule implements DbModuleIF, Constants {
 		/*
 		 * sql = "SELECT " + SCHEMA_ID_FLD + " FROM " + SCHEMA_TABLE + " WHERE " +
 		 * XML_SCHEMA_FLD + "= '" + xmlSchema + "'";
-		 * 
+		 *
 		 * String[][] r = _executeStringQuery(sql);
-		 * 
+		 *
 		 * if (r.length==0) throw new SQLException("Error when returning id for " +
 		 * xmlSchema + " ");
-		 * 
+		 *
 		 * return r[0][0];
 		 */
 	}
@@ -529,7 +529,7 @@ public class DbModule implements DbModuleIF, Constants {
 
 	/**
 	 * Returns new database connection.
-	 * 
+	 *
 	 * @throw ServiceException if no connections were available.
 	 */
 	public Connection getConnection() throws SQLException {
@@ -609,7 +609,7 @@ public class DbModule implements DbModuleIF, Constants {
 
 
 	public Vector getSchemas(String schemaId, boolean stylesheets) throws SQLException {
-	    String sql="SELECT " + SCHEMA_ID_FLD + "," + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD + ", " + 
+	    String sql="SELECT " + SCHEMA_ID_FLD + "," + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD + ", " +
 	    DTD_PUBLIC_ID_FLD + ", " + SCHEMA_VALIDATE_FLD + " FROM " + SCHEMA_TABLE;
 	    if (schemaId!=null){
 	      if (Utils.isNum(schemaId)){
@@ -619,7 +619,7 @@ public class DbModule implements DbModuleIF, Constants {
 	         sql+=" WHERE " + XML_SCHEMA_FLD + " =" +	Utils.strLiteral(schemaId);
 	      }
 	    }
-	         
+
 	    sql +=  " ORDER BY " + XML_SCHEMA_FLD;
 
 	    String [][] r = _executeStringQuery(sql);
@@ -628,7 +628,7 @@ public class DbModule implements DbModuleIF, Constants {
 
 	    for (int i =0; i<   r.length; i++) {
 
-	      HashMap h = new HashMap();    
+	      HashMap h = new HashMap();
 	      h.put("schema_id", r[i][0]);
 	      h.put("xml_schema", r[i][1]);
 	      h.put("description", r[i][2]);
@@ -1325,12 +1325,12 @@ public class DbModule implements DbModuleIF, Constants {
 		}
 
 	}
-	
-	
+
+
 	public boolean checkStylesheetFile(String xsl_id, String xslFileName) throws SQLException {
 		int id = 0;
 
-		String sql = "SELECT COUNT(*) FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD + "=" + Utils.strLiteral(xslFileName) 
+		String sql = "SELECT COUNT(*) FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD + "=" + Utils.strLiteral(xslFileName)
 		+ "and " +CNV_ID_FLD+"="+xsl_id;
 
 		String r[][] = _executeStringQuery(sql);
@@ -1357,5 +1357,37 @@ public class DbModule implements DbModuleIF, Constants {
 			return true;
 		}
 	}
+	public boolean checkQueryFile(String queryFileName) throws SQLException {
+
+		int id = 0;
+
+		String sql = "SELECT COUNT(*) FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD + "=" + Utils.strLiteral(queryFileName);
+
+		String r[][] = _executeStringQuery(sql);
+
+		String count = r[0][0];
+		if (count.equals("0")) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+	public boolean checkQueryFile(String query_id, String queryFileName) throws SQLException {
+		int id = 0;
+
+		String sql = "SELECT COUNT(*) FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD + "=" + Utils.strLiteral(queryFileName)
+		+ "and " +QUERY_ID_FLD+"="+query_id;
+
+		String r[][] = _executeStringQuery(sql);
+
+		String count = r[0][0];
+		if (count.equals("0")) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 
 }

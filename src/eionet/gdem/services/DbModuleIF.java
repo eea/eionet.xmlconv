@@ -64,8 +64,8 @@ public interface DbModuleIF {
    * Table for uploaded xml schemas in the DB
    */
    public static final String UPL_SCHEMA_TABLE="T_UPL_SCHEMA";
-  
-  
+
+
   /**
   * Table for root element mappings for schemas in the DB
   */
@@ -87,14 +87,14 @@ public interface DbModuleIF {
   public static final String XSL_SCHEMA_ID_FLD="SCHEMA_ID";
   public static final String DESCR_FLD="DESCRIPTION";
   public static final String RESULT_TYPE_FLD="RESULT_TYPE";
-  public static final String XSL_FILE_FLD="XSL_FILENAME";  
+  public static final String XSL_FILE_FLD="XSL_FILENAME";
 
   /**
   * Field names in QUERY table
   */
   public static final String QUERY_ID_FLD="QUERY_ID";
   public static final String SHORT_NAME_FLD="SHORT_NAME";
-  public static final String QUERY_FILE_FLD="QUERY_FILENAME";  
+  public static final String QUERY_FILE_FLD="QUERY_FILENAME";
 
   /**
   * Field names in SCHEMA table
@@ -111,8 +111,8 @@ public interface DbModuleIF {
    public static final String UPL_SCHEMA_ID_FLD="SCHEMA_ID";
    public static final String UPL_SCHEMA_FLD="SCHEMA";
    public static final String UPL_SCHEMA_DESC="DESCRIPTION";
-  
-  
+
+
   /**
   * Field names in ROOT ELEMENTS table
   */
@@ -132,7 +132,7 @@ public interface DbModuleIF {
   public static final String TIMESTAMP_FLD="TIME_STAMP";
   public static final String XQ_ID_FLD="QUERY_ID";
   public static final String SRC_FILE_FLD="SRC_FILE";
-  
+
   /**
   * Field names in FILE table
   */
@@ -165,8 +165,8 @@ public interface DbModuleIF {
   public static final String BROWSER_TITLE_FLD="BROWSER_TITLE";
   public static final String BROWSER_STYLESHEET_FLD="STYLESHEET";
   public static final String BROWSER_PRIORITY_FLD="PRIORITY";
-  
-  
+
+
   /**
   * Field names in HOSTS table
   */
@@ -206,7 +206,7 @@ public interface DbModuleIF {
 
   /**
   * Updates a Schema properties in the database
-  * @param schema_id - id from database, used as a constraint 
+  * @param schema_id - id from database, used as a constraint
   * @param xmlSchema - xml schema  (http://eionet.eea.eu.int/RASchema"
   * @param xsdDescription - text describing the schema
   * @param public_id - dtd public id
@@ -215,7 +215,7 @@ public interface DbModuleIF {
 
   /**
   * Updates a Query properties in the database
-  * @param String query_id - id from database, used as a constraint 
+  * @param String query_id - id from database, used as a constraint
   * @param String schema_id - schema id
   * @param String short_name - db field for title
   * @param String description - text describing the query
@@ -226,7 +226,7 @@ public interface DbModuleIF {
 
   /**
   * Updates stylesheet properties in the database
-  * @param String xsl_id - id from database, used as a constraint 
+  * @param String xsl_id - id from database, used as a constraint
   * @param String schema_id - schema id
   * @param String description - text describing the query
   * @param String fileName - query file name
@@ -236,7 +236,7 @@ public interface DbModuleIF {
 
   /**
   * Updates a Schema validate properties in the database
-  * @param String schema_id - id from database, used as a constraint 
+  * @param String schema_id - id from database, used as a constraint
   * @param String validate - validate property
   */
   public void updateSchemaValidate(String schema_id, String validate) throws SQLException;
@@ -273,7 +273,7 @@ public interface DbModuleIF {
   public HashMap getStylesheetInfo(String convertId) throws SQLException;
   public HashMap getQueryInfo(String queryId) throws SQLException;
   public String getQueryText(String queryId) throws SQLException;
-  
+
   /**
   * Gets the data of one or several schemas from the repository
   * Vector contains HashMaps with schema and it's stylesheets information
@@ -307,7 +307,7 @@ public interface DbModuleIF {
 
   public Vector getSchemaStylesheets(String schemaId) throws SQLException;
   public Vector getSchemaQueries(String schemaId) throws SQLException;
-  
+
   /**
   * Gets information about the received job in Workqueue
   * @param String jobId
@@ -333,7 +333,7 @@ public interface DbModuleIF {
   * Changes the status of the jobs in the table and sets the downloaded file local src
   * THe jobs should have the sam source url.
   * also changes the time_stamp showing when the new task was started
-  */ 
+  */
   public void changeFileJobsStatus(String url, String savedFile, int status) throws SQLException;
   /**
   * Returns job IDs in the Workqueue with the given status
@@ -342,7 +342,7 @@ public interface DbModuleIF {
   public String[] getJobs(int status) throws SQLException;
 
   /**
-  * Removes the XQJob 
+  * Removes the XQJob
   * No checking performed by this method
   */
   public void endXQJob(String jobId) throws SQLException;
@@ -385,7 +385,7 @@ public interface DbModuleIF {
   */
 
   public Hashtable getXForm(String XMLSchema) throws SQLException;
-  
+
   /**
   * returns XForm information
   * @param - XForm id
@@ -410,13 +410,13 @@ public interface DbModuleIF {
   public Hashtable getXFormNames(Vector XMLSchemas) throws SQLException;
 
 /**
-  * returns all XForm file names 
+  * returns all XForm file names
   * @return Hashtable contining schema url as key and  XForm  url as value
   */
 
   public Hashtable getXForms() throws SQLException;
 /**
-  * returns XForms capable browser types 
+  * returns XForms capable browser types
   * @return Vector contining all fields from BROWSER table
   */
 
@@ -434,7 +434,7 @@ public interface DbModuleIF {
 
   /**
   * Updates a XForm properties in the database
-  * @param xform_id - id from database, used as a constraint 
+  * @param xform_id - id from database, used as a constraint
   * @param schema_id - xml schema id
   * @param title - title describing the xform shortly
   * @param description - text describes the xform
@@ -453,7 +453,7 @@ public interface DbModuleIF {
 
   /**
   * Updates a Host properties in the database
-  * @param host_id - id from database, used as a constraint 
+  * @param host_id - id from database, used as a constraint
   * @param hostName - host name  (http://eionet.eea.eu.int"
   * @param userName - username
   * @param pwd - password
@@ -462,14 +462,14 @@ public interface DbModuleIF {
 
   /**
   * Deletes the Host from the database
-  * @param host_id - id from database, used as a constraint 
+  * @param host_id - id from database, used as a constraint
   */
   public void removeHost(String hostId) throws SQLException;
 
 /**
   * returns hosts from database
   * @param host - if empty, then all fields are return
-  *             - numeric id from database 
+  *             - numeric id from database
   *             - host name as string - wildcard search is performed
   * @return Vector contining all fields from T_HOST table
   */
@@ -498,26 +498,26 @@ public interface DbModuleIF {
    */
 
    public String[][] getJobData() throws SQLException;
-  
+
   /**
   * returns all records from T_QUERY WHERE XML_SCHEMA=xmlSchema
   * @param String xmlSchema - xmlSchema as an URL
   * @return Vector contining all fields as Hashtable from T_QUERY table
   */
   public Vector listQueries(String xmlSchema) throws SQLException;
-  
+
   /**
    * returns all uploaded schemas
    * @return Vector containing all fields as HashMap from UPL_SCHEMA table
    */
 
-   public Vector getUplSchema() throws SQLException;  
-   
+   public Vector getUplSchema() throws SQLException;
+
    /**
     * Adds a new uploaded Schema to the database
     * @param schema - xml schema name
     * @return The ID of the added schema
-    */    
+    */
     public String addUplSchema(String schema, String description) throws SQLException;
 
 	 /**
@@ -525,14 +525,14 @@ public interface DbModuleIF {
 	  * @param uplSchemaId - schema Id
 	  */
 	 public void removeUplSchema(String uplSchemaId) throws SQLException;
-	 
+
 	 /**
 	  * returns schema for requested schema id
 	  * @param uplSchemaId
 	  * @return
 	  * @throws SQLException
 	  */
-	 public String getUplSchema(String uplSchemaId) throws SQLException; 
+	 public String getUplSchema(String uplSchemaId) throws SQLException;
 
 	 /**
 	  * retturns all schemas which have stylesheets
@@ -540,15 +540,19 @@ public interface DbModuleIF {
 	  * @throws SQLException
 	  */
 	 public Vector getSchemasWithStl() throws SQLException;
-	 
+
 	 public Hashtable getUplSchemaById(String schemaId) throws SQLException;
-	 
+
 	 public void updateUplSchema(String schema_id, String description) throws SQLException;
-	 
+
 	 public boolean checkStylesheetFile(String xslFileName) throws SQLException;
-	 
+
 	 public boolean checkStylesheetFile(String xsl_id, String xslFileName) throws SQLException;
-	 
+
 	 boolean checkUplSchemaFile(String schemaFileName) throws SQLException;
-	 
+
+	 public boolean checkQueryFile(String queryFileName) throws SQLException;
+
+	 public boolean checkQueryFile(String query_id, String queryFileName) throws SQLException;
+
 }
