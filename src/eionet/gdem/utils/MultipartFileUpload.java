@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Iterator;
@@ -223,7 +225,7 @@ public class MultipartFileUpload{
 
         if (file.exists()){
         	if (keepExisting){
-        		File uniqueFile = getUniqueFile(_folderName, saveAs);
+        		File uniqueFile = getDateAappendedFile(_folderName, saveAs);
         		file.renameTo(uniqueFile);
         	}
         }
@@ -302,5 +304,30 @@ public class MultipartFileUpload{
 
       fileName =  fileName.substring(i + 1);
       return fileName;
+    }
+    /**
+     * Appends current date value at the end of the filename
+     *
+     * @param folderName	Folder where the file will be stored
+     * @param fileName	File name that should be used for generating the unique filename
+
+     * @return 			Filename with appended date (in format yyMMddHHmmss)
+     */
+    private File getDateAappendedFile(String folderName, String fileName){
+
+    	SimpleDateFormat sdf = new SimpleDateFormat();
+    	sdf.applyPattern("yyMMddHHmmss");
+    	String dateVal = sdf.format(new Date());
+
+        int pos = fileName.lastIndexOf(".");
+    	StringBuffer buf = new StringBuffer();
+    	buf.append(fileName.substring(0, pos ));
+    	buf.append("_");
+    	buf.append(dateVal);
+    	buf.append(fileName.substring( pos));
+
+
+        return getUniqueFile(folderName,buf.toString());
+
     }
 }
