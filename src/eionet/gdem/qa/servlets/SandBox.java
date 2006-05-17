@@ -44,7 +44,7 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.GDEMException;
 
-public class SandBox  extends HttpServlet implements Constants { 
+public class SandBox  extends HttpServlet implements Constants {
 
  public void doGet(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException    {
   res.sendRedirect("sandbox.jsp"); //GET redirects to JSP
@@ -53,13 +53,14 @@ public class SandBox  extends HttpServlet implements Constants {
 
     String result=null;
 
+    res.setContentType("text/html");
+
     //save changes in XQ script to repository
     if(!Utils.isNullStr(req.getParameter("save"))) {
       String q_id = req.getParameter("ID");
       String xqFileName = req.getParameter("file_name");
       String xqScript = req.getParameter(XQ_SCRIPT_PARAM);
-      res.setContentType("text/html");
-      
+
       if(Utils.isNullStr(xqScript)) {
          res.getWriter().write("<html>The script cannot be empty!</html>");
          return;
@@ -91,7 +92,7 @@ public class SandBox  extends HttpServlet implements Constants {
     }
     if (sandboxtype.equals("SCHEMA")){ //execute all the scripts for 1 schema
       String xml_schema = req.getParameter("xml_schema");
-      
+
       if (Utils.isNullStr(xml_schema)){
          res.getWriter().write("<html>XML Schema cannot be empty!</html>");
          return;
@@ -106,7 +107,7 @@ public class SandBox  extends HttpServlet implements Constants {
               ValidationService vs = new ValidationService();
 			  vs.setTrustedMode(false);
 			  vs.setTicket(getTicket(req));
-    
+
               //result = vs.validateSchema(dataURL, xml_schema);
               result = vs.validate(dataURL);
             } catch (GDEMException ge){
@@ -120,7 +121,7 @@ public class SandBox  extends HttpServlet implements Constants {
             }
             catch(Exception e){
               res.getWriter().write("<html>Could not read script from file: " + xqScriptFile + "</html>");
-              return;            
+              return;
             }
 
             String[] pars = new String[1];
@@ -140,7 +141,7 @@ public class SandBox  extends HttpServlet implements Constants {
         // Add jobs to workqueue engine
         //
         else {
-          XQueryService xqE = new XQueryService(); 
+          XQueryService xqE = new XQueryService();
           try {
             Hashtable h = new Hashtable();
             Vector files = new Vector();
@@ -175,7 +176,7 @@ public class SandBox  extends HttpServlet implements Constants {
         // Run immediately
       //
         if(!Utils.isNullStr(req.getParameter("runnow"))) {
-  
+
           xq = new XQScript(xqScript, pars);
         	OutputStream outstream = res.getOutputStream();
            try {
@@ -190,8 +191,8 @@ public class SandBox  extends HttpServlet implements Constants {
         // Add job to workqueue engine
         //
         else {
-          XQueryService xqE = new XQueryService(); 
-          try {             
+          XQueryService xqE = new XQueryService();
+          try {
               result = xqE.analyze(dataURL, xqScript);
               res.getWriter().write("<html>Job (id: " + result + ") successfully added to the <a href='workqueue.jsp'>workqueue</a>.</html>");
            } catch (GDEMException ge){
@@ -209,15 +210,15 @@ public class SandBox  extends HttpServlet implements Constants {
 	HttpSession httpSession = req.getSession(false);
 	if (httpSession != null) {
 		ticket = (String)httpSession.getAttribute(Names.TICKET_ATT);
-	}	
-			
+	}
+
 	return ticket;
   }
 
 /*private static void _l(String s ){
   System.out.println ("=========================================");
   System.out.println (s);
-  System.out.println ("=========================================");  
+  System.out.println ("=========================================");
 }*/
 
 }
