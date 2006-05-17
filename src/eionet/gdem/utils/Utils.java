@@ -27,6 +27,7 @@ import eionet.gdem.Properties;
 import java.net.URL;
 import java.io.*;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -38,13 +39,13 @@ import sun.misc.BASE64Encoder;
  */
 public class Utils {
 
- 
+
 	private static Hashtable xmlEscapes = null;
   /*
   public static String tmpFolder="/tmp";
 
   //public static String urlPrefix="http://conversions.eionet.eu.int/";
-  
+
   public static String xslFolder="/xsl/";
 
   //Database settings from the properties file
@@ -55,10 +56,10 @@ public class Utils {
 
   //period for checking new jobs in the workqueue in milliseconds, default 20sec
   public static long wqCheckInterval=20000L;
-  
+
    //NB Saxon is the default value, not hard-coded!
 	public static String engineClass="eionet.gdem.qa.engines.SaxonImpl";
-	
+
 	private static ResourceBundle props;
   private static Category logger;
   */
@@ -66,7 +67,7 @@ public class Utils {
   static {
     if(logger == null)
         logger = Category.getInstance("gdem");
-      
+
     if (props==null) {
       props=ResourceBundle.getBundle("gdem");
       try {
@@ -80,8 +81,8 @@ public class Utils {
         dbPwd=props.getString("db.pwd");
 
         engineClass=props.getString("xq.engine.implementator");
-        
-				//period in seconds 
+
+				//period in seconds
 	      String frequency = props.getString("wq.check.interval");
 		    Float f = new Float(frequency);
 			  wqCheckInterval = (long)(f.floatValue() * 1000);
@@ -104,7 +105,7 @@ public class Utils {
   */
   public static String saveSrcFile(String srcUrl)throws IOException {
 
-     URL url = new URL(srcUrl);      
+     URL url = new URL(srcUrl);
      InputStream is = url.openStream();
 
      String fileName=null;
@@ -112,13 +113,13 @@ public class Utils {
 
      File file =new File(tmpFileName);
      FileOutputStream fos=new FileOutputStream(file);
-      
+
       int bufLen = 0;
       byte[] buf = new byte[1024];
-      
+
       while ( (bufLen=is.read( buf ))!= -1 )
         fos.write(buf, 0, bufLen );
-     
+
       fileName=tmpFileName;
       is.close();
       fos.flush(); fos.close();
@@ -131,8 +132,8 @@ public class Utils {
     return saveStrToFile(null, str, extension);
   }
    /**
-  * Stores a String in a text file 
-  * @param String fileName: 
+  * Stores a String in a text file
+  * @param String fileName:
   * @param String str: text to be stored
   * @param String ext: file extension
   */
@@ -144,7 +145,7 @@ public class Utils {
       if (extension!=null)
         fileName=fileName+"."+extension;
     }
-      
+
     FileWriter fos = new FileWriter(new File(fileName));
     fos.write(str);
     fos.flush(); fos.close();
@@ -153,14 +154,14 @@ public class Utils {
 
   public static String readStrFromFile(String fileName) throws java.io.IOException {
 
-    BufferedReader fis = new BufferedReader(new FileReader(fileName)); 
+    BufferedReader fis = new BufferedReader(new FileReader(fileName));
     StringBuffer s = new StringBuffer();
     String line=null;
-    while ((line = fis.readLine()) != null) 
+    while ((line = fis.readLine()) != null)
       s.append(line + "\n");
-     
+
       fis.close();
-      return s.toString();    
+      return s.toString();
   }
 
 
@@ -179,23 +180,23 @@ public class Utils {
       return true;
     else
       return false;
-  } 
+  }
   public static boolean isNullVector(Vector v ) {
     if (v==null)
       return true;
     else
       if (v.size()==0) return true;
-    
+
     return false;
-  } 
+  }
   public static boolean isNullHashtable(Hashtable h ) {
     if (h==null)
       return true;
     else
       if (h.isEmpty()) return true;
-    
+
     return false;
-  } 
+  }
   /**
   * Checks if the given string is a well-formed URL
   */
@@ -206,7 +207,7 @@ public class Utils {
       catch (MalformedURLException e){
           return false;
       }
-        
+
       return true;
   }
   /**
@@ -219,7 +220,7 @@ public class Utils {
       catch (Exception e){
           return false;
       }
-        
+
       return true;
   }
     /**
@@ -263,14 +264,14 @@ public class Utils {
         return str_decoded.substring(sep +1);
       else
         return null;
-    }   
+    }
 	  /**
      * A method for encoding the BASIC auth for request header
      */
     public static String getEncodedAuthentication(String user, String pwd)  throws java.io.IOException {
       String auth = user + ":" + pwd;
       return new BASE64Encoder().encode(auth.getBytes());
-    }   
+    }
 	  /**
      * A method for escaping apostrophes
      */
@@ -290,19 +291,19 @@ public class Utils {
     return ret.toString();
   }
 	public static String escapeXML(String text){
-		
+
 		if (text==null) return null;
 		if (text.length()==0) return text;
-		
+
 		StringBuffer buf = new StringBuffer();
 		for (int i=0; i<text.length(); i++)
 			buf.append(escapeXML(i, text));
-		
+
 		return buf.toString();
 	}
-	
+
 	public static String escapeXML(int pos, String text){
-		
+
 		if (xmlEscapes==null) setXmlEscapes();
 		Character c = new Character(text.charAt(pos));
 		for (Enumeration e=xmlEscapes.elements(); e.hasMoreElements(); ){
@@ -313,7 +314,7 @@ public class Utils {
 					return c.toString();
 			}
 		}
-		
+
 		if (pos+1 < text.length() && text.charAt(pos+1)=='#'){
 			int semicolonPos = text.indexOf(';', pos+1);
 			if (semicolonPos!=-1){
@@ -329,14 +330,14 @@ public class Utils {
 				}
 			}
 		}
-		
+
 		String esc = (String)xmlEscapes.get(c);
 		if (esc!=null)
 			return esc;
 		else
 			return c.toString();
 	}
-	
+
 	private static void setXmlEscapes(){
 		xmlEscapes = new Hashtable();
 		xmlEscapes.put(new Character('&'), "&amp;");
@@ -345,7 +346,7 @@ public class Utils {
 		xmlEscapes.put(new Character('"'), "&quot;");
 		xmlEscapes.put(new Character('\''), "&apos;");
 	}
-	   /** 
+	   /**
 	  * reads temporary file from dis and returs as a bytearray
 	  */
 	  public static byte[] fileToBytes(String fileName) throws GDEMException {
@@ -356,24 +357,24 @@ public class Utils {
 	      //log("========= open fis " + fileName);
 	      FileInputStream fis = new     FileInputStream(fileName);
 	      //log("========= fis opened");
-	      
+
 	      baos = new ByteArrayOutputStream();
-	    
+
 	      int bufLen = 0;
 	      byte[] buf = new byte[1024];
 
-	  
+
 	     while ( (bufLen=fis.read( buf ))!= -1 )
 	          baos.write(buf, 0, bufLen );
 
 	      fis.close();
-	      
+
 	    } catch (FileNotFoundException fne) {
 	      throw new GDEMException("File not found " + fileName, fne);
 	    } catch (Exception e) {
 	      throw new GDEMException("Exception " + e.toString(), e);
-	    }    
-	      return baos.toByteArray();    
+	    }
+	      return baos.toByteArray();
 	  }
 	  public static boolean containsKeyIgnoreCase(Hashtable hash, String val){
 		Enumeration keys = hash.keys();
@@ -383,5 +384,24 @@ public class Utils {
         }
         return false;
       }
+
+	/**
+	 * checks if list contains any String values or not
+	 *
+	 * @param list 		The list that will be investigated
+	 *
+	 * @return value	true, if the list does not contain any String values, otherwise true
+	 */
+	public static boolean isEmptyArrayList(ArrayList list){
+		boolean ret =true;
+		if (list == null)return ret;
+        if (list.size()==0) return ret;
+
+        for (int i=0; i<list.size();i++){
+        	String str_value = (String)list.get(i);
+        	if (!Utils.isNullStr(str_value)) return false;
+        }
+
+		return ret;
+	}
 }
-  

@@ -23,6 +23,12 @@
 
 package eionet.gdem.conversion.excel;
 
+import java.io.InputStream;
+
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+
+import eionet.gdem.conversion.SourceReaderIF;
+
 public class ExcelUtils {
 
   /**
@@ -40,7 +46,25 @@ public class ExcelUtils {
   /**
   * returns a valid ExcelReaderIF
   */
-  public static ExcelReaderIF getExcelReader(){
+  public static SourceReaderIF getExcelReader(){
     return new ExcelReader();
   }
+  /*
+   * returns true, if inputstream can be opened with MS Excel
+   */
+  public static boolean isExcelFile(InputStream input){
+	  try{
+		  POIFSFileSystem fs = new POIFSFileSystem(input);
+		  return true;
+	  }
+	  catch(Exception e){
+		  return false;
+	  }
+	 finally {
+		try {
+			if (input != null) input.close();
+		} catch (Exception e) {}
+	 }
+  }
 }
+
