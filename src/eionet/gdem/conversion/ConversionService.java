@@ -549,10 +549,10 @@ public class ConversionService {
 			if (converter == null) {
 				_logger
 						.error(
-								"Could not detect the format of source file. Converter waits MS Excel of OpenDocument Spreadsheet",
+								"Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.",
 								null);
 				throw new GDEMException(
-						"Could not detect the format of source file. Converter waits MS Excel of OpenDocument Spreadsheet");
+						"Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.");
 			}
 			// create new inputstrema from tmp Bytearrayoutputstream
 			in_stream_tmp = new ByteArrayInputStream(out_stream_tmp
@@ -727,10 +727,10 @@ public class ConversionService {
 			if (converter == null) {
 				_logger
 						.error(
-								"Could not detect the format of source file. Converter waits MS Excel of OpenDocument Spreadsheet",
+								"Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.",
 								null);
 				throw new GDEMException(
-						"Could not detect the format of source file. Converter waits MS Excel of OpenDocument Spreadsheet ");
+						"Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.");
 			}
 			// create new inputstrema from tmp Bytearrayoutputstream
 			in_stream_tmp = new ByteArrayInputStream(out_stream_tmp
