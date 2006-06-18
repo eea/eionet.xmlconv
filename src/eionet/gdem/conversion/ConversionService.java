@@ -310,6 +310,7 @@ public class ConversionService {
 					try {
 						result = response.getOutputStream();
 						response.setContentType(cnvContentType);
+						response.setHeader("Content-Disposition","inline; filename=converted." + cnvFileExt);
 					} catch (IOException e) {
 						_logger
 								.error("Error getting response outputstream ",
@@ -431,6 +432,7 @@ public class ConversionService {
 				try {
 					result = res.getOutputStream();
 					res.setContentType(cnvContentType);
+					res.setHeader("Content-Disposition","inline; filename=converted." + cnvFileExt);
 				} catch (IOException e) {
 					_logger.error("Error getting response outputstream ", e);
 					throw new GDEMException(
@@ -607,6 +609,7 @@ public class ConversionService {
 		if (res != null) {
 			try {
 				res.setContentType("text/xml");
+				res.setHeader("Content-Disposition","inline; filename=converted.xml");
 				result.close();
 			} catch (IOException e) {
 				_logger.error("Error closing result ResponseOutputStream ", e);
@@ -781,6 +784,7 @@ public class ConversionService {
 		if (res != null) {
 			try {
 				res.setContentType("text/xml");
+				res.setHeader("Content-Disposition","inline; filename=converted.xml");
 				result.close();
 			} catch (IOException e) {
 				_logger.error("Error closing result ResponseOutputStream ", e);
