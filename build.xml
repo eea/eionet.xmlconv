@@ -1,6 +1,7 @@
 <project name="xmlconv" default="buildjar" basedir=".">
 	<!-- set global properties for this build -->
 	<property name="src" value="src"/>
+        <property file="${basedir}/build.properties" />
 	<property name="lib" value="public/WEB-INF/lib"/>
 	<property name="classes.dir" value="public/WEB-INF/classes"/>
 	<target name="make_gzip" depends="check_os" if="is_unix">
