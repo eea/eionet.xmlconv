@@ -82,12 +82,12 @@
         			query_file = (String)querie.get("query");			
         			String name = (String)querie.get("short_name");
         			%>
-        				<input type="radio" name="script" value="<%=Properties.queriesFolder%><%=query_file%>" <% if (j == 0) %>checked="checked"<%;%>/>
+        				<input type="radio" name="script" value="<%=query_id%>" <% if (j == 0) %>checked="checked"<%;%>/>
         				<%=name%> - <a target="blank" href="<%=Names.QUERY_FOLDER%><%=query_file%>"><%=query_file%></a><br/>
         			<%
 				}
 				if (bValidate){
-					%><input type="radio" name="script" value="-1" <% if (queries.size() == 0) %>checked="true"<%;%>/>
+					%><input type="radio" name="script" value="-1" <% if (queries.size() == 0) %>checked="checked"<%;%>/>
 							XML Schema validation<%
 				}
         		%>
@@ -112,9 +112,9 @@
 		if(wquPrm && !Utils.isNullStr(q_id)) {
 		%>		
 			<input type="hidden" name="file_name" value="<%=query_file%>" />
-			<input type="hidden" name="ID" value="<%=q_id%>" />
 			<input type="submit" name="save" value=" Save changes to file " />
 		<% } %>
+		<input type="hidden" name="ID" value="<%=q_id%>" />
 	</form>
 	<!--/td></tr></table-->
 </div>
