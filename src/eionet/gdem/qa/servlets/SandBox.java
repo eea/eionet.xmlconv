@@ -23,6 +23,7 @@
 
 package eionet.gdem.qa.servlets;
 import eionet.gdem.Constants;
+import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.qa.XQueryService;
 import eionet.gdem.validation.ValidationService;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -39,186 +41,266 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import javax.servlet.ServletException;
+
 import eionet.gdem.utils.Utils;
 
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.services.DbModuleIF;
+import eionet.gdem.services.GDEMServices;
 import eionet.gdem.GDEMException;
 
 public class SandBox  extends HttpServlet implements Constants {
 
- public void doGet(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException    {
-  res.sendRedirect("sandbox.jsp"); //GET redirects to JSP
- }
- public void doPost(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException    {
+	private static final String HTML_CONTENT_TYPE = "text/html";
+	private static DbModuleIF db; //DbModule
 
-    String result=null;
+	public void doGet(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException    {
+		res.sendRedirect("sandbox.jsp"); //GET redirects to JSP
+	}
+	public void doPost(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException    {
 
-    res.setContentType("text/html");
+		String result=null;
 
-    //save changes in XQ script to repository
-    if(!Utils.isNullStr(req.getParameter("save"))) {
-      String q_id = req.getParameter("ID");
-      String xqFileName = req.getParameter("file_name");
-      String xqScript = req.getParameter(XQ_SCRIPT_PARAM);
 
-      if(Utils.isNullStr(xqScript)) {
-         res.getWriter().write("<html>The script cannot be empty!</html>");
-         return;
-      }
-      try{
-        Utils.saveStrToFile(xqFileName, xqScript, null);
-        res.sendRedirect(Names.SANDBOX_JSP + "?ID=" + q_id);
-      } catch (Exception ge){
-        result = "<html>Error occured during saving file: " + xqFileName + "<br/>"+ ge.getMessage() + "</html>";
-        res.getWriter().write(result);
-      }
-      return;
-    }
+		//save changes in XQ script to repository
+		if(!Utils.isNullStr(req.getParameter("save"))) {
 
-    String dataURL = req.getParameter(XQ_SOURCE_PARAM_NAME);
-    if (Utils.isNullStr(dataURL)){
-         res.getWriter().write("<html>The data URL cannot be empty!</html>");
-         return;
-    }
-    String sandboxtype = req.getParameter("sandboxtype");
-    if (Utils.isNullStr(sandboxtype)){
-         res.getWriter().write("<html>Sandbox type cannot be empty!</html>");
-         return;
-    }
-    //search all scripts according to XML Schema and send back to sandbox
-    if(!Utils.isNullStr(req.getParameter("findscripts"))) {
-       res.sendRedirect(Names.SANDBOX_JSP + "?SOURCE_URL=" + dataURL);
-       return;
-    }
-    if (sandboxtype.equals("SCHEMA")){ //execute all the scripts for 1 schema
-      String xml_schema = req.getParameter("xml_schema");
+			String q_id = req.getParameter("ID");
+			String xqFileName = req.getParameter("file_name");
+			String xqScript = req.getParameter(XQ_SCRIPT_PARAM);
 
-      if (Utils.isNullStr(xml_schema)){
-         res.getWriter().write("<html>XML Schema cannot be empty!</html>");
-         return;
-      }
-        // Run immediately
-      //
-        if(!Utils.isNullStr(req.getParameter("runnow"))) {
-          String xqScriptFile = req.getParameter("script");
-          String xqScript=null;
-          if (xqScriptFile.equals(String.valueOf(JOB_VALIDATION))){
-            try{
-              ValidationService vs = new ValidationService();
-			  vs.setTrustedMode(false);
-			  vs.setTicket(getTicket(req));
+			if(Utils.isNullStr(xqScript)) {
+				writeHTMLMessage(res, "The script cannot be empty!");
+				return;
+			}
+			try{
+				Utils.saveStrToFile(xqFileName, xqScript, null);
+				res.sendRedirect(Names.SANDBOX_JSP + "?ID=" + q_id);
+			} catch (Exception ge){
+				writeHTMLMessage(res, "Error occured during saving file: " + xqFileName + "<br/>"+ ge.getMessage());
+			}
+			return;
+		}
 
-              //result = vs.validateSchema(dataURL, xml_schema);
-              result = vs.validate(dataURL);
-            } catch (GDEMException ge){
-              result = ge.getMessage();
-            }
-            res.getWriter().write(result);
-          }
-          else{
-            try{
-              xqScript = Utils.readStrFromFile(xqScriptFile);
-            }
-            catch(Exception e){
-              res.getWriter().write("<html>Could not read script from file: " + xqScriptFile + "</html>");
-              return;
-            }
+		String dataURL = req.getParameter(XQ_SOURCE_PARAM_NAME);
+		if (Utils.isNullStr(dataURL)){
+			writeHTMLMessage(res, "The data URL cannot be empty!");
+			return;
+		}
+		String sandboxtype = req.getParameter("sandboxtype");
+		if (Utils.isNullStr(sandboxtype)){
+			writeHTMLMessage(res, "Sandbox type cannot be empty!");
+			return;
+		}
+		//search all scripts according to XML Schema and send back to sandbox
+		if(!Utils.isNullStr(req.getParameter("findscripts"))) {
+			res.sendRedirect(Names.SANDBOX_JSP + "?SOURCE_URL=" + dataURL);
+			return;
+		}
+		if (sandboxtype.equals("SCHEMA")){ //execute all the scripts for 1 schema
+			String xml_schema = req.getParameter("xml_schema");
 
-            String[] pars = new String[1];
-            pars[0] = XQ_SOURCE_PARAM_NAME + "=" + dataURL;
+			if (Utils.isNullStr(xml_schema)){
+				writeHTMLMessage(res, "XML Schema cannot be empty!");
+				return;
+			}
+			// Run immediately
+			//
+			if(!Utils.isNullStr(req.getParameter("runnow"))) {
+				String xqScriptId = req.getParameter("script");
+				String xqScript=null;
+				if (xqScriptId.equals(String.valueOf(JOB_VALIDATION))){
+					res.setContentType(HTML_CONTENT_TYPE);
+					try{
+						ValidationService vs = new ValidationService();
+						vs.setTrustedMode(false);
+						vs.setTicket(getTicket(req));
 
-            XQScript xq = new XQScript(xqScript, pars);
-          	OutputStream outstream = res.getOutputStream();
-            try {
-            		System.out.println("siin");
-            	xq.getResult(outstream);
-            } catch (GDEMException ge){
-              result = ge.getMessage();
-              outstream.write(result.getBytes());
-            }
-          }
-        }
-        // Add jobs to workqueue engine
-        //
-        else {
-          XQueryService xqE = new XQueryService();
-          try {
-            Hashtable h = new Hashtable();
-            Vector files = new Vector();
-            files.add(dataURL);
-            h.put(xml_schema, files);
-            Vector v_result = xqE.analyzeXMLFiles(h);
-            PrintWriter writer = res.getWriter();
-            if (Utils.isNullVector(v_result)){
-              writer.write("<html>No jobs has been added to the workqueue!</html>");
-             }
-            else{
-              writer.write("<html>The following jobs has  been added to the <a href='workqueue.jsp'>workqueue</a>.");
-              for (int i=0;i<v_result.size();i++){
-                Vector v = (Vector)v_result.get(i);
-                writer.write("<br/>" + String.valueOf(i+1) + ". job ID: " + (String)v.get(0));
-              }
-            }
-           } catch (GDEMException ge){
-              result = ge.getMessage();
-              res.getWriter().write(result);
-           }
-        }
-    }
-    else if(sandboxtype.equals("SCRIPT")){  //execute only 1 script from textarea
-      String xqScript = req.getParameter(XQ_SCRIPT_PARAM);
+						//result = vs.validateSchema(dataURL, xml_schema);
+						result = vs.validate(dataURL);
+					} catch (GDEMException ge){
+						result = ge.getMessage();
+					}
+					res.getWriter().write(result);
+				}
+				//run QA script
+				else{
+					HashMap query = getQueryInfo(xqScriptId);
+					String xqScriptFile = getQueryFile(query);
+					try{
+						xqScript = Utils.readStrFromFile( xqScriptFile);
+					}
+					catch(Exception e){
+						writeHTMLMessage(res, "Could not read script from file: " + xqScriptFile);
+						return;
+					}
 
-      String[] pars = new String[1];
-      pars[0] = XQ_SOURCE_PARAM_NAME + "=" + dataURL;
+					res.setContentType(getContentType(query));
 
-      XQScript xq = null;
-      if(!Utils.isNullStr(xqScript)) {
-        // Run immediately
-      //
-        if(!Utils.isNullStr(req.getParameter("runnow"))) {
+					String[] pars = new String[1];
+					pars[0] = XQ_SOURCE_PARAM_NAME + "=" + dataURL;
 
-          xq = new XQScript(xqScript, pars);
-        	OutputStream outstream = res.getOutputStream();
-           try {
-        		//System.out.println("siin2");
-          	xq.getResult(outstream);
-          	//result = xq.getResult();
-           } catch (GDEMException ge){
-              result = ge.getMessage();
-              outstream.write(result.getBytes());
-           }
-        }
-        // Add job to workqueue engine
-        //
-        else {
-          XQueryService xqE = new XQueryService();
-          try {
-              result = xqE.analyze(dataURL, xqScript);
-              res.getWriter().write("<html>Job (id: " + result + ") successfully added to the <a href='workqueue.jsp'>workqueue</a>.</html>");
-           } catch (GDEMException ge){
-              result = ge.getMessage();
-              res.getWriter().write(result);
-           }
-        }
-      }
-      else
-         res.getWriter().write("<html>The script cannot be empty!</html>");
-    }
-  }
-  private String getTicket(HttpServletRequest req){
-	String ticket=null;
-	HttpSession httpSession = req.getSession(false);
-	if (httpSession != null) {
-		ticket = (String)httpSession.getAttribute(Names.TICKET_ATT);
+					XQScript xq = new XQScript(xqScript, pars);
+					OutputStream outstream = res.getOutputStream();
+					try {
+						xq.getResult(outstream);
+					} catch (GDEMException ge){
+						result = ge.getMessage();
+						outstream.write(result.getBytes());
+					}
+				}
+			}
+			// Add jobs to workqueue engine
+			//
+			else {
+				res.setContentType(HTML_CONTENT_TYPE);
+				XQueryService xqE = new XQueryService();
+				try {
+					Hashtable h = new Hashtable();
+					Vector files = new Vector();
+					files.add(dataURL);
+					h.put(xml_schema, files);
+					Vector v_result = xqE.analyzeXMLFiles(h);
+					PrintWriter writer = res.getWriter();
+					if (Utils.isNullVector(v_result)){
+						writer.write("<html>No jobs has been added to the workqueue!</html>");
+					}
+					else{
+						writer.write("<html>The following jobs has  been added to the <a href='workqueue.jsp'>workqueue</a>.");
+						for (int i=0;i<v_result.size();i++){
+							Vector v = (Vector)v_result.get(i);
+							writer.write("<br/>" + String.valueOf(i+1) + ". job ID: " + (String)v.get(0));
+						}
+					}
+				} catch (GDEMException ge){
+					result = ge.getMessage();
+					res.getWriter().write(result);
+				}
+			}
+		}
+		else if(sandboxtype.equals("SCRIPT")){  //execute only 1 script from textarea
+			String q_id = req.getParameter("ID");
+			String xqScript = req.getParameter(XQ_SCRIPT_PARAM);
+
+
+			String[] pars = new String[1];
+			pars[0] = XQ_SOURCE_PARAM_NAME + "=" + dataURL;
+
+			XQScript xq = null;
+			if(!Utils.isNullStr(xqScript)) {
+				// Run immediately
+				//
+				if(!Utils.isNullStr(req.getParameter("runnow"))) {
+
+					HashMap query = getQueryInfo(q_id);
+					res.setContentType(getContentType(query));
+
+					xq = new XQScript(xqScript, pars);
+					OutputStream outstream = res.getOutputStream();
+					try {
+						//System.out.println("siin2");
+						xq.getResult(outstream);
+						//result = xq.getResult();
+					} catch (GDEMException ge){
+						result = ge.getMessage();
+						outstream.write(result.getBytes());
+					}
+				}
+				// Add job to workqueue engine
+				//
+				else {
+					XQueryService xqE = new XQueryService();
+					try {
+						result = xqE.analyze(dataURL, xqScript);
+						writeHTMLMessage(res, "Job (id: " + result + ") successfully added to the <a href='workqueue.jsp'>workqueue</a>.");
+					} catch (GDEMException ge){
+						result = ge.getMessage();
+						writeHTMLMessage(res, result);
+					}
+				}
+			}
+			else
+				writeHTMLMessage(res, "The script cannot be empty!");
+		}
+	}
+	/*
+	 * Methods writes simple text message on HTML page inot response outputstream
+	 */
+	private void writeHTMLMessage(HttpServletResponse res, String message) throws IOException{
+		res.setContentType(HTML_CONTENT_TYPE);
+		res.getWriter().write("<html>");
+		res.getWriter().write(message);
+		res.getWriter().write("</html>");
+
+
 	}
 
-	return ticket;
-  }
+	/*
+	 * loads Query info from database
+	 */
+	private HashMap getQueryInfo(String id){
+		HashMap query = null;
+		if(id != null) {
+			try{
+				db = GDEMServices.getDbModule();
+				query = db.getQueryInfo(id);
+			}
+			catch(Exception e){
 
-/*private static void _l(String s ){
-  System.out.println ("=========================================");
-  System.out.println (s);
-  System.out.println ("=========================================");
-}*/
+			}
+		}
+		return query;
+	}
+	/*
+	 * method returns sqript content type from hashmap or default content type
+	 */
+	private String getContentType(HashMap hash){
+		String content_type = null;
+		if (hash!=null && hash.containsKey("content_type")){
+			String typeID = (String)hash.get("content_type");
+			try{
+				Hashtable hashType = db.getConvType(typeID);
+				if (hash!=null){
+					content_type = (String)hashType.get("content_type");
+				}
+			}
+			catch(Exception e){
+				//do nothing, return default content type
+			}
+
+		}
+		if(Utils.isNullStr(content_type))
+			return HTML_CONTENT_TYPE;
+
+		return content_type;
+
+	}
+	/*
+	 * Method returns the script file location in filesystem
+	 */
+	private String getQueryFile(HashMap hash){
+		String query_file = null;
+		if (hash!=null && hash.containsKey("query")){
+			query_file = Properties.queriesFolder + (String)hash.get("query");
+		}
+		return query_file;
+	}
+
+
+	private String getTicket(HttpServletRequest req){
+		String ticket=null;
+		HttpSession httpSession = req.getSession(false);
+		if (httpSession != null) {
+			ticket = (String)httpSession.getAttribute(Names.TICKET_ATT);
+		}
+
+		return ticket;
+	}
+
+	/*private static void _l(String s ){
+	 System.out.println ("=========================================");
+	 System.out.println (s);
+	 System.out.println ("=========================================");
+	 }*/
 
 }
