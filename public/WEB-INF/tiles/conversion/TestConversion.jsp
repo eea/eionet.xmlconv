@@ -20,6 +20,14 @@
 			<html:form action="/testConversionForm" method="post" >
 				  <table cellpadding="0" cellspacing="0" border="0" align="center">
 				    <tr>
+				      <td colspan="3">
+					        <bean:message key="label.conversion.selectSource"/>
+				      </td>
+				    </tr>
+				    <tr>
+				      <td colspan="3">&nbsp;</td>
+				    </tr>
+				    <tr>
 				      <td align="left" class="label"> 
 					       <bean:message key="label.conversion.url"/>:
 				      </td>
@@ -32,13 +40,46 @@
 				      <td colspan="3">&nbsp;</td>
 				    </tr>
 				    <tr>
-				      <td colspan="3">
-					        <bean:message key="label.conversion.selectConversion"/>
+				      <td align="left" class="label"> 
+					       <bean:message key="label.conversion.cdrfiles"/>:
 				      </td>
-				    </tr>
+				      <td>&nbsp;</td>
+			      		<bean:size name="schema" id="countfiles" property="cdrfiles"/>
+				      	<logic:greaterThan name="countfiles" value="0">
+					      <td>
+					        <select name="cdrFile"  size="10" >
+								<option selected="selected" value="">
+									--
+								</option>		        
+								<logic:iterate id="cdrfile" name="schema" scope="page"  property="cdrfiles" type="CdrFileDto">
+										<option value="<bean:write name="cdrfile" property="url" />">
+											<bean:write name="cdrfile" property="country" />&nbsp;-&nbsp;
+											<bean:write name="cdrfile" property="title" />
+											<logic:notEqual name="cdrfile" property="year" value="0">
+												&nbsp;-&nbsp;(<bean:write name="cdrfile" property="year" />
+												<logic:notEqual name="cdrfile" property="endyear" value="0">
+													&nbsp;-&nbsp;<bean:write name="cdrfile" property="endyear" />
+												</logic:notEqual>
+												<logic:equal name="cdrfile" property="endyear" value="0">
+													<logic:notEqual name="cdrfile" property="partofyear" value="">
+														&nbsp;-&nbsp;<bean:write name="cdrfile" property="partofyear" />
+													</logic:notEqual>
+												</logic:equal>)
+											</logic:notEqual>
+										</option>
+								</logic:iterate>
+						    </select>
+						  </td>
+						</logic:greaterThan>
+				      	<logic:equal name="countfiles" value="0">
+					      <td>
+						        <bean:message key="label.conversion.noCdrFiles"/>
+					      </td>
+						</logic:equal>
+					</tr>
 				    <tr>
 				      <td colspan="3">&nbsp;</td>
-				    </tr>		    
+				    </tr>
 				    <tr>
 				      <td align="left" class="label"> 
 					        <bean:message key="label.conversion.xmlSchema"/>:
@@ -53,6 +94,14 @@
 				    <tr>
 				      <td colspan="3">&nbsp;</td>
 				    </tr>
+				    <tr>
+				      <td colspan="3">
+					        <bean:message key="label.conversion.selectConversion"/>
+				      </td>
+				    </tr>
+				    <tr>
+				      <td colspan="3">&nbsp;</td>
+				    </tr>		    
 				    
 				    <bean:define id="idConv" name="ConversionForm" property="conversionId"  type="java.lang.String"/>	    
 				    
@@ -60,18 +109,16 @@
 					    <tr>
 					      <td align="right">
 								<logic:equal name="stylesheet" property="convId" value="<%=idConv%>">
-									<input type="radio" checked="checked" name="format" value="<bean:write name="stylesheet" property="convId" />" />
+									<input type="radio" checked="checked" name="format" id="r_<bean:write name="stylesheet" property="convId" />" value="<bean:write name="stylesheet" property="convId" />" />
 								</logic:equal>
 								<logic:notEqual name="stylesheet" property="convId" value="<%=idConv%>">
-									<input type="radio" name="format" value="<bean:write name="stylesheet" property="convId" />" />
+									<input type="radio" name="format" id="r_<bean:write name="stylesheet" property="convId" />"  value="<bean:write name="stylesheet" property="convId" />" />
 								</logic:notEqual>
 					      </td>
 					      <td>&nbsp;</td>
 					      <td>
-								<a target="blank" href="<bean:write name="stylesheet" property="xsl" />" title="<bean:write name="stylesheet" property="xsl_descr" />">						
-									<bean:write name="stylesheet" property="type" />
-								</a>&#160;
-								&nbsp;-&nbsp;<bean:write name="stylesheet" property="xsl_descr" /> 								
+								<label for="r_<bean:write name="stylesheet" property="convId" />"><bean:write name="stylesheet" property="type" />
+								&nbsp;-&nbsp;<bean:write name="stylesheet" property="xsl_descr" /></label>
 					      </td>
 					    </tr>
 					</logic:iterate>		    
