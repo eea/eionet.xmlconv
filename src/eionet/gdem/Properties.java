@@ -82,6 +82,10 @@ public class Properties {
 	public static String ldapUserDir = null;
 	public static String ldapAttrUid = null;
 
+	//DCM settings from the properties file of incoming services from CDR
+	//CDR doesn't use Service names
+	public static String cdrServUrl = null;
+
 	private static ResourceBundle props;
 	private static ResourceBundle ldapProps;
 	public static Category logger;
@@ -96,11 +100,11 @@ public class Properties {
 				queriesFolder = props.getString("queries.folder");
 
 				//xformsFolder=props.getString("xforms.folder");
-				
-				
+
+
 				xslFolder=checkPath(props.getString("xsl.folder"));
 				tmpFolder=props.getString("tmp.folder");
-				
+
 				//DB connection settings
 				dbDriver = props.getString("db.driver");
 				dbUrl = props.getString("db.url");
@@ -108,15 +112,18 @@ public class Properties {
 				dbPwd = props.getString("db.pwd");
 
 				engineClass = props.getString("xq.engine.implementator");
-				//DCM settings 
+				//DCM settings
 				ddURL = props.getString("dd.url");
 				gdemURL = props.getString("gdem.url");
 
-				//settings for incoming services from DD 
+				//settings for incoming services from DD
 				invServUrl = props.getString("dd.rpc.url");
 				invServName = props.getString("dd.rpcservice.name");
 
-				//period in seconds 
+				//settings for incoming services from CDR
+				cdrServUrl = props.getString("cdr.url");
+
+				//period in seconds
 				String frequency = props.getString("wq.check.interval");
 				Float f = new Float(frequency);
 				wqCheckInterval = (long) (f.floatValue() * 1000);
@@ -144,19 +151,19 @@ public class Properties {
 				ldapContext = ldapProps.getString("ldap.context");
 				ldapUserDir = ldapProps.getString("ldap.user.dir");
 				ldapAttrUid = ldapProps.getString("ldap.attr.uid");
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 
 	}
-	
+
 	private static String checkPath(String path){
 		if(path.endsWith("/")){
 			path=path.substring(0, path.length() -1);
 		}
 		return path;
 	}
-	
+
 }

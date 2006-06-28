@@ -3,20 +3,20 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is Web Dashboards Service
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency (EEA).  Portions created by European Dynamics (ED) company are
  * Copyright (C) by European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributors(s):
- *    Original code: Istvan Alfeldi (ED) 
+ *    Original code: Istvan Alfeldi (ED)
  */
 
 package eionet.gdem.web.struts.conversion;
@@ -60,15 +60,15 @@ public class TestConvFormAction extends Action {
 		String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
 		ActionErrors errors = new ActionErrors();
 		ArrayList schemas = new ArrayList();
-		
+
 		DynaValidatorForm cForm = (DynaValidatorForm) actionForm;
 		String schema = processFormStr((String) cForm.get("schemaUrl"));
 		String xmlUrl = processFormStr((String) cForm.get("url"));
 		String idConv = processFormStr((String) cForm.get("conversionId"));
 		String validate = processFormStr((String) cForm.get("validate"));
-		
+
 		_logger.debug(schema); _logger.debug(xmlUrl); _logger.debug(idConv); _logger.debug(validate);
-		
+
 		if (xmlUrl==null && schema==null) {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.validation"));
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
@@ -84,10 +84,13 @@ public class TestConvFormAction extends Action {
 					throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 				}
 				ArrayList stylesheets = null;
+				ArrayList cdrfiles = null;
 				stylesheets = sm.getSchemaStylesheets(schema);
+				cdrfiles = sm.getCdrFiles(schema);
 				Schema scObj = new Schema();
 				scObj.setSchema(schema);
 				scObj.setStylesheets(stylesheets);
+				scObj.setCdrfiles(cdrfiles);
 				schemas.add(scObj);
 			} else {
 				if (!Utils.isNullStr(xmlUrl)) {
@@ -104,10 +107,13 @@ public class TestConvFormAction extends Action {
 
 					if (schemaOrDTD != null) {
 						ArrayList stylesheets = null;
+						ArrayList cdrfiles = null;
 						stylesheets = sm.getSchemaStylesheets(schemaOrDTD);
+						cdrfiles = sm.getCdrFiles(schemaOrDTD);
 						Schema scObj = new Schema();
 						scObj.setSchema(schemaOrDTD);
 						scObj.setStylesheets(stylesheets);
+						scObj.setCdrfiles(cdrfiles);
 						schemas.add(scObj);
 					}
 					// did not find schema or dtd from xml header
@@ -122,10 +128,13 @@ public class TestConvFormAction extends Action {
 							HashMap schemaHash = (HashMap) matchedSchemas.get(k);
 							String schema_name = (String) schemaHash.get("xml_schema");
 							ArrayList stylesheets = null;
+							ArrayList cdrfiles = null;
 							stylesheets = sm.getSchemaStylesheets(schema_name);
+							cdrfiles = sm.getCdrFiles(schema_name);
 							Schema scObj = new Schema();
 							scObj.setSchema(schema_name);
 							scObj.setStylesheets(stylesheets);
+							scObj.setCdrfiles(cdrfiles);
 							schemas.add(scObj);
 						}
 
@@ -140,7 +149,7 @@ public class TestConvFormAction extends Action {
 			if (idConv == null) {
 				idConv = "-1";
 			}
-			
+
 			cForm.set("conversionId", idConv);
 
 			if (validate != null) {
@@ -168,6 +177,7 @@ public class TestConvFormAction extends Action {
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 			return actionMapping.findForward("error");
 		}
+
 
 		if(schemas.size()>0){
 			httpServletRequest.getSession().setAttribute("conversion.schemas", schemas);
@@ -206,7 +216,7 @@ public class TestConvFormAction extends Action {
 			throw new DCMException(BusinessConstants.EXCEPTION_VALIDATION_ERROR);
 		}
 	}
-	
+
 	private String processFormStr(String arg) {
 		String result=null;
 		if(arg!=null) {

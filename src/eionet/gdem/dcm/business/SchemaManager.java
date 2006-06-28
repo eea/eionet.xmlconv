@@ -3,20 +3,20 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is Web Dashboards Service
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency (EEA).  Portions created by European Dynamics (ED) company are
  * Copyright (C) by European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributors(s):
- *    Original code: Istvan Alfeldi (ED) 
+ *    Original code: Istvan Alfeldi (ED)
  */
 
 package eionet.gdem.dcm.business;
@@ -42,6 +42,7 @@ import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.Conversion;
+import eionet.gdem.dto.CdrFileDto;
 import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.dto.RootElem;
 import eionet.gdem.dto.Schema;
@@ -198,7 +199,7 @@ public class SchemaManager {
 				sc.setStylesheets(stls);
 				schemas.add(sc);
 			}
-			
+
 			BeanComparator comp = new BeanComparator("table");
 			Collections.sort(schemas, comp);
 
@@ -413,7 +414,7 @@ public class SchemaManager {
 				schemas.add(sc);
 				schemasChk.add(schema.get("xml_schema"));
 			}
-			
+
 			BeanComparator comp = new BeanComparator("table");
 			Collections.sort(schemas, comp);
 
@@ -439,7 +440,7 @@ public class SchemaManager {
 			_logger.debug("Error getting schema",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
-		
+
 		return schemas;
 
 	}
@@ -747,6 +748,41 @@ public class SchemaManager {
 		return sc;
 
 	}
+	public ArrayList getCdrFiles(String schema) throws DCMException {
+
+		ArrayList files = new ArrayList();
+		try{
+			// retrive conversions for DD tables
+			List cdrFiles = CDRServiceClient.searchXMLFiles(schema);
+
+			for (int i = 0; i < cdrFiles.size(); i++) {
+				Hashtable xmlfile = (Hashtable) cdrFiles.get(i);
+				String url = (String) xmlfile.get("url");
+
+				CdrFileDto cf = new CdrFileDto();
+				cf.setUrl(url);
+				cf.setCountry((String) xmlfile.get("country"));
+				cf.setIso((String) xmlfile.get("iso"));
+				cf.setPartofyear((String) xmlfile.get("partofyear"));
+				cf.setTitle((String) xmlfile.get("title"));
+				//year and endyear are Integers, if not null
+				Object endyear =xmlfile.get("endyear");
+				if(endyear instanceof Integer)
+					cf.setEndyear(((Integer)endyear).intValue());
+
+				Object year =(Integer) xmlfile.get("year");
+				if(year instanceof Integer)
+					cf.setYear(((Integer)year).intValue());
+
+				files.add(cf);
+			}
+		} catch (Exception e) {
+			_logger.error("Error getting XML files from CDR for schema",e);
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+		return files;
+	}
+
 
 
 	public static void main(String[] args) throws DCMException {
