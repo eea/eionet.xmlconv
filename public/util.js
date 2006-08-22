@@ -33,6 +33,7 @@
 	function redirect(url){
 		//document.URL=url;
 		document.location=url;
+	}
 
 	function logout() {
 		document.forms["logout"].submit();
