@@ -11,11 +11,13 @@
     <title>Login</title>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
     <script type="text/javascript">
+// <![CDATA[
     function setFocus(){
             var t;
             t=document.getElementById("j_username");
             t.focus();
     }
+// ]]>
     </script>
 </head>
 <body bgcolor="#f0f0f0" onload="setFocus()">
@@ -23,14 +25,14 @@
 			<input name="ACTION" type="hidden" value="<%=Names.LOGIN_ACTION%>" />
 			<% if (err!= null) { %>
 		  		<h4><%=err%></h4>
-			<% } 
+			<% }
 			else{
 			%>
 				<br/><br/><br/><br/>
 			<% } %>
 			<table>
 				<tr>
-					<td width="200"></td><td><b>UserName:</b></td>			
+					<td width="200"></td><td><b>UserName:</b></td>
 					<td><input type="text" name="j_username" id="j_username" /></td>
 				</tr>
 				<tr>

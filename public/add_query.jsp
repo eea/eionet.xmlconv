@@ -8,8 +8,8 @@
 	//get schema from parameter
 	String id = request.getParameter("ID");
     id = (id == null ? "" : id);
-	
-	
+
+
 
 	DbModuleIF dbM= GDEMServices.getDbModule();
 
@@ -22,14 +22,14 @@
 			<b>Couldn't find XML schema!</b> <%
 			return;
 		}
-		
+
 		HashMap schema = (HashMap)list.get(0);
 		schema_name = (String)schema.get("xml_schema");
 	}
 
 	Vector convTypes = dbM.getConvTypes();
 	if (convTypes==null) convTypes = new Vector();
-	
+
 %>
 <ed:breadcrumbs-push label="Add query" level="2" />
 <tiles:insert definition="TmpHeader">
@@ -47,13 +47,13 @@
 			<h1>Add a new query</h1>
 
 		<form name="Upload" action="main?ACTION=<%=Names.QUERY_ADD_ACTION%>" method="post" enctype="multipart/form-data">
-				
+
 			<table cellspacing="0">
 				<tr valign="top">
-					<td align="left">	
+					<td align="left">
 						<label for="schemafield">XML Schema</label>
 					</td>
-					<td align="left">	
+					<td align="left">
 						<input type="text" id="schemafield" class="textfield" size="64" name="SCHEMA" value="<% if (schema_name != null) %><%=schema_name%><%;%>" />
 					</td>
 				</tr>
@@ -61,7 +61,7 @@
 					<td align="right" style="padding-right:5">
 						<label for="shortnamefield">Short Name</label>
 					</td>
-					<td align="left">	
+					<td align="left">
 						<input type="text" id="shortnamefield" class="textfield" size="64" name="SHORT_NAME" value="" />
 					</td>
 				</tr>
@@ -69,7 +69,7 @@
 					<td align="right" style="padding-right:5">
 						<label for="descriptionfield">Description</label>
 					</td>
-					<td align="left">	
+					<td align="left">
 						<textarea class="small" rows="2" cols="55" name="DESCRIPTION" id="descriptionfield"></textarea>
 					</td>
 				</tr>
@@ -77,7 +77,7 @@
 					<td align="right" style="padding-right:5">
 						<label for="contenttypefield">Content type</label>
 					</td>
-					<td align="left">	
+					<td align="left">
 						<select class="small" name="CONTENT_TYPE" id="contenttypefield" title="content type of resilt file">
 							<option value="HTML">HTML</option>
 							<option value="XML">XML</option>
@@ -103,7 +103,7 @@
 				</tr>
 			</table>
 			<input type="hidden" name="ACTION" value="<%=Names.QUERY_ADD_ACTION%>"/>
-		</form>	
+		</form>
 
 	</div>
 <form name="f" action="main" method="post">

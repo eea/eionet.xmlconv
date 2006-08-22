@@ -9,7 +9,7 @@
         // and if the result is an odd number, we return true
         // if not, we return false
         int div = services_installed/service;
-        
+
         if (div % 2 != 0)
             return true;
         else
@@ -25,5 +25,4 @@
   boolean hovPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_HOST_PATH, "v");
 
 %>
-
 

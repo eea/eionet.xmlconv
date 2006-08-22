@@ -8,18 +8,18 @@
 <%
     //get schema id from parameter
     String id = (String)request.getParameter(Names.SCHEMA_ID);
-    if (id == null || id.length()==0){ 
+    if (id == null || id.length()==0){
         id = (String)request.getAttribute(Names.SCHEMA_ID); //if stylesheet is added
-        if (id == null || id.length()==0){ 
+        if (id == null || id.length()==0){
             id="0";
         }
-        
+
     }
     DbModuleIF dbM= GDEMServices.getDbModule();
 
     Vector list = dbM.getSchemas(id);
     if (list==null) list=new Vector();
-    
+
     String name = "";
     String schema_desc = null;
     Vector queries = null;
@@ -27,7 +27,7 @@
     String schema_id = "0";
 
     if (list.size()>0){
-    
+
         schema = (HashMap)list.get(0);
         name = (String)schema.get("xml_schema");
         schema_desc = (String)schema.get("description");
@@ -50,7 +50,7 @@
 
 <%@ include file="menu.jsp" %>
 
-    
+
 <div id="workarea">
 
     <% if (err!= null) { %>
@@ -67,11 +67,11 @@
         	<li><a href="<%=Names.ADD_QUERY_JSP%>?ID=<%=id%>" title="Add a new XQuery">Add Query</a></li>
 		<%}%>
         <li><a href="<%=Names.SANDBOX_JSP%>?SCHEMA_ID=<%=id%>" title="Run all XQuery scripts for this schema">Run QA Service</a></li>
+        <li><a href="do/schemaElemForm?schemaId=<%=id%>">View schema info</a></li>
     </ul>
     </div>
-    
+
     <h1>Queries of <%=name%></h1>
-    <a href="do/schemaElemForm?schemaId=<%=id%>">View schema info</a>
     <form name="view_schema_info" action="main" method="post">
         <input type="hidden" name="ID" value="<%=id%>" />
         <input type="hidden" name="ACTION" value="<%=Names.SHOW_SCHEMA_ACTION%>" />
@@ -104,11 +104,11 @@
 		<input type="hidden" name="ACTION" value="<%=Names.XSD_UPDVAL_ACTION%>" />
 		<input type="hidden" name="<%=Names.SCHEMA_ID%>" value="<%=schema_id%>" />
 	</form>
-		
+
     <div id="main_table">
-        <table class="sortable" border="0" cellspacing="1" cellpadding="2" width="100%">
+        <table class="datatable" width="100%">
             <thead>
-                    
+
                <%
                 boolean ssdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "d");
             %>
@@ -117,12 +117,12 @@
                   <th scope="col" align="left">Description</th>
                   <th scope="col" align="left" width="180">Query</th>
                   <th scope="col" align="left" width="140">Last modified</th>
-                  <th scope="col" align="center" width="50">&#160;</th>
+                  <th scope="col" width="50">&#160;</th>
                 </tr>
             </thead>
            <tbody>
                <%
-               
+
 
                 for (int i=0; i<queries.size(); i++){
                     HashMap hash = (HashMap)queries.get(i);
@@ -130,22 +130,22 @@
                     String query = (String)hash.get("query");
                     String short_name = (String)hash.get("short_name");
                     String description = (String)hash.get("description");
-					
-                    File f=new File(Properties.queriesFolder + query);	
+
+                    File f=new File(Properties.queriesFolder + query);
 					String last_modified="";
-					
+
 					if (f!=null)
 						last_modified = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM).format(new Date(f.lastModified()));
 
 					%>
-                    <tr>
-                        <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
+                    <tr <% if (i % 2 != 0) %>class="zebraeven"<% else %>class="zebraodd"<%;%>>
+                        <td>
                         <a href="<%=Names.QUERY_JSP%>?query_id=<%=query_id%>" title="Edit/View query metadata">&#160;<%=short_name%></a>
                         </td>
-                        <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><%=description%></td>
-                        <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><a target="blank" href="<%=Names.QUERY_FOLDER%><%=query%>"><%=query%></a></td>
-                        <td align="left" <% if (i % 2 != 0) %>class="zebradark"<%;%>><%=last_modified%></td>
-	                    <td align="center" <% if (i % 2 != 0) %>class="zebradark"<%;%>>
+                        <td><%=description%></td>
+                        <td><a target="blank" href="<%=Names.QUERY_FOLDER%><%=query%>"><%=query%></a></td>
+                        <td><%=last_modified%></td>
+	                    <td align="center">
                              <a href="<%=Names.SANDBOX_JSP%>?ID=<%=query_id%>"><img height="15" width="24" src="images/run.png" alt="Run" title="Run this query in XQuery Sandbox"></img></a>
                              <%
                             if (ssdPrm){%>
@@ -158,14 +158,14 @@
                             	<input type="hidden" name="QUERY_DEL_ID" value="<%=query_id%>"/>
                             	<input type="hidden" name="ID" value="<%=id%>"/>
                         		</form>
-                        </td>        
+                        </td>
                     </tr>
                     <%
                    }
                %>
                 </tbody>
              </table>
-        </div> 
+        </div>
   </div>
 
 <form name="f" action="main" method="post">

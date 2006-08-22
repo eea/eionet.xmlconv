@@ -1,13 +1,13 @@
 
 	function changeParamInString(sUrl, sName, sValue){
 		var  i, j,  sBeg, sEnd, sStr;
-		
+
 		//KL 021009 -> in some reason does not work anymore :(
 		//sValue=escape(sValue);
 
 		i = sUrl.indexOf(sName + '=');
 		if (i > 0) {
-			sBeg=sUrl.substr(0, i); 
+			sBeg=sUrl.substr(0, i);
 			sStr=sUrl.substr(i);
 			j = sStr.indexOf('&');
 			if (j > 0)
@@ -35,7 +35,7 @@
 		document.location=url;
 
 	function logout() {
-		document.forms["logout"].submit();		
+		document.forms["logout"].submit();
 	}
 	function login() {
 		window.open("do/start?login=true","login","height=230,width=400,status=no,toolbar=no,scrollbars=no,resizable=no,menubar=no,location=no");

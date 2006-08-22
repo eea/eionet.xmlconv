@@ -6,7 +6,7 @@
 	String q_id = (String)request.getParameter("ID");
 	String schema_id = (String)request.getParameter("SCHEMA_ID");
 	String source_url = (String)request.getParameter("SOURCE_URL");
-	
+
 	String qText = "";
 	Vector queries = null;
 	String query_file = null;
@@ -29,7 +29,7 @@
 	if(schema_id != null) {
       queries = dbM.getSchemaQueries(schema_id);
       if (queries == null) queries = new Vector();
-      
+
       //checks if the validation is a part of QA Service. If yes, then add it to work queue
       HashMap _oSchema = dbM.getSchema(schema_id);
       String validate = (String)_oSchema.get("validate");
@@ -43,7 +43,7 @@
 			query_file = Properties.queriesFolder + (String)queryInfo.get("query");
 		}
 	}
-	
+
 %>
 
 <ed:breadcrumbs-push label="XQuery Sandbox" level="1" />
@@ -75,11 +75,11 @@
 				<div>No QA scripts found for this XML Schema</div>
 			<%} else { %>
 				<div>QA Service for selected XML Schema contains the following scripts: </div>
-				<%	
+				<%
       			for (int j=0;j<queries.size();j++){
         			HashMap querie = (HashMap)queries.get(j);
         			String query_id = (String)querie.get("query_id");
-        			query_file = (String)querie.get("query");			
+        			query_file = (String)querie.get("query");
         			String name = (String)querie.get("short_name");
         			%>
         				<input type="radio" name="script" value="<%=query_id%>" <% if (j == 0) %>checked="checked"<%;%>/>
@@ -106,11 +106,11 @@
 		boolean wqPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "i");
 		boolean wquPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "u");
 		if(wqPrm) {
-		%>		
+		%>
 			<input type="submit" name="queue" value=" Add to workqueue " class="button"/>
-		<% } 
+		<% }
 		if(wquPrm && !Utils.isNullStr(q_id)) {
-		%>		
+		%>
 			<input type="hidden" name="file_name" value="<%=query_file%>" />
 			<input type="submit" name="save" value=" Save changes to file " />
 		<% } %>
