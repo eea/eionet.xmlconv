@@ -12,15 +12,16 @@
 
 <ed:breadcrumbs-push label="Hosts" level="1" />
 
-<h1 class="documentFirstHeading">
-	<bean:message key="label.hosts.title"/>
-</h1>
-
+<div id="workarea">
 <ed:hasPermission username="username" acl="host" permission="i">
 <div id="operations">
 	<ul><li><html:link page="/do/hosts/add">Add host</html:link>	</li></ul>
 </div>
 </ed:hasPermission>
+
+<h1 class="documentFirstHeading">
+	<bean:message key="label.hosts.title"/>
+</h1>
 
 <div class="visualClear">&nbsp;</div>
 
@@ -29,9 +30,9 @@
 		<table class="datatable" align="center" width="100%">
 			<thead>
 				<tr>
-					<th scope="col"><span title="Action">&nbsp;</span></th>
-					<th scope="col"><span title="Host name"><bean:message key="label.hosts.host"/></span></th>
-					<th scope="col"><span title="User name"><bean:message key="label.hosts.username"/></span></th>
+					<th scope="col" title="Action">&nbsp;</th>
+					<th scope="col"><bean:message key="label.hosts.host"/></th>
+					<th scope="col">><bean:message key="label.hosts.username"/></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -62,4 +63,4 @@
 </logic:present>
 
 <div class="visualClear">&nbsp;</div>
-
+</div>

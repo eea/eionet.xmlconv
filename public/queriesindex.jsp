@@ -35,8 +35,6 @@
 		</script>
 
 
-
-
 <%@ include file="menu.jsp" %>
 
 
@@ -61,16 +59,23 @@
 
 		<div id="main_table">
 			<table class="datatable" width="100%">
-            <%
+			<%
 			boolean ssdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "d");
 			%>
+			  <%if (ssdPrm){%>
+				<col style="width:45%"/>
+				<col style="width:50%"/>
+				<col style="width:5%"/>
+				<% } else {%>
+				<col style="width:50%"/>
+				<col style="width:50%"/>
+				<%}%>
 				<thead>
             <tr>
-		      <th  scope="col" align="left" width="*">XML Schema</th>
-              <th  scope="col" align="left" width="50%">Queries</th>
-			  <%
-				if (ssdPrm){%>
-     			  <th align="center" width="5%">&#160;</th>
+							<th  scope="col" align="left">XML Schema</th>
+              <th  scope="col" align="left">Queries</th>
+			  <%if (ssdPrm){%>
+     			  <th align="center">&#160;</th>
      		  <%}%>
 		    </tr>
 		   </thead>
@@ -92,10 +97,10 @@
 
 					%>
 					<tr <% if (i % 2 != 0) %>class="zebraeven"<% else %>class="zebraodd"<%;%>>
-						<td align="left" style="padding-left:5;padding-right:10" >
+						<td align="left">
 							<a href="javascript:openXSD('<%=Names.SHOW_QUERIES_ACTION%>', <%=id%>)" title="<%=schema_descr%>"><%=name%></a>
 						</td>
-						<td align="left" style="padding-left:5;padding-right:10" >
+						<td align="left">
 						<%
 						for (int j=0; j<queries.size(); j++){
 							HashMap q = (HashMap)queries.get(j);
