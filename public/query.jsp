@@ -9,8 +9,8 @@
 	String id = request.getParameter("query_id");
 
 	id = (id == null ? "" : id);
-	
-	
+
+
 
 	DbModuleIF dbM= GDEMServices.getDbModule();
 	HashMap query =null;
@@ -33,7 +33,7 @@
 		file = (String)query.get("query");
 		schema_id = (String)query.get("schema_id");
 	}
-	
+
 %>
 
 <ed:breadcrumbs-push label="Query" level="1" />
@@ -48,13 +48,13 @@
 		<ul>
 			<%
 			if(Utils.isNullStr(schema_id)){%>
-				<li><a href="main" title="Back to main page">Back to Queries</a></li>
+				<li><a href="main">Back to Queries</a></li>
 			<%} else { %>
-				<li><a href="<%=Names.QUERIES_JSP%>?ID=<%=schema_id%>" title="Back to XML Schema">Back to XML Schema</a></li>
+				<li><a href="<%=Names.QUERIES_JSP%>?ID=<%=schema_id%>">Back to XML Schema</a></li>
 
 			<%}%>
 			<li><a href="<%=Names.SANDBOX_JSP%>?ID=<%=id%>" title="Run query in Sandbox">Run Query</a></li>
-		</ul>	
+		</ul>
 	</div>
 
 		<% if (err!= null) { %>
@@ -62,10 +62,10 @@
 		<% } %>
 		<%
 		boolean xquPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "u");
-			
+
 		if(xquPrm)
 			mode="edit";
-		
+
 		if (mode.equals("edit")){%>
 			<h1>Edit query</h1>
 		<%}
@@ -73,22 +73,22 @@
 			<h1>View query</h1>
 		<%}%>
 		<form name="Upload" action="main?query_id=<%=id%>&amp;ACTION=<%=Names.QUERY_UPD_ACTION%>" method="post" enctype="multipart/form-data">
-				
+
 			<input type="hidden" size="60" name="SCHEMA_ID" value="<%=schema_id%>"/>
 			<input type="hidden" size="60" name="QUERY_ID" value="<%=id%>"/>
-			<table cellspacing="0">
-				<tr valign="top">
-					<td align="left">	
-						<label for="schemafield">XML Schema:&#160;</label>
-					</td>
-					<td align="left"><div id="schemafield"><%=xml_schema%></div>
+			<table class="datatable">
+				<tr>
+					<th scope="row" class="scope-row">
+						<label for="schemafield">XML Schema:</label>
+					</th>
+					<td><div id="schemafield"><%=xml_schema%></div>
 					</td>
 				</tr>
-				<tr valign="top">
-					<td align="right">
-						<label for="shortnamefield">Short Name:&#160;</label>
-					</td>
-					<td align="left">	
+				<tr>
+					<th scope="row" class="scope-row">
+						<label for="shortnamefield">Short Name:</label>
+					</th>
+					<td>
 						<%if(!mode.equals("view")){%>
 							<input type="text" id="shortnamefield" class="textfield" size="64" name="SHORT_NAME" value="<%=short_name%>" />
 						<%}else{%>
@@ -96,11 +96,11 @@
 						<%}%>
 					</td>
 				</tr>
-				<tr valign="top">
-					<td align="right">
-						<label for="descriptionfield">Description:&#160;</label>
-					</td>
-					<td align="left">	
+				<tr>
+					<th scope="row" class="scope-row">
+						<label for="descriptionfield">Description:</label>
+					</th>
+					<td>
 						<%if(!mode.equals("view")){%>
 							<textarea class="small" rows="2" cols="55" name="DESCRIPTION" id="descriptionfield"><%=description%></textarea>
 						<%}else{%>
@@ -108,16 +108,16 @@
 						<%}%>
 					</td>
 				</tr>
-				<tr valign="top">
-					<td align="right">
-						<label for="contenttypefield">Content type:&#160;</label>
-					</td>
-					<td align="left">	
+				<tr>
+					<th scope="row" class="scope-row">
+						<label for="contenttypefield">Content type:</label>
+					</th>
+					<td>
 						<%if(!mode.equals("view")){%>
 							<select class="small" name="CONTENT_TYPE" id="contenttypefield" title="rrr" alt="jjj">
-								<option value="HTML" <% if (content_type.equals("HTML")) %>selected="true"<%;%>>HTML</option>
-								<option value="XML" <% if (content_type.equals("XML")) %>selected="true"<%;%>>XML</option>
-								<option value="TXT" <% if (content_type.equals("TXT")) %>selected="true"<%;%>>TEXT</option>
+								<option value="HTML" <% if (content_type.equals("HTML")) %>selected="selected"<%;%>>HTML</option>
+								<option value="XML" <% if (content_type.equals("XML")) %>selected="selected"<%;%>>XML</option>
+								<option value="TXT" <% if (content_type.equals("TXT")) %>selected="selected"<%;%>>TEXT</option>
 							</select>
 						<%}else{%>
 							<div id="contenttypefield"><%=content_type%></div>
@@ -125,17 +125,17 @@
 					</td>
 				</tr>
 				<tr>
-					<td align="right" valign="top">
-						<label for="filefield">XQuery file:&#160;</label>
-					</td>
-					<td align="left">
+					<th scope="row" class="scope-row">
+						<label for="filefield">XQuery file:</label>
+					</th>
+					<td>
 						<a href="<%=Names.QUERY_FOLDER%><%=file%>" title="View XQuery source"><%=file%>
               			</a>
 						<%if(!mode.equals("view")){%>
 							<input type="hidden" name="FILE_NAME" value="<%=file%>"/><br/><br/>
 							<input type="file" class="textfield" name="FILE_INPUT" id="filefield" size="53" title="Add a new XQuery file"/>
 						<% } else {%>
-							<div id="filefield"></div>						
+							<div id="filefield"></div>
 						<% }%>
 					</td>
 				</tr>
@@ -143,15 +143,15 @@
 				<%if(!mode.equals("view")){%>
 					<tr>
 						<td></td>
-						<td align="left">
-							<input name="SUBMIT" type="SUBMIT" class="mediumbuttonb" value="Save" />&#160;&#160;
+						<td>
+							<input name="SUBMIT" type="SUBMIT" class="mediumbuttonb" value="Save" />
 						</td>
 					</tr>
 				<% } %>
 			</table>
 			<input type="hidden" name="ACTION" value="<%=Names.QUERY_UPD_ACTION%>"/>
-		</form>	
+		</form>
 
 	</div>
 <tiles:insert definition="TmpFooter"/>
-	
+

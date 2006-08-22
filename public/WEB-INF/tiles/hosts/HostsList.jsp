@@ -32,7 +32,7 @@
 				<tr>
 					<th scope="col" title="Action">&nbsp;</th>
 					<th scope="col"><bean:message key="label.hosts.host"/></th>
-					<th scope="col">><bean:message key="label.hosts.username"/></th>
+					<th scope="col"><bean:message key="label.hosts.username"/></th>
 				</tr>
 			</thead>
 			<tbody>

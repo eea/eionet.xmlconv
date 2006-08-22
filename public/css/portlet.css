@@ -15,11 +15,11 @@
 .box {
 	margin: 0;
 	padding: 0 6px 0 0;
-	background: url(../images/borders.png) #F0F0F0 repeat-y 100% 0;
+	background: url(../images/borders.png) #FFF repeat-y 100% 0;
 }
 .boxleft {
 	padding: 0 0 0 6px;
-	background: url(../images/borders.png) #F0F0F0 0 0 repeat-y;
+	background: url(../images/borders.png) #FFF 0 0 repeat-y;
 }
 .boxtop {
 	margin: 0 -6px;
@@ -34,7 +34,7 @@
 .boxcontent {
 	margin: 0px;
 	padding: 4px 10px;
-	background: #F0F0F0;
+	background: #FFF;
 	overflow: auto;
 }
 .boxcontent ul {
@@ -49,7 +49,7 @@
 .boxbottombuttons {
 	margin: 0px;
 	padding: 4px 10px;
-	background: #F0F0F0;
+	background: #FFF;
 	text-align: center;
 }
 .boxbottom {

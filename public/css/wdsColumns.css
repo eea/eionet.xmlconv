@@ -13,16 +13,16 @@ margin-right: -0em;
 #portal-column-content {
 width: 100%;
 float: right;
-margin-left: -130px;
+margin-left: -198px;
 }
 
 #portal-column-content #content {
-margin: 0 0em 0 130px;
+margin: 0 0em 0 198px;
 }
 
 #portal-column-one {
 float: left;
-width: 130px;
+width: 198px;
 overflow: hidden;
 }
 
@@ -52,6 +52,6 @@ margin: 0 0em 0 0;
 }
 
 .visualColumnHideTwo #portal-column-content #content {
-margin: 0 0 0 130px;
+margin: 0 0 0 198px;
 }
 
