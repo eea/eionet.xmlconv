@@ -273,7 +273,7 @@ font-family: sans-serif;
 font-size:9px;
 font-weight: bold;
 text-decoration: none;
-text-align:left;	
+text-align:left;
 color:#fff;
 width:90px;
 height:13px;
@@ -539,7 +539,7 @@ border: 1px solid #C60;
 border: 0;
 }
 .portletDetails { font-size: 85%; text-align: right; }
-.portletContent { 
+.portletContent {
 padding: 0.5em;
 line-height: 1em;
 background-color: #FFF7E8;
@@ -745,7 +745,7 @@ padding: 1px;
 
 .admin_form td {
 	text-align: right;
-	padding:3px; 
+	padding:3px;
 }
 
 /* The .operations is for the blue buttons to the right of the page */
@@ -782,6 +782,49 @@ padding: 1px;
 }
 
 
+
+table .number {
+	text-align: right;
+}
+table .sum {
+	font-weight: bold;
+}
+table .center {
+	text-align: center;
+}
+
+
+/* Data tables */
+.datatable th {
+	text-align: center;
+	background-color: #f6f6f6;
+	font-weight: bold;
+	border-bottom: 2px solid white;
+}
+.datatable th.scope-row { /* IE6 doesn't understand [scope="row"] */
+	text-align: right;
+	vertical-align:top;
+}
+.datatable th[scope="row"] {
+	text-align: right;
+	vertical-align:top;
+}
+
+.datatable td, .datatable th  {
+	margin:0;
+	padding: 0.3em;
+	vertical-align: top;
+}
+.datatable td {
+/*	border-top:    2px solid #f6f6f6;*/
+	border-bottom: 2px solid #f6f6f6;
+}
+table.datatable {
+	border: 1px solid #b6b6b6;
+	border-collapse: collapse;
+	color: #666666;
+	margin: 1em 0em;
+}
 
 
 /* Sortable tables css from EEA: */

@@ -60,7 +60,7 @@
 			<h1>Queries</h1>
 
 		<div id="main_table">
-			<table class="sortable" width="100%">
+			<table class="datatable" width="100%">
             <%
 			boolean ssdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "d");
 			%>

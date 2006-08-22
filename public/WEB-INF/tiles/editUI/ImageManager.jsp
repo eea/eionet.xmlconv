@@ -17,7 +17,7 @@
 	<style type="text/css" media="screen">
 		<!-- @import url(<c:url value="/css/portlet.css"/>); -->
 	</style>
-	    
+
 </head>
 <body style="background-image: none;">
 
@@ -32,26 +32,33 @@
 	<input type="button" class="button" name="cancel" value="   Cancel   " onclick="window.close()" />
 	<html:hidden styleId="picToDelete" property="deletePic" value=""/>
 	<br/><br/>
-		
-			<logic:present name="fileList">
-			<table class="sortable" style="width:75%">
-				<tr>
-					<th scope="col" style="width:30%"><span>Name</span></th>
-					<th scope="col" style="width:65%"><span>Image (click on image to select)</span></th>
-					<th scope="col" style="width:5%"><span>Action</span></th>
-				</tr>	 					
 
-				<c:forEach var="filelist" items="${fileList}" varStatus="counter">			
+			<logic:present name="fileList">
+			<table class="datatable" style="width:75%">
+				<col style="width:30%"/>
+				<col style="width:65%"/>
+				<col style="width:5%"/>
+				<thead>
+				<tr>
+					<th scope="col">Name</th>
+					<th scope="col">Image (click on image to select)</th>
+					<th scope="col">Action</th>
+				</tr>
+				</thead>
+				<tbody>
+
+				<c:forEach var="filelist" items="${fileList}" varStatus="counter">
 					<tr <c:if test="${(counter.index % 2) == 1}">class="zebraeven"</c:if>>
 					<td style="text-align:center;"><bean:write name="filelist"/></td>
 					<td style="text-align:center;">
-						<img style="cursor:crosshair;" src="<c:url value="/images/gallery/"/><bean:write name="filelist"/>" 
+						<img style="cursor:crosshair;" src="<c:url value="/images/gallery/"/><bean:write name="filelist"/>"
 						alt="<bean:write name="filelist"/>" onclick="window.opener.document.getElementById('slika').value=this.alt;window.close()"/>
 					</td>
 					<td style="text-align:center;"><input type="image" title="Delete <bean:write name="filelist"/>?" src="<c:url value="/images/delete.gif"/>"
 					 onclick="if(confirm('Are you sure you want to delete <bean:write name="filelist"/>')){document.getElementById('picToDelete').value='<bean:write name="filelist"/>';document.forms[0].submit;}else{return false;}"/></td>
  				</tr>
 				</c:forEach>
+				</tbody>
 			</table>
 		</logic:present>
 <br/><br/>

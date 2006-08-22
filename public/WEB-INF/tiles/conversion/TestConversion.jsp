@@ -7,16 +7,16 @@
 
 <html:xhtml/>
 
-				
-<div id="stylesheet" class="box"> 
-	<div class="boxleft"> 
+
+<div id="stylesheet" class="box">
+	<div class="boxleft">
 		<div class="boxtop"><div>&nbsp;</div>
-	</div> 
+	</div>
 
 	<ed:breadcrumbs-push label="Test conversion" level="1" />
-	<h4><bean:message key="label.conversion.testconversion"/></h4> 
+	<h4><bean:message key="label.conversion.testconversion"/></h4>
 	<div class="boxcontent">
-		<logic:iterate id="schema" name="conversion.schemas" scope="session" type="Schema">	
+		<logic:iterate id="schema" name="conversion.schemas" scope="session" type="Schema">
 			<html:form action="/testConversionForm" method="post" >
 				  <table cellpadding="0" cellspacing="0" border="0" align="center">
 				    <tr>
@@ -28,19 +28,19 @@
 				      <td colspan="3">&nbsp;</td>
 				    </tr>
 				    <tr>
-				      <td align="left" class="label"> 
+				      <td align="left" class="label">
 					       <bean:message key="label.conversion.url"/>:
 				      </td>
 				      <td>&nbsp;</td>
 				      <td>
-					        <html:text property="url"  style="width:300px" />		        
+					        <html:text property="url"  style="width:300px" />
 				      </td>
 				    </tr>
 				    <tr>
 				      <td colspan="3">&nbsp;</td>
 				    </tr>
 				    <tr>
-				      <td align="left" class="label"> 
+				      <td align="left" class="label">
 					       <bean:message key="label.conversion.cdrfiles"/>:
 				      </td>
 				      <td>&nbsp;</td>
@@ -50,7 +50,7 @@
 					        <select name="cdrFile"  size="10" >
 								<option selected="selected" value="">
 									--
-								</option>		        
+								</option>
 								<logic:iterate id="cdrfile" name="schema" scope="page"  property="cdrfiles" type="CdrFileDto">
 										<option value="<bean:write name="cdrfile" property="url" />">
 											<bean:write name="cdrfile" property="country" />&nbsp;-&nbsp;
@@ -81,14 +81,14 @@
 				      <td colspan="3">&nbsp;</td>
 				    </tr>
 				    <tr>
-				      <td align="left" class="label"> 
+				      <td align="left" class="label">
 					        <bean:message key="label.conversion.xmlSchema"/>:
 				      </td>
 				      <td>&nbsp;</td>
 				      <td>
-							<a target="blank" href="<bean:write name="schema" property="schema" />" title="<bean:write name="schema" property="schema" />">						
+							<a target="blank" href="<bean:write name="schema" property="schema" />" title="<bean:write name="schema" property="schema" />">
 									<bean:write name="schema" property="schema" />
-							</a>			        	        
+							</a>
 				      </td>
 				    </tr>
 				    <tr>
@@ -101,11 +101,11 @@
 				    </tr>
 				    <tr>
 				      <td colspan="3">&nbsp;</td>
-				    </tr>		    
-				    
-				    <bean:define id="idConv" name="ConversionForm" property="conversionId"  type="java.lang.String"/>	    
-				    
-				    <logic:iterate indexId="index" id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">						
+				    </tr>
+
+				    <bean:define id="idConv" name="ConversionForm" property="conversionId"  type="java.lang.String"/>
+
+				    <logic:iterate indexId="index" id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">
 					    <tr>
 					      <td align="right">
 								<logic:equal name="stylesheet" property="convId" value="<%=idConv%>">
@@ -121,7 +121,7 @@
 								&nbsp;-&nbsp;<bean:write name="stylesheet" property="xsl_descr" /></label>
 					      </td>
 					    </tr>
-					</logic:iterate>		    
+					</logic:iterate>
 				    <tr>
 				      <td colspan="3">&nbsp;</td>
 				    </tr>
@@ -129,7 +129,7 @@
 				      <td colspan="3" align="center">
 				      		<bean:size name="schema" id="count" property="stylesheets"/>
 					      	<logic:greaterThan name="count" value="0">
-						        <input type="button" class="button" value="<bean:message key="label.conversion.convert"/>" onclick="return submitAction('<bean:write name="webRoot" />/convert');"/>	        
+						        <input type="button" class="button" value="<bean:message key="label.conversion.convert"/>" onclick="return submitAction('<bean:write name="webRoot" />/convert');"/>
 					        </logic:greaterThan>
 					        <logic:equal name="count" value="0">
 					        <p style="color: red; font-weight: bold;"><bean:message key="label.conversion.noconversion"/></p>
@@ -146,7 +146,11 @@
 				<div class="visualClear">&nbsp;</div>
 				<logic:present name="conversion.valid" scope="request">
 					<div style="width: 97%">
-						<table class="sortable" align="center" width="100%">
+						<table class="datatable" align="center" width="100%">
+							<col style="width:7%"/>
+							<col style="width:7%"/>
+							<col style="width:7%"/>
+							<col style="width:79%"/>
 							<thead>
 								<tr>
 									<th scope="col"><span title="Error"><bean:message key="label.table.conversion.type"/></span></th>
@@ -157,27 +161,27 @@
 							</thead>
 							<tbody>
 								<logic:iterate indexId="index" id="valid" name="conversion.valid" scope="request" type="ValidateDto">
-									<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
-										<td width="7%">
+									<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
+										<td>
 												<bean:write name="valid" property="type" />
 										</td>
-										<td width="7%">
+										<td>
 												<bean:write name="valid" property="line" />
 										</td>
-										<td width="7%">
+										<td>
 												<bean:write name="valid" property="column" />
 										</td>
-										<td width="79%">
+										<td>
 												<bean:write name="valid" property="description" />
 										</td>
 									</tr>
 								</logic:iterate>
 							</tbody>
 						</table>
-					</div>	
+					</div>
 				</logic:present>
 	</div>
-	<div class="boxbottom"><div>&nbsp;</div></div> 
+	<div class="boxbottom"><div>&nbsp;</div></div>
 	</div>
 </div>
 

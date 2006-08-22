@@ -17,14 +17,16 @@
 </h1>
 
 <ed:hasPermission username="username" acl="host" permission="i">
+<div id="operations">
 	<ul><li><html:link page="/do/hosts/add">Add host</html:link>	</li></ul>
+</div>
 </ed:hasPermission>
-	
-<div class="visualClear">&nbsp;</div>	
+
+<div class="visualClear">&nbsp;</div>
 
 <logic:present name="hosts.list">
 	<div style="width: 80%">
-		<table class="sortable" align="center" width="100%">
+		<table class="datatable" align="center" width="100%">
 			<thead>
 				<tr>
 					<th scope="col"><span title="Action">&nbsp;</span></th>
@@ -34,8 +36,8 @@
 			</thead>
 			<tbody>
 				<logic:iterate indexId="index" id="host" name="hosts.list">
-					<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
-						<td width="5%" align="center">
+					<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
+						<td width="5%" class="center">
 							<ed:hasPermission username="username" acl="host" permission="d">
 								<html:link page="/do/hosts/delete" paramId="id" paramName="host" paramProperty="id" titleKey="label.hosts.delete">
 									<html:img page="/images/delete.gif" altKey="label.delete" title="Delete host credentials" />
@@ -56,8 +58,8 @@
 				</logic:iterate>
 			</tbody>
 		</table>
-	</div>	
+	</div>
 </logic:present>
 
-<div class="visualClear">&nbsp;</div>	
-			
+<div class="visualClear">&nbsp;</div>
+
