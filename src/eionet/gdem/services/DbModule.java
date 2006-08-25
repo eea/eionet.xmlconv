@@ -299,6 +299,9 @@ public class DbModule implements DbModuleIF, Constants {
 
 		description = (description == null ? "" : description);
 
+		//remove whitespaces before and after the schema identifier
+		xmlSchema = xmlSchema.trim();
+
 		String sql = "INSERT INTO " + SCHEMA_TABLE + " ( " + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD + ", " + DTD_PUBLIC_ID_FLD + ") VALUES (" + Utils.strLiteral(xmlSchema) + ", " + Utils.strLiteral(description) + ", " + Utils.strLiteral(public_id) + ")";
 
 		_executeUpdate(sql);
@@ -322,6 +325,9 @@ public class DbModule implements DbModuleIF, Constants {
 
 		description = (description == null ? "" : description);
 		public_id = (public_id == null ? "" : public_id);
+
+		//remove whitespaces before and after the schema identifier
+		xmlSchema = xmlSchema.trim();
 
 		String sql = "UPDATE  " + SCHEMA_TABLE + " SET " + XML_SCHEMA_FLD + "=" + Utils.strLiteral(xmlSchema) + ", " + SCHEMA_DESCR_FLD + "=" + Utils.strLiteral(description) + ", " + DTD_PUBLIC_ID_FLD + "=" + Utils.strLiteral(public_id) + "" + " WHERE " + SCHEMA_ID_FLD + "=" + schema_id;
 
