@@ -40,4 +40,9 @@
                 <result_type>XML</result_type>
                 <stylesheet>XML.xsl</stylesheet>
         </conversion>
+        <conversion id="9">
+                <description>OpenDocument Spreadsheet</description>
+                <result_type>ODS</result_type>
+                <stylesheet>OpenDocumentSpreadsheet.xsl</stylesheet>
+        </conversion> 
 </conversions>
