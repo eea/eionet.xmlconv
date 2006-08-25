@@ -41,6 +41,8 @@ public class Properties {
 
 	public static String xslFolder = "/xsl/";
 
+	public static String odsFolder = "/opendoc/ods";
+
 	public static String queriesFolder = "/queries/";
 
 	public static String schemaFolder = "/schema/";
@@ -104,6 +106,7 @@ public class Properties {
 
 				xslFolder=checkPath(props.getString("xsl.folder"));
 				tmpFolder=props.getString("tmp.folder");
+				odsFolder=checkPath(props.getString("ods.folder"));
 
 				//DB connection settings
 				dbDriver = props.getString("db.driver");

@@ -404,4 +404,56 @@ public class Utils {
 
 		return ret;
 	}
+	  /*
+	   * Creates random name using timestamp
+	   */
+	public static String getRandomName(){
+
+
+		StringBuffer bufRandName = new StringBuffer(32);
+	    bufRandName.append(System.currentTimeMillis());
+	    bufRandName.append(Math.random() * 10000);
+	    return bufRandName.toString();
+	}
+	/**
+	 *
+	 * @param in
+	 * @param out
+	 * @throws Exception
+	 */
+	public static void copyFile(File in, File out) throws Exception {
+
+		FileInputStream fis = null;
+		FileOutputStream fos = null;
+		try{
+			fis = new FileInputStream(in);
+		    fos = new FileOutputStream(out);
+		    byte[] buf = new byte[1024];
+		    int i = 0;
+		    while((i=fis.read(buf))!=-1){
+		    	fos.write(buf, 0, i);
+		    }
+		}
+		finally{
+		    if (fis!=null) fis.close();
+		    if (fos!=null) fos.close();
+		}
+	}
+	/*
+	 *
+	 */
+	public static void deleteFolder(String folderPath){
+
+		File folder = new File(folderPath);
+		File[] files = folder.listFiles();
+		for (int i=0; files!=null && i<files.length; i++){
+			if (files[i].isDirectory()){
+				deleteFolder(files[i].getAbsolutePath());
+				continue;
+			}
+			files[i].delete();
+		}
+
+		folder.delete();
+	}
 }

@@ -9,7 +9,7 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * The Original Code is "EINRC-7 / GDEM project".
+ * The Original Code is " GDEM project".
  *
  * The Initial Developer of the Original Code is TietoEnator.
  * The Original Code code was developed for the European
@@ -52,17 +52,17 @@ public class OdsReader implements SourceReaderIF {
 
 	private OpenDocumentSpreadsheet spreadsheet = null;
 
-	private final static String SCHEMA_ATTR_NAME = "schema-url";
+	public final static String SCHEMA_ATTR_NAME = "schema-url";
 
-	private final static String TBL_SCHEMAS_ATTR_NAME = "table-schema-urls";
+	public final static String TBL_SCHEMAS_ATTR_NAME = "table-schema-urls";
 
 	private final static String TBL_SEPARATOR = ";";
 
 	private final static String TBL_PROPERTIES_SEPARATOR = ",";
 
-	private final static String TABLE_NAME = "tableName=";
+	public final static String TABLE_NAME = "tableName=";
 
-	private final static String TABLE_SCHEMA_URL = "tableSchemaURL=";
+	public final static String TABLE_SCHEMA_URL = "tableSchemaURL=";
 
 	public String getXMLSchema() {
 		String ret = null;
