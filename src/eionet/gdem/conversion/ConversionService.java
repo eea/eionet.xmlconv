@@ -49,6 +49,7 @@ import eionet.gdem.conversion.converters.ConvertContext;
 import eionet.gdem.conversion.converters.ConvertStartegy;
 import eionet.gdem.conversion.converters.ExcelConverter;
 import eionet.gdem.conversion.converters.HTMLConverter;
+import eionet.gdem.conversion.converters.OdsConverter;
 import eionet.gdem.conversion.converters.PDFConverter;
 import eionet.gdem.conversion.converters.TextConverter;
 import eionet.gdem.conversion.converters.XMLConverter;
@@ -75,6 +76,8 @@ public class ConversionService {
 
 	public static final String DEFAULT_FILE_EXT = "txt";
 
+	public static final String DEFAULT_FILE_NAME = "converted";
+
 	private String xslFolder;
 
 	private String tmpFolder;
@@ -88,6 +91,8 @@ public class ConversionService {
 	private String cnvFileExt = null;
 
 	private String cnvTypeOut = null;
+
+	private String cnvFileName = null;
 
 	private String ticket = null;
 
@@ -268,6 +273,8 @@ public class ConversionService {
 				src = new InputFile(sourceURL);
 				src.setAuthentication(ticket);
 				src.setTrustedMode(trustedMode);
+				cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ?
+						DEFAULT_FILE_NAME:src.getFileNameNoExtension();
 
 				if (db == null)
 					db = GDEMServices.getDbModule();
@@ -310,7 +317,7 @@ public class ConversionService {
 					try {
 						result = response.getOutputStream();
 						response.setContentType(cnvContentType);
-						response.setHeader("Content-Disposition","inline; filename=converted." + cnvFileExt);
+						response.setHeader("Content-Disposition","inline; filename=" + cnvFileName + "." + cnvFileExt);
 					} catch (IOException e) {
 						_logger
 								.error("Error getting response outputstream ",
@@ -347,6 +354,7 @@ public class ConversionService {
 			}
 
 			h.put("content-type", cnvContentType);
+			h.put("filename", cnvFileName + "." + cnvFileExt);
 			if (response != null) {
 				try {
 					result.close();
@@ -399,6 +407,8 @@ public class ConversionService {
 			src = new InputFile(sourceURL);
 			src.setAuthentication(ticket);
 			src.setTrustedMode(trustedMode);
+			cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ?
+					DEFAULT_FILE_NAME:src.getFileNameNoExtension();
 
 			if (db == null)
 				db = GDEMServices.getDbModule();
@@ -432,7 +442,7 @@ public class ConversionService {
 				try {
 					result = res.getOutputStream();
 					res.setContentType(cnvContentType);
-					res.setHeader("Content-Disposition","inline; filename=converted." + cnvFileExt);
+					res.setHeader("Content-Disposition","inline; filename=" + cnvFileName + "." + cnvFileExt);
 				} catch (IOException e) {
 					_logger.error("Error getting response outputstream ", e);
 					throw new GDEMException(
@@ -463,6 +473,7 @@ public class ConversionService {
 		}
 
 		h.put("content-type", cnvContentType);
+		h.put("filename", cnvFileName + "." + cnvFileExt);
 		if (res != null) {
 			try {
 				result.close();
@@ -529,6 +540,9 @@ public class ConversionService {
 			src = new InputFile(sourceURL);
 			src.setAuthentication(ticket);
 			src.setTrustedMode(trustedMode);
+			cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ?
+					DEFAULT_FILE_NAME:src.getFileNameNoExtension();
+
 			if (res != null) {
 				try {
 					result = res.getOutputStream();
@@ -609,7 +623,7 @@ public class ConversionService {
 		if (res != null) {
 			try {
 				res.setContentType("text/xml");
-				res.setHeader("Content-Disposition","inline; filename=converted.xml");
+				res.setHeader("Content-Disposition","inline; filename=" + cnvFileName + ".xml");
 				result.close();
 			} catch (IOException e) {
 				_logger.error("Error closing result ResponseOutputStream ", e);
@@ -627,8 +641,10 @@ public class ConversionService {
 		byte[] file = Utils.fileToBytes(outFileName);
 
 		v_result.add(String.valueOf(result_code));
-		if (result_code == 0)
+		if (result_code == 0){
 			v_result.add(file);
+			v_result.add(cnvFileName + ".xml");
+		}
 		else
 			v_result.add(error_mess);
 
@@ -711,6 +727,9 @@ public class ConversionService {
 			src = new InputFile(sourceURL);
 			src.setAuthentication(ticket);
 			src.setTrustedMode(trustedMode);
+
+			cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ?
+					DEFAULT_FILE_NAME:src.getFileNameNoExtension();
 			if (res != null) {
 				try {
 					result = res.getOutputStream();
@@ -784,7 +803,7 @@ public class ConversionService {
 		if (res != null) {
 			try {
 				res.setContentType("text/xml");
-				res.setHeader("Content-Disposition","inline; filename=converted.xml");
+				res.setHeader("Content-Disposition","inline; filename=" + cnvFileName + ".xml");
 				result.close();
 			} catch (IOException e) {
 				_logger.error("Error closing result ResponseOutputStream ", e);
@@ -831,6 +850,8 @@ public class ConversionService {
 			cs = new ExcelConverter();
 		} else if (cnvTypeOut.equals("XML")) {
 			cs = new XMLConverter();
+		} else if (cnvTypeOut.equals("ODS")) {
+			cs = new OdsConverter();
 		} else {
 			cs = new TextConverter();
 		}
