@@ -27,6 +27,7 @@ package eionet.gdem.conversion;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.Vector;
 
 import eionet.gdem.conversion.odf.OpenDocumentUtils;
 
@@ -56,8 +57,9 @@ public class Ods2Xml extends DDXMLConverter {
 
 		ConversionService conv = new ConversionService();
 		try{
-			conv.convertDD_XML("http://localhost:8080/gdem/test.xls");
-			conv.convertDD_XML("http://localhost:8080/xmlconv/tmp/Groundwater_data.ods");
+			//conv.convertDD_XML("http://localhost:8080/gdem/test.xls");
+			Vector v = conv.convertDD_XML_split("http://cdrtest.eionet.europa.eu/copy_of_ee/eea/colqrajqw/envrorfcq/Rivers_testdata_EU_137.ods", null);
+			System.out.println(v.toString());
 		}
 		catch(Exception e){
 			System.out.println(e.toString());
@@ -71,8 +73,8 @@ public class Ods2Xml extends DDXMLConverter {
 	    //String excelFile = "E:/Projects/gdem/public/test.xls";
 	  	//String excelFile = "E:/Projects/gdem/tmp/Summer_ozone.xls";
 	    //String excelFile = E\\Projects\\gdem\\exelToXML\\Groundwater_GG_CCxxx.xls";
-	  	String odsFile = "E:/Projects/gdem/ods/CLC2000.ods";
-	    String outFile = "E:\\Projects\\gdem\\ods\\CLC2000.xml";
+	  	String odsFile = "E:/Projects/xmlconv/tmp/Rivers_testdata_EU_137.ods";
+	    String outFile = "E:/Projects/xmlconv/tmp/Rivers_testdata_EU_137.ods.xml";
 	    try{
 	      //OdsReader reader= new OdsReader();
 	      Ods2Xml processor = new Ods2Xml();
@@ -84,7 +86,7 @@ public class Ods2Xml extends DDXMLConverter {
 	      fout = new FileOutputStream(xml);
 
 	      //FileInputStream fis = new FileInputStream()
-	      processor.convertDD_XML_split(fis, fout, "Nat_CLCchange");
+	      processor.convertDD_XML_split(fis, fout, "Stations");
 	      //reader.initReader(fis);
 	      //String schema = reader.getXMLSchema();
 	      //Hashtable h = reader.getSheetSchemas();

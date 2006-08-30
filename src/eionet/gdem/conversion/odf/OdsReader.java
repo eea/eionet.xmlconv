@@ -255,10 +255,7 @@ public class OdsReader implements SourceReaderIF {
 		if (spreadsheet == null)
 			return true;
 
-		if (spreadsheet.getTableRowCount(sheet_name) > 0)
-			return false;
-		else
-			return true;
+		return spreadsheet.isEmptySheet(sheet_name);
 	}
 
 	/*
