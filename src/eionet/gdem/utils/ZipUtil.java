@@ -38,7 +38,7 @@ import java.util.zip.ZipOutputStream;
 
 public class ZipUtil {
 
-	static final int BUFFER = 2048;
+	static final int BUFFER = 1024;
 	static final String MIMETYPE_FILE = "mimetype";
 
 	public static void zipDir(String dir2zip, ZipOutputStream outZip)
@@ -62,19 +62,19 @@ public class ZipUtil {
 		// get a listing of the directory content
 		String[] dirList = zipDir.list();
 
-		// Set the compression ratio
-		outZip.setLevel(Deflater.DEFAULT_COMPRESSION);
 
 		//if directory contains mimetype file, then start with it
 		File mimetype_file = new File(dir2zip, MIMETYPE_FILE);
 		if (mimetype_file.exists()){
+			// Set the compression ratio
+			outZip.setLevel(Deflater.NO_COMPRESSION);
 			zipFile(mimetype_file,outZip,sourceDir);
 		}
+		// Set the compression ratio
+		outZip.setLevel(Deflater.DEFAULT_COMPRESSION);
 
 		// loop through dirList, and zip the files
 		for (int i = 0; i < dirList.length; i++) {
-			// Do not zip mimetype file anymore
-			if (dirList[i].equals(MIMETYPE_FILE))continue;
 
 			File f = new File(zipDir, dirList[i]);
 			if (f.isDirectory()) {
@@ -85,6 +85,9 @@ public class ZipUtil {
 				// loop again
 				continue;
 			}
+			// Do not zip mimetype file anymore
+			if (dirList[i].equals(MIMETYPE_FILE))continue;
+
 			//if we reached herem the f is not directory
 			zipFile(f,outZip,sourceDir);
 		}
