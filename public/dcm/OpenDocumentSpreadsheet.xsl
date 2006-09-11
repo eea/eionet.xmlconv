@@ -52,6 +52,8 @@
 <xsl:text disable-output-escaping="yes">			&lt;xsl:attribute name="table:name"&gt;</xsl:text>
 <xsl:value-of select="identifier"/>
 <xsl:text disable-output-escaping="yes">&lt;/xsl:attribute&gt;</xsl:text>
+<xsl:text disable-output-escaping="yes">		&lt;xsl:attribute name="schema-url"&gt;<xsl:value-of select="$dd_schema_url"/><xsl:value-of select="tableid"/>&lt;/xsl:attribute&gt;</xsl:text>
+<xsl:text disable-output-escaping="yes">		&lt;xsl:attribute name="table-schema-urls"&gt;<xsl:value-of select="$dd_schema_url"/><xsl:value-of select="tableid"/>&lt;/xsl:attribute&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">			&lt;table:table-columns&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">				&lt;table:table-column table:default-cell-value-type='number' table:default-cell-style-name='cell1' &gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">					&lt;xsl:attribute name="table:number-columns-repeated"&gt;&lt;xsl:value-of select="count(./dd</xsl:text>
@@ -66,7 +68,6 @@
 <xsl:text disable-output-escaping="yes">:Row"/&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">			&lt;/table:table-rows&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">		&lt;/table:table&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">		&lt;xsl:call-template name="DD_Schema_sheet"/&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">	&lt;/office:spreadsheet&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">	&lt;/office:body&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">&lt;/office:document-content&gt;</xsl:text>
@@ -108,49 +109,7 @@
 <xsl:text disable-output-escaping="yes">		&lt;/table:table-row&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">	&lt;/table:table-header-rows&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">&lt;!-- Creates a sheet with XML schema, as it is done in DataDcit. Then it's possible to convert Excel back to XML--&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">&lt;xsl:template name="DD_Schema_sheet"&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">	&lt;table:table&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">		&lt;xsl:attribute name="table:name"&gt;DO_NOT_DELETE_THIS_SHEET&lt;/xsl:attribute&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">		&lt;xsl:attribute name="schema-url"&gt;<xsl:value-of select="$dd_schema_url"/><xsl:value-of select="tableid"/>&lt;/xsl:attribute&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">			&lt;table:table-columns&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">				&lt;table:table-column table:default-cell-value-type='text' table:default-cell-style-name='cell1' /&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">			&lt;/table:table-columns&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">			&lt;table:table-rows&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">				&lt;table:table-row&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">					&lt;table:table-cell&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">						&lt;text:p&gt;Please do not delete or modify this sheet!!!&lt;/text:p&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">					&lt;/table:table-cell&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">				&lt;/table:table-row&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">				&lt;table:table-row&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">					&lt;table:table-cell&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">						&lt;text:p&gt;It is used for converting this file back to XML!&lt;/text:p&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">					&lt;/table:table-cell&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">				&lt;/table:table-row&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">				&lt;table:table-row&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">					&lt;table:table-cell&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">						&lt;text:p&gt;Without this possibility your work cannot be used!&lt;/text:p&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">					&lt;/table:table-cell&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">				&lt;/table:table-row&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">				&lt;table:table-row&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">					&lt;table:table-cell&gt;</xsl:text>
 
-<xsl:text disable-output-escaping="yes">						&lt;text:p&gt;</xsl:text>
-<xsl:value-of select="$dd_schema_url"/>
-<xsl:value-of select="tableid"/>
-<xsl:text disable-output-escaping="yes">&lt;/text:p&gt;</xsl:text>
-
-
-
-
-
-
-
-<xsl:text disable-output-escaping="yes">					&lt;/table:table-cell&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">				&lt;/table:table-row&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">			&lt;/table:table-rows&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">		&lt;/table:table&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;</xsl:text>
 
         <xsl:text disable-output-escaping="yes">&lt;/xsl:stylesheet&gt;&#xd;&#xa;</xsl:text>       
         
