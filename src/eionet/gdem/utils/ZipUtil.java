@@ -39,6 +39,7 @@ import java.util.zip.ZipOutputStream;
 public class ZipUtil {
 
 	static final int BUFFER = 2048;
+	static final String MIMETYPE_FILE = "mimetype";
 
 	public static void zipDir(String dir2zip, ZipOutputStream outZip)
 			throws IOException {
@@ -46,20 +47,35 @@ public class ZipUtil {
 		zipDir(dir2zip, outZip, dir2zip);
 	}
 
+	/**
+	 * Function zips all the files in directory and subdirectories and adds these into zip file
+	 *
+	 * @param dir2zip - directory that will be zipped
+	 * @param outZip - ZipOutputStream represents the zip file, where the files will be placed
+	 * @param sourceDir - root directory, where the zipping started
+	 * @throws IOException
+	 */
 	public static void zipDir(String dir2zip, ZipOutputStream outZip,
 			String sourceDir) throws IOException {
 		// create a new File object based on the directory we have to zip
 		File zipDir = new File(dir2zip);
 		// get a listing of the directory content
 		String[] dirList = zipDir.list();
-		byte[] readBuffer = new byte[BUFFER];
-		int bytesIn = 0;
 
 		// Set the compression ratio
 		outZip.setLevel(Deflater.DEFAULT_COMPRESSION);
 
+		//if directory contains mimetype file, then start with it
+		File mimetype_file = new File(dir2zip, MIMETYPE_FILE);
+		if (mimetype_file.exists()){
+			zipFile(mimetype_file,outZip,sourceDir);
+		}
+
 		// loop through dirList, and zip the files
 		for (int i = 0; i < dirList.length; i++) {
+			// Do not zip mimetype file anymore
+			if (dirList[i].equals(MIMETYPE_FILE))continue;
+
 			File f = new File(zipDir, dirList[i]);
 			if (f.isDirectory()) {
 				// if the File object is a directory, call this
@@ -69,33 +85,46 @@ public class ZipUtil {
 				// loop again
 				continue;
 			}
-			// if we reached here, the File object f was not a directory
-			// create a FileInputStream on top of f
-			FileInputStream fis = new FileInputStream(f);
-			// create a new zip entry
-			String strAbsPath = f.getPath();
-			String strZipEntryName = strAbsPath.substring(
-					sourceDir.length() + 1, strAbsPath.length());
-
-			//make ut work on windows
-			strZipEntryName = Utils.Replace(strZipEntryName, File.separator,
-					"/");
-			ZipEntry anEntry = new ZipEntry(strZipEntryName);
-			// place the zip entry in the ZipOutputStream object
-			outZip.putNextEntry(anEntry);
-			// now write the content of the file to the ZipOutputStream
-			while ((bytesIn = fis.read(readBuffer)) != -1) {
-				outZip.write(readBuffer, 0, bytesIn);
-			}
-			outZip.flush();
-			// Close the current entry
-			outZip.closeEntry();
-			// close the Stream
-
-			fis.close();
+			//if we reached herem the f is not directory
+			zipFile(f,outZip,sourceDir);
 		}
 	}
+	/**
+	 *
+	 * @param f  - File that will be zipped
+	 * @param outZip - ZipOutputStream represents the zip file, where the files will be placed
+	 * @param sourceDir - root directory, where the zipping started
+	 * @throws IOException
+	 */
+	public static void zipFile(File f, ZipOutputStream outZip, String sourceDir) throws IOException {
 
+		byte[] readBuffer = new byte[BUFFER];
+		int bytesIn = 0;
+		// create a FileInputStream on top of file f
+		FileInputStream fis = new FileInputStream(f);
+		// create a new zip entry
+		String strAbsPath = f.getPath();
+		String strZipEntryName = strAbsPath.substring(
+				sourceDir.length() + 1, strAbsPath.length());
+
+		//make ut work on windows
+		strZipEntryName = Utils.Replace(strZipEntryName, File.separator,
+				"/");
+		ZipEntry anEntry = new ZipEntry(strZipEntryName);
+		// place the zip entry in the ZipOutputStream object
+		outZip.putNextEntry(anEntry);
+		// now write the content of the file to the ZipOutputStream
+		while ((bytesIn = fis.read(readBuffer)) != -1) {
+			outZip.write(readBuffer, 0, bytesIn);
+		}
+		outZip.flush();
+		// Close the current entry
+		outZip.closeEntry();
+		// close the Stream
+
+		fis.close();
+
+	}
 	public static void unzip(String inZip, String outDir) throws IOException {
 
 		File sourceZipFile = new File(inZip);
@@ -146,5 +175,12 @@ public class ZipUtil {
 			}
 		}
 		zipFile.close();
+	}
+	private static boolean getDirContainsMimeFile(String dir){
+		File file = new File(dir, MIMETYPE_FILE);
+		if (file.exists())
+			return true;
+		else
+			return false;
 	}
 }

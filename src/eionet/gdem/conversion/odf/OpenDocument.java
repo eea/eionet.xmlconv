@@ -214,14 +214,14 @@ public class OpenDocument {
 			List elements = xQuery.getElements("table:table");
 			for (int i = 0; i < elements.size(); i++) {
 				HashMap attr_map = (HashMap) elements.get(i);
-				if (attr_map.containsKey(OdsReader.SCHEMA_ATTR_NAME)){
-					String schema_url = (String)attr_map.get(OdsReader.SCHEMA_ATTR_NAME);
+				if (attr_map.containsKey(OdsReader.SCHEMA_ATTR_NAME) && Utils.isNullStr(schemaUrl)){
+					schemaUrl = (String)attr_map.get(OdsReader.SCHEMA_ATTR_NAME);
+				}
+				if (attr_map.containsKey(OdsReader.TBL_SCHEMAS_ATTR_NAME)){
 					if (attr_map.containsKey("table:name")){
+						String schema_url = (String)attr_map.get(OdsReader.TBL_SCHEMAS_ATTR_NAME);
 						String name = (String)attr_map.get("table:name");
-						if (name!=null && name.equals("DO_NOT_DELETE_THIS_SHEET")){
-							schemaUrl = (String)attr_map.get(OdsReader.SCHEMA_ATTR_NAME);
-						}
-						else{
+						if (!Utils.isNullStr(schema_url) && !Utils.isNullStr(name)){
 							tableSchemaUrls.append(OdsReader.TABLE_NAME);
 							tableSchemaUrls.append(name);
 							tableSchemaUrls.append(";");
@@ -232,7 +232,7 @@ public class OpenDocument {
 					}
 				}
 			}
-			if (schemaUrl!=null){
+			if (!Utils.isNullStr(schemaUrl)){
 				os = new FileOutputStream(strWorkingFolder  + File.separator + META_FILE_NAME);
 				in = new FileInputStream(strMetaFile);
 				HashMap parameters = new HashMap();
