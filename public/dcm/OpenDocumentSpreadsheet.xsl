@@ -52,8 +52,9 @@
 <xsl:text disable-output-escaping="yes">			&lt;xsl:attribute name="table:name"&gt;</xsl:text>
 <xsl:value-of select="identifier"/>
 <xsl:text disable-output-escaping="yes">&lt;/xsl:attribute&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">		&lt;xsl:attribute name="schema-url"&gt;<xsl:value-of select="$dd_schema_url"/><xsl:value-of select="tableid"/>&lt;/xsl:attribute&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">		&lt;xsl:attribute name="table-schema-urls"&gt;<xsl:value-of select="$dd_schema_url"/><xsl:value-of select="tableid"/>&lt;/xsl:attribute&gt;</xsl:text>
+<xsl:text disable-output-escaping="yes">		&lt;xsl:attribute name="schema-url"&gt;</xsl:text>
+<xsl:value-of select="$dd_schema_url"/><xsl:value-of select="tableid"/><xsl:text disable-output-escaping="yes">&lt;/xsl:attribute&gt;</xsl:text>
+<xsl:text disable-output-escaping="yes">		&lt;xsl:attribute name="table-schema-urls"&gt;</xsl:text><xsl:value-of select="$dd_schema_url"/><xsl:value-of select="tableid"/><xsl:text disable-output-escaping="yes">&lt;/xsl:attribute&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">			&lt;table:table-columns&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">				&lt;table:table-column table:default-cell-value-type='number' table:default-cell-style-name='cell1' &gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">					&lt;xsl:attribute name="table:number-columns-repeated"&gt;&lt;xsl:value-of select="count(./dd</xsl:text>
