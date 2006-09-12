@@ -104,15 +104,6 @@ public class ZipUtil {
 		//Read the source file into byte array
 		byte[] fileBytes = Utils.getBytesFromFile(f);
 
-		// 	Set the compression ratio
-		if(doCompress){
-			outZip.setMethod(ZipOutputStream.DEFLATED);
-			outZip.setLevel(Deflater.DEFAULT_COMPRESSION);
-		}
-		else{
-			outZip.setMethod(ZipOutputStream.STORED);
-		}
-
 		// create a new zip entry
 		String strAbsPath = f.getPath();
 		String strZipEntryName = strAbsPath.substring(
@@ -126,9 +117,9 @@ public class ZipUtil {
 			//ZipEntry can't calculate crc size automatically, if we use STORED method.
 			anEntry.setMethod(ZipEntry.STORED);
 			anEntry.setSize(fileBytes.length);
-            CRC32 crc321 = new CRC32();
-            crc321.update(fileBytes);
-            anEntry.setCrc(crc321.getValue());
+			CRC32 crc321 = new CRC32();
+			crc321.update(fileBytes);
+			anEntry.setCrc(crc321.getValue());
 		}
 		// place the zip entry in the ZipOutputStream object
 		outZip.putNextEntry(anEntry);
