@@ -120,7 +120,7 @@ public class OpenDocument {
 			Streams.drain(result_file_input,out);
 
 		} catch (IOException ioe) {
-			throw new Exception("Could not create OpenDocuement Spreadsheet file: " + ioe.toString());
+			throw new Exception("Could not create OpenDocument Spreadsheet file: " + ioe.toString());
 		} finally {
 			if (zip_out!=null){
 				try {
