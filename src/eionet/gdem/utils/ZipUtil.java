@@ -31,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -38,7 +39,7 @@ import java.util.zip.ZipOutputStream;
 
 public class ZipUtil {
 
-	static final int BUFFER = 1024;
+	static final int BUFFER = 2156;
 	static final String MIMETYPE_FILE = "mimetype";
 
 	public static void zipDir(String dir2zip, ZipOutputStream outZip)
@@ -67,11 +68,8 @@ public class ZipUtil {
 		File mimetype_file = new File(dir2zip, MIMETYPE_FILE);
 		if (mimetype_file.exists()){
 			// Set the compression ratio
-			outZip.setLevel(Deflater.NO_COMPRESSION);
-			zipFile(mimetype_file,outZip,sourceDir);
+			zipFile(mimetype_file,outZip,sourceDir,false);
 		}
-		// Set the compression ratio
-		outZip.setLevel(Deflater.DEFAULT_COMPRESSION);
 
 		// loop through dirList, and zip the files
 		for (int i = 0; i < dirList.length; i++) {
@@ -89,7 +87,7 @@ public class ZipUtil {
 			if (dirList[i].equals(MIMETYPE_FILE))continue;
 
 			//if we reached herem the f is not directory
-			zipFile(f,outZip,sourceDir);
+			zipFile(f,outZip,sourceDir,true);
 		}
 	}
 	/**
@@ -97,35 +95,50 @@ public class ZipUtil {
 	 * @param f  - File that will be zipped
 	 * @param outZip - ZipOutputStream represents the zip file, where the files will be placed
 	 * @param sourceDir - root directory, where the zipping started
+	 * @param doCompress - don't comress the file, if doCompress=true
 	 * @throws IOException
 	 */
-	public static void zipFile(File f, ZipOutputStream outZip, String sourceDir) throws IOException {
+	public static void zipFile(File f, ZipOutputStream outZip, String sourceDir, boolean doCompress) throws IOException {
 
-		byte[] readBuffer = new byte[BUFFER];
-		int bytesIn = 0;
-		// create a FileInputStream on top of file f
-		FileInputStream fis = new FileInputStream(f);
+
+		//Read the source file into byte array
+		byte[] fileBytes = Utils.getBytesFromFile(f);
+
+		// 	Set the compression ratio
+		if(doCompress){
+			outZip.setMethod(ZipOutputStream.DEFLATED);
+			outZip.setLevel(Deflater.DEFAULT_COMPRESSION);
+		}
+		else{
+			outZip.setMethod(ZipOutputStream.STORED);
+		}
+
 		// create a new zip entry
 		String strAbsPath = f.getPath();
 		String strZipEntryName = strAbsPath.substring(
 				sourceDir.length() + 1, strAbsPath.length());
-
-		//make ut work on windows
 		strZipEntryName = Utils.Replace(strZipEntryName, File.separator,
 				"/");
 		ZipEntry anEntry = new ZipEntry(strZipEntryName);
+
+		//Don't compress the file, if not needed
+		if(!doCompress){
+			//ZipEntry can't calculate crc size automatically, if we use STORED method.
+			anEntry.setMethod(ZipEntry.STORED);
+			anEntry.setSize(fileBytes.length);
+            CRC32 crc321 = new CRC32();
+            crc321.update(fileBytes);
+            anEntry.setCrc(crc321.getValue());
+		}
 		// place the zip entry in the ZipOutputStream object
 		outZip.putNextEntry(anEntry);
+
 		// now write the content of the file to the ZipOutputStream
-		while ((bytesIn = fis.read(readBuffer)) != -1) {
-			outZip.write(readBuffer, 0, bytesIn);
-		}
+		outZip.write(fileBytes);
+
 		outZip.flush();
 		// Close the current entry
 		outZip.closeEntry();
-		// close the Stream
-
-		fis.close();
 
 	}
 	public static void unzip(String inZip, String outDir) throws IOException {
