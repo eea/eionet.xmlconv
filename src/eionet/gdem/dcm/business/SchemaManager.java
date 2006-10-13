@@ -261,7 +261,8 @@ public class SchemaManager {
 				if (!xsl.startsWith(Properties.gdemURL + "/do/getStylesheet?id=")) {
 
 					File f = new File(Properties.xslFolder + File.separatorChar +  xsl);
-					if (f != null) last_modified = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(f.lastModified()));
+					if (f != null) last_modified = Utils.getDateTime(new Date(f.lastModified()));
+					//DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(f.lastModified()));
 					xslUrl = Names.XSL_FOLDER + (String) hash.get("xsl");
 					type = (String) hash.get("result_type");
 				} else {

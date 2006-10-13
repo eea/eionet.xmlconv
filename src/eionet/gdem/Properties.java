@@ -92,7 +92,10 @@ public class Properties {
 	private static ResourceBundle ldapProps;
 	public static Category logger;
 
-	static {
+	public static String dateFormatPattern="dd MMM yyyy";
+	public static String timeFormatPattern="dd MMM yyyy hh:mm:ss";
+
+	 static {
 
 		if (logger == null) logger = Category.getInstance("gdem");
 
@@ -131,7 +134,10 @@ public class Properties {
 				Float f = new Float(frequency);
 				wqCheckInterval = (long) (f.floatValue() * 1000);
 
-				try {
+		        dateFormatPattern=props.getString("date.format.pattern");
+		        timeFormatPattern=props.getString("time.format.pattern");
+
+		        try {
 					services_installed = Integer.parseInt(props.getString("gdem.services"));
 				} catch (Exception e) { //ignore, use default
 				}

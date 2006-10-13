@@ -29,7 +29,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
-import java.text.DateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -129,7 +128,8 @@ public class XQueryService  implements Constants {
 					String last_modified="";
 					
 					if (f!=null)
-						last_modified = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM).format(new Date(f.lastModified()));
+						last_modified = Utils.getDateTime(new Date(f.lastModified()));;
+						//DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM).format(new Date(f.lastModified()));
 					
 					v1.add(last_modified);
 					vec.add(v1);

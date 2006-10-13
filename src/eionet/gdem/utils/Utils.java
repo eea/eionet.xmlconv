@@ -27,7 +27,9 @@ import eionet.gdem.Properties;
 import java.net.URL;
 import java.io.*;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -491,4 +493,42 @@ public class Utils {
         // Close the input stream and return bytes
         is.close();
         return bytes;
-    }}
+    }
+	/**
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static String getDate(Date date){
+		return getFormat(date, Properties.dateFormatPattern);
+	}
+
+	/**
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static String getDateTime(Date date){
+		return getFormat(date, Properties.timeFormatPattern);
+	}
+
+	/**
+	 * 
+	 * @param date
+	 * @param pattern
+	 * @return
+	 */
+	public static String getFormat(Date date, String pattern){
+
+		if (date==null)
+			return null;
+
+		SimpleDateFormat formatter = null;
+		if (pattern==null)
+			formatter = new SimpleDateFormat();
+		else
+			formatter = new SimpleDateFormat(pattern);
+
+		return formatter.format(date);
+	}   
+}
