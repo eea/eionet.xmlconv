@@ -1,8 +1,12 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
-<%@ page import="eionet.gdem.Constants, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices"%>
+<%@ page import="eionet.gdem.Constants, eionet.gdem.services.GDEMServices"%>
+
 <%
-	DbModuleIF dbM= GDEMServices.getDbModule();
+response.setHeader("Pragma", "No-cache");
+response.setHeader("Cache-Control", "no-cache");
+response.setHeader("Cache-Control","no-store");
+response.setDateHeader("Expires", 0);
 %>
 
 <ed:breadcrumbs-push label="Workqueue" level="1" />
@@ -17,9 +21,11 @@
 
 <div id="workarea">
 		<%
-
-
-			String[][] list = dbM.getJobData();
+			String[][] list = null;
+			try{
+			eionet.gdem.services.db.dao.IXQJobDao jobDao = GDEMServices.getDaoService().getXQJobDao();
+			list = jobDao.getJobData();
+			}catch (Exception e) {e.printStackTrace();}
 			String tmpFolder = Constants.TMP_FOLDER;
 			String queriesFolder = Constants.QUERIES_FOLDER;
 		%>

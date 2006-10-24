@@ -36,11 +36,13 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
+import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dto.HostDto;
-import eionet.gdem.services.DbModuleIF;
+
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.web.struts.BaseAction;
 
 public class ListHostsAction extends BaseAction {
@@ -48,6 +50,7 @@ public class ListHostsAction extends BaseAction {
 	private static LoggerIF _logger = GDEMServices.getLogger();
 	protected final String GDEM_SSAclName = "/stylesheets";
 
+	private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();;
 
 	public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
 		ActionErrors errors = new ActionErrors();
@@ -55,8 +58,7 @@ public class ListHostsAction extends BaseAction {
 
 		try {
 			if(	checkPermission(request, Names.ACL_HOST_PATH, "v")) {
-				DbModuleIF dbM= GDEMServices.getDbModule();
-				Vector list = dbM.getHosts(null);
+				Vector list = hostDao.getHosts(null);
 				for (int i=0; i<list.size(); i++){
 					Hashtable host = (Hashtable)list.get(i);
 					HostDto h=new HostDto();

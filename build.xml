@@ -66,6 +66,7 @@
 		<javac debug="on" deprecation="off" srcdir="${src}" destdir="${classes.dir}" classpath="${lib}/avalon.jar;
 						            ${lib}/uit-security.jar;
                                     ${lib}/uit-client.jar;
+									${lib}/casclient.jar;
                                     ${lib}/commons-fileupload-1.0.jar;
 						            ${lib}/commons-beanutils-1.6.1.jar;
                                     ${lib}/batik.jar;

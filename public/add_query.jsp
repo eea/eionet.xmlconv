@@ -1,22 +1,26 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
-<%@ page import="java.util.HashMap, java.util.Vector, java.util.Hashtable, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names" %>
+<%@ page import="java.util.HashMap, java.util.Vector, java.util.Hashtable, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names" %>
 
-
+<%
+response.setHeader("Pragma", "No-cache");
+response.setHeader("Cache-Control", "no-cache");
+response.setHeader("Cache-Control","no-store");
+response.setDateHeader("Expires", 0);
+%>
 
 <%
 	//get schema from parameter
 	String id = request.getParameter("ID");
     id = (id == null ? "" : id);
-
-
-
-	DbModuleIF dbM= GDEMServices.getDbModule();
-
+	
+    eionet.gdem.services.db.dao.ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
+    eionet.gdem.services.db.dao.IConvTypeDao  convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
+	
 	String schema_name=null;
 
 	if (!id.equals("")){
-		Vector list = dbM.getSchemas(id);
+		Vector list = schemaDao.getSchemas(id);
 		if (list==null) list=new Vector();
 		if (list.size()==0){%>
 			<b>Couldn't find XML schema!</b> <%
@@ -27,7 +31,7 @@
 		schema_name = (String)schema.get("xml_schema");
 	}
 
-	Vector convTypes = dbM.getConvTypes();
+	Vector convTypes = convTypeDao.getConvTypes();
 	if (convTypes==null) convTypes = new Vector();
 
 %>

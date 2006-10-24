@@ -26,6 +26,7 @@ package eionet.gdem.conversion.ssr;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Vector;
+import java.io.File;
 
 import com.tee.uit.security.AppUser;
 
@@ -35,9 +36,10 @@ import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.MultipartFileUpload;
 
 
-import eionet.gdem.services.DbModuleIF;
+
 import eionet.gdem.services.GDEMServices;
-import java.io.File;
+
+
 
 /**
 * Handler of storing methods for the GDEM
@@ -45,8 +47,7 @@ import java.io.File;
 public class SaveHandler {
 
   private static final int BUF_SIZE = 1024;
-  private static DbModuleIF dbM=null;
-
+ 
   /**
   * stylesheets handling
   *
@@ -110,14 +111,13 @@ public class SaveHandler {
          return;
        }
        try{
-         dbM= GDEMServices.getDbModule();
-
-         schemaID=dbM.getSchemaID(schema);
+           schemaID=GDEMServices.getDaoService().getSchemaDao().getSchemaID(schema);
          if (schemaID==null)
-            schemaID=dbM.addSchema(schema, null);
+             schemaID=GDEMServices.getDaoService().getSchemaDao().addSchema(schema, null);
 
 
-         dbM.addStylesheet(schemaID, type, fileName, descr);
+         GDEMServices.getDaoService().getStyleSheetDao().addStylesheet(schemaID, type, fileName, descr);
+
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
@@ -176,10 +176,8 @@ public class SaveHandler {
        fileName = (fileName==null)?current_file:fileName;
 
        try{
-         dbM= GDEMServices.getDbModule();
+         GDEMServices.getDaoService().getStyleSheetDao().updateStylesheet(xsl_id, schema_id, descr, fileName, content_type);
 
-
-         dbM.updateStylesheet(xsl_id, schema_id, descr, fileName, content_type);
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
@@ -205,11 +203,12 @@ public class SaveHandler {
          return;
        }
        try{
-         dbM= GDEMServices.getDbModule();
-         HashMap hash = dbM.getStylesheetInfo(del_id);
+         HashMap hash = GDEMServices.getDaoService().getStyleSheetDao().getStylesheetInfo(del_id);
+
          fileName = (String)hash.get("xsl");
          schemaID= (String)req.getParameter("schema_id");
-         dbM.removeStylesheet(del_id);
+         GDEMServices.getDaoService().getStyleSheetDao().removeStylesheet(del_id);
+
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while deleting stylesheet from database: " + e.toString());
@@ -263,7 +262,7 @@ public class SaveHandler {
            return;
         }
         try{
-          dbM= GDEMServices.getDbModule();
+          
 
           MultipartFileUpload fu = new MultipartFileUpload(false);
           fu.processMultiPartRequest(req);
@@ -276,7 +275,7 @@ public class SaveHandler {
 		    return;
           }
           //check if file exists in filesystem or in database
-  		  if (fu.getFileExists() || dbM.checkQueryFile(fileName)){
+  		  if (fu.getFileExists() || GDEMServices.getDaoService().getQueryDao().checkQueryFile(fileName)){
   	        req.setAttribute(Names.ERROR_ATT, "File already exists. Rename the file and upload it again.");
   		    return;
   		  }
@@ -302,13 +301,14 @@ public class SaveHandler {
          return;
        }
        try{
-         dbM= GDEMServices.getDbModule();
-
-         schemaID=dbM.getSchemaID(schema);
+           
+    	 schemaID=GDEMServices.getDaoService().getSchemaDao().getSchemaID(schema);
          if (schemaID==null)
-            schemaID=dbM.addSchema(schema, null);
+             schemaID=GDEMServices.getDaoService().getSchemaDao().addSchema(schema, null);
 
-         dbM.addQuery(schemaID, name, fileName, descr, content_type);
+
+         GDEMServices.getDaoService().getQueryDao().addQuery(schemaID, name, fileName, descr, content_type);
+
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
@@ -339,7 +339,7 @@ public class SaveHandler {
         }
 
         try{
-            dbM= GDEMServices.getDbModule();
+
 
             MultipartFileUpload fu = new MultipartFileUpload(false);
             fu.processMultiPartRequest(req);
@@ -359,7 +359,7 @@ public class SaveHandler {
             		//	Didn't have filename in database
         			current_file = fu.getFileName();
         			//	check if file exists
-        			if (fu.getFileExists() || dbM.checkQueryFile(current_file)){
+        			if (fu.getFileExists() || GDEMServices.getDaoService().getQueryDao().checkQueryFile(current_file)){
         				req.setAttribute(Names.ERROR_ATT, "File already exists. Rename the file and upload it again.");
         				return;
       		  		}
@@ -393,7 +393,8 @@ public class SaveHandler {
        try{
 
 
-         dbM.updateQuery(query_id, schema_id,name,descr, current_file, content_type);
+         GDEMServices.getDaoService().getQueryDao().updateQuery(query_id, schema_id,name,descr, fileName, content_type);
+
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
@@ -419,11 +420,13 @@ public class SaveHandler {
          return;
        }
        try{
-         dbM= GDEMServices.getDbModule();
-         HashMap hash = dbM.getQueryInfo(del_id);
+         
+         HashMap hash = GDEMServices.getDaoService().getQueryDao().getQueryInfo(del_id);
+
          fileName = (String)hash.get("query");
          schemaID= (String)req.getParameter("schema_id");
-         dbM.removeQuery(del_id);
+         GDEMServices.getDaoService().getQueryDao().removeQuery(del_id);
+
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while deleting query from database: " + e.toString());
@@ -469,9 +472,9 @@ public class SaveHandler {
        String del_id= (String)req.getParameter(Names.XSD_DEL_ID);
 
        try{
-         dbM= GDEMServices.getDbModule();
+         
          if(action.equals( Names.XSD_DEL_ACTION)) {
-            Vector stylesheets = dbM.getSchemaStylesheets(del_id);
+            Vector stylesheets = GDEMServices.getDaoService().getSchemaDao().getSchemaStylesheets(del_id);
             if (stylesheets!=null){
          		 for (int i=0; i<stylesheets.size(); i++){
            			HashMap hash = (HashMap)stylesheets.get(i);
@@ -490,11 +493,11 @@ public class SaveHandler {
                  }
               }
            	}
-            if(dbM.getSchemaQueries(del_id) != null)
+            if(GDEMServices.getDaoService().getSchemaDao().getSchemaQueries(del_id) != null)
                hasOtherStuff = true;
          }
          else {  // action.equals( Names.XSDQ_DEL_ACTION )
-            Vector queries = dbM.getSchemaQueries(del_id);
+            Vector queries = GDEMServices.getDaoService().getSchemaDao().getSchemaQueries(del_id);
             if (queries!=null){
          		 for (int i=0; i<queries.size(); i++){
            			HashMap hash = (HashMap)queries.get(i);
@@ -513,10 +516,10 @@ public class SaveHandler {
                  }
               }
            	}
-            if(dbM.getSchemaStylesheets(del_id) != null)
+            if(GDEMServices.getDaoService().getSchemaDao().getSchemaStylesheets(del_id) != null)
                hasOtherStuff = true;
          }
-         dbM.removeSchema(del_id, action.equals(Names.XSD_DEL_ACTION), action.equals(Names.XSDQ_DEL_ACTION), !hasOtherStuff);
+         GDEMServices.getDaoService().getSchemaDao().removeSchema(del_id, action.equals(Names.XSD_DEL_ACTION), action.equals(Names.XSDQ_DEL_ACTION), !hasOtherStuff);
         }
         catch (Exception e){
           err_buf.append("Cannot delete Schema: " + e.toString() + del_id);
@@ -547,18 +550,19 @@ public class SaveHandler {
          return;
        }
         try{
-          dbM= GDEMServices.getDbModule();
+          
           if (action.equals(Names.XSD_UPDVAL_ACTION)){
             String validate= (String)req.getParameter("VALIDATE");
 
-            dbM.updateSchemaValidate(schema_id, validate);
+            GDEMServices.getDaoService().getSchemaDao().updateSchemaValidate(schema_id, validate);
           }
           else{
             String schema_name= (String)req.getParameter("XML_SCHEMA");
             String description= (String)req.getParameter("DESCRIPTION");
             String dtd_public_id= (String)req.getParameter("DTD_PUBLIC_ID");
 
-            dbM.updateSchema(schema_id, schema_name, description, dtd_public_id);
+            GDEMServices.getDaoService().getSchemaDao().updateSchema(schema_id, schema_name, description, dtd_public_id);
+
           }
 
        }
@@ -606,9 +610,9 @@ public class SaveHandler {
          return;
        }
        try{
-         dbM= GDEMServices.getDbModule();
 
-         dbM.addRootElem(schema_id, elem_name, namespace);
+           GDEMServices.getDaoService().getRootElemDao().addRootElem(schema_id, elem_name, namespace);
+
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
@@ -634,8 +638,7 @@ public class SaveHandler {
          return;
        }
        try{
-         dbM= GDEMServices.getDbModule();
-         dbM.removeRootElem(del_id);
+           GDEMServices.getDaoService().getRootElemDao().removeRootElem(del_id);
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while deleting root element from database: " + e.toString());
@@ -672,8 +675,9 @@ public class SaveHandler {
        String del_id= (String)req.getParameter("ID");
 
        try{
-         dbM= GDEMServices.getDbModule();
-          dbM.removeHost(del_id);
+         
+           GDEMServices.getDaoService().getHostDao().removeHost(del_id);              
+
         }
         catch (Exception e){
           err_buf.append("Cannot delete host: " + e.toString() + del_id);
@@ -705,8 +709,7 @@ public class SaveHandler {
        String pwd= (String)req.getParameter("PASSWORD");
 
        try{
-         dbM= GDEMServices.getDbModule();
-         dbM.updateHost(host_id, host_name, user_n, pwd);
+           GDEMServices.getDaoService().getHostDao().updateHost(host_id, host_name, user_n, pwd);
         }
         catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Cannot update host: " + e.toString() + host_id);
@@ -730,9 +733,8 @@ public class SaveHandler {
        String pwd= (String)req.getParameter("PASSWORD");
 
        try{
-         dbM= GDEMServices.getDbModule();
-
-         dbM.addHost(host_name, user_n, pwd);
+         
+        GDEMServices.getDaoService().getHostDao().addHost(host_name, user_n, pwd);
        }
        catch (Exception e){
           req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
@@ -763,9 +765,9 @@ public class SaveHandler {
          String del_id = (String)req.getParameter("ID");
 
          try {
-            dbM = GDEMServices.getDbModule();
             if(del_id != null)
-               dbM.endXQJob(del_id);
+                GDEMServices.getDaoService().getXQJobDao().endXQJob(del_id);
+
          }
          catch (Exception e) {
             err_buf.append("Cannot delete job: " + e.toString() + del_id);

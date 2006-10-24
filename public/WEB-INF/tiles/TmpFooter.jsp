@@ -1,4 +1,5 @@
 <%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java"%>
+<%@ page import="eionet.gdem.web.filters.EionetCASFilter" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
@@ -74,8 +75,8 @@
 								</h5>								
 								<div class="portletBody">
 									<div class="portletContent odd">									
-										<ul class="portal-subnav">										
-											<li><a href="<c:url value="/do/start?login"/>" title="login">Login</a></li>
+										<ul class="portal-subnav">
+											<li><a href="<%=EionetCASFilter.getCASLoginURL(request)%> " title="login">Login</a></li>
 										</ul>
 									</div>
 								</div>

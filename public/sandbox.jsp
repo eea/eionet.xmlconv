@@ -1,7 +1,15 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ page import="java.util.Vector,java.util.HashMap,java.util.Hashtable"%>
-<%@ page import="eionet.gdem.Constants, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.utils.Utils, eionet.gdem.Properties, eionet.gdem.conversion.ssr.InputAnalyser"%>
+<%@ page import="eionet.gdem.Constants, eionet.gdem.services.GDEMServices, eionet.gdem.utils.Utils, eionet.gdem.Properties, eionet.gdem.conversion.ssr.InputAnalyser"%>
+
+<%
+response.setHeader("Pragma", "No-cache");
+response.setHeader("Cache-Control", "no-cache");
+response.setHeader("Cache-Control","no-store");
+response.setDateHeader("Expires", 0);
+%>
+
 <%
 	String q_id = (String)request.getParameter("ID");
 	String schema_id = (String)request.getParameter("SCHEMA_ID");
@@ -12,14 +20,15 @@
 	String query_file = null;
 	String schema_url ="";
 	boolean bValidate = false;
-	DbModuleIF dbM= GDEMServices.getDbModule();
 
+	eionet.gdem.services.db.dao.ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
+	eionet.gdem.services.db.dao.IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();	
 	if (!Utils.isNullStr(source_url)){
 		InputAnalyser analyser = new InputAnalyser();
 		try{
 			analyser.parseXML(source_url);
 			String schemaOrDTD = analyser.getSchemaOrDTD();
-			schema_id = dbM.getSchemaID(schemaOrDTD);
+			schema_id = schemaDao.getSchemaID(schemaOrDTD);
 		}
 		catch(Exception e){
 			//do nothoing - did not find XML Schema
@@ -27,18 +36,18 @@
 		}
 	}
 	if(schema_id != null) {
-      queries = dbM.getSchemaQueries(schema_id);
+      queries = schemaDao.getSchemaQueries(schema_id);
       if (queries == null) queries = new Vector();
 
       //checks if the validation is a part of QA Service. If yes, then add it to work queue
-      HashMap _oSchema = dbM.getSchema(schema_id);
+      HashMap _oSchema = schemaDao.getSchema(schema_id);
       String validate = (String)_oSchema.get("validate");
       schema_url = (String)_oSchema.get("xml_schema");
       bValidate = validate.equals("1") ? true: false;
 	}
 	if(q_id != null) {
-		qText = dbM.getQueryText(q_id);
-		HashMap queryInfo = dbM.getQueryInfo(q_id);
+		qText = queryDao.getQueryText(q_id);
+		HashMap queryInfo = queryDao.getQueryInfo(q_id);
 		if (queryInfo!=null){
 			query_file = Properties.queriesFolder + (String)queryInfo.get("query");
 		}
@@ -82,12 +91,12 @@
         			query_file = (String)querie.get("query");
         			String name = (String)querie.get("short_name");
         			%>
-        				<input type="radio" name="script" value="<%=query_id%>" <% if (j == 0) %>checked="checked"<%;%>/>
+        				<input type="radio" name="script" value="<%=Properties.queriesFolder%><%=query_file%>" <% if (j == 0) %>checked="checked"<%;%>/>
         				<%=name%> - <a target="blank" href="<%=Names.QUERY_FOLDER%><%=query_file%>"><%=query_file%></a><br/>
         			<%
 				}
 				if (bValidate){
-					%><input type="radio" name="script" value="-1" <% if (queries.size() == 0) %>checked="checked"<%;%>/>
+					%><input type="radio" name="script" value="-1" <% if (queries.size() == 0) %>checked="true"<%;%>/>
 							XML Schema validation<%
 				}
         		%>
@@ -112,9 +121,10 @@
 		if(wquPrm && !Utils.isNullStr(q_id)) {
 		%>
 			<input type="hidden" name="file_name" value="<%=query_file%>" />
+
 			<input type="submit" name="save" value=" Save changes to file " />
 		<% } %>
-		<input type="hidden" name="ID" value="<%=q_id%>" />
+		<input type="hidden" name="ID" value="<%=q_id%>" />		
 	</form>
 	<!--/td></tr></table-->
 </div>

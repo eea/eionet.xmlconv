@@ -23,23 +23,19 @@
 
 package eionet.gdem.services;
 
-import eionet.gdem.GDEMException;
+
+import eionet.gdem.services.db.dao.DCMDaoFactory;
 
 /**
  * Container class for GDEM Services e.g. DBService, Logger etc
  */
 public class GDEMServices {
-  private static DbModuleIF _dbSrv=null;
+  
   private static LoggerIF _logger=null;
   
-  /**
-  * returns a valid DbModuleIF
-  */
-  public static DbModuleIF getDbModule() throws GDEMException {
-    if (_dbSrv==null)
-      _dbSrv=new DbModule();
-      
-    return _dbSrv;
+ 
+  public static DCMDaoFactory getDaoService(){
+	  return DCMDaoFactory.getDaoFactory(DCMDaoFactory.MYSQL_DB);
   }
   
   public static LoggerIF getLogger()   {

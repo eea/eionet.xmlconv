@@ -32,21 +32,30 @@ import java.util.Vector;
 
 import org.apache.struts.upload.FormFile;
 
+
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.ConvType;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.DbModuleIF;
+
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.stylesheet.ConvTypeHolder;
+import eionet.gdem.services.db.dao.IConvTypeDao;
+import eionet.gdem.services.db.dao.ISchemaDao;
+import eionet.gdem.services.db.dao.IStyleSheetDao;
+
 
 public class StylesheetManager {
 	private static LoggerIF _logger = GDEMServices.getLogger();
+	  private  IStyleSheetDao styleSheetDao = GDEMServices.getDaoService().getStyleSheetDao();;
+	  private  ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
+	  private  IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
+	  
 
 
 	public void delete(String user, String stylesheetId) throws DCMException {
@@ -64,14 +73,13 @@ public class StylesheetManager {
 		}
 
 		try {
-			DbModuleIF dbM = GDEMServices.getDbModule();
-			dbM = GDEMServices.getDbModule();
-			HashMap hash = dbM.getStylesheetInfo(stylesheetId);
+			HashMap hash = styleSheetDao.getStylesheetInfo(stylesheetId);
 			String fileName = (String) hash.get("xsl");
 			String xslFolder = Properties.xslFolder;
 			if (!xslFolder.endsWith(File.separator)) xslFolder = xslFolder + File.separator;
 			Utils.deleteFile(xslFolder + fileName);
-			dbM.removeStylesheet(stylesheetId);
+			styleSheetDao.removeStylesheet(stylesheetId);
+			
 
 			/*
 			 * //removing schema if it doesnt have stylesheets String schema =
@@ -96,8 +104,8 @@ public class StylesheetManager {
 		try {
 			convs = new ArrayList();
 
-			DbModuleIF dbM = GDEMServices.getDbModule();
-			Vector convTypes = dbM.getConvTypes();
+			Vector convTypes = convTypeDao.getConvTypes();
+
 
 			for (int i = 0; i < convTypes.size(); i++) {
 				Hashtable hash = (Hashtable) convTypes.get(i);
@@ -133,8 +141,8 @@ public class StylesheetManager {
 		try {
 			String fileName = file.getFileName();
 
-			DbModuleIF dbM = GDEMServices.getDbModule();
-			if (dbM.checkStylesheetFile(fileName)) {
+
+			if (styleSheetDao.checkStylesheetFile(fileName)) {
 				throw new DCMException(BusinessConstants.EXCEPTION_STYLEHEET_FILE_EXISTS);
 			}
 
@@ -150,9 +158,10 @@ public class StylesheetManager {
 			in.close();
 			file.destroy();
 
-			String schemaID = dbM.getSchemaID(schema);
-			if (schemaID == null) schemaID = dbM.addSchema(schema, null);
-			dbM.addStylesheet(schemaID, type, fileName, descr);
+			String schemaID = schemaDao.getSchemaID(schema);
+			if (schemaID == null) schemaID = schemaDao.addSchema(schema, null);
+			
+			styleSheetDao.addStylesheet(schemaID, type, fileName, descr);
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
@@ -167,9 +176,9 @@ public class StylesheetManager {
 		Stylesheet st = new Stylesheet();
 
 		try {
-			DbModuleIF dbM = GDEMServices.getDbModule();
 			if (!stylesheetId.equals("")) {
-				HashMap xsl = dbM.getStylesheetInfo(stylesheetId);
+				HashMap xsl = styleSheetDao.getStylesheetInfo(stylesheetId);
+
 				if (xsl == null) xsl = new HashMap();
 
 				st.setSchema((String) xsl.get("xml_schema"));
@@ -201,11 +210,11 @@ public class StylesheetManager {
 		}
 		try {
 			String fileName = file.getFileName().trim();
-			DbModuleIF dbM = GDEMServices.getDbModule();
+
 
 			if (fileName != null && !fileName.equals("")) {
-				if(!dbM.checkStylesheetFile(xsl_id, fileName)) {
-					if (dbM.checkStylesheetFile(fileName)) {
+				if(!styleSheetDao.checkStylesheetFile(xsl_id, fileName)) {
+					if (styleSheetDao.checkStylesheetFile(fileName)) {						
 						throw new DCMException(BusinessConstants.EXCEPTION_STYLEHEET_FILE_EXISTS);
 					}
 				}
@@ -223,7 +232,8 @@ public class StylesheetManager {
 				file.destroy();
 
 				// delete Old xsl
-				HashMap hash = dbM.getStylesheetInfo(xsl_id);
+				HashMap hash = styleSheetDao.getStylesheetInfo(xsl_id);
+
 
 				String fileNameOld = (String) hash.get("xsl");
 				String xslFolder = Properties.xslFolder;
@@ -233,11 +243,10 @@ public class StylesheetManager {
 				Utils.deleteFile(xslFolder + fileNameOld);
 
 			}
-
-			String schemaID = dbM.getSchemaID(schema);
-			if (schemaID == null) schemaID = dbM.addSchema(schema, null);
-
-			dbM.updateStylesheet(xsl_id, schemaID, descr, fileName, type);
+			String schemaID = schemaDao.getSchemaID(schema);
+			
+			if (schemaID == null) schemaID = schemaDao.addSchema(schema, null);
+			styleSheetDao.updateStylesheet(xsl_id, schemaID, descr, fileName, type);
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {

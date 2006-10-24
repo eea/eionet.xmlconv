@@ -31,16 +31,23 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
 
+
 import eionet.gdem.conversion.ssr.Names;
-import eionet.gdem.services.DbModuleIF;
+
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.BaseAction;
 
 public class SaveHostAction extends BaseAction {
 	private static LoggerIF _logger = GDEMServices.getLogger();
+
+	private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
+	
+	
+	
 	
 	public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
 		ActionMessages messages = new ActionMessages();
@@ -60,8 +67,7 @@ public class SaveHostAction extends BaseAction {
 			if(hostId==null) { //Add new host
 				_logger.debug("ADDING NEW HOST !!!");
 				if(	checkPermission(request, Names.ACL_HOST_PATH, "i")) {
-					DbModuleIF dbM= GDEMServices.getDbModule();
-					dbM.addHost(host, username, password);
+					hostDao.addHost(host, username, password);
 					hostForm.getMap().clear();
 					messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.inserted"));
 				} else {
@@ -70,8 +76,7 @@ public class SaveHostAction extends BaseAction {
 			} else { //Update host
 				_logger.debug("UPDATE HOST !!!");
 				if(	checkPermission(request, Names.ACL_HOST_PATH, "u")) {
-					DbModuleIF dbM= GDEMServices.getDbModule();
-					dbM.updateHost(hostId, host, username, password);
+					hostDao.updateHost(hostId, host, username, password);
 					hostForm.getMap().clear();
 					messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.updated"));
 				} else {

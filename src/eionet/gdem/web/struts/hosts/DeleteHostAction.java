@@ -32,14 +32,19 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
 
+
 import eionet.gdem.conversion.ssr.Names;
-import eionet.gdem.services.DbModuleIF;
+import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.web.struts.BaseAction;
 
 public class DeleteHostAction extends BaseAction {
 	private static LoggerIF _logger = GDEMServices.getLogger();
+	
+	private static IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
+	
+
 	
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
 		ActionErrors errors = new ActionErrors();
@@ -49,8 +54,7 @@ public class DeleteHostAction extends BaseAction {
 		
 		try {
 			if(	checkPermission(request, Names.ACL_HOST_PATH, "d")) {
-				DbModuleIF dbM= GDEMServices.getDbModule();
-				dbM.removeHost(hostId);
+				hostDao.removeHost(hostId);
 				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.deleted"));
 			} else {
 				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.dnoperm", translate(actionMapping, request, "label.hosts")));

@@ -57,9 +57,10 @@ import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dcm.XslGenerator;
 import eionet.gdem.dcm.business.DDServiceClient;
 import eionet.gdem.dto.ConversionDto;
-import eionet.gdem.services.DbModuleIF;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.services.db.dao.IConvTypeDao;
+import eionet.gdem.services.db.dao.IStyleSheetDao;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
@@ -82,8 +83,6 @@ public class ConversionService {
 
 	private String tmpFolder;
 
-	private DbModuleIF db;
-
 	private HashMap convTypes;
 
 	private String cnvContentType = null;
@@ -97,6 +96,9 @@ public class ConversionService {
 	private String ticket = null;
 
 	private boolean trustedMode = true;// false for web clients
+	
+	private IStyleSheetDao styleSheetDao = GDEMServices.getDaoService().getStyleSheetDao();
+	private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
 	private static LoggerIF _logger;
 
@@ -135,8 +137,6 @@ public class ConversionService {
 	 */
 	public Vector listConversions(String schema) throws GDEMException {
 
-		if (db == null)
-			db = GDEMServices.getDbModule();
 		Vector v = new Vector();
 		List ddTables = DDServiceClient.getDDTables();
 		List convs = Conversion.getConversions();
@@ -207,7 +207,7 @@ public class ConversionService {
 
 		// retriving handocoded transformations
 		try {
-			Vector vDb = db.listConversions(schema);
+			Vector vDb = convTypeDao.listConversions(schema);
 			for (int i = 0; i < vDb.size(); i++) {
 				v.add(vDb.get(i));
 			}
@@ -276,11 +276,9 @@ public class ConversionService {
 				cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ?
 						DEFAULT_FILE_NAME:src.getFileNameNoExtension();
 
-				if (db == null)
-					db = GDEMServices.getDbModule();
 
 				try {
-					HashMap styleSheetData = db.getStylesheetInfo(convertId);
+					HashMap styleSheetData = styleSheetDao.getStylesheetInfo(convertId);
 
 					if (styleSheetData == null)
 						throw new GDEMException(
@@ -290,7 +288,7 @@ public class ConversionService {
 					cnvTypeOut = (String) styleSheetData
 							.get("content_type_out");
 
-					Hashtable convType = db.getConvType(cnvTypeOut);
+					Hashtable convType = convTypeDao.getConvType(cnvTypeOut);
 
 					if (convType != null) {
 						try {
@@ -410,11 +408,9 @@ public class ConversionService {
 			cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ?
 					DEFAULT_FILE_NAME:src.getFileNameNoExtension();
 
-			if (db == null)
-				db = GDEMServices.getDbModule();
 			try {
 				cnvTypeOut = conv.getResultType();
-				Hashtable convType = db.getConvType(cnvTypeOut);
+				Hashtable convType = convTypeDao.getConvType(cnvTypeOut);
 
 				if (convType != null) {
 					try {

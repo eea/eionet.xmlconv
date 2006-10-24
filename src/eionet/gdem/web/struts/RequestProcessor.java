@@ -66,20 +66,23 @@ public class RequestProcessor extends TilesRequestProcessor {
 	}
 
 
-	protected ActionForward processActionPerform(HttpServletRequest request, HttpServletResponse response, Action action, ActionForm form, ActionMapping mapping) throws IOException, ServletException {
-		String path = request.getPathInfo();
-		String query = request.getQueryString();
-		if (query != null && query.length() > 0) path += "?" + query;
-
-		boolean loggedIn = false;
-		Object objUser = request.getSession().getAttribute("user");
-
-		if (objUser == null && (path.indexOf("/editUI") == 0 || path.indexOf("/ldapForm") == 0 || path.indexOf("/dbForm") == 0 || path.indexOf("/addUplSchemaForm") == 0 || path.indexOf("/addStylesheetForm") == 0)) {
-			return mapping.findForward("loginForm");
-		}
-
-		return super.processActionPerform(request, response, action, form, mapping);
-	}
-
+//	protected ActionForward processActionPerform(HttpServletRequest request, HttpServletResponse response, Action action, ActionForm form, ActionMapping mapping) throws IOException, ServletException {
+//		String path = request.getPathInfo();
+//		String query = request.getQueryString();
+//		if (query != null && query.length() > 0) path += "?" + query;
+//
+//		boolean loggedIn = false;
+//		Object objUser = request.getSession().getAttribute("user");
+//
+//		if (objUser == null && (path.indexOf("/editUI") == 0 || path.indexOf("/ldapForm") == 0 || path.indexOf("/dbForm") == 0 || path.indexOf("/addUplSchemaForm") == 0 || path.indexOf("/addStylesheetForm") == 0)) {
+//			String casLoginUrl = getServletContext().getInitParameter("edu.yale.its.tp.cas.client.filter.loginUrl") + "?service=" + request.getRequestURL();
+//			response.sendRedirect("/do/login");
+//		}
+//
+//		
+//		
+//		return super.processActionPerform(request, response, action, form, mapping);
+//	}
+//
 
 }

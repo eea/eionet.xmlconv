@@ -1,8 +1,13 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
-<%@ page import="java.util.HashMap, java.util.Vector, java.util.Hashtable, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.Utils" %>
+<%@ page import="java.util.HashMap, java.util.Vector, java.util.Hashtable, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.Utils" %>
 
-
+<%
+response.setHeader("Pragma", "No-cache");
+response.setHeader("Cache-Control", "no-cache");
+response.setHeader("Cache-Control","no-store");
+response.setDateHeader("Expires", 0);
+%>
 
 <%
 	//get schema from parameter
@@ -10,9 +15,6 @@
 
 	id = (id == null ? "" : id);
 
-
-
-	DbModuleIF dbM= GDEMServices.getDbModule();
 	HashMap query =null;
 	String mode="view";
 	String xml_schema = "";
@@ -22,8 +24,10 @@
 	String file = "";
 	String schema_id = "";
 
+    eionet.gdem.services.db.dao.IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
+	
 	if (!id.equals("")){
-		query = dbM.getQueryInfo(id);
+		query = queryDao.getQueryInfo(id);
 		if (query==null) query=new HashMap();
 
 		xml_schema = (String)query.get("xml_schema");

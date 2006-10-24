@@ -45,15 +45,18 @@ import javax.servlet.ServletException;
 import eionet.gdem.utils.Utils;
 
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.services.DbModuleIF;
 import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.db.dao.IConvTypeDao;
+import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.GDEMException;
 
 public class SandBox  extends HttpServlet implements Constants {
 
 	private static final String HTML_CONTENT_TYPE = "text/html";
-	private static DbModuleIF db; //DbModule
-
+	private  IQueryDao queryDao =GDEMServices.getDaoService().getQueryDao();
+	private  IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
+	
+	
 	public void doGet(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException    {
 		res.sendRedirect("sandbox.jsp"); //GET redirects to JSP
 	}
@@ -242,8 +245,7 @@ public class SandBox  extends HttpServlet implements Constants {
 		HashMap query = null;
 		if(id != null) {
 			try{
-				db = GDEMServices.getDbModule();
-				query = db.getQueryInfo(id);
+				query = queryDao.getQueryInfo(id);
 			}
 			catch(Exception e){
 
@@ -259,7 +261,7 @@ public class SandBox  extends HttpServlet implements Constants {
 		if (hash!=null && hash.containsKey("content_type")){
 			String typeID = (String)hash.get("content_type");
 			try{
-				Hashtable hashType = db.getConvType(typeID);
+				Hashtable hashType = convTypeDao.getConvType(typeID);
 				if (hash!=null){
 					content_type = (String)hashType.get("content_type");
 				}

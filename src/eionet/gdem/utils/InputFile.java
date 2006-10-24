@@ -25,7 +25,7 @@ package eionet.gdem.utils;
 
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-import eionet.gdem.services.DbModuleIF;
+import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 
@@ -56,6 +56,11 @@ public class InputFile  {
   private String strFileName = null;
   private String strFileNameNoExtension = null;
 
+  private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
+  
+  
+
+  
   public InputFile(String str_url) throws IOException, MalformedURLException{
       _logger = GDEMServices.getLogger();
 
@@ -73,9 +78,9 @@ public class InputFile  {
    */
   private void getHostCredentials(String host) {
     try {
-      DbModuleIF db = GDEMServices.getDbModule();
 
-      Vector v=db.getHosts(host);
+      Vector v=hostDao.getHosts(host);
+
 
       if (v==null) return;
       if (v.size()>0){

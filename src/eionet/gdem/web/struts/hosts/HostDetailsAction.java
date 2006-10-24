@@ -34,14 +34,17 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
 
+
 import eionet.gdem.conversion.ssr.Names;
-import eionet.gdem.services.DbModuleIF;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.web.struts.BaseAction;
 
 public class HostDetailsAction extends BaseAction {
-	private static LoggerIF _logger = GDEMServices.getLogger();
+	private static LoggerIF _logger = GDEMServices.getLogger();	
+	private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();;
+	
 	
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
 		ActionMessages errors = new ActionMessages();
@@ -51,8 +54,8 @@ public class HostDetailsAction extends BaseAction {
 
 		try {
 			if(	checkPermission(request, Names.ACL_HOST_PATH, "u")) {
-				DbModuleIF dbM= GDEMServices.getDbModule();
-				Vector hosts = dbM.getHosts(hostId);
+				Vector hosts = hostDao.getHosts(hostId);
+
 				if (hosts!=null){
 					_logger.debug("PUNIM !!!");
 					Hashtable host = (Hashtable)hosts.get(0);

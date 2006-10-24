@@ -40,6 +40,9 @@ import eionet.gdem.services.*;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.services.db.dao.IQueryDao;
+import eionet.gdem.services.db.dao.ISchemaDao;
+import eionet.gdem.services.db.dao.IXQJobDao;
 
 import java.sql.SQLException;
 import java.io.FileNotFoundException;
@@ -52,7 +55,10 @@ import java.util.Vector;
 */
 public class XQueryService  implements Constants {
 
-  private static DbModuleIF db; //DbModule
+	  private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();;
+	  private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
+	  private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
+	  
  
   private static LoggerIF _logger;
   
@@ -65,12 +71,9 @@ public class XQueryService  implements Constants {
   */
   public Vector listQueries(String schema) throws GDEMException {
 
-    if (db==null)
-      db = GDEMServices.getDbModule();
-
     Vector v = null;
     try {
-      v=db.listQueries(schema);
+        v=queryDao.listQueries(schema);
     } catch (Exception e ) {
       throw new GDEMException("Error getting data from the DB " + e.toString(), e);
     }
@@ -86,11 +89,9 @@ public class XQueryService  implements Constants {
    public Vector listQAScripts(String schema) throws GDEMException {
   	Vector vec = new Vector();
   	Vector v1 = null;
-    if (db==null)
-      db = GDEMServices.getDbModule();
-
     try {
-      Vector v=db.getSchemas(schema);
+      Vector v=schemaDao.getSchemas(schema);
+
       if (Utils.isNullVector(v)) return vec;
       
       HashMap h = (HashMap)v.get(0);
@@ -183,7 +184,7 @@ public class XQueryService  implements Constants {
       String newId="-1"; //should not be returned with value -1;
       
       Vector _queries = listQueries(schema);
-      db=GDEMServices.getDbModule();
+
       if (Utils.isNullVector(_queries)) return result;
       
       for (int j=0;j<_queries.size();j++){
@@ -200,7 +201,8 @@ public class XQueryService  implements Constants {
           } catch(NumberFormatException n) {
             int_qID = 0;
           }           
-          newId=db.startXQJob(file, Properties.queriesFolder + query_file, resultFile, int_qID);
+          newId=xqJobDao.startXQJob(file, Properties.queriesFolder + query_file, resultFile, int_qID);
+
         } catch (SQLException sqe ) {
           throw new GDEMException("DB operation failed: " + sqe.toString());
         }
@@ -211,12 +213,14 @@ public class XQueryService  implements Constants {
       }
       //checks if the validation is a part of QA Service. If yes, then add it to work queue
       try {
-        String db_schema_id = db.getSchemaID(schema);
-        HashMap _oSchema = db.getSchema(db_schema_id);
+        String db_schema_id = schemaDao.getSchemaID(schema);
+        HashMap _oSchema = schemaDao.getSchema(db_schema_id);
+        
         String validate = (String)_oSchema.get("validate");
         if (validate.equals("1")){
           String resultFile=Properties.tmpFolder + "gdem_validate_" + System.currentTimeMillis() + ".html";
-          newId=db.startXQJob(file, schema, resultFile, JOB_VALIDATION);
+          newId=xqJobDao.startXQJob(file, schema, resultFile, JOB_VALIDATION);
+
 
           Vector _res = new Vector();
           _res.add(newId);
@@ -253,12 +257,11 @@ public class XQueryService  implements Constants {
     String resultFile=Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + ".html";
     String newId="-1"; //should not be returned with value -1;
 
-    //init DBModule
-    db=GDEMServices.getDbModule();
       
     //start a job in the Workqueue
     try {
-      newId=db.startXQJob(sourceURL, xqFile, resultFile);
+      newId=xqJobDao.startXQJob(sourceURL, xqFile, resultFile);
+
     } catch (SQLException sqe ) {
       throw new GDEMException("DB operation failed: " + sqe.toString());
     }
@@ -275,20 +278,20 @@ public class XQueryService  implements Constants {
 
     _logger.debug("XML/RPC call for getting result with JOB ID: " + jobId);
 
-    //init DBModule
-    db=GDEMServices.getDbModule();    
 
     String[] jobData=null;
     HashMap scriptData=null;
     int status=0;
     try {
-      jobData=db.getXQJobData(jobId);
+      jobData=xqJobDao.getXQJobData(jobId);
+      
       if (jobData==null){ //no such job
         //throw new GDEMException("** No such job with ID=" + jobId + " in the queue.");
       	status = XQ_JOBNOTFOUND_ERR;
       }
       else{
-        scriptData=db.getQueryInfo(jobData[5]);
+        scriptData=queryDao.getQueryInfo(jobData[5]);
+
         status= Integer.valueOf(jobData[3]).intValue();      	
       }
     } catch (SQLException sqle) {
@@ -305,7 +308,8 @@ public class XQueryService  implements Constants {
 		//remove the job from the queue / DB when the status won't change= FATAL or READY
 		if (status == XQ_FATAL_ERR || status == XQ_READY){
 			try {
-				db.endXQJob(jobId);
+				xqJobDao.endXQJob(jobId);
+
         _logger.debug("Delete the job: " + jobId);
 			} catch (SQLException sqle) {
 				throw new GDEMException("Error getting XQJob data from DB: " + sqle.toString());
@@ -409,10 +413,10 @@ public class XQueryService  implements Constants {
 	  		pars[0] = XQ_SOURCE_PARAM_NAME + "=" + file_url;
 
 	  		try{
-	  			db=GDEMServices.getDbModule();
-	  			String xqScript = db.getQueryText(script_id);
-	  			HashMap  hash= db.getQueryInfo(script_id);
+	  			String xqScript = queryDao.getQueryText(script_id);
+	  			HashMap  hash= queryDao.getQueryInfo(script_id);
     	
+	  			
 	  			if (Utils.isNullStr(xqScript) || hash == null){
 	  				String err_mess="Could not find QA script with id: " + script_id;
 	  				_logger.error(err_mess);

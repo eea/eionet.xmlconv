@@ -1,6 +1,13 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
-<%@ page import="java.io.File,java.util.Date,java.text.DateFormat,java.util.HashMap, java.util.Vector, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.Properties,eionet.gdem.utils.Utils" %>
+<%@ page import="java.io.File,java.util.Date,java.text.DateFormat,java.util.HashMap, java.util.Vector, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.Properties,eionet.gdem.Properties,eionet.gdem.utils.Utils" %>
+
+<%
+response.setHeader("Pragma", "No-cache");
+response.setHeader("Cache-Control", "no-cache");
+response.setHeader("Cache-Control","no-store");
+response.setDateHeader("Expires", 0);
+%>
 
 <%!private HashMap schema=null;%>
 
@@ -15,9 +22,9 @@
         }
 
     }
-    DbModuleIF dbM= GDEMServices.getDbModule();
 
-    Vector list = dbM.getSchemas(id);
+    eionet.gdem.services.db.dao.ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
+    Vector list = schemaDao.getSchemas(id);
     if (list==null) list=new Vector();
 
     String name = "";

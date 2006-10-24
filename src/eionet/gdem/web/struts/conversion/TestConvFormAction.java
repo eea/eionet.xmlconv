@@ -45,9 +45,9 @@ import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.DbModuleIF;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
 
@@ -55,6 +55,10 @@ public class TestConvFormAction extends Action {
 
 	private static LoggerIF _logger = GDEMServices.getLogger();
 
+	  private IRootElemDao rootElemDao = GDEMServices.getDaoService().getRootElemDao();
+	  
+
+	
 
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 		String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
@@ -122,8 +126,10 @@ public class TestConvFormAction extends Action {
 
 						String namespace = analyser.getNamespace();
 
-						DbModuleIF dbM = GDEMServices.getDbModule();
-						Vector matchedSchemas = dbM.getRootElemMatching(root_elem, namespace);
+
+
+						Vector matchedSchemas = rootElemDao.getRootElemMatching(root_elem, namespace);
+
 						for (int k = 0; k < matchedSchemas.size(); k++) {
 							HashMap schemaHash = (HashMap) matchedSchemas.get(k);
 							String schema_name = (String) schemaHash.get("xml_schema");

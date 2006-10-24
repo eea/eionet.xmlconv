@@ -24,11 +24,10 @@
 package eionet.gdem.qa;
 
 import eionet.gdem.Constants;
-import eionet.gdem.GDEMException;
-
-import eionet.gdem.services.DbModuleIF;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.db.dao.IXQJobDao;
+
 
 //import eionet.gdem.utils.Utils;
 
@@ -44,12 +43,16 @@ import java.sql.SQLException;
 */
 
 public class WQChecker extends TimerTask implements Constants {
-  private static DbModuleIF _db;
   private static LoggerIF _logger;
 
+  
+  private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
+  
+
+  
   public WQChecker() {
     _logger=GDEMServices.getLogger();
-    
+    /*
     try {
       _db=GDEMServices.getDbModule();
     } catch (Exception e) {
@@ -57,6 +60,7 @@ public class WQChecker extends TimerTask implements Constants {
       _logger.fatal("Initializing DB Pool failed: " + e.toString() , e);
       
     }
+    */
   }
 	/**
 	* override of Thread run() method, checks for new jobs in DB
@@ -65,7 +69,8 @@ public class WQChecker extends TimerTask implements Constants {
     //get new received jobs from the DB
     String[] newJobs=null;
     try {
-      newJobs=_db.getJobs(XQ_RECEIVED);
+      newJobs=xqJobDao.getJobs(XQ_RECEIVED);
+
     } catch(SQLException sqe ) {
 		   _logger.fatal("*** SQL error getting jobs from DB: " + sqe.toString());
     } catch(Exception e ) {

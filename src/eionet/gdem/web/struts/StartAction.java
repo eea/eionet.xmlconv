@@ -21,6 +21,8 @@
 
 package eionet.gdem.web.struts;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -31,10 +33,12 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import eionet.gdem.conversion.ssr.Names;
+import eionet.gdem.web.filters.EionetCASFilter;
+
 
 public class StartAction extends Action {
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException{
 
 		System.out.println("------------StartAction-----------");
 		System.out.println(httpServletRequest.getQueryString());
@@ -44,11 +48,14 @@ public class StartAction extends Action {
 			System.out.println(e.nextElement());
 		}
 
-		if (httpServletRequest.getParameter("logout") != null) {
+		if (httpServletRequest.getParameter("logout") != null) {			
 			session.setAttribute("user", null);
 			session.setAttribute(Names.USER_ATT, null);
 			session.removeAttribute(Names.TICKET_ATT);
-			return actionMapping.findForward("home"); // home page
+			EionetCASFilter.attachEionetLoginCookie(httpServletResponse,false);
+			httpServletResponse.sendRedirect(EionetCASFilter.getCASLogoutURL(httpServletRequest));
+			return null;
+			//return actionMapping.findForward("home"); // home page		
 		}
 
 		if (httpServletRequest.getParameter("login") != null) {

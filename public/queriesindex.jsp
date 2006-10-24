@@ -1,17 +1,24 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
-<%@ page import="java.util.Hashtable, java.util.Vector, java.util.HashMap, eionet.gdem.services.DbModuleIF, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.SecurityUtil,com.tee.uit.security.AppUser" %>
+<%@ page import="java.util.Hashtable, java.util.Vector, java.util.HashMap, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.SecurityUtil,com.tee.uit.security.AppUser" %>
 
 <%
 	//AppUser user = SecurityUtil.getUser(request);
 
 
-	DbModuleIF dbM= GDEMServices.getDbModule();
-	Vector list = dbM.getSchemas(null);
-	if (list==null) list=new Vector();
+	eionet.gdem.services.db.dao.ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
+	Vector list = schemaDao.getSchemas(null);
+	if (list==null) 
+		list=new Vector();
+
 
 %>
-
+<%
+response.setHeader("Pragma", "No-cache");
+response.setHeader("Cache-Control", "no-cache");
+response.setHeader("Cache-Control","no-store");
+response.setDateHeader("Expires", 0);
+%>
 
 <ed:breadcrumbs-push label="Queries" level="1" />
 <tiles:insert definition="TmpHeader">

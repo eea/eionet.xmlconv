@@ -30,12 +30,14 @@ package eionet.gdem.qa;
 
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
-import eionet.gdem.services.DbModuleIF;
+
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.Properties;
+import eionet.gdem.services.db.dao.IXQJobDao;
+
 
 import eionet.gdem.validation.ValidationService;
 
@@ -52,7 +54,6 @@ import java.util.Iterator;
 */
 public class XQueryTask extends Thread implements Constants {
 
-  private static DbModuleIF _db;
   private LoggerIF _logger;
 
   private String _scriptFile;
@@ -63,18 +64,16 @@ public class XQueryTask extends Thread implements Constants {
 
   private String _url; //source url for XML
 
+  
+	private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
+	
+  
   //int status;
 
   public XQueryTask(String jobId)  {
     _jobId=jobId;
     _logger=GDEMServices.getLogger();
     
-    try {
-     _db = GDEMServices.getDbModule();
-    } catch (Exception e ) {
-      _logger.fatal("** Initializing DB module failed " + e.toString());
-      _db=null; //fix me!!!!
-    }
 
     //inits variables from DB where the waiting task is stored
     //URL, XQ_FILE, RESULT_FILE
@@ -242,7 +241,8 @@ public class XQueryTask extends Thread implements Constants {
     try {
 
       //URL, XQ, RESULT
-      String[] jobData = _db.getXQJobData(_jobId);
+      String[] jobData = xqJobDao.getXQJobData(_jobId);
+      
 
       if (jobData==null)
           handleError("No such job: " + _jobId, true);
@@ -310,14 +310,16 @@ public class XQueryTask extends Thread implements Constants {
   
   private void changeStatus(int status)  {
     try {
-			_db.changeJobStatus(_jobId, status);  
+			xqJobDao.changeJobStatus(_jobId, status);  
+
     } catch (Exception e ) {
       handleError(e.toString(), true);
     }
   }
   private void changeFileJobsStatus(String savedFile, int status)  {
     try {
-			_db.changeFileJobsStatus(_url, savedFile, status);
+			xqJobDao.changeFileJobsStatus(_url, savedFile, status);
+			
     } catch (Exception e ) {
       handleError(e.toString(), false);
     }

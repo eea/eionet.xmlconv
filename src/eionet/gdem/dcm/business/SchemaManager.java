@@ -37,6 +37,7 @@ import java.util.Vector;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.struts.upload.FormFile;
 
+
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ssr.Names;
@@ -49,7 +50,6 @@ import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.dto.UplSchema;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.DbModuleIF;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.SecurityUtil;
@@ -57,11 +57,21 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.schema.SchemaElemHolder;
 import eionet.gdem.web.struts.schema.UplSchemaHolder;
 import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
+import eionet.gdem.services.db.dao.IRootElemDao;
+import eionet.gdem.services.db.dao.ISchemaDao;
+import eionet.gdem.services.db.dao.IUPLSchemaDao;
+
 
 public class SchemaManager {
 
 	private static LoggerIF _logger = GDEMServices.getLogger();
 
+	private  ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
+	private  IRootElemDao rootElemDao = GDEMServices.getDaoService().getRootElemDao();
+	private  IUPLSchemaDao uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
+
+	
+	
 
 	public void delete(String user, String schemaId) throws DCMException {
 
@@ -80,9 +90,10 @@ public class SchemaManager {
 		}
 
 		try {
-			DbModuleIF dbM = GDEMServices.getDbModule();
 
-			Vector stylesheets = dbM.getSchemaStylesheets(schemaId);
+
+			Vector stylesheets = schemaDao.getSchemaStylesheets(schemaId);
+
 			if (stylesheets != null) {
 				for (int i = 0; i < stylesheets.size(); i++) {
 					HashMap hash = (HashMap) stylesheets.get(i);
@@ -99,10 +110,12 @@ public class SchemaManager {
 					}
 				}
 			}
-			if (dbM.getSchemaQueries(schemaId) != null) hasOtherStuff = true;
+			if (schemaDao.getSchemaQueries(schemaId) != null) hasOtherStuff = true;
+
 
 			// dbM.removeSchema( schemaId, true, false, !hasOtherStuff);
-			dbM.removeSchema(schemaId, true, true, true);
+			schemaDao.removeSchema(schemaId, true, true, true);
+			
 		} catch (Exception e) {
 			_logger.debug("Error removing schema", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
@@ -128,8 +141,7 @@ public class SchemaManager {
 			st.setSsdPrm(ssdPrm);
 			st.setSsiPrm(ssiPrm);
 
-			DbModuleIF dbM = GDEMServices.getDbModule();
-			hcSchemas = dbM.getSchemas(null);
+			hcSchemas = schemaDao.getSchemas(null);
 			if (hcSchemas == null) hcSchemas = new Vector();
 
 			for (int i = 0; i < hcSchemas.size(); i++) {
@@ -231,9 +243,8 @@ public class SchemaManager {
 			st.setSsiPrm(ssiPrm);
 			st.setConvPrm(convPrm);
 
-			DbModuleIF dbM = GDEMServices.getDbModule();
+			String schemaId = schemaDao.getSchemaID(schema);
 
-			String schemaId = dbM.getSchemaID(schema);
 
 			if (schemaId == null) {
 				st.setHandcoded(false);
@@ -313,8 +324,8 @@ public class SchemaManager {
 		// String del_id= (String)req.getParameter(Names.XSD_DEL_ID);
 
 		try {
-			DbModuleIF dbM = GDEMServices.getDbModule();
-			dbM.updateSchema(schemaId, schema, description, dtdPublicId);
+			schemaDao.updateSchema(schemaId, schema, description, dtdPublicId);
+			
 		} catch (Exception e) {
 			_logger.debug("Error updating schema", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
@@ -337,9 +348,8 @@ public class SchemaManager {
 
 			se.setXsduPrm(xsduPrm);
 
-			DbModuleIF dbM = GDEMServices.getDbModule();
+			Vector list = schemaDao.getSchemas(schemaId, false);
 
-			Vector list = dbM.getSchemas(schemaId, false);
 			if (list == null) list = new Vector();
 
 			String name = "";
@@ -365,7 +375,9 @@ public class SchemaManager {
 				se.setSchema(schema);
 			}
 
-			Vector root_elems = (Vector) dbM.getSchemaRootElems(schemaId);
+
+			Vector root_elems = (Vector) rootElemDao.getSchemaRootElems(schemaId);
+
 			if (root_elems == null) root_elems = new Vector();
 
 			for (int i = 0; i < root_elems.size(); i++) {
@@ -420,8 +432,8 @@ public class SchemaManager {
 			Collections.sort(schemas, comp);
 
 			// append handcoded conversions
-			DbModuleIF dbM = GDEMServices.getDbModule();
-			hcSchemas = dbM.getSchemasWithStl();
+			hcSchemas = schemaDao.getSchemasWithStl();
+
 
 			if (hcSchemas == null) hcSchemas = new Vector();
 
@@ -453,7 +465,7 @@ public class SchemaManager {
 		ArrayList stls = new ArrayList();
 
 		try {
-			DbModuleIF dbM = GDEMServices.getDbModule();
+			
 			ConversionService cs = new ConversionService();
 			Vector stylesheets = cs.listConversions(schema);
 
@@ -516,8 +528,8 @@ public class SchemaManager {
 
 			schemas = new ArrayList();
 
-			DbModuleIF dbM = GDEMServices.getDbModule();
-			Vector schemaVec = dbM.getUplSchema();
+			Vector schemaVec = uplSchemaDao.getUplSchema();
+
 
 			for (int i = 0; i < schemaVec.size(); i++) {
 				Hashtable hash = (Hashtable) schemaVec.get(i);
@@ -558,9 +570,10 @@ public class SchemaManager {
 		}
 		try {
 			String fileName = file.getFileName();
-			DbModuleIF dbM = GDEMServices.getDbModule();
 
-			if (dbM.checkUplSchemaFile(fileName)) {
+
+
+			if (uplSchemaDao.checkUplSchemaFile(fileName)) {				
 				throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_FILE_EXISTS);
 			}
 
@@ -576,7 +589,8 @@ public class SchemaManager {
 			in.close();
 			file.destroy();
 
-			dbM.addUplSchema(fileName, desc);
+			uplSchemaDao.addUplSchema(fileName, desc);
+
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
@@ -604,16 +618,18 @@ public class SchemaManager {
 		}
 
 		try {
-			DbModuleIF dbM = GDEMServices.getDbModule();
+			String schema = uplSchemaDao.getUplSchema(uplSchemaId);
 
-			String schema = dbM.getUplSchema(uplSchemaId);
 
 			if (schema != null) {
 
-				String schemaId = dbM.getSchemaID(Properties.gdemURL + "/schema/" + schema);
+
+				String schemaId = schemaDao.getSchemaID(Properties.gdemURL + "/schema/" + schema);
+				
 
 				if (schemaId != null) {
-					Vector stylesheets = dbM.getSchemaStylesheets(schemaId);
+					Vector stylesheets = schemaDao.getSchemaStylesheets(schemaId);
+					
 					if (stylesheets != null) {
 						for (int i = 0; i < stylesheets.size(); i++) {
 							HashMap hash = (HashMap) stylesheets.get(i);
@@ -630,9 +646,11 @@ public class SchemaManager {
 							}
 						}
 					}
-					if (dbM.getSchemaQueries(schemaId) != null) hasOtherStuff = true;
+					if (schemaDao.getSchemaQueries(schemaId) != null) hasOtherStuff = true;
 
-					dbM.removeSchema(schemaId, true, false, !hasOtherStuff);
+
+					schemaDao.removeSchema(schemaId, true, false, !hasOtherStuff);
+
 				}
 			}
 			try {
@@ -641,7 +659,8 @@ public class SchemaManager {
 				_logger.error("Error deleting upoladed schema file",e);
 				throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 			}
-			dbM.removeUplSchema(uplSchemaId);
+			uplSchemaDao.removeUplSchema(uplSchemaId);
+
 		} catch (Exception e) {
 			_logger.error("Error deleting uploaded schema",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
@@ -686,8 +705,9 @@ public class SchemaManager {
 		Schema schema = null;
 
 		try {
-			DbModuleIF dbM = GDEMServices.getDbModule();
-			sch = dbM.getSchema(schemaId);
+
+			sch = schemaDao.getSchema(schemaId);
+
 
 			schema = new Schema();
 			schema.setId(schemaId);
@@ -718,9 +738,9 @@ public class SchemaManager {
 		}
 
 		try {
-			DbModuleIF dbM = GDEMServices.getDbModule();
 			// dbM.updateSchema(schemaId, schema, description, dtdPublicId);
-			dbM.updateUplSchema(schemaId, description);
+			uplSchemaDao.updateUplSchema(schemaId, description);
+
 		} catch (Exception e) {
 			_logger.error("Error updating uploaded schema", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
@@ -733,8 +753,8 @@ public class SchemaManager {
 
 		UplSchema sc = new UplSchema();
 		try {
-			DbModuleIF dbM = GDEMServices.getDbModule();
-			Hashtable ht = dbM.getUplSchemaById(schemaId);
+
+			Hashtable ht = uplSchemaDao.getUplSchemaById(schemaId);
 			String schema = (String) ht.get("schema");
 			String desc = (String) ht.get("description");
 
