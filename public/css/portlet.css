@@ -15,26 +15,26 @@
 .box {
 	margin: 0;
 	padding: 0 6px 0 0;
-	background: url(../images/borders.png) #FFF repeat-y 100% 0;
+	background: url(../images/borders-green.png) #FFF repeat-y 100% 0;
 }
 .boxleft {
 	padding: 0 0 0 6px;
-	background: url(../images/borders.png) #FFF 0 0 repeat-y;
+	background: url(../images/borders-green.png) #FFF 0 0 repeat-y;
 }
 .boxtop {
 	margin: 0 -6px;
-	background: url(../images/box.png) 100% 0 no-repeat;
+	background: url(../images/box-green.png) 100% 0 no-repeat;
 	height: 30px;
 }
 .boxtop div {
 	width: 15px;
-	background: url(../images/box.png) 0 0 no-repeat;
+	background: url(../images/box-green.png) 0 0 no-repeat;
 	height: 30px;
 }
 .boxcontent {
 	margin: 0px;
 	padding: 4px 10px;
-	background: #FFF;
+	background: #F0F0F0;
 	overflow: auto;
 }
 .boxcontent ul {
@@ -54,12 +54,12 @@
 }
 .boxbottom {
 	margin: 0 -6px;
-	background: url(../images/box.png) 100% 100% no-repeat;
+	background: url(../images/box-green.png) 100% 100% no-repeat;
 	height: 13px;
 }
 .boxbottom div {
 	width: 13px;
-	background: url(../images/box.png) 0 100% no-repeat;
+	background: url(../images/box-green.png) 0 100% no-repeat;
 	height: 13px;
 }
 .box h4 {
@@ -69,7 +69,7 @@
 	float: left;
 	/*white-space: nowrap;*/
 	display: inline;
-	background: #FF9400;
+	background: #9BAE77; 
 	color: #FFF;
 	font: bold 1em/1em Verdana, Geneva, Arial, Helvetica, sans-serif;
 	overflow:hidden;
@@ -112,7 +112,7 @@
 }
 */
 .button {
-	background: url(../images/button.png);
-	border: 1px solid #FFCE7B;
+	background: url(../images/button-green.png);
+	border: 1px solid #136F70;
 	padding: 0 2px;
 }

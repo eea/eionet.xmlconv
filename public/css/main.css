@@ -139,7 +139,6 @@ margin: 0;
 }
 textarea {
 font: 110% "Courier New", Courier, monospace;
-border: 1px solid #C60;
 color: #000;
 background-color: white;
 width: 100%;
@@ -151,10 +150,6 @@ color: #000;
 vertical-align: bottom;
 }
 
-input[type|="text"] ,input[type|="password"]{
-	background-color: white;
-	border: 1px solid #C60;
-}
 
 input[disabled]{
 	color: gray;
@@ -168,7 +163,6 @@ input[disabled=false]{
 }
 
 select {
-border: 1px solid #C60;
 color: #000;
 background-color: White;
 vertical-align: bottom;
