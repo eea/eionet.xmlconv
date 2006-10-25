@@ -50,12 +50,12 @@
 												<ed:menuItem action="/do/hosts/list"  title="Hosts">
 													<bean:message key="label.menu.hosts"/>
 												</ed:menuItem>
-											</ed:hasPermission>
-											<logic:present name="user">
+											</ed:hasPermission>											
+											<ed:hasPermission username="username" acl="config" permission="u">
 												<ed:menuItem action="/do/ldapForm"  title="Edit application configurations">
 													<bean:message key="label.menu.config"/>
 												</ed:menuItem>
-											</logic:present>
+											</ed:hasPermission>
 											<ed:menuItem action="#" onclick="javascript:openWindow(applicationRoot+'/help/index.jsp','olinehelp');" title="Help">
 												<bean:message key="label.menu.help"/>
 											</ed:menuItem>

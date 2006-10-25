@@ -22,9 +22,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.batik.script.Window.GetURLHandler;
+
+import com.tee.uit.security.AppUser;
+
 import edu.yale.its.tp.cas.client.filter.CASFilter;
+import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.SecurityUtil;
+import eionet.gdem.utils.Utils;
 
 public class EionetCASFilter extends CASFilter {
 
@@ -41,6 +48,7 @@ public class EionetCASFilter extends CASFilter {
 	private static String SERVER_NAME = null;
 
 	private static String EIONET_LOGIN_COOKIE_DOMAIN = null;
+	
 
 	public void init(FilterConfig config) throws ServletException {
 		CAS_LOGIN_URL = config.getInitParameter(LOGIN_INIT_PARAM);
@@ -56,13 +64,15 @@ public class EionetCASFilter extends CASFilter {
 
 		if (chain.isDoNext()) {
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
+			HttpServletResponse httpResponse = (HttpServletResponse) response;
 			HttpSession session = httpRequest.getSession();
 			if (session != null && session.getAttribute("user") == null) {
-				session.setAttribute("user", session.getAttribute(CAS_FILTER_USER));
-
-				logger.debug("Logged in user " + session.getAttribute(CAS_FILTER_USER));
+				String username = (String) session.getAttribute(CAS_FILTER_USER);
+				AppUser aclUser = new CASUser(username);
+				httpRequest.getSession().setAttribute(Names.USER_ATT, aclUser);
+				session.setAttribute("user", username);
+				logger.debug("Logged in user " + username);
 				String requestURI = httpRequest.getRequestURI();
-				HttpServletResponse httpResponse = (HttpServletResponse) response;
 				if (requestURI.indexOf(EIONET_COOKIE_LOGIN_PATH) > -1) {
 					redirectAfterEionetCookieLogin(httpRequest, httpResponse);
 					return;
@@ -223,5 +233,17 @@ class CASFilterChain implements FilterChain {
 
 	public boolean isDoNext() {
 		return doNext;
+	}
+}
+
+class CASUser extends AppUser {
+
+	public CASUser(String userName){
+		this.authenticatedUserName = userName;
+	}
+	private String authenticatedUserName ;
+	
+	public String getUserName(){
+		return authenticatedUserName; 
 	}
 }

@@ -48,10 +48,8 @@ public class StartAction extends Action {
 			System.out.println(e.nextElement());
 		}
 
-		if (httpServletRequest.getParameter("logout") != null) {			
-			session.setAttribute("user", null);
-			session.setAttribute(Names.USER_ATT, null);
-			session.removeAttribute(Names.TICKET_ATT);
+		if (httpServletRequest.getParameter("logout") != null) {
+			session.invalidate();
 			EionetCASFilter.attachEionetLoginCookie(httpServletResponse,false);
 			httpServletResponse.sendRedirect(EionetCASFilter.getCASLogoutURL(httpServletRequest));
 			return null;
