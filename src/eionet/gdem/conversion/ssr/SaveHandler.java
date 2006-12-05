@@ -393,7 +393,7 @@ public class SaveHandler {
        try{
 
 
-         GDEMServices.getDaoService().getQueryDao().updateQuery(query_id, schema_id,name,descr, fileName, content_type);
+         GDEMServices.getDaoService().getQueryDao().updateQuery(query_id, schema_id,name,descr, current_file, content_type);
 
        }
        catch (Exception e){
