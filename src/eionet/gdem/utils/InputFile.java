@@ -228,7 +228,9 @@ public class InputFile  {
 	public String getFileNameNoExtension() {
 		return strFileNameNoExtension;
 	}
-
+	public String toString(){
+		return (url==null)?null:url.toString();
+	}
 
 	public static void main(String args[]) {
 		String str_url = "http://localhost:8080/xmlconv/tmp/IrelandePERD'a&ta.xml?sss";

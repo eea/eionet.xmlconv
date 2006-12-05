@@ -42,6 +42,7 @@ import javax.servlet.http.HttpSession;
 
 import javax.servlet.ServletException;
 
+import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 
 import eionet.gdem.qa.XQScript;
@@ -62,7 +63,9 @@ public class SandBox  extends HttpServlet implements Constants {
 	}
 	public void doPost(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException    {
 
+		
 		String result=null;
+		String fileName=null;
 
 
 		//save changes in XQ script to repository
@@ -90,6 +93,16 @@ public class SandBox  extends HttpServlet implements Constants {
 			writeHTMLMessage(res, "The data URL cannot be empty!");
 			return;
 		}
+		try{
+	      InputFile inputFile = new InputFile(dataURL);
+	      dataURL = inputFile.toString();
+	      fileName = inputFile.getFileNameNoExtension();
+		}
+		catch(Exception e){
+			writeHTMLMessage(res, "The data URL is not an URI! " + e.toString());
+			return;			
+		}
+
 		String sandboxtype = req.getParameter("sandboxtype");
 		if (Utils.isNullStr(sandboxtype)){
 			writeHTMLMessage(res, "Sandbox type cannot be empty!");

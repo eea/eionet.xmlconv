@@ -223,15 +223,15 @@ public class ValidationService {
 
 try {
     //String xml = "http://reportek2.eionet.eu.int/colqaj8nw/envqe8zva/countrynames.tmx";
-    String xml = "http://localhost:8080/gdem/test/MT_bodies.xml";
-    //String sch = "http://dd.eionet.eu.int/GetSchema?comp_id=1752&comp_type=TBL";
+    String xml = "http://cdrtest.eionet.europa.eu/ee/eea/ewn3/envrmtmhw/EE bodies.xml";
+    String sch = "http://dd.eionet.europa.eu/GetSchema?id=TBL3400";
     // String sch = "http://www.lisa.org/tmx/tmx14.dtd";
     //String sch = "http://roddev.eionet.eu.int/waterdemo/water_measurements.xsd";
     
     ValidationService v = new ValidationService(true);
 	
-    String result = v.validate("http://reporter.ceetel.net:18180/nl/eea/ewn3/envqyyafg/BG_bodies_Rubi.xml");
-  //System.out.println(v.validateSchema(xml,sch));
+  //  String result = v.validate("http://reporter.ceetel.net:18180/nl/eea/ewn3/envqyyafg/BG_bodies_Rubi.xml");
+  System.out.println(v.validateSchema(xml,sch));
   //System.out.println(result);
     //v.log(v.validate(xml));
     

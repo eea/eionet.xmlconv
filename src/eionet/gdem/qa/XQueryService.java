@@ -37,6 +37,7 @@ import java.util.Hashtable;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.services.*;
+import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
 import eionet.gdem.services.LoggerIF;
@@ -184,6 +185,15 @@ public class XQueryService  implements Constants {
       String newId="-1"; //should not be returned with value -1;
       
       Vector _queries = listQueries(schema);
+      try{
+    	  InputFile inputFile = new InputFile(file);
+    	  file = inputFile.toString();//escapes spaces in url
+      }
+      catch(Exception e){
+    	  String err_mess="File URL is incorrect";
+		  _logger.error(err_mess + "; " + e.toString());
+		  throw new GDEMException(err_mess, e);
+      }
 
       if (Utils.isNullVector(_queries)) return result;
       
@@ -395,6 +405,15 @@ public class XQueryService  implements Constants {
 	  	byte[] result_bytes;
       _logger.debug("==xmlconv== runQAScript: id=" + script_id + " file_url="+ file_url +"; ");
   	
+		try{
+			InputFile inputFile = new InputFile(file_url);
+		    file_url = inputFile.toString();//escapes spaces in url
+		}
+		catch(Exception e){
+			String err_mess="File URL is incorrect";
+		    _logger.error(err_mess + "; " + e.toString());
+		    throw new GDEMException(err_mess, e);
+		}
 	  	if (script_id.equals(String.valueOf(JOB_VALIDATION))){
 	  		try{
 	  			ValidationService vs = new ValidationService();
