@@ -25,6 +25,8 @@ package eionet.gdem.conversion.converters;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -44,17 +46,27 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
 public abstract class ConvertStartegy {
+	
+	private HashMap xslParams = null;
 	private static LoggerIF _logger = GDEMServices.getLogger();
 	public String xslFolder = Properties.xslFolder+ File.separatorChar; //props.getString("xsl.folder");
 	public String tmpFolder = Properties.tmpFolder+ File.separatorChar; //props.getString("tmp.folder");
 	
 	public abstract String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException, Exception;
 	
+	/*
+	 *  sets the map of xsl global paramters for this strategy 
+	 */
+	public void setXslParams(HashMap map){
+		this.xslParams = map;
+	}
+	
 	protected void runXalanTransformation(InputStream in, InputStream xslStream, OutputStream out) throws GDEMException {
 		try {
 			TransformerFactory tFactory = TransformerFactory.newInstance();
 			Transformer transformer = tFactory.newTransformer(new StreamSource(xslStream));
 			transformer.setParameter("dd_domain",Properties.ddURL);
+			setTransformerParameters(transformer);
 			transformer.transform(new StreamSource(in), new StreamResult(out));
 		} catch (TransformerConfigurationException tce) {
 			throw new GDEMException("Error transforming XML - incorrect stylesheet file: " + tce.toString(), tce);
@@ -78,13 +90,29 @@ public abstract class ConvertStartegy {
 			Source xsltSrc = new StreamSource(xsl);
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer(xsltSrc);
+			setTransformerParameters(transformer);
 			transformer.transform(src, res);
 		} catch (Throwable e) {
 			_logger.error("Error " + e.toString(), e);
 			throw new GDEMException("Error transforming XML to PDF " + e.toString());
 		}
 	}
+	/*
+	 * sets the map of xsl global parameters to xsl transformer
+	 */
+	private void setTransformerParameters(Transformer transformer){
+		
+		if(xslParams==null)return;
 
+		Iterator keys = xslParams.keySet().iterator();
+		while ( keys.hasNext()) {
+			String key = (String)keys.next();
+			String value = (String)xslParams.get(key);
+			if(value!=null)
+				transformer.setParameter(key,value);
+		}
+		
+	}
 
 
 }

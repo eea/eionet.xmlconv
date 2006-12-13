@@ -327,7 +327,7 @@ public class ConversionService {
 				}
 
 				outputFileName = executeConversion(src.getSrcInputStream(),
-						xslFile, result);
+						xslFile, result, src.getCdrParams());
 
 			} catch (MalformedURLException mfe) {
 				// throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
@@ -448,7 +448,7 @@ public class ConversionService {
 			}
 
 			outputFileName = executeConversion(src.getSrcInputStream(), byteIn,
-					result);
+					result, src.getCdrParams());
 
 		} catch (MalformedURLException mfe) {
 			_logger.error("Bad URL", mfe);
@@ -834,7 +834,7 @@ public class ConversionService {
 	}
 
 	private String executeConversion(InputStream source, Object xslt,
-			OutputStream result) throws Exception {
+			OutputStream result, HashMap params) throws Exception {
 		ConvertContext ctx = new ConvertContext(source, xslt, result,
 				cnvFileExt);
 		ConvertStartegy cs = null;
@@ -851,6 +851,7 @@ public class ConversionService {
 		} else {
 			cs = new TextConverter();
 		}
+		cs.setXslParams(params);
 		return ctx.executeConversion(cs);
 	}
 
