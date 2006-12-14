@@ -122,7 +122,7 @@ public class DD_XMLInstanceHandler extends DefaultHandler{
     try {
         getEncoding = locator.getClass().getMethod("getEncoding", new Class[]{});
         if(getEncoding != null) {
-            encoding = (String)getEncoding.invoke(locator, null);
+            encoding = (String)getEncoding.invoke(locator);
         }
     } catch (Exception e) {
         // either this locator object doesn't have this
