@@ -112,10 +112,10 @@
 								<div class="portletBody">
 									<div class="portletContent odd">
 										<ul class="portal-subnav">
-											<li><a title="Reporting Obligations" href="http://rod.eionet.eu.int/">ROD</a></li>
-											<li><a title="Central Data Repository" href="http://cdr.eionet.eu.int/">CDR</a></li>
-											<li><a title="Data Dictionary" href="http://dd.eionet.eu.int/">DD</a></li>
-											<li><a title="Content Registry" href="http://cr.eionet.eu.int/">CR</a></li>
+											<li><a title="Reporting Obligations" href="http://rod.eionet.europa.eu/">ROD</a></li>
+											<li><a title="Central Data Repository" href="http://cdr.eionet.europa.eu/">CDR</a></li>
+											<li><a title="Data Dictionary" href="http://dd.eionet.europa.eu/">DD</a></li>
+											<li><a title="Content Registry" href="http://cr.eionet.europa.eu/">CR</a></li>
 										</ul>
 									</div>
 								</div>

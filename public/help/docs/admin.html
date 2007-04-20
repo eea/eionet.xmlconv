@@ -224,8 +224,8 @@ border=0 width=642 height=376 src="../images/image008.gif"></p>
 <h3><a name="_Toc119909592"></a>3.2.4 Edit XML Schema or DTD information</h3>
 <p>In addition to the “Edit Schema” functionality described in section 3.2.3, DCM also offers the possibility to the user to view and edit the XML Schema’s root elements. The definition of root elements by the DCM administrator allows the system to find the appropriate conversions for delivered XML files that do not contain XML schemas.</p>
 <p>For example, consider a file Handcoded conversion for an XML Schema for which the following root element has been added:</p>
-<p>GeneralCharacterisation:&nbsp; <a href="http://dd.eionet.eu.int/namespace.jsp?ns_id=8"
-title="Data Dictionary (DD)">http://dd.eionet.eu.int/namespace.jsp?ns_id=8</a></p>
+<p>GeneralCharacterisation:&nbsp; <a href="http://dd.eionet.europa.eu/namespace.jsp?ns_id=8"
+title="Data Dictionary (DD)">http://dd.eionet.europa.eu/namespace.jsp?ns_id=8</a></p>
 <p>With this information stored in the DCM database, if a user attempts to convert an XML document which is structured according to the above-mentioned Handcoded conversion but with no “xsi:noNamespaceSchemaLocation” information, the system will be able to determine the appropriate XML schema, by identifying the XML namespaces that exist in the submitted document and matching it against the corresponding values in the DCM.</p>
 <p><b>Important Note</b>: This functionality is available only for XML Schemas with handcoded conversions. </p>
 <p>In order to perform such an operation, you must be logged in as DCM Administrator. </p>

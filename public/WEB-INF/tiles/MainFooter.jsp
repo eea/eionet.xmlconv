@@ -112,10 +112,10 @@
 								<div class="portletBody">
 									<div class="portletContent odd">
 										<ul class="portal-subnav">
-											<li><a title="Reporting Obligations" href="http://rod.eionet.eu.int/">ROD</a></li>
-											<li><a title="Central Data Repository" href="http://cdr.eionet.eu.int/">CDR</a></li>
-											<li><a title="Data Dictionary" href="http://dd.eionet.eu.int/">DD</a></li>
-											<li><a title="Content Registry" href="http://cr.eionet.eu.int/">CR</a></li>
+											<li><a title="Reporting Obligations" href="http://rod.eionet.europa.eu/">ROD</a></li>
+											<li><a title="Central Data Repository" href="http://cdr.eionet.europa.eu/">CDR</a></li>
+											<li><a title="Data Dictionary" href="http://dd.eionet.europa.eu/">DD</a></li>
+											<li><a title="Content Registry" href="http://cr.eionet.europa.eu/">CR</a></li>
 										</ul>
 									</div>
 								</div>
@@ -135,7 +135,7 @@
 <logic:equal name="showFooter" value="true">
 	<div id="portal-footer">
 		<div style="text-align: center">
-			<a href="http://eea.eu.int/">European Environment Agency</a><br/>
+			<a href="http://eea.europa.eu/">European Environment Agency</a><br/>
 			<span style="font-style:italic">Kgs. Nytorv 6, DK-1050 Copenhagen K, Denmark - Phone: +45 3336 7100</span>
 		</div>
 	</div>

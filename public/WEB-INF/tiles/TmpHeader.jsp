@@ -81,7 +81,7 @@ response.setDateHeader("Expires", 0);
 		<h5 class="hiddenStructure">Navigation</h5>
 
 		<div id="portal-breadcrumbs">
-		   	  <a class="breadcrumbSep" href="http://www.eionet.eu.int/" title="European Environment Information and Observation Network (EIONET)">EIONET</a>
+		   	  <a class="breadcrumbSep" href="http://www.eionet.europa.eu/" title="European Environment Information and Observation Network (Eionet)">Eionet</a>
 		</div>
 		<div class="visualClear"></div>
 		<br/>
