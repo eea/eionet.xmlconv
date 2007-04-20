@@ -36,8 +36,8 @@ import java.util.Hashtable;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
+import eionet.gdem.dcm.business.SourceFileManager;
 import eionet.gdem.services.*;
-import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
 import eionet.gdem.services.LoggerIF;
@@ -47,6 +47,7 @@ import eionet.gdem.services.db.dao.IXQJobDao;
 
 import java.sql.SQLException;
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.util.Vector;
 
 
@@ -60,6 +61,8 @@ public class XQueryService  implements Constants {
 	  private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
 	  private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
 	  
+		private String ticket = null;
+		private boolean trustedMode = true;// false for web clients
  
   private static LoggerIF _logger;
   
@@ -186,8 +189,9 @@ public class XQueryService  implements Constants {
       
       Vector _queries = listQueries(schema);
       try{
-    	  InputFile inputFile = new InputFile(file);
-    	  file = inputFile.toString();//escapes spaces in url
+  		//get the trusted URL from source file adapter
+      	file = SourceFileManager.getSourceFileAdapterURL(
+  				ticket,file,trustedMode);
       }
       catch(Exception e){
     	  String err_mess="File URL is incorrect";
@@ -270,11 +274,24 @@ public class XQueryService  implements Constants {
       
     //start a job in the Workqueue
     try {
-      newId=xqJobDao.startXQJob(sourceURL, xqFile, resultFile);
+		//get the trusted URL from source file adapter
+    	sourceURL = SourceFileManager.getSourceFileAdapterURL(
+				ticket,sourceURL,trustedMode);
+    	newId=xqJobDao.startXQJob(sourceURL, xqFile, resultFile);
 
     } catch (SQLException sqe ) {
+		sqe.printStackTrace();
+	    _logger.error("DB operation failed: " + sqe.toString());
       throw new GDEMException("DB operation failed: " + sqe.toString());
-    }
+    } catch (MalformedURLException e) {
+		e.printStackTrace();
+	    _logger.error("Source file URL is wrong: " + e.toString());
+    	throw new GDEMException("Source file URL is wrong: " + e.toString());
+	} catch (IOException e) {
+		e.printStackTrace();
+	    _logger.error("Error opening source file: " + e.toString());
+		throw new GDEMException("Error opening source file: " + e.toString());
+	}
     return newId; 
   }
 
@@ -406,8 +423,9 @@ public class XQueryService  implements Constants {
       _logger.debug("==xmlconv== runQAScript: id=" + script_id + " file_url="+ file_url +"; ");
   	
 		try{
-			InputFile inputFile = new InputFile(file_url);
-		    file_url = inputFile.toString();//escapes spaces in url
+			//get the trusted URL from source file adapter
+		    file_url = SourceFileManager.getSourceFileAdapterURL(
+					ticket,file_url,trustedMode);
 		}
 		catch(Exception e){
 			String err_mess="File URL is incorrect";
@@ -472,6 +490,15 @@ public class XQueryService  implements Constants {
   		result.add(result_bytes);
   		return result;
   }
+	  
+	public void setTicket(String _ticket) {
+		this.ticket = _ticket;
+	}
+
+	public void setTrustedMode(boolean mode) {
+		this.trustedMode = mode;
+	}
+	  
   /**
   * returns an instance of the best XQEngine :)
   * implementator class name specified in the props file

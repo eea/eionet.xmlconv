@@ -208,7 +208,21 @@ public class InputFile  {
 		
 		return h;
 	}
-
+	public URL getURL(){
+		return this.url;
+	}
+	
+	/**
+	 * Get the authentication ticket for the source file, if available
+	 * @param _ticket
+	 */
+	public String getAuthentication(){
+		if (Utils.isNullStr(ticket) && isTrustedMode){
+			String host=url.getHost();
+			getHostCredentials(host);
+		}
+		return ticket;
+	}
 
 	/*
 	 * PRIVATE METHODS
@@ -247,11 +261,8 @@ public class InputFile  {
 
 		URLConnection uc = url.openConnection();
 
-		if (ticket==null && isTrustedMode){
-			String host=url.getHost();
-			getHostCredentials(host);
-		}
-
+		ticket = getAuthentication();
+		
 		if (ticket!=null){
 			//String auth = Utils.getEncodedAuthentication(user,pwd);
 			uc.addRequestProperty("Authorization", " Basic " + ticket);

@@ -50,6 +50,7 @@ import javax.xml.transform.OutputKeys;
 import org.w3c.css.sac.SACMediaList;
 
 import eionet.gdem.qa.XQEngineIF;
+import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.GDEMServices;
@@ -248,9 +249,30 @@ public class SaxonImpl implements XQEngineIF {
     //listener.error(e);
   } finally {
   		if (listener.hasErrors() || dynamicListener.hasErrors() )
-  			throw new GDEMException (listener.getErrors() + dynamicListener.getErrors());
+  			throw new GDEMException (parseErrors(listener.getErrors() + dynamicListener.getErrors()));
   	}
   //return s;
+  }
+  
+  // if URL contains ticket information, then remove it
+  private String parseErrors(String err){
+	  String search_base=Constants.TICKET_PARAM + "=";
+	  
+	  StringBuffer buf = new StringBuffer();
+      int found = 0;
+      int last=0;
+	  
+      while ((found = err.indexOf(search_base, last)) >= 0) {
+          buf.append(err.substring(last, found));
+          last = err.indexOf("&", found);
+          if(last<0)
+        	  last = err.indexOf(" ", found);
+          if(last<0)
+        	  last = err.length()-1;
+      }
+      buf.append(err.substring(last));
+
+      return  buf.toString();
   }
 /*
   public static void main(String [] a) throws Exception {

@@ -59,4 +59,12 @@ public interface Constants {
 	// Folder for temporary files - to be placed under public
 	public static final String TMP_FOLDER = "tmp/";
 	public static final String QUERIES_FOLDER = "queries/";
+
+	// Public constants for SourceFileAdapter
+	public static final String GETSOURCE_URL = "/do/getsource";
+	public static final String AUTH_PARAM = "auth";
+	public static final String TICKET_PARAM = "ticket";
+	public static final String SOURCE_URL_PARAM = "source_url";
+
+	public static final int URL_TEXT_LEN = 100;
 }

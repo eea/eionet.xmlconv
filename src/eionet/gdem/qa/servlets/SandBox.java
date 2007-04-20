@@ -25,6 +25,7 @@ package eionet.gdem.qa.servlets;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
+import eionet.gdem.dcm.business.SourceFileManager;
 import eionet.gdem.qa.XQueryService;
 import eionet.gdem.validation.ValidationService;
 import java.io.IOException;
@@ -120,6 +121,8 @@ public class SandBox  extends HttpServlet implements Constants {
 				writeHTMLMessage(res, "XML Schema cannot be empty!");
 				return;
 			}
+			
+			
 			// Run immediately
 			//
 			if(!Utils.isNullStr(req.getParameter("runnow"))) {
@@ -152,6 +155,10 @@ public class SandBox  extends HttpServlet implements Constants {
 					}
 
 					res.setContentType(getContentType(query));
+					
+					//get the trusted URL from source file adapter
+					dataURL = SourceFileManager.getSourceFileAdapterURL(
+							getTicket(req),dataURL,false);
 
 					String[] pars = new String[1];
 					pars[0] = XQ_SOURCE_PARAM_NAME + "=" + dataURL;
@@ -172,6 +179,9 @@ public class SandBox  extends HttpServlet implements Constants {
 				res.setContentType(HTML_CONTENT_TYPE);
 				XQueryService xqE = new XQueryService();
 				try {
+					xqE.setTicket(getTicket(req));
+					xqE.setTrustedMode(false);
+
 					Hashtable h = new Hashtable();
 					Vector files = new Vector();
 					files.add(dataURL);
@@ -194,10 +204,15 @@ public class SandBox  extends HttpServlet implements Constants {
 				}
 			}
 		}
-		else if(sandboxtype.equals("SCRIPT")){  //execute only 1 script from textarea
+		else if(sandboxtype.equals("SCRIPT")){  
+//			execute only 1 script from textarea
+
 			String q_id = req.getParameter("ID");
 			String xqScript = req.getParameter(XQ_SCRIPT_PARAM);
 
+			//get the trusted URL from source file adapter
+			dataURL = SourceFileManager.getSourceFileAdapterURL(
+					getTicket(req),dataURL,false);
 
 			String[] pars = new String[1];
 			pars[0] = XQ_SOURCE_PARAM_NAME + "=" + dataURL;
@@ -226,6 +241,8 @@ public class SandBox  extends HttpServlet implements Constants {
 				//
 				else {
 					XQueryService xqE = new XQueryService();
+					xqE.setTicket(getTicket(req));
+					xqE.setTrustedMode(false);
 					try {
 						result = xqE.analyze(dataURL, xqScript);
 						writeHTMLMessage(res, "Job (id: " + result + ") successfully added to the <a href='workqueue.jsp'>workqueue</a>.");
