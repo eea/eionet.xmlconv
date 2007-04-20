@@ -95,8 +95,6 @@ response.setDateHeader("Expires", 0);
 
 					if (status==Constants.XQ_RECEIVED || status==Constants.XQ_DOWNLOADING_SRC || status==Constants.XQ_PROCESSING)
 						resultFile = null;
-					//TODO change this constant (100)
-					String urlName = (url.length() > 100 ? url.substring(0, 100) + "..." : url);
 
 					//TODO Status name, maybe better to move to some Java common class
 					String statusName="-- Unknown --";
@@ -115,8 +113,15 @@ response.setDateHeader("Expires", 0);
 						statusName="RECOVERABLE ERROR";
 
 
+					if(url.indexOf(Constants.GETSOURCE_URL)>0 && url.indexOf(Constants.SOURCE_URL_PARAM)>0){
+						int idx = url.indexOf(Constants.SOURCE_URL_PARAM);
+						url = url.substring(idx + Constants.SOURCE_URL_PARAM.length() + 1);
+					}
+					
+					
+					String urlName = (url.length() > Constants.URL_TEXT_LEN ? url.substring(0, Constants.URL_TEXT_LEN) + "..." : url);
 
-   		%>
+		%>
 					<tr <% if (i % 2 != 0) %>class="zebraeven"<% else %>class="zebraodd"<%;%>>
 						<td>
 							<%=jobId%>
