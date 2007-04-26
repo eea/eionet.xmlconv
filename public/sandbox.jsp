@@ -91,7 +91,7 @@ response.setDateHeader("Expires", 0);
         			query_file = (String)querie.get("query");
         			String name = (String)querie.get("short_name");
         			%>
-        				<input type="radio" name="script" value="<%=query_file%>" <% if (j == 0) %>checked="checked"<%;%>/>
+        				<input type="radio" name="script" value="<%=query_id%>" <% if (j == 0) %>checked="checked"<%;%>/>
         				<%=name%> - <a target="blank" href="<%=Names.QUERY_FOLDER%><%=query_file%>"><%=query_file%></a><br/>
         			<%
 				}
