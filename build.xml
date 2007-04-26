@@ -77,7 +77,8 @@
                                     ${lib}/struts-1.2.4.jar;
                                     ${lib}/jstl.jar;
                                     ${lib}/MetadataAggregator.jar;
-                                    ${lib}/saxon7.jar;
+                                    ${lib}/saxon8.jar;
+                                    ${lib}/saxon8-xqj.jar;
                                     ${lib}/log4j.jar;
                                     ${lib}/xalan-j2-2.6.0.jar;
                                     ${lib}/xml-apis.jar;
@@ -100,6 +101,8 @@
 			<fileset dir="public">
 				<exclude name="**/*.java"/>
 				<exclude name="**/*.properties"/>
+				<exclude name="**/servlet-api.jar"/>
+				<exclude name="**/jsp-api.jar"/>
 			</fileset>
 		</copy>
 		<copy todir="${prefix}/xmlconv/${classes.dir}" overwrite="false">
