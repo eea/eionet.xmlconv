@@ -44,10 +44,12 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.sax.SAXSource; */
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.OutputKeys;
 
 import org.w3c.css.sac.SACMediaList;
+import org.xml.sax.InputSource;
 
 import eionet.gdem.qa.XQEngineIF;
 import eionet.gdem.Constants;
@@ -62,7 +64,7 @@ import net.sf.saxon.Transform;
 import net.sf.saxon.value.StringValue;
 import net.sf.saxon.query.StaticQueryContext;
 import net.sf.saxon.query.DynamicQueryContext;
-import net.sf.saxon.query.QueryProcessor;
+//import net.sf.saxon.query.QueryProcessor;
 import net.sf.saxon.query.XQueryExpression;
 import net.sf.saxon.query.QueryResult;
 import net.sf.saxon.om.Item;
@@ -70,8 +72,8 @@ import net.sf.saxon.om.NamePool;
 import net.sf.saxon.om.DocumentInfo;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.om.NodeInfo;
-import net.sf.saxon.value.Type;
-import net.sf.saxon.xpath.XPathException;
+//import net.sf.saxon.value.Type;
+//import net.sf.saxon.xpath.XPathException;
 
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -155,9 +157,9 @@ public class SaxonImpl implements XQEngineIF {
     //config.setRecoveryPolicy(Configuration.DO_NOT_RECOVER);
     
     config.setHostLanguage(config.XQUERY);
-    StaticQueryContext staticEnv = new StaticQueryContext();
-    staticEnv.setConfiguration(config);
-    DynamicQueryContext dynamicEnv = new DynamicQueryContext();
+    StaticQueryContext staticEnv = new StaticQueryContext(config);
+    //staticEnv.setConfiguration(config);
+    DynamicQueryContext dynamicEnv = new DynamicQueryContext(config);
     
     SaxonListener dynamicListener = new SaxonListener();
     dynamicEnv.setErrorListener(dynamicListener);
@@ -189,56 +191,44 @@ public class SaxonImpl implements XQEngineIF {
           }
           else if (argname.startsWith("+")) {
             // parameters starting with "+" are taken as inputdocuments
-            List sources = Transform.loadDocuments(arg.substring(eq+1), true, config);
-            dynamicEnv.setParameter(argname.substring(1), sources);
+            //List sources = Transform.loadDocuments(arg.substring(eq+1), true, config);
+            //dynamicEnv.setParameter(argname.substring(1), sources);
            }
            else 
               dynamicEnv.setParameter(argname, new StringValue(arg.substring(eq+1)));
             
          }
   
-      QueryProcessor xquery = new QueryProcessor(config, staticEnv);
+      //QueryProcessor xquery = new QueryProcessor(config, staticEnv);
   
       //compile Query
       XQueryExpression exp;
       try {
-        exp = xquery.compileQuery(queryReader);
+        exp = staticEnv.compileQuery(queryReader);
         queryReader.close(); //KL 040218
-      } catch (XPathException err) {
-        throw new TransformerException(err);
-      }
+        staticEnv=exp.getStaticContext(); 
+      }catch(net.sf.saxon.trans.XPathException e)
+        {System.err.println(e.getMessage());
+        throw e;
+      }catch(java.io.IOException e){
+    	  System.err.println(e.getMessage());
+    	  throw e;
+        }
        
       try {
-        // The next line actually executes the query
-        SequenceIterator results = exp.iterator(dynamicEnv);
 
-        if (wrap) {
-          DocumentInfo resultDoc = QueryResult.wrap(results, NamePool.getDefaultNamePool());
-          QueryResult.serialize(resultDoc, new StreamResult(result), outputProps);
-        } 
-        else {
-          while (results.hasNext()) {
-          Item item = results.next();
-          switch (item.getItemType()) {
-            case Type.DOCUMENT:
-            case Type.ELEMENT:
-              QueryResult.serialize((NodeInfo)item, new StreamResult(result), outputProps);                  
-              break;
-            default:
-              //result.write(item.getStringValue());
-            }
-          }
-        }
-      } catch (TerminationException err) {
-          throw err;
-      } catch (TransformerException err) {
-        listener.error(err);
-       // The message will already have been displayed; don't do it twice
-        throw new TransformerException("Run-time errors were reported");
-      }  catch (Exception err) {
-        err.printStackTrace();
-        throw err;
-      }
+          //evaluating
+          exp.run(dynamicEnv,new StreamResult(result),outputProps);
+          result.close();
+          }catch(net.sf.saxon.trans.XPathException e)
+               {System.err.println(e.getMessage());
+               listener.error(e);
+          }catch (java.io.IOException e)
+               {System.err.println(e.getMessage());
+               throw e;
+               }
+    	  
+
       //s = result.getBuffer().toString();
       //result.close(); //??
       
@@ -248,32 +238,32 @@ public class SaxonImpl implements XQEngineIF {
     throw new GDEMException (errMsg);
     //listener.error(e);
   } finally {
-  		if (listener.hasErrors() || dynamicListener.hasErrors() )
-  			throw new GDEMException (parseErrors(listener.getErrors() + dynamicListener.getErrors()));
-  	}
-  //return s;
-  }
-  
-  // if URL contains ticket information, then remove it
-  private String parseErrors(String err){
+		if (listener.hasErrors() || dynamicListener.hasErrors() )
+			throw new GDEMException (parseErrors(listener.getErrors() + dynamicListener.getErrors()));
+	}
+//return s;
+}
+
+// if URL contains ticket information, then remove it
+private String parseErrors(String err){
 	  String search_base=Constants.TICKET_PARAM + "=";
 	  
 	  StringBuffer buf = new StringBuffer();
-      int found = 0;
-      int last=0;
+    int found = 0;
+    int last=0;
 	  
-      while ((found = err.indexOf(search_base, last)) >= 0) {
-          buf.append(err.substring(last, found));
-          last = err.indexOf("&", found);
-          if(last<0)
-        	  last = err.indexOf(" ", found);
-          if(last<0)
-        	  last = err.length()-1;
-      }
-      buf.append(err.substring(last));
+    while ((found = err.indexOf(search_base, last)) >= 0) {
+        buf.append(err.substring(last, found));
+        last = err.indexOf("&", found);
+        if(last<0)
+      	  last = err.indexOf(" ", found);
+        if(last<0)
+      	  last = err.length()-1;
+    }
+    buf.append(err.substring(last));
 
-      return  buf.toString();
-  }
+    return  buf.toString();
+}
 /*
   public static void main(String [] a) throws Exception {
     String s =  eionet.gdem.Utils.readStrFromFile("\\einrc\\webs\\gdem\\xquery\\sum_emissions.xql");
