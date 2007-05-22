@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.Vector;
 
 public interface IQueryDao extends IDbSchema{
+	  public static String FILEREAD_EXCEPTION = "Unable to read the file: ";
+
 	  public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description, String content_type) throws SQLException;
 	  /**
 	   * Updates a Query properties in the database
-	   * @param String query_id - id from database, used as a constraint 
+	   * @param String query_id - id from database, used as a constraint
 	   * @param String schema_id - schema id
 	   * @param String short_name - db field for title
 	   * @param String description - text describing the query
@@ -31,6 +33,6 @@ public interface IQueryDao extends IDbSchema{
 	   public Vector listQueries(String xmlSchema) throws SQLException;
 	   public boolean checkQueryFile(String queryFileName) throws SQLException ;
 	   public boolean checkQueryFile(String query_id, String queryFileName) throws SQLException ;
-		
-	   
+
+
 }

@@ -24,9 +24,13 @@
 package eionet.gdem.conversion.ssr;
 
 import javax.servlet.http.HttpServletRequest;
+
+
 import java.util.HashMap;
 import java.util.Vector;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 
 import com.tee.uit.security.AppUser;
 
@@ -35,9 +39,9 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.MultipartFileUpload;
 
-
-
 import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.LoggerIF;
+import eionet.gdem.services.db.dao.IQueryDao;
 
 
 
@@ -46,8 +50,9 @@ import eionet.gdem.services.GDEMServices;
 */
 public class SaveHandler {
 
+  private static LoggerIF _logger = GDEMServices.getLogger();
   private static final int BUF_SIZE = 1024;
- 
+
   /**
   * stylesheets handling
   *
@@ -262,7 +267,7 @@ public class SaveHandler {
            return;
         }
         try{
-          
+
 
           MultipartFileUpload fu = new MultipartFileUpload(false);
           fu.processMultiPartRequest(req);
@@ -301,7 +306,7 @@ public class SaveHandler {
          return;
        }
        try{
-           
+
     	 schemaID=GDEMServices.getDaoService().getSchemaDao().getSchemaID(schema);
          if (schemaID==null)
              schemaID=GDEMServices.getDaoService().getSchemaDao().addSchema(schema, null);
@@ -326,6 +331,10 @@ public class SaveHandler {
         String descr= null;
         String content_type= null;
         String current_file= null;
+        boolean save_source = false;
+        String file_data = null;
+        String strChecksum = null;
+		String newChecksum = null;
 
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "u")){
@@ -351,25 +360,51 @@ public class SaveHandler {
             descr= (String)req_params.get("DESCRIPTION");
             content_type= (String)req_params.get("CONTENT_TYPE");
             current_file= (String)req_params.get("FILE_NAME");
+            file_data= (String)req_params.get("FILEDATA");
+            strChecksum= (String)req_params.get("CHECKSUM");
 
+            save_source = (req_params.get("SAVE")==null) ? false : true;
 
-        	if (!Utils.isNullStr(fu.getFileName())){
-        		//upload file
-        		if (Utils.isNullStr(current_file)){
-            		//	Didn't have filename in database
-        			current_file = fu.getFileName();
-        			//	check if file exists
-        			if (fu.getFileExists() || GDEMServices.getDaoService().getQueryDao().checkQueryFile(current_file)){
-        				req.setAttribute(Names.ERROR_ATT, "File already exists. Rename the file and upload it again.");
-        				return;
-      		  		}
+            if(save_source){
+        		//save the file source from textarea into file
+        		if(!Utils.isNullStr(current_file) && !Utils.isNullStr(file_data) &&
+        				file_data.indexOf(IQueryDao.FILEREAD_EXCEPTION)==-1) {
+
+        			//compare checksums
+        			try{
+        				newChecksum = Utils.getChecksumFromString(file_data);
+        			}
+        			catch(Exception e){
+        			 _logger.error("unable to create checksum");
+        			}
+        			if(strChecksum==null)strChecksum="";
+        			if(newChecksum==null)newChecksum="";
+
+        			if(!strChecksum.equals(newChecksum)){
+        				Utils.saveStrToFile(Properties.queriesFolder + File.separator + current_file, file_data,null);
+        			}
         		}
-        		fu.setFolder(queriesFolder);
-        		fu.saveFileAs(current_file,true);
+
+        	}
+        	else{
+        		//	upload file
+               	if (!Utils.isNullStr(fu.getFileName())){
+               		if (Utils.isNullStr(current_file)){
+               			//	Didn't have filename in database
+        				current_file = fu.getFileName();
+        				//	check if file exists
+        				if (fu.getFileExists() || GDEMServices.getDaoService().getQueryDao().checkQueryFile(current_file)){
+        					req.setAttribute(Names.ERROR_ATT, "File already exists. Rename the file and upload it again.");
+        					return;
+      		  			}
+        			}
+        			fu.setFolder(queriesFolder);
+        			fu.saveFileAs(current_file,true);
+        		}
         	}
         }
         catch (Exception e){
-           req.setAttribute(Names.ERROR_ATT, "Uploading file: " + e.toString());
+           req.setAttribute(Names.ERROR_ATT, "Upadating query: " + e.toString());
            return;
         }
 
@@ -420,7 +455,7 @@ public class SaveHandler {
          return;
        }
        try{
-         
+
          HashMap hash = GDEMServices.getDaoService().getQueryDao().getQueryInfo(del_id);
 
          fileName = (String)hash.get("query");
@@ -472,7 +507,7 @@ public class SaveHandler {
        String del_id= (String)req.getParameter(Names.XSD_DEL_ID);
 
        try{
-         
+
          if(action.equals( Names.XSD_DEL_ACTION)) {
             Vector stylesheets = GDEMServices.getDaoService().getSchemaDao().getSchemaStylesheets(del_id);
             if (stylesheets!=null){
@@ -550,7 +585,7 @@ public class SaveHandler {
          return;
        }
         try{
-          
+
           if (action.equals(Names.XSD_UPDVAL_ACTION)){
             String validate= (String)req.getParameter("VALIDATE");
 
@@ -675,8 +710,8 @@ public class SaveHandler {
        String del_id= (String)req.getParameter("ID");
 
        try{
-         
-           GDEMServices.getDaoService().getHostDao().removeHost(del_id);              
+
+           GDEMServices.getDaoService().getHostDao().removeHost(del_id);
 
         }
         catch (Exception e){
@@ -733,7 +768,7 @@ public class SaveHandler {
        String pwd= (String)req.getParameter("PASSWORD");
 
        try{
-         
+
         GDEMServices.getDaoService().getHostDao().addHost(host_name, user_n, pwd);
        }
        catch (Exception e){

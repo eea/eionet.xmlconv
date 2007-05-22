@@ -55,16 +55,18 @@ import eionet.gdem.GDEMException;
 public class SandBox  extends HttpServlet implements Constants {
 
 	private static final String HTML_CONTENT_TYPE = "text/html";
+	private static final String HTML_CHARACTER_ENCODING = "utf-8";
 	private  IQueryDao queryDao =GDEMServices.getDaoService().getQueryDao();
 	private  IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
-	
-	
+
+
 	public void doGet(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException    {
 		res.sendRedirect("sandbox.jsp"); //GET redirects to JSP
 	}
 	public void doPost(HttpServletRequest req, HttpServletResponse res)	throws ServletException, IOException    {
 
-		
+		req.setCharacterEncoding(HTML_CHARACTER_ENCODING);
+
 		String result=null;
 		String fileName=null;
 
@@ -101,7 +103,7 @@ public class SandBox  extends HttpServlet implements Constants {
 		}
 		catch(Exception e){
 			writeHTMLMessage(res, "The data URL is not an URI! " + e.toString());
-			return;			
+			return;
 		}
 
 		String sandboxtype = req.getParameter("sandboxtype");
@@ -121,8 +123,8 @@ public class SandBox  extends HttpServlet implements Constants {
 				writeHTMLMessage(res, "XML Schema cannot be empty!");
 				return;
 			}
-			
-			
+
+
 			// Run immediately
 			//
 			if(!Utils.isNullStr(req.getParameter("runnow"))) {
@@ -155,7 +157,7 @@ public class SandBox  extends HttpServlet implements Constants {
 					}
 
 					res.setContentType(getContentType(query));
-					
+
 					//get the trusted URL from source file adapter
 					dataURL = SourceFileManager.getSourceFileAdapterURL(
 							getTicket(req),dataURL,false);
@@ -204,7 +206,7 @@ public class SandBox  extends HttpServlet implements Constants {
 				}
 			}
 		}
-		else if(sandboxtype.equals("SCRIPT")){  
+		else if(sandboxtype.equals("SCRIPT")){
 //			execute only 1 script from textarea
 
 			String q_id = req.getParameter("ID");

@@ -27,12 +27,15 @@ import eionet.gdem.Properties;
 import java.net.URL;
 import java.io.*;
 import java.net.MalformedURLException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -495,7 +498,7 @@ public class Utils {
         return bytes;
     }
 	/**
-	 * 
+	 *
 	 * @param date
 	 * @return
 	 */
@@ -504,7 +507,7 @@ public class Utils {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param date
 	 * @return
 	 */
@@ -513,7 +516,7 @@ public class Utils {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param date
 	 * @param pattern
 	 * @return
@@ -530,5 +533,65 @@ public class Utils {
 			formatter = new SimpleDateFormat(pattern);
 
 		return formatter.format(date);
-	}   
+	}
+	/**
+	 * Generates checksum (MD5) value from filepath
+	 * @param filename
+	 * @return
+	 * @throws IOException
+	 * @throws NoSuchAlgorithmException
+	 */
+	public static String getChecksumFromFile(String filename) throws NoSuchAlgorithmException, IOException{
+
+		FileInputStream in = new FileInputStream(filename);
+		try{
+			return getChecksumValue(in);
+		}
+		finally{
+			try{if(in!=null)in.close();}catch(Exception e){};
+		}
+
+	}
+	/**
+	 * Generates checksum (MD5) value from string value
+	 * @param src
+	 * @return
+	 * @throws IOException
+	 * @throws NoSuchAlgorithmException
+	 */
+	public static String getChecksumFromString(String src) throws NoSuchAlgorithmException, IOException {
+
+		ByteArrayInputStream in = new ByteArrayInputStream(src.getBytes());
+		try{
+			return getChecksumValue(in);
+		}
+		finally{
+			try{if(in!=null)in.close();}catch(Exception e){};
+		}
+	}
+	/**
+	 * Greneretes checksum value from given inputsource
+	 * @param is
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 */
+	public static String getChecksumValue(InputStream is) throws IOException, NoSuchAlgorithmException{
+
+		StringBuffer out = new StringBuffer();
+
+		byte[] buffer = new byte[1024];
+		MessageDigest complete = MessageDigest.getInstance("MD5");
+		int numRead;
+		do {
+			numRead = is.read(buffer);
+			if (numRead > 0) {
+				complete.update(buffer, 0, numRead);
+			}
+		} while (numRead != -1);
+		byte[] chk1 = complete.digest();
+		for (int i=0; i < chk1.length; i++) {
+			out.append(Integer.toString( ( chk1[i] & 0xff ) + 0x100, 16).substring( 1 ));
+		}
+		return  out.toString();
+	}
 }

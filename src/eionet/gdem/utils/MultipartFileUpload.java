@@ -25,6 +25,7 @@ package eionet.gdem.utils;
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -133,6 +134,8 @@ public class MultipartFileUpload{
     public void processMultiPartRequest(HttpServletRequest request) throws GDEMException {
 
         List items = null;
+    	String encoding = request.getCharacterEncoding();
+    	if (encoding==null) encoding="UTF-8";
         try {
             items = upload.parseRequest(request);
         } catch (FileUploadException fue) {
@@ -155,7 +158,14 @@ public class MultipartFileUpload{
             if (item.isFormField()) {
                 // It's a field name, it means that we got a non-file
                 // form field. Upload is not required.
-                _params.put(fieldName, item.getString());
+            	try{
+            		//use encoding from request
+            		_params.put(fieldName, item.getString(encoding));
+            	}
+            	catch(UnsupportedEncodingException e){
+            		//use default encoding
+            		_params.put(fieldName, item.getString());
+            	}
 
             } else {
                 _fileItem = item;

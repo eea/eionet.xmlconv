@@ -3,20 +3,20 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is Web Dashboards Service
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency (EEA).  Portions created by European Dynamics (ED) company are
  * Copyright (C) by European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributors(s):
- *    Original code: Istvan Alfeldi (ED) 
+ *    Original code: Istvan Alfeldi (ED)
  */
 
 package eionet.gdem.web.struts.stylesheet;
@@ -37,6 +37,10 @@ public class StylesheetForm extends ActionForm {
 	private String schemaId;
 	private String xsl;
 	private String stylesheetId;
+	private String xslContent;
+	private String xslFileName;
+	private String modified;
+	private String checksum;
 
 
 	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
@@ -119,6 +123,46 @@ public class StylesheetForm extends ActionForm {
 
 	public void setStylesheetId(String stylesheetId) {
 		this.stylesheetId = stylesheetId;
+	}
+
+
+	public String getXslContent() {
+		return xslContent;
+	}
+
+
+	public void setXslContent(String xslContent) {
+		this.xslContent = xslContent;
+	}
+
+
+	public String getXslFileName() {
+		return xslFileName;
+	}
+
+
+	public void setXslFileName(String xslFileName) {
+		this.xslFileName = xslFileName;
+	}
+
+
+	public String getModified() {
+		return modified;
+	}
+
+
+	public void setModified(String modified) {
+		this.modified = modified;
+	}
+
+
+	public String getChecksum() {
+		return checksum;
+	}
+
+
+	public void setChecksum(String checksum) {
+		this.checksum = checksum;
 	}
 
 }

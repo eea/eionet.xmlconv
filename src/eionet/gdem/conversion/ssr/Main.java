@@ -73,9 +73,12 @@ public class Main extends HttpServlet implements Names {
     return session;
   }
 
-  public void doGet( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException {  
+  public void doGet( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException {
 
-    String action=req.getParameter("ACTION");
+
+	req.setCharacterEncoding(setEncoding());
+
+	String action=req.getParameter("ACTION");
     action = (action == null ? "" : action);
     HttpSession sess = req.getSession();
 
@@ -85,13 +88,13 @@ public class Main extends HttpServlet implements Names {
       doLogout(req);
       userChanged=true;
     }
-  
+
     //if login is going on, no user needed
     if (action.equals(LOGIN_ACTION)) {
       try {
         doLogin(req, res);
       } catch (Exception e ) {
-        //l ("exception in login");      
+        //l ("exception in login");
        handleError(req,res, "Error: " + e.toString(), LOGIN_ACTION );
        return;
       }
@@ -100,16 +103,16 @@ public class Main extends HttpServlet implements Names {
     //check if session exist, if not redirect to login page
     /*if ( !guard(sess)) {
         if (isAllowed(null)) {
-          //l("doLogin");        
+          //l("doLogin");
           doLogin(req,res);
-          //l("Login ok");                  
+          //l("Login ok");
           action=SHOW_SCHEMAS_ACTION;
         }
         else {
           handleError(req,res, "No session", LOGIN_ACTION );
           return;
         }
-    } 
+    }
     */
     //HttpSession needed as request attribtue as well
     req.setAttribute(SESS_ATT, sess);
@@ -118,7 +121,7 @@ public class Main extends HttpServlet implements Names {
      //redirect to correct JSP
     dispatch(req,res,action);
  }
-  
+
   /**
   * doPost()
   */
@@ -132,9 +135,9 @@ public class Main extends HttpServlet implements Names {
       String u = req.getParameter("j_username");
       String p = req.getParameter("j_passwd");
 
-      //here we set session as a request attribute    
+      //here we set session as a request attribute
       HttpSession session = req.getSession();
-    
+
 
       try {
         //DirectoryService.sessionLogin(u, p);
@@ -150,19 +153,19 @@ public class Main extends HttpServlet implements Names {
         session.setAttribute(USER_ATT, aclUser);
         session.setAttribute(TICKET_ATT, Utils.getEncodedAuthentication(u,p));
 
-         
+
     } catch (Exception dire ){
 
-      session.setAttribute(USER_ATT, null);    
+      session.setAttribute(USER_ATT, null);
     //  session.setAttribute(Names.APPLICATIONS_ATT, null);
       req.setAttribute(SESS_ATT, null);
 
       //handleError(req, res,"Authentication failed " + dire.toString(), Names.ERROR_ACTION);
       throw new ServletException("Authentication failed " + dire.toString());
-      //l("=================== 1");      
+      //l("=================== 1");
       //return;
     }
-    
+
  }
 
   /**
@@ -182,7 +185,7 @@ public class Main extends HttpServlet implements Names {
       Exception err= new Exception(errMsg);
         sess.setAttribute("gdem.exception", err);
       if (Utils.isNullStr(jspName)) jspName = Names.ERROR_JSP;
-      
+
       //req.getRequestDispatcher(jspName).forward(req,res);
       res.sendRedirect(res.encodeRedirectURL(req.getContextPath() + "/" + jspName));
     }
@@ -191,7 +194,7 @@ public class Main extends HttpServlet implements Names {
     private void dispatch(HttpServletRequest req, HttpServletResponse res, String action) throws ServletException, IOException  {
 
     String jspName=index_jsp;
-    
+
      if ( action.equals( SHOW_SCHEMAS_ACTION ))
         jspName= index_jsp;
       else if ( action.equals( SHOW_STYLESHEETS_ACTION ))
@@ -239,7 +242,7 @@ public class Main extends HttpServlet implements Names {
         res.setContentType("text/html");
         PrintWriter out = res.getWriter();
         out.print("<html><script>window.opener.location.reload(true);window.close()</script></html>");
-        out.close();   
+        out.close();
       }
       else if ( action.equals( SHOW_TESTCONVERSION_ACTION ))
         jspName=TEST_CONVERSION_JSP;
@@ -265,17 +268,17 @@ public class Main extends HttpServlet implements Names {
       req.getRequestDispatcher(jspName).forward(req,res);
     }
     private void doLogout(HttpServletRequest req) {
-      
+
       //groups=null;
       //permissions=null;
 
-      if (appClients != null)      
+      if (appClients != null)
         appClients.clear();
-      
+
       req.getSession().removeAttribute(USER_ATT);
 	  req.getSession().removeAttribute(TICKET_ATT);
       req.removeAttribute(SESS_ATT);
-      
+
 
   }
 
@@ -286,7 +289,7 @@ public class Main extends HttpServlet implements Names {
         return true;
     }
     private String getWelcomeFile(){
-    
+
     String welcomefile = null;
     String[] files=(String[])getServletConfig().getServletContext().getAttribute("org.apache.catalina.WELCOME_FILES");
 
@@ -305,7 +308,7 @@ public class Main extends HttpServlet implements Names {
         else {
           welcomefile=INDEX_JSP;
         }
-        
+
       }
       return welcomefile;
     }
@@ -317,11 +320,15 @@ public class Main extends HttpServlet implements Names {
         // and if the result is an odd number, we return true
         // if not, we return false
         int div = services_installed/service;
-        
+
         if (div % 2 != 0)
             return true;
         else
             return false;
+    }
+    protected String setEncoding()
+    {
+        return "UTF-8";
     }
 
 }

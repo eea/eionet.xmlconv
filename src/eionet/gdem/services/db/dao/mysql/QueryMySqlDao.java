@@ -16,80 +16,80 @@ import java.util.HashMap;
 
 
 public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
-	
-	private static final String  qListQueries = "SELECT " 
-													+ QUERY_TABLE + "." + QUERY_ID_FLD + ", " 
-													+ SHORT_NAME_FLD + ", " + QUERY_FILE_FLD + ", " 
-													+ QUERY_TABLE + "." + DESCR_FLD + "," 
-													+ SCHEMA_TABLE + "." + SCHEMA_ID_FLD + "," 
-													+ SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ", " 
-													+  QUERY_TABLE + "." + RESULT_TYPE_FLD 
-													+ " FROM " 
-													+  QUERY_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE 
+
+	private static final String  qListQueries = "SELECT "
+													+ QUERY_TABLE + "." + QUERY_ID_FLD + ", "
+													+ SHORT_NAME_FLD + ", " + QUERY_FILE_FLD + ", "
+													+ QUERY_TABLE + "." + DESCR_FLD + ","
+													+ SCHEMA_TABLE + "." + SCHEMA_ID_FLD + ","
+													+ SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ", "
+													+  QUERY_TABLE + "." + RESULT_TYPE_FLD
+													+ " FROM "
+													+  QUERY_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE
 													+ " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD;
-	
+
 	private static final String  qListQueriesBySchema = qListQueries  + " WHERE " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + "= ?";
-    private static final String  qQueryTextByFileName = "SELECT " + QUERY_FILE_FLD  + " FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD + "= ?"; 
-	private static final String  qQueryTextByID = "SELECT " + QUERY_FILE_FLD  + " FROM " + QUERY_TABLE + " WHERE " + QUERY_ID_FLD + "= ?"; 
-	
-	private static final String  qQueryInfo = 	"SELECT " 
-												+ QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "," 
-												+ QUERY_FILE_FLD + ", " + QUERY_TABLE + "." + DESCR_FLD + "," 
-												+ SHORT_NAME_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + "," 
-												+ QUERY_TABLE + "." + RESULT_TYPE_FLD + ", " 
-												+ CONVTYPE_TABLE + "." + CONTENT_TYPE_FLD 
-												+ " FROM " 
-												+ QUERY_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE 
-												+ " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD 
-												+ " LEFT OUTER JOIN " + CONVTYPE_TABLE 
+    private static final String  qQueryTextByFileName = "SELECT " + QUERY_FILE_FLD  + " FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD + "= ?";
+	private static final String  qQueryTextByID = "SELECT " + QUERY_FILE_FLD  + " FROM " + QUERY_TABLE + " WHERE " + QUERY_ID_FLD + "= ?";
+
+	private static final String  qQueryInfo = 	"SELECT "
+												+ QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + ","
+												+ QUERY_FILE_FLD + ", " + QUERY_TABLE + "." + DESCR_FLD + ","
+												+ SHORT_NAME_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ","
+												+ QUERY_TABLE + "." + RESULT_TYPE_FLD + ", "
+												+ CONVTYPE_TABLE + "." + CONTENT_TYPE_FLD
+												+ " FROM "
+												+ QUERY_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE
+												+ " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD
+												+ " LEFT OUTER JOIN " + CONVTYPE_TABLE
 												+ " ON " + QUERY_TABLE + "." + RESULT_TYPE_FLD + "=" + CONVTYPE_TABLE + "." + CONV_TYPE_FLD;
-	
-	
+
+
 	private static final String  qQueryInfoByID =  qQueryInfo + " WHERE " + QUERY_ID_FLD + "=?" ;
 	private static final String  qQueryInfoByFileName = qQueryInfo + " WHERE " + QUERY_FILE_FLD + "=?";
-	
+
 	private static final String  qRemoveQuery = "DELETE FROM " + QUERY_TABLE + " WHERE " + QUERY_ID_FLD + "=?";
-	private static final String  qUpdateQuery = "UPDATE  " + QUERY_TABLE 
-												+ " SET " 
-												+ QUERY_FILE_FLD + "=?" + ", " 
-												+ SHORT_NAME_FLD + "=?" + ", " 
-												+ DESCR_FLD + "=?" + ", " 
-												+ XSL_SCHEMA_ID_FLD + "=?" + ", " 
-												+ RESULT_TYPE_FLD + "=?"  
+	private static final String  qUpdateQuery = "UPDATE  " + QUERY_TABLE
+												+ " SET "
+												+ QUERY_FILE_FLD + "=?" + ", "
+												+ SHORT_NAME_FLD + "=?" + ", "
+												+ DESCR_FLD + "=?" + ", "
+												+ XSL_SCHEMA_ID_FLD + "=?" + ", "
+												+ RESULT_TYPE_FLD + "=?"
 												+ " WHERE " + QUERY_ID_FLD + "=?";
- 
-	
 
-	private static final String  qInsertQuery = "INSERT INTO " + QUERY_TABLE 
-												+ " ( " 
-												+ XSL_SCHEMA_ID_FLD + ", " 
-												+ SHORT_NAME_FLD + ", " 
-												+ QUERY_FILE_FLD + ", " 
-												+ DESCR_FLD + ", " 
-												+ RESULT_TYPE_FLD 
-												+ ") " + 
-												" VALUES (?,?,?,?,?)"; 
 
-	
-	private static final String  qQueryByFileName = "SELECT " + QUERY_ID_FLD + " FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD + "=?";	
-	
-	
-	private static final String  qCheckQueryFileByName = "SELECT COUNT(*) FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD + "=?";	
-	
+
+	private static final String  qInsertQuery = "INSERT INTO " + QUERY_TABLE
+												+ " ( "
+												+ XSL_SCHEMA_ID_FLD + ", "
+												+ SHORT_NAME_FLD + ", "
+												+ QUERY_FILE_FLD + ", "
+												+ DESCR_FLD + ", "
+												+ RESULT_TYPE_FLD
+												+ ") " +
+												" VALUES (?,?,?,?,?)";
+
+
+	private static final String  qQueryByFileName = "SELECT " + QUERY_ID_FLD + " FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD + "=?";
+
+
+	private static final String  qCheckQueryFileByName = "SELECT COUNT(*) FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD + "=?";
+
 	private static final String  qCheckQueryFileByIdAndName =  "SELECT COUNT(*) FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD + "=?" + " and " +QUERY_ID_FLD+"=?";
-;	
+;
 
-	
-	
-	
-	
+
+
+
+
 	public QueryMySqlDao(){}
-	
+
 /*	public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description, String content_type) throws SQLException {
 
 		description = (description == null ? "" : description);
 
-		String sql = "INSERT INTO " + QUERY_TABLE + " ( " + XSL_SCHEMA_ID_FLD + ", " + SHORT_NAME_FLD + ", " + QUERY_FILE_FLD + ", " + DESCR_FLD + ", " + RESULT_TYPE_FLD + ") 
+		String sql = "INSERT INTO " + QUERY_TABLE + " ( " + XSL_SCHEMA_ID_FLD + ", " + SHORT_NAME_FLD + ", " + QUERY_FILE_FLD + ", " + DESCR_FLD + ", " + RESULT_TYPE_FLD + ")
 		VALUES ('" + xmlSchemaID + "', '" + shortName + "', " + Utils.strLiteral(queryFileName) + ", " + Utils.strLiteral(description) + ", " + Utils.strLiteral(content_type) + ")";
 
 		_executeUpdate(sql);
@@ -102,19 +102,19 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
 		return r[0][0];
 	}
-*/	
+*/
 	public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description, String content_type) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String result = null;
-		
+
 		description = (description == null ? "" : description);
-		
+
 		if (isDebugMode){ logger.debug("Query is " + qInsertQuery);}
 
 		try{
-			conn = getConnection();	
+			conn = getConnection();
 			pstmt = conn.prepareStatement(qInsertQuery);
 			pstmt.setInt(1, Integer.parseInt(xmlSchemaID));
 			pstmt.setString(2, shortName);
@@ -122,23 +122,23 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 			pstmt.setString(4, description);
 			pstmt.setString(5, content_type);
 			pstmt.executeUpdate();
-			
+
 			if(pstmt != null) pstmt.close();
-			
+
 			pstmt = conn.prepareStatement(qQueryByFileName);
 			pstmt.setString(1,queryFileName);
-			rs = pstmt.executeQuery();			
+			rs = pstmt.executeQuery();
 			String[][] r = getResults(rs);
 			if (r.length == 0) throw new SQLException("Error when returning id  for " + queryFileName + " ");
 			result = r[0][0];
 		}finally{
-			closeAllResources(rs,pstmt,conn);			
-		}		
-				
+			closeAllResources(rs,pstmt,conn);
+		}
+
 		return result;
 	}
-	
-	
+
+
 /*	public void updateQuery(String query_id, String schema_id, String short_name, String description, String fileName, String content_type) throws SQLException {
 
 		short_name = (short_name == null ? "" : short_name);
@@ -157,11 +157,11 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
 		short_name = (short_name == null ? "" : short_name);
 		description = (description == null ? "" : description);
-				
+
 		if (isDebugMode){ logger.debug("Query is " + qUpdateQuery);}
-		
+
 		try{
-			conn = getConnection();	
+			conn = getConnection();
 			pstmt = conn.prepareStatement(qUpdateQuery);
 			pstmt.setString(1, fileName);
 			pstmt.setString(2, short_name);
@@ -171,42 +171,42 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 			pstmt.setInt(6, Integer.parseInt(query_id));
 			pstmt.executeUpdate();
 		}finally{
-			closeAllResources(null,pstmt,conn);			
-		}		
-		
+			closeAllResources(null,pstmt,conn);
+		}
+
 	}
-	
-	
+
+
 
 /*	public void removeQuery(String queryId) throws SQLException {
 		String sql = "DELETE FROM " + QUERY_TABLE + " WHERE " + QUERY_ID_FLD + "=" + queryId;
 		_executeUpdate(sql);
 	}
 
-*/	
+*/
 	public void removeQuery(String queryId) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
-		if (isDebugMode){ logger.debug("Query is " + qRemoveQuery);}		
+		if (isDebugMode){ logger.debug("Query is " + qRemoveQuery);}
 		try{
-			conn = getConnection();	
+			conn = getConnection();
 			pstmt = conn.prepareStatement(qRemoveQuery);
 			pstmt.setInt(1, Integer.parseInt(queryId));
 			pstmt.executeUpdate();
 		}finally{
-			closeAllResources(null,pstmt,conn);			
-		}		
-		
+			closeAllResources(null,pstmt,conn);
+		}
+
 	}
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
 /*	public HashMap getQueryInfo(String queryId) throws SQLException {
 
 		int id = 0;
@@ -247,11 +247,11 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
 		return h;
 	}
-*/		
+*/
 	public HashMap getQueryInfo(String queryId) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		ResultSet rs =null;		
+		ResultSet rs =null;
 		int id = 0;
 		String queryName = null;
 		HashMap h = null;
@@ -263,7 +263,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 			else
 				throw new SQLException("not numeric ID or xql file name: " + queryId);
 		}
-	    
+
 		try {
 			conn = getConnection();
 			if (queryName != null) {
@@ -274,8 +274,8 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 				pstmt.setInt(1,id);
 			}
 			if (isDebugMode){logger.debug("Query is " + ((queryName != null)?qQueryInfoByFileName:qQueryInfoByID));}
-			
-			rs = pstmt.executeQuery();			
+
+			rs = pstmt.executeQuery();
 			String[][] r = getResults(rs);
 
 			if (r.length > 0) {
@@ -289,23 +289,23 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 				h.put("content_type", r[0][5]);
 				h.put("meta_type", r[0][6]);
 			}
-			
+
 		} finally{
 			closeAllResources(rs,pstmt,conn);
 		}
-		
+
 		return h;
-		
+
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
 	/*public String getQueryText(String queryId) throws SQLException {
 	int id = 0;
 	String queryName = null;
@@ -342,11 +342,11 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 	}
 	*/
 
-	
+
 	public String getQueryText(String queryId) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		ResultSet rs =null;		
+		ResultSet rs =null;
 		int id = 0;
 		String qText = "";
 		String queryName = null;
@@ -358,7 +358,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 			else
 				throw new SQLException("not numeric ID or xql file name: " + queryId);
 		}
-	    
+
 		try {
 			conn = getConnection();
 			if (queryName != null) {
@@ -369,8 +369,8 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 				pstmt.setInt(1,id);
 			}
 			if (isDebugMode){logger.debug("Query is " + ((queryName != null)?qQueryTextByFileName:qQueryTextByID));}
-			
-			rs = pstmt.executeQuery();			
+
+			rs = pstmt.executeQuery();
 			String[][] r = getResults(rs);
 
 			if (r.length > 0) {
@@ -379,20 +379,20 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 				try {
 					qText = Utils.readStrFromFile(queriesFolder + r[0][0]);
 				} catch (IOException e) {
-					qText = "Unable to read file: " + queriesFolder + r[0][0] + "\n " + e.toString();
+					qText = FILEREAD_EXCEPTION + queriesFolder + r[0][0] + "\n " + e.toString();
 				}
 			}
-			
+
 		} finally{
 			closeAllResources(rs,pstmt,conn);
 		}
-		
+
 		return qText;
 	}
-	
 
-	
-	
+
+
+
 	/*public Vector listQueries(String xmlSchema) throws SQLException {
 
 	String sql = "SELECT " + QUERY_TABLE + "." + QUERY_ID_FLD + ", " + SHORT_NAME_FLD + ", " + QUERY_FILE_FLD + ", " + QUERY_TABLE + "." + DESCR_FLD + "," + SCHEMA_TABLE + "." + SCHEMA_ID_FLD + "," + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ", " + QUERY_TABLE + "." + RESULT_TYPE_FLD + " FROM " + QUERY_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE + " ON "
@@ -428,16 +428,16 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 		boolean forSchema = xmlSchema != null ;
 		Vector v = null;
 		String query = (forSchema) ? qListQueriesBySchema : qListQueries;
-		
+
 		if (isDebugMode){
 			logger.debug("XMLSchema is " + xmlSchema);
 			logger.debug("Query is " + query);
-		}			
+		}
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(query);
 			if(forSchema){pstmt.setString(1, xmlSchema);}
-			rs = pstmt.executeQuery();			
+			rs = pstmt.executeQuery();
 			String[][] r = getResults(rs);
 			v = new Vector(r.length);
 			for (int i = 0; i < r.length; i++) {
@@ -450,15 +450,15 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 				h.put("xml_schema", r[i][5]);
 				h.put("content_type_out", r[i][6]);
 				v.add(h);
-			}			
-		} 
-		finally {
-			closeAllResources(rs,pstmt,conn);			
+			}
 		}
-		
-		return v;	
+		finally {
+			closeAllResources(rs,pstmt,conn);
+		}
+
+		return v;
 	}
-	
+
 
 //	public boolean checkQueryFile(String queryFileName) throws SQLException {
 //
@@ -475,34 +475,34 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 //			return true;
 //		}
 //
-//	}	
-	
+//	}
+
 	public boolean checkQueryFile(String queryFileName) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
+
 		if (isDebugMode){ logger.debug("Query is " + qCheckQueryFileByName);}
 
 		try{
-			conn = getConnection();	
+			conn = getConnection();
 			pstmt = conn.prepareStatement(qCheckQueryFileByName);
 			pstmt.setString(1, queryFileName);
-			rs = pstmt.executeQuery();			
+			rs = pstmt.executeQuery();
 			String[][] r = getResults(rs);
 			String count = r[0][0];
 			if (count.equals("0")) {
 				return false;
 			} else {
 				return true;
-			}			
+			}
 		}finally{
-			closeAllResources(rs,pstmt,conn);			
-		}		
-				
+			closeAllResources(rs,pstmt,conn);
+		}
+
 	}
-	
-	
+
+
 //	public boolean checkQueryFile(String query_id, String queryFileName) throws SQLException {
 //		int id = 0;
 //
@@ -519,37 +519,37 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 //		}
 //	}
 
-	
+
 
 	public boolean checkQueryFile(String query_id, String queryFileName) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
+
 		if (isDebugMode){ logger.debug("Query is " + qCheckQueryFileByIdAndName);}
 
 		try{
-			conn = getConnection();	
+			conn = getConnection();
 			pstmt = conn.prepareStatement(qCheckQueryFileByIdAndName);
 			pstmt.setString(1, queryFileName);
 			pstmt.setString(2, query_id);
-			rs = pstmt.executeQuery();			
+			rs = pstmt.executeQuery();
 			String[][] r = getResults(rs);
 			String count = r[0][0];
 			if (count.equals("0")) {
 				return false;
 			} else {
 				return true;
-			}			
+			}
 		}finally{
-			closeAllResources(rs,pstmt,conn);			
-		}		
-				
+			closeAllResources(rs,pstmt,conn);
+		}
+
 	}
-	
-	
-	
-	
+
+
+
+
 }
 
 
