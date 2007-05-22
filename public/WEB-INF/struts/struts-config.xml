@@ -86,7 +86,7 @@
             <forward name="success" path="/editStylesheet.jsp" redirect="true" />
         </action>
         <action path="/stylesheetEdit" input="/editStylesheet.jsp" name="stylesheetForm"
-            type="eionet.gdem.web.struts.stylesheet.EditStylesheetAction" scope="request">
+            type="eionet.gdem.web.struts.stylesheet.EditStylesheetAction" scope="request" parameter="action">
              <forward name="success" path="/do/schemaStylesheets" redirect="true"/>
              <forward name="fail" path="/editStylesheet.jsp" redirect="false"/>
         </action>

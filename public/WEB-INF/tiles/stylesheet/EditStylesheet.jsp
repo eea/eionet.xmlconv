@@ -17,7 +17,7 @@
 		<div class="boxcontent" >
 
 		<html:form action="/stylesheetEdit" method="post" enctype="multipart/form-data">
-		  <table cellpadding="0" cellspacing="0" border="0" >
+		  <table cellpadding="0" cellspacing="0" border="0" width="100%">
 		    <tr>
 		      <td>
 		        <bean:message key="label.stylesheet.schema"/>:
@@ -133,13 +133,38 @@
 		      <td>
 					<a target="blank" href="<bean:write name="webRoot"/>/<bean:write property="xsl" name="stylesheetForm"/>" title="<bean:write property="xsl" name="stylesheetForm"/>">						
 								<bean:write property="xsl" name="stylesheetForm"/>
-					</a>&#160;		        	  		        
+					</a>
+					<logic:present name="stylesheetForm" property="modified">
+						&#160;&#160;&#160;&#160;&#160;&#160;(<bean:message key="label.lastmodified"/>: <bean:write property="modified" name="stylesheetForm"/>)
+					</logic:present>
 		      </td>
 		    </tr>
 		    <tr>
 		      <td colspan="3">&nbsp;</td>
 		    </tr>
 		    <logic:present name="user">
+		      	<logic:present name="stylesheetForm" property="xslFileName">
+				    <tr>
+				      <td colspan="3">
+				        <html:textarea property="xslContent" style="width: 100%;" rows="20"/>
+				      </td>
+				    </tr>
+				<tr>
+			      <td colspan="3">&nbsp;</td>
+			    </tr>
+			    <tr>
+			      <td colspan="3" align="center">
+			        <html:submit styleClass="button" property="action">
+			        	<bean:message key="label.stylesheet.save"/>
+				    </html:submit>
+			        <html:hidden property="xslFileName" />
+			        <html:hidden property="checksum" name="stylesheetForm" />
+			      </td>
+			    </tr>
+				<tr>
+			      <td colspan="3">&nbsp;</td>
+				</tr>
+			</logic:present>
 		    <tr>
 		      <td>		        
 		      </td>
@@ -149,21 +174,21 @@
 		      </td>
 		    </tr>
 		    </logic:present>
-		    <tr>
+			<tr>
 		      <td colspan="3">&nbsp;</td>
 		    </tr>
 		    <tr>
 		      <td colspan="3" align="center">
 		      	<logic:present name="user">
-			        <html:submit styleClass="button">
+			        <html:submit styleClass="button" property="action">
 			        	<bean:message key="label.stylesheet.upload"/>
 			        </html:submit>
-			        <html:cancel styleClass="button">
+			        <html:cancel styleClass="button" property="action">
 			        	<bean:message key="label.stylesheet.cancel"/>
 			        </html:cancel>
 		        </logic:present>
 		        <logic:notPresent name="user">
-			        <html:cancel styleClass="button">
+			        <html:cancel styleClass="button" property="action">
 			        	<bean:message key="label.ok"/>
 			        </html:cancel>		        
 		        </logic:notPresent>

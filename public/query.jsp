@@ -1,17 +1,23 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
-<%@ page import="java.util.HashMap, java.util.Vector, java.util.Hashtable, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.Utils" %>
+<%@ taglib uri="/WEB-INF/tlds/c.tld" prefix="c"%>
+<%@ page import="java.io.File,java.util.Date,java.text.DateFormat,java.util.HashMap, java.util.Vector, java.util.Hashtable, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.Utils, eionet.gdem.Properties" %>
 
 <%
 response.setHeader("Pragma", "No-cache");
 response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Cache-Control","no-store");
 response.setDateHeader("Expires", 0);
+response.setHeader("charset","no-store");
+
 %>
 
 <%
 	//get schema from parameter
 	String id = request.getParameter("query_id");
+	//String qText = "";
+	String last_modified="";
 
 	id = (id == null ? "" : id);
 
@@ -23,6 +29,8 @@ response.setDateHeader("Expires", 0);
 	String content_type = "";
 	String file = "";
 	String schema_id = "";
+	String checksum = "";
+	String qText = "";
 
     eionet.gdem.services.db.dao.IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
 	
@@ -36,6 +44,21 @@ response.setDateHeader("Expires", 0);
 		content_type = (String)query.get("content_type");
 		file = (String)query.get("query");
 		schema_id = (String)query.get("schema_id");
+
+		if(!Utils.isNullStr(file)) {
+			qText = queryDao.getQueryText(id);
+			pageContext.setAttribute("qtext", qText, PageContext.PAGE_SCOPE);
+			try{
+		        File f=new File(Properties.queriesFolder + file);
+
+				if (f!=null){
+					last_modified=Utils.getDateTime(new Date(f.lastModified()));
+					checksum = Utils.getChecksumFromFile(Properties.queriesFolder + file);
+				}
+			}
+			catch(Exception e){
+			}
+		}
 	}
 
 %>
@@ -76,11 +99,11 @@ response.setDateHeader("Expires", 0);
 		else{%>
 			<h1>View query</h1>
 		<%}%>
-		<form name="Upload" action="main?query_id=<%=id%>&amp;ACTION=<%=Names.QUERY_UPD_ACTION%>" method="post" enctype="multipart/form-data">
+		<form name="Upload" action="main?query_id=<%=id%>&amp;ACTION=<%=Names.QUERY_UPD_ACTION%>" method="post" enctype="multipart/form-data" acceptcharset="utf-8">
 
 			<input type="hidden" size="60" name="SCHEMA_ID" value="<%=schema_id%>"/>
 			<input type="hidden" size="60" name="QUERY_ID" value="<%=id%>"/>
-			<table class="datatable">
+			<table class="datatable" width="100%">
 				<tr>
 					<th scope="row" class="scope-row">
 						<label for="schemafield">XML Schema:</label>
@@ -106,7 +129,7 @@ response.setDateHeader("Expires", 0);
 					</th>
 					<td>
 						<%if(!mode.equals("view")){%>
-							<textarea class="small" rows="2" cols="55" name="DESCRIPTION" id="descriptionfield"><%=description%></textarea>
+							<textarea class="small" rows="2" cols="55" name="DESCRIPTION" id="descriptionfield" style="width: 98%;"><%=description%></textarea>
 						<%}else{%>
 							<div id="descriptionfield"><%=description%></div>
 						<%}%>
@@ -133,22 +156,41 @@ response.setDateHeader("Expires", 0);
 						<label for="filefield">XQuery file:</label>
 					</th>
 					<td>
-						<a href="<%=Names.QUERY_FOLDER%><%=file%>" title="View XQuery source"><%=file%>
-              			</a>
-						<%if(!mode.equals("view")){%>
-							<input type="hidden" name="FILE_NAME" value="<%=file%>"/><br/><br/>
-							<input type="file" class="textfield" name="FILE_INPUT" id="filefield" size="53" title="Add a new XQuery file"/>
-						<% } else {%>
-							<div id="filefield"></div>
-						<% }%>
+						<a href="<%=Names.QUERY_FOLDER%><%=file%>" title="View XQuery source"><%=file%></a>
+						<%if(!Utils.isNullStr(last_modified)){%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Last modified: <%=last_modified%>)<%}%>
 					</td>
 				</tr>
-				<tr><td colspan="2"></td></tr>
+				<%if(!mode.equals("view")){%>
+					<%if(!Utils.isNullStr(file)){%>
+						<tr>
+							<th scope="row" class="scope-row"></th>
+							<td>
+								<textarea name="FILEDATA" style="width: 98%;" rows="20" wrap="off"><c:out value="${qtext}" escapeXml="true" /></textarea> 
+								<%-- checksum:<%=checksum --%>
+								<input type="hidden" name="CHECKSUM" value="<%=checksum%>"/>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+								<input name="SAVE" type="SUBMIT" class="mediumbuttonb" value="Save changes" />
+							</td>
+						</tr>
+					<% }%>
+					<tr>
+						<th scope="row" class="scope-row"></th>
+						<td>
+							<input type="file" class="textfield" name="FILE_INPUT" id="filefield" size="53" title="Add a new XQuery file"/>
+							<input type="hidden" name="FILE_NAME" value="<%=file%>"/>
+						</td>
+					</tr>
+				<% }%>
+				<!--tr><td colspan="2"></td></tr-->
 				<%if(!mode.equals("view")){%>
 					<tr>
 						<td></td>
 						<td>
-							<input name="SUBMIT" type="SUBMIT" class="mediumbuttonb" value="Save" />
+							<input name="UPLOAD" type="SUBMIT" class="mediumbuttonb" value="Upload" />
 						</td>
 					</tr>
 				<% } %>

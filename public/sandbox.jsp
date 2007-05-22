@@ -1,5 +1,7 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
+<%@ taglib uri="/WEB-INF/tlds/c.tld" prefix="c"%>
 <%@ page import="java.util.Vector,java.util.HashMap,java.util.Hashtable"%>
 <%@ page import="eionet.gdem.Constants, eionet.gdem.services.GDEMServices, eionet.gdem.utils.Utils, eionet.gdem.Properties, eionet.gdem.conversion.ssr.InputAnalyser"%>
 
@@ -47,6 +49,7 @@ response.setDateHeader("Expires", 0);
 	}
 	if(q_id != null) {
 		qText = queryDao.getQueryText(q_id);
+		pageContext.setAttribute("qtext", qText, PageContext.PAGE_SCOPE);
 		HashMap queryInfo = queryDao.getQueryInfo(q_id);
 		if (queryInfo!=null){
 			query_file = Properties.queriesFolder + (String)queryInfo.get("query");
@@ -68,7 +71,7 @@ response.setDateHeader("Expires", 0);
 <h1>XQuery Sandbox</h1>
 <div id="main_table">
 	<!--table border="0" cellspacing="1" cellpadding="2" width="100%"><tr><td-->
-	<form name="f" action="sandbox" method="post">
+	<form name="f" action="sandbox" method="post" acceptcharset="utf-8">
 		<label for="dataurlfield">URL to data file </label>
 			<input type="text" class="textfield" name="source_url" size="75" id="dataurlfield" value="<%=Utils.isNullStr(source_url) ? "" : source_url%>"/>
 			<input type="submit" name="findscripts" value=" Find scripts " title="Reads the XML Schema from the header of XML file and search the scripts from the repository" class="button"/>
@@ -107,7 +110,7 @@ response.setDateHeader("Expires", 0);
 		%>
 			<input type="hidden" name="sandboxtype" value="SCRIPT"/>
 			<label for="scriptarea">XQuery script</label>
-			<textarea name="XQSCRIPT" rows="25" cols="100" style="width:99%" id="scriptarea"><%=qText%></textarea>
+			<textarea name="XQSCRIPT" rows="25" cols="100" style="width:99%" id="scriptarea"><c:out value="${qtext}" escapeXml="true" /></textarea>
 		<%}%>
 		<br/><br/>
 		<input type="submit" name="runnow" value=" Run now " class="button" />
