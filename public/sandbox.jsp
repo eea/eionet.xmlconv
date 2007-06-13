@@ -132,4 +132,4 @@ response.setDateHeader("Expires", 0);
 	<!--/td></tr></table-->
 </div>
 </div>
-<tiles:insert definition="TmpFooter"/>
+<tiles:insert definition="MainFooter"/>

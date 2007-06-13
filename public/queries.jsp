@@ -180,4 +180,4 @@ response.setDateHeader("Expires", 0);
     <input type="hidden" name="ACTION" value=""/>
     <input type="hidden" name="PARAM" value=""/>
 </form>
-<tiles:insert definition="TmpFooter"/>
+<tiles:insert definition="MainFooter"/>
