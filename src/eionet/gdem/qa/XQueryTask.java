@@ -139,8 +139,8 @@ public class XQueryTask extends Thread implements Constants {
 
       FileInputStream fis = null;
       try {
-        if (_logger.enable(_logger.DEBUG))
-          _logger.debug("** XQuery starts, ID=" + _jobId +
+        if (_logger.enable(_logger.INFO))
+          _logger.info("** XQuery starts, ID=" + _jobId +
             " schema: "  + _scriptFile +
             " result will be stored to " + _resultFile );
         ValidationService vs = new ValidationService();
@@ -175,8 +175,8 @@ public class XQueryTask extends Thread implements Constants {
 
 
       try {
-        if (_logger.enable(_logger.DEBUG))
-          _logger.debug("** XQuery starts, ID=" + _jobId +
+        if (_logger.enable(_logger.INFO))
+          _logger.info("** XQuery starts, ID=" + _jobId +
             " params: "  + (xqParam==null ? "<< no params >>" : xqParam[0]) +
             " result will be stored to " + _resultFile );
 
@@ -224,8 +224,8 @@ public class XQueryTask extends Thread implements Constants {
     }
 
       changeStatus(XQ_READY);
-        if (_logger.enable(_logger.DEBUG))
-          _logger.debug("Job ID=" + _jobId + " succeeded");
+        if (_logger.enable(_logger.INFO))
+          _logger.info("Job ID=" + _jobId + " succeeded");
 
       //all done, thread stops here, job is waiting for pulling from the client side
 

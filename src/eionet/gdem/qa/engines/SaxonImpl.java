@@ -89,7 +89,7 @@ import javax.xml.transform.ErrorListener;
 //import net.sf.saxon.om.EmptyIterator;
 
 public class SaxonImpl implements XQEngineIF {
-  
+
   private LoggerIF _logger;
 
   public SaxonImpl() {
@@ -99,20 +99,20 @@ public class SaxonImpl implements XQEngineIF {
     String res=null;
     try {
       res=runQuery(xqScript, params);
-      
+
       if (_logger.enable(_logger.DEBUG))
-        _logger.debug("RESULT: \n" + res);    
+        _logger.debug("RESULT: \n" + res);
 
      } catch(Exception e) {
         throw new GDEMException(e.toString());
     }
-  
+
     return res;
   }
   public void getResult(String xqScript, String[] params, OutputStream out) throws GDEMException  {
     try {
       runQuery(xqScript, params, out);
-      
+
      } catch(Exception e) {
         throw new GDEMException(e.toString());
     }
@@ -120,7 +120,7 @@ public class SaxonImpl implements XQEngineIF {
   public String getResult(String xqScript) throws GDEMException  {
     return getResult(xqScript, null);
   }
-  
+
 
 //  public void setParameters(String[] params) {}
 
@@ -153,17 +153,17 @@ public class SaxonImpl implements XQEngineIF {
     //our own extension of Saxon's error listener to send feedback to the user
     SaxonListener listener = new SaxonListener();
     config.setErrorListener(listener);
-    
+
     //config.setRecoveryPolicy(Configuration.DO_NOT_RECOVER);
-    
+
     config.setHostLanguage(config.XQUERY);
     StaticQueryContext staticEnv = new StaticQueryContext(config);
     //staticEnv.setConfiguration(config);
     DynamicQueryContext dynamicEnv = new DynamicQueryContext(config);
-    
+
     SaxonListener dynamicListener = new SaxonListener();
     dynamicEnv.setErrorListener(dynamicListener);
-    
+
     Properties outputProps = new Properties();
     outputProps.setProperty(OutputKeys.INDENT, "yes");
 
@@ -173,7 +173,7 @@ public class SaxonImpl implements XQEngineIF {
     staticEnv.setBaseURI(new File(script).toURI().toString());
 
     String s = "";
-    
+
   try {
       //handle xq Parameters, extract from Saxon code
       if (xqParams!=null)
@@ -194,19 +194,19 @@ public class SaxonImpl implements XQEngineIF {
             //List sources = Transform.loadDocuments(arg.substring(eq+1), true, config);
             //dynamicEnv.setParameter(argname.substring(1), sources);
            }
-           else 
+           else
               dynamicEnv.setParameter(argname, new StringValue(arg.substring(eq+1)));
-            
+
          }
-  
+
       //QueryProcessor xquery = new QueryProcessor(config, staticEnv);
-  
+
       //compile Query
       XQueryExpression exp;
       try {
         exp = staticEnv.compileQuery(queryReader);
         queryReader.close(); //KL 040218
-        staticEnv=exp.getStaticContext(); 
+        staticEnv=exp.getStaticContext();
       }catch(net.sf.saxon.trans.XPathException e)
         {System.err.println(e.getMessage());
         throw e;
@@ -214,7 +214,7 @@ public class SaxonImpl implements XQEngineIF {
     	  System.err.println(e.getMessage());
     	  throw e;
         }
-       
+
       try {
 
           //evaluating
@@ -227,31 +227,57 @@ public class SaxonImpl implements XQEngineIF {
                {System.err.println(e.getMessage());
                throw e;
                }
-    	  
+
 
       //s = result.getBuffer().toString();
       //result.close(); //??
-      
+
   } catch (Exception e) {
-  	_logger.debug("==== CATCHED EXCEPTION " + e.toString() );
     String errMsg = (listener.hasErrors() ? listener.getErrors() : e.toString());
+    try{
+    	errMsg = parseErrors(errMsg,staticEnv);
+    }
+    catch(Exception ex){
+    	_logger.error("Unable to parse exception string: " + ex.toString() );
+    }
+
+  	_logger.error("==== CATCHED EXCEPTION " + errMsg );
     throw new GDEMException (errMsg);
     //listener.error(e);
-  } finally {
-		if (listener.hasErrors() || dynamicListener.hasErrors() )
-			throw new GDEMException (parseErrors(listener.getErrors() + dynamicListener.getErrors()));
+  }
+  finally {
+		if (listener.hasErrors() || dynamicListener.hasErrors() ){
+			String errMsg = listener.getErrors() + dynamicListener.getErrors();
+			try{
+		    	errMsg = parseErrors(errMsg,staticEnv);
+		    }
+		    catch(Exception ex){
+		    	_logger.error("Unable to parse exception string: " + ex.toString() );
+		    }
+		  	_logger.error(errMsg);
+		    throw new GDEMException (errMsg);
+		}
 	}
 //return s;
 }
 
 // if URL contains ticket information, then remove it
-private String parseErrors(String err){
-	  String search_base=Constants.TICKET_PARAM + "=";
-	  
-	  StringBuffer buf = new StringBuffer();
+//if the error messages contains staticEnv.baseURI, then remove it
+private String parseErrors(String err, StaticQueryContext staticEnv){
+
+	if(err==null) return null;
+
+	String search_base=Constants.TICKET_PARAM + "=";
+	String baseURI = (staticEnv==null)?null:staticEnv.getBaseURI();
+
+
+	if (baseURI!= null && err.indexOf(baseURI)>0){
+		err = eionet.gdem.utils.Utils.Replace(err,baseURI,"xquery");
+	}
+	StringBuffer buf = new StringBuffer();
     int found = 0;
     int last=0;
-	  
+
     while ((found = err.indexOf(search_base, last)) >= 0) {
         buf.append(err.substring(last, found));
         last = err.indexOf("&", found);
@@ -273,5 +299,5 @@ private String parseErrors(String err){
 
     x.getResult();
   }
-*/ 
+*/
 }

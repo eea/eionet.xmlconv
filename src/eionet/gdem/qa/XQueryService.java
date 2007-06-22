@@ -183,7 +183,9 @@ public class XQueryService  implements Constants {
  // }
   public Vector analyzeXMLFiles(String schema, String orig_file, Vector result) throws GDEMException{
 
-      if (result==null) result = new Vector();
+	  _logger.info("XML/RPC call for analyze xml: " + orig_file);
+
+	  if (result==null) result = new Vector();
       //get all possible xqueries from db
       String newId="-1"; //should not be returned with value -1;
       String file=orig_file;
@@ -247,6 +249,7 @@ public class XQueryService  implements Constants {
         throw new GDEMException("DB operation failed: " + sqe.toString());
       }
 
+	  _logger.info("Analyze xml result: " + result.toString());
       return result;
   }
   /**
@@ -258,7 +261,7 @@ public class XQueryService  implements Constants {
   public String analyze(String sourceURL, String xqScript) throws GDEMException {
     String  xqFile="";
 
-    _logger.debug("XML/RPC call for analyze xml: " + sourceURL);
+    _logger.info("XML/RPC call for analyze xml: " + sourceURL);
     //save XQScript in a text file for the WQ
     try {
       xqFile=Utils.saveStrToFile(xqScript, "xql");
@@ -304,7 +307,7 @@ public class XQueryService  implements Constants {
   */
   public Hashtable getResult(String jobId) throws GDEMException {
 
-    _logger.debug("XML/RPC call for getting result with JOB ID: " + jobId);
+    _logger.info("XML/RPC call for getting result with JOB ID: " + jobId);
 
 
     String[] jobData=null;
@@ -328,17 +331,21 @@ public class XQueryService  implements Constants {
 
 
 
-    _logger.debug("XQuerySrevice found status for job: " + String.valueOf(status));
+    _logger.info("XQuerySrevice found status for job (" + jobId + "):" + String.valueOf(status));
 
     Hashtable ret =  result(status, jobData, scriptData, jobId);
-    _logger.debug("result: " + ret.toString());
+    if(_logger.enable(_logger.INFO)){
+    	String result = ret.toString();
+    	if(result.length()>100) result=result.substring(0,100).concat("....");
+    	_logger.info("result: " + result);
+    }
 
 		//remove the job from the queue / DB when the status won't change= FATAL or READY
 		if (status == XQ_FATAL_ERR || status == XQ_READY){
 			try {
 				xqJobDao.endXQJob(jobId);
 
-        _logger.debug("Delete the job: " + jobId);
+        _logger.info("Delete the job: " + jobId);
 			} catch (SQLException sqle) {
 				throw new GDEMException("Error getting XQJob data from DB: " + sqle.toString());
 			}
