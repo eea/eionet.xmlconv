@@ -207,11 +207,9 @@ public class SaxonImpl implements XQEngineIF {
         exp = staticEnv.compileQuery(queryReader);
         queryReader.close(); //KL 040218
         staticEnv=exp.getStaticContext();
-      }catch(net.sf.saxon.trans.XPathException e)
-        {System.err.println(e.getMessage());
+      }catch(net.sf.saxon.trans.XPathException e){
         throw e;
       }catch(java.io.IOException e){
-    	  System.err.println(e.getMessage());
     	  throw e;
         }
 
@@ -220,13 +218,11 @@ public class SaxonImpl implements XQEngineIF {
           //evaluating
           exp.run(dynamicEnv,new StreamResult(result),outputProps);
           result.close();
-          }catch(net.sf.saxon.trans.XPathException e)
-               {System.err.println(e.getMessage());
+          }catch(net.sf.saxon.trans.XPathException e){
                listener.error(e);
-          }catch (java.io.IOException e)
-               {System.err.println(e.getMessage());
+          }catch (java.io.IOException e){
                throw e;
-               }
+          }
 
 
       //s = result.getBuffer().toString();
