@@ -46,7 +46,7 @@ import eionet.gdem.Properties;
 public class WQCheckerServlet extends HttpServlet {
 
   public void init(ServletConfig config) throws ServletException {
-  
+
     try {
 			(new Timer(true)).scheduleAtFixedRate( new WQChecker(), 0, Properties.wqCheckInterval );
     } catch (Exception e) {

@@ -93,8 +93,13 @@ public class XQueryTask extends Thread implements Constants {
     try {
       if (_logger.enable(_logger.INFO))
   			_logger.info("Job ID=  " + _jobId + " started getting source file.");
+
+
       String srcFile=null;
 
+      //Do not download the source file, because the file is downloaded by xquery or validator engine
+
+      /*
 
       if (Utils.isNullStr(_savedSrcFile)){
         //Status to DOWNLOADING source:
@@ -123,6 +128,7 @@ public class XQueryTask extends Thread implements Constants {
         //The source file is stored already before
         srcFile = _savedSrcFile;
       }
+      */
     //saved ok:
 
       //do not save the source file, use safe URL instead: getsource?ticket=..&source_url=..

@@ -95,6 +95,7 @@ public class Properties {
 	public static String dateFormatPattern="dd MMM yyyy";
 	public static String timeFormatPattern="dd MMM yyyy hh:mm:ss";
 
+	public static int wqMaxJobs = 20;
 	 static {
 
 		if (logger == null) logger = Category.getInstance("gdem");
@@ -133,6 +134,13 @@ public class Properties {
 				String frequency = props.getString("wq.check.interval");
 				Float f = new Float(frequency);
 				wqCheckInterval = (long) (f.floatValue() * 1000);
+
+				//maximum number of jobs executed at the same time
+				String maxJobs = props.getString("wq.max.jobs");
+				try{
+					if (maxJobs!=null && maxJobs.length()>0) {wqMaxJobs =Integer.parseInt(maxJobs);}
+				}
+				catch(Exception e){}
 
 		        dateFormatPattern=props.getString("date.format.pattern");
 		        timeFormatPattern=props.getString("time.format.pattern");

@@ -24,6 +24,7 @@
 package eionet.gdem.qa;
 
 import eionet.gdem.Constants;
+import eionet.gdem.Properties;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IXQJobDao;
@@ -45,11 +46,11 @@ import java.sql.SQLException;
 public class WQChecker extends TimerTask implements Constants {
   private static LoggerIF _logger;
 
-  
-  private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
-  
 
-  
+  private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
+
+
+
   public WQChecker() {
     _logger=GDEMServices.getLogger();
     /*
@@ -58,7 +59,7 @@ public class WQChecker extends TimerTask implements Constants {
     } catch (Exception e) {
       _db=null;
       _logger.fatal("Initializing DB Pool failed: " + e.toString() , e);
-      
+
     }
     */
   }
@@ -69,20 +70,20 @@ public class WQChecker extends TimerTask implements Constants {
     //get new received jobs from the DB
     String[] newJobs=null;
     try {
-      newJobs=xqJobDao.getJobs(XQ_RECEIVED);
+      newJobs=xqJobDao.getJobsLimit(XQ_RECEIVED, Properties.wqMaxJobs);
 
     } catch(SQLException sqe ) {
 		   _logger.fatal("*** SQL error getting jobs from DB: " + sqe.toString());
     } catch(Exception e ) {
       _logger.error("*** error when getting received jobs:  " + e.toString());
-    } 
-    
+    }
+
     XQueryTask xq;
     if (newJobs!=null)
       for (int i=0; i<newJobs.length; i++) {
         if(_logger.enable(_logger.DEBUG))
           _logger.info("*** waiting job: " + newJobs[i]);
-          
+
         xq = new XQueryTask(newJobs[i]);
         xq.start();
       }

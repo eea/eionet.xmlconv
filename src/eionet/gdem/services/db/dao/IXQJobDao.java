@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 public interface IXQJobDao extends IDbSchema{
 
-	  
+
 	  /**
 	  * Gets information about the received job in Workqueue
 	  * @param String jobId
@@ -30,16 +30,21 @@ public interface IXQJobDao extends IDbSchema{
 	   * Changes the status of the jobs in the table and sets the downloaded file local src
 	   * THe jobs should have the sam source url.
 	   * also changes the time_stamp showing when the new task was started
-	   */ 
+	   */
 	   public void changeFileJobsStatus(String url, String savedFile, int status) throws SQLException;
 	   /**
 	   * Returns job IDs in the Workqueue with the given status
 	   * @return String[]
 	   */
 	   public String[] getJobs(int status) throws SQLException;
+	   /**
+	   * Returns job IDs in the Workqueue with the given status and limits the rows with the given limit
+	   * @return String[]
+	   */
+	   public String[] getJobsLimit(int status, int max_rows) throws SQLException;
 
 	   /**
-	   * Removes the XQJob 
+	   * Removes the XQJob
 	   * No checking performed by this method
 	   */
 	   public void endXQJob(String jobId) throws SQLException;
@@ -55,5 +60,5 @@ public interface IXQJobDao extends IDbSchema{
 	    */
 
 	    public String[][] getJobData() throws SQLException;
-	  
+
 }
