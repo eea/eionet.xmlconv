@@ -1,3 +1,4 @@
+<%@page contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ page import="eionet.gdem.Constants, eionet.gdem.services.GDEMServices"%>
@@ -17,10 +18,70 @@ response.setDateHeader("Expires", 0);
 
 
 <%@ include file="menu.jsp" %>
+<script type="text/javascript">
+// <![CDATA[
+
+var elementName="jobID";
+isSelected = false;
+
+function toggleSelect() {
+  elems = document.getElementsByTagName("input");
+
+  if (isSelected == false) {
+    for (i = 0; i < elems.length; i++)
+     if (elems[i].value && elementName==elems[i].name) {
+      elems[i].checked = true ;
+      }
+      isSelected = true;
+      document.getElementById("selectAll").value = "Deselect All";
+      return isSelected;
+  }
+  else {
+    for (i = 0; i < elems.length; i++)
+      elems[i].checked = false ;
+      isSelected = false;
+      document.getElementById("selectAll").value = "Select All";
+      return isSelected;       
+  }
+}
+
+function countSelected() {
+	var j = 0;
+	elems = document.getElementsByTagName("input");
+    for (i = 0; i < elems.length; i++)
+     if (elems[i].checked == true && elementName==elems[i].name) {
+      j++;
+	}
+    return j;
+}
+function doDelete(){
+	if(countSelected()==0){
+		alert('No jobs selected!');
+		return false;
+	}
+	if (!confirm('Are you sure you want to delete the selected jobs?'))
+		return false;
+
+	document.getElementById('ACTION').value='<%=Names.WQ_DEL_ACTION%>';
+	document.forms['jobs'].submit();
+}
+function doRestart(){
+	if(countSelected()==0){
+		alert('No jobs selected!');
+		return false;
+	}
+	document.getElementById('ACTION').value='<%=Names.WQ_RESTART_ACTION%>';
+	document.forms['jobs'].submit();
+}
+// ]]>
+</script>
 
 
 <div id="workarea">
 		<%
+		    boolean wqdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "d");
+		    boolean wquPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "u");
+
 			String[][] list = null;
 			try{
 			eionet.gdem.services.db.dao.IXQJobDao jobDao = GDEMServices.getDaoService().getXQJobDao();
@@ -38,30 +99,26 @@ response.setDateHeader("Expires", 0);
 		<h1>Jobs</h1>
 		<p>Currently there are following jobs in the queue...</p>
 		<div id="main_table">
-		<table class="datatable" width="100%">
-		<col style="width:10%"/>
-		<col style="width:30%"/>
-		<col style="width:15%"/>
-		<col style="width:15%"/>
-		<col style="width:10%"/>
-		<col style="width:20%"/>
-		<thead>
-			<tr>
-				<th scope="col" class="scope-col">job ID</th>
-				<th scope="col" class="scope-col">Document URL</th>
-				<th scope="col" class="scope-col">XQuery script</th>
-				<th scope="col" class="scope-col">Job Result</th>
-				<th scope="col" class="scope-col">status</th>
-				<th scope="col" class="scope-col">Started at</th>
+		<form name="jobs" action="main" method="post">
+			<table class="datatable" width="100%">
+				<col style="width:30px; text-align:right;"/>
+				<col/>
+				<col/>
+				<col/>
+				<col style="width:100px"/>
+				<col style="width:100px"/>
+				<thead>
+					<tr>
+						<th scope="col" class="scope-col" colspan="2">job ID</th>
+						<th scope="col" class="scope-col">Document URL</th>
+						<th scope="col" class="scope-col">XQuery script</th>
+						<th scope="col" class="scope-col">Job Result</th>
+						<th scope="col" class="scope-col">status</th>
+						<th scope="col" class="scope-col">Started at</th>
+					</tr>
+				</thead>
+				<tbody>
 				<%
-			    boolean wqdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "d");
-			    if (wqdPrm){%>
-					<th scope="col">&#160;</th>
-			    <%}%>
-			</tr>
-		</thead>
-		<tbody>
-		<%
 				for (int i=0; i<list.length; i++){
 					String jobId = list[i][0];
 					String url = list[i][1];
@@ -123,9 +180,21 @@ response.setDateHeader("Expires", 0);
 
 		%>
 					<tr <% if (i % 2 != 0) %>class="zebraeven"<% else %>class="zebraodd"<%;%>>
-						<td>
-							<%=jobId%>
-						</td>
+						    <%
+							if (wqdPrm || wquPrm){
+							%>
+								<td>
+									<input type="checkbox" name="jobID" id="job_<%=jobId%>" value="<%=jobId%>"/>
+								</td>
+								<td>
+									<label for="job_<%=jobId%>"><%=jobId%></label>
+								</td>
+						    <%} else {%>
+								<td/>
+								<td>
+									<%=jobId%>
+								</td>
+							<%}%>
 						<td>
 							<a href="<%=url%>"><%=urlName%></a>
 						</td>
@@ -143,22 +212,27 @@ response.setDateHeader("Expires", 0);
 						<td>
 							<%=timeStamp%>
 						</td>
-						<%
-					    if (wqdPrm){%>
-						<td class="center" align="middle">
-	   					<img onclick="job_<%=jobId%>.submit();" height="15" width="15" src="images/delete.png" title="Delete job"></img>
-						<form name="job_<%=jobId%>" action="main" method="post">
-                            <input type="hidden" name="ACTION" value="<%=Names.WQ_DEL_ACTION%>"/>
-							<input type="hidden" name="ID" value="<%=jobId%>" />
-						</form>
-						</td>
-					    <%}%>
 					</tr>
 					<%
     	   		}
     	   	%>
 				</tbody>
 		 	</table>
+			<%
+		    if (wqdPrm || wquPrm){%>
+				<% if (wqdPrm){%>
+					<input type="button" value="Delete" onclick="return doDelete();"/>
+				<%}%>
+				<% if (wquPrm){%>
+					<input type="button" value="Restart" onclick="return doRestart();"/>
+				<%}%>
+				<input class="form-element" type="button" name="selectAll" id="selectAll" value="Select All" onclick="toggleSelect('jobID'); return false"/>
+			<%}%>
+			<div id="hidden_elements">
+	            <input type="hidden" name="ACTION" id="ACTION" value="<%=Names.WQ_DEL_ACTION%>"/>
+				<input type="hidden" name="ID" value="" />
+			</div>
+		</form>
 	</div>
 	</div>
 <tiles:insert definition="MainFooter"/>
