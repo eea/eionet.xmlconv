@@ -35,7 +35,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import java.util.Timer;
 import eionet.gdem.qa.WQChecker;
+import eionet.gdem.services.GDEMServices;
 //import eionet.gdem.utils.Utils;
+import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 
 /**
@@ -47,8 +49,15 @@ public class WQCheckerServlet extends HttpServlet {
 
   public void init(ServletConfig config) throws ServletException {
 
-    try {
-			(new Timer(true)).scheduleAtFixedRate( new WQChecker(), 0, Properties.wqCheckInterval );
+	  try {
+		  (new Timer(true)).scheduleAtFixedRate( new WQChecker(), 0, Properties.wqCheckInterval );
+		  try {
+			  GDEMServices.getDaoService().getXQJobDao().changeJobStatusByStatus(Constants.XQ_DOWNLOADING_SRC, Constants.XQ_RECEIVED);
+			  GDEMServices.getDaoService().getXQJobDao().changeJobStatusByStatus(Constants.XQ_PROCESSING, Constants.XQ_RECEIVED);
+		  }
+		  catch (Exception e) {
+			  GDEMServices.getLogger().error("Error reseting active jobs: " + e.toString());
+		  }
     } catch (Exception e) {
       //better error handling here!!
       throw new ServletException(e.getMessage(), e);

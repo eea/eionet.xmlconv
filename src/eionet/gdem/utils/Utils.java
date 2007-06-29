@@ -594,4 +594,17 @@ public class Utils {
 		}
 		return  out.toString();
 	}
+	public static String stringArray2String(String[] arr, String sep){
+
+		if(arr==null || arr.length==0) return null;
+		StringBuffer buf = new StringBuffer();
+
+		for (int i=0;i<arr.length;i++){
+			buf.append(arr[i]);
+			if(i<arr.length-1)
+				buf.append(sep);
+		}
+
+		return buf.toString();
+	}
 }

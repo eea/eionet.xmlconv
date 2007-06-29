@@ -30,15 +30,15 @@ public interface Names {
 
 //Request + session Attribute names
   public static final String SESS_ATT         = "GDEM_SESS";
-  public static final String USER_ATT         = "GDEM_ACL_USR_ATT"; 
-  public static final String ERROR_ATT        = "GDEM_ERROR_ATT";  
-  public static final String STYLESHEETS_ATT  = "GDEM_ACL_SS_ATT"; 
-  public static final String TICKET_ATT  = "GDEM_TICKET"; 
+  public static final String USER_ATT         = "GDEM_ACL_USR_ATT";
+  public static final String ERROR_ATT        = "GDEM_ERROR_ATT";
+  public static final String STYLESHEETS_ATT  = "GDEM_ACL_SS_ATT";
+  public static final String TICKET_ATT  = "GDEM_TICKET";
 
 
   //JSP names
   public static final String INDEX_JSP = "index.jsp";
-  public static final String ERROR_JSP = "error.jsp";  
+  public static final String ERROR_JSP = "error.jsp";
   public static final String STYLESHEET_JSP = "stylesheetEditForm.do";
   public static final String STYLESHEETS_JSP = "schemaStylesheets.do";
   public static final String ADD_XSL_JSP = "addStylesheetForm.do";
@@ -66,12 +66,12 @@ public interface Names {
   public static final String XSL_UPD_ACTION = "XU";
   public static final String ELEM_DEL_ACTION = "P";
   public static final String ELEM_ADD_ACTION = "U";
-  public static final String LOGIN_ACTION = "F";  
-  public static final String LOGOUT_ACTION = "I";    
+  public static final String LOGIN_ACTION = "F";
+  public static final String LOGOUT_ACTION = "I";
   public static final String SHOW_SCHEMAS_ACTION = "S";
-  public static final String SHOW_STYLESHEETS_ACTION = "C";  
-  public static final String SHOW_QUERIES_ACTION = "QC";  
-  public static final String SHOW_ADDXSL_ACTION = "H";  
+  public static final String SHOW_STYLESHEETS_ACTION = "C";
+  public static final String SHOW_QUERIES_ACTION = "QC";
+  public static final String SHOW_ADDXSL_ACTION = "H";
   public static final String SHOW_TESTCONVERSION_ACTION = "J";
   public static final String SHOW_LISTCONVERSION_ACTION = "L";
   public static final String SHOW_SCHEMA_ACTION = "T";
@@ -80,18 +80,19 @@ public interface Names {
   public static final String HOST_ADD_ACTION = "E";
   public static final String HOST_UPD_ACTION = "G";
   public static final String WQ_DEL_ACTION = "X";
-  public static final String QUERY_ADD_ACTION = "QA";
+  public static final String WQ_RESTART_ACTION = "WQR";
+    public static final String QUERY_ADD_ACTION = "QA";
   public static final String QUERY_DEL_ACTION = "QX";
   public static final String QUERY_UPD_ACTION = "QU";
 
   //public static final String ERROR_ACTION = "XXX";
   //Parameters
-  public static final String XSL_FOLDER = "xsl/";  
-  public static final String QUERY_FOLDER = "queries/";  
-  public static final String SCHEMA_ID = "ID";  
-  public static final String XSL_DEL_ID = "XSL_DEL_ID";  
-  public static final String XSD_DEL_ID = "XSD_DEL_ID";  
-  public static final String QUERY_DEL_ID = "QUERY_DEL_ID";  
+  public static final String XSL_FOLDER = "xsl/";
+  public static final String QUERY_FOLDER = "queries/";
+  public static final String SCHEMA_ID = "ID";
+  public static final String XSL_DEL_ID = "XSL_DEL_ID";
+  public static final String XSD_DEL_ID = "XSD_DEL_ID";
+  public static final String QUERY_DEL_ID = "QUERY_DEL_ID";
 
   public static final String ACL_STYLESHEETS_PATH = "stylesheets";
   public static final String ACL_TESTCONVERSION_PATH = "testconversion";
@@ -100,10 +101,10 @@ public interface Names {
   public static final String ACL_WQ_PATH = "workqueue";
   public static final String ACL_QUERIES_PATH = "queries";
   public static final String ACL_CONFIG_PATH = "config";
-  
+
 
   public static final String RPC_SERVICE_NAME="XService";
   public static final String EXCEL_CONVERSION_JSP = "excel2xml_conversion.jsp";
-  public static final String EXCEL2XML_CONV_PARAM = "excel2dd_xml";  
+  public static final String EXCEL2XML_CONV_PARAM = "excel2dd_xml";
 
 }

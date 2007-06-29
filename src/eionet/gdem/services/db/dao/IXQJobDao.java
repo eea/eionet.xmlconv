@@ -50,6 +50,17 @@ public interface IXQJobDao extends IDbSchema{
 	   public void endXQJob(String jobId) throws SQLException;
 
 	   /**
+	   * Removes the XQJobs.
+	   * No checking performed by this method
+	   */
+	   public void endXQJobs(String[] jobIds) throws SQLException;
+	   /**
+	    * changes the job status for several jobs.
+		* No checking performed by this method
+		*/
+	   public void changeXQJobsStatuses(String[] jobIds, int status) throws SQLException;
+
+	   /**
 	   * returns all root element mappings for schema ID
 	   * @param - schema ID
 	   * @return Vector containing HashMaps with root element info
@@ -60,5 +71,16 @@ public interface IXQJobDao extends IDbSchema{
 	    */
 
 	    public String[][] getJobData() throws SQLException;
+	   /**
+	   * Removes the XQJobs.
+	   * No checking performed by this method
+	   */
+	   public void changeJobStatusByStatus(int currentStatus, int newStatus) throws SQLException;
 
+	   /**
+	    * Countr the active jobs (N_STATUS=1 or 2) in DB
+	    * @return
+	    * @throws SQLException
+	    */
+	   public int countActiveJobs() throws SQLException;
 }

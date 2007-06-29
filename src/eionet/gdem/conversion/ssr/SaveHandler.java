@@ -34,6 +34,7 @@ import java.io.FileOutputStream;
 
 import com.tee.uit.security.AppUser;
 
+import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.SecurityUtil;
@@ -797,18 +798,44 @@ public class SaveHandler {
          }
 
          StringBuffer err_buf = new StringBuffer();
-         String del_id = (String)req.getParameter("ID");
+         //String del_id = (String)req.getParameter("ID");
+         String[] jobs= req.getParameterValues("jobID");
 
          try {
-            if(del_id != null)
-                GDEMServices.getDaoService().getXQJobDao().endXQJob(del_id);
+            if(jobs.length>0)
+                GDEMServices.getDaoService().getXQJobDao().endXQJobs(jobs);
 
          }
          catch (Exception e) {
-            err_buf.append("Cannot delete job: " + e.toString() + del_id);
+            err_buf.append("Cannot delete job: " + e.toString() + jobs);
          }
          if(err_buf.length() > 0)
             req.setAttribute(Names.ERROR_ATT, err_buf.toString());
       }
-   }
+      else if(action.equals(Names.WQ_RESTART_ACTION)) {
+          try {
+             if(!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "u")) {
+                req.setAttribute(Names.ERROR_ATT, "You don't have permissions to restart the jobs!");
+                return;
+             }
+          }
+          catch (Exception e) {
+             req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
+             return;
+          }
+
+          StringBuffer err_buf = new StringBuffer();
+          String[] jobs= req.getParameterValues("jobID");
+
+          try {
+             if(jobs.length>0)
+                 GDEMServices.getDaoService().getXQJobDao().changeXQJobsStatuses(jobs, Constants.XQ_RECEIVED);
+
+          }
+          catch (Exception e) {
+             err_buf.append("Cannot restart jobs: " + e.toString() + jobs);
+          }
+          if(err_buf.length() > 0)
+             req.setAttribute(Names.ERROR_ATT, err_buf.toString());
+       }}
 }

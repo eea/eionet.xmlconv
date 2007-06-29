@@ -260,7 +260,7 @@ public class Main extends HttpServlet implements Names {
         SaveHandler.handleHosts(req,action);
         jspName=HOSTS_JSP;
       }
-      else  if ( action.equals( WQ_DEL_ACTION )){
+      else  if ( action.equals( WQ_DEL_ACTION ) || action.equals( WQ_RESTART_ACTION )){
         SaveHandler.handleWorkqueue(req,action);
         jspName=LIST_WORKQUEUE_JSP;
       }

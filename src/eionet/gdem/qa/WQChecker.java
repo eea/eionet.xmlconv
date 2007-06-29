@@ -70,7 +70,15 @@ public class WQChecker extends TimerTask implements Constants {
     //get new received jobs from the DB
     String[] newJobs=null;
     try {
-      newJobs=xqJobDao.getJobsLimit(XQ_RECEIVED, Properties.wqMaxJobs);
+    	int activeJobs = xqJobDao.countActiveJobs();
+    	if (activeJobs >=Properties.wqMaxJobs){
+    		if(_logger.enable(_logger.DEBUG))
+    				_logger.debug("The number of active jobs is greater or equal than max jobs allowed to run in parallel: active jobs:" +
+    				activeJobs + "; max jobs: " + Properties.wqMaxJobs);
+    	}
+    	else{
+    		newJobs=xqJobDao.getJobsLimit(XQ_RECEIVED, Properties.wqMaxJobs-activeJobs);
+    	}
 
     } catch(SQLException sqe ) {
 		   _logger.fatal("*** SQL error getting jobs from DB: " + sqe.toString());

@@ -1,9 +1,11 @@
 package eionet.gdem.services.db.dao.mysql;
 
 import eionet.gdem.services.db.dao.IXQJobDao;
+import eionet.gdem.utils.Utils;
 
 import eionet.gdem.Constants;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
@@ -69,6 +71,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao,Constants {
 
 	private static final String qEndXQJob = "DELETE FROM " + WQ_TABLE + " WHERE " + JOB_ID_FLD + "= ?";
 
+	private static final String qEndXQJobs = "DELETE FROM " + WQ_TABLE + " WHERE " + JOB_ID_FLD + " IN ";
 
 	private static final String qJobData = 	"SELECT "
 											+ JOB_ID_FLD + ", "
@@ -81,8 +84,21 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao,Constants {
 											+ " FROM " + WQ_TABLE
 											+ " ORDER BY " + JOB_ID_FLD;
 
+	private static final String qChangeJobsStatuses = 	"UPDATE " + WQ_TABLE
+		+ " SET " + STATUS_FLD + "= ?" + ", "
+		+ TIMESTAMP_FLD + "= NOW() "
+		+ " WHERE " + JOB_ID_FLD
+		+ " IN  ";
 
-	public XQJobMySqlDao(){}
+	private static final String qRestartActiveXQJobs = 	"UPDATE " + WQ_TABLE
+		+ " SET " + STATUS_FLD + "= ?" + ", "
+		+ TIMESTAMP_FLD + "= NOW() "
+		+ " WHERE " + STATUS_FLD
+		+ "= ?";
+
+	private static final String qCountActiveJobs = 	"SELECT COUNT(*) "
+		+ " FROM " + WQ_TABLE
+		+ " WHERE " + STATUS_FLD + "=" + Constants.XQ_DOWNLOADING_SRC + " OR "+  STATUS_FLD + "=" + Constants.XQ_PROCESSING;
 
 
 /*	public String[] getXQJobData(String jobId) throws SQLException {
@@ -366,6 +382,99 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao,Constants {
 			closeAllResources(rs,pstmt,conn);
 		}
 		return r;
+	}
+
+
+	public void endXQJobs(String[] jobIds) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		//build the query IN()
+		String strJobIDs = Utils.stringArray2String(jobIds, ",");
+
+		StringBuffer queryBuf = new StringBuffer(qEndXQJobs);
+		queryBuf.append("(");
+		queryBuf.append(strJobIDs);
+		queryBuf.append(")");
+		if (isDebugMode){ logger.debug("Query is " + queryBuf.toString());}
+		try{
+			conn = getConnection();
+			pstmt = conn.prepareStatement(queryBuf.toString());
+			pstmt.executeUpdate();
+		}finally{
+			closeAllResources(null,pstmt,conn);
+		}
+	}
+
+
+	public void changeXQJobsStatuses(String[] jobIds, int status) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		//build the query IN()
+		String strJobIDs = Utils.stringArray2String(jobIds, ",");
+		StringBuffer queryBuf = new StringBuffer(qChangeJobsStatuses);
+		queryBuf.append("(");
+		queryBuf.append(strJobIDs);
+		queryBuf.append(")");
+		if (isDebugMode){ logger.debug("Query is " + queryBuf.toString());}
+
+		try{
+			conn = getConnection();
+			pstmt = conn.prepareStatement(queryBuf.toString());
+			pstmt.setInt(1, status);
+			pstmt.executeUpdate();
+		}finally{
+			closeAllResources(null,pstmt,conn);
+		}
+	}
+
+
+	public void changeJobStatusByStatus(int currentStatus, int newStatus) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		if (isDebugMode){ logger.debug("Query is " + qRestartActiveXQJobs);}
+		try{
+			conn = getConnection();
+			pstmt = conn.prepareStatement(qRestartActiveXQJobs);
+			pstmt.setInt(1, newStatus);
+			pstmt.setInt(2, currentStatus);
+			pstmt.executeUpdate();
+		}finally{
+			closeAllResources(null,pstmt,conn);
+		}
+	}
+
+
+	public int countActiveJobs() throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs =null;
+		String [][] r = null;
+		int ret=0;
+
+		if (isDebugMode){ logger.debug("Query is " + qCountActiveJobs);}
+
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(qCountActiveJobs);
+			rs = pstmt.executeQuery();
+			r = getResults(rs);
+			if (r.length > 0) {
+				String  strC = r[0][0];
+				try{
+					ret = Integer.parseInt(strC);
+				}
+				catch(Exception e){}
+
+			}
+			if (isDebugMode){ logger.debug("number of active jobs: " + ret);}
+		}
+		finally {
+			closeAllResources(rs,pstmt,conn);
+		}
+		return ret;
 	}
 
 }
