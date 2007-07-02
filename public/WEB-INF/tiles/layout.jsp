@@ -47,11 +47,14 @@ response.setDateHeader("Expires", 0);
 		<script type="text/javascript" src="<c:url value="/scripts/admin.js"/>"></script>
 		<script type="text/javascript" src="<c:url value="/scripts/user.js"/>"></script>
 		<script type="text/javascript">
-			parentLocation='<%=request.getRequestURI()%>';
-		   	applicationRoot='<%=request.getContextPath()%>';
+			// <![CDATA[
+				parentLocation='<%=request.getRequestURI()%>';
+			   	applicationRoot='<%=request.getContextPath()%>';
+			// ]]>
 		</script>
 		<% if (session.getAttribute(EionetCASFilter.CAS_FILTER_USER) == null )  {%>
 		<script type="text/javascript" >
+			// <![CDATA[
 				function get_cookie( cookie_name )
 				{
 				  var results = document.cookie.match ( cookie_name + '=(.*?)(;|$)' );				
@@ -64,6 +67,7 @@ response.setDateHeader("Expires", 0);
 				if (eionetLoginCookieValue != null && eionetLoginCookieValue == "loggedIn"){	
 					window.location="<%=EionetCASFilter.getEionetCookieCASLoginURL(request) %>";
 				}
+			// ]]>
 		</script>
 		<%}%>
 	</head>
