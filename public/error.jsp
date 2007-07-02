@@ -1,3 +1,4 @@
+<%@page contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ page import="java.io.PrintWriter"%>
@@ -45,4 +46,4 @@
 	    
 			<%}%>
 	</div>
-<tiles:insert definition="MainFooter"/>
+<tiles:insert definition="TmpFooter"/>

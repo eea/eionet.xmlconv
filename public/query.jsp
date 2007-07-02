@@ -199,5 +199,5 @@ response.setHeader("charset","no-store");
 		</form>
 
 	</div>
-<tiles:insert definition="MainFooter"/>
+<tiles:insert definition="TmpFooter"/>
 

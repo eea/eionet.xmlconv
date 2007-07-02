@@ -1,3 +1,4 @@
+<%@page contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ page import="java.util.HashMap, java.util.Vector, java.util.Hashtable, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names" %>
@@ -114,4 +115,4 @@ response.setDateHeader("Expires", 0);
 	<input type="hidden" name="ACTION" value=""/>
 	<input type="hidden" name="PARAM" value=""/>
 </form>
-<tiles:insert definition="MainFooter"/>
+<tiles:insert definition="TmpFooter"/>

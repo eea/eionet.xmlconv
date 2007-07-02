@@ -16,7 +16,7 @@
 </table>
         
 <%-- include footer --%>
-<tiles:insert page="/WEB-INF/tiles/MainFooter.jsp">
+<tiles:insert page="/WEB-INF/tiles/TmpFooter.jsp">
 	<tiles:put name="showFooter" type="string" value="true"/>
 </tiles:insert>
 

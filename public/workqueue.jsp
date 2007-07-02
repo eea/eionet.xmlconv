@@ -235,4 +235,4 @@ function doRestart(){
 		</form>
 	</div>
 	</div>
-<tiles:insert definition="MainFooter"/>
+<tiles:insert definition="TmpFooter"/>

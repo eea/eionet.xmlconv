@@ -131,17 +131,16 @@
 			<div class="visualClear">&nbsp;</div>
 		
 
+
 <tiles:useAttribute id="showFooter" name="showFooter"/>
 <logic:equal name="showFooter" value="true">
 	<div id="portal-footer">
-		<!-- <div style="text-align: center; ">PROTOTYPE v1.0 - Deployed on: 25/07/2005</div>-->
-    	<div style="width:100%">
-		<ed:ui-renderer id="footer"/>
+		<div style="text-align: center">
+			<a href="http://eea.europa.eu/">European Environment Agency</a><br/>
+			<span style="font-style:italic">Kgs. Nytorv 6, DK-1050 Copenhagen K, Denmark - Phone: +45 3336 7100</span>
 		</div>
-		</div>
+	</div>
 </logic:equal>
-
-
 		</div>
 		<!-- end column wrapper -->
 
