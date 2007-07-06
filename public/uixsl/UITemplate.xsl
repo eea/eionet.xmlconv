@@ -37,7 +37,7 @@
                                 </xsl:for-each>
                             </xsl:attribute>
                             <xsl:if test="@type='LinkWithPic'">
-                                <a target="_blank">
+                                <a >
                                     <xsl:attribute name="href">
                                         <xsl:value-of select="link"/>
                                     </xsl:attribute>
@@ -52,7 +52,7 @@
                                 </a>
                             </xsl:if>
                             <xsl:if test="@type='Link'">
-                                <a target="_blank">
+                                <a >
                                     <xsl:attribute name="href">
                                         <xsl:value-of select="link"/>
                                     </xsl:attribute>

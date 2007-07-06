@@ -19,7 +19,7 @@
 			<li><a style="color:black;text-decoration: none;" title="Header Design"
            href="<c:url value="/do/editUI/viewHeader"/>"><bean:message key="label.editUI.headereditor"/></a></li>
 				
-				<li class="currenttab"><span
+				<li id="currenttab"><span
     style="color:black;text-decoration: none;"
     title="Footer Design"><bean:message key="label.editUI.footereditor"/></span></li>
 		</ul>

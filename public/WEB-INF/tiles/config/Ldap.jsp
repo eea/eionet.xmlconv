@@ -10,7 +10,7 @@
 <div style="width:100%;">
 	<div id="tabbedmenu">
 	    <ul>
-	        <li class="currenttab"><span style="color: black; text-decoration: none;" title="<bean:message key="label.config.ldap"/>"><bean:message key="label.config.ldap" /></span></li>
+	        <li id="currenttab"><span style="color: black; text-decoration: none;" title="<bean:message key="label.config.ldap"/>"><bean:message key="label.config.ldap" /></span></li>
 	        <li>
 	            <html:link page="/do/dbForm" titleKey="label.config.db" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
 	                <bean:message key="label.config.db" />

@@ -1,10 +1,11 @@
 /* The basic elements: */
-body {
-font: 69% Verdana, Geneva, Arial, Helvetica, sans-serif;
-background: #ffffff url('http://www.eionet.europa.eu/styles/eea2006/eionet_bg.jpg') no-repeat;
-color: #000;
-margin: 0;
-padding: 0;
+
+/*
+* Quickfix to problem when content of div #container overflows its height:
+* setting the minimum height of workarea to surely exceed the height of the menu in leftcolumn
+*/
+#workarea {
+	min-height:200px;
 }
 
 table {font-size: 100%;}
@@ -214,17 +215,7 @@ color: #006E6F;
 text-decoration: none;
 cursor: pointer;
 }
-#sitetitle {
-	position: absolute;
-	left: 11px;
-	top: 75px;
-	color: #97af79;
-	font-size: 140%;
-	font-weight: bold;
-}
-#sitetagline {
-	display: none;
-}
+
 .logo {float:right;}
 a img.logo {border:0;}
 /* Top section */
@@ -288,17 +279,8 @@ ul.portal-subnav li.selected a, ul.portal-subnav li a:hover {
 .visualCaseSensitive {
 text-transform: none;
 }
-#portal-breadcrumbs {
-/* The path bar, including breadcrumbs and add to favorites */
-padding: 0 1em 1px 1em;
-white-space: nowrap;
-margin: 3px 0em 0em 198px;
-	font-family: verdana, arial, helvetica, sans-serif;
-	color: #7d7d7d;
-	border-top: 1px dotted rgb(143,167,113);
-	border-bottom: 1px dotted rgb(143,167,113);
-}
-#portal-breadcrumbs a {text-decoration: none;}
+
+
 .breadcrumbSep{
 	background-image: url(http://www.eionet.europa.eu/styles/eea2006/arrow-normal.png);
 	background-repeat: no-repeat;
@@ -694,117 +676,12 @@ padding: 1px;
 }
 
 
-/* Tabbed menus - as used on the front page */
-#tabbedmenu {
-	float:left;
-	width:100%;
-	padding: 0;
-	background: url("http://www.eionet.europa.eu/styles/eea2006/tabborder.gif") bottom repeat-x;
-	font-size: 1.1em;
-	line-height:normal;
-}
-#tabbedmenuline {
-	float:left;
-	width:100%;
-	padding: 0 1em 0 0px;
-	font-size: 1.1em;
-	line-height:normal;
-	background: url("http://www.eionet.europa.eu/styles/eea2006/tabborder.gif") bottom repeat-x;
-}
-#tabbedmenu ul {
-	margin:0;
-	padding:10px 0 0 10px;
-	list-style:none;
-}
-#tabbedmenu li {
-	float:left;
-	background:url("http://www.eionet.europa.eu/styles/eea2006/tab_left.gif") no-repeat left top;
-	margin:0;
-	padding:0 0 0 13px;
-	white-space: nowrap;
-	color:black;
-}
-#tabbedmenu a {
-	display:block;
-	text-decoration: none;
-	font-weight: bold;
-	color: black;
-	background:url("http://www.eionet.europa.eu/styles/eea2006/tab_right.gif") no-repeat right top;
-	padding:3px 13px 2px 0px;
-}
-#tabbedmenu li.currenttab {
-	background-image:url("http://www.eionet.europa.eu/styles/eea2006/tab-mouse_left.gif");
-}
-#tabbedmenu li.currenttab span, #tabbedmenu li.currenttab a {
-	display:block;
-	text-decoration: none;
-	font-weight: bold;
-	background:url("http://www.eionet.europa.eu/styles/eea2006/tab-mouse_right.gif") no-repeat right top;
-	padding:3px 13px 2px 2px;
-	color:black;
-}
-
 .admin_form td {
 	text-align: right;
 	padding:3px;
 }
 
 
-/* The .operations is for the buttons to the right of the page */
-
-#operations {
-	float: right;
-	margin: 0.5em 0 0px 1em;
-}
-#operations h2 {
-	color: #455b6b;
-	font-family: verdana, helvetica, sans-serif;
-	font-size: 120%;
-	padding-left: 10px;
-}
-
-#operations ul {
-	list-style: none;
-	list-style-image: none;
-	margin: 0;
-}
-
-#operations li {
-	font-size:.95em;
-	font-family: verdana, helvetica, sans-serif;
-	font-weight: bold;
-	line-height: 100%;
-	white-space: nowrap;
-}
-
-#operations li a {
-	display:block;
-	font-weight: bold;
-	color: #455b6b;
-	text-decoration: none;
-	background: url('http://www.eionet.europa.eu/styles/eea2006/bt-lightgreen.gif') no-repeat;
-	padding: 5px 0px 0px 10px;
-	border-bottom: none;
-	width: 170px;
-	height: 22px;
-}
-#operations li a:hover {
-	color: #b20d00;
-	background-color: transparent;
-	text-decoration: none;
-}
-#operations li a:active {
-	color: #b20d00;
-	background: url('http://www.eionet.europa.eu/styles/eea2006/bt-darkgreen.gif') no-repeat;
-	text-decoration: none;
-}
-
-#operations li.help a {
-	background: url('http://www.eionet.europa.eu/styles/eea2006/bt-lightred.gif') no-repeat;
-}
-#operations li.help a:active {
-	background: url('http://www.eionet.europa.eu/styles/eea2006/bt-darkred.gif') no-repeat;
-}
 
 
 table .number {
@@ -838,16 +715,22 @@ table .center {
 	margin:0;
 	padding: 0.3em;
 	vertical-align: top;
+	overflow:hidden;
 }
 .datatable td {
-/*	border-top:    2px solid #f6f6f6;*/
 	border-bottom: 2px solid #f6f6f6;
+	overflow:hidden;
 }
+
 table.datatable {
 	border: 1px solid #b6b6b6;
 	border-collapse: collapse;
 	color: #666666;
 	margin: 1em 0em;
+	table-layout:fixed;
+	width:100%;
+	overflow:hidden;
+	word-wrap:break-word;
 }
 
 

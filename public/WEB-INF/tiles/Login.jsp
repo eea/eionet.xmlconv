@@ -13,7 +13,7 @@
 <div class="box"> 
 	<div class="boxleft"> 
 		<div class="boxtop"><div>&nbsp;</div></div> 
-		<h4><bean:message key="label.login.message"/></h4>			
+		<h4><bean:message key="label.login.message"/></h4>
 			
 		<div class="boxcontent">
 		

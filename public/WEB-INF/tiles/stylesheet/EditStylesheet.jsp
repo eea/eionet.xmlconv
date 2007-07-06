@@ -29,7 +29,7 @@
 		        </logic:present>
 		        <logic:notPresent name="user">
 	        		<html:hidden name="stylesheetForm" property="schema" />
-					<a target="blank" href="<bean:write name="stylesheetForm" property="schema" />" title="<bean:write name="stylesheetForm" property="schema" />">						
+					<a  href="<bean:write name="stylesheetForm" property="schema" />" title="<bean:write name="stylesheetForm" property="schema" />">						
 						<bean:write name="stylesheetForm" property="schema" />
 					</a>&#160;		        	  
 		        </logic:notPresent>
@@ -131,7 +131,7 @@
 		      </td>
 		      <td>&nbsp;</td>
 		      <td>
-					<a target="blank" href="<bean:write name="webRoot"/>/<bean:write property="xsl" name="stylesheetForm"/>" title="<bean:write property="xsl" name="stylesheetForm"/>">						
+					<a  href="<bean:write name="webRoot"/>/<bean:write property="xsl" name="stylesheetForm"/>" title="<bean:write property="xsl" name="stylesheetForm"/>">						
 								<bean:write property="xsl" name="stylesheetForm"/>
 					</a>
 					<logic:present name="stylesheetForm" property="modified">

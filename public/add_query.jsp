@@ -44,7 +44,7 @@ response.setDateHeader("Expires", 0);
 
 <%@ include file="menu.jsp" %>
 
-<div id="workarea">
+
 
 		<% if (err!= null) { %>
 			<h1><font color="#FF0000"><%=err%></font></h1>

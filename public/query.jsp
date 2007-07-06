@@ -70,7 +70,7 @@ response.setHeader("charset","no-store");
 
 <%@ include file="menu.jsp" %>
 
-<div id="workarea">
+
 	<div id="operations">
 		<ul>
 			<%
@@ -99,16 +99,21 @@ response.setHeader("charset","no-store");
 		else{%>
 			<h1>View query</h1>
 		<%}%>
+		
 		<form name="Upload" action="main?query_id=<%=id%>&amp;ACTION=<%=Names.QUERY_UPD_ACTION%>" method="post" enctype="multipart/form-data" acceptcharset="utf-8">
 
 			<input type="hidden" size="60" name="SCHEMA_ID" value="<%=schema_id%>"/>
 			<input type="hidden" size="60" name="QUERY_ID" value="<%=id%>"/>
+			
 			<table class="datatable" width="100%">
+				<col style="width:16%"/>
+				<col style="width:84%"/>
 				<tr>
 					<th scope="row" class="scope-row">
 						<label for="schemafield">XML Schema:</label>
 					</th>
-					<td><div id="schemafield"><%=xml_schema%></div>
+					<td>
+						<div id="schemafield"><%=xml_schema%></div>
 					</td>
 				</tr>
 				<tr>

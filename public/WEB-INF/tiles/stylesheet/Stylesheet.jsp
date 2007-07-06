@@ -18,8 +18,8 @@
 	<logic:present name="handCodedStylesheets" name="stylesheet.stylesheetList" scope="session" property="handCodedStylesheets" >
 		<div style="width: 97%">
 			<table class="datatable" align="center" width="100%">
-				<col style="width:7%"/>
-				<col style="width:55%"/>
+				<col style="width:10%"/>
+				<col style="width:52%"/>
 				<col style="width:38%"/>
 				<thead>
 					<tr>
@@ -43,12 +43,12 @@
 									<html:img page="/images/delete.gif" altKey="label.delete" title="delete schema" /></a>
 		    				</logic:equal>
 						</td>
-						<td>
-								<bean:write name="schema" property="schema" />
+						<td title="<bean:write name="schema" property="schema"/>">
+							<bean:write name="schema" property="schema" />
 						</td>
 						<td>
 							<logic:iterate id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">
-							<a target="blank" href="<bean:write name="webRoot"/>/<bean:write name="stylesheet" property="xsl" />" title="<bean:write name="stylesheet" property="xsl_descr" />">
+							<a  href="<bean:write name="webRoot"/>/<bean:write name="stylesheet" property="xsl" />" title="<bean:write name="stylesheet" property="xsl_descr" />">
 								<bean:write name="stylesheet" property="type" />
 							</a>&#160;
 							</logic:iterate>
@@ -112,20 +112,20 @@
 							<html:img page="/images/properties.gif" altKey="label.table.stylesheet" title="view stylesheets" />
 						</html:link>
 					</td>
-					<td>
-							<bean:write name="schema" property="table" />
+					<td title="<bean:write name="schema" property="table"/>">
+						<bean:write name="schema" property="table" />
+					</td>
+					<td title="<bean:write name="schema" property="dataset"/>">
+						<bean:write name="schema" property="dataset" />
 					</td>
 					<td>
-							<bean:write name="schema" property="dataset" />
-					</td>
-					<td>
-						<a target="blank" href="<bean:write name="schema" property="schema" />" title="<bean:write name="schema" property="schema" />">
+						<a  href="<bean:write name="schema" property="schema" />" title="<bean:write name="schema" property="schema" />">
 							<bean:write name="schema" property="id" />
 						</a>
 					</td>
 					<td>
 						<logic:iterate id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">
-						<a target="blank" href="<bean:write name="stylesheet" property="xsl" />" title="<bean:write name="stylesheet" property="xsl_descr" />">
+						<a  href="<bean:write name="stylesheet" property="xsl" />" title="<bean:write name="stylesheet" property="xsl_descr" />">
 							<bean:write name="stylesheet" property="xsl_descr" />
 						</a>&#160;
 						</logic:iterate>

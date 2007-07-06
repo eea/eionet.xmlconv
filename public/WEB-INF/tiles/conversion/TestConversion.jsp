@@ -86,7 +86,7 @@
 				      </td>
 				      <td>&nbsp;</td>
 				      <td>
-							<a target="blank" href="<bean:write name="schema" property="schema" />" title="<bean:write name="schema" property="schema" />">
+							<a  href="<bean:write name="schema" property="schema" />" title="<bean:write name="schema" property="schema" />">
 									<bean:write name="schema" property="schema" />
 							</a>
 				      </td>

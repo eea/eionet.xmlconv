@@ -78,24 +78,29 @@ public class ListTag extends TagSupport {
 		buffer.append("\tbc.innerHTML += '");
 		Iterator itr = breadcrumbs.iterateTrail();
 		while (itr.hasNext()) {
+			
 			BreadCrumb breadcrumb = (BreadCrumb) itr.next();
 			Object label = breadcrumb.getLabel();
 			Object url = breadcrumb.getUrl();
 
 			if (itr.hasNext()) {
-				buffer.append("<a");
-				if (classStyle != null && classStyle.length() > 0)
+				buffer.append("<div");
+				if (classStyle!=null && classStyle.length()>0)
 					buffer.append(" class=\"" + classStyle + "\"");
-				buffer.append(" href=\"" + url + "\">");
+				buffer.append("><a href=\"");
+				buffer.append(url);
+				buffer.append("\">");
 				buffer.append(label);
 				buffer.append("<\\/a>");
-			} else {
-				buffer.append("<span");
+				buffer.append("<\\/div>");
+			}
+			else{
+				buffer.append("<div");
 				if (classStyleEnd != null && classStyleEnd.length() > 0)
 					buffer.append(" class=\"" + classStyleEnd + "\"");
 				buffer.append(">");
 				buffer.append(label);
-				buffer.append("<\\/span>");
+				buffer.append("<\\/div>");
 			}
 			buffer.append(this.delimiter);
 		}

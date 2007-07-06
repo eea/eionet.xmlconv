@@ -4,6 +4,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/tlds/c.tld" prefix="c"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
+
 <logic:present name="user">
 	<bean:define id="username" name="user" scope="session"/>
 </logic:present>
@@ -11,12 +12,10 @@
 <html:xhtml/>
 
 <ed:breadcrumbs-push label="Hosts" level="1" />
-
-<div id="workarea">
 <ed:hasPermission username="username" acl="host" permission="i">
-<div id="operations">
-	<ul><li><html:link page="/do/hosts/add">Add host</html:link>	</li></ul>
-</div>
+	<div id="operations">
+		<ul><li><html:link page="/do/hosts/add">Add host</html:link>	</li></ul>
+	</div>
 </ed:hasPermission>
 
 <h1 class="documentFirstHeading">
@@ -26,7 +25,7 @@
 <div class="visualClear">&nbsp;</div>
 
 <logic:present name="hosts.list">
-	<div style="width: 80%">
+	<div style="width:80%">
 		<table class="datatable" align="center" width="100%">
 			<thead>
 				<tr>

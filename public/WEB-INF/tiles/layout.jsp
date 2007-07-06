@@ -14,14 +14,17 @@ response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Cache-Control","no-store");
 response.setDateHeader("Expires", 0);
 %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 	<head>
 		<title>
 			<tiles:importAttribute name="title" scope="request"/>
 			<bean:message name="title"/>
 		</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/print.css" media="print" />
+		<link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/handheld.css" media="handheld" />		
+	    <link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen" title="Eionet 2007 style" />
 		<style type="text/css" media="screen">
 			<!-- @import url(<c:url value="/css/main.css"/>); -->
 		</style>
@@ -46,6 +49,7 @@ response.setDateHeader("Expires", 0);
 		<link rel="shortcut icon" href="<c:url value="/images/favicon.ico"/>" type="image/x-icon" ></link>
 		<script type="text/javascript" src="<c:url value="/scripts/admin.js"/>"></script>
 		<script type="text/javascript" src="<c:url value="/scripts/user.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/scripts/pageops.js"/>"></script>
 		<script type="text/javascript">
 			// <![CDATA[
 				parentLocation='<%=request.getRequestURI()%>';

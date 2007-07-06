@@ -67,7 +67,7 @@ response.setDateHeader("Expires", 0);
 
 <%@ include file="menu.jsp" %>
 
-<div id="workarea">
+
 <h1>XQuery Sandbox</h1>
 <div id="main_table">
 	<!--table border="0" cellspacing="1" cellpadding="2" width="100%"><tr><td-->
@@ -95,7 +95,7 @@ response.setDateHeader("Expires", 0);
         			String name = (String)querie.get("short_name");
         			%>
         				<input type="radio" name="script" value="<%=query_id%>" <% if (j == 0) %>checked="checked"<%;%>/>
-        				<%=name%> - <a target="blank" href="<%=Names.QUERY_FOLDER%><%=query_file%>"><%=query_file%></a><br/>
+        				<%=name%> - <a  href="<%=Names.QUERY_FOLDER%><%=query_file%>"><%=query_file%></a><br/>
         			<%
 				}
 				if (bValidate){

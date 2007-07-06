@@ -39,7 +39,7 @@
 	    		    </logic:present>
 	    		    <logic:notPresent name="user">
 		    		    <html:hidden property="schema" />
-						<a target="blank" href="<bean:write name="schemaForm" property="schema" />" title="<bean:write name="schemaForm" property="schema" />">
+						<a  href="<bean:write name="schemaForm" property="schema" />" title="<bean:write name="schemaForm" property="schema" />">
 							<bean:write name="schemaForm" property="schema" />
 						</a>&#160;
 	   		        </logic:notPresent>

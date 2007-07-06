@@ -51,15 +51,10 @@ response.setDateHeader("Expires", 0);
 	<tiles:put name="title" value="Queries"/>
 </tiles:insert>
 
-    <script type="text/javascript" src="util.js"></script>
-
-
-
+<script type="text/javascript" src="util.js"></script>
 
 <%@ include file="menu.jsp" %>
 
-
-<div id="workarea">
 
     <% if (err!= null) { %>
             <h4><%=err%></h4>
@@ -152,13 +147,13 @@ response.setDateHeader("Expires", 0);
                         <a href="<%=Names.QUERY_JSP%>?query_id=<%=query_id%>" title="Edit/View query metadata">&#160;<%=short_name%></a>
                         </td>
                         <td><%=description%></td>
-                        <td><a target="blank" href="<%=Names.QUERY_FOLDER%><%=query%>"><%=query%></a></td>
+                        <td><a  href="<%=Names.QUERY_FOLDER%><%=query%>"><%=query%></a></td>
                         <td><%=last_modified%></td>
 	                    <td align="center">
-                             <a href="<%=Names.SANDBOX_JSP%>?ID=<%=query_id%>"><img height="15" width="24" src="images/run.png" alt="Run" title="Run this query in XQuery Sandbox"></img></a>
+                             <a href="<%=Names.SANDBOX_JSP%>?ID=<%=query_id%>"><img src="images/run.gif" alt="Run" title="Run this query in XQuery Sandbox"></img></a>
                              <%
                             if (ssdPrm){%>
-                                <img onclick="ss_<%=query_id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete query"></img>
+                                <img onclick="ss_<%=query_id%>.submit();" src="images/delete.gif" title="Delete query"></img>
                             <%}%>
                           </td>
                           <td>
@@ -181,4 +176,5 @@ response.setDateHeader("Expires", 0);
     <input type="hidden" name="ACTION" value=""/>
     <input type="hidden" name="PARAM" value=""/>
 </form>
+
 <tiles:insert definition="TmpFooter"/>

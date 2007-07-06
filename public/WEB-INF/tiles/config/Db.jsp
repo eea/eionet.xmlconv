@@ -14,7 +14,7 @@
                     <bean:message key="label.config.ldap" />
                 </html:link>
             </li>
-            <li class="currenttab"><span style="color: black; text-decoration: none;" title='<bean:message key="label.config.db"/>'><bean:message key="label.config.db" /></span></li>
+            <li id="currenttab"><span style="color: black; text-decoration: none;" title='<bean:message key="label.config.db"/>'><bean:message key="label.config.db" /></span></li>
         </ul>
 	</div>
 	<p>&nbsp;</p>

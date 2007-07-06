@@ -25,7 +25,7 @@
 			      </td>
 			      <td>&nbsp;</td>
 			      <td>
-						<a target="blank" href="<bean:write name="EditUplSchemaForm" property="schema" />" title="<bean:write name="EditUplSchemaForm" property="schema" />">						
+						<a  href="<bean:write name="EditUplSchemaForm" property="schema" />" title="<bean:write name="EditUplSchemaForm" property="schema" />">						
 							<bean:write name="EditUplSchemaForm" property="schema" />
 						</a>&#160;		        	  		        
 						<html:hidden  property="idSchema" />

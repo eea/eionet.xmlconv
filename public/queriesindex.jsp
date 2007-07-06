@@ -47,7 +47,7 @@ response.setDateHeader("Expires", 0);
 
 
 
-<div id="workarea">
+
     <%
     boolean ssiPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "i");
     if (ssiPrm){
@@ -117,7 +117,7 @@ response.setDateHeader("Expires", 0);
 							String query_descr = (String)q.get("description");
 
 							if (j>0) %>,&#160;<%
-							%><a target="blank" href="<%=Names.QUERY_FOLDER%><%=query%>" title="<%=query_descr%>"><%=short_name%></a><%
+							%><a  href="<%=Names.QUERY_FOLDER%><%=query%>" title="<%=query_descr%>"><%=short_name%></a><%
 
 						}
 						%>
@@ -125,7 +125,7 @@ response.setDateHeader("Expires", 0);
  	         				<%
 							if (ssdPrm){%>
  	         			<td align="center" >
-								<img onclick="ss_<%=id%>.submit();" height="15" width="15" src="images/delete.png" title="Delete schema and all it's queries"></img>
+								<img onclick="ss_<%=id%>.submit();" src="images/delete.gif" title="Delete schema and all it's queries"></img>
 						<form name="ss_<%=id%>" action="main" method="post">
 							<input type="hidden" name="ACTION" value="<%=Names.XSDQ_DEL_ACTION%>" />
 							<input type="hidden" name="XSD_DEL_ID" value="<%=id%>" />

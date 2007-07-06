@@ -14,7 +14,7 @@
 <div style="width:100%">
 <div id="tabbedmenu">
 		<ul>
-		<li class="currenttab"><span style="color:black;text-decoration: none;" title="Header Design"><bean:message key="label.editUI.headereditor"/></span></li>
+		<li id="currenttab"><span style="color:black;text-decoration: none;" title="Header Design"><bean:message key="label.editUI.headereditor"/></span></li>
 		<li><a style="color:black;text-decoration: none;" title="Footer Design" href="<c:url value="/do/editUI/viewFooter"/>"><bean:message key="label.editUI.footereditor"/></a></li>
 		</ul>
 </div>

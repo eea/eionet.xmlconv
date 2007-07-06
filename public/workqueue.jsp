@@ -77,7 +77,7 @@ function doRestart(){
 </script>
 
 
-<div id="workarea">
+
 		<%
 		    boolean wqdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "d");
 		    boolean wquPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "u");

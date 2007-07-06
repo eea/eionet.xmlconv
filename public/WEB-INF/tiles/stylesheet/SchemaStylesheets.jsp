@@ -27,10 +27,10 @@
 			<logic:present name="stylesheets" name="schema" scope="page" property="stylesheets" >
 				<div style="width: 97%">
 					<table class="datatable" align="center" width="100%">
+						<col style="width:8%"/>
 						<col style="width:10%"/>
-						<col style="width:5%"/>
 						<col style="width:20%"/>
-						<col style="width:45%"/>
+						<col style="width:42%"/>
 						<col style="width:20%"/>
 						<thead>
 							<tr>
@@ -46,7 +46,7 @@
 								<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
 									<td align="center" nowrap="nowrap">
 										<a href="testConversionForm?schemaUrl=<bean:write name="schema" property="schema" />&amp;conversionId=<bean:write name="stylesheet" property="convId" />"  >
-											<html:img page="/images/run.png" altKey="label.stylesheet.run" title="run conversion"/></a>
+											<html:img page="/images/run.gif" altKey="label.stylesheet.run" title="run conversion"/></a>
 										<logic:equal name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >
 											<logic:equal name="ssdPrm" value="true"  name="schema.stylesheets" scope="session" property="ssdPrm" >
 												&nbsp;
@@ -67,12 +67,12 @@
 									</td>
 									<td>
 										<logic:notEqual name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >
-											<a target="blank" href="<bean:write name="stylesheet" property="xsl" />">
+											<a  href="<bean:write name="stylesheet" property="xsl" />">
 												<bean:write name="stylesheet" property="xsl" />
 											</a>&#160;
 										</logic:notEqual>
 										<logic:equal name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >
-											<a target="blank" href="<bean:write name="webRoot"/>/<bean:write name="stylesheet" property="xsl" />">
+											<a  href="<bean:write name="webRoot"/>/<bean:write name="stylesheet" property="xsl" />">
 												<bean:write name="webRoot"/>/<bean:write name="stylesheet" property="xsl" />
 											</a>&#160;
 										</logic:equal>
