@@ -11,6 +11,7 @@
 
 <ed:breadcrumbs-push label="XML Services" url="/index.jsp" level="0"/>
 <%
+pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
 String a=request.getContextPath(); 
 session.setAttribute("webRoot",a==null?"":a);
 response.setHeader("Pragma", "No-cache");

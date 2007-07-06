@@ -5,8 +5,12 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ taglib uri="/WEB-INF/tlds/c.tld" prefix="c"%>
+
 <ed:breadcrumbs-push label="XML Services" url="/index.jsp" level="0"/>
+
 <%
+pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
+
 String a=request.getContextPath(); 
 session.setAttribute("webRoot",a==null?"":a);
 response.setHeader("Pragma", "No-cache");
@@ -15,6 +19,7 @@ response.setHeader("Cache-Control","no-store");
 response.setDateHeader("Expires", 0);
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 	<head>
 		<title>

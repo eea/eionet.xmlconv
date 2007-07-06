@@ -6,7 +6,10 @@
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ taglib uri="/WEB-INF/tlds/c.tld" prefix="c"%>
 
-<% String a=request.getContextPath(); session.setAttribute("webRoot",a==null?"":a); %>
+<%
+pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
+String a=request.getContextPath(); session.setAttribute("webRoot",a==null?"":a);
+%>
 
 </div> <!-- workarea -->
 </div> <!-- container -->

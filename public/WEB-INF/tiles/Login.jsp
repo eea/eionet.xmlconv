@@ -3,8 +3,11 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 
+<%
+pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
+%>
 <ed:breadcrumbs-push label="Login" level="1"/>
-<html:xhtml/>
+
 <br/>
 
 <table width="300" align="center">

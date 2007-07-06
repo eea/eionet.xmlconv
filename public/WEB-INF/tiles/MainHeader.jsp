@@ -6,6 +6,9 @@
 <%@ taglib uri="/WEB-INF/tlds/c.tld" prefix="c"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 
+<%
+pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
+%>
 <logic:present name="user">
 	<bean:define id="username" name="user" scope="session"/>
 </logic:present>
@@ -32,7 +35,7 @@
 				<div id="freesrchform">
 					<label for="freesrchfld">Search</label>
 					<input type="text" id="freesrchfld" name="query"/>
-					<html:image styleId="freesrchbtn" page="/images/button_go.gif" alt="Go"/>
+					<html:image styleId="freesrchbtn" page="/images/button_go.gif" alt="Go" title="Go"/>
 				</div>
 			</form>
 	    </div>

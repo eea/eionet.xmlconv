@@ -2,8 +2,11 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
 
-<% String a=request.getContextPath(); session.setAttribute("webRoot",a==null?"":a); %>
 
+<%
+pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
+String a=request.getContextPath(); session.setAttribute("webRoot",a==null?"":a);
+%>
 		
 </div> <!-- workarea -->
 </div> <!-- container -->
