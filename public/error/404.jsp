@@ -5,9 +5,9 @@
 <%-- include header --%>
 <tiles:insert page="/WEB-INF/tiles/TmpHeader.jsp" />
 
-<table cellpadding="0" cellspacing="0" border="0" align="center">
+<table cellpadding="0" cellspacing="0" border="0">
   <tr>
-    <td nowrap="nowrap">
+    <td>
 		<div class="error-msg">
 			<bean:message key="label.error.404" arg0="<%=(String)request.getAttribute("javax.servlet.error.request_uri")%>" />
 		</div>

@@ -18,7 +18,7 @@
 </logic:present>
 
 <logic:present name="dcm.messages">
-<table cellpadding="0" cellspacing="0" border="0" align="center">
+<table cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td>
       <div class="system-msg">
@@ -32,7 +32,7 @@
 </logic:present>
 
 <logic:present name="dcm.errors">
-<table cellpadding="0" cellspacing="0" border="0" align="center">
+<table cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td>
       <div class="error-msg">
@@ -46,7 +46,7 @@
 </logic:present>
 
 <logic:present name="org.apache.struts.action.ERROR">
-<table cellpadding="0" cellspacing="0" border="0" align="center">
+<table cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td>
       <div class="error-msg"><html:errors/></div>
