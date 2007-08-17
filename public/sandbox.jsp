@@ -69,9 +69,8 @@ response.setDateHeader("Expires", 0);
 
 
 <h1>XQuery Sandbox</h1>
-<div id="main_table">
-	<!--table border="0" cellspacing="1" cellpadding="2" width="100%"><tr><td-->
-	<form name="f" action="sandbox" method="post" acceptcharset="utf-8">
+	<form id="f" action="sandbox" method="post" accept-charset="utf-8">
+	  <div id="main_table">
 		<label for="dataurlfield">URL to data file </label>
 			<input type="text" class="textfield" name="source_url" size="75" id="dataurlfield" value="<%=Utils.isNullStr(source_url) ? "" : source_url%>"/>
 			<input type="submit" name="findscripts" value=" Find scripts " title="Reads the XML Schema from the header of XML file and search the scripts from the repository" class="button"/>
@@ -128,8 +127,6 @@ response.setDateHeader("Expires", 0);
 			<input type="submit" name="save" value=" Save changes to file " />
 		<% } %>
 		<input type="hidden" name="ID" value="<%=q_id%>" />		
+		</div>
 	</form>
-	<!--/td></tr></table-->
-</div>
-</div>
 <tiles:insert definition="TmpFooter"/>

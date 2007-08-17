@@ -8,7 +8,7 @@
 <table cellpadding="0" cellspacing="0" border="0" align="center">
   <tr>
     <td nowrap="nowrap">
-		<div class="error">
+		<div class="error-msg">
 			<bean:message key="label.error.404" arg0="<%=(String)request.getAttribute("javax.servlet.error.request_uri")%>" />
 		</div>
     </td>

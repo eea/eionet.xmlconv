@@ -25,10 +25,10 @@ function elementDelete(title) {
 	}
 }
 
-function submitAction(act)
+function submitAction(formIdx, act)
 {
-	document.forms[0].action = act;
-	document.forms[0].submit();
+	document.forms[formIdx].action = act;
+	document.forms[formIdx].submit();
 	return true;
 }
 
@@ -51,3 +51,13 @@ function openWindow(theURL, winName) {
    WinId.focus();
    WinId.document.location =theURL;
 }
+
+function hostDelete(title) {
+	if(confirm('Are you sure you want to delete host "' + title + '"')){
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+

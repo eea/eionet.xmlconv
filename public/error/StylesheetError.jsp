@@ -44,7 +44,7 @@ h1 {
 		<table style="margin-top:100px" cellpadding="0" cellspacing="0" border="0" align="center">
 		  <tr>
 		    <td >
-		      <div class="error">
+		      <div class="error-msg">
 				  <html:messages id="message" name="dcm.errors">
 				     <bean:write name="message" filter="false"/>
 				  </html:messages>

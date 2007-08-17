@@ -17,7 +17,7 @@
 
 	<logic:present name="handCodedStylesheets" name="stylesheet.stylesheetList" scope="session" property="handCodedStylesheets" >
 		<div style="width: 97%">
-			<table class="datatable" align="center" width="100%">
+			<table class="datatable" width="100%">
 				<col style="width:10%"/>
 				<col style="width:52%"/>
 				<col style="width:38%"/>
@@ -31,7 +31,7 @@
 				<tbody>
 					<logic:iterate indexId="index" id="schema" name="stylesheet.stylesheetList" scope="session" property="handCodedStylesheets" type="Schema">
 					<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
-						<td align="center" nowrap="nowrap">
+						<td align="center">
 	    					<html:link page="/do/schemaStylesheets" paramId="schema" paramName="schema" paramProperty="schema">
 								<html:img page="/images/properties.gif" altKey="label.table.stylesheet" title="view stylesheets" />
 							</html:link>
@@ -76,7 +76,9 @@
 
 	<div class="boxbottombuttons">
 	<form action="addStylesheetForm">
-		<input class="button" type="submit" value="<bean:message key="label.stylesheet.add" />"/>
+		<div>
+			<input class="button" type="submit" value="<bean:message key="label.stylesheet.add" />"/>
+		</div>
 	</form>
 	</div>
 
@@ -89,7 +91,7 @@
 	<div class="visualClear">&nbsp;</div>
 
 	<div style="width: 97%">
-		<table class="datatable" align="center" width="100%">
+		<table class="datatable" width="100%">
 			<col style="width:7%"/>
 			<col style="width:10%"/>
 			<col style="width:20%"/>

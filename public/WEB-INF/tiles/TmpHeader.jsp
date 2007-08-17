@@ -31,24 +31,6 @@ response.setDateHeader("Expires", 0);
 <style type="text/css" media="screen">
 	<!-- @import url(<c:url value="/css/main.css"/>); -->
 </style>
-<style type="text/css" media="screen">
-	<!-- @import url(<c:url value="/css/portlet.css"/>); -->
-</style>
-<style type="text/css" media="screen">
-	<!-- @import url(<c:url value="/css/wdsColumns.css"/>); -->
-</style>
-<link type="text/css" media="print" href="<c:url value="/css/print.css"/>" rel="stylesheet"></link>
-<!--[if IE]>
-<style type="text/css" media="screen">
-	@import url(<c:url value="/css/portlet-ie.css"/>);
-</style>
-<link type="text/css" media="print" href="<c:url value="/css/print-ie.css"/>" rel="stylesheet"></link>
-<![endif]-->
-<!--[if IE 5]>
-<style type="text/css" media="screen">
-	@import url(<c:url value="/css/portlet-ie5.css"/>);
-</style>
-<![endif]-->
 <link rel="shortcut icon" href="<c:url value="/images/favicon.ico"/>" type="image/x-icon" ></link>
 <script type="text/javascript" src="<c:url value="/scripts/admin.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/scripts/user.js"/>"></script>

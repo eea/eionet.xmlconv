@@ -25,10 +25,8 @@
 			message = e.toString();
 	%>
 	
-	<div class="error">
-		<span id="errormessage">
-			<%=message%>
-		</span>
+	<div class="error-msg">
+		<%=message%>
 	</div>
 	
 <tiles:insert definition="TmpFooter"/>

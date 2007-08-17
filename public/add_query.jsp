@@ -47,41 +47,42 @@ response.setDateHeader("Expires", 0);
 
 
 		<% if (err!= null) { %>
-			<h1><font color="#FF0000"><%=err%></font></h1>
+			<div class="error-msg"><%=err%></div>
 		<% } %>
 			<h1>Add a new query</h1>
 
-		<form name="Upload" action="main?ACTION=<%=Names.QUERY_ADD_ACTION%>" method="post" enctype="multipart/form-data">
-
-			<table cellspacing="0">
-				<tr valign="top">
-					<td align="left">
+		<form id="Upload" action="main?ACTION=<%=Names.QUERY_ADD_ACTION%>" method="post" enctype="multipart/form-data">
+			<table cellspacing="0" class="datatable">
+				<col style="width:16%"/>
+				<col style="width:84%"/>
+				<tr>
+					<th scope="row" class="scope-row">
 						<label for="schemafield">XML Schema</label>
-					</td>
+					</th>
 					<td align="left">
-						<input type="text" id="schemafield" class="textfield" size="64" name="SCHEMA" value="<% if (schema_name != null) %><%=schema_name%><%;%>" />
+						<input type="text" id="schemafield" size="64" name="SCHEMA" value="<% if (schema_name != null) %><%=schema_name%><%;%>" />
 					</td>
 				</tr>
 				<tr valign="top">
-					<td align="right" style="padding-right:5">
+					<th scope="row" class="scope-row">
 						<label for="shortnamefield">Short Name</label>
-					</td>
+					</th>
 					<td align="left">
 						<input type="text" id="shortnamefield" class="textfield" size="64" name="SHORT_NAME" value="" />
 					</td>
 				</tr>
 				<tr valign="top">
-					<td align="right" style="padding-right:5">
+					<th scope="row" class="scope-row">
 						<label for="descriptionfield">Description</label>
-					</td>
+					</th>
 					<td align="left">
-						<textarea class="small" rows="2" cols="55" name="DESCRIPTION" id="descriptionfield"></textarea>
+						<textarea class="small" rows="2" cols="55" name="DESCRIPTION" id="descriptionfield" style="width: 98%;"></textarea>
 					</td>
 				</tr>
 				<tr valign="top">
-					<td align="right" style="padding-right:5">
+					<th scope="row" class="scope-row">
 						<label for="contenttypefield">Content type</label>
-					</td>
+					</th>
 					<td align="left">
 						<select class="small" name="CONTENT_TYPE" id="contenttypefield" title="content type of resilt file">
 							<option value="HTML">HTML</option>
@@ -91,9 +92,9 @@ response.setDateHeader("Expires", 0);
 					</td>
 				</tr>
 				<tr>
-					<td align="right" style="padding-right:5">
+					<th scope="row" class="scope-row">
 						<label for="filefield">XQuery File</label>
-					</td>
+					</th>
 					<td align="left">
 						<input type="file" class="textfield" name="FILE_INPUT" id="filefield" size="53"/>
 					</td>
@@ -107,12 +108,15 @@ response.setDateHeader("Expires", 0);
 					</td>
 				</tr>
 			</table>
-			<input type="hidden" name="ACTION" value="<%=Names.QUERY_ADD_ACTION%>"/>
+			<div>
+				<input type="hidden" name="ACTION" value="<%=Names.QUERY_ADD_ACTION%>"/>
+			</div>
 		</form>
 
+<form id="f" action="main" method="post">
+	<div>
+		<input type="hidden" name="ACTION" value=""/>
+		<input type="hidden" name="PARAM" value=""/>
 	</div>
-<form name="f" action="main" method="post">
-	<input type="hidden" name="ACTION" value=""/>
-	<input type="hidden" name="PARAM" value=""/>
 </form>
 <tiles:insert definition="TmpFooter"/>

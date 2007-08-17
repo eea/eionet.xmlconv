@@ -7,7 +7,7 @@
 <table cellpadding="0" cellspacing="0" border="0" align="center">
   <tr>
     <td>
-      <div class="success">
+      <div class="system-msg">
 		  <html:messages id="message" message="true">
 		     <bean:write name="message" filter="false"/>
 		  </html:messages>
@@ -21,7 +21,7 @@
 <table cellpadding="0" cellspacing="0" border="0" align="center">
   <tr>
     <td>
-      <div class="success">
+      <div class="system-msg">
 		  <html:messages id="message" name="dcm.messages">
 		     <bean:write name="message" filter="false"/>
 		  </html:messages>		  
@@ -35,7 +35,7 @@
 <table cellpadding="0" cellspacing="0" border="0" align="center">
   <tr>
     <td>
-      <div class="error">
+      <div class="error-msg">
 		  <html:messages id="message" name="dcm.errors">
 		     <bean:write name="message" filter="false"/>
 		  </html:messages>
@@ -49,7 +49,7 @@
 <table cellpadding="0" cellspacing="0" border="0" align="center">
   <tr>
     <td>
-      <div class="error"><html:errors/></div>
+      <div class="error-msg"><html:errors/></div>
     </td>
   </tr>
 </table>

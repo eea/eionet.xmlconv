@@ -71,7 +71,7 @@ response.setHeader("charset","no-store");
 <%@ include file="menu.jsp" %>
 
 
-	<div id="operations">
+	<div id="operations" >
 		<ul>
 			<%
 			if(Utils.isNullStr(schema_id)){%>
@@ -85,7 +85,7 @@ response.setHeader("charset","no-store");
 	</div>
 
 		<% if (err!= null) { %>
-			<h1><font color="#FF0000"><%=err%></font></h1>
+			<div class="error-msg"><%=err%></div>
 		<% } %>
 		<%
 		boolean xquPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "u");
@@ -100,10 +100,12 @@ response.setHeader("charset","no-store");
 			<h1>View query</h1>
 		<%}%>
 		
-		<form name="Upload" action="main?query_id=<%=id%>&amp;ACTION=<%=Names.QUERY_UPD_ACTION%>" method="post" enctype="multipart/form-data" acceptcharset="utf-8">
-
-			<input type="hidden" size="60" name="SCHEMA_ID" value="<%=schema_id%>"/>
-			<input type="hidden" size="60" name="QUERY_ID" value="<%=id%>"/>
+		<form id="Upload" action="main?query_id=<%=id%>&amp;ACTION=<%=Names.QUERY_UPD_ACTION%>" method="post" enctype="multipart/form-data">
+			
+			<div>
+				<input type="hidden" size="60" name="SCHEMA_ID" value="<%=schema_id%>"/>
+				<input type="hidden" size="60" name="QUERY_ID" value="<%=id%>"/>
+			</div>
 			
 			<table class="datatable" width="100%">
 				<col style="width:16%"/>
@@ -122,7 +124,7 @@ response.setHeader("charset","no-store");
 					</th>
 					<td>
 						<%if(!mode.equals("view")){%>
-							<input type="text" id="shortnamefield" class="textfield" size="64" name="SHORT_NAME" value="<%=short_name%>" />
+							<input type="text" id="shortnamefield" size="64" name="SHORT_NAME" value="<%=short_name%>" />
 						<%}else{%>
 							<div id="shortnamefield"><%=short_name%></div>
 						<%}%>
@@ -146,7 +148,7 @@ response.setHeader("charset","no-store");
 					</th>
 					<td>
 						<%if(!mode.equals("view")){%>
-							<select class="small" name="CONTENT_TYPE" id="contenttypefield" title="rrr" alt="jjj">
+							<select class="small" name="CONTENT_TYPE" id="contenttypefield">
 								<option value="HTML" <% if (content_type.equals("HTML")) %>selected="selected"<%;%>>HTML</option>
 								<option value="XML" <% if (content_type.equals("XML")) %>selected="selected"<%;%>>XML</option>
 								<option value="TXT" <% if (content_type.equals("TXT")) %>selected="selected"<%;%>>TEXT</option>
@@ -168,23 +170,20 @@ response.setHeader("charset","no-store");
 				<%if(!mode.equals("view")){%>
 					<%if(!Utils.isNullStr(file)){%>
 						<tr>
-							<th scope="row" class="scope-row"></th>
-							<td>
-								<textarea name="FILEDATA" style="width: 98%;" rows="20" wrap="off"><c:out value="${qtext}" escapeXml="true" /></textarea> 
+							<td colspan="2" align="center">
+								<textarea name="FILEDATA" style="width: 98%;" rows="20" cols="55"><c:out value="${qtext}" escapeXml="true" /></textarea> 
 								<%-- checksum:<%=checksum --%>
 								<input type="hidden" name="CHECKSUM" value="<%=checksum%>"/>
 							</td>
 						</tr>
 						<tr>
-							<td></td>
-							<td>
-								<input name="SAVE" type="SUBMIT" class="mediumbuttonb" value="Save changes" />
+							<td colspan="2" align="center">
+								<input name="SAVE" type="submit" class="mediumbuttonb" value="Save changes" />
 							</td>
 						</tr>
 					<% }%>
 					<tr>
-						<th scope="row" class="scope-row"></th>
-						<td>
+						<td colspan="2" align="center">
 							<input type="file" class="textfield" name="FILE_INPUT" id="filefield" size="53" title="Add a new XQuery file"/>
 							<input type="hidden" name="FILE_NAME" value="<%=file%>"/>
 						</td>
@@ -193,16 +192,16 @@ response.setHeader("charset","no-store");
 				<!--tr><td colspan="2"></td></tr-->
 				<%if(!mode.equals("view")){%>
 					<tr>
-						<td></td>
-						<td>
-							<input name="UPLOAD" type="SUBMIT" class="mediumbuttonb" value="Upload" />
+						<td colspan="2" align="center">
+							<input name="UPLOAD" type="submit" class="mediumbuttonb" value="Upload" />
 						</td>
 					</tr>
 				<% } %>
 			</table>
-			<input type="hidden" name="ACTION" value="<%=Names.QUERY_UPD_ACTION%>"/>
+			<div>
+				<input type="hidden" name="ACTION" value="<%=Names.QUERY_UPD_ACTION%>"/>
+			</div>
 		</form>
 
-	</div>
 <tiles:insert definition="TmpFooter"/>
 

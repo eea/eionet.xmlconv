@@ -16,7 +16,7 @@
 
 	<logic:present name="schemas" name="schemas.uploaded" scope="session" property="schemas" >
 		<div style="width: 97%">
-			<table class="datatable" align="center" width="80%">
+			<table class="datatable" width="80%">
 				<col style="width:10%"/>
 				<col style="width:45%"/>
 				<col style="width:45%"/>
@@ -30,7 +30,7 @@
 				<tbody>
 					<logic:iterate indexId="index" id="schema" name="schemas.uploaded" scope="session" property="schemas" type="UplSchema">
 						<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
-							<td align="center" nowrap="nowrap" >
+							<td align="center" >
 								<a href="schemaStylesheets?schema=<bean:write name="schema" property="schema" />">
 									<img src="<bean:write name="webRoot"/>/images/properties.gif" alt="<bean:message key="label.table.stylesheet" />" title="view stylesheets" /></a>
 								<logic:equal name="ssuPrm" value="true"  name="schemas.uploaded" scope="session" property="ssuPrm" >
@@ -72,7 +72,9 @@
 	<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssiPrm" >
 		<div class="boxbottombuttons">
 			<form action="addUplSchemaForm">
-				<input class="button" type="submit" value="<bean:message key="label.uplSchema.add" />"/>
+				<div>
+					<input class="button" type="submit" value="<bean:message key="label.uplSchema.add" />"/>
+				</div>
 			</form>
 		</div>
 	</logic:equal>

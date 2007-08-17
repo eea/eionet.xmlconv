@@ -26,7 +26,10 @@
 
 <logic:present name="hosts.list">
 	<div style="width:80%">
-		<table class="datatable" align="center" width="100%">
+		<table class="datatable" width="100%">
+			<col style="width:8%"/>
+			<col style="width:46%"/>
+			<col style="width:46%"/>
 			<thead>
 				<tr>
 					<th scope="col" title="Action">&nbsp;</th>
@@ -37,11 +40,11 @@
 			<tbody>
 				<logic:iterate indexId="index" id="host" name="hosts.list">
 					<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
-						<td width="5%" class="center">
+						<td>
 							<ed:hasPermission username="username" acl="host" permission="d">
-								<html:link page="/do/hosts/delete" paramId="id" paramName="host" paramProperty="id" titleKey="label.hosts.delete">
-									<html:img page="/images/delete.gif" altKey="label.delete" title="Delete host credentials" />
-								</html:link>
+								<a href="delete?id=<bean:write name="host" property="id" />"
+													onclick='return hostDelete("<bean:write name="host" property="hostname" />");'>
+													<html:img page="/images/delete.gif" altKey="label.delete" title="delete stylesheet"/></a>
 							</ed:hasPermission>
 						</td>
 						<td>
@@ -62,4 +65,3 @@
 </logic:present>
 
 <div class="visualClear">&nbsp;</div>
-</div>

@@ -7,44 +7,33 @@
 
 
 <html:xhtml/>
-<div id="stylesheet" class="box"> 
-	<div class="boxleft"> 
-		<div class="boxtop"><div>&nbsp;</div>	</div> 
-			<ed:breadcrumbs-push label="Add Stylesheet" level="2" />
-			<h4><bean:message key="label.stylesheet.add"/></h4> 
+		<ed:breadcrumbs-push label="Add Stylesheet" level="2" />
+		<h1><bean:message key="label.stylesheet.add"/></h1> 
 
-		<div class="boxcontent">
-			<html:form action="/stylesheetAdd" method="post" enctype="multipart/form-data">
-					  <table cellpadding="0" cellspacing="0" border="0">
-					    <tr>
-					      <td>
-					        <bean:message key="label.stylesheet.schema"/>:
-					      </td>
-					      <td>&nbsp;</td>
-					      <td>
+		<html:form action="/stylesheetAdd" method="post" enctype="multipart/form-data">
+		  <table width="100%" class="datatable">
+			<col style="width:16%"/>
+			<col style="width:84%"/>
+		    <tr>
+				<th scope="row" class="scope-row">
+			        <bean:message key="label.stylesheet.schema"/>:
+				</th>
+				<td>
 							<logic:present name="schema" scope="request">
 					          <input type="text" name="schema" value="<bean:write name="schema" scope="request"/>" style="width:400px" />
 					        </logic:present>
 					        <logic:notPresent name="schema" scope="request">
 					          <input type="text" name="schema" maxlength="255"  style="width:400px" />
 					        </logic:notPresent>
-					      </td>
-					    </tr>
-					    <tr>
-					      <td colspan="3">&nbsp;</td>
-					    </tr>
-					    <logic:present name="user">
-						    <tr>
-						      <td colspan="3">
-						        <bean:message key="label.stylesheet.selectDDSchema"/>:
-						      </td>
-						    </tr>		    
-						    <tr>
-						      <td colspan="3">&nbsp;</td>
-						    </tr>		    
-						    <tr>
-						      <td colspan="3">		    
-						      		<select name="xmlSchema"  size="10" onchange="setSchema()">
+				</td>
+			</tr>
+			    <logic:present name="user">
+				    <tr>
+	 				  <th scope="row" class="scope-row">
+				        <bean:message key="label.stylesheet.selectDDSchema"/>:
+				      </th>
+				      <td>		    
+						      		<select name="xmlSchema"  size="10" onchange="setSchema()" style="width:98%">
 													<option selected="selected" value="">
 														--
 													</option>		        
@@ -61,15 +50,11 @@
 						        	</select>
 						      </td>
 						    </tr>
-						    <tr>
-						      <td colspan="3">&nbsp;</td>
-						    </tr>		    
 					    </logic:present>		    
 					    <tr>
-					      <td>
+		 				  <th scope="row" class="scope-row">
 					        <bean:message key="label.stylesheet.outputtype"/>:
-					      </td>
-					      <td>&nbsp;</td>
+					      </th>
 					      <td>	                         
 					        <select name="outputtype" style="width:100px;">
 								<logic:iterate id="opt" name="stylesheet.outputtype" scope="session"  property="convTypes" type="ConvType">
@@ -81,34 +66,23 @@
 					      </td>
 					    </tr>
 					    <tr>
-					      <td colspan="3">&nbsp;</td>
-					    </tr>
-					    <tr>
-					      <td>
+		 				  <th scope="row" class="scope-row">
 					      	<bean:message key="label.stylesheet.description"/>:
-					      </td>
-					      <td>&nbsp;</td>
+					      </th>
 					      <td>
 					        <html:textarea property="description"  rows="3" cols="30" style="width:400px"/>
 					      </td>
 					    </tr>
 					    <tr>
-					      <td colspan="3">&nbsp;</td>
-					    </tr>
-					    <tr>
-					      <td>
+		 				  <th scope="row" class="scope-row">
 					        <bean:message key="label.stylesheet.xslfile"/>:
-					      </td>
-					      <td>&nbsp;</td>
+					      </th>
 					      <td>
 					        <html:file property="xslfile"  style="width:400px" size="64"/>
 					      </td>
 					    </tr>
 					    <tr>
-					      <td colspan="3">&nbsp;</td>
-					    </tr>
-					    <tr>
-					      <td colspan="3" align="center">
+					      <td colspan="2" align="center">
 					        <html:submit styleClass="button">
 					        	<bean:message key="label.stylesheet.upload"/>
 					        </html:submit>
@@ -124,8 +98,4 @@
 					    </tr>
 					  </table>
 			</html:form>		
-		</div>
-		<div class="boxbottom"><div>&nbsp;</div></div> 
-	</div>
-</div>
 

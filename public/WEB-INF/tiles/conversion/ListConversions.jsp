@@ -13,50 +13,36 @@
 			<li><a style="color: black; text-decoration: none;" title="<bean:message key="label.conversion.excel2xml"/>" href="<bean:write name="webRoot" />/excel2xml_conversion.jsp"><bean:message key="label.conversion.excel2xml"/></a></li>
 		</ul>
 	</div>
-	<p>&nbsp;</p>
 				
-	<div id="stylesheet" class="box"> 
-		<div class="boxleft"> 
-			<div class="boxtop"><div>&nbsp;</div>
-			</div> 
 		<ed:breadcrumbs-push label="Find conversion" level="1" />
-		<h4><bean:message key="label.conversion.find"/></h4> 
+		<h1><bean:message key="label.conversion.find"/></h1> 
 	
-		<div class="boxcontent">
 			<html:form action="/testConversionForm" method="get" >
-			  <table cellpadding="0" cellspacing="0" border="0">
+			<!--fieldset><legend><bean:message key="label.conversion.url"/></legend-->
+			<table class="datatable">
+			    <tr>
+				 <th scope="col" class="scope-col">
+			        <bean:message key="label.conversion.url"/>
+			      </th>
+				 </tr>
 			    <tr>
 			      <td>
 			        <bean:message key="label.conversion.insertURL"/>
 			      </td>
 			    </tr>
-			    <tr>
-			      <td>&nbsp;</td>
-			    </tr>
-			    <tr>
-			      <td class="label"> 
-			        <bean:message key="label.conversion.url"/>:<br/>
-			      </td>
-			     </tr>
-			     <tr>
+				 <tr>
 			      <td>
 			        <html:text property="url"  style="width: 30em;" />		        
 			      </td>
 			    </tr>
 			    <tr>
-			      <td>&nbsp;</td>
+				 <th scope="col" class="scope-col">
+			        <bean:message key="label.conversion.xmlSchema"/>
+			      </th>
 			    </tr>
 			    <tr>
-			      <td>
-			        <bean:message key="label.conversion.selectSchema"/>
-			      </td>
-			    </tr>
-			    <tr>
-			      <td>&nbsp;</td>
-			    </tr>		    
-			    <tr>
-			      <td class="label">
-			        <bean:message key="label.conversion.xmlSchema"/>:<br/>
+					<td>
+				        <bean:message key="label.conversion.selectSchema"/>
 			      </td>
 			    </tr>
 			    <tr>
@@ -79,29 +65,14 @@
 			      </td>
 			    </tr>
 			    <tr>
-			      <td>&nbsp;</td>
+				 <th scope="col" class="scope-col">
+			        <bean:message key="label.conversion.validate"/>
+			      </th>
 			    </tr>
 			    <tr>
-			      <td>
-			        <bean:message key="label.conversion.validateSchema"/>
-			      </td>
-			    </tr>
-			    <tr>
-			      <td>&nbsp;</td>
-			    </tr>		    
-			    <tr>
-			      <td>
-			      	<table>
-			      		<tr>
-			      			<td class="label">
-					      		<bean:message key="label.conversion.validate"/>:
-					        </td>
-					        <td>
-								<input type="checkbox" name="validate" id="validatefield"/>
-							</td>
-					     </tr>
-				    </table>
-			      </td>
+			        <td>
+						<input type="checkbox" name="validate" id="validatefield"/><label for="validatefield"><bean:message key="label.conversion.validateSchema"/></label>
+					</td>
 			    </tr>
 			    <tr>
 			      <td>&nbsp;</td>
@@ -117,11 +88,8 @@
 			      <td>&nbsp;</td>
 			    </tr>
 			  </table>
+			  <!--/fieldset-->
 			</html:form>
 			
-		</div>
-		<div class="boxbottom"><div>&nbsp;</div></div> 
-		</div>
-	</div>
 
 </div>

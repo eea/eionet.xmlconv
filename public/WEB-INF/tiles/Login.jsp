@@ -10,35 +10,27 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
 
 <br/>
 
-<table width="300" align="center">
+<table width="100%">
 <tr>
-<td>
-<div class="box"> 
-	<div class="boxleft"> 
-		<div class="boxtop"><div>&nbsp;</div></div> 
-		<h4><bean:message key="label.login.message"/></h4>
-			
-		<div class="boxcontent">
+<td align="center">
+		<h1><bean:message key="label.login.message"/></h1>
 		
 			<html:form action="login" method="post" focus="username">
-			  <table width="100%" cellpadding="0" cellspacing="0" border="0" align="center">
+			  <table class="datatable" style="width:300px">
+				<col style="width:36%"/>
+				<col style="width:64%"/>
 			    <tr>
-			      <td>
-			        <bean:message key="label.login.username"/>:
-			      </td>
-			      <td>&nbsp;</td>
+					<th scope="row" class="scope-row">
+				        <bean:message key="label.login.username"/>:
+				      </th>
 			      <td>
 			        <html:text property="username" size="15"/>
 			      </td>
 			    </tr>
 			    <tr>
-			      <td colspan="3">&nbsp;</td>
-			    </tr>
-			    <tr>
-			      <td>
-			        <bean:message key="label.login.password"/>:
-			      </td>
-			      <td>&nbsp;</td>
+					<th scope="row" class="scope-row">
+				        <bean:message key="label.login.password"/>:
+				      </th>
 			      <td>
 			        <html:password property="password" size="15"/>
 			      </td>
@@ -55,10 +47,6 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
 			    </tr>
 			  </table>
 			</html:form>
-		</div>
-		<div class="boxbottom"><div>&nbsp;</div></div> 
-	</div>
-</div>
 </td>
 </tr>
 </table>

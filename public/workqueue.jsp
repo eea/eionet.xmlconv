@@ -63,7 +63,7 @@ function doDelete(){
 		return false;
 
 	document.getElementById('ACTION').value='<%=Names.WQ_DEL_ACTION%>';
-	document.forms['jobs'].submit();
+	document.getElementById('jobs').submit();
 }
 function doRestart(){
 	if(countSelected()==0){
@@ -71,7 +71,7 @@ function doRestart(){
 		return false;
 	}
 	document.getElementById('ACTION').value='<%=Names.WQ_RESTART_ACTION%>';
-	document.forms['jobs'].submit();
+	document.getElementById('jobs').submit();
 }
 // ]]>
 </script>
@@ -92,19 +92,20 @@ function doRestart(){
 		%>
 			<% if (err!=null){
 				%>
-				<span id="errormessage"><%=err%></span>
+				<div class="error-msg"><%=err%></div>
 			<%
 			}
 			%>
 		<h1>Jobs</h1>
 		<p>Currently there are following jobs in the queue...</p>
 		<div id="main_table">
-		<form name="jobs" action="main" method="post">
+		<form id="jobs" action="main" method="post">
 			<table class="datatable" width="100%">
 				<col style="width:30px; text-align:right;"/>
+				<col style="width:50px; text-align:right;"/>
 				<col/>
-				<col/>
-				<col/>
+				<col style="width:100px"/>
+				<col style="width:100px"/>
 				<col style="width:100px"/>
 				<col style="width:100px"/>
 				<thead>
@@ -218,6 +219,7 @@ function doRestart(){
     	   	%>
 				</tbody>
 		 	</table>
+			<div id="hidden_elements">
 			<%
 		    if (wqdPrm || wquPrm){%>
 				<% if (wqdPrm){%>
@@ -228,11 +230,9 @@ function doRestart(){
 				<%}%>
 				<input class="form-element" type="button" name="selectAll" id="selectAll" value="Select All" onclick="toggleSelect('jobID'); return false"/>
 			<%}%>
-			<div id="hidden_elements">
 	            <input type="hidden" name="ACTION" id="ACTION" value="<%=Names.WQ_DEL_ACTION%>"/>
 				<input type="hidden" name="ID" value="" />
 			</div>
 		</form>
-	</div>
 	</div>
 <tiles:insert definition="TmpFooter"/>

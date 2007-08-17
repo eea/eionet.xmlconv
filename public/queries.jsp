@@ -57,7 +57,7 @@ response.setDateHeader("Expires", 0);
 
 
     <% if (err!= null) { %>
-            <h4><%=err%></h4>
+            <div class="error-msg"><%=err%></div>
     <% } %>
 
     <%
@@ -75,12 +75,14 @@ response.setDateHeader("Expires", 0);
     </div>
 
     <h1>Queries of <%=name%></h1>
-    <form name="view_schema_info" action="main" method="post">
-        <input type="hidden" name="ID" value="<%=id%>" />
-        <input type="hidden" name="ACTION" value="<%=Names.SHOW_SCHEMA_ACTION%>" />
+    <form id="view_schema_info" action="main" method="post">
+		<div>
+		    <input type="hidden" name="ID" value="<%=id%>" />
+	        <input type="hidden" name="ACTION" value="<%=Names.SHOW_SCHEMA_ACTION%>" />
+		</div>
     </form>
 
-	<form name="upd_xsd" action="main" method="post">
+	<form id="upd_xsd" action="main" method="post">
 		<table cellspacing="0">
 			<tr>
 				<td align="right" style="padding-right:5">
@@ -88,7 +90,7 @@ response.setDateHeader("Expires", 0);
 				</td>
 				<td align="left">
 					<%	if (xsduPrm){ %>
-						<input type="checkbox" class="textfield" value="1" name="VALIDATE" <%if (validate.equals("1")){%>checked="true"<%}%> id="validatefield" />
+						<input type="checkbox" class="textfield" value="1" name="VALIDATE" <%if (validate.equals("1")){%>checked="checked"<%}%> id="validatefield" />
 					<%} else {
 						String str_validate = validate.equals("1")  ? "yes" : "no";
 						%>
@@ -104,23 +106,32 @@ response.setDateHeader("Expires", 0);
  				</td>
 			</tr>
 		</table>
-		<input type="hidden" name="ACTION" value="<%=Names.XSD_UPDVAL_ACTION%>" />
-		<input type="hidden" name="<%=Names.SCHEMA_ID%>" value="<%=schema_id%>" />
+		<div>
+			<input type="hidden" name="ACTION" value="<%=Names.XSD_UPDVAL_ACTION%>" />
+			<input type="hidden" name="<%=Names.SCHEMA_ID%>" value="<%=schema_id%>" />
+		</div>
 	</form>
 
     <div id="main_table">
         <table class="datatable" width="100%">
+			<col width="180"/>
+			<col width="*"/>
+			<col width="180"/>
+			<col width="140"/>
+			<col width="30"/>
+			<col width="30"/>
             <thead>
 
                <%
                 boolean ssdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "d");
             %>
                 <tr>
-                  <th scope="col" align="left" width="180">Short name</th>
-                  <th scope="col" align="left">Description</th>
-                  <th scope="col" align="left" width="180">Query</th>
-                  <th scope="col" align="left" width="140">Last modified</th>
-                  <th scope="col" width="50">&#160;</th>
+                  <th scope="col">Short name</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Query</th>
+                  <th scope="col">Last modified</th>
+                  <th scope="col">&#160;</th>
+                  <th scope="col">&#160;</th>
                 </tr>
             </thead>
            <tbody>
@@ -142,39 +153,46 @@ response.setDateHeader("Expires", 0);
 						//last_modified = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM).format(new Date(f.lastModified()));
 
 					%>
-                    <tr <% if (i % 2 != 0) %>class="zebraeven"<% else %>class="zebraodd"<%;%>>
+                    <tr <% if (i % 2 != 0) %>class="zebraeven"<% else %>class="zebraodd"<%;%> valign="top">
                         <td>
                         <a href="<%=Names.QUERY_JSP%>?query_id=<%=query_id%>" title="Edit/View query metadata">&#160;<%=short_name%></a>
                         </td>
                         <td><%=description%></td>
                         <td><a  href="<%=Names.QUERY_FOLDER%><%=query%>"><%=query%></a></td>
                         <td><%=last_modified%></td>
-	                    <td align="center">
+	                    <td>
                              <a href="<%=Names.SANDBOX_JSP%>?ID=<%=query_id%>"><img src="images/run.gif" alt="Run" title="Run this query in XQuery Sandbox"></img></a>
+						</td>
+						<td>
                              <%
                             if (ssdPrm){%>
-                                <img onclick="ss_<%=query_id%>.submit();" src="images/delete.gif" title="Delete query"></img>
+								<a href="javascript:if (confirm('Are you sure you want to delete the query?')) document.getElementById('ss_<%=query_id%>').submit();">
+									<img src="images/delete.gif" title="Delete query" alt="Delete"></img>
+								</a>
                             <%}%>
                           </td>
                           <td>
-	                         	<form name="ss_<%=query_id%>" action="main" method="post">
-                            	<input type="hidden" name="ACTION" value="<%=Names.QUERY_DEL_ACTION%>"/>
-                            	<input type="hidden" name="QUERY_DEL_ID" value="<%=query_id%>"/>
-                            	<input type="hidden" name="ID" value="<%=id%>"/>
-                        		</form>
+                         	<form id="ss_<%=query_id%>" action="main" method="post">
+								<div>
+		                        	<input type="hidden" name="ACTION" value="<%=Names.QUERY_DEL_ACTION%>"/>
+			                    	<input type="hidden" name="QUERY_DEL_ID" value="<%=query_id%>"/>
+				                	<input type="hidden" name="ID" value="<%=id%>"/>
+								</div>
+                       		</form>
                         </td>
                     </tr>
                     <%
                    }
                %>
-                </tbody>
-             </table>
-        </div>
+			</tbody>
+		</table>
   </div>
 
-<form name="f" action="main" method="post">
-    <input type="hidden" name="ACTION" value=""/>
-    <input type="hidden" name="PARAM" value=""/>
+<form id="f" action="main" method="post">
+	<div>
+	    <input type="hidden" name="ACTION" value=""/>
+		<input type="hidden" name="PARAM" value=""/>
+	</div>
 </form>
 
 <tiles:insert definition="TmpFooter"/>

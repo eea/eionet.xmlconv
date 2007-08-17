@@ -31,13 +31,13 @@ response.setDateHeader("Expires", 0);
     <script type="text/javascript">
 // <![CDATA[
 		function openPage(action) {
-			document.forms["f"].ACTION.value=action;
-			document.forms["f"].submit();
+			document.getElementById("submit_action").value=action;
+			document.getElementById("f").submit();
 		}
 		function openXSD(action, id) {
-			document.forms["f"].ACTION.value=action;
-			document.forms["f"].ID.value=id;
-			document.forms["f"].submit();
+			document.getElementById("submit_action").value=action;
+			document.getElementById("submit_id").value=id;
+			document.getElementById("f").submit();
 		}
 // ]]>
 		</script>
@@ -61,7 +61,7 @@ response.setDateHeader("Expires", 0);
 
 
 		<% if (err!= null) { %>
-			<h4><%=err%></h4>
+				<div class="error-msg"><%=err%></div>
 	  	<% } %>
 			<h1>Queries</h1>
 
@@ -125,10 +125,12 @@ response.setDateHeader("Expires", 0);
  	         				<%
 							if (ssdPrm){%>
  	         			<td align="center" >
-								<img onclick="ss_<%=id%>.submit();" src="images/delete.gif" title="Delete schema and all it's queries"></img>
-						<form name="ss_<%=id%>" action="main" method="post">
-							<input type="hidden" name="ACTION" value="<%=Names.XSDQ_DEL_ACTION%>" />
-							<input type="hidden" name="XSD_DEL_ID" value="<%=id%>" />
+								<a href="javascript:if (confirm('Are you sure you want to delete the schema and all its queries?')) document.getElementById('ss_<%=id%>').submit();"><img src="images/delete.gif" title="Delete schema and all its queries" alt="Delete"></img></a>
+						<form id="ss_<%=id%>" action="main" method="post">
+							<div>
+								<input type="hidden" name="ACTION" id="delete_action_<%=id%>" value="<%=Names.XSDQ_DEL_ACTION%>" />
+								<input type="hidden" name="XSD_DEL_ID" value="<%=id%>" />
+							</div>
 						</form>
  	         			</td>
 							<%}%>
@@ -139,11 +141,12 @@ response.setDateHeader("Expires", 0);
 				%>
 			</tbody>
 		</table>
-		</div>
 	</div>
 
-	<form name="f" action="main" method="get">
-		<input type="hidden" name="ACTION" value=""/>
-		<input type="hidden" name="ID" value=""/>
+	<form id="f" action="main" method="get">
+		<div>
+			<input type="hidden" name="ACTION" id="submit_action" value=""/>
+			<input type="hidden" name="ID" id="submit_id" value=""/>
+		</div>
 	</form>
 <tiles:insert definition="TmpFooter"/>

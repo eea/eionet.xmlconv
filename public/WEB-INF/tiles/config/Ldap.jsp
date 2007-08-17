@@ -20,68 +20,51 @@
 	</div>
 	<p>&nbsp;</p>
 	
-	<div id="stylesheet" class="box">
-		<div class="boxleft">
-			<div class="boxtop">
-				<div>&nbsp;</div>
-			</div>
 			
 			<ed:breadcrumbs-push label="LDAP configuration" level="1" />
-			<h4><bean:message key="label.config.ldap.admin" /></h4>
+			<h1><bean:message key="label.config.ldap.admin" /></h1>
 			
-			<div class="boxcontent">
 				<html:form action="/ldap" method="post">
-				    <table cellpadding="0" cellspacing="0" border="0" align="center">
-				        <tr>
-				            <td align="left">
+				    <table class="datatable">
+					  <col style="width:26%"/>
+					  <col style="width:74%"/>
+					  <tr>
+							<th scope="row" class="scope-row">
 				            	<bean:message key="label.config.ldap.url" />:
-				            </td>
-				            <td>&nbsp;</td>
+				            </th>
 				            <td>
 				            	<html:text property="url" maxlength="255" style="width: 30em;" />
 				            </td>
 						</tr>
-				        <tr>
-				            <td colspan="3">&nbsp;</td>
-				        </tr>
 						<tr>
-				            <td align="left">
+							<th scope="row" class="scope-row">
 				            	<bean:message key="label.config.ldap.context" />:
-				            </td>
-				            <td>&nbsp;</td>
+				            </th>
 				            <td>
 				            	<html:text property="context" maxlength="255" style="width: 30em;" />
 				            </td>
 						</tr>
-				        <tr>
-				            <td colspan="3">&nbsp;</td>
-				        </tr>
 						<tr>
-				            <td align="left">
+							<th scope="row" class="scope-row">
 				            	<bean:message key="label.config.ldap.userDir" />:
-				            </td>
-				            <td>&nbsp;</td>
+				            </th>
 				            <td>
 				            	<html:text property="userDir" maxlength="255" style="width: 30em;" />
 				            </td>
 						</tr>
-				        <tr>
-				            <td colspan="3">&nbsp;</td>
-				        </tr>
 						<tr>
-				            <td align="left">
+							<th scope="row" class="scope-row">
 				            	<bean:message key="label.config.ldap.attrUid" />:
-				            </td>
-				            <td>&nbsp;</td>
+				            </th>
 				            <td>
 				            	<html:text property="attrUid" maxlength="255" style="width: 30em;" />
 				            </td>
 				        </tr>
 				        <tr>
-				            <td colspan="3">&nbsp;</td>
+				            <td colspan="2">&nbsp;</td>
 				        </tr>
 				        <tr>
-				            <td colspan="3" align="center">
+				            <td colspan="2" align="center">
 				                <html:submit styleClass="button">
 				                    <bean:message key="label.config.ldap.save" />
 				                </html:submit>
@@ -89,10 +72,4 @@
 				        </tr>
 				    </table>
 				</html:form>
-			</div>
-			<div class="boxbottom">
-				<div>&nbsp;</div>
-			</div>
-		</div>
-	</div>
 </div>

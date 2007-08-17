@@ -10,51 +10,47 @@
 
 <html:xhtml/>
 
-<div id="stylesheet" class="box"> 
-	<div class="boxleft"> 
-		<div class="boxtop"><div>&nbsp;</div></div> 
 		<ed:breadcrumbs-push label="Host details" level="2" />
-		<h4 class="documentFirstHeading">
+		<h1 class="documentFirstHeading">
 			<logic:empty name="HostForm" property="id">
 				<bean:message key="label.hosts.add_title"/>
 			</logic:empty>
 			<logic:notEmpty name="HostForm" property="id">
 				<bean:message key="label.hosts.edit"/>
 			</logic:notEmpty>
-		</h4>
+		</h1>
 	
-		<div class="boxcontent" >
 			<html:form action="/hosts/save" method="post">
-				<br/>
-				<table cellspacing="0">
-					<tr>
-						<td align="right" style="padding-right:5">
+				<table class="datatable">
+				  <col style="width:16%"/>
+				  <col style="width:84%"/>
+					  <tr>
+						<th scope="row" class="scope-row">
 							<bean:message key="label.hosts.host"/>
-						</td>
+						</th>
 						<td align="left">
 							<html:text property="host" size="70" />
 						</td>
 					</tr>		
 					<tr>
-						<td align="right" style="padding-right:5">
+						<th scope="row" class="scope-row">
 							<bean:message key="label.hosts.username"/>
-						</td>
+						</th>
 						<td align="left">
 							<html:text property="username" size="70" />
 						</td>
 					</tr>		
 					<tr>
-						<td align="right" style="padding-right:5">
+						<th scope="row" class="scope-row">
 							<bean:message key="label.hosts.password"/>
-						</td>
+						</th>
 						<td align="left">
 							<html:text property="password" size="70" />
 						</td>
 					</tr>		
 					<tr><td>&#160;</td><td>&#160;</td></tr>
 					<tr>
-						<td>&#160;</td>
-						<td>
+						<td colspan="2" align="center">
 							<html:submit styleClass="button">Save</html:submit>
 							<html:cancel styleClass="button">
 					        	<bean:message key="label.cancel"/>
@@ -63,8 +59,4 @@
 					</tr>
 				</table>
 			</html:form>	
-		</div>
-		<div class="boxbottom"><div>&nbsp;</div></div> 
-	</div>
-</div>
 

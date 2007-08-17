@@ -122,7 +122,7 @@ color: #000;
 }
 
 fieldset {
-border: 1px solid #C60;
+border: 1px solid;
 margin: 1em 0em 1em 0em;
 padding: 0em 1em 1em 1em;
 line-height: 1.5em;
@@ -131,7 +131,7 @@ width: auto;
 legend {
 background: #FFF;
 padding: 0.5em;
-font-size: 90%;
+font-size: 100%;
 }
 
 form {
@@ -629,6 +629,7 @@ width: 1px;
 font-weight: bold;
 display: inline;
 padding-right: 0.5em;
+text-align:left;
 }
 
 .optionsToggle {
@@ -768,4 +769,10 @@ table.datatable {
 
 .sortable img {
 	/* display: none; */
+}
+.boxbottombuttons {
+	margin: 0px;
+	padding: 4px 10px;
+	background: #FFF;
+	text-align: center;
 }

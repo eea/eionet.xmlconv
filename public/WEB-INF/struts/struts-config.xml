@@ -93,14 +93,14 @@
         <action path="/schemaElemForm" name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemFormAction" input="/schema.jsp" scope="request">
             <forward name="success" path="/schema.jsp" redirect="true"/>
         </action>
-        <action path="/deleteElem"  scope="request" type="eionet.gdem.web.struts.schema.DeleteRootElemAction">           
+        <action path="/deleteElem"  scope="request" type="eionet.gdem.web.struts.schema.DeleteRootElemAction" input="/schema.jsp">           
         	<forward name="success" path="/do/schemaElemForm"  />            
         </action>        
-        <action path="/elementAdd" name="schemaForm" scope="request" type="eionet.gdem.web.struts.schema.AddElemAction">           
+        <action path="/elementAdd" name="schemaForm" scope="request" type="eionet.gdem.web.struts.schema.AddElemAction" input="/schema.jsp">           
         	<forward name="success" path="/do/schemaElemForm" />            
         </action>        
-        <action path="/schemaUpdate" name="schemaForm" scope="request" type="eionet.gdem.web.struts.schema.EditSchemaAction">           
-        	<forward name="back" path="/do/stylesheetEdit"/>
+        <action path="/schemaUpdate" name="schemaForm" scope="request" type="eionet.gdem.web.struts.schema.EditSchemaAction" input="/schema.jsp"> 
+        	<forward name="back" path="/do/stylesheetEdit" redirect="true"/>
         	<forward name="success" path="/do/schemaElemForm"/>
         </action>    
         <action path="/getStylesheet"  scope="request" type="eionet.gdem.web.struts.stylesheet.GetStylesheetAction" name="getXslForm">           

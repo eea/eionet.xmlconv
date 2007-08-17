@@ -6,23 +6,18 @@
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 
 <html:xhtml/>
-<div id="stylesheet" class="box"> 
-	<div class="boxleft"> 
-		<div class="boxtop"><div>&nbsp;</div>
-	</div> 
 
-			<ed:breadcrumbs-push label="Edit Stylesheet" level="3" />
-			<h4><bean:message key="label.stylesheet.edit"/></h4> 
-
-		<div class="boxcontent" >
+		<ed:breadcrumbs-push label="Edit Stylesheet" level="3" />
+		<h1><bean:message key="label.stylesheet.edit"/></h1> 
 
 		<html:form action="/stylesheetEdit" method="post" enctype="multipart/form-data">
-		  <table cellpadding="0" cellspacing="0" border="0" width="100%">
+		  <table width="100%" class="datatable">
+			<col style="width:16%"/>
+			<col style="width:84%"/>
 		    <tr>
-		      <td>
-		        <bean:message key="label.stylesheet.schema"/>:
-		      </td>
-		      <td>&nbsp;</td>
+				<th scope="row" class="scope-row">
+			        <bean:message key="label.stylesheet.schema"/>:
+				</th>
 		      <td>
 		      	<logic:present name="user">
 		        	<html:text property="schema"  maxlength="255" style="width:400px" />		        
@@ -35,21 +30,13 @@
 		        </logic:notPresent>
 		      </td>
 		    </tr>
-		    <tr>
-		      <td>&nbsp;</td>
-		    </tr>
 		    <logic:present name="user">
 			    <tr>
-			      <td colspan="3">
-			        <bean:message key="label.stylesheet.selectDDSchema"/>:
-			      </td>
-			    </tr>		    
-			    <tr>
-			      <td>&nbsp;</td>
-			    </tr>		    
-			    <tr>
-			      <td colspan="3">		    
-			          <select name="xmlSchema"  size="10" onchange="setSchema()" >
+					<th scope="row" class="scope-row">
+				        <bean:message key="label.stylesheet.selectDDSchema"/>:
+			      </th>
+			      <td>
+			          <select name="xmlSchema"  size="10" onchange="setSchema()" style="width:98%">
 						<option selected="selected" value="">
 							--
 						</option>		        
@@ -66,15 +53,11 @@
 			        </select>
 			       </td>
 			    </tr>
-			    <tr>
-			      <td>&nbsp;</td>
-			    </tr>		    
 		    </logic:present>		        
 		    <tr>
-		      <td>
-		        <bean:message key="label.stylesheet.outputtype"/>:
-		      </td>
-		      <td>&nbsp;</td>
+				<th scope="row" class="scope-row">
+					<bean:message key="label.stylesheet.outputtype"/>:
+				</th>
 		      <td>
 					<bean:define id="oType" name="stylesheet.outputtypeSel" scope="session" type="java.lang.String" />	
 			   <logic:present name="user">		
@@ -105,13 +88,9 @@
 		      </td>
 		    </tr>
 		    <tr>
-		      <td colspan="3">&nbsp;</td>
-		    </tr>
-		    <tr>
-		      <td>
-		      	<bean:message key="label.stylesheet.description"/>:
-		      </td>
-		      <td>&nbsp;</td>
+				<th scope="row" class="scope-row">
+			      	<bean:message key="label.stylesheet.description"/>:
+				</th>
 		      <td>
 			      <logic:present name="user">
 				        <html:textarea property="description"  rows="3" cols="30" style="width:400px"/>
@@ -123,13 +102,9 @@
 		      </td>
 		    </tr>
 		    <tr>
-		      <td colspan="3">&nbsp;</td>
-		    </tr>
-		    <tr>
-		      <td>
-		        <bean:message key="label.stylesheet.xslfile"/>:
-		      </td>
-		      <td>&nbsp;</td>
+				<th scope="row" class="scope-row">
+			        <bean:message key="label.stylesheet.xslfile"/>:
+				</th>
 		      <td>
 					<a  href="<bean:write name="webRoot"/>/<bean:write property="xsl" name="stylesheetForm"/>" title="<bean:write property="xsl" name="stylesheetForm"/>">						
 								<bean:write property="xsl" name="stylesheetForm"/>
@@ -139,21 +114,15 @@
 					</logic:present>
 		      </td>
 		    </tr>
-		    <tr>
-		      <td colspan="3">&nbsp;</td>
-		    </tr>
 		    <logic:present name="user">
 		      	<logic:present name="stylesheetForm" property="xslFileName">
 				    <tr>
-				      <td colspan="3">
-				        <html:textarea property="xslContent" style="width: 100%;" rows="20"/>
+				      <td colspan="2" align="center">
+				        <html:textarea property="xslContent" style="width: 98%;" rows="20" cols="55"/>
 				      </td>
 				    </tr>
-				<tr>
-			      <td colspan="3">&nbsp;</td>
-			    </tr>
 			    <tr>
-			      <td colspan="3" align="center">
+			      <td colspan="2" align="center">
 			        <html:submit styleClass="button" property="action">
 			        	<bean:message key="label.stylesheet.save"/>
 				    </html:submit>
@@ -161,24 +130,15 @@
 			        <html:hidden property="checksum" name="stylesheetForm" />
 			      </td>
 			    </tr>
-				<tr>
-			      <td colspan="3">&nbsp;</td>
-				</tr>
 			</logic:present>
 		    <tr>
-		      <td>		        
-		      </td>
-		      <td>&nbsp;</td>
-		      <td>
+		      <td colspan="2" align="center">
 		        <html:file property="xslfile" style="width:400px" size="64" />
 		      </td>
 		    </tr>
 		    </logic:present>
-			<tr>
-		      <td colspan="3">&nbsp;</td>
-		    </tr>
 		    <tr>
-		      <td colspan="3" align="center">
+		      <td colspan="2" align="center">
 		      	<logic:present name="user">
 			        <html:submit styleClass="button" property="action">
 			        	<bean:message key="label.stylesheet.upload"/>
@@ -197,8 +157,4 @@
 		  </table>
 		</html:form>
 		
-		</div>
-		<div class="boxbottom"><div>&nbsp;</div></div> 
-	</div>
-</div>
 
