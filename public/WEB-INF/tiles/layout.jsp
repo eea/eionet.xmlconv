@@ -68,7 +68,8 @@ response.setDateHeader("Expires", 0);
 		<tiles:insert attribute="header"/>
 		
 		<%-- include Error display --%>
-		<tiles:insert definition="Error" />
+		<%-- move system-msg and error-msg below the  <h1> heading --%>
+		<%-- tiles:insert definition="Error" /> --%>
 		    
 		<%-- include body --%>
 		<tiles:insert attribute="body"/>

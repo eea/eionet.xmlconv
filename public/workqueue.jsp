@@ -90,13 +90,12 @@ function doRestart(){
 			String tmpFolder = Constants.TMP_FOLDER;
 			String queriesFolder = Constants.QUERIES_FOLDER;
 		%>
-			<% if (err!=null){
-				%>
-				<div class="error-msg"><%=err%></div>
-			<%
-			}
-			%>
 		<h1>Jobs</h1>
+
+		<% if (err!=null){
+			%>
+			<div class="error-msg"><%=err%></div>
+		<%}	%>
 		<p>Currently there are following jobs in the queue...</p>
 		<div id="main_table">
 		<form id="jobs" action="main" method="post">

@@ -4,6 +4,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/tlds/c.tld" prefix="c"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
 <logic:present name="user">
 	<bean:define id="username" name="user" scope="session"/>
 </logic:present>
@@ -19,6 +20,9 @@
 				<bean:message key="label.hosts.edit"/>
 			</logic:notEmpty>
 		</h1>
+
+		<%-- include Error display --%>
+		<tiles:insert definition="Error" />
 	
 			<html:form action="/hosts/save" method="post">
 				<table class="datatable">

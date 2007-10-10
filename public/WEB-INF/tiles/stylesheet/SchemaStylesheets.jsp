@@ -14,6 +14,13 @@
 			<h1 class="documentFirstHeading">
 				<bean:message key="label.schema.stylesheets"/>&nbsp;<bean:write name="schema" property="schema" />
 			</h1>
+		
+	</logic:iterate>
+
+	<%-- include Error display --%>
+	<tiles:insert definition="Error" />
+			
+	<logic:iterate indexId="index" id="schema" name="schema.stylesheets" scope="session" property="handCodedStylesheets" type="Schema">
 			<div class="visualClear">&nbsp;</div>
 			<logic:equal  value="true"  name="schema.stylesheets" scope="session" property="handcoded" >
 				<div>

@@ -24,6 +24,9 @@
 			<ed:breadcrumbs-push label="LDAP configuration" level="1" />
 			<h1><bean:message key="label.config.ldap.admin" /></h1>
 			
+			<%-- include Error display --%>
+			<tiles:insert definition="Error" />
+
 				<html:form action="/ldap" method="post">
 				    <table class="datatable">
 					  <col style="width:26%"/>

@@ -45,11 +45,11 @@ response.setDateHeader("Expires", 0);
 <%@ include file="menu.jsp" %>
 
 
+		<h1>Add a new query</h1>
 
 		<% if (err!= null) { %>
 			<div class="error-msg"><%=err%></div>
 		<% } %>
-			<h1>Add a new query</h1>
 
 		<form id="Upload" action="main?ACTION=<%=Names.QUERY_ADD_ACTION%>" method="post" enctype="multipart/form-data">
 			<table cellspacing="0" class="datatable">

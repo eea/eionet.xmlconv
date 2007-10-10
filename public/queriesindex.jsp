@@ -60,10 +60,11 @@ response.setDateHeader("Expires", 0);
     <%}%>
 
 
+		<h1>Queries</h1>
+
 		<% if (err!= null) { %>
 				<div class="error-msg"><%=err%></div>
 	  	<% } %>
-			<h1>Queries</h1>
 
 		<div id="main_table">
 			<table class="datatable" width="100%">

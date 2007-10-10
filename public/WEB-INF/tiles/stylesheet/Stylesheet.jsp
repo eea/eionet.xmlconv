@@ -13,6 +13,9 @@
 		<bean:message key="label.stylesheet.handcoded"/>
 	</h1>
 
+	<%-- include Error display --%>
+	<tiles:insert definition="Error" />
+
 	<div class="visualClear">&nbsp;</div>
 
 	<logic:present name="handCodedStylesheets" name="stylesheet.stylesheetList" scope="session" property="handCodedStylesheets" >
@@ -38,8 +41,7 @@
 							<a href="schemaElemForm?backToConv=yes&amp;schemaId=<bean:write name="schema" property="id" />">
 								<html:img page="/images/info_icon.gif" altKey="label.table.schemainfo" title="view schema info"/></a>
 							<logic:equal name="ssdPrm" value="true"  name="stylesheet.stylesheetList" scope="session" property="ssdPrm" >
-								<a href="deleteSchema?schemaId=<bean:write name="schema" property="id" />"
-									onclick='return schemaDelete("<bean:write name="schema" property="schema" />");'>
+								<a href="deleteSchema?schemaId=<bean:write name="schema" property="id" />" onclick='return schemaDelete("<bean:write name="schema" property="schema" />");'>
 									<html:img page="/images/delete.gif" altKey="label.delete" title="delete schema" /></a>
 		    				</logic:equal>
 						</td>

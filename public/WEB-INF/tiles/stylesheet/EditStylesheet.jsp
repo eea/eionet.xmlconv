@@ -10,6 +10,9 @@
 		<ed:breadcrumbs-push label="Edit Stylesheet" level="3" />
 		<h1><bean:message key="label.stylesheet.edit"/></h1> 
 
+		<%-- include Error display --%>
+		<tiles:insert definition="Error" />
+
 		<html:form action="/stylesheetEdit" method="post" enctype="multipart/form-data">
 		  <table width="100%" class="datatable">
 			<col style="width:16%"/>

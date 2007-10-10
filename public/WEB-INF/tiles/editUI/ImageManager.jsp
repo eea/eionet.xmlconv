@@ -24,7 +24,10 @@
 		<div style="margin-left:50px;">
 			<br /><br />
 			<h1>Image Manager</h1>
-			<br/><br/><br/>
+			<br/>
+			<%-- include Error display --%>
+			<tiles:insert definition="Error" />
+			<br/><br/>
 <html:form action="/editUI/imageManager" styleId="ImageMan" method="POST" enctype="multipart/form-data">
 	<bean:message key="label.editUI.uploadPicture"/>
 	<html:file property="picFile" size="40"/><br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

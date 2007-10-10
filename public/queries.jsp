@@ -56,10 +56,6 @@ response.setDateHeader("Expires", 0);
 <%@ include file="menu.jsp" %>
 
 
-    <% if (err!= null) { %>
-            <div class="error-msg"><%=err%></div>
-    <% } %>
-
     <%
     boolean ssiPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "i");
 	boolean xsduPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "u");
@@ -75,7 +71,12 @@ response.setDateHeader("Expires", 0);
     </div>
 
     <h1>Queries of <%=name%></h1>
-    <form id="view_schema_info" action="main" method="post">
+
+    <% if (err!= null) { %>
+            <div class="error-msg"><%=err%></div>
+    <% } %>
+	
+	<form id="view_schema_info" action="main" method="post">
 		<div>
 		    <input type="hidden" name="ID" value="<%=id%>" />
 	        <input type="hidden" name="ACTION" value="<%=Names.SHOW_SCHEMA_ACTION%>" />

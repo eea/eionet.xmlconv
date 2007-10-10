@@ -95,7 +95,7 @@ response.setDateHeader("Expires", 0);
 	</div> <!-- toolribbon -->
 	
 	<div id="pagehead">
-		<a href="/"><img src="images/eealogo.gif" alt="Logo" id="logo" /></a>
+		<a href="/"><img src="images/eea-print-logo.gif" alt="Logo" id="logo" /></a>
 	    <div id="networktitle">Eionet</div>
 		<div id="sitetitle">XML Services</div>
 		<div id="sitetagline">Conversion and Quality Assessment Service</div>

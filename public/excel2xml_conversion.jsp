@@ -23,12 +23,11 @@
 			</ul>
 		</div>
 	
-			<% if (err!=null){%>
-				<div class="error-msg"><%=err%></div>
-			<%
-			}
-			%>
 	<h1>Spreadsheet to Data Dictionary XML conversion</h1>
+
+	<% if (err!=null){%>
+		<div class="error-msg"><%=err%></div>
+	<%	} %>
 
 	<form id="Excel2XML" action="<%=Names.TEST_CONVERSION_SERVLET%>" method="post">
 		<table class="datatable">

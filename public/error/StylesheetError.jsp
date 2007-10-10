@@ -41,17 +41,11 @@ h1 {
     
 </div>
     <logic:present name="dcm.errors">
-		<table style="margin-top:100px" cellpadding="0" cellspacing="0" border="0">
-		  <tr>
-		    <td>
-		      <div class="error-msg">
-				  <html:messages id="message" name="dcm.errors">
-				     <bean:write name="message" filter="false"/>
-				  </html:messages>
-		      </div>
-		    </td>
-		  </tr>
-		</table>
+      <div class="error-msg">
+		  <html:messages id="message" name="dcm.errors">
+		     <bean:write name="message" filter="false"/>
+		  </html:messages>
+      </div>
 	</logic:present>
 
 </body>

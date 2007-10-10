@@ -17,6 +17,9 @@
 		<ed:breadcrumbs-push label="Find conversion" level="1" />
 		<h1><bean:message key="label.conversion.find"/></h1> 
 	
+		<%-- include Error display --%>
+		<tiles:insert definition="Error" />
+
 			<html:form action="/testConversionForm" method="get" >
 			<!--fieldset><legend><bean:message key="label.conversion.url"/></legend-->
 			<table class="datatable">

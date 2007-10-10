@@ -12,6 +12,9 @@
 	<ed:breadcrumbs-push label="Test conversion" level="1" />
 	<h1><bean:message key="label.conversion.testconversion"/></h1>
 
+		<%-- include Error display --%>
+		<tiles:insert definition="Error" />
+
 		<logic:iterate id="schema" name="conversion.schemas" scope="session" type="Schema">
 			<html:form action="/testConversionForm" method="post" >
 				  <table cellpadding="0" cellspacing="0" border="0" class="datatable">

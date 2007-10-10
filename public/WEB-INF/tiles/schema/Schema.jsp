@@ -17,6 +17,8 @@
 		</logic:present>
 		<h1><bean:message key="label.schema.edit"/></h1> 
 
+		<%-- include Error display --%>
+		<tiles:insert definition="Error" />
 
 		<html:form action="/schemaUpdate" method="post">
 		  <table width="100%" class="datatable">
@@ -70,9 +72,7 @@
 	   			    <input type="button"  class="button" value="<bean:message key="label.schema.save"/>" onclick="return submitAction(1,'schemaUpdate');" />
 			        &nbsp;
 			        <logic:notPresent name="schemaForm" property="backToConv">		        	
-				        <html:cancel styleClass="button">
-					      	<bean:message key="label.cancel"/>
-		  			    </html:cancel>
+		   			    <input type="button"  class="button" value="<bean:message key="label.cancel"/>" onclick="return submitAction(1,'schemaStylesheets');" />
 	  			    </logic:notPresent>
 	  			    <logic:present name="schemaForm" property="backToConv">
 		  			   <input type="button"  value="<bean:message key="label.cancel"/>"  class="button" onclick="location.href='<bean:write name="webRoot"/>/do/stylesheetList'" />
@@ -80,9 +80,7 @@
    		      </logic:equal>
 			  <logic:notEqual name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
 			        <logic:notPresent name="schemaForm" property="backToConv">		        					
-				        <html:cancel styleClass="button">
-					      	<bean:message key="label.ok"/>
-		  			    </html:cancel>
+		   			    <input type="button"  class="button" value="<bean:message key="label.ok"/>" onclick="return submitAction(1,'schemaStylesheets');" />
 		  			</logic:notPresent>
 	  			   <logic:present name="schemaForm" property="backToConv">
 		  			   <input type="button"  value="<bean:message key="label.ok"/>"  class="button" onclick="location.href='<bean:write name="webRoot"/>/do/stylesheetList'" />

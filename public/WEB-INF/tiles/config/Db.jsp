@@ -23,6 +23,9 @@
 		<ed:breadcrumbs-push label="DB configuration" level="1" />
 		<h1><bean:message key="label.config.db.admin" /></h1>
 
+		<%-- include Error display --%>
+		<tiles:insert definition="Error" />
+
 			<html:form action="/db" method="post">
 			    <table class="datatable">
 				  <col style="width:16%"/>

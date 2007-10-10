@@ -10,6 +10,9 @@
 		<ed:breadcrumbs-push label="Upload Schema" level="1" />
 		<h1><bean:message key="label.title.uplSchema.add"/></h1> 
 
+		<%-- include Error display --%>
+		<tiles:insert definition="Error" />
+
 			<html:form action="/addUplSchema" method="post" enctype="multipart/form-data">
 			  <table class="datatable">
 				<col style="width:16%"/>

@@ -9,6 +9,9 @@
 		<ed:breadcrumbs-push label="Edit Schema" level="2" />
 		<h1><bean:message key="label.title.uplSchema.edit"/></h1> 
 	
+		<%-- include Error display --%>
+		<tiles:insert definition="Error" />
+		
 			<html:form action="/editUplSchema" method="post">
 			  <table class="datatable">
 				<col style="width:16%"/>

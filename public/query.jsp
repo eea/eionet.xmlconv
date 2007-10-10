@@ -84,9 +84,6 @@ response.setHeader("charset","no-store");
 		</ul>
 	</div>
 
-		<% if (err!= null) { %>
-			<div class="error-msg"><%=err%></div>
-		<% } %>
 		<%
 		boolean xquPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "u");
 
@@ -100,6 +97,10 @@ response.setHeader("charset","no-store");
 			<h1>View query</h1>
 		<%}%>
 		
+		<% if (err!= null) { %>
+			<div class="error-msg"><%=err%></div>
+		<% } %>
+
 		<form id="Upload" action="main?query_id=<%=id%>&amp;ACTION=<%=Names.QUERY_UPD_ACTION%>" method="post" enctype="multipart/form-data">
 			
 			<div>

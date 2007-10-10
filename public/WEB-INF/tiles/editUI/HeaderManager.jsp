@@ -21,6 +21,8 @@
 <p>&nbsp;</p>
 <h1><bean:message key="label.editUI.headerpreview"/></h1>
 <br/>
+<%-- include Error display --%>
+<tiles:insert definition="Error" />
 <br/>
 <div style="border: thin dashed #606060; padding: 1em;width:95%;">
 <ed:ui-renderer id="header" enableJs="true"/>

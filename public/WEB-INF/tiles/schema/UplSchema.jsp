@@ -12,6 +12,9 @@
 		<bean:message key="label.schemas.uploaded"/>
 	</h1>
 
+	<%-- include Error display --%>
+	<tiles:insert definition="Error" />
+
 	<div class="visualClear">&nbsp;</div>
 
 	<logic:present name="schemas" name="schemas.uploaded" scope="session" property="schemas" >
