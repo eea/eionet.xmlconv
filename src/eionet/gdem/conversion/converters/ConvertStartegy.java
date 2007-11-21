@@ -44,6 +44,7 @@ import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.Utils;
 
 public abstract class ConvertStartegy {
 	
@@ -51,6 +52,8 @@ public abstract class ConvertStartegy {
 	private static LoggerIF _logger = GDEMServices.getLogger();
 	public String xslFolder = Properties.xslFolder+ File.separatorChar; //props.getString("xsl.folder");
 	public String tmpFolder = Properties.tmpFolder+ File.separatorChar; //props.getString("tmp.folder");
+	public static final String XML_FOLDER_URI_PARAM="xml_folder_uri"; 
+	public static final String DD_DOMAIN_PARAM="dd_domain"; 
 	
 	public abstract String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException, Exception;
 	
@@ -65,7 +68,7 @@ public abstract class ConvertStartegy {
 		try {
 			TransformerFactory tFactory = TransformerFactory.newInstance();
 			Transformer transformer = tFactory.newTransformer(new StreamSource(xslStream));
-			transformer.setParameter("dd_domain",Properties.ddURL);
+			transformer.setParameter(DD_DOMAIN_PARAM,Properties.ddURL);
 			setTransformerParameters(transformer);
 			transformer.transform(new StreamSource(in), new StreamResult(out));
 		} catch (TransformerConfigurationException tce) {
@@ -111,6 +114,13 @@ public abstract class ConvertStartegy {
 			if(value!=null)
 				transformer.setParameter(key,value);
 		}
+
+		//sets base URI for xmlfiles uploaded into xmlconv
+	    String xmlFilePathURI = Utils.getURIfromPath(eionet.gdem.Properties.xmlfileFolderPath);
+	    
+	    if(xmlFilePathURI!=null){
+			transformer.setParameter(XML_FOLDER_URI_PARAM,xmlFilePathURI);
+	    }
 		
 	}
 

@@ -3,6 +3,7 @@ package eionet.gdem.services.db.dao.mysql;
 
 import eionet.gdem.services.db.dao.DCMDaoFactory;
 import eionet.gdem.services.db.dao.IStyleSheetDao;
+import eionet.gdem.services.db.dao.IUPLXmlFileDao;
 import eionet.gdem.services.db.dao.IXFormDao;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IHostDao;
@@ -71,6 +72,11 @@ public class MySqlDaoFactory extends DCMDaoFactory{
 
 	public IConvTypeDao getConvTypeDao(){
 		return new ConvTypeMySqlDao();
+	}
+
+	@Override
+	public IUPLXmlFileDao getUPLXmlFileDao() {
+		return new UplXmlFileMySqlDao();
 	}	
 
 	

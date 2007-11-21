@@ -65,7 +65,7 @@ public class GErrorHandler extends DefaultHandler {
   private void writeRowStart(){
     if (htmlErrContainer.length()==0){
       htmlErrContainer.append("<html>");
-      htmlErrContainer.append("<hwad>");
+      htmlErrContainer.append("<head>");
       htmlErrContainer.append("<title>XML Schema validation</title>");
       htmlErrContainer.append("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>");
       htmlErrContainer.append("</head>");

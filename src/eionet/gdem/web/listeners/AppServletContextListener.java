@@ -48,6 +48,7 @@ public class AppServletContextListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
 		System.out.println("Application started !");
 		try {
+			
 			String pathPrefix = servletContextEvent.getServletContext().getRealPath("/");
 			checkHomeDirectories(pathPrefix);
 			Properties.metaXSLFolder=servletContextEvent.getServletContext().getRealPath("/dcm");
@@ -57,6 +58,7 @@ public class AppServletContextListener implements ServletContextListener {
 			//Properties.tmpFolder=servletContextEvent.getServletContext().getRealPath("/tmp");
 			Properties.uiFolder=servletContextEvent.getServletContext().getRealPath("/uixsl");
 			Properties.appHome=servletContextEvent.getServletContext().getRealPath("/WEB-INF/classes");
+			Properties.xmlfileFolderPath=servletContextEvent.getServletContext().getRealPath(Properties.xmlfileFolder);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}		
@@ -72,8 +74,9 @@ public class AppServletContextListener implements ServletContextListener {
 			//File tmp = new File(pathPrefix + File.separatorChar + "tmp");
 			File uixsl = new File(pathPrefix + File.separatorChar + "uixsl");
 			File schema = new File(pathPrefix + File.separatorChar + "schema");
+			File xmlfile = new File(pathPrefix + File.separatorChar + Properties.xmlfileFolder);
 			//File xsl = new File(pathPrefix + File.separatorChar + "xsl");
-			File[] dcmDirs={uixsl, schema};
+			File[] dcmDirs={uixsl, schema, xmlfile};
 			
 			for (int i = 0; i < dcmDirs.length; i++) {
 				if (!dcmDirs[i].exists()) {

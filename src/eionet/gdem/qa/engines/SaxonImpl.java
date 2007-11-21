@@ -56,6 +56,7 @@ import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.GDEMServices;
+import eionet.gdem.utils.Utils;
 
 
 import net.sf.saxon.instruct.TerminationException;
@@ -78,6 +79,7 @@ import net.sf.saxon.om.NodeInfo;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+
 /*
 import net.sf.saxon.StandardErrorListener;
 import java.io.PrintStream;
@@ -170,7 +172,13 @@ public class SaxonImpl implements XQEngineIF {
     //query script
     Reader queryReader = new StringReader(script);
 
-    staticEnv.setBaseURI(new File(script).toURI().toString());
+//    staticEnv.setBaseURI(new File(script).toURI().toString());
+    String xmlFilePathURI = Utils.getURIfromPath(eionet.gdem.Properties.xmlfileFolderPath);
+    
+    
+    if(xmlFilePathURI!=null){
+   		staticEnv.setBaseURI(xmlFilePathURI);
+    }
 
     String s = "";
 

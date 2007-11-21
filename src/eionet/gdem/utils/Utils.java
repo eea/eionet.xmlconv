@@ -607,4 +607,21 @@ public class Utils {
 
 		return buf.toString();
 	}
+	/**
+	 * Method constructs a URI from specified folder path.
+	 * If the folder does not exists, then it return null value.
+	 *  
+	 * @param strPath	Folder path. eg: /usr/prj/xmlconv/xmlfiles
+	 * @return			URI: file:///usr/prj/xmlconv/xmlfiles
+	 */
+	public static String getURIfromPath(String strPath){
+    
+    	if(strPath!=null){
+    		File f = new File(strPath);
+    		if(f.exists()&& f.isDirectory()){
+    			return f.toURI().toString();
+    		}
+    	}
+    	return null;
+	}
 }

@@ -111,12 +111,13 @@ public class ValidationService {
 
       reader.setErrorHandler(errHandler);
       //make parser to validate
-      reader.setFeature("http://xml.org/sax/features/validation", true); 
-      reader.setFeature("http://apache.org/xml/features/validation/schema", true);
-      reader.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
+      reader.setFeature("http://xml.org/sax/features/validation", false); 
+      reader.setFeature("http://apache.org/xml/features/validation/schema", false);
+      reader.setFeature("http://apache.org/xml/features/validation/schema-full-checking", false);
       
       reader.setFeature("http://xml.org/sax/features/namespaces", true);
       reader.setFeature("http://xml.org/sax/features/namespace-prefixes",true);
+      reader.setFeature("http://apache.org/xml/features/continue-after-fatal-error",true);
       	 
 		
 	
@@ -167,8 +168,13 @@ public class ValidationService {
       //log("OK");      
   
     } catch ( SAXParseException se ) {
+    	return "ERROR: Document is not well-formed. Column: " + se.getColumnNumber() + "; line:"  +se.getLineNumber() + "; " + se.getMessage();
       //ignore
-    } catch (Exception e ) {
+    }
+    catch (IOException ioe) { 
+        return "ERROR: Due to an IOException, the parser could not check the document. " + ioe.getMessage();  
+    }
+    catch (Exception e ) {
       Exception se = e;
       if (e instanceof SAXException) {
           se = ((SAXException)e).getException();
@@ -177,7 +183,8 @@ public class ValidationService {
         se.printStackTrace(System.err);
       else
         e.printStackTrace(System.err);    
-      throw new GDEMException("Error parsing: " + e.toString());
+      return "ERROR: The parser could not check the document. " + e.getMessage();
+      //throw new GDEMException("Error parsing: " + e.toString());
     }
 
     //we have errors!

@@ -125,6 +125,7 @@ public interface IDbSchema {
   public static final String XFORM_FILE_TYPE="xform";
   public static final String CSS_FILE_TYPE="css";
   public static final String IMAGE_FILE_TYPE="image";
+  public static final String XML_FILE_TYPE="xml";
 /**
  * PARENT_TYPE values in FILE table
  */

@@ -47,6 +47,11 @@ public class Properties {
 
 	public static String schemaFolder = "/schema/";
 
+	public static String xmlfileFolder = "xmlfile";
+
+	//full path to xmlfileFolder. Calclated at context init
+	public static String xmlfileFolderPath = "/xmlfile/";
+
 	public static final int CONV_SERVICE = 1; //Conversion service weight
 	public static final int QA_SERVICE = 2; //QA service weight
 	public static int services_installed = 3; //by default the both services are installed
@@ -107,10 +112,11 @@ public class Properties {
 
 				//xformsFolder=props.getString("xforms.folder");
 
-
 				xslFolder=checkPath(props.getString("xsl.folder"));
 				tmpFolder=props.getString("tmp.folder");
 				odsFolder=checkPath(props.getString("ods.folder"));
+
+				xmlfileFolder = props.getString("xmlfile.folder");
 
 				//DB connection settings
 				dbDriver = props.getString("db.driver");
@@ -153,6 +159,7 @@ public class Properties {
 
 				//urlPrefix=props.getString("url.prefix"); //URL where the files can be downloaded
 			} catch (MissingResourceException mse) {
+				mse.printStackTrace();
 
 				//no error handling? go with the default values??
 			} catch (Exception e) {

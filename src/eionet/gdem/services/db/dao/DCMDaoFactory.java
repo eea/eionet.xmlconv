@@ -38,4 +38,5 @@ public abstract class DCMDaoFactory {
    public abstract IXFBrowserDao getXFBrowserDao();    
    public abstract ISchemaDao getSchemaDao();    
    public abstract IXQJobDao getXQJobDao();    
-}
+   public abstract IUPLXmlFileDao getUPLXmlFileDao();    
+   }

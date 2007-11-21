@@ -48,4 +48,9 @@ public class BusinessConstants {
 	public static final String EXCEPTION_CONVERT_URL_ERROR = "label.conversion.url.error";
 	public static final String EXCEPTION_STYLEHEET_FILE_EXISTS = "label.stylesheet.error.fileExists";
 	public static final String EXCEPTION_UPLSCHEMA_FILE_EXISTS = "label.uplSchema.error.fileExists";
+
+	public static final String EXCEPTION_AUTORIZATION_XMLFILE_DELETE = "label.autorization.xmlfile.delete";
+	public static final String EXCEPTION_AUTORIZATION_XMLFILE_UPDATE = "label.autorization.xmlfile.update";
+	public static final String EXCEPTION_AUTORIZATION_XMLFILE_INSERT = "label.autorization.xmlfile.insert";
+	public static final String EXCEPTION_XMLFILE_FILE_EXISTS = "label.uplXmlFile.error.fileExists";
 }
