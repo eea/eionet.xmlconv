@@ -110,6 +110,9 @@
 				<exclude name="**/*.class"/>
 			</fileset>
 		</copy>
+		<copy todir="${prefix}/xmlconv/acl" overwrite="false">
+			<fileset dir="acl"/>
+		</copy>
 		<!-- should take care of not overwriting them -->
 		<copy todir="${prefix}/xmlconv/public/xsl">
 			<fileset dir="public/xsl"/>
@@ -148,6 +151,11 @@
 				<isset property="queries.folder"/>
 			</not>
 		</condition>
+		<condition property="xmlfile.needed">
+			<not>
+				<isset property="xmlfile.folder"/>
+			</not>
+		</condition>
 		<loadproperties srcFile="${prefix}/xmlconv/public/WEB-INF/classes/uit.properties"/>
 		<condition property="srvdef.not.available">
 			<not>
@@ -170,11 +178,22 @@
 				</not>
 			</and>
 		</condition>
+		<condition property="xmlfilefolder.not.exist">
+			<and>
+				<isset property="xmlfile.folder"/>
+				<not>
+					<available file="${prefix}/xmlconv/public/${xmlfile.folder}" type="dir"/>
+				</not>
+			</and>
+		</condition>
 		<fail if="tmp.needed" message="Property 'tmp.folder'  is missing from ${prefix}/xmlconv/public/WEB-INF/classes/gdem.properties"/>
 		<fail if="xsl.needed" message="Property 'xsl.folder'  is missing from ${prefix}/xmlconv/public/WEB-INF/classes/gdem.properties"/>
 		<fail if="queries.needed" message="Property 'queries.folder'  is missing from ${prefix}/xmlconv/public/WEB-INF/classes/gdem.properties"/>
+		<fail if="xmlfile.needed" message="Property 'xmlfile.folder'  is missing from ${prefix}/xmlconv/public/WEB-INF/classes/gdem.properties"/>
 		<antcall target="warn_definition"/>
 		<antcall target="warn_xsl"/>
+		<antcall target="warn_queries"/>
+		<antcall target="warn_xmlfile"/>
 	</target>
 	<target name="warn_xsl" if="xslfolder.not.exist">
 		<echo message="========================================================================="/>
@@ -189,6 +208,13 @@
 		<echo message="Create the folder or make a change in gdem.properties"/>
 		<echo message="========================================================================="/>
 		<!--mkdir dir="${xsl.folder}"/-->
+	</target>
+	<target name="warn_xmlfile" if="xmlfilefolder.not.exist">
+		<!--echo message="========================================================================="/>
+		<echo message="XMLfile folder was not available at: ${xmlfilefolder.folder}"/>
+		<echo message="Create the folder or make a change in gdem.properties"/>
+		<echo message="========================================================================="/-->
+		<mkdir dir="${prefix}/xmlconv/public/${xmlfile.folder}"/>
 	</target>
 	<target name="warn_definition" if="srvdef.not.available">
 		<echo message="========================================================================="/>
