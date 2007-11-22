@@ -46,6 +46,8 @@
         	<form-property name="username" type="java.lang.String"/>
         	<form-property name="password" type="java.lang.String"/>
         </form-bean>
+        <form-bean name="UplXmlFileForm" type="eionet.gdem.web.struts.xmlfile.UplXmlFileForm" />                   
+        <form-bean name="EditUplXmlFileForm" type="eionet.gdem.web.struts.xmlfile.EditUplXmlFileForm"/>   
 	       
              
     </form-beans>
@@ -156,8 +158,24 @@
         
        
         <action path="/getsource" scope="request" type="eionet.gdem.web.struts.source.GetSourceAction"/>
-        
-
+		<!--  uploaded XML file actions -->        
+        <action path="/uplXmlFiles"  type="eionet.gdem.web.struts.xmlfile.UplXmlFileFormAction" scope="request">
+            <forward name="success" path="/uplXmlFile.jsp" />
+        </action>
+        <action path="/deleteUplXmlFile"  scope="request" type="eionet.gdem.web.struts.xmlfile.DeleteUplXmlFileAction">           
+        	<forward name="success" path="/do/uplXmlFiles"  redirect="true"/>            
+        </action>        
+        <action path="/addUplXmlFileForm"  parameter="/addUplXmlFile.jsp" scope="request" validate="false" type="org.apache.struts.actions.ForwardAction"/>           
+        <action path="/addUplXmlFile"  scope="request" type="eionet.gdem.web.struts.xmlfile.AddUplXmlFileAction" name="UplXmlFileForm">           
+        	<forward name="success" path="/do/uplXmlFiles"  redirect="true"/>            
+        	<forward name="fail" path="/do/addUplXmlFileForm"  redirect="true"/>
+        </action>        
+        <action path="/editUplXmlFileForm" name="EditUplXmlFileForm" type="eionet.gdem.web.struts.xmlfile.EditUplXmlFileFormAction" scope="request" input="/editUplXmlFile.jsp">
+            <forward name="success" path="/editUplXmlFile.jsp" redirect="true" />
+        </action>
+        <action path="/editUplXmlFile"  scope="request" type="eionet.gdem.web.struts.xmlfile.EditUplXmlFileAction" name="EditUplXmlFileForm">           
+        	<forward name="success" path="/do/uplXmlFiles"  redirect="true"/>            
+        </action>
 
  <!-- Edit UI -->
         <action path="/editUI/imageManagerSetup" type="eionet.gdem.web.struts.uimanage.ImageManagerSetupAction"

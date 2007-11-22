@@ -25,6 +25,9 @@
   <definition name="uplSchema" path="/WEB-INF/tiles/schema/UplSchema.jsp" />  
   <definition name="addUplSchema" path="/WEB-INF/tiles/schema/AddUplSchema.jsp" />
   <definition name="editUplSchema" path="/WEB-INF/tiles/schema/EditUplSchema.jsp" />
+  <definition name="uplXmlFile" path="/WEB-INF/tiles/xmlfile/UplXmlFile.jsp" />  
+  <definition name="addUplXmlFile" path="/WEB-INF/tiles/xmlfile/AddUplXmlFile.jsp" />
+  <definition name="editUplXmlFile" path="/WEB-INF/tiles/xmlfile/EditUplXmlFile.jsp" />
   
   <definition name="confLdap" path="/WEB-INF/tiles/config/Ldap.jsp" />
   <definition name="confDb" path="/WEB-INF/tiles/config/Db.jsp" />
@@ -87,6 +90,17 @@
 	</definition>
   <definition name="/editUplSchema.jsp" extends="base">
     <put name="body" type="definition" value="editUplSchema"/>
+  </definition>
+  	<definition name="/uplXmlFile.jsp" extends="base">
+	 	<put name="title"  value="label.xmlfiles.title"/>
+    	<put name="body" type="definition" value="uplXmlFile"/>
+	</definition>  
+	<definition name="/addUplXmlFile.jsp" extends="base">
+		<put name="title"  value="label.title.uplXmlFile.add"/>
+		<put name="body" type="definition" value="addUplXmlFile"/>
+	</definition>
+  <definition name="/editUplXmlFile.jsp" extends="base">
+    <put name="body" type="definition" value="editUplXmlFile"/>
   </definition>
  	<definition name="/editUI/HeaderManager.jsp" extends="base">
  		<put name="title"  value="label.editUI.headereditor"/>
