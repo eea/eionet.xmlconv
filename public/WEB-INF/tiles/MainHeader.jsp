@@ -78,6 +78,9 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
 			<ed:menuItem action="/sandbox.jsp" title="XQ Sandbox">
 				<bean:message key="label.menu.xqsendbox"/>
 			</ed:menuItem>
+			<ed:menuItem action="/do/uplXmlFiles" title="XML Files">
+				<bean:message key="label.menu.xmlfiles"/>
+			</ed:menuItem>
 			<ed:hasPermission username="username" acl="host" permission="v">
 				<ed:menuItem action="/do/hosts/list"  title="Hosts">
 					<bean:message key="label.menu.hosts"/>
