@@ -16,6 +16,15 @@ function schemaDelete(title) {
 		return false;
 	}
 }
+function xmlfileDelete(title) {
+	if(confirm('Are you sure you want to delete XML file "' + title + '"')){
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 function elementDelete(title) {
 	if(confirm('Are you sure you want to delete root element "' + title + '"')){
 		return true;
