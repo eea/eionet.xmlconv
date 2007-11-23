@@ -20,8 +20,9 @@
 	<logic:present name="xmlfiles" name="xmlfiles.uploaded" scope="session" property="xmlfiles" >
 		<div style="width: 97%">
 			<table class="datatable" width="80%">
-				<col style="width:10%"/>				<col style="width:45%"/>
-				<col style="width:45%"/>
+				<col style="width:8%"/>				<col style="width:30%"/>
+				<col style="width:37%"/>
+				<col style="width:25%"/>
 				<thead>
 					<tr>
 						<th scope="col">
@@ -31,6 +32,7 @@
 						</th>
 						<th scope="col"><span title="XML File"><bean:message key="label.table.uplXmlFile.xmlfile"/></span></th>
 						<th scope="col"><span title="Title"><bean:message key="label.table.uplXmlFile.title"/></span></th>
+						<th scope="col"><span title="Last Modified"><bean:message key="label.lastmodified"/></span></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -48,17 +50,25 @@
 								</logic:equal>
 							</td>
 							<td>
-								<a  href='<bean:write name="webRoot"/>/<bean:write name="xmlfiles.uploaded" property="xmlfileFolder" />/<bean:write name="xmlfile" property="fileName" />'>
+								<a  href='<bean:write name="webRoot"/>/<bean:write name="xmlfiles.uploaded" property="xmlfileFolder" />/<bean:write name="xmlfile" property="fileName" />' title="<bean:write name="xmlfile" property="fileName" />">
 									<bean:write name="xmlfile" property="fileName" />
 								</a>
 							</td>
 							<td>
 									<bean:write name="xmlfile" property="title" />
 							</td>
+							<td>
+								<logic:notEqual name="fileExists" value=""  name="xmlfile" property="lastModified" >
+									<bean:write name="xmlfile" property="lastModified" />
+								</logic:notEqual>
+								<logic:equal name="fileNotExists" value=""  name="xmlfile" property="lastModified" >
+									<bean:message key="label.fileNotFound"/>
+								</logic:equal>
+							</td>
 						</tr>
 					</logic:iterate>
 					<tr>
-						<td valign="top" colspan="3">
+						<td valign="top" colspan="4">
 						</td>
 					</tr>
 				</tbody>

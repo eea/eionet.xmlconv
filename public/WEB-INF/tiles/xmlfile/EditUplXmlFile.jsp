@@ -36,6 +36,19 @@
 			      </td>
 			    </tr>
 			    <tr>
+  				  <th scope="row" class="scope-row">
+			        <bean:message key="label.lastmodified"/>:
+			      </th>
+			      <td>
+					<logic:notEqual name="fileExists" value=""  name="EditUplXmlFileForm" property="lastModified" >
+						<bean:write name="EditUplXmlFileForm" property="lastModified" />
+					</logic:notEqual>
+					<logic:equal name="fileNotExists" value=""  name="EditUplXmlFileForm" property="lastModified" >
+						<bean:message key="label.fileNotFound"/>
+					</logic:equal>
+			      </td>
+			    </tr>
+			    <tr>
 			      <td colspan="2">&nbsp;</td>
 			    </tr>
 			    <tr>
