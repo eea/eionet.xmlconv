@@ -21,6 +21,7 @@ public class EditUplXmlFileForm extends ActionForm {
 	private String xmlfile;
 	private String xmlfileId;
 	private String title;
+	private String lastModified;
 
 
 	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
@@ -62,6 +63,16 @@ public class EditUplXmlFileForm extends ActionForm {
 
 	public void setXmlfile(String xmlfile) {
 		this.xmlfile = xmlfile;
+	}
+
+
+	public String getLastModified() {
+		return lastModified;
+	}
+
+
+	public void setLastModified(String lastModified) {
+		this.lastModified = lastModified;
 	}
 
 }

@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -187,10 +188,16 @@ public class UplXmlFileManager {
 			Hashtable ht = uplXmlFileDao.getUplXmlFileById(xmlFileId);
 			String file_name= (String) ht.get("file_name");
 			String title = (String) ht.get("title");
+			String lastModified = "";
+			if(!Utils.isNullStr(file_name)){
+				File f = new File(Properties.xmlfileFolderPath + File.separatorChar +  file_name);
+				if (f != null && f.exists()) lastModified = Utils.getDateTime(new Date(f.lastModified()));
+			}
 
 			xmlfile.setTitle(title);
 			xmlfile.setId(xmlFileId);
 			xmlfile.setFileName(file_name);
+			xmlfile.setLastModified(lastModified);
 		} catch (Exception e) {
 			e.printStackTrace();
 			_logger.error("Error getting uploaded XML file", e);
@@ -238,11 +245,18 @@ public class UplXmlFileManager {
 				String id = (String) hash.get("id");
 				String fileName = (String) hash.get("file_name");
 				String title = (String) hash.get("title");
+				String lastModified = "";
 
+				if(!Utils.isNullStr(fileName)){
+					File f = new File(Properties.xmlfileFolderPath + File.separatorChar +  fileName);
+					if (f != null && f.exists()) lastModified = Utils.getDateTime(new Date(f.lastModified()));
+				}
+				
 				UplXmlFile uplXmlFile = new UplXmlFile();
 				uplXmlFile.setId(id);
 				uplXmlFile.setFileName(fileName);
 				uplXmlFile.setTitle(title);
+				uplXmlFile.setLastModified(lastModified);
 				xmlfiles.add(uplXmlFile);
 			}
 			if (xmlfiles.size() > 0) {

@@ -47,6 +47,7 @@ public class EditUplXmlFileFormAction extends Action {
 			form.setXmlfile(httpServletRequest.getContextPath() + "/" + Properties.xmlfileFolder+ "/" + xmlfile.getFileName());
 
 			form.setTitle(xmlfile.getTitle());
+			form.setLastModified(xmlfile.getLastModified());
 
 		} catch (DCMException e) {
 			e.printStackTrace();

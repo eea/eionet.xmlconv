@@ -20,6 +20,7 @@ public class UplXmlFileForm extends ActionForm {
 
 	private FormFile xmlfile;
 	private String title;
+	private String lastModified;
 
 
 	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
@@ -50,6 +51,16 @@ public class UplXmlFileForm extends ActionForm {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+
+	public String getLastModified() {
+		return lastModified;
+	}
+
+
+	public void setLastModified(String lastModified) {
+		this.lastModified = lastModified;
 	}
 
 }

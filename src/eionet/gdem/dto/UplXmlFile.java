@@ -15,6 +15,7 @@ public class UplXmlFile  implements Serializable {
 	private String id;
 	private String fileName;
 	private String title;
+	private String lastModified;
 	
 	public UplXmlFile() {
 	}
@@ -41,6 +42,14 @@ public class UplXmlFile  implements Serializable {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getLastModified() {
+		return lastModified;
+	}
+
+	public void setLastModified(String lastModified) {
+		this.lastModified = lastModified;
 	}
 
 }
