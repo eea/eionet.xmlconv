@@ -114,6 +114,10 @@ public interface ExcelXMLTags {
  * Style family attribute - <CODE>&lt;style:family='table-cell'&gt;</CODE>
  */
    public static final String STYLE_FAMILY_ATTR = "style:family";
+   /**
+    * Style family attribute - <CODE>&lt;style:column-width='table-cell'&gt;</CODE>
+    */
+      public static final String STYLE_COLUMN_WIDTH_ATTR = "style:column-width";
 /**
  * Table style name attribute - <CODE>&lt;table:style-name='col1'&gt;</CODE>
  */

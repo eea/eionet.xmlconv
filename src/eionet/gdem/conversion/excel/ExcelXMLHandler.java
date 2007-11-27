@@ -135,6 +135,7 @@ public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags{
           style.setFontSize(attributes.getValue(FONT_SIZE_ATTR));
           style.setItalic(attributes.getValue(FONT_STYLE_ATTR));
           style.setTextAlgin(attributes.getValue(TEXT_ALIGN_ATTR));
+          style.setColumnWidth(attributes.getValue(STYLE_COLUMN_WIDTH_ATTR));
       }          
       if (name.equals(DATA_TAG)){
           bOK = true;

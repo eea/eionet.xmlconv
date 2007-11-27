@@ -74,7 +74,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
      // System.out.println("Worksheet" + currentSheet);
       currentRow=-1;
       currentCell=0;
-      
+      columns = new Vector();
  }
   public void addRow(String def_style, String def_type)
   {
@@ -113,6 +113,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
      HashMap column = new HashMap();
      column.put("data_type", def_type);
      column.put("style", short_idx);
+     column.put("style_name", def_style);
      columns.add(column);
   }
   public void addColumns(String def_style, String def_type, int repeated)
@@ -240,11 +241,26 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
         _cell.setCellStyle(wb.getCellStyleAt(idx));
     //calculates the col with according to the first row
     if (currentRow==0 && idx>-1){
-      HSSFCellStyle style = wb.getCellStyleAt(idx);
-      int f_i = style.getFontIndex();
-      HSSFFont font = wb.getFontAt((short)f_i);
-      int size = (int)font.getFontHeightInPoints();
-  		short width = (short)(str_value.length() * size * 50);
+    	short colStyleWidth = 0;
+    	HSSFCellStyle style = wb.getCellStyleAt(idx);
+    	int f_i = style.getFontIndex();
+    	HSSFFont font = wb.getFontAt((short)f_i);
+    	//character size
+    	short size = (short)font.getFontHeightInPoints();
+    	if (columns.size()>currentCell){
+    		HashMap column = (HashMap)columns.get(currentCell);
+    		String column_style_name = column.get("style_name")==null ? "" : (String)column.get("style_name");
+            ExcelStyleIF definedStyle=getStyleByName(column_style_name, ExcelStyleIF.STYLE_FAMILY_TABLE_CELL);
+            if(definedStyle!=null)
+            	colStyleWidth = definedStyle.getColumnWidth();
+    	}
+    	short width = (short) (_sheet.getDefaultColumnWidth() * size * 25);
+    	if(colStyleWidth>0){
+    		width = colStyleWidth;
+    	}
+    	else if(str_value.length()>0){
+    		width = (short)(str_value.length() * size * 50);
+    	}
     	_sheet.setColumnWidth((short)currentCell, width);
      }
      currentCell = _cell.getCellNum()+1;

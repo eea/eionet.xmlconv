@@ -92,4 +92,17 @@ public interface ExcelStyleIF  {
   * @param index  
   */
   public void setWorkbookIndex(short index);
+
+  /**
+   * Gets the column width
+   * @param index  
+   */
+  public short getColumnWidth() ;
+  
+  /**
+   * sets the column width "12cm" or "11pt"
+   * @param column_width
+   */
+  public void setColumnWidth(String column_width);
 }
+

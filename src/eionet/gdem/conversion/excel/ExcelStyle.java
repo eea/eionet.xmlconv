@@ -42,6 +42,8 @@ public class ExcelStyle implements ExcelStyleIF {
   private String font_name=null;
   private short text_align=HSSFCellStyle.ALIGN_GENERAL;
   private short workbook_index=-1;
+  //width - - the width in units of 1/256th of a character width
+  private short column_width=0;
   
   public ExcelStyle() {
   }
@@ -138,5 +140,37 @@ public class ExcelStyle implements ExcelStyleIF {
   }
   public void setWorkbookIndex(short index){
     this.workbook_index=index;
+  }
+  public short getColumnWidth() {
+	return column_width;
+  }
+  
+  //xcel bases its measurement of column widths on the number of digits 
+  //(specifically, the number of zeros) in the column, using the Normal style font. 
+  //(There are some fonts that have digits of different widths, but this is unusual.)
+
+  //For example, using the default font, a column with a width of 10 refers to the column 
+  //width needed to display 10 non-bold, non-italic, Arial 10-point zeros. 
+  
+  // POI waits the column width set in units of 1/256th of a character width
+  public void setColumnWidth(String str_column_width) {
+	    Short numcolumn_width = null;
+	    if (str_column_width==null) return;
+	    int x = 256;
+	    
+	    if (str_column_width.endsWith("cm")){
+	    	str_column_width=str_column_width.substring(0,str_column_width.indexOf("cm"));
+	    	x = 1280;
+		}
+	    try {
+	    	float l = Float.parseFloat(str_column_width);
+	    	float full_width = l * x;  
+	    	numcolumn_width = Short.parseShort(String.valueOf(Math.round(full_width)));
+	    }
+	    catch (Exception e){
+	      return;
+	    }
+	    if (numcolumn_width!=null)
+	    	column_width=numcolumn_width.shortValue();
   }
 }
