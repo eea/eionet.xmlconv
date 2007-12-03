@@ -123,11 +123,21 @@ public class SchemaManager {
 
 	}
 
-
-	public StylesheetListHolder getSchemas(String user_name) throws DCMException {
+	/**
+	 * Method creates StylesheetListHolder object, that stores the list of stylesheets both for handcoded and generated.
+	 * The object stores also user permissions info to manage stylesheets.
+	 * 
+	 * @param user_name		user name stored in HTTP session.This for checking user permisssions
+	 * @param type			if type==null, then show only handcoded stylesheets. If type==generated, then
+	 * 						show only generated stylesheets. If type==both, then show both handcoded and generated stylesheets
+	 * @return
+	 * @throws DCMException
+	 */
+	public StylesheetListHolder getSchemas(String user_name,String type) throws DCMException {
 
 		StylesheetListHolder st = new StylesheetListHolder();
-
+		if(Utils.isNullStr(type))type="handcoded";
+			
 		boolean ssiPrm = false;
 		boolean ssdPrm = false;
 		Vector hcSchemas;
@@ -141,42 +151,47 @@ public class SchemaManager {
 			st.setSsdPrm(ssdPrm);
 			st.setSsiPrm(ssiPrm);
 
-			hcSchemas = schemaDao.getSchemas(null);
-			if (hcSchemas == null) hcSchemas = new Vector();
+			//By default show only handcoded stylesheets
+			if(type.equals("handcoded")|| type.equals("all")){
+				hcSchemas = schemaDao.getSchemas(null);
+				if (hcSchemas == null) hcSchemas = new Vector();
 
-			for (int i = 0; i < hcSchemas.size(); i++) {
-				HashMap schema = (HashMap) hcSchemas.get(i);
-				Schema sc = new Schema();
-				sc.setId((String) schema.get("schema_id"));
-				sc.setSchema((String) schema.get("xml_schema"));
-				sc.setDescription((String) schema.get("description"));
+				for (int i = 0; i < hcSchemas.size(); i++) {
+					HashMap schema = (HashMap) hcSchemas.get(i);
+					Schema sc = new Schema();
+					sc.setId((String) schema.get("schema_id"));
+					sc.setSchema((String) schema.get("xml_schema"));
+					sc.setDescription((String) schema.get("description"));
 
-				Vector stylesheets = new Vector();
-				if (schema.containsKey("stylesheets")) {
-					stylesheets = (Vector) schema.get("stylesheets");
+					Vector stylesheets = new Vector();
+					if (schema.containsKey("stylesheets")) {
+						stylesheets = (Vector) schema.get("stylesheets");
+					}
+
+					ArrayList stls = new ArrayList();
+					for (int j = 0; j < stylesheets.size(); j++) {
+						HashMap stylesheet = (HashMap) stylesheets.get(j);
+						Stylesheet stl = new Stylesheet();
+						// 	st.setConvId(1);
+						stl.setType((String) stylesheet.get("content_type_out"));
+						stl.setXsl(Names.XSL_FOLDER + (String) stylesheet.get("xsl"));
+						stl.setXsl_descr((String) stylesheet.get("description"));
+						stl.setDdConv(false);
+						stls.add(stl);
+					}
+					//if (stls.size() > 0) {
+						sc.setStylesheets(stls);
+						schemas.add(sc);
+					//}
 				}
-
-				ArrayList stls = new ArrayList();
-				for (int j = 0; j < stylesheets.size(); j++) {
-					HashMap stylesheet = (HashMap) stylesheets.get(j);
-					Stylesheet stl = new Stylesheet();
-					// st.setConvId(1);
-					stl.setType((String) stylesheet.get("content_type_out"));
-					stl.setXsl(Names.XSL_FOLDER + (String) stylesheet.get("xsl"));
-					stl.setXsl_descr((String) stylesheet.get("description"));
-					stl.setDdConv(false);
-					stls.add(stl);
+				if(schemas.size()>0){
+					st.setHandCodedStylesheets(schemas);
 				}
-
-				// if (stls.size() > 0) {
-				sc.setStylesheets(stls);
-				schemas.add(sc);
-				// }
 			}
-			if(schemas.size()>0){
-				st.setHandCodedStylesheets(schemas);
-			}
-
+			
+			//if type==all, then show both handcoded and generated styleseheets
+			//if type==generated, then show only generated from DD  sttyleseets
+			if(type.equals("generated") || type.equals("all")){
 			// retrive conversions for DD tables
 			List ddTables = DDServiceClient.getDDTables();
 			schemas = new ArrayList();
@@ -216,6 +231,7 @@ public class SchemaManager {
 			Collections.sort(schemas, comp);
 
 			st.setDdStylesheets(schemas);
+			}
 
 		} catch (Exception e) {
 			_logger.debug("Error getting schema",e);

@@ -36,7 +36,7 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
-public class StylesheetListAction extends Action {
+public class GeneratedStylesheetListAction extends Action {
 	private static LoggerIF _logger = GDEMServices.getLogger();
 
 
@@ -48,7 +48,7 @@ public class StylesheetListAction extends Action {
 
 		try {
 			SchemaManager sm = new SchemaManager();
-			st = sm.getSchemas(user_name,"handcoded");
+			st = sm.getSchemas(user_name,"generated");
 
 		} catch (DCMException e) {
 			e.printStackTrace();
