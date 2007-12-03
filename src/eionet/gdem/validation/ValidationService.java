@@ -111,9 +111,9 @@ public class ValidationService {
 
       reader.setErrorHandler(errHandler);
       //make parser to validate
-      reader.setFeature("http://xml.org/sax/features/validation", false); 
-      reader.setFeature("http://apache.org/xml/features/validation/schema", false);
-      reader.setFeature("http://apache.org/xml/features/validation/schema-full-checking", false);
+      reader.setFeature("http://xml.org/sax/features/validation", true); 
+      reader.setFeature("http://apache.org/xml/features/validation/schema", true);
+      reader.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
       
       reader.setFeature("http://xml.org/sax/features/namespaces", true);
       reader.setFeature("http://xml.org/sax/features/namespace-prefixes",true);
@@ -168,11 +168,11 @@ public class ValidationService {
       //log("OK");      
   
     } catch ( SAXParseException se ) {
-    	return "ERROR: Document is not well-formed. Column: " + se.getColumnNumber() + "; line:"  +se.getLineNumber() + "; " + se.getMessage();
+    	return GErrorHandler.formatResultText("ERROR: Document is not well-formed. Column: " + se.getColumnNumber() + "; line:"  +se.getLineNumber() + "; " + se.getMessage());
       //ignore
     }
     catch (IOException ioe) { 
-        return "ERROR: Due to an IOException, the parser could not check the document. " + ioe.getMessage();  
+        return GErrorHandler.formatResultText("ERROR: Due to an IOException, the parser could not check the document. " + ioe.getMessage());  
     }
     catch (Exception e ) {
       Exception se = e;
@@ -183,18 +183,18 @@ public class ValidationService {
         se.printStackTrace(System.err);
       else
         e.printStackTrace(System.err);    
-      return "ERROR: The parser could not check the document. " + e.getMessage();
+      return GErrorHandler.formatResultText("ERROR: The parser could not check the document. " + e.getMessage());
       //throw new GDEMException("Error parsing: " + e.toString());
     }
 
     //we have errors!
     if (errors!= null && errors.length()>0){
       //return errors.toString();
-      htmlErrors.append("</table></html>");
+      htmlErrors.append("</table></div>");
       return htmlErrors.toString();
     }
     else
-      return "OK - XML Schema validation passed without errors.";
+      return GErrorHandler.formatResultText("OK - XML Schema validation passed without errors.");
   }
   
   

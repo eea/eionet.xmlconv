@@ -64,12 +64,9 @@ public class GErrorHandler extends DefaultHandler {
   }
   private void writeRowStart(){
     if (htmlErrContainer.length()==0){
-      htmlErrContainer.append("<html>");
-      htmlErrContainer.append("<head>");
-      htmlErrContainer.append("<title>XML Schema validation</title>");
-      htmlErrContainer.append("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>");
-      htmlErrContainer.append("</head>");
-			htmlErrContainer.append("<table border='1'><tr>"); 
+      htmlErrContainer.append("<div class='feedbacktext'>");
+      htmlErrContainer.append("<h2>XML Schema validation</h2>");
+      htmlErrContainer.append("<table border='1'><tr>"); 
       htmlErrContainer.append("<th>Type</th>");
       htmlErrContainer.append("<th>Position</th>"); 
       htmlErrContainer.append("<th>Error message</th>");
@@ -86,9 +83,12 @@ public class GErrorHandler extends DefaultHandler {
     htmlErrContainer.append("</td>");
   }
   public String getHTMLError(){
-    htmlErrContainer.append("</table>");
+    htmlErrContainer.append("</table></div>");
     
     return htmlErrContainer.toString();
+  }
+  public static String formatResultText(String text){
+	  return "<div class='feedbacktext'>".concat(text).concat("</div>");
   }
 
   

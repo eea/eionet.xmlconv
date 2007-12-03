@@ -24,32 +24,11 @@
 package eionet.gdem.qa.engines;
 
 import java.util.Properties;
-import java.util.List;
 
 import java.io.Reader;
-/*import java.io.FileReader;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.OutputStream;
-import java.io.PrintWriter; */
-import java.io.File;
 
-/*
-import org.xml.sax.InputSource;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.URIResolver;
-import javax.xml.transform.sax.SAXSource; */
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.OutputKeys;
-
-import org.w3c.css.sac.SACMediaList;
-import org.xml.sax.InputSource;
 
 import eionet.gdem.qa.XQEngineIF;
 import eionet.gdem.Constants;
@@ -58,37 +37,17 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.Utils;
 
-
-import net.sf.saxon.instruct.TerminationException;
 import net.sf.saxon.Configuration;
-import net.sf.saxon.Transform;
 import net.sf.saxon.value.StringValue;
 import net.sf.saxon.query.StaticQueryContext;
 import net.sf.saxon.query.DynamicQueryContext;
 //import net.sf.saxon.query.QueryProcessor;
 import net.sf.saxon.query.XQueryExpression;
-import net.sf.saxon.query.QueryResult;
-import net.sf.saxon.om.Item;
-import net.sf.saxon.om.NamePool;
-import net.sf.saxon.om.DocumentInfo;
-import net.sf.saxon.om.SequenceIterator;
-import net.sf.saxon.om.NodeInfo;
-//import net.sf.saxon.value.Type;
-//import net.sf.saxon.xpath.XPathException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
-import java.io.StringWriter;
 
-/*
-import net.sf.saxon.StandardErrorListener;
-import java.io.PrintStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import javax.xml.transform.ErrorListener;
-*/
-
-//import net.sf.saxon.om.EmptyIterator;
 
 public class SaxonImpl implements XQEngineIF {
 
@@ -133,12 +92,12 @@ public class SaxonImpl implements XQEngineIF {
   * and modified
   */
   private String runQuery(String script, String xqParams[]) throws GDEMException  {
-    StringWriter result = new StringWriter();
+    ByteArrayOutputStream result = new ByteArrayOutputStream();
     String s="";
-   // runQuery(script,xqParams, result);
+   	runQuery(script,xqParams, result);
     try{
-    	s = result.getBuffer().toString();
-    	result.close(); //??
+    	s = result.toString("UTF-8");
+    	//result.close(); //??
     } catch (Exception e) {
     	_logger.debug("==== CATCHED EXCEPTION " + e.toString() );
     }

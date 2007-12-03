@@ -34,6 +34,7 @@ public interface Names {
   public static final String ERROR_ATT        = "GDEM_ERROR_ATT";
   public static final String STYLESHEETS_ATT  = "GDEM_ACL_SS_ATT";
   public static final String TICKET_ATT  = "GDEM_TICKET";
+  public static final String SUCCESS_ATT        = "GDEM_SUCCESS_ATT";
 
 
   //JSP names
@@ -51,6 +52,7 @@ public interface Names {
   public static final String HOST_JSP = "host.jsp";
   public static final String LIST_WORKQUEUE_JSP = "workqueue.jsp";
   public static final String SANDBOX_JSP = "sandbox.jsp";
+  public static final String SANDBOX_RESULT_JSP = "sandbox_result.jsp";
   public static final String QUERIESINDEX_JSP = "queriesindex.jsp";
   public static final String QUERIES_JSP = "queries.jsp";
   public static final String ADD_QUERY_JSP = "add_query.jsp";

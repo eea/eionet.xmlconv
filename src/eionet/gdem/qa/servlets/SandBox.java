@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -70,30 +71,45 @@ public class SandBox  extends HttpServlet implements Constants {
 		String result=null;
 		String fileName=null;
 
+		String dataURL = req.getParameter(XQ_SOURCE_PARAM_NAME);
+		req.setAttribute(XQ_INS_SOURCE_PARAM_NAME, dataURL);
 
+		//go back to sandbox
+		if(!Utils.isNullStr(req.getParameter("backToSandbox"))) {
+		    req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
+			return;
+		}
+		
+		
 		//save changes in XQ script to repository
 		if(!Utils.isNullStr(req.getParameter("save"))) {
 
-			String q_id = req.getParameter("ID");
 			String xqFileName = req.getParameter("file_name");
 			String xqScript = req.getParameter(XQ_SCRIPT_PARAM);
 
 			if(Utils.isNullStr(xqScript)) {
-				writeHTMLMessage(res, "The script cannot be empty!");
+				//writeHTMLMessage(res, "The script cannot be empty!");
+				req.setAttribute(Names.ERROR_ATT, "Cannot save empty script!");
+			    req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
 				return;
 			}
 			try{
 				Utils.saveStrToFile(xqFileName, xqScript, null);
-				res.sendRedirect(Names.SANDBOX_JSP + "?ID=" + q_id);
+				req.setAttribute(Names.SUCCESS_ATT, "Script saved successfully. (".concat(Utils.getDateTime(new Date())).concat(")"));
+			    req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
 			} catch (Exception ge){
-				writeHTMLMessage(res, "Error occured during saving file: " + xqFileName + "<br/>"+ ge.getMessage());
+				req.setAttribute(Names.ERROR_ATT, "Error occured during saving file: " + xqFileName + " - "+ ge.getMessage());
+			    req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
+				//writeHTMLMessage(res, "Error occured during saving file: " + xqFileName + "<br/>"+ ge.getMessage());
 			}
 			return;
 		}
 
-		String dataURL = req.getParameter(XQ_SOURCE_PARAM_NAME);
+
 		if (Utils.isNullStr(dataURL)){
-			writeHTMLMessage(res, "The data URL cannot be empty!");
+			req.setAttribute(Names.ERROR_ATT, "The data URL cannot be empty!");
+		    req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
+			//writeHTMLMessage(res, "The data URL cannot be empty!");
 			return;
 		}
 		try{
@@ -102,25 +118,31 @@ public class SandBox  extends HttpServlet implements Constants {
 	      fileName = inputFile.getFileNameNoExtension();
 		}
 		catch(Exception e){
-			writeHTMLMessage(res, "The data URL is not an URI! " + e.toString());
+			req.setAttribute(Names.ERROR_ATT, "The data URL is not an URI! " + e.toString());
+		    req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
+			//writeHTMLMessage(res, "The data URL is not an URI! " + e.toString());
 			return;
 		}
 
 		String sandboxtype = req.getParameter("sandboxtype");
 		if (Utils.isNullStr(sandboxtype)){
-			writeHTMLMessage(res, "Sandbox type cannot be empty!");
+			req.setAttribute(Names.ERROR_ATT, "Sandbox type cannot be empty!");
+		    req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
+			//writeHTMLMessage(res, "Sandbox type cannot be empty!");
 			return;
 		}
 		//search all scripts according to XML Schema and send back to sandbox
 		if(!Utils.isNullStr(req.getParameter("findscripts"))) {
-			res.sendRedirect(Names.SANDBOX_JSP + "?SOURCE_URL=" + dataURL);
+			res.sendRedirect(Names.SANDBOX_JSP + "?findscripts=true&source_url=" + dataURL);
 			return;
 		}
 		if (sandboxtype.equals("SCHEMA")){ //execute all the scripts for 1 schema
 			String xml_schema = req.getParameter("xml_schema");
 
 			if (Utils.isNullStr(xml_schema)){
-				writeHTMLMessage(res, "XML Schema cannot be empty!");
+				req.setAttribute(Names.ERROR_ATT, "XML Schema cannot be empty!");
+			    req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
+				//writeHTMLMessage(res, "XML Schema cannot be empty!");
 				return;
 			}
 
@@ -129,6 +151,14 @@ public class SandBox  extends HttpServlet implements Constants {
 			//
 			if(!Utils.isNullStr(req.getParameter("runnow"))) {
 				String xqScriptId = req.getParameter("script");
+				
+				if (Utils.isNullStr(xqScriptId)){
+					req.setAttribute(Names.ERROR_ATT, "Could not find script ID!");
+				    req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
+					//writeHTMLMessage(res, "XML Schema cannot be empty!");
+					return;
+				}
+
 				String xqScript=null;
 				if (xqScriptId.equals(String.valueOf(JOB_VALIDATION))){
 					res.setContentType(HTML_CONTENT_TYPE);
@@ -142,7 +172,9 @@ public class SandBox  extends HttpServlet implements Constants {
 					} catch (GDEMException ge){
 						result = ge.getMessage();
 					}
-					res.getWriter().write(result);
+					req.setAttribute(XQ_RESULT_ATT, result);
+				    req.getRequestDispatcher(Names.SANDBOX_RESULT_JSP).forward(req,res);				
+					//res.getWriter().write(result);
 				}
 				//run QA script
 				else{
@@ -152,11 +184,13 @@ public class SandBox  extends HttpServlet implements Constants {
 						xqScript = Utils.readStrFromFile( xqScriptFile);
 					}
 					catch(Exception e){
-						writeHTMLMessage(res, "Could not read script from file: " + xqScriptFile);
+						req.setAttribute(Names.ERROR_ATT, "Could not read script from file: " + xqScriptFile);
+					    req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
+						//writeHTMLMessage(res, "Could not read script from file: " + xqScriptFile);
 						return;
 					}
 
-					res.setContentType(getContentType(query));
+					String resultContentType = getContentType(query);
 
 					//get the trusted URL from source file adapter
 					dataURL = SourceFileManager.getSourceFileAdapterURL(
@@ -166,12 +200,24 @@ public class SandBox  extends HttpServlet implements Constants {
 					pars[0] = XQ_SOURCE_PARAM_NAME + "=" + dataURL;
 
 					XQScript xq = new XQScript(xqScript, pars);
-					OutputStream outstream = res.getOutputStream();
+					//OutputStream outstream = res.getOutputStream();
 					try {
-						xq.getResult(outstream);
+						if(!resultContentType.equals(HTML_CONTENT_TYPE)){
+							res.setContentType(resultContentType);
+							res.setCharacterEncoding(HTML_CHARACTER_ENCODING);
+							OutputStream output = res.getOutputStream();
+							xq.getResult(output);
+							return;
+						}
+						else{
+							result = xq.getResult();
+							req.setAttribute(XQ_RESULT_ATT, result);
+						    req.getRequestDispatcher(Names.SANDBOX_RESULT_JSP).forward(req,res);
+						}
 					} catch (GDEMException ge){
 						result = ge.getMessage();
-						outstream.write(result.getBytes());
+						req.setAttribute(Names.ERROR_ATT, result);
+					    req.getRequestDispatcher(Names.SANDBOX_RESULT_JSP).forward(req,res);				
 					}
 				}
 			}
@@ -189,21 +235,23 @@ public class SandBox  extends HttpServlet implements Constants {
 					files.add(dataURL);
 					h.put(xml_schema, files);
 					Vector v_result = xqE.analyzeXMLFiles(h);
-					PrintWriter writer = res.getWriter();
+					StringBuffer buffer = new StringBuffer();
 					if (Utils.isNullVector(v_result)){
-						writer.write("<html>No jobs has been added to the workqueue!</html>");
+						buffer.append("No jobs has been added to the workqueue!");
 					}
 					else{
-						writer.write("<html>The following jobs has  been added to the <a href='workqueue.jsp'>workqueue</a>.");
+						buffer.append("The following jobs has  been added to the <a href='workqueue.jsp'>workqueue</a>.");
 						for (int i=0;i<v_result.size();i++){
 							Vector v = (Vector)v_result.get(i);
-							writer.write("<br/>" + String.valueOf(i+1) + ". job ID: " + (String)v.get(0));
+							buffer.append("<br/>" + String.valueOf(i+1) + ". job ID: " + (String)v.get(0));
 						}
 					}
+					req.setAttribute(Names.SUCCESS_ATT, buffer.toString());
 				} catch (GDEMException ge){
 					result = ge.getMessage();
-					res.getWriter().write(result);
+					req.setAttribute(Names.ERROR_ATT, result);
 				}
+			    req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
 			}
 		}
 		else if(sandboxtype.equals("SCRIPT")){
@@ -226,17 +274,30 @@ public class SandBox  extends HttpServlet implements Constants {
 				if(!Utils.isNullStr(req.getParameter("runnow"))) {
 
 					HashMap query = getQueryInfo(q_id);
+					String resultContentType = getContentType(query);
 					res.setContentType(getContentType(query));
 
 					xq = new XQScript(xqScript, pars);
-					OutputStream outstream = res.getOutputStream();
 					try {
 						//System.out.println("siin2");
-						xq.getResult(outstream);
-						//result = xq.getResult();
+						if(!resultContentType.equals(HTML_CONTENT_TYPE)){
+							res.setContentType(resultContentType);
+							res.setCharacterEncoding(HTML_CHARACTER_ENCODING);
+							OutputStream output = res.getOutputStream();
+							xq.getResult(output);
+							return;
+						}
+						else{
+							result=xq.getResult();
+							req.setAttribute(XQ_RESULT_ATT, result);
+							req.getRequestDispatcher(Names.SANDBOX_RESULT_JSP).forward(req,res);
+							return;
+						}
 					} catch (GDEMException ge){
 						result = ge.getMessage();
-						outstream.write(result.getBytes());
+						req.setAttribute(Names.ERROR_ATT, result);
+					    req.getRequestDispatcher(Names.SANDBOX_RESULT_JSP).forward(req,res);				
+						return;
 					}
 				}
 				// Add job to workqueue engine
@@ -247,15 +308,20 @@ public class SandBox  extends HttpServlet implements Constants {
 					xqE.setTrustedMode(false);
 					try {
 						result = xqE.analyze(dataURL, xqScript);
-						writeHTMLMessage(res, "Job (id: " + result + ") successfully added to the <a href='workqueue.jsp'>workqueue</a>.");
+						req.setAttribute(Names.SUCCESS_ATT, "Job (id: " + result + ") successfully added to the <a href='workqueue.jsp'>workqueue</a>.");
+						//writeHTMLMessage(res, "Job (id: " + result + ") successfully added to the <a href='workqueue.jsp'>workqueue</a>.");
 					} catch (GDEMException ge){
 						result = ge.getMessage();
-						writeHTMLMessage(res, result);
+						req.setAttribute(Names.ERROR_ATT, result);
 					}
+				    req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
 				}
 			}
-			else
-				writeHTMLMessage(res, "The script cannot be empty!");
+			else{
+				req.setAttribute(Names.ERROR_ATT, "The script cannot be empty!");
+				req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
+				//writeHTMLMessage(res, "The script cannot be empty!");
+			}
 		}
 	}
 	/*
