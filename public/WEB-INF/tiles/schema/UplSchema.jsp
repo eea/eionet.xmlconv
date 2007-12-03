@@ -34,7 +34,7 @@
 					<logic:iterate indexId="index" id="schema" name="schemas.uploaded" scope="session" property="schemas" type="UplSchema">
 						<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
 							<td align="center" >
-								<a href="schemaStylesheets?schema=<bean:write name="schema" property="schema" />">
+								<a href="schemaStylesheets?backList=uplschemas&schema=<bean:write name="schema" property="schema" />">
 									<img src="<bean:write name="webRoot"/>/images/properties.gif" alt="<bean:message key="label.table.stylesheet" />" title="view stylesheets" /></a>
 								<logic:equal name="ssuPrm" value="true"  name="schemas.uploaded" scope="session" property="ssuPrm" >
 									<a href="editUplSchemaForm?schemaId=<bean:write name="schema" property="id" />">

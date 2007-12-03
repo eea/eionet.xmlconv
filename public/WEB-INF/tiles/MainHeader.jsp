@@ -63,8 +63,11 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
 			<ed:menuItem action="/do/uplSchemas" title="Schemas">
 				<bean:message key="label.menu.schemas"/>
 			</ed:menuItem>
-			<ed:menuItem action="/do/stylesheetList" title="Stylesheets">
+			<ed:menuItem action="/do/stylesheetList" title="Handcoded Stylesheets">
 				<bean:message key="label.menu.stylesheets"/>
+			</ed:menuItem>
+			<ed:menuItem action="/do/generatedStylesheetList" title="Generated Stylesheets">
+				<bean:message key="label.menu.stylesheetsGenerated"/>
 			</ed:menuItem>
 			<ed:menuItem action="/do/listConvForm" title="Converter">
 				<bean:message key="label.menu.converter"/>

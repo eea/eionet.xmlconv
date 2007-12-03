@@ -16,6 +16,7 @@
   <definition name="Error" path="/WEB-INF/tiles/Error.jsp" />
   <definition name="Login" path="/WEB-INF/tiles/Login.jsp" />
   <definition name="Stylesheet" path="/WEB-INF/tiles/stylesheet/Stylesheet.jsp" />
+  <definition name="GeneratedStylesheet" path="/WEB-INF/tiles/stylesheet/GeneratedStylesheet.jsp" />
   <definition name="schemaStylesheets" path="/WEB-INF/tiles/stylesheet/SchemaStylesheets.jsp" />
   <definition name="editStylesheet" path="/WEB-INF/tiles/stylesheet/EditStylesheet.jsp" />
   <definition name="addStylesheet" path="/WEB-INF/tiles/stylesheet/AddStylesheet.jsp" />
@@ -58,6 +59,10 @@
   	<definition name="/stylesheetList.jsp" extends="base">
   		<put name="title"  value="label.stylesheet.title"/>
 	    <put name="body" type="definition" value="Stylesheet"/>
+  	</definition>
+  	<definition name="/generatedStylesheetList.jsp" extends="base">
+  		<put name="title"  value="label.stylesheet.title"/>
+	    <put name="body" type="definition" value="GeneratedStylesheet"/>
   	</definition>
   <definition name="/schemaStylesheets.jsp" extends="base">
     <put name="body" type="definition" value="schemaStylesheets"/>

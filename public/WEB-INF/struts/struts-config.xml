@@ -67,6 +67,9 @@
         <action path="/stylesheetList" type="eionet.gdem.web.struts.stylesheet.StylesheetListAction">
             <forward name="success" path="/stylesheetList.jsp" redirect="true"/>            
         </action>
+        <action path="/generatedStylesheetList" type="eionet.gdem.web.struts.stylesheet.GeneratedStylesheetListAction">
+            <forward name="success" path="/generatedStylesheetList.jsp" redirect="true"/>            
+        </action>
         <action path="/deleteSchema"  scope="request" type="eionet.gdem.web.struts.stylesheet.SchemaDeleteAction">           
         	<forward name="success" path="/do/stylesheetList"  redirect="true"/>            
         </action>        

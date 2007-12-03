@@ -133,21 +133,70 @@
 						</form>
 					</td>
 					<td align="left"> 
-						<form action="stylesheetList">
-							<div>
-								<input type="submit" class="button" value="<bean:message key="label.ok"/>" />
-							</div>
-						</form>
-					</td>
+			<logic:present name="backList" scope="request">
+				<logic:equal name="backList" scope="request" value="generated">
+					<form action="generatedStylesheetList">
+						<div>
+							<input type="submit" class="button" value="<bean:message key="label.ok"/>" />
+						</div>				
+					</form>
+				</logic:equal>
+				<logic:equal name="backList" scope="request" value="uplschemas">
+					<form action="uplSchemas">
+						<div>
+							<input type="submit" class="button" value="<bean:message key="label.ok"/>" />
+						</div>				
+					</form>
+				</logic:equal>
+				<logic:equal name="backList" scope="request" value="">
+					<form action="stylesheetList">
+						<div>
+							<input type="submit" class="button" value="<bean:message key="label.ok"/>" />
+						</div>				
+					</form>
+				</logic:equal>
+			</logic:present>
+			<logic:notPresent name="backList" scope="request">
+				<form action="stylesheetList">
+					<div>
+						<input type="submit" class="button" value="<bean:message key="label.ok"/>" />
+					</div>				
+				</form>
+			</logic:notPresent>					</td>
 				</tr>
 			</table>
 		</logic:equal>
 		<logic:notEqual name="ssiPrm" value="true"  name="schema.stylesheets" scope="session" property="ssiPrm" >
-			<form action="stylesheetList">
-				<div>
-					<input type="submit" class="button" value="<bean:message key="label.ok"/>" />
-				</div>				
-			</form>
+			<logic:present name="backList" scope="request">
+				<logic:equal name="backList" scope="request" value="generated">
+					<form action="generatedStylesheetList">
+						<div>
+							<input type="submit" class="button" value="<bean:message key="label.ok"/>" />
+						</div>				
+					</form>
+				</logic:equal>
+				<logic:equal name="backList" scope="request" value="uplschemas">
+					<form action="uplSchemas">
+						<div>
+							<input type="submit" class="button" value="<bean:message key="label.ok"/>" />
+						</div>				
+					</form>
+				</logic:equal>
+				<logic:equal name="backList" scope="request" value="">
+					<form action="stylesheetList">
+						<div>
+							<input type="submit" class="button" value="<bean:message key="label.ok"/>" />
+						</div>				
+					</form>
+				</logic:equal>
+			</logic:present>
+			<logic:notPresent name="backList" scope="request">
+				<form action="stylesheetList">
+					<div>
+						<input type="submit" class="button" value="<bean:message key="label.ok"/>" />
+					</div>				
+				</form>
+			</logic:notPresent>
 		</logic:notEqual>
 	</div>
 </logic:present>
