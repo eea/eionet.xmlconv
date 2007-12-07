@@ -52,6 +52,8 @@ import java.io.StringReader;
 public class SaxonImpl implements XQEngineIF {
 
   private LoggerIF _logger;
+  private String encoding = null;
+  private String outputType = null;
 
   public SaxonImpl() {
     _logger=GDEMServices.getLogger();
@@ -96,7 +98,7 @@ public class SaxonImpl implements XQEngineIF {
     String s="";
    	runQuery(script,xqParams, result);
     try{
-    	s = result.toString("UTF-8");
+    	s = result.toString(DEFAULT_ENCODING);
     	//result.close(); //??
     } catch (Exception e) {
     	_logger.debug("==== CATCHED EXCEPTION " + e.toString() );
@@ -127,8 +129,14 @@ public class SaxonImpl implements XQEngineIF {
 
     Properties outputProps = new Properties();
     outputProps.setProperty(OutputKeys.INDENT, "yes");
+    outputProps.setProperty(OutputKeys.ENCODING, DEFAULT_ENCODING);
+	outputProps.setProperty(OutputKeys.METHOD, getOutputType());
+    if(getOutputType().equals(XML_CONTENT_TYPE))
+        outputProps.setProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+    else
+        outputProps.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 
-    //query script
+//query script
     Reader queryReader = new StringReader(script);
 
 //    staticEnv.setBaseURI(new File(script).toURI().toString());
@@ -252,6 +260,27 @@ private String parseErrors(String err, StaticQueryContext staticEnv){
     buf.append(err.substring(last));
 
     return  buf.toString();
+}
+public String getEncoding() {
+	if(Utils.isNullStr(encoding))encoding=DEFAULT_ENCODING;
+	
+	return encoding;
+}
+public void setEncoding(String encoding) {
+	this.encoding = encoding;
+}
+public String getOutputType() {
+	if(Utils.isNullStr(outputType))outputType=DEFAULT_OUTPUTTYPE;
+	return outputType;
+}
+public void setOutputType(String outputType) {
+	outputType=outputType==null ? DEFAULT_OUTPUTTYPE : outputType.trim().toLowerCase();
+	outputType = outputType.equals("txt")?"text":outputType;
+	if(outputType.equals("xml") || outputType.equals("html") ||
+			outputType.equals("text") ||outputType.equals("xhtml"))
+		this.outputType = outputType;
+	else
+		this.outputType = DEFAULT_OUTPUTTYPE;
 }
 /*
   public static void main(String [] a) throws Exception {

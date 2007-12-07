@@ -35,6 +35,7 @@ public class XQScript {
   private String _script; //XQuery script
   private String[] _xqParams; //parameter name + value pairs
   private String strResultFile;
+  private String _outputType;
 
   //XQ Engine instance
   private static XQEngineIF _engine;
@@ -46,9 +47,13 @@ public class XQScript {
    * in format {name1=value1, name2=value2, ... , nameN=valueN}
    * if no parameters, null should be passed
    */
-  public XQScript(String xqScript, String[] params)  { 
-    _script = xqScript;  
-    _xqParams=params;
+  public XQScript(String xqScript, String[] params)  {
+	  this(xqScript,params,XQEngineIF.DEFAULT_OUTPUTTYPE);
+  }
+  public XQScript(String xqScript, String[] params, String outputType)  {
+	  _script = xqScript;  
+	  _xqParams=params;
+	  _outputType=outputType;	  
   }
 
   private void initEngine() throws GDEMException {
@@ -62,10 +67,12 @@ public class XQScript {
   */
   public String getResult() throws GDEMException {
     initEngine();
+    _engine.setOutputType(_outputType);
     return _engine.getResult(_script, _xqParams);
   }
   public void getResult(OutputStream out) throws GDEMException {
     initEngine();
+    _engine.setOutputType(_outputType);
     _engine.getResult(_script, _xqParams, out);
   }
   public void setResulFile(String fileName){

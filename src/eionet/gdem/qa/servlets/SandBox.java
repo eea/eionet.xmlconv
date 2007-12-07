@@ -191,6 +191,8 @@ public class SandBox  extends HttpServlet implements Constants {
 					}
 
 					String resultContentType = getContentType(query);
+					String xqOutputType=(query!=null && query.get("content_type")!=null) ?
+							(String)query.get("content_type"):null;
 
 					//get the trusted URL from source file adapter
 					dataURL = SourceFileManager.getSourceFileAdapterURL(
@@ -199,13 +201,14 @@ public class SandBox  extends HttpServlet implements Constants {
 					String[] pars = new String[1];
 					pars[0] = XQ_SOURCE_PARAM_NAME + "=" + dataURL;
 
-					XQScript xq = new XQScript(xqScript, pars);
+					XQScript xq = new XQScript(xqScript, pars,  xqOutputType);
 					//OutputStream outstream = res.getOutputStream();
+					OutputStream output = null;					
 					try {
 						if(!resultContentType.equals(HTML_CONTENT_TYPE)){
 							res.setContentType(resultContentType);
 							res.setCharacterEncoding(HTML_CHARACTER_ENCODING);
-							OutputStream output = res.getOutputStream();
+							output = res.getOutputStream();
 							xq.getResult(output);
 							return;
 						}
@@ -213,11 +216,19 @@ public class SandBox  extends HttpServlet implements Constants {
 							result = xq.getResult();
 							req.setAttribute(XQ_RESULT_ATT, result);
 						    req.getRequestDispatcher(Names.SANDBOX_RESULT_JSP).forward(req,res);
+							return;
 						}
 					} catch (GDEMException ge){
 						result = ge.getMessage();
-						req.setAttribute(Names.ERROR_ATT, result);
-					    req.getRequestDispatcher(Names.SANDBOX_RESULT_JSP).forward(req,res);				
+						if(output==null){
+							req.setAttribute(Names.ERROR_ATT, result);
+						    req.getRequestDispatcher(Names.SANDBOX_RESULT_JSP).forward(req,res);																		
+							return;
+						}
+						else{
+							output.write(result.getBytes());
+							return;
+						}
 					}
 				}
 			}
@@ -275,15 +286,17 @@ public class SandBox  extends HttpServlet implements Constants {
 
 					HashMap query = getQueryInfo(q_id);
 					String resultContentType = getContentType(query);
-					res.setContentType(getContentType(query));
+					String xqOutputType=(query!=null && query.get("content_type")!=null) ?
+						(String)query.get("content_type"):null;
 
-					xq = new XQScript(xqScript, pars);
+					xq = new XQScript(xqScript, pars, xqOutputType);
+					OutputStream output =null;
 					try {
 						//System.out.println("siin2");
 						if(!resultContentType.equals(HTML_CONTENT_TYPE)){
 							res.setContentType(resultContentType);
 							res.setCharacterEncoding(HTML_CHARACTER_ENCODING);
-							OutputStream output = res.getOutputStream();
+							output = res.getOutputStream();
 							xq.getResult(output);
 							return;
 						}
@@ -295,9 +308,15 @@ public class SandBox  extends HttpServlet implements Constants {
 						}
 					} catch (GDEMException ge){
 						result = ge.getMessage();
-						req.setAttribute(Names.ERROR_ATT, result);
-					    req.getRequestDispatcher(Names.SANDBOX_RESULT_JSP).forward(req,res);				
-						return;
+						if(output==null){
+							req.setAttribute(Names.ERROR_ATT, result);
+						    req.getRequestDispatcher(Names.SANDBOX_RESULT_JSP).forward(req,res);				
+							return;
+						}
+						else{
+							output.write(result.getBytes());
+							return;
+						}
 					}
 				}
 				// Add job to workqueue engine

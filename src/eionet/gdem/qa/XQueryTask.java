@@ -36,6 +36,7 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.Properties;
+import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 
 
@@ -46,6 +47,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Iterator;
 
 
@@ -66,6 +68,7 @@ public class XQueryTask extends Thread implements Constants {
 
 
 	private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
+	private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
 
 
   //int status;
@@ -143,7 +146,6 @@ public class XQueryTask extends Thread implements Constants {
       if (_logger.enable(_logger.INFO))
         _logger.info("Job ID=" + _jobId + " Validation started");
 
-      FileInputStream fis = null;
       try {
         if (_logger.enable(_logger.INFO))
           _logger.info("** XQuery starts, ID=" + _jobId +
@@ -151,9 +153,8 @@ public class XQueryTask extends Thread implements Constants {
             " result will be stored to " + _resultFile );
         ValidationService vs = new ValidationService();
 
-        fis = new FileInputStream(srcFile);
         //XML Schema shoul be in schemaLocation attribute
-        String result = vs.validateSchema(fis, _scriptFile);
+        String result = vs.validateSchema(srcFile, _scriptFile);
 
         if (_logger.enable(_logger.DEBUG))
           _logger.debug("Validation proceeded, now store to the result file");
@@ -165,17 +166,18 @@ public class XQueryTask extends Thread implements Constants {
         return;
       }
       finally{
-        if (fis!=null){
-          try{
-            fis.close();
-          }catch(Exception e){};
-        }
       }
     }
     else{//Do xq job
       if (_logger.enable(_logger.INFO))
         _logger.info("Job ID=" + _jobId + " XQ processing started");
 
+      //read query info from DB.
+      HashMap query = getQueryInfo(_queryID);
+      String content_type = null;
+      if (query!=null && query.containsKey("content_type")){
+			content_type = (String)query.get("content_type");
+      }
 
       String[] xqParam={XQ_SOURCE_PARAM_NAME + "=" + srcFile};
 
@@ -192,7 +194,7 @@ public class XQueryTask extends Thread implements Constants {
         if (_logger.enable(_logger.DEBUG))
         		_logger.debug("Script: \n" + xqScript );
 
-        XQScript xq = new XQScript(xqScript, xqParam);
+        XQScript xq = new XQScript(xqScript, xqParam,content_type);
         FileOutputStream out=null;
         //System.out.println("==>filename " + _resultFile);
         try{
@@ -334,6 +336,21 @@ public class XQueryTask extends Thread implements Constants {
       handleError(e.toString(), false);
     }
   }
+	/*
+	 * loads Query info from database
+	 */
+	private HashMap getQueryInfo(String id){
+		HashMap query = null;
+		if(id != null) {
+			try{
+				query = queryDao.getQueryInfo(id);
+			}
+			catch(Exception e){
+
+			}
+		}
+		return query;
+	}
 
 
 }

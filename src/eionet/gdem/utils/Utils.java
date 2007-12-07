@@ -172,7 +172,8 @@ public class Utils {
 
   public static void deleteFile(String fName) {
     File f = new File(fName);
-    f.delete();
+    if(f.exists())
+    	f.delete();
 
   }
 

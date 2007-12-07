@@ -41,6 +41,7 @@ import eionet.gdem.services.*;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
@@ -60,9 +61,10 @@ public class XQueryService  implements Constants {
 	  private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();;
 	  private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
 	  private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
+	  private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
-		private String ticket = null;
-		private boolean trustedMode = true;// false for web clients
+	  private String ticket = null;
+	  private boolean trustedMode = true;// false for web clients
 
   private static LoggerIF _logger;
 
@@ -186,12 +188,19 @@ public class XQueryService  implements Constants {
 	  _logger.info("XML/RPC call for analyze xml: " + orig_file);
 
 	  if (result==null) result = new Vector();
+	  Vector outputTypes = null;
       //get all possible xqueries from db
       String newId="-1"; //should not be returned with value -1;
       String file=orig_file;
 
       Vector _queries = listQueries(schema);
       try{
+    	  outputTypes = convTypeDao.getConvTypes();
+  		} catch (SQLException sqe ) {
+  			throw new GDEMException("DB operation failed: " + sqe.toString());
+  		}
+
+	  try{
   		//get the trusted URL from source file adapter
       	file = SourceFileManager.getSourceFileAdapterURL(
   				ticket,file,trustedMode);
@@ -209,8 +218,9 @@ public class XQueryService  implements Constants {
         String query_id = (String)_querie.get("query_id");
         String query_file = (String)_querie.get("query");
         String content_type = (String)_querie.get("content_type_out");
+        String fileExtension = getExtension(outputTypes, content_type);
         String resultFile=Properties.tmpFolder + "gdem_q" + query_id + "_" +
-            System.currentTimeMillis() + "." + content_type.toLowerCase();
+            System.currentTimeMillis() + "." + fileExtension;
         try {
           int int_qID =0;
           try {
@@ -252,7 +262,24 @@ public class XQueryService  implements Constants {
 	  _logger.info("Analyze xml result: " + result.toString());
       return result;
   }
-  /**
+  private String getExtension(Vector outputTypes, String content_type) {
+	String ret="html";
+	if(outputTypes==null)return ret;
+	if(content_type==null)return ret;
+	
+	for(int i=0;i<outputTypes.size();i++){
+		Hashtable outType = (Hashtable)outputTypes.get(i);
+		if(outType==null)continue;
+		if(!outType.containsKey("conv_type") || !outType.containsKey("file_ext") || 
+				outType.get("conv_type")==null || outType.get("file_ext")==null)continue;
+		String typeId = (String)outType.get("conv_type");
+		if(!content_type.equalsIgnoreCase(typeId))continue;
+		ret = (String)outType.get("file_ext");
+	}
+	
+	return ret;
+}
+/**
   * Request from XML/RPC client
   * Stores the xqScript and starts a job in the workqueue
   * @param String url: URL of the srouce XML
@@ -348,6 +375,27 @@ public class XQueryService  implements Constants {
         _logger.info("Delete the job: " + jobId);
 			} catch (SQLException sqle) {
 				throw new GDEMException("Error getting XQJob data from DB: " + sqle.toString());
+			}
+			//delete files only, if debug is not enabled
+			if (status == XQ_READY && !_logger.enable(LoggerIF.DEBUG)){
+				//delete the result from filesystem
+				String resultFile = jobData[2];
+				try{
+					Utils.deleteFile(resultFile);
+				}
+				catch(Exception e){
+					_logger.error("Could not delete job result file: " + resultFile + "." + e.getMessage());
+				}
+				//	delete XQuery file, if it is stored in tmp folder
+				String xqFile = jobData[1];
+				try{
+    				//Important!!!: delete only, when the file is stored in tmp folder 
+    				if(xqFile.startsWith(Properties.tmpFolder))
+    					Utils.deleteFile(xqFile);
+				}
+				catch(Exception e){
+					_logger.error("Could not delete job result file: " + xqFile + "." + e.getMessage());
+				}
 			}
 		}
 		return ret;
@@ -471,7 +519,7 @@ public class XQueryService  implements Constants {
 	  				if (!Utils.isNullStr((String)hash.get("meta_type")))
     					content_type = (String)hash.get("meta_type");
 	  				outstream = new ByteArrayOutputStream();
-	  				XQScript xq = new XQScript(xqScript, pars);
+	  				XQScript xq = new XQScript(xqScript, pars, (String)hash.get("content_type"));
 
 	  				xq.getResult(outstream);
 	  				result_bytes = outstream.toByteArray();
