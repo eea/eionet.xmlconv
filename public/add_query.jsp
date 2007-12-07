@@ -87,7 +87,7 @@ response.setDateHeader("Expires", 0);
 						<select class="small" name="CONTENT_TYPE" id="contenttypefield" title="content type of resilt file">
 							<option value="HTML">HTML</option>
 							<option value="XML">XML</option>
-							<option value="TXT">TEXT</option>
+							<option value="TEXT">TEXT</option>
 						</select>
 					</td>
 				</tr>

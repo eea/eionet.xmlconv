@@ -152,7 +152,7 @@ response.setHeader("charset","no-store");
 							<select class="small" name="CONTENT_TYPE" id="contenttypefield">
 								<option value="HTML" <% if (content_type.equals("HTML")) %>selected="selected"<%;%>>HTML</option>
 								<option value="XML" <% if (content_type.equals("XML")) %>selected="selected"<%;%>>XML</option>
-								<option value="TXT" <% if (content_type.equals("TXT")) %>selected="selected"<%;%>>TEXT</option>
+								<option value="TEXT" <% if (content_type.equals("TEXT")) %>selected="selected"<%;%>>TEXT</option>
 							</select>
 						<%}else{%>
 							<div id="contenttypefield"><%=content_type%></div>
