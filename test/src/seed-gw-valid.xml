@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dd8:GeneralCharacterisation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dd8="http://dd.eionet.europa.eu/namespace.jsp?ns_id=8" xmlns:dd37="http://dd.eionet.europa.eu/namespace.jsp?ns_id=37" xsi:schemaLocation="http://dd.eionet.europa.eu/namespace.jsp?ns_id=8 http://dd.eionet.europa.eu/GetSchema?id=TBL4564">
+	<dd8:Row status="new">
+		<dd37:GWEWN-Code>GWCode</dd37:GWEWN-Code>
+		<dd37:GWName></dd37:GWName>
+		<dd37:GWReference_year>2001</dd37:GWReference_year>
+		<dd37:GWNo_of_horizon></dd37:GWNo_of_horizon>
+		<dd37:artificial_recharge>no</dd37:artificial_recharge>
+		<dd37:main_infrastructures_which></dd37:main_infrastructures_which>
+		<dd37:Annual_gw_level_amplitude_min>22</dd37:Annual_gw_level_amplitude_min>
+		<dd37:Hydraulic_conductivity_min></dd37:Hydraulic_conductivity_min>
+		<dd37:Depth_to_groundwater_max></dd37:Depth_to_groundwater_max>
+		<dd37:Thickness_max>25</dd37:Thickness_max>
+		<dd37:Land_use_urban_areas>28</dd37:Land_use_urban_areas>
+		<dd37:Annual_gw_level_amplitude_mean>11</dd37:Annual_gw_level_amplitude_mean>
+		<dd37:water_abstraction>no</dd37:water_abstraction>
+		<dd37:Thickness_mean>12</dd37:Thickness_mean>
+		<dd37:National_code></dd37:National_code>
+		<dd37:Location></dd37:Location>
+		<dd37:Stratigraphy>Ordovician</dd37:Stratigraphy>
+		<dd37:Land_use_forest_and_woodland>22</dd37:Land_use_forest_and_woodland>
+		<dd37:GWArea>77</dd37:GWArea>
+		<dd37:Annual_precipitation_max>89</dd37:Annual_precipitation_max>
+		<dd37:Hydraulic_conductivity_mean></dd37:Hydraulic_conductivity_mean>
+		<dd37:associated_aquatic_ecosystems_which></dd37:associated_aquatic_ecosystems_which>
+		<dd37:Main_aquifer_type>Fractured media</dd37:Main_aquifer_type>
+		<dd37:Maximum_width>211</dd37:Maximum_width>
+		<dd37:Annual_precipitation_mean>32</dd37:Annual_precipitation_mean>
+		<dd37:Depth_to_groundwater_min></dd37:Depth_to_groundwater_min>
+		<dd37:Annual_gw_level_amplitude_max>222</dd37:Annual_gw_level_amplitude_max>
+		<dd37:Depth_to_groundwater_mean></dd37:Depth_to_groundwater_mean>
+		<dd37:Hydraulic_conductivity_max></dd37:Hydraulic_conductivity_max>
+		<dd37:Land_use_permanent_pasture>88</dd37:Land_use_permanent_pasture>
+		<dd37:Main_recharge_source>Groundwaters</dd37:Main_recharge_source>
+		<dd37:Annual_precipitation_min>33</dd37:Annual_precipitation_min>
+		<dd37:water_abstraction_purpose></dd37:water_abstraction_purpose>
+		<dd37:Land_use_permanent_crops>44</dd37:Land_use_permanent_crops>
+		<dd37:Land_use_other>2</dd37:Land_use_other>
+		<dd37:Overlaying_strata></dd37:Overlaying_strata>
+		<dd37:Maximum_length>111</dd37:Maximum_length>
+		<dd37:Petrographic_descript>Carbonate - fractured</dd37:Petrographic_descript>
+		<dd37:artificial_recharge_purpose></dd37:artificial_recharge_purpose>
+		<dd37:Land_use_arable_land>34</dd37:Land_use_arable_land>
+		<dd37:associated_aquatic_ecosystems>no</dd37:associated_aquatic_ecosystems>
+		<dd37:main_infrastructures>no</dd37:main_infrastructures>
+		<dd37:Thickness_min>33</dd37:Thickness_min>
+	</dd8:Row>
+</dd8:GeneralCharacterisation>
