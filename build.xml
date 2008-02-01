@@ -1,103 +1,157 @@
-<project name="xmlconv" default="buildjar" basedir=".">
-	<!-- set global properties for this build -->
-	<property name="src" value="src"/>
-        <property file="${basedir}/build.properties" />
-	<property name="lib" value="public/WEB-INF/lib"/>
-	<property name="classes.dir" value="public/WEB-INF/classes"/>
-	<target name="make_gzip" depends="check_os" if="is_unix">
-		<tar tarfile="xmlconv.tar">
-			<tarfileset dir=".." prefix="xmlconv"/>
-		</tar>
-		<gzip zipfile="xmlconv.tar.gz" src="../xmlconv.tar"/>
-		<!--delete file="xmlconv.tar"/-->
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ================================================== -->
+<!-- BUILDFILE FOR XMLCONV
+
+	Ant reads all arguments from build.properties file.
+		build.dir - directory where the application will be installed eg.  /tomcat/webapps
+		servletapi.jar - servletapi.jar file location eg. /tomcat/common/lib/srvletapi.jar
+		vhost - if tdefined, the application will be installed as a new virtual host. 
+												Otherwise it is installed under webapps folder under existing virtual host.
+
+	If build.properties doesn't exist yet, then make a copy from default.properties and rename it to build.properties. Modify properties, if needed.
+	
+
+     The main targets are:
+
+	compile
+	   compiles java classes into classes.dir.
+
+	buildjar
+	   builds xmlconv.jar into WEB-INF/lib directory. removes also compiled java classes from classes directory.
+
+     install
+        creates the correct deployment directory structure in the target build.dir and
+        copies all web (jsp, xsl, xml,images, css and js), configuration (web.xml)
+        related data there, java libraries and builds jar file.
+
+     clean
+        this target removes all compiled java classes from classes.dir,
+        but does not touch the rest (jsp, html, xml, stylesheets etc.)
+
+	test
+		runs unit tests
+
+	 default is install 
+  -->
+<!-- use JAR instead of classes because it makes it easier to debug errors -->
+
+
+<project name="xmlconv" default="install" basedir=".">
+
+	<target name="init">
+
+        <condition property="build.properties.exists">
+                <available file="build.properties" />
+        </condition>
+
+        <fail unless="build.properties.exists"
+            message="Couldn't find build.properties file! Make a copy from default.properties and rename it to build.properties. Modify properties, if needed."/>
+
+		<loadproperties srcFile="build.properties"/>
+
+        <fail unless="build.dir"
+            message="Mandatory build.dir property is missing in build.properties file. Please provide a directory name as build.dir property value where the application will be installed eg.  build.dir=/tomcat/webapps/webrod "/>
+
+		<!-- set global properties for this build -->
+		<property name="src" value="src"/>
+		<property name="lib" value="public/WEB-INF/lib"/>
+		<property name="classes.dir" value="${build.dir}/public/WEB-INF/classes"/>
+		<property name="test" value="test"/>
+		<property name="test-build" value="test/build"/>
+
+		<!-- define external classpath, i.e. JARs and classes not found in WEB-INF/classes and WEB-INF/lib -->
+		<path id="classpath.externals">
+			<pathelement location="${servletapi.jar}"/>
+		</path>
+
+		<!-- define classpath for compile -->
+		<path id="classpath.compile">
+			<path refid="classpath.externals"/>
+			<fileset dir="public/WEB-INF/lib">
+				<include name="*.jar"/>
+			</fileset>
+		</path>
+
 	</target>
-	<target name="make_zip" depends="check_os" if="is_win">
-		<!--target name="make_zip" depends="check_os" if="is_win"-->
-		<zip destfile="xmlconv.zip">
-			<zipfileset dir=".." prefix="xmlconv"/>
-		</zip>
+
+	<!-- compile -->
+	<target name="compile" depends="init,clean">
+		<javac debug="on" deprecation="off" srcdir="${src}" destdir="${classes.dir}" description="compiles java classes into classes path">
+            <classpath refid="classpath.compile"/>
+        </javac>
 	</target>
-	<target name="make_package" depends="make_gzip,make_zip">
-		<antcall target="clean"/>
+
+	<!-- install  -->
+	<target name="install" depends="init, copyfiles">
+		<antcall target="checkProps"/>
+		<antcall target="create_context"/>
 	</target>
-	<!-- if it is installed as a new virtual host -->
-	<target name="root_context" if="vhost">
-		<copy file="ROOT.xml" todir="${prefix}/xmlconv" overwrite="true"/>
-		<copy file="xmlconv_vhost_server.xml" todir="${prefix}/xmlconv" overwrite="true"/>
-		<echo>==================================================================</echo>
-		<echo>=== You are installing GDEM application as a virtual host</echo>
-		<echo>=== Remember to add a virtual host TAG into  the server.xml</echo>
-		<echo>=== if not existing yet																		</echo>
-		<echo>=== Look example at: ${prefix}/xmlconv/xmlconv_vhost_server.xml	</echo>
-		<echo>==================================================================</echo>
-		<echo>=== NB! NO CONTEXT TAG IS NEEDED inside Host tag at server.xml</echo>
-		<echo>=== Tomcat loads it from ${prefix}/xmlconv/ROOT.xml							</echo>
-		<echo>==================================================================</echo>
-	</target>
-	<target name="clean_tar" if="is_unix">
-		<!--delete file="xmlconv.tar.gz"/-->
-		<delete file="xmlconv.tar"/>
-	</target>
-	<target name="clean_zip" if="is_win">
-		<!--delete file="xmlconv.zip"/-->
-	</target>
-	<target name="clean">
-		<delete dir="${classes.dir}"/>
-	</target>
-	<!-- if it is installed under webapps folder under existing virtual host -->
-	<target name="webapp_context" unless="vhost">
-		<copy file="xmlconv.xml" todir="${prefix}/xmlconv" overwrite="true"/>
-	</target>
-	<target name="create_context" depends="webapp_context,root_context"/>
-	<target name="check_os">
-		<!--fail unless="prefix" message="Usage: ant install -Dprefix={directory to install}"/-->
-		<condition property="is_win">
-			<os family="windows"/>
-		</condition>
-		<condition property="is_unix">
-			<os family="unix"/>
-		</condition>
-	</target>
-	<target name="compile">
-		<!--fail unless="prefix" message="Usage: ant install -Dprefix={directory to install}"/-->
-		<!-- Compile the java code from ${src} into ${build} -->
-		<echo message="Using java version ${ant.java.version}"/>
-		<mkdir dir="${classes.dir}"/>
-		<javac debug="on" deprecation="off" srcdir="${src}" destdir="${classes.dir}" classpath="${lib}/avalon.jar;
-						            ${lib}/uit-security.jar;
-                                    ${lib}/uit-client.jar;
-									${lib}/casclient.jar;
-                                    ${lib}/commons-fileupload-1.0.jar;
-						            ${lib}/commons-beanutils-1.6.1.jar;
-                                    ${lib}/batik.jar;
-                                    ${lib}/fop.jar;
-                                    ${lib}/poi-2.5.1-final-20040804.jar;
-                                    ${lib}/servlet-api.jar;
-                                    ${lib}/jsp-api.jar;
-                                    ${lib}/struts-1.2.4.jar;
-                                    ${lib}/jstl.jar;
-                                    ${lib}/MetadataAggregator.jar;
-                                    ${lib}/saxon8.jar;
-                                    ${lib}/saxon8-xqj.jar;
-                                    ${lib}/log4j.jar;
-                                    ${lib}/xalan-j2-2.6.0.jar;
-                                    ${lib}/xml-apis.jar;
-                                    ${lib}/xercesImpl.jar;"/>
-	</target>
+
 	<!-- build xmlconv.jar -->
 	<target name="buildjar" depends="compile">
 		<jar basedir="${classes.dir}" jarfile="public/WEB-INF/lib/xmlconv.jar" includes="**/*.class"/>
 		<!--delete dir="${classes.dir}/eionet"/-->
+		<antcall target="clean"/>
 	</target>
-	<target name="install" depends="copyfiles">
-		<antcall target="checkProps"/>
-		<antcall target="create_context"/>
+
+
+	<!-- clean classes directory -->
+	<target name="clean">
+		<delete dir="${classes.dir}/eionet"/>
 	</target>
-	<!-- put buildjar back -->
-	<target name="copyfiles" depends="buildjar">
+
+<!--	##########################  	-->
+<!-- 				CONTEXT related  targets  						-->
+<!--	##########################  	-->
+
+	<!-- if it is installed as a new virtual host, then create root context -->
+	<target name="root_context" if="install.vhost" description="suggestion for creating virtual host in server.xml and installation instructions">
+		<copy file="ROOT.xml" todir="${build.dir}" overwrite="true"/>
+		<copy file="xmlconv_vhost_server.xml" todir="${build.dir}" overwrite="true"/>
+		<echo>==================================================================</echo>
+		<echo>=== You are installing GDEM application as a virtual host</echo>
+		<echo>=== Remember to add a virtual host TAG into  the server.xml</echo>
+		<echo>=== if not existing yet																		</echo>
+		<echo>=== Look example at: ${build.dir}/xmlconv_vhost_server.xml	</echo>
+		<echo>==================================================================</echo>
+		<echo>=== NB! NO CONTEXT TAG IS NEEDED inside Host tag at server.xml</echo>
+		<echo>=== Tomcat loads it from ${build.dir}/ROOT.xml							</echo>
+		<echo>==================================================================</echo>
+	</target>
+
+	<!-- if it is installed under webapps folder under existing virtual host -->
+	<target name="webapp_context" unless="install.vhost">
+		<copy file="xmlconv.xml" todir="${build.dir}" overwrite="true"/>
+	</target>
+	
+	<target name="create_context">
+		<condition property="install.vhost">
+			<equals arg1="${vhost}" arg2="true"/>
+		</condition>
+		<antcall target="root_context"/>
+	</target>
+	
+<!--	##########################  	-->
+<!--		CREATE and copy  targets			-->
+<!--	##########################  	-->
+
+	<!-- PREPARE folder structure -->
+	<target name="prepare" description="Creates folder structure if not existing yet">
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${build.dir}/acl"/>
+		<mkdir dir="${build.dir}/public"/>
+		<mkdir dir="${build.dir}/public/schema"/>
+		<mkdir dir="${build.dir}/public/WEB-INF"/>
+		<mkdir dir="${build.dir}/public/WEB-INF/classes"/>
+		<mkdir dir="${build.dir}/public/WEB-INF/lib"/>
+	</target>
+
+
+	<!-- COPYFILES -->
+	<target name="copyfiles" depends="prepare,buildjar">
 		<!-- we do not care about these files older versions -->
-		<copy file="GDEMServices.xml" tofile="${prefix}/xmlconv/GDEMServices.xml" overwrite="true"/>
-		<copy todir="${prefix}/xmlconv/public" overwrite="true">
+		<copy file="GDEMServices.xml" tofile="${build.dir}/GDEMServices.xml" overwrite="true"/>
+		<copy todir="${build.dir}/public" overwrite="true">
 			<fileset dir="public">
 				<exclude name="**/*.java"/>
 				<exclude name="**/*.properties"/>
@@ -105,37 +159,42 @@
 				<exclude name="**/jsp-api.jar"/>
 			</fileset>
 		</copy>
-		<copy todir="${prefix}/xmlconv/${classes.dir}" overwrite="false">
+		<copy todir="${classes.dir}" overwrite="false">
 			<fileset dir="${src}" includes="**/*.properties">
 				<exclude name="**/*.class"/>
 			</fileset>
 		</copy>
-		<copy todir="${prefix}/xmlconv/acl" overwrite="false">
+		<copy todir="${build.dir}/acl" overwrite="false">
 			<fileset dir="acl"/>
 		</copy>
 		<!-- should take care of not overwriting them -->
-		<copy todir="${prefix}/xmlconv/public/xsl">
+		<copy todir="${build.dir}/public/xsl">
 			<fileset dir="public/xsl"/>
 		</copy>
 		<condition property="uit.needed">
 			<not>
-				<available file="${prefix}/xmlconv/public/WEB-INF/classes/uit.properties"/>
+				<available file="${build.dir}/public/WEB-INF/classes/uit.properties"/>
 			</not>
 		</condition>
 		<condition property="xmlconv.needed">
 			<not>
-				<available file="${prefix}/xmlconv/public/WEB-INF/classes/gdem.properties"/>
+				<available file="${build.dir}/public/WEB-INF/classes/gdem.properties"/>
 			</not>
 		</condition>
 		<condition property="log4j.needed">
 			<not>
-				<available file="${prefix}/xmlconv/public/WEB-INF/classes/log4j.properties"/>
+				<available file="${build.dir}/public/WEB-INF/classes/log4j.properties"/>
 			</not>
 		</condition>
 		<antcall target="copy_props"/>
 	</target>
+
+
+<!--	##########################  	-->
+<!-- 	 	CHECK PROPERTIES targets 		-->
+<!--	##########################  	-->
 	<target name="checkProps">
-		<loadproperties srcFile="${prefix}/xmlconv/public/WEB-INF/classes/gdem.properties"/>
+		<loadproperties srcFile="${build.dir}/public/WEB-INF/classes/gdem.properties"/>
 		<condition property="tmp.needed">
 			<not>
 				<isset property="tmp.folder"/>
@@ -156,7 +215,7 @@
 				<isset property="xmlfile.folder"/>
 			</not>
 		</condition>
-		<loadproperties srcFile="${prefix}/xmlconv/public/WEB-INF/classes/uit.properties"/>
+		<loadproperties srcFile="${build.dir}/public/WEB-INF/classes/uit.properties"/>
 		<condition property="srvdef.not.available">
 			<not>
 				<available file="${services.definition.file}"/>
@@ -182,14 +241,14 @@
 			<and>
 				<isset property="xmlfile.folder"/>
 				<not>
-					<available file="${prefix}/xmlconv/public/${xmlfile.folder}" type="dir"/>
+					<available file="${build.dir}/public/${xmlfile.folder}" type="dir"/>
 				</not>
 			</and>
 		</condition>
-		<fail if="tmp.needed" message="Property 'tmp.folder'  is missing from ${prefix}/xmlconv/public/WEB-INF/classes/gdem.properties"/>
-		<fail if="xsl.needed" message="Property 'xsl.folder'  is missing from ${prefix}/xmlconv/public/WEB-INF/classes/gdem.properties"/>
-		<fail if="queries.needed" message="Property 'queries.folder'  is missing from ${prefix}/xmlconv/public/WEB-INF/classes/gdem.properties"/>
-		<fail if="xmlfile.needed" message="Property 'xmlfile.folder'  is missing from ${prefix}/xmlconv/public/WEB-INF/classes/gdem.properties"/>
+		<fail if="tmp.needed" message="Property 'tmp.folder'  is missing from ${build.dir}/public/WEB-INF/classes/gdem.properties"/>
+		<fail if="xsl.needed" message="Property 'xsl.folder'  is missing from ${build.dir}/public/WEB-INF/classes/gdem.properties"/>
+		<fail if="queries.needed" message="Property 'queries.folder'  is missing from ${build.dir}/public/WEB-INF/classes/gdem.properties"/>
+		<fail if="xmlfile.needed" message="Property 'xmlfile.folder'  is missing from ${build.dir}/public/WEB-INF/classes/gdem.properties"/>
 		<antcall target="warn_definition"/>
 		<antcall target="warn_xsl"/>
 		<antcall target="warn_queries"/>
@@ -214,7 +273,7 @@
 		<echo message="XMLfile folder was not available at: ${xmlfilefolder.folder}"/>
 		<echo message="Create the folder or make a change in gdem.properties"/>
 		<echo message="========================================================================="/-->
-		<mkdir dir="${prefix}/xmlconv/public/${xmlfile.folder}"/>
+		<mkdir dir="${build.dir}/public/${xmlfile.folder}"/>
 	</target>
 	<target name="warn_definition" if="srvdef.not.available">
 		<echo message="========================================================================="/>
@@ -228,12 +287,137 @@
 		<antcall target="cp_log4j"/>
 	</target>
 	<target name="cp_uit" if="uit.needed">
-		<copy file="${src}/uit.properties" tofile="${prefix}/xmlconv/public/WEB-INF/classes/uit.properties"/>
+		<echo message="buiiddir: ${build.dir}"/>
+		<copy file="${src}/uit.properties" tofile="${build.dir}/public/WEB-INF/classes/uit.properties"/>
 	</target>
 	<target name="cp_log4j" if="log4j.needed">
-		<copy file="${src}/log4j.properties" tofile="${prefix}/xmlconv/public/WEB-INF/classes/log4j.properties"/>
+		<copy file="${src}/log4j.properties" tofile="${build.dir}/public/WEB-INF/classes/log4j.properties"/>
 	</target>
 	<target name="cp_xmlconv" if="xmlconv.needed">
-		<copy file="${src}/gdem.properties" tofile="${prefix}/xmlconv/public/WEB-INF/classes/gdem.properties"/>
+		<copy file="${src}/gdem.properties" tofile="${build.dir}/public/WEB-INF/classes/gdem.properties"/>
 	</target>
+
+
+<!--	##########################  	-->
+<!-- 				TEST targets  						-->
+<!--	##########################  	-->
+
+	<!-- define classpath for unit tests -->
+	<path id="classpath.compile-tests">
+		<pathelement path="${test-build}"/>
+		<path refid="classpath.compile"/>
+    </path>
+
+	<!-- cleans the test/build directory -->
+	<target name="clean-tests">
+		<delete dir="${test-build}"/>
+		<mkdir dir="${test-build}"/>
+	</target>
+
+	<!-- copy properties target, unit test needs some properties from gdem.properties file -->
+	<target name="copy-test-props">
+
+		<copy todir="${test-build}" overwrite="false">
+			<fileset dir="${src}" includes="**/*.properties">
+				<exclude name="**/*.class"/>
+			</fileset>
+		</copy>
+		<loadproperties srcFile="${test-build}/gdem.properties"/>
+		<replace file="${test-build}/gdem.properties" token="tmp.folder=${tmp.folder}" value="tmp.folder=${test-build}"/>
+		<loadproperties srcFile="${test-build}/log4j.properties"/>
+		<replace file="${test-build}/log4j.properties" token="log4j.appender.f.File=${log4j.appender.f.File}" value="log4j.appender.f.File=${test-build}/xmlconv-test.log"/>
+
+	</target>
+	
+	<!-- compile target for compiling unit tests, expects classes-under-test compiled, refers to pre-defined paths -->
+	<target name="compile-tests" depends="clean-tests,copy-test-props">
+		
+		<javac srcdir="${src}" destdir="${test-build}" source="1.5" target="1.5" debug="on">
+			<classpath refid="classpath.test"/>
+		</javac>
+		<javac srcdir="${test}/src" destdir="${test-build}" source="1.5" target="1.5" debug="on">
+			<classpath refid="classpath.test"/>
+		</javac>
+	</target>
+
+	<!-- copies seed for unit tests into the unit tests' build tree -->
+	<target name="seed-tests">
+		<copy todir="${test}/build" overwrite="true">
+			<fileset dir="${test}/src">
+				<include name="**/seed-*.*"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- define classpath to be used by JUnit -->
+	<path id="classpath.test">
+		<pathelement path="test/build"/>
+		<path refid="classpath.compile"/>
+		<fileset dir="test/lib">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
+
+	<!-- define src files to be included and/or excluded when JUnit searches for test cases -->
+	<fileset id="fileset.test" dir="test/src">
+		<include name="**/*Test.java"/>
+	</fileset>
+
+	<!-- test target, refers to pre-defined paths and filesets -->
+  	<target name="test" depends="init,compile-tests,seed-tests" description="Runs all found unit tests">
+		<junit haltonfailure="yes" failureproperty="unittestFailed" showoutput="yes" printsummary="yes">
+			<classpath refid="classpath.test" />
+			<formatter type="brief" usefile="false"/>
+			<batchtest fork="yes">				
+				<fileset refid="fileset.test"/>
+			</batchtest>
+		</junit>
+		<fail if="unittestFailed" message="One or more unit tests failed."/>
+	</target>
+
+
+<!--	##########################  	-->
+<!-- 				ZIP targets 							-->
+<!--	##########################  	-->
+
+	<!-- make gzip package for Linux-->
+	<target name="make_gzip" depends="check_os" if="is_unix">
+		<tar tarfile="../xmlconv.tar">
+			<tarfileset dir="." prefix="xmlconv"/>
+		</tar>
+		<gzip zipfile="xmlconv.tar.gz" src="../xmlconv.tar"/>
+		<!--delete file="xmlconv.tar"/-->
+	</target>
+
+	<!-- make zip package for Windows-->
+	<target name="make_zip" depends="check_os" if="is_win">
+		<!--target name="make_zip" depends="check_os" if="is_win"-->
+		<zip destfile="../xmlconv.zip">
+			<zipfileset dir="." prefix="xmlconv"/>
+		</zip>
+	</target>
+
+	<!-- make zip packages -->
+	<target name="make_package" depends="make_gzip,make_zip">
+		<antcall target="clean"/>
+	</target>
+
+	<target name="clean_tar" if="is_unix">
+		<!--delete file="xmlconv.tar.gz"/-->
+		<delete file="xmlconv.tar"/>
+	</target>
+	<target name="clean_zip" if="is_win">
+		<!--delete file="xmlconv.zip"/-->
+	</target>
+
+	<target name="check_os">
+		<!--fail unless="prefix" message="Usage: ant install -Dprefix={directory to install}"/-->
+		<condition property="is_win">
+			<os family="windows"/>
+		</condition>
+		<condition property="is_unix">
+			<os family="unix"/>
+		</condition>
+	</target>
+
 </project>
