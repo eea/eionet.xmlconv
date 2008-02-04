@@ -101,9 +101,13 @@ public class EionetCASFilter extends CASFilter {
 	
 	
 	public static String getCASLoginURL(HttpServletRequest request) {
-		if (!request.getRequestURL().toString().endsWith(".js")){// strange behaivor need to be checked			
-			request.getSession(true).setAttribute("afterLogin",request.getRequestURL().toString() + (request.getQueryString() != null ? ("?" +request.getQueryString()):"" ));
-		}			
+		
+		// Since Tomcat 5.5 getRequestURL() returns the JSP of the template (lauout.jsp).
+		// If it is a Struts request, then it is a problem, because it is not the URL initiated by client browser.
+		// use javax.servlet.forward.request_uri for getting the original URL
+		//System.out.println(getReturnURL(request));
+		request.getSession(true).setAttribute("afterLogin",getReturnURL(request));
+
 		return CAS_LOGIN_URL + "?service=" + request.getScheme() + "://" + SERVER_NAME + request.getContextPath() + "/login";
 	}
 
@@ -220,7 +224,60 @@ public class EionetCASFilter extends CASFilter {
 		    }
 		    return result.toString();
 		  }
+	  /** 
+	   * Recreates the full URL that originally got the web client to the given 
+	   * request.  This takes into account changes to the request due to request 
+	   * dispatching. copied from: http://issues.apache.org/bugzilla/show_bug.cgi?id=28222
+	   *
+	   * <p>Note that if the protocol is HTTP and the port number is 80 or if the
+	   * protocol is HTTPS and the port number is 443, then the port number is not 
+	   * added to the return string as a convenience.</p>
+	   */
+	  public final static String getReturnURL(HttpServletRequest request)
+	  {
+	      if (request == null)
+	      {
+	          throw new IllegalArgumentException("Cannot take null parameters.");
+	      }
+	      
+	      String scheme = request.getScheme();
+	      String serverName = request.getServerName();
+	      int serverPort = request.getServerPort();
+	      
+	      //try to get the forwarder value first, only if it's empty fall back to the  current value
+	      String requestUri =
+	    	  (String)request.getAttribute("javax.servlet.forward.request_uri");
+	      requestUri = (requestUri == null) ? request.getRequestURI() : requestUri;
+	   
+	      //try to get the forwarder value first, only if it's empty fall back to the current value 
+	      String queryString = (String)request.getAttribute("javax.servlet.forward.query_string");
+	      queryString = (queryString == null) ? request.getQueryString() : queryString;
 
+	      StringBuffer buffer = new StringBuffer();
+	      buffer.append(scheme);
+	      buffer.append("://");
+	      buffer.append(serverName);
+	      
+	      //if not http:80 or https:443, then add the port number
+	      if(
+	          !(scheme.equalsIgnoreCase("http") && serverPort == 80) &&
+	          !(scheme.equalsIgnoreCase("https") && serverPort == 443)
+	      )
+	      {
+	          buffer.append(":");
+	          buffer.append(String.valueOf(serverPort));
+	      }
+	      
+	      buffer.append(requestUri);
+	      
+	      if (queryString != null)
+	      {
+	          buffer.append("?");
+	          buffer.append(queryString);
+	      }
+	      
+	      return buffer.toString();
+	  }
 }
 
 class CASFilterChain implements FilterChain {
