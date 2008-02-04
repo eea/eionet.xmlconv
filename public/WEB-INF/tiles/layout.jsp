@@ -35,7 +35,6 @@ response.setDateHeader("Expires", 0);
 		</style>
 		<link rel="shortcut icon" href="<c:url value="/images/favicon.ico"/>" type="image/x-icon" ></link>
 		<script type="text/javascript" src="<c:url value="/scripts/admin.js"/>"></script>
-		<script type="text/javascript" src="<c:url value="/scripts/user.js"/>"></script>
 		<script type="text/javascript" src="<c:url value="/scripts/pageops.js"/>"></script>
 		<script type="text/javascript">
 			// <![CDATA[
