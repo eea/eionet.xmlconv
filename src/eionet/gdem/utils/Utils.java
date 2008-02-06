@@ -29,6 +29,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -534,6 +535,27 @@ public class Utils {
 			formatter = new SimpleDateFormat(pattern);
 
 		return formatter.format(date);
+	}
+	/**
+	 *	parses String to Date
+	 * @param String date
+	 * @param pattern
+	 * @return Date object
+	 * @throws ParseException 
+	 */
+	public static Date parseDate(String srtDate, String pattern) throws ParseException{
+
+		if (srtDate==null)
+			return null;
+
+		SimpleDateFormat formatter = null;
+		if (pattern==null)
+			formatter = new SimpleDateFormat();
+		else
+			formatter = new SimpleDateFormat(pattern);
+
+		
+		return formatter.parse(srtDate);
 	}
 	/**
 	 * Generates checksum (MD5) value from filepath

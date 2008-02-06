@@ -22,6 +22,7 @@
 package eionet.gdem.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public class Schema implements Serializable {
@@ -35,7 +36,8 @@ public class Schema implements Serializable {
 	private String table;
 	private String dataset;
 	private List cdrfiles;
-
+	private Date datasetReleased;
+	
 
 	public Schema() {
 
@@ -128,5 +130,15 @@ public class Schema implements Serializable {
 
 	public void setCdrfiles(List cdrfiles) {
 		this.cdrfiles = cdrfiles;
+	}
+
+
+	public Date getDatasetReleased() {
+		return datasetReleased;
+	}
+
+
+	public void setDatasetReleased(Date datasetReleased) {
+		this.datasetReleased = datasetReleased;
 	}
 }

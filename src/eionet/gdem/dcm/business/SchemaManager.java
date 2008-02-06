@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -35,8 +34,8 @@ import java.util.List;
 import java.util.Vector;
 
 import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.struts.upload.FormFile;
-
 
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ConversionService;
@@ -193,44 +192,8 @@ public class SchemaManager {
 			//if type==generated, then show only generated from DD  sttyleseets
 			if(type.equals("generated") || type.equals("all")){
 			// retrive conversions for DD tables
-			List ddTables = DDServiceClient.getDDTables();
-			schemas = new ArrayList();
-
-			for (int i = 0; i < ddTables.size(); i++) {
-				Hashtable schema = (Hashtable) ddTables.get(i);
-				String tblId = (String) schema.get("tblId");
-				String schemaUrl = Properties.ddURL + "/GetSchema?id=TBL" + tblId;
-
-				Schema sc = new Schema();
-				sc.setId("TBL" + tblId);
-				sc.setSchema(schemaUrl);
-				sc.setTable((String) schema.get("shortName"));
-				sc.setDataset((String) schema.get("dataSet"));
-
-				List ddStylesheets = Conversion.getConversions();
-				ArrayList stls = new ArrayList();
-
-				for (int j = 0; j < ddStylesheets.size(); j++) {
-					ConversionDto ddConv = ((ConversionDto) ddStylesheets.get(j));
-
-					String convId = ddConv.getConvId();
-					String xsl_url = Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv=" + convId;
-
-					Stylesheet stl = new Stylesheet();
-					stl.setType(ddConv.getResultType());
-					stl.setXsl(xsl_url);
-					stl.setXsl_descr(ddConv.getDescription());
-					stl.setDdConv(true);
-					stls.add(stl);
-				}
-				sc.setStylesheets(stls);
-				schemas.add(sc);
-			}
-
-			BeanComparator comp = new BeanComparator("table");
-			Collections.sort(schemas, comp);
-
-			st.setDdStylesheets(schemas);
+				schemas = getDDSchemas(true);
+				st.setDdStylesheets(schemas);
 			}
 
 		} catch (Exception e) {
@@ -418,7 +381,11 @@ public class SchemaManager {
 
 	}
 
-
+	/**
+	 *	Get DD Schemas and append schemas founf from database 
+	 * 	@return
+	 * 	@throws DCMException
+	 */
 	public ArrayList getSchemas() throws DCMException {
 
 		ArrayList schemas = new ArrayList();
@@ -428,7 +395,7 @@ public class SchemaManager {
 		try {
 
 			// retrive conversions for DD tables
-			List ddTables = DDServiceClient.getDDTables();
+			List ddTables = getDDTables();
 
 			for (int i = 0; i < ddTables.size(); i++) {
 				Hashtable schema = (Hashtable) ddTables.get(i);
@@ -440,12 +407,18 @@ public class SchemaManager {
 				sc.setSchema(schemaUrl);
 				sc.setTable((String) schema.get("shortName"));
 				sc.setDataset((String) schema.get("dataSet"));
+				Date d = null;
+				try{
+					d = Utils.parseDate((String)schema.get("dateReleased"), "ddMMyy");
+				}
+				catch(Exception e){
+					_logger.error("Unable to parse DataDictionary dataset released date: " + (String)schema.get("dateReleased"),e);
+				}
+				sc.setDatasetReleased(d);
 				schemas.add(sc);
-				schemasChk.add(schema.get("xml_schema"));
+				schemasChk.add(schemaUrl);
 			}
 
-			BeanComparator comp = new BeanComparator("table");
-			Collections.sort(schemas, comp);
 
 			// append handcoded conversions
 			hcSchemas = schemaDao.getSchemasWithStl();
@@ -464,6 +437,8 @@ public class SchemaManager {
 					schemasChk.add(schema.get("xml_schema"));
 				}
 			}
+			BeanComparator comparator = new BeanComparator( "schema" );			
+			Collections.sort(schemas, comparator);
 
 		} catch (Exception e) {
 			_logger.debug("Error getting schema",e);
@@ -684,15 +659,22 @@ public class SchemaManager {
 
 	}
 
-
 	public ArrayList getDDSchemas() throws DCMException {
+		return getDDSchemas(false);
+	}
+	/**
+	 * Get Schemas and stylesheets generated from DataDictioanry
+	 * @param getStylesheets - generate also stylesheet information
+	 * @return
+	 * @throws DCMException
+	 */
+	public ArrayList getDDSchemas(boolean getStylesheets) throws DCMException {
+		
 		ArrayList schemas = new ArrayList();
-		ArrayList schemasChk = new ArrayList();
 
 		try {
-
-			// retrive conversions for DD tables
-			List ddTables = DDServiceClient.getDDTables();
+			// retrive conversions for DD tables			
+			List ddTables = getDDTables();
 			for (int i = 0; i < ddTables.size(); i++) {
 				Hashtable schema = (Hashtable) ddTables.get(i);
 				String tblId = (String) schema.get("tblId");
@@ -702,11 +684,39 @@ public class SchemaManager {
 				sc.setSchema(schemaUrl);
 				sc.setTable((String) schema.get("shortName"));
 				sc.setDataset((String) schema.get("dataSet"));
+				Date d = null;
+				try{
+					d = Utils.parseDate((String)schema.get("dateReleased"), "ddMMyy");
+				}
+				catch(Exception e){
+					_logger.error("Unable to parse DataDictionary dataset released date: " + (String)schema.get("dateReleased"),e);
+				}
+				sc.setDatasetReleased(d);
+				List ddStylesheets = Conversion.getConversions();
+				ArrayList stls = new ArrayList();
+
+				for (int j = 0; j < ddStylesheets.size(); j++) {
+					ConversionDto ddConv = ((ConversionDto) ddStylesheets.get(j));
+
+					String convId = ddConv.getConvId();
+					String xsl_url = Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv=" + convId;
+
+					Stylesheet stl = new Stylesheet();
+					stl.setType(ddConv.getResultType());
+					stl.setXsl(xsl_url);
+					stl.setXsl_descr(ddConv.getDescription());
+					stl.setDdConv(true);
+					stls.add(stl);
+				}
+				sc.setStylesheets(stls);
 				schemas.add(sc);
-				schemasChk.add(schema.get("xml_schema"));
 			}
-			BeanComparator comp = new BeanComparator("table");
-			Collections.sort(schemas, comp);
+			ComparatorChain comparatorChain = new ComparatorChain( );
+			comparatorChain.addComparator( new BeanComparator( "table" ) );
+			comparatorChain.addComparator( new BeanComparator( "dataset" ) );
+			comparatorChain.addComparator( new BeanComparator( "datasetReleased" ), true );
+			
+			Collections.sort(schemas, comparatorChain);
 		} catch (Exception e) {
 			_logger.error("Error getting DD schemas",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
@@ -820,6 +830,13 @@ public class SchemaManager {
 		return files;
 	}
 
+	/**
+	 * Returns the list of DD tables retreived from xml-rpx request
+	 * @return
+	 */
+	protected List getDDTables(){ 
+		return DDServiceClient.getDDTables();
+	}
 
 
 	public static void main(String[] args) throws DCMException {
