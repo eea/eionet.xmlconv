@@ -13,7 +13,18 @@ import junit.framework.TestCase;
  */
 
 public class ValidationServiceTest extends TestCase {
+	
+	public static final String SEED_GW_VALID_XML = "seed-gw-valid.xml";
+	
+	public static final String SEED_GW_INVALID_XML = "seed-gw-invalid.xml";
 
+	public static final String SEED_GW_SCHEMA = "seed-gw-schema.xsd";
+	
+	/**
+	 * construct URI from seed file name
+	 * @param seedName	eg. "seed.xml"
+	 * @return	
+	 */
 	protected String getSeedURL(String seedName){
 		
         String filename = getClass().getClassLoader().getResource(seedName).getFile();
@@ -27,7 +38,7 @@ public class ValidationServiceTest extends TestCase {
 	 */
 	public void testValidateInvalidXML() throws Exception{
 		ValidationService validService = new ValidationService();
-		String s = validService.validate(getSeedURL("seed-gw-invalid.xml"));
+		String s = validService.validateSchema(getSeedURL(SEED_GW_INVALID_XML),getSeedURL(SEED_GW_SCHEMA));
 		
 		//System.out.println(s);
 
@@ -41,7 +52,7 @@ public class ValidationServiceTest extends TestCase {
 	 */
 	public void testValidateValidXML() throws Exception{
 		ValidationService validService = new ValidationService();
-		String s = validService.validate(getSeedURL("seed-gw-valid.xml"));
+		String s = validService.validateSchema(getSeedURL(SEED_GW_VALID_XML),getSeedURL(SEED_GW_SCHEMA));
 		
 		//System.out.println(s);
 

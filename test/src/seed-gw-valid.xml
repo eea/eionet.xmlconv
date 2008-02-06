@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dd8:GeneralCharacterisation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dd8="http://dd.eionet.europa.eu/namespace.jsp?ns_id=8" xmlns:dd37="http://dd.eionet.europa.eu/namespace.jsp?ns_id=37" xsi:schemaLocation="http://dd.eionet.europa.eu/namespace.jsp?ns_id=8 http://dd.eionet.europa.eu/GetSchema?id=TBL4564">
+<dd8:GeneralCharacterisation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dd8="http://dd.eionet.europa.eu/namespace.jsp?ns_id=8" xmlns:dd37="http://dd.eionet.europa.eu/namespace.jsp?ns_id=37">
 	<dd8:Row status="new">
 		<dd37:GWEWN-Code>GWCode</dd37:GWEWN-Code>
 		<dd37:GWName></dd37:GWName>

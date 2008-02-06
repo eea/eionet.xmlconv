@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:dd37="http://dd.eionet.europa.eu/namespace.jsp?ns_id=37" xmlns:ddnull="http://dd.eionet.europa.eu/namespace.jsp?ns_id=null" xmlns:ns1="http://dd.eionet.europa.eu/namespace.jsp?ns_id=8" targetNamespace="http://dd.eionet.europa.eu/namespace.jsp?ns_id=8" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://dd.eionet.europa.eu/namespace.jsp?ns_id=37" schemaLocation="seed-gw-schema-container.xsd"/>
+	<xs:element name="GeneralCharacterisation">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				<ddnull:Name><![CDATA[Groundwater Body Characteristics and Pressures]]></ddnull:Name>
+				<ddnull:Definition><![CDATA[Detailed information on the physical characteristics and proxy pressures relating to groundwater bodies are requested from EEA Member Countries on an annual basis.]]></ddnull:Definition>
+				<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+				<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+				<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+				<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+				<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+				<ddnull:Methodology><![CDATA[Many EEA Member Countries have previously submitted data on the physical characteristics and proxy pressures relating to groundwater bodies. The characteristics and pressures, up to the last year of requested data, are available to be viewed and downloaded from the publicly accessible Waterbase, hosted by the EEA Data Service at:
+http://dataservice.eea.europa.eu/dataservice/metadetails.asp?id=832.
+
+Further information on Corine Land Cover can be found on the EEA's web site in the Reports section at:
+http://reports.eea.europa.eu/search_results?SearchTitle=corine+land+cover
+and the EEA Data Service at:
+http://dataservice.eea.europa.eu/dataservice/available2.asp?type=findkeyword&theme=CLC1990 and
+http://dataservice.eea.europa.eu/dataservice/available2.asp?type=findkeyword&theme=clc2000.
+
+Data providers are asked to check and validate the published data, and include any amendments or missing information in the next delivery of data. Some of this information might be available from the detailed characterisation of groundwater bodies according to the Water Framework Directive.
+
+The EWN-Code should be unique in this table and no duplicate records should exist.
+
+We would like to encourage all countries to provide data on the physical characteristics and proxy pressure data relating to the groundwater bodies.]]></ddnull:Methodology>
+				<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+				<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Row" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="dd37:GWEWN-Code"/>
+							<xs:element ref="dd37:GWName"/>
+							<xs:element ref="dd37:GWReference_year"/>
+							<xs:element ref="dd37:GWNo_of_horizon"/>
+							<xs:element ref="dd37:artificial_recharge"/>
+							<xs:element ref="dd37:main_infrastructures_which"/>
+							<xs:element ref="dd37:Annual_gw_level_amplitude_min"/>
+							<xs:element ref="dd37:Hydraulic_conductivity_min"/>
+							<xs:element ref="dd37:Depth_to_groundwater_max"/>
+							<xs:element ref="dd37:Thickness_max"/>
+							<xs:element ref="dd37:Land_use_urban_areas"/>
+							<xs:element ref="dd37:Annual_gw_level_amplitude_mean"/>
+							<xs:element ref="dd37:water_abstraction"/>
+							<xs:element ref="dd37:Thickness_mean"/>
+							<xs:element ref="dd37:National_code"/>
+							<xs:element ref="dd37:Location"/>
+							<xs:element ref="dd37:Stratigraphy"/>
+							<xs:element ref="dd37:Land_use_forest_and_woodland"/>
+							<xs:element ref="dd37:GWArea"/>
+							<xs:element ref="dd37:Annual_precipitation_max"/>
+							<xs:element ref="dd37:Hydraulic_conductivity_mean"/>
+							<xs:element ref="dd37:associated_aquatic_ecosystems_which"/>
+							<xs:element ref="dd37:Main_aquifer_type"/>
+							<xs:element ref="dd37:Maximum_width"/>
+							<xs:element ref="dd37:Annual_precipitation_mean"/>
+							<xs:element ref="dd37:Depth_to_groundwater_min"/>
+							<xs:element ref="dd37:Annual_gw_level_amplitude_max"/>
+							<xs:element ref="dd37:Depth_to_groundwater_mean"/>
+							<xs:element ref="dd37:Hydraulic_conductivity_max"/>
+							<xs:element ref="dd37:Land_use_permanent_pasture"/>
+							<xs:element ref="dd37:Main_recharge_source"/>
+							<xs:element ref="dd37:Annual_precipitation_min"/>
+							<xs:element ref="dd37:water_abstraction_purpose"/>
+							<xs:element ref="dd37:Land_use_permanent_crops"/>
+							<xs:element ref="dd37:Land_use_other"/>
+							<xs:element ref="dd37:Overlaying_strata"/>
+							<xs:element ref="dd37:Maximum_length"/>
+							<xs:element ref="dd37:Petrographic_descript"/>
+							<xs:element ref="dd37:artificial_recharge_purpose"/>
+							<xs:element ref="dd37:Land_use_arable_land"/>
+							<xs:element ref="dd37:associated_aquatic_ecosystems"/>
+							<xs:element ref="dd37:main_infrastructures"/>
+							<xs:element ref="dd37:Thickness_min"/>
+						</xs:sequence>
+						<xs:attribute name="status" type="xs:string" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

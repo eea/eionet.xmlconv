@@ -1,0 +1,997 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://dd.eionet.europa.eu/namespace.jsp?ns_id=37" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ddnull="http://dd.eionet.europa.eu/namespace.jsp?ns_id=null" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:element name="GWEWN-Code">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[EWN-Code]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Internally produced, unique identifier of the groundwater body.]]></ddnull:Definition>
+			<ddnull:Methodology><![CDATA[Based on ISO 3166-alpha-2 country code elements, concatenated with an identification number preferably 3 digits in length but no more than 4 (e.g. AT123).]]></ddnull:Methodology>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="5"/>
+			<xs:maxLength value="6"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="GWName">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Name]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Name of the groundwater body.]]></ddnull:Definition>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="32"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="GWReference_year">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Reference year]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Last year of revision of update of characteristics. ]]></ddnull:Definition>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="4"/>
+			<xs:minInclusive value="1800"/>
+			<xs:maxInclusive value="2004"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="GWNo_of_horizon">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Number of Horizon]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Groundwater horizon in which groundwater body is situated.]]></ddnull:Definition>
+			<ddnull:Methodology><![CDATA[Value from 1 (top) to 10.]]></ddnull:Methodology>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="artificial_recharge">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Artificial Recharge]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Artifical recharge of the groundwater body, as defined in the codelist.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="no"/>
+			<xs:enumeration value="yes"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="main_infrastructures_which">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Description of the Main Infrastructures]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Description of the main infrastructures affecting the dynamics of the groundwater body.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:Methodology><![CDATA[Free text description.]]></ddnull:Methodology>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="64"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Annual_gw_level_amplitude_min">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Minimum Annual Groundwater Level Amplitude]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Minimum of the range between the lowest and highest groundwater level within a year in m.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[m]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="3"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Hydraulic_conductivity_min">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Minimum Hydraulic Conductivity]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Minimum hydraulic conductivity of the groundwater as a kf-value.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[kf = m/s]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="8"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Depth_to_groundwater_max">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Maximum Depth to Groundwater Body]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Maximum depth from the surface to the top of the groundwater body in m.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[m]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="6"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Thickness_max">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Maximum Thickness]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Maximum thickness of the groundwater body in m.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[m]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="5"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Land_use_urban_areas">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Urban Areas]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Urban land use as a percentage of the groundwater body area.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:Methodology><![CDATA[Land use data based on Corine Land Cover.]]></ddnull:Methodology>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[%]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="3"/>
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Annual_gw_level_amplitude_mean">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Mean Annual Groundwater Level Amplitude]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Mean of the range between the lowest and highest groundwater level within a year in m.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[m]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="3"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="water_abstraction">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Water Abstractions]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Water abstracted from the groundwater body, as defined in the codelist.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="no"/>
+			<xs:enumeration value="yes"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Thickness_mean">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Mean Thickness]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Mean thickness of the groundwater body in m.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[m]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="5"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="National_code">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[National Code]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Nationally assigned identifier of groundwater body.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Location">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Location]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Region, province etc. in which groundwater body is located.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="32"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Stratigraphy">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Stratigraphy]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Description of the stratigraphy (geological period) of the groundwater body, as defined in the codelist.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Cambrian"/>
+			<xs:enumeration value="Carboniferous"/>
+			<xs:enumeration value="Cretaceous"/>
+			<xs:enumeration value="Devonian"/>
+			<xs:enumeration value="Jurassic"/>
+			<xs:enumeration value="Ordovician"/>
+			<xs:enumeration value="Permian"/>
+			<xs:enumeration value="Precambrian"/>
+			<xs:enumeration value="Quarternary"/>
+			<xs:enumeration value="Silurian"/>
+			<xs:enumeration value="Tertiary - Neogene"/>
+			<xs:enumeration value="Tertiary - Paleogene"/>
+			<xs:enumeration value="Triassic"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Land_use_forest_and_woodland">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Forest and Woodland]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Forest and woodland land use as a percentage of the groundwater body area.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:Methodology><![CDATA[Land use data based on Corine Land Cover.]]></ddnull:Methodology>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[%]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="3"/>
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="GWArea">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Groundwater Body Area]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Area of the groundwater body in km2.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[km2]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:decimal">
+			<xs:totalDigits value="8"/>
+			<xs:minInclusive value="0"/>
+			<xs:fractionDigits value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Annual_precipitation_max">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Maximum Annual Precipitation]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Maximum long term annual precipitation over the groundwater body area in mm.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[mm]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="5"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Hydraulic_conductivity_mean">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Mean Hydraulic Conductivity]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Mean hydraulic conductivity of the groundwater as a kf-value.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[kf = m/s]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="8"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="associated_aquatic_ecosystems_which">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Description of the Associated Aquatic Ecosystems]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Description of the aquatic ecosystems associated with the groundwater body.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:Methodology><![CDATA[Free text description.]]></ddnull:Methodology>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="64"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Main_aquifer_type">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Main Aquifer Type]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Predominant aquifer type, as defined in codelist.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Fractured media"/>
+			<xs:enumeration value="Fractured/Porous media"/>
+			<xs:enumeration value="Karstic media"/>
+			<xs:enumeration value="Porous media"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Maximum_width">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Maximum Width]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Maximum width of the groundwater body in km.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[km]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="8"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Annual_precipitation_mean">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Mean Annual Precipitation]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Mean long term annual precipitation over the groundwater body area in mm.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[mm]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="5"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Depth_to_groundwater_min">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Minimum Depth to Groundwater Body]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Minimum depth from the surface to the top of the groundwater body in m.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[m]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="6"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Annual_gw_level_amplitude_max">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Maximum Annual Groundwater Level Amplitude]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Maximum of the range between the lowest and highest groundwater level within a year in m.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[m]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="3"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Depth_to_groundwater_mean">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Mean Depth to Groundwater Body]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Mean depth from the surface to the top of the groundwater body in m.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[m]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="6"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Hydraulic_conductivity_max">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Maximum Hydraulic Conductivity]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Maximum hydraulic conductivity of the groundwater as a kf-value.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[kf = m/s]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="8"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Land_use_permanent_pasture">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Permanent Pasture]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Permanent pastoral land use as a percentage of the groundwater body area.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:Methodology><![CDATA[Land use data based on Corine Land Cover.]]></ddnull:Methodology>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[%]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="3"/>
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Main_recharge_source">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Main Recharge Source]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Main source recharging the groundwater body, as defined in the codelist.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value=" Irrigation"/>
+			<xs:enumeration value="Groundwaters"/>
+			<xs:enumeration value="No info"/>
+			<xs:enumeration value="Precipitation"/>
+			<xs:enumeration value="Springs"/>
+			<xs:enumeration value="Surface waters"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Annual_precipitation_min">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Minimum Annual Precipitation]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Minimum long term annual precipitation over the groundwater body area in mm.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[mm]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="5"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="water_abstraction_purpose">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Purpose for the Water Abstractions]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Purpose for which water is abstracted from the groundwater body.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:Methodology><![CDATA[Free text description.]]></ddnull:Methodology>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="64"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Land_use_permanent_crops">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Permanent Crops]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Permanent crops land use as a percentage of the groundwater body area.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:Methodology><![CDATA[Land use data based on Corine Land Cover.]]></ddnull:Methodology>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[%]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="3"/>
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Land_use_other">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Other Land Use]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Other land use as a percentage of the groundwater body area.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:Methodology><![CDATA[Land use data based on Corine Land Cover.]]></ddnull:Methodology>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[%]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="3"/>
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Overlaying_strata">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Overlying Strata]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Description of the groundwater body's overlying strata.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:Methodology><![CDATA[Free text description (e.g. Quarternary deposits(mainly till and loess) etc.).]]></ddnull:Methodology>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="64"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Maximum_length">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Maximum Length]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Maximum length of the groundwater body in km.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[km]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="8"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Petrographic_descript">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Petrographic Description]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Short petrographic description of the dominant components of the stratigraphy of the groundwater body.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Boulders"/>
+			<xs:enumeration value="Carbonate - conduit"/>
+			<xs:enumeration value="Carbonate - fractured"/>
+			<xs:enumeration value="Chalk"/>
+			<xs:enumeration value="Coarse gravel"/>
+			<xs:enumeration value="Coarse sand"/>
+			<xs:enumeration value="Fine gravel"/>
+			<xs:enumeration value="Fine sand"/>
+			<xs:enumeration value="Gravel"/>
+			<xs:enumeration value="Igneous rock"/>
+			<xs:enumeration value="Medium gravel"/>
+			<xs:enumeration value="Medium sand"/>
+			<xs:enumeration value="Metamorphic rock"/>
+			<xs:enumeration value="Other"/>
+			<xs:enumeration value="Sand"/>
+			<xs:enumeration value="Sandstone"/>
+			<xs:enumeration value="Silt"/>
+			<xs:enumeration value="Silty sand"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="artificial_recharge_purpose">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Purpose for Artificial Recharge]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Purpose for the artificial recharge of the groundwater body.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:Methodology><![CDATA[Free text description.]]></ddnull:Methodology>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="64"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Land_use_arable_land">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Arable Land]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Arable land use as a percentage of the groundwater body area.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:Methodology><![CDATA[Land use data based on Corine Land Cover.]]></ddnull:Methodology>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[%]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="3"/>
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="associated_aquatic_ecosystems">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Associated Aquatic Ecosystems]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Aquatic ecosystems associated with the groundwater body, as defined in the codelist.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="no"/>
+			<xs:enumeration value="yes"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="main_infrastructures">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Main Infrastructures]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Main infrastructures affecting the dynamics of the groundwater body, as defined in the codelist.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="no"/>
+			<xs:enumeration value="yes"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+<xs:element name="Thickness_min">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<ddnull:Name><![CDATA[Minimum Thickness]]></ddnull:Name>
+			<ddnull:Definition><![CDATA[Minimum thickness of the groundwater body in m.]]></ddnull:Definition>
+			<ddnull:Keyword><![CDATA[Aquifer]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Groundwater]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Pollution]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water]]></ddnull:Keyword>
+			<ddnull:Keyword><![CDATA[Water quality]]></ddnull:Keyword>
+			<ddnull:PublicOrInternal><![CDATA[undefined]]></ddnull:PublicOrInternal>
+			<ddnull:Unit><![CDATA[m]]></ddnull:Unit>
+			<ddnull:EEAissue><![CDATA[Eutrophication]]></ddnull:EEAissue>
+			<ddnull:EEAissue><![CDATA[Water]]></ddnull:EEAissue>
+		</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="5"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:element>
+
+</xs:schema>
