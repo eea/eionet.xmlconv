@@ -302,11 +302,6 @@
 <!-- 				TEST targets  						-->
 <!--	##########################  	-->
 
-	<!-- define classpath for unit tests -->
-	<path id="classpath.compile-tests">
-		<pathelement path="${test-build}"/>
-		<path refid="classpath.compile"/>
-    </path>
 
 	<!-- cleans the test/build directory -->
 	<target name="clean-tests">
@@ -317,15 +312,31 @@
 	<!-- copy properties target, unit test needs some properties from gdem.properties file -->
 	<target name="copy-test-props">
 
+		<!-- copy acl files, the tests might need these -->
+		<mkdir dir="${test-build}/acl"/>
+		<mkdir dir="${test-build}/tmp"/>
+		<copy todir="${test-build}/acl" overwrite="false">
+			<fileset dir="acl"/>
+		</copy>
+
 		<copy todir="${test-build}" overwrite="false">
 			<fileset dir="${src}" includes="**/*.properties">
 				<exclude name="**/*.class"/>
 			</fileset>
 		</copy>
+		<!-- gdem.properties -->
 		<loadproperties srcFile="${test-build}/gdem.properties"/>
-		<replace file="${test-build}/gdem.properties" token="tmp.folder=${tmp.folder}" value="tmp.folder=${test-build}"/>
+		<replace file="${test-build}/gdem.properties" token="tmp.folder=${tmp.folder}" value="tmp.folder=${test-build}/tmp/"/>
+
+		<!-- log4j.properties -->
 		<loadproperties srcFile="${test-build}/log4j.properties"/>
 		<replace file="${test-build}/log4j.properties" token="log4j.appender.f.File=${log4j.appender.f.File}" value="log4j.appender.f.File=${test-build}/xmlconv-test.log"/>
+
+		<!-- uit.properties -->
+		<loadproperties srcFile="${test-build}/uit.properties"/>
+		<replace file="${test-build}/uit.properties" token="application.acl.folder=${application.acl.folder}" value="application.acl.folder=${test-build}/acl"/>
+		<replace file="${test-build}/uit.properties" token="application.localgroups.file=${application.localgroups.file}" value="application.localgroups.file=${test-build}/acl/gdem.group"/>
+		<replace file="${test-build}/uit.properties" token="application.permissions.file=${application.permissions.file}" value="application.permissions.file=${test-build}/acl/gdem.prms"/>
 
 	</target>
 	
@@ -333,10 +344,10 @@
 	<target name="compile-tests" depends="clean-tests,copy-test-props">
 		
 		<javac srcdir="${src}" destdir="${test-build}" source="1.5" target="1.5" debug="on">
-			<classpath refid="classpath.test"/>
+			<classpath refid="classpath.compile"/>
 		</javac>
 		<javac srcdir="${test}/src" destdir="${test-build}" source="1.5" target="1.5" debug="on">
-			<classpath refid="classpath.test"/>
+			<classpath refid="classpath.compile"/>
 		</javac>
 	</target>
 
