@@ -23,26 +23,16 @@
 
 package eionet.gdem.validation;
 
-//import javax.xml.parsers.SAXParser;
-//import org.apache.xerces.parsers.SAXParser;
-import eionet.gdem.conversion.ssr.InputAnalyser;
-import eionet.gdem.conversion.ssr.Names;
-import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.dto.ValidateDto;
-import eionet.gdem.utils.Utils;
 import org.xml.sax.*;
 import javax.xml.parsers.*;
 
 import org.w3c.dom.*;
 
-import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import eionet.gdem.utils.InputFile;
-import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -157,7 +147,7 @@ public class ValidationService {
 		newSchema = namespace + " " +schema  ;
 		
 		
-		System.out.println("newSchema="+newSchema);
+//		System.out.println("newSchema="+newSchema);
         reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", newSchema);      
 //      reader.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation", schema)     
       }
