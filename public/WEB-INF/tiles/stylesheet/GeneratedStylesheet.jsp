@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8"  import="eionet.gdem.dto.*"%>
+<%@ page contentType="text/html; charset=UTF-8"  import="eionet.gdem.dto.*,eionet.gdem.Properties"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
@@ -20,13 +20,15 @@
 			<col style="width:7%"/>
 			<col style="width:10%"/>
 			<col style="width:20%"/>
-			<col style="width:15%"/>
-			<col style="width:48%"/>
+			<col style="width:10%"/>
+			<col style="width:10%"/>
+			<col style="width:43%"/>
 			<thead>
 				<tr>
 					<th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.action"/></th>
 					<th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.table"/></th>
 					<th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.dataset"/></th>
+					<th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.datasetReleased"/></th>
 					<th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.title"/></th>
 					<th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.stylesheets"/></th>
 				</tr>
@@ -44,6 +46,9 @@
 					</td>
 					<td title="<bean:write name="schema" property="dataset"/>">
 						<bean:write name="schema" property="dataset" />
+					</td>
+					<td title="<bean:write name="schema" property="datasetReleased"/>">
+						<bean:write name="schema" property="datasetReleased" format="<%= Properties.dateFormatPattern%>" />
 					</td>
 					<td>
 						<a  href="<bean:write name="schema" property="schema" />" title="<bean:write name="schema" property="schema" />">

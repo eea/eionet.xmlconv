@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*"%>
+<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
@@ -60,7 +60,8 @@
 											<logic:notEqual name="schema" property="table" value="">
 												&nbsp;-&nbsp;
 												<bean:write name="schema" property="table" />&nbsp;(
-												<bean:write name="schema" property="dataset" />)
+												<bean:write name="schema" property="dataset" /> - 
+												<bean:write name="schema" property="datasetReleased" format="<%= Properties.dateFormatPattern%>" />)
 											</logic:notEqual>										
 										</option>
 						</logic:iterate>
