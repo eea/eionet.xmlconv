@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -67,18 +68,24 @@ public abstract class ConvertStartegy {
 	protected void runXalanTransformation(InputStream in, InputStream xslStream, OutputStream out) throws GDEMException {
 		try {
 			TransformerFactory tFactory = TransformerFactory.newInstance();
+			TransformerErrorListener errors = new TransformerErrorListener();
+			tFactory.setErrorListener(errors);
+
 			Transformer transformer = tFactory.newTransformer(new StreamSource(xslStream));
+			transformer.setErrorListener(errors);
+
 			transformer.setParameter(DD_DOMAIN_PARAM,Properties.ddURL);
-			setTransformerParameters(transformer);
+			setTransformerParameters(transformer);		
 			transformer.transform(new StreamSource(in), new StreamResult(out));
+			
 		} catch (TransformerConfigurationException tce) {
 			throw new GDEMException("Error transforming XML - incorrect stylesheet file: " + tce.toString(), tce);
 		} catch (TransformerException tfe) {
 			throw new GDEMException("Error transforming XML - it's not probably well-formed xml file: " + tfe.toString(), tfe);
-		} catch (Throwable e) {
-			_logger.error("Error " + e.toString(), e);
-			e.printStackTrace(System.out);
-			throw new GDEMException("Error transforming XML " + e.toString());
+		} catch (Throwable th) {
+			_logger.error("Error " + th.toString(), th);
+			th.printStackTrace(System.out);
+			throw new GDEMException("Error transforming XML: " + th.toString());
 		}
 	}
 
@@ -92,9 +99,18 @@ public abstract class ConvertStartegy {
 			Source src = new StreamSource(in);
 			Source xsltSrc = new StreamSource(xsl);
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			TransformerErrorListener errors = new TransformerErrorListener();
+
+			transformerFactory.setErrorListener(errors);
 			Transformer transformer = transformerFactory.newTransformer(xsltSrc);
 			setTransformerParameters(transformer);
+			transformer.setErrorListener(errors);
+
 			transformer.transform(src, res);
+		} catch (TransformerConfigurationException tce) {
+			throw new GDEMException("Error transforming XML to PDF - incorrect stylesheet file: " + tce.toString(), tce);
+		} catch (TransformerException tfe) {
+			throw new GDEMException("Error transforming XML to PDF - it's not probably well-formed xml file: " + tfe.toString(), tfe);
 		} catch (Throwable e) {
 			_logger.error("Error " + e.toString(), e);
 			throw new GDEMException("Error transforming XML to PDF " + e.toString());
@@ -116,7 +132,7 @@ public abstract class ConvertStartegy {
 		}
 
 		//sets base URI for xmlfiles uploaded into xmlconv
-	    String xmlFilePathURI = Utils.getURIfromPath(eionet.gdem.Properties.xmlfileFolderPath);
+	    String xmlFilePathURI = Utils.getURIfromPath(eionet.gdem.Properties.xmlfileFolderPath,true);
 	    
 	    if(xmlFilePathURI!=null){
 			transformer.setParameter(XML_FOLDER_URI_PARAM,xmlFilePathURI);
