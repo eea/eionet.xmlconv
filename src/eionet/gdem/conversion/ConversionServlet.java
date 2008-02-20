@@ -101,7 +101,8 @@ public class ConversionServlet extends HttpServlet {
 
 		if (!save_src) {
 			//System.out.println("Response ");
-			result = cnv.convert(url, format, response);
+			//FIXME add HttpResultWrapper
+			result = cnv.convert(url, format);
 		} else {
 			//System.out.println("File ");
 			result = cnv.convert(url, format);
@@ -206,7 +207,7 @@ public class ConversionServlet extends HttpServlet {
 
 
 	private void listConversions(HttpServletResponse res, String list) throws GDEMException, IOException {
-		ConversionService cnv = new ConversionService();
+		ConversionServiceIF cnv = new ConversionService();
 		Vector conversions = null;
 		Hashtable xslD = null;
 

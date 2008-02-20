@@ -55,7 +55,7 @@ public class Ods2Xml extends DDXMLConverter {
 	public static void main(String[] args){
 
 
-		ConversionService conv = new ConversionService();
+		ConversionServiceIF conv = new ConversionService();
 		try{
 			//conv.convertDD_XML("http://localhost:8080/gdem/test.xls");
 			Vector v = conv.convertDD_XML_split("http://cdrtest.eionet.europa.eu/copy_of_ee/eea/colqrajqw/envrorfcq/Rivers_testdata_EU_137.ods", null);
