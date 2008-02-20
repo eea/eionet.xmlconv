@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -58,286 +59,463 @@ public class MultipartFileUpload{
 
   //integer for generating unique name for temporary file
   //private static int HOW_LONG = 6;
+	  private static final String DEFAULT_ENCODING = "UTF-8";
+
+	  private String _folderName;		//tmp folder for files
+	  private String _fileName;
+	  private FileItem _fileItem;
+	  private DiskFileUpload upload;
+	  private boolean _uploadAtOnce=true;
+
+	  private HashMap _params=null;
+	  private List fileItems=null;
+	  private String encoding=null;
+	  private HashMap fileNameEscapes=new HashMap <Integer,String>();
+	  private static char[] restrictedChars = {'\\','/',':','*','?','"','<','>','|','\'','&','%','#',';'};
+
+	  /**
+	   * Constructor. Creates a new FileUploadAdapter object
+	   * @param String folderName - folder for the uploaded file
+	   */
+	  public MultipartFileUpload(boolean uploadAtOnce){
+
+	  //  lineSep = System.getProperty("line.separator");
+	     upload = new DiskFileUpload();
+	     _params = new HashMap();
+	     initEscapes();
+	     this._uploadAtOnce=uploadAtOnce;
+	  }
+	  public MultipartFileUpload(){
+	      new MultipartFileUpload(true);
+	  }
+	  /**
+	   * Sets folder name where to insert uploaded file
+	   *
+	   * @param String folderName - folder for the uploaded file
+	   */
+	  public void setFolder(String fldName){
+	      _folderName = fldName;
+	  }
+	  /**
+	   * Sets folder name where to insert uploaded file
+	   *
+	   * @param String folderName - folder for the uploaded file
+	   */
+	  public HashMap getRequestParams(){
+	      return _params;
+	  }
+
+	  /**
+	   * Returns filename from request
+	   */
+	  public String getFileName() {
+	    return _fileName;
+	  }
 
 
-  private String _folderName;		//tmp folder for files
-  private String _fileName;
-  private FileItem _fileItem;
-  private DiskFileUpload upload;
-  private boolean _uploadAtOnce=true;
+	  public void setFileName(String name){
+	    _fileName = name;
+	  }
 
-  private HashMap _params=null;
+	  /**
+	   * Checks whether file with the specified filename already exists in the destination folder
+	   */
+	  public boolean getFileExists() {
 
-  /**
-   * Constructor. Creates a new FileUploadAdapter object
-   * @param String folderName - folder for the uploaded file
-   */
-  public MultipartFileUpload(boolean uploadAtOnce){
+		if (_fileName==null || _folderName==null) return false;
 
-  //  lineSep = System.getProperty("line.separator");
-     upload = new DiskFileUpload();
-     _params = new HashMap();
-     this._uploadAtOnce=uploadAtOnce;
-  }
-  public MultipartFileUpload(){
-      new MultipartFileUpload(true);
-  }
-  /**
-   * Sets folder name where to insert uploaded file
-   *
-   * @param String folderName - folder for the uploaded file
-   */
-  public void setFolder(String fldName){
-      _folderName = fldName;
-  }
-  /**
-   * Sets folder name where to insert uploaded file
-   *
-   * @param String folderName - folder for the uploaded file
-   */
-  public HashMap getRequestParams(){
-      return _params;
-  }
+		File file = new File(_folderName, _fileName);
 
-  /**
-   * Returns filename from request
-   */
-  public String getFileName() {
-    return _fileName;
-  }
+		if (file==null) return false;
 
+		return file.exists();
 
-  public void setFileName(String name){
-    _fileName = name;
-  }
+	  }
 
-  /**
-   * Checks whether file with the specified filename already exists in the destination folder
-   */
-  public boolean getFileExists() {
+	  /**
+	     * @param request Servlet request
+	     * @return the calculated trigger
+	     * @throws XFormsException If an error occurs
+	     */
+	    public void processMultiPartRequest(HttpServletRequest request) throws GDEMException {
 
-	if (_fileName==null || _folderName==null) return false;
+	        List items = null;
+	    	setEncoding(request.getCharacterEncoding());
+	        try {
+	            items = upload.parseRequest(request);
+	        } catch (FileUploadException fue) {
+	            throw new GDEMException(fue.toString());
+	        }
 
-	File file = new File(_folderName, _fileName);
+	        Iterator iter = items.iterator();
+	        while (iter.hasNext()) {
+	            FileItem item = (FileItem) iter.next();
+	          //  String itemName = item.getName();
+	            String fieldName = item.getFieldName();
+	            //String id = (String) this.parameterNames.get(fieldName);
 
-	if (file==null) return false;
+	            /*System.out.println("Multipart item name is: " + itemName
+	                        + " and fieldname is: " + fieldName);
+	                       // + " and id is: " + id);
+	            System.out.println("Is formfield: " + item.isFormField());
+	            System.out.println("Content: " + item.getString());
+	            */
+	            if (item.isFormField()) {
+	                // It's a field name, it means that we got a non-file
+	                // form field. Upload is not required.
+	            	String itemValue = null;
+	            	try{
+	            		//use encoding from request
+	            		itemValue = item.getString(getEncoding());
+	            	}
+	            	catch(UnsupportedEncodingException e){
+	            		//use default encoding
+	            		itemValue =  item.getString();
+	            	}
 
-	return file.exists();
+	            	if(_params.containsKey(fieldName)){
+	        			Object curObj = _params.get(fieldName);
+	        			List valueList = null;
 
-  }
+	        			if(curObj instanceof String){
+	        				valueList = new ArrayList();
+	        				valueList.add((String)curObj);
+	        			}
+	        			else if(curObj instanceof List){
+	        				valueList = (List)curObj;
+	        			}
+	    				valueList.add(itemValue);
+	            		_params.put(fieldName,valueList);
+	        		}
+	            	else{
+	            		_params.put(fieldName,itemValue);
+	            	}
+	            } else {
+	                _fileItem = item;
+	                addFileItem(_fileItem);
+	            	String fileName = getFileItemName(_fileItem.getName());
+	            	setFileName(fileName);
+	                if (_uploadAtOnce)
+	                    saveFile();
+	           }
+	      }
+	    }
+	    /*
+	     * Stores uploaded file in the filesystem with the original filename.
+	     * If the file with the same name exisits, appends next available number at the end of the filename.
+	     *
+		 * @return      			File name
+		 * @throws GDEMException    Thrown in case of missing data or error during file writing.
+	     */
+	    public String saveFile() throws GDEMException {
 
-  /**
-     * @param request Servlet request
-     * @return the calculated trigger
-     * @throws XFormsException If an error occurs
-     */
-    public void processMultiPartRequest(HttpServletRequest request) throws GDEMException {
+	        String fileName = getFileName();
 
-        List items = null;
-    	String encoding = request.getCharacterEncoding();
-    	if (encoding==null) encoding="UTF-8";
-        try {
-            items = upload.parseRequest(request);
-        } catch (FileUploadException fue) {
-            throw new GDEMException(fue.toString());
-        }
+	        if (_folderName==null) throw new GDEMException("Folder name is empty!");
+	        if (fileName==null) throw new GDEMException("File name is empty!");
+	        if (_fileItem==null)  throw new GDEMException("No files found!");
+	        upload.setRepositoryPath(_folderName);
 
-        Iterator iter = items.iterator();
-        while (iter.hasNext()) {
-            FileItem item = (FileItem) iter.next();
-            String itemName = item.getName();
-            String fieldName = item.getFieldName();
-            //String id = (String) this.parameterNames.get(fieldName);
+	        if (_fileItem.getSize()==0) return null; //There is nothing to save, file size is 0
 
-            /*System.out.println("Multipart item name is: " + itemName
-                        + " and fieldname is: " + fieldName);
-                       // + " and id is: " + id);
-            System.out.println("Is formfield: " + item.isFormField());
-            System.out.println("Content: " + item.getString());
-            */
-            if (item.isFormField()) {
-                // It's a field name, it means that we got a non-file
-                // form field. Upload is not required.
-            	try{
-            		//use encoding from request
-            		_params.put(fieldName, item.getString(encoding));
-            	}
-            	catch(UnsupportedEncodingException e){
-            		//use default encoding
-            		_params.put(fieldName, item.getString());
-            	}
-
-            } else {
-                _fileItem = item;
-            	String fileName = getFileItemName(_fileItem.getName());
-            	setFileName(fileName);
-                if (_uploadAtOnce)
-                    saveFile();
-           }
-      }
-    }
-    /*
-     * Stores uploaded file in the filesystem with the original filename.
-     * If the file with the same name exisits, appends next available number at the end of the filename.
-     *
-	 * @return      			File name
-	 * @throws GDEMException    Thrown in case of missing data or error during file writing.
-     */
-    public String saveFile() throws GDEMException {
-
-        String fileName = getFileName();
-
-        if (_folderName==null) throw new GDEMException("Folder name is empty!");
-        if (fileName==null) throw new GDEMException("File name is empty!");
-        if (_fileItem==null)  throw new GDEMException("No files found!");
-        upload.setRepositoryPath(_folderName);
-
-        if (_fileItem.getSize()==0) return null; //There is nothing to save, file size is 0
-
-        File file = getUniqueFile(_folderName, fileName);
-        fileName = file.getName();
+	        File file = new File(_folderName, fileName);//getUniqueFile(_folderName, fileName);
+	        fileName = file.getName();
 
 
-        if (_fileItem.getSize() > 0) {
-          try {
-            _fileItem.write(file);
-          } catch (Exception e) {
-            throw new GDEMException(e.toString());
-          }
-        }
-        return fileName;
-    }
+	        if (_fileItem.getSize() > 0) {
+	          try {
+	            _fileItem.write(file);
+	          } catch (Exception e) {
+	            throw new GDEMException(e.toString());
+	          }
+	        }
+	        return fileName;
+	    }
 
-    /*
-     * Stores uploaded file in the filesystem with specified name. Renames the existing file, if needed.
-     * Otherwise overwrites exisitng file
-     *
-	 * @param destFileName      Destination file name.
-	 * @param keepExisitng      true, if rename existing file before saving the new faile.
-	 * 							false, if overwrite exisitng file
-	 * @throws GDEMException    Thrown in case of missing data or error during file writing.
-     */
-    public void saveFileAs(String saveAs, boolean keepExisting) throws GDEMException {
+	    /*
+	     * Stores uploaded file in the filesystem with specified name. Renames the existing file, if needed.
+	     * Otherwise overwrites exisitng file
+	     *
+		 * @param destFileName      Destination file name.
+		 * @param keepExisitng      true, if rename existing file before saving the new faile.
+		 * 							false, if overwrite exisitng file
+		 * @throws GDEMException    Thrown in case of missing data or error during file writing.
+	     */
+	    public void saveFileAs(String saveAs, boolean keepExisting) throws GDEMException {
 
-    	File file = null;
+	    	File file = null;
 
-        if (_folderName==null) throw new GDEMException("Folder name is empty!");
-        if (_fileItem==null)  throw new GDEMException("No files found!");
+	        if (_folderName==null) throw new GDEMException("Folder name is empty!");
+	        if (_fileItem==null)  throw new GDEMException("No files found!");
 
-        upload.setRepositoryPath(_folderName);
+	        upload.setRepositoryPath(_folderName);
 
-        if (_fileItem.getSize()==0) return; //There is nothing to save, file size is 0
+	        if (_fileItem.getSize()==0) return; //There is nothing to save, file size is 0
 
-        if (saveAs==null)
-        	saveAs = getFileName();
+	        if (saveAs==null)
+	        	saveAs = getFileName();
 
-        file = new File(_folderName, saveAs);
+	        file = new File(_folderName, saveAs);
 
-        if (file.exists()){
-        	if (keepExisting){
-        		File uniqueFile = getDateAappendedFile(_folderName, saveAs);
-        		file.renameTo(uniqueFile);
-        	}
-        }
-
-
-        if (_fileItem.getSize() > 0) {
-          try {
-            _fileItem.write(file);
-          } catch (Exception e) {
-            throw new GDEMException(e.toString());
-          }
-        }
-    }
-    /**
-     * Generates filename
-     *
-     * @param fileName, n >0, if file with the same name already exists in the tmp folder
-     * ex: genFileName( test.xls, 1 )= test_1.xls
-     *     genFileName( test_1.xls, 2 )= test_2.xls
-     */
-    private String getGeneratedFileName(String fileName, int n){
-      String ret ;
-      int pos = fileName.lastIndexOf(".");
+	        if (file.exists()){
+	        	if (keepExisting){
+	        		File uniqueFile = getDateAappendedFile(_folderName, saveAs);
+	        		file.renameTo(uniqueFile);
+	        	}
+	        }
 
 
-      int dashPos = fileName.lastIndexOf( "_" );
-      if (dashPos>1 && dashPos<pos){
-          String snum = fileName.substring(dashPos+1, pos);
-          try{
-        	  int inum = Integer.parseInt(snum);
-              ret = fileName.substring(0, dashPos ) + "_" + (inum+1) + fileName.substring( pos);
-          }
-          catch(Exception e){
-              ret = fileName.substring(0, pos ) + "_" + n + fileName.substring( pos);
-          }
-      }
-      else{
-          ret = fileName.substring(0, pos ) + "_" + n + fileName.substring( pos);
-      }
-
-      return ret;
-    }
-
-    /**
-     * Finds unique filename using genFileName method
-     *
-     * @param folderName	Folder where the file will be stored
-     * @param fileName	File name that should be used for generating the unique filename
-
-     * @return 			Filename that does not exist in the folder
-     */
-    private File getUniqueFile(String folderName, String fileName){
-
-  	  int n =0;
-  	  File file = new File(folderName, fileName);
-  	  while ( file.exists()){
-  		  n++;
-  		  fileName = getGeneratedFileName( fileName , n) ;
-  		  file = new File(_folderName, fileName);
-  	  }
-
-  	  return file;
-    }
-    /**
-     * Returns filename from filename with full path
-     * in: "C:\TEMP\test.txt"
-     * out: "test.txt"
-     */
-    private String getFileItemName(String fileName) {
-      int i = fileName.lastIndexOf("\\");
-      if(i < 0 || i >= fileName.length() - 1) {
-        i = fileName.lastIndexOf("/");
-        if(i < 0 || i >= fileName.length() - 1)
-          return fileName;
-      }
-
-      fileName =  fileName.substring(i + 1);
-      return fileName;
-    }
-    /**
-     * Appends current date value at the end of the filename
-     *
-     * @param folderName	Folder where the file will be stored
-     * @param fileName	File name that should be used for generating the unique filename
-
-     * @return 			Filename with appended date (in format yyMMddHHmmss)
-     */
-    private File getDateAappendedFile(String folderName, String fileName){
-
-    	SimpleDateFormat sdf = new SimpleDateFormat();
-    	sdf.applyPattern("yyMMddHHmmss");
-    	String dateVal = sdf.format(new Date());
-
-        int pos = fileName.lastIndexOf(".");
-    	StringBuffer buf = new StringBuffer();
-    	buf.append(fileName.substring(0, pos ));
-    	buf.append("_");
-    	buf.append(dateVal);
-    	buf.append(fileName.substring( pos));
+	        if (_fileItem.getSize() > 0) {
+	          try {
+	            _fileItem.write(file);
+	          } catch (Exception e) {
+	            throw new GDEMException(e.toString());
+	          }
+	        }
+	    }
+	    /**
+	     * Generates filename
+	     *
+	     * @param fileName, n >0, if file with the same name already exists in the tmp folder
+	     * ex: genFileName( test.xls, 1 )= test_1.xls
+	     *     genFileName( test_1.xls, 2 )= test_2.xls
+	     */
+	    private String getGeneratedFileName(String fileName, int n){
+	      String ret ;
+	      int pos = fileName.lastIndexOf(".");
 
 
-        return getUniqueFile(folderName,buf.toString());
+	      int dashPos = fileName.lastIndexOf( "_" );
+	      if (dashPos>1 && dashPos<pos){
+	          String snum = fileName.substring(dashPos+1, pos);
+	          try{
+	        	  int inum = Integer.parseInt(snum);
+	              ret = fileName.substring(0, dashPos ) + "_" + (inum+1) + fileName.substring( pos);
+	          }
+	          catch(Exception e){
+	              ret = fileName.substring(0, pos ) + "_" + n + fileName.substring( pos);
+	          }
+	      }
+	      else{
+	          ret = fileName.substring(0, pos ) + "_" + n + fileName.substring( pos);
+	      }
 
-    }
+	      return ret;
+	    }
+
+	    /**
+	     * Finds unique filename using genFileName method
+	     *
+	     * @param folderName	Folder where the file will be stored
+	     * @param fileName	File name that should be used for generating the unique filename
+
+	     * @return 			Filename that does not exist in the folder
+	     */
+	    private File getUniqueFile(String folderName, String fileName){
+
+	  	  int n =0;
+	  	  File file = new File(folderName, fileName);
+	  	  while ( file.exists()){
+	  		  n++;
+	  		  fileName = getGeneratedFileName( fileName , n) ;
+	  		  file = new File(folderName, fileName);
+	  	  }
+
+	  	  return file;
+	    }
+	    /**
+	     * Returns filename from filename with full path
+	     * in: "C:\TEMP\test.txt"
+	     * out: "test.txt"
+	     */
+	    private String getFileItemName(String fileName) {
+	      int i = fileName.lastIndexOf("\\");
+	      if(i < 0 || i >= fileName.length() - 1) {
+	        i = fileName.lastIndexOf("/");
+	        if(i < 0 || i >= fileName.length() - 1)
+	          return getEscapedItemName(fileName);
+	      }
+
+	      //fileName =  Utils.escapeFileNsame(fileName.substring(i + 1));
+	      fileName =  fileName.substring(i + 1);
+	      return getEscapedItemName(fileName);
+	    }
+		/**
+	     * Appends current date value at the end of the filename
+	     *
+	     * @param folderName	Folder where the file will be stored
+	     * @param fileName	File name that should be used for generating the unique filename
+
+	     * @return 			Filename with appended date (in format yyMMddHHmmss)
+	     */
+	    private File getDateAappendedFile(String folderName, String fileName){
+
+	    	SimpleDateFormat sdf = new SimpleDateFormat();
+	    	sdf.applyPattern("yyMMddHHmmss");
+	    	String dateVal = sdf.format(new Date());
+
+	        int pos = fileName.lastIndexOf(".");
+	    	StringBuffer buf = new StringBuffer();
+	    	buf.append(fileName.substring(0, pos ));
+	    	buf.append("_");
+	    	buf.append(dateVal);
+	    	buf.append(fileName.substring( pos));
+
+
+	        return getUniqueFile(folderName,buf.toString());
+
+
+	    }
+	    /*
+	     * Stores fileItems into list
+	     */
+	    private void addFileItem(FileItem item){
+	    	if(fileItems==null) fileItems=new ArrayList();
+
+	    	fileItems.add(item);
+
+	    }
+	    /*
+	     * returns file item for sepcified fieldName
+	     */
+	    private FileItem getFileItem(String fieldName){
+	    	if(fileItems==null) fileItems=new ArrayList();
+
+	    	for (int i=0;i<fileItems.size();i++){
+	    		FileItem item = (FileItem) fileItems.get(i);
+	    		if(item.getFieldName().equalsIgnoreCase(fieldName))
+	    			return item;
+	    	}
+
+	    	return null;
+
+	    }
+
+	    /**
+	     * returns the file name for specified fieldName. Useful for posting several fileitems.
+	     *
+	     * @param fieldName - file item field name
+	     * @return
+	     */
+	    public String getFileName(String fieldName){
+	    	String strRet = null;
+
+
+	    	if(fileItems==null || fieldName==null) return strRet;
+
+	    	for (int i=0;i<fileItems.size();i++){
+	    		FileItem item = (FileItem) fileItems.get(i);
+	    		if(item.getFieldName().equalsIgnoreCase(fieldName))
+	    			return getFileItemName(item.getName());
+	    	}
+	    	return strRet;
+	    }
+	    /**
+	     * Stores uploaded file in the filesystem with the original filename.
+	     * If the file with the same name exisits, appends next available number at the end of the filename.
+	     *
+	     * @param fieldName - file item field name
+	     * @param folderdName - target folder
+	     *
+		 * @return      			File name
+		 * @throws GDEMException    Thrown in case of missing data or error during file writing.
+	     */
+	    public String saveFile(String fieldName, String folderName) throws GDEMException {
+
+	    	folderName = (folderName==null)?_folderName:folderName;
+	        if (folderName==null) throw new GDEMException("Folder name is empty!");
+
+	    	FileItem fileItem = getFileItem(fieldName);
+	        if (fileItem==null)  throw new GDEMException("No files found!");
+
+	        String fileName = getFileItemName(fileItem.getName());
+	        if (fileName==null) throw new GDEMException("File name is empty!");
+
+
+	        upload.setRepositoryPath(folderName);
+
+	        if (fileItem.getSize()==0) return null; //There is nothing to save, file size is 0
+
+	        File file = getUniqueFile(folderName, fileName);
+	        fileName = file.getName();
+
+
+	        if (fileItem.getSize() > 0) {
+	          try {
+	        	  fileItem.write(file);
+	          } catch (Exception e) {
+	            throw new GDEMException(e.toString());
+	          }
+	        }
+	        return fileName;
+	    }
+		public String getEncoding() {
+			if(encoding==null)encoding=DEFAULT_ENCODING;
+			return encoding;
+		}
+		public void setEncoding(String encoding) {
+			this.encoding = encoding;
+		}
+		private String getEscapedItemName(String itemName){
+			String fileItemName=null;
+	    	try{
+	    		//use encoding from request   		
+	    		fileItemName = new String( itemName.getBytes(),getEncoding());
+	    	}
+	    	catch(UnsupportedEncodingException e){
+	    		//use default encoding
+	    		fileItemName =  itemName;
+	    	}
+			return parseFileName(fileItemName);
+			
+		}
+		/**
+		 * eemaldab faili nimest veidrad s�mbolid
+		 * @param fileName
+		 * @return
+		 */
+		private String parseFileName (String fileName){
+			StringBuffer ret = new StringBuffer();
+			
+			int code = 0;
+			int lastCode = 0;
+			
+			for (int i=0;i<fileName.length();i++){
+	    		char c = fileName.charAt(i);
+	    		code = Character.valueOf(fileName.charAt(i));
+	    		if(code==63 && lastCode==65533){
+	    			ret.append("s");    			
+	    		}
+	    		else if(fileNameEscapes.containsKey(new Integer(code))){
+	    			ret.append(fileNameEscapes.get(code));
+	    		}
+	    		else if(code>127 || isRestrictedChar(c)){
+	    			ret.append("-");
+	    		}
+	    		else{
+	    			ret.append(c);
+	    		}
+	    		//System.out.println(c + "=" + code);
+	    		lastCode=code;
+	    	}
+			return ret.toString(); 
+		}
+		private void initEscapes(){
+			fileNameEscapes.put(352, "S");
+			fileNameEscapes.put(381, "Z");
+			fileNameEscapes.put(382, "z");
+			fileNameEscapes.put(252, "u"); 
+			fileNameEscapes.put(245, "o"); 
+			fileNameEscapes.put(246, "o"); 
+			fileNameEscapes.put(228, "a"); 
+			fileNameEscapes.put(213, "O"); 
+			fileNameEscapes.put(214, "O"); 
+			fileNameEscapes.put(196, "A"); 
+		}
+		private boolean isRestrictedChar(char c){
+			for (int i=0;i<restrictedChars.length;i++){
+				if(c==restrictedChars[i])return true;
+			}
+			return false;
+		}
 }

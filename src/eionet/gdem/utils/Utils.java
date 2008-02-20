@@ -1,5 +1,5 @@
 /**
- * The contents of this file are subject to the Mozilla Public
+* The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
@@ -24,6 +24,9 @@ package eionet.gdem.utils;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.LoggerIF;
+
 import java.net.URL;
 import java.io.*;
 import java.net.MalformedURLException;
@@ -47,7 +50,10 @@ public class Utils {
 
 
 	private static Hashtable xmlEscapes = null;
-  /*
+	
+	private static LoggerIF _logger = GDEMServices.getLogger();
+
+	/*
   public static String tmpFolder="/tmp";
 
   //public static String urlPrefix="http://conversions.eionet.eu.int/";
@@ -299,7 +305,7 @@ public class Utils {
   }
 	public static String escapeXML(String text){
 
-		if (text==null) return null;
+		if (text==null) return "";
 		if (text.length()==0) return text;
 
 		StringBuffer buf = new StringBuffer();
@@ -377,12 +383,16 @@ public class Utils {
 	      fis.close();
 
 	    } catch (FileNotFoundException fne) {
+			_logger.error("File not found " + fileName, fne);
 	      throw new GDEMException("File not found " + fileName, fne);
 	    } catch (Exception e) {
+			_logger.error("", e);
 	      throw new GDEMException("Exception " + e.toString(), e);
 	    }
 	      return baos.toByteArray();
 	  }
+
+		
 	  public static boolean containsKeyIgnoreCase(Hashtable hash, String val){
 		Enumeration keys = hash.keys();
         while (keys.hasMoreElements()){
@@ -631,20 +641,110 @@ public class Utils {
 		return buf.toString();
 	}
 	/**
-	 * Method constructs a URI from specified folder path.
-	 * If the folder does not exists, then it return null value.
+	 * Method constructs a URI from specified file and folder path.
+	 * If the file or folder does not exists, then it return null value.
 	 *  
-	 * @param strPath	Folder path. eg: /usr/prj/xmlconv/xmlfiles
-	 * @return			URI: file:///usr/prj/xmlconv/xmlfiles
+	 * @param strPath		Folder path. eg: /usr/prj/xmlconv/xmlfiles
+	 * @param isDirectory	return URI only, if the path is directory
+	 * @return				URI: file:///usr/prj/xmlconv/xmlfiles
 	 */
-	public static String getURIfromPath(String strPath){
+	public static String getURIfromPath(String strPath, boolean isDirectory){
     
     	if(strPath!=null){
     		File f = new File(strPath);
-    		if(f.exists()&& f.isDirectory()){
+    		if(f.exists()&&
+    				((isDirectory && f.isDirectory()) || !isDirectory)){
     			return f.toURI().toString();
     		}
     	}
     	return null;
 	}
-}
+	/**
+	 * generates unique temporary file name with full path
+	 * 
+	 * @param fileName
+	 * @return
+	 */
+	public static String getUniqueTmpFileName(String fileName){
+		StringBuffer buf = new StringBuffer();
+		buf.append(Properties.tmpFolder);
+		buf.append("xmlconv_");
+		buf.append(System.currentTimeMillis());
+		if(fileName!=null)
+			buf.append(fileName);
+		else
+			buf.append(".tmp");
+		return buf.toString();
+	}
+	/**
+	 * generates unique temporary folder name  and creates the directory 
+	 * 
+	 * @return fill path
+	 */
+	public static String createUniqueTmpFolder(){
+		
+		StringBuffer buf = new StringBuffer("tmp_");
+		buf.append(System.currentTimeMillis());
+
+		String folderName = buf.toString();
+		String parent_folder = Properties.tmpFolder;
+		
+	  	int n =0;
+	  	File folder = new File(parent_folder, folderName);
+	  	while ( folder.exists()){
+	  		n++;
+	  		folderName = getGeneratedFolderName( folderName , n) ;
+	  		folder = new File(parent_folder, folderName);
+	  	}
+	  	folder.mkdir();
+	  	
+	  	return folder.getPath();
+	}
+    /**
+     * Generates foldername
+     *
+     * @param folderName, n >0, if folder with the same name already exists in the tmp folder
+     * ex: getGeneratedFolderName( test, 1 )= test_1
+     *     getGeneratedFolderName( test_1, 2 )= test_2
+     */
+    public static String getGeneratedFolderName(String folderName, int n){
+      String ret ;
+ 
+
+      int dashPos = folderName.lastIndexOf( "_" );
+      if (dashPos>1){
+          String snum = folderName.substring(dashPos+1);
+          try{
+        	  int inum = Integer.parseInt(snum);
+              ret = folderName.substring(0, dashPos ) + "_" + (inum+1);
+          }
+          catch(Exception e){
+              ret = folderName + "_" + n;
+          }
+      }
+      else{
+          ret = folderName + "_" + n;
+      }
+
+      return ret;
+    }
+    /**
+     * deletes the folder, where specified file locates
+     * @param filePath
+     */
+	public static void deleteParentFolder(String filePath){
+
+		File file = new File(filePath);
+		String folder = file.getParent();
+		
+		//check if the folder is not Properties.tmpFolder
+		File oFolder = new File(folder);
+		File oTmpFolder = new File(Properties.tmpFolder);
+		
+		//if parent folder is system tmp folder, then delete only the specifieds file
+		if(oFolder.equals(oTmpFolder))
+			deleteFile(filePath);
+		else
+			deleteFolder(folder);
+	}
+ }
