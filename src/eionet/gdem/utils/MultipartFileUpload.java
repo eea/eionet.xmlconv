@@ -25,6 +25,8 @@ package eionet.gdem.utils;
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import java.text.SimpleDateFormat;
@@ -448,6 +450,15 @@ public class MultipartFileUpload{
 	          }
 	        }
 	        return fileName;
+	    }
+	    public InputStream getFileAsInputStream(String fieldName) throws GDEMException, IOException{
+	    	
+	    	FileItem fileItem = getFileItem(fieldName);
+	        if (fileItem==null)  throw new GDEMException("No files found!");
+
+	        if (fileItem.getSize()==0) throw new GDEMException("File size is 0KB!"); //There is nothing to save, file size is 0
+
+	        return fileItem.getInputStream();
 	    }
 		public String getEncoding() {
 			if(encoding==null)encoding=DEFAULT_ENCODING;
