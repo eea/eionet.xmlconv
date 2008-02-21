@@ -6,11 +6,12 @@ package eionet.gdem.conversion;
 import java.io.File;
 
 import eionet.gdem.Properties;
-import eionet.gdem.dcm.results.HttpResultWrapper;
+import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
 
 /**
+ * Abstract class for holding ConversionService methods
+ * 
  * @author Enriko Käsper, TietoEnator Estonia AS
- * ConversionServiceMethod
  */
 
 public abstract class ConversionServiceMethod {
@@ -32,7 +33,7 @@ public abstract class ConversionServiceMethod {
 	
 	private boolean isHttpRequest = false;
 	
-	private HttpResultWrapper httpResult = null;
+	private HttpMethodResponseWrapper httpResponse = null;
 
 	public ConversionServiceMethod() {
 		xslFolder = Properties.xslFolder + File.separatorChar; // props.getString("xsl.folder");
@@ -59,13 +60,13 @@ public abstract class ConversionServiceMethod {
 		return isHttpRequest;
 	}
 
-	public HttpResultWrapper getHttpResult() {
-		return httpResult;
+	public HttpMethodResponseWrapper getHttpResponse() {
+		return httpResponse;
 	}
 
-	public void setHttpResult(HttpResultWrapper httpResult) {
+	public void setHttpResult(HttpMethodResponseWrapper httpResult) {
 		isHttpRequest=true;
-		this.httpResult = httpResult;
+		this.httpResponse = httpResult;
 	}
 
 	public String getXslFolder() {

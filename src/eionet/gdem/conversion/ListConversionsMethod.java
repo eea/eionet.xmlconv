@@ -18,8 +18,9 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 
 /**
+ * Implementation of listConversions method
+ * 
  * @author Enriko Käsper, TietoEnator Estonia AS
- * ListConversionsMethod
  */
 
 public class ListConversionsMethod {

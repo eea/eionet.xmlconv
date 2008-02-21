@@ -24,7 +24,7 @@ import eionet.gdem.conversion.converters.TextConverter;
 import eionet.gdem.conversion.converters.XMLConverter;
 import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dcm.XslGenerator;
-import eionet.gdem.dcm.results.HttpResultWrapper;
+import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
 import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
@@ -34,8 +34,9 @@ import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 
 /**
+ * Conversion Service methods that executes XML conversions to other file types using XSL transformations.
+ * 
  * @author Enriko Käsper, TietoEnator Estonia AS
- * ConvertXMLMethods
  */
 
 public class ConvertXMLMethod extends ConversionServiceMethod {
@@ -111,10 +112,10 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 				}
 				if (isHttpRequest()) {
 					try {
-						HttpResultWrapper httpResult = getHttpResult();
-						httpResult.setContentType(cnvContentType);
-						httpResult.setContentDisposition(cnvFileName + "." + cnvFileExt);
-						result = httpResult.getOutputStream();
+						HttpMethodResponseWrapper httpResponse = getHttpResponse();
+						httpResponse.setContentType(cnvContentType);
+						httpResponse.setContentDisposition(cnvFileName + "." + cnvFileExt);
+						result = httpResponse.getOutputStream();
 					} catch (IOException e) {
 						_logger
 								.error("Error getting response outputstream ",
@@ -235,7 +236,7 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 			}
 			if (isHttpRequest()) {
 				try {
-					HttpResultWrapper httpResult = getHttpResult();
+					HttpMethodResponseWrapper httpResult = getHttpResponse();
 					httpResult.setContentType(cnvContentType);
 					httpResult.setContentDisposition(cnvFileName + "."
 							+ cnvFileExt);
@@ -295,7 +296,35 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 		return h;
 
 	}
+	public Hashtable convertPush(InputStream fileInput, String convertId, String fileName) throws GDEMException {
+		
+		try{
+		//Store the file into temporar folder
+		String folderName =Utils.createUniqueTmpFolder();
+		String filePath = folderName + File.separator + (Utils.isNullStr(fileName)?DEFAULT_FILE_NAME:fileName);
 
+		File file = new File(filePath);
+		//store inputstream into file
+
+		String fileUri = Utils.getURIfromPath(fileName,false);
+
+		//TODO - unzip the file if it is a zip file
+		// 		- check if it is a XML file
+		//		- call convert method
+		}
+		finally{
+			try{
+				Utils.deleteParentFolder(fileName);		
+			} catch (Exception e) {
+
+				_logger.error("Couldn't delete the temporary file: "
+					+ fileName, e);
+			}
+		}
+
+		return convert(fileName, convertId);
+		
+	}
 	private String executeConversion(InputStream source, Object xslt,
 			OutputStream result, HashMap params, String cnvFileExt,
 			String cnvTypeOut) throws Exception {

@@ -3,10 +3,11 @@
  */
 package eionet.gdem.conversion;
 
+import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import eionet.gdem.dcm.results.HttpResultWrapper;
+import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
 
 import eionet.gdem.GDEMException;
 
@@ -66,12 +67,29 @@ public interface ConversionServiceIF {
 	public Vector convertDD_XML_split(String sourceURL, String sheet_param)
 			throws GDEMException;
 
+	/**
+	 * If Conversion Service is called through HTTP, then set the HTTP Response object
+	 * @param httpResponse
+	 */
+	public void setHttpResponse(HttpMethodResponseWrapper httpResponse);
 	
-	public void setHTTPResult(HttpResultWrapper httpResult);
+	/**
+	 * Convert an XML file with given XSL. The file is stored into file system by HTTP action already.
+	 * 
+	 * @param file			file content as InputStream
+	 * @param convertId		Stylesheet ID.
+	 * @return				returns the Hashtable that has exactly the same structure as convert method.
+	 * @throws GDEMException
+	 */
+	public Hashtable convertPush(InputStream file, String convertId, String fileName)throws GDEMException;
 	
-	public boolean isHTTPRequest();
-	
-	public Hashtable convertPush(String fileName, String convertId)throws GDEMException;
-	
+	/**
+	 * Method for xml-rpc clients file is base64 encoded bytearray
+	 * @param fileBase64	base64 encoded bytearray
+	 * @param convertId		Stylesheet ID
+	 * @param fileName
+	 * @return				returns the Hashtable that has exactly the same structure as convert method.
+	 * @throws GDEMException
+	 */
 	public Hashtable convertPush(byte[] fileBase64, String convertId, String fileName)throws GDEMException;
 }

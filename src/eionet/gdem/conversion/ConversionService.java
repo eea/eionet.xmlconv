@@ -35,7 +35,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -43,20 +42,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
-import eionet.gdem.dcm.Conversion;
-import eionet.gdem.dcm.XslGenerator;
-import eionet.gdem.dcm.results.HttpResultWrapper;
-import eionet.gdem.dto.ConversionDto;
+import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-import eionet.gdem.services.db.dao.IConvTypeDao;
-import eionet.gdem.services.db.dao.IStyleSheetDao;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
 
 /**
- * Facade for different conversions for being used through XML/RPC and HTTP POST and GET
+ * Facade class for different conversions for being used through XML/RPC and HTTP POST and GET
  *
  * @author Enriko Käsper
  */
@@ -79,7 +73,7 @@ public class ConversionService implements ConversionServiceIF {
 	
 	private boolean isHttpResponse = false;
 	
-	private HttpResultWrapper httpResult = null;
+	private HttpMethodResponseWrapper httpResponse = null;
 	
 
 	private static LoggerIF _logger = GDEMServices.getLogger();
@@ -119,7 +113,7 @@ public class ConversionService implements ConversionServiceIF {
 			ConvertXMLMethod convertMethod = new ConvertXMLMethod();
 			convertMethod.setTicket(ticket);
 			convertMethod.setTrustedMode(false);
-			convertMethod.setHttpResult(httpResult);
+			convertMethod.setHttpResult(httpResponse);
 			
 			return convertMethod.convert(sourceURL, convertId);
 
@@ -135,7 +129,7 @@ public class ConversionService implements ConversionServiceIF {
 	public Hashtable convert(String sourceURL, String convertId) throws GDEMException {
 		
 		ConvertXMLMethod convertMethod = new ConvertXMLMethod();
-		convertMethod.setHttpResult(httpResult);
+		convertMethod.setHttpResult(httpResponse);
 		return convertMethod.convert(sourceURL, convertId);	
 	}
 
@@ -482,27 +476,36 @@ public class ConversionService implements ConversionServiceIF {
 		return isHttpResponse;
 	}
 
-	public void setHTTPResult(HttpResultWrapper httpResult) {
+	public void setHttpResponse(HttpMethodResponseWrapper httpResponse) {
 		isHttpResponse=true;
-		this.httpResult = httpResult; 
+		this.httpResponse = httpResponse; 
 	}
 
+	/* (non-Javadoc)
+	 * @see eionet.gdem.conversion.ConversionServiceIF#convertPush(byte[],java.lang.String,java.lang.String)
+	 */
 	public Hashtable convertPush(byte[] fileBase64, String convertId, String fileName)throws GDEMException {
-
-		//return convertPush(new ByteArrayInputStream(file), convertId, fileName);
-		return null;
-	}
-	public Hashtable convertPush(String fileName, String convertId) throws GDEMException {
-		//test if the file is zip
-		String fileUri = Utils.getURIfromPath(fileName,false);
-		Hashtable result =convert(fileUri,convertId); 
-		try {
-			Utils.deleteParentFolder(fileName);
-		} catch (Exception e) {
-
-			_logger.error("Couldn't delete the result file: "
-					+ fileName, e);
+		
+		InputStream fileInput = null;
+		
+		try{
+			fileInput = null; // TODO make fileBase64 to InputStream
 		}
-		return result;
+		catch(Exception e){
+			throw new GDEMException("Could not read base64 bytearray. " + e.getMessage());
+		}
+		ConvertXMLMethod convertMethod = new ConvertXMLMethod();
+		convertMethod.setHttpResult(httpResponse);
+		return convertMethod.convertPush(fileInput, convertId, fileName);	
+		
+	}
+	/* (non-Javadoc)
+	 * @see eionet.gdem.conversion.ConversionServiceIF#convertPush(java.lang.String,java.lang.String)
+	 */
+	public Hashtable convertPush(InputStream fileInput, String convertId, String fileName) throws GDEMException {
+		
+		ConvertXMLMethod convertMethod = new ConvertXMLMethod();
+		convertMethod.setHttpResult(httpResponse);
+		return convertMethod.convertPush(fileInput, convertId, fileName);	
 	}
 }
