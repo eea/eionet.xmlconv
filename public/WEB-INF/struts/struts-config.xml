@@ -179,6 +179,18 @@
         <action path="/editUplXmlFile"  scope="request" type="eionet.gdem.web.struts.xmlfile.EditUplXmlFileAction" name="EditUplXmlFileForm">           
         	<forward name="success" path="/do/uplXmlFiles"  redirect="true"/>            
         </action>
+<!-- methods for remote API HTTP POST and GET -->
+        <action path="/listConversions"  scope="request" type="eionet.gdem.web.struts.remoteapi.ListConversionsAction">
+	        <forward name="fail" path="/api/methodError" />
+        </action>
+        <action path="/convert"  scope="request" type="eionet.gdem.web.struts.remoteapi.ConvertAction">
+	        <forward name="fail" path="/api/methodError" />
+        </action>
+        <action path="/convertPush"  scope="request" type="eionet.gdem.web.struts.remoteapi.ConvertPushAction">
+	        <forward name="fail" path="/api/methodError" />
+        </action>
+        <action path="/methodError"  scope="request" type="eionet.gdem.web.struts.remoteapi.MethodErrorAction">
+        </action>
 
  <!-- Edit UI -->
         <action path="/editUI/imageManagerSetup" type="eionet.gdem.web.struts.uimanage.ImageManagerSetupAction"
