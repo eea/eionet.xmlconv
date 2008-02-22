@@ -3,7 +3,6 @@
  */
 package eionet.gdem.web.struts.remoteapi;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.Map;
 
@@ -66,6 +65,7 @@ public class ConvertPushAction  extends BaseAction {
 
 			//get the file as inputstream from request
 			fileInput =  fu.getFileAsInputStream(CONVERT_FILE_PARAM_NAME);
+			fileName = fu.getFileName(CONVERT_FILE_PARAM_NAME);
 			
 			// call ConversionService
 			ConversionServiceIF cs = new ConversionService();
@@ -93,7 +93,7 @@ public class ConvertPushAction  extends BaseAction {
 			}
 			catch(Exception e){ _logger.error("Unable to close inputstream.");}
 		}
-		//Do nothing, then response is already sent.		
+		//Do nothing, the response is already sent.		
 		return map.findForward(null);
 	}
 }

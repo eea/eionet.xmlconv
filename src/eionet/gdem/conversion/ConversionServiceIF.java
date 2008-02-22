@@ -85,11 +85,11 @@ public interface ConversionServiceIF {
 	
 	/**
 	 * Method for xml-rpc clients file is base64 encoded bytearray
-	 * @param fileBase64	base64 encoded bytearray
+	 * @param file	base64 encoded bytearray
 	 * @param convertId		Stylesheet ID
 	 * @param fileName
 	 * @return				returns the Hashtable that has exactly the same structure as convert method.
 	 * @throws GDEMException
 	 */
-	public Hashtable convertPush(byte[] fileBase64, String convertId, String fileName)throws GDEMException;
+	public Hashtable convertPush(byte[] file, String convertId, String filename)throws GDEMException;
 }

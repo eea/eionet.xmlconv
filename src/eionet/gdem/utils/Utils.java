@@ -26,6 +26,8 @@ import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.xml.IXmlCtx;
+import eionet.gdem.utils.xml.XmlContext;
 
 import java.net.URL;
 import java.io.*;
@@ -746,5 +748,47 @@ public class Utils {
 			deleteFile(filePath);
 		else
 			deleteFolder(folder);
+	}
+	/**
+	 * Find the first XML file stored in specified folder
+	 * @param folder  folder path
+	 * @return
+	 */
+	public static String findXMLFromFolder(String folder) {
+		return findXMLFromFolder(new File(folder));
+	}
+	/**
+	 * Find the first XML file stored in specified folder 
+	 * @param folder	File object 
+	 * @return
+	 */
+	public static String findXMLFromFolder(File folder) {
+		
+		File[] files = folder.listFiles();
+		// go through all the files and check well formedness
+		for (int i=0; files!=null && i<files.length; i++){
+			if (!files[i].isDirectory()){
+				try{
+					IXmlCtx x = new XmlContext();
+					x.setWellFormednessChecking();
+					x.checkFromFile(files[i].getAbsolutePath());
+					//XML file found
+					return files[i].getAbsolutePath();
+				}
+				catch(Exception e){
+					//it is not an XML
+				}
+			}
+		}
+		// go through all subfolders
+		for (int i=0; files!=null && i<files.length; i++){
+			if (files[i].isDirectory()){
+				String xmlFile = findXMLFromFolder(files[i].getAbsolutePath());
+				if(xmlFile!=null)return xmlFile;
+			}
+		}
+
+		return null;
+		
 	}
  }

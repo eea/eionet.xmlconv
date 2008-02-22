@@ -39,6 +39,7 @@ import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ConversionService;
+import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.Conversion;
@@ -231,7 +232,7 @@ public class SchemaManager {
 				st.setHandcoded(true);
 			}
 
-			ConversionService cs = new ConversionService();
+			ConversionServiceIF cs = new ConversionService();
 			Vector stylesheets = cs.listConversions(schema);
 			ArrayList stls = new ArrayList();
 			Schema sc = new Schema();
@@ -457,7 +458,7 @@ public class SchemaManager {
 
 		try {
 			
-			ConversionService cs = new ConversionService();
+			ConversionServiceIF cs = new ConversionService();
 			Vector stylesheets = cs.listConversions(schema);
 
 			for (int i = 0; i < stylesheets.size(); i++) {

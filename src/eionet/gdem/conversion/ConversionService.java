@@ -40,6 +40,10 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.xmlrpc.Base64;
+
+import sun.misc.BASE64Decoder;
+
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
@@ -50,7 +54,8 @@ import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
 
 /**
- * Facade class for different conversions for being used through XML/RPC and HTTP POST and GET
+ * Conversion Service Facade. 
+ * The service is able to execute different conversions that are called through XML/RPC and HTTP POST and GET.
  *
  * @author Enriko Käsper
  */
@@ -484,19 +489,38 @@ public class ConversionService implements ConversionServiceIF {
 	/* (non-Javadoc)
 	 * @see eionet.gdem.conversion.ConversionServiceIF#convertPush(byte[],java.lang.String,java.lang.String)
 	 */
-	public Hashtable convertPush(byte[] fileBase64, String convertId, String fileName)throws GDEMException {
+	public Hashtable convertPush(byte file[], String convertId, String filename)throws GDEMException {
 		
-		InputStream fileInput = null;
+		InputStream encodedInput = null;
+		InputStream decodedInput = null;
 		
 		try{
-			fileInput = null; // TODO make fileBase64 to InputStream
+			encodedInput = new ByteArrayInputStream(file);
+			try{
+			//System.out.println(Base64.isArrayByteBase64(file));
+				
+			//	byte [] decoded_bytes = Base64.decode(file);
+			//	decodedInput = new ByteArrayInputStream(decoded_bytes ); 
+			}
+			catch(Exception ioe){
+				_logger.error(ioe.toString());
+				throw new GDEMException("Unable to decode base64 bytes");
+			}
+			ConvertXMLMethod convertMethod = new ConvertXMLMethod();
+			convertMethod.setHttpResult(httpResponse);
+			return convertMethod.convertPush(encodedInput, convertId, filename);	
 		}
-		catch(Exception e){
-			throw new GDEMException("Could not read base64 bytearray. " + e.getMessage());
+		finally{
+			try{
+				encodedInput.close();
+			}
+			catch(Exception e){}
+			try{
+				decodedInput.close();
+			}
+			catch(Exception e){}
+			
 		}
-		ConvertXMLMethod convertMethod = new ConvertXMLMethod();
-		convertMethod.setHttpResult(httpResponse);
-		return convertMethod.convertPush(fileInput, convertId, fileName);	
 		
 	}
 	/* (non-Javadoc)

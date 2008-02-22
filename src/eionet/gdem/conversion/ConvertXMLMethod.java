@@ -5,6 +5,7 @@ package eionet.gdem.conversion;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,10 +32,16 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IStyleSheetDao;
 import eionet.gdem.utils.InputFile;
+import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.utils.ZipUtil;
+import eionet.gdem.utils.xml.IXmlCtx;
+import eionet.gdem.utils.xml.XmlContext;
+import eionet.gdem.utils.xml.XmlException;
 
 /**
- * Conversion Service methods that executes XML conversions to other file types using XSL transformations.
+ * Conversion Service methods that executes XML conversions to other file types
+ * using XSL transformations.
  * 
  * @author Enriko Käsper, TietoEnator Estonia AS
  */
@@ -114,7 +121,8 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 					try {
 						HttpMethodResponseWrapper httpResponse = getHttpResponse();
 						httpResponse.setContentType(cnvContentType);
-						httpResponse.setContentDisposition(cnvFileName + "." + cnvFileExt);
+						httpResponse.setContentDisposition(cnvFileName + "."
+								+ cnvFileExt);
 						result = httpResponse.getOutputStream();
 					} catch (IOException e) {
 						_logger
@@ -127,7 +135,8 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 				}
 
 				outputFileName = executeConversion(src.getSrcInputStream(),
-						xslFile, result, src.getCdrParams(),cnvFileExt, cnvContentType);
+						xslFile, result, src.getCdrParams(), cnvFileExt,
+						cnvContentType);
 
 			} catch (MalformedURLException mfe) {
 				_logger.error("Bad URL", mfe);
@@ -152,7 +161,7 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 
 			h.put("content-type", cnvContentType);
 			h.put("filename", cnvFileName + "." + cnvFileExt);
-			
+
 			if (isHttpRequest()) {
 				return h;
 			}
@@ -251,7 +260,7 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 			}
 
 			outputFileName = executeConversion(src.getSrcInputStream(), byteIn,
-					result, src.getCdrParams(),cnvFileExt, cnvContentType);
+					result, src.getCdrParams(), cnvFileExt, cnvContentType);
 
 		} catch (MalformedURLException mfe) {
 			_logger.error("Bad URL", mfe);
@@ -296,35 +305,97 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 		return h;
 
 	}
-	public Hashtable convertPush(InputStream fileInput, String convertId, String fileName) throws GDEMException {
-		
-		try{
-		//Store the file into temporar folder
-		String folderName =Utils.createUniqueTmpFolder();
-		String filePath = folderName + File.separator + (Utils.isNullStr(fileName)?DEFAULT_FILE_NAME:fileName);
+	/**
+	 * The method checks if the given file is XML and calls convert methdo.
+	 * If the file is not XML, then the method tries to unzip it and find an XML from zip file.
+	 * 
+	 * @param fileInput
+	 * @param convertId
+	 * @param fileName
+	 * @return
+	 * @throws GDEMException	no XML file found from given input stream
+	 */
+	public Hashtable convertPush(InputStream fileInput, String convertId,
+			String fileName) throws GDEMException {
+		String filePath = null;
+		Hashtable result = null;
+		String tmpFolderName = null;
+		boolean isXml = false;
 
-		File file = new File(filePath);
-		//store inputstream into file
+		try {
+			// Store the file into temporary folder
+			tmpFolderName = Utils.createUniqueTmpFolder();
+			filePath = tmpFolderName
+					+ File.separator
+					+ (Utils.isNullStr(fileName) ? DEFAULT_FILE_NAME : fileName);
 
-		String fileUri = Utils.getURIfromPath(fileName,false);
+			File file = new File(filePath);
+			FileOutputStream outStream = new FileOutputStream(file);
+			Streams.drain(fileInput, outStream);
 
-		//TODO - unzip the file if it is a zip file
-		// 		- check if it is a XML file
-		//		- call convert method
-		}
-		finally{
-			try{
-				Utils.deleteParentFolder(fileName);		
+			outStream.close();
+			// check if the stored file is XML
+			try {
+				IXmlCtx x = new XmlContext();
+				x.setWellFormednessChecking();
+				x.checkFromFile(filePath);
+				isXml = true;
+			} catch (XmlException xmle) {
+				_logger
+						.debug("The file is not well-formed XML, try to unzip it.");
+			}
+
+			// try to unzip the input file, if it is not XML
+			if (!isXml) {
+				try {
+					File zipFolder = new File(tmpFolderName + File.separator
+							+ "zip");
+					zipFolder.mkdir();
+					ZipUtil.unzip(filePath, zipFolder.getPath());
+					String zippedXml = Utils.findXMLFromFolder(zipFolder);
+					if (zippedXml == null)
+						throw new GDEMException("Could not find XML");
+					else
+						filePath = zippedXml;
+				} catch (Exception e) {
+					_logger
+							.error("The file is not well-formed XML or zipped XML. Unable to convert it.");
+					throw new GDEMException(
+							"The file is not well-formed XML or zipped XML. Unable to convert it.");
+				}
+			}
+			
+			//Creates an URI for temprarily stored XML file and calll convert method with it
+			String fileUri = Utils.getURIfromPath(filePath, false);
+			result = convert(fileUri, convertId);
+			
+		} catch (Exception e) {
+			_logger.error(e.toString());
+			throw new GDEMException(e.toString());
+		} finally {
+			// delete all the data stored in temp folder
+			try {
+				Utils.deleteFolder(tmpFolderName);
 			} catch (Exception e) {
-
-				_logger.error("Couldn't delete the temporary file: "
-					+ fileName, e);
+				_logger.error(
+						"Couldn't delete the temporary folder: " + tmpFolderName, e);
 			}
 		}
 
-		return convert(fileName, convertId);
-		
+		return result;
+
 	}
+	/**
+	 * Choose the correct converter for given content type and execute the conversion
+	 * @param source
+	 * @param xslt
+	 * @param result
+	 * @param params
+	 * @param cnvFileExt
+	 * @param cnvTypeOut
+	 * @return
+	 * @throws Exception
+	 */
 	private String executeConversion(InputStream source, Object xslt,
 			OutputStream result, HashMap params, String cnvFileExt,
 			String cnvTypeOut) throws Exception {
