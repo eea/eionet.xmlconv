@@ -20,7 +20,6 @@ import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.web.struts.api.BaseMethodAction;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS
@@ -63,6 +62,7 @@ public class ConvertAction  extends BaseMethodAction {
 			ConversionServiceIF cs = new ConversionService();
 			//set up the servlet outputstream form converter
 			cs.setHttpResponse(methodResponse);
+			cs.setTicket(getTicket(request));
 			// execute conversion
 			cs.convert(url, convert_id);
 			//flush the content

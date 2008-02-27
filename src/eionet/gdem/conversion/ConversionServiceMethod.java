@@ -16,7 +16,6 @@ import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
 
 public abstract class ConversionServiceMethod {
 
-
 	public static final String DEFAULT_CONTENT_TYPE = "text/plain";
 
 	public static final String DEFAULT_FILE_EXT = "txt";
@@ -29,7 +28,7 @@ public abstract class ConversionServiceMethod {
 
 	private String ticket = null;
 
-	private boolean trustedMode = true;// false for web clients
+	private boolean trustedMode = false;// false for web clients
 	
 	private boolean isHttpRequest = false;
 	
@@ -64,8 +63,8 @@ public abstract class ConversionServiceMethod {
 		return httpResponse;
 	}
 
-	public void setHttpResult(HttpMethodResponseWrapper httpResult) {
-		isHttpRequest=true;
+	public void setHttpResponse(HttpMethodResponseWrapper httpResult) {
+		if (httpResult!=null) isHttpRequest=true;
 		this.httpResponse = httpResult;
 	}
 

@@ -48,7 +48,7 @@ public interface ConversionServiceIF {
 			throws GDEMException;
 
 	/**
-	 * Request from XML/RPC client Converts DataDictionary MS Excel file to XML
+	 * Converts DataDictionary MS Excel file to XML
 	 *
 	 * @param String
 	 *            url: URL of the srouce Excel file
@@ -57,7 +57,7 @@ public interface ConversionServiceIF {
 	public Vector convertDD_XML(String sourceURL) throws GDEMException;
 
 	/**
-	 * Request from XML/RPC client Converts DataDictionary MS Excel sheets to
+	 * Converts DataDictionary MS Excel sheets to
 	 * different XML files, where one xml file is dataset table.
 	 *
 	 * @param String
@@ -92,4 +92,10 @@ public interface ConversionServiceIF {
 	 * @throws GDEMException
 	 */
 	public Hashtable convertPush(byte[] file, String convertId, String filename)throws GDEMException;
+
+	/**
+	 * Set base64 authentication info for receiveing remote URLs
+	 * @param _ticket
+	 */
+	public void setTicket(String _ticket);
 }

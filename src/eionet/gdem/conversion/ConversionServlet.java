@@ -38,6 +38,12 @@ import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.utils.Utils;
 
+/**
+ * @deprecated
+ * 
+ * @author Enriko Käsper, TietoEnator Estonia AS
+ * ConversionServlet
+ */
 public class ConversionServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -138,7 +144,8 @@ public class ConversionServlet extends HttpServlet {
 
 		if (!show_array) {
 			//System.out.println("Response");
-			result = cnv.convertDD_XML_split(url, sheet_param, res);
+			//FIXME
+			result = cnv.convertDD_XML_split(url, sheet_param);
 		} else {
 			result = cnv.convertDD_XML_split(url, sheet_param);
 			String str_result = result.toString();
@@ -172,7 +179,8 @@ public class ConversionServlet extends HttpServlet {
 		if (save != null) save_src = true;
 		if (!save_src) {
 			//System.out.println("Response ");
-			result = cnv.convertDD_XML(url, res);
+			//FIXME
+			result = cnv.convertDD_XML(url);
 		} else {
 			//System.out.println("File ");
 			result = cnv.convertDD_XML(url);

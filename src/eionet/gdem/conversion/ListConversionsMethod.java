@@ -3,6 +3,7 @@
  */
 package eionet.gdem.conversion;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -110,5 +111,35 @@ public class ListConversionsMethod {
 					+ e.toString(), e);
 		}
 		return v;		
+	}
+	/**
+	 * Get a distinct list of XML Schemas returned from listConversions() method 
+	 * @return
+	 * @throws GDEMException
+	 */
+	public ArrayList getXMLSchemas() throws GDEMException {
+		Vector conv = listConversions(null);
+		ArrayList schemas = new ArrayList();
+
+		for (int i = 0; i < conv.size(); i++) {
+			Hashtable schema = (Hashtable) conv.get(i);
+			// System.out.println( i + " - " + schema.get("xml_schema") );
+			if (!schemas.contains(schema.get("xml_schema"))) {
+				schemas.add(schema.get("xml_schema"));
+			}
+		}
+
+		return schemas;
+	}
+
+	/**
+	 * Check if listConversions method contains specified schema
+	 * @param xmlSchema
+	 * @return
+	 * @throws GDEMException
+	 */
+	public boolean existsXMLSchema(String xmlSchema) throws GDEMException {
+		ArrayList schemas = getXMLSchemas();
+		return schemas.contains(xmlSchema);
 	}
 }

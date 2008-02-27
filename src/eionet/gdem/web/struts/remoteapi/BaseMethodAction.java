@@ -6,7 +6,9 @@ package eionet.gdem.web.struts.remoteapi;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.results.XMLErrorResult;
 import eionet.gdem.web.struts.BaseAction;
 
@@ -43,5 +45,14 @@ public class BaseMethodAction extends BaseAction {
 		request.getSession().setAttribute("api.errors", null);		
 		return errorResult;
 		
+	}
+	protected String getTicket(HttpServletRequest req){
+	  	String ticket=null;
+		HttpSession httpSession = req.getSession(false);
+		if (httpSession != null) {
+			ticket = (String)httpSession.getAttribute(Names.TICKET_ATT);
+		}
+
+		return ticket;
 	}
 }

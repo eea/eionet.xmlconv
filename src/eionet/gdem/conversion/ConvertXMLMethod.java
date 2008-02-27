@@ -48,6 +48,11 @@ import eionet.gdem.utils.xml.XmlException;
 
 public class ConvertXMLMethod extends ConversionServiceMethod {
 
+	
+	public static  final String CONTENTTYPE_KEY = "content-type";
+	public static  final String FILENAME_KEY = "filename";
+	public static final String CONTENT_KEY = "content";
+
 	private IStyleSheetDao styleSheetDao = GDEMServices.getDaoService()
 			.getStyleSheetDao();
 	private IConvTypeDao convTypeDao = GDEMServices.getDaoService()
@@ -55,10 +60,24 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 
 	private static LoggerIF _logger = GDEMServices.getLogger();
 
+	/**
+	 * Converts the XML file to a specific format.
+	 *
+	 * @param sourceURL
+	 *            URL of the XML file to be converted
+	 * @param convertId
+	 *            ID of desired conversion as the follows: - If conversion ID
+	 *            begins with the DD DCM will generate appropriate stylesheet on
+	 *            the fly. - If conversion ID is number the DCM will consider
+	 *            consider hand coded conversion
+	 * @return Hashtable containing two elements: - content-type (String) -
+	 *         content (Byte array)
+	 * @throws GDEMException
+	 *             Thrown in case of errors
+	 */
 	public Hashtable convert(String sourceURL, String convertId)
 			throws GDEMException {
 		OutputStream result = null;
-		String convError = null;
 		String cnvFileName = null;
 		String cnvTypeOut = null;
 		String cnvFileExt = null;
@@ -107,9 +126,9 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 						}
 					}
 					if (cnvContentType == null)
-						cnvContentType = "text/plain;charset=UTF-8";
+						cnvContentType = this.DEFAULT_CONTENT_TYPE;
 					if (cnvFileExt == null)
-						cnvFileExt = "txt";
+						cnvFileExt = DEFAULT_FILE_EXT;
 
 				} catch (Exception e) {
 					_logger.error("error getting con types", e);
@@ -149,7 +168,6 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 				throw ge;
 			} catch (Exception e) {
 				_logger.error("Error converting", e);
-				convError = "Error converting";
 				throw new GDEMException("Convert error: " + e.toString(), e);
 			} finally {
 				try {
@@ -159,15 +177,15 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 				}
 			}
 
-			h.put("content-type", cnvContentType);
-			h.put("filename", cnvFileName + "." + cnvFileExt);
+			h.put(CONTENTTYPE_KEY, cnvContentType);
+			h.put(FILENAME_KEY, cnvFileName + "." + cnvFileExt);
 
 			if (isHttpRequest()) {
 				return h;
 			}
 
 			byte[] file = Utils.fileToBytes(outputFileName);
-			h.put("content", file);
+			h.put(CONTENT_KEY, file);
 			try {
 				Utils.deleteFile(outputFileName);
 			} catch (Exception e) {
@@ -231,9 +249,9 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 					}
 				}
 				if (cnvContentType == null)
-					cnvContentType = "text/plain";
+					cnvContentType = DEFAULT_CONTENT_TYPE;
 				if (cnvFileExt == null)
-					cnvFileExt = "txt";
+					cnvFileExt = DEFAULT_FILE_EXT;
 
 			} catch (Exception e) {
 				_logger.error(
@@ -282,8 +300,8 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 			}
 		}
 
-		h.put("content-type", cnvContentType);
-		h.put("filename", cnvFileName + "." + cnvFileExt);
+		h.put(CONTENTTYPE_KEY, cnvContentType);
+		h.put(FILENAME_KEY, cnvFileName + "." + cnvFileExt);
 		if (isHttpRequest()) {
 			return h;
 		}
@@ -292,7 +310,7 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 		byte[] file = Utils.fileToBytes(outputFileName);
 		// log("========= bytes ok");
 
-		h.put("content", file);
+		h.put(CONTENT_KEY, file);
 		try {
 			// Utils.deleteFile(sourceFile);
 			// deleteFile(htmlFileName);

@@ -140,7 +140,7 @@ public class SaxonImpl implements XQEngineIF {
     Reader queryReader = new StringReader(script);
 
 //    staticEnv.setBaseURI(new File(script).toURI().toString());
-    String xmlFilePathURI = Utils.getURIfromPath(eionet.gdem.Properties.xmlfileFolderPath);
+    String xmlFilePathURI = Utils.getURIfromPath(eionet.gdem.Properties.xmlfileFolderPath,true);
     
     
     if(xmlFilePathURI!=null){

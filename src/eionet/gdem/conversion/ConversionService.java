@@ -25,32 +25,15 @@
 package eionet.gdem.conversion;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.xmlrpc.Base64;
-
-import sun.misc.BASE64Decoder;
-
 import eionet.gdem.GDEMException;
-import eionet.gdem.Properties;
 import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-import eionet.gdem.utils.InputFile;
-import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -62,33 +45,52 @@ import eionet.gdem.utils.Utils;
 
 public class ConversionService implements ConversionServiceIF {
 
-	public static final String DEFAULT_CONTENT_TYPE = "text/plain";
 
-	public static final String DEFAULT_FILE_EXT = "txt";
-
-	public static final String DEFAULT_FILE_NAME = "converted";
-
-	private String tmpFolder;
-
-	private String cnvFileName = null;
+	//The service provides methods both for HTTP and XMLRPC clients. 
+	//isHttpResponse=true and HttpMethodResponseWrapper object is initialised, if the service is called through HTTP.
+	
+	private boolean isHttpRequest = false;
+	
+	private HttpMethodResponseWrapper httpResponse = null;
 
 	private String ticket = null;
 
-	private boolean trustedMode = true;// false for web clients
-	
-	private boolean isHttpResponse = false;
-	
-	private HttpMethodResponseWrapper httpResponse = null;
-	
+	private boolean trustedMode = false;
 
 	private static LoggerIF _logger = GDEMServices.getLogger();
 
 	public ConversionService() {
 
-		tmpFolder = Properties.tmpFolder + File.separatorChar; // props.getString("tmp.folder");
-
 	}
 
+	public void setTicket(String _ticket) {
+		this.ticket = _ticket;
+	}
+
+	public void setTrustedMode(boolean mode) {
+		this.trustedMode = mode;
+	}
+
+
+	public String getTicket() {
+		return ticket;
+	}
+
+	public boolean isTrustedMode() {
+		return trustedMode;
+	}
+
+	public boolean isHTTPRequest() {
+		return isHttpRequest;
+	}
+	/**
+	 * Assignes the HttpResponseWrapper into the method. 
+	 * The response is used to fulfill the outputstream by converion service.
+	 */
+	public void setHttpResponse(HttpMethodResponseWrapper httpResponse) {
+		if (httpResponse!=null) isHttpRequest=true;
+		this.httpResponse = httpResponse; 
+	}
 	/* (non-Javadoc)
 	 * @see eionet.gdem.conversion.ConversionServiceIF#listConversions()
 	 */
@@ -106,20 +108,16 @@ public class ConversionService implements ConversionServiceIF {
 		Vector v = method.listConversions(schema);
 	
 		return v;
-
 	}
-
-
 	public Hashtable convert(String sourceURL, String convertId,
 			String username, String password) throws GDEMException {
+		
 		try {
-			String ticket = Utils.getEncodedAuthentication(username, password);
+			setTicket(Utils.getEncodedAuthentication(username, password));
+			setTrustedMode(false);
 		
 			ConvertXMLMethod convertMethod = new ConvertXMLMethod();
-			convertMethod.setTicket(ticket);
-			convertMethod.setTrustedMode(false);
-			convertMethod.setHttpResult(httpResponse);
-			
+			setGlobalParameters(convertMethod);
 			return convertMethod.convert(sourceURL, convertId);
 
 		} catch (IOException ex) {
@@ -133,8 +131,10 @@ public class ConversionService implements ConversionServiceIF {
 	 */
 	public Hashtable convert(String sourceURL, String convertId) throws GDEMException {
 		
+		if(!isHttpRequest && _logger.enable(LoggerIF.DEBUG))
+			_logger.debug("ConversionService.convert method called through XML-rpc.");
 		ConvertXMLMethod convertMethod = new ConvertXMLMethod();
-		convertMethod.setHttpResult(httpResponse);
+		setGlobalParameters(convertMethod);
 		return convertMethod.convert(sourceURL, convertId);	
 	}
 
@@ -142,381 +142,54 @@ public class ConversionService implements ConversionServiceIF {
 	 * @see eionet.gdem.conversion.ConversionServiceIF#convertDD_XML(java.lang.String)
 	 */
 	public Vector convertDD_XML(String sourceURL) throws GDEMException {
-		return convertDD_XML(sourceURL, null);
-	}
+		
+		if(!isHttpRequest && _logger.enable(LoggerIF.DEBUG))
+			_logger.debug("ConversionService.convertDD_XML method called through XML-rpc.");
 
-	/**
-	 * Request from WebBrowser Converts DataDictionary MS Excel file to XML
-	 *
-	 * @param String
-	 *            url: URL of the srouce Excel file
-	 * @param HttpServletResponse
-	 *            res: Servlet response
-	 * @return Vector result: error_code, xml_url, error_message
-	 */
-	public Vector convertDD_XML(String sourceURL, HttpServletResponse res)
-			throws GDEMException {
-		OutputStream result = null;
-		ByteArrayOutputStream out_stream_tmp = new ByteArrayOutputStream();
-		ByteArrayInputStream in_stream_tmp = null;
-		InputFile src = null;
-		Vector v_result = new Vector();
-		String str_result = null;
-		String outFileName = tmpFolder + "gdem_" + System.currentTimeMillis()
-				+ ".xml";
-		String error_mess = null;
-
-		try {
-
-			src = new InputFile(sourceURL);
-			src.setAuthentication(ticket);
-			src.setTrustedMode(trustedMode);
-			cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ?
-					DEFAULT_FILE_NAME:src.getFileNameNoExtension();
-
-			if (res != null) {
-				try {
-					result = res.getOutputStream();
-				} catch (IOException e) {
-					_logger.error("Error getting response outputstream ", e);
-					throw new GDEMException(
-							"Error getting response outputstream "
-									+ e.toString(), e);
-				}
-			}
-			if (result == null)
-				result = new FileOutputStream(outFileName);
-
-			// Read inputstream into Bytearrayoutputstream
-			Streams.drain(src.getSrcInputStream(), out_stream_tmp);
-			// Detect the file format
-			DDXMLConverter converter = DDXMLConverter
-					.getConverter(out_stream_tmp);
-
-			if (converter == null) {
-				_logger
-						.error(
-								"Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.",
-								null);
-				throw new GDEMException(
-						"Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.");
-			}
-			// create new inputstrema from tmp Bytearrayoutputstream
-			in_stream_tmp = new ByteArrayInputStream(out_stream_tmp
-					.toByteArray());
-
-			str_result = converter.convertDD_XML(in_stream_tmp, result);
-
-		} catch (MalformedURLException mfe) {
-			_logger.error("Bad URL ", mfe);
-			if (res != null) {
-				throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
-			} else {
-				error_mess = "Bad URL : " + mfe.toString();
-			}
-		} catch (IOException ioe) {
-			_logger.error("Error opening URL ", ioe);
-			if (res != null) {
-				throw new GDEMException("Error opening URL " + ioe.toString(),
-						ioe);
-			} else {
-				error_mess = "Error opening URL " + ioe.toString();
-			}
-		} catch (Exception e) {
-			_logger.error("", e);
-			if (res != null) {
-
-				throw new GDEMException(e.toString(), e);
-			} else {
-				error_mess = e.toString();
-			}
-		} finally {
-			try {
-				if (src != null)
-					src.close();
-				// if (result!=null) result.close();
-			} catch (Exception e) {
-				_logger.error("", e);
-			}
-			try {
-				if (in_stream_tmp != null)
-					in_stream_tmp.close();
-			} catch (Exception e) {
-			}
-			try {
-				if (out_stream_tmp != null)
-					out_stream_tmp.close();
-			} catch (Exception e) {
-			}
-
-		}
-
-		if (res != null) {
-			try {
-				res.setContentType("text/xml");
-				res.setHeader("Content-Disposition","inline;filename=\"" + cnvFileName + ".xml\"");
-				result.close();
-			} catch (IOException e) {
-				_logger.error("Error closing result ResponseOutputStream ", e);
-				throw new GDEMException(
-						"Error closing result ResponseOutputStream ", e);
-			}
-			return v_result;
-		}
-		// Creates response Vector
-		int result_code = 1;
-		if (!Utils.isNullStr(str_result)) {
-			if (str_result.equals("OK"))
-				result_code = 0;
-		}
-		byte[] file = Utils.fileToBytes(outFileName);
-
-		v_result.add(String.valueOf(result_code));
-		if (result_code == 0){
-			v_result.add(file);
-			v_result.add(cnvFileName + ".xml");
-		}
-		else
-			v_result.add(error_mess);
-
-		try {
-			Utils.deleteFile(outFileName);
-		} catch (Exception e) {
-			_logger.error("Couldn't delete the result file", e);
-		}
-
-		return v_result;
-	}
-
-	/**
-	 * reads temporary file from dis and returs as a bytearray
-	 */
-	private byte[] fileToBytes(String fileName) throws GDEMException {
-
-		ByteArrayOutputStream baos = null;
-		try {
-
-			// log("========= open fis " + fileName);
-			FileInputStream fis = new FileInputStream(fileName);
-			// log("========= fis opened");
-
-			baos = new ByteArrayOutputStream();
-
-			int bufLen = 0;
-			byte[] buf = new byte[1024];
-
-			while ((bufLen = fis.read(buf)) != -1)
-				baos.write(buf, 0, bufLen);
-
-			fis.close();
-
-		} catch (FileNotFoundException fne) {
-			_logger.error("File not found " + fileName, fne);
-			throw new GDEMException("File not found " + fileName, fne);
-		} catch (Exception e) {
-			_logger.error("", e);
-			throw new GDEMException("Exception " + e.toString(), e);
-		}
-		return baos.toByteArray();
+		ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
+		setGlobalParameters(convertDDXMLMethod);
+		return convertDDXMLMethod.convertDD_XML(sourceURL);	
 	}
 
 	/* (non-Javadoc)
 	 * @see eionet.gdem.conversion.ConversionServiceIF#convertDD_XML_split(java.lang.String, java.lang.String)
 	 */
-	public Vector convertDD_XML_split(String sourceURL, String sheet_param)
-			throws GDEMException {
-		return convertDD_XML_split(sourceURL, sheet_param, null);
+	public Vector convertDD_XML_split(String sourceURL, String sheet_param) throws GDEMException {
+
+		if(!isHttpRequest && _logger.enable(LoggerIF.DEBUG))
+			_logger.debug("ConversionService.convertDD_XML_split method called through XML-rpc.");
+		
+		ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
+		setGlobalParameters(convertDDXMLMethod);
+		return convertDDXMLMethod.convertDD_XML_split(sourceURL,sheet_param);	
 	}
-
-	/**
-	 * Request from WebBrowser Converts DataDictionary MS Excel sheets to
-	 * different XML files, where one xml file is dataset table.
-	 *
-	 * @param String
-	 *            url: URL of the srouce Excel file
-	 * @param HttpServletResponse
-	 *            res: Servlet response
-	 * @return Vector result: error_code, xml_url, error_message
-	 */
-	public Vector convertDD_XML_split(String sourceURL, String sheet_param,
-			HttpServletResponse res) throws GDEMException {
-		OutputStream result = null;
-		ByteArrayOutputStream out_stream_tmp = new ByteArrayOutputStream();
-		ByteArrayInputStream in_stream_tmp = null;
-
-		InputFile src = null;
-		String error_mess = null;
-		Vector v_result = null;
-
-		try {
-
-			src = new InputFile(sourceURL);
-			src.setAuthentication(ticket);
-			src.setTrustedMode(trustedMode);
-
-			cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ?
-					DEFAULT_FILE_NAME:src.getFileNameNoExtension();
-			if (res != null) {
-				try {
-					result = res.getOutputStream();
-				} catch (IOException e) {
-					_logger.error("Error getting response outputstream ", e);
-					throw new GDEMException(
-							"Error getting response outputstream "
-									+ e.toString(), e);
-				}
-			}
-			// Read inputstream into Bytearrayoutputstream
-			Streams.drain(src.getSrcInputStream(), out_stream_tmp);
-			// Detect the file format
-			DDXMLConverter converter = DDXMLConverter
-					.getConverter(out_stream_tmp);
-
-			if (converter == null) {
-				_logger
-						.error(
-								"Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.",
-								null);
-				throw new GDEMException(
-						"Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.");
-			}
-			// create new inputstrema from tmp Bytearrayoutputstream
-			in_stream_tmp = new ByteArrayInputStream(out_stream_tmp
-					.toByteArray());
-
-			v_result = converter.convertDD_XML_split(in_stream_tmp, result,
-					sheet_param);
-
-		} catch (MalformedURLException mfe) {
-			_logger.error("Bad URL ", mfe);
-			if (res != null) {
-				throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
-			} else {
-				error_mess = "Bad URL : " + mfe.toString();
-			}
-		} catch (IOException ioe) {
-			_logger.error("Error opening URL ", ioe);
-			if (res != null) {
-				throw new GDEMException("Error opening URL " + ioe.toString(),
-						ioe);
-			} else {
-				error_mess = "Error opening URL " + ioe.toString();
-			}
-		} catch (Exception e) {
-			_logger.error("", e);
-			if (res != null) {
-				throw new GDEMException(e.toString(), e);
-			} else {
-				error_mess = e.toString();
-			}
-		} finally {
-			try {
-				if (src != null)
-					src.close();
-			} catch (Exception e) {
-			}
-			try {
-				if (in_stream_tmp != null)
-					in_stream_tmp.close();
-			} catch (Exception e) {
-			}
-			try {
-				if (out_stream_tmp != null)
-					out_stream_tmp.close();
-			} catch (Exception e) {
-			}
-		}
-		if (res != null) {
-			try {
-				res.setContentType("text/xml");
-				res.setHeader("Content-Disposition","inline;filename=\"" + cnvFileName + ".xml\"");
-				result.close();
-			} catch (IOException e) {
-				_logger.error("Error closing result ResponseOutputStream ", e);
-				throw new GDEMException(
-						"Error closing result ResponseOutputStream ", e);
-			}
-			return v_result;
-		}
-		// Creates response Vector
-
-		if (Utils.isNullVector(v_result) && !Utils.isNullStr(error_mess)) {
-			v_result.add("1");
-			v_result.add(error_mess);
-		}
-
-		return v_result;
-	}
-
-	public ArrayList getXMLSchemas() throws GDEMException {
-		Vector conv = listConversions();
-		ArrayList schemas = new ArrayList();
-
-		for (int i = 0; i < conv.size(); i++) {
-			Hashtable schema = (Hashtable) conv.get(i);
-			// System.out.println( i + " - " + schema.get("xml_schema") );
-			if (!schemas.contains(schema.get("xml_schema"))) {
-				schemas.add(schema.get("xml_schema"));
-			}
-		}
-
-		return schemas;
-	}
-
 
 	public boolean existsXMLSchema(String xmlSchema) throws GDEMException {
-		ArrayList schemas = getXMLSchemas();
-		return schemas.contains(xmlSchema);
+		ListConversionsMethod method = new ListConversionsMethod();
+		return method.existsXMLSchema(xmlSchema);
 	}
 
-	public void setTicket(String _ticket) {
-		this.ticket = _ticket;
-	}
 
-	public void setTrustedMode(boolean mode) {
-		this.trustedMode = mode;
-	}
-
-	public boolean isHTTPRequest() {
-		return isHttpResponse;
-	}
-
-	public void setHttpResponse(HttpMethodResponseWrapper httpResponse) {
-		isHttpResponse=true;
-		this.httpResponse = httpResponse; 
-	}
 
 	/* (non-Javadoc)
 	 * @see eionet.gdem.conversion.ConversionServiceIF#convertPush(byte[],java.lang.String,java.lang.String)
 	 */
 	public Hashtable convertPush(byte file[], String convertId, String filename)throws GDEMException {
 		
-		InputStream encodedInput = null;
-		InputStream decodedInput = null;
+		if(!isHttpRequest && _logger.enable(LoggerIF.DEBUG))
+			_logger.debug("ConversionService.convertPush method called through XML-rpc.");
+
+		InputStream input = null;
 		
 		try{
-			encodedInput = new ByteArrayInputStream(file);
-			try{
-			//System.out.println(Base64.isArrayByteBase64(file));
-				
-			//	byte [] decoded_bytes = Base64.decode(file);
-			//	decodedInput = new ByteArrayInputStream(decoded_bytes ); 
-			}
-			catch(Exception ioe){
-				_logger.error(ioe.toString());
-				throw new GDEMException("Unable to decode base64 bytes");
-			}
+			input = new ByteArrayInputStream(file);
 			ConvertXMLMethod convertMethod = new ConvertXMLMethod();
-			convertMethod.setHttpResult(httpResponse);
-			return convertMethod.convertPush(encodedInput, convertId, filename);	
+			setGlobalParameters(convertMethod);
+			return convertMethod.convertPush(input, convertId, filename);	
 		}
 		finally{
 			try{
-				encodedInput.close();
-			}
-			catch(Exception e){}
-			try{
-				decodedInput.close();
+				input.close();
 			}
 			catch(Exception e){}
 			
@@ -529,7 +202,21 @@ public class ConversionService implements ConversionServiceIF {
 	public Hashtable convertPush(InputStream fileInput, String convertId, String fileName) throws GDEMException {
 		
 		ConvertXMLMethod convertMethod = new ConvertXMLMethod();
-		convertMethod.setHttpResult(httpResponse);
+		setGlobalParameters(convertMethod);
 		return convertMethod.convertPush(fileInput, convertId, fileName);	
+	}
+	/** Assign ticket and HTTPResponse to the executed method. 
+	 * 
+	 * @param method
+	 */
+	private void setGlobalParameters(ConversionServiceMethod method){
+		//if it's a xml-rpc request, then use trusted account for getting remote URLs
+		if(!isHttpRequest)
+			setTrustedMode(true);
+		
+		method.setTicket(getTicket());
+		method.setTrustedMode(isTrustedMode());
+		method.setHttpResponse(httpResponse);
+			
 	}
 }
