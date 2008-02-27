@@ -23,7 +23,7 @@
 	    </init-param>
 	    <init-param>
 	      <param-name>edu.yale.its.tp.cas.client.filter.serverName</param-name>
-	      <param-value>converters.eionet.europa.eu</param-value>
+	      <param-value>192.168.10.58:8080</param-value>
 	    </init-param>
 	   <init-param>
 	      <param-name>edu.yale.its.tp.cas.client.filter.wrapRequest</param-name>
@@ -124,6 +124,10 @@
 	<servlet-mapping>
 		<servlet-name>RpcRouter</servlet-name>
 		<url-pattern>/RpcRouter</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>action</servlet-name>
+		<url-pattern>/api/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>action</servlet-name>

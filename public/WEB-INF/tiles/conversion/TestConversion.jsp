@@ -16,7 +16,7 @@
 		<tiles:insert definition="Error" />
 
 		<logic:iterate id="schema" name="conversion.schemas" scope="session" type="Schema">
-			<html:form action="/testConversionForm" method="post" >
+			<html:form action="/testConversion" method="post" >
 				  <table cellpadding="0" cellspacing="0" border="0" class="datatable">
 				    <tr>
 					 <th scope="col" class="scope-col">
@@ -28,7 +28,7 @@
 				    </tr>
 				    <tr>
 				      <td>
-					        <html:text property="url"  style="width:300px" />
+					        <html:text property="url" style="width: 30em;"/>
 				      </td>
 				    </tr>
 				    <tr>
@@ -75,6 +75,7 @@
 							<a  href="<bean:write name="schema" property="schema" />" title="<bean:write name="schema" property="schema" />">
 									<bean:write name="schema" property="schema" />
 							</a>
+							<html:hidden name="ConversionForm" property="schemaUrl"/>
 				      </td>
 				    </tr>
 				    <tr>
@@ -83,16 +84,16 @@
 				      </th>
 				    </tr>
 					
-				    <bean:define id="idConv" name="ConversionForm" property="conversionId"  type="java.lang.String"/>
+				    <bean:define id="idConv" name="ConversionForm" property="conversionId"  type="java.lang.String" scope="request"/>
 
 					    <tr>
 					      <td align="left">
 				    <logic:iterate indexId="index" id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">
 								<logic:equal name="stylesheet" property="convId" value="<%=idConv%>">
-									<input type="radio" checked="checked" name="format" id="r_<bean:write name="stylesheet" property="convId" />" value="<bean:write name="stylesheet" property="convId" />" />
+									<input type="radio" checked="checked" name="conversionId" id="r_<bean:write name="stylesheet" property="convId" />" value="<bean:write name="stylesheet" property="convId" />" />
 								</logic:equal>
 								<logic:notEqual name="stylesheet" property="convId" value="<%=idConv%>">
-									<input type="radio" name="format" id="r_<bean:write name="stylesheet" property="convId" />"  value="<bean:write name="stylesheet" property="convId" />" />
+									<input type="radio" name="conversionId" id="r_<bean:write name="stylesheet" property="convId" />"  value="<bean:write name="stylesheet" property="convId" />" />
 								</logic:notEqual>
 								<label for="r_<bean:write name="stylesheet" property="convId" />"><bean:write name="stylesheet" property="type" />
 								&nbsp;-&nbsp;<bean:write name="stylesheet" property="xsl_descr" /></label><br/>
@@ -106,7 +107,9 @@
 				      <td align="center">
 				      		<bean:size name="schema" id="count" property="stylesheets"/>
 					      	<logic:greaterThan name="count" value="0">
-						        <input type="button" class="button" value="<bean:message key="label.conversion.convert"/>" onclick="return submitAction(1,'<bean:write name="webRoot" />/convert');"/>
+						        <html:submit styleClass="button">
+						        	<bean:message key="label.conversion.convert"/>
+			        			</html:submit>		        
 					        </logic:greaterThan>
 					        <logic:equal name="count" value="0">
 					        <p style="color: red; font-weight: bold;"><bean:message key="label.conversion.noconversion"/></p>

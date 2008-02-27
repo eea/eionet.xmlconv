@@ -10,7 +10,7 @@
 	<div id="tabbedmenu">
 		<ul>
 			<li id="currenttab"><span style="color: black; text-decoration: none;" title="<bean:message key="label.conversion.converters"/>"><bean:message key="label.conversion.converters"/></span></li>
-			<li><a style="color: black; text-decoration: none;" title="<bean:message key="label.conversion.excel2xml"/>" href="<bean:write name="webRoot" />/excel2xml_conversion.jsp"><bean:message key="label.conversion.excel2xml"/></a></li>
+			<li><a style="color: black; text-decoration: none;" title="<bean:message key="label.conversion.excel2xml"/>" href="<bean:write name="webRoot" />/do/excel2XmlConversionForm"><bean:message key="label.conversion.excel2xml"/></a></li>
 		</ul>
 	</div>
 				

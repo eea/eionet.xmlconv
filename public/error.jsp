@@ -4,8 +4,10 @@
 <%@ page import="java.io.PrintWriter"%>
 
 <ed:breadcrumbs-push label="XML Services error" level="1" />
+<tiles:insert definition="TmpHeader">
+	<tiles:put name="title" value="Error"/>
+</tiles:insert>
 
-<tiles:insert definition="TmpHeader"/>
 
 	<%@ include file="menu.jsp" %>
 

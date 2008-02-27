@@ -29,6 +29,7 @@
   <definition name="uplXmlFile" path="/WEB-INF/tiles/xmlfile/UplXmlFile.jsp" />  
   <definition name="addUplXmlFile" path="/WEB-INF/tiles/xmlfile/AddUplXmlFile.jsp" />
   <definition name="editUplXmlFile" path="/WEB-INF/tiles/xmlfile/EditUplXmlFile.jsp" />
+  <definition name="excel2XmlConversion" path="/WEB-INF/tiles/conversion/Excel2XmlConversion.jsp" />
   
   <definition name="confLdap" path="/WEB-INF/tiles/config/Ldap.jsp" />
   <definition name="confDb" path="/WEB-INF/tiles/config/Db.jsp" />
@@ -85,6 +86,10 @@
  		<put name="title"  value="label.conversiontest.title"/>
  		<put name="body" type="definition" value="testConversion"/>
   	</definition>
+ 	<definition name="/excel2XmlConv.jsp" extends="base">
+ 		<put name="title"  value="label.conversion.excel2xml"/>
+ 		<put name="body" type="definition" value="excel2XmlConversion"/>
+	</definition>
   	<definition name="/uplSchema.jsp" extends="base">
 	 	<put name="title"  value="label.schemas.title"/>
     	<put name="body" type="definition" value="uplSchema"/>
