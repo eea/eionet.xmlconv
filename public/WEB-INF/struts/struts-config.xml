@@ -200,6 +200,9 @@
         <action path="/listConversions" scope="request" type="eionet.gdem.web.struts.remoteapi.ListConversionsAction">
 	        <forward name="fail" path="/api/methodError" />
         </action>
+        <action path="/getXMLSchemas" scope="request" type="eionet.gdem.web.struts.remoteapi.GetXMLSchemasAction">
+	        <forward name="fail" path="/api/methodError" />
+        </action>
         <action path="/convert"  name="convert" scope="request" type="eionet.gdem.web.struts.remoteapi.ConvertAction">
 	        <forward name="fail" path="/api/methodError" />
         </action>
