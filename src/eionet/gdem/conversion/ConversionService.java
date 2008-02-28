@@ -27,6 +27,7 @@ package eionet.gdem.conversion;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -218,5 +219,10 @@ public class ConversionService implements ConversionServiceIF {
 		method.setTrustedMode(isTrustedMode());
 		method.setHttpResponse(httpResponse);
 			
+	}
+
+	public ArrayList getXMLSchemas() throws GDEMException {
+		ListConversionsMethod method = new ListConversionsMethod();
+		return method.getXMLSchemas();
 	}
 }

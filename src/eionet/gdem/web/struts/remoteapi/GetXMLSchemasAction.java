@@ -1,10 +1,10 @@
 /*
- * Created on 07.02.2008
+ * Created on 28.02.2008
  */
 package eionet.gdem.web.struts.remoteapi;
 
+import java.util.ArrayList;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,23 +16,20 @@ import org.apache.struts.action.ActionMapping;
 
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
+import eionet.gdem.dcm.results.GetXMLSchemasResult;
 import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
-import eionet.gdem.dcm.results.ListConversionsResult;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-import eionet.gdem.utils.Utils;
-import eionet.gdem.web.struts.BaseAction;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS
- * ListConversionAction
+ * GetSchemasAction
  */
 
-public class ListConversionsAction  extends BaseAction {
+public class GetXMLSchemasAction extends BaseMethodAction {
+
 	private static LoggerIF _logger = GDEMServices.getLogger();
 
-	private static final String SCHEMA_PARAM_NAME = "schema";
-	
 	/**
 	 * Purpose of this action is to execute ConversionService method listConversions.
 	 * The request could have schema parameter 
@@ -46,18 +43,14 @@ public class ListConversionsAction  extends BaseAction {
 		Map params = request.getParameterMap();
 
 		try{
-			String schema = null;
-			if(params.containsKey(SCHEMA_PARAM_NAME))
-				schema = (String)((Object[]) params.get(SCHEMA_PARAM_NAME))[0];
-			if(Utils.isNullStr(schema))schema=null;
 			
 			//Call ConversionService
 			ConversionServiceIF cs = new ConversionService();
-			Vector v = cs.listConversions(schema);
+			ArrayList schemas = cs.getXMLSchemas();
 
 			//parse the result of Conversion Service method and format it as XML
-			ListConversionsResult xmlResult = new ListConversionsResult();
-			xmlResult.setResult(v);
+			GetXMLSchemasResult xmlResult = new GetXMLSchemasResult();
+			xmlResult.setResult(schemas);
 			xmlResult.writeXML();
 			//flush the result into servlet outputstream
 			methodResponse.flushXML(xmlResult);

@@ -4,6 +4,7 @@
 package eionet.gdem.conversion;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -98,4 +99,11 @@ public interface ConversionServiceIF {
 	 * @param _ticket
 	 */
 	public void setTicket(String _ticket);
+
+	/**
+	 * Get a distinct list of XML Schemas returned from listConversions() method 
+	 * @return
+	 * @throws GDEMException
+	 */
+	public ArrayList getXMLSchemas() throws GDEMException ;
 }
