@@ -155,7 +155,7 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 
 				outputFileName = executeConversion(src.getSrcInputStream(),
 						xslFile, result, src.getCdrParams(), cnvFileExt,
-						cnvContentType);
+						cnvTypeOut);
 
 			} catch (MalformedURLException mfe) {
 				_logger.error("Bad URL", mfe);
