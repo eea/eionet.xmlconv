@@ -35,7 +35,7 @@ public class ConversionServiceTest extends TestCase{
 	 */
 	public void testConvertDD_XML() throws Exception{
 
-		ConversionService convService = new ConversionService();
+		ConversionServiceIF convService = new ConversionService();
 		Vector v = convService.convertDD_XML(getSeedURL());
 		
 		// test if the result Vector is in correct format:
@@ -61,7 +61,7 @@ public class ConversionServiceTest extends TestCase{
 	public void testConvertDD_XML_split() throws Exception{
 		//System.out.println(filename);
 
-		ConversionService convService = new ConversionService();
+		ConversionServiceIF convService = new ConversionService();
 		Vector v = convService.convertDD_XML_split(getSeedURL(),"BasicQuality");
 		
 		// test if the result Vector is in correct format:
@@ -92,7 +92,7 @@ public class ConversionServiceTest extends TestCase{
 	public void testConvertDD_XML_split_nosheet() throws Exception{
 		//System.out.println(filename);
 
-		ConversionService convService = new ConversionService();
+		ConversionServiceIF convService = new ConversionService();
 		Vector v = convService.convertDD_XML_split(getSeedURL(),"NOSHEET");
 		
 		// test if the result Vector is in correct format:
