@@ -131,11 +131,15 @@ CREATE TABLE T_CONVTYPE (
 --
 
 
-INSERT INTO T_CONVTYPE VALUES ('HTML','text/html','html','');
-INSERT INTO T_CONVTYPE VALUES ('XML','text/xml','xml','');
+INSERT INTO T_CONVTYPE VALUES ('HTML','text/html;charset=UTF-8','html','HTML files');
+INSERT INTO T_CONVTYPE VALUES ('XML','text/xml;charset=UTF-8','xml','');
 INSERT INTO T_CONVTYPE VALUES ('EXCEL','application/vnd.ms-excel','xls','');
 INSERT INTO T_CONVTYPE VALUES ('PDF','application/pdf','pdf','');
 INSERT INTO T_CONVTYPE VALUES ('SQL','text/plain','sql','');
+INSERT INTO T_CONVTYPE VALUES ('ODS','application/vnd.oasis.opendocument.spreadsheet','ods','OpenDocument Spreadsheet');
+INSERT INTO T_CONVTYPE VALUES ('TEXT','text/plain','txt','Simple text files - tab/comma/... separated values');
+INSERT INTO T_CONVTYPE VALUES ('RDF','application/rdf+xml','rdf','Semantic Web resources');
+INSERT INTO T_CONVTYPE VALUES ('KML','application/vnd.google-earth.kml+xml','kml','Google Earth Keyhole Markup Language');
 
 
 --
