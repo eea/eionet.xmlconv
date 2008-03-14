@@ -28,7 +28,6 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -76,8 +75,13 @@ public abstract class ConvertStartegy {
 
 			transformer.setParameter(DD_DOMAIN_PARAM,Properties.ddURL);
 			setTransformerParameters(transformer);		
+            long l = 0L;
+            if(_logger.enable(LoggerIF.DEBUG))
+                l = System.currentTimeMillis();
 			transformer.transform(new StreamSource(in), new StreamResult(out));
-			
+            if(_logger.enable(LoggerIF.DEBUG))
+            	_logger.debug((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis() - l).append(" ms").toString());
+			System.out.println((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis() - l).append(" ms").toString());
 		} catch (TransformerConfigurationException tce) {
 			throw new GDEMException("Error transforming XML - incorrect stylesheet file: " + tce.toString(), tce);
 		} catch (TransformerException tfe) {
@@ -106,7 +110,13 @@ public abstract class ConvertStartegy {
 			setTransformerParameters(transformer);
 			transformer.setErrorListener(errors);
 
+            long l = 0L;
+            if(_logger.enable(LoggerIF.DEBUG))
+                l = System.currentTimeMillis();
 			transformer.transform(src, res);
+            if(_logger.enable(LoggerIF.DEBUG))
+            	_logger.debug((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis() - l).append(" ms").toString());
+            
 		} catch (TransformerConfigurationException tce) {
 			throw new GDEMException("Error transforming XML to PDF - incorrect stylesheet file: " + tce.toString(), tce);
 		} catch (TransformerException tfe) {

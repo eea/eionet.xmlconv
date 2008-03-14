@@ -33,7 +33,8 @@ public class GDEMServices {
   
   private static LoggerIF _logger=null;
   
- 
+  private static boolean testConnection = false;
+
   public static DCMDaoFactory getDaoService(){
 	  return DCMDaoFactory.getDaoFactory(DCMDaoFactory.MYSQL_DB);
   }
@@ -77,4 +78,11 @@ public class GDEMServices {
     }
        
   }
+  public static boolean isTestConnection() {
+		return testConnection;
+	}
+
+	public static void setTestConnection(boolean testConnection) {
+		GDEMServices.testConnection = testConnection;
+	}
 }

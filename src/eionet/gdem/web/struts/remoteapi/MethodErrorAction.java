@@ -14,7 +14,6 @@ import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.results.XMLErrorResult;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-import eionet.gdem.web.struts.api.BaseMethodAction;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS 

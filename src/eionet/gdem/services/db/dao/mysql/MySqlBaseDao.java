@@ -1,6 +1,7 @@
 package eionet.gdem.services.db.dao.mysql;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -13,6 +14,8 @@ import javax.sql.DataSource;
 
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.GDEMException;
+import eionet.gdem.Properties;
 
 public abstract class MySqlBaseDao {
 
@@ -23,7 +26,13 @@ public abstract class MySqlBaseDao {
 
 	protected static boolean isDebugMode = logger.enable(LoggerIF.DEBUG);
 
-	static {
+	public MySqlBaseDao() {}
+
+	/**
+	 * Init JNDI datasource
+	 * @throws NamingException
+	 */
+	private static void initDataSource() throws NamingException{
 		try {
 			InitialContext ctx = new InitialContext();
 			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/GDEM_DB");
@@ -33,20 +42,72 @@ public abstract class MySqlBaseDao {
 	}
 
 	
-	
-	public MySqlBaseDao() {}
-
-	
-	
 	/**
 	 * Returns new database connection.
 	 * 
 	 * @throw ServiceException if no connections were available.
 	 */
 	public static synchronized Connection getConnection() throws SQLException {
-		return ds.getConnection();
+		if(GDEMServices.isTestConnection())
+			return getSimpleConnection();
+		else
+			return getJNDIConnection();
+	}
+	
+	
+	/**
+	 * Returns new database connection.
+	 * Read properties from Context
+	 * 
+	 * @throw ServiceException if no connections were available.
+	 */
+	public static synchronized Connection getJNDIConnection() throws SQLException {
+		try{
+			if (ds==null)
+				initDataSource();
+			return ds.getConnection();
+		}
+		catch (Exception e){
+			throw new SQLException("Failed to get connection through JNDI: " + e.toString());
+		}
 	}
 
+	/**
+	 * Returns new database connection.
+	 * Read properties from gdem.properties
+	 * 
+	 * @return
+	 * @throws SQLException 
+	 * @throws GDEMException 
+	 */
+	private static synchronized Connection getSimpleConnection() throws SQLException{
+		
+		String drv = Properties.dbDriver;
+		if (drv==null || drv.trim().length()==0)
+			throw new SQLException("Failed to get connection, missing property: " + Properties.dbDriver);
+		
+		String url = Properties.dbUrl;
+		if (url==null || url.trim().length()==0)
+			throw new SQLException("Failed to get connection, missing property: " + Properties.dbUrl);
+
+		String usr = Properties.dbUser;
+		if (usr==null || usr.trim().length()==0)
+			throw new SQLException("Failed to get connection, missing property: " + Properties.dbUser);
+
+		String pwd = Properties.dbPwd;
+		if (pwd==null || pwd.trim().length()==0)
+			throw new SQLException("Failed to get connection, missing property: " + Properties.dbPwd);
+
+		try{
+			Class.forName(drv);
+			return DriverManager.getConnection(url, usr, pwd);
+		}
+		catch (ClassNotFoundException e){
+			throw new SQLException((new StringBuilder()).append("Failed to get connection, driver class not found: ").append(drv)
+					.append(".").append(e.toString()).toString());
+		}
+	}
+	
 	
 	public static void closeAllResources(ResultSet rs, Statement pstmt, Connection conn) {
 		try {
@@ -153,5 +214,4 @@ public abstract class MySqlBaseDao {
 		closeAllResources(rs, stmt, con);
 		return lastInsertId;
 	}
-
 }

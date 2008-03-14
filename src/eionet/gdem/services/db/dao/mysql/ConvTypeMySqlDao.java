@@ -95,12 +95,12 @@ public class ConvTypeMySqlDao extends MySqlBaseDao implements IConvTypeDao {
 			v = new Vector(r.length);
 			for (int i = 0; i < r.length; i++) {
 				Hashtable h = new Hashtable();
-				h.put("convert_id", r[i][0]);
-				h.put("xsl", r[i][1]);
-				h.put("description", r[i][2]);
-				h.put("content_type_out", r[i][5]);
-				h.put("xml_schema", r[i][4]);				
-				h.put("result_type", r[i][3]);
+				h.put("convert_id", r[i][0]==null? "": r[i][0]);
+				h.put("xsl", r[i][1]==null? "": r[i][1]);
+				h.put("description", r[i][2]==null? "": r[i][2]);
+				h.put("content_type_out", r[i][5]==null? "": r[i][5]);
+				h.put("xml_schema", r[i][4]==null? "": r[i][4]);				
+				h.put("result_type", r[i][3]==null? "": r[i][3]);
 				v.add(h);
 			}			
 		} 
