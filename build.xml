@@ -36,7 +36,7 @@
 <!-- use JAR instead of classes because it makes it easier to debug errors -->
 
 
-<project name="xmlconv" default="install" basedir=".">
+<project name="xmlconv" default="compile" basedir=".">
 
 	<target name="init">
 
@@ -75,7 +75,7 @@
 	</target>
 
 	<!-- compile -->
-	<target name="compile" depends="init,clean">
+	<target name="compile" depends="clean">
 		<javac debug="on" deprecation="off" srcdir="${src}" destdir="${classes.dir}" description="compiles java classes into classes path">
             <classpath refid="classpath.compile"/>
         </javac>
@@ -90,14 +90,15 @@
 	<!-- build xmlconv.jar -->
 	<target name="buildjar" depends="compile">
 		<jar basedir="${classes.dir}" jarfile="public/WEB-INF/lib/xmlconv.jar" includes="**/*.class"/>
-		<!--delete dir="${classes.dir}/eionet"/-->
-		<antcall target="clean"/>
+		<delete dir="${classes.dir}/eionet"/>
+		<!--antcall target="clean"/-->
 	</target>
 
 
 	<!-- clean classes directory -->
-	<target name="clean">
+	<target name="clean" depends="init">
 		<delete dir="${classes.dir}/eionet"/>
+		<delete file="public/WEB-INF/lib/xmlconv.jar"/>
 	</target>
 
 <!--	##########################  	-->
@@ -157,6 +158,7 @@
 				<exclude name="**/*.properties"/>
 				<exclude name="**/servlet-api.jar"/>
 				<exclude name="**/jsp-api.jar"/>
+				<exclude name="WEB-INF/classes/**"/>
 			</fileset>
 		</copy>
 		<copy todir="${classes.dir}" overwrite="false">
@@ -285,6 +287,7 @@
 		<antcall target="cp_uit"/>
 		<antcall target="cp_xmlconv"/>
 		<antcall target="cp_log4j"/>
+		<copy file="${src}/ApplicationResources.properties" tofile="${build.dir}/public/WEB-INF/classes/ApplicationResources.properties" overwrite="true"/>
 	</target>
 	<target name="cp_uit" if="uit.needed">
 		<echo message="buiiddir: ${build.dir}"/>
@@ -315,6 +318,7 @@
 		<!-- copy acl files, the tests might need these -->
 		<mkdir dir="${test-build}/acl"/>
 		<mkdir dir="${test-build}/tmp"/>
+		<mkdir dir="${test-build}/dcm"/>
 		<copy todir="${test-build}/acl" overwrite="false">
 			<fileset dir="acl"/>
 		</copy>
@@ -322,7 +326,16 @@
 		<copy todir="${test-build}" overwrite="false">
 			<fileset dir="${src}" includes="**/*.properties">
 				<exclude name="**/*.class"/>
+				<exclude name="gdem.properties"/>
 			</fileset>
+		</copy>
+
+		<copy todir="${test-build}" overwrite="false">
+			<fileset dir="${test}/resources"/>
+		</copy>
+
+		<copy todir="${test-build}/dcm" overwrite="false">
+			<fileset dir="public/dcm"/>
 		</copy>
 		<!-- gdem.properties -->
 		<loadproperties srcFile="${test-build}/gdem.properties"/>
@@ -347,7 +360,7 @@
 			<classpath refid="classpath.compile"/>
 		</javac>
 		<javac srcdir="${test}/src" destdir="${test-build}" source="1.5" target="1.5" debug="on">
-			<classpath refid="classpath.compile"/>
+			<classpath refid="classpath.test"/>
 		</javac>
 	</target>
 
