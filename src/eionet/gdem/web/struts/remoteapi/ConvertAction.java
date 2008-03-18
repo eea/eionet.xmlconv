@@ -28,8 +28,8 @@ import eionet.gdem.utils.Utils;
 
 public class ConvertAction  extends BaseMethodAction {
 
-	private static final String CONVERT_ID_PARAM_NAME = "convert_id";
-	private static final String URL_PARAM_NAME = "url";
+	protected static final String CONVERT_ID_PARAM_NAME = "convert_id";
+	protected static final String URL_PARAM_NAME = "url";
 
 	private static LoggerIF _logger = GDEMServices.getLogger();
 

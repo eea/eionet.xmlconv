@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class GetXMLSchemasResult extends XMLResultStrategy{
 
-	private static final String SCHEMA_TAG="schema";
+	public static final String SCHEMA_TAG="schema";
 	
 	private ArrayList schemas = null;
 	

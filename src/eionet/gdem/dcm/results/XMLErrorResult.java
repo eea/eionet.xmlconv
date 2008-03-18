@@ -18,10 +18,10 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class XMLErrorResult extends XMLResultStrategy {
 
-	private static final String ERROR_TAG = "error-message";
-	private static final String METHOD_TAG = "method";
-	private static final String PARAMETERS_TAG = "parameters";
-	private static final String PARAMETER_TAG = "parameter";
+	public static final String ERROR_TAG = "error-message";
+	public static final String METHOD_TAG = "method";
+	public static final String PARAMETERS_TAG = "parameters";
+	public static final String PARAMETER_TAG = "parameter";
 
 	private int status = HttpServletResponse.SC_BAD_REQUEST;
 	private String error = null;

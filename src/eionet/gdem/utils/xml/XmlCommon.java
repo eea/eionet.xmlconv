@@ -92,7 +92,7 @@ public class XmlCommon {
 			}
 
 		} catch (SAXException saxe) {
-			saxe.printStackTrace();
+			//saxe.printStackTrace();
 			throw new XmlException("Failure reasons: " + saxe.getMessage());
 		} catch (IOException ioe) {
 			throw new XmlException("Failure reasons: " + ioe.getMessage());

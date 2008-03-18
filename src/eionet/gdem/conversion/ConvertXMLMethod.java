@@ -222,7 +222,7 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 		ConversionDto conv = Conversion.getConversionById(convId);
 		String format = Properties.metaXSLFolder + File.separatorChar
 				+ conv.getStylesheet();
-		String url = Properties.ddURL + "/GetTableDef?id=" + tblId;
+		String url = getDDTableDefUrl(tblId);
 		// xslFile = Properties.gdemURL + "/do/getStylesheet?id=" + tblId +
 		// "&conv=" + convId;
 
@@ -435,5 +435,17 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 		}
 		cs.setXslParams(params);
 		return ctx.executeConversion(cs);
+	}
+	/**
+	 * Creates DD table definition URL. If it is a test, then the definition should be in xml stored locally.
+	 */
+	private String getDDTableDefUrl(String tblId){
+		if(GDEMServices.isTestConnection()){
+			return "file://".concat(getClass().getClassLoader().getResource("seed-DD-tabledef-" + tblId + ".xml").getFile());
+		}
+		else{
+			return Properties.ddURL + "/GetTableDef?id=" + tblId;			
+		}
+			
 	}
 }

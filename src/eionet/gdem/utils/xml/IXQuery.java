@@ -73,4 +73,12 @@ public interface IXQuery {
 	 */
 	public List getElements(String elementName) throws XmlException;
 
+	/**
+	 * returns the list of element values
+	 * @param elementName	
+	 * @return
+	 * @throws XmlException
+	 */
+	public List getElementValues(String elementName) throws XmlException;
+
 }

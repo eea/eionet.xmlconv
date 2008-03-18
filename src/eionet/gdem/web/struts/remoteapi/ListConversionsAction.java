@@ -31,7 +31,7 @@ import eionet.gdem.web.struts.BaseAction;
 public class ListConversionsAction  extends BaseAction {
 	private static LoggerIF _logger = GDEMServices.getLogger();
 
-	private static final String SCHEMA_PARAM_NAME = "schema";
+	public static final String SCHEMA_PARAM_NAME = "schema";
 	
 	/**
 	 * Purpose of this action is to execute ConversionService method listConversions.

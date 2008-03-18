@@ -34,12 +34,12 @@ public class GDEMException extends Exception {
 
   public GDEMException(String msg)  {
       super(msg);
-      System.err.println("GDEMException occured with reason <<" + msg + ">>");
+      //System.err.println("GDEMException occured with reason <<" + msg + ">>");
     }
   public GDEMException(String msg, Exception cause)  {
       super(msg);
       this.cause = cause;
-      System.err.println("GDEMException occured with reason<<" + cause.toString() + ">>");
+      //System.err.println("GDEMException occured with reason<<" + cause.toString() + ">>");
     }
     /**
      * Prints this exception and its backtrace to the

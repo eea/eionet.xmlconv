@@ -81,7 +81,7 @@ public abstract class ConvertStartegy {
 			transformer.transform(new StreamSource(in), new StreamResult(out));
             if(_logger.enable(LoggerIF.DEBUG))
             	_logger.debug((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis() - l).append(" ms").toString());
-			System.out.println((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis() - l).append(" ms").toString());
+			//System.out.println((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis() - l).append(" ms").toString());
 		} catch (TransformerConfigurationException tce) {
 			throw new GDEMException("Error transforming XML - incorrect stylesheet file: " + tce.toString(), tce);
 		} catch (TransformerException tfe) {

@@ -15,7 +15,12 @@ import java.util.Vector;
 
 public class ListConversionsResult extends XMLResultStrategy{
 
-	private static final String CONVERSION_TAG="conversion";
+	public static final String CONVERSION_TAG="conversion";
+	public static final String CONVERT_ID_TAG="convert_id";
+	public static final String XSL_TAG="xsl";
+	public static final String CONTENT_TYPE_TAG="content_type_out";
+	public static final String RESULT_TYPE_TAG="result_type";
+	public static final String XML_SCHEMA_TAG="xml_schema";
 	
 	private Vector conversions = null;
 	

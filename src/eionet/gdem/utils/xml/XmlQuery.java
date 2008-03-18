@@ -143,5 +143,22 @@ public class XmlQuery implements IXQuery {
 		}
 		return result;
 	}
+	public List getElementValues(String elementName) throws XmlException {
+		String xpath = "//"+elementName;
+		List result = new ArrayList();
+		try {
+			NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
+			for (int i = 0; i < nodes.getLength(); i++) {
+				Node child = nodes.item(i).getFirstChild();
+				if(child!=null){
+					String value = child.getNodeValue();
+					result.add(value);
+				}
+			}
+		} catch (Exception e) {
+			throw new XmlException(e);
+		}
+		return result;
+	}
 
 }
