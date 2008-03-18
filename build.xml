@@ -337,9 +337,11 @@
 		<copy todir="${test-build}/dcm" overwrite="false">
 			<fileset dir="public/dcm"/>
 		</copy>
+		
 		<!-- gdem.properties -->
 		<loadproperties srcFile="${test-build}/gdem.properties"/>
 		<replace file="${test-build}/gdem.properties" token="tmp.folder=${tmp.folder}" value="tmp.folder=${test-build}/tmp/"/>
+		<replace file="${test-build}/gdem.properties" token="xsl.folder=${xsl.folder}" value="xsl.folder=${test-build}"/>
 
 		<!-- log4j.properties -->
 		<loadproperties srcFile="${test-build}/log4j.properties"/>
