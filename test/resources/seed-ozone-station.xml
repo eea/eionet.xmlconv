@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dd207:Station xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dd207="http://dd.eionet.europa.eu/namespace.jsp?ns_id=207" xmlns:dd208="http://dd.eionet.europa.eu/namespace.jsp?ns_id=208" xsi:schemaLocation="http://dd.eionet.europa.eu/namespace.jsp?ns_id=207 http://dd.eionet.europa.eu/GetSchema?id=TBL3453">
+	<dd207:Row status="new">
+		<dd208:Zone_code>SI2</dd208:Zone_code>
+		<dd208:EoI_station_code>SI 0001A</dd208:EoI_station_code>
+		<dd208:Local_station_code>E23</dd208:Local_station_code>
+		<dd208:Station_name>Conversion works!</dd208:Station_name>
+		<dd208:Longitude_decimal>15.2678</dd208:Longitude_decimal>
+		<dd208:Latitude_decimal>46.235</dd208:Latitude_decimal>
+		<dd208:Longitude_DDMMSS></dd208:Longitude_DDMMSS>
+		<dd208:Latitude_DDMMSS></dd208:Latitude_DDMMSS>
+		<dd208:Altitude>240</dd208:Altitude>
+		<dd208:Station_type_O3>U</dd208:Station_type_O3>
+		<dd208:Station_type_EoI>B</dd208:Station_type_EoI>
+		<dd208:Area_type_EoI>U</dd208:Area_type_EoI>
+	</dd207:Row>
+	<dd207:Row status="new">
+		<dd208:Zone_code>SIM</dd208:Zone_code>
+		<dd208:EoI_station_code>SI 0002A</dd208:EoI_station_code>
+		<dd208:Local_station_code>E22</dd208:Local_station_code>
+		<dd208:Station_name>Maribor</dd208:Station_name>
+		<dd208:Longitude_decimal>15.6567</dd208:Longitude_decimal>
+		<dd208:Latitude_decimal>46.5594</dd208:Latitude_decimal>
+		<dd208:Longitude_DDMMSS></dd208:Longitude_DDMMSS>
+		<dd208:Latitude_DDMMSS></dd208:Latitude_DDMMSS>
+		<dd208:Altitude>270</dd208:Altitude>
+		<dd208:Station_type_O3>U</dd208:Station_type_O3>
+		<dd208:Station_type_EoI>T</dd208:Station_type_EoI>
+		<dd208:Area_type_EoI>U</dd208:Area_type_EoI>
+	</dd207:Row>
+	<dd207:Row status="new">
+		<dd208:Zone_code>SIL</dd208:Zone_code>
+		<dd208:EoI_station_code>SI 0003A</dd208:EoI_station_code>
+		<dd208:Local_station_code>E21</dd208:Local_station_code>
+		<dd208:Station_name>Ljubljana-Bezigrad</dd208:Station_name>
+		<dd208:Longitude_decimal>14.5172</dd208:Longitude_decimal>
+		<dd208:Latitude_decimal>46.0658</dd208:Latitude_decimal>
+		<dd208:Longitude_DDMMSS></dd208:Longitude_DDMMSS>
+		<dd208:Latitude_DDMMSS></dd208:Latitude_DDMMSS>
+		<dd208:Altitude>299</dd208:Altitude>
+		<dd208:Station_type_O3>U</dd208:Station_type_O3>
+		<dd208:Station_type_EoI>B</dd208:Station_type_EoI>
+		<dd208:Area_type_EoI>U</dd208:Area_type_EoI>
+	</dd207:Row>
+	<dd207:Row status="new">
+		<dd208:Zone_code>SI1</dd208:Zone_code>
+		<dd208:EoI_station_code>SI 0033A</dd208:EoI_station_code>
+		<dd208:Local_station_code>E24</dd208:Local_station_code>
+		<dd208:Station_name>Murska Sobota</dd208:Station_name>
+		<dd208:Longitude_decimal>16.1961</dd208:Longitude_decimal>
+		<dd208:Latitude_decimal>46.6525</dd208:Latitude_decimal>
+		<dd208:Longitude_DDMMSS></dd208:Longitude_DDMMSS>
+		<dd208:Latitude_DDMMSS></dd208:Latitude_DDMMSS>
+		<dd208:Altitude>188</dd208:Altitude>
+		<dd208:Station_type_O3>R</dd208:Station_type_O3>
+		<dd208:Station_type_EoI>B</dd208:Station_type_EoI>
+		<dd208:Area_type_EoI>RNCA</dd208:Area_type_EoI>
+	</dd207:Row>
+	<dd207:Row status="new">
+		<dd208:Zone_code>SI4</dd208:Zone_code>
+		<dd208:EoI_station_code>SI 0034A</dd208:EoI_station_code>
+		<dd208:Local_station_code>E25</dd208:Local_station_code>
+		<dd208:Station_name>Nova gorica</dd208:Station_name>
+		<dd208:Longitude_decimal>13.6569</dd208:Longitude_decimal>
+		<dd208:Latitude_decimal>45.9558</dd208:Latitude_decimal>
+		<dd208:Longitude_DDMMSS></dd208:Longitude_DDMMSS>
+		<dd208:Latitude_DDMMSS></dd208:Latitude_DDMMSS>
+		<dd208:Altitude>113</dd208:Altitude>
+		<dd208:Station_type_O3>S</dd208:Station_type_O3>
+		<dd208:Station_type_EoI>B</dd208:Station_type_EoI>
+		<dd208:Area_type_EoI>S</dd208:Area_type_EoI>
+	</dd207:Row>
+	<dd207:Row status="new">
+		<dd208:Zone_code>SI2</dd208:Zone_code>
+		<dd208:EoI_station_code>SI 0035A</dd208:EoI_station_code>
+		<dd208:Local_station_code>E26</dd208:Local_station_code>
+		<dd208:Station_name>Trbovlje</dd208:Station_name>
+		<dd208:Longitude_decimal>15.0411</dd208:Longitude_decimal>
+		<dd208:Latitude_decimal>46.1433</dd208:Latitude_decimal>
+		<dd208:Longitude_DDMMSS></dd208:Longitude_DDMMSS>
+		<dd208:Latitude_DDMMSS></dd208:Latitude_DDMMSS>
+		<dd208:Altitude>250</dd208:Altitude>
+		<dd208:Station_type_O3>U</dd208:Station_type_O3>
+		<dd208:Station_type_EoI>B</dd208:Station_type_EoI>
+		<dd208:Area_type_EoI>U</dd208:Area_type_EoI>
+	</dd207:Row>
+	<dd207:Row status="new">
+		<dd208:Zone_code>SI2</dd208:Zone_code>
+		<dd208:EoI_station_code>SI 0036A</dd208:EoI_station_code>
+		<dd208:Local_station_code>E27</dd208:Local_station_code>
+		<dd208:Station_name>Zagorje</dd208:Station_name>
+		<dd208:Longitude_decimal>15</dd208:Longitude_decimal>
+		<dd208:Latitude_decimal>46.1311</dd208:Latitude_decimal>
+		<dd208:Longitude_DDMMSS></dd208:Longitude_DDMMSS>
+		<dd208:Latitude_DDMMSS></dd208:Latitude_DDMMSS>
+		<dd208:Altitude>241</dd208:Altitude>
+		<dd208:Station_type_O3>U</dd208:Station_type_O3>
+		<dd208:Station_type_EoI>T</dd208:Station_type_EoI>
+		<dd208:Area_type_EoI>U</dd208:Area_type_EoI>
+	</dd207:Row>
+	<dd207:Row status="new">
+		<dd208:Zone_code>SI2</dd208:Zone_code>
+		<dd208:EoI_station_code>SI 0037A</dd208:EoI_station_code>
+		<dd208:Local_station_code>E28</dd208:Local_station_code>
+		<dd208:Station_name>Hrastnik</dd208:Station_name>
+		<dd208:Longitude_decimal>15.0881</dd208:Longitude_decimal>
+		<dd208:Latitude_decimal>46.1442</dd208:Latitude_decimal>
+		<dd208:Longitude_DDMMSS></dd208:Longitude_DDMMSS>
+		<dd208:Latitude_DDMMSS></dd208:Latitude_DDMMSS>
+		<dd208:Altitude>290</dd208:Altitude>
+		<dd208:Station_type_O3>S</dd208:Station_type_O3>
+		<dd208:Station_type_EoI>B</dd208:Station_type_EoI>
+		<dd208:Area_type_EoI>S</dd208:Area_type_EoI>
+	</dd207:Row>
+	<dd207:Row status="new">
+		<dd208:Zone_code>SI3</dd208:Zone_code>
+		<dd208:EoI_station_code>SI 0008R</dd208:EoI_station_code>
+		<dd208:Local_station_code>M16</dd208:Local_station_code>
+		<dd208:Station_name>Iskrba</dd208:Station_name>
+		<dd208:Longitude_decimal>14.8628</dd208:Longitude_decimal>
+		<dd208:Latitude_decimal>45.56138889</dd208:Latitude_decimal>
+		<dd208:Longitude_DDMMSS></dd208:Longitude_DDMMSS>
+		<dd208:Latitude_DDMMSS></dd208:Latitude_DDMMSS>
+		<dd208:Altitude>520</dd208:Altitude>
+		<dd208:Station_type_O3>RB</dd208:Station_type_O3>
+		<dd208:Station_type_EoI>B</dd208:Station_type_EoI>
+		<dd208:Area_type_EoI>RREG</dd208:Area_type_EoI>
+	</dd207:Row>
+	<dd207:Row status="new">
+		<dd208:Zone_code>SI3</dd208:Zone_code>
+		<dd208:EoI_station_code>SI 0032R</dd208:EoI_station_code>
+		<dd208:Local_station_code>M22</dd208:Local_station_code>
+		<dd208:Station_name>Krvavec</dd208:Station_name>
+		<dd208:Longitude_decimal>14.5386</dd208:Longitude_decimal>
+		<dd208:Latitude_decimal>46.2978</dd208:Latitude_decimal>
+		<dd208:Longitude_DDMMSS></dd208:Longitude_DDMMSS>
+		<dd208:Latitude_DDMMSS></dd208:Latitude_DDMMSS>
+		<dd208:Altitude>1740</dd208:Altitude>
+		<dd208:Station_type_O3>RB</dd208:Station_type_O3>
+		<dd208:Station_type_EoI>B</dd208:Station_type_EoI>
+		<dd208:Area_type_EoI>RREG</dd208:Area_type_EoI>
+	</dd207:Row>
+	<dd207:Row status="new">
+		<dd208:Zone_code>SI4</dd208:Zone_code>
+		<dd208:EoI_station_code>SI 0038A</dd208:EoI_station_code>
+		<dd208:Local_station_code>E30</dd208:Local_station_code>
+		<dd208:Station_name>Koper</dd208:Station_name>
+		<dd208:Longitude_decimal>13.7181</dd208:Longitude_decimal>
+		<dd208:Latitude_decimal>45.5431</dd208:Latitude_decimal>
+		<dd208:Longitude_DDMMSS></dd208:Longitude_DDMMSS>
+		<dd208:Latitude_DDMMSS></dd208:Latitude_DDMMSS>
+		<dd208:Altitude>56</dd208:Altitude>
+		<dd208:Station_type_O3>S</dd208:Station_type_O3>
+		<dd208:Station_type_EoI>B</dd208:Station_type_EoI>
+		<dd208:Area_type_EoI>S</dd208:Area_type_EoI>
+	</dd207:Row>
+	<dd207:Row status="new">
+		<dd208:Zone_code>SI4</dd208:Zone_code>
+		<dd208:EoI_station_code></dd208:EoI_station_code>
+		<dd208:Local_station_code>E31</dd208:Local_station_code>
+		<dd208:Station_name>Otlica</dd208:Station_name>
+		<dd208:Longitude_decimal>13.9167</dd208:Longitude_decimal>
+		<dd208:Latitude_decimal>45.9367</dd208:Latitude_decimal>
+		<dd208:Longitude_DDMMSS></dd208:Longitude_DDMMSS>
+		<dd208:Latitude_DDMMSS></dd208:Latitude_DDMMSS>
+		<dd208:Altitude>918</dd208:Altitude>
+		<dd208:Station_type_O3>RB</dd208:Station_type_O3>
+		<dd208:Station_type_EoI>B</dd208:Station_type_EoI>
+		<dd208:Area_type_EoI>RREG</dd208:Area_type_EoI>
+	</dd207:Row>
+</dd207:Station>
