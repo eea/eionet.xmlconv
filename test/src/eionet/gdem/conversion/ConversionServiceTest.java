@@ -5,6 +5,9 @@ package eionet.gdem.conversion;
 
 import java.util.Vector;
 
+import eionet.gdem.test.TestConstants;
+import eionet.gdem.test.TestUtils;
+
 
 import junit.framework.TestCase;
 
@@ -17,14 +20,7 @@ import junit.framework.TestCase;
 
 public class ConversionServiceTest extends TestCase{
 
-	protected final String CONVERSION_SUCCEEDED= "Conversion succeeded!";
 	
-	protected String getSeedURL(){
-		
-        String filename = getClass().getClassLoader().getResource("seed-rivers.xls").getFile();
-
-        return "file://".concat(filename);
-	}
 	/**
 	 * Test DataDictionary MS Excel file to XML conversion.
 	 * seed-rivers.xls should be in the root of test classes. 
@@ -36,7 +32,7 @@ public class ConversionServiceTest extends TestCase{
 	public void testConvertDD_XML() throws Exception{
 
 		ConversionServiceIF convService = new ConversionService();
-		Vector v = convService.convertDD_XML(getSeedURL());
+		Vector v = convService.convertDD_XML(TestUtils.getSeedURL(TestConstants.SEED_RIVERS_XML,this));
 		
 		// test if the result Vector is in correct format:
 		//["0", byte[], "XML filename"]
@@ -46,7 +42,7 @@ public class ConversionServiceTest extends TestCase{
 
 		byte[] xml = (byte[])v.get(1);
 		String strXML = new String(xml, "UTF-8");
-		assertTrue(strXML.indexOf(CONVERSION_SUCCEEDED)>0);
+		assertTrue(strXML.indexOf(TestConstants.STRCONTENT_RESULT)>0);
 
 		assertEquals("seed-rivers.xml",(String)v.get(2));
 	}
@@ -62,7 +58,7 @@ public class ConversionServiceTest extends TestCase{
 		//System.out.println(filename);
 
 		ConversionServiceIF convService = new ConversionService();
-		Vector v = convService.convertDD_XML_split(getSeedURL(),"BasicQuality");
+		Vector v = convService.convertDD_XML_split(TestUtils.getSeedURL(TestConstants.SEED_RIVERS_XML,this),"BasicQuality");
 		
 		// test if the result Vector is in correct format:
 		//[["0", "XML filename", byte[]]]
@@ -81,7 +77,7 @@ public class ConversionServiceTest extends TestCase{
 		//xml content as byte array
 		byte[] xml = (byte[])v2.get(2);
 		String strXML = new String(xml, "UTF-8");
-		assertTrue(strXML.indexOf("Conversion succeeded!")>0);
+		assertTrue(strXML.indexOf(TestConstants.STRCONTENT_RESULT)>0);
 	}
 	/**
 	 * Test DataDictionary MS Excel file to XML conversion ConvertDD_XML_split method.
@@ -93,7 +89,7 @@ public class ConversionServiceTest extends TestCase{
 		//System.out.println(filename);
 
 		ConversionServiceIF convService = new ConversionService();
-		Vector v = convService.convertDD_XML_split(getSeedURL(),"NOSHEET");
+		Vector v = convService.convertDD_XML_split(TestUtils.getSeedURL(TestConstants.SEED_RIVERS_XML,this),"NOSHEET");
 		
 		// test if the result Vector is in correct format:
 		//[["0", "XML filename", byte[]]]

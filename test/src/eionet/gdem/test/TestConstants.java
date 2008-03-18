@@ -1,0 +1,35 @@
+/*
+ * Created on 18.03.2008
+ */
+package eionet.gdem.test;
+
+/**
+ * The class holds different constant values used in test cases.
+ * @author Enriko Käsper, TietoEnator Estonia AS
+ * TestConstants
+ */
+
+public class TestConstants {
+
+	//SEED FILES with test data
+	public static final String SEED_DATASET_CONVERSIONS_XML = "seed-dataset-conversions.xml";
+	//SEED FILES for conversions
+	public static final String SEED_RIVERS_XML = "seed-rivers.xls";
+	public static final String SEED_GENERAL_REPORT_XML = "seed-general-report.xml";
+	public static final String SEED_GENERAL_REPORT_ZIP = "seed-general-report.zip";
+	public static final String SEED_OZONE_STATION_XML = "seed-ozone-station.xml";
+	public static final String SEED_GW_VALID_XML = "seed-gw-valid.xml";	
+	public static final String SEED_GW_INVALID_XML = "seed-gw-invalid.xml";
+	public static final String SEED_GW_SCHEMA = "seed-gw-schema.xsd";
+
+	//TEST RESULT PROPERTIES
+	public final static String HTML_CONTENTYPE_RESULT ="text/html;charset=UTF-8";
+	public final static String TEXT_CONTENTYPE_RESULT ="text/plain";
+	public final static String EXCEl_CONTENTYPE_RESULT ="application/vnd.ms-excel";
+	public final static String XML_CONTENTYPE_RESULT ="text/xml";
+	public final static String GR_HTML_FILENAME_RESULT ="seed-general-report.html";
+	public final static String OZ_HTML_FILENAME_RESULT ="seed-ozone-station.html";
+	public final static String OZ_SQL_FILENAME_RESULT ="seed-ozone-station.sql";
+	public final static String STRCONTENT_RESULT ="Conversion works!";
+
+}

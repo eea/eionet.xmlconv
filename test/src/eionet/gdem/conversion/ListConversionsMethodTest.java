@@ -11,8 +11,10 @@ import org.dbunit.DBTestCase;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 
-import eionet.gdem.Properties;
+import eionet.gdem.dcm.results.ListConversionsResult;
 import eionet.gdem.test.DbHelper;
+import eionet.gdem.test.TestConstants;
+import eionet.gdem.test.TestUtils;
 
 /**
  * This unittest tests the Conversion Service listConversions method
@@ -30,8 +32,7 @@ public class ListConversionsMethodTest  extends DBTestCase{
 	{
 		super( name );
 		DbHelper.setUpConnectionProperties();
-        String conversions_filename = getClass().getClassLoader().getResource("dcm/conversions.xml").getFile();
-        Properties.convFile = conversions_filename;
+		TestUtils.setUpProperties(this);
 	}
 	/**
 	 * Load the data which will be inserted for the test
@@ -39,7 +40,7 @@ public class ListConversionsMethodTest  extends DBTestCase{
 	protected IDataSet getDataSet() throws Exception {
 		IDataSet loadedDataSet = new FlatXmlDataSet(
 				getClass().getClassLoader().getResourceAsStream(
-						"seed-dataset-conversions.xml"));
+						TestConstants.SEED_DATASET_CONVERSIONS_XML));
 		return loadedDataSet;
 	}
 	/**
@@ -65,11 +66,11 @@ public class ListConversionsMethodTest  extends DBTestCase{
 
 		//analyze the conversion hashtable at index 0
 		Hashtable h = (Hashtable)v.get(0);
-		String convert_id = (String)h.get("convert_id");
-		String xsl = (String)h.get("xsl");
-		String content_type_out = (String)h.get("content_type_out");
-		String result_type = (String)h.get("result_type");
-		String xml_schema = (String)h.get("xml_schema");
+		String convert_id = (String)h.get(ListConversionsResult.CONVERT_ID_TAG);
+		String xsl = (String)h.get(ListConversionsResult.XSL_TAG);
+		String content_type_out = (String)h.get(ListConversionsResult.CONTENT_TYPE_TAG);
+		String result_type = (String)h.get(ListConversionsResult.RESULT_TYPE_TAG);
+		String xml_schema = (String)h.get(ListConversionsResult.XML_SCHEMA_TAG);
 
 		assertEquals("169",convert_id);
 		assertEquals("dir75442_excel.xsl",xsl);
@@ -79,11 +80,11 @@ public class ListConversionsMethodTest  extends DBTestCase{
 
 		//analyze the conversion hashtable at index 1
 		Hashtable h2 = (Hashtable)v.get(1);
-		String convert_id2 = (String)h2.get("convert_id");
-		String xsl2 = (String)h2.get("xsl");
-		String content_type_out2 = (String)h2.get("content_type_out");
-		String result_type2 = (String)h2.get("result_type");
-		String xml_schema2 = (String)h2.get("xml_schema");
+		String convert_id2 = (String)h2.get(ListConversionsResult.CONVERT_ID_TAG);
+		String xsl2 = (String)h2.get(ListConversionsResult.XSL_TAG);
+		String content_type_out2 = (String)h2.get(ListConversionsResult.CONTENT_TYPE_TAG);
+		String result_type2 = (String)h2.get(ListConversionsResult.RESULT_TYPE_TAG);
+		String xml_schema2 = (String)h2.get(ListConversionsResult.XML_SCHEMA_TAG);
 
 		assertEquals("171",convert_id2);
 		assertEquals("dir75442_html.xsl",xsl2);
