@@ -25,7 +25,8 @@ public class TestConstants {
 	//TEST RESULT PROPERTIES
 	public final static String HTML_CONTENTYPE_RESULT ="text/html;charset=UTF-8";
 	public final static String TEXT_CONTENTYPE_RESULT ="text/plain";
-	public final static String EXCEl_CONTENTYPE_RESULT ="application/vnd.ms-excel";
+	public final static String EXCEL_CONTENTYPE_RESULT ="application/vnd.ms-excel";
+	public final static String ZIP_CONTENTYPE_RESULT ="application/x-zip-compressed";
 	public final static String XML_CONTENTYPE_RESULT ="text/xml";
 	public final static String GR_HTML_FILENAME_RESULT ="seed-general-report.html";
 	public final static String OZ_HTML_FILENAME_RESULT ="seed-ozone-station.html";

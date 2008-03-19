@@ -12,7 +12,6 @@ import org.dbunit.DBTestCase;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 
-import eionet.gdem.dcm.results.GetXMLSchemasResult;
 import eionet.gdem.dcm.results.ListConversionsResult;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
@@ -111,7 +110,7 @@ public class ListConversionsActionTest  extends DBTestCase{
 		
 		//validate content types
 		List contentTypes = xQuery.getElementValues(ListConversionsResult.CONTENT_TYPE_TAG);
-		assertEquals(TestConstants.EXCEl_CONTENTYPE_RESULT,(String)contentTypes.get(0));
+		assertEquals(TestConstants.EXCEL_CONTENTYPE_RESULT,(String)contentTypes.get(0));
 		assertEquals(TestConstants.HTML_CONTENTYPE_RESULT,(String)contentTypes.get(1));
 
 		//validate result types
