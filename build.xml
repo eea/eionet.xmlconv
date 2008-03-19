@@ -29,7 +29,15 @@
         but does not touch the rest (jsp, html, xml, stylesheets etc.)
 
 	test
-		runs unit tests
+		runs unit tests. 
+		Set up test database and insert database connection properties into test/resource/gdem.properties file.
+		Do not run the tests on operational database, because it will delete all data.
+		
+		Create database called 'xmlconv_test'
+		GRANT ALL ON xmlconv_test.* to xmlconvtest@localhost identified by 'testpwd';
+		Then you import the table structure as:
+		mysql -u xmlconvtest -p xmlconv_test <db/gdem_init.sql
+		
 
 	 default is install 
   -->
@@ -390,7 +398,7 @@
 	</fileset>
 
 	<!-- test target, refers to pre-defined paths and filesets -->
-  	<target name="test" depends="init,compile-tests,seed-tests" description="Runs all found unit tests">
+  	<target name="test" depends="test_echo,init,compile-tests,seed-tests" description="Runs all found unit tests">
 		<junit haltonfailure="yes" failureproperty="unittestFailed" showoutput="yes" printsummary="yes">
 			<classpath refid="classpath.test" />
 			<formatter type="brief" usefile="false"/>
@@ -401,6 +409,13 @@
 		<fail if="unittestFailed" message="One or more unit tests failed."/>
 	</target>
 
+	<target	name="test_echo">
+		<echo message="****************************************************************************************"/>
+		<echo message="Set up test databse, before running the tests."/>
+		<echo message="Databse connection properties should be inserted into test/resources/gdem.properties file"/>
+		<echo message="NB! Do not run the test on operational database"/>
+		<echo message="****************************************************************************************"/>
+	</target>
 
 <!--	##########################  	-->
 <!-- 				ZIP targets 							-->
