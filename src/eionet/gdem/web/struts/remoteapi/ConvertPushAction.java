@@ -33,8 +33,8 @@ import eionet.gdem.web.struts.BaseAction;
 public class ConvertPushAction  extends BaseAction {
 	private static LoggerIF _logger = GDEMServices.getLogger();
 
-	private static final String CONVERT_ID_PARAM_NAME = "convert_id";
-	private static final String CONVERT_FILE_PARAM_NAME = "convert_file";
+	public static final String CONVERT_ID_PARAM_NAME = "convert_id";
+	public static final String CONVERT_FILE_PARAM_NAME = "convert_file";
 
 	/**
 	 * Purpose of this action is to execute Conversion Service convertPush method.
