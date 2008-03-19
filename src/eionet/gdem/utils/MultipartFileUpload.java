@@ -38,7 +38,11 @@ import java.util.Iterator;
 
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import eionet.gdem.GDEMException;
 
@@ -66,7 +70,8 @@ public class MultipartFileUpload{
 	  private String _folderName;		//tmp folder for files
 	  private String _fileName;
 	  private FileItem _fileItem;
-	  private DiskFileUpload upload;
+	  private DiskFileItemFactory factory = null;
+      private ServletFileUpload upload;
 	  private boolean _uploadAtOnce=true;
 
 	  private HashMap _params=null;
@@ -81,8 +86,11 @@ public class MultipartFileUpload{
 	   */
 	  public MultipartFileUpload(boolean uploadAtOnce){
 
-	  //  lineSep = System.getProperty("line.separator");
-	     upload = new DiskFileUpload();
+		// Create a factory for disk-based file items
+		 factory = new DiskFileItemFactory();
+		  
+		  // Create a new file upload handler
+		 upload = new ServletFileUpload(factory);
 	     _params = new HashMap();
 	     initEscapes();
 	     this._uploadAtOnce=uploadAtOnce;
@@ -216,7 +224,7 @@ public class MultipartFileUpload{
 	        if (_folderName==null) throw new GDEMException("Folder name is empty!");
 	        if (fileName==null) throw new GDEMException("File name is empty!");
 	        if (_fileItem==null)  throw new GDEMException("No files found!");
-	        upload.setRepositoryPath(_folderName);
+	        factory.setRepository(new File(_folderName));
 
 	        if (_fileItem.getSize()==0) return null; //There is nothing to save, file size is 0
 
@@ -250,7 +258,7 @@ public class MultipartFileUpload{
 	        if (_folderName==null) throw new GDEMException("Folder name is empty!");
 	        if (_fileItem==null)  throw new GDEMException("No files found!");
 
-	        upload.setRepositoryPath(_folderName);
+	        factory.setRepository(new File(_folderName));
 
 	        if (_fileItem.getSize()==0) return; //There is nothing to save, file size is 0
 
@@ -434,7 +442,7 @@ public class MultipartFileUpload{
 	        if (fileName==null) throw new GDEMException("File name is empty!");
 
 
-	        upload.setRepositoryPath(folderName);
+	        factory.setRepository(new File(folderName));
 
 	        if (fileItem.getSize()==0) return null; //There is nothing to save, file size is 0
 
