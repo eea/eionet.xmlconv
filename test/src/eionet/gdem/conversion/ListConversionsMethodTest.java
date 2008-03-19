@@ -31,9 +31,14 @@ public class ListConversionsMethodTest  extends DBTestCase{
 	public ListConversionsMethodTest(String name)
 	{
 		super( name );
+	}
+	/**
+	 * Set up test case properties
+	 */
+    protected void setUp()throws Exception{
 		DbHelper.setUpConnectionProperties();
 		TestUtils.setUpProperties(this);
-	}
+    }
 	/**
 	 * Load the data which will be inserted for the test
 	 */
