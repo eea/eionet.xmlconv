@@ -157,7 +157,7 @@
 
 
 	<!-- COPYFILES -->
-	<target name="copyfiles" depends="prepare,buildjar">
+	<target name="copyfiles" depends="clean_resources,prepare,buildjar">
 		<!-- we do not care about these files older versions -->
 		<copy file="GDEMServices.xml" tofile="${build.dir}/GDEMServices.xml" overwrite="true"/>
 		<copy todir="${build.dir}/public" overwrite="true">
@@ -197,6 +197,14 @@
 			</not>
 		</condition>
 		<antcall target="copy_props"/>
+	</target>
+	<!-- Deletes *.jsp, *.jar files -->
+	<target name="clean_resources">
+		<delete>
+			<fileset dir="${build.dir}/public/WEB-INF/lib"/>
+			<fileset dir="${build.dir}/public/WEB-INF/tiles"/>
+		</delete>
+
 	</target>
 
 
