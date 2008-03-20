@@ -5,6 +5,7 @@ package eionet.gdem.conversion;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import org.dbunit.DBTestCase;
@@ -104,7 +105,7 @@ public class ListConversionsMethodTest  extends DBTestCase{
 
 		ConversionService cs = new ConversionService();
 		//test getXMLSchemas method, that is part of ListConversionsMethod class
-		ArrayList schemas = cs.getXMLSchemas();
+		List schemas = cs.getXMLSchemas();
 		//we don't know the exact number of schemas will be returned, because DD stylesheets has been created dynamically
 		assertTrue(schemas.size()>36);
 	}
