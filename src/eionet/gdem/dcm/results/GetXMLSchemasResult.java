@@ -4,6 +4,7 @@
 package eionet.gdem.dcm.results;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Converts the listConversions method result as XML.
@@ -15,7 +16,7 @@ public class GetXMLSchemasResult extends XMLResultStrategy{
 
 	public static final String SCHEMA_TAG="schema";
 	
-	private ArrayList schemas = null;
+	private List schemas = null;
 	
 	public GetXMLSchemasResult() {
 	}
@@ -24,7 +25,7 @@ public class GetXMLSchemasResult extends XMLResultStrategy{
 	 * 
 	 * @param list
 	 */
-	public void setResult(ArrayList list){
+	public void setResult(List list){
 		schemas = list;
 	}
 		/**

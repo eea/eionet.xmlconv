@@ -4,6 +4,7 @@
 package eionet.gdem.web.struts.remoteapi;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -46,7 +47,7 @@ public class GetXMLSchemasAction extends BaseMethodAction {
 			
 			//Call ConversionService
 			ConversionServiceIF cs = new ConversionService();
-			ArrayList schemas = cs.getXMLSchemas();
+			List schemas = cs.getXMLSchemas();
 
 			//parse the result of Conversion Service method and format it as XML
 			GetXMLSchemasResult xmlResult = new GetXMLSchemasResult();

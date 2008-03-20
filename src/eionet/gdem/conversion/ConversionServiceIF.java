@@ -6,6 +6,7 @@ package eionet.gdem.conversion;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
@@ -105,5 +106,5 @@ public interface ConversionServiceIF {
 	 * @return
 	 * @throws GDEMException
 	 */
-	public ArrayList getXMLSchemas() throws GDEMException ;
+	public List getXMLSchemas() throws GDEMException ;
 }

@@ -221,7 +221,7 @@ public class ConversionService implements ConversionServiceIF {
 			
 	}
 
-	public ArrayList getXMLSchemas() throws GDEMException {
+	public Vector getXMLSchemas() throws GDEMException {
 		ListConversionsMethod method = new ListConversionsMethod();
 		return method.getXMLSchemas();
 	}

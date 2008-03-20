@@ -99,7 +99,7 @@ public class XMLErrorResult extends XMLResultStrategy {
 	 */
 	protected void writeRequestParamters() throws Exception {
 
-		hd.startElement("", "", PARAMETERS_TAG, atts);
+		hd.startElement("", "", PARAMETERS_TAG, null);
 		if (requestParamters != null) {
 			Iterator iterKeys = requestParamters.keySet().iterator();
 			while (iterKeys.hasNext()) {

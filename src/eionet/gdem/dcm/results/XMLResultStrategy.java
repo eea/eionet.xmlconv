@@ -21,12 +21,12 @@ public abstract class XMLResultStrategy{
 	private int status = HttpServletResponse.SC_OK;
 
 	private static final String ROOT_TAG = "response";
+	private static final String RESPONSE_CODE_ATTR = "code";
 	
 	private ByteArrayOutputStream outputStreamBuffer = null;
 	
 	protected TransformerHandler hd = null;
-	protected AttributesImpl atts = null;
-
+	
 	public XMLResultStrategy() {
 	}
 
@@ -76,11 +76,13 @@ public abstract class XMLResultStrategy{
 		Transformer serializer = hd.getTransformer();
 		serializer.setOutputProperty(OutputKeys.ENCODING,getEncoding());
 		serializer.setOutputProperty(OutputKeys.INDENT,"yes");
-		atts = new AttributesImpl();
 
+		AttributesImpl attrs = new AttributesImpl();
+		attrs.addAttribute("", "", RESPONSE_CODE_ATTR, "int", String.valueOf(getStatus()));
+		
 		hd.setResult(streamResult);
 		hd.startDocument();
-		hd.startElement("","",ROOT_TAG,atts);	
+		hd.startElement("","",ROOT_TAG,attrs);	
 		writeElements();
 		hd.endElement("", "", ROOT_TAG);
 		hd.endDocument();

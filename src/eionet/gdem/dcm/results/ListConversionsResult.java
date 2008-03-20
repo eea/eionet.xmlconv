@@ -43,7 +43,7 @@ public class ListConversionsResult extends XMLResultStrategy{
 			Hashtable h = (Hashtable)conversions.get(i);
 			Enumeration keys = h.keys();
 			
-			hd.startElement("","",CONVERSION_TAG,atts);
+			hd.startElement("","",CONVERSION_TAG,null);
 			while (keys.hasMoreElements()){
 				String key = (String)keys.nextElement();
 				writeSimpleElement(key,(String)h.get(key));			

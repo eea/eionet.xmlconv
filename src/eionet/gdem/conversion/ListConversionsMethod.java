@@ -117,9 +117,9 @@ public class ListConversionsMethod {
 	 * @return
 	 * @throws GDEMException
 	 */
-	public ArrayList getXMLSchemas() throws GDEMException {
+	public Vector getXMLSchemas() throws GDEMException {
 		Vector conv = listConversions(null);
-		ArrayList schemas = new ArrayList();
+		Vector schemas = new Vector();
 
 		for (int i = 0; i < conv.size(); i++) {
 			Hashtable schema = (Hashtable) conv.get(i);
@@ -139,7 +139,7 @@ public class ListConversionsMethod {
 	 * @throws GDEMException
 	 */
 	public boolean existsXMLSchema(String xmlSchema) throws GDEMException {
-		ArrayList schemas = getXMLSchemas();
+		List schemas = getXMLSchemas();
 		return schemas.contains(xmlSchema);
 	}
 }
