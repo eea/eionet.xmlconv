@@ -34,13 +34,14 @@ public class ConvertActionTest extends DBTestCase{
 	 */
 	public ConvertActionTest(String name)	{
 		super( name );
+		DbHelper.setUpConnectionProperties();
 	}
 	/**
 	 * Set up test case properties
 	 */
     protected void setUp()throws Exception{
-		DbHelper.setUpConnectionProperties();
-		TestUtils.setUpProperties(this);
+    	super.setUp();
+    	TestUtils.setUpProperties(this);
     }
 	/**
 	 * Load the data which will be inserted for the test

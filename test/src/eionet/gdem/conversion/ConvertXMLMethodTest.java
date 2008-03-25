@@ -28,12 +28,13 @@ public class ConvertXMLMethodTest extends DBTestCase{
 		public ConvertXMLMethodTest(String name)
 		{
 			super( name );
+	    	DbHelper.setUpConnectionProperties();
 		}
 		/**
 		 * Set up test case properties
 		 */
 	    protected void setUp()throws Exception{
-			DbHelper.setUpConnectionProperties();
+	    	super.setUp();
 			TestUtils.setUpProperties(this);
 	    }
 		/**

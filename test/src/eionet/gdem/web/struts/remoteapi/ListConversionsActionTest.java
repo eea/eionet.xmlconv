@@ -35,12 +35,13 @@ public class ListConversionsActionTest  extends DBTestCase{
 	 */
 	public ListConversionsActionTest(String name)	{
 		super( name );
+    	DbHelper.setUpConnectionProperties();
 	}
 	/**
 	 * Set up test case properties
 	 */
     protected void setUp()throws Exception{
-		DbHelper.setUpConnectionProperties();
+    	super.setUp();
 		TestUtils.setUpProperties(this);
     }
 	/**

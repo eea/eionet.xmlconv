@@ -32,12 +32,13 @@ public class ConvertPushActionTest  extends DBTestCase{
 	 */
 	public ConvertPushActionTest(String name)	{
 		super( name );
+    	DbHelper.setUpConnectionProperties();
 	}
 	/**
 	 * Set up test case properties
 	 */
     protected void setUp()throws Exception{
-		DbHelper.setUpConnectionProperties();
+    	super.setUp();
 		TestUtils.setUpProperties(this);
     }
 	/**
@@ -123,6 +124,5 @@ public class ConvertPushActionTest  extends DBTestCase{
 		IXmlCtx x = new XmlContext();
 		x.setWellFormednessChecking();
 		x.checkFromInputStream(new ByteArrayInputStream(((MockServletOutputStream)response.getOutputStream()).toByteArray()));
-
 	}
 }
