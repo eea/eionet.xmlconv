@@ -1,0 +1,24 @@
+<?php
+
+/*
+*  PHP script for testing testing XMLCONV Conversion Service
+*
+*  Author Enriko Käsper, TietoEnator
+*/ 
+
+$server_url = "http://localhost:8080/xmlconv/api";
+$method_path = "/getXMLSchemas";
+$xml=simplexml_load_file($server_url.$method_path);
+
+$response_code = $xml->attributes()->code;
+
+if	($response_code==200){
+	foreach($xml->schema as $item){
+		Print_r($item);
+	}
+}
+else{
+	echo "Error happened: ".$xml->error-message;
+}
+
+?>

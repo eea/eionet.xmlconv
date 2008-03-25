@@ -9,7 +9,7 @@ import xmlrpclib
 server_url="http://localhost:8080/xmlconv/RpcRouter"
 server = xmlrpclib.Server(server_url)
 try:
-	param1  = "https://svn.eionet.europa.eu/projects/Reportnet/browser/Dataflows/HabitatsDirectiveArticle17/xmlfiles/general-instancefile.xml?format=raw"
+	param1  = "https://svn.eionet.europa.eu/repositories/Reportnet/Dataflows/HabitatsDirectiveArticle17/xmlfiles/general-instancefile.xml"
 	#convert_id parameter
 	param2="168"
 
