@@ -98,7 +98,7 @@
 	<!-- build xmlconv.jar -->
 	<target name="buildjar" depends="compile">
 		<jar basedir="${classes.dir}" jarfile="public/WEB-INF/lib/xmlconv.jar" includes="**/*.class"/>
-		<delete dir="${classes.dir}/eionet"/>
+		<delete dir="${classes.dir}/eionet" failonerror="false"/>
 		<!--antcall target="clean"/-->
 	</target>
 
@@ -106,7 +106,7 @@
 	<!-- clean classes directory -->
 	<target name="clean" depends="init">
 		<delete dir="${classes.dir}/eionet"/>
-		<delete file="public/WEB-INF/lib/xmlconv.jar"/>
+		<delete file="public/WEB-INF/lib/xmlconv.jar" failonerror="false"/>
 	</target>
 
 <!--	##########################  	-->
@@ -200,11 +200,10 @@
 	</target>
 	<!-- Deletes *.jsp, *.jar files -->
 	<target name="clean_resources">
-		<delete>
+		<delete  failonerror="false">
 			<fileset dir="${build.dir}/public/WEB-INF/lib"/>
 			<fileset dir="${build.dir}/public/WEB-INF/tiles"/>
 		</delete>
-
 	</target>
 
 
@@ -318,14 +317,15 @@
 
 
 <!--	##########################  	-->
-<!-- 				TEST targets  						-->
+<!-- 				TEST targets  		-->
 <!--	##########################  	-->
 
 
 	<!-- cleans the test/build directory -->
 	<target name="clean-tests">
-		<delete dir="${test-build}"/>
-		<mkdir dir="${test-build}"/>
+		<delete includeemptydirs="true">
+			<fileset dir="test/build" includes="**/*"/>
+		</delete>
 	</target>
 
 	<!-- copy properties target, unit test needs some properties from gdem.properties file -->
@@ -374,10 +374,10 @@
 	<!-- compile target for compiling unit tests, expects classes-under-test compiled, refers to pre-defined paths -->
 	<target name="compile-tests" depends="clean-tests,copy-test-props">
 		
-		<javac srcdir="${src}" destdir="${test-build}" source="1.5" target="1.5" debug="on">
+		<javac srcdir="${src}" destdir="${test-build}" debug="on">
 			<classpath refid="classpath.compile"/>
 		</javac>
-		<javac srcdir="${test}/src" destdir="${test-build}" source="1.5" target="1.5" debug="on">
+		<javac srcdir="${test}/src" destdir="${test-build}" debug="on">
 			<classpath refid="classpath.test"/>
 		</javac>
 	</target>
