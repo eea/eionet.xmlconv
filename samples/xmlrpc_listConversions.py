@@ -6,7 +6,7 @@
 import xmlrpclib
 
 #server_url="http://converters.eionet.eu.int/RpcRouter"
-server_url="http://localhost:8080/xmlconv/RpcRouter"
+server_url="http://80.235.29.171:8080/xmlconv/RpcRouter"
 server = xmlrpclib.Server(server_url)
 try:
 	#file parameter value encoded as Base64 byte array

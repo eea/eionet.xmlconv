@@ -6,12 +6,12 @@
 import xmlrpclib
 
 #server_url="http://converters.eionet.eu.int/RpcRouter"
-server_url="http://localhost:8080/xmlconv/RpcRouter"
+server_url="http://80.235.29.171:8080/xmlconv/RpcRouter"
 server = xmlrpclib.Server(server_url)
 try:
 	param1  = "https://svn.eionet.europa.eu/repositories/Reportnet/Dataflows/HabitatsDirectiveArticle17/xmlfiles/general-instancefile.xml"
 	#convert_id parameter
-	param2="168"
+	param2="26"
 
 	method_result=server.ConversionService.convert(param1,param2)
 

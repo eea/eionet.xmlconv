@@ -6,7 +6,7 @@
 import xmlrpclib
 
 #server_url="http://converters.eionet.eu.int/RpcRouter"
-server_url="http://localhost:8080/xmlconv/RpcRouter"
+server_url="http://80.235.29.171:8080/xmlconv/RpcRouter"
 server = xmlrpclib.Server(server_url)
 try:
 	#open the file XML file and read it into byte array
@@ -18,7 +18,7 @@ try:
 	#file parameter value encoded as Base64 byte array
 	param1  = xmlrpclib.Binary(contents)
 	#convert_id parameter
-	param2="168"
+	param2="26"
 	#filename paramter
 	param3="ResultFile.html"
 	method_result=server.ConversionService.convertPush(param1,param2,param3)

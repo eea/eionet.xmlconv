@@ -29,7 +29,7 @@
 	$convert_id=$_SESSION['convert_id'];
 	$schema=$_SESSION['schema'];
 	$xmlfiles=$_SESSION['xmlfiles'];
-	if (count($files==0))loadXMLFiles();
+	if (count($xmlfiles==0))loadXMLFiles();
 
 
 //read request parameters and store these in the session
@@ -51,7 +51,6 @@
 		
 		$_SESSION['convert_url']=$convert_url;
 		$_SESSION['convert_id']=$convert_id;
-		$_SESSION['conversions']=$conversions;
 		return;
 	}
 	elseif($action=="getXMLSchemas"){
@@ -62,6 +61,7 @@
 		$schema=$_GET['schema'];
 		listConversions($schema);
 		$_SESSION['schema']=$schema;
+		//$_SESSION['conversions']=$conversions;
 	}
 	elseif($action=="clear"){
 		session_destroy(); 
@@ -147,7 +147,7 @@
 	/**
 	*	load xml and zip files from the related directory
 	*/
-	function loadXMLFiles($schema){
+	function loadXMLFiles(){
 		global $dir, $xmlfiles;
 
 		$d = dir($dir);
