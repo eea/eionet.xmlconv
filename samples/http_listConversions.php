@@ -6,7 +6,7 @@
 *  Author Enriko Käsper, TietoEnator
 */ 
 
-$server_url = "http://localhost:8080/xmlconv/api";
+$server_url = "http://80.235.29.171:8080/xmlconv/api";
 $method_path = "/listConversions";
 $schema_param = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd";
 

@@ -6,12 +6,12 @@
 *  Author Enriko Käsper, TietoEnator
 */ 
 
-$server_url = "http://localhost:8080/xmlconv/api";
+$server_url = "http://80.235.29.171:8080/xmlconv/api";
 $method_path = "/convertPush";
 $dir = realpath('.');
 
 $convert_file="seed-general-report.xml";
-$convert_id="168";
+$convert_id="26";
 
 		$filepathname = $dir."/".$convert_file;
 

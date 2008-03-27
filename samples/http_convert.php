@@ -6,11 +6,11 @@
 *  Author Enriko Käsper, TietoEnator
 */ 
 
-$server_url = "http://localhost:8080/xmlconv/api";
+$server_url = "http://80.235.29.171:8080/xmlconv/api";
 $method_path = "/convert";
 
 $convert_url="https://svn.eionet.europa.eu/repositories/Reportnet/Dataflows/HabitatsDirectiveArticle17/xmlfiles/general-instancefile.xml";
-$convert_id="168";
+$convert_id="26";
 
 $r = new HttpRequest($server_url.$method_path, HttpRequest::METH_POST);
 $r->addPostFields(array('url' => $convert_url));
