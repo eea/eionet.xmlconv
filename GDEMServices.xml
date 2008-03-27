@@ -5,13 +5,13 @@
 			<Method Name="convert" Auth="false">
 				<Parameters>
 					<Parameter Name="url" Type="STRING"/>
-					<Parameter Name="convertId" Type="STRING"/>
+					<Parameter Name="convert_id" Type="STRING"/>
 				</Parameters>
 				<Value Type="STRUCT"/>
 			</Method>
 			<Method Name="listConversions" Auth="false">
 				<Parameters>
-					<Parameter Name="id" Type="STRING"/>
+					<Parameter Name="xml_schema" Type="STRING"/>
 				</Parameters>
 				<Value Type="ARRAY"/>
 			</Method>
@@ -31,12 +31,24 @@
 			<Method Name="convert" Auth="false">
 				<Parameters>
 					<Parameter Name="url" Type="STRING"/>
-					<Parameter Name="convertId" Type="STRING"/>
+					<Parameter Name="convert_id" Type="STRING"/>
 					<Parameter Name="username" Type="STRING"/>
 					<Parameter Name="password" Type="STRING"/>										
 				</Parameters>
 				<Value Type="STRUCT"/>
 			</Method>			
+			<Method Name="convertPush" Auth="false">
+				<Parameters>
+					<Parameter Name="convert_file" Type="BASE64"/>
+					<Parameter Name="convert_id" Type="STRING"/>
+					<Parameter Name="filename" Type="STRING"/>
+				</Parameters>
+				<Value Type="STRUCT"/>
+			</Method>
+			<Method Name="getXMLSchemas" Auth="false">
+				<Parameters/>
+				<Value Type="ARRAY"/>
+			</Method>
 		</Methods>
 	</Service>
 	<Service Name="XQueryService" Provider="eionet.gdem.qa.XQueryService">
@@ -44,7 +56,7 @@
 			<Method Name="analyze" Auth="false">
 				<Parameters>
 					<Parameter Name="url" Type="STRING"/>
-					<Parameter Name="xqScript" Type="STRING"/>
+					<Parameter Name="xq_script" Type="STRING"/>
 				</Parameters>
 				<Value Type="STRING"/>
 			</Method>
@@ -56,13 +68,13 @@
 			</Method>
 			<Method Name="listQueries" Auth="false">
 				<Parameters>
-					<Parameter Name="id" Type="STRING"/>
+					<Parameter Name="xml_schema" Type="STRING"/>
 				</Parameters>
 				<Value Type="ARRAY"/>
 			</Method>
 			<Method Name="getResult" Auth="false">
 				<Parameters>
-					<Parameter Name="jobId" Type="STRING"/>
+					<Parameter Name="job_id" Type="STRING"/>
 				</Parameters>
 				<Value Type="STRUCT"/>
 				<!--Member Name="CODE" Type="INT"/>
@@ -71,13 +83,13 @@
 			</Method>
 			<Method Name="listQAScripts" Auth="false">
 				<Parameters>
-					<Parameter Name="schema" Type="STRING"/>
+					<Parameter Name="xml_schema" Type="STRING"/>
 				</Parameters>
 				<Value Type="ARRAY"/>
 			</Method>
 			<Method Name="runQAScript" Auth="false">
 				<Parameters>
-					<Parameter Name="file_url" Type="STRING"/>
+					<Parameter Name="url" Type="STRING"/>
 					<Parameter Name="script_id" Type="STRING"/>
 				</Parameters>
 				<Value Type="ARRAY"/>
@@ -95,7 +107,7 @@
 			<Method Name="validateSchema" Auth="false">
 				<Parameters>
 					<Parameter Name="url" Type="STRING"/>
-					<Parameter Name="schemaUrl" Type="STRING"/>
+					<Parameter Name="xml_schema" Type="STRING"/>
 				</Parameters>
 				<Value Type="STRING"/>
 			</Method>
