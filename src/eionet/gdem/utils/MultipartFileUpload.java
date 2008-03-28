@@ -77,7 +77,7 @@ public class MultipartFileUpload{
 	  private HashMap _params=null;
 	  private List fileItems=null;
 	  private String encoding=null;
-	  private HashMap fileNameEscapes=new HashMap <Integer,String>();
+	  private HashMap fileNameEscapes=new HashMap();
 	  private static char[] restrictedChars = {'\\','/',':','*','?','"','<','>','|','\'','&','%','#',';'};
 
 	  /**
