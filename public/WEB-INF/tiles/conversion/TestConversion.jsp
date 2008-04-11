@@ -8,6 +8,15 @@
 <html:xhtml/>
 
 
+	<div id="tabbedmenu">
+		<ul>
+			<li id="currenttab"><span style="color: black; text-decoration: none;" title="<bean:message key="label.conversion.tab.converters"/>"><bean:message key="label.conversion.tab.converters"/></span></li>
+			<li><a style="color: black; text-decoration: none;" title="<bean:message key="label.conversion.tab.crconversion"/>" href="<bean:write name="webRoot" />/do/crConversionForm"><bean:message key="label.conversion.tab.crconversion"/></a></li>
+			<li><a style="color: black; text-decoration: none;" title="<bean:message key="label.conversion.tab.excel2xml"/>" href="<bean:write name="webRoot" />/do/excel2XmlConversionForm"><bean:message key="label.conversion.tab.excel2xml"/></a></li>
+			<li><a style="color: black; text-decoration: none;" title="<bean:message key="label.conversion.tab.validate"/>" href="<bean:write name="webRoot" />/do/crConversionForm"><bean:message key="label.conversion.tab.validate"/></a></li>
+		</ul>
+	</div>
+
 
 	<ed:breadcrumbs-push label="Test conversion" level="1" />
 	<h1><bean:message key="label.conversion.testconversion"/></h1>

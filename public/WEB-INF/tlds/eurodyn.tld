@@ -136,4 +136,30 @@
         <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag> 
-</taglib>
+  <tag>
+    <name>tabItem</name>
+    <tag-class>eionet.gdem.web.tags.TabItem</tag-class>
+    <description>
+       display (selected) tab item
+    </description>
+    <attribute>
+        <name>href</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>title</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>selectedTab</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>id</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag></taglib>

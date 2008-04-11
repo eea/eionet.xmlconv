@@ -8,12 +8,9 @@
 <html:xhtml/>
 <div style="width:100%;">
 
-		<div id="tabbedmenu">
-			<ul>
-				<li><a style="color: black; text-decoration: none;" title="<bean:message key="label.conversion.converters"/>" href="<bean:write name="webRoot" />/do/listConvForm"><bean:message key="label.conversion.converters"/></a></li>
-				<li id="currenttab"><a style="color: black; text-decoration: none;" title="<bean:message key="label.conversion.excel2xml"/>" href="<bean:write name="webRoot" />/do/excel2XmlConversionForm"><bean:message key="label.conversion.excel2xml"/></a></li>
-			</ul>
-		</div>
+		<tiles:insert definition="ConverterTabs">
+			<tiles:put name="selectedTab" value="excel2xml" />
+		</tiles:insert>
 				
 		<ed:breadcrumbs-push label="Spreadsheet to XML" level="1" />
 		<h1><bean:message key="label.conversion.excel2xml.heading"/></h1> 
