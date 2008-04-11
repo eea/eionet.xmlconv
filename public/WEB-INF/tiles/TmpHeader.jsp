@@ -7,7 +7,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
-<%@ taglib uri="/WEB-INF/tlds/c.tld" prefix="c"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <ed:breadcrumbs-push label="XML Services" url="/index.jsp" level="0"/>
 <%
