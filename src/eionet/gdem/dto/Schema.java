@@ -36,6 +36,7 @@ public class Schema implements Serializable {
 	private String table;
 	private String dataset;
 	private List cdrfiles;
+	private List crfiles;
 	private Date datasetReleased;
 	
 
@@ -140,5 +141,23 @@ public class Schema implements Serializable {
 
 	public void setDatasetReleased(Date datasetReleased) {
 		this.datasetReleased = datasetReleased;
+	}
+
+
+	public List getCrfiles() {
+		return crfiles;
+	}
+
+
+	public void setCrfiles(List crfiles) {
+		this.crfiles = crfiles;
+	}
+	public boolean equals(Object oSchema){
+		if(oSchema instanceof Schema){
+			if (oSchema!=null && ((Schema)oSchema).getSchema()!=null && getSchema()!=null){
+				return ((Schema)oSchema).getSchema().equals(getSchema());
+			}
+		}
+		return false;
 	}
 }

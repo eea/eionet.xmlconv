@@ -45,12 +45,14 @@ public class TestConvAction extends Action{
 
 	String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
 
-	DynaValidatorForm cForm = (DynaValidatorForm) actionForm;
-	String url = processFormStr((String) cForm.get("url"));
-	String convert_id = processFormStr((String) cForm.get("conversionId"));
-	String cdrFile = processFormStr((String) cForm.get("cdrFile"));
+	ConversionForm cForm = (ConversionForm) actionForm;
+
+	String url = cForm.getUrl();
+	String convert_id = cForm.getConversionId();
 	
-	if(Utils.isNullStr(url))url=cdrFile;
+	httpServletRequest.getSession().setAttribute("converted.url", url);
+	httpServletRequest.getSession().setAttribute("converted.conversionId", convert_id);
+
 	//create custom HttpServletResponseWrapper		
 	HttpMethodResponseWrapper methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
 	//get request parameters

@@ -44,22 +44,43 @@ public class ListConvFormAction extends Action {
 	private static LoggerIF _logger = GDEMServices.getLogger();
 
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 		ActionErrors errors = new ActionErrors();
 		ArrayList schemas = null;
+		Object schemasInSession = httpServletRequest.getSession().getAttribute(
+		"conversion.schemas");
+
+		//reset the form in the session
+		ConversionForm cForm = (ConversionForm) actionForm;
+		cForm.resetAll(actionMapping, httpServletRequest);
+
 
 		try {
-			SchemaManager sm = new SchemaManager();
-			schemas = sm.getSchemas();
+			if (schemasInSession == null
+					|| ((ArrayList) schemasInSession).size() == 0) {
+				schemasInSession = loadSchemas();
+				httpServletRequest.getSession().setAttribute(
+						"conversion.schemas", schemasInSession);
+			}
 		} catch (DCMException e) {
 			e.printStackTrace();
-			_logger.error("List conversion error",e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+			_logger.error("Serach CR Conversions error", e);
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e
+					.getErrorCode()));
 			saveMessages(httpServletRequest, errors);
 		}
-		saveMessages(httpServletRequest, errors);
 
-		httpServletRequest.getSession().setAttribute("conversion.schemas", schemas);
 		return actionMapping.findForward("success");
+	}
+	private ArrayList loadSchemas() throws DCMException {
+
+		ArrayList schemas = null;
+		SchemaManager sm = new SchemaManager();
+		schemas = sm.getSchemas();
+		return schemas;
 	}
 }

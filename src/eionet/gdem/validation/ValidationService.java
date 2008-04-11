@@ -220,8 +220,11 @@ public class ValidationService {
 
 try {
     //String xml = "http://reportek2.eionet.eu.int/colqaj8nw/envqe8zva/countrynames.tmx";
-    String xml = "http://cdrtest.eionet.europa.eu/ee/eea/ewn3/envrmtmhw/EE bodies.xml";
-    String sch = "http://dd.eionet.europa.eu/GetSchema?id=TBL3400";
+    //String xml = "http://cdrtest.eionet.europa.eu/ee/eea/ewn3/envrmtmhw/EE bodies.xml";
+    String xml = "http://localhost:8080/xmlconv/tmp/ddInstance3382.xml";
+    //xml="http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/general-report.xml";
+    String sch="http://dd.eionet.europa.eu/GetSchema?id=TBL3382";
+    //String sch = "http://dd.eionet.europa.eu/GetSchema?id=TBL3400";
     // String sch = "http://www.lisa.org/tmx/tmx14.dtd";
     //String sch = "http://roddev.eionet.eu.int/waterdemo/water_measurements.xsd";
     

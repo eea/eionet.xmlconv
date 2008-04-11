@@ -830,6 +830,43 @@ public class SchemaManager {
 		}
 		return files;
 	}
+	/*
+	 * Search XML files from Conent Registry
+	 */
+	public ArrayList getCRFiles(String schema) throws DCMException {
+
+		ArrayList files = new ArrayList();
+		try{
+			// retrive conversions for DD tables
+			List cdrFiles = CDRServiceClient.searchXMLFiles(schema);
+
+			for (int i = 0; i < cdrFiles.size(); i++) {
+				Hashtable xmlfile = (Hashtable) cdrFiles.get(i);
+				String url = (String) xmlfile.get("url");
+
+				CdrFileDto cf = new CdrFileDto();
+				cf.setUrl(url);
+				cf.setCountry((String) xmlfile.get("country"));
+				cf.setIso((String) xmlfile.get("iso"));
+				cf.setPartofyear((String) xmlfile.get("partofyear"));
+				cf.setTitle((String) xmlfile.get("title"));
+				//year and endyear are Integers, if not null
+				Object endyear =xmlfile.get("endyear");
+				if(endyear instanceof Integer)
+					cf.setEndyear(((Integer)endyear).intValue());
+
+				Object year =(Integer) xmlfile.get("year");
+				if(year instanceof Integer)
+					cf.setYear(((Integer)year).intValue());
+
+				files.add(cf);
+			}
+		} catch (Exception e) {
+			_logger.error("Error getting XML files from CDR for schema",e);
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+		return files;
+	}
 
 	/**
 	 * Returns the list of DD tables retreived from xml-rpx request

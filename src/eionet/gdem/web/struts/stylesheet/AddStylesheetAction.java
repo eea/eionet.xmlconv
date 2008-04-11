@@ -109,7 +109,8 @@ public class AddStylesheetAction extends Action {
 		}
 		httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
-
+		//new schema might be added, remove the schemas list form the session.
+		httpServletRequest.getSession().removeAttribute("conversion.schemas");
 		return new ActionForward("/do/schemaStylesheets?schema="+schema,true);  //actionMapping.findForward("success");
 	}
 

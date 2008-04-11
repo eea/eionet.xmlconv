@@ -87,6 +87,8 @@ public class AddUplSchemaAction extends Action {
 		}
 		httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
+		//new schema might be added, remove the schemas list form the session.
+		httpServletRequest.getSession().removeAttribute("conversion.schemas");
 
 		return actionMapping.findForward("success");
 	}

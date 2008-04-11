@@ -51,7 +51,7 @@ public class SchemaElemFormAction extends Action {
 			backToConv = (String) httpServletRequest.getParameter("backToConv");
 		}
 
-		System.out.println("backToConv=" + backToConv);
+		//System.out.println("backToConv=" + backToConv);
 
 		if (schemaId != null && schemaId != "") {
 			httpServletRequest.getSession().setAttribute("schemaId", schemaId);
