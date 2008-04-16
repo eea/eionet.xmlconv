@@ -11,7 +11,7 @@
 			<tiles:put name="selectedTab" value="convertXML" />
 		</tiles:insert>
 				
-		<ed:breadcrumbs-push label="Find conversion" level="1" />
+		<ed:breadcrumbs-push label="Find conversions" level="1" />
 		<h1><bean:message key="label.conversion.find"/></h1> 
 	
 		<%-- include Error display --%>
@@ -35,7 +35,7 @@
 			        <html:text property="url"  style="width: 40em;" />		        
 			      </td>
 			    </tr>
-			<logic:equal name="ConversionForm" property="showSchemaSelection" value="true">
+				<logic:equal name="ConversionForm" property="showSchemaSelection" value="true">
 			    <tr>
 				 <th scope="col" class="scope-col">
 			        <bean:message key="label.conversion.xmlSchema"/>
@@ -48,21 +48,10 @@
 			    </tr>
 			    <tr>
 			      <td>
-			        <html:select property="schemaUrl"  size="10" >
-										<option selected="selected" value="">
-											--
-										</option>		        
-						<logic:iterate id="schema" name="conversion.schemas" scope="session"  type="Schema">
-										<option value="<bean:write name="schema" property="schema" />">
-											<bean:write name="schema" property="schema" />
-											<logic:notEqual name="schema" property="table" value="">
-												&nbsp;-&nbsp;
-												<bean:write name="schema" property="table" />&nbsp;(
-												<bean:write name="schema" property="dataset" /> - 
-												<bean:write name="schema" property="datasetReleased" format="<%= Properties.dateFormatPattern%>" />)
-											</logic:notEqual>										
-										</option>
-						</logic:iterate>
+			      	
+			        <html:select name="ConversionForm" property="schemaUrl"  size="10">
+						<html:option value="">--</html:option>
+						<html:options collection="conversion.schemas" property="schema" labelProperty="label" />
 			        </html:select>
 			      </td>
 			    </tr>
@@ -74,8 +63,10 @@
 			        </html:submit>		        
 			      </td>
 			    </tr>
-			    <logic:notEmpty name="ConversionForm" property="schemaUrl">
-			    <tr>
+			    </table>
+			    <logic:notEmpty name="ConversionForm" property="action">
+			    <table class="datatable">
+			     <tr>
 				 <th scope="col" class="scope-col">
 			        <bean:message key="label.conversion.selectConversion"/>
 			      </th>
@@ -113,8 +104,13 @@
 			    </tr>
 			    </logic:notEmpty>
 			    <logic:empty name="ConversionForm" property="schemas">
+			    	<tr>
+			    		<td>
+			    			<bean:message key="label.conversion.noconversion"/>
+			    		</td>
+			    	</tr>
 			    </logic:empty>
-				</logic:notEmpty>
-			  </table>
-			</html:form>
+			  </table>			    
+		</logic:notEmpty>
+	</html:form>
 </div>

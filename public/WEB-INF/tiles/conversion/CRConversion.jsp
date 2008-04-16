@@ -27,32 +27,11 @@
 			    </tr>
 			    <tr>
 			      <td>
-			      	<c:set var="selSchema"><bean:write name="ConversionForm" property="schemaUrl" scope="session" /></c:set>
-			      	
-			        <select name="schemaUrl"  size="10">
-						<option value="">
-							--
-						</option>		        
-						<logic:iterate id="schema" name="conversion.schemas" scope="session"  type="Schema">
-							
-					         <logic:equal name="schema" property="schema" value="${selSchema}" >
-					         	<c:set var="selected" value="selected=\"selected\""/>
-					         </logic:equal>
-					         <logic:notEqual name="schema" property="schema" value="${selSchema}" >
-			         			<c:set var="selected" value=""/>
-					        </logic:notEqual>
+			        <html:select name="ConversionForm" property="schemaUrl"  size="10">
+						<html:option value="">--</html:option>
+						<html:options collection="conversion.schemas" property="schema" labelProperty="label" />
+			        </html:select>
 
-							<option value="<bean:write name="schema" property="schema" />" ${selected}>
-								<bean:write name="schema" property="schema" />
-								<logic:notEqual name="schema" property="table" value="">
-									&nbsp;-&nbsp;
-									<bean:write name="schema" property="table" />&nbsp;(
-									<bean:write name="schema" property="dataset" /> - 
-									<bean:write name="schema" property="datasetReleased" format="<%= Properties.dateFormatPattern%>" />)
-								</logic:notEqual>										
-							</option>
-						</logic:iterate>
-			        </select>
 			      </td>
 			    </tr>
 			    <tr>
@@ -60,12 +39,10 @@
 			        <html:submit styleClass="button">
 			        	<bean:message key="label.conversion.searchXML"/>
 			        </html:submit>
-			        <html:hidden property="conversionId"/>
 			      </td>
 			    </tr>
 			   </table>
 			</html:form>
-			
 			<!--  Show XML files -->
 			<logic:present name="ConversionForm" property="schema">
 			<bean:define id="schema"  name="ConversionForm" property="schema" />
@@ -76,41 +53,24 @@
 			        <bean:message key="label.conversion.CRxmlfiles"/>
 			      </th>
 			    </tr>
+
+				      	<bean:define id="selUrl" value="" type="String" />
+			      		<logic:notEmpty name="converted.url" scope="session">
+					      	<bean:define id="selUrl" name="converted.url" scope="session" type="String" />
+					     </logic:notEmpty>
+
 			      		<bean:size name="schema" id="countfiles" property="crfiles"/>
-				      	<bean:define id="selUrl" name="converted.url" scope="session" type="String" />
+			      		<bean:define id="crfiles" name="schema" property="crfiles"/>
+
 				      	<logic:greaterThan name="countfiles" value="0">
+				      	
 				      	<tr>
 					      <td>
+					        <html:select name="ConversionForm" property="url"  size="10">
+								<html:option value="">--</html:option>
+								<html:options collection="crfiles" property="url" labelProperty="label" />
+			        		</html:select>
 
-					        <select name="url"  size="10" >
-								<option value="">
-									--
-								</option>
-								<logic:iterate id="crfile" name="schema" scope="page"  property="crfiles" type="CdrFileDto">
-							         <logic:equal name="crfile" property="url" value="<%=selUrl %>" >
-					         			<c:set var="selected" value="selected=\"selected\""/>
-					         		</logic:equal>
-					         		<logic:notEqual name="crfile" property="url" value="<%=selUrl %>" >
-			         					<c:set var="selected" value=""/>
-					        		</logic:notEqual>
-
-										<option value="<bean:write name="crfile" property="url" />" ${selected } >
-											<bean:write name="crfile" property="country" />&nbsp;-&nbsp;
-											<bean:write name="crfile" property="title" />
-											<logic:notEqual name="crfile" property="year" value="0">
-												&nbsp;-&nbsp;(<bean:write name="crfile" property="year" />
-												<logic:notEqual name="crfile" property="endyear" value="0">
-													&nbsp;-&nbsp;<bean:write name="crfile" property="endyear" />
-												</logic:notEqual>
-												<logic:equal name="crfile" property="endyear" value="0">
-													<logic:notEqual name="crfile" property="partofyear" value="">
-														&nbsp;-&nbsp;<bean:write name="crfile" property="partofyear" />
-													</logic:notEqual>
-												</logic:equal>)
-											</logic:notEqual>
-										</option>
-								</logic:iterate>
-						    </select>
 						  </td>
 						 </tr>
 						</logic:greaterThan>
@@ -129,6 +89,7 @@
 					<tr>
 				      <td>
 							<html:hidden name="ConversionForm" property="schemaUrl"/>
+							<html:hidden name="ConversionForm" property="errorForward" value="errorCR" />
 				      </td>
 				    </tr>
 				    <tr>

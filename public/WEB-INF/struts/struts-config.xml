@@ -8,25 +8,7 @@
         </form-bean>
         <form-bean name="stylesheetForm" type="eionet.gdem.web.struts.stylesheet.StylesheetForm" />
         <form-bean name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemForm" />     
-        
-        <!-- form-bean name="ConversionForm" type="org.apache.struts.validator.DynaValidatorForm">
-	        <form-property name="url" type="java.lang.String"/>
-	        <form-property name="schemaUrl" type="java.lang.String"/>
-	        <form-property name="conversionId" type="java.lang.String"/>
-	        <form-property name="validate" type="java.lang.String"/>
-	        <form-property name="cdrFile" type="java.lang.String"/>
-        </form-bean-->   
         <form-bean name="ConversionForm" type="eionet.gdem.web.struts.conversion.ConversionForm"/>
-        <!-- 
-	        <form-property name="schemaUrl" type="java.lang.String"/>
-	        <form-property name="url" type="java.lang.String"/>
-	        <form-property name="conversionId" type="java.lang.String"/>
-	        <form-property name="schema" type="eionet.gdem.dto.Schema"/>
-	        <form-property name="showSchemaSelection" type="boolean"/>
-	        <form-property name="schemas" type="java.util.ArrayList"/>
-	        <form-property name="searchAction" type="java.lang.String"/>
-        </form-bean>   
- -->
         <form-bean name="ExcelConversionForm" type="org.apache.struts.validator.DynaValidatorForm">
 	        <form-property name="url" type="java.lang.String"/>
 	        <form-property name="sheet" type="java.lang.String"/>
@@ -134,20 +116,20 @@
             <forward name="success" path="/listConv.jsp" redirect="true"/>
         </action>
         <action path="/listConversionsByXML" name="ConversionForm" type="eionet.gdem.web.struts.conversion.ListConversionsAction" input="/listConv.jsp" scope="session">
-            <forward name="success" path="/listConv.jsp" redirect="false"/>
-            <forward name="convert" path="/do/testConversion" redirect="false"/>
+            <forward name="success" path="/listConv.jsp" redirect="true"/>
+            <forward name="convert" path="/do/testConversion" redirect="true"/>
             <forward name="error" path="/do/listConvForm" redirect="false"/>
         </action>
-
-        <action path="/testConversionForm" name="ConversionForm" type="eionet.gdem.web.struts.conversion.TestConvFormAction" input="/testConv.jsp" scope="request">
+        <action path="/testConversionForm" name="ConversionForm" type="eionet.gdem.web.struts.conversion.TestConvFormAction" input="/testConv.jsp" scope="session">
             <forward name="success" path="/testConv.jsp" redirect="true"/>
-            <forward name="error" path="/do/testConversionForm" redirect="true"/>
-            <forward name="back" path="/do/listConvForm" redirect="true"/> 
+            <forward name="error" path="/do/testConversionForm" redirect="false"/>
+            <forward name="back" path="/do/listConvForm" redirect="false"/> 
         </action>
         <action path="/testConversion"  name="ConversionForm"  type="eionet.gdem.web.struts.conversion.TestConvAction" scope="session">
-            <forward name="error" path="/do/testConversionForm" redirect="false"/>
+            <forward name="error" path="/do/listConversionsByXML" redirect="false"/>
+            <forward name="errorCR" path="/do/searchCR" redirect="false"/>
         </action>
-        <action path="/excel2XmlConversionForm" name="ExcelConversionForm" type="eionet.gdem.web.struts.conversion.Excel2XmlConversionFormAction" input="/excel2XmlConv.jsp" scope="request">
+        <action path="/excel2XmlConversionForm" name="ExcelConversionForm" type="eionet.gdem.web.struts.conversion.Excel2XmlConversionFormAction" input="/excel2XmlConv.jsp" scope="session">
             <forward name="success" path="/excel2XmlConv.jsp" redirect="true"/>
         </action>
         <action path="/excel2XmlConversion"  name="ExcelConversionForm"  type="eionet.gdem.web.struts.conversion.Excel2XmlConversionAction" scope="request">
