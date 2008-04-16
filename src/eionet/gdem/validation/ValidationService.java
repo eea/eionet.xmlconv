@@ -23,8 +23,12 @@
 
 package eionet.gdem.validation;
 
+import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.ValidateDto;
+import eionet.gdem.exceptions.DCMException;
+
 import org.xml.sax.*;
+
 import javax.xml.parsers.*;
 
 import org.w3c.dom.*;
@@ -62,7 +66,7 @@ public class ValidationService {
 	    errHandler = new ValidatorErrorHandler(errorsList);
 	  }
   
-  public String validateSchema (String srcUrl, String schema) throws GDEMException {
+  public String validateSchema (String srcUrl, String schema) throws DCMException {
     InputFile src=null;
     InputStream src_stream = null;
 	uriXml= srcUrl;	
@@ -72,10 +76,16 @@ public class ValidationService {
       src.setAuthentication(ticket);
       src_stream = src.getSrcInputStream();
       return validateSchema(src_stream, schema);
-    } catch (MalformedURLException mfe ) {
-      throw new GDEMException("Bad URL : " + mfe.toString());
+    }
+    catch (MalformedURLException mfe ) {
+      //throw new GDEMException("Bad URL : " + mfe.toString());
+		throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED);
     } catch (IOException ioe ) {
-      throw new GDEMException("Error opening URL " + ioe.toString());
+      //throw new GDEMException("Error opening URL " + ioe.toString());
+		throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_ERROR);	
+    } catch (Exception e ) {
+		e.printStackTrace();
+		throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
     }
     finally{
       if (src_stream!=null){
@@ -86,7 +96,7 @@ public class ValidationService {
     }
     
   }
-  public String validateSchema (InputStream src_stream, String schema) throws GDEMException {
+  public String validateSchema (InputStream src_stream, String schema) throws DCMException {
 	String newSchema = null;
 
     try {
@@ -197,7 +207,7 @@ public class ValidationService {
 
 
 
-  public String validate (String srcUrl) throws GDEMException {
+  public String validate (String srcUrl) throws DCMException {
     return validateSchema(srcUrl, null);
   }
   

@@ -241,8 +241,9 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 
 				if (convType != null) {
 					try {
-						cnvContentType = (String) convType.get("content_type");
+						cnvContentType = (String) convType.get("content_type");//content type used in HTTP header
 						cnvFileExt = (String) convType.get("file_ext");
+						cnvTypeOut = (String) convType.get("conv_type");//content type ID
 					} catch (Exception e) {
 						_logger.error("Error getting conversion types ", e);
 						// Take no action, use default params
@@ -278,7 +279,7 @@ public class ConvertXMLMethod extends ConversionServiceMethod {
 			}
 
 			outputFileName = executeConversion(src.getSrcInputStream(), byteIn,
-					result, src.getCdrParams(), cnvFileExt, cnvContentType);
+					result, src.getCdrParams(), cnvFileExt, cnvTypeOut);
 
 		} catch (MalformedURLException mfe) {
 			_logger.error("Bad URL", mfe);

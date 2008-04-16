@@ -26,6 +26,7 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.business.SourceFileManager;
+import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQueryService;
 import eionet.gdem.validation.ValidationService;
 import java.io.IOException;
@@ -169,8 +170,8 @@ public class SandBox  extends HttpServlet implements Constants {
 
 						//result = vs.validateSchema(dataURL, xml_schema);
 						result = vs.validate(dataURL);
-					} catch (GDEMException ge){
-						result = ge.getMessage();
+					} catch (DCMException de){
+						result = de.getMessage();
 					}
 					req.setAttribute(XQ_RESULT_ATT, result);
 				    req.getRequestDispatcher(Names.SANDBOX_RESULT_JSP).forward(req,res);				
