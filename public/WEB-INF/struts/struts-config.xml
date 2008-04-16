@@ -9,6 +9,7 @@
         <form-bean name="stylesheetForm" type="eionet.gdem.web.struts.stylesheet.StylesheetForm" />
         <form-bean name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemForm" />     
         <form-bean name="ConversionForm" type="eionet.gdem.web.struts.conversion.ConversionForm"/>
+        <form-bean name="ValidationForm" type="eionet.gdem.web.struts.conversion.ConversionForm"/>
         <form-bean name="ExcelConversionForm" type="org.apache.struts.validator.DynaValidatorForm">
 	        <form-property name="url" type="java.lang.String"/>
 	        <form-property name="sheet" type="java.lang.String"/>
@@ -141,6 +142,13 @@
         <action path="/searchCR" name="ConversionForm" type="eionet.gdem.web.struts.conversion.SearchCRConversionAction" input="/crConversion.jsp" scope="session">
             <forward name="success" path="/crConversion.jsp" redirect="true"/>
             <forward name="error" path="/do/crConversionForm" redirect="false"/>
+        </action>
+        <action path="/validateXMLForm" name="ValidationForm" type="eionet.gdem.web.struts.conversion.ValidateXMLFormAction" input="/validateXML.jsp" scope="request">
+            <forward name="success" path="/validateXML.jsp" redirect="true"/>
+        </action>
+        <action path="/validateXML" name="ValidationForm" type="eionet.gdem.web.struts.conversion.ValidateXMLAction" input="/validateXML.jsp" scope="request">
+            <forward name="success" path="/validateXML.jsp" redirect="true"/>
+            <forward name="error" path="/do/validateXMLForm" redirect="false"/>
         </action>
         
         <!-- Manually defined schemas -->

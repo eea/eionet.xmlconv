@@ -31,6 +31,7 @@
   <definition name="editUplXmlFile" path="/WEB-INF/tiles/xmlfile/EditUplXmlFile.jsp" />
   <definition name="excel2XmlConversion" path="/WEB-INF/tiles/conversion/Excel2XmlConversion.jsp" />
   <definition name="crConversion" path="/WEB-INF/tiles/conversion/CRConversion.jsp" />
+  <definition name="validateXML" path="/WEB-INF/tiles/conversion/ValidateXML.jsp" />
   
   <definition name="confLdap" path="/WEB-INF/tiles/config/Ldap.jsp" />
   <definition name="confDb" path="/WEB-INF/tiles/config/Db.jsp" />
@@ -142,5 +143,9 @@
  	<definition name="/crConversion.jsp" extends="base">
  		<put name="title"  value="label.conversion.crconversion.title"/>
  		<put name="body" type="definition" value="crConversion"/>
+	</definition>
+ 	<definition name="/validateXML.jsp" extends="base">
+ 		<put name="title"  value="label.conversion.validate.title"/>
+ 		<put name="body" type="definition" value="validateXML"/>
 	</definition>
  </tiles-definitions>
