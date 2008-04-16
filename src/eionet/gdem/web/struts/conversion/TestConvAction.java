@@ -4,9 +4,7 @@
 package eionet.gdem.web.struts.conversion;
 
 import java.io.IOException;
-import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -18,13 +16,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
-import org.apache.struts.validator.DynaValidatorForm;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.conversion.ssr.Names;
-import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
@@ -32,7 +28,7 @@ import eionet.gdem.utils.Utils;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS
- * TestCnv
+ * TestConvAction
  */
 
 public class TestConvAction extends Action{
@@ -49,6 +45,7 @@ public class TestConvAction extends Action{
 
 	String url = cForm.getUrl();
 	String convert_id = cForm.getConversionId();
+	String errorForward = cForm.getErrorForward();
 	
 	httpServletRequest.getSession().setAttribute("converted.url", url);
 	httpServletRequest.getSession().setAttribute("converted.conversionId", convert_id);
@@ -61,12 +58,17 @@ public class TestConvAction extends Action{
 		if(Utils.isNullStr(convert_id)){
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.noconversionselected"));
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward("error");			
+			return actionMapping.findForward(errorForward);			
 		}
 		if(Utils.isNullStr(url)){
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.selectSource"));
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward("error");
+			return actionMapping.findForward(errorForward);
+		}
+		if(!Utils.isURL(url)){
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.url.malformed"));
+			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+			return actionMapping.findForward(errorForward);
 		}
 		
 		// call ConversionService
@@ -91,15 +93,5 @@ public class TestConvAction extends Action{
 	}
 	//Do nothing, then response is already sent.		
 	return actionMapping.findForward(null);	
-	}
-
-	private String processFormStr(String arg) {
-		String result=null;
-		if(arg!=null) {
-			if(!arg.trim().equalsIgnoreCase("")) {
-				result=arg.trim();
-			}
-		}
-		return result;
 	}
 }

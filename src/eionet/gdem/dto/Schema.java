@@ -22,8 +22,11 @@
 package eionet.gdem.dto;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import eionet.gdem.Properties;
 
 public class Schema implements Serializable {
 
@@ -159,5 +162,28 @@ public class Schema implements Serializable {
 			}
 		}
 		return false;
+	}
+	public String getLabel(){
+		StringBuilder label = new StringBuilder(schema);
+		if(id!=null && isDDSchema() && getTable()!=null){
+			label.append(" - ");
+			label.append(getTable());
+			label.append(" (");
+			label.append(getDataset());
+			label.append(" - ");
+			SimpleDateFormat formatter = new SimpleDateFormat(Properties.dateFormatPattern);
+			String strDate = formatter.format(getDatasetReleased());
+			label.append(strDate);			
+			label.append(")");
+		}
+		return label.toString();
+	}
+	public boolean isDDSchema(){
+		boolean ret = false;
+		
+		if(id!=null)
+			ret = id.startsWith("TBL");
+		
+		return ret;
 	}
 }

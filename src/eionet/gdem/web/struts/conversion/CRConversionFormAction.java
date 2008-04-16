@@ -20,8 +20,6 @@ import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-import eionet.gdem.web.struts.schema.SchemaElemForm;
-import eionet.gdem.web.struts.schema.SchemaElemHolder;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS CRConversionFormAction
@@ -35,6 +33,8 @@ public class CRConversionFormAction extends Action {
 			ActionForm actionForm, HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse) {
 		ActionErrors errors = new ActionErrors();
+		
+		//get the schemas list from the session
 		Object schemasInSession = httpServletRequest.getSession().getAttribute(
 		"conversion.schemas");
 
@@ -43,6 +43,7 @@ public class CRConversionFormAction extends Action {
 		cForm.resetAll(actionMapping, httpServletRequest);
 
 		try {
+			//if schemas list is not stored in the session, then load it from the database
 			if (schemasInSession == null
 					|| ((ArrayList) schemasInSession).size() == 0) {
 				schemasInSession = loadSchemas();
@@ -57,11 +58,14 @@ public class CRConversionFormAction extends Action {
 			saveMessages(httpServletRequest, errors);
 		}
 
-		httpServletRequest.getSession().setAttribute("selected.schema",null);
-		saveMessages(httpServletRequest, errors);
+		saveErrors(httpServletRequest, errors);
 		return actionMapping.findForward("success");
 	}
-
+	/**
+	 * load schemas form db
+	 * @return
+	 * @throws DCMException
+	 */
 	private ArrayList loadSchemas() throws DCMException {
 
 		ArrayList schemas = null;

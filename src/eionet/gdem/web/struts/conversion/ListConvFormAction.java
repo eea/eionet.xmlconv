@@ -51,6 +51,8 @@ public class ListConvFormAction extends Action {
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 		ActionErrors errors = new ActionErrors();
 		ArrayList schemas = null;
+		
+		//load the list of schemas from the session
 		Object schemasInSession = httpServletRequest.getSession().getAttribute(
 		"conversion.schemas");
 
@@ -60,6 +62,7 @@ public class ListConvFormAction extends Action {
 
 
 		try {
+			//if schemas list is not stored in the session, then load it from the database
 			if (schemasInSession == null
 					|| ((ArrayList) schemasInSession).size() == 0) {
 				schemasInSession = loadSchemas();
@@ -73,9 +76,13 @@ public class ListConvFormAction extends Action {
 					.getErrorCode()));
 			saveMessages(httpServletRequest, errors);
 		}
-
 		return actionMapping.findForward("success");
 	}
+	/**
+	 * Load the list of schemas from the databases
+	 * @return
+	 * @throws DCMException
+	 */
 	private ArrayList loadSchemas() throws DCMException {
 
 		ArrayList schemas = null;

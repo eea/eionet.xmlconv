@@ -41,9 +41,17 @@ public class SearchCRConversionAction extends Action {
 
 		String ticket = (String) httpServletRequest.getSession().getAttribute(
 				Names.TICKET_ATT);
+
 		ActionErrors errors = new ActionErrors();
 		String idConv = null;
 		Schema oSchema = null;
+		
+		//request comes from SchemaStyleheets pagew
+		if(httpServletRequest.getParameter("conversionId")!=null){
+			idConv=	(String)httpServletRequest.getParameter("conversionId");
+			httpServletRequest.getSession().setAttribute("converted.conversionId", idConv);
+		}
+
 
 		ConversionForm cForm = (ConversionForm) actionForm;
 		String schema = cForm.getSchemaUrl();
@@ -53,6 +61,7 @@ public class SearchCRConversionAction extends Action {
 			SchemaManager sm = new SchemaManager();
 			ConversionService cs = new ConversionService();
 			// use the Schema data from the session, if schema is the same
+			//otherwise load the data from database and search CR
 			if (!Utils.isNullStr(schema)
 					&& (oSchema == null || !oSchema.getSchema().equals(schema))) {
 				if (!schemaExists(httpServletRequest,schema)) {
@@ -80,7 +89,6 @@ public class SearchCRConversionAction extends Action {
 				httpServletRequest.getSession().setAttribute("converted.url","");
 				httpServletRequest.getSession().setAttribute("converted.conversionId","");
 			}
-
 		} catch (DCMException e) {
 			e.printStackTrace();
 			_logger.error("Error searching XML files", e);

@@ -82,4 +82,23 @@ public class CdrFileDto implements Serializable{
 	public void setIso(String iso) {
 		this.iso = iso;
 	}
+	public String getLabel(){
+		StringBuilder label = new StringBuilder(country);
+		label.append(" - ");
+		label.append(title);
+		if (getYear()>0){
+			label.append(" - (");
+			label.append(year);
+			if (getEndyear()>0){
+				label.append(" - ");
+				label.append(getEndyear());				
+			}
+			if (getEndyear()==0){
+				label.append(" - ");
+				label.append(getPartofyear());
+			}
+			label.append(")");		
+		}
+		return label.toString();
+	}
 }

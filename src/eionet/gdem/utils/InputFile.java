@@ -288,6 +288,9 @@ public class InputFile  {
 		catch(URISyntaxException ue){
 			throw new MalformedURLException(ue.toString());
 		}
+		catch(IllegalArgumentException ae){
+			throw new MalformedURLException(ae.toString());			
+		}
 
 	}
 	/*

@@ -80,11 +80,6 @@ public class TabItem extends TagSupport {
 		return EVAL_PAGE;
 	}
 
-	private String getPath(String fullPath) {
-		int i = fullPath.lastIndexOf('/');
-		return fullPath.substring(0, i + 1);
-	}
-
 	public String getId() {
 		return id;
 	}

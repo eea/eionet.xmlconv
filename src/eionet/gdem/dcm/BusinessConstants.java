@@ -34,6 +34,7 @@ public class BusinessConstants {
 	public static final String EXCEPTION_SCHEMA_NOT_EXIST = "label.schema.notexists";
 	public static final String EXCEPTION_VALIDATION_ERROR = "label.validation.error";
 	public static final String EXCEPTION_AUTORIZATION_SCHEMA_INSERT = "label.autorization.schema.insert";
+	public static final String EXCEPTION_XMLPARSING_ERROR = "label.conversion.xmlparsing.error";
 
 	// public static final String EXCEPTION_PARAM_DB_SAVED =
 	// "label.editParam.db.saved";

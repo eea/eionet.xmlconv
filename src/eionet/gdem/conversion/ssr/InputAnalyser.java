@@ -69,10 +69,16 @@ public class InputAnalyser
     } catch (IOException ioe ) {
       //throw new GDEMException("Error opening URL " + ioe.toString());
 		throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_ERROR);	
+    } catch (SAXException e ) {
+		e.printStackTrace();
+		throw new DCMException(BusinessConstants.EXCEPTION_XMLPARSING_ERROR);
     } catch (GDEMException e ) {
 		e.printStackTrace();
 		throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-    }
+    } catch (Exception e ) {
+		e.printStackTrace();
+		throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+  }
 	
     finally{
       try{
@@ -82,7 +88,7 @@ public class InputAnalyser
     }
     
   }
-  public String parseXML(InputStream input) throws GDEMException
+  public String parseXML(InputStream input) throws GDEMException, SAXException
   {
     String dtd=null;
     try{
@@ -144,18 +150,16 @@ public class InputAnalyser
 
     } 
     catch ( SAXParseException se ) {
-      //ignore
+        se.printStackTrace(System.err);
+        throw (SAXException)se;
+    } 
+    catch ( SAXException se ) {
+        se.printStackTrace(System.err);
+        throw se;
     } 
     catch (Exception e ) {
-      Exception se = e;
-      if (e instanceof SAXException) {
-          se = ((SAXException)e).getException();
-      }
-      if (se != null)
-        se.printStackTrace(System.err);
-      else
         e.printStackTrace(System.err);    
-      throw new GDEMException("Error parsing: " + e.toString(), e);
+        throw new GDEMException("Error parsing: " + e.toString(), e);
     }
   
   return "OK";

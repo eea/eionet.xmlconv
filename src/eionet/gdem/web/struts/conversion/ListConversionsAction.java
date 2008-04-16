@@ -43,13 +43,14 @@ public class ListConversionsAction  extends Action {
 	private IRootElemDao rootElemDao = GDEMServices.getDaoService().getRootElemDao();
 
 
-
-
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 		String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
 		ActionErrors errors = new ActionErrors();
+		
 		ArrayList<Schema> schemas = new ArrayList<Schema>();
 		ArrayList stylesheets = null;
+		
+		//default action forward
 		String actionForward="success";
 		String idConv=null;
 
@@ -58,20 +59,16 @@ public class ListConversionsAction  extends Action {
 		String url = cForm.getUrl();
 
 		//get request parameters
-			
-		/*
-		if (url==null && schema==null) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.validation"));
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward("error");
-		}
-		 */
-		//forward to do converion
+
+		//forward to convert action
 		if(httpServletRequest.getParameter("convertAction")!=null && !cForm.isConverted()){
 			cForm.setConvertAction(null);
 			cForm.setConverted(true);
+			cForm.setErrorForward("error");
+			cForm.setAction("convert");
 			actionForward="convert";
 		}
+		// search conversions and display the selection on the form 
 		else if(httpServletRequest.getParameter("searchAction")!=null){
 			//search available conversions
 			try {
@@ -87,22 +84,26 @@ public class ListConversionsAction  extends Action {
 					oSchema.setSchema(schema);
 					oSchema.setStylesheets(stylesheets);
 					schemas.add(oSchema);
+					//store schema info in the form bean
 					cForm.setSchemas(schemas);
+					cForm.setInsertedUrl(null);
 				}
-				//sniff schema declaration from the header
+				//sniff schema declaration from the header of XML file
+				//if the xml url is stored in the session already, then use XML Schema information from the session 
 				else {
-					if (!Utils.isNullStr(url)) {
+					if (!Utils.isNullStr(url) && !url.equals(cForm.getInsertedUrl())) {
+						cForm.setInsertedUrl(url);
 						InputAnalyser analyser = new InputAnalyser();
 						try {
 							analyser.parseXML(url);
 						} catch (DCMException e) {
-							errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getMessage()));
-							//saveMessages(httpServletRequest, errors);
-							httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+							errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+							saveErrors(httpServletRequest, errors);
+							//httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 						} catch (Exception e) {
 							errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getMessage()));
-							//saveMessages(httpServletRequest, errors);
-							httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+							saveErrors(httpServletRequest, errors);
+							//httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 						}
 						// schema or dtd found from header
 						String schemaOrDTD = analyser.getSchemaOrDTD();
@@ -115,6 +116,7 @@ public class ListConversionsAction  extends Action {
 							cForm.setSchemas(schemas);
 						}
 						// did not find schema or dtd from xml header
+						//compare root elements
 						else {
 							String root_elem = analyser.getRootElement();
 							String namespace = analyser.getNamespace();
@@ -130,11 +132,18 @@ public class ListConversionsAction  extends Action {
 							}
 							cForm.setSchemas(schemas);
 						}
+						//no schemas found from the header, show schema selection on the form
+						if(cForm.getSchemas()==null || cForm.getSchemas().size()==0)
+							cForm.setShowSchemaSelection(true);
+						else
+							cForm.setShowSchemaSelection(false);
+
 					}
 				}
 				if(cForm.getSchemas()==null || cForm.getSchemas().size()==0)
 					cForm.setShowSchemaSelection(true);
 				else{
+					//set default conversion ID
 					if (idConv == null && cForm.getSchemas().get(0).getStylesheets().size() > 0) {
 						idConv = ((Stylesheet) (cForm.getSchemas().get(0).getStylesheets().get(0)))
 							.getConvId();
@@ -143,17 +152,13 @@ public class ListConversionsAction  extends Action {
 				if (idConv == null) {
 					idConv = "-1";
 				}
+				if(!cForm.isConverted()){
+					httpServletRequest.getSession().setAttribute("converted.url","");
+					httpServletRequest.getSession().setAttribute("converted.conversionId","");
+				}
 				cForm.setConversionId(idConv);
-				cForm.setConverted(false);
 				cForm.setSearchAction(null);
-
-				httpServletRequest.getSession().setAttribute("converted.url","");
-				httpServletRequest.getSession().setAttribute("converted.conversionId","");
-
-				if(cForm.getSchemas()==null || cForm.getSchemas().size()==0)
-					cForm.setShowSchemaSelection(true);
-
-
+				cForm.setAction("search");
 			} catch (DCMException e) {
 				e.printStackTrace();
 				_logger.error("Error listing conversions",e);
@@ -170,21 +175,14 @@ public class ListConversionsAction  extends Action {
 				return actionMapping.findForward("error");
 			}
 		}
-
-
+		else{
+			//comping back from convert page
+			cForm.setConverted(false);
+		}
 		return actionMapping.findForward(actionForward);
 	}
 
 
-	private String processFormStr(String arg) {
-		String result=null;
-		if(arg!=null) {
-			if(!arg.trim().equalsIgnoreCase("")) {
-				result=arg.trim();
-			}
-		}
-		return result;
-	}
 	/**
 	 * check if schema passed as request parameter exists in the list of schemas stored in the session.
 	 * If there is no schema list in the session, then create it
