@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
-<%@ taglib uri="/WEB-INF/tlds/c.tld" prefix="c"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.io.File,java.util.Date,java.text.DateFormat,java.util.HashMap, java.util.Vector, java.util.Hashtable, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.Utils, eionet.gdem.Properties" %>
 
 <%
