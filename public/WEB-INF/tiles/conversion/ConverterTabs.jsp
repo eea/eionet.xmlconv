@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties"%>
+<%@ page contentType="text/html; charset=UTF-8"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
@@ -17,7 +17,7 @@
 		<ed:tabItem href="/do/excel2XmlConversionForm" title="Convert spreadsheet to DD XML" id="excel2xml" selectedTab="<%=selectedTab%>">
 			<bean:message key="label.conversion.tab.excel2xml"/>
 		</ed:tabItem>
-		<ed:tabItem href="/do/crConversionForm" title="Validate XML" id="validateXML" selectedTab="<%=selectedTab%>">
+		<ed:tabItem href="/do/validateXMLForm" title="Validate XML" id="validateXML" selectedTab="<%=selectedTab%>">
 			<bean:message key="label.conversion.tab.validate"/>
 		</ed:tabItem>
 	</ul>

@@ -22,7 +22,6 @@
   <definition name="addStylesheet" path="/WEB-INF/tiles/stylesheet/AddStylesheet.jsp" />
   <definition name="schema" path="/WEB-INF/tiles/schema/Schema.jsp" />
   <definition name="listConversion" path="/WEB-INF/tiles/conversion/ListConversions.jsp" />
-  <definition name="testConversion" path="/WEB-INF/tiles/conversion/TestConversion.jsp" />
   <definition name="uplSchema" path="/WEB-INF/tiles/schema/UplSchema.jsp" />  
   <definition name="addUplSchema" path="/WEB-INF/tiles/schema/AddUplSchema.jsp" />
   <definition name="editUplSchema" path="/WEB-INF/tiles/schema/EditUplSchema.jsp" />
@@ -84,10 +83,6 @@
  		<put name="title"  value="label.conversion.title"/>
  		<put name="body" type="definition" value="listConversion"/>
 	</definition>
- 	<definition name="/testConv.jsp" extends="base">
- 		<put name="title"  value="label.conversiontest.title"/>
- 		<put name="body" type="definition" value="testConversion"/>
-  	</definition>
  	<definition name="/excel2XmlConv.jsp" extends="base">
  		<put name="title"  value="label.conversion.excel2xml.heading"/>
  		<put name="body" type="definition" value="excel2XmlConversion"/>

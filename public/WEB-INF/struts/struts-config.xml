@@ -121,11 +121,6 @@
             <forward name="convert" path="/do/testConversion" redirect="true"/>
             <forward name="error" path="/do/listConvForm" redirect="false"/>
         </action>
-        <action path="/testConversionForm" name="ConversionForm" type="eionet.gdem.web.struts.conversion.TestConvFormAction" input="/testConv.jsp" scope="session">
-            <forward name="success" path="/testConv.jsp" redirect="true"/>
-            <forward name="error" path="/do/testConversionForm" redirect="false"/>
-            <forward name="back" path="/do/listConvForm" redirect="false"/> 
-        </action>
         <action path="/testConversion"  name="ConversionForm"  type="eionet.gdem.web.struts.conversion.TestConvAction" scope="session">
             <forward name="error" path="/do/listConversionsByXML" redirect="false"/>
             <forward name="errorCR" path="/do/searchCR" redirect="false"/>
@@ -152,7 +147,7 @@
         </action>
         
         <!-- Manually defined schemas -->
-        <action path="/uplSchemas"  type="eionet.gdem.web.struts.schema.UplSchemaFormAction" input="/testConv.jsp" scope="request">
+        <action path="/uplSchemas"  type="eionet.gdem.web.struts.schema.UplSchemaFormAction" scope="request">
             <forward name="success" path="/uplSchema.jsp" />
         </action>
         <action path="/deleteUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.DeleteUplSchemaAction">           
