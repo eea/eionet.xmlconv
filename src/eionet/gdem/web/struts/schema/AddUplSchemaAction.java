@@ -53,6 +53,7 @@ public class AddUplSchemaAction extends Action {
 
 		FormFile schema = form.getSchema();
 		String desc = form.getDescription();
+		String url = form.getSchemaUrl();
 
 		String user = (String) httpServletRequest.getSession().getAttribute("user");
 
@@ -79,7 +80,7 @@ public class AddUplSchemaAction extends Action {
 
 		try {
 			SchemaManager sm = new SchemaManager();
-			sm.addUplSchema(user, schema, desc);
+			sm.addUplSchema(user, schema, desc, url);
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.inserted"));
 		} catch (DCMException e) {
 			_logger.error("Error adding upload schema",e);

@@ -85,6 +85,7 @@ public interface IDbSchema {
    public static final String UPL_SCHEMA_ID_FLD="SCHEMA_ID";
    public static final String UPL_SCHEMA_FLD="SCHEMA_NAME";
    public static final String UPL_SCHEMA_DESC="DESCRIPTION";
+   public static final String UPL_SCHEMA_URL="SCHEMA_URL";
   
   
   /**

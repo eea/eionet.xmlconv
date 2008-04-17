@@ -23,11 +23,14 @@ package eionet.gdem.dto;
 
 import java.io.Serializable;
 
+import eionet.gdem.utils.Utils;
+
 public class UplSchema implements Serializable {
 
 	private String id;
 	private String schema;
 	private String description;
+	private String schemaUrl;
 
 
 	public UplSchema() {
@@ -62,6 +65,17 @@ public class UplSchema implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+
+	public String getSchemaUrl() {
+		
+		return schemaUrl;
+	}
+
+
+	public void setSchemaUrl(String schemaUrl) {
+		this.schemaUrl = schemaUrl;
 	}
 
 }

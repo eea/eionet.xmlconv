@@ -32,6 +32,7 @@ public class UplSchemaForm extends ActionForm {
 
 	private FormFile schema;
 	private String description;
+	private String schemaUrl;
 
 
 	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
@@ -42,6 +43,7 @@ public class UplSchemaForm extends ActionForm {
 	public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
 		schema = null;
 		description = null;
+		schemaUrl = null;
 	}
 
 
@@ -62,6 +64,16 @@ public class UplSchemaForm extends ActionForm {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+
+	public String getSchemaUrl() {
+		return schemaUrl;
+	}
+
+
+	public void setSchemaUrl(String schemaUrl) {
+		this.schemaUrl = schemaUrl;
 	}
 
 }

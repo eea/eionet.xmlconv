@@ -56,6 +56,8 @@ public class EditUplSchemaFormAction extends Action {
 			form.setIdSchema(schema.getId());
 			form.setSchema(httpServletRequest.getContextPath() + "/schema/" + schema.getSchema());
 
+			form.setSchemaFileName(schema.getSchema());
+			form.setSchemaUrl(schema.getSchemaUrl());
 			form.setDescription(schema.getDescription());
 
 		} catch (DCMException e) {

@@ -30,6 +30,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
+import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
@@ -48,6 +49,9 @@ public class EditUplSchemaAction extends Action {
 		EditUplSchemaForm form = (EditUplSchemaForm) actionForm;
 		String schemaId = form.getIdSchema();
 		String description = form.getDescription();
+		FormFile file = form.getSchemaFile();
+		String schema = form.getSchemaFileName();
+		String schemaUrl = form.getSchemaUrl();
 
 		if (isCancelled(httpServletRequest)) {
 			return actionMapping.findForward("success");
@@ -58,7 +62,7 @@ public class EditUplSchemaAction extends Action {
 		try {
 			SchemaManager sm = new SchemaManager();
 			// sm.uplUpdate( user, schemaId, description);
-			sm.updateUplSchema(user, schemaId, description);
+			sm.updateUplSchema(user, schemaId, schema, file, description, schemaUrl);
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.updated"));
 		} catch (DCMException e) {
 			e.printStackTrace();

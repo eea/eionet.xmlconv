@@ -17,7 +17,8 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 	private static final String qUplSchema = 	"SELECT " 
 												+ UPL_SCHEMA_ID_FLD + ", " 
 												+ UPL_SCHEMA_FLD + ", " 
-												+ UPL_SCHEMA_DESC 
+												+ UPL_SCHEMA_DESC  + ", " 
+												+ UPL_SCHEMA_URL
 												+ " FROM " + UPL_SCHEMA_TABLE 
 												+ " ORDER BY " + UPL_SCHEMA_FLD;
 	
@@ -26,9 +27,10 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 													+ UPL_SCHEMA_TABLE 
 													+ " ( " 
 													+ UPL_SCHEMA_FLD + " ," 
-													+ UPL_SCHEMA_DESC 
+													+ UPL_SCHEMA_DESC + " ," 
+													+ UPL_SCHEMA_URL 
 													+ ") " 
-													+ "VALUES (?,?)";
+													+ "VALUES (?,?,?)";
 	
 	
 	public static final String qRemoveUplSchema = "DELETE FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_SCHEMA_ID_FLD + "= ?" ;
@@ -37,13 +39,16 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 	private static final String  qUplSchemaByID = 	"SELECT " 
 													+ SCHEMA_ID_FLD + ", " 
 													+ UPL_SCHEMA_FLD + "," 
-													+ UPL_SCHEMA_DESC 
+													+ UPL_SCHEMA_DESC + "," 
+													+ UPL_SCHEMA_URL 
 													+ " FROM " + UPL_SCHEMA_TABLE 
 													+ " WHERE " + SCHEMA_ID_FLD + "= ?";
 	
 
 	private static final String qUpdateUplSchema = "UPDATE  " + UPL_SCHEMA_TABLE 
-													+ " SET " + SCHEMA_DESCR_FLD + "= ? " 
+													+ " SET " + UPL_SCHEMA_FLD + "= ?, " 
+													+ UPL_SCHEMA_DESC + "= ?, " 
+													+ UPL_SCHEMA_URL+ "= ? " 
 													+ " WHERE " + UPL_SCHEMA_ID_FLD + "= ?";
 
 	private static final String qUpdateSchema = "UPDATE  " + SCHEMA_TABLE 
@@ -98,6 +103,7 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 				h.put("id", r[i][0]);
 				h.put("schema", r[i][1]);
 				h.put("description", r[i][2]);
+				h.put("schema_url", r[i][3]);
 				v.add(h);
 			}
 		} 
@@ -119,7 +125,7 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 		return _getLastInsertID();
 	}
 */
-	public String addUplSchema(String schema, String description) throws SQLException{
+	public String addUplSchema(String schema, String description, String schema_url) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
@@ -129,6 +135,7 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 			pstmt = conn.prepareStatement(qInsertUplSchema);
 			pstmt.setString(1, schema);
 			pstmt.setString(2, description);
+			pstmt.setString(3, schema_url);
 			pstmt.executeUpdate();
 		}finally{
 			closeAllResources(null,pstmt,conn);			
@@ -185,7 +192,7 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 */	
 
 	
-	public void updateUplSchema(String schema_id, String description) throws SQLException{
+	public void updateUplSchema(String schema_id, String schema_file, String description, String schema_url) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
@@ -197,8 +204,10 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 
 			if (isDebugMode){ logger.debug("Query is " + qUpdateUplSchema);}			
 			pstmt = conn.prepareStatement(qUpdateUplSchema);
-			pstmt.setString(1,description);
-			pstmt.setInt(2,Integer.parseInt(schema_id));
+			pstmt.setString(1,schema_file);
+			pstmt.setString(2,description);
+			pstmt.setString(3,schema_url);
+			pstmt.setInt(4,Integer.parseInt(schema_id));
 			pstmt.executeUpdate();
 			pstmt.close();				
 			
@@ -315,6 +324,7 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 			h.put("schema_id", r[0][0]);
 			h.put("schema", r[0][1]);
 			h.put("description", r[0][2]);			
+			h.put("schema_url", r[0][3]);			
 		} 
 		finally {
 			closeAllResources(rs,pstmt,conn);

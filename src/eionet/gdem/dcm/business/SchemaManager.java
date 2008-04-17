@@ -528,11 +528,13 @@ public class SchemaManager {
 				String id = (String) hash.get("id");
 				String schema = Properties.gdemURL + "/schema/" + (String) hash.get("schema");
 				String desc = (String) hash.get("description");
+				String schemaUrl = (String) hash.get("schema_url");
 
 				UplSchema uplSchema = new UplSchema();
 				uplSchema.setId(id);
 				uplSchema.setSchema(schema);
 				uplSchema.setDescription(desc);
+				uplSchema.setSchemaUrl(Utils.isNullStr(schemaUrl)?schema:schemaUrl);
 				schemas.add(uplSchema);
 			}
 			if (schemas.size() > 0) {
@@ -548,7 +550,7 @@ public class SchemaManager {
 	}
 
 
-	public void addUplSchema(String user, FormFile file, String desc) throws DCMException {
+	public void addUplSchema(String user, FormFile file, String desc, String url) throws DCMException {
 
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "i")) {
@@ -581,7 +583,7 @@ public class SchemaManager {
 			in.close();
 			file.destroy();
 
-			uplSchemaDao.addUplSchema(fileName, desc);
+			uplSchemaDao.addUplSchema(fileName, desc, url);
 
 		} catch (DCMException e) {
 			throw e;
@@ -750,8 +752,11 @@ public class SchemaManager {
 	}
 
 
-	public void updateUplSchema(String user, String schemaId, String description) throws DCMException {
+	public void updateUplSchema(String user, String schemaId, String schema, FormFile file, String description, String schemaUrl) throws DCMException {
 
+		boolean bDeleteOldFile = false;
+		String oldFileName=null;
+		
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
 				_logger.debug("You don't have permissions to update schemas!");
@@ -765,9 +770,37 @@ public class SchemaManager {
 		}
 
 		try {
+			if(file!=null && !Utils.isNullStr(file.getFileName())){
+				String fileName = file.getFileName();
+				
+				if (uplSchemaDao.checkUplSchemaFile(fileName)) {				
+					throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_FILE_EXISTS);
+				}
+				InputStream in = file.getInputStream();
+				String filepath = new String(Properties.schemaFolder + File.separatorChar + file.getFileName());
+				OutputStream w = new FileOutputStream(filepath);
+				int bytesRead = 0;
+				byte[] buffer = new byte[8192];
+				while ((bytesRead = in.read(buffer, 0, 8192)) != -1) {
+					w.write(buffer, 0, bytesRead);
+				}
+				w.close();
+				in.close();
+				file.destroy();
+				oldFileName=schema;
+				bDeleteOldFile=true;
+				schema=fileName;
+			}
+			
 			// dbM.updateSchema(schemaId, schema, description, dtdPublicId);
-			uplSchemaDao.updateUplSchema(schemaId, description);
+			uplSchemaDao.updateUplSchema(schemaId, schema, description, schemaUrl);
+			if(bDeleteOldFile && !Utils.isNullStr(oldFileName)){
+				Utils.deleteFile(Properties.schemaFolder + File.separator + oldFileName);
+			}
 
+		} catch (DCMException dcme) {
+			_logger.error("Error updating uploaded schema", dcme);
+			throw dcme;
 		} catch (Exception e) {
 			_logger.error("Error updating uploaded schema", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
@@ -784,10 +817,12 @@ public class SchemaManager {
 			Hashtable ht = uplSchemaDao.getUplSchemaById(schemaId);
 			String schema = (String) ht.get("schema");
 			String desc = (String) ht.get("description");
+			String url = (String) ht.get("schema_url");
 
 			sc.setDescription(desc);
 			sc.setId(schemaId);
 			sc.setSchema(schema);
+			sc.setSchemaUrl(url);
 		} catch (Exception e) {
 			e.printStackTrace();
 			_logger.error("Error getting uploaded schema", e);

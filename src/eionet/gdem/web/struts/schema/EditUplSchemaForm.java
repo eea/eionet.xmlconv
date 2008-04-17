@@ -26,12 +26,16 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
 
 public class EditUplSchemaForm extends ActionForm {
 
+	private FormFile schemaFile;
+	private String schemaFileName;
 	private String schema;
 	private String idSchema;
 	private String description;
+	private String schemaUrl;
 
 
 	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
@@ -40,9 +44,12 @@ public class EditUplSchemaForm extends ActionForm {
 
 
 	public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
+		schemaFile = null;
+		schemaFileName = null;
 		schema = null;
 		idSchema = null;
 		description = null;
+		schemaUrl = null;
 	}
 
 
@@ -73,6 +80,36 @@ public class EditUplSchemaForm extends ActionForm {
 
 	public void setSchema(String schema) {
 		this.schema = schema;
+	}
+
+
+	public FormFile getSchemaFile() {
+		return schemaFile;
+	}
+
+
+	public void setSchemaFile(FormFile schemaFile) {
+		this.schemaFile = schemaFile;
+	}
+
+
+	public String getSchemaUrl() {
+		return schemaUrl;
+	}
+
+
+	public void setSchemaUrl(String schemaUrl) {
+		this.schemaUrl = schemaUrl;
+	}
+
+
+	public String getSchemaFileName() {
+		return schemaFileName;
+	}
+
+
+	public void setSchemaFileName(String schemaFileName) {
+		this.schemaFileName = schemaFileName;
 	}
 
 }

@@ -17,7 +17,7 @@ public interface IUPLSchemaDao extends IDbSchema{
 	    * @param schema - xml schema name
 	    * @return The ID of the added schema
 	    */    
-	    public String addUplSchema(String schema, String description) throws SQLException;
+	    public String addUplSchema(String schema, String description, String schema_url) throws SQLException;
 
 		 /**
 		  * Removes the uploaded xml schema from the uploaded schema table
@@ -35,7 +35,7 @@ public interface IUPLSchemaDao extends IDbSchema{
 
 		 public Hashtable getUplSchemaById(String schemaId) throws SQLException;
 		 
-		 public void updateUplSchema(String schema_id, String description) throws SQLException;
+		 public void updateUplSchema(String schema_id, String description, String schema_file, String schema_url) throws SQLException;
 		 
 		 public boolean checkUplSchemaFile(String schemaFileName) throws SQLException;
 }
