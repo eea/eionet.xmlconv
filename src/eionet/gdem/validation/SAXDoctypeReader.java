@@ -21,11 +21,10 @@
  * Original Code: Enriko Käsper (TietoEnator)
  */
 
-package eionet.gdem.conversion.ssr;
+package eionet.gdem.validation;
 
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 public class SAXDoctypeReader implements LexicalHandler {
 

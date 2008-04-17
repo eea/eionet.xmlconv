@@ -21,7 +21,7 @@
  * Original Code: Enriko Käsper (TietoEnator)
  */
 
-package eionet.gdem.conversion.ssr;
+package eionet.gdem.validation;
 
 
 

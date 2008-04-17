@@ -19,7 +19,6 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.conversion.ConversionService;
-import eionet.gdem.conversion.ssr.InputAnalyser;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
@@ -30,6 +29,7 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.validation.InputAnalyser;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS
