@@ -12,7 +12,7 @@
 		<%-- include Error display --%>
 		<tiles:insert definition="Error" />
 		
-			<html:form action="/editUplSchema" method="post">
+			<html:form action="/editUplSchema" method="post" enctype="multipart/form-data">
 			  <table class="datatable">
 				<col style="width:16%"/>
 				<col style="width:84%"/>
@@ -25,6 +25,17 @@
 							<bean:write name="EditUplSchemaForm" property="schema" />
 						</a>&#160;		        	  		        
 						<html:hidden  property="idSchema" />
+						<html:hidden  property="schemaFileName" />
+						<br/><br/>
+				        <html:file property="schemaFile" size="20" style="width:400px"/>
+			      </td>
+			    </tr>
+			    <tr>
+  				  <th scope="row" class="scope-row">
+			        <bean:message key="label.uplSchema.url"/>:
+			      </th>
+			      <td>
+			        <html:text property="schemaUrl" style="width:400px"/>
 			      </td>
 			    </tr>
 			    <tr>

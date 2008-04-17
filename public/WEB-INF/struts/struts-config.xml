@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+ <!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN"
+          "http://struts.apache.org/dtds/struts-config_1_3.dtd">
 <struts-config>
     <form-beans>
 	    <form-bean name="loginForm"  type="org.apache.struts.validator.DynaValidatorForm">
@@ -83,7 +85,7 @@
 	        <forward name="success" path="/addStylesheet.jsp" />                      
         </action>
         <action path="/stylesheetAdd" input="/addStylesheet.jsp" name="stylesheetForm"
-            type="eionet.gdem.web.struts.stylesheet.AddStylesheetAction">
+            type="eionet.gdem.web.struts.stylesheet.AddStylesheetAction" cancellable="true">
             <forward name="success" path="/do/schemaStylesheets"/>
             <forward name="fail" path="/do/addStylesheetForm" redirect="true"/>						   
         </action>
@@ -91,7 +93,7 @@
             <forward name="success" path="/editStylesheet.jsp" redirect="true" />
         </action>
         <action path="/stylesheetEdit" input="/editStylesheet.jsp" name="stylesheetForm"
-            type="eionet.gdem.web.struts.stylesheet.EditStylesheetAction" scope="request" parameter="action">
+            type="eionet.gdem.web.struts.stylesheet.EditStylesheetAction" scope="request" parameter="action" cancellable="true">
              <forward name="success" path="/do/schemaStylesheets" redirect="true"/>
              <forward name="fail" path="/editStylesheet.jsp" redirect="false"/>
         </action>
@@ -154,14 +156,14 @@
         	<forward name="success" path="/do/uplSchemas"  redirect="true"/>            
         </action>        
         <action path="/addUplSchemaForm"  parameter="/addUplSchema.jsp" scope="request" validate="false" type="org.apache.struts.actions.ForwardAction"/>           
-        <action path="/addUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.AddUplSchemaAction" name="UplSchemaForm">           
+        <action path="/addUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.AddUplSchemaAction" name="UplSchemaForm" cancellable="true">           
         	<forward name="success" path="/do/uplSchemas"  redirect="true"/>            
         	<forward name="fail" path="/do/addUplSchemaForm"  redirect="true"/>
         </action>        
         <action path="/editUplSchemaForm" name="EditUplSchemaForm" type="eionet.gdem.web.struts.schema.EditUplSchemaFormAction" input="/editUplSchema.jsp" scope="request">
             <forward name="success" path="/editUplSchema.jsp" redirect="true" />
         </action>
-        <action path="/editUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.EditUplSchemaAction" name="EditUplSchemaForm">           
+        <action path="/editUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.EditUplSchemaAction" name="EditUplSchemaForm" cancellable="true">           
         	<forward name="success" path="/do/uplSchemas"  redirect="true"/>            
         </action>
         
@@ -179,7 +181,7 @@
         <action path="/hosts/delete" name="HostForm" input="/hosts/list.jsp"  validate="false" type="eionet.gdem.web.struts.hosts.DeleteHostAction">           
         	<forward name="success" path="/do/hosts/list" redirect="true" />         
         </action>
-        <action path="/hosts/save" name="HostForm" input="/hosts/details.jsp" scope="session" type="eionet.gdem.web.struts.hosts.SaveHostAction">           
+        <action path="/hosts/save" name="HostForm" input="/hosts/details.jsp" scope="session" type="eionet.gdem.web.struts.hosts.SaveHostAction" cancellable="true">           
         	<forward name="success" path="/do/hosts/list" redirect="true" />
         </action>
         
@@ -193,14 +195,14 @@
         	<forward name="success" path="/do/uplXmlFiles"  redirect="true"/>            
         </action>        
         <action path="/addUplXmlFileForm"  parameter="/addUplXmlFile.jsp" scope="request" validate="false" type="org.apache.struts.actions.ForwardAction"/>           
-        <action path="/addUplXmlFile"  scope="request" type="eionet.gdem.web.struts.xmlfile.AddUplXmlFileAction" name="UplXmlFileForm">           
+        <action path="/addUplXmlFile"  scope="request" type="eionet.gdem.web.struts.xmlfile.AddUplXmlFileAction" name="UplXmlFileForm" cancellable="true">           
         	<forward name="success" path="/do/uplXmlFiles"  redirect="true"/>            
         	<forward name="fail" path="/do/addUplXmlFileForm"  redirect="true"/>
         </action>        
         <action path="/editUplXmlFileForm" name="EditUplXmlFileForm" type="eionet.gdem.web.struts.xmlfile.EditUplXmlFileFormAction" scope="request" input="/editUplXmlFile.jsp">
             <forward name="success" path="/editUplXmlFile.jsp" redirect="true" />
         </action>
-        <action path="/editUplXmlFile"  scope="request" type="eionet.gdem.web.struts.xmlfile.EditUplXmlFileAction" name="EditUplXmlFileForm">           
+        <action path="/editUplXmlFile"  scope="request" type="eionet.gdem.web.struts.xmlfile.EditUplXmlFileAction" name="EditUplXmlFileForm" cancellable="true">           
         	<forward name="success" path="/do/uplXmlFiles"  redirect="true"/>            
         </action>
         

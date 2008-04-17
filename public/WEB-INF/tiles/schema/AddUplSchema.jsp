@@ -27,6 +27,14 @@
 			    </tr>
 			    <tr>
   				  <th scope="row" class="scope-row">
+			        <bean:message key="label.uplSchema.url"/>:
+			      </th>
+			      <td>
+			        <html:text property="schemaUrl" style="width:400px"/>
+			      </td>
+			    </tr>
+			    <tr>
+  				  <th scope="row" class="scope-row">
 			        <bean:message key="label.uplSchema.description"/>:
 			      </th>
 			      <td>
