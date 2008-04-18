@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Vector;
 import java.util.Hashtable;
 
@@ -44,6 +45,13 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 													+ " FROM " + UPL_SCHEMA_TABLE 
 													+ " WHERE " + SCHEMA_ID_FLD + "= ?";
 	
+	private static final String  qUplSchemaByURL = 	"SELECT " 
+		+ SCHEMA_ID_FLD + ", " 
+		+ UPL_SCHEMA_FLD + "," 
+		+ UPL_SCHEMA_DESC + "," 
+		+ UPL_SCHEMA_URL 
+		+ " FROM " + UPL_SCHEMA_TABLE 
+		+ " WHERE " + UPL_SCHEMA_URL + "= ?";
 
 	private static final String qUpdateUplSchema = "UPDATE  " + UPL_SCHEMA_TABLE 
 													+ " SET " + UPL_SCHEMA_FLD + "= ?, " 
@@ -60,6 +68,7 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 
 	private static final String  checkUplSchemaFile = "SELECT COUNT(*) FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_SCHEMA_FLD + "= ?";	
 	
+	private static final String  checkUplSchemaURL = "SELECT COUNT(*) FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_SCHEMA_URL + "!='' AND " + UPL_SCHEMA_URL + "= ?";	
 
 	public UPLSchemaMySqlDao() {}
 	
@@ -333,20 +342,7 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 	}
 		
 	
-/*	public boolean checkUplSchemaFile(String schemaFileName) throws SQLException {
 
-		String sql = "SELECT COUNT(*) FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_SCHEMA_FLD + "="+ Utils.strLiteral(schemaFileName);
-
-		String[][] r = _executeStringQuery(sql);
-
-		String count = r[0][0];
-		if (count.equals("0")) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-*/		
 	public boolean checkUplSchemaFile(String schemaFileName) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -369,5 +365,66 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 			closeAllResources(rs,pstmt,conn);
 		}
 		return result;					
+	}
+
+
+
+
+	public boolean checkUplSchemaURL(String schemaURL) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs =null;
+		boolean result = false;
+ 		
+		if (isDebugMode){ logger.debug("Query is " + checkUplSchemaURL);}
+		
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(checkUplSchemaURL);
+			pstmt.setString(1,schemaURL);
+			rs = pstmt.executeQuery();			
+			String[][] r = getResults(rs);
+			String count = r[0][0];
+			if (!count.equals("0")) 
+				result = true;			
+		} 
+		finally {
+			closeAllResources(rs,pstmt,conn);
+		}
+		return result;					
+	}
+
+
+
+
+	public HashMap<String,String> getUplSchemaByURL(String schemaUrl) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs =null;
+		HashMap<String,String> h = null;
+	
+		if (schemaUrl == null) throw new SQLException("Schema URL not defined");
+			
+		if (isDebugMode){ logger.debug("Query is " + qUplSchemaByURL);}
+		
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(qUplSchemaByURL);
+			pstmt.setString(1,schemaUrl);
+			rs = pstmt.executeQuery();			
+			String[][] r = getResults(rs);
+
+			if (r.length == 0) return null;
+			
+			h = new HashMap<String,String>();
+			h.put("schema_id", r[0][0]);
+			h.put("schema", r[0][1]);
+			h.put("description", r[0][2]);			
+			h.put("schema_url", r[0][3]);			
+		} 
+		finally {
+			closeAllResources(rs,pstmt,conn);
+		}		
+		return h;			
 	}
 }

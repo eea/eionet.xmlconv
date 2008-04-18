@@ -31,6 +31,11 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import eionet.gdem.dto.ValidateDto;
 
+/**
+ * Callback methods for validation errors
+ * @author Enriko Käsper, TietoEnator Estonia AS
+ * ValidatorErrorHandler
+ */
 public class ValidatorErrorHandler extends DefaultHandler {
   //private StringBuffer errContainer;
   //private StringBuffer htmlErrContainer;

@@ -1,6 +1,7 @@
 package eionet.gdem.services.db.dao;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -33,9 +34,37 @@ public interface IUPLSchemaDao extends IDbSchema{
 		  */
 		 public String getUplSchema(String uplSchemaId) throws SQLException; 
 
+		 /**
+		  * Returns the uploaded schema identified with the given ID
+		  * @param schemaId
+		  * @return
+		  * @throws SQLException
+		  */
 		 public Hashtable getUplSchemaById(String schemaId) throws SQLException;
 		 
 		 public void updateUplSchema(String schema_id, String description, String schema_file, String schema_url) throws SQLException;
-		 
+
+		 /**
+		  * Checks if schema with the given file name already ecxists in T_UPL_SCHEMA table. 
+		  * @param schemaFileName
+		  * @return true, if file exists in the database
+		  * @throws SQLException
+		  */
 		 public boolean checkUplSchemaFile(String schemaFileName) throws SQLException;
+
+		 /**
+		  * Checks if specified schema URL is already registered in T_UPL_SCHEMA table 
+		  * @param schemaURL
+		  * @return true, if URL exists in the database
+		  * @throws SQLException
+		  */
+		 public boolean checkUplSchemaURL(String schemaURL) throws SQLException;
+
+		 /**
+		  * Returns the uploaded schema identified with the given schema URL
+		  * @param schemaUrl
+		  * @return
+		  * @throws SQLException
+		  */
+		 public HashMap<String,String> getUplSchemaByURL(String schemaUrl) throws SQLException;
 }

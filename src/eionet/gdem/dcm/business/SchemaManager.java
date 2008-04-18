@@ -566,7 +566,13 @@ public class SchemaManager {
 			String fileName = file.getFileName();
 
 
-
+			//Schema URL should be unique
+			if(!Utils.isNullStr(url)){
+				if (uplSchemaDao.checkUplSchemaFile(url)) {				
+					throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_URL_EXISTS);
+				}
+			}
+			// filename should be unique
 			if (uplSchemaDao.checkUplSchemaFile(fileName)) {				
 				throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_FILE_EXISTS);
 			}
@@ -770,6 +776,13 @@ public class SchemaManager {
 		}
 
 		try {
+			//Schema URL should be unique
+			if(!Utils.isNullStr(schemaUrl)){
+				if (uplSchemaDao.checkUplSchemaFile(schemaUrl)) {				
+					throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_URL_EXISTS);
+				}
+			}
+			//if file uploaded, then check the file name and delete the old file
 			if(file!=null && !Utils.isNullStr(file.getFileName())){
 				String fileName = file.getFileName();
 				
@@ -792,8 +805,10 @@ public class SchemaManager {
 				schema=fileName;
 			}
 			
-			// dbM.updateSchema(schemaId, schema, description, dtdPublicId);
+			// update DB
 			uplSchemaDao.updateUplSchema(schemaId, schema, description, schemaUrl);
+			
+			//delete old file, if new file is uploaded
 			if(bDeleteOldFile && !Utils.isNullStr(oldFileName)){
 				Utils.deleteFile(Properties.schemaFolder + File.separator + oldFileName);
 			}
@@ -829,6 +844,30 @@ public class SchemaManager {
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return sc;
+
+	}
+	
+	/**
+	 * If the schema is stored in local repository, then this method returns the file name of locally stored schema 
+	 * @param schemaUrl remote schema URL
+	 * @return filename stored in schemas folder
+	 * @throws DCMException
+	 */
+	public String getUplSchemaURL(String schemaUrl) throws DCMException {
+		String retURL = schemaUrl;
+		try {
+
+			HashMap ht = uplSchemaDao.getUplSchemaByURL(schemaUrl);
+			if(ht!=null){
+				retURL = (String) ht.get("schema");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			_logger.error("Error getting uploaded schema", e);
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+		return retURL;
 
 	}
 	public ArrayList getCdrFiles(String schema) throws DCMException {

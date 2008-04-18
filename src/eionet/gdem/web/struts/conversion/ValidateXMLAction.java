@@ -15,7 +15,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
-import org.apache.struts.validator.DynaValidatorForm;
 
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
@@ -55,13 +54,25 @@ public class ValidateXMLAction  extends Action {
 
 		try {
 			String schema = null;
-				ArrayList valid;
-				if (schema == null) { // schema defined in header
-					valid = validate(url, ticket);
-				} else {
-					valid = validateSchema(url, schema, ticket);
-				}
-				httpServletRequest.setAttribute("conversion.valid", valid);
+			ArrayList valid;
+			String validatedSchema = null;
+			try {
+				ValidationService v = new ValidationService(true);
+				v.setTrustedMode(false);
+				v.setTicket(ticket);
+				if (schema == null)  // schema defined in header
+					v.validate(url);
+				else
+					v.validateSchema(url, schema);
+				valid = v.getErrorList();
+				validatedSchema = v.getValidatedSchemaURL();
+			} catch (DCMException dcme) {
+				throw dcme;
+			} catch (Exception e) {
+				throw new DCMException(BusinessConstants.EXCEPTION_VALIDATION_ERROR);
+			}
+			httpServletRequest.setAttribute("conversion.valid", valid);
+			httpServletRequest.setAttribute("conversion.validatedSchema", validatedSchema);
 		} catch (DCMException e) {
 			e.printStackTrace();
 			_logger.error("Error validating xml",e);
@@ -76,48 +87,6 @@ public class ValidateXMLAction  extends Action {
 			return actionMapping.findForward("error");
 		}
 		return actionMapping.findForward("success");
-	}
-
-
-	private ArrayList validate(String url, String ticket) throws DCMException {
-		try {
-			ValidationService v = new ValidationService(true);
-			v.setTrustedMode(false);
-	    	v.setTicket(ticket);
-			v.validate(url);
-			return v.getErrorList();
-		} catch (DCMException dcme) {
-			throw dcme;
-		} catch (Exception e) {
-			throw new DCMException(BusinessConstants.EXCEPTION_VALIDATION_ERROR);
-		}
-	}
-
-
-	private ArrayList validateSchema(String url, String schema, String ticket) throws DCMException {
-		try {
-			ValidationService v = new ValidationService(true);
-			v.setTrustedMode(false);
-	    	v.setTicket(ticket);
-			v.validateSchema(url, schema);
-			v.printList();
-			return v.getErrorList();
-
-		} catch (DCMException dcme) {
-			throw dcme;
-		} catch (Exception e) {
-			throw new DCMException(BusinessConstants.EXCEPTION_VALIDATION_ERROR);
-		}
-	}
-
-	private String processFormStr(String arg) {
-		String result=null;
-		if(arg!=null) {
-			if(!arg.trim().equalsIgnoreCase("")) {
-				result=arg.trim();
-			}
-		}
-		return result;
 	}
 
 }

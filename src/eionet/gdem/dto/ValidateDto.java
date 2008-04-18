@@ -75,4 +75,7 @@ public class ValidateDto implements Serializable {
 		return line;
 	}
 
+	public String toString(){
+		return type + ": line " + line + ", col " + column + " - " + description;
+	}
 }
