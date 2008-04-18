@@ -20,7 +20,9 @@ public class TestConstants {
 	public static final String SEED_OZONE_STATION_XML = "seed-ozone-station.xml";
 	public static final String SEED_GW_VALID_XML = "seed-gw-valid.xml";	
 	public static final String SEED_GW_INVALID_XML = "seed-gw-invalid.xml";
-	public static final String SEED_GW_SCHEMA = "seed-gw-schema.xsd";
+	public static final String SEED_GW_SCHEMA = "schema/seed-gw-schema.xsd";
+	public static final String SEED_XLIFF_DTD = "schema/xliff.dtd";
+	public static final String SEED_XLIFF_XML = "seed-xliff.xml";
 
 	//TEST RESULT PROPERTIES
 	public final static String HTML_CONTENTYPE_RESULT ="text/html;charset=UTF-8";

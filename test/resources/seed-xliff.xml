@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xliff SYSTEM "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.0">
+	<file datatype="xml" source-language="en-USA" target-language="es-ESP"><!--  add original attribute to be valid xml-->
+		<header>
+			<count-group name="Totals">
+				<count count-type="TextUnits" unit="transUnits">40</count>
+				<count count-type="TotalWordCount" unit="words">416</count>
+			</count-group>
+		</header>
+		<body>
+			<trans-unit id="t1">
+				<source> Xml:tm</source>
+				<target> Xml:tm </target>
+			</trans-unit>
+			<trans-unit id="t2">
+				<source> Xml:tm is a revolutionary technique for dealing with the problems of translation memory for XML documents by using XML techniques and embedding memory directly into the XML documents themselves. </source>
+				<target> Xml:tm es un técnica revolucionaria que trata los problemas de memoria de traducción en documentos XML usando técnicas XML e incluyendo la memoria en el documento mismo. </target>
+			</trans-unit>
+			<trans-unit id="t3">
+				<source> It makes extensive use of XML namespace. </source>
+				<target>E sta técnica hace extensor uso de XML namespace. </target>
+			</trans-unit>
+			<trans-unit id="t4">
+				<source> The “tm” stands for “text memory”. </source>
+				<target> “tm” significa “memoria de texto”. </target>
+			</trans-unit>
+			<trans-unit id="t5">
+				<source> There are two aspects to text memory: </source>
+				<target> Hay dos aspectos de memoria de texto: </target>
+			</trans-unit>
+			<trans-unit id="t6">
+				<source> Author memory </source>
+				<target> Memoria de autor </target>
+			</trans-unit>
+			<trans-unit id="t7">
+				<source> Translation memory </source>
+				<target> Memoria de traducción </target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

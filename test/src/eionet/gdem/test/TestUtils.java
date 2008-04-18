@@ -30,10 +30,10 @@ public class TestUtils {
 
 		GDEMServices.setTestConnection(true);
 		String conversions_filename = obj.getClass().getClassLoader()
-		.getResource("dcm/conversions.xml").getFile();
+			.getResource("dcm/conversions.xml").getFile();
 		Properties.convFile = conversions_filename;
-		Properties.metaXSLFolder = obj.getClass().getClassLoader().getResource(
-		"dcm").getFile();
+		Properties.metaXSLFolder = obj.getClass().getClassLoader().getResource("dcm").getFile();
+		Properties.schemaFolder = obj.getClass().getClassLoader().getResource("schema").getFile().substring(1);
 	}
 
 	/**
