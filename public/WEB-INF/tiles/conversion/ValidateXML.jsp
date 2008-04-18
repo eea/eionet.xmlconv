@@ -66,8 +66,25 @@
 		</table>
 	</html:form>
 				<logic:present name="conversion.valid" scope="request">
-					<h2><bean:message key="label.conversion.validate.results"/></h2> 
-					<div>
+					<bean:size id="countErrors" name="conversion.valid" />
+
+						<logic:equal name="countErrors" value="0">
+							<div class="important-msg">
+								<strong>The file is valid XML</strong>
+								<logic:notEmpty name="conversion.validatedSchema">
+									<p><bean:message key="label.conversion.validatedSchema"/>&#160;
+										<a href="<bean:write name="conversion.validatedSchema"/>"><bean:write  name="conversion.validatedSchema"/></a></p> 
+								</logic:notEmpty>
+							</div>
+						</logic:equal>
+					<logic:notEqual name="countErrors" value="0">
+					<div class="warning-msg">
+						<strong>The file is not valid XML</strong>
+						<logic:notEmpty name="conversion.validatedSchema">
+							<p><bean:message key="label.conversion.validatedSchema"/>&#160;
+								<a href="<bean:write name="conversion.validatedSchema"/>"><bean:write  name="conversion.validatedSchema"/></a></p> 
+						</logic:notEmpty>
+					</div>
 						<table class="datatable" align="center" width="100%">
 							<col style="width:8%"/>
 							<col style="width:8%"/>
@@ -100,6 +117,6 @@
 								</logic:iterate>
 							</tbody>
 						</table>
-					</div>
+					</logic:notEqual>
 				</logic:present>
 	</div>
