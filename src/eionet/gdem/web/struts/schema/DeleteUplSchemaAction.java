@@ -53,13 +53,16 @@ public class DeleteUplSchemaAction extends Action {
 			sm.deleteUplSchema(user_name, schemaId);
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.deleted"));
 		} catch (DCMException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			_logger.error("Error deleting root schema",e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 		}
 		httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
 
+		saveMessages(httpServletRequest,messages);
+		saveErrors(httpServletRequest,errors);
+		
 		return actionMapping.findForward("success");
 	}
 }

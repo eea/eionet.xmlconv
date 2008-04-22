@@ -65,7 +65,7 @@ public class EditUplSchemaAction extends Action {
 			sm.updateUplSchema(user, schemaId, schema, file, description, schemaUrl);
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.updated"));
 		} catch (DCMException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			_logger.error("Error editing uploaded schema",e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 		}
