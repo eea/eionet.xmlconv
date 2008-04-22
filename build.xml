@@ -44,7 +44,7 @@
 <!-- use JAR instead of classes because it makes it easier to debug errors -->
 
 
-<project name="xmlconv" default="compile" basedir=".">
+<project name="xmlconv" default="copy_resources" basedir=".">
 
 	<target name="init">
 
@@ -335,14 +335,19 @@
 		<mkdir dir="${test-build}/acl"/>
 		<mkdir dir="${test-build}/tmp"/>
 		<mkdir dir="${test-build}/dcm"/>
+		<mkdir dir="${test-build}/struts"/>
 		<copy todir="${test-build}/acl" overwrite="false">
 			<fileset dir="acl"/>
+		</copy>
+		<copy todir="${test-build}/struts" overwrite="true">
+			<fileset dir="WEB-INF/struts"/>
 		</copy>
 
 		<copy todir="${test-build}" overwrite="false">
 			<fileset dir="${src}" includes="**/*.properties">
 				<exclude name="**/*.class"/>
 				<exclude name="gdem.properties"/>
+				<exclude name="log4j.properties"/>
 			</fileset>
 		</copy>
 
@@ -407,8 +412,10 @@
 
 	<!-- test target, refers to pre-defined paths and filesets -->
   	<target name="test" depends="test_echo,init,compile-tests,seed-tests" description="Runs all found unit tests">
-		<junit haltonfailure="yes" failureproperty="unittestFailed" showoutput="yes" printsummary="yes">
+		<junit haltonfailure="yes" failureproperty="unittestFailed" showoutput="yes" printsummary="yes" fork="yes">
 			<classpath refid="classpath.test" />
+	        <jvmarg value="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger"/>
+	        <jvmarg value="-Dlog4j.configuration=log4j.properties"/>
 			<formatter type="brief" usefile="false"/>
 			<batchtest fork="yes">				
 				<fileset refid="fileset.test"/>
@@ -468,5 +475,18 @@
 			<os family="unix"/>
 		</condition>
 	</target>
-
+	<!-- copy resources for development only -->
+	<target name="copy_resources" depends="init">
+		<copy file="GDEMServices.xml" tofile="${build.dir}/GDEMServices.xml" overwrite="true"/>
+		<copy todir="${build.dir}/public" overwrite="true">
+			<fileset dir="public" includes="**/*.jsp,**/*.xml">
+				<exclude name="**/*.java"/>
+				<exclude name="**/*.properties"/>
+				<exclude name="**/servlet-api.jar"/>
+				<exclude name="**/jsp-api.jar"/>
+				<exclude name="WEB-INF/classes/**"/>
+			</fileset>
+		</copy>
+		<!--copy file="src/ApplicationResources.properties" tofile="${classes.dir}/ApplicationResources.properties" overwrite="true"/-->
+	</target>
 </project>
