@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.apache.struts.action.ActionMapping;
 
+import servletunit.struts.MockStrutsTestCase;
+
 import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.test.mocks.MockActionMapping;
@@ -35,6 +37,20 @@ public class TestUtils {
 		Properties.metaXSLFolder = obj.getClass().getClassLoader().getResource("dcm").getFile();
 		Properties.schemaFolder = obj.getClass().getClassLoader().getResource("schema").getFile().substring(1);
 	}
+
+	/**
+	 * get struts config location
+	 * 
+	 * @param obj
+	 */
+	public static String getStrutsConfigLocation() {
+		return "struts/struts-config.xml";
+	}
+	public static String getStrutsTempDir(Object obj) {
+		String s =obj.getClass().getClassLoader().getResource("schema").getPath().substring(1); 
+		return s;
+	}
+
 
 	/**
 	 * construct URI from seed file name

@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 rel. 3 sp1 (http://www.altova.com) by Søren Roug (European Environment Agency) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/03/xml.xsd"/>
+	<xs:element name="report">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="member-state" type="string-label-countrycode-type"/>
+				<xs:element ref="legal-framework"/>
+				<xs:element ref="regional" maxOccurs="unbounded"/>
+				<xs:element ref="management-tools">
+					<xs:annotation>
+						<xs:documentation>Section 3</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="conservation-measures">
+					<xs:annotation>
+						<xs:documentation>Section 4</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="deterioration-measures">
+					<xs:annotation>
+						<xs:documentation>Section 5</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="plan-measures">
+					<xs:annotation>
+						<xs:documentation>Section 6</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="financing"/>
+				<xs:element ref="coherence-measures"/>
+				<xs:element ref="surveillance-system"/>
+				<xs:element ref="protection-measures"/>
+				<xs:element ref="supporting-measures"/>
+			</xs:sequence>
+			<xs:attribute ref="xml:lang" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="legal-framework">
+		<xs:annotation>
+			<xs:documentation>Section 1</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="legal-texts" type="string-label-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="regional">
+		<xs:annotation>
+			<xs:documentation>Section 2</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="region" type="string-label-desc-type"/>
+				<xs:element ref="community-importance"/>
+				<xs:element ref="areas-of-conservation"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="community-importance">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="total"/>
+				<xs:element ref="marine"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="areas-of-conservation">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="total"/>
+				<xs:element ref="marine"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="total">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="number" type="positive-integer-type"/>
+				<xs:element name="area" type="area-decimal-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="marine">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="number" type="positive-integer-type"/>
+				<xs:element name="area" type="area-decimal-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="management-tools">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="management-plans"/>
+				<xs:element ref="other-planning"/>
+				<xs:element ref="non-planning"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="management-plans">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="adopted-number" type="positive-integer-type"/>
+				<xs:element name="preparation-number" type="positive-integer-type"/>
+				<xs:element name="created-number" type="positive-integer-type"/>
+				<xs:element ref="plans-list" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="plans-list">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="sitecode" type="string-label-type"/>
+				<xs:element name="sitename" type="string-label-type"/>
+				<xs:element name="type-management" type="string-label-type"/>
+				<xs:element name="preparation" type="yes-no-type"/>
+				<xs:element name="type-management-body" type="string-label-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="other-planning">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="included-number" type="positive-integer-type"/>
+				<xs:element ref="other-list" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="other-list">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="sitecode" type="string-label-type"/>
+				<xs:element name="sitename" type="string-label-type"/>
+				<xs:element name="type-plan" type="string-label-type"/>
+				<xs:element name="coverage" type="positive-integer-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="non-planning">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="number-non-plan" type="positive-integer-type"/>
+				<xs:element ref="not-plan-list" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="not-plan-list">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="sitecode" type="string-label-type"/>
+				<xs:element name="sitename" type="string-label-type"/>
+				<xs:element name="type-instrument" type="string-label-type"/>
+				<xs:element name="coverage" type="positive-integer-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="conservation-measures">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="description" type="string-label-type"/>
+				<xs:element name="impact" type="string-label-type"/>
+				<xs:element name="published" type="string-label-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="deterioration-measures">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="description" type="string-label-type"/>
+				<xs:element name="published" type="string-label-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="plan-measures">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="necessary-number" type="positive-integer-type"/>
+				<xs:element name="requested-number" type="positive-integer-type"/>
+				<xs:element ref="necessary-list" maxOccurs="unbounded"/>
+				<xs:element name="impact" type="string-label-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="necessary-list">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="sitecode" type="string-label-type"/>
+				<xs:element name="sitename" type="string-label-type"/>
+				<xs:element name="project-type" type="string-label-type"/>
+				<xs:element name="commission-opinion" type="yes-no-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="financing">
+		<xs:annotation>
+			<xs:documentation>Section 7</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="estimated-average-annual-costs" type="currency-year-type" minOccurs="6" maxOccurs="6"/>
+				<xs:element name="measures" type="string-label-type"/>
+				<xs:element name="estimated-annual-costs" type="currency-year-type" minOccurs="6" maxOccurs="6"/>
+				<xs:element name="cofinancing-by-eu" type="currency-positive-integer-type"/>
+				<xs:element ref="cofinancing-list" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="cofinancing-list">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="source" type="string-label-type"/>
+				<xs:element name="co-financing" type="currency-positive-integer-type"/>
+				<xs:element name="measures" type="string-label-type"/>
+				<xs:element name="published" type="string-label-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="coherence-measures">
+		<xs:annotation>
+			<xs:documentation>Section 8</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="description" type="string-label-type"/>
+				<xs:element name="published" type="string-label-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="surveillance-system">
+		<xs:annotation>
+			<xs:documentation>Section 9</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="description" type="string-label-type"/>
+				<xs:element name="published" type="string-label-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="protection-measures">
+		<xs:annotation>
+			<xs:documentation>Section 10</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="requisites" maxOccurs="unbounded"/>
+				<xs:element ref="control-systems" maxOccurs="unbounded"/>
+				<xs:element ref="species-taking" maxOccurs="unbounded"/>
+				<xs:element name="indiscriminate-means" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="type-of-control" type="string-label-type"/>
+							<xs:element name="species-names" type="string-label-type"/>
+						</xs:sequence>
+						<xs:attribute name="label" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="requisites">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="measures" type="string-label-type"/>
+				<xs:element name="published" type="string-label-type"/>
+				<xs:element name="species-names" type="string-label-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="control-systems">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="control-system" type="string-label-type"/>
+				<xs:element name="impact" type="string-label-type"/>
+				<xs:element name="species-names" type="string-label-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="species-taking">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="measures" type="string-label-type"/>
+				<xs:element name="species-names" type="string-label-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="supporting-measures">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="research" maxOccurs="unbounded"/>
+				<xs:element ref="reintroduction-of-species" maxOccurs="unbounded"/>
+				<xs:element ref="introduction-of-nonnative-species" maxOccurs="unbounded"/>
+				<xs:element ref="education"  maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="research">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="main-efforts" type="string-label-type"/>
+				<xs:element name="published" type="string-label-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="reintroduction-of-species">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="species-name" type="string-label-type"/>
+				<xs:element name="species-author" type="string-label-type"/>
+				<xs:element name="period" type="period-type"/>
+				<xs:element name="successful" type="yes-no-type"/>
+				<xs:element name="fcs" type="yes-no-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="introduction-of-nonnative-species">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="species-name" type="string-label-type"/>
+				<xs:element name="species-author" type="string-label-type"/>
+				<xs:element name="habitats" type="string-label-type"/>
+				<xs:element name="species-concerned" type="string-label-type"/>
+				<xs:element name="period" type="period-type"/>
+				<xs:element name="measures" type="string-label-type"/>
+				<xs:element name="description" type="string-label-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="education">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="measures" type="string-label-type"/>
+				<xs:element name="published" type="string-label-type"/>
+			</xs:sequence>
+			<xs:attribute name="label" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!--types -->
+	<xs:simpleType name="yes-no-simpletype">
+		<xs:union>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:pattern value="Yes|No"/>
+					<!-- format: Yes or No -->
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType>
+				<xs:restriction base="empty-simpletype"/>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+	<xs:complexType name="yes-no-type">
+		<xs:simpleContent>
+			<xs:extension base="yes-no-simpletype">
+				<xs:attribute name="label" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="month-or-period-simpletype">
+		<xs:union>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:pattern value="(0[1-9]|1[0-2])/[0-9]{4}|[0-9]{4}(-[0-9]{4})?"/>
+					<!-- format: MM/YYYY or YYYY-YYYY or YYYY -->
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType>
+				<xs:restriction base="empty-simpletype"/>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+	<xs:complexType name="month-or-period-type">
+		<xs:simpleContent>
+			<xs:extension base="month-or-period-simpletype">
+				<xs:attribute name="label" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="period-simpletype">
+		<xs:union>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:pattern value="[0-9]{4}(-[0-9]{4})?"/>
+					<!-- format: YYYY-YYYY or YYYY -->
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType>
+				<xs:restriction base="empty-simpletype"/>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+	<xs:complexType name="period-type">
+		<xs:simpleContent>
+			<xs:extension base="period-simpletype">
+				<xs:attribute name="label" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="area-decimal-simpletype">
+		<xs:union memberTypes="xs:decimal empty-simpletype"/>
+	</xs:simpleType>
+	<xs:complexType name="area-decimal-type">
+		<xs:simpleContent>
+			<xs:extension base="area-decimal-simpletype">
+				<xs:attribute name="label" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="positive-integer-simpletype">
+		<xs:union memberTypes="xs:nonNegativeInteger empty-simpletype"/> <!-- Zero is allowed -->
+	</xs:simpleType>
+	<xs:complexType name="positive-integer-type">
+		<xs:simpleContent>
+			<xs:extension base="positive-integer-simpletype">
+				<xs:attribute name="label" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="currency-positive-integer-type">
+		<xs:simpleContent>
+			<xs:extension base="positive-integer-simpletype">
+				<xs:attribute name="label" type="xs:string" use="required"/>
+				<xs:attribute name="currency" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="string-label-simpletype">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:complexType name="string-label-type">
+		<xs:simpleContent>
+			<xs:extension base="string-label-simpletype">
+				<xs:attribute name="label" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="string-label-desc-type">
+		<xs:simpleContent>
+			<xs:extension base="string-label-simpletype">
+				<xs:attribute name="label" use="required"/>
+				<xs:attribute name="desc" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="string-label-countrycode-type">
+		<xs:simpleContent>
+			<xs:extension base="string-label-simpletype">
+				<xs:attribute name="label" use="required"/>
+				<xs:attribute name="countrycode" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="label-type">
+		<xs:attribute name="label" use="required"/>
+	</xs:complexType>
+	<xs:simpleType name="empty-simpletype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value=""/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="map-container-type">
+		<xs:sequence>
+			<xs:element name="map">
+				<xs:complexType>
+					<xs:attribute name="href" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="label" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="currency-year-type">
+		<xs:annotation>
+			<xs:documentation>label, currency, year attributes</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="positive-integer-simpletype">
+				<xs:attribute name="label" type="xs:string" use="required"/>
+				<xs:attribute name="currency" type="xs:string" use="required"/>
+				<xs:attribute name="year" type="xs:gYear" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+</xs:schema>

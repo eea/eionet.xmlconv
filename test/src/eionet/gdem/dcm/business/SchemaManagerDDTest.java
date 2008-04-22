@@ -21,7 +21,7 @@ import junit.framework.TestCase;
  * SchemaManagerTest
  */
 
-public class SchemaManagerTest extends TestCase {
+public class SchemaManagerDDTest extends TestCase {
 
 	
 	/**

@@ -13,6 +13,8 @@ public class TestConstants {
 
 	//SEED FILES with test data
 	public static final String SEED_DATASET_CONVERSIONS_XML = "seed-dataset-conversions.xml";
+	public static final String SEED_DATASET_UPL_SCHEMAS_XML = "seed-dataset-upl_schemas.xml";
+	
 	//SEED FILES for conversions
 	public static final String SEED_RIVERS_XML = "seed-rivers.xls";
 	public static final String SEED_GENERAL_REPORT_XML = "seed-general-report.xml";
@@ -23,6 +25,8 @@ public class TestConstants {
 	public static final String SEED_GW_SCHEMA = "schema/seed-gw-schema.xsd";
 	public static final String SEED_XLIFF_DTD = "schema/xliff.dtd";
 	public static final String SEED_XLIFF_XML = "seed-xliff.xml";
+	public static final String SEED_GENERALREPORT_SCHEMA = "seed-generalreport.xsd";
+	public static final String SEED_GENERALREPORT_SCHEMA_UPD = "seed-generalreportUPD.xsd";
 
 	//TEST RESULT PROPERTIES
 	public final static String HTML_CONTENTYPE_RESULT ="text/html;charset=UTF-8";
@@ -35,4 +39,8 @@ public class TestConstants {
 	public final static String OZ_SQL_FILENAME_RESULT ="seed-ozone-station.sql";
 	public final static String STRCONTENT_RESULT ="Conversion works!";
 
+	
+	//USER PROPERTIES
+	public final static String TEST_USER = "tester";
+	public final static String TEST_ADMIN_USER = "roug";
 }

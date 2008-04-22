@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.sql.DriverManager;
 import java.sql.Connection;
 
+import org.dbunit.AbstractDatabaseTester;
+import org.dbunit.JdbcDatabaseTester;
 import org.dbunit.PropertiesBasedJdbcDatabaseTester;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -37,6 +39,19 @@ public class DbHelper {
 				Properties.dbUser);
 		System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD,
 				Properties.dbPwd);
+	}
+	public static void setUpDatabase(Object obj, String dataset) throws Exception{
+
+		GDEMServices.setTestConnection(true);
+		AbstractDatabaseTester  databaseTester = new  JdbcDatabaseTester(Properties.dbDriver, Properties.dbUrl, 
+				Properties.dbUser, Properties.dbPwd);
+
+        IDataSet dataSet = new FlatXmlDataSet(
+				obj.getClass().getClassLoader().getResourceAsStream(
+						dataset));
+        databaseTester.setDataSet( dataSet );
+        databaseTester.onSetup();
+		
 	}
 
 	/**
