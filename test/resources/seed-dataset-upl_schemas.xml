@@ -2,4 +2,5 @@
 <dataset>
   <t_upl_schema SCHEMA_ID="8" SCHEMA_NAME="xliff.dtd" DESCRIPTION="XLIFF schema stored locally" SCHEMA_URL="http://www.oasis-open.org/committees/xliff/documents/xliff.dtd"/>
   <t_upl_schema SCHEMA_ID="9" SCHEMA_NAME="seed-gw-schema.xsd" DESCRIPTION="Groundwater schema" SCHEMA_URL="http://dd.eionet.europa.eu/GetSchema?id=TBL4564"/>
+  <t_upl_schema SCHEMA_ID="10" SCHEMA_NAME="seed-gw-schema-delete.xsd" DESCRIPTION="Delete it" SCHEMA_URL="http://www.dummy.com"/>
 </dataset>
