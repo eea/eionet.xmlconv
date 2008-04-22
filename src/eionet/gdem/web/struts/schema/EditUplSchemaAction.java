@@ -71,6 +71,9 @@ public class EditUplSchemaAction extends Action {
 		}
 		httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
+		
+		saveErrors(httpServletRequest,errors);
+		saveMessages(httpServletRequest,messages);
 
 		return actionMapping.findForward("success");
 	}

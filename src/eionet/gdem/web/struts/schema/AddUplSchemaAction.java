@@ -21,8 +21,6 @@
 
 package eionet.gdem.web.struts.schema;
 
-import java.io.ByteArrayInputStream;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -38,8 +36,6 @@ import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
 
 public class AddUplSchemaAction extends Action {
 
@@ -64,19 +60,10 @@ public class AddUplSchemaAction extends Action {
 
 		if (schema == null || schema.getFileSize() == 0) {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.validation"));
+			saveErrors(httpServletRequest, errors);
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 			return actionMapping.findForward("fail");
 		}
-
-		/*IXmlCtx x = new XmlContext();
-		try {
-			x.setWellFormednessChecking();
-			x.checkFromInputStream(new ByteArrayInputStream(schema.getFileData()));
-		} catch (Exception e) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.error.notvalid"));
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward("fail");
-		}*/
 
 		try {
 			SchemaManager sm = new SchemaManager();
@@ -88,6 +75,8 @@ public class AddUplSchemaAction extends Action {
 		}
 		httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
+		saveErrors(httpServletRequest, errors);
+		saveMessages(httpServletRequest, messages);
 		//new schema might be added, remove the schemas list form the session.
 		httpServletRequest.getSession().removeAttribute("conversion.schemas");
 

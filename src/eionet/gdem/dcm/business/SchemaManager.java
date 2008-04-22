@@ -568,7 +568,7 @@ public class SchemaManager {
 
 			//Schema URL should be unique
 			if(!Utils.isNullStr(url)){
-				if (uplSchemaDao.checkUplSchemaFile(url)) {				
+				if (uplSchemaDao.checkUplSchemaURL(url)) {				
 					throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_URL_EXISTS);
 				}
 			}
@@ -786,7 +786,7 @@ public class SchemaManager {
 			if(file!=null && !Utils.isNullStr(file.getFileName())){
 				String fileName = file.getFileName();
 				
-				if (uplSchemaDao.checkUplSchemaFile(fileName)) {				
+				if (!fileName.equals(schema) && uplSchemaDao.checkUplSchemaFile(fileName)) {				
 					throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_FILE_EXISTS);
 				}
 				InputStream in = file.getInputStream();
@@ -801,7 +801,8 @@ public class SchemaManager {
 				in.close();
 				file.destroy();
 				oldFileName=schema;
-				bDeleteOldFile=true;
+				if (!fileName.equals(schema))
+						bDeleteOldFile=true;
 				schema=fileName;
 			}
 			
@@ -839,7 +840,7 @@ public class SchemaManager {
 			sc.setSchema(schema);
 			sc.setSchemaUrl(url);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			_logger.error("Error getting uploaded schema", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}

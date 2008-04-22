@@ -34,12 +34,8 @@ import org.apache.struts.action.ActionMessages;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.UplSchema;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 public class EditUplSchemaFormAction extends Action {
-
-	private static LoggerIF _logger = GDEMServices.getLogger();
 
 
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -61,8 +57,7 @@ public class EditUplSchemaFormAction extends Action {
 			form.setDescription(schema.getDescription());
 
 		} catch (DCMException e) {
-			e.printStackTrace();
-			_logger.error("Error editing uploaded schema", e);
+			//e.printStackTrace();
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			saveErrors(httpServletRequest, errors);
 		}
