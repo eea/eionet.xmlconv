@@ -162,7 +162,7 @@ response.setDateHeader("Expires", 0);
                         <td><a  href="<%=Names.QUERY_FOLDER%><%=query%>"><%=query%></a></td>
                         <td><%=last_modified%></td>
 	                    <td>
-                             <a href="<%=Names.SANDBOX_JSP%>?ID=<%=query_id%>"><img src="images/run.gif" alt="Run" title="Run this query in XQuery Sandbox"></img></a>
+                             <a href="<%=Names.SANDBOX_JSP%>?ID=<%=query_id%>"><img src="images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img></a>
 						</td>
 						<td>
                              <%

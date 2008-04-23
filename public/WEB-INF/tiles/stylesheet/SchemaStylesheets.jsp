@@ -55,7 +55,7 @@
 								<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
 									<td align="center">
 										<a href="searchCR?schemaUrl=<bean:write name="schema" property="schema" />&amp;conversionId=<bean:write name="stylesheet" property="convId" />"  >
-											<html:img page="/images/run.gif" altKey="label.stylesheet.run" title="run conversion"/>
+											<html:img page="/images/execute.gif" altKey="label.stylesheet.run" title="run conversion"/>
 										</a>
 									</td>
 										<logic:equal name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >

@@ -3,7 +3,7 @@
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.util.Vector,java.util.HashMap,java.util.Hashtable"%>
-<%@ page import="eionet.gdem.Constants, eionet.gdem.services.GDEMServices, eionet.gdem.utils.Utils, eionet.gdem.Properties, eionet.gdem.conversion.ssr.InputAnalyser, eionet.gdem.conversion.ssr.Names"%>
+<%@ page import="eionet.gdem.Constants, eionet.gdem.services.GDEMServices, eionet.gdem.utils.Utils, eionet.gdem.Properties, eionet.gdem.validation.InputAnalyser, eionet.gdem.conversion.ssr.Names"%>
 
 <%
 response.setHeader("Pragma", "No-cache");
