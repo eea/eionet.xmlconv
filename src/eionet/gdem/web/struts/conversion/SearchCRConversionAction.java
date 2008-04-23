@@ -90,15 +90,15 @@ public class SearchCRConversionAction extends Action {
 				httpServletRequest.getSession().setAttribute("converted.conversionId","");
 			}
 		} catch (DCMException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			_logger.error("Error searching XML files", e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e
 					.getErrorCode()));
-			// saveMessages(httpServletRequest, errors);
+			saveErrors(httpServletRequest, errors);
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 			return actionMapping.findForward("error");
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			_logger.error("Error searching XML files", e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(
 					BusinessConstants.EXCEPTION_GENERAL));
