@@ -5,10 +5,6 @@ package eionet.gdem.web.struts.schema;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.ActionServlet;
-
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
@@ -21,7 +17,6 @@ import servletunit.struts.MockStrutsTestCase;
  */
 
 public class EditUplSchemaFormActionTest  extends MockStrutsTestCase {
-    protected static Log log = LogFactory.getLog(ActionServlet.class);
 
     public EditUplSchemaFormActionTest(String testName) {
         super(testName);
@@ -34,7 +29,6 @@ public class EditUplSchemaFormActionTest  extends MockStrutsTestCase {
         
         //setup database
         DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
-        log.error("test logging");
 
     }
 
