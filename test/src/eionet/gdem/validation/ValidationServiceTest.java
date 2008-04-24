@@ -105,7 +105,7 @@ public class ValidationServiceTest extends DBTestCase{
 		ValidationService validService = new ValidationService(true);
 		validService.setLocalSchemaUrl("http://dd.eionet.europa.eu/GetSchema?id=TBL4564");
 		
-		assertEquals(validService.getValidatedSchema(),TestUtils.getSeedURL(TestConstants.SEED_GW_SCHEMA,this));
+		assertTrue(validService.getValidatedSchema().endsWith(TestConstants.SEED_GW_SCHEMA));
 		assertEquals(validService.getValidatedSchemaURL(),Properties.gdemURL.concat("/").concat(TestConstants.SEED_GW_SCHEMA));
 		
 		validService.setLocalSchemaUrl("http://dd.eionet.europa.eu/GetSchema");

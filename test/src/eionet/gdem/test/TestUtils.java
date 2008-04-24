@@ -35,7 +35,7 @@ public class TestUtils {
 			.getResource("dcm/conversions.xml").getFile();
 		Properties.convFile = conversions_filename;
 		Properties.metaXSLFolder = obj.getClass().getClassLoader().getResource("dcm").getFile();
-		Properties.schemaFolder = obj.getClass().getClassLoader().getResource("schema").getFile().substring(1);
+		Properties.schemaFolder = obj.getClass().getClassLoader().getResource("schema").getFile();
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class TestUtils {
 	 * @param obj
 	 */
 	public static String getStrutsConfigLocation() {
-		return "struts/struts-config.xml";
+		return "WEB-INF/struts/struts-config.xml";
 	}
 	public static String getStrutsTempDir(Object obj) {
 		String s =obj.getClass().getClassLoader().getResource("schema").getPath().substring(1); 
