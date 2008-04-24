@@ -335,12 +335,17 @@
 		<mkdir dir="${test-build}/acl"/>
 		<mkdir dir="${test-build}/tmp"/>
 		<mkdir dir="${test-build}/dcm"/>
-		<mkdir dir="${test-build}/struts"/>
+		<mkdir dir="${test-build}/WEB-INF"/>
 		<copy todir="${test-build}/acl" overwrite="false">
 			<fileset dir="acl"/>
 		</copy>
-		<copy todir="${test-build}/struts" overwrite="true">
-			<fileset dir="WEB-INF/struts"/>
+
+		<!-- struts TestCases needs web.xml and struts config files-->
+		<copy todir="${test-build}/WEB-INF" overwrite="true">
+			<fileset dir="public/WEB-INF">
+				<include name="web.xml"/>
+				<include name="struts/**.*"/>
+			</fileset>
 		</copy>
 
 		<copy todir="${test-build}" overwrite="false">
@@ -426,7 +431,7 @@
 
 	<target	name="test_echo">
 		<echo message="****************************************************************************************"/>
-		<echo message="Set up test databse, before running the tests."/>
+		<echo message="Set up test database, before running the tests."/>
 		<echo message="Databse connection properties should be inserted into test/resources/gdem.properties file"/>
 		<echo message="NB! Do not run the test on operational database"/>
 		<echo message="****************************************************************************************"/>
