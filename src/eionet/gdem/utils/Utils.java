@@ -42,8 +42,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * Several common methods for file handling etc
@@ -260,7 +259,8 @@ public class Utils {
      * A method for decoding the BASIC auth from request header
      */
     public static String getEncodedUsername(String str)  throws java.io.IOException {
-      byte[] b_decoded = new BASE64Decoder().decodeBuffer(str);
+    	
+      byte[] b_decoded = Base64.decodeBase64(str.getBytes());
       String str_decoded = new String(b_decoded);
       int sep =str_decoded.indexOf(":");
       if (sep>0)
@@ -272,7 +272,7 @@ public class Utils {
      * A method for decoding the BASIC auth from request header
      */
     public static String getEncodedPwd(String str)  throws java.io.IOException {
-      byte[] b_decoded = new BASE64Decoder().decodeBuffer(str);
+      byte[] b_decoded = Base64.decodeBase64(str.getBytes());
       String str_decoded = new String(b_decoded);
       int sep =str_decoded.indexOf(":");
       if (sep>0)
@@ -285,7 +285,8 @@ public class Utils {
      */
     public static String getEncodedAuthentication(String user, String pwd)  throws java.io.IOException {
       String auth = user + ":" + pwd;
-      return new BASE64Encoder().encode(auth.getBytes());
+      String ret = new String(Base64.encodeBase64(auth.getBytes()));
+      return ret;
     }
 	  /**
      * A method for escaping apostrophes
