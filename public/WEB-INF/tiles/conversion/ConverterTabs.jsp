@@ -17,9 +17,6 @@
 		<ed:tabItem href="/do/excel2XmlConversionForm" title="Convert spreadsheet to DD XML" id="excel2xml" selectedTab="<%=selectedTab%>">
 			<bean:message key="label.conversion.tab.excel2xml"/>
 		</ed:tabItem>
-		<ed:tabItem href="/do/validateXMLForm" title="Validate XML" id="validateXML" selectedTab="<%=selectedTab%>">
-			<bean:message key="label.conversion.tab.validate"/>
-		</ed:tabItem>
 	</ul>
 </div>
 <div id="tabbedmenuend"></div>

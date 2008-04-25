@@ -7,9 +7,6 @@
 
 <html:xhtml/>
 	<div style="width:100%;">
-		<tiles:insert definition="ConverterTabs">
-			<tiles:put name="selectedTab" value="validateXML" />
-		</tiles:insert>
 				
 		<ed:breadcrumbs-push label="Validate XML" level="1" />
 		<h1><bean:message key="label.conversion.validate.title"/></h1> 

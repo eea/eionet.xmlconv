@@ -72,6 +72,9 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
 			<ed:menuItem action="/do/listConvForm" title="Converter">
 				<bean:message key="label.menu.converter"/>
 			</ed:menuItem>
+			<ed:menuItem action="/do/validateXMLForm" title="Validate XML">
+				<bean:message key="label.conversion.tab.validation"/>
+			</ed:menuItem>
 			<ed:menuItem action="/workqueue.jsp" title="QA jobs">
 				<bean:message key="label.menu.QAJobs"/>
 			</ed:menuItem>
