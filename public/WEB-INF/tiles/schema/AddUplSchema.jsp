@@ -15,16 +15,8 @@
 
 			<html:form action="/addUplSchema" method="post" enctype="multipart/form-data">
 			  <table class="datatable">
-				<col style="width:16%"/>
-				<col style="width:84%"/>
-				<tr>
-  				  <th scope="row" class="scope-row">
-			        <bean:message key="label.uplSchema.schemaFile"/>:
-			      </th>
-			      <td>
-			        <html:file property="schema"  />
-			      </td>
-			    </tr>
+				<col style="width:25%"/>
+				<col style="width:75%"/>
 			    <tr>
   				  <th scope="row" class="scope-row">
 			        <bean:message key="label.uplSchema.url"/>:
@@ -33,12 +25,38 @@
 			        <html:text property="schemaUrl" style="width:400px"/>
 			      </td>
 			    </tr>
+				<tr>
+  				  <th scope="row" class="scope-row">
+			        <bean:message key="label.uplSchema.schemaFile"/>:
+			      </th>
+			      <td>
+			        <html:file property="schemaFile"  />
+			      </td>
+			    </tr>
 			    <tr>
   				  <th scope="row" class="scope-row">
 			        <bean:message key="label.uplSchema.description"/>:
 			      </th>
 			      <td>
 			        <html:textarea property="description"  rows="3" cols="30" style="width:400px"/>
+			      </td>
+			    </tr>
+			    <tr>
+  				  <th scope="row" class="scope-row">
+			        <bean:message key="label.schema.language"/>:
+			      </th>
+			      <td>
+			        <html:select property="schemaLang" >
+						<html:options property="schemaLanguages" />
+			        </html:select>			      	
+			      </td>
+			    </tr>
+			    <tr>
+  				  <th scope="row" class="scope-row">
+			        <bean:message key="label.schema.dovalidation"/>:
+			      </th>
+			      <td>
+			        <html:checkbox property="doValidation" />
 			      </td>
 			    </tr>
 			    <tr>

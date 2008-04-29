@@ -5,7 +5,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 
-<ed:breadcrumbs-push label="Uploaded schemas" level="1" />
+<ed:breadcrumbs-push label="XML schemas" level="1" />
 
 <logic:present name="schemas.uploaded">
 	<h1 class="documentFirstHeading">
@@ -20,13 +20,15 @@
 	<logic:present name="schemas" name="schemas.uploaded" scope="session" property="schemas" >
 		<div style="width: 97%">
 			<table class="datatable" width="80%">
-				<col style="width:10%"/>
+				<col style="width:15%"/>
 				<col style="width:45%"/>
+				<col style="width:5%"/>
 				<col style="width:45%"/>
 				<thead>
 					<tr>
 						<th scope="col"><span title="Action"><bean:message key="label.table.uplSchema.action"/></span></th>
 						<th scope="col"><span title="Schema"><bean:message key="label.table.uplSchema.schema"/></span></th>
+						<th scope="col"></th>
 						<th scope="col"><span title="Description"><bean:message key="label.table.uplSchema.description"/></span></th>
 					</tr>
 				</thead>
@@ -37,19 +39,36 @@
 								<a href="schemaStylesheets?backList=uplschemas&schema=<bean:write name="schema" property="schemaUrl" />">
 									<img src="<bean:write name="webRoot"/>/images/properties.gif" alt="<bean:message key="label.table.stylesheet" />" title="view stylesheets" /></a>
 								<logic:equal name="ssuPrm" value="true"  name="schemas.uploaded" scope="session" property="ssuPrm" >
-									<a href="editUplSchemaForm?schemaId=<bean:write name="schema" property="id" />">
+									<a href="schemaElemForm?backToConv=schema&schemaId=<bean:write name="schema" property="schemaId" />">
 										<img src="<bean:write name="webRoot"/>/images/edit.gif" alt="<bean:message key="label.edit" />" title="edit schema" /></a>
 								</logic:equal>
+								
+								<logic:notEqual name="ssuPrm" value="true"  name="schemas.uploaded" scope="session" property="ssuPrm" >
+									<a href="schemaElemForm?backToConv=schema&amp;schemaId=<bean:write name="schema" property="schemaId" />">
+										<html:img page="/images/info_icon.gif" altKey="label.table.schemainfo" title="view schema info"/></a>
+								</logic:notEqual>
+								
+								
+								<logic:equal name="ssuPrm" value="true"  name="schemas.uploaded" scope="session" property="ssuPrm" >
+									<a href="editUplSchemaForm?schemaId=<bean:write name="schema" property="schemaId" />">
+										<img src="<bean:write name="webRoot"/>/images/upload.gif" alt="<bean:message key="label.edit" />" title="upload schema file" /></a>
+								</logic:equal>
 								<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >
-									<a href="deleteUplSchema?schemaId=<bean:write name="schema" property="id" />"
-									onclick='return schemaDelete("<bean:write name="schema" property="schema" />");'>
+									<a href="deleteUplSchema?schemaId=<bean:write name="schema" property="schemaId" />&amp;deleteSchema=true&amp;schemaFile=<bean:write name="schema" property="uplSchemaFile" />"
+									onclick='return schemaDelete("<bean:write name="schema" property="schemaUrl" />");'>
 										<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete schema" /></a>
 								</logic:equal>
 							</td>
 							<td>
-								<a  href="<bean:write name="schema" property="schema" />">
+								<a  href="<bean:write name="schema" property="schemaUrl" />">
 									<bean:write name="schema" property="schemaUrl" />
 								</a>
+							</td>
+							<td align="center" >
+								<logic:notEmpty name="schema" property="uplSchemaFile">
+									<a href="<bean:write name="schema" property="uplSchemaFileUrl" />">
+										<img src="<bean:write name="webRoot"/>/images/file.gif" alt="<bean:message key="label.uplSchema.schemaFile" />" title="view uploaded schema" /></a>
+								</logic:notEmpty>
 							</td>
 							<td>
 									<bean:write name="schema" property="description" />
@@ -57,7 +76,7 @@
 						</tr>
 					</logic:iterate>
 					<tr>
-						<td valign="top" colspan="3">
+						<td valign="top" colspan="4">
 						</td>
 					</tr>
 				</tbody>

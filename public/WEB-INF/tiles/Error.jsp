@@ -15,7 +15,7 @@
 <logic:present name="dcm.messages">
 	<div class="system-msg">
 		<html:messages id="message" name="dcm.messages">
-			<bean:write name="message" filter="false"/>	(<%=Utils.getDateTime(new Date())%>)
+			<bean:write name="message" filter="false"/>	(<%=Utils.getDateTime(new Date())%>)<br/>
 		</html:messages>		  
 
 	</div>

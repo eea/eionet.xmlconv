@@ -22,12 +22,12 @@
 
 		<html:form action="/schemaUpdate" method="post">
 		  <table width="100%" class="datatable">
-			<col style="width:16%"/>
-			<col style="width:84%"/>
+			<col style="width:25%"/>
+			<col style="width:75%"/>
 		    <tr>
 				<th scope="row" class="scope-row">
 	    		    <html:hidden property="schemaId" />
-			        <bean:message key="label.schema.location"/>:
+			        <bean:message key="label.schema.url"/>:
 			      </th>
 			      <td align="left">
 			        <html:hidden property="backToConv" />
@@ -42,6 +42,18 @@
 	   		        </logic:notPresent>
 			      </td>
 			    </tr>
+				<logic:notEmpty name="schemaForm" property="uplSchemaFileName">
+					<tr>
+  					  <th scope="row" class="scope-row">
+				        <bean:message key="label.uplSchema.schemaFile"/>:
+				      </th>
+			    	  <td>
+						<a href="<bean:write name="schemaForm" property="uplSchemaFileUrl" />">
+							<bean:write name="schemaForm" property="uplSchemaFileName" />
+						</a>
+				      </td>
+				    </tr>
+				</logic:notEmpty>
 			    <tr>
 				  <th scope="row" class="scope-row">
 			        <bean:message key="label.schema.description"/>:
@@ -55,14 +67,46 @@
 	   		        </logic:notPresent>				    
 			      </td>
 			    </tr>
-			    <bean:define id="schemaProp" name="schema.rootElemets" scope="session" property="schema" />
-			    <logic:equal  value="true"  name="schemaProp" scope="page" property="isDTD" >
+			    <tr>
+  				  <th scope="row" class="scope-row">
+			        <bean:message key="label.schema.language"/>:
+			      </th>
+			      <td>
+		    		<logic:present name="user">
+				        <html:select property="schemaLang" >
+							<html:options property="schemaLanguages" />
+			    	    </html:select>
+					</logic:present>	    	   			      	
+		    		<logic:notPresent name="user">
+						<bean:write name="schemaForm" property="schemaLang" />
+		    		</logic:notPresent>
+			      </td>
+			    </tr>
+			    <tr>
+  				  <th scope="row" class="scope-row">
+			        <bean:message key="label.schema.dovalidation"/>:
+			      </th>
+			      <td>
+		    		<logic:present name="user">
+				        <html:checkbox property="doValidation" />
+					</logic:present>	    	   			      	
+		    		<logic:notPresent name="user">
+						<bean:write name="schemaForm" property="doValidation" />
+		    		</logic:notPresent>
+			      </td>
+			    </tr>
+			    <logic:equal value="true" name="schemaForm" property="dtd" >
 				    <tr>
 					  <th scope="row" class="scope-row">
 				        <bean:message key="label.elem.dtdid"/>:
 				      </th>
 				      <td align="left">
-				        <html:text property="dtdId" maxlength="50" size="50" />		        
+			    		<logic:present name="user">
+					        <html:text property="dtdId" maxlength="50" size="50" />		        
+						</logic:present>	    	   			      	
+		    			<logic:notPresent name="user">
+							<bean:write name="schemaForm" property="dtdId" />
+		    			</logic:notPresent>
 				      </td>
 				    </tr>
 			    </logic:equal>	
@@ -75,7 +119,12 @@
 		   			    <input type="button"  class="button" value="<bean:message key="label.cancel"/>" onclick="return submitAction(1,'schemaStylesheets');" />
 	  			    </logic:notPresent>
 	  			    <logic:present name="schemaForm" property="backToConv">
-		  			   <input type="button"  value="<bean:message key="label.cancel"/>"  class="button" onclick="location.href='<bean:write name="webRoot"/>/do/stylesheetList'" />
+		  			    <logic:equal name="schemaForm" property="backToConv" value="schema">
+		  			   		<input type="button"  value="<bean:message key="label.cancel"/>"  class="button" onclick="location.href='<bean:write name="webRoot"/>/do/uplSchemas'" />
+		  			    </logic:equal>
+		  			    <logic:notEqual name="schemaForm" property="backToConv" value="schema">
+		  			   		<input type="button"  value="<bean:message key="label.cancel"/>"  class="button" onclick="location.href='<bean:write name="webRoot"/>/do/stylesheetList'" />
+		  			    </logic:notEqual>	  			    
 	  			    </logic:present>	  			    
    		      </logic:equal>
 			  <logic:notEqual name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
@@ -83,7 +132,12 @@
 		   			    <input type="button"  class="button" value="<bean:message key="label.ok"/>" onclick="return submitAction(1,'schemaStylesheets');" />
 		  			</logic:notPresent>
 	  			   <logic:present name="schemaForm" property="backToConv">
-		  			   <input type="button"  value="<bean:message key="label.ok"/>"  class="button" onclick="location.href='<bean:write name="webRoot"/>/do/stylesheetList'" />
+		  			    <logic:equal name="schemaForm" property="backToConv" value="schema">
+		  			   		<input type="button"  value="<bean:message key="label.cancel"/>"  class="button" onclick="location.href='<bean:write name="webRoot"/>/do/uplSchemas'" />
+		  			    </logic:equal>
+		  			    <logic:notEqual name="schemaForm" property="backToConv" value="schema">
+		  			   		<input type="button"  value="<bean:message key="label.cancel"/>"  class="button" onclick="location.href='<bean:write name="webRoot"/>/do/stylesheetList'" />
+		  			    </logic:notEqual>	  			    
 	  			   </logic:present>
 			   </logic:notEqual>	
 			  </td>

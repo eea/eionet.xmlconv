@@ -162,6 +162,7 @@
         </action>        
         <action path="/editUplSchemaForm" name="EditUplSchemaForm" type="eionet.gdem.web.struts.schema.EditUplSchemaFormAction" input="/editUplSchema.jsp" scope="request">
             <forward name="success" path="/editUplSchema.jsp" redirect="true" />
+        	<forward name="fail" path="/do/editUplSchemaForm"  redirect="false"/>
         </action>
         <action path="/editUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.EditUplSchemaAction" name="EditUplSchemaForm" cancellable="true">           
         	<forward name="success" path="/do/uplSchemas"  redirect="true"/>            
