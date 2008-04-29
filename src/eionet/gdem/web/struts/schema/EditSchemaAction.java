@@ -51,6 +51,8 @@ public class EditSchemaAction extends Action {
 		String schema = form.getSchema();
 		String description = form.getDescription();
 		String dtdId = form.getDtdId();
+		String schemaLang = form.getSchemaLang();
+		boolean doValidation = form.isDoValidation();
 
 		if (isCancelled(httpServletRequest)) {
 			try {
@@ -87,7 +89,7 @@ public class EditSchemaAction extends Action {
 
 		try {
 			SchemaManager sm = new SchemaManager();
-			sm.update(user, schemaId, schema, description, dtdId);
+			sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdId);
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.updated"));
 			httpServletRequest.setAttribute("schema", schema);
 		} catch (DCMException e) {

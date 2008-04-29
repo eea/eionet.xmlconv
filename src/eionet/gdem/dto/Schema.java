@@ -41,8 +41,13 @@ public class Schema implements Serializable {
 	private List cdrfiles;
 	private List crfiles;
 	private Date datasetReleased;
+	private boolean doValidation=false;
+	private String schemaLang;
+	private String uplSchemaFileName;
 	
-
+	private static String[] schemaLanguages={"XSD","DTD"};
+	private static String defaultSchemaLang="XSD";
+	
 	public Schema() {
 
 	}
@@ -89,7 +94,7 @@ public class Schema implements Serializable {
 
 
 	public boolean getIsDTD() {
-		return isDTD;
+		return getSchemaLang().equals("DTD");
 	}
 
 
@@ -185,5 +190,42 @@ public class Schema implements Serializable {
 			ret = id.startsWith("TBL");
 		
 		return ret;
+	}
+	public static String[] getSchemaLanguages(){
+		return schemaLanguages;
+	}
+	public static String getDefaultSchemaLang(){
+		return defaultSchemaLang;
+	}
+
+
+	public boolean isDoValidation() {
+		return doValidation;
+	}
+
+
+	public void setDoValidation(boolean doValidation) {
+		this.doValidation = doValidation;
+	}
+
+
+	public String getSchemaLang() {
+		if(schemaLang==null) schemaLang=getDefaultSchemaLang();
+		return schemaLang;
+	}
+
+
+	public void setSchemaLang(String schemaLang) {
+		this.schemaLang = schemaLang;
+	}
+
+
+	public String getUplSchemaFileName() {
+		return uplSchemaFileName;
+	}
+
+
+	public void setUplSchemaFileName(String uplSchemaFile) {
+		this.uplSchemaFileName = uplSchemaFile;
 	}
 }

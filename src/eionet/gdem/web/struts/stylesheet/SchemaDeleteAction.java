@@ -50,7 +50,7 @@ public class SchemaDeleteAction extends Action {
 
 		try {
 			SchemaManager sm = new SchemaManager();
-			sm.delete(user_name, schemaId);
+			sm.deleteSchemaStylesheets(user_name, schemaId);
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.deleted"));
 		} catch (DCMException e) {
 			e.printStackTrace();

@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.Hashtable;
@@ -15,11 +16,22 @@ import java.util.Hashtable;
 
 public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 
+	//T_SCHEMA LEFT JOIN T_UPL_SCHEMA
+	private static final String qSchemas = 	"SELECT "
+		+ "S." + SCHEMA_ID_FLD + ", "
+		+ "S." + XML_SCHEMA_FLD + ", "
+		+ "S." + SCHEMA_DESCR_FLD + ", "
+		+ "U." + UPL_SCHEMA_ID_FLD + ", " 
+		+ "U." + UPL_SCHEMA_FLD
+		+ " FROM " + SCHEMA_TABLE +" S LEFT JOIN " + UPL_SCHEMA_TABLE + " U ON S."
+		+ SCHEMA_ID_FLD + "=U." + UPL_FK_SCHEMA_ID  
+		+ " ORDER BY S." + XML_SCHEMA_FLD;
+
 	private static final String qUplSchema = 	"SELECT " 
 												+ UPL_SCHEMA_ID_FLD + ", " 
 												+ UPL_SCHEMA_FLD + ", " 
 												+ UPL_SCHEMA_DESC  + ", " 
-												+ UPL_SCHEMA_URL
+												+ UPL_FK_SCHEMA_ID
 												+ " FROM " + UPL_SCHEMA_TABLE 
 												+ " ORDER BY " + UPL_SCHEMA_FLD;
 	
@@ -29,7 +41,7 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 													+ " ( " 
 													+ UPL_SCHEMA_FLD + " ," 
 													+ UPL_SCHEMA_DESC + " ," 
-													+ UPL_SCHEMA_URL 
+													+ UPL_FK_SCHEMA_ID 
 													+ ") " 
 													+ "VALUES (?,?,?)";
 	
@@ -38,25 +50,37 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 	
 	
 	private static final String  qUplSchemaByID = 	"SELECT " 
-													+ SCHEMA_ID_FLD + ", " 
-													+ UPL_SCHEMA_FLD + "," 
-													+ UPL_SCHEMA_DESC + "," 
-													+ UPL_SCHEMA_URL 
-													+ " FROM " + UPL_SCHEMA_TABLE 
-													+ " WHERE " + SCHEMA_ID_FLD + "= ?";
+													+ "S." + SCHEMA_ID_FLD + ", "
+													+ "S." + XML_SCHEMA_FLD + ", "
+													+ "S." + SCHEMA_DESCR_FLD + ", "
+													+ "U." + UPL_SCHEMA_ID_FLD + ", " 
+													+ "U." + UPL_SCHEMA_FLD
+													+ " FROM " + SCHEMA_TABLE +" S RIGHT JOIN " + UPL_SCHEMA_TABLE + " U ON S."
+													+ SCHEMA_ID_FLD + "=U." + UPL_FK_SCHEMA_ID  
+													+ " WHERE U." + SCHEMA_ID_FLD + "= ?";
 	
-	private static final String  qUplSchemaByURL = 	"SELECT " 
+	private static final String  qUplSchemaByFkId = 	"SELECT " 
+		+ "S." + SCHEMA_ID_FLD + ", "
+		+ "S." + XML_SCHEMA_FLD + ", "
+		+ "S." + SCHEMA_DESCR_FLD + ", "
+		+ "U." + UPL_SCHEMA_ID_FLD + ", " 
+		+ "U." + UPL_SCHEMA_FLD
+		+ " FROM " + SCHEMA_TABLE +" S LEFT JOIN " + UPL_SCHEMA_TABLE + " U ON S."
+		+ SCHEMA_ID_FLD + "=U." + UPL_FK_SCHEMA_ID  
+		+ " WHERE S." + SCHEMA_ID_FLD + "= ?";
+
+	private static final String  qUplSchemaByURL = 	"SELECT U." 
 		+ SCHEMA_ID_FLD + ", " 
-		+ UPL_SCHEMA_FLD + "," 
-		+ UPL_SCHEMA_DESC + "," 
-		+ UPL_SCHEMA_URL 
-		+ " FROM " + UPL_SCHEMA_TABLE 
-		+ " WHERE " + UPL_SCHEMA_URL + "= ?";
+		+ "U." + UPL_SCHEMA_FLD + "," 
+		+ "S." + SCHEMA_DESCR_FLD + "," 
+		+ "s." + XML_SCHEMA_FLD 
+		+ " FROM " + SCHEMA_TABLE +" S RIGHT JOIN " + UPL_SCHEMA_TABLE + " U ON S."
+		+ " WHERE S." + XML_SCHEMA_FLD + "= ?";
 
 	private static final String qUpdateUplSchema = "UPDATE  " + UPL_SCHEMA_TABLE 
 													+ " SET " + UPL_SCHEMA_FLD + "= ?, " 
 													+ UPL_SCHEMA_DESC + "= ?, " 
-													+ UPL_SCHEMA_URL+ "= ? " 
+													+ UPL_FK_SCHEMA_ID+ "= ? " 
 													+ " WHERE " + UPL_SCHEMA_ID_FLD + "= ?";
 
 	private static final String qUpdateSchema = "UPDATE  " + SCHEMA_TABLE 
@@ -68,7 +92,7 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 
 	private static final String  checkUplSchemaFile = "SELECT COUNT(*) FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_SCHEMA_FLD + "= ?";	
 	
-	private static final String  checkUplSchemaURL = "SELECT COUNT(*) FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_SCHEMA_URL + "!='' AND " + UPL_SCHEMA_URL + "= ?";	
+	private static final String  checkUplSchemaFK = "SELECT COUNT(*) FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_FK_SCHEMA_ID + "!='' AND " + UPL_FK_SCHEMA_ID + "= ?";	
 
 	public UPLSchemaMySqlDao() {}
 	
@@ -112,7 +136,7 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 				h.put("id", r[i][0]);
 				h.put("schema", r[i][1]);
 				h.put("description", r[i][2]);
-				h.put("schema_url", r[i][3]);
+				h.put("fk_schema_id", r[i][3]);
 				v.add(h);
 			}
 		} 
@@ -120,6 +144,36 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 			closeAllResources(rs,pstmt,conn);
 		}		
 		return v;		
+	}
+	
+	public ArrayList<HashMap<String,String>> getSchemas() throws SQLException{
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs =null;
+		ArrayList<HashMap<String,String>> l = null;
+ 		
+		if (isDebugMode){ logger.debug("Query is " + qSchemas);}
+		
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(qSchemas);
+			rs = pstmt.executeQuery();			
+			String[][] r = getResults(rs);
+			l = new ArrayList<HashMap<String,String>>(r.length);
+			for (int i = 0; i < r.length; i++) {
+				HashMap<String,String> h = new HashMap<String,String>();
+				h.put("schema_id", r[i][0]);
+				h.put("xml_schema", r[i][1]);
+				h.put("description", r[i][2]);
+				h.put("upl_schema_id", r[i][3]);
+				h.put("upl_schema_file", r[i][4]);
+				l.add(h);
+			}
+		} 
+		finally {
+			closeAllResources(rs,pstmt,conn);
+		}		
+		return l;		
 	}
 
 	
@@ -134,17 +188,18 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 		return _getLastInsertID();
 	}
 */
-	public String addUplSchema(String schema, String description, String schema_url) throws SQLException{
+	public String addUplSchema(String schema, String description, String fk_schema_id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		
+		description = (description == null ? "" : description);
+
 		if (isDebugMode){ logger.debug("Query is " + qInsertUplSchema);}		
 		try{
 			conn = getConnection();	
 			pstmt = conn.prepareStatement(qInsertUplSchema);
 			pstmt.setString(1, schema);
 			pstmt.setString(2, description);
-			pstmt.setString(3, schema_url);
+			pstmt.setString(3, fk_schema_id);
 			pstmt.executeUpdate();
 		}finally{
 			closeAllResources(null,pstmt,conn);			
@@ -201,7 +256,7 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 */	
 
 	
-	public void updateUplSchema(String schema_id, String schema_file, String description, String schema_url) throws SQLException{
+	public void updateUplSchema(String schema_id, String schema_file, String description, String fk_schema_id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
@@ -215,7 +270,7 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 			pstmt = conn.prepareStatement(qUpdateUplSchema);
 			pstmt.setString(1,schema_file);
 			pstmt.setString(2,description);
-			pstmt.setString(3,schema_url);
+			pstmt.setString(3,fk_schema_id);
 			pstmt.setInt(4,Integer.parseInt(schema_id));
 			pstmt.executeUpdate();
 			pstmt.close();				
@@ -331,9 +386,10 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 
 			h = new Hashtable();
 			h.put("schema_id", r[0][0]);
-			h.put("schema", r[0][1]);
-			h.put("description", r[0][2]);			
-			h.put("schema_url", r[0][3]);			
+			h.put("xml_schema", r[0][1]);
+			h.put("description", r[0][2]);
+			h.put("upl_schema_id", r[0][3]);
+			h.put("upl_schema_file", r[0][4]);
 		} 
 		finally {
 			closeAllResources(rs,pstmt,conn);
@@ -342,7 +398,45 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 	}
 		
 	
+	public HashMap<String,String> getUplSchemaByFkSchemaId(String schemaId) throws SQLException{
+		int id = 0;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs =null;
+		HashMap<String,String> h = null;
+	
+		if (schemaId == null) throw new SQLException("Schema ID not defined");
+		try {
+			id = Integer.parseInt(schemaId);
+		} catch (NumberFormatException n) {
+			throw new SQLException("not numeric ID " + schemaId);
+		}
+			
+		if (isDebugMode){ logger.debug("Query is " + qUplSchemaByFkId);}
+		
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(qUplSchemaByFkId);
+			pstmt.setInt(1,id);
+			rs = pstmt.executeQuery();			
+			String[][] r = getResults(rs);
 
+			if (r.length == 0) return null;
+
+			h = new HashMap<String,String>();
+			
+			h.put("schema_id", r[0][0]);
+			h.put("xml_schema", r[0][1]);
+			h.put("description", r[0][2]);
+			h.put("upl_schema_id", r[0][3]);
+			h.put("upl_schema_file", r[0][4]);
+		} 
+		finally {
+			closeAllResources(rs,pstmt,conn);
+		}		
+		return h;			
+	}
+		
 	public boolean checkUplSchemaFile(String schemaFileName) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -370,18 +464,18 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 
 
 
-	public boolean checkUplSchemaURL(String schemaURL) throws SQLException {
+	public boolean checkUplSchemaFK(String schemaFK) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs =null;
 		boolean result = false;
  		
-		if (isDebugMode){ logger.debug("Query is " + checkUplSchemaURL);}
+		if (isDebugMode){ logger.debug("Query is " + checkUplSchemaFK);}
 		
 		try {
 			conn = getConnection();
-			pstmt = conn.prepareStatement(checkUplSchemaURL);
-			pstmt.setString(1,schemaURL);
+			pstmt = conn.prepareStatement(checkUplSchemaFK);
+			pstmt.setString(1,schemaFK);
 			rs = pstmt.executeQuery();			
 			String[][] r = getResults(rs);
 			String count = r[0][0];
@@ -397,13 +491,13 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 
 
 
-	public HashMap<String,String> getUplSchemaByURL(String schemaUrl) throws SQLException {
+	public HashMap<String,String> getUplSchemaByUrl(String schemaUrl) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs =null;
 		HashMap<String,String> h = null;
 	
-		if (schemaUrl == null) throw new SQLException("Schema URL not defined");
+		if (schemaUrl == null) throw new SQLException("Schema URL key not defined");
 			
 		if (isDebugMode){ logger.debug("Query is " + qUplSchemaByURL);}
 		
@@ -420,7 +514,7 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 			h.put("schema_id", r[0][0]);
 			h.put("schema", r[0][1]);
 			h.put("description", r[0][2]);			
-			h.put("schema_url", r[0][3]);			
+			h.put("fk_schema_id", r[0][3]);			
 		} 
 		finally {
 			closeAllResources(rs,pstmt,conn);

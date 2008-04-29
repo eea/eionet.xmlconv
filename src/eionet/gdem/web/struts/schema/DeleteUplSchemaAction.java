@@ -35,6 +35,7 @@ import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.Utils;
 
 public class DeleteUplSchemaAction extends Action {
 
@@ -47,11 +48,20 @@ public class DeleteUplSchemaAction extends Action {
 
 		String schemaId = (String) httpServletRequest.getParameter("schemaId");
 		String user_name = (String) httpServletRequest.getSession().getAttribute("user");
+		String schemaFile = (String) httpServletRequest.getParameter("schemaFile");
+		boolean deleteSchema = httpServletRequest.getParameter("deleteSchema")!=null;
 
 		try {
 			SchemaManager sm = new SchemaManager();
-			sm.deleteUplSchema(user_name, schemaId);
-			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.deleted"));
+			boolean schemaDeleted = sm.deleteUplSchema(user_name, schemaId, deleteSchema);
+			if(!Utils.isNullStr(schemaFile))
+				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.deleted"));
+
+			if(deleteSchema && schemaDeleted)
+				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.deleted"));
+
+			if(deleteSchema && !schemaDeleted)
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.notdeleted"));
 		} catch (DCMException e) {
 			//e.printStackTrace();
 			_logger.error("Error deleting root schema",e);

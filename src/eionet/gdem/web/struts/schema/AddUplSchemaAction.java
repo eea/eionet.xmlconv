@@ -32,10 +32,12 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.upload.FormFile;
 
+import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.Utils;
 
 public class AddUplSchemaAction extends Action {
 
@@ -47,9 +49,11 @@ public class AddUplSchemaAction extends Action {
 		ActionMessages messages = new ActionMessages();
 		UplSchemaForm form = (UplSchemaForm) actionForm;
 
-		FormFile schema = form.getSchema();
+		FormFile schemaFile = form.getSchemaFile();
 		String desc = form.getDescription();
-		String url = form.getSchemaUrl();
+		String schemaUrl = form.getSchemaUrl();
+		boolean doValidation = form.isDoValidation();
+		String schemaLang = form.getSchemaLang();
 
 		String user = (String) httpServletRequest.getSession().getAttribute("user");
 
@@ -58,7 +62,7 @@ public class AddUplSchemaAction extends Action {
 			return actionMapping.findForward("success");
 		}
 
-		if (schema == null || schema.getFileSize() == 0) {
+		if ((schemaFile == null || schemaFile.getFileSize() == 0) && Utils.isNullStr(schemaUrl) ) {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.validation"));
 			saveErrors(httpServletRequest, errors);
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
@@ -67,7 +71,29 @@ public class AddUplSchemaAction extends Action {
 
 		try {
 			SchemaManager sm = new SchemaManager();
-			sm.addUplSchema(user, schema, desc, url);
+			String fileName ="";
+			String tmpSchemaUrl ="";
+			//generate unique file name
+			if(schemaFile!=null){
+				fileName = sm.generateUniqueSchemaFilename(user, Utils.extractExtension(schemaFile.getFileName())); 
+				if (Utils.isNullStr(schemaUrl)){
+					tmpSchemaUrl = Properties.gdemURL + "/schema/" + fileName;
+					schemaUrl=tmpSchemaUrl;
+				}
+			}
+			//Add row to T_SCHEMA table			
+			String schemaID = sm.addSchema(user, schemaUrl, desc, schemaLang, doValidation);
+			if(schemaFile!=null){
+				//	Change the filename to schema-UniqueIDxsd
+				fileName = sm.generateSchemaFilenameByID(Properties.schemaFolder,schemaID, Utils.extractExtension(schemaFile.getFileName()));
+			//	Add row to T_UPL_SCHEMA table			
+				sm.addUplSchema(user, schemaFile, fileName, schemaID);
+			//	Update T_SCHEMA table set 
+				if (!Utils.isNullStr(tmpSchemaUrl)){
+					schemaUrl = Properties.gdemURL + "/schema/" + fileName;
+				}
+				sm.update(user, schemaID, schemaUrl, desc, schemaLang, doValidation, null);
+			}
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.inserted"));
 		} catch (DCMException e) {
 			_logger.error("Error adding upload schema",e);

@@ -28,14 +28,27 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 
+
 public class EditUplSchemaForm extends ActionForm {
 
 	private FormFile schemaFile;
 	private String schemaFileName;
-	private String schema;
-	private String idSchema;
+	private String schemaId;
+	private String uplSchemaId;
 	private String description;
 	private String schemaUrl;
+	private String uplSchemaFileUrl;
+	private String lastModified;
+
+
+	public String getLastModified() {
+		return lastModified;
+	}
+
+
+	public void setLastModified(String lastModified) {
+		this.lastModified = lastModified;
+	}
 
 
 	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
@@ -46,10 +59,11 @@ public class EditUplSchemaForm extends ActionForm {
 	public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
 		schemaFile = null;
 		schemaFileName = null;
-		schema = null;
-		idSchema = null;
+		schemaId = null;
+		uplSchemaId = null;
 		description = null;
 		schemaUrl = null;
+		uplSchemaFileUrl = null;
 	}
 
 
@@ -63,23 +77,13 @@ public class EditUplSchemaForm extends ActionForm {
 	}
 
 
-	public String getIdSchema() {
-		return idSchema;
+	public String getSchemaId() {
+		return schemaId;
 	}
 
 
-	public void setIdSchema(String idSchema) {
-		this.idSchema = idSchema;
-	}
-
-
-	public String getSchema() {
-		return schema;
-	}
-
-
-	public void setSchema(String schema) {
-		this.schema = schema;
+	public void setSchemaId(String idSchema) {
+		this.schemaId = idSchema;
 	}
 
 
@@ -110,6 +114,26 @@ public class EditUplSchemaForm extends ActionForm {
 
 	public void setSchemaFileName(String schemaFileName) {
 		this.schemaFileName = schemaFileName;
+	}
+
+
+	public String getUplSchemaId() {
+		return uplSchemaId;
+	}
+
+
+	public void setUplSchemaId(String uplSchemaId) {
+		this.uplSchemaId = uplSchemaId;
+	}
+
+
+	public String getUplSchemaFileUrl() {
+		return uplSchemaFileUrl;
+	}
+
+
+	public void setUplSchemaFileUrl(String schemaFileUrl) {
+		this.uplSchemaFileUrl = schemaFileUrl;
 	}
 
 }

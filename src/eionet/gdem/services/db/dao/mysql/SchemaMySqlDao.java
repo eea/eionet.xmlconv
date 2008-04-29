@@ -20,13 +20,17 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 												+ " ( " 
 												+ XML_SCHEMA_FLD + ", " 
 												+ SCHEMA_DESCR_FLD + ", " 
+												+ SCHEMA_LANG_FLD + ", " 
+												+ SCHEMA_VALIDATE_FLD + ", " 
 												+ DTD_PUBLIC_ID_FLD 
 												+ ")" 
-												+ " VALUES (?,?,?)";
+												+ " VALUES (?,?,?,?,?)";
 
 	private static final String qUpdateSchema = "UPDATE  " + SCHEMA_TABLE 
 												+ " SET " + XML_SCHEMA_FLD + "= ?" + ", " 
 												+ SCHEMA_DESCR_FLD + "= ?" + ", " 
+												+ SCHEMA_LANG_FLD + "= ?" + ", " 
+												+ SCHEMA_VALIDATE_FLD + "= ?" + ", " 
 												+ DTD_PUBLIC_ID_FLD + "= ? " + "" 
 												+ " WHERE " + SCHEMA_ID_FLD + "= ?";
 	
@@ -34,7 +38,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 	private static final String qDeleteQueries = "DELETE FROM " + QUERY_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?";
 	private static final String qDeleteRootElement = "DELETE FROM " + ROOTELEM_TABLE + " WHERE " + ELEM_SCHEMA_ID_FLD + "= ?";
 	private static final String qDeleteSchema = "DELETE FROM " + SCHEMA_TABLE + " WHERE " + SCHEMA_ID_FLD + "= ?";
-	
+	private static final String qDeleteSchemaFiles = "DELETE FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_FK_SCHEMA_ID + "= ?";
 
 	
 	
@@ -43,7 +47,8 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 												+ XML_SCHEMA_FLD + ", " 
 												+ SCHEMA_DESCR_FLD + ", " 
 												+ DTD_PUBLIC_ID_FLD + ", " 
-												+ SCHEMA_VALIDATE_FLD 
+												+ SCHEMA_VALIDATE_FLD + ", " 
+												+ SCHEMA_LANG_FLD 
 												+ " FROM " + SCHEMA_TABLE ;
 
 	private static final String qAllSchemas = 	qSchemaBase  +  " ORDER BY " + XML_SCHEMA_FLD;
@@ -89,7 +94,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 	}
 */	
 	public String addSchema(String xmlSchema,  String description) throws SQLException{
-		return addSchema(xmlSchema, description, null);		
+		return addSchema(xmlSchema, description, null, false, null);		
 	}
 	
 	
@@ -109,18 +114,22 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 		return getSchemaID(xmlSchema);
 	}
 */			
-	public String addSchema(String xmlSchema,  String description, String public_id) throws SQLException{
+	public String addSchema(String xmlSchema,  String description, String schemaLang, boolean doValidate, String public_id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		description = (description == null ? "" : description);
-		
+		schemaLang = (schemaLang == null ? "" : schemaLang);
+		String strValidate = doValidate?"1":"0";
+	
 		if (isDebugMode){ logger.debug("Query is " + qInsertSchema);}		
 		try{
 			conn = getConnection();	
 			pstmt = conn.prepareStatement(qInsertSchema);
 			pstmt.setString(1, xmlSchema);
 			pstmt.setString(2, description);
-			pstmt.setString(3, public_id);
+			pstmt.setString(3, schemaLang);
+			pstmt.setString(4, strValidate);
+			pstmt.setString(5, public_id);
 			pstmt.executeUpdate();
 		}finally{
 			closeAllResources(null,pstmt,conn);			
@@ -128,33 +137,13 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 		return getSchemaID(xmlSchema);		
 	}
 	
-/*	public void updateSchema(String schema_id, String xmlSchema, String description, String public_id) throws SQLException {
-
-		description = (description == null ? "" : description);
-		public_id = (public_id == null ? "" : public_id);
-
-		String sql = "UPDATE  " + SCHEMA_TABLE + " SET " + XML_SCHEMA_FLD + "=" + Utils.strLiteral(xmlSchema) + ", " + SCHEMA_DESCR_FLD + "=" + Utils.strLiteral(description) + ", " + DTD_PUBLIC_ID_FLD + "=" + Utils.strLiteral(public_id) + "" + " WHERE " + SCHEMA_ID_FLD + "=" + schema_id;
-
-		_executeUpdate(sql);
-
-		if (xmlSchema.startsWith(Properties.gdemURL + "/schema/")) {
-
-			String url = Properties.gdemURL + "/schema/";
-			String schema = xmlSchema.substring(url.length(), xmlSchema.length());
-
-			sql = "UPDATE  " + UPL_SCHEMA_TABLE + " SET " + SCHEMA_DESCR_FLD + "=" + Utils.strLiteral(description) + " WHERE " + UPL_SCHEMA_FLD + "=" + Utils.strLiteral(schema);
-
-			_executeUpdate(sql);
-		}
-
-	}
-
-*/
-	public void updateSchema(String schema_id, String xmlSchema,  String description, String public_id) throws SQLException{
+	public void updateSchema(String schema_id, String xmlSchema,  String description, String schemaLang, boolean doValidate, String public_id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		description = (description == null ? "" : description);
+		schemaLang = (schemaLang == null ? "" : schemaLang);
 		public_id = (public_id == null ? "" : public_id);
+		String strValidate = doValidate?"1":"0";
 
 		
 		if (isDebugMode){ logger.debug("Query is " + qUpdateSchema);}		
@@ -163,8 +152,10 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 			pstmt = conn.prepareStatement(qUpdateSchema);
 			pstmt.setString(1, xmlSchema);
 			pstmt.setString(2, description);
-			pstmt.setString(3, public_id);
-			pstmt.setInt(4, Integer.parseInt(schema_id));
+			pstmt.setString(3, schemaLang);
+			pstmt.setString(4, strValidate);
+			pstmt.setString(5, public_id);
+			pstmt.setInt(6, Integer.parseInt(schema_id));
 			pstmt.executeUpdate();
 		}finally{
 			closeAllResources(null,pstmt,conn);			
@@ -229,7 +220,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 	}
 */	
 
-	public void removeSchema(String schemaId, boolean del_stylesheets, boolean del_queries, boolean del_self) throws SQLException{
+	public void removeSchema(String schemaId, boolean del_stylesheets, boolean del_queries, boolean del_upl_schemas, boolean del_self) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
@@ -254,6 +245,15 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 				pstmt.close();				
 			}
 
+			if (del_upl_schemas) {
+				// delete all files from T_UPL_SCHEMA table 
+				pstmt = conn.prepareStatement(qDeleteSchemaFiles);
+				pstmt.setInt(1,schemaIdInt);
+				if (isDebugMode){ logger.debug("Query is " + qDeleteSchemaFiles);}				
+				pstmt.executeUpdate();				
+				pstmt.close();				
+			}
+
 			if (del_self) {
 				// delete all root element mappings at first
 				pstmt = conn.prepareStatement(qDeleteRootElement);
@@ -262,6 +262,8 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 				pstmt.executeUpdate();				
 				pstmt.close();				
 
+				
+				//Delete row from T_SCHEMA
 				pstmt = conn.prepareStatement(qDeleteSchema);
 				pstmt.setInt(1,schemaIdInt);
 				if (isDebugMode){ logger.debug("Query is " + qDeleteSchema);}								
@@ -380,6 +382,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 			      h.put("description", r[i][2]);
 			      h.put("dtd_public_id", r[i][3]);
 			      h.put("validate", r[i][4]);
+			      h.put("schema_lang", r[i][5]);
 			      if (stylesheets){
 				        Vector v_xls=getSchemaStylesheets(r[i][0]);
 				        h.put("stylesheets", v_xls);

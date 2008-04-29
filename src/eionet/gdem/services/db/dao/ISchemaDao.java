@@ -2,7 +2,6 @@ package eionet.gdem.services.db.dao;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Vector;
 
 public interface ISchemaDao extends IDbSchema{
@@ -10,19 +9,23 @@ public interface ISchemaDao extends IDbSchema{
 	  * Adds a new Schema to the database
 	  * @param xmlSchema - xml schema  (http://eionet.eea.eu.int/RASchema"
 	  * @param xsdDescription - text describing the schema
+	  * @param schemaLang - SD, DTD, ..
+	  * @param doValidate - use schema for validatin
 	  * @param public_id - dtd public id
 	  * @return The ID of the added schema
 	  */
-	  public String addSchema(String xmlSchema,  String description, String public_id) throws SQLException;
+	  public String addSchema(String xmlSchema,  String description, String schemaLang, boolean doValidate, String public_id) throws SQLException;
 
 	  /**
 	  * Updates a Schema properties in the database
 	  * @param schema_id - id from database, used as a constraint 
 	  * @param xmlSchema - xml schema  (http://eionet.eea.eu.int/RASchema"
+	  * @param schemaLang - SD, DTD, ..
+	  * @param doValidate - use schema for validatin
 	  * @param xsdDescription - text describing the schema
 	  * @param public_id - dtd public id
 	  */
-	  public void updateSchema(String schema_id, String xmlSchema,  String description, String public_id) throws SQLException;
+	  public void updateSchema(String schema_id, String xmlSchema,  String description, String schemaLang, boolean doValidation, String public_id) throws SQLException;
 
 
 	  /**
@@ -39,10 +42,15 @@ public interface ISchemaDao extends IDbSchema{
 
 
 	  /**
-	  * Removes the schema and all it's stylesheets
-	  * @param - schema ID
-	  */
-	  public void removeSchema(String schemaId, boolean del_stylesheets, boolean del_queries, boolean del_self) throws SQLException;
+ 	   * Removes the schema and all it's related stuff if needed
+	   * @param schemaId 
+	   * @param del_stylesheets
+	   * @param del_queries
+	   * @param del_upl_schemas
+	   * @param del_self
+	   * @throws SQLException
+	   */
+	  public void removeSchema(String schemaId, boolean del_stylesheets, boolean del_queries, boolean del_upl_schemas, boolean del_self) throws SQLException;
 
 
 

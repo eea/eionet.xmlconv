@@ -27,10 +27,23 @@ import eionet.gdem.utils.Utils;
 
 public class UplSchema implements Serializable {
 
-	private String id;
-	private String schema;
-	private String description;
+	private String uplSchemaId;
+	private String uplSchemaFile;
+	private String uplSchemaFileUrl;
+	private String schemaId;
 	private String schemaUrl;
+	private String description;
+	private String lastModified;
+
+
+	public String getLastModified() {
+		return lastModified;
+	}
+
+
+	public void setLastModified(String lastModified) {
+		this.lastModified = lastModified;
+	}
 
 
 	public UplSchema() {
@@ -38,23 +51,23 @@ public class UplSchema implements Serializable {
 	}
 
 
-	public String getId() {
-		return id;
+	public String getUplSchemaId() {
+		return uplSchemaId;
 	}
 
 
-	public void setId(String id) {
-		this.id = id;
+	public void setUplSchemaId(String id) {
+		this.uplSchemaId = id;
 	}
 
 
-	public String getSchema() {
-		return schema;
+	public String getSchemaUrl() {
+		return schemaUrl;
 	}
 
 
-	public void setSchema(String schema) {
-		this.schema = schema;
+	public void setSchemaUrl(String schema) {
+		this.schemaUrl = schema;
 	}
 
 
@@ -67,15 +80,33 @@ public class UplSchema implements Serializable {
 		this.description = description;
 	}
 
-
-	public String getSchemaUrl() {
-		
-		return schemaUrl;
+	public String getUplSchemaFile() {
+		return uplSchemaFile;
 	}
 
 
-	public void setSchemaUrl(String schemaUrl) {
-		this.schemaUrl = schemaUrl;
+	public void setUplSchemaFile(String uplSchemaFile) {
+		this.uplSchemaFile = uplSchemaFile;
+	}
+
+
+	public String getSchemaId() {
+		return schemaId;
+	}
+
+
+	public void setSchemaId(String schemaId) {
+		this.schemaId = schemaId;
+	}
+
+
+	public String getUplSchemaFileUrl() {
+		return uplSchemaFileUrl;
+	}
+
+
+	public void setUplSchemaFileUrl(String uplSchemaFileUrl) {
+		this.uplSchemaFileUrl = uplSchemaFileUrl;
 	}
 
 }

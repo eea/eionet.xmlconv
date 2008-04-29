@@ -290,7 +290,7 @@ public class MultipartFileUpload{
 	     * ex: genFileName( test.xls, 1 )= test_1.xls
 	     *     genFileName( test_1.xls, 2 )= test_2.xls
 	     */
-	    private String getGeneratedFileName(String fileName, int n){
+	    public static String getGeneratedFileName(String fileName, int n){
 	      String ret ;
 	      int pos = fileName.lastIndexOf(".");
 
@@ -321,7 +321,7 @@ public class MultipartFileUpload{
 
 	     * @return 			Filename that does not exist in the folder
 	     */
-	    private File getUniqueFile(String folderName, String fileName){
+	    public static File getUniqueFile(String folderName, String fileName){
 
 	  	  int n =0;
 	  	  File file = new File(folderName, fileName);
@@ -333,6 +333,12 @@ public class MultipartFileUpload{
 
 	  	  return file;
 	    }
+	    public static String getUniqueFileName(String folderName, String fileName){
+	    	File file = getUniqueFile(folderName, fileName);
+	    	String strFileName = file.getName();
+		  	return strFileName;
+		}
+
 	    /**
 	     * Returns filename from filename with full path
 	     * in: "C:\TEMP\test.txt"

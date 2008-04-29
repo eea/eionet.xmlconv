@@ -27,6 +27,8 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
+import eionet.gdem.dto.Schema;
+
 public class SchemaElemForm extends ActionForm{
 
 	private String schema;
@@ -36,9 +38,14 @@ public class SchemaElemForm extends ActionForm{
 	private String namespace;
 	private String dtdId;
 	private String backToConv;
+	private boolean doValidation=false;
+	private String schemaLang;
+	private boolean dtd=false;
+	private String uplSchemaFileName;
+	private String uplSchemaFileUrl;
 	
 	
-	  public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
+	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
 		    return null;
 		  }
 	  public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
@@ -46,6 +53,11 @@ public class SchemaElemForm extends ActionForm{
 			description=null;
 			description=null;
 			namespace=null;			
+			schemaLang = Schema.getDefaultSchemaLang();
+			doValidation=false;	
+			dtd=false;
+			uplSchemaFileName=null;
+			uplSchemaFileUrl=null;
 		  }
 	public String getDescription() {
 		return description;
@@ -99,11 +111,41 @@ public class SchemaElemForm extends ActionForm{
 	public void setBackToConv(String backToConv) {
 		this.backToConv = backToConv;
 	}
-	
-	
-	
-	
-	
-	
-	
+	public boolean isDoValidation() {
+		return doValidation;
+	}
+	public void setDoValidation(boolean doValidation) {
+		this.doValidation = doValidation;
+	}
+	public String getSchemaLang() {
+		return schemaLang;
+	}
+	public void setSchemaLang(String schemaLang) {
+		this.schemaLang = schemaLang;
+	}
+	public String[] getSchemaLanguages(){
+		return Schema.getSchemaLanguages();
+	}
+
+	public String getDefaultSchemaLang(){
+		return Schema.getDefaultSchemaLang();
+	}
+	public boolean isDtd() {
+		return dtd;
+	}
+	public void setDtd(boolean dtd) {
+		this.dtd = dtd;
+	}
+	public String getUplSchemaFileName() {
+		return uplSchemaFileName;
+	}
+	public void setUplSchemaFileName(String uplSchemaFileName) {
+		this.uplSchemaFileName = uplSchemaFileName;
+	}
+	public String getUplSchemaFileUrl() {
+		return uplSchemaFileUrl;
+	}
+	public void setUplSchemaFileUrl(String uplSchemaFileUrl) {
+		this.uplSchemaFileUrl = uplSchemaFileUrl;
+	}
 }

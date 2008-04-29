@@ -32,10 +32,12 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.upload.FormFile;
 
+import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.Utils;
 
 public class EditUplSchemaAction extends Action {
 
@@ -47,11 +49,10 @@ public class EditUplSchemaAction extends Action {
 		ActionMessages messages = new ActionMessages();
 
 		EditUplSchemaForm form = (EditUplSchemaForm) actionForm;
-		String schemaId = form.getIdSchema();
-		String description = form.getDescription();
+		String uplSchemaId = form.getUplSchemaId();
+		String schemaId = form.getSchemaId();
 		FormFile file = form.getSchemaFile();
-		String schema = form.getSchemaFileName();
-		String schemaUrl = form.getSchemaUrl();
+		String fileName = form.getSchemaFileName();
 
 		if (isCancelled(httpServletRequest)) {
 			return actionMapping.findForward("success");
@@ -59,10 +60,24 @@ public class EditUplSchemaAction extends Action {
 
 		String user = (String) httpServletRequest.getSession().getAttribute("user");
 
+		if (file == null || file.getFileSize() == 0) {
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.upload.validation"));
+			saveErrors(httpServletRequest, errors);
+			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+			return actionMapping.findForward("fail");
+		}
+
 		try {
 			SchemaManager sm = new SchemaManager();
 			// sm.uplUpdate( user, schemaId, description);
-			sm.updateUplSchema(user, schemaId, schema, file, description, schemaUrl);
+			if(Utils.isNullStr(fileName)){
+				//Change the filename to schema-UniqueIDxsd
+				fileName = sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaId, Utils.extractExtension(file.getFileName()));
+				sm.addUplSchema(user, file, fileName, schemaId);
+			}
+			else if (uplSchemaId!=null){
+				sm.updateUplSchema(user, uplSchemaId, schemaId, fileName, file);
+			}
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.updated"));
 		} catch (DCMException e) {
 			//e.printStackTrace();

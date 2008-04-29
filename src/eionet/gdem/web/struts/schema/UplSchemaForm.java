@@ -28,11 +28,22 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 
+import eionet.gdem.dto.Schema;
+
 public class UplSchemaForm extends ActionForm {
 
-	private FormFile schema;
+	//T_SCHEMA table
+	private String schemaId;
 	private String description;
 	private String schemaUrl;
+	private boolean doValidation=false;
+	private String schemaLang;
+
+	//T_UPL_SCHEMA
+	private String uplSchemaId;
+	private FormFile schemaFile;
+	private String schemaFileName;
+	
 
 
 	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
@@ -41,19 +52,21 @@ public class UplSchemaForm extends ActionForm {
 
 
 	public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
-		schema = null;
+		schemaFile = null;
 		description = null;
 		schemaUrl = null;
+		schemaLang = Schema.getDefaultSchemaLang();
+		doValidation=false;	
 	}
 
 
-	public FormFile getSchema() {
-		return schema;
+	public FormFile getSchemaFile() {
+		return schemaFile;
 	}
 
 
-	public void setSchema(FormFile schema) {
-		this.schema = schema;
+	public void setSchemaFile(FormFile schema) {
+		this.schemaFile = schema;
 	}
 
 
@@ -76,4 +89,61 @@ public class UplSchemaForm extends ActionForm {
 		this.schemaUrl = schemaUrl;
 	}
 
+
+	public String getSchemaId() {
+		return schemaId;
+	}
+
+
+	public void setSchemaId(String schemaId) {
+		this.schemaId = schemaId;
+	}
+
+
+	public String getUplSchemaId() {
+		return uplSchemaId;
+	}
+
+
+	public void setUplSchemaId(String uplSchemaId) {
+		this.uplSchemaId = uplSchemaId;
+	}
+
+
+	public String getSchemaFileName() {
+		return schemaFileName;
+	}
+
+
+	public void setSchemaFileName(String schemaFileName) {
+		this.schemaFileName = schemaFileName;
+	}
+
+
+	public boolean isDoValidation() {
+		return doValidation;
+	}
+
+
+	public void setDoValidation(boolean doValidation) {
+		this.doValidation = doValidation;
+	}
+
+
+	public String getSchemaLang() {
+		return schemaLang;
+	}
+
+
+	public void setSchemaLang(String schemaLang) {
+		this.schemaLang = schemaLang;
+	}
+
+	public String[] getSchemaLanguages(){
+		return Schema.getSchemaLanguages();
+	}
+
+	public String getDefaultSchemaLang(){
+		return Schema.getDefaultSchemaLang();
+	}
 }

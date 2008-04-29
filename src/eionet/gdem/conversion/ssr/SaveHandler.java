@@ -509,53 +509,35 @@ public class SaveHandler {
 
        try{
 
-         if(action.equals( Names.XSD_DEL_ACTION)) {
-            Vector stylesheets = GDEMServices.getDaoService().getSchemaDao().getSchemaStylesheets(del_id);
-            if (stylesheets!=null){
-         		 for (int i=0; i<stylesheets.size(); i++){
-           			HashMap hash = (HashMap)stylesheets.get(i);
-             		String xslFile = (String)hash.get("xsl");
-
-                 String xslFolder=Properties.xslFolder;
-                 if (!xslFolder.endsWith(File.separator))
-                    xslFolder = xslFolder + File.separator;
-
-                 try{
-                   Utils.deleteFile(xslFolder + xslFile);
-                 }
-                 catch (Exception e){
-                   err_buf.append("Cannot delete XSL file: " + xslFile + "; " + e.toString() + "<BR>");
-                   continue;
-                 }
-              }
-           	}
-            if(GDEMServices.getDaoService().getSchemaDao().getSchemaQueries(del_id) != null)
-               hasOtherStuff = true;
-         }
-         else {  // action.equals( Names.XSDQ_DEL_ACTION )
+           // action.equals( Names.XSDQ_DEL_ACTION )
             Vector queries = GDEMServices.getDaoService().getSchemaDao().getSchemaQueries(del_id);
-            if (queries!=null){
-         		 for (int i=0; i<queries.size(); i++){
-           			HashMap hash = (HashMap)queries.get(i);
-             		String queryFile = (String)hash.get("query");
 
-                 String queriesFolder=Properties.queriesFolder;
-                 if (!queriesFolder.endsWith(File.separator))
-                    queriesFolder = queriesFolder + File.separator;
-
-                 try{
-                   Utils.deleteFile(queriesFolder + queryFile);
-                 }
-                 catch (Exception e){
-                   err_buf.append("Cannot delete XQuery file: " + queryFile + "; " + e.toString() + "<BR>");
-                   continue;
-                 }
-              }
-           	}
-            if(GDEMServices.getDaoService().getSchemaDao().getSchemaStylesheets(del_id) != null)
+            if(!Utils.isNullVector(GDEMServices.getDaoService().getSchemaDao().getSchemaStylesheets(del_id))|| 
+            		GDEMServices.getDaoService().getUPLSchemaDao().checkUplSchemaFK(del_id))
                hasOtherStuff = true;
-         }
-         GDEMServices.getDaoService().getSchemaDao().removeSchema(del_id, action.equals(Names.XSD_DEL_ACTION), action.equals(Names.XSDQ_DEL_ACTION), !hasOtherStuff);
+            //delete XQueries
+            GDEMServices.getDaoService().getSchemaDao().removeSchema(del_id, false, action.equals(Names.XSDQ_DEL_ACTION), false, !hasOtherStuff);
+            
+            //delete queries files only if db operatino succeeded
+            if (queries!=null){
+        		 for (int i=0; i<queries.size(); i++){
+          			HashMap hash = (HashMap)queries.get(i);
+            		String queryFile = (String)hash.get("query");
+
+                String queriesFolder=Properties.queriesFolder;
+                if (!queriesFolder.endsWith(File.separator))
+                   queriesFolder = queriesFolder + File.separator;
+
+                try{
+                  Utils.deleteFile(queriesFolder + queryFile);
+                }
+                catch (Exception e){
+                  err_buf.append("Cannot delete XQuery file: " + queryFile + "; " + e.toString() + "<BR>");
+                  continue;
+                }
+             }
+          	}
+            
         }
         catch (Exception e){
           err_buf.append("Cannot delete Schema: " + e.toString() + del_id);
@@ -567,8 +549,7 @@ public class SaveHandler {
         if (err_buf.length()>0)
           req.setAttribute(Names.ERROR_ATT, err_buf.toString());
       }
-      else if (action.equals( Names.XSD_UPD_ACTION)
-              || action.equals(Names.XSD_UPDVAL_ACTION)) {
+      else if (action.equals(Names.XSD_UPDVAL_ACTION)) {
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "u")){
            req.setAttribute(Names.ERROR_ATT, "You don't have permissions to update schema!");
@@ -587,19 +568,9 @@ public class SaveHandler {
        }
         try{
 
-          if (action.equals(Names.XSD_UPDVAL_ACTION)){
             String validate= (String)req.getParameter("VALIDATE");
 
             GDEMServices.getDaoService().getSchemaDao().updateSchemaValidate(schema_id, validate);
-          }
-          else{
-            String schema_name= (String)req.getParameter("XML_SCHEMA");
-            String description= (String)req.getParameter("DESCRIPTION");
-            String dtd_public_id= (String)req.getParameter("DTD_PUBLIC_ID");
-
-            GDEMServices.getDaoService().getSchemaDao().updateSchema(schema_id, schema_name, description, dtd_public_id);
-
-          }
 
        }
        catch (Exception e){

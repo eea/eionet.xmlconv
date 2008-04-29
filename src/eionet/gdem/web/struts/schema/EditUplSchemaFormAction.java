@@ -49,12 +49,15 @@ public class EditUplSchemaFormAction extends Action {
 			SchemaManager sm = new SchemaManager();
 			UplSchema schema = sm.getUplSchemasById(schemaId);
 
-			form.setIdSchema(schema.getId());
-			form.setSchema(httpServletRequest.getContextPath() + "/schema/" + schema.getSchema());
-
-			form.setSchemaFileName(schema.getSchema());
+			form.setSchemaId(schema.getSchemaId());
+			form.setUplSchemaId(schema.getUplSchemaId());
 			form.setSchemaUrl(schema.getSchemaUrl());
+			form.setUplSchemaFileUrl(schema.getUplSchemaFileUrl());
+
+			form.setSchemaFileName(schema.getUplSchemaFile());
 			form.setDescription(schema.getDescription());
+			form.setLastModified(schema.getLastModified());
+			
 
 		} catch (DCMException e) {
 			//e.printStackTrace();

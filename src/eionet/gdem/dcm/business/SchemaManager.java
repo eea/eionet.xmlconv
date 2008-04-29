@@ -52,6 +52,7 @@ import eionet.gdem.dto.UplSchema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.MultipartFileUpload;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.schema.SchemaElemHolder;
@@ -73,7 +74,7 @@ public class SchemaManager {
 	
 	
 
-	public void delete(String user, String schemaId) throws DCMException {
+	public void deleteSchemaStylesheets(String user, String schemaId) throws DCMException {
 
 		boolean hasOtherStuff = false;
 
@@ -94,6 +95,15 @@ public class SchemaManager {
 
 			Vector stylesheets = schemaDao.getSchemaStylesheets(schemaId);
 
+			if (!Utils.isNullVector(schemaDao.getSchemaQueries(schemaId))|| 
+					uplSchemaDao.checkUplSchemaFK(schemaId)) 
+				hasOtherStuff = true;
+
+
+			// dbM.removeSchema( schemaId, true, false, !hasOtherStuff);
+			schemaDao.removeSchema(schemaId, true, false, false, !hasOtherStuff);
+			
+			//delete stylesheet files only if db operation succeeded
 			if (stylesheets != null) {
 				for (int i = 0; i < stylesheets.size(); i++) {
 					HashMap hash = (HashMap) stylesheets.get(i);
@@ -110,12 +120,7 @@ public class SchemaManager {
 					}
 				}
 			}
-			if (schemaDao.getSchemaQueries(schemaId) != null) hasOtherStuff = true;
 
-
-			// dbM.removeSchema( schemaId, true, false, !hasOtherStuff);
-			schemaDao.removeSchema(schemaId, true, true, true);
-			
 		} catch (Exception e) {
 			_logger.debug("Error removing schema", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
@@ -179,10 +184,10 @@ public class SchemaManager {
 						stl.setDdConv(false);
 						stls.add(stl);
 					}
-					//if (stls.size() > 0) {
+					if (stls.size() > 0) {
 						sc.setStylesheets(stls);
 						schemas.add(sc);
-					//}
+					}
 				}
 				if(schemas.size()>0){
 					st.setHandCodedStylesheets(schemas);
@@ -286,7 +291,7 @@ public class SchemaManager {
 	}
 
 
-	public void update(String user, String schemaId, String schema, String description, String dtdPublicId) throws DCMException {
+	public void update(String user, String schemaId, String schema, String description, String schemaLang, boolean doValidation, String dtdPublicId) throws DCMException {
 
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
@@ -304,7 +309,7 @@ public class SchemaManager {
 		// String del_id= (String)req.getParameter(Names.XSD_DEL_ID);
 
 		try {
-			schemaDao.updateSchema(schemaId, schema, description, dtdPublicId);
+			schemaDao.updateSchema(schemaId, schema, description, schemaLang, doValidation, dtdPublicId);
 			
 		} catch (Exception e) {
 			_logger.debug("Error updating schema", e);
@@ -330,28 +335,28 @@ public class SchemaManager {
 
 			Vector list = schemaDao.getSchemas(schemaId, false);
 
+
 			if (list == null) list = new Vector();
 
-			String name = "";
-			String schema_desc = null;
-			String dtd_public_id = null;
-			boolean isDTD = false;
-
 			if (list.size() > 0) {
+
+				HashMap uplSchema = uplSchemaDao.getUplSchemaByFkSchemaId(schemaId);
 
 				schema = new Schema();
 
 				HashMap schemaHash = (HashMap) list.get(0);
 				schema.setSchema((String) schemaHash.get("xml_schema"));
 				schema.setDescription((String) schemaHash.get("description"));
+				schema.setSchemaLang((String) schemaHash.get("schema_lang"));
+		        boolean validate = (!Utils.isNullStr((String) schemaHash.get("validate")) && ((String) schemaHash.get("validate")).equals("1"));
+				schema.setDoValidation(validate);
 				schema.setDtdPublicId((String) schemaHash.get("dtd_public_id"));
-				name = (String) schemaHash.get("xml_schema");
-				int name_len = name.length();
-				if (name_len > 3) {
-					String schema_end = name.substring((name_len - 3), (name_len)).toLowerCase();
-					if (schema_end.equals("dtd")) isDTD = true;
+				
+				
+				if(uplSchema!=null && uplSchema.get("upl_schema_file")!=null){
+					schema.setUplSchemaFileName((String)uplSchema.get("upl_schema_file"));
 				}
-				schema.setIsDTD(isDTD);
+					
 				se.setSchema(schema);
 			}
 
@@ -520,21 +525,26 @@ public class SchemaManager {
 
 			schemas = new ArrayList();
 
-			Vector schemaVec = uplSchemaDao.getUplSchema();
+			ArrayList schemaList = uplSchemaDao.getSchemas();
 
 
-			for (int i = 0; i < schemaVec.size(); i++) {
-				Hashtable hash = (Hashtable) schemaVec.get(i);
-				String id = (String) hash.get("id");
-				String schema = Properties.gdemURL + "/schema/" + (String) hash.get("schema");
+			for (int i = 0; i < schemaList.size(); i++) {
+				HashMap hash = (HashMap) schemaList.get(i);
+				String schemaId = (String) hash.get("schema_id");
+				//String schema = Properties.gdemURL + "/schema/" + (String) hash.get("schema");
+				String schema =(String) hash.get("xml_schema"); 
 				String desc = (String) hash.get("description");
-				String schemaUrl = (String) hash.get("schema_url");
-
+				String uplSchemaId = (String) hash.get("upl_schema_id");
+				String uplSchemaFile = (String) hash.get("upl_schema_file");
+				String uplSchemaFileUrl = Properties.gdemURL + "/schema/" +(String) hash.get("upl_schema_file");
+							
 				UplSchema uplSchema = new UplSchema();
-				uplSchema.setId(id);
-				uplSchema.setSchema(schema);
+				uplSchema.setSchemaId(schemaId);
+				uplSchema.setSchemaUrl(schema);
 				uplSchema.setDescription(desc);
-				uplSchema.setSchemaUrl(Utils.isNullStr(schemaUrl)?schema:schemaUrl);
+				uplSchema.setUplSchemaId(uplSchemaId);
+				uplSchema.setUplSchemaFile(uplSchemaFile);
+				uplSchema.setUplSchemaFileUrl(uplSchemaFileUrl);
 				schemas.add(uplSchema);
 			}
 			if (schemas.size() > 0) {
@@ -548,9 +558,39 @@ public class SchemaManager {
 		return sc;
 
 	}
+	public String addSchema(String user, String schemaUrl, String descr, String schemaLang, boolean doValidation) throws DCMException {
+		String schemaID = null;
+		try {
+			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "i")) {
+				throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_INSERT);
+			}
+		} catch (DCMException e) {
+			throw e;
+		} catch (Exception e) {
+			_logger.error("Error adding upoaded schema",e);
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+		try {
+			schemaID = schemaDao.getSchemaID(schemaUrl);
 
 
-	public void addUplSchema(String user, FormFile file, String desc, String url) throws DCMException {
+			//Schema URL should be unique
+			if(!Utils.isNullStr(schemaID)){
+				throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_URL_EXISTS);
+			}
+			if (schemaID == null) schemaID = schemaDao.addSchema(schemaUrl, descr, schemaLang, doValidation, null);
+
+		} catch (DCMException e) {
+			throw e;
+		} catch (Exception e) {
+			_logger.error("Error adding uploaded schema",e);
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+		return schemaID;
+	}
+
+	
+	public void addUplSchema(String user, FormFile file, String fileName, String fkSchemaId) throws DCMException {
 
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "i")) {
@@ -563,22 +603,17 @@ public class SchemaManager {
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		try {
-			String fileName = file.getFileName();
 
 
-			//Schema URL should be unique
-			if(!Utils.isNullStr(url)){
-				if (uplSchemaDao.checkUplSchemaURL(url)) {				
+			//FK Schema ID should be unique
+			if(!Utils.isNullStr(fkSchemaId)){
+				if (uplSchemaDao.checkUplSchemaFK(fkSchemaId)) {				
 					throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_URL_EXISTS);
 				}
 			}
-			// filename should be unique
-			if (uplSchemaDao.checkUplSchemaFile(fileName)) {				
-				throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_FILE_EXISTS);
-			}
 
 			InputStream in = file.getInputStream();
-			String filepath = new String(Properties.schemaFolder + File.separatorChar + file.getFileName());
+			String filepath = new String(Properties.schemaFolder + File.separatorChar + fileName);
 			OutputStream w = new FileOutputStream(filepath);
 			int bytesRead = 0;
 			byte[] buffer = new byte[8192];
@@ -589,7 +624,7 @@ public class SchemaManager {
 			in.close();
 			file.destroy();
 
-			uplSchemaDao.addUplSchema(fileName, desc, url);
+			uplSchemaDao.addUplSchema(fileName, null, fkSchemaId);
 
 		} catch (DCMException e) {
 			throw e;
@@ -601,9 +636,8 @@ public class SchemaManager {
 	}
 
 
-	public void deleteUplSchema(String user, String uplSchemaId) throws DCMException {
+	public boolean deleteUplSchema(String user, String schemaId, boolean delSchema) throws DCMException {
 
-		boolean hasOtherStuff = false;
 
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "d")) {
@@ -618,53 +652,36 @@ public class SchemaManager {
 		}
 
 		try {
-			String schema = uplSchemaDao.getUplSchema(uplSchemaId);
+			 HashMap<String,String> uplSchema = uplSchemaDao.getUplSchemaByFkSchemaId(schemaId);
 
-
-			if (schema != null) {
-
-
-				String schemaId = schemaDao.getSchemaID(Properties.gdemURL + "/schema/" + schema);
+			if(delSchema){
+				if (!Utils.isNullVector(schemaDao.getSchemaQueries(schemaId))|| 
+					!Utils.isNullVector(schemaDao.getSchemaStylesheets(schemaId)))
+					delSchema = false;
+			}
 				
+            //delete uploaded files and schema if needed
+			schemaDao.removeSchema(schemaId, false, false, true, delSchema);
 
-				if (schemaId != null) {
-					Vector stylesheets = schemaDao.getSchemaStylesheets(schemaId);
-					
-					if (stylesheets != null) {
-						for (int i = 0; i < stylesheets.size(); i++) {
-							HashMap hash = (HashMap) stylesheets.get(i);
-							String xslFile = (String) hash.get("xsl");
+			//delete uplSchema files only if db operation succeeded
+			if (uplSchema != null) {
 
-							String xslFolder = Properties.xslFolder;
-							if (!xslFolder.endsWith(File.separator)) xslFolder = xslFolder + File.separator;
+				String schemaFile = (String)uplSchema.get("upl_schema_file");
 
-							try {
-								Utils.deleteFile(xslFolder + xslFile);
-							} catch (Exception e) {
-								_logger.error("Error deleting stylesheet files",e);
-								throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-							}
-						}
+				if (schemaFile != null) {
+					try {
+						Utils.deleteFile(Properties.schemaFolder + "/" + schemaFile);
+					} catch (Exception e) {
+						_logger.error("Error deleting upoladed schema file",e);
+						throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 					}
-					if (schemaDao.getSchemaQueries(schemaId) != null) hasOtherStuff = true;
-
-
-					schemaDao.removeSchema(schemaId, true, false, !hasOtherStuff);
-
 				}
 			}
-			try {
-				Utils.deleteFile(Properties.schemaFolder + "/" + schema);
-			} catch (Exception e) {
-				_logger.error("Error deleting upoladed schema file",e);
-				throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-			}
-			uplSchemaDao.removeUplSchema(uplSchemaId);
-
 		} catch (Exception e) {
 			_logger.error("Error deleting uploaded schema",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
+		return delSchema;
 
 	}
 
@@ -758,10 +775,8 @@ public class SchemaManager {
 	}
 
 
-	public void updateUplSchema(String user, String schemaId, String schema, FormFile file, String description, String schemaUrl) throws DCMException {
+	public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, FormFile file) throws DCMException {
 
-		boolean bDeleteOldFile = false;
-		String oldFileName=null;
 		
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
@@ -776,21 +791,11 @@ public class SchemaManager {
 		}
 
 		try {
-			//Schema URL should be unique
-			if(!Utils.isNullStr(schemaUrl)){
-				if (uplSchemaDao.checkUplSchemaFile(schemaUrl)) {				
-					throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_URL_EXISTS);
-				}
-			}
-			//if file uploaded, then check the file name and delete the old file
-			if(file!=null && !Utils.isNullStr(file.getFileName())){
-				String fileName = file.getFileName();
+			//store the uploaded content into schema folder with the given filename
+			if(file!=null && !Utils.isNullStr(fileName)){
 				
-				if (!fileName.equals(schema) && uplSchemaDao.checkUplSchemaFile(fileName)) {				
-					throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_FILE_EXISTS);
-				}
 				InputStream in = file.getInputStream();
-				String filepath = new String(Properties.schemaFolder + File.separatorChar + file.getFileName());
+				String filepath = new String(Properties.schemaFolder + File.separatorChar + fileName);
 				OutputStream w = new FileOutputStream(filepath);
 				int bytesRead = 0;
 				byte[] buffer = new byte[8192];
@@ -800,23 +805,15 @@ public class SchemaManager {
 				w.close();
 				in.close();
 				file.destroy();
-				oldFileName=schema;
-				if (!fileName.equals(schema))
-						bDeleteOldFile=true;
-				schema=fileName;
 			}
 			
-			// update DB
-			uplSchemaDao.updateUplSchema(schemaId, schema, description, schemaUrl);
-			
-			//delete old file, if new file is uploaded
-			if(bDeleteOldFile && !Utils.isNullStr(oldFileName)){
-				Utils.deleteFile(Properties.schemaFolder + File.separator + oldFileName);
-			}
+			//  DB update needed
+			//uplSchemaDao.updateUplSchema(uplSchemaId, null, fileName, schemaId);
 
-		} catch (DCMException dcme) {
-			_logger.error("Error updating uploaded schema", dcme);
-			throw dcme;
+
+		//} catch (DCMException dcme) {
+		//	_logger.error("Error updating uploaded schema", dcme);
+		//	throw dcme;
 		} catch (Exception e) {
 			_logger.error("Error updating uploaded schema", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
@@ -827,24 +824,41 @@ public class SchemaManager {
 
 	public UplSchema getUplSchemasById(String schemaId) throws DCMException {
 
-		UplSchema sc = new UplSchema();
+		UplSchema uplSchema = new UplSchema();
 		try {
 
-			Hashtable ht = uplSchemaDao.getUplSchemaById(schemaId);
-			String schema = (String) ht.get("schema");
+			HashMap ht = uplSchemaDao.getUplSchemaByFkSchemaId(schemaId);
+			//String schema = Properties.gdemURL + "/schema/" + (String) hash.get("schema");
+			String schema =(String) ht.get("xml_schema"); 
 			String desc = (String) ht.get("description");
-			String url = (String) ht.get("schema_url");
-
-			sc.setDescription(desc);
-			sc.setId(schemaId);
-			sc.setSchema(schema);
-			sc.setSchemaUrl(url);
+			String uplSchemaFile = (String) ht.get("upl_schema_file");
+			String uplSchemaId = (String) ht.get("upl_schema_id");
+			String uplSchemaFileUrl = Properties.gdemURL + "/schema/" +uplSchemaFile;
+			
+			uplSchema = new UplSchema();
+			uplSchema.setSchemaId(schemaId);
+			uplSchema.setSchemaUrl(schema);
+			uplSchema.setDescription(desc);
+			uplSchema.setUplSchemaId(uplSchemaId);
+			uplSchema.setUplSchemaFile(uplSchemaFile);
+			uplSchema.setUplSchemaFileUrl(uplSchemaFileUrl);
+			
+			if(!Utils.isNullStr(uplSchemaFile)){
+				try{
+					File f=new File(Properties.schemaFolder,uplSchemaFile);
+					if (f!=null)
+						uplSchema.setLastModified(Utils.getDateTime(new Date(f.lastModified())));
+				}
+				catch(Exception e){
+				}
+			}
+			
 		} catch (Exception e) {
 			//e.printStackTrace();
 			_logger.error("Error getting uploaded schema", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
-		return sc;
+		return uplSchema;
 
 	}
 	
@@ -858,7 +872,7 @@ public class SchemaManager {
 		String retURL = schemaUrl;
 		try {
 
-			HashMap ht = uplSchemaDao.getUplSchemaByURL(schemaUrl);
+			HashMap ht = uplSchemaDao.getUplSchemaByUrl(schemaUrl);
 			if(ht!=null){
 				retURL = (String) ht.get("schema");
 			}
@@ -964,6 +978,35 @@ public class SchemaManager {
 
 		// SchemaManager s = new SchemaManager();
 		// SchemaElemHolder d = s.getSchemaElems( "_admin","37");
+	}
+	public String generateUniqueSchemaFilename(String filepart, String ext) throws DCMException{
+		
+		String ret = "";
+		if(Utils.isNullStr(ext))ext=Schema.getDefaultSchemaLang().toLowerCase();
+		StringBuilder uniq = new StringBuilder(filepart);
+		
+		try{
+			uniq.append(String.valueOf(System.currentTimeMillis()));
+		
+			String hash = Utils.md5digest(uniq.toString());
+
+			ret = "schema-".concat(hash).concat(".").concat(ext);
+		
+		} catch (Exception e) {
+			_logger.error("Error generating unque schema file name",e);
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+		return ret;
+		
+	}
+	public String generateSchemaFilenameByID(String folderName, String schemaID, String ext) throws DCMException{
+		
+		if(Utils.isNullStr(ext))ext=Schema.getDefaultSchemaLang().toLowerCase();
+		String fileName = "schema-".concat(schemaID).concat(".").concat(ext);
+		fileName = MultipartFileUpload.getUniqueFileName(folderName, fileName); 
+		
+		return fileName;
+		
 	}
 
 }

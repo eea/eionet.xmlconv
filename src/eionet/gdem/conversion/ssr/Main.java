@@ -215,17 +215,9 @@ public class Main extends HttpServlet implements Names {
         SaveHandler.handleQueries(req,action);
         jspName=QUERY_JSP;
       }
-      else if ( action.equals(XSL_UPD_ACTION)){
-        SaveHandler.handleStylesheets(req,action);
-        jspName=STYLESHEET_JSP;
-      }
       else  if ( action.equals( XSD_UPDVAL_ACTION )){
         SaveHandler.handleSchemas(req,action);
         jspName=QUERIES_JSP;
-      }
-      else  if ( action.equals( XSD_DEL_ACTION )){
-        SaveHandler.handleSchemas(req,action);
-        jspName=index_jsp;
       }
       else  if ( action.equals( XSDQ_DEL_ACTION )){
         SaveHandler.handleSchemas(req,action);

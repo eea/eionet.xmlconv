@@ -31,10 +31,12 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
+import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.Utils;
 
 public class SchemaElemFormAction extends Action {
 
@@ -71,7 +73,15 @@ public class SchemaElemFormAction extends Action {
 			form.setBackToConv(backToConv);
 			form.setElemName("");
 			form.setNamespace("");
-
+			form.setDoValidation(seHolder.getSchema().isDoValidation());
+			form.setSchemaLang(seHolder.getSchema().getSchemaLang());
+			form.setDtd(seHolder.getSchema().getIsDTD());
+			String fileName = seHolder.getSchema().getUplSchemaFileName();
+			if(!Utils.isNullStr(fileName)){
+				form.setUplSchemaFileName(fileName);
+				form.setUplSchemaFileUrl(Properties.gdemURL + "/schema/" +fileName);
+			}
+			
 			httpServletRequest.getSession().setAttribute("schema.rootElemets", seHolder);
 
 		} catch (DCMException e) {

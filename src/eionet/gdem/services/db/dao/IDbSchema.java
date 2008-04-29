@@ -78,6 +78,7 @@ public interface IDbSchema {
   public static final String SCHEMA_DESCR_FLD="DESCRIPTION";
   public static final String DTD_PUBLIC_ID_FLD="DTD_PUBLIC_ID";
   public static final String SCHEMA_VALIDATE_FLD="VALIDATE";
+  public static final String SCHEMA_LANG_FLD="SCHEMA_LANG";
 
   /**
    * Field names in UPL_SCHEMA table
@@ -85,7 +86,7 @@ public interface IDbSchema {
    public static final String UPL_SCHEMA_ID_FLD="SCHEMA_ID";
    public static final String UPL_SCHEMA_FLD="SCHEMA_NAME";
    public static final String UPL_SCHEMA_DESC="DESCRIPTION";
-   public static final String UPL_SCHEMA_URL="SCHEMA_URL";
+   public static final String UPL_FK_SCHEMA_ID="FK_SCHEMA_ID";
   
   
   /**

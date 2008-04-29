@@ -32,6 +32,7 @@ import eionet.gdem.utils.xml.XmlContext;
 import java.net.URL;
 import java.io.*;
 import java.net.MalformedURLException;
+import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
@@ -792,4 +793,59 @@ public class Utils {
 		return null;
 		
 	}
- }
+	/**
+	 * 
+	 * @param s
+	 * @return
+	 */
+	public static String md5digest(String s) throws Exception{
+		return Utils.digest(s, "md5");
+	}
+	
+	/**
+	 * 
+	 * @param src
+	 * @param algorithm
+	 * @return
+	 * @throws Exception
+	 */
+	public static String digest(String src, String algorithm) throws Exception{
+        
+        byte[] srcBytes = src.getBytes();
+        byte[] dstBytes = new byte[16];
+        
+        MessageDigest md;
+
+        md = MessageDigest.getInstance(algorithm);
+        
+        md.update(srcBytes);
+        dstBytes = md.digest();
+        md.reset();
+        
+        StringBuffer buf = new StringBuffer();
+        for (int i=0; i<dstBytes.length; i++){
+            Byte byteWrapper = new Byte(dstBytes[i]);
+            int k = byteWrapper.intValue();
+            String s = Integer.toHexString(byteWrapper.intValue());
+            if (s.length() == 1) s = "0" + s;
+            buf.append(s.substring(s.length() - 2));
+        }
+        
+        return buf.toString();
+    }
+
+	/**
+     * Extracts file extension from filename
+     */
+    public static String extractExtension(String strFilename)
+    {
+        String strExtension = "";
+        int index = strFilename.lastIndexOf('.');
+        if(index > 0)
+        {
+            strExtension = strFilename.substring(index + 1, strFilename.length());
+            strExtension = strExtension.toLowerCase();
+        }
+        return strExtension;
+    }
+}
