@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 import org.apache.struts.upload.FormFile;
 
 
@@ -52,7 +54,15 @@ public class EditUplSchemaForm extends ActionForm {
 
 
 	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
-		return null;
+		
+		ActionErrors errors =null;
+		if (schemaFile == null || schemaFile.getFileSize() == 0) {
+			errors = new ActionErrors();
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.upload.validation"));
+			
+			//httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+		}	
+		return errors;
 	}
 
 

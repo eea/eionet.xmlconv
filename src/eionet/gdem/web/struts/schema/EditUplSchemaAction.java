@@ -60,12 +60,6 @@ public class EditUplSchemaAction extends Action {
 
 		String user = (String) httpServletRequest.getSession().getAttribute("user");
 
-		if (file == null || file.getFileSize() == 0) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.upload.validation"));
-			saveErrors(httpServletRequest, errors);
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward("fail");
-		}
 
 		try {
 			SchemaManager sm = new SchemaManager();

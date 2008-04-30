@@ -43,7 +43,8 @@ public class EditUplSchemaFormAction extends Action {
 		ActionMessages errors = new ActionMessages();
 
 		EditUplSchemaForm form = (EditUplSchemaForm) actionForm;
-		String schemaId = (String) httpServletRequest.getParameter("schemaId");
+		String schemaId = form.getSchemaId();
+		//String schemaId = (String) httpServletRequest.getParameter("schemaId");
 
 		try {
 			SchemaManager sm = new SchemaManager();
