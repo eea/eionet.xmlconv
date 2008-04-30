@@ -75,6 +75,7 @@ public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {
 		+ "S." + SCHEMA_DESCR_FLD + "," 
 		+ "s." + XML_SCHEMA_FLD 
 		+ " FROM " + SCHEMA_TABLE +" S RIGHT JOIN " + UPL_SCHEMA_TABLE + " U ON S."
+		+ SCHEMA_ID_FLD + "=U." + UPL_FK_SCHEMA_ID  
 		+ " WHERE S." + XML_SCHEMA_FLD + "= ?";
 
 	private static final String qUpdateUplSchema = "UPDATE  " + UPL_SCHEMA_TABLE 
