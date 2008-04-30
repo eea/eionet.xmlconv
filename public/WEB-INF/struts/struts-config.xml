@@ -160,12 +160,12 @@
         	<forward name="success" path="/do/uplSchemas"  redirect="true"/>            
         	<forward name="fail" path="/do/addUplSchemaForm"  redirect="true"/>
         </action>        
-        <action path="/editUplSchemaForm" name="EditUplSchemaForm" type="eionet.gdem.web.struts.schema.EditUplSchemaFormAction" input="/editUplSchema.jsp" scope="request">
+        <action path="/editUplSchemaForm" type="eionet.gdem.web.struts.schema.EditUplSchemaFormAction"  name="EditUplSchemaForm" validate="false" input="/editUplSchema.jsp" scope="request">
             <forward name="success" path="/editUplSchema.jsp" redirect="true" />
-        	<forward name="fail" path="/do/editUplSchemaForm"  redirect="false"/>
         </action>
-        <action path="/editUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.EditUplSchemaAction" name="EditUplSchemaForm" cancellable="true">           
+        <action path="/editUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.EditUplSchemaAction" name="EditUplSchemaForm" input="/editUplSchema.jsp" cancellable="true">           
         	<forward name="success" path="/do/uplSchemas"  redirect="true"/>            
+        	<forward name="fail" path="/do/editUplSchemaForm"  redirect="true"/>
         </action>
         
         <!--  Hosts module -->

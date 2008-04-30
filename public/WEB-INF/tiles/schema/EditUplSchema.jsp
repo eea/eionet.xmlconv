@@ -46,6 +46,7 @@
 			      	</logic:notEmpty>
 						<html:hidden  property="schemaId" />
 						<html:hidden  property="uplSchemaId" />
+						<html:hidden  property="schemaUrl" />
 						<html:hidden  property="schemaFileName" />
 						<br/><br/>
 				        <html:file property="schemaFile" size="20" style="width:400px"/>
