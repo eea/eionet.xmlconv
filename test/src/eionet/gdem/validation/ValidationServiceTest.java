@@ -42,7 +42,7 @@ public class ValidationServiceTest extends DBTestCase{
 	protected IDataSet getDataSet() throws Exception {
 		IDataSet loadedDataSet = new FlatXmlDataSet(
 				getClass().getClassLoader().getResourceAsStream(
-						TestConstants.SEED_DATASET_CONVERSIONS_XML));
+						TestConstants.SEED_DATASET_UPL_SCHEMAS_XML));
 		return loadedDataSet;
 	}
 	

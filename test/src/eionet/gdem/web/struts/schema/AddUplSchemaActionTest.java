@@ -59,7 +59,7 @@ public class AddUplSchemaActionTest extends MockStrutsTestCase {
 
         addRequestParameter("schemaUrl",schemaUrl);
         addRequestParameter("description",description);
-        ((MockStrutsMultipartRequestSimulator)request).writeFile("schema",getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA).getFile(),"text/xml");       
+        ((MockStrutsMultipartRequestSimulator)request).writeFile("schemaFile",getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA).getFile(),"text/xml");       
 
         actionPerform();
         verifyForward("success");
@@ -90,7 +90,7 @@ public class AddUplSchemaActionTest extends MockStrutsTestCase {
 
         addRequestParameter("schemaUrl",schemaUrl);
         addRequestParameter("description",description);
-        ((MockStrutsMultipartRequestSimulator)request).writeFile("schema",getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA).getFile(),"text/xml");       
+        ((MockStrutsMultipartRequestSimulator)request).writeFile("schemaFile",getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA).getFile(),"text/xml");       
 
         actionPerform();
         verifyForward("success");
@@ -111,7 +111,7 @@ public class AddUplSchemaActionTest extends MockStrutsTestCase {
         //HttpSession session = request.getSession();
         //session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
 
-        addRequestParameter("schemaUrl",schemaUrl);
+        addRequestParameter("schemaUrl","");
         addRequestParameter("description",description);
         
         setRequestPathInfo("/addUplSchema");

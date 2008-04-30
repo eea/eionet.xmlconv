@@ -36,7 +36,7 @@ public class EditUplSchemaFormActionTest  extends MockStrutsTestCase {
         HttpSession session = request.getSession();
         session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
         
-        addRequestParameter("schemaId","8");
+        addRequestParameter("schemaId","2");
         setRequestPathInfo("/editUplSchemaForm");
         actionPerform();
         verifyForward("success");

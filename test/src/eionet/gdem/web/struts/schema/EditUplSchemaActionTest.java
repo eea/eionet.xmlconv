@@ -25,9 +25,8 @@ import eionet.gdem.test.mocks.MockStrutsMultipartRequestSimulator;
 public class EditUplSchemaActionTest  extends MockStrutsTestCase {
 
 	private  IUPLSchemaDao uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
-	private String idSchema="8";
-	private String schemaUrl="Upadted URL";
-	private String description="Updated description";
+	private String uplSchemaId="8";
+	private String schemaId="2";
 	private String schemaFileName="xliff.dtd";
 
 	public EditUplSchemaActionTest(String testName) {
@@ -59,9 +58,8 @@ public class EditUplSchemaActionTest  extends MockStrutsTestCase {
 		HttpSession session = request.getSession();
 		session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
 
-		addRequestParameter("idSchema",idSchema);
-		addRequestParameter("schemaUrl",schemaUrl);
-		addRequestParameter("description",description);
+		addRequestParameter("uplSchemaId",uplSchemaId);
+		addRequestParameter("schemaId",schemaId);
 		addRequestParameter("schemaFileName",schemaFileName);
 		((MockStrutsMultipartRequestSimulator)request).writeFile("schemaFile",getClass().getClassLoader().getResource(TestConstants.SEED_XLIFF_DTD).getFile(),"text/xml");       
 
@@ -74,10 +72,8 @@ public class EditUplSchemaActionTest  extends MockStrutsTestCase {
 		verifyActionMessages(actionMess);
 
 		//Get schema by ID and test if all inserted fields are in DB
-		Hashtable schema = uplSchemaDao.getUplSchemaById(idSchema);
-		assertEquals((String)schema.get("description"),description);
-		assertEquals((String)schema.get("schema"),schemaFileName);
-		assertEquals((String)schema.get("schema_url"),schemaUrl);
+		Hashtable schema = uplSchemaDao.getUplSchemaById(uplSchemaId);
+		assertEquals((String)schema.get("upl_schema_file"),schemaFileName);
 	}
 	/**
 	 * Editing failed, because of lack of permissins
@@ -86,15 +82,17 @@ public class EditUplSchemaActionTest  extends MockStrutsTestCase {
 	 */
 	public void testFailedNotPermissions() throws Exception {
 
+		//overwrite the default StrutsRequestSimulator and mock multipartrequest object
+		request = new MockStrutsMultipartRequestSimulator(config.getServletContext());
 		setRequestPathInfo("/editUplSchema");
 
 		HttpSession session = request.getSession();
 		session.setAttribute("user", TestConstants.TEST_USER);
 
-		addRequestParameter("idSchema",idSchema);
-		addRequestParameter("schemaUrl",schemaUrl);
-		addRequestParameter("description",description);
+		addRequestParameter("uplSchemaId",uplSchemaId);
+		addRequestParameter("schemaId",schemaId);
 		addRequestParameter("schemaFileName",schemaFileName);
+		((MockStrutsMultipartRequestSimulator)request).writeFile("schemaFile",getClass().getClassLoader().getResource(TestConstants.SEED_XLIFF_XML).getFile(),"text/xml");       
 
 		actionPerform();
 		verifyForward("success");
@@ -103,38 +101,32 @@ public class EditUplSchemaActionTest  extends MockStrutsTestCase {
 		verifyActionErrors(errMess);
 
 		//Get schema by ID and test if all inserted fields are NOT in DB
-		Hashtable schema = uplSchemaDao.getUplSchemaById(idSchema);
-		assertFalse(description.equals((String)schema.get("description")));
-		assertFalse(schemaUrl.equals((String)schema.get("schema_url")));
+		Hashtable schema = uplSchemaDao.getUplSchemaById(uplSchemaId);
+		assertTrue(schemaFileName.equals((String)schema.get("upl_schema_file")));
+		assertTrue(uplSchemaId.equals((String)schema.get("upl_schema_id")));
 
 	}
-	/**
-	 * editing fails, the form should display error message: "Schema file already exists"
-	 */
-	public void testFailedSchemaFileExists() throws Exception{
-		//overwrite the default StrutsRequestSimulator and mock multipartrequest object
-		request = new MockStrutsMultipartRequestSimulator(config.getServletContext());
-		setRequestPathInfo("/editUplSchema");
+    /**
+     * test failed adding the new file, the form should display error message: "schema file not found"
+     */
+    public void testFailedFileNotFound()throws Exception {
 
-		HttpSession session = request.getSession();
-		session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
+    	int countUplSchema = uplSchemaDao.getUplSchema().size();
+        //HttpSession session = request.getSession();
+        //session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
 
-		addRequestParameter("idSchema",idSchema);
-		addRequestParameter("schemaUrl",schemaUrl);
-		addRequestParameter("description",description);
-		addRequestParameter("schemaFileName",schemaFileName);
-		((MockStrutsMultipartRequestSimulator)request).writeFile("schemaFile",getClass().getClassLoader().getResource(TestConstants.SEED_GW_SCHEMA).getFile(),"text/xml");       
+        addRequestParameter("uplSchemaId",uplSchemaId);
+        
+        setRequestPathInfo("/editUplSchema");
+        actionPerform();
+        verifyInputForward();
+        String[] errMess = {"label.uplSchema.upload.validation"};
+        verifyActionErrors(errMess);
 
-		actionPerform();
-		verifyForward("success");
-		verifyForwardPath("/do/uplSchemas");
-		String[] errMess = {BusinessConstants.EXCEPTION_UPLSCHEMA_FILE_EXISTS};
-		verifyActionErrors(errMess);
-
-		//Get schema by ID and test if all inserted fields are NOT in DB
-		Hashtable schema = uplSchemaDao.getUplSchemaById("8");
-		assertFalse(description.equals((String)schema.get("description")));
-		assertFalse(schemaUrl.equals((String)schema.get("schema_url")));
-	}
+        //check if the row was added or not
+        int countUplSchema2 = uplSchemaDao.getUplSchema().size();
+        assertEquals(countUplSchema,countUplSchema2);
+        
+    }
 }
 

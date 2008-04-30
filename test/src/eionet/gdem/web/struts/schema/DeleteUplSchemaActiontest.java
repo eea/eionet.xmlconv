@@ -24,7 +24,8 @@ import eionet.gdem.test.TestUtils;
 public class DeleteUplSchemaActiontest   extends MockStrutsTestCase {
 
 	private  IUPLSchemaDao uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
-	private String idSchema="10";
+	private String schemaId="3";
+	private String uplSchemaId="10";
 
 	public DeleteUplSchemaActiontest(String testName) {
 		super(testName);
@@ -55,14 +56,16 @@ public class DeleteUplSchemaActiontest   extends MockStrutsTestCase {
 		HttpSession session = request.getSession();
 		session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
 
-		addRequestParameter("schemaId",idSchema);
+		addRequestParameter("schemaId",schemaId);
+		addRequestParameter("schemaFile","schema.xsd");
+		addRequestParameter("deleteSchema", "true");
 
 		actionPerform();
 		verifyForward("success");
 		verifyForwardPath("/do/uplSchemas");
 		//verifyTilesForward("success", "/do/uplSchemas");
 		verifyNoActionErrors();
-		String[] actionMess = {"label.uplSchema.deleted"};
+		String[] actionMess = {"label.schema.deleted","label.uplSchema.deleted"};
 		verifyActionMessages(actionMess);
 
 
@@ -84,7 +87,7 @@ public class DeleteUplSchemaActiontest   extends MockStrutsTestCase {
 		HttpSession session = request.getSession();
 		session.setAttribute("user", TestConstants.TEST_USER);
 
-		addRequestParameter("schemaId",idSchema);
+		addRequestParameter("schemaId",schemaId);
 
 		actionPerform();
 		verifyForward("success");
@@ -93,8 +96,8 @@ public class DeleteUplSchemaActiontest   extends MockStrutsTestCase {
 		verifyActionErrors(errMess);
 
 		//Get schema by ID and test if it still exists in DB
-		Hashtable schema = uplSchemaDao.getUplSchemaById(idSchema);	
-		assertEquals((String)schema.get("schema_id"),idSchema);
+		Hashtable schema = uplSchemaDao.getUplSchemaById(uplSchemaId);	
+		assertEquals((String)schema.get("upl_schema_id"),uplSchemaId);
 
 		//check if the row was deleted or not
         int countUplSchema2 = uplSchemaDao.getUplSchema().size();

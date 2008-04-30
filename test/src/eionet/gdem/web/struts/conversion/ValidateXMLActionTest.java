@@ -30,7 +30,7 @@ public class ValidateXMLActionTest  extends MockStrutsTestCase {
         setInitParameter("validating","false");
         
         //setup database
-        DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_CONVERSIONS_XML);
+        DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
         TestUtils.setUpProperties(this);
 
     }

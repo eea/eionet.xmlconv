@@ -11,6 +11,7 @@ import org.dbunit.DBTestCase;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 
+import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
@@ -56,6 +57,7 @@ public class UPLSchemaDaoTest  extends DBTestCase{
 	 * @throws Exception
 	 */
 	public void testUPLSchemaMethods() throws Exception{
+		String schemaId="83";
 		String fileName = "schema.xsd";
 		String descr = "test General report schema";
 		String url = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd";
@@ -66,7 +68,7 @@ public class UPLSchemaDaoTest  extends DBTestCase{
 		int countSchemas = schemas.size();
 		
 		//add schema int db and upoload schema file
-		uplSchemaDao.addUplSchema(fileName, descr, url);
+		uplSchemaDao.addUplSchema(fileName, null, schemaId);
 		
 		//count schemas
 		List schemas2 = uplSchemaDao.getUplSchema();
@@ -75,38 +77,36 @@ public class UPLSchemaDaoTest  extends DBTestCase{
 		//check if the nuber of schemas is increased
 		assertEquals(countSchemas+1,countSchemas2);
 		
-		//the method should return the file name of locally stored schema by URL
-		HashMap uploadedSchema = uplSchemaDao.getUplSchemaByURL(url);
-		String schemaId = (String)uploadedSchema.get("schema_id");
-		assertEquals((String)uploadedSchema.get("description"),descr);
-		assertEquals((String)uploadedSchema.get("schema"),fileName);
-		assertEquals((String)uploadedSchema.get("schema_url"),url);
+		//the method should return the file name of locally stored schema by FK_SCHEMA_ID
+		HashMap uploadedSchema = uplSchemaDao.getUplSchemaByFkSchemaId(schemaId);
+		String uplSchemaId = (String)uploadedSchema.get("upl_schema_id");
+		assertEquals((String)uploadedSchema.get("schema_id"),schemaId);
+		assertEquals((String)uploadedSchema.get("xml_schema"),url);
+		assertEquals((String)uploadedSchema.get("upl_schema_file"),fileName);
 		
 		//Get schema by ID and test if all inserted fields are in DB
-		Hashtable schema = uplSchemaDao.getUplSchemaById(schemaId);
-		assertEquals((String)schema.get("description"),descr);
-		assertEquals((String)schema.get("schema"),fileName);
-		assertEquals((String)schema.get("schema_url"),url);
+		Hashtable schema = uplSchemaDao.getUplSchemaById(uplSchemaId);
+		assertEquals((String)schema.get("schema_id"),schemaId);
+		assertEquals((String)schema.get("xml_schema"),url);
+		assertEquals((String)schema.get("upl_schema_file"),fileName);
 		
-		//check b9oolean methods
+		//check boolean methods
 		assertTrue(uplSchemaDao.checkUplSchemaFile(fileName));
-		assertTrue(uplSchemaDao.checkUplSchemaURL(url));
+		assertTrue(uplSchemaDao.checkUplSchemaFK(schemaId));
 		assertFalse(uplSchemaDao.checkUplSchemaFile(fileName + "222"));
-		assertFalse(uplSchemaDao.checkUplSchemaURL(url + "222"));
+		assertFalse(uplSchemaDao.checkUplSchemaFK("222"));
 
 		//upadate schema fileds
-		uplSchemaDao.updateUplSchema(schemaId, fileName + "UPD", descr + "UPD", url +"UPD");
+		uplSchemaDao.updateUplSchema(uplSchemaId, fileName + "UPD", null, schemaId);
 		
 		//Get schema by ID and test if all upadted fields are in DB
-		schema = uplSchemaDao.getUplSchemaById(schemaId);
-		assertEquals((String)schema.get("schema_id"),schemaId);
-		assertEquals((String)schema.get("description"),descr + "UPD");
-		assertEquals((String)schema.get("schema"),fileName + "UPD");
-		assertEquals((String)schema.get("schema_url"),url + "UPD");
+		schema = uplSchemaDao.getUplSchemaById(uplSchemaId);
+		assertEquals((String)schema.get("upl_schema_id"),uplSchemaId);
+		assertEquals((String)schema.get("upl_schema_file"),fileName + "UPD");
 		
 		
 		//delete inserted schema
-		uplSchemaDao.removeUplSchema(schemaId);
+		uplSchemaDao.removeUplSchema(uplSchemaId);
 		
 		//count schemas
 		List schemas3 = uplSchemaDao.getUplSchema();
@@ -114,5 +114,22 @@ public class UPLSchemaDaoTest  extends DBTestCase{
 		
 		//check if the nuber of schemas is the same as in the beginning
 		assertEquals(countSchemas,countSchemas3);
+	}
+	/**
+	 * The method test if it gets the local file name by URL
+	 * 
+	 * @throws Exception
+	 */
+	public void testGetSchemaByURL() throws Exception{
+		String schemaUrl1 = "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd";
+		String schemaUrl2 = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd";
+		
+		SchemaManager sm = new SchemaManager();
+		
+		HashMap schema1 = uplSchemaDao.getUplSchemaByUrl(schemaUrl1);	
+		assertEquals((String)schema1.get("schema"), "xliff.dtd");
+
+		HashMap schema2 = uplSchemaDao.getUplSchemaByUrl(schemaUrl2);	
+		assertTrue(schema2==null);
 	}
 }

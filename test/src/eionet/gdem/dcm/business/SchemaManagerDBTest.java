@@ -57,65 +57,59 @@ public class SchemaManagerDBTest  extends DBTestCase{
 	 */
 	public void testUPLSchemaMethods() throws Exception{
 		String descr = "test General report schema";
-		String url = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd";
+		String schemaId = "83";
 		String user = TestConstants.TEST_ADMIN_USER;
 		
 		SchemaManager sm = new SchemaManager();
-		//get all uploaded schemas
+		//get all schemas
 		UplSchemaHolder schemas = sm.getUplSchemas(user);
 		//count schemas stored in data file
 		int countSchemas = schemas.getSchemas().size();
 		
 		MockFormFile file = new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA)
 				.getFile());
+		String fileName = sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaId, "xsd");
 		//add schema int db and upoload schema file
-		sm.addUplSchema(user, file, descr, url);
+		sm.addUplSchema(user, file, fileName, schemaId);
 		
 		//count schemas
 		UplSchemaHolder schemas2 = sm.getUplSchemas(user);
 		int countSchemas2 = schemas2.getSchemas().size();
 		
-		//check if the nuber of schemas is increased
-		assertEquals(countSchemas+1,countSchemas2);
+		//The number of schemas shouldn't be inreased, because the number of schemas is the same
+		assertEquals(countSchemas,countSchemas2);
 		
 		//the method should return the file name of locally stored schema by URL
-		String schemaFileName = sm.getUplSchemaURL(url);
-		assertEquals(schemaFileName,TestConstants.SEED_GENERALREPORT_SCHEMA);
+		UplSchema uplSchema = sm.getUplSchemasById(schemaId);
+		String schemaFileName = uplSchema.getUplSchemaFile();
+		assertEquals(schemaFileName,"schema-83.xsd");
+				
 		
-		String schemaId = null;
-		List schemasList = schemas2.getSchemas();
-		for (int i=0;i<schemasList.size();i++){
-			UplSchema _schema = (UplSchema)schemasList.get(i);
-			if(_schema.getSchema().equals(Properties.gdemURL + "/schema/" +TestConstants.SEED_GENERALREPORT_SCHEMA)){
-				schemaId=_schema.getId();
-				break;
-			}
-		}
-		
-		//Get schema by ID and test if all inserted fields are in DB
-		UplSchema schema = sm.getUplSchemasById(schemaId);
-		assertEquals(schema.getDescription(),descr);
-		assertEquals(schema.getSchemaUrl(),url);
-		assertEquals(schema.getSchema(),TestConstants.SEED_GENERALREPORT_SCHEMA);
-		
-		//upadate schema fileds
-		MockFormFile file2 = new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA_UPD)
-				.getFile());
-		sm.updateUplSchema(user, schemaId, TestConstants.SEED_GENERALREPORT_SCHEMA, file2, descr + "UPD", url +"UPD");
-		
-		//Get schema by ID and test if all upadted fields are in DB
-		schema = sm.getUplSchemasById(schemaId);
-		assertEquals(schema.getDescription(),descr + "UPD");
-		assertEquals(schema.getSchemaUrl(),url + "UPD");
-		assertEquals(schema.getSchema(),TestConstants.SEED_GENERALREPORT_SCHEMA_UPD);
-		
-		sm.deleteUplSchema(user, schemaId);
+		//Get schema by ID and test if all upadted fields are in DB		
+		sm.deleteUplSchema(user, schemaId, false);
 		
 		//count schemas
 		UplSchemaHolder schemas3 = sm.getUplSchemas(user);
 		int countSchemas3 = schemas3.getSchemas().size();
 		
-		//check if the nuber of schemas is the same as in the beginning
+		//check if the number of schemas is the same
 		assertEquals(countSchemas,countSchemas3);
+	}
+	/**
+	 * The method test if it gets the local file insted of remote URL
+	 * 
+	 * @throws Exception
+	 */
+	public void testGetSchemaByURL() throws Exception{
+		String schemaUrl1 = "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd";
+		String schemaUrl2 = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd";
+		
+		SchemaManager sm = new SchemaManager();
+		
+		String url1 = sm.getUplSchemaURL(schemaUrl1);
+		assertEquals(url1, "xliff.dtd");
+		
+		String url2 = sm.getUplSchemaURL(schemaUrl2);
+		assertEquals(url2, schemaUrl2);
 	}
 }
