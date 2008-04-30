@@ -44,7 +44,7 @@
 <!-- use JAR instead of classes because it makes it easier to debug errors -->
 
 
-<project name="xmlconv" default="copy_resources" basedir=".">
+<project name="xmlconv" default="install" basedir=".">
 
 	<target name="init">
 
