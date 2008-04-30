@@ -36,16 +36,16 @@
 					<logic:iterate indexId="index" id="schema" name="schemas.uploaded" scope="session" property="schemas" type="UplSchema">
 						<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
 							<td align="center" >
-								<a href="schemaStylesheets?backList=uplschemas&schema=<bean:write name="schema" property="schemaUrl" />">
+								<a href="schemaStylesheets?backList=uplschemas&amp;schema=<bean:write name="schema" property="schemaUrl" />">
 									<img src="<bean:write name="webRoot"/>/images/properties.gif" alt="<bean:message key="label.table.stylesheet" />" title="view stylesheets" /></a>
 								<logic:equal name="ssuPrm" value="true"  name="schemas.uploaded" scope="session" property="ssuPrm" >
-									<a href="schemaElemForm?backToConv=schema&schemaId=<bean:write name="schema" property="schemaId" />">
+									<a href="schemaElemForm?backToConv=schema&amp;schemaId=<bean:write name="schema" property="schemaId" />">
 										<img src="<bean:write name="webRoot"/>/images/edit.gif" alt="<bean:message key="label.edit" />" title="edit schema" /></a>
 								</logic:equal>
 								
 								<logic:notEqual name="ssuPrm" value="true"  name="schemas.uploaded" scope="session" property="ssuPrm" >
 									<a href="schemaElemForm?backToConv=schema&amp;schemaId=<bean:write name="schema" property="schemaId" />">
-										<html:img page="/images/info_icon.gif" altKey="label.table.schemainfo" title="view schema info"/></a>
+										<img src="<bean:write name="webRoot"/>/images/info_icon.gif" alt="<bean:message key="label.table.schemainfo" />" title="view schema info" /></a>
 								</logic:notEqual>
 								
 								
