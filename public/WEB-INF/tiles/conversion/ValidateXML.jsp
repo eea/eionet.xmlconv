@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties"%>
+<%@ page import="eionet.gdem.utils.Utils,java.util.Date" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
@@ -13,6 +14,28 @@
 	
 		<%-- include Error display --%>
 		<tiles:insert definition="Error" />
+				<logic:present name="conversion.valid" scope="request">
+					<bean:size id="countErrors" name="conversion.valid" />
+
+						<logic:equal name="countErrors" value="0">
+							<div class="system-msg">
+								The file is valid XML (<%=Utils.getDateTime(new Date())%>)
+								<logic:notEmpty name="conversion.validatedSchema">
+									<p><bean:message key="label.conversion.validatedSchema"/>&#160;
+										<a href="<bean:write name="conversion.validatedSchema"/>"><bean:write  name="conversion.validatedSchema"/></a></p> 
+								</logic:notEmpty>
+							</div>
+						</logic:equal>
+					<logic:notEqual name="countErrors" value="0">
+					<div class="error-msg">
+						The file is not valid XML
+						<logic:notEmpty name="conversion.validatedSchema">
+							<p><bean:message key="label.conversion.validatedSchema"/>&#160;
+								<a href="<bean:write name="conversion.validatedSchema"/>"><bean:write  name="conversion.validatedSchema"/></a></p> 
+						</logic:notEmpty>
+					</div>
+					</logic:notEqual>
+				</logic:present>
 
 
 			<html:form action="/validateXML" method="post" >
@@ -64,24 +87,7 @@
 	</html:form>
 				<logic:present name="conversion.valid" scope="request">
 					<bean:size id="countErrors" name="conversion.valid" />
-
-						<logic:equal name="countErrors" value="0">
-							<div class="important-msg">
-								<strong>The file is valid XML</strong>
-								<logic:notEmpty name="conversion.validatedSchema">
-									<p><bean:message key="label.conversion.validatedSchema"/>&#160;
-										<a href="<bean:write name="conversion.validatedSchema"/>"><bean:write  name="conversion.validatedSchema"/></a></p> 
-								</logic:notEmpty>
-							</div>
-						</logic:equal>
 					<logic:notEqual name="countErrors" value="0">
-					<div class="warning-msg">
-						<strong>The file is not valid XML</strong>
-						<logic:notEmpty name="conversion.validatedSchema">
-							<p><bean:message key="label.conversion.validatedSchema"/>&#160;
-								<a href="<bean:write name="conversion.validatedSchema"/>"><bean:write  name="conversion.validatedSchema"/></a></p> 
-						</logic:notEmpty>
-					</div>
 						<table class="datatable" align="center" width="100%">
 							<col style="width:8%"/>
 							<col style="width:8%"/>
