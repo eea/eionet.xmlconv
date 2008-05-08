@@ -130,7 +130,12 @@ public class SaxonImpl implements XQEngineIF {
     Properties outputProps = new Properties();
     outputProps.setProperty(OutputKeys.INDENT, "yes");
     outputProps.setProperty(OutputKeys.ENCODING, DEFAULT_ENCODING);
-	outputProps.setProperty(OutputKeys.METHOD, getOutputType());
+    //if the output is html, then use method="xml" in output, otherwise, it's not valid xml
+    if(getOutputType().equals(HTML_CONTENT_TYPE))
+    	outputProps.setProperty(OutputKeys.METHOD, XML_CONTENT_TYPE);
+    else
+    	outputProps.setProperty(OutputKeys.METHOD, getOutputType());
+    //add xml declaration only, if the output should be XML
     if(getOutputType().equals(XML_CONTENT_TYPE))
         outputProps.setProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
     else
@@ -273,9 +278,10 @@ public String getOutputType() {
 	if(Utils.isNullStr(outputType))outputType=DEFAULT_OUTPUTTYPE;
 	return outputType;
 }
-public void setOutputType(String outputType) {
-	outputType=outputType==null ? DEFAULT_OUTPUTTYPE : outputType.trim().toLowerCase();
-	outputType = outputType.equals("txt")?"text":outputType;
+public void setOutputType(String _outputType) {
+	outputType= (_outputType==null) ? DEFAULT_OUTPUTTYPE : _outputType.trim().toLowerCase();
+	outputType = (outputType.equals("txt"))?"text":outputType;
+
 	if(outputType.equals("xml") || outputType.equals("html") ||
 			outputType.equals("text") ||outputType.equals("xhtml"))
 		this.outputType = outputType;

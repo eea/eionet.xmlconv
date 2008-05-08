@@ -34,6 +34,7 @@ public interface XQEngineIF {
 
   public static final String DEFAULT_ENCODING ="UTF-8";
   public static final String DEFAULT_OUTPUTTYPE ="html";
+  public static final String HTML_CONTENT_TYPE ="html";
   public static final String XML_CONTENT_TYPE="xml";
 	/**
    * processes the XQuery
