@@ -149,7 +149,7 @@ public class InputAnalyser
 				if (!e.getMessage().equals("OK"))
 					throw new SAXException(e);
 			}
-			schemaOrDTD=Utils.isURL(handler.getSchemaLocation())? handler.getSchemaLocation():null;
+			schemaOrDTD=!Utils.isNullStr(handler.getSchemaLocation())? handler.getSchemaLocation():null;
 			rootElement = handler.getStartTag();
 			namespace = handler.getStartTagNamespace();
 			hasNamespace = handler.hasNamespace();

@@ -42,13 +42,13 @@ public class ValidateXMLAction  extends Action {
 
 		if(Utils.isNullStr(url)){
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.selectSource"));
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+			//httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 			saveErrors(httpServletRequest,errors);
 			return actionMapping.findForward("error");
 		}
 		if(!Utils.isURL(url)){
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED));
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+			//httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 			saveErrors(httpServletRequest,errors);
 			return actionMapping.findForward("error");
 		}
