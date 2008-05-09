@@ -36,7 +36,10 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.xml.parsers.SAXParser;
@@ -50,9 +53,13 @@ import eionet.gdem.conversion.excel.DD_XMLInstance;
 import eionet.gdem.conversion.excel.DD_XMLInstanceHandler;
 import eionet.gdem.conversion.excel.ExcelUtils;
 import eionet.gdem.conversion.odf.OpenDocumentUtils;
+import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.utils.xml.IXQuery;
+import eionet.gdem.utils.xml.IXmlCtx;
+import eionet.gdem.utils.xml.XmlContext;
 
 
 /*
@@ -65,17 +72,17 @@ import eionet.gdem.utils.Utils;
 
 public abstract class DDXMLConverter {
 
-	protected static LoggerIF _logger;
+	protected static LoggerIF _logger=GDEMServices.getLogger();
 
 	private static final String INSTANCE_SERVLET = "GetXmlInstance";
 	private static final String SCHEMA_SERVLET = "GetSchema";
+	private static final String CONTAINER_SCHEMA_SERVLET = "GetContainerSchema";
     public  static final String META_SHEET_NAME = "-meta";
     public  static final String META_SHEET_NAME_ODS = "_meta";
 
 	protected SourceReaderIF sourcefile = null;
 
 	public DDXMLConverter() {
-		_logger = GDEMServices.getLogger();
 	}
 
 	public abstract SourceReaderIF getSourceReader();
@@ -320,6 +327,7 @@ public abstract class DDXMLConverter {
 			if (!Utils.isNullStr(enc_url))
 				instance.setEncoding(enc_url);
 		}
+		importSheetSchemas(sourcefile, instance, xml_schema);
 		sourcefile.writeContentToInstance(instance);
 		instance.flush(outStream);
 	}
@@ -350,6 +358,29 @@ public abstract class DDXMLConverter {
 					+ e.toString() + " - " + schema_url);
 		} catch (Exception e) {
 			throw new GDEMException("Error getting Instance file URL: "
+					+ e.toString() + " - " + schema_url);
+		}
+	}
+	/**
+	 * Returns the DD container schema URL. It holds the elements definitions
+	 * @param schema_url
+	 * @return
+	 * @throws GDEMException
+	 */
+	public static String getContainerSchemaUrl(String schema_url) throws GDEMException {
+
+		try {
+			URL SchemaURL = new URL(schema_url);
+
+			String containerSchemaUrl = schema_url.replace(SCHEMA_SERVLET, CONTAINER_SCHEMA_SERVLET);
+
+			URL InstanceURL = new URL(containerSchemaUrl);
+			return containerSchemaUrl;
+		} catch (MalformedURLException e) {
+			throw new GDEMException("Error getting Container Schema URL: "
+					+ e.toString() + " - " + schema_url);
+		} catch (Exception e) {
+			throw new GDEMException("Error getting Container Schema URL: "
 					+ e.toString() + " - " + schema_url);
 		}
 	}
@@ -397,7 +428,98 @@ public abstract class DDXMLConverter {
 			}
 		}
 	}
-
+	/**
+	 * gather all element definitions
+	 * @param spreadsheet 
+	 * @param instance
+	 */
+	protected void importSheetSchemas(SourceReaderIF spreadsheet, DD_XMLInstance instance, String xml_schema){
+		try{
+			//if instance type is TBL, then import only table schema
+			if(instance.getType().equals(DD_XMLInstance.TBL_TYPE)){
+				Map elemDefs = importSchemaElemDefs(xml_schema);
+				instance.addElemDef(DD_XMLInstance.TBL_TYPE, elemDefs);
+			}
+			//if instance type is dataset, then import schemas for all pages
+			else{
+				Hashtable sheetSchemas = spreadsheet.getSheetSchemas();
+				Enumeration sheets = sheetSchemas.keys();
+				while (sheets.hasMoreElements()){
+					String sheet_name = sheets.nextElement().toString();
+					String schemaUrl = (String)sheetSchemas.get(sheet_name);
+					Map elemDefs = importSchemaElemDefs(schemaUrl);
+					instance.addElemDef(sheet_name, elemDefs);				
+					}
+				}
+		} catch (Exception ex) {
+			_logger.error("Error reading elements from schema files ", ex);
+		}
+	}
+	/**
+	 * gather all element definitions
+	 * @param instance
+	 * @param schemaUrl
+	 */
+	protected Map importSchemaElemDefs(String schemaUrl){
+		InputStream inputStream =null;
+		Map elemDefs = new HashMap();
+		try {
+			//get element definitions for given schema
+			Map schemaElemDefs = getSchemaElemDefs(schemaUrl);
+			elemDefs.putAll(schemaElemDefs);
+			
+			//load imported schema URLs
+			IXmlCtx ctx=new XmlContext();
+			URL url = new URL(schemaUrl);
+			inputStream = url.openStream();
+			ctx.checkFromInputStream(inputStream);
+			
+			IXQuery xQuery=ctx.getQueryManager();
+			
+			//run recursively the same function for importing elem defs for imported schemas
+			List schemas = xQuery.getSchemaImports();
+			for (int i = 0; i < schemas.size(); i++) {
+				String schema=(String) schemas.get(i);
+				Map impSchemaElemeDefs = getSchemaElemDefs(schema);
+				elemDefs.putAll(impSchemaElemeDefs);
+			}
+		} catch (Exception ex) {
+			_logger.error("Error reading schema file ", ex);
+		}
+		finally{
+			try{
+				inputStream.close();
+			}catch(Exception e){}
+		}
+		return elemDefs;
+	}
+	protected Map getSchemaElemDefs(String schemaUrl){
+		InputStream inputStream =null;
+		Map elemDefs = new HashMap();
+		try {
+			IXmlCtx ctx=new XmlContext();
+			URL url = new URL(schemaUrl);
+			inputStream = url.openStream();
+			ctx.checkFromInputStream(inputStream);
+			
+			IXQuery xQuery=ctx.getQueryManager();
+			List elemNames = xQuery.getSchemaElements();
+			for (int i = 0; i < elemNames.size(); i++) {
+				String elemName=(String) elemNames.get(i);
+				String dataType = xQuery.getSchemaElementType(elemName);
+				elemDefs.put(elemName,dataType);
+			}
+		} catch (Exception ex) {
+			_logger.error("Error reading schema file ", ex);
+		}
+		finally{
+			try{
+				inputStream.close();
+			}catch(Exception e){}
+		}
+		return elemDefs;
+		
+	}
 	protected Vector createResultForSheet(String code, String sheet_name,
 			String error_mess) {
 		Vector sheet_result = new Vector();

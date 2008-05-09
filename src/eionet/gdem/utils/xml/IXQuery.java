@@ -81,4 +81,24 @@ public interface IXQuery {
 	 */
 	public List getElementValues(String elementName) throws XmlException;
 
+	/**
+	 * returns the list XML Schema element names from xs:element name attribute 
+	 * @return
+	 * @throws XmlException
+	 */
+	public List getSchemaElements() throws XmlException;
+	
+	/**
+	 * returns the xs:restriction/@base for gievn element from XML Schema 
+	 * @return
+	 * @throws XmlException
+	 */
+	public String getSchemaElementType(String elementName) throws XmlException;
+
+	/**
+	 * returns the list XML Schema imports from xs:import schemaLocation attribute 
+	 * @return
+	 * @throws XmlException
+	 */
+	public List getSchemaImports() throws XmlException;
 }

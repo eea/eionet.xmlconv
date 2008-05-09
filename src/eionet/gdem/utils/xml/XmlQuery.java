@@ -160,5 +160,51 @@ public class XmlQuery implements IXQuery {
 		}
 		return result;
 	}
+	public List getSchemaElements() throws XmlException {
+		String xpath = "//xs:element";
+		List result = new ArrayList();
+		try {
+			NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
+			for (int i = 0; i < nodes.getLength(); i++) {
+				if(nodes.item(i).getAttributes()!=null && nodes.item(i).getAttributes().getNamedItem("name")!=null){
+					String elemName=nodes.item(i).getAttributes().getNamedItem("name").getNodeValue();
+					if(elemName!=null) result.add(elemName);
+				}
+			}
+		} catch (Exception e) {
+			throw new XmlException(e);
+		}
+		return result;
+	}
+	public String getSchemaElementType(String elementName) throws XmlException {
+		String xpath = "//xs:element[@name='" + elementName +"']//xs:restriction";
+		String base = null;
+		try {
+			NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
+			if (nodes.getLength()>0) {
+				if(nodes.item(0).getAttributes()!=null && nodes.item(0).getAttributes().getNamedItem("base")!=null)
+					base=nodes.item(0).getAttributes().getNamedItem("base").getNodeValue();
+			}
+		} catch (Exception e) {
+			throw new XmlException(e);
+		}
+		return base;
+	}
 
+	public List getSchemaImports() throws XmlException {
+		String xpath = "//xs:import";
+		List result = new ArrayList();
+		try {
+			NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
+			for (int i = 0; i < nodes.getLength(); i++) {
+				if(nodes.item(i).getAttributes()!=null && nodes.item(i).getAttributes().getNamedItem("schemaLocation")!=null){
+					String schemaLocation=nodes.item(i).getAttributes().getNamedItem("schemaLocation").getNodeValue();
+					if(schemaLocation!=null) result.add(schemaLocation);
+				}
+			}
+		} catch (Exception e) {
+			throw new XmlException(e);
+		}
+		return result;
+	}
 }

@@ -26,15 +26,17 @@ package eionet.gdem.conversion.excel;
 import eionet.gdem.utils.Utils;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 import java.io.File;
 import java.io.OutputStreamWriter;
 
 public class DD_XMLInstance  {
 
-  private static final String DST_TYPE = "DST";
-  private static final String TBL_TYPE = "TBL";
+  public static final String DST_TYPE = "DST";
+  public static final String TBL_TYPE = "TBL";
   private static final String DEFAULT_ENCODING = "UTF-8";
 	
   protected String lineTerminator = "\n";
@@ -48,6 +50,7 @@ public class DD_XMLInstance  {
   private Vector content =  new Vector();
   private StringBuffer namespaces = new StringBuffer();
   private Hashtable leads = null;
+  private Map elemDefs = new HashMap();
 
   private String cur_row_name = "";
   private String cur_row_attrs = "";
@@ -269,5 +272,26 @@ public class DD_XMLInstance  {
 			lead = "";
 		
 		return lead;
+	}
+	public void setElemDefs(Map elemDefs) {
+		this.elemDefs = elemDefs;
+	}
+	public void addElemDef(String sheet, Map _elemDefs) {
+		if(this.elemDefs==null)this.elemDefs=new HashMap();
+		this.elemDefs.put(sheet, _elemDefs);
+	}
+	public HashMap getElemDefs(String sheet){
+		if(elemDefs!=null){
+			if (elemDefs.containsKey(sheet)){
+				return (HashMap)elemDefs.get(sheet);
+			}
+			else if(elemDefs.containsKey(TBL_TYPE)){
+				return (HashMap)elemDefs.get(TBL_TYPE);
+			}
+		}
+		return null;
+	}
+	public String getType() {
+		return type;
 	}
 }

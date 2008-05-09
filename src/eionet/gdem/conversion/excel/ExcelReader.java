@@ -28,7 +28,10 @@ import eionet.gdem.conversion.DDXMLConverter;
 import eionet.gdem.conversion.SourceReaderIF;
 import eionet.gdem.utils.Utils;
 
+import java.util.Date;
 import java.util.Hashtable;
+import java.util.Map;
+
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.hssf.usermodel.*;
 
@@ -38,13 +41,14 @@ import eionet.gdem.GDEMException;
 
 /**
 * The main class, which is calling POI HSSF methods for reading Excel file
-* @author Enriko K�sper
+* @author Enriko Käsper
 */
 
 public class ExcelReader implements SourceReaderIF
 {
   private HSSFWorkbook wb=null;
   private static final String SCHEMA_SHEET_NAME = "DO_NOT_DELETE_THIS_SHEET";
+  private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
   public void initReader(InputStream input) throws GDEMException{
     try{
@@ -142,6 +146,8 @@ public class ExcelReader implements SourceReaderIF
 
       instance.writeTableStart(tbl_name, tbl_attrs);
       instance.setCurRow(tbl_name);
+      
+      Map elemDefs = instance.getElemDefs(tbl_localname);
 
 //read data
       // there are no data rows in the Excel file. We create empty table
@@ -157,14 +163,16 @@ public class ExcelReader implements SourceReaderIF
         for (int k=0;k<elements.size();k++){
           Hashtable elem = (Hashtable)elements.get(k);
           String elem_name = (String)elem.get("name");
+          String elem_local_name = (String)elem.get("localName");
           String elem_attributes = (String)elem.get("attributes");
           Integer col_idx = (Integer)elem.get("col_idx");
           Boolean main_table = (Boolean)elem.get("main_table");
+          String schemaType = (elemDefs!=null && elemDefs.containsKey(elem_local_name)) ? (String)elemDefs.get(elem_local_name): null;
 
           String data = "";
           if (col_idx!=null && main_table!=null){
             data = (main_table.booleanValue()) ?
-                getCellValue(row,col_idx) : getCellValue(meta_row,col_idx);
+                getCellValue(row,col_idx, schemaType) : getCellValue(meta_row,col_idx, null);
           }
           instance.writeElement(elem_name,elem_attributes, data);
         }
@@ -180,7 +188,7 @@ public class ExcelReader implements SourceReaderIF
   	for (int j=0; j<=row.getLastCellNum();j++){
   		HSSFCell cell = row.getCell((short)j);
   		if (cell==null) continue;
-  		if (!Utils.isNullStr(cellValueToString(cell)))
+  		if (!Utils.isNullStr(cellValueToString(cell, null)))
   			return false;
   	}
   	return true;
@@ -282,16 +290,25 @@ public class ExcelReader implements SourceReaderIF
 
       return null;
   }
-  private String cellValueToString(HSSFCell cell){
+  protected String cellValueToString(HSSFCell cell, String schemaType){
     String   value = "";
     switch (cell.getCellType()){
       case HSSFCell.CELL_TYPE_FORMULA :
         break;
       case HSSFCell.CELL_TYPE_NUMERIC :
-      	value = POINumericToString(cell.getNumericCellValue());
+    	  if (HSSFDateUtil.isCellDateFormatted(cell)) { 
+  	    	Date dateValue = cell.getDateCellValue();
+  	    	value= Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
+    	  }else  if ( HSSFDateUtil.isValidExcelDate(cell.getNumericCellValue()) && schemaType!=null && schemaType.equals("xs:date") ) {
+   	    	Date dateValue = cell.getDateCellValue();
+   	    	value= Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
+    	  } else {
+    	  	value = POINumericToString(cell.getNumericCellValue());
+    	  }
         break;
       case HSSFCell.CELL_TYPE_STRING :
-        value = cell.getStringCellValue();
+    	  HSSFRichTextString richText = cell.getRichStringCellValue();
+    	  value=richText.toString();
         break;
       case HSSFCell.CELL_TYPE_BOOLEAN :
         value = Boolean.toString(cell.getBooleanCellValue());
@@ -330,10 +347,10 @@ public class ExcelReader implements SourceReaderIF
       }
 
   }
-  private String getCellValue(HSSFRow row, Integer col_idx){
+  private String getCellValue(HSSFRow row, Integer col_idx, String schemaType){
 
     HSSFCell cell = (col_idx==null || row==null) ? null : row.getCell(col_idx.shortValue());
-    String data = (cell==null) ? "" : cellValueToString(cell);
+    String data = (cell==null) ? "" : cellValueToString(cell, schemaType);
     return data;
   }
   /*
