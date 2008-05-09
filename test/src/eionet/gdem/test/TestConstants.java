@@ -16,13 +16,15 @@ public class TestConstants {
 	public static final String SEED_DATASET_UPL_SCHEMAS_XML = "seed-dataset-upl_schemas.xml";
 	
 	//SEED FILES for conversions
-	public static final String SEED_RIVERS_XML = "seed-rivers.xls";
+	public static final String SEED_RIVERS_XLS = "seed-rivers.xls";
+	public static final String SEED_DATES_XLS = "seed-dates.xls";
 	public static final String SEED_GENERAL_REPORT_XML = "seed-general-report.xml";
 	public static final String SEED_GENERAL_REPORT_ZIP = "seed-general-report.zip";
 	public static final String SEED_OZONE_STATION_XML = "seed-ozone-station.xml";
 	public static final String SEED_GW_VALID_XML = "seed-gw-valid.xml";	
 	public static final String SEED_GW_INVALID_XML = "seed-gw-invalid.xml";
 	public static final String SEED_GW_SCHEMA = "schema/seed-gw-schema.xsd";
+	public static final String SEED_GW_CONTAINER_SCHEMA = "schema/seed-gw-schema-container.xsd";
 	public static final String SEED_XLIFF_DTD = "schema/xliff.dtd";
 	public static final String SEED_XLIFF_XML = "seed-xliff.xml";
 	public static final String SEED_GENERALREPORT_SCHEMA = "seed-generalreport.xsd";

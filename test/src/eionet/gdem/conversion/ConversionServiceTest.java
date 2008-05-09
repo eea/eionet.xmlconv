@@ -32,7 +32,7 @@ public class ConversionServiceTest extends TestCase{
 	public void testConvertDD_XML() throws Exception{
 
 		ConversionServiceIF convService = new ConversionService();
-		Vector v = convService.convertDD_XML(TestUtils.getSeedURL(TestConstants.SEED_RIVERS_XML,this));
+		Vector v = convService.convertDD_XML(TestUtils.getSeedURL(TestConstants.SEED_RIVERS_XLS,this));
 		
 		// test if the result Vector is in correct format:
 		//["0", byte[], "XML filename"]
@@ -58,7 +58,7 @@ public class ConversionServiceTest extends TestCase{
 		//System.out.println(filename);
 
 		ConversionServiceIF convService = new ConversionService();
-		Vector v = convService.convertDD_XML_split(TestUtils.getSeedURL(TestConstants.SEED_RIVERS_XML,this),"BasicQuality");
+		Vector v = convService.convertDD_XML_split(TestUtils.getSeedURL(TestConstants.SEED_RIVERS_XLS,this),"BasicQuality");
 		
 		// test if the result Vector is in correct format:
 		//[["0", "XML filename", byte[]]]
@@ -89,7 +89,7 @@ public class ConversionServiceTest extends TestCase{
 		//System.out.println(filename);
 
 		ConversionServiceIF convService = new ConversionService();
-		Vector v = convService.convertDD_XML_split(TestUtils.getSeedURL(TestConstants.SEED_RIVERS_XML,this),"NOSHEET");
+		Vector v = convService.convertDD_XML_split(TestUtils.getSeedURL(TestConstants.SEED_RIVERS_XLS,this),"NOSHEET");
 		
 		// test if the result Vector is in correct format:
 		//[["0", "XML filename", byte[]]]
