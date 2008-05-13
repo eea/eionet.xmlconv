@@ -42,7 +42,7 @@ public class UplXmlFileFormAction extends Action {
 
 		} catch (DCMException e) {
 			e.printStackTrace();
-			_logger.error("Uplaoded XML file form error",e);
+			_logger.error("Uploaded XML file form error",e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			saveMessages(httpServletRequest, errors);
 		}
