@@ -3,6 +3,7 @@
 
 .ok-msg {
 	border: 2px solid green;
+        padding: 0.5em 0.5em 0.5em 24px;
 	background: url('../images/ok.gif') 5px 5px no-repeat;
 	color: #008000;
 	font-size: 110%;
