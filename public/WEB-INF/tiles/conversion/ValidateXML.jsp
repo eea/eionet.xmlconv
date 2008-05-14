@@ -18,7 +18,7 @@
 					<bean:size id="countErrors" name="conversion.valid" />
 
 						<logic:equal name="countErrors" value="0">
-							<div class="system-msg">
+							<div class="ok-msg">
 								The file is valid XML (<%=Utils.getDateTime(new Date())%>)
 								<logic:notEmpty name="conversion.validatedSchema">
 									<p><bean:message key="label.conversion.validatedSchema"/>&#160;

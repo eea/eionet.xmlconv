@@ -1,7 +1,7 @@
-<!-- Last updated: 2007-12-20T14:27:14Z
+<!-- Last updated: 2008-02-27T15:39:37Z
      To update download http://www.eionet.europa.eu/dropdownmenus.txt -->
         <ul id="dropdowns">
-         <li><a href="http://www.eionet.europa.eu/">Services</a>
+         <li><a href="http://www.eionet.europa.eu/services">Services</a>
           <ul>
            <li><a href="http://nmc.eionet.europa.eu/">Helpdesk</a></li>
            <li><a href="http://eea.eionet.europa.eu/Public/irc/eionet-circle/Home/main">CIRCA</a></li>

@@ -12,10 +12,14 @@
 <head>
 <title></title>
 <style type="text/css" media="screen">
-	<!-- @import url(<c:url value="../css/main.css"/>); -->
+<!--
+	@import url(<c:url value="../css/main.css"/>);
+-->
 </style>
 <style type="text/css" media="screen">
-	<!-- @import url(<c:url value="/css/portlet.css"/>); -->
+<!--
+	@import url(<c:url value="/css/portlet.css"/>);
+-->
 </style>
 <style type="text/css">
 body {
