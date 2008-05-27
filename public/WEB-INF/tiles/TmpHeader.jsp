@@ -72,7 +72,7 @@ response.setDateHeader("Expires", 0);
 	<div id="toolribbon">
 		<div id="lefttools">
 	      <a id="eealink" href="http://www.eea.europa.eu/">EEA</a>
-	      <a id="ewlink" href="http://www.ewindows.eu.org/">EnviroWindows</a>
+	      <a id="ewlink" href="http://ew.eea.europa.eu/">EnviroWindows</a>
 	    </div>
 	    <div id="righttools">	    
 	    	<logic:notPresent name="user">
