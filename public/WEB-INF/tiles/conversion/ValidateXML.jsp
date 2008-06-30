@@ -18,13 +18,19 @@
 					<bean:size id="countErrors" name="conversion.valid" />
 
 						<logic:equal name="countErrors" value="0">
-							<div class="ok-msg">
-								The file is valid XML (<%=Utils.getDateTime(new Date())%>)
-								<logic:notEmpty name="conversion.validatedSchema">
+							<logic:notEmpty name="conversion.validatedSchema">
+								<div class="ok-msg">
+									The file is valid XML (<%=Utils.getDateTime(new Date())%>)
 									<p><bean:message key="label.conversion.validatedSchema"/>&#160;
 										<a href="<bean:write name="conversion.validatedSchema"/>"><bean:write  name="conversion.validatedSchema"/></a></p> 
-								</logic:notEmpty>
-							</div>
+								</div>
+							</logic:notEmpty>
+							<logic:empty name="conversion.validatedSchema">
+								<div class="error-msg">
+									Could not validate XML.
+									<p><bean:message key="label.conversion.schema.not.found"/></p> 								
+								</div>
+							</logic:empty>
 						</logic:equal>
 					<logic:notEqual name="countErrors" value="0">
 					<div class="error-msg">
@@ -33,6 +39,9 @@
 							<p><bean:message key="label.conversion.validatedSchema"/>&#160;
 								<a href="<bean:write name="conversion.validatedSchema"/>"><bean:write  name="conversion.validatedSchema"/></a></p> 
 						</logic:notEmpty>
+						<logic:empty name="conversion.validatedSchema">
+							<p><bean:message key="label.conversion.schema.not.found"/></p> 
+						</logic:empty>
 					</div>
 					</logic:notEqual>
 				</logic:present>
@@ -45,6 +54,16 @@
 			        <bean:message key="label.conversion.url"/>
 			      </th>
 				 </tr>
+				 <tr>
+			      <td>
+			        <html:text property="url"  style="width: 40em;" />		        
+			      </td>
+			    </tr>
+			    <tr>
+				 <th scope="col" class="scope-col">
+			        <bean:message key="label.conversion.xmlSchema.optional"/>
+			      </th>
+				 </tr>
 			    <tr>
 			      <td>
 			        <bean:message key="label.conversion.validate.note"/>
@@ -52,7 +71,7 @@
 			    </tr>
 				 <tr>
 			      <td>
-			        <html:text property="url"  style="width: 40em;" />		        
+			        <html:text property="schemaUrl"  style="width: 40em;" />		        
 			      </td>
 			    </tr>
 				<logic:equal name="ValidationForm" property="showSchemaSelection" value="true">

@@ -22,7 +22,7 @@
 		</init-param>
 		<init-param>
 			<param-name>edu.yale.its.tp.cas.client.filter.serverName</param-name>
-			<param-value>converters.eionet.europa.eu</param-value>
+			<param-value>192.168.10.58:8080</param-value>
 		</init-param>
 		<init-param>
 			<param-name>edu.yale.its.tp.cas.client.filter.wrapRequest</param-name>
