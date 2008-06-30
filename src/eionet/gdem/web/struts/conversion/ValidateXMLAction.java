@@ -39,6 +39,7 @@ public class ValidateXMLAction  extends Action {
 
 		ConversionForm cForm = (ConversionForm) actionForm;
 		String url = cForm.getUrl();
+		String schema = cForm.getSchemaUrl();
 
 		if(Utils.isNullStr(url)){
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.selectSource"));
@@ -55,7 +56,6 @@ public class ValidateXMLAction  extends Action {
 
 
 		try {
-			String schema = null;
 			ArrayList valid;
 			String validatedSchema = null;
 			try {

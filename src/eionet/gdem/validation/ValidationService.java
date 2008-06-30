@@ -128,6 +128,8 @@ public class ValidationService {
 	}
 	public String validateSchema (InputStream src_stream, String schema) throws DCMException {
 		boolean isDTD = false;
+		schema=Utils.isNullStr(schema)?null:schema;
+		
 		try {
 
 			SAXParserFactory spfact = SAXParserFactory.newInstance();
@@ -178,7 +180,9 @@ public class ValidationService {
 					reader.setEntityResolver(localResolver);
 				}
 			}
-
+			else{
+				return GErrorHandler.formatResultText("WARNING: Could not validate XML file. Unable to locate XML Schema reference.");				
+			}
 			InputSource is = new InputSource( src_stream);
 			reader.parse(is);
 
