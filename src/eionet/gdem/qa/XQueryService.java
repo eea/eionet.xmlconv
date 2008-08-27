@@ -194,6 +194,7 @@ public class XQueryService  implements Constants {
       String file=orig_file;
 
       Vector _queries = listQueries(schema);
+      
       try{
     	  outputTypes = convTypeDao.getConvTypes();
   		} catch (SQLException sqe ) {
@@ -211,32 +212,32 @@ public class XQueryService  implements Constants {
 		  throw new GDEMException(err_mess, e);
       }
 
-      if (Utils.isNullVector(_queries)) return result;
+      if (!Utils.isNullVector(_queries)) {
 
-      for (int j=0;j<_queries.size();j++){
-        Hashtable _querie = (Hashtable)_queries.get(j);
-        String query_id = (String)_querie.get("query_id");
-        String query_file = (String)_querie.get("query");
-        String content_type = (String)_querie.get("content_type_out");
-        String fileExtension = getExtension(outputTypes, content_type);
-        String resultFile=Properties.tmpFolder + "gdem_q" + query_id + "_" +
-            System.currentTimeMillis() + "." + fileExtension;
-        try {
-          int int_qID =0;
-          try {
-            int_qID=Integer.parseInt(query_id);
-          } catch(NumberFormatException n) {
-            int_qID = 0;
-          }
-          newId=xqJobDao.startXQJob(file, Properties.queriesFolder + query_file, resultFile, int_qID);
-
-        } catch (SQLException sqe ) {
-          throw new GDEMException("DB operation failed: " + sqe.toString());
-        }
-        Vector _res = new Vector();
-        _res.add(newId);
-        _res.add(orig_file);
-        result.add(_res);
+    	  for (int j=0;j<_queries.size();j++){
+    		  Hashtable _querie = (Hashtable)_queries.get(j);
+    		  String query_id = (String)_querie.get("query_id");
+    		  String query_file = (String)_querie.get("query");
+    		  String content_type = (String)_querie.get("content_type_out");
+    		  String fileExtension = getExtension(outputTypes, content_type);
+    		  String resultFile=Properties.tmpFolder + "gdem_q" + query_id + "_" +
+    		  System.currentTimeMillis() + "." + fileExtension;
+    		  try {
+    			  int int_qID =0;
+    			  try {
+    				  int_qID=Integer.parseInt(query_id);
+    			  } catch(NumberFormatException n) {
+    				  int_qID = 0;
+    			  }
+    			  newId=xqJobDao.startXQJob(file, Properties.queriesFolder + query_file, resultFile, int_qID);    			  
+    		  } catch (SQLException sqe ) {
+    			  throw new GDEMException("DB operation failed: " + sqe.toString());
+    		  }
+    		  Vector _res = new Vector();
+    		  _res.add(newId);
+    		  _res.add(orig_file);
+    		  result.add(_res);
+    	  }
       }
       //checks if the validation is a part of QA Service. If yes, then add it to work queue
       try {
