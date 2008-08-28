@@ -83,7 +83,7 @@ public class AddUplSchemaAction extends Action {
 			}
 			//Add row to T_SCHEMA table			
 			String schemaID = sm.addSchema(user, schemaUrl, desc, schemaLang, doValidation);
-			if(schemaFile!=null){
+			if(schemaFile!=null && schemaFile.getFileSize()>0){
 				//	Change the filename to schema-UniqueIDxsd
 				fileName = sm.generateSchemaFilenameByID(Properties.schemaFolder,schemaID, Utils.extractExtension(schemaFile.getFileName()));
 			//	Add row to T_UPL_SCHEMA table			
