@@ -27,70 +27,31 @@ package eionet.gdem.conversion;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import eionet.gdem.GDEMException;
-import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
+import eionet.gdem.dcm.results.RemoteService;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 /**
  * Conversion Service Facade. 
- * The service is able to execute different conversions that are called through XML/RPC and HTTP POST and GET.
+ * The service is able to execute different conversions 
+ * that are called through XML/RPC and HTTP POST and GET.
  *
  * @author Enriko Käsper
  */
 
-public class ConversionService implements ConversionServiceIF {
+public class ConversionService extends RemoteService 
+				implements ConversionServiceIF{
 
 
-	//The service provides methods both for HTTP and XMLRPC clients. 
-	//isHttpResponse=true and HttpMethodResponseWrapper object is initialised, if the service is called through HTTP.
-	
-	private boolean isHttpRequest = false;
-	
-	private HttpMethodResponseWrapper httpResponse = null;
-
-	private String ticket = null;
-
-	private boolean trustedMode = false;
 
 	private static LoggerIF _logger = GDEMServices.getLogger();
 
 	public ConversionService() {
-
-	}
-
-	public void setTicket(String _ticket) {
-		this.ticket = _ticket;
-	}
-
-	public void setTrustedMode(boolean mode) {
-		this.trustedMode = mode;
-	}
-
-
-	public String getTicket() {
-		return ticket;
-	}
-
-	public boolean isTrustedMode() {
-		return trustedMode;
-	}
-
-	public boolean isHTTPRequest() {
-		return isHttpRequest;
-	}
-	/**
-	 * Assignes the HttpResponseWrapper into the method. 
-	 * The response is used to fulfill the outputstream by converion service.
-	 */
-	public void setHttpResponse(HttpMethodResponseWrapper httpResponse) {
-		if (httpResponse!=null) isHttpRequest=true;
-		this.httpResponse = httpResponse; 
 	}
 	/* (non-Javadoc)
 	 * @see eionet.gdem.conversion.ConversionServiceIF#listConversions()
@@ -132,7 +93,7 @@ public class ConversionService implements ConversionServiceIF {
 	 */
 	public Hashtable convert(String sourceURL, String convertId) throws GDEMException {
 		
-		if(!isHttpRequest && _logger.enable(LoggerIF.DEBUG))
+		if(!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG))
 			_logger.debug("ConversionService.convert method called through XML-rpc.");
 		ConvertXMLMethod convertMethod = new ConvertXMLMethod();
 		setGlobalParameters(convertMethod);
@@ -144,7 +105,7 @@ public class ConversionService implements ConversionServiceIF {
 	 */
 	public Vector convertDD_XML(String sourceURL) throws GDEMException {
 		
-		if(!isHttpRequest && _logger.enable(LoggerIF.DEBUG))
+		if(!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG))
 			_logger.debug("ConversionService.convertDD_XML method called through XML-rpc.");
 
 		ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
@@ -157,7 +118,7 @@ public class ConversionService implements ConversionServiceIF {
 	 */
 	public Vector convertDD_XML_split(String sourceURL, String sheet_param) throws GDEMException {
 
-		if(!isHttpRequest && _logger.enable(LoggerIF.DEBUG))
+		if(!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG))
 			_logger.debug("ConversionService.convertDD_XML_split method called through XML-rpc.");
 		
 		ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
@@ -177,7 +138,7 @@ public class ConversionService implements ConversionServiceIF {
 	 */
 	public Hashtable convertPush(byte file[], String convertId, String filename)throws GDEMException {
 		
-		if(!isHttpRequest && _logger.enable(LoggerIF.DEBUG))
+		if(!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG))
 			_logger.debug("ConversionService.convertPush method called through XML-rpc.");
 
 		InputStream input = null;
@@ -205,20 +166,6 @@ public class ConversionService implements ConversionServiceIF {
 		ConvertXMLMethod convertMethod = new ConvertXMLMethod();
 		setGlobalParameters(convertMethod);
 		return convertMethod.convertPush(fileInput, convertId, fileName);	
-	}
-	/** Assign ticket and HTTPResponse to the executed method. 
-	 * 
-	 * @param method
-	 */
-	private void setGlobalParameters(ConversionServiceMethod method){
-		//if it's a xml-rpc request, then use trusted account for getting remote URLs
-		if(!isHttpRequest)
-			setTrustedMode(true);
-		
-		method.setTicket(getTicket());
-		method.setTrustedMode(isTrustedMode());
-		method.setHttpResponse(httpResponse);
-			
 	}
 
 	public Vector getXMLSchemas() throws GDEMException {

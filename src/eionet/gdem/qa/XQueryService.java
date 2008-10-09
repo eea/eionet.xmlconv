@@ -37,6 +37,7 @@ import java.util.Hashtable;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.SourceFileManager;
+import eionet.gdem.dcm.results.RemoteService;
 import eionet.gdem.services.*;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
@@ -53,101 +54,42 @@ import java.util.Vector;
 
 
 /**
-* Container for holding XQueryService XML/RPC methods
-* and other common methods
-*/
-public class XQueryService  implements Constants {
+ * QA Service Service Facade. 
+ * The service is able to execute different QA related methods 
+ * that are called through XML/RPC and HTTP POST and GET.
+ *
+ * @author Enriko Käsper
+ */
+public class XQueryService extends RemoteService implements Constants {
 
 	  private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();;
 	  private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
 	  private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
 	  private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
-	  private String ticket = null;
-	  private boolean trustedMode = true;// false for web clients
 
-  private static LoggerIF _logger;
+  private static LoggerIF _logger=GDEMServices.getLogger();
 
 
   public XQueryService()  {
-    _logger=GDEMServices.getLogger();
   }
   /**
   * List all possible XQueries for this namespace
   */
   public Vector listQueries(String schema) throws GDEMException {
 
-    Vector v = null;
-    try {
-        v=queryDao.listQueries(schema);
-    } catch (Exception e ) {
-      throw new GDEMException("Error getting data from the DB " + e.toString(), e);
-    }
-
-    return v;
-
-
+	  ListQueriesMethod method = new ListQueriesMethod();
+	  Vector v = method.listQueries(schema);
+	  return v;
   }
   /**
    * List all  XQueries and their modification times for this namespace
    * returns also XML Schema validation
    */
-   public Vector listQAScripts(String schema) throws GDEMException {
-  	Vector vec = new Vector();
-  	Vector v1 = null;
-    try {
-      Vector v=schemaDao.getSchemas(schema);
-
-      if (Utils.isNullVector(v)) return vec;
-
-      HashMap h = (HashMap)v.get(0);
-      String validate = (String)h.get("validate");
-      if (!Utils.isNullStr(validate)){
-        if (validate.equals("1")){
-        	v1 = new Vector();
-        	v1.add(String.valueOf(JOB_VALIDATION));
-        	v1.add("XML Schema Validation");
-        	v1.add("");
-        	vec.add(v1);
-        }
-      }
-      Vector queries = (Vector)h.get("queries");
-      if (Utils.isNullVector(queries)) return vec;
-
-      for (int i = 0; i <queries.size();i++){
-      		HashMap hQueries = (HashMap)queries.get(i);
-      		String q_id = (String)hQueries.get("query_id");
-      		String q_file = (String)hQueries.get("query");
-      		String q_desc = (String)hQueries.get("descripton");
-      		String q_name = (String)hQueries.get("short_name");
-      		if (Utils.isNullStr(q_desc)){
-      			if (Utils.isNullStr(q_name)){
-      				q_desc = "Quality Assurance script";
-      			}
-      			else {
-      				q_desc=q_name;
-      			}
-      		}
-        	v1 = new Vector();
-        	v1.add(q_id);
-        	v1.add(q_desc);
-          File f=new File(Properties.queriesFolder + q_file);
-					String last_modified="";
-
-					if (f!=null)
-						last_modified = Utils.getDateTime(new Date(f.lastModified()));;
-						//DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM).format(new Date(f.lastModified()));
-
-					v1.add(last_modified);
-					vec.add(v1);
-      }
-
-
-    } catch (Exception e ) {
-      throw new GDEMException("Error getting data from the DB " + e.toString(), e);
-    }
-
-  	return vec;
+  public Vector listQAScripts(String schema) throws GDEMException {
+	  ListQueriesMethod method = new ListQueriesMethod();
+	  Vector v = method.listQAScripts(schema);
+	  return v;
    }
   /**
   * Request from XML/RPC client
@@ -204,7 +146,7 @@ public class XQueryService  implements Constants {
 	  try{
   		//get the trusted URL from source file adapter
       	file = SourceFileManager.getSourceFileAdapterURL(
-  				ticket,file,trustedMode);
+  				getTicket(),file,isTrustedMode());
       }
       catch(Exception e){
     	  String err_mess="File URL is incorrect";
@@ -229,7 +171,10 @@ public class XQueryService  implements Constants {
     			  } catch(NumberFormatException n) {
     				  int_qID = 0;
     			  }
-    			  newId=xqJobDao.startXQJob(file, Properties.queriesFolder + query_file, resultFile, int_qID);    			  
+    			  //if it is a XQuery script, then append the system folder
+    			  if(int_qID!=JOB_VALIDATION)
+    				  query_file =  Properties.queriesFolder + query_file;
+    			  newId=xqJobDao.startXQJob(file, query_file, resultFile, int_qID);    			  
     		  } catch (SQLException sqe ) {
     			  throw new GDEMException("DB operation failed: " + sqe.toString());
     		  }
@@ -239,26 +184,7 @@ public class XQueryService  implements Constants {
     		  result.add(_res);
     	  }
       }
-      //checks if the validation is a part of QA Service. If yes, then add it to work queue
-      try {
-        String db_schema_id = schemaDao.getSchemaID(schema);
-        HashMap _oSchema = schemaDao.getSchema(db_schema_id);
 
-        String validate = (String)_oSchema.get("validate");
-        if (validate.equals("1")){
-          String resultFile=Properties.tmpFolder + "gdem_validate_" + System.currentTimeMillis() + ".html";
-          newId=xqJobDao.startXQJob(file, schema, resultFile, JOB_VALIDATION);
-
-
-          Vector _res = new Vector();
-          _res.add(newId);
-          _res.add(orig_file);
-          result.add(_res);
-
-        }
-      } catch (SQLException sqe ) {
-        throw new GDEMException("DB operation failed: " + sqe.toString());
-      }
 
 	  _logger.info("Analyze xml result: " + result.toString());
       return result;
@@ -308,7 +234,7 @@ public class XQueryService  implements Constants {
     try {
 		//get the trusted URL from source file adapter
     	sourceURL = SourceFileManager.getSourceFileAdapterURL(
-				ticket,sourceURL,trustedMode);
+				getTicket(),sourceURL,isTrustedMode());
     	newId=xqJobDao.startXQJob(sourceURL, xqFile, resultFile);
 
     } catch (SQLException sqe ) {
@@ -482,7 +408,7 @@ public class XQueryService  implements Constants {
 		try{
 			//get the trusted URL from source file adapter
 		    file_url = SourceFileManager.getSourceFileAdapterURL(
-					ticket,file_url,trustedMode);
+					getTicket(),file_url,isTrustedMode());
 		}
 		catch(Exception e){
 			String err_mess="File URL is incorrect";
@@ -548,13 +474,6 @@ public class XQueryService  implements Constants {
   		return result;
   }
 
-	public void setTicket(String _ticket) {
-		this.ticket = _ticket;
-	}
-
-	public void setTrustedMode(boolean mode) {
-		this.trustedMode = mode;
-	}
 
   /**
   * returns an instance of the best XQEngine :)

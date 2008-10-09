@@ -7,6 +7,7 @@ import java.io.File;
 
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
+import eionet.gdem.dcm.results.RemoteServiceMethod;
 
 /**
  * Abstract class for holding ConversionService methods
@@ -14,7 +15,7 @@ import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
  * @author Enriko Käsper, TietoEnator Estonia AS
  */
 
-public abstract class ConversionServiceMethod {
+public abstract class ConversionServiceMethod extends RemoteServiceMethod{
 
 	public static final String DEFAULT_CONTENT_TYPE = "text/plain";
 

@@ -26,6 +26,7 @@ import eionet.gdem.conversion.converters.XMLConverter;
 import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dcm.XslGenerator;
 import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
+import eionet.gdem.dcm.results.RemoteServiceMethod;
 import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
@@ -46,7 +47,7 @@ import eionet.gdem.utils.xml.XmlException;
  * @author Enriko Käsper, TietoEnator Estonia AS
  */
 
-public class ConvertXMLMethod extends ConversionServiceMethod {
+public class ConvertXMLMethod extends RemoteServiceMethod {
 
 	
 	public static  final String CONTENTTYPE_KEY = "content-type";

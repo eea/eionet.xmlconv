@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Vector;
 
 import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
+import eionet.gdem.dcm.results.RemoteServiceIF;
 
 import eionet.gdem.GDEMException;
 
@@ -18,7 +19,7 @@ import eionet.gdem.GDEMException;
  * ConversionServiceIF
  */
 
-public interface ConversionServiceIF {
+public interface ConversionServiceIF extends RemoteServiceIF{
 
 	/**
 	 * List all possible conversions

@@ -3,7 +3,6 @@
  */
 package eionet.gdem.conversion;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +12,7 @@ import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dcm.business.DDServiceClient;
+import eionet.gdem.dcm.results.RemoteServiceMethod;
 import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
@@ -24,7 +24,7 @@ import eionet.gdem.services.db.dao.IConvTypeDao;
  * @author Enriko Käsper, TietoEnator Estonia AS
  */
 
-public class ListConversionsMethod {
+public class ListConversionsMethod extends RemoteServiceMethod{
 
 	private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 

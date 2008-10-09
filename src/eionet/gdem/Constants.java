@@ -43,6 +43,9 @@ public interface Constants {
 	public static final int JOB_FATAL_ERROR = 2;
 	public static final int JOB_LIGHT_ERROR = 3;
 
+	public static final String QA_TYPE_XQUERY = "xquery";
+	public static final String QA_TYPE_XSLT = "xslt";
+	
 	// key names for te getResult() STRUCT
 	public static final String RESULT_CODE_PRM = "CODE";
 	public static final String RESULT_VALUE_PRM = "VALUE";
