@@ -1,7 +1,7 @@
 /*
  * Created on 13.02.2008
  */
-package eionet.gdem.dcm.results;
+package eionet.gdem.dcm.remote;
 
 import java.io.OutputStream;
 import java.util.Map;

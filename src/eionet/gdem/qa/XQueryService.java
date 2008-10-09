@@ -37,7 +37,7 @@ import java.util.Hashtable;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.SourceFileManager;
-import eionet.gdem.dcm.results.RemoteService;
+import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.services.*;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;

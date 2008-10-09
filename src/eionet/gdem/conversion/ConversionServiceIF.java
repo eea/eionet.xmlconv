@@ -9,8 +9,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
-import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
-import eionet.gdem.dcm.results.RemoteServiceIF;
+import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
+import eionet.gdem.dcm.remote.RemoteServiceIF;
 
 import eionet.gdem.GDEMException;
 

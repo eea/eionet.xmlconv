@@ -20,7 +20,7 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
-import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
+import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.web.struts.BaseAction;

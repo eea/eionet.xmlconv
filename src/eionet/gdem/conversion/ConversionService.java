@@ -31,7 +31,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import eionet.gdem.GDEMException;
-import eionet.gdem.dcm.results.RemoteService;
+import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;

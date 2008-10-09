@@ -1,7 +1,7 @@
 /*
  * Created on 25.05.2007
  */
-package eionet.gdem.dcm.results;
+package eionet.gdem.dcm.remote;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;

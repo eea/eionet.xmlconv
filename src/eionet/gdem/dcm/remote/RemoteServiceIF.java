@@ -1,4 +1,4 @@
-package eionet.gdem.dcm.results;
+package eionet.gdem.dcm.remote;
 
 
 public interface RemoteServiceIF {

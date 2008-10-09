@@ -6,8 +6,8 @@ package eionet.gdem.conversion;
 import java.io.File;
 
 import eionet.gdem.Properties;
-import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
-import eionet.gdem.dcm.results.RemoteServiceMethod;
+import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
+import eionet.gdem.dcm.remote.RemoteServiceMethod;
 
 /**
  * Abstract class for holding ConversionService methods

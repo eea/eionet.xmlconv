@@ -12,8 +12,8 @@ import java.net.MalformedURLException;
 import java.util.Vector;
 
 import eionet.gdem.GDEMException;
-import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
-import eionet.gdem.dcm.results.RemoteServiceMethod;
+import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
+import eionet.gdem.dcm.remote.RemoteServiceMethod;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.InputFile;

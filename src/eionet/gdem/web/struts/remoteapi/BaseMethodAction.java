@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import eionet.gdem.conversion.ssr.Names;
-import eionet.gdem.dcm.results.XMLErrorResult;
+import eionet.gdem.dcm.remote.XMLErrorResult;
 import eionet.gdem.web.struts.BaseAction;
 
 /**

@@ -1,7 +1,7 @@
 /*
  * Created on 12.02.2008
  */
-package eionet.gdem.dcm.results;
+package eionet.gdem.dcm.remote;
 
 import java.util.ArrayList;
 import java.util.List;

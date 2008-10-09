@@ -10,8 +10,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import eionet.gdem.dcm.results.HttpMethodResponseWrapper;
-import eionet.gdem.dcm.results.XMLErrorResult;
+import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
+import eionet.gdem.dcm.remote.XMLErrorResult;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
