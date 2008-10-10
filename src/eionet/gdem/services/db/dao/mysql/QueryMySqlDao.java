@@ -23,10 +23,13 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 													+ QUERY_TABLE + "." + DESCR_FLD + ","
 													+ SCHEMA_TABLE + "." + SCHEMA_ID_FLD + ","
 													+ SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ", "
-													+  QUERY_TABLE + "." + RESULT_TYPE_FLD
+													+  QUERY_TABLE + "." + RESULT_TYPE_FLD + ", "
+													+  CONVTYPE_TABLE + "." + CONTENT_TYPE_FLD
 													+ " FROM "
 													+  QUERY_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE
-													+ " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD;
+													+ " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD
+													+ " LEFT OUTER JOIN " + CONVTYPE_TABLE 
+													+ " ON " +QUERY_TABLE + "." + RESULT_TYPE_FLD + "=" + CONVTYPE_TABLE + "." + CONV_TYPE_FLD;
 
 	private static final String  qListQueriesBySchema = qListQueries  + " WHERE " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + "= ?";
     private static final String  qQueryTextByFileName = "SELECT " + QUERY_FILE_FLD  + " FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD + "= ?";
@@ -448,7 +451,8 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 				h.put("description", r[i][3]);
 				h.put("schema_id", r[i][4]);
 				h.put("xml_schema", r[i][5]);
-				h.put("content_type_out", r[i][6]);
+				h.put("content_type_id", r[i][6]);
+				h.put("content_type_out", r[i][7]);
 				v.add(h);
 			}
 		}

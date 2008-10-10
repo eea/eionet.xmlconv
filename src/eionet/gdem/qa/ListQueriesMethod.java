@@ -11,6 +11,7 @@ import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.remote.RemoteServiceMethod;
 import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.Utils;
@@ -22,8 +23,21 @@ import eionet.gdem.utils.Utils;
  */
 public class ListQueriesMethod extends RemoteServiceMethod {
 
+	public final static String KEY_QUERY_ID = "query_id";
+	public final static String KEY_QUERY = "query";
+	public final static String KEY_SHORT_NAME = "short_name";
+	public final static String KEY_DESCRIPTION = "description";
+	public final static String KEY_SCHEMA_ID = "schema_id";
+	public final static String KEY_XML_SCHEMA = "xml_schema";
+	public final static String KEY_TYPE = "type";
+	public final static String KEY_CONTENT_TYPE_OUT = "content_type_out";
+	public final static String KEY_CONTENT_TYPE_ID = "content_type_id";
+	
+	public final static String DEFAULT_CONTENT_TYPE_ID="HTML";
+	
 	private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();;
 	private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
+	private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 	
 	/**
 	 * List all possible QA scripts (XQueries, XML Schemas, DTD, XSLT?) for this XML Schema.
@@ -41,6 +55,12 @@ public class ListQueriesMethod extends RemoteServiceMethod {
 		try {
 			//Get schemas that has to be validated
 			Vector schemas=schemaDao.getSchemas(schema,false);
+			Hashtable convType = convTypeDao.getConvType(DEFAULT_CONTENT_TYPE_ID);
+			String contentType=
+				(convType!=null && convType.containsKey("content_type"))?
+						(String)convType.get("content_type"):
+							DEFAULT_QA_CONTENT_TYPE;
+			
 			if (schemas!=null){
 				for (int i=0;i<schemas.size();i++){
 					HashMap h = (HashMap)schemas.get(i);
@@ -48,14 +68,15 @@ public class ListQueriesMethod extends RemoteServiceMethod {
 					if (!Utils.isNullStr(validate)){
 						if (validate.equals("1")){
 							Hashtable ht = new Hashtable();
-							ht.put("query_id", Constants.JOB_VALIDATION);
-							ht.put("short_name", h.get("description"));
-							ht.put("query", schema);
-							ht.put("description", "XML Schema Validation");
-							ht.put("schema_id", h.get("schema_id"));
-							ht.put("xml_schema", schema);
-							ht.put("content_type_out", "HTML");
-							ht.put("type", ((String)h.get("schema_lang")).toLowerCase());
+							ht.put(KEY_QUERY_ID, Constants.JOB_VALIDATION);
+							ht.put(KEY_SHORT_NAME, "XML Schema Validation");
+							ht.put(KEY_QUERY, h.get("xml_schema"));
+							ht.put(KEY_SHORT_NAME, h.get("description"));
+							ht.put(KEY_SCHEMA_ID, h.get("schema_id"));
+							ht.put(KEY_XML_SCHEMA, h.get("xml_schema"));
+							ht.put(KEY_CONTENT_TYPE_ID, DEFAULT_CONTENT_TYPE_ID);
+							ht.put(KEY_CONTENT_TYPE_OUT, contentType);
+							ht.put(KEY_TYPE, ((String)h.get("schema_lang")).toLowerCase());
 							v.add(ht);
 						}
 					}
@@ -66,7 +87,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
 			if (queries!=null){
 				for (int i=0;i<queries.size();i++){
 					Hashtable ht = (Hashtable)queries.get(i);
-					ht.put("type", Constants.QA_TYPE_XQUERY);
+					ht.put(KEY_TYPE, Constants.QA_TYPE_XQUERY);
 					v.add(ht);					
 				}
 			}

@@ -26,10 +26,8 @@ package eionet.gdem.qa;
 import eionet.gdem.Constants;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -62,7 +60,6 @@ import java.util.Vector;
  */
 public class XQueryService extends RemoteService implements Constants {
 
-	  private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();;
 	  private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
 	  private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
 	  private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
@@ -160,7 +157,7 @@ public class XQueryService extends RemoteService implements Constants {
     		  Hashtable _querie = (Hashtable)_queries.get(j);
     		  String query_id = (String)_querie.get("query_id");
     		  String query_file = (String)_querie.get("query");
-    		  String content_type = (String)_querie.get("content_type_out");
+    		  String content_type = (String)_querie.get("content_type_id");
     		  String fileExtension = getExtension(outputTypes, content_type);
     		  String resultFile=Properties.tmpFolder + "gdem_q" + query_id + "_" +
     		  System.currentTimeMillis() + "." + fileExtension;
