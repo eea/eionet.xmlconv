@@ -11,7 +11,7 @@ import org.dbunit.DBTestCase;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 
-import eionet.gdem.dcm.results.GetXMLSchemasResult;
+import eionet.gdem.dcm.remote.GetXMLSchemasResult;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;

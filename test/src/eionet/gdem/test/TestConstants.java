@@ -14,6 +14,7 @@ public class TestConstants {
 	//SEED FILES with test data
 	public static final String SEED_DATASET_CONVERSIONS_XML = "seed-dataset-conversions.xml";
 	public static final String SEED_DATASET_UPL_SCHEMAS_XML = "seed-dataset-upl_schemas.xml";
+	public static final String SEED_DATASET_QA_XML = "seed-dataset-qa.xml";
 	
 	//SEED FILES for conversions
 	public static final String SEED_RIVERS_XLS = "seed-rivers.xls";
