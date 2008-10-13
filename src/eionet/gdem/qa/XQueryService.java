@@ -155,7 +155,7 @@ public class XQueryService extends RemoteService implements Constants {
 
     	  for (int j=0;j<_queries.size();j++){
     		  Hashtable _querie = (Hashtable)_queries.get(j);
-    		  String query_id = (String)_querie.get("query_id");
+    		  String query_id = String.valueOf(_querie.get("query_id"));
     		  String query_file = (String)_querie.get("query");
     		  String content_type = (String)_querie.get("content_type_id");
     		  String fileExtension = getExtension(outputTypes, content_type);
@@ -169,8 +169,8 @@ public class XQueryService extends RemoteService implements Constants {
     				  int_qID = 0;
     			  }
     			  //if it is a XQuery script, then append the system folder
-    			  if(int_qID!=JOB_VALIDATION)
-    				  query_file =  Properties.queriesFolder + query_file;
+    			  if(int_qID!=JOB_VALIDATION && query_file.startsWith(Properties.gdemURL + "/" + Constants.QUERIES_FOLDER))
+    				  query_file =  Utils.Replace(query_file,Properties.gdemURL + "/" + Constants.QUERIES_FOLDER,Properties.queriesFolder);
     			  newId=xqJobDao.startXQJob(file, query_file, resultFile, int_qID);    			  
     		  } catch (SQLException sqe ) {
     			  throw new GDEMException("DB operation failed: " + sqe.toString());

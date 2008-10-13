@@ -7,7 +7,7 @@ import eionet.gdem.Properties;
 public abstract class RemoteServiceMethod {
 	public static final String DEFAULT_CONTENT_TYPE = "text/plain";
 
-	public static final String DEFAULT_QA_CONTENT_TYPE = "text/html";
+	public static final String DEFAULT_QA_CONTENT_TYPE = "text/html;charset=UTF-8";
 
 	public static final String DEFAULT_FILE_EXT = "txt";
 

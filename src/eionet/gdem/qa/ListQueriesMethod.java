@@ -52,6 +52,8 @@ public class ListQueriesMethod extends RemoteServiceMethod {
 	public Vector listQueries(String schema) throws GDEMException {
 
 		Vector v = new Vector();
+		if (schema!=null && schema.equals(""))schema=null;
+		
 		try {
 			//Get schemas that has to be validated
 			Vector schemas=schemaDao.getSchemas(schema,false);
@@ -88,6 +90,8 @@ public class ListQueriesMethod extends RemoteServiceMethod {
 				for (int i=0;i<queries.size();i++){
 					Hashtable ht = (Hashtable)queries.get(i);
 					ht.put(KEY_TYPE, Constants.QA_TYPE_XQUERY);
+					//return full URL of XQuerys
+					ht.put(KEY_QUERY, Properties.gdemURL + "/" + Constants.QUERIES_FOLDER + (String)ht.get("query"));
 					v.add(ht);					
 				}
 			}
