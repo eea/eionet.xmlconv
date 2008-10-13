@@ -58,7 +58,7 @@ public class ListQueriesMethodTest  extends DBTestCase{
 		
 		assertEquals((String)ht.get(ListQueriesMethod.KEY_TYPE),"xsd");
 		assertEquals((String)ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_ID),"HTML");
-		assertEquals((String)ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_OUT),"text/html");
+		assertEquals((String)ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_OUT),ListQueriesMethod.DEFAULT_QA_CONTENT_TYPE);
 	}    	
 	public void testListConversionsXQueryResult() throws Exception {
 
@@ -71,11 +71,12 @@ public class ListQueriesMethodTest  extends DBTestCase{
 
 		assertEquals((String)ht.get(ListQueriesMethod.KEY_TYPE),Constants.QA_TYPE_XQUERY);
 		assertEquals((String)ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_ID),"HTML");
-		assertEquals((String)ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_OUT),"text/html");
+		assertEquals((String)ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_OUT),ListQueriesMethod.DEFAULT_QA_CONTENT_TYPE);
 	}    	
 	public void testListConversionsAllQueries() throws Exception {
 
 		ListQueriesMethod qas = new ListQueriesMethod();
+
 		//get all queries (xqueries, xml schemas, xslts)
 		Vector v = qas.listQueries(null);
 		assertTrue(v.size()==10);
