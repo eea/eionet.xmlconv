@@ -19,4 +19,6 @@
 	<t_schema SCHEMA_ID="85" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/habitats.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
 	<t_schema SCHEMA_ID="86" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/species.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD"/>
 	<t_schema SCHEMA_ID="87" XML_SCHEMA="http://cdrtest.eionet.eu.int/xmlexports/dir9243eec/schema.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD"/>
+	<t_host HOST_ID="1" HOST_NAME="http://cdr.eionet.europa.eu" USER="test" PWD="test"/>
+	<t_xqjobs JOB_ID="1288" URL="http://localhost:8080/xmlconv/do/getsource?ticket=a2FzcGVyZW46bWk2&amp;source_url=http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="4" QUERY_ID="0"/>
 </dataset>
