@@ -64,11 +64,13 @@ public class XQueryService extends RemoteService implements Constants {
 	  private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
 	  private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
-
-  private static LoggerIF _logger=GDEMServices.getLogger();
-
+	  private static LoggerIF _logger=GDEMServices.getLogger();
+	  
+ 
 
   public XQueryService()  {
+	  //for remote clients use trusted mode
+	  setTrustedMode(true);
   }
   /**
   * List all possible XQueries for this namespace
