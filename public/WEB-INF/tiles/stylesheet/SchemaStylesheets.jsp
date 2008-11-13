@@ -11,6 +11,13 @@
 <logic:present name="schema.stylesheets">
 
 	<logic:iterate indexId="index" id="schema" name="schema.stylesheets" scope="session" property="handCodedStylesheets" type="Schema">
+			<logic:equal  value="true"  name="schema.stylesheets" scope="session" property="handcoded" >
+				<div id="operations">
+					<a href="schemaElemForm?schemaId=<bean:write name="schema" property="id"/>">
+						<bean:message key="label.schema.info"/>
+					</a>
+				</div>
+			</logic:equal>
 			<h1 class="documentFirstHeading">
 				<bean:message key="label.schema.stylesheets"/>&nbsp;<bean:write name="schema" property="schema" />
 			</h1>
@@ -22,17 +29,8 @@
 			
 	<logic:iterate indexId="index" id="schema" name="schema.stylesheets" scope="session" property="handCodedStylesheets" type="Schema">
 			<div class="visualClear">&nbsp;</div>
-			<logic:equal  value="true"  name="schema.stylesheets" scope="session" property="handcoded" >
-				<div>
-					<a href="schemaElemForm?schemaId=<bean:write name="schema" property="id"/>">
-						<bean:message key="label.schema.info"/>
-					</a>
-				</div>
-				<div class="visualClear">&nbsp;</div>
-			</logic:equal>
 
 			<logic:present name="stylesheets" name="schema" scope="page" property="stylesheets" >
-				<div style="width: 97%">
 					<table class="datatable" width="100%">
 						<col style="width:4%"/>
 						<col style="width:3%"/>
@@ -106,7 +104,6 @@
 							</tr>
 						</tbody>
 					</table>
-				</div>
 			</logic:present>
 			<logic:notPresent name="stylesheets" name="schema" scope="page" property="stylesheets" >
 				<div class="success">
