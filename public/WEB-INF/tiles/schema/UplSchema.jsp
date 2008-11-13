@@ -8,6 +8,15 @@
 <ed:breadcrumbs-push label="XML schemas" level="1" />
 
 <logic:present name="schemas.uploaded">
+
+	<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssiPrm" >
+		<div id="operations">
+		  <ul>
+		   <li><a href="addUplSchemaForm"><bean:message key="label.uplSchema.add" /></a></li>
+			</ul>
+		</div>
+	</logic:equal>
+
 	<h1 class="documentFirstHeading">
 		<bean:message key="label.schemas.uploaded"/>
 	</h1>
@@ -15,11 +24,8 @@
 	<%-- include Error display --%>
 	<tiles:insert definition="Error" />
 
-	<div class="visualClear">&nbsp;</div>
-
 	<logic:present name="schemas" name="schemas.uploaded" scope="session" property="schemas" >
-		<div style="width: 97%">
-			<table class="datatable" width="80%">
+			<table class="datatable" width="100%">
 				<col style="width:15%"/>
 				<col style="width:45%"/>
 				<col style="width:5%"/>
@@ -75,13 +81,8 @@
 							</td>
 						</tr>
 					</logic:iterate>
-					<tr>
-						<td valign="top" colspan="4">
-						</td>
-					</tr>
 				</tbody>
 			</table>
-		</div>
 	</logic:present>
 	<logic:notPresent name="schemas" name="schemas.uploaded" scope="session" property="schemas" >
 		<div class="success">
@@ -89,17 +90,6 @@
 		</div>
 	</logic:notPresent>
 	<div class="visualClear">&nbsp;</div>
-
-
-	<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssiPrm" >
-		<div class="boxbottombuttons">
-			<form action="addUplSchemaForm">
-				<div>
-					<input class="button" type="submit" value="<bean:message key="label.uplSchema.add" />"/>
-				</div>
-			</form>
-		</div>
-	</logic:equal>
 
 
 </logic:present>
