@@ -329,6 +329,8 @@ public class ExcelReader implements SourceReaderIF
   }
   private void setColumnMappings(HSSFRow row, Vector elements, boolean main_table){
  //read column header
+	  
+	  if(row==null || elements==null)return;
       int first_cell = row.getFirstCellNum();
       int last_cell = row.getLastCellNum();
 
