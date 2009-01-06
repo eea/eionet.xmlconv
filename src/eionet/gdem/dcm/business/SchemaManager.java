@@ -35,6 +35,7 @@ import java.util.Vector;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections.comparators.ComparatorChain;
+import org.apache.commons.collections.comparators.NullComparator;
 import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.Properties;
@@ -738,9 +739,9 @@ public class SchemaManager {
 				schemas.add(sc);
 			}
 			ComparatorChain comparatorChain = new ComparatorChain( );
-			comparatorChain.addComparator( new BeanComparator( "table" ) );
-			comparatorChain.addComparator( new BeanComparator( "dataset" ) );
-			comparatorChain.addComparator( new BeanComparator( "datasetReleased" ), true );
+			comparatorChain.addComparator( new BeanComparator( "table", new NullComparator() ) );
+			comparatorChain.addComparator( new BeanComparator( "dataset", new NullComparator() ) );
+			comparatorChain.addComparator( new BeanComparator( "datasetReleased", new NullComparator() ), true );
 			
 			Collections.sort(schemas, comparatorChain);
 		} catch (Exception e) {
