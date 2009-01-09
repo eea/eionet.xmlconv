@@ -339,7 +339,8 @@ public class ExcelReader implements SourceReaderIF
         String elem_localName = (String)elem.get("localName");
         for (int k=first_cell;k<last_cell;k++){
           HSSFCell cell = row.getCell((short)k);
-          String col_name = cell.getStringCellValue();
+          String col_name = cell.getRichStringCellValue()!=null ? 
+        		  cell.getRichStringCellValue().toString().trim():"";
           if (col_name.equalsIgnoreCase(elem_localName)){
               elem.put("col_idx", new Integer(k));
               elem.put("main_table", new Boolean(main_table));
