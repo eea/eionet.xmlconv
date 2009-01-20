@@ -1,5 +1,5 @@
 <%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java"%>
-<%@ page import="eionet.gdem.web.filters.EionetCASFilter" %>
+<%@ page import="eionet.gdem.utils.SecurityUtil" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
@@ -20,12 +20,12 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
 	      <a id="eealink" href="http://www.eea.europa.eu/">EEA</a>
 	      <a id="ewlink" href="http://ew.eea.europa.eu/">EnviroWindows</a>
 	    </div>
-	    <div id="righttools">	    
+	    <div id="righttools">
 	    	<logic:notPresent name="user">
-				<a id="loginlink" href="<%=EionetCASFilter.getCASLoginURL(request)%>" title="Login">Login</a>
+				<a id="loginlink" href="<%=SecurityUtil.getLoginURL(request)%>" title="Login">Login</a>
 	    	</logic:notPresent>
 	    	<logic:present name="user">
-				<a id="logoutlink" href="<c:url value="/do/start?logout"/>" title="Logout">Logout <span>(<bean:write name="user" scope="session"/>)</span></a>
+				<a id="logoutlink" href="<c:url value="/do/logout"/>" title="Logout">Logout <span>(<bean:write name="user" scope="session"/>)</span></a>
 	    	</logic:present>
 	    	<a href="javascript:openWindow(applicationRoot+'/help/index.jsp','olinehelp');" title="Help">Online Help</a>
 			<a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>

@@ -1,5 +1,5 @@
 <%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java"%>
-<%@ page import="eionet.gdem.web.filters.EionetCASFilter" %>
+<%@ page import="eionet.gdem.utils.SecurityUtil" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-nested.tld" prefix="nested" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
@@ -42,24 +42,6 @@ response.setDateHeader("Expires", 0);
 	applicationRoot='<%=request.getContextPath()%>';
 // ]]>
 </script>
-<% if (session.getAttribute(EionetCASFilter.CAS_FILTER_USER) == null )  {%>
-	<script type="text/javascript" >
-		// <![CDATA[
-			function get_cookie( cookie_name )
-			{
-			  var results = document.cookie.match ( cookie_name + '=(.*?)(;|$)' );				
-			  if ( results )
-			    return ( unescape ( results[1] ) );
-			  else
-			    return null;
-			}
-			eionetLoginCookieValue = get_cookie("<%= EionetCASFilter.EIONET_LOGIN_COOKIE_NAME %>");
-			if (eionetLoginCookieValue != null && eionetLoginCookieValue == "loggedIn"){	
-				window.location="<%=EionetCASFilter.getEionetCookieCASLoginURL(request) %>";
-			}
-		// ]]>
-	</script>
-<%}%>
 </head>
 <body>
 
@@ -76,10 +58,10 @@ response.setDateHeader("Expires", 0);
 	    </div>
 	    <div id="righttools">	    
 	    	<logic:notPresent name="user">
-				<a id="loginlink" href="<%=EionetCASFilter.getCASLoginURL(request)%>" title="Login">Login</a>
+				<a id="loginlink" href="<%=SecurityUtil.getLoginURL(request)%>" title="Login">Login</a>
 	    	</logic:notPresent>
 	    	<logic:present name="user">
-				<a id="logoutlink" href="<c:url value="/do/start?logout"/>" title="Logout">Logout <span>(<bean:write name="user" scope="session"/>)</span></a>
+				<a id="logoutlink" href="<c:url value="/do/logout"/>" title="Logout">Logout <span>(<bean:write name="user" scope="session"/>)</span></a>
 	    	</logic:present>
 	    	<a href="javascript:openWindow(applicationRoot+'/help/index.jsp','olinehelp');" title="Help">Online Help</a>
 			<a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>

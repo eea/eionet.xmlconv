@@ -66,6 +66,8 @@
         </action>
         <action path="/login" input="/login.jsp" name="loginForm" scope="request" type="eionet.gdem.web.struts.login.LoginAction" validate="true">           
         </action>        
+        <action path="/afterLogin" type="eionet.gdem.web.struts.login.AfterCASLoginAction"/>           
+        <action path="/logout" type="eionet.gdem.web.struts.login.LogoutAction"/>           
         <action path="/stylesheetList" type="eionet.gdem.web.struts.stylesheet.StylesheetListAction">
             <forward name="success" path="/stylesheetList.jsp" redirect="true"/>            
         </action>

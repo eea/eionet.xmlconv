@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
 	<display-name>Conversion and Quality Assessment Service</display-name>
+	<context-param>
+		<param-name>edu.yale.its.tp.cas.client.filter.loginUrl</param-name>
+		<param-value>https://sso.eionet.europa.eu/login</param-value>
+	</context-param>
 	<filter>
 		<filter-name>Set Character Encoding</filter-name>
 		<filter-class>eionet.gdem.web.filters.SetCharacterEncodingFilter</filter-class>
@@ -11,7 +15,7 @@
 	</filter>
 	<filter>
 		<filter-name>CAS Filter</filter-name>
-		<filter-class>eionet.gdem.web.filters.EionetCASFilter</filter-class>
+	    <filter-class>edu.yale.its.tp.cas.client.filter.CASFilter</filter-class>
 		<init-param>
 			<param-name>edu.yale.its.tp.cas.client.filter.loginUrl</param-name>
 			<param-value>https://sso.eionet.europa.eu/login</param-value>
@@ -28,10 +32,6 @@
 			<param-name>edu.yale.its.tp.cas.client.filter.wrapRequest</param-name>
 			<param-value>true</param-value>
 		</init-param>
-		<init-param>
-			<param-name>eionetLoginCookieDomain</param-name>
-			<param-value>eionet.europa.eu</param-value>
-		</init-param>
 	</filter>
 	<!-- Filter Mappings -->
 	<filter-mapping>
@@ -41,6 +41,10 @@
 	<filter-mapping>
 		<filter-name>CAS Filter</filter-name>
 		<url-pattern>/login</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>CAS Filter</filter-name>
+		<url-pattern>/do/afterLogin</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>CAS Filter</filter-name>
@@ -62,6 +66,34 @@
 		<filter-name>CAS Filter</filter-name>
 		<url-pattern>/do/addStylesheetForm</url-pattern>
 	</filter-mapping>
+	<filter-mapping>
+		<filter-name>CAS Filter</filter-name>
+		<url-pattern>/add_query.jsp</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>CAS Filter</filter-name>
+		<url-pattern>/add_query.jsp</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>CAS Filter</filter-name>
+		<url-pattern>/do/addUplXmlFileForm</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>CAS Filter</filter-name>
+		<url-pattern>/do/dbForm</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>CAS Filter</filter-name>
+		<url-pattern>/do/ldapForm</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>CAS Filter</filter-name>
+		<url-pattern>/do/hosts/*</url-pattern>
+	</filter-mapping>
+	
+	
+	
+	
 	<filter-mapping>
 		<filter-name>Set Character Encoding</filter-name>
 		<servlet-name>action</servlet-name>

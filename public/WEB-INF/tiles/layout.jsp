@@ -1,5 +1,4 @@
 <%@ page buffer="100kb" pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java" %>
-<%@ page import="eionet.gdem.web.filters.EionetCASFilter" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
@@ -39,24 +38,6 @@ response.setDateHeader("Expires", 0);
 				applicationRoot='<%=request.getContextPath()%>';
 			// ]]>
 		</script>
-		<% if (session.getAttribute(EionetCASFilter.CAS_FILTER_USER) == null )  {%>
-		<script type="text/javascript" >
-			// <![CDATA[
-				function get_cookie( cookie_name )
-				{
-				  var results = document.cookie.match ( cookie_name + '=(.*?)(;|$)' );				
-				  if ( results )
-				    return ( unescape ( results[1] ) );
-				  else
-				    return null;
-				}
-				eionetLoginCookieValue = get_cookie("<%= EionetCASFilter.EIONET_LOGIN_COOKIE_NAME %>");
-				if (eionetLoginCookieValue != null && eionetLoginCookieValue == "loggedIn"){	
-					window.location="<%=EionetCASFilter.getEionetCookieCASLoginURL(request) %>";
-				}
-			// ]]>
-		</script>
-		<%}%>
 	</head>
 
 	<body>
