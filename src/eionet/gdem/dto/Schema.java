@@ -175,10 +175,12 @@ public class Schema implements Serializable {
 			label.append(getTable());
 			label.append(" (");
 			label.append(getDataset());
-			label.append(" - ");
-			SimpleDateFormat formatter = new SimpleDateFormat(Properties.dateFormatPattern);
-			String strDate = formatter.format(getDatasetReleased());
-			label.append(strDate);			
+			if(getDatasetReleased()!=null){
+				label.append(" - ");
+				SimpleDateFormat formatter = new SimpleDateFormat(Properties.dateFormatPattern);
+				String strDate = formatter.format(getDatasetReleased());
+				label.append(strDate);			
+			}
 			label.append(")");
 		}
 		return label.toString();

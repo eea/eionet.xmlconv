@@ -444,7 +444,7 @@ public class SchemaManager {
 					schemasChk.add(schema.get("xml_schema"));
 				}
 			}
-			BeanComparator comparator = new BeanComparator( "schema" );			
+			BeanComparator comparator = new BeanComparator( "schema" , new NullComparator());			
 			Collections.sort(schemas, comparator);
 
 		} catch (Exception e) {

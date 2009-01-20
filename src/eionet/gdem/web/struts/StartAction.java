@@ -33,7 +33,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import eionet.gdem.conversion.ssr.Names;
-import eionet.gdem.web.filters.EionetCASFilter;
 
 
 public class StartAction extends Action {
@@ -46,14 +45,6 @@ public class StartAction extends Action {
 
 		for (java.util.Enumeration e = httpServletRequest.getParameterNames(); e.hasMoreElements();) {
 			System.out.println(e.nextElement());
-		}
-
-		if (httpServletRequest.getParameter("logout") != null) {
-			session.invalidate();
-			EionetCASFilter.attachEionetLoginCookie(httpServletResponse,false);
-			httpServletResponse.sendRedirect(EionetCASFilter.getCASLogoutURL(httpServletRequest));
-			return null;
-			//return actionMapping.findForward("home"); // home page		
 		}
 
 		if (httpServletRequest.getParameter("login") != null) {

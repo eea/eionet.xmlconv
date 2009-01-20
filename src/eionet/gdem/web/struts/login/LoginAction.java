@@ -56,6 +56,10 @@ public class LoginAction extends Action {
 		String username = (String) loginForm.get("username");
 		String password = (String) loginForm.get("password");
 
+		if(Utils.isNullStr(username) && Utils.isNullStr(username)){
+			return actionMapping.findForward("loginForm"); // openlogin form
+		}
+			
 		try {
 			doLogin(username, password, httpServletRequest);
 			_logger.debug("Success login");
