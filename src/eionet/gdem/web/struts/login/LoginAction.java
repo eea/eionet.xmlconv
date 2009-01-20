@@ -21,6 +21,8 @@
 
 package eionet.gdem.web.struts.login;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -47,7 +49,7 @@ public class LoginAction extends Action {
 	protected final String GDEM_SSAclName = "/stylesheets";
 
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
 		ActionMessages loginMessages = new ActionMessages();
 		ActionErrors errors = new ActionErrors();
 		ActionForward ret = null;
@@ -75,6 +77,13 @@ public class LoginAction extends Action {
 
 		httpServletRequest.getSession().setAttribute("dcm.messages", loginMessages);
 		httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+		
+		//go back to the previous page
+		String afterLogin = (String)httpServletRequest.getSession().getAttribute(AfterCASLoginAction.AFTER_LOGIN_ATTR_NAME);
+		if (afterLogin != null && !afterLogin.toLowerCase().contains("/tiles/layout.jsp")){
+			httpServletResponse.sendRedirect(afterLogin);
+			return null;
+		}
 
 		return ret;
 

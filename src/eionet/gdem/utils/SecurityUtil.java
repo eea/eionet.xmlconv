@@ -133,24 +133,31 @@ public class SecurityUtil {
 	 */
 	public static String getLoginURL(HttpServletRequest request) throws GDEMException {
 		
-		String result = "/do/login";
+		String urlWithContextPath = getUrlWithContextPath(request);
+		String result = "login";
 		
+		String afterLoginUrl = getRealRequestURL(request);
+		// store the current page in the session to be able to come back after login
+		if(afterLoginUrl!=null && !afterLoginUrl.contains("login"))
+			request.getSession().setAttribute(AfterCASLoginAction.AFTER_LOGIN_ATTR_NAME, afterLoginUrl);
+
 		String casLoginUrl = request.getSession().getServletContext().getInitParameter(CASFilter.LOGIN_INIT_PARAM);
 		if (casLoginUrl!=null){
-
-			String afterLoginUrl = getRealRequestURL(request);
-			request.getSession().setAttribute(AfterCASLoginAction.AFTER_LOGIN_ATTR_NAME, afterLoginUrl);
 
 			StringBuffer loginUrl = new StringBuffer(casLoginUrl);
 			loginUrl.append("?service=");
 			try {
 				// + request.getScheme() + "://" + SERVER_NAME + request.getContextPath() + "/login";
-				loginUrl.append(URLEncoder.encode(getUrlWithContextPath(request) + "/do/afterLogin", "UTF-8"));
+				loginUrl.append(URLEncoder.encode(urlWithContextPath+ "/do/afterLogin", "UTF-8"));
 				result = loginUrl.toString();
 			}
 			catch (UnsupportedEncodingException e) {
 				throw new GDEMException(e.toString(), e);
 			}
+		}
+		else{
+			// got to local login page
+			result = urlWithContextPath+ "/do/login";
 		}
 		
 		return result;
@@ -165,7 +172,7 @@ public class SecurityUtil {
 	public static String getLogoutURL(HttpServletRequest request) throws GDEMException{
 
 
-		String result = "/do/start";
+		String result = "start";
 		
 		String casLoginUrl = request.getSession().getServletContext().getInitParameter(CASFilter.LOGIN_INIT_PARAM);
 		if (casLoginUrl!=null){
@@ -179,7 +186,7 @@ public class SecurityUtil {
 				throw new GDEMException(e.toString(), e);
 			}
 		}
-		
+		// goto start page
 		return result;
 	}
 	
