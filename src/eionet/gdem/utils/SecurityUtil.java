@@ -194,16 +194,33 @@ public class SecurityUtil {
 	 * 
 	 * @return
 	 */
-	private static String getUrlWithContextPath(HttpServletRequest request){
+	public static String getUrlWithContextPath(HttpServletRequest request){
 		
-		StringBuffer url = new StringBuffer(request.getScheme());
-		url.append("://").append(request.getServerName());
-		if (request.getServerPort()>0)
-			url.append(":").append(request.getServerPort());
-		url.append(request.getContextPath());
-		return url.toString();
+      if (request == null)
+      {
+          throw new IllegalArgumentException("Cannot take null parameters.");
+      }
+	      
+      String scheme = request.getScheme();
+      String serverName = request.getServerName();
+      int serverPort = request.getServerPort();
+
+      StringBuffer url = new StringBuffer(scheme);
+      url.append("://").append(serverName);
+		
+      //if not http:80 or https:443, then add the port number
+      if(!(scheme.equalsIgnoreCase("http") && serverPort == 80) &&
+	        !(scheme.equalsIgnoreCase("https") && serverPort == 443) &&
+	        serverPort>0){
+    	  
+	          url.append(":");
+	          url.append(String.valueOf(serverPort));
+	  }
+
+      url.append(request.getContextPath());
+      return url.toString();
 	}    
-	private static String getRealRequestURL(HttpServletRequest request){
+	public static String getRealRequestURL(HttpServletRequest request){
 		
 		HttpServletRequest tmpRequest = request;
 		while (tmpRequest instanceof HttpServletRequestWrapper) {
