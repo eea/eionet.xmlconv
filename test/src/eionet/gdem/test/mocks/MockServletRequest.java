@@ -33,13 +33,22 @@ public class MockServletRequest  implements HttpServletRequest {
 	Locale locale = Locale.getDefault();
 	int bufferSize = 0;
 	String charEncoding = "UTF-8";
+	
+	String scheme = null;
+	String serverName = null;
+	int serverPort = 0;
+	String contextPath= null;
+	String requestURL = null;
+	String queryString = null;
+	
+	HttpSession session;
 
 	public String getAuthType() {
 		throw new UnsupportedOperationException();
 	}
 
 	public String getContextPath() {
-		throw new UnsupportedOperationException();
+		return contextPath;
 	}
 
 	public Cookie[] getCookies() {
@@ -79,7 +88,7 @@ public class MockServletRequest  implements HttpServletRequest {
 	}
 
 	public String getQueryString() {
-		throw new UnsupportedOperationException();
+		return queryString;
 	}
 
 	public String getRemoteUser() {
@@ -91,7 +100,7 @@ public class MockServletRequest  implements HttpServletRequest {
 	}
 
 	public StringBuffer getRequestURL() {
-		throw new UnsupportedOperationException();
+		return new StringBuffer(requestURL);
 	}
 
 	public String getRequestedSessionId() {
@@ -103,11 +112,11 @@ public class MockServletRequest  implements HttpServletRequest {
 	}
 
 	public HttpSession getSession() {
-		return null;
+		return session;
 	}
 
 	public HttpSession getSession(boolean arg0) {
-		return null;
+		return session;
 	}
 
 	public Principal getUserPrincipal() {
@@ -223,15 +232,15 @@ public class MockServletRequest  implements HttpServletRequest {
 	}
 
 	public String getScheme() {
-		throw new UnsupportedOperationException();
+		return scheme;
 	}
 
 	public String getServerName() {
-		throw new UnsupportedOperationException();
+		return serverName;
 	}
 
 	public int getServerPort() {
-		throw new UnsupportedOperationException();
+		return serverPort;
 	}
 
 	public boolean isSecure() {
@@ -257,5 +266,33 @@ public class MockServletRequest  implements HttpServletRequest {
 
 	public void setContentLength(int contentLength) {
 		this.contentLength = contentLength;
+	}
+
+	public void setScheme(String scheme) {
+		this.scheme = scheme;
+	}
+
+	public void setServerName(String serverName) {
+		this.serverName = serverName;
+	}
+
+	public void setServerPort(int serverPort) {
+		this.serverPort = serverPort;
+	}
+
+	public void setContextPath(String contextPath) {
+		this.contextPath = contextPath;
+	}
+
+	public void setSession(HttpSession session) {
+		this.session = session;
+	}
+
+	public void setRequestURL(String requestURL) {
+		this.requestURL = requestURL;
+	}
+
+	public void setQueryString(String queryString) {
+		this.queryString = queryString;
 	}
 }
