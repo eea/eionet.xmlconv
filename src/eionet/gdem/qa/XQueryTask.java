@@ -320,12 +320,13 @@ public class XQueryTask extends Thread implements Constants {
   private void cleanup() {
   }
 
-  private void changeStatus(int status)  {
+  private void changeStatus(int status) throws Exception {
     try {
 			xqJobDao.changeJobStatus(_jobId, status);
 
     } catch (Exception e ) {
-      handleError(e.toString(), true);
+    	_logger.error("Database exception when changing job status. " + e.toString());
+    	throw e;
     }
   }
   private void changeFileJobsStatus(String savedFile, int status)  {
