@@ -70,7 +70,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
 					if (!Utils.isNullStr(validate)){
 						if (validate.equals("1")){
 							Hashtable ht = new Hashtable();
-							ht.put(KEY_QUERY_ID, Constants.JOB_VALIDATION);
+							ht.put(KEY_QUERY_ID, String.valueOf(Constants.JOB_VALIDATION));
 							ht.put(KEY_SHORT_NAME, "XML Schema Validation");
 							ht.put(KEY_QUERY, h.get("xml_schema"));
 							ht.put(KEY_SHORT_NAME, h.get("description"));
