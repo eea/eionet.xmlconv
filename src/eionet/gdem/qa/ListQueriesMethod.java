@@ -73,7 +73,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
 							ht.put(KEY_QUERY_ID, String.valueOf(Constants.JOB_VALIDATION));
 							ht.put(KEY_SHORT_NAME, "XML Schema Validation");
 							ht.put(KEY_QUERY, h.get("xml_schema"));
-							ht.put(KEY_SHORT_NAME, h.get("description"));
+							ht.put(KEY_DESCRIPTION, h.get("description"));
 							ht.put(KEY_SCHEMA_ID, h.get("schema_id"));
 							ht.put(KEY_XML_SCHEMA, h.get("xml_schema"));
 							ht.put(KEY_CONTENT_TYPE_ID, DEFAULT_CONTENT_TYPE_ID);
