@@ -28,9 +28,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 import eionet.gdem.GDEMException;
+import eionet.gdem.conversion.ExcelToMultipleXML.ConversionResultDto;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
@@ -171,5 +173,29 @@ public class ConversionService extends RemoteService
 	public Vector getXMLSchemas() throws GDEMException {
 		ListConversionsMethod method = new ListConversionsMethod();
 		return method.getXMLSchemas();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Vector<Object> convertExcelToXML(byte[] file, String fileName)
+			throws GDEMException {
+		Vector<Object> result = new Vector<Object>();
+
+		ConversionResultDto dto = new ExcelToMultipleXML().convert(
+				new ByteArrayInputStream(file), fileName);
+
+		result.add(dto.getStatusCode());
+		result.add(dto.getStatusDescription());
+
+		if (dto.getConvertedXmls() != null) {
+			for (Map.Entry<String, String> entry : dto.getConvertedXmls()
+					.entrySet()) {
+				result.add(entry.getKey());
+				result.add(entry.getValue());
+			}
+		}
+
+		return result;
 	}
 }

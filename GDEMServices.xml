@@ -49,6 +49,13 @@
 				<Parameters/>
 				<Value Type="ARRAY"/>
 			</Method>
+			<Method Name="convertExcelToXML" Auth="false">
+				<Parameters>
+					<Parameter Name="file" Type="BASE64"/>
+					<Parameter Name="fileName" Type="STRING"/>
+				</Parameters>
+				<Value Type="ARRAY"/>
+			</Method>
 		</Methods>
 	</Service>
 	<Service Name="XQueryService" Provider="eionet.gdem.qa.XQueryService">

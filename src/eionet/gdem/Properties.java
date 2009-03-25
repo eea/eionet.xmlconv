@@ -92,6 +92,9 @@ public class Properties {
 	//DCM settings from the properties file of incoming services from CDR
 	//CDR doesn't use Service names
 	public static String cdrServUrl = null;
+	
+	// TODO add initialization from property file
+	public static int openOfficePort = 8100;
 
 	private static ResourceBundle props;
 	private static ResourceBundle ldapProps;
@@ -154,6 +157,15 @@ public class Properties {
 		        try {
 					services_installed = Integer.parseInt(props.getString("gdem.services"));
 				} catch (Exception e) { //ignore, use default
+				}
+
+				String ooServicePortStr = props.getString("openoffice.service.port");
+				try {
+					if (ooServicePortStr != null && ooServicePortStr.length() > 0) {
+						openOfficePort = Integer.parseInt(ooServicePortStr);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				//wqCheckInterval= (Long.getLong(props.getString("wq.check.interval"))).longValue();
 

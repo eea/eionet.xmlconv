@@ -108,4 +108,15 @@ public interface ConversionServiceIF extends RemoteServiceIF{
 	 * @throws GDEMException
 	 */
 	public List getXMLSchemas() throws GDEMException ;
+
+	/**
+	 * Converts excel file to a set of XML files by XSL teplates specified in xmlconv
+	 *
+	 * @param file excel file as an byte array
+	 * @param fileName excel file name
+	 * @return a vector of objects (strings) where the first element is status code, second is status description.
+	 * 		Then goes a sequence of pairs: file name, xml data as a string
+	 * @throws GDEMException if some unpredictable error occurs.
+	 */
+	Vector<Object> convertExcelToXML(byte[] file, String fileName) throws GDEMException;
 }
