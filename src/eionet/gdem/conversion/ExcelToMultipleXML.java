@@ -46,8 +46,7 @@ import eionet.gdem.utils.Utils;
  */
 public class ExcelToMultipleXML {
 
-	private static final Log LOGGER = LogFactory
-			.getLog(ExcelToMultipleXML.class);
+	private static final Log LOGGER = LogFactory.getLog(ExcelToMultipleXML.class);
 
 	private static final String SCHEMA_SHEET_NAME = "DO_NOT_DELETE_THIS_SHEET";
 	private static final int SCHEMA_ROW_IDX = 3;
@@ -67,8 +66,7 @@ public class ExcelToMultipleXML {
 	 *             if some error occurs.
 	 */
 	@SuppressWarnings("unchecked")
-	public ConversionResultDto convert(InputStream source, String fileName)
-			throws GDEMException {
+	public ConversionResultDto convert(InputStream source, String fileName) throws GDEMException {
 		ConversionResultDto result = new ConversionResultDto();
 		result.setStatusCode(ConversionResultDto.STATUS_OK);
 		result.setStatusDescription("OK.");
@@ -87,43 +85,39 @@ public class ExcelToMultipleXML {
 		}
 
 		// extract metadata
-		if (!ConversionResultDto.STATUS_ERR_SYSTEM.equals(result
-				.getStatusCode())) {
+		if (!ConversionResultDto.STATUS_ERR_SYSTEM.equals(result.getStatusCode())) {
 			try {
-				metadata = getSchemaAndReleaseDate(new FileInputStream(
-						xlsTmpFileLocation));
+				metadata = getSchemaAndReleaseDate(new FileInputStream(xlsTmpFileLocation));
 			} catch (Exception e) {
 				// delete tmp xls file
 				Utils.deleteFile(xlsTmpFileLocation);
-				LOGGER.error(
-						"Error during extraction methadata from excel file", e);
+				LOGGER.error("Error during extraction methadata from excel file", e);
 				result.setStatusCode(ConversionResultDto.STATUS_ERR_SYSTEM);
 				result.setStatusDescription(e.getMessage());
 			}
 		}
 
-		if (!ConversionResultDto.STATUS_ERR_SYSTEM.equals(result
-				.getStatusCode())) {
+		if (!ConversionResultDto.STATUS_ERR_SYSTEM.equals(result.getStatusCode())) {
 			if (Utils.isNullStr(metadata[0]) || Utils.isNullStr(metadata[1])) {
-				result.setStatusCode(ConversionResultDto.STATUS_ERR_SYSTEM);
-				result
-						.setStatusDescription("Schema and version are mandatory.");
+				result.setStatusCode(ConversionResultDto.STATUS_ERR_SCHEMA_NOT_FOUND);
+				result.setStatusDescription("Unknown format. Schema and version are mandatory.");
 			} else {
 				try {
 					// convert xls to xml and save result to tmp file
-					xmlTmpFileLocation = convertToXml(xlsTmpFileLocation,
-							fileName);
-					ISchemaDao schemaDao = DCMDaoFactory.getDaoFactory(
-							DCMDaoFactory.MYSQL_DB).getSchemaDao();
-					// find stylesheets by schema url with version
-					Vector<Object> stylesheets = schemaDao
-							.getSchemaStylesheets(schemaDao
-									.getSchemaID(metadata[0] + "?"
-											+ metadata[1]));
-					System.err.println("Stylesheets: " + stylesheets.size());
-					if (stylesheets != null) {
-						applyTransformation(result, xmlTmpFileLocation,
-								stylesheets);
+					xmlTmpFileLocation = convertToXml(xlsTmpFileLocation, fileName);
+					ISchemaDao schemaDao = DCMDaoFactory.getDaoFactory(DCMDaoFactory.MYSQL_DB).getSchemaDao();
+					String schemaUrl = metadata[0] + "?" + metadata[1];
+					String schemaId = schemaDao.getSchemaID(schemaUrl);
+
+					if (schemaId != null) {
+						// find stylesheets by schema url with version
+						Vector<Object> stylesheets = schemaDao.getSchemaStylesheets(schemaId);
+						if (stylesheets != null) {
+							applyTransformation(result, xmlTmpFileLocation, stylesheets);
+						}
+					} else {
+						result.setStatusCode(ConversionResultDto.STATUS_ERR_SCHEMA_NOT_FOUND);
+						result.setStatusDescription("Schema '" + schemaUrl + "' was not found");
 					}
 				} catch (Exception e) {
 					LOGGER.error("", e);
@@ -140,9 +134,8 @@ public class ExcelToMultipleXML {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static final void applyTransformation(ConversionResultDto result,
-			String xmlTmpFileLocation, Vector<Object> stylesheets)
-			throws FileNotFoundException, GDEMException, Exception,
+	private static final void applyTransformation(ConversionResultDto result, String xmlTmpFileLocation,
+			Vector<Object> stylesheets) throws FileNotFoundException, GDEMException, Exception,
 			UnsupportedEncodingException, IOException {
 		HashMap<Object, Object> stylesheet;
 		FileInputStream xslFis;
@@ -152,48 +145,42 @@ public class ExcelToMultipleXML {
 
 		HashMap<String, String> xmls = new HashMap<String, String>();
 
-		// apply transformation of the xml file (converted from
-		// excel) with each template
+		// apply transformation of the xml file (converted from excel) with each
+		// template
 		for (Object st : stylesheets) {
 			stylesheet = (HashMap<Object, Object>) st;
 			// support only XML style sheets.
 			if ("XML".equalsIgnoreCase((String) stylesheet.get("content_type_out"))) {
-				xslFis = new FileInputStream(Properties.xslFolder
-						+ File.separatorChar + stylesheet.get("xsl"));
+				xslFis = new FileInputStream(Properties.xslFolder + File.separatorChar + stylesheet.get("xsl"));
 				xmlFis = new FileInputStream(xmlTmpFileLocation);
 				out = new ByteArrayOutputStream();
 
 				xmlConv.convert(xmlFis, xslFis, out, "xml");
-				xmls.put(transformFileNameToExtension((String) stylesheet
-						.get("xsl"), "xml"), out.toString("UTF-8"));
+				xmls.put(transformFileNameToExtension((String) stylesheet.get("xsl"), "xml"), out.toString("UTF-8"));
 
 				xslFis.close();
 				xmlFis.close();
 				out.close();
+			} else {
+				LOGGER.warn("Unsupported content type out: " + stylesheet.get("content_type_out")
+						+ "; XML is only supported");
 			}
 		}
 
 		result.setConvertedXmls(xmls);
 	}
 
-	private static String convertToXml(String xlsFilePath, String fileName)
-			throws Exception {
-		String tmpOds = Utils
-				.getUniqueTmpFileName(transformFileNameToExtension(fileName,
-						"ods"));
-		String result = Utils
-				.getUniqueTmpFileName(transformFileNameToExtension(fileName,
-						"xml"));
+	private static String convertToXml(String xlsFilePath, String fileName) throws Exception {
+		String tmpOds = Utils.getUniqueTmpFileName(transformFileNameToExtension(fileName, "ods"));
+		String result = Utils.getUniqueTmpFileName(transformFileNameToExtension(fileName, "xml"));
 
 		try {
 			// connect to an OpenOffice.org instance
-			OpenOfficeConnection connection = new SocketOpenOfficeConnection(
-					Properties.openOfficePort);
+			OpenOfficeConnection connection = new SocketOpenOfficeConnection(Properties.openOfficePort);
 			connection.connect();
 
 			// convert
-			DocumentConverter converter = new OpenOfficeDocumentConverter(
-					connection);
+			DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
 			converter.convert(new File(xlsFilePath), new File(tmpOds));
 
 			// close the connection
@@ -205,11 +192,9 @@ public class ExcelToMultipleXML {
 
 			while (entries.hasMoreElements()) {
 				entry = entries.nextElement();
-				if (!entry.isDirectory()
-						&& "content.xml".equals(entry.getName())) {
-					copyInputStream(zipFile.getInputStream(entry),
-							new BufferedOutputStream(new FileOutputStream(
-									result)));
+				if (!entry.isDirectory() && "content.xml".equals(entry.getName())) {
+					copyInputStream(zipFile.getInputStream(entry), new BufferedOutputStream(
+							new FileOutputStream(result)));
 				}
 			}
 
@@ -224,19 +209,14 @@ public class ExcelToMultipleXML {
 		return result;
 	}
 
-	private static final String saveXlsToTmpFile(InputStream source,
-			String fileName) throws Exception {
-		String result = Utils
-				.getUniqueTmpFileName(transformFileNameToExtension(fileName,
-						"xls"));
-		copyInputStream(source, new BufferedOutputStream(new FileOutputStream(
-				(result))));
+	private static final String saveXlsToTmpFile(InputStream source, String fileName) throws Exception {
+		String result = Utils.getUniqueTmpFileName(transformFileNameToExtension(fileName, "xls"));
+		copyInputStream(source, new BufferedOutputStream(new FileOutputStream((result))));
 
 		return result;
 	}
 
-	private static final String transformFileNameToExtension(String fileName,
-			String ext) {
+	private static final String transformFileNameToExtension(String fileName, String ext) {
 		String fname = fileName;
 		String actualFileExt = Utils.extractExtension(fname);
 
@@ -252,8 +232,7 @@ public class ExcelToMultipleXML {
 	/*
 	 * First element of the array is schema, second - release date.
 	 */
-	private String[] getSchemaAndReleaseDate(InputStream xlsSource)
-			throws GDEMException {
+	private String[] getSchemaAndReleaseDate(InputStream xlsSource) throws GDEMException {
 		String[] result = new String[2];
 
 		result[0] = null;
@@ -265,17 +244,13 @@ public class ExcelToMultipleXML {
 			fs = new POIFSFileSystem(xlsSource);
 			wb = new HSSFWorkbook(fs);
 		} catch (Exception e) {
-			throw new GDEMException(
-					"ErrorConversionHandler - couldn't open Excel file: "
-							+ e.toString());
+			throw new GDEMException("ErrorConversionHandler - couldn't open Excel file: " + e.toString());
 		}
 
 		HSSFSheet schemaSheet = wb.getSheet(SCHEMA_SHEET_NAME);
 
-		result[0] = extractCellValue(schemaSheet, SCHEMA_ROW_IDX,
-				SCHEMA_CELL_IDX);
-		result[1] = extractCellValue(schemaSheet, RELEASE_DATE_ROW_IDX,
-				RELEASE_DATE_CELL_IDX);
+		result[0] = extractCellValue(schemaSheet, SCHEMA_ROW_IDX, SCHEMA_CELL_IDX);
+		result[1] = extractCellValue(schemaSheet, RELEASE_DATE_ROW_IDX, RELEASE_DATE_CELL_IDX);
 
 		try {
 			xlsSource.close();
@@ -287,8 +262,7 @@ public class ExcelToMultipleXML {
 	}
 
 	@SuppressWarnings("deprecation")
-	private static final String extractCellValue(HSSFSheet schemaSheet,
-			int rowId, int cellId) {
+	private static final String extractCellValue(HSSFSheet schemaSheet, int rowId, int cellId) {
 		String result = null;
 
 		if (schemaSheet != null) {
@@ -309,8 +283,7 @@ public class ExcelToMultipleXML {
 		return result;
 	}
 
-	private static final void copyInputStream(InputStream in, OutputStream out)
-			throws IOException {
+	private static final void copyInputStream(InputStream in, OutputStream out) throws IOException {
 		byte[] buffer = new byte[1024];
 		int len;
 
@@ -343,6 +316,11 @@ public class ExcelToMultipleXML {
 		 * Value: 2 Indicates that some unpredictable system error occurred.
 		 */
 		public static final String STATUS_ERR_SYSTEM = "2";
+
+		/**
+		 * Value 3: Indicates that the schema by URL and version was not found.
+		 */
+		public static final String STATUS_ERR_SCHEMA_NOT_FOUND = "3";
 
 		/**
 		 * Conversion status code. See Dto public constants.
@@ -413,8 +391,8 @@ public class ExcelToMultipleXML {
 
 	public static void main(String[] args) throws Exception {
 		GDEMServices.setTestConnection(true);
-		ConversionResultDto res = new ExcelToMultipleXML().convert(
-				new FileInputStream("c:\\temp\\lichab.xls"), "hz.xls");
+		ConversionResultDto res = new ExcelToMultipleXML().convert(new FileInputStream("c:\\temp\\lichab.xls"),
+				"hz.xls");
 		System.err.println(res.getStatusDescription());
 		System.err.println(res.getConvertedXmls());
 	}
