@@ -19,7 +19,6 @@ import java.util.zip.ZipFile;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.impl.Log4jFactory;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -110,9 +109,16 @@ public class ExcelToMultipleXML {
 					String schemaId = schemaDao.getSchemaID(schemaUrl);
 
 					if (schemaId != null) {
+						HashMap<String, Object> schemaInfo = schemaDao.getSchema(schemaId);
 						// find stylesheets by schema url with version
 						Vector<Object> stylesheets = schemaDao.getSchemaStylesheets(schemaId);
-						if (stylesheets != null) {
+						// validate schema language - EXCEL expected.
+						if (!"EXCEL".equalsIgnoreCase((String) schemaInfo.get("schema_lang"))) {
+							result.setStatusCode(ConversionResultDto.STATUS_ERR_SCHEMA_NOT_FOUND);
+							result.setStatusDescription("Schema '" + schemaUrl
+									+ "' with schema lang: EXCEL not found. Found schema lang: "
+									+ schemaInfo.get("schema_lang"));
+						} else if (stylesheets != null) {
 							applyTransformation(result, xmlTmpFileLocation, stylesheets);
 						}
 					} else {
