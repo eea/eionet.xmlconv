@@ -45,8 +45,8 @@ public class Schema implements Serializable {
 	private String schemaLang;
 	private String uplSchemaFileName;
 	
-	private static String[] schemaLanguages={"XSD","DTD"};
-	private static String defaultSchemaLang="XSD";
+	private static String[] schemaLanguages = { "XSD", "DTD", "EXCEL" };
+	private static String defaultSchemaLang = "XSD";
 	
 	public Schema() {
 
