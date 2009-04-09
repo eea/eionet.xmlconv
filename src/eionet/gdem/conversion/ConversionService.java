@@ -186,7 +186,7 @@ public class ConversionService extends RemoteService
 	/**
 	 * {@inheritDoc}
 	 */
-	public Vector<Object> convertExcelToXMLPush(String fileUrl) throws GDEMException {
+	public Vector<Object> convertExcelToXML(String fileUrl) throws GDEMException {
 		ConversionResultDto dto = new ExcelToMultipleXML().convert(fileUrl);
 		return convertResult(dto);
 	}

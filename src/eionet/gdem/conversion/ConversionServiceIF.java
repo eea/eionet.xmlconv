@@ -128,5 +128,5 @@ public interface ConversionServiceIF extends RemoteServiceIF{
 	 * 		Then goes a sequence of pairs: file name, xml data as a string
 	 * @throws GDEMException if some unpredictable error occurs.
 	 */
-	Vector<Object> convertExcelToXMLPush(String fileUrl) throws GDEMException;
+	Vector<Object> convertExcelToXML(String fileUrl) throws GDEMException;
 }
