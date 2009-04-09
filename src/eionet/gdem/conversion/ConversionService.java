@@ -178,19 +178,27 @@ public class ConversionService extends RemoteService
 	/**
 	 * {@inheritDoc}
 	 */
-	public Vector<Object> convertExcelToXML(byte[] file, String fileName)
-			throws GDEMException {
-		Vector<Object> result = new Vector<Object>();
+	public Vector<Object> convertExcelToXMLPush(byte[] file, String fileName) throws GDEMException {
+		ConversionResultDto dto = new ExcelToMultipleXML().convert(new ByteArrayInputStream(file), fileName);
+		return convertResult(dto);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Vector<Object> convertExcelToXMLPush(String fileUrl) throws GDEMException {
+		ConversionResultDto dto = new ExcelToMultipleXML().convert(fileUrl);
+		return convertResult(dto);
+	}
 
-		ConversionResultDto dto = new ExcelToMultipleXML().convert(
-				new ByteArrayInputStream(file), fileName);
+	private static final Vector<Object> convertResult(ConversionResultDto dto) {
+		Vector<Object> result = new Vector<Object>();
 
 		result.add(dto.getStatusCode());
 		result.add(dto.getStatusDescription());
 
 		if (dto.getConvertedXmls() != null) {
-			for (Map.Entry<String, String> entry : dto.getConvertedXmls()
-					.entrySet()) {
+			for (Map.Entry<String, String> entry : dto.getConvertedXmls().entrySet()) {
 				result.add(entry.getKey());
 				result.add(entry.getValue());
 			}

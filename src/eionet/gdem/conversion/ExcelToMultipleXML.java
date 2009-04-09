@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +37,7 @@ import eionet.gdem.conversion.converters.XMLConverter;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.DCMDaoFactory;
 import eionet.gdem.services.db.dao.ISchemaDao;
+import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -53,6 +55,40 @@ public class ExcelToMultipleXML {
 	private static final int SCHEMA_CELL_IDX = 0;
 	private static final int RELEASE_DATE_CELL_IDX = 0;
 
+	/**
+	 * 
+	 * @param fileUrl URL of the excel file for conversion.
+	 * @return {@link ConversionResultDto}
+	 * @throws GDEMException if some error occurs.
+	 */
+	public ConversionResultDto convert(String fileUrl) throws GDEMException {
+		ConversionResultDto result = new ConversionResultDto();
+		result.setStatusCode(ConversionResultDto.STATUS_OK);
+		result.setStatusDescription("OK.");
+		
+		if (Utils.isNullStr(fileUrl)) {
+			result.setStatusCode(ConversionResultDto.STATUS_ERR_VALIDATION);
+			result.setStatusDescription("Empty URL.");
+		} else {
+			InputFile inputFile;
+			try {
+				inputFile = new InputFile(fileUrl);
+				inputFile.setTrustedMode(true);
+				result = convert(inputFile.getSrcInputStream(), inputFile.getFileName());
+			} catch (MalformedURLException e) {
+				result.setStatusCode(ConversionResultDto.STATUS_ERR_SYSTEM);
+				result.setStatusDescription(e.getMessage());
+				LOGGER.error("", e);
+			} catch (IOException e) {
+				result.setStatusCode(ConversionResultDto.STATUS_ERR_SYSTEM);
+				result.setStatusDescription(e.getMessage());
+				LOGGER.error("", e);
+			}
+		}
+		
+		return result;
+	}
+	
 	/**
 	 * Converts Excel file to XML by specified XSL-s.
 	 * 

@@ -49,10 +49,16 @@
 				<Parameters/>
 				<Value Type="ARRAY"/>
 			</Method>
-			<Method Name="convertExcelToXML" Auth="false">
+			<Method Name="convertExcelToXMLPush" Auth="false">
 				<Parameters>
 					<Parameter Name="file" Type="BASE64"/>
 					<Parameter Name="fileName" Type="STRING"/>
+				</Parameters>
+				<Value Type="ARRAY"/>
+			</Method>
+			<Method Name="convertExcelToXML" Auth="false">
+				<Parameters>
+					<Parameter Name="fileUrl" Type="STRING"/>
 				</Parameters>
 				<Value Type="ARRAY"/>
 			</Method>
