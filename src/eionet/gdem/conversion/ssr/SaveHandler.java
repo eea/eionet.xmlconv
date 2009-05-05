@@ -122,7 +122,7 @@ public class SaveHandler {
              schemaID=GDEMServices.getDaoService().getSchemaDao().addSchema(schema, null);
 
 
-         GDEMServices.getDaoService().getStyleSheetDao().addStylesheet(schemaID, type, fileName, descr);
+         GDEMServices.getDaoService().getStyleSheetDao().addStylesheet(schemaID, type, fileName, descr, null);
 
        }
        catch (Exception e){
@@ -182,7 +182,7 @@ public class SaveHandler {
        fileName = (fileName==null)?current_file:fileName;
 
        try{
-         GDEMServices.getDaoService().getStyleSheetDao().updateStylesheet(xsl_id, schema_id, descr, fileName, content_type);
+         GDEMServices.getDaoService().getStyleSheetDao().updateStylesheet(xsl_id, schema_id, descr, fileName, content_type, null);
 
        }
        catch (Exception e){

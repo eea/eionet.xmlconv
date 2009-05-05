@@ -22,6 +22,7 @@
 package eionet.gdem.web.struts.stylesheet;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,6 +40,7 @@ import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.Utils;
 
 public class EditStylesheetFormAction extends Action {
 
@@ -65,15 +67,26 @@ public class EditStylesheetFormAction extends Action {
 			form.setXslFileName(stylesheet.getXslFileName());
 			form.setModified(stylesheet.getModified());
 			form.setChecksum(stylesheet.getChecksum());
+			// set empty string if dependsOn is null to avoid struts error in define tag:
+			// Define tag cannot set a null value
+			form.setDependsOn(stylesheet.getDependsOn() == null ? "" : stylesheet.getDependsOn());
 
 			ctHolder = st.getConvTypes();
 
 			httpServletRequest.getSession().setAttribute("stylesheet.outputtypeSel", stylesheet.getType());
 
 			SchemaManager schema = new SchemaManager();
+			StylesheetManager styleMan = new StylesheetManager();
 			ArrayList schemas = schema.getDDSchemas();
 
 			httpServletRequest.getSession().setAttribute("stylesheet.DDSchemas", schemas);
+			
+			String schemaId = schema.getSchemaId(stylesheet.getSchema());
+			if (!Utils.isNullStr(schemaId)) {
+				httpServletRequest.setAttribute("schemaInfo", schema.getSchema(schemaId));
+				httpServletRequest.setAttribute("existingStylesheets", styleMan.getSchemaStylesheets(schemaId, stylesheetId));
+			}
+			
 
 		} catch (DCMException e) {
 			e.printStackTrace();

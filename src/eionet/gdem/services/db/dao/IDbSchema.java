@@ -61,7 +61,8 @@ public interface IDbSchema {
   public static final String XSL_SCHEMA_ID_FLD="SCHEMA_ID";
   public static final String DESCR_FLD="DESCRIPTION";
   public static final String RESULT_TYPE_FLD="RESULT_TYPE";
-  public static final String XSL_FILE_FLD="XSL_FILENAME";  
+  public static final String XSL_FILE_FLD="XSL_FILENAME"; 
+  public static final String DEPENDS_ON="DEPENDS_ON"; 
 
   /**
   * Field names in QUERY table

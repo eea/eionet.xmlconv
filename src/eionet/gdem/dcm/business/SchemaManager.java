@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -767,12 +768,22 @@ public class SchemaManager {
 			schema.setSchema((String) sch.get("xml_schema"));
 			schema.setDescription((String) sch.get("description"));
 			schema.setDtdPublicId((String) sch.get("dtd_public_id"));
+			schema.setSchemaLang((String) sch.get("schema_lang"));
 
 		} catch (Exception e) {
 			_logger.error("Error getting schema",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return schema;
+	}
+
+	public String getSchemaId(String schema) throws DCMException {
+		try {
+			return schemaDao.getSchemaID(schema);
+		} catch (SQLException e) {
+			_logger.error("Error getting schema",e);
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
 	}
 
 

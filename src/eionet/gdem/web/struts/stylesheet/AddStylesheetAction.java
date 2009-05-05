@@ -54,6 +54,7 @@ public class AddStylesheetAction extends Action {
 		String type = form.getOutputtype();
 		FormFile xslFile = form.getXslfile();
 		String user = (String) httpServletRequest.getSession().getAttribute("user");
+		String dependsOn = form.getDependsOn();
 		httpServletRequest.setAttribute("schema", schema);
 
 		if (isCancelled(httpServletRequest)) {
@@ -100,7 +101,7 @@ public class AddStylesheetAction extends Action {
 
 		try {
 			StylesheetManager st = new StylesheetManager();
-			st.add(user, schema, xslFile, type, desc);
+			st.add(user, schema, xslFile, type, desc, dependsOn);
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.inserted"));
 		} catch (DCMException e) {
 			e.printStackTrace();

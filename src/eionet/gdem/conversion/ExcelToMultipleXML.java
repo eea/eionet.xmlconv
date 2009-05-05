@@ -1,6 +1,7 @@
 package eionet.gdem.conversion;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,9 +12,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -57,15 +65,17 @@ public class ExcelToMultipleXML {
 
 	/**
 	 * 
-	 * @param fileUrl URL of the excel file for conversion.
+	 * @param fileUrl
+	 *            URL of the excel file for conversion.
 	 * @return {@link ConversionResultDto}
-	 * @throws GDEMException if some error occurs.
+	 * @throws GDEMException
+	 *             if some error occurs.
 	 */
 	public ConversionResultDto convert(String fileUrl) throws GDEMException {
 		ConversionResultDto result = new ConversionResultDto();
 		result.setStatusCode(ConversionResultDto.STATUS_OK);
 		result.setStatusDescription("OK.");
-		
+
 		if (Utils.isNullStr(fileUrl)) {
 			result.setStatusCode(ConversionResultDto.STATUS_ERR_VALIDATION);
 			result.setStatusDescription("Empty URL.");
@@ -85,10 +95,10 @@ public class ExcelToMultipleXML {
 				LOGGER.error("", e);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Converts Excel file to XML by specified XSL-s.
 	 * 
@@ -175,37 +185,60 @@ public class ExcelToMultipleXML {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	private static final void applyTransformation(ConversionResultDto result, String xmlTmpFileLocation,
 			Vector<Object> stylesheets) throws FileNotFoundException, GDEMException, Exception,
 			UnsupportedEncodingException, IOException {
-		HashMap<Object, Object> stylesheet;
-		FileInputStream xslFis;
-		FileInputStream xmlFis;
+		Map<Object, Object> stylesheet;
+		InputStream xslFis;
+		InputStream xmlFis;
 		ByteArrayOutputStream out;
 		XMLConverter xmlConv = new XMLConverter();
 
 		HashMap<String, String> xmls = new HashMap<String, String>();
+		Map<String, Map<Object, Object>> stylesheetMap = toMap(stylesheets);
+		// key is conversion id, value is XML string.
+		Map<String, String> doneConversions = new HashMap<String, String>();
+		List<List<String>> conversionChains = buildConversionChains(stylesheetMap);
+		String conversionId;
+		// set of conversion id-s that are returned to end user.
+		Set<String> toReturn = new HashSet<String>();
 
-		// apply transformation of the xml file (converted from excel) with each
-		// template
-		for (Object st : stylesheets) {
-			stylesheet = (HashMap<Object, Object>) st;
-			// support only XML style sheets.
-			if ("XML".equalsIgnoreCase((String) stylesheet.get("content_type_out"))) {
-				xslFis = new FileInputStream(Properties.xslFolder + File.separatorChar + stylesheet.get("xsl"));
-				xmlFis = new FileInputStream(xmlTmpFileLocation);
-				out = new ByteArrayOutputStream();
+		for (List<String> chain : conversionChains) {
+			for (int i = 0; i < chain.size(); i++) {
+				conversionId = chain.get(i);
+				stylesheet = stylesheetMap.get(conversionId);
+				// avoid conversion duplication.
+				if (!doneConversions.containsKey(conversionId)) {
+					if (i == 0) {
+						// apply transformation against content.xml
+						xmlFis = new FileInputStream(xmlTmpFileLocation);
+					} else {
+						// apply transformation against previous generated XML.
+						xmlFis = new ByteArrayInputStream(doneConversions.get(chain.get(i - 1)).getBytes("UTF-8"));
+					}
 
-				xmlConv.convert(xmlFis, xslFis, out, "xml");
-				xmls.put(transformFileNameToExtension((String) stylesheet.get("xsl"), "xml"), out.toString("UTF-8"));
+					xslFis = new FileInputStream(Properties.xslFolder + File.separatorChar + stylesheet.get("xsl"));
+					out = new ByteArrayOutputStream();
+					xmlConv.convert(xmlFis, xslFis, out, "xml");
+					doneConversions.put(conversionId, out.toString("UTF-8"));
+					
+					xslFis.close();
+					xmlFis.close();
+					out.close();
+				}
+			}
 
-				xslFis.close();
-				xmlFis.close();
-				out.close();
-			} else {
-				LOGGER.warn("Unsupported content type out: " + stylesheet.get("content_type_out")
-						+ "; XML is only supported");
+			// populate toReturn set
+			// we return only those conversions which ID-s are last in each
+			// chain
+			toReturn.add(chain.get(chain.size() - 1));
+		}
+
+		// populate xmls map with values that should be returned.
+		for (Map.Entry<String, String> me : doneConversions.entrySet()) {
+			if (toReturn.contains(me.getKey())) {
+				xmls.put(transformFileNameToExtension((String) stylesheetMap.get(me.getKey()).get("xsl"), "xml"), me
+						.getValue());
 			}
 		}
 
@@ -325,6 +358,102 @@ public class ExcelToMultipleXML {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
+	private static final Map<String, Map<Object, Object>> toMap(Vector<Object> stylesheets) {
+		Map<String, Map<Object, Object>> result = new HashMap<String, Map<Object, Object>>();
+		Map<Object, Object> map;
+		String convertId;
+		for (Object obj : stylesheets) {
+			map = (Map<Object, Object>) obj;
+			convertId = (String) map.get("convert_id");
+			result.put(convertId, map);
+
+		}
+		return result;
+	}
+
+	private static final Map<String, String> toConvertIdOutputFileName(Map<String, Map<Object, Object>> stylesheetMap) {
+		Map<String, String> result = new HashMap<String, String>();
+
+		for (Map.Entry<String, Map<Object, Object>> me : stylesheetMap.entrySet()) {
+			result.put(me.getKey(), (String) me.getValue().get("xsl"));
+		}
+
+		return result;
+	}
+
+	/**
+	 * Builds conversion order.
+	 * 
+	 * @param stylesheetMap
+	 * @return list of lists of conversion ID-s where the first element of the
+	 *         list (second list) is conversion id that does not depend on any
+	 *         of the conversion, the second depends on the first, etc, the last
+	 *         has no conversion ID that is depended on it. Example (pairs
+	 *         conversion id and depends on): 1 -> null, 2 -> 1, 3 -> 2, 4->
+	 *         null, 5 -> 2; the result will be: [[1, 2, 3], [1, 2, 5], [4]]
+	 */
+	private static final List<List<String>> buildConversionChains(Map<String, Map<Object, Object>> stylesheetMap) {
+		List<List<String>> result = new LinkedList<List<String>>();
+		// final String convertIdKey = "convert_id";
+		final String dependsOnKey = "depends_on";
+
+		Map<String, String> convertIdDependsOnMap = new HashMap<String, String>();
+		// map where key is depends on field and value is a collection on
+		// convert_ids
+		Map<String, Collection<String>> dependOnConvertIdMap = new HashMap<String, Collection<String>>();
+		String dependsOn;
+		String convId;
+		Collection<String> convIds;
+
+		for (Map.Entry<String, Map<Object, Object>> me : stylesheetMap.entrySet()) {
+			dependsOn = (String) me.getValue().get(dependsOnKey);
+			// populate convertIdDependsOnMap
+			convertIdDependsOnMap.put(me.getKey(), dependsOn);
+
+			// populate dependOnConvertIdMap
+			if (!Utils.isNullStr(dependsOn)) {
+				convIds = dependOnConvertIdMap.get(dependsOn);
+				if (convIds == null) {
+					convIds = new HashSet<String>();
+					dependOnConvertIdMap.put(dependsOn, convIds);
+				}
+
+				convIds.add(me.getKey());
+			}
+		}
+
+		List<String> idsChain;
+		for (Map.Entry<String, String> me : convertIdDependsOnMap.entrySet()) {
+			convId = me.getKey();
+			convIds = dependOnConvertIdMap.get(convId);
+
+			if (convIds == null || convIds.size() == 0) {
+				// this is id that is not be depended on.
+				// start build a chain
+				idsChain = new ArrayList<String>();
+				idsChain.add(convId);
+				// get a depend_on from convertIdDependsOnMap
+				dependsOn = convertIdDependsOnMap.get(convId);
+				// if depend_on is null - the idsChain has one element
+				// else get a depend_on from convertIdDependsOnMap of depend_on
+				// etc
+				while (dependsOn != null && !idsChain.contains(dependsOn)) { // avoid
+					// potential
+					// cyclic
+					// dependency
+					convId = dependsOn;
+					dependsOn = convertIdDependsOnMap.get(convId);
+					idsChain.add(convId);
+				}
+				Collections.reverse(idsChain);
+				result.add(idsChain);
+			}
+		}
+
+		return result;
+	}
+
 	private static final void copyInputStream(InputStream in, OutputStream out) throws IOException {
 		byte[] buffer = new byte[1024];
 		int len;
@@ -432,11 +561,32 @@ public class ExcelToMultipleXML {
 	}
 
 	public static void main(String[] args) throws Exception {
-		GDEMServices.setTestConnection(true);
-		ConversionResultDto res = new ExcelToMultipleXML().convert(new FileInputStream("c:\\temp\\lichab.xls"),
-				"hz.xls");
-		System.err.println(res.getStatusDescription());
-		System.err.println(res.getConvertedXmls());
+		 GDEMServices.setTestConnection(true);
+		 ConversionResultDto res = new ExcelToMultipleXML().convert(new
+		 FileInputStream("c:\\temp\\lichab.xls"),
+		 "hz.xls");
+		 System.err.println(res.getStatusDescription());
+		 System.err.println(res.getConvertedXmls());
+		//testOrderByByDOn();
+
+	}
+
+	private static void testOrderByByDOn() {
+		Map<String, Map<Object, Object>> stylesheets = new HashMap<String, Map<Object, Object>>();
+		stylesheets.put("1", getObjectMap("1", null));
+		stylesheets.put("2", getObjectMap("2", "1"));
+		stylesheets.put("3", getObjectMap("3", "2"));
+		stylesheets.put("4", getObjectMap("4", null));
+		stylesheets.put("5", getObjectMap("5", "2"));
+
+		System.err.println(buildConversionChains(stylesheets));
+	}
+
+	private static Map<Object, Object> getObjectMap(String convertId, String dependsOn) {
+		Map<Object, Object> result = new HashMap<Object, Object>();
+		result.put("convert_id", convertId);
+		result.put("depends_on", dependsOn);
+		return result;
 	}
 
 }

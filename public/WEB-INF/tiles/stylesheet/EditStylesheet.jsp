@@ -91,6 +91,55 @@
 		       </logic:present>
 		      </td>
 		    </tr>
+		    
+		    
+		    <logic:present name="schemaInfo" scope="request">
+			<logic:equal name="schemaInfo" property="schemaLang" value="EXCEL">
+			
+			<bean:define id="depOn" name="stylesheetForm" property="dependsOn" scope="request" type="java.lang.String" />
+			
+				<tr>
+		 			<th scope="row" class="scope-row">
+						<bean:message key="label.stylesheet.dependsOn"/>:
+					</th>
+					<td>
+						<logic:present name="user">		                         
+						<select name="dependsOn">
+					        <logic:empty name="stylesheetForm" property="dependsOn">
+					        	<option value="" selected="selected">--</option>
+					        </logic:empty>
+					        <logic:notEmpty name="stylesheetForm" property="dependsOn">
+					        	<option value="">--</option>
+					        </logic:notEmpty>
+						        
+						    <logic:iterate id="st" scope="request" name="existingStylesheets">
+						        <logic:equal name="st" property="convId" value="<%=depOn %>">
+							        <option value="<bean:write name="st" property="convId" />" selected="selected">
+							        	<bean:write name="st" property="xslFileName"/>
+							        </option>
+						        </logic:equal>
+						        <logic:notEqual name="st" property="convId" value="<%=depOn %>">
+							        <option value="<bean:write name="st" property="convId" />">
+							        	<bean:write name="st" property="xslFileName"/>
+							        </option>
+						        </logic:notEqual>
+						     </logic:iterate>
+					     </select>
+					     </logic:present>
+					     <logic:notPresent name="user">
+					     	<logic:iterate id="st" scope="request" name="existingStylesheets">
+					     		<logic:equal name="st" property="convId" value="<%=depOn %>">
+					     			<bean:write name="st" property="xslFileName" />
+					     		</logic:equal>
+					     	</logic:iterate>
+					     </logic:notPresent>
+					 </td>
+				</tr>
+				
+			</logic:equal>
+			</logic:present>
+			
+		    
 		    <tr>
 				<th scope="row" class="scope-row">
 			      	<bean:message key="label.stylesheet.description"/>:

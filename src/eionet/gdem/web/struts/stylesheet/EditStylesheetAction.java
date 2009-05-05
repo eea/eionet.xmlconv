@@ -72,6 +72,7 @@ public class EditStylesheetAction extends LookupDispatchAction  {
 		FormFile xslFile = form.getXslfile();
 		String stylesheetId = form.getStylesheetId();
 		String user = (String) httpServletRequest.getSession().getAttribute("user");
+		String dependsOn = form.getDependsOn();
 
 		if (isCancelled(httpServletRequest)) {
 			return actionMapping.findForward("success");
@@ -101,7 +102,7 @@ public class EditStylesheetAction extends LookupDispatchAction  {
 		if (errors.isEmpty()) {
 			try {
 				StylesheetManager st = new StylesheetManager();
-				st.update(user, stylesheetId, schema, xslFile, type, desc);
+				st.update(user, stylesheetId, schema, xslFile, type, desc, dependsOn);
 				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.updated"));
 			} catch (DCMException e) {
 				_logger.error("Edit stylesheet error",e);
@@ -140,6 +141,7 @@ public class EditStylesheetAction extends LookupDispatchAction  {
 		String checksum = form.getChecksum();
 		boolean updateContent=false;
 		String newChecksum = null;
+		String dependsOn = form.getDependsOn();
 
 		if (isCancelled(httpServletRequest)) {
 			return actionMapping.findForward("success");
@@ -178,7 +180,7 @@ public class EditStylesheetAction extends LookupDispatchAction  {
 		if (errors.isEmpty()) {
 			try {
 				StylesheetManager st = new StylesheetManager();
-				st.updateContent(user, stylesheetId, schema, xslFileName, type, desc,xslContent, updateContent);
+				st.updateContent(user, stylesheetId, schema, xslFileName, type, desc,xslContent, updateContent, dependsOn);
 				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.updated"));
 			} catch (DCMException e) {
 				_logger.error("Edit stylesheet error",e);

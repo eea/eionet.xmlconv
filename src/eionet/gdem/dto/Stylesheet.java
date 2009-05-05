@@ -35,6 +35,23 @@ public class Stylesheet implements Serializable {
 	private String xslContent;
 	private String xslFileName;
 	private String checksum;
+	private String dependsOn;
+
+
+	/**
+	 * @return the dependsOn
+	 */
+	public String getDependsOn() {
+		return dependsOn;
+	}
+
+
+	/**
+	 * @param dependsOn the dependsOn to set
+	 */
+	public void setDependsOn(String dependsOn) {
+		this.dependsOn = dependsOn;
+	}
 
 
 	public String getConvId() {

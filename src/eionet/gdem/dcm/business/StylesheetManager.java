@@ -21,7 +21,6 @@
 
 package eionet.gdem.dcm.business;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,10 +30,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.struts.upload.FormFile;
-
 
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
@@ -42,15 +42,14 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.ConvType;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
-
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-import eionet.gdem.utils.SecurityUtil;
-import eionet.gdem.utils.Utils;
-import eionet.gdem.web.struts.stylesheet.ConvTypeHolder;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.services.db.dao.IStyleSheetDao;
+import eionet.gdem.utils.SecurityUtil;
+import eionet.gdem.utils.Utils;
+import eionet.gdem.web.struts.stylesheet.ConvTypeHolder;
 
 
 public class StylesheetManager {
@@ -130,7 +129,7 @@ public class StylesheetManager {
 	}
 
 
-	public void add(String user, String schema, FormFile file, String type, String descr) throws DCMException {
+	public void add(String user, String schema, FormFile file, String type, String descr, String dependsOn) throws DCMException {
 
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "i")) {
@@ -165,7 +164,7 @@ public class StylesheetManager {
 			String schemaID = schemaDao.getSchemaID(schema);
 			if (schemaID == null) schemaID = schemaDao.addSchema(schema, null);
 
-			styleSheetDao.addStylesheet(schemaID, type, fileName, descr);
+			styleSheetDao.addStylesheet(schemaID, type, fileName, descr, dependsOn);
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
@@ -190,6 +189,7 @@ public class StylesheetManager {
 				st.setType((String) xsl.get("content_type_out"));
 				String xslFolder = Properties.xslFolder;
 				st.setConvId(stylesheetId);
+				st.setDependsOn((String) xsl.get("depends_on"));
 
 				if(!Utils.isNullStr((String)xsl.get("xsl"))){
 					st.setXsl(Names.XSL_FOLDER + xsl.get("xsl"));
@@ -227,9 +227,46 @@ public class StylesheetManager {
 		return st;
 
 	}
+	
+	/**
+	 * Finds stylesheets that belong to specified schema.
+	 * <p/>
+	 * Following fields in {@link Stylesheet} are populated: convId, xslFileName, dependsOn.
+	 * 
+	 * @param schemaId
+	 *            schema id.
+	 * @param excludeStylesheetId
+	 *            stylesheet id to be excluded in returning result. If the value
+	 *            is null then no exclusion is done.
+	 * @return list of {@link Stylesheet} -s.
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Stylesheet> getSchemaStylesheets(String schemaId, String excludeStylesheetId) throws DCMException  {
+		List<Stylesheet> result = new ArrayList<Stylesheet>();
+		try {
+			Vector<Object> stylesheets = schemaDao.getSchemaStylesheets(schemaId);
+			Map<Object, Object> stylesheet;
+			Stylesheet st;
+			for (Object o : stylesheets) {
+				stylesheet = (Map<Object, Object>) o;
+				st = new Stylesheet();
+				st.setConvId((String)stylesheet.get("convert_id"));
+				st.setXslFileName((String)stylesheet.get("xsl"));
+				st.setDependsOn((String)stylesheet.get("depends_on"));
+				
+				if (excludeStylesheetId == null || !excludeStylesheetId.equals(st.getConvId())) {
+					result.add(st);
+				}
+			}
+		} catch (Exception e) {
+			_logger.error("Error getting stylesheet", e);
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+		return result;
+	}
 
 
-	public void update(String user, String xsl_id, String schema, FormFile file, String type, String descr) throws DCMException {
+	public void update(String user, String xsl_id, String schema, FormFile file, String type, String descr, String dependsOn) throws DCMException {
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "u")) {
 				throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_STYLEHEET_UPDATE);
@@ -278,7 +315,7 @@ public class StylesheetManager {
 			String schemaID = schemaDao.getSchemaID(schema);
 
 			if (schemaID == null) schemaID = schemaDao.addSchema(schema, null);
-			styleSheetDao.updateStylesheet(xsl_id, schemaID, descr, fileName, type);
+			styleSheetDao.updateStylesheet(xsl_id, schemaID, descr, fileName, type, dependsOn);
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
@@ -290,7 +327,7 @@ public class StylesheetManager {
 	}
 
 	public void updateContent(String user, String xsl_id, String schema, String fileName, String type,
-			String descr, String fileContent,boolean updateContent) throws DCMException {
+			String descr, String fileContent,boolean updateContent, String dependsOn) throws DCMException {
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "u")) {
 				throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_STYLEHEET_UPDATE);
@@ -310,7 +347,7 @@ public class StylesheetManager {
 			String schemaID = schemaDao.getSchemaID(schema);
 
 			if (schemaID == null) schemaID = schemaDao.addSchema(schema, null);
-			styleSheetDao.updateStylesheet(xsl_id, schemaID, descr, fileName, type);
+			styleSheetDao.updateStylesheet(xsl_id, schemaID, descr, fileName, type, dependsOn);
 		} catch (Exception e) {
 			e.printStackTrace();
 			_logger.error("Error updating stylesheet", e);

@@ -60,7 +60,8 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 													+ CNV_ID_FLD + ", " 
 													+ XSL_FILE_FLD + ", " 
 													+ DESCR_FLD + "," 
-													+ RESULT_TYPE_FLD 
+													+ RESULT_TYPE_FLD + ","
+													+ DEPENDS_ON
 													+ " FROM " + XSL_TABLE 
 													+ " WHERE " + XSL_SCHEMA_ID_FLD + "= ?"
 													+ " ORDER BY " + RESULT_TYPE_FLD;
@@ -532,6 +533,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 				h.put("xsl", r[i][1]);
 				h.put("description", r[i][2]);
 				h.put("content_type_out", r[i][3]);
+				h.put("depends_on", r[i][4]);
 				v.add(h);
 			}			
 		} 

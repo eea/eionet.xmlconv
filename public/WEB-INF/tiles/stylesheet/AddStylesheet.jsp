@@ -69,6 +69,27 @@
 					        </select>
 					      </td>
 					    </tr>
+					    
+					    <logic:present name="schemaInfo" scope="request">
+					    <logic:equal name="schemaInfo" property="schemaLang" value="EXCEL">
+					    <tr>
+		 				  <th scope="row" class="scope-row">
+					        <bean:message key="label.stylesheet.dependsOn"/>:
+					      </th>
+					      <td>	                         
+					        <select name="dependsOn">
+					        	<option value="" selected="selected">--</option>
+					        	<logic:iterate id="st" scope="request" name="existingStylesheets">
+					        		<option value="<bean:write name="st" property="convId" />">
+					        			<bean:write name="st" property="xslFileName" />
+					        		</option>
+					        	</logic:iterate>
+					        </select>
+					      </td>
+					    </tr>
+					    </logic:equal>
+					    </logic:present>
+					    
 					    <tr>
 		 				  <th scope="row" class="scope-row">
 					      	<bean:message key="label.stylesheet.description"/>:

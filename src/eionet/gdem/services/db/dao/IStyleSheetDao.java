@@ -12,9 +12,10 @@ public interface IStyleSheetDao extends IDbSchema{
 	  * @param xslFileName - xslFileName in the folder
 	  * @param xslDescription - text describing the stylesheet
 	  * @param content_type - result file content_type
+	  * @param dependsOn stylesheet id the current stylesheet depends on
 	  * @return The ID of the added stylesheet
 	  */
-	  public String addStylesheet(String xmlSchemaID, String resultType, String xslFileName, String description) throws SQLException;
+	  public String addStylesheet(String xmlSchemaID, String resultType, String xslFileName, String description, String dependsOn) throws SQLException;
 
 	  /**
 	  * Updates stylesheet properties in the database
@@ -23,8 +24,9 @@ public interface IStyleSheetDao extends IDbSchema{
 	  * @param String description - text describing the query
 	  * @param String fileName - query file name
 	  * @param String content_type - result content type
+	  * @param dependsOn stylesheet id the current stylesheet depends on
 	  */
-	  public void updateStylesheet(String xsl_id, String schema_id, String description, String fileName, String content_type) throws SQLException;
+	  public void updateStylesheet(String xsl_id, String schema_id, String description, String fileName, String content_type, String dependsOn) throws SQLException;
 
 	  /**
 	   * Removes the stylesheet from the stylesheets table

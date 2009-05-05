@@ -1,11 +1,13 @@
 package eionet.gdem.services.db.dao.mysql;
 
 import eionet.gdem.services.db.dao.IStyleSheetDao;
+import eionet.gdem.utils.Utils;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.HashMap;
 
 
@@ -18,9 +20,10 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
 													+ XSL_SCHEMA_ID_FLD + ", " 
 													+ RESULT_TYPE_FLD + ", " 
 													+ XSL_FILE_FLD + ", " 
-													+ DESCR_FLD 
+													+ DESCR_FLD + ", "
+													+ DEPENDS_ON
 													+ ") " 
-													+ " VALUES (?,?,?,?)";
+													+ " VALUES (?,?,?,?,?)";
 
 	private static final String qStylesheetByFileName = "SELECT " + CNV_ID_FLD + " FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD + "= ? ";
 
@@ -28,14 +31,14 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
 	private static final String qUpdateStyleSheet = "UPDATE  " + XSL_TABLE 
 													+ " SET " + DESCR_FLD + "= ? "  + ", " 
 													+ XSL_SCHEMA_ID_FLD + "= ? "  + ", " 
-													+ RESULT_TYPE_FLD + "= ? "  
+													+ RESULT_TYPE_FLD + "= ? " + ", " + DEPENDS_ON + "= ?"  
 													+ " WHERE " + CNV_ID_FLD + "= ?";
 
 	private static final String qUpdateStyleSheetFN = "UPDATE  " + XSL_TABLE 
 														+ " SET " + XSL_FILE_FLD + "= ? "  + ", " 
 														+ DESCR_FLD + "= ? "  + ", " 
 														+ XSL_SCHEMA_ID_FLD + "= ? " + ", " 
-														+ RESULT_TYPE_FLD + "= ? "  
+														+ RESULT_TYPE_FLD + "= ? " + ", " + DEPENDS_ON + "= ?"  
 														+ " WHERE " + CNV_ID_FLD + "= ? ";
 
 	
@@ -46,7 +49,8 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
 														+ XSL_FILE_FLD + ", " 
 														+ XSL_TABLE + "." + DESCR_FLD + "," 
 														+ RESULT_TYPE_FLD + ", " 
-														+ SCHEMA_TABLE + "." + XML_SCHEMA_FLD 
+														+ SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ", "
+														+ XSL_TABLE + "." + DEPENDS_ON
 														+ " FROM " + XSL_TABLE 
 														+ " LEFT OUTER JOIN " + SCHEMA_TABLE 
 														+ " ON " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD;
@@ -79,7 +83,7 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
 	}
 
 */	
-	public String addStylesheet(String xmlSchemaID, String resultType, String xslFileName, String description) throws SQLException{
+	public String addStylesheet(String xmlSchemaID, String resultType, String xslFileName, String description, String dependsOn) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -96,6 +100,12 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
 			pstmt.setString(2, resultType);
 			pstmt.setString(3, xslFileName);
 			pstmt.setString(4, description);
+			if (Utils.isNullStr(dependsOn)) {
+				pstmt.setNull(5, Types.INTEGER);
+			} else {
+				pstmt.setInt(5, Integer.parseInt(dependsOn));
+			}
+			
 			pstmt.executeUpdate();
 			
 			if(pstmt != null) pstmt.close();
@@ -130,7 +140,10 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
 */
 	
 	
-	public void updateStylesheet(String xsl_id, String schema_id, String description, String fileName, String content_type) throws SQLException{
+	/**
+	 * {@inheritDoc}
+	 */
+	public void updateStylesheet(String xsl_id, String schema_id, String description, String fileName, String content_type, String dependsOn) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		description = (description == null ? "" : description);
@@ -144,14 +157,24 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
 				pstmt.setString(1, description);
 				pstmt.setInt(2, Integer.parseInt(schema_id));				
 				pstmt.setString(3, content_type);
-				pstmt.setInt(4, Integer.parseInt(xsl_id));
+				if (Utils.isNullStr(dependsOn)) {
+					pstmt.setNull(4, Types.INTEGER);
+				} else {
+					pstmt.setInt(4, Integer.parseInt(dependsOn));
+				}
+				pstmt.setInt(5, Integer.parseInt(xsl_id));
 			} else {
 				pstmt = conn.prepareStatement(qUpdateStyleSheetFN);
 				pstmt.setString(1, fileName);
 				pstmt.setString(2, description);
 				pstmt.setInt(3, Integer.parseInt(schema_id));				
 				pstmt.setString(4, content_type);
-				pstmt.setInt(5, Integer.parseInt(xsl_id));
+				if (Utils.isNullStr(dependsOn)) {
+					pstmt.setNull(5, Types.INTEGER);
+				} else {
+					pstmt.setInt(5, Integer.parseInt(dependsOn));
+				}
+				pstmt.setInt(6, Integer.parseInt(xsl_id));
 			}			
 			if (isDebugMode){ logger.debug("Query is " + (isEmptyFileName?qUpdateStyleSheet:qUpdateStyleSheetFN));}			
 			pstmt.executeUpdate();
@@ -267,6 +290,7 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
 				h.put("description", r[0][2]);
 				h.put("content_type_out", r[0][3]);
 				h.put("xml_schema", r[0][4]);
+				h.put("depends_on", r[0][5]);
 			}
 		} 
 		finally {

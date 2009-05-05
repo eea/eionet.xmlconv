@@ -38,6 +38,7 @@ import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.Utils;
 
 public class ConvTypeAction extends Action {
 
@@ -59,6 +60,14 @@ public class ConvTypeAction extends Action {
 			ArrayList schemas = schemaMan.getDDSchemas();
 
 			httpServletRequest.getSession().setAttribute("stylesheet.DDSchemas", schemas);
+			
+			if (!Utils.isNullStr(schema)) {
+				String schemaId = schemaMan.getSchemaId(schema);
+				if (schemaId != null) {
+					httpServletRequest.setAttribute("schemaInfo", schemaMan.getSchema(schemaId));
+					httpServletRequest.setAttribute("existingStylesheets", sm.getSchemaStylesheets(schemaId, null));
+				}
+			}
 
 		} catch (DCMException e) {
 			e.printStackTrace();

@@ -41,7 +41,7 @@ public class StylesheetForm extends ActionForm {
 	private String xslFileName;
 	private String modified;
 	private String checksum;
-
+	private String dependsOn;
 
 	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
 		return null;
@@ -163,6 +163,21 @@ public class StylesheetForm extends ActionForm {
 
 	public void setChecksum(String checksum) {
 		this.checksum = checksum;
+	}
+
+	/**
+	 * @return the dependsOn
+	 */
+	public String getDependsOn() {
+		return dependsOn;
+	}
+
+
+	/**
+	 * @param dependsOn the dependsOn to set
+	 */
+	public void setDependsOn(String dependsOn) {
+		this.dependsOn = dependsOn;
 	}
 
 }
