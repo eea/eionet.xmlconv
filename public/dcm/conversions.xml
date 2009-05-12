@@ -45,4 +45,9 @@
                 <result_type>ODS</result_type>
                 <stylesheet>OpenDocumentSpreadsheet.xsl</stylesheet>
         </conversion> 
+        <conversion id="10">
+                <description>RDF</description>
+                <result_type>RDF</result_type>
+                <stylesheet>RDF.xsl</stylesheet>
+        </conversion> 
 </conversions>
