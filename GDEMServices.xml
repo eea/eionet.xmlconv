@@ -70,6 +70,7 @@
 				<Parameters>
 					<Parameter Name="url" Type="STRING"/>
 					<Parameter Name="xq_script" Type="STRING"/>
+					<Parameter Name="script_type" Type="STRING"/>
 				</Parameters>
 				<Value Type="STRING"/>
 			</Method>
