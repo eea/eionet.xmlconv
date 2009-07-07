@@ -56,7 +56,7 @@ public class XmlQuery implements IXQuery {
 			++i;
 		}
 		xpath += "]";
-		System.out.println(xpath);
+		//System.out.println(xpath);
 		Node result = null;
 		try {
 			result = XPathAPI.selectSingleNode(ctx.getDocument(), xpath);

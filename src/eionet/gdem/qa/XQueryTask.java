@@ -34,7 +34,6 @@ import eionet.gdem.GDEMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.utils.InputFile;
 import eionet.gdem.Properties;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
@@ -43,12 +42,10 @@ import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.validation.ValidationService;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Iterator;
 
 
 /**
@@ -175,10 +172,20 @@ public class XQueryTask extends Thread implements Constants {
       //read query info from DB.
       HashMap query = getQueryInfo(_queryID);
       String content_type = null;
+      String scriptType=null;
       if (query!=null && query.containsKey("content_type")){
 			content_type = (String)query.get("content_type");
       }
-
+      //get script type if it comes from T_QUERY table
+      if (query!=null && query.containsKey("script_type")){
+    	  scriptType=(String)query.get("script_type");
+      }
+      //get script type if it stored in filesystem and we have to guess it by file extension
+      if(Utils.isNullStr(scriptType)){
+    	  scriptType = _scriptFile.endsWith(XQScript.SCRIPT_LANG_XSL) ? XQScript.SCRIPT_LANG_XSL:
+    		  				_scriptFile.endsWith(XQScript.SCRIPT_LANG_XGAWK) ? XQScript.SCRIPT_LANG_XGAWK:
+    		  					XQScript.SCRIPT_LANG_XQUERY;
+      }
       String[] xqParam={XQ_SOURCE_PARAM_NAME + "=" + srcFile};
 
 
@@ -189,12 +196,16 @@ public class XQueryTask extends Thread implements Constants {
             " result will be stored to " + _resultFile );
 
 
-        String xqScript = Utils.readStrFromFile(_scriptFile);
+        //String xqScript = Utils.readStrFromFile(_scriptFile);
 
         if (_logger.enable(_logger.DEBUG))
-        		_logger.debug("Script: \n" + xqScript );
+        		_logger.debug("Script: \n" + _scriptFile );
 
-        XQScript xq = new XQScript(xqScript, xqParam,content_type);
+        XQScript xq = new XQScript(null, xqParam,content_type);
+        xq.setScriptFileName(_scriptFile);
+		xq.setScriptType(scriptType);
+		xq.setSrcFileUrl(srcFile);
+		
         FileOutputStream out=null;
         //System.out.println("==>filename " + _resultFile);
         try{
@@ -225,7 +236,7 @@ public class XQueryTask extends Thread implements Constants {
 
 
       } catch (Exception e ) {
-        handleError("Error processing XQ:" + e.toString(), true);
+        handleError("Error processing QA script:" + e.toString(), true);
         return;
 
       }

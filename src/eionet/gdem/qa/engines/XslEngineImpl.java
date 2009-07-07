@@ -1,0 +1,114 @@
+/*
+ * The contents of this file are subject to the Mozilla Public
+ * License Version 1.1 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of
+ * the License at http://www.mozilla.org/MPL/
+ * 
+ * Software distributed under the License is distributed on an "AS
+ * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+ * implied. See the License for the specific language governing
+ * rights and limitations under the License.
+ * 
+ * The Original Code is XMLCONV.
+ * 
+ * The Initial Owner of the Original Code is European Environment
+ * Agency.  Portions created by Tieto Eesti are Copyright
+ * (C) European Environment Agency.  All Rights Reserved.
+ * 
+ * Contributor(s):
+ * Enriko Käsper, Tieto Estonia
+ */
+
+package eionet.gdem.qa.engines;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+
+import eionet.gdem.GDEMException;
+import eionet.gdem.conversion.converters.ConvertContext;
+import eionet.gdem.conversion.converters.ConvertStartegy;
+import eionet.gdem.conversion.converters.XMLConverter;
+import eionet.gdem.qa.XQScript;
+import eionet.gdem.qa.XQueryService;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.InputFile;
+import eionet.gdem.utils.Utils;
+
+/**
+ * @author Enriko Käsper, Tieto Estonia
+ * XslEngineImpl
+ */
+
+public class XslEngineImpl extends QAScriptEngineStrategy {
+
+	private static LoggerIF _logger = GDEMServices.getLogger();
+
+	@Override
+	protected void runQuery(XQScript script, OutputStream result) throws GDEMException {
+
+		FileInputStream fisXsl = null;
+		InputStream streamXml = null;
+		String tmpXslFile = null;
+
+	    try {
+	    	
+	    	//build InputSource for xsl 
+		    if(!Utils.isNullStr(script.getScriptSource())){
+		    	tmpXslFile= Utils.saveStrToFile(null, script.getScriptSource(), "xsl");
+		    }
+		    else if(!Utils.isNullStr(script.getScriptFileName())){
+		    	fisXsl=new FileInputStream(script.getScriptFileName());
+		    }
+		    else{
+		    	throw new GDEMException("XQuery engine could not find script source or script file name!");
+		    }
+		    //Build InputSource for xml file
+		    InputFile src = new InputFile(script.getSrcFileUrl());
+		    streamXml = src.getSrcInputStream();
+		    
+		    //execute xsl transformation
+
+		    //XSLTransformer transformer = new XSLTransformer();
+		    //transformer.transform(tmpXslFile==null?script.getScriptFileName():tmpXslFile, new InputSource(fisXsl), result, parseParams(script.getParams()));
+			
+		    ConvertContext ctx = new ConvertContext(streamXml, tmpXslFile==null?script.getScriptFileName():tmpXslFile, result,null);
+			ConvertStartegy cs = new XMLConverter();
+			
+			HashMap params = src.getCdrParams();
+			params.put(XQueryService.XQ_SOURCE_PARAM_NAME, script.getOrigFileUrl());
+			cs.setXslParams(params);
+			ctx.executeConversion(cs);
+		    
+		    
+		    if(tmpXslFile!=null){
+		    	Utils.deleteFile(tmpXslFile);
+		    }
+	    }
+	    catch(Exception e){
+	    	e.printStackTrace();
+	      	_logger.error("==== CATCHED EXCEPTION " + e.toString() );
+	        throw new GDEMException (e.getMessage());
+	    }
+	    finally{
+	  	  if(fisXsl!=null){
+		        try {
+		        	fisXsl.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		  }
+	  	  if(streamXml!=null){
+		        try {
+		        	streamXml.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		  }
+	    }
+
+	}
+}

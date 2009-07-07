@@ -23,7 +23,6 @@
 
 package eionet.gdem.qa;
 import eionet.gdem.GDEMException;
-import eionet.gdem.utils.Utils;
 
 import java.io.OutputStream;
 /**
@@ -36,7 +35,17 @@ public interface XQEngineIF {
   public static final String DEFAULT_OUTPUTTYPE ="html";
   public static final String HTML_CONTENT_TYPE ="html";
   public static final String XML_CONTENT_TYPE="xml";
-	/**
+
+  /**
+   * processes the XQuery
+   * @param xqScript the XQscript object with required attributes
+   * @return the result of XQuery
+   * @throws eionet.gdem.GDEMException
+   */
+  public String getResult(XQScript script) throws GDEMException;
+  public void getResult(XQScript script, OutputStream out) throws GDEMException;
+
+  /**
    * processes the XQuery
    * @param xqScript the XQuery script
    * @param params XQuery parameter name value pairs
@@ -44,17 +53,11 @@ public interface XQEngineIF {
    * @return the result of XQuery
    * @throws eionet.gdem.GDEMException
    */
+  /*
   public String getResult(String xqScript, String params[]) throws GDEMException;
-  /**
-   * processes the XQuery
-   * @param xqScript the XQuery script
-   * @return the result of XQuery
-   * @throws eionet.gdem.GDEMException
-   */
-  public String getResult(String xqScript) throws GDEMException;
   
   public void getResult(String xqScript, String params[], OutputStream out) throws GDEMException;
-  
+  */
   /**
    * get encoding for XQuery engine to use. If not set use default encoding UTF-8.
    * @return

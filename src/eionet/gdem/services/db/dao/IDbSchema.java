@@ -70,6 +70,8 @@ public interface IDbSchema {
   public static final String QUERY_ID_FLD="QUERY_ID";
   public static final String SHORT_NAME_FLD="SHORT_NAME";
   public static final String QUERY_FILE_FLD="QUERY_FILENAME";  
+  public static final String QUERY_RESULT_TYPE="RESULT_TYPE";
+  public static final String QUERY_SCRIPT_TYPE="SCRIPT_TYPE";
 
   /**
   * Field names in SCHEMA table

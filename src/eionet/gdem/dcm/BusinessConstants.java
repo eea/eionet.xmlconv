@@ -43,6 +43,7 @@ public class BusinessConstants {
 	// public static final String EXCEPTION_PARAM_LDAP_SAVED =
 	// "label.editParam.ldap.saved";
 	public static final String EXCEPTION_PARAM_LDAP_FAILED = "label.editParam.ldap.failed";
+	public static final String EXCEPTION_PARAM_SYSTEM_FAILED = "label.editParam.system.failed";
 	// public static final String EXCEPTION_PARAM_LDAP_TEST_FAILED =
 	// "label.editParam.ldap.testFailed";
 	public static final String EXCEPTION_CONVERT_URL_MALFORMED = "label.conversion.url.malformed";

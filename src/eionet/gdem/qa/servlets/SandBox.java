@@ -203,6 +203,10 @@ public class SandBox  extends HttpServlet implements Constants {
 					pars[0] = XQ_SOURCE_PARAM_NAME + "=" + dataURL;
 
 					XQScript xq = new XQScript(xqScript, pars,  xqOutputType);
+					xq.setScriptType((String)query.get("script_type"));
+	  				xq.setSrcFileUrl(dataURL);
+					
+					
 					//OutputStream outstream = res.getOutputStream();
 					OutputStream output = null;					
 					try {
@@ -271,6 +275,7 @@ public class SandBox  extends HttpServlet implements Constants {
 
 			String q_id = req.getParameter("ID");
 			String xqScript = req.getParameter(XQ_SCRIPT_PARAM);
+			String scriptType = req.getParameter(XQ_SCRIPT_TYPE_ATT);
 
 			//get the trusted URL from source file adapter
 			dataURL = SourceFileManager.getSourceFileAdapterURL(
@@ -291,10 +296,12 @@ public class SandBox  extends HttpServlet implements Constants {
 						(String)query.get("content_type"):null;
 
 					xq = new XQScript(xqScript, pars, xqOutputType);
+					xq.setScriptType(scriptType);
+					xq.setSrcFileUrl(dataURL);
 					OutputStream output =null;
 					try {
 						//System.out.println("siin2");
-						if(!resultContentType.equals(HTML_CONTENT_TYPE)){
+						if(!resultContentType.startsWith(HTML_CONTENT_TYPE)){
 							res.setContentType(resultContentType);
 							res.setCharacterEncoding(HTML_CHARACTER_ENCODING);
 							output = res.getOutputStream();
@@ -327,7 +334,7 @@ public class SandBox  extends HttpServlet implements Constants {
 					xqE.setTicket(getTicket(req));
 					xqE.setTrustedMode(false);
 					try {
-						result = xqE.analyze(dataURL, xqScript);
+						result = xqE.analyze(dataURL, xqScript, scriptType);
 						req.setAttribute(Names.SUCCESS_ATT, "Job (id: " + result + ") successfully added to the <a href='workqueue.jsp'>workqueue</a>.");
 						//writeHTMLMessage(res, "Job (id: " + result + ") successfully added to the <a href='workqueue.jsp'>workqueue</a>.");
 					} catch (GDEMException ge){

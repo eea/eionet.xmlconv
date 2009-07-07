@@ -44,7 +44,18 @@ public class Schema implements Serializable {
 	private boolean doValidation=false;
 	private String schemaLang;
 	private String uplSchemaFileName;
+	private List qascripts;
 	
+	public List getQascripts() {
+		return qascripts;
+	}
+
+
+	public void setQascripts(List qascripts) {
+		this.qascripts = qascripts;
+	}
+
+
 	private static String[] schemaLanguages = { "XSD", "DTD", "EXCEL" };
 	private static String defaultSchemaLang = "XSD";
 	

@@ -100,6 +100,38 @@ public class DcmProperties {
 	}
 
 
+	public void setSystemParams(Long qaTimeout, String cmdXGawk) throws DCMException {
+
+		String filePath = Properties.appHome + File.separatorChar + "gdem.properties";
+
+		try {
+
+			BufferedReader reader = new BufferedReader(new FileReader(filePath));
+			String line = null;
+			StringBuffer st = new StringBuffer();
+
+			while ((line = reader.readLine()) != null) {
+				// process the line
+				line = findSetProp(line, "external.qa.timeout", String.valueOf(qaTimeout));
+				line = findSetProp(line, "external.qa.command.xgawk", cmdXGawk);
+				st.append(line);
+				st.append("\n");
+			}
+
+			BufferedWriter out = new BufferedWriter(new FileWriter(filePath));
+			out.write(st.toString());
+			out.close();
+			
+			Properties.xgawkCommand=cmdXGawk;
+			Properties.qaTimeout =Long.valueOf(qaTimeout);
+			
+		} catch (IOException e) {
+			_logger.error("Saving system parameters failed!", e);
+			e.printStackTrace();
+			throw new DCMException(BusinessConstants.EXCEPTION_PARAM_SYSTEM_FAILED);
+		}
+	}
+
 	private String findSetProp(String line, String key, String value) {
 		if (line.startsWith(key + "=")) {
 			line = key + "=" + value;

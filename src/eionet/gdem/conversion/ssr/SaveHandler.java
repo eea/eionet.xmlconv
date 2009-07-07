@@ -301,6 +301,7 @@ public class SaveHandler {
        String name= (String)req_params.get("SHORT_NAME");
        String descr= (String)req_params.get("DESCRIPTION");
        String content_type= (String)req_params.get("CONTENT_TYPE");
+       String script_type= (String)req_params.get("SCRIPT_TYPE");
 
        if (Utils.isNullStr(schema)){
          req.setAttribute(Names.ERROR_ATT, "XML schema cannot be empty.");
@@ -313,7 +314,7 @@ public class SaveHandler {
              schemaID=GDEMServices.getDaoService().getSchemaDao().addSchema(schema, null);
 
 
-         GDEMServices.getDaoService().getQueryDao().addQuery(schemaID, name, fileName, descr, content_type);
+         GDEMServices.getDaoService().getQueryDao().addQuery(schemaID, name, fileName, descr, content_type, script_type);
 
        }
        catch (Exception e){
@@ -336,6 +337,7 @@ public class SaveHandler {
         String file_data = null;
         String strChecksum = null;
 		String newChecksum = null;
+        String script_type= null;
 
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "u")){
@@ -363,6 +365,7 @@ public class SaveHandler {
             current_file= (String)req_params.get("FILE_NAME");
             file_data= (String)req_params.get("FILEDATA");
             strChecksum= (String)req_params.get("CHECKSUM");
+            script_type= (String)req_params.get("SCRIPT_TYPE");
 
             save_source = (req_params.get("SAVE")==null) ? false : true;
 
@@ -429,7 +432,7 @@ public class SaveHandler {
        try{
 
 
-         GDEMServices.getDaoService().getQueryDao().updateQuery(query_id, schema_id,name,descr, current_file, content_type);
+         GDEMServices.getDaoService().getQueryDao().updateQuery(query_id, schema_id,name,descr, current_file, content_type, script_type);
 
        }
        catch (Exception e){

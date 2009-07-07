@@ -30,9 +30,9 @@ import java.io.Reader;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.OutputKeys;
 
-import eionet.gdem.qa.XQEngineIF;
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
+import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.Utils;
@@ -44,70 +44,21 @@ import net.sf.saxon.query.DynamicQueryContext;
 //import net.sf.saxon.query.QueryProcessor;
 import net.sf.saxon.query.XQueryExpression;
 
-import java.io.ByteArrayOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 
 
-public class SaxonImpl implements XQEngineIF {
+public class SaxonImpl extends QAScriptEngineStrategy {
 
-  private LoggerIF _logger;
-  private String encoding = null;
-  private String outputType = null;
 
+  private static LoggerIF _logger = GDEMServices.getLogger();
   public SaxonImpl() {
-    _logger=GDEMServices.getLogger();
   }
-  public String getResult(String xqScript, String[] params) throws GDEMException  {
-    String res=null;
-    try {
-      res=runQuery(xqScript, params);
+  
+  protected void runQuery(XQScript script, OutputStream result) throws GDEMException  {
 
-      if (_logger.enable(_logger.DEBUG))
-        _logger.debug("RESULT: \n" + res);
-
-     } catch(Exception e) {
-        throw new GDEMException(e.toString());
-    }
-
-    return res;
-  }
-  public void getResult(String xqScript, String[] params, OutputStream out) throws GDEMException  {
-    try {
-      runQuery(xqScript, params, out);
-
-     } catch(Exception e) {
-        throw new GDEMException(e.toString());
-    }
-  }
-  public String getResult(String xqScript) throws GDEMException  {
-    return getResult(xqScript, null);
-  }
-
-
-//  public void setParameters(String[] params) {}
-
-
- /**
-  * executes
-  * code extracted from Saxon 7 source
-  * and modified
-  */
-  private String runQuery(String script, String xqParams[]) throws GDEMException  {
-    ByteArrayOutputStream result = new ByteArrayOutputStream();
-    String s="";
-   	runQuery(script,xqParams, result);
-    try{
-    	s = result.toString(DEFAULT_ENCODING);
-    	//result.close(); //??
-    } catch (Exception e) {
-    	_logger.debug("==== CATCHED EXCEPTION " + e.toString() );
-    }
-    return s;
-  }
-  private void runQuery(String script, String xqParams[], OutputStream result) throws GDEMException  {
-
-    boolean wrap=false;
     //Source sourceInput = null;
     //StringBuffer err_buf = new StringBuffer();
 
@@ -142,8 +93,7 @@ public class SaxonImpl implements XQEngineIF {
         outputProps.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 
 //query script
-    Reader queryReader = new StringReader(script);
-
+    
 //    staticEnv.setBaseURI(new File(script).toURI().toString());
     String xmlFilePathURI = Utils.getURIfromPath(eionet.gdem.Properties.xmlfileFolderPath,true);
     
@@ -152,13 +102,21 @@ public class SaxonImpl implements XQEngineIF {
    		staticEnv.setBaseURI(xmlFilePathURI);
     }
 
+    Reader queryReader = null;
     String s = "";
 
-  try {
-      //handle xq Parameters, extract from Saxon code
-      if (xqParams!=null)
-        for (int p=0; p<xqParams.length; p++) {
-          String arg = xqParams[p];
+    try {
+	    if(!Utils.isNullStr(script.getScriptSource()))
+	    	queryReader = new StringReader(script.getScriptSource());
+	    else if(!Utils.isNullStr(script.getScriptFileName()))
+	    	queryReader = new FileReader(script.getScriptFileName());
+	    else
+	    	throw new GDEMException("XQuery engine could not find script source or script file name!");
+
+	    //handle xq Parameters, extract from Saxon code
+      if (script.getParams()!=null)
+        for (int p=0; p<script.getParams().length; p++) {
+          String arg = script.getParams()[p];
           int eq = arg.indexOf("=");
           if (eq<1 || eq>=arg.length()-1) {
               throw new GDEMException("Bad param=value pair");
@@ -185,7 +143,6 @@ public class SaxonImpl implements XQEngineIF {
       XQueryExpression exp;
       try {
         exp = staticEnv.compileQuery(queryReader);
-        queryReader.close(); //KL 040218
         staticEnv=exp.getStaticContext();
       }catch(net.sf.saxon.trans.XPathException e){
         throw e;
@@ -222,6 +179,14 @@ public class SaxonImpl implements XQEngineIF {
     //listener.error(e);
   }
   finally {
+	  if(queryReader!=null){
+	        try {
+				queryReader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	  }
+		  
 		if (listener.hasErrors() || dynamicListener.hasErrors() ){
 			String errMsg = listener.getErrors() + dynamicListener.getErrors();
 			try{
@@ -266,36 +231,4 @@ private String parseErrors(String err, StaticQueryContext staticEnv){
 
     return  buf.toString();
 }
-public String getEncoding() {
-	if(Utils.isNullStr(encoding))encoding=DEFAULT_ENCODING;
-	
-	return encoding;
-}
-public void setEncoding(String encoding) {
-	this.encoding = encoding;
-}
-public String getOutputType() {
-	if(Utils.isNullStr(outputType))outputType=DEFAULT_OUTPUTTYPE;
-	return outputType;
-}
-public void setOutputType(String _outputType) {
-	outputType= (_outputType==null) ? DEFAULT_OUTPUTTYPE : _outputType.trim().toLowerCase();
-	outputType = (outputType.equals("txt"))?"text":outputType;
-
-	if(outputType.equals("xml") || outputType.equals("html") ||
-			outputType.equals("text") ||outputType.equals("xhtml"))
-		this.outputType = outputType;
-	else
-		this.outputType = DEFAULT_OUTPUTTYPE;
-}
-/*
-  public static void main(String [] a) throws Exception {
-    String s =  eionet.gdem.Utils.readStrFromFile("\\einrc\\webs\\gdem\\xquery\\sum_emissions.xql");
-    String p[] = {eionet.gdem.Utils.XQ_SOURCE_PARAM_NAME + "=" + "http://localhost:8080/gdem/s.xml"};
-
-    eionet.gdem.qa.XQScript x = new eionet.gdem.qa.XQScript(s, p);
-
-    x.getResult();
-  }
-*/
 }

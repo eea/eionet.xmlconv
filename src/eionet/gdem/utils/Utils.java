@@ -40,6 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -212,6 +213,14 @@ public class Utils {
 
     return false;
   }
+  public static boolean isNullHashMap(HashMap h ) {
+	    if (h==null)
+	      return true;
+	    else
+	      if (h.isEmpty()) return true;
+
+	    return false;
+	  }
   /**
   * Checks if the given string is a well-formed URL
   */

@@ -36,7 +36,7 @@ import org.apache.log4j.Priority;
  * @version $Revision: 1.1 $
  */
 
-class LoggerModule implements LoggerIF {
+public class LoggerModule implements LoggerIF {
   
   
   //private static GDEMLogger logger;
@@ -48,7 +48,7 @@ class LoggerModule implements LoggerIF {
  * Package local method for initializing Logger. Does not do anything as the com.tee.xmlserver.Logger
  * will be initialized by the servlet container.
  */
-  LoggerModule() {
+  public LoggerModule() {
     logger = Category.getInstance("gdem");
   }
   

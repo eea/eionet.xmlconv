@@ -71,7 +71,9 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 												+ QUERY_ID_FLD + ", " 
 												+ QUERY_FILE_FLD + ", " 
 												+ DESCR_FLD + "," 
-												+ SHORT_NAME_FLD 
+												+ SHORT_NAME_FLD + "," 
+												+ QUERY_SCRIPT_TYPE + "," 
+												+ QUERY_RESULT_TYPE 
 												+ " FROM " + QUERY_TABLE 
 												+ " WHERE " + XSL_SCHEMA_ID_FLD + "= ?"
 												+ " ORDER BY " + SHORT_NAME_FLD;
@@ -385,9 +387,9 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 			      h.put("validate", r[i][4]);
 			      h.put("schema_lang", r[i][5]);
 			      if (stylesheets){
-				        Vector v_xls=getSchemaStylesheets(r[i][0]);
+				        Vector v_xls=getSchemaStylesheets(r[i][0],conn);
 				        h.put("stylesheets", v_xls);
-				        Vector v_queries=getSchemaQueries(r[i][0]);
+				        Vector v_queries=getSchemaQueries(r[i][0],conn);
 				        h.put("queries", v_queries);
 				  }			      
  				  v.add(h);
@@ -504,8 +506,18 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 
 */	
 	public Vector getSchemaStylesheets(String schemaId) throws SQLException{
-		int id = 0;
 		Connection conn = null;
+		try {
+			conn = getConnection();
+			return getSchemaStylesheets(schemaId, conn);
+		}
+		finally {
+			closeAllResources(null,null,conn);
+		}
+		
+	}
+	private Vector getSchemaStylesheets(String schemaId, Connection conn) throws SQLException{
+		int id = 0;
 		PreparedStatement pstmt = null;
 		ResultSet rs =null;
 		Vector v = null;
@@ -520,7 +532,6 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 		if (isDebugMode){ logger.debug("Query is " + qSchemaStylesheets);}
 		
 		try {
-			conn = getConnection();
 			pstmt = conn.prepareStatement(qSchemaStylesheets);
 			pstmt.setInt(1,id);
 			rs = pstmt.executeQuery();			
@@ -538,7 +549,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 			}			
 		} 
 		finally {
-			closeAllResources(rs,pstmt,conn);
+			closeAllResources(rs,pstmt,null);
 		}
 		
 		return v;	
@@ -580,8 +591,19 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 	
 */		
 	public Vector getSchemaQueries(String schemaId) throws SQLException{
-		int id = 0;
 		Connection conn = null;
+		try {
+			conn = getConnection();
+			return getSchemaQueries(schemaId, conn);
+		}
+		finally {
+			closeAllResources(null,null,conn);
+		}
+		
+	}
+
+	private Vector getSchemaQueries(String schemaId, Connection conn) throws SQLException{
+		int id = 0;
 		PreparedStatement pstmt = null;
 		ResultSet rs =null;
 		Vector v = null;
@@ -596,7 +618,6 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 		if (isDebugMode){ logger.debug("Query is " + qSchemaQueries);}
 		
 		try {
-			conn = getConnection();
 			pstmt = conn.prepareStatement(qSchemaQueries);
 			pstmt.setInt(1,id);
 			rs = pstmt.executeQuery();			
@@ -609,11 +630,13 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 				h.put("query", r[i][1]);
 				h.put("description", r[i][2]);
 				h.put("short_name", r[i][3]);
+				h.put("script_type", r[i][4]);
+				h.put("result_type", r[i][5]);
 				v.add(h);
 			}
 		} 
 		finally {
-			closeAllResources(rs,pstmt,conn);
+			closeAllResources(rs,pstmt,null);
 		}
 		
 		return v;	

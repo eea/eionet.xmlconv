@@ -53,7 +53,7 @@ public interface Names {
   public static final String LIST_WORKQUEUE_JSP = "workqueue.jsp";
   public static final String SANDBOX_JSP = "sandbox.jsp";
   public static final String SANDBOX_RESULT_JSP = "sandbox_result.jsp";
-  public static final String QUERIESINDEX_JSP = "queriesindex.jsp";
+  public static final String QUERIESINDEX_JSP = "qaScripts.do";
   public static final String QUERIES_JSP = "queries.jsp";
   public static final String ADD_QUERY_JSP = "add_query.jsp";
   public static final String QUERY_JSP = "query.jsp";

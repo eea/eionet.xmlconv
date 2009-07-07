@@ -95,7 +95,10 @@ public class Properties {
 	
 	// TODO add initialization from property file
 	public static int openOfficePort = 8100;
-
+	public static String xgawkCommand = null;
+	//timeout for running external QA program in command line in milliseconds, default 120sec
+	public static long qaTimeout = 120000L;
+	
 	private static ResourceBundle props;
 	private static ResourceBundle ldapProps;
 	public static Category logger;
@@ -170,6 +173,16 @@ public class Properties {
 				//wqCheckInterval= (Long.getLong(props.getString("wq.check.interval"))).longValue();
 
 				//urlPrefix=props.getString("url.prefix"); //URL where the files can be downloaded
+				//maximum number of jobs executed at the same time
+				String sQaTimeout = props.getString("external.qa.timeout");
+				try{
+					if (sQaTimeout!=null && sQaTimeout.length()>0) {qaTimeout =Long.parseLong(sQaTimeout);}
+				}
+				catch(Exception e){
+					logger.error("\"external.qa.timeout\" property is not defined or is not numeric in gdem.properties");
+				}
+				xgawkCommand = props.getString("external.qa.command.xgawk");
+
 			} catch (MissingResourceException mse) {
 				mse.printStackTrace();
 

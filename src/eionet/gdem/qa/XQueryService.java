@@ -42,7 +42,6 @@ import eionet.gdem.validation.ValidationService;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IQueryDao;
-import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 
 import java.sql.SQLException;
@@ -210,14 +209,15 @@ public class XQueryService extends RemoteService implements Constants {
   * Stores the xqScript and starts a job in the workqueue
   * @param String url: URL of the srouce XML
   * @param String xqScript: XQueryScript to be processed
+  * @param String scriptType: xquery, xsl or xgawk
   */
-  public String analyze(String sourceURL, String xqScript) throws GDEMException {
+  public String analyze(String sourceURL, String xqScript, String scriptType) throws GDEMException {
     String  xqFile="";
 
     _logger.info("XML/RPC call for analyze xml: " + sourceURL);
     //save XQScript in a text file for the WQ
     try {
-      xqFile=Utils.saveStrToFile(xqScript, "xql");
+      xqFile=Utils.saveStrToFile(xqScript, scriptType);
     } catch (FileNotFoundException fne) {
       throw new GDEMException("Folder does not exist: :" + fne.toString());
      } catch (IOException ioe ) {
@@ -396,18 +396,19 @@ public class XQueryService extends RemoteService implements Constants {
 	  * @param String url: URL of the srouce XML
 	  * @param String xqScript: XQueryScript ID or -1 (XML Schema validation) to be processed
 	  */
-	  public Vector runQAScript(String file_url, String script_id) throws GDEMException{
+	  public Vector runQAScript(String orig_file_url, String script_id) throws GDEMException{
 
 	  	Vector result = new Vector();
 	  	ByteArrayOutputStream outstream =null;
+	  	String file_url=null;
 	  	String content_type="text/html";
 	  	byte[] result_bytes;
-      _logger.debug("==xmlconv== runQAScript: id=" + script_id + " file_url="+ file_url +"; ");
+      _logger.debug("==xmlconv== runQAScript: id=" + script_id + " file_url="+ orig_file_url +"; ");
 
 		try{
 			//get the trusted URL from source file adapter
 		    file_url = SourceFileManager.getSourceFileAdapterURL(
-					getTicket(),file_url,isTrustedMode());
+					getTicket(),orig_file_url,isTrustedMode());
 		}
 		catch(Exception e){
 			String err_mess="File URL is incorrect";
@@ -446,6 +447,8 @@ public class XQueryService extends RemoteService implements Constants {
     					content_type = (String)hash.get("meta_type");
 	  				outstream = new ByteArrayOutputStream();
 	  				XQScript xq = new XQScript(xqScript, pars, (String)hash.get("content_type"));
+	  				xq.setScriptType((String)hash.get("script_type"));
+	  				xq.setSrcFileUrl(file_url);
 
 	  				xq.getResult(outstream);
 	  				result_bytes = outstream.toByteArray();
@@ -474,24 +477,6 @@ public class XQueryService extends RemoteService implements Constants {
   }
 
 
-  /**
-  * returns an instance of the best XQEngine :)
-  * implementator class name specified in the props file
-  */
-  static XQEngineIF getEngine() throws GDEMException {
-    String className=Properties.engineClass; // "eionet.gdem.qa.engines.SaxonImpl";
-    XQEngineIF engine = null;
-    try {
-      Class engineClass =  Class.forName(className);
-      engine = (XQEngineIF)engineClass.newInstance();
-    }  catch (ClassNotFoundException cn) {
-      throw new GDEMException("No such class: " + className);
-    } catch (Exception e ) {
-       throw new GDEMException("Error initializing engine  " +e.toString());
-    }
-
-    return engine; //new SaxonImpl();
-  }
   public static void main(String args[]) {
     try{
       XQueryService xqs = new XQueryService();

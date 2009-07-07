@@ -47,6 +47,7 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dto.CdrFileDto;
 import eionet.gdem.dto.ConversionDto;
+import eionet.gdem.dto.QAScript;
 import eionet.gdem.dto.RootElem;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
@@ -57,6 +58,7 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.MultipartFileUpload;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.schema.SchemaElemHolder;
 import eionet.gdem.web.struts.schema.UplSchemaHolder;
 import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
@@ -290,6 +292,76 @@ public class SchemaManager {
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return st;
+	}
+
+
+	/**
+	 * Method creates QAScriptListHolder object, that stores the list of qa script
+	 * The object stores also user permissions info to manage stylesheets.
+	 * 
+	 * @param user_name		user name stored in HTTP session.This for checking user permisssions
+	 * @return
+	 * @throws DCMException
+	 */
+	public QAScriptListHolder getSchemasWithQAScripts(String user_name) throws DCMException {
+
+		QAScriptListHolder st = new QAScriptListHolder();
+			
+		boolean ssiPrm = false;
+		boolean ssdPrm = false;
+		Vector hcSchemas;
+		ArrayList schemas;
+
+		try {
+			schemas = new ArrayList();
+			ssiPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "i");
+			ssdPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "d");
+
+			st.setSsdPrm(ssdPrm);
+			st.setSsiPrm(ssiPrm);
+
+			hcSchemas = schemaDao.getSchemas(null);
+			if (hcSchemas == null) hcSchemas = new Vector();
+
+			for (int i = 0; i < hcSchemas.size(); i++) {
+				HashMap schema = (HashMap) hcSchemas.get(i);
+				Schema sc = new Schema();
+				sc.setId((String) schema.get("schema_id"));
+				sc.setSchema((String) schema.get("xml_schema"));
+				sc.setDescription((String) schema.get("description"));
+
+				Vector qascripts = new Vector();
+				if (schema.containsKey("queries")) {
+					qascripts = (Vector) schema.get("queries");
+					}
+
+					ArrayList qases = new ArrayList();
+					for (int j = 0; j < qascripts.size(); j++) {
+						HashMap qascript = (HashMap) qascripts.get(j);
+						QAScript qas = new QAScript();
+						qas.setQueryId((String) qascript.get("query_id"));
+						qas.setFileName(Names.QUERY_FOLDER + (String) qascript.get("query"));
+						qas.setDescription((String) qascript.get("description"));
+						qas.setShortName((String) qascript.get("short_name"));
+						qas.setScriptType((String) qascript.get("script_type"));
+						qas.setResultType((String) qascript.get("result_type"));
+						qases.add(qas);
+					}
+					if (qases.size() > 0) {
+						sc.setQascripts(qases);
+						schemas.add(sc);
+					}
+				}
+				if(schemas.size()>0){
+					st.setQascripts(schemas);
+				}
+
+		} catch (Exception e) {
+			_logger.debug("Error getting schemas with QA scripts",e);
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+		return st;
+
 	}
 
 
