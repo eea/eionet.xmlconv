@@ -1,5 +1,5 @@
 -- Database: GDEM
----------------------------------------------------------
+-- -------------------------------------------------------
 
 --
 -- Table structure for table `T_FILE`
@@ -169,6 +169,7 @@ CREATE TABLE T_QUERY (
   QUERY_FILENAME varchar(255) NOT NULL default '',
   SCHEMA_ID int(11) NOT NULL default '0',
   RESULT_TYPE varchar(50) default 'HTML',
+  SCRIPT_TYPE varchar(50) default 'xquery',
   PRIMARY KEY  (QUERY_ID),
   UNIQUE KEY QUERY_FILENAME (QUERY_FILENAME),
   UNIQUE KEY QUERY_ID (QUERY_ID)
