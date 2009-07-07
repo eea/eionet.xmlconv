@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2007 rel. 3 sp1 (http://www.altova.com) by Ander Tenno (TietoEnator Eesti AS) -->
 <dataset>
-	<t_query QUERY_ID="25" DESCRIPTION="" SHORT_NAME="Summer ozone - information" QUERY_FILENAME="sum-oz_info_1920_1.xql" SCHEMA_ID="62" RESULT_TYPE="HTML"/>
-	<t_query QUERY_ID="26" DESCRIPTION="" SHORT_NAME="Summer ozone - alert" QUERY_FILENAME="sum-oz_alert_1919_2.xql" SCHEMA_ID="60" RESULT_TYPE="HTML"/>
-	<t_query QUERY_ID="27" DESCRIPTION="" SHORT_NAME="Summer ozone - stations" QUERY_FILENAME="sum-oz_stations_1922.xql" SCHEMA_ID="63" RESULT_TYPE="HTML"/>
-	<t_query QUERY_ID="28" DESCRIPTION="" SHORT_NAME="Summer ozone - health" QUERY_FILENAME="sum-oz_health_1968_3.xql" SCHEMA_ID="59" RESULT_TYPE="HTML"/>
-	<t_query QUERY_ID="44" DESCRIPTION="ä" SHORT_NAME="Article 17 - species report checks" QUERY_FILENAME="art17_species.xquery" SCHEMA_ID="86" RESULT_TYPE="HTML"/>
-	<t_query QUERY_ID="46" DESCRIPTION="a" SHORT_NAME="Article 17 - habitat report" QUERY_FILENAME="art17_habitats.xquery" SCHEMA_ID="85" RESULT_TYPE="HTML"/>
-	<t_query QUERY_ID="47" DESCRIPTION="Validates mandatory fields, sitecodes and their coverages and period fields" SHORT_NAME="General report" QUERY_FILENAME="art17_report.xquery" SCHEMA_ID="83" RESULT_TYPE="HTML"/>
-	<t_query QUERY_ID="48" DESCRIPTION="Checks species names and suggest fuzzy matching alternatves if found from the list of European species" SHORT_NAME="Article 17 - General report species check" QUERY_FILENAME="art17_general_report_species.xquery" SCHEMA_ID="83" RESULT_TYPE="HTML"/>
+	<t_query QUERY_ID="25" DESCRIPTION="" SHORT_NAME="Summer ozone - information" QUERY_FILENAME="sum-oz_info_1920_1.xql" SCHEMA_ID="62" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery"/>
+	<t_query QUERY_ID="26" DESCRIPTION="" SHORT_NAME="Summer ozone - alert" QUERY_FILENAME="sum-oz_alert_1919_2.xql" SCHEMA_ID="60" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery"/>
+	<t_query QUERY_ID="27" DESCRIPTION="" SHORT_NAME="Summer ozone - stations" QUERY_FILENAME="sum-oz_stations_1922.xql" SCHEMA_ID="63" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery"/>
+	<t_query QUERY_ID="28" DESCRIPTION="" SHORT_NAME="Summer ozone - health" QUERY_FILENAME="sum-oz_health_1968_3.xql" SCHEMA_ID="59" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery"/>
+	<t_query QUERY_ID="44" DESCRIPTION="ä" SHORT_NAME="Article 17 - species report checks" QUERY_FILENAME="art17_species.xquery" SCHEMA_ID="86" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery"/>
+	<t_query QUERY_ID="46" DESCRIPTION="a" SHORT_NAME="Article 17 - habitat report" QUERY_FILENAME="art17_habitats.xquery" SCHEMA_ID="85" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery"/>
+	<t_query QUERY_ID="47" DESCRIPTION="Validates mandatory fields, sitecodes and their coverages and period fields" SHORT_NAME="General report" QUERY_FILENAME="art17_report.xquery" SCHEMA_ID="83" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery"/>
+	<t_query QUERY_ID="48" DESCRIPTION="Checks species names and suggest fuzzy matching alternatves if found from the list of European species" SHORT_NAME="Article 17 - General report species check" QUERY_FILENAME="art17_general_report_species.xquery" SCHEMA_ID="83" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery"/>
 	<t_schema SCHEMA_ID="59" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1968" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -  Exceedance of ozone long-term objective for health protection" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
 	<t_schema SCHEMA_ID="60" XML_SCHEMA="http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1919" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -   Exceedance of ozone alert threshold values" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
 	<t_schema SCHEMA_ID="61" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1921" DESCRIPTION="Summer ozone exceedances (2002/3/EC) - Comment" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
