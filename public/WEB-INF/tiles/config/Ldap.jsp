@@ -10,12 +10,17 @@
 <div style="width:100%;">
 	<div id="tabbedmenu">
 	    <ul>
-	        <li id="currenttab"><span style="color: black; text-decoration: none;" title="<bean:message key="label.config.ldap"/>"><bean:message key="label.config.ldap" /></span></li>
+            <li>
+                <html:link page="/do/systemForm"   titleKey="label.config.system" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                    <bean:message key="label.config.system" />
+                </html:link>
+            </li>
 	        <li>
 	            <html:link page="/do/dbForm" titleKey="label.config.db" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
 	                <bean:message key="label.config.db" />
 	            </html:link>
 	        </li>
+	        <li id="currenttab"><span style="color: black; text-decoration: none;" title="<bean:message key="label.config.ldap"/>"><bean:message key="label.config.ldap" /></span></li>
 	    </ul>
 	</div>
 	<p>&nbsp;</p>
@@ -28,39 +33,39 @@
 			<tiles:insert definition="Error" />
 
 				<html:form action="/ldap" method="post">
-				    <table class="datatable">
+				    <table class="formtable">
 					  <col style="width:26%"/>
 					  <col style="width:74%"/>
 					  <tr>
-							<th scope="row" class="scope-row">
-				            	<bean:message key="label.config.ldap.url" />:
-				            </th>
+							<td>
+				            	<label class="question" for="url"><bean:message key="label.config.ldap.url" /></label>
+				            </td>
 				            <td>
-				            	<html:text property="url" maxlength="255" style="width: 30em;" />
+				            	<html:text property="url" maxlength="255" style="width: 30em;"  styleId="url"/>
 				            </td>
 						</tr>
 						<tr>
-							<th scope="row" class="scope-row">
-				            	<bean:message key="label.config.ldap.context" />:
-				            </th>
+							<td>
+				            	<label class="question" for="context"><bean:message key="label.config.ldap.context" /></label>
+				            </td>
 				            <td>
-				            	<html:text property="context" maxlength="255" style="width: 30em;" />
+				            	<html:text property="context" maxlength="255" style="width: 30em;" styleId="context"/>
 				            </td>
 						</tr>
 						<tr>
-							<th scope="row" class="scope-row">
-				            	<bean:message key="label.config.ldap.userDir" />:
-				            </th>
+							<td>
+				            	<label class="question" for="userDir"><bean:message key="label.config.ldap.userDir" /></label>
+				            </td>
 				            <td>
-				            	<html:text property="userDir" maxlength="255" style="width: 30em;" />
+				            	<html:text property="userDir" maxlength="255" style="width: 30em;" styleId="userDir"/>
 				            </td>
 						</tr>
 						<tr>
-							<th scope="row" class="scope-row">
-				            	<bean:message key="label.config.ldap.attrUid" />:
-				            </th>
+							<td>
+				            	<label class="question" for="attrUid"><bean:message key="label.config.ldap.attrUid" /></label>
+				            </td>
 				            <td>
-				            	<html:text property="attrUid" maxlength="255" style="width: 30em;" />
+				            	<html:text property="attrUid" maxlength="255" style="width: 30em;" styleId="attrUid"/>
 				            </td>
 				        </tr>
 				        <tr>

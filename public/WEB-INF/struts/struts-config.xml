@@ -34,6 +34,10 @@
         	<form-property name="user" type="java.lang.String"/>
         	<form-property name="password" type="java.lang.String"/>
         </form-bean>   
+        <form-bean name="systemForm" type="org.apache.struts.validator.DynaValidatorForm">
+	        <form-property name="qaTimeout" type="java.lang.Long"/>
+	        <form-property name="cmdXGawk" type="java.lang.String"/>
+        </form-bean>   
         <form-bean name="EditUplSchemaForm" type="eionet.gdem.web.struts.schema.EditUplSchemaForm"/>   
         <form-bean name="getXslForm" type="org.apache.struts.validator.DynaValidatorForm">
 	        <form-property name="id" type="java.lang.String"/>
@@ -51,7 +55,9 @@
         <form-bean name="UplXmlFileForm" type="eionet.gdem.web.struts.xmlfile.UplXmlFileForm" />                   
         <form-bean name="EditUplXmlFileForm" type="eionet.gdem.web.struts.xmlfile.EditUplXmlFileForm"/>   
 	       
-             
+        <form-bean name="QAScriptForm" type="eionet.gdem.web.struts.qascript.QAScriptForm" />                   
+        <form-bean name="EditQAScriptForm" type="eionet.gdem.web.struts.qascript.EditQAScriptForm"/>   
+            
     </form-beans>
 
     <global-forwards>
@@ -209,6 +215,33 @@
         	<forward name="success" path="/do/uplXmlFiles"  redirect="true"/>            
         </action>
         
+
+        <!-- action path="/stylesheetList" type="eionet.gdem.web.struts.stylesheet.StylesheetListAction">
+            <forward name="success" path="/stylesheetList.jsp" redirect="true"/>            
+        </action> -->
+
+		<!--  QA Scripts  actions -->        
+        <action path="/qaScripts"  type="eionet.gdem.web.struts.qascript.QAScriptListAction" scope="request">
+            <forward name="success" path="/qaScripts.jsp" />
+        </action>
+        <action path="/deleteQAScript"  scope="request" type="eionet.gdem.web.struts.qascript.DeleteQAScriptAction">           
+        	<forward name="success" path="/do/qaScripts"  redirect="true"/>            
+        </action>        
+        <action path="/addQAScriptForm"  parameter="/addQAScript.jsp" scope="request" validate="false" type="org.apache.struts.actions.ForwardAction"/>           
+        <action path="/addQAScript"  scope="request" type="eionet.gdem.web.struts.qascript.AddQAScriptAction" name="QAScriptForm" cancellable="true">           
+        	<forward name="success" path="/do/qaScript"  redirect="true"/>            
+        	<forward name="fail" path="/do/addQAScriptForm"  redirect="true"/>
+        </action>        
+        <action path="/editQAScriptForm" name="EditQAScriptForm" type="eionet.gdem.web.struts.qascript.EditQAScriptFormAction" scope="request" input="/editQAScript.jsp">
+            <forward name="success" path="/editQAScript.jsp" redirect="true" />
+        </action>
+        <action path="/editQAScript"  scope="request" type="eionet.gdem.web.struts.qascript.EditQAScriptAction" name="EditQAScriptForm" cancellable="true">           
+        	<forward name="success" path="/do/qaScripts"  redirect="true"/>            
+        </action>
+        <action path="/schemaQAScripts" type="eionet.gdem.web.struts.qascript.SchemaQAScripts" name="schemaStyleForm">   
+	        <forward name="success" path="/schemaQAScripts.jsp" redirect="true"/>                      
+        </action>
+
         
 <!-- methods for remote API HTTP POST and GET -->
         <action path="/listConversions" scope="request" type="eionet.gdem.web.struts.remoteapi.ListConversionsAction">
@@ -263,6 +296,15 @@
         <action path="/db" input="/configDb.jsp" name="dbForm"
             type="eionet.gdem.web.struts.config.DbAction" scope="request">
              <forward name="success" path="/do/dbForm" redirect="true"/>
+        </action>
+        <action path="/systemForm" type="eionet.gdem.web.struts.config.SystemFormAction"
+    	name="systemForm" scope="request" validate="false">
+    		<forward name="success" path="/system.jsp" redirect="true"/>
+    	</action>
+        <action path="/system" input="/system.jsp" name="systemForm"
+            type="eionet.gdem.web.struts.config.SystemAction" scope="request">
+             <forward name="success" path="/do/systemForm" redirect="true"/>
+             <forward name="fail" path="/do/systemForm" redirect="true"/>
         </action>
     </action-mappings>
     

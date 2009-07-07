@@ -2,6 +2,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ page import="java.util.HashMap, java.util.Vector, java.util.Hashtable, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names" %>
+<%@ page import="eionet.gdem.qa.XQScript"%>
 
 <%
 response.setHeader("Pragma", "No-cache");
@@ -45,44 +46,44 @@ response.setDateHeader("Expires", 0);
 <%@ include file="menu.jsp" %>
 
 
-		<h1>Add a new query</h1>
+		<h1>Add QA Script</h1>
 
 		<% if (err!= null) { %>
 			<div class="error-msg"><%=err%></div>
 		<% } %>
 
 		<form id="Upload" action="main?ACTION=<%=Names.QUERY_ADD_ACTION%>" method="post" enctype="multipart/form-data">
-			<table cellspacing="0" class="datatable">
-				<col style="width:16%"/>
-				<col style="width:84%"/>
+			<table class="formtable">
+				<col style="width:20%"/>
+				<col style="width:80%"/>
 				<tr>
-					<th scope="row" class="scope-row">
-						<label for="schemafield">XML Schema</label>
-					</th>
+					<td>
+						<label class="question" for="schemafield">XML Schema</label>
+					</td>
 					<td align="left">
 						<input type="text" id="schemafield" size="64" name="SCHEMA" value="<% if (schema_name != null) %><%=schema_name%><%;%>" />
 					</td>
 				</tr>
 				<tr valign="top">
-					<th scope="row" class="scope-row">
-						<label for="shortnamefield">Short Name</label>
-					</th>
+					<td>
+						<label class="question" for="shortnamefield">Short Name</label>
+					</td>
 					<td align="left">
 						<input type="text" id="shortnamefield" class="textfield" size="64" name="SHORT_NAME" value="" />
 					</td>
 				</tr>
 				<tr valign="top">
-					<th scope="row" class="scope-row">
-						<label for="descriptionfield">Description</label>
-					</th>
+					<td>
+						<label class="question" for="descriptionfield">Description</label>
+					</td>
 					<td align="left">
 						<textarea class="small" rows="2" cols="55" name="DESCRIPTION" id="descriptionfield" style="width: 98%;"></textarea>
 					</td>
 				</tr>
 				<tr valign="top">
-					<th scope="row" class="scope-row">
-						<label for="contenttypefield">Content type</label>
-					</th>
+					<td>
+						<label class="question" for="contenttypefield">Output type</label>
+					</td>
 					<td align="left">
 						<select class="small" name="CONTENT_TYPE" id="contenttypefield" title="content type of resilt file">
 							<option value="HTML">HTML</option>
@@ -92,9 +93,25 @@ response.setDateHeader("Expires", 0);
 					</td>
 				</tr>
 				<tr>
-					<th scope="row" class="scope-row">
-						<label for="filefield">XQuery File</label>
-					</th>
+					<td>
+						<label class="question" for="scripttype">Script type</label>
+					</td>
+					<td>
+						<select  class="small" name="SCRIPT_TYPE" id="scriptType">
+						<%
+							for (int i=0;i<XQScript.SCRIPT_LANGS.length;i++){
+							%>
+								<option value="<%=XQScript.SCRIPT_LANGS[i] %>"><%=XQScript.SCRIPT_LANGS[i] %></option>
+							<%
+							}
+							%>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label class="question" for="filefield">Script File</label>
+					</td>
 					<td align="left">
 						<input type="file" class="textfield" name="FILE_INPUT" id="filefield" size="53"/>
 					</td>

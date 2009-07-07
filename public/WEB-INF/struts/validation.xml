@@ -1,38 +1,43 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE form-validation PUBLIC
-          "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.0//EN"
-          "http://jakarta.apache.org/commons/dtds/validator_1_0.dtd">
+        "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.3.0//EN"
+        "http://jakarta.apache.org/commons/dtds/validator_1_3_0.dtd">
 
 <form-validation>
 	<formset>
 		<form name="dbForm">
 			<field property="dbUrl" depends="required">
-				<arg0 key="label.config.db.url.error"/>
+				<arg position="0" key="label.config.db.url.error"/>
+			</field>
+		</form>
+		<form name="systemForm">
+			<field property="qaTimeout" depends="required">
+				<arg position="0" key="label.config.system.qa.timeout"/>
 			</field>
 		</form>
 		<form name="ldapForm">
 			<field property="url" depends="required">
-				<arg0 key="label.config.ldap.url.error"/>
+				<arg  position="0" key="label.config.ldap.url.error"/>
 			</field>
 			<field property="context" depends="required">
-				<arg0 key="label.config.ldap.url.error.Context"/>
+				<arg  position="0" key="label.config.ldap.url.error.Context"/>
 			</field>
 			<field property="userDir" depends="required">
-				<arg0 key="label.config.ldap.url.error.UserDir"/>
+				<arg  position="0" key="label.config.ldap.url.error.UserDir"/>
 			</field>
 			<field property="attrUid" depends="required">
-				<arg0 key="label.config.ldap.url.error.AttrUid"/>
+				<arg  position="0" key="label.config.ldap.url.error.AttrUid"/>
 			</field>
 		</form>
 		<form name="HostForm">
 			<field property="host" depends="required">
-				<arg0 key="label.hosts.host"/>
+				<arg  position="0" key="label.hosts.host"/>
 			</field>
 			<field property="username" depends="required">
-				<arg0 key="label.hosts.username"/>
+				<arg  position="0" key="label.hosts.username"/>
 			</field>
 			<field property="password" depends="required">
-				<arg0 key="label.hosts.password"/>
+				<arg  position="0" key="label.hosts.password"/>
 			</field>
 		</form>
 	</formset>

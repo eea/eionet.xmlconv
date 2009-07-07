@@ -10,11 +10,16 @@
     <div id="tabbedmenu">
         <ul>
             <li>
+                <html:link page="/do/systemForm"   titleKey="label.config.system" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                    <bean:message key="label.config.system" />
+                </html:link>
+            </li>
+            <li id="currenttab"><span style="color: black; text-decoration: none;" title='<bean:message key="label.config.db"/>'><bean:message key="label.config.db" /></span></li>
+            <li>
                 <html:link page="/do/ldapForm"   titleKey="label.config.ldap" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
                     <bean:message key="label.config.ldap" />
                 </html:link>
             </li>
-            <li id="currenttab"><span style="color: black; text-decoration: none;" title='<bean:message key="label.config.db"/>'><bean:message key="label.config.db" /></span></li>
         </ul>
 	</div>
 	<p>&nbsp;</p>
@@ -27,31 +32,31 @@
 		<tiles:insert definition="Error" />
 
 			<html:form action="/db" method="post">
-			    <table class="datatable">
-				  <col style="width:16%"/>
-				  <col style="width:84%"/>
+			    <table class="formtable">
+				  <col style="width:25%"/>
+				  <col style="width:75%"/>
 					  <tr>
-						<th scope="row" class="scope-row">
-			            	<bean:message key="label.config.db.url" />:
-			            </th>
+						<td>
+			            	<label class="question" for="dbUrl"><bean:message key="label.config.db.url" /></label>
+			            </td>
 			            <td>
-			            	<html:text property="dbUrl" maxlength="255" style="width: 30em;" />
+			            	<html:text property="dbUrl" maxlength="255" style="width: 30em;" styleId="dbUrl"/>
 			            </td>
 			        </tr>
 			        <tr>
-						<th scope="row" class="scope-row">
-			            	<bean:message key="label.config.db.user" />:
-			            </th>
+						<td>
+			            	<label class="question" for="user"><bean:message key="label.config.db.user" /></label>
+			            </td>
 			            <td>
-			            	<html:text property="user" maxlength="255" style="width: 30em;" />
+			            	<html:text property="user" maxlength="255" style="width: 30em;" styleId="user"/>
 			            </td>
 			        </tr>
 			        <tr>
-						<th scope="row" class="scope-row">
-			            	<bean:message key="label.config.db.password" />:
-			            </th>
+						<td>
+			            	<label class="question" for="password"><bean:message key="label.config.db.password" /></label>
+			            </td>
 			            <td>
-			            	<html:password property="password" maxlength="255" style="width: 30em;" />
+			            	<html:password property="password" maxlength="255" style="width: 30em;" styleId="password"/>
 			            </td>
 			        </tr>
 			        <tr>

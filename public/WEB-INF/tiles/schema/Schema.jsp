@@ -115,30 +115,11 @@
 			  <logic:equal name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >				
 	   			    <input type="button"  class="button" value="<bean:message key="label.schema.save"/>" onclick="return submitAction(1,'schemaUpdate');" />
 			        &nbsp;
-			        <logic:notPresent name="schemaForm" property="backToConv">		        	
-		   			    <input type="button"  class="button" value="<bean:message key="label.cancel"/>" onclick="return submitAction(1,'schemaStylesheets');" />
-	  			    </logic:notPresent>
-	  			    <logic:present name="schemaForm" property="backToConv">
-		  			    <logic:equal name="schemaForm" property="backToConv" value="schema">
-		  			   		<input type="button"  value="<bean:message key="label.cancel"/>"  class="button" onclick="location.href='<bean:write name="webRoot"/>/do/uplSchemas'" />
-		  			    </logic:equal>
-		  			    <logic:notEqual name="schemaForm" property="backToConv" value="schema">
-		  			   		<input type="button"  value="<bean:message key="label.cancel"/>"  class="button" onclick="location.href='<bean:write name="webRoot"/>/do/stylesheetList'" />
-		  			    </logic:notEqual>	  			    
-	  			    </logic:present>	  			    
    		      </logic:equal>
 			  <logic:notEqual name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
 			        <logic:notPresent name="schemaForm" property="backToConv">		        					
 		   			    <input type="button"  class="button" value="<bean:message key="label.ok"/>" onclick="return submitAction(1,'schemaStylesheets');" />
 		  			</logic:notPresent>
-	  			   <logic:present name="schemaForm" property="backToConv">
-		  			    <logic:equal name="schemaForm" property="backToConv" value="schema">
-		  			   		<input type="button"  value="<bean:message key="label.cancel"/>"  class="button" onclick="location.href='<bean:write name="webRoot"/>/do/uplSchemas'" />
-		  			    </logic:equal>
-		  			    <logic:notEqual name="schemaForm" property="backToConv" value="schema">
-		  			   		<input type="button"  value="<bean:message key="label.cancel"/>"  class="button" onclick="location.href='<bean:write name="webRoot"/>/do/stylesheetList'" />
-		  			    </logic:notEqual>	  			    
-	  			   </logic:present>
 			   </logic:notEqual>	
 			  </td>
 			 </tr>

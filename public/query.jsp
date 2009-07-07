@@ -3,6 +3,7 @@
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.io.File,java.util.Date,java.text.DateFormat,java.util.HashMap, java.util.Vector, java.util.Hashtable, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.Utils, eionet.gdem.Properties" %>
+<%@ page import="eionet.gdem.qa.XQScript"%>
 
 <%
 response.setHeader("Pragma", "No-cache");
@@ -27,6 +28,7 @@ response.setHeader("charset","no-store");
 	String short_name= "";
 	String description = "";
 	String content_type = "";
+	String script_type = "";
 	String file = "";
 	String schema_id = "";
 	String checksum = "";
@@ -42,6 +44,7 @@ response.setHeader("charset","no-store");
 		short_name= (String)query.get("short_name");
 		description = (String)query.get("description");
 		content_type = (String)query.get("content_type");
+		script_type = (String)query.get("script_type");
 		file = (String)query.get("query");
 		schema_id = (String)query.get("schema_id");
 
@@ -91,10 +94,10 @@ response.setHeader("charset","no-store");
 			mode="edit";
 
 		if (mode.equals("edit")){%>
-			<h1>Edit query</h1>
+			<h1>Edit QA Script</h1>
 		<%}
 		else{%>
-			<h1>View query</h1>
+			<h1>View QA Script</h1>
 		<%}%>
 		
 		<% if (err!= null) { %>
@@ -108,21 +111,21 @@ response.setHeader("charset","no-store");
 				<input type="hidden" size="60" name="QUERY_ID" value="<%=id%>"/>
 			</div>
 			
-			<table class="datatable" width="100%">
+			<table class="formtable" width="100%">
 				<col style="width:16%"/>
 				<col style="width:84%"/>
 				<tr>
-					<th scope="row" class="scope-row">
-						<label for="schemafield">XML Schema:</label>
-					</th>
+					<td>
+						<label class="question" for="schemafield">XML Schema</label>
+					</td>
 					<td>
 						<div id="schemafield"><%=xml_schema%></div>
 					</td>
 				</tr>
 				<tr>
-					<th scope="row" class="scope-row">
-						<label for="shortnamefield">Short Name:</label>
-					</th>
+					<td>
+						<label class="question" for="shortnamefield">Short name</label>
+					</td>
 					<td>
 						<%if(!mode.equals("view")){%>
 							<input type="text" id="shortnamefield" size="64" name="SHORT_NAME" value="<%=short_name%>" />
@@ -132,9 +135,9 @@ response.setHeader("charset","no-store");
 					</td>
 				</tr>
 				<tr>
-					<th scope="row" class="scope-row">
-						<label for="descriptionfield">Description:</label>
-					</th>
+					<td>
+						<label  class="question" for="descriptionfield">Description</label>
+					</td>
 					<td>
 						<%if(!mode.equals("view")){%>
 							<textarea class="small" rows="2" cols="55" name="DESCRIPTION" id="descriptionfield" style="width: 98%;"><%=description%></textarea>
@@ -144,9 +147,9 @@ response.setHeader("charset","no-store");
 					</td>
 				</tr>
 				<tr>
-					<th scope="row" class="scope-row">
-						<label for="contenttypefield">Content type:</label>
-					</th>
+					<td>
+						<label class="question" for="contenttypefield">Output type</label>
+					</td>
 					<td>
 						<%if(!mode.equals("view")){%>
 							<select class="small" name="CONTENT_TYPE" id="contenttypefield">
@@ -160,11 +163,32 @@ response.setHeader("charset","no-store");
 					</td>
 				</tr>
 				<tr>
-					<th scope="row" class="scope-row">
-						<label for="filefield">XQuery file:</label>
-					</th>
 					<td>
-						<a href="<%=Names.QUERY_FOLDER%><%=file%>" title="View XQuery source"><%=file%></a>
+						<label class="question" for="scripttype">Script type</label>
+					</td>
+					<td>
+						<%if(!mode.equals("view")){%>
+							<select  class="small" name="SCRIPT_TYPE" id="scriptType">
+							<%
+								for (int i=0;i<XQScript.SCRIPT_LANGS.length;i++){
+									String selected = XQScript.SCRIPT_LANGS[i].equalsIgnoreCase(script_type) ? "selected='selected'" :"";
+								%>
+									<option value="<%=XQScript.SCRIPT_LANGS[i] %>" <%=selected %>><%=XQScript.SCRIPT_LANGS[i] %></option>
+								<%
+								}
+								%>
+							</select>
+						<%}else{%>
+							<div id="scripttype"><%=script_type%></div>
+						<%}%>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label class="question" for="filefield">Script file</label>
+					</td>
+					<td>
+						<a href="<%=Names.QUERY_FOLDER%><%=file%>" title="View scrpt source"><%=file%></a>
 						<%if(!Utils.isNullStr(last_modified)){%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Last modified: <%=last_modified%>)<%}%>
 					</td>
 				</tr>

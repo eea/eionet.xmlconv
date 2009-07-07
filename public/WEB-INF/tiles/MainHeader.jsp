@@ -78,7 +78,7 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
 			<ed:menuItem action="/workqueue.jsp" title="QA jobs">
 				<bean:message key="label.menu.QAJobs"/>
 			</ed:menuItem>
-			<ed:menuItem action="/queriesindex.jsp" title="Queries">
+			<ed:menuItem action="/do/qaScripts" title="QA Scripts">
 				<bean:message key="label.menu.queries"/>
 			</ed:menuItem>
 			<ed:menuItem action="/sandbox.jsp" title="XQ Sandbox">
@@ -93,7 +93,7 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
 				</ed:menuItem>
 			</ed:hasPermission>
 			<ed:hasPermission username="username" acl="config" permission="u">
-				<ed:menuItem action="/do/ldapForm"  title="Edit application configurations">
+				<ed:menuItem action="/do/systemForm"  title="Edit application configurations">
 					<bean:message key="label.menu.config"/>
 				</ed:menuItem>
 			</ed:hasPermission>

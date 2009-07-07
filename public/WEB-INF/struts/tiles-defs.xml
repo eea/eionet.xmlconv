@@ -31,9 +31,14 @@
   <definition name="excel2XmlConversion" path="/WEB-INF/tiles/conversion/Excel2XmlConversion.jsp" />
   <definition name="crConversion" path="/WEB-INF/tiles/conversion/CRConversion.jsp" />
   <definition name="validateXML" path="/WEB-INF/tiles/conversion/ValidateXML.jsp" />
+  <definition name="qaScripts" path="/WEB-INF/tiles/qascript/QAScripts.jsp" />  
+  <definition name="schemaQAScripts" path="/WEB-INF/tiles/qascript/SchemaQAScripts.jsp" />  
+  <definition name="addQAScript" path="/WEB-INF/tiles/qascript/AddQAScript.jsp" />
+  <definition name="editQAScript" path="/WEB-INF/tiles/qascript/EditQAScript.jsp" />
   
   <definition name="confLdap" path="/WEB-INF/tiles/config/Ldap.jsp" />
   <definition name="confDb" path="/WEB-INF/tiles/config/Db.jsp" />
+  <definition name="system" path="/WEB-INF/tiles/config/System.jsp" />
   
   <definition name="/editUI/ImageManager.jsp" path="/WEB-INF/tiles/editUI/ImageManager.jsp"/>
   <definition name="HeaderManager" path="/WEB-INF/tiles/editUI/HeaderManager.jsp"/>
@@ -125,6 +130,10 @@
   		<put name="title"  value="label.config.db.admin"/>
  		<put name="body" type="definition" value="confDb"/>   
    </definition>
+	<definition name="/system.jsp" extends="base">   
+		<put name="title"  value="label.config.system.admin"/>
+		<put name="body" type="definition" value="system"/>   
+	</definition>
 	<definition name="/hosts/list.jsp" extends="base">   
 		<put name="title"  value="label.hosts.title"/>
 		<put name="body" type="definition" value="hosts"/>   
@@ -143,4 +152,10 @@
  		<put name="title"  value="label.conversion.validate.title"/>
  		<put name="body" type="definition" value="validateXML"/>
 	</definition>
+
+  	<definition name="/qaScripts.jsp" extends="base">
+  		<put name="title"  value="label.qascript.title"/>
+	    <put name="body" type="definition" value="qaScripts"/>
+  	</definition>
+
  </tiles-definitions>

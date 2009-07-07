@@ -1,6 +1,6 @@
 <!DOCTYPE form-validation PUBLIC
-          "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.0//EN"
-          "http://jakarta.apache.org/commons/dtds/validator_1_0.dtd">
+        "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.3.0//EN"
+        "http://jakarta.apache.org/commons/dtds/validator_1_3_0.dtd">
 <!--
 	
 	This file contains the default Struts Validator pluggable validator
@@ -42,28 +42,43 @@
 <form-validation>
 
 	<global>
-		<validator name="required"
-			classname="org.apache.struts.validator.FieldChecks"
-			method="validateRequired"
-			methodParams="java.lang.Object,
+        <validator name="required"
+                   classname="org.apache.struts.validator.FieldChecks"
+                   method="validateRequired"
+                   methodParams="java.lang.Object,
                        org.apache.commons.validator.ValidatorAction,
                        org.apache.commons.validator.Field,
                        org.apache.struts.action.ActionMessages,
+                       org.apache.commons.validator.Validator,
                        javax.servlet.http.HttpServletRequest"
-			msg="errors.required" />
+                   msg="errors.required"/>
 
 
-		<validator name="integer"
-			classname="org.apache.struts.validator.FieldChecks"
-			method="validateInteger"
-			methodParams="java.lang.Object,
+        <validator name="integer"
+                   classname="org.apache.struts.validator.FieldChecks"
+                   method="validateInteger"
+                   methodParams="java.lang.Object,
                        org.apache.commons.validator.ValidatorAction,
                        org.apache.commons.validator.Field,
                        org.apache.struts.action.ActionMessages,
+                       org.apache.commons.validator.Validator,
                        javax.servlet.http.HttpServletRequest"
-			depends="" msg="errors.integer" />
+                   depends=""
+                   msg="errors.integer"
+                   jsFunctionName="IntegerValidations"
+                   jsFunction="org.apache.commons.validator.javascript.validateInteger-compress"/>
 			
-			
+        <validator name="long"
+                   classname="org.apache.struts.validator.FieldChecks"
+                   method="validateLong"
+                   methodParams="java.lang.Object,
+                       org.apache.commons.validator.ValidatorAction,
+                       org.apache.commons.validator.Field,
+                       org.apache.struts.action.ActionMessages,
+                       org.apache.commons.validator.Validator,
+                       javax.servlet.http.HttpServletRequest"
+                   depends=""
+                   msg="errors.long"/>
 
 	</global>
 

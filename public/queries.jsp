@@ -70,7 +70,7 @@ response.setDateHeader("Expires", 0);
     </ul>
     </div>
 
-    <h1>Queries of <%=name%></h1>
+    <h1>QA Scripts of <%=name%></h1>
 
     <% if (err!= null) { %>
             <div class="error-msg"><%=err%></div>
@@ -129,7 +129,7 @@ response.setDateHeader("Expires", 0);
                 <tr>
                   <th scope="col">Short name</th>
                   <th scope="col">Description</th>
-                  <th scope="col">Query</th>
+                  <th scope="col">Script</th>
                   <th scope="col">Last modified</th>
                   <th scope="col">&#160;</th>
                   <th scope="col">&#160;</th>

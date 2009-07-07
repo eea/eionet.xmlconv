@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.util.Vector,java.util.HashMap,java.util.Hashtable"%>
 <%@ page import="eionet.gdem.Constants, eionet.gdem.services.GDEMServices, eionet.gdem.utils.Utils, eionet.gdem.Properties, eionet.gdem.validation.InputAnalyser, eionet.gdem.conversion.ssr.Names"%>
+<%@ page import="eionet.gdem.qa.XQScript"%>
 
 <%
 response.setHeader("Pragma", "No-cache");
@@ -27,6 +28,7 @@ response.setDateHeader("Expires", 0);
 	String query_file = null;
 	String schema_url ="";
 	boolean bValidate = false;
+	String scriptType = XQScript.SCRIPT_LANG_XQUERY;
 
 	eionet.gdem.services.db.dao.ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
 	eionet.gdem.services.db.dao.IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();	
@@ -57,6 +59,7 @@ response.setDateHeader("Expires", 0);
 		HashMap queryInfo = queryDao.getQueryInfo(q_id);
 		if (queryInfo!=null){
 			query_file = Properties.queriesFolder + (String)queryInfo.get("query");
+			scriptType = (String)queryInfo.get("script_type");
 		}
 	}
 
@@ -65,9 +68,9 @@ response.setDateHeader("Expires", 0);
 	pageContext.setAttribute("qtext", qText, PageContext.PAGE_SCOPE);
 %>
 
-<ed:breadcrumbs-push label="XQuery Sandbox" level="1" />
+<ed:breadcrumbs-push label="QA Sandbox" level="1" />
 <tiles:insert definition="TmpHeader">
-	<tiles:put name="title" value="XQuery Sandbox"/>
+	<tiles:put name="title" value="QA Sandbox"/>
 </tiles:insert>
 
 
@@ -75,7 +78,7 @@ response.setDateHeader("Expires", 0);
 <%@ include file="menu.jsp" %>
 
 
-<h1>XQuery Sandbox</h1>
+<h1>QA Sandbox</h1>
 	<% if (success_msg!= null) { %>
 		<div class="system-msg"><%=success_msg%></div>
 	<% } %>
@@ -105,9 +108,11 @@ response.setDateHeader("Expires", 0);
         			String query_id = (String)querie.get("query_id");
         			query_file = (String)querie.get("query");
         			String name = (String)querie.get("short_name");
+        			query_file = (String)querie.get("query");
+        			scriptType = (String)querie.get("script_type");
         			%>
         				<input type="radio" id="opt<%=query_id%>" name="script" value="<%=query_id%>" <% if (j == 0) %>checked="checked"<%;%>/>
-        				<label for="opt<%=query_id%>"><%=name%> - </label><a  href="<%=Names.QUERY_FOLDER%><%=query_file%>"><%=query_file%></a><br/>
+        				<label for="opt<%=query_id%>"><%=name%> - </label><a  href="<%=Names.QUERY_FOLDER%><%=query_file%>"><%=query_file%></a> (<%=scriptType %>)<br/>
         			<%
 				}
 				if (bValidate){
@@ -120,8 +125,20 @@ response.setDateHeader("Expires", 0);
 		}
 		else{
 		%>
+			<label for="scripType">Script type </label>
+			<select name="SCRIPT_TYPE" id="scripType">
+				<%
+					for (int i=0;i<XQScript.SCRIPT_LANGS.length;i++){
+						String selected = XQScript.SCRIPT_LANGS[i].equalsIgnoreCase(scriptType) ? "selected='selected'" :"";
+						%>
+						<option value="<%=XQScript.SCRIPT_LANGS[i] %>" <%=selected %>><%=XQScript.SCRIPT_LANGS[i] %></option>
+						<%
+					}
+				%>
+			</select>
+			<br/><br/>
 			<input type="hidden" name="sandboxtype" value="SCRIPT"/>
-			<label for="scriptarea">XQuery script</label>
+			<label for="scriptarea">QA script</label>
 			<textarea name="XQSCRIPT" rows="25" cols="100" style="width:99%" id="scriptarea"><c:out value="${qtext}" escapeXml="true" /></textarea>
 		<%}%>
 		<br/><br/>
