@@ -39,4 +39,5 @@ public abstract class DCMDaoFactory {
    public abstract ISchemaDao getSchemaDao();    
    public abstract IXQJobDao getXQJobDao();    
    public abstract IUPLXmlFileDao getUPLXmlFileDao();    
+   public abstract IBackupDao getBackupDao();    
    }

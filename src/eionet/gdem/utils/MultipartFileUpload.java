@@ -481,6 +481,9 @@ public class MultipartFileUpload{
 		public void setEncoding(String encoding) {
 			this.encoding = encoding;
 		}
+		public String getFolderName() {
+		    return this._folderName;
+		}
 		private String getEscapedItemName(String itemName){
 			String fileItemName=null;
 	    	try{

@@ -40,6 +40,7 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.MultipartFileUpload;
 
+import eionet.gdem.dcm.business.BackupManager;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IQueryDao;
@@ -385,7 +386,11 @@ public class SaveHandler {
         			if(newChecksum==null)newChecksum="";
 
         			if(!strChecksum.equals(newChecksum)){
-        				Utils.saveStrToFile(Properties.queriesFolder + File.separator + current_file, file_data,null);
+            			//create backup of existing file
+            			BackupManager bum = new BackupManager();
+            			bum.backupFile(Properties.queriesFolder, current_file, query_id, user_name);
+
+            			Utils.saveStrToFile(Properties.queriesFolder + File.separator + current_file, file_data,null);
         			}
         		}
 
@@ -403,7 +408,11 @@ public class SaveHandler {
       		  			}
         			}
         			fu.setFolder(queriesFolder);
-        			fu.saveFileAs(current_file,true);
+        			//create backup of existing file
+        			BackupManager bum = new BackupManager();
+        			bum.backupFile(Properties.queriesFolder, current_file, query_id, user_name);
+        			
+        			fu.saveFileAs(current_file,false);
         		}
         	}
         }
@@ -839,5 +848,6 @@ public class SaveHandler {
           }
           if(err_buf.length() > 0)
              req.setAttribute(Names.ERROR_ATT, err_buf.toString());
-       }}
+       }
+     }
 }

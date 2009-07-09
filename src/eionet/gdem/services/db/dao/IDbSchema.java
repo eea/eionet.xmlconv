@@ -55,6 +55,10 @@ public interface IDbSchema {
   */
   public static final String CONVTYPE_TABLE="T_CONVTYPE";
   /**
+   * Table for backup files
+   */
+   public static final String BACKUP_TABLE="T_BACKUP";
+  /**
   * Field names in XSL table
   */
   public static final String CNV_ID_FLD="CONVERT_ID";
@@ -163,4 +167,13 @@ public interface IDbSchema {
   public static final String FILE_EXT_FLD="FILE_EXT";
   public static final String CONVTYPE_DESCRIPTION_FLD="DESCRIPTION";
 
-  }
+  /**
+   * Field names in BACKUP table
+   */
+   public static final String BACKUP_ID_FLD="BACKUP_ID";
+   public static final String BACKUP_OBJECT_ID_FLD="OBJECT_ID";
+   public static final String BACKUP_FILENAME_FLD="FILE_NAME";
+   public static final String BACKUP_TIMESTAMP_FLD="F_TIMESTAMP";
+   public static final String BACKUP_USER_FLD="USER";
+
+}
