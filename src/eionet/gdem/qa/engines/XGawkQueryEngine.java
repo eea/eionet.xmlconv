@@ -43,13 +43,13 @@ public class XGawkQueryEngine extends ExternalQueryEngine {
 		
 		String ret = "";
 		if(!Utils.isNullHashMap(params)){
-			StringBuffer buf = new StringBuffer(" -v");
+			StringBuffer buf = new StringBuffer();
 			Iterator it = params.keySet().iterator();
 			
 			while (it.hasNext()){
 				String key = (String)it.next();
 				String value = (String)params.get(key);
-				buf.append(" ");
+				buf.append(" -v ");
 				buf.append(key);
 				buf.append("=\"");
 				buf.append(value);
