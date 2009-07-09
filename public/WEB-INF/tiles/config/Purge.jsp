@@ -14,12 +14,12 @@
                     <bean:message key="label.config.db" />
                 </html:link>
             </li>
-            <li id="currenttab"><span style="color: black; text-decoration: none;" title='<bean:message key="label.config.system"/>'><bean:message key="label.config.system" /></span></li>
             <li>
-                <html:link page="/do/purgeForm"   titleKey="label.config.purge" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
-                    <bean:message key="label.config.purge" />
+                <html:link page="/do/systemForm"   titleKey="label.config.system" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                    <bean:message key="label.config.system" />
                 </html:link>
             </li>
+            <li id="currenttab"><span style="color: black; text-decoration: none;" title='<bean:message key="label.config.purge"/>'><bean:message key="label.config.purge" /></span></li>
             <li>
                 <html:link page="/do/ldapForm"   titleKey="label.config.ldap" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
                     <bean:message key="label.config.ldap" />
@@ -27,32 +27,24 @@
             </li>
         </ul>
 	</div>
-	
 
-		<ed:breadcrumbs-push label="System configuration" level="1" />
-		<h1><bean:message key="label.config.system.admin" /></h1>
+
+		<ed:breadcrumbs-push label="Purge" level="1" />
+		<h1><bean:message key="label.config.purge.title" /></h1>
 
 		<%-- include Error display --%>
 		<tiles:insert definition="Error" />
 
-			<html:form action="/system" method="post">
+			<html:form action="/purge" method="post">
 			    <table  class="formtable">
 				  <col style="width:25%"/>
 				  <col style="width:75%"/>
 					  <tr>
 						<td>
-			            	<label for="qaTimeout" class="question"><bean:message key="label.config.system.qa.timeout" /></label>
+			            	<label for="nofDays" class="question"><bean:message key="label.config.purge.nofdays" /></label>
 			            </td>
 			            <td>
-			            	<html:text property="qaTimeout" maxlength="20" style="width: 30em;" styleId="qaTimeout"/>
-			            </td>
-			        </tr>
-					  <tr>
-						<td>
-			            	<label for="cmdXGawk" class="question"><bean:message key="label.config.system.qa.xgawk" /></label>
-			            </td>
-			            <td>
-			            	<html:text property="cmdXGawk" maxlength="255" style="width: 30em;" styleId="cmdXGawk"/>
+			            	<html:text property="nofDays" maxlength="10" style="width: 10em;" styleId="nofDays"/>
 			            </td>
 			        </tr>
 				        <tr>
@@ -61,7 +53,7 @@
 				        <tr>
 				            <td colspan="2" align="center">
 				                <html:submit styleClass="button">
-				                    <bean:message key="label.config.system.save" />
+				                    <bean:message key="label.config.purge.submit" />
 				                </html:submit>
 				            </td>
 				        </tr>

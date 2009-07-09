@@ -10,20 +10,24 @@
 <div style="width:100%;">
 	<div id="tabbedmenu">
 	    <ul>
-            <li>
-                <html:link page="/do/systemForm"   titleKey="label.config.system" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
-                    <bean:message key="label.config.system" />
-                </html:link>
-            </li>
 	        <li>
 	            <html:link page="/do/dbForm" titleKey="label.config.db" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
 	                <bean:message key="label.config.db" />
 	            </html:link>
 	        </li>
+            <li>
+                <html:link page="/do/systemForm"   titleKey="label.config.system" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                    <bean:message key="label.config.system" />
+                </html:link>
+            </li>
+            <li>
+                <html:link page="/do/purgeForm"   titleKey="label.config.purge" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                    <bean:message key="label.config.purge" />
+                </html:link>
+            </li>
 	        <li id="currenttab"><span style="color: black; text-decoration: none;" title="<bean:message key="label.config.ldap"/>"><bean:message key="label.config.ldap" /></span></li>
 	    </ul>
 	</div>
-	<p>&nbsp;</p>
 	
 			
 			<ed:breadcrumbs-push label="LDAP configuration" level="1" />

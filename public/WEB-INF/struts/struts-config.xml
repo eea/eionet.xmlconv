@@ -38,6 +38,9 @@
 	        <form-property name="qaTimeout" type="java.lang.Long"/>
 	        <form-property name="cmdXGawk" type="java.lang.String"/>
         </form-bean>   
+        <form-bean name="purgeForm" type="org.apache.struts.validator.DynaValidatorForm">
+	        <form-property name="nofDays" type="java.lang.Integer"/>
+        </form-bean>   
         <form-bean name="EditUplSchemaForm" type="eionet.gdem.web.struts.schema.EditUplSchemaForm"/>   
         <form-bean name="getXslForm" type="org.apache.struts.validator.DynaValidatorForm">
 	        <form-property name="id" type="java.lang.String"/>
@@ -241,6 +244,9 @@
         <action path="/schemaQAScripts" type="eionet.gdem.web.struts.qascript.SchemaQAScripts" name="schemaStyleForm">   
 	        <forward name="success" path="/schemaQAScripts.jsp" redirect="true"/>                      
         </action>
+        <action path="/qaScriptHistory"  type="eionet.gdem.web.struts.qascript.HistoryListAction" scope="request">
+            <forward name="success" path="/qaScriptHistory.jsp" />
+        </action>
 
         
 <!-- methods for remote API HTTP POST and GET -->
@@ -305,6 +311,12 @@
             type="eionet.gdem.web.struts.config.SystemAction" scope="request">
              <forward name="success" path="/do/systemForm" redirect="true"/>
              <forward name="fail" path="/do/systemForm" redirect="true"/>
+        </action>
+        <action path="/purgeForm" forward="/purge.jsp"/>
+        <action path="/purge" input="/purge.jsp" name="purgeForm"
+            type="eionet.gdem.web.struts.config.PurgeAction" scope="request">
+             <forward name="success" path="/do/purgeForm" redirect="true"/>
+             <forward name="fail" path="/do/purgeForm" redirect="true"/>
         </action>
     </action-mappings>
     

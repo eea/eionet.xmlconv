@@ -9,12 +9,17 @@
 <div style="width:100%;">
     <div id="tabbedmenu">
         <ul>
+            <li id="currenttab"><span style="color: black; text-decoration: none;" title='<bean:message key="label.config.db"/>'><bean:message key="label.config.db" /></span></li>
             <li>
                 <html:link page="/do/systemForm"   titleKey="label.config.system" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
                     <bean:message key="label.config.system" />
                 </html:link>
             </li>
-            <li id="currenttab"><span style="color: black; text-decoration: none;" title='<bean:message key="label.config.db"/>'><bean:message key="label.config.db" /></span></li>
+            <li>
+                <html:link page="/do/purgeForm"   titleKey="label.config.purge" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                    <bean:message key="label.config.purge" />
+                </html:link>
+            </li>
             <li>
                 <html:link page="/do/ldapForm"   titleKey="label.config.ldap" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
                     <bean:message key="label.config.ldap" />
@@ -22,7 +27,6 @@
             </li>
         </ul>
 	</div>
-	<p>&nbsp;</p>
 
 
 		<ed:breadcrumbs-push label="DB configuration" level="1" />

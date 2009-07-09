@@ -35,10 +35,12 @@
   <definition name="schemaQAScripts" path="/WEB-INF/tiles/qascript/SchemaQAScripts.jsp" />  
   <definition name="addQAScript" path="/WEB-INF/tiles/qascript/AddQAScript.jsp" />
   <definition name="editQAScript" path="/WEB-INF/tiles/qascript/EditQAScript.jsp" />
+  <definition name="qaScriptHistory" path="/WEB-INF/tiles/qascript/QAScriptHistory.jsp" />  
   
   <definition name="confLdap" path="/WEB-INF/tiles/config/Ldap.jsp" />
   <definition name="confDb" path="/WEB-INF/tiles/config/Db.jsp" />
   <definition name="system" path="/WEB-INF/tiles/config/System.jsp" />
+  <definition name="purge" path="/WEB-INF/tiles/config/Purge.jsp" />
   
   <definition name="/editUI/ImageManager.jsp" path="/WEB-INF/tiles/editUI/ImageManager.jsp"/>
   <definition name="HeaderManager" path="/WEB-INF/tiles/editUI/HeaderManager.jsp"/>
@@ -134,6 +136,10 @@
 		<put name="title"  value="label.config.system.admin"/>
 		<put name="body" type="definition" value="system"/>   
 	</definition>
+	<definition name="/purge.jsp" extends="base">   
+		<put name="title"  value="label.config.purge"/>
+		<put name="body" type="definition" value="purge"/>   
+	</definition>
 	<definition name="/hosts/list.jsp" extends="base">   
 		<put name="title"  value="label.hosts.title"/>
 		<put name="body" type="definition" value="hosts"/>   
@@ -156,6 +162,11 @@
   	<definition name="/qaScripts.jsp" extends="base">
   		<put name="title"  value="label.qascript.title"/>
 	    <put name="body" type="definition" value="qaScripts"/>
+  	</definition>
+
+  	<definition name="/qaScriptHistory.jsp" extends="base">
+  		<put name="title"  value="label.qascriptHistory.title"/>
+	    <put name="body" type="definition" value="qaScriptHistory"/>
   	</definition>
 
  </tiles-definitions>

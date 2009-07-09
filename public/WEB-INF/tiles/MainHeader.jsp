@@ -93,7 +93,7 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
 				</ed:menuItem>
 			</ed:hasPermission>
 			<ed:hasPermission username="username" acl="config" permission="u">
-				<ed:menuItem action="/do/systemForm"  title="Edit application configurations">
+				<ed:menuItem action="/do/dbForm"  title="Edit application configurations">
 					<bean:message key="label.menu.config"/>
 				</ed:menuItem>
 			</ed:hasPermission>
