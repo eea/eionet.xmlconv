@@ -1,6 +1,6 @@
 alter table T_QUERY add column SCRIPT_TYPE varchar(50);
 
-update T_QUERY set SCRIPT_TYPE='xquery' where SCRIPT_TYPE='';
+update T_QUERY set SCRIPT_TYPE='xquery' where SCRIPT_TYPE='' or SCRIPT_TYPE IS NULL;
 
 CREATE TABLE T_BACKUP (
   BACKUP_ID int(11) NOT NULL auto_increment,
