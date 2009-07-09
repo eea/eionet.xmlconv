@@ -36,6 +36,7 @@ public class TestUtils {
 		Properties.convFile = conversions_filename;
 		Properties.metaXSLFolder = obj.getClass().getClassLoader().getResource("dcm").getFile();
 		Properties.schemaFolder = obj.getClass().getClassLoader().getResource("schema").getFile();
+		Properties.queriesFolder = obj.getClass().getClassLoader().getResource("queries").getFile();
 	}
 
 	/**
