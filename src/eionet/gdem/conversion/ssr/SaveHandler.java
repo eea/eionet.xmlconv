@@ -258,6 +258,8 @@ public class SaveHandler {
       */
      if (action.equals( Names.QUERY_ADD_ACTION) ) {
         HashMap req_params=null;
+        boolean fileStored=false;
+        MultipartFileUpload fu = null;
         try{
           if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "i")){
              req.setAttribute(Names.ERROR_ATT, "You don't have permissions to insert queries!");
@@ -271,7 +273,7 @@ public class SaveHandler {
         try{
 
 
-          MultipartFileUpload fu = new MultipartFileUpload(false);
+          fu = new MultipartFileUpload(false);
           fu.processMultiPartRequest(req);
 
           req_params = fu.getRequestParams();
@@ -287,6 +289,7 @@ public class SaveHandler {
   		    return;
   		  }
 		  fileName=fu.saveFile();
+		  fileStored=true;
         }
         catch (Exception e){
            req.setAttribute(Names.ERROR_ATT, "Uploading file: " + e.toString());
@@ -304,11 +307,10 @@ public class SaveHandler {
        String content_type= (String)req_params.get("CONTENT_TYPE");
        String script_type= (String)req_params.get("SCRIPT_TYPE");
 
-       if (Utils.isNullStr(schema)){
-         req.setAttribute(Names.ERROR_ATT, "XML schema cannot be empty.");
-         return;
-       }
        try{
+         if (Utils.isNullStr(schema)){
+            throw new Exception("XML schema cannot be empty.");
+         }
 
     	 schemaID=GDEMServices.getDaoService().getSchemaDao().getSchemaID(schema);
          if (schemaID==null)
@@ -319,7 +321,13 @@ public class SaveHandler {
 
        }
        catch (Exception e){
-          req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
+           req.setAttribute(Names.ERROR_ATT, "Error while saving info into database: " + e.toString());
+    	  //if file is stored, but db operation did not succeeded, then delete the file
+    	  if (fileStored && fu!=null){
+    		  File savedFile = new File(fu.getFolderName(), fileName);
+    		  if(savedFile.exists())savedFile.delete();
+    	  }
+    		  
           return;
        }
    }
