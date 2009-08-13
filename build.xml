@@ -3,7 +3,7 @@
 <!-- BUILDFILE FOR XMLCONV
 
 	Ant reads all arguments from build.properties file.
-		build.dir - directory where the application will be installed eg.  /tomcat/webapps
+		webapp.home - directory where the application will be installed eg.  /tomcat/webapps
 		servletapi.jar - servletapi.jar file location eg. /tomcat/common/lib/srvletapi.jar
 		vhost - if tdefined, the application will be installed as a new virtual host. 
 												Otherwise it is installed under webapps folder under existing virtual host.
@@ -20,7 +20,7 @@
 	   builds xmlconv.jar into WEB-INF/lib directory. removes also compiled java classes from classes directory.
 
      install
-        creates the correct deployment directory structure in the target build.dir and
+        creates the correct deployment directory structure in the target webapp.home and
         copies all web (jsp, xsl, xml,images, css and js), configuration (web.xml)
         related data there, java libraries and builds jar file.
 
@@ -57,13 +57,13 @@
 
 		<loadproperties srcFile="build.properties"/>
 
-        <fail unless="build.dir"
-            message="Mandatory build.dir property is missing in build.properties file. Please provide a directory name as build.dir property value where the application will be installed eg.  build.dir=/tomcat/webapps/webrod "/>
+        <fail unless="webapp.home"
+            message="Mandatory webapp.home property is missing in build.properties file. Please provide a directory name as webapp.home property value where the application will be installed eg.  webapp.home=/tomcat/webapps/webrod "/>
 
 		<!-- set global properties for this build -->
 		<property name="src" value="src"/>
 		<property name="lib" value="public/WEB-INF/lib"/>
-		<property name="classes.dir" value="${build.dir}/public/WEB-INF/classes"/>
+		<property name="classes.dir" value="${webapp.home}/WEB-INF/classes"/>
 		<property name="test" value="test"/>
 		<property name="test-build" value="test/build"/>
 
@@ -115,22 +115,22 @@
 
 	<!-- if it is installed as a new virtual host, then create root context -->
 	<target name="root_context" if="install.vhost" description="suggestion for creating virtual host in server.xml and installation instructions">
-		<copy file="ROOT.xml" todir="${build.dir}" overwrite="true"/>
-		<copy file="xmlconv_vhost_server.xml" todir="${build.dir}" overwrite="true"/>
+		<copy file="ROOT.xml" tofile="${webapp.home}/META-INF/context.xml" overwrite="true"/>
+		<copy file="xmlconv_vhost_server.xml" todir="${app.home}" overwrite="true"/>
 		<echo>==================================================================</echo>
 		<echo>=== You are installing GDEM application as a virtual host</echo>
 		<echo>=== Remember to add a virtual host TAG into  the server.xml</echo>
 		<echo>=== if not existing yet																		</echo>
-		<echo>=== Look example at: ${build.dir}/xmlconv_vhost_server.xml	</echo>
+		<echo>=== Look example at: ${app.home}/xmlconv_vhost_server.xml	</echo>
 		<echo>==================================================================</echo>
 		<echo>=== NB! NO CONTEXT TAG IS NEEDED inside Host tag at server.xml</echo>
-		<echo>=== Tomcat loads it from ${build.dir}/ROOT.xml							</echo>
+		<echo>=== Tomcat loads it from ${webapp.home}/META-INF/context.xml							</echo>
 		<echo>==================================================================</echo>
 	</target>
 
 	<!-- if it is installed under webapps folder under existing virtual host -->
 	<target name="webapp_context" unless="install.vhost">
-		<copy file="xmlconv.xml" todir="${build.dir}" overwrite="true"/>
+		<copy file="xmlconv.xml" tofile="${webapp.home}/META-INF/context.xml" overwrite="true"/>
 	</target>
 	
 	<target name="create_context">
@@ -146,21 +146,20 @@
 
 	<!-- PREPARE folder structure -->
 	<target name="prepare" description="Creates folder structure if not existing yet">
-		<mkdir dir="${build.dir}"/>
-		<mkdir dir="${build.dir}/acl"/>
-		<mkdir dir="${build.dir}/public"/>
-		<mkdir dir="${build.dir}/public/schema"/>
-		<mkdir dir="${build.dir}/public/WEB-INF"/>
-		<mkdir dir="${build.dir}/public/WEB-INF/classes"/>
-		<mkdir dir="${build.dir}/public/WEB-INF/lib"/>
+		<mkdir dir="${webapp.home}"/>
+		<mkdir dir="${app.home}/acl"/>
+		<mkdir dir="${webapp.home}/schema"/>
+		<mkdir dir="${webapp.home}/WEB-INF"/>
+		<mkdir dir="${webapp.home}/WEB-INF/classes"/>
+		<mkdir dir="${webapp.home}/WEB-INF/lib"/>
 	</target>
 
 
 	<!-- COPYFILES -->
 	<target name="copyfiles" depends="clean_resources,prepare,buildjar">
 		<!-- we do not care about these files older versions -->
-		<copy file="GDEMServices.xml" tofile="${build.dir}/GDEMServices.xml" overwrite="true"/>
-		<copy todir="${build.dir}/public" overwrite="true">
+		<copy file="GDEMServices.xml" tofile="${app.home}/GDEMServices.xml" overwrite="true"/>
+		<copy todir="${webapp.home}" overwrite="true">
 			<fileset dir="public">
 				<exclude name="**/*.java"/>
 				<exclude name="**/*.properties"/>
@@ -174,26 +173,29 @@
 				<exclude name="**/*.class"/>
 			</fileset>
 		</copy>
-		<copy todir="${build.dir}/acl" overwrite="false">
+                <replace file="${classes.dir}/gdem.properties" token="@WEBAPP.HOME@" value="${webapp.home}"/>
+                <replace file="${classes.dir}/uit.properties" token="@APP.HOME@" value="${app.home}"/>
+		<copy todir="${app.home}/acl" overwrite="false">
 			<fileset dir="acl"/>
+			<globmapper from="*" to="*.dist"/>
 		</copy>
 		<!-- should take care of not overwriting them -->
-		<copy todir="${build.dir}/public/xsl">
+		<copy todir="${webapp.home}/xsl">
 			<fileset dir="public/xsl"/>
 		</copy>
 		<condition property="uit.needed">
 			<not>
-				<available file="${build.dir}/public/WEB-INF/classes/uit.properties"/>
+				<available file="${classes.dir}/uit.properties"/>
 			</not>
 		</condition>
 		<condition property="xmlconv.needed">
 			<not>
-				<available file="${build.dir}/public/WEB-INF/classes/gdem.properties"/>
+				<available file="${classes.dir}/gdem.properties"/>
 			</not>
 		</condition>
 		<condition property="log4j.needed">
 			<not>
-				<available file="${build.dir}/public/WEB-INF/classes/log4j.properties"/>
+				<available file="${classes.dir}/log4j.properties"/>
 			</not>
 		</condition>
 		<antcall target="copy_props"/>
@@ -201,8 +203,8 @@
 	<!-- Deletes *.jsp, *.jar files -->
 	<target name="clean_resources">
 		<delete  failonerror="false">
-			<fileset dir="${build.dir}/public/WEB-INF/lib"/>
-			<fileset dir="${build.dir}/public/WEB-INF/tiles"/>
+			<fileset dir="${webapp.home}/WEB-INF/lib"/>
+			<fileset dir="${webapp.home}/WEB-INF/tiles"/>
 		</delete>
 	</target>
 
@@ -211,7 +213,7 @@
 <!-- 	 	CHECK PROPERTIES targets 		-->
 <!--	##########################  	-->
 	<target name="checkProps">
-		<loadproperties srcFile="${build.dir}/public/WEB-INF/classes/gdem.properties"/>
+		<loadproperties srcFile="${classes.dir}/gdem.properties"/>
 		<condition property="tmp.needed">
 			<not>
 				<isset property="tmp.folder"/>
@@ -232,7 +234,7 @@
 				<isset property="xmlfile.folder"/>
 			</not>
 		</condition>
-		<loadproperties srcFile="${build.dir}/public/WEB-INF/classes/uit.properties"/>
+		<loadproperties srcFile="${classes.dir}/uit.properties"/>
 		<condition property="srvdef.not.available">
 			<not>
 				<available file="${services.definition.file}"/>
@@ -258,14 +260,14 @@
 			<and>
 				<isset property="xmlfile.folder"/>
 				<not>
-					<available file="${build.dir}/public/${xmlfile.folder}" type="dir"/>
+					<available file="${webapp.home}/${xmlfile.folder}" type="dir"/>
 				</not>
 			</and>
 		</condition>
-		<fail if="tmp.needed" message="Property 'tmp.folder'  is missing from ${build.dir}/public/WEB-INF/classes/gdem.properties"/>
-		<fail if="xsl.needed" message="Property 'xsl.folder'  is missing from ${build.dir}/public/WEB-INF/classes/gdem.properties"/>
-		<fail if="queries.needed" message="Property 'queries.folder'  is missing from ${build.dir}/public/WEB-INF/classes/gdem.properties"/>
-		<fail if="xmlfile.needed" message="Property 'xmlfile.folder'  is missing from ${build.dir}/public/WEB-INF/classes/gdem.properties"/>
+		<fail if="tmp.needed" message="Property 'tmp.folder'  is missing from ${classes.dir}/gdem.properties"/>
+		<fail if="xsl.needed" message="Property 'xsl.folder'  is missing from ${classes.dir}/gdem.properties"/>
+		<fail if="queries.needed" message="Property 'queries.folder'  is missing from ${classes.dir}/gdem.properties"/>
+		<fail if="xmlfile.needed" message="Property 'xmlfile.folder'  is missing from ${classes.dir}/gdem.properties"/>
 		<antcall target="warn_definition"/>
 		<antcall target="warn_xsl"/>
 		<antcall target="warn_queries"/>
@@ -290,7 +292,7 @@
 		<echo message="XMLfile folder was not available at: ${xmlfilefolder.folder}"/>
 		<echo message="Create the folder or make a change in gdem.properties"/>
 		<echo message="========================================================================="/-->
-		<mkdir dir="${build.dir}/public/${xmlfile.folder}"/>
+		<mkdir dir="${webapp.home}/${xmlfile.folder}"/>
 	</target>
 	<target name="warn_definition" if="srvdef.not.available">
 		<echo message="========================================================================="/>
@@ -302,17 +304,19 @@
 		<antcall target="cp_uit"/>
 		<antcall target="cp_xmlconv"/>
 		<antcall target="cp_log4j"/>
-		<copy file="${src}/ApplicationResources.properties" tofile="${build.dir}/public/WEB-INF/classes/ApplicationResources.properties" overwrite="true"/>
+		<copy file="${src}/ApplicationResources.properties" tofile="${classes.dir}/ApplicationResources.properties" overwrite="true"/>
 	</target>
 	<target name="cp_uit" if="uit.needed">
-		<echo message="buiiddir: ${build.dir}"/>
-		<copy file="${src}/uit.properties" tofile="${build.dir}/public/WEB-INF/classes/uit.properties"/>
+		<echo message="webapp-home: ${webapp.home}"/>
+		<copy file="${src}/uit.properties" tofile="${classes.dir}/uit.properties"/>
+		<replace file="${classes.dir}/uit.properties" token="@APP.HOME@" value="${app.home}"/>
 	</target>
 	<target name="cp_log4j" if="log4j.needed">
-		<copy file="${src}/log4j.properties" tofile="${build.dir}/public/WEB-INF/classes/log4j.properties"/>
+		<copy file="${src}/log4j.properties" tofile="${classes.dir}/log4j.properties"/>
 	</target>
 	<target name="cp_xmlconv" if="xmlconv.needed">
-		<copy file="${src}/gdem.properties" tofile="${build.dir}/public/WEB-INF/classes/gdem.properties"/>
+		<copy file="${src}/gdem.properties" tofile="${classes.dir}/gdem.properties"/>
+		<replace file="${classes.dir}/gdem.properties" token="@WEBAPP.HOME@" value="${webapp.home}"/>
 	</target>
 
 
@@ -482,8 +486,8 @@
 	</target>
 	<!-- copy resources for development only -->
 	<target name="copy_resources" depends="init">
-		<copy file="GDEMServices.xml" tofile="${build.dir}/GDEMServices.xml" overwrite="true"/>
-		<copy todir="${build.dir}/public" overwrite="true">
+		<copy file="GDEMServices.xml" tofile="${app.home}/GDEMServices.xml" overwrite="true"/>
+		<copy todir="${webapp.home}" overwrite="true">
 			<fileset dir="public" includes="**/*.jsp,**/*.xml">
 				<exclude name="**/*.java"/>
 				<exclude name="**/*.properties"/>
