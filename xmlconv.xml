@@ -1,13 +1,13 @@
-	<Context path="" docBase="xmlconv/public" debug="0" reloadable="true" crossContext="true">
-		<Resource name="jdbc/GDEM_DB" auth="Container" type="javax.sql.DataSource"
-		    factory="org.apache.commons.dbcp.BasicDataSourceFactory"
-		    maxActive="100"
-		    maxIdle="30"
-		    maxWait="10000"
-		    username="username"
-		    password="password"
-		    driverClassName="com.mysql.jdbc.Driver"
-		    poolPreparedStatements="true"
-		    url="jdbc:mysql://localhost:3306/DB?autoReconnect=true"
-		/>
-	</Context>
+<Context path="" docBase="xmlconv" debug="0" reloadable="true" crossContext="true">
+	<Resource name="jdbc/GDEM_DB" auth="Container" type="javax.sql.DataSource"
+	    factory="org.apache.commons.dbcp.BasicDataSourceFactory"
+	    maxActive="100"
+	    maxIdle="30"
+	    maxWait="10000"
+	    username="@DB.USER@"
+	    password="@DB.PASSWORD@"
+	    driverClassName="com.mysql.jdbc.Driver"
+	    poolPreparedStatements="true"
+	    url="jdbc:mysql://@DB.HOST@/@DB.DATABASE@?autoReconnect=true"
+	/>
+</Context>

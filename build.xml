@@ -5,41 +5,42 @@
 	Ant reads all arguments from build.properties file.
 		webapp.home - directory where the application will be installed eg.  /tomcat/webapps
 		servletapi.jar - servletapi.jar file location eg. /tomcat/common/lib/srvletapi.jar
-		vhost - if tdefined, the application will be installed as a new virtual host. 
-												Otherwise it is installed under webapps folder under existing virtual host.
+		vhost - if defined, the application will be installed as a new virtual host. 
+			Otherwise it is installed under webapps folder under existing virtual host.
 
-	If build.properties doesn't exist yet, then make a copy from default.properties and rename it to build.properties. Modify properties, if needed.
+	If build.properties doesn't exist yet, then make a copy from default.properties and rename it
+	to build.properties. Modify properties, if needed.
 	
 
      The main targets are:
 
 	compile
-	   compiles java classes into classes.dir.
+	    compiles java classes into classes.dir.
 
 	buildjar
-	   builds xmlconv.jar into WEB-INF/lib directory. removes also compiled java classes from classes directory.
+	    builds xmlconv.jar into WEB-INF/lib directory. removes also compiled java classes from classes directory.
 
-     install
-        creates the correct deployment directory structure in the target webapp.home and
-        copies all web (jsp, xsl, xml,images, css and js), configuration (web.xml)
-        related data there, java libraries and builds jar file.
+	install
+            creates the correct deployment directory structure in the target webapp.home and
+            copies all web (jsp, xsl, xml,images, css and js), configuration (web.xml)
+            related data there, java libraries and builds jar file.
 
-     clean
-        this target removes all compiled java classes from classes.dir,
-        but does not touch the rest (jsp, html, xml, stylesheets etc.)
+	clean
+            this target removes all compiled java classes from classes.dir,
+            but does not touch the rest (jsp, html, xml, stylesheets etc.)
 
 	test
-		runs unit tests. 
-		Set up test database and insert database connection properties into test/resource/gdem.properties file.
-		Do not run the tests on operational database, because it will delete all data.
-		
-		Create database called 'xmlconv_test'
-		GRANT ALL ON xmlconv_test.* to xmlconvtest@localhost identified by 'testpwd';
-		Then you import the table structure as:
-		mysql -u xmlconvtest -p xmlconv_test <db/gdem_init.sql
+	    runs unit tests. 
+	    Set up test database and insert database connection properties into test/resource/gdem.properties file.
+	    Do not run the tests on operational database, because it will delete all data.
+	    
+	    Create database called 'xmlconv_test'
+	    GRANT ALL ON xmlconv_test.* to xmlconvtest@localhost identified by 'testpwd';
+	    Then you import the table structure as:
+	    mysql -u xmlconvtest -p xmlconv_test <db/gdem_init.sql
 		
 
-	 default is install 
+	default is install 
   -->
 <!-- use JAR instead of classes because it makes it easier to debug errors -->
 
@@ -48,17 +49,17 @@
 
 	<target name="init">
 
-        <condition property="build.properties.exists">
-                <available file="build.properties" />
-        </condition>
+		<condition property="build.properties.exists">
+			<available file="build.properties" />
+		</condition>
 
-        <fail unless="build.properties.exists"
-            message="Couldn't find build.properties file! Make a copy from default.properties and rename it to build.properties. Modify properties, if needed."/>
+		<fail unless="build.properties.exists"
+		    message="Couldn't find build.properties file! Make a copy from default.properties and rename it to build.properties. Modify properties, if needed."/>
 
-		<loadproperties srcFile="build.properties"/>
+		    <loadproperties srcFile="build.properties"/>
 
-        <fail unless="webapp.home"
-            message="Mandatory webapp.home property is missing in build.properties file. Please provide a directory name as webapp.home property value where the application will be installed eg.  webapp.home=/tomcat/webapps/webrod "/>
+		<fail unless="webapp.home"
+		    message="Mandatory webapp.home property is missing in build.properties file. Please provide a directory name as webapp.home property value where the application will be installed eg.  webapp.home=/tomcat/webapps/webrod "/>
 
 		<!-- set global properties for this build -->
 		<property name="src" value="src"/>
@@ -85,8 +86,8 @@
 	<!-- compile -->
 	<target name="compile" depends="clean">
 		<javac debug="on" deprecation="off" srcdir="${src}" destdir="${classes.dir}" description="compiles java classes into classes path">
-            <classpath refid="classpath.compile"/>
-        </javac>
+		<classpath refid="classpath.compile"/>
+		</javac>
 	</target>
 
 	<!-- install  -->
@@ -114,14 +115,20 @@
 <!--	##########################  	-->
 
 	<!-- if it is installed as a new virtual host, then create root context -->
-	<target name="root_context" if="install.vhost" description="suggestion for creating virtual host in server.xml and installation instructions">
+	<target name="root_context" if="install.vhost"
+		description="suggestion for creating virtual host in server.xml and installation instructions">
 		<copy file="ROOT.xml" tofile="${webapp.home}/META-INF/context.xml" overwrite="true"/>
-		<copy file="xmlconv_vhost_server.xml" todir="${app.home}" overwrite="true"/>
+		<replace file="${webapp.home}/META-INF/context.xml">
+			<replacefilter token="@DB.USER@" value="${db.user}"/>
+			<replacefilter token="@DB.PASSWORD@" value="${db.password}"/>
+			<replacefilter token="@DB.HOST@" value="${db.host}"/>
+			<replacefilter token="@DB.DATABASE@" value="${db.database}"/>
+		</replace>
 		<echo>==================================================================</echo>
-		<echo>=== You are installing GDEM application as a virtual host</echo>
-		<echo>=== Remember to add a virtual host TAG into  the server.xml</echo>
-		<echo>=== if not existing yet																		</echo>
-		<echo>=== Look example at: ${app.home}/xmlconv_vhost_server.xml	</echo>
+		<echo>=== You are installing the application as a virtual host</echo>
+		<echo>=== Remember to add a virtual host TAG into the server.xml</echo>
+		<echo>=== if it doesn't yet exist</echo>
+		<echo>=== Look example at: xmlconv_vhost_server.xml	</echo>
 		<echo>==================================================================</echo>
 		<echo>=== NB! NO CONTEXT TAG IS NEEDED inside Host tag at server.xml</echo>
 		<echo>=== Tomcat loads it from ${webapp.home}/META-INF/context.xml							</echo>
@@ -131,6 +138,12 @@
 	<!-- if it is installed under webapps folder under existing virtual host -->
 	<target name="webapp_context" unless="install.vhost">
 		<copy file="xmlconv.xml" tofile="${webapp.home}/META-INF/context.xml" overwrite="true"/>
+		<replace file="${webapp.home}/META-INF/context.xml">
+			 <replacefilter token="@DB.USER@" value="${db.user}"/>
+			 <replacefilter token="@DB.PASSWORD@" value="${db.password}"/>
+			 <replacefilter token="@DB.HOST@" value="${db.host}"/>
+			 <replacefilter token="@DB.DATABASE@" value="${db.database}"/>
+		</replace>
 	</target>
 	
 	<target name="create_context">
@@ -149,6 +162,9 @@
 		<mkdir dir="${webapp.home}"/>
 		<mkdir dir="${app.home}/acl"/>
 		<mkdir dir="${webapp.home}/schema"/>
+		<mkdir dir="${webapp.home}/xsl"/>
+		<mkdir dir="${webapp.home}/xmlfile"/>
+		<mkdir dir="${webapp.home}/queries"/>
 		<mkdir dir="${webapp.home}/WEB-INF"/>
 		<mkdir dir="${webapp.home}/WEB-INF/classes"/>
 		<mkdir dir="${webapp.home}/WEB-INF/lib"/>
@@ -173,16 +189,24 @@
 				<exclude name="**/*.class"/>
 			</fileset>
 		</copy>
-                <replace file="${classes.dir}/gdem.properties" token="@WEBAPP.HOME@" value="${webapp.home}"/>
-                <replace file="${classes.dir}/uit.properties" token="@APP.HOME@" value="${app.home}"/>
+		<replace file="${classes.dir}/gdem.properties">
+			<replacefilter token="@WEBAPP.HOME@" value="${webapp.home}"/>
+			<replacefilter token="@DB.USER@" value="${db.user}"/>
+			<replacefilter token="@DB.PASSWORD@" value="${db.password}"/>
+			<replacefilter token="@DB.HOST@" value="${db.host}"/>
+			<replacefilter token="@DB.DATABASE@" value="${db.database}"/>
+		</replace>
+		<replace file="${classes.dir}/uit.properties" token="@APP.HOME@" value="${app.home}"/>
 		<copy todir="${app.home}/acl" overwrite="false">
 			<fileset dir="acl"/>
 			<globmapper from="*" to="*.dist"/>
 		</copy>
 		<!-- should take care of not overwriting them -->
+<!--
 		<copy todir="${webapp.home}/xsl">
 			<fileset dir="public/xsl"/>
 		</copy>
+-->
 		<condition property="uit.needed">
 			<not>
 				<available file="${classes.dir}/uit.properties"/>
@@ -316,7 +340,13 @@
 	</target>
 	<target name="cp_xmlconv" if="xmlconv.needed">
 		<copy file="${src}/gdem.properties" tofile="${classes.dir}/gdem.properties"/>
-		<replace file="${classes.dir}/gdem.properties" token="@WEBAPP.HOME@" value="${webapp.home}"/>
+		<replace file="${classes.dir}/gdem.properties">
+			<replacefilter token="@WEBAPP.HOME@" value="${webapp.home}"/>
+			<replacefilter token="@DB.USER@" value="${db.user}"/>
+			<replacefilter token="@DB.PASSWORD@" value="${db.password}"/>
+			<replacefilter token="@DB.HOST@" value="${db.host}"/>
+			<replacefilter token="@DB.DATABASE@" value="${db.database}"/>
+		</replace>
 	</target>
 
 
@@ -423,8 +453,8 @@
   	<target name="test" depends="test_echo,init,compile-tests,seed-tests" description="Runs all found unit tests">
 		<junit haltonfailure="yes" failureproperty="unittestFailed" showoutput="yes" printsummary="yes" fork="yes">
 			<classpath refid="classpath.test" />
-	        <jvmarg value="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger"/>
-	        <jvmarg value="-Dlog4j.configuration=log4j.properties"/>
+			<jvmarg value="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger"/>
+			<jvmarg value="-Dlog4j.configuration=log4j.properties"/>
 			<formatter type="brief" usefile="false"/>
 			<batchtest fork="yes">				
 				<fileset refid="fileset.test"/>
@@ -436,7 +466,7 @@
 	<target	name="test_echo">
 		<echo message="****************************************************************************************"/>
 		<echo message="Set up test database, before running the tests."/>
-		<echo message="Databse connection properties should be inserted into test/resources/gdem.properties file"/>
+		<echo message="Database connection properties should be inserted into test/resources/gdem.properties file"/>
 		<echo message="NB! Do not run the test on operational database"/>
 		<echo message="****************************************************************************************"/>
 	</target>
