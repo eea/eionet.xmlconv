@@ -64,7 +64,7 @@
 		<!-- set global properties for this build -->
 		<property name="src" value="src"/>
 		<property name="lib" value="public/WEB-INF/lib"/>
-		<property name="classes.dir" value="${webapp.home}/WEB-INF/classes"/>
+		<property name="classes.dir" value="target/classes"/>
 		<property name="test" value="test"/>
 		<property name="test-build" value="test/build"/>
 
@@ -84,7 +84,9 @@
 	</target>
 
 	<!-- compile -->
-	<target name="compile" depends="clean">
+	<target name="compile" depends="init">
+                <mkdir dir="target"/>
+                <mkdir dir="${classes.dir}"/>
 		<javac debug="on" deprecation="off" srcdir="${src}" destdir="${classes.dir}" description="compiles java classes into classes path">
 		<classpath refid="classpath.compile"/>
 		</javac>
@@ -98,16 +100,13 @@
 
 	<!-- build xmlconv.jar -->
 	<target name="buildjar" depends="compile">
-		<jar basedir="${classes.dir}" jarfile="public/WEB-INF/lib/xmlconv.jar" includes="**/*.class"/>
-		<delete dir="${classes.dir}/eionet" failonerror="false"/>
-		<!--antcall target="clean"/-->
+		<jar basedir="${classes.dir}" jarfile="target/xmlconv.jar" includes="**/*.class"/>
 	</target>
 
 
 	<!-- clean classes directory -->
 	<target name="clean" depends="init">
-		<delete dir="${classes.dir}/eionet"/>
-		<delete file="public/WEB-INF/lib/xmlconv.jar" failonerror="false"/>
+		<delete dir="target"/>
 	</target>
 
 <!--	##########################  	-->
@@ -172,7 +171,7 @@
 
 
 	<!-- COPYFILES -->
-	<target name="copyfiles" depends="clean_resources,prepare,buildjar">
+	<target name="copyfiles" depends="init,clean_resources,prepare,buildjar">
 		<!-- we do not care about these files older versions -->
 		<copy file="GDEMServices.xml" tofile="${app.home}/GDEMServices.xml" overwrite="true"/>
 		<copy todir="${webapp.home}" overwrite="true">
@@ -184,19 +183,20 @@
 				<exclude name="WEB-INF/classes/**"/>
 			</fileset>
 		</copy>
-		<copy todir="${classes.dir}" overwrite="false">
+		<copy todir="${webapp.home}/WEB-INF/lib" file="target/xmlconv.jar" overwrite="true"/>
+		<copy todir="${webapp.home}/WEB-INF/classes" overwrite="false">
 			<fileset dir="${src}" includes="**/*.properties">
 				<exclude name="**/*.class"/>
 			</fileset>
 		</copy>
-		<replace file="${classes.dir}/gdem.properties">
+		<replace file="${webapp.home}/WEB-INF/classes/gdem.properties">
 			<replacefilter token="@WEBAPP.HOME@" value="${webapp.home}"/>
 			<replacefilter token="@DB.USER@" value="${db.user}"/>
 			<replacefilter token="@DB.PASSWORD@" value="${db.password}"/>
 			<replacefilter token="@DB.HOST@" value="${db.host}"/>
 			<replacefilter token="@DB.DATABASE@" value="${db.database}"/>
 		</replace>
-		<replace file="${classes.dir}/uit.properties" token="@APP.HOME@" value="${app.home}"/>
+		<replace file="${webapp.home}/WEB-INF/classes/uit.properties" token="@APP.HOME@" value="${app.home}"/>
 		<copy todir="${app.home}/acl" overwrite="false">
 			<fileset dir="acl"/>
 			<globmapper from="*" to="*.dist"/>
@@ -209,17 +209,17 @@
 -->
 		<condition property="uit.needed">
 			<not>
-				<available file="${classes.dir}/uit.properties"/>
+				<available file="${webapp.home}/WEB-INF/classes/uit.properties"/>
 			</not>
 		</condition>
 		<condition property="xmlconv.needed">
 			<not>
-				<available file="${classes.dir}/gdem.properties"/>
+				<available file="${webapp.home}/WEB-INF/classes/gdem.properties"/>
 			</not>
 		</condition>
 		<condition property="log4j.needed">
 			<not>
-				<available file="${classes.dir}/log4j.properties"/>
+				<available file="${webapp.home}/WEB-INF/classes/log4j.properties"/>
 			</not>
 		</condition>
 		<antcall target="copy_props"/>
@@ -237,7 +237,7 @@
 <!-- 	 	CHECK PROPERTIES targets 		-->
 <!--	##########################  	-->
 	<target name="checkProps">
-		<loadproperties srcFile="${classes.dir}/gdem.properties"/>
+		<loadproperties srcFile="${webapp.home}/WEB-INF/classes/gdem.properties"/>
 		<condition property="tmp.needed">
 			<not>
 				<isset property="tmp.folder"/>
@@ -258,7 +258,7 @@
 				<isset property="xmlfile.folder"/>
 			</not>
 		</condition>
-		<loadproperties srcFile="${classes.dir}/uit.properties"/>
+		<loadproperties srcFile="${webapp.home}/WEB-INF/classes/uit.properties"/>
 		<condition property="srvdef.not.available">
 			<not>
 				<available file="${services.definition.file}"/>
@@ -288,10 +288,10 @@
 				</not>
 			</and>
 		</condition>
-		<fail if="tmp.needed" message="Property 'tmp.folder'  is missing from ${classes.dir}/gdem.properties"/>
-		<fail if="xsl.needed" message="Property 'xsl.folder'  is missing from ${classes.dir}/gdem.properties"/>
-		<fail if="queries.needed" message="Property 'queries.folder'  is missing from ${classes.dir}/gdem.properties"/>
-		<fail if="xmlfile.needed" message="Property 'xmlfile.folder'  is missing from ${classes.dir}/gdem.properties"/>
+		<fail if="tmp.needed" message="Property 'tmp.folder'  is missing from ${webapp.home}/WEB-INF/classes/gdem.properties"/>
+		<fail if="xsl.needed" message="Property 'xsl.folder'  is missing from ${webapp.home}/WEB-INF/classes/gdem.properties"/>
+		<fail if="queries.needed" message="Property 'queries.folder'  is missing from ${webapp.home}/WEB-INF/classes/gdem.properties"/>
+		<fail if="xmlfile.needed" message="Property 'xmlfile.folder'  is missing from ${webapp.home}/WEB-INF/classes/gdem.properties"/>
 		<antcall target="warn_definition"/>
 		<antcall target="warn_xsl"/>
 		<antcall target="warn_queries"/>
@@ -328,19 +328,19 @@
 		<antcall target="cp_uit"/>
 		<antcall target="cp_xmlconv"/>
 		<antcall target="cp_log4j"/>
-		<copy file="${src}/ApplicationResources.properties" tofile="${classes.dir}/ApplicationResources.properties" overwrite="true"/>
+		<copy file="${src}/ApplicationResources.properties" tofile="${webapp.home}/WEB-INF/classes/ApplicationResources.properties" overwrite="true"/>
 	</target>
 	<target name="cp_uit" if="uit.needed">
 		<echo message="webapp-home: ${webapp.home}"/>
-		<copy file="${src}/uit.properties" tofile="${classes.dir}/uit.properties"/>
-		<replace file="${classes.dir}/uit.properties" token="@APP.HOME@" value="${app.home}"/>
+		<copy file="${src}/uit.properties" tofile="${webapp.home}/WEB-INF/classes/uit.properties"/>
+		<replace file="${webapp.home}/WEB-INF/classes/uit.properties" token="@APP.HOME@" value="${app.home}"/>
 	</target>
 	<target name="cp_log4j" if="log4j.needed">
-		<copy file="${src}/log4j.properties" tofile="${classes.dir}/log4j.properties"/>
+		<copy file="${src}/log4j.properties" tofile="${webapp.home}/WEB-INF/classes/log4j.properties"/>
 	</target>
 	<target name="cp_xmlconv" if="xmlconv.needed">
-		<copy file="${src}/gdem.properties" tofile="${classes.dir}/gdem.properties"/>
-		<replace file="${classes.dir}/gdem.properties">
+		<copy file="${src}/gdem.properties" tofile="${webapp.home}/WEB-INF/classes/gdem.properties" overwrite="true"/>
+		<replace file="${webapp.home}/WEB-INF/classes/gdem.properties">
 			<replacefilter token="@WEBAPP.HOME@" value="${webapp.home}"/>
 			<replacefilter token="@DB.USER@" value="${db.user}"/>
 			<replacefilter token="@DB.PASSWORD@" value="${db.password}"/>
@@ -526,6 +526,6 @@
 				<exclude name="WEB-INF/classes/**"/>
 			</fileset>
 		</copy>
-		<!--copy file="src/ApplicationResources.properties" tofile="${classes.dir}/ApplicationResources.properties" overwrite="true"/-->
+		<!--copy file="src/ApplicationResources.properties" tofile="${webapp.home}/WEB-INF/classes/ApplicationResources.properties" overwrite="true"/-->
 	</target>
 </project>
