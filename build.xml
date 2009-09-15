@@ -365,6 +365,16 @@
 	<!-- copy properties target, unit test needs some properties from gdem.properties file -->
 	<target name="copy-test-props">
 
+		<condition property="build.properties.exists">
+			<available file="build.properties" />
+		</condition>
+		<fail unless="build.properties.exists"
+		    message="Couldn't find build.properties file! Make a copy from default.properties and rename it to build.properties. Modify TEST database connection properties, if needed."/>
+
+		<fail unless="db.test.database"
+		    message="Couldn't find TEST database properties from build.properties file! Make a copy from default.properties and rename it to build.properties. Modify TEST database connection properties, if needed."/>
+
+
 		<!-- copy acl files, the tests might need these -->
 		<mkdir dir="${test-build}/acl"/>
 		<mkdir dir="${test-build}/tmp"/>
@@ -402,6 +412,12 @@
 		<loadproperties srcFile="${test-build}/gdem.properties"/>
 		<replace file="${test-build}/gdem.properties" token="tmp.folder=${tmp.folder}" value="tmp.folder=${test-build}/tmp/"/>
 		<replace file="${test-build}/gdem.properties" token="xsl.folder=${xsl.folder}" value="xsl.folder=${test-build}"/>
+                <replace file="${test-build}/gdem.properties">
+                        <replacefilter token="@DB.USER@" value="${db.test.user}"/>
+                        <replacefilter token="@DB.PASSWORD@" value="${db.test.password}"/>
+                        <replacefilter token="@DB.HOST@" value="${db.test.host}"/>
+                        <replacefilter token="@DB.DATABASE@" value="${db.test.database}"/>
+                </replace>
 
 		<!-- log4j.properties -->
 		<loadproperties srcFile="${test-build}/log4j.properties"/>
@@ -518,7 +534,7 @@
 	<target name="copy_resources" depends="init">
 		<copy file="GDEMServices.xml" tofile="${app.home}/GDEMServices.xml" overwrite="true"/>
 		<copy todir="${webapp.home}" overwrite="true">
-			<fileset dir="public" includes="**/*.jsp,**/*.xml">
+			<fileset dir="public" includes="**/*.jsp,**/*.xml,**/ApplicationResources.properties">
 				<exclude name="**/*.java"/>
 				<exclude name="**/*.properties"/>
 				<exclude name="**/servlet-api.jar"/>
