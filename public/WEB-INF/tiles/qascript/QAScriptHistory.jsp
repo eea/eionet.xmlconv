@@ -14,7 +14,7 @@
     <div id="tabbedmenu">
         <ul>
             <li>
-                <html:link page="/query.jsp?id=${script_id}"   titleKey="label.qascript.tab.title" onclick="return submitTab(this);"     style="color: black; text-decoration: none;">
+                <html:link page="/query.jsp?query_id=${script_id}"   titleKey="label.qascript.tab.title" onclick="return submitTab(this);"     style="color: black; text-decoration: none;">
                     <bean:message key="label.qascript.tab.title" />
                 </html:link>
             </li>
