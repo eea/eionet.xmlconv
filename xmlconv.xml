@@ -1,6 +1,5 @@
 <Context path="" docBase="xmlconv" debug="0" reloadable="true" crossContext="true">
 	<Resource name="jdbc/GDEM_DB" auth="Container" type="javax.sql.DataSource"
-	    factory="org.apache.commons.dbcp.BasicDataSourceFactory"
 	    maxActive="100"
 	    maxIdle="30"
 	    maxWait="10000"
