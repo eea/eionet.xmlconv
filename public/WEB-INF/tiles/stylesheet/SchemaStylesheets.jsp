@@ -13,7 +13,7 @@
 	<logic:iterate indexId="index" id="schema" name="schema.stylesheets" scope="session" property="handCodedStylesheets" type="Schema">
 			<logic:equal  value="true"  name="schema.stylesheets" scope="session" property="handcoded" >
 				<div id="operations">
-					<a href="schemaElemForm?schemaId=<bean:write name="schema" property="id"/>">
+					<a href="viewSchemaForm?schemaId=<bean:write name="schema" property="id"/>">
 						<bean:message key="label.schema.info"/>
 					</a>
 				</div>

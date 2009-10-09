@@ -44,23 +44,13 @@
 							<td align="center" >
 								<a href="schemaStylesheets?backList=uplschemas&amp;schema=<bean:write name="schema" property="schemaUrl" />">
 									<img src="<bean:write name="webRoot"/>/images/properties.gif" alt="<bean:message key="label.table.stylesheet" />" title="view stylesheets" /></a>
-								<logic:equal name="ssuPrm" value="true"  name="schemas.uploaded" scope="session" property="ssuPrm" >
-									<a href="schemaElemForm?backToConv=schema&amp;schemaId=<bean:write name="schema" property="schemaId" />">
-										<img src="<bean:write name="webRoot"/>/images/edit.gif" alt="<bean:message key="label.edit" />" title="edit schema" /></a>
-								</logic:equal>
 								
-								<logic:notEqual name="ssuPrm" value="true"  name="schemas.uploaded" scope="session" property="ssuPrm" >
-									<a href="schemaElemForm?backToConv=schema&amp;schemaId=<bean:write name="schema" property="schemaId" />">
-										<img src="<bean:write name="webRoot"/>/images/info_icon.gif" alt="<bean:message key="label.table.schemainfo" />" title="view schema info" /></a>
-								</logic:notEqual>
+								<a href="viewSchemaForm?backToConv=schema&amp;schemaId=<bean:write name="schema" property="schemaId" />">
+									<img src="<bean:write name="webRoot"/>/images/info_icon.gif" alt="<bean:message key="label.table.schemainfo" />" title="view schema info" /></a>
 								
 								
-								<logic:equal name="ssuPrm" value="true"  name="schemas.uploaded" scope="session" property="ssuPrm" >
-									<a href="editUplSchemaForm?schemaId=<bean:write name="schema" property="schemaId" />">
-										<img src="<bean:write name="webRoot"/>/images/upload.gif" alt="<bean:message key="label.edit" />" title="upload schema file" /></a>
-								</logic:equal>
 								<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >
-									<a href="deleteUplSchema?schemaId=<bean:write name="schema" property="schemaId" />&amp;deleteSchema=true&amp;schemaFile=<bean:write name="schema" property="uplSchemaFile" />"
+									<a href="deleteUplSchema?schemaId=<bean:write name="schema" property="schemaId" />&amp;deleteSchema=true&amp;schemaFileName=<bean:write name="schema" property="uplSchemaFile" />"
 									onclick='return schemaDelete("<bean:write name="schema" property="schemaUrl" />");'>
 										<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete schema" /></a>
 								</logic:equal>

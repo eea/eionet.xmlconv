@@ -18,14 +18,18 @@
 					<bean:size id="countErrors" name="conversion.valid" />
 
 						<logic:equal name="countErrors" value="0">
-							<logic:notEmpty name="conversion.validatedSchema">
+							<logic:notEmpty name="conversion.originalSchema">
 								<div class="ok-msg">
 									The file is valid XML (<%=Utils.getDateTime(new Date())%>)
-									<p><bean:message key="label.conversion.validatedSchema"/>&#160;
-										<a href="<bean:write name="conversion.validatedSchema"/>"><bean:write  name="conversion.validatedSchema"/></a></p> 
+									<p><bean:message key="label.conversion.originalSchema"/>&#160;
+										<a href="<bean:write name="conversion.originalSchema"/>"><bean:write  name="conversion.originalSchema"/></a></p>
+									<logic:present name="conversion.validatedSchema">
+										<p><bean:message key="label.conversion.validatedSchema"/>&#160;
+											<a href="<bean:write name="conversion.validatedSchema"/>"><bean:write  name="conversion.validatedSchema"/></a></p> 
+									</logic:present> 
 								</div>
 							</logic:notEmpty>
-							<logic:empty name="conversion.validatedSchema">
+							<logic:empty name="conversion.originalSchema">
 								<div class="error-msg">
 									Could not validate XML.
 									<p><bean:message key="label.conversion.schema.not.found"/></p> 								
@@ -35,11 +39,15 @@
 					<logic:notEqual name="countErrors" value="0">
 					<div class="error-msg">
 						The file is not valid XML
-						<logic:notEmpty name="conversion.validatedSchema">
-							<p><bean:message key="label.conversion.validatedSchema"/>&#160;
-								<a href="<bean:write name="conversion.validatedSchema"/>"><bean:write  name="conversion.validatedSchema"/></a></p> 
+						<logic:notEmpty name="conversion.originalSchema">
+							<p><bean:message key="label.conversion.originalSchema"/>&#160;
+								<a href="<bean:write name="conversion.originalSchema"/>"><bean:write  name="conversion.originalSchema"/></a></p>
+							<logic:present name="conversion.validatedSchema">
+								<p><bean:message key="label.conversion.validatedSchema"/>&#160;
+									<a href="<bean:write name="conversion.validatedSchema"/>"><bean:write  name="conversion.validatedSchema"/></a></p> 
+							</logic:present> 
 						</logic:notEmpty>
-						<logic:empty name="conversion.validatedSchema">
+						<logic:empty name="conversion.originalSchema">
 							<p><bean:message key="label.conversion.schema.not.found"/></p> 
 						</logic:empty>
 					</div>

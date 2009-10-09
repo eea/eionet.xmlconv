@@ -48,7 +48,7 @@
 	    					<html:link page="/queries.jsp" paramId="ID" paramName="schema" paramProperty="id">
 								<html:img page="/images/properties.gif" altKey="label.table.qascript.qascripts" title="view QA scripts for this XML Schema" />
 							</html:link>
-							<a href="schemaElemForm?backToConv=yes&amp;schemaId=<bean:write name="schema" property="id" />">
+							<a href="viewSchemaForm?backToConv=yes&amp;schemaId=<bean:write name="schema" property="id" />">
 								<html:img page="/images/info_icon.gif" altKey="label.table.schemainfo" title="view schema info"/></a>
 						</td>
 						<td title="<bean:write name="schema" property="schema"/>">

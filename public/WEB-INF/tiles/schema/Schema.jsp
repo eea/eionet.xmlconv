@@ -20,60 +20,52 @@
 		<%-- include Error display --%>
 		<tiles:insert definition="Error" />
 
-		<html:form action="/schemaUpdate" method="post">
-		  <table width="100%" class="datatable">
-			<col style="width:25%"/>
-			<col style="width:75%"/>
-		    <tr>
-				<th scope="row" class="scope-row">
-	    		    <html:hidden property="schemaId" />
-			        <bean:message key="label.schema.url"/>:
-			      </th>
+		<html:form action="/schemaUpdate" method="post" enctype="multipart/form-data">
+		<fieldset><legend><bean:message key="label.schema.fldset.properties"/></legend>
+		  <table class="formtable">
+           <col class="labelcol"/>
+           <col class="entrycol"/>
+			<tr class="zebraeven">
+				<td>
+					<label class="question required" for="txtSchemaUrl"> 
+				        <bean:message key="label.schema.url"/>
+					</label>
+			     </td>
 			      <td align="left">
-			        <html:hidden property="backToConv" />
 		    		<logic:present name="user">
-				       	<html:text property="schema" maxlength="255" style="width:400px"/>    
+				       	<html:text property="schema" maxlength="255" style="width:500px" styleId="txtSchemaUrl"/>    
 	    		    </logic:present>
 	    		    <logic:notPresent name="user">
-		    		    <html:hidden property="schema" />       		        	 		        	
 						<a href="<bean:write name="schemaForm" property="schema" />" title="<bean:write name="schemaForm" property="schema" />">						
 							<bean:write name="schemaForm" property="schema" />
 						</a>&#160;		        	      		        	
 	   		        </logic:notPresent>
 			      </td>
 			    </tr>
-				<logic:notEmpty name="schemaForm" property="uplSchemaFileName">
-					<tr>
-  					  <th scope="row" class="scope-row">
-				        <bean:message key="label.uplSchema.schemaFile"/>:
-				      </th>
-			    	  <td>
-						<a href="<bean:write name="schemaForm" property="uplSchemaFileUrl" />">
-							<bean:write name="schemaForm" property="uplSchemaFileName" />
-						</a>
-				      </td>
-				    </tr>
-				</logic:notEmpty>
 			    <tr>
-				  <th scope="row" class="scope-row">
-			        <bean:message key="label.schema.description"/>:
-			      </th>
+				  <td>
+					<label class="question" for="txtDescription"> 
+				        <bean:message key="label.schema.description"/>
+					</label>
+			      </td>
 			      <td align="left">
 	    		    <logic:present name="user">		      	
-				        <html:textarea property="description"  rows="3" cols="30" style="width:400px"/>	        
+				        <html:textarea property="description"  rows="2" cols="30" style="width:500px" styleId="txtDescription"/>	        
 				    </logic:present>
 	   		        <logic:notPresent name="user">
 						<bean:write name="schemaForm" property="description" />    		        
 	   		        </logic:notPresent>				    
 			      </td>
 			    </tr>
-			    <tr>
-  				  <th scope="row" class="scope-row">
-			        <bean:message key="label.schema.language"/>:
-			      </th>
+				<tr class="zebraeven">
+  				  <td>
+					<label class="question" for="txtSchemaLang"> 
+				        <bean:message key="label.schema.language"/>
+					</label>
+			      </td>
 			      <td>
 		    		<logic:present name="user">
-				        <html:select property="schemaLang" >
+				        <html:select property="schemaLang" styleId="txtSchemaLang">
 							<html:options property="schemaLanguages" />
 			    	    </html:select>
 					</logic:present>	    	   			      	
@@ -83,12 +75,14 @@
 			      </td>
 			    </tr>
 			    <tr>
-  				  <th scope="row" class="scope-row">
-			        <bean:message key="label.schema.dovalidation"/>:
-			      </th>
+  				  <td>
+					<label class="question" for="txtValidation"> 
+				        <bean:message key="label.schema.dovalidation"/>
+					</label>
+			      </td>
 			      <td>
 		    		<logic:present name="user">
-				        <html:checkbox property="doValidation" />
+				        <html:checkbox property="doValidation" styleId="txtValidation"/>
 					</logic:present>	    	   			      	
 		    		<logic:notPresent name="user">
 						<bean:write name="schemaForm" property="doValidation" />
@@ -96,13 +90,15 @@
 			      </td>
 			    </tr>
 			    <logic:equal value="true" name="schemaForm" property="dtd" >
-				    <tr>
-					  <th scope="row" class="scope-row">
-				        <bean:message key="label.elem.dtdid"/>:
-				      </th>
+					<tr class="zebraeven">
+					  <td>
+						<label class="question" for="txtDtdId"> 
+					        <bean:message key="label.elem.dtdid"/>
+						</label>
+				      </td>
 				      <td align="left">
 			    		<logic:present name="user">
-					        <html:text property="dtdId" maxlength="50" size="50" />		        
+					        <html:text property="dtdId" maxlength="50" size="50" styleId="txtDtdId"/>		        
 						</logic:present>	    	   			      	
 		    			<logic:notPresent name="user">
 							<bean:write name="schemaForm" property="dtdId" />
@@ -110,98 +106,151 @@
 				      </td>
 				    </tr>
 			    </logic:equal>	
-			<tr>			  
-			   <td colspan="2" align="center">
-			  <logic:equal name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >				
+			    <tr>			  
+					<td></td>
+				   <td>
+			  <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >				
 	   			    <input type="button"  class="button" value="<bean:message key="label.schema.save"/>" onclick="return submitAction(1,'schemaUpdate');" />
 			        &nbsp;
    		      </logic:equal>
-			  <logic:notEqual name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
-			        <logic:notPresent name="schemaForm" property="backToConv">		        					
-		   			    <input type="button"  class="button" value="<bean:message key="label.ok"/>" onclick="return submitAction(1,'schemaStylesheets');" />
-		  			</logic:notPresent>
-			   </logic:notEqual>	
+ 			  <logic:equal name="xsddPrm" value="true"  name="schema.rootElements" scope="session" property="xsddPrm" >
+	   			    <input type="button"  class="button" value="<bean:message key="label.schema.delete"/>" onclick="return submitAction(1,'deleteUplSchema?deleteSchema=true');" />
+			  </logic:equal>
+			  </td>
+			 </tr>
+			</table>
+		</fieldset>
+		<fieldset><legend><bean:message key="label.schema.fldset.localfile"/></legend>
+			<table class="formtable">
+	           <col class="labelcol"/>
+	           <col class="entrycol"/>
+				<tr class="zebraeven">
+  				  <td>
+					<label class="question" for="txtSchemaFile"> 
+				        <bean:message key="label.uplSchema.schemaFile"/>
+					</label>
+			      </td>
+			      <td>
+			      	<logic:notEmpty  name="schemaForm" property="uplSchemaFileName">
+						<a  href="<bean:write name="schemaForm" property="uplSchemaFileUrl" />" title="<bean:write name="schemaForm" property="uplSchemaFileUrl" />">						
+							<bean:write name="schemaForm" property="uplSchemaFileName" />
+						</a>&#160;		        	  		        
+						<logic:present name="schemaForm" property="lastModified">
+							&#160;&#160;(<bean:message key="label.lastmodified"/>: <bean:write property="lastModified" name="schemaForm"/>)
+						</logic:present>
+			      	</logic:notEmpty>
+				</td>
+				</tr>
+				  <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >				
+					<tr>
+						<td></td>
+						<td>
+				        	<html:file property="schemaFile" size="20" style="width:400px" styleId="txtSchemaFile"/>
+					     </td>
+			    	</tr>
+		       </logic:equal>
+			    <tr>			  
+					<td></td>
+				   <td>
+			  <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >				
+	   			    <input type="button"  class="button" value="<bean:message key="label.uplSchema.upload"/>" onclick="return submitAction(1,'editUplSchema');" />
+   		      </logic:equal>
+ 			  <logic:notEmpty  name="schemaForm" property="uplSchemaFileName">
+ 			  	<logic:equal name="xsddPrm" value="true"  name="schema.rootElements" scope="session" property="xsddPrm" >
+	   			    <input type="button"  class="button" value="<bean:message key="label.schema.deleteFile"/>" onclick="return submitAction(1,'deleteUplSchema');" />
+			  	</logic:equal>
+	  		    <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >				
+		  		    <logic:equal name="schemaIdRemoteUrl" value="true"  name="schema.rootElements" scope="session" property="schemaIdRemoteUrl" >						  	
+	   			    	<input type="button"  class="button" value="<bean:message key="label.uplSchema.checkupdates"/>" onclick="return submitAction(1,'diffUplSchemas');" />
+			        </logic:equal>
+   		      </logic:equal>
+			  </logic:notEmpty>
+ 			  <logic:empty  name="schemaForm" property="uplSchemaFileName">
+		  		    <logic:equal name="schemaIdRemoteUrl" value="true"  name="schema.rootElements" scope="session" property="schemaIdRemoteUrl" >						  	
+	   			    	<input type="button"  class="button" value="<bean:message key="label.uplSchema.createcopy"/>" onclick="return submitAction(1,'diffUplSchemas');" />
+			        </logic:equal>
+ 			  </logic:empty>
 			  </td>
 			 </tr>
 		  </table>
+		</fieldset>
+		<fieldset><legend><bean:message key="label.schema.fldset.rootelems"/></legend>
 			    
-			<logic:present name="user">
-			  <h3>Root elements</h3>
-			  <table class="datatable">
+			<logic:equal name="schema.rootElements" scope="session" property="rootElemsPresent" value="true">
+			  <table class="datatable" width="80%">
 				  <thead>
 					<tr>
 						<th scope="col"><span title="Element name"><bean:message key="label.schema.table.element"/></span></th>
 						<th scope="col"><span title="Namespace"><bean:message key="label.schema.table.namespace"/></span></th>
-						<th scope="col"><span title="Action"><bean:message key="label.schema.table.action"/></span></th>				
+						<logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >				
+							<th scope="col"></th>
+						</logic:equal>
 					</tr>			
 				   </thead>
 				   <tbody>
-						<logic:present name="rootElem"  name="schema.rootElemets" scope="session" property="rootElem" >						
-							<logic:iterate indexId="index" id="elem" name="schema.rootElemets" scope="session" property="rootElem" type="RootElem">								
+						<logic:present name="rootElem"  name="schema.rootElements" scope="session" property="rootElem" >						
+							<logic:iterate indexId="index" id="elem" name="schema.rootElements" scope="session" property="rootElem" type="RootElem">								
 								<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
 									<td>
 										<bean:write name="elem" property="name" />
 									</td>
 									<td>					
-											<bean:write name="elem" property="namespace" />					
+										<bean:write name="elem" property="namespace" />					
 									</td>
-									<td align="center">
-										<logic:equal name="ssdPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
-										<a href="deleteElem?elemId=<bean:write name="elem" property="elemId" />"
-										onclick='return elementDelete("<bean:write name="elem" property="name" />");'>
-										<html:img page="/images/delete.gif" altKey="label.delete" title="delete root element"/>
-										</a>	
-										</logic:equal>		
-									</td>
+									<logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
+										<td align="center">
+											<a href="deleteElem?elemId=<bean:write name="elem" property="elemId" />"
+											onclick='return elementDelete("<bean:write name="elem" property="name" />");'>
+											<html:img page="/images/delete.gif" altKey="label.delete" title="delete root element"/>
+											</a>	
+										</td>
+									</logic:equal>		
 								</tr>
 							</logic:iterate>				
-							</logic:present>
-							<logic:equal name="xsduPrm" value="true"  name="schema.rootElemets" scope="session" property="xsduPrm" >
-								<tr>
-									<td  align="left">
-										 <html:text property="elemName" maxlength="255"  style="width:250px"/>
-									</td>
-									<td  align="left">					
-										  <html:text property="namespace" maxlength="255"   style="width:250px"/>
-									</td>
-									<td >
-										<input type="button"  class="button" style="width:50px" value="<bean:message key="label.element.add"/>" onclick="return submitAction(1,'elementAdd');" />
-									</td>
-								</tr>
-								<tr>
-									<td valign="top" colspan="3">
-									</td>
-								</tr>
-							</logic:equal>	
-					</tbody>			   	
-				</table>	
-			</logic:present>
-				
-   		     <logic:notPresent name="user">
-			   <logic:present name="rootElem"  name="schema.rootElemets" scope="session" property="rootElem" >							  
-				  <table class="datatable" width="80%">
-					<col style="width:50%"/>
-					<col style="width:50%"/>
-				  	<thead>
-						<tr>
-							<th scope="col"><span title="Element name"><bean:message key="label.schema.table.element"/></span></th>
-							<th scope="col"><span title="Namespace"><bean:message key="label.schema.table.namespace"/></span></th>
-						</tr>
-					</thead>
-					<tbody>
-						<logic:iterate indexId="index" id="elem" name="schema.rootElemets" scope="session" property="rootElem" type="RootElem">								
-							<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
-								<td>
-									<bean:write name="elem" property="name" />
-								</td>
-								<td>					
-									<bean:write name="elem" property="namespace" />
-								</td>
-							</tr>
-						</logic:iterate>				
-					</tbody>
+						</logic:present>
+				   </tbody>
 				</table>
-			   </logic:present>
-			</logic:notPresent>
-	
+			</logic:equal>
+				<logic:present name="user">
+				  <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >									 
+					<table class="formtable">
+			           <col class="labelcol"/>
+			           <col class="entrycol"/>
+						<tr class="zebraeven">
+						<td>
+							<label class="question" for="txtElemName"> 
+								<bean:message key="label.schema.table.element"/>
+							</label>
+						</td>
+						<td>
+							 <html:text property="elemName" maxlength="255"  style="width:250px" styleId="txtElemName"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label class="question" for="txtNamespace"> 
+								<bean:message key="label.schema.table.namespace"/>
+							</label>
+						</td>
+						<td>
+							  <html:text property="namespace" maxlength="255"   style="width:250px" styleId="txtNamespace"/>
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td>
+							<input type="button"  class="button" style="width:50px" value="<bean:message key="label.element.add"/>" onclick="return submitAction(1,'elementAdd');" />
+						</td>
+					</tr>
+				</table>
+			   </logic:equal>
+		   </logic:present>
+		</fieldset>
+		<div style="display:none">
+   		    <html:hidden property="schemaId" />
+   		    <html:hidden property="uplSchemaFileName" />
+   		    <html:hidden property="uplSchemaId" />
+	        <html:hidden property="backToConv" />
+   		    <html:hidden property="schema" />       		        	 		        	
+		</div>
 		</html:form>

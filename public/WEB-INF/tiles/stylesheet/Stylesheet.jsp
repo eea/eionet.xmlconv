@@ -39,7 +39,7 @@
 	    					<html:link page="/do/schemaStylesheets" paramId="schema" paramName="schema" paramProperty="schema">
 								<html:img page="/images/properties.gif" altKey="label.table.stylesheet" title="view stylesheets" />
 							</html:link>
-							<a href="schemaElemForm?backToConv=yes&amp;schemaId=<bean:write name="schema" property="id" />">
+							<a href="viewSchemaForm?backToConv=yes&amp;schemaId=<bean:write name="schema" property="id" />">
 								<html:img page="/images/info_icon.gif" altKey="label.table.schemainfo" title="view schema info"/></a>
 							<logic:equal name="ssdPrm" value="true"  name="stylesheet.stylesheetList" scope="session" property="ssdPrm" >
 								<a href="deleteSchema?schemaId=<bean:write name="schema" property="id" />" onclick='return schemaDelete("<bean:write name="schema" property="schema" />");'>
