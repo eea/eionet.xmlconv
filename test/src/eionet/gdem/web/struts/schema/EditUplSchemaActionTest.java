@@ -119,7 +119,7 @@ public class EditUplSchemaActionTest  extends MockStrutsTestCase {
         
         setRequestPathInfo("/editUplSchema");
         actionPerform();
-        verifyInputForward();
+		verifyForwardPath("/do/schemaElemForm");
         String[] errMess = {"label.uplSchema.upload.validation"};
         verifyActionErrors(errMess);
 
