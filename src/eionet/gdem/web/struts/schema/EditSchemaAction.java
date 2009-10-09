@@ -54,9 +54,6 @@ public class EditSchemaAction extends Action {
 		String dtdId = form.getDtdId();
 		String schemaLang = form.getSchemaLang();
 		boolean doValidation = form.isDoValidation();
-		String uplSchemaId = form.getUplSchemaId();
-		FormFile file = form.getSchemaFile();
-		String fileName = form.getUplSchemaFileName();
 
 		if (isCancelled(httpServletRequest)) {
 			try {
@@ -76,17 +73,6 @@ public class EditSchemaAction extends Action {
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 			return actionMapping.findForward("success");
 		}
-
-		/*try {
-			IXmlCtx xml = new XmlContext();
-			xml.setWellFormednessChecking();
-			xml.checkFromInputStream((new InputFile(schema)).getSrcInputStream());
-		} catch (Exception e) {
-			_logger.error("schema not valid",e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.error.notvalid"));
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward("success");
-		}*/
 		
 		
 		String user = (String) httpServletRequest.getSession().getAttribute("user");
