@@ -118,6 +118,7 @@
         </action>
         <action path="/schemaElemForm" name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemFormAction" input="/schema.jsp" scope="request">
             <forward name="success" path="/schema.jsp" redirect="true"/>
+            <forward name="fail" path="/uplSchema.jsp" redirect="true"/>
         </action>
         <action path="/editUplSchema"  type="eionet.gdem.web.struts.schema.EditUplSchemaAction" name="schemaForm">           
         	<forward name="success" path="/do/schemaElemForm"  redirect="true"/>
