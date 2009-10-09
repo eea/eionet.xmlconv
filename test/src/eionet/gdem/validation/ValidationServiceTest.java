@@ -113,7 +113,6 @@ public class ValidationServiceTest extends DBTestCase{
 		
 		assertEquals(validService.getValidatedSchema(),"http://dd.eionet.europa.eu/GetSchema");
 		assertEquals(validService.getValidatedSchemaURL(),"http://dd.eionet.europa.eu/GetSchema");
-		assertEquals(validService.getOriginalSchema(),"http://dd.eionet.europa.eu/GetSchema?id=TBL4564");
 	}
 	/**
 	 * Test XML file validation method. Validation Service should use locally stored XML Schema described in T_UPL_SCHEMA table.
