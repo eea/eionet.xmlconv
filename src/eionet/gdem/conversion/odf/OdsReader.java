@@ -32,14 +32,15 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import com.catcode.odf.ODFMetaFileAnalyzer;
+import com.catcode.odf.OpenDocumentMetadata;
+
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.DDXMLConverter;
 import eionet.gdem.conversion.SourceReaderIF;
 import eionet.gdem.conversion.excel.DD_XMLInstance;
 import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
-
-import com.catcode.odf.*;
 
 /**
  * The class is responsible for reading OpenDocument Spreadsheets

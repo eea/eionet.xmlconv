@@ -24,14 +24,11 @@
 package eionet.gdem.conversion.excel;
 
 
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-
 import java.util.HashMap;
 import java.util.Vector;
-import java.util.Iterator;
-import javax.xml.parsers.*;
-import java.util.*;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.helpers.DefaultHandler;
 
 
 /**

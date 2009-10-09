@@ -1,18 +1,18 @@
 package eionet.gdem.services.db.dao.mysql;
 
-import eionet.gdem.Properties;
-import eionet.gdem.services.db.dao.IQueryDao;
-import eionet.gdem.utils.Utils;
-
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
-import java.util.HashMap;
+
+import eionet.gdem.Properties;
+import eionet.gdem.services.db.dao.IQueryDao;
+import eionet.gdem.utils.Utils;
 
 
 public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {

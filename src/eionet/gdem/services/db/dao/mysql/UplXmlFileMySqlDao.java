@@ -3,17 +3,14 @@
  */
 package eionet.gdem.services.db.dao.mysql;
 
-import eionet.gdem.Properties;
-import eionet.gdem.services.db.dao.IUPLXmlFileDao;
-import eionet.gdem.utils.Utils;
-
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Vector;
-import java.util.Hashtable;;
+
+import eionet.gdem.services.db.dao.IUPLXmlFileDao;
 
 /**
  * MySql implementationd for uplodaed XML file database object.  

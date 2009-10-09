@@ -23,13 +23,18 @@
 
 package eionet.gdem.conversion;
 
-import eionet.gdem.GDEMException;
-import eionet.gdem.conversion.excel.*;
-
-import org.xml.sax.*;
-import javax.xml.parsers.*;
-import java.io.OutputStream;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.XMLReader;
+
+import eionet.gdem.GDEMException;
+import eionet.gdem.conversion.excel.ExcelConversionHandlerIF;
+import eionet.gdem.conversion.excel.ExcelUtils;
+import eionet.gdem.conversion.excel.ExcelXMLHandler;
 
 
 /**

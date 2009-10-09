@@ -23,8 +23,8 @@
 
 package eionet.gdem.validation;
 
-import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.ext.LexicalHandler;
 
 /**
  * Reads DTD information from the header of XML

@@ -5,17 +5,13 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Hashtable;
-import java.util.Vector;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 

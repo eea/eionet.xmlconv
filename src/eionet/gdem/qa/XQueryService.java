@@ -23,31 +23,28 @@
 
 package eionet.gdem.qa;
 
-import eionet.gdem.Constants;
-
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-
+import java.net.MalformedURLException;
+import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Vector;
 
+import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.SourceFileManager;
 import eionet.gdem.dcm.remote.RemoteService;
-import eionet.gdem.services.*;
-import eionet.gdem.utils.Utils;
-import eionet.gdem.validation.ValidationService;
+import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
-
-import java.sql.SQLException;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.util.Vector;
+import eionet.gdem.utils.Utils;
+import eionet.gdem.validation.ValidationService;
 
 
 /**

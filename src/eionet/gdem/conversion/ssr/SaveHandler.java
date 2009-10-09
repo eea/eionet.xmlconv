@@ -23,27 +23,23 @@
 
 package eionet.gdem.conversion.ssr;
 
-import javax.servlet.http.HttpServletRequest;
-
-
+import java.io.File;
 import java.util.HashMap;
 import java.util.Vector;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+
+import javax.servlet.http.HttpServletRequest;
 
 import com.tee.uit.security.AppUser;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
-import eionet.gdem.utils.Utils;
-import eionet.gdem.utils.SecurityUtil;
-import eionet.gdem.utils.MultipartFileUpload;
-
 import eionet.gdem.dcm.business.BackupManager;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IQueryDao;
+import eionet.gdem.utils.MultipartFileUpload;
+import eionet.gdem.utils.SecurityUtil;
+import eionet.gdem.utils.Utils;
 
 
 

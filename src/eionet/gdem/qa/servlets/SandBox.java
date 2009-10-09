@@ -22,37 +22,33 @@
  */
 
 package eionet.gdem.qa.servlets;
-import eionet.gdem.Constants;
-import eionet.gdem.Properties;
-import eionet.gdem.conversion.ssr.Names;
-import eionet.gdem.dcm.business.SourceFileManager;
-import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.qa.XQueryService;
-import eionet.gdem.validation.ValidationService;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import javax.servlet.ServletException;
-
-import eionet.gdem.utils.InputFile;
-import eionet.gdem.utils.Utils;
-
+import eionet.gdem.Constants;
+import eionet.gdem.GDEMException;
+import eionet.gdem.Properties;
+import eionet.gdem.conversion.ssr.Names;
+import eionet.gdem.dcm.business.SourceFileManager;
+import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.qa.XQueryService;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IQueryDao;
-import eionet.gdem.GDEMException;
+import eionet.gdem.utils.InputFile;
+import eionet.gdem.utils.Utils;
+import eionet.gdem.validation.ValidationService;
 
 public class SandBox  extends HttpServlet implements Constants {
 

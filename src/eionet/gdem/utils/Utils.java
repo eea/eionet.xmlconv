@@ -22,17 +22,20 @@
  */
 package eionet.gdem.utils;
 
-import eionet.gdem.GDEMException;
-import eionet.gdem.Properties;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
-import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
-
-import java.net.URL;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.security.GeneralSecurityException;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
@@ -45,6 +48,13 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import org.apache.commons.codec.binary.Base64;
+
+import eionet.gdem.GDEMException;
+import eionet.gdem.Properties;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.xml.IXmlCtx;
+import eionet.gdem.utils.xml.XmlContext;
 
 /**
  * Several common methods for file handling etc
@@ -821,6 +831,17 @@ public class Utils {
 	public static String digest(String src, String algorithm) throws Exception{
         
         byte[] srcBytes = src.getBytes();
+        return Utils.digest(srcBytes, algorithm);
+	}
+	/**
+	 * 
+	 * @param srcBytes
+	 * @param algorithm
+	 * @return
+	 * @throws Exception
+	 */
+	public static String digest(byte[] srcBytes, String algorithm) throws Exception{
+        
         byte[] dstBytes = new byte[16];
         
         MessageDigest md;
@@ -842,7 +863,42 @@ public class Utils {
         
         return buf.toString();
     }
+	/**
+	 * 
+	 * @param srcBytes
+	 * @param algorithm
+	 * @return
+	 * @throws Exception
+	 */
+	public static String digest(File f, String algorithm) throws Exception{
+        
+        byte[] dstBytes = new byte[16];
+        
+        MessageDigest md;
 
+        md = MessageDigest.getInstance(algorithm);
+        
+        BufferedInputStream in = new BufferedInputStream(new FileInputStream(f));
+
+        int theByte = 0;
+        while ((theByte = in.read()) != -1) {
+          md.update((byte) theByte);
+        }
+        in.close();
+        dstBytes = md.digest();
+        md.reset();
+        
+        StringBuffer buf = new StringBuffer();
+        for (int i=0; i<dstBytes.length; i++){
+            Byte byteWrapper = new Byte(dstBytes[i]);
+            int k = byteWrapper.intValue();
+            String s = Integer.toHexString(byteWrapper.intValue());
+            if (s.length() == 1) s = "0" + s;
+            buf.append(s.substring(s.length() - 2));
+        }
+        
+        return buf.toString();
+    }
 	/**
      * Extracts file extension from filename
      */

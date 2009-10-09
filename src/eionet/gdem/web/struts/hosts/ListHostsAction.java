@@ -36,10 +36,8 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
-import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dto.HostDto;
-
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IHostDao;

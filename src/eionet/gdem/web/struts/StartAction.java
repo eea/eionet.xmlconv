@@ -32,8 +32,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import eionet.gdem.conversion.ssr.Names;
-
 
 public class StartAction extends Action {
 

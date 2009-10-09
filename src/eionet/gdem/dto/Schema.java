@@ -45,7 +45,18 @@ public class Schema implements Serializable {
 	private String schemaLang;
 	private String uplSchemaFileName;
 	private List qascripts;
+	private UplSchema uplSchema;
 	
+	public UplSchema getUplSchema() {
+		return uplSchema;
+	}
+
+
+	public void setUplSchema(UplSchema uplSchema) {
+		this.uplSchema = uplSchema;
+	}
+
+
 	public List getQascripts() {
 		return qascripts;
 	}

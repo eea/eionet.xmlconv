@@ -22,11 +22,10 @@
  */
 
 package eionet.gdem.qa.engines;
-import eionet.gdem.services.GDEMServices;
-//import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 
 import net.sf.saxon.StandardErrorListener;
+import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
 /**

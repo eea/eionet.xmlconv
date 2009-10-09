@@ -23,25 +23,38 @@ package eionet.gdem.web.struts.schema;
 
 import java.util.List;
 
+import eionet.gdem.dto.RootElem;
 import eionet.gdem.dto.Schema;
 
 public class SchemaElemHolder {
 
 	private Schema schema;
-	private List rootElem;
+	private List<RootElem> rootElem;
 	private boolean xsduPrm;
+	private boolean xsddPrm;
+	private boolean isSchemaIdRemoteUrl=false;
+
+
+	public boolean isXsddPrm() {
+		return xsddPrm;
+	}
+
+
+	public void setXsddPrm(boolean xsddPrm) {
+		this.xsddPrm = xsddPrm;
+	}
 
 
 	public SchemaElemHolder() {
 	}
 
 
-	public List getRootElem() {
+	public List<RootElem> getRootElem() {
 		return rootElem;
 	}
 
 
-	public void setRootElem(List rootElem) {
+	public void setRootElem(List<RootElem> rootElem) {
 		this.rootElem = rootElem;
 	}
 
@@ -63,6 +76,19 @@ public class SchemaElemHolder {
 
 	public void setXsduPrm(boolean xsduPrm) {
 		this.xsduPrm = xsduPrm;
+	}
+	public boolean isRootElemsPresent(){
+		return rootElem!=null && rootElem.size()>0;
+	}
+
+
+	public void setSchemaIdRemoteUrl(boolean isSchemaIdRemoteUrl) {
+		this.isSchemaIdRemoteUrl = isSchemaIdRemoteUrl;
+	}
+
+
+	public boolean isSchemaIdRemoteUrl() {
+		return isSchemaIdRemoteUrl;
 	}
 
 }

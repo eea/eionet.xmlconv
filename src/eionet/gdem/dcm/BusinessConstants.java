@@ -35,7 +35,8 @@ public class BusinessConstants {
 	public static final String EXCEPTION_VALIDATION_ERROR = "label.validation.error";
 	public static final String EXCEPTION_AUTORIZATION_SCHEMA_INSERT = "label.autorization.schema.insert";
 	public static final String EXCEPTION_XMLPARSING_ERROR = "label.conversion.xmlparsing.error";
-
+	public static final String EXCEPTION_SCHEMAOPEN_ERROR = "label.schemaopen.error";
+	
 	// public static final String EXCEPTION_PARAM_DB_SAVED =
 	// "label.editParam.db.saved";
 	public static final String EXCEPTION_PARAM_DB_FAILED = "label.editParam.db.failed";
@@ -56,6 +57,11 @@ public class BusinessConstants {
 	public static final String EXCEPTION_AUTORIZATION_XMLFILE_UPDATE = "label.autorization.xmlfile.update";
 	public static final String EXCEPTION_AUTORIZATION_XMLFILE_INSERT = "label.autorization.xmlfile.insert";
 	public static final String EXCEPTION_XMLFILE_FILE_EXISTS = "label.uplXmlFile.error.fileExists";
+	
+	public static final String WARNING_LOCALFILE_NOTAVAILABLE = "warning.localfile.notavailable";
+	public static final String WARNING_FILES_IDENTICAL = "warning.files.identical";
+	public static final String WARNING_FILES_NOTIDENTICAL = "warning.files.notidentical";
+	public static final String WARNING_SCHEMA_NOTVALID = "warning.schema.notvalid";
 
 
 }

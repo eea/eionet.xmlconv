@@ -24,10 +24,10 @@
 package eionet.gdem.conversion;
 
 import java.io.InputStream;
+import java.util.Hashtable;
+
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.excel.DD_XMLInstance;
-
-import java.util.Hashtable;
 
 /**
  *

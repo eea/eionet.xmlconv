@@ -28,24 +28,21 @@
 
 package eionet.gdem.qa;
 
-import eionet.gdem.Constants;
-import eionet.gdem.GDEMException;
-
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
-import eionet.gdem.utils.Utils;
-import eionet.gdem.Properties;
-import eionet.gdem.services.db.dao.IQueryDao;
-import eionet.gdem.services.db.dao.IXQJobDao;
-
-
-import eionet.gdem.validation.ValidationService;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
+
+import eionet.gdem.Constants;
+import eionet.gdem.GDEMException;
+import eionet.gdem.Properties;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.LoggerIF;
+import eionet.gdem.services.db.dao.IQueryDao;
+import eionet.gdem.services.db.dao.IXQJobDao;
+import eionet.gdem.utils.Utils;
+import eionet.gdem.validation.ValidationService;
 
 
 /**

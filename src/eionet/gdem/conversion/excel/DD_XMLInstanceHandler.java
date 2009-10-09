@@ -24,11 +24,14 @@
 package eionet.gdem.conversion.excel;
 
 
-import eionet.gdem.utils.Utils;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-
 import java.lang.reflect.Method;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.LocatorImpl;
+
+import eionet.gdem.utils.Utils;
 
 /**
 * Handler for parsing xml instance document from datadictionary

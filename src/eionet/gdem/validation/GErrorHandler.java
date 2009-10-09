@@ -23,8 +23,8 @@
 
 package eionet.gdem.validation;
 
-import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class GErrorHandler extends DefaultHandler {

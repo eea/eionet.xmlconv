@@ -24,21 +24,16 @@
 
 package eionet.gdem.qa.servlets;
 
-import java.io.IOException;
+import java.util.Timer;
 
 import javax.servlet.ServletConfig;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import javax.servlet.ServletException;
-import java.util.Timer;
-import eionet.gdem.qa.WQChecker;
-import eionet.gdem.services.GDEMServices;
-//import eionet.gdem.utils.Utils;
+import javax.servlet.http.HttpServlet;
+
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.qa.WQChecker;
+import eionet.gdem.services.GDEMServices;
 
 /**
 * Servlet started automatically when the servlet engine starts

@@ -22,7 +22,6 @@
 package eionet.gdem.dcm.business;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

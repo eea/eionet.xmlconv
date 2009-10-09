@@ -36,6 +36,7 @@ import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 
 public class SchemaElemFormAction extends Action {
@@ -60,7 +61,6 @@ public class SchemaElemFormAction extends Action {
 		} else {
 			schemaId = (String) httpServletRequest.getSession().getAttribute("schemaId");
 		}
-
 		SchemaElemHolder seHolder = new SchemaElemHolder();
 
 		try {
@@ -77,12 +77,16 @@ public class SchemaElemFormAction extends Action {
 			form.setSchemaLang(seHolder.getSchema().getSchemaLang());
 			form.setDtd(seHolder.getSchema().getIsDTD());
 			String fileName = seHolder.getSchema().getUplSchemaFileName();
-			if(!Utils.isNullStr(fileName)){
+			if(seHolder.getSchema().getUplSchema()!=null && !Utils.isNullStr(fileName)){
+				form.setUplSchemaId(seHolder.getSchema().getUplSchema().getUplSchemaId());
+				form.setUplSchemaFileUrl(seHolder.getSchema().getUplSchema().getUplSchemaFileUrl());
+				form.setLastModified(seHolder.getSchema().getUplSchema().getLastModified());				
 				form.setUplSchemaFileName(fileName);
 				form.setUplSchemaFileUrl(Properties.gdemURL + "/schema/" +fileName);
 			}
-			
-			httpServletRequest.getSession().setAttribute("schema.rootElemets", seHolder);
+			seHolder.setSchemaIdRemoteUrl(Utils.isURL(seHolder.getSchema().getSchema()) &&
+					!seHolder.getSchema().getSchema().startsWith(SecurityUtil.getUrlWithContextPath(httpServletRequest)));
+			httpServletRequest.getSession().setAttribute("schema.rootElements", seHolder);
 
 		} catch (DCMException e) {
 			e.printStackTrace();

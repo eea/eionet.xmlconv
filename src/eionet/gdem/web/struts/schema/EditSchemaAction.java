@@ -30,6 +30,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
+import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
@@ -53,6 +54,9 @@ public class EditSchemaAction extends Action {
 		String dtdId = form.getDtdId();
 		String schemaLang = form.getSchemaLang();
 		boolean doValidation = form.isDoValidation();
+		String uplSchemaId = form.getUplSchemaId();
+		FormFile file = form.getSchemaFile();
+		String fileName = form.getUplSchemaFileName();
 
 		if (isCancelled(httpServletRequest)) {
 			try {
@@ -90,6 +94,7 @@ public class EditSchemaAction extends Action {
 		try {
 			SchemaManager sm = new SchemaManager();
 			sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdId);
+		
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.updated"));
 			httpServletRequest.setAttribute("schema", schema);
 		} catch (DCMException e) {

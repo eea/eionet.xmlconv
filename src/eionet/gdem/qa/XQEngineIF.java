@@ -22,9 +22,9 @@
  */
 
 package eionet.gdem.qa;
-import eionet.gdem.GDEMException;
-
 import java.io.OutputStream;
+
+import eionet.gdem.GDEMException;
 /**
 * Interface for XQuery Engine implementation
 */

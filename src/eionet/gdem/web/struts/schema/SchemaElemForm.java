@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.dto.Schema;
 
@@ -41,8 +42,31 @@ public class SchemaElemForm extends ActionForm{
 	private boolean doValidation=false;
 	private String schemaLang;
 	private boolean dtd=false;
+
+	// uploaded schema file
 	private String uplSchemaFileName;
 	private String uplSchemaFileUrl;
+	private FormFile schemaFile;
+	private String lastModified;
+	public FormFile getSchemaFile() {
+		return schemaFile;
+	}
+	public void setSchemaFile(FormFile schemaFile) {
+		this.schemaFile = schemaFile;
+	}
+	public String getLastModified() {
+		return lastModified;
+	}
+	public void setLastModified(String lastModified) {
+		this.lastModified = lastModified;
+	}
+	public String getUplSchemaId() {
+		return uplSchemaId;
+	}
+	public void setUplSchemaId(String uplSchemaId) {
+		this.uplSchemaId = uplSchemaId;
+	}
+	private String uplSchemaId;
 	
 	
 	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
@@ -58,6 +82,8 @@ public class SchemaElemForm extends ActionForm{
 			dtd=false;
 			uplSchemaFileName=null;
 			uplSchemaFileUrl=null;
+			schemaFile=null;
+			lastModified=null;
 		  }
 	public String getDescription() {
 		return description;

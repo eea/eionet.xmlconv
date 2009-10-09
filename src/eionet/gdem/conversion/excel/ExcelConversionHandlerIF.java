@@ -23,8 +23,9 @@
 
 package eionet.gdem.conversion.excel;
 
-import eionet.gdem.GDEMException;
 import java.io.OutputStream;
+
+import eionet.gdem.GDEMException;
 
 /**
 * The main class, which is calling POI HSSF methods for creating Excel fiile and adding data into it

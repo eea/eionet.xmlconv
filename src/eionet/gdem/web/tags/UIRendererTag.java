@@ -33,7 +33,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 
-
 import eionet.gdem.Properties;
 import eionet.gdem.utils.cache.MemoryCache;
 import eionet.gdem.utils.xml.XSLTransformer;

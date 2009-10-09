@@ -21,6 +21,7 @@
 
 package eionet.gdem.dcm.business;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -55,6 +56,10 @@ import eionet.gdem.dto.UplSchema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.services.db.dao.IRootElemDao;
+import eionet.gdem.services.db.dao.ISchemaDao;
+import eionet.gdem.services.db.dao.IUPLSchemaDao;
+import eionet.gdem.utils.HttpUtils;
 import eionet.gdem.utils.MultipartFileUpload;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
@@ -62,9 +67,6 @@ import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.schema.SchemaElemHolder;
 import eionet.gdem.web.struts.schema.UplSchemaHolder;
 import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
-import eionet.gdem.services.db.dao.IRootElemDao;
-import eionet.gdem.services.db.dao.ISchemaDao;
-import eionet.gdem.services.db.dao.IUPLSchemaDao;
 
 
 public class SchemaManager {
@@ -398,14 +400,17 @@ public class SchemaManager {
 		SchemaElemHolder se = new SchemaElemHolder();
 
 		boolean xsduPrm = false;
+		boolean xsddPrm = false;
 		Schema schema;
 		ArrayList elems;
 
 		try {
 			elems = new ArrayList();
 			xsduPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "u");
+			xsddPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "d");
 
 			se.setXsduPrm(xsduPrm);
+			se.setXsddPrm(xsddPrm);
 
 			Vector list = schemaDao.getSchemas(schemaId, false);
 
@@ -413,8 +418,6 @@ public class SchemaManager {
 			if (list == null) list = new Vector();
 
 			if (list.size() > 0) {
-
-				HashMap uplSchema = uplSchemaDao.getUplSchemaByFkSchemaId(schemaId);
 
 				schema = new Schema();
 
@@ -427,8 +430,30 @@ public class SchemaManager {
 				schema.setDtdPublicId((String) schemaHash.get("dtd_public_id"));
 				
 				
-				if(uplSchema!=null && uplSchema.get("upl_schema_file")!=null){
-					schema.setUplSchemaFileName((String)uplSchema.get("upl_schema_file"));
+				//get uploaded schema information
+				HashMap uplSchemaMap = uplSchemaDao.getUplSchemaByFkSchemaId(schemaId);
+				
+				if(uplSchemaMap!=null && uplSchemaMap.get("upl_schema_file")!=null){
+					UplSchema uplSchema = new UplSchema();
+
+					String uplSchemaFile = (String) uplSchemaMap.get("upl_schema_file");
+					String uplSchemaId = (String) uplSchemaMap.get("upl_schema_id");
+					String uplSchemaFileUrl = Properties.gdemURL + "/schema/" +uplSchemaFile;
+
+					if(!Utils.isNullStr(uplSchemaFile)){
+						try{
+							File f=new File(Properties.schemaFolder,uplSchemaFile);
+							if (f!=null)
+								uplSchema.setLastModified(Utils.getDateTime(new Date(f.lastModified())));
+						}
+						catch(Exception e){
+						}
+					}
+					uplSchema.setUplSchemaId(uplSchemaId);
+					uplSchema.setUplSchemaFile(uplSchemaFile);
+					uplSchema.setUplSchemaFileUrl(uplSchemaFileUrl);
+					schema.setUplSchema(uplSchema);
+					schema.setUplSchemaFileName(uplSchemaFile);
 				}
 					
 				se.setSchema(schema);
@@ -666,6 +691,19 @@ public class SchemaManager {
 	
 	public void addUplSchema(String user, FormFile file, String fileName, String fkSchemaId) throws DCMException {
 
+		try{
+			InputStream fileInputStream = file.getInputStream();
+			addUplSchema(user, fileInputStream, fileName, fkSchemaId);
+			file.destroy();
+		} catch (DCMException e) {
+			throw e;
+		} catch (Exception e) {
+			_logger.error("Error adding upoaded schema",e);
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+	}
+	public void addUplSchema(String user, InputStream fileInputStream, String fileName, String fkSchemaId) throws DCMException {
+
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "i")) {
 				throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_INSERT);
@@ -686,17 +724,15 @@ public class SchemaManager {
 				}
 			}
 
-			InputStream in = file.getInputStream();
 			String filepath = new String(Properties.schemaFolder + File.separatorChar + fileName);
 			OutputStream w = new FileOutputStream(filepath);
 			int bytesRead = 0;
 			byte[] buffer = new byte[8192];
-			while ((bytesRead = in.read(buffer, 0, 8192)) != -1) {
+			while ((bytesRead = fileInputStream.read(buffer, 0, 8192)) != -1) {
 				w.write(buffer, 0, bytesRead);
 			}
 			w.close();
-			in.close();
-			file.destroy();
+			fileInputStream.close();
 
 			uplSchemaDao.addUplSchema(fileName, null, fkSchemaId);
 
@@ -861,6 +897,19 @@ public class SchemaManager {
 
 	public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, FormFile file) throws DCMException {
 
+		try{
+			InputStream fileInputStream = file.getInputStream();
+			updateUplSchema(user, uplSchemaId, schemaId, fileName, fileInputStream);
+			file.destroy();
+		} catch (DCMException e) {
+			throw e;
+		} catch (Exception e) {
+			_logger.error("Error adding upoaded schema",e);
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+	}
+	public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, InputStream fileInputStream) throws DCMException {
+
 		
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
@@ -876,19 +925,17 @@ public class SchemaManager {
 
 		try {
 			//store the uploaded content into schema folder with the given filename
-			if(file!=null && !Utils.isNullStr(fileName)){
+			if(fileInputStream!=null && !Utils.isNullStr(fileName)){
 				
-				InputStream in = file.getInputStream();
 				String filepath = new String(Properties.schemaFolder + File.separatorChar + fileName);
 				OutputStream w = new FileOutputStream(filepath);
 				int bytesRead = 0;
 				byte[] buffer = new byte[8192];
-				while ((bytesRead = in.read(buffer, 0, 8192)) != -1) {
+				while ((bytesRead = fileInputStream.read(buffer, 0, 8192)) != -1) {
 					w.write(buffer, 0, bytesRead);
 				}
 				w.close();
-				in.close();
-				file.destroy();
+				fileInputStream.close();
 			}
 			
 			//  DB update needed
@@ -1092,5 +1139,97 @@ public class SchemaManager {
 		return fileName;
 		
 	}
+	/**
+	 * compares the differences between remote schema and the local copy of it
+	 * @param schemaUrl
+	 * @param schemaFile
+	 * @return if the result is empty string, then the files are identical,
+	 *  otherwise BusinessConstants with AppReosurce identifier is returned
+	 * @throws DCMException
+	 */
+	public String diffRemoteSchema(byte[] remoteSchema, String schemaFile) throws DCMException{
+		
+		String remoteSchemaHash ="";
+		String fileHash = "";
+		String result = "";
+		
+		// make md5
+		try{
+			remoteSchemaHash = Utils.digest(remoteSchema,"md5");
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+		// make local file md5
+		//if there is no local file, then there is nothing to diff
+		if(Utils.isNullStr(schemaFile))
+			return "";
+		
+		File f = new File (Properties.schemaFolder, schemaFile);
+		if(!f.exists()){
+			return BusinessConstants.WARNING_LOCALFILE_NOTAVAILABLE;
+		}
+		try{
+			fileHash = Utils.digest(f, "md5");
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return BusinessConstants.WARNING_LOCALFILE_NOTAVAILABLE;
+		}
+		// compare
+		result=remoteSchemaHash.equals(fileHash) && remoteSchemaHash.length()>0 ? 
+				BusinessConstants.WARNING_FILES_IDENTICAL:BusinessConstants.WARNING_FILES_NOTIDENTICAL;
+		
+		return result;
+	}
+	/**
+	 * Download remote schema from specified URL and return it as byte array
+	 * 
+	 * @param url
+	 * @return
+	 * @throws DCMException
+	 */
+	public byte[] downloadRemoteSchema(String url)throws DCMException{ 
+		// download schema
+		byte[] remoteSchema=null;
+		try{
+			remoteSchema = HttpUtils.downloadRemoteFile(url);
+		}
+		catch(DCMException dce){
+			dce.printStackTrace();
+			throw dce;
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			throw new DCMException(BusinessConstants.EXCEPTION_SCHEMAOPEN_ERROR);
+		}
+		return remoteSchema;
+	}
+	/**
+	 * Method tries to download the remote XML Schema and store it in the local cache.
+	 * Method registers the schema in T_UPL_SCHEMA table.
+	 *   
+	 * @param user
+	 * @param schemaUrl
+	 * @param schemaFileName
+	 * @param schemaId
+	 * @param uplSchemaId
+	 * @throws DCMException
+	 */
+	public void storeRemoteSchema(String user, String schemaUrl, String schemaFileName,
+			String schemaId, String uplSchemaId) throws DCMException{
+		
+		byte[] remoteSchema = downloadRemoteSchema(schemaUrl);
+		ByteArrayInputStream in = new ByteArrayInputStream(remoteSchema);
+		if(Utils.isNullStr(schemaFileName))
+			schemaFileName=generateSchemaFilenameByID(Properties.schemaFolder,schemaId, Utils.extractExtension(schemaUrl));
+		if(Utils.isNullStr(uplSchemaId))
+			addUplSchema(user, in, schemaFileName, schemaId);
+		else
+			updateUplSchema(user, uplSchemaId, schemaId, schemaFileName, in);
+
+	}
+	
 
 }

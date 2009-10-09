@@ -23,27 +23,37 @@
 
 package eionet.gdem.validation;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.exceptions.DCMException;
-
-import org.xml.sax.*;
-
-import javax.xml.parsers.*;
-import org.w3c.dom.*;
-
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * The class offers validation methods for XMLCONV and remote clients
@@ -60,6 +70,8 @@ public class ValidationService {
 	private String ticket = null;
 	private boolean trustedMode=true;//false for web clients
 	private static LoggerIF _logger=GDEMServices.getLogger();
+	private String originalSchema = null;	//original URL
+
 	private String validatedSchema = null;	//system URL
 	private String validatedSchemaURL = null; //public URL
 
@@ -291,6 +303,7 @@ public class ValidationService {
 			//ignore local schema, use the original schema from remote URL
 			_logger.error(e);
 		}
+		setOriginalSchema(schema);
 		setValidatedSchema(systemURL);
 		setValidatedSchemaURL(publicURL);
 	}
@@ -321,6 +334,12 @@ public class ValidationService {
 	}
 	public void setValidatedSchemaURL(String validatedSchemaURL) {
 		this.validatedSchemaURL = validatedSchemaURL;
+	}
+	public String getOriginalSchema() {
+		return originalSchema;
+	}
+	public void setOriginalSchema(String originalSchema) {
+		this.originalSchema = originalSchema;
 	}
 
 	public static void main(String[] s) {

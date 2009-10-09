@@ -23,22 +23,23 @@
 
 package eionet.gdem.utils;
 
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
-import eionet.gdem.services.db.dao.IHostDao;
-import eionet.gdem.GDEMException;
-import eionet.gdem.Properties;
-
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import java.io.*;
+import eionet.gdem.Properties;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.LoggerIF;
+import eionet.gdem.services.db.dao.IHostDao;
 
 
 /**

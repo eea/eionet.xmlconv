@@ -46,9 +46,13 @@ public class DeleteUplSchemaAction extends Action {
 		ActionMessages errors = new ActionMessages();
 		ActionMessages messages = new ActionMessages();
 
-		String schemaId = (String) httpServletRequest.getParameter("schemaId");
+		SchemaElemForm form = (SchemaElemForm) actionForm;
+		
+		String schemaId = form.getSchemaId();
+		String schemaFile = form.getUplSchemaFileName();
+		
+		String forward = "success";
 		String user_name = (String) httpServletRequest.getSession().getAttribute("user");
-		String schemaFile = (String) httpServletRequest.getParameter("schemaFile");
 		boolean deleteSchema = httpServletRequest.getParameter("deleteSchema")!=null;
 
 		try {
@@ -60,12 +64,18 @@ public class DeleteUplSchemaAction extends Action {
 			if(deleteSchema && schemaDeleted)
 				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.deleted"));
 
-			if(deleteSchema && !schemaDeleted)
+			if(deleteSchema && !schemaDeleted){
 				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.notdeleted"));
+			}
+			if(!deleteSchema){
+				httpServletRequest.setAttribute("schemaId", schemaId);
+				forward="success_deletefile";
+			}
 		} catch (DCMException e) {
 			//e.printStackTrace();
 			_logger.error("Error deleting root schema",e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+			forward="fail";
 		}
 		httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
@@ -73,6 +83,6 @@ public class DeleteUplSchemaAction extends Action {
 		saveMessages(httpServletRequest,messages);
 		saveErrors(httpServletRequest,errors);
 		
-		return actionMapping.findForward("success");
+		return actionMapping.findForward(forward);
 	}
 }

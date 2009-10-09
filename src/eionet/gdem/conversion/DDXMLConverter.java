@@ -53,7 +53,6 @@ import eionet.gdem.conversion.excel.DD_XMLInstance;
 import eionet.gdem.conversion.excel.DD_XMLInstanceHandler;
 import eionet.gdem.conversion.excel.ExcelUtils;
 import eionet.gdem.conversion.odf.OpenDocumentUtils;
-import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;

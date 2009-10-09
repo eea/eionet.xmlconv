@@ -3,7 +3,8 @@
  */
 package eionet.gdem.validation;
 
-import org.xml.sax.*;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
 
 import eionet.gdem.utils.Utils;
 /**

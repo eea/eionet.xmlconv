@@ -25,14 +25,13 @@
 
 package eionet.gdem.utils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletInputStream;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import java.util.Random;
+
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;

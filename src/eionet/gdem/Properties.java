@@ -26,7 +26,7 @@ package eionet.gdem;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 /**
  * Several settings and properties for GDEM
@@ -101,7 +101,7 @@ public class Properties {
 	
 	private static ResourceBundle props;
 	private static ResourceBundle ldapProps;
-	public static Category logger;
+    public static final Logger logger = Logger.getLogger(Properties.class);
 
 	public static String dateFormatPattern="dd MMM yyyy";
 	public static String timeFormatPattern="dd MMM yyyy hh:mm:ss";
@@ -109,7 +109,6 @@ public class Properties {
 	public static int wqMaxJobs = 20;
 	 static {
 
-		if (logger == null) logger = Category.getInstance("gdem");
 
 		if (props == null) {
 			props = ResourceBundle.getBundle("gdem");

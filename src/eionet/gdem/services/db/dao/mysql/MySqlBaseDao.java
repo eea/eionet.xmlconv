@@ -12,10 +12,10 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.LoggerIF;
 
 public abstract class MySqlBaseDao {
 

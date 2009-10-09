@@ -6,10 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.services.db.dao.IBackupDao;

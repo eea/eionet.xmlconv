@@ -23,31 +23,27 @@
 
 package eionet.gdem.qa.engines;
 
-import java.util.Properties;
-
-import java.io.Reader;
-
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.OutputKeys;
-
-import eionet.gdem.Constants;
-import eionet.gdem.GDEMException;
-import eionet.gdem.qa.XQScript;
-import eionet.gdem.services.LoggerIF;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.utils.Utils;
-
-import net.sf.saxon.Configuration;
-import net.sf.saxon.value.StringValue;
-import net.sf.saxon.query.StaticQueryContext;
-import net.sf.saxon.query.DynamicQueryContext;
-//import net.sf.saxon.query.QueryProcessor;
-import net.sf.saxon.query.XQueryExpression;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.io.StringReader;
+import java.util.Properties;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.stream.StreamResult;
+
+import net.sf.saxon.Configuration;
+import net.sf.saxon.query.DynamicQueryContext;
+import net.sf.saxon.query.StaticQueryContext;
+import net.sf.saxon.query.XQueryExpression;
+import net.sf.saxon.value.StringValue;
+import eionet.gdem.Constants;
+import eionet.gdem.GDEMException;
+import eionet.gdem.qa.XQScript;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.Utils;
 
 
 public class SaxonImpl extends QAScriptEngineStrategy {
@@ -71,6 +67,7 @@ public class SaxonImpl extends QAScriptEngineStrategy {
     //config.setRecoveryPolicy(Configuration.DO_NOT_RECOVER);
 
     config.setHostLanguage(config.XQUERY);
+    config.setLineNumbering(true);
     StaticQueryContext staticEnv = new StaticQueryContext(config);
     //staticEnv.setConfiguration(config);
     DynamicQueryContext dynamicEnv = new DynamicQueryContext(config);

@@ -23,16 +23,16 @@
 
 package eionet.gdem.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpSession;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
-import com.tee.uit.security.AppUser;
-import com.tee.uit.security.AccessController;
 import com.tee.uit.security.AccessControlListIF;
+import com.tee.uit.security.AccessController;
+import com.tee.uit.security.AppUser;
 
 import edu.yale.its.tp.cas.client.filter.CASFilter;
 import eionet.gdem.GDEMException;

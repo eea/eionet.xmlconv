@@ -4,15 +4,13 @@
 package eionet.gdem.conversion;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import eionet.gdem.GDEMException;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.remote.RemoteServiceIF;
-
-import eionet.gdem.GDEMException;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS

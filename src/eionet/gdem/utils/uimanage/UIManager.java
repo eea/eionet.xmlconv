@@ -20,17 +20,17 @@
  */
 package eionet.gdem.utils.uimanage;
 
-import java.util.Map;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.XPathAPI;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
-import org.w3c.dom.DOMException;
 
 public class UIManager implements IUIManager {
 

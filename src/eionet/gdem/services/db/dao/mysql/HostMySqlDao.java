@@ -1,14 +1,14 @@
 package eionet.gdem.services.db.dao.mysql;
 
-import eionet.gdem.services.db.dao.IHostDao;
-import eionet.gdem.utils.Utils;
-
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import eionet.gdem.services.db.dao.IHostDao;
+import eionet.gdem.utils.Utils;
 
 
 public class HostMySqlDao extends MySqlBaseDao implements IHostDao {

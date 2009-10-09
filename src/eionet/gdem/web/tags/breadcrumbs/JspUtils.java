@@ -21,14 +21,9 @@
 
 package eionet.gdem.web.tags.breadcrumbs;
 
-import java.io.IOException;
-import java.io.StringWriter;
-
-import javax.servlet.jsp.tagext.BodyContent;
-
-import javax.servlet.jsp.PageContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.PageContext;
 
 class JspUtils {
 

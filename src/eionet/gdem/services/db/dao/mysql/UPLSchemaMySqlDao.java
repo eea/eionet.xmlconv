@@ -1,17 +1,16 @@
 package eionet.gdem.services.db.dao.mysql;
 
-import eionet.gdem.Properties;
-import eionet.gdem.services.db.dao.IUPLSchemaDao;
-
-
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 import java.util.Hashtable;
+import java.util.Vector;
+
+import eionet.gdem.Properties;
+import eionet.gdem.services.db.dao.IUPLSchemaDao;
 
 
 public class UPLSchemaMySqlDao  extends MySqlBaseDao implements IUPLSchemaDao {

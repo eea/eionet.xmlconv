@@ -24,8 +24,9 @@
 package eionet.gdem.conversion.excel;
 
 import java.io.InputStream;
-import eionet.gdem.GDEMException;
 import java.util.Hashtable;
+
+import eionet.gdem.GDEMException;
 
 /**
 * The main class, which is calling POI HSSF methods for reading Excel file

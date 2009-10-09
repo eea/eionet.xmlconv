@@ -24,20 +24,24 @@
 package eionet.gdem.conversion.excel;
 
 
-import eionet.gdem.conversion.DDXMLConverter;
-import eionet.gdem.conversion.SourceReaderIF;
-import eionet.gdem.utils.Utils;
-
+import java.io.InputStream;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
-
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.hssf.usermodel.*;
-
 import java.util.Vector;
-import java.io.InputStream;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+
 import eionet.gdem.GDEMException;
+import eionet.gdem.conversion.DDXMLConverter;
+import eionet.gdem.conversion.SourceReaderIF;
+import eionet.gdem.utils.Utils;
 
 /**
 * The main class, which is calling POI HSSF methods for reading Excel file

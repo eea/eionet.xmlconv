@@ -23,14 +23,17 @@
 
 package eionet.gdem.conversion.excel;
 
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.hssf.util.*;
-
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.Vector;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.Vector;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import eionet.gdem.GDEMException;
 

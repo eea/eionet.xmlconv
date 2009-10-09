@@ -25,8 +25,10 @@ package eionet.gdem.validation;
 
 
 
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import eionet.gdem.utils.Utils;
 

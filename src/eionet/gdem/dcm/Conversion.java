@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-
 import eionet.gdem.Properties;
 import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.services.GDEMServices;
@@ -33,7 +32,6 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
-import eionet.gdem.services.db.dao.IConvTypeDao;
 
 
 public class Conversion {

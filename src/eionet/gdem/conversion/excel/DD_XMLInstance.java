@@ -23,15 +23,16 @@
 
 package eionet.gdem.conversion.excel;
 
-import eionet.gdem.utils.Utils;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
-import java.io.File;
-import java.io.OutputStreamWriter;
+
+import eionet.gdem.utils.Utils;
 
 public class DD_XMLInstance  {
 

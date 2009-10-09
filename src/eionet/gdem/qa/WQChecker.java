@@ -23,18 +23,14 @@
 
 package eionet.gdem.qa;
 
-import eionet.gdem.Constants;
-import eionet.gdem.Properties;
-import eionet.gdem.services.LoggerIF;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.db.dao.IXQJobDao;
-
-
-//import eionet.gdem.utils.Utils;
-
+import java.sql.SQLException;
 import java.util.TimerTask;
 
-import java.sql.SQLException;
+import eionet.gdem.Constants;
+import eionet.gdem.Properties;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.LoggerIF;
+import eionet.gdem.services.db.dao.IXQJobDao;
 
 
 

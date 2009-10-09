@@ -23,8 +23,6 @@ package eionet.gdem.dto;
 
 import java.io.Serializable;
 
-import eionet.gdem.utils.Utils;
-
 public class UplSchema implements Serializable {
 
 	private String uplSchemaId;

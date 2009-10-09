@@ -23,8 +23,8 @@
 
 package eionet.gdem.services;
 
-import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -40,7 +40,7 @@ public class LoggerModule implements LoggerIF {
   
   
   //private static GDEMLogger logger;
-  Category logger;
+  Logger logger;
   
 
   
@@ -49,22 +49,22 @@ public class LoggerModule implements LoggerIF {
  * will be initialized by the servlet container.
  */
   public LoggerModule() {
-    logger = Category.getInstance("gdem");
+    logger = Logger.getLogger(LoggerModule.class);
   }
   
-  private Priority convSeverity(int severity) {
+  private Level convSeverity(int severity) {
     switch (severity) {
       case EMERGENCY:
-        return Priority.FATAL;
+        return Level.FATAL;
       case ERROR:
-        return Priority.ERROR;
+        return Level.ERROR;
       case WARNING:
-        return Priority.WARN;
+        return Level.WARN;
       case INFO:
-        return Priority.INFO;
+        return Level.INFO;
       case DEBUG:
       default:
-        return Priority.DEBUG;
+        return Level.DEBUG;
     }
   }
 /**

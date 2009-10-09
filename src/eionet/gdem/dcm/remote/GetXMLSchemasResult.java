@@ -3,7 +3,6 @@
  */
 package eionet.gdem.dcm.remote;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

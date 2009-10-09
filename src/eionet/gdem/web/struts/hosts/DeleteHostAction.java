@@ -32,11 +32,10 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
 
-
 import eionet.gdem.conversion.ssr.Names;
-import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.web.struts.BaseAction;
 
 public class DeleteHostAction extends BaseAction {

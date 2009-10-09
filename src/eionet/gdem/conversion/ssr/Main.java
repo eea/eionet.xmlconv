@@ -23,26 +23,20 @@
 
 package eionet.gdem.conversion.ssr;
 
-import java.util.Enumeration;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
 import javax.servlet.ServletException;
-import java.io.IOException;
-import java.util.MissingResourceException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-//import com.tee.uit.security.AccessControlListIF;
-//import com.tee.uit.security.AccessController;
-import com.tee.uit.security.*;
-//import com.tee.uit.security.SignOnException;
+import com.tee.uit.security.AppUser;
 
 import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.utils.SecurityUtil;
 
 
 /**

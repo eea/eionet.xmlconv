@@ -26,7 +26,6 @@ import java.io.File;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-
 import eionet.gdem.Properties;
 
 

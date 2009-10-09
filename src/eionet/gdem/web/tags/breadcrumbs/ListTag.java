@@ -22,15 +22,9 @@
 package eionet.gdem.web.tags.breadcrumbs;
 
 import java.io.IOException;
-import java.io.StringWriter;
-
 import java.util.Iterator;
 
-import javax.servlet.ServletRequest;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 

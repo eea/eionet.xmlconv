@@ -1,15 +1,15 @@
 package eionet.gdem.services.db.dao.mysql;
 
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Vector;
+
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.Utils;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Vector;
-import java.util.HashMap;
 
 
 public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {

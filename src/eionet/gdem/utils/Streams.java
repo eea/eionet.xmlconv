@@ -23,13 +23,13 @@
 package eionet.gdem.utils;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.io.InputStreamReader;
 
 /**
  * Utility functions related to Streams.

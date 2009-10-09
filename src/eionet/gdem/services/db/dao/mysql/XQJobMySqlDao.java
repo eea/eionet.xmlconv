@@ -1,16 +1,13 @@
 package eionet.gdem.services.db.dao.mysql;
 
-import eionet.gdem.services.db.dao.IXQJobDao;
-import eionet.gdem.utils.Utils;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import eionet.gdem.Constants;
-
-import java.sql.Array;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Vector;
+import eionet.gdem.services.db.dao.IXQJobDao;
+import eionet.gdem.utils.Utils;
 
 
 

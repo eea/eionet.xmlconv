@@ -1,12 +1,13 @@
 package eionet.gdem.services.db.dao.mysql;
 
-import eionet.gdem.services.db.dao.IConvTypeDao;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import eionet.gdem.services.db.dao.IConvTypeDao;
 
 
 public class ConvTypeMySqlDao extends MySqlBaseDao implements IConvTypeDao {

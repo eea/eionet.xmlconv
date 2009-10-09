@@ -21,9 +21,11 @@
 
 package eionet.gdem.utils.xml;
 
-import org.apache.xerces.parsers.*;
-import org.apache.xerces.util.*;
-import org.apache.xerces.xni.*;
+import org.apache.xerces.parsers.DOMParser;
+import org.apache.xerces.util.EncodingMap;
+import org.apache.xerces.xni.Augmentations;
+import org.apache.xerces.xni.XMLResourceIdentifier;
+import org.apache.xerces.xni.XNIException;
 import org.apache.xerces.xni.parser.XMLParserConfiguration;
 
 public class CustomDomParser extends DOMParser {

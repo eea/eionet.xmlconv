@@ -38,7 +38,6 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.SecurityUtil;
-import eionet.gdem.utils.Utils;
 
 public class PurgeAction extends Action {
 

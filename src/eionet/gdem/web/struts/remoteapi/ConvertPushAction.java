@@ -14,15 +14,14 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import eionet.gdem.utils.MultipartFileUpload;
-import eionet.gdem.utils.Utils;
-
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.MultipartFileUpload;
+import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.BaseAction;
 
 /**
