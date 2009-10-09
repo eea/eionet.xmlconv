@@ -15,15 +15,11 @@
 
 
 fieldset {
-	border: 1px solid;
-	margin: 1em 0em 1em 0em;
-	padding: 0em 1em 1em 1em;
-	line-height: 1.5em;
-	width: auto;
+	margin: 0.5em 0em 0.5em 0em;
+	padding: 0.5em 0.5em 0.5em 0.5em;
 }
 legend {
-	background: #FFF;
-	padding: 0.5em;
+	padding: 0.2em;
 	font-size: 100%;
 }
 
@@ -507,3 +503,24 @@ a.portletMore:visited {
 	background: #FFF;
 	text-align: center;
 }
+tr.zebraeven {
+	background-color: #f6f6f6;
+}
+
+tr.even {
+	background-color: #f6f6f6;
+}
+@media screen { /* To prevent PocketPC from loading the stylesheet */
+/* REDESIGNED PART START */
+
+table.formtable {
+	width: 100%;
+}
+.formtable .labelcol {
+	width: 25%;
+}
+.formtable .entrycol {
+	width: 75%;
+}
+/* REDESIGNED PART END */
+
