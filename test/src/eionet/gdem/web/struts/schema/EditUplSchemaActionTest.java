@@ -60,15 +60,15 @@ public class EditUplSchemaActionTest  extends MockStrutsTestCase {
 
 		addRequestParameter("uplSchemaId",uplSchemaId);
 		addRequestParameter("schemaId",schemaId);
-		addRequestParameter("schemaFileName",schemaFileName);
+		addRequestParameter("uplSchemaFileName",schemaFileName);
 		((MockStrutsMultipartRequestSimulator)request).writeFile("schemaFile",getClass().getClassLoader().getResource(TestConstants.SEED_XLIFF_DTD).getFile(),"text/xml");       
 
 		actionPerform();
 		verifyForward("success");
-		verifyForwardPath("/do/uplSchemas");
+		verifyForwardPath("/do/schemaElemForm");
 		//verifyTilesForward("success", "/do/uplSchemas");
 		verifyNoActionErrors();
-		String[] actionMess = {"label.schema.updated"};
+		String[] actionMess = {"label.uplSchema.updated"};
 		verifyActionMessages(actionMess);
 
 		//Get schema by ID and test if all inserted fields are in DB
@@ -91,12 +91,12 @@ public class EditUplSchemaActionTest  extends MockStrutsTestCase {
 
 		addRequestParameter("uplSchemaId",uplSchemaId);
 		addRequestParameter("schemaId",schemaId);
-		addRequestParameter("schemaFileName",schemaFileName);
+		addRequestParameter("uplSchemaFileName",schemaFileName);
 		((MockStrutsMultipartRequestSimulator)request).writeFile("schemaFile",getClass().getClassLoader().getResource(TestConstants.SEED_XLIFF_XML).getFile(),"text/xml");       
 
 		actionPerform();
 		verifyForward("success");
-		verifyForwardPath("/do/uplSchemas");
+		verifyForwardPath("/do/schemaElemForm");
 		String[] errMess = {BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_UPDATE};
 		verifyActionErrors(errMess);
 

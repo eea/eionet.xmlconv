@@ -16,9 +16,9 @@ import eionet.gdem.test.TestUtils;
  * EditUplSchemaFormActionTest
  */
 
-public class EditUplSchemaFormActionTest  extends MockStrutsTestCase {
+public class SchemaElemFormActionTest  extends MockStrutsTestCase {
 
-    public EditUplSchemaFormActionTest(String testName) {
+    public SchemaElemFormActionTest(String testName) {
         super(testName);
     }
 
@@ -37,10 +37,10 @@ public class EditUplSchemaFormActionTest  extends MockStrutsTestCase {
         session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
         
         addRequestParameter("schemaId","2");
-        setRequestPathInfo("/editUplSchemaForm");
+        setRequestPathInfo("/schemaElemForm");
         actionPerform();
         verifyForward("success");
-        verifyInputTilesForward("/editUplSchema.jsp");
+        verifyInputTilesForward("/schema.jsp");
         verifyNoActionErrors();
     }
 
@@ -49,11 +49,11 @@ public class EditUplSchemaFormActionTest  extends MockStrutsTestCase {
         session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
         
         addRequestParameter("schemaId","0");
-        setRequestPathInfo("/editUplSchemaForm");
+        setRequestPathInfo("/schemaElemForm");
         actionPerform();
         verifyForward("success");
-        verifyInputTilesForward("/editUplSchema.jsp");
-        String[] errMess = {BusinessConstants.EXCEPTION_GENERAL};
+        verifyInputTilesForward("/schema.jsp");
+        String[] errMess = {BusinessConstants.EXCEPTION_SCHEMA_NOT_EXIST};
         verifyActionErrors(errMess);
     }
 }
