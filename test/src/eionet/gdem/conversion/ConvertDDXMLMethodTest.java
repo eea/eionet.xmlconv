@@ -7,12 +7,12 @@ import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Vector;
 
+import junit.framework.TestCase;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
-import junit.framework.TestCase;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS

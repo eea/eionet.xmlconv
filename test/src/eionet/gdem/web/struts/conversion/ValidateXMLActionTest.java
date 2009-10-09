@@ -8,7 +8,6 @@ import java.util.List;
 import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.dto.Schema;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;

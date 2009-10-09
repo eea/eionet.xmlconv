@@ -4,8 +4,8 @@
 package eionet.gdem.test;
 
 import java.io.FileOutputStream;
-import java.sql.DriverManager;
 import java.sql.Connection;
+import java.sql.DriverManager;
 
 import org.dbunit.AbstractDatabaseTester;
 import org.dbunit.JdbcDatabaseTester;

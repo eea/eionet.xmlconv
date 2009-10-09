@@ -3,13 +3,11 @@
  */
 package eionet.gdem.conversion;
 
-import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
-
-import junit.framework.TestCase;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS

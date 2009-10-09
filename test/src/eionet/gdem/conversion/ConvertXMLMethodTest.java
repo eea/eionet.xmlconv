@@ -3,11 +3,11 @@
  */
 package eionet.gdem.conversion;
 
+import java.util.Hashtable;
+
 import org.dbunit.DBTestCase;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
-
-import java.util.Hashtable;
 
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;

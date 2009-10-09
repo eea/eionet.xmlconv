@@ -6,9 +6,8 @@ package eionet.gdem.utils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import eionet.gdem.Properties;
-
 import junit.framework.TestCase;
+import eionet.gdem.Properties;
 
 /**
  * This is a class for unit testing the <code>eionet.gdem.utils.Utils</code> class.

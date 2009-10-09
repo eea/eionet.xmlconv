@@ -6,11 +6,11 @@ package eionet.gdem.utils;
 import java.io.File;
 import java.io.FileInputStream;
 
+import junit.framework.TestCase;
 import eionet.gdem.Properties;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
-import junit.framework.TestCase;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS

@@ -5,8 +5,6 @@ package eionet.gdem.utils;
 
 import java.util.HashMap;
 
-import eionet.gdem.services.db.dao.IHostDao;
-
 import junit.framework.TestCase;
 
 /**

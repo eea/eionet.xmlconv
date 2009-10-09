@@ -5,8 +5,6 @@ package eionet.gdem.web.struts.conversion;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;

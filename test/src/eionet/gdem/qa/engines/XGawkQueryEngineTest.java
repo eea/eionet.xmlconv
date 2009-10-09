@@ -23,8 +23,8 @@ package eionet.gdem.qa.engines;
 
 import java.util.HashMap;
 
-import eionet.gdem.Properties;
 import junit.framework.TestCase;
+import eionet.gdem.Properties;
 
 /**
  * @author Enriko Käsper, Tieto Estonia

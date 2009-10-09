@@ -4,12 +4,12 @@
 package eionet.gdem.utils;
 
 
+import junit.framework.TestCase;
 import edu.yale.its.tp.cas.client.filter.CASFilter;
 import eionet.gdem.test.mocks.MockHttpSession;
 import eionet.gdem.test.mocks.MockServletContext;
 import eionet.gdem.test.mocks.MockServletRequest;
 import eionet.gdem.web.struts.login.AfterCASLoginAction;
-import junit.framework.TestCase;
 
 /**
  * This class tests teh different methods in SecurityUtil class.

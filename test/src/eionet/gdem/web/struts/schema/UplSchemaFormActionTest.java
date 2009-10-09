@@ -5,10 +5,10 @@ package eionet.gdem.web.struts.schema;
 
 import javax.servlet.http.HttpSession;
 
+import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
-import servletunit.struts.MockStrutsTestCase;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS

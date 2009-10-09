@@ -5,11 +5,9 @@ package eionet.gdem.conversion;
 
 import java.util.Vector;
 
+import junit.framework.TestCase;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
-
-
-import junit.framework.TestCase;
 
 /**
  * Tests ConversionService methods

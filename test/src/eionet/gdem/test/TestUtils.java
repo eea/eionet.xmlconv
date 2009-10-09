@@ -7,8 +7,6 @@ import java.util.Map;
 
 import org.apache.struts.action.ActionMapping;
 
-import servletunit.struts.MockStrutsTestCase;
-
 import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.test.mocks.MockActionMapping;

@@ -3,9 +3,9 @@
  */
 package eionet.gdem.validation;
 
+import junit.framework.TestCase;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
-import junit.framework.TestCase;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS

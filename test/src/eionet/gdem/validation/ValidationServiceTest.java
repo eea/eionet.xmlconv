@@ -94,6 +94,7 @@ public class ValidationServiceTest extends DBTestCase{
 		assertTrue(s.startsWith("<div"));
 		assertTrue(s.indexOf("OK")>0);
 		assertEquals(validService.getValidatedSchemaURL(),Properties.gdemURL.concat("/").concat(TestConstants.SEED_GW_SCHEMA));
+		assertEquals(validService.getOriginalSchema(),"http://dd.eionet.europa.eu/GetSchema?id=TBL4564");
 		//check if errors list is empty
 		assertTrue(validService.getErrorList()==null || validService.getErrorList().size()==0);
 	}
@@ -112,6 +113,7 @@ public class ValidationServiceTest extends DBTestCase{
 		
 		assertEquals(validService.getValidatedSchema(),"http://dd.eionet.europa.eu/GetSchema");
 		assertEquals(validService.getValidatedSchemaURL(),"http://dd.eionet.europa.eu/GetSchema");
+		assertEquals(validService.getOriginalSchema(),"http://dd.eionet.europa.eu/GetSchema?id=TBL4564");
 	}
 	/**
 	 * Test XML file validation method. Validation Service should use locally stored XML Schema described in T_UPL_SCHEMA table.
@@ -128,6 +130,7 @@ public class ValidationServiceTest extends DBTestCase{
 		assertTrue(s.startsWith("<div"));
 		assertTrue(s.indexOf("OK")>0);
 		assertEquals(validService.getValidatedSchemaURL(),Properties.gdemURL.concat("/").concat(TestConstants.SEED_XLIFF_DTD));
+		assertEquals(validService.getOriginalSchema(),"http://www.oasis-open.org/committees/xliff/documents/xliff.dtd");
 		//check if errors list is empty
 		assertTrue(validService.getErrorList()==null || validService.getErrorList().size()==0);
 	}

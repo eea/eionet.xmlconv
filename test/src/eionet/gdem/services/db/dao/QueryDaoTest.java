@@ -22,7 +22,6 @@
 package eionet.gdem.services.db.dao;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.dbunit.DBTestCase;

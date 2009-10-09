@@ -3,8 +3,6 @@
  */
 package eionet.gdem.web.struts.conversion;
 
-import java.util.List;
-
 import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.Schema;

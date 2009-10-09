@@ -4,7 +4,6 @@
 package eionet.gdem.web.struts.schema;
 
 import java.io.File;
-import java.util.Hashtable;
 
 import javax.servlet.http.HttpSession;
 

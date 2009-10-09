@@ -7,12 +7,11 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import junit.framework.TestCase;
 import eionet.gdem.Properties;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
-
-import junit.framework.TestCase;
 
 /**
  * This is a class for unit testing the <code>eionet.gdem.dcm.business.SchemaManager</code> class.

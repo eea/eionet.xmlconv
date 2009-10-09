@@ -3,18 +3,18 @@
  */
 package eionet.gdem.dcm.business;
 
-import java.util.List;
-
 import org.dbunit.DBTestCase;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 
 import eionet.gdem.Properties;
+import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.UplSchema;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.test.mocks.MockFormFile;
+import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.schema.UplSchemaHolder;
 
 /**
@@ -111,5 +111,27 @@ public class SchemaManagerDBTest  extends DBTestCase{
 		
 		String url2 = sm.getUplSchemaURL(schemaUrl2);
 		assertEquals(url2, schemaUrl2);
+	}
+	public void testDiffRemoteSchema() throws Exception{
+		SchemaManager sm = new SchemaManager();
+
+		String schemaFile = getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA).getFile();
+		byte[] bytes = Utils.fileToBytes(schemaFile);
+		
+		//files are iodentical
+		String result = sm.diffRemoteSchema(bytes, TestConstants.SEED_GENERALREPORT_SCHEMA);	
+		assertEquals(result,BusinessConstants.WARNING_FILES_IDENTICAL);
+
+		//filename is empty
+		result = sm.diffRemoteSchema(bytes, "");	
+		assertEquals(result,"");
+
+		//file does not exists
+		result = sm.diffRemoteSchema(bytes, "nofile.xsd");	
+		assertEquals(result,BusinessConstants.WARNING_LOCALFILE_NOTAVAILABLE);
+
+		//files are different
+		result = sm.diffRemoteSchema(bytes, "seed-gw-schema.xsd");	
+		assertEquals(result,BusinessConstants.WARNING_FILES_NOTIDENTICAL);
 	}
 }
