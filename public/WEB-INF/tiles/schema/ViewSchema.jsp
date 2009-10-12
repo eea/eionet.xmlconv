@@ -35,7 +35,7 @@
 	    <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >				
 			<div id="operations">
 		  	<ul>
-		   		<li><a href="schemaElemForm?backToConv=schema&amp;schemaId=<bean:write name="schemaForm" property="schemaId" />"><bean:message key="label.schema.edit.button" /></a></li>
+		   		<li><a href="schemaElemForm?schemaId=<bean:write name="schemaForm" property="schemaId" />"><bean:message key="label.schema.edit.button" /></a></li>
 			</ul>
 			</div>
 		</logic:equal>

@@ -32,12 +32,10 @@
 	<logic:present name="qascripts" name="qascript.qascriptList" scope="session" property="qascripts" >
 		<div style="width: 97%">
 			<table class="datatable" width="100%">
-				<col style="width:10%"/>
-				<col style="width:52%"/>
-				<col style="width:38%"/>
+				<col/>
+				<col/>
 				<thead>
 					<tr>
-						<th scope="col" class="scope-col"><bean:message key="label.table.qascript.action"/></th>
 						<th scope="col" class="scope-col"><bean:message key="label.table.qascript.xmlschema"/></th>
 						<th scope="col" class="scope-col"><bean:message key="label.table.qascript.qascripts"/></th>
 					</tr>
@@ -45,15 +43,10 @@
 				<tbody>
 					<logic:iterate indexId="index" id="schema" name="qascript.qascriptList" scope="session" property="qascripts" type="Schema">
 					<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
-						<td align="center">
-	    					<html:link page="/queries.jsp" paramId="ID" paramName="schema" paramProperty="id">
-								<html:img page="/images/properties.gif" altKey="label.table.qascript.qascripts" title="view QA scripts for this XML Schema" />
-							</html:link>
-							<a href="viewSchemaForm?backToConv=yes&amp;schemaId=<bean:write name="schema" property="id" />">
-								<html:img page="/images/info_icon.gif" altKey="label.table.schemainfo" title="view schema info"/></a>
-						</td>
 						<td title="<bean:write name="schema" property="schema"/>">
-							<bean:write name="schema" property="schema" />
+	    					<html:link page="/queries.jsp" paramId="ID" paramName="schema" paramProperty="id" title="view QA scripts for this XML Schema" >
+								<bean:write name="schema" property="schema" />
+							</html:link>
 						</td>
 						<td>
 							<logic:iterate id="qascript" name="schema" scope="page" property="qascripts" type="QAScript">

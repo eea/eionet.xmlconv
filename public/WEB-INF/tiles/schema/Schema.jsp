@@ -267,7 +267,6 @@
    		    <html:hidden property="schemaId" />
    		    <html:hidden property="uplSchemaFileName" />
    		    <html:hidden property="uplSchemaId" />
-	        <html:hidden property="backToConv" />
    		    <html:hidden property="schema" />       		        	 		        	
 		</div>
 		</html:form>

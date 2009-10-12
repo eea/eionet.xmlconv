@@ -7,7 +7,7 @@
 
 <html:xhtml/>
 
-		<ed:breadcrumbs-push label="Upload Schema" level="1" />
+		<ed:breadcrumbs-push label="Upload Schema" level="2" />
 		<h1><bean:message key="label.title.uplSchema.add"/></h1> 
 
 		<%-- include Error display --%>

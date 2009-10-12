@@ -7,7 +7,7 @@
 
 
 <html:xhtml/>
-		<ed:breadcrumbs-push label="Add Stylesheet" level="2" />
+		<ed:breadcrumbs-push label="Add Stylesheet" level="3" />
 		<h1><bean:message key="label.stylesheet.add"/></h1> 
 
 		<%-- include Error display --%>
@@ -109,16 +109,11 @@
 					    <tr>
 					      <td colspan="2" align="center">
 					        <html:submit styleClass="button">
-					        	<bean:message key="label.stylesheet.upload"/>
+					        	<bean:message key="label.xsl.save"/>
 					        </html:submit>
-					        <logic:present name="schema" scope="request">
 					        <html:cancel styleClass="button">
 					        	<bean:message key="label.stylesheet.cancel"/>
 					        </html:cancel>
-					        </logic:present>
-					        <logic:notPresent name="schema" scope="request">
-					        	<input type="button"  value="<bean:message key="label.stylesheet.cancel"/>"  class="button" onclick="location.href='<bean:write name="webRoot"/>/do/stylesheetList'" />
-					        </logic:notPresent>		        
 					      </td>
 					    </tr>
 					  </table>

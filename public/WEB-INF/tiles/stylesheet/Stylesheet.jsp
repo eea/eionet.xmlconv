@@ -10,6 +10,14 @@
 
 <logic:present name="stylesheet.stylesheetList">
 
+	<logic:equal name="ssdPrm" value="true"  name="stylesheet.stylesheetList" scope="session" property="ssiPrm" >
+		<div id="operations">
+			<ul>
+				<li><a href="addStylesheetForm"><bean:message key="label.stylesheet.add" /></a></li>
+			</ul>
+		</div>
+	</logic:equal>
+
 	<h1 class="documentFirstHeading">
 		<bean:message key="label.stylesheet.handcoded"/>
 	</h1>
@@ -19,15 +27,21 @@
 
 	<div class="visualClear">&nbsp;</div>
 
+
 	<logic:present name="handCodedStylesheets" name="stylesheet.stylesheetList" scope="session" property="handCodedStylesheets" >
-		<div style="width: 97%">
+		<html:form action="/deleteSchema" method="post">
+
 			<table class="datatable" width="100%">
-				<col style="width:10%"/>
-				<col style="width:52%"/>
-				<col style="width:38%"/>
+				<logic:equal name="ssdPrm" value="true"  name="stylesheet.stylesheetList" scope="session" property="ssdPrm" >
+					<col style="width:5%"/>
+				</logic:equal>
+				<col/>
+				<col/>
 				<thead>
 					<tr>
-						<th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.action"/></th>
+						<logic:equal name="ssdPrm" value="true"  name="stylesheet.stylesheetList" scope="session" property="ssdPrm" >
+							<th scope="col" class="scope-col"></th>
+						</logic:equal>
 						<th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.title"/></th>
 						<th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.stylesheets"/></th>
 					</tr>
@@ -35,19 +49,16 @@
 				<tbody>
 					<logic:iterate indexId="index" id="schema" name="stylesheet.stylesheetList" scope="session" property="handCodedStylesheets" type="Schema">
 					<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
-						<td align="center">
-	    					<html:link page="/do/schemaStylesheets" paramId="schema" paramName="schema" paramProperty="schema">
-								<html:img page="/images/properties.gif" altKey="label.table.stylesheet" title="view stylesheets" />
-							</html:link>
-							<a href="viewSchemaForm?backToConv=yes&amp;schemaId=<bean:write name="schema" property="id" />">
-								<html:img page="/images/info_icon.gif" altKey="label.table.schemainfo" title="view schema info"/></a>
-							<logic:equal name="ssdPrm" value="true"  name="stylesheet.stylesheetList" scope="session" property="ssdPrm" >
-								<a href="deleteSchema?schemaId=<bean:write name="schema" property="id" />" onclick='return schemaDelete("<bean:write name="schema" property="schema" />");'>
-									<html:img page="/images/delete.gif" altKey="label.delete" title="delete schema" /></a>
-		    				</logic:equal>
-						</td>
+						<logic:equal name="ssdPrm" value="true"  name="stylesheet.stylesheetList" scope="session" property="ssdPrm" >
+							<td align="center">
+								<bean:define id="schemaId" name="schema" property="id" />
+								<html:radio property="schemaId" value="${schemaId}" />
+							</td>
+						</logic:equal> 
 						<td title="<bean:write name="schema" property="schema"/>">
-							<bean:write name="schema" property="schema" />
+	    					<html:link page="/do/schemaStylesheets" paramId="schema" paramName="schema" paramProperty="schema"  title="view schema stylesheets" >
+								<bean:write name="schema" property="schema" />
+							</html:link>
 						</td>
 						<td>
 							<logic:iterate id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">
@@ -64,7 +75,12 @@
 					</tr>
 				</tbody>
 			</table>
-		</div>
+			<logic:equal name="ssdPrm" value="true"  name="stylesheet.stylesheetList" scope="session" property="ssdPrm" >
+				<div class="boxbottombuttons">
+   					<input type="button"  class="button" value="<bean:message key="label.schema.delete"/>" onclick="return submitAction(1,'deleteSchema');" />
+   				</div>
+   			</logic:equal>
+		</html:form>
 	</logic:present>
 	<logic:notPresent name="handCodedStylesheets" name="stylesheet.stylesheetList" scope="session" property="handCodedStylesheets" >
 		<div class="success">
@@ -75,17 +91,6 @@
 	<div class="visualClear">&nbsp;</div>
 
 
-	<logic:equal name="ssdPrm" value="true"  name="stylesheet.stylesheetList" scope="session" property="ssiPrm" >
-
-	<div class="boxbottombuttons">
-	<form action="addStylesheetForm">
-		<div>
-			<input class="button" type="submit" value="<bean:message key="label.stylesheet.add" />"/>
-		</div>
-	</form>
-	</div>
-
-	</logic:equal>
 
 </logic:present>
 

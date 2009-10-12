@@ -5,8 +5,9 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 
-<ed:breadcrumbs-push label="XML Schemas" level="1" />
+<html:xhtml/>
 
+<ed:breadcrumbs-push label="XML Schemas" level="1" />
 
 <logic:present name="schemas.uploaded">
 
@@ -25,15 +26,21 @@
 	<%-- include Error display --%>
 	<tiles:insert definition="Error" />
 
+
 	<logic:present name="schemas" name="schemas.uploaded" scope="session" property="schemas" >
+		<html:form action="/deleteUplSchema" method="post">
 			<table class="datatable" width="100%">
-				<col style="width:15%"/>
-				<col style="width:45%"/>
+				<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >
+					<col style="width:5%"/>
+				</logic:equal>
+				<col/>
 				<col style="width:5%"/>
 				<col style="width:45%"/>
 				<thead>
 					<tr>
-						<th scope="col"><span title="Action"><bean:message key="label.table.uplSchema.action"/></span></th>
+						<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >
+							<th scope="col"></th>
+						</logic:equal>
 						<th scope="col"><span title="Schema"><bean:message key="label.table.uplSchema.schema"/></span></th>
 						<th scope="col"></th>
 						<th scope="col"><span title="Description"><bean:message key="label.table.uplSchema.description"/></span></th>
@@ -42,23 +49,15 @@
 				<tbody>
 					<logic:iterate indexId="index" id="schema" name="schemas.uploaded" scope="session" property="schemas" type="UplSchema">
 						<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
-							<td align="center" >
-								<a href="schemaStylesheets?backList=uplschemas&amp;schema=<bean:write name="schema" property="schemaUrl" />">
-									<img src="<bean:write name="webRoot"/>/images/properties.gif" alt="<bean:message key="label.table.stylesheet" />" title="view stylesheets" /></a>
-								
-								<a href="viewSchemaForm?backToConv=schema&amp;schemaId=<bean:write name="schema" property="schemaId" />">
-									<img src="<bean:write name="webRoot"/>/images/info_icon.gif" alt="<bean:message key="label.table.schemainfo" />" title="view schema info" /></a>
-								
-								
-								<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >
-									<a href="deleteUplSchema?schemaId=<bean:write name="schema" property="schemaId" />&amp;deleteSchema=true&amp;schemaFileName=<bean:write name="schema" property="uplSchemaFile" />"
-									onclick='return schemaDelete("<bean:write name="schema" property="schemaUrl" />");'>
-										<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete schema" /></a>
-								</logic:equal>
-							</td>
+							<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >
+								<td align="center" >
+									<bean:define id="schemaId"  name="schema" property="schemaId" />
+									<html:radio property="schemaId" value="${schemaId}" /> 
+								</td>
+							</logic:equal>
 							<td>
-								<a  href="<bean:write name="schema" property="schemaUrl" />">
-									<bean:write name="schema" property="schemaUrl" />
+								<a href="viewSchemaForm?schemaId=<bean:write name="schema" property="schemaId" />" title="view XML Schema properties">
+									<bean:write name="schema" property="schemaUrl"  />
 								</a>
 							</td>
 							<td align="center" >
@@ -74,7 +73,14 @@
 					</logic:iterate>
 				</tbody>
 			</table>
+			<logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >
+				<div class="boxbottombuttons">
+	    			<input type="button"  class="button" value="<bean:message key="label.schema.delete"/>" onclick="return submitAction(1,'deleteUplSchema?deleteSchema=true');" />
+	    		</div>
+			</logic:equal>						
+		</html:form>
 	</logic:present>
+	
 	<logic:notPresent name="schemas" name="schemas.uploaded" scope="session" property="schemas" >
 		<div class="success">
 			<bean:message key="label.uplSchema.noSchemas"/>
@@ -84,6 +90,4 @@
 
 
 </logic:present>
-
-
 

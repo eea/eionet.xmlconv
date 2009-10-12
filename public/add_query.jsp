@@ -37,9 +37,9 @@ response.setDateHeader("Expires", 0);
 	if (convTypes==null) convTypes = new Vector();
 
 %>
-<ed:breadcrumbs-push label="Add query" level="2" />
+<ed:breadcrumbs-push label="Add QA Script" level="3" />
 <tiles:insert definition="TmpHeader">
-	<tiles:put name="title" value="Add a new query"/>
+	<tiles:put name="title" value="Add a new QA script"/>
 </tiles:insert>
 
 
@@ -120,8 +120,7 @@ response.setDateHeader("Expires", 0);
 				<tr>
 					<td></td>
 					<td align="left">
-						<input name="SUBMIT" type="submit" class="button" value="Upload"/>&#160;&#160;
-						<input name="RESET" type="reset" class="button" value="Clear" />
+						<input name="SUBMIT" type="submit" class="button" value="Save"/>&#160;&#160;
 					</td>
 				</tr>
 			</table>
