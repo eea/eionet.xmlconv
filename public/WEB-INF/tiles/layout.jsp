@@ -56,6 +56,8 @@ response.setDateHeader("Expires", 0);
 		<tiles:insert attribute="footer">
 			<tiles:put name="showFooter" beanName="showFooter" />
 		</tiles:insert>
+		
+		
 	</body>
 	
 </html>

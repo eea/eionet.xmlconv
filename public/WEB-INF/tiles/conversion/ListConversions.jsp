@@ -11,7 +11,7 @@
 			<tiles:put name="selectedTab" value="convertXML" />
 		</tiles:insert>
 				
-		<ed:breadcrumbs-push label="Find conversions" level="1" />
+		<ed:breadcrumbs-push label="Convert XML" level="1" />
 		<h1><bean:message key="label.conversion.find"/></h1> 
 	
 		<%-- include Error display --%>

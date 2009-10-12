@@ -6,7 +6,8 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html"%>
 <%@ page import="java.io.File,java.util.Date,java.text.DateFormat,java.util.HashMap, java.util.Vector, java.util.Hashtable, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.Utils, eionet.gdem.Properties" %>
 <%@ page import="eionet.gdem.qa.XQScript"%>
-<%@page import="eionet.gdem.Constants"%><ed:breadcrumbs-push label="Query" level="1" />
+<%@page import="eionet.gdem.Constants"%>
+
 
 <%
 response.setHeader("Pragma", "No-cache");
@@ -68,14 +69,11 @@ response.setHeader("charset","no-store");
 	}
 	String historyPage = "/do/qaScriptHistory?" +Constants.XQ_SCRIPT_ID_PARAM + "=" + id;
 %>
-
+<ed:breadcrumbs-push label="QA Script" level="3" />
 
 <tiles:insert definition="TmpHeader"/>
 
-
-
 <%@ include file="menu.jsp" %>
-
 
 <div style="width:100%;">
     <div id="tabbedmenu">
@@ -91,13 +89,6 @@ response.setHeader("charset","no-store");
 
 	<div id="operations" >
 		<ul>
-			<%
-			if(Utils.isNullStr(schema_id)){%>
-				<li><a href="main">Back to Queries</a></li>
-			<%} else { %>
-				<li><a href="<%=Names.QUERIES_JSP%>?ID=<%=schema_id%>">Back to XML Schema</a></li>
-
-			<%}%>
 			<li><a href="<%=Names.SANDBOX_JSP%>?ID=<%=id%>" title="Run query in Sandbox">Run Query</a></li>
 		</ul>
 	</div>

@@ -6,7 +6,8 @@
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed"%>
 <html:xhtml/>
 
-<ed:breadcrumbs-push label="QA Scripts" level="1" />
+<ed:breadcrumbs-push label="All QA Scripts" level="1" />
+
 
 
 	<logic:equal name="ssdPrm" value="true"  name="qascript.qascriptList" scope="session" property="ssiPrm" >

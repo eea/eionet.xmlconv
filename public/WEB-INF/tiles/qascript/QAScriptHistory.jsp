@@ -22,7 +22,8 @@
         </ul>
 	</div>
 
-<ed:breadcrumbs-push label="QA Script history" level="1" />
+<ed:breadcrumbs-push label="QA Script History" level="3" />
+
 
 	<h1 class="documentFirstHeading">
 		<bean:message key="label.qascriptHistory.title"/>

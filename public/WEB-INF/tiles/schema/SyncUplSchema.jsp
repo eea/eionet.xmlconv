@@ -5,7 +5,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 
-<ed:breadcrumbs-push label="Update XML schema cached copy" level="1" />
+<ed:breadcrumbs-push label="Update XML schema cached copy" level="3" />
 
 
 	<h1 class="documentFirstHeading">

@@ -13,6 +13,8 @@ String a=request.getContextPath(); session.setAttribute("webRoot",a==null?"":a);
 </div> <!-- workarea -->
 </div> <!-- container -->
 
+<ed:breadcrumbs-list htmlid="portal-breadcrumbs" classStyle="breadcrumbitem" classStyleEnd="breadcrumbitemlast" delimiter="" />
+
 <tiles:useAttribute id="showFooter" name="showFooter"/>
 <logic:equal name="showFooter" value="true">
 	<div id="pagefoot">

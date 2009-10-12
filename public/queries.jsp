@@ -1,6 +1,8 @@
 <%@page contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html"%>
 <%@ page import="java.io.File,java.util.Date,java.text.DateFormat,java.util.HashMap, java.util.Vector, eionet.gdem.services.GDEMServices, eionet.gdem.conversion.ssr.Names, eionet.gdem.Properties,eionet.gdem.Properties,eionet.gdem.utils.Utils" %>
 
 <%
@@ -46,9 +48,10 @@ response.setDateHeader("Expires", 0);
     if (queries==null) queries=new Vector();
 %>
 
-<ed:breadcrumbs-push label="Queries" level="1" />
+<ed:breadcrumbs-push label="XML Schema QA Scripts" level="2" />
+
 <tiles:insert definition="TmpHeader">
-	<tiles:put name="title" value="Queries"/>
+	<tiles:put name="title" value="QA Scripts"/>
 </tiles:insert>
 
 <script type="text/javascript" src="util.js"></script>
@@ -59,14 +62,35 @@ response.setDateHeader("Expires", 0);
     <%
     boolean ssiPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "i");
 	boolean xsduPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "u");
+
+	String schemaPage = "/do/viewSchemaForm?schemaId=" + id;
+	String xslPage = "/do/schemaStylesheets?schema=" + name;
+
 	%>
-    <div id="operations">
+		<div id="tabbedmenu">   	
+  			<ul>
+      			<li>
+           			<html:link page="<%=schemaPage%>"   titleKey="label.tab.title.schema" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+               			<bean:message key="label.tab.title.schema" />
+           			</html:link>
+       			</li>
+       			<li>
+                <html:link page="<%=xslPage %>"   titleKey="label.tab.title.xsl" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                    <bean:message key="label.tab.title.xsl" />
+                </html:link>
+       			</li>
+       			<li id="currenttab">
+       				<span style="color: black; text-decoration: none;" title='<bean:message key="label.tab.title.scripts"/>'><bean:message key="label.tab.title.scripts" /></span>
+       			</li>
+   			</ul>
+		</div>
+				
+	<div id="operations">
     <ul>
 		<% if (ssiPrm){%>
         	<li><a href="<%=Names.ADD_QUERY_JSP%>?ID=<%=id%>" title="Add a new XQuery">Add Query</a></li>
 		<%}%>
         <li><a href="<%=Names.SANDBOX_JSP%>?SCHEMA_ID=<%=id%>" title="Run all XQuery scripts for this schema">Run QA Service</a></li>
-        <li><a href="do/schemaElemForm?schemaId=<%=id%>">View schema info</a></li>
     </ul>
     </div>
 

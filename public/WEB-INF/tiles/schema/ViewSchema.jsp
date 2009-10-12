@@ -7,9 +7,30 @@
 
 <html:xhtml/>
 
+	<ed:breadcrumbs-push label="XML Schema or DTD" level="2" />
 
-	
-		<ed:breadcrumbs-push label="XML Schema or DTD" level="2" />
+   	<bean:define id="schemaURL" name="schemaForm" property="schema" />
+   	<bean:define id="id" name="schemaForm" property="schemaId" />
+
+    <div id="tabbedmenu">
+    	
+        <ul>
+            <li id="currenttab">
+            	<span style="color: black; text-decoration: none;" title='<bean:message key="label.tab.title.schema"/>'><bean:message key="label.tab.title.schema" /></span>
+            </li>
+            <li>
+                <html:link page="/do/schemaStylesheets?schema=${schemaURL}"   titleKey="label.tab.title.xsl" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                    <bean:message key="label.tab.title.xsl" />
+                </html:link>
+            </li>
+            <li>
+                <html:link page="/queries.jsp?ID=${id}"   titleKey="label.tab.title.scripts" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                    <bean:message key="label.tab.title.scripts" />
+                </html:link>
+            </li>
+        </ul>
+	</div>
+
 
 	    <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >				
 			<div id="operations">

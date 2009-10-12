@@ -5,7 +5,8 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 
-<ed:breadcrumbs-push label="XML schemas" level="1" />
+<ed:breadcrumbs-push label="XML Schemas" level="1" />
+
 
 <logic:present name="schemas.uploaded">
 

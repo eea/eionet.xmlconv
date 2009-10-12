@@ -56,7 +56,6 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
 		<div class="breadcrumbhead">You are here:</div>
 		<div class="breadcrumbitem eionetaccronym"><a href="http://www.eionet.europa.eu" title="European Environment Information and Observation Network (Eionet)">Eionet</a></div>
 	</div> <!-- breadcrumbtrail -->
-	<ed:breadcrumbs-list htmlid="portal-breadcrumbs" classStyle="breadcrumbitem" classStyleEnd="breadcrumbitemlast" delimiter="" />
 	
 	<div id="leftcolumn" class="localnav">
 		<ul>
