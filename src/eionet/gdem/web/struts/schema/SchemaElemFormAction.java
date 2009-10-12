@@ -92,7 +92,7 @@ public class SchemaElemFormAction extends Action {
 			httpServletRequest.getSession().setAttribute("schema.rootElements", seHolder);
 
 		} catch (DCMException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			_logger.error("Schema element form error",e);
 			errors.add("stylesheet", new ActionMessage(e.getErrorCode()));
 			saveErrors(httpServletRequest, errors);
