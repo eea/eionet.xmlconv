@@ -67,7 +67,7 @@ public class EditUplSchemaAction extends Action {
 			if(file!=null && file.getFileSize() > 0){
 				if(Utils.isNullStr(fileName)){
 				//	Change the filename to schema-UniqueIDxsd
-					fileName = sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaId, Utils.extractExtension(file.getFileName()));
+					fileName = sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaId, Utils.extractExtension(file.getFileName(),"xsd"));
 					sm.addUplSchema(user, file, fileName, schemaId);
 				}
 				else if (uplSchemaId!=null){

@@ -902,15 +902,20 @@ public class Utils {
 	/**
      * Extracts file extension from filename
      */
-    public static String extractExtension(String strFilename)
+    public static String extractExtension(String strFilename){
+    	return extractExtension(strFilename, "xml");
+    }
+    public static String extractExtension(String strFilename, String defaultExt)
     {
         String strExtension = "";
         int index = strFilename.lastIndexOf('.');
-        if(index > 0)
+        //if the "." is before the 5 chars at the end of file name, then it's not probably a file name
+        if(index > strFilename.length()-5)
         {
             strExtension = strFilename.substring(index + 1, strFilename.length());
             strExtension = strExtension.toLowerCase();
+            return strExtension;
         }
-        return strExtension;
+        return defaultExt;
     }
 }

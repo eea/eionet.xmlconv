@@ -58,7 +58,10 @@ public class AddStylesheetAction extends Action {
 		httpServletRequest.setAttribute("schema", schema);
 
 		if (isCancelled(httpServletRequest)) {
-			return actionMapping.findForward("success");
+			if(schema!=null)
+				return new ActionForward("/do/schemaStylesheets?schema="+schema,true);  //actionMapping.findForward("success");
+			else
+				return actionMapping.findForward("list");
 		}
 
 		ActionMessages errors = new ActionMessages();

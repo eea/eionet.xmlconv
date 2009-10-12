@@ -293,7 +293,7 @@ public class ExcelToMultipleXML {
 
 	private static final String transformFileNameToExtension(String fileName, String ext) {
 		String fname = fileName;
-		String actualFileExt = Utils.extractExtension(fname);
+		String actualFileExt = Utils.extractExtension(fname, null);
 
 		if (Utils.isNullStr(actualFileExt)) {
 			fname = fname + "." + ext;

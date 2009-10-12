@@ -746,9 +746,19 @@ public class SchemaManager {
 	}
 
 
-	public boolean deleteUplSchema(String user, String schemaId, boolean delSchema) throws DCMException {
+	/**
+	 * 
+	 * @param user - user name stored in Http session attribute
+	 * @param schemaId	- schema DB identifier that will be deleted
+	 * @param delSchema - false=delete only row in T_UPL_SCHEMA (local file); 
+	 * 						true=delete both row in T_SCHEMA and T_UPL_SCHEMA
+	 * @return	0= nothing deleted; 1 = T_SCHEMA deleted; 2= T_UPL_SCHEMA deleted; 3= T_SCHEMA & T_UPL_SCHEMA deleted 
+	 * @throws DCMException
+	 */
+	public int deleteUplSchema(String user, String schemaId, boolean delSchema) throws DCMException {
 
-
+		int ret = 0;
+		
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "d")) {
 				_logger.debug("You don't have permissions to delete schemas!");
@@ -785,13 +795,15 @@ public class SchemaManager {
 						_logger.error("Error deleting upoladed schema file",e);
 						throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 					}
+					ret=ret+2;
 				}
 			}
 		} catch (Exception e) {
 			_logger.error("Error deleting uploaded schema",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
-		return delSchema;
+		if(delSchema)ret++;
+		return ret;
 
 	}
 
@@ -1223,7 +1235,7 @@ public class SchemaManager {
 		byte[] remoteSchema = downloadRemoteSchema(schemaUrl);
 		ByteArrayInputStream in = new ByteArrayInputStream(remoteSchema);
 		if(Utils.isNullStr(schemaFileName))
-			schemaFileName=generateSchemaFilenameByID(Properties.schemaFolder,schemaId, Utils.extractExtension(schemaUrl));
+			schemaFileName=generateSchemaFilenameByID(Properties.schemaFolder,schemaId, Utils.extractExtension(schemaUrl,"xsd"));
 		if(Utils.isNullStr(uplSchemaId))
 			addUplSchema(user, in, schemaFileName, schemaId);
 		else

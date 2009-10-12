@@ -49,7 +49,6 @@ public class DeleteUplSchemaAction extends Action {
 		SchemaElemForm form = (SchemaElemForm) actionForm;
 		
 		String schemaId = form.getSchemaId();
-		String schemaFile = form.getUplSchemaFileName();
 		
 		String forward = "success";
 		String user_name = (String) httpServletRequest.getSession().getAttribute("user");
@@ -57,14 +56,14 @@ public class DeleteUplSchemaAction extends Action {
 
 		try {
 			SchemaManager sm = new SchemaManager();
-			boolean schemaDeleted = sm.deleteUplSchema(user_name, schemaId, deleteSchema);
-			if(!Utils.isNullStr(schemaFile))
+			int schemaDeleted = sm.deleteUplSchema(user_name, schemaId, deleteSchema);
+			if(schemaDeleted==2)
 				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.deleted"));
 
-			if(deleteSchema && schemaDeleted)
+			if(deleteSchema && (schemaDeleted==1 || schemaDeleted==3))
 				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.deleted"));
 
-			if(deleteSchema && !schemaDeleted){
+			if(deleteSchema && (schemaDeleted==0 || schemaDeleted==2)){
 				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.notdeleted"));
 			}
 			if(!deleteSchema){
@@ -77,11 +76,8 @@ public class DeleteUplSchemaAction extends Action {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			forward="fail";
 		}
-		httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
-
-		saveMessages(httpServletRequest,messages);
-		saveErrors(httpServletRequest,errors);
+		saveMessages(httpServletRequest.getSession(),messages);
+		saveErrors(httpServletRequest.getSession(),errors);
 		
 		return actionMapping.findForward(forward);
 	}

@@ -75,7 +75,7 @@ public class AddUplSchemaAction extends Action {
 			String tmpSchemaUrl ="";
 			//generate unique file name
 			if(schemaFile!=null){
-				fileName = sm.generateUniqueSchemaFilename(user, Utils.extractExtension(schemaFile.getFileName())); 
+				fileName = sm.generateUniqueSchemaFilename(user, Utils.extractExtension(schemaFile.getFileName(),"xsd")); 
 				if (Utils.isNullStr(schemaUrl)){
 					tmpSchemaUrl = Properties.gdemURL + "/schema/" + fileName;
 					schemaUrl=tmpSchemaUrl;

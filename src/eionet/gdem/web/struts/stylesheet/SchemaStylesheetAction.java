@@ -62,10 +62,6 @@ public class SchemaStylesheetAction extends Action {
 
 		httpServletRequest.setAttribute("schema", schema);
 		
-		String backList = (httpServletRequest.getParameter("backList")==null) ?null:(String) httpServletRequest.getParameter("backList");
-
-		if(backList !=null && !backList.equals(""))
-			httpServletRequest.setAttribute("backList", backList);
 
 		try {
 			SchemaManager sm = new SchemaManager();

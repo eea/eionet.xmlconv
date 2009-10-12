@@ -35,6 +35,7 @@ import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.web.struts.schema.SchemaElemForm;
 
 public class SchemaDeleteAction extends Action {
 
@@ -43,7 +44,9 @@ public class SchemaDeleteAction extends Action {
 
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-		String schemaId = (String) httpServletRequest.getParameter("schemaId");
+		SchemaElemForm form = (SchemaElemForm) actionForm;
+		String schemaId = form.getSchemaId();
+
 		String user_name = (String) httpServletRequest.getSession().getAttribute("user");
 		ActionMessages errors = new ActionMessages();
 		ActionMessages messages = new ActionMessages();
@@ -51,7 +54,7 @@ public class SchemaDeleteAction extends Action {
 		try {
 			SchemaManager sm = new SchemaManager();
 			sm.deleteSchemaStylesheets(user_name, schemaId);
-			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.deleted"));
+			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheets.deleted"));
 		} catch (DCMException e) {
 			e.printStackTrace();
 			_logger.error("Error deleting schema",e);
@@ -59,8 +62,8 @@ public class SchemaDeleteAction extends Action {
 		}
 		// saveErrors(httpServletRequest, errors);
 
-		httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
+		saveErrors(httpServletRequest.getSession(), errors);
+		saveMessages(httpServletRequest.getSession(), messages);
 
 		return actionMapping.findForward("success");
 	}

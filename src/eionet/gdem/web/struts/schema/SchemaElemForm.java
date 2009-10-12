@@ -38,7 +38,6 @@ public class SchemaElemForm extends ActionForm{
 	private String elemName;
 	private String namespace;
 	private String dtdId;
-	private String backToConv;
 	private boolean doValidation=false;
 	private String schemaLang;
 	private boolean dtd=false;
@@ -129,13 +128,6 @@ public class SchemaElemForm extends ActionForm{
 	
 	public void setDtdId(String dtdId) {
 		this.dtdId = dtdId;
-	}
-	public String getBackToConv() {
-		return backToConv;
-	}
-	
-	public void setBackToConv(String backToConv) {
-		this.backToConv = backToConv;
 	}
 	public boolean isDoValidation() {
 		return doValidation;
