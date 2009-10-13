@@ -395,7 +395,6 @@
 		<copy todir="${test-build}" overwrite="false">
 			<fileset dir="${src}" includes="**/*.properties">
 				<exclude name="**/*.class"/>
-				<exclude name="gdem.properties"/>
 				<exclude name="log4j.properties"/>
 			</fileset>
 		</copy>
