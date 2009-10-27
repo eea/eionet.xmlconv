@@ -46,6 +46,7 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.DCMDaoFactory;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.InputFile;
+import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -176,8 +177,10 @@ public class ExcelToMultipleXML {
 					result.setStatusCode(ConversionResultDto.STATUS_ERR_SYSTEM);
 					result.setStatusDescription(e.getMessage());
 				} finally {
-					Utils.deleteFile(xmlTmpFileLocation);
-					Utils.deleteFile(xlsTmpFileLocation);
+					if(!LOGGER.isDebugEnabled()){					
+						Utils.deleteFile(xmlTmpFileLocation);
+						Utils.deleteFile(xlsTmpFileLocation);
+					}
 				}
 			}
 		}
@@ -207,14 +210,18 @@ public class ExcelToMultipleXML {
 			for (int i = 0; i < chain.size(); i++) {
 				conversionId = chain.get(i);
 				stylesheet = stylesheetMap.get(conversionId);
+				LOGGER.debug("convert->i=" + i +";conversionId=" + conversionId + ";xsl=" +stylesheet.get("xsl"));
 				// avoid conversion duplication.
 				if (!doneConversions.containsKey(conversionId)) {
 					if (i == 0) {
 						// apply transformation against content.xml
 						xmlFis = new FileInputStream(xmlTmpFileLocation);
+						LOGGER.debug("use content.xml");
 					} else {
 						// apply transformation against previous generated XML.
 						xmlFis = new ByteArrayInputStream(doneConversions.get(chain.get(i - 1)).getBytes("UTF-8"));
+						
+						LOGGER.debug("use previous generated XML");
 					}
 
 					xslFis = new FileInputStream(Properties.xslFolder + File.separatorChar + stylesheet.get("xsl"));
@@ -222,6 +229,15 @@ public class ExcelToMultipleXML {
 					xmlConv.convert(xmlFis, xslFis, out, "xml");
 					doneConversions.put(conversionId, out.toString("UTF-8"));
 					
+					if(!LOGGER.isDebugEnabled()){
+						//store tmp files in server, if debug is enabled
+						ByteArrayInputStream tmpFis = new ByteArrayInputStream(out.toByteArray());
+						FileOutputStream tmpFile = new FileOutputStream(Utils.getUniqueTmpFileName(transformFileNameToExtension("tmpOutput", "xml")));
+						Streams.drain(tmpFis, tmpFile);
+						tmpFile.close();
+						tmpFis.close();
+					}
+
 					xslFis.close();
 					xmlFis.close();
 					out.close();
@@ -278,7 +294,9 @@ public class ExcelToMultipleXML {
 			throw e;
 		} finally {
 			// delete tmp ods file
-			Utils.deleteFile(tmpOds);
+			if(!LOGGER.isDebugEnabled()){
+				Utils.deleteFile(tmpOds);
+			}
 		}
 
 		return result;
