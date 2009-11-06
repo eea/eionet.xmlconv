@@ -106,6 +106,8 @@ public class Properties {
 	public static String dateFormatPattern="dd MMM yyyy";
 	public static String timeFormatPattern="dd MMM yyyy hh:mm:ss";
 
+	private static ResourceBundle applicationResources;
+
 	public static int wqMaxJobs = 20;
 	 static {
 
@@ -204,6 +206,8 @@ public class Properties {
 				e.printStackTrace();
 			}
 		}
+		if (applicationResources == null) 
+			applicationResources = ResourceBundle.getBundle("ApplicationResources");
 
 	}
 
@@ -212,6 +216,9 @@ public class Properties {
 			path=path.substring(0, path.length() -1);
 		}
 		return path;
+	}
+	public static String getMessage(String key){
+        return applicationResources.getString(key);
 	}
 
 }

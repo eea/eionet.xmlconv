@@ -27,9 +27,22 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import eionet.gdem.Properties;
+import eionet.gdem.utils.Utils;
+
 public class GErrorHandler extends DefaultHandler {
 	private StringBuffer errContainer;
 	private StringBuffer htmlErrContainer;
+	private String schema;
+	
+	public String getSchema() {
+		return schema;
+	}
+
+	public void setSchema(String schema) {
+		this.schema = schema;
+	}
+
 	public GErrorHandler(StringBuffer errContainer, StringBuffer htmlErrContainer) {
 		this.errContainer=errContainer;
 		this.htmlErrContainer= htmlErrContainer;
@@ -65,7 +78,13 @@ public class GErrorHandler extends DefaultHandler {
 	private void writeRowStart(){
 		if (htmlErrContainer.length()==0){
 			htmlErrContainer.append("<div class='feedbacktext'>");
-			htmlErrContainer.append("<h2>XML Schema validation</h2>");
+			htmlErrContainer.append("<h2>" + Properties.getMessage("label.validation.result.title") + "</h2>");
+			htmlErrContainer.append("<p>" + Properties.getMessage("label.validation.result.description") + "</p>"); 
+			htmlErrContainer.append("<p>" + Properties.getMessage("label.validation.result.failed") + "</p>"); 			
+			if(!Utils.isNullStr(getSchema())){
+				htmlErrContainer.append("<p>").append(Properties.getMessage("label.validation.result.schema")).append(" <a href=\"")
+					.append(getSchema()).append("\">").append(getSchema()).append("</a></p>");
+			}
 			htmlErrContainer.append("<table border='1'><tr>"); 
 			htmlErrContainer.append("<th>Type</th>");
 			htmlErrContainer.append("<th>Position</th>"); 
@@ -87,8 +106,16 @@ public class GErrorHandler extends DefaultHandler {
 
 		return htmlErrContainer.toString();
 	}
-	public static String formatResultText(String text){
-		return "<div class='feedbacktext'>".concat(text).concat("</div>");
+	public static String formatResultText(String text,String schemaURL){
+		StringBuffer ret = new StringBuffer( "<div class=\"feedbacktext\">");
+		ret.append("<p>").append(text).append("</p>");
+		if(!Utils.isNullStr(schemaURL)){
+			ret.append("<p>").append(Properties.getMessage("label.validation.result.schema")).append(" <a href=\"")
+				.append(schemaURL).append("\">").append(schemaURL).append("</a></p>");
+		}
+		ret.append("</div>");
+		
+		return ret.toString();
 	}
 
 

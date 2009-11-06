@@ -35,6 +35,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.struts.action.ActionMessage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.ErrorHandler;
@@ -193,17 +194,19 @@ public class ValidationService {
 				}
 			}
 			else{
-				return GErrorHandler.formatResultText("WARNING: Could not validate XML file. Unable to locate XML Schema reference.");				
+				return GErrorHandler.formatResultText("WARNING: Could not validate XML file. Unable to locate XML Schema reference.", null);				
 			}
+			if(errHandler instanceof GErrorHandler)
+				((GErrorHandler)errHandler).setSchema(getOriginalSchema());
 			InputSource is = new InputSource( src_stream);
 			reader.parse(is);
 
 		} catch ( SAXParseException se ) {
-			return GErrorHandler.formatResultText("ERROR: Document is not well-formed. Column: " + se.getColumnNumber() + "; line:"  +se.getLineNumber() + "; " + se.getMessage());
+			return GErrorHandler.formatResultText("ERROR: Document is not well-formed. Column: " + se.getColumnNumber() + "; line:"  +se.getLineNumber() + "; " + se.getMessage(), null);
 			//ignore
 		}
 		catch (IOException ioe) { 
-			return GErrorHandler.formatResultText("ERROR: Due to an IOException, the parser could not check the document. " + ioe.getMessage());  
+			return GErrorHandler.formatResultText("ERROR: Due to an IOException, the parser could not check the document. " + ioe.getMessage(), null);  
 		}
 		catch (Exception e ) {
 			Exception se = e;
@@ -214,7 +217,7 @@ public class ValidationService {
 				se.printStackTrace(System.err);
 			else
 				e.printStackTrace(System.err);    
-			return GErrorHandler.formatResultText("ERROR: The parser could not check the document. " + e.getMessage());
+			return GErrorHandler.formatResultText("ERROR: The parser could not check the document. " + e.getMessage(), null);
 			//throw new GDEMException("Error parsing: " + e.toString());
 		}
 
@@ -228,7 +231,7 @@ public class ValidationService {
 			return getErrorList().toString();
 		}
 		else
-			return GErrorHandler.formatResultText("OK - XML Schema validation passed without errors. ");
+			return GErrorHandler.formatResultText(Properties.getMessage("label.validation.result.ok"),getOriginalSchema());
 	}
 	/**
 	 * Read default namespace from XML file
