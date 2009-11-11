@@ -88,7 +88,7 @@ public class ExcelReader implements SourceReaderIF
   	if (wb==null) return null;
 
     for (int i=0; i<wb.getNumberOfSheets();i++){
-    	String sheet_name = wb.getSheetName(i);
+    	String sheet_name = wb.getSheetName(i).trim();
     	if (sheet_name.equalsIgnoreCase(SCHEMA_SHEET_NAME))
 			continue;
     	return sheet_name;
@@ -230,7 +230,7 @@ public class ExcelReader implements SourceReaderIF
       if (schema_row==null) continue;
       if (schema_row.getLastCellNum()<0) continue;
       schema_cell = schema_row.getCell((short)0);
-      String val = schema_cell.getStringCellValue();
+      String val = schema_cell.getRichStringCellValue().toString();
 
       if (val.startsWith("http://") &&
             val.toLowerCase().indexOf("/getschema")>0 &&
@@ -261,16 +261,16 @@ public class ExcelReader implements SourceReaderIF
       if (schema_row.getLastCellNum()<1) continue;
       schema_cell = schema_row.getCell((short)1);
       if(schema_cell==null)continue;
-      String schema_val = schema_cell.getStringCellValue();
+      String schema_val = schema_cell.getRichStringCellValue().toString();
 
       if (schema_val.startsWith("http://") &&
       		schema_val.toLowerCase().indexOf("/getschema")>0 &&
             Utils.isURL(schema_val)){
 
       		sheet_cell = schema_row.getCell((short)0);
-      		String sheet_val = sheet_cell.getStringCellValue();
+      		String sheet_val = sheet_cell.getRichStringCellValue().toString();
       		if (sheet_val==null)continue;
-      	    HSSFSheet sheet = wb.getSheet(sheet_val);
+      	    HSSFSheet sheet = getSheet(sheet_val);
       	    if (sheet!=null && !result.containsKey(sheet_val))
       	    	result.put(sheet_val,schema_val);
       }
@@ -278,12 +278,12 @@ public class ExcelReader implements SourceReaderIF
     return result;
   }
     private HSSFSheet getSheet(String name){
-      HSSFSheet sheet = wb.getSheet(name);
+      HSSFSheet sheet = wb.getSheet(name.trim());
 
       if (sheet == null){
         for (int i=0; i<wb.getNumberOfSheets();i++){
           String sheet_name = wb.getSheetName(i);
-          if (sheet_name.equalsIgnoreCase(name))
+          if (sheet_name.trim().equalsIgnoreCase(name.trim()))
             return wb.getSheet(sheet_name);
       }
 
