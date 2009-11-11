@@ -118,6 +118,8 @@ public class SourceFileManager {
 				httpResponse.getOutputStream().write(buf, 0, bufLen);
 		}
 		finally{
+			httpResponse.getOutputStream().close();
+			httpResponse.getOutputStream().flush();
 			is.close();
 		}
 	}
