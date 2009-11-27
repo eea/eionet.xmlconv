@@ -23,9 +23,12 @@
 
 package eionet.gdem.qa;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
+import eionet.gdem.dto.ConvType;
 import eionet.gdem.qa.engines.SaxonImpl;
 import eionet.gdem.qa.engines.XGawkQueryEngine;
 import eionet.gdem.qa.engines.XslEngineImpl;
@@ -51,6 +54,13 @@ public class XQScript {
 	public static final String SCRIPT_LANG_XGAWK ="xgawk";
 
 	public static String[] SCRIPT_LANGS = {SCRIPT_LANG_XQUERY, SCRIPT_LANG_XSL, SCRIPT_LANG_XGAWK} ;
+
+	public static final String SCRIPT_RESULTTYPE_XML ="XML";
+	public static final String SCRIPT_RESULTTYPE_TEXT ="TEXT";
+	public static final String SCRIPT_RESULTTYPE_HTML ="HTML";
+
+	public static String[] SCRIPT_RESULTTYPES = {SCRIPT_RESULTTYPE_XML, SCRIPT_RESULTTYPE_TEXT, SCRIPT_RESULTTYPE_HTML} ;
+
 	//XQ Engine instance
 	private XQEngineIF _engine;
 
@@ -163,4 +173,5 @@ public class XQScript {
 	public void setSrcFileDownloaded(boolean srcFileDownloaded) {
 		this.srcFileDownloaded = srcFileDownloaded;
 	}
+
 }

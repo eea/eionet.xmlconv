@@ -36,6 +36,9 @@ public class BusinessConstants {
 	public static final String EXCEPTION_AUTORIZATION_SCHEMA_INSERT = "label.autorization.schema.insert";
 	public static final String EXCEPTION_XMLPARSING_ERROR = "label.conversion.xmlparsing.error";
 	public static final String EXCEPTION_SCHEMAOPEN_ERROR = "label.schemaopen.error";
+	public static final String EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE = "label.autorization.qascript.update";
+	public static final String EXCEPTION_AUTORIZATION_QASCRIPT_DELETE = "label.autorization.qascript.delete";
+	public static final String EXCEPTION_AUTORIZATION_QASCRIPT_INSERT = "label.autorization.qascript.insert";
 	
 	// public static final String EXCEPTION_PARAM_DB_SAVED =
 	// "label.editParam.db.saved";
@@ -63,5 +66,7 @@ public class BusinessConstants {
 	public static final String WARNING_FILES_NOTIDENTICAL = "warning.files.notidentical";
 	public static final String WARNING_SCHEMA_NOTVALID = "warning.schema.notvalid";
 
+	public static final String EXCEPTION_DELETE_DD_XSL = "label.stylesheet.error.deleteDD";
 
+	public static final String EXCEPTION_QASCRIPT_FILE_EXISTS = "label.qascript.error.fileExists";
 }

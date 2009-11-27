@@ -36,6 +36,7 @@ import java.util.Vector;
 
 import org.apache.struts.upload.FormFile;
 
+import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
@@ -58,9 +59,6 @@ public class StylesheetManager {
 	  private  ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
 	  private  IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
-	  public static String FILEREAD_EXCEPTION = "Unable to read the file: ";
-
-
 	public void delete(String user, String stylesheetId) throws DCMException {
 
 		try {
@@ -74,6 +72,11 @@ public class StylesheetManager {
 			_logger.error("Error deleting stylesheet", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
+
+		if(stylesheetId!=null && stylesheetId.startsWith("DD_")){
+			throw new DCMException(BusinessConstants.EXCEPTION_DELETE_DD_XSL);
+		}
+
 
 		try {
 			HashMap hash = styleSheetDao.getStylesheetInfo(stylesheetId);
@@ -199,7 +202,7 @@ public class StylesheetManager {
 					try {
 						xslText = Utils.readStrFromFile(xslFolder + xsl.get("xsl"));
 					} catch (IOException e) {
-						xslText = FILEREAD_EXCEPTION + xslFolder + xsl.get("xsl") + "\n " + e.toString();
+						xslText = Constants.FILEREAD_EXCEPTION + xslFolder + xsl.get("xsl") + "\n " + e.toString();
 					}
 					st.setXslContent(xslText);
 					String checksum = null;
@@ -211,7 +214,7 @@ public class StylesheetManager {
 					st.setChecksum(checksum);
 					try{
 				        File f=new File(xslFolder + xsl.get("xsl"));
-						if (f!=null)
+						if (f!=null && f.exists())
 							st.setModified(Utils.getDateTime(new Date(f.lastModified())));
 					}
 					catch(Exception e){
@@ -341,7 +344,7 @@ public class StylesheetManager {
 
 		try {
 			if (!Utils.isNullStr(fileName) && !Utils.isNullStr(fileContent) &&
-					fileContent.indexOf(StylesheetManager.FILEREAD_EXCEPTION)==-1 && updateContent) {
+					fileContent.indexOf(Constants.FILEREAD_EXCEPTION)==-1 && updateContent) {
 				Utils.saveStrToFile(Properties.xslFolder + File.separator + fileName, fileContent,null);
 			}
 			String schemaID = schemaDao.getSchemaID(schema);

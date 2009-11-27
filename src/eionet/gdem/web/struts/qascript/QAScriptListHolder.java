@@ -22,13 +22,15 @@ package eionet.gdem.web.struts.qascript;
 
 import java.util.List;
 
+import eionet.gdem.dto.Schema;
+
 public class QAScriptListHolder {
 	/**
 	 * @author Enriko Käsper, Tieto Estonia
 	 * QAScriptListHolder
 	 */
 
-	private List qascripts;
+	private List<Schema> qascripts;
 	boolean ssiPrm;
 	boolean ssdPrm;
 
@@ -37,12 +39,12 @@ public class QAScriptListHolder {
 	}
 
 
-	public List getQascripts() {
+	public List<Schema> getQascripts() {
 		return qascripts;
 	}
 
 
-	public void setQascripts(List qascripts) {
+	public void setQascripts(List<Schema> qascripts) {
 		this.qascripts = qascripts;
 	}
 

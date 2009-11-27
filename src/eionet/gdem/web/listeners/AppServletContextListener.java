@@ -22,11 +22,15 @@
 package eionet.gdem.web.listeners;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import eionet.gdem.Properties;
+import eionet.gdem.dto.ConvType;
+import eionet.gdem.qa.XQScript;
 
 
 public class AppServletContextListener implements ServletContextListener {
@@ -58,6 +62,10 @@ public class AppServletContextListener implements ServletContextListener {
 			Properties.uiFolder=servletContextEvent.getServletContext().getRealPath("/uixsl");
 			Properties.appHome=servletContextEvent.getServletContext().getRealPath("/WEB-INF/classes");
 			Properties.xmlfileFolderPath=servletContextEvent.getServletContext().getRealPath(Properties.xmlfileFolder);
+			
+			servletContextEvent.getServletContext().setAttribute("qascript.resulttypes", loadConvTypes(XQScript.SCRIPT_RESULTTYPES));
+			servletContextEvent.getServletContext().setAttribute("qascript.scriptlangs", loadConvTypes(XQScript.SCRIPT_LANGS));
+			
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}		
@@ -96,6 +104,15 @@ public class AppServletContextListener implements ServletContextListener {
 		System.out.println("Application terminated !");
 	}
 
+	public static List<ConvType> loadConvTypes(String[] types){
 
-
+		List<ConvType> l = new ArrayList<ConvType>(types.length);
+		
+		for (String type:types){
+			ConvType ct = new ConvType();
+			ct.setConvType(type);
+			l.add(ct);
+		}
+		return l;		
+	}
 }

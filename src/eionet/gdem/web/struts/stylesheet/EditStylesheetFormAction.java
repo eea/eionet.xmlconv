@@ -52,6 +52,11 @@ public class EditStylesheetFormAction extends Action {
 
 		StylesheetForm form = (StylesheetForm) actionForm;
 		String stylesheetId = (String) httpServletRequest.getParameter("stylesheetId");
+
+		if (stylesheetId == null || stylesheetId.equals("")) {
+			stylesheetId = (String) httpServletRequest.getAttribute("stylesheetId");
+		}
+
 		ConvTypeHolder ctHolder = new ConvTypeHolder();
 
 		try {

@@ -44,7 +44,7 @@ public class Schema implements Serializable {
 	private boolean doValidation=false;
 	private String schemaLang;
 	private String uplSchemaFileName;
-	private List qascripts;
+	private List<QAScript> qascripts;
 	private UplSchema uplSchema;
 	
 	public UplSchema getUplSchema() {
@@ -57,12 +57,12 @@ public class Schema implements Serializable {
 	}
 
 
-	public List getQascripts() {
+	public List<QAScript> getQascripts() {
 		return qascripts;
 	}
 
 
-	public void setQascripts(List qascripts) {
+	public void setQascripts(List<QAScript> qascripts) {
 		this.qascripts = qascripts;
 	}
 

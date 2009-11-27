@@ -45,7 +45,7 @@ public class StylesheetDeleteAction extends Action {
 
 		ActionMessages errors = new ActionMessages();
 		ActionMessages messages = new ActionMessages();
-		String stylesheetId = (String) httpServletRequest.getParameter("stylesheetId");
+		String stylesheetId = (String) httpServletRequest.getParameter("conversionId");
 		String user_name = (String) httpServletRequest.getSession().getAttribute("user");
 
 		httpServletRequest.setAttribute("schema", httpServletRequest.getParameter("schema"));

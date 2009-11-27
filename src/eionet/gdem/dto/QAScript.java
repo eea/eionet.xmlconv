@@ -27,22 +27,52 @@ package eionet.gdem.dto;
 
 public class QAScript{
 
-	String queryId;
+	String scriptId;
     String description;
     String shortName;
     String fileName;
     String schemaId;
+    String schema;
 	String resultType;
     String scriptType;
+	String modified;
+	String checksum;
+	String scriptContent;
+	
+    public String getScriptContent() {
+		return scriptContent;
+	}
+	public void setScriptContent(String scriptContent) {
+		this.scriptContent = scriptContent;
+	}
+	public String getFilePath() {
+		return filePath;
+	}
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+	String filePath;
     
-    public QAScript() {
+    public String getModified() {
+		return modified;
+	}
+	public void setModified(String modified) {
+		this.modified = modified;
+	}
+	public String getChecksum() {
+		return checksum;
+	}
+	public void setChecksum(String checksum) {
+		this.checksum = checksum;
+	}
+	public QAScript() {
 		super();
 	}
-	public String getQueryId() {
-		return queryId;
+	public String getScriptId() {
+		return scriptId;
 	}
-	public void setQueryId(String queryId) {
-		this.queryId = queryId;
+	public void setScriptId(String queryId) {
+		this.scriptId = queryId;
 	}
 	public String getDescription() {
 		return description;
@@ -79,5 +109,11 @@ public class QAScript{
 	}
 	public void setScriptType(String queryType) {
 		this.scriptType = queryType;
+	}
+	public String getSchema() {
+		return schema;
+	}
+	public void setSchema(String schema) {
+		this.schema = schema;
 	}
 }

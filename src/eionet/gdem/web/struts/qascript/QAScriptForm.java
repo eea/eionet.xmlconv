@@ -18,7 +18,6 @@
  * Contributor(s):* Enriko Käsper, Tieto Estonia
  */
 
-
 package eionet.gdem.web.struts.qascript;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,158 +29,144 @@ import org.apache.struts.upload.FormFile;
 
 public class QAScriptForm extends ActionForm {
 	/**
-	 * @author Enriko Käsper, Tieto Estonia
-	 * QAScriptForm
+	 * @author Enriko Käsper, Tieto Estonia QAScriptForm
 	 */
-
-	private String schema;
-	private String outputtype;
+	private String scriptId;
 	private String description;
-	private FormFile xslfile;
+	private String shortName;
+	private String fileName;
+	private String filePath;
 	private String schemaId;
-	private String xsl;
-	private String stylesheetId;
-	private String xslContent;
-	private String xslFileName;
+	private String resultType;
+	private String scriptType;
 	private String modified;
 	private String checksum;
-	private String dependsOn;
+	private String scriptContent;
+	private FormFile scriptFile;
+	private String schema;
 
-	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
+	public ActionErrors validate(ActionMapping actionMapping,
+			HttpServletRequest httpServletRequest) {
 		return null;
 	}
 
-
-	public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
-		schema = null;
-		outputtype = null;
+	public void reset(ActionMapping actionMapping,
+			HttpServletRequest httpServletRequest) {
+		scriptId = null;
 		description = null;
-		xslfile = null;
+		shortName = null;
+		fileName = null;
+		schemaId = null;
+		resultType = null;
+		scriptType = null;
+		modified = null;
+		checksum = null;
+		scriptContent = null;
+		scriptFile = null;
+		schema = null;
 	}
 
+	public String getScriptId() {
+		return scriptId;
+	}
+
+	public void setScriptId(String queryId) {
+		this.scriptId = queryId;
+	}
 
 	public String getDescription() {
 		return description;
 	}
 
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
-
-	public String getOutputtype() {
-		return outputtype;
+	public String getShortName() {
+		return shortName;
 	}
 
-
-	public void setOutputtype(String outputtype) {
-		this.outputtype = outputtype;
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
 	}
 
-
-	public String getSchema() {
-		return schema;
+	public String getFileName() {
+		return fileName;
 	}
 
-
-	public void setSchema(String schema) {
-		this.schema = schema;
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
-
-
-	public FormFile getXslfile() {
-		return xslfile;
-	}
-
-
-	public void setXslfile(FormFile xslfile) {
-		this.xslfile = xslfile;
-	}
-
 
 	public String getSchemaId() {
 		return schemaId;
 	}
 
-
 	public void setSchemaId(String schemaId) {
 		this.schemaId = schemaId;
 	}
 
-
-	public String getXsl() {
-		return xsl;
+	public String getResultType() {
+		return resultType;
 	}
 
-
-	public void setXsl(String xsl) {
-		this.xsl = xsl;
+	public void setResultType(String resultType) {
+		this.resultType = resultType;
 	}
 
-
-	public String getStylesheetId() {
-		return stylesheetId;
+	public String getScriptType() {
+		return scriptType;
 	}
 
-
-	public void setStylesheetId(String stylesheetId) {
-		this.stylesheetId = stylesheetId;
+	public void setScriptType(String scriptType) {
+		this.scriptType = scriptType;
 	}
-
-
-	public String getXslContent() {
-		return xslContent;
-	}
-
-
-	public void setXslContent(String xslContent) {
-		this.xslContent = xslContent;
-	}
-
-
-	public String getXslFileName() {
-		return xslFileName;
-	}
-
-
-	public void setXslFileName(String xslFileName) {
-		this.xslFileName = xslFileName;
-	}
-
 
 	public String getModified() {
 		return modified;
 	}
 
-
 	public void setModified(String modified) {
 		this.modified = modified;
 	}
-
 
 	public String getChecksum() {
 		return checksum;
 	}
 
-
 	public void setChecksum(String checksum) {
 		this.checksum = checksum;
 	}
 
-	/**
-	 * @return the dependsOn
-	 */
-	public String getDependsOn() {
-		return dependsOn;
+	public String getScriptContent() {
+		return scriptContent;
 	}
 
+	public void setScriptContent(String scriptContent) {
+		this.scriptContent = scriptContent;
+	}
 
-	/**
-	 * @param dependsOn the dependsOn to set
-	 */
-	public void setDependsOn(String dependsOn) {
-		this.dependsOn = dependsOn;
+	public FormFile getScriptFile() {
+		return scriptFile;
+	}
+
+	public void setScriptFile(FormFile scriptFile) {
+		this.scriptFile = scriptFile;
+	}
+
+	public String getSchema() {
+		return schema;
+	}
+
+	public void setSchema(String schema) {
+		this.schema = schema;
+	}
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 }

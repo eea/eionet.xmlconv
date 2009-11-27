@@ -77,4 +77,6 @@ public interface Constants {
 
 	public static final String BACKUP_FILE_PREFIX = "bup_";
 	public static final String BACKUP_FOLDER_NAME = "backup";
+
+    public static final String FILEREAD_EXCEPTION = "Unable to read the file: ";
 }

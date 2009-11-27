@@ -33,9 +33,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
+import org.apache.struts.action.RedirectingActionForward;
 import org.apache.struts.actions.LookupDispatchAction;
 import org.apache.struts.upload.FormFile;
 
+import eionet.gdem.Constants;
 import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
@@ -70,8 +72,10 @@ public class EditStylesheetAction extends LookupDispatchAction  {
 		String user = (String) httpServletRequest.getSession().getAttribute("user");
 		String dependsOn = form.getDependsOn();
 
+		httpServletRequest.setAttribute("stylesheetId", stylesheetId);
+
 		if (isCancelled(httpServletRequest)) {
-			return actionMapping.findForward("success");
+			return findForward(actionMapping, "success", stylesheetId);
 		}
 
 		if (xslFile != null && xslFile.getFileSize() != 0) {
@@ -112,7 +116,7 @@ public class EditStylesheetAction extends LookupDispatchAction  {
 		}
 		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
 		httpServletRequest.setAttribute("schema", schema);
-		return actionMapping.findForward("success");
+		return findForward(actionMapping, "success", stylesheetId);
 	}
 	/*
 	 * The method saves all the changes made on the form.
@@ -139,12 +143,14 @@ public class EditStylesheetAction extends LookupDispatchAction  {
 		String newChecksum = null;
 		String dependsOn = form.getDependsOn();
 
+		httpServletRequest.setAttribute("stylesheetId", stylesheetId);
+
 		if (isCancelled(httpServletRequest)) {
-			return actionMapping.findForward("success");
+			return findForward(actionMapping, "success", stylesheetId);
 		}
 
 		if (!Utils.isNullStr(xslFileName) && !Utils.isNullStr(xslContent) &&
-				xslContent.indexOf(StylesheetManager.FILEREAD_EXCEPTION)==-1) {
+				xslContent.indexOf(Constants.FILEREAD_EXCEPTION)==-1) {
 
 			//compare checksums
 			try{
@@ -190,19 +196,25 @@ public class EditStylesheetAction extends LookupDispatchAction  {
 		}
 		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
 		httpServletRequest.setAttribute("schema", schema);
-		return actionMapping.findForward("success");
+
+		return findForward(actionMapping, "success", stylesheetId);
 	}
 	public ActionForward cancel(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)  {
 		return actionMapping.findForward("success");
 	}
 
-	protected Map getKeyMethodMap() {
-		 Map map = new HashMap();
+	protected Map<String,String> getKeyMethodMap() {
+		 Map<String,String> map = new HashMap<String,String>();
 		 map.put("label.stylesheet.save", "save");
 		 map.put("label.stylesheet.upload", "upload");
-		 map.put("label.stylesheet.cancel", "cancel");
-		 map.put("label.ok", "cancel");
 		 return map;
+	}
+	private ActionForward findForward(ActionMapping actionMapping, String f, String stylesheetId){
+		ActionForward forward = actionMapping.findForward(f);
+		 StringBuffer path = new StringBuffer(forward.getPath());
+		 path.append("?stylesheetId=" + stylesheetId);
+	    forward = new RedirectingActionForward(path.toString());
+	    return forward;
 	}
 }

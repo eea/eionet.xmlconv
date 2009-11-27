@@ -24,6 +24,7 @@ package eionet.gdem.dcm.business;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
@@ -40,6 +41,7 @@ import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.commons.collections.comparators.NullComparator;
 import org.apache.struts.upload.FormFile;
 
+import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
@@ -183,7 +185,7 @@ public class SchemaManager {
 					for (int j = 0; j < stylesheets.size(); j++) {
 						HashMap stylesheet = (HashMap) stylesheets.get(j);
 						Stylesheet stl = new Stylesheet();
-						// 	st.setConvId(1);
+						stl.setConvId((String) stylesheet.get("convert_id"));
 						stl.setType((String) stylesheet.get("content_type_out"));
 						stl.setXsl(Names.XSL_FOLDER + (String) stylesheet.get("xsl"));
 						stl.setXsl_descr((String) stylesheet.get("description"));
@@ -263,7 +265,7 @@ public class SchemaManager {
 				if (!xsl.startsWith(Properties.gdemURL + "/do/getStylesheet?id=")) {
 
 					File f = new File(Properties.xslFolder + File.separatorChar +  xsl);
-					if (f != null) last_modified = Utils.getDateTime(new Date(f.lastModified()));
+					if (f != null && f.exists()) last_modified = Utils.getDateTime(new Date(f.lastModified()));
 					//DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(f.lastModified()));
 					xslUrl = Names.XSL_FOLDER + (String) hash.get("xsl");
 					type = (String) hash.get("result_type");
@@ -306,23 +308,26 @@ public class SchemaManager {
 	 * @throws DCMException
 	 */
 	public QAScriptListHolder getSchemasWithQAScripts(String user_name) throws DCMException {
+		return getSchemasWithQAScripts(user_name, null);
+	}
+	public QAScriptListHolder getSchemasWithQAScripts(String user_name, String schemaId) throws DCMException {
 
 		QAScriptListHolder st = new QAScriptListHolder();
 			
 		boolean ssiPrm = false;
 		boolean ssdPrm = false;
 		Vector hcSchemas;
-		ArrayList schemas;
+		List<Schema> schemas;
 
 		try {
-			schemas = new ArrayList();
+			schemas = new ArrayList<Schema>();
 			ssiPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "i");
 			ssdPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "d");
 
 			st.setSsdPrm(ssdPrm);
 			st.setSsiPrm(ssiPrm);
 
-			hcSchemas = schemaDao.getSchemas(null);
+			hcSchemas = schemaDao.getSchemas(schemaId);
 			if (hcSchemas == null) hcSchemas = new Vector();
 
 			for (int i = 0; i < hcSchemas.size(); i++) {
@@ -337,17 +342,34 @@ public class SchemaManager {
 					qascripts = (Vector) schema.get("queries");
 					}
 
-					ArrayList qases = new ArrayList();
+					List<QAScript> qases = new ArrayList<QAScript>();
 					for (int j = 0; j < qascripts.size(); j++) {
 						HashMap qascript = (HashMap) qascripts.get(j);
 						QAScript qas = new QAScript();
-						qas.setQueryId((String) qascript.get("query_id"));
-						qas.setFileName(Names.QUERY_FOLDER + (String) qascript.get("query"));
+						qas.setScriptId((String) qascript.get("query_id"));
+						qas.setFileName((String) qascript.get("query"));
 						qas.setDescription((String) qascript.get("description"));
 						qas.setShortName((String) qascript.get("short_name"));
 						qas.setScriptType((String) qascript.get("script_type"));
 						qas.setResultType((String) qascript.get("result_type"));
 						qases.add(qas);
+
+						//get file last modified only if schemaId is known
+						if(schemaId!=null)
+							if (!Utils.isNullStr(qas.getFileName())) {
+								qas.setFilePath(Names.QUERY_FOLDER + qas.getFileName());
+								String queryFolder=Properties.queriesFolder;
+								if (!queryFolder.endsWith(File.separator))
+									queryFolder = queryFolder + File.separator;
+								try {
+									File f = new File(queryFolder + qas.getFileName());
+									if (f != null && f.exists())
+										qas.setModified(Utils.getDateTime(new Date(f.lastModified())));
+								} catch (Exception e) {
+							}
+
+						}
+					
 					}
 					if (qases.size() > 0) {
 						sc.setQascripts(qases);
