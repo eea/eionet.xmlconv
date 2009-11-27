@@ -35,6 +35,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.tee.uit.security.AppUser;
+
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
@@ -47,6 +49,7 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.utils.InputFile;
+import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
 
@@ -77,13 +80,30 @@ public class SandBox  extends HttpServlet implements Constants {
 			return;
 		}
 		
-		
+		//get user info
+		AppUser user = null;
+		boolean wqPrm = false;
+		boolean wquPrm = false;
+		try{
+			user = SecurityUtil.getUser(req, Names.USER_ATT);
+			wqPrm = user!=null && SecurityUtil.hasPerm(user.getUserName(), "/" + Names.ACL_WQ_PATH, "i");
+			wquPrm = user!=null && SecurityUtil.hasPerm(user.getUserName(), "/" + Names.ACL_WQ_PATH, "u");
+		} catch (Exception ge){
+			req.setAttribute(Names.ERROR_ATT, "Error reading permissions"+ ge.getMessage());
+		    req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
+			return;
+		}
+
 		//save changes in XQ script to repository
 		if(!Utils.isNullStr(req.getParameter("save"))) {
-
 			String xqFileName = req.getParameter("file_name");
 			String xqScript = req.getParameter(XQ_SCRIPT_PARAM);
 
+			if(!wquPrm){
+				req.setAttribute(Names.ERROR_ATT, "Access denied!");
+			    req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
+				return;				
+			}
 			if(Utils.isNullStr(xqScript)) {
 				//writeHTMLMessage(res, "The script cannot be empty!");
 				req.setAttribute(Names.ERROR_ATT, "Cannot save empty script!");
@@ -235,7 +255,13 @@ public class SandBox  extends HttpServlet implements Constants {
 			}
 			// Add jobs to workqueue engine
 			//
-			else {
+			else if(!Utils.isNullStr(req.getParameter("queue"))) {
+				
+				if(!wqPrm){
+					req.setAttribute(Names.ERROR_ATT, "Access denied!");
+				    req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
+					return;				
+				}
 				res.setContentType(HTML_CONTENT_TYPE);
 				XQueryService xqE = new XQueryService();
 				try {
@@ -325,7 +351,13 @@ public class SandBox  extends HttpServlet implements Constants {
 				}
 				// Add job to workqueue engine
 				//
-				else {
+				if(!Utils.isNullStr(req.getParameter("queue"))) {
+
+					if(!wqPrm){
+						req.setAttribute(Names.ERROR_ATT, "Access denied!");
+					    req.getRequestDispatcher(Names.SANDBOX_JSP).forward(req,res);				
+						return;				
+					}
 					XQueryService xqE = new XQueryService();
 					xqE.setTicket(getTicket(req));
 					xqE.setTrustedMode(false);
