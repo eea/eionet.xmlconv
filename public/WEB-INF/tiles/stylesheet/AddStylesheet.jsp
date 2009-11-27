@@ -14,53 +14,59 @@
 		<tiles:insert definition="Error" />
 
 		<html:form action="/stylesheetAdd" method="post" enctype="multipart/form-data">
-		  <table width="100%" class="datatable">
-			<col style="width:16%"/>
-			<col style="width:84%"/>
-		    <tr>
-				<th scope="row" class="scope-row">
-			        <bean:message key="label.stylesheet.schema"/>:
-				</th>
+		  <table class="formtable">
+			<col class="labelcol"/>
+			<col class="entrycol"/>
+			<tr class="zebraeven">
 				<td>
-							<logic:present name="schema" scope="request">
-					          <input type="text" name="schema" value="<bean:write name="schema" scope="request"/>" style="width:400px" />
-					        </logic:present>
-					        <logic:notPresent name="schema" scope="request">
-					          <input type="text" name="schema" maxlength="255"  style="width:400px" />
-					        </logic:notPresent>
+					<label class="question" for="txtSchemaUrl"> 
+				        <bean:message key="label.stylesheet.schema"/>
+					</label>
+				</td>
+				<td>
+					<logic:present name="schema" scope="request">
+						<input type="text" name="schema" value="<bean:write name="schema" scope="request"/>" style="width:400px"  id="txtSchemaUrl"/>
+					</logic:present>
+					<logic:notPresent name="schema" scope="request">
+						<input type="text" name="schema" maxlength="255"  style="width:400px"  id="txtSchemaUrl"/>
+					</logic:notPresent>
 				</td>
 			</tr>
 			    <logic:present name="user">
 				    <tr>
-	 				  <th scope="row" class="scope-row">
-				        <bean:message key="label.stylesheet.selectDDSchema"/>:
-				      </th>
+	 				  <td>
+						<label class="question" for="selDDSchema"> 
+					        <bean:message key="label.stylesheet.selectDDSchema"/>
+					     </label>
+				      </td>
 				      <td>		    
-						      		<select name="xmlSchema"  size="10" onchange="setSchema()" style="width:98%">
-													<option selected="selected" value="">
-														--
-													</option>		        
-									<logic:iterate id="schema" name="stylesheet.DDSchemas" scope="session"  type="Schema">
-													<option value="<bean:write name="schema" property="schema" />">
-														<bean:write name="schema" property="schema" />
-														<logic:notEqual name="schema" property="table" value="">
-															&nbsp;-&nbsp;
-															<bean:write name="schema" property="table" />&nbsp;(
-															<bean:write name="schema" property="dataset" /> - 
-															<bean:write name="schema" property="datasetReleased" format="<%= Properties.dateFormatPattern%>" />)
-														</logic:notEqual>										
-													</option>
-									</logic:iterate>
-						        	</select>
+						<select name="xmlSchema"  size="10" onchange="setSchema()" style="width:98%" id="selDDSchema">
+								<option selected="selected" value="">
+									--
+								</option>		        
+								<logic:iterate id="schema" name="stylesheet.DDSchemas" scope="session"  type="Schema">
+									<option value="<bean:write name="schema" property="schema" />">
+										<bean:write name="schema" property="schema" />
+										<logic:notEqual name="schema" property="table" value="">
+											&nbsp;-&nbsp;
+											<bean:write name="schema" property="table" />&nbsp;(
+											<bean:write name="schema" property="dataset" /> - 
+											<bean:write name="schema" property="datasetReleased" format="<%= Properties.dateFormatPattern%>" />)
+										</logic:notEqual>										
+									</option>
+								</logic:iterate>
+							</select>
 						      </td>
 						    </tr>
 					    </logic:present>		    
-					    <tr>
-		 				  <th scope="row" class="scope-row">
-					        <bean:message key="label.stylesheet.outputtype"/>:
-					      </th>
+					<tr class="zebraeven">
+		 				  <td>
+		 				  	<label class="question" for="selOutputType">
+					        	<bean:message key="label.stylesheet.outputtype"/>
+					        </label>
+					      </td>
 					      <td>	                         
-					        <select name="outputtype" style="width:100px;">
+					        <select name="outputtype" style="width:100px;" id="selOutputType">
 								<logic:iterate id="opt" name="stylesheet.outputtype" scope="session"  property="convTypes" type="ConvType">
 									<option value="<bean:write name="opt" property="convType" />">
 										<bean:write name="opt" property="convType" />
@@ -73,11 +79,13 @@
 					    <logic:present name="schemaInfo" scope="request">
 					    <logic:equal name="schemaInfo" property="schemaLang" value="EXCEL">
 					    <tr>
-		 				  <th scope="row" class="scope-row">
-					        <bean:message key="label.stylesheet.dependsOn"/>:
-					      </th>
+		 				  <td>
+		 				  	<label class="question" for="chkDepends">
+					        	<bean:message key="label.stylesheet.dependsOn"/>
+					        </label>
+					      </td>
 					      <td>	                         
-					        <select name="dependsOn">
+					        <select name="dependsOn" id="chkDepends">
 					        	<option value="" selected="selected">--</option>
 					        	<logic:iterate id="st" scope="request" name="existingStylesheets">
 					        		<option value="<bean:write name="st" property="convId" />">
@@ -91,23 +99,31 @@
 					    </logic:present>
 					    
 					    <tr>
-		 				  <th scope="row" class="scope-row">
-					      	<bean:message key="label.stylesheet.description"/>:
-					      </th>
+		 				  <td>
+		 				  	<label class="question" for="txtDescription">
+					      		<bean:message key="label.stylesheet.description"/>
+					      	</label>
+					      </td>
 					      <td>
-					        <html:textarea property="description"  rows="3" cols="30" style="width:400px"/>
+					        <html:textarea property="description"  rows="3" cols="30" style="width:400px" styleId="txtDescription"/>
+					      </td>
+					    </tr>
+					<tr class="zebraeven">
+		 				  <td>
+		 				  	<label class="question" for="fileXsl">
+					        	<bean:message key="label.stylesheet.xslfile"/>
+					        </label>
+					      </td>
+					      <td>
+					        <html:file property="xslfile"  style="width:400px" size="64" styleId="fileXsl"/>
 					      </td>
 					    </tr>
 					    <tr>
-		 				  <th scope="row" class="scope-row">
-					        <bean:message key="label.stylesheet.xslfile"/>:
-					      </th>
-					      <td>
-					        <html:file property="xslfile"  style="width:400px" size="64"/>
-					      </td>
-					    </tr>
+			    	  		<td colspan="2">&nbsp;</td>
+			    		</tr>
 					    <tr>
-					      <td colspan="2" align="center">
+					    	<td>&#160;</td>
+					      <td>
 					        <html:submit styleClass="button">
 					        	<bean:message key="label.xsl.save"/>
 					        </html:submit>

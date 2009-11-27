@@ -14,7 +14,7 @@
 		<div id="operations">
 			<ul>
 		   		<li>
- 					<html:link page="/add_query.jsp"><bean:message key="label.qascript.add" /></html:link>
+ 					<html:link page="/do/addQAScriptForm"><bean:message key="label.qascript.add" /></html:link>
 		   		</li>
 			</ul>
 		</div>
@@ -44,15 +44,16 @@
 					<logic:iterate indexId="index" id="schema" name="qascript.qascriptList" scope="session" property="qascripts" type="Schema">
 					<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
 						<td title="<bean:write name="schema" property="schema"/>">
-	    					<html:link page="/queries.jsp" paramId="ID" paramName="schema" paramProperty="id" title="view QA scripts for this XML Schema" >
+	    					<html:link page="/do/schemaQAScripts" paramId="schemaId" paramName="schema" paramProperty="id" title="view QA scripts for this XML Schema" >
 								<bean:write name="schema" property="schema" />
 							</html:link>
 						</td>
 						<td>
 							<logic:iterate id="qascript" name="schema" scope="page" property="qascripts" type="QAScript">
-							<a  href="<bean:write name="webRoot"/>/<bean:write name="qascript" property="fileName" />" title="<bean:write name="qascript" property="description" />">
-								<bean:write name="qascript" property="shortName" />
-							</a>&#160;
+				                <html:link page="/do/viewQAScriptForm" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qascript.tab.title">
+									<bean:write name="qascript" property="shortName" />
+                				</html:link>
+								&#160;
 							</logic:iterate>
 						</td>
 					</tr>

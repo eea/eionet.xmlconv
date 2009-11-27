@@ -19,7 +19,7 @@
 		<tiles:insert definition="Error" />
 
 			<html:form action="/searchCR" method="get">
-			<table class="datatable">
+			<table class="formtable">
 				<tr>
 				 <th scope="col" class="scope-col">
 			        <bean:message key="label.conversion.xmlSchema"/>

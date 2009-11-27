@@ -29,14 +29,17 @@
 <div class="visualClear">&nbsp;</div>
 
 <logic:present name="hosts.list">
+	<html:form action="/hosts/delete" method="post">
 	<div style="width:80%">
 		<table class="datatable" width="100%">
-			<col style="width:8%"/>
-			<col style="width:46%"/>
-			<col style="width:46%"/>
+			<col style="width:5%"/>
+			<col style="width:47%"/>
+			<col style="width:47%"/>
 			<thead>
 				<tr>
-					<th scope="col" title="Action">&nbsp;</th>
+					<ed:hasPermission username="username" acl="host" permission="d">
+						<th scope="col">&nbsp;</th>
+					</ed:hasPermission>
 					<th scope="col"><bean:message key="label.hosts.host"/></th>
 					<th scope="col"><bean:message key="label.hosts.username"/></th>
 				</tr>
@@ -44,13 +47,12 @@
 			<tbody>
 				<logic:iterate indexId="index" id="host" name="hosts.list">
 					<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
-						<td>
-							<ed:hasPermission username="username" acl="host" permission="d">
-								<a href="delete?id=<bean:write name="host" property="id" />"
-													onclick='return hostDelete("<bean:write name="host" property="hostname" />");'>
-													<html:img page="/images/delete.gif" altKey="label.delete" title="delete stylesheet"/></a>
-							</ed:hasPermission>
-						</td>
+						<ed:hasPermission username="username" acl="host" permission="d">
+							<td>
+								<bean:define id="hostId" name="host" property="id" />
+								<input type="radio" name="id" value="${hostId}" />
+							</td>
+						</ed:hasPermission>
 						<td>
 							<ed:hasPermission username="username" acl="host" permission="u">
 								<html:link page="/do/hosts/edit" paramId="id" paramName="host" paramProperty="id" titleKey="label.hosts.edit">
@@ -65,7 +67,16 @@
 				</logic:iterate>
 			</tbody>
 		</table>
+		<div class="boxbottombuttons">
+			<ed:hasPermission username="username" acl="host" permission="d">
+		        <html:submit styleClass="button" property="action">
+		        	<bean:message key="label.delete"/>
+		        </html:submit>
+				<!--input type="button"  class="button" value="<bean:message key="label.delete"/>" onclick="return submitAction(1,'/do/hosts/delete');" /-->
+			</ed:hasPermission>
+		</div>
 	</div>
+	</html:form>
 </logic:present>
 
 <div class="visualClear">&nbsp;</div>

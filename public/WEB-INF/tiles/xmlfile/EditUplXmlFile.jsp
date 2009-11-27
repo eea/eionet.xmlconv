@@ -13,13 +13,15 @@
 		<tiles:insert definition="Error" />
 		
 			<html:form action="/editUplXmlFile" method="post">
-			  <table class="datatable">
-				<col style="width:16%"/>
-				<col style="width:84%"/>
-				<tr>
-  				  <th scope="row" class="scope-row">
-			        <bean:message key="label.uplXmlFile.xmlfile"/>:
-			      </th>
+			  <table class="formtable">
+				<col class="labelcol"/>
+				<col class="entrycol"/>
+				<tr class="zebraeven">
+  				  <td>
+  				  	<label class="question">
+				        <bean:message key="label.uplXmlFile.xmlfile"/>
+				    </label>
+			      </td>
 			      <td>
 						<a  href="<bean:write name="EditUplXmlFileForm" property="xmlfile" />" title="<bean:write name="EditUplXmlFileForm" property="xmlfile" />">						
 							<bean:write name="EditUplXmlFileForm" property="xmlfile" />
@@ -28,23 +30,27 @@
 			      </td>
 			    </tr>
 			    <tr>
-  				  <th scope="row" class="scope-row">
-			        <bean:message key="label.uplXmlFile.title"/>:
-			      </th>
+  				  <td>
+  				  	<label class="question" for="txtTitle">
+			        	<bean:message key="label.uplXmlFile.title"/>
+			        </label>
+			      </td>
 			      <td>
-			        <html:textarea property="title"  rows="3" cols="30" style="width:400px"/>
+			        <html:textarea property="title"  rows="3" cols="30" style="width:400px" styleId="txtTitle"/>
 			      </td>
 			    </tr>
-			    <tr>
-  				  <th scope="row" class="scope-row">
-			        <bean:message key="label.lastmodified"/>:
-			      </th>
+				<tr class="zebraeven">
+  				  <td>
+  				  	<label class="question">
+				        <bean:message key="label.lastmodified"/>
+				    </label>
+			      </td>
 			      <td>
 					<logic:notEqual name="fileExists" value=""  name="EditUplXmlFileForm" property="lastModified" >
 						<bean:write name="EditUplXmlFileForm" property="lastModified" />
 					</logic:notEqual>
 					<logic:equal name="fileNotExists" value=""  name="EditUplXmlFileForm" property="lastModified" >
-						<bean:message key="label.fileNotFound"/>
+						<span style="color:red"><bean:message key="label.fileNotFound"/></span>
 					</logic:equal>
 			      </td>
 			    </tr>
@@ -52,7 +58,8 @@
 			      <td colspan="2">&nbsp;</td>
 			    </tr>
 			    <tr>
-			      <td colspan="2" align="center">
+			      <td>&nbsp;</td>
+			      <td>
 			        <html:submit styleClass="button">
 			        	<bean:message key="label.ok"/>
 			        </html:submit>

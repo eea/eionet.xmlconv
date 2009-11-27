@@ -25,36 +25,43 @@
 		<tiles:insert definition="Error" />
 	
 			<html:form action="/hosts/save" method="post">
-				<table class="datatable">
-				  <col style="width:16%"/>
-				  <col style="width:84%"/>
-					  <tr>
-						<th scope="row" class="scope-row">
-							<bean:message key="label.hosts.host"/>
-						</th>
+			  <table class="formtable">
+				<col class="labelcol"/>
+				<col class="entrycol"/>
+				<tr class="zebraeven">
+						<td>
+							<label class="question required" for="txtHost"> 
+				    			<bean:message key="label.hosts.host"/>
+				    		</label>
+						</td>
 						<td align="left">
-							<html:text property="host" size="70" />
+							<html:text property="host" size="70"  styleId="txtHost"/>
 						</td>
 					</tr>		
 					<tr>
-						<th scope="row" class="scope-row">
-							<bean:message key="label.hosts.username"/>
-						</th>
+						<td>
+							<label class="question required" for="txtUsername"> 
+								<bean:message key="label.hosts.username"/>
+							</label>
+						</td>
 						<td align="left">
-							<html:text property="username" size="70" />
+							<html:text property="username" size="70"  styleId="txtUsername"/>
 						</td>
 					</tr>		
-					<tr>
-						<th scope="row" class="scope-row">
-							<bean:message key="label.hosts.password"/>
-						</th>
+				<tr class="zebraeven">
+						<td>
+							<label class="question" for="txtPassword"> 
+								<bean:message key="label.hosts.password"/>
+							</label>
+						</td>
 						<td align="left">
-							<html:text property="password" size="70" />
+							<html:text property="password" size="70"  styleId="txtPassword"/>
 						</td>
 					</tr>		
-					<tr><td>&#160;</td><td>&#160;</td></tr>
+					<tr><td colspan="2">&#160;</td></tr>
 					<tr>
-						<td colspan="2" align="center">
+						<td>&#160;</td>
+						<td>
 							<html:submit styleClass="button">Save</html:submit>
 							<html:cancel styleClass="button">
 					        	<bean:message key="label.cancel"/>

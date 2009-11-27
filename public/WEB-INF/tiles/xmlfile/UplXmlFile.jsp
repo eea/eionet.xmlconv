@@ -4,6 +4,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
+<html:xhtml/>
 
 <ed:breadcrumbs-push label="Uploaded XML files" level="1" />
 
@@ -27,18 +28,25 @@
 	<div class="visualClear">&nbsp;</div>
 
 	<logic:present name="xmlfiles" name="xmlfiles.uploaded" scope="session" property="xmlfiles" >
+		<html:form action="/deleteUplXmlFile" method="post">
 			<table class="datatable" width="100%">
-				<col style="width:8%"/>
+				<logic:equal name="ssdPrm" value="true"  name="xmlfiles.uploaded" scope="session" property="ssuPrm" >
+					<col style="width:5%"/>
+				</logic:equal>
+				<logic:equal name="ssuPrm" value="true"  name="xmlfiles.uploaded" scope="session" property="ssuPrm" >
+					<col style="width:5%"/>
+				</logic:equal>
 				<col style="width:30%"/>
-				<col style="width:37%"/>
+				<col/>
 				<col style="width:25%"/>
 				<thead>
 					<tr>
-						<th scope="col">
-							<logic:equal name="ssuPrm" value="true"  name="xmlfiles.uploaded" scope="session" property="ssuPrm" >
-								<span title="Action"><bean:message key="label.table.uplXmlFile.action"/></span>
-							</logic:equal>
-						</th>
+						<logic:equal name="ssdPrm" value="true"  name="xmlfiles.uploaded" scope="session" property="ssuPrm" >
+							<th scope="col">&#160;</th>
+						</logic:equal>						
+						<logic:equal name="ssuPrm" value="true"  name="xmlfiles.uploaded" scope="session" property="ssuPrm" >
+							<th scope="col">&#160;</th>
+						</logic:equal>						
 						<th scope="col"><span title="XML File"><bean:message key="label.table.uplXmlFile.xmlfile"/></span></th>
 						<th scope="col"><span title="Title"><bean:message key="label.table.uplXmlFile.title"/></span></th>
 						<th scope="col"><span title="Last Modified"><bean:message key="label.lastmodified"/></span></th>
@@ -47,17 +55,18 @@
 				<tbody>
 					<logic:iterate indexId="index" id="xmlfile" name="xmlfiles.uploaded" scope="session" property="xmlfiles" type="UplXmlFile">
 						<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
-							<td align="center" >
-								<logic:equal name="ssuPrm" value="true"  name="xmlfiles.uploaded" scope="session" property="ssuPrm" >
+							<logic:equal name="ssdPrm" value="true"  name="xmlfiles.uploaded" scope="session" property="ssdPrm" >
+								<td align="center" >
+									<bean:define id="fileId" name="xmlfile" property="id" />
+									<input type="radio" name="xmlfileId" value="${fileId}" />
+								</td>
+							</logic:equal>
+							<logic:equal name="ssuPrm" value="true"  name="xmlfiles.uploaded" scope="session" property="ssuPrm" >
+								<td align="center" >
 									<a href="editUplXmlFileForm?xmlfileId=<bean:write name="xmlfile" property="id" />">
 										<img src="<bean:write name="webRoot"/>/images/edit.gif" alt="<bean:message key="label.edit" />" title="edit XML file" /></a>
-								</logic:equal>
-								<logic:equal name="ssdPrm" value="true"  name="xmlfiles.uploaded" scope="session" property="ssdPrm" >
-									<a href="deleteUplXmlFile?xmlfileId=<bean:write name="xmlfile" property="id" />"
-									onclick='return xmlfileDelete("<bean:write name="xmlfile" property="fileName" />");'>
-										<img src="<bean:write name="webRoot"/>/images/delete.gif" alt="<bean:message key="label.delete" />" title="delete XML file" /></a>
-								</logic:equal>
-							</td>
+								</td>
+							</logic:equal>
 							<td>
 								<a  href='<bean:write name="webRoot"/>/<bean:write name="xmlfiles.uploaded" property="xmlfileFolder" />/<bean:write name="xmlfile" property="fileName" />' title="<bean:write name="xmlfile" property="fileName" />">
 									<bean:write name="xmlfile" property="fileName" />
@@ -71,7 +80,7 @@
 									<bean:write name="xmlfile" property="lastModified" />
 								</logic:notEqual>
 								<logic:equal name="fileNotExists" value=""  name="xmlfile" property="lastModified" >
-									<bean:message key="label.fileNotFound"/>
+									<span style="color:red"><bean:message key="label.fileNotFound"/></span>
 								</logic:equal>
 							</td>
 						</tr>
@@ -82,6 +91,12 @@
 					</tr>
 				</tbody>
 			</table>
+			<div class="boxbottombuttons">
+				<logic:equal name="ssdPrm" value="true"  name="xmlfiles.uploaded" scope="session" property="ssdPrm" >
+					<input type="button"  class="button" value="<bean:message key="label.delete"/>" onclick="return submitAction(1,'deleteUplXmlFile');" />
+				</logic:equal>
+			</div>
+		</html:form>
 	</logic:present>
 	<logic:notPresent name="xmlfiles" name="xmlfiles.uploaded" scope="session" property="xmlfiles" >
 		<div class="success">

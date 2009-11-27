@@ -19,6 +19,7 @@
   <definition name="GeneratedStylesheet" path="/WEB-INF/tiles/stylesheet/GeneratedStylesheet.jsp" />
   <definition name="schemaStylesheets" path="/WEB-INF/tiles/stylesheet/SchemaStylesheets.jsp" />
   <definition name="editStylesheet" path="/WEB-INF/tiles/stylesheet/EditStylesheet.jsp" />
+  <definition name="viewStylesheet" path="/WEB-INF/tiles/stylesheet/ViewStylesheet.jsp" />
   <definition name="addStylesheet" path="/WEB-INF/tiles/stylesheet/AddStylesheet.jsp" />
   <definition name="schema" path="/WEB-INF/tiles/schema/Schema.jsp" />
   <definition name="viewSchema" path="/WEB-INF/tiles/schema/ViewSchema.jsp" />
@@ -35,6 +36,7 @@
   <definition name="schemaQAScripts" path="/WEB-INF/tiles/qascript/SchemaQAScripts.jsp" />  
   <definition name="addQAScript" path="/WEB-INF/tiles/qascript/AddQAScript.jsp" />
   <definition name="editQAScript" path="/WEB-INF/tiles/qascript/EditQAScript.jsp" />
+  <definition name="viewQAScript" path="/WEB-INF/tiles/qascript/ViewQAScript.jsp" />
   <definition name="qaScriptHistory" path="/WEB-INF/tiles/qascript/QAScriptHistory.jsp" />  
   <definition name="syncUplSchema" path="/WEB-INF/tiles/schema/SyncUplSchema.jsp" />  
   
@@ -83,6 +85,9 @@
 	</definition>
   <definition name="/editStylesheet.jsp" extends="base">
     <put name="body" type="definition" value="editStylesheet"/>
+  </definition>
+  <definition name="/viewStylesheet.jsp" extends="base">
+    <put name="body" type="definition" value="viewStylesheet"/>
   </definition>
   <definition name="/schema.jsp" extends="base">
     <put name="body" type="definition" value="schema"/>
@@ -168,6 +173,26 @@
   	<definition name="/qaScriptHistory.jsp" extends="base">
   		<put name="title"  value="label.qascriptHistory.title"/>
 	    <put name="body" type="definition" value="qaScriptHistory"/>
+  	</definition>
+
+  	<definition name="/viewQAScript.jsp" extends="base">
+  		<put name="title"  value="label.qascriptView.title"/>
+	    <put name="body" type="definition" value="viewQAScript"/>
+  	</definition>
+
+  	<definition name="/editQAScript.jsp" extends="base">
+  		<put name="title"  value="label.qascriptEdit.title"/>
+	    <put name="body" type="definition" value="editQAScript"/>
+  	</definition>
+
+  	<definition name="/addQAScript.jsp" extends="base">
+  		<put name="title"  value="label.qascriptAdd.title"/>
+	    <put name="body" type="definition" value="addQAScript"/>
+  	</definition>
+
+  	<definition name="/schemaQAScripts.jsp" extends="base">
+  		<put name="title"  value="label.schemaQascripts.title"/>
+	    <put name="body" type="definition" value="schemaQAScripts"/>
   	</definition>
 
   	<definition name="/syncUplSchema.jsp" extends="base">

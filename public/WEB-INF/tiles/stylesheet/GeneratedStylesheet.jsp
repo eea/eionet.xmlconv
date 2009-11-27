@@ -37,7 +37,7 @@
 				<logic:iterate indexId="index" id="schema" name="stylesheet.stylesheetList" scope="session" property="ddStylesheets" type="Schema">
 				<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
 					<td align="center">
-						<html:link action="/schemaStylesheets?backList=generated" paramId="schema" paramName="schema" paramProperty="schema">
+						<html:link action="/schemaStylesheets" paramId="schema" paramName="schema" paramProperty="schema">
 							<html:img page="/images/properties.gif" altKey="label.table.stylesheet" title="view stylesheets" />
 						</html:link>
 					</td>

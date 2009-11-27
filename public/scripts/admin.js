@@ -6,6 +6,14 @@ function stylesheetDelete(title) {
 		return false;
 	}
 }
+function qaScriptDelete(title) {
+	if(confirm('Are you sure you want to delete QA script "' + title + '"')){
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 
 
 function schemaDelete(title) {

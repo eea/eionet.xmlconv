@@ -9,6 +9,7 @@
             <form-property name="password" type="java.lang.String"/>
         </form-bean>
         <form-bean name="stylesheetForm" type="eionet.gdem.web.struts.stylesheet.StylesheetForm" />
+        <form-bean name="qaScriptForm" type="eionet.gdem.web.struts.qascript.QAScriptForm" />
         <form-bean name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemForm" />     
         <form-bean name="ConversionForm" type="eionet.gdem.web.struts.conversion.ConversionForm"/>
         <form-bean name="ValidationForm" type="eionet.gdem.web.struts.conversion.ConversionForm"/>
@@ -41,10 +42,10 @@
         <form-bean name="purgeForm" type="org.apache.struts.validator.DynaValidatorForm">
 	        <form-property name="nofDays" type="java.lang.Integer"/>
         </form-bean>   
-        <form-bean name="getXslForm" type="org.apache.struts.validator.DynaValidatorForm">
+        <!-- <form-bean name="getXslForm" type="org.apache.struts.validator.DynaValidatorForm">
 	        <form-property name="id" type="java.lang.String"/>
         	<form-property name="conv" type="java.lang.String"/>
-        </form-bean>
+        </form-bean> -->
         <form-bean name="schemaStyleForm" type="org.apache.struts.action.DynaActionForm">
 	        <form-property name="schema" type="java.lang.String"/>
 	    </form-bean>
@@ -58,7 +59,6 @@
         <form-bean name="EditUplXmlFileForm" type="eionet.gdem.web.struts.xmlfile.EditUplXmlFileForm"/>   
 	       
         <form-bean name="QAScriptForm" type="eionet.gdem.web.struts.qascript.QAScriptForm" />                   
-        <form-bean name="EditQAScriptForm" type="eionet.gdem.web.struts.qascript.EditQAScriptForm"/>   
         <form-bean name="SyncUplSchemaForm" type="eionet.gdem.web.struts.schema.SyncUplSchemaForm" />     
             
     </form-beans>
@@ -104,9 +104,12 @@
         <action path="/stylesheetEditForm" name="stylesheetForm" type="eionet.gdem.web.struts.stylesheet.EditStylesheetFormAction" input="/editStylesheet.jsp" scope="request">
             <forward name="success" path="/editStylesheet.jsp" redirect="true" />
         </action>
+        <action path="/stylesheetViewForm" name="stylesheetForm" type="eionet.gdem.web.struts.stylesheet.EditStylesheetFormAction" scope="request">           
+            <forward name="success" path="/viewStylesheet.jsp" />
+        </action>
         <action path="/stylesheetEdit" input="/editStylesheet.jsp" name="stylesheetForm"
             type="eionet.gdem.web.struts.stylesheet.EditStylesheetAction" scope="request" parameter="action" cancellable="true">
-             <forward name="success" path="/do/schemaStylesheets" redirect="true"/>
+             <forward name="success" path="/do/stylesheetViewForm" redirect="true"/>
              <forward name="fail" path="/editStylesheet.jsp" redirect="false"/>
         </action>
         
@@ -217,7 +220,7 @@
         <action path="/uplXmlFiles"  type="eionet.gdem.web.struts.xmlfile.UplXmlFileFormAction" scope="request">
             <forward name="success" path="/uplXmlFile.jsp" />
         </action>
-        <action path="/deleteUplXmlFile"  scope="request" type="eionet.gdem.web.struts.xmlfile.DeleteUplXmlFileAction">           
+        <action path="/deleteUplXmlFile" name="EditUplXmlFileForm"  scope="request" type="eionet.gdem.web.struts.xmlfile.DeleteUplXmlFileAction">           
         	<forward name="success" path="/do/uplXmlFiles"  redirect="true"/>            
         </action>        
         <action path="/addUplXmlFileForm"  parameter="/addUplXmlFile.jsp" scope="request" validate="false" type="org.apache.struts.actions.ForwardAction"/>           
@@ -242,20 +245,25 @@
             <forward name="success" path="/qaScripts.jsp" />
         </action>
         <action path="/deleteQAScript"  scope="request" type="eionet.gdem.web.struts.qascript.DeleteQAScriptAction">           
-        	<forward name="success" path="/do/qaScripts"  redirect="true"/>            
+        	<forward name="success" path="/queries.jsp"  redirect="true"/>            
         </action>        
         <action path="/addQAScriptForm"  parameter="/addQAScript.jsp" scope="request" validate="false" type="org.apache.struts.actions.ForwardAction"/>           
         <action path="/addQAScript"  scope="request" type="eionet.gdem.web.struts.qascript.AddQAScriptAction" name="QAScriptForm" cancellable="true">           
         	<forward name="success" path="/do/qaScript"  redirect="true"/>            
         	<forward name="fail" path="/do/addQAScriptForm"  redirect="true"/>
+            <forward name="list" path="/do/qaScript"/>
         </action>        
-        <action path="/editQAScriptForm" name="EditQAScriptForm" type="eionet.gdem.web.struts.qascript.EditQAScriptFormAction" scope="request" input="/editQAScript.jsp">
+        <action path="/editQAScriptForm" name="QAScriptForm" type="eionet.gdem.web.struts.qascript.QAScriptFormAction" scope="request" input="/editQAScript.jsp">
             <forward name="success" path="/editQAScript.jsp" redirect="true" />
         </action>
-        <action path="/editQAScript"  scope="request" type="eionet.gdem.web.struts.qascript.EditQAScriptAction" name="EditQAScriptForm" cancellable="true">           
-        	<forward name="success" path="/do/qaScripts"  redirect="true"/>            
+        <action path="/viewQAScriptForm" name="QAScriptForm" type="eionet.gdem.web.struts.qascript.QAScriptFormAction" scope="request" input="/viewQAScript.jsp">
+            <forward name="success" path="/viewQAScript.jsp" redirect="true" />
         </action>
-        <action path="/schemaQAScripts" type="eionet.gdem.web.struts.qascript.SchemaQAScripts" name="schemaStyleForm">   
+        <action path="/editQAScript"  scope="request" type="eionet.gdem.web.struts.qascript.EditQAScriptAction" name="QAScriptForm" parameter="action" cancellable="true" input="/editQAScript.jsp">           
+             <forward name="success" path="/do/viewQAScriptForm" redirect="true"/>
+             <forward name="fail" path="/editQAScript.jsp" redirect="false"/>
+        </action>
+        <action path="/schemaQAScripts" type="eionet.gdem.web.struts.qascript.SchemaQAScriptsFormAction">   
 	        <forward name="success" path="/schemaQAScripts.jsp" redirect="true"/>                      
         </action>
         <action path="/qaScriptHistory"  type="eionet.gdem.web.struts.qascript.HistoryListAction" scope="request">
@@ -270,7 +278,7 @@
         <action path="/getXMLSchemas" scope="request" type="eionet.gdem.web.struts.remoteapi.GetXMLSchemasAction">
 	        <forward name="fail" path="/api/methodError" />
         </action>
-        <action path="/convert"  name="convert" scope="request" type="eionet.gdem.web.struts.remoteapi.ConvertAction">
+        <action path="/convert" scope="request" type="eionet.gdem.web.struts.remoteapi.ConvertAction">
 	        <forward name="fail" path="/api/methodError" />
         </action>
         <action path="/convertPush"  scope="request" type="eionet.gdem.web.struts.remoteapi.ConvertPushAction">

@@ -62,9 +62,9 @@
 						</td>
 						<td>
 							<logic:iterate id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">
-							<a  href="<bean:write name="webRoot"/>/<bean:write name="stylesheet" property="xsl" />" title="<bean:write name="stylesheet" property="xsl_descr" />">
+	    					<html:link page="/do/stylesheetViewForm" paramId="stylesheetId" paramName="stylesheet" paramProperty="convId"  title="view stylesheet" >
 								<bean:write name="stylesheet" property="type" />
-							</a>&#160;
+							</html:link>&#160;
 							</logic:iterate>
 						</td>
 					</tr>

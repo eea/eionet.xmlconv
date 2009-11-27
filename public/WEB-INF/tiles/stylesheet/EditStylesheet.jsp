@@ -14,32 +14,27 @@
 		<tiles:insert definition="Error" />
 
 		<html:form action="/stylesheetEdit" method="post" enctype="multipart/form-data">
-		  <table width="100%" class="datatable">
-			<col style="width:16%"/>
-			<col style="width:84%"/>
-		    <tr>
-				<th scope="row" class="scope-row">
-			        <bean:message key="label.stylesheet.schema"/>:
-				</th>
-		      <td>
-		      	<logic:present name="user">
-		        	<html:text property="schema"  maxlength="255" style="width:400px" />		        
-		        </logic:present>
-		        <logic:notPresent name="user">
-	        		<html:hidden name="stylesheetForm" property="schema" />
-					<a  href="<bean:write name="stylesheetForm" property="schema" />" title="<bean:write name="stylesheetForm" property="schema" />">						
-						<bean:write name="stylesheetForm" property="schema" />
-					</a>&#160;		        	  
-		        </logic:notPresent>
-		      </td>
+		  <table class="formtable">
+			<col class="labelcol"/>
+			<col class="entrycol"/>
+			<tr class="zebraeven">
+	        	<td>
+					<label class="question">
+			        	<bean:message key="label.stylesheet.schema"/>
+			    	</label>
+				</td>
+		   		<td>
+		        	<html:text property="schema"  maxlength="255" style="width:400px" />
+		        </td>		        
 		    </tr>
-		    <logic:present name="user">
-			    <tr>
-					<th scope="row" class="scope-row">
-				        <bean:message key="label.stylesheet.selectDDSchema"/>:
-			      </th>
-			      <td>
-			          <select name="xmlSchema"  size="10" onchange="setSchema()" style="width:98%">
+		    <tr>
+				<td>
+					<label class="question" for="selDDSchema">
+			        	<bean:message key="label.stylesheet.selectDDSchema"/>
+			        </label>
+		      </td>
+		      <td>
+		          <select name="xmlSchema"  size="10" onchange="setSchema()" style="width:98%" id="selDDSchema">
 						<option selected="selected" value="">
 							--
 						</option>		        
@@ -57,38 +52,28 @@
 			        </select>
 			       </td>
 			    </tr>
-		    </logic:present>		        
-		    <tr>
-				<th scope="row" class="scope-row">
-					<bean:message key="label.stylesheet.outputtype"/>:
-				</th>
+			<tr class="zebraeven">
+				<td>
+					<label class="question" for="selOutputType">
+						<bean:message key="label.stylesheet.outputtype"/>
+					</label>
+				</td>
 		      <td>
-					<bean:define id="oType" name="stylesheet.outputtypeSel" scope="session" type="java.lang.String" />	
-			   <logic:present name="user">		
-		        	<select name="outputtype" style="width:100px">
-		       </logic:present>
-				<logic:iterate id="opt" name="stylesheet.outputtype" scope="session"  property="convTypes" type="ConvType">
+				<bean:define id="oType" name="stylesheet.outputtypeSel" scope="session" type="java.lang.String" />
+	        	<select name="outputtype" style="width:100px" id="selOutputType">
+					<logic:iterate id="opt" name="stylesheet.outputtype" scope="session"  property="convTypes" type="ConvType">
 				         <logic:equal name="opt" property="convType" value="<%=oType%>">
-					         <logic:present name="user">						         
-								<option selected="selected" value="<bean:write name="opt" property="convType" />">
-									<bean:write name="opt" property="convType" />
-								</option>
-							 </logic:present>
-					         <logic:notPresent name="user">									 								 
-     						         <bean:write name="opt" property="convType" />
-					         </logic:notPresent>
+							<option selected="selected" value="<bean:write name="opt" property="convType" />">
+								<bean:write name="opt" property="convType" />
+							</option>
 						 </logic:equal>
 				         <logic:notEqual name="opt" property="convType" value="<%=oType%>">
-					         <logic:present name="user">						         
 								<option value="<bean:write name="opt" property="convType" />">
 									<bean:write name="opt" property="convType" />
 							 	</option>
-							 </logic:present>
 						 </logic:notEqual>							 						
-				</logic:iterate>
-				<logic:present name="user">			
-			        </select>
-		       </logic:present>
+					</logic:iterate>
+		        </select>
 		      </td>
 		    </tr>
 		    
@@ -99,12 +84,13 @@
 			<bean:define id="depOn" name="stylesheetForm" property="dependsOn" scope="request" type="java.lang.String" />
 			
 				<tr>
-		 			<th scope="row" class="scope-row">
-						<bean:message key="label.stylesheet.dependsOn"/>:
-					</th>
+		 			<td>
+						<label class="question" for="selDependsOn">
+							<bean:message key="label.stylesheet.dependsOn"/>
+						</label>
+					</td>
 					<td>
-						<logic:present name="user">		                         
-						<select name="dependsOn">
+						<select name="dependsOn" id="selDependsOn">
 					        <logic:empty name="stylesheetForm" property="dependsOn">
 					        	<option value="" selected="selected">--</option>
 					        </logic:empty>
@@ -125,14 +111,6 @@
 						        </logic:notEqual>
 						     </logic:iterate>
 					     </select>
-					     </logic:present>
-					     <logic:notPresent name="user">
-					     	<logic:iterate id="st" scope="request" name="existingStylesheets">
-					     		<logic:equal name="st" property="convId" value="<%=depOn %>">
-					     			<bean:write name="st" property="xslFileName" />
-					     		</logic:equal>
-					     	</logic:iterate>
-					     </logic:notPresent>
 					 </td>
 				</tr>
 				
@@ -141,70 +119,68 @@
 			
 		    
 		    <tr>
-				<th scope="row" class="scope-row">
-			      	<bean:message key="label.stylesheet.description"/>:
-				</th>
+				<td>
+					<label class="question" for="txtDescription">
+			      		<bean:message key="label.stylesheet.description"/>
+			      	</label>
+				</td>
 		      <td>
-			      <logic:present name="user">
-				        <html:textarea property="description"  rows="3" cols="30" style="width:400px"/>
-			      </logic:present>
-			      <logic:notPresent name="user">
-					    <bean:write name="stylesheetForm" property="description"/>
-			      </logic:notPresent>
+		        <html:textarea property="description"  rows="3" cols="30" style="width:400px" styleId="txtDescription"/>
 		        <html:hidden property="stylesheetId" />
 		      </td>
 		    </tr>
-		    <tr>
-				<th scope="row" class="scope-row">
-			        <bean:message key="label.stylesheet.xslfile"/>:
-				</th>
+			<tr class="zebraeven">
+				<td>
+					<label class="question" for="txtXsl">
+				        <bean:message key="label.stylesheet.xslfile"/>
+				     </label>
+				</td>
 		      <td>
 					<a  href="<bean:write name="webRoot"/>/<bean:write property="xsl" name="stylesheetForm"/>" title="<bean:write property="xsl" name="stylesheetForm"/>">						
-								<bean:write property="xsl" name="stylesheetForm"/>
+								<bean:write property="xslFileName" name="stylesheetForm"/>
 					</a>
+					&#160;&#160;&#160;&#160;&#160;&#160;(<bean:message key="label.lastmodified"/>: 
 					<logic:present name="stylesheetForm" property="modified">
-						&#160;&#160;&#160;&#160;&#160;&#160;(<bean:message key="label.lastmodified"/>: <bean:write property="modified" name="stylesheetForm"/>)
+						<bean:write property="modified" name="stylesheetForm"/>
 					</logic:present>
+					<logic:notPresent name="stylesheetForm" property="modified">
+						<span style="color:red"><bean:message key="label.fileNotFound"/></span>
+					</logic:notPresent>
+					)
 		      </td>
 		    </tr>
-		    <logic:present name="user">
 		      	<logic:present name="stylesheetForm" property="xslFileName">
 				    <tr>
-				      <td colspan="2" align="center">
-				        <html:textarea property="xslContent" style="width: 98%;" rows="20" cols="55"/>
-				      </td>
+				      	<td colspan="2">
+					        <html:textarea property="xslContent" style="width: 98%;" rows="20" cols="55" styleId="txtXsl"/>
+				      	</td>
 				    </tr>
 			    <tr>
-			      <td colspan="2" align="center">
-			        <html:submit styleClass="button" property="action">
-			        	<bean:message key="label.stylesheet.save"/>
-				    </html:submit>
-			        <html:hidden property="xslFileName" />
-			        <html:hidden property="checksum" name="stylesheetForm" />
-			      </td>
+		    		<td>&#160;</td>
+			      	<td>
+				        <html:submit styleClass="button" property="action">
+			        		<bean:message key="label.stylesheet.save"/>
+				    	</html:submit>
+			        	<html:hidden property="xslFileName" />
+			        	<html:hidden property="checksum" name="stylesheetForm" />
+			      	</td>
 			    </tr>
-			</logic:present>
 		    <tr>
-		      <td colspan="2" align="center">
+	    	  <td colspan="2">&#160;</td>
+	    	 </tr>
+		    <tr>
+	    	  <td>&#160;</td>
+		      <td>
 		        <html:file property="xslfile" style="width:400px" size="64" />
 		      </td>
 		    </tr>
 		    </logic:present>
 		    <tr>
-		      <td colspan="2" align="center">
-		      	<logic:present name="user">
-			        <html:submit styleClass="button" property="action">
-			        	<bean:message key="label.stylesheet.upload"/>
-			        </html:submit>
-			        <html:cancel styleClass="button" property="action">
-			        	<bean:message key="label.stylesheet.cancel"/>
-			        </html:cancel>
-		        </logic:present>
-		        <logic:notPresent name="user">
-			        <html:cancel styleClass="button" property="action">
-			        	<bean:message key="label.ok"/>
-			        </html:cancel>		        
-		        </logic:notPresent>
+	    		<td>&#160;</td>
+		      <td>
+		        <html:submit styleClass="button" property="action">
+		        	<bean:message key="label.stylesheet.upload"/>
+		        </html:submit>
 		      </td>
 		    </tr>
 		  </table>

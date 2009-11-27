@@ -14,30 +14,35 @@
 		<tiles:insert definition="Error" />
 
 			<html:form action="/addUplXmlFile" method="post" enctype="multipart/form-data">
-			  <table class="datatable">
-				<col style="width:16%"/>
-				<col style="width:84%"/>
-				<tr>
-  				  <th scope="row" class="scope-row">
-			        <bean:message key="label.uplXmlFile.xmlfile"/>:
-			      </th>
+			  <table class="formtable">
+				<col class="labelcol"/>
+				<col class="entrycol"/>
+				<tr class="zebraeven">
+  				  <td>
+					<label class="question required" for="fileXml">   				  	
+			        	<bean:message key="label.uplXmlFile.xmlfile"/>
+			        </label>
+			      </td>
 			      <td>
-			        <html:file property="xmlfile"  />
+			        <html:file property="xmlfile" styleId="fileXml" />
 			      </td>
 			    </tr>
-			    <tr>
-  				  <th scope="row" class="scope-row">
-			        <bean:message key="label.uplXmlFile.title"/>:
-			      </th>
+				<tr>
+  				  <td>
+					<label class="question" for="txtTitle">   				  	
+				        <bean:message key="label.uplXmlFile.title"/>
+				    </label>
+			      </td>
 			      <td>
-			        <html:textarea property="title"  rows="3" cols="30" style="width:400px"/>
+			        <html:textarea property="title"  rows="3" cols="30" style="width:400px" styleId="txtTitle"/>
 			      </td>
 			    </tr>
 			    <tr>
 			      <td colspan="2">&nbsp;</td>
 			    </tr>
 			    <tr>
-			      <td colspan="2" align="center">
+			      <td>&nbsp;</td>
+			      <td>
 			        <html:submit styleClass="button">
 			        	<bean:message key="label.uplXmlFile.upload"/>
 			        </html:submit>
