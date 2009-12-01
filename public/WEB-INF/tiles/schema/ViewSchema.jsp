@@ -24,7 +24,7 @@
                 </html:link>
             </li>
             <li>
-                <html:link page="/queries.jsp?ID=${id}"   titleKey="label.tab.title.scripts" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                <html:link page="/do/schemaQAScripts?schemaId=${id}"   titleKey="label.tab.title.scripts" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
                     <bean:message key="label.tab.title.scripts" />
                 </html:link>
             </li>

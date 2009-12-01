@@ -42,21 +42,23 @@
 				</thead>
 				<tbody>
 					<logic:iterate indexId="index" id="schema" name="qascript.qascriptList" scope="session" property="qascripts" type="Schema">
-					<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
-						<td title="<bean:write name="schema" property="schema"/>">
-	    					<html:link page="/do/schemaQAScripts" paramId="schemaId" paramName="schema" paramProperty="id" title="view QA scripts for this XML Schema" >
-								<bean:write name="schema" property="schema" />
-							</html:link>
-						</td>
-						<td>
-							<logic:iterate id="qascript" name="schema" scope="page" property="qascripts" type="QAScript">
-				                <html:link page="/do/viewQAScriptForm" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qascript.tab.title">
-									<bean:write name="qascript" property="shortName" />
-                				</html:link>
-								&#160;
-							</logic:iterate>
-						</td>
-					</tr>
+						<logic:present name="schema" property="qascripts" >
+						<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
+							<td title="<bean:write name="schema" property="schema"/>">
+	    						<html:link page="/do/schemaQAScripts" paramId="schemaId" paramName="schema" paramProperty="id" title="view QA scripts for this XML Schema" >
+									<bean:write name="schema" property="schema" />
+								</html:link>
+							</td>
+							<td>
+								<logic:iterate id="qascript" name="schema" scope="page" property="qascripts" type="QAScript">
+					                <html:link page="/do/viewQAScriptForm" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qascript.tab.title">
+										<bean:write name="qascript" property="shortName" />
+	                				</html:link>
+									&#160;
+								</logic:iterate>
+							</td>
+						</tr>
+						</logic:present>
 					</logic:iterate>
 					<tr>
 						<td valign="top" colspan="3">

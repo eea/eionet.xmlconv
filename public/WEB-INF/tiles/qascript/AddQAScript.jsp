@@ -13,32 +13,19 @@
 
 		<%-- include Error display --%>
 		<tiles:insert definition="Error" />
-
 		<html:form action="/addQAScript" method="post" enctype="multipart/form-data">
 		  <table class="formtable">
 			<col class="labelcol"/>
 			<col class="entrycol"/>
 			<tr class="zebraeven">
-				<logic:present name="schema" scope="request">
-		        	<td>
-						<label class="question" for="txtSchemaUrl">
-				        	<bean:message key="label.qascript.schema"/>
-				    	</label>
-					</td>
-		      		<td>
-						<bean:write name="schema" scope="request"/>
-					</td>
-				</logic:present>
-				<logic:notPresent name="schema" scope="request">
 		        	<td>
 						<label class="question required" for="txtSchemaUrl">
 				        	<bean:message key="label.qascript.schema"/>
 				    	</label>
 					</td>
-		      		<td>
-						<input type="text" name="schema" maxlength="255"  style="width:400px"  id="txtSchemaUrl" size="64"/>
+		      		<td>						
+						<html:text styleId="txtSchemaUrl" size="64" property="schema" />
 					</td>
-				</logic:notPresent>
 		    </tr>        
 			<tr>
 				<td>
@@ -47,7 +34,7 @@
 			    	</label>
 				</td>
 		      <td>
-				<input type="text" id="txtShortName" class="textfield" size="64" name="shortName" value="" />
+				<html:text styleId="txtShortName" size="64" property="shortName" />
 		      </td>
 		    </tr>
 			<tr class="zebraeven">
@@ -57,7 +44,7 @@
 			      	</label>
 				</td>
 		      <td>
-				<textarea rows="2" cols="30" name="description" id="txtDescription" style="width:400px"></textarea>
+				<html:textarea rows="2" cols="30" styleId="txtDescription" property="description"  style="width:400px" />
 		      </td>
 		    </tr>
 			<tr>
@@ -91,7 +78,7 @@
 			     </label>
 	    	  </td>
 		      <td>
-				<input type="file" name="scriptFile" id="txtFile" style="width:400px" size="64" />
+				<html:file property="scriptFile" styleId="txtFile" style="width:400px" size="64" />
 		      </td>
 		    </tr>
 		    <tr>
@@ -102,7 +89,7 @@
 		        </html:submit>
 		      </td>
 		    </tr>
-		    <html:hidden property="schemaId"/>		  
 		</table>
+		<div><html:hidden property="schemaId" /></div>
 	</html:form>
 

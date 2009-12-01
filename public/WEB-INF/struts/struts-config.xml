@@ -244,14 +244,16 @@
         <action path="/qaScripts"  type="eionet.gdem.web.struts.qascript.QAScriptListAction" scope="request">
             <forward name="success" path="/qaScripts.jsp" />
         </action>
-        <action path="/deleteQAScript"  scope="request" type="eionet.gdem.web.struts.qascript.DeleteQAScriptAction">           
-        	<forward name="success" path="/queries.jsp"  redirect="true"/>            
+        <action path="/deleteQAScript"  name="QAScriptForm"  scope="request" type="eionet.gdem.web.struts.qascript.DeleteQAScriptAction">           
+        	<forward name="success" path="/do/schemaQAScripts"  redirect="true"/>            
         </action>        
-        <action path="/addQAScriptForm"  parameter="/addQAScript.jsp" scope="request" validate="false" type="org.apache.struts.actions.ForwardAction"/>           
+        <action path="/addQAScriptForm"  name="QAScriptForm" type="eionet.gdem.web.struts.qascript.AddQAScriptFormAction" scope="request" input="/addQAScript.jsp">   
+	        <forward name="success" path="/addQAScript.jsp" redirect="true"/>                   
+        </action>
         <action path="/addQAScript"  scope="request" type="eionet.gdem.web.struts.qascript.AddQAScriptAction" name="QAScriptForm" cancellable="true">           
-        	<forward name="success" path="/do/qaScript"  redirect="true"/>            
-        	<forward name="fail" path="/do/addQAScriptForm"  redirect="true"/>
-            <forward name="list" path="/do/qaScript"/>
+        	<forward name="success" path="/do/schemaQAScripts"  redirect="true"/>            
+        	<forward name="fail" path="/do/addQAScriptForm" redirect="false"/>
+            <forward name="list" path="/do/qaScripts"/>
         </action>        
         <action path="/editQAScriptForm" name="QAScriptForm" type="eionet.gdem.web.struts.qascript.QAScriptFormAction" scope="request" input="/editQAScript.jsp">
             <forward name="success" path="/editQAScript.jsp" redirect="true" />
@@ -265,6 +267,10 @@
         </action>
         <action path="/schemaQAScripts" type="eionet.gdem.web.struts.qascript.SchemaQAScriptsFormAction">   
 	        <forward name="success" path="/schemaQAScripts.jsp" redirect="true"/>                      
+            <forward name="fail" path="/do/qaScripts"/>
+        </action>
+        <action path="/saveSchemaValidation" name="schemaForm" type="eionet.gdem.web.struts.qascript.SaveSchemaValidationAction">   
+        	<forward name="success" path="/do/schemaQAScripts"  redirect="true"/>            
         </action>
         <action path="/qaScriptHistory"  type="eionet.gdem.web.struts.qascript.HistoryListAction" scope="request">
             <forward name="success" path="/qaScriptHistory.jsp" />

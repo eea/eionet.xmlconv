@@ -58,27 +58,33 @@
 			
 	<logic:iterate indexId="index" id="schema" name="schema.qascripts" scope="session" property="qascripts" type="Schema">
 		<div class="visualClear">&nbsp;</div>
-			<table cellspacing="0">
+		<html:form action="/viewQAScriptForm" method="post">
+			<table class="formtable">
 				<tr>
-					<td align="right" style="padding-right:5">
-						<label for="validatefield">XML Schema validation is a part of QA Service for this type of XML files:</label>
+					<td style="width:510px">
+						<label class="question" for="validatefield"><bean:message key="label.qascript.schema.validate"/></label>
 					</td>
-					<td align="left">
+					<td style="width:40px">
 						<logic:equal name="ssiPrm" value="true"  name="schema.qascripts" scope="session" property="ssiPrm" >
 							<html:checkbox name="schema" property="doValidation" styleId="validatefield" />
 						</logic:equal>
 						<logic:equal name="ssiPrm" value="false"  name="schema.qascripts" scope="session" property="ssiPrm" >
-							<bean:write name="schema"	 property="doValidation" />																						 
+							<bean:write  name="schema"	 property="doValidation" />
 						</logic:equal>
-							<!--String str_validate = validate.equals("1")  ? "yes" : "no";-->
 					</td>
 					<td>
-					<!-- save button -->
- 					</td>
+						<logic:equal name="ssiPrm" value="true"  name="schema.qascripts" scope="session" property="ssiPrm" >
+							<!-- save button -->
+		   						<input type="button"  class="button" value="<bean:message key="label.save"/>" onclick="return submitAction(1,'saveSchemaValidation');" />
+							<input type="hidden" name="schemaId" value="${schemaId}" />
+						</logic:equal>
+					</td>
 				</tr>
 			</table>
+		</html:form>
 		
 		<logic:present name="qascripts" name="schema" scope="page" property="qascripts" >
+			<html:form action="/searchCR" method="post">
 	        <table class="datatable" width="100%">
 				<logic:equal name="ssdPrm" value="true"  name="schema.qascripts" scope="session" property="ssdPrm" >
 					<col style="width:10px"/>
@@ -94,10 +100,10 @@
 		              	<th scope="col">&#160;</th>
 					</logic:equal>
                   	<th scope="col">&#160;</th>
-                  	<th scope="col">Short name</th>
-                  	<th scope="col">Description</th>
-                  	<th scope="col">Script</th>
-                  	<th scope="col">Last modified</th>
+                  	<th scope="col"><bean:message key="label.qascript.shortname"/></th>
+                  	<th scope="col"><bean:message key="label.qascript.description"/></th>
+                  	<th scope="col"><bean:message key="label.qascript.fileName"/></th>
+                  	<th scope="col"><bean:message key="label.lastmodified"/></th>
                	</tr>
             	</thead>
            	<tbody>
@@ -139,9 +145,12 @@
 			</table>
 				<div class="boxbottombuttons">					
 					<logic:equal name="ssdPrm" value="true"  name="schema.qascripts" scope="session" property="ssdPrm" >
-   						<input type="button"  class="button" value="<bean:message key="label.qascript.delete"/>" onclick="return submitAction(1,'deleteQAScript');" />
+   						<input type="button"  class="button" value="<bean:message key="label.qascript.delete"/>" onclick="return submitAction(2,'deleteQAScript');" />
+						<input type="hidden" name="schemaId" value="${schemaId}" />
 					</logic:equal>
 				</div>
+			</html:form>
+
 			</logic:present>
 			<logic:notPresent name="qascripts" name="schema" scope="page" property="qascripts" >
 				<div class="success">
