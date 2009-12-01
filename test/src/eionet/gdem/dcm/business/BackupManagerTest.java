@@ -75,7 +75,7 @@ public class BackupManagerTest   extends DBTestCase{
 	public void testFileBackup() throws Exception{
 		
 		String folderName = Properties.queriesFolder;
-		String fileName= "test.xquery";
+		String fileName= TestConstants.SEED_QASCRIPT_TEST;
 		String id="100";
 		String user="testuser";
 				

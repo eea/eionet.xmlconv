@@ -30,6 +30,9 @@ public class TestConstants {
 	public static final String SEED_XLIFF_XML = "seed-xliff.xml";
 	public static final String SEED_GENERALREPORT_SCHEMA = "seed-generalreport.xsd";
 	public static final String SEED_GENERALREPORT_SCHEMA_UPD = "seed-generalreportUPD.xsd";
+	public static final String SEED_QASCRIPT_XQUERY = "seed-qascript.xquery";
+	public static final String SEED_QASCRIPT_XQUERY2 = "seed-qascript2.xquery";
+	public static final String SEED_QASCRIPT_TEST = "test.xquery";
 
 	//TEST RESULT PROPERTIES
 	public final static String HTML_CONTENTYPE_RESULT ="text/html;charset=UTF-8";
