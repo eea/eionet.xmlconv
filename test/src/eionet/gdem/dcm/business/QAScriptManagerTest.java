@@ -91,7 +91,7 @@ public class QAScriptManagerTest  extends DBTestCase{
 	public void testUpdateSchemaValidation() throws Exception{
 
 		String user = TestConstants.TEST_ADMIN_USER;
-		String schemaId = "83";
+		String schemaId = "62";
 
 		SchemaManager sm = new SchemaManager();
 		QAScriptListHolder st = sm.getSchemasWithQAScripts(user, schemaId);

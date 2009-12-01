@@ -79,7 +79,7 @@ public class ListQueriesMethodTest  extends DBTestCase{
 
 		//get all queries (xqueries, xml schemas, xslts)
 		Vector v = qas.listQueries(null);
-		assertTrue(v.size()==10);
+		assertTrue(v.size()>10);
 
 	}    	
 
