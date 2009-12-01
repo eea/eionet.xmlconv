@@ -28,56 +28,29 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
-
-import eionet.gdem.dcm.business.SchemaManager;
-import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 /**
  * @author Enriko Käsper, Tieto Estonia
- * SchemaQAScriptsFormAction
+ * AddQAScriptFormAction
  */
 
-public class SchemaQAScriptsFormAction  extends Action {
-
-	private static LoggerIF _logger = GDEMServices.getLogger();
-
+public class AddQAScriptFormAction  extends Action {
 
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-		QAScriptListHolder st = new QAScriptListHolder();
-		ActionMessages messages = new ActionMessages();
-		String user_name = (String) httpServletRequest.getSession().getAttribute("user");
 
+		QAScriptForm form = (QAScriptForm) actionForm;
 		String schemaId = (String) httpServletRequest.getParameter("schemaId");
-
 		if (schemaId == null || schemaId.equals("")) {
 			schemaId = (String) httpServletRequest.getAttribute("schemaId");
 		}
-
-		
-		if (schemaId == null || schemaId.equals("")) {
-			return actionMapping.findForward("fail");
+		String schema = (String) httpServletRequest.getParameter("schema");
+		if (schema == null || schema.equals("")) {
+			schema = (String) httpServletRequest.getAttribute("schema");
 		}
+		form.setSchema(schema);
+		form.setSchemaId(schemaId);	
 
-		httpServletRequest.setAttribute("schemaId", schemaId);
-		
-
-		try {
-			SchemaManager sm = new SchemaManager();
-			st = sm.getSchemasWithQAScripts(user_name, schemaId);
-
-		} catch (DCMException e) {
-			e.printStackTrace();
-			_logger.error("Error getting schema QA scripts",e);
-			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-		}
-		saveErrors(httpServletRequest, messages);
-
-		httpServletRequest.getSession().setAttribute("schema.qascripts", st);
 		return actionMapping.findForward("success");
 	}
 }

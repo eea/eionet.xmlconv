@@ -336,6 +336,8 @@ public class SchemaManager {
 				sc.setId((String) schema.get("schema_id"));
 				sc.setSchema((String) schema.get("xml_schema"));
 				sc.setDescription((String) schema.get("description"));
+		        boolean validate = (!Utils.isNullStr((String) schema.get("validate")) && ((String) schema.get("validate")).equals("1"));
+				sc.setDoValidation(validate);
 
 				Vector qascripts = new Vector();
 				if (schema.containsKey("queries")) {
@@ -373,8 +375,8 @@ public class SchemaManager {
 					}
 					if (qases.size() > 0) {
 						sc.setQascripts(qases);
-						schemas.add(sc);
 					}
+					schemas.add(sc);
 				}
 				if(schemas.size()>0){
 					st.setQascripts(schemas);

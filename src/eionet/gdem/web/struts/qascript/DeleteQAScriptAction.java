@@ -50,8 +50,12 @@ public class DeleteQAScriptAction  extends Action {
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
 		QAScriptForm form = (QAScriptForm) actionForm;
-		String scriptId = (String) httpServletRequest.getParameter("scriptId");
-		String schemaId = (String) httpServletRequest.getParameter("schemaId");
+		String scriptId = form.getScriptId();
+		if(scriptId==null || scriptId.length()==0)
+			 scriptId = (String) httpServletRequest.getParameter("scriptId");
+		String schemaId = form.getSchemaId();
+		if(schemaId==null || schemaId.length()==0)
+			schemaId = (String) httpServletRequest.getParameter("schemaId");
 
 		String user = (String) httpServletRequest.getSession().getAttribute("user");
 		ActionMessages errors = new ActionMessages();
@@ -75,10 +79,10 @@ public class DeleteQAScriptAction  extends Action {
 
 		return findForward(actionMapping, "success", schemaId);
 	}
-	private ActionForward findForward(ActionMapping actionMapping, String f, String stylesheetId){
+	private ActionForward findForward(ActionMapping actionMapping, String f, String schemaId){
 		ActionForward forward = actionMapping.findForward(f);
 		 StringBuffer path = new StringBuffer(forward.getPath());
-		 path.append("?ID=" + stylesheetId);
+		 path.append("?schemaId=" + schemaId);
 	    forward = new RedirectingActionForward(path.toString());
 	    return forward;
 	}

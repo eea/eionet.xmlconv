@@ -55,6 +55,7 @@ public class SaveHandler {
   * stylesheets handling
   *
   */
+  @Deprecated
   static void handleStylesheets(HttpServletRequest req, String action) {
 
      String schemaID=null;
@@ -231,9 +232,11 @@ public class SaveHandler {
   }
 
   /**
+  *  
   * queries handling
   *
   */
+  @Deprecated
   static void handleQueries(HttpServletRequest req, String action) {
 
      String schemaID=null;
@@ -500,6 +503,7 @@ public class SaveHandler {
   * schemas handling
   *
   */
+  @Deprecated
   static void handleSchemas(HttpServletRequest req, String action) {
 
     boolean hasOtherStuff = false;
@@ -586,7 +590,7 @@ public class SaveHandler {
 
             String validate= (String)req.getParameter("VALIDATE");
 
-            GDEMServices.getDaoService().getSchemaDao().updateSchemaValidate(schema_id, validate);
+            //GDEMServices.getDaoService().getSchemaDao().updateSchemaValidate(schema_id, validate);
 
        }
        catch (Exception e){
@@ -599,6 +603,7 @@ public class SaveHandler {
   * root elements handling
   *
   */
+  @Deprecated
   static void handleRootElems(HttpServletRequest req, String action) {
 
      String schema_id=null;

@@ -33,7 +33,7 @@ public interface ISchemaDao extends IDbSchema{
 	  * @param String schema_id - id from database, used as a constraint 
 	  * @param String validate - validate property
 	  */
-	  public void updateSchemaValidate(String schema_id, String validate) throws SQLException;
+	  public void updateSchemaValidate(String schema_id, boolean validate) throws SQLException;
 
 
 

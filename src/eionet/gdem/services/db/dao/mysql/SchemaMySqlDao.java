@@ -92,31 +92,11 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 	
 	public SchemaMySqlDao(){}
 	
-/*	public String addSchema(String xmlSchema, String description) throws SQLException {
-		return addSchema(xmlSchema, description, null);
-	}
-*/	
 	public String addSchema(String xmlSchema,  String description) throws SQLException{
 		return addSchema(xmlSchema, description, null, false, null);		
 	}
 	
-	
-	
-	
-	
-	
-
-/*	public String addSchema(String xmlSchema, String description, String public_id) throws SQLException {
-
-
-
-		String sql = "INSERT INTO " + SCHEMA_TABLE + " ( " + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD + ", " + DTD_PUBLIC_ID_FLD + ") VALUES (" + Utils.strLiteral(xmlSchema) + ", " + Utils.strLiteral(description) + ", " + Utils.strLiteral(public_id) + ")";
-
-		_executeUpdate(sql);
-
-		return getSchemaID(xmlSchema);
-	}
-*/			
+					
 	public String addSchema(String xmlSchema,  String description, String schemaLang, boolean doValidate, String public_id) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -166,29 +146,16 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 	}
 	
 
-/*	public void updateSchemaValidate(String schema_id, String validate) throws SQLException {
-
-		validate = (validate == null ? "0" : validate);
-		if (!validate.equals("1")) validate = "0";
-
-		String sql = "UPDATE  " + SCHEMA_TABLE + " SET " + SCHEMA_VALIDATE_FLD + "=" + Utils.strLiteral(validate) + " WHERE " + SCHEMA_ID_FLD + "=" + schema_id;
-
-		_executeUpdate(sql);
-
-	}
-*/	
-	
-	public void updateSchemaValidate(String schema_id, String validate) throws SQLException{
+	public void updateSchemaValidate(String schema_id, boolean validate) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		validate = (validate == null ? "0" : validate);
-		if (!validate.equals("1")) validate = "0";
+		String strValidate = (validate)? "1":"0";
 			
 		if (isDebugMode){ logger.debug("Query is " + qUpdateSchemaValidate);}		
 		try{
 			conn = getConnection();	
 			pstmt = conn.prepareStatement(qUpdateSchemaValidate);
-			pstmt.setString(1, validate);
+			pstmt.setString(1, strValidate);
 			pstmt.setInt(2, Integer.parseInt(schema_id));
 			pstmt.executeUpdate();
 		}finally{
@@ -197,32 +164,6 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 	}
 	
 	
-	
-/*	public void removeSchema(String schemaId, boolean del_stylesheets, boolean del_queries, boolean del_self) throws SQLException {
-
-		// delete all stylesheets at first
-		if (del_stylesheets) {
-			String sql_xsl = "DELETE FROM " + XSL_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "=" + schemaId;
-			_executeUpdate(sql_xsl);
-		}
-
-		if (del_queries) {
-			String sql_xsl = "DELETE FROM " + QUERY_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "=" + schemaId;
-			_executeUpdate(sql_xsl);
-		}
-
-		if (del_self) {
-			// delete all root element mappings at first
-			String sql_elem = "DELETE FROM " + ROOTELEM_TABLE + " WHERE " + ELEM_SCHEMA_ID_FLD + "=" + schemaId;
-			_executeUpdate(sql_elem);
-
-			String sql = "DELETE FROM " + SCHEMA_TABLE + " WHERE " + SCHEMA_ID_FLD + "=" + schemaId;
-			_executeUpdate(sql);
-		}
-
-	}
-*/	
-
 	public void removeSchema(String schemaId, boolean del_stylesheets, boolean del_queries, boolean del_upl_schemas, boolean del_self) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;

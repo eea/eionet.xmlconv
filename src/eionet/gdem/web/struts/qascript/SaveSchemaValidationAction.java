@@ -31,83 +31,54 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.action.RedirectingActionForward;
-import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.web.struts.schema.SchemaElemForm;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * AddQAScriptAction
+ * @author Enriko Käsper, Tieto Estonia SchemaValidationFormAction
  */
 
-public class AddQAScriptAction  extends Action {
+public class SaveSchemaValidationAction extends Action {
 
 	private static LoggerIF _logger = GDEMServices.getLogger();
 
+	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
+			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
-		QAScriptForm form = (QAScriptForm) actionForm;
-		String scriptId = form.getScriptId();
+		SchemaElemForm form = (SchemaElemForm) actionForm;
 		String schemaId = form.getSchemaId();
-		String shortName = form.getShortName();
-		String desc = form.getDescription();
-		String schema = form.getSchema();
-		String resultType = form.getResultType();
-		String scriptType = form.getScriptType();
-		FormFile scriptFile = form.getScriptFile();
+		boolean validate = form.isDoValidation();
 
 		String user = (String) httpServletRequest.getSession().getAttribute("user");
-
-		httpServletRequest.setAttribute("schemaId", schemaId);
-
-		if (isCancelled(httpServletRequest)) {
-			if(schema!=null)
-				return findForward(actionMapping, "cancel", schemaId);
-			else
-				return actionMapping.findForward("list");
-		}
-
 		ActionMessages errors = new ActionMessages();
 		ActionMessages messages = new ActionMessages();
 
-		if (scriptFile == null || scriptFile.getFileSize() == 0) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.file.validation"));
-			saveErrors(httpServletRequest.getSession(), errors);
-		}
-				
-		if (schema == null || schema.equals("")) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.schema.validation"));
-			saveErrors(httpServletRequest.getSession(), errors);
-		}
-		if(errors.size()>0){
-			return actionMapping.findForward("fail");			
-		}
+		httpServletRequest.setAttribute("schemaId", schemaId);
 
 		try {
 			QAScriptManager qm = new QAScriptManager();
-			qm.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile);
-			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.inserted"));
+			qm.updateSchemaValidation(user, schemaId, validate);
+			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.validation.updated"));
 		} catch (DCMException e) {
 			e.printStackTrace();
-			_logger.error("Add QA Script error", e);
+			_logger.error("Error updateing schema validation", e);
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-			saveErrors(httpServletRequest.getSession(), errors);
-			return actionMapping.findForward("fail");			
 		}
+
 		saveErrors(httpServletRequest.getSession(), errors);
 		saveMessages(httpServletRequest.getSession(), messages);
-
 		return findForward(actionMapping, "success", schemaId);
 	}
-	private ActionForward findForward(ActionMapping actionMapping, String f, String schemaId){
+
+	private ActionForward findForward(ActionMapping actionMapping, String f, String scriptId) {
 		ActionForward forward = actionMapping.findForward(f);
-		 StringBuffer path = new StringBuffer(forward.getPath());
-		 path.append("?schemaId=" + schemaId);
-	    forward = new RedirectingActionForward(path.toString());
-	    return forward;
+		StringBuffer path = new StringBuffer(forward.getPath());
+		path.append("?schemaId=" + scriptId);
+		forward = new RedirectingActionForward(path.toString());
+		return forward;
 	}
 }

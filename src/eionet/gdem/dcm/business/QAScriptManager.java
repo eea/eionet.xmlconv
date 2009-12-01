@@ -265,8 +265,10 @@ public class QAScriptManager {
 		}
 	}
 
-	public void add(String user, String scriptId, String shortName, String schemaId, String schema, String resultType,
+	public String add(String user, String shortName, String schemaId, String schema, String resultType,
 			String description, String scriptType, FormFile scriptFile) throws DCMException {
+		
+		String scriptId = null;
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "i")) {
 				_logger.debug("You don't have permissions to insert QA script!");
@@ -295,7 +297,7 @@ public class QAScriptManager {
 				}
 			}
 
-			queryDao.addQuery(schemaId, shortName, fileName, description, resultType, scriptType);
+			scriptId = queryDao.addQuery(schemaId, shortName, fileName, description, resultType, scriptType);
 			storeQAScriptFile(scriptFile, fileName);
 		} catch (DCMException e) {
 			throw e;
@@ -304,6 +306,29 @@ public class QAScriptManager {
 			_logger.error("Error updating QA script", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
+		return scriptId;
+	}
 
+	public void updateSchemaValidation(String user, String schemaId, boolean validate) throws DCMException {
+		try {
+			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
+				_logger.debug("You don't have permissions to update XML Schema validationt!");
+				throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_UPDATE);
+			}
+		} catch (DCMException e) {
+			throw e;
+		} catch (Exception e) {
+			_logger.error("Error updating schema validation", e);
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+
+		try {
+			schemaDao.updateSchemaValidate(schemaId, validate);
+		} catch (Exception e) {
+			e.printStackTrace();
+			_logger.error("Error updating XML Schema", e);
+			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+		}
+		
 	}
 }
