@@ -42,10 +42,10 @@
         <form-bean name="purgeForm" type="org.apache.struts.validator.DynaValidatorForm">
 	        <form-property name="nofDays" type="java.lang.Integer"/>
         </form-bean>   
-        <!-- <form-bean name="getXslForm" type="org.apache.struts.validator.DynaValidatorForm">
+        <form-bean name="getXslForm" type="org.apache.struts.validator.DynaValidatorForm">
 	        <form-property name="id" type="java.lang.String"/>
         	<form-property name="conv" type="java.lang.String"/>
-        </form-bean> -->
+        </form-bean>
         <form-bean name="schemaStyleForm" type="org.apache.struts.action.DynaActionForm">
 	        <form-property name="schema" type="java.lang.String"/>
 	    </form-bean>
