@@ -376,7 +376,9 @@ public class SchemaManager {
 					if (qases.size() > 0) {
 						sc.setQascripts(qases);
 					}
-					schemas.add(sc);
+					if (qases.size() > 0 || schemaId!=null || sc.isDoValidation()==true) {
+						schemas.add(sc);
+					}
 				}
 				if(schemas.size()>0){
 					st.setQascripts(schemas);
