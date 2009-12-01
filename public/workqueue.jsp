@@ -196,14 +196,14 @@ function doRestart(){
 								</td>
 							<%}%>
 						<td>
-							<a href="<%=url%>"><%=urlName%></a>
+							<a href="<%=url%>" rel="nofollow"><%=urlName%></a>
 						</td>
   					<td>
-							<a href="<%=xqFileURL%>"><%=xqText%></a>
+							<a href="<%=xqFileURL%>" rel="nofollow"><%=xqText%></a>
 						</td>
 						<td>
 							<% if (resultFile != null) { %>
-							<a href="<%=tmpFolder + resultFile%>">Show result</a>
+							<a href="<%=tmpFolder + resultFile%>" rel="nofollow">Show result</a>
 							<% } else { out.println("*** Not ready ***"); } %>
 						</td>
 						<td>
