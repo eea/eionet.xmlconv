@@ -38,6 +38,7 @@ CREATE TABLE T_SCHEMA (
   DTD_PUBLIC_ID varchar(255) default NULL,
   VALIDATE enum('0','1') default '0',
   SCHEMA_LANG varchar(255) NOT NULL default 'XSD',
+  EXPIRE_DATE datetime default NULL,
   PRIMARY KEY  (SCHEMA_ID),
   UNIQUE KEY XML_SCHEMA (XML_SCHEMA)
 ) TYPE=MyISAM;
