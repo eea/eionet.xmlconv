@@ -22,6 +22,7 @@
 package eionet.gdem.dcm.business;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -73,6 +74,22 @@ public class DDServiceClient {
 			e.printStackTrace();
 		}
 		return list;
+	}
+	public static Map getDataset(String type, String id) {
+		DDServiceClient d = new DDServiceClient();
+		Map result = null;
+		try {
+			Vector b = new Vector();
+			b.add(type);
+			b.add(id);
+			d.getProps();
+			d.load();
+			Object res = d.execute("getDataset", b);
+			result = (Map) res;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 	

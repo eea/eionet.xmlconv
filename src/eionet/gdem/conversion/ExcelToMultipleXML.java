@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -165,6 +166,14 @@ public class ExcelToMultipleXML {
 							result.setStatusDescription("Schema '" + schemaUrl
 									+ "' with schema lang: EXCEL not found. Found schema lang: "
 									+ schemaInfo.get("schema_lang"));
+						}
+						// validate expiration date - should be in the future.
+						else if (!Utils.isNullStr(schemaInfo.get("expire_date")) && 
+									(new Date()).before(Utils.parseDate((String)schemaInfo.get("expire_date"), null))) {
+								result.setStatusCode(ConversionResultDto.STATUS_ERR_SCHEMA_NOT_FOUND);
+								result.setStatusDescription("The conversion to XML is not allowed for obsolete Schemas! " +
+										" This version of Schema '" + schemaUrl
+										+ "' expired on: " + (String)schemaInfo.get("expire_date"));
 						} else if (stylesheets != null) {
 							applyTransformation(result, xmlTmpFileLocation, stylesheets);
 						}

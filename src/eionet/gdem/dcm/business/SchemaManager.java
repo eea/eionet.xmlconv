@@ -175,6 +175,7 @@ public class SchemaManager {
 					sc.setId((String) schema.get("schema_id"));
 					sc.setSchema((String) schema.get("xml_schema"));
 					sc.setDescription((String) schema.get("description"));
+					sc.setExpireDate(Utils.parseDate((String) schema.get("expire_date"),"yyyy-MM-dd HH:mm:ss"));
 
 					Vector stylesheets = new Vector();
 					if (schema.containsKey("stylesheets")) {
@@ -393,7 +394,7 @@ public class SchemaManager {
 	}
 
 
-	public void update(String user, String schemaId, String schema, String description, String schemaLang, boolean doValidation, String dtdPublicId) throws DCMException {
+	public void update(String user, String schemaId, String schema, String description, String schemaLang, boolean doValidation, String dtdPublicId, Date expireDate) throws DCMException {
 
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
@@ -411,7 +412,7 @@ public class SchemaManager {
 		// String del_id= (String)req.getParameter(Names.XSD_DEL_ID);
 
 		try {
-			schemaDao.updateSchema(schemaId, schema, description, schemaLang, doValidation, dtdPublicId);
+			schemaDao.updateSchema(schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate);
 			
 		} catch (Exception e) {
 			_logger.debug("Error updating schema", e);
@@ -454,6 +455,7 @@ public class SchemaManager {
 		        boolean validate = (!Utils.isNullStr((String) schemaHash.get("validate")) && ((String) schemaHash.get("validate")).equals("1"));
 				schema.setDoValidation(validate);
 				schema.setDtdPublicId((String) schemaHash.get("dtd_public_id"));
+				schema.setExpireDate(Utils.parseDate((String) schemaHash.get("expire_date"),"yyyy-MM-dd HH:mm:ss"));
 				
 				
 				//get uploaded schema information
@@ -915,6 +917,7 @@ public class SchemaManager {
 			schema.setDescription((String) sch.get("description"));
 			schema.setDtdPublicId((String) sch.get("dtd_public_id"));
 			schema.setSchemaLang((String) sch.get("schema_lang"));
+			schema.setExpireDate(Utils.parseDate((String) sch.get("expire_date"),"yyyy-MM-dd HH:mm:ss"));
 
 		} catch (Exception e) {
 			_logger.error("Error getting schema",e);

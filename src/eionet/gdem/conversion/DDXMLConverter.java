@@ -53,6 +53,8 @@ import eionet.gdem.conversion.excel.DD_XMLInstance;
 import eionet.gdem.conversion.excel.DD_XMLInstanceHandler;
 import eionet.gdem.conversion.excel.ExcelUtils;
 import eionet.gdem.conversion.odf.OpenDocumentUtils;
+import eionet.gdem.dcm.BusinessConstants;
+import eionet.gdem.dcm.business.DDServiceClient;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
@@ -80,6 +82,9 @@ public abstract class DDXMLConverter {
     public  static final String META_SHEET_NAME_ODS = "_meta";
 
 	protected SourceReaderIF sourcefile = null;
+
+ 	boolean httpResponse = false;
+
 
 	public DDXMLConverter() {
 	}
@@ -130,8 +135,7 @@ public abstract class DDXMLConverter {
 
 		} catch (Exception e) {
 			Vector result = new Vector();
-			result
-					.add("ErrorConversionHandler convertDD_XML_split- couldn't save the source file: "
+			result.add("ErrorConversionHandler convertDD_XML_split- couldn't save the source file: "
 							+ e.toString());
 			return result;
 		}
@@ -151,9 +155,14 @@ public abstract class DDXMLConverter {
 	        sourcefile.initReader(inStream);
 	        String xml_schema = sourcefile.getXMLSchema();
 	        if (xml_schema==null){
-	          throw new Exception("The " + getSourceFormatName() + " file must be based on a template generated " +
-	          			"from Data Dictionary for conversion to work. Could not find XML Schema!");
+	          throw new Exception(Properties.getMessage(
+              		BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE, new String[]{getSourceFormatName()}));
 	        }
+	        String invalidMess = getInvalidSchemaMessage(xml_schema); 
+	        if(invalidMess!=null){
+		          throw new Exception(invalidMess);	        	
+	        }
+	        //execute conversion
 	   		doConversion(xml_schema, outStream);
 	      }
 	      catch (Exception e){
@@ -169,7 +178,6 @@ public abstract class DDXMLConverter {
 	  }
 	   public Vector convertDD_XML_split(InputStream inStream, OutputStream outStream, String sheet_param) throws GDEMException{
 
-	   	  boolean http_response = (outStream==null)? false:true;
 	   	  Vector result = new Vector();
 	   	  String outFileName=null;
 	      if (inStream == null) throw new GDEMException("Could not find InputStream");
@@ -179,15 +187,13 @@ public abstract class DDXMLConverter {
 	        String xml_schema = sourcefile.getXMLSchema();
 
 	        if (xml_schema==null){
-	    		if (http_response)
-	                throw new Exception("The " + getSourceFormatName() + " file must be based on a template generated " +
-	              			"from Data Dictionary for conversion to work. Could not find XML Schema!");
-	    		else{
-	            	result.add(createResultForSheet("1","Workbook","The " + getSourceFormatName() + " file must be based on a template generated " +
-	              			"from Data Dictionary for conversion to work. Could not find XML Schema!"));
-	            	return result;
-	    		}
+	        	return buildWorkbookErrorMessage(result,null,Properties.getMessage(
+                		BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE, new String[]{getSourceFormatName()}));
 	          }
+	        String invalidMess = getInvalidSchemaMessage(xml_schema); 
+	        if(invalidMess!=null){
+	        	return buildWorkbookErrorMessage(result,null,invalidMess);
+	        }
 
 	        Hashtable sheet_schemas = sourcefile.getSheetSchemas();
 			String first_sheet_name=sourcefile.getFirstSheetName();
@@ -200,27 +206,16 @@ public abstract class DDXMLConverter {
 	        		sheet_schemas.put(first_sheet_name,xml_schema);
 	        	}
 	        	else{
-	        		if (http_response)
-	                    throw new GDEMException("The " + getSourceFormatName() + " file must be based on a template generated " +
-	                  			"from Data Dictionary for conversion to work. Could not find XML Schemas for sheets!");
-	        		else{
-	                	result.add(createResultForSheet("1","Workbook","The " + getSourceFormatName() + " file must be based on a template generated " +
-	                  			"from Data Dictionary for conversion to work. Could not find XML Schemas for sheets!"));
-	                	return result;
-	        		}
+		        	return buildWorkbookErrorMessage(result,null,Properties.getMessage(
+	                		BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE, new String[]{getSourceFormatName()}));
 	        	}
 	        }
 	        if (!Utils.isNullStr(sheet_param)){
 	        	if (!Utils.containsKeyIgnoreCase(sheet_schemas,sheet_param)){
-	        		if (http_response)
-	        			throw new GDEMException("Could not find sheet with specified name or the XML schema reference was missing on DO_NOT_DELETE_THIS_SHEET: " + sheet_param);
-	        		else{
-	                	result.add(createResultForSheet("1",sheet_param,"Could not find sheet with specified name or the XML schema reference was missing on DO_NOT_DELETE_THIS_SHEET: " + sheet_param));
-	                	return result;
-	        		}
+		        	return buildWorkbookErrorMessage(result,sheet_param,"Could not find sheet with specified name or the XML schema reference was missing on DO_NOT_DELETE_THIS_SHEET: " + sheet_param);
 	        	}
 	        }
-	        if (http_response && Utils.isNullStr(sheet_param))
+	        if (isHttpResponse() && Utils.isNullStr(sheet_param))
 	        	sheet_param=first_sheet_name;
 
 	  		Enumeration sheets = sheet_schemas.keys();
@@ -241,21 +236,18 @@ public abstract class DDXMLConverter {
 	            	try{
 	            		//Do not return empty sheets.
 	            		if (sourcefile.isEmptySheet(sheet_name)){
-	            			if (http_response)
-	                			throw new GDEMException("The sheet is empty: " + sheet_name + "!");
-	            			else
-	            				result.add(createResultForSheet("1",sheet_name,"The sheet is empty: " + sheet_name + "!"));
+	    		        	result = buildWorkbookErrorMessage(result,sheet_param,"The sheet is empty: " + sheet_name + "!");
 	            			continue;
 	            		}
 
-	            		if (!http_response){
+	            		if (!isHttpResponse()){
 	            			outFileName=Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + ".xml";
 	            	        outStream = new FileOutputStream(outFileName);
 	            		}
 	            		doConversion(sheet_schema, outStream);
 
 	            		// if the respponse is http stream, then it is already written there and no file available
-	            		if (!http_response){
+	            		if (!isHttpResponse()){
 	            			byte[] file = Utils.fileToBytes(outFileName);
 	            			Vector sheet_result = new Vector();
 	            			sheet_result.add("0");
@@ -271,13 +263,10 @@ public abstract class DDXMLConverter {
 	            		}
 	            	}
 	            	catch(Exception e){
-	            		if (http_response)
-	            			throw new GDEMException(e.toString());
-	            		else
-	            			result.add(createResultForSheet("1",sheet_name,"Could not find xml schema for this sheet " + sheet_name + "! " + e.toString()));
+    		        	result = buildWorkbookErrorMessage(result,sheet_param,"Could not find xml schema for this sheet " + sheet_name + "! " + e.toString());
 	            	}
 	            	finally{
-	            		if(!http_response){
+	            		if(!isHttpResponse()){
 	            			if (outStream!=null) outStream.close();
 	            		}
 	            	}
@@ -297,6 +286,14 @@ public abstract class DDXMLConverter {
 		    }
 	      return result;
 	  }
+ 	public boolean isHttpResponse() {
+		return httpResponse;
+	}
+
+	public void setHttpResponse(boolean httpResponse) {
+		this.httpResponse = httpResponse;
+	}
+
 	protected void doConversion(String xml_schema, OutputStream outStream)
 			throws Exception {
 		String instance_url = getInstanceUrl(xml_schema);
@@ -334,23 +331,24 @@ public abstract class DDXMLConverter {
 	public static String getInstanceUrl(String schema_url) throws GDEMException {
 
 		try {
-			URL SchemaURL = new URL(schema_url);
+			
+			//throws Exception, if not correct URL
+			URL schemaURL = new URL(schema_url);
+
+			String id = getSchemaIdParam(schema_url);
+			
+			String type = id.substring(0, 3);
+			id = id.substring(3);
 
 			int path_idx = schema_url.toLowerCase().indexOf(
 					SCHEMA_SERVLET.toLowerCase());
 			String path = schema_url.substring(0, path_idx);
 
-			int id_idx = schema_url.indexOf("id=");
-			String id = schema_url.substring(id_idx + 3);
-			if (id.indexOf("&") > -1)
-				id = id.substring(0, id.indexOf("&"));
-
-			String type = id.substring(0, 3);
-			id = id.substring(3);
-
 			String instance_url = path + INSTANCE_SERVLET + "?id=" + id
 					+ "&type=" + type.toLowerCase();
-			URL InstanceURL = new URL(instance_url);
+
+			//throws Exception, if not correct URL
+			URL instanceURL = new URL(instance_url);
 			return instance_url;
 		} catch (MalformedURLException e) {
 			throw new GDEMException("Error getting Instance file URL: "
@@ -360,6 +358,18 @@ public abstract class DDXMLConverter {
 					+ e.toString() + " - " + schema_url);
 		}
 	}
+	public static String getSchemaIdParam(String schema_url) throws GDEMException {
+		
+		String ret = "";
+		
+		int id_idx = schema_url.indexOf("id=");
+		String id = schema_url.substring(id_idx + 3);
+		if (id.indexOf("&") > -1)
+			id = id.substring(0, id.indexOf("&"));
+
+		return id;
+	}
+
 	/**
 	 * Returns the DD container schema URL. It holds the elements definitions
 	 * @param schema_url
@@ -528,5 +538,73 @@ public abstract class DDXMLConverter {
 		sheet_result.add(error_mess);
 
 		return sheet_result;
+	}
+	/**
+	 * Throws Exception if the result should go directlt into HTTP response, 
+	 * otherwise the method builds result structure including error message
+	 * @param result
+	 * @param sheet
+	 * @param message
+	 * @return
+	 * @throws Exception
+	 */
+	protected Vector buildWorkbookErrorMessage(Vector result, String sheet, String message) throws Exception{
+		
+		String sheetParam = (Utils.isNullStr(sheet))?"Workbook":sheet;
+		if (isHttpResponse()){
+            throw new Exception(message);
+		}
+        result.add(createResultForSheet("1",sheetParam,message));
+
+        return result;
+	}
+	
+	/**
+	 * checks if the given schema belongs to the last released dataset in DD. Returns null, if schema is OK.
+	 * Returns an error message, if the schema is not ok to convert.
+	 * @param xml_schema
+	 * @return error message
+	 * @throws GDEMException 
+	 */
+	public String getInvalidSchemaMessage(String xml_schema) throws GDEMException {
+		
+		String result = null;
+		Map dataset = null;
+		boolean isLatestReleased = false;
+		String status = "";
+		String dateOfLatestReleased = "";
+		String idOfLatestReleased = "";
+		
+		String id = getSchemaIdParam(xml_schema);
+
+		if(id.length()>4 && (id.startsWith(DD_XMLInstance.DST_TYPE) || id.startsWith(DD_XMLInstance.TBL_TYPE))){
+			
+			String type = id.substring(0,3);
+			String dsId = id.substring(3);
+			dataset = getDataset(type.toLowerCase(),dsId);
+		
+			status = (String)dataset.get("status");
+			isLatestReleased = (dataset.get("isLatestReleased")==null || 
+						"true".equals((String)dataset.get("isLatestReleased")))?
+							true:false;
+			dateOfLatestReleased = (String)dataset.get("dateOfLatestReleased");
+			idOfLatestReleased = (String)dataset.get("idOfLatestReleased");	
+		}
+		if(dataset==null){
+			result = Properties.getMessage(
+            		BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE, new String[]{getSourceFormatName()});
+		}
+		else if(!isLatestReleased && "Released".equalsIgnoreCase(status)){
+			String formattedReleasedDate = Utils.formatTimestampDate(dateOfLatestReleased);
+			result = Properties.getMessage(
+            		BusinessConstants.ERROR_CONVERSION_OBSOLETE_TEMPLATE, 
+            			new String[]{getSourceFormatName(),formattedReleasedDate==null?"":formattedReleasedDate
+            					,idOfLatestReleased});			
+		}
+
+		return result;
+	}
+	protected Map getDataset(String type, String dsId){
+		return DDServiceClient.getDataset(type,dsId);
 	}
 }

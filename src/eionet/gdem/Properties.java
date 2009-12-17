@@ -23,6 +23,7 @@
 
 package eionet.gdem;
 
+import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -219,6 +220,9 @@ public class Properties {
 	}
 	public static String getMessage(String key){
         return applicationResources.getString(key);
+	}
+	public static String getMessage(String key, Object[] replacement){
+		return MessageFormat.format(applicationResources.getString(key), replacement);
 	}
 
 }

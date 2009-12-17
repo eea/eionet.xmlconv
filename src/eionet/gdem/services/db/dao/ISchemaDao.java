@@ -1,6 +1,7 @@
 package eionet.gdem.services.db.dao;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -25,7 +26,7 @@ public interface ISchemaDao extends IDbSchema{
 	  * @param xsdDescription - text describing the schema
 	  * @param public_id - dtd public id
 	  */
-	  public void updateSchema(String schema_id, String xmlSchema,  String description, String schemaLang, boolean doValidation, String public_id) throws SQLException;
+	  public void updateSchema(String schema_id, String xmlSchema,  String description, String schemaLang, boolean doValidation, String public_id, Date expireDate) throws SQLException;
 
 
 	  /**

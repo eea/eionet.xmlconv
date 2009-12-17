@@ -201,6 +201,12 @@ public class Utils {
     Properties.logger.info(msg);
   }
 
+  public static boolean isNullStr(Object o ) {
+	  if(o==null || !(o instanceof String) )
+		  return true;
+
+	  return isNullStr((String)o);
+  }
   public static boolean isNullStr(String s ) {
     if (s==null || s.trim().equals(""))
       return true;
@@ -589,6 +595,29 @@ public class Utils {
 
 		
 		return formatter.parse(srtDate);
+	}
+	/**
+	 *	formats timestamp (millis from 1 Jan 1970) into string using pattern 
+	 * @param String timestamp
+	 * @param pattern
+	 * @return Date object
+	 * @throws ParseException 
+	 */
+	public static String formatTimestampDate(String timestamp){
+
+		if (timestamp==null)
+			return null;
+
+		long l = 0;
+		try{
+			 l = Long.parseLong(timestamp);
+		}
+		catch(Exception e){
+			return null;
+		}
+
+		Date d = new Date(l);
+		return Utils.getDate(d);
 	}
 	/**
 	 * Generates checksum (MD5) value from filepath

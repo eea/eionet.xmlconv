@@ -92,7 +92,7 @@ public class AddUplSchemaAction extends Action {
 				if (!Utils.isNullStr(tmpSchemaUrl)){
 					schemaUrl = Properties.gdemURL + "/schema/" + fileName;
 				}
-				sm.update(user, schemaID, schemaUrl, desc, schemaLang, doValidation, null);
+				sm.update(user, schemaID, schemaUrl, desc, schemaLang, doValidation, null, null);
 			}
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.inserted"));
 		} catch (DCMException e) {

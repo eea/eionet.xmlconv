@@ -73,6 +73,7 @@ public class SchemaElemFormAction extends Action {
 			form.setSchemaLang(seHolder.getSchema().getSchemaLang());
 			form.setDtd(seHolder.getSchema().getIsDTD());
 			String fileName = seHolder.getSchema().getUplSchemaFileName();
+			form.setExpireDateObj(seHolder.getSchema().getExpireDate());
 			if(seHolder.getSchema().getUplSchema()!=null && !Utils.isNullStr(fileName)){
 				form.setUplSchemaId(seHolder.getSchema().getUplSchema().getUplSchemaId());
 				form.setUplSchemaFileUrl(seHolder.getSchema().getUplSchema().getUplSchemaFileUrl());

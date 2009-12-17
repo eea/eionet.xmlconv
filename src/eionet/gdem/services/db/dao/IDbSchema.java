@@ -86,6 +86,7 @@ public interface IDbSchema {
   public static final String DTD_PUBLIC_ID_FLD="DTD_PUBLIC_ID";
   public static final String SCHEMA_VALIDATE_FLD="VALIDATE";
   public static final String SCHEMA_LANG_FLD="SCHEMA_LANG";
+  public static final String EXPIRE_DATE_FLD="EXPIRE_DATE";
 
   /**
    * Field names in UPL_SCHEMA table

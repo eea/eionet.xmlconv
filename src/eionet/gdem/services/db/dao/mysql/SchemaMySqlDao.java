@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -31,7 +32,8 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 												+ SCHEMA_DESCR_FLD + "= ?" + ", " 
 												+ SCHEMA_LANG_FLD + "= ?" + ", " 
 												+ SCHEMA_VALIDATE_FLD + "= ?" + ", " 
-												+ DTD_PUBLIC_ID_FLD + "= ? " + "" 
+												+ DTD_PUBLIC_ID_FLD + "= ? " + ", " 
+												+ EXPIRE_DATE_FLD + "= ? " + "" 
 												+ " WHERE " + SCHEMA_ID_FLD + "= ?";
 	
 	private static final String qDeleteStyleSheets = "DELETE FROM " + XSL_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?" ;
@@ -48,7 +50,8 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 												+ SCHEMA_DESCR_FLD + ", " 
 												+ DTD_PUBLIC_ID_FLD + ", " 
 												+ SCHEMA_VALIDATE_FLD + ", " 
-												+ SCHEMA_LANG_FLD 
+												+ SCHEMA_LANG_FLD  + ", " 
+												+ EXPIRE_DATE_FLD 
 												+ " FROM " + SCHEMA_TABLE ;
 
 	private static final String qAllSchemas = 	qSchemaBase  +  " ORDER BY " + XML_SCHEMA_FLD;
@@ -120,7 +123,8 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 		return getSchemaID(xmlSchema);		
 	}
 	
-	public void updateSchema(String schema_id, String xmlSchema,  String description, String schemaLang, boolean doValidate, String public_id) throws SQLException{
+	public void updateSchema(String schema_id, String xmlSchema,  String description, String schemaLang, 
+			boolean doValidate, String public_id, Date expireDate) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		description = (description == null ? "" : description);
@@ -138,7 +142,8 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 			pstmt.setString(3, schemaLang);
 			pstmt.setString(4, strValidate);
 			pstmt.setString(5, public_id);
-			pstmt.setInt(6, Integer.parseInt(schema_id));
+			pstmt.setDate(6, new java.sql.Date(expireDate.getTime()));
+			pstmt.setInt(7, Integer.parseInt(schema_id));
 			pstmt.executeUpdate();
 		}finally{
 			closeAllResources(null,pstmt,conn);			
@@ -327,6 +332,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 			      h.put("dtd_public_id", r[i][3]);
 			      h.put("validate", r[i][4]);
 			      h.put("schema_lang", r[i][5]);
+			      h.put("expire_date", r[i][6]);
 			      if (stylesheets){
 				        Vector v_xls=getSchemaStylesheets(r[i][0],conn);
 				        h.put("stylesheets", v_xls);

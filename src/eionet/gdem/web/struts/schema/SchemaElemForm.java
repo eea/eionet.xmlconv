@@ -21,16 +21,20 @@
 
 package eionet.gdem.web.struts.schema;
 
+import java.text.ParseException;
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
+import org.apache.struts.validator.ValidatorForm;
 
 import eionet.gdem.dto.Schema;
+import eionet.gdem.utils.Utils;
 
-public class SchemaElemForm extends ActionForm{
+public class SchemaElemForm extends ValidatorForm {
 
 	private String schema;
 	private String schemaId;
@@ -38,132 +42,186 @@ public class SchemaElemForm extends ActionForm{
 	private String elemName;
 	private String namespace;
 	private String dtdId;
-	private boolean doValidation=false;
+	private boolean doValidation = false;
 	private String schemaLang;
-	private boolean dtd=false;
+	private boolean dtd = false;
+	private String expireDate;
+	private Date expireDateObj;
 
 	// uploaded schema file
 	private String uplSchemaFileName;
+
 	private String uplSchemaFileUrl;
+
 	private FormFile schemaFile;
+
 	private String lastModified;
-	public FormFile getSchemaFile() {
-		return schemaFile;
-	}
-	public void setSchemaFile(FormFile schemaFile) {
-		this.schemaFile = schemaFile;
-	}
-	public String getLastModified() {
-		return lastModified;
-	}
-	public void setLastModified(String lastModified) {
-		this.lastModified = lastModified;
-	}
-	public String getUplSchemaId() {
-		return uplSchemaId;
-	}
-	public void setUplSchemaId(String uplSchemaId) {
-		this.uplSchemaId = uplSchemaId;
-	}
+
 	private String uplSchemaId;
-	
-	
-	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
-		    return null;
-		  }
-	  public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
-			schema=null;
-			description=null;
-			description=null;
-			namespace=null;			
-			schemaLang = Schema.getDefaultSchemaLang();
-			doValidation=false;	
-			dtd=false;
-			uplSchemaFileName=null;
-			uplSchemaFileUrl=null;
-			schemaFile=null;
-			lastModified=null;
-		  }
+	public String getDefaultSchemaLang() {
+		return Schema.getDefaultSchemaLang();
+	}
 	public String getDescription() {
 		return description;
-	}
-	
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	public String getElemName() {
-		return elemName;
-	}
-	
-	public void setElemName(String elemName) {
-		this.elemName = elemName;
-	}
-	
-	public String getNamespace() {
-		return namespace;
-	}
-	
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
-	
-	public String getSchema() {
-		return schema;
-	}
-	
-	public void setSchema(String schema) {
-		this.schema = schema;
-	}
-	public String getSchemaId() {
-		return schemaId;
-	}
-	
-	public void setSchemaId(String schemaId) {
-		this.schemaId = schemaId;
 	}
 	public String getDtdId() {
 		return dtdId;
 	}
-	
-	public void setDtdId(String dtdId) {
-		this.dtdId = dtdId;
+
+	public String getElemName() {
+		return elemName;
 	}
-	public boolean isDoValidation() {
-		return doValidation;
+
+	public String getExpireDate() {
+		return expireDate;
 	}
-	public void setDoValidation(boolean doValidation) {
-		this.doValidation = doValidation;
+	public String getLongExpireDate() {
+		if(expireDateObj==null) return "";
+		
+		return Utils.getDate(expireDateObj);
 	}
+
+	public Date getExpireDateObj() {
+		return expireDateObj;
+	}
+
+	public String getLastModified() {
+		return lastModified;
+	}
+
+	public String getNamespace() {
+		return namespace;
+	}
+
+	public String getSchema() {
+		return schema;
+	}
+
+	public FormFile getSchemaFile() {
+		return schemaFile;
+	}
+
+	public String getSchemaId() {
+		return schemaId;
+	}
+
 	public String getSchemaLang() {
 		return schemaLang;
 	}
-	public void setSchemaLang(String schemaLang) {
-		this.schemaLang = schemaLang;
-	}
-	public String[] getSchemaLanguages(){
+
+	public String[] getSchemaLanguages() {
 		return Schema.getSchemaLanguages();
 	}
 
-	public String getDefaultSchemaLang(){
-		return Schema.getDefaultSchemaLang();
-	}
-	public boolean isDtd() {
-		return dtd;
-	}
-	public void setDtd(boolean dtd) {
-		this.dtd = dtd;
-	}
 	public String getUplSchemaFileName() {
 		return uplSchemaFileName;
 	}
-	public void setUplSchemaFileName(String uplSchemaFileName) {
-		this.uplSchemaFileName = uplSchemaFileName;
-	}
+
 	public String getUplSchemaFileUrl() {
 		return uplSchemaFileUrl;
 	}
+
+	public String getUplSchemaId() {
+		return uplSchemaId;
+	}
+
+	public boolean isDoValidation() {
+		return doValidation;
+	}
+
+	public boolean isDtd() {
+		return dtd;
+	}
+
+	public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
+		schema = null;
+		description = null;
+		description = null;
+		namespace = null;
+		schemaLang = Schema.getDefaultSchemaLang();
+		doValidation = false;
+		dtd = false;
+		uplSchemaFileName = null;
+		uplSchemaFileUrl = null;
+		schemaFile = null;
+		lastModified = null;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setDoValidation(boolean doValidation) {
+		this.doValidation = doValidation;
+	}
+
+	public void setDtd(boolean dtd) {
+		this.dtd = dtd;
+	}
+
+	public void setDtdId(String dtdId) {
+		this.dtdId = dtdId;
+	}
+
+	public void setElemName(String elemName) {
+		this.elemName = elemName;
+	}
+
+	public void setExpireDateObj(Date expireDate) {
+		this.expireDateObj = expireDate;
+		this.expireDate = Utils.getFormat(expireDate, "dd/MM/yyyy");
+	}
+
+	public void setExpireDate(String strExpireDate) throws ParseException {
+		this.expireDate = strExpireDate;
+		if(Utils.isNullStr(strExpireDate))
+			expireDateObj=null;
+		else
+			try{
+				this.expireDateObj = Utils.parseDate(strExpireDate,"dd/MM/yyyy");
+			}
+			catch(Exception e){
+				//invalid date, validator should catch this
+			}
+	}
+
+	public void setLastModified(String lastModified) {
+		this.lastModified = lastModified;
+	}
+
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
+	}
+
+	public void setSchema(String schema) {
+		this.schema = schema;
+	}
+
+	public void setSchemaFile(FormFile schemaFile) {
+		this.schemaFile = schemaFile;
+	}
+
+	public void setSchemaId(String schemaId) {
+		this.schemaId = schemaId;
+	}
+
+	public void setSchemaLang(String schemaLang) {
+		this.schemaLang = schemaLang;
+	}
+
+	public void setUplSchemaFileName(String uplSchemaFileName) {
+		this.uplSchemaFileName = uplSchemaFileName;
+	}
+
 	public void setUplSchemaFileUrl(String uplSchemaFileUrl) {
 		this.uplSchemaFileUrl = uplSchemaFileUrl;
+	}
+
+	public void setUplSchemaId(String uplSchemaId) {
+		this.uplSchemaId = uplSchemaId;
+	}
+	public ActionErrors validate(ActionMapping mapping,
+			HttpServletRequest request){
+		return super.validate(mapping, request);
 	}
 }

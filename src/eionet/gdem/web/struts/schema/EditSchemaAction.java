@@ -21,6 +21,8 @@
 
 package eionet.gdem.web.struts.schema;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,7 +32,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
-import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
@@ -54,6 +55,7 @@ public class EditSchemaAction extends Action {
 		String dtdId = form.getDtdId();
 		String schemaLang = form.getSchemaLang();
 		boolean doValidation = form.isDoValidation();
+		Date expireDate = form.getExpireDateObj();
 
 		if (isCancelled(httpServletRequest)) {
 			try {
@@ -67,7 +69,11 @@ public class EditSchemaAction extends Action {
 				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			}
 		}
-
+		errors =form.validate(actionMapping, httpServletRequest);
+		if(errors.size()>0){
+			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+			return actionMapping.findForward("success");			
+		}
 		if (schema == null || schema.equals("")) {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.validation"));
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
@@ -79,7 +85,7 @@ public class EditSchemaAction extends Action {
 
 		try {
 			SchemaManager sm = new SchemaManager();
-			sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdId);
+			sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdId, expireDate);
 		
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.updated"));
 			httpServletRequest.setAttribute("schema", schema);

@@ -92,6 +92,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
 			in_stream_tmp = new ByteArrayInputStream(out_stream_tmp
 					.toByteArray());
 
+			converter.setHttpResponse(isHttpRequest());
 			str_result = converter.convertDD_XML(in_stream_tmp, result);
 
 		} catch (MalformedURLException mfe) {
@@ -221,6 +222,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
 			in_stream_tmp = new ByteArrayInputStream(out_stream_tmp
 					.toByteArray());
 
+			converter.setHttpResponse(isHttpRequest());
 			v_result = converter.convertDD_XML_split(in_stream_tmp, result,
 					sheet_param);
 

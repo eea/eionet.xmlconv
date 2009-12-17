@@ -46,7 +46,18 @@ public class Schema implements Serializable {
 	private String uplSchemaFileName;
 	private List<QAScript> qascripts;
 	private UplSchema uplSchema;
+	private Date expireDate;
 	
+	public Date getExpireDate() {
+		return expireDate;
+	}
+
+
+	public void setExpireDate(Date expireDate) {
+		this.expireDate = expireDate;
+	}
+
+
 	public UplSchema getUplSchema() {
 		return uplSchema;
 	}

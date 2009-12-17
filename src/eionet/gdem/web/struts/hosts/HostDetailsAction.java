@@ -56,7 +56,6 @@ public class HostDetailsAction extends BaseAction {
 				Vector hosts = hostDao.getHosts(hostId);
 
 				if (hosts!=null){
-					_logger.debug("PUNIM !!!");
 					Hashtable host = (Hashtable)hosts.get(0);
 					hostForm.set("id", (String)host.get("host_id"));
 					hostForm.set("host", (String)host.get("host_name"));
