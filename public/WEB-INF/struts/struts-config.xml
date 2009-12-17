@@ -10,7 +10,10 @@
         </form-bean>
         <form-bean name="stylesheetForm" type="eionet.gdem.web.struts.stylesheet.StylesheetForm" />
         <form-bean name="qaScriptForm" type="eionet.gdem.web.struts.qascript.QAScriptForm" />
-        <form-bean name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemForm" />     
+        <form-bean name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemForm" >
+	        <form-property name="schema" type="java.lang.String"/>
+	        <form-property name="expireDate" type="java.lang.String"/>
+        </form-bean>     
         <form-bean name="ConversionForm" type="eionet.gdem.web.struts.conversion.ConversionForm"/>
         <form-bean name="ValidationForm" type="eionet.gdem.web.struts.conversion.ConversionForm"/>
         <form-bean name="ExcelConversionForm" type="org.apache.struts.validator.DynaValidatorForm">
@@ -152,9 +155,10 @@
         <action path="/elementAdd" name="schemaForm" scope="request" type="eionet.gdem.web.struts.schema.AddElemAction" input="/schema.jsp">           
         	<forward name="success" path="/do/schemaElemForm" />            
         </action>        
-        <action path="/schemaUpdate" name="schemaForm" scope="request" type="eionet.gdem.web.struts.schema.EditSchemaAction" input="/schema.jsp"> 
+        <action path="/schemaUpdate" name="schemaForm" scope="request" type="eionet.gdem.web.struts.schema.EditSchemaAction" input="/schema.jsp" validate="true"> 
         	<forward name="back" path="/do/stylesheetEdit" redirect="true"/>
         	<forward name="success" path="/do/schemaElemForm"/>
+        	<forward name="fail" path="/do/schemaElemForm"/>
         </action>    
         <action path="/getStylesheet"  scope="request" type="eionet.gdem.web.struts.stylesheet.GetStylesheetAction" name="getXslForm">           
 	        <forward name="fail" path="/error/StylesheetError.jsp" />

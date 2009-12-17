@@ -106,8 +106,18 @@
 		    		</logic:notPresent>
 			      </td>
 			    </tr>
+				<tr class="zebraeven">
+  				  <td>
+					<label class="question" for="txtExpireDate"> 
+				        <bean:message key="label.schema.expireDate"/>
+					</label>
+			      </td>
+			      <td>
+			        <html:text property="expireDate" styleId="txtExpireDate"/>
+			      </td>
+			    </tr>
 			    <logic:equal value="true" name="schemaForm" property="dtd" >
-					<tr class="zebraeven">
+			    <tr>
 					  <td>
 						<label class="question" for="txtDtdId"> 
 					        <bean:message key="label.elem.dtdid"/>

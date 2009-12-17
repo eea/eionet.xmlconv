@@ -80,6 +80,18 @@
                    depends=""
                    msg="errors.long"/>
 
-	</global>
+        <validator name="date"
+                   classname="org.apache.struts.validator.FieldChecks"
+                   method="validateDate"
+                   methodParams="java.lang.Object,
+                       org.apache.commons.validator.ValidatorAction,
+                       org.apache.commons.validator.Field,
+                       org.apache.struts.action.ActionMessages,
+                       org.apache.commons.validator.Validator,
+                       javax.servlet.http.HttpServletRequest"
+                   depends=""
+                   msg="errors.date"
+                   jsFunctionName="DateValidations"/>
+</global>
 
 </form-validation>

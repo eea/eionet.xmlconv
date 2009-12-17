@@ -83,6 +83,14 @@
 						<bean:write name="schemaForm" property="doValidation" />
 			      </td>
 			    </tr>
+			    <tr>
+					<th scope="row" class="scope-row"> 
+				        <bean:message key="label.schema.expireDate"/>
+				      </th>
+			      <td>
+						<bean:write name="schemaForm" property="longExpireDate" />
+			      </td>
+			    </tr>
 			    <logic:equal value="true" name="schemaForm" property="dtd" >
 					<tr>
 						<th scope="row" class="scope-row"> 
