@@ -3,12 +3,16 @@
  */
 package eionet.gdem.dcm.business;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.dbunit.DBTestCase;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
+import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.UplSchema;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
@@ -133,5 +137,38 @@ public class SchemaManagerDBTest  extends DBTestCase{
 		//files are different
 		result = sm.diffRemoteSchema(bytes, "seed-gw-schema.xsd");	
 		assertEquals(result,BusinessConstants.WARNING_FILES_NOTIDENTICAL);
+	}
+	/**
+	 * Test schema update DB method
+	 * @throws Exception
+	 */
+	public void testUpdateSchema() throws Exception{
+		SchemaManager sm = new SchemaManager();
+		String description = "updated";
+		String schemaId = "4";
+		String user = TestConstants.TEST_ADMIN_USER;
+		String schema="www.schema.com";
+		String schemaLang ="XSD";
+		boolean doValidation =false;
+		String dtdPublicId ="";
+		Date expireDate=null;
+		
+		sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate);
+		Schema sch = sm.getSchema(schemaId);
+		
+		assertEquals(description, sch.getDescription());
+		assertNull(sch.getExpireDate());
+
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		expireDate = new Date(cal.getTimeInMillis());
+		
+		sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate);
+		sch = sm.getSchema(schemaId);
+		assertEquals(expireDate, sch.getExpireDate());
+	
 	}
 }
