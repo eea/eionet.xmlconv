@@ -72,7 +72,7 @@ public class EditSchemaAction extends Action {
 		errors =form.validate(actionMapping, httpServletRequest);
 		if(errors.size()>0){
 			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward("success");			
+			return actionMapping.findForward("fail");			
 		}
 		if (schema == null || schema.equals("")) {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.validation"));

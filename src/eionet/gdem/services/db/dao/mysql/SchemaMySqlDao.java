@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
@@ -142,7 +143,10 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 			pstmt.setString(3, schemaLang);
 			pstmt.setString(4, strValidate);
 			pstmt.setString(5, public_id);
-			pstmt.setDate(6, new java.sql.Date(expireDate.getTime()));
+			if(expireDate==null)
+				pstmt.setNull(6,Types.DATE);
+			else
+				pstmt.setDate(6, new java.sql.Date(expireDate.getTime()));
 			pstmt.setInt(7, Integer.parseInt(schema_id));
 			pstmt.executeUpdate();
 		}finally{

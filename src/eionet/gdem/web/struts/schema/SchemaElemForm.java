@@ -145,6 +145,7 @@ public class SchemaElemForm extends ValidatorForm {
 		uplSchemaFileUrl = null;
 		schemaFile = null;
 		lastModified = null;
+		expireDate=null;
 	}
 
 	public void setDescription(String description) {
