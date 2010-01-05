@@ -127,11 +127,11 @@
             <forward name="success" path="/schema.jsp" redirect="true"/>
             <forward name="fail" path="/uplSchema.jsp" redirect="true"/>
         </action>
-        <action path="/editUplSchema"  type="eionet.gdem.web.struts.schema.EditUplSchemaAction" name="schemaForm" cancellable="true">           
+        <action path="/editUplSchema"  type="eionet.gdem.web.struts.schema.EditUplSchemaAction" name="schemaForm" input="/schema.jsp" cancellable="true">           
         	<forward name="success" path="/do/schemaElemForm"  redirect="true"/>
         	<forward name="fail" path="/do/schemaElemForm"  redirect="true"/>
         </action>
-        <action path="/deleteUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.DeleteUplSchemaAction" name="schemaForm" >           
+        <action path="/deleteUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.DeleteUplSchemaAction" name="schemaForm"  input="/schema.jsp">           
         	<forward name="success" path="/do/uplSchemas"  redirect="true"/>            
         	<forward name="success_deletefile" path="/do/schemaElemForm"  redirect="true"/>
         	<forward name="fail" path="/do/schemaElemForm"  redirect="true"/>
