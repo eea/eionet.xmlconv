@@ -61,6 +61,7 @@ public class EditUplSchemaActionTest  extends MockStrutsTestCase {
 		addRequestParameter("uplSchemaId",uplSchemaId);
 		addRequestParameter("schemaId",schemaId);
 		addRequestParameter("uplSchemaFileName",schemaFileName);
+		addRequestParameter("schema","schema");
 		((MockStrutsMultipartRequestSimulator)request).writeFile("schemaFile",getClass().getClassLoader().getResource(TestConstants.SEED_XLIFF_DTD).getFile(),"text/xml");       
 
 		actionPerform();
@@ -92,6 +93,7 @@ public class EditUplSchemaActionTest  extends MockStrutsTestCase {
 		addRequestParameter("uplSchemaId",uplSchemaId);
 		addRequestParameter("schemaId",schemaId);
 		addRequestParameter("uplSchemaFileName",schemaFileName);
+		addRequestParameter("schema","schema");
 		((MockStrutsMultipartRequestSimulator)request).writeFile("schemaFile",getClass().getClassLoader().getResource(TestConstants.SEED_XLIFF_XML).getFile(),"text/xml");       
 
 		actionPerform();
@@ -116,7 +118,8 @@ public class EditUplSchemaActionTest  extends MockStrutsTestCase {
         //session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
 
         addRequestParameter("uplSchemaId",uplSchemaId);
-        
+		addRequestParameter("schema","schema");
+
         setRequestPathInfo("/editUplSchema");
         actionPerform();
 		verifyForwardPath("/do/schemaElemForm");

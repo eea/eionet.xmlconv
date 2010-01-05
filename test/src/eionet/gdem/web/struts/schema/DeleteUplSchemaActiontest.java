@@ -57,7 +57,8 @@ public class DeleteUplSchemaActiontest   extends MockStrutsTestCase {
 		session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
 
 		addRequestParameter("schemaId",schemaId);
-		addRequestParameter("schemaFile","schema.xsd");
+		addRequestParameter("schema","schema");
+		//addRequestParameter("schemaFile","schema.xsd");
 		addRequestParameter("deleteSchema", "true");
 
 		actionPerform();
@@ -65,7 +66,7 @@ public class DeleteUplSchemaActiontest   extends MockStrutsTestCase {
 		verifyForwardPath("/do/uplSchemas");
 		//verifyTilesForward("success", "/do/uplSchemas");
 		verifyNoActionErrors();
-		String[] actionMess = {"label.schema.deleted","label.uplSchema.deleted"};
+		String[] actionMess = {"label.schema.deleted"};
 		verifyActionMessages(actionMess);
 
 
@@ -88,10 +89,11 @@ public class DeleteUplSchemaActiontest   extends MockStrutsTestCase {
 		session.setAttribute("user", TestConstants.TEST_USER);
 
 		addRequestParameter("schemaId",schemaId);
+		addRequestParameter("schema","schema");
 
 		actionPerform();
-		verifyForward("success");
-		verifyForwardPath("/do/uplSchemas");
+		verifyForward("fail");
+		verifyForwardPath("/do/schemaElemForm");
 		String[] errMess = {BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_DELETE};
 		verifyActionErrors(errMess);
 
