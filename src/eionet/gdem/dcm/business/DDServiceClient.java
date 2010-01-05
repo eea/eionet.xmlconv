@@ -37,6 +37,8 @@ public class DDServiceClient {
 	protected String serviceName = null;
 	protected String serviceUrl = null;
 	protected ServiceClientIF client = null;
+	private static Map<String,String> mockDataset =null; 
+
 
 
 	protected void load() throws Exception {
@@ -93,6 +95,17 @@ public class DDServiceClient {
 	}
 	
 	
+	/**
+	 * The testing purposes
+	 * @return
+	 */
+	public static Map<String,String> getMockDataset(String type, String id) {
+		return mockDataset;
+	}
+	public static void setMockDataset(Map<String,String> mockDataset) {
+		DDServiceClient.mockDataset = mockDataset;
+	}
+
 	public static void main(String args[]) {
 		DDServiceClient d = new DDServiceClient();
 		try {
