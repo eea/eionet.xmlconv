@@ -20,6 +20,15 @@ import eionet.gdem.utils.xml.XmlContext;
  */
 
 public class ConvertDDXMLMethodTest extends TestCase {
+
+	/**
+	 * Set up test case properties
+	 */
+    protected void setUp()throws Exception{
+    	super.setUp();
+    	TestUtils.setUpReleasedDataset();
+    }
+
 	/**
 	 * Test DataDictionary MS Excel file to XML conversion.
 	 * seed-dates.xls should be in the resources folder. 

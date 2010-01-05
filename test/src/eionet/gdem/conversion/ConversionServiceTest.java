@@ -3,9 +3,12 @@
  */
 package eionet.gdem.conversion;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import junit.framework.TestCase;
+import eionet.gdem.dcm.business.DDServiceClient;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
@@ -20,6 +23,14 @@ public class ConversionServiceTest extends TestCase{
 
 	
 	/**
+	 * Set up test case properties
+	 */
+    protected void setUp()throws Exception{
+    	super.setUp();
+    	TestUtils.setUpReleasedDataset();
+    }
+
+    /**
 	 * Test DataDictionary MS Excel file to XML conversion.
 	 * seed-rivers.xls should be in the root of test classes. 
 	 * MS Excel file should contain text "Conversion succeeded!" in one of the cells.
@@ -29,6 +40,7 @@ public class ConversionServiceTest extends TestCase{
 	 */
 	public void testConvertDD_XML() throws Exception{
 
+	
 		ConversionServiceIF convService = new ConversionService();
 		Vector v = convService.convertDD_XML(TestUtils.getSeedURL(TestConstants.SEED_RIVERS_XLS,this));
 		
@@ -106,4 +118,5 @@ public class ConversionServiceTest extends TestCase{
 		//error message
 		assertTrue(((String)v2.get(2)).indexOf("NOSHEET")>0);
 	}
+	
 }

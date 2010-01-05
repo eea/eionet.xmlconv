@@ -3,11 +3,13 @@
  */
 package eionet.gdem.test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.struts.action.ActionMapping;
 
 import eionet.gdem.Properties;
+import eionet.gdem.dcm.business.DDServiceClient;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.test.mocks.MockActionMapping;
 import eionet.gdem.test.mocks.MockServletMultipartRequest;
@@ -122,5 +124,18 @@ public class TestUtils {
 		action.execute(actionMap, null, request, response);
 
 		return response;
+	}
+
+	//conversion service checks if the dataset is the latest released verison
+	// otherwise conversion fails
+	public static void setUpReleasedDataset(){
+		Map<String,String> mockDataset = new HashMap<String,String>();
+		mockDataset.put("id", "4948");
+		mockDataset.put("status", "Released");
+		mockDataset.put("isLatestReleased", "true");
+		mockDataset.put("dateOfLatestReleased", "");
+		mockDataset.put("idOfLatestReleased", "");
+		DDServiceClient.setMockDataset(mockDataset);
+		
 	}
 }
