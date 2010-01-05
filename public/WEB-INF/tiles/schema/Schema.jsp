@@ -113,7 +113,7 @@
 					</label>
 			      </td>
 			      <td>
-			        <html:text property="expireDate" styleId="txtExpireDate"/>
+			        <html:text property="expireDate" styleId="txtExpireDate"/> (dd/MM/yyyy)
 			      </td>
 			    </tr>
 			    <logic:equal value="true" name="schemaForm" property="dtd" >

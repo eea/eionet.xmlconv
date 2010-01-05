@@ -12,8 +12,8 @@
         <form-bean name="qaScriptForm" type="eionet.gdem.web.struts.qascript.QAScriptForm" />
         <form-bean name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemForm" >
 	        <form-property name="schema" type="java.lang.String"/>
-	        <form-property name="expireDate" type="java.lang.String"/>
-        </form-bean>     
+	        <form-property name="expireDate" type="java.lang.String"/>	        
+        </form-bean>
         <form-bean name="ConversionForm" type="eionet.gdem.web.struts.conversion.ConversionForm"/>
         <form-bean name="ValidationForm" type="eionet.gdem.web.struts.conversion.ConversionForm"/>
         <form-bean name="ExcelConversionForm" type="org.apache.struts.validator.DynaValidatorForm">
@@ -120,14 +120,14 @@
         <action path="/uplSchemas"  type="eionet.gdem.web.struts.schema.UplSchemaFormAction" scope="request">
             <forward name="success" path="/uplSchema.jsp" />
         </action>        
-        <action path="/viewSchemaForm" name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemFormAction" scope="request">           
+        <action path="/viewSchemaForm" name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemFormAction" scope="request" validate="false">           
             <forward name="success" path="/viewSchema.jsp" />
         </action>
-        <action path="/schemaElemForm" name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemFormAction" input="/schema.jsp" scope="request">
+        <action path="/schemaElemForm" name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemFormAction" input="/schema.jsp" scope="request" validate="false">
             <forward name="success" path="/schema.jsp" redirect="true"/>
             <forward name="fail" path="/uplSchema.jsp" redirect="true"/>
         </action>
-        <action path="/editUplSchema"  type="eionet.gdem.web.struts.schema.EditUplSchemaAction" name="schemaForm">           
+        <action path="/editUplSchema"  type="eionet.gdem.web.struts.schema.EditUplSchemaAction" name="schemaForm" cancellable="true">           
         	<forward name="success" path="/do/schemaElemForm"  redirect="true"/>
         	<forward name="fail" path="/do/schemaElemForm"  redirect="true"/>
         </action>

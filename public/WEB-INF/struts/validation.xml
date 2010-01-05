@@ -6,18 +6,13 @@
 <form-validation>
 	<formset>
 		<form name="schemaForm">
- 			<field property="expireDate" depends="date">
-        		<arg position="0" key="label.schema.expireDate"/>
-        		<var><var-name>datePattern</var-name><var-value>dd/MM/yyyy</var-value></var>
-    		</field>
-		<!-- 
 			<field property="schema" depends="required">
 				<arg position="0" key="label.schema.url"/>
 			</field>
  			<field property="expireDate" depends="date">
         		<arg position="0" key="label.schema.expireDate"/>
-        		<var><var-name>datePattern</var-name><var-value>MM/dd/yyyy</var-value></var>
-    		</field> -->
+        		<var><var-name>datePattern</var-name><var-value>dd/MM/yyyy</var-value></var>
+    		</field>
 		</form>
 		<form name="dbForm">
 			<field property="dbUrl" depends="required">
