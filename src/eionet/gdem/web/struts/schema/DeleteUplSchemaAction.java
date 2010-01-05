@@ -79,6 +79,9 @@ public class DeleteUplSchemaAction extends Action {
 		saveMessages(httpServletRequest.getSession(),messages);
 		saveErrors(httpServletRequest.getSession(),errors);
 		
+		saveMessages(httpServletRequest,messages);
+		saveErrors(httpServletRequest,errors);
+
 		return actionMapping.findForward(forward);
 	}
 }
