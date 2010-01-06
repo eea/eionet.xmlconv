@@ -169,7 +169,7 @@ public class ExcelToMultipleXML {
 						}
 						// validate expiration date - should be in the future.
 						else if (!Utils.isNullStr(schemaInfo.get("expire_date")) && 
-									(new Date()).before(Utils.parseDate((String)schemaInfo.get("expire_date"), null))) {
+									(new Date()).after(Utils.parseDate((String)schemaInfo.get("expire_date"),"yyyy-MM-dd HH:mm:ss"))) {
 								result.setStatusCode(ConversionResultDto.STATUS_ERR_SCHEMA_NOT_FOUND);
 								result.setStatusDescription("The conversion to XML is not allowed for obsolete Schemas! " +
 										" This version of Schema '" + schemaUrl
