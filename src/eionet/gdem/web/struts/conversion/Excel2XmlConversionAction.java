@@ -85,7 +85,7 @@ public class Excel2XmlConversionAction extends Action {
 			HttpSession sess = httpServletRequest.getSession(true);
 			//GDEMException err= new GDEMException(errMsg);
 
-			sess.setAttribute("gdem.exception", new GDEMException("Error testing conversion"));
+			sess.setAttribute("gdem.exception", new GDEMException("Error testing conversion: " + e.getMessage()));
 
 			httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/" + Names.ERROR_JSP);
 		}
