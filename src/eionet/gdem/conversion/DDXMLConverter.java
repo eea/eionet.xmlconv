@@ -605,8 +605,8 @@ public abstract class DDXMLConverter {
 		return result;
 	}
 	protected Map getDataset(String type, String dsId){
-		if(GDEMServices.isTestConnection()){
-			return DDServiceClient.getDataset(type,dsId);
+		if(!GDEMServices.isTestConnection()){
+			return DDServiceClient.getDatasetWithReleaseInfo(type,dsId);
 		}
 		else{
 			return DDServiceClient.getMockDataset(type,dsId);

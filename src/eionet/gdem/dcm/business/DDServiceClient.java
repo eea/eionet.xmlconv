@@ -77,7 +77,7 @@ public class DDServiceClient {
 		}
 		return list;
 	}
-	public static Map getDataset(String type, String id) {
+	public static Map getDatasetWithReleaseInfo(String type, String id) {
 		DDServiceClient d = new DDServiceClient();
 		Map result = null;
 		try {
@@ -86,7 +86,7 @@ public class DDServiceClient {
 			b.add(id);
 			d.getProps();
 			d.load();
-			Object res = d.execute("getDataset", b);
+			Object res = d.execute("getDatasetWithReleaseInfo", b);
 			result = (Map) res;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -107,8 +107,11 @@ public class DDServiceClient {
 	}
 
 	public static void main(String args[]) {
-		DDServiceClient d = new DDServiceClient();
+		//DDServiceClient d = new DDServiceClient();
 		try {
+			Map m = DDServiceClient.getDatasetWithReleaseInfo("dst", "2826");
+			System.out.println(m);
+			/*
 			Vector b = new Vector();
 			d.getProps();
 			d.load();
@@ -118,7 +121,7 @@ public class DDServiceClient {
 				Object o = list.get(i);
 				System.out.println(i + " - " + o);
 			}
-
+	*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
