@@ -27,6 +27,7 @@ public class ConversionServiceTest extends TestCase{
 	 */
     protected void setUp()throws Exception{
     	super.setUp();
+    	TestUtils.setUpProperties(this);
     	TestUtils.setUpReleasedDataset();
     }
 
