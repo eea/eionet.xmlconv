@@ -105,6 +105,7 @@ public class AddUplSchemaAction extends Action {
 		saveMessages(httpServletRequest, messages);
 		//new schema might be added, remove the schemas list form the session.
 		httpServletRequest.getSession().removeAttribute("conversion.schemas");
+		httpServletRequest.getSession().removeAttribute("qascript.qascriptList");
 
 		return actionMapping.findForward("success");
 	}

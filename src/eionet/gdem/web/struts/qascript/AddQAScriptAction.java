@@ -101,6 +101,9 @@ public class AddQAScriptAction  extends Action {
 		saveErrors(httpServletRequest.getSession(), errors);
 		saveMessages(httpServletRequest.getSession(), messages);
 
+		//clear qascript list in session
+		httpServletRequest.getSession().removeAttribute("qascript.qascriptList");
+
 		return findForward(actionMapping, "success", schemaId);
 	}
 	private ActionForward findForward(ActionMapping actionMapping, String f, String schemaId){

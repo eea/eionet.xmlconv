@@ -45,6 +45,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.commons.codec.binary.Base64;
@@ -221,6 +222,14 @@ public class Utils {
 
     return false;
   }
+  public static boolean isNullList(List l ) {
+	    if (l==null)
+	      return true;
+	    else
+	      if (l.size()==0) return true;
+
+	    return false;
+	  }
   public static boolean isNullHashtable(Hashtable h ) {
     if (h==null)
       return true;

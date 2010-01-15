@@ -54,12 +54,26 @@ public class XQScript {
 	public static final String SCRIPT_LANG_XGAWK ="xgawk";
 
 	public static String[] SCRIPT_LANGS = {SCRIPT_LANG_XQUERY, SCRIPT_LANG_XSL, SCRIPT_LANG_XGAWK} ;
+	
+	public static enum ScriptLang {
+		SCRIPT_LANG_XQUERY("xquery"), SCRIPT_LANG_XSL("xsl"), SCRIPT_LANG_XGAWK("xgawk");
+		private String value;
+		ScriptLang(String value){
+			this.value=value;
+		}
+		public String getValue(){
+			return value;
+		}
+	}
+	; 
 
 	public static final String SCRIPT_RESULTTYPE_XML ="XML";
 	public static final String SCRIPT_RESULTTYPE_TEXT ="TEXT";
 	public static final String SCRIPT_RESULTTYPE_HTML ="HTML";
 
 	public static String[] SCRIPT_RESULTTYPES = {SCRIPT_RESULTTYPE_XML, SCRIPT_RESULTTYPE_TEXT, SCRIPT_RESULTTYPE_HTML} ;
+
+	public static enum ScriptResultType {XML, TEXT, HTML}
 
 	//XQ Engine instance
 	private XQEngineIF _engine;

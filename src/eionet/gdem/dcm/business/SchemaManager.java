@@ -317,6 +317,8 @@ public class SchemaManager {
 			
 		boolean ssiPrm = false;
 		boolean ssdPrm = false;
+		boolean wqiPrm = false;
+		boolean wquPrm = false;
 		Vector hcSchemas;
 		List<Schema> schemas;
 
@@ -324,9 +326,13 @@ public class SchemaManager {
 			schemas = new ArrayList<Schema>();
 			ssiPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "i");
 			ssdPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "d");
+			wqiPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "i");
+			wquPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "u");
 
 			st.setSsdPrm(ssdPrm);
 			st.setSsiPrm(ssiPrm);
+			st.setWqiPrm(wqiPrm);
+			st.setWquPrm(wquPrm);
 
 			hcSchemas = schemaDao.getSchemas(schemaId);
 			if (hcSchemas == null) hcSchemas = new Vector();

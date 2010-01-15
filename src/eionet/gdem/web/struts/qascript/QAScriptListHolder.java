@@ -33,6 +33,9 @@ public class QAScriptListHolder {
 	private List<Schema> qascripts;
 	boolean ssiPrm;
 	boolean ssdPrm;
+	boolean wqiPrm;
+	boolean wquPrm;
+
 
 
 	public QAScriptListHolder() {
@@ -68,4 +71,23 @@ public class QAScriptListHolder {
 		this.ssdPrm = ssdPrm;
 	}
 
+
+	public boolean isWqiPrm() {
+		return wqiPrm;
+	}
+
+
+	public void setWqiPrm(boolean wqiPrm) {
+		this.wqiPrm = wqiPrm;
+	}
+
+
+	public boolean isWquPrm() {
+		return wquPrm;
+	}
+
+
+	public void setWquPrm(boolean wquPrm) {
+		this.wquPrm = wquPrm;
+	}
 }
