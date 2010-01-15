@@ -116,7 +116,7 @@ response.setDateHeader("Expires", 0);
 			<ed:menuItem action="/do/qaScripts" title="QA Scripts">
 				<bean:message key="label.menu.queries"/>
 			</ed:menuItem>
-			<ed:menuItem action="/sandbox.jsp" title="XQ Sandbox">
+			<ed:menuItem action="/do/qaSandboxForm" title="QA Sandbox">
 				<bean:message key="label.menu.xqsendbox"/>
 			</ed:menuItem>
 			<ed:menuItem action="/do/uplXmlFiles" title="XML Files">

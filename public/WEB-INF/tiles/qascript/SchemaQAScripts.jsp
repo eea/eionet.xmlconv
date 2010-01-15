@@ -42,7 +42,7 @@
 							</li>
 						</logic:equal>
 				        <li>
-			                <html:link page="/sandbox.jsp" paramId="SCHEMA_ID" paramName="schema" paramProperty="id" titleKey="label.tab.title.xsl" onclick="return submitTab(this);"  titleKey="label.qascript.runservice.title">
+			                <html:link page="/do/openQAServiceInSandbox" paramId="schemaId" paramName="schema" paramProperty="id" titleKey="label.qascript.runservice.title">
 		               			<bean:message key="label.qascript.runservice" />
 		        			</html:link>
 						</li>
@@ -77,6 +77,7 @@
 							<!-- save button -->
 		   						<input type="button"  class="button" value="<bean:message key="label.save"/>" onclick="return submitAction(1,'saveSchemaValidation');" />
 							<input type="hidden" name="schemaId" value="${schemaId}" />
+							<input type="hidden" name="schema" value="${schemaUrl}" />
 						</logic:equal>
 					</td>
 				</tr>
@@ -116,7 +117,9 @@
 						</td>
 					</logic:equal>
                     <td>
-	                    <a href="<bean:write name="webRoot"/>/sandbox.jsp?ID=${scriptId}"><img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img></a>
+		                <html:link page="/do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.label.qasandbox.editScript">
+		                    <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img>
+						</html:link>
 					</td>
 					<td>
 						<a href="viewQAScriptForm?scriptId=<bean:write name="qascript" property="scriptId" />" title="view QAScript properties">

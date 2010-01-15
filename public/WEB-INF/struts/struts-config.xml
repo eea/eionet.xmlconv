@@ -9,7 +9,6 @@
             <form-property name="password" type="java.lang.String"/>
         </form-bean>
         <form-bean name="stylesheetForm" type="eionet.gdem.web.struts.stylesheet.StylesheetForm" />
-        <form-bean name="qaScriptForm" type="eionet.gdem.web.struts.qascript.QAScriptForm" />
         <form-bean name="schemaForm" type="eionet.gdem.web.struts.schema.SchemaElemForm" >
 	        <form-property name="schema" type="java.lang.String"/>
 	        <form-property name="expireDate" type="java.lang.String"/>	        
@@ -63,6 +62,8 @@
 	       
         <form-bean name="QAScriptForm" type="eionet.gdem.web.struts.qascript.QAScriptForm" />                   
         <form-bean name="SyncUplSchemaForm" type="eionet.gdem.web.struts.schema.SyncUplSchemaForm" />     
+
+        <form-bean name="QASandboxForm" type="eionet.gdem.web.struts.qasandbox.QASandboxForm" />
             
     </form-beans>
 
@@ -280,7 +281,56 @@
             <forward name="success" path="/qaScriptHistory.jsp" />
         </action>
 
-        
+<!-- QA sanbox actions -->
+        <action path="/qaSandboxForm" name="QASandboxForm" type="eionet.gdem.web.struts.qasandbox.QASandboxFormAction" input="/qaSandbox.jsp" scope="session">
+            <forward name="success" path="/qaSandbox.jsp" redirect="true"/>
+            <forward name="error" path="/qaSandbox.jsp" redirect="true"/>
+        </action>
+        <action path="/executeSandoxAction" name="QASandboxForm" type="eionet.gdem.web.struts.qasandbox.SandboxDispatchAction" input="/qaSandbox.jsp" scope="session" parameter="action">
+            <forward name="success" path="/qaSandbox.jsp" redirect="true"/>
+            <forward name="error" path="/qaSandbox.jsp" redirect="true"/>
+            <forward name="save" path="/do/saveQAScriptContent" redirect="true"/>
+            <forward name="run" path="/do/runScript" redirect="true"/>
+            <forward name="search" path="/do/searchQAXml" redirect="true"/>
+            <forward name="find" path="/do/findScripts" redirect="true"/>
+            <forward name="extract" path="/do/extractSchema" redirect="true"/>
+            <forward name="workqueue" path="/do/addToWorkqueue" redirect="true"/>
+        </action>
+        <action path="/searchQAXml" name="QASandboxForm" type="eionet.gdem.web.struts.qasandbox.SearchCRSandboxAction" input="/qaSandbox.jsp" scope="session">
+            <forward name="find" path="/do/findScripts" redirect="true"/>
+            <forward name="success" path="/qaSandbox.jsp" redirect="true"/>
+            <forward name="error" path="/qaSandbox.jsp" redirect="true"/>
+        </action>
+        <action path="/extractSchema" name="QASandboxForm" type="eionet.gdem.web.struts.qasandbox.ExtractSchemaAction" input="/qaSandbox.jsp" scope="session">
+            <forward name="find" path="/do/findScripts" redirect="true"/>
+            <forward name="success" path="/qaSandbox.jsp" redirect="true"/>
+            <forward name="error" path="/qaSandbox.jsp" redirect="true"/>
+        </action>
+        <action path="/addToWorkqueue" name="QASandboxForm" type="eionet.gdem.web.struts.qasandbox.AddToWorkqueueAction" input="/qaSandbox.jsp" scope="session">
+            <forward name="success" path="/qaSandbox.jsp" redirect="true"/>
+            <forward name="error" path="/qaSandbox.jsp" redirect="true"/>
+        </action>
+        <action path="/findScripts" name="QASandboxForm" type="eionet.gdem.web.struts.qasandbox.FindQAScriptsAction" input="/qaSandbox.jsp" scope="session">
+            <forward name="success" path="/qaSandbox.jsp" redirect="true"/>
+            <forward name="error" path="/qaSandbox.jsp" redirect="true"/>
+        </action>
+        <action path="/saveQAScriptContent" name="QASandboxForm" type="eionet.gdem.web.struts.qasandbox.SaveQAScriptContentAction" input="/qaSandbox.jsp" scope="session">
+            <forward name="success" path="/qaSandbox.jsp" redirect="true"/>
+            <forward name="error" path="/qaSandbox.jsp" redirect="true"/>
+        </action>
+        <action path="/editQAScriptInSandbox" name="QASandboxForm" type="eionet.gdem.web.struts.qasandbox.EditQAScriptInSandboxAction" scope="session">
+            <forward name="success" path="/qaSandbox.jsp" redirect="true"/>
+            <forward name="error" path="/qaSandbox.jsp" redirect="true"/>
+        </action>
+        <action path="/openQAServiceInSandbox" name="QASandboxForm" type="eionet.gdem.web.struts.qasandbox.OpenQAServiceInSandboxAction" scope="session">
+            <forward name="success" path="/qaSandbox.jsp" redirect="true"/>
+            <forward name="error" path="/qaSandbox.jsp" redirect="true"/>
+        </action>
+        <action path="/runScript" name="QASandboxForm" type="eionet.gdem.web.struts.qasandbox.RunScriptAction" scope="session">
+            <forward name="success" path="/qaSandboxResult.jsp" redirect="true"/>
+            <forward name="error" path="/qaSandbox.jsp" redirect="true"/>
+        </action>
+
 <!-- methods for remote API HTTP POST and GET -->
         <action path="/listConversions" scope="request" type="eionet.gdem.web.struts.remoteapi.ListConversionsAction">
 	        <forward name="fail" path="/api/methodError" />

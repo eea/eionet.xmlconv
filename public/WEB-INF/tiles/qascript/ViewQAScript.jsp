@@ -24,7 +24,7 @@
 		<div id="operations">
 	  		<ul>
    				<li>
-					<html:link page="/sandbox.jsp" paramId="ID" paramName="QAScriptForm" paramProperty="scriptId" title="run QA script" >	
+	                <html:link page="/do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="QAScriptForm" paramProperty="scriptId" titleKey="label.qasandbox.label.qasandbox.editScript">
 						<bean:message key="label.qascript.run" />
 					</html:link>
 				</li>

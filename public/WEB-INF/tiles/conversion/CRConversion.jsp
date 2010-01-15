@@ -46,11 +46,14 @@
 			<!--  Show XML files -->
 			<logic:present name="ConversionForm" property="schema">
 			<bean:define id="schema"  name="ConversionForm" property="schema" />
+      		<bean:size name="schema" id="countfiles" property="crfiles"/>
+      		<bean:define id="crfiles" name="schema" property="crfiles"/>
+
 			<html:form action="/testConversion" method="post" >
 			<table class="datatable">
 				<tr>
 				 <th scope="col" class="scope-col">
-			        <bean:message key="label.conversion.CRxmlfiles"/>
+			        <bean:message key="label.conversion.CRxmlfiles"/> (<bean:write name="countfiles"/>)
 			      </th>
 			    </tr>
 
@@ -59,8 +62,6 @@
 					      	<bean:define id="selUrl" name="converted.url" scope="session" type="String" />
 					     </logic:notEmpty>
 
-			      		<bean:size name="schema" id="countfiles" property="crfiles"/>
-			      		<bean:define id="crfiles" name="schema" property="crfiles"/>
 
 				      	<logic:greaterThan name="countfiles" value="0">
 				      	
