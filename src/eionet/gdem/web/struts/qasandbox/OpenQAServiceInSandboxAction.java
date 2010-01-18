@@ -32,19 +32,19 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
-import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.dcm.business.SchemaManager;
-import eionet.gdem.dto.QAScript;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 
 /**
- * @author Enriko Käsper, Tieto Estonia EditQAScriptInSandboxAction
+ * EditQAScriptInSandboxAction
+ * Find all the scripts for the given XML schema and allow to execute them in sandox
+ * 
+ * @author Enriko Käsper, Tieto Estonia
  */
 
 public class OpenQAServiceInSandboxAction extends Action {
@@ -62,7 +62,7 @@ public class OpenQAServiceInSandboxAction extends Action {
 		QASandboxForm cForm = (QASandboxForm) actionForm;
 		String userName = (String) httpServletRequest.getSession().getAttribute("user");
 
-		String schemaIdParam=null;
+		String schemaIdParam = null;
 		if (httpServletRequest.getParameter("schemaId") != null) {
 			schemaIdParam = (String) httpServletRequest.getParameter("schemaId");
 		}
@@ -87,21 +87,19 @@ public class OpenQAServiceInSandboxAction extends Action {
 			QAScriptListHolder qascripts = sm.getSchemasWithQAScripts(userName, schemaIdParam);
 			Schema schema = null;
 
-			if(qascripts==null || qascripts.getQascripts()==null || qascripts.getQascripts().size()==0){
+			if (qascripts == null || qascripts.getQascripts() == null || qascripts.getQascripts().size() == 0) {
 				schema = new Schema();
-			}
-			else{
+			} else {
 				schema = qascripts.getQascripts().get(0);
 				cForm.setSchemaId(schema.getId());
 				cForm.setSchemaUrl(schema.getSchema());
 			}
-			cForm.setSchema(schema);				
-			if(Utils.isNullList(cForm.getSchema().getQascripts()) && cForm.getSchema().isDoValidation()){
+			cForm.setSchema(schema);
+			if (Utils.isNullList(cForm.getSchema().getQascripts()) && cForm.getSchema().isDoValidation()) {
 				cForm.setScriptId("-1");
-			}
-			else if(!Utils.isNullList(cForm.getSchema().getQascripts()) &&
-					cForm.getSchema().getQascripts().size()==1 && !cForm.getSchema().isDoValidation()){
-				cForm.setScriptId(cForm.getSchema().getQascripts().get(0).getScriptId());					
+			} else if (!Utils.isNullList(cForm.getSchema().getQascripts())
+					&& cForm.getSchema().getQascripts().size() == 1 && !cForm.getSchema().isDoValidation()) {
+				cForm.setScriptId(cForm.getSchema().getQascripts().get(0).getScriptId());
 			}
 		} catch (DCMException e) {
 			e.printStackTrace();

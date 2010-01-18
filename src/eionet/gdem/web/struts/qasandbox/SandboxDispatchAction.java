@@ -22,37 +22,29 @@
 package eionet.gdem.web.struts.qasandbox;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
 import org.apache.struts.actions.LookupDispatchAction;
 
-import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.dto.Schema;
-import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
-import eionet.gdem.utils.Utils;
 
 /**
- * @author Enriko Käsper, Tieto Estonia SearchCRSandboxAction
+ * SearchCRSandboxAction
+ * The axction  dispatches the original sandbox request to the correct action.
+ *  
+ * @author Enriko Käsper, Tieto Estonia
  */
 
 public class SandboxDispatchAction extends LookupDispatchAction {
-	private static LoggerIF _logger = GDEMServices.getLogger();
 
 	public ActionForward searchXml(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
 
 		return actionMapping.findForward("search");
 	}
@@ -62,38 +54,40 @@ public class SandboxDispatchAction extends LookupDispatchAction {
 
 		return actionMapping.findForward("extract");
 	}
+
 	public ActionForward findScripts(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
 		return actionMapping.findForward("find");
 	}
+
 	public ActionForward manualUrl(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-		
+
 		QASandboxForm cForm = (QASandboxForm) actionForm;
 		Schema schema = cForm.getSchema();
-		if(schema!=null){
+		if (schema != null) {
 			schema.setCrfiles(null);
 		}
-		
 
 		return actionMapping.findForward("success");
 	}
+
 	public ActionForward addToWorkqueue(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
 		return actionMapping.findForward("workqueue");
 
 	}
+
 	public ActionForward saveFile(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-		
 
 		return actionMapping.findForward("save");
 	}
+
 	public ActionForward runScript(ActionMapping actionMapping, ActionForm actionForm,
 			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-		
 
 		return actionMapping.findForward("run");
 	}
@@ -103,10 +97,10 @@ public class SandboxDispatchAction extends LookupDispatchAction {
 		map.put("label.qasandbox.searchXML", "searchXml");
 		map.put("label.qasandbox.findScripts", "findScripts");
 		map.put("label.qasandbox.extractSchema", "extractSchema");
-		map.put("label.qasandbox.manualUrl","manualUrl");
-		map.put("label.qasandbox.saveFile","saveFile");
-		map.put("label.qasandbox.addToWorkqueue","addToWorkqueue");
-		map.put("label.qasandbox.runNow","runScript");
+		map.put("label.qasandbox.manualUrl", "manualUrl");
+		map.put("label.qasandbox.saveFile", "saveFile");
+		map.put("label.qasandbox.addToWorkqueue", "addToWorkqueue");
+		map.put("label.qasandbox.runNow", "runScript");
 		return map;
 	}
 }

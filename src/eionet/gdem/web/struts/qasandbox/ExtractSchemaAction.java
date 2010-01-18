@@ -42,7 +42,10 @@ import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 
 /**
- * @author Enriko Käsper, Tieto Estonia SearchCRSandboxAction
+ * SearchCRSandboxAction
+ * Extract the XML schema from the inserted source URL of XML file and find available QA scripts.
+ *  
+ * @author Enriko Käsper, Tieto Estonia
  */
 
 public class ExtractSchemaAction extends Action {

@@ -60,7 +60,7 @@ public class Main extends HttpServlet implements Names {
   protected HashMap acls;
 
   /**
-  * returns the current Http session
+  * returns the current Http session (old controller servlet)
   */
   protected HttpSession getSession(HttpServletRequest req ) {
     session = (HttpSession)req.getAttribute(Names.SESS_ATT);
@@ -93,21 +93,6 @@ public class Main extends HttpServlet implements Names {
        return;
       }
     }
-
-    //check if session exist, if not redirect to login page
-    /*if ( !guard(sess)) {
-        if (isAllowed(null)) {
-          //l("doLogin");
-          doLogin(req,res);
-          //l("Login ok");
-          action=SHOW_SCHEMAS_ACTION;
-        }
-        else {
-          handleError(req,res, "No session", LOGIN_ACTION );
-          return;
-        }
-    }
-    */
     //HttpSession needed as request attribtue as well
     req.setAttribute(SESS_ATT, sess);
 
@@ -189,39 +174,7 @@ public class Main extends HttpServlet implements Names {
 
     String jspName=index_jsp;
 
-     if ( action.equals( SHOW_SCHEMAS_ACTION ))
-        jspName= index_jsp;
-      else if ( action.equals( SHOW_STYLESHEETS_ACTION ))
-        jspName=STYLESHEETS_JSP;
-      else if ( action.equals( SHOW_QUERIES_ACTION ))
-        jspName=QUERIES_JSP;
-      else  if ( action.equals( SHOW_ADDXSL_ACTION ))
-        jspName= ADD_XSL_JSP;
-      else  if ( action.equals( XSL_ADD_ACTION ) || action.equals( XSL_DEL_ACTION )){
-        SaveHandler.handleStylesheets(req,action);
-        jspName=STYLESHEETS_JSP;
-      }
-      else  if ( action.equals( QUERY_ADD_ACTION ) || action.equals( QUERY_DEL_ACTION )){
-        SaveHandler.handleQueries(req,action);
-        jspName=QUERIES_JSP;
-      }
-      else if ( action.equals(QUERY_UPD_ACTION)){
-        SaveHandler.handleQueries(req,action);
-        jspName=QUERY_JSP;
-      }
-      else  if ( action.equals( XSD_UPDVAL_ACTION )){
-        SaveHandler.handleSchemas(req,action);
-        jspName=QUERIES_JSP;
-      }
-      else  if ( action.equals( XSDQ_DEL_ACTION )){
-        SaveHandler.handleSchemas(req,action);
-        jspName=QUERIESINDEX_JSP;
-      }
-      else  if ( action.equals( XSD_UPD_ACTION )){
-        SaveHandler.handleSchemas(req,action);
-        jspName=SCHEMA_JSP;
-      }
-      else if ( action.equals( LOGOUT_ACTION ))
+      if ( action.equals( LOGOUT_ACTION ))
         jspName=index_jsp;
       else if ( action.equals( LOGIN_ACTION )){
           //login has succeeded and we close login window
@@ -236,16 +189,6 @@ public class Main extends HttpServlet implements Names {
         jspName=LIST_CONVERSION_JSP;
       else if ( action.equals( EXECUTE_TESTCONVERSION_ACTION ))
         jspName=TEST_CONVERSION_SERVLET;
-      else if ( action.equals( SHOW_SCHEMA_ACTION ))
-        jspName=SCHEMA_JSP;
-      else  if ( action.equals( ELEM_ADD_ACTION ) || action.equals( ELEM_DEL_ACTION )){
-        SaveHandler.handleRootElems(req,action);
-        jspName=SCHEMA_JSP;
-      }
-      else  if ( action.equals( HOST_ADD_ACTION ) || action.equals( HOST_DEL_ACTION ) || action.equals( HOST_UPD_ACTION )){
-        SaveHandler.handleHosts(req,action);
-        jspName=HOSTS_JSP;
-      }
       else  if ( action.equals( WQ_DEL_ACTION ) || action.equals( WQ_RESTART_ACTION )){
         SaveHandler.handleWorkqueue(req,action);
         jspName=LIST_WORKQUEUE_JSP;

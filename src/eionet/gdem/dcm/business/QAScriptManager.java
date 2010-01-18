@@ -28,12 +28,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
 
 import org.apache.struts.upload.FormFile;
 
@@ -41,13 +37,10 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.dto.ConvType;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.qa.XQueryService;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.SecurityUtil;
@@ -62,8 +55,14 @@ public class QAScriptManager {
 	private static LoggerIF _logger = GDEMServices.getLogger();
 	private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
 	private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
-	  private  IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
+	/**
+	 * Returns QAScript object with all the data incl. file contebnt
+	 * 
+	 * @param queryId
+	 * @return
+	 * @throws DCMException
+	 */
 	public QAScript getQAScript(String queryId) throws DCMException {
 		QAScript qaScript = new QAScript();
 
@@ -167,6 +166,21 @@ public class QAScriptManager {
 
 	}
 
+	/**
+	 * Update script properties
+	 * 
+	 * @param user
+	 * @param scriptId
+	 * @param shortName
+	 * @param schemaId
+	 * @param resultType
+	 * @param descr
+	 * @param scriptType
+	 * @param curFileName
+	 * @param content
+	 * @param updateContent
+	 * @throws DCMException
+	 */
 	public void update(String user, String scriptId, String shortName, String schemaId, String resultType,
 			String descr, String scriptType, String curFileName, String content, boolean updateContent)
 			throws DCMException {
@@ -205,6 +219,14 @@ public class QAScriptManager {
 
 	}
 
+	/**
+	 * Checks if the script with the given filename exists whether in db or in
+	 * fs
+	 * 
+	 * @param fileName
+	 * @return
+	 * @throws SQLException
+	 */
 	public boolean fileExists(String fileName) throws SQLException {
 
 		if (queryDao.checkQueryFile(fileName)) {
@@ -222,6 +244,14 @@ public class QAScriptManager {
 
 	}
 
+	/**
+	 * Store QA script file into file system
+	 * 
+	 * @param file
+	 * @param fileName
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public void storeQAScriptFile(FormFile file, String fileName) throws FileNotFoundException, IOException {
 
 		InputStream in = file.getInputStream();
@@ -237,7 +267,19 @@ public class QAScriptManager {
 		file.destroy();
 
 	}
-	public void storeQAScriptFromString(String user, String scriptId, String fileContent) throws FileNotFoundException, IOException, DCMException {
+
+	/**
+	 * Store QA script content into file system
+	 * 
+	 * @param user
+	 * @param scriptId
+	 * @param fileContent
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws DCMException
+	 */
+	public void storeQAScriptFromString(String user, String scriptId, String fileContent) throws FileNotFoundException,
+			IOException, DCMException {
 
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
@@ -252,8 +294,10 @@ public class QAScriptManager {
 		}
 
 		QAScript script = getQAScript(scriptId);
-		String fileName = Properties.queriesFolder + script.getFileName();
 		
+		String sep = Properties.queriesFolder.endsWith(File.separator) ? "" : File.separator;
+		String fileName = Properties.queriesFolder + sep + script.getFileName();
+
 		// create backup of existing file
 		BackupManager bum = new BackupManager();
 		bum.backupFile(Properties.queriesFolder, script.getFileName(), scriptId, user);
@@ -261,67 +305,13 @@ public class QAScriptManager {
 		Utils.saveStrToFile(fileName, fileContent, null);
 	}
 
-	public String addQAScriptToWorkqueue(String user, String sourceUrl, String scriptContent, String scriptType) throws DCMException {
-
-		try {
-			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_WQ_PATH, "i")) {
-				_logger.debug("You don't have permissions jobs into workqueue!");
-				throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
-			}
-			
-		} catch (DCMException e) {
-			throw e;
-		} catch (Exception e) {
-			_logger.error("Error adding job to workqueue", e);
-			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-		}
-		XQueryService xqE = new XQueryService();
-		xqE.setTrustedMode(false);
-		try {
-			String result = xqE.analyze(sourceUrl, scriptContent, scriptType);
-			return result;
-		} catch (Exception e) {
-			_logger.error("Error adding job to workqueue", e);
-			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-		}
-
-	}
-
-	public List<String> addSchemaScriptsToWorkqueue(String user, String sourceUrl, String schemaUrl) throws DCMException {
-
-		List<String> result = new ArrayList<String>();
-		try {
-			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_WQ_PATH, "i")) {
-				_logger.debug("You don't have permissions jobs into workqueue!");
-				throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
-			}
-			
-		} catch (DCMException e) {
-			throw e;
-		} catch (Exception e) {
-			_logger.error("Error adding job to workqueue", e);
-			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-		}
-		XQueryService xqE = new XQueryService();
-		xqE.setTrustedMode(false);
-		try {
-			Hashtable h = new Hashtable();
-			Vector files = new Vector();
-			files.add(sourceUrl);
-			h.put(schemaUrl, files);
-			Vector v_result = xqE.analyzeXMLFiles(h);
-			if(v_result!=null){
-				for (int i=0;i<v_result.size();i++){
-					Vector v = (Vector)v_result.get(i);
-					result.add((String)v.get(0));
-				}
-			}
-		} catch (Exception e) {
-			_logger.error("Error adding job to workqueue", e);
-			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-		}
-		return result;
-	}
+	/**
+	 * Delete the selected QA script from database and file system
+	 * 
+	 * @param user
+	 * @param scriptId
+	 * @throws DCMException
+	 */
 	public void delete(String user, String scriptId) throws DCMException {
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "d")) {
@@ -357,9 +347,23 @@ public class QAScriptManager {
 		}
 	}
 
+	/**
+	 * Add a new QA script into the repository
+	 * 
+	 * @param user
+	 * @param shortName
+	 * @param schemaId
+	 * @param schema
+	 * @param resultType
+	 * @param description
+	 * @param scriptType
+	 * @param scriptFile
+	 * @return
+	 * @throws DCMException
+	 */
 	public String add(String user, String shortName, String schemaId, String schema, String resultType,
 			String description, String scriptType, FormFile scriptFile) throws DCMException {
-		
+
 		String scriptId = null;
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "i")) {
@@ -401,6 +405,14 @@ public class QAScriptManager {
 		return scriptId;
 	}
 
+	/**
+	 * Update schema validation flag
+	 * 
+	 * @param user
+	 * @param schemaId
+	 * @param validate
+	 * @throws DCMException
+	 */
 	public void updateSchemaValidation(String user, String schemaId, boolean validate) throws DCMException {
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
@@ -421,26 +433,7 @@ public class QAScriptManager {
 			_logger.error("Error updating XML Schema", e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
-		
-	}
-	public ConvType getConvType(String convTypeId) throws DCMException {
-		ConvType convType=null;
-		try {
-
-			Hashtable type = convTypeDao.getConvType(convTypeId);
-			if(type==null)return null;
-			convType = new ConvType();
-			convType.setContType(type.get("content_type")==null?null:(String)type.get("content_type"));
-			convType.setConvType(type.get("conv_type")==null?null:(String)type.get("conv_type"));
-			convType.setDescription(type.get("description")==null?null:(String)type.get("description"));
-			convType.setFileExt(type.get("file_ext")==null?null:(String)type.get("file_ext"));
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			_logger.error("Error getting conv types", e);
-			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-		}
-		return convType;
 
 	}
+
 }

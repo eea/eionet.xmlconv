@@ -39,7 +39,10 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 /**
- * @author Enriko Käsper, Tieto Estonia EditQAScriptInSandboxAction
+ * EditQAScriptInSandboxAction
+ * The action saves the changes of QA script content into file system.
+ * 
+ * @author Enriko Käsper, Tieto Estonia
  */
 
 public class SaveQAScriptContentAction extends Action {
@@ -66,7 +69,7 @@ public class SaveQAScriptContentAction extends Action {
 			saveErrors(httpServletRequest, errors);
 			return actionMapping.findForward("error");
 		}
-		try{
+		try {
 			String userName = (String) httpServletRequest.getSession().getAttribute("user");
 
 			QAScriptManager qm = new QAScriptManager();
@@ -78,7 +81,7 @@ public class SaveQAScriptContentAction extends Action {
 			saveErrors(httpServletRequest, errors);
 			return actionMapping.findForward("error");
 		} catch (Exception e) {
-			// 	e.printStackTrace();
+			// e.printStackTrace();
 			_logger.error("Error saving script content", e);
 			saveErrors(httpServletRequest, errors);
 			return actionMapping.findForward("error");

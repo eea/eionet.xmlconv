@@ -37,6 +37,7 @@ import org.apache.struts.action.ActionMessages;
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
+import eionet.gdem.dcm.business.ConvTypeManager;
 import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.dto.ConvType;
 import eionet.gdem.dto.QAScript;
@@ -48,7 +49,11 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
 
 /**
- * @author Enriko Käsper, Tieto Estonia EditQAScriptInSandboxAction
+ * EditQAScriptInSandboxAction
+ * Execute the QA script and display the results.
+ * If the result of QA script is not html, then wire the result directly into Servlet OutputStream.
+ * 
+ * @author Enriko Käsper, Tieto Estonia
  */
 
 public class RunScriptAction extends Action {
@@ -92,47 +97,48 @@ public class RunScriptAction extends Action {
 
 		try {
 			String result = null;
-			
-			//VALIDATION! if it is a validation job, then do the action and get out of here
-			if (scriptId.equals(String.valueOf(Constants.JOB_VALIDATION))){
-				try{
+
+			// VALIDATION! if it is a validation job, then do the action and get
+			// out of here
+			if (scriptId.equals(String.valueOf(Constants.JOB_VALIDATION))) {
+				try {
 					ValidationService vs = new ValidationService();
 					vs.setTrustedMode(false);
 
-					//result = vs.validateSchema(dataURL, xml_schema);
+					// result = vs.validateSchema(dataURL, xml_schema);
 					result = vs.validate(sourceUrl);
-				} catch (DCMException de){
+				} catch (DCMException de) {
 					result = de.getMessage();
 				}
 				cForm.setResult(result);
 				return actionMapping.findForward("success");
 			}
 
-			QAScript qascript=null;
-			String outputContentType=HTML_CONTENT_TYPE;
-			String xqResultType=null;
+			QAScript qascript = null;
+			String outputContentType = HTML_CONTENT_TYPE;
+			String xqResultType = null;
 			QAScriptManager qm = new QAScriptManager();
+			ConvTypeManager ctm = new ConvTypeManager();
 
-			//get QA script
-			if(!Utils.isNullStr(scriptId) && !"0".equals(scriptId)){
+			// get QA script
+			if (!Utils.isNullStr(scriptId) && !"0".equals(scriptId)) {
 				qascript = qm.getQAScript(scriptId);
 				String resultType = qascript.getResultType();
-				//get correct putput type by convTypeId
-				ConvType cType = qm.getConvType(resultType);
-				if(cType!=null && !Utils.isNullStr(cType.getContType())){
+				// get correct putput type by convTypeId
+				ConvType cType = ctm.getConvType(resultType);
+				if (cType != null && !Utils.isNullStr(cType.getContType())) {
 					outputContentType = cType.getContType();
 					xqResultType = cType.getConvType();
 				}
-		
+
 			}
 			XQScript xq = null;
-			if(showScripts){
-				//run script by ID
-				//read scriptContent from file
-				try{
-					scriptContent = Utils.readStrFromFile( Properties.queriesFolder + qascript.getFileName());
-				}
-				catch(Exception e){
+			if (showScripts) {
+				// run script by ID
+				// read scriptContent from file
+				try {
+					scriptContent = Utils.readStrFromFile(Properties.queriesFolder + qascript.getFileName());
+				} catch (Exception e) {
 					errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.fileNotFound"));
 					saveErrors(httpServletRequest, errors);
 					return actionMapping.findForward("error");
@@ -144,10 +150,10 @@ public class RunScriptAction extends Action {
 			xq.setScriptType(scriptType);
 			xq.setSrcFileUrl(sourceUrl);
 
-			OutputStream output =null;
+			OutputStream output = null;
 			try {
-				//write the result directly to servlet boutputstream
-				if(!outputContentType.startsWith(HTML_CONTENT_TYPE)){
+				// write the result directly to servlet boutputstream
+				if (!outputContentType.startsWith(HTML_CONTENT_TYPE)) {
 					httpServletResponse.setContentType(outputContentType);
 					httpServletResponse.setCharacterEncoding(HTML_CHARACTER_ENCODING);
 					output = httpServletResponse.getOutputStream();
@@ -155,19 +161,17 @@ public class RunScriptAction extends Action {
 					output.flush();
 					output.close();
 					return null;
-				}
-				else{
-					result=xq.getResult();
+				} else {
+					result = xq.getResult();
 					cForm.setResult(result);
 
 				}
-			} catch (GDEMException ge){
+			} catch (GDEMException ge) {
 				result = ge.getMessage();
-				if(output==null){
+				if (output == null) {
 					cForm.setResult(result);
 					return actionMapping.findForward("success");
-				}
-				else{
+				} else {
 					output.write(result.getBytes());
 					output.flush();
 					output.close();

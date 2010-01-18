@@ -24,7 +24,7 @@
 package eionet.gdem.conversion.ssr;
 
 /**
-* Constants, used by GDEM
+* Constants, used by GDEM (deprecated, but some constants may be still in use)
 */
 public interface Names {
 
@@ -48,53 +48,21 @@ public interface Names {
   public static final String TEST_CONVERSION_SERVLET = "convert";
   public static final String LOGIN_JSP = "start.do?login=true";
   public static final String SCHEMA_JSP = "schemaElemForm.do";
-  public static final String HOSTS_JSP = "hosts.jsp";
-  public static final String HOST_JSP = "host.jsp";
   public static final String LIST_WORKQUEUE_JSP = "workqueue.jsp";
-  public static final String SANDBOX_JSP = "sandbox.jsp";
-  public static final String SANDBOX_RESULT_JSP = "sandbox_result.jsp";
   public static final String QUERIESINDEX_JSP = "qaScripts.do";
-  public static final String QUERIES_JSP = "queries.jsp";
-  public static final String ADD_QUERY_JSP = "add_query.jsp";
-  public static final String QUERY_JSP = "query.jsp";
 
   //actions
-  public static final String XSD_UPD_ACTION = "B";
-  public static final String XSDQ_DEL_ACTION = "QD";
-  public static final String XSD_DEL_ACTION = "D";
-  public static final String XSD_UPDVAL_ACTION = "QV";
-  public static final String XSL_ADD_ACTION = "O";
-  public static final String XSL_DEL_ACTION = "Q";
-  public static final String XSL_UPD_ACTION = "XU";
-  public static final String ELEM_DEL_ACTION = "P";
-  public static final String ELEM_ADD_ACTION = "U";
   public static final String LOGIN_ACTION = "F";
   public static final String LOGOUT_ACTION = "I";
-  public static final String SHOW_SCHEMAS_ACTION = "S";
-  public static final String SHOW_STYLESHEETS_ACTION = "C";
-  public static final String SHOW_QUERIES_ACTION = "QC";
-  public static final String SHOW_ADDXSL_ACTION = "H";
   public static final String SHOW_TESTCONVERSION_ACTION = "J";
   public static final String SHOW_LISTCONVERSION_ACTION = "L";
-  public static final String SHOW_SCHEMA_ACTION = "T";
   public static final String EXECUTE_TESTCONVERSION_ACTION = "K";
-  public static final String HOST_DEL_ACTION = "M";
-  public static final String HOST_ADD_ACTION = "E";
-  public static final String HOST_UPD_ACTION = "G";
   public static final String WQ_DEL_ACTION = "X";
   public static final String WQ_RESTART_ACTION = "WQR";
-    public static final String QUERY_ADD_ACTION = "QA";
-  public static final String QUERY_DEL_ACTION = "QX";
-  public static final String QUERY_UPD_ACTION = "QU";
 
-  //public static final String ERROR_ACTION = "XXX";
   //Parameters
   public static final String XSL_FOLDER = "xsl/";
   public static final String QUERY_FOLDER = "queries/";
-  public static final String SCHEMA_ID = "ID";
-  public static final String XSL_DEL_ID = "XSL_DEL_ID";
-  public static final String XSD_DEL_ID = "XSD_DEL_ID";
-  public static final String QUERY_DEL_ID = "QUERY_DEL_ID";
 
   public static final String ACL_STYLESHEETS_PATH = "stylesheets";
   public static final String ACL_TESTCONVERSION_PATH = "testconversion";

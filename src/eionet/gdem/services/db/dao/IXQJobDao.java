@@ -61,11 +61,6 @@ public interface IXQJobDao extends IDbSchema{
 	   public void changeXQJobsStatuses(String[] jobIds, int status) throws SQLException;
 
 	   /**
-	   * returns all root element mappings for schema ID
-	   * @param - schema ID
-	   * @return Vector containing HashMaps with root element info
-	   */
-	   /**
 	    * returns all the job data in the WQ table
 	    * @return String[][] containing all fields as HashMap from T_CONVTYPE table
 	    */

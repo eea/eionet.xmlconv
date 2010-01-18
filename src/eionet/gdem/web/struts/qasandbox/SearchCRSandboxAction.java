@@ -42,7 +42,11 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 
 /**
- * @author Enriko Käsper, Tieto Estonia SearchCRSandboxAction
+ * SearchCRSandboxAction
+ * Search XML files from Content Registry
+ * 
+ * @author Enriko Käsper, Tieto Estonia
+ *  
  */
 
 public class SearchCRSandboxAction extends Action {
@@ -64,22 +68,22 @@ public class SearchCRSandboxAction extends Action {
 			SchemaManager sm = new SchemaManager();
 			// use the Schema data from the session, if schema is the same
 			// otherwise load the data from database and search CR
-			if (!Utils.isNullStr(schemaUrl) && (oSchema == null || 
-					oSchema.getSchema()==null || !oSchema.getSchema().equals(schemaUrl) 
-					|| oSchema.getCrfiles()==null)  ) {
+			if (!Utils.isNullStr(schemaUrl)
+					&& (oSchema == null || oSchema.getSchema() == null || !oSchema.getSchema().equals(schemaUrl) || oSchema
+							.getCrfiles() == null)) {
 				if (!schemaExists(httpServletRequest, schemaUrl)) {
 					throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 				}
 				ArrayList crfiles = null;
 				crfiles = sm.getCRFiles(schemaUrl);
-				if(oSchema==null)
+				if (oSchema == null)
 					oSchema = new Schema();
 				oSchema.setSchema(schemaUrl);
 				oSchema.setCrfiles(crfiles);
 
 				cForm.setSchema(oSchema);
-				
-				if(cForm.isShowScripts()){
+
+				if (cForm.isShowScripts()) {
 					return actionMapping.findForward("find");
 				}
 			}
@@ -97,7 +101,6 @@ public class SearchCRSandboxAction extends Action {
 
 		return actionMapping.findForward("success");
 	}
-
 
 	/**
 	 * check if schema passed as request parameter exists in the list of schemas

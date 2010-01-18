@@ -39,54 +39,55 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
  * QASandboxFormAction
+ * Open sandbox form. Optionally load the form from session.
+ * 
+ * @author Enriko Käsper, Tieto Estonia 
  */
 
 public class QASandboxFormAction extends Action {
 	private static LoggerIF _logger = GDEMServices.getLogger();
 
-	public ActionForward execute(ActionMapping actionMapping,
-			ActionForm actionForm, HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse) {
+	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
+			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 		ActionErrors errors = new ActionErrors();
-		
-		//get the schemas list from the session
-		Object schemasInSession = httpServletRequest.getSession().getAttribute(
-				"qascript.qascriptList");
 
-		//reset the form in the session
+		// get the schemas list from the session
+		Object schemasInSession = httpServletRequest.getSession().getAttribute("qascript.qascriptList");
+
+		// reset the form in the session
 		QASandboxForm cForm = (QASandboxForm) actionForm;
 
 		boolean resetForm = true;
 		if (httpServletRequest.getParameter("reset") != null) {
 			resetForm = !"false".equals((String) httpServletRequest.getParameter("reset"));
 		}
-		if(resetForm){
+		if (resetForm) {
 			cForm.resetAll(actionMapping, httpServletRequest);
 		}
 
 		try {
-			//if schemas list is not stored in the session, then load it from the database
-			if (schemasInSession == null
-					|| ((QAScriptListHolder) schemasInSession).getQascripts().size() == 0) {
+			// if schemas list is not stored in the session, then load it from
+			// the database
+			if (schemasInSession == null || ((QAScriptListHolder) schemasInSession).getQascripts().size() == 0) {
 				String userName = (String) httpServletRequest.getSession().getAttribute("user");
-				QAScriptListHolder schemas= loadSchemas(userName);
+				QAScriptListHolder schemas = loadSchemas(userName);
 				httpServletRequest.getSession().setAttribute("qascript.qascriptList", schemas);
 			}
 		} catch (DCMException e) {
 			e.printStackTrace();
 			_logger.error("QA Sandbox fomr error error", e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e
-					.getErrorCode()));
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
 			saveMessages(httpServletRequest, errors);
 		}
 
 		saveErrors(httpServletRequest, errors);
 		return actionMapping.findForward("success");
 	}
+
 	/**
 	 * load schemas form db
+	 * 
 	 * @return
 	 * @throws DCMException
 	 */

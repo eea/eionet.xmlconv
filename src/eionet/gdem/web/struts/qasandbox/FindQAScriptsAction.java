@@ -21,8 +21,6 @@
 
 package eionet.gdem.web.struts.qasandbox;
 
-import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -34,7 +32,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
-import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
@@ -44,8 +41,11 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 
 /**
- * @author Enriko Käsper, Tieto Estonia SearchCRSandboxAction
- */
+ * SearchCRSandboxAction
+ * Find all the scripts for the given XML schema and allow to execute them in sandox
+ * 
+ * @author Enriko Käsper, Tieto Estonia 
+*/
 
 public class FindQAScriptsAction extends Action {
 	private static LoggerIF _logger = GDEMServices.getLogger();
@@ -59,7 +59,6 @@ public class FindQAScriptsAction extends Action {
 		String schemaUrl = cForm.getSchemaUrl();
 		Schema schema = cForm.getSchema();
 
-
 		if (Utils.isNullStr(schemaUrl)) {
 
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.missingSchemaUrl"));
@@ -68,7 +67,7 @@ public class FindQAScriptsAction extends Action {
 		}
 		try {
 			cForm.setScriptId(null);
-			
+
 			SchemaManager sm = new SchemaManager();
 			String schemaId = sm.getSchemaId(schemaUrl);
 			String userName = (String) httpServletRequest.getSession().getAttribute("user");
@@ -85,13 +84,12 @@ public class FindQAScriptsAction extends Action {
 				}
 			}
 			cForm.setShowScripts(true);
-			if(Utils.isNullStr(cForm.getScriptId())){
-				if(Utils.isNullList(cForm.getSchema().getQascripts()) && cForm.getSchema().isDoValidation()){
+			if (Utils.isNullStr(cForm.getScriptId())) {
+				if (Utils.isNullList(cForm.getSchema().getQascripts()) && cForm.getSchema().isDoValidation()) {
 					cForm.setScriptId("-1");
-				}
-				else if(!Utils.isNullList(cForm.getSchema().getQascripts()) &&
-						cForm.getSchema().getQascripts().size()==1 && !cForm.getSchema().isDoValidation()){
-					cForm.setScriptId(cForm.getSchema().getQascripts().get(0).getScriptId());					
+				} else if (!Utils.isNullList(cForm.getSchema().getQascripts())
+						&& cForm.getSchema().getQascripts().size() == 1 && !cForm.getSchema().isDoValidation()) {
+					cForm.setScriptId(cForm.getSchema().getQascripts().get(0).getScriptId());
 				}
 			}
 		} catch (DCMException e) {

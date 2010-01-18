@@ -44,7 +44,11 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 
 /**
- * @author Enriko Käsper, Tieto Estonia EditQAScriptInSandboxAction
+ * EditQAScriptInSandboxAction Open selected QA script content and allow
+ * to edit it.
+ *
+ * @author Enriko Käsper, Tieto Estonia
+ * 
  */
 
 public class EditQAScriptInSandboxAction extends Action {
@@ -61,11 +65,11 @@ public class EditQAScriptInSandboxAction extends Action {
 		// reset the form in the session
 		QASandboxForm cForm = (QASandboxForm) actionForm;
 
-		String scriptIdParam=null;
+		String scriptIdParam = null;
 		if (httpServletRequest.getParameter("scriptId") != null) {
 			scriptIdParam = (String) httpServletRequest.getParameter("scriptId");
 		}
-		boolean reset=false;
+		boolean reset = false;
 		// request comes from Schema Queries page
 		if (httpServletRequest.getParameter("reset") != null) {
 			reset = "true".equals((String) httpServletRequest.getParameter("reset"));
@@ -85,10 +89,10 @@ public class EditQAScriptInSandboxAction extends Action {
 				QAScriptListHolder schemas = loadSchemas(userName);
 				httpServletRequest.getSession().setAttribute("qascript.qascriptList", schemas);
 			}
-			//reset field values
-			if(reset){
+			// reset field values
+			if (reset) {
 				cForm.setSourceUrl("");
-				if(cForm.getSchema()!=null){
+				if (cForm.getSchema() != null) {
 					Schema schema = cForm.getSchema();
 					schema.setCrfiles(null);
 					cForm.setSchema(schema);
@@ -96,12 +100,12 @@ public class EditQAScriptInSandboxAction extends Action {
 			}
 			cForm.setShowScripts(false);
 
-			//write a new script
-			if("0".equals(scriptIdParam)){
+			// write a new script
+			if ("0".equals(scriptIdParam)) {
 				cForm.setScriptId(scriptIdParam);
 				cForm.setScriptContent("");
 				cForm.setScriptType(XQScript.SCRIPT_LANG_XQUERY);
-				return actionMapping.findForward("success");				
+				return actionMapping.findForward("success");
 			}
 			QAScriptManager qm = new QAScriptManager();
 			QAScript script = qm.getQAScript(scriptIdParam);
@@ -109,11 +113,11 @@ public class EditQAScriptInSandboxAction extends Action {
 			cForm.setScriptId(scriptIdParam);
 			cForm.setScriptContent(script.getScriptContent());
 			cForm.setScriptType(script.getScriptType());
-			
+
 			cForm.setSchemaId(script.getSchemaId());
 			cForm.setSchemaUrl(script.getSchema());
 			Schema schema = cForm.getSchema();
-			if(schema==null){
+			if (schema == null) {
 				schema = new Schema();
 				schema.setSchema(script.getSchema());
 				schema.setId(script.getSchemaId());

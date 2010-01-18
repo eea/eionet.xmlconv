@@ -21,7 +21,6 @@
 
 package eionet.gdem.web.struts.qasandbox;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,18 +34,17 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
-import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.dcm.business.QAScriptManager;
-import eionet.gdem.dcm.business.SchemaManager;
-import eionet.gdem.dto.Schema;
+import eionet.gdem.dcm.business.WorkqueueManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 
 /**
- * @author Enriko Käsper, Tieto Estonia SearchCRSandboxAction
+ * SearchCRSandboxAction
+ * Add selected scripts into workqueue.
+ * 
+ * @author Enriko Käsper, Tieto Estonia
  */
 
 public class AddToWorkqueueAction extends Action {
@@ -75,7 +73,8 @@ public class AddToWorkqueueAction extends Action {
 			return actionMapping.findForward("error");
 		}
 		if (Utils.isNullStr(schemaUrl) && cForm.isShowScripts()) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.error.qasandbox.missingSchemaUrl"));
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(
+					"error.qasandbox.error.qasandbox.missingSchemaUrl"));
 			saveErrors(httpServletRequest, errors);
 			return actionMapping.findForward("error");
 		}
@@ -84,17 +83,17 @@ public class AddToWorkqueueAction extends Action {
 			saveErrors(httpServletRequest, errors);
 			return actionMapping.findForward("error");
 		}
-		try{
+		try {
 			String userName = (String) httpServletRequest.getSession().getAttribute("user");
 
-			QAScriptManager qm = new QAScriptManager();
-			if(cForm.isShowScripts()){				
-				List<String> jobIds = qm.addSchemaScriptsToWorkqueue(userName, sourceUrl, schemaUrl);
-				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("message.qasandbox.jobsAdded",jobIds.toString()));
-			}
-			else{
-				String jobId = qm.addQAScriptToWorkqueue(userName, sourceUrl, content, scriptType);
-				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("message.qasandbox.jobAdded",jobId));
+			WorkqueueManager wqm = new WorkqueueManager();
+			if (cForm.isShowScripts()) {
+				List<String> jobIds = wqm.addSchemaScriptsToWorkqueue(userName, sourceUrl, schemaUrl);
+				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("message.qasandbox.jobsAdded", jobIds
+						.toString()));
+			} else {
+				String jobId = wqm.addQAScriptToWorkqueue(userName, sourceUrl, content, scriptType);
+				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("message.qasandbox.jobAdded", jobId));
 			}
 		} catch (DCMException e) {
 			// e.printStackTrace();
@@ -102,13 +101,14 @@ public class AddToWorkqueueAction extends Action {
 			saveErrors(httpServletRequest, errors);
 			return actionMapping.findForward("error");
 		} catch (Exception e) {
-			// 	e.printStackTrace();
+			// e.printStackTrace();
 			_logger.error("Error saving script content", e);
 			saveErrors(httpServletRequest, errors);
 			return actionMapping.findForward("error");
 		}
 
 		saveMessages(httpServletRequest, messages);
-		return actionMapping.findForward("success");	}
+		return actionMapping.findForward("success");
+	}
 
 }
