@@ -87,7 +87,7 @@
         <action path="/generatedStylesheetList" type="eionet.gdem.web.struts.stylesheet.GeneratedStylesheetListAction">
             <forward name="success" path="/generatedStylesheetList.jsp" redirect="true"/>            
         </action>
-        <action path="/deleteSchema"  scope="request" type="eionet.gdem.web.struts.stylesheet.SchemaDeleteAction" name="schemaForm" >           
+        <action path="/deleteSchema"  scope="request" type="eionet.gdem.web.struts.stylesheet.SchemaDeleteAction" name="schemaForm"  validate="false">           
         	<forward name="success" path="/do/stylesheetList"  redirect="true"/>            
         </action>        
         <action path="/schemaStylesheets" type="eionet.gdem.web.struts.stylesheet.SchemaStylesheetAction" name="schemaStyleForm">   
@@ -132,7 +132,7 @@
         	<forward name="success" path="/do/schemaElemForm"  redirect="true"/>
         	<forward name="fail" path="/do/schemaElemForm"  redirect="true"/>
         </action>
-        <action path="/deleteUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.DeleteUplSchemaAction" name="schemaForm"  input="/schema.jsp">           
+        <action path="/deleteUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.DeleteUplSchemaAction" name="schemaForm"  input="/schema.jsp" validate="false">           
         	<forward name="success" path="/do/uplSchemas"  redirect="true"/>            
         	<forward name="success_deletefile" path="/do/schemaElemForm"  redirect="true"/>
         	<forward name="fail" path="/do/schemaElemForm"  redirect="true"/>
