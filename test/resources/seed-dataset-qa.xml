@@ -22,5 +22,13 @@
 	<t_schema SCHEMA_ID="86" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/species.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD"/>
 	<t_schema SCHEMA_ID="87" XML_SCHEMA="http://cdrtest.eionet.eu.int/xmlexports/dir9243eec/schema.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD"/>
 	<t_host HOST_ID="1" HOST_NAME="http://cdr.eionet.europa.eu" USER="test" PWD="test"/>
-	<t_xqjobs JOB_ID="1288" URL="http://localhost:8080/xmlconv/do/getsource?ticket=a2FzcGVyZW46bWk2&amp;source_url=http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="4" QUERY_ID="0"/>
+	<t_xqjobs JOB_ID="1288" URL="http://localhost:8080/xmlconv/do/getsource?ticket=a2FzcGVyZW46bWk2&amp;source_url=http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="4" QUERY_ID="0" SRC_FILE=""/>
+    <t_convtype CONV_TYPE="HTML" CONTENT_TYPE="text/html;charset=UTF-8" FILE_EXT="html" DESCRIPTION="HTML files"/>
+    <t_convtype CONV_TYPE="XML" CONTENT_TYPE="text/xml;charset=UTF-8" FILE_EXT="xml" DESCRIPTION=""/>
+    <t_convtype CONV_TYPE="EXCEL" CONTENT_TYPE="application/vnd.ms-excel" FILE_EXT="xls" DESCRIPTION=""/>
+    <t_convtype CONV_TYPE="PDF" CONTENT_TYPE="application/pdf" FILE_EXT="pdf" DESCRIPTION=""/>
+    <t_convtype CONV_TYPE="SQL" CONTENT_TYPE="text/plain" FILE_EXT="sql" DESCRIPTION=""/>
+    <t_convtype CONV_TYPE="ODS" CONTENT_TYPE="application/vnd.oasis.opendocument.spreadsheet" FILE_EXT="ods" DESCRIPTION="OpenDocument Spreadsheet"/>
+    <t_convtype CONV_TYPE="TEXT" CONTENT_TYPE="text/plain" FILE_EXT="txt" DESCRIPTION="Simple text files - tab, comma, ... separated values"/>
+    <t_convtype CONV_TYPE="RDF" CONTENT_TYPE="application/rdf+xml" FILE_EXT="rdf" DESCRIPTION="Semantic Web resources"/>
 </dataset>

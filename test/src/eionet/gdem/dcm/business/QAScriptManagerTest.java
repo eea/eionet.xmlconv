@@ -223,6 +223,30 @@ public class QAScriptManagerTest  extends DBTestCase{
 		assertEquals(resultType,qascript.getResultType());
 		assertEquals(scriptType,qascript.getScriptType());
 
+	}
+	/**
+	 * The method updates QA Script content in file system
+	 * 
+	 * @throws Exception
+	 */
+	public void testStoreQAScriptFromString() throws Exception{
+		
+		String scriptId = "49";
+		String user = TestConstants.TEST_ADMIN_USER;
 
+		QAScriptManager qm = new QAScriptManager();
+		QAScript script = qm.getQAScript(scriptId);
+				
+		String content = script.getScriptContent();
+		String newLine = "(:  This is the new line to be added :)\n";
+		StringBuffer contentBuf = new StringBuffer(newLine);
+		contentBuf.append(content);
+		
+		qm.storeQAScriptFromString(user, scriptId, contentBuf.toString());
+		script = qm.getQAScript(scriptId);
+		String newContent = script.getScriptContent();
+		
+		assertTrue(newContent.startsWith(newLine));
+		assertEquals(newContent.length(),content.length() + newLine.length());
 	}
 }
