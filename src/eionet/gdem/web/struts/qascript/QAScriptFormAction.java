@@ -32,6 +32,7 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.QAScriptManager;
+import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
@@ -68,6 +69,9 @@ public class QAScriptFormAction extends Action {
 			form.setModified(qaScript.getModified());
 			form.setChecksum(qaScript.getChecksum());
 			form.setScriptContent(qaScript.getScriptContent());
+
+			QAScriptListLoader.loadQAScriptList(httpServletRequest, false);
+
 		} catch (DCMException e) {
 			e.printStackTrace();
 			_logger.error("QA Script form error",e);

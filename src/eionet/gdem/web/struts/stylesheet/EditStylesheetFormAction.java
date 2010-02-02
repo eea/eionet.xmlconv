@@ -90,7 +90,9 @@ public class EditStylesheetFormAction extends Action {
 				httpServletRequest.setAttribute("schemaInfo", schema.getSchema(schemaId));
 				httpServletRequest.setAttribute("existingStylesheets", styleMan.getSchemaStylesheets(schemaId, stylesheetId));
 			}
-			
+
+			StylesheetListLoader.loadStylesheetList(httpServletRequest, false, "handcoded");
+
 
 		} catch (DCMException e) {
 			e.printStackTrace();

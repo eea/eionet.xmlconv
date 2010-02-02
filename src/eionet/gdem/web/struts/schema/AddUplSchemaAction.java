@@ -38,6 +38,7 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 
 public class AddUplSchemaAction extends Action {
 
@@ -105,7 +106,7 @@ public class AddUplSchemaAction extends Action {
 		saveMessages(httpServletRequest, messages);
 		//new schema might be added, remove the schemas list form the session.
 		httpServletRequest.getSession().removeAttribute("conversion.schemas");
-		httpServletRequest.getSession().removeAttribute("qascript.qascriptList");
+		QAScriptListLoader.clearList(httpServletRequest);
 
 		return actionMapping.findForward("success");
 	}

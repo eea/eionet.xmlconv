@@ -40,6 +40,7 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
+import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 
 /**
  * SearchCRSandboxAction
@@ -127,10 +128,7 @@ public class ExtractSchemaAction extends Action {
 	private boolean schemaExists(HttpServletRequest httpServletRequest, String schema) throws DCMException {
 		Object schemasInSession = httpServletRequest.getSession().getAttribute("qascript.qascriptList");
 		if (schemasInSession == null || ((QAScriptListHolder) schemasInSession).getQascripts().size() == 0) {
-			String userName = (String) httpServletRequest.getSession().getAttribute("user");
-			SchemaManager sm = new SchemaManager();
-			schemasInSession = sm.getSchemasWithQAScripts(userName);
-			httpServletRequest.getSession().setAttribute("qascript.qascriptList", schemasInSession);
+			schemasInSession = QAScriptListLoader.loadQAScriptList(httpServletRequest, true);
 		}
 		Schema oSchema = new Schema();
 		oSchema.setSchema(schema);

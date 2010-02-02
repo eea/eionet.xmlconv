@@ -37,6 +37,7 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
+import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 
 /**
  * QASandboxFormAction
@@ -70,9 +71,7 @@ public class QASandboxFormAction extends Action {
 			// if schemas list is not stored in the session, then load it from
 			// the database
 			if (schemasInSession == null || ((QAScriptListHolder) schemasInSession).getQascripts().size() == 0) {
-				String userName = (String) httpServletRequest.getSession().getAttribute("user");
-				QAScriptListHolder schemas = loadSchemas(userName);
-				httpServletRequest.getSession().setAttribute("qascript.qascriptList", schemas);
+				QAScriptListLoader.loadQAScriptList(httpServletRequest, true);
 			}
 		} catch (DCMException e) {
 			e.printStackTrace();

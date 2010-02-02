@@ -42,11 +42,12 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
+import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 
 /**
- * EditQAScriptInSandboxAction Open selected QA script content and allow
- * to edit it.
- *
+ * EditQAScriptInSandboxAction Open selected QA script content and allow to edit
+ * it.
+ * 
  * @author Enriko Käsper, Tieto Estonia
  * 
  */
@@ -85,9 +86,7 @@ public class EditQAScriptInSandboxAction extends Action {
 			// if schemas list is not stored in the session, then load it from
 			// the database
 			if (schemasInSession == null || ((QAScriptListHolder) schemasInSession).getQascripts().size() == 0) {
-				String userName = (String) httpServletRequest.getSession().getAttribute("user");
-				QAScriptListHolder schemas = loadSchemas(userName);
-				httpServletRequest.getSession().setAttribute("qascript.qascriptList", schemas);
+				schemasInSession = QAScriptListLoader.loadQAScriptList(httpServletRequest, true);
 			}
 			// reset field values
 			if (reset) {
@@ -134,18 +133,4 @@ public class EditQAScriptInSandboxAction extends Action {
 		return actionMapping.findForward("success");
 	}
 
-	/**
-	 * load schemas from db
-	 * 
-	 * @return
-	 * @throws DCMException
-	 */
-	private QAScriptListHolder loadSchemas(String userName) throws DCMException {
-
-		QAScriptListHolder schemas = null;
-		SchemaManager sm = new SchemaManager();
-
-		schemas = sm.getSchemasWithQAScripts(userName);
-		return schemas;
-	}
 }

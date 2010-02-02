@@ -39,6 +39,7 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
+import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 
 /**
  * EditQAScriptInSandboxAction
@@ -77,8 +78,7 @@ public class OpenQAServiceInSandboxAction extends Action {
 			// if schemas list is not stored in the session, then load it from
 			// the database
 			if (schemasInSession == null || ((QAScriptListHolder) schemasInSession).getQascripts().size() == 0) {
-				QAScriptListHolder schemas = loadSchemas(userName);
-				httpServletRequest.getSession().setAttribute("qascript.qascriptList", schemas);
+				QAScriptListLoader.loadQAScriptList(httpServletRequest, true);
 			}
 			cForm.setShowScripts(true);
 			cForm.setSourceUrl("");
@@ -112,18 +112,4 @@ public class OpenQAServiceInSandboxAction extends Action {
 		return actionMapping.findForward("success");
 	}
 
-	/**
-	 * load schemas from db
-	 * 
-	 * @return
-	 * @throws DCMException
-	 */
-	private QAScriptListHolder loadSchemas(String userName) throws DCMException {
-
-		QAScriptListHolder schemas = null;
-		SchemaManager sm = new SchemaManager();
-
-		schemas = sm.getSchemasWithQAScripts(userName);
-		return schemas;
-	}
 }

@@ -42,21 +42,16 @@ public class GeneratedStylesheetListAction extends Action {
 
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-		StylesheetListHolder st = new StylesheetListHolder();
 		ActionMessages errors = new ActionMessages();
-		String user_name = (String) httpServletRequest.getSession().getAttribute("user");
 
 		try {
-			SchemaManager sm = new SchemaManager();
-			st = sm.getSchemas(user_name,"generated");
-
+			StylesheetListLoader.loadStylesheetList(httpServletRequest, false, "generated");
 		} catch (DCMException e) {
 			e.printStackTrace();
 			_logger.error("Error getting stylesheet list", e);
 			errors.add("schema", new ActionMessage("label.exception.unknown"));
 			saveErrors(httpServletRequest, errors);
 		}
-		httpServletRequest.getSession().setAttribute("stylesheet.stylesheetList", st);
 		return actionMapping.findForward("success");
 	}
 }

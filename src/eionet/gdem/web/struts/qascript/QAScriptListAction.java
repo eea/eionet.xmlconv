@@ -30,7 +30,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
-import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
@@ -42,21 +41,16 @@ public class QAScriptListAction extends Action {
 
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-		QAScriptListHolder st = new QAScriptListHolder();
 		ActionMessages errors = new ActionMessages();
-		String user_name = (String) httpServletRequest.getSession().getAttribute("user");
 
 		try {
-			SchemaManager sm = new SchemaManager();
-			st = sm.getSchemasWithQAScripts(user_name);
-
+			QAScriptListLoader.loadQAScriptList(httpServletRequest, false);
 		} catch (DCMException e) {
 			e.printStackTrace();
 			_logger.error("Error getting QA scripts list", e);
 			errors.add("schema", new ActionMessage("label.exception.unknown"));
 			saveErrors(httpServletRequest, errors);
 		}
-		httpServletRequest.getSession().setAttribute("qascript.qascriptList", st);
 		return actionMapping.findForward("success");
 	}
 }

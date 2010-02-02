@@ -91,6 +91,8 @@ public class AddQAScriptAction  extends Action {
 			QAScriptManager qm = new QAScriptManager();
 			qm.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile);
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.inserted"));
+			//clear qascript list in session
+			QAScriptListLoader.loadQAScriptList(httpServletRequest, true);
 		} catch (DCMException e) {
 			e.printStackTrace();
 			_logger.error("Add QA Script error", e);
@@ -101,8 +103,6 @@ public class AddQAScriptAction  extends Action {
 		saveErrors(httpServletRequest.getSession(), errors);
 		saveMessages(httpServletRequest.getSession(), messages);
 
-		//clear qascript list in session
-		httpServletRequest.getSession().removeAttribute("qascript.qascriptList");
 
 		return findForward(actionMapping, "success", schemaId);
 	}
