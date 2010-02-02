@@ -347,28 +347,7 @@
         <action path="/methodError"  scope="request" type="eionet.gdem.web.struts.remoteapi.MethodErrorAction">
         </action>
 
- <!-- Edit UI -->
-        <action path="/editUI/imageManagerSetup" type="eionet.gdem.web.struts.uimanage.ImageManagerSetupAction"
-        name="imageForm" scope="request">
-        <forward name="success" path="/editUI/ImageManager.jsp"/>
-        </action>
-        <action path="/editUI/imageManager" type="eionet.gdem.web.struts.uimanage.ImageManagerAction"
-        name="imageForm" scope="request">
-        <forward name="uploaded" path="/editUI/ImageManager.jsp"/>
-        </action>
-       <action path="/editUI/viewFooter" type="eionet.gdem.web.struts.uimanage.ViewTemplateAction"
-        name="dynamicItemForm" parameter="footer" scope="request" validate="false">
-            <forward name="footer" path="/editUI/FooterManager.jsp"/>
-        </action>
-        <action path="/editUI/viewHeader" type="eionet.gdem.web.struts.uimanage.ViewTemplateAction"
-        name="dynamicItemForm" parameter="header" scope="request" validate="false" >
-            <forward name="header" path="/editUI/HeaderManager.jsp"/>
-        </action>
-        <action path="/editUI/processTemplate" type="eionet.gdem.web.struts.uimanage.ProcessTemplateAction"
-    	name="dynamicItemForm" scope="request" validate="false">
-    		<forward name="footer" path="/do/editUI/viewFooter" redirect="true"/>
-    		<forward name="header" path="/do/editUI/viewHeader" redirect="true"/>
-    	</action>
+ <!--  LDAP form -->
         <action path="/ldapForm" type="eionet.gdem.web.struts.config.LdapFormAction"
     	name="ldapForm" scope="request" validate="false">
     		<forward name="success" path="/configLdap.jsp" redirect="true"/>
@@ -377,6 +356,8 @@
             type="eionet.gdem.web.struts.config.LdapAction" scope="request">
              <forward name="success" path="/do/ldapForm" redirect="true"/>
         </action>
+ 
+ <!--  DB form -->
         <action path="/dbForm" type="eionet.gdem.web.struts.config.DbFormAction"
     	name="dbForm" scope="request" validate="false">
     		<forward name="success" path="/configDb.jsp" redirect="true"/>
@@ -385,6 +366,7 @@
             type="eionet.gdem.web.struts.config.DbAction" scope="request">
              <forward name="success" path="/do/dbForm" redirect="true"/>
         </action>
+ <!--  System form -->
         <action path="/systemForm" type="eionet.gdem.web.struts.config.SystemFormAction"
     	name="systemForm" scope="request" validate="false">
     		<forward name="success" path="/system.jsp" redirect="true"/>
@@ -394,6 +376,7 @@
              <forward name="success" path="/do/systemForm" redirect="true"/>
              <forward name="fail" path="/do/systemForm" redirect="true"/>
         </action>
+ <!-- Purge form -->
         <action path="/purgeForm" forward="/purge.jsp"/>
         <action path="/purge" input="/purge.jsp" name="purgeForm"
             type="eionet.gdem.web.struts.config.PurgeAction" scope="request">

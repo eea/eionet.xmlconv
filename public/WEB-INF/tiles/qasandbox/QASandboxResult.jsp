@@ -22,7 +22,7 @@
 		<br/>
 		<html:form action="/qaSandboxForm?reset=false" method="post">
 	        <html:submit styleClass="button" property="action" >
-				<bean:write key="label.qasandboxresult.back"/>
+				<bean:message key="label.qasandboxresult.back"/>
 			</html:submit>
 		</html:form>
 

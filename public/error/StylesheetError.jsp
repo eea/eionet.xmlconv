@@ -16,11 +16,6 @@
 	@import url(<c:url value="../css/main.css"/>);
 -->
 </style>
-<style type="text/css" media="screen">
-<!--
-	@import url(<c:url value="/css/portlet.css"/>);
--->
-</style>
 <style type="text/css">
 body {
 	margin: 0;

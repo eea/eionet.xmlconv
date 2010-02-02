@@ -47,10 +47,6 @@
   <definition name="system" path="/WEB-INF/tiles/config/System.jsp" />
   <definition name="purge" path="/WEB-INF/tiles/config/Purge.jsp" />
   
-  <definition name="/editUI/ImageManager.jsp" path="/WEB-INF/tiles/editUI/ImageManager.jsp"/>
-  <definition name="HeaderManager" path="/WEB-INF/tiles/editUI/HeaderManager.jsp"/>
-  <definition name="FooterManager" path="/WEB-INF/tiles/editUI/FooterManager.jsp"/>
-  
   <definition name="hosts" path="/WEB-INF/tiles/hosts/HostsList.jsp" />
   <definition name="hostDetails" path="/WEB-INF/tiles/hosts/HostDetails.jsp" />
 
@@ -124,14 +120,6 @@
   <definition name="/editUplXmlFile.jsp" extends="base">
     <put name="body" type="definition" value="editUplXmlFile"/>
   </definition>
- 	<definition name="/editUI/HeaderManager.jsp" extends="base">
- 		<put name="title"  value="label.editUI.headereditor"/>
-		<put name="body" type="definition" value="HeaderManager"/>
-	</definition>
-   	<definition name="/editUI/FooterManager.jsp" extends="base">
-   		<put name="title"  value="label.editUI.footereditor"/>
-  		<put name="body" type="definition" value="FooterManager"/>
-   	</definition>
 	<definition name="/configLdap.jsp" extends="base">   
 		<put name="title"  value="label.config.ldap.admin"/>
 		<put name="body" type="definition" value="confLdap"/>   
