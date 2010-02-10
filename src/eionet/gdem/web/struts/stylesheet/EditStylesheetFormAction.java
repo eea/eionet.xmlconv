@@ -91,7 +91,7 @@ public class EditStylesheetFormAction extends Action {
 				httpServletRequest.setAttribute("existingStylesheets", styleMan.getSchemaStylesheets(schemaId, stylesheetId));
 			}
 
-			StylesheetListLoader.loadStylesheetList(httpServletRequest, false, "handcoded");
+			StylesheetListLoader.loadStylesheetList(httpServletRequest, false);
 
 
 		} catch (DCMException e) {

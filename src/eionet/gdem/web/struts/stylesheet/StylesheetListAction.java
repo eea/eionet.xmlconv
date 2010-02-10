@@ -44,7 +44,7 @@ public class StylesheetListAction extends Action {
 		ActionMessages errors = new ActionMessages();
 
 		try {
-			StylesheetListLoader.loadStylesheetList(httpServletRequest, false, "handcoded");
+			StylesheetListLoader.loadStylesheetList(httpServletRequest, false);
 		} catch (DCMException e) {
 			e.printStackTrace();
 			_logger.error("Error getting stylesheet list", e);

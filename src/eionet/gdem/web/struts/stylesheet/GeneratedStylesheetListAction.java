@@ -45,7 +45,7 @@ public class GeneratedStylesheetListAction extends Action {
 		ActionMessages errors = new ActionMessages();
 
 		try {
-			StylesheetListLoader.loadStylesheetList(httpServletRequest, false, "generated");
+			StylesheetListLoader.loadStylesheetGeneratedList(httpServletRequest, false);
 		} catch (DCMException e) {
 			e.printStackTrace();
 			_logger.error("Error getting stylesheet list", e);

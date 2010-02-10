@@ -1106,7 +1106,7 @@ public class SchemaManager {
 		List<CrFileDto> files = new ArrayList<CrFileDto>();
 		try{
 			// retrive conversions for DD tables
-			List crXmlFiles = CRServiceClient.getXmlFilesBySchema(schema);
+			List crXmlFiles = getXmlFilesBySchema(schema);
 
 			for (Object crXmlFile : crXmlFiles) {
 				Hashtable xmlfile = (Hashtable) crXmlFile;
@@ -1132,6 +1132,14 @@ public class SchemaManager {
 	 */
 	protected List getDDTables(){ 
 		return DDServiceClient.getDDTables();
+	}
+	/**
+	 * Returns the list of xml files retreived from xml-rpx request
+	 * @return
+	 * @throws Exception 
+	 */
+	protected List getXmlFilesBySchema(String schema) throws Exception{ 
+		return CRServiceClient.getXmlFilesBySchema(schema);
 	}
 
 

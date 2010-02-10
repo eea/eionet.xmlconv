@@ -24,11 +24,8 @@
 
 package eionet.gdem.dcm.business;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
 
 import com.tee.uit.client.ServiceClientIF;
 import com.tee.uit.client.ServiceClients;

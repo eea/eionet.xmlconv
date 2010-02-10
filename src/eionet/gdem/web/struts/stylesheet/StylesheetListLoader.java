@@ -38,10 +38,11 @@ import eionet.gdem.services.LoggerIF;
 public class StylesheetListLoader {
 	
 	public final static String STYLESHEET_LIST_ATTR = "stylesheet.stylesheetList";
+	public final static String STYLESHEET_GENERATED_LIST_ATTR = "stylesheet.generatedList";
 
 	private static LoggerIF _logger = GDEMServices.getLogger();
 
-	public static StylesheetListHolder loadStylesheetList(HttpServletRequest httpServletRequest, boolean reload, String type) throws DCMException{
+	public static StylesheetListHolder loadStylesheetList(HttpServletRequest httpServletRequest, boolean reload) throws DCMException{
 
 		
 		Object st = httpServletRequest.getSession().getAttribute(STYLESHEET_LIST_ATTR);
@@ -51,7 +52,7 @@ public class StylesheetListLoader {
 			String user_name = (String) httpServletRequest.getSession().getAttribute("user");
 			try {
 				SchemaManager sm = new SchemaManager();
-				st = sm.getSchemas(user_name,type);
+				st = sm.getSchemas(user_name,"handcoded");
 			} catch (DCMException e) {
 				e.printStackTrace();
 				_logger.error("Error getting stylesheet list", e);
@@ -62,8 +63,30 @@ public class StylesheetListLoader {
 
 		return (StylesheetListHolder)st;
 	}
+	public static StylesheetListHolder loadStylesheetGeneratedList(HttpServletRequest httpServletRequest, boolean reload) throws DCMException{
+
+		
+		Object st = httpServletRequest.getSession().getAttribute(STYLESHEET_GENERATED_LIST_ATTR);
+		if(st==null || !(st instanceof StylesheetListHolder) || reload){
+			st = new StylesheetListHolder();
+
+			String user_name = (String) httpServletRequest.getSession().getAttribute("user");
+			try {
+				SchemaManager sm = new SchemaManager();
+				st = sm.getSchemas(user_name,"generated");
+			} catch (DCMException e) {
+				e.printStackTrace();
+				_logger.error("Error getting stylesheet generated list", e);
+				throw e;
+			}
+			httpServletRequest.getSession().setAttribute(STYLESHEET_GENERATED_LIST_ATTR, st);
+		}
+
+		return (StylesheetListHolder)st;
+	}
 	public static void clearList(HttpServletRequest httpServletRequest){
 		httpServletRequest.getSession().removeAttribute(STYLESHEET_LIST_ATTR);		
+		httpServletRequest.getSession().removeAttribute(STYLESHEET_GENERATED_LIST_ATTR);		
 	}
 
 }
