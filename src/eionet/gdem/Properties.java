@@ -84,6 +84,10 @@ public class Properties {
 	public static String invServUrl = null;
 	public static String invServName = null;
 
+	//Content registry xml-rpc 
+	public static String crServUrl = null;
+	public static String crServName = null;
+
 	//ldap url
 	public static String ldapUrl = null;
 	public static String ldapContext = null;
@@ -110,6 +114,7 @@ public class Properties {
 	private static ResourceBundle applicationResources;
 
 	public static int wqMaxJobs = 20;
+
 	 static {
 
 
@@ -143,6 +148,10 @@ public class Properties {
 
 				//settings for incoming services from CDR
 				cdrServUrl = props.getString("cdr.url");
+
+				//settings for incoming services from Content Registry
+				crServUrl = props.getString("cr.rpc.url");
+				crServName = props.getString("cr.rpcservice.name");
 
 				//period in seconds
 				String frequency = props.getString("wq.check.interval");

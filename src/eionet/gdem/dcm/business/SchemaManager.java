@@ -50,6 +50,7 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dto.CdrFileDto;
 import eionet.gdem.dto.ConversionDto;
+import eionet.gdem.dto.CrFileDto;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.dto.RootElem;
 import eionet.gdem.dto.Schema;
@@ -1100,36 +1101,26 @@ public class SchemaManager {
 	/*
 	 * Search XML files from Conent Registry
 	 */
-	public ArrayList getCRFiles(String schema) throws DCMException {
+	public List<CrFileDto> getCRFiles(String schema) throws DCMException {
 
-		ArrayList files = new ArrayList();
+		List<CrFileDto> files = new ArrayList<CrFileDto>();
 		try{
 			// retrive conversions for DD tables
-			List cdrFiles = CDRServiceClient.searchXMLFiles(schema);
+			List crXmlFiles = CRServiceClient.getXmlFilesBySchema(schema);
 
-			for (int i = 0; i < cdrFiles.size(); i++) {
-				Hashtable xmlfile = (Hashtable) cdrFiles.get(i);
-				String url = (String) xmlfile.get("url");
+			for (Object crXmlFile : crXmlFiles) {
+				Hashtable xmlfile = (Hashtable) crXmlFile;
+				String url = (String) xmlfile.get("uri");
+				String lastModified = (String) xmlfile.get("lastModified");
 
-				CdrFileDto cf = new CdrFileDto();
+				CrFileDto cf = new CrFileDto();
 				cf.setUrl(url);
-				cf.setCountry((String) xmlfile.get("country"));
-				cf.setIso((String) xmlfile.get("iso"));
-				cf.setPartofyear((String) xmlfile.get("partofyear"));
-				cf.setTitle((String) xmlfile.get("title"));
-				//year and endyear are Integers, if not null
-				Object endyear =xmlfile.get("endyear");
-				if(endyear instanceof Integer)
-					cf.setEndyear(((Integer)endyear).intValue());
-
-				Object year =(Integer) xmlfile.get("year");
-				if(year instanceof Integer)
-					cf.setYear(((Integer)year).intValue());
+				cf.setLastModified(lastModified);
 
 				files.add(cf);
 			}
 		} catch (Exception e) {
-			_logger.error("Error getting XML files from CDR for schema",e);
+			_logger.error("Error getting XML files from CR for schema",e);
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return files;

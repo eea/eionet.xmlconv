@@ -21,7 +21,7 @@
 
 package eionet.gdem.web.struts.qasandbox;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +34,7 @@ import org.apache.struts.action.ActionMapping;
 
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
+import eionet.gdem.dto.CrFileDto;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
@@ -75,7 +76,7 @@ public class SearchCRSandboxAction extends Action {
 				if (!schemaExists(httpServletRequest, schemaUrl)) {
 					throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 				}
-				ArrayList crfiles = null;
+				List<CrFileDto> crfiles = null;
 				crfiles = sm.getCRFiles(schemaUrl);
 				if (oSchema == null)
 					oSchema = new Schema();

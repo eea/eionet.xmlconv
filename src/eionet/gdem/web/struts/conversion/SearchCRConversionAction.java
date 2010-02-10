@@ -4,6 +4,7 @@
 package eionet.gdem.web.struts.conversion;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +21,7 @@ import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
+import eionet.gdem.dto.CrFileDto;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
@@ -68,7 +70,7 @@ public class SearchCRConversionAction extends Action {
 					throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 				}
 				ArrayList stylesheets = null;
-				ArrayList crfiles = null;
+				List<CrFileDto> crfiles = null;
 				stylesheets = sm.getSchemaStylesheets(schema);
 				crfiles = sm.getCRFiles(schema);
 				oSchema = new Schema();

@@ -38,8 +38,8 @@ public class Schema implements Serializable {
 	private String dtdPublicId;
 	private String table;
 	private String dataset;
-	private List cdrfiles;
-	private List crfiles;
+	private List<CdrFileDto> cdrfiles;
+	private List<CrFileDto> crfiles;
 	private Date datasetReleased;
 	private boolean doValidation=false;
 	private String schemaLang;
@@ -165,12 +165,12 @@ public class Schema implements Serializable {
 		this.table = table;
 	}
 
-	public List getCdrfiles() {
+	public List<CdrFileDto> getCdrfiles() {
 		return cdrfiles;
 	}
 
 
-	public void setCdrfiles(List cdrfiles) {
+	public void setCdrfiles(List<CdrFileDto> cdrfiles) {
 		this.cdrfiles = cdrfiles;
 	}
 
@@ -185,12 +185,12 @@ public class Schema implements Serializable {
 	}
 
 
-	public List getCrfiles() {
+	public List<CrFileDto> getCrfiles() {
 		return crfiles;
 	}
 
 
-	public void setCrfiles(List crfiles) {
+	public void setCrfiles(List<CrFileDto> crfiles) {
 		this.crfiles = crfiles;
 	}
 	public boolean equals(Object oSchema){
