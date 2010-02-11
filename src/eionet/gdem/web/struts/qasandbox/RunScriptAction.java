@@ -37,6 +37,7 @@ import org.apache.struts.action.ActionMessages;
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
+import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.business.ConvTypeManager;
 import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.dto.ConvType;
@@ -45,6 +46,7 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
 
@@ -73,29 +75,34 @@ public class RunScriptAction extends Action {
 		String scriptType = cForm.getScriptType();
 		String sourceUrl = cForm.getSourceUrl();
 		boolean showScripts = cForm.isShowScripts();
-
-		if (showScripts && Utils.isNullStr(scriptId)) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.missingId"));
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("error");
-		}
-		if (!showScripts && Utils.isNullStr(scriptContent)) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.missingContent"));
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("error");
-		}
-		if (Utils.isNullStr(sourceUrl)) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.missingUrl"));
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("error");
-		}
-		if (!Utils.isURL(sourceUrl)) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.notUrl"));
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("error");
-		}
+		String userName = (String) httpServletRequest.getSession().getAttribute("user");
 
 		try {
+			if (showScripts && Utils.isNullStr(scriptId)) {
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.missingId"));
+				saveErrors(httpServletRequest, errors);
+				return actionMapping.findForward("error");
+			}
+			if (!showScripts && Utils.isNullStr(scriptContent)) {
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.missingContent"));
+				saveErrors(httpServletRequest, errors);
+				return actionMapping.findForward("error");
+			}
+			if (!Utils.isNullStr(scriptContent) && !SecurityUtil.hasPerm(userName, "/" + Names.ACL_QASANDBOX_PATH, "i")) {
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.autorization.qasandbox.execute"));
+				saveErrors(httpServletRequest, errors);
+				return actionMapping.findForward("error");
+			}
+			if (Utils.isNullStr(sourceUrl)) {
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.missingUrl"));
+				saveErrors(httpServletRequest, errors);
+				return actionMapping.findForward("error");
+			}
+			if (!Utils.isURL(sourceUrl)) {
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.notUrl"));
+				saveErrors(httpServletRequest, errors);
+				return actionMapping.findForward("error");
+			}
 			String result = null;
 
 			// VALIDATION! if it is a validation job, then do the action and get

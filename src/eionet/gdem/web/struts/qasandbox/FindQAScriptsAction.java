@@ -66,7 +66,7 @@ public class FindQAScriptsAction extends Action {
 			return actionMapping.findForward("error");
 		}
 		try {
-			cForm.setScriptId(null);
+			//cForm.setScriptId(null);
 
 			SchemaManager sm = new SchemaManager();
 			String schemaId = sm.getSchemaId(schemaUrl);

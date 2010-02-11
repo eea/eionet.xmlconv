@@ -57,10 +57,6 @@ public interface Constants {
 	 * by the QA service
 	 */
 	public static final String XQ_SOURCE_PARAM_NAME = "source_url";
-	public static final String XQ_INS_SOURCE_PARAM_NAME = "inserted_url";
-	public static final String XQ_SCRIPT_PARAM = "XQSCRIPT"; // field name for XQscript in the sandbox
-	public static final String XQ_RESULT_ATT = "RESULT_TEXT";
-	public static final String XQ_SCRIPT_TYPE_ATT = "SCRIPT_TYPE";
 	public static final String XQ_SCRIPT_ID_PARAM = "script_id";
 
 	// Folder for temporary files - to be placed under public

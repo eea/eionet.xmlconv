@@ -35,7 +35,29 @@ public class QAScriptListHolder {
 	boolean ssdPrm;
 	boolean wqiPrm;
 	boolean wquPrm;
+	boolean qsiPrm;
+	boolean qsuPrm;
 
+
+
+	public boolean isQsuPrm() {
+		return qsuPrm;
+	}
+
+
+	public void setQsuPrm(boolean qsuPrm) {
+		this.qsuPrm = qsuPrm;
+	}
+
+
+	public boolean isQsiPrm() {
+		return qsiPrm;
+	}
+
+
+	public void setQsiPrm(boolean qsiPrm) {
+		this.qsiPrm = qsiPrm;
+	}
 
 
 	public QAScriptListHolder() {
