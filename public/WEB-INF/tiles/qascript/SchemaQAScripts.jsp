@@ -117,9 +117,16 @@
 						</td>
 					</logic:equal>
                     <td>
-		                <html:link page="/do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.label.qasandbox.editScript">
-		                    <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img>
-						</html:link>
+						<logic:equal name="qsuPrm" value="true"  name="qascript.qascriptList" scope="session" property="qsuPrm" >
+			                <html:link page="/do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.label.qasandbox.editScript">
+			                    <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img>
+							</html:link>
+	        			</logic:equal>
+						<logic:notEqual name="qsuPrm" value="true"  name="qascript.qascriptList" scope="session" property="qsuPrm" >
+			                <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=<bean:write name="schema" property="id"/>" title="<bean:message key="label.qascript.runservice.title" />">
+			                    <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img>
+	        				</a>
+						</logic:notEqual>
 					</td>
 					<td>
 						<a href="viewQAScriptForm?scriptId=<bean:write name="qascript" property="scriptId" />" title="view QAScript properties">

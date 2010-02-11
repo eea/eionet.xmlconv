@@ -286,7 +286,7 @@
             <forward name="success" path="/qaSandbox.jsp" redirect="true"/>
             <forward name="error" path="/qaSandbox.jsp" redirect="true"/>
         </action>
-        <action path="/executeSandoxAction" name="QASandboxForm" type="eionet.gdem.web.struts.qasandbox.SandboxDispatchAction" input="/qaSandbox.jsp" scope="session" parameter="action">
+        <action path="/executeSandboxAction" name="QASandboxForm" type="eionet.gdem.web.struts.qasandbox.SandboxDispatchAction" input="/qaSandbox.jsp" scope="session" parameter="action">
             <forward name="success" path="/qaSandbox.jsp" redirect="true"/>
             <forward name="error" path="/qaSandbox.jsp" redirect="true"/>
             <forward name="save" path="/do/saveQAScriptContent" redirect="true"/>

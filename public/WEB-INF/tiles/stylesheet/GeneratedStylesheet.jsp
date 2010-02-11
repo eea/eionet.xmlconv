@@ -8,7 +8,7 @@
 
 <ed:breadcrumbs-push label="Stylesheets" level="1" />
 
-<logic:present name="stylesheet.stylesheetList">
+<logic:present name="stylesheet.generatedList">
 	<h1 class="documentFirstHeading">
 		<bean:message key="label.stylesheet.generated"/>
 	</h1>
@@ -34,7 +34,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<logic:iterate indexId="index" id="schema" name="stylesheet.stylesheetList" scope="session" property="ddStylesheets" type="Schema">
+				<logic:iterate indexId="index" id="schema" name="stylesheet.generatedList" scope="session" property="ddStylesheets" type="Schema">
 				<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
 					<td align="center">
 						<html:link action="/schemaStylesheets" paramId="schema" paramName="schema" paramProperty="schema">
