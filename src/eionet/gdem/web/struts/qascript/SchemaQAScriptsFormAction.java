@@ -70,6 +70,8 @@ public class SchemaQAScriptsFormAction  extends Action {
 			SchemaManager sm = new SchemaManager();
 			st = sm.getSchemasWithQAScripts(user_name, schemaId);
 
+			QAScriptListLoader.loadQAScriptList(httpServletRequest, false);
+
 		} catch (DCMException e) {
 			e.printStackTrace();
 			_logger.error("Error getting schema QA scripts",e);

@@ -98,14 +98,22 @@ public class SaveHostAction extends BaseAction {
 	
 	private boolean checkConnection(String url, String username, String password) {
 		boolean result=false;
+		InputFile src = null;
 		try {
-			InputFile src = new InputFile(url);
+			src = new InputFile(url);
 			src.setAuthentication(Utils.getEncodedAuthentication(username, password));
 			src.setTrustedMode(false);
 			src.getSrcInputStream();
 			result=true;
 		} catch(Exception e) {
 			_logger.error("", e);
+		}
+		finally{
+			if (src!=null){
+				try{
+					src.close();
+				}catch(Exception e){};
+			}			
 		}
 		return result;
 	}

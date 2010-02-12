@@ -82,7 +82,7 @@ public class ExcelToMultipleXML {
 			result.setStatusCode(ConversionResultDto.STATUS_ERR_VALIDATION);
 			result.setStatusDescription("Empty URL.");
 		} else {
-			InputFile inputFile;
+			InputFile inputFile=null;
 			try {
 				inputFile = new InputFile(fileUrl);
 				inputFile.setTrustedMode(true);
@@ -96,6 +96,13 @@ public class ExcelToMultipleXML {
 				result.setStatusDescription(e.getMessage());
 				LOGGER.error("", e);
 			}
+			finally{
+				try {
+					if (inputFile != null)
+						inputFile.close();
+				} catch (Exception e) {	}				
+			}
+			
 		}
 
 		return result;

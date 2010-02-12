@@ -113,14 +113,12 @@ public class ValidationService {
 	 */
 	public String validateSchema (String srcUrl, String schema) throws DCMException {
 		InputFile src=null;
-		InputStream src_stream = null;
 		uriXml= srcUrl;	
 		try{
 			src = new InputFile(srcUrl);
 			src.setTrustedMode(trustedMode);
 			src.setAuthentication(ticket);
-			src_stream = src.getSrcInputStream();
-			return validateSchema(src_stream, schema);
+			return validateSchema(src.getSrcInputStream(), schema);
 		}
 		catch (MalformedURLException mfe ) {
 			throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED);
@@ -131,9 +129,9 @@ public class ValidationService {
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		finally{
-			if (src_stream!=null){
+			if (src!=null){
 				try{
-					src_stream.close();
+					src.close();
 				}catch(Exception e){};
 			}
 		}
@@ -243,21 +241,32 @@ public class ValidationService {
 	 */
 	private String getDefaultNamespace() throws IOException, ParserConfigurationException, FactoryConfigurationError, SAXException{
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		InputFile src = new InputFile(uriXml);
-		src.setTrustedMode(trustedMode);
-		src.setAuthentication(ticket);
-		Document doc = builder.parse(src.getSrcInputStream());
-
-
-		Element root = doc.getDocumentElement();
-		String rootName = root.getTagName();
-
-		String schema = root.getAttribute("xsi:schemaLocation");
-
+		InputFile src = null;
 		String namespace=null;
-		if(rootName.indexOf(":")>0){
-			String attName1 = "xmlns:" + rootName.substring(0, rootName.indexOf(":")) ;
-			namespace = root.getAttribute(attName1);
+		try{
+			src = new InputFile(uriXml);
+			src.setTrustedMode(trustedMode);
+			src.setAuthentication(ticket);
+			Document doc = builder.parse(src.getSrcInputStream());
+
+
+			Element root = doc.getDocumentElement();
+			String rootName = root.getTagName();
+
+			String schema = root.getAttribute("xsi:schemaLocation");
+
+			if(rootName.indexOf(":")>0){
+				String attName1 = "xmlns:" + rootName.substring(0, rootName.indexOf(":")) ;
+				namespace = root.getAttribute(attName1);
+			}
+		}
+		finally{
+	    	if (src != null) {
+	    		try{
+	    			src.close();
+	    		
+	    		} catch (Exception e) {}
+			}			
 		}
 		return namespace;
 	}

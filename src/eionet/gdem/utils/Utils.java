@@ -129,26 +129,44 @@ public class Utils {
   /**
   * saving an URL stream to the specified text file
   */
-  public static String saveSrcFile(String srcUrl)throws IOException {
+	public static String saveSrcFile(String srcUrl)throws IOException {
 
-     URL url = new URL(srcUrl);
-     InputStream is = url.openStream();
 
-     String fileName=null;
-     String tmpFileName=Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + ".xml";
+		String fileName=null;
+		String tmpFileName=Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + ".xml";
+		InputStream is = null;
+		FileOutputStream fos= null;
+		
+		try{
 
-     File file =new File(tmpFileName);
-     FileOutputStream fos=new FileOutputStream(file);
+			URL url = new URL(srcUrl);
+			is = url.openStream();
+			File file =new File(tmpFileName);
+			fos=new FileOutputStream(file);
 
-      int bufLen = 0;
-      byte[] buf = new byte[1024];
+			int bufLen = 0;
+			byte[] buf = new byte[1024];
 
-      while ( (bufLen=is.read( buf ))!= -1 )
-        fos.write(buf, 0, bufLen );
+			while ( (bufLen=is.read( buf ))!= -1 )
+				fos.write(buf, 0, bufLen );
 
-      fileName=tmpFileName;
-      is.close();
-      fos.flush(); fos.close();
+			fileName=tmpFileName;
+		}
+		finally{
+			if(is!=null){
+				try{
+					is.close();					
+				}
+				catch(Exception e){}
+			}
+			if(fos!=null){
+				try{
+					fos.flush(); 
+					fos.close();
+				}
+				catch(Exception e){}
+			}
+		}
 
       return fileName;
 
@@ -403,10 +421,11 @@ public class Utils {
 	  public static byte[] fileToBytes(String fileName) throws GDEMException {
 
 	    ByteArrayOutputStream baos = null;
+	    FileInputStream fis = null;
 	    try {
 
 	      //log("========= open fis " + fileName);
-	      FileInputStream fis = new     FileInputStream(fileName);
+	      fis = new FileInputStream(fileName);
 	      //log("========= fis opened");
 
 	      baos = new ByteArrayOutputStream();
@@ -418,7 +437,6 @@ public class Utils {
 	     while ( (bufLen=fis.read( buf ))!= -1 )
 	          baos.write(buf, 0, bufLen );
 
-	      fis.close();
 
 	    } catch (FileNotFoundException fne) {
 			_logger.error("File not found " + fileName, fne);
@@ -426,6 +444,16 @@ public class Utils {
 	    } catch (Exception e) {
 			_logger.error("", e);
 	      throw new GDEMException("Exception " + e.toString(), e);
+	    }
+	    finally{
+	    	if(fis!=null){
+	    		try{
+	    		    fis.close();	    		    			
+	    		}
+	    		catch(Exception e){
+	    			
+	    		}
+	    	}
 	    }
 	      return baos.toByteArray();
 	  }
@@ -513,40 +541,51 @@ public class Utils {
 	}
 
 //	 Returns the contents of the file in a byte array.
-    public static byte[] getBytesFromFile(File file) throws IOException {
-        InputStream is = new FileInputStream(file);
+	public static byte[] getBytesFromFile(File file) throws IOException {
+		InputStream is = null;
+		byte[] bytes = null;
 
-        // Get the size of the file
-        long length = file.length();
+		try{
+			is = new FileInputStream(file);
+			// Get the size of the file
+			long length = file.length();
 
-        // You cannot create an array using a long type.
-        // It needs to be an int type.
-        // Before converting to an int type, check
-        // to ensure that file is not larger than Integer.MAX_VALUE.
-        if (length > Integer.MAX_VALUE) {
-            // File is too large
-        }
+			// You cannot create an array using a long type.
+			// It needs to be an int type.
+			// Before converting to an int type, check
+			// to ensure that file is not larger than Integer.MAX_VALUE.
+			if (length > Integer.MAX_VALUE) {
+				// File is too large
+			}
 
-        // Create the byte array to hold the data
-        byte[] bytes = new byte[(int)length];
+			// Create the byte array to hold the data
+			bytes = new byte[(int)length];
 
-        // Read in the bytes
-        int offset = 0;
-        int numRead = 0;
-        while (offset < bytes.length
-               && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
-            offset += numRead;
-        }
+			// Read in the bytes
+			int offset = 0;
+			int numRead = 0;
+			while (offset < bytes.length
+					&& (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
+				offset += numRead;
+			}
 
-        // Ensure all the bytes have been read in
-        if (offset < bytes.length) {
-            throw new IOException("Could not completely read file "+file.getName());
-        }
+			// Ensure all the bytes have been read in
+			if (offset < bytes.length) {
+				throw new IOException("Could not completely read file "+file.getName());
+			}
 
-        // Close the input stream and return bytes
-        is.close();
-        return bytes;
-    }
+		}
+		finally {
+			// Close the input stream and return bytes
+			if(is!=null){
+				try{
+					is.close();        			
+				}
+				catch(Exception e){}
+			}
+		}
+		return bytes;
+	}
 	/**
 	 *
 	 * @param date
@@ -916,13 +955,20 @@ public class Utils {
 
         md = MessageDigest.getInstance(algorithm);
         
-        BufferedInputStream in = new BufferedInputStream(new FileInputStream(f));
+        BufferedInputStream in = null;
 
         int theByte = 0;
-        while ((theByte = in.read()) != -1) {
-          md.update((byte) theByte);
+        try{
+        	in = new BufferedInputStream(new FileInputStream(f));
+        	while ((theByte = in.read()) != -1) {
+        		md.update((byte) theByte);
+        	}
         }
-        in.close();
+        finally{
+        	try{
+        		in.close();
+        	}catch(Exception e){}
+        }
         dstBytes = md.digest();
         md.reset();
         

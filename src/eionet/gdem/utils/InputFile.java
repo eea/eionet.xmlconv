@@ -46,10 +46,11 @@ import eionet.gdem.services.db.dao.IHostDao;
  * Several commmone class for reading files from url
  * Is able to read the host credentials from database
  * and pass the basic auth to remote server for files with limited access
+ * 
+ * NB! Always call close() method in finally block, otherwise the InputStream stays open 
  */
 public class InputFile  {
 
-	private static LoggerIF _logger;
 	private String ticket = null;
 	private URL url=null;
 	private InputStream is = null;
@@ -58,8 +59,10 @@ public class InputFile  {
 	private String strFileName = null;
 	private String strHostName = null;
 	private String strFolderName = null;
+	boolean isClosed = false;
 	//instance = strHostName + strFolderName + "/" + strFileName 
 	private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
+	private static LoggerIF _logger = GDEMServices.getLogger();
 
 
 
@@ -70,7 +73,6 @@ public class InputFile  {
 	 * @throws MalformedURLException
 	 */
 	public InputFile(String str_url) throws IOException, MalformedURLException{
-		_logger = GDEMServices.getLogger();
 
 		// Java's URL class doesn't escape certain characters with % +hexidecimal digits.
 		// This is a bug in the class java.net.URL.
@@ -97,21 +99,33 @@ public class InputFile  {
 
 		fillInputStream();
 
+		FileOutputStream fos = null;
 		String fileName=null;
 		String tmpFileName=Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + ".xml";
 
-		File file =new File(tmpFileName);
-		FileOutputStream fos=new FileOutputStream(file);
+		try{
+			File file =new File(tmpFileName);
+			fos=new FileOutputStream(file);
 
-		int bufLen = 0;
-		byte[] buf = new byte[1024];
+			int bufLen = 0;
+			byte[] buf = new byte[1024];
 
-		while ( (bufLen=is.read( buf ))!= -1 )
-			fos.write(buf, 0, bufLen );
+			while ( (bufLen=is.read( buf ))!= -1 )
+				fos.write(buf, 0, bufLen );
 
-		fileName=tmpFileName;
-		is.close();
-		fos.flush(); fos.close();
+			fileName=tmpFileName;
+		}
+		finally{
+			close();
+			if(fos!=null){
+				try{
+					fos.flush(); 
+					fos.close();
+				}
+				catch(Exception e){}
+			}
+		}
+		
 
 		return fileName;
 
@@ -122,11 +136,13 @@ public class InputFile  {
 	 */
 	public void close(){
 		try{
-			if (is!=null)
+			if (is!=null && !isClosed){
 				is.close();
+				isClosed=true;
+			}
 		}
 		catch(Exception e){
-			_logger.error("Closing inputstream in FileInput: " + e.toString());
+			_logger.warning("Closing inputstream in FileInput: " + e.toString());
 		}
 
 	}
@@ -260,6 +276,7 @@ public class InputFile  {
 	 */
 	private void fillInputStream() throws IOException{
 
+		isClosed=false;
 		URLConnection uc = url.openConnection();
 
 		ticket = getAuthentication();
@@ -358,6 +375,7 @@ public class InputFile  {
 
 	public static void main(String args[]) {
 		String str_url = "http://localhost:8080/xmlconv/tmp/IrelandePERD a&ta.xml?sss";
+		InputFile in =null;
 		try{
 			/*
 			URI _uri = new URI(str_url);
@@ -368,7 +386,7 @@ public class InputFile  {
 			System.out.println("authority" + uri.getAuthority());
 			System.out.println("file" + uri.getFile());
 			 */		
-			InputFile in = new InputFile(str_url);
+			in = new InputFile(str_url);
 			System.out.println(in.getHostName());
 			System.out.println(in.getFolderName());
 			System.out.println(in.getFileName());
@@ -385,6 +403,14 @@ public class InputFile  {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally{
+			if (in!=null){
+				try{
+					in.close();
+				}
+				catch(Exception e){}
+			}
 		}
 	}
 }

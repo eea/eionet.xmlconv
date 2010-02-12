@@ -51,8 +51,8 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
 	protected void runQuery(XQScript script, OutputStream result) throws GDEMException {
 
 		FileInputStream fisXsl = null;
-		InputStream streamXml = null;
 		String tmpXslFile = null;
+		InputFile src = null;
 
 	    try {
 	    	
@@ -67,15 +67,15 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
 		    	throw new GDEMException("XQuery engine could not find script source or script file name!");
 		    }
 		    //Build InputSource for xml file
-		    InputFile src = new InputFile(script.getSrcFileUrl());
-		    streamXml = src.getSrcInputStream();
+		    src = new InputFile(script.getSrcFileUrl());
+		    //streamXml = src.getSrcInputStream();
 		    
 		    //execute xsl transformation
 
 		    //XSLTransformer transformer = new XSLTransformer();
 		    //transformer.transform(tmpXslFile==null?script.getScriptFileName():tmpXslFile, new InputSource(fisXsl), result, parseParams(script.getParams()));
 			
-		    ConvertContext ctx = new ConvertContext(streamXml, tmpXslFile==null?script.getScriptFileName():tmpXslFile, result,null);
+		    ConvertContext ctx = new ConvertContext(src.getSrcInputStream(), tmpXslFile==null?script.getScriptFileName():tmpXslFile, result,null);
 			ConvertStartegy cs = new XMLConverter();
 			
 			HashMap params = src.getCdrParams();
@@ -94,16 +94,15 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
 	        throw new GDEMException (e.getMessage());
 	    }
 	    finally{
+	    	if (src != null) {
+	    		try{
+	    			src.close();
+	    		
+	    		} catch (Exception e) {}
+			}
 	  	  if(fisXsl!=null){
 		        try {
 		        	fisXsl.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-		  }
-	  	  if(streamXml!=null){
-		        try {
-		        	streamXml.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

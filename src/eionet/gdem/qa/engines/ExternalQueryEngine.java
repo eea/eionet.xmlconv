@@ -49,7 +49,8 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
 	protected void runQuery(XQScript script, OutputStream result) throws GDEMException {
 
 		String tmpScriptFile = null;
-
+		InputFile src =null;
+		
 	    try {
 	    	
 	    	//build InputSource for xsl 
@@ -64,7 +65,7 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
 		    	throw new GDEMException("XQuery engine could not find script source or script file name!");
 		    }
 		    //Build InputSource for xml file
-		    InputFile src = new InputFile(script.getSrcFileUrl());
+		    src = new InputFile(script.getSrcFileUrl());
 		    String srcFile = src.saveSrcFile();
 		    
 		    InputFile srcOrigFile = new InputFile(script.getOrigFileUrl());
@@ -116,6 +117,12 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
 	    	catch(Exception e){
 	    		_logger.warning(e);
 	    	}
+	    	if (src != null) {
+	    		try{
+	    			src.close();
+	    		
+	    		} catch (Exception e) {}
+			}
 	    }
 
 	}

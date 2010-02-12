@@ -71,12 +71,10 @@ public class InputAnalyser
 	 */
 	public String parseXML(String srcUrl) throws DCMException{
 		InputFile src=null;
-		InputStream input = null;
 		try{
 			src = new InputFile(srcUrl);
 			src.setTrustedMode(true);
-			input = src.getSrcInputStream();
-			return parseXML(input);
+			return parseXML(src.getSrcInputStream());
 		} catch (MalformedURLException mfe ) {
 			//throw new GDEMException("Bad URL : " + mfe.toString());
 			throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED);
@@ -96,7 +94,7 @@ public class InputAnalyser
 
 		finally{
 			try{
-				if (input!=null) input.close();
+				if (src!=null) src.close();
 			}
 			catch(Exception e){}
 		}
