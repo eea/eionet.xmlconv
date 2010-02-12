@@ -1114,16 +1114,18 @@ public class SchemaManager {
 			// retrive conversions for DD tables
 			List crXmlFiles = getXmlFilesBySchema(schema);
 
-			for (Object crXmlFile : crXmlFiles) {
-				Hashtable xmlfile = (Hashtable) crXmlFile;
-				String url = (String) xmlfile.get("uri");
-				String lastModified = (String) xmlfile.get("lastModified");
+			if(crXmlFiles!=null){
+				for (Object crXmlFile : crXmlFiles) {
+					Hashtable xmlfile = (Hashtable) crXmlFile;
+					String url = (String) xmlfile.get("uri");
+					String lastModified = (String) xmlfile.get("lastModified");
 
-				CrFileDto cf = new CrFileDto();
-				cf.setUrl(url);
-				cf.setLastModified(lastModified);
+					CrFileDto cf = new CrFileDto();
+					cf.setUrl(url);
+					cf.setLastModified(lastModified);
 
-				files.add(cf);
+					files.add(cf);
+				}
 			}
 		} catch (Exception e) {
 			_logger.error("Error getting XML files from CR for schema",e);
