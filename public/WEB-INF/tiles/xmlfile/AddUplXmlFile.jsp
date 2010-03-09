@@ -24,7 +24,7 @@
 			        </label>
 			      </td>
 			      <td>
-			        <html:file property="xmlfile" styleId="fileXml" />
+			        <html:file property="xmlfile" styleId="fileXml" size="68" />
 			      </td>
 			    </tr>
 				<tr>

@@ -12,7 +12,7 @@
 		<%-- include Error display --%>
 		<tiles:insert definition="Error" />
 		
-			<html:form action="/editUplXmlFile" method="post">
+			<html:form action="/editUplXmlFile" method="post" enctype="multipart/form-data">
 			  <table class="formtable">
 				<col class="labelcol"/>
 				<col class="entrycol"/>
@@ -23,10 +23,26 @@
 				    </label>
 			      </td>
 			      <td>
-						<a  href="<bean:write name="EditUplXmlFileForm" property="xmlfile" />" title="<bean:write name="EditUplXmlFileForm" property="xmlfile" />">						
-							<bean:write name="EditUplXmlFileForm" property="xmlfile" />
-						</a>&#160;		        	  		        
+						<a  href="<bean:write name="EditUplXmlFileForm" property="xmlFilePath" /><bean:write name="EditUplXmlFileForm" property="xmlFileName" />" title="<bean:write name="EditUplXmlFileForm" property="xmlFileName" />">						
+							<bean:write name="EditUplXmlFileForm" property="xmlFileName" />
+						</a>&#160;&#160;		        	  		        
+						(<bean:message key="label.lastmodified"/>: 
+						<logic:present name="EditUplXmlFileForm" property="lastModified">
+							<bean:write property="lastModified" name="EditUplXmlFileForm"/>
+						</logic:present>
+						<logic:equal name="fileNotExists" value=""  name="EditUplXmlFileForm" property="lastModified" >
+							<span style="color:red"><bean:message key="label.fileNotFound"/></span>
+						</logic:equal>
+						)
 						<html:hidden  property="xmlfileId" />
+						<html:hidden  property="xmlFileName" />
+			      </td>
+			    </tr>
+				<tr>
+  				  <td>
+			      </td>
+			      <td>
+			        <html:file property="xmlFile" styleId="fileXml" size="68" />
 			      </td>
 			    </tr>
 			    <tr>
@@ -37,21 +53,6 @@
 			      </td>
 			      <td>
 			        <html:textarea property="title"  rows="3" cols="30" style="width:400px" styleId="txtTitle"/>
-			      </td>
-			    </tr>
-				<tr class="zebraeven">
-  				  <td>
-  				  	<label class="question">
-				        <bean:message key="label.lastmodified"/>
-				    </label>
-			      </td>
-			      <td>
-					<logic:notEqual name="fileExists" value=""  name="EditUplXmlFileForm" property="lastModified" >
-						<bean:write name="EditUplXmlFileForm" property="lastModified" />
-					</logic:notEqual>
-					<logic:equal name="fileNotExists" value=""  name="EditUplXmlFileForm" property="lastModified" >
-						<span style="color:red"><bean:message key="label.fileNotFound"/></span>
-					</logic:equal>
 			      </td>
 			    </tr>
 			    <tr>
