@@ -8,6 +8,8 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 import eionet.gdem.Properties;
+import eionet.gdem.test.TestConstants;
+import eionet.gdem.test.TestUtils;
 
 /**
  * This is a class for unit testing the <code>eionet.gdem.utils.Utils</code> class.
@@ -37,5 +39,19 @@ public class UtilsTest extends TestCase {
 		assertEquals(Utils.getFormat(date, Properties.dateFormatPattern),Utils.getDate(date));
 		assertEquals(Utils.getFormat(date, Properties.timeFormatPattern),Utils.getDateTime(date));
 		
+	}
+	
+	public void testResourceExists(){
+		boolean b1 = Utils.resourceExists(TestUtils.getSeedURL(TestConstants.SEED_XLIFF_XML,this));
+		assertTrue(b1);
+
+		boolean b2 = Utils.resourceExists(TestUtils.getSeedURL(TestConstants.SEED_XLIFF_XML,this).concat(".tmp"));
+		assertFalse(b2);
+
+		boolean b3 = Utils.resourceExists("https://svn.eionet.europa.eu");
+		assertTrue(b3);
+
+		boolean b4 = Utils.resourceExists("https://svn.eionet.europa.eu/thereisnoschema");
+		assertFalse(b4);
 	}
 }

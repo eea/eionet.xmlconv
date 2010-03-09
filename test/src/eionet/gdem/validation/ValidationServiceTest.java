@@ -133,4 +133,18 @@ public class ValidationServiceTest extends DBTestCase{
 		//check if errors list is empty
 		assertTrue(validService.getErrorList()==null || validService.getErrorList().size()==0);
 	}
+	/**
+	 *  Try to validate XML against XML schema that is not available
+	 * 
+	 * @throws Exception
+	 */
+	public void testXMLAgainstUnavailableSchema() throws Exception{
+		ValidationService validService = new ValidationService(true);
+		String s = validService.validateSchema(TestUtils.getSeedURL(TestConstants.SEED_XLIFF_XML,this),"https://svn.eionet.europa.eu/thereisnoschema");
+		
+		//System.out.println(s);
+
+		assertTrue(s.startsWith("<div"));
+		assertTrue(s.indexOf("ERROR")>0);
+	}
 }
