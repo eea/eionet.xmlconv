@@ -44,7 +44,8 @@ public class EditUplXmlFileFormAction extends Action {
 			UplXmlFile xmlfile = fm.getUplXmlFileById(xmlfileId);
 
 			form.setXmlfileId(xmlfile.getId());
-			form.setXmlfile(httpServletRequest.getContextPath() + "/" + Properties.xmlfileFolder+ "/" + xmlfile.getFileName());
+			form.setXmlFileName(xmlfile.getFileName());
+			form.setXmlFilePath(httpServletRequest.getContextPath() + "/" + Properties.xmlfileFolder+ "/");
 
 			form.setTitle(xmlfile.getTitle());
 			form.setLastModified(xmlfile.getLastModified());

@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
+import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.dcm.business.UplXmlFileManager;
 import eionet.gdem.exceptions.DCMException;
@@ -36,7 +37,9 @@ public class EditUplXmlFileAction extends Action {
 		EditUplXmlFileForm form = (EditUplXmlFileForm) actionForm;
 		String xmlfileId = form.getXmlfileId();
 		String title = form.getTitle();
-
+		FormFile xmlfile = form.getXmlFile();
+		String xmlFileName = form.getXmlFileName();
+		
 		if (isCancelled(httpServletRequest)) {
 			return actionMapping.findForward("success");
 		}
@@ -45,7 +48,7 @@ public class EditUplXmlFileAction extends Action {
 
 		try {
 			UplXmlFileManager fm = new UplXmlFileManager();
-			fm.updateUplXmlFile(user, xmlfileId, title);
+			fm.updateUplXmlFile(user, xmlfileId, title, xmlFileName, xmlfile);
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplXmlFile.updated"));
 		} catch (DCMException e) {
 			e.printStackTrace();

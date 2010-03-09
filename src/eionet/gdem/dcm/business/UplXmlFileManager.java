@@ -4,9 +4,12 @@
 package eionet.gdem.dcm.business;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
@@ -63,20 +66,11 @@ public class UplXmlFileManager {
 		try {
 			String fileName = xmlfile.getFileName();
 
-			if (uplXmlFileDao.checkUplXmlFile(fileName)) {				
+			if (fileExists(fileName)) {				
 				throw new DCMException(BusinessConstants.EXCEPTION_XMLFILE_FILE_EXISTS);
 			}
 			//write XML file into filesystem
-			InputStream in = xmlfile.getInputStream();
-			String filepath = new String(Properties.xmlfileFolderPath + File.separatorChar + xmlfile.getFileName());
-			OutputStream w = new FileOutputStream(filepath);
-			int bytesRead = 0;
-			byte[] buffer = new byte[8192];
-			while ((bytesRead = in.read(buffer, 0, 8192)) != -1) {
-				w.write(buffer, 0, bytesRead);
-			}
-			w.close();
-			in.close();
+			storeXmlFile(xmlfile, fileName);
 			xmlfile.destroy();
 
 			//store metadata in DB
@@ -148,7 +142,7 @@ public class UplXmlFileManager {
 	 * @throws DCMException 	If database or file deleting operation fails 
 	 */
 
-	public void updateUplXmlFile(String user, String xmlFileId, String title) throws DCMException {
+	public void updateUplXmlFile(String user, String xmlFileId, String title, String curFileName, FormFile file) throws DCMException {
 
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_XMLFILE_PATH, "u")) {
@@ -163,6 +157,19 @@ public class UplXmlFileManager {
 		}
 
 		try {
+			String fileName = file.getFileName().trim();
+			// upload file
+			if (!Utils.isNullStr(fileName)) {
+				if (Utils.isNullStr(curFileName)) {
+					// check if file exists
+					if (fileExists(fileName)) {
+						throw new DCMException(BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS);
+					}
+				}
+				//write XML file into filesystem
+				storeXmlFile(file, curFileName);
+				file.destroy();
+			}
 			//update metadata in DB
 			uplXmlFileDao.updateUplXmlFile(xmlFileId, title);
 
@@ -267,6 +274,52 @@ public class UplXmlFileManager {
 			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 		}
 		return xh;
+
+	}
+	/**
+	 * Checks if the xml file with the given filename exists whether in db or in
+	 * fs
+	 * 
+	 * @param fileName
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean fileExists(String fileName) throws SQLException {
+
+		if (uplXmlFileDao.checkUplXmlFile(fileName)) {
+			// file name exists in database
+			return true;
+		}
+
+		File file = new File(Properties.xmlfileFolder, fileName);
+
+		if (file == null) {
+			return false;
+		}
+
+		return file.exists();
+
+	}
+	/**
+	 * Stores the xml file into filesystem
+	 * @param file
+	 * @param fileName
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public void storeXmlFile(FormFile file, String fileName) throws FileNotFoundException, IOException {
+
+		InputStream in = file.getInputStream();
+		String filepath = new String(Properties.xmlfileFolderPath + "/" + fileName);
+		OutputStream w = new FileOutputStream(filepath);
+		int bytesRead = 0;
+		byte[] buffer = new byte[8192];
+		while ((bytesRead = in.read(buffer, 0, 8192)) != -1) {
+			w.write(buffer, 0, bytesRead);
+		}
+		w.close();
+		in.close();
+		file.destroy();
 
 	}
 

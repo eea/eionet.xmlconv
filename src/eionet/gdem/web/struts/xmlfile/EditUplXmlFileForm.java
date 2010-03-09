@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
 
 /**
  * ActionForm for editing XML file metadata  
@@ -18,10 +19,22 @@ import org.apache.struts.action.ActionMapping;
 
 public class EditUplXmlFileForm extends ActionForm {
 
-	private String xmlfile;
+	private String xmlFileName;
+	private String xmlFilePath;
 	private String xmlfileId;
 	private String title;
 	private String lastModified;
+	private FormFile xmlFile;
+
+
+	public FormFile getXmlFile() {
+		return xmlFile;
+	}
+
+
+	public void setXmlFile(FormFile xmlFile) {
+		this.xmlFile = xmlFile;
+	}
 
 
 	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
@@ -30,9 +43,11 @@ public class EditUplXmlFileForm extends ActionForm {
 
 
 	public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
-		xmlfile = null;
+		xmlFileName = null;
+		xmlFilePath = null;
 		xmlfileId = null;
 		title = null;
+		xmlFile = null;
 	}
 
 
@@ -56,13 +71,13 @@ public class EditUplXmlFileForm extends ActionForm {
 	}
 
 
-	public String getXmlfile() {
-		return xmlfile;
+	public String getXmlFileName() {
+		return xmlFileName;
 	}
 
 
-	public void setXmlfile(String xmlfile) {
-		this.xmlfile = xmlfile;
+	public void setXmlFileName(String xmlFileName) {
+		this.xmlFileName = xmlFileName;
 	}
 
 
@@ -73,6 +88,15 @@ public class EditUplXmlFileForm extends ActionForm {
 
 	public void setLastModified(String lastModified) {
 		this.lastModified = lastModified;
+	}
+
+
+	public void setXmlFilePath(String xmlFilePath) {
+		this.xmlFilePath = xmlFilePath;
+	}
+
+	public String getXmlFilePath() {
+		return xmlFilePath;
 	}
 
 }
