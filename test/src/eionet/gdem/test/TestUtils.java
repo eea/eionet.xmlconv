@@ -37,6 +37,7 @@ public class TestUtils {
 		Properties.metaXSLFolder = obj.getClass().getClassLoader().getResource("dcm").getFile();
 		Properties.schemaFolder = obj.getClass().getClassLoader().getResource("schema").getFile();
 		Properties.queriesFolder = obj.getClass().getClassLoader().getResource("queries").getFile();
+		Properties.xmlfileFolderPath = obj.getClass().getClassLoader().getResource("xmlfile").getFile();
 	}
 
 	/**
