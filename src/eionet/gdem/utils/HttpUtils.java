@@ -27,6 +27,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.HeadMethod;
 
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
@@ -80,5 +81,39 @@ public class HttpUtils {
         }  
     	return responseBody;
     }
+	
+	/**
+	 * Method checks whether the resource behind the given URL exist.
+	 * The method calls HEAD request and if the resonse code is 200, then returns true.
+	 * If exception is thrown or response code is something else, then the result is false.
+	 * 
+	 * @param url
+	 * @return
+	 */
+	public static boolean urlExists(String url){
+		
+		
+		HttpClient client = new HttpClient();
 
+		// 	Create a method instance.
+		HeadMethod method = new HeadMethod(url);
+    
+		try {
+      // 	Execute the method.
+			int statusCode = client.executeMethod(method);
+
+			return statusCode == HttpStatus.SC_OK;
+		} catch (HttpException e) {
+			_logger.error("Fatal protocol violation: " + e.getMessage());
+			e.printStackTrace();
+			return false;
+		} catch (IOException e) {
+			_logger.error("Fatal transport error: " + e.getMessage());
+			e.printStackTrace();
+			return false;
+		} finally {
+    // 	Release the connection.
+			method.releaseConnection();
+		}
+	}
 }

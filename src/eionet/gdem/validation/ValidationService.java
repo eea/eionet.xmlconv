@@ -35,7 +35,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.struts.action.ActionMessage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.ErrorHandler;
@@ -156,7 +155,7 @@ public class ValidationService {
 
 			reader.setFeature("http://xml.org/sax/features/namespaces", true);
 			reader.setFeature("http://xml.org/sax/features/namespace-prefixes",true);
-			reader.setFeature("http://apache.org/xml/features/continue-after-fatal-error",true);
+			reader.setFeature("http://apache.org/xml/features/continue-after-fatal-error",false);
 			
 			InputAnalyser inputAnalyser = new InputAnalyser();
 			inputAnalyser.parseXML(uriXml);
@@ -193,6 +192,10 @@ public class ValidationService {
 			}
 			else{
 				return GErrorHandler.formatResultText("WARNING: Could not validate XML file. Unable to locate XML Schema reference.", null);				
+			}
+			//if schema is not available, then do not parse the XML and throw error
+			if(!Utils.resourceExists(getValidatedSchema())){
+				return GErrorHandler.formatResultText("ERROR: Failed to read schema document from the following URL: " + getValidatedSchema(), null);								
 			}
 			if(errHandler instanceof GErrorHandler)
 				((GErrorHandler)errHandler).setSchema(getOriginalSchema());
@@ -387,4 +390,5 @@ public class ValidationService {
 		}
 
 	}
+
 }

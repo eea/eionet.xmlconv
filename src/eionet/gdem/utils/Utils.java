@@ -35,6 +35,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -1002,4 +1004,30 @@ public class Utils {
         }
         return defaultExt;
     }
+    
+    /**
+     * Utility method for checking whether the resource exists.
+     * The resource can be web or file system resource that matches the URI with "http", "https" or "file" schemes
+     * Returns false, if the resource does not exist
+     * 
+     * @param strUri
+     * @return
+     */
+    public static boolean resourceExists(String strUri){
+    	try {
+			URI uri = new URI(strUri);
+			String scheme = uri.getScheme();
+			if(scheme.startsWith("http")){
+				return HttpUtils.urlExists(strUri);
+			}
+			else if(scheme.equals("file")){
+				File f = new File(uri.getPath());
+				return f.exists();
+			}
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return false;
+	}
 }
