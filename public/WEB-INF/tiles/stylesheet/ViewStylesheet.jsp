@@ -111,10 +111,5 @@
 		    </tr>
 		  </table>
       	<logic:present name="stylesheetForm" property="xslFileName">
-      		<pre>
-	        	<bean:write name="stylesheetForm" property="xslContent"/>
-	        </pre>
+      		<pre><bean:write name="stylesheetForm" property="xslContent"/></pre>
 		</logic:present>
-
-		
-
