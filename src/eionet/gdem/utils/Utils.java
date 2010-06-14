@@ -477,13 +477,13 @@ public class Utils {
 	 *
 	 * @return value	true, if the list does not contain any String values, otherwise true
 	 */
-	public static boolean isEmptyArrayList(ArrayList list){
+	public static boolean isEmptyArrayList(List<String> list){
 		boolean ret =true;
 		if (list == null)return ret;
         if (list.size()==0) return ret;
 
         for (int i=0; i<list.size();i++){
-        	String str_value = (String)list.get(i);
+        	String str_value = list.get(i);
         	if (!Utils.isNullStr(str_value)) return false;
         }
 
