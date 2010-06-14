@@ -21,11 +21,12 @@
  * Original Code: Enriko Käsper (TietoEnator)
  */
 
-package eionet.gdem.conversion.excel;
+package eionet.gdem.conversion.excel.writer;
 
 import java.io.OutputStream;
 
 import eionet.gdem.GDEMException;
+import eionet.gdem.conversion.excel.ExcelStyleIF;
 
 /**
 * The main class, which is calling POI HSSF methods for creating Excel fiile and adding data into it

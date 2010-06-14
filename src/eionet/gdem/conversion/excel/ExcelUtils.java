@@ -28,6 +28,9 @@ import java.io.InputStream;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import eionet.gdem.conversion.SourceReaderIF;
+import eionet.gdem.conversion.excel.reader.ExcelReader;
+import eionet.gdem.conversion.excel.writer.ExcelConversionHandler;
+import eionet.gdem.conversion.excel.writer.ExcelConversionHandlerIF;
 
 public class ExcelUtils {
 

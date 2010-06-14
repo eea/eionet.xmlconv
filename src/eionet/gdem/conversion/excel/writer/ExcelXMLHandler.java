@@ -21,11 +21,14 @@
  * Original Code: Enriko Käsper (TietoEnator)
  */
 
-package eionet.gdem.conversion.excel;
+package eionet.gdem.conversion.excel.writer;
 
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
+
+import eionet.gdem.conversion.excel.ExcelStyleIF;
+import eionet.gdem.conversion.excel.ExcelUtils;
 
 
 /**

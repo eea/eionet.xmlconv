@@ -21,7 +21,7 @@
  * Original Code: Enriko Käsper (TietoEnator)
  */
 
-package eionet.gdem.conversion.excel;
+package eionet.gdem.conversion.excel.reader;
 
 import java.io.File;
 import java.io.IOException;

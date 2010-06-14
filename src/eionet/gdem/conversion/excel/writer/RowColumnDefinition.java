@@ -19,7 +19,7 @@
  * Enriko Käsper, Tieto Estonia
  */
 
-package eionet.gdem.conversion.excel;
+package eionet.gdem.conversion.excel.writer;
 
 /**
  * @author Enriko Käsper, Tieto Estonia

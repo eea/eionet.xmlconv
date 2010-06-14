@@ -21,7 +21,7 @@
  * Original Code: Enriko Käsper (TietoEnator)
  */
 
-package eionet.gdem.conversion.excel;
+package eionet.gdem.conversion.excel.writer;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -36,6 +36,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import eionet.gdem.GDEMException;
+import eionet.gdem.conversion.excel.ExcelStyleIF;
 
 /**
 * The main class, which is calling POI HSSF methods for creating Excel file and adding data into it
@@ -206,15 +207,15 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
      if (isNumber){
        if (number_value!=null)
          _cell.setCellValue(number_value.doubleValue());
-       _cell.setCellType(_cell.CELL_TYPE_NUMERIC);
+       _cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
      }
      else if (isBoolean){
        if (boolean_value!=null)
          _cell.setCellValue(boolean_value.booleanValue());
-       _cell.setCellType(_cell.CELL_TYPE_BOOLEAN);
+       _cell.setCellType(HSSFCell.CELL_TYPE_BOOLEAN);
      }
      else{
-       _cell.setCellType(_cell.CELL_TYPE_STRING);
+       _cell.setCellType(HSSFCell.CELL_TYPE_STRING);
        _cell.setEncoding(HSSFCell.ENCODING_UTF_16 );//
        _cell.setCellValue(str_value);
      }
