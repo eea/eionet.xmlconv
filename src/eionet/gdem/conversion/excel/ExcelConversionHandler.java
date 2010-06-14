@@ -25,8 +25,8 @@ package eionet.gdem.conversion.excel;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -38,9 +38,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import eionet.gdem.GDEMException;
 
 /**
-* The main class, which is calling POI HSSF methods for creating Excel fiile and adding data into it
+* The main class, which is calling POI HSSF methods for creating Excel file and adding data into it
 * works together with ExcelXMLHandler
-* @author Enriko K�sper
+* @author Enriko Käsper
 */
 
 public class ExcelConversionHandler implements ExcelConversionHandlerIF
@@ -53,10 +53,9 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
   private int currentRow=0;
   private int currentCell=0;
 
-  private Vector styles=null;
-  private HashMap cell_style_map=null;
-  private Vector columns=null;
-  private Vector rows=null;
+  private List<ExcelStyleIF> styles=null;
+  private List<RowColumnDefinition> columns=null;
+  private List<RowColumnDefinition> rows=null;
   
   public ExcelConversionHandler()
   {
@@ -72,30 +71,27 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
 
       if (sheetName==null) sheetName="Sheet" + String.valueOf(currentSheet+1);
       
-      HSSFSheet sheet = wb.createSheet(sheetName);
+      wb.createSheet(sheetName);
       currentSheet=wb.getNumberOfSheets()-1;
      // System.out.println("Worksheet" + currentSheet);
       currentRow=-1;
       currentCell=0;
-      columns = new Vector();
+      columns = new ArrayList<RowColumnDefinition>();
  }
-  public void addRow(String def_style, String def_type)
+  public void addRow(String defStyle, String defType)
   {
      HSSFSheet sh = wb.getSheetAt(currentSheet);
      currentRow++;
-     HSSFRow HSSFrow = sh.createRow(currentRow);
+     sh.createRow(currentRow);
      currentRow=sh.getPhysicalNumberOfRows()-1;
 
      currentCell=0;
 
-     if (rows==null) rows = new Vector();
+     if (rows==null) rows = new ArrayList<RowColumnDefinition>();
 
-     short idx = getStyleIdxByName(def_style, ExcelStyleIF.STYLE_FAMILY_TABLE_CELL);
-     Short short_idx=new Short(idx);
+     short idx = getStyleIdxByName(defStyle, ExcelStyleIF.STYLE_FAMILY_TABLE_CELL);
 
-     HashMap row = new HashMap();
-     row.put("data_type", def_type);
-     row.put("style", short_idx);
+     RowColumnDefinition row = new RowColumnDefinition(defType, idx, defStyle);
      rows.add(row);
 
   }
@@ -106,24 +102,20 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
         addRow(def_style, def_type);
       }
   }
-  public void addColumn(String def_style, String def_type)
+  public void addColumn(String defStyle, String defType)
   {
-     if (columns==null) columns = new Vector();
+     if (columns==null) columns = new ArrayList<RowColumnDefinition>();
 
-     short idx = getStyleIdxByName(def_style, ExcelStyleIF.STYLE_FAMILY_TABLE_CELL);
-     Short short_idx=new Short(idx);
+     short idx = getStyleIdxByName(defStyle, ExcelStyleIF.STYLE_FAMILY_TABLE_CELL);
 
-     HashMap column = new HashMap();
-     column.put("data_type", def_type);
-     column.put("style", short_idx);
-     column.put("style_name", def_style);
+     RowColumnDefinition column = new RowColumnDefinition(defType, idx, defStyle);
      columns.add(column);
   }
-  public void addColumns(String def_style, String def_type, int repeated)
+  public void addColumns(String defStyle, String defType, int repeated)
   {
       for (int i=0;i<repeated;i++)
       {
-        addColumn(def_style, def_type);
+        addColumn(defStyle, defType);
       }
   }
   public void addCell(String type, String str_value, String style_name){
@@ -135,7 +127,6 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
      Boolean boolean_value=null;
      boolean isNumber=false;
      boolean isBoolean=false;
-     boolean isDate=false;
      if (type==null){
        type=(String)getDefaultParams("data_type");
      }
@@ -234,9 +225,9 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
      }
      
      if (idx<0){
-       Short Short_idx=(Short)getDefaultParams("style");
-       if (Short_idx!=null){
-         idx=Short_idx.shortValue();
+       Short short_idx=(Short)getDefaultParams("style");
+       if (short_idx!=null){
+         idx=short_idx.shortValue();
        }
      }
 
@@ -251,8 +242,8 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
     	//character size
     	short size = (short)font.getFontHeightInPoints();
     	if (columns.size()>currentCell){
-    		HashMap column = (HashMap)columns.get(currentCell);
-    		String column_style_name = column.get("style_name")==null ? "" : (String)column.get("style_name");
+    		RowColumnDefinition column = columns.get(currentCell);
+    		String column_style_name = column.getStyleName()==null ? "" : column.getStyleName();
             ExcelStyleIF definedStyle=getStyleByName(column_style_name, ExcelStyleIF.STYLE_FAMILY_TABLE_CELL);
             if(definedStyle!=null)
             	colStyleWidth = definedStyle.getColumnWidth();
@@ -279,8 +270,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
 
   public void addStyle(ExcelStyleIF style){
      if (style==null) return;
-     if (styles==null) styles=new Vector();
-     if (cell_style_map==null) cell_style_map= new HashMap();
+     if (styles==null) styles=new ArrayList<ExcelStyleIF>();
 
      if (!styleExists(style))
         styles.add(style);
@@ -355,24 +345,26 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
     if (columns.size()<currentCell) return null;
 
     //Find default value defined at row level
-    HashMap row_map = (HashMap)rows.get(currentRow);
-    if (row_map.containsKey(param)){
-      Object value = row_map.get(param);
-      if (value!=null){
-        if (param.equals("style")){
-            Short short_value = (Short)value;
-            if (short_value.shortValue()>-1)
-              return row_map.get(param);
-        }
-        else
-          return row_map.get(param);
-      }
+    RowColumnDefinition rowDef = rows.get(currentRow);
+    if(param.equals("data_type")) {
+    	if(rowDef.getDataType()!=null){
+    		return rowDef.getDataType();
+    	}
     }
+    else if(param.equals("style")) {
+    	short idx = rowDef.getStyleIndex();
+    	if(idx>-1){
+    		return idx;
+    	}
+    }
+
     //Find default value defined at column level
-    HashMap col_map = (HashMap)columns.get(currentCell);
-    if (col_map.containsKey(param)){
-      if (col_map.get(param)!=null)
-        return col_map.get(param);
+    RowColumnDefinition colDef = (RowColumnDefinition)columns.get(currentCell);
+    if(param.equals("data_type")) {
+    	return colDef.getDataType();
+    }
+    else if(param.equals("style")) {
+    	return colDef.getStyleIndex();
     }
 
     return null;

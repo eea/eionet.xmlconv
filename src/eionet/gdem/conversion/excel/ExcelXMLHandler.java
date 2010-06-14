@@ -24,9 +24,6 @@
 package eionet.gdem.conversion.excel;
 
 
-import java.util.HashMap;
-import java.util.Vector;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -43,9 +40,6 @@ public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags{
    protected ExcelConversionHandlerIF excel;
 
   private StringBuffer fieldData = new StringBuffer(); // buffer for collecting characters
-
-  private HashMap cell=null;
-  private Vector cells=new Vector();//null;
 
   private String cell_value=null;
   private String cell_type=null;
