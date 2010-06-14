@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -38,7 +39,8 @@ import com.catcode.odf.OpenDocumentMetadata;
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.DDXMLConverter;
 import eionet.gdem.conversion.SourceReaderIF;
-import eionet.gdem.conversion.excel.DD_XMLInstance;
+import eionet.gdem.conversion.excel.reader.DDXmlElement;
+import eionet.gdem.conversion.excel.reader.DD_XMLInstance;
 import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
 
@@ -122,7 +124,7 @@ public class OdsReader implements SourceReaderIF {
 	 */
 	public void writeContentToInstance(DD_XMLInstance instance)
 			throws GDEMException {
-		Vector tables = instance.getTables();
+		List<DDXmlElement> tables = instance.getTables();
 		if (tables == null)
 			throw new GDEMException(
 					"could not find tables from DD instance file");
@@ -130,33 +132,33 @@ public class OdsReader implements SourceReaderIF {
 			return;
 
 		for (int i = 0; i < tables.size(); i++) {
-			Hashtable table = (Hashtable) tables.get(i);
-			String tbl_localname = (String) table.get("localName");
-			String tbl_name = (String) table.get("name");
-			String tbl_attrs = (String) table.get("attributes");
+			DDXmlElement table = tables.get(i);
+			String tblLocalName = table.getLocalName();
+			String tblName = table.getName();
+			String tblAttrs = table.getAttributes();
 
-			ArrayList list_tabledata = spreadsheet.getTableData(tbl_localname);
-			ArrayList list_metatabledata = getMetaTableData(tbl_localname);
+			List list_tabledata = spreadsheet.getTableData(tblLocalName);
+			List list_metatabledata = getMetaTableData(tblLocalName);
 
 			if (list_tabledata == null)
 				continue;
-			Vector elements = instance.getTblElements(tbl_name);
+			List<DDXmlElement> elements = instance.getTblElements(tblName);
 
-			setColumnMappings(spreadsheet.getTableHeader(tbl_localname),
+			setColumnMappings(spreadsheet.getTableHeader(tblLocalName),
 					elements, true);
 
 			if (list_metatabledata != null) {
-				setColumnMappings(getMetaTableHeader(tbl_localname), elements,
+				setColumnMappings(getMetaTableHeader(tblLocalName), elements,
 						false);
 			}
 
-			instance.writeTableStart(tbl_name, tbl_attrs);
-			instance.setCurRow(tbl_name);
+			instance.writeTableStart(tblName, tblAttrs);
+			instance.setCurRow(tblName);
 
 			// read data
 			// there are no data rows in the Excel file. We create empty table
 			// first_row = (first_row == last_row) ? last_row : first_row+1;
-			boolean emptySheet = spreadsheet.isEmptySheet(tbl_localname);
+			boolean emptySheet = spreadsheet.isEmptySheet(tblLocalName);
 
 			for (int j = 0; j < list_tabledata.size() || emptySheet; j++) {
 				ArrayList list_row = (ArrayList) list_tabledata.get(j);
@@ -170,17 +172,17 @@ public class OdsReader implements SourceReaderIF {
 
 				instance.writeRowStart();
 				for (int k = 0; k < elements.size(); k++) {
-					Hashtable elem = (Hashtable) elements.get(k);
-					String elem_name = (String) elem.get("name");
-					String elem_attributes = (String) elem.get("attributes");
-					Integer col_idx = (Integer) elem.get("col_idx");
-					Boolean main_table = (Boolean) elem.get("main_table");
+					DDXmlElement elem = elements.get(k);
+					String elem_name = elem.getName();
+					String elem_attributes = elem.getAttributes();
+					int colIndex = elem.getColIndex();
+					boolean isMainTable = elem.isMainTable();
 
 					String data = "";
-					if (col_idx != null && main_table != null && !emptySheet) {
-						data = (main_table.booleanValue()) ? getListStringValue(
-								list_row, col_idx)
-								: getListStringValue(list_metarow, col_idx);
+					if (colIndex > -1 && !emptySheet) {
+						data = (isMainTable) ? getListStringValue(
+								list_row, colIndex)
+								: getListStringValue(list_metarow, colIndex);
 					}
 					instance.writeElement(elem_name, elem_attributes, data);
 
@@ -189,7 +191,7 @@ public class OdsReader implements SourceReaderIF {
 				if (emptySheet)
 					break;
 			}
-			instance.writeTableEnd(tbl_name);
+			instance.writeTableEnd(tblName);
 		}
 
 	}
@@ -265,44 +267,44 @@ public class OdsReader implements SourceReaderIF {
 	 * finding these kind of sheets and parsing these in parallel with the main
 	 * sheet
 	 */
-	private ArrayList getMetaTableData(String main_sheet_name) {
-		return spreadsheet.getTableData(main_sheet_name
+	private List getMetaTableData(String mainSheetName) {
+		return spreadsheet.getTableData(mainSheetName
 				+ DDXMLConverter.META_SHEET_NAME_ODS);
 	}
 
-	private ArrayList getMetaTableHeader(String main_sheet_name) {
-		return spreadsheet.getTableHeader(main_sheet_name
+	private List getMetaTableHeader(String mainSheetName) {
+		return spreadsheet.getTableHeader(mainSheetName
 				+ DDXMLConverter.META_SHEET_NAME_ODS);
 	}
 
 	/*
 	 * Set mappings in case user has changed columns ordering
 	 */
-	private void setColumnMappings(ArrayList list_headerrow, Vector elements,
-			boolean main_table) {
+	private void setColumnMappings(List<String> listHeaderRow, List<DDXmlElement> elements,
+			boolean isMainTable) {
 		// read column header
 
 		for (int j = 0; j < elements.size(); j++) {
-			Hashtable elem = (Hashtable) elements.get(j);
-			String elem_localName = (String) elem.get("localName");
-			int k = list_headerrow.indexOf(elem_localName);
+			DDXmlElement elem = elements.get(j);
+			String elemLocalName = elem.getLocalName();
+			int k = listHeaderRow.indexOf(elemLocalName);
 
 			if (k > -1) {
-				elem.put("col_idx", new Integer(k));
-				elem.put("main_table", new Boolean(main_table));
+				elem.setColIndex(k);
+				elem.setMainTable(isMainTable);
 			}
 
 		}
 
 	}
 
-	private String getListStringValue(ArrayList list, Integer col_idx) {
+	private String getListStringValue(List<String> list, Integer colIdx) {
 
 		if (list == null)
 			return "";
-		if (list.size() < col_idx.intValue())
+		if (list.size() < colIdx)
 			return "";
-		String data = (String) list.get(col_idx.intValue());
+		String data = list.get(colIdx);
 		if (data == null)
 			return "";
 

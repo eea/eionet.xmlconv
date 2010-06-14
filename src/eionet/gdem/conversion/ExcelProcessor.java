@@ -32,9 +32,9 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.XMLReader;
 
 import eionet.gdem.GDEMException;
-import eionet.gdem.conversion.excel.ExcelConversionHandlerIF;
 import eionet.gdem.conversion.excel.ExcelUtils;
-import eionet.gdem.conversion.excel.ExcelXMLHandler;
+import eionet.gdem.conversion.excel.writer.ExcelConversionHandlerIF;
+import eionet.gdem.conversion.excel.writer.ExcelXMLHandler;
 
 
 /**

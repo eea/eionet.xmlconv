@@ -27,7 +27,7 @@ import java.io.InputStream;
 import java.util.Hashtable;
 
 import eionet.gdem.GDEMException;
-import eionet.gdem.conversion.excel.DD_XMLInstance;
+import eionet.gdem.conversion.excel.reader.DD_XMLInstance;
 
 /**
  *

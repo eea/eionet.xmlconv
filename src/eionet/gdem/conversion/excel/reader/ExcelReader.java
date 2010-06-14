@@ -27,8 +27,8 @@ package eionet.gdem.conversion.excel.reader;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -118,71 +118,69 @@ public class ExcelReader implements SourceReaderIF
       return null;
     }
   public void writeContentToInstance(DD_XMLInstance instance)throws GDEMException{
-    Vector tables = instance.getTables();
+    List<DDXmlElement> tables = instance.getTables();
     if (tables == null)
       throw new GDEMException("could not find tables from DD instance file");
     if (wb==null) return;
 
     for (int i=0;i<tables.size();i++){
-      Hashtable table = (Hashtable)tables.get(i);
-      String tbl_localname = (String)table.get("localName");
-      String tbl_name = (String)table.get("name");
-      String tbl_attrs = (String)table.get("attributes");
+      DDXmlElement table = tables.get(i);
+      String tblLocalname = table.getLocalName();
+      String tblName = table.getName();
+      String tblAttrs = table.getAttributes();
 
-      HSSFSheet sheet = getSheet(tbl_localname);
-      HSSFSheet meta_sheet = getMetaSheet(tbl_localname);
+      HSSFSheet sheet = getSheet(tblLocalname);
+      HSSFSheet metaSheet = getMetaSheet(tblLocalname);
 
       if (sheet == null) continue;
-      int first_row = sheet.getFirstRowNum();
-      int last_row = sheet.getLastRowNum();
-      HSSFRow row = sheet.getRow(first_row);
-      HSSFRow meta_row = null;
-      Vector elements = instance.getTblElements(tbl_name);
+      int firstRow = sheet.getFirstRowNum();
+      int lastRow = sheet.getLastRowNum();
+      HSSFRow row = sheet.getRow(firstRow);
+      HSSFRow metaRow = null;
+      List<DDXmlElement> elements = instance.getTblElements(tblName);
 
       setColumnMappings(row, elements, true);
 
-      if (meta_sheet!=null){
-        int meta_first_row = meta_sheet.getFirstRowNum();
-        int meta_last_row = meta_sheet.getLastRowNum();
-        meta_row = meta_sheet.getRow(first_row);
-        setColumnMappings(meta_row, elements, false);
+      if (metaSheet!=null){
+        metaRow = metaSheet.getRow(firstRow);
+        setColumnMappings(metaRow, elements, false);
       }
 
-      instance.writeTableStart(tbl_name, tbl_attrs);
-      instance.setCurRow(tbl_name);
+      instance.writeTableStart(tblName, tblAttrs);
+      instance.setCurRow(tblName);
       
-      Map elemDefs = instance.getElemDefs(tbl_localname);
+      Map<String, String> elemDefs = instance.getElemDefs(tblLocalname);
 
 //read data
       // there are no data rows in the Excel file. We create empty table
-      first_row = (first_row == last_row) ? last_row : first_row+1;
+      firstRow = (firstRow == lastRow) ? lastRow : firstRow+1;
 
-      for (int j=first_row;j<=last_row;j++){
-        row = (first_row==0) ? null:sheet.getRow(j);
-        meta_row = (meta_sheet!=null && first_row!=0) ? meta_sheet.getRow(j):null;
+      for (int j=firstRow;j<=lastRow;j++){
+        row = (firstRow==0) ? null:sheet.getRow(j);
+        metaRow = (metaSheet!=null && firstRow!=0) ? metaSheet.getRow(j):null;
         //don't convert empty rows.
         if (isEmptyRow(row)) continue;
 
         instance.writeRowStart();
         for (int k=0;k<elements.size();k++){
-          Hashtable elem = (Hashtable)elements.get(k);
-          String elem_name = (String)elem.get("name");
-          String elem_local_name = (String)elem.get("localName");
-          String elem_attributes = (String)elem.get("attributes");
-          Integer col_idx = (Integer)elem.get("col_idx");
-          Boolean main_table = (Boolean)elem.get("main_table");
-          String schemaType = (elemDefs!=null && elemDefs.containsKey(elem_local_name)) ? (String)elemDefs.get(elem_local_name): null;
+        	DDXmlElement elem = elements.get(k);
+        	String elemName = (String)elem.getName();
+        	String elemLocalName = (String)elem.getLocalName();
+        	String elemAttributes = (String)elem.getAttributes();
+        	int colIdx = elem.getColIndex();
+        	boolean isMainTable = elem.isMainTable();
+        	String schemaType = (elemDefs!=null && elemDefs.containsKey(elemLocalName)) ? (String)elemDefs.get(elemLocalName): null;
 
           String data = "";
-          if (col_idx!=null && main_table!=null){
-            data = (main_table.booleanValue()) ?
-                getCellValue(row,col_idx, schemaType) : getCellValue(meta_row,col_idx, null);
+          if (colIdx > -1 ){
+            data = (isMainTable) ?
+                getCellValue(row,colIdx, schemaType) : getCellValue(metaRow,colIdx, null);
           }
-          instance.writeElement(elem_name,elem_attributes, data);
+          instance.writeElement(elemName,elemAttributes, data);
         }
         instance.writeRowEnd();
       }
-      instance.writeTableEnd(tbl_name);
+      instance.writeTableEnd(tblName);
     }
 
   }
@@ -220,17 +218,16 @@ public class ExcelReader implements SourceReaderIF
    * The deault row is 4.
    */
   private String findSchemaFromSheet(HSSFSheet schema_sheet){
-    String xml_schema = null;
 
-    HSSFRow schema_row = null;
-    HSSFCell schema_cell = null;
+    HSSFRow schemaRow = null;
+    HSSFCell schemaCell = null;
     for (int i=3; i>-1; i--){
       if (schema_sheet.getLastRowNum()<i) continue;
-      schema_row = schema_sheet.getRow(i);
-      if (schema_row==null) continue;
-      if (schema_row.getLastCellNum()<0) continue;
-      schema_cell = schema_row.getCell((short)0);
-      String val = schema_cell.getRichStringCellValue().toString();
+      schemaRow = schema_sheet.getRow(i);
+      if (schemaRow==null) continue;
+      if (schemaRow.getLastCellNum()<0) continue;
+      schemaCell = schemaRow.getCell((short)0);
+      String val = schemaCell.getRichStringCellValue().toString();
 
       if (val.startsWith("http://") &&
             val.toLowerCase().indexOf("/getschema")>0 &&
@@ -244,35 +241,34 @@ public class ExcelReader implements SourceReaderIF
    * method goes through rows after XML Schema and finds schemas for Excel sheets (DataDict tables).
    *  cell(0) =sheet name; cell(1)= XML schema
    */
-  private Hashtable findSheetSchemas(HSSFSheet schema_sheet){
+  private Hashtable findSheetSchemas(HSSFSheet schemaSheet){
 
-  	String xml_schema = null;
 
-    HSSFRow schema_row = null;
-    HSSFCell schema_cell = null;
-    HSSFCell sheet_cell = null;
+    HSSFRow schemaRow = null;
+    HSSFCell schemaCell = null;
+    HSSFCell sheetCell = null;
 
     Hashtable result = new Hashtable();
-    if (schema_sheet.getLastRowNum()<1)return null;
+    if (schemaSheet.getLastRowNum()<1)return null;
 
-    for (int i=0; i<=schema_sheet.getLastRowNum(); i++){
-      schema_row = schema_sheet.getRow(i);
-      if (schema_row==null) continue;
-      if (schema_row.getLastCellNum()<1) continue;
-      schema_cell = schema_row.getCell((short)1);
-      if(schema_cell==null)continue;
-      String schema_val = schema_cell.getRichStringCellValue().toString();
+    for (int i=0; i<=schemaSheet.getLastRowNum(); i++){
+      schemaRow = schemaSheet.getRow(i);
+      if (schemaRow==null) continue;
+      if (schemaRow.getLastCellNum()<1) continue;
+      schemaCell = schemaRow.getCell((short)1);
+      if(schemaCell==null)continue;
+      String schemaValue = schemaCell.getRichStringCellValue().toString();
 
-      if (schema_val.startsWith("http://") &&
-      		schema_val.toLowerCase().indexOf("/getschema")>0 &&
-            Utils.isURL(schema_val)){
+      if (schemaValue.startsWith("http://") &&
+      		schemaValue.toLowerCase().indexOf("/getschema")>0 &&
+            Utils.isURL(schemaValue)){
 
-      		sheet_cell = schema_row.getCell((short)0);
-      		String sheet_val = sheet_cell.getRichStringCellValue().toString();
-      		if (sheet_val==null)continue;
-      	    HSSFSheet sheet = getSheet(sheet_val);
-      	    if (sheet!=null && !result.containsKey(sheet_val))
-      	    	result.put(sheet_val,schema_val);
+      		sheetCell = schemaRow.getCell((short)0);
+      		String sheetValue = sheetCell.getRichStringCellValue().toString();
+      		if (sheetValue==null)continue;
+      	    HSSFSheet sheet = getSheet(sheetValue);
+      	    if (sheet!=null && !result.containsKey(sheetValue))
+      	    	result.put(sheetValue,schemaValue);
       }
     }
     return result;
@@ -282,9 +278,9 @@ public class ExcelReader implements SourceReaderIF
 
       if (sheet == null){
         for (int i=0; i<wb.getNumberOfSheets();i++){
-          String sheet_name = wb.getSheetName(i);
-          if (sheet_name.trim().equalsIgnoreCase(name.trim()))
-            return wb.getSheet(sheet_name);
+          String sheetName = wb.getSheetName(i);
+          if (sheetName.trim().equalsIgnoreCase(name.trim()))
+            return wb.getSheet(sheetName);
       }
 
       }
@@ -331,23 +327,23 @@ public class ExcelReader implements SourceReaderIF
   private HSSFSheet getMetaSheet(String main_sheet_name){
     return getSheet(main_sheet_name + DDXMLConverter.META_SHEET_NAME);
   }
-  private void setColumnMappings(HSSFRow row, Vector elements, boolean main_table){
+  private void setColumnMappings(HSSFRow row, List<DDXmlElement> elements, boolean mainTable){
  //read column header
 	  
 	  if(row==null || elements==null)return;
-      int first_cell = row.getFirstCellNum();
-      int last_cell = row.getLastCellNum();
+      int firstCell = row.getFirstCellNum();
+      int lastCell = row.getLastCellNum();
 
       for (int j=0;j<elements.size();j++){
-        Hashtable elem = (Hashtable)elements.get(j);
-        String elem_localName = (String)elem.get("localName");
-        for (int k=first_cell;k<last_cell;k++){
+    	DDXmlElement elem = elements.get(j);
+        String elemLocalName = elem.getLocalName();
+        for (int k=firstCell;k<lastCell;k++){
           HSSFCell cell = row.getCell((short)k);
-          String col_name = cellValueToString(cell,null);
-          col_name = col_name!=null ? col_name.trim():"";
-          if (col_name.equalsIgnoreCase(elem_localName)){
-              elem.put("col_idx", new Integer(k));
-              elem.put("main_table", new Boolean(main_table));
+          String colName = cellValueToString(cell,null);
+          colName = colName!=null ? colName.trim():"";
+          if (colName.equalsIgnoreCase(elemLocalName)){
+              elem.setColIndex(k);
+              elem.setMainTable(mainTable);
               break;
           }
         }
@@ -361,12 +357,11 @@ public class ExcelReader implements SourceReaderIF
     return data;
   }
   /*
-  *      poi is returning all the numeric values as double and ending with .0
-  *      we want hav also integer values
+  *      POI is returning all the numeric values as double and ending with .0
+  *      we want to have also integer values
   *      small hack to change 2.0 value to 2
   */
   private String POINumericToString(double d_val){
-  	Double d = new Double(d_val);
 
   	int int_val = (int)d_val;
 

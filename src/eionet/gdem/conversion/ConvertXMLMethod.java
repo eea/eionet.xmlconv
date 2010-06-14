@@ -78,7 +78,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
 	 */
 	public Hashtable convert(String sourceURL, String convertId)
 			throws GDEMException {
-		OutputStream result = null;
+		OutputStream resultStream = null;
 		String cnvFileName = null;
 		String cnvTypeOut = null;
 		String cnvFileExt = null;
@@ -89,7 +89,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
 			return convertDDTable(sourceURL, convertId);
 		} else {
 
-			Hashtable h = new Hashtable();
+			Hashtable result = new Hashtable();
 			String xslFile = null;
 			String outputFileName = null;
 			InputFile src = null;
@@ -143,7 +143,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
 						httpResponse.setContentType(cnvContentType);
 						httpResponse.setContentDisposition(cnvFileName + "."
 								+ cnvFileExt);
-						result = httpResponse.getOutputStream();
+						resultStream = httpResponse.getOutputStream();
 					} catch (IOException e) {
 						_logger
 								.error("Error getting response outputstream ",
@@ -155,7 +155,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
 				}
 
 				outputFileName = executeConversion(src.getSrcInputStream(),
-						xslFile, result, src.getCdrParams(), cnvFileExt,
+						xslFile, resultStream, src.getCdrParams(), cnvFileExt,
 						cnvTypeOut);
 
 			} catch (MalformedURLException mfe) {
@@ -178,15 +178,15 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
 				}
 			}
 
-			h.put(CONTENTTYPE_KEY, cnvContentType);
-			h.put(FILENAME_KEY, cnvFileName + "." + cnvFileExt);
+			result.put(CONTENTTYPE_KEY, cnvContentType);
+			result.put(FILENAME_KEY, cnvFileName + "." + cnvFileExt);
 
 			if (isHttpRequest()) {
-				return h;
+				return result;
 			}
 
 			byte[] file = Utils.fileToBytes(outputFileName);
-			h.put(CONTENT_KEY, file);
+			result.put(CONTENT_KEY, file);
 			try {
 				Utils.deleteFile(outputFileName);
 			} catch (Exception e) {
@@ -195,7 +195,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
 						+ outputFileName, e);
 			}
 
-			return h;
+			return result;
 		}
 	}
 

@@ -25,6 +25,8 @@ package eionet.gdem.conversion.odf;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import eionet.gdem.utils.Utils;
 
@@ -32,11 +34,17 @@ public class OpenDocumentSpreadsheet {
 
 	private String currentTable = null;
 
-	private ArrayList tables = new ArrayList();
+	private List<String> tables;
 
-	private HashMap tables_data = new HashMap();
+	private Map<String, List<List<String>>> tablesData;
 
-	private HashMap tables_headers = new HashMap();
+	private Map<String, List<String>> tablesHeaders;
+
+	public OpenDocumentSpreadsheet() {
+		this.tables = new ArrayList<String>();
+		this.tablesData = new HashMap<String, List<List<String>>>();
+		this.tablesHeaders = new HashMap<String, List<String>>();
+	}
 
 	/*
 	 *
@@ -60,7 +68,7 @@ public class OpenDocumentSpreadsheet {
 	/*
 	 * Returns tables' list
 	 */
-	public ArrayList getTables() {
+	public List<String> getTables() {
 		return tables;
 	}
 
@@ -69,7 +77,7 @@ public class OpenDocumentSpreadsheet {
 	 */
 	public String getTableName(int idx) {
 		if (idx <= tables.size())
-			return (String) tables.get(idx);
+			return tables.get(idx);
 		else
 			return null;
 	}
@@ -80,15 +88,15 @@ public class OpenDocumentSpreadsheet {
 	public void addTableHeaderValue(String tbl_name, String value) {
 		if (Utils.isNullStr(tbl_name))
 			tbl_name = currentTable;
-		ArrayList list = null;
+		List<String> list = null;
 
-		if (tables_headers.containsKey(tbl_name)) {
-			list = (ArrayList) tables_headers.get(tbl_name);
+		if (tablesHeaders.containsKey(tbl_name)) {
+			list = tablesHeaders.get(tbl_name);
 			list.add(value);
 		} else {
-			list = new ArrayList();
+			list = new ArrayList<String>();
 			list.add(value);
-			tables_headers.put(tbl_name, list);
+			tablesHeaders.put(tbl_name, list);
 		}
 
 	}
@@ -96,32 +104,32 @@ public class OpenDocumentSpreadsheet {
 	/*
 	 * Adds data row into data Map
 	 */
-	public void addTableDataRow(String tbl_name, ArrayList row_list) {
+	public void addTableDataRow(String tbl_name, List<String> row_list) {
 		if (Utils.isNullStr(tbl_name))
 			tbl_name = currentTable;
-		ArrayList rows_list = null;
+		List<List<String>> rows_list = null;
 
-		if (tables_data.containsKey(tbl_name)) {
-			rows_list = (ArrayList) tables_data.get(tbl_name);
+		if (tablesData.containsKey(tbl_name)) {
+			rows_list = tablesData.get(tbl_name);
 			rows_list.add(row_list);
 		} else {
-			rows_list = new ArrayList();
+			rows_list = new ArrayList<List<String>>();
 			rows_list.add(row_list);
-			tables_data.put(tbl_name, rows_list);
+			tablesData.put(tbl_name, rows_list);
 		}
-
 	}
 
 	/*
 	 * Returns tables' data as ArrayList
 	 */
-	public ArrayList getTableData(String tbl_name) {
-		if (Utils.isNullStr(tbl_name))
-			tbl_name = currentTable;
+	public List<List<String>> getTableData(String tblName) {
+		if (Utils.isNullStr(tblName))
+			tblName = currentTable;
 
-		ArrayList list = null;
-		if (tables_data.containsKey(tbl_name))
-			list = (ArrayList) tables_data.get(tbl_name);
+		List<List<String>> list = null;
+		if (tablesData.containsKey(tblName)){
+			list = tablesData.get(tblName);
+		}
 
 		return list;
 	}
@@ -129,13 +137,13 @@ public class OpenDocumentSpreadsheet {
 	/*
 	 * Gets table header list
 	 */
-	public ArrayList getTableHeader(String tbl_name) {
+	public List<String> getTableHeader(String tbl_name) {
 		if (Utils.isNullStr(tbl_name))
 			tbl_name = currentTable;
 
-		ArrayList list = null;
-		if (tables_headers.containsKey(tbl_name))
-			list = (ArrayList) tables_headers.get(tbl_name);
+		List<String> list = null;
+		if (tablesHeaders.containsKey(tbl_name))
+			list = tablesHeaders.get(tbl_name);
 
 		return list;
 	}
@@ -148,16 +156,16 @@ public class OpenDocumentSpreadsheet {
 			tbl_name = currentTable;
 
 		int i = 0;
-		if (tables_headers == null)
+		if (tablesHeaders == null)
 			return i;
 
-		if (tables_headers.containsKey(tbl_name)) {
+		if (tablesHeaders.containsKey(tbl_name)) {
 			try {
-				ArrayList list = (ArrayList) tables_headers.get(tbl_name);
-				if (list != null)
-					i = list.size();
+				if ( tablesHeaders.get(tbl_name) != null){
+					i =  tablesHeaders.get(tbl_name).size();
+				}
 			} catch (Exception e) {
-				// do nothing return 0
+				e.printStackTrace();
 			}
 		}
 
@@ -173,16 +181,16 @@ public class OpenDocumentSpreadsheet {
 
 		if (Utils.isNullStr(tbl_name))
 			tbl_name = currentTable;
-		if (tables_data == null)
+		if (tablesData == null)
 			return i;
 
-		if (tables_data.containsKey(tbl_name)) {
+		if (tablesData.containsKey(tbl_name)) {
 			try {
-				ArrayList list = (ArrayList) tables_data.get(tbl_name);
-				if (list != null)
-					i = list.size();
+				if (tablesData.get(tbl_name) != null)
+					i = tablesData.get(tbl_name).size();
 			} catch (Exception e) {
 				// do nothing return 0
+				e.printStackTrace();
 			}
 		}
 
@@ -192,37 +200,37 @@ public class OpenDocumentSpreadsheet {
 	/*
 	 * Checks if table exists
 	 */
-	public boolean tableExists(String tbl_name) {
+	public boolean tableExists(String tblName) {
 		if (tables == null)
 			return false;
-		return tables.contains(tbl_name);
+		return tables.contains(tblName);
 
 	}
 
 	/*
 	 * Checks if sheet contains any data.
 	 */
-	public boolean isEmptySheet(String tbl_name) {
+	public boolean isEmptySheet(String tblName) {
 
-		if (Utils.isNullStr(tbl_name))
-			tbl_name = currentTable;
+		if (Utils.isNullStr(tblName))
+			tblName = currentTable;
 		// data does not exist
-		if (tables_data == null)
+		if (tablesData == null)
 			return true;
 
 		// Table does not exist
-		if (!tables_data.containsKey(tbl_name))
+		if (!tablesData.containsKey(tblName))
 			return true;
 
 		try {
-			ArrayList rows = (ArrayList) tables_data.get(tbl_name);
+			List<List<String>> rows = tablesData.get(tblName);
 
 			// no data rows
 			if (rows == null || rows.size() == 0)
 				return true;
 			for (int n = 0; n < rows.size(); n++) {
 				try {
-					ArrayList row = (ArrayList) rows.get(n);
+					List<String> row = rows.get(n);
 
 					// If row contains any String data, then it is not empty,
 					// return false

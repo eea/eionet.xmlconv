@@ -49,9 +49,9 @@ import org.xml.sax.XMLReader;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
-import eionet.gdem.conversion.excel.DD_XMLInstance;
-import eionet.gdem.conversion.excel.DD_XMLInstanceHandler;
 import eionet.gdem.conversion.excel.ExcelUtils;
+import eionet.gdem.conversion.excel.reader.DD_XMLInstance;
+import eionet.gdem.conversion.excel.reader.DD_XMLInstanceHandler;
 import eionet.gdem.conversion.odf.OpenDocumentUtils;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.DDServiceClient;
@@ -502,9 +502,9 @@ public abstract class DDXMLConverter {
 		}
 		return elemDefs;
 	}
-	protected Map getSchemaElemDefs(String schemaUrl){
+	protected Map<String, String> getSchemaElemDefs(String schemaUrl){
 		InputStream inputStream =null;
-		Map elemDefs = new HashMap();
+		Map<String, String> elemDefs = new HashMap<String, String>();
 		try {
 			IXmlCtx ctx=new XmlContext();
 			URL url = new URL(schemaUrl);

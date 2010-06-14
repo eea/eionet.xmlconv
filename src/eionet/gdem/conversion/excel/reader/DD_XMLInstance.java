@@ -27,8 +27,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -41,78 +42,74 @@ public class DD_XMLInstance  {
   private static final String DEFAULT_ENCODING = "UTF-8";
 	
   protected String lineTerminator = "\n";
-	private OutputStreamWriter writer = null;
+  private OutputStreamWriter writer = null;
   
   private String type = TBL_TYPE;//by default it's table
-  private Hashtable root_tag=new Hashtable();
-  private Vector tables = new Vector();
-  private Hashtable row_attrs= new Hashtable();
-  private Hashtable elements = new Hashtable();
+  private DDXmlElement root_tag;
+  private List<DDXmlElement> tables;
+  private HashMap<String, DDXmlElement> row_attrs;
+  private Map<String, List<DDXmlElement>> elements;
   private Vector content =  new Vector();
-  private StringBuffer namespaces = new StringBuffer();
-  private Hashtable leads = null;
-  private Map elemDefs = new HashMap();
+  private StringBuffer namespaces;
+  private Map<String,String> leads;
+  private Map<String, Map<String, String>> elemDefs;
 
-  private String cur_row_name = "";
-  private String cur_row_attrs = "";
+  private String currentRowName = "";
+  private String currentRowAttrs = "";
   private String encoding = null;
   
   public DD_XMLInstance() {
+	this.tables = new ArrayList<DDXmlElement>();
+	this.row_attrs = new HashMap<String, DDXmlElement>();
+	this.elements = new HashMap<String, List<DDXmlElement>>();
+	this.namespaces = new StringBuffer();
+	this.leads = new HashMap<String, String>();
+	this.elemDefs = new HashMap<String, Map<String, String>>();
+	
     this.lineTerminator = File.separator.equals("/") ? "\r\n" : "\n";
   }
   /*
    * inserts the root_tag name and attributes into Hashtable
    */
-  public void setRootTag(String name, String localName, String attributes){
-    root_tag.put("name",name);
-    root_tag.put("localName", localName);
-    root_tag.put("attributes", attributes);
+  public void setRootTag(String name, String localName, String attributes){	  
+    root_tag = new DDXmlElement(name, localName, attributes);
   }
   /*
    * creates the table name, localName and attributes into Hashtable and inserts it into Vector
    */
   public void addTable(String name, String localName, String attributes){
-    Hashtable table = new Hashtable();
-    table.put("name", name);
-    table.put("localName", localName);
-    table.put("attributes", attributes);
+    DDXmlElement table = new DDXmlElement(name, localName, attributes);
     tables.add(table);
   }
-  public void addTable(Hashtable table){
+  public void addTable(DDXmlElement table){
     tables.add(table);
   }
 /*
  * inserts row attributes into Hashtable, where keys are table names
  */
-  public void addRowAttributes(String tbl_name, String row_name, String attributes){
-    if (tbl_name==null) return;
-    Hashtable attribute = new Hashtable();
-    attribute.put("row_name", row_name);
-    attribute.put("row_attrs", attributes);
+  public void addRowAttributes(String tblName, String rowName, String attributes){
+    if (tblName==null) return;
+    DDXmlElement attribute = new DDXmlElement(rowName, null, attributes);
 
-    row_attrs.put(tbl_name, attribute);
+    row_attrs.put(tblName, attribute);
     
   }
 /*
  * inserts element names, localNames and attributes into Hashtable, where keys are table names
  */
-  public void addElement(String tbl_name, String name, String localName, String attributes){
-    if (tbl_name==null) return;
-    Hashtable element = new Hashtable();
-    element.put("name", name);
-    element.put("localName", localName);
-    element.put("attributes", attributes);
-
-    if (elements.containsKey(tbl_name)){
-      Vector tbl_elements = (Vector)elements.get(tbl_name);
-      if (tbl_elements==null) tbl_elements = new Vector();
-      tbl_elements.add(element);
+  public void addElement(String tblName, String name, String localName, String attributes){
+    if (tblName==null) return;
+    DDXmlElement element = new DDXmlElement(name, localName, attributes);
+    List<DDXmlElement> tblElements = null;
+    
+    if (elements.containsKey(tblName)){
+      tblElements = elements.get(tblName);
     }
-    else{
-      Vector tbl_elements = new Vector();
-      tbl_elements.add(element);
-      elements.put(tbl_name, tbl_elements);
+    if (tblElements==null){
+    	tblElements = new ArrayList<DDXmlElement>();
     }
+    tblElements.add(element);
+    elements.put(tblName, tblElements);
   }
   public void addNamespace(String prefix, String uri){
     namespaces.append(" xmlns:");
@@ -122,17 +119,13 @@ public class DD_XMLInstance  {
     namespaces.append("\"");
   }
   public void setTypeDataset(){
-  	leads = new Hashtable();
-	
     leads.put("tbl", "\t");
 	  leads.put("row", "\t\t");
 		leads.put("elm", "\t\t\t");
     this.type = DST_TYPE;
   }
+
   public void setTypeTable(){
-	
-  	leads = new Hashtable();
-	
     leads.put("tbl", "");
 	  leads.put("row", "\t");
 		leads.put("elm", "\t\t");
@@ -145,20 +138,20 @@ public class DD_XMLInstance  {
   public String getEncoding(){
     return this.encoding;
   }
-  public Hashtable getRootTag(){
-    return this.root_tag;
+  public DDXmlElement getRootTag(){
+    return root_tag;
   }
   public String getRootTagName(){
-    return (String)root_tag.get("name");
+    return root_tag.getName();
   }
   public String getRootTagAttributes(){
-    return (String)root_tag.get("attributes");
+    return root_tag.getAttributes();
   }
-  public Vector getTables(){
+  public List<DDXmlElement> getTables(){
     return this.tables;
   }
-  public Vector getTblElements(String tbl_name){
-    return (Vector)this.elements.get(tbl_name);
+  public List<DDXmlElement> getTblElements(String tbl_name){
+    return elements.get(tbl_name);
   }
 
 	/**
@@ -181,40 +174,42 @@ public class DD_XMLInstance  {
 	      try{
     				if (writer != null) writer.close();
        }
-       catch(Exception e){}
+       catch(Exception e){
+    	   e.printStackTrace();
+       }
    }
 	}
-  public void writeElement(String elem_name, String attributes, String data){
-		addString(getLead("elm") + "<" + elem_name + attributes + ">");
+  public void writeElement(String elemName, String attributes, String data){
+	addString(getLead("elm") + "<" + elemName + attributes + ">");
     addString(Utils.escapeXML(data));
-    addString("</" + elem_name + ">");
+    addString("</" + elemName + ">");
     newLine();
     
   }
   public void writeRowStart(){
-		addString(getLead("row") + "<" + cur_row_name + cur_row_attrs + ">");
+		addString(getLead("row") + "<" + currentRowName + currentRowAttrs + ">");
     newLine();    
   }
   public void writeRowEnd(){
-		addString(getLead("row") + "</" + cur_row_name + ">");    
+		addString(getLead("row") + "</" + currentRowName + ">");    
     newLine();
   }
-  public void writeTableStart(String tbl_name, String attributes){
+  public void writeTableStart(String tblName, String attributes){
     if (type.equals(DST_TYPE)){
-  		addString(getLead("tbl") + "<" + tbl_name + attributes + ">");
+  		addString(getLead("tbl") + "<" + tblName + attributes + ">");
       newLine();
     }    
   }
-  public void writeTableEnd(String tbl_name){
+  public void writeTableEnd(String tblName){
     if (type.equals(DST_TYPE)){
-      addString(getLead("tbl") + "</" + tbl_name + ">");    
+      addString(getLead("tbl") + "</" + tblName + ">");    
       newLine();
     }
   }
-  public void setCurRow(String tbl_name){
-    Hashtable row = (Hashtable)row_attrs.get(tbl_name);
-    cur_row_name = (String)row.get("row_name");
-    cur_row_attrs = (String)row.get("row_attrs");
+  public void setCurRow(String tblName){
+    DDXmlElement rowElement = row_attrs.get(tblName);
+    currentRowName = rowElement.getName();
+    currentRowAttrs = rowElement.getAttributes();
   }
 	protected void addString(String s){
 		content.add(s);
@@ -274,20 +269,19 @@ public class DD_XMLInstance  {
 		
 		return lead;
 	}
-	public void setElemDefs(Map elemDefs) {
+	public void setElemDefs(Map<String, Map<String, String>> elemDefs) {
 		this.elemDefs = elemDefs;
 	}
-	public void addElemDef(String sheet, Map _elemDefs) {
-		if(this.elemDefs==null)this.elemDefs=new HashMap();
-		this.elemDefs.put(sheet, _elemDefs);
+	public void addElemDef(String sheet, Map<String, String> elemDefs) {
+		this.elemDefs.put(sheet, elemDefs);
 	}
-	public HashMap getElemDefs(String sheet){
+	public  Map<String, String> getElemDefs(String sheet){
 		if(elemDefs!=null){
 			if (elemDefs.containsKey(sheet)){
-				return (HashMap)elemDefs.get(sheet);
+				return elemDefs.get(sheet);
 			}
 			else if(elemDefs.containsKey(TBL_TYPE)){
-				return (HashMap)elemDefs.get(TBL_TYPE);
+				return elemDefs.get(TBL_TYPE);
 			}
 		}
 		return null;
