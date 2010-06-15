@@ -41,6 +41,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.DDXMLConverter;
 import eionet.gdem.conversion.SourceReaderIF;
+import eionet.gdem.conversion.datadict.DDElement;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -149,7 +150,7 @@ public class ExcelReader implements SourceReaderIF
       instance.writeTableStart(tblName, tblAttrs);
       instance.setCurRow(tblName);
       
-      Map<String, String> elemDefs = instance.getElemDefs(tblLocalname);
+      Map<String, DDElement> elemDefs = instance.getElemDefs(tblLocalname);
 
 //read data
       // there are no data rows in the Excel file. We create empty table
@@ -169,7 +170,9 @@ public class ExcelReader implements SourceReaderIF
         	String elemAttributes = (String)elem.getAttributes();
         	int colIdx = elem.getColIndex();
         	boolean isMainTable = elem.isMainTable();
-        	String schemaType = (elemDefs!=null && elemDefs.containsKey(elemLocalName)) ? (String)elemDefs.get(elemLocalName): null;
+        	String schemaType = (elemDefs!=null && elemDefs.containsKey(elemLocalName)) ? 
+        						elemDefs.get(elemLocalName).getSchemaDataType(): 
+        						null;
 
           String data = "";
           if (colIdx > -1 ){

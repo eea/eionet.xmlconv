@@ -19,9 +19,10 @@
  * Enriko Käsper, Tieto Estonia
  */
 
-package eionet.gdem.conversion.access;
+package eionet.gdem.conversion.datadict;
 
 import java.util.List;
+
 
 /**
  * @author Enriko Käsper, Tieto Estonia

@@ -19,7 +19,7 @@
  * Enriko Käsper, Tieto Estonia
  */
 
-package eionet.gdem.conversion.access;
+package eionet.gdem.conversion.datadict;
 
 /**
  * @author Enriko Käsper, Tieto Estonia
@@ -27,10 +27,39 @@ package eionet.gdem.conversion.access;
  */
 
 public class DDElement {
-	private String elmIdf=null;
+	private String elmIdf;
+	private String schemaDataType;
+	private String delimiter;
+	private boolean hasMultipleValues = false;
 
 	public DDElement(String elmIdf) {
 		this.elmIdf = elmIdf;
+		this.schemaDataType = "xs:string";
+		this.delimiter = "";
+	}
+
+	public String getSchemaDataType() {
+		return schemaDataType;
+	}
+
+	public void setSchemaDataType(String dataType) {
+		this.schemaDataType = dataType;
+	}
+
+	public String getDelimiter() {
+		return delimiter;
+	}
+
+	public void setDelimiter(String delimiter) {
+		this.delimiter = delimiter;
+	}
+
+	public boolean isHasMultipleValues() {
+		return hasMultipleValues;
+	}
+
+	public void setHasMultipleValues(boolean hasMultipleValues) {
+		this.hasMultipleValues = hasMultipleValues;
 	}
 
 	public String getElmIdf() {

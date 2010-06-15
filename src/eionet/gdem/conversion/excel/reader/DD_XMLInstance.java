@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
+import eionet.gdem.conversion.datadict.DDElement;
 import eionet.gdem.utils.Utils;
 
 public class DD_XMLInstance  {
@@ -51,7 +51,7 @@ public class DD_XMLInstance  {
   private Map<String, List<DDXmlElement>> elements;
   private StringBuffer namespaces;
   private Map<String,String> leads;
-  private Map<String, Map<String, String>> elemDefs;
+  private Map<String, Map<String, DDElement>> elemDefs;
 
   private String currentRowName;
   private String currentRowAttrs;
@@ -63,7 +63,7 @@ public class DD_XMLInstance  {
 	this.elements = new HashMap<String, List<DDXmlElement>>();
 	this.namespaces = new StringBuffer();
 	this.leads = new HashMap<String, String>();
-	this.elemDefs = new HashMap<String, Map<String, String>>();
+	this.elemDefs = new HashMap<String, Map<String, DDElement>>();
 	this.encoding = DEFAULT_ENCODING;
 	
     this.lineTerminator = File.separator.equals("/") ? "\r\n" : "\n";
@@ -260,13 +260,13 @@ public class DD_XMLInstance  {
 		
 		return lead;
 	}
-	public void setElemDefs(Map<String, Map<String, String>> elemDefs) {
+	public void setElemDefs(Map<String, Map<String, DDElement>> elemDefs) {
 		this.elemDefs = elemDefs;
 	}
-	public void addElemDef(String sheet, Map<String, String> elemDefs) {
+	public void addElemDef(String sheet, Map<String, DDElement> elemDefs) {
 		this.elemDefs.put(sheet, elemDefs);
 	}
-	public  Map<String, String> getElemDefs(String sheet){
+	public  Map<String, DDElement> getElemDefs(String sheet){
 		if(elemDefs!=null){
 			if (elemDefs.containsKey(sheet)){
 				return elemDefs.get(sheet);

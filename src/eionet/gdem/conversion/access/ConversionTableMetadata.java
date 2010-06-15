@@ -24,6 +24,8 @@ package eionet.gdem.conversion.access;
 import java.util.ArrayList;
 import java.util.List;
 
+import eionet.gdem.conversion.datadict.DDTable;
+
 /**
  * @author Enriko Käsper, Tieto Estonia
  * ConversionMetadata

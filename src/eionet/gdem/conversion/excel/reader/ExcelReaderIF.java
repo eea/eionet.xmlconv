@@ -24,7 +24,7 @@
 package eionet.gdem.conversion.excel.reader;
 
 import java.io.InputStream;
-import java.util.Hashtable;
+import java.util.Map;
 
 import eionet.gdem.GDEMException;
 
@@ -64,7 +64,7 @@ public String getFirstSheetName();
 * then it finds the XML Shemas for each Excel sheet
 * @return - Excel sheet name
 */
-public Hashtable getSheetSchemas();
+public Map<String, String> getSheetSchemas();
 
 /**
 * Check if sheet has data or not

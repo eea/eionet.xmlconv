@@ -35,10 +35,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -49,6 +45,8 @@ import org.xml.sax.XMLReader;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
+import eionet.gdem.conversion.datadict.DDElement;
+import eionet.gdem.conversion.datadict.DataDictUtil;
 import eionet.gdem.conversion.excel.ExcelUtils;
 import eionet.gdem.conversion.excel.reader.DD_XMLInstance;
 import eionet.gdem.conversion.excel.reader.DD_XMLInstanceHandler;
@@ -58,9 +56,6 @@ import eionet.gdem.dcm.business.DDServiceClient;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.utils.xml.IXQuery;
-import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
 
 
 /*
@@ -75,9 +70,6 @@ public abstract class DDXMLConverter {
 
 	protected static LoggerIF _logger=GDEMServices.getLogger();
 
-	private static final String INSTANCE_SERVLET = "GetXmlInstance";
-	private static final String SCHEMA_SERVLET = "GetSchema";
-	private static final String CONTAINER_SCHEMA_SERVLET = "GetContainerSchema";
     public  static final String META_SHEET_NAME = "-meta";
     public  static final String META_SHEET_NAME_ODS = "_meta";
 
@@ -295,16 +287,17 @@ public abstract class DDXMLConverter {
 
 	protected void doConversion(String xml_schema, OutputStream outStream)
 			throws Exception {
-		String instance_url = getInstanceUrl(xml_schema);
+		String instance_url = DataDictUtil.getInstanceUrl(xml_schema);
 
 		DD_XMLInstance instance = new DD_XMLInstance();
 		DD_XMLInstanceHandler handler = new DD_XMLInstanceHandler(instance);
 
-		SAXParserFactory spfact = SAXParserFactory.newInstance();
-		SAXParser parser = spfact.newSAXParser();
+		SAXParserFactory factory = SAXParserFactory.newInstance();
+		SAXParser parser = factory.newSAXParser();
 		XMLReader reader = parser.getXMLReader();
-		spfact.setValidating(false);
-		spfact.setNamespaceAware(true);
+		
+		factory.setValidating(false);
+		factory.setNamespaceAware(true);
 		reader.setFeature("http://xml.org/sax/features/validation", false);
 		reader.setFeature("http://apache.org/xml/features/validation/schema",
 				false);
@@ -328,71 +321,7 @@ public abstract class DDXMLConverter {
 		instance.flushXml();
 	}
 
-	public static String getInstanceUrl(String schema_url) throws GDEMException {
 
-		try {
-			
-			//throws Exception, if not correct URL
-			URL schemaURL = new URL(schema_url);
-
-			String id = getSchemaIdParam(schema_url);
-			
-			String type = id.substring(0, 3);
-			id = id.substring(3);
-
-			int path_idx = schema_url.toLowerCase().indexOf(
-					SCHEMA_SERVLET.toLowerCase());
-			String path = schema_url.substring(0, path_idx);
-
-			String instance_url = path + INSTANCE_SERVLET + "?id=" + id
-					+ "&type=" + type.toLowerCase();
-
-			//throws Exception, if not correct URL
-			URL instanceURL = new URL(instance_url);
-			return instance_url;
-		} catch (MalformedURLException e) {
-			throw new GDEMException("Error getting Instance file URL: "
-					+ e.toString() + " - " + schema_url);
-		} catch (Exception e) {
-			throw new GDEMException("Error getting Instance file URL: "
-					+ e.toString() + " - " + schema_url);
-		}
-	}
-	public static String getSchemaIdParam(String schema_url) throws GDEMException {
-		
-		String ret = "";
-		
-		int id_idx = schema_url.indexOf("id=");
-		String id = schema_url.substring(id_idx + 3);
-		if (id.indexOf("&") > -1)
-			id = id.substring(0, id.indexOf("&"));
-
-		return id;
-	}
-
-	/**
-	 * Returns the DD container schema URL. It holds the elements definitions
-	 * @param schema_url
-	 * @return
-	 * @throws GDEMException
-	 */
-	public static String getContainerSchemaUrl(String schema_url) throws GDEMException {
-
-		try {
-			URL SchemaURL = new URL(schema_url);
-
-			String containerSchemaUrl = schema_url.replace(SCHEMA_SERVLET, CONTAINER_SCHEMA_SERVLET);
-
-			URL InstanceURL = new URL(containerSchemaUrl);
-			return containerSchemaUrl;
-		} catch (MalformedURLException e) {
-			throw new GDEMException("Error getting Container Schema URL: "
-					+ e.toString() + " - " + schema_url);
-		} catch (Exception e) {
-			throw new GDEMException("Error getting Container Schema URL: "
-					+ e.toString() + " - " + schema_url);
-		}
-	}
 
 	// Reads the XML declaration from instance file
 	// It is called only, when SAX coudn't read it
@@ -446,7 +375,7 @@ public abstract class DDXMLConverter {
 		try{
 			//if instance type is TBL, then import only table schema
 			if(instance.getType().equals(DD_XMLInstance.TBL_TYPE)){
-				Map elemDefs = importSchemaElemDefs(xml_schema);
+				Map<String, DDElement> elemDefs = DataDictUtil.importDDTableSchemaElemDefs(xml_schema);
 				instance.addElemDef(DD_XMLInstance.TBL_TYPE, elemDefs);
 			}
 			//if instance type is dataset, then import schemas for all pages
@@ -455,7 +384,7 @@ public abstract class DDXMLConverter {
 				for (Map.Entry<String, String> entry : sheetSchemas.entrySet()){
 					String sheetName = entry.getKey();
 					String schemaUrl = entry.getValue();
-					Map elemDefs = importSchemaElemDefs(schemaUrl);
+					Map<String, DDElement> elemDefs = DataDictUtil.importDDTableSchemaElemDefs(schemaUrl);
 					instance.addElemDef(sheetName, elemDefs);				
 					}
 				}
@@ -463,71 +392,7 @@ public abstract class DDXMLConverter {
 			_logger.error("Error reading elements from schema files ", ex);
 		}
 	}
-	/**
-	 * gather all element definitions
-	 * @param instance
-	 * @param schemaUrl
-	 */
-	protected Map<String, String> importSchemaElemDefs(String schemaUrl){
-		InputStream inputStream =null;
-		Map<String, String> elemDefs = new HashMap<String, String>();
-		try {
-			//get element definitions for given schema
-			Map<String, String> schemaElemDefs = getSchemaElemDefs(schemaUrl);
-			elemDefs.putAll(schemaElemDefs);
-			
-			//load imported schema URLs
-			IXmlCtx ctx=new XmlContext();
-			URL url = new URL(schemaUrl);
-			inputStream = url.openStream();
-			ctx.checkFromInputStream(inputStream);
-			
-			IXQuery xQuery=ctx.getQueryManager();
-			
-			//run recursively the same function for importing elem defs for imported schemas
-			List<String> schemas = xQuery.getSchemaImports();
-			for (int i = 0; i < schemas.size(); i++) {
-				String schema=(String) schemas.get(i);
-				Map<String, String> impSchemaElemeDefs = getSchemaElemDefs(schema);
-				elemDefs.putAll(impSchemaElemeDefs);
-			}
-		} catch (Exception ex) {
-			_logger.error("Error reading schema file ", ex);
-		}
-		finally{
-			try{
-				inputStream.close();
-			}catch(Exception e){}
-		}
-		return elemDefs;
-	}
-	protected Map<String, String> getSchemaElemDefs(String schemaUrl){
-		InputStream inputStream =null;
-		Map<String, String> elemDefs = new HashMap<String, String>();
-		try {
-			IXmlCtx ctx=new XmlContext();
-			URL url = new URL(schemaUrl);
-			inputStream = url.openStream();
-			ctx.checkFromInputStream(inputStream);
-			
-			IXQuery xQuery=ctx.getQueryManager();
-			List elemNames = xQuery.getSchemaElements();
-			for (int i = 0; i < elemNames.size(); i++) {
-				String elemName=(String) elemNames.get(i);
-				String dataType = xQuery.getSchemaElementType(elemName);
-				elemDefs.put(elemName,dataType);
-			}
-		} catch (Exception ex) {
-			_logger.error("Error reading schema file ", ex);
-		}
-		finally{
-			try{
-				inputStream.close();
-			}catch(Exception e){}
-		}
-		return elemDefs;
-		
-	}
+
 	protected Vector createResultForSheet(String code, String sheet_name,
 			String error_mess) {
 		Vector sheet_result = new Vector();
@@ -574,7 +439,7 @@ public abstract class DDXMLConverter {
 		String dateOfLatestReleased = "";
 		String idOfLatestReleased = "";
 		
-		String id = getSchemaIdParam(xml_schema);
+		String id = DataDictUtil.getSchemaIdParamFromUrl(xml_schema);
 
 		if(id.length()>4 && (id.startsWith(DD_XMLInstance.DST_TYPE) || id.startsWith(DD_XMLInstance.TBL_TYPE))){
 			

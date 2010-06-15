@@ -160,9 +160,9 @@ public class XmlQuery implements IXQuery {
 		}
 		return result;
 	}
-	public List getSchemaElements() throws XmlException {
+	public List<String> getSchemaElements() throws XmlException {
 		String xpath = "//xs:element";
-		List result = new ArrayList();
+		List<String> result = new ArrayList<String>();
 		try {
 			NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
 			for (int i = 0; i < nodes.getLength(); i++) {
@@ -206,5 +206,29 @@ public class XmlQuery implements IXQuery {
 			throw new XmlException(e);
 		}
 		return result;
+	}
+
+	public Map<String, String> getSchemaElementWithMultipleValues()
+			throws XmlException {
+		String xpath = "//xs:element[@maxOccurs='unbounded']";
+		Map<String, String> elements = new HashMap<String, String>();
+		try {
+			NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
+			for (int i = 0; i < nodes.getLength(); i++) {
+				if(nodes.item(i).getAttributes()!=null && nodes.item(i).getAttributes().getNamedItem("ref")!=null
+						 && nodes.item(i).getAttributes().getNamedItem("dd:multiValueDelim")!=null){
+					String elemName = nodes.item(i).getAttributes().getNamedItem("ref").getNodeValue();
+					String delimiter = nodes.item(i).getAttributes().getNamedItem("dd:multiValueDelim").getNodeValue();
+					if(elemName!=null){
+						//get elem name without namespace
+						if(elemName.contains(":"))elemName = elemName.substring(elemName.indexOf(":") + 1);
+						elements.put(elemName, delimiter);
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw new XmlException(e);
+		}
+		return elements;
 	}
 }

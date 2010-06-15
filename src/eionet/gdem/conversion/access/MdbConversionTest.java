@@ -35,6 +35,8 @@ import com.healthmarketscience.jackcess.Column;
 import com.healthmarketscience.jackcess.Database;
 import com.healthmarketscience.jackcess.Table;
 
+import eionet.gdem.conversion.datadict.DDElement;
+import eionet.gdem.conversion.datadict.DDTable;
 import eionet.gdem.utils.Utils;
 
 /**

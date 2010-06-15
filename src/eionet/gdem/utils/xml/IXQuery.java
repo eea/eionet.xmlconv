@@ -86,7 +86,7 @@ public interface IXQuery {
 	 * @return
 	 * @throws XmlException
 	 */
-	public List getSchemaElements() throws XmlException;
+	public List<String> getSchemaElements() throws XmlException;
 	
 	/**
 	 * returns the xs:restriction/@base for gievn element from XML Schema 
@@ -100,5 +100,12 @@ public interface IXQuery {
 	 * @return
 	 * @throws XmlException
 	 */
-	public List getSchemaImports() throws XmlException;
+	public List<String> getSchemaImports() throws XmlException;
+
+	/**
+	 * returns the list XML Schema elements that may have multiple values  
+	 * @return
+	 * @throws XmlException
+	 */
+	public Map<String, String> getSchemaElementWithMultipleValues() throws XmlException;
 }
