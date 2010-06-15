@@ -49,14 +49,13 @@ public class DD_XMLInstance  {
   private List<DDXmlElement> tables;
   private HashMap<String, DDXmlElement> row_attrs;
   private Map<String, List<DDXmlElement>> elements;
-  private Vector content =  new Vector();
   private StringBuffer namespaces;
   private Map<String,String> leads;
   private Map<String, Map<String, String>> elemDefs;
 
-  private String currentRowName = "";
-  private String currentRowAttrs = "";
-  private String encoding = null;
+  private String currentRowName;
+  private String currentRowAttrs;
+  private String encoding;
   
   public DD_XMLInstance() {
 	this.tables = new ArrayList<DDXmlElement>();
@@ -65,6 +64,7 @@ public class DD_XMLInstance  {
 	this.namespaces = new StringBuffer();
 	this.leads = new HashMap<String, String>();
 	this.elemDefs = new HashMap<String, Map<String, String>>();
+	this.encoding = DEFAULT_ENCODING;
 	
     this.lineTerminator = File.separator.equals("/") ? "\r\n" : "\n";
   }
@@ -157,50 +157,41 @@ public class DD_XMLInstance  {
 	/**
 	* Flush the written content into the output stream.
 	*/
-	public void flush(OutputStream outStream) throws Exception{
-    
-    try{		
-      this.writer = new OutputStreamWriter(outStream, getEncoding());
-      writeHeader();
-      startRootElement();
-      // write content
-      for (int i=0; i<content.size(); i++){
-  			writer.write((String)content.get(i));
-    	} 
-  		endRootElement();
-      writer.flush();
-    }
-	  finally{
-	      try{
-    				if (writer != null) writer.close();
-       }
-       catch(Exception e){
-    	   e.printStackTrace();
-       }
-   }
+  public void startWritingXml(OutputStream outStream) throws Exception{
+  
+	  this.writer = new OutputStreamWriter(outStream, getEncoding());
+	  writeHeader();
+	  startRootElement();
 	}
-  public void writeElement(String elemName, String attributes, String data){
+	/**
+	* Flush the written content into the output stream.
+	*/
+	public void flushXml() throws Exception{    
+  		endRootElement();
+  		writer.flush();
+	}
+  public void writeElement(String elemName, String attributes, String data) throws Exception{
 	addString(getLead("elm") + "<" + elemName + attributes + ">");
     addString(Utils.escapeXML(data));
     addString("</" + elemName + ">");
     newLine();
     
   }
-  public void writeRowStart(){
-		addString(getLead("row") + "<" + currentRowName + currentRowAttrs + ">");
+  public void writeRowStart() throws Exception{
+	addString(getLead("row") + "<" + currentRowName + currentRowAttrs + ">");
     newLine();    
   }
-  public void writeRowEnd(){
+  public void writeRowEnd() throws Exception{
 		addString(getLead("row") + "</" + currentRowName + ">");    
     newLine();
   }
-  public void writeTableStart(String tblName, String attributes){
+  public void writeTableStart(String tblName, String attributes) throws Exception{
     if (type.equals(DST_TYPE)){
   		addString(getLead("tbl") + "<" + tblName + attributes + ">");
-      newLine();
+  		newLine();
     }    
   }
-  public void writeTableEnd(String tblName){
+  public void writeTableEnd(String tblName) throws Exception{
     if (type.equals(DST_TYPE)){
       addString(getLead("tbl") + "</" + tblName + ">");    
       newLine();
@@ -211,11 +202,11 @@ public class DD_XMLInstance  {
     currentRowName = rowElement.getName();
     currentRowAttrs = rowElement.getAttributes();
   }
-	protected void addString(String s){
-		content.add(s);
+	protected void addString(String s) throws Exception{
+		writer.write(s);
 	}
-	protected void newLine(){
-		content.add(lineTerminator);
+	protected void newLine() throws Exception{
+		writer.write(lineTerminator);
 	}
 	private void writeHeader() throws IOException{
 		//writer.print("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>");

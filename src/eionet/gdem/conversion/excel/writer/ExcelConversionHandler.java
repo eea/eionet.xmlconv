@@ -122,7 +122,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
   public void addCell(String type, String str_value, String style_name){
      HSSFSheet _sheet = wb.getSheetAt(currentSheet);
      HSSFRow _row = _sheet.getRow(currentRow);
-     HSSFCell _cell = _row.createCell((short)(currentCell));
+     HSSFCell _cell = _row.createCell((currentCell));
 
      Double number_value=null;
      Boolean boolean_value=null;
@@ -216,7 +216,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
      }
      else{
        _cell.setCellType(HSSFCell.CELL_TYPE_STRING);
-       _cell.setEncoding(HSSFCell.ENCODING_UTF_16 );//
+       //_cell.setEncoding(HSSFCell.ENCODING_UTF_16 );//
        _cell.setCellValue(str_value);
      }
 
@@ -256,9 +256,9 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
     	else if(str_value.length()>0){
     		width = (short)(str_value.length() * size * 50);
     	}
-    	_sheet.setColumnWidth((short)currentCell, width);
+    	_sheet.setColumnWidth(currentCell, width);
      }
-     currentCell = _cell.getCellNum()+1;
+     currentCell = _cell.getColumnIndex()+1;
   //    System.out.println("Cell" + currentCell+ "-" + value);
   }
   public void addCells(String type, String style_name, int repeated)

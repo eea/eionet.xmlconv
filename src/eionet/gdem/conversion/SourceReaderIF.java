@@ -24,7 +24,7 @@
 package eionet.gdem.conversion;
 
 import java.io.InputStream;
-import java.util.Hashtable;
+import java.util.Map;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.excel.reader.DD_XMLInstance;
@@ -54,8 +54,9 @@ public void initReader(InputStream input) throws GDEMException;
 /**
 * Goes through the source file and writes the data into DD_XMLInstance as xml
 * @param DD_XMLInstance instance - XML instance file, where the structure xml has been efined before
+ * @throws Exception 
 */
-public void writeContentToInstance(DD_XMLInstance instance)throws GDEMException;
+public void writeContentToInstance(DD_XMLInstance instance)throws Exception;
 /**
 * Finds the first sheet name, that is not DO_NOT_DELETE_THIS_SHEET
 * @return - sheet name
@@ -66,7 +67,7 @@ public String getFirstSheetName();
 * then it finds the XML Shemas for each spreadsheet
 * @return - Spreadsheet name
 */
-public Hashtable getSheetSchemas();
+public Map<String, String> getSheetSchemas();
 
 /**
 * Check if sheet has data or not

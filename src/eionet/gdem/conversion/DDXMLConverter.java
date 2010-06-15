@@ -195,15 +195,15 @@ public abstract class DDXMLConverter {
 	        	return buildWorkbookErrorMessage(result,null,invalidMess);
 	        }
 
-	        Hashtable sheet_schemas = sourcefile.getSheetSchemas();
+	        Map<String, String> sheetSchemas = sourcefile.getSheetSchemas();
 			String first_sheet_name=sourcefile.getFirstSheetName();
 
 	        //could not find sheet schemas
-	        if (Utils.isNullHashtable(sheet_schemas)){
+	        if (Utils.isNullHashMap(sheetSchemas)){
 	        	//maybe it's spreadsheet file for DD table
 	        	if (xml_schema.toLowerCase().indexOf("type=tbl")>-1
 	        			|| xml_schema.toLowerCase().indexOf("=tbl")>-1){
-	        		sheet_schemas.put(first_sheet_name,xml_schema);
+	        		sheetSchemas.put(first_sheet_name,xml_schema);
 	        	}
 	        	else{
 		        	return buildWorkbookErrorMessage(result,null,Properties.getMessage(
@@ -211,32 +211,31 @@ public abstract class DDXMLConverter {
 	        	}
 	        }
 	        if (!Utils.isNullStr(sheet_param)){
-	        	if (!Utils.containsKeyIgnoreCase(sheet_schemas,sheet_param)){
+	        	if (!Utils.containsKeyIgnoreCase(sheetSchemas,sheet_param)){
 		        	return buildWorkbookErrorMessage(result,sheet_param,"Could not find sheet with specified name or the XML schema reference was missing on DO_NOT_DELETE_THIS_SHEET: " + sheet_param);
 	        	}
 	        }
 	        if (isHttpResponse() && Utils.isNullStr(sheet_param))
 	        	sheet_param=first_sheet_name;
 
-	  		Enumeration sheets = sheet_schemas.keys();
-	        while (sheets.hasMoreElements()){
-	            String sheet_name = sheets.nextElement().toString();
-	            String sheet_schema = (String)sheet_schemas.get(sheet_name);
-	            if (sheet_schema==null){
-	            	result.add(createResultForSheet("1",sheet_name,"could not find xml schema for this sheet!"));
+	        for (Map.Entry<String, String> entry : sheetSchemas.entrySet()){
+	            String sheetName = entry.getKey();
+	            String sheetSchema = entry.getValue();
+	            if (sheetSchema==null){
+	            	result.add(createResultForSheet("1",sheetName,"could not find xml schema for this sheet!"));
 	            	continue;
 	            }
 	            	if (!Utils.isNullStr(sheet_param)){
 	                	//Only 1 sheet is needed.
-	            		if (!sheet_param.equalsIgnoreCase(sheet_name)){
+	            		if (!sheet_param.equalsIgnoreCase(sheetName)){
 	            			continue;
 	            		}
 	            	}
 
 	            	try{
 	            		//Do not return empty sheets.
-	            		if (sourcefile.isEmptySheet(sheet_name)){
-	    		        	result = buildWorkbookErrorMessage(result,sheet_param,"The sheet is empty: " + sheet_name + "!");
+	            		if (sourcefile.isEmptySheet(sheetName)){
+	    		        	result = buildWorkbookErrorMessage(result,sheet_param,"The sheet is empty: " + sheetName + "!");
 	            			continue;
 	            		}
 
@@ -244,14 +243,14 @@ public abstract class DDXMLConverter {
 	            			outFileName=Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + ".xml";
 	            	        outStream = new FileOutputStream(outFileName);
 	            		}
-	            		doConversion(sheet_schema, outStream);
+	            		doConversion(sheetSchema, outStream);
 
 	            		// if the respponse is http stream, then it is already written there and no file available
 	            		if (!isHttpResponse()){
 	            			byte[] file = Utils.fileToBytes(outFileName);
 	            			Vector sheet_result = new Vector();
 	            			sheet_result.add("0");
-	            			sheet_result.add(sheet_name + ".xml");
+	            			sheet_result.add(sheetName + ".xml");
 	            			sheet_result.add(file);
 	            			result.add(sheet_result);
 	            			/*try{
@@ -263,7 +262,7 @@ public abstract class DDXMLConverter {
 	            		}
 	            	}
 	            	catch(Exception e){
-    		        	result = buildWorkbookErrorMessage(result,sheet_param,"Could not find xml schema for this sheet " + sheet_name + "! " + e.toString());
+    		        	result = buildWorkbookErrorMessage(result,sheet_param,"Could not find xml schema for this sheet " + sheetName + "! " + e.toString());
 	            	}
 	            	finally{
 	            		if(!isHttpResponse()){
@@ -324,8 +323,9 @@ public abstract class DDXMLConverter {
 				instance.setEncoding(enc_url);
 		}
 		importSheetSchemas(sourcefile, instance, xml_schema);
+		instance.startWritingXml(outStream);
 		sourcefile.writeContentToInstance(instance);
-		instance.flush(outStream);
+		instance.flushXml();
 	}
 
 	public static String getInstanceUrl(String schema_url) throws GDEMException {
@@ -451,13 +451,12 @@ public abstract class DDXMLConverter {
 			}
 			//if instance type is dataset, then import schemas for all pages
 			else{
-				Hashtable sheetSchemas = spreadsheet.getSheetSchemas();
-				Enumeration sheets = sheetSchemas.keys();
-				while (sheets.hasMoreElements()){
-					String sheet_name = sheets.nextElement().toString();
-					String schemaUrl = (String)sheetSchemas.get(sheet_name);
+				Map<String, String> sheetSchemas = spreadsheet.getSheetSchemas();
+				for (Map.Entry<String, String> entry : sheetSchemas.entrySet()){
+					String sheetName = entry.getKey();
+					String schemaUrl = entry.getValue();
 					Map elemDefs = importSchemaElemDefs(schemaUrl);
-					instance.addElemDef(sheet_name, elemDefs);				
+					instance.addElemDef(sheetName, elemDefs);				
 					}
 				}
 		} catch (Exception ex) {
@@ -469,12 +468,12 @@ public abstract class DDXMLConverter {
 	 * @param instance
 	 * @param schemaUrl
 	 */
-	protected Map importSchemaElemDefs(String schemaUrl){
+	protected Map<String, String> importSchemaElemDefs(String schemaUrl){
 		InputStream inputStream =null;
-		Map elemDefs = new HashMap();
+		Map<String, String> elemDefs = new HashMap<String, String>();
 		try {
 			//get element definitions for given schema
-			Map schemaElemDefs = getSchemaElemDefs(schemaUrl);
+			Map<String, String> schemaElemDefs = getSchemaElemDefs(schemaUrl);
 			elemDefs.putAll(schemaElemDefs);
 			
 			//load imported schema URLs
@@ -486,10 +485,10 @@ public abstract class DDXMLConverter {
 			IXQuery xQuery=ctx.getQueryManager();
 			
 			//run recursively the same function for importing elem defs for imported schemas
-			List schemas = xQuery.getSchemaImports();
+			List<String> schemas = xQuery.getSchemaImports();
 			for (int i = 0; i < schemas.size(); i++) {
 				String schema=(String) schemas.get(i);
-				Map impSchemaElemeDefs = getSchemaElemDefs(schema);
+				Map<String, String> impSchemaElemeDefs = getSchemaElemDefs(schema);
 				elemDefs.putAll(impSchemaElemeDefs);
 			}
 		} catch (Exception ex) {

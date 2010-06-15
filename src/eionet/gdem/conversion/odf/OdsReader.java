@@ -28,10 +28,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 import com.catcode.odf.ODFMetaFileAnalyzer;
 import com.catcode.odf.OpenDocumentMetadata;
@@ -123,7 +124,7 @@ public class OdsReader implements SourceReaderIF {
 	 * @see eionet.gdem.conversion.SourceReaderIF#writeContentToInstance(eionet.gdem.conversion.excel.DD_XMLInstance)
 	 */
 	public void writeContentToInstance(DD_XMLInstance instance)
-			throws GDEMException {
+			throws Exception {
 		List<DDXmlElement> tables = instance.getTables();
 		if (tables == null)
 			throw new GDEMException(
@@ -208,18 +209,18 @@ public class OdsReader implements SourceReaderIF {
 		return spreadsheet.getTableName(0);
 	}
 
-	public Hashtable getSheetSchemas() {
-		Hashtable hash = null;
-		Hashtable usermetadata = metadata.getUserDefined();
-		if (usermetadata.containsKey(TBL_SCHEMAS_ATTR_NAME)) {
-			String ret = (String) usermetadata.get(TBL_SCHEMAS_ATTR_NAME);
+	public Map<String, String> getSheetSchemas() {
+		Map<String, String> resultMap = null;
+		Hashtable userMetadata = metadata.getUserDefined();
+		if (userMetadata.containsKey(TBL_SCHEMAS_ATTR_NAME)) {
+			String ret = (String) userMetadata.get(TBL_SCHEMAS_ATTR_NAME);
 			if (Utils.isNullStr(ret))
-				return hash;
+				return resultMap;
 
 			StringTokenizer st_tbl = new StringTokenizer(ret, TBL_SEPARATOR);
 			if (st_tbl.countTokens() == 0)
-				return hash;
-			hash = new Hashtable();
+				return resultMap;
+			resultMap = new HashMap<String, String>();
 			while (st_tbl.hasMoreTokens()) {
 				String tbl = st_tbl.nextToken();
 				StringTokenizer st_tbl_props = new StringTokenizer(tbl,
@@ -245,13 +246,13 @@ public class OdsReader implements SourceReaderIF {
 					if (!spreadsheet.tableExists(tbl_name))
 						continue;
 				}
-				if (!hash.containsKey(tbl_name)) {
-					hash.put(tbl_name, tbl_schema);
+				if (!resultMap.containsKey(tbl_name)) {
+					resultMap.put(tbl_name, tbl_schema);
 				}
 			}
 
 		}
-		return hash;
+		return resultMap;
 	}
 
 	public boolean isEmptySheet(String sheet_name) {
@@ -308,7 +309,7 @@ public class OdsReader implements SourceReaderIF {
 		if (data == null)
 			return "";
 
-		return data;
+		return data.trim();
 	}
 
 }

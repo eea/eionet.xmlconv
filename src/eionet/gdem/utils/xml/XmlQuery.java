@@ -191,9 +191,9 @@ public class XmlQuery implements IXQuery {
 		return base;
 	}
 
-	public List getSchemaImports() throws XmlException {
+	public List<String> getSchemaImports() throws XmlException {
 		String xpath = "//xs:import";
-		List result = new ArrayList();
+		List<String> result = new ArrayList<String>();
 		try {
 			NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
 			for (int i = 0; i < nodes.getLength(); i++) {

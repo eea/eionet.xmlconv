@@ -42,12 +42,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.codec.binary.Base64;
@@ -258,7 +258,7 @@ public class Utils {
 
     return false;
   }
-  public static boolean isNullHashMap(HashMap h ) {
+  public static boolean isNullHashMap(Map h ) {
 	    if (h==null)
 	      return true;
 	    else
@@ -461,10 +461,11 @@ public class Utils {
 	  }
 
 		
-	  public static boolean containsKeyIgnoreCase(Hashtable hash, String val){
-		Enumeration keys = hash.keys();
-        while (keys.hasMoreElements()){
-            String key = keys.nextElement().toString();
+	  public static boolean containsKeyIgnoreCase(Map<String, String> hash, String val){
+		  
+		Iterator<String> keysIterator = hash.keySet().iterator();
+        while (keysIterator.hasNext()){
+            String key = keysIterator.next();
             if (key.equalsIgnoreCase(val))return true;
         }
         return false;

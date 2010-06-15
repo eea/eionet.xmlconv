@@ -26,7 +26,7 @@ package eionet.gdem.conversion.excel.reader;
 
 import java.io.InputStream;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -96,16 +96,16 @@ public class ExcelReader implements SourceReaderIF
     return null;
 
   }
-  public Hashtable getSheetSchemas(){
+  public Map<String, String> getSheetSchemas(){
 
       if (wb==null) return null;
 
-      HSSFSheet schema_sheet = wb.getSheet(SCHEMA_SHEET_NAME);
+      HSSFSheet schemaSheet = wb.getSheet(SCHEMA_SHEET_NAME);
 
-      if (schema_sheet == null){
+      if (schemaSheet == null){
         for (int i=0; i<wb.getNumberOfSheets();i++){
-          schema_sheet = wb.getSheetAt(i);
-          Hashtable schemas = findSheetSchemas(schema_sheet);
+          schemaSheet = wb.getSheetAt(i);
+          Map<String, String> schemas = findSheetSchemas(schemaSheet);
           if (schemas!=null){
           	if (!schemas.isEmpty())
             return schemas;
@@ -113,11 +113,11 @@ public class ExcelReader implements SourceReaderIF
         }
       }
       else{
-        return findSheetSchemas(schema_sheet);
+        return findSheetSchemas(schemaSheet);
       }
       return null;
     }
-  public void writeContentToInstance(DD_XMLInstance instance)throws GDEMException{
+  public void writeContentToInstance(DD_XMLInstance instance)throws Exception{
     List<DDXmlElement> tables = instance.getTables();
     if (tables == null)
       throw new GDEMException("could not find tables from DD instance file");
@@ -188,7 +188,7 @@ public class ExcelReader implements SourceReaderIF
   	if (row==null) return true;
 
   	for (int j=0; j<=row.getLastCellNum();j++){
-  		HSSFCell cell = row.getCell((short)j);
+  		HSSFCell cell = row.getCell(j);
   		if (cell==null) continue;
   		if (!Utils.isNullStr(cellValueToString(cell, null)))
   			return false;
@@ -226,7 +226,7 @@ public class ExcelReader implements SourceReaderIF
       schemaRow = schema_sheet.getRow(i);
       if (schemaRow==null) continue;
       if (schemaRow.getLastCellNum()<0) continue;
-      schemaCell = schemaRow.getCell((short)0);
+      schemaCell = schemaRow.getCell(0);
       String val = schemaCell.getRichStringCellValue().toString();
 
       if (val.startsWith("http://") &&
@@ -241,21 +241,21 @@ public class ExcelReader implements SourceReaderIF
    * method goes through rows after XML Schema and finds schemas for Excel sheets (DataDict tables).
    *  cell(0) =sheet name; cell(1)= XML schema
    */
-  private Hashtable findSheetSchemas(HSSFSheet schemaSheet){
+  private Map<String, String> findSheetSchemas(HSSFSheet schemaSheet){
 
 
     HSSFRow schemaRow = null;
     HSSFCell schemaCell = null;
     HSSFCell sheetCell = null;
 
-    Hashtable result = new Hashtable();
+    Map<String, String> result = new LinkedHashMap<String, String>();
     if (schemaSheet.getLastRowNum()<1)return null;
 
     for (int i=0; i<=schemaSheet.getLastRowNum(); i++){
       schemaRow = schemaSheet.getRow(i);
       if (schemaRow==null) continue;
       if (schemaRow.getLastCellNum()<1) continue;
-      schemaCell = schemaRow.getCell((short)1);
+      schemaCell = schemaRow.getCell(1);
       if(schemaCell==null)continue;
       String schemaValue = schemaCell.getRichStringCellValue().toString();
 
@@ -263,7 +263,7 @@ public class ExcelReader implements SourceReaderIF
       		schemaValue.toLowerCase().indexOf("/getschema")>0 &&
             Utils.isURL(schemaValue)){
 
-      		sheetCell = schemaRow.getCell((short)0);
+      		sheetCell = schemaRow.getCell(0);
       		String sheetValue = sheetCell.getRichStringCellValue().toString();
       		if (sheetValue==null)continue;
       	    HSSFSheet sheet = getSheet(sheetValue);
@@ -338,7 +338,7 @@ public class ExcelReader implements SourceReaderIF
     	DDXmlElement elem = elements.get(j);
         String elemLocalName = elem.getLocalName();
         for (int k=firstCell;k<lastCell;k++){
-          HSSFCell cell = row.getCell((short)k);
+          HSSFCell cell = row.getCell(k);
           String colName = cellValueToString(cell,null);
           colName = colName!=null ? colName.trim():"";
           if (colName.equalsIgnoreCase(elemLocalName)){
@@ -352,7 +352,7 @@ public class ExcelReader implements SourceReaderIF
   }
   private String getCellValue(HSSFRow row, Integer col_idx, String schemaType){
 
-    HSSFCell cell = (col_idx==null || row==null) ? null : row.getCell(col_idx.shortValue());
+    HSSFCell cell = (col_idx==null || row==null) ? null : row.getCell(col_idx);
     String data = (cell==null) ? "" : cellValueToString(cell, schemaType);
     return data;
   }
