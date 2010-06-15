@@ -9,8 +9,6 @@ import java.util.Map;
 import junit.framework.TestCase;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.test.TestConstants;
-import eionet.gdem.test.TestUtils;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS
@@ -19,44 +17,7 @@ import eionet.gdem.test.TestUtils;
 
 public class DDXMLConverterTest extends TestCase{
 
-	/**
-	 * Tests convert method - validate the result file and metadata( content type and file name) 
-	 */
-	public void testGetContainerSchemaUrl() throws Exception {
-		String url = DDXMLConverter.getContainerSchemaUrl("http://dd.eionet.europa.eu/GetSchema?id=TBL4948");
-		assertEquals("http://dd.eionet.europa.eu/GetContainerSchema?id=TBL4948",url);
-	}
 
-	/**
-	 * Tests convert method - validate the result file and metadata( content type and file name) 
-	 */
-	public void testGetElementsDefs() throws Exception {
-		String schemaUrl =TestUtils.getSeedURL(TestConstants.SEED_GW_CONTAINER_SCHEMA,this);
-		DDXMLConverter converter = new Excel2XML();
-		Map elemDefs = converter.getSchemaElemDefs(schemaUrl);
-		assertEquals(elemDefs.size(),43);
-		
-		String type = (String)elemDefs.get("GWEWN-Code");
-		assertEquals("xs:string",type);
-		
-		String type2 = (String)elemDefs.get("GWArea");
-		assertEquals("xs:decimal",type2);
-		
-
-	}
-	/**
-	 * Tests DD schema URL handling
-	 */
-    public void testDDUrlhandling() throws Exception{
-    	assertEquals("http://dd.eionet.europa.eu/GetXmlInstance?id=3739&type=tbl",
-    			DDXMLConverter.getInstanceUrl("http://dd.eionet.europa.eu/GetSchema?id=TBL3739"));
-    	assertEquals("TBL3739",
-    			DDXMLConverter.getSchemaIdParam(("http://dd.eionet.europa.eu/GetSchema?id=TBL3739")));
-    	assertEquals("DST1111",
-    			DDXMLConverter.getSchemaIdParam(("http://dd.eionet.europa.eu/GetSchema?id=DST1111")));
-    	assertEquals("http://dd.eionet.europa.eu/GetContainerSchema?id=DST1111",
-    			DDXMLConverter.getContainerSchemaUrl(("http://dd.eionet.europa.eu/GetSchema?id=DST1111")));
-    }
     /**
      * Test DD schema verification methdo
      */

@@ -32,7 +32,7 @@ public class ConvertDDXMLMethodTest extends TestCase {
 	/**
 	 * Test DataDictionary MS Excel file to XML conversion.
 	 * seed-dates.xls should be in the resources folder. 
-	 * The method tests, if date fileds converted succesfully.
+	 * The method tests, if date fields converted successfully.
 	 * 
 	 * @throws Exception
 	 */
@@ -46,7 +46,6 @@ public class ConvertDDXMLMethodTest extends TestCase {
 		assertEquals("seed-dates.xml",(String)v.get(2));
 
 		byte[] xml = (byte[])v.get(1);
-		String strXML = new String(xml, "UTF-8");
 
 		//parse date values from result XML
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(xml);
