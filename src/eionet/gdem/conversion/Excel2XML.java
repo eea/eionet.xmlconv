@@ -41,24 +41,4 @@ public class Excel2XML extends DDXMLConverter
 	public String getSourceFormatName(){
 		return FORMAT_NAME;
 	}
-
-
-
-  public static void main(String[] args){
-    //String excelFile = "E:/Projects/gdem/public/test.xls";
-  	//String excelFile = "E:/Projects/gdem/tmp/Summer_ozone.xls";
-    //String excelFile = E\\Projects\\gdem\\exelToXML\\Groundwater_GG_CCxxx.xls";
-	  /*
-  	String excelFile = "E:/Projects/gdem/public/tmp/Rivers.xls";
-    String outFile = "E:\\Projects\\gdem\\tmp\\Instance1925_.xml";
-    try{
-      Excel2XML processor = new Excel2XML();
-      //processor.convertDD_XML_split(excelFile,outFile);
-      processor.convertDD_XML_split(excelFile, null);
-    }
-    catch(Exception e){
-      System.out.println(e.toString());
-    }
-    */
-  }
 }

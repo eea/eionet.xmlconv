@@ -31,8 +31,6 @@ public class DDXmlElement {
     private String name;
     private String localName;
     private String attributes;
-    private boolean hasMultipleValues=false;
-    private String delimiter;
     private int colIndex=-1;
     private boolean isMainTable=false;
     
@@ -41,19 +39,6 @@ public class DDXmlElement {
 		this.name = name;
 		this.localName = localName;
 		this.attributes = attributes;
-	}
-	
-	public boolean isHasMultipleValues() {
-		return hasMultipleValues;
-	}
-	public void setHasMultipleValues(boolean hasMultipleValues) {
-		this.hasMultipleValues = hasMultipleValues;
-	}
-	public String getDelimiter() {
-		return delimiter;
-	}
-	public void setDelimiter(String delimiter) {
-		this.delimiter = delimiter;
 	}
 	public String getName() {
 		return name;

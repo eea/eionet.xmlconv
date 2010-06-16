@@ -33,7 +33,7 @@ public interface IXQuery {
 	 *  For this elemebnt will be searched under element with provided ID .
 	 *
 	 */
-	public Node findElementByAttrs(String parentId, Map attributes) throws XmlException;
+	public Node findElementByAttrs(String parentId, Map<String, String> attributes) throws XmlException;
 
 	public String getAttributeValue(String parentId, String attribute) throws XmlException;
 
@@ -62,7 +62,7 @@ public interface IXQuery {
 	 * @return
 	 * @throws XmlException
 	 */
-	public List getElementIdentifiers(String elementName) throws XmlException;
+	public List<String> getElementIdentifiers(String elementName) throws XmlException;
 
 	/**
 	 * Retruns list of all elements attributes for the specifed element name
@@ -71,7 +71,7 @@ public interface IXQuery {
 	 * @return
 	 * @throws XmlException
 	 */
-	public List getElements(String elementName) throws XmlException;
+	public List<Map<String, String>> getElements(String elementName) throws XmlException;
 
 	/**
 	 * returns the list of element values
@@ -79,7 +79,7 @@ public interface IXQuery {
 	 * @return
 	 * @throws XmlException
 	 */
-	public List getElementValues(String elementName) throws XmlException;
+	public List<String> getElementValues(String elementName) throws XmlException;
 
 	/**
 	 * returns the list XML Schema element names from xs:element name attribute 

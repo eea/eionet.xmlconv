@@ -3,12 +3,21 @@
  */
 package eionet.gdem.conversion;
 
+import java.io.ByteArrayInputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import junit.framework.TestCase;
 import eionet.gdem.Properties;
+import eionet.gdem.conversion.datadict.DD_XMLInstance;
 import eionet.gdem.dcm.BusinessConstants;
+import eionet.gdem.test.TestConstants;
+import eionet.gdem.test.TestUtils;
+import eionet.gdem.utils.xml.IXQuery;
+import eionet.gdem.utils.xml.IXmlCtx;
+import eionet.gdem.utils.xml.XmlContext;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS
@@ -19,12 +28,12 @@ public class DDXMLConverterTest extends TestCase{
 
 
     /**
-     * Test DD schema verification methdo
+     * Test DD schema verification method
      */
     public void testGetInvalidSchemaMessage() throws Exception{
-		MockDDXMLConverter ddConverter = new MockDDXMLConverter();
+		MockDDXMLConverter ddConverter = new MockDDXMLConverter(new Excel2XML());
 
-		Map dataset = new HashMap();
+		Map<String, String> dataset = new HashMap<String, String>();
 		dataset.put("id", "1111");
 		dataset.put("status", "Released");
 		dataset.put("isLatestReleased", "true");
@@ -67,22 +76,84 @@ public class DDXMLConverterTest extends TestCase{
 		assertNull(message);
 
     }
-	class MockDDXMLConverter extends Excel2XML {
+	public void testConvertDDExcelToXml_MultipleValues() throws Exception{
 
-		/**
-		 * Override getDataset and construct the result of xml-rpc method (DDServiceClient.getDataset())
-		 * 
-		 */
+		MockDDXMLConverter converter = new MockDDXMLConverter(new Excel2XML());
+		Map<String, String> dataset = new HashMap<String, String>();
+		dataset.put("id", "6585");
+		dataset.put("status", "Released");
+		dataset.put("isLatestReleased", "true");
+		converter.setDataset(dataset);
+		
+		Vector conversionResult = converter.convertDD_XML_split(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_XLS).getFile(), null);
+		assetTestConvertDD_MultipleValuesresults((Vector)conversionResult.get(0));
+		
+	}
+	public void testConvertDDOdsToXml_MultipleValues() throws Exception{
 
-		Map datasetResult = null;
-		public MockDDXMLConverter() {
+		MockDDXMLConverter converter = new MockDDXMLConverter(new Ods2Xml());
+		Map<String, String> dataset = new HashMap<String, String>();
+		dataset.put("id", "6585");
+		dataset.put("status", "Released");
+		dataset.put("isLatestReleased", "true");
+		converter.setDataset(dataset);
+		
+		Vector conversionResult = converter.convertDD_XML_split(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_ODS).getFile(), null);
+		assetTestConvertDD_MultipleValuesresults((Vector)conversionResult.get(0));
+		
+	}
+	private void assetTestConvertDD_MultipleValuesresults(Vector conversionResult) throws Exception{
+
+		assertEquals(3,conversionResult.size());
+		assertEquals("0",(String)conversionResult.get(0));	
+		assertEquals("GeneralCharacterisation.xml",(String)conversionResult.get(1));
+
+		byte[] xml = (byte[])conversionResult.get(2);
+		
+		//parse date values from result XML
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(xml);
+		IXmlCtx ctx=new XmlContext();
+		ctx.checkFromInputStream(inputStream);
+		
+		IXQuery xQuery=ctx.getQueryManager();
+
+		List<String> multipleValues = xQuery.getElementValues("dd37:Stratigraphy");
+		assertTrue(multipleValues.size()>0);
+		assertEquals("Cambrian", multipleValues.get(0));
+		assertEquals("Carboniferous", multipleValues.get(1));
+		assertEquals("Devonian", multipleValues.get(2));
+		assertEquals("Jurassic,Cambrian", multipleValues.get(3));
+		assertEquals("1", multipleValues.get(4));
+		assertEquals("2", multipleValues.get(5));
+		assertEquals("3", multipleValues.get(6));
+	}
+
+	class MockDDXMLConverter extends DDXMLConverter {
+
+		Map<String, String> datasetResult = null;
+		private DDXMLConverter spreadsheetReader;
+		
+		public MockDDXMLConverter(DDXMLConverter spreadsheetReader) {			
 			super();
+			this.spreadsheetReader = spreadsheetReader;
 		}
-		protected Map getDataset(String type, String dsId){
+		protected Map<String, String> getDataset(String type, String dsId){
 			return datasetResult;
 		}
-		public void setDataset(Map dataset){
+		public void setDataset(Map<String, String> dataset){
 			this.datasetResult = dataset;
+		}
+		protected void importSheetSchemas(SourceReaderIF spreadsheet, DD_XMLInstance instance, String xml_schema){
+			String localSchemaUrl = TestUtils.getSeedURL(TestConstants.SEED_GW_SCHEMA,this);
+			super.importSheetSchemas(spreadsheet, instance, localSchemaUrl);
+		}
+		@Override
+		public String getSourceFormatName() {
+			return spreadsheetReader.getSourceFormatName();
+		}
+		@Override
+		public SourceReaderIF getSourceReader() {
+			return spreadsheetReader.getSourceReader();
 		}
 	}
 }

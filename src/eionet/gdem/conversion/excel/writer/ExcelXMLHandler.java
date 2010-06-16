@@ -51,7 +51,6 @@ public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags{
   private ExcelStyleIF style=null;
 
 
-   private static final int   root_level = 0;
    private static final int   sheet_level = 1;
    private static final int   row_level = 2;
    private static final int   cell_level = 3;

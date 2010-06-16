@@ -27,9 +27,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -40,8 +40,9 @@ import com.catcode.odf.OpenDocumentMetadata;
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.DDXMLConverter;
 import eionet.gdem.conversion.SourceReaderIF;
+import eionet.gdem.conversion.datadict.DDElement;
+import eionet.gdem.conversion.datadict.DD_XMLInstance;
 import eionet.gdem.conversion.excel.reader.DDXmlElement;
-import eionet.gdem.conversion.excel.reader.DD_XMLInstance;
 import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
 
@@ -138,17 +139,17 @@ public class OdsReader implements SourceReaderIF {
 			String tblName = table.getName();
 			String tblAttrs = table.getAttributes();
 
-			List list_tabledata = spreadsheet.getTableData(tblLocalName);
-			List list_metatabledata = getMetaTableData(tblLocalName);
+			List<List<String>> listTableData = spreadsheet.getTableData(tblLocalName);
+			List<List<String>> listMetaTableData = getMetaTableData(tblLocalName);
 
-			if (list_tabledata == null)
+			if (listTableData == null)
 				continue;
 			List<DDXmlElement> elements = instance.getTblElements(tblName);
 
 			setColumnMappings(spreadsheet.getTableHeader(tblLocalName),
 					elements, true);
 
-			if (list_metatabledata != null) {
+			if (listMetaTableData != null) {
 				setColumnMappings(getMetaTableHeader(tblLocalName), elements,
 						false);
 			}
@@ -156,15 +157,17 @@ public class OdsReader implements SourceReaderIF {
 			instance.writeTableStart(tblName, tblAttrs);
 			instance.setCurRow(tblName);
 
+			Map<String, DDElement> elemDefs = instance.getElemDefs(tblName);
+
 			// read data
 			// there are no data rows in the Excel file. We create empty table
 			// first_row = (first_row == last_row) ? last_row : first_row+1;
 			boolean emptySheet = spreadsheet.isEmptySheet(tblLocalName);
 
-			for (int j = 0; j < list_tabledata.size() || emptySheet; j++) {
-				ArrayList list_row = (ArrayList) list_tabledata.get(j);
-				ArrayList list_metarow = (list_metatabledata != null && list_metatabledata
-						.size() > j) ? (ArrayList) list_metatabledata.get(j)
+			for (int j = 0; j < listTableData.size() || emptySheet; j++) {
+				List<String> list_row = listTableData.get(j);
+				List<String> list_metarow = (listMetaTableData != null && listMetaTableData
+						.size() > j) ?  listMetaTableData.get(j)
 						: null;
 
 				// don't convert empty rows.
@@ -174,10 +177,20 @@ public class OdsReader implements SourceReaderIF {
 				instance.writeRowStart();
 				for (int k = 0; k < elements.size(); k++) {
 					DDXmlElement elem = elements.get(k);
-					String elem_name = elem.getName();
-					String elem_attributes = elem.getAttributes();
+					String elemName = elem.getName();
+					String elemLocalName = elem.getLocalName();
+					String elemAttributes = elem.getAttributes();
 					int colIndex = elem.getColIndex();
 					boolean isMainTable = elem.isMainTable();
+
+					boolean hasMultipleValues = false;
+					String delim = null;
+					
+					//get element definition info
+					if (elemDefs!=null && elemDefs.containsKey(elemLocalName)){ 
+						delim = elemDefs.get(elemLocalName).getDelimiter();
+						hasMultipleValues = elemDefs.get(elemLocalName).isHasMultipleValues();
+					}
 
 					String data = "";
 					if (colIndex > -1 && !emptySheet) {
@@ -185,7 +198,15 @@ public class OdsReader implements SourceReaderIF {
 								list_row, colIndex)
 								: getListStringValue(list_metarow, colIndex);
 					}
-					instance.writeElement(elem_name, elem_attributes, data);
+					if(hasMultipleValues && !Utils.isNullStr(delim)){
+						String[] values = data.split(delim);
+						for (String value : values){
+							instance.writeElement(elemName,elemAttributes, value.trim());							
+						}
+					}
+					else{
+						instance.writeElement(elemName, elemAttributes, data);
+					}
 
 				}
 				instance.writeRowEnd();
@@ -210,8 +231,9 @@ public class OdsReader implements SourceReaderIF {
 	}
 
 	public Map<String, String> getSheetSchemas() {
-		Map<String, String> resultMap = null;
+		Map<String, String> resultMap = new LinkedHashMap<String, String>();
 		Hashtable userMetadata = metadata.getUserDefined();
+		
 		if (userMetadata.containsKey(TBL_SCHEMAS_ATTR_NAME)) {
 			String ret = (String) userMetadata.get(TBL_SCHEMAS_ATTR_NAME);
 			if (Utils.isNullStr(ret))
@@ -268,12 +290,12 @@ public class OdsReader implements SourceReaderIF {
 	 * finding these kind of sheets and parsing these in parallel with the main
 	 * sheet
 	 */
-	private List getMetaTableData(String mainSheetName) {
+	private List<List<String>> getMetaTableData(String mainSheetName) {
 		return spreadsheet.getTableData(mainSheetName
 				+ DDXMLConverter.META_SHEET_NAME_ODS);
 	}
 
-	private List getMetaTableHeader(String mainSheetName) {
+	private List<String> getMetaTableHeader(String mainSheetName) {
 		return spreadsheet.getTableHeader(mainSheetName
 				+ DDXMLConverter.META_SHEET_NAME_ODS);
 	}

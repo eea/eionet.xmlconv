@@ -42,12 +42,12 @@ public class XmlQuery implements IXQuery {
 		this.ctx=ctx;
 	}
 
-	public Node findElementByAttrs(String parentId, Map attributes) throws XmlException {
+	public Node findElementByAttrs(String parentId, Map<String, String> attributes) throws XmlException {
 		String xpath = "//*[@id='" + parentId + "']/*[";
-		Iterator attrs = attributes.keySet().iterator();
+		Iterator<String> attrs = attributes.keySet().iterator();
 		int i = 0;
 		while (attrs.hasNext()) {
-			String key = (String) attrs.next();
+			String key = attrs.next();
 			if (i == 0) {
 				xpath += "@" + key + "='" + attributes.get(key) + "' ";
 			} else {
@@ -110,9 +110,9 @@ public class XmlQuery implements IXQuery {
 		return result;
 	}
 
-	public List getElementIdentifiers(String elementName) throws XmlException {
+	public List<String> getElementIdentifiers(String elementName) throws XmlException {
 		String xpath = "//"+elementName;
-		List result = new ArrayList();
+		List<String> result = new ArrayList<String>();
 		try {
 			NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
 			for (int i = 0; i < nodes.getLength(); i++) {
@@ -124,13 +124,13 @@ public class XmlQuery implements IXQuery {
 		}
 		return result;
 	}
-	public List getElements(String elementName) throws XmlException {
+	public List<Map<String, String>> getElements(String elementName) throws XmlException {
 		String xpath = "//"+elementName;
-		List result = new ArrayList();
+		List<Map<String, String>> result = new ArrayList<Map<String, String>>();
 		try {
 			NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
 			for (int i = 0; i < nodes.getLength(); i++) {
-				HashMap attr_map = new HashMap();
+				Map<String, String> attr_map = new HashMap<String, String>();
 				for (int j = 0; j < nodes.item(i).getAttributes().getLength(); j++) {
 					String attr_name=nodes.item(i).getAttributes().item(j).getNodeName();
 					String attr_value=nodes.item(i).getAttributes().item(j).getNodeValue();
@@ -143,9 +143,9 @@ public class XmlQuery implements IXQuery {
 		}
 		return result;
 	}
-	public List getElementValues(String elementName) throws XmlException {
+	public List<String> getElementValues(String elementName) throws XmlException {
 		String xpath = "//"+elementName;
-		List result = new ArrayList();
+		List<String> result = new ArrayList<String>();
 		try {
 			NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
 			for (int i = 0; i < nodes.getLength(); i++) {

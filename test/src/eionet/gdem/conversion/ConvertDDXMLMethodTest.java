@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Vector;
 
 import junit.framework.TestCase;
+import eionet.gdem.conversion.datadict.DD_XMLInstance;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.utils.xml.IXQuery;
@@ -55,7 +56,7 @@ public class ConvertDDXMLMethodTest extends TestCase {
 		IXQuery xQuery=ctx.getQueryManager();
 
 		//TEST if result XML contains ND_EndDate values in 2008-02-01 format and not in numeric format: 39479 
-		List dateValues = xQuery.getElementValues("dd487:ND_EndDate");
+		List<String> dateValues = xQuery.getElementValues("dd487:ND_EndDate");
 		assertTrue(dateValues.size()>0);
 		for (int i = 0; i < dateValues.size(); i++) {
 			String dateValue=(String) dateValues.get(i);
@@ -63,7 +64,7 @@ public class ConvertDDXMLMethodTest extends TestCase {
 		}
 
 		//TEST if result XML contains ND_NoOfSamples values in numeric format and they are not converted to dates 
-		List numValues = xQuery.getElementValues("dd487:ND_NoOfSamples");
+		List<String> numValues = xQuery.getElementValues("dd487:ND_NoOfSamples");
 		assertTrue(numValues.size()>0);
 		for (int i = 0; i < numValues.size(); i++) {
 			String numValue=(String) numValues.get(i);
@@ -74,5 +75,4 @@ public class ConvertDDXMLMethodTest extends TestCase {
 		}
 		
 	}
-
 }

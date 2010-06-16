@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 import eionet.gdem.GDEMException;
+import eionet.gdem.conversion.datadict.DD_XMLInstance;
 
 /**
 * The main class, which is calling POI HSSF methods for reading Excel file

@@ -3,12 +3,9 @@
  */
 package eionet.gdem.conversion;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
 import junit.framework.TestCase;
-import eionet.gdem.dcm.business.DDServiceClient;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 

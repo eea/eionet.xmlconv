@@ -21,7 +21,7 @@
  * Original Code: Enriko Käsper (TietoEnator)
  */
 
-package eionet.gdem.conversion.excel.reader;
+package eionet.gdem.conversion.datadict;
 
 
 import java.lang.reflect.Method;

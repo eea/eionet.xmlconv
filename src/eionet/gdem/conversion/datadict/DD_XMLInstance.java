@@ -21,7 +21,7 @@
  * Original Code: Enriko Käsper (TietoEnator)
  */
 
-package eionet.gdem.conversion.excel.reader;
+package eionet.gdem.conversion.datadict;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eionet.gdem.conversion.datadict.DDElement;
+import eionet.gdem.conversion.excel.reader.DDXmlElement;
 import eionet.gdem.utils.Utils;
 
 public class DD_XMLInstance  {
