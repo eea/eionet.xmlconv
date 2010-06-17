@@ -23,6 +23,7 @@ package eionet.gdem.qa.engines;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
@@ -36,19 +37,19 @@ public class XGawkQueryEngine extends ExternalQueryEngine {
 
 	@Override
 	protected String getShellCommand(String dataFile, String scriptFile,
-			HashMap params) {
+			Map<String, String> params) {
 		return Properties.xgawkCommand + getVariables(params)+ " -f " + scriptFile + " " + dataFile;
 	}
-	protected String getVariables(HashMap params){
+	protected String getVariables(Map<String, String> params){
 		
 		String ret = "";
 		if(!Utils.isNullHashMap(params)){
 			StringBuffer buf = new StringBuffer();
-			Iterator it = params.keySet().iterator();
+			Iterator<String> it = params.keySet().iterator();
 			
 			while (it.hasNext()){
-				String key = (String)it.next();
-				String value = (String)params.get(key);
+				String key = it.next();
+				String value = params.get(key);
 				buf.append(" -v ");
 				buf.append(key);
 				buf.append("=\"");

@@ -34,6 +34,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 import eionet.gdem.Properties;
@@ -205,10 +206,10 @@ public class InputFile  {
 	 * parameters: envelopeurl, envelopepath, instance, filename
 	 * @return
 	 */
-	public HashMap getCdrParams(){
+	public Map<String, String> getCdrParams(){
 		String strEnvelopeUrl = null;
 		String strInstance = null;
-		HashMap h = new HashMap();
+		Map<String, String> h = new HashMap<String, String>();
 		if(getHostName()!=null && getFolderName()!=null){
 			strEnvelopeUrl = getHostName().concat(getFolderName());
 		}

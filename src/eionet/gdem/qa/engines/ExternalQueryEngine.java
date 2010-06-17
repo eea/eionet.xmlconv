@@ -23,7 +23,7 @@ package eionet.gdem.qa.engines;
 
 import java.io.OutputStream;
 import java.io.StringReader;
-import java.util.HashMap;
+import java.util.Map;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.qa.XQScript;
@@ -43,7 +43,7 @@ import eionet.gdem.utils.system.SysCommandExecutor;
 public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
 	private static LoggerIF _logger = GDEMServices.getLogger();
 
-	protected abstract String getShellCommand(String dataFile, String scriptFile, HashMap params);
+	protected abstract String getShellCommand(String dataFile, String scriptFile, Map<String, String> params);
 
 	@Override
 	protected void runQuery(XQScript script, OutputStream result) throws GDEMException {
@@ -69,7 +69,7 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
 		    String srcFile = src.saveSrcFile();
 		    
 		    InputFile srcOrigFile = new InputFile(script.getOrigFileUrl());
-			HashMap params = srcOrigFile.getCdrParams();
+			Map<String, String> params = srcOrigFile.getCdrParams();
 			params.put(XQueryService.XQ_SOURCE_PARAM_NAME, script.getOrigFileUrl());
 
 			String cmd = getShellCommand(srcFile, script.getScriptFileName(), params);

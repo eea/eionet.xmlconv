@@ -25,8 +25,8 @@ package eionet.gdem.conversion.converters;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -48,7 +48,7 @@ import eionet.gdem.utils.Utils;
 
 public abstract class ConvertStartegy {
 	
-	private HashMap xslParams = null;
+	private Map<String, String> xslParams = null;
 	private static LoggerIF _logger = GDEMServices.getLogger();
 	public String xslFolder = Properties.xslFolder+ File.separatorChar; //props.getString("xsl.folder");
 	public String tmpFolder = Properties.tmpFolder+ File.separatorChar; //props.getString("tmp.folder");
@@ -60,7 +60,7 @@ public abstract class ConvertStartegy {
 	/*
 	 *  sets the map of xsl global paramters for this strategy 
 	 */
-	public void setXslParams(HashMap map){
+	public void setXslParams(Map<String, String> map){
 		this.xslParams = map;
 	}
 	
@@ -133,10 +133,10 @@ public abstract class ConvertStartegy {
 		
 		if(xslParams==null)return;
 
-		Iterator keys = xslParams.keySet().iterator();
+		Iterator<String> keys = xslParams.keySet().iterator();
 		while ( keys.hasNext()) {
-			String key = (String)keys.next();
-			String value = (String)xslParams.get(key);
+			String key = keys.next();
+			String value = xslParams.get(key);
 			if(value!=null)
 				transformer.setParameter(key,value);
 		}

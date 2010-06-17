@@ -30,17 +30,18 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
-import org.xml.sax.InputSource;
-
 import eionet.gdem.Properties;
+import eionet.gdem.conversion.converters.ConvertContext;
+import eionet.gdem.conversion.converters.ConvertStartegy;
+import eionet.gdem.conversion.converters.XMLConverter;
 import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.ZipUtil;
 import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XSLTransformer;
 import eionet.gdem.utils.xml.XmlContext;
 
 /*
@@ -235,11 +236,16 @@ public class OpenDocument {
 			if (!Utils.isNullStr(schemaUrl)){
 				os = new FileOutputStream(strWorkingFolder  + File.separator + META_FILE_NAME);
 				in = new FileInputStream(strMetaFile);
-				HashMap parameters = new HashMap();
+				Map<String, String> parameters = new HashMap<String, String>();
 				parameters.put(OdsReader.SCHEMA_ATTR_NAME, schemaUrl);
 				parameters.put(OdsReader.TBL_SCHEMAS_ATTR_NAME, tableSchemaUrls.toString());
-				XSLTransformer transform = new XSLTransformer();
-				transform.transform(strMetaXslFile, new InputSource(in), os, parameters);
+				ConvertContext conversionContext = new ConvertContext(in, strMetaXslFile, os, "xml");
+				ConvertStartegy cs = new XMLConverter();
+				cs.setXslParams(parameters);
+				conversionContext.executeConversion(cs);
+
+				//XSLTransformer transform = new XSLTransformer();
+				//transform.transform(strMetaXslFile, new InputSource(in), os, parameters);
 			}
 
 		} catch (Exception ex) {

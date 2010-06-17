@@ -4,6 +4,7 @@
 package eionet.gdem.utils;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -32,7 +33,7 @@ public class InputFileTest  extends TestCase{
     	assertEquals("http://cdrtest.eionet.europa.eu", inputFile.getHostName());
     	assertEquals("http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/general%20report.xml?param=11&param2=22", inputFile.getURL().toString());
     	
-    	HashMap cdrParams = new HashMap();
+    	Map<String, String> cdrParams = new HashMap<String, String>();
     	cdrParams.put("filename", "general report.xml");
     	cdrParams.put("envelopeurl", "http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg");
     	cdrParams.put("envelopepath", "/ee/eu/art17/envriytkg");
@@ -55,7 +56,7 @@ public class InputFileTest  extends TestCase{
     	assertEquals("http://localhost:8080", inputFile.getHostName());
     	assertEquals("http://localhost:8080/xmlconv/just%20a%20file.dddd#999", inputFile.getURL().toString());
     	
-    	HashMap cdrParams = new HashMap();
+    	Map<String, String> cdrParams = new HashMap<String, String>();
     	cdrParams.put("filename", "just a file.dddd");
     	cdrParams.put("envelopeurl", "http://localhost:8080/xmlconv");
     	cdrParams.put("envelopepath", "/xmlconv");

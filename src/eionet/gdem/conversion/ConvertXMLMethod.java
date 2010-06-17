@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
@@ -417,7 +418,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
 	 * @throws Exception
 	 */
 	private String executeConversion(InputStream source, Object xslt,
-			OutputStream result, HashMap params, String cnvFileExt,
+			OutputStream result, Map<String, String> params, String cnvFileExt,
 			String cnvTypeOut) throws Exception {
 		ConvertContext ctx = new ConvertContext(source, xslt, result,
 				cnvFileExt);

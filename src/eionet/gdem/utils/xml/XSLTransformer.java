@@ -74,6 +74,7 @@ public class XSLTransformer {
                     domFactory.setValidating(false);
                     saxFactory = SAXParserFactory.newInstance();
                     saxFactory.setValidating(false);
+                    saxFactory.setNamespaceAware(true);
                     // if (!tFactory.getFeature(SAXTransformerFactory.FEATURE))
                     // { throw new TransformException(
                     // "Invalid SAX Tranformer. Doesn't support SAX"); }

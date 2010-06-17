@@ -23,9 +23,8 @@ package eionet.gdem.qa.engines;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
+import java.util.Map;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.converters.ConvertContext;
@@ -78,7 +77,7 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
 		    ConvertContext ctx = new ConvertContext(src.getSrcInputStream(), tmpXslFile==null?script.getScriptFileName():tmpXslFile, result,null);
 			ConvertStartegy cs = new XMLConverter();
 			
-			HashMap params = src.getCdrParams();
+			Map<String, String> params = src.getCdrParams();
 			params.put(XQueryService.XQ_SOURCE_PARAM_NAME, script.getOrigFileUrl());
 			cs.setXslParams(params);
 			ctx.executeConversion(cs);
