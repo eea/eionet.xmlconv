@@ -286,11 +286,9 @@ public class InputFile  {
 		if (ticket!=null){
 			//String auth = Utils.getEncodedAuthentication(user,pwd);
 			uc.addRequestProperty("Authorization", " Basic " + ticket);
-
 		}
 
 		this.is = uc.getInputStream();
-
 	}
 	/**
 	 * Stores the URL
