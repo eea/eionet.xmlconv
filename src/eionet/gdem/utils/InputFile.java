@@ -281,6 +281,7 @@ public class InputFile  {
 		URLConnection uc = url.openConnection();
 
 		ticket = getAuthentication();
+		uc.addRequestProperty("Accept", "*/*");
 		
 		if (ticket!=null){
 			//String auth = Utils.getEncodedAuthentication(user,pwd);
