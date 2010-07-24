@@ -76,7 +76,7 @@ public class SaxonImpl extends QAScriptEngineStrategy {
     dynamicEnv.setErrorListener(dynamicListener);
 
     Properties outputProps = new Properties();
-    outputProps.setProperty(OutputKeys.INDENT, "yes");
+    outputProps.setProperty(OutputKeys.INDENT, "no");
     outputProps.setProperty(OutputKeys.ENCODING, DEFAULT_ENCODING);
     //if the output is html, then use method="xml" in output, otherwise, it's not valid xml
     if(getOutputType().equals(HTML_CONTENT_TYPE))
