@@ -316,10 +316,11 @@ public class ExcelReader implements SourceReaderIF
 		case HSSFCell.CELL_TYPE_FORMULA :
 			break;
 		case HSSFCell.CELL_TYPE_NUMERIC :
-			if (HSSFDateUtil.isCellDateFormatted(cell)) { 
+			if (HSSFDateUtil.isCellDateFormatted(cell) && !isYearValue(cell.getNumericCellValue())) { 
 				Date dateValue = cell.getDateCellValue();
 				value= Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
-			}else  if ( HSSFDateUtil.isValidExcelDate(cell.getNumericCellValue()) && schemaType!=null && schemaType.equals("xs:date") ) {
+			}else  if ( HSSFDateUtil.isValidExcelDate(cell.getNumericCellValue()) 
+					&& schemaType!=null && schemaType.equals("xs:date")  && !isYearValue(cell.getNumericCellValue())) {
 				Date dateValue = cell.getDateCellValue();
 				value= Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
 			} else {
@@ -391,5 +392,9 @@ public class ExcelReader implements SourceReaderIF
 		else{
 			return  Integer.toString(int_val);
 		}
+	}
+	//if date formatted cell value is not higher than 4 digit number, then it is probably a year
+	private boolean isYearValue(double doubleCellValue){
+		return doubleCellValue<3000 && doubleCellValue >0;
 	}
 }
