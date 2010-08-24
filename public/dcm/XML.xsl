@@ -114,6 +114,10 @@
             <xsl:value-of select="precision"/>
             <xsl:text disable-output-escaping="yes">&lt;/precision&gt;</xsl:text>            
             <xsl:text disable-output-escaping="yes">&#xd;&#xa;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;multiValueDelim&gt;</xsl:text>           
+            <xsl:value-of select="multiValueDelim"/>
+            <xsl:text disable-output-escaping="yes">&lt;/multiValueDelim&gt;</xsl:text>            
+            <xsl:text disable-output-escaping="yes">&#xd;&#xa;</xsl:text>
             <xsl:text disable-output-escaping="yes">&lt;/elem&gt;</xsl:text>                       
         </xsl:for-each>
         </table>
