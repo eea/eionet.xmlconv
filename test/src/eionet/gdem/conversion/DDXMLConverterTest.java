@@ -86,7 +86,7 @@ public class DDXMLConverterTest extends TestCase{
 		converter.setDataset(dataset);
 		
 		Vector conversionResult = converter.convertDD_XML_split(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_XLS).getFile(), null);
-		assetTestConvertDD_MultipleValuesresults((Vector)conversionResult.get(0));
+		assertTestConvertDD_MultipleValuesresults((Vector)conversionResult.get(0));
 		
 	}
 	public void testConvertDDOdsToXml_MultipleValues() throws Exception{
@@ -99,14 +99,14 @@ public class DDXMLConverterTest extends TestCase{
 		converter.setDataset(dataset);
 		
 		Vector conversionResult = converter.convertDD_XML_split(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_ODS).getFile(), null);
-		assetTestConvertDD_MultipleValuesresults((Vector)conversionResult.get(0));
+		assertTestConvertDD_MultipleValuesresults((Vector)conversionResult.get(0));
 		
 	}
-	private void assetTestConvertDD_MultipleValuesresults(Vector conversionResult) throws Exception{
+	private void assertTestConvertDD_MultipleValuesresults(Vector conversionResult) throws Exception{
 
 		assertEquals(3,conversionResult.size());
 		assertEquals("0",(String)conversionResult.get(0));	
-		assertEquals("GeneralCharacterisation.xml",(String)conversionResult.get(1));
+		assertEquals("GW-Body_Characterisation.xml",(String)conversionResult.get(1));
 
 		byte[] xml = (byte[])conversionResult.get(2);
 		
@@ -114,7 +114,6 @@ public class DDXMLConverterTest extends TestCase{
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(xml);
 		IXmlCtx ctx=new XmlContext();
 		ctx.checkFromInputStream(inputStream);
-		
 		IXQuery xQuery=ctx.getQueryManager();
 
 		List<String> multipleValues = xQuery.getElementValues("dd37:Stratigraphy");
