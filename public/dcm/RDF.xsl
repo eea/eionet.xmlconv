@@ -56,7 +56,7 @@
 				<xsl:element name="rdf:type">
 					<xsl:attribute name="rdf:resource"><xsl:value-of select="concat($dd_domain, '/tables/', tableid, '/rdf/', identifier)"/></xsl:attribute>
 				</xsl:element>
-				<xsl:element name="cr:recordOf"><xsl:attribute name="rdf:resource"><xsl:value-of select="'{$instance}''"/></xsl:attribute></xsl:element>
+				<xsl:element name="cr:recordOf"><xsl:attribute name="rdf:resource"><xsl:value-of select="'{$instance}'"/></xsl:attribute></xsl:element>
 
 				<xsl:text disable-output-escaping="yes">&lt;!-- known by DD --&gt;&#xd;&#xa;</xsl:text>
 				
