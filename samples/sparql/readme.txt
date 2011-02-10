@@ -1,0 +1,1 @@
+This folder contains sample XQuery and XSL scripts that use SPARQL to query RDF data from repositories.
