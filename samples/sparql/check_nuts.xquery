@@ -56,9 +56,10 @@ declare function xmlconv:getHabidesNutsCodes($xmlUrl as xs:string){
         fn:data($node/@code)
  }
  ;
-xmlconv:checkHabidesDelivery("http://cdr.eionet.europa.eu/fi/eu/habides/envts79og/FI_bird_rap_2008.xml")
+xmlconv:checkHabidesDelivery("FI_bird.xml")
  
 (: 
+xmlconv:checkHabidesDelivery("http://cdr.eionet.europa.eu/fi/eu/habides/envts79og/FI_bird_rap_2008.xml")
 xmlconv:getNutsByCode("BE353")
 xmlconv:getNutsByCC("UK")
 xmlconv:checkHabidesDelivery("http://cdr.eionet.europa.eu/fi/eu/habides/envts79og/FI_bird_rap_2008.xml")

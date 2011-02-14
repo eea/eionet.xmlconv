@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="nuts_labels.xsl"?>
+<regions> 
+      <region code="FI"/>
+      <region code="FI19"/>
+      <region code="FI13"/>
+     <region code="FI18"/>
+    <region code="FI1A"/>
+    <region code="CH056"/>
+    <region code="UNKNOWN"/>
+</regions>  
