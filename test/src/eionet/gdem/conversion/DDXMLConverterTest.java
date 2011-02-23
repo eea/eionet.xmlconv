@@ -89,6 +89,19 @@ public class DDXMLConverterTest extends TestCase{
 		assertTestConvertDD_MultipleValuesresults((Vector)conversionResult.get(0));
 		
 	}
+	public void testConvertDDExcel2007ToXml_MultipleValues() throws Exception{
+
+		MockDDXMLConverter converter = new MockDDXMLConverter(new Excel20072XML());
+		Map<String, String> dataset = new HashMap<String, String>();
+		dataset.put("id", "6585");
+		dataset.put("status", "Released");
+		dataset.put("isLatestReleased", "true");
+		converter.setDataset(dataset);
+		
+		Vector conversionResult = converter.convertDD_XML_split(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_XLSX).getFile(), null);
+		assertTestConvertDD_MultipleValuesresults((Vector)conversionResult.get(0));
+		
+	}
 	public void testConvertDDOdsToXml_MultipleValues() throws Exception{
 
 		MockDDXMLConverter converter = new MockDDXMLConverter(new Ods2Xml());

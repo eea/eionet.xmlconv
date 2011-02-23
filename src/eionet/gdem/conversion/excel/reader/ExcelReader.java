@@ -36,7 +36,14 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.RichTextString;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.DDXMLConverter;
@@ -52,14 +59,26 @@ import eionet.gdem.utils.Utils;
 
 public class ExcelReader implements SourceReaderIF
 {
-	private HSSFWorkbook wb=null;
+	private Workbook wb=null;
 	private static final String SCHEMA_SHEET_NAME = "DO_NOT_DELETE_THIS_SHEET";
 	private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
+	private boolean isExcel2007=false;
+	
+	public ExcelReader(boolean excel2007) {
+		isExcel2007=excel2007;
+	}
+	
 	public void initReader(InputStream input) throws GDEMException{
 		try{
-			POIFSFileSystem fs = new POIFSFileSystem(input);
-			wb = new HSSFWorkbook(fs);
+			if (!isExcel2007) {
+				POIFSFileSystem fs = new POIFSFileSystem(input);
+				wb = new HSSFWorkbook(fs);
+			}
+			else {
+				OPCPackage p = OPCPackage.open(input);
+				wb = WorkbookFactory.create(p);
+			}
 		}
 		catch(Exception e)
 		{
@@ -70,7 +89,7 @@ public class ExcelReader implements SourceReaderIF
 
 		if (wb==null) return null;
 
-		HSSFSheet schema_sheet = wb.getSheet(SCHEMA_SHEET_NAME);
+		Sheet schema_sheet = wb.getSheet(SCHEMA_SHEET_NAME);
 
 		if (schema_sheet == null){
 			for (int i=0; i<wb.getNumberOfSheets();i++){
@@ -102,8 +121,8 @@ public class ExcelReader implements SourceReaderIF
 
 		if (wb==null) return null;
 
-		HSSFSheet schemaSheet = wb.getSheet(SCHEMA_SHEET_NAME);
-
+		Sheet schemaSheet = wb.getSheet(SCHEMA_SHEET_NAME);
+		
 		if (schemaSheet == null){
 			for (int i=0; i<wb.getNumberOfSheets();i++){
 				schemaSheet = wb.getSheetAt(i);
@@ -131,14 +150,14 @@ public class ExcelReader implements SourceReaderIF
 			String tblName = table.getName();
 			String tblAttrs = table.getAttributes();
 
-			HSSFSheet sheet = getSheet(tblLocalname);
-			HSSFSheet metaSheet = getMetaSheet(tblLocalname);
-
+			Sheet sheet = getSheet(tblLocalname);
+			Sheet metaSheet = getMetaSheet(tblLocalname);
 			if (sheet == null) continue;
 			int firstRow = sheet.getFirstRowNum();
 			int lastRow = sheet.getLastRowNum();
-			HSSFRow row = sheet.getRow(firstRow);
-			HSSFRow metaRow = null;
+			Row row = sheet.getRow(firstRow);
+			Row metaRow = null;
+			
 			List<DDXmlElement> elements = instance.getTblElements(tblName);
 
 			setColumnMappings(row, elements, true);
@@ -204,11 +223,11 @@ public class ExcelReader implements SourceReaderIF
 		}
 
 	}
-	public boolean isEmptyRow(HSSFRow row){
+	public boolean isEmptyRow(Row row){
 		if (row==null) return true;
 
 		for (int j=0; j<=row.getLastCellNum();j++){
-			HSSFCell cell = row.getCell(j);
+			Cell cell = row.getCell(j);
 			if (cell==null) continue;
 			if (!Utils.isNullStr(cellValueToString(cell, null)))
 				return false;
@@ -217,13 +236,13 @@ public class ExcelReader implements SourceReaderIF
 	}
 	public boolean isEmptySheet(String sheet_name){
 
-		HSSFSheet sheet = getSheet(sheet_name);
+		Sheet sheet = getSheet(sheet_name);
 		int row_count =sheet.getLastRowNum();
 		if (row_count<1) return true;
 
 		//check if the first row has any data
 		for (int i=1; i<=row_count;i++){
-			HSSFRow row = sheet.getRow(i);
+			Row row = sheet.getRow(i);
 			if (isEmptyRow(row))
 				continue;
 			else{
@@ -237,10 +256,10 @@ public class ExcelReader implements SourceReaderIF
 	 * method goes through 4 rows and search the best fit of XML Schema.
 	 * The deault row is 4.
 	 */
-	private String findSchemaFromSheet(HSSFSheet schema_sheet){
-
-		HSSFRow schemaRow = null;
-		HSSFCell schemaCell = null;
+	private String findSchemaFromSheet(Sheet schema_sheet){
+		Row schemaRow = null;
+		Cell schemaCell = null;
+		
 		for (int i=3; i>-1; i--){
 			if (schema_sheet.getLastRowNum()<i) continue;
 			schemaRow = schema_sheet.getRow(i);
@@ -261,12 +280,13 @@ public class ExcelReader implements SourceReaderIF
 	 * method goes through rows after XML Schema and finds schemas for Excel sheets (DataDict tables).
 	 *  cell(0) =sheet name; cell(1)= XML schema
 	 */
-	private Map<String, String> findSheetSchemas(HSSFSheet schemaSheet){
+	private Map<String, String> findSheetSchemas(Sheet schemaSheet){
 
 
-		HSSFRow schemaRow = null;
-		HSSFCell schemaCell = null;
-		HSSFCell sheetCell = null;
+		Row schemaRow = null;
+		Cell schemaCell = null;
+		Cell sheetCell = null;
+		
 
 		Map<String, String> result = new LinkedHashMap<String, String>();
 		if (schemaSheet.getLastRowNum()<1)return null;
@@ -286,15 +306,15 @@ public class ExcelReader implements SourceReaderIF
 				sheetCell = schemaRow.getCell(0);
 				String sheetValue = sheetCell.getRichStringCellValue().toString();
 				if (sheetValue==null)continue;
-				HSSFSheet sheet = getSheet(sheetValue);
+				Sheet sheet = getSheet(sheetValue);
 				if (sheet!=null && !result.containsKey(sheetValue))
 					result.put(sheetValue,schemaValue);
 			}
 		}
 		return result;
 	}
-	private HSSFSheet getSheet(String name){
-		HSSFSheet sheet = wb.getSheet(name.trim());
+	private Sheet getSheet(String name){
+		Sheet sheet = wb.getSheet(name.trim());
 
 		if (sheet == null){
 			for (int i=0; i<wb.getNumberOfSheets();i++){
@@ -310,7 +330,7 @@ public class ExcelReader implements SourceReaderIF
 
 		return null;
 	}
-	protected String cellValueToString(HSSFCell cell, String schemaType){
+	protected String cellValueToString(Cell cell, String schemaType){		
 		String   value = "";
 		switch (cell.getCellType()){
 		case HSSFCell.CELL_TYPE_FORMULA :
@@ -328,7 +348,7 @@ public class ExcelReader implements SourceReaderIF
 			}
 			break;
 		case HSSFCell.CELL_TYPE_STRING :
-			HSSFRichTextString richText = cell.getRichStringCellValue();
+			RichTextString richText = cell.getRichStringCellValue();
 			value=richText.toString();
 			break;
 		case HSSFCell.CELL_TYPE_BOOLEAN :
@@ -345,10 +365,10 @@ public class ExcelReader implements SourceReaderIF
 	 * In XML these should be handled as 1 table.
 	 * This is method for finding these kind of sheets and parsing these in parallel with the main sheet
 	 */
-	private HSSFSheet getMetaSheet(String main_sheet_name){
+	private Sheet getMetaSheet(String main_sheet_name){
 		return getSheet(main_sheet_name + DDXMLConverter.META_SHEET_NAME);
 	}
-	private void setColumnMappings(HSSFRow row, List<DDXmlElement> elements, boolean mainTable){
+	private void setColumnMappings(Row row, List<DDXmlElement> elements, boolean mainTable){
 		//read column header
 
 		if(row==null || elements==null)return;
@@ -359,7 +379,7 @@ public class ExcelReader implements SourceReaderIF
 			DDXmlElement elem = elements.get(j);
 			String elemLocalName = elem.getLocalName();
 			for (int k=firstCell;k<lastCell;k++){
-				HSSFCell cell = row.getCell(k);
+				Cell cell = row.getCell(k);
 				String colName = cellValueToString(cell,null);
 				colName = colName!=null ? colName.trim():"";
 				if (colName.equalsIgnoreCase(elemLocalName)){
@@ -371,9 +391,8 @@ public class ExcelReader implements SourceReaderIF
 		}
 
 	}
-	private String getCellValue(HSSFRow row, Integer col_idx, String schemaType){
-
-		HSSFCell cell = (col_idx==null || row==null) ? null : row.getCell(col_idx);
+	private String getCellValue(Row row, Integer col_idx, String schemaType){
+		Cell cell = (col_idx==null || row==null) ? null : row.getCell(col_idx);
 		String data = (cell==null) ? "" : cellValueToString(cell, schemaType);
 		return data;
 	}

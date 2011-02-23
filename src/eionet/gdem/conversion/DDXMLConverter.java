@@ -87,16 +87,28 @@ public abstract class DDXMLConverter {
 	public static DDXMLConverter getConverter(ByteArrayOutputStream outstream){
 
 		try{
-			if (ExcelUtils.isExcelFile(new ByteArrayInputStream(outstream.toByteArray())))
+			if (ExcelUtils.isExcelFile(new ByteArrayInputStream(outstream.toByteArray()))) {
 				return new Excel2XML();
+			}
 		}
 		catch(Exception e){
 
 		}
+		
+		try {
+ 			if (ExcelUtils.isExcel2007File( new ByteArrayInputStream(outstream.toByteArray()))) {
+ 				_logger.debug("Excel 2007 document");
+				return new Excel20072XML();
+			}
+		} catch (Exception e) {
+			
+		}
+		
 		//If it is a zip file, then it is OpenDocument
 		try{
-			if (OpenDocumentUtils.isSpreadsheetFile(new ByteArrayInputStream(outstream.toByteArray())))
+			if (OpenDocumentUtils.isSpreadsheetFile(new ByteArrayInputStream(outstream.toByteArray()))) {
 				return new Ods2Xml();
+			}
 		}
 		catch(Exception e){
 
@@ -475,5 +487,7 @@ public abstract class DDXMLConverter {
 		else{
 			return DDServiceClient.getMockDataset(type,dsId);
 		}
+	
+	 
 	}
 }
