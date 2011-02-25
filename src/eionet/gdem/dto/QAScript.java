@@ -38,6 +38,7 @@ public class QAScript{
 	String modified;
 	String checksum;
 	String scriptContent;
+	String upperLimit;
 	
     public String getScriptContent() {
 		return scriptContent;
@@ -116,4 +117,12 @@ public class QAScript{
 	public void setSchema(String schema) {
 		this.schema = schema;
 	}
+	public String getUpperLimit() {
+		return upperLimit;
+	}
+	public void setUpperLimit(String upperLimit) {
+		this.upperLimit = upperLimit;
+	}
+	
+	
 }

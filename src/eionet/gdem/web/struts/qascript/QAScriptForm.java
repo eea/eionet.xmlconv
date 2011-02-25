@@ -44,6 +44,9 @@ public class QAScriptForm extends ActionForm {
 	private String scriptContent;
 	private FormFile scriptFile;
 	private String schema;
+	private String upperLimit;
+
+	
 
 	public ActionErrors validate(ActionMapping actionMapping,
 			HttpServletRequest httpServletRequest) {
@@ -64,6 +67,7 @@ public class QAScriptForm extends ActionForm {
 		scriptContent = null;
 		scriptFile = null;
 		schema = null;
+		upperLimit = "10";
 	}
 
 	public String getScriptId() {
@@ -169,4 +173,11 @@ public class QAScriptForm extends ActionForm {
 		this.filePath = filePath;
 	}
 
+	public String getUpperLimit() {
+		return upperLimit;
+	}
+
+	public void setUpperLimit(String upperLimit) {
+		this.upperLimit = upperLimit;
+	}
 }

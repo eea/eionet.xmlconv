@@ -7,7 +7,7 @@ import java.util.Vector;
 public interface IQueryDao extends IDbSchema{
 	  public static String FILEREAD_EXCEPTION = "Unable to read the file: ";
 
-	  public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description, String content_type, String script_type) throws SQLException;
+	  public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description, String content_type, String script_type, String upperLimit) throws SQLException;
 	  /**
 	   * Updates a Query properties in the database
 	   * @param String query_id - id from database, used as a constraint
@@ -17,8 +17,9 @@ public interface IQueryDao extends IDbSchema{
 	   * @param String fileName - query file name
 	   * @param String content_type - result content type
 	   * @param String script_type - xquery, xsl, xgawk
+	   * @param String upperLimit - result upper limit in MB
 	   */
-	   public void updateQuery(String query_id, String schema_id, String short_name, String description, String fileName, String content_type, String script_type) throws SQLException;
+	   public void updateQuery(String query_id, String schema_id, String short_name, String description, String fileName, String content_type, String script_type, String upperLimit) throws SQLException;
 
 	   public void removeQuery(String queryId) throws SQLException;
 

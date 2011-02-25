@@ -76,6 +76,7 @@ public interface IDbSchema {
   public static final String QUERY_FILE_FLD="QUERY_FILENAME";  
   public static final String QUERY_RESULT_TYPE="RESULT_TYPE";
   public static final String QUERY_SCRIPT_TYPE="SCRIPT_TYPE";
+  public static final String UPPER_LIMIT_FLD="UPPER_LIMIT";
 
   /**
   * Field names in SCHEMA table
@@ -87,6 +88,7 @@ public interface IDbSchema {
   public static final String SCHEMA_VALIDATE_FLD="VALIDATE";
   public static final String SCHEMA_LANG_FLD="SCHEMA_LANG";
   public static final String EXPIRE_DATE_FLD="EXPIRE_DATE";
+  
 
   /**
    * Field names in UPL_SCHEMA table

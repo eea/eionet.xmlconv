@@ -72,6 +72,7 @@ public class EditQAScriptAction extends LookupDispatchAction {
 		String scriptType = form.getScriptType();
 		String curFileName = form.getFileName();
 		FormFile content = form.getScriptFile();
+		String upperLimit = form.getUpperLimit();
 
 		String user = (String) httpServletRequest.getSession().getAttribute("user");
 
@@ -83,7 +84,7 @@ public class EditQAScriptAction extends LookupDispatchAction {
 
 		try {
 			QAScriptManager qm = new QAScriptManager();
-			qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, content);
+			qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, content, upperLimit);
 
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.updated"));
 		} catch (DCMException e) {
@@ -120,6 +121,7 @@ public class EditQAScriptAction extends LookupDispatchAction {
 		String scriptType = form.getScriptType();
 		String curFileName = form.getFileName();
 		String scriptContent = form.getScriptContent();
+		String upperLimit = form.getUpperLimit();
 		String checksum = form.getChecksum();
 		boolean updateContent = false;
 		String newChecksum = null;
@@ -149,10 +151,17 @@ public class EditQAScriptAction extends LookupDispatchAction {
 			updateContent = !checksum.equals(newChecksum);
 		}
 
+
+		//upper limit between 0 and 10Gb
+		if (upperLimit == null || !Utils.isNum(upperLimit) || Integer.parseInt(upperLimit) <= 0 || Integer.parseInt(upperLimit) > 10000) {
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.upperlimit.validation"));
+			saveErrors(httpServletRequest.getSession(), errors);
+		}
+		
 		if (errors.isEmpty()) {
 			try {
 				QAScriptManager qm = new QAScriptManager();
-				qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName,
+				qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, upperLimit,
 						scriptContent, updateContent);
 				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.updated"));
 			} catch (DCMException e) {

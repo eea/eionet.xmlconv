@@ -69,6 +69,7 @@ public class QAScriptFormAction extends Action {
 			form.setModified(qaScript.getModified());
 			form.setChecksum(qaScript.getChecksum());
 			form.setScriptContent(qaScript.getScriptContent());
+			form.setUpperLimit(qaScript.getUpperLimit());
 
 			QAScriptListLoader.loadQAScriptList(httpServletRequest, false);
 

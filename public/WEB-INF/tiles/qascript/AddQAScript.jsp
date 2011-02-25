@@ -71,7 +71,17 @@
 					</html:select>				
 				</td>
 			</tr>
-		    <tr>
+			<tr>
+				<td>
+					<label class="question required" for="txtUpperLimit">
+			      		<bean:message key="label.qascript.upperlimit"/>
+			      	</label>
+				</td>
+				<td>
+					<html:text styleId="txtUpperLimit" size="3" property="upperLimit" />				
+				</td>
+			</tr>
+		    <tr class="zebraeven">
 	    	  <td>
 				<label class="question required" for="txtFile">
 			        <bean:message key="label.qascript.fileName"/>

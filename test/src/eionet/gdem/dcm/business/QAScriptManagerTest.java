@@ -62,6 +62,7 @@ public class QAScriptManagerTest  extends DBTestCase{
 		String resultType ="HTML";
 		String scriptType ="xquery";
 		String schema="http://schema.xsd";
+		String upperLimit = "100";
 
 		String user = TestConstants.TEST_ADMIN_USER;
 		
@@ -70,7 +71,7 @@ public class QAScriptManagerTest  extends DBTestCase{
 		MockFormFile scriptFile = new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_QASCRIPT_XQUERY)
 				.getFile());
 		//add qa script into db and upoload schema file
-		String scriptId = qm.add(user, shortName, schemaId, schema, resultType, description, scriptType, scriptFile);
+		String scriptId = qm.add(user, shortName, schemaId, schema, resultType, description, scriptType, scriptFile, upperLimit);
 		
 		// query script by id and compare fields
 		QAScript qascript = qm.getQAScript(scriptId);
@@ -80,6 +81,7 @@ public class QAScriptManagerTest  extends DBTestCase{
 		assertEquals(shortName,qascript.getShortName());
 		assertEquals(resultType,qascript.getResultType());
 		assertEquals(scriptType,qascript.getScriptType());
+		assertEquals(upperLimit, qascript.getUpperLimit());
 
 
 	}
@@ -170,13 +172,14 @@ public class QAScriptManagerTest  extends DBTestCase{
 		String scriptType ="xsl";
 		String fileName = TestConstants.SEED_QASCRIPT_TEST;
 		String content="The source of script file";
+		String upperLimit = "1000";
 
 		String user = TestConstants.TEST_ADMIN_USER;
 		
 		QAScriptManager qm = new QAScriptManager();
 		
 		//update qa script properties
-		qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, content, false);
+		qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, upperLimit, content, false);
 		
 		// query script by id and compare fields
 		QAScript qascript = qm.getQAScript(scriptId);
@@ -186,6 +189,7 @@ public class QAScriptManagerTest  extends DBTestCase{
 		assertEquals(shortName,qascript.getShortName());
 		assertEquals(resultType,qascript.getResultType());
 		assertEquals(scriptType,qascript.getScriptType());
+		assertEquals(upperLimit, qascript.getUpperLimit());
 
 
 	}
@@ -203,6 +207,7 @@ public class QAScriptManagerTest  extends DBTestCase{
 		String resultType ="XML";
 		String scriptType ="xsl";
 		String fileName = TestConstants.SEED_QASCRIPT_XQUERY2;
+		String upperLimit = "100";
 
 		String user = TestConstants.TEST_ADMIN_USER;
 
@@ -212,7 +217,7 @@ public class QAScriptManagerTest  extends DBTestCase{
 		QAScriptManager qm = new QAScriptManager();
 		
 		//update qa script properties
-		qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName,scriptFile);
+		qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName,scriptFile, upperLimit);
 		
 		// query script by id and compare fields
 		QAScript qascript = qm.getQAScript(scriptId);
@@ -222,7 +227,7 @@ public class QAScriptManagerTest  extends DBTestCase{
 		assertEquals(shortName,qascript.getShortName());
 		assertEquals(resultType,qascript.getResultType());
 		assertEquals(scriptType,qascript.getScriptType());
-
+		assertEquals(upperLimit, qascript.getUpperLimit());
 	}
 	/**
 	 * The method updates QA Script content in file system

@@ -81,6 +81,8 @@ public class QAScriptManager {
 				qaScript.setResultType((String) scriptData.get("content_type"));
 				qaScript.setScriptType((String) scriptData.get("script_type"));
 				qaScript.setFileName((String) scriptData.get("query"));
+				qaScript.setUpperLimit((String) scriptData.get("upper_limit"));
+				
 
 				String queryFolder = Properties.queriesFolder;
 
@@ -122,7 +124,7 @@ public class QAScriptManager {
 	}
 
 	public void update(String user, String scriptId, String shortName, String schemaId, String resultType,
-			String descr, String scriptType, String curFileName, FormFile file) throws DCMException {
+			String descr, String scriptType, String curFileName, FormFile file, String upperLimit) throws DCMException {
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
 				throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
@@ -155,7 +157,7 @@ public class QAScriptManager {
 
 				storeQAScriptFile(file, curFileName);
 			}
-			queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType);
+			queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit);
 		} catch (DCMException e) {
 			throw e;
 		} catch (Exception e) {
@@ -182,7 +184,7 @@ public class QAScriptManager {
 	 * @throws DCMException
 	 */
 	public void update(String user, String scriptId, String shortName, String schemaId, String resultType,
-			String descr, String scriptType, String curFileName, String content, boolean updateContent)
+			String descr, String scriptType, String curFileName, String upperLimit, String content, boolean updateContent)
 			throws DCMException {
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
@@ -210,7 +212,7 @@ public class QAScriptManager {
 
 				Utils.saveStrToFile(Properties.queriesFolder + File.separator + curFileName, content, null);
 			}
-			queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType);
+			queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit);
 		} catch (Exception e) {
 			e.printStackTrace();
 			_logger.error("Error updating QA script", e);
@@ -362,13 +364,13 @@ public class QAScriptManager {
 	 * @throws DCMException
 	 */
 	public String add(String user, String shortName, String schemaId, String schema, String resultType,
-			String description, String scriptType, FormFile scriptFile) throws DCMException {
+			String description, String scriptType, FormFile scriptFile, String upperLimit) throws DCMException {
 
 		String scriptId = null;
 		try {
 			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "i")) {
 				_logger.debug("You don't have permissions to insert QA script!");
-				throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_DELETE);
+				throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_INSERT);
 			}
 		} catch (DCMException e) {
 			throw e;
@@ -393,7 +395,7 @@ public class QAScriptManager {
 				}
 			}
 
-			scriptId = queryDao.addQuery(schemaId, shortName, fileName, description, resultType, scriptType);
+			scriptId = queryDao.addQuery(schemaId, shortName, fileName, description, resultType, scriptType, upperLimit);
 			storeQAScriptFile(scriptFile, fileName);
 		} catch (DCMException e) {
 			throw e;

@@ -37,6 +37,7 @@ import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.Utils;
 
 /**
  * @author Enriko Käsper, Tieto Estonia
@@ -59,6 +60,7 @@ public class AddQAScriptAction  extends Action {
 		String resultType = form.getResultType();
 		String scriptType = form.getScriptType();
 		FormFile scriptFile = form.getScriptFile();
+		String upperLimit = form.getUpperLimit();
 
 		String user = (String) httpServletRequest.getSession().getAttribute("user");
 
@@ -83,13 +85,19 @@ public class AddQAScriptAction  extends Action {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.schema.validation"));
 			saveErrors(httpServletRequest.getSession(), errors);
 		}
+		
+		//upper limit between 0 and 10Gb
+		if (upperLimit == null || !Utils.isNum(upperLimit) || Integer.parseInt(upperLimit) <= 0 || Integer.parseInt(upperLimit) > 10000) {
+			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.upperlimit.validation"));
+			saveErrors(httpServletRequest.getSession(), errors);
+		}
 		if(errors.size()>0){
 			return actionMapping.findForward("fail");			
 		}
 
 		try {
 			QAScriptManager qm = new QAScriptManager();
-			qm.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile);
+			qm.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit);
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.inserted"));
 			//clear qascript list in session
 			QAScriptListLoader.loadQAScriptList(httpServletRequest, true);

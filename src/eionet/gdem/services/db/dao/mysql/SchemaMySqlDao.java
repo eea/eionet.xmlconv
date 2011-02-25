@@ -52,7 +52,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 												+ DTD_PUBLIC_ID_FLD + ", " 
 												+ SCHEMA_VALIDATE_FLD + ", " 
 												+ SCHEMA_LANG_FLD  + ", " 
-												+ EXPIRE_DATE_FLD 
+												+ EXPIRE_DATE_FLD   
 												+ " FROM " + SCHEMA_TABLE ;
 
 	private static final String qAllSchemas = 	qSchemaBase  +  " ORDER BY " + XML_SCHEMA_FLD;

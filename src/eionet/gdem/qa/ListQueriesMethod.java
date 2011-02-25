@@ -32,6 +32,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
 	public final static String KEY_TYPE = "type";
 	public final static String KEY_CONTENT_TYPE_OUT = "content_type_out";
 	public final static String KEY_CONTENT_TYPE_ID = "content_type_id";
+	public final static String KEY_UPPER_LIMIT = "upper_limit";
 	
 	public final static String DEFAULT_CONTENT_TYPE_ID="HTML";
 	
@@ -79,6 +80,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
 							ht.put(KEY_CONTENT_TYPE_ID, DEFAULT_CONTENT_TYPE_ID);
 							ht.put(KEY_CONTENT_TYPE_OUT, contentType);
 							ht.put(KEY_TYPE, ((String)h.get("schema_lang")).toLowerCase());
+							ht.put(KEY_UPPER_LIMIT, h.get("upper_limit"));
 							v.add(ht);
 						}
 					}

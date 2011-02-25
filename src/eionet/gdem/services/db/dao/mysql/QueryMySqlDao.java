@@ -41,7 +41,8 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 												+ SHORT_NAME_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ","
 												+ QUERY_TABLE + "." + RESULT_TYPE_FLD + ", "
 												+ CONVTYPE_TABLE + "." + CONTENT_TYPE_FLD + ","
-												+ QUERY_TABLE + "." + QUERY_SCRIPT_TYPE
+												+ QUERY_TABLE + "." + QUERY_SCRIPT_TYPE + ","
+												+ QUERY_TABLE + "." + UPPER_LIMIT_FLD  
 												+ " FROM "
 												+ QUERY_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE
 												+ " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD
@@ -60,7 +61,8 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 												+ DESCR_FLD + "=?" + ", "
 												+ XSL_SCHEMA_ID_FLD + "=?" + ", "
 												+ RESULT_TYPE_FLD + "=?" + ", "
-												+ QUERY_SCRIPT_TYPE + "=?"
+												+ QUERY_SCRIPT_TYPE + "=?" + ", "
+												+ UPPER_LIMIT_FLD + "=?"
 												+ " WHERE " + QUERY_ID_FLD + "=?";
 
 
@@ -72,9 +74,10 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 												+ QUERY_FILE_FLD + ", "
 												+ DESCR_FLD + ", "
 												+ RESULT_TYPE_FLD + ", "
-												+ QUERY_SCRIPT_TYPE
+												+ QUERY_SCRIPT_TYPE + ", "
+												+ UPPER_LIMIT_FLD
 												+ ") " +
-												" VALUES (?,?,?,?,?,?)";
+												" VALUES (?,?,?,?,?,?,?)";
 
 
 	private static final String  qQueryByFileName = "SELECT " + QUERY_ID_FLD + " FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD + "=?";
@@ -91,7 +94,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
 	public QueryMySqlDao(){}
 
-	public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description, String content_type, String script_type) throws SQLException {
+	public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description, String content_type, String script_type, String upperLimit) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -110,6 +113,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 			pstmt.setString(4, description);
 			pstmt.setString(5, content_type);
 			pstmt.setString(6, script_type);
+			pstmt.setInt(7, Integer.parseInt(upperLimit));
 			pstmt.executeUpdate();
 
 			if(pstmt != null) pstmt.close();
@@ -127,7 +131,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 		return result;
 	}
 
-	public void updateQuery(String query_id, String schema_id, String short_name, String description, String fileName, String content_type, String script_type) throws SQLException{
+	public void updateQuery(String query_id, String schema_id, String short_name, String description, String fileName, String content_type, String script_type, String upperLimit) throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
@@ -145,7 +149,9 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 			pstmt.setString(4, schema_id);
 			pstmt.setString(5, content_type);
 			pstmt.setString(6, script_type);
-			pstmt.setInt(7, Integer.parseInt(query_id));
+			pstmt.setInt(7, Integer.parseInt(upperLimit));
+			pstmt.setInt(8, Integer.parseInt(query_id));
+			
 			pstmt.executeUpdate();
 		}finally{
 			closeAllResources(null,pstmt,conn);
@@ -209,6 +215,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 				h.put("content_type", r[0][5]);
 				h.put("meta_type", r[0][6]);
 				h.put("script_type", r[0][7]);
+				h.put("upper_limit", r[0][8]);
 			}
 
 		} finally{

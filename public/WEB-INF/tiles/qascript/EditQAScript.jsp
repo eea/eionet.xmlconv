@@ -86,6 +86,17 @@
 			</tr>
 			<tr>
 				<td>
+					<label class="question" for="txtUpperLimit">
+			      		<bean:message key="label.qascript.upperlimit"/>
+			      	</label>
+				</td>
+				<td>
+					<html:text styleId="txtUpperLimit" size="3" property="upperLimit" />				
+				</td>
+			</tr>
+
+			<tr class="zebraeven">
+				<td>
 					<label class="question" for="txtFile">
 				        <bean:message key="label.qascript.fileName"/>
 				     </label>

@@ -103,6 +103,15 @@
 		      </td>
 		    </tr>
 			<tr>
+        	<th scope="row" class="scope-row">
+				<bean:message key="label.qascript.upperlimit"/>
+			</th>
+	      <td>
+			<bean:write name="QAScriptForm" property="upperLimit" />
+	      </td>
+	    </tr>
+
+			<tr>
 	        	<th scope="row" class="scope-row">
 			        <bean:message key="label.qascript.fileName"/>
 				</th>
