@@ -102,9 +102,9 @@ public class ConvertActionTest extends DBTestCase{
         
         String param1[] = {TestUtils.getSeedURL(TestConstants.SEED_GENERAL_REPORT_XML,this)};
         String param2[] = {"-99"};
-        Map map = new HashMap();
+        Map<String,String[]> map = new HashMap<String,String[]>();
 		map.put(ConvertAction.URL_PARAM_NAME,param1);
-		//map.put(ConvertAction.CONVERT_ID_PARAM_NAME,param2);
+		map.put(ConvertAction.CONVERT_ID_PARAM_NAME,param2);
 
 		//call the request
 		MockServletResponse response = TestUtils.executeAction(new ConvertAction(), map);

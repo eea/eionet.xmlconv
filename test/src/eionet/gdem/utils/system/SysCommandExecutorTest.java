@@ -62,7 +62,7 @@ public class SysCommandExecutorTest extends TestCase{
     	SysCommandExecutor exe = new SysCommandExecutor();
 	    exe.setOutputLogDevice(new LogDevice());
 	    exe.setErrorLogDevice(new LogDevice());
-    	exe.setTimeout(1000L); //1 second
+    	exe.setTimeout(1L); //1 second
 
     	try{
     		int status = exe.runCommand("sleep 3");
