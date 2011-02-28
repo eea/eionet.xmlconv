@@ -56,7 +56,7 @@ public class SysCommandExecutor
 	private ILogDevice fOuputLogDevice = null;
 	private ILogDevice fErrorLogDevice = null;
 	private String fWorkingDirectory = null;
-	private List fEnvironmentVarList = null;
+	private List<EnvironmentVar> fEnvironmentVarList = null;
 	
 	private StringBuffer fCmdOutput = null;
 	private StringBuffer fCmdError = null;
@@ -92,7 +92,7 @@ public class SysCommandExecutor
 	public void setEnvironmentVar(String name, String value)
 	{
 		if( fEnvironmentVarList == null )
-			fEnvironmentVarList = new ArrayList();
+			fEnvironmentVarList = new ArrayList<EnvironmentVar>();
 		
 		fEnvironmentVarList.add(new EnvironmentVar(name, value));
 	}
@@ -175,7 +175,7 @@ public class SysCommandExecutor
 			return null;
 		
 		String[] envTokenArray = new String[fEnvironmentVarList.size()];
-		Iterator envVarIter = fEnvironmentVarList.iterator();
+		Iterator<EnvironmentVar> envVarIter = fEnvironmentVarList.iterator();
 		int nEnvVarIndex = 0; 
 		while (envVarIter.hasNext() == true)
 		{
@@ -205,17 +205,14 @@ public class SysCommandExecutor
         // make sure that we are running on a supported system, and if so set the command line appropriately
         String massagedCommand;
         String osName = System.getProperty("os.name");
-        if (osName.equals("Windows XP"))
-        {
+        if (osName.startsWith("Windows"))        {
             massagedCommand = "cmd.exe /C " + originalCommand;
         }
-        else if (osName.equals("Solaris") || osName.equals("SunOS") || osName.equals("Linux"))
-        {
+        else if (osName.equals("Solaris") || osName.equals("SunOS") || osName.equals("Linux")){
             massagedCommand = originalCommand;
         }
-        else
-        {
-            String errorMessage = "Unable to run on this system which is not Solaris, Linux, or Windows XP (actual OS type: \'" +
+        else{
+            String errorMessage = "Unable to run on this system which is not Solaris, Linux, or some Windows (actual OS type: \'" +
                                   osName + "\').";
             throw new RuntimeException(errorMessage);
         }

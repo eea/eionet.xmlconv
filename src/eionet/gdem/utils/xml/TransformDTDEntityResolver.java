@@ -34,9 +34,9 @@ import org.xml.sax.SAXException;
 import eionet.gdem.utils.Streams;
 
 public class TransformDTDEntityResolver implements EntityResolver {
-    private Map dtds;
+    private Map<String, byte[]> dtds;
 
-    public TransformDTDEntityResolver(Map dtds) {
+    public TransformDTDEntityResolver(Map<String, byte[]> dtds) {
         this.dtds = dtds;
     }
 

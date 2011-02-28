@@ -45,15 +45,18 @@ import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.utils.xml.XSLTransformer;
 
 public abstract class ConvertStartegy {
 	
-	private Map<String, String> xslParams = null;
-	private static LoggerIF _logger = GDEMServices.getLogger();
 	public String xslFolder = Properties.xslFolder+ File.separatorChar; //props.getString("xsl.folder");
 	public String tmpFolder = Properties.tmpFolder+ File.separatorChar; //props.getString("tmp.folder");
 	public static final String XML_FOLDER_URI_PARAM="xml_folder_uri"; 
 	public static final String DD_DOMAIN_PARAM="dd_domain"; 
+
+	private Map<String, String> xslParams = null;
+	private static LoggerIF _logger = GDEMServices.getLogger();
+	private static XSLTransformer transform = new XSLTransformer();
 	
 	public abstract String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException, Exception;
 	
@@ -64,9 +67,9 @@ public abstract class ConvertStartegy {
 		this.xslParams = map;
 	}
 	
-	protected void runXalanTransformation(InputStream in, InputStream xslStream, OutputStream out) throws GDEMException {
+	protected void runXslTransformation(InputStream in, InputStream xslStream, OutputStream out) throws GDEMException {
 		try {
-			TransformerFactory tFactory = TransformerFactory.newInstance();
+			TransformerFactory tFactory = transform.getTransformerFactoryInstance();
 			TransformerErrorListener errors = new TransformerErrorListener();
 			tFactory.setErrorListener(errors);
 
@@ -76,11 +79,13 @@ public abstract class ConvertStartegy {
 			transformer.setParameter(DD_DOMAIN_PARAM,Properties.ddURL);
 			setTransformerParameters(transformer);		
             long l = 0L;
-            if(_logger.enable(LoggerIF.DEBUG))
+            if(_logger.enable(LoggerIF.DEBUG)){
                 l = System.currentTimeMillis();
+            }
 			transformer.transform(new StreamSource(in), new StreamResult(out));
-            if(_logger.enable(LoggerIF.DEBUG))
+            if(_logger.enable(LoggerIF.DEBUG)){
             	_logger.debug((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis() - l).append(" ms").toString());
+            }
 			//System.out.println((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis() - l).append(" ms").toString());
 		} catch (TransformerConfigurationException tce) {
 			throw new GDEMException("Error transforming XML - incorrect stylesheet file: " + tce.toString(), tce);
@@ -102,7 +107,7 @@ public abstract class ConvertStartegy {
 			Result res = new SAXResult(driver.getContentHandler());
 			Source src = new StreamSource(in);
 			Source xsltSrc = new StreamSource(xsl);
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			TransformerFactory transformerFactory = transform.getTransformerFactoryInstance();
 			TransformerErrorListener errors = new TransformerErrorListener();
 
 			transformerFactory.setErrorListener(errors);
@@ -111,11 +116,13 @@ public abstract class ConvertStartegy {
 			transformer.setErrorListener(errors);
 
             long l = 0L;
-            if(_logger.enable(LoggerIF.DEBUG))
+            if(_logger.enable(LoggerIF.DEBUG)){
                 l = System.currentTimeMillis();
+            }
 			transformer.transform(src, res);
-            if(_logger.enable(LoggerIF.DEBUG))
+            if(_logger.enable(LoggerIF.DEBUG)){
             	_logger.debug((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis() - l).append(" ms").toString());
+            }
             
 		} catch (TransformerConfigurationException tce) {
 			throw new GDEMException("Error transforming XML to PDF - incorrect stylesheet file: " + tce.toString(), tce);

@@ -171,7 +171,7 @@ public class OdsReader implements SourceReaderIF {
 						: null;
 
 				// don't convert empty rows.
-				if (Utils.isEmptyArrayList(list_row) && !emptySheet)
+				if (Utils.isEmptyList(list_row) && !emptySheet)
 					continue;
 
 				instance.writeRowStart();

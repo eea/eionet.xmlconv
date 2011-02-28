@@ -34,10 +34,10 @@ public class TextConverter extends ConvertStartegy {
 	public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException, Exception {
 		String outFile = tmpFolder + "gdem_out" + System.currentTimeMillis() + "." + cnvFileExt;
 		if (result != null)
-			runXalanTransformation(source, xslt, result);
+			runXslTransformation(source, xslt, result);
 		else
 			try {
-				runXalanTransformation(source, xslt, new FileOutputStream(outFile));
+				runXslTransformation(source, xslt, new FileOutputStream(outFile));
 			} catch (IOException e) {
 				throw new GDEMException("Error creating TEXT output file with Xalan:" + e.toString(), e);
 			}

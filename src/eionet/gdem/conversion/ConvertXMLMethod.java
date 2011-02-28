@@ -106,10 +106,11 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
 					HashMap styleSheetData = styleSheetDao
 							.getStylesheetInfo(convertId);
 
-					if (styleSheetData == null)
+					if (styleSheetData == null){
 						throw new GDEMException(
 								"No stylesheet info for convertID= "
 										+ convertId);
+					}
 					xslFile = getXslFolder()
 							+ (String) styleSheetData.get("xsl");
 					cnvTypeOut = (String) styleSheetData
@@ -127,10 +128,12 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
 							// Take no action, use default params
 						}
 					}
-					if (cnvContentType == null)
-						cnvContentType = this.DEFAULT_CONTENT_TYPE;
-					if (cnvFileExt == null)
+					if (cnvContentType == null){
+						cnvContentType = RemoteServiceMethod.DEFAULT_CONTENT_TYPE;
+					}
+					if (cnvFileExt == null){
 						cnvFileExt = DEFAULT_FILE_EXT;
+					}
 
 				} catch (Exception e) {
 					_logger.error("error getting con types", e);
@@ -208,7 +211,6 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
 		InputFile src = null;
 		String tblId = "";
 		String convId = "";
-		String convError = null;
 		String cnvFileName = null;
 		String cnvTypeOut = null;
 		String cnvFileExt = null;
@@ -225,10 +227,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
 		String format = Properties.metaXSLFolder + File.separatorChar
 				+ conv.getStylesheet();
 		String url = getDDTableDefUrl(tblId);
-		// xslFile = Properties.gdemURL + "/do/getStylesheet?id=" + tblId +
-		// "&conv=" + convId;
 
-		// pozvati konverziju za sourceURL i xslURL
 		try {
 			ByteArrayInputStream byteIn = XslGenerator.convertXML(url, format);
 			src = new InputFile(sourceURL);

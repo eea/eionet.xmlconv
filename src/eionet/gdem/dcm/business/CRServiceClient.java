@@ -24,6 +24,7 @@
 
 package eionet.gdem.dcm.business;
 
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
@@ -38,6 +39,7 @@ public class CRServiceClient {
 	protected String serviceUrl = null;
 	protected String serviceName = "";
 	protected ServiceClientIF client = null;
+	private static List<Hashtable<String,String>> mockXmlFiles =null; 
 
 
 	protected void load() throws Exception {
@@ -74,6 +76,16 @@ public class CRServiceClient {
 		return list;
 	}
 
+	/**
+	 * The testing purposes
+	 * @return
+	 */
+	public static List<Hashtable<String,String>> getMockXmlFilesBySchema(String schemaUrl) {
+		return mockXmlFiles;
+	}
+	public static void setMockXmlFilesBySchema(List<Hashtable<String,String>> mockXmlFiles) {
+		CRServiceClient.mockXmlFiles = mockXmlFiles;
+	}
 
 	public static void main(String args[]) {
 		String schemaURL = "http://waste.eionet.eu.int/schemas/dir200053ec/schema.xsd";

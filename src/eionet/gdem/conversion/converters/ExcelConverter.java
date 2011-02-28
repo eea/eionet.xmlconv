@@ -40,7 +40,7 @@ public class ExcelConverter extends ConvertStartegy {
 		String xmlFile = tmpFolder + "gdem_out" + System.currentTimeMillis() + ".xml";
 		String excelFile = tmpFolder + "gdem_" + System.currentTimeMillis() + ".xls";
 		try {
-			runXalanTransformation(source, xslt, new FileOutputStream(xmlFile));
+			runXslTransformation(source, xslt, new FileOutputStream(xmlFile));
 			ExcelProcessor ep = new ExcelProcessor();
 			if (result != null)
 				ep.makeExcel(xmlFile, result);

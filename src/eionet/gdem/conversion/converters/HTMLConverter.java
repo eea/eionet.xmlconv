@@ -34,10 +34,10 @@ public class HTMLConverter extends ConvertStartegy {
 	public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException, Exception {
 		String htmlFile = tmpFolder + "gdem_" + System.currentTimeMillis() + ".html";
 		if (result != null)
-			runXalanTransformation(source, xslt, result);
+			runXslTransformation(source, xslt, result);
 		else {
 			try {
-				runXalanTransformation(source, xslt, new FileOutputStream(htmlFile));
+				runXslTransformation(source, xslt, new FileOutputStream(htmlFile));
 			} catch (IOException e) {
 				throw new GDEMException("Error creating HTML output file " + e.toString(), e);
 			}

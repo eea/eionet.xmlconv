@@ -45,7 +45,7 @@ public class OdsConverter extends ConvertStartegy {
 
 		try {
 			xmlOut = new FileOutputStream(xmlFile);
-			runXalanTransformation(source, xslt, xmlOut);
+			runXslTransformation(source, xslt, xmlOut);
 			OpenDocumentProcessor odp = new OpenDocumentProcessor();
 			if (result != null)
 				odp.makeSpreadsheet(xmlFile, result);

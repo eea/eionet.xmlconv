@@ -27,6 +27,7 @@ package eionet.gdem.conversion.odf;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -292,7 +293,7 @@ public class ODFSpreadsheetAnalyzer {
 	protected void processDataRow(Element rowElement,
 			OpenDocumentSpreadsheet spreadsheetResult) {
 
-		ArrayList list_data_row = new ArrayList();
+		List<String> list_data_row = new ArrayList<String>();
 		// number of columns in the table (the number of header cells)
 		int i_tblcol_count = spreadsheetResult.getTableColCount(null);
 
@@ -303,8 +304,9 @@ public class ODFSpreadsheetAnalyzer {
 
 		NodeList cellNodes = rowElement.getElementsByTagName(tableNamespace
 				+ "table-cell");
-		if (cellNodes.getLength() == 0)
+		if (cellNodes.getLength() == 0){
 			return;
+		}
 
 		for (int cellNo = 0; cellNo < cellNodes.getLength(); cellNo++) {
 			Element cell = (Element) cellNodes.item(cellNo);
@@ -319,18 +321,21 @@ public class ODFSpreadsheetAnalyzer {
 			for (int l = 0; l < i_cols_repeated; l++) {
 				list_data_row.add(cell_value);
 				// don't add more data columns as header columns
-				if (i_tblcol_count == list_data_row.size())
+				if (i_tblcol_count == list_data_row.size()){
 					break;
+				}
 			}
 			// don't add more data columns as header columns
-			if (i_tblcol_count == list_data_row.size())
+			if (i_tblcol_count == list_data_row.size()){
 				break;
+			}
 
 		}
 		// This is empty row and repeated more than 1 times.
 		// It is probably the last one - don't add it to spreadsheet
-		if (i_rows_repeated > 100 && Utils.isEmptyArrayList(list_data_row))
+		if (i_rows_repeated > 100 && Utils.isEmptyList(list_data_row)){
 			return;
+		}
 
 		// similar rows can be repeated, add ArrayList into sreadsheet the same
 		// number of times

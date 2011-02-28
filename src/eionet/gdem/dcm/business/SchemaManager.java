@@ -1147,7 +1147,13 @@ public class SchemaManager {
 	 * @throws Exception 
 	 */
 	protected List getXmlFilesBySchema(String schema) throws Exception{ 
-		return CRServiceClient.getXmlFilesBySchema(schema);
+        if(!GDEMServices.isTestConnection()){
+            return CRServiceClient.getXmlFilesBySchema(schema);
+        }
+        else{
+            return CRServiceClient.getMockXmlFilesBySchema(schema);
+        }
+		
 	}
 
 

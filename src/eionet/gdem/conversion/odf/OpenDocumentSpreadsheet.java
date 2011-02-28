@@ -234,7 +234,7 @@ public class OpenDocumentSpreadsheet {
 
 					// If row contains any String data, then it is not empty,
 					// return false
-					if (!Utils.isEmptyArrayList(row))
+					if (!Utils.isEmptyList(row))
 						return false;
 				} catch (Exception e) {
 					continue;

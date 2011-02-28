@@ -43,7 +43,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -65,69 +65,10 @@ import eionet.gdem.utils.xml.XmlContext;
 public class Utils {
 
 
-	private static Hashtable xmlEscapes = null;
+	private static Map<Character, String> xmlEscapes = null;
 	
 	private static LoggerIF _logger = GDEMServices.getLogger();
 
-	/*
-  public static String tmpFolder="/tmp";
-
-  //public static String urlPrefix="http://conversions.eionet.eu.int/";
-
-  public static String xslFolder="/xsl/";
-
-  //Database settings from the properties file
-  public static String dbUrl=null;
-  public static String dbDriver=null;
-  public static String dbUser=null;
-  public static String dbPwd=null;
-
-  //period for checking new jobs in the workqueue in milliseconds, default 20sec
-  public static long wqCheckInterval=20000L;
-
-   //NB Saxon is the default value, not hard-coded!
-	public static String engineClass="eionet.gdem.qa.engines.SaxonImpl";
-
-	private static ResourceBundle props;
-  private static Category logger;
-  */
-/*
-  static {
-    if(logger == null)
-        logger = Category.getInstance("gdem");
-
-    if (props==null) {
-      props=ResourceBundle.getBundle("gdem");
-      try {
-        tmpFolder=props.getString("tmp.folder");
-        xslFolder=props.getString("xsl.folder");
-
-        //DB connection settings
-        dbDriver=props.getString("db.driver");
-        dbUrl=props.getString("db.url");
-        dbUser=props.getString("db.user");
-        dbPwd=props.getString("db.pwd");
-
-        engineClass=props.getString("xq.engine.implementator");
-
-				//period in seconds
-	      String frequency = props.getString("wq.check.interval");
-		    Float f = new Float(frequency);
-			  wqCheckInterval = (long)(f.floatValue() * 1000);
-
-        //wqCheckInterval= (Long.getLong(props.getString("wq.check.interval"))).longValue();
-
-
-        //urlPrefix=props.getString("url.prefix"); //URL where the files can be downloaded
-      } catch (MissingResourceException mse) {
-
-        //no error handling? go with the default values??
-      } catch (Exception e ) {
-					System.out.println("error " + e.toString());
-			}
-    }
-  }
-  */
   /**
   * saving an URL stream to the specified text file
   */
@@ -377,12 +318,13 @@ public class Utils {
 
 		if (xmlEscapes==null) setXmlEscapes();
 		Character c = new Character(text.charAt(pos));
-		for (Enumeration e=xmlEscapes.elements(); e.hasMoreElements(); ){
-			String esc = (String)e.nextElement();
+		    
+	    for(String esc : xmlEscapes.values()){
 			if (pos+esc.length() < text.length()){
 				String sub = text.substring(pos, pos+esc.length());
-				if (sub.equals(esc))
+				if (sub.equals(esc)){
 					return c.toString();
+				}
 			}
 		}
 
@@ -394,8 +336,9 @@ public class Utils {
 					try{
 						// if the string between # and ; is a number then return true,
 						// because it is most probably an escape sequence
-						if (Integer.parseInt(sub)>=0)
+						if (Integer.parseInt(sub)>=0){
 							return c.toString();
+						}
 					}
 					catch (NumberFormatException nfe){}
 				}
@@ -403,14 +346,16 @@ public class Utils {
 		}
 
 		String esc = (String)xmlEscapes.get(c);
-		if (esc!=null)
+		if (esc!=null){
 			return esc;
-		else
+		}
+		else{
 			return c.toString();
+		}
 	}
 
 	private static void setXmlEscapes(){
-		xmlEscapes = new Hashtable();
+		xmlEscapes = new HashMap<Character, String>();
 		xmlEscapes.put(new Character('&'), "&amp;");
 		xmlEscapes.put(new Character('<'), "&lt;");
 		xmlEscapes.put(new Character('>'), "&gt;");
@@ -478,7 +423,7 @@ public class Utils {
 	 *
 	 * @return value	true, if the list does not contain any String values, otherwise true
 	 */
-	public static boolean isEmptyArrayList(List<String> list){
+	public static boolean isEmptyList(List<String> list){
 		boolean ret =true;
 		if (list == null)return ret;
         if (list.size()==0) return ret;
@@ -936,7 +881,7 @@ public class Utils {
         for (int i=0; i<dstBytes.length; i++){
             Byte byteWrapper = new Byte(dstBytes[i]);
             int k = byteWrapper.intValue();
-            String s = Integer.toHexString(byteWrapper.intValue());
+            String s = Integer.toHexString(k);
             if (s.length() == 1) s = "0" + s;
             buf.append(s.substring(s.length() - 2));
         }
@@ -979,7 +924,7 @@ public class Utils {
         for (int i=0; i<dstBytes.length; i++){
             Byte byteWrapper = new Byte(dstBytes[i]);
             int k = byteWrapper.intValue();
-            String s = Integer.toHexString(byteWrapper.intValue());
+            String s = Integer.toHexString(k);
             if (s.length() == 1) s = "0" + s;
             buf.append(s.substring(s.length() - 2));
         }

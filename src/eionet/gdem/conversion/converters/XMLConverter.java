@@ -34,10 +34,10 @@ public class XMLConverter extends ConvertStartegy {
 	public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException, Exception {
 		String xmlFile = tmpFolder + "gdem_out" + System.currentTimeMillis() + "." + cnvFileExt;
 		if (result != null)
-			runXalanTransformation(source, xslt, result);
+			runXslTransformation(source, xslt, result);
 		else
 			try {
-				runXalanTransformation(source, xslt, new FileOutputStream(xmlFile));
+				runXslTransformation(source, xslt, new FileOutputStream(xmlFile));
 			} catch (IOException e) {
 				throw new GDEMException("Error creating XML output file " + e.toString(), e);
 			}

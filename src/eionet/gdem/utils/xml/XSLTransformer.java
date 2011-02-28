@@ -30,7 +30,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -48,6 +47,9 @@ import javax.xml.transform.sax.TemplatesHandler;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
+import net.sf.saxon.Configuration;
+import net.sf.saxon.FeatureKeys;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -60,27 +62,20 @@ public class XSLTransformer {
         synchronized (mutex) {
             try {
                 ResourceBundle props = ResourceBundle.getBundle("xml");
-                String jaxSaxFactoryProp = props.getString(JAX_SAX_PARSER_PROPERTY);
-                String jaxDomFactoryProp = props.getString(JAX_DOM_PARSER_PROPERTY);
-                String jaxTransformFactoryProp = props.getString(JAX_TRANSFORM_PROPERTY);
-                String saxDriverProp = props.getString(SAX_DRIVER);
+                jaxSaxFactoryProp = props.getString(JAX_SAX_PARSER_PROPERTY);
+                jaxDomFactoryProp = props.getString(JAX_DOM_PARSER_PROPERTY);
+                jaxTransformFactoryProp = props.getString(JAX_TRANSFORM_PROPERTY);
+                saxDriverProp = props.getString(SAX_DRIVER);
                 if (transformerFactory == null) {
-                    System.setProperty(JAX_TRANSFORM_PROPERTY, jaxTransformFactoryProp);
-                    System.setProperty(JAX_SAX_PARSER_PROPERTY, jaxSaxFactoryProp);
-                    System.setProperty(JAX_DOM_PARSER_PROPERTY, jaxDomFactoryProp);
-                    System.setProperty(SAX_DRIVER, saxDriverProp);
-                    TransformerFactory tFactory = TransformerFactory.newInstance();
-                    domFactory = DocumentBuilderFactory.newInstance();
+                    TransformerFactory tFactory = TransformerFactory.newInstance(jaxTransformFactoryProp, null);
+                    domFactory = DocumentBuilderFactory.newInstance(jaxDomFactoryProp, null);
                     domFactory.setValidating(false);
-                    saxFactory = SAXParserFactory.newInstance();
+                    saxFactory = SAXParserFactory.newInstance(jaxSaxFactoryProp, null);
                     saxFactory.setValidating(false);
                     saxFactory.setNamespaceAware(true);
-                    // if (!tFactory.getFeature(SAXTransformerFactory.FEATURE))
-                    // { throw new TransformException(
-                    // "Invalid SAX Tranformer. Doesn't support SAX"); }
                     transformerFactory = ((SAXTransformerFactory) tFactory);
+                    transformerFactory.setAttribute(FeatureKeys.RECOVERY_POLICY, Configuration.RECOVER_SILENTLY);
                 }
-
             } catch (MissingResourceException mre) {
             	mre.printStackTrace();
             }
@@ -89,28 +84,34 @@ public class XSLTransformer {
     }
 
     private static DocumentBuilderFactory domFactory = null;
-
     private static SAXParserFactory saxFactory = null;
-
     private static SAXTransformerFactory transformerFactory = null;
-
     private final static Object mutex = new Object();
 
     //
     // JAXP System Wide Properties
     //
     private static final String JAX_TRANSFORM_PROPERTY = "javax.xml.transform.TransformerFactory";
-
     private static final String JAX_SAX_PARSER_PROPERTY = "javax.xml.parsers.SAXParserFactory";
-
     private static final String JAX_DOM_PARSER_PROPERTY = "javax.xml.parsers.DocumentBuilderFactory";
-    
     private static final String SAX_DRIVER = "org.xml.sax.driver";
 
-    // DTD Map
-    static private Map dtds = new HashMap();
+    private static String jaxSaxFactoryProp;
+    private static String jaxDomFactoryProp;
+    private static String jaxTransformFactoryProp;
+    private static String saxDriverProp;
 
-    public void transform(String xslt, InputSource inputSource, OutputStream os, Map parameters) throws TransformException {
+    // DTD Map
+    static private Map<String, byte[]> dtds = new HashMap<String, byte[]>();
+
+    /**
+     * returns TransformerFactory instance
+     * @return
+     */
+    public TransformerFactory getTransformerFactoryInstance(){
+    	return transformerFactory;
+    }
+    public void transform(String xslt, InputSource inputSource, OutputStream os, Map<String, Object>  parameters) throws TransformException {
         if (xslt == null) {
             try { // if no stylesheet specified simply drain the stream
                 Streams.drain(inputSource.getByteStream(), os);
@@ -129,7 +130,7 @@ public class XSLTransformer {
         }
     }
 
-    public void transform(String xslt, InputSource inputSource, Writer writer, Map parameters) throws TransformException {
+    public void transform(String xslt, InputSource inputSource, Writer writer, Map<String, Object>  parameters) throws TransformException {
         if (xslt == null) {
             try { // if no stylesheet specified simply drain the stream
                 Streams.drain(inputSource.getByteStream(), writer);
@@ -148,7 +149,7 @@ public class XSLTransformer {
         }
     }
 	
-	public void transform(String xsltName, String xslContent, InputSource inputSource, OutputStream os, Map parameters) throws TransformException {
+	public void transform(String xsltName, String xslContent, InputSource inputSource, OutputStream os, Map<String, Object>  parameters) throws TransformException {
 		  ByteArrayInputStream bais=new ByteArrayInputStream(xslContent.getBytes());
           InputStreamReader ssreader = new InputStreamReader(bais);
 		  transformStream(xsltName, ssreader, inputSource,  new StreamResult(os), parameters);
@@ -165,7 +166,7 @@ public class XSLTransformer {
 	 * @param parameters
 	 * @throws TransformException
 	 */
-	public void transform(String xsltName, InputStream xslIs, InputStream is, OutputStream os, Map parameters) throws TransformException {
+	public void transform(String xsltName, InputStream xslIs, InputStream is, OutputStream os, Map<String, Object>  parameters) throws TransformException {
         InputStreamReader ssreader = new InputStreamReader(xslIs);
 		  transformStream(xsltName, ssreader, new InputSource(is),  new StreamResult(os), parameters);
 		  
@@ -173,7 +174,7 @@ public class XSLTransformer {
 	
 	
 
-    private void transformStream(String xslt, InputStreamReader xslReader, InputSource inputSource, StreamResult streamResult, Map parameters) throws TransformException {
+    private static void transformStream(String xslt, InputStreamReader xslReader, InputSource inputSource, StreamResult streamResult, Map<String, Object> parameters) throws TransformException {
         if (xslt == null) {
             throw new TransformException("Invalid Transform, no stylesheet set!");
         }
@@ -194,7 +195,7 @@ public class XSLTransformer {
             TemplatesHandler templatesHandler = transformerFactory.newTemplatesHandler();
 
             // Create an XMLReader and set its ContentHandler.
-            XMLReader reader = XMLReaderFactory.createXMLReader();
+            XMLReader reader = XMLReaderFactory.createXMLReader(saxDriverProp);
             reader.setContentHandler(templatesHandler);
 
             // Set it to solve Entities via cache
@@ -230,12 +231,9 @@ public class XSLTransformer {
                 //
                 // Get the transform variables (parameters)
                 //
-                Iterator keys = parameters.keySet().iterator();
-                while (keys.hasNext()) {
-                    String name = (String) keys.next();
-                    String value = (String) parameters.get(name);
-                    processor.setParameter(name, value);
-                }
+            	for (Map.Entry<String, Object> param : parameters.entrySet()){
+                    processor.setParameter(param.getKey(), param.getValue());            		
+            	}
             }
 
             //
