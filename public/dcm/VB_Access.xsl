@@ -52,17 +52,32 @@
         <xsl:text disable-output-escaping="yes">]"            &lt;xsl:call-template name="fields"/&gt;</xsl:text> 
         <xsl:text disable-output-escaping="yes"> VALUES ('&lt;xsl:value-of select="@status"/&gt;',</xsl:text>
    <!--   insert data  -->
-        <xsl:text disable-output-escaping="yes">&lt;xsl:for-each select="*"&gt;</xsl:text>
-        <xsl:element name="xsl:if"><xsl:attribute name="test">count(preceding-sibling::*[local-name() = local-name(current())])=0</xsl:attribute>
-			<xsl:element name="xsl:if"><xsl:attribute name="test">.=''</xsl:attribute>null</xsl:element>
-			<xsl:element name="xsl:if"><xsl:attribute name="test">.!=''</xsl:attribute>&apos;<xsl:element name="xsl:call-template">
-					<xsl:attribute name="name">globalReplace</xsl:attribute>
-					<xsl:element name="xsl:with-param"><xsl:attribute name="name">outputString</xsl:attribute><xsl:element name="xsl:call-template"><xsl:attribute name="name">getValue</xsl:attribute></xsl:element></xsl:element>
-					<xsl:element name="xsl:with-param"><xsl:attribute name="name">target</xsl:attribute><xsl:attribute name="select">&quot;'&quot;</xsl:attribute></xsl:element>
-					<xsl:element name="xsl:with-param"><xsl:attribute name="name">replacement</xsl:attribute><xsl:attribute name="select">&quot;''&quot;</xsl:attribute></xsl:element>
-				</xsl:element>&apos;</xsl:element><xsl:element name="xsl:if"><xsl:attribute name="test">position()!=last()  and count(following-sibling::*[local-name() != local-name(current())])&gt;0</xsl:attribute>,</xsl:element>
-		</xsl:element>
-		<xsl:text disable-output-escaping="yes">&lt;/xsl:for-each&gt;</xsl:text>
+        <xsl:element name="xsl:variable">
+            <xsl:attribute name="name">row</xsl:attribute>
+            <xsl:attribute name="select">.</xsl:attribute>
+        </xsl:element>
+        <xsl:element name="xsl:for-each" namespace="http://www.w3.org/1999/XSL/Transform">
+            <xsl:attribute name="select">$elementsMetadata/element</xsl:attribute>
+            <xsl:element name="xsl:variable">
+                <xsl:attribute name="name">elemIdentifier</xsl:attribute>
+                <xsl:element name="xsl:value-of"><xsl:attribute name="select">identifier</xsl:attribute></xsl:element>
+            </xsl:element>			
+            <xsl:element name="xsl:variable">
+                <xsl:attribute name="name">multiValueSeparator</xsl:attribute>
+                <xsl:element name="xsl:call-template">
+                    <xsl:attribute name="name">getSeparator</xsl:attribute>
+                    <xsl:element name="xsl:with-param">
+                        <xsl:attribute name="name">element</xsl:attribute>
+                        <xsl:attribute name="select">$elemIdentifier</xsl:attribute>
+                    </xsl:element>
+                </xsl:element>
+            </xsl:element>
+            <xsl:element name="xsl:choose">
+                <xsl:element name="xsl:when"><xsl:attribute name="test">count($row/*[local-name()= $elemIdentifier])=0 or string-join($row/*[local-name()= $elemIdentifier ],'')=''</xsl:attribute>null</xsl:element>
+                <xsl:element name="xsl:otherwise">&apos;<xsl:element name="xsl:value-of"><xsl:attribute name="select">replace(string-join($row/*[local-name()= $elemIdentifier ],$multiValueSeparator),&quot;'&quot;,&quot;''&quot;)</xsl:attribute></xsl:element>&apos;</xsl:element>
+            </xsl:element>			
+            <xsl:element name="xsl:if"><xsl:attribute name="test">position()!=last()</xsl:attribute>,</xsl:element>
+        </xsl:element>
         <xsl:text disable-output-escaping="yes">); " &#xd;&#xa;</xsl:text>                 
         <xsl:text disable-output-escaping="yes">conn.Execute (query) &#xd;&#xa;</xsl:text>                              
         <xsl:text disable-output-escaping="yes">' End SQL command &#xd;&#xa;</xsl:text>               
@@ -79,17 +94,24 @@
         <xsl:text disable-output-escaping="yes">query = "CREATE TABLE [</xsl:text>
         <xsl:value-of select="identifier"/>
         <xsl:text disable-output-escaping="yes">] (status text(10), " </xsl:text>
-        <xsl:text disable-output-escaping="no"> &#xd;&#xa;</xsl:text>        
-        
-        <xsl:text disable-output-escaping="yes">&lt;xsl:for-each select="*"&gt;</xsl:text>
-    <!--      <xsl:text disable-output-escaping="yes">[&lt;xsl:value-of select="local-name()" /&gt;]&lt;xsl:value-of select="' '"/&gt;&lt;xsl:call-template name="getFieldType"&gt;&lt;xsl:with-param name="name" select="local-name()"/&gt;&lt;/xsl:call-template&gt;&#xd;&#xa;</xsl:text>-->
-        <xsl:element name="xsl:if"><xsl:attribute name="test">count(preceding-sibling::*[local-name() = local-name(current())])=0</xsl:attribute>
-			<xsl:text disable-output-escaping="no">query = query &amp; </xsl:text>         
-			<xsl:text disable-output-escaping="yes">" [&lt;xsl:value-of select="translate(local-name(),'.','_')" /&gt;]&lt;xsl:value-of select="' '"/&gt;&lt;xsl:call-template name="getFieldType"&gt;&lt;xsl:with-param name="name" select="local-name()"/&gt;&lt;/xsl:call-template&gt;&#xd;&#xa;</xsl:text>
-			<xsl:text disable-output-escaping="yes">&lt;xsl:if test="position()!=last()  and count(following-sibling::*[local-name() != local-name(current())])&gt;0"&gt;,&lt;/xsl:if&gt;  " </xsl:text>
-			<xsl:text disable-output-escaping="yes">&#xd;&#xa;</xsl:text> 
-		</xsl:element>
-        <xsl:text disable-output-escaping="yes">&lt;/xsl:for-each&gt;</xsl:text>
+        <xsl:text disable-output-escaping="yes">&#xd;&#xa;</xsl:text>     
+        <xsl:element name="xsl:for-each" namespace="http://www.w3.org/1999/XSL/Transform">
+            <xsl:attribute name="select">$elementsMetadata/element</xsl:attribute>
+            <xsl:text disable-output-escaping="no">query = query &amp; </xsl:text>         
+            <xsl:text disable-output-escaping="yes">"[</xsl:text>         
+            <xsl:element name="xsl:value-of"><xsl:attribute name="select">identifier</xsl:attribute></xsl:element>
+            <xsl:text disable-output-escaping="yes">] </xsl:text>         
+            <xsl:element name="xsl:call-template">
+                <xsl:attribute name="name">getFieldType</xsl:attribute>
+                <xsl:element name="xsl:with-param">
+                    <xsl:attribute name="name">name</xsl:attribute>
+                    <xsl:attribute name="select">identifier</xsl:attribute>
+                </xsl:element>
+            </xsl:element>
+            <xsl:element name="xsl:if"><xsl:attribute name="test">position()!=last()</xsl:attribute>,</xsl:element>
+            <xsl:text disable-output-escaping="yes">"</xsl:text>         
+            <xsl:text disable-output-escaping="no"> &#xd;&#xa;</xsl:text>        
+        </xsl:element>
         <xsl:text disable-output-escaping="no">query = query &amp; </xsl:text> 
         <xsl:text disable-output-escaping="yes">");"&#xd;&#xa;</xsl:text>                
         <xsl:text disable-output-escaping="yes">conn.Execute (query) &#xd;&#xa;</xsl:text>        
@@ -102,16 +124,18 @@
         <xsl:text disable-output-escaping="yes">&lt;xsl:template name="fields"&gt;&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="no">query = query &amp; </xsl:text>           
         <xsl:text disable-output-escaping="yes">"(status, "&#xd;&#xa;</xsl:text>
-        <xsl:text disable-output-escaping="yes">&lt;xsl:for-each select="*"&gt;</xsl:text>
-        <xsl:element name="xsl:if"><xsl:attribute name="test">count(preceding-sibling::*[local-name() = local-name(current())])=0</xsl:attribute>
-			<xsl:text disable-output-escaping="no">query = query &amp; </xsl:text>   
-			<xsl:text disable-output-escaping="yes">"[</xsl:text>
-			<xsl:text disable-output-escaping="yes">&lt;xsl:value-of select="local-name()" /&gt;</xsl:text>
-			<xsl:text disable-output-escaping="yes">]</xsl:text>
-			<xsl:text disable-output-escaping="yes">&lt;xsl:if test="position()!=last()and count(following-sibling::*[local-name() != local-name(current())])&gt;0"&gt;,&lt;/xsl:if&gt;</xsl:text>
-			<xsl:text disable-output-escaping="yes">"&#xd;&#xa;</xsl:text>        
-		</xsl:element>
-		<xsl:text disable-output-escaping="yes">&lt;/xsl:for-each&gt;</xsl:text>
+        <xsl:element name="xsl:for-each" namespace="http://www.w3.org/1999/XSL/Transform">
+            <xsl:attribute name="select">$elementsMetadata/element</xsl:attribute>
+            <xsl:text disable-output-escaping="no">query = query &amp; </xsl:text>   
+            <xsl:text disable-output-escaping="yes">"[</xsl:text>
+            <xsl:element name="xsl:value-of">
+                <xsl:attribute name="select">identifier</xsl:attribute>
+            </xsl:element>
+            <xsl:text disable-output-escaping="yes">] </xsl:text>
+            <xsl:element name="xsl:if"><xsl:attribute name="test">position()!=last()</xsl:attribute>,</xsl:element>
+            <xsl:text disable-output-escaping="yes">"</xsl:text>         
+            <xsl:text disable-output-escaping="no"> &#xd;&#xa;</xsl:text>        
+        </xsl:element>		
         <xsl:text disable-output-escaping="no">query = query &amp; </xsl:text>   
         <xsl:text disable-output-escaping="yes">") </xsl:text>
         <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;&#xd;&#xa;</xsl:text>
@@ -150,116 +174,34 @@
         <xsl:text disable-output-escaping="yes">&lt;/xsl:choose&gt;&#xd;&#xa;</xsl:text>
         <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;&#xd;&#xa;</xsl:text>
 		
-		<xsl:text disable-output-escaping="yes">&lt;xsl:template name="replaceEscapes"&gt;&#xd;&#xa;</xsl:text>
-			<xsl:text disable-output-escaping="yes">&lt;xsl:param name="outputString"/&gt;&#xd;&#xa;</xsl:text>
-			<xsl:text disable-output-escaping="yes">&lt;xsl:variable name="replace1"&gt;&#xd;&#xa;</xsl:text>
-				<xsl:text disable-output-escaping="yes">&lt;xsl:call-template name="globalReplace"&gt;&#xd;&#xa;</xsl:text>
-					<xsl:text disable-output-escaping="yes">&lt;xsl:with-param name="outputString" select="$outputString"/&gt;&#xd;&#xa;</xsl:text>
-					<xsl:text disable-output-escaping="yes">&lt;xsl:with-param name="target" select='"&amp;apos;"'/&gt;&#xd;&#xa;</xsl:text>
-					<xsl:text disable-output-escaping="yes">&lt;xsl:with-param name="replacement" select='"&amp;apos;&amp;apos;"'/&gt;&#xd;&#xa;</xsl:text>
-				<xsl:text disable-output-escaping="yes">&lt;/xsl:call-template&gt;&#xd;&#xa;</xsl:text>
-			<xsl:text disable-output-escaping="yes">&lt;/xsl:variable&gt;&#xd;&#xa;</xsl:text>
-			<xsl:text disable-output-escaping="yes">&lt;xsl:variable name="replace2"&gt;&#xd;&#xa;</xsl:text>
-				<xsl:text disable-output-escaping="yes">&lt;xsl:call-template name="globalReplace"&gt;&#xd;&#xa;</xsl:text>
-					<xsl:text disable-output-escaping="yes">&lt;xsl:with-param name="outputString" select="$replace1"/&gt;&#xd;&#xa;</xsl:text>
-					<xsl:text disable-output-escaping="yes">&lt;xsl:with-param name="target" select="'&amp;quot;&amp;quot;'"/&gt;&#xd;&#xa;</xsl:text>
-					<xsl:text disable-output-escaping="yes">&lt;xsl:with-param name="replacement" select="'&amp;quot;&amp;quot;&amp;quot;&amp;quot;'"/&gt;&#xd;&#xa;</xsl:text>
-				<xsl:text disable-output-escaping="yes">&lt;/xsl:call-template&gt;&#xd;&#xa;</xsl:text>
-			<xsl:text disable-output-escaping="yes">&lt;/xsl:variable&gt;&#xd;&#xa;</xsl:text>
-			<xsl:text disable-output-escaping="yes">&lt;xsl:variable name="replace3"&gt;&#xd;&#xa;</xsl:text>
-				<xsl:text disable-output-escaping="yes">&lt;xsl:call-template name="globalReplace"&gt;&#xd;&#xa;</xsl:text>
-					<xsl:text disable-output-escaping="yes">&lt;xsl:with-param name="outputString" select="$replace2"/&gt;&#xd;&#xa;</xsl:text>
-					<xsl:text disable-output-escaping="yes">&lt;xsl:with-param name="target" select="'&amp;#13;'"/&gt;&#xd;&#xa;</xsl:text>
-					<xsl:text disable-output-escaping="yes">&lt;xsl:with-param name="replacement" select="'&amp;quot;&amp;quot;</xsl:text>
-					<xsl:text disable-output-escaping="no"> &amp; vbCrLf  &amp; </xsl:text>
-					<xsl:text disable-output-escaping="yes">&amp;quot;&amp;quot;'"/&gt;&#xd;&#xa;</xsl:text>
-				<xsl:text disable-output-escaping="yes">&lt;/xsl:call-template&gt;&#xd;&#xa;</xsl:text>
-			<xsl:text disable-output-escaping="yes">&lt;/xsl:variable&gt;&#xd;&#xa;</xsl:text>
-			<xsl:text disable-output-escaping="yes">&lt;xsl:value-of select="$replace3"/&gt;&#xd;&#xa;</xsl:text>
-		<xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;&#xd;&#xa;</xsl:text>
 
-		<xsl:text disable-output-escaping="yes">&lt;xsl:template name="globalReplace"&gt;&#xd;&#xa;</xsl:text>
-			<xsl:text disable-output-escaping="yes">&lt;xsl:param name="outputString"/&gt;&#xd;&#xa;</xsl:text>
-			<xsl:text disable-output-escaping="yes">&lt;xsl:param name="target"/&gt;&#xd;&#xa;</xsl:text>
-			<xsl:text disable-output-escaping="yes">&lt;xsl:param name="replacement"/&gt;&#xd;&#xa;</xsl:text>
-				<xsl:text disable-output-escaping="yes">&lt;xsl:choose&gt;&#xd;&#xa;</xsl:text>
-					<xsl:text disable-output-escaping="yes">&lt;xsl:when test="contains($outputString,$target)"&gt;&#xd;&#xa;</xsl:text>
-						<xsl:text disable-output-escaping="yes">&lt;xsl:value-of select="concat(substring-before($outputString,$target),$replacement)"/&gt;&#xd;&#xa;</xsl:text>
-						<xsl:text disable-output-escaping="yes">&lt;xsl:call-template name="globalReplace"&gt;&#xd;&#xa;</xsl:text>
-							<xsl:text disable-output-escaping="yes">&lt;xsl:with-param name="outputString" select="substring-after($outputString,$target)"/&gt;&#xd;&#xa;</xsl:text>
-							<xsl:text disable-output-escaping="yes">&lt;xsl:with-param name="target" select="$target"/&gt;&#xd;&#xa;</xsl:text>
-							<xsl:text disable-output-escaping="yes">&lt;xsl:with-param name="replacement" select="$replacement"/&gt;&#xd;&#xa;</xsl:text>
-						<xsl:text disable-output-escaping="yes">&lt;/xsl:call-template&gt;&#xd;&#xa;</xsl:text>
-					<xsl:text disable-output-escaping="yes">&lt;/xsl:when&gt;&#xd;&#xa;</xsl:text>
-					<xsl:text disable-output-escaping="yes">&lt;xsl:otherwise&gt;&#xd;&#xa;</xsl:text>
-				<xsl:text disable-output-escaping="yes">&lt;xsl:value-of select="$outputString"/&gt;&#xd;&#xa;</xsl:text>
-				<xsl:text disable-output-escaping="yes">&lt;/xsl:otherwise&gt;&#xd;&#xa;</xsl:text>
-			<xsl:text disable-output-escaping="yes">&lt;/xsl:choose&gt;&#xd;&#xa;</xsl:text>
-		<xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;&#xd;&#xa;</xsl:text>
+
+        <!--   TEMPLATE name="getSeparator"  -->
+        <xsl:element name="xsl:template">
+            <xsl:attribute name="name">getSeparator</xsl:attribute>
+            <xsl:element name="xsl:param"><xsl:attribute name="name">element</xsl:attribute><xsl:attribute name="select">''</xsl:attribute></xsl:element>
+            <xsl:choose>
+                <xsl:when test="count(elements/element[string-length(multiValueDelim) > 0]) > 0">
+                    <xsl:element name="xsl:choose">
+                        <xsl:for-each select="elements/element[string-length(multiValueDelim)>0]">
+                            <xsl:element name="xsl:when"><xsl:attribute name="test">$element = '<xsl:value-of select="identifier"/>'</xsl:attribute><xsl:value-of select="multiValueDelim"/></xsl:element>
+                        </xsl:for-each>
+                        <xsl:element name="xsl:otherwise">,</xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:otherwise><xsl:element name="xsl:value-of"><xsl:attribute name="select">','</xsl:attribute></xsl:element></xsl:otherwise>
+            </xsl:choose>
+        </xsl:element>
         
-   <!--   TEMPLATE name="getValue"  -->
-	<xsl:element name="xsl:template">
-		<xsl:attribute name="name">getValue</xsl:attribute>
-		<xsl:element name="xsl:choose">
-			<xsl:element name="xsl:when">
-				<xsl:attribute name="test">count(following-sibling::*[local-name() = local-name(current())])=0</xsl:attribute>
-				<xsl:element name="xsl:value-of"><xsl:attribute name="select">.</xsl:attribute></xsl:element>
-			</xsl:element>
-			<xsl:element name="xsl:otherwise">
-				<xsl:element name="xsl:call-template">
-					<xsl:attribute name="name">joinMultiValue</xsl:attribute>
-					<xsl:element name="xsl:with-param"><xsl:attribute name="name">valueList</xsl:attribute><xsl:attribute name="select">parent::*/child::*[local-name() = local-name(current())]</xsl:attribute></xsl:element>
-				</xsl:element>
-			</xsl:element>
-		</xsl:element>
-	</xsl:element>
-
-   <!--   TEMPLATE name="joinMultiValue"  -->
-	<xsl:element name="xsl:template">
-		<xsl:attribute name="name">joinMultiValue</xsl:attribute>
-		<xsl:element name="xsl:param"><xsl:attribute name="name">valueList</xsl:attribute><xsl:attribute name="select">''</xsl:attribute></xsl:element>
-		<xsl:element name="xsl:variable">
-			<xsl:attribute name="name">separator</xsl:attribute>
-			<xsl:element name="xsl:call-template">
-				<xsl:attribute name="name">getSeparator</xsl:attribute>
-				<xsl:element name="xsl:with-param"><xsl:attribute name="name">element</xsl:attribute><xsl:attribute name="select">local-name()</xsl:attribute></xsl:element>
-			</xsl:element>
-		</xsl:element>
-
-		<xsl:element name="xsl:for-each">
-			<xsl:attribute name="select">$valueList</xsl:attribute>
-			<xsl:element name="xsl:choose">
-				<xsl:element name="xsl:when">
-					<xsl:attribute name="test">position() = 1</xsl:attribute>
-					<xsl:element name="xsl:value-of"><xsl:attribute name="select">.</xsl:attribute></xsl:element>
-				</xsl:element>
-				<xsl:element name="xsl:otherwise">
-					<xsl:element name="xsl:value-of"><xsl:attribute name="select">concat($separator, .)</xsl:attribute></xsl:element>
-				</xsl:element>
-			</xsl:element>
-		</xsl:element>
-	</xsl:element>
-
-   <!--   TEMPLATE name="getSeparator"  -->
-		<xsl:element name="xsl:template">
-			<xsl:attribute name="name">getSeparator</xsl:attribute>
-			<xsl:element name="xsl:param"><xsl:attribute name="name">element</xsl:attribute><xsl:attribute name="select">''</xsl:attribute></xsl:element>		
-			<xsl:choose>
-				<xsl:when test="count(elements/element[string-length(precision) > 0]) > 0">
-					<xsl:element name="xsl:choose">
-						<xsl:for-each select="elements/element[string-length(multiValueDelim)>0]">
-							<xsl:element name="xsl:when"><xsl:attribute name="test">$element = '<xsl:value-of select="identifier"/>'</xsl:attribute><xsl:value-of select="multiValueDelim"/></xsl:element>
-						</xsl:for-each>
-						<xsl:element name="xsl:otherwise">,</xsl:element>
-					</xsl:element>
-				</xsl:when>
-				<xsl:otherwise><xsl:element name="xsl:value-of"><xsl:attribute name="select">','</xsl:attribute></xsl:element></xsl:otherwise>
-			</xsl:choose>
-		</xsl:element>
-
-        <xsl:text disable-output-escaping="yes">&lt;/xsl:stylesheet&gt;&#xd;&#xa;</xsl:text>       
+        <!-- DD elements metadata variable -->
+        <xsl:element name="xsl:variable" namespace="http://www.w3.org/1999/XSL/Transform">
+            <xsl:attribute name="name">elementsMetadata</xsl:attribute>
+            <xsl:copy-of select="//elements/element" />
+        </xsl:element>
         
-    </xsl:template> 
+        <xsl:text disable-output-escaping="yes">&lt;/xsl:stylesheet&gt;&#xd;&#xa;</xsl:text>
+    </xsl:template>
+    
     
 </xsl:stylesheet>
 

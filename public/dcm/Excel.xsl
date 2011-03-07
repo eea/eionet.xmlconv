@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0" xmlns:table="http://openoffice.org/2000/table" xmlns:text="http://openoffice.org/2000/text">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:table="http://openoffice.org/2000/table" xmlns:text="http://openoffice.org/2000/text">
     <xsl:output  method="xml"/>
     <xsl:param name="dd_domain" select="'true'"/>
     <xsl:param name="dd_ns_url" select="concat('=&quot;',$dd_domain,'/namespace.jsp?ns_id=')"/>
@@ -10,7 +10,7 @@
     </xsl:template>
     
     <xsl:template match="table">
-        <xsl:text  xml:space="default" disable-output-escaping="yes">&#xd;&#xa;&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"&#xd;&#xa;xmlns:office='http://openoffice.org/2000/office'&#xd;&#xa; 	xmlns:table='http://openoffice.org/2000/table'&#xd;&#xa; xmlns:text='http://openoffice.org/2000/text'&#xd;&#xa;    xmlns:dd</xsl:text>
+        <xsl:text  xml:space="default" disable-output-escaping="yes">&#xd;&#xa;&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"&#xd;&#xa;xmlns:office='http://openoffice.org/2000/office'&#xd;&#xa; 	xmlns:table='http://openoffice.org/2000/table'&#xd;&#xa; xmlns:text='http://openoffice.org/2000/text'&#xd;&#xa;    xmlns:dd</xsl:text>
         <xsl:value-of select="parentNS"/>
         <xsl:value-of select="$dd_ns_url"/>
         <xsl:value-of select="parentNS"/>
@@ -53,9 +53,7 @@
 <xsl:text disable-output-escaping="yes">&lt;/xsl:attribute&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">			&lt;table:table-columns&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">				&lt;table:table-column table:default-cell-value-type='number' table:default-cell-style-name='cell1' &gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">					&lt;xsl:attribute name="table:number-columns-repeated"&gt;&lt;xsl:value-of select="count(./dd</xsl:text>
-<xsl:value-of select="parentNS"/>
-<xsl:text disable-output-escaping="yes">:Row[1]/*)"/&gt;&lt;/xsl:attribute&gt;</xsl:text>
+<xsl:text disable-output-escaping="yes">					&lt;xsl:attribute name="table:number-columns-repeated"&gt;&lt;xsl:value-of select="count($elementsMetadata/element)"/&gt;&lt;/xsl:attribute&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">				&lt;/table:table-column&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">			&lt;/table:table-columns&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">			&lt;!-- create header rows --&gt;</xsl:text>
@@ -78,15 +76,35 @@
 <xsl:text disable-output-escaping="yes">		&lt;/xsl:if&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">	&lt;table:table-row&gt;</xsl:text>
  <!--   insert data  -->
-<xsl:text disable-output-escaping="yes">&lt;xsl:for-each select="*"&gt;</xsl:text>
-<xsl:element name="xsl:if"><xsl:attribute name="test">count(preceding-sibling::*[local-name() = local-name(current())])=0</xsl:attribute>
-	<xsl:element name="table:table-cell">
-		<xsl:element name="text:p">
-			<xsl:element name="xsl:call-template"><xsl:attribute name="name">getValue</xsl:attribute></xsl:element>
-		</xsl:element>
-	</xsl:element>
-</xsl:element>
-<xsl:text disable-output-escaping="yes">&lt;/xsl:for-each&gt;&#xd;&#xa;</xsl:text>
+        <xsl:element name="xsl:variable">
+            <xsl:attribute name="name">row</xsl:attribute>
+            <xsl:attribute name="select">.</xsl:attribute>
+        </xsl:element>
+        <xsl:element name="xsl:for-each" namespace="http://www.w3.org/1999/XSL/Transform">
+            <xsl:attribute name="select">$elementsMetadata/element</xsl:attribute>
+            <xsl:element name="xsl:variable">
+                <xsl:attribute name="name">elemIdentifier</xsl:attribute>
+                <xsl:element name="xsl:value-of"><xsl:attribute name="select">identifier</xsl:attribute></xsl:element>
+            </xsl:element>			
+            <xsl:element name="xsl:variable">
+                <xsl:attribute name="name">multiValueSeparator</xsl:attribute>
+                <xsl:element name="xsl:call-template">
+                    <xsl:attribute name="name">getSeparator</xsl:attribute>
+                    <xsl:element name="xsl:with-param">
+                        <xsl:attribute name="name">element</xsl:attribute>
+                        <xsl:attribute name="select">$elemIdentifier</xsl:attribute>
+                    </xsl:element>
+                </xsl:element>
+            </xsl:element>
+            <xsl:element name="table:table-cell">
+                <xsl:element name="text:p">
+                    <xsl:element name="xsl:choose">
+                        <xsl:element name="xsl:when"><xsl:attribute name="test">count($row/*[local-name()= $elemIdentifier])=0 or string-join($row/*[local-name()= $elemIdentifier ],'')=''</xsl:attribute>&#160;</xsl:element>
+                        <xsl:element name="xsl:otherwise"><xsl:element name="xsl:value-of"><xsl:attribute name="select">string-join($row/*[local-name()= $elemIdentifier ],$multiValueSeparator)</xsl:attribute></xsl:element></xsl:element>
+                    </xsl:element>
+                </xsl:element>
+            </xsl:element>
+        </xsl:element>
 <xsl:text disable-output-escaping="yes">	&lt;/table:table-row&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;</xsl:text>
 
@@ -94,19 +112,13 @@
 <xsl:text disable-output-escaping="yes">&lt;!--  a named template, which creates the table header row --&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">&lt;xsl:template name="header"&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">	&lt;table:table-header-rows&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">		&lt;!--table:table-row   table:default-cell-value-type='string' table:default-cell-style-name='Heading1' &gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">			&lt;table:table-cell&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">				&lt;text:p&gt;Groundwater Body Characteristics and Pressures&lt;/text:p&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">			&lt;/table:table-cell&gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">		&lt;/table:table-row--&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">		&lt;table:table-row  table:default-cell-value-type='string' table:default-cell-style-name='Heading2' &gt;</xsl:text>
-<xsl:text disable-output-escaping="yes">			&lt;xsl:for-each select="*"&gt;</xsl:text>
-<xsl:element name="xsl:if"><xsl:attribute name="test">count(preceding-sibling::*[local-name() = local-name(current())])=0</xsl:attribute>
-	<xsl:text disable-output-escaping="yes">				&lt;table:table-cell&gt;</xsl:text>
-	<xsl:text disable-output-escaping="yes">					&lt;text:p&gt;&lt;xsl:value-of select="local-name()" /&gt;&lt;/text:p&gt;</xsl:text>
-	<xsl:text disable-output-escaping="yes">				&lt;/table:table-cell&gt;</xsl:text>
-</xsl:element>
-<xsl:text disable-output-escaping="yes">			&lt;/xsl:for-each&gt;</xsl:text>
+        <xsl:element name="xsl:for-each" namespace="http://www.w3.org/1999/XSL/Transform">
+            <xsl:attribute name="select">$elementsMetadata/element</xsl:attribute>
+            <xsl:text disable-output-escaping="yes">				&lt;table:table-cell&gt;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;text:p&gt;&lt;xsl:value-of select="identifier" /&gt;&lt;/text:p&gt; &#xd;&#xa;</xsl:text>
+            <xsl:text disable-output-escaping="yes">				&lt;/table:table-cell&gt;</xsl:text>
+        </xsl:element>
 <xsl:text disable-output-escaping="yes">		&lt;/table:table-row&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">	&lt;/table:table-header-rows&gt;</xsl:text>
 <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;</xsl:text>
@@ -154,70 +166,30 @@
 <xsl:text disable-output-escaping="yes">&lt;/xsl:template&gt;</xsl:text>
 
 
-   <!--   TEMPLATE name="getValue"  -->
-	<xsl:element name="xsl:template">
-		<xsl:attribute name="name">getValue</xsl:attribute>
-		<xsl:element name="xsl:choose">
-			<xsl:element name="xsl:when">
-				<xsl:attribute name="test">count(following-sibling::*[local-name() = local-name(current())])=0</xsl:attribute>
-				<xsl:element name="xsl:value-of"><xsl:attribute name="select">.</xsl:attribute></xsl:element>
-			</xsl:element>
-			<xsl:element name="xsl:otherwise">
-				<xsl:element name="xsl:call-template">
-					<xsl:attribute name="name">joinMultiValue</xsl:attribute>
-					<xsl:element name="xsl:with-param"><xsl:attribute name="name">valueList</xsl:attribute><xsl:attribute name="select">parent::*/child::*[local-name() = local-name(current())]</xsl:attribute></xsl:element>
-				</xsl:element>
-			</xsl:element>
-		</xsl:element>
-	</xsl:element>
-
-   <!--   TEMPLATE name="joinMultiValue"  -->
-	<xsl:element name="xsl:template">
-		<xsl:attribute name="name">joinMultiValue</xsl:attribute>
-		<xsl:element name="xsl:param"><xsl:attribute name="name">valueList</xsl:attribute><xsl:attribute name="select">''</xsl:attribute></xsl:element>
-		<xsl:element name="xsl:variable">
-			<xsl:attribute name="name">separator</xsl:attribute>
-			<xsl:element name="xsl:call-template">
-				<xsl:attribute name="name">getSeparator</xsl:attribute>
-				<xsl:element name="xsl:with-param"><xsl:attribute name="name">element</xsl:attribute><xsl:attribute name="select">local-name()</xsl:attribute></xsl:element>
-			</xsl:element>
-		</xsl:element>
-
-		<xsl:element name="xsl:for-each">
-			<xsl:attribute name="select">$valueList</xsl:attribute>
-			<xsl:element name="xsl:choose">
-				<xsl:element name="xsl:when">
-					<xsl:attribute name="test">position() = 1</xsl:attribute>
-					<xsl:element name="xsl:value-of"><xsl:attribute name="select">.</xsl:attribute></xsl:element>
-				</xsl:element>
-				<xsl:element name="xsl:otherwise">
-					<xsl:element name="xsl:value-of"><xsl:attribute name="select">concat($separator, .)</xsl:attribute></xsl:element>
-				</xsl:element>
-			</xsl:element>
-		</xsl:element>
-	</xsl:element>
-
-   <!--   TEMPLATE name="getSeparator"  -->
-		<xsl:element name="xsl:template">
-			<xsl:attribute name="name">getSeparator</xsl:attribute>
-			<xsl:element name="xsl:param"><xsl:attribute name="name">element</xsl:attribute><xsl:attribute name="select">''</xsl:attribute></xsl:element>		
-			<xsl:choose>
-				<xsl:when test="count(elements/element[string-length(precision) > 0]) > 0">
-					<xsl:element name="xsl:choose">
-						<xsl:for-each select="elements/element[string-length(multiValueDelim)>0]">
-							<xsl:element name="xsl:when"><xsl:attribute name="test">$element = '<xsl:value-of select="identifier"/>'</xsl:attribute><xsl:value-of select="multiValueDelim"/></xsl:element>
-						</xsl:for-each>
-						<xsl:element name="xsl:otherwise">,</xsl:element>
-					</xsl:element>
-				</xsl:when>
-				<xsl:otherwise><xsl:element name="xsl:value-of"><xsl:attribute name="select">','</xsl:attribute></xsl:element></xsl:otherwise>
-			</xsl:choose>
-		</xsl:element>
-
-
-        <xsl:text disable-output-escaping="yes">&lt;/xsl:stylesheet&gt;&#xd;&#xa;</xsl:text>       
+        <!--   TEMPLATE name="getSeparator"  -->
+        <xsl:element name="xsl:template">
+            <xsl:attribute name="name">getSeparator</xsl:attribute>
+            <xsl:element name="xsl:param"><xsl:attribute name="name">element</xsl:attribute><xsl:attribute name="select">''</xsl:attribute></xsl:element>
+            <xsl:choose>
+                <xsl:when test="count(elements/element[string-length(multiValueDelim) > 0]) > 0">
+                    <xsl:element name="xsl:choose">
+                        <xsl:for-each select="elements/element[string-length(multiValueDelim)>0]">
+                            <xsl:element name="xsl:when"><xsl:attribute name="test">$element = '<xsl:value-of select="identifier"/>'</xsl:attribute><xsl:value-of select="multiValueDelim"/></xsl:element>
+                        </xsl:for-each>
+                        <xsl:element name="xsl:otherwise">,</xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:otherwise><xsl:element name="xsl:value-of"><xsl:attribute name="select">','</xsl:attribute></xsl:element></xsl:otherwise>
+            </xsl:choose>
+        </xsl:element>
         
-    </xsl:template> 
-    
+        <!-- DD elements metadata variable -->
+        <xsl:element name="xsl:variable" namespace="http://www.w3.org/1999/XSL/Transform">
+            <xsl:attribute name="name">elementsMetadata</xsl:attribute>
+            <xsl:copy-of select="//elements/element" />
+        </xsl:element>
+        
+        <xsl:text disable-output-escaping="yes">&lt;/xsl:stylesheet&gt;&#xd;&#xa;</xsl:text>
+    </xsl:template>    
 </xsl:stylesheet>
 
