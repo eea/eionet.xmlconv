@@ -77,7 +77,8 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 												+ DESCR_FLD + "," 
 												+ SHORT_NAME_FLD + "," 
 												+ QUERY_SCRIPT_TYPE + "," 
-												+ QUERY_RESULT_TYPE 
+												+ QUERY_RESULT_TYPE + ","
+												+ UPPER_LIMIT_FLD 
 												+ " FROM " + QUERY_TABLE 
 												+ " WHERE " + XSL_SCHEMA_ID_FLD + "= ?"
 												+ " ORDER BY " + SHORT_NAME_FLD;
@@ -108,7 +109,9 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 		schemaLang = (schemaLang == null ? "" : schemaLang);
 		String strValidate = doValidate?"1":"0";
 	
-		if (isDebugMode){ logger.debug("Query is " + qInsertSchema);}		
+		if (isDebugMode) {
+			logger.debug("Query is " + qInsertSchema);
+		}
 		try{
 			conn = getConnection();	
 			pstmt = conn.prepareStatement(qInsertSchema);
@@ -134,7 +137,9 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 		String strValidate = doValidate?"1":"0";
 
 		
-		if (isDebugMode){ logger.debug("Query is " + qUpdateSchema);}		
+		if (isDebugMode) {
+			logger.debug("Query is " + qUpdateSchema);
+		}
 		try{
 			conn = getConnection();	
 			pstmt = conn.prepareStatement(qUpdateSchema);
@@ -232,58 +237,9 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 		}		
 	}
 	
-	
-/*	public Vector getSchemas(String schemaId) throws SQLException {
-		return getSchemas(schemaId, true);
-	}
-	
-*/	
 	public Vector getSchemas(String schemaId) throws SQLException{
 		return getSchemas(schemaId, true);
 	}
-
-	
-	
-/*	public Vector getSchemas(String schemaId, boolean stylesheets) throws SQLException {
-	    String sql="SELECT " + SCHEMA_ID_FLD + "," + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD + ", " + 
-	    DTD_PUBLIC_ID_FLD + ", " + SCHEMA_VALIDATE_FLD + " FROM " + SCHEMA_TABLE;
-	    if (schemaId!=null){
-	      if (Utils.isNum(schemaId)){
-	        sql += " WHERE " + SCHEMA_ID_FLD + " = " +	schemaId;
-	      }
-	      else{
-	         sql+=" WHERE " + XML_SCHEMA_FLD + " =" +	Utils.strLiteral(schemaId);
-	      }
-	    }
-	         
-	    sql +=  " ORDER BY " + XML_SCHEMA_FLD;
-
-	    String [][] r = _executeStringQuery(sql);
-
-	    Vector v = new Vector();
-
-	    for (int i =0; i<   r.length; i++) {
-
-	      HashMap h = new HashMap();    
-	      h.put("schema_id", r[i][0]);
-	      h.put("xml_schema", r[i][1]);
-	      h.put("description", r[i][2]);
-	      h.put("dtd_public_id", r[i][3]);
-	      h.put("validate", r[i][4]);
-
-	      if (stylesheets){
-	        Vector v_xls=getSchemaStylesheets(r[i][0]);
-	        h.put("stylesheets", v_xls);
-	        Vector v_queries=getSchemaQueries(r[i][0]);
-	        h.put("queries", v_queries);
-	      }
-	      v.add(h);
-	    }
-
-	    return v;
-	}
-*/
-	
 	
 	private static final int ALL_SCHEMAS = 1;
 	private static final int SCHEMA_BY_ID = 2;	  
@@ -323,7 +279,11 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 				break;
 			}
 
-			if (isDebugMode){ logger.debug("Query is " + ((queryType == ALL_SCHEMAS)?qAllSchemas:(queryType == SCHEMA_BY_ID)?qSchemaById:qSchemaByName ) );}	
+			if (isDebugMode) {
+				logger.debug("Query is "
+				        + ((queryType == ALL_SCHEMAS) ? qAllSchemas : (queryType == SCHEMA_BY_ID) ? qSchemaById
+				                : qSchemaByName));
+			}
 			rs = pstmt.executeQuery();			
 			String[][] r = getResults(rs);			
 			v = new Vector(r.length);
@@ -351,27 +311,10 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 		return v;					  
 	  }	  
 
-/*	public HashMap getSchema(String schema_id) throws SQLException {
-		return getSchema(schema_id, false);
-	}
-*/	
 	public HashMap getSchema(String schema_id) throws SQLException{
 		return getSchema(schema_id, false);
 	}
 
-	
-	
-/*	public HashMap getSchema(String schema_id, boolean stylesheets) throws SQLException {
-
-		Vector schemas = getSchemas(schema_id, stylesheets);
-
-		if (schemas == null) return null;
-		if (schemas.size() == 0) return null;
-
-		return (HashMap) schemas.get(0);
-
-	}
-*/	
 	public HashMap getSchema(String schema_id, boolean stylesheets) throws SQLException {
 		
 		Vector schemas = getSchemas(schema_id, stylesheets);
@@ -381,23 +324,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 
 		return (HashMap) schemas.get(0);
 
-	}
-
-	
-	
-	
-	
-/*	public String getSchemaID(String schema) throws SQLException {
-
-		String sql = "SELECT " + SCHEMA_ID_FLD + " FROM " + SCHEMA_TABLE + " WHERE " + XML_SCHEMA_FLD + "=" + Utils.strLiteral(schema);
-
-		String[][] r = _executeStringQuery(sql);
-
-		if (r.length == 0) return null;
-
-		return r[0][0];
-	}
-*/		
+	}	
 	
 	public String getSchemaID(String schema) throws SQLException{
 		Connection conn = null;
@@ -405,7 +332,9 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 		ResultSet rs =null;
 		String[][] r = null;
 
-		if (isDebugMode){ logger.debug("Query is " + qSchemaID);}
+		if (isDebugMode) {
+			logger.debug("Query is " + qSchemaID);
+		}
 		
 		try {
 			conn = getConnection();
@@ -424,38 +353,6 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 		
 	}
 	
-/*	public Vector getSchemaStylesheets(String schemaId) throws SQLException {
-
-		int id = 0;
-
-		if (schemaId == null) throw new SQLException("Schema ID not defined");
-		try {
-			id = Integer.parseInt(schemaId);
-		} catch (NumberFormatException n) {
-			throw new SQLException("not numeric ID " + schemaId);
-		}
-
-		String sql = "SELECT " + CNV_ID_FLD + ", " + XSL_FILE_FLD + ", " + DESCR_FLD + "," + RESULT_TYPE_FLD + " FROM " + XSL_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "=" + id;
-
-		sql += " ORDER BY " + RESULT_TYPE_FLD;
-
-		String[][] r = _executeStringQuery(sql);
-
-		Vector v = new Vector();
-
-		for (int i = 0; i < r.length; i++) {
-			HashMap h = new HashMap();
-			h.put("convert_id", r[i][0]);
-			h.put("xsl", r[i][1]);
-			h.put("description", r[i][2]);
-			h.put("content_type_out", r[i][3]);
-			v.add(h);
-		}
-
-		return v;
-	}
-
-*/	
 	public Vector getSchemaStylesheets(String schemaId) throws SQLException{
 		Connection conn = null;
 		try {
@@ -473,7 +370,9 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 		ResultSet rs =null;
 		Vector v = null;
 	
-		if (schemaId == null) throw new SQLException("Schema ID not defined");
+		if (schemaId == null){
+			throw new SQLException("Schema ID not defined");
+		}
 		try {
 			id = Integer.parseInt(schemaId);
 		} catch (NumberFormatException n) {
@@ -506,41 +405,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 		return v;	
 	
 	}
-
-
-	
-/*	public Vector getSchemaQueries(String schemaId) throws SQLException {
-
-		int id = 0;
-
-		if (schemaId == null) throw new SQLException("Schema ID not defined");
-		try {
-			id = Integer.parseInt(schemaId);
-		} catch (NumberFormatException n) {
-			throw new SQLException("not numeric ID " + schemaId);
-		}
-
-		String sql = "SELECT " + QUERY_ID_FLD + ", " + QUERY_FILE_FLD + ", " + DESCR_FLD + "," + SHORT_NAME_FLD + " FROM " + QUERY_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "=" + id;
-
-		sql += " ORDER BY " + SHORT_NAME_FLD;
-
-		String[][] r = _executeStringQuery(sql);
-
-		Vector v = new Vector();
-
-		for (int i = 0; i < r.length; i++) {
-			HashMap h = new HashMap();
-			h.put("query_id", r[i][0]);
-			h.put("query", r[i][1]);
-			h.put("description", r[i][2]);
-			h.put("short_name", r[i][3]);
-			v.add(h);
-		}
-
-		return v;
-	}
-	
-*/		
+		
 	public Vector getSchemaQueries(String schemaId) throws SQLException{
 		Connection conn = null;
 		try {
@@ -566,7 +431,9 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 			throw new SQLException("not numeric ID " + schemaId);
 		}
 			
-		if (isDebugMode){ logger.debug("Query is " + qSchemaQueries);}
+		if (isDebugMode) {
+			logger.debug("Query is " + qSchemaQueries);
+		}
 		
 		try {
 			pstmt = conn.prepareStatement(qSchemaQueries);
@@ -583,6 +450,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 				h.put("short_name", r[i][3]);
 				h.put("script_type", r[i][4]);
 				h.put("result_type", r[i][5]);
+				h.put("upper_limit", r[i][6]);
 				v.add(h);
 			}
 		} 
@@ -593,36 +461,16 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 		return v;	
 		
 	}
-	
-	
-/*	public Vector getSchemasWithStl() throws SQLException {
 
-		String sql = "SELECT DISTINCT S." + SCHEMA_ID_FLD + ", S." + XML_SCHEMA_FLD + ", S." + SCHEMA_DESCR_FLD + " FROM " + SCHEMA_TABLE + " S" + " JOIN " + XSL_TABLE + " ST ON S." + SCHEMA_ID_FLD + " = ST." + XSL_SCHEMA_ID_FLD + " ORDER BY S." + XML_SCHEMA_FLD;
-
-		String[][] r = _executeStringQuery(sql);
-
-		Vector v = new Vector();
-
-		for (int i = 0; i < r.length; i++) {
-
-			HashMap h = new HashMap();
-			h.put("schema_id", r[i][0]);
-			h.put("xml_schema", r[i][1]);
-			h.put("description", r[i][2]);
-			v.add(h);
-		}
-
-		return v;
-	}
-*/
-	
 	public Vector getSchemasWithStl() throws SQLException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs =null;
 		Vector v = null;
  		
-		if (isDebugMode){ logger.debug("Query is " + qSchemasWithStl);}
+		if (isDebugMode) {
+			logger.debug("Query is " + qSchemasWithStl);
+		}
 		
 		try {
 			conn = getConnection();
