@@ -106,7 +106,7 @@ public class QueryDaoTest extends DBTestCase{
 		assertEquals((String)query.get("short_name"),shortName);
 		assertEquals((String)query.get("content_type"),content_type);
 		assertEquals((String)query.get("script_type"),script_type);
-		assertEquals((String)query.get("upperLimit"), upperLimit);
+		assertEquals((String)query.get("upper_limit"), upperLimit);
 		//check boolean methods
 		assertTrue(queryDao.checkQueryFile(queryFileName));
 		assertTrue(queryDao.checkQueryFile(queryId, queryFileName));
