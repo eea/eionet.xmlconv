@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -36,6 +37,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -59,6 +61,7 @@ public class ExcelReader implements SourceReaderIF
 	private Workbook wb=null;
 	private static final String SCHEMA_SHEET_NAME = "DO_NOT_DELETE_THIS_SHEET";
 	private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+	private static DataFormatter formatter = new DataFormatter(new Locale("en", "US"));
 
 	private boolean isExcel2007=false;
 	
@@ -341,7 +344,7 @@ public class ExcelReader implements SourceReaderIF
 				Date dateValue = cell.getDateCellValue();
 				value= Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
 			} else {
-				value = POINumericToString(cell.getNumericCellValue());
+				value =formatter.formatCellValue(cell);
 			}
 			break;
 		case HSSFCell.CELL_TYPE_STRING :
@@ -393,22 +396,7 @@ public class ExcelReader implements SourceReaderIF
 		String data = (cell==null) ? "" : cellValueToString(cell, schemaType);
 		return data;
 	}
-	/*
-	 *      POI is returning all the numeric values as double and ending with .0
-	 *      we want to have also integer values
-	 *      small hack to change 2.0 value to 2
-	 */
-	private String POINumericToString(double d_val){
 
-		int int_val = (int)d_val;
-
-		if (d_val - int_val>0 || d_val - int_val<0){
-			return  Double.toString(d_val);
-		}
-		else{
-			return  Integer.toString(int_val);
-		}
-	}
 	//if date formatted cell value is not higher than 4 digit number, then it is probably a year
 	private boolean isYearValue(double doubleCellValue){
 		return doubleCellValue<3000 && doubleCellValue >0;
