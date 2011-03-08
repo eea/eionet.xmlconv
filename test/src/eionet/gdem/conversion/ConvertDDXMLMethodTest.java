@@ -58,7 +58,7 @@ public class ConvertDDXMLMethodTest extends TestCase {
 		}
 	}
 	
-	public void testConvertDD_XMLNumbers() throws Exception{
+	public void testConvertDD_XMLIntegers() throws Exception{
 		Vector<Object> v = convertExcel();
 		IXmlCtx ctx = getXmlFromConversionResult(v);
 		IXQuery xQuery=ctx.getQueryManager();
@@ -71,6 +71,35 @@ public class ConvertDDXMLMethodTest extends TestCase {
 			if(numValue.length()>0){
 				int intValue = Integer.parseInt(numValue);
 				assertEquals(intValue,i+1);
+			}
+		}		
+	}
+	public void testConvertDD_XMLDouble() throws Exception{
+		Vector<Object> v = convertExcel();
+		IXmlCtx ctx = getXmlFromConversionResult(v);
+		IXQuery xQuery=ctx.getQueryManager();
+
+		//TEST if result XML contains ND_MaxValue values in numeric format and they are not converted to dates 
+		List<String> numValues = xQuery.getElementValues("dd487:ND_MaxValue");
+		assertTrue(numValues.size()>3);
+		for (int i = 0; i < numValues.size(); i++) {
+			String numValue=(String) numValues.get(i);
+			if(numValue.length()>0){
+				switch (i){ 
+					case 0:	
+						assertEquals(numValue,"0.00001");
+						break;
+					case 1:	
+						assertEquals(numValue,"0.1");
+						break;
+					case 2:	
+						assertEquals(numValue,"131.12");
+						break;
+					case 3: 
+						assertEquals(numValue,"23");
+						break;
+				}
+				
 			}
 		}		
 	}
