@@ -209,4 +209,12 @@ RDF does not have schema or DTD - only namespaces" RESULT_TYPE="HTML" XSL_FILENA
 	<T_STYLESHEET CONVERT_ID="176" DESCRIPTION="" RESULT_TYPE="TEXT" XSL_FILENAME="EK_GW_Programmes_QE.xsl" SCHEMA_ID="113"/>
 	<T_STYLESHEET CONVERT_ID="177" DESCRIPTION="" RESULT_TYPE="HTML" XSL_FILENAME="dir199913_html-utf8.xsl" SCHEMA_ID="112"/>
 	<T_STYLESHEET CONVERT_ID="178" DESCRIPTION="" RESULT_TYPE="TEXT" XSL_FILENAME="eoi_statistics_to_text.xsl" SCHEMA_ID="109"/>
+	<t_convtype CONV_TYPE="HTML" CONTENT_TYPE="text/html;charset=UTF-8" FILE_EXT="html" DESCRIPTION="HTML files"/>
+    <t_convtype CONV_TYPE="XML" CONTENT_TYPE="text/xml;charset=UTF-8" FILE_EXT="xml" DESCRIPTION=""/>
+    <t_convtype CONV_TYPE="EXCEL" CONTENT_TYPE="application/vnd.ms-excel" FILE_EXT="xls" DESCRIPTION=""/>
+    <t_convtype CONV_TYPE="PDF" CONTENT_TYPE="application/pdf" FILE_EXT="pdf" DESCRIPTION=""/>
+    <t_convtype CONV_TYPE="SQL" CONTENT_TYPE="text/plain" FILE_EXT="sql" DESCRIPTION=""/>
+    <t_convtype CONV_TYPE="ODS" CONTENT_TYPE="application/vnd.oasis.opendocument.spreadsheet" FILE_EXT="ods" DESCRIPTION="OpenDocument Spreadsheet"/>
+    <t_convtype CONV_TYPE="TEXT" CONTENT_TYPE="text/plain" FILE_EXT="txt" DESCRIPTION="Simple text files - tab, comma, ... separated values"/>
+    <t_convtype CONV_TYPE="RDF" CONTENT_TYPE="application/rdf+xml" FILE_EXT="rdf" DESCRIPTION="Semantic Web resources"/>
 </dataset>
