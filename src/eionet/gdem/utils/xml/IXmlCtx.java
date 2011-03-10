@@ -38,7 +38,8 @@ public interface IXmlCtx {
 
 	public void checkFromFile(String fullFileName) throws XmlException;
 
-
+	public void checkFromString(String xmlString) throws XmlException;
+	
 	public void createXMLDocument() throws XmlException;
 
 

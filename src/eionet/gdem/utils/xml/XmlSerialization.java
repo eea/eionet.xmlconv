@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -95,6 +96,23 @@ public class XmlSerialization implements IXmlSerializer {
 		} finally {
 		}
 		return byteInputStream;
+	}
+	
+	public String serializeToString() throws XmlException {
+		
+		StringWriter stringOut;
+		try {
+			OutputFormat format    = new OutputFormat (ctx.getDocument()); 
+			format.setOmitXMLDeclaration(true);
+			stringOut = new StringWriter ();    
+			XMLSerializer serial   = new XMLSerializer (stringOut, 
+			                                              format);
+			serial.serialize(ctx.getDocument());
+			
+		} catch (IOException ioe) {
+			throw new XmlException("Error occurred while serializing XML document . Reason: " + ioe.getMessage());
+		}
+	    return stringOut.toString();
 	}
 
 }

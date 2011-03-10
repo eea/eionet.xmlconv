@@ -36,8 +36,13 @@ public class XQueryServiceTest  extends DBTestCase{
 	 * Set up test case properties
 	 */
 	protected void setUp()throws Exception{
+		try {
 		super.setUp();
 		TestUtils.setUpProperties(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 	/**
 	 * Load the data which will be inserted for the test
@@ -73,4 +78,54 @@ public class XQueryServiceTest  extends DBTestCase{
 		//check if url field containts ticket parameter
 		assertTrue(urlField.contains("getsource?ticket="));
 	}    	
+	
+	private void nothing() {
+		
+	}
+	public void testExpiredStyleSheetHTML() throws Exception {
+		XQueryService qs = new XQueryService();
+		
+		Vector queryResult = qs.runQAScript("http://localhost/notexist.xml", "51");
+	
+		String qyeryResultHtml = new String( (byte[]) queryResult.elementAt(1));
+		boolean ok = false;
+		
+		ok = qyeryResultHtml != null && qyeryResultHtml.startsWith("<html>") && qyeryResultHtml.endsWith("</html>");
+//		//must contain red warning <span class="warning">The stylesheet expired on 11.11.2010</span>
+		ok = ok && qyeryResultHtml.indexOf("<span style=\"color:red; font-size:110%\">The stylesheet expired on 11.11.2010</span>") != -1;
+		
+		assertTrue(ok);
+		
+	}
+	
+	public void testNotExpiredStyleSheetHtml() throws Exception {
+		XQueryService qs = new XQueryService();
+		
+		Vector queryResult = qs.runQAScript("http://localhost/notexist.xml", "52");
+	
+		String qyeryResultHtml = new String( (byte[]) queryResult.elementAt(1));
+		boolean ok = false;
+		
+		ok = qyeryResultHtml != null && qyeryResultHtml.startsWith("<html>") && qyeryResultHtml.endsWith("</html>");
+		//must NOT contain red warning <span class="warning">The stylesheet expired on 11.11.2010</span>
+		ok = ok && qyeryResultHtml.indexOf("The stylesheet expired") == -1;
+		
+		assertTrue(ok);
+		
+	}
+	public void testExpiredStyleSheetXml() throws Exception {
+		XQueryService qs = new XQueryService();
+		
+		Vector queryResult = qs.runQAScript("http://localhost/notexist.xml", "53");
+	
+		String qyeryResultXml = new String( (byte[]) queryResult.elementAt(1));
+		boolean ok = false;
+		
+		ok = qyeryResultXml != null && qyeryResultXml.startsWith("<?xml");
+		//must NOT contain red warning - it is XML 
+		ok = ok && qyeryResultXml.indexOf("The stylesheet expired") == -1;
+		
+		assertTrue(ok);
+		
+	}
 }

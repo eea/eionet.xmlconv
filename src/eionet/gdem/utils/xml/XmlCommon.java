@@ -23,6 +23,7 @@ package eionet.gdem.utils.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -105,6 +106,8 @@ public class XmlCommon {
 	public void setWellFormednessChecking() throws XmlException {
 		try {
 			parser.setFeature("http://apache.org/xml/features/validation/schema", false);
+			//parser.setFeature("http://xml.org/sax/features/namespaces", false);
+
 			parser.setFeature("http://xml.org/sax/features/validation", false);
 
 			parser.setFeature("http://xml.org/sax/features/external-general-entities", false);
@@ -169,7 +172,37 @@ public class XmlCommon {
 	}
 
 
-	
+	public void checkFromString(String xml) throws XmlException {
+		StringReader strR = null;
+		try {
+			// strReader = new StringReader(stringOut.toString());
+			// source = new InputSource(strReader);
+			strR  = new StringReader(xml);
+			InputSource input = new InputSource(strR);
+			//setWellFormednessChecking();
+			parser.parse(input);
+			document = parser.getDocument();
+			if (!errorStorage.isEmpty()) {
+				throw new XmlException("Failure reasons:" + errorStorage.getErrors());
+			}
+
+		} catch (SAXException saxe) {
+			//saxe.printStackTrace();
+			throw new XmlException("Failure reasons: " + saxe.getMessage());
+		} catch (IOException ioe) {
+			throw new XmlException("Failure reasons: " + ioe.getMessage());
+		} catch(XmlException e) {
+			throw e;
+		} finally {
+			try {
+				if (strR != null) {
+					strR.close();
+				}
+			} catch (Exception e) {
+			}
+		}
+	}
+
 
 
 	

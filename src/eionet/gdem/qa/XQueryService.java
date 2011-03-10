@@ -36,12 +36,15 @@ import java.util.Vector;
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
+import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.business.SourceFileManager;
 import eionet.gdem.dcm.remote.RemoteService;
+import eionet.gdem.dto.Schema;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IQueryDao;
+import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
@@ -59,7 +62,10 @@ public class XQueryService extends RemoteService implements Constants {
 	  private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
 	  private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
 	  private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
+	  private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
 
+	  private SchemaManager schManager = new SchemaManager();
+	  
 	  private static LoggerIF _logger=GDEMServices.getLogger();
 	  
  
@@ -432,8 +438,13 @@ public class XQueryService extends RemoteService implements Constants {
 	  		try{
 	  			String xqScript = queryDao.getQueryText(script_id);
 	  			HashMap  hash= queryDao.getQueryInfo(script_id);
-
-
+	  			String schemaId = (String)hash.get("schema_id");
+	  			Schema schema = null;
+	  			//check because ISchemaDao.getSchema(null)  returns first schema  
+	  			if (schemaId != null) {
+	  				schema = schManager.getSchema( schemaId );
+	  			}
+	  			
 	  			if (Utils.isNullStr(xqScript) || hash == null){
 	  				String err_mess="Could not find QA script with id: " + script_id;
 	  				_logger.error(err_mess);
@@ -446,10 +457,14 @@ public class XQueryService extends RemoteService implements Constants {
 	  				XQScript xq = new XQScript(xqScript, pars, (String)hash.get("content_type"));
 	  				xq.setScriptType((String)hash.get("script_type"));
 	  				xq.setSrcFileUrl(file_url);
-
-	  				xq.getResult(outstream);
-	  				result_bytes = outstream.toByteArray();
-
+	  				xq.setSchema(schema);
+	  				
+	  				String xqResult = xq.getResult();
+	  				
+	  				//xq.getResult(outstream);
+	  				//result_bytes = outstream.toByteArray();
+	  				result_bytes =  xqResult.getBytes();
+	  				
 	  			}
 	  		} catch (SQLException sqle) {
 	  			throw new GDEMException("Error getting data from DB: " + sqle.toString());

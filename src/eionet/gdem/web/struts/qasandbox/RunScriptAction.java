@@ -40,6 +40,7 @@ import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.business.ConvTypeManager;
 import eionet.gdem.dcm.business.QAScriptManager;
+import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.ConvType;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
@@ -126,6 +127,7 @@ public class RunScriptAction extends Action {
 			String xqResultType = null;
 			QAScriptManager qm = new QAScriptManager();
 			ConvTypeManager ctm = new ConvTypeManager();
+			SchemaManager schM = new SchemaManager();
 
 			// get QA script
 			if (!Utils.isNullStr(scriptId) && !"0".equals(scriptId)) {
@@ -157,6 +159,10 @@ public class RunScriptAction extends Action {
 			xq.setScriptType(scriptType);
 			xq.setSrcFileUrl(sourceUrl);
 
+			if (qascript.getSchemaId() != null) {
+				xq.setSchema(schM.getSchema(qascript.getSchemaId()));
+			}
+
 			OutputStream output = null;
 			try {
 				// write the result directly to servlet boutputstream
@@ -169,6 +175,8 @@ public class RunScriptAction extends Action {
 					output.close();
 					return null;
 				} else {
+					
+					
 					result = xq.getResult();
 					cForm.setResult(result);
 

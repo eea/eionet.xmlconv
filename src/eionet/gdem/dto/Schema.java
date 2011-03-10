@@ -263,4 +263,10 @@ public class Schema implements Serializable {
 	public void setUplSchemaFileName(String uplSchemaFile) {
 		this.uplSchemaFileName = uplSchemaFile;
 	}
+	
+	public boolean isExpired () {
+		Date expDate = getExpireDate();
+		Date now = new Date();
+		return expDate != null && expDate.before(now);
+	}
 }

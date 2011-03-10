@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public interface IXQuery {
 
@@ -108,4 +109,5 @@ public interface IXQuery {
 	 * @throws XmlException
 	 */
 	public Map<String, String> getSchemaElementWithMultipleValues() throws XmlException;
+	
 }

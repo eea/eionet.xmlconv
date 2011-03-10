@@ -31,12 +31,16 @@ package eionet.gdem.qa;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.sql.SQLException;
 import java.util.HashMap;
 
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
+import eionet.gdem.dcm.business.SchemaManager;
+import eionet.gdem.dto.Schema;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IQueryDao;
@@ -62,6 +66,7 @@ public class XQueryTask extends Thread implements Constants {
 
 	private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
 	private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
+	private SchemaManager schemaManager;
 
 
   //int status;
@@ -69,7 +74,7 @@ public class XQueryTask extends Thread implements Constants {
   public XQueryTask(String jobId)  {
     _jobId=jobId;
     _logger=GDEMServices.getLogger();
-
+    schemaManager = new SchemaManager();
 
     //inits variables from DB where the waiting task is stored
     //URL, XQ_FILE, RESULT_FILE
@@ -174,6 +179,9 @@ public class XQueryTask extends Thread implements Constants {
       HashMap query = getQueryInfo(_queryID);
       String content_type = null;
       String scriptType=null;
+      Schema schema = null;
+      boolean schemaExpired = false;
+      
       if (query!=null && query.containsKey("content_type")){
 			content_type = (String)query.get("content_type");
       }
@@ -181,7 +189,16 @@ public class XQueryTask extends Thread implements Constants {
       if (query!=null && query.containsKey("script_type")){
     	  scriptType=(String)query.get("script_type");
       }
-      //get script type if it stored in filesystem and we have to guess it by file extension
+      
+      //stylesheet - to check if it is expired
+      if (query!=null && query.containsKey("xml_schema")){
+    	  //set schema if exists:
+    	  schema = getSchema((String)query.get("xml_schema"));
+    	  schemaExpired = (schema != null && schema.isExpired()) ; 
+    		  
+      }
+      
+        //get script type if it stored in filesystem and we have to guess it by file extension
       if(Utils.isNullStr(scriptType)){
     	  scriptType = _scriptFile.endsWith(XQScript.SCRIPT_LANG_XSL) ? XQScript.SCRIPT_LANG_XSL:
     		  				_scriptFile.endsWith(XQScript.SCRIPT_LANG_XGAWK) ? XQScript.SCRIPT_LANG_XGAWK:
@@ -206,12 +223,23 @@ public class XQueryTask extends Thread implements Constants {
         xq.setScriptFileName(_scriptFile);
 		xq.setScriptType(scriptType);
 		xq.setSrcFileUrl(srcFile);
+		xq.setSchema(schema);
 		
         FileOutputStream out=null;
+        Writer writer = null;
         //System.out.println("==>filename " + _resultFile);
         try{
-           out = new FileOutputStream(new File(_resultFile));
-           xq.getResult(out);
+           
+           //if result type is HTML and schema is expired parse result (add warning) before writing to file
+           if (schemaExpired && content_type.equals(xq.SCRIPT_RESULTTYPE_HTML)) {
+        	   String res = xq.getResult();
+        	   
+        	   Utils.saveStrToFile(_resultFile, res, null);
+           }
+           else {
+        	   out = new FileOutputStream(new File(_resultFile));
+        	   xq.getResult(out);
+           }
         }
         catch(IOException ioe){
           throw new GDEMException(ioe.toString());
@@ -225,6 +253,10 @@ public class XQueryTask extends Thread implements Constants {
 
         		}
         	}
+        	
+//        	if (writer != null) {
+//        		writer.close();
+//        	}
 
         }
 
@@ -360,5 +392,22 @@ public class XQueryTask extends Thread implements Constants {
 		return query;
 	}
 
+	private Schema getSchema(String schemaUrl) {
+		try {
+			if (schemaUrl != null) {
+				String schemaId = schemaManager.getSchemaId(schemaUrl);
+				if (schemaId != null) {
+					Schema schema = schemaManager.getSchema(schemaId);
+					return schema;
+				}
+			}
+		} catch (Exception e) {
+			_logger.error("getSchema() error : " + e.toString()); 
+		}
+		
+		
+		return null;
+		
+	}
 
 }

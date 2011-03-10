@@ -29,6 +29,7 @@ import java.util.List;
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.dto.ConvType;
+import eionet.gdem.dto.Schema;
 import eionet.gdem.qa.engines.SaxonImpl;
 import eionet.gdem.qa.engines.XGawkQueryEngine;
 import eionet.gdem.qa.engines.XslEngineImpl;
@@ -46,6 +47,7 @@ public class XQScript {
 	private String scriptType; // xquery, xsl, xgawk
 	private String scriptFileName; // full path of script file
 	private String srcFileUrl; 
+	private Schema schema;
 	
 	private boolean srcFileDownloaded; 
 
@@ -186,6 +188,12 @@ public class XQScript {
 	}
 	public void setSrcFileDownloaded(boolean srcFileDownloaded) {
 		this.srcFileDownloaded = srcFileDownloaded;
+	}
+	public Schema getSchema() {
+		return schema;
+	}
+	public void setSchema(Schema schema) {
+		this.schema = schema;
 	}
 
 }
