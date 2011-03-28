@@ -13,13 +13,13 @@ import org.apache.struts.action.ActionMapping;
 
 public class MockActionMapping extends ActionMapping {
 
-	public MockActionMapping() {
+    public MockActionMapping() {
 
-	}
+    }
 
-	public ActionForward findForward(String forwardName) {
-		return null;
-	}
+    public ActionForward findForward(String forwardName) {
+        return null;
+    }
     public String getPath()
     {
         return "";

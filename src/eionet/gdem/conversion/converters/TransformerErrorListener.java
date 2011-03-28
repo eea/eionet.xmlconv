@@ -35,39 +35,39 @@ import eionet.gdem.services.LoggerIF;
  * TransformerErrorListener
  */
 public class TransformerErrorListener implements
-		javax.xml.transform.ErrorListener {
+        javax.xml.transform.ErrorListener {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
-	public void warning(TransformerException te) throws TransformerException {
-		_logger.error(formatTransformerException(0, te));
-	}
+    public void warning(TransformerException te) throws TransformerException {
+        _logger.error(formatTransformerException(0, te));
+    }
 
-	public void error(TransformerException te) throws TransformerException {
-		throw new TransformerException(formatTransformerException(1, te));
-	}
+    public void error(TransformerException te) throws TransformerException {
+        throw new TransformerException(formatTransformerException(1, te));
+    }
 
-	public void fatalError(TransformerException te) throws TransformerException {
-		Throwable cause = te.getException();
-		if (cause != null) {
-			if (cause instanceof SAXException) {
-				throw te;
-			} else {
-				throw new TransformerException(
-						formatTransformerException(2, te));
-			}
-		} else {
-			throw new TransformerException(formatTransformerException(2, te));
-		}
-	}
+    public void fatalError(TransformerException te) throws TransformerException {
+        Throwable cause = te.getException();
+        if (cause != null) {
+            if (cause instanceof SAXException) {
+                throw te;
+            } else {
+                throw new TransformerException(
+                        formatTransformerException(2, te));
+            }
+        } else {
+            throw new TransformerException(formatTransformerException(2, te));
+        }
+    }
 
-	public static String formatTransformerException(int errType,
-			TransformerException te) {
-		String[] errorTypes = { "WARNING", "ERROR", "FATAL ERROR" };
-		String msg = te.getMessageAndLocation();
-		String msgout = "The XSLT processor reported the following "
-				+ errorTypes[errType] + ":\n" + msg;
-		return msgout;
-	}
+    public static String formatTransformerException(int errType,
+            TransformerException te) {
+        String[] errorTypes = { "WARNING", "ERROR", "FATAL ERROR" };
+        String msg = te.getMessageAndLocation();
+        String msgout = "The XSLT processor reported the following "
+                + errorTypes[errType] + ":\n" + msg;
+        return msgout;
+    }
 
 }

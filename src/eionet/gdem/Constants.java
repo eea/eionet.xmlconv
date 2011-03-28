@@ -24,55 +24,55 @@
 package eionet.gdem;
 
 public interface Constants {
-	// constants:
-	// XQuery job statuses in the DB: (internal)
-	public static final int XQ_RECEIVED = 0; // waiting for the engine to begin processing
-	public static final int XQ_DOWNLOADING_SRC = 1; // downloading from the server to be stored locally
-	public static final int XQ_PROCESSING = 2; // XQEngine is processing
-	public static final int XQ_READY = 3; // waiting for pulling by the client
-	public static final int XQ_FATAL_ERR = 4; // fatal error
-	public static final int XQ_LIGHT_ERR = 5; // error, can be tried again
-	public static final int XQ_JOBNOTFOUND_ERR = 6; // job not found or result has been downloadad
+    // constants:
+    // XQuery job statuses in the DB: (internal)
+    public static final int XQ_RECEIVED = 0; // waiting for the engine to begin processing
+    public static final int XQ_DOWNLOADING_SRC = 1; // downloading from the server to be stored locally
+    public static final int XQ_PROCESSING = 2; // XQEngine is processing
+    public static final int XQ_READY = 3; // waiting for pulling by the client
+    public static final int XQ_FATAL_ERR = 4; // fatal error
+    public static final int XQ_LIGHT_ERR = 5; // error, can be tried again
+    public static final int XQ_JOBNOTFOUND_ERR = 6; // job not found or result has been downloadad
 
-	public static final int JOB_VALIDATION = -1;
-	public static final int JOB_FROMSTRING = 0;
+    public static final int JOB_VALIDATION = -1;
+    public static final int JOB_FROMSTRING = 0;
 
-	// status values for reportek getResult() method (external)
-	public static final int JOB_READY = 0;
-	public static final int JOB_NOT_READY = 1;
-	public static final int JOB_FATAL_ERROR = 2;
-	public static final int JOB_LIGHT_ERROR = 3;
+    // status values for reportek getResult() method (external)
+    public static final int JOB_READY = 0;
+    public static final int JOB_NOT_READY = 1;
+    public static final int JOB_FATAL_ERROR = 2;
+    public static final int JOB_LIGHT_ERROR = 3;
 
-	public static final String QA_TYPE_XQUERY = "xquery";
-	public static final String QA_TYPE_XSLT = "xslt";
-	
-	// key names for te getResult() STRUCT
-	public static final String RESULT_CODE_PRM = "CODE";
-	public static final String RESULT_VALUE_PRM = "VALUE";
-	public static final String RESULT_METATYPE_PRM = "METATYPE";
-	public static final String RESULT_SCRIPTTITLE_PRM = "SCRIPT_TITLE";
+    public static final String QA_TYPE_XQUERY = "xquery";
+    public static final String QA_TYPE_XSLT = "xslt";
 
-	/**
-	 * Default parameter name of the source URL to be given to the XQuery script
-	 * by the QA service
-	 */
-	public static final String XQ_SOURCE_PARAM_NAME = "source_url";
-	public static final String XQ_SCRIPT_ID_PARAM = "script_id";
+    // key names for te getResult() STRUCT
+    public static final String RESULT_CODE_PRM = "CODE";
+    public static final String RESULT_VALUE_PRM = "VALUE";
+    public static final String RESULT_METATYPE_PRM = "METATYPE";
+    public static final String RESULT_SCRIPTTITLE_PRM = "SCRIPT_TITLE";
 
-	// Folder for temporary files - to be placed under public
-	public static final String TMP_FOLDER = "tmp/";
-	public static final String QUERIES_FOLDER = "queries/";
+    /**
+     * Default parameter name of the source URL to be given to the XQuery script
+     * by the QA service
+     */
+    public static final String XQ_SOURCE_PARAM_NAME = "source_url";
+    public static final String XQ_SCRIPT_ID_PARAM = "script_id";
 
-	// Public constants for SourceFileAdapter
-	public static final String GETSOURCE_URL = "/do/getsource";
-	public static final String AUTH_PARAM = "auth";
-	public static final String TICKET_PARAM = "ticket";
-	public static final String SOURCE_URL_PARAM = "source_url";
+    // Folder for temporary files - to be placed under public
+    public static final String TMP_FOLDER = "tmp/";
+    public static final String QUERIES_FOLDER = "queries/";
 
-	public static final int URL_TEXT_LEN = 100;
+    // Public constants for SourceFileAdapter
+    public static final String GETSOURCE_URL = "/do/getsource";
+    public static final String AUTH_PARAM = "auth";
+    public static final String TICKET_PARAM = "ticket";
+    public static final String SOURCE_URL_PARAM = "source_url";
 
-	public static final String BACKUP_FILE_PREFIX = "bup_";
-	public static final String BACKUP_FOLDER_NAME = "backup";
+    public static final int URL_TEXT_LEN = 100;
+
+    public static final String BACKUP_FILE_PREFIX = "bup_";
+    public static final String BACKUP_FOLDER_NAME = "backup";
 
     public static final String FILEREAD_EXCEPTION = "Unable to read the file: ";
 }

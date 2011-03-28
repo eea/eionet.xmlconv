@@ -7,23 +7,23 @@
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 
 <html:xhtml/>
-	<div style="width:100%;">
-				
-		<ed:breadcrumbs-push label="QA sandbox result" level="2" />
-		<h1><bean:message key="label.qasandboxresult.title"/></h1> 
-	
-		<%-- include Error display --%>
-		<tiles:insert definition="Error" />
+    <div style="width:100%;">
 
-		<div id="sanbox_result">
-			<bean:write name="QASandboxForm" property="result"  filter="false" />
-		</div>
-		<br/>
-		<br/>
-		<html:form action="/qaSandboxForm?reset=false" method="post">
-	        <html:submit styleClass="button" property="action" >
-				<bean:message key="label.qasandboxresult.back"/>
-			</html:submit>
-		</html:form>
+        <ed:breadcrumbs-push label="QA sandbox result" level="2" />
+        <h1><bean:message key="label.qasandboxresult.title"/></h1>
 
-	</div>
+        <%-- include Error display --%>
+        <tiles:insert definition="Error" />
+
+        <div id="sanbox_result">
+            <bean:write name="QASandboxForm" property="result"  filter="false" />
+        </div>
+        <br/>
+        <br/>
+        <html:form action="/qaSandboxForm?reset=false" method="post">
+            <html:submit styleClass="button" property="action" >
+                <bean:message key="label.qasandboxresult.back"/>
+            </html:submit>
+        </html:form>
+
+    </div>

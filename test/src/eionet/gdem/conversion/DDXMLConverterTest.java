@@ -31,142 +31,142 @@ public class DDXMLConverterTest extends TestCase{
      * Test DD schema verification method
      */
     public void testGetInvalidSchemaMessage() throws Exception{
-		MockDDXMLConverter ddConverter = new MockDDXMLConverter(new Excel2XML());
+        MockDDXMLConverter ddConverter = new MockDDXMLConverter(new Excel2XML());
 
-		Map<String, String> dataset = new HashMap<String, String>();
-		dataset.put("id", "1111");
-		dataset.put("status", "Released");
-		dataset.put("isLatestReleased", "true");
-		dataset.put("dateOfLatestReleased", "1257138000000");
-		dataset.put("idOfLatestReleased", "2222");
-		
-		ddConverter.setDataset(dataset);
-		
-		//schema is OK
-		String message = ddConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=TBL3739");
-		assertNull(message);
-		message = ddConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=DST1111");
-		assertNull(message);
-		
-		//schema is INVALID
-		message = ddConverter.getInvalidSchemaMessage("http://unknown.com?SchemaId=1111");
-		assertEquals(Properties.getMessage(
-        		BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE, new String[]{ddConverter.getSourceFormatName()}), 
-        		message);
+        Map<String, String> dataset = new HashMap<String, String>();
+        dataset.put("id", "1111");
+        dataset.put("status", "Released");
+        dataset.put("isLatestReleased", "true");
+        dataset.put("dateOfLatestReleased", "1257138000000");
+        dataset.put("idOfLatestReleased", "2222");
 
-		//schema is OBSOLETE
-		dataset.put("status", "RELEASED");
-		dataset.put("isLatestReleased", "false");
-		dataset.put("dateOfLatestReleased", "1257138000000"); //2 Nov 2009
-		dataset.put("idOfLatestReleased", "2222");
-		ddConverter.setDataset(dataset);
-		
-		message = ddConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=TBL3739");
-		assertEquals(Properties.getMessage(
-        		BusinessConstants.ERROR_CONVERSION_OBSOLETE_TEMPLATE, new String[]{ddConverter.getSourceFormatName(),"02 Nov 2009","2222"}), 
-        		message);
+        ddConverter.setDataset(dataset);
 
-		//schema is not RELEASED, but OK
-		message = ddConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=TBL3739");
-		dataset.put("status", "Incomplete");
-		dataset.put("isLatestReleased", "false");
-		ddConverter.setDataset(dataset);
+        //schema is OK
+        String message = ddConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=TBL3739");
+        assertNull(message);
+        message = ddConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=DST1111");
+        assertNull(message);
 
-		message = ddConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=TBL3739");
-		assertNull(message);
+        //schema is INVALID
+        message = ddConverter.getInvalidSchemaMessage("http://unknown.com?SchemaId=1111");
+        assertEquals(Properties.getMessage(
+                BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE, new String[]{ddConverter.getSourceFormatName()}),
+                message);
+
+        //schema is OBSOLETE
+        dataset.put("status", "RELEASED");
+        dataset.put("isLatestReleased", "false");
+        dataset.put("dateOfLatestReleased", "1257138000000"); //2 Nov 2009
+        dataset.put("idOfLatestReleased", "2222");
+        ddConverter.setDataset(dataset);
+
+        message = ddConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=TBL3739");
+        assertEquals(Properties.getMessage(
+                BusinessConstants.ERROR_CONVERSION_OBSOLETE_TEMPLATE, new String[]{ddConverter.getSourceFormatName(),"02 Nov 2009","2222"}),
+                message);
+
+        //schema is not RELEASED, but OK
+        message = ddConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=TBL3739");
+        dataset.put("status", "Incomplete");
+        dataset.put("isLatestReleased", "false");
+        ddConverter.setDataset(dataset);
+
+        message = ddConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=TBL3739");
+        assertNull(message);
 
     }
-	public void testConvertDDExcelToXml_MultipleValues() throws Exception{
+    public void testConvertDDExcelToXml_MultipleValues() throws Exception{
 
-		MockDDXMLConverter converter = new MockDDXMLConverter(new Excel2XML());
-		Map<String, String> dataset = new HashMap<String, String>();
-		dataset.put("id", "6585");
-		dataset.put("status", "Released");
-		dataset.put("isLatestReleased", "true");
-		converter.setDataset(dataset);
-		
-		Vector conversionResult = converter.convertDD_XML_split(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_XLS).getFile(), null);
-		assertTestConvertDD_MultipleValuesresults((Vector)conversionResult.get(0));
-		
-	}
-	public void testConvertDDExcel2007ToXml_MultipleValues() throws Exception{
+        MockDDXMLConverter converter = new MockDDXMLConverter(new Excel2XML());
+        Map<String, String> dataset = new HashMap<String, String>();
+        dataset.put("id", "6585");
+        dataset.put("status", "Released");
+        dataset.put("isLatestReleased", "true");
+        converter.setDataset(dataset);
 
-		MockDDXMLConverter converter = new MockDDXMLConverter(new Excel20072XML());
-		Map<String, String> dataset = new HashMap<String, String>();
-		dataset.put("id", "6585");
-		dataset.put("status", "Released");
-		dataset.put("isLatestReleased", "true");
-		converter.setDataset(dataset);
-		
-		Vector conversionResult = converter.convertDD_XML_split(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_XLSX).getFile(), null);
-		assertTestConvertDD_MultipleValuesresults((Vector)conversionResult.get(0));
-		
-	}
-	public void testConvertDDOdsToXml_MultipleValues() throws Exception{
+        Vector conversionResult = converter.convertDD_XML_split(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_XLS).getFile(), null);
+        assertTestConvertDD_MultipleValuesresults((Vector)conversionResult.get(0));
 
-		MockDDXMLConverter converter = new MockDDXMLConverter(new Ods2Xml());
-		Map<String, String> dataset = new HashMap<String, String>();
-		dataset.put("id", "6585");
-		dataset.put("status", "Released");
-		dataset.put("isLatestReleased", "true");
-		converter.setDataset(dataset);
-		
-		Vector conversionResult = converter.convertDD_XML_split(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_ODS).getFile(), null);
-		assertTestConvertDD_MultipleValuesresults((Vector)conversionResult.get(0));
-		
-	}
-	private void assertTestConvertDD_MultipleValuesresults(Vector conversionResult) throws Exception{
+    }
+    public void testConvertDDExcel2007ToXml_MultipleValues() throws Exception{
 
-		assertEquals(3,conversionResult.size());
-		assertEquals("0",(String)conversionResult.get(0));	
-		assertEquals("GW-Body_Characterisation.xml",(String)conversionResult.get(1));
+        MockDDXMLConverter converter = new MockDDXMLConverter(new Excel20072XML());
+        Map<String, String> dataset = new HashMap<String, String>();
+        dataset.put("id", "6585");
+        dataset.put("status", "Released");
+        dataset.put("isLatestReleased", "true");
+        converter.setDataset(dataset);
 
-		byte[] xml = (byte[])conversionResult.get(2);
-		
-		//parse date values from result XML
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(xml);
-		IXmlCtx ctx=new XmlContext();
-		ctx.checkFromInputStream(inputStream);
-		IXQuery xQuery=ctx.getQueryManager();
+        Vector conversionResult = converter.convertDD_XML_split(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_XLSX).getFile(), null);
+        assertTestConvertDD_MultipleValuesresults((Vector)conversionResult.get(0));
 
-		List<String> multipleValues = xQuery.getElementValues("dd37:Stratigraphy");
-		assertTrue(multipleValues.size()>0);
-		assertEquals("Cambrian", multipleValues.get(0));
-		assertEquals("Carboniferous", multipleValues.get(1));
-		assertEquals("Devonian", multipleValues.get(2));
-		assertEquals("Jurassic,Cambrian", multipleValues.get(3));
-		assertEquals("1", multipleValues.get(4));
-		assertEquals("2", multipleValues.get(5));
-		assertEquals("3", multipleValues.get(6));
-	}
+    }
+    public void testConvertDDOdsToXml_MultipleValues() throws Exception{
 
-	class MockDDXMLConverter extends DDXMLConverter {
+        MockDDXMLConverter converter = new MockDDXMLConverter(new Ods2Xml());
+        Map<String, String> dataset = new HashMap<String, String>();
+        dataset.put("id", "6585");
+        dataset.put("status", "Released");
+        dataset.put("isLatestReleased", "true");
+        converter.setDataset(dataset);
 
-		Map<String, String> datasetResult = null;
-		private DDXMLConverter spreadsheetReader;
-		
-		public MockDDXMLConverter(DDXMLConverter spreadsheetReader) {			
-			super();
-			this.spreadsheetReader = spreadsheetReader;
-		}
-		protected Map<String, String> getDataset(String type, String dsId){
-			return datasetResult;
-		}
-		public void setDataset(Map<String, String> dataset){
-			this.datasetResult = dataset;
-		}
-		protected void importSheetSchemas(SourceReaderIF spreadsheet, DD_XMLInstance instance, String xml_schema){
-			String localSchemaUrl = TestUtils.getSeedURL(TestConstants.SEED_GW_SCHEMA,this);
-			super.importSheetSchemas(spreadsheet, instance, localSchemaUrl);
-		}
-		@Override
-		public String getSourceFormatName() {
-			return spreadsheetReader.getSourceFormatName();
-		}
-		@Override
-		public SourceReaderIF getSourceReader() {
-			return spreadsheetReader.getSourceReader();
-		}
-	}
+        Vector conversionResult = converter.convertDD_XML_split(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_ODS).getFile(), null);
+        assertTestConvertDD_MultipleValuesresults((Vector)conversionResult.get(0));
+
+    }
+    private void assertTestConvertDD_MultipleValuesresults(Vector conversionResult) throws Exception{
+
+        assertEquals(3,conversionResult.size());
+        assertEquals("0",(String)conversionResult.get(0));
+        assertEquals("GW-Body_Characterisation.xml",(String)conversionResult.get(1));
+
+        byte[] xml = (byte[])conversionResult.get(2);
+
+        //parse date values from result XML
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(xml);
+        IXmlCtx ctx=new XmlContext();
+        ctx.checkFromInputStream(inputStream);
+        IXQuery xQuery=ctx.getQueryManager();
+
+        List<String> multipleValues = xQuery.getElementValues("dd37:Stratigraphy");
+        assertTrue(multipleValues.size()>0);
+        assertEquals("Cambrian", multipleValues.get(0));
+        assertEquals("Carboniferous", multipleValues.get(1));
+        assertEquals("Devonian", multipleValues.get(2));
+        assertEquals("Jurassic,Cambrian", multipleValues.get(3));
+        assertEquals("1", multipleValues.get(4));
+        assertEquals("2", multipleValues.get(5));
+        assertEquals("3", multipleValues.get(6));
+    }
+
+    class MockDDXMLConverter extends DDXMLConverter {
+
+        Map<String, String> datasetResult = null;
+        private DDXMLConverter spreadsheetReader;
+
+        public MockDDXMLConverter(DDXMLConverter spreadsheetReader) {
+            super();
+            this.spreadsheetReader = spreadsheetReader;
+        }
+        protected Map<String, String> getDataset(String type, String dsId){
+            return datasetResult;
+        }
+        public void setDataset(Map<String, String> dataset){
+            this.datasetResult = dataset;
+        }
+        protected void importSheetSchemas(SourceReaderIF spreadsheet, DD_XMLInstance instance, String xml_schema){
+            String localSchemaUrl = TestUtils.getSeedURL(TestConstants.SEED_GW_SCHEMA,this);
+            super.importSheetSchemas(spreadsheet, instance, localSchemaUrl);
+        }
+        @Override
+        public String getSourceFormatName() {
+            return spreadsheetReader.getSourceFormatName();
+        }
+        @Override
+        public SourceReaderIF getSourceReader() {
+            return spreadsheetReader.getSourceReader();
+        }
+    }
 }
 

@@ -20,35 +20,35 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
 /**
- * Action loading the list of XML files  
- * 
+ * Action loading the list of XML files
+ *
  * @author Enriko Käsper (TietoEnator)
  *
  */
 public class UplXmlFileFormAction extends Action {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-		ActionErrors errors = new ActionErrors();
-		UplXmlFileHolder holder = null;
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        ActionErrors errors = new ActionErrors();
+        UplXmlFileHolder holder = null;
 
-		String user = (String) httpServletRequest.getSession().getAttribute("user");
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
 
-		try {
-			UplXmlFileManager fm = new UplXmlFileManager();
-			holder = fm.getUplXmlFiles(user);
+        try {
+            UplXmlFileManager fm = new UplXmlFileManager();
+            holder = fm.getUplXmlFiles(user);
 
-		} catch (DCMException e) {
-			e.printStackTrace();
-			_logger.error("Uploaded XML file form error",e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-			saveMessages(httpServletRequest, errors);
-		}
-		saveMessages(httpServletRequest, errors);
+        } catch (DCMException e) {
+            e.printStackTrace();
+            _logger.error("Uploaded XML file form error",e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+            saveMessages(httpServletRequest, errors);
+        }
+        saveMessages(httpServletRequest, errors);
 
-		httpServletRequest.getSession().setAttribute("xmlfiles.uploaded", holder);
-		return actionMapping.findForward("success");
-	}
+        httpServletRequest.getSession().setAttribute("xmlfiles.uploaded", holder);
+        return actionMapping.findForward("success");
+    }
 }

@@ -3,20 +3,20 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is Web Dashboards Service
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency (EEA).  Portions created by European Dynamics (ED) company are
  * Copyright (C) by European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributors(s):
- *    Original code: Dusan Popovic (ED) 
+ *    Original code: Dusan Popovic (ED)
  *                          Nedeljko Pavlovic (ED)
  */
 
@@ -77,7 +77,7 @@ public class XSLTransformer {
                     transformerFactory.setAttribute(FeatureKeys.RECOVERY_POLICY, Configuration.RECOVER_SILENTLY);
                 }
             } catch (MissingResourceException mre) {
-            	mre.printStackTrace();
+                mre.printStackTrace();
             }
 
         }
@@ -109,7 +109,7 @@ public class XSLTransformer {
      * @return
      */
     public TransformerFactory getTransformerFactoryInstance(){
-    	return transformerFactory;
+        return transformerFactory;
     }
     public void transform(String xslt, InputSource inputSource, OutputStream os, Map<String, Object>  parameters) throws TransformException {
         if (xslt == null) {
@@ -119,13 +119,13 @@ public class XSLTransformer {
                 throw new TransformException(e);
             }
         } else {
-			java.io.FileInputStream is;
-			try {
-				is = new java.io.FileInputStream(xslt);
-			} catch (FileNotFoundException e) {
+            java.io.FileInputStream is;
+            try {
+                is = new java.io.FileInputStream(xslt);
+            } catch (FileNotFoundException e) {
                 throw new TransformException(e);
-			}
-	        InputStreamReader ssreader = new InputStreamReader(is);
+            }
+            InputStreamReader ssreader = new InputStreamReader(is);
             transformStream(xslt, ssreader, inputSource,  new StreamResult(os), parameters);
         }
     }
@@ -138,41 +138,41 @@ public class XSLTransformer {
                 throw new TransformException(e);
             }
         } else {
-			java.io.FileInputStream is;
-			try {
-				is = new java.io.FileInputStream(xslt);
-			} catch (FileNotFoundException e) {
+            java.io.FileInputStream is;
+            try {
+                is = new java.io.FileInputStream(xslt);
+            } catch (FileNotFoundException e) {
                 throw new TransformException(e);
-			}
-	        InputStreamReader ssreader = new InputStreamReader(is);
+            }
+            InputStreamReader ssreader = new InputStreamReader(is);
             transformStream(xslt, ssreader, inputSource, new StreamResult(writer), parameters);
         }
     }
-	
-	public void transform(String xsltName, String xslContent, InputSource inputSource, OutputStream os, Map<String, Object>  parameters) throws TransformException {
-		  ByteArrayInputStream bais=new ByteArrayInputStream(xslContent.getBytes());
+
+    public void transform(String xsltName, String xslContent, InputSource inputSource, OutputStream os, Map<String, Object>  parameters) throws TransformException {
+          ByteArrayInputStream bais=new ByteArrayInputStream(xslContent.getBytes());
           InputStreamReader ssreader = new InputStreamReader(bais);
-		  transformStream(xsltName, ssreader, inputSource,  new StreamResult(os), parameters);
-		  
-	}
-	
-	
-	/**
-	 * 
-	 * @param xsltName
-	 * @param xslIs
-	 * @param is
-	 * @param os
-	 * @param parameters
-	 * @throws TransformException
-	 */
-	public void transform(String xsltName, InputStream xslIs, InputStream is, OutputStream os, Map<String, Object>  parameters) throws TransformException {
+          transformStream(xsltName, ssreader, inputSource,  new StreamResult(os), parameters);
+
+    }
+
+
+    /**
+     *
+     * @param xsltName
+     * @param xslIs
+     * @param is
+     * @param os
+     * @param parameters
+     * @throws TransformException
+     */
+    public void transform(String xsltName, InputStream xslIs, InputStream is, OutputStream os, Map<String, Object>  parameters) throws TransformException {
         InputStreamReader ssreader = new InputStreamReader(xslIs);
-		  transformStream(xsltName, ssreader, new InputSource(is),  new StreamResult(os), parameters);
-		  
-	}
-	
-	
+          transformStream(xsltName, ssreader, new InputSource(is),  new StreamResult(os), parameters);
+
+    }
+
+
 
     private static void transformStream(String xslt, InputStreamReader xslReader, InputSource inputSource, StreamResult streamResult, Map<String, Object> parameters) throws TransformException {
         if (xslt == null) {
@@ -218,7 +218,7 @@ public class XSLTransformer {
 
             //
             // Parse the Document into a DOM tree
-            // 
+            //
             //
             org.w3c.dom.Document doc = docBuilder.parse(inputSource);
 
@@ -231,9 +231,9 @@ public class XSLTransformer {
                 //
                 // Get the transform variables (parameters)
                 //
-            	for (Map.Entry<String, Object> param : parameters.entrySet()){
-                    processor.setParameter(param.getKey(), param.getValue());            		
-            	}
+                for (Map.Entry<String, Object> param : parameters.entrySet()){
+                    processor.setParameter(param.getKey(), param.getValue());
+                }
             }
 
             //

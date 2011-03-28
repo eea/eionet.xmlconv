@@ -33,12 +33,12 @@ import eionet.gdem.conversion.excel.ExcelUtils;
 
 public class Excel2XML extends DDXMLConverter
 {
-	private final static String FORMAT_NAME = "MS Excel";
+    private final static String FORMAT_NAME = "MS Excel";
 
-	public SourceReaderIF getSourceReader(){
-		return ExcelUtils.getExcelReader();
-	}
-	public String getSourceFormatName(){
-		return FORMAT_NAME;
-	}
+    public SourceReaderIF getSourceReader(){
+        return ExcelUtils.getExcelReader();
+    }
+    public String getSourceFormatName(){
+        return FORMAT_NAME;
+    }
 }

@@ -46,203 +46,203 @@ import eionet.gdem.web.struts.login.AfterCASLoginAction;
  * @author Enriko Käsper
  */
 public class SecurityUtil {
-    
+
 
     /**
     * Returns current user, or 'null', if the current session
     * does not have user attached to it.
     */
     public static final AppUser getUser(HttpServletRequest request, String attrName) {
-        
+
 
         HttpSession session = request.getSession();
         AppUser user = session==null ? null : (AppUser)session.getAttribute(attrName);
-        
+
         if (user==null){
-        	String casUserName = (String)session.getAttribute(CASFilter.CAS_FILTER_USER);
-        	if (casUserName!=null){
-        		user = new CASUser(casUserName);
-				session.setAttribute(attrName, user);
-				session.setAttribute("user", user.getUserName());        	
-			}
+            String casUserName = (String)session.getAttribute(CASFilter.CAS_FILTER_USER);
+            if (casUserName!=null){
+                user = new CASUser(casUserName);
+                session.setAttribute(attrName, user);
+                session.setAttribute("user", user.getUserName());
+            }
         }
         else if (user instanceof CASUser){
-        	String casUserName = (String)session.getAttribute(CASFilter.CAS_FILTER_USER);
-        	if (casUserName==null){
-        		user = null;
-        		session.removeAttribute(attrName);
-				session.removeAttribute("user");        	
-        	}
-        	else if (!casUserName.equals(user.getUserName())){
-        		user = new CASUser(casUserName);
-				session.setAttribute(attrName, user);
-				session.setAttribute("user", user.getUserName());        	
-        	}
+            String casUserName = (String)session.getAttribute(CASFilter.CAS_FILTER_USER);
+            if (casUserName==null){
+                user = null;
+                session.removeAttribute(attrName);
+                session.removeAttribute("user");
+            }
+            else if (!casUserName.equals(user.getUserName())){
+                user = new CASUser(casUserName);
+                session.setAttribute(attrName, user);
+                session.setAttribute("user", user.getUserName());
+            }
         }
-        
+
         if (user != null)
             return user;
-        else 
+        else
             return null;
     }
     /**
-     * 
+     *
      */
     public static boolean hasPerm(String usr, String aclPath, String prm)
-    														throws Exception{
-    	if (!aclPath.startsWith("/")) return false;
-    	
-    	boolean has = false;
-		AccessControlListIF acl = null;
-		int i = aclPath.indexOf("/", 1);
-		while (i!=-1 && !has){
-			String subPath = aclPath.substring(0,i);
-			try{
-				acl = AccessController.getAcl(subPath);
-			}
-			catch (Exception e){
-				acl = null;
-			}
-			
-			if (acl!=null)
-				has = acl.checkPermission(usr, prm);
-			
-			i = aclPath.indexOf("/", i+1);
-		}
-		
-		if (!has){
-			try{
-				acl = AccessController.getAcl(aclPath);
-			}
-			catch (Exception e){
-				acl = null;
-			}
-			
-			if (acl!=null)
-				has = acl.checkPermission(usr, prm);
-		}
-    	
-    	return has;
+                                                            throws Exception{
+        if (!aclPath.startsWith("/")) return false;
+
+        boolean has = false;
+        AccessControlListIF acl = null;
+        int i = aclPath.indexOf("/", 1);
+        while (i!=-1 && !has){
+            String subPath = aclPath.substring(0,i);
+            try{
+                acl = AccessController.getAcl(subPath);
+            }
+            catch (Exception e){
+                acl = null;
+            }
+
+            if (acl!=null)
+                has = acl.checkPermission(usr, prm);
+
+            i = aclPath.indexOf("/", i+1);
+        }
+
+        if (!has){
+            try{
+                acl = AccessController.getAcl(aclPath);
+            }
+            catch (Exception e){
+                acl = null;
+            }
+
+            if (acl!=null)
+                has = acl.checkPermission(usr, prm);
+        }
+
+        return has;
     }
 
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 * @throws GDEMException 
-	 */
-	public static String getLoginURL(HttpServletRequest request) throws GDEMException {
-		
-		String urlWithContextPath = getUrlWithContextPath(request);
-		String result = "login";
-		
-		String afterLoginUrl = getRealRequestURL(request);
-		// store the current page in the session to be able to come back after login
-		if(afterLoginUrl!=null && !afterLoginUrl.contains("login"))
-			request.getSession().setAttribute(AfterCASLoginAction.AFTER_LOGIN_ATTR_NAME, afterLoginUrl);
+    /**
+     *
+     * @param request
+     * @return
+     * @throws GDEMException
+     */
+    public static String getLoginURL(HttpServletRequest request) throws GDEMException {
 
-		String casLoginUrl = request.getSession().getServletContext().getInitParameter(CASFilter.LOGIN_INIT_PARAM);
-		if (casLoginUrl!=null){
+        String urlWithContextPath = getUrlWithContextPath(request);
+        String result = "login";
 
-			StringBuffer loginUrl = new StringBuffer(casLoginUrl);
-			loginUrl.append("?service=");
-			try {
-				// + request.getScheme() + "://" + SERVER_NAME + request.getContextPath() + "/login";
-				loginUrl.append(URLEncoder.encode(urlWithContextPath+ "/do/afterLogin", "UTF-8"));
-				result = loginUrl.toString();
-			}
-			catch (UnsupportedEncodingException e) {
-				throw new GDEMException(e.toString(), e);
-			}
-		}
-		else{
-			// got to local login page
-			result = urlWithContextPath+ "/do/login";
-		}
-		
-		return result;
-	}
+        String afterLoginUrl = getRealRequestURL(request);
+        // store the current page in the session to be able to come back after login
+        if(afterLoginUrl!=null && !afterLoginUrl.contains("login"))
+            request.getSession().setAttribute(AfterCASLoginAction.AFTER_LOGIN_ATTR_NAME, afterLoginUrl);
 
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 * @throws GDEMException 
-	 */
-	public static String getLogoutURL(HttpServletRequest request) throws GDEMException{
+        String casLoginUrl = request.getSession().getServletContext().getInitParameter(CASFilter.LOGIN_INIT_PARAM);
+        if (casLoginUrl!=null){
+
+            StringBuffer loginUrl = new StringBuffer(casLoginUrl);
+            loginUrl.append("?service=");
+            try {
+                // + request.getScheme() + "://" + SERVER_NAME + request.getContextPath() + "/login";
+                loginUrl.append(URLEncoder.encode(urlWithContextPath+ "/do/afterLogin", "UTF-8"));
+                result = loginUrl.toString();
+            }
+            catch (UnsupportedEncodingException e) {
+                throw new GDEMException(e.toString(), e);
+            }
+        }
+        else{
+            // got to local login page
+            result = urlWithContextPath+ "/do/login";
+        }
+
+        return result;
+    }
+
+    /**
+     *
+     * @param request
+     * @return
+     * @throws GDEMException
+     */
+    public static String getLogoutURL(HttpServletRequest request) throws GDEMException{
 
 
-		String result = "start";
-		
-		String casLoginUrl = request.getSession().getServletContext().getInitParameter(CASFilter.LOGIN_INIT_PARAM);
-		if (casLoginUrl!=null){
-			
-			StringBuffer buf = new StringBuffer(casLoginUrl.replaceFirst("/login", "/logout"));
-			try {
-				buf.append("?url=").append(URLEncoder.encode(getUrlWithContextPath(request), "UTF-8"));
-				result = buf.toString();
-			}
-			catch (UnsupportedEncodingException e) {
-				throw new GDEMException(e.toString(), e);
-			}
-		}
-		// goto start page
-		return result;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public static String getUrlWithContextPath(HttpServletRequest request){
-		
+        String result = "start";
+
+        String casLoginUrl = request.getSession().getServletContext().getInitParameter(CASFilter.LOGIN_INIT_PARAM);
+        if (casLoginUrl!=null){
+
+            StringBuffer buf = new StringBuffer(casLoginUrl.replaceFirst("/login", "/logout"));
+            try {
+                buf.append("?url=").append(URLEncoder.encode(getUrlWithContextPath(request), "UTF-8"));
+                result = buf.toString();
+            }
+            catch (UnsupportedEncodingException e) {
+                throw new GDEMException(e.toString(), e);
+            }
+        }
+        // goto start page
+        return result;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static String getUrlWithContextPath(HttpServletRequest request){
+
       if (request == null)
       {
           throw new IllegalArgumentException("Cannot take null parameters.");
       }
-	      
+
       String scheme = request.getScheme();
       String serverName = request.getServerName();
       int serverPort = request.getServerPort();
 
       StringBuffer url = new StringBuffer(scheme);
       url.append("://").append(serverName);
-		
+
       //if not http:80 or https:443, then add the port number
       if(!(scheme.equalsIgnoreCase("http") && serverPort == 80) &&
-	        !(scheme.equalsIgnoreCase("https") && serverPort == 443) &&
-	        serverPort>0){
-    	  
-	          url.append(":");
-	          url.append(String.valueOf(serverPort));
-	  }
+            !(scheme.equalsIgnoreCase("https") && serverPort == 443) &&
+            serverPort>0){
+
+              url.append(":");
+              url.append(String.valueOf(serverPort));
+      }
 
       url.append(request.getContextPath());
       return url.toString();
-	}    
-	public static String getRealRequestURL(HttpServletRequest request){
-		
-		HttpServletRequest tmpRequest = request;
-		while (tmpRequest instanceof HttpServletRequestWrapper) {
-			tmpRequest = (HttpServletRequest) ((HttpServletRequestWrapper)
-					tmpRequest).getRequest();
-		}
-		StringBuffer url = tmpRequest.getRequestURL();
+    }
+    public static String getRealRequestURL(HttpServletRequest request){
 
-		if (tmpRequest.getQueryString()!=null)
-			url.append("?").append(tmpRequest.getQueryString());
-		
-		return url.toString();
-	}
+        HttpServletRequest tmpRequest = request;
+        while (tmpRequest instanceof HttpServletRequestWrapper) {
+            tmpRequest = (HttpServletRequest) ((HttpServletRequestWrapper)
+                    tmpRequest).getRequest();
+        }
+        StringBuffer url = tmpRequest.getRequestURL();
+
+        if (tmpRequest.getQueryString()!=null)
+            url.append("?").append(tmpRequest.getQueryString());
+
+        return url.toString();
+    }
 }
 class CASUser extends AppUser {
 
-	public CASUser(String userName){
-		this.authenticatedUserName = userName;
-	}
-	private String authenticatedUserName ;
+    public CASUser(String userName){
+        this.authenticatedUserName = userName;
+    }
+    private String authenticatedUserName ;
 
-	public String getUserName(){
-		return authenticatedUserName; 
-	}
+    public String getUserName(){
+        return authenticatedUserName;
+    }
 }

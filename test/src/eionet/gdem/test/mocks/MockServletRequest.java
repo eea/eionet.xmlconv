@@ -25,274 +25,274 @@ import javax.servlet.http.HttpSession;
 
 public class MockServletRequest  implements HttpServletRequest {
 
-	ServletInputStream inputStream = null;
-	String contentType = null;
-	int contentLength = 0;
-	HashMap headers = new HashMap();
-	Map parameterMap = new HashMap();
-	Locale locale = Locale.getDefault();
-	int bufferSize = 0;
-	String charEncoding = "UTF-8";
-	
-	String scheme = null;
-	String serverName = null;
-	int serverPort = 0;
-	String contextPath= null;
-	String requestURL = null;
-	String queryString = null;
-	
-	HttpSession session;
+    ServletInputStream inputStream = null;
+    String contentType = null;
+    int contentLength = 0;
+    HashMap headers = new HashMap();
+    Map parameterMap = new HashMap();
+    Locale locale = Locale.getDefault();
+    int bufferSize = 0;
+    String charEncoding = "UTF-8";
 
-	public String getAuthType() {
-		throw new UnsupportedOperationException();
-	}
+    String scheme = null;
+    String serverName = null;
+    int serverPort = 0;
+    String contextPath= null;
+    String requestURL = null;
+    String queryString = null;
 
-	public String getContextPath() {
-		return contextPath;
-	}
+    HttpSession session;
 
-	public Cookie[] getCookies() {
-		throw new UnsupportedOperationException();
-	}
+    public String getAuthType() {
+        throw new UnsupportedOperationException();
+    }
 
-	public long getDateHeader(String arg0) {
-		throw new UnsupportedOperationException();
-	}
+    public String getContextPath() {
+        return contextPath;
+    }
 
-	public String getHeader(String arg0) {
-		throw new UnsupportedOperationException();
-	}
+    public Cookie[] getCookies() {
+        throw new UnsupportedOperationException();
+    }
 
-	public Enumeration getHeaderNames() {
-		throw new UnsupportedOperationException();
-	}
+    public long getDateHeader(String arg0) {
+        throw new UnsupportedOperationException();
+    }
 
-	public Enumeration getHeaders(String arg0) {
-		throw new UnsupportedOperationException();
-	}
+    public String getHeader(String arg0) {
+        throw new UnsupportedOperationException();
+    }
 
-	public int getIntHeader(String arg0) {
-		throw new UnsupportedOperationException();
-	}
+    public Enumeration getHeaderNames() {
+        throw new UnsupportedOperationException();
+    }
 
-	public String getMethod() {
-		throw new UnsupportedOperationException();
-	}
+    public Enumeration getHeaders(String arg0) {
+        throw new UnsupportedOperationException();
+    }
 
-	public String getPathInfo() {
-		throw new UnsupportedOperationException();
-	}
+    public int getIntHeader(String arg0) {
+        throw new UnsupportedOperationException();
+    }
 
-	public String getPathTranslated() {
-		throw new UnsupportedOperationException();
-	}
+    public String getMethod() {
+        throw new UnsupportedOperationException();
+    }
 
-	public String getQueryString() {
-		return queryString;
-	}
+    public String getPathInfo() {
+        throw new UnsupportedOperationException();
+    }
 
-	public String getRemoteUser() {
-		throw new UnsupportedOperationException();
-	}
+    public String getPathTranslated() {
+        throw new UnsupportedOperationException();
+    }
 
-	public String getRequestURI() {
-		throw new UnsupportedOperationException();
-	}
+    public String getQueryString() {
+        return queryString;
+    }
 
-	public StringBuffer getRequestURL() {
-		return new StringBuffer(requestURL);
-	}
+    public String getRemoteUser() {
+        throw new UnsupportedOperationException();
+    }
 
-	public String getRequestedSessionId() {
-		throw new UnsupportedOperationException();
-	}
+    public String getRequestURI() {
+        throw new UnsupportedOperationException();
+    }
 
-	public String getServletPath() {
-		throw new UnsupportedOperationException();
-	}
+    public StringBuffer getRequestURL() {
+        return new StringBuffer(requestURL);
+    }
 
-	public HttpSession getSession() {
-		return session;
-	}
+    public String getRequestedSessionId() {
+        throw new UnsupportedOperationException();
+    }
 
-	public HttpSession getSession(boolean arg0) {
-		return session;
-	}
+    public String getServletPath() {
+        throw new UnsupportedOperationException();
+    }
 
-	public Principal getUserPrincipal() {
-		throw new UnsupportedOperationException();
-	}
+    public HttpSession getSession() {
+        return session;
+    }
 
-	public boolean isRequestedSessionIdFromCookie() {
-		throw new UnsupportedOperationException();
-	}
+    public HttpSession getSession(boolean arg0) {
+        return session;
+    }
 
-	public boolean isRequestedSessionIdFromURL() {
-		return false;
-	}
+    public Principal getUserPrincipal() {
+        throw new UnsupportedOperationException();
+    }
 
-	public boolean isRequestedSessionIdFromUrl() {
-		return false;
-	}
+    public boolean isRequestedSessionIdFromCookie() {
+        throw new UnsupportedOperationException();
+    }
 
-	public boolean isRequestedSessionIdValid() {
-		return false;
-	}
+    public boolean isRequestedSessionIdFromURL() {
+        return false;
+    }
 
-	public boolean isUserInRole(String arg0) {
-		return false;
-	}
+    public boolean isRequestedSessionIdFromUrl() {
+        return false;
+    }
 
-	public Object getAttribute(String arg0) {
-		throw new UnsupportedOperationException();
-	}
+    public boolean isRequestedSessionIdValid() {
+        return false;
+    }
 
-	public Enumeration getAttributeNames() {
-		throw new UnsupportedOperationException();
-	}
+    public boolean isUserInRole(String arg0) {
+        return false;
+    }
 
-	public String getCharacterEncoding() {
-		return charEncoding;
-	}
+    public Object getAttribute(String arg0) {
+        throw new UnsupportedOperationException();
+    }
 
-	public int getContentLength() {
-		return contentLength;
-	}
+    public Enumeration getAttributeNames() {
+        throw new UnsupportedOperationException();
+    }
 
-	public String getContentType() {
-		return contentType;
-	}
+    public String getCharacterEncoding() {
+        return charEncoding;
+    }
 
-	public ServletInputStream getInputStream() throws IOException {
-		return inputStream;
-	}
+    public int getContentLength() {
+        return contentLength;
+    }
 
-	public String getLocalAddr() {
-		throw new UnsupportedOperationException();
-	}
+    public String getContentType() {
+        return contentType;
+    }
 
-	public String getLocalName() {
-		return locale.getDisplayName();
-	}
+    public ServletInputStream getInputStream() throws IOException {
+        return inputStream;
+    }
 
-	public int getLocalPort() {
-		return 0;
-	}
+    public String getLocalAddr() {
+        throw new UnsupportedOperationException();
+    }
 
-	public Locale getLocale() {
-		return locale;
-	}
+    public String getLocalName() {
+        return locale.getDisplayName();
+    }
 
-	public Enumeration getLocales() {
-		throw new UnsupportedOperationException();
-	}
+    public int getLocalPort() {
+        return 0;
+    }
 
-	public String getParameter(String arg0) {
-		return (String)parameterMap.get(arg0);
-	}
+    public Locale getLocale() {
+        return locale;
+    }
 
-	public Map getParameterMap() {
-		return parameterMap;
-	}
+    public Enumeration getLocales() {
+        throw new UnsupportedOperationException();
+    }
 
-	public Enumeration getParameterNames() {
-		throw new UnsupportedOperationException();
-	}
+    public String getParameter(String arg0) {
+        return (String)parameterMap.get(arg0);
+    }
 
-	public String[] getParameterValues(String arg0) {
-		throw new UnsupportedOperationException();
-	}
+    public Map getParameterMap() {
+        return parameterMap;
+    }
 
-	public String getProtocol() {
-		throw new UnsupportedOperationException();
-	}
+    public Enumeration getParameterNames() {
+        throw new UnsupportedOperationException();
+    }
 
-	public BufferedReader getReader() throws IOException {
-		throw new UnsupportedOperationException();
-	}
+    public String[] getParameterValues(String arg0) {
+        throw new UnsupportedOperationException();
+    }
 
-	public String getRealPath(String arg0) {
-		throw new UnsupportedOperationException();
-	}
+    public String getProtocol() {
+        throw new UnsupportedOperationException();
+    }
 
-	public String getRemoteAddr() {
-		throw new UnsupportedOperationException();
-	}
+    public BufferedReader getReader() throws IOException {
+        throw new UnsupportedOperationException();
+    }
 
-	public String getRemoteHost() {
-		throw new UnsupportedOperationException();
-	}
+    public String getRealPath(String arg0) {
+        throw new UnsupportedOperationException();
+    }
 
-	public int getRemotePort() {
-		throw new UnsupportedOperationException();
-	}
+    public String getRemoteAddr() {
+        throw new UnsupportedOperationException();
+    }
 
-	public RequestDispatcher getRequestDispatcher(String arg0) {
-		throw new UnsupportedOperationException();
-	}
+    public String getRemoteHost() {
+        throw new UnsupportedOperationException();
+    }
 
-	public String getScheme() {
-		return scheme;
-	}
+    public int getRemotePort() {
+        throw new UnsupportedOperationException();
+    }
 
-	public String getServerName() {
-		return serverName;
-	}
+    public RequestDispatcher getRequestDispatcher(String arg0) {
+        throw new UnsupportedOperationException();
+    }
 
-	public int getServerPort() {
-		return serverPort;
-	}
+    public String getScheme() {
+        return scheme;
+    }
 
-	public boolean isSecure() {
-		return false;
-	}
+    public String getServerName() {
+        return serverName;
+    }
 
-	public void removeAttribute(String arg0) {
-	}
+    public int getServerPort() {
+        return serverPort;
+    }
 
-	public void setAttribute(String arg0, Object arg1) {
-	}
+    public boolean isSecure() {
+        return false;
+    }
 
-	public void setCharacterEncoding(String arg0){
-		this.charEncoding=arg0;
-	}
-	//Methods needed for testing
-	public void setParameterMap(Map paramsMap) {
-		parameterMap=paramsMap;
-	}
-	public void setServletInputStream(ByteArrayInputStream ins){
-		inputStream = new MockServletInputStream(ins);
-	}
+    public void removeAttribute(String arg0) {
+    }
 
-	public void setContentLength(int contentLength) {
-		this.contentLength = contentLength;
-	}
+    public void setAttribute(String arg0, Object arg1) {
+    }
 
-	public void setScheme(String scheme) {
-		this.scheme = scheme;
-	}
+    public void setCharacterEncoding(String arg0){
+        this.charEncoding=arg0;
+    }
+    //Methods needed for testing
+    public void setParameterMap(Map paramsMap) {
+        parameterMap=paramsMap;
+    }
+    public void setServletInputStream(ByteArrayInputStream ins){
+        inputStream = new MockServletInputStream(ins);
+    }
 
-	public void setServerName(String serverName) {
-		this.serverName = serverName;
-	}
+    public void setContentLength(int contentLength) {
+        this.contentLength = contentLength;
+    }
 
-	public void setServerPort(int serverPort) {
-		this.serverPort = serverPort;
-	}
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
+    }
 
-	public void setContextPath(String contextPath) {
-		this.contextPath = contextPath;
-	}
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
+    }
 
-	public void setSession(HttpSession session) {
-		this.session = session;
-	}
+    public void setServerPort(int serverPort) {
+        this.serverPort = serverPort;
+    }
 
-	public void setRequestURL(String requestURL) {
-		this.requestURL = requestURL;
-	}
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
 
-	public void setQueryString(String queryString) {
-		this.queryString = queryString;
-	}
+    public void setSession(HttpSession session) {
+        this.session = session;
+    }
+
+    public void setRequestURL(String requestURL) {
+        this.requestURL = requestURL;
+    }
+
+    public void setQueryString(String queryString) {
+        this.queryString = queryString;
+    }
 }

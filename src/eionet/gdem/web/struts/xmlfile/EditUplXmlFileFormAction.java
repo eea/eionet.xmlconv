@@ -21,42 +21,42 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
 /**
- * Action for opening Edit XML file metadata form  
- * 
+ * Action for opening Edit XML file metadata form
+ *
  * @author Enriko Käsper (TietoEnator)
  *
  */
 
 public class EditUplXmlFileFormAction extends Action {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-		ActionMessages errors = new ActionMessages();
+        ActionMessages errors = new ActionMessages();
 
-		EditUplXmlFileForm form = (EditUplXmlFileForm) actionForm;
-		String xmlfileId = (String) httpServletRequest.getParameter("xmlfileId");
+        EditUplXmlFileForm form = (EditUplXmlFileForm) actionForm;
+        String xmlfileId = (String) httpServletRequest.getParameter("xmlfileId");
 
-		try {
-			UplXmlFileManager fm = new UplXmlFileManager();
-			UplXmlFile xmlfile = fm.getUplXmlFileById(xmlfileId);
+        try {
+            UplXmlFileManager fm = new UplXmlFileManager();
+            UplXmlFile xmlfile = fm.getUplXmlFileById(xmlfileId);
 
-			form.setXmlfileId(xmlfile.getId());
-			form.setXmlFileName(xmlfile.getFileName());
-			form.setXmlFilePath(httpServletRequest.getContextPath() + "/" + Properties.xmlfileFolder+ "/");
+            form.setXmlfileId(xmlfile.getId());
+            form.setXmlFileName(xmlfile.getFileName());
+            form.setXmlFilePath(httpServletRequest.getContextPath() + "/" + Properties.xmlfileFolder+ "/");
 
-			form.setTitle(xmlfile.getTitle());
-			form.setLastModified(xmlfile.getLastModified());
+            form.setTitle(xmlfile.getTitle());
+            form.setLastModified(xmlfile.getLastModified());
 
-		} catch (DCMException e) {
-			e.printStackTrace();
-			_logger.error("Error editing uploaded XML file", e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-			saveErrors(httpServletRequest, errors);
-		}
+        } catch (DCMException e) {
+            e.printStackTrace();
+            _logger.error("Error editing uploaded XML file", e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+            saveErrors(httpServletRequest, errors);
+        }
 
-		return actionMapping.findForward("success");
-	}
+        return actionMapping.findForward("success");
+    }
 }

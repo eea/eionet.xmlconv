@@ -40,45 +40,45 @@ import eionet.gdem.services.LoggerIF;
 
 public class QAScriptFormAction extends Action {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-		ActionMessages errors = new ActionMessages();
+        ActionMessages errors = new ActionMessages();
 
-		QAScriptForm form = (QAScriptForm) actionForm;
-		String scriptId = (String) httpServletRequest.getParameter("scriptId");
+        QAScriptForm form = (QAScriptForm) actionForm;
+        String scriptId = (String) httpServletRequest.getParameter("scriptId");
 
-		if (scriptId == null || scriptId.equals("")) {
-			scriptId = (String) httpServletRequest.getAttribute("scriptId");
-		}
+        if (scriptId == null || scriptId.equals("")) {
+            scriptId = (String) httpServletRequest.getAttribute("scriptId");
+        }
 
-		try {
-			QAScriptManager qm = new QAScriptManager();
-			QAScript qaScript = qm.getQAScript(scriptId);
-			form.setScriptId(qaScript.getScriptId());
-			form.setDescription(qaScript.getDescription());
-			form.setShortName(qaScript.getShortName());
-			form.setFileName(qaScript.getFileName());
-			form.setFilePath(qaScript.getFilePath());
-			form.setSchema(qaScript.getSchema());
-			form.setSchemaId(qaScript.getSchemaId());	
-			form.setResultType(qaScript.getResultType());
-			form.setScriptType(qaScript.getScriptType());
-			form.setModified(qaScript.getModified());
-			form.setChecksum(qaScript.getChecksum());
-			form.setScriptContent(qaScript.getScriptContent());
-			form.setUpperLimit(qaScript.getUpperLimit());
+        try {
+            QAScriptManager qm = new QAScriptManager();
+            QAScript qaScript = qm.getQAScript(scriptId);
+            form.setScriptId(qaScript.getScriptId());
+            form.setDescription(qaScript.getDescription());
+            form.setShortName(qaScript.getShortName());
+            form.setFileName(qaScript.getFileName());
+            form.setFilePath(qaScript.getFilePath());
+            form.setSchema(qaScript.getSchema());
+            form.setSchemaId(qaScript.getSchemaId());
+            form.setResultType(qaScript.getResultType());
+            form.setScriptType(qaScript.getScriptType());
+            form.setModified(qaScript.getModified());
+            form.setChecksum(qaScript.getChecksum());
+            form.setScriptContent(qaScript.getScriptContent());
+            form.setUpperLimit(qaScript.getUpperLimit());
 
-			QAScriptListLoader.loadQAScriptList(httpServletRequest, false);
+            QAScriptListLoader.loadQAScriptList(httpServletRequest, false);
 
-		} catch (DCMException e) {
-			e.printStackTrace();
-			_logger.error("QA Script form error",e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-			saveErrors(httpServletRequest, errors);
-		}
-		return actionMapping.findForward("success");
-	}
+        } catch (DCMException e) {
+            e.printStackTrace();
+            _logger.error("QA Script form error",e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+            saveErrors(httpServletRequest, errors);
+        }
+        return actionMapping.findForward("success");
+    }
 }

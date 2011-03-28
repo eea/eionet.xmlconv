@@ -63,43 +63,43 @@ public class ExcelUtils {
    public static SourceReaderIF getExcel2007Reader(){
      return new ExcelReader(true);
    }
-   
-  
+
+
   /*
    * returns true, if inputstream can be opened with MS Excel
    */
   public static boolean isExcelFile(InputStream input){
-	  try{
-		  POIFSFileSystem fs = new POIFSFileSystem(input);
-		  return true;
-	  }
-	  catch(Exception e){
-		  return false;
-	  }
-	 finally {
-		try {
-			if (input != null) input.close();
-		} catch (Exception e) {}
-	 }
+      try{
+          POIFSFileSystem fs = new POIFSFileSystem(input);
+          return true;
+      }
+      catch(Exception e){
+          return false;
+      }
+     finally {
+        try {
+            if (input != null) input.close();
+        } catch (Exception e) {}
+     }
   }
-  
+
   /**
    * determines if stream is Excel 2007 file
    */
   public static boolean isExcel2007File(InputStream input) {
-	  try{
-		  OPCPackage p = OPCPackage.open(input);
-		  Workbook wb = WorkbookFactory.create(p);
-		  return true;
-	  }
-	  catch(Exception e){
-		  return false;
-	  }
-	 finally {
-		try {
-			if (input != null) input.close();
-		} catch (Exception e) {}
-	 }
+      try{
+          OPCPackage p = OPCPackage.open(input);
+          Workbook wb = WorkbookFactory.create(p);
+          return true;
+      }
+      catch(Exception e){
+          return false;
+      }
+     finally {
+        try {
+            if (input != null) input.close();
+        } catch (Exception e) {}
+     }
   }
 }
 

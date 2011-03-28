@@ -3,18 +3,18 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is XMLCONV.
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency.  Portions created by Tieto Eesti are Copyright
  * (C) European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributor(s):
  * Enriko Käsper, Tieto Estonia
  */
@@ -44,46 +44,46 @@ import eionet.gdem.services.LoggerIF;
 
 public class DeleteQAScriptAction  extends Action {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-		QAScriptForm form = (QAScriptForm) actionForm;
-		String scriptId = form.getScriptId();
-		if(scriptId==null || scriptId.length()==0)
-			 scriptId = (String) httpServletRequest.getParameter("scriptId");
-		String schemaId = form.getSchemaId();
-		if(schemaId==null || schemaId.length()==0)
-			schemaId = (String) httpServletRequest.getParameter("schemaId");
+        QAScriptForm form = (QAScriptForm) actionForm;
+        String scriptId = form.getScriptId();
+        if(scriptId==null || scriptId.length()==0)
+             scriptId = (String) httpServletRequest.getParameter("scriptId");
+        String schemaId = form.getSchemaId();
+        if(schemaId==null || schemaId.length()==0)
+            schemaId = (String) httpServletRequest.getParameter("schemaId");
 
-		String user = (String) httpServletRequest.getSession().getAttribute("user");
-		ActionMessages errors = new ActionMessages();
-		ActionMessages messages = new ActionMessages();
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
+        ActionMessages errors = new ActionMessages();
+        ActionMessages messages = new ActionMessages();
 
-		httpServletRequest.setAttribute("schemaId", httpServletRequest.getParameter("schemaId"));
+        httpServletRequest.setAttribute("schemaId", httpServletRequest.getParameter("schemaId"));
 
-		try {
-			QAScriptManager qm = new QAScriptManager();
-			qm.delete(user, scriptId);
-			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.deleted"));
-		} catch (DCMException e) {
-			e.printStackTrace();
-			_logger.error("Error deleting QA script",e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-		}
-		// saveErrors(httpServletRequest, errors);
+        try {
+            QAScriptManager qm = new QAScriptManager();
+            qm.delete(user, scriptId);
+            messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.deleted"));
+        } catch (DCMException e) {
+            e.printStackTrace();
+            _logger.error("Error deleting QA script",e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+        }
+        // saveErrors(httpServletRequest, errors);
 
-		saveErrors(httpServletRequest.getSession(), errors);
-		saveMessages(httpServletRequest.getSession(), messages);
+        saveErrors(httpServletRequest.getSession(), errors);
+        saveMessages(httpServletRequest.getSession(), messages);
 
-		return findForward(actionMapping, "success", schemaId);
-	}
-	private ActionForward findForward(ActionMapping actionMapping, String f, String schemaId){
-		ActionForward forward = actionMapping.findForward(f);
-		 StringBuffer path = new StringBuffer(forward.getPath());
-		 path.append("?schemaId=" + schemaId);
-	    forward = new RedirectingActionForward(path.toString());
-	    return forward;
-	}
+        return findForward(actionMapping, "success", schemaId);
+    }
+    private ActionForward findForward(ActionMapping actionMapping, String f, String schemaId){
+        ActionForward forward = actionMapping.findForward(f);
+         StringBuffer path = new StringBuffer(forward.getPath());
+         path.append("?schemaId=" + schemaId);
+        forward = new RedirectingActionForward(path.toString());
+        return forward;
+    }
 }

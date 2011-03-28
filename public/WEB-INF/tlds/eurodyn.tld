@@ -62,7 +62,7 @@
     <name>breadcrumbs-list</name>
     <tag-class>eionet.gdem.web.tags.breadcrumbs.ListTag</tag-class>
     <body-content>JSP</body-content>
-    <description>ListTag is used to display the trail, either the whole trail or more likely the normalized version. </description> 
+    <description>ListTag is used to display the trail, either the whole trail or more likely the normalized version. </description>
     <attribute>
       <name>htmlid</name>
       <required>true</required>
@@ -94,7 +94,7 @@
       <description>The delimiter to use between trail items. It defaults to -&gt; and at some point an image will be useable instead. </description>
     </attribute>
   </tag>
-  
+
   <tag>
     <name>breadcrumbs-push</name>
     <tag-class>eionet.gdem.web.tags.breadcrumbs.PushTag</tag-class>
@@ -135,7 +135,7 @@
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
     </attribute>
-  </tag> 
+  </tag>
   <tag>
     <name>tabItem</name>
     <tag-class>eionet.gdem.web.tags.TabItem</tag-class>

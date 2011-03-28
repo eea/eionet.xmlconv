@@ -57,7 +57,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
   private List<ExcelStyleIF> styles=null;
   private List<RowColumnDefinition> columns=null;
   private List<RowColumnDefinition> rows=null;
-  
+
   public ExcelConversionHandler()
   {
       wb = new HSSFWorkbook();
@@ -71,7 +71,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
       if(wb==null) return;
 
       if (sheetName==null) sheetName="Sheet" + String.valueOf(currentSheet+1);
-      
+
       wb.createSheet(sheetName);
       currentSheet=wb.getNumberOfSheets()-1;
      // System.out.println("Worksheet" + currentSheet);
@@ -166,16 +166,16 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
   //                cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("yyyymmdd"));
 
 /*
- * 
+ *
  *    The way how to handle user defined formats
  *    not supported right now
                   HSSFDataFormat format = wb.createDataFormat();
                   HSSFCellStyle style = wb.createCellStyle();
                   style.setDataFormat(format.getFormat("yyyymmdd"));
-                  _cell.setCellStyle(style); 
+                  _cell.setCellStyle(style);
 
 
-*/                  
+*/
                   //cellStyle.setDataFormat(new HSSFDataFormat("yyyymmdd"));
                   /*try{
                      l_value=Long.parseLong(value);
@@ -196,7 +196,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
                   else
                     _cell.setCellValue(value);*/
                  // System.out.println("hh");
-                  
+
               }
               catch(Exception e){
                   System.out.println(e.toString());
@@ -224,7 +224,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
      if (style_name!=null){
        idx = getStyleIdxByName(style_name, ExcelStyleIF.STYLE_FAMILY_TABLE_CELL);
      }
-     
+
      if (idx<0){
        Short short_idx=(Short)getDefaultParams("style");
        if (short_idx!=null){
@@ -236,27 +236,27 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
         _cell.setCellStyle(wb.getCellStyleAt(idx));
     //calculates the col with according to the first row
     if (currentRow==0 && idx>-1){
-    	short colStyleWidth = 0;
-    	HSSFCellStyle style = wb.getCellStyleAt(idx);
-    	int f_i = style.getFontIndex();
-    	HSSFFont font = wb.getFontAt((short)f_i);
-    	//character size
-    	short size = (short)font.getFontHeightInPoints();
-    	if (columns.size()>currentCell){
-    		RowColumnDefinition column = columns.get(currentCell);
-    		String column_style_name = column.getStyleName()==null ? "" : column.getStyleName();
+        short colStyleWidth = 0;
+        HSSFCellStyle style = wb.getCellStyleAt(idx);
+        int f_i = style.getFontIndex();
+        HSSFFont font = wb.getFontAt((short)f_i);
+        //character size
+        short size = (short)font.getFontHeightInPoints();
+        if (columns.size()>currentCell){
+            RowColumnDefinition column = columns.get(currentCell);
+            String column_style_name = column.getStyleName()==null ? "" : column.getStyleName();
             ExcelStyleIF definedStyle=getStyleByName(column_style_name, ExcelStyleIF.STYLE_FAMILY_TABLE_CELL);
             if(definedStyle!=null)
-            	colStyleWidth = definedStyle.getColumnWidth();
-    	}
-    	short width = (short) (_sheet.getDefaultColumnWidth() * size * 25);
-    	if(colStyleWidth>0){
-    		width = colStyleWidth;
-    	}
-    	else if(str_value.length()>0){
-    		width = (short)(str_value.length() * size * 50);
-    	}
-    	_sheet.setColumnWidth(currentCell, width);
+                colStyleWidth = definedStyle.getColumnWidth();
+        }
+        short width = (short) (_sheet.getDefaultColumnWidth() * size * 25);
+        if(colStyleWidth>0){
+            width = colStyleWidth;
+        }
+        else if(str_value.length()>0){
+            width = (short)(str_value.length() * size * 50);
+        }
+        _sheet.setColumnWidth(currentCell, width);
      }
      currentCell = _cell.getColumnIndex()+1;
   //    System.out.println("Cell" + currentCell+ "-" + value);
@@ -276,7 +276,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
      if (!styleExists(style))
         styles.add(style);
      if (style.getFamily().equals(ExcelStyleIF.STYLE_FAMILY_TABLE_CELL)){
-        addStyleToWorkbook(style);  
+        addStyleToWorkbook(style);
      }
   }
   private void addStyleToWorkbook(ExcelStyleIF style){
@@ -303,7 +303,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
       HSSFStyle.setAlignment((short)align);
 
       style.setWorkbookIndex((short)HSSFStyle.getIndex());
-      
+
   }
   private boolean styleExists(ExcelStyleIF style){
       if (style==null) return false;
@@ -330,7 +330,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
 
       if (styles ==null) return -1;
       if (name==null || family==null) return -1;
-      
+
       for (int i=0; i<styles.size();i++){
         ExcelStyleIF style=(ExcelStyleIF)styles.get(i);
         if (name.equals(style.getName()) && family.equals(style.getFamily()))
@@ -348,24 +348,24 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
     //Find default value defined at row level
     RowColumnDefinition rowDef = rows.get(currentRow);
     if(param.equals("data_type")) {
-    	if(rowDef.getDataType()!=null){
-    		return rowDef.getDataType();
-    	}
+        if(rowDef.getDataType()!=null){
+            return rowDef.getDataType();
+        }
     }
     else if(param.equals("style")) {
-    	short idx = rowDef.getStyleIndex();
-    	if(idx>-1){
-    		return idx;
-    	}
+        short idx = rowDef.getStyleIndex();
+        if(idx>-1){
+            return idx;
+        }
     }
 
     //Find default value defined at column level
     RowColumnDefinition colDef = (RowColumnDefinition)columns.get(currentCell);
     if(param.equals("data_type")) {
-    	return colDef.getDataType();
+        return colDef.getDataType();
     }
     else if(param.equals("style")) {
-    	return colDef.getStyleIndex();
+        return colDef.getStyleIndex();
     }
 
     return null;
@@ -373,7 +373,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
  public void writeToFile() throws GDEMException{
       // Write the output to a file
     try
-    {     
+    {
         FileOutputStream fileOut = new FileOutputStream(fileName);
         wb.write(fileOut);
         fileOut.close();
@@ -388,7 +388,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF
   public void writeToFile(OutputStream outstream) throws GDEMException{
       // Write the output to  Outputstream
     try
-    {     
+    {
         wb.write(outstream);
     }
     catch(Exception e)

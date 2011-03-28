@@ -8,9 +8,9 @@
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
     the License.  You may obtain a copy of the License at
-   
+
          http://www.apache.org/licenses/LICENSE-2.0
-   
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -49,7 +49,7 @@
         <description>
             <![CDATA[
             <p><strong>Render an HTML <code>&lt;base&gt;</code> Element</strong></p>
-          
+
           <p>Renders an HTML <code>&lt;base&gt;</code> element with an
           <code>href</code> attribute pointing to the absolute location of
           the enclosing JSP page.  This tag is valid only when nested inside
@@ -108,7 +108,7 @@
         <description>
             <![CDATA[
             <p><strong>Render A Button Input Field</strong></p>
-          
+
             <p>
                 Renders an HTML &lt;input&gt; element of type
                 <code>button</code>, populated from the specified value or the
@@ -162,7 +162,7 @@
                     <p>The servlet context attributes key for the MessageResources
                     instance to use.  If not specified, defaults to the
                     application resources configured for our action servlet.</p>
-                
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -456,7 +456,7 @@
             <p><strong>
             Render a Cancel Button
         </strong></p>
-          
+
             <p>
                 Renders an HTML &lt;input&gt; element of type submit. This tag is only
                 valid when nested inside a form tag body. Pressing of this submit
@@ -506,7 +506,7 @@
                     The servlet context attributes key for the MessageResources
                     instance to use.  If not specified, defaults to the
                     application resources configured for our action servlet.
-                
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -791,7 +791,7 @@
             <p><strong>
             Render A Checkbox Input Field
         </strong></p>
-          
+
             <p>Renders an HTML &lt;input&gt; element of type
                         <code>checkbox</code>, populated from the specified
                         value or the specified property of the bean associated
@@ -810,7 +810,7 @@
                         <code>ActionForm</code> bean associated with this form
                         must include a statement setting the corresponding
                         boolean property to <code>false</code> in the
-                        <code>reset()</code> method.</p>                        
+                        <code>reset()</code> method.</p>
         ]]>
         </description>
         <attribute>
@@ -854,7 +854,7 @@
                     The servlet context attributes key for the MessageResources
                     instance to use.  If not specified, defaults to the
                     application resources configured for our action servlet.
-                
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -894,12 +894,12 @@
                   have been stored.  If not present, the name specified by the
                   <code>Globals.ERROR_KEY</code> constant string will be used.</p>
 
-                  <p><strong>N.B.</strong> This is used in conjunction with the 
-                  <code>errorStyle</code>, <code>errorStyleClass</code> and 
+                  <p><strong>N.B.</strong> This is used in conjunction with the
+                  <code>errorStyle</code>, <code>errorStyleClass</code> and
                   <code>errorStyleId</code> attributes and should be set to
                   the same value as the <code>name</code> attribute on the
-                  &lt;html:errors/&gt; tag.</p> 
-            
+                  &lt;html:errors/&gt; tag.</p>
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -914,9 +914,9 @@
                 <p>CSS styles to be applied to this HTML element if
                 an error exists for it.</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>style</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -931,9 +931,9 @@
                 <p>CSS stylesheet class to be applied to this HTML element if
                 an error exists for it (renders a "class" attribute).</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>styleClass</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -948,9 +948,9 @@
                 <p>Identifier to be assigned to this HTML element if
                 an error exists for it (renders an "id" attribute).</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>styleId</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -1242,7 +1242,7 @@
             <p><strong>
                 Conditionally display a set of accumulated error messages.
                 </strong></p>
-          
+
                 <p>Displays a set of error messages prepared by a business
                 logic component and stored as an <code>ActionMessages</code>
                 object, an <code>ActionErrors</code>
@@ -1268,7 +1268,7 @@
                 <li><strong>suffix</strong> - Text that will be rendered
                 after each individual error in the list (default "errors.suffix").</li>
                 </ul>
-                
+
                 <p>See the <code>messages</code> tag for an alternative to this tag that
                     does not rely on HTML in your <code>MessageResources</code>.</p>
 
@@ -1295,7 +1295,7 @@
                   This value is an optional message resource key that will
                   be printed after the iteration of error messages has finished.
                   Defaults to "errors.footer" if not specified.
-                  
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -1310,7 +1310,7 @@
                   This value is an optional message resource key that will
                   be printed before the iteration of error messages begins.
                   Defaults to "errors.header" if not specified.
-                  
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -1349,7 +1349,7 @@
                   This value is an optional message resource key that will
                   be printed before an error message.
                   Defaults to "errors.prefix" if not specified.
-                  
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -1376,7 +1376,7 @@
                   This value is an optional message resource key that will
                   be printed after an error message.
                   Defaults to "errors.suffix" if not specified.
-                  
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -1391,7 +1391,7 @@
             <p><strong>
             Render A File Select Input Field
         </strong></p>
-          
+
             <p>
                 Renders an HTML &lt;input&gt; element of type file, defaulting to
                 the specified value or the specified property of the bean
@@ -1470,7 +1470,7 @@
                     The servlet context attributes key for the MessageResources
                     instance to use.  If not specified, defaults to the
                     application resources configured for our action servlet.
-                
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -1510,12 +1510,12 @@
                   have been stored.  If not present, the name specified by the
                   <code>Globals.ERROR_KEY</code> constant string will be used.</p>
 
-                  <p><strong>N.B.</strong> This is used in conjunction with the 
-                  <code>errorStyle</code>, <code>errorStyleClass</code> and 
+                  <p><strong>N.B.</strong> This is used in conjunction with the
+                  <code>errorStyle</code>, <code>errorStyleClass</code> and
                   <code>errorStyleId</code> attributes and should be set to
                   the same value as the <code>name</code> attribute on the
-                  &lt;html:errors/&gt; tag.</p> 
-            
+                  &lt;html:errors/&gt; tag.</p>
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -1530,9 +1530,9 @@
                 <p>CSS styles to be applied to this HTML element if
                 an error exists for it.</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>style</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -1547,9 +1547,9 @@
                 <p>CSS stylesheet class to be applied to this HTML element if
                 an error exists for it (renders a "class" attribute).</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>styleClass</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -1564,9 +1564,9 @@
                 <p>Identifier to be assigned to this HTML element if
                 an error exists for it (renders an "id" attribute).</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>styleId</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -1865,15 +1865,15 @@
                 <![CDATA[
             <p>
                 <strong>NOTE</strong>: When setting this to some value, whether
-                intentional or as the result (for example) of validation errors 
-                forcing the user back to the original jsp, this value is ignored 
+                intentional or as the result (for example) of validation errors
+                forcing the user back to the original jsp, this value is ignored
                 by most browsers (for security reasons).
                 This means that your users will have to re-select any previously
                 selected files when submitting the form.  Opera web browser will
                 prompt the user so they have a chance to abort the submit.
             </p>
                 Value to which this field should be initialized. [Use the
-                corresponding bean property value or body content (if any) if 
+                corresponding bean property value or body content (if any) if
                 property is not specified]
             ]]>
             </description>
@@ -1888,7 +1888,7 @@
             <p><strong>
             Define An Input Form
         </strong></p>
-          
+
             <p>
                 Renders an HTML &lt;form&gt; element whose contents are described
                 by the body content of this tag. The form implicitly interacts
@@ -1896,7 +1896,7 @@
                 the input fields with the current property values from the bean.
             </p>
             <p>
-                The form bean is located, and created if necessary, based on the 
+                The form bean is located, and created if necessary, based on the
                 form bean specification for the associated <code>ActionMapping</code>.
             </p>
         ]]>
@@ -1911,7 +1911,7 @@
                         value is also used to select the ActionMapping we are
                         assumed to be processing, from which we can identify
                         the appropriate form bean and scope.  If a value is not
-                        provided, the original URI (servletPath) for the request is 
+                        provided, the original URI (servletPath) for the request is
                         used. </p>
 
                         <p>If you are using extension mapping for selecting the
@@ -1935,7 +1935,7 @@
                 <![CDATA[
                 The list of character encodings for input data that the server should
                 accept.
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.2</dd></dl>
           ]]>
@@ -1962,7 +1962,7 @@
                 <![CDATA[
                 Set to <code>true</code> if the Form's input fields should be
                 disabled.
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.7</dd></dl>
           ]]>
@@ -1999,9 +1999,9 @@
             <rtexprvalue>true</rtexprvalue>
             <description>
                 <![CDATA[
-                If the focus field is a field array, such as a radio button group, you can 
+                If the focus field is a field array, such as a radio button group, you can
                 specify the index in the array to receive focus.
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.1</dd></dl>
           ]]>
@@ -2059,7 +2059,7 @@
                 <![CDATA[
                 Set to <code>true</code> if the Form's input fields should be
                 read only.
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.7</dd></dl>
           ]]>
@@ -2075,7 +2075,7 @@
                 The form's focus &lt;script&gt; element will not contain a language attribute
                 when this is set to false.  The default is true but this property is ignored
                 in XHMTL mode.
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2</dd></dl>
           ]]>
@@ -2132,7 +2132,7 @@
         <description>
             <![CDATA[
             <p><strong>Render an HTML frame element</strong></p>
-          
+
 
             <p>Renders an HTML <code>&lt;frame&gt;</code> element
             with processing for the <code>src</code> attribute that is
@@ -2156,7 +2156,7 @@
                 URI by including the context path and application
                 prefix.</li>
             <li><em>action</em> - Use the value of this attribute as the
-                logical name of a global Action that contains the actual 
+                logical name of a global Action that contains the actual
                 content-relative URI of the destination of this transfer.</li>
             </ul>
 
@@ -2232,7 +2232,7 @@
                     The servlet context attributes key for the MessageResources
                     instance to use.  If not specified, defaults to the
                     application resources configured for our action servlet.
-                
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -2253,10 +2253,10 @@
                <code>forward</code> attribute, the
                <code>href</code> attribute,
                or the <code>page</code> attribute.</p>
-               
-               <p>Additionally, you can specify a <code>module</code> prefix 
+
+               <p>Additionally, you can specify a <code>module</code> prefix
                for linking to other modules.</p>
-                           
+
            ]]>
             </description>
         </attribute>
@@ -2269,9 +2269,9 @@
                <p>Prefix name of a <code>Module</code> that
                contains the action mapping for the <code>Action</code>
                that is specified by the <code>action</code> attribute.
-               You <strong>must</strong> specify an <code>action</code> 
+               You <strong>must</strong> specify an <code>action</code>
                attribute for this to have an effect.</p>
-        
+
                <p><strong>Note: </strong>Use "" to map to the default module.</p>
           ]]>
             </description>
@@ -2597,7 +2597,7 @@
             <p><strong>
             Render A Hidden Field
         </strong></p>
-          
+
             <p>
                 Renders an HTML &lt;input&gt; element of type hidden, populated
                 from the specified value or the specified property of the bean
@@ -2647,7 +2647,7 @@
                     The servlet context attributes key for the MessageResources
                     instance to use.  If not specified, defaults to the
                     application resources configured for our action servlet.
-                
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -2957,7 +2957,7 @@
         <description>
             <![CDATA[
             <p><strong>Render an HTML <code>&lt;html&gt;</code> Element</strong></p>
-          
+
           <p>Renders an HTML <code>&lt;html&gt;</code> element with
           language attributes extracted from the user's current Locale
           object, if there is one.</p>
@@ -2970,11 +2970,11 @@
             <type>boolean</type>
             <description>
                 <![CDATA[
-                 Renders a lang attribute with the locale stored in the user's session.  If not 
+                 Renders a lang attribute with the locale stored in the user's session.  If not
                  found in the session, the language from the <code>Accept-Language</code>
-                 HTTP header is used.  If still not found, the default language for the server 
+                 HTTP header is used.  If still not found, the default language for the server
                  is used.
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2</dd></dl>
           ]]>
@@ -2987,13 +2987,13 @@
             <type>boolean</type>
             <description>
                 <![CDATA[
-              <p>Set to <code>true</code> in order to render 
-              <code>xml:lang</code> and <code>xmlns</code> attributes 
-              on the generated <code>html</code> element.  This also 
-              causes all other html tags to render as XHTML 1.0 (the 
+              <p>Set to <code>true</code> in order to render
+              <code>xml:lang</code> and <code>xmlns</code> attributes
+              on the generated <code>html</code> element.  This also
+              causes all other html tags to render as XHTML 1.0 (the
               &lt;html:xhtml/&gt; tag has a similar purpose).
               </p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.1</dd></dl>
           ]]>
@@ -3008,7 +3008,7 @@
             <p><strong>
                 Render an input tag of type "image"
                 </strong></p>
-          
+
 
                 <p>Renders an HTML <code>&lt;input&gt;</code> tag of type
                 "image".  The base URL for this image is calculated directly
@@ -3021,7 +3021,7 @@
                 <p>If you would like to obtain the coordinates of the mouse
                 click that submitted this request, see the information below
                 on the <code>property</code> attribute.</p>
-                
+
                 <p>This tag is only valid when nested inside a form tag body.</p>
 
                 ]]>
@@ -3450,7 +3450,7 @@
         <description>
             <![CDATA[
             <p><strong>Render an HTML img tag</strong></p>
-          
+
 
                 <p>Renders an HTML <code>&lt;img&gt;</code> element with
                 the image at the specified URL.  Like the link tag, URL
@@ -3869,10 +3869,10 @@
               <strong>must</strong> specify the <code>action</code>,
               <code>page</code>
                   attribute or the <code>src</code> attribute.</p>
-               
-               <p>Additionally, you can specify a <code>module</code> prefix 
+
+               <p>Additionally, you can specify a <code>module</code> prefix
                for linking to other modules.</p>
-                           
+
                ]]>
             </description>
         </attribute>
@@ -3885,9 +3885,9 @@
                    <p>Prefix name of a <code>Module</code> that
                    contains the action mapping for the <code>Action</code>
                    that is specified by the <code>action</code> attribute.
-                   You <strong>must</strong> specify an <code>action</code> 
+                   You <strong>must</strong> specify an <code>action</code>
                    attribute for this to have an effect.</p>
-            
+
                    <p><strong>Note: </strong>Use "" to map to the default module.</p>
               ]]>
             </description>
@@ -4103,7 +4103,7 @@
             Render JavaScript validation based on the
             validation rules loaded by the ValidatorPlugIn.
         </strong></p>
-          
+
             <p>
                 Render JavaScript validation based on the
                 validation rules loaded by the <code>ValidatorPlugIn</code>.
@@ -4134,7 +4134,7 @@
                   be wrapped in a CDATA section to prevent XML parsing. The default is
                   "true" to comply with the W3C's recommendation.
                </p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.1</dd></dl>
           ]]>
@@ -4161,9 +4161,9 @@
                 <![CDATA[
                <p>
                   The key (form name) to retrieve a specific
-                  set of validation rules.  If "dynamicJavascript" is set 
-                  to <code>true</code> and formName is missing or is not 
-                  recognized by the <code>ValidatorPlugIn</code>, a 
+                  set of validation rules.  If "dynamicJavascript" is set
+                  to <code>true</code> and formName is missing or is not
+                  recognized by the <code>ValidatorPlugIn</code>, a
                   JspException will be thrown.
                </p>
             ]]>
@@ -4209,7 +4209,7 @@
                 The &lt;script&gt; element will not contain a language attribute
                 when this is set to false.  The default is true but this property is ignored
                 in XHTML mode.
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2</dd></dl>
           ]]>
@@ -4252,7 +4252,7 @@
                   with HTML comments.  This attribute is ignored in XHTML
                   mode because the script would be deleted by the XML parser.  See
                   the cdata attribute for details on hiding scripts from XML
-                  parsers. 
+                  parsers.
                   Defaults to <code>true</code>.
                </p>
             ]]>
@@ -4267,7 +4267,7 @@
                     The servlet context attributes key for the MessageResources
                     instance to use.  If not specified, defaults to the
                     application resources configured for our action servlet.
-                
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.7</dd></dl>
           ]]>
@@ -4281,7 +4281,7 @@
         <description>
             <![CDATA[
             <p><strong>Render an HTML anchor or hyperlink</strong></p>
-          
+
 
                 <p>Renders an HTML <code>&lt;a&gt;</code> element as an
                 anchor definition (if "linkName" is specified) or as a
@@ -4364,13 +4364,13 @@
                 or an object whose toString() method will be called.
                 If a String array is specified, more than one value for the
                 same query parameter name will be created.</p>
-                
-                <p>Supplmenting these two methods, you can nest one or more 
+
+                <p>Supplmenting these two methods, you can nest one or more
                 lt&;html:param&gt; tags to dynamically add parameters in a
-                logic-friendly way (such as executing a for loop that 
+                logic-friendly way (such as executing a for loop that
                 assigns the name/value pairs at runtime). This method does
-                not compete with the aforementioned; it will adds its 
-                parameters <em>in addition</em> to whatever parameters are 
+                not compete with the aforementioned; it will adds its
+                parameters <em>in addition</em> to whatever parameters are
                 already specified.</p>
 
                 <p>Additionally, you can request that the current transaction
@@ -4409,10 +4409,10 @@
                   <code>forward</code> attribute, the
                   <code>href</code> attribute, the <code>linkName</code>
                   attribute, or the <code>page</code> attribute.</p>
-               
-               <p>Additionally, you can specify a <code>module</code> prefix 
+
+               <p>Additionally, you can specify a <code>module</code> prefix
                for linking to other modules.</p>
-                           
+
                ]]>
             </description>
         </attribute>
@@ -4425,9 +4425,9 @@
                    <p>Prefix name of a <code>Module</code> that
                    contains the action mapping for the <code>Action</code>
                    that is specified by the <code>action</code> attribute.
-                   You <strong>must</strong> specify an <code>action</code> 
+                   You <strong>must</strong> specify an <code>action</code>
                    attribute for this to have an effect.</p>
-            
+
                    <p><strong>Note: </strong>Use "" to map to the default module.</p>
               ]]>
             </description>
@@ -4526,7 +4526,7 @@
                     The servlet context attributes key for the MessageResources
                     instance to use.  If not specified, defaults to the
                     application resources configured for our action servlet.
-                
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -4912,20 +4912,20 @@
     <tag>
         <name>param</name>
         <tag-class>org.apache.struts.taglib.html.ParamTag</tag-class>
-				<description>
+                <description>
             <![CDATA[
                 <p>Adds a parameter to the following tags:
-                	<ol>
-                		<li><a href="#frame">&lt;html:frame&gt;</li>
-                		<li><a href="#link">&lt;html:link&gt;</li>
-                		<li><a href="#rewrite">&lt;html:rewrite&gt;</li>
-                	</ol>
+                    <ol>
+                        <li><a href="#frame">&lt;html:frame&gt;</li>
+                        <li><a href="#link">&lt;html:link&gt;</li>
+                        <li><a href="#rewrite">&lt;html:rewrite&gt;</li>
+                    </ol>
                 </p>
-            
-		            <dl><dt><b>Since:</b></dt>
-		            <dd>Struts 1.3.6</dd></dl>
-		        ]]>
-				</description>
+
+                    <dl><dt><b>Since:</b></dt>
+                    <dd>Struts 1.3.6</dd></dl>
+                ]]>
+                </description>
         <attribute>
             <name>name</name>
             <required>true</required>
@@ -4960,13 +4960,13 @@
             <p><strong>
                 Conditionally display a set of accumulated messages.
                 </strong></p>
-          
+
                 <p>Displays a set of messages prepared by a business
                 logic component and stored as an <code>ActionMessages</code>
                 object, <code>ActionErrors</code> object, a String,
                 or a String array in any scope.  If
-                such a bean is not found, nothing will be rendered.  The messages are 
-                placed into the page scope in the body of this tag where they can be displayed 
+                such a bean is not found, nothing will be rendered.  The messages are
+                placed into the page scope in the body of this tag where they can be displayed
                 by standard JSP methods. (For example: <code>&lt;bean:write&gt;</code>,<code>&lt;c:out&gt;</code>)
                 </p>
 
@@ -5081,7 +5081,7 @@
             <p><strong>
             Render A Checkbox Input Field
         </strong></p>
-          
+
                         <p>Renders an HTML &lt;input&gt; element of type
                         <code>checkbox</code>, whose "checked" status is
                         initialized based on whether the specified value
@@ -5109,11 +5109,11 @@
                 body content of this tag will be used as the value to be
                 returned.</li>
                 </ul>
-              
+
                 <p>
                 Also note that a map backed attribute cannot be used to hold a the String[]
                 for a group of multibox tags.
-               </p>                
+               </p>
 
         ]]>
         </description>
@@ -5158,7 +5158,7 @@
                     The servlet context attributes key for the MessageResources
                     instance to use.  If not specified, defaults to the
                     application resources configured for our action servlet.
-                
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -5186,12 +5186,12 @@
                   have been stored.  If not present, the name specified by the
                   <code>Globals.ERROR_KEY</code> constant string will be used.</p>
 
-                  <p><strong>N.B.</strong> This is used in conjunction with the 
-                  <code>errorStyle</code>, <code>errorStyleClass</code> and 
+                  <p><strong>N.B.</strong> This is used in conjunction with the
+                  <code>errorStyle</code>, <code>errorStyleClass</code> and
                   <code>errorStyleId</code> attributes and should be set to
                   the same value as the <code>name</code> attribute on the
-                  &lt;html:errors/&gt; tag.</p> 
-            
+                  &lt;html:errors/&gt; tag.</p>
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -5206,9 +5206,9 @@
                 <p>CSS styles to be applied to this HTML element if
                 an error exists for it.</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>style</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -5223,9 +5223,9 @@
                 <p>CSS stylesheet class to be applied to this HTML element if
                 an error exists for it (renders a "class" attribute).</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>styleClass</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -5240,9 +5240,9 @@
                 <p>Identifier to be assigned to this HTML element if
                 an error exists for it (renders an "id" attribute).</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>styleId</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -5506,7 +5506,7 @@
             <p><strong>
                 Render A Select Option
         </strong></p>
-          
+
                 <p>Render an HTML <code>&lt;option&gt;</code> element,
                 representing one of the choices for an enclosing
                 <code>&lt;select&gt;</code> element.  The text displayed to the
@@ -5661,7 +5661,7 @@
             <p><strong>
             Render a Collection of Select Options
         </strong></p>
-          
+
                 <p>Renders a set of HTML <code>&lt;option&gt;</code> elements,
                 representing possible choices for a <code>&lt;select&gt;</code>
                 element.  This tag can be used multiple times within a single
@@ -5849,7 +5849,7 @@
             <p><strong>
             Render a Collection of Select Options
         </strong></p>
-          
+
             <p>Renders a set of HTML <code>&lt;option&gt;</code> elements,
             representing possible choices for a <code>&lt;select&gt;</code>
             element.  This tag can be used multiple times within a single
@@ -5965,7 +5965,7 @@
             <p><strong>
             Render A Password Input Field
         </strong></p>
-          
+
             Renders an HTML &lt;input&gt; element of type password, populated
             from the specified value or the specified property of the bean
             associated with our current form. This tag is only valid when
@@ -6013,7 +6013,7 @@
                     The servlet context attributes key for the MessageResources
                     instance to use.  If not specified, defaults to the
                     application resources configured for our action servlet.
-                
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -6053,12 +6053,12 @@
                   have been stored.  If not present, the name specified by the
                   <code>Globals.ERROR_KEY</code> constant string will be used.</p>
 
-                  <p><strong>N.B.</strong> This is used in conjunction with the 
-                  <code>errorStyle</code>, <code>errorStyleClass</code> and 
+                  <p><strong>N.B.</strong> This is used in conjunction with the
+                  <code>errorStyle</code>, <code>errorStyleClass</code> and
                   <code>errorStyleId</code> attributes and should be set to
                   the same value as the <code>name</code> attribute on the
-                  &lt;html:errors/&gt; tag.</p> 
-            
+                  &lt;html:errors/&gt; tag.</p>
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -6073,9 +6073,9 @@
                 <p>CSS styles to be applied to this HTML element if
                 an error exists for it.</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>style</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -6090,9 +6090,9 @@
                 <p>CSS stylesheet class to be applied to this HTML element if
                 an error exists for it (renders a "class" attribute).</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>styleClass</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -6107,9 +6107,9 @@
                 <p>Identifier to be assigned to this HTML element if
                 an error exists for it (renders an "id" attribute).</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>styleId</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -6451,7 +6451,7 @@
             <p><strong>
             Render A Radio Button Input Field
         </strong></p>
-          
+
             <p>
             Renders an HTML &lt;input&gt; element of type radio, populated from
             the specified property of the bean associated with our current form.
@@ -6507,7 +6507,7 @@
                     The servlet context attributes key for the MessageResources
                     instance to use.  If not specified, defaults to the
                     application resources configured for our action servlet.
-                
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -6547,12 +6547,12 @@
                   have been stored.  If not present, the name specified by the
                   <code>Globals.ERROR_KEY</code> constant string will be used.</p>
 
-                  <p><strong>N.B.</strong> This is used in conjunction with the 
-                  <code>errorStyle</code>, <code>errorStyleClass</code> and 
+                  <p><strong>N.B.</strong> This is used in conjunction with the
+                  <code>errorStyle</code>, <code>errorStyleClass</code> and
                   <code>errorStyleId</code> attributes and should be set to
                   the same value as the <code>name</code> attribute on the
-                  &lt;html:errors/&gt; tag.</p> 
-            
+                  &lt;html:errors/&gt; tag.</p>
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -6567,9 +6567,9 @@
                 <p>CSS styles to be applied to this HTML element if
                 an error exists for it.</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>style</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -6584,9 +6584,9 @@
                 <p>CSS stylesheet class to be applied to this HTML element if
                 an error exists for it (renders a "class" attribute).</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>styleClass</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -6601,9 +6601,9 @@
                 <p>Identifier to be assigned to this HTML element if
                 an error exists for it (renders an "id" attribute).</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>styleId</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -6894,7 +6894,7 @@
                 present, the value attribute is used as the name of the
                 property on the idName bean that will return the
                 value of the radio tag for this iteration.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.1</dd></dl>
           ]]>
@@ -6909,7 +6909,7 @@
             <p><strong>
             Render A Reset Button Input Field
         </strong></p>
-          
+
             Renders an HTML &lt;input&gt; element of type reset.
         ]]>
         </description>
@@ -6954,7 +6954,7 @@
                     The servlet context attributes key for the MessageResources
                     instance to use.  If not specified, defaults to the
                     application resources configured for our action servlet.
-                
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -7231,7 +7231,7 @@
         <description>
             <![CDATA[
             <p><strong>Render an URI</strong></p>
-          
+
                 <p>Renders a request URI based on exactly the same rules
                 as the <code><a href="#link">link</a></code> tag does,
                 but without creating
@@ -7255,11 +7255,11 @@
                   <code>forward</code> attribute, the
                   <code>href</code> attribute, or the <code>page</code>
                   attribute.</p>
-               
-               <p>Additionally, you can specify a <code>module</code> prefix 
+
+               <p>Additionally, you can specify a <code>module</code> prefix
                for linking to other modules.</p>
-                           
-               
+
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.0</dd></dl>
           ]]>
@@ -7274,9 +7274,9 @@
                    <p>Prefix name of a <code>Module</code> that
                    contains the action mapping for the <code>Action</code>
                    that is specified by the <code>action</code> attribute.
-                   You <strong>must</strong> specify an <code>action</code> 
+                   You <strong>must</strong> specify an <code>action</code>
                    attribute for this to have an effect.</p>
-            
+
                    <p><strong>Note: </strong>Use "" to map to the default module.</p>
               ]]>
             </description>
@@ -7353,7 +7353,7 @@
                    if activated.  This hyperlink may be dynamically modified
                    by the inclusion of query parameters, as described in the
                    tag description.  You <strong>must</strong> specify exactly
-                   one of the <code>action</code> attribute, the 
+                   one of the <code>action</code> attribute, the
                    <code>forward</code> attribute, the
                    <code>href</code> attribute, or the <code>page</code>
                    attribute.</p>
@@ -7481,7 +7481,7 @@
             <p><strong>
             Render A Select Element
         </strong></p>
-          
+
                         <p>Renders an HTML &lt;select&gt; element, associated
                         with a bean property specified by our attributes.  This
                         tag is only valid when nested inside a form tag body.
@@ -7540,7 +7540,7 @@
                     The servlet context attributes key for the MessageResources
                     instance to use.  If not specified, defaults to the
                     application resources configured for our action servlet.
-                
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -7580,12 +7580,12 @@
                   have been stored.  If not present, the name specified by the
                   <code>Globals.ERROR_KEY</code> constant string will be used.</p>
 
-                  <p><strong>N.B.</strong> This is used in conjunction with the 
-                  <code>errorStyle</code>, <code>errorStyleClass</code> and 
+                  <p><strong>N.B.</strong> This is used in conjunction with the
+                  <code>errorStyle</code>, <code>errorStyleClass</code> and
                   <code>errorStyleId</code> attributes and should be set to
                   the same value as the <code>name</code> attribute on the
-                  &lt;html:errors/&gt; tag.</p> 
-            
+                  &lt;html:errors/&gt; tag.</p>
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -7600,9 +7600,9 @@
                 <p>CSS styles to be applied to this HTML element if
                 an error exists for it.</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>style</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -7617,9 +7617,9 @@
                 <p>CSS stylesheet class to be applied to this HTML element if
                 an error exists for it (renders a "class" attribute).</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>styleClass</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -7634,9 +7634,9 @@
                 <p>Identifier to be assigned to this HTML element if
                 an error exists for it (renders an "id" attribute).</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>styleId</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -7948,7 +7948,7 @@
             <p><strong>
             Render A Submit Button
         </strong></p>
-          
+
             Renders an HTML &lt;input&gt; element of type <code>submit</code>.
             <p>
              If a graphical button is needed (a button with an image), then the
@@ -7997,7 +7997,7 @@
                     The servlet context attributes key for the MessageResources
                     instance to use.  If not specified, defaults to the
                     application resources configured for our action servlet.
-                
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -8275,8 +8275,8 @@
         <description>
             <![CDATA[
             <p><strong>Render An Input Field of Type text</strong></p>
-          
-            <p>Render an input field of type text.  This tag is only valid when 
+
+            <p>Render an input field of type text.  This tag is only valid when
             nested inside a form tag body.</p>
         ]]>
         </description>
@@ -8321,7 +8321,7 @@
                     The servlet context attributes key for the MessageResources
                     instance to use.  If not specified, defaults to the
                     application resources configured for our action servlet.
-                
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -8361,12 +8361,12 @@
                   have been stored.  If not present, the name specified by the
                   <code>Globals.ERROR_KEY</code> constant string will be used.</p>
 
-                  <p><strong>N.B.</strong> This is used in conjunction with the 
-                  <code>errorStyle</code>, <code>errorStyleClass</code> and 
+                  <p><strong>N.B.</strong> This is used in conjunction with the
+                  <code>errorStyle</code>, <code>errorStyleClass</code> and
                   <code>errorStyleId</code> attributes and should be set to
                   the same value as the <code>name</code> attribute on the
-                  &lt;html:errors/&gt; tag.</p> 
-            
+                  &lt;html:errors/&gt; tag.</p>
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -8381,9 +8381,9 @@
                 <p>CSS styles to be applied to this HTML element if
                 an error exists for it.</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>style</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -8398,9 +8398,9 @@
                 <p>CSS stylesheet class to be applied to this HTML element if
                 an error exists for it (renders a "class" attribute).</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>styleClass</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -8415,9 +8415,9 @@
                 <p>Identifier to be assigned to this HTML element if
                 an error exists for it (renders an "id" attribute).</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>styleId</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -8752,7 +8752,7 @@
             <p><strong>
             Render A Textarea
         </strong></p>
-          
+
             Render a textarea element.  This tag is only valid when nested
                 inside a form tag body.
         ]]>
@@ -8798,7 +8798,7 @@
                     The servlet context attributes key for the MessageResources
                     instance to use.  If not specified, defaults to the
                     application resources configured for our action servlet.
-                
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -8848,12 +8848,12 @@
                   have been stored.  If not present, the name specified by the
                   <code>Globals.ERROR_KEY</code> constant string will be used.</p>
 
-                  <p><strong>N.B.</strong> This is used in conjunction with the 
-                  <code>errorStyle</code>, <code>errorStyleClass</code> and 
+                  <p><strong>N.B.</strong> This is used in conjunction with the
+                  <code>errorStyle</code>, <code>errorStyleClass</code> and
                   <code>errorStyleId</code> attributes and should be set to
                   the same value as the <code>name</code> attribute on the
-                  &lt;html:errors/&gt; tag.</p> 
-            
+                  &lt;html:errors/&gt; tag.</p>
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -8868,9 +8868,9 @@
                 <p>CSS styles to be applied to this HTML element if
                 an error exists for it.</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>style</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -8885,9 +8885,9 @@
                 <p>CSS stylesheet class to be applied to this HTML element if
                 an error exists for it (renders a "class" attribute).</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>styleClass</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -8902,9 +8902,9 @@
                 <p>Identifier to be assigned to this HTML element if
                 an error exists for it (renders an "id" attribute).</p>
 
-                <p><strong>N.B.</strong> If present, this overrides the 
+                <p><strong>N.B.</strong> If present, this overrides the
                 <code>styleId</code> attribute in the event of an error.</p>
-            
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.2.5</dd></dl>
           ]]>
@@ -9228,18 +9228,18 @@
         <description>
             <![CDATA[
             <p><strong>Render HTML tags as XHTML</strong></p>
-          
+
           <p>
             Using this tag in a page tells all other html taglib tags
             to render themselves as XHTML 1.0.  This is useful
-            when composing pages with JSP includes or Tiles. 
+            when composing pages with JSP includes or Tiles.
             &lt;html:html xhtml="true"&gt; has a similar effect.  This
             tag has no attributes; you use it like this: &lt;html:xhtml/&gt;.
           </p>
           <p>
             <strong>Note</strong>: Included pages do not inherit the rendering
             style of the including page.  Each JSP fragment or Tile must use this
-            tag to render as XHTML.  
+            tag to render as XHTML.
           </p>
           ]]>
         </description>

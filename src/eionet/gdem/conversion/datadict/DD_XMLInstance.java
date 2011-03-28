@@ -40,10 +40,10 @@ public class DD_XMLInstance  {
   public static final String DST_TYPE = "DST";
   public static final String TBL_TYPE = "TBL";
   private static final String DEFAULT_ENCODING = "UTF-8";
-	
+
   protected String lineTerminator = "\n";
   private OutputStreamWriter writer = null;
-  
+
   private String type = TBL_TYPE;//by default it's table
   private DDXmlElement root_tag;
   private List<DDXmlElement> tables;
@@ -56,22 +56,22 @@ public class DD_XMLInstance  {
   private String currentRowName;
   private String currentRowAttrs;
   private String encoding;
-  
+
   public DD_XMLInstance() {
-	this.tables = new ArrayList<DDXmlElement>();
-	this.row_attrs = new HashMap<String, DDXmlElement>();
-	this.elements = new HashMap<String, List<DDXmlElement>>();
-	this.namespaces = new StringBuffer();
-	this.leads = new HashMap<String, String>();
-	this.elemDefs = new HashMap<String, Map<String, DDElement>>();
-	this.encoding = DEFAULT_ENCODING;
-	
+    this.tables = new ArrayList<DDXmlElement>();
+    this.row_attrs = new HashMap<String, DDXmlElement>();
+    this.elements = new HashMap<String, List<DDXmlElement>>();
+    this.namespaces = new StringBuffer();
+    this.leads = new HashMap<String, String>();
+    this.elemDefs = new HashMap<String, Map<String, DDElement>>();
+    this.encoding = DEFAULT_ENCODING;
+
     this.lineTerminator = File.separator.equals("/") ? "\r\n" : "\n";
   }
   /*
    * inserts the root_tag name and attributes into Hashtable
    */
-  public void setRootTag(String name, String localName, String attributes){	  
+  public void setRootTag(String name, String localName, String attributes){
     root_tag = new DDXmlElement(name, localName, attributes);
   }
   /*
@@ -92,7 +92,7 @@ public class DD_XMLInstance  {
     DDXmlElement attribute = new DDXmlElement(rowName, null, attributes);
 
     row_attrs.put(tblName, attribute);
-    
+
   }
 /*
  * inserts element names, localNames and attributes into Hashtable, where keys are table names
@@ -101,12 +101,12 @@ public class DD_XMLInstance  {
     if (tblName==null) return;
     DDXmlElement element = new DDXmlElement(name, localName, attributes);
     List<DDXmlElement> tblElements = null;
-    
+
     if (elements.containsKey(tblName)){
       tblElements = elements.get(tblName);
     }
     if (tblElements==null){
-    	tblElements = new ArrayList<DDXmlElement>();
+        tblElements = new ArrayList<DDXmlElement>();
     }
     tblElements.add(element);
     elements.put(tblName, tblElements);
@@ -120,16 +120,16 @@ public class DD_XMLInstance  {
   }
   public void setTypeDataset(){
     leads.put("tbl", "\t");
-	  leads.put("row", "\t\t");
-		leads.put("elm", "\t\t\t");
+      leads.put("row", "\t\t");
+        leads.put("elm", "\t\t\t");
     this.type = DST_TYPE;
   }
 
   public void setTypeTable(){
     leads.put("tbl", "");
-	  leads.put("row", "\t");
-		leads.put("elm", "\t\t");
-	
+      leads.put("row", "\t");
+        leads.put("elm", "\t\t");
+
     this.type = TBL_TYPE;
   }
   public void setEncoding(String encoding){
@@ -154,46 +154,46 @@ public class DD_XMLInstance  {
     return elements.get(tbl_name);
   }
 
-	/**
-	* Flush the written content into the output stream.
-	*/
+    /**
+    * Flush the written content into the output stream.
+    */
   public void startWritingXml(OutputStream outStream) throws Exception{
-  
-	  this.writer = new OutputStreamWriter(outStream, getEncoding());
-	  writeHeader();
-	  startRootElement();
-	}
-	/**
-	* Flush the written content into the output stream.
-	*/
-	public void flushXml() throws Exception{    
-  		endRootElement();
-  		writer.flush();
-	}
+
+      this.writer = new OutputStreamWriter(outStream, getEncoding());
+      writeHeader();
+      startRootElement();
+    }
+    /**
+    * Flush the written content into the output stream.
+    */
+    public void flushXml() throws Exception{
+          endRootElement();
+          writer.flush();
+    }
   public void writeElement(String elemName, String attributes, String data) throws Exception{
-	addString(getLead("elm") + "<" + elemName + attributes + ">");
+    addString(getLead("elm") + "<" + elemName + attributes + ">");
     addString(Utils.escapeXML(data));
     addString("</" + elemName + ">");
     newLine();
-    
+
   }
   public void writeRowStart() throws Exception{
-	addString(getLead("row") + "<" + currentRowName + currentRowAttrs + ">");
-    newLine();    
+    addString(getLead("row") + "<" + currentRowName + currentRowAttrs + ">");
+    newLine();
   }
   public void writeRowEnd() throws Exception{
-		addString(getLead("row") + "</" + currentRowName + ">");    
+        addString(getLead("row") + "</" + currentRowName + ">");
     newLine();
   }
   public void writeTableStart(String tblName, String attributes) throws Exception{
     if (type.equals(DST_TYPE)){
-  		addString(getLead("tbl") + "<" + tblName + attributes + ">");
-  		newLine();
-    }    
+          addString(getLead("tbl") + "<" + tblName + attributes + ">");
+          newLine();
+    }
   }
   public void writeTableEnd(String tblName) throws Exception{
     if (type.equals(DST_TYPE)){
-      addString(getLead("tbl") + "</" + tblName + ">");    
+      addString(getLead("tbl") + "</" + tblName + ">");
       newLine();
     }
   }
@@ -202,82 +202,82 @@ public class DD_XMLInstance  {
     currentRowName = rowElement.getName();
     currentRowAttrs = rowElement.getAttributes();
   }
-	protected void addString(String s) throws Exception{
-		writer.write(s);
-	}
-	protected void newLine() throws Exception{
-		writer.write(lineTerminator);
-	}
-	private void writeHeader() throws IOException{
-		//writer.print("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>");
+    protected void addString(String s) throws Exception{
+        writer.write(s);
+    }
+    protected void newLine() throws Exception{
+        writer.write(lineTerminator);
+    }
+    private void writeHeader() throws IOException{
+        //writer.print("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>");
     String enc = (Utils.isNullStr(getEncoding())) ? DEFAULT_ENCODING : encoding;
-		writer.write("<?xml version=\"1.0\" encoding=\"" + enc + "\"?>");
-		writer.write(lineTerminator);
-	}
+        writer.write("<?xml version=\"1.0\" encoding=\"" + enc + "\"?>");
+        writer.write(lineTerminator);
+    }
   private void startRootElement() throws IOException{
     String root_attributes = getRootTagAttributes();
     if (root_attributes == null) root_attributes="";
     String rootTagOut = getRootTagName();
-    
+
     if (root_attributes.indexOf("xmlns:xsi")>-1)
       rootTagOut +=  root_attributes;
     else
       rootTagOut +=  namespaces.toString() + root_attributes;
-		writer.write("<" + rootTagOut + ">");
+        writer.write("<" + rootTagOut + ">");
     writer.write(lineTerminator);
   }
   private void endRootElement() throws IOException{
-		writer.write("</" + getRootTagName() + ">");
+        writer.write("</" + getRootTagName() + ">");
   }
-	protected String escape(String s){
-        
-		if (s == null) return null;
-        
-		StringBuffer buf = new StringBuffer();
-		for (int i=0; i<s.length(); i++){
-			char c = s.charAt(i);
-			if (c == '<')
-				buf.append("&lt;");
-			else if (c == '>')
-				buf.append("&gt;");
-			else if (c == '&')
-				buf.append("&amp;");
-			else
-				buf.append(c);
-		}
-        
-		return buf.toString();
-	}
-	protected String getLead(String leadName){
-		
-		if (leads==null || leads.size()==0){
-			setTypeTable();
-		}
-		
-		String lead = (String)leads.get(leadName);
-		if (lead==null)
-			lead = "";
-		
-		return lead;
-	}
-	public void setElemDefs(Map<String, Map<String, DDElement>> elemDefs) {
-		this.elemDefs = elemDefs;
-	}
-	public void addElemDef(String sheet, Map<String, DDElement> elemDefs) {
-		this.elemDefs.put(sheet, elemDefs);
-	}
-	public  Map<String, DDElement> getElemDefs(String sheet){
-		if(elemDefs!=null){
-			if (elemDefs.containsKey(sheet)){
-				return elemDefs.get(sheet);
-			}
-			else if(elemDefs.containsKey(TBL_TYPE)){
-				return elemDefs.get(TBL_TYPE);
-			}
-		}
-		return null;
-	}
-	public String getType() {
-		return type;
-	}
+    protected String escape(String s){
+
+        if (s == null) return null;
+
+        StringBuffer buf = new StringBuffer();
+        for (int i=0; i<s.length(); i++){
+            char c = s.charAt(i);
+            if (c == '<')
+                buf.append("&lt;");
+            else if (c == '>')
+                buf.append("&gt;");
+            else if (c == '&')
+                buf.append("&amp;");
+            else
+                buf.append(c);
+        }
+
+        return buf.toString();
+    }
+    protected String getLead(String leadName){
+
+        if (leads==null || leads.size()==0){
+            setTypeTable();
+        }
+
+        String lead = (String)leads.get(leadName);
+        if (lead==null)
+            lead = "";
+
+        return lead;
+    }
+    public void setElemDefs(Map<String, Map<String, DDElement>> elemDefs) {
+        this.elemDefs = elemDefs;
+    }
+    public void addElemDef(String sheet, Map<String, DDElement> elemDefs) {
+        this.elemDefs.put(sheet, elemDefs);
+    }
+    public  Map<String, DDElement> getElemDefs(String sheet){
+        if(elemDefs!=null){
+            if (elemDefs.containsKey(sheet)){
+                return elemDefs.get(sheet);
+            }
+            else if(elemDefs.containsKey(TBL_TYPE)){
+                return elemDefs.get(TBL_TYPE);
+            }
+        }
+        return null;
+    }
+    public String getType() {
+        return type;
+    }
 }

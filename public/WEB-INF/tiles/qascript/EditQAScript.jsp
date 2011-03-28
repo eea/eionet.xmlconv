@@ -18,139 +18,139 @@
                 </html:link>
             </li>
         </ul>
-	</div>
-		<ed:breadcrumbs-push label="Edit QA script" level="3" />
+    </div>
+        <ed:breadcrumbs-push label="Edit QA script" level="3" />
 
-		<h1><bean:message key="label.qascript.edit"/></h1> 
+        <h1><bean:message key="label.qascript.edit"/></h1>
 
-		<%-- include Error display --%>
-		<tiles:insert definition="Error" />
+        <%-- include Error display --%>
+        <tiles:insert definition="Error" />
 
-		<html:form action="/editQAScript" method="post" enctype="multipart/form-data">
-		  <table class="formtable">
-			<col class="labelcol"/>
-			<col class="entrycol"/>
-			<tr class="zebraeven">
-	        	<td>
-					<label class="question">
-			        	<bean:message key="label.qascript.schema"/>
-			    	</label>
-				</td>
-	      		<td>
-		        	<bean:write name="QAScriptForm" property="schema" />
-		        </td>		        
-		    </tr>        
-			<tr>
-				<td>
-					<label class="question" for="txtShortName">
-			        	<bean:message key="label.qascript.shortname"/>
-			    	</label>
-				</td>
-		      <td>
-				<html:text name="QAScriptForm" property="shortName" styleId="txtShortName"  size="64" />
-		      </td>
-		    </tr>
-			<tr class="zebraeven">
-				<td>
-					<label class="question" for="txtDescription">
-			      		<bean:message key="label.qascript.description"/>
-			      	</label>
-				</td>
-		      <td>
-				<html:textarea property="description"  rows="2" cols="30" style="width:400px" styleId="txtDescription"/>
-		      </td>
-		    </tr>
-			<tr>
-				<td>
-					<label class="question" for="selContentType">
-			      		<bean:message key="label.qascript.resulttype"/>
-			      	</label>
-				</td>
-				<td>
-					<html:select name="QAScriptForm" property="resultType" styleId="selContentType">
-						<html:options collection="qascript.resulttypes" property="convType"/>
-					</html:select>				
-				</td>
-			</tr>
-			<tr class="zebraeven">
-				<td>
-					<label class="question" for="selScriptType">
-			      		<bean:message key="label.qascript.scripttype"/>
-			      	</label>
-				</td>
-				<td>
-					<html:select name="QAScriptForm" property="scriptType" styleId="selScriptType">
-						<html:options collection="qascript.scriptlangs" property="convType"/>
-					</html:select>				
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label class="question" for="txtUpperLimit">
-			      		<bean:message key="label.qascript.upperlimit"/>
-			      	</label>
-				</td>
-				<td>
-					<html:text styleId="txtUpperLimit" size="3" property="upperLimit" />				
-				</td>
-			</tr>
+        <html:form action="/editQAScript" method="post" enctype="multipart/form-data">
+          <table class="formtable">
+            <col class="labelcol"/>
+            <col class="entrycol"/>
+            <tr class="zebraeven">
+                <td>
+                    <label class="question">
+                        <bean:message key="label.qascript.schema"/>
+                    </label>
+                </td>
+                  <td>
+                    <bean:write name="QAScriptForm" property="schema" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="question" for="txtShortName">
+                        <bean:message key="label.qascript.shortname"/>
+                    </label>
+                </td>
+              <td>
+                <html:text name="QAScriptForm" property="shortName" styleId="txtShortName"  size="64" />
+              </td>
+            </tr>
+            <tr class="zebraeven">
+                <td>
+                    <label class="question" for="txtDescription">
+                          <bean:message key="label.qascript.description"/>
+                      </label>
+                </td>
+              <td>
+                <html:textarea property="description"  rows="2" cols="30" style="width:400px" styleId="txtDescription"/>
+              </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="question" for="selContentType">
+                          <bean:message key="label.qascript.resulttype"/>
+                      </label>
+                </td>
+                <td>
+                    <html:select name="QAScriptForm" property="resultType" styleId="selContentType">
+                        <html:options collection="qascript.resulttypes" property="convType"/>
+                    </html:select>
+                </td>
+            </tr>
+            <tr class="zebraeven">
+                <td>
+                    <label class="question" for="selScriptType">
+                          <bean:message key="label.qascript.scripttype"/>
+                      </label>
+                </td>
+                <td>
+                    <html:select name="QAScriptForm" property="scriptType" styleId="selScriptType">
+                        <html:options collection="qascript.scriptlangs" property="convType"/>
+                    </html:select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="question" for="txtUpperLimit">
+                          <bean:message key="label.qascript.upperlimit"/>
+                      </label>
+                </td>
+                <td>
+                    <html:text styleId="txtUpperLimit" size="3" property="upperLimit" />
+                </td>
+            </tr>
 
-			<tr class="zebraeven">
-				<td>
-					<label class="question" for="txtFile">
-				        <bean:message key="label.qascript.fileName"/>
-				     </label>
-				</td>
-		      <td>
-					<a  href="<bean:write name="webRoot"/>/<bean:write property="filePath" name="QAScriptForm"/>" title="<bean:write property="filePath" name="QAScriptForm"/>">						
-								<bean:write property="fileName" name="QAScriptForm"/>
-					</a>
-					&#160;&#160;&#160;&#160;&#160;&#160;(<bean:message key="label.lastmodified"/>: 
-					<logic:present name="QAScriptForm" property="modified">
-						<bean:write property="modified" name="QAScriptForm"/>
-					</logic:present>
-					<logic:notPresent name="QAScriptForm" property="modified">
-						<span style="color:red"><bean:message key="label.fileNotFound"/></span>
-					</logic:notPresent>
-					)
-		      </td>
-		    </tr>
-		      	<logic:present name="QAScriptForm" property="fileName">
-				    <tr>
-				      	<td colspan="2">
-					        <html:textarea property="scriptContent" style="width: 98%;" rows="20" cols="55" styleId="txtFile"/>
-				      	</td>
-				    </tr>
-			    <tr>
-		    		<td>&#160;</td>
-			      	<td>
-				        <html:submit styleClass="button" property="action">
-			        		<bean:message key="label.qascript.save"/>
-				    	</html:submit>
-			        	<html:hidden property="fileName" />
-			        	<html:hidden property="checksum" name="QAScriptForm" />
-			        	<html:hidden property="scriptId" name="QAScriptForm" />
-			        	<html:hidden property="schemaId" name="QAScriptForm" />
-			      	</td>
-			    </tr>
-		    <tr>
-	    	  <td colspan="2">&#160;</td>
-	    	 </tr>
-		    <tr>
-	    	  <td>&#160;</td>
-		      <td>
-		        <html:file property="scriptFile" style="width:400px" size="64" />
-		      </td>
-		    </tr>
-		    </logic:present>
-		    <tr>
-	    		<td>&#160;</td>
-		      <td>
-		        <html:submit styleClass="button" property="action">
-		        	<bean:message key="label.qascript.upload"/>
-		        </html:submit>
-		      </td>
-		    </tr>		  </table>
-		</html:form>
-</div>		
+            <tr class="zebraeven">
+                <td>
+                    <label class="question" for="txtFile">
+                        <bean:message key="label.qascript.fileName"/>
+                     </label>
+                </td>
+              <td>
+                    <a  href="<bean:write name="webRoot"/>/<bean:write property="filePath" name="QAScriptForm"/>" title="<bean:write property="filePath" name="QAScriptForm"/>">
+                                <bean:write property="fileName" name="QAScriptForm"/>
+                    </a>
+                    &#160;&#160;&#160;&#160;&#160;&#160;(<bean:message key="label.lastmodified"/>:
+                    <logic:present name="QAScriptForm" property="modified">
+                        <bean:write property="modified" name="QAScriptForm"/>
+                    </logic:present>
+                    <logic:notPresent name="QAScriptForm" property="modified">
+                        <span style="color:red"><bean:message key="label.fileNotFound"/></span>
+                    </logic:notPresent>
+                    )
+              </td>
+            </tr>
+                  <logic:present name="QAScriptForm" property="fileName">
+                    <tr>
+                          <td colspan="2">
+                            <html:textarea property="scriptContent" style="width: 98%;" rows="20" cols="55" styleId="txtFile"/>
+                          </td>
+                    </tr>
+                <tr>
+                    <td>&#160;</td>
+                      <td>
+                        <html:submit styleClass="button" property="action">
+                            <bean:message key="label.qascript.save"/>
+                        </html:submit>
+                        <html:hidden property="fileName" />
+                        <html:hidden property="checksum" name="QAScriptForm" />
+                        <html:hidden property="scriptId" name="QAScriptForm" />
+                        <html:hidden property="schemaId" name="QAScriptForm" />
+                      </td>
+                </tr>
+            <tr>
+              <td colspan="2">&#160;</td>
+             </tr>
+            <tr>
+              <td>&#160;</td>
+              <td>
+                <html:file property="scriptFile" style="width:400px" size="64" />
+              </td>
+            </tr>
+            </logic:present>
+            <tr>
+                <td>&#160;</td>
+              <td>
+                <html:submit styleClass="button" property="action">
+                    <bean:message key="label.qascript.upload"/>
+                </html:submit>
+              </td>
+            </tr>		  </table>
+        </html:form>
+</div>
 

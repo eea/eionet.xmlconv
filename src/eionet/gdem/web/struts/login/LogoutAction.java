@@ -27,19 +27,19 @@ import eionet.gdem.utils.SecurityUtil;
 public class LogoutAction   extends Action {
 
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, GDEMException {
-    	
-		httpServletRequest.setCharacterEncoding("UTF-8");
-		
-		AppUser user = SecurityUtil.getUser(httpServletRequest, Names.USER_ATT);
-		httpServletRequest.getSession().invalidate();
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, GDEMException {
 
-		String logoutURL = SecurityUtil.getLogoutURL(httpServletRequest);
-		if (logoutURL!=null){
-			httpServletResponse.sendRedirect(logoutURL);
-        	return null;
-		}
-		return actionMapping.findForward("home");
+        httpServletRequest.setCharacterEncoding("UTF-8");
+
+        AppUser user = SecurityUtil.getUser(httpServletRequest, Names.USER_ATT);
+        httpServletRequest.getSession().invalidate();
+
+        String logoutURL = SecurityUtil.getLogoutURL(httpServletRequest);
+        if (logoutURL!=null){
+            httpServletResponse.sendRedirect(logoutURL);
+            return null;
+        }
+        return actionMapping.findForward("home");
     }
 }
 

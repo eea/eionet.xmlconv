@@ -62,333 +62,333 @@ import eionet.gdem.utils.Utils;
  */
 
 public class ValidationService {
-	private StringBuffer errors;
-	private StringBuffer htmlErrors;
-	private String uriXml;
-	private ArrayList errorsList;
-	private ErrorHandler errHandler;
-	private String ticket = null;
-	private boolean trustedMode=true;//false for web clients
-	private static LoggerIF _logger=GDEMServices.getLogger();
-	private String originalSchema = null;	//original URL
+    private StringBuffer errors;
+    private StringBuffer htmlErrors;
+    private String uriXml;
+    private ArrayList errorsList;
+    private ErrorHandler errHandler;
+    private String ticket = null;
+    private boolean trustedMode=true;//false for web clients
+    private static LoggerIF _logger=GDEMServices.getLogger();
+    private String originalSchema = null;	//original URL
 
-	private String validatedSchema = null;	//system URL
-	private String validatedSchemaURL = null; //public URL
+    private String validatedSchema = null;	//system URL
+    private String validatedSchemaURL = null; //public URL
 
-	/**
-	 * Constructor for remote methods
-	 */
-	public ValidationService()  {
-		errors=new StringBuffer()  ;
-		htmlErrors=new StringBuffer()  ;
-		errHandler = new GErrorHandler(errors, htmlErrors);
-	}
-	/**
-	 * Constructor for web client
-	 * @param list
-	 */
-	public ValidationService(boolean list)  {
+    /**
+     * Constructor for remote methods
+     */
+    public ValidationService()  {
+        errors=new StringBuffer()  ;
+        htmlErrors=new StringBuffer()  ;
+        errHandler = new GErrorHandler(errors, htmlErrors);
+    }
+    /**
+     * Constructor for web client
+     * @param list
+     */
+    public ValidationService(boolean list)  {
 
-		errorsList = new ArrayList(); 
-		errHandler = new ValidatorErrorHandler(errorsList);
-	}
-	/**
-	 * validate XML, read the schema or DTD from the header of XML
-	 * @param srcUrl
-	 * @return
-	 * @throws DCMException
-	 */
-	public String validate (String srcUrl) throws DCMException {
-		return validateSchema(srcUrl, null);
-	}
+        errorsList = new ArrayList();
+        errHandler = new ValidatorErrorHandler(errorsList);
+    }
+    /**
+     * validate XML, read the schema or DTD from the header of XML
+     * @param srcUrl
+     * @return
+     * @throws DCMException
+     */
+    public String validate (String srcUrl) throws DCMException {
+        return validateSchema(srcUrl, null);
+    }
 
-	/**
-	 * Validate XML. If schema is null, then read the schema or DTD from the header of XML.
-	 * If schema or DTD is defined, then ignore the defined schema or DTD
-	 * @param srcUrl
-	 * @param schema
-	 * @return	Formatted text with results (errors or OK)
-	 * @throws DCMException
-	 */
-	public String validateSchema (String srcUrl, String schema) throws DCMException {
-		InputFile src=null;
-		uriXml= srcUrl;	
-		try{
-			src = new InputFile(srcUrl);
-			src.setTrustedMode(trustedMode);
-			src.setAuthentication(ticket);
-			return validateSchema(src.getSrcInputStream(), schema);
-		}
-		catch (MalformedURLException mfe ) {
-			throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED);
-		} catch (IOException ioe ) {
-			throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_ERROR);	
-		} catch (Exception e ) {
-			e.printStackTrace();
-			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-		}
-		finally{
-			if (src!=null){
-				try{
-					src.close();
-				}catch(Exception e){};
-			}
-		}
+    /**
+     * Validate XML. If schema is null, then read the schema or DTD from the header of XML.
+     * If schema or DTD is defined, then ignore the defined schema or DTD
+     * @param srcUrl
+     * @param schema
+     * @return	Formatted text with results (errors or OK)
+     * @throws DCMException
+     */
+    public String validateSchema (String srcUrl, String schema) throws DCMException {
+        InputFile src=null;
+        uriXml= srcUrl;
+        try{
+            src = new InputFile(srcUrl);
+            src.setTrustedMode(trustedMode);
+            src.setAuthentication(ticket);
+            return validateSchema(src.getSrcInputStream(), schema);
+        }
+        catch (MalformedURLException mfe ) {
+            throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED);
+        } catch (IOException ioe ) {
+            throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_ERROR);
+        } catch (Exception e ) {
+            e.printStackTrace();
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
+        finally{
+            if (src!=null){
+                try{
+                    src.close();
+                }catch(Exception e){};
+            }
+        }
 
-	}
-	public String validateSchema (InputStream src_stream, String schema) throws DCMException {
-		boolean isDTD = false;
-		schema=Utils.isNullStr(schema)?null:schema;
-		
-		try {
+    }
+    public String validateSchema (InputStream src_stream, String schema) throws DCMException {
+        boolean isDTD = false;
+        schema=Utils.isNullStr(schema)?null:schema;
 
-			SAXParserFactory spfact = SAXParserFactory.newInstance();
-			SAXParser parser = spfact.newSAXParser();
-			XMLReader reader = parser.getXMLReader();
+        try {
 
-			reader.setErrorHandler(errHandler);
+            SAXParserFactory spfact = SAXParserFactory.newInstance();
+            SAXParser parser = spfact.newSAXParser();
+            XMLReader reader = parser.getXMLReader();
 
-			//make parser to validate
-			reader.setFeature("http://xml.org/sax/features/validation", true); 
-			reader.setFeature("http://apache.org/xml/features/validation/schema", true);
-			reader.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
+            reader.setErrorHandler(errHandler);
 
-			reader.setFeature("http://xml.org/sax/features/namespaces", true);
-			reader.setFeature("http://xml.org/sax/features/namespace-prefixes",true);
-			reader.setFeature("http://apache.org/xml/features/continue-after-fatal-error",false);
-			
-			InputAnalyser inputAnalyser = new InputAnalyser();
-			inputAnalyser.parseXML(uriXml);
-			String namespace = inputAnalyser.getSchemaNamespace();
+            //make parser to validate
+            reader.setFeature("http://xml.org/sax/features/validation", true);
+            reader.setFeature("http://apache.org/xml/features/validation/schema", true);
+            reader.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
 
-			//if schema is not in the parameter, then sniff it from the header of xml
-			if(schema==null){
-				schema=inputAnalyser.getSchemaOrDTD();
-				isDTD = inputAnalyser.isDTD();
-			}
-			else{
-				//if the given schema ends with dtd, then don't do schema validation
-				isDTD=schema.endsWith("dtd");
-			}
+            reader.setFeature("http://xml.org/sax/features/namespaces", true);
+            reader.setFeature("http://xml.org/sax/features/namespace-prefixes",true);
+            reader.setFeature("http://apache.org/xml/features/continue-after-fatal-error",false);
 
-			//schmea is already given as a parameter. Read the default namespace from XML file and set external schema.
-			if(schema!=null){
-				if (!isDTD){
-					//String namespace = getDefaultNamespace();
-					if(Utils.isNullStr(namespace)){
-					//	XML file does not have default namespace
-						setNoNamespaceSchemaProperty(reader, schema);
-					}
-					else{
-						setNamespaceSchemaProperty(reader, namespace, schema);
-					}
-				}
-				else{
-					//validate against DTD
-					setLocalSchemaUrl(schema);
-					LocalEntityResolver localResolver = new LocalEntityResolver(schema,getValidatedSchema());
-					reader.setEntityResolver(localResolver);
-				}
-			}
-			else{
-				return GErrorHandler.formatResultText("WARNING: Could not validate XML file. Unable to locate XML Schema reference.", null);				
-			}
-			//if schema is not available, then do not parse the XML and throw error
-			if(!Utils.resourceExists(getValidatedSchema())){
-				return GErrorHandler.formatResultText("ERROR: Failed to read schema document from the following URL: " + getValidatedSchema(), null);								
-			}
-			if(errHandler instanceof GErrorHandler)
-				((GErrorHandler)errHandler).setSchema(getOriginalSchema());
-			InputSource is = new InputSource( src_stream);
-			reader.parse(is);
+            InputAnalyser inputAnalyser = new InputAnalyser();
+            inputAnalyser.parseXML(uriXml);
+            String namespace = inputAnalyser.getSchemaNamespace();
 
-		} catch ( SAXParseException se ) {
-			return GErrorHandler.formatResultText("ERROR: Document is not well-formed. Column: " + se.getColumnNumber() + "; line:"  +se.getLineNumber() + "; " + se.getMessage(), null);
-			//ignore
-		}
-		catch (IOException ioe) { 
-			return GErrorHandler.formatResultText("ERROR: Due to an IOException, the parser could not check the document. " + ioe.getMessage(), null);  
-		}
-		catch (Exception e ) {
-			Exception se = e;
-			if (e instanceof SAXException) {
-				se = ((SAXException)e).getException();
-			}
-			if (se != null)
-				se.printStackTrace(System.err);
-			else
-				e.printStackTrace(System.err);    
-			return GErrorHandler.formatResultText("ERROR: The parser could not check the document. " + e.getMessage(), null);
-			//throw new GDEMException("Error parsing: " + e.toString());
-		}
+            //if schema is not in the parameter, then sniff it from the header of xml
+            if(schema==null){
+                schema=inputAnalyser.getSchemaOrDTD();
+                isDTD = inputAnalyser.isDTD();
+            }
+            else{
+                //if the given schema ends with dtd, then don't do schema validation
+                isDTD=schema.endsWith("dtd");
+            }
 
-		//we have errors!
-		if ((errors!= null && errors.length()>0)){
-			//return errors.toString();
-			htmlErrors.append("</table></div>");
-			return htmlErrors.toString();
-		}
-		else if ((errorsList!= null && errorsList.size()>0)){
-			return getErrorList().toString();
-		}
-		else
-			return GErrorHandler.formatResultText(Properties.getMessage("label.validation.result.ok"),getOriginalSchema());
-	}
-	/**
-	 * Read default namespace from XML file
-	 * @return
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws FactoryConfigurationError
-	 * @throws SAXException
-	 */
-	private String getDefaultNamespace() throws IOException, ParserConfigurationException, FactoryConfigurationError, SAXException{
-		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		InputFile src = null;
-		String namespace=null;
-		try{
-			src = new InputFile(uriXml);
-			src.setTrustedMode(trustedMode);
-			src.setAuthentication(ticket);
-			Document doc = builder.parse(src.getSrcInputStream());
+            //schmea is already given as a parameter. Read the default namespace from XML file and set external schema.
+            if(schema!=null){
+                if (!isDTD){
+                    //String namespace = getDefaultNamespace();
+                    if(Utils.isNullStr(namespace)){
+                    //	XML file does not have default namespace
+                        setNoNamespaceSchemaProperty(reader, schema);
+                    }
+                    else{
+                        setNamespaceSchemaProperty(reader, namespace, schema);
+                    }
+                }
+                else{
+                    //validate against DTD
+                    setLocalSchemaUrl(schema);
+                    LocalEntityResolver localResolver = new LocalEntityResolver(schema,getValidatedSchema());
+                    reader.setEntityResolver(localResolver);
+                }
+            }
+            else{
+                return GErrorHandler.formatResultText("WARNING: Could not validate XML file. Unable to locate XML Schema reference.", null);
+            }
+            //if schema is not available, then do not parse the XML and throw error
+            if(!Utils.resourceExists(getValidatedSchema())){
+                return GErrorHandler.formatResultText("ERROR: Failed to read schema document from the following URL: " + getValidatedSchema(), null);
+            }
+            if(errHandler instanceof GErrorHandler)
+                ((GErrorHandler)errHandler).setSchema(getOriginalSchema());
+            InputSource is = new InputSource( src_stream);
+            reader.parse(is);
+
+        } catch ( SAXParseException se ) {
+            return GErrorHandler.formatResultText("ERROR: Document is not well-formed. Column: " + se.getColumnNumber() + "; line:"  +se.getLineNumber() + "; " + se.getMessage(), null);
+            //ignore
+        }
+        catch (IOException ioe) {
+            return GErrorHandler.formatResultText("ERROR: Due to an IOException, the parser could not check the document. " + ioe.getMessage(), null);
+        }
+        catch (Exception e ) {
+            Exception se = e;
+            if (e instanceof SAXException) {
+                se = ((SAXException)e).getException();
+            }
+            if (se != null)
+                se.printStackTrace(System.err);
+            else
+                e.printStackTrace(System.err);
+            return GErrorHandler.formatResultText("ERROR: The parser could not check the document. " + e.getMessage(), null);
+            //throw new GDEMException("Error parsing: " + e.toString());
+        }
+
+        //we have errors!
+        if ((errors!= null && errors.length()>0)){
+            //return errors.toString();
+            htmlErrors.append("</table></div>");
+            return htmlErrors.toString();
+        }
+        else if ((errorsList!= null && errorsList.size()>0)){
+            return getErrorList().toString();
+        }
+        else
+            return GErrorHandler.formatResultText(Properties.getMessage("label.validation.result.ok"),getOriginalSchema());
+    }
+    /**
+     * Read default namespace from XML file
+     * @return
+     * @throws IOException
+     * @throws ParserConfigurationException
+     * @throws FactoryConfigurationError
+     * @throws SAXException
+     */
+    private String getDefaultNamespace() throws IOException, ParserConfigurationException, FactoryConfigurationError, SAXException{
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        InputFile src = null;
+        String namespace=null;
+        try{
+            src = new InputFile(uriXml);
+            src.setTrustedMode(trustedMode);
+            src.setAuthentication(ticket);
+            Document doc = builder.parse(src.getSrcInputStream());
 
 
-			Element root = doc.getDocumentElement();
-			String rootName = root.getTagName();
+            Element root = doc.getDocumentElement();
+            String rootName = root.getTagName();
 
-			String schema = root.getAttribute("xsi:schemaLocation");
+            String schema = root.getAttribute("xsi:schemaLocation");
 
-			if(rootName.indexOf(":")>0){
-				String attName1 = "xmlns:" + rootName.substring(0, rootName.indexOf(":")) ;
-				namespace = root.getAttribute(attName1);
-			}
-		}
-		finally{
-	    	if (src != null) {
-	    		try{
-	    			src.close();
-	    		
-	    		} catch (Exception e) {}
-			}			
-		}
-		return namespace;
-	}
-	/**
-	 * Set the noNamespaceSchemaLocation property
-	 * @param reader
-	 * @param schema
-	 * @throws SAXNotRecognizedException
-	 * @throws SAXNotSupportedException
-	 */
-	private void setNoNamespaceSchemaProperty(XMLReader reader, String schema) throws SAXNotRecognizedException, SAXNotSupportedException{
-		setLocalSchemaUrl(schema);
-		reader.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation", getValidatedSchema());      							
-	}
-	/**
-	 * Set the schemaLocation property. The value is "namespace schemaLocation".
-	 * @param reader
-	 * @param namespace
-	 * @param schema
-	 * @throws SAXNotRecognizedException
-	 * @throws SAXNotSupportedException
-	 */
-	private void setNamespaceSchemaProperty(XMLReader reader, String namespace, String schema) throws SAXNotRecognizedException, SAXNotSupportedException{
-		setLocalSchemaUrl(schema);
-		reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", namespace + " " + getValidatedSchema());		
-	}
-	/**
-	 * sets the local URL of given schema, if available
-	 * @param schema
-	 * @return
-	 */
-	protected void setLocalSchemaUrl(String schema){
-		String systemURL = schema;
-		String publicURL = schema;
-		SchemaManager sm = new SchemaManager();
-		
-		try{
-			String schemaFileName = sm.getUplSchemaURL(schema);
-			if(!schema.equals(schemaFileName)){
-				String rootPackageFolder = getClass().getClassLoader().getResource("gdem.properties").getFile();
-				systemURL = "file:///".concat(Properties.schemaFolder).concat("/").concat(schemaFileName);
-				publicURL = Properties.gdemURL.concat("/schema/").concat(schemaFileName);
-			}
-		}
-		catch(DCMException e){
-			//ignore local schema, use the original schema from remote URL
-			_logger.error(e);
-		}
-		setOriginalSchema(schema);
-		setValidatedSchema(systemURL);
-		setValidatedSchemaURL(publicURL);
-	}
-	public void setTicket(String _ticket){
-		this.ticket =  _ticket;	
-	}
-	public void setTrustedMode(boolean mode){
-		this.trustedMode=mode;
-	}
+            if(rootName.indexOf(":")>0){
+                String attName1 = "xmlns:" + rootName.substring(0, rootName.indexOf(":")) ;
+                namespace = root.getAttribute(attName1);
+            }
+        }
+        finally{
+            if (src != null) {
+                try{
+                    src.close();
 
-	public ArrayList getErrorList(){
-		return errorsList;
-	}
+                } catch (Exception e) {}
+            }
+        }
+        return namespace;
+    }
+    /**
+     * Set the noNamespaceSchemaLocation property
+     * @param reader
+     * @param schema
+     * @throws SAXNotRecognizedException
+     * @throws SAXNotSupportedException
+     */
+    private void setNoNamespaceSchemaProperty(XMLReader reader, String schema) throws SAXNotRecognizedException, SAXNotSupportedException{
+        setLocalSchemaUrl(schema);
+        reader.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation", getValidatedSchema());
+    }
+    /**
+     * Set the schemaLocation property. The value is "namespace schemaLocation".
+     * @param reader
+     * @param namespace
+     * @param schema
+     * @throws SAXNotRecognizedException
+     * @throws SAXNotSupportedException
+     */
+    private void setNamespaceSchemaProperty(XMLReader reader, String namespace, String schema) throws SAXNotRecognizedException, SAXNotSupportedException{
+        setLocalSchemaUrl(schema);
+        reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", namespace + " " + getValidatedSchema());
+    }
+    /**
+     * sets the local URL of given schema, if available
+     * @param schema
+     * @return
+     */
+    protected void setLocalSchemaUrl(String schema){
+        String systemURL = schema;
+        String publicURL = schema;
+        SchemaManager sm = new SchemaManager();
 
-	public void printList(){
-		for (int j=0; j<errorsList.size(); j++){
-			ValidateDto val = (ValidateDto)errorsList.get(j);
-		}	  
-	}
-	public String getValidatedSchema() {
-		return validatedSchema;
-	}
-	public void setValidatedSchema(String validatedSchema) {
-		this.validatedSchema = validatedSchema;
-	}
-	public String getValidatedSchemaURL() {
-		return validatedSchemaURL;
-	}
-	public void setValidatedSchemaURL(String validatedSchemaURL) {
-		this.validatedSchemaURL = validatedSchemaURL;
-	}
-	public String getOriginalSchema() {
-		return originalSchema;
-	}
-	public void setOriginalSchema(String originalSchema) {
-		this.originalSchema = originalSchema;
-	}
+        try{
+            String schemaFileName = sm.getUplSchemaURL(schema);
+            if(!schema.equals(schemaFileName)){
+                String rootPackageFolder = getClass().getClassLoader().getResource("gdem.properties").getFile();
+                systemURL = "file:///".concat(Properties.schemaFolder).concat("/").concat(schemaFileName);
+                publicURL = Properties.gdemURL.concat("/schema/").concat(schemaFileName);
+            }
+        }
+        catch(DCMException e){
+            //ignore local schema, use the original schema from remote URL
+            _logger.error(e);
+        }
+        setOriginalSchema(schema);
+        setValidatedSchema(systemURL);
+        setValidatedSchemaURL(publicURL);
+    }
+    public void setTicket(String _ticket){
+        this.ticket =  _ticket;
+    }
+    public void setTrustedMode(boolean mode){
+        this.trustedMode=mode;
+    }
 
-	public static void main(String[] s) {
+    public ArrayList getErrorList(){
+        return errorsList;
+    }
 
-		try {
-			GDEMServices.setTestConnection(true);
-			//String xml = "http://reportek2.eionet.eu.int/colqaj8nw/envqe8zva/countrynames.tmx";
-			//String xml = "http://cdrtest.eionet.europa.eu/ee/eea/ewn3/envrmtmhw/EE bodies.xml";
-			String xml = "http://localhost:8080/xmlconv/tmp/xliff.xml";
-			//String xml = "http://localhost:8080/xmlconv/tmp/seed-gw-valid.xml";
-			//xml="http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/general-report.xml";
-			String sch="http://www.oasis-open.org/committees/xliff/documents/xliff.dtd";
-			//String sch = "http://dd.eionet.europa.eu/GetSchema?id=TBL4564";
-			// String sch = "http://www.lisa.org/tmx/tmx14.dtd";
-			//String sch = "http://roddev.eionet.eu.int/waterdemo/water_measurements.xsd";
+    public void printList(){
+        for (int j=0; j<errorsList.size(); j++){
+            ValidateDto val = (ValidateDto)errorsList.get(j);
+        }
+    }
+    public String getValidatedSchema() {
+        return validatedSchema;
+    }
+    public void setValidatedSchema(String validatedSchema) {
+        this.validatedSchema = validatedSchema;
+    }
+    public String getValidatedSchemaURL() {
+        return validatedSchemaURL;
+    }
+    public void setValidatedSchemaURL(String validatedSchemaURL) {
+        this.validatedSchemaURL = validatedSchemaURL;
+    }
+    public String getOriginalSchema() {
+        return originalSchema;
+    }
+    public void setOriginalSchema(String originalSchema) {
+        this.originalSchema = originalSchema;
+    }
 
-			ValidationService v = new ValidationService(true);
+    public static void main(String[] s) {
 
-			//  String result = v.validate("http://reporter.ceetel.net:18180/nl/eea/ewn3/envqyyafg/BG_bodies_Rubi.xml");
-			System.out.println(v.validateSchema(xml,null));
-			ArrayList errs = v.getErrorList();
-			if(errs!=null && errs.size()>0){
-				for(int i=0;i<errs.size();i++){
-					System.out.println(((ValidateDto)errs.get(i)).toString());					
-				}
-			}
-			//System.out.println(result);
-			//v.log(v.validate(xml));
+        try {
+            GDEMServices.setTestConnection(true);
+            //String xml = "http://reportek2.eionet.eu.int/colqaj8nw/envqe8zva/countrynames.tmx";
+            //String xml = "http://cdrtest.eionet.europa.eu/ee/eea/ewn3/envrmtmhw/EE bodies.xml";
+            String xml = "http://localhost:8080/xmlconv/tmp/xliff.xml";
+            //String xml = "http://localhost:8080/xmlconv/tmp/seed-gw-valid.xml";
+            //xml="http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/general-report.xml";
+            String sch="http://www.oasis-open.org/committees/xliff/documents/xliff.dtd";
+            //String sch = "http://dd.eionet.europa.eu/GetSchema?id=TBL4564";
+            // String sch = "http://www.lisa.org/tmx/tmx14.dtd";
+            //String sch = "http://roddev.eionet.eu.int/waterdemo/water_measurements.xsd";
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("===== " + e.toString());
-		}
+            ValidationService v = new ValidationService(true);
 
-	}
+            //  String result = v.validate("http://reporter.ceetel.net:18180/nl/eea/ewn3/envqyyafg/BG_bodies_Rubi.xml");
+            System.out.println(v.validateSchema(xml,null));
+            ArrayList errs = v.getErrorList();
+            if(errs!=null && errs.size()>0){
+                for(int i=0;i<errs.size();i++){
+                    System.out.println(((ValidateDto)errs.get(i)).toString());
+                }
+            }
+            //System.out.println(result);
+            //v.log(v.validate(xml));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("===== " + e.toString());
+        }
+
+    }
 
 }

@@ -24,16 +24,16 @@
 package eionet.gdem.services;
 
 /**
- * Log4j implementation is used, if an error occurs, output is written 
+ * Log4j implementation is used, if an error occurs, output is written
  * to System.err
  */
 public interface LoggerIF {
 
-	public static final int DEBUG 		= 5;
-	public static final int INFO 		  = 4;
-	public static final int WARNING 	= 3;
-	public static final int ERROR 		= 2;
-	public static final int EMERGENCY = 1;
+    public static final int DEBUG 		= 5;
+    public static final int INFO 		  = 4;
+    public static final int WARNING 	= 3;
+    public static final int ERROR 		= 2;
+    public static final int EMERGENCY = 1;
 
  /**
  * Guard function to decide, whether the message of the given level shoul;d be logged.<BR><BR>
@@ -41,31 +41,31 @@ public interface LoggerIF {
  * Log level values can be between 1 and 5: 1 is the most silent, 5 the most talkative.
  */
   public boolean enable(int level) ;
- 
+
   /**
  * Logs debug level message.
  */
   public void debug(Object msg);
   public void debug(Object msg, Throwable t);
-  
-  
+
+
 /**
  * Logs info level message.
  */
   public void info(Object msg);
-  public void info(Object msg, Throwable t);  
+  public void info(Object msg, Throwable t);
 
 /**
  * Logs debug warning message.
  */
   public void warning(Object msg);
-  public void warning(Object msg, Throwable t);  
+  public void warning(Object msg, Throwable t);
 
 /**
  * Logs error level message.
  */
   public void error(Object msg);
-  public void error(Object msg, Throwable t);  
+  public void error(Object msg, Throwable t);
 /**
  * Logs error level message.
  */

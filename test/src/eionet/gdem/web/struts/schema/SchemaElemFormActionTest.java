@@ -26,7 +26,7 @@ public class SchemaElemFormActionTest  extends MockStrutsTestCase {
         super.setUp();
         setConfigFile(TestUtils.getStrutsConfigLocation());
         setInitParameter("validating","false");
-        
+
         //setup database
         DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
 
@@ -35,7 +35,7 @@ public class SchemaElemFormActionTest  extends MockStrutsTestCase {
     public void testSuccessfulForward() {
         HttpSession session = request.getSession();
         session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
-        
+
         addRequestParameter("schemaId","2");
         setRequestPathInfo("/schemaElemForm");
         actionPerform();
@@ -47,7 +47,7 @@ public class SchemaElemFormActionTest  extends MockStrutsTestCase {
     public void testFailedForward() {
         HttpSession session = request.getSession();
         session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
-        
+
         addRequestParameter("schemaId","0");
         setRequestPathInfo("/schemaElemForm");
         actionPerform();

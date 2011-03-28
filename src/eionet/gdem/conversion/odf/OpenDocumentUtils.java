@@ -29,41 +29,41 @@ import eionet.gdem.conversion.SourceReaderIF;
 
 public class OpenDocumentUtils {
 
-	/**
-	 * returns a valid SpreadsheetReaderIF
-	 */
-	public static SourceReaderIF getSpreadhseetReader() {
-		return new OdsReader();
-	}
+    /**
+     * returns a valid SpreadsheetReaderIF
+     */
+    public static SourceReaderIF getSpreadhseetReader() {
+        return new OdsReader();
+    }
 
-	/*
-	 * returns true, if inputstream is zip file
-	 */
-	public static boolean isSpreadsheetFile(InputStream input) {
+    /*
+     * returns true, if inputstream is zip file
+     */
+    public static boolean isSpreadsheetFile(InputStream input) {
 
-		ZipInputStream zipStream = new ZipInputStream(input);
-		ZipEntry zipEntry = null;
-		try {
-			while (zipStream.available() == 1
-					&& (zipEntry = zipStream.getNextEntry()) != null) {
-				if (zipEntry != null) {
-					if ("content.xml".equals(zipEntry.getName())) {
-						// content file found, it is OpenDocument.
-						return true;
-					}
-				}
-			}
-		} catch (IOException ioe) {
-			return false;
-		} finally {
-			try {
-				// and finally we close stream
-				zipStream.close();
-			} catch (IOException ioe) {
-				// intentionally left blank
-			}
-		}
-		return false;
+        ZipInputStream zipStream = new ZipInputStream(input);
+        ZipEntry zipEntry = null;
+        try {
+            while (zipStream.available() == 1
+                    && (zipEntry = zipStream.getNextEntry()) != null) {
+                if (zipEntry != null) {
+                    if ("content.xml".equals(zipEntry.getName())) {
+                        // content file found, it is OpenDocument.
+                        return true;
+                    }
+                }
+            }
+        } catch (IOException ioe) {
+            return false;
+        } finally {
+            try {
+                // and finally we close stream
+                zipStream.close();
+            } catch (IOException ioe) {
+                // intentionally left blank
+            }
+        }
+        return false;
 
-	}
+    }
 }

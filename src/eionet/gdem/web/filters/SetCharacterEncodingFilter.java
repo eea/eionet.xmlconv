@@ -3,20 +3,20 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is Web Dashboards Service
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency (EEA).  Portions created by European Dynamics (ED) company are
  * Copyright (C) by European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributors(s):
- *    Original code: Nedeljko Pavlovic (ED) 
+ *    Original code: Nedeljko Pavlovic (ED)
  */
 
 package eionet.gdem.web.filters;
@@ -72,7 +72,7 @@ public class SetCharacterEncodingFilter implements Filter {
      */
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain)
-	throws IOException, ServletException {
+    throws IOException, ServletException {
         // Conditionally select and set the character encoding to be used
         if (ignore || (request.getCharacterEncoding() == null)) {
             String encoding = selectEncoding(request);
@@ -80,7 +80,7 @@ public class SetCharacterEncodingFilter implements Filter {
                 request.setCharacterEncoding(encoding);
         }
 
-	// Pass control on to the next filter
+    // Pass control on to the next filter
         chain.doFilter(request, response);
 
     }
@@ -93,7 +93,7 @@ public class SetCharacterEncodingFilter implements Filter {
      */
     public void init(FilterConfig filterConfig) throws ServletException {
 
-	this.filterConfig = filterConfig;
+    this.filterConfig = filterConfig;
         this.encoding = filterConfig.getInitParameter("encoding");
         String value = filterConfig.getInitParameter("ignore");
         if (value == null)

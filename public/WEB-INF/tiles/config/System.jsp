@@ -26,47 +26,47 @@
                 </html:link>
             </li>
         </ul>
-	</div>
-	
+    </div>
 
-		<ed:breadcrumbs-push label="System configuration" level="1" />
-		<h1><bean:message key="label.config.system.admin" /></h1>
 
-		<%-- include Error display --%>
-		<tiles:insert definition="Error" />
+        <ed:breadcrumbs-push label="System configuration" level="1" />
+        <h1><bean:message key="label.config.system.admin" /></h1>
 
-			<html:form action="/system" method="post">
-			    <table  class="formtable">
-				  <col style="width:25%"/>
-				  <col style="width:75%"/>
-					  <tr>
-						<td>
-			            	<label for="qaTimeout" class="question"><bean:message key="label.config.system.qa.timeout" /></label>
-			            </td>
-			            <td>
-			            	<html:text property="qaTimeout" maxlength="20" style="width: 30em;" styleId="qaTimeout"/>
-			            </td>
-			        </tr>
-					  <tr>
-						<td>
-			            	<label for="cmdXGawk" class="question"><bean:message key="label.config.system.qa.xgawk" /></label>
-			            </td>
-			            <td>
-			            	<html:text property="cmdXGawk" maxlength="255" style="width: 30em;" styleId="cmdXGawk"/>
-			            </td>
-			        </tr>
-				        <tr>
-				            <td colspan="2">&nbsp;</td>
-				        </tr>
-				        <tr>
-				            <td colspan="2" align="center">
-				                <html:submit styleClass="button">
-				                    <bean:message key="label.config.system.save" />
-				                </html:submit>
-				            </td>
-				        </tr>
+        <%-- include Error display --%>
+        <tiles:insert definition="Error" />
 
-			    </table>
-			</html:form>
+            <html:form action="/system" method="post">
+                <table  class="formtable">
+                  <col style="width:25%"/>
+                  <col style="width:75%"/>
+                      <tr>
+                        <td>
+                            <label for="qaTimeout" class="question"><bean:message key="label.config.system.qa.timeout" /></label>
+                        </td>
+                        <td>
+                            <html:text property="qaTimeout" maxlength="20" style="width: 30em;" styleId="qaTimeout"/>
+                        </td>
+                    </tr>
+                      <tr>
+                        <td>
+                            <label for="cmdXGawk" class="question"><bean:message key="label.config.system.qa.xgawk" /></label>
+                        </td>
+                        <td>
+                            <html:text property="cmdXGawk" maxlength="255" style="width: 30em;" styleId="cmdXGawk"/>
+                        </td>
+                    </tr>
+                        <tr>
+                            <td colspan="2">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center">
+                                <html:submit styleClass="button">
+                                    <bean:message key="label.config.system.save" />
+                                </html:submit>
+                            </td>
+                        </tr>
+
+                </table>
+            </html:form>
 
 </div>

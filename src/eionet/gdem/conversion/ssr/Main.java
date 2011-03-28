@@ -70,9 +70,9 @@ public class Main extends HttpServlet implements Names {
   public void doGet( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException {
 
 
-	req.setCharacterEncoding(setEncoding());
+    req.setCharacterEncoding(setEncoding());
 
-	String action=req.getParameter("ACTION");
+    String action=req.getParameter("ACTION");
     action = (action == null ? "" : action);
     HttpSession sess = req.getSession();
 
@@ -205,7 +205,7 @@ public class Main extends HttpServlet implements Names {
         appClients.clear();
 
       req.getSession().removeAttribute(USER_ATT);
-	  req.getSession().removeAttribute(TICKET_ATT);
+      req.getSession().removeAttribute(TICKET_ATT);
       req.removeAttribute(SESS_ATT);
 
 
@@ -243,7 +243,7 @@ public class Main extends HttpServlet implements Names {
     }
     private boolean serviceInstalled(int service){
 
-    		int services_installed = Properties.services_installed;
+            int services_installed = Properties.services_installed;
 
         // we divide displayWhen with the type's weight
         // and if the result is an odd number, we return true

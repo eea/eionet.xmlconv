@@ -48,7 +48,7 @@ public class ExcelProcessor  {
   }
   public void makeExcel(String sIn, String sOut) throws GDEMException {
     try
-    {     
+    {
         FileOutputStream outStream = new FileOutputStream(sOut);
         makeExcel(sIn, outStream);
         outStream.close();
@@ -62,10 +62,10 @@ public class ExcelProcessor  {
     }
   }
   public void makeExcel(String sIn, OutputStream sOut) throws GDEMException {
-    
+
       if (sIn == null) return;
       if (sOut == null) return;
-      
+
       try{
         ExcelConversionHandlerIF excel = ExcelUtils.getExcelConversionHandler();
         //excel.setFileName(sOut);
@@ -83,7 +83,7 @@ public class ExcelProcessor  {
       catch (Exception e){
         throw new GDEMException("Error generating Excel file: " + e.toString(), e);
       }
-      
+
       return;
   }
   public static void main(String[] args){
@@ -93,7 +93,7 @@ public class ExcelProcessor  {
     //String srcFile = "http://reportek2.eionet.eu.int/AAAcolqv1nta/envqwkktq/EE_bodies.xml";
     try{
       ExcelProcessor processor = new ExcelProcessor();
-      processor.makeExcel(srcFile, excelFile);  
+      processor.makeExcel(srcFile, excelFile);
     }
     catch(Exception e){
       System.out.println(e.toString());

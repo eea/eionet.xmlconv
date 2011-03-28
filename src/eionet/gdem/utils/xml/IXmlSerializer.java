@@ -4,12 +4,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 public interface IXmlSerializer {
-	
-	public ByteArrayOutputStream serializeToOutStream() throws XmlException;
-	public void serializeToFs(String fullFileName) throws XmlException;
-	public ByteArrayInputStream serializeToInStream() throws XmlException;
-	
-	
-	public String serializeToString() throws XmlException ;
+
+    public ByteArrayOutputStream serializeToOutStream() throws XmlException;
+    public void serializeToFs(String fullFileName) throws XmlException;
+    public ByteArrayInputStream serializeToInStream() throws XmlException;
+
+
+    public String serializeToString() throws XmlException ;
 
 }

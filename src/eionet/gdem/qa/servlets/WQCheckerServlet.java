@@ -44,15 +44,15 @@ public class WQCheckerServlet extends HttpServlet {
 
   public void init(ServletConfig config) throws ServletException {
 
-	  try {
-		  (new Timer(true)).scheduleAtFixedRate( new WQChecker(), 0, Properties.wqCheckInterval );
-		  try {
-			  GDEMServices.getDaoService().getXQJobDao().changeJobStatusByStatus(Constants.XQ_DOWNLOADING_SRC, Constants.XQ_RECEIVED);
-			  GDEMServices.getDaoService().getXQJobDao().changeJobStatusByStatus(Constants.XQ_PROCESSING, Constants.XQ_RECEIVED);
-		  }
-		  catch (Exception e) {
-			  GDEMServices.getLogger().error("Error reseting active jobs: " + e.toString());
-		  }
+      try {
+          (new Timer(true)).scheduleAtFixedRate( new WQChecker(), 0, Properties.wqCheckInterval );
+          try {
+              GDEMServices.getDaoService().getXQJobDao().changeJobStatusByStatus(Constants.XQ_DOWNLOADING_SRC, Constants.XQ_RECEIVED);
+              GDEMServices.getDaoService().getXQJobDao().changeJobStatusByStatus(Constants.XQ_PROCESSING, Constants.XQ_RECEIVED);
+          }
+          catch (Exception e) {
+              GDEMServices.getLogger().error("Error reseting active jobs: " + e.toString());
+          }
     } catch (Exception e) {
       //better error handling here!!
       throw new ServletException(e.getMessage(), e);

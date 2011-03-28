@@ -59,25 +59,25 @@ public class WQChecker extends TimerTask implements Constants {
     }
     */
   }
-	/**
-	* override of Thread run() method, checks for new jobs in DB
-	*/
-	public void run() {
+    /**
+    * override of Thread run() method, checks for new jobs in DB
+    */
+    public void run() {
     //get new received jobs from the DB
     String[] newJobs=null;
     try {
-    	int activeJobs = xqJobDao.countActiveJobs();
-    	if (activeJobs >=Properties.wqMaxJobs){
-    		if(_logger.enable(_logger.DEBUG))
-    				_logger.debug("The number of active jobs is greater or equal than max jobs allowed to run in parallel: active jobs:" +
-    				activeJobs + "; max jobs: " + Properties.wqMaxJobs);
-    	}
-    	else{
-    		newJobs=xqJobDao.getJobsLimit(XQ_RECEIVED, Properties.wqMaxJobs-activeJobs);
-    	}
+        int activeJobs = xqJobDao.countActiveJobs();
+        if (activeJobs >=Properties.wqMaxJobs){
+            if(_logger.enable(_logger.DEBUG))
+                    _logger.debug("The number of active jobs is greater or equal than max jobs allowed to run in parallel: active jobs:" +
+                    activeJobs + "; max jobs: " + Properties.wqMaxJobs);
+        }
+        else{
+            newJobs=xqJobDao.getJobsLimit(XQ_RECEIVED, Properties.wqMaxJobs-activeJobs);
+        }
 
     } catch(SQLException sqe ) {
-		   _logger.fatal("*** SQL error getting jobs from DB: " + sqe.toString());
+           _logger.fatal("*** SQL error getting jobs from DB: " + sqe.toString());
     } catch(Exception e ) {
       _logger.error("*** error when getting received jobs:  " + e.toString());
     }

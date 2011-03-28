@@ -19,138 +19,138 @@ import eionet.gdem.dto.Schema;
 
 public class ConversionForm extends ActionForm {
 
-	private static final String DEFAULT_ERROR_FORWARD="error"; 
-	
-	private String schemaUrl;
-	private String url;
-	private String insertedUrl;
-	private String conversionId;
-	private Schema schema;
-	private List<Schema> schemas;
-	private boolean showSchemaSelection=false;
-	private boolean converted=true;
-	private String searchAction;
-	private String convertAction;
-	private String action;
-	private String errorForward=DEFAULT_ERROR_FORWARD;
+    private static final String DEFAULT_ERROR_FORWARD="error";
 
-	public ActionErrors validate(ActionMapping actionMapping,
-			HttpServletRequest httpServletRequest) {
-		
-		return null;
-	}
+    private String schemaUrl;
+    private String url;
+    private String insertedUrl;
+    private String conversionId;
+    private Schema schema;
+    private List<Schema> schemas;
+    private boolean showSchemaSelection=false;
+    private boolean converted=true;
+    private String searchAction;
+    private String convertAction;
+    private String action;
+    private String errorForward=DEFAULT_ERROR_FORWARD;
 
-	public void resetAll(ActionMapping actionMapping,
-			HttpServletRequest httpServletRequest) {
-		super.reset(actionMapping, httpServletRequest);
-		schemaUrl = null;
-		url = null;
-		insertedUrl=null;
-		conversionId = null;
-		schema=null;
-		showSchemaSelection=false;
-		schemas=null;
-		searchAction=null;
-		convertAction=null;
-		converted=false;
-		action=null;
-		errorForward=DEFAULT_ERROR_FORWARD;
-	}
+    public ActionErrors validate(ActionMapping actionMapping,
+            HttpServletRequest httpServletRequest) {
 
-	public String getSchemaUrl() {
-		return schemaUrl;
-	}
+        return null;
+    }
 
-	public void setSchemaUrl(String schemaUrl) {
-		this.schemaUrl = schemaUrl;
-	}
+    public void resetAll(ActionMapping actionMapping,
+            HttpServletRequest httpServletRequest) {
+        super.reset(actionMapping, httpServletRequest);
+        schemaUrl = null;
+        url = null;
+        insertedUrl=null;
+        conversionId = null;
+        schema=null;
+        showSchemaSelection=false;
+        schemas=null;
+        searchAction=null;
+        convertAction=null;
+        converted=false;
+        action=null;
+        errorForward=DEFAULT_ERROR_FORWARD;
+    }
 
-	public String getUrl() {
-		return url;
-	}
+    public String getSchemaUrl() {
+        return schemaUrl;
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public void setSchemaUrl(String schemaUrl) {
+        this.schemaUrl = schemaUrl;
+    }
 
-	public String getConversionId() {
-		return conversionId;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public void setConversionId(String conversionId) {
-		this.conversionId = conversionId;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	public Schema getSchema() {
-		return schema;
-	}
+    public String getConversionId() {
+        return conversionId;
+    }
 
-	public void setSchema(Schema schema) {
-		this.schema = schema;
-	}
+    public void setConversionId(String conversionId) {
+        this.conversionId = conversionId;
+    }
 
-	public List<Schema> getSchemas() {
-		return schemas;
-	}
+    public Schema getSchema() {
+        return schema;
+    }
 
-	public void setSchemas(List<Schema> schemas) {
-		this.schemas = schemas;
-	}
+    public void setSchema(Schema schema) {
+        this.schema = schema;
+    }
 
-	public boolean isShowSchemaSelection() {
-		return showSchemaSelection;
-	}
+    public List<Schema> getSchemas() {
+        return schemas;
+    }
 
-	public void setShowSchemaSelection(boolean showSchemaSelection) {
-		this.showSchemaSelection = showSchemaSelection;
-	}
+    public void setSchemas(List<Schema> schemas) {
+        this.schemas = schemas;
+    }
 
-	public String getSearchAction() {
-		return searchAction;
-	}
+    public boolean isShowSchemaSelection() {
+        return showSchemaSelection;
+    }
 
-	public void setSearchAction(String searchAction) {
-		this.searchAction = searchAction;
-	}
+    public void setShowSchemaSelection(boolean showSchemaSelection) {
+        this.showSchemaSelection = showSchemaSelection;
+    }
 
-	public String getConvertAction() {
-		return convertAction;
-	}
+    public String getSearchAction() {
+        return searchAction;
+    }
 
-	public void setConvertAction(String convertAction) {
-		this.convertAction = convertAction;
-	}
+    public void setSearchAction(String searchAction) {
+        this.searchAction = searchAction;
+    }
 
-	public boolean isConverted() {
-		return converted;
-	}
+    public String getConvertAction() {
+        return convertAction;
+    }
 
-	public void setConverted(boolean converted) {
-		this.converted = converted;
-	}
+    public void setConvertAction(String convertAction) {
+        this.convertAction = convertAction;
+    }
 
-	public String getAction() {
-		return action;
-	}
+    public boolean isConverted() {
+        return converted;
+    }
 
-	public void setAction(String action) {
-		this.action = action;
-	}
+    public void setConverted(boolean converted) {
+        this.converted = converted;
+    }
 
-	public String getInsertedUrl() {
-		return insertedUrl;
-	}
+    public String getAction() {
+        return action;
+    }
 
-	public void setInsertedUrl(String insertedUrl) {
-		this.insertedUrl = insertedUrl;
-	}
+    public void setAction(String action) {
+        this.action = action;
+    }
 
-	public String getErrorForward() {
-		return errorForward;
-	}
+    public String getInsertedUrl() {
+        return insertedUrl;
+    }
 
-	public void setErrorForward(String errorForward) {
-		this.errorForward = errorForward;
-	}
+    public void setInsertedUrl(String insertedUrl) {
+        this.insertedUrl = insertedUrl;
+    }
+
+    public String getErrorForward() {
+        return errorForward;
+    }
+
+    public void setErrorForward(String errorForward) {
+        this.errorForward = errorForward;
+    }
 
 }

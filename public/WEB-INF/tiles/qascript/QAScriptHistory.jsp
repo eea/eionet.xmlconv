@@ -20,58 +20,58 @@
             </li>
             <li id="currenttab"><span style="color: black; text-decoration: none;" title='<bean:message key="label.qascript.history"/>'><bean:message key="label.qascript.history" /></span></li>
         </ul>
-	</div>
+    </div>
 
 <ed:breadcrumbs-push label="QA Script History" level="3" />
 
 
-	<h1 class="documentFirstHeading">
-		<bean:message key="label.qascriptHistory.title"/>
-	</h1>
+    <h1 class="documentFirstHeading">
+        <bean:message key="label.qascriptHistory.title"/>
+    </h1>
 
-	<%-- include Error display --%>
-	<tiles:insert definition="Error" />
+    <%-- include Error display --%>
+    <tiles:insert definition="Error" />
 
-	<div class="visualClear">&nbsp;</div>
+    <div class="visualClear">&nbsp;</div>
 
-	<logic:present name="qascript.history" scope="session">
-		<div style="width: 97%">
-			<table class="datatable" width="100%">
-				<col style="width:10%"/>
-				<col style="width:52%"/>
-				<col style="width:38%"/>
-				<thead>
-					<tr>
-						<th scope="col" class="scope-col"><bean:message key="label.table.backup.filename"/></th>
-						<th scope="col" class="scope-col"><bean:message key="label.table.backup.timestamp"/></th>
-						<th scope="col" class="scope-col"><bean:message key="label.table.backup.user"/></th>
-					</tr>
-				</thead>
-				<tbody>
-					<logic:iterate indexId="index" id="backup" name="qascript.history" scope="session" type="BackupDto">
-					<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
-						<td align="center">
-							<a  href="<bean:write name="webRoot"/>/<%=Names.QUERY_FOLDER%>/<%=Constants.BACKUP_FOLDER_NAME%>/<bean:write name="backup" property="fileName" />" title="<bean:write name="backup" property="fileName" />">
-								<bean:write name="backup" property="fileName" />
-							</a>
-						</td>
-						<td>
-							<bean:write name="backup" property="timestamp" />
-						</td>
-						<td>
-							<bean:write name="backup" property="user" />
-						</td>
-					</tr>
-					</logic:iterate>
-					<tr>
-						<td valign="top" colspan="3">
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		<div class="visualClear">&nbsp;</div>
-	</logic:present>
+    <logic:present name="qascript.history" scope="session">
+        <div style="width: 97%">
+            <table class="datatable" width="100%">
+                <col style="width:10%"/>
+                <col style="width:52%"/>
+                <col style="width:38%"/>
+                <thead>
+                    <tr>
+                        <th scope="col" class="scope-col"><bean:message key="label.table.backup.filename"/></th>
+                        <th scope="col" class="scope-col"><bean:message key="label.table.backup.timestamp"/></th>
+                        <th scope="col" class="scope-col"><bean:message key="label.table.backup.user"/></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <logic:iterate indexId="index" id="backup" name="qascript.history" scope="session" type="BackupDto">
+                    <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
+                        <td align="center">
+                            <a  href="<bean:write name="webRoot"/>/<%=Names.QUERY_FOLDER%>/<%=Constants.BACKUP_FOLDER_NAME%>/<bean:write name="backup" property="fileName" />" title="<bean:write name="backup" property="fileName" />">
+                                <bean:write name="backup" property="fileName" />
+                            </a>
+                        </td>
+                        <td>
+                            <bean:write name="backup" property="timestamp" />
+                        </td>
+                        <td>
+                            <bean:write name="backup" property="user" />
+                        </td>
+                    </tr>
+                    </logic:iterate>
+                    <tr>
+                        <td valign="top" colspan="3">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="visualClear">&nbsp;</div>
+    </logic:present>
 
 
 

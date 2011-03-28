@@ -41,69 +41,69 @@ import eionet.gdem.conversion.odf.OpenDocumentUtils;
 
 public class Ods2Xml extends DDXMLConverter {
 
-	private final static String FORMAT_NAME = "OpenDocument Spreadsheet";
+    private final static String FORMAT_NAME = "OpenDocument Spreadsheet";
 
-	public SourceReaderIF getSourceReader(){
-		return OpenDocumentUtils.getSpreadhseetReader();
-	}
-	public String getSourceFormatName(){
-		return FORMAT_NAME;
-	}
-
-
-
-	public static void main(String[] args){
+    public SourceReaderIF getSourceReader(){
+        return OpenDocumentUtils.getSpreadhseetReader();
+    }
+    public String getSourceFormatName(){
+        return FORMAT_NAME;
+    }
 
 
-		ConversionServiceIF conv = new ConversionService();
-		try{
-			//conv.convertDD_XML("http://localhost:8080/gdem/test.xls");
-			Vector v = conv.convertDD_XML_split("http://cdrtest.eionet.europa.eu/copy_of_ee/eea/colqrajqw/envrorfcq/Rivers_testdata_EU_137.ods", null);
-			System.out.println(v.toString());
-		}
-		catch(Exception e){
-			System.out.println(e.toString());
-		}
 
-		if(true)
-			return;
+    public static void main(String[] args){
 
-	      FileInputStream fis = null;
-	      FileOutputStream fout = null;
-	    //String excelFile = "E:/Projects/gdem/public/test.xls";
-	  	//String excelFile = "E:/Projects/gdem/tmp/Summer_ozone.xls";
-	    //String excelFile = E\\Projects\\gdem\\exelToXML\\Groundwater_GG_CCxxx.xls";
-	  	String odsFile = "E:/Projects/xmlconv/tmp/Rivers_testdata_EU_137.ods";
-	    String outFile = "E:/Projects/xmlconv/tmp/Rivers_testdata_EU_137.ods.xml";
-	    try{
-	      //OdsReader reader= new OdsReader();
-	      Ods2Xml processor = new Ods2Xml();
-	      //processor.convertDD_XML_split(excelFile,outFile);
-	      File ods = new File(odsFile);
-	      fis = new FileInputStream(ods);
 
-	      File xml = new File(outFile);
-	      fout = new FileOutputStream(xml);
+        ConversionServiceIF conv = new ConversionService();
+        try{
+            //conv.convertDD_XML("http://localhost:8080/gdem/test.xls");
+            Vector v = conv.convertDD_XML_split("http://cdrtest.eionet.europa.eu/copy_of_ee/eea/colqrajqw/envrorfcq/Rivers_testdata_EU_137.ods", null);
+            System.out.println(v.toString());
+        }
+        catch(Exception e){
+            System.out.println(e.toString());
+        }
 
-	      //FileInputStream fis = new FileInputStream()
-	      processor.convertDD_XML_split(fis, fout, "Stations");
-	      //reader.initReader(fis);
-	      //String schema = reader.getXMLSchema();
-	      //Hashtable h = reader.getSheetSchemas();
-	      //System.out.println(schema);
-	      //System.out.println(h.toString());
-	      //reader.convertDD_XML_split(odsFile, null);
-	    }
-	    catch(Exception e){
-	      System.out.println(e.toString());
-	    }
-	    finally{
-	    	if (fis!=null){
-	    		try{ fis.close();}catch(Exception e){}
-	    	}
-	    	if (fout!=null){
-	    		try{ fout.close();}catch(Exception e){}
-	    	}
-	    }
-	  }
+        if(true)
+            return;
+
+          FileInputStream fis = null;
+          FileOutputStream fout = null;
+        //String excelFile = "E:/Projects/gdem/public/test.xls";
+          //String excelFile = "E:/Projects/gdem/tmp/Summer_ozone.xls";
+        //String excelFile = E\\Projects\\gdem\\exelToXML\\Groundwater_GG_CCxxx.xls";
+          String odsFile = "E:/Projects/xmlconv/tmp/Rivers_testdata_EU_137.ods";
+        String outFile = "E:/Projects/xmlconv/tmp/Rivers_testdata_EU_137.ods.xml";
+        try{
+          //OdsReader reader= new OdsReader();
+          Ods2Xml processor = new Ods2Xml();
+          //processor.convertDD_XML_split(excelFile,outFile);
+          File ods = new File(odsFile);
+          fis = new FileInputStream(ods);
+
+          File xml = new File(outFile);
+          fout = new FileOutputStream(xml);
+
+          //FileInputStream fis = new FileInputStream()
+          processor.convertDD_XML_split(fis, fout, "Stations");
+          //reader.initReader(fis);
+          //String schema = reader.getXMLSchema();
+          //Hashtable h = reader.getSheetSchemas();
+          //System.out.println(schema);
+          //System.out.println(h.toString());
+          //reader.convertDD_XML_split(odsFile, null);
+        }
+        catch(Exception e){
+          System.out.println(e.toString());
+        }
+        finally{
+            if (fis!=null){
+                try{ fis.close();}catch(Exception e){}
+            }
+            if (fout!=null){
+                try{ fout.close();}catch(Exception e){}
+            }
+        }
+      }
 }

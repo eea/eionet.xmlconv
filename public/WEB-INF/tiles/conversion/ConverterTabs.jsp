@@ -5,18 +5,18 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 
-<tiles:useAttribute name="selectedTab" classname="java.lang.String"/> 
+<tiles:useAttribute name="selectedTab" classname="java.lang.String"/>
 <div id="tabbedmenu">
-	<ul>
-		<ed:tabItem href="/do/listConvForm" title="Convert XML" id="convertXML" selectedTab="<%=selectedTab%>">
-			<bean:message key="label.conversion.tab.converters"/>
-		</ed:tabItem>
-		<ed:tabItem href="/do/crConversionForm" title="Search CR for XML files" id="searchXML" selectedTab="<%=selectedTab%>">
-			<bean:message key="label.conversion.tab.crconversion"/>
-		</ed:tabItem>
-		<ed:tabItem href="/do/excel2XmlConversionForm" title="Convert spreadsheet to DD XML" id="excel2xml" selectedTab="<%=selectedTab%>">
-			<bean:message key="label.conversion.tab.excel2xml"/>
-		</ed:tabItem>
-	</ul>
+    <ul>
+        <ed:tabItem href="/do/listConvForm" title="Convert XML" id="convertXML" selectedTab="<%=selectedTab%>">
+            <bean:message key="label.conversion.tab.converters"/>
+        </ed:tabItem>
+        <ed:tabItem href="/do/crConversionForm" title="Search CR for XML files" id="searchXML" selectedTab="<%=selectedTab%>">
+            <bean:message key="label.conversion.tab.crconversion"/>
+        </ed:tabItem>
+        <ed:tabItem href="/do/excel2XmlConversionForm" title="Convert spreadsheet to DD XML" id="excel2xml" selectedTab="<%=selectedTab%>">
+            <bean:message key="label.conversion.tab.excel2xml"/>
+        </ed:tabItem>
+    </ul>
 </div>
 <div id="tabbedmenuend"></div>

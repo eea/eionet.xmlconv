@@ -33,7 +33,7 @@ import eionet.gdem.conversion.datadict.DD_XMLInstance;
 * The main class, which is calling POI HSSF methods for reading Excel file
 * @author Enriko Käsper
 */
-public interface ExcelReaderIF 
+public interface ExcelReaderIF
 {
 
 /**
@@ -56,7 +56,7 @@ public void initReader(InputStream input) throws GDEMException;
 */
 public void readDocumentToInstance(DD_XMLInstance instance)throws GDEMException;
 /**
-* Finds the first sheet name, that is not DO_NOT_DELETE_THIS_SHEET 
+* Finds the first sheet name, that is not DO_NOT_DELETE_THIS_SHEET
 * @return - Excel sheet name
 */
 public String getFirstSheetName();
@@ -73,5 +73,5 @@ public Map<String, String> getSheetSchemas();
 * @return boolean - true if has data
 */
 public boolean isEmptySheet(String sheet_name);
-	  
+
 }

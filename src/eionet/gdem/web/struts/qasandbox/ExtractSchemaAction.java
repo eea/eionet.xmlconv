@@ -3,18 +3,18 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is XMLCONV.
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency.  Portions created by Tieto Eesti are Copyright
  * (C) European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributor(s):
  * Enriko Käsper, Tieto Estonia
  */
@@ -45,107 +45,107 @@ import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 /**
  * SearchCRSandboxAction
  * Extract the XML schema from the inserted source URL of XML file and find available QA scripts.
- *  
+ *
  * @author Enriko Käsper, Tieto Estonia
  */
 
 public class ExtractSchemaAction extends Action {
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
+            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-		ActionErrors errors = new ActionErrors();
+        ActionErrors errors = new ActionErrors();
 
-		QASandboxForm cForm = (QASandboxForm) actionForm;
-		Schema oSchema = cForm.getSchema();
-		String sourceUrl = cForm.getSourceUrl();
+        QASandboxForm cForm = (QASandboxForm) actionForm;
+        Schema oSchema = cForm.getSchema();
+        String sourceUrl = cForm.getSourceUrl();
 
-		if (Utils.isNullStr(sourceUrl)) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.missingUrl"));
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("error");
-		}
-		if (!Utils.isURL(sourceUrl)) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.notUrl"));
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("error");
-		}
+        if (Utils.isNullStr(sourceUrl)) {
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.missingUrl"));
+            saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("error");
+        }
+        if (!Utils.isURL(sourceUrl)) {
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.notUrl"));
+            saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("error");
+        }
 
-		String schemaUrl = null;
-		try {
-			if (!Utils.isNullStr(sourceUrl)) {
-				schemaUrl = findSchemaFromXml(sourceUrl);
-				if (!Utils.isURL(schemaUrl)) {
-					errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.schemaNotFound"));
-					saveErrors(httpServletRequest, errors);
-					return actionMapping.findForward("error");
-				}
-				if (schemaExists(httpServletRequest, schemaUrl)) {
-					cForm.setSchemaUrl(schemaUrl);
-				} else if (!Utils.isNullStr(schemaUrl)) {
-					if (oSchema == null)
-						oSchema = new Schema();
+        String schemaUrl = null;
+        try {
+            if (!Utils.isNullStr(sourceUrl)) {
+                schemaUrl = findSchemaFromXml(sourceUrl);
+                if (!Utils.isURL(schemaUrl)) {
+                    errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.schemaNotFound"));
+                    saveErrors(httpServletRequest, errors);
+                    return actionMapping.findForward("error");
+                }
+                if (schemaExists(httpServletRequest, schemaUrl)) {
+                    cForm.setSchemaUrl(schemaUrl);
+                } else if (!Utils.isNullStr(schemaUrl)) {
+                    if (oSchema == null)
+                        oSchema = new Schema();
 
-					oSchema.setSchema(null);
-					oSchema.setDoValidation(false);
-					oSchema.setQascripts(null);
-					cForm.setSchemaUrl(null);
-					cForm.setShowScripts(true);
-					cForm.setSchema(oSchema);
+                    oSchema.setSchema(null);
+                    oSchema.setDoValidation(false);
+                    oSchema.setQascripts(null);
+                    cForm.setSchemaUrl(null);
+                    cForm.setShowScripts(true);
+                    cForm.setSchema(oSchema);
 
-					errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.noSchemaScripts",
-							schemaUrl));
-					saveErrors(httpServletRequest, errors);
-					return actionMapping.findForward("error");
-				}
-			}
-		} catch (DCMException e) {
-			// e.printStackTrace();
-			_logger.error("Error extracting schema from XML file", e);
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("error");
-		} catch (Exception e) {
-			// e.printStackTrace();
-			_logger.error("Error extracting schema from XML file", e);
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("error");
-		}
+                    errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.noSchemaScripts",
+                            schemaUrl));
+                    saveErrors(httpServletRequest, errors);
+                    return actionMapping.findForward("error");
+                }
+            }
+        } catch (DCMException e) {
+            // e.printStackTrace();
+            _logger.error("Error extracting schema from XML file", e);
+            saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("error");
+        } catch (Exception e) {
+            // e.printStackTrace();
+            _logger.error("Error extracting schema from XML file", e);
+            saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("error");
+        }
 
-		return actionMapping.findForward("find");
-	}
+        return actionMapping.findForward("find");
+    }
 
-	/**
-	 * check if schema passed as request parameter exists in the list of schemas
-	 * stored in the session. If there is no schema list in the session, then
-	 * create it
-	 * 
-	 * @param httpServletRequest
-	 * @param schema
-	 * @return
-	 * @throws DCMException
-	 */
-	private boolean schemaExists(HttpServletRequest httpServletRequest, String schema) throws DCMException {
-		Object schemasInSession = httpServletRequest.getSession().getAttribute("qascript.qascriptList");
-		if (schemasInSession == null || ((QAScriptListHolder) schemasInSession).getQascripts().size() == 0) {
-			schemasInSession = QAScriptListLoader.loadQAScriptList(httpServletRequest, true);
-		}
-		Schema oSchema = new Schema();
-		oSchema.setSchema(schema);
-		return ((QAScriptListHolder) schemasInSession).getQascripts().contains(oSchema);
-	}
+    /**
+     * check if schema passed as request parameter exists in the list of schemas
+     * stored in the session. If there is no schema list in the session, then
+     * create it
+     *
+     * @param httpServletRequest
+     * @param schema
+     * @return
+     * @throws DCMException
+     */
+    private boolean schemaExists(HttpServletRequest httpServletRequest, String schema) throws DCMException {
+        Object schemasInSession = httpServletRequest.getSession().getAttribute("qascript.qascriptList");
+        if (schemasInSession == null || ((QAScriptListHolder) schemasInSession).getQascripts().size() == 0) {
+            schemasInSession = QAScriptListLoader.loadQAScriptList(httpServletRequest, true);
+        }
+        Schema oSchema = new Schema();
+        oSchema.setSchema(schema);
+        return ((QAScriptListHolder) schemasInSession).getQascripts().contains(oSchema);
+    }
 
-	private String findSchemaFromXml(String xml) {
-		InputAnalyser analyser = new InputAnalyser();
-		try {
-			analyser.parseXML(xml);
-			String schemaOrDTD = analyser.getSchemaOrDTD();
-			return schemaOrDTD;
-		} catch (Exception e) {
-			// do nothoing - did not find XML Schema
-			// handleError(request, response, e);
-		}
-		return null;
-	}
+    private String findSchemaFromXml(String xml) {
+        InputAnalyser analyser = new InputAnalyser();
+        try {
+            analyser.parseXML(xml);
+            String schemaOrDTD = analyser.getSchemaOrDTD();
+            return schemaOrDTD;
+        } catch (Exception e) {
+            // do nothoing - did not find XML Schema
+            // handleError(request, response, e);
+        }
+        return null;
+    }
 
 }

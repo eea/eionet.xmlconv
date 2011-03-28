@@ -30,243 +30,243 @@ import eionet.gdem.Properties;
 
 public class Schema implements Serializable {
 
-	private String id;
-	private String schema;
-	private String description;
-	private List stylesheets;
-	boolean isDTD = false;
-	private String dtdPublicId;
-	private String table;
-	private String dataset;
-	private List<CdrFileDto> cdrfiles;
-	private List<CrFileDto> crfiles;
-	private Date datasetReleased;
-	private boolean doValidation=false;
-	private String schemaLang;
-	private String uplSchemaFileName;
-	private List<QAScript> qascripts;
-	private UplSchema uplSchema;
-	private Date expireDate;
-	
-	public Date getExpireDate() {
-		return expireDate;
-	}
+    private String id;
+    private String schema;
+    private String description;
+    private List stylesheets;
+    boolean isDTD = false;
+    private String dtdPublicId;
+    private String table;
+    private String dataset;
+    private List<CdrFileDto> cdrfiles;
+    private List<CrFileDto> crfiles;
+    private Date datasetReleased;
+    private boolean doValidation=false;
+    private String schemaLang;
+    private String uplSchemaFileName;
+    private List<QAScript> qascripts;
+    private UplSchema uplSchema;
+    private Date expireDate;
 
+    public Date getExpireDate() {
+        return expireDate;
+    }
 
-	public void setExpireDate(Date expireDate) {
-		this.expireDate = expireDate;
-	}
 
+    public void setExpireDate(Date expireDate) {
+        this.expireDate = expireDate;
+    }
 
-	public UplSchema getUplSchema() {
-		return uplSchema;
-	}
 
+    public UplSchema getUplSchema() {
+        return uplSchema;
+    }
 
-	public void setUplSchema(UplSchema uplSchema) {
-		this.uplSchema = uplSchema;
-	}
 
+    public void setUplSchema(UplSchema uplSchema) {
+        this.uplSchema = uplSchema;
+    }
 
-	public List<QAScript> getQascripts() {
-		return qascripts;
-	}
 
+    public List<QAScript> getQascripts() {
+        return qascripts;
+    }
 
-	public void setQascripts(List<QAScript> qascripts) {
-		this.qascripts = qascripts;
-	}
 
+    public void setQascripts(List<QAScript> qascripts) {
+        this.qascripts = qascripts;
+    }
 
-	private static String[] schemaLanguages = { "XSD", "DTD", "EXCEL" };
-	private static String defaultSchemaLang = "XSD";
-	
-	public Schema() {
 
-	}
+    private static String[] schemaLanguages = { "XSD", "DTD", "EXCEL" };
+    private static String defaultSchemaLang = "XSD";
 
+    public Schema() {
 
-	public String getDescription() {
-		return description;
-	}
+    }
 
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
 
-	public String getId() {
-		return id;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return id;
+    }
 
 
-	public String getSchema() {
-		return schema;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
 
-	public void setSchema(String schema) {
-		this.schema = schema;
-	}
+    public String getSchema() {
+        return schema;
+    }
 
 
-	public List getStylesheets() {
-		return stylesheets;
-	}
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
 
 
-	public void setStylesheets(List stylesheets) {
-		this.stylesheets = stylesheets;
-	}
+    public List getStylesheets() {
+        return stylesheets;
+    }
 
 
-	public boolean getIsDTD() {
-		return getSchemaLang().equals("DTD");
-	}
+    public void setStylesheets(List stylesheets) {
+        this.stylesheets = stylesheets;
+    }
 
 
-	public void setIsDTD(boolean isDTD) {
-		this.isDTD = isDTD;
-	}
+    public boolean getIsDTD() {
+        return getSchemaLang().equals("DTD");
+    }
 
-
-	public String getDtdPublicId() {
-		return dtdPublicId;
-	}
 
+    public void setIsDTD(boolean isDTD) {
+        this.isDTD = isDTD;
+    }
 
-	public void setDtdPublicId(String dtdPublicId) {
-		this.dtdPublicId = dtdPublicId;
-	}
 
+    public String getDtdPublicId() {
+        return dtdPublicId;
+    }
 
-	public String getDataset() {
-		return dataset;
-	}
 
+    public void setDtdPublicId(String dtdPublicId) {
+        this.dtdPublicId = dtdPublicId;
+    }
 
-	public void setDataset(String dataset) {
-		this.dataset = dataset;
-	}
 
+    public String getDataset() {
+        return dataset;
+    }
 
-	public String getTable() {
-		return table;
-	}
 
+    public void setDataset(String dataset) {
+        this.dataset = dataset;
+    }
 
-	public void setTable(String table) {
-		this.table = table;
-	}
 
-	public List<CdrFileDto> getCdrfiles() {
-		return cdrfiles;
-	}
+    public String getTable() {
+        return table;
+    }
 
 
-	public void setCdrfiles(List<CdrFileDto> cdrfiles) {
-		this.cdrfiles = cdrfiles;
-	}
+    public void setTable(String table) {
+        this.table = table;
+    }
 
+    public List<CdrFileDto> getCdrfiles() {
+        return cdrfiles;
+    }
 
-	public Date getDatasetReleased() {
-		return datasetReleased;
-	}
 
+    public void setCdrfiles(List<CdrFileDto> cdrfiles) {
+        this.cdrfiles = cdrfiles;
+    }
 
-	public void setDatasetReleased(Date datasetReleased) {
-		this.datasetReleased = datasetReleased;
-	}
 
+    public Date getDatasetReleased() {
+        return datasetReleased;
+    }
 
-	public List<CrFileDto> getCrfiles() {
-		return crfiles;
-	}
 
+    public void setDatasetReleased(Date datasetReleased) {
+        this.datasetReleased = datasetReleased;
+    }
 
-	public void setCrfiles(List<CrFileDto> crfiles) {
-		this.crfiles = crfiles;
-	}
-	public boolean equals(Object oSchema){
-		if(oSchema instanceof Schema){
-			if (oSchema!=null && ((Schema)oSchema).getSchema()!=null && getSchema()!=null){
-				return ((Schema)oSchema).getSchema().equals(getSchema());
-			}
-		}
-		return false;
-	}
-	public String getLabel(){
-		StringBuilder label = new StringBuilder(schema);
-		if(id!=null && isDDSchema() && getTable()!=null){
-			label.append(" - ");
-			label.append(getTable());
-			label.append(" (");
-			label.append(getDataset());
-			if(getDatasetReleased()!=null){
-				label.append(" - ");
-				SimpleDateFormat formatter = new SimpleDateFormat(Properties.dateFormatPattern);
-				String strDate = formatter.format(getDatasetReleased());
-				label.append(strDate);			
-			}
-			label.append(")");
-		}
-		return label.toString();
-	}
-	public boolean isDDSchema(){
-		boolean ret = false;
-		
-		if(id!=null)
-			ret = id.startsWith("TBL");
-		
-		return ret;
-	}
-	public static String[] getSchemaLanguages(){
-		return schemaLanguages;
-	}
-	public static String getDefaultSchemaLang(){
-		return defaultSchemaLang;
-	}
 
+    public List<CrFileDto> getCrfiles() {
+        return crfiles;
+    }
 
-	public boolean isDoValidation() {
-		return doValidation;
-	}
 
+    public void setCrfiles(List<CrFileDto> crfiles) {
+        this.crfiles = crfiles;
+    }
+    public boolean equals(Object oSchema){
+        if(oSchema instanceof Schema){
+            if (oSchema!=null && ((Schema)oSchema).getSchema()!=null && getSchema()!=null){
+                return ((Schema)oSchema).getSchema().equals(getSchema());
+            }
+        }
+        return false;
+    }
+    public String getLabel(){
+        StringBuilder label = new StringBuilder(schema);
+        if(id!=null && isDDSchema() && getTable()!=null){
+            label.append(" - ");
+            label.append(getTable());
+            label.append(" (");
+            label.append(getDataset());
+            if(getDatasetReleased()!=null){
+                label.append(" - ");
+                SimpleDateFormat formatter = new SimpleDateFormat(Properties.dateFormatPattern);
+                String strDate = formatter.format(getDatasetReleased());
+                label.append(strDate);
+            }
+            label.append(")");
+        }
+        return label.toString();
+    }
+    public boolean isDDSchema(){
+        boolean ret = false;
 
-	public void setDoValidation(boolean doValidation) {
-		this.doValidation = doValidation;
-	}
+        if(id!=null)
+            ret = id.startsWith("TBL");
 
+        return ret;
+    }
+    public static String[] getSchemaLanguages(){
+        return schemaLanguages;
+    }
+    public static String getDefaultSchemaLang(){
+        return defaultSchemaLang;
+    }
 
-	public String getSchemaLang() {
-		if(schemaLang==null) schemaLang=getDefaultSchemaLang();
-		return schemaLang;
-	}
 
+    public boolean isDoValidation() {
+        return doValidation;
+    }
 
-	public void setSchemaLang(String schemaLang) {
-		this.schemaLang = schemaLang;
-	}
 
+    public void setDoValidation(boolean doValidation) {
+        this.doValidation = doValidation;
+    }
 
-	public String getUplSchemaFileName() {
-		return uplSchemaFileName;
-	}
 
+    public String getSchemaLang() {
+        if(schemaLang==null) schemaLang=getDefaultSchemaLang();
+        return schemaLang;
+    }
 
-	public void setUplSchemaFileName(String uplSchemaFile) {
-		this.uplSchemaFileName = uplSchemaFile;
-	}
-	
-	public boolean isExpired () {
-		Date expDate = getExpireDate();
-		Date now = new Date();
-		return expDate != null && expDate.before(now);
-	}
+
+    public void setSchemaLang(String schemaLang) {
+        this.schemaLang = schemaLang;
+    }
+
+
+    public String getUplSchemaFileName() {
+        return uplSchemaFileName;
+    }
+
+
+    public void setUplSchemaFileName(String uplSchemaFile) {
+        this.uplSchemaFileName = uplSchemaFile;
+    }
+
+    public boolean isExpired () {
+        Date expDate = getExpireDate();
+        Date now = new Date();
+        return expDate != null && expDate.before(now);
+    }
 }

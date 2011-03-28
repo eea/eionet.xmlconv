@@ -27,50 +27,50 @@ import eionet.gdem.services.LoggerIF;
 
 public class CRConversionFormAction extends Action {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
-	public ActionForward execute(ActionMapping actionMapping,
-			ActionForm actionForm, HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse) {
-		ActionErrors errors = new ActionErrors();
-		
-		//get the schemas list from the session
-		Object schemasInSession = httpServletRequest.getSession().getAttribute(
-		"conversion.schemas");
+    public ActionForward execute(ActionMapping actionMapping,
+            ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
+        ActionErrors errors = new ActionErrors();
 
-		//reset the form in the session
-		ConversionForm cForm = (ConversionForm) actionForm;
-		cForm.resetAll(actionMapping, httpServletRequest);
+        //get the schemas list from the session
+        Object schemasInSession = httpServletRequest.getSession().getAttribute(
+        "conversion.schemas");
 
-		try {
-			//if schemas list is not stored in the session, then load it from the database
-			if (schemasInSession == null
-					|| ((ArrayList) schemasInSession).size() == 0) {
-				schemasInSession = loadSchemas();
-				httpServletRequest.getSession().setAttribute(
-						"conversion.schemas", schemasInSession);
-			}
-		} catch (DCMException e) {
-			e.printStackTrace();
-			_logger.error("Serach CR Conversions error", e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e
-					.getErrorCode()));
-			saveMessages(httpServletRequest, errors);
-		}
+        //reset the form in the session
+        ConversionForm cForm = (ConversionForm) actionForm;
+        cForm.resetAll(actionMapping, httpServletRequest);
 
-		saveErrors(httpServletRequest, errors);
-		return actionMapping.findForward("success");
-	}
-	/**
-	 * load schemas form db
-	 * @return
-	 * @throws DCMException
-	 */
-	private ArrayList loadSchemas() throws DCMException {
+        try {
+            //if schemas list is not stored in the session, then load it from the database
+            if (schemasInSession == null
+                    || ((ArrayList) schemasInSession).size() == 0) {
+                schemasInSession = loadSchemas();
+                httpServletRequest.getSession().setAttribute(
+                        "conversion.schemas", schemasInSession);
+            }
+        } catch (DCMException e) {
+            e.printStackTrace();
+            _logger.error("Serach CR Conversions error", e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e
+                    .getErrorCode()));
+            saveMessages(httpServletRequest, errors);
+        }
 
-		ArrayList schemas = null;
-		SchemaManager sm = new SchemaManager();
-		schemas = sm.getSchemas();
-		return schemas;
-	}
+        saveErrors(httpServletRequest, errors);
+        return actionMapping.findForward("success");
+    }
+    /**
+     * load schemas form db
+     * @return
+     * @throws DCMException
+     */
+    private ArrayList loadSchemas() throws DCMException {
+
+        ArrayList schemas = null;
+        SchemaManager sm = new SchemaManager();
+        schemas = sm.getSchemas();
+        return schemas;
+    }
 }

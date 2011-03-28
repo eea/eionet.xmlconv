@@ -25,7 +25,7 @@ package eionet.gdem.conversion.excel.writer;
 
 /**
  * Defines XML tag names and attributes used in intermediate XML file.<BR><BR>
- * ExcelXML is implementing a small part of  OpenOffice XML 
+ * ExcelXML is implementing a small part of  OpenOffice XML
  * @author  Enriko Käsper
  */
 
@@ -150,5 +150,5 @@ public interface ExcelXMLTags {
  * Font family attribute - <CODE>&lt;fo:font-family='&apos;Luxi Sans&apos;'&gt;</CODE>
  */
    public static final String FONT_FAMILY_ATTR = "fo:font-family";
-   
+
 }

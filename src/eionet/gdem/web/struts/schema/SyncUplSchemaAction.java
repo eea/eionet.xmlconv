@@ -3,18 +3,18 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is XMLCONV.
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency.  Portions created by Tieto Eesti are Copyright
  * (C) European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributor(s):
  * Enriko Käsper, Tieto Estonia
  */
@@ -41,48 +41,48 @@ import eionet.gdem.services.LoggerIF;
  * SyncUplSchemaAction
  */
 
-	public class SyncUplSchemaAction extends Action {
+    public class SyncUplSchemaAction extends Action {
 
-		private static LoggerIF _logger = GDEMServices.getLogger();
+        private static LoggerIF _logger = GDEMServices.getLogger();
 
 
-		public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-	
+        public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-			ActionMessages errors = new ActionMessages();
-			ActionMessages messages = new ActionMessages();
 
-			SyncUplSchemaForm form = (SyncUplSchemaForm) actionForm;
-			
-			String schemaId = form.getSchemaId();
-			String schemaFile = form.getUplSchemaFileName();
-			String schemaUrl = form.getSchemaUrl();
-			String uplSchemaId = form.getUplSchemaId();
-			
-			httpServletRequest.setAttribute("schemaId", schemaId);
-			String user_name = (String) httpServletRequest.getSession().getAttribute("user");
+            ActionMessages errors = new ActionMessages();
+            ActionMessages messages = new ActionMessages();
 
-			if (isCancelled(httpServletRequest)) {
-				return actionMapping.findForward("success");
-			}
+            SyncUplSchemaForm form = (SyncUplSchemaForm) actionForm;
 
-			try {
-				SchemaManager sm = new SchemaManager();
-				sm.storeRemoteSchema(user_name, schemaUrl, schemaFile, schemaId, uplSchemaId);
+            String schemaId = form.getSchemaId();
+            String schemaFile = form.getUplSchemaFileName();
+            String schemaUrl = form.getSchemaUrl();
+            String uplSchemaId = form.getUplSchemaId();
 
-				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.cached"));
+            httpServletRequest.setAttribute("schemaId", schemaId);
+            String user_name = (String) httpServletRequest.getSession().getAttribute("user");
 
-			} catch (DCMException e) {
-				//e.printStackTrace();
-				_logger.error("Unable to sync local schema",e);
-				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-			}
-			saveMessages(httpServletRequest.getSession(),messages);
-			saveErrors(httpServletRequest.getSession(),errors);
+            if (isCancelled(httpServletRequest)) {
+                return actionMapping.findForward("success");
+            }
 
-			//saveMessages(httpServletRequest,messages);
-			//saveErrors(httpServletRequest,errors);
-			
-			return actionMapping.findForward("success");
-		}
-	}
+            try {
+                SchemaManager sm = new SchemaManager();
+                sm.storeRemoteSchema(user_name, schemaUrl, schemaFile, schemaId, uplSchemaId);
+
+                messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.cached"));
+
+            } catch (DCMException e) {
+                //e.printStackTrace();
+                _logger.error("Unable to sync local schema",e);
+                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+            }
+            saveMessages(httpServletRequest.getSession(),messages);
+            saveErrors(httpServletRequest.getSession(),errors);
+
+            //saveMessages(httpServletRequest,messages);
+            //saveErrors(httpServletRequest,errors);
+
+            return actionMapping.findForward("success");
+        }
+    }

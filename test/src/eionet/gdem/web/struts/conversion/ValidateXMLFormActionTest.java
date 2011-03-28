@@ -25,7 +25,7 @@ public class ValidateXMLFormActionTest   extends MockStrutsTestCase {
         super.setUp();
         setConfigFile(TestUtils.getStrutsConfigLocation());
         setInitParameter("validating","false");
-        
+
         //setup database
         DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_CONVERSIONS_XML);
 
@@ -35,7 +35,7 @@ public class ValidateXMLFormActionTest   extends MockStrutsTestCase {
      * test if the form is successfully formwarding and stores the schemas list in session
      */
     public void testSuccessfulForward() {
-        
+
         setRequestPathInfo("/validateXMLForm");
         actionPerform();
         verifyForward("success");

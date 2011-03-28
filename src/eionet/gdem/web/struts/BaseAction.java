@@ -18,31 +18,31 @@ public class BaseAction extends Action {
     public static final String KEY_REQDTO = "dto";
 
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-    	return null;
+        return null;
     }
-    
+
     protected boolean checkPermission(HttpServletRequest request, String acl, String permission) throws Exception {
-    	String username=(String) request.getSession().getAttribute("user");
-    	boolean result = username!=null && SecurityUtil.hasPerm(username, "/" + acl, permission);
-    	return result;
+        String username=(String) request.getSession().getAttribute("user");
+        boolean result = username!=null && SecurityUtil.hasPerm(username, "/" + acl, permission);
+        return result;
     }
-    
+
     protected String processFormStr(String arg) {
-		String result=null;
-		if(arg!=null) {
-			if(!arg.trim().equalsIgnoreCase("")) {
-				result=arg.trim();
-			}
-		}
-		return result;
-	}
-    
-    
-    protected String translate(ActionMapping map, HttpServletRequest req, String key) {
-    	MessageResources msgRes=getMessageResources(map);
-    	return msgRes.getMessage(req.getLocale(), key);
+        String result=null;
+        if(arg!=null) {
+            if(!arg.trim().equalsIgnoreCase("")) {
+                result=arg.trim();
+            }
+        }
+        return result;
     }
-    
+
+
+    protected String translate(ActionMapping map, HttpServletRequest req, String key) {
+        MessageResources msgRes=getMessageResources(map);
+        return msgRes.getMessage(req.getLocale(), key);
+    }
+
     protected MessageResources getMessageResources(ActionMapping map) {
         MessageResourcesConfig mrc = map.getModuleConfig().findMessageResourcesConfig(Globals.MESSAGES_KEY);
         MessageResources msgRes = MessageResources.getMessageResources(mrc.getParameter());
@@ -50,7 +50,7 @@ public class BaseAction extends Action {
         return msgRes;
     }
 
-    
-    
+
+
 
 }

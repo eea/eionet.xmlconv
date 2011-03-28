@@ -3,20 +3,20 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is Web Dashboards Service
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency (EEA).  Portions created by European Dynamics (ED) company are
  * Copyright (C) by European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributors(s):
- *    Original code: Istvan Alfeldi (ED) 
+ *    Original code: Istvan Alfeldi (ED)
  */
 
 package eionet.gdem.web.struts.schema;
@@ -41,62 +41,62 @@ import eionet.gdem.services.LoggerIF;
 
 public class EditSchemaAction extends Action {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-		ActionMessages errors = new ActionMessages();
-		ActionMessages messages = new ActionMessages();
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        ActionMessages errors = new ActionMessages();
+        ActionMessages messages = new ActionMessages();
 
-		SchemaElemForm form = (SchemaElemForm) actionForm;
-		String schemaId = form.getSchemaId();
-		String schema = form.getSchema();
-		String description = form.getDescription();
-		String dtdId = form.getDtdId();
-		String schemaLang = form.getSchemaLang();
-		boolean doValidation = form.isDoValidation();
-		Date expireDate = form.getExpireDateObj();
+        SchemaElemForm form = (SchemaElemForm) actionForm;
+        String schemaId = form.getSchemaId();
+        String schema = form.getSchema();
+        String description = form.getDescription();
+        String dtdId = form.getDtdId();
+        String schemaLang = form.getSchemaLang();
+        boolean doValidation = form.isDoValidation();
+        Date expireDate = form.getExpireDateObj();
 
-		if (isCancelled(httpServletRequest)) {
-			try {
-				SchemaManager sm = new SchemaManager();
-				Schema sch = sm.getSchema(schemaId);
-				httpServletRequest.setAttribute("schema", sch.getSchema());
-				return actionMapping.findForward("back");
-			} catch (DCMException e) {
-				e.printStackTrace();
-				_logger.error("Error editing schema",e);
-				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-			}
-		}
-		errors =form.validate(actionMapping, httpServletRequest);
-		if(errors.size()>0){
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward("fail");			
-		}
-		if (schema == null || schema.equals("")) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.validation"));
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward("success");
-		}
-		
-		
-		String user = (String) httpServletRequest.getSession().getAttribute("user");
+        if (isCancelled(httpServletRequest)) {
+            try {
+                SchemaManager sm = new SchemaManager();
+                Schema sch = sm.getSchema(schemaId);
+                httpServletRequest.setAttribute("schema", sch.getSchema());
+                return actionMapping.findForward("back");
+            } catch (DCMException e) {
+                e.printStackTrace();
+                _logger.error("Error editing schema",e);
+                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+            }
+        }
+        errors =form.validate(actionMapping, httpServletRequest);
+        if(errors.size()>0){
+            httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+            return actionMapping.findForward("fail");
+        }
+        if (schema == null || schema.equals("")) {
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.validation"));
+            httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+            return actionMapping.findForward("success");
+        }
 
-		try {
-			SchemaManager sm = new SchemaManager();
-			sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdId, expireDate);
-		
-			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.updated"));
-			httpServletRequest.setAttribute("schema", schema);
-		} catch (DCMException e) {
-			e.printStackTrace();
-			_logger.error("Error editing schema",e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-		}
-		httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
 
-		return actionMapping.findForward("success");
-	}
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
+
+        try {
+            SchemaManager sm = new SchemaManager();
+            sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdId, expireDate);
+
+            messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.updated"));
+            httpServletRequest.setAttribute("schema", schema);
+        } catch (DCMException e) {
+            e.printStackTrace();
+            _logger.error("Error editing schema",e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+        }
+        httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+        httpServletRequest.getSession().setAttribute("dcm.messages", messages);
+
+        return actionMapping.findForward("success");
+    }
 }

@@ -15,41 +15,41 @@ import eionet.gdem.utils.Utils;
 
 public class LocalEntityResolver implements EntityResolver {
 
-	private String localSystemId = null;
-	private String localId = null;
+    private String localSystemId = null;
+    private String localId = null;
 
-	public LocalEntityResolver(String _localSystemId, String _localId){
-		localSystemId=_localSystemId;
-		localId=_localId;
-	}
+    public LocalEntityResolver(String _localSystemId, String _localId){
+        localSystemId=_localSystemId;
+        localId=_localId;
+    }
 
-	public InputSource resolveEntity(String publicId, String systemId) {
+    public InputSource resolveEntity(String publicId, String systemId) {
 
 
-		if (!Utils.isNullStr(getLocalId()) && !Utils.isNullStr(getLocalSystemId()) && systemId.equals(getLocalSystemId())) {
-			return new InputSource(getLocalId());
-		} 
-		else {
-			// use the default behaviour
-			return null;
-		}
+        if (!Utils.isNullStr(getLocalId()) && !Utils.isNullStr(getLocalSystemId()) && systemId.equals(getLocalSystemId())) {
+            return new InputSource(getLocalId());
+        }
+        else {
+            // use the default behaviour
+            return null;
+        }
 
-	}
+    }
 
-	public String getLocalSystemId() {
-		return localSystemId;
-	}
+    public String getLocalSystemId() {
+        return localSystemId;
+    }
 
-	public void setLocalSystemId(String localSystemId) {
-		this.localSystemId = localSystemId;
-	}
+    public void setLocalSystemId(String localSystemId) {
+        this.localSystemId = localSystemId;
+    }
 
-	public String getLocalId() {
-		return localId;
-	}
+    public String getLocalId() {
+        return localId;
+    }
 
-	public void setLocalId(String localId) {
-		this.localId = localId;
-	}
+    public void setLocalId(String localId) {
+        this.localId = localId;
+    }
 
 }

@@ -9,25 +9,25 @@
     <xsl:template match="/">
       <table cellpadding="0" cellspacing="0" border="0">
                 <xsl:choose>
-                	<xsl:when test="$cellclick='true'">
-          				<xsl:attribute name="id">temp</xsl:attribute>
-          				<xsl:attribute name="width">95%</xsl:attribute>
-          				<xsl:attribute name="align">center</xsl:attribute>
-          			</xsl:when>
-          			<xsl:otherwise>
-          				<xsl:attribute name="width">100%</xsl:attribute>
-          			</xsl:otherwise>
-          			
-          		</xsl:choose>
-      		  <xsl:for-each select="ui-templates/template[@id=$templateselect]/row">
-           
+                    <xsl:when test="$cellclick='true'">
+                          <xsl:attribute name="id">temp</xsl:attribute>
+                          <xsl:attribute name="width">95%</xsl:attribute>
+                          <xsl:attribute name="align">center</xsl:attribute>
+                      </xsl:when>
+                      <xsl:otherwise>
+                          <xsl:attribute name="width">100%</xsl:attribute>
+                      </xsl:otherwise>
+
+                  </xsl:choose>
+                <xsl:for-each select="ui-templates/template[@id=$templateselect]/row">
+
                 <tr>
                    <xsl:for-each select="cell">
                         <td>
                             <xsl:if test="$cellclick='true' ">
                             <xsl:attribute name="onclick"><xsl:value-of select="$cellclickJS"/></xsl:attribute>
                             </xsl:if>
-                                
+
                                 <xsl:attribute name="style">
                                 <xsl:for-each select="style/*">
                                     <xsl:value-of select="name(.)"/>
@@ -71,7 +71,7 @@
                             </xsl:if>
                             <xsl:if test="@type='Text'">
                                 <xsl:value-of select="content"/>
-                                
+
                             </xsl:if>
                             <xsl:if test="@type='blank'">
                                 <xsl:if test="$cellclick='true'"><xsl:text>EMPTY CELL!!!</xsl:text></xsl:if>
@@ -79,7 +79,7 @@
                         </td>
                     </xsl:for-each>
                 </tr>
-            
+
         </xsl:for-each>
         </table>
     </xsl:template>

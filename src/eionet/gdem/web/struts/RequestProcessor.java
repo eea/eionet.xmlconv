@@ -3,20 +3,20 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is Web Dashboards Service
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency (EEA).  Portions created by European Dynamics (ED) company are
  * Copyright (C) by European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributors(s):
- *    Original code: Istvan Alfeldi (ED) 
+ *    Original code: Istvan Alfeldi (ED)
  */
 
 package eionet.gdem.web.struts;
@@ -30,33 +30,33 @@ import org.apache.struts.tiles.TilesRequestProcessor;
 public class RequestProcessor extends TilesRequestProcessor {
 
 
-	public RequestProcessor() {
-		super();
-	}
+    public RequestProcessor() {
+        super();
+    }
 
 
-	/**
-	 * Preprocess every action that is called from struts framework
-	 * 
-	 */
-	public boolean processPreprocess(HttpServletRequest request, HttpServletResponse response) {
-		request.setAttribute("servletPath", request.getServletPath());
+    /**
+     * Preprocess every action that is called from struts framework
+     *
+     */
+    public boolean processPreprocess(HttpServletRequest request, HttpServletResponse response) {
+        request.setAttribute("servletPath", request.getServletPath());
 
-		// Remove messages from session and add to page context
-		ActionMessages errors = (ActionMessages) request.getSession().getAttribute("dcm.errors");
-		if (errors != null) {
-			request.getSession().setAttribute("dcm.errors", null);
-			if (!errors.isEmpty()) {
-				request.setAttribute("dcm.errors", errors);
-			}
-		}
-		ActionMessages messages = (ActionMessages) request.getSession().getAttribute("dcm.messages");
-		if (messages != null) {
-			request.getSession().setAttribute("dcm.messages", null);
-			if (!messages.isEmpty()) request.setAttribute("dcm.messages", messages);
-		}
-		return true;
-	}
+        // Remove messages from session and add to page context
+        ActionMessages errors = (ActionMessages) request.getSession().getAttribute("dcm.errors");
+        if (errors != null) {
+            request.getSession().setAttribute("dcm.errors", null);
+            if (!errors.isEmpty()) {
+                request.setAttribute("dcm.errors", errors);
+            }
+        }
+        ActionMessages messages = (ActionMessages) request.getSession().getAttribute("dcm.messages");
+        if (messages != null) {
+            request.getSession().setAttribute("dcm.messages", null);
+            if (!messages.isEmpty()) request.setAttribute("dcm.messages", messages);
+        }
+        return true;
+    }
 
 
 //	protected ActionForward processActionPerform(HttpServletRequest request, HttpServletResponse response, Action action, ActionForm form, ActionMapping mapping) throws IOException, ServletException {
@@ -72,8 +72,8 @@ public class RequestProcessor extends TilesRequestProcessor {
 //			response.sendRedirect("/do/login");
 //		}
 //
-//		
-//		
+//
+//
 //		return super.processActionPerform(request, response, action, form, mapping);
 //	}
 //

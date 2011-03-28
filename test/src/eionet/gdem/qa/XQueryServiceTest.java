@@ -22,110 +22,110 @@ import eionet.gdem.test.TestUtils;
  */
 
 public class XQueryServiceTest  extends DBTestCase{
-	 private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
-	 
-	 /**
-	 * Provide a connection to the database.
-	 */
-	public XQueryServiceTest(String name)
-	{
-		super( name );
-		DbHelper.setUpConnectionProperties();
-	}
-	/**
-	 * Set up test case properties
-	 */
-	protected void setUp()throws Exception{
-		try {
-		super.setUp();
-		TestUtils.setUpProperties(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		}
-	}
-	/**
-	 * Load the data which will be inserted for the test
-	 */
-	protected IDataSet getDataSet() throws Exception {
-		IDataSet loadedDataSet = new FlatXmlDataSet(
-				getClass().getClassLoader().getResourceAsStream(
-						TestConstants.SEED_DATASET_QA_XML));
-		return loadedDataSet;
-	}
-	/**
-	 * Tests that the added QA job contains the qa account data for QA engine
-	 */
-	public void testAnalyzeXMLProtectedFiles() throws Exception {
+     private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
 
-		XQueryService qs = new XQueryService();
+     /**
+     * Provide a connection to the database.
+     */
+    public XQueryServiceTest(String name)
+    {
+        super( name );
+        DbHelper.setUpConnectionProperties();
+    }
+    /**
+     * Set up test case properties
+     */
+    protected void setUp()throws Exception{
+        try {
+        super.setUp();
+        TestUtils.setUpProperties(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    /**
+     * Load the data which will be inserted for the test
+     */
+    protected IDataSet getDataSet() throws Exception {
+        IDataSet loadedDataSet = new FlatXmlDataSet(
+                getClass().getClassLoader().getResourceAsStream(
+                        TestConstants.SEED_DATASET_QA_XML));
+        return loadedDataSet;
+    }
+    /**
+     * Tests that the added QA job contains the qa account data for QA engine
+     */
+    public void testAnalyzeXMLProtectedFiles() throws Exception {
 
-		String schema ="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/habitats.xsd";
-		String fileName="http://cdr.eionet.europa.eu/test.xml";
-		Hashtable hash = new Hashtable();
-		Vector files = new Vector();
-		files.add(fileName);
-		hash.put(schema,files);
-		
-		Vector v = qs.analyzeXMLFiles(hash);
-		assertTrue(v.size()==1);
-		Vector v2 = (Vector)v.get(0);
-		String jobId = (String)v2.get(0);
-	
-		String jobdata[] = xqJobDao.getXQJobData(jobId);
-		String urlField = jobdata[0];
+        XQueryService qs = new XQueryService();
 
-		//check if url field containts ticket parameter
-		assertTrue(urlField.contains("getsource?ticket="));
-	}    	
-	
-	private void nothing() {
-		
-	}
-	public void testExpiredStyleSheetHTML() throws Exception {
-		XQueryService qs = new XQueryService();
-		
-		Vector queryResult = qs.runQAScript("http://localhost/notexist.xml", "51");
-	
-		String qyeryResultHtml = new String( (byte[]) queryResult.elementAt(1));
-		boolean ok = false;
-		
-		ok = qyeryResultHtml != null && qyeryResultHtml.startsWith("<html>") && qyeryResultHtml.endsWith("</html>");
+        String schema ="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/habitats.xsd";
+        String fileName="http://cdr.eionet.europa.eu/test.xml";
+        Hashtable hash = new Hashtable();
+        Vector files = new Vector();
+        files.add(fileName);
+        hash.put(schema,files);
+
+        Vector v = qs.analyzeXMLFiles(hash);
+        assertTrue(v.size()==1);
+        Vector v2 = (Vector)v.get(0);
+        String jobId = (String)v2.get(0);
+
+        String jobdata[] = xqJobDao.getXQJobData(jobId);
+        String urlField = jobdata[0];
+
+        //check if url field containts ticket parameter
+        assertTrue(urlField.contains("getsource?ticket="));
+    }
+
+    private void nothing() {
+
+    }
+    public void testExpiredStyleSheetHTML() throws Exception {
+        XQueryService qs = new XQueryService();
+
+        Vector queryResult = qs.runQAScript("http://localhost/notexist.xml", "51");
+
+        String qyeryResultHtml = new String( (byte[]) queryResult.elementAt(1));
+        boolean ok = false;
+
+        ok = qyeryResultHtml != null && qyeryResultHtml.startsWith("<html>") && qyeryResultHtml.endsWith("</html>");
 //		//must contain red warning <span class="warning">The stylesheet expired on 11.11.2010</span>
-		ok = ok && qyeryResultHtml.indexOf("<span style=\"color:red; font-size:110%\">The stylesheet expired on 11.11.2010</span>") != -1;
-		
-		assertTrue(ok);
-		
-	}
-	
-	public void testNotExpiredStyleSheetHtml() throws Exception {
-		XQueryService qs = new XQueryService();
-		
-		Vector queryResult = qs.runQAScript("http://localhost/notexist.xml", "52");
-	
-		String qyeryResultHtml = new String( (byte[]) queryResult.elementAt(1));
-		boolean ok = false;
-		
-		ok = qyeryResultHtml != null && qyeryResultHtml.startsWith("<html>") && qyeryResultHtml.endsWith("</html>");
-		//must NOT contain red warning <span class="warning">The stylesheet expired on 11.11.2010</span>
-		ok = ok && qyeryResultHtml.indexOf("The stylesheet expired") == -1;
-		
-		assertTrue(ok);
-		
-	}
-	public void testExpiredStyleSheetXml() throws Exception {
-		XQueryService qs = new XQueryService();
-		
-		Vector queryResult = qs.runQAScript("http://localhost/notexist.xml", "53");
-	
-		String qyeryResultXml = new String( (byte[]) queryResult.elementAt(1));
-		boolean ok = false;
-		
-		ok = qyeryResultXml != null && qyeryResultXml.startsWith("<?xml");
-		//must NOT contain red warning - it is XML 
-		ok = ok && qyeryResultXml.indexOf("The stylesheet expired") == -1;
-		
-		assertTrue(ok);
-		
-	}
+        ok = ok && qyeryResultHtml.indexOf("<span style=\"color:red; font-size:110%\">The stylesheet expired on 11.11.2010</span>") != -1;
+
+        assertTrue(ok);
+
+    }
+
+    public void testNotExpiredStyleSheetHtml() throws Exception {
+        XQueryService qs = new XQueryService();
+
+        Vector queryResult = qs.runQAScript("http://localhost/notexist.xml", "52");
+
+        String qyeryResultHtml = new String( (byte[]) queryResult.elementAt(1));
+        boolean ok = false;
+
+        ok = qyeryResultHtml != null && qyeryResultHtml.startsWith("<html>") && qyeryResultHtml.endsWith("</html>");
+        //must NOT contain red warning <span class="warning">The stylesheet expired on 11.11.2010</span>
+        ok = ok && qyeryResultHtml.indexOf("The stylesheet expired") == -1;
+
+        assertTrue(ok);
+
+    }
+    public void testExpiredStyleSheetXml() throws Exception {
+        XQueryService qs = new XQueryService();
+
+        Vector queryResult = qs.runQAScript("http://localhost/notexist.xml", "53");
+
+        String qyeryResultXml = new String( (byte[]) queryResult.elementAt(1));
+        boolean ok = false;
+
+        ok = qyeryResultXml != null && qyeryResultXml.startsWith("<?xml");
+        //must NOT contain red warning - it is XML
+        ok = ok && qyeryResultXml.indexOf("The stylesheet expired") == -1;
+
+        assertTrue(ok);
+
+    }
 }

@@ -1,191 +1,191 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Test Conversion methods</title>
-		<style type="text/css" media="screen">
-			fieldset{
-				margin: 2px;
-			}
-			legend{
-				font-weight:bold;
-				font-size: 12pt;
-				color: black;
-			}
-			.row{
-				display:block;
-				width:100%;
-			}
-			label{
-				width: 10em;
-				background-color: #f0f0f0;
-				vertical-align: top;
-				margin: 3px;
-				float: left;
-			}
-			input[type="text"], input[type="file"]{
-				width: 500px;
-				margin: 2px;
-			}
-			select{
-				margin: 2px;
-			}
-		</style>	
-		<script type="text/javascript">
-		//<!--
+    <head>
+        <title>Test Conversion methods</title>
+        <style type="text/css" media="screen">
+            fieldset{
+                margin: 2px;
+            }
+            legend{
+                font-weight:bold;
+                font-size: 12pt;
+                color: black;
+            }
+            .row{
+                display:block;
+                width:100%;
+            }
+            label{
+                width: 10em;
+                background-color: #f0f0f0;
+                vertical-align: top;
+                margin: 3px;
+                float: left;
+            }
+            input[type="text"], input[type="file"]{
+                width: 500px;
+                margin: 2px;
+            }
+            select{
+                margin: 2px;
+            }
+        </style>
+        <script type="text/javascript">
+        //<!--
 
-		Array.prototype.getUniqueValues = function () {
-			var hash = new Object();
-			for (j = 0; j < this.length; j++) {hash[this[j]] = true}
-			var array = new Array();
-			for (value in hash) {array.push(value)};
-				return array;
-		}
-		//load the full list of 
-		var xmlDoc;
-		function loadXML(xmlFile)
-		{
-			//IE
-			if( window.ActiveXObject && /Win/.test(navigator.userAgent) )  {
-				xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-				xmlDoc.async="false";
-				xmlDoc.onreadystatechange=verify; 
-			}
-			//FF
-			else if( document.implementation && document.implementation.createDocument )
-			{
-				xmlDoc=document.implementation.createDocument("","",null);
-				xmlDoc.async=false;
-				xmlDoc.onreadystatechange=verify; 
-			}
-			xmlDoc.load(xmlFile);
-			return xmlDoc;
-		}
-		function verify()
-		{
-			 // 0 Object is not initialized
-			 // 1 Loading object is loading data
-			 // 2 Loaded object has loaded data
-			 // 3 Data from object can be worked with
-			 // 4 Object completely initialized
-			 if (xmlDoc.readyState != 4)
-			 {
-			   return false;
-			 }
-		}
+        Array.prototype.getUniqueValues = function () {
+            var hash = new Object();
+            for (j = 0; j < this.length; j++) {hash[this[j]] = true}
+            var array = new Array();
+            for (value in hash) {array.push(value)};
+                return array;
+        }
+        //load the full list of
+        var xmlDoc;
+        function loadXML(xmlFile)
+        {
+            //IE
+            if( window.ActiveXObject && /Win/.test(navigator.userAgent) )  {
+                xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+                xmlDoc.async="false";
+                xmlDoc.onreadystatechange=verify;
+            }
+            //FF
+            else if( document.implementation && document.implementation.createDocument )
+            {
+                xmlDoc=document.implementation.createDocument("","",null);
+                xmlDoc.async=false;
+                xmlDoc.onreadystatechange=verify;
+            }
+            xmlDoc.load(xmlFile);
+            return xmlDoc;
+        }
+        function verify()
+        {
+             // 0 Object is not initialized
+             // 1 Loading object is loading data
+             // 2 Loaded object has loaded data
+             // 3 Data from object can be worked with
+             // 4 Object completely initialized
+             if (xmlDoc.readyState != 4)
+             {
+               return false;
+             }
+        }
 
-		function loadSchemas(){
-			xmlSchemas = loadXML(document.getElementById("server").value +  "/getXMLSchemas");
-			var selSchemas=document.getElementById("selectSchema");
-			var schemas = Array();
+        function loadSchemas(){
+            xmlSchemas = loadXML(document.getElementById("server").value +  "/getXMLSchemas");
+            var selSchemas=document.getElementById("selectSchema");
+            var schemas = Array();
 
-			//alert(xmlSchemas.getElementsByTagName("schema").length);
-			
-			var all_schemas = xmlSchemas.getElementsByTagName("schema");
-			for (var i=0;i<all_schemas.length;i++){
-				 schemas[i] = all_schemas[i].childNodes[0].nodeValue;
-			}
-			
-			for (var k=0;k<schemas.length;k++){
-				selSchemas.options[k+1] = new Option(schemas[k],schemas[k]);
-			}
-		}
-		function listConversions(){
-			cleanSelect("selectConversion");
-			xmlConversions = loadXML(document.getElementById("server").value +  "/listConversions?schema=" + document.getElementById("selectSchema").value);
-			var selConversion=document.getElementById("selectConversion");
+            //alert(xmlSchemas.getElementsByTagName("schema").length);
 
-			
-			var conversions = xmlConversions.getElementsByTagName("conversion");
-			//alert(conversions[1].getElementsByTagName("convert_id")[0].childNodes[0].nodeValue);
-			
-			for (var i=0;i<conversions.length;i++){
+            var all_schemas = xmlSchemas.getElementsByTagName("schema");
+            for (var i=0;i<all_schemas.length;i++){
+                 schemas[i] = all_schemas[i].childNodes[0].nodeValue;
+            }
 
-				 convert_id = getTextValue(conversions[i].getElementsByTagName("convert_id")[0]);
-				 type = getTextValue(conversions[i].getElementsByTagName("result_type")[0]);
-				 descr = getTextValue(conversions[i].getElementsByTagName("description")[0]);
-	 			 selConversion.options[i+1] = new Option(type + " - " + descr, convert_id);
-			}
-		}
-		function getTextValue(txtNode){
-			if(txtNode){
-				if(txtNode.childNodes.length>0){
-					return txtNode.childNodes[0].nodeValue;
-				}
-			}
-			return "";
-		}
-		function cleanSelect(selId){
-			var selectbox = document.getElementById(selId);
-			for(var i=selectbox.options.length-1;i>=0;i--){
-				selectbox.remove(i);
-			}
-		}
+            for (var k=0;k<schemas.length;k++){
+                selSchemas.options[k+1] = new Option(schemas[k],schemas[k]);
+            }
+        }
+        function listConversions(){
+            cleanSelect("selectConversion");
+            xmlConversions = loadXML(document.getElementById("server").value +  "/listConversions?schema=" + document.getElementById("selectSchema").value);
+            var selConversion=document.getElementById("selectConversion");
 
-		function getXMLSchemasXML(){
-			document.location = document.getElementById("server").value +  "/getXMLSchemas";
-		}
-		function listConversionsXML(){
-			document.location = document.getElementById("server").value +  "/listConversions?schema=" + document.getElementById("selectSchema").value;
-		}
-		function setConversionId(){
-			var selectedConversion=document.getElementById("selectConversion").value;
-			var inpObjects = document.getElementsByTagName("input");
-			for (var i=0; i < inpObjects.length;i++){
-				var name = inpObjects[i].getAttribute("name");
-				if(name=="convert_id"){
-					inpObjects[i].value=selectedConversion;
-				}
-			}
-		}
-		function init() {
-			//loadSchemas();
-		}
-		window.onload = init;		
-		//-->
-		</script>
-	</head>
-	<body>
-		<h1>Test XMLCONV conversion methods - HTML + JavaScript</h1>
-		<form action="api/listConversions" method="get">
-			<fieldset>
-				<legend>1. "listConversions" method - search for available conversions</legend>
-				<div class="row" style="display:none">
-					<label for="server">Server URL:</label><input type="text" id="server" name="server" value="api"/>
-				</div>
-				<div class="row">
-					<label for="selectSchema">Select XML Schema:</label><select id="selectSchema" name="schema"><option/></select>
-					<input type="button" onclick="loadSchemas()" value="getXMLSchemas"/>
-					<input type="button" onclick="getXMLSchemasXML()" value="show getXMLSchemas XML"/>
-				</div>
-				<div class="row">
-					<label for="selectConversion">Select conversion:</label><select id="selectConversion" name="conversionId" onchange="setConversionId()"><option/></select>
-					<input type="button" onclick="listConversions()" value="listConversions"/>
-					<input type="button" onclick="listConversionsXML()" value="show listConversions XML"/>
-				</div>
-			</fieldset>
-		</form>
 
-		<form name="convert" action="http://localhost:8080/xmlconv/api/convert" method="post">
-			<fieldset>
-				<legend>2. "convert" method - insert the URL of XML file and execute the conversion</legend>
-				<label for="url">URL of XML file:</label><input type="text" id="url" name="url"/>
-				<br/>
-				<label for="convert_id">Conversion ID:</label><input type="text" id="convert_id1" name="convert_id"/>
-				<br/>
-				<input type="submit" value="Convert">
-			</fieldset>
-		</form>
+            var conversions = xmlConversions.getElementsByTagName("conversion");
+            //alert(conversions[1].getElementsByTagName("convert_id")[0].childNodes[0].nodeValue);
 
-		<form name="convertPush" method="post" enctype="multipart/form-data" action="http://localhost:8080/xmlconv/api/convertPush">
-			<fieldset>
-				<legend>3. "convertPush" method - upload the XML (or zipped XML) file from local machine and execute the conversion</legend>
-				<label for="convert_file">Upload XML file:</label><input type="file" id="convert_file" name="convert_file"/>
-				<br/>
-				<label for="convert_id">Conversion ID:</label><input type="text" id="convert_id2" name="convert_id"/>
-				<br/>
-				<input type="submit" value="Convert">
-			</fieldset>
-		</form>
+            for (var i=0;i<conversions.length;i++){
+
+                 convert_id = getTextValue(conversions[i].getElementsByTagName("convert_id")[0]);
+                 type = getTextValue(conversions[i].getElementsByTagName("result_type")[0]);
+                 descr = getTextValue(conversions[i].getElementsByTagName("description")[0]);
+                  selConversion.options[i+1] = new Option(type + " - " + descr, convert_id);
+            }
+        }
+        function getTextValue(txtNode){
+            if(txtNode){
+                if(txtNode.childNodes.length>0){
+                    return txtNode.childNodes[0].nodeValue;
+                }
+            }
+            return "";
+        }
+        function cleanSelect(selId){
+            var selectbox = document.getElementById(selId);
+            for(var i=selectbox.options.length-1;i>=0;i--){
+                selectbox.remove(i);
+            }
+        }
+
+        function getXMLSchemasXML(){
+            document.location = document.getElementById("server").value +  "/getXMLSchemas";
+        }
+        function listConversionsXML(){
+            document.location = document.getElementById("server").value +  "/listConversions?schema=" + document.getElementById("selectSchema").value;
+        }
+        function setConversionId(){
+            var selectedConversion=document.getElementById("selectConversion").value;
+            var inpObjects = document.getElementsByTagName("input");
+            for (var i=0; i < inpObjects.length;i++){
+                var name = inpObjects[i].getAttribute("name");
+                if(name=="convert_id"){
+                    inpObjects[i].value=selectedConversion;
+                }
+            }
+        }
+        function init() {
+            //loadSchemas();
+        }
+        window.onload = init;
+        //-->
+        </script>
+    </head>
+    <body>
+        <h1>Test XMLCONV conversion methods - HTML + JavaScript</h1>
+        <form action="api/listConversions" method="get">
+            <fieldset>
+                <legend>1. "listConversions" method - search for available conversions</legend>
+                <div class="row" style="display:none">
+                    <label for="server">Server URL:</label><input type="text" id="server" name="server" value="api"/>
+                </div>
+                <div class="row">
+                    <label for="selectSchema">Select XML Schema:</label><select id="selectSchema" name="schema"><option/></select>
+                    <input type="button" onclick="loadSchemas()" value="getXMLSchemas"/>
+                    <input type="button" onclick="getXMLSchemasXML()" value="show getXMLSchemas XML"/>
+                </div>
+                <div class="row">
+                    <label for="selectConversion">Select conversion:</label><select id="selectConversion" name="conversionId" onchange="setConversionId()"><option/></select>
+                    <input type="button" onclick="listConversions()" value="listConversions"/>
+                    <input type="button" onclick="listConversionsXML()" value="show listConversions XML"/>
+                </div>
+            </fieldset>
+        </form>
+
+        <form name="convert" action="http://localhost:8080/xmlconv/api/convert" method="post">
+            <fieldset>
+                <legend>2. "convert" method - insert the URL of XML file and execute the conversion</legend>
+                <label for="url">URL of XML file:</label><input type="text" id="url" name="url"/>
+                <br/>
+                <label for="convert_id">Conversion ID:</label><input type="text" id="convert_id1" name="convert_id"/>
+                <br/>
+                <input type="submit" value="Convert">
+            </fieldset>
+        </form>
+
+        <form name="convertPush" method="post" enctype="multipart/form-data" action="http://localhost:8080/xmlconv/api/convertPush">
+            <fieldset>
+                <legend>3. "convertPush" method - upload the XML (or zipped XML) file from local machine and execute the conversion</legend>
+                <label for="convert_file">Upload XML file:</label><input type="file" id="convert_file" name="convert_file"/>
+                <br/>
+                <label for="convert_id">Conversion ID:</label><input type="text" id="convert_id2" name="convert_id"/>
+                <br/>
+                <input type="submit" value="Convert">
+            </fieldset>
+        </form>
 </body>
 </html>

@@ -7,16 +7,16 @@
 
 <html:xhtml/>
 
-	<ed:breadcrumbs-push label="XML Schema or DTD" level="2" />
+    <ed:breadcrumbs-push label="XML Schema or DTD" level="2" />
 
-   	<bean:define id="schemaURL" name="schemaForm" property="schema" />
-   	<bean:define id="id" name="schemaForm" property="schemaId" />
+       <bean:define id="schemaURL" name="schemaForm" property="schema" />
+       <bean:define id="id" name="schemaForm" property="schemaId" />
 
     <div id="tabbedmenu">
-    	
+
         <ul>
             <li id="currenttab">
-            	<span style="color: black; text-decoration: none;" title='<bean:message key="label.tab.title.schema"/>'><bean:message key="label.tab.title.schema" /></span>
+                <span style="color: black; text-decoration: none;" title='<bean:message key="label.tab.title.schema"/>'><bean:message key="label.tab.title.schema" /></span>
             </li>
             <li>
                 <html:link page="/do/schemaStylesheets?schema=${schemaURL}"   titleKey="label.tab.title.xsl" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
@@ -29,121 +29,120 @@
                 </html:link>
             </li>
         </ul>
-	</div>
+    </div>
 
 
-	    <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >				
-			<div id="operations">
-		  	<ul>
-		   		<li><a href="schemaElemForm?schemaId=<bean:write name="schemaForm" property="schemaId" />"><bean:message key="label.schema.edit.button" /></a></li>
-			</ul>
-			</div>
-		</logic:equal>
+        <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
+            <div id="operations">
+              <ul>
+                   <li><a href="schemaElemForm?schemaId=<bean:write name="schemaForm" property="schemaId" />"><bean:message key="label.schema.edit.button" /></a></li>
+            </ul>
+            </div>
+        </logic:equal>
 
-		<h1><bean:message key="label.schema.view"/></h1> 
+        <h1><bean:message key="label.schema.view"/></h1>
 
-		<%-- include Error display --%>
-		<tiles:insert definition="Error" />
+        <%-- include Error display --%>
+        <tiles:insert definition="Error" />
 
-		<fieldset><legend><bean:message key="label.schema.fldset.properties"/></legend>
-		  <table class="datatable">
+        <fieldset><legend><bean:message key="label.schema.fldset.properties"/></legend>
+          <table class="datatable">
            <col class="labelcol"/>
            <col class="entrycol"/>
-			<tr>
-				<th scope="row" class="scope-row"> 
-				        <bean:message key="label.schema.url"/>
-			     </th>
-			      <td align="left">
-						<a href="<bean:write name="schemaForm" property="schema" />" title="<bean:write name="schemaForm" property="schema" />">						
-							<bean:write name="schemaForm" property="schema" />
-						</a>&#160;		        	      		        	
-			      </td>
-			    </tr>
-			    <tr>
-					<th scope="row" class="scope-row"> 
-				        <bean:message key="label.schema.description"/>
-			      </th>
-			      <td align="left">
-					<bean:write name="schemaForm" property="description" />    		        
-			      </td>
-			    </tr>
-				<tr>
-					<th scope="row" class="scope-row"> 
-				        <bean:message key="label.schema.language"/>
-			      </th>
-			      <td>
-					<bean:write name="schemaForm" property="schemaLang" />
-			      </td>
-			    </tr>
-			    <tr>
-					<th scope="row" class="scope-row"> 
-				        <bean:message key="label.schema.dovalidation"/>
-				      </th>
-			      <td>
-						<bean:write name="schemaForm" property="doValidation" />
-			      </td>
-			    </tr>
-			    <tr>
-					<th scope="row" class="scope-row"> 
-				        <bean:message key="label.schema.expireDate"/>
-				      </th>
-			      <td>
-						<bean:write name="schemaForm" property="longExpireDate" />
-			      </td>
-			    </tr>
-			    <logic:equal value="true" name="schemaForm" property="dtd" >
-					<tr>
-						<th scope="row" class="scope-row"> 
-					        <bean:message key="label.elem.dtdid"/>
-				      </th>
-				      <td align="left">
-							<bean:write name="schemaForm" property="dtdId" />
-				      </td>
-				    </tr>
-			    </logic:equal>	
-				<tr>
-					<th scope="row" class="scope-row"> 
-				        <bean:message key="label.uplSchema.schemaFile"/>
-			      </th>
-			      <td>
-			      	<logic:notEmpty  name="schemaForm" property="uplSchemaFileName">
-						<a  href="<bean:write name="schemaForm" property="uplSchemaFileUrl" />" title="<bean:write name="schemaForm" property="uplSchemaFileUrl" />">						
-							<bean:write name="schemaForm" property="uplSchemaFileName" />
-						</a>&#160;		        	  		        
-						<logic:present name="schemaForm" property="lastModified">
-							&#160;&#160;(<bean:message key="label.lastmodified"/>: <bean:write property="lastModified" name="schemaForm"/>)
-						</logic:present>
-			      	</logic:notEmpty>
-				</td>
-				</tr>
-		  </table>
-		</fieldset>
-		<logic:equal name="schema.rootElements" scope="session" property="rootElemsPresent" value="true">
-			<fieldset><legend><bean:message key="label.schema.fldset.rootelems"/></legend>
-			    
-			  <table class="datatable" width="80%">
-				  <thead>
-					<tr>
-						<th scope="col"><span title="Element name"><bean:message key="label.schema.table.element"/></span></th>
-						<th scope="col"><span title="Namespace"><bean:message key="label.schema.table.namespace"/></span></th>
-					</tr>			
-				   </thead>
-				   <tbody>
-						<logic:present name="rootElem"  name="schema.rootElements" scope="session" property="rootElem" >						
-							<logic:iterate indexId="index" id="elem" name="schema.rootElements" scope="session" property="rootElem" type="RootElem">								
-								<tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
-									<td>
-										<bean:write name="elem" property="name" />
-									</td>
-									<td>					
-										<bean:write name="elem" property="namespace" />					
-									</td>
-								</tr>
-							</logic:iterate>				
-						</logic:present>
-				   </tbody>
-				</table>
+            <tr>
+                <th scope="row" class="scope-row">
+                        <bean:message key="label.schema.url"/>
+                 </th>
+                  <td align="left">
+                        <a href="<bean:write name="schemaForm" property="schema" />" title="<bean:write name="schemaForm" property="schema" />">
+                            <bean:write name="schemaForm" property="schema" />
+                        </a>&#160;
+                  </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="scope-row">
+                        <bean:message key="label.schema.description"/>
+                  </th>
+                  <td align="left">
+                    <bean:write name="schemaForm" property="description" />
+                  </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="scope-row">
+                        <bean:message key="label.schema.language"/>
+                  </th>
+                  <td>
+                    <bean:write name="schemaForm" property="schemaLang" />
+                  </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="scope-row">
+                        <bean:message key="label.schema.dovalidation"/>
+                      </th>
+                  <td>
+                        <bean:write name="schemaForm" property="doValidation" />
+                  </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="scope-row">
+                        <bean:message key="label.schema.expireDate"/>
+                      </th>
+                  <td>
+                        <bean:write name="schemaForm" property="longExpireDate" />
+                  </td>
+                </tr>
+                <logic:equal value="true" name="schemaForm" property="dtd" >
+                    <tr>
+                        <th scope="row" class="scope-row">
+                            <bean:message key="label.elem.dtdid"/>
+                      </th>
+                      <td align="left">
+                            <bean:write name="schemaForm" property="dtdId" />
+                      </td>
+                    </tr>
+                </logic:equal>
+                <tr>
+                    <th scope="row" class="scope-row">
+                        <bean:message key="label.uplSchema.schemaFile"/>
+                  </th>
+                  <td>
+                      <logic:notEmpty  name="schemaForm" property="uplSchemaFileName">
+                        <a  href="<bean:write name="schemaForm" property="uplSchemaFileUrl" />" title="<bean:write name="schemaForm" property="uplSchemaFileUrl" />">
+                            <bean:write name="schemaForm" property="uplSchemaFileName" />
+                        </a>&#160;
+                        <logic:present name="schemaForm" property="lastModified">
+                            &#160;&#160;(<bean:message key="label.lastmodified"/>: <bean:write property="lastModified" name="schemaForm"/>)
+                        </logic:present>
+                      </logic:notEmpty>
+                </td>
+                </tr>
+          </table>
+        </fieldset>
+        <logic:equal name="schema.rootElements" scope="session" property="rootElemsPresent" value="true">
+            <fieldset><legend><bean:message key="label.schema.fldset.rootelems"/></legend>
 
-			</fieldset>
-		</logic:equal>
-		
+              <table class="datatable" width="80%">
+                  <thead>
+                    <tr>
+                        <th scope="col"><span title="Element name"><bean:message key="label.schema.table.element"/></span></th>
+                        <th scope="col"><span title="Namespace"><bean:message key="label.schema.table.namespace"/></span></th>
+                    </tr>
+                   </thead>
+                   <tbody>
+                        <logic:present name="rootElem"  name="schema.rootElements" scope="session" property="rootElem" >
+                            <logic:iterate indexId="index" id="elem" name="schema.rootElements" scope="session" property="rootElem" type="RootElem">
+                                <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
+                                    <td>
+                                        <bean:write name="elem" property="name" />
+                                    </td>
+                                    <td>
+                                        <bean:write name="elem" property="namespace" />
+                                    </td>
+                                </tr>
+                            </logic:iterate>
+                        </logic:present>
+                   </tbody>
+                </table>
+
+            </fieldset>
+        </logic:equal>

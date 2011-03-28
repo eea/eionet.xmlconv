@@ -19,35 +19,35 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
 /**
- * Action for deleting XML files from reporitory  
- * 
+ * Action for deleting XML files from reporitory
+ *
  * @author Enriko Käsper (TietoEnator)
  *
  */
 public class DeleteUplXmlFileAction extends Action {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-		ActionMessages errors = new ActionMessages();
-		ActionMessages messages = new ActionMessages();
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        ActionMessages errors = new ActionMessages();
+        ActionMessages messages = new ActionMessages();
 
-		String xmlfileId = (String) httpServletRequest.getParameter("xmlfileId");
-		String user_name = (String) httpServletRequest.getSession().getAttribute("user");
+        String xmlfileId = (String) httpServletRequest.getParameter("xmlfileId");
+        String user_name = (String) httpServletRequest.getSession().getAttribute("user");
 
-		try {
-			UplXmlFileManager fm = new UplXmlFileManager();
-			fm.deleteUplXmlFile(user_name, xmlfileId);
-			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplXmlFile.deleted"));
-		} catch (DCMException e) {
-			e.printStackTrace();
-			_logger.error("Error deleting XML file",e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-		}
-		httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
+        try {
+            UplXmlFileManager fm = new UplXmlFileManager();
+            fm.deleteUplXmlFile(user_name, xmlfileId);
+            messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplXmlFile.deleted"));
+        } catch (DCMException e) {
+            e.printStackTrace();
+            _logger.error("Error deleting XML file",e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+        }
+        httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+        httpServletRequest.getSession().setAttribute("dcm.messages", messages);
 
-		return actionMapping.findForward("success");
-	}
+        return actionMapping.findForward("success");
+    }
 }

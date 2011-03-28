@@ -3,20 +3,20 @@ package eionet.gdem.dcm.remote;
 
 public interface RemoteServiceIF {
 
-	public void setTicket(String _ticket);
+    public void setTicket(String _ticket);
 
-	public void setTrustedMode(boolean mode);
+    public void setTrustedMode(boolean mode);
 
-	public String getTicket();
+    public String getTicket();
 
-	public boolean isTrustedMode();
+    public boolean isTrustedMode();
 
-	public boolean isHTTPRequest();
+    public boolean isHTTPRequest();
 
-	/**
-	 * Assignes the HttpResponseWrapper into the method. 
-	 * The response is used to fulfill the outputstream by converion service.
-	 */
-	public void setHttpResponse(HttpMethodResponseWrapper httpResponse);
+    /**
+     * Assignes the HttpResponseWrapper into the method.
+     * The response is used to fulfill the outputstream by converion service.
+     */
+    public void setHttpResponse(HttpMethodResponseWrapper httpResponse);
 
 }

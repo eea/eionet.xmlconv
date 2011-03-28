@@ -33,61 +33,61 @@ public class RunScriptActionTest  extends MockStrutsTestCase {
      * test the QA sandbox permissions. Don't allow execute manually inserted scripts for non-authorized users
      */
     public void testRunScriptNoPermissions() {
-        
-    	setRequestPathInfo("/runScript");
-        
+
+        setRequestPathInfo("/runScript");
+
         addRequestParameter("schemaUrl","http://air-climate.eionet.europa.eu/schemas/dir199913ec/schema.xsd");
         addRequestParameter("sourceUrl","http://cdr.eionet.europa.eu/fi/euvocsol/envsfurdw/questionnaire_voc_solvents.xml");
         addRequestParameter("scriptType","xquery");
         addRequestParameter("scriptContent","xquery version \"1.0\" \n\r string(4)");
-        
+
         actionPerform();
         verifyForward("error");
-		String[] errorMess = {"label.autorization.qasandbox.execute"};
+        String[] errorMess = {"label.autorization.qasandbox.execute"};
         verifyActionErrors(errorMess);
-        
+
 
     }
     /**
      * test the QA sandbox permissions. Don't allow execute manually inserted scripts for non-authorized users
      */
     public void testRunScriptNoPermissions2() {
-        
-    	HttpSession session = request.getSession();
-    	session.setAttribute("user", TestConstants.TEST_USER);
 
-    	setRequestPathInfo("/runScript");
-        
+        HttpSession session = request.getSession();
+        session.setAttribute("user", TestConstants.TEST_USER);
+
+        setRequestPathInfo("/runScript");
+
         addRequestParameter("schemaUrl","http://air-climate.eionet.europa.eu/schemas/dir199913ec/schema.xsd");
         addRequestParameter("sourceUrl","http://cdr.eionet.europa.eu/fi/euvocsol/envsfurdw/questionnaire_voc_solvents.xml");
         addRequestParameter("scriptType","xquery");
         addRequestParameter("scriptContent","xquery version \"1.0\" \n\r string(4)");
-        
+
         actionPerform();
         verifyForward("error");
-		String[] errorMess = {"label.autorization.qasandbox.execute"};
+        String[] errorMess = {"label.autorization.qasandbox.execute"};
         verifyActionErrors(errorMess);
-        
+
 
     }
     /**
      * test the QA sandbox permissions. Don't allow execute manually inserted scripts for non-authorized users
      */
     public void testRunScriptSuccess() {
-        
-    	HttpSession session = request.getSession();
-    	session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
 
-    	setRequestPathInfo("/runScript");
-        
+        HttpSession session = request.getSession();
+        session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
+
+        setRequestPathInfo("/runScript");
+
         addRequestParameter("schemaUrl","http://air-climate.eionet.europa.eu/schemas/dir199913ec/schema.xsd");
         addRequestParameter("sourceUrl","http://cdr.eionet.europa.eu/fi/euvocsol/envsfurdw/questionnaire_voc_solvents.xml");
         addRequestParameter("scriptType","xquery");
         addRequestParameter("scriptContent","xquery version \"1.0\" \n\r string(4)");
-        
+
         actionPerform();
         verifyForward("success");
-        
+
         verifyNoActionErrors();
         verifyNoActionMessages();
     }

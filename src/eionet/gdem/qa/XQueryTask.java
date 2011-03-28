@@ -64,9 +64,9 @@ public class XQueryTask extends Thread implements Constants {
   private String _url; //source url for XML
 
 
-	private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
-	private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
-	private SchemaManager schemaManager;
+    private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
+    private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
+    private SchemaManager schemaManager;
 
 
   //int status;
@@ -93,7 +93,7 @@ public class XQueryTask extends Thread implements Constants {
   public void run() {
     try {
       if (_logger.enable(LoggerIF.INFO)){
-  			_logger.info("Job ID=  " + _jobId + " started getting source file.");
+              _logger.info("Job ID=  " + _jobId + " started getting source file.");
       }
 
 
@@ -114,7 +114,7 @@ public class XQueryTask extends Thread implements Constants {
           InputFile inputfile = new InputFile(_url);
           inputfile.setTrustedMode(true);
           srcFile=inputfile.saveSrcFile();
-      		//srcFile=Utils.saveSrcFile(_url);
+              //srcFile=Utils.saveSrcFile(_url);
 
           if(_logger.enable(_logger.DEBUG))
             _logger.debug("==== Source XML was stored to " + srcFile);
@@ -122,9 +122,9 @@ public class XQueryTask extends Thread implements Constants {
           changeFileJobsStatus(srcFile, XQ_DOWNLOADING_SRC);
         //if the URL is not responding, set the status to easy_err and try again in 2 hrs or smth...
         } catch (Exception e ) {
-  				handleError(e.toString(), true);
-    			return;
-      	}
+                  handleError(e.toString(), true);
+                return;
+          }
       }
       else{
         //The source file is stored already before
@@ -181,28 +181,28 @@ public class XQueryTask extends Thread implements Constants {
       String scriptType=null;
       Schema schema = null;
       boolean schemaExpired = false;
-      
+
       if (query!=null && query.containsKey("content_type")){
-			content_type = (String)query.get("content_type");
+            content_type = (String)query.get("content_type");
       }
       //get script type if it comes from T_QUERY table
       if (query!=null && query.containsKey("script_type")){
-    	  scriptType=(String)query.get("script_type");
+          scriptType=(String)query.get("script_type");
       }
-      
+
       //stylesheet - to check if it is expired
       if (query!=null && query.containsKey("xml_schema")){
-    	  //set schema if exists:
-    	  schema = getSchema((String)query.get("xml_schema"));
-    	  schemaExpired = (schema != null && schema.isExpired()) ; 
-    		  
+          //set schema if exists:
+          schema = getSchema((String)query.get("xml_schema"));
+          schemaExpired = (schema != null && schema.isExpired()) ;
+
       }
-      
+
         //get script type if it stored in filesystem and we have to guess it by file extension
       if(Utils.isNullStr(scriptType)){
-    	  scriptType = _scriptFile.endsWith(XQScript.SCRIPT_LANG_XSL) ? XQScript.SCRIPT_LANG_XSL:
-    		  				_scriptFile.endsWith(XQScript.SCRIPT_LANG_XGAWK) ? XQScript.SCRIPT_LANG_XGAWK:
-    		  					XQScript.SCRIPT_LANG_XQUERY;
+          scriptType = _scriptFile.endsWith(XQScript.SCRIPT_LANG_XSL) ? XQScript.SCRIPT_LANG_XSL:
+                              _scriptFile.endsWith(XQScript.SCRIPT_LANG_XGAWK) ? XQScript.SCRIPT_LANG_XGAWK:
+                                  XQScript.SCRIPT_LANG_XQUERY;
       }
       String[] xqParam={XQ_SOURCE_PARAM_NAME + "=" + srcFile};
 
@@ -217,43 +217,43 @@ public class XQueryTask extends Thread implements Constants {
         //String xqScript = Utils.readStrFromFile(_scriptFile);
 
         if (_logger.enable(LoggerIF.DEBUG)){
-        		_logger.debug("Script: \n" + _scriptFile );
+                _logger.debug("Script: \n" + _scriptFile );
         }
         XQScript xq = new XQScript(null, xqParam,content_type);
         xq.setScriptFileName(_scriptFile);
-		xq.setScriptType(scriptType);
-		xq.setSrcFileUrl(srcFile);
-		xq.setSchema(schema);
-		
+        xq.setScriptType(scriptType);
+        xq.setSrcFileUrl(srcFile);
+        xq.setSchema(schema);
+
         FileOutputStream out=null;
         Writer writer = null;
         //System.out.println("==>filename " + _resultFile);
         try{
-           
+
            //if result type is HTML and schema is expired parse result (add warning) before writing to file
            if (schemaExpired && content_type.equals(xq.SCRIPT_RESULTTYPE_HTML)) {
-        	   String res = xq.getResult();
-        	   
-        	   Utils.saveStrToFile(_resultFile, res, null);
+               String res = xq.getResult();
+
+               Utils.saveStrToFile(_resultFile, res, null);
            }
            else {
-        	   out = new FileOutputStream(new File(_resultFile));
-        	   xq.getResult(out);
+               out = new FileOutputStream(new File(_resultFile));
+               xq.getResult(out);
            }
         }
         catch(IOException ioe){
           throw new GDEMException(ioe.toString());
         }
         finally{
-        	if (out!=null){
-        		try{
-        			out.close();
-        		}
-        		catch(Exception e){
+            if (out!=null){
+                try{
+                    out.close();
+                }
+                catch(Exception e){
 
-        		}
-        	}
-        	
+                }
+            }
+
 //        	if (writer != null) {
 //        		writer.close();
 //        	}
@@ -277,7 +277,7 @@ public class XQueryTask extends Thread implements Constants {
 
       changeStatus(XQ_READY);
       if (_logger.enable(LoggerIF.INFO)){
-    	  _logger.info("Job ID=" + _jobId + " succeeded");
+          _logger.info("Job ID=" + _jobId + " succeeded");
       }
 
       //all done, thread stops here, job is waiting for pulling from the client side
@@ -320,31 +320,31 @@ public class XQueryTask extends Thread implements Constants {
     _logger.error("Error handling started: <<< " + error + " >>> ");
 
     try {
-			int err_status;
+            int err_status;
 
-			if (fatal){
-				err_status=XQ_FATAL_ERR;
-			}
-			else{
-				err_status=XQ_LIGHT_ERR;
-			}
+            if (fatal){
+                err_status=XQ_FATAL_ERR;
+            }
+            else{
+                err_status=XQ_LIGHT_ERR;
+            }
 
       changeStatus(err_status);
 
       //if result file already ok, store the error message in the file:
       if (_resultFile==null)
         _resultFile= Properties.tmpFolder + "gdem_error" + _jobId + ".txt";
-			//else
-			//	_resultFile= _resultFile.substring(0, _resultFile.lastIndexOf("."));
+            //else
+            //	_resultFile= _resultFile.substring(0, _resultFile.lastIndexOf("."));
 
       if (_logger.enable(LoggerIF.INFO)){
         _logger.info("******* The error message is stored to: " + _resultFile);
       }
-      
+
       if(error==null){
         error="No error message for job=" + _jobId;
       }
-      
+
       Utils.saveStrToFile(_resultFile, "<error>" + error + "</error>", null);
 
 
@@ -361,53 +361,53 @@ public class XQueryTask extends Thread implements Constants {
 
   private void changeStatus(int status) throws Exception {
     try {
-			xqJobDao.changeJobStatus(_jobId, status);
+            xqJobDao.changeJobStatus(_jobId, status);
 
     } catch (Exception e ) {
-    	_logger.error("Database exception when changing job status. " + e.toString());
-    	throw e;
+        _logger.error("Database exception when changing job status. " + e.toString());
+        throw e;
     }
   }
   private void changeFileJobsStatus(String savedFile, int status)  {
     try {
-			xqJobDao.changeFileJobsStatus(_url, savedFile, status);
+            xqJobDao.changeFileJobsStatus(_url, savedFile, status);
 
     } catch (Exception e ) {
       handleError(e.toString(), false);
     }
   }
-	/*
-	 * loads Query info from database
-	 */
-	private HashMap getQueryInfo(String id){
-		HashMap query = null;
-		if(id != null) {
-			try{
-				query = queryDao.getQueryInfo(id);
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-		}
-		return query;
-	}
+    /*
+     * loads Query info from database
+     */
+    private HashMap getQueryInfo(String id){
+        HashMap query = null;
+        if(id != null) {
+            try{
+                query = queryDao.getQueryInfo(id);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        return query;
+    }
 
-	private Schema getSchema(String schemaUrl) {
-		try {
-			if (schemaUrl != null) {
-				String schemaId = schemaManager.getSchemaId(schemaUrl);
-				if (schemaId != null) {
-					Schema schema = schemaManager.getSchema(schemaId);
-					return schema;
-				}
-			}
-		} catch (Exception e) {
-			_logger.error("getSchema() error : " + e.toString()); 
-		}
-		
-		
-		return null;
-		
-	}
+    private Schema getSchema(String schemaUrl) {
+        try {
+            if (schemaUrl != null) {
+                String schemaId = schemaManager.getSchemaId(schemaUrl);
+                if (schemaId != null) {
+                    Schema schema = schemaManager.getSchema(schemaId);
+                    return schema;
+                }
+            }
+        } catch (Exception e) {
+            _logger.error("getSchema() error : " + e.toString());
+        }
+
+
+        return null;
+
+    }
 
 }

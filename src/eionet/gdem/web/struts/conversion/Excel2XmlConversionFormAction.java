@@ -20,8 +20,8 @@ import eionet.gdem.services.LoggerIF;
  */
 
 public class Excel2XmlConversionFormAction extends Action {
-	private static LoggerIF _logger = GDEMServices.getLogger();
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-		return actionMapping.findForward("success");
-	}
+    private static LoggerIF _logger = GDEMServices.getLogger();
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        return actionMapping.findForward("success");
+    }
 }

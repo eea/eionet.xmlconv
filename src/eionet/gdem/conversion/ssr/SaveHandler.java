@@ -48,7 +48,7 @@ public class SaveHandler {
    static void handleWorkqueue(HttpServletRequest req, String action) {
       AppUser user = SecurityUtil.getUser(req, Names.USER_ATT);
       String user_name = null;
-	   if(user != null)
+       if(user != null)
          user_name = user.getUserName();
 
       if(action.equals(Names.WQ_DEL_ACTION)) {
@@ -69,33 +69,33 @@ public class SaveHandler {
 
          try {
             if(jobs.length>0){
-            	//delete also result files from file system tmp folder
-            	try{
-            		for (int i=0;i<jobs.length;i++){
-            			String jobData[] = GDEMServices.getDaoService().getXQJobDao().getXQJobData(jobs[i]);
-            			if(jobData==null || jobData.length<3)continue;
-            			String resultFile = jobData[2];
-            			try{
-            				Utils.deleteFile(resultFile);
-            			}
-                    	catch(Exception e){
-                    		_logger.error("Could not delete job result file: " + resultFile + "." + e.getMessage());
-                    	}	
-                    	//delete xquery files, if they are stored in tmp folder
-            			String xqFile = jobData[1];
-            			try{
-            				//Important!!!: delete only, when the file is stored in tmp folder 
-            				if(xqFile.startsWith(Properties.tmpFolder))
-            					Utils.deleteFile(xqFile);
-            			}
-                    	catch(Exception e){
-                    		_logger.error("Could not delete XQuery script file: " + xqFile + "." + e.getMessage());
-                    	}	
-            		}
-            	}
-            	catch(Exception e){
-            		_logger.error("Could not delete job result files!" + e.getMessage());
-            	}
+                //delete also result files from file system tmp folder
+                try{
+                    for (int i=0;i<jobs.length;i++){
+                        String jobData[] = GDEMServices.getDaoService().getXQJobDao().getXQJobData(jobs[i]);
+                        if(jobData==null || jobData.length<3)continue;
+                        String resultFile = jobData[2];
+                        try{
+                            Utils.deleteFile(resultFile);
+                        }
+                        catch(Exception e){
+                            _logger.error("Could not delete job result file: " + resultFile + "." + e.getMessage());
+                        }
+                        //delete xquery files, if they are stored in tmp folder
+                        String xqFile = jobData[1];
+                        try{
+                            //Important!!!: delete only, when the file is stored in tmp folder
+                            if(xqFile.startsWith(Properties.tmpFolder))
+                                Utils.deleteFile(xqFile);
+                        }
+                        catch(Exception e){
+                            _logger.error("Could not delete XQuery script file: " + xqFile + "." + e.getMessage());
+                        }
+                    }
+                }
+                catch(Exception e){
+                    _logger.error("Could not delete job result files!" + e.getMessage());
+                }
                 GDEMServices.getDaoService().getXQJobDao().endXQJobs(jobs);
             }
 

@@ -39,9 +39,9 @@ import eionet.gdem.dto.ValidateDto;
 public class ValidatorErrorHandler extends DefaultHandler {
   //private StringBuffer errContainer;
   //private StringBuffer htmlErrContainer;
-  
+
   private ArrayList errContainer;
-  
+
   public ValidatorErrorHandler(ArrayList errContainer) {
     this.errContainer=errContainer;
   }
@@ -52,26 +52,26 @@ public class ValidatorErrorHandler extends DefaultHandler {
   }
 
   public void error(SAXParseException ex) throws SAXException {
-    addError("ERROR", ex);    
+    addError("ERROR", ex);
   }
-  
+
   public void fatalError(SAXParseException ex) throws SAXException {
     //System.out.println("FATAL ERROR: " + ex.getMessage());
-    addError("FATAL ERROR", ex);    
+    addError("FATAL ERROR", ex);
   }
 
   private void addError(String type, SAXParseException ex) {
-	  ValidateDto val = new ValidateDto();
-	  val.setType(type);
-	  val.setDescription(ex.getMessage());
-	  val.setColumn(ex.getColumnNumber());
-	  val.setLine(ex.getLineNumber());
-	  
-	  errContainer.add(val);      
+      ValidateDto val = new ValidateDto();
+      val.setType(type);
+      val.setDescription(ex.getMessage());
+      val.setColumn(ex.getColumnNumber());
+      val.setLine(ex.getLineNumber());
+
+      errContainer.add(val);
   }
   public ArrayList getErrors(){
     return errContainer;
   }
 
-  
+
 }

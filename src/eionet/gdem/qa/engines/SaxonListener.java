@@ -37,10 +37,10 @@ public class SaxonListener extends StandardErrorListener {
   private StringBuffer _errBuf; //in this buffer we collect all the error messages
   private boolean _hasErrors=false;
   private LoggerIF _logger;
-  
+
 
   public SaxonListener()  {
-  	_logger= GDEMServices.getLogger();
+      _logger= GDEMServices.getLogger();
     _errBuf=new StringBuffer();
   }
 
@@ -62,20 +62,20 @@ public class SaxonListener extends StandardErrorListener {
                          "\n  " +
                          getExpandedMessage(exception);
 
-     _errBuf.append(message).append("\n");                         
+     _errBuf.append(message).append("\n");
       super.error(exception);
   }
-  
+
   public void warning(TransformerException exception)  throws TransformerException {
-  	_hasErrors=true;
+      _hasErrors=true;
      String message = "";
        if (exception.getLocator()!=null) {
             message = getLocationMessage(exception) + "\n  ";
         }
-        message += getExpandedMessage(exception);  
+        message += getExpandedMessage(exception);
 
      _errBuf.append(message).append("\n");
 
-      super.warning(exception);     
+      super.warning(exception);
   }
 }

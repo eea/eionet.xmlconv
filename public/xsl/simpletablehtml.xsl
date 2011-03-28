@@ -3,13 +3,13 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
 <xsl:template match="measurements">
-	<html>
-		<head>
-			<title>Freshwater quality</title>
-		</head>
-		<body>
-			<h2>Freshwater quality</h2>
-			<table border="1">
+    <html>
+        <head>
+            <title>Freshwater quality</title>
+        </head>
+        <body>
+            <h2>Freshwater quality</h2>
+            <table border="1">
 <tr>
 <th>Stnr</th>
 <th>Date</th>
@@ -32,24 +32,24 @@
 <th>Strep</th>
 <th>Salman</th>
 </tr>
-				<xsl:apply-templates select="measurement" />
-			</table>
-		</body>
-	</html>
+                <xsl:apply-templates select="measurement" />
+            </table>
+        </body>
+    </html>
 </xsl:template>
 
 <xsl:template match="measurement">
-	<tr>
-		<xsl:apply-templates />
-	</tr>
+    <tr>
+        <xsl:apply-templates />
+    </tr>
 </xsl:template>
 
 <xsl:template match="Stnr">
-	<th><xsl:value-of select="." /></th>
+    <th><xsl:value-of select="." /></th>
 </xsl:template>
 
 <xsl:template match="*">
-	<td><xsl:value-of select="@mod" /><xsl:value-of select="." /></td>
+    <td><xsl:value-of select="@mod" /><xsl:value-of select="." /></td>
 </xsl:template>
 
 </xsl:stylesheet>

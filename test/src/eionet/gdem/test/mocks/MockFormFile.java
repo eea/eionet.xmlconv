@@ -19,52 +19,52 @@ import org.apache.struts.upload.FormFile;
 
 public class MockFormFile implements FormFile {
 
-		private String fileName = null;
-		private String contentType = null;
-		private int fileSize=0;
-		private File file = null;
-		
-		public MockFormFile(String s)throws IOException{
-			file = new File(s);
-			fileName = file.getName();
-		}
-		public void destroy() {
-			// FIXME Auto-generated method stub
-		}
+        private String fileName = null;
+        private String contentType = null;
+        private int fileSize=0;
+        private File file = null;
 
-		public String getContentType() {
-			return contentType;
-		}
+        public MockFormFile(String s)throws IOException{
+            file = new File(s);
+            fileName = file.getName();
+        }
+        public void destroy() {
+            // FIXME Auto-generated method stub
+        }
 
-		public byte[] getFileData() throws FileNotFoundException, IOException {
-			return null;
-		}
+        public String getContentType() {
+            return contentType;
+        }
 
-		public String getFileName() {
-			return fileName;
-		}
+        public byte[] getFileData() throws FileNotFoundException, IOException {
+            return null;
+        }
 
-		public int getFileSize() {
-			return fileSize;
-		}
+        public String getFileName() {
+            return fileName;
+        }
 
-		public InputStream getInputStream() throws FileNotFoundException,
-				IOException {
-			FileInputStream fis = new FileInputStream(file);
-			return fis;
-		}
+        public int getFileSize() {
+            return fileSize;
+        }
 
-		public void setContentType(String s) {
-			contentType = s;
-			
-		}
+        public InputStream getInputStream() throws FileNotFoundException,
+                IOException {
+            FileInputStream fis = new FileInputStream(file);
+            return fis;
+        }
 
-		public void setFileName(String s) {
-			fileName = s;
-		}
+        public void setContentType(String s) {
+            contentType = s;
 
-		public void setFileSize(int i) {
-			fileSize = i;
-		}
-	}
+        }
+
+        public void setFileName(String s) {
+            fileName = s;
+        }
+
+        public void setFileSize(int i) {
+            fileSize = i;
+        }
+    }
 

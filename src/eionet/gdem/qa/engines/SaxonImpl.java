@@ -52,7 +52,7 @@ public class SaxonImpl extends QAScriptEngineStrategy {
   private static LoggerIF _logger = GDEMServices.getLogger();
   public SaxonImpl() {
   }
-  
+
   protected void runQuery(XQScript script, OutputStream result) throws GDEMException  {
 
     //Source sourceInput = null;
@@ -80,9 +80,9 @@ public class SaxonImpl extends QAScriptEngineStrategy {
     outputProps.setProperty(OutputKeys.ENCODING, DEFAULT_ENCODING);
     //if the output is html, then use method="xml" in output, otherwise, it's not valid xml
     if(getOutputType().equals(HTML_CONTENT_TYPE))
-    	outputProps.setProperty(OutputKeys.METHOD, XML_CONTENT_TYPE);
+        outputProps.setProperty(OutputKeys.METHOD, XML_CONTENT_TYPE);
     else
-    	outputProps.setProperty(OutputKeys.METHOD, getOutputType());
+        outputProps.setProperty(OutputKeys.METHOD, getOutputType());
     //add xml declaration only, if the output should be XML
     if(getOutputType().equals(XML_CONTENT_TYPE))
         outputProps.setProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
@@ -90,27 +90,27 @@ public class SaxonImpl extends QAScriptEngineStrategy {
         outputProps.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 
 //query script
-    
+
 //    staticEnv.setBaseURI(new File(script).toURI().toString());
     String xmlFilePathURI = Utils.getURIfromPath(eionet.gdem.Properties.xmlfileFolderPath,true);
-    
-    
+
+
     if(xmlFilePathURI!=null){
-   		staticEnv.setBaseURI(xmlFilePathURI);
+           staticEnv.setBaseURI(xmlFilePathURI);
     }
 
     Reader queryReader = null;
     String s = "";
 
     try {
-	    if(!Utils.isNullStr(script.getScriptSource()))
-	    	queryReader = new StringReader(script.getScriptSource());
-	    else if(!Utils.isNullStr(script.getScriptFileName()))
-	    	queryReader = new FileReader(script.getScriptFileName());
-	    else
-	    	throw new GDEMException("XQuery engine could not find script source or script file name!");
+        if(!Utils.isNullStr(script.getScriptSource()))
+            queryReader = new StringReader(script.getScriptSource());
+        else if(!Utils.isNullStr(script.getScriptFileName()))
+            queryReader = new FileReader(script.getScriptFileName());
+        else
+            throw new GDEMException("XQuery engine could not find script source or script file name!");
 
-	    //handle xq Parameters, extract from Saxon code
+        //handle xq Parameters, extract from Saxon code
       if (script.getParams()!=null)
         for (int p=0; p<script.getParams().length; p++) {
           String arg = script.getParams()[p];
@@ -144,7 +144,7 @@ public class SaxonImpl extends QAScriptEngineStrategy {
       }catch(net.sf.saxon.trans.XPathException e){
         throw e;
       }catch(java.io.IOException e){
-    	  throw e;
+          throw e;
         }
 
       try {
@@ -165,37 +165,37 @@ public class SaxonImpl extends QAScriptEngineStrategy {
   } catch (Exception e) {
     String errMsg = (listener.hasErrors() ? listener.getErrors() : e.toString());
     try{
-    	errMsg = parseErrors(errMsg,staticEnv);
+        errMsg = parseErrors(errMsg,staticEnv);
     }
     catch(Exception ex){
-    	_logger.error("Unable to parse exception string: " + ex.toString() );
+        _logger.error("Unable to parse exception string: " + ex.toString() );
     }
 
-  	_logger.error("==== CATCHED EXCEPTION " + errMsg );
+      _logger.error("==== CATCHED EXCEPTION " + errMsg );
     throw new GDEMException (errMsg);
     //listener.error(e);
   }
   finally {
-	  if(queryReader!=null){
-	        try {
-				queryReader.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-	  }
-		  
-		if (listener.hasErrors() || dynamicListener.hasErrors() ){
-			String errMsg = listener.getErrors() + dynamicListener.getErrors();
-			try{
-		    	errMsg = parseErrors(errMsg,staticEnv);
-		    }
-		    catch(Exception ex){
-		    	_logger.error("Unable to parse exception string: " + ex.toString() );
-		    }
-		  	_logger.error(errMsg);
-		    throw new GDEMException (errMsg);
-		}
-	}
+      if(queryReader!=null){
+            try {
+                queryReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+      }
+
+        if (listener.hasErrors() || dynamicListener.hasErrors() ){
+            String errMsg = listener.getErrors() + dynamicListener.getErrors();
+            try{
+                errMsg = parseErrors(errMsg,staticEnv);
+            }
+            catch(Exception ex){
+                _logger.error("Unable to parse exception string: " + ex.toString() );
+            }
+              _logger.error(errMsg);
+            throw new GDEMException (errMsg);
+        }
+    }
 //return s;
 }
 
@@ -203,16 +203,16 @@ public class SaxonImpl extends QAScriptEngineStrategy {
 //if the error messages contains staticEnv.baseURI, then remove it
 private String parseErrors(String err, StaticQueryContext staticEnv){
 
-	if(err==null) return null;
+    if(err==null) return null;
 
-	String search_base=Constants.TICKET_PARAM + "=";
-	String baseURI = (staticEnv==null)?null:staticEnv.getBaseURI();
+    String search_base=Constants.TICKET_PARAM + "=";
+    String baseURI = (staticEnv==null)?null:staticEnv.getBaseURI();
 
 
-	if (baseURI!= null && err.indexOf(baseURI)>0){
-		err = eionet.gdem.utils.Utils.Replace(err,baseURI,"xquery");
-	}
-	StringBuffer buf = new StringBuffer();
+    if (baseURI!= null && err.indexOf(baseURI)>0){
+        err = eionet.gdem.utils.Utils.Replace(err,baseURI,"xquery");
+    }
+    StringBuffer buf = new StringBuffer();
     int found = 0;
     int last=0;
 
@@ -220,9 +220,9 @@ private String parseErrors(String err, StaticQueryContext staticEnv){
         buf.append(err.substring(last, found));
         last = err.indexOf("&", found);
         if(last<0)
-      	  last = err.indexOf(" ", found);
+            last = err.indexOf(" ", found);
         if(last<0)
-      	  last = err.length()-1;
+            last = err.length()-1;
     }
     buf.append(err.substring(last));
 

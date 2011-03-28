@@ -14,43 +14,43 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
 <table width="100%">
 <tr>
 <td align="center">
-		<h1><bean:message key="label.login.message"/></h1>
-		
-		<%-- include Error display --%>
-		<tiles:insert definition="Error" />
+        <h1><bean:message key="label.login.message"/></h1>
 
-			<html:form action="login" method="post" focus="username">
-			  <table class="datatable" style="width:300px">
-				<col style="width:36%"/>
-				<col style="width:64%"/>
-			    <tr>
-					<th scope="row" class="scope-row">
-				        <bean:message key="label.login.username"/>:
-				      </th>
-			      <td>
-			        <html:text property="username" size="15"/>
-			      </td>
-			    </tr>
-			    <tr>
-					<th scope="row" class="scope-row">
-				        <bean:message key="label.login.password"/>:
-				      </th>
-			      <td>
-			        <html:password property="password" size="15"/>
-			      </td>
-			    </tr>
-			    <tr>
-			      <td colspan="3">&nbsp;</td>
-			    </tr>
-			    <tr>
-			      <td colspan="3" align="center">
-			        <html:submit styleClass="button">
-			        	<bean:message key="label.login.submit"/>
-			        </html:submit>        
-			      </td>
-			    </tr>
-			  </table>
-			</html:form>
+        <%-- include Error display --%>
+        <tiles:insert definition="Error" />
+
+            <html:form action="login" method="post" focus="username">
+              <table class="datatable" style="width:300px">
+                <col style="width:36%"/>
+                <col style="width:64%"/>
+                <tr>
+                    <th scope="row" class="scope-row">
+                        <bean:message key="label.login.username"/>:
+                      </th>
+                  <td>
+                    <html:text property="username" size="15"/>
+                  </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="scope-row">
+                        <bean:message key="label.login.password"/>:
+                      </th>
+                  <td>
+                    <html:password property="password" size="15"/>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td colspan="3" align="center">
+                    <html:submit styleClass="button">
+                        <bean:message key="label.login.submit"/>
+                    </html:submit>
+                  </td>
+                </tr>
+              </table>
+            </html:form>
 </td>
 </tr>
 </table>

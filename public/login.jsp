@@ -2,7 +2,7 @@
 <%@ page contentType="text/html" import="eionet.gdem.conversion.ssr.Names"%>
 <%
 
-	String err = (String)request.getAttribute(Names.ERROR_ATT);
+    String err = (String)request.getAttribute(Names.ERROR_ATT);
 
 %>
 
@@ -21,34 +21,34 @@
     </script>
 </head>
 <body bgcolor="#f0f0f0" onload="setFocus()">
-		<form name="f" action="main" method="post">
-			<input name="ACTION" type="hidden" value="<%=Names.LOGIN_ACTION%>" />
-			<% if (err!= null) { %>
-		  		<h4><%=err%></h4>
-			<% }
-			else{
-			%>
-				<br/><br/><br/><br/>
-			<% } %>
-			<table>
-				<tr>
-					<td width="200"></td><td><b>UserName:</b></td>
-					<td><input type="text" name="j_username" id="j_username" /></td>
-				</tr>
-				<tr>
-					<td width="200"></td><td><b>Password:</b></td><td><input type="password" name="j_passwd" /></td>
-				</tr>
-				<tr>
-					<td colspan="3"></td>
-				</tr>
-				<tr>
-					<td width="200"></td>
-					<td>
-						<input type="submit" name="ok_btn" value="  OK  " />
-					</td>
-					<td><input type="button" name="cancel_btn" value="  Cancel  " onclick="javascript:window.close()" /></td>
-				</tr>
-			</table>
-		</form>
+        <form name="f" action="main" method="post">
+            <input name="ACTION" type="hidden" value="<%=Names.LOGIN_ACTION%>" />
+            <% if (err!= null) { %>
+                  <h4><%=err%></h4>
+            <% }
+            else{
+            %>
+                <br/><br/><br/><br/>
+            <% } %>
+            <table>
+                <tr>
+                    <td width="200"></td><td><b>UserName:</b></td>
+                    <td><input type="text" name="j_username" id="j_username" /></td>
+                </tr>
+                <tr>
+                    <td width="200"></td><td><b>Password:</b></td><td><input type="password" name="j_passwd" /></td>
+                </tr>
+                <tr>
+                    <td colspan="3"></td>
+                </tr>
+                <tr>
+                    <td width="200"></td>
+                    <td>
+                        <input type="submit" name="ok_btn" value="  OK  " />
+                    </td>
+                    <td><input type="button" name="cancel_btn" value="  Cancel  " onclick="javascript:window.close()" /></td>
+                </tr>
+            </table>
+        </form>
 </body>
 </html>

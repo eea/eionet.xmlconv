@@ -56,7 +56,7 @@ public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags{
    private static final int   cell_level = 3;
 
    private int                level;
- 
+
   private boolean             bOK=false;
 
   public ExcelXMLHandler(ExcelConversionHandlerIF excel)
@@ -81,7 +81,7 @@ public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags{
               i_repeated = Integer.parseInt(s_repeated);
             }
             catch(Exception e){}
-          }     
+          }
           excel.addColumns(def_cell_style,def_cell_type, i_repeated);
       }
       else if (name.equals(ROW_TAG)){
@@ -95,7 +95,7 @@ public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags{
               i_repeated = Integer.parseInt(s_repeated);
             }
             catch(Exception e){}
-          }     
+          }
           excel.addRows(def_cell_style, def_cell_type, i_repeated);
           level=row_level;
       }
@@ -109,7 +109,7 @@ public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags{
               i_repeated = Integer.parseInt(s_repeated);
             }
             catch(Exception e){}
-          }     
+          }
           excel.addCells(cell_type, cell_style, i_repeated);
 
           level=cell_level;
@@ -121,7 +121,7 @@ public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags{
 
           style = ExcelUtils.getExcelStyle();
           style.setExcelStyle(style_name, style_family);
-      }          
+      }
       else if (name.equals(STYLE_PROP_TAG)){
           style.setFontWeight(attributes.getValue(FONT_WEIGHT_ATTR));
           style.setFontName(attributes.getValue(FONT_FAMILY_ATTR));
@@ -129,7 +129,7 @@ public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags{
           style.setItalic(attributes.getValue(FONT_STYLE_ATTR));
           style.setTextAlgin(attributes.getValue(TEXT_ALIGN_ATTR));
           style.setColumnWidth(attributes.getValue(STYLE_COLUMN_WIDTH_ATTR));
-      }          
+      }
       if (name.equals(DATA_TAG)){
           bOK = true;
       }
@@ -146,15 +146,15 @@ public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags{
     if (name.equals(CELL_TAG)){
       //cells.add(cell);
       excel.addCell(cell_type, cell_value,cell_style);
-      
+
     }
     else if (name.equals(STYLE_TAG)){
       excel.addStyle(style);
-      
+
     }
     else{
       if (bOK){
-        if (level==cell_level)  
+        if (level==cell_level)
           cell_value=fieldData.toString().trim();
         bOK=false;
       }

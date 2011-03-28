@@ -36,76 +36,76 @@ import eionet.gdem.utils.Utils;
 
 public class CRServiceClient {
 
-	protected String serviceUrl = null;
-	protected String serviceName = "";
-	protected ServiceClientIF client = null;
-	private static List<Hashtable<String,String>> mockXmlFiles =null; 
+    protected String serviceUrl = null;
+    protected String serviceName = "";
+    protected ServiceClientIF client = null;
+    private static List<Hashtable<String,String>> mockXmlFiles =null;
 
 
-	protected void load() throws Exception {
-		if (serviceName == null || serviceName.equals("") || serviceUrl == null || serviceUrl.equals("")) throw new Exception("serviceName or serviceUrl is missing!");
-		client = ServiceClients.getServiceClient(serviceName, serviceUrl);
-	}
+    protected void load() throws Exception {
+        if (serviceName == null || serviceName.equals("") || serviceUrl == null || serviceUrl.equals("")) throw new Exception("serviceName or serviceUrl is missing!");
+        client = ServiceClients.getServiceClient(serviceName, serviceUrl);
+    }
 
 
-	protected void getProps() {
-		serviceName = Properties.crServName;
-		serviceUrl = Properties.crServUrl;
-	}
+    protected void getProps() {
+        serviceName = Properties.crServName;
+        serviceUrl = Properties.crServUrl;
+    }
 
 
-	protected Object execute(String method, Vector params) throws Exception {
-		if (client == null) load();
-		return client.getValue(method, params);
-	}
-	public static List getXmlFilesBySchema(String schemaURL) throws Exception{
-		if ( Utils.isNullStr(schemaURL)) throw new Exception("schemaURL is missing!");
+    protected Object execute(String method, Vector params) throws Exception {
+        if (client == null) load();
+        return client.getValue(method, params);
+    }
+    public static List getXmlFilesBySchema(String schemaURL) throws Exception{
+        if ( Utils.isNullStr(schemaURL)) throw new Exception("schemaURL is missing!");
 
-		CRServiceClient d = new CRServiceClient();
-		Vector list = null;
-		try {
-			Vector b = new Vector();
-			b.add(schemaURL);
-			d.getProps();
-			d.load();
-			Object res = d.execute("getXmlFilesBySchema", b);
-			list = (Vector) res;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
+        CRServiceClient d = new CRServiceClient();
+        Vector list = null;
+        try {
+            Vector b = new Vector();
+            b.add(schemaURL);
+            d.getProps();
+            d.load();
+            Object res = d.execute("getXmlFilesBySchema", b);
+            list = (Vector) res;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
-	/**
-	 * The testing purposes
-	 * @return
-	 */
-	public static List<Hashtable<String,String>> getMockXmlFilesBySchema(String schemaUrl) {
-		return mockXmlFiles;
-	}
-	public static void setMockXmlFilesBySchema(List<Hashtable<String,String>> mockXmlFiles) {
-		CRServiceClient.mockXmlFiles = mockXmlFiles;
-	}
+    /**
+     * The testing purposes
+     * @return
+     */
+    public static List<Hashtable<String,String>> getMockXmlFilesBySchema(String schemaUrl) {
+        return mockXmlFiles;
+    }
+    public static void setMockXmlFilesBySchema(List<Hashtable<String,String>> mockXmlFiles) {
+        CRServiceClient.mockXmlFiles = mockXmlFiles;
+    }
 
-	public static void main(String args[]) {
-		String schemaURL = "http://waste.eionet.eu.int/schemas/dir200053ec/schema.xsd";
-		CRServiceClient d = new CRServiceClient();
-		try {
-			Vector b = new Vector();
-			b.add(schemaURL);
-			d.getProps();
-			d.load();
-			Object res = d.execute("getXmlFilesBySchema", b);
-			List list = (Vector) res;
-			for (int i = 0; i < list.size(); i++) {
-				Object o = list.get(i);
-				System.out.println(i + " - " + o);
-			}
+    public static void main(String args[]) {
+        String schemaURL = "http://waste.eionet.eu.int/schemas/dir200053ec/schema.xsd";
+        CRServiceClient d = new CRServiceClient();
+        try {
+            Vector b = new Vector();
+            b.add(schemaURL);
+            d.getProps();
+            d.load();
+            Object res = d.execute("getXmlFilesBySchema", b);
+            List list = (Vector) res;
+            for (int i = 0; i < list.size(); i++) {
+                Object o = list.get(i);
+                System.out.println(i + " - " + o);
+            }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	}
+    }
 
 }

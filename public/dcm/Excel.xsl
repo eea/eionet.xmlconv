@@ -4,11 +4,11 @@
     <xsl:param name="dd_domain" select="'true'"/>
     <xsl:param name="dd_ns_url" select="concat('=&quot;',$dd_domain,'/namespace.jsp?ns_id=')"/>
     <xsl:param name="dd_schema_url" select="concat($dd_domain,'/GetSchema?id=TBL')"/>
-    
+
     <xsl:template match="/">
         <xsl:apply-templates select="table"/>
     </xsl:template>
-    
+
     <xsl:template match="table">
         <xsl:text  xml:space="default" disable-output-escaping="yes">&#xd;&#xa;&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"&#xd;&#xa;xmlns:office='http://openoffice.org/2000/office'&#xd;&#xa; 	xmlns:table='http://openoffice.org/2000/table'&#xd;&#xa; xmlns:text='http://openoffice.org/2000/text'&#xd;&#xa;    xmlns:dd</xsl:text>
         <xsl:value-of select="parentNS"/>
@@ -21,9 +21,9 @@
 
 
         <xsl:text disable-output-escaping="yes">"&gt;&#xd;&#xa;    </xsl:text>
- 
- 
- 
+
+
+
 
 <xsl:text disable-output-escaping="yes">&lt;xsl:template match="dd</xsl:text>
 <xsl:value-of select="parentNS"/>
@@ -85,7 +85,7 @@
             <xsl:element name="xsl:variable">
                 <xsl:attribute name="name">elemIdentifier</xsl:attribute>
                 <xsl:element name="xsl:value-of"><xsl:attribute name="select">identifier</xsl:attribute></xsl:element>
-            </xsl:element>			
+            </xsl:element>
             <xsl:element name="xsl:variable">
                 <xsl:attribute name="name">multiValueSeparator</xsl:attribute>
                 <xsl:element name="xsl:call-template">
@@ -182,14 +182,14 @@
                 <xsl:otherwise><xsl:element name="xsl:value-of"><xsl:attribute name="select">','</xsl:attribute></xsl:element></xsl:otherwise>
             </xsl:choose>
         </xsl:element>
-        
+
         <!-- DD elements metadata variable -->
         <xsl:element name="xsl:variable" namespace="http://www.w3.org/1999/XSL/Transform">
             <xsl:attribute name="name">elementsMetadata</xsl:attribute>
             <xsl:copy-of select="//elements/element" />
         </xsl:element>
-        
+
         <xsl:text disable-output-escaping="yes">&lt;/xsl:stylesheet&gt;&#xd;&#xa;</xsl:text>
-    </xsl:template>    
+    </xsl:template>
 </xsl:stylesheet>
 

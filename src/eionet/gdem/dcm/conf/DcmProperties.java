@@ -3,20 +3,20 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is Web Dashboards Service
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency (EEA).  Portions created by European Dynamics (ED) company are
  * Copyright (C) by European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributors(s):
- *    Original code: Istvan Alfeldi (ED) 
+ *    Original code: Istvan Alfeldi (ED)
  */
 
 package eionet.gdem.dcm.conf;
@@ -36,107 +36,107 @@ import eionet.gdem.services.LoggerIF;
 
 public class DcmProperties {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
 
-	public void setDbParams(String url, String user, String psw) throws DCMException {
+    public void setDbParams(String url, String user, String psw) throws DCMException {
 
-		String filePath = Properties.appHome + File.separatorChar + "gdem.properties";
+        String filePath = Properties.appHome + File.separatorChar + "gdem.properties";
 
-		try {
+        try {
 
-			BufferedReader reader = new BufferedReader(new FileReader(filePath));
-			String line = null;
-			StringBuffer st = new StringBuffer();
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            String line = null;
+            StringBuffer st = new StringBuffer();
 
-			while ((line = reader.readLine()) != null) {
-				// process the line
-				line = findSetProp(line, "db.url", url);
-				line = findSetProp(line, "db.user", user);
-				line = findSetProp(line, "db.pwd", psw);
-				st.append(line);
-				st.append("\n");
-			}
+            while ((line = reader.readLine()) != null) {
+                // process the line
+                line = findSetProp(line, "db.url", url);
+                line = findSetProp(line, "db.user", user);
+                line = findSetProp(line, "db.pwd", psw);
+                st.append(line);
+                st.append("\n");
+            }
 
-			BufferedWriter out = new BufferedWriter(new FileWriter(filePath));
-			out.write(st.toString());
-			out.close();
-		} catch (IOException e) {
-			_logger.error("Saving database parameters failed!", e);
-			e.printStackTrace();
-			throw new DCMException(BusinessConstants.EXCEPTION_PARAM_DB_FAILED);
-		}
-	}
-
-
-	public void setLdapParams(String url, String context, String userDir, String attrUid) throws DCMException {
-
-		String filePath = Properties.appHome + File.separatorChar + "eionetdir.properties";
-
-		try {
-
-			BufferedReader reader = new BufferedReader(new FileReader(filePath));
-			String line = null;
-			StringBuffer st = new StringBuffer();
-
-			while ((line = reader.readLine()) != null) {
-				// process the line
-				line = findSetProp(line, "ldap.url", url);
-				line = findSetProp(line, "ldap.context", context);
-				line = findSetProp(line, "ldap.user.dir", userDir);
-				line = findSetProp(line, "ldap.attr.uid", attrUid);
-				st.append(line);
-				st.append("\n");
-			}
-
-			BufferedWriter out = new BufferedWriter(new FileWriter(filePath));
-			out.write(st.toString());
-			out.close();
-		} catch (IOException e) {
-			_logger.error("Saving ldap parameters failed!", e);
-			e.printStackTrace();
-			throw new DCMException(BusinessConstants.EXCEPTION_PARAM_LDAP_FAILED);
-		}
-	}
+            BufferedWriter out = new BufferedWriter(new FileWriter(filePath));
+            out.write(st.toString());
+            out.close();
+        } catch (IOException e) {
+            _logger.error("Saving database parameters failed!", e);
+            e.printStackTrace();
+            throw new DCMException(BusinessConstants.EXCEPTION_PARAM_DB_FAILED);
+        }
+    }
 
 
-	public void setSystemParams(Long qaTimeout, String cmdXGawk) throws DCMException {
+    public void setLdapParams(String url, String context, String userDir, String attrUid) throws DCMException {
 
-		String filePath = Properties.appHome + File.separatorChar + "gdem.properties";
+        String filePath = Properties.appHome + File.separatorChar + "eionetdir.properties";
 
-		try {
+        try {
 
-			BufferedReader reader = new BufferedReader(new FileReader(filePath));
-			String line = null;
-			StringBuffer st = new StringBuffer();
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            String line = null;
+            StringBuffer st = new StringBuffer();
 
-			while ((line = reader.readLine()) != null) {
-				// process the line
-				line = findSetProp(line, "external.qa.timeout", String.valueOf(qaTimeout));
-				line = findSetProp(line, "external.qa.command.xgawk", cmdXGawk);
-				st.append(line);
-				st.append("\n");
-			}
+            while ((line = reader.readLine()) != null) {
+                // process the line
+                line = findSetProp(line, "ldap.url", url);
+                line = findSetProp(line, "ldap.context", context);
+                line = findSetProp(line, "ldap.user.dir", userDir);
+                line = findSetProp(line, "ldap.attr.uid", attrUid);
+                st.append(line);
+                st.append("\n");
+            }
 
-			BufferedWriter out = new BufferedWriter(new FileWriter(filePath));
-			out.write(st.toString());
-			out.close();
-			
-			Properties.xgawkCommand=cmdXGawk;
-			Properties.qaTimeout =Long.valueOf(qaTimeout);
-			
-		} catch (IOException e) {
-			_logger.error("Saving system parameters failed!", e);
-			e.printStackTrace();
-			throw new DCMException(BusinessConstants.EXCEPTION_PARAM_SYSTEM_FAILED);
-		}
-	}
+            BufferedWriter out = new BufferedWriter(new FileWriter(filePath));
+            out.write(st.toString());
+            out.close();
+        } catch (IOException e) {
+            _logger.error("Saving ldap parameters failed!", e);
+            e.printStackTrace();
+            throw new DCMException(BusinessConstants.EXCEPTION_PARAM_LDAP_FAILED);
+        }
+    }
 
-	private String findSetProp(String line, String key, String value) {
-		if (line.startsWith(key + "=")) {
-			line = key + "=" + value;
-		}
-		return line;
-	}
+
+    public void setSystemParams(Long qaTimeout, String cmdXGawk) throws DCMException {
+
+        String filePath = Properties.appHome + File.separatorChar + "gdem.properties";
+
+        try {
+
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            String line = null;
+            StringBuffer st = new StringBuffer();
+
+            while ((line = reader.readLine()) != null) {
+                // process the line
+                line = findSetProp(line, "external.qa.timeout", String.valueOf(qaTimeout));
+                line = findSetProp(line, "external.qa.command.xgawk", cmdXGawk);
+                st.append(line);
+                st.append("\n");
+            }
+
+            BufferedWriter out = new BufferedWriter(new FileWriter(filePath));
+            out.write(st.toString());
+            out.close();
+
+            Properties.xgawkCommand=cmdXGawk;
+            Properties.qaTimeout =Long.valueOf(qaTimeout);
+
+        } catch (IOException e) {
+            _logger.error("Saving system parameters failed!", e);
+            e.printStackTrace();
+            throw new DCMException(BusinessConstants.EXCEPTION_PARAM_SYSTEM_FAILED);
+        }
+    }
+
+    private String findSetProp(String line, String key, String value) {
+        if (line.startsWith(key + "=")) {
+            line = key + "=" + value;
+        }
+        return line;
+    }
 
 }

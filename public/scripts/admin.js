@@ -1,59 +1,59 @@
 function stylesheetDelete(title) {
-	if(confirm('Are you sure you want to delete stylesheet "' + title + '"')){
-		return true;
-	}
-	else {
-		return false;
-	}
+    if(confirm('Are you sure you want to delete stylesheet "' + title + '"')){
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 function qaScriptDelete(title) {
-	if(confirm('Are you sure you want to delete QA script "' + title + '"')){
-		return true;
-	}
-	else {
-		return false;
-	}
+    if(confirm('Are you sure you want to delete QA script "' + title + '"')){
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 
 function schemaDelete(title) {
-	if(confirm('Are you sure you want to delete schema "' + title + '"')){
-		return true;
-	}
-	else {
-		return false;
-	}
+    if(confirm('Are you sure you want to delete schema "' + title + '"')){
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 function xmlfileDelete(title) {
-	if(confirm('Are you sure you want to delete XML file "' + title + '"')){
-		return true;
-	}
-	else {
-		return false;
-	}
+    if(confirm('Are you sure you want to delete XML file "' + title + '"')){
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 function elementDelete(title) {
-	if(confirm('Are you sure you want to delete root element "' + title + '"')){
-		return true;
-	}
-	else {
-		return false;
-	}
+    if(confirm('Are you sure you want to delete root element "' + title + '"')){
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 function submitAction(formIdx, act)
 {
-	document.forms[formIdx].action = act;
-	document.forms[formIdx].submit();
-	return true;
+    document.forms[formIdx].action = act;
+    document.forms[formIdx].submit();
+    return true;
 }
 
 function setSchema()
 {
-	document.forms[0].schema.value = document.forms[0].xmlSchema.options[document.forms[0].xmlSchema.selectedIndex].value;
+    document.forms[0].schema.value = document.forms[0].xmlSchema.options[document.forms[0].xmlSchema.selectedIndex].value;
 
-	return true;
+    return true;
 }
 
 function openWindow(theURL, winName) {
@@ -70,11 +70,11 @@ function openWindow(theURL, winName) {
 }
 
 function hostDelete(title) {
-	if(confirm('Are you sure you want to delete host "' + title + '"')){
-		return true;
-	}
-	else {
-		return false;
-	}
+    if(confirm('Are you sure you want to delete host "' + title + '"')){
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 

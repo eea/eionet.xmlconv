@@ -5,12 +5,12 @@
 <%-- include header --%>
 <tiles:insert page="/WEB-INF/tiles/TmpHeader.jsp" />
 
-	<div class="error-msg">
-		<bean:message key="label.error.500"/>
-	</div>
+    <div class="error-msg">
+        <bean:message key="label.error.500"/>
+    </div>
 
 <%-- include footer --%>
 <tiles:insert page="/WEB-INF/tiles/TmpFooter.jsp">
-	<tiles:put name="showFooter" type="string" value="true"/>
+    <tiles:put name="showFooter" type="string" value="true"/>
 </tiles:insert>
 

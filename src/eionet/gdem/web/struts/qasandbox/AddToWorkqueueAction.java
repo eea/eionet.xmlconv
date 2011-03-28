@@ -3,18 +3,18 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is XMLCONV.
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency.  Portions created by Tieto Eesti are Copyright
  * (C) European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributor(s):
  * Enriko Käsper, Tieto Estonia
  */
@@ -43,72 +43,72 @@ import eionet.gdem.utils.Utils;
 /**
  * SearchCRSandboxAction
  * Add selected scripts into workqueue.
- * 
+ *
  * @author Enriko Käsper, Tieto Estonia
  */
 
 public class AddToWorkqueueAction extends Action {
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
+            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-		ActionErrors errors = new ActionErrors();
-		ActionMessages messages = new ActionMessages();
+        ActionErrors errors = new ActionErrors();
+        ActionMessages messages = new ActionMessages();
 
-		QASandboxForm cForm = (QASandboxForm) actionForm;
-		String sourceUrl = cForm.getSourceUrl();
-		String content = cForm.getScriptContent();
-		String scriptType = cForm.getScriptType();
-		String schemaUrl = cForm.getSchemaUrl();
+        QASandboxForm cForm = (QASandboxForm) actionForm;
+        String sourceUrl = cForm.getSourceUrl();
+        String content = cForm.getScriptContent();
+        String scriptType = cForm.getScriptType();
+        String schemaUrl = cForm.getSchemaUrl();
 
-		if (Utils.isNullStr(sourceUrl)) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.missingUrl"));
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("error");
-		}
-		if (Utils.isNullStr(content) && !cForm.isShowScripts()) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.missingContent"));
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("error");
-		}
-		if (Utils.isNullStr(schemaUrl) && cForm.isShowScripts()) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(
-					"error.qasandbox.error.qasandbox.missingSchemaUrl"));
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("error");
-		}
-		if (!Utils.isURL(sourceUrl)) {
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.notUrl"));
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("error");
-		}
-		try {
-			String userName = (String) httpServletRequest.getSession().getAttribute("user");
+        if (Utils.isNullStr(sourceUrl)) {
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.missingUrl"));
+            saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("error");
+        }
+        if (Utils.isNullStr(content) && !cForm.isShowScripts()) {
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.missingContent"));
+            saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("error");
+        }
+        if (Utils.isNullStr(schemaUrl) && cForm.isShowScripts()) {
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(
+                    "error.qasandbox.error.qasandbox.missingSchemaUrl"));
+            saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("error");
+        }
+        if (!Utils.isURL(sourceUrl)) {
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.notUrl"));
+            saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("error");
+        }
+        try {
+            String userName = (String) httpServletRequest.getSession().getAttribute("user");
 
-			WorkqueueManager wqm = new WorkqueueManager();
-			if (cForm.isShowScripts()) {
-				List<String> jobIds = wqm.addSchemaScriptsToWorkqueue(userName, sourceUrl, schemaUrl);
-				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("message.qasandbox.jobsAdded", jobIds
-						.toString()));
-			} else {
-				String jobId = wqm.addQAScriptToWorkqueue(userName, sourceUrl, content, scriptType);
-				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("message.qasandbox.jobAdded", jobId));
-			}
-		} catch (DCMException e) {
-			// e.printStackTrace();
-			_logger.error("Error saving script content", e);
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("error");
-		} catch (Exception e) {
-			// e.printStackTrace();
-			_logger.error("Error saving script content", e);
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("error");
-		}
+            WorkqueueManager wqm = new WorkqueueManager();
+            if (cForm.isShowScripts()) {
+                List<String> jobIds = wqm.addSchemaScriptsToWorkqueue(userName, sourceUrl, schemaUrl);
+                messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("message.qasandbox.jobsAdded", jobIds
+                        .toString()));
+            } else {
+                String jobId = wqm.addQAScriptToWorkqueue(userName, sourceUrl, content, scriptType);
+                messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("message.qasandbox.jobAdded", jobId));
+            }
+        } catch (DCMException e) {
+            // e.printStackTrace();
+            _logger.error("Error saving script content", e);
+            saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("error");
+        } catch (Exception e) {
+            // e.printStackTrace();
+            _logger.error("Error saving script content", e);
+            saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("error");
+        }
 
-		saveMessages(httpServletRequest, messages);
-		return actionMapping.findForward("success");
-	}
+        saveMessages(httpServletRequest, messages);
+        return actionMapping.findForward("success");
+    }
 
 }

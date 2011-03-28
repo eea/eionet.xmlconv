@@ -31,68 +31,68 @@ import eionet.gdem.validation.ValidationService;
 
 public class ValidateXMLAction  extends Action {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-		String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
-		ActionErrors errors = new ActionErrors();
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
+        ActionErrors errors = new ActionErrors();
 
-		ConversionForm cForm = (ConversionForm) actionForm;
-		String url = cForm.getUrl();
-		String schema = cForm.getSchemaUrl();
+        ConversionForm cForm = (ConversionForm) actionForm;
+        String url = cForm.getUrl();
+        String schema = cForm.getSchemaUrl();
 
-		if(Utils.isNullStr(url)){
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.selectSource"));
-			//httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			saveErrors(httpServletRequest,errors);
-			return actionMapping.findForward("error");
-		}
-		if(!Utils.isURL(url)){
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED));
-			//httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			saveErrors(httpServletRequest,errors);
-			return actionMapping.findForward("error");
-		}
+        if(Utils.isNullStr(url)){
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.selectSource"));
+            //httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+            saveErrors(httpServletRequest,errors);
+            return actionMapping.findForward("error");
+        }
+        if(!Utils.isURL(url)){
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED));
+            //httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+            saveErrors(httpServletRequest,errors);
+            return actionMapping.findForward("error");
+        }
 
 
-		try {
-			ArrayList valid;
-			String validatedSchema = null;
-			String originalSchema = null;
-			try {
-				ValidationService v = new ValidationService(true);
-				v.setTrustedMode(false);
-				v.setTicket(ticket);
-				if (schema == null)  // schema defined in header
-					v.validate(url);
-				else
-					v.validateSchema(url, schema);
-				valid = v.getErrorList();
-				validatedSchema = v.getValidatedSchemaURL();
-				originalSchema = v.getOriginalSchema();
-			} catch (DCMException dcme) {
-				throw dcme;
-			} catch (Exception e) {
-				throw new DCMException(BusinessConstants.EXCEPTION_VALIDATION_ERROR);
-			}
-			httpServletRequest.setAttribute("conversion.valid", valid);
-			httpServletRequest.setAttribute("conversion.originalSchema", originalSchema);
-			if(!originalSchema.equals(validatedSchema))
-				httpServletRequest.setAttribute("conversion.validatedSchema", validatedSchema);
-		} catch (DCMException e) {
-			e.printStackTrace();
-			_logger.error("Error validating xml",e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("error");
-		} catch (Exception e) {
-			e.printStackTrace();
-			_logger.error("Error validating xml",e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(BusinessConstants.EXCEPTION_GENERAL));
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("error");
-		}
-		return actionMapping.findForward("success");
-	}
+        try {
+            ArrayList valid;
+            String validatedSchema = null;
+            String originalSchema = null;
+            try {
+                ValidationService v = new ValidationService(true);
+                v.setTrustedMode(false);
+                v.setTicket(ticket);
+                if (schema == null)  // schema defined in header
+                    v.validate(url);
+                else
+                    v.validateSchema(url, schema);
+                valid = v.getErrorList();
+                validatedSchema = v.getValidatedSchemaURL();
+                originalSchema = v.getOriginalSchema();
+            } catch (DCMException dcme) {
+                throw dcme;
+            } catch (Exception e) {
+                throw new DCMException(BusinessConstants.EXCEPTION_VALIDATION_ERROR);
+            }
+            httpServletRequest.setAttribute("conversion.valid", valid);
+            httpServletRequest.setAttribute("conversion.originalSchema", originalSchema);
+            if(!originalSchema.equals(validatedSchema))
+                httpServletRequest.setAttribute("conversion.validatedSchema", validatedSchema);
+        } catch (DCMException e) {
+            e.printStackTrace();
+            _logger.error("Error validating xml",e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+            saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("error");
+        } catch (Exception e) {
+            e.printStackTrace();
+            _logger.error("Error validating xml",e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(BusinessConstants.EXCEPTION_GENERAL));
+            saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("error");
+        }
+        return actionMapping.findForward("success");
+    }
 
 }

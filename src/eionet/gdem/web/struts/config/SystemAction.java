@@ -3,20 +3,20 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is Web Dashboards Service
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency (EEA).  Portions created by European Dynamics (ED) company are
  * Copyright (C) by European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributors(s):
- *    Original code: Istvan Alfeldi (ED) 
+ *    Original code: Istvan Alfeldi (ED)
  */
 
 package eionet.gdem.web.struts.config;
@@ -41,58 +41,58 @@ import eionet.gdem.utils.SecurityUtil;
 
 public class SystemAction extends Action {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-		ActionMessages errors = new ActionMessages();
-		ActionMessages messages = new ActionMessages();
+        ActionMessages errors = new ActionMessages();
+        ActionMessages messages = new ActionMessages();
 
-		DynaValidatorForm form = (DynaValidatorForm) actionForm;
+        DynaValidatorForm form = (DynaValidatorForm) actionForm;
 
-		String cmdXGawk = (String) form.get("cmdXGawk");
-		Long qaTimeout = (Long) form.get("qaTimeout");
-		String user = (String) httpServletRequest.getSession().getAttribute("user");
+        String cmdXGawk = (String) form.get("cmdXGawk");
+        Long qaTimeout = (Long) form.get("qaTimeout");
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
 
-		try {
+        try {
 
-			if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_CONFIG_PATH, "u")) {
-				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.autorization.config.update"));
-				httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-				return actionMapping.findForward("success");
-			}
-			if (qaTimeout == null || qaTimeout.equals("") || qaTimeout<=0) {
-				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.config.system.qatimeout.validation"));
-				httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-				return actionMapping.findForward("success");
-			}
+            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_CONFIG_PATH, "u")) {
+                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.autorization.config.update"));
+                httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+                return actionMapping.findForward("success");
+            }
+            if (qaTimeout == null || qaTimeout.equals("") || qaTimeout<=0) {
+                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.config.system.qatimeout.validation"));
+                httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+                return actionMapping.findForward("success");
+            }
 
 
-			DcmProperties dcmProp = new DcmProperties();
+            DcmProperties dcmProp = new DcmProperties();
 
-			dcmProp.setSystemParams(qaTimeout, cmdXGawk);
+            dcmProp.setSystemParams(qaTimeout, cmdXGawk);
 
-		} catch (DCMException e) {
-			e.printStackTrace();
-			_logger.error("SystemAction error", e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-			saveErrors(httpServletRequest, errors);
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward("success");
-		} catch (Exception e) {
-			e.printStackTrace();
-			_logger.error("SystemAction error", e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
-			saveErrors(httpServletRequest, errors);
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward("success");
-		}
-		messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.editParam.system.saved"));
+        } catch (DCMException e) {
+            e.printStackTrace();
+            _logger.error("SystemAction error", e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+            saveErrors(httpServletRequest, errors);
+            httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+            return actionMapping.findForward("success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            _logger.error("SystemAction error", e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
+            saveErrors(httpServletRequest, errors);
+            httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+            return actionMapping.findForward("success");
+        }
+        messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.editParam.system.saved"));
 
-		httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
-		return actionMapping.findForward("success");
-	}
+        httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+        httpServletRequest.getSession().setAttribute("dcm.messages", messages);
+        return actionMapping.findForward("success");
+    }
 
 }

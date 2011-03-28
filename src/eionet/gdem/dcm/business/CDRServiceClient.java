@@ -37,70 +37,70 @@ import eionet.gdem.utils.Utils;
 
 public class CDRServiceClient {
 
-	protected String serviceUrl = null;
-	protected String serviceName = "";
-	protected ServiceClientIF client = null;
+    protected String serviceUrl = null;
+    protected String serviceName = "";
+    protected ServiceClientIF client = null;
 
 
-	protected void load() throws Exception {
-		if ( serviceUrl == null || serviceUrl.equals("")) throw new Exception("serviceUrl is missing!");
-		client = ServiceClients.getServiceClient(serviceName, serviceUrl);
-	}
+    protected void load() throws Exception {
+        if ( serviceUrl == null || serviceUrl.equals("")) throw new Exception("serviceUrl is missing!");
+        client = ServiceClients.getServiceClient(serviceName, serviceUrl);
+    }
 
 
-	protected void getProps() {
-		serviceUrl = Properties.cdrServUrl;
-	}
+    protected void getProps() {
+        serviceUrl = Properties.cdrServUrl;
+    }
 
 
-	protected Object execute(String method, Vector params) throws Exception {
-		if (client == null) load();
-		return client.getValue(method, params);
-	}
+    protected Object execute(String method, Vector params) throws Exception {
+        if (client == null) load();
+        return client.getValue(method, params);
+    }
 
 
-	public void execute(HttpServletRequest req) throws Exception {
-	}
+    public void execute(HttpServletRequest req) throws Exception {
+    }
 
 
-	public static List searchXMLFiles(String schemaURL) throws Exception{
-		if ( Utils.isNullStr(schemaURL)) throw new Exception("schemaURL is missing!");
+    public static List searchXMLFiles(String schemaURL) throws Exception{
+        if ( Utils.isNullStr(schemaURL)) throw new Exception("schemaURL is missing!");
 
-		CDRServiceClient d = new CDRServiceClient();
-		List list = null;
-		try {
-			Vector b = new Vector();
-			b.add(schemaURL);
-			d.getProps();
-			d.load();
-			Object res = d.execute("searchxmlfiles", b);
-			list = (List) res;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
+        CDRServiceClient d = new CDRServiceClient();
+        List list = null;
+        try {
+            Vector b = new Vector();
+            b.add(schemaURL);
+            d.getProps();
+            d.load();
+            Object res = d.execute("searchxmlfiles", b);
+            list = (List) res;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
 
-	public static void main(String args[]) {
-		String schemaURL = "http://waste.eionet.eu.int/schemas/dir200053ec/schema.xsd";
-		CDRServiceClient d = new CDRServiceClient();
-		try {
-			Vector b = new Vector();
-			b.add(schemaURL);
-			d.getProps();
-			d.load();
-			Object res = d.execute("searchxmlfiles", b);
-			Vector list = (Vector) res;
-			for (int i = 0; i < list.size(); i++) {
-				Object o = list.get(i);
-				System.out.println(i + " - " + o);
-			}
+    public static void main(String args[]) {
+        String schemaURL = "http://waste.eionet.eu.int/schemas/dir200053ec/schema.xsd";
+        CDRServiceClient d = new CDRServiceClient();
+        try {
+            Vector b = new Vector();
+            b.add(schemaURL);
+            d.getProps();
+            d.load();
+            Object res = d.execute("searchxmlfiles", b);
+            Vector list = (Vector) res;
+            for (int i = 0; i < list.size(); i++) {
+                Object o = list.get(i);
+                System.out.println(i + " - " + o);
+            }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	}
+    }
 
 }

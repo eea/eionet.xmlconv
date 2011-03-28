@@ -30,7 +30,7 @@ public class SearchCRConversionActionTest   extends MockStrutsTestCase {
         super.setUp();
         setConfigFile(TestUtils.getStrutsConfigLocation());
         setInitParameter("validating","false");
-        
+
         //setup database
         DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_CONVERSIONS_XML);
     }
@@ -39,12 +39,12 @@ public class SearchCRConversionActionTest   extends MockStrutsTestCase {
      * test if the form is successfully forwarding and stores the schemas list in session
      */
     public void testSuccessfulForward() {
-        
-    	String schemaUrl = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd";
-    	CRServiceClient.setMockXmlFilesBySchema(getXmlFilesBySchema(schemaUrl));
-    	
-    	setRequestPathInfo("/searchCR");
-    	
+
+        String schemaUrl = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd";
+        CRServiceClient.setMockXmlFilesBySchema(getXmlFilesBySchema(schemaUrl));
+
+        setRequestPathInfo("/searchCR");
+
         addRequestParameter("schemaUrl",schemaUrl);
         actionPerform();
         verifyForward("success");
@@ -62,11 +62,11 @@ public class SearchCRConversionActionTest   extends MockStrutsTestCase {
      * test if the form is successfully forwarding and stores the schemas list in session
      */
     public void testFailedForward() {
-        
-    	String schemaUrl = "No such schema";
 
-    	setRequestPathInfo("/searchCR");
-    	
+        String schemaUrl = "No such schema";
+
+        setRequestPathInfo("/searchCR");
+
         addRequestParameter("schemaUrl",schemaUrl);
         actionPerform();
         verifyForward("error");
@@ -77,24 +77,24 @@ public class SearchCRConversionActionTest   extends MockStrutsTestCase {
     }
 
     private List<Hashtable<String,String>> getXmlFilesBySchema(String schema){
-	    
-    	Hashtable<String,String> hash1 = new Hashtable<String,String>();
-    	hash1.put("uri", "http://test.com/file1.xml");
-    	hash1.put("lastModified", "2006-07-03T13:19:33");
-    	
-    	Hashtable<String,String> hash2 = new Hashtable<String,String>();
-    	hash2.put("uri", "http://test.com/file2.xml");
-    	hash2.put("lastModified", "2007-07-03T13:19:33");
 
-    	Hashtable<String,String> hash3 = new Hashtable<String,String>();
-    	hash3.put("uri", "http://test.com/file3.xml");
-    	hash3.put("lastModified", "2008-07-03T13:19:33");
-    	
-    	List<Hashtable<String,String>> list= new ArrayList<Hashtable<String,String>>();
-    	list.add(hash1);
-    	list.add(hash2);
-    	list.add(hash3);
-    	return list;
+        Hashtable<String,String> hash1 = new Hashtable<String,String>();
+        hash1.put("uri", "http://test.com/file1.xml");
+        hash1.put("lastModified", "2006-07-03T13:19:33");
+
+        Hashtable<String,String> hash2 = new Hashtable<String,String>();
+        hash2.put("uri", "http://test.com/file2.xml");
+        hash2.put("lastModified", "2007-07-03T13:19:33");
+
+        Hashtable<String,String> hash3 = new Hashtable<String,String>();
+        hash3.put("uri", "http://test.com/file3.xml");
+        hash3.put("lastModified", "2008-07-03T13:19:33");
+
+        List<Hashtable<String,String>> list= new ArrayList<Hashtable<String,String>>();
+        list.add(hash1);
+        list.add(hash2);
+        list.add(hash3);
+        return list;
     }
 }
 

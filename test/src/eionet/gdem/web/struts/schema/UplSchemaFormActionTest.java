@@ -25,19 +25,19 @@ public class UplSchemaFormActionTest  extends MockStrutsTestCase {
         super.setUp();
         setConfigFile(TestUtils.getStrutsConfigLocation());
         setInitParameter("validating","false");
-        
+
         //setup database
         DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
     }
 
     public void testSuccessfulForward() {
-        
+
         setRequestPathInfo("/uplSchemas");
         actionPerform();
         verifyForward("success");
         verifyTilesForward("success", "/uplSchema.jsp");
         verifyNoActionErrors();
-        
+
         //test if the list of schemas is stored in session attribute
         HttpSession session = request.getSession();
         UplSchemaHolder holder = (UplSchemaHolder)session.getAttribute("schemas.uploaded");

@@ -7,49 +7,49 @@ import java.io.Serializable;
 
 /**
  * Business object representing uploaded XML files
- * 
+ *
  * @author Enriko Käsper (TietoEnator)
  *
  */
 public class UplXmlFile  implements Serializable {
-	private String id;
-	private String fileName;
-	private String title;
-	private String lastModified;
-	
-	public UplXmlFile() {
-	}
+    private String id;
+    private String fileName;
+    private String title;
+    private String lastModified;
 
-	public String getId() {
-		return id;
-	}
+    public UplXmlFile() {
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getFileName() {
-		return fileName;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
+    public String getFileName() {
+        return fileName;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public String getLastModified() {
-		return lastModified;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public void setLastModified(String lastModified) {
-		this.lastModified = lastModified;
-	}
+    public String getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(String lastModified) {
+        this.lastModified = lastModified;
+    }
 
 }

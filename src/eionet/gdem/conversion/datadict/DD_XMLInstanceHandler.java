@@ -48,7 +48,7 @@ public class DD_XMLInstanceHandler extends DefaultHandler{
   private static final int   row_level = 2;
   private static final int   element_level = 3;
   private static final String ROW_TAG = "Row";
-  
+
   private int                level=0;
   private String             cur_table=null;
 
@@ -58,7 +58,7 @@ public class DD_XMLInstanceHandler extends DefaultHandler{
       this.instance = instance;
   }
   public void startPrefixMapping(String prefix, String uri){
-      instance.addNamespace(prefix, uri);           
+      instance.addNamespace(prefix, uri);
   }
   public void startElement(String uri, String localName, String name, Attributes attributes){
 
@@ -81,7 +81,7 @@ public class DD_XMLInstanceHandler extends DefaultHandler{
         level=row_level;
       }
     }
-    else if (level == row_level){ 
+    else if (level == row_level){
       instance.addRowAttributes(cur_table, name, attributesToString(attributes));
       level=element_level;
     }
@@ -95,7 +95,7 @@ public class DD_XMLInstanceHandler extends DefaultHandler{
 
   public void endElement(String uri, String localName, String name){
     if (level>table_level){
-      if (localName.equalsIgnoreCase(ROW_TAG)){ 
+      if (localName.equalsIgnoreCase(ROW_TAG)){
         level = table_level;
       }
     }
@@ -110,7 +110,7 @@ public class DD_XMLInstanceHandler extends DefaultHandler{
         buf.append("\"");
       }
       return buf.toString();
-    
+
   }
   public void setDocumentLocator (Locator locator)
   {
@@ -132,5 +132,5 @@ public class DD_XMLInstanceHandler extends DefaultHandler{
         // method, or we're on an old JDK
     }
     return encoding;
-  }  
+  }
 }

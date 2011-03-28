@@ -51,46 +51,46 @@ import eionet.gdem.validation.ValidationService;
 
 
 /**
- * QA Service Service Facade. 
- * The service is able to execute different QA related methods 
+ * QA Service Service Facade.
+ * The service is able to execute different QA related methods
  * that are called through XML/RPC and HTTP POST and GET.
  *
  * @author Enriko Käsper
  */
 public class XQueryService extends RemoteService implements Constants {
 
-	  private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
-	  private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
-	  private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
-	  private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
+      private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
+      private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
+      private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
+      private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
 
-	  private SchemaManager schManager = new SchemaManager();
-	  
-	  private static LoggerIF _logger=GDEMServices.getLogger();
-	  
- 
+      private SchemaManager schManager = new SchemaManager();
+
+      private static LoggerIF _logger=GDEMServices.getLogger();
+
+
 
   public XQueryService()  {
-	  //for remote clients use trusted mode
-	  setTrustedMode(true);
+      //for remote clients use trusted mode
+      setTrustedMode(true);
   }
   /**
   * List all possible XQueries for this namespace
   */
   public Vector listQueries(String schema) throws GDEMException {
 
-	  ListQueriesMethod method = new ListQueriesMethod();
-	  Vector v = method.listQueries(schema);
-	  return v;
+      ListQueriesMethod method = new ListQueriesMethod();
+      Vector v = method.listQueries(schema);
+      return v;
   }
   /**
    * List all  XQueries and their modification times for this namespace
    * returns also XML Schema validation
    */
   public Vector listQAScripts(String schema) throws GDEMException {
-	  ListQueriesMethod method = new ListQueriesMethod();
-	  Vector v = method.listQAScripts(schema);
-	  return v;
+      ListQueriesMethod method = new ListQueriesMethod();
+      Vector v = method.listQAScripts(schema);
+      return v;
    }
   /**
   * Request from XML/RPC client
@@ -104,7 +104,7 @@ public class XQueryService extends RemoteService implements Constants {
 
       if (files==null) return result;
 
-  		Enumeration _schemas = files.keys();
+          Enumeration _schemas = files.keys();
       while (_schemas.hasMoreElements()){
         String _schema = _schemas.nextElement().toString();
         Vector _files = (Vector)files.get(_schema);
@@ -128,84 +128,84 @@ public class XQueryService extends RemoteService implements Constants {
  // }
   public Vector analyzeXMLFiles(String schema, String orig_file, Vector result) throws GDEMException{
 
-	  _logger.info("XML/RPC call for analyze xml: " + orig_file);
+      _logger.info("XML/RPC call for analyze xml: " + orig_file);
 
-	  if (result==null) result = new Vector();
-	  Vector outputTypes = null;
+      if (result==null) result = new Vector();
+      Vector outputTypes = null;
       //get all possible xqueries from db
       String newId="-1"; //should not be returned with value -1;
       String file=orig_file;
 
       Vector _queries = listQueries(schema);
-      
-      try{
-    	  outputTypes = convTypeDao.getConvTypes();
-  		} catch (SQLException sqe ) {
-  			throw new GDEMException("DB operation failed: " + sqe.toString());
-  		}
 
-	  try{
-  		//get the trusted URL from source file adapter
-      	file = SourceFileManager.getSourceFileAdapterURL(
-  				getTicket(),file,isTrustedMode());
+      try{
+          outputTypes = convTypeDao.getConvTypes();
+          } catch (SQLException sqe ) {
+              throw new GDEMException("DB operation failed: " + sqe.toString());
+          }
+
+      try{
+          //get the trusted URL from source file adapter
+          file = SourceFileManager.getSourceFileAdapterURL(
+                  getTicket(),file,isTrustedMode());
       }
       catch(Exception e){
-    	  String err_mess="File URL is incorrect";
-		  _logger.error(err_mess + "; " + e.toString());
-		  throw new GDEMException(err_mess, e);
+          String err_mess="File URL is incorrect";
+          _logger.error(err_mess + "; " + e.toString());
+          throw new GDEMException(err_mess, e);
       }
 
       if (!Utils.isNullVector(_queries)) {
 
-    	  for (int j=0;j<_queries.size();j++){
-    		  Hashtable _querie = (Hashtable)_queries.get(j);
-    		  String query_id = String.valueOf(_querie.get("query_id"));
-    		  String query_file = (String)_querie.get("query");
-    		  String content_type = (String)_querie.get("content_type_id");
-    		  String fileExtension = getExtension(outputTypes, content_type);
-    		  String resultFile=Properties.tmpFolder + "gdem_q" + query_id + "_" +
-    		  System.currentTimeMillis() + "." + fileExtension;
-    		  try {
-    			  int int_qID =0;
-    			  try {
-    				  int_qID=Integer.parseInt(query_id);
-    			  } catch(NumberFormatException n) {
-    				  int_qID = 0;
-    			  }
-    			  //if it is a XQuery script, then append the system folder
-    			  if(int_qID!=JOB_VALIDATION && query_file.startsWith(Properties.gdemURL + "/" + Constants.QUERIES_FOLDER))
-    				  query_file =  Utils.Replace(query_file,Properties.gdemURL + "/" + Constants.QUERIES_FOLDER,Properties.queriesFolder);
-    			  newId=xqJobDao.startXQJob(file, query_file, resultFile, int_qID);    			  
-    		  } catch (SQLException sqe ) {
-    			  throw new GDEMException("DB operation failed: " + sqe.toString());
-    		  }
-    		  Vector _res = new Vector();
-    		  _res.add(newId);
-    		  _res.add(orig_file);
-    		  result.add(_res);
-    	  }
+          for (int j=0;j<_queries.size();j++){
+              Hashtable _querie = (Hashtable)_queries.get(j);
+              String query_id = String.valueOf(_querie.get("query_id"));
+              String query_file = (String)_querie.get("query");
+              String content_type = (String)_querie.get("content_type_id");
+              String fileExtension = getExtension(outputTypes, content_type);
+              String resultFile=Properties.tmpFolder + "gdem_q" + query_id + "_" +
+              System.currentTimeMillis() + "." + fileExtension;
+              try {
+                  int int_qID =0;
+                  try {
+                      int_qID=Integer.parseInt(query_id);
+                  } catch(NumberFormatException n) {
+                      int_qID = 0;
+                  }
+                  //if it is a XQuery script, then append the system folder
+                  if(int_qID!=JOB_VALIDATION && query_file.startsWith(Properties.gdemURL + "/" + Constants.QUERIES_FOLDER))
+                      query_file =  Utils.Replace(query_file,Properties.gdemURL + "/" + Constants.QUERIES_FOLDER,Properties.queriesFolder);
+                  newId=xqJobDao.startXQJob(file, query_file, resultFile, int_qID);
+              } catch (SQLException sqe ) {
+                  throw new GDEMException("DB operation failed: " + sqe.toString());
+              }
+              Vector _res = new Vector();
+              _res.add(newId);
+              _res.add(orig_file);
+              result.add(_res);
+          }
       }
 
 
-	  _logger.info("Analyze xml result: " + result.toString());
+      _logger.info("Analyze xml result: " + result.toString());
       return result;
   }
   private String getExtension(Vector outputTypes, String content_type) {
-	String ret="html";
-	if(outputTypes==null)return ret;
-	if(content_type==null)return ret;
-	
-	for(int i=0;i<outputTypes.size();i++){
-		Hashtable outType = (Hashtable)outputTypes.get(i);
-		if(outType==null)continue;
-		if(!outType.containsKey("conv_type") || !outType.containsKey("file_ext") || 
-				outType.get("conv_type")==null || outType.get("file_ext")==null)continue;
-		String typeId = (String)outType.get("conv_type");
-		if(!content_type.equalsIgnoreCase(typeId))continue;
-		ret = (String)outType.get("file_ext");
-	}
-	
-	return ret;
+    String ret="html";
+    if(outputTypes==null)return ret;
+    if(content_type==null)return ret;
+
+    for(int i=0;i<outputTypes.size();i++){
+        Hashtable outType = (Hashtable)outputTypes.get(i);
+        if(outType==null)continue;
+        if(!outType.containsKey("conv_type") || !outType.containsKey("file_ext") ||
+                outType.get("conv_type")==null || outType.get("file_ext")==null)continue;
+        String typeId = (String)outType.get("conv_type");
+        if(!content_type.equalsIgnoreCase(typeId))continue;
+        ret = (String)outType.get("file_ext");
+    }
+
+    return ret;
 }
 /**
   * Request from XML/RPC client
@@ -234,24 +234,24 @@ public class XQueryService extends RemoteService implements Constants {
 
     //start a job in the Workqueue
     try {
-		//get the trusted URL from source file adapter
-    	sourceURL = SourceFileManager.getSourceFileAdapterURL(
-				getTicket(),sourceURL,isTrustedMode());
-    	newId=xqJobDao.startXQJob(sourceURL, xqFile, resultFile);
+        //get the trusted URL from source file adapter
+        sourceURL = SourceFileManager.getSourceFileAdapterURL(
+                getTicket(),sourceURL,isTrustedMode());
+        newId=xqJobDao.startXQJob(sourceURL, xqFile, resultFile);
 
     } catch (SQLException sqe ) {
-		sqe.printStackTrace();
-	    _logger.error("DB operation failed: " + sqe.toString());
+        sqe.printStackTrace();
+        _logger.error("DB operation failed: " + sqe.toString());
       throw new GDEMException("DB operation failed: " + sqe.toString());
     } catch (MalformedURLException e) {
-		e.printStackTrace();
-	    _logger.error("Source file URL is wrong: " + e.toString());
-    	throw new GDEMException("Source file URL is wrong: " + e.toString());
-	} catch (IOException e) {
-		e.printStackTrace();
-	    _logger.error("Error opening source file: " + e.toString());
-		throw new GDEMException("Error opening source file: " + e.toString());
-	}
+        e.printStackTrace();
+        _logger.error("Source file URL is wrong: " + e.toString());
+        throw new GDEMException("Source file URL is wrong: " + e.toString());
+    } catch (IOException e) {
+        e.printStackTrace();
+        _logger.error("Error opening source file: " + e.toString());
+        throw new GDEMException("Error opening source file: " + e.toString());
+    }
     return newId;
   }
 
@@ -274,7 +274,7 @@ public class XQueryService extends RemoteService implements Constants {
 
       if (jobData==null){ //no such job
         //throw new GDEMException("** No such job with ID=" + jobId + " in the queue.");
-      	status = XQ_JOBNOTFOUND_ERR;
+          status = XQ_JOBNOTFOUND_ERR;
       }
       else{
         scriptData=queryDao.getQueryInfo(jobData[5]);
@@ -291,72 +291,72 @@ public class XQueryService extends RemoteService implements Constants {
 
     Hashtable ret =  result(status, jobData, scriptData, jobId);
     if(_logger.enable(_logger.INFO)){
-    	String result = ret.toString();
-    	if(result.length()>100) result=result.substring(0,100).concat("....");
-    	_logger.info("result: " + result);
+        String result = ret.toString();
+        if(result.length()>100) result=result.substring(0,100).concat("....");
+        _logger.info("result: " + result);
     }
 
-		//remove the job from the queue / DB when the status won't change= FATAL or READY
-		if (status == XQ_FATAL_ERR || status == XQ_READY){
-			try {
-				xqJobDao.endXQJob(jobId);
+        //remove the job from the queue / DB when the status won't change= FATAL or READY
+        if (status == XQ_FATAL_ERR || status == XQ_READY){
+            try {
+                xqJobDao.endXQJob(jobId);
 
         _logger.info("Delete the job: " + jobId);
-			} catch (SQLException sqle) {
-				throw new GDEMException("Error getting XQJob data from DB: " + sqle.toString());
-			}
-			//delete files only, if debug is not enabled
-			if (status == XQ_READY && !_logger.enable(LoggerIF.DEBUG)){
-				//delete the result from filesystem
-				String resultFile = jobData[2];
-				try{
-					Utils.deleteFile(resultFile);
-				}
-				catch(Exception e){
-					_logger.error("Could not delete job result file: " + resultFile + "." + e.getMessage());
-				}
-				//	delete XQuery file, if it is stored in tmp folder
-				String xqFile = jobData[1];
-				try{
-    				//Important!!!: delete only, when the file is stored in tmp folder 
-    				if(xqFile.startsWith(Properties.tmpFolder))
-    					Utils.deleteFile(xqFile);
-				}
-				catch(Exception e){
-					_logger.error("Could not delete job result file: " + xqFile + "." + e.getMessage());
-				}
-			}
-		}
-		return ret;
+            } catch (SQLException sqle) {
+                throw new GDEMException("Error getting XQJob data from DB: " + sqle.toString());
+            }
+            //delete files only, if debug is not enabled
+            if (status == XQ_READY && !_logger.enable(LoggerIF.DEBUG)){
+                //delete the result from filesystem
+                String resultFile = jobData[2];
+                try{
+                    Utils.deleteFile(resultFile);
+                }
+                catch(Exception e){
+                    _logger.error("Could not delete job result file: " + resultFile + "." + e.getMessage());
+                }
+                //	delete XQuery file, if it is stored in tmp folder
+                String xqFile = jobData[1];
+                try{
+                    //Important!!!: delete only, when the file is stored in tmp folder
+                    if(xqFile.startsWith(Properties.tmpFolder))
+                        Utils.deleteFile(xqFile);
+                }
+                catch(Exception e){
+                    _logger.error("Could not delete job result file: " + xqFile + "." + e.getMessage());
+                }
+            }
+        }
+        return ret;
   }
 
-	//Hashtable to be composed for the getResult() method return value
-	private Hashtable result(int status, String[] jobData, HashMap scriptData, String jobId) throws GDEMException{
-		Hashtable h = new Hashtable();
-		int resultCode;
-		String resultValue="";
-		String metatype="";
-		String script_title="";
+    //Hashtable to be composed for the getResult() method return value
+    private Hashtable result(int status, String[] jobData, HashMap scriptData, String jobId) throws GDEMException{
+        Hashtable h = new Hashtable();
+        int resultCode;
+        String resultValue="";
+        String metatype="";
+        String script_title="";
 
-		if (status==XQ_RECEIVED || status==XQ_DOWNLOADING_SRC || status==XQ_PROCESSING) {
-			resultCode=JOB_NOT_READY;
-			resultValue="*** Not ready ***";
-		}
-		else if (status==XQ_JOBNOTFOUND_ERR){
-			resultCode=JOB_LIGHT_ERROR;
-			resultValue="*** No such job or the job result has been already downloaded. ***";
-		}
-		else  {
-			if (status==XQ_READY)
-				resultCode=JOB_READY;
-			else if (status==XQ_LIGHT_ERR)
-				resultCode=JOB_LIGHT_ERROR;
-			else if (status==XQ_FATAL_ERR)
-				resultCode=JOB_FATAL_ERROR;
-			else
-				resultCode=-1; //not expected to reach here
+        if (status==XQ_RECEIVED || status==XQ_DOWNLOADING_SRC || status==XQ_PROCESSING) {
+            resultCode=JOB_NOT_READY;
+            resultValue="*** Not ready ***";
+        }
+        else if (status==XQ_JOBNOTFOUND_ERR){
+            resultCode=JOB_LIGHT_ERROR;
+            resultValue="*** No such job or the job result has been already downloaded. ***";
+        }
+        else  {
+            if (status==XQ_READY)
+                resultCode=JOB_READY;
+            else if (status==XQ_LIGHT_ERR)
+                resultCode=JOB_LIGHT_ERROR;
+            else if (status==XQ_FATAL_ERR)
+                resultCode=JOB_FATAL_ERROR;
+            else
+                resultCode=-1; //not expected to reach here
 
-			try {
+            try {
         int xq_id = 0;
         try {
           xq_id=Integer.parseInt(jobData[5]);
@@ -371,13 +371,13 @@ public class XQueryService extends RemoteService implements Constants {
           script_title = (String)scriptData.get("short_name");
         }
 
-				resultValue=Utils.readStrFromFile(jobData[2]);
-			} catch (Exception ioe ) {
-				resultCode=JOB_FATAL_ERROR;
-				resultValue= "<error>Error reading the XQ value from the file:" + jobData[2] + "</error>";
-			}
+                resultValue=Utils.readStrFromFile(jobData[2]);
+            } catch (Exception ioe ) {
+                resultCode=JOB_FATAL_ERROR;
+                resultValue= "<error>Error reading the XQ value from the file:" + jobData[2] + "</error>";
+            }
 
-		}
+        }
     try{
       h.put(RESULT_CODE_PRM, Integer.toString(resultCode));
       h.put(RESULT_VALUE_PRM, resultValue);
@@ -390,102 +390,102 @@ public class XQueryService extends RemoteService implements Constants {
       throw new GDEMException(err_mess, e);
     }
 
-		return h;
+        return h;
 
-	}
-	/**
-	  * Request from XML/RPC client
-	  * running the QA script on the fly
-	  * @param String url: URL of the srouce XML
-	  * @param String xqScript: XQueryScript ID or -1 (XML Schema validation) to be processed
-	  */
-	  public Vector runQAScript(String orig_file_url, String script_id) throws GDEMException{
+    }
+    /**
+      * Request from XML/RPC client
+      * running the QA script on the fly
+      * @param String url: URL of the srouce XML
+      * @param String xqScript: XQueryScript ID or -1 (XML Schema validation) to be processed
+      */
+      public Vector runQAScript(String orig_file_url, String script_id) throws GDEMException{
 
-	  	Vector result = new Vector();
-	  	ByteArrayOutputStream outstream =null;
-	  	String file_url=null;
-	  	String content_type="text/html";
-	  	byte[] result_bytes;
+          Vector result = new Vector();
+          ByteArrayOutputStream outstream =null;
+          String file_url=null;
+          String content_type="text/html";
+          byte[] result_bytes;
       _logger.debug("==xmlconv== runQAScript: id=" + script_id + " file_url="+ orig_file_url +"; ");
 
-		try{
-			//get the trusted URL from source file adapter
-		    file_url = SourceFileManager.getSourceFileAdapterURL(
-					getTicket(),orig_file_url,isTrustedMode());
-		}
-		catch(Exception e){
-			String err_mess="File URL is incorrect";
-		    _logger.error(err_mess + "; " + e.toString());
-		    throw new GDEMException(err_mess, e);
-		}
-	  	if (script_id.equals(String.valueOf(JOB_VALIDATION))){
-	  		try{
-	  			ValidationService vs = new ValidationService();
-	  			String val_result = vs.validate(file_url);
-	  			result_bytes = val_result.getBytes();
-	  		}
-	  		catch(Exception e){
-	        String err_mess="Could not execute runQAMethod";
-	        _logger.error(err_mess + "; " + e.toString());
-	        throw new GDEMException(err_mess, e);
+        try{
+            //get the trusted URL from source file adapter
+            file_url = SourceFileManager.getSourceFileAdapterURL(
+                    getTicket(),orig_file_url,isTrustedMode());
+        }
+        catch(Exception e){
+            String err_mess="File URL is incorrect";
+            _logger.error(err_mess + "; " + e.toString());
+            throw new GDEMException(err_mess, e);
+        }
+          if (script_id.equals(String.valueOf(JOB_VALIDATION))){
+              try{
+                  ValidationService vs = new ValidationService();
+                  String val_result = vs.validate(file_url);
+                  result_bytes = val_result.getBytes();
+              }
+              catch(Exception e){
+            String err_mess="Could not execute runQAMethod";
+            _logger.error(err_mess + "; " + e.toString());
+            throw new GDEMException(err_mess, e);
 
-	  		}
-	  	}
-	  	else{
-	  		String[] pars = new String[1];
-	  		pars[0] = XQ_SOURCE_PARAM_NAME + "=" + file_url;
+              }
+          }
+          else{
+              String[] pars = new String[1];
+              pars[0] = XQ_SOURCE_PARAM_NAME + "=" + file_url;
 
-	  		try{
-	  			String xqScript = queryDao.getQueryText(script_id);
-	  			HashMap  hash= queryDao.getQueryInfo(script_id);
-	  			String schemaId = (String)hash.get("schema_id");
-	  			Schema schema = null;
-	  			//check because ISchemaDao.getSchema(null)  returns first schema  
-	  			if (schemaId != null) {
-	  				schema = schManager.getSchema( schemaId );
-	  			}
-	  			
-	  			if (Utils.isNullStr(xqScript) || hash == null){
-	  				String err_mess="Could not find QA script with id: " + script_id;
-	  				_logger.error(err_mess);
-	  				throw new GDEMException(err_mess, new Exception());
-	  			}
-	  			else{
-	  				if (!Utils.isNullStr((String)hash.get("meta_type")))
-    					content_type = (String)hash.get("meta_type");
-	  				outstream = new ByteArrayOutputStream();
-	  				XQScript xq = new XQScript(xqScript, pars, (String)hash.get("content_type"));
-	  				xq.setScriptType((String)hash.get("script_type"));
-	  				xq.setSrcFileUrl(file_url);
-	  				xq.setSchema(schema);
-	  				
-	  				String xqResult = xq.getResult();
-	  				
-	  				//xq.getResult(outstream);
-	  				//result_bytes = outstream.toByteArray();
-	  				result_bytes =  xqResult.getBytes();
-	  				
-	  			}
-	  		} catch (SQLException sqle) {
-	  			throw new GDEMException("Error getting data from DB: " + sqle.toString());
-	  		}
-	  		catch(Exception e){
-	        String err_mess="Could not execute runQAMethod";
-	        _logger.error(err_mess + "; " + e.toString());
-	        throw new GDEMException(err_mess, e);
-	  		}
-	  		finally{
-	  			if (outstream!=null)
-	  				try{
-	  					outstream.flush();
-	  					outstream.close();
-	  				}
-      			catch(Exception e){}
-	  		}
-	  	}
-  		result.add(content_type);
-  		result.add(result_bytes);
-  		return result;
+              try{
+                  String xqScript = queryDao.getQueryText(script_id);
+                  HashMap  hash= queryDao.getQueryInfo(script_id);
+                  String schemaId = (String)hash.get("schema_id");
+                  Schema schema = null;
+                  //check because ISchemaDao.getSchema(null)  returns first schema
+                  if (schemaId != null) {
+                      schema = schManager.getSchema( schemaId );
+                  }
+
+                  if (Utils.isNullStr(xqScript) || hash == null){
+                      String err_mess="Could not find QA script with id: " + script_id;
+                      _logger.error(err_mess);
+                      throw new GDEMException(err_mess, new Exception());
+                  }
+                  else{
+                      if (!Utils.isNullStr((String)hash.get("meta_type")))
+                        content_type = (String)hash.get("meta_type");
+                      outstream = new ByteArrayOutputStream();
+                      XQScript xq = new XQScript(xqScript, pars, (String)hash.get("content_type"));
+                      xq.setScriptType((String)hash.get("script_type"));
+                      xq.setSrcFileUrl(file_url);
+                      xq.setSchema(schema);
+
+                      String xqResult = xq.getResult();
+
+                      //xq.getResult(outstream);
+                      //result_bytes = outstream.toByteArray();
+                      result_bytes =  xqResult.getBytes();
+
+                  }
+              } catch (SQLException sqle) {
+                  throw new GDEMException("Error getting data from DB: " + sqle.toString());
+              }
+              catch(Exception e){
+            String err_mess="Could not execute runQAMethod";
+            _logger.error(err_mess + "; " + e.toString());
+            throw new GDEMException(err_mess, e);
+              }
+              finally{
+                  if (outstream!=null)
+                      try{
+                          outstream.flush();
+                          outstream.close();
+                      }
+                  catch(Exception e){}
+              }
+          }
+          result.add(content_type);
+          result.add(result_bytes);
+          return result;
   }
 
 

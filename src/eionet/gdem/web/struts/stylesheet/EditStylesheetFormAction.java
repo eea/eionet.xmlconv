@@ -43,65 +43,65 @@ import eionet.gdem.utils.Utils;
 
 public class EditStylesheetFormAction extends Action {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-		ActionMessages errors = new ActionMessages();
+        ActionMessages errors = new ActionMessages();
 
-		StylesheetForm form = (StylesheetForm) actionForm;
-		String stylesheetId = (String) httpServletRequest.getParameter("stylesheetId");
+        StylesheetForm form = (StylesheetForm) actionForm;
+        String stylesheetId = (String) httpServletRequest.getParameter("stylesheetId");
 
-		if (stylesheetId == null || stylesheetId.equals("")) {
-			stylesheetId = (String) httpServletRequest.getAttribute("stylesheetId");
-		}
+        if (stylesheetId == null || stylesheetId.equals("")) {
+            stylesheetId = (String) httpServletRequest.getAttribute("stylesheetId");
+        }
 
-		ConvTypeHolder ctHolder = new ConvTypeHolder();
+        ConvTypeHolder ctHolder = new ConvTypeHolder();
 
-		try {
-			StylesheetManager st = new StylesheetManager();
-			Stylesheet stylesheet = st.getStylesheet(stylesheetId);
-			form.setDescription(stylesheet.getXsl_descr());
-			form.setOutputtype(stylesheet.getType());
-			form.setSchema(stylesheet.getSchema());
-			form.setStylesheetId(stylesheet.getConvId());
-			form.setXsl(stylesheet.getXsl());
-			form.setXslContent(stylesheet.getXslContent());
-			form.setXslFileName(stylesheet.getXslFileName());
-			form.setModified(stylesheet.getModified());
-			form.setChecksum(stylesheet.getChecksum());
-			// set empty string if dependsOn is null to avoid struts error in define tag:
-			// Define tag cannot set a null value
-			form.setDependsOn(stylesheet.getDependsOn() == null ? "" : stylesheet.getDependsOn());
+        try {
+            StylesheetManager st = new StylesheetManager();
+            Stylesheet stylesheet = st.getStylesheet(stylesheetId);
+            form.setDescription(stylesheet.getXsl_descr());
+            form.setOutputtype(stylesheet.getType());
+            form.setSchema(stylesheet.getSchema());
+            form.setStylesheetId(stylesheet.getConvId());
+            form.setXsl(stylesheet.getXsl());
+            form.setXslContent(stylesheet.getXslContent());
+            form.setXslFileName(stylesheet.getXslFileName());
+            form.setModified(stylesheet.getModified());
+            form.setChecksum(stylesheet.getChecksum());
+            // set empty string if dependsOn is null to avoid struts error in define tag:
+            // Define tag cannot set a null value
+            form.setDependsOn(stylesheet.getDependsOn() == null ? "" : stylesheet.getDependsOn());
 
-			ctHolder = st.getConvTypes();
+            ctHolder = st.getConvTypes();
 
-			httpServletRequest.getSession().setAttribute("stylesheet.outputtypeSel", stylesheet.getType());
+            httpServletRequest.getSession().setAttribute("stylesheet.outputtypeSel", stylesheet.getType());
 
-			SchemaManager schema = new SchemaManager();
-			StylesheetManager styleMan = new StylesheetManager();
-			ArrayList schemas = schema.getDDSchemas();
+            SchemaManager schema = new SchemaManager();
+            StylesheetManager styleMan = new StylesheetManager();
+            ArrayList schemas = schema.getDDSchemas();
 
-			httpServletRequest.getSession().setAttribute("stylesheet.DDSchemas", schemas);
-			
-			String schemaId = schema.getSchemaId(stylesheet.getSchema());
-			if (!Utils.isNullStr(schemaId)) {
-				httpServletRequest.setAttribute("schemaInfo", schema.getSchema(schemaId));
-				httpServletRequest.setAttribute("existingStylesheets", styleMan.getSchemaStylesheets(schemaId, stylesheetId));
-			}
+            httpServletRequest.getSession().setAttribute("stylesheet.DDSchemas", schemas);
 
-			StylesheetListLoader.loadStylesheetList(httpServletRequest, false);
+            String schemaId = schema.getSchemaId(stylesheet.getSchema());
+            if (!Utils.isNullStr(schemaId)) {
+                httpServletRequest.setAttribute("schemaInfo", schema.getSchema(schemaId));
+                httpServletRequest.setAttribute("existingStylesheets", styleMan.getSchemaStylesheets(schemaId, stylesheetId));
+            }
+
+            StylesheetListLoader.loadStylesheetList(httpServletRequest, false);
 
 
-		} catch (DCMException e) {
-			e.printStackTrace();
-			_logger.error("Edit stylesheet error",e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-			saveErrors(httpServletRequest, errors);
-		}
-		httpServletRequest.getSession().setAttribute("stylesheet.outputtype", ctHolder);
+        } catch (DCMException e) {
+            e.printStackTrace();
+            _logger.error("Edit stylesheet error",e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+            saveErrors(httpServletRequest, errors);
+        }
+        httpServletRequest.getSession().setAttribute("stylesheet.outputtype", ctHolder);
 
-		return actionMapping.findForward("success");
-	}
+        return actionMapping.findForward("success");
+    }
 }

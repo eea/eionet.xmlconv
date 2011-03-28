@@ -3,18 +3,18 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is XMLCONV.
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency.  Portions created by Tieto Eesti are Copyright
  * (C) European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributor(s):
  * Enriko Käsper, Tieto Estonia
  */
@@ -45,109 +45,109 @@ import eionet.gdem.utils.Utils;
 
 public class BackupManager {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
-	private  IBackupDao backupDao = GDEMServices.getDaoService().getBackupDao();
+    private  IBackupDao backupDao = GDEMServices.getDaoService().getBackupDao();
 
-	public void backupFile(String folderName, String fileName, String id, String user){
+    public void backupFile(String folderName, String fileName, String id, String user){
 
-		File origFile = new File(folderName, fileName);
-		if(!origFile.exists())return; //there's nothing to backup since file does not exist
+        File origFile = new File(folderName, fileName);
+        if(!origFile.exists())return; //there's nothing to backup since file does not exist
 
-		long timestamp = System.currentTimeMillis();
-		String backupFileName = Constants.BACKUP_FILE_PREFIX + id + "_" + timestamp + fileName.substring(fileName.lastIndexOf("."));
+        long timestamp = System.currentTimeMillis();
+        String backupFileName = Constants.BACKUP_FILE_PREFIX + id + "_" + timestamp + fileName.substring(fileName.lastIndexOf("."));
 
-		//backup folder is the subfolder
-		String backupFolderName = folderName + File.separator + Constants.BACKUP_FOLDER_NAME;
-		File backupFolder = new File(backupFolderName);
-		if(!backupFolder.exists())backupFolder.mkdir(); //create backup folder if it does not exist
+        //backup folder is the subfolder
+        String backupFolderName = folderName + File.separator + Constants.BACKUP_FOLDER_NAME;
+        File backupFolder = new File(backupFolderName);
+        if(!backupFolder.exists())backupFolder.mkdir(); //create backup folder if it does not exist
 
-		File backupFile = new File(backupFolderName, backupFileName);
+        File backupFile = new File(backupFolderName, backupFileName);
 
-		try{
-			Utils.copyFile(origFile, backupFile);
-			BackupDto backup = new BackupDto();
-			backup.setFileName(backupFileName);
-			backup.setQueryId(id);
-			backup.setUser(user);
-			backup.setTimestamp(new Timestamp(timestamp));
-			backupDao.addBackup(backup);
-		}
-		catch(Exception e){
-			_logger.error("Unable to create backupfile - copy original file " + origFile.getPath() + " to " +
-					backupFile.getPath() + ". " + e.toString());
-			e.printStackTrace();
-		}
-	}
-	public List<BackupDto> getBackups(String objectId) throws DCMException{
-		try {
-			return backupDao.getBackups(objectId);
-		} catch (Exception e) {
-			//e.printStackTrace();
-			_logger.error("Error getting backups for QA script: " + objectId, e);
-			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-		}
+        try{
+            Utils.copyFile(origFile, backupFile);
+            BackupDto backup = new BackupDto();
+            backup.setFileName(backupFileName);
+            backup.setQueryId(id);
+            backup.setUser(user);
+            backup.setTimestamp(new Timestamp(timestamp));
+            backupDao.addBackup(backup);
+        }
+        catch(Exception e){
+            _logger.error("Unable to create backupfile - copy original file " + origFile.getPath() + " to " +
+                    backupFile.getPath() + ". " + e.toString());
+            e.printStackTrace();
+        }
+    }
+    public List<BackupDto> getBackups(String objectId) throws DCMException{
+        try {
+            return backupDao.getBackups(objectId);
+        } catch (Exception e) {
+            //e.printStackTrace();
+            _logger.error("Error getting backups for QA script: " + objectId, e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
 
-	}
-	/**
-	 * Remove backup files and refereces in database
-	 * @param nofDays - number of days to keep
-	 * @return
-	 * @throws DCMException
-	 */
-	public int purgeBackup(int nofDays) throws DCMException{
-		int result =0;
-		
-		Calendar purgeDate = Calendar.getInstance();
-		purgeDate.add(Calendar.DATE, -nofDays);
-		
-		SimpleDateFormat sf = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
-		_logger.info("Purge backup files created before: " + sf.format(new Date(purgeDate.getTimeInMillis())));
-		
-		long purgeDateInMillis =purgeDate.getTimeInMillis() ;
-		Timestamp ts = new Timestamp(purgeDateInMillis);
-		
-		File backupFolder = new File(Properties.queriesFolder, Constants.BACKUP_FOLDER_NAME);
-		
-		if(backupFolder.exists() && backupFolder.isDirectory()){
-			File[] files = backupFolder.listFiles();
-			for (int i=0;i<files.length; i++){
-				String fileName = files[i].getName();
-				//check if it is backup file
-				if (!files[i].isFile() || !fileName.startsWith(Constants.BACKUP_FILE_PREFIX)) continue;
-				int start = fileName.indexOf("_", Constants.BACKUP_FILE_PREFIX.length());
-				int end = fileName.lastIndexOf(".");
-				String fileTimestamp = fileName.substring(start+1, end);
-				
-				long lFileTimestamp = 0;
-				try{
-					lFileTimestamp = Long.parseLong(fileTimestamp);
-				}catch(ClassCastException e){
-					continue;
-				}
-				if(lFileTimestamp<purgeDateInMillis){
-					try{
-						files[i].delete();
-						result++;
-					}
-					catch(Exception ioe){
-						_logger.error("Unable to delete backup file: " + files[i].getPath(), ioe);						
-					}
-				}
-				
-			}
-		}
-		_logger.info("Number of back files deleted: " + result);
-		//remove database rows
-		try {
-			backupDao.removeBackupsOlderThan(ts);
-		} catch (Exception e) {
-			//e.printStackTrace();
-			_logger.error("Error removing backups.", e);
-			throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-		}
-		return result;
-	}
+    }
+    /**
+     * Remove backup files and refereces in database
+     * @param nofDays - number of days to keep
+     * @return
+     * @throws DCMException
+     */
+    public int purgeBackup(int nofDays) throws DCMException{
+        int result =0;
+
+        Calendar purgeDate = Calendar.getInstance();
+        purgeDate.add(Calendar.DATE, -nofDays);
+
+        SimpleDateFormat sf = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
+        _logger.info("Purge backup files created before: " + sf.format(new Date(purgeDate.getTimeInMillis())));
+
+        long purgeDateInMillis =purgeDate.getTimeInMillis() ;
+        Timestamp ts = new Timestamp(purgeDateInMillis);
+
+        File backupFolder = new File(Properties.queriesFolder, Constants.BACKUP_FOLDER_NAME);
+
+        if(backupFolder.exists() && backupFolder.isDirectory()){
+            File[] files = backupFolder.listFiles();
+            for (int i=0;i<files.length; i++){
+                String fileName = files[i].getName();
+                //check if it is backup file
+                if (!files[i].isFile() || !fileName.startsWith(Constants.BACKUP_FILE_PREFIX)) continue;
+                int start = fileName.indexOf("_", Constants.BACKUP_FILE_PREFIX.length());
+                int end = fileName.lastIndexOf(".");
+                String fileTimestamp = fileName.substring(start+1, end);
+
+                long lFileTimestamp = 0;
+                try{
+                    lFileTimestamp = Long.parseLong(fileTimestamp);
+                }catch(ClassCastException e){
+                    continue;
+                }
+                if(lFileTimestamp<purgeDateInMillis){
+                    try{
+                        files[i].delete();
+                        result++;
+                    }
+                    catch(Exception ioe){
+                        _logger.error("Unable to delete backup file: " + files[i].getPath(), ioe);
+                    }
+                }
+
+            }
+        }
+        _logger.info("Number of back files deleted: " + result);
+        //remove database rows
+        try {
+            backupDao.removeBackupsOlderThan(ts);
+        } catch (Exception e) {
+            //e.printStackTrace();
+            _logger.error("Error removing backups.", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
+        return result;
+    }
 
 }
 

@@ -3,18 +3,18 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is XMLCONV.
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency.  Portions created by Tieto Eesti are Copyright
  * (C) European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributor(s):
  * Enriko Käsper, Tieto Estonia
  */
@@ -42,60 +42,60 @@ import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 /**
  * QASandboxFormAction
  * Open sandbox form. Optionally load the form from session.
- * 
- * @author Enriko Käsper, Tieto Estonia 
+ *
+ * @author Enriko Käsper, Tieto Estonia
  */
 
 public class QASandboxFormAction extends Action {
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-		ActionErrors errors = new ActionErrors();
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
+            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        ActionErrors errors = new ActionErrors();
 
-		// get the schemas list from the session
-		Object schemasInSession = httpServletRequest.getSession().getAttribute("qascript.qascriptList");
+        // get the schemas list from the session
+        Object schemasInSession = httpServletRequest.getSession().getAttribute("qascript.qascriptList");
 
-		// reset the form in the session
-		QASandboxForm cForm = (QASandboxForm) actionForm;
+        // reset the form in the session
+        QASandboxForm cForm = (QASandboxForm) actionForm;
 
-		boolean resetForm = true;
-		if (httpServletRequest.getParameter("reset") != null) {
-			resetForm = !"false".equals((String) httpServletRequest.getParameter("reset"));
-		}
-		if (resetForm) {
-			cForm.resetAll(actionMapping, httpServletRequest);
-		}
+        boolean resetForm = true;
+        if (httpServletRequest.getParameter("reset") != null) {
+            resetForm = !"false".equals((String) httpServletRequest.getParameter("reset"));
+        }
+        if (resetForm) {
+            cForm.resetAll(actionMapping, httpServletRequest);
+        }
 
-		try {
-			// if schemas list is not stored in the session, then load it from
-			// the database
-			if (schemasInSession == null || ((QAScriptListHolder) schemasInSession).getQascripts().size() == 0) {
-				QAScriptListLoader.loadQAScriptList(httpServletRequest, true);
-			}
-		} catch (DCMException e) {
-			e.printStackTrace();
-			_logger.error("QA Sandbox fomr error error", e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-			saveMessages(httpServletRequest, errors);
-		}
+        try {
+            // if schemas list is not stored in the session, then load it from
+            // the database
+            if (schemasInSession == null || ((QAScriptListHolder) schemasInSession).getQascripts().size() == 0) {
+                QAScriptListLoader.loadQAScriptList(httpServletRequest, true);
+            }
+        } catch (DCMException e) {
+            e.printStackTrace();
+            _logger.error("QA Sandbox fomr error error", e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+            saveMessages(httpServletRequest, errors);
+        }
 
-		saveErrors(httpServletRequest, errors);
-		return actionMapping.findForward("success");
-	}
+        saveErrors(httpServletRequest, errors);
+        return actionMapping.findForward("success");
+    }
 
-	/**
-	 * load schemas form db
-	 * 
-	 * @return
-	 * @throws DCMException
-	 */
-	private QAScriptListHolder loadSchemas(String userName) throws DCMException {
+    /**
+     * load schemas form db
+     *
+     * @return
+     * @throws DCMException
+     */
+    private QAScriptListHolder loadSchemas(String userName) throws DCMException {
 
-		QAScriptListHolder schemas = null;
-		SchemaManager sm = new SchemaManager();
+        QAScriptListHolder schemas = null;
+        SchemaManager sm = new SchemaManager();
 
-		schemas = sm.getSchemasWithQAScripts(userName);
-		return schemas;
-	}
+        schemas = sm.getSchemasWithQAScripts(userName);
+        return schemas;
+    }
 }

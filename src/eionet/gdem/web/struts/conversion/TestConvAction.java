@@ -33,65 +33,65 @@ import eionet.gdem.utils.Utils;
 
 public class TestConvAction extends Action{
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException{
-	
-	ActionErrors errors = new ActionErrors();
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException{
 
-	String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
+    ActionErrors errors = new ActionErrors();
 
-	ConversionForm cForm = (ConversionForm) actionForm;
+    String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
 
-	String url = cForm.getUrl();
-	String convert_id = cForm.getConversionId();
-	String errorForward = cForm.getErrorForward();
-	
-	httpServletRequest.getSession().setAttribute("converted.url", url);
-	httpServletRequest.getSession().setAttribute("converted.conversionId", convert_id);
+    ConversionForm cForm = (ConversionForm) actionForm;
 
-	//create custom HttpServletResponseWrapper		
-	HttpMethodResponseWrapper methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
-	//get request parameters
-	try{
-		//parse request parameters
-		if(Utils.isNullStr(convert_id)){
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.noconversionselected"));
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward(errorForward);			
-		}
-		if(Utils.isNullStr(url)){
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.selectSource"));
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward(errorForward);
-		}
-		if(!Utils.isURL(url)){
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.url.malformed"));
-			httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-			return actionMapping.findForward(errorForward);
-		}
-		
-		// call ConversionService
-		ConversionServiceIF cs = new ConversionService();
-		//set up the servlet outputstream form converter
-		cs.setHttpResponse(methodResponse);
-		cs.setTicket(ticket);
-		// execute conversion
-		cs.convert(url, convert_id);
-		//flush the content
-		methodResponse.flush();
-	}
-	catch(Exception e){
-		e.printStackTrace();
-		_logger.error("Error testing conversion",e);
-		HttpSession sess = httpServletRequest.getSession(true);
-		//GDEMException err= new GDEMException(errMsg);
+    String url = cForm.getUrl();
+    String convert_id = cForm.getConversionId();
+    String errorForward = cForm.getErrorForward();
 
-		sess.setAttribute("gdem.exception", new GDEMException("Error testing conversion"));
+    httpServletRequest.getSession().setAttribute("converted.url", url);
+    httpServletRequest.getSession().setAttribute("converted.conversionId", convert_id);
 
-		httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/" + Names.ERROR_JSP);
-	}
-	//Do nothing, then response is already sent.		
-	return actionMapping.findForward(null);	
-	}
+    //create custom HttpServletResponseWrapper
+    HttpMethodResponseWrapper methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
+    //get request parameters
+    try{
+        //parse request parameters
+        if(Utils.isNullStr(convert_id)){
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.noconversionselected"));
+            httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+            return actionMapping.findForward(errorForward);
+        }
+        if(Utils.isNullStr(url)){
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.selectSource"));
+            httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+            return actionMapping.findForward(errorForward);
+        }
+        if(!Utils.isURL(url)){
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.url.malformed"));
+            httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+            return actionMapping.findForward(errorForward);
+        }
+
+        // call ConversionService
+        ConversionServiceIF cs = new ConversionService();
+        //set up the servlet outputstream form converter
+        cs.setHttpResponse(methodResponse);
+        cs.setTicket(ticket);
+        // execute conversion
+        cs.convert(url, convert_id);
+        //flush the content
+        methodResponse.flush();
+    }
+    catch(Exception e){
+        e.printStackTrace();
+        _logger.error("Error testing conversion",e);
+        HttpSession sess = httpServletRequest.getSession(true);
+        //GDEMException err= new GDEMException(errMsg);
+
+        sess.setAttribute("gdem.exception", new GDEMException("Error testing conversion"));
+
+        httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/" + Names.ERROR_JSP);
+    }
+    //Do nothing, then response is already sent.
+    return actionMapping.findForward(null);
+    }
 }

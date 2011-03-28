@@ -2,73 +2,73 @@
 
 
 .ok-msg {
-	border: 2px solid green;
+    border: 2px solid green;
         padding: 0.5em 0.5em 0.5em 24px;
-	background: url('../images/ok.gif') 5px 5px no-repeat;
-	color: #008000;
-	font-size: 110%;
-	font-weight: bold;
+    background: url('../images/ok.gif') 5px 5px no-repeat;
+    color: #008000;
+    font-size: 110%;
+    font-weight: bold;
 }
 
 fieldset {
-	margin: 0.5em 0em 0.5em 0em;
-	padding: 0.5em 0.5em 0.5em 0.5em;
+    margin: 0.5em 0em 0.5em 0em;
+    padding: 0.5em 0.5em 0.5em 0.5em;
 }
 legend {
-	padding: 0.2em;
-	font-size: 100%;
+    padding: 0.2em;
+    font-size: 100%;
 }
 
 textarea {
-	color: #000;
-	background-color: white;
-	width: 100%;
+    color: #000;
+    background-color: white;
+    width: 100%;
 }
 input {
-	visibility: visible;
-	color: #000;
-	vertical-align: bottom;
+    visibility: visible;
+    color: #000;
+    vertical-align: bottom;
 }
 
 
 input[disabled]{
-	color: gray;
-	border-color: gray;
+    color: gray;
+    border-color: gray;
 }
 
 /*Opera*/
 input[disabled=false]{
-	color: black;
-	border-color: #C60;
+    color: black;
+    border-color: #C60;
 }
 
 .boxbottombuttons {
-	margin: 0px;
-	padding: 4px 10px;
-	background: #FFF;
-	text-align: left;
+    margin: 0px;
+    padding: 4px 10px;
+    background: #FFF;
+    text-align: left;
 }
 
 /*  Zebra table */
 tr.zebraeven {
-	background-color: #f6f6f6;
+    background-color: #f6f6f6;
 }
 
 tr.even {
-	background-color: #f6f6f6;
+    background-color: #f6f6f6;
 }
 
 @media screen { /* To prevent PocketPC from loading the stylesheet */
 /* REDESIGNED PART START */
 
 table.formtable {
-	width: 100%;
+    width: 100%;
 }
 .formtable .labelcol {
-	width: 25%;
+    width: 25%;
 }
 .formtable .entrycol {
-	width: 75%;
+    width: 75%;
 }
 /* REDESIGNED PART END */
 

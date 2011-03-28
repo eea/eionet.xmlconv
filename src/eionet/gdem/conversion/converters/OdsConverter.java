@@ -36,42 +36,42 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 public class OdsConverter extends ConvertStartegy {
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
-	public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException, Exception {
-		FileOutputStream xmlOut = null;
-		String xmlFile = tmpFolder + "gdem_out" + System.currentTimeMillis() + ".xml";
-		String odsFile = tmpFolder + "gdem_out" + System.currentTimeMillis() + ".ods";
+    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException, Exception {
+        FileOutputStream xmlOut = null;
+        String xmlFile = tmpFolder + "gdem_out" + System.currentTimeMillis() + ".xml";
+        String odsFile = tmpFolder + "gdem_out" + System.currentTimeMillis() + ".ods";
 
-		try {
-			xmlOut = new FileOutputStream(xmlFile);
-			runXslTransformation(source, xslt, xmlOut);
-			OpenDocumentProcessor odp = new OpenDocumentProcessor();
-			if (result != null)
-				odp.makeSpreadsheet(xmlFile, result);
-			else
-				odp.makeSpreadsheet(xmlFile, odsFile);
+        try {
+            xmlOut = new FileOutputStream(xmlFile);
+            runXslTransformation(source, xslt, xmlOut);
+            OpenDocumentProcessor odp = new OpenDocumentProcessor();
+            if (result != null)
+                odp.makeSpreadsheet(xmlFile, result);
+            else
+                odp.makeSpreadsheet(xmlFile, odsFile);
 
 
-		} catch (FileNotFoundException e) {
-			_logger.error("Error " + e.toString(), e);
-			throw new GDEMException("Error transforming OpenDocument Spreadhseet " + e.toString(), e);
-		}
-		finally{
-			if (xmlOut!=null){
-				try {
-					xmlOut.close();
-				} catch (IOException ioe) {}
-			}
-		}
-		try {
-			Utils.deleteFile(xmlFile);
-		} catch (Exception e) {
-			_logger.error("Couldn't delete the result file: " + xmlFile, e);
-		}
+        } catch (FileNotFoundException e) {
+            _logger.error("Error " + e.toString(), e);
+            throw new GDEMException("Error transforming OpenDocument Spreadhseet " + e.toString(), e);
+        }
+        finally{
+            if (xmlOut!=null){
+                try {
+                    xmlOut.close();
+                } catch (IOException ioe) {}
+            }
+        }
+        try {
+            Utils.deleteFile(xmlFile);
+        } catch (Exception e) {
+            _logger.error("Couldn't delete the result file: " + xmlFile, e);
+        }
 
-		return odsFile;
-	}
+        return odsFile;
+    }
 
 
 }

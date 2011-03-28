@@ -23,10 +23,10 @@ import eionet.gdem.test.mocks.MockStrutsMultipartRequestSimulator;
 
 public class AddUplSchemaActionTest extends MockStrutsTestCase {
 
-	private  IUPLSchemaDao uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
-	private String schemaUrl="Upadted URL";
-	private String description="Updated description";
-	   
+    private  IUPLSchemaDao uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
+    private String schemaUrl="Upadted URL";
+    private String description="Updated description";
+
    public AddUplSchemaActionTest(String testName) {
         super(testName);
     }
@@ -34,9 +34,9 @@ public class AddUplSchemaActionTest extends MockStrutsTestCase {
     public void setUp() throws Exception {
         super.setUp();
         //set struts-confg file location
-	    setConfigFile(TestUtils.getStrutsConfigLocation());
-	    // set tempdir property for executing multi-part requests. Struts tries to save the sent file temprarily
-		context.setAttribute("javax.servlet.context.tempdir", new File(TestUtils.getStrutsTempDir(this)));
+        setConfigFile(TestUtils.getStrutsConfigLocation());
+        // set tempdir property for executing multi-part requests. Struts tries to save the sent file temprarily
+        context.setAttribute("javax.servlet.context.tempdir", new File(TestUtils.getStrutsTempDir(this)));
         setInitParameter("validating","false");
         //setup database
         DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
@@ -44,21 +44,21 @@ public class AddUplSchemaActionTest extends MockStrutsTestCase {
     }
     /**
      * Tests successful adding. Verifies the action message and forward
-     * @throws Exception 
-     * 
+     * @throws Exception
+     *
      */
     public void testSuccessfulForward() throws Exception {
-    	int countUplSchema = uplSchemaDao.getUplSchema().size();
-    	//overwrite the default StrutsRequestSimulator and mock multipartrequest object
+        int countUplSchema = uplSchemaDao.getUplSchema().size();
+        //overwrite the default StrutsRequestSimulator and mock multipartrequest object
         request = new MockStrutsMultipartRequestSimulator(config.getServletContext());
         setRequestPathInfo("/addUplSchema");
-   		
-    	HttpSession session = request.getSession();
+
+        HttpSession session = request.getSession();
         session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
 
         addRequestParameter("schemaUrl",schemaUrl);
         addRequestParameter("description",description);
-        ((MockStrutsMultipartRequestSimulator)request).writeFile("schemaFile",getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA).getFile(),"text/xml");       
+        ((MockStrutsMultipartRequestSimulator)request).writeFile("schemaFile",getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA).getFile(),"text/xml");
 
         actionPerform();
         verifyForward("success");
@@ -70,33 +70,33 @@ public class AddUplSchemaActionTest extends MockStrutsTestCase {
 
         int countUplSchema2 = uplSchemaDao.getUplSchema().size();
         assertEquals(countUplSchema+1,countUplSchema2);
-        
+
     }
     /**
      * Tests adding schema with user without appropriate permissions
-     * @throws Exception 
-     * 
+     * @throws Exception
+     *
      */
     public void testFailedNotPermissions() throws Exception {
 
-    	int countUplSchema = uplSchemaDao.getUplSchema().size();
-    	//overwrite the default StrutsRequestSimulator and mock multipartrequest object
+        int countUplSchema = uplSchemaDao.getUplSchema().size();
+        //overwrite the default StrutsRequestSimulator and mock multipartrequest object
         request = new MockStrutsMultipartRequestSimulator(config.getServletContext());
         setRequestPathInfo("/addUplSchema");
-   		
-    	HttpSession session = request.getSession();
+
+        HttpSession session = request.getSession();
         session.setAttribute("user", TestConstants.TEST_USER);
 
         addRequestParameter("schemaUrl",schemaUrl);
         addRequestParameter("description",description);
-        ((MockStrutsMultipartRequestSimulator)request).writeFile("schemaFile",getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA).getFile(),"text/xml");       
+        ((MockStrutsMultipartRequestSimulator)request).writeFile("schemaFile",getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA).getFile(),"text/xml");
 
         actionPerform();
         verifyForward("success");
         verifyForwardPath("/do/uplSchemas");
         String[] errMess = {BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_INSERT};
         verifyActionErrors(errMess);
-        
+
         //check if the row was added or not
         int countUplSchema2 = uplSchemaDao.getUplSchema().size();
         assertEquals(countUplSchema,countUplSchema2);
@@ -106,13 +106,13 @@ public class AddUplSchemaActionTest extends MockStrutsTestCase {
      */
     public void testFailedFileNotFound()throws Exception {
 
-    	int countUplSchema = uplSchemaDao.getUplSchema().size();
+        int countUplSchema = uplSchemaDao.getUplSchema().size();
         //HttpSession session = request.getSession();
         //session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
 
         addRequestParameter("schemaUrl","");
         addRequestParameter("description",description);
-        
+
         setRequestPathInfo("/addUplSchema");
         actionPerform();
         verifyForward("fail");
@@ -123,7 +123,7 @@ public class AddUplSchemaActionTest extends MockStrutsTestCase {
         //check if the row was added or not
         int countUplSchema2 = uplSchemaDao.getUplSchema().size();
         assertEquals(countUplSchema,countUplSchema2);
-        
+
     }
 }
 

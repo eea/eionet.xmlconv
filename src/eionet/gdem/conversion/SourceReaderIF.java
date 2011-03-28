@@ -54,7 +54,7 @@ public void initReader(InputStream input) throws GDEMException;
 /**
 * Goes through the source file and writes the data into DD_XMLInstance as xml
 * @param DD_XMLInstance instance - XML instance file, where the structure xml has been efined before
- * @throws Exception 
+ * @throws Exception
 */
 public void writeContentToInstance(DD_XMLInstance instance)throws Exception;
 /**

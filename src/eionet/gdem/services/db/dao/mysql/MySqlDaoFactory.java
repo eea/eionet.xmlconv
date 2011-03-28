@@ -21,56 +21,56 @@ import eionet.gdem.services.db.dao.IXQJobDao;
 
 public class MySqlDaoFactory extends DCMDaoFactory{
 
-	
-	
-	public IStyleSheetDao getStyleSheetDao(){
-		return new StyleSheetMySqlDao();
-	}    
 
-	public IXFormDao getXFormDao(){
-		return new XFormMySqlDao();
-	}
-	
-	public IHostDao getHostDao(){
-		return new HostMySqlDao();
-	}
-	
-	public IQueryDao getQueryDao(){
-		return new QueryMySqlDao();
-	}
-    
-	public IRootElemDao getRootElemDao(){
-		return new RootElemMySqlDao();
-	}
-	
-	public IUPLSchemaDao getUPLSchemaDao(){
-		return new UPLSchemaMySqlDao();
-	}
-	
-	public IXFBrowserDao getXFBrowserDao(){
-		return new XFBrowserMySqlDao();
-	}
-	
-	public ISchemaDao getSchemaDao(){
-		return new SchemaMySqlDao();
-	}
-	
-	public IXQJobDao getXQJobDao(){
-		return new XQJobMySqlDao();
-	}
 
-	public IConvTypeDao getConvTypeDao(){
-		return new ConvTypeMySqlDao();
-	}
+    public IStyleSheetDao getStyleSheetDao(){
+        return new StyleSheetMySqlDao();
+    }
 
-	public IUPLXmlFileDao getUPLXmlFileDao() {
-		return new UplXmlFileMySqlDao();
-	}	
+    public IXFormDao getXFormDao(){
+        return new XFormMySqlDao();
+    }
 
-	public IBackupDao getBackupDao() {
-		return new BackupMySqlDao();
-	}	
-	
-	
-	
+    public IHostDao getHostDao(){
+        return new HostMySqlDao();
+    }
+
+    public IQueryDao getQueryDao(){
+        return new QueryMySqlDao();
+    }
+
+    public IRootElemDao getRootElemDao(){
+        return new RootElemMySqlDao();
+    }
+
+    public IUPLSchemaDao getUPLSchemaDao(){
+        return new UPLSchemaMySqlDao();
+    }
+
+    public IXFBrowserDao getXFBrowserDao(){
+        return new XFBrowserMySqlDao();
+    }
+
+    public ISchemaDao getSchemaDao(){
+        return new SchemaMySqlDao();
+    }
+
+    public IXQJobDao getXQJobDao(){
+        return new XQJobMySqlDao();
+    }
+
+    public IConvTypeDao getConvTypeDao(){
+        return new ConvTypeMySqlDao();
+    }
+
+    public IUPLXmlFileDao getUPLXmlFileDao() {
+        return new UplXmlFileMySqlDao();
+    }
+
+    public IBackupDao getBackupDao() {
+        return new BackupMySqlDao();
+    }
+
+
+
 }

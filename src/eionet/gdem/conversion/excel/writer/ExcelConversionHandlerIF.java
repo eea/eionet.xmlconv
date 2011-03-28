@@ -78,11 +78,11 @@ public interface ExcelConversionHandlerIF  {
   * @param repeated - the number of new rows
   */
   public void addColumns(String def_style, String def_type, int repeated);
-  
+
   /**
   * Adds a new cell to the active worksheet and active row
   * @param type - data type for the new cell, if not defined, then inherited from parent level
-  * @param str_value - cell value 
+  * @param str_value - cell value
   * @param style_name - style name
   */
   public void addCell(String type, String str_value, String style_name);
@@ -107,7 +107,7 @@ public interface ExcelConversionHandlerIF  {
   * @return excel style object
   */
   public ExcelStyleIF getStyleByName(String name, String family);
-  
+
   /**
   * Writes the EXCEL workbook object into file
   */

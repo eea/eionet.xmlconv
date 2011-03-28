@@ -5,81 +5,81 @@ import java.io.File;
 import eionet.gdem.Properties;
 
 public abstract class RemoteServiceMethod {
-	public static final String DEFAULT_CONTENT_TYPE = "text/plain";
+    public static final String DEFAULT_CONTENT_TYPE = "text/plain";
 
-	public static final String DEFAULT_QA_CONTENT_TYPE = "text/html;charset=UTF-8";
+    public static final String DEFAULT_QA_CONTENT_TYPE = "text/html;charset=UTF-8";
 
-	public static final String DEFAULT_FILE_EXT = "txt";
+    public static final String DEFAULT_FILE_EXT = "txt";
 
-	public static final String DEFAULT_FILE_NAME = "converted";
-	
-	/* Filesystem path where XSL files are stored */
-	private String xslFolder;
+    public static final String DEFAULT_FILE_NAME = "converted";
 
-	/* Filesystem path for temporary files */
-	private String tmpFolder;
+    /* Filesystem path where XSL files are stored */
+    private String xslFolder;
 
-	/* Filesystem path where XQueries files are stored */
-	private String queriesFolder;
+    /* Filesystem path for temporary files */
+    private String tmpFolder;
 
-	private String ticket = null;
+    /* Filesystem path where XQueries files are stored */
+    private String queriesFolder;
 
-	private boolean trustedMode = false;// false for web clients
-	
-	private boolean isHttpRequest = false;
-	
-	private HttpMethodResponseWrapper httpResponse = null;
+    private String ticket = null;
 
-	public RemoteServiceMethod() {
-		xslFolder = Properties.xslFolder + File.separatorChar; // props.getString("xsl.folder");
-		tmpFolder = Properties.tmpFolder + File.separatorChar; // props.getString("tmp.folder");
-		queriesFolder = Properties.queriesFolder + File.separatorChar; // props.getString("queries.folder");
-	}
+    private boolean trustedMode = false;// false for web clients
 
-	public String getTicket() {
-		return ticket;
-	}
+    private boolean isHttpRequest = false;
 
-	public void setTicket(String ticket) {
-		this.ticket = ticket;
-	}
+    private HttpMethodResponseWrapper httpResponse = null;
 
-	public boolean isTrustedMode() {
-		return trustedMode;
-	}
+    public RemoteServiceMethod() {
+        xslFolder = Properties.xslFolder + File.separatorChar; // props.getString("xsl.folder");
+        tmpFolder = Properties.tmpFolder + File.separatorChar; // props.getString("tmp.folder");
+        queriesFolder = Properties.queriesFolder + File.separatorChar; // props.getString("queries.folder");
+    }
 
-	public void setTrustedMode(boolean trustedMode) {
-		this.trustedMode = trustedMode;
-	}
+    public String getTicket() {
+        return ticket;
+    }
 
-	public boolean isHttpRequest() {
-		return isHttpRequest;
-	}
+    public void setTicket(String ticket) {
+        this.ticket = ticket;
+    }
 
-	public HttpMethodResponseWrapper getHttpResponse() {
-		return httpResponse;
-	}
+    public boolean isTrustedMode() {
+        return trustedMode;
+    }
 
-	public void setHttpResponse(HttpMethodResponseWrapper httpResult) {
-		if (httpResult!=null) isHttpRequest=true;
-		this.httpResponse = httpResult;
-	}
+    public void setTrustedMode(boolean trustedMode) {
+        this.trustedMode = trustedMode;
+    }
 
-	public String getXslFolder() {
-		return xslFolder;
-	}
+    public boolean isHttpRequest() {
+        return isHttpRequest;
+    }
 
-	public String getTmpFolder() {
-		return tmpFolder;
-	}
+    public HttpMethodResponseWrapper getHttpResponse() {
+        return httpResponse;
+    }
 
-	public String getQueriesFolder() {
-		return queriesFolder;
-	}
+    public void setHttpResponse(HttpMethodResponseWrapper httpResult) {
+        if (httpResult!=null) isHttpRequest=true;
+        this.httpResponse = httpResult;
+    }
 
-	public void setQueriesFolder(String queriesFolder) {
-		this.queriesFolder = queriesFolder;
-	}
+    public String getXslFolder() {
+        return xslFolder;
+    }
+
+    public String getTmpFolder() {
+        return tmpFolder;
+    }
+
+    public String getQueriesFolder() {
+        return queriesFolder;
+    }
+
+    public void setQueriesFolder(String queriesFolder) {
+        this.queriesFolder = queriesFolder;
+    }
 
 
 }

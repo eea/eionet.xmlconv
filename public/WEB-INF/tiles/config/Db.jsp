@@ -26,52 +26,52 @@
                 </html:link>
             </li>
         </ul>
-	</div>
+    </div>
 
 
-		<ed:breadcrumbs-push label="DB configuration" level="1" />
-		<h1><bean:message key="label.config.db.admin" /></h1>
+        <ed:breadcrumbs-push label="DB configuration" level="1" />
+        <h1><bean:message key="label.config.db.admin" /></h1>
 
-		<%-- include Error display --%>
-		<tiles:insert definition="Error" />
+        <%-- include Error display --%>
+        <tiles:insert definition="Error" />
 
-			<html:form action="/db" method="post">
-			    <table class="formtable">
-				  <col style="width:25%"/>
-				  <col style="width:75%"/>
-					  <tr>
-						<td>
-			            	<label class="question" for="dbUrl"><bean:message key="label.config.db.url" /></label>
-			            </td>
-			            <td>
-			            	<html:text property="dbUrl" maxlength="255" style="width: 30em;" styleId="dbUrl"/>
-			            </td>
-			        </tr>
-			        <tr>
-						<td>
-			            	<label class="question" for="user"><bean:message key="label.config.db.user" /></label>
-			            </td>
-			            <td>
-			            	<html:text property="user" maxlength="255" style="width: 30em;" styleId="user"/>
-			            </td>
-			        </tr>
-			        <tr>
-						<td>
-			            	<label class="question" for="password"><bean:message key="label.config.db.password" /></label>
-			            </td>
-			            <td>
-			            	<html:password property="password" maxlength="255" style="width: 30em;" styleId="password"/>
-			            </td>
-			        </tr>
-			        <tr>
-			            <td colspan="2">&nbsp;</td>
-			        </tr>
-			        <tr>
-			            <td colspan="2" align="center">
-			                <html:submit styleClass="button"><bean:message key="label.config.db.update" /></html:submit>
-			            </td>
-			        </tr>
-			    </table>
-			</html:form>
+            <html:form action="/db" method="post">
+                <table class="formtable">
+                  <col style="width:25%"/>
+                  <col style="width:75%"/>
+                      <tr>
+                        <td>
+                            <label class="question" for="dbUrl"><bean:message key="label.config.db.url" /></label>
+                        </td>
+                        <td>
+                            <html:text property="dbUrl" maxlength="255" style="width: 30em;" styleId="dbUrl"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="question" for="user"><bean:message key="label.config.db.user" /></label>
+                        </td>
+                        <td>
+                            <html:text property="user" maxlength="255" style="width: 30em;" styleId="user"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="question" for="password"><bean:message key="label.config.db.password" /></label>
+                        </td>
+                        <td>
+                            <html:password property="password" maxlength="255" style="width: 30em;" styleId="password"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <html:submit styleClass="button"><bean:message key="label.config.db.update" /></html:submit>
+                        </td>
+                    </tr>
+                </table>
+            </html:form>
 
 </div>

@@ -3,18 +3,18 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is XMLCONV.
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency.  Portions created by Tieto Eesti are Copyright
  * (C) European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributor(s):
  * Enriko Käsper, Tieto Estonia
  */
@@ -44,41 +44,41 @@ import eionet.gdem.web.struts.schema.SchemaElemForm;
 
 public class SaveSchemaValidationAction extends Action {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
+            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-		SchemaElemForm form = (SchemaElemForm) actionForm;
-		String schemaId = form.getSchemaId();
-		boolean validate = form.isDoValidation();
+        SchemaElemForm form = (SchemaElemForm) actionForm;
+        String schemaId = form.getSchemaId();
+        boolean validate = form.isDoValidation();
 
-		String user = (String) httpServletRequest.getSession().getAttribute("user");
-		ActionMessages errors = new ActionMessages();
-		ActionMessages messages = new ActionMessages();
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
+        ActionMessages errors = new ActionMessages();
+        ActionMessages messages = new ActionMessages();
 
-		httpServletRequest.setAttribute("schemaId", schemaId);
+        httpServletRequest.setAttribute("schemaId", schemaId);
 
-		try {
-			QAScriptManager qm = new QAScriptManager();
-			qm.updateSchemaValidation(user, schemaId, validate);
-			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.validation.updated"));
-		} catch (DCMException e) {
-			e.printStackTrace();
-			_logger.error("Error updateing schema validation", e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-		}
+        try {
+            QAScriptManager qm = new QAScriptManager();
+            qm.updateSchemaValidation(user, schemaId, validate);
+            messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.validation.updated"));
+        } catch (DCMException e) {
+            e.printStackTrace();
+            _logger.error("Error updateing schema validation", e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+        }
 
-		saveErrors(httpServletRequest.getSession(), errors);
-		saveMessages(httpServletRequest.getSession(), messages);
-		return findForward(actionMapping, "success", schemaId);
-	}
+        saveErrors(httpServletRequest.getSession(), errors);
+        saveMessages(httpServletRequest.getSession(), messages);
+        return findForward(actionMapping, "success", schemaId);
+    }
 
-	private ActionForward findForward(ActionMapping actionMapping, String f, String scriptId) {
-		ActionForward forward = actionMapping.findForward(f);
-		StringBuffer path = new StringBuffer(forward.getPath());
-		path.append("?schemaId=" + scriptId);
-		forward = new RedirectingActionForward(path.toString());
-		return forward;
-	}
+    private ActionForward findForward(ActionMapping actionMapping, String f, String scriptId) {
+        ActionForward forward = actionMapping.findForward(f);
+        StringBuffer path = new StringBuffer(forward.getPath());
+        path.append("?schemaId=" + scriptId);
+        forward = new RedirectingActionForward(path.toString());
+        return forward;
+    }
 }

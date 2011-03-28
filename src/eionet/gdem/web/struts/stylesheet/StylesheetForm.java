@@ -30,154 +30,154 @@ import org.apache.struts.upload.FormFile;
 
 public class StylesheetForm extends ActionForm {
 
-	private String schema;
-	private String outputtype;
-	private String description;
-	private FormFile xslfile;
-	private String schemaId;
-	private String xsl;
-	private String stylesheetId;
-	private String xslContent;
-	private String xslFileName;
-	private String modified;
-	private String checksum;
-	private String dependsOn;
+    private String schema;
+    private String outputtype;
+    private String description;
+    private FormFile xslfile;
+    private String schemaId;
+    private String xsl;
+    private String stylesheetId;
+    private String xslContent;
+    private String xslFileName;
+    private String modified;
+    private String checksum;
+    private String dependsOn;
 
-	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
-		return null;
-	}
-
-
-	public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
-		schema = null;
-		outputtype = null;
-		description = null;
-		xslfile = null;
-	}
+    public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
+        return null;
+    }
 
 
-	public String getDescription() {
-		return description;
-	}
+    public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
+        schema = null;
+        outputtype = null;
+        description = null;
+        xslfile = null;
+    }
 
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
 
-	public String getOutputtype() {
-		return outputtype;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
 
-	public void setOutputtype(String outputtype) {
-		this.outputtype = outputtype;
-	}
+    public String getOutputtype() {
+        return outputtype;
+    }
 
 
-	public String getSchema() {
-		return schema;
-	}
+    public void setOutputtype(String outputtype) {
+        this.outputtype = outputtype;
+    }
 
 
-	public void setSchema(String schema) {
-		this.schema = schema;
-	}
+    public String getSchema() {
+        return schema;
+    }
 
 
-	public FormFile getXslfile() {
-		return xslfile;
-	}
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
 
 
-	public void setXslfile(FormFile xslfile) {
-		this.xslfile = xslfile;
-	}
+    public FormFile getXslfile() {
+        return xslfile;
+    }
 
 
-	public String getSchemaId() {
-		return schemaId;
-	}
+    public void setXslfile(FormFile xslfile) {
+        this.xslfile = xslfile;
+    }
 
 
-	public void setSchemaId(String schemaId) {
-		this.schemaId = schemaId;
-	}
+    public String getSchemaId() {
+        return schemaId;
+    }
 
 
-	public String getXsl() {
-		return xsl;
-	}
+    public void setSchemaId(String schemaId) {
+        this.schemaId = schemaId;
+    }
 
 
-	public void setXsl(String xsl) {
-		this.xsl = xsl;
-	}
+    public String getXsl() {
+        return xsl;
+    }
 
 
-	public String getStylesheetId() {
-		return stylesheetId;
-	}
+    public void setXsl(String xsl) {
+        this.xsl = xsl;
+    }
 
 
-	public void setStylesheetId(String stylesheetId) {
-		this.stylesheetId = stylesheetId;
-	}
+    public String getStylesheetId() {
+        return stylesheetId;
+    }
 
 
-	public String getXslContent() {
-		return xslContent;
-	}
+    public void setStylesheetId(String stylesheetId) {
+        this.stylesheetId = stylesheetId;
+    }
 
 
-	public void setXslContent(String xslContent) {
-		this.xslContent = xslContent;
-	}
+    public String getXslContent() {
+        return xslContent;
+    }
 
 
-	public String getXslFileName() {
-		return xslFileName;
-	}
+    public void setXslContent(String xslContent) {
+        this.xslContent = xslContent;
+    }
 
 
-	public void setXslFileName(String xslFileName) {
-		this.xslFileName = xslFileName;
-	}
+    public String getXslFileName() {
+        return xslFileName;
+    }
 
 
-	public String getModified() {
-		return modified;
-	}
+    public void setXslFileName(String xslFileName) {
+        this.xslFileName = xslFileName;
+    }
 
 
-	public void setModified(String modified) {
-		this.modified = modified;
-	}
+    public String getModified() {
+        return modified;
+    }
 
 
-	public String getChecksum() {
-		return checksum;
-	}
+    public void setModified(String modified) {
+        this.modified = modified;
+    }
 
 
-	public void setChecksum(String checksum) {
-		this.checksum = checksum;
-	}
-
-	/**
-	 * @return the dependsOn
-	 */
-	public String getDependsOn() {
-		return dependsOn;
-	}
+    public String getChecksum() {
+        return checksum;
+    }
 
 
-	/**
-	 * @param dependsOn the dependsOn to set
-	 */
-	public void setDependsOn(String dependsOn) {
-		this.dependsOn = dependsOn;
-	}
+    public void setChecksum(String checksum) {
+        this.checksum = checksum;
+    }
+
+    /**
+     * @return the dependsOn
+     */
+    public String getDependsOn() {
+        return dependsOn;
+    }
+
+
+    /**
+     * @param dependsOn the dependsOn to set
+     */
+    public void setDependsOn(String dependsOn) {
+        this.dependsOn = dependsOn;
+    }
 
 }

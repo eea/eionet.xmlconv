@@ -5,12 +5,12 @@
 <%-- include header --%>
 <tiles:insert page="/WEB-INF/tiles/TmpHeader.jsp" />
 
-	<div class="error-msg">
-		<bean:message key="label.error.404" arg0="<%=(String)request.getAttribute("javax.servlet.error.request_uri")%>" />
-	</div>
-        
+    <div class="error-msg">
+        <bean:message key="label.error.404" arg0="<%=(String)request.getAttribute("javax.servlet.error.request_uri")%>" />
+    </div>
+
 <%-- include footer --%>
 <tiles:insert page="/WEB-INF/tiles/TmpFooter.jsp">
-	<tiles:put name="showFooter" type="string" value="true"/>
+    <tiles:put name="showFooter" type="string" value="true"/>
 </tiles:insert>
 

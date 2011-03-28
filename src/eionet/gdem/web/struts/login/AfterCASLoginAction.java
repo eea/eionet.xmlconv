@@ -27,27 +27,27 @@ import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
 
 public class AfterCASLoginAction  extends Action {
 
-	/** */
-	public static final String AFTER_LOGIN_ATTR_NAME = "afterLogin";
+    /** */
+    public static final String AFTER_LOGIN_ATTR_NAME = "afterLogin";
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
-    	
-		//Store user in session
-		AppUser aclUser = SecurityUtil.getUser(httpServletRequest, Names.USER_ATT);
-		
-		//remove session data, that contains permission related attributes
-		QAScriptListLoader.clearList(httpServletRequest);
-		StylesheetListLoader.clearList(httpServletRequest);
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
 
-		String afterLogin = (String)httpServletRequest.getSession().getAttribute(AFTER_LOGIN_ATTR_NAME);
+        //Store user in session
+        AppUser aclUser = SecurityUtil.getUser(httpServletRequest, Names.USER_ATT);
 
-		if (afterLogin != null && !afterLogin.toLowerCase().contains("/tiles/layout.jsp")){
-			httpServletResponse.sendRedirect(afterLogin);
-			return null;
-		}
+        //remove session data, that contains permission related attributes
+        QAScriptListLoader.clearList(httpServletRequest);
+        StylesheetListLoader.clearList(httpServletRequest);
 
-		return actionMapping.findForward("home");
-	
+        String afterLogin = (String)httpServletRequest.getSession().getAttribute(AFTER_LOGIN_ATTR_NAME);
+
+        if (afterLogin != null && !afterLogin.toLowerCase().contains("/tiles/layout.jsp")){
+            httpServletResponse.sendRedirect(afterLogin);
+            return null;
+        }
+
+        return actionMapping.findForward("home");
+
     }
 }
 

@@ -11,70 +11,70 @@ import eionet.gdem.dcm.remote.RemoteServiceMethod;
 
 /**
  * Abstract class for holding ConversionService methods
- * 
+ *
  * @author Enriko Käsper, TietoEnator Estonia AS
  */
 
 public abstract class ConversionServiceMethod extends RemoteServiceMethod{
 
-	public static final String DEFAULT_CONTENT_TYPE = "text/plain";
+    public static final String DEFAULT_CONTENT_TYPE = "text/plain";
 
-	public static final String DEFAULT_FILE_EXT = "txt";
+    public static final String DEFAULT_FILE_EXT = "txt";
 
-	public static final String DEFAULT_FILE_NAME = "converted";
+    public static final String DEFAULT_FILE_NAME = "converted";
 
-	private String xslFolder;
+    private String xslFolder;
 
-	private String tmpFolder;
+    private String tmpFolder;
 
-	private String ticket = null;
+    private String ticket = null;
 
-	private boolean trustedMode = false;// false for web clients
-	
-	private boolean isHttpRequest = false;
-	
-	private HttpMethodResponseWrapper httpResponse = null;
+    private boolean trustedMode = false;// false for web clients
 
-	public ConversionServiceMethod() {
-		xslFolder = Properties.xslFolder + File.separatorChar; // props.getString("xsl.folder");
-		tmpFolder = Properties.tmpFolder + File.separatorChar; // props.getString("tmp.folder");
-	}
+    private boolean isHttpRequest = false;
 
-	public String getTicket() {
-		return ticket;
-	}
+    private HttpMethodResponseWrapper httpResponse = null;
 
-	public void setTicket(String ticket) {
-		this.ticket = ticket;
-	}
+    public ConversionServiceMethod() {
+        xslFolder = Properties.xslFolder + File.separatorChar; // props.getString("xsl.folder");
+        tmpFolder = Properties.tmpFolder + File.separatorChar; // props.getString("tmp.folder");
+    }
 
-	public boolean isTrustedMode() {
-		return trustedMode;
-	}
+    public String getTicket() {
+        return ticket;
+    }
 
-	public void setTrustedMode(boolean trustedMode) {
-		this.trustedMode = trustedMode;
-	}
+    public void setTicket(String ticket) {
+        this.ticket = ticket;
+    }
 
-	public boolean isHttpRequest() {
-		return isHttpRequest;
-	}
+    public boolean isTrustedMode() {
+        return trustedMode;
+    }
 
-	public HttpMethodResponseWrapper getHttpResponse() {
-		return httpResponse;
-	}
+    public void setTrustedMode(boolean trustedMode) {
+        this.trustedMode = trustedMode;
+    }
 
-	public void setHttpResponse(HttpMethodResponseWrapper httpResult) {
-		if (httpResult!=null) isHttpRequest=true;
-		this.httpResponse = httpResult;
-	}
+    public boolean isHttpRequest() {
+        return isHttpRequest;
+    }
 
-	public String getXslFolder() {
-		return xslFolder;
-	}
+    public HttpMethodResponseWrapper getHttpResponse() {
+        return httpResponse;
+    }
 
-	public String getTmpFolder() {
-		return tmpFolder;
-	}
+    public void setHttpResponse(HttpMethodResponseWrapper httpResult) {
+        if (httpResult!=null) isHttpRequest=true;
+        this.httpResponse = httpResult;
+    }
+
+    public String getXslFolder() {
+        return xslFolder;
+    }
+
+    public String getTmpFolder() {
+        return tmpFolder;
+    }
 
 }

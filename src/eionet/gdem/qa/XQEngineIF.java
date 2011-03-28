@@ -55,7 +55,7 @@ public interface XQEngineIF {
    */
   /*
   public String getResult(String xqScript, String params[]) throws GDEMException;
-  
+
   public void getResult(String xqScript, String params[], OutputStream out) throws GDEMException;
   */
   /**

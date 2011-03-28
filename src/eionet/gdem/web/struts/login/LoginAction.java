@@ -45,66 +45,66 @@ import eionet.gdem.utils.Utils;
 
 public class LoginAction extends Action {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
-	protected final String GDEM_SSAclName = "/stylesheets";
+    private static LoggerIF _logger = GDEMServices.getLogger();
+    protected final String GDEM_SSAclName = "/stylesheets";
 
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
-		ActionMessages loginMessages = new ActionMessages();
-		ActionErrors errors = new ActionErrors();
-		ActionForward ret = null;
-		DynaValidatorForm loginForm = (DynaValidatorForm) actionForm;
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
+        ActionMessages loginMessages = new ActionMessages();
+        ActionErrors errors = new ActionErrors();
+        ActionForward ret = null;
+        DynaValidatorForm loginForm = (DynaValidatorForm) actionForm;
 
-		String username = (String) loginForm.get("username");
-		String password = (String) loginForm.get("password");
+        String username = (String) loginForm.get("username");
+        String password = (String) loginForm.get("password");
 
-		if(Utils.isNullStr(username) && Utils.isNullStr(username)){
-			return actionMapping.findForward("loginForm"); // openlogin form
-		}
-			
-		try {
-			doLogin(username, password, httpServletRequest);
-			_logger.debug("Success login");
-			ret = actionMapping.findForward("home");
-			httpServletRequest.getSession().setAttribute("user", username);
-			loginForm.getMap().clear();
-		} catch (Exception e) {
-			loginForm.set("password", null);
-			_logger.error("Fail login", e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.login.error.invalid"));
-			ret = actionMapping.getInputForward();
-		}
+        if(Utils.isNullStr(username) && Utils.isNullStr(username)){
+            return actionMapping.findForward("loginForm"); // openlogin form
+        }
 
-		httpServletRequest.getSession().setAttribute("dcm.messages", loginMessages);
-		httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-		
-		//go back to the previous page
-		String afterLogin = (String)httpServletRequest.getSession().getAttribute(AfterCASLoginAction.AFTER_LOGIN_ATTR_NAME);
-		if (afterLogin != null && !afterLogin.toLowerCase().contains("/tiles/layout.jsp")){
-			httpServletResponse.sendRedirect(afterLogin);
-			return null;
-		}
+        try {
+            doLogin(username, password, httpServletRequest);
+            _logger.debug("Success login");
+            ret = actionMapping.findForward("home");
+            httpServletRequest.getSession().setAttribute("user", username);
+            loginForm.getMap().clear();
+        } catch (Exception e) {
+            loginForm.set("password", null);
+            _logger.error("Fail login", e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.login.error.invalid"));
+            ret = actionMapping.getInputForward();
+        }
 
-		return ret;
+        httpServletRequest.getSession().setAttribute("dcm.messages", loginMessages);
+        httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 
-	}
+        //go back to the previous page
+        String afterLogin = (String)httpServletRequest.getSession().getAttribute(AfterCASLoginAction.AFTER_LOGIN_ATTR_NAME);
+        if (afterLogin != null && !afterLogin.toLowerCase().contains("/tiles/layout.jsp")){
+            httpServletResponse.sendRedirect(afterLogin);
+            return null;
+        }
+
+        return ret;
+
+    }
 
 
-	private void doLogin(String username, String password, HttpServletRequest httpServletRequest) throws Exception {
-		try {
-			AppUser aclUser = new AppUser();
-			if (!Utils.isNullStr(username)) aclUser.authenticate(username, password);
-			if (!SecurityUtil.hasPerm(username, GDEM_SSAclName, "v")) // GDEM_readPermission))
-				throw new Exception("Not allowed to use the Styelsheet Repository");
-			// session.setAttribute(Names.USER_ATT, aclUser);
-			// add object into session becouse of old bussines ligic
-			httpServletRequest.getSession().setAttribute(Names.USER_ATT, aclUser);
-			httpServletRequest.getSession().setAttribute(Names.TICKET_ATT, Utils.getEncodedAuthentication(username, password));
-		} catch (Exception dire) {
-			_logger.debug("Authentication failed " + dire.toString(), dire);
-			throw new Exception("Authentication failed ");
-		}
+    private void doLogin(String username, String password, HttpServletRequest httpServletRequest) throws Exception {
+        try {
+            AppUser aclUser = new AppUser();
+            if (!Utils.isNullStr(username)) aclUser.authenticate(username, password);
+            if (!SecurityUtil.hasPerm(username, GDEM_SSAclName, "v")) // GDEM_readPermission))
+                throw new Exception("Not allowed to use the Styelsheet Repository");
+            // session.setAttribute(Names.USER_ATT, aclUser);
+            // add object into session becouse of old bussines ligic
+            httpServletRequest.getSession().setAttribute(Names.USER_ATT, aclUser);
+            httpServletRequest.getSession().setAttribute(Names.TICKET_ATT, Utils.getEncodedAuthentication(username, password));
+        } catch (Exception dire) {
+            _logger.debug("Authentication failed " + dire.toString(), dire);
+            throw new Exception("Authentication failed ");
+        }
 
-	}
+    }
 
 }

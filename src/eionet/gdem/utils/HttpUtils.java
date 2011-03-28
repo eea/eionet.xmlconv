@@ -3,18 +3,18 @@
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * The Original Code is XMLCONV.
- * 
+ *
  * The Initial Owner of the Original Code is European Environment
  * Agency.  Portions created by Tieto Eesti are Copyright
  * (C) European Environment Agency.  All Rights Reserved.
- * 
+ *
  * Contributor(s):
  * Enriko Käsper, Tieto Estonia
  */
@@ -41,23 +41,23 @@ import eionet.gdem.services.LoggerIF;
 
 public class HttpUtils {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
-	public static byte[] downloadRemoteFile(String url) throws Exception{
+    public static byte[] downloadRemoteFile(String url) throws Exception{
 
-    	byte[] responseBody = null;
-    	HttpClient client = new HttpClient();
+        byte[] responseBody = null;
+        HttpClient client = new HttpClient();
 
         // Create a method instance.
         GetMethod method = new GetMethod(url);
-        
+
         try {
           // Execute the method.
           int statusCode = client.executeMethod(method);
 
           if (statusCode != HttpStatus.SC_OK) {
-        	_logger.error("Method failed: " + method.getStatusLine());
-        	throw new DCMException(BusinessConstants.EXCEPTION_SCHEMAOPEN_ERROR,method.getStatusLine().toString());
+            _logger.error("Method failed: " + method.getStatusLine());
+            throw new DCMException(BusinessConstants.EXCEPTION_SCHEMAOPEN_ERROR,method.getStatusLine().toString());
           }
 
           // Read the response body.
@@ -68,52 +68,52 @@ public class HttpUtils {
           //System.out.println(new String(responseBody));
 
         } catch (HttpException e) {
-        	_logger.error("Fatal protocol violation: " + e.getMessage());
+            _logger.error("Fatal protocol violation: " + e.getMessage());
           e.printStackTrace();
           throw e;
         } catch (IOException e) {
-        	_logger.error("Fatal transport error: " + e.getMessage());
+            _logger.error("Fatal transport error: " + e.getMessage());
           e.printStackTrace();
           throw e;
         } finally {
           // Release the connection.
           method.releaseConnection();
-        }  
-    	return responseBody;
+        }
+        return responseBody;
     }
-	
-	/**
-	 * Method checks whether the resource behind the given URL exist.
-	 * The method calls HEAD request and if the resonse code is 200, then returns true.
-	 * If exception is thrown or response code is something else, then the result is false.
-	 * 
-	 * @param url
-	 * @return
-	 */
-	public static boolean urlExists(String url){
-		
-		
-		HttpClient client = new HttpClient();
 
-		// 	Create a method instance.
-		HeadMethod method = new HeadMethod(url);
-    
-		try {
+    /**
+     * Method checks whether the resource behind the given URL exist.
+     * The method calls HEAD request and if the resonse code is 200, then returns true.
+     * If exception is thrown or response code is something else, then the result is false.
+     *
+     * @param url
+     * @return
+     */
+    public static boolean urlExists(String url){
+
+
+        HttpClient client = new HttpClient();
+
+        // 	Create a method instance.
+        HeadMethod method = new HeadMethod(url);
+
+        try {
       // 	Execute the method.
-			int statusCode = client.executeMethod(method);
+            int statusCode = client.executeMethod(method);
 
-			return statusCode == HttpStatus.SC_OK;
-		} catch (HttpException e) {
-			_logger.error("Fatal protocol violation: " + e.getMessage());
-			e.printStackTrace();
-			return false;
-		} catch (IOException e) {
-			_logger.error("Fatal transport error: " + e.getMessage());
-			e.printStackTrace();
-			return false;
-		} finally {
+            return statusCode == HttpStatus.SC_OK;
+        } catch (HttpException e) {
+            _logger.error("Fatal protocol violation: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            _logger.error("Fatal transport error: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } finally {
     // 	Release the connection.
-			method.releaseConnection();
-		}
-	}
+            method.releaseConnection();
+        }
+    }
 }

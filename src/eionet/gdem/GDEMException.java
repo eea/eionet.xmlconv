@@ -51,7 +51,7 @@ public class GDEMException extends Exception {
         if (this.cause != null) {
             this.cause.printStackTrace();
         }
-    }  
+    }
     /**
      * Prints this exception and its backtrace to the
      * given print stream.

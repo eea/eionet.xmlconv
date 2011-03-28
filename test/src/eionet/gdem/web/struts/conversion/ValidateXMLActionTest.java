@@ -27,7 +27,7 @@ public class ValidateXMLActionTest  extends MockStrutsTestCase {
         super.setUp();
         setConfigFile(TestUtils.getStrutsConfigLocation());
         setInitParameter("validating","false");
-        
+
         //setup database
         DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
         TestUtils.setUpProperties(this);
@@ -38,12 +38,12 @@ public class ValidateXMLActionTest  extends MockStrutsTestCase {
      * test if the form is successfully forwarded and retreives no validation errors
      */
     public void testSuccessfulForwardValidXML() {
-        
-    	String url = TestUtils.getSeedURL(TestConstants.SEED_GW_VALID_XML, this);
-    	
+
+        String url = TestUtils.getSeedURL(TestConstants.SEED_GW_VALID_XML, this);
+
         setRequestPathInfo("/validateXML");
-        
-        
+
+
         addRequestParameter("url",url);
         actionPerform();
         verifyForward("success");
@@ -51,21 +51,21 @@ public class ValidateXMLActionTest  extends MockStrutsTestCase {
         verifyNoActionErrors();
 
         assertEquals(request.getAttribute("conversion.validatedSchema"),Properties.gdemURL.concat("/").concat(TestConstants.SEED_GW_SCHEMA));
-        assertTrue(request.getAttribute("conversion.valid")==null || 
-        		((List)request.getAttribute("conversion.valid")).size()==0); //no errors in the list
-        
+        assertTrue(request.getAttribute("conversion.valid")==null ||
+                ((List)request.getAttribute("conversion.valid")).size()==0); //no errors in the list
+
 
     }
     /**
      * test if the form is successfully forwarded and retreives validation errors
      */
     public void testSuccessfulForwardInvalidXML() {
-        
-    	String url = TestUtils.getSeedURL(TestConstants.SEED_GW_INVALID_XML, this);
-    	
+
+        String url = TestUtils.getSeedURL(TestConstants.SEED_GW_INVALID_XML, this);
+
         setRequestPathInfo("/validateXML");
-        
-        
+
+
         addRequestParameter("url",url);
         actionPerform();
         verifyForward("success");
@@ -74,20 +74,20 @@ public class ValidateXMLActionTest  extends MockStrutsTestCase {
 
         assertEquals(request.getAttribute("conversion.validatedSchema"),Properties.gdemURL.concat("/").concat(TestConstants.SEED_GW_SCHEMA));
         assertTrue(((List)request.getAttribute("conversion.valid")).size()>0); // errors in the list
-        
+
 
     }
     /**
-     * test if the form is successfully formwarding 
+     * test if the form is successfully formwarding
      * The form should get an error message
      */
     public void testFailedForward() {
-        
-    	String url = "It is not an URL";
-    	
+
+        String url = "It is not an URL";
+
         setRequestPathInfo("/validateXML");
-        
-        
+
+
         addRequestParameter("url",url);
         actionPerform();
         verifyForward("error");
@@ -98,15 +98,15 @@ public class ValidateXMLActionTest  extends MockStrutsTestCase {
 
     }
     /**
-     * test if the form is successfully formwarding 
+     * test if the form is successfully formwarding
      * The form should get an error message
      */
     public void testFailedForwardWithoutURL() {
-        
-    	
+
+
         setRequestPathInfo("/validateXML");
-        
-        
+
+
         actionPerform();
         verifyForward("error");
         verifyForwardPath("/do/validateXMLForm");

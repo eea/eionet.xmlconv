@@ -5,30 +5,30 @@
 
 <ed:breadcrumbs-push label="XML Services error" level="1" />
 <tiles:insert definition="TmpHeader">
-	<tiles:put name="title" value="Error"/>
+    <tiles:put name="title" value="Error"/>
 </tiles:insert>
 
 
-	<%@ include file="menu.jsp" %>
+    <%@ include file="menu.jsp" %>
 
-	<h1>Error page!</h1>
-	
-	<%
-		if (err!= null) {
-			%>
-			<div id="errormessage" class="error"><%=err%></div><%
-		}
-		
-		Exception e = (Exception)session.getAttribute("gdem.exception");
-		String message = "unknown error";
-		if (e!=null && e.getMessage()!=null)
-			message = e.getMessage();
-		else if (e!=null)
-			message = e.toString();
-	%>
-	
-	<div class="error-msg">
-		<%=message%>
-	</div>
-	
+    <h1>Error page!</h1>
+
+    <%
+        if (err!= null) {
+            %>
+            <div id="errormessage" class="error"><%=err%></div><%
+        }
+
+        Exception e = (Exception)session.getAttribute("gdem.exception");
+        String message = "unknown error";
+        if (e!=null && e.getMessage()!=null)
+            message = e.getMessage();
+        else if (e!=null)
+            message = e.toString();
+    %>
+
+    <div class="error-msg">
+        <%=message%>
+    </div>
+
 <tiles:insert definition="TmpFooter"/>

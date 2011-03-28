@@ -36,53 +36,53 @@ import eionet.gdem.utils.xml.XmlContext;
 
 public class Conversion {
 
-	private static LoggerIF _logger=GDEMServices.getLogger();
-	public static String CONVERSION_ELEMENT="conversion";
-	private static List conversions =new ArrayList();
+    private static LoggerIF _logger=GDEMServices.getLogger();
+    public static String CONVERSION_ELEMENT="conversion";
+    private static List conversions =new ArrayList();
 
 
 
-	static {
-		try {
-			
-			IXmlCtx ctx=new XmlContext();
-			ctx.checkFromFile(Properties.convFile);
-			IXQuery xQuery=ctx.getQueryManager();
-			List identifiers = xQuery.getElementIdentifiers(CONVERSION_ELEMENT);
-			for (int i = 0; i < identifiers.size(); i++) {
-				String id=(String) identifiers.get(i);
-				ConversionDto resObject = new ConversionDto();
-				resObject.setConvId(id);
-				resObject.setDescription(xQuery.getElementValue(id, "description"));
-				resObject.setResultType(xQuery.getElementValue(id, "result_type"));
-				resObject.setStylesheet(xQuery.getElementValue(id, "stylesheet"));
-				Hashtable convType = GDEMServices.getDaoService().getConvTypeDao().getConvType(resObject.getResultType());
+    static {
+        try {
 
-				resObject.setContentType((String) convType.get("content_type"));
-				conversions.add(resObject);
-			}
-		} catch (Exception ex) {
-			_logger.error("Error reading conversions.xml file ", ex);
-		}
+            IXmlCtx ctx=new XmlContext();
+            ctx.checkFromFile(Properties.convFile);
+            IXQuery xQuery=ctx.getQueryManager();
+            List identifiers = xQuery.getElementIdentifiers(CONVERSION_ELEMENT);
+            for (int i = 0; i < identifiers.size(); i++) {
+                String id=(String) identifiers.get(i);
+                ConversionDto resObject = new ConversionDto();
+                resObject.setConvId(id);
+                resObject.setDescription(xQuery.getElementValue(id, "description"));
+                resObject.setResultType(xQuery.getElementValue(id, "result_type"));
+                resObject.setStylesheet(xQuery.getElementValue(id, "stylesheet"));
+                Hashtable convType = GDEMServices.getDaoService().getConvTypeDao().getConvType(resObject.getResultType());
 
-	}
+                resObject.setContentType((String) convType.get("content_type"));
+                conversions.add(resObject);
+            }
+        } catch (Exception ex) {
+            _logger.error("Error reading conversions.xml file ", ex);
+        }
 
-
-	public static List getConversions() {
-		return conversions;
-	}
+    }
 
 
-	public static ConversionDto getConversionById(String convId) {
-		ConversionDto conversion=null;
-		for (int i = 0; i < conversions.size(); i++) {
-			if (((ConversionDto) conversions.get(i)).getConvId().compareTo(convId) == 0) {
-				conversion=(ConversionDto) conversions.get(i);
-				break;
-			}
-		}
-		return conversion;
-	}
+    public static List getConversions() {
+        return conversions;
+    }
+
+
+    public static ConversionDto getConversionById(String convId) {
+        ConversionDto conversion=null;
+        for (int i = 0; i < conversions.size(); i++) {
+            if (((ConversionDto) conversions.get(i)).getConvId().compareTo(convId) == 0) {
+                conversion=(ConversionDto) conversions.get(i);
+                break;
+            }
+        }
+        return conversion;
+    }
 
 
 }

@@ -29,10 +29,10 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 
 /**
 * This class is mapping styles between xml (fo:style) and sytles defined in poi HSSF
-* 
+*
 * @author Enriko Käsper
 */
-  
+
 public class ExcelStyle implements ExcelStyleIF {
 
   private String name=null;
@@ -45,11 +45,11 @@ public class ExcelStyle implements ExcelStyleIF {
   private short workbook_index=-1;
   //width - - the width in units of 1/256th of a character width
   private short column_width=0;
-  
+
   public ExcelStyle() {
   }
   public void setExcelStyle(String name, String family) {
-      //These are style unique id's 
+      //These are style unique id's
       this.name=name;
       this.family=family;
   }
@@ -83,11 +83,11 @@ public class ExcelStyle implements ExcelStyleIF {
 // set methods
   public void setItalic(String str_italic){
     if (str_italic==null) return;
-    if (str_italic.equalsIgnoreCase("italic")) italic=true;  
+    if (str_italic.equalsIgnoreCase("italic")) italic=true;
   }
   public void setFontWeight(String str_bold){
     if (str_bold==null) return;
-    if (str_bold.equalsIgnoreCase("bold")) 
+    if (str_bold.equalsIgnoreCase("bold"))
         font_weight=HSSFFont.BOLDWEIGHT_BOLD;
   }
   public void setFontSize(String str_size){
@@ -111,29 +111,29 @@ public class ExcelStyle implements ExcelStyleIF {
   }
    public void setTextAlgin(String str_align){
     if (str_align==null) return;
-    if (str_align.equalsIgnoreCase("center")) 
+    if (str_align.equalsIgnoreCase("center"))
         text_align=HSSFCellStyle.ALIGN_CENTER;
-    else if (str_align.equalsIgnoreCase("left")) 
+    else if (str_align.equalsIgnoreCase("left"))
         text_align=HSSFCellStyle.ALIGN_LEFT;
-    else if (str_align.equalsIgnoreCase("right") || str_align.equalsIgnoreCase("end")) 
+    else if (str_align.equalsIgnoreCase("right") || str_align.equalsIgnoreCase("end"))
         text_align=HSSFCellStyle.ALIGN_RIGHT;
-    else if (str_align.equalsIgnoreCase("justify")) 
+    else if (str_align.equalsIgnoreCase("justify"))
         text_align=HSSFCellStyle.ALIGN_JUSTIFY;
-    else if (str_align.equalsIgnoreCase("left")) 
+    else if (str_align.equalsIgnoreCase("left"))
         text_align=HSSFCellStyle.ALIGN_LEFT;
-    else if (str_align.equalsIgnoreCase("start")) 
+    else if (str_align.equalsIgnoreCase("start"))
         text_align=HSSFCellStyle.ALIGN_GENERAL;
     else
         text_align=HSSFCellStyle.ALIGN_GENERAL;
   }
   public boolean equals(ExcelStyleIF style){
-  
+
     String compare_name=  style.getName();
     String compare_family=  style.getFamily();
 
     if (compare_name==null || compare_family==null) return false;
 
-    if (compare_name.equalsIgnoreCase(this.name) 
+    if (compare_name.equalsIgnoreCase(this.name)
             && compare_family.equalsIgnoreCase(this.family))
             return true;
 
@@ -143,35 +143,35 @@ public class ExcelStyle implements ExcelStyleIF {
     this.workbook_index=index;
   }
   public short getColumnWidth() {
-	return column_width;
+    return column_width;
   }
-  
-  //xcel bases its measurement of column widths on the number of digits 
-  //(specifically, the number of zeros) in the column, using the Normal style font. 
+
+  //xcel bases its measurement of column widths on the number of digits
+  //(specifically, the number of zeros) in the column, using the Normal style font.
   //(There are some fonts that have digits of different widths, but this is unusual.)
 
-  //For example, using the default font, a column with a width of 10 refers to the column 
-  //width needed to display 10 non-bold, non-italic, Arial 10-point zeros. 
-  
+  //For example, using the default font, a column with a width of 10 refers to the column
+  //width needed to display 10 non-bold, non-italic, Arial 10-point zeros.
+
   // POI waits the column width set in units of 1/256th of a character width
   public void setColumnWidth(String str_column_width) {
-	    Short numcolumn_width = null;
-	    if (str_column_width==null) return;
-	    int x = 256;
-	    
-	    if (str_column_width.endsWith("cm")){
-	    	str_column_width=str_column_width.substring(0,str_column_width.indexOf("cm"));
-	    	x = 1280;
-		}
-	    try {
-	    	float l = Float.parseFloat(str_column_width);
-	    	float full_width = l * x;  
-	    	numcolumn_width = Short.parseShort(String.valueOf(Math.round(full_width)));
-	    }
-	    catch (Exception e){
-	      return;
-	    }
-	    if (numcolumn_width!=null)
-	    	column_width=numcolumn_width.shortValue();
+        Short numcolumn_width = null;
+        if (str_column_width==null) return;
+        int x = 256;
+
+        if (str_column_width.endsWith("cm")){
+            str_column_width=str_column_width.substring(0,str_column_width.indexOf("cm"));
+            x = 1280;
+        }
+        try {
+            float l = Float.parseFloat(str_column_width);
+            float full_width = l * x;
+            numcolumn_width = Short.parseShort(String.valueOf(Math.round(full_width)));
+        }
+        catch (Exception e){
+          return;
+        }
+        if (numcolumn_width!=null)
+            column_width=numcolumn_width.shortValue();
   }
 }

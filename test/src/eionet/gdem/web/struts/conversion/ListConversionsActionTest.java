@@ -25,7 +25,7 @@ public class ListConversionsActionTest  extends MockStrutsTestCase {
         super.setUp();
         setConfigFile(TestUtils.getStrutsConfigLocation());
         setInitParameter("validating","false");
-        
+
         //setup database
         DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_CONVERSIONS_XML);
 
@@ -35,12 +35,12 @@ public class ListConversionsActionTest  extends MockStrutsTestCase {
      * The form should find available conversions for specified URL
      */
     public void testSuccessfulForward() {
-        
-    	String url = TestUtils.getSeedURL(TestConstants.SEED_GENERAL_REPORT_XML, this);
-    	
+
+        String url = TestUtils.getSeedURL(TestConstants.SEED_GENERAL_REPORT_XML, this);
+
         setRequestPathInfo("/listConversionsByXML");
-        
-        
+
+
         addRequestParameter("url",url);
         addRequestParameter("searchAction","search");
         actionPerform();
@@ -51,7 +51,7 @@ public class ListConversionsActionTest  extends MockStrutsTestCase {
         ConversionForm cForm = (ConversionForm) request.getSession().getAttribute("ConversionForm");
         assertEquals(cForm.getUrl(),url);
         assertTrue(cForm.getSchemas().size()>0);
-        
+
         //XMLCONV should find some stylesheets for specified XML
         Schema schema = cForm.getSchemas().get(0);
         assertTrue(schema.getStylesheets().size()>0);
@@ -63,12 +63,12 @@ public class ListConversionsActionTest  extends MockStrutsTestCase {
      * The form should find available conversions for specified schema URL
      */
     public void testSuccessfulForwardBySchema() {
-        
-    	String schemaUrl = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd";
-    	
+
+        String schemaUrl = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd";
+
         setRequestPathInfo("/listConversionsByXML");
-        
-        
+
+
         addRequestParameter("schemaUrl",schemaUrl);
         addRequestParameter("searchAction","search");
         actionPerform();
@@ -79,7 +79,7 @@ public class ListConversionsActionTest  extends MockStrutsTestCase {
         ConversionForm cForm = (ConversionForm) request.getSession().getAttribute("ConversionForm");
         assertEquals(cForm.getSchemaUrl(),schemaUrl);
         assertTrue(cForm.getSchemas().size()>0);
-        
+
         //XMLCONV should find some stylesheets for specified XML
         Schema schema = cForm.getSchemas().get(0);
         assertTrue(schema.getStylesheets().size()>0);
@@ -91,12 +91,12 @@ public class ListConversionsActionTest  extends MockStrutsTestCase {
      * The form should get an error message
      */
     public void testFailedForward() {
-        
-    	String url = "It is not an URL";
-    	
+
+        String url = "It is not an URL";
+
         setRequestPathInfo("/listConversionsByXML");
-        
-        
+
+
         addRequestParameter("url",url);
         addRequestParameter("searchAction","search");
         actionPerform();
@@ -115,12 +115,12 @@ public class ListConversionsActionTest  extends MockStrutsTestCase {
      * The form should find available conversions for specified URL
      */
     public void testSuccessfulForwardConvert() {
-        
-    	String url = TestUtils.getSeedURL(TestConstants.SEED_GENERAL_REPORT_XML, this);
-    	
+
+        String url = TestUtils.getSeedURL(TestConstants.SEED_GENERAL_REPORT_XML, this);
+
         setRequestPathInfo("/listConversionsByXML");
-        
-        
+
+
         addRequestParameter("url",url);
         addRequestParameter("convertAction","convert");
         addRequestParameter("conversionId","168");
@@ -132,7 +132,7 @@ public class ListConversionsActionTest  extends MockStrutsTestCase {
         ConversionForm cForm = (ConversionForm) request.getSession().getAttribute("ConversionForm");
         assertEquals(cForm.getUrl(),url);
         assertEquals(cForm.getConversionId(),"168");
-       
+
     }
   }
 

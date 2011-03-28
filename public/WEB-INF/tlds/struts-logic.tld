@@ -8,9 +8,9 @@
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
     the License.  You may obtain a copy of the License at
-   
+
          http://www.apache.org/licenses/LICENSE-2.0
-   
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -92,24 +92,24 @@
     Evaluate the nested body content of this tag if the requested variable is
     either null or an empty string.
     </strong></p>
-          
+
     <p>This tag evaluates its nested body content only if the specified value
     is either absent (i.e. <code>null</code>), an empty string (i.e. a
     <code>java.lang.String</code> with a length of zero), or an empty
     <code>java.util.Collection</code> or <code>java.util.Map</code> (tested by
     the .isEmpty() method on the respective interface).</p>
-    
+
     <p>
-    <strong>JSTL</strong>:  The equivalent JSTL tag is &lt;c:if&gt; using the 
+    <strong>JSTL</strong>:  The equivalent JSTL tag is &lt;c:if&gt; using the
     <code>empty</code> operator.  For example,
     <br/>
     <code>
-    	&lt;c:if test="${empty sessionScope.myBean.myProperty}"&gt;
-    	  do something
-    	&lt;/c:if&gt;
+        &lt;c:if test="${empty sessionScope.myBean.myProperty}"&gt;
+          do something
+        &lt;/c:if&gt;
     </code>
     </p>
-    
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.1</dd></dl>
           ]]>
@@ -161,7 +161,7 @@
     Evaluate the nested body content of this tag if the requested
     variable is equal to the specified value.
     </strong></p>
-          
+
     <p>Compares the variable specified by one of the selector attributes
     against the specified constant value.  The nested body content of this
     tag is evaluated if the variable and value are <strong>equal</strong>.
@@ -260,7 +260,7 @@
     Forward control to the page specified by the specified ActionForward
     entry.
     </strong></p>
-          
+
     <p>Performs a <code>PageContext.forward()</code> or
     <code>HttpServletResponse.sendRedirect()</code> call for the global
     <code>ActionForward</code> entry for the specified name.  URL
@@ -274,8 +274,8 @@
             <description>
                 <![CDATA[
       <p>
-      	The logical name of the global <code>ActionForward</code> entry
-      	that identifies the destination, and forwarding approach, to be used.
+          The logical name of the global <code>ActionForward</code> entry
+          that identifies the destination, and forwarding approach, to be used.
         <strong>Note</strong>: forwarding to Tiles definitions is not supported
         from this tag.  You should forward to them from an Action subclass.
       </p>
@@ -293,7 +293,7 @@
     Evaluate the nested body content of this tag if the requested
     variable is greater than or equal to the specified value.
     </strong></p>
-          
+
     <p>Compares the variable specified by one of the selector attributes
     against the specified constant value.  The nested body content of this
     tag is evaluated if the variable is <strong>greater than or equal</strong>
@@ -392,7 +392,7 @@
     Evaluate the nested body content of this tag if the requested
     variable is greater than the specified value.
     </strong></p>
-          
+
     <p>Compares the variable specified by one of the selector attributes
     against the specified constant value.  The nested body content of this
     tag is evaluated if the variable is <strong>greater than</strong>
@@ -491,7 +491,7 @@
             <p><strong>
     Repeat the nested body content of this tag over a specified collection.
     </strong></p>
-          
+
     <p>Repeats the nested body content of this tag once for every element
     of the specified collection, which must be an <code>Iterator</code>,
     a <code>Collection</code>, a <code>Map</code> (whose values are to be
@@ -671,7 +671,7 @@
     Evaluate the nested body content of this tag if the requested
     variable is less than or equal to the specified value.
     </strong></p>
-          
+
     <p>Compares the variable specified by one of the selector attributes
     against the specified constant value.  The nested body content of this
     tag is evaluated if the variable is <strong>less than or equal</strong>
@@ -770,7 +770,7 @@
     Evaluate the nested body content of this tag if the requested
     variable is less than the specified value.
     </strong></p>
-          
+
     <p>Compares the variable specified by one of the selector attributes
     against the specified constant value.  The nested body content of this
     tag is evaluated if the variable is <strong>less than</strong>
@@ -869,7 +869,7 @@
     Evaluate the nested body content of this tag if the specified value
     is an appropriate substring of the requested variable.
     </strong></p>
-          
+
     <p>Matches the variable specified by one of the selector attributes
     (as a String) against the specified constant value.  If the value is
     a substring (appropriately limited by the <code>location</code>
@@ -982,14 +982,14 @@
     Generate the nested body content of this tag if the specified
     message is not present in any scope.
     </strong></p>
-          
+
     <p>Evaluates the nested body content of this tag if
        an <code>ActionMessages</code>
        object, <code>ActionErrors</code> object, a String,
        or a String array is not present in any scope.  If
        such a bean is found, nothing will be rendered.
     </p>
-    
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.1</dd></dl>
           ]]>
@@ -1046,14 +1046,14 @@
     Generate the nested body content of this tag if the specified
     message is present in any scope.
     </strong></p>
-          
+
     <p>Evaluates the nested body content of this tag if
        an <code>ActionMessages</code>
        object, <code>ActionErrors</code> object, a String,
        or a String array is present in any scope.  If
        such a bean is not found, nothing will be rendered.
     </p>
-    
+
             <dl><dt><b>Since:</b></dt>
             <dd>Struts 1.1</dd></dl>
           ]]>
@@ -1064,7 +1064,7 @@
             <rtexprvalue>true</rtexprvalue>
             <description>
                 <![CDATA[
-      <p>The parameter key used to retrieve the message from page, request, 
+      <p>The parameter key used to retrieve the message from page, request,
       session, or application scope.</p>
       ]]>
             </description>
@@ -1110,19 +1110,19 @@
     neither null, nor an empty string, nor an empty java.util.Collection
     (tested by the .isEmpty() method on the java.util.Collection interface).
     </strong></p>
-          
+
     <p>This tag evaluates its nested body content only if the specified value
     is present (i.e. not <code>null</code>) and is not an empty string (i.e. a
     <code>java.lang.String</code> with a length of zero).</p>
-    
+
     <p>
-    <strong>JSTL</strong>:  The equivalent JSTL tag is &lt;c:if&gt; using the 
+    <strong>JSTL</strong>:  The equivalent JSTL tag is &lt;c:if&gt; using the
     <code>! empty</code> operator.  For example,
     <br/>
     <code>
-    	&lt;c:if test="${ ! empty sessionScope.myBean.myProperty}"&gt;
-    	  do something
-    	&lt;/c:if&gt;
+        &lt;c:if test="${ ! empty sessionScope.myBean.myProperty}"&gt;
+          do something
+        &lt;/c:if&gt;
     </code>
     </p>
     ]]>
@@ -1174,7 +1174,7 @@
     Evaluate the nested body content of this tag if the requested
     variable is not equal to the specified value.
     </strong></p>
-          
+
     <p>Compares the variable specified by one of the selector attributes
     against the specified constant value.  The nested body content of this
     tag is evaluated if the variable and value are <strong>not equal</strong>.
@@ -1273,7 +1273,7 @@
     Evaluate the nested body content of this tag if the specified value
     is not an appropriate substring of the requested variable.
     </strong></p>
-          
+
     <p>Matches the variable specified by one of the selector attributes
     (as a String) against the specified constant value.  If the value is
     not a substring (appropriately limited by the <code>location</code>
@@ -1385,7 +1385,7 @@
     Generate the nested body content of this tag if the specified
     value is not present in this request.
     </strong></p>
-          
+
     <p>Depending on which attribute is specified, this tag checks the
     current request, and evaluates the nested body content of this tag
     only if the specified value <strong>is not</strong> present.  Only one
@@ -1496,7 +1496,7 @@
     Generate the nested body content of this tag if the specified
     value is present in this request.
     </strong></p>
-          
+
     <p>Depending on which attribute is specified, this tag checks the
     current request, and evaluates the nested body content of this tag
     only if the specified value <strong>is</strong> present.  Only one
@@ -1607,7 +1607,7 @@
         <description>
             <![CDATA[
             <p><strong>Render an HTTP Redirect</strong></p>
-          
+
 
                 <p>Performs an <code>HttpServletResponse.sendRedirect()</code>
                 call to the hyperlink specified by the attributes to this

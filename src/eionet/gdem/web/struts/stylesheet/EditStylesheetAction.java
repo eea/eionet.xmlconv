@@ -48,173 +48,173 @@ import eionet.gdem.utils.xml.XmlContext;
 
 public class EditStylesheetAction extends LookupDispatchAction  {
 
-	private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
 
-	/*
-	 * The method uploads the file from user's filesystem to the repository.
-	 * Saves all the other changes made onthe form execpt the file source in textarea
-	 *
-	 */
-	public ActionForward upload(ActionMapping actionMapping, ActionForm actionForm,
-			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)  {
+    /*
+     * The method uploads the file from user's filesystem to the repository.
+     * Saves all the other changes made onthe form execpt the file source in textarea
+     *
+     */
+    public ActionForward upload(ActionMapping actionMapping, ActionForm actionForm,
+            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)  {
 
 
-		ActionMessages errors = new ActionMessages();
-		ActionMessages messages = new ActionMessages();
+        ActionMessages errors = new ActionMessages();
+        ActionMessages messages = new ActionMessages();
 
-		StylesheetForm form = (StylesheetForm) actionForm;
-		String desc = form.getDescription();
-		String schema = form.getSchema();
-		String type = form.getOutputtype();
-		FormFile xslFile = form.getXslfile();
-		String stylesheetId = form.getStylesheetId();
-		String user = (String) httpServletRequest.getSession().getAttribute("user");
-		String dependsOn = form.getDependsOn();
+        StylesheetForm form = (StylesheetForm) actionForm;
+        String desc = form.getDescription();
+        String schema = form.getSchema();
+        String type = form.getOutputtype();
+        FormFile xslFile = form.getXslfile();
+        String stylesheetId = form.getStylesheetId();
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
+        String dependsOn = form.getDependsOn();
 
-		httpServletRequest.setAttribute("stylesheetId", stylesheetId);
+        httpServletRequest.setAttribute("stylesheetId", stylesheetId);
 
-		if (isCancelled(httpServletRequest)) {
-			return findForward(actionMapping, "success", stylesheetId);
-		}
+        if (isCancelled(httpServletRequest)) {
+            return findForward(actionMapping, "success", stylesheetId);
+        }
 
-		if (xslFile != null && xslFile.getFileSize() != 0) {
-			try {
-				IXmlCtx x = new XmlContext();
-				x.setWellFormednessChecking();
-				x.checkFromInputStream(new ByteArrayInputStream(xslFile.getFileData()));
-			} catch (Exception e) {
-				_logger.error("stylesheet not valid",e);
-				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.notvalid"));
-			}
-		}
+        if (xslFile != null && xslFile.getFileSize() != 0) {
+            try {
+                IXmlCtx x = new XmlContext();
+                x.setWellFormednessChecking();
+                x.checkFromInputStream(new ByteArrayInputStream(xslFile.getFileData()));
+            } catch (Exception e) {
+                _logger.error("stylesheet not valid",e);
+                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.notvalid"));
+            }
+        }
 
-		/*try {
-			IXmlCtx x = new XmlContext();
-			x.setWellFormednessChecking();
-			x.checkFromInputStream((new InputFile(schema)).getSrcInputStream());
-		} catch (Exception e) {
-			_logger.error("schema not valid",e);
-			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.error.notvalid"));
-		}*/
-
-
-		if (errors.isEmpty()) {
-			try {
-				StylesheetManager st = new StylesheetManager();
-				st.update(user, stylesheetId, schema, xslFile, type, desc, dependsOn);
-				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.updated"));
-			} catch (DCMException e) {
-				_logger.error("Edit stylesheet error",e);
-				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-			}
-		}
-
-		if (!errors.isEmpty()) {
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("fail");
-		}
-		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
-		httpServletRequest.setAttribute("schema", schema);
-		return findForward(actionMapping, "success", stylesheetId);
-	}
-	/*
-	 * The method saves all the changes made on the form.
-	 * Saves also modifications made to the file source textarea
-	 *
-	 */
-	public ActionForward save(ActionMapping actionMapping, ActionForm actionForm,
-			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)  {
+        /*try {
+            IXmlCtx x = new XmlContext();
+            x.setWellFormednessChecking();
+            x.checkFromInputStream((new InputFile(schema)).getSrcInputStream());
+        } catch (Exception e) {
+            _logger.error("schema not valid",e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.error.notvalid"));
+        }*/
 
 
-		ActionMessages errors = new ActionMessages();
-		ActionMessages messages = new ActionMessages();
+        if (errors.isEmpty()) {
+            try {
+                StylesheetManager st = new StylesheetManager();
+                st.update(user, stylesheetId, schema, xslFile, type, desc, dependsOn);
+                messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.updated"));
+            } catch (DCMException e) {
+                _logger.error("Edit stylesheet error",e);
+                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+            }
+        }
 
-		StylesheetForm form = (StylesheetForm) actionForm;
-		String desc = form.getDescription();
-		String schema = form.getSchema();
-		String type = form.getOutputtype();
-		String stylesheetId = form.getStylesheetId();
-		String user = (String) httpServletRequest.getSession().getAttribute("user");
-		String xslContent = form.getXslContent();
-		String xslFileName = form.getXslFileName();
-		String checksum = form.getChecksum();
-		boolean updateContent=false;
-		String newChecksum = null;
-		String dependsOn = form.getDependsOn();
+        if (!errors.isEmpty()) {
+            saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("fail");
+        }
+        httpServletRequest.getSession().setAttribute("dcm.messages", messages);
+        httpServletRequest.setAttribute("schema", schema);
+        return findForward(actionMapping, "success", stylesheetId);
+    }
+    /*
+     * The method saves all the changes made on the form.
+     * Saves also modifications made to the file source textarea
+     *
+     */
+    public ActionForward save(ActionMapping actionMapping, ActionForm actionForm,
+            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)  {
 
-		httpServletRequest.setAttribute("stylesheetId", stylesheetId);
 
-		if (isCancelled(httpServletRequest)) {
-			return findForward(actionMapping, "success", stylesheetId);
-		}
+        ActionMessages errors = new ActionMessages();
+        ActionMessages messages = new ActionMessages();
 
-		if (!Utils.isNullStr(xslFileName) && !Utils.isNullStr(xslContent) &&
-				xslContent.indexOf(Constants.FILEREAD_EXCEPTION)==-1) {
+        StylesheetForm form = (StylesheetForm) actionForm;
+        String desc = form.getDescription();
+        String schema = form.getSchema();
+        String type = form.getOutputtype();
+        String stylesheetId = form.getStylesheetId();
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
+        String xslContent = form.getXslContent();
+        String xslFileName = form.getXslFileName();
+        String checksum = form.getChecksum();
+        boolean updateContent=false;
+        String newChecksum = null;
+        String dependsOn = form.getDependsOn();
 
-			//compare checksums
-			try{
-				newChecksum = Utils.getChecksumFromString(xslContent);
-			}
-			catch(Exception e){
-			 _logger.error("unable to create checksum");
-			}
-			if(checksum==null)checksum="";
-			if(newChecksum==null)newChecksum="";
+        httpServletRequest.setAttribute("stylesheetId", stylesheetId);
 
-			updateContent = !checksum.equals(newChecksum);
+        if (isCancelled(httpServletRequest)) {
+            return findForward(actionMapping, "success", stylesheetId);
+        }
 
-			if(updateContent){
+        if (!Utils.isNullStr(xslFileName) && !Utils.isNullStr(xslContent) &&
+                xslContent.indexOf(Constants.FILEREAD_EXCEPTION)==-1) {
 
-				try {
-					IXmlCtx x = new XmlContext();
-					x.setWellFormednessChecking();
-					String charset = httpServletRequest.getCharacterEncoding();
-					x.checkFromInputStream(new ByteArrayInputStream(xslContent.getBytes(charset)));
-				} catch (Exception e) {
-					_logger.error("stylesheet not valid",e);
-					errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.notvalid"));
-				}
+            //compare checksums
+            try{
+                newChecksum = Utils.getChecksumFromString(xslContent);
+            }
+            catch(Exception e){
+             _logger.error("unable to create checksum");
+            }
+            if(checksum==null)checksum="";
+            if(newChecksum==null)newChecksum="";
 
-			}
-		}
+            updateContent = !checksum.equals(newChecksum);
 
-		if (errors.isEmpty()) {
-			try {
-				StylesheetManager st = new StylesheetManager();
-				st.updateContent(user, stylesheetId, schema, xslFileName, type, desc,xslContent, updateContent, dependsOn);
-				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.updated"));
-			} catch (DCMException e) {
-				_logger.error("Edit stylesheet error",e);
-				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-			}
-		}
+            if(updateContent){
 
-		if (!errors.isEmpty()) {
-			saveErrors(httpServletRequest, errors);
-			return actionMapping.findForward("fail");
-		}
-		httpServletRequest.getSession().setAttribute("dcm.messages", messages);
-		httpServletRequest.setAttribute("schema", schema);
+                try {
+                    IXmlCtx x = new XmlContext();
+                    x.setWellFormednessChecking();
+                    String charset = httpServletRequest.getCharacterEncoding();
+                    x.checkFromInputStream(new ByteArrayInputStream(xslContent.getBytes(charset)));
+                } catch (Exception e) {
+                    _logger.error("stylesheet not valid",e);
+                    errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.notvalid"));
+                }
 
-		return findForward(actionMapping, "success", stylesheetId);
-	}
-	public ActionForward cancel(ActionMapping actionMapping, ActionForm actionForm,
-			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)  {
-		return actionMapping.findForward("success");
-	}
+            }
+        }
 
-	protected Map<String,String> getKeyMethodMap() {
-		 Map<String,String> map = new HashMap<String,String>();
-		 map.put("label.stylesheet.save", "save");
-		 map.put("label.stylesheet.upload", "upload");
-		 return map;
-	}
-	private ActionForward findForward(ActionMapping actionMapping, String f, String stylesheetId){
-		ActionForward forward = actionMapping.findForward(f);
-		 StringBuffer path = new StringBuffer(forward.getPath());
-		 path.append("?stylesheetId=" + stylesheetId);
-	    forward = new RedirectingActionForward(path.toString());
-	    return forward;
-	}
+        if (errors.isEmpty()) {
+            try {
+                StylesheetManager st = new StylesheetManager();
+                st.updateContent(user, stylesheetId, schema, xslFileName, type, desc,xslContent, updateContent, dependsOn);
+                messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.updated"));
+            } catch (DCMException e) {
+                _logger.error("Edit stylesheet error",e);
+                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("fail");
+        }
+        httpServletRequest.getSession().setAttribute("dcm.messages", messages);
+        httpServletRequest.setAttribute("schema", schema);
+
+        return findForward(actionMapping, "success", stylesheetId);
+    }
+    public ActionForward cancel(ActionMapping actionMapping, ActionForm actionForm,
+            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)  {
+        return actionMapping.findForward("success");
+    }
+
+    protected Map<String,String> getKeyMethodMap() {
+         Map<String,String> map = new HashMap<String,String>();
+         map.put("label.stylesheet.save", "save");
+         map.put("label.stylesheet.upload", "upload");
+         return map;
+    }
+    private ActionForward findForward(ActionMapping actionMapping, String f, String stylesheetId){
+        ActionForward forward = actionMapping.findForward(f);
+         StringBuffer path = new StringBuffer(forward.getPath());
+         path.append("?stylesheetId=" + stylesheetId);
+        forward = new RedirectingActionForward(path.toString());
+        return forward;
+    }
 }

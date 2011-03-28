@@ -1,67 +1,67 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Context path="/DCM" docBase="DCM" debug="5" reloadable="true"
-	crossContext="true">
-	<Resource name="jdbc/GDEM_DB" auth="Container"
-		type="javax.sql.DataSource" />
-	<ResourceParams name="jdbc/GDEM_DB">
-		<parameter>
-			<name>factory</name>
-			<value>
-				org.apache.commons.dbcp.BasicDataSourceFactory
-			</value>
-		</parameter>
+    crossContext="true">
+    <Resource name="jdbc/GDEM_DB" auth="Container"
+        type="javax.sql.DataSource" />
+    <ResourceParams name="jdbc/GDEM_DB">
+        <parameter>
+            <name>factory</name>
+            <value>
+                org.apache.commons.dbcp.BasicDataSourceFactory
+            </value>
+        </parameter>
 
-		<!-- Maximum number of dB connections in pool. Make sure you
-			configure your mysqld max_connections large enough to handle
-			all of your db connections. Set to 0 for no limit.
-		-->
-		<parameter>
-			<name>maxActive</name>
-			<value>100</value>
-		</parameter>
+        <!-- Maximum number of dB connections in pool. Make sure you
+            configure your mysqld max_connections large enough to handle
+            all of your db connections. Set to 0 for no limit.
+        -->
+        <parameter>
+            <name>maxActive</name>
+            <value>100</value>
+        </parameter>
 
-		<!-- Maximum number of idle dB connections to retain in pool.
-			Set to -1 for no limit.  See also the DBCP documentation on this
-			and the minEvictableIdleTimeMillis configuration parameter.
-		-->
-		<parameter>
-			<name>maxIdle</name>
-			<value>30</value>
-		</parameter>
+        <!-- Maximum number of idle dB connections to retain in pool.
+            Set to -1 for no limit.  See also the DBCP documentation on this
+            and the minEvictableIdleTimeMillis configuration parameter.
+        -->
+        <parameter>
+            <name>maxIdle</name>
+            <value>30</value>
+        </parameter>
 
-		<!-- Maximum time to wait for a dB connection to become available
-			in ms, in this example 10 seconds. An Exception is thrown if
-			this timeout is exceeded.  Set to -1 to wait indefinitely.
-		-->
-		<parameter>
-			<name>maxWait</name>
-			<value>10000</value>
-		</parameter>
+        <!-- Maximum time to wait for a dB connection to become available
+            in ms, in this example 10 seconds. An Exception is thrown if
+            this timeout is exceeded.  Set to -1 to wait indefinitely.
+        -->
+        <parameter>
+            <name>maxWait</name>
+            <value>10000</value>
+        </parameter>
 
-		<parameter>
-			<name>username</name>
-			<value>gdem_developer</value>
-		</parameter>
-		<parameter>
-			<name>password</name>
-			<value>reportnet</value>
-		</parameter>
+        <parameter>
+            <name>username</name>
+            <value>gdem_developer</value>
+        </parameter>
+        <parameter>
+            <name>password</name>
+            <value>reportnet</value>
+        </parameter>
 
-		<parameter>
-			<name>driverClassName</name>
-			<value>com.mysql.jdbc.Driver</value>
-		</parameter>
+        <parameter>
+            <name>driverClassName</name>
+            <value>com.mysql.jdbc.Driver</value>
+        </parameter>
 
-		<parameter>
-			<name>poolPreparedStatements</name>
-			<value>true</value>
-		</parameter>
+        <parameter>
+            <name>poolPreparedStatements</name>
+            <value>true</value>
+        </parameter>
 
-		<parameter>
-			<name>url</name>
-			<value>
-				jdbc:mysql://192.168.0.90:3306/GDEM_DEV?autoReconnect=true
-			</value>
-		</parameter>
-	</ResourceParams>
+        <parameter>
+            <name>url</name>
+            <value>
+                jdbc:mysql://192.168.0.90:3306/GDEM_DEV?autoReconnect=true
+            </value>
+        </parameter>
+    </ResourceParams>
 </Context>

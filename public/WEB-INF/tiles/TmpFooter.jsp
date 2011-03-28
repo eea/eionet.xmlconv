@@ -17,12 +17,12 @@ String a=request.getContextPath(); session.setAttribute("webRoot",a==null?"":a);
 
 <tiles:useAttribute id="showFooter" name="showFooter"/>
 <logic:equal name="showFooter" value="true">
-	<div id="pagefoot">
-		<p>
+    <div id="pagefoot">
+        <p>
             <a href="http://www.eea.europa.eu" style="font-weight:bold">European Environment Agency</a>
             <br/>Kgs. Nytorv 6, DK-1050 Copenhagen K, Denmark - Phone: +45 3336 7100
          </p>
-	</div>
+    </div>
 </logic:equal>
 
 </body>

@@ -9,9 +9,9 @@
 <h1><a name="_Toc119909618"></a>5. External System FEATURES</h1>
 <p>The DCM has been designed to be used also by external applications. These client applications may perform the following operations on DCM:</p>
 <ul>
-	<li>Get conversions for delivered XML file </li>
-	<li>Validate delivered XML file</li>
-	<li>Convert delivered XML file</li>
+    <li>Get conversions for delivered XML file </li>
+    <li>Validate delivered XML file</li>
+    <li>Convert delivered XML file</li>
 </ul>
 <p>In order to invoke these operations, the location of the DCM XML RPC Router must be known. By default this is set to: http://&lt;&lt;web_root&gt;&gt;/RpcRouter </p>
 <p>To make use of the DCM XML RPC, users need to call it from an external application. The following is an example for such an RPC call using the Python programming language:</p>
@@ -25,35 +25,35 @@
 <h2><a name="_Toc119909619"></a>5.1 Get Conversions for delivered XML file</h2>
 <p>The method called for fetching the available conversion stylesheets for a delivered XML file is:</p>
 <p>Method syntax:<br>
-	<b>listConversions(schema_url)</b></p>
+    <b>listConversions(schema_url)</b></p>
 <p>Method parameters:<br>
-	<i>schema_url</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string – This parameter represents the URL of the XML schema for which the conversions will be fetched. </p>
+    <i>schema_url</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string – This parameter represents the URL of the XML schema for which the conversions will be fetched. </p>
 <p>This method returns:<br>
-	<i>struct</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A Structure object that contains five elements:<br>
-	                        ‘convert_id’ - xsl file name<br>
-	                        ‘xsl’- xsl file name<br>
-	<i>                        </i>‘description’ - description of the conversion<br>
-	<i>                        </i>‘content_type_out’ - result file content type<br>
-	            <i>            </i>‘xml_schema’- xml schema of the input XML file</p>
+    <i>struct</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A Structure object that contains five elements:<br>
+                            ‘convert_id’ - xsl file name<br>
+                            ‘xsl’- xsl file name<br>
+    <i>                        </i>‘description’ - description of the conversion<br>
+    <i>                        </i>‘content_type_out’ - result file content type<br>
+                <i>            </i>‘xml_schema’- xml schema of the input XML file</p>
 <h2><a name="_Toc119909620"></a>5.2 Convert delivered XML file</h2>
 <p>This method converts the source XML file into the specified format </p>
 <p>Method syntax:<br>
-	<b>convert(xml_url,format_id)</b></p>
+    <b>convert(xml_url,format_id)</b></p>
 <p>Method parameters:<br>
-	<i>xml_url</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string - URL of the XML file  to be converted.<br>
-	<i>format_id</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string -&nbsp; numeric ID or XSL filename of the conversion.</p>
+    <i>xml_url</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string - URL of the XML file  to be converted.<br>
+    <i>format_id</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string -&nbsp; numeric ID or XSL filename of the conversion.</p>
 <p>This method returns:<br>
-	<i>struct</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A Structure object that contains two elements. <br>
+    <i>struct</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A Structure object that contains two elements. <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;‘content-type’ - the file format e.g. (“text/html”, “application-pdf”, …)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;‘content’ - result of conversion as a byte array</p>
 <h2><a name="_Toc119909621"></a>5.3 Validate delivered XML file</h2>
 <p>Validates the source XML file against the XML Schema.or doctype defined within the XML file</p>
 <p>Method Syntax:<br>
-	<b>validate(xml_url)</b></p>
+    <b>validate(xml_url)</b></p>
 <p align=left>Method parameters:<br>
-	<i>xml_url</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string – URL of the XML file to be validated.</p>
+    <i>xml_url</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string – URL of the XML file to be validated.</p>
 <p align=left>This method returns: <i><br>
-	string</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The return value contains validation result in HTML format. If validation passed<br>
+    string</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The return value contains validation result in HTML format. If validation passed<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;successfully, then the string starts with “OK –“</p>
 </body>
 </html>

@@ -38,8 +38,8 @@ public interface IDbSchema {
    * Table for uploaded xml schemas in the DB
    */
    public static final String UPL_SCHEMA_TABLE="T_UPL_SCHEMA";
-  
-  
+
+
   /**
   * Table for root element mappings for schemas in the DB
   */
@@ -65,15 +65,15 @@ public interface IDbSchema {
   public static final String XSL_SCHEMA_ID_FLD="SCHEMA_ID";
   public static final String DESCR_FLD="DESCRIPTION";
   public static final String RESULT_TYPE_FLD="RESULT_TYPE";
-  public static final String XSL_FILE_FLD="XSL_FILENAME"; 
-  public static final String DEPENDS_ON="DEPENDS_ON"; 
+  public static final String XSL_FILE_FLD="XSL_FILENAME";
+  public static final String DEPENDS_ON="DEPENDS_ON";
 
   /**
   * Field names in QUERY table
   */
   public static final String QUERY_ID_FLD="QUERY_ID";
   public static final String SHORT_NAME_FLD="SHORT_NAME";
-  public static final String QUERY_FILE_FLD="QUERY_FILENAME";  
+  public static final String QUERY_FILE_FLD="QUERY_FILENAME";
   public static final String QUERY_RESULT_TYPE="RESULT_TYPE";
   public static final String QUERY_SCRIPT_TYPE="SCRIPT_TYPE";
   public static final String UPPER_LIMIT_FLD="UPPER_LIMIT";
@@ -88,7 +88,7 @@ public interface IDbSchema {
   public static final String SCHEMA_VALIDATE_FLD="VALIDATE";
   public static final String SCHEMA_LANG_FLD="SCHEMA_LANG";
   public static final String EXPIRE_DATE_FLD="EXPIRE_DATE";
-  
+
 
   /**
    * Field names in UPL_SCHEMA table
@@ -97,8 +97,8 @@ public interface IDbSchema {
    public static final String UPL_SCHEMA_FLD="SCHEMA_NAME";
    public static final String UPL_SCHEMA_DESC="DESCRIPTION";
    public static final String UPL_FK_SCHEMA_ID="FK_SCHEMA_ID";
-  
-  
+
+
   /**
   * Field names in ROOT ELEMENTS table
   */
@@ -118,7 +118,7 @@ public interface IDbSchema {
   public static final String TIMESTAMP_FLD="TIME_STAMP";
   public static final String XQ_ID_FLD="QUERY_ID";
   public static final String SRC_FILE_FLD="SRC_FILE";
-  
+
   /**
   * Field names in FILE table
   */
@@ -152,8 +152,8 @@ public interface IDbSchema {
   public static final String BROWSER_TITLE_FLD="BROWSER_TITLE";
   public static final String BROWSER_STYLESHEET_FLD="STYLESHEET";
   public static final String BROWSER_PRIORITY_FLD="PRIORITY";
-  
-  
+
+
   /**
   * Field names in HOSTS table
   */

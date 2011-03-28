@@ -26,39 +26,39 @@
                 </html:link>
             </li>
         </ul>
-	</div>
+    </div>
 
 
-		<ed:breadcrumbs-push label="Purge" level="1" />
-		<h1><bean:message key="label.config.purge.title" /></h1>
+        <ed:breadcrumbs-push label="Purge" level="1" />
+        <h1><bean:message key="label.config.purge.title" /></h1>
 
-		<%-- include Error display --%>
-		<tiles:insert definition="Error" />
+        <%-- include Error display --%>
+        <tiles:insert definition="Error" />
 
-			<html:form action="/purge" method="post">
-			    <table  class="formtable">
-				  <col style="width:25%"/>
-				  <col style="width:75%"/>
-					  <tr>
-						<td>
-			            	<label for="nofDays" class="question"><bean:message key="label.config.purge.nofdays" /></label>
-			            </td>
-			            <td>
-			            	<html:text property="nofDays" maxlength="10" style="width: 10em;" styleId="nofDays"/>
-			            </td>
-			        </tr>
-				        <tr>
-				            <td colspan="2">&nbsp;</td>
-				        </tr>
-				        <tr>
-				            <td colspan="2" align="center">
-				                <html:submit styleClass="button">
-				                    <bean:message key="label.config.purge.submit" />
-				                </html:submit>
-				            </td>
-				        </tr>
+            <html:form action="/purge" method="post">
+                <table  class="formtable">
+                  <col style="width:25%"/>
+                  <col style="width:75%"/>
+                      <tr>
+                        <td>
+                            <label for="nofDays" class="question"><bean:message key="label.config.purge.nofdays" /></label>
+                        </td>
+                        <td>
+                            <html:text property="nofDays" maxlength="10" style="width: 10em;" styleId="nofDays"/>
+                        </td>
+                    </tr>
+                        <tr>
+                            <td colspan="2">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center">
+                                <html:submit styleClass="button">
+                                    <bean:message key="label.config.purge.submit" />
+                                </html:submit>
+                            </td>
+                        </tr>
 
-			    </table>
-			</html:form>
+                </table>
+            </html:form>
 
 </div>
