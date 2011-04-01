@@ -50,6 +50,7 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.qa.QAResultPostProcessor;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.InputFile;
@@ -74,6 +75,8 @@ public class ValidationService {
 
     private String validatedSchema = null;	//system URL
     private String validatedSchemaURL = null; //public URL
+
+    private String warningMessage = null;
 
     /**
      * Constructor for remote methods
@@ -222,17 +225,26 @@ public class ValidationService {
             //throw new GDEMException("Error parsing: " + e.toString());
         }
 
+        QAResultPostProcessor postProcessor = new QAResultPostProcessor();
+        String result = null;
+
         //we have errors!
         if ((errors!= null && errors.length()>0)){
             //return errors.toString();
             htmlErrors.append("</table></div>");
-            return htmlErrors.toString();
+
+            result = postProcessor.processQAResult(htmlErrors.toString(), schema);
         }
         else if ((errorsList!= null && errorsList.size()>0)){
-            return getErrorList().toString();
+            this.warningMessage = postProcessor.getWarningMessage(schema);
+            result = getErrorList().toString();
         }
-        else
-            return GErrorHandler.formatResultText(Properties.getMessage("label.validation.result.ok"),getOriginalSchema());
+        else{
+            result = GErrorHandler.formatResultText(Properties.getMessage("label.validation.result.ok"),getOriginalSchema());
+            result = postProcessor.processQAResult(result, schema);
+            this.warningMessage = postProcessor.getWarningMessage(schema);
+        }
+        return result;
     }
     /**
      * Read default namespace from XML file
@@ -356,7 +368,12 @@ public class ValidationService {
     public void setOriginalSchema(String originalSchema) {
         this.originalSchema = originalSchema;
     }
-
+    public String getWarningMessage() {
+        return warningMessage;
+    }
+    public void setWarningMessage(String warningMessage) {
+        this.warningMessage = warningMessage;
+    }
     public static void main(String[] s) {
 
         try {

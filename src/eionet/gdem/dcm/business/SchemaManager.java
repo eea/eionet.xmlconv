@@ -922,8 +922,6 @@ public class SchemaManager {
         try {
 
             sch = schemaDao.getSchema(schemaId);
-
-
             schema = new Schema();
             schema.setId(schemaId);
             schema.setSchema((String) sch.get("xml_schema"));

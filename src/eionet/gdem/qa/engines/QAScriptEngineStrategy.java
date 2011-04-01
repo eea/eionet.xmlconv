@@ -22,33 +22,20 @@
 package eionet.gdem.qa.engines;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.batik.gvt.TextNode;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
+import eionet.gdem.qa.QAResultPostProcessor;
 import eionet.gdem.qa.XQEngineIF;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.GDEMServices;
@@ -91,18 +78,20 @@ public abstract class QAScriptEngineStrategy  implements XQEngineIF{
         getResult(script, result);
         try{
             res = result.toString(DEFAULT_ENCODING);
-            if (_logger.enable(_logger.DEBUG))
-                _logger.debug("RESULT: \n" + res);
+            if (_logger.enable(LoggerIF.DEBUG)){
+                _logger.debug("RESULT: \n" + res.substring(0,300));
+            }
 
         } catch (Exception e) {
             _logger.error("==== CATCHED EXCEPTION " + e.toString() );
         }
 
         //add "red coloured warning" if script is expired
-        if (script.getOutputType() .equals(script.SCRIPT_RESULTTYPE_HTML) &&
-                script.getSchema() != null && script.getSchema().isExpired() ) {
+        if (script.getOutputType().equals(XQScript.SCRIPT_RESULTTYPE_HTML) &&
+                script.getSchema() != null ) {
 
-            res=addExpWarning(res, Utils.getFormat( script.getSchema().getExpireDate() , "dd.MM.yyyy") );
+            QAResultPostProcessor postProcessor = new QAResultPostProcessor();
+            res=postProcessor.processQAResult(res, script.getSchema());
         }
 
         return res;
@@ -147,72 +136,6 @@ public abstract class QAScriptEngineStrategy  implements XQEngineIF{
 
         }
         return paramsMap;
-    }
-
-    private String addExpWarning(String htmlResult, String expDate) {
-
-        try {
-            IXmlCtx ctx=new XmlContext();
-            ctx.checkFromString(  htmlResult);
-            IXQuery xQuery=ctx.getQueryManager();
-
-            NodeList divElements = ctx.getDocument().getElementsByTagName("div");
-            boolean foundFeedbackDiv=parseDivNodes(divElements, expDate);
-
-            //searching node is case insensitive in XPath - do it twice:
-            if (!foundFeedbackDiv) {
-                divElements = ctx.getDocument().getElementsByTagName("DIV");
-                foundFeedbackDiv=parseDivNodes(divElements, expDate);
-            }
-
-            if (!foundFeedbackDiv) {
-                return htmlResult;
-            }
-            else {
-                IXmlSerializer serializer = new XmlSerialization(ctx);
-                return serializer.serializeToString();
-            }
-        } catch (Exception e) {
-            _logger.error("addExpWarning() Error parsing HTML, returning original HTML: " + e.toString());
-        }
-
-        return htmlResult;
-    }
-
-    private boolean parseDivNodes(NodeList divElements, String expDate) throws XmlException {
-        boolean feedBackDivFound = false;
-        try {
-            for (int i = 0; divElements != null && i < divElements.getLength() ; i++) {
-                Node divNode = divElements.item(i);
-                Node classNode = divNode.getAttributes().getNamedItem("class");
-
-                if (classNode != null && classNode.getNodeValue().equalsIgnoreCase("feedbacktext")) {
-                    //found feedback div
-                    feedBackDivFound = true;
-
-                    Node firstChild = divNode.getFirstChild();
-                    Document doc = firstChild.getOwnerDocument();
-
-                    Node warningNode =
-                          DocumentBuilderFactory.newInstance()
-                            .newDocumentBuilder()
-                              .parse( new InputSource(new StringReader("<span style='color:red; font-size:110%'>" +
-                                      Properties.getMessage("label.stylesheet.warning.expired", new String[]{expDate}) +  "</span>"))).getFirstChild();
-                    warningNode = doc.importNode(warningNode, true);
-                    if (firstChild == null) {
-                        divNode.appendChild(warningNode);
-                    }
-                    else {
-                        warningNode = divNode.insertBefore(warningNode, firstChild);
-                    }
-                    //
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            _logger.error("Error processing divNodes " + e);
-        }
-        return feedBackDivFound;
     }
 }
 

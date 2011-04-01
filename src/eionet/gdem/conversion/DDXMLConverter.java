@@ -438,56 +438,47 @@ public abstract class DDXMLConverter {
     /**
      * checks if the given schema belongs to the last released dataset in DD. Returns null, if schema is OK.
      * Returns an error message, if the schema is not ok to convert.
-     * @param xml_schema
+     * @param xmlSchema
      * @return error message
      * @throws GDEMException
      */
-    public String getInvalidSchemaMessage(String xml_schema) throws GDEMException {
+    public String getInvalidSchemaMessage(String xmlSchema)
+            throws GDEMException {
 
         String result = null;
-        Map dataset = null;
-        boolean isLatestReleased = false;
-        String status = "";
-        String dateOfLatestReleased = "";
-        String idOfLatestReleased = "";
 
-        String id = DataDictUtil.getSchemaIdParamFromUrl(xml_schema);
+        Map dataset = getDataset(xmlSchema);
 
-        if(id.length()>4 && (id.startsWith(DD_XMLInstance.DST_TYPE) || id.startsWith(DD_XMLInstance.TBL_TYPE))){
-
-            String type = id.substring(0,3);
-            String dsId = id.substring(3);
-            dataset = getDataset(type.toLowerCase(),dsId);
-
-            status = (String)dataset.get("status");
-            isLatestReleased = (dataset.get("isLatestReleased")==null ||
-                        "true".equals((String)dataset.get("isLatestReleased")))?
-                            true:false;
-            dateOfLatestReleased = (String)dataset.get("dateOfLatestReleased");
-            idOfLatestReleased = (String)dataset.get("idOfLatestReleased");
-        }
-        if(dataset==null){
+        if (dataset == null) {
             result = Properties.getMessage(
-                    BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE, new String[]{getSourceFormatName()});
-        }
-        else if(!isLatestReleased && "Released".equalsIgnoreCase(status)){
-            String formattedReleasedDate = Utils.formatTimestampDate(dateOfLatestReleased);
-            result = Properties.getMessage(
-                    BusinessConstants.ERROR_CONVERSION_OBSOLETE_TEMPLATE,
-                        new String[]{getSourceFormatName(),formattedReleasedDate==null?"":formattedReleasedDate
-                                ,idOfLatestReleased});
+                    BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE,
+                    new String[] { getSourceFormatName() });
+        } else {
+            String status = (String) dataset.get("status");
+            boolean isLatestReleased = (dataset.get("isLatestReleased") == null ||
+                        "true".equals((String) dataset.get("isLatestReleased"))) ?
+                                true
+                                : false;
+            String dateOfLatestReleased = (String) dataset.get("dateOfLatestReleased");
+            String idOfLatestReleased = (String) dataset.get("idOfLatestReleased");
+
+            if (!isLatestReleased && "Released".equalsIgnoreCase(status)) {
+                String formattedReleasedDate = Utils
+                        .formatTimestampDate(dateOfLatestReleased);
+                result = Properties.getMessage(
+                        BusinessConstants.ERROR_CONVERSION_OBSOLETE_TEMPLATE,
+                        new String[] {
+                                getSourceFormatName(),
+                                formattedReleasedDate == null ? ""
+                                        : formattedReleasedDate
+                                , idOfLatestReleased });
+            }
         }
 
         return result;
     }
-    protected Map getDataset(String type, String dsId){
-        if(!GDEMServices.isTestConnection()){
-            return DDServiceClient.getDatasetWithReleaseInfo(type,dsId);
-        }
-        else{
-            return DDServiceClient.getMockDataset(type,dsId);
-        }
 
-
+    protected Map getDataset(String xmlSchema) {
+        return DataDictUtil.getDatasetReleaseInfoForSchema(xmlSchema);
     }
 }

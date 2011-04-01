@@ -59,6 +59,7 @@ public class ValidateXMLAction  extends Action {
             ArrayList valid;
             String validatedSchema = null;
             String originalSchema = null;
+            String warningMessage = null;
             try {
                 ValidationService v = new ValidationService(true);
                 v.setTrustedMode(false);
@@ -70,6 +71,7 @@ public class ValidateXMLAction  extends Action {
                 valid = v.getErrorList();
                 validatedSchema = v.getValidatedSchemaURL();
                 originalSchema = v.getOriginalSchema();
+                warningMessage = v.getWarningMessage();
             } catch (DCMException dcme) {
                 throw dcme;
             } catch (Exception e) {
@@ -79,6 +81,7 @@ public class ValidateXMLAction  extends Action {
             httpServletRequest.setAttribute("conversion.originalSchema", originalSchema);
             if(!originalSchema.equals(validatedSchema))
                 httpServletRequest.setAttribute("conversion.validatedSchema", validatedSchema);
+            httpServletRequest.setAttribute("conversion.warningMessage", warningMessage);
         } catch (DCMException e) {
             e.printStackTrace();
             _logger.error("Error validating xml",e);

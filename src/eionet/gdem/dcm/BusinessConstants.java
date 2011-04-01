@@ -73,4 +73,7 @@ public class BusinessConstants {
     public static final String ERROR_CONVERSION_OBSOLETE_TEMPLATE = "error.conversion.obsolete.template";
     public static final String ERROR_CONVERSION_INVALID_TEMPLATE = "error.conversion.invalid.template";
 
+    public static final String WARNING_QA_EXPIRED_SCHEMA = "warning.qa.expired.schema";
+    public static final String WARNING_QA_EXPIRED_DD_SCHEMA = "warning.qa.expired.dd.schema";
+
 }

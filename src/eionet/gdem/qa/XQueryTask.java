@@ -31,14 +31,13 @@ package eionet.gdem.qa;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.sql.SQLException;
 import java.util.HashMap;
 
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
+import eionet.gdem.conversion.datadict.DataDictUtil;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.services.GDEMServices;
@@ -67,9 +66,6 @@ public class XQueryTask extends Thread implements Constants {
     private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
     private SchemaManager schemaManager;
-
-
-  //int status;
 
   public XQueryTask(String jobId)  {
     _jobId=jobId;
@@ -181,6 +177,7 @@ public class XQueryTask extends Thread implements Constants {
       String scriptType=null;
       Schema schema = null;
       boolean schemaExpired = false;
+      boolean isNotLatestReleasedDDSchema = false;
 
       if (query!=null && query.containsKey("content_type")){
             content_type = (String)query.get("content_type");
@@ -195,6 +192,7 @@ public class XQueryTask extends Thread implements Constants {
           //set schema if exists:
           schema = getSchema((String)query.get("xml_schema"));
           schemaExpired = (schema != null && schema.isExpired()) ;
+          isNotLatestReleasedDDSchema = DataDictUtil.isDDSchemaAndNotLatestReleased(schema.getSchema());
 
       }
 
@@ -226,14 +224,10 @@ public class XQueryTask extends Thread implements Constants {
         xq.setSchema(schema);
 
         FileOutputStream out=null;
-        Writer writer = null;
-        //System.out.println("==>filename " + _resultFile);
         try{
-
            //if result type is HTML and schema is expired parse result (add warning) before writing to file
-           if (schemaExpired && content_type.equals(xq.SCRIPT_RESULTTYPE_HTML)) {
+           if ((schemaExpired || isNotLatestReleasedDDSchema) && content_type.equals(XQScript.SCRIPT_RESULTTYPE_HTML)) {
                String res = xq.getResult();
-
                Utils.saveStrToFile(_resultFile, res, null);
            }
            else {
@@ -253,13 +247,7 @@ public class XQueryTask extends Thread implements Constants {
 
                 }
             }
-
-//        	if (writer != null) {
-//        		writer.close();
-//        	}
-
         }
-
 
         if (_logger.enable(LoggerIF.DEBUG)){
           _logger.debug("Script proceeded, now store to the result file");
