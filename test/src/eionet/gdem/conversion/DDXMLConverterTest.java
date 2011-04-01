@@ -49,7 +49,8 @@ public class DDXMLConverterTest extends TestCase{
         assertNull(message);
 
         //schema is INVALID
-        message = ddConverter.getInvalidSchemaMessage("http://unknown.com?SchemaId=1111");
+        DDXMLConverter ddExcelConverter = new Excel2XML();
+        message = ddExcelConverter.getInvalidSchemaMessage("http://unknown.com?SchemaId=1111");
         assertEquals(Properties.getMessage(
                 BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE, new String[]{ddConverter.getSourceFormatName()}),
                 message);
@@ -149,7 +150,7 @@ public class DDXMLConverterTest extends TestCase{
             super();
             this.spreadsheetReader = spreadsheetReader;
         }
-        protected Map<String, String> getDataset(String type, String dsId){
+        protected Map getDataset(String xmlSchema){
             return datasetResult;
         }
         public void setDataset(Map<String, String> dataset){

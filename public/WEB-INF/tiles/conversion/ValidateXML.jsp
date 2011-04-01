@@ -14,45 +14,48 @@
 
         <%-- include Error display --%>
         <tiles:insert definition="Error" />
-                <logic:present name="conversion.valid" scope="request">
-                    <bean:size id="countErrors" name="conversion.valid" />
+<logic:present name="conversion.valid" scope="request">
+	<bean:size id="countErrors" name="conversion.valid" />
 
-                        <logic:equal name="countErrors" value="0">
-                            <logic:notEmpty name="conversion.originalSchema">
-                                <div class="ok-msg">
-                                    The file is valid XML (<%=Utils.getDateTime(new Date())%>)
-                                    <p><bean:message key="label.conversion.originalSchema"/>&#160;
-                                        <a href="<bean:write name="conversion.originalSchema"/>"><bean:write  name="conversion.originalSchema"/></a></p>
-                                    <logic:present name="conversion.validatedSchema">
-                                        <p><bean:message key="label.conversion.validatedSchema"/>&#160;
-                                            <a href="<bean:write name="conversion.validatedSchema"/>"><bean:write  name="conversion.validatedSchema"/></a></p>
-                                    </logic:present>
-                                </div>
-                            </logic:notEmpty>
-                            <logic:empty name="conversion.originalSchema">
-                                <div class="error-msg">
-                                    Could not validate XML.
-                                    <p><bean:message key="label.conversion.schema.not.found"/></p>
-                                </div>
-                            </logic:empty>
-                        </logic:equal>
-                    <logic:notEqual name="countErrors" value="0">
-                    <div class="error-msg">
-                        The file is not valid XML
-                        <logic:notEmpty name="conversion.originalSchema">
-                            <p><bean:message key="label.conversion.originalSchema"/>&#160;
-                                <a href="<bean:write name="conversion.originalSchema"/>"><bean:write  name="conversion.originalSchema"/></a></p>
-                            <logic:present name="conversion.validatedSchema">
-                                <p><bean:message key="label.conversion.validatedSchema"/>&#160;
-                                    <a href="<bean:write name="conversion.validatedSchema"/>"><bean:write  name="conversion.validatedSchema"/></a></p>
-                            </logic:present>
-                        </logic:notEmpty>
-                        <logic:empty name="conversion.originalSchema">
-                            <p><bean:message key="label.conversion.schema.not.found"/></p>
-                        </logic:empty>
-                    </div>
-                    </logic:notEqual>
-                </logic:present>
+	<logic:equal name="countErrors" value="0">
+		<logic:notEmpty name="conversion.originalSchema">
+			<div class="ok-msg">The file is valid XML (<%=Utils.getDateTime(new Date())%>)
+			<p><bean:message key="label.conversion.originalSchema" />&#160; <a
+				href="<bean:write name="conversion.originalSchema"/>"><bean:write
+				name="conversion.originalSchema" /></a></p>
+			<logic:present name="conversion.validatedSchema">
+				<p><bean:message key="label.conversion.validatedSchema" />&#160;
+				<a href="<bean:write name="conversion.validatedSchema"/>"><bean:write
+					name="conversion.validatedSchema" /></a></p>
+			</logic:present></div>
+		</logic:notEmpty>
+		<logic:empty name="conversion.originalSchema">
+			<div class="error-msg">Could not validate XML.
+			<p><bean:message key="label.conversion.schema.not.found" /></p>
+			</div>
+		</logic:empty>
+	</logic:equal>
+	<logic:notEqual name="countErrors" value="0">
+		<div class="error-msg">The file is not valid XML <logic:notEmpty
+			name="conversion.originalSchema">
+			<p><bean:message key="label.conversion.originalSchema" />&#160; <a
+				href="<bean:write name="conversion.originalSchema"/>"><bean:write
+				name="conversion.originalSchema" /></a></p>
+			<logic:present name="conversion.validatedSchema">
+				<p><bean:message key="label.conversion.validatedSchema" />&#160;
+				<a href="<bean:write name="conversion.validatedSchema"/>"><bean:write
+					name="conversion.validatedSchema" /></a></p>
+			</logic:present>
+		</logic:notEmpty> <logic:empty name="conversion.originalSchema">
+			<p><bean:message key="label.conversion.schema.not.found" /></p>
+		</logic:empty></div>
+	</logic:notEqual>
+	<logic:notEmpty name="conversion.warningMessage">
+		<div class="error-msg">
+		<bean:write name="conversion.warningMessage" />
+		</div>
+	</logic:notEmpty>
+</logic:present>
 
 
             <html:form action="/validateXML" method="post" >
@@ -130,7 +133,8 @@
                             </thead>
                             <tbody>
                                 <logic:iterate indexId="index" id="valid" name="conversion.valid" scope="request" type="ValidateDto">
-                                    <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
+                                    <tr <%=(index.intValue() % 2 == 1) ? "class=\"zebraeven\""
+                                : "class=\"zebraodd\""%>>
                                         <td>
                                                 <bean:write name="valid" property="type" />
                                         </td>
