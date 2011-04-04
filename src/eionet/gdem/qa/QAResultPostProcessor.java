@@ -255,10 +255,10 @@ public class QAResultPostProcessor {
                                     .newDocumentBuilder()
                                     .parse(new InputSource(
                                             new StringReader(
-                                                    "<span style='color:red; font-size:110%'>"
+                                                    "<div class=\"error-msg\">"
                                                             +
                                                             warnMessage
-                                                            + "</span>")))
+                                                            + "</div>")))
                                     .getFirstChild();
                     warningNode = doc.importNode(warningNode, true);
                     if (firstChild == null) {
