@@ -449,7 +449,7 @@ public abstract class DDXMLConverter {
 
         Map dataset = getDataset(xmlSchema);
 
-        if (dataset == null) {
+        if (dataset == null && xmlSchema!= null && xmlSchema.startsWith(Properties.ddURL)) {
             result = Properties.getMessage(
                     BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE,
                     new String[] { getSourceFormatName() });

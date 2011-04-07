@@ -15,8 +15,8 @@ Agency (EEA).  Portions created by TietoEnator or Euro Dynamics are
 Copyright (C) by European Environment Agency.  All
 Rights Reserved.
 
-Contributor(s): Enriko Käsper (TietoEnator),
+Contributor(s): Enriko KÃ¤sper (TietoEnator),
                 Kaido Laine (TietoEnator),
-                S¸ren Roug (European Environment Agency),
+                SÃ¸ren Roug (European Environment Agency),
                 Nedeljko Pavlovic (European Dynamics),
                 Alfeldi Istvan (European Dynamics)

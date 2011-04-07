@@ -48,12 +48,15 @@ public class DDXMLConverterTest extends TestCase{
         message = ddConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=DST1111");
         assertNull(message);
 
-        //schema is INVALID
+        //schema is INVALID DD schema
         DDXMLConverter ddExcelConverter = new Excel2XML();
-        message = ddExcelConverter.getInvalidSchemaMessage("http://unknown.com?SchemaId=1111");
+        message = ddExcelConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=DST1111289389");
         assertEquals(Properties.getMessage(
                 BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE, new String[]{ddConverter.getSourceFormatName()}),
                 message);
+        //   schema is unknown
+        message = ddExcelConverter.getInvalidSchemaMessage("http://unknown.com?SchemaId=1111");
+        assertNull(message);
 
         //schema is OBSOLETE
         dataset.put("status", "RELEASED");
