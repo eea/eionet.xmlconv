@@ -49,7 +49,7 @@ public class DDXMLConverterTest extends TestCase{
         assertNull(message);
 
         //schema is INVALID DD schema
-        DDXMLConverter ddExcelConverter = new Excel2XML();
+        MockDDXMLConverter ddExcelConverter = new MockDDXMLConverter(new Excel2XML());
         message = ddExcelConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=DST1111289389");
         assertEquals(Properties.getMessage(
                 BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE, new String[]{ddConverter.getSourceFormatName()}),

@@ -92,7 +92,7 @@ public class XQueryServiceTest  extends DBTestCase{
 
         ok = qyeryResultHtml != null && qyeryResultHtml.startsWith("<html>") && qyeryResultHtml.endsWith("</html>");
 //		//must contain red warning <span class="warning">The stylesheet expired on 11.11.2010</span>
-        ok = ok && qyeryResultHtml.indexOf("<span style=\"color:red; font-size:110%\">The reported XML file is using an expired XML Schema.") != -1;
+        ok = ok && qyeryResultHtml.indexOf("<div class=\"error-msg\">The reported XML file uses an expired XML Schema.") != -1;
 
         assertTrue(ok);
 

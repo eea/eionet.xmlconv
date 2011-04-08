@@ -259,7 +259,7 @@ public class DataDictUtil {
 
         Map<String, String> dataset = null;
 
-        if (xmlSchema == null) {
+        if (xmlSchema == null || !xmlSchema.startsWith(Properties.ddURL)) {
             return dataset;
         }
 

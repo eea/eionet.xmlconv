@@ -57,7 +57,6 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
-
 /*
  * Abstract class contains the logic for converting spreadsheet like datafiles into
  * DataDictionary XML Instance format. The spreadsheets should be exctracted from DD
@@ -65,52 +64,52 @@ import eionet.gdem.utils.Utils;
  * Currently supported formats are MS Excel and OpenDocument Spreadsheet.
  */
 
-
 public abstract class DDXMLConverter {
 
-    protected static LoggerIF _logger=GDEMServices.getLogger();
+    protected static LoggerIF _logger = GDEMServices.getLogger();
 
-    public  static final String META_SHEET_NAME = "-meta";
-    public  static final String META_SHEET_NAME_ODS = "_meta";
+    public static final String META_SHEET_NAME = "-meta";
+    public static final String META_SHEET_NAME_ODS = "_meta";
 
     protected SourceReaderIF sourcefile = null;
 
-     boolean httpResponse = false;
-
+    boolean httpResponse = false;
 
     public DDXMLConverter() {
     }
 
     public abstract SourceReaderIF getSourceReader();
+
     public abstract String getSourceFormatName();
 
-    public static DDXMLConverter getConverter(ByteArrayOutputStream outstream){
+    public static DDXMLConverter getConverter(ByteArrayOutputStream outstream) {
 
-        try{
-            if (ExcelUtils.isExcelFile(new ByteArrayInputStream(outstream.toByteArray()))) {
+        try {
+            if (ExcelUtils.isExcelFile(new ByteArrayInputStream(outstream
+                    .toByteArray()))) {
                 return new Excel2XML();
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
 
         }
 
         try {
-             if (ExcelUtils.isExcel2007File( new ByteArrayInputStream(outstream.toByteArray()))) {
-                 _logger.debug("Excel 2007 document");
+            if (ExcelUtils.isExcel2007File(new ByteArrayInputStream(outstream
+                    .toByteArray()))) {
+                _logger.debug("Excel 2007 document");
                 return new Excel20072XML();
             }
         } catch (Exception e) {
 
         }
 
-        //If it is a zip file, then it is OpenDocument
-        try{
-            if (OpenDocumentUtils.isSpreadsheetFile(new ByteArrayInputStream(outstream.toByteArray()))) {
+        // If it is a zip file, then it is OpenDocument
+        try {
+            if (OpenDocumentUtils.isSpreadsheetFile(new ByteArrayInputStream(
+                    outstream.toByteArray()))) {
                 return new Ods2Xml();
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -150,146 +149,172 @@ public abstract class DDXMLConverter {
             throws GDEMException {
         return convertDD_XML_split(inStream, null, null);
     }
-    public String convertDD_XML(InputStream inStream, OutputStream outStream) throws GDEMException{
 
-          if (inStream == null) return "Could not find InputStream";
-          if (outStream == null) return "Could not find OutputStream";
-          try{
+    public String convertDD_XML(InputStream inStream, OutputStream outStream)
+            throws GDEMException {
+
+        if (inStream == null)
+            return "Could not find InputStream";
+        if (outStream == null)
+            return "Could not find OutputStream";
+        try {
             sourcefile = getSourceReader();
             sourcefile.initReader(inStream);
             String xml_schema = sourcefile.getXMLSchema();
-            if (xml_schema==null){
-              throw new Exception(Properties.getMessage(
-                      BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE, new String[]{getSourceFormatName()}));
+            if (xml_schema == null) {
+                throw new Exception(Properties.getMessage(
+                        BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE,
+                        new String[] { getSourceFormatName() }));
             }
             String invalidMess = getInvalidSchemaMessage(xml_schema);
-            if(invalidMess!=null){
-                  throw new Exception(invalidMess);
+            if (invalidMess != null) {
+                throw new Exception(invalidMess);
             }
-            //execute conversion
-               doConversion(xml_schema, outStream);
-          }
-          catch (Exception e){
-            throw new GDEMException("Error generating XML file from " + getSourceFormatName() + " file: " + e.toString(), e);
-          }
-            finally{
-                try{
-                    if (inStream != null) inStream.close();
-                }
-                catch(Exception e){}
+            // execute conversion
+            doConversion(xml_schema, outStream);
+        } catch (Exception e) {
+            throw new GDEMException("Error generating XML file from "
+                    + getSourceFormatName() + " file: " + e.toString(), e);
+        } finally {
+            try {
+                if (inStream != null)
+                    inStream.close();
+            } catch (Exception e) {
             }
-          return "OK";
-      }
-       public Vector convertDD_XML_split(InputStream inStream, OutputStream outStream, String sheet_param) throws GDEMException{
+        }
+        return "OK";
+    }
 
-             Vector result = new Vector();
-             String outFileName=null;
-          if (inStream == null) throw new GDEMException("Could not find InputStream");
-          try{
+    public Vector convertDD_XML_split(InputStream inStream,
+            OutputStream outStream, String sheet_param) throws GDEMException {
+
+        Vector result = new Vector();
+        String outFileName = null;
+        if (inStream == null)
+            throw new GDEMException("Could not find InputStream");
+        try {
             sourcefile = getSourceReader();
             sourcefile.initReader(inStream);
             String xml_schema = sourcefile.getXMLSchema();
 
-            if (xml_schema==null){
-                return buildWorkbookErrorMessage(result,null,Properties.getMessage(
-                        BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE, new String[]{getSourceFormatName()}));
-              }
+            if (xml_schema == null) {
+                return buildWorkbookErrorMessage(
+                        result,
+                        null,
+                        Properties
+                                .getMessage(
+                                        BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE,
+                                        new String[] { getSourceFormatName() }));
+            }
             String invalidMess = getInvalidSchemaMessage(xml_schema);
-            if(invalidMess!=null){
-                return buildWorkbookErrorMessage(result,null,invalidMess);
+            if (invalidMess != null) {
+                return buildWorkbookErrorMessage(result, null, invalidMess);
             }
 
             Map<String, String> sheetSchemas = sourcefile.getSheetSchemas();
-            String first_sheet_name=sourcefile.getFirstSheetName();
+            String first_sheet_name = sourcefile.getFirstSheetName();
 
-            //could not find sheet schemas
-            if (Utils.isNullHashMap(sheetSchemas)){
-                //maybe it's spreadsheet file for DD table
-                if (xml_schema.toLowerCase().indexOf("type=tbl")>-1
-                        || xml_schema.toLowerCase().indexOf("=tbl")>-1){
-                    sheetSchemas.put(first_sheet_name,xml_schema);
-                }
-                else{
-                    return buildWorkbookErrorMessage(result,null,Properties.getMessage(
-                            BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE, new String[]{getSourceFormatName()}));
+            // could not find sheet schemas
+            if (Utils.isNullHashMap(sheetSchemas)) {
+                // maybe it's spreadsheet file for DD table
+                if (xml_schema.toLowerCase().indexOf("type=tbl") > -1
+                        || xml_schema.toLowerCase().indexOf("=tbl") > -1) {
+                    sheetSchemas.put(first_sheet_name, xml_schema);
+                } else {
+                    return buildWorkbookErrorMessage(
+                            result,
+                            null,
+                            Properties
+                                    .getMessage(
+                                            BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE,
+                                            new String[] { getSourceFormatName() }));
                 }
             }
-            if (!Utils.isNullStr(sheet_param)){
-                if (!Utils.containsKeyIgnoreCase(sheetSchemas,sheet_param)){
-                    return buildWorkbookErrorMessage(result,sheet_param,"Could not find sheet with specified name or the XML schema reference was missing on DO_NOT_DELETE_THIS_SHEET: " + sheet_param);
+            if (!Utils.isNullStr(sheet_param)) {
+                if (!Utils.containsKeyIgnoreCase(sheetSchemas, sheet_param)) {
+                    return buildWorkbookErrorMessage(
+                            result,
+                            sheet_param,
+                            "Could not find sheet with specified name or the XML schema reference was missing on DO_NOT_DELETE_THIS_SHEET: "
+                                    + sheet_param);
                 }
             }
             if (isHttpResponse() && Utils.isNullStr(sheet_param))
-                sheet_param=first_sheet_name;
+                sheet_param = first_sheet_name;
 
-            for (Map.Entry<String, String> entry : sheetSchemas.entrySet()){
+            for (Map.Entry<String, String> entry : sheetSchemas.entrySet()) {
                 String sheetName = entry.getKey();
                 String sheetSchema = entry.getValue();
-                if (sheetSchema==null){
-                    result.add(createResultForSheet("1",sheetName,"could not find xml schema for this sheet!"));
+                if (sheetSchema == null) {
+                    result.add(createResultForSheet("1", sheetName,
+                            "could not find xml schema for this sheet!"));
                     continue;
                 }
-                    if (!Utils.isNullStr(sheet_param)){
-                        //Only 1 sheet is needed.
-                        if (!sheet_param.equalsIgnoreCase(sheetName)){
-                            continue;
-                        }
-                    }
-
-                    try{
-                        //Do not return empty sheets.
-                        if (sourcefile.isEmptySheet(sheetName)){
-                            result = buildWorkbookErrorMessage(result,sheet_param,"The sheet is empty: " + sheetName + "!");
-                            continue;
-                        }
-
-                        if (!isHttpResponse()){
-                            outFileName=Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + ".xml";
-                            outStream = new FileOutputStream(outFileName);
-                        }
-                        doConversion(sheetSchema, outStream);
-
-                        // if the respponse is http stream, then it is already written there and no file available
-                        if (!isHttpResponse()){
-                            byte[] file = Utils.fileToBytes(outFileName);
-                            Vector sheet_result = new Vector();
-                            sheet_result.add("0");
-                            sheet_result.add(sheetName + ".xml");
-                            sheet_result.add(file);
-                            result.add(sheet_result);
-                            /*try{
-                                Utils.deleteFile(outFileName);
-                            }
-                            catch(Exception e){
-                                _logger.error("Couldn't delete the result file" + outFileName);
-                            }*/
-                        }
-                    }
-                    catch(Exception e){
-                        result = buildWorkbookErrorMessage(result,sheet_param,"Could not find xml schema for this sheet " + sheetName + "! " + e.toString());
-                    }
-                    finally{
-                        if(!isHttpResponse()){
-                            if (outStream!=null) outStream.close();
-                        }
-                    }
-                    if (!Utils.isNullStr(sheet_param)){
-                        break;
+                if (!Utils.isNullStr(sheet_param)) {
+                    // Only 1 sheet is needed.
+                    if (!sheet_param.equalsIgnoreCase(sheetName)) {
+                        continue;
                     }
                 }
-          }
-          catch (Exception e){
-            throw new GDEMException("Error generating XML files from " + getSourceFormatName() + " file: " + e.toString(), e);
-          }
-            finally{
-                try{
-                    if (inStream != null) inStream.close();
+
+                try {
+                    // Do not return empty sheets.
+                    if (sourcefile.isEmptySheet(sheetName)) {
+                        result = buildWorkbookErrorMessage(result, sheet_param,
+                                "The sheet is empty: " + sheetName + "!");
+                        continue;
+                    }
+
+                    if (!isHttpResponse()) {
+                        outFileName = Properties.tmpFolder + "gdem_"
+                                + System.currentTimeMillis() + ".xml";
+                        outStream = new FileOutputStream(outFileName);
+                    }
+                    doConversion(sheetSchema, outStream);
+
+                    // if the respponse is http stream, then it is already
+                    // written there and no file available
+                    if (!isHttpResponse()) {
+                        byte[] file = Utils.fileToBytes(outFileName);
+                        Vector sheet_result = new Vector();
+                        sheet_result.add("0");
+                        sheet_result.add(sheetName + ".xml");
+                        sheet_result.add(file);
+                        result.add(sheet_result);
+                        /*
+                         * try{ Utils.deleteFile(outFileName); } catch(Exception
+                         * e){ _logger.error("Couldn't delete the result file" +
+                         * outFileName); }
+                         */
+                    }
+                } catch (Exception e) {
+                    result = buildWorkbookErrorMessage(result, sheet_param,
+                            "Could not find xml schema for this sheet "
+                                    + sheetName + "! " + e.toString());
+                } finally {
+                    if (!isHttpResponse()) {
+                        if (outStream != null)
+                            outStream.close();
+                    }
                 }
-                catch(Exception e){}
+                if (!Utils.isNullStr(sheet_param)) {
+                    break;
+                }
             }
-          return result;
-      }
-     public boolean isHttpResponse() {
+        } catch (Exception e) {
+            throw new GDEMException("Error generating XML files from "
+                    + getSourceFormatName() + " file: " + e.toString(), e);
+        } finally {
+            try {
+                if (inStream != null)
+                    inStream.close();
+            } catch (Exception e) {
+            }
+        }
+        return result;
+    }
+
+    public boolean isHttpResponse() {
         return httpResponse;
     }
 
@@ -332,8 +357,6 @@ public abstract class DDXMLConverter {
         sourcefile.writeContentToInstance(instance);
         instance.flushXml();
     }
-
-
 
     // Reads the XML declaration from instance file
     // It is called only, when SAX coudn't read it
@@ -378,28 +401,34 @@ public abstract class DDXMLConverter {
             }
         }
     }
+
     /**
      * gather all element definitions
+     *
      * @param spreadsheet
      * @param instance
      */
-    protected void importSheetSchemas(SourceReaderIF spreadsheet, DD_XMLInstance instance, String xml_schema){
-        try{
-            //if instance type is TBL, then import only table schema
-            if(instance.getType().equals(DD_XMLInstance.TBL_TYPE)){
-                Map<String, DDElement> elemDefs = DataDictUtil.importDDTableSchemaElemDefs(xml_schema);
+    protected void importSheetSchemas(SourceReaderIF spreadsheet,
+            DD_XMLInstance instance, String xml_schema) {
+        try {
+            // if instance type is TBL, then import only table schema
+            if (instance.getType().equals(DD_XMLInstance.TBL_TYPE)) {
+                Map<String, DDElement> elemDefs = DataDictUtil
+                        .importDDTableSchemaElemDefs(xml_schema);
                 instance.addElemDef(DD_XMLInstance.TBL_TYPE, elemDefs);
             }
-            //if instance type is dataset, then import schemas for all pages
-            else{
-                Map<String, String> sheetSchemas = spreadsheet.getSheetSchemas();
-                for (Map.Entry<String, String> entry : sheetSchemas.entrySet()){
+            // if instance type is dataset, then import schemas for all pages
+            else {
+                Map<String, String> sheetSchemas = spreadsheet
+                        .getSheetSchemas();
+                for (Map.Entry<String, String> entry : sheetSchemas.entrySet()) {
                     String sheetName = entry.getKey();
                     String schemaUrl = entry.getValue();
-                    Map<String, DDElement> elemDefs = DataDictUtil.importDDTableSchemaElemDefs(schemaUrl);
+                    Map<String, DDElement> elemDefs = DataDictUtil
+                            .importDDTableSchemaElemDefs(schemaUrl);
                     instance.addElemDef(sheetName, elemDefs);
-                    }
                 }
+            }
         } catch (Exception ex) {
             _logger.error("Error reading elements from schema files ", ex);
         }
@@ -415,29 +444,34 @@ public abstract class DDXMLConverter {
 
         return sheet_result;
     }
+
     /**
      * Throws Exception if the result should go directlt into HTTP response,
      * otherwise the method builds result structure including error message
+     *
      * @param result
      * @param sheet
      * @param message
      * @return
      * @throws Exception
      */
-    protected Vector buildWorkbookErrorMessage(Vector result, String sheet, String message) throws Exception{
+    protected Vector buildWorkbookErrorMessage(Vector result, String sheet,
+            String message) throws Exception {
 
-        String sheetParam = (Utils.isNullStr(sheet))?"Workbook":sheet;
-        if (isHttpResponse()){
+        String sheetParam = (Utils.isNullStr(sheet)) ? "Workbook" : sheet;
+        if (isHttpResponse()) {
             throw new Exception(message);
         }
-        result.add(createResultForSheet("1",sheetParam,message));
+        result.add(createResultForSheet("1", sheetParam, message));
 
         return result;
     }
 
     /**
-     * checks if the given schema belongs to the last released dataset in DD. Returns null, if schema is OK.
-     * Returns an error message, if the schema is not ok to convert.
+     * checks if the given schema belongs to the last released dataset in DD.
+     * Returns null, if schema is OK. Returns an error message, if the schema is
+     * not ok to convert.
+     *
      * @param xmlSchema
      * @return error message
      * @throws GDEMException
@@ -447,31 +481,36 @@ public abstract class DDXMLConverter {
 
         String result = null;
 
-        Map dataset = getDataset(xmlSchema);
-
-        if (dataset == null && xmlSchema!= null && xmlSchema.startsWith(Properties.ddURL)) {
-            result = Properties.getMessage(
-                    BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE,
-                    new String[] { getSourceFormatName() });
-        } else {
-            String status = (String) dataset.get("status");
-            boolean isLatestReleased = (dataset.get("isLatestReleased") == null ||
+        //check latest version only if it Schema from DD
+        if (xmlSchema != null && xmlSchema.startsWith(Properties.ddURL)) {
+            Map dataset = getDataset(xmlSchema);
+            if (dataset == null) {
+                result = Properties.getMessage(
+                        BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE,
+                        new String[] { getSourceFormatName() });
+            } else {
+                String status = (String) dataset.get("status");
+                boolean isLatestReleased = (dataset.get("isLatestReleased") == null ||
                         "true".equals((String) dataset.get("isLatestReleased"))) ?
                                 true
                                 : false;
-            String dateOfLatestReleased = (String) dataset.get("dateOfLatestReleased");
-            String idOfLatestReleased = (String) dataset.get("idOfLatestReleased");
+                String dateOfLatestReleased = (String) dataset
+                        .get("dateOfLatestReleased");
+                String idOfLatestReleased = (String) dataset
+                        .get("idOfLatestReleased");
 
-            if (!isLatestReleased && "Released".equalsIgnoreCase(status)) {
-                String formattedReleasedDate = Utils
-                        .formatTimestampDate(dateOfLatestReleased);
-                result = Properties.getMessage(
-                        BusinessConstants.ERROR_CONVERSION_OBSOLETE_TEMPLATE,
-                        new String[] {
-                                getSourceFormatName(),
-                                formattedReleasedDate == null ? ""
-                                        : formattedReleasedDate
-                                , idOfLatestReleased });
+                if (!isLatestReleased && "Released".equalsIgnoreCase(status)) {
+                    String formattedReleasedDate = Utils
+                            .formatTimestampDate(dateOfLatestReleased);
+                    result = Properties
+                            .getMessage(
+                                    BusinessConstants.ERROR_CONVERSION_OBSOLETE_TEMPLATE,
+                                    new String[] {
+                                            getSourceFormatName(),
+                                            formattedReleasedDate == null ? ""
+                                                    : formattedReleasedDate
+                                            , idOfLatestReleased });
+                }
             }
         }
 
