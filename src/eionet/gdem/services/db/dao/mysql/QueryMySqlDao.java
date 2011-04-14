@@ -25,7 +25,9 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
                                                     + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ", "
                                                     +  QUERY_TABLE + "." + RESULT_TYPE_FLD + ", "
                                                     +  CONVTYPE_TABLE + "." + CONTENT_TYPE_FLD + ", "
-                                                    +  QUERY_TABLE + "." + QUERY_SCRIPT_TYPE+ " FROM "
+                                                    +  QUERY_TABLE + "." + QUERY_SCRIPT_TYPE + ","
+                                                    + QUERY_TABLE + "." + UPPER_LIMIT_FLD
+                                                    + " FROM "
                                                     +  QUERY_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE
                                                     + " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD
                                                     + " LEFT OUTER JOIN " + CONVTYPE_TABLE
@@ -308,6 +310,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
                 h.put("content_type_id", r[i][6]);
                 h.put("content_type_out", r[i][7]);
                 h.put("script_type", r[i][8]);
+                h.put("upper_limit", r[i][9]);
                 v.add(h);
             }
         }
