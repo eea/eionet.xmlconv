@@ -59,6 +59,7 @@ public class ListQueriesMethodTest  extends DBTestCase{
         assertEquals((String)ht.get(ListQueriesMethod.KEY_TYPE),"xsd");
         assertEquals((String)ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_ID),"HTML");
         assertEquals((String)ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_OUT),ListQueriesMethod.DEFAULT_QA_CONTENT_TYPE);
+        assertEquals((String)ht.get(ListQueriesMethod.KEY_UPPER_LIMIT),String.valueOf(ListQueriesMethod.VALIDATION_UPPER_LIMIT));
     }
     public void testListConversionsXQueryResult() throws Exception {
 
@@ -72,6 +73,7 @@ public class ListQueriesMethodTest  extends DBTestCase{
         assertEquals((String)ht.get(ListQueriesMethod.KEY_TYPE),Constants.QA_TYPE_XQUERY);
         assertEquals((String)ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_ID),"HTML");
         assertEquals((String)ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_OUT),ListQueriesMethod.DEFAULT_QA_CONTENT_TYPE);
+        assertEquals((String)ht.get(ListQueriesMethod.KEY_UPPER_LIMIT),"20");
     }
     public void testListConversionsAllQueries() throws Exception {
 
