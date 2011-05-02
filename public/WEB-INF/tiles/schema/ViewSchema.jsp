@@ -54,9 +54,7 @@
                         <bean:message key="label.schema.url"/>
                  </th>
                   <td align="left">
-                        <a href="<bean:write name="schemaForm" property="schema" />" title="<bean:write name="schemaForm" property="schema" />">
-                            <bean:write name="schemaForm" property="schema" />
-                        </a>&#160;
+                        <a href="<bean:write name="schemaForm" property="schema" />"><bean:write name="schemaForm" property="schema" /></a>
                   </td>
                 </tr>
                 <tr>
@@ -107,7 +105,7 @@
                   </th>
                   <td>
                       <logic:notEmpty  name="schemaForm" property="uplSchemaFileName">
-                        <a  href="<bean:write name="schemaForm" property="uplSchemaFileUrl" />" title="<bean:write name="schemaForm" property="uplSchemaFileUrl" />">
+                        <a  href="<bean:write name="schemaForm" property="uplSchemaFileUrl" />">
                             <bean:write name="schemaForm" property="uplSchemaFileName" />
                         </a>&#160;
                         <logic:present name="schemaForm" property="lastModified">
