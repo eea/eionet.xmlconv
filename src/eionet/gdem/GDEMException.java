@@ -22,9 +22,9 @@
  */
 
 package eionet.gdem;
+
 import java.io.PrintStream;
 import java.io.PrintWriter;
-
 
 public class GDEMException extends Exception {
     /**
@@ -32,18 +32,17 @@ public class GDEMException extends Exception {
      */
     protected Exception cause = null;
 
-  public GDEMException(String msg)  {
-      super(msg);
-      //System.err.println("GDEMException occured with reason <<" + msg + ">>");
+    public GDEMException(String msg) {
+        super(msg);
     }
-  public GDEMException(String msg, Exception cause)  {
-      super(msg);
-      this.cause = cause;
-      //System.err.println("GDEMException occured with reason<<" + cause.toString() + ">>");
+
+    public GDEMException(String msg, Exception cause) {
+        super(msg);
+        this.cause = cause;
     }
+
     /**
-     * Prints this exception and its backtrace to the
-     * standard error stream.
+     * Prints this exception and its backtrace to the standard error stream.
      */
     public void printStackTrace() {
         super.printStackTrace();
@@ -52,11 +51,12 @@ public class GDEMException extends Exception {
             this.cause.printStackTrace();
         }
     }
+
     /**
-     * Prints this exception and its backtrace to the
-     * given print stream.
+     * Prints this exception and its backtrace to the given print stream.
      *
-     * @param ps the print stream.
+     * @param ps
+     *            the print stream.
      */
     public void printStackTrace(PrintStream ps) {
         super.printStackTrace(ps);
@@ -67,10 +67,10 @@ public class GDEMException extends Exception {
     }
 
     /**
-     * Prints this exception and its backtrace to the
-     * given print writer.
+     * Prints this exception and its backtrace to the given print writer.
      *
-     * @param pw - the print writer.
+     * @param pw
+     *            - the print writer.
      */
     public void printStackTrace(PrintWriter pw) {
         super.printStackTrace(pw);
@@ -78,10 +78,19 @@ public class GDEMException extends Exception {
             this.cause.printStackTrace(pw);
         }
 
-//		if (this.cause == null) {
-//			super.printStackTrace(pw);
-//		} else {
-//			cause.printStackTrace(pw);
-//		}
     }
+
+    /**
+     * Returns the message of original cause.
+     *
+     * @return cause message
+     */
+    public String getCauseMessage() {
+
+        if(cause != null && cause.getMessage() != null){
+            return cause.getMessage();
+        }
+        return "";
+    }
+
 }
