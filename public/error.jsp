@@ -2,6 +2,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ page import="java.io.PrintWriter"%>
+<%@ page import="eionet.gdem.GDEMException"%>
 
 <ed:breadcrumbs-push label="XML Services error" level="1" />
 <tiles:insert definition="TmpHeader">
@@ -21,14 +22,23 @@
 
         Exception e = (Exception)session.getAttribute("gdem.exception");
         String message = "unknown error";
-        if (e!=null && e.getMessage()!=null)
+        if (e!=null && e.getMessage()!=null){
             message = e.getMessage();
-        else if (e!=null)
+        }
+        else if (e!=null){
             message = e.toString();
+        }
     %>
 
     <div class="error-msg">
         <%=message%>
     </div>
+    <%
+    if(e != null && e instanceof GDEMException){
+        %>
+            <p><%=((GDEMException)e).getCauseMessage() %></p>
+        <%
+    }
+    %>
 
 <tiles:insert definition="TmpFooter"/>

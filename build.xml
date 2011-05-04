@@ -357,7 +357,7 @@
 
     <!-- cleans the test/build directory -->
     <target name="clean-tests">
-        <delete includeemptydirs="true">
+        <delete includeemptydirs="true" failonerror="false">
             <fileset dir="test/build" includes="**/*"/>
         </delete>
     </target>
@@ -433,6 +433,8 @@
     <!-- compile target for compiling unit tests, expects classes-under-test compiled, refers to pre-defined paths -->
     <target name="compile-tests" depends="clean-tests,copy-test-props">
 
+        <mkdir dir="${test-build}"/>
+
         <javac srcdir="${src}" destdir="${test-build}" debug="on">
             <classpath refid="classpath.compile"/>
         </javac>
@@ -468,7 +470,7 @@
 
     <!-- test target, refers to pre-defined paths and filesets -->
       <target name="test" depends="test_echo,init,compile-tests,seed-tests" description="Runs all found unit tests">
-        <junit haltonfailure="yes" failureproperty="unittestFailed" showoutput="yes" printsummary="yes" fork="yes">
+      	<junit haltonfailure="yes" failureproperty="unittestFailed" showoutput="yes" printsummary="yes" fork="yes">
             <classpath refid="classpath.test" />
             <jvmarg value="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger"/>
             <jvmarg value="-Dlog4j.configuration=log4j.properties"/>

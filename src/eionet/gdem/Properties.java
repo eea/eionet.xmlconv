@@ -38,8 +38,6 @@ public class Properties {
 
     public static String tmpFolder = "/tmp";
 
-    //public static String urlPrefix="http://conversions.eionet.eu.int/";
-
     public static String xslFolder = "/xsl/";
 
     public static String odsFolder = "/opendoc/ods";
@@ -107,6 +105,7 @@ public class Properties {
 
     private static ResourceBundle props;
     private static ResourceBundle ldapProps;
+
     public static final Logger logger = Logger.getLogger(Properties.class);
 
     public static String dateFormatPattern="dd MMM yyyy";
@@ -183,9 +182,6 @@ public class Properties {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                //wqCheckInterval= (Long.getLong(props.getString("wq.check.interval"))).longValue();
-
-                //urlPrefix=props.getString("url.prefix"); //URL where the files can be downloaded
                 //maximum number of jobs executed at the same time
                 String sQaTimeout = props.getString("external.qa.timeout");
                 try{
@@ -197,11 +193,11 @@ public class Properties {
                 xgawkCommand = props.getString("external.qa.command.xgawk");
 
             } catch (MissingResourceException mse) {
+                logger.error("Missing property in gdem.properties");
                 mse.printStackTrace();
-
                 //no error handling? go with the default values??
             } catch (Exception e) {
-                //System.out.println("error " + e.toString());
+                logger.error("Error when reading properties from gdem.properties");
                 e.printStackTrace();
             }
         }
@@ -218,8 +214,9 @@ public class Properties {
                 e.printStackTrace();
             }
         }
-        if (applicationResources == null)
+        if (applicationResources == null){
             applicationResources = ResourceBundle.getBundle("ApplicationResources");
+        }
 
     }
 
