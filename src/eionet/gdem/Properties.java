@@ -82,9 +82,7 @@ public class Properties {
     public static String invServUrl = null;
     public static String invServName = null;
 
-    //Content registry xml-rpc
-    public static String crServUrl = null;
-    public static String crServName = null;
+    //Content Registry SPARQL endpoint URL
     public static String crSparqlEndpoint = null;
 
     //ldap url
@@ -150,8 +148,6 @@ public class Properties {
                 cdrServUrl = props.getString("cdr.url");
 
                 //settings for incoming services from Content Registry
-                crServUrl = props.getString("cr.rpc.url");
-                crServName = props.getString("cr.rpcservice.name");
                 crSparqlEndpoint = props.getString("cr.sparql.endpoint");
 
                 //period in seconds
