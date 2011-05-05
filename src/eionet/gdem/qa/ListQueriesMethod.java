@@ -105,60 +105,62 @@ public class ListQueriesMethod extends RemoteServiceMethod {
     }
     /**
      * List all  XQueries and their modification times for this namespace
-     * returns also XML Schema validation
+     * returns also XML Schema validation.
      *
      * @param schema
      * @return result is an Array of Arrays that contains 3 fields (script_id, description, last modification)
      * @throws GDEMException
      */
     public Vector listQAScripts(String schema) throws GDEMException {
-        Vector vec = new Vector();
-        Vector v1 = null;
+        Vector<Vector<String>> result = new Vector<Vector<String>>();
+        Vector<String> resultQuery = null;
         try {
             Vector v=schemaDao.getSchemas(schema);
 
-            if (Utils.isNullVector(v)) return vec;
+            if (Utils.isNullVector(v)) return result;
 
             HashMap h = (HashMap)v.get(0);
             String validate = (String)h.get("validate");
             if (!Utils.isNullStr(validate)){
                 if (validate.equals("1")){
-                    v1 = new Vector();
-                    v1.add(String.valueOf(Constants.JOB_VALIDATION));
-                    v1.add("XML Schema Validation");
-                    v1.add("");
-                    vec.add(v1);
+                    resultQuery = new Vector<String>();
+                    resultQuery.add(String.valueOf(Constants.JOB_VALIDATION));
+                    resultQuery.add("XML Schema Validation");
+                    resultQuery.add("");
+                    resultQuery.add(String.valueOf(VALIDATION_UPPER_LIMIT));
+                    result.add(resultQuery);
                 }
             }
             Vector queries = (Vector)h.get("queries");
-            if (Utils.isNullVector(queries)) return vec;
+            if (Utils.isNullVector(queries)) return result;
 
-            for (int i = 0; i <queries.size();i++){
+            for (int i = 0; i <queries.size(); i++){
                 HashMap hQueries = (HashMap)queries.get(i);
-                String q_id = (String)hQueries.get("query_id");
-                String q_file = (String)hQueries.get("query");
-                String q_desc = (String)hQueries.get("descripton");
-                String q_name = (String)hQueries.get("short_name");
-                if (Utils.isNullStr(q_desc)){
-                    if (Utils.isNullStr(q_name)){
-                        q_desc = "Quality Assurance script";
+                String queryId = (String)hQueries.get("query_id");
+                String queryFile = (String)hQueries.get("query");
+                String queryDescription = (String)hQueries.get("descripton");
+                String queryName = (String)hQueries.get("short_name");
+                String queryUpperLimit = (String)hQueries.get("upper_limit");
+                if (Utils.isNullStr(queryDescription)){
+                    if (Utils.isNullStr(queryName)){
+                        queryDescription = "Quality Assurance script";
                     }
                     else {
-                        q_desc=q_name;
+                        queryDescription=queryName;
                     }
                 }
-                v1 = new Vector();
-                v1.add(q_id);
-                v1.add(q_desc);
-                File f=new File(Properties.queriesFolder + q_file);
+                resultQuery = new Vector<String>();
+                resultQuery.add(queryId);
+                resultQuery.add(queryDescription);
+                File f=new File(Properties.queriesFolder + queryFile);
                 String last_modified="";
 
                 if (f!=null)
                     last_modified = Utils.getDateTime(new Date(f.lastModified()));;
-                    //DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM).format(new Date(f.lastModified()));
 
-                    v1.add(last_modified);
-                    vec.add(v1);
+                    resultQuery.add(last_modified);
+                    resultQuery.add(queryUpperLimit);
+                    result.add(resultQuery);
             }
 
 
@@ -166,6 +168,6 @@ public class ListQueriesMethod extends RemoteServiceMethod {
             throw new GDEMException("Error getting data from the DB " + e.toString(), e);
         }
 
-        return vec;
+        return result;
     }
 }

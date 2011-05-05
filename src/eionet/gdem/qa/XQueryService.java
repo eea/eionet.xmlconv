@@ -62,7 +62,6 @@ public class XQueryService extends RemoteService implements Constants {
       private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
       private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
       private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
-      private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
 
       private SchemaManager schManager = new SchemaManager();
 

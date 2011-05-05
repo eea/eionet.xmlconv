@@ -79,9 +79,6 @@ public class XQueryServiceTest  extends DBTestCase{
         assertTrue(urlField.contains("getsource?ticket="));
     }
 
-    private void nothing() {
-
-    }
     public void testExpiredQAResultHTML() throws Exception {
         XQueryService qs = new XQueryService();
 
