@@ -131,9 +131,7 @@
             </tr>
           </table>
           <logic:present name="QAScriptForm" property="fileName">
-              <pre>
-                <bean:write name="QAScriptForm" property="scriptContent"/>
-            </pre>
+              <pre><bean:write name="QAScriptForm" property="scriptContent"/></pre>
         </logic:present>
 
 

@@ -33,9 +33,7 @@
     <p>
     File downloaded from: <bean:write name="SyncUplSchemaForm" property="schemaUrl" />
     </p>
-    <pre>
-        <bean:write name="SyncUplSchemaForm" property="schemaFile" />
-    </pre>
+    <pre><bean:write name="SyncUplSchemaForm" property="schemaFile" /></pre>
 
     <div style="display:none">
           <html:hidden property="schemaId" />
