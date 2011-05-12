@@ -54,7 +54,7 @@
                       </label>
                 </td>
                 <td>
-                    <html:select name="QAScriptForm" property="resultType" styleId="selContentType">
+                    <html:select name="QAScriptForm" property="resultType" styleId="selContentType" value="HTML">
                         <html:options collection="qascript.resulttypes" property="convType"/>
                     </html:select>
                 </td>
@@ -66,7 +66,7 @@
                       </label>
                 </td>
                 <td>
-                    <html:select name="QAScriptForm" property="scriptType" styleId="selScriptType">
+                    <html:select name="QAScriptForm" property="scriptType" styleId="selScriptType" value="xquery">
                         <html:options collection="qascript.scriptlangs" property="convType"/>
                     </html:select>
                 </td>

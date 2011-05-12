@@ -54,7 +54,7 @@
                     </label>
                   </td>
                   <td>
-                    <html:select property="schemaLang"  styleId="txtSchemaLang">
+                    <html:select property="schemaLang"  styleId="txtSchemaLang" value="XSD">
                         <html:options property="schemaLanguages" />
                     </html:select>
                   </td>

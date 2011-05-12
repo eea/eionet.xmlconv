@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8"  import="eionet.gdem.dto.*,eionet.gdem.Properties"%>
+<%@ taglib uri="/WEB-INF/tlds/c.tld" prefix="c" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
@@ -68,7 +69,10 @@
                           <td>
                             <select name="outputtype" style="width:100px;" id="selOutputType">
                                 <logic:iterate id="opt" name="stylesheet.outputtype" scope="session"  property="convTypes" type="ConvType">
-                                    <option value="<bean:write name="opt" property="convType" />">
+                                    <c:set var="selected">
+                                        <logic:equal name="opt" property="convType" value="HTML">selected="selected"</logic:equal>
+                                    </c:set>
+                                    <option value="<bean:write name="opt" property="convType" />" ${selected} >
                                         <bean:write name="opt" property="convType" />
                                     </option>
                                 </logic:iterate>
