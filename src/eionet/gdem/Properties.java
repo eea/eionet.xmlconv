@@ -109,6 +109,8 @@ public class Properties {
     public static int wqMaxJobs = 20;
     /** period for checking new jobs in the workqueue in milliseconds, default 20sec. */
     public static long wqCheckInterval = 20000L;
+    /** Maximum size (MB) of XML file sent to manual QA for XML Schema validation. */
+    public static int qaValidationXmlUpperLimit = 200;
 
     /** Resource bundle for gdem properties. */
     private static ResourceBundle props;
@@ -201,6 +203,12 @@ public class Properties {
                 } catch (Exception e) {
                     logger.error("\"external.qa.timeout\" property is not defined or is not numeric in gdem.properties");
                 }
+                try {
+                    qaValidationXmlUpperLimit = Integer.parseInt(props.getString("qa.validation.xml.upper_limit"));
+                } catch (Exception e) {
+                    logger.error("\"qa.validation.xml.upper_limit\" property is not defined or is not numeric in gdem.properties");
+                }
+
                 xgawkCommand = props.getString("external.qa.command.xgawk");
 
             } catch (MissingResourceException mse) {

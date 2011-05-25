@@ -44,7 +44,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
     /** XML file upper limit property key in ListQueries method result. */
     public static final String KEY_UPPER_LIMIT = "upper_limit";
     /** Upper limit for xml file size to be sent to manual QA. */
-    public static final int VALIDATION_UPPER_LIMIT = 50;
+    public static final int VALIDATION_UPPER_LIMIT = Properties.qaValidationXmlUpperLimit;
 
     /** Default conversion output type. */
     public static final String DEFAULT_CONTENT_TYPE_ID = "HTML";
