@@ -9,29 +9,30 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 /**
- * JUnit test test InputFile functionality.
- * InputFile is responsible for parsing retreived URL - escapes the URL, extracts the file name, host and folder.
- *
- * @author Enriko Käsper, TietoEnator Estonia AS
- * InputFileTest
+ * JUnit test test InputFile functionality. InputFile is responsible for parsing retreived URL - escapes the URL, extracts the file
+ * name, host and folder.
+ * 
+ * @author Enriko Käsper, TietoEnator Estonia AS InputFileTest
  */
 
-public class InputFileTest  extends TestCase{
+public class InputFileTest extends TestCase {
 
     /**
      * The method tests, if InputFile class extracts correct strings from URL
-     *
+     * 
      * @throws Exception
      */
 
-    public void testPublicMethods() throws Exception{
-        InputFile inputFile = new InputFile("http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/general report.xml?param=11&param2=22");
+    public void testPublicMethods() throws Exception {
+        InputFile inputFile =
+                new InputFile("http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/general report.xml?param=11&param2=22");
 
         assertEquals("general report.xml", inputFile.getFileName());
         assertEquals("general report", inputFile.getFileNameNoExtension());
         assertEquals("/ee/eu/art17/envriytkg", inputFile.getFolderName());
         assertEquals("http://cdrtest.eionet.europa.eu", inputFile.getHostName());
-        assertEquals("http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/general%20report.xml?param=11&param2=22", inputFile.getURL().toString());
+        assertEquals("http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/general%20report.xml?param=11&param2=22", inputFile
+                .getURL().toString());
 
         Map<String, String> cdrParams = new HashMap<String, String>();
         cdrParams.put("filename", "general report.xml");
@@ -39,15 +40,15 @@ public class InputFileTest  extends TestCase{
         cdrParams.put("envelopepath", "/ee/eu/art17/envriytkg");
         cdrParams.put("instance", "http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/general report.xml");
 
-        assertEquals(cdrParams,inputFile.getCdrParams());
+        assertEquals(cdrParams, inputFile.getCdrParams());
     }
 
     /**
      * Test the public methods with different URL
-     *
+     * 
      * @throws Exception
      */
-    public static void testPublicMethods2() throws Exception{
+    public static void testPublicMethods2() throws Exception {
         InputFile inputFile = new InputFile("http://localhost:8080/xmlconv/just a file.dddd#999");
 
         assertEquals("just a file.dddd", inputFile.getFileName());
@@ -62,7 +63,7 @@ public class InputFileTest  extends TestCase{
         cdrParams.put("envelopepath", "/xmlconv");
         cdrParams.put("instance", "http://localhost:8080/xmlconv/just a file.dddd");
 
-        assertEquals(cdrParams,inputFile.getCdrParams());
+        assertEquals(cdrParams, inputFile.getCdrParams());
     }
 
 }

@@ -25,14 +25,13 @@ public class TestUtils {
 
     /**
      * Set up test runtime properties
-     *
+     * 
      * @param obj
      */
     public static void setUpProperties(Object obj) {
 
         GDEMServices.setTestConnection(true);
-        String conversions_filename = obj.getClass().getClassLoader()
-            .getResource("dcm/conversions.xml").getFile();
+        String conversions_filename = obj.getClass().getClassLoader().getResource("dcm/conversions.xml").getFile();
         Properties.convFile = conversions_filename;
         Properties.metaXSLFolder = obj.getClass().getClassLoader().getResource("dcm").getFile();
         Properties.schemaFolder = obj.getClass().getClassLoader().getResource("schema").getFile();
@@ -42,38 +41,36 @@ public class TestUtils {
 
     /**
      * get struts config location
-     *
+     * 
      * @param obj
      */
     public static String getStrutsConfigLocation() {
         return "WEB-INF/struts/struts-config.xml";
     }
+
     public static String getStrutsTempDir(Object obj) {
-        String s =obj.getClass().getClassLoader().getResource("schema").getPath().substring(1);
+        String s = obj.getClass().getClassLoader().getResource("schema").getPath().substring(1);
         return s;
     }
 
-
     /**
      * construct URI from seed file name
-     *
+     * 
      * @param seedName
      *            eg. "seed.xml"
      * @return
      */
     public static String getSeedURL(String seedName, Object obj) {
 
-        String filename = obj.getClass().getClassLoader().getResource(seedName)
-        .getFile();
+        String filename = obj.getClass().getClassLoader().getResource(seedName).getFile();
 
         return "file://".concat(filename);
     }
 
     /**
-     * Method for executing Struts action.execute() methods. The method returns
-     * MockServletResponse object and it's header and outputstream can be
-     * validated.
-     *
+     * Method for executing Struts action.execute() methods. The method returns MockServletResponse object and it's header and
+     * outputstream can be validated.
+     * 
      * @param action
      *            Action class, that excute() method will be called
      * @param paramsMap
@@ -81,8 +78,7 @@ public class TestUtils {
      * @return MockServletResponse
      * @throws Exception
      */
-    public static MockServletResponse executeAction(BaseAction action,
-            Map paramsMap) throws Exception {
+    public static MockServletResponse executeAction(BaseAction action, Map paramsMap) throws Exception {
         // Create the mock objects
         MockServletRequest request = new MockServletRequest();
         ActionMapping actionMap = new MockActionMapping();
@@ -96,10 +92,9 @@ public class TestUtils {
     }
 
     /**
-     * Method for executing Struts action.execute() methods with multipart
-     * request The method returns MockServletResponse object and it's header and
-     * outputstream can be validated.
-     *
+     * Method for executing Struts action.execute() methods with multipart request The method returns MockServletResponse object and
+     * it's header and outputstream can be validated.
+     * 
      * @param action
      *            initilised action class
      * @param paramsMap
@@ -111,9 +106,8 @@ public class TestUtils {
      * @return
      * @throws Exception
      */
-    public static MockServletResponse executeActionMultipart(BaseAction action,
-            Map paramsMap, String fileItemParam, String uploadFile,
-            String fileContentType) throws Exception {
+    public static MockServletResponse executeActionMultipart(BaseAction action, Map paramsMap, String fileItemParam,
+            String uploadFile, String fileContentType) throws Exception {
 
         // Create the mock objects
         MockServletMultipartRequest request = new MockServletMultipartRequest();
@@ -127,10 +121,10 @@ public class TestUtils {
         return response;
     }
 
-    //conversion service checks if the dataset is the latest released verison
+    // conversion service checks if the dataset is the latest released verison
     // otherwise conversion fails
-    public static void setUpReleasedDataset(){
-        Map<String,String> mockDataset = new HashMap<String,String>();
+    public static void setUpReleasedDataset() {
+        Map<String, String> mockDataset = new HashMap<String, String>();
         mockDataset.put("id", "4948");
         mockDataset.put("status", "Released");
         mockDataset.put("isLatestReleased", "true");

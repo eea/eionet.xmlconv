@@ -16,8 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * The class mocks HttpServletResponse class to be able to test HTTP request and response.
- * @author Enriko Käsper, TietoEnator Estonia AS
- * MockServletResponse
+ * 
+ * @author Enriko Käsper, TietoEnator Estonia AS MockServletResponse
  */
 
 public class MockServletResponse implements HttpServletResponse {
@@ -40,8 +40,7 @@ public class MockServletResponse implements HttpServletResponse {
         this.writer = new PrintWriter(outputStream);
     }
 
-    public MockServletResponse(PrintWriter writer,
-            ServletOutputStream outputStream) {
+    public MockServletResponse(PrintWriter writer, ServletOutputStream outputStream) {
         this.writer = writer;
         this.outputStream = outputStream;
     }
@@ -185,11 +184,12 @@ public class MockServletResponse implements HttpServletResponse {
     }
 
     public String getHeader(String key) {
-        if(headers.containsKey(key))
-            return (String)headers.get(key);
+        if (headers.containsKey(key))
+            return (String) headers.get(key);
         else
             return null;
     }
+
     public int getStatus() {
         return statusCode;
     }

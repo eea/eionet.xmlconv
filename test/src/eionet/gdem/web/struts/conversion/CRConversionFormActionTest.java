@@ -11,11 +11,10 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * CRConversionFormActionTest
+ * @author Enriko Käsper, TietoEnator Estonia AS CRConversionFormActionTest
  */
 
-public class CRConversionFormActionTest  extends MockStrutsTestCase {
+public class CRConversionFormActionTest extends MockStrutsTestCase {
 
     public CRConversionFormActionTest(String testName) {
         super(testName);
@@ -24,9 +23,9 @@ public class CRConversionFormActionTest  extends MockStrutsTestCase {
     public void setUp() throws Exception {
         super.setUp();
         setConfigFile(TestUtils.getStrutsConfigLocation());
-        setInitParameter("validating","false");
+        setInitParameter("validating", "false");
 
-        //setup database
+        // setup database
         DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_CONVERSIONS_XML);
 
     }
@@ -42,10 +41,9 @@ public class CRConversionFormActionTest  extends MockStrutsTestCase {
         verifyInputTilesForward("/crConversion.jsp");
         verifyNoActionErrors();
 
-        List schemasInSession = (List)request.getSession().getAttribute("conversion.schemas");
-        assertTrue(schemasInSession.size()>0);
+        List schemasInSession = (List) request.getSession().getAttribute("conversion.schemas");
+        assertTrue(schemasInSession.size() > 0);
 
     }
 
 }
-

@@ -67,7 +67,7 @@ public class SearchCRConversionActionTest extends MockStrutsTestCase {
         actionPerform();
         verifyForward("error");
         verifyForwardPath("/do/crConversionForm");
-        String[] errMess = { BusinessConstants.EXCEPTION_GENERAL };
+        String[] errMess = {BusinessConstants.EXCEPTION_GENERAL};
         verifyActionErrors(errMess);
 
     }

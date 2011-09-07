@@ -22,89 +22,88 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.schema.UplSchemaHolder;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * SchemaManagerDBTest
+ * @author Enriko Käsper, TietoEnator Estonia AS SchemaManagerDBTest
  */
 
-public class SchemaManagerDBTest  extends DBTestCase{
-
+public class SchemaManagerDBTest extends DBTestCase {
 
     /**
      * Provide a connection to the database.
      */
-    public SchemaManagerDBTest(String name)	{
-        super( name );
+    public SchemaManagerDBTest(String name) {
+        super(name);
         DbHelper.setUpConnectionProperties();
     }
+
     /**
      * Set up test case properties
      */
-    protected void setUp()throws Exception{
+    protected void setUp() throws Exception {
         super.setUp();
         TestUtils.setUpProperties(this);
     }
+
     /**
      * Load the data which will be inserted for the test
      */
     protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet = new FlatXmlDataSet(
-                getClass().getClassLoader().getResourceAsStream(
-                        TestConstants.SEED_DATASET_UPL_SCHEMAS_XML));
+        IDataSet loadedDataSet =
+                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_UPL_SCHEMAS_XML));
         return loadedDataSet;
     }
 
     /**
-     * The method adds UPL schema into DB, then it edits the properties and finally deletes the added schema.
-     * After each operation it scheks the properties values.
-     *
+     * The method adds UPL schema into DB, then it edits the properties and finally deletes the added schema. After each operation
+     * it scheks the properties values.
+     * 
      * @throws Exception
      */
-    public void testUPLSchemaMethods() throws Exception{
+    public void testUPLSchemaMethods() throws Exception {
         String descr = "test General report schema";
         String schemaId = "83";
         String user = TestConstants.TEST_ADMIN_USER;
 
         SchemaManager sm = new SchemaManager();
-        //get all schemas
+        // get all schemas
         UplSchemaHolder schemas = sm.getUplSchemas(user);
-        //count schemas stored in data file
+        // count schemas stored in data file
         int countSchemas = schemas.getSchemas().size();
 
-        MockFormFile file = new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA)
-                .getFile());
+        MockFormFile file =
+                new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA).getFile());
         String fileName = sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaId, "xsd");
-        //add schema int db and upoload schema file
+        // add schema int db and upoload schema file
         sm.addUplSchema(user, file, fileName, schemaId);
 
-        //count schemas
+        // count schemas
         UplSchemaHolder schemas2 = sm.getUplSchemas(user);
         int countSchemas2 = schemas2.getSchemas().size();
 
-        //The number of schemas shouldn't be inreased, because the number of schemas is the same
-        assertEquals(countSchemas,countSchemas2);
+        // The number of schemas shouldn't be inreased, because the number of schemas is the same
+        assertEquals(countSchemas, countSchemas2);
 
-        //the method should return the file name of locally stored schema by URL
+        // the method should return the file name of locally stored schema by URL
         UplSchema uplSchema = sm.getUplSchemasById(schemaId);
         String schemaFileName = uplSchema.getUplSchemaFile();
-        assertEquals(schemaFileName,"schema-83.xsd");
+        assertEquals(schemaFileName, "schema-83.xsd");
 
-
-        //Get schema by ID and test if all upadted fields are in DB
+        // Get schema by ID and test if all upadted fields are in DB
         sm.deleteUplSchema(user, schemaId, false);
 
-        //count schemas
+        // count schemas
         UplSchemaHolder schemas3 = sm.getUplSchemas(user);
         int countSchemas3 = schemas3.getSchemas().size();
 
-        //check if the number of schemas is the same
-        assertEquals(countSchemas,countSchemas3);
+        // check if the number of schemas is the same
+        assertEquals(countSchemas, countSchemas3);
     }
+
     /**
      * The method test if it gets the local file insted of remote URL
-     *
+     * 
      * @throws Exception
      */
-    public void testGetSchemaByURL() throws Exception{
+    public void testGetSchemaByURL() throws Exception {
         String schemaUrl1 = "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd";
         String schemaUrl2 = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd";
 
@@ -116,42 +115,45 @@ public class SchemaManagerDBTest  extends DBTestCase{
         String url2 = sm.getUplSchemaURL(schemaUrl2);
         assertEquals(url2, schemaUrl2);
     }
-    public void testDiffRemoteSchema() throws Exception{
+
+    public void testDiffRemoteSchema() throws Exception {
         SchemaManager sm = new SchemaManager();
 
         String schemaFile = getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA).getFile();
         byte[] bytes = Utils.fileToBytes(schemaFile);
 
-        //files are iodentical
+        // files are iodentical
         String result = sm.diffRemoteSchema(bytes, TestConstants.SEED_GENERALREPORT_SCHEMA);
-        assertEquals(result,BusinessConstants.WARNING_FILES_IDENTICAL);
+        assertEquals(result, BusinessConstants.WARNING_FILES_IDENTICAL);
 
-        //filename is empty
+        // filename is empty
         result = sm.diffRemoteSchema(bytes, "");
-        assertEquals(result,"");
+        assertEquals(result, "");
 
-        //file does not exists
+        // file does not exists
         result = sm.diffRemoteSchema(bytes, "nofile.xsd");
-        assertEquals(result,BusinessConstants.WARNING_LOCALFILE_NOTAVAILABLE);
+        assertEquals(result, BusinessConstants.WARNING_LOCALFILE_NOTAVAILABLE);
 
-        //files are different
+        // files are different
         result = sm.diffRemoteSchema(bytes, "seed-gw-schema.xsd");
-        assertEquals(result,BusinessConstants.WARNING_FILES_NOTIDENTICAL);
+        assertEquals(result, BusinessConstants.WARNING_FILES_NOTIDENTICAL);
     }
+
     /**
      * Test schema update DB method
+     * 
      * @throws Exception
      */
-    public void testUpdateSchema() throws Exception{
+    public void testUpdateSchema() throws Exception {
         SchemaManager sm = new SchemaManager();
         String description = "updated";
         String schemaId = "4";
         String user = TestConstants.TEST_ADMIN_USER;
-        String schema="www.schema.com";
-        String schemaLang ="XSD";
-        boolean doValidation =false;
-        String dtdPublicId ="";
-        Date expireDate=null;
+        String schema = "www.schema.com";
+        String schemaLang = "XSD";
+        boolean doValidation = false;
+        String dtdPublicId = "";
+        Date expireDate = null;
 
         sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate);
         Schema sch = sm.getSchema(schemaId);

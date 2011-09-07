@@ -25,20 +25,19 @@ import junit.framework.TestCase;
 
 /**
  * JUnit test test System Command functionality.
- *
- * @author Enriko Käsper, Tieto Estonia
- * SysCommandExecutorTest
+ * 
+ * @author Enriko Käsper, Tieto Estonia SysCommandExecutorTest
  */
 
-public class SysCommandExecutorTest extends TestCase{
+public class SysCommandExecutorTest extends TestCase {
 
     /**
      * The method tests, if the system is able to execute some simple commands
-     *
+     * 
      * @throws Exception
      */
 
-    public void testCommand() throws Exception{
+    public void testCommand() throws Exception {
 
         SysCommandExecutor exe = new SysCommandExecutor();
         exe.setOutputLogDevice(new LogDevice());
@@ -50,27 +49,27 @@ public class SysCommandExecutorTest extends TestCase{
         assertEquals(status, 0);
         assertEquals(out, "OK" + System.getProperty("line.separator"));
     }
+
     /**
      * The method tests, if it's possible to kill the process after timeout
-     *
+     * 
      * @throws Exception
      */
 
-    public void testCommandTimeout() throws Exception{
+    public void testCommandTimeout() throws Exception {
 
-        Exception eTimeout=null;
+        Exception eTimeout = null;
         SysCommandExecutor exe = new SysCommandExecutor();
         exe.setOutputLogDevice(new LogDevice());
         exe.setErrorLogDevice(new LogDevice());
-        exe.setTimeout(1L); //1 second
+        exe.setTimeout(1L); // 1 second
 
-        try{
+        try {
             int status = exe.runCommand("sleep 3");
-        }
-        catch(RuntimeException e){
-            eTimeout=e;
+        } catch (RuntimeException e) {
+            eTimeout = e;
         }
         // asset the exception object
         assertNotNull("No expected exception", eTimeout);
     }
- }
+}

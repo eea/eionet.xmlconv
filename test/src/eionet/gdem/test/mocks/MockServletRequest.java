@@ -19,11 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * MockHttpMultipartServletRequest
+ * @author Enriko Käsper, TietoEnator Estonia AS MockHttpMultipartServletRequest
  */
 
-public class MockServletRequest  implements HttpServletRequest {
+public class MockServletRequest implements HttpServletRequest {
 
     ServletInputStream inputStream = null;
     String contentType = null;
@@ -37,7 +36,7 @@ public class MockServletRequest  implements HttpServletRequest {
     String scheme = null;
     String serverName = null;
     int serverPort = 0;
-    String contextPath= null;
+    String contextPath = null;
     String requestURL = null;
     String queryString = null;
 
@@ -188,7 +187,7 @@ public class MockServletRequest  implements HttpServletRequest {
     }
 
     public String getParameter(String arg0) {
-        return (String)parameterMap.get(arg0);
+        return (String) parameterMap.get(arg0);
     }
 
     public Map getParameterMap() {
@@ -253,14 +252,16 @@ public class MockServletRequest  implements HttpServletRequest {
     public void setAttribute(String arg0, Object arg1) {
     }
 
-    public void setCharacterEncoding(String arg0){
-        this.charEncoding=arg0;
+    public void setCharacterEncoding(String arg0) {
+        this.charEncoding = arg0;
     }
-    //Methods needed for testing
+
+    // Methods needed for testing
     public void setParameterMap(Map paramsMap) {
-        parameterMap=paramsMap;
+        parameterMap = paramsMap;
     }
-    public void setServletInputStream(ByteArrayInputStream ins){
+
+    public void setServletInputStream(ByteArrayInputStream ins) {
         inputStream = new MockServletInputStream(ins);
     }
 

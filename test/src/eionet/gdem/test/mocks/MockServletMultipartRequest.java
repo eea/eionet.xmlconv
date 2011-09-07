@@ -16,8 +16,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Enriko Käsper, TietoEnator Estonia AS MockHttpMultipartServletRequest
  */
 
-public class MockServletMultipartRequest extends MockServletRequest implements
-        HttpServletRequest {
+public class MockServletMultipartRequest extends MockServletRequest implements HttpServletRequest {
 
     private String contentType = "multipart/form-data; ";
     private static String boundary = "---------------------------7d226f700d0";
@@ -28,8 +27,7 @@ public class MockServletMultipartRequest extends MockServletRequest implements
         return contentType.concat("boundary=").concat(boundary);
     }
 
-    public void writeFile(String fileItemParam, String file,
-            String fileContentType) throws Exception {
+    public void writeFile(String fileItemParam, String file, String fileContentType) throws Exception {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         out.write(("--" + boundary + "\r\n").getBytes());
@@ -55,26 +53,22 @@ public class MockServletMultipartRequest extends MockServletRequest implements
                 } else {
                     value = requestParameters.get(key).toString();
                 }
-                out.write((new StringBuilder(
-                        "Content-disposition: form-data; name=\"").append(key)
-                        .append("\"\r\n\r\n")).toString().getBytes());
+                out.write((new StringBuilder("Content-disposition: form-data; name=\"").append(key).append("\"\r\n\r\n"))
+                        .toString().getBytes());
                 out.write(value.getBytes());
                 out.write(("\r\n" + "--" + boundary + "\r\n").getBytes());
             }
         }
     }
 
-    private void writeFile(ByteArrayOutputStream out, String fileItemParam,
-            String name, String contentType) throws Exception {
+    private void writeFile(ByteArrayOutputStream out, String fileItemParam, String name, String contentType) throws Exception {
 
         File file = new File(name);
         FileInputStream fis = new FileInputStream(file);
         try {
-            out.write("Content-disposition: form-data; name=\"".concat(
-                    fileItemParam).concat("\"; filename=\"").concat(
-                    file.getName()).concat("\"\r\n").getBytes());
-            out.write("Content-type: ".concat(contentType).concat("\r\n\r\n")
-                    .getBytes());
+            out.write("Content-disposition: form-data; name=\"".concat(fileItemParam).concat("\"; filename=\"")
+                    .concat(file.getName()).concat("\"\r\n").getBytes());
+            out.write("Content-type: ".concat(contentType).concat("\r\n\r\n").getBytes());
 
             int i = 0;
             while (true) {

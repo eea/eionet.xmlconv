@@ -26,34 +26,34 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.utils.Utils;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * DocumentAnalyserTest
+ * @author Enriko Käsper, Tieto Estonia DocumentAnalyserTest
  */
 
-public class DocumentAnalyserTest  extends TestCase{
+public class DocumentAnalyserTest extends TestCase {
 
-    public void testXMLSchema() throws Exception{
+    public void testXMLSchema() throws Exception {
 
         String schemaFile = getClass().getClassLoader().getResource(TestConstants.SEED_GW_CONTAINER_SCHEMA).getFile();
         byte[] schemaBytes = Utils.fileToBytes(schemaFile);
         String dtdFile = getClass().getClassLoader().getResource(TestConstants.SEED_XLIFF_DTD).getFile();
-        byte[]dtdBytes = Utils.fileToBytes(dtdFile);
+        byte[] dtdBytes = Utils.fileToBytes(dtdFile);
 
-        boolean isSchema =DocumentAnalyser.sourceIsXMLSchema(schemaBytes);
+        boolean isSchema = DocumentAnalyser.sourceIsXMLSchema(schemaBytes);
         assertTrue(isSchema);
-        isSchema =DocumentAnalyser.sourceIsXMLSchema(dtdBytes);
+        isSchema = DocumentAnalyser.sourceIsXMLSchema(dtdBytes);
         assertFalse(isSchema);
     }
-    public void testDTD() throws Exception{
+
+    public void testDTD() throws Exception {
 
         String schemaFile = getClass().getClassLoader().getResource(TestConstants.SEED_GW_SCHEMA).getFile();
         byte[] schemaBytes = Utils.fileToBytes(schemaFile);
         String dtdFile = getClass().getClassLoader().getResource(TestConstants.SEED_XLIFF_DTD).getFile();
-        byte[]dtdBytes = Utils.fileToBytes(dtdFile);
+        byte[] dtdBytes = Utils.fileToBytes(dtdFile);
 
-        boolean isDTD =DocumentAnalyser.sourceIsDTD(schemaBytes);
+        boolean isDTD = DocumentAnalyser.sourceIsDTD(schemaBytes);
         assertFalse(isDTD);
-        isDTD =DocumentAnalyser.sourceIsDTD(dtdBytes);
+        isDTD = DocumentAnalyser.sourceIsDTD(dtdBytes);
         assertTrue(isDTD);
     }
 

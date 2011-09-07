@@ -27,8 +27,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
 
 /**
- * @author Enriko Käsper
- * MockSession
+ * @author Enriko Käsper MockSession
  */
 
 public class MockHttpSession implements HttpSession {
@@ -36,11 +35,12 @@ public class MockHttpSession implements HttpSession {
     HashMap attributes;
     ServletContext servletContext;
 
-    public MockHttpSession(){
+    public MockHttpSession() {
         attributes = new HashMap();
     }
+
     public Object getAttribute(String s) {
-        if (s!=null && attributes.containsKey(s))
+        if (s != null && attributes.containsKey(s))
             return attributes.get(s);
 
         return null;
@@ -96,8 +96,9 @@ public class MockHttpSession implements HttpSession {
     }
 
     public void removeAttribute(String s) {
-        if(s!=null && attributes.containsKey(s));
-            attributes.remove(s);
+        if (s != null && attributes.containsKey(s))
+            ;
+        attributes.remove(s);
     }
 
     public void removeValue(String s) {
@@ -105,13 +106,14 @@ public class MockHttpSession implements HttpSession {
     }
 
     public void setAttribute(String s, Object obj) {
-        if(s!=null)
+        if (s != null)
             attributes.put(s, obj);
     }
 
     public void setMaxInactiveInterval(int i) {
         throw new UnsupportedOperationException();
     }
+
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
     }

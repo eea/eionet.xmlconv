@@ -11,11 +11,10 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * ListConversionsActionTest
+ * @author Enriko Käsper, TietoEnator Estonia AS ListConversionsActionTest
  */
 
-public class ListConversionsActionTest  extends MockStrutsTestCase {
+public class ListConversionsActionTest extends MockStrutsTestCase {
 
     public ListConversionsActionTest(String testName) {
         super(testName);
@@ -24,15 +23,16 @@ public class ListConversionsActionTest  extends MockStrutsTestCase {
     public void setUp() throws Exception {
         super.setUp();
         setConfigFile(TestUtils.getStrutsConfigLocation());
-        setInitParameter("validating","false");
+        setInitParameter("validating", "false");
 
-        //setup database
+        // setup database
         DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_CONVERSIONS_XML);
 
     }
+
     /**
-     * test if the form is successfully formwarding and stores ConversionForm in session
-     * The form should find available conversions for specified URL
+     * test if the form is successfully formwarding and stores ConversionForm in session The form should find available conversions
+     * for specified URL
      */
     public void testSuccessfulForward() {
 
@@ -40,27 +40,26 @@ public class ListConversionsActionTest  extends MockStrutsTestCase {
 
         setRequestPathInfo("/listConversionsByXML");
 
-
-        addRequestParameter("url",url);
-        addRequestParameter("searchAction","search");
+        addRequestParameter("url", url);
+        addRequestParameter("searchAction", "search");
         actionPerform();
         verifyForward("success");
         verifyInputTilesForward("/listConv.jsp");
         verifyNoActionErrors();
 
         ConversionForm cForm = (ConversionForm) request.getSession().getAttribute("ConversionForm");
-        assertEquals(cForm.getUrl(),url);
-        assertTrue(cForm.getSchemas().size()>0);
+        assertEquals(cForm.getUrl(), url);
+        assertTrue(cForm.getSchemas().size() > 0);
 
-        //XMLCONV should find some stylesheets for specified XML
+        // XMLCONV should find some stylesheets for specified XML
         Schema schema = cForm.getSchemas().get(0);
-        assertTrue(schema.getStylesheets().size()>0);
+        assertTrue(schema.getStylesheets().size() > 0);
 
     }
 
     /**
-     * test if the form is successfully formwarding and stores ConversionForm in session
-     * The form should find available conversions for specified schema URL
+     * test if the form is successfully formwarding and stores ConversionForm in session The form should find available conversions
+     * for specified schema URL
      */
     public void testSuccessfulForwardBySchema() {
 
@@ -68,27 +67,25 @@ public class ListConversionsActionTest  extends MockStrutsTestCase {
 
         setRequestPathInfo("/listConversionsByXML");
 
-
-        addRequestParameter("schemaUrl",schemaUrl);
-        addRequestParameter("searchAction","search");
+        addRequestParameter("schemaUrl", schemaUrl);
+        addRequestParameter("searchAction", "search");
         actionPerform();
         verifyForward("success");
         verifyInputTilesForward("/listConv.jsp");
         verifyNoActionErrors();
 
         ConversionForm cForm = (ConversionForm) request.getSession().getAttribute("ConversionForm");
-        assertEquals(cForm.getSchemaUrl(),schemaUrl);
-        assertTrue(cForm.getSchemas().size()>0);
+        assertEquals(cForm.getSchemaUrl(), schemaUrl);
+        assertTrue(cForm.getSchemas().size() > 0);
 
-        //XMLCONV should find some stylesheets for specified XML
+        // XMLCONV should find some stylesheets for specified XML
         Schema schema = cForm.getSchemas().get(0);
-        assertTrue(schema.getStylesheets().size()>0);
+        assertTrue(schema.getStylesheets().size() > 0);
 
     }
 
     /**
-     * test if the form is successfully formwarding and stores ConversionForm in session
-     * The form should get an error message
+     * test if the form is successfully formwarding and stores ConversionForm in session The form should get an error message
      */
     public void testFailedForward() {
 
@@ -96,9 +93,8 @@ public class ListConversionsActionTest  extends MockStrutsTestCase {
 
         setRequestPathInfo("/listConversionsByXML");
 
-
-        addRequestParameter("url",url);
-        addRequestParameter("searchAction","search");
+        addRequestParameter("url", url);
+        addRequestParameter("searchAction", "search");
         actionPerform();
         verifyForward("success");
         verifyInputTilesForward("/listConv.jsp");
@@ -106,13 +102,14 @@ public class ListConversionsActionTest  extends MockStrutsTestCase {
         verifyActionErrors(errMess);
 
         ConversionForm cForm = (ConversionForm) request.getSession().getAttribute("ConversionForm");
-        assertEquals(cForm.getUrl(),url);
-        assertTrue(cForm.getSchemas().size()==0);
+        assertEquals(cForm.getUrl(), url);
+        assertTrue(cForm.getSchemas().size() == 0);
 
     }
+
     /**
-     * test if the form is successfully formwarding and stores ConversionForm in session
-     * The form should find available conversions for specified URL
+     * test if the form is successfully formwarding and stores ConversionForm in session The form should find available conversions
+     * for specified URL
      */
     public void testSuccessfulForwardConvert() {
 
@@ -120,19 +117,17 @@ public class ListConversionsActionTest  extends MockStrutsTestCase {
 
         setRequestPathInfo("/listConversionsByXML");
 
-
-        addRequestParameter("url",url);
-        addRequestParameter("convertAction","convert");
-        addRequestParameter("conversionId","168");
-        addRequestParameter("converted","false");
+        addRequestParameter("url", url);
+        addRequestParameter("convertAction", "convert");
+        addRequestParameter("conversionId", "168");
+        addRequestParameter("converted", "false");
         actionPerform();
         verifyForward("convert");
         verifyForwardPath("/do/testConversion");
         verifyNoActionErrors();
         ConversionForm cForm = (ConversionForm) request.getSession().getAttribute("ConversionForm");
-        assertEquals(cForm.getUrl(),url);
-        assertEquals(cForm.getConversionId(),"168");
+        assertEquals(cForm.getUrl(), url);
+        assertEquals(cForm.getConversionId(), "168");
 
     }
-  }
-
+}

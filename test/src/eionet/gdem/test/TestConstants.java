@@ -5,19 +5,19 @@ package eionet.gdem.test;
 
 /**
  * The class holds different constant values used in test cases.
- * @author Enriko Käsper, TietoEnator Estonia AS
- * TestConstants
+ * 
+ * @author Enriko Käsper, TietoEnator Estonia AS TestConstants
  */
 
 public class TestConstants {
 
-    //SEED FILES with test data
+    // SEED FILES with test data
     public static final String SEED_DATASET_CONVERSIONS_XML = "seed-dataset-conversions.xml";
     public static final String SEED_DATASET_UPL_SCHEMAS_XML = "seed-dataset-upl_schemas.xml";
     public static final String SEED_DATASET_QA_XML = "seed-dataset-qa.xml";
     public static final String SEED_DATASET_UPLXML_XML = "seed-dataset-uplxml.xml";
 
-    //SEED FILES for conversions
+    // SEED FILES for conversions
     public static final String SEED_RIVERS_XLS = "seed-rivers.xls";
     public static final String SEED_DATES_XLS = "seed-dates.xls";
     public static final String SEED_MULTIVALUES_XLS = "seed-multivalues.xls";
@@ -39,19 +39,18 @@ public class TestConstants {
     public static final String SEED_QASCRIPT_XQUERY2 = "seed-qascript2.xquery";
     public static final String SEED_QASCRIPT_TEST = "test.xquery";
 
-    //TEST RESULT PROPERTIES
-    public final static String HTML_CONTENTYPE_RESULT ="text/html;charset=UTF-8";
-    public final static String TEXT_CONTENTYPE_RESULT ="text/plain";
-    public final static String EXCEL_CONTENTYPE_RESULT ="application/vnd.ms-excel";
-    public final static String ZIP_CONTENTYPE_RESULT ="application/x-zip-compressed";
-    public final static String XML_CONTENTYPE_RESULT ="text/xml";
-    public final static String GR_HTML_FILENAME_RESULT ="seed-general-report.html";
-    public final static String OZ_HTML_FILENAME_RESULT ="seed-ozone-station.html";
-    public final static String OZ_SQL_FILENAME_RESULT ="seed-ozone-station.sql";
-    public final static String STRCONTENT_RESULT ="Conversion works!";
+    // TEST RESULT PROPERTIES
+    public final static String HTML_CONTENTYPE_RESULT = "text/html;charset=UTF-8";
+    public final static String TEXT_CONTENTYPE_RESULT = "text/plain";
+    public final static String EXCEL_CONTENTYPE_RESULT = "application/vnd.ms-excel";
+    public final static String ZIP_CONTENTYPE_RESULT = "application/x-zip-compressed";
+    public final static String XML_CONTENTYPE_RESULT = "text/xml";
+    public final static String GR_HTML_FILENAME_RESULT = "seed-general-report.html";
+    public final static String OZ_HTML_FILENAME_RESULT = "seed-ozone-station.html";
+    public final static String OZ_SQL_FILENAME_RESULT = "seed-ozone-station.sql";
+    public final static String STRCONTENT_RESULT = "Conversion works!";
 
-
-    //USER PROPERTIES
+    // USER PROPERTIES
     public final static String TEST_USER = "tester";
     public final static String TEST_ADMIN_USER = "roug";
 }

@@ -60,14 +60,14 @@ public class WorkqueueManagerTest extends DBTestCase {
      * Load the data which will be inserted for the test
      */
     protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet = new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(
-                TestConstants.SEED_DATASET_QA_XML));
+        IDataSet loadedDataSet =
+                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_QA_XML));
         return loadedDataSet;
     }
 
     /**
      * The method adds a new QA job into the workqueue
-     *
+     * 
      * @throws Exception
      */
     public void testAddQAScriptToWorkqueue() throws Exception {
@@ -75,8 +75,9 @@ public class WorkqueueManagerTest extends DBTestCase {
         String user = TestConstants.TEST_ADMIN_USER;
         String sourceUrl = "http://test.eu/test.xml";
         String scriptType = XQScript.SCRIPT_LANG_XQUERY;
-        String scriptContent = "xquery version \"1.0\";\n let $numbers := (1,2,3,4) "
-                + "\n for $n in $numbers \n return \n <number>{data($n)}</number>\n";
+        String scriptContent =
+                "xquery version \"1.0\";\n let $numbers := (1,2,3,4) "
+                        + "\n for $n in $numbers \n return \n <number>{data($n)}</number>\n";
 
         WorkqueueManager wqm = new WorkqueueManager();
 
@@ -93,7 +94,7 @@ public class WorkqueueManagerTest extends DBTestCase {
 
     /**
      * The method adds several jobs to workqueue
-     *
+     * 
      * @throws Exception
      */
     public void testAddSchemaScriptsToWorkqueue() throws Exception {

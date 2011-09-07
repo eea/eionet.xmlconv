@@ -14,23 +14,23 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * MockSessionContext
+ * @author Enriko Käsper, TietoEnator Estonia AS MockSessionContext
  */
 
-public class MockServletContext implements ServletContext{
+public class MockServletContext implements ServletContext {
 
     HashMap attributes;
     HashMap initParameters;
 
-    public MockServletContext(){
+    public MockServletContext() {
         attributes = new HashMap();
         initParameters = new HashMap();
     }
 
     public Object getAttribute(String s) {
-        if (s!=null && attributes.containsKey(s))
+        if (s != null && attributes.containsKey(s))
             return attributes.get(s);
 
         return null;
@@ -45,8 +45,8 @@ public class MockServletContext implements ServletContext{
     }
 
     public String getInitParameter(String s) {
-        if (s!=null && initParameters.containsKey(s))
-            return (String)initParameters.get(s);
+        if (s != null && initParameters.containsKey(s))
+            return (String) initParameters.get(s);
 
         return null;
     }
@@ -124,16 +124,18 @@ public class MockServletContext implements ServletContext{
     }
 
     public void removeAttribute(String s) {
-        if(s!=null && attributes.containsKey(s));
+        if (s != null && attributes.containsKey(s))
+            ;
         attributes.remove(s);
     }
 
     public void setAttribute(String s, Object obj) {
-        if(s!=null)
+        if (s != null)
             attributes.put(s, obj);
     }
+
     public void setInitParameter(String s, String s2) {
-        if(s!=null)
+        if (s != null)
             initParameters.put(s, s2);
     }
 

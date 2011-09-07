@@ -34,98 +34,101 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * QueryDaoTest
+ * @author Enriko Käsper, Tieto Estonia QueryDaoTest
  */
 
-public class QueryDaoTest extends DBTestCase{
+public class QueryDaoTest extends DBTestCase {
 
-    private  IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
+    private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
 
     /**
      * Provide a connection to the database.
      */
-    public QueryDaoTest(String name)	{
-        super( name );
+    public QueryDaoTest(String name) {
+        super(name);
         DbHelper.setUpConnectionProperties();
     }
+
     /**
      * Set up test case properties
      */
-    protected void setUp()throws Exception{
+    protected void setUp() throws Exception {
         super.setUp();
         TestUtils.setUpProperties(this);
     }
+
     /**
      * Load the data which will be inserted for the test
      */
     protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet = new FlatXmlDataSet(
-                getClass().getClassLoader().getResourceAsStream(
-                        TestConstants.SEED_DATASET_QA_XML));
+        IDataSet loadedDataSet =
+                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_QA_XML));
         return loadedDataSet;
     }
+
     /**
-     * The method adds QA script into DB, then it edits the properties and finally deletes the added query.
-     * After each operation it checks the properties values.
-     *
+     * The method adds QA script into DB, then it edits the properties and finally deletes the added query. After each operation it
+     * checks the properties values.
+     * 
      * @throws Exception
      */
-    public void testQueryMethods() throws Exception{
+    public void testQueryMethods() throws Exception {
 
         String queryFileName = "script.xquery";
         String description = "test QA script";
         String schemaID = "83";
         String shortName = "New QA script";
-        String content_type ="HTML";
-        String script_type ="xquery";
+        String content_type = "HTML";
+        String script_type = "xquery";
         String upperLimit = "100";
 
-        //get all uploaded queries
+        // get all uploaded queries
         List queries = queryDao.listQueries(null);
-        //count queries
+        // count queries
         int countQueries = queries.size();
 
-        //add query int db
+        // add query int db
         String queryId = queryDao.addQuery(schemaID, shortName, queryFileName, description, content_type, script_type, upperLimit);
 
-        //count queries
+        // count queries
         List queries2 = queryDao.listQueries(null);
         int countQueries2 = queries2.size();
 
-        //check if the number of queries is increased
-        assertEquals(countQueries+1,countQueries2);
+        // check if the number of queries is increased
+        assertEquals(countQueries + 1, countQueries2);
 
-        //get the query Object BY query ID
+        // get the query Object BY query ID
         HashMap query = queryDao.getQueryInfo(queryId);
 
-        assertEquals((String)query.get("schema_id"),schemaID);
-        assertEquals((String)query.get("query"),queryFileName);
-        assertEquals((String)query.get("description"),description);
-        assertEquals((String)query.get("schema_id"),schemaID);
-        assertEquals((String)query.get("short_name"),shortName);
-        assertEquals((String)query.get("content_type"),content_type);
-        assertEquals((String)query.get("script_type"),script_type);
-        assertEquals((String)query.get("upper_limit"), upperLimit);
-        //check boolean methods
+        assertEquals((String) query.get("schema_id"), schemaID);
+        assertEquals((String) query.get("query"), queryFileName);
+        assertEquals((String) query.get("description"), description);
+        assertEquals((String) query.get("schema_id"), schemaID);
+        assertEquals((String) query.get("short_name"), shortName);
+        assertEquals((String) query.get("content_type"), content_type);
+        assertEquals((String) query.get("script_type"), script_type);
+        assertEquals((String) query.get("upper_limit"), upperLimit);
+        // check boolean methods
         assertTrue(queryDao.checkQueryFile(queryFileName));
         assertTrue(queryDao.checkQueryFile(queryId, queryFileName));
 
-        //upadate query fileds
-        queryDao.updateQuery(queryId, schemaID, shortName + "UPD", description + "UPD",queryFileName, content_type, script_type, upperLimit);
+        // upadate query fileds
+        queryDao.updateQuery(queryId, schemaID, shortName + "UPD", description + "UPD", queryFileName, content_type, script_type,
+                upperLimit);
 
-        //Get query by ID and test if all upadted fields are in DB
+        // Get query by ID and test if all upadted fields are in DB
         query = queryDao.getQueryInfo(queryId);
-        assertEquals((String)query.get("description"),description + "UPD");
-        assertEquals((String)query.get("short_name"),shortName + "UPD");
+        assertEquals((String) query.get("description"), description + "UPD");
+        assertEquals((String) query.get("short_name"), shortName + "UPD");
 
-        //delete inserted query
+        // delete inserted query
         queryDao.removeQuery(queryId);
 
-        //count queries
+        // count queries
         List queries3 = queryDao.listQueries(null);
         int countQueries3 = queries3.size();
 
-        //check if the nuber of schemas is the same as in the beginning
-        assertEquals(countQueries,countQueries3);
-    }}
+        // check if the nuber of schemas is the same as in the beginning
+        assertEquals(countQueries, countQueries3);
+    }
+}

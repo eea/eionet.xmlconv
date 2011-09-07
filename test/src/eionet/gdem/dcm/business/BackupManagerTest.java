@@ -36,77 +36,77 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * BackupManagerTest
+ * @author Enriko Käsper, Tieto Estonia BackupManagerTest
  */
 
-public class BackupManagerTest   extends DBTestCase{
-
+public class BackupManagerTest extends DBTestCase {
 
     /**
      * Provide a connection to the database.
      */
-    public BackupManagerTest(String name)	{
-        super( name );
+    public BackupManagerTest(String name) {
+        super(name);
         DbHelper.setUpConnectionProperties();
     }
+
     /**
      * Set up test case properties
      */
-    protected void setUp()throws Exception{
+    protected void setUp() throws Exception {
         super.setUp();
         TestUtils.setUpProperties(this);
     }
+
     /**
      * Load the data which will be inserted for the test
      */
     protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet = new FlatXmlDataSet(
-                getClass().getClassLoader().getResourceAsStream(
-                        TestConstants.SEED_DATASET_QA_XML));
+        IDataSet loadedDataSet =
+                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_QA_XML));
         return loadedDataSet;
     }
+
     /**
-     * The method adds UPL schema into DB, then it edits the properties and finally deletes the added schema.
-     * After each operation it scheks the properties values.
-     *
+     * The method adds UPL schema into DB, then it edits the properties and finally deletes the added schema. After each operation
+     * it scheks the properties values.
+     * 
      * @throws Exception
      */
-    public void testFileBackup() throws Exception{
+    public void testFileBackup() throws Exception {
 
         String folderName = Properties.queriesFolder;
-        String fileName= TestConstants.SEED_QASCRIPT_TEST;
-        String id="100";
-        String user="testuser";
+        String fileName = TestConstants.SEED_QASCRIPT_TEST;
+        String id = "100";
+        String user = "testuser";
 
-        //create backup folder and 2 new backupfiles
+        // create backup folder and 2 new backupfiles
         BackupManager bm = new BackupManager();
         bm.backupFile(folderName, fileName, id, user);
         bm.backupFile(folderName, fileName, id, user);
 
-        //check if backupfolder exists
-        File backupFolder =new File(folderName, Constants.BACKUP_FOLDER_NAME);
+        // check if backupfolder exists
+        File backupFolder = new File(folderName, Constants.BACKUP_FOLDER_NAME);
         assertTrue((backupFolder).exists());
 
-        //get the list of backups from database
-        List<BackupDto> backups =bm.getBackups(id);
-        assertEquals(2,backups.size());
+        // get the list of backups from database
+        List<BackupDto> backups = bm.getBackups(id);
+        assertEquals(2, backups.size());
 
-        //check if backup files exist in backup folder
-        File backupFile1 =new File(backupFolder, backups.get(0).getFileName());
-        File backupFile2 =new File(backupFolder, backups.get(1).getFileName());
+        // check if backup files exist in backup folder
+        File backupFile1 = new File(backupFolder, backups.get(0).getFileName());
+        File backupFile2 = new File(backupFolder, backups.get(1).getFileName());
         assertTrue((backupFile1).exists());
         assertTrue((backupFile2).exists());
 
-        //purge all backups
-        int deleted = bm.purgeBackup(-1); //purge files before tomorrow
-        assertEquals(2,deleted);
+        // purge all backups
+        int deleted = bm.purgeBackup(-1); // purge files before tomorrow
+        assertEquals(2, deleted);
 
-        //check if database rows are deleted
-        backups =bm.getBackups(id);
-        assertEquals(0,backups.size());
+        // check if database rows are deleted
+        backups = bm.getBackups(id);
+        assertEquals(0, backups.size());
 
-        //check if files are deleted
+        // check if files are deleted
         assertFalse((backupFile1).exists());
         assertFalse((backupFile2).exists());
 

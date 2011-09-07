@@ -11,11 +11,10 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * UplSchemaFormActionTest
+ * @author Enriko Käsper, TietoEnator Estonia AS UplSchemaFormActionTest
  */
 
-public class UplSchemaFormActionTest  extends MockStrutsTestCase {
+public class UplSchemaFormActionTest extends MockStrutsTestCase {
 
     public UplSchemaFormActionTest(String testName) {
         super(testName);
@@ -24,9 +23,9 @@ public class UplSchemaFormActionTest  extends MockStrutsTestCase {
     public void setUp() throws Exception {
         super.setUp();
         setConfigFile(TestUtils.getStrutsConfigLocation());
-        setInitParameter("validating","false");
+        setInitParameter("validating", "false");
 
-        //setup database
+        // setup database
         DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
     }
 
@@ -38,10 +37,9 @@ public class UplSchemaFormActionTest  extends MockStrutsTestCase {
         verifyTilesForward("success", "/uplSchema.jsp");
         verifyNoActionErrors();
 
-        //test if the list of schemas is stored in session attribute
+        // test if the list of schemas is stored in session attribute
         HttpSession session = request.getSession();
-        UplSchemaHolder holder = (UplSchemaHolder)session.getAttribute("schemas.uploaded");
-        assertTrue(holder.getSchemas().size()>0);
+        UplSchemaHolder holder = (UplSchemaHolder) session.getAttribute("schemas.uploaded");
+        assertTrue(holder.getSchemas().size() > 0);
     }
 }
-

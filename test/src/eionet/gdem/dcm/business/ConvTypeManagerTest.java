@@ -31,11 +31,10 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * ConvTypeManagerTest
+ * @author Enriko Käsper, Tieto Estonia ConvTypeManagerTest
  */
 
-public class ConvTypeManagerTest  extends DBTestCase {
+public class ConvTypeManagerTest extends DBTestCase {
 
     /**
      * Provide a connection to the database.
@@ -57,23 +56,23 @@ public class ConvTypeManagerTest  extends DBTestCase {
      * Load the data which will be inserted for the test
      */
     protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet = new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(
-                TestConstants.SEED_DATASET_QA_XML));
+        IDataSet loadedDataSet =
+                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_QA_XML));
         return loadedDataSet;
     }
 
     /**
      * The method queries all the conversion types
-     *
+     * 
      * @throws Exception
      */
     public void testGgetConvType() throws Exception {
         ConvTypeManager ctm = new ConvTypeManager();
         ConvType cType = ctm.getConvType("HTML");
-        assertEquals("HTML",cType.getConvType());
-        assertEquals("text/html;charset=UTF-8",cType.getContType());
-        assertEquals("html",cType.getFileExt());
-        assertEquals("HTML files",cType.getDescription());
+        assertEquals("HTML", cType.getConvType());
+        assertEquals("text/html;charset=UTF-8", cType.getContType());
+        assertEquals("html", cType.getFileExt());
+        assertEquals("HTML files", cType.getDescription());
     }
 
 }

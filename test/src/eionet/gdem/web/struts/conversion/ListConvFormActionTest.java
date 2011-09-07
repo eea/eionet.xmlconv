@@ -11,11 +11,10 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * ListConvFormActionTest
+ * @author Enriko Käsper, TietoEnator Estonia AS ListConvFormActionTest
  */
 
-public class ListConvFormActionTest   extends MockStrutsTestCase {
+public class ListConvFormActionTest extends MockStrutsTestCase {
 
     public ListConvFormActionTest(String testName) {
         super(testName);
@@ -24,12 +23,13 @@ public class ListConvFormActionTest   extends MockStrutsTestCase {
     public void setUp() throws Exception {
         super.setUp();
         setConfigFile(TestUtils.getStrutsConfigLocation());
-        setInitParameter("validating","false");
+        setInitParameter("validating", "false");
 
-        //setup database
+        // setup database
         DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_CONVERSIONS_XML);
 
     }
+
     /**
      * test if the form is successfully formwarding and stores the schemas list in session
      */
@@ -41,10 +41,9 @@ public class ListConvFormActionTest   extends MockStrutsTestCase {
         verifyInputTilesForward("/listConv.jsp");
         verifyNoActionErrors();
 
-        List schemasInSession = (List)request.getSession().getAttribute("conversion.schemas");
-        assertTrue(schemasInSession.size()>0);
+        List schemasInSession = (List) request.getSession().getAttribute("conversion.schemas");
+        assertTrue(schemasInSession.size() > 0);
 
     }
 
 }
-

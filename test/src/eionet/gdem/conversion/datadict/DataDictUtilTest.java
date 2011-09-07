@@ -28,8 +28,7 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * DataDictUtilTest
+ * @author Enriko Käsper, Tieto Estonia DataDictUtilTest
  */
 
 public class DataDictUtilTest extends TestCase {
@@ -38,39 +37,39 @@ public class DataDictUtilTest extends TestCase {
      * Tests convert method - validate the result file and metadata( content type and file name)
      */
     public void testGetElementsDefs() throws Exception {
-        String schemaUrl =TestUtils.getSeedURL(TestConstants.SEED_GW_CONTAINER_SCHEMA,this);
+        String schemaUrl = TestUtils.getSeedURL(TestConstants.SEED_GW_CONTAINER_SCHEMA, this);
         Map<String, DDElement> elemDefs = DataDictUtil.importDDElementSchemaDefs(null, schemaUrl);
-        assertEquals(elemDefs.size(),43);
+        assertEquals(elemDefs.size(), 43);
 
         String type = elemDefs.get("GWEWN-Code").getSchemaDataType();
-        assertEquals("xs:string",type);
+        assertEquals("xs:string", type);
 
         String type2 = elemDefs.get("GWArea").getSchemaDataType();
-        assertEquals("xs:decimal",type2);
+        assertEquals("xs:decimal", type2);
     }
+
     /**
      * Tests DD schema URL handling
      */
-    public void testDDUrlhandling() throws Exception{
+    public void testDDUrlhandling() throws Exception {
         assertEquals("http://dd.eionet.europa.eu/GetXmlInstance?id=3739&type=tbl",
                 DataDictUtil.getInstanceUrl("http://dd.eionet.europa.eu/GetSchema?id=TBL3739"));
-        assertEquals("TBL3739",
-                DataDictUtil.getSchemaIdParamFromUrl(("http://dd.eionet.europa.eu/GetSchema?id=TBL3739")));
-        assertEquals("DST1111",
-                DataDictUtil.getSchemaIdParamFromUrl(("http://dd.eionet.europa.eu/GetSchema?id=DST1111")));
+        assertEquals("TBL3739", DataDictUtil.getSchemaIdParamFromUrl(("http://dd.eionet.europa.eu/GetSchema?id=TBL3739")));
+        assertEquals("DST1111", DataDictUtil.getSchemaIdParamFromUrl(("http://dd.eionet.europa.eu/GetSchema?id=DST1111")));
         assertEquals("http://dd.eionet.europa.eu/GetContainerSchema?id=DST1111",
                 DataDictUtil.getContainerSchemaUrl(("http://dd.eionet.europa.eu/GetSchema?id=DST1111")));
     }
+
     /**
      * Tests convert method - validate the result file and metadata( content type and file name)
      */
     public void testGetContainerSchemaUrl() throws Exception {
         String url = DataDictUtil.getContainerSchemaUrl("http://dd.eionet.europa.eu/GetSchema?id=TBL4948");
-        assertEquals("http://dd.eionet.europa.eu/GetContainerSchema?id=TBL4948",url);
+        assertEquals("http://dd.eionet.europa.eu/GetContainerSchema?id=TBL4948", url);
     }
 
     public void testMultivalueElementsDefs() throws Exception {
-        String schemaUrl =TestUtils.getSeedURL(TestConstants.SEED_GW_SCHEMA,this);
+        String schemaUrl = TestUtils.getSeedURL(TestConstants.SEED_GW_SCHEMA, this);
 
         Map<String, DDElement> elemDefs = DataDictUtil.importDDTableSchemaElemDefs(schemaUrl);
 

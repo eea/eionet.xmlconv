@@ -22,58 +22,58 @@ import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * GetXMLSchemasActionTest
+ * @author Enriko Käsper, TietoEnator Estonia AS GetXMLSchemasActionTest
  */
 
-public class GetXMLSchemasActionTest  extends DBTestCase{
-
+public class GetXMLSchemasActionTest extends DBTestCase {
 
     /**
      * Provide a connection to the database.
      */
-    public GetXMLSchemasActionTest(String name)	{
-        super( name );
+    public GetXMLSchemasActionTest(String name) {
+        super(name);
         DbHelper.setUpConnectionProperties();
     }
+
     /**
      * Set up test case properties
      */
-    protected void setUp()throws Exception{
+    protected void setUp() throws Exception {
         super.setUp();
         TestUtils.setUpProperties(this);
     }
+
     /**
      * Load the data which will be inserted for the test
      */
     protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet = new FlatXmlDataSet(
-                getClass().getClassLoader().getResourceAsStream(
-                        TestConstants.SEED_DATASET_CONVERSIONS_XML));
+        IDataSet loadedDataSet =
+                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_CONVERSIONS_XML));
         return loadedDataSet;
     }
+
     /**
      * Tests action execution
      */
     public void testExecute() throws Exception {
 
-        //call the request
+        // call the request
         MockServletResponse response = TestUtils.executeAction(new GetXMLSchemasAction(), new HashMap());
 
-        assertEquals(TestConstants.XML_CONTENTYPE_RESULT,response.getContentType());
-        assertEquals(200,response.getStatus());
+        assertEquals(TestConstants.XML_CONTENTYPE_RESULT, response.getContentType());
+        assertEquals(200, response.getStatus());
 
-        //System.out.println(response.getOutputStream().toString());
+        // System.out.println(response.getOutputStream().toString());
 
-        //check if the result is well-formed XML
+        // check if the result is well-formed XML
         IXmlCtx x = new XmlContext();
         x.setWellFormednessChecking();
-        x.checkFromInputStream(new ByteArrayInputStream(((MockServletOutputStream)response.getOutputStream()).toByteArray()));
+        x.checkFromInputStream(new ByteArrayInputStream(((MockServletOutputStream) response.getOutputStream()).toByteArray()));
 
-        //count the schemas found from returned XML
-        IXQuery xQuery=x.getQueryManager();
+        // count the schemas found from returned XML
+        IXQuery xQuery = x.getQueryManager();
         List schemas = xQuery.getElementValues(GetXMLSchemasResult.SCHEMA_TAG);
-        assertTrue(schemas.size()>36);
+        assertTrue(schemas.size() > 36);
     }
 
 }

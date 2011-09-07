@@ -24,13 +24,12 @@ package eionet.gdem.utils;
 import junit.framework.TestCase;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * HttpUtilsTest
+ * @author Enriko Käsper, Tieto Estonia HttpUtilsTest
  */
 
-public class HttpUtilsTest extends TestCase{
+public class HttpUtilsTest extends TestCase {
 
-    public void testUrlExists() throws Exception{
+    public void testUrlExists() throws Exception {
 
         boolean b1 = HttpUtils.urlExists("https://svn.eionet.europa.eu");
         assertTrue(b1);

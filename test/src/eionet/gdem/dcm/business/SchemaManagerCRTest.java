@@ -29,7 +29,7 @@ import eionet.gdem.dto.CrFileDto;
 
 /**
  * This is a class for unit testing the <code>eionet.gdem.dcm.business.SchemaManager</code> class.
- *
+ * 
  * @author Enriko Käsper, Tieto Estonia SchemaManagerCRTest
  */
 
@@ -37,7 +37,7 @@ public class SchemaManagerCRTest extends TestCase {
 
     /**
      * Test getCrFiles method. The result should be list of CrFileDto objects.
-     *
+     * 
      * @throws Exception
      */
     public void testGetCrFiles() throws Exception {

@@ -27,15 +27,14 @@ import junit.framework.TestCase;
 import eionet.gdem.Properties;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * XGawkQueryEngineTest
+ * @author Enriko Käsper, Tieto Estonia XGawkQueryEngineTest
  */
 
-public class XGawkQueryEngineTest extends TestCase{
+public class XGawkQueryEngineTest extends TestCase {
 
     public void testGetShellCommand() throws Exception {
-        String dataFile="data.xml";
-        String scriptFile="script.xml";
+        String dataFile = "data.xml";
+        String scriptFile = "script.xml";
 
         XGawkQueryEngine engine = new XGawkQueryEngine();
         String command = engine.getShellCommand(dataFile, scriptFile, null);
@@ -45,8 +44,8 @@ public class XGawkQueryEngineTest extends TestCase{
     }
 
     public void testGetShellCommandWithParams() throws Exception {
-        String dataFile="data.xml";
-        String scriptFile="script.xml";
+        String dataFile = "data.xml";
+        String scriptFile = "script.xml";
         HashMap params = new HashMap();
         params.put("param2", "param2value");
         params.put("source_url", "http://localhost/dummy.xml");
@@ -54,9 +53,8 @@ public class XGawkQueryEngineTest extends TestCase{
         XGawkQueryEngine engine = new XGawkQueryEngine();
         String command = engine.getShellCommand(dataFile, scriptFile, params);
 
-        assertEquals(Properties.xgawkCommand +
-                " -v param2=\"param2value\" -v source_url=\"http://localhost/dummy.xml\" " +
-                "-f script.xml data.xml", command);
+        assertEquals(Properties.xgawkCommand + " -v param2=\"param2value\" -v source_url=\"http://localhost/dummy.xml\" "
+                + "-f script.xml data.xml", command);
 
     }
 }

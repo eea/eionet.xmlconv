@@ -17,15 +17,14 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * DeleteUplSchemaActiontest
+ * @author Enriko Käsper, TietoEnator Estonia AS DeleteUplSchemaActiontest
  */
 
-public class DeleteUplSchemaActiontest   extends MockStrutsTestCase {
+public class DeleteUplSchemaActiontest extends MockStrutsTestCase {
 
-    private  IUPLSchemaDao uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
-    private String schemaId="3";
-    private String uplSchemaId="10";
+    private IUPLSchemaDao uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
+    private String schemaId = "3";
+    private String uplSchemaId = "10";
 
     public DeleteUplSchemaActiontest(String testName) {
         super(testName);
@@ -33,19 +32,21 @@ public class DeleteUplSchemaActiontest   extends MockStrutsTestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-        //set struts-confg file location
+        // set struts-confg file location
         setConfigFile(TestUtils.getStrutsConfigLocation());
         // set tempdir property for executing multi-part requests. Struts tries to save the sent file temprarily
         context.setAttribute("javax.servlet.context.tempdir", new File(TestUtils.getStrutsTempDir(this)));
-        setInitParameter("validating","false");
-        //setup database
+        setInitParameter("validating", "false");
+        // setup database
         DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
         TestUtils.setUpProperties(this);
     }
+
     /**
      * Tests successful deleting. Verifies the action message and forward and DB
+     * 
      * @throws Exception
-     *
+     * 
      */
     public void testSuccessfulForward() throws Exception {
 
@@ -56,28 +57,29 @@ public class DeleteUplSchemaActiontest   extends MockStrutsTestCase {
         HttpSession session = request.getSession();
         session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
 
-        addRequestParameter("schemaId",schemaId);
-        addRequestParameter("schema","schema");
-        //addRequestParameter("schemaFile","schema.xsd");
+        addRequestParameter("schemaId", schemaId);
+        addRequestParameter("schema", "schema");
+        // addRequestParameter("schemaFile","schema.xsd");
         addRequestParameter("deleteSchema", "true");
 
         actionPerform();
         verifyForward("success");
         verifyForwardPath("/do/uplSchemas");
-        //verifyTilesForward("success", "/do/uplSchemas");
+        // verifyTilesForward("success", "/do/uplSchemas");
         verifyNoActionErrors();
         String[] actionMess = {"label.schema.deleted"};
         verifyActionMessages(actionMess);
 
-
-        //check if the row was deleted or not
+        // check if the row was deleted or not
         int countUplSchema2 = uplSchemaDao.getUplSchema().size();
-        assertEquals(countUplSchema-1,countUplSchema2);
+        assertEquals(countUplSchema - 1, countUplSchema2);
     }
+
     /**
      * Editing failed, because of lack of permissins
+     * 
      * @throws Exception
-     *
+     * 
      */
     public void testFailedNotPermissions() throws Exception {
 
@@ -88,8 +90,8 @@ public class DeleteUplSchemaActiontest   extends MockStrutsTestCase {
         HttpSession session = request.getSession();
         session.setAttribute("user", TestConstants.TEST_USER);
 
-        addRequestParameter("schemaId",schemaId);
-        addRequestParameter("schema","schema");
+        addRequestParameter("schemaId", schemaId);
+        addRequestParameter("schema", "schema");
 
         actionPerform();
         verifyForward("fail");
@@ -97,14 +99,13 @@ public class DeleteUplSchemaActiontest   extends MockStrutsTestCase {
         String[] errMess = {BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_DELETE};
         verifyActionErrors(errMess);
 
-        //Get schema by ID and test if it still exists in DB
+        // Get schema by ID and test if it still exists in DB
         Hashtable schema = uplSchemaDao.getUplSchemaById(uplSchemaId);
-        assertEquals((String)schema.get("upl_schema_id"),uplSchemaId);
+        assertEquals((String) schema.get("upl_schema_id"), uplSchemaId);
 
-        //check if the row was deleted or not
+        // check if the row was deleted or not
         int countUplSchema2 = uplSchemaDao.getUplSchema().size();
-        assertEquals(countUplSchema,countUplSchema2);
+        assertEquals(countUplSchema, countUplSchema2);
 
     }
 }
-

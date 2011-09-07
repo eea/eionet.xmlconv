@@ -32,7 +32,7 @@ import eionet.gdem.test.TestUtils;
 
 /**
  * This unittest tests the QA Service listQAScripts method.
- *
+ * 
  * @author Enriko Käsper
  */
 
@@ -58,9 +58,8 @@ public class ListQAScriptsMethodTest extends DBTestCase {
      * Load the data which will be inserted for the test
      */
     protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet = new FlatXmlDataSet(
-                getClass().getClassLoader().getResourceAsStream(
-                        TestConstants.SEED_DATASET_QA_XML));
+        IDataSet loadedDataSet =
+                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_QA_XML));
         return loadedDataSet;
     }
 

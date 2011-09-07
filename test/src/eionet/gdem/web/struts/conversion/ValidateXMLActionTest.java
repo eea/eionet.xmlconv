@@ -13,11 +13,10 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * ValidateXMLActionTest
+ * @author Enriko Käsper, TietoEnator Estonia AS ValidateXMLActionTest
  */
 
-public class ValidateXMLActionTest  extends MockStrutsTestCase {
+public class ValidateXMLActionTest extends MockStrutsTestCase {
 
     public ValidateXMLActionTest(String testName) {
         super(testName);
@@ -26,9 +25,9 @@ public class ValidateXMLActionTest  extends MockStrutsTestCase {
     public void setUp() throws Exception {
         super.setUp();
         setConfigFile(TestUtils.getStrutsConfigLocation());
-        setInitParameter("validating","false");
+        setInitParameter("validating", "false");
 
-        //setup database
+        // setup database
         DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
         TestUtils.setUpProperties(this);
 
@@ -43,19 +42,19 @@ public class ValidateXMLActionTest  extends MockStrutsTestCase {
 
         setRequestPathInfo("/validateXML");
 
-
-        addRequestParameter("url",url);
+        addRequestParameter("url", url);
         actionPerform();
         verifyForward("success");
         verifyInputTilesForward("/validateXML.jsp");
         verifyNoActionErrors();
 
-        assertEquals(request.getAttribute("conversion.validatedSchema"),Properties.gdemURL.concat("/").concat(TestConstants.SEED_GW_SCHEMA));
-        assertTrue(request.getAttribute("conversion.valid")==null ||
-                ((List)request.getAttribute("conversion.valid")).size()==0); //no errors in the list
-
+        assertEquals(request.getAttribute("conversion.validatedSchema"),
+                Properties.gdemURL.concat("/").concat(TestConstants.SEED_GW_SCHEMA));
+        assertTrue(request.getAttribute("conversion.valid") == null
+                || ((List) request.getAttribute("conversion.valid")).size() == 0); // no errors in the list
 
     }
+
     /**
      * test if the form is successfully forwarded and retreives validation errors
      */
@@ -65,21 +64,20 @@ public class ValidateXMLActionTest  extends MockStrutsTestCase {
 
         setRequestPathInfo("/validateXML");
 
-
-        addRequestParameter("url",url);
+        addRequestParameter("url", url);
         actionPerform();
         verifyForward("success");
         verifyInputTilesForward("/validateXML.jsp");
         verifyNoActionErrors();
 
-        assertEquals(request.getAttribute("conversion.validatedSchema"),Properties.gdemURL.concat("/").concat(TestConstants.SEED_GW_SCHEMA));
-        assertTrue(((List)request.getAttribute("conversion.valid")).size()>0); // errors in the list
-
+        assertEquals(request.getAttribute("conversion.validatedSchema"),
+                Properties.gdemURL.concat("/").concat(TestConstants.SEED_GW_SCHEMA));
+        assertTrue(((List) request.getAttribute("conversion.valid")).size() > 0); // errors in the list
 
     }
+
     /**
-     * test if the form is successfully formwarding
-     * The form should get an error message
+     * test if the form is successfully formwarding The form should get an error message
      */
     public void testFailedForward() {
 
@@ -87,25 +85,21 @@ public class ValidateXMLActionTest  extends MockStrutsTestCase {
 
         setRequestPathInfo("/validateXML");
 
-
-        addRequestParameter("url",url);
+        addRequestParameter("url", url);
         actionPerform();
         verifyForward("error");
         verifyForwardPath("/do/validateXMLForm");
         String[] errMess = {BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED};
         verifyActionErrors(errMess);
 
-
     }
+
     /**
-     * test if the form is successfully formwarding
-     * The form should get an error message
+     * test if the form is successfully formwarding The form should get an error message
      */
     public void testFailedForwardWithoutURL() {
 
-
         setRequestPathInfo("/validateXML");
-
 
         actionPerform();
         verifyForward("error");
@@ -113,7 +107,5 @@ public class ValidateXMLActionTest  extends MockStrutsTestCase {
         String[] errMess = {"label.conversion.selectSource"};
         verifyActionErrors(errMess);
 
-
     }
 }
-
