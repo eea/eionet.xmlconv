@@ -45,8 +45,8 @@ public class EditStylesheetFormAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
 
@@ -93,10 +93,9 @@ public class EditStylesheetFormAction extends Action {
 
             StylesheetListLoader.loadStylesheetList(httpServletRequest, false);
 
-
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Edit stylesheet error",e);
+            _logger.error("Edit stylesheet error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveErrors(httpServletRequest, errors);
         }

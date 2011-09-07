@@ -32,7 +32,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
-import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
@@ -43,17 +42,16 @@ import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 
 /**
- * SearchCRSandboxAction
- * Extract the XML schema from the inserted source URL of XML file and find available QA scripts.
- *
+ * SearchCRSandboxAction Extract the XML schema from the inserted source URL of XML file and find available QA scripts.
+ * 
  * @author Enriko Käsper, Tieto Estonia
  */
 
 public class ExtractSchemaAction extends Action {
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ActionErrors errors = new ActionErrors();
 
@@ -94,8 +92,7 @@ public class ExtractSchemaAction extends Action {
                     cForm.setShowScripts(true);
                     cForm.setSchema(oSchema);
 
-                    errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.noSchemaScripts",
-                            schemaUrl));
+                    errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.noSchemaScripts", schemaUrl));
                     saveErrors(httpServletRequest, errors);
                     return actionMapping.findForward("error");
                 }
@@ -116,10 +113,9 @@ public class ExtractSchemaAction extends Action {
     }
 
     /**
-     * check if schema passed as request parameter exists in the list of schemas
-     * stored in the session. If there is no schema list in the session, then
-     * create it
-     *
+     * check if schema passed as request parameter exists in the list of schemas stored in the session. If there is no schema list
+     * in the session, then create it
+     * 
      * @param httpServletRequest
      * @param schema
      * @return

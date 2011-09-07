@@ -22,8 +22,7 @@
 package eionet.gdem.utils.system;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * ILogDevice
+ * @author Enriko Käsper, Tieto Estonia ILogDevice
  */
 
 public interface ILogDevice {

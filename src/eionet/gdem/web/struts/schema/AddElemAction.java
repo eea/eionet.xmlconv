@@ -40,8 +40,8 @@ public class AddElemAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
         SchemaElemForm form = (SchemaElemForm) actionForm;

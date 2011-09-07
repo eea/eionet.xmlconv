@@ -22,6 +22,7 @@
  */
 
 package eionet.gdem.qa.engines;
+
 import javax.xml.transform.TransformerException;
 
 import net.sf.saxon.StandardErrorListener;
@@ -29,53 +30,50 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
 /**
- * Extension of the Saxon error listener
- * to catch all the errors and feedback them to user
+ * Extension of the Saxon error listener to catch all the errors and feedback them to user
  */
 public class SaxonListener extends StandardErrorListener {
 
-  private StringBuffer _errBuf; //in this buffer we collect all the error messages
-  private boolean _hasErrors=false;
-  private LoggerIF _logger;
+    private StringBuffer _errBuf; // in this buffer we collect all the error messages
+    private boolean _hasErrors = false;
+    private LoggerIF _logger;
 
+    public SaxonListener() {
+        _logger = GDEMServices.getLogger();
+        _errBuf = new StringBuffer();
+    }
 
-  public SaxonListener()  {
-      _logger= GDEMServices.getLogger();
-    _errBuf=new StringBuffer();
-  }
+    boolean hasErrors() {
+        return _hasErrors;
+    }
 
+    /**
+     * Returns all the error messages gathered when processing the XQuery script
+     * 
+     * @return String errors - all the errors
+     */
+    public String getErrors() {
+        return _errBuf.toString();
+    }
 
-  boolean hasErrors() {
-    return _hasErrors;
-  }
-  /**
-   * Returns all the error messages gathered when processing the XQuery script
-   * @return  String errors - all the errors
-   */
-  public String getErrors() {
-    return _errBuf.toString();
-  }
-  public void error(TransformerException exception) throws TransformerException {
-    _hasErrors=true;
-    String message = "Error " +
-                         getLocationMessage(exception) +
-                         "\n  " +
-                         getExpandedMessage(exception);
+    public void error(TransformerException exception) throws TransformerException {
+        _hasErrors = true;
+        String message = "Error " + getLocationMessage(exception) + "\n  " + getExpandedMessage(exception);
 
-     _errBuf.append(message).append("\n");
-      super.error(exception);
-  }
+        _errBuf.append(message).append("\n");
+        super.error(exception);
+    }
 
-  public void warning(TransformerException exception)  throws TransformerException {
-      _hasErrors=true;
-     String message = "";
-       if (exception.getLocator()!=null) {
+    public void warning(TransformerException exception) throws TransformerException {
+        _hasErrors = true;
+        String message = "";
+        if (exception.getLocator() != null) {
             message = getLocationMessage(exception) + "\n  ";
         }
         message += getExpandedMessage(exception);
 
-     _errBuf.append(message).append("\n");
+        _errBuf.append(message).append("\n");
 
-      super.warning(exception);
-  }
+        super.warning(exception);
+    }
 }

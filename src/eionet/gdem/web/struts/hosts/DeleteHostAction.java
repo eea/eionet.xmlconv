@@ -43,31 +43,32 @@ public class DeleteHostAction extends BaseAction {
 
     private static IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
 
-
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
+            HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
         ActionMessages messages = new ActionMessages();
         DynaValidatorForm hostForm = (DynaValidatorForm) actionForm;
         String hostId = processFormStr((String) hostForm.get("id"));
 
         try {
-            if(	checkPermission(request, Names.ACL_HOST_PATH, "d")) {
+            if (checkPermission(request, Names.ACL_HOST_PATH, "d")) {
                 hostDao.removeHost(hostId);
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.deleted"));
             } else {
-                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.dnoperm", translate(actionMapping, request, "label.hosts")));
+                errors.add(ActionMessages.GLOBAL_MESSAGE,
+                        new ActionMessage("error.dnoperm", translate(actionMapping, request, "label.hosts")));
             }
         } catch (Exception e) {
             _logger.error("", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
         }
 
-        if(errors.size()>0)	{
+        if (errors.size() > 0) {
             request.getSession().setAttribute("dcm.errors", errors);
             return actionMapping.getInputForward();
         }
-        if(messages.size()>0) request.getSession().setAttribute("dcm.messages", messages);
+        if (messages.size() > 0)
+            request.getSession().setAttribute("dcm.messages", messages);
 
         return actionMapping.findForward("success");
 

@@ -43,8 +43,8 @@ public class PurgeAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
@@ -55,7 +55,6 @@ public class PurgeAction extends Action {
         String user = (String) httpServletRequest.getSession().getAttribute("user");
         int deleted = 0;
 
-
         try {
 
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
@@ -63,14 +62,13 @@ public class PurgeAction extends Action {
                 httpServletRequest.getSession().setAttribute("dcm.errors", errors);
                 return actionMapping.findForward("success");
             }
-            if (nofDays==null || nofDays.equals("") || nofDays<=0 ) {
+            if (nofDays == null || nofDays.equals("") || nofDays <= 0) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.config.purge.validation"));
                 httpServletRequest.getSession().setAttribute("dcm.errors", errors);
                 return actionMapping.findForward("success");
             }
             BackupManager bm = new BackupManager();
             deleted = bm.purgeBackup(nofDays);
-
 
         } catch (DCMException e) {
             e.printStackTrace();
@@ -87,7 +85,7 @@ public class PurgeAction extends Action {
             httpServletRequest.getSession().setAttribute("dcm.errors", errors);
             return actionMapping.findForward("success");
         }
-        String[] numbers = {String.valueOf(nofDays.intValue()),String.valueOf(deleted)};
+        String[] numbers = {String.valueOf(nofDays.intValue()), String.valueOf(deleted)};
         messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.config.purge.successful", numbers));
 
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);

@@ -48,45 +48,39 @@ public class UIRendererTag extends TagSupport {
     static {
         synchronized (mutex) {
             MemCache = new MemoryCache(100, 10);
-            UI_DEFINITION=Properties.uiFolder + File.separatorChar + "UITemplate.xml";
-            UI_XSL=Properties.uiFolder + File.separatorChar + "UITemplate.xsl";
+            UI_DEFINITION = Properties.uiFolder + File.separatorChar + "UITemplate.xml";
+            UI_XSL = Properties.uiFolder + File.separatorChar + "UITemplate.xsl";
         }
     }
 
     private String id;
     private String enableJs;
 
-
     public UIRendererTag() {
     }
 
-
     public void setParent(Tag parent) {
     }
-
 
     public Tag getParent() {
         return null;
     }
 
-
     public void setId(String id) {
         this.id = id;
     }
 
-
     /**
-     * @param enableJs The enableJs to set.
+     * @param enableJs
+     *            The enableJs to set.
      */
     public void setEnableJs(String enableJs) {
         this.enableJs = enableJs;
     }
 
-
     public synchronized static void invalidateCache() {
         MemCache.clearCache();
     }
-
 
     public int doStartTag() throws JspException {
         Map parameters = new HashMap();
@@ -95,11 +89,12 @@ public class UIRendererTag extends TagSupport {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         parameters.put("galleryPath", request.getContextPath() + "/images/gallery/");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        String content=(String) MemCache.getContent(id);
+        String content = (String) MemCache.getContent(id);
         if (enableJs != null || content == null) {
             try {
-                transform.transform("UITemplate.xsl", new FileInputStream(UI_XSL), new FileInputStream(UI_DEFINITION), baos, parameters);
-                content=baos.toString("UTF-8");
+                transform.transform("UITemplate.xsl", new FileInputStream(UI_XSL), new FileInputStream(UI_DEFINITION), baos,
+                        parameters);
+                content = baos.toString("UTF-8");
                 if (enableJs == null) {
                     MemCache.put(id, content, Integer.MAX_VALUE);
                 }
@@ -116,9 +111,9 @@ public class UIRendererTag extends TagSupport {
         return EVAL_BODY_INCLUDE;
     }
 
-
     /**
      * doEndTag method
+     * 
      * @throws JspException
      * @return int
      */
@@ -126,14 +121,14 @@ public class UIRendererTag extends TagSupport {
         return Tag.EVAL_PAGE;
     }
 
-
     public void release() {
     }
 
-
     /**
      * Prints Object to output stream
-     * @param toPrint Object
+     * 
+     * @param toPrint
+     *            Object
      * @throws JspException
      */
     protected void print(Object toPrint) throws JspException {

@@ -118,7 +118,7 @@ public class Utils {
 
     /**
      * Stores a String in a text file
-     *
+     * 
      * @param String
      *            fileName:
      * @param String
@@ -430,10 +430,10 @@ public class Utils {
 
     /**
      * checks if list contains any String values or not
-     *
+     * 
      * @param list
      *            The list that will be investigated
-     *
+     * 
      * @return value true, if the list does not contain any String values, otherwise true
      */
     public static boolean isEmptyList(List<String> list) {
@@ -464,7 +464,7 @@ public class Utils {
     }
 
     /**
-     *
+     * 
      * @param in
      * @param out
      * @throws Exception
@@ -531,8 +531,7 @@ public class Utils {
             // Read in the bytes
             int offset = 0;
             int numRead = 0;
-            while (offset < bytes.length
-                    && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+            while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
                 offset += numRead;
             }
 
@@ -554,7 +553,7 @@ public class Utils {
     }
 
     /**
-     *
+     * 
      * @param date
      * @return
      */
@@ -563,7 +562,7 @@ public class Utils {
     }
 
     /**
-     *
+     * 
      * @param date
      * @return
      */
@@ -572,7 +571,7 @@ public class Utils {
     }
 
     /**
-     *
+     * 
      * @param date
      * @param pattern
      * @return
@@ -593,7 +592,7 @@ public class Utils {
 
     /**
      * parses String to Date
-     *
+     * 
      * @param String
      *            date
      * @param pattern
@@ -602,7 +601,7 @@ public class Utils {
      */
     public static Date parseDate(String srtDate, String pattern) throws ParseException {
 
-        if (isNullStr(srtDate)){
+        if (isNullStr(srtDate)) {
             return null;
         }
 
@@ -618,7 +617,7 @@ public class Utils {
 
     /**
      * formats timestamp (millis from 1 Jan 1970) into string using pattern
-     *
+     * 
      * @param String
      *            timestamp
      * @param pattern
@@ -643,7 +642,7 @@ public class Utils {
 
     /**
      * Generates checksum (MD5) value from filepath
-     *
+     * 
      * @param filename
      * @return
      * @throws IOException
@@ -667,7 +666,7 @@ public class Utils {
 
     /**
      * Generates checksum (MD5) value from string value
-     *
+     * 
      * @param src
      * @return
      * @throws IOException
@@ -690,7 +689,7 @@ public class Utils {
 
     /**
      * Greneretes checksum value from given inputsource
-     *
+     * 
      * @param is
      * @return
      * @throws NoSuchAlgorithmException
@@ -733,7 +732,7 @@ public class Utils {
     /**
      * Method constructs a URI from specified file and folder path. If the file or folder does not exists, then it return null
      * value.
-     *
+     * 
      * @param strPath
      *            Folder path. eg: /usr/prj/xmlconv/xmlfiles
      * @param isDirectory
@@ -744,8 +743,7 @@ public class Utils {
 
         if (strPath != null) {
             File f = new File(strPath);
-            if (f.exists() &&
-                    ((isDirectory && f.isDirectory()) || !isDirectory)) {
+            if (f.exists() && ((isDirectory && f.isDirectory()) || !isDirectory)) {
                 return f.toURI().toString();
             }
         }
@@ -754,7 +752,7 @@ public class Utils {
 
     /**
      * generates unique temporary file name with full path
-     *
+     * 
      * @param fileName
      * @return
      */
@@ -772,7 +770,7 @@ public class Utils {
 
     /**
      * generates unique temporary folder name and creates the directory
-     *
+     * 
      * @return fill path
      */
     public static String createUniqueTmpFolder() {
@@ -797,7 +795,7 @@ public class Utils {
 
     /**
      * Generates foldername
-     *
+     * 
      * @param folderName
      *            , n >0, if folder with the same name already exists in the tmp folder ex: getGeneratedFolderName( test, 1 )=
      *            test_1 getGeneratedFolderName( test_1, 2 )= test_2
@@ -823,7 +821,7 @@ public class Utils {
 
     /**
      * deletes the folder, where specified file locates
-     *
+     * 
      * @param filePath
      */
     public static void deleteParentFolder(String filePath) {
@@ -844,7 +842,7 @@ public class Utils {
 
     /**
      * Find the first XML file stored in specified folder
-     *
+     * 
      * @param folder
      *            folder path
      * @return
@@ -855,7 +853,7 @@ public class Utils {
 
     /**
      * Find the first XML file stored in specified folder
-     *
+     * 
      * @param folder
      *            File object
      * @return
@@ -891,7 +889,7 @@ public class Utils {
     }
 
     /**
-     *
+     * 
      * @param s
      * @return
      */
@@ -900,7 +898,7 @@ public class Utils {
     }
 
     /**
-     *
+     * 
      * @param src
      * @param algorithm
      * @return
@@ -913,7 +911,7 @@ public class Utils {
     }
 
     /**
-     *
+     * 
      * @param srcBytes
      * @param algorithm
      * @return
@@ -945,7 +943,7 @@ public class Utils {
     }
 
     /**
-     *
+     * 
      * @param srcBytes
      * @param algorithm
      * @return
@@ -1011,7 +1009,7 @@ public class Utils {
     /**
      * Utility method for checking whether the resource exists. The resource can be web or file system resource that matches the URI
      * with "http", "https" or "file" schemes Returns false, if the resource does not exist
-     *
+     * 
      * @param strUri
      * @return
      */

@@ -22,17 +22,17 @@ import eionet.gdem.services.LoggerIF;
 
 /**
  * Action for opening Edit XML file metadata form
- *
+ * 
  * @author Enriko Käsper (TietoEnator)
- *
+ * 
  */
 
 public class EditUplXmlFileFormAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
 
@@ -45,7 +45,7 @@ public class EditUplXmlFileFormAction extends Action {
 
             form.setXmlfileId(xmlfile.getId());
             form.setXmlFileName(xmlfile.getFileName());
-            form.setXmlFilePath(httpServletRequest.getContextPath() + "/" + Properties.xmlfileFolder+ "/");
+            form.setXmlFilePath(httpServletRequest.getContextPath() + "/" + Properties.xmlfileFolder + "/");
 
             form.setTitle(xmlfile.getTitle());
             form.setLastModified(xmlfile.getLastModified());

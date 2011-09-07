@@ -18,7 +18,7 @@ import eionet.gdem.utils.Utils;
 
 /**
  * Implementation of listQueries and listQAScripts methods.
- *
+ * 
  * @author Enriko Käsper, TietoEnator Estonia AS
  */
 public class ListQueriesMethod extends RemoteServiceMethod {
@@ -59,18 +59,18 @@ public class ListQueriesMethod extends RemoteServiceMethod {
     /**
      * List all possible QA scripts (XQueries, XML Schemas, DTD, XSLT?) for this XML Schema. If schema is null, then all possible QA
      * scripts are returned
-     *
+     * 
      * @param schema
      *            URL of XML schema
      * @return array of Hastables with the following keys: qyery_id, short_name, description, query, schema_id, xml_schema,
      *         content_type_out, type
-     *
+     * 
      * @throws GDEMException
      */
     public Vector listQueries(String schema) throws GDEMException {
 
         Vector v = new Vector();
-        if (schema != null && schema.equals("")){
+        if (schema != null && schema.equals("")) {
             schema = null;
         }
 
@@ -78,8 +78,9 @@ public class ListQueriesMethod extends RemoteServiceMethod {
             // Get schemas that has to be validated
             Vector schemas = schemaDao.getSchemas(schema, false);
             Hashtable convType = convTypeDao.getConvType(DEFAULT_CONTENT_TYPE_ID);
-            String contentType = (convType != null && convType.containsKey("content_type")) ? (String) convType.get("content_type")
-                    : DEFAULT_QA_CONTENT_TYPE;
+            String contentType =
+                    (convType != null && convType.containsKey("content_type")) ? (String) convType.get("content_type")
+                            : DEFAULT_QA_CONTENT_TYPE;
 
             if (schemas != null) {
                 for (int i = 0; i < schemas.size(); i++) {
@@ -122,7 +123,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
 
     /**
      * List all XQueries and their modification times for this namespace returns also XML Schema validation.
-     *
+     * 
      * @param schema
      * @return result is an Array of Arrays that contains 3 fields (script_id, description, last modification)
      * @throws GDEMException
@@ -133,7 +134,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
         try {
             Vector v = schemaDao.getSchemas(schema);
 
-            if (Utils.isNullVector(v)){
+            if (Utils.isNullVector(v)) {
                 return result;
             }
 

@@ -26,13 +26,15 @@ public abstract class MySqlBaseDao {
 
     protected static boolean isDebugMode = logger.enable(LoggerIF.DEBUG);
 
-    public MySqlBaseDao() {}
+    public MySqlBaseDao() {
+    }
 
     /**
      * Init JNDI datasource
+     * 
      * @throws NamingException
      */
-    private static void initDataSource() throws NamingException{
+    private static void initDataSource() throws NamingException {
         try {
             InitialContext ctx = new InitialContext();
             ds = (DataSource) ctx.lookup("java:comp/env/jdbc/GDEM_DB");
@@ -41,73 +43,66 @@ public abstract class MySqlBaseDao {
         }
     }
 
-
     /**
      * Returns new database connection.
-     *
+     * 
      * @throw ServiceException if no connections were available.
      */
     public static synchronized Connection getConnection() throws SQLException {
-        if(GDEMServices.isTestConnection())
+        if (GDEMServices.isTestConnection())
             return getSimpleConnection();
         else
             return getJNDIConnection();
     }
 
-
     /**
-     * Returns new database connection.
-     * Read properties from Context
-     *
+     * Returns new database connection. Read properties from Context
+     * 
      * @throw ServiceException if no connections were available.
      */
     public static synchronized Connection getJNDIConnection() throws SQLException {
-        try{
-            if (ds==null)
+        try {
+            if (ds == null)
                 initDataSource();
             return ds.getConnection();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new SQLException("Failed to get connection through JNDI: " + e.toString());
         }
     }
 
     /**
-     * Returns new database connection.
-     * Read properties from gdem.properties
-     *
+     * Returns new database connection. Read properties from gdem.properties
+     * 
      * @return
      * @throws SQLException
      * @throws GDEMException
      */
-    private static synchronized Connection getSimpleConnection() throws SQLException{
+    private static synchronized Connection getSimpleConnection() throws SQLException {
 
         String drv = Properties.dbDriver;
-        if (drv==null || drv.trim().length()==0)
+        if (drv == null || drv.trim().length() == 0)
             throw new SQLException("Failed to get connection, missing property: " + Properties.dbDriver);
 
         String url = Properties.dbUrl;
-        if (url==null || url.trim().length()==0)
+        if (url == null || url.trim().length() == 0)
             throw new SQLException("Failed to get connection, missing property: " + Properties.dbUrl);
 
         String usr = Properties.dbUser;
-        if (usr==null || usr.trim().length()==0)
+        if (usr == null || usr.trim().length() == 0)
             throw new SQLException("Failed to get connection, missing property: " + Properties.dbUser);
 
         String pwd = Properties.dbPwd;
-        if (pwd==null || pwd.trim().length()==0)
+        if (pwd == null || pwd.trim().length() == 0)
             throw new SQLException("Failed to get connection, missing property: " + Properties.dbPwd);
 
-        try{
+        try {
             Class.forName(drv);
             return DriverManager.getConnection(url, usr, pwd);
-        }
-        catch (ClassNotFoundException e){
+        } catch (ClassNotFoundException e) {
             throw new SQLException((new StringBuilder()).append("Failed to get connection, driver class not found: ").append(drv)
                     .append(".").append(e.toString()).toString());
         }
     }
-
 
     public static void closeAllResources(ResultSet rs, Statement pstmt, Connection conn) {
         try {
@@ -153,7 +148,6 @@ public abstract class MySqlBaseDao {
             e.printStackTrace();
         }
     }
-
 
     public static String[][] getResults(ResultSet rset) throws SQLException {
         Vector rvec = new Vector(); // Return value as Vector

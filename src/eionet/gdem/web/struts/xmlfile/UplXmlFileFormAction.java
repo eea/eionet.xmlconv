@@ -21,16 +21,16 @@ import eionet.gdem.services.LoggerIF;
 
 /**
  * Action loading the list of XML files
- *
+ * 
  * @author Enriko Käsper (TietoEnator)
- *
+ * 
  */
 public class UplXmlFileFormAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
         UplXmlFileHolder holder = null;
 
@@ -42,7 +42,7 @@ public class UplXmlFileFormAction extends Action {
 
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Uploaded XML file form error",e);
+            _logger.error("Uploaded XML file form error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveMessages(httpServletRequest, errors);
         }

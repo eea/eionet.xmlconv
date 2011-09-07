@@ -33,45 +33,45 @@ import eionet.gdem.dto.ValidateDto;
 
 /**
  * Callback methods for validation errors
- * @author Enriko Käsper, TietoEnator Estonia AS
- * ValidatorErrorHandler
+ * 
+ * @author Enriko Käsper, TietoEnator Estonia AS ValidatorErrorHandler
  */
 public class ValidatorErrorHandler extends DefaultHandler {
-  //private StringBuffer errContainer;
-  //private StringBuffer htmlErrContainer;
+    // private StringBuffer errContainer;
+    // private StringBuffer htmlErrContainer;
 
-  private ArrayList errContainer;
+    private ArrayList errContainer;
 
-  public ValidatorErrorHandler(ArrayList errContainer) {
-    this.errContainer=errContainer;
-  }
+    public ValidatorErrorHandler(ArrayList errContainer) {
+        this.errContainer = errContainer;
+    }
 
-  public void warning(SAXParseException ex) throws SAXException {
-    //System.out.println("WARNING: " + ex.getMessage());
-    addError("WARNING", ex);
-  }
+    public void warning(SAXParseException ex) throws SAXException {
+        // System.out.println("WARNING: " + ex.getMessage());
+        addError("WARNING", ex);
+    }
 
-  public void error(SAXParseException ex) throws SAXException {
-    addError("ERROR", ex);
-  }
+    public void error(SAXParseException ex) throws SAXException {
+        addError("ERROR", ex);
+    }
 
-  public void fatalError(SAXParseException ex) throws SAXException {
-    //System.out.println("FATAL ERROR: " + ex.getMessage());
-    addError("FATAL ERROR", ex);
-  }
+    public void fatalError(SAXParseException ex) throws SAXException {
+        // System.out.println("FATAL ERROR: " + ex.getMessage());
+        addError("FATAL ERROR", ex);
+    }
 
-  private void addError(String type, SAXParseException ex) {
-      ValidateDto val = new ValidateDto();
-      val.setType(type);
-      val.setDescription(ex.getMessage());
-      val.setColumn(ex.getColumnNumber());
-      val.setLine(ex.getLineNumber());
+    private void addError(String type, SAXParseException ex) {
+        ValidateDto val = new ValidateDto();
+        val.setType(type);
+        val.setDescription(ex.getMessage());
+        val.setColumn(ex.getColumnNumber());
+        val.setLine(ex.getLineNumber());
 
-      errContainer.add(val);
-  }
-  public ArrayList getErrors(){
-    return errContainer;
-  }
+        errContainer.add(val);
+    }
 
+    public ArrayList getErrors() {
+        return errContainer;
+    }
 
 }

@@ -39,23 +39,25 @@ import eionet.gdem.web.struts.BaseAction;
 public class AddHostAction extends BaseAction {
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
     /**
-     * Purpose of this action is to forward user to Add host form and clean up form bean that might be filled up in previous edit actions.
+     * Purpose of this action is to forward user to Add host form and clean up form bean that might be filled up in previous edit
+     * actions.
      */
-    public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request,
+            HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
         DynaValidatorForm hostForm = (DynaValidatorForm) actionForm;
         hostForm.getMap().clear();
         try {
-            if(	!checkPermission(request, Names.ACL_HOST_PATH, "i")) {
-                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.inoperm", translate(map, request, "label.hosts")));
+            if (!checkPermission(request, Names.ACL_HOST_PATH, "i")) {
+                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.inoperm",
+                        translate(map, request, "label.hosts")));
             }
         } catch (Exception e) {
             _logger.error("", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
         }
-        if(errors.size()>0)	{
+        if (errors.size() > 0) {
             saveErrors(request, errors);
             return map.findForward("fail");
         }

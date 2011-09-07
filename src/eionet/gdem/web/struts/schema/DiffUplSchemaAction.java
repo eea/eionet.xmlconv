@@ -42,76 +42,74 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.DocumentAnalyser;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * DiffUplSchemaAction
+ * @author Enriko Käsper, Tieto Estonia DiffUplSchemaAction
  */
 
 public class DiffUplSchemaAction extends Action {
 
-        private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
+        ActionMessages errors = new ActionMessages();
+        ActionMessages messages = new ActionMessages();
 
-        public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-            ActionMessages errors = new ActionMessages();
-            ActionMessages messages = new ActionMessages();
+        SchemaElemForm form = (SchemaElemForm) actionForm;
 
-            SchemaElemForm form = (SchemaElemForm) actionForm;
+        String schemaId = form.getSchemaId();
+        String uplSchemaId = form.getUplSchemaId();
+        String schemaFile = form.getUplSchemaFileName();
+        String schemaUrl = form.getSchema();
+        String forward = "success";
 
-            String schemaId = form.getSchemaId();
-            String uplSchemaId = form.getUplSchemaId();
-            String schemaFile = form.getUplSchemaFileName();
-            String schemaUrl = form.getSchema();
-            String forward="success";
+        SyncUplSchemaForm syncForm = new SyncUplSchemaForm();
 
-            SyncUplSchemaForm syncForm = new SyncUplSchemaForm();
+        String user_name = (String) httpServletRequest.getSession().getAttribute("user");
 
-            String user_name = (String) httpServletRequest.getSession().getAttribute("user");
+        try {
+            SchemaManager sm = new SchemaManager();
+            byte[] remoteSchema = sm.downloadRemoteSchema(schemaUrl);
 
-            try {
-                SchemaManager sm = new SchemaManager();
-                byte[] remoteSchema = sm.downloadRemoteSchema(schemaUrl);
+            // check validity - it is really schema
+            boolean isSchemaOrDTD = DocumentAnalyser.sourceIsXMLSchema(remoteSchema) || DocumentAnalyser.sourceIsDTD(remoteSchema);
+            if (!isSchemaOrDTD)
+                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(BusinessConstants.WARNING_SCHEMA_NOTVALID));
 
-                // check validity -  it is really schema
-                boolean isSchemaOrDTD = DocumentAnalyser.sourceIsXMLSchema(remoteSchema) ||
-                            DocumentAnalyser.sourceIsDTD(remoteSchema);
-                if(!isSchemaOrDTD)
-                    errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(BusinessConstants.WARNING_SCHEMA_NOTVALID));
+            String result = sm.diffRemoteSchema(remoteSchema, schemaFile);
 
-                String result = sm.diffRemoteSchema(remoteSchema,schemaFile);
-
-                if(!Utils.isNullStr(result)){
-                    messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(result));
-                }
-
-                if(!BusinessConstants.WARNING_FILES_IDENTICAL.equals(result) || result.equals("")){
-                    forward="warning";
-                    syncForm.setSchemaId(schemaId);
-                    syncForm.setSchemaUrl(schemaUrl);
-                    syncForm.setUplSchemaFileName(schemaFile);
-                    syncForm.setUplSchemaId(uplSchemaId);
-                    try {
-                        syncForm.setSchemaFile(new String(remoteSchema,"UTF-8"));
-                    } catch (UnsupportedEncodingException e) {
-                        syncForm.setSchemaFile(new String(remoteSchema));
-                        e.printStackTrace();
-                    }
-                    httpServletRequest.setAttribute("SyncUplSchemaForm", syncForm);
-                }
-
-            } catch (DCMException e) {
-                //e.printStackTrace();
-                _logger.error("Unable to diff schemas",e);
-                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-                forward="fail";
+            if (!Utils.isNullStr(result)) {
+                messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(result));
             }
-            httpServletRequest.setAttribute("schemaId", schemaId);
 
-            saveMessages(httpServletRequest.getSession(),messages);
-            saveErrors(httpServletRequest.getSession(),errors);
+            if (!BusinessConstants.WARNING_FILES_IDENTICAL.equals(result) || result.equals("")) {
+                forward = "warning";
+                syncForm.setSchemaId(schemaId);
+                syncForm.setSchemaUrl(schemaUrl);
+                syncForm.setUplSchemaFileName(schemaFile);
+                syncForm.setUplSchemaId(uplSchemaId);
+                try {
+                    syncForm.setSchemaFile(new String(remoteSchema, "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    syncForm.setSchemaFile(new String(remoteSchema));
+                    e.printStackTrace();
+                }
+                httpServletRequest.setAttribute("SyncUplSchemaForm", syncForm);
+            }
 
-            //saveMessages(httpServletRequest,messages);
-            //saveErrors(httpServletRequest,errors);
-
-            return actionMapping.findForward(forward);
+        } catch (DCMException e) {
+            // e.printStackTrace();
+            _logger.error("Unable to diff schemas", e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+            forward = "fail";
         }
+        httpServletRequest.setAttribute("schemaId", schemaId);
+
+        saveMessages(httpServletRequest.getSession(), messages);
+        saveErrors(httpServletRequest.getSession(), errors);
+
+        // saveMessages(httpServletRequest,messages);
+        // saveErrors(httpServletRequest,errors);
+
+        return actionMapping.findForward(forward);
     }
+}

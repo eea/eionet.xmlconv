@@ -26,7 +26,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-
 public class ConvertContext {
 
     private InputStream source;
@@ -34,19 +33,17 @@ public class ConvertContext {
     private OutputStream result;
     private String cnvFileExt;
 
-
-    public ConvertContext(InputStream source, Object xsl, OutputStream result,  String cnvFileExt) {
+    public ConvertContext(InputStream source, Object xsl, OutputStream result, String cnvFileExt) {
         this.cnvFileExt = cnvFileExt;
         this.result = result;
         this.source = source;
         this.xsl = xsl;
     }
 
-
     public String executeConversion(ConvertStartegy converter) throws Exception {
-        if(xsl instanceof String) xsl=new FileInputStream((String) xsl);
-      return converter.convert(source, (InputStream) xsl, result, cnvFileExt);
-  }
-
+        if (xsl instanceof String)
+            xsl = new FileInputStream((String) xsl);
+        return converter.convert(source, (InputStream) xsl, result, cnvFileExt);
+    }
 
 }

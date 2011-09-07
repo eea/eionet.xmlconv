@@ -19,7 +19,7 @@ import eionet.gdem.dto.Schema;
 
 public class ConversionForm extends ActionForm {
 
-    private static final String DEFAULT_ERROR_FORWARD="error";
+    private static final String DEFAULT_ERROR_FORWARD = "error";
 
     private String schemaUrl;
     private String url;
@@ -27,34 +27,32 @@ public class ConversionForm extends ActionForm {
     private String conversionId;
     private Schema schema;
     private List<Schema> schemas;
-    private boolean showSchemaSelection=false;
-    private boolean converted=true;
+    private boolean showSchemaSelection = false;
+    private boolean converted = true;
     private String searchAction;
     private String convertAction;
     private String action;
-    private String errorForward=DEFAULT_ERROR_FORWARD;
+    private String errorForward = DEFAULT_ERROR_FORWARD;
 
-    public ActionErrors validate(ActionMapping actionMapping,
-            HttpServletRequest httpServletRequest) {
+    public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
 
         return null;
     }
 
-    public void resetAll(ActionMapping actionMapping,
-            HttpServletRequest httpServletRequest) {
+    public void resetAll(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         super.reset(actionMapping, httpServletRequest);
         schemaUrl = null;
         url = null;
-        insertedUrl=null;
+        insertedUrl = null;
         conversionId = null;
-        schema=null;
-        showSchemaSelection=false;
-        schemas=null;
-        searchAction=null;
-        convertAction=null;
-        converted=false;
-        action=null;
-        errorForward=DEFAULT_ERROR_FORWARD;
+        schema = null;
+        showSchemaSelection = false;
+        schemas = null;
+        searchAction = null;
+        convertAction = null;
+        converted = false;
+        action = null;
+        errorForward = DEFAULT_ERROR_FORWARD;
     }
 
     public String getSchemaUrl() {

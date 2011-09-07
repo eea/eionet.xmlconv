@@ -14,23 +14,21 @@ import eionet.gdem.utils.Utils;
 
 public class GetSourceAction extends Action {
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         String ticket = httpServletRequest.getParameter(Constants.TICKET_PARAM);
-        //String auth = httpServletRequest.getParameter(Constants.AUTH_PARAM);
+        // String auth = httpServletRequest.getParameter(Constants.AUTH_PARAM);
         String source_url = httpServletRequest.getParameter(Constants.SOURCE_URL_PARAM);
-            //"http://cdr.eionet.europa.eu/be/eu/wfdart8/be_scheldt_escaut/RBD_BE_Escaut_RW_Monitoring.xml";
-        try{
+        // "http://cdr.eionet.europa.eu/be/eu/wfdart8/be_scheldt_escaut/RBD_BE_Escaut_RW_Monitoring.xml";
+        try {
             SourceFileManager manager = new SourceFileManager();
-            if(!Utils.isNullStr(ticket)){
+            if (!Utils.isNullStr(ticket)) {
                 manager.getFileBasicAuthentication(httpServletResponse, ticket, source_url);
+            } else {
+                manager.getFileNoAuthentication(httpServletResponse, source_url);
             }
-            else{
-                manager.getFileNoAuthentication(httpServletResponse,source_url);
-            }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
         }
         return null;
     }

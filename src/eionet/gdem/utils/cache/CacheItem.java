@@ -37,10 +37,12 @@ public class CacheItem {
 
     /**
      * Constructs a CacheItem object
-     *
+     * 
      * @param key
-     * @param timeToLive ms to keep this in the cache
-     * @param content The content being cached
+     * @param timeToLive
+     *            ms to keep this in the cache
+     * @param content
+     *            The content being cached
      */
     public CacheItem(String key, Object content, long timeToLive) {
         this.key = key;
@@ -51,8 +53,9 @@ public class CacheItem {
 
     /**
      * Set the cache's last accessed stamp
-     *
-     * @param lastAccessed the cache's last access stamp
+     * 
+     * @param lastAccessed
+     *            the cache's last access stamp
      */
     public void setLastAccessed(long lastAccessed) {
         this.lastAccessed = lastAccessed;
@@ -60,7 +63,7 @@ public class CacheItem {
 
     /**
      * Get the cache's lastAccessed stamp
-     *
+     * 
      * @return the cache's last accessed stamp
      */
     public long getLastAccessed() {
@@ -69,8 +72,9 @@ public class CacheItem {
 
     /**
      * Set the content in the cache
-     *
-     * @param content the content being cached
+     * 
+     * @param content
+     *            the content being cached
      */
     public void setContent(Object content) {
         this.content = content;
@@ -78,7 +82,7 @@ public class CacheItem {
 
     /**
      * Get the content
-     *
+     * 
      * @return the content being cached
      */
     public Object getContent() {
@@ -93,7 +97,8 @@ public class CacheItem {
     }
 
     /**
-     * @param key The key to set.
+     * @param key
+     *            The key to set.
      */
     public void setKey(String key) {
         this.key = key;
@@ -107,7 +112,8 @@ public class CacheItem {
     }
 
     /**
-     * @param timeToLive The timeToLive in seconds
+     * @param timeToLive
+     *            The timeToLive in seconds
      */
     public void setTimeToLive(long timeToLive) {
         this.timeToLive = timeToLive;

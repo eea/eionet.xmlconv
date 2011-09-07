@@ -41,8 +41,8 @@ public class SchemaStylesheetAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         StylesheetListHolder st = new StylesheetListHolder();
         ActionMessages messages = new ActionMessages();
@@ -55,13 +55,11 @@ public class SchemaStylesheetAction extends Action {
             schema = (String) httpServletRequest.getAttribute("schema");
         }
 
-
         if (schema == null || schema.equals("")) {
             return actionMapping.findForward("home");
         }
 
         httpServletRequest.setAttribute("schema", schema);
-
 
         try {
             SchemaManager sm = new SchemaManager();
@@ -69,7 +67,7 @@ public class SchemaStylesheetAction extends Action {
 
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error getting stylesheet",e);
+            _logger.error("Error getting stylesheet", e);
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         saveErrors(httpServletRequest, messages);

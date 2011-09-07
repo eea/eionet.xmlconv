@@ -45,7 +45,7 @@ import eionet.gdem.utils.xml.XmlSerialization;
 
 /**
  * @author Enriko Käsper
- *
+ * 
  *         The class processes QA results and add warnings/errors if required.
  */
 public class QAResultPostProcessor {
@@ -56,10 +56,10 @@ public class QAResultPostProcessor {
     private SchemaManager schemaManager = new SchemaManager();
 
     private String warnMessage = null;
+
     /**
-     * Checks if the QA was made against expired schema. Adds a warning on top
-     * of the QA result if the result is HTML format.
-     *
+     * Checks if the QA was made against expired schema. Adds a warning on top of the QA result if the result is HTML format.
+     * 
      * @return
      */
     public String processQAResult(String result, Schema xmlSchema) {
@@ -80,7 +80,7 @@ public class QAResultPostProcessor {
 
     /**
      * Returns warning message for given schema URL.
-     *
+     * 
      * @param xmlSchemaUrl
      * @return
      * @throws DCMException
@@ -96,7 +96,7 @@ public class QAResultPostProcessor {
 
     /**
      * Returns warning message if schema is expired.
-     *
+     * 
      * @param xmlSchema
      * @return
      */
@@ -117,7 +117,7 @@ public class QAResultPostProcessor {
 
     /**
      * Get Schema object from database
-     *
+     * 
      * @param xmlSchemaUrl
      * @return
      * @throws DCMException
@@ -132,8 +132,7 @@ public class QAResultPostProcessor {
                 schema = schemaManager.getSchema(schemaId);
             }
         } catch (DCMException e) {
-            logger.error("Unable to find Schema information from database"
-                    + e.toString());
+            logger.error("Unable to find Schema information from database" + e.toString());
             e.printStackTrace();
         }
 
@@ -145,9 +144,8 @@ public class QAResultPostProcessor {
     }
 
     /**
-     * Check if given XML Schema is marked as expired in XMLCONV repository.
-     * Returns error message, otherwise null.
-     *
+     * Check if given XML Schema is marked as expired in XMLCONV repository. Returns error message, otherwise null.
+     * 
      * @param xmlSchema
      * @return
      */
@@ -156,20 +154,17 @@ public class QAResultPostProcessor {
         if (xmlSchema != null && xmlSchema.isExpired()) {
 
             // schema is expired add message in top of the QA result
-            String expDate = Utils.getFormat(xmlSchema.getExpireDate(),
-                    "dd.MM.yyyy");
-            String message = Properties.getMessage(
-                    BusinessConstants.WARNING_QA_EXPIRED_SCHEMA,
-                    new String[] { expDate });
+            String expDate = Utils.getFormat(xmlSchema.getExpireDate(), "dd.MM.yyyy");
+            String message = Properties.getMessage(BusinessConstants.WARNING_QA_EXPIRED_SCHEMA, new String[] {expDate});
             return message;
         }
         return null;
     }
 
     /**
-     * Check if schema is the latest released version in DD (in case of DD
-     * schema). If it is not latest released then return warning message.
-     *
+     * Check if schema is the latest released version in DD (in case of DD schema). If it is not latest released then return warning
+     * message.
+     * 
      * @param xmlSchema
      * @return
      */
@@ -178,24 +173,17 @@ public class QAResultPostProcessor {
         Map<String, String> dataset = getDataset(xmlSchema.getSchema());
         if (dataset != null) {
             String status = (String) dataset.get("status");
-            boolean isLatestReleased = (dataset.get("isLatestReleased") == null ||
-                        "true".equals((String) dataset.get("isLatestReleased"))) ?
-                                true
-                                : false;
-            String dateOfLatestReleased = (String) dataset
-                    .get("dateOfLatestReleased");
-            String idOfLatestReleased = (String) dataset
-                    .get("idOfLatestReleased");
+            boolean isLatestReleased =
+                    (dataset.get("isLatestReleased") == null || "true".equals((String) dataset.get("isLatestReleased"))) ? true
+                            : false;
+            String dateOfLatestReleased = (String) dataset.get("dateOfLatestReleased");
+            String idOfLatestReleased = (String) dataset.get("idOfLatestReleased");
 
             if (!isLatestReleased && "Released".equalsIgnoreCase(status)) {
-                String formattedReleasedDate = Utils
-                        .formatTimestampDate(dateOfLatestReleased);
-                String message = Properties.getMessage(
-                        BusinessConstants.WARNING_QA_EXPIRED_DD_SCHEMA,
-                        new String[] {
-                                formattedReleasedDate == null ? ""
-                                        : formattedReleasedDate
-                                , idOfLatestReleased });
+                String formattedReleasedDate = Utils.formatTimestampDate(dateOfLatestReleased);
+                String message =
+                        Properties.getMessage(BusinessConstants.WARNING_QA_EXPIRED_DD_SCHEMA, new String[] {
+                                formattedReleasedDate == null ? "" : formattedReleasedDate, idOfLatestReleased});
                 return message;
             }
         }
@@ -208,8 +196,7 @@ public class QAResultPostProcessor {
             IXmlCtx ctx = new XmlContext();
             ctx.checkFromString(htmlResult);
 
-            NodeList divElements = ctx.getDocument()
-                    .getElementsByTagName("div");
+            NodeList divElements = ctx.getDocument().getElementsByTagName("div");
             boolean foundFeedbackDiv = parseDivNodes(divElements, warnMessage);
 
             // searching node is case insensitive in XPath - do it twice:
@@ -225,24 +212,20 @@ public class QAResultPostProcessor {
                 return serializer.serializeToString();
             }
         } catch (Exception e) {
-            logger.error("addExpWarning() Error parsing HTML, returning original HTML: "
-                    + e.toString());
+            logger.error("addExpWarning() Error parsing HTML, returning original HTML: " + e.toString());
         }
 
         return htmlResult;
     }
 
-    private boolean parseDivNodes(NodeList divElements, String warnMessage)
-            throws XmlException {
+    private boolean parseDivNodes(NodeList divElements, String warnMessage) throws XmlException {
         boolean feedBackDivFound = false;
         try {
             for (int i = 0; divElements != null && i < divElements.getLength(); i++) {
                 Node divNode = divElements.item(i);
                 Node classNode = divNode.getAttributes().getNamedItem("class");
 
-                if (classNode != null
-                        && classNode.getNodeValue().equalsIgnoreCase(
-                                "feedbacktext")) {
+                if (classNode != null && classNode.getNodeValue().equalsIgnoreCase("feedbacktext")) {
                     // found feedback div
                     feedBackDivFound = true;
 
@@ -253,19 +236,13 @@ public class QAResultPostProcessor {
                             DocumentBuilderFactory
                                     .newInstance()
                                     .newDocumentBuilder()
-                                    .parse(new InputSource(
-                                            new StringReader(
-                                                    "<div class=\"error-msg\">"
-                                                            +
-                                                            warnMessage
-                                                            + "</div>")))
+                                    .parse(new InputSource(new StringReader("<div class=\"error-msg\">" + warnMessage + "</div>")))
                                     .getFirstChild();
                     warningNode = doc.importNode(warningNode, true);
                     if (firstChild == null) {
                         divNode.appendChild(warningNode);
                     } else {
-                        warningNode = divNode.insertBefore(warningNode,
-                                firstChild);
+                        warningNode = divNode.insertBefore(warningNode, firstChild);
                     }
                     //
                     break;
@@ -279,7 +256,7 @@ public class QAResultPostProcessor {
 
     /**
      * Get DD XML Schema released info
-     *
+     * 
      * @param xmlSchema
      * @return
      */

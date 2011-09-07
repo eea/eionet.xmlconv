@@ -41,6 +41,7 @@ import eionet.gdem.utils.Utils;
 
 /**
  * The class tests, if it is possible to convert CDDA MS access file into XML format using Jackcess library
+ * 
  * @author Enriko Käsper, Tieto Estonia MdbConversionTest
  */
 
@@ -50,7 +51,7 @@ public class MdbConversionTest {
 
     public static void main(String[] args) {
         MdbConversionTest test = new MdbConversionTest();
-        //test.readData();
+        // test.readData();
         test.readData2();
     }
 
@@ -74,6 +75,7 @@ public class MdbConversionTest {
         }
 
     }
+
     public void readData2() {
         try {
             db = Database.open(new File("C:\\Projects\\xmlconv\\tmp\\test.mdb"), true);
@@ -86,7 +88,7 @@ public class MdbConversionTest {
                     Object value = rowMap.get(col.getName());
                     if (value != null) {
                         strValue = correctValueFormating(value, col);// correct
-                                                                        // formatting
+                                                                     // formatting
                     }
                     System.out.println(col.getName() + "-" + strValue);
                 }
@@ -128,17 +130,19 @@ public class MdbConversionTest {
             BufferedWriter writer = null;
             try {
 
-                writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(folder, tbl
-                        .getTblIdf()
-                        + "-java.xml")), "UTF8"));
+                writer =
+                        new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(folder, tbl.getTblIdf()
+                                + "-java.xml")), "UTF8"));
                 writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
 
                 // print table start tag
-                String tblStartTag = "<" + metadata.getDstNsID() + ":" + tbl.getTblIdf()
-                        + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ";
-                tblStartTag = tblStartTag + "xmlns:" + metadata.getDstNsID() + "=\"" + metadata.getDstNsURL()
-                        + "\" xmlns:" + tbl.getTblNsID() + "=\"" + tbl.getTblNsURL() + "\" xsi:schemaLocation=\""
-                        + metadata.getDstNsURL() + " " + tbl.getTblSchemaURL() + "\">\r\n";
+                String tblStartTag =
+                        "<" + metadata.getDstNsID() + ":" + tbl.getTblIdf()
+                                + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ";
+                tblStartTag =
+                        tblStartTag + "xmlns:" + metadata.getDstNsID() + "=\"" + metadata.getDstNsURL() + "\" xmlns:"
+                                + tbl.getTblNsID() + "=\"" + tbl.getTblNsURL() + "\" xsi:schemaLocation=\""
+                                + metadata.getDstNsURL() + " " + tbl.getTblSchemaURL() + "\">\r\n";
 
                 // printLine tblStartTag
                 writer.write(tblStartTag);
@@ -167,7 +171,7 @@ public class MdbConversionTest {
                         Object value = rowMap.get(elem.getElmIdf());
                         if (value != null) {
                             strValue = correctValueFormating(value, col);// correct
-                                                                            // formatting
+                                                                         // formatting
                         }
                         String elmTag = tbl.getTblNsID() + ":" + elem.getElmIdf();
                         writer.write("\t\t" + "<" + elmTag + ">" + Utils.escapeXML(strValue) + "</" + elmTag + ">\r\n");
@@ -243,18 +247,17 @@ public class MdbConversionTest {
             return result;
         try {
             switch (col.getType()) {
-            case DOUBLE:
-                return (value.toString()).endsWith(".0") ? Integer.toString(((Double) value).intValue()) : value
-                        .toString();
-            case BOOLEAN:
-                return ((Boolean) value) ? "True" : "False"; // true or false -
-                                                                // CDDA specific
-            case SHORT_DATE_TIME:
-                // System.out.println("TIMESTAMP " + (Date)value);
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                return formatter.format((Date) value);
-            default:
-                return value.toString();
+                case DOUBLE:
+                    return (value.toString()).endsWith(".0") ? Integer.toString(((Double) value).intValue()) : value.toString();
+                case BOOLEAN:
+                    return ((Boolean) value) ? "True" : "False"; // true or false -
+                                                                 // CDDA specific
+                case SHORT_DATE_TIME:
+                    // System.out.println("TIMESTAMP " + (Date)value);
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    return formatter.format((Date) value);
+                default:
+                    return value.toString();
             }
         } catch (Exception e) {
             e.printStackTrace();

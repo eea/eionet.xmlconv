@@ -76,18 +76,20 @@ public class OpenDocumentSpreadsheet {
      * Returns table name in specified index
      */
     public String getTableName(int idx) {
-        if (idx <= tables.size())
+        if (idx <= tables.size()) {
             return tables.get(idx);
-        else
+        } else {
             return null;
+        }
     }
 
     /*
      * Adds header list into headers Map
      */
     public void addTableHeaderValue(String tbl_name, String value) {
-        if (Utils.isNullStr(tbl_name))
+        if (Utils.isNullStr(tbl_name)) {
             tbl_name = currentTable;
+        }
         List<String> list = null;
 
         if (tablesHeaders.containsKey(tbl_name)) {
@@ -105,8 +107,9 @@ public class OpenDocumentSpreadsheet {
      * Adds data row into data Map
      */
     public void addTableDataRow(String tbl_name, List<String> row_list) {
-        if (Utils.isNullStr(tbl_name))
+        if (Utils.isNullStr(tbl_name)) {
             tbl_name = currentTable;
+        }
         List<List<String>> rows_list = null;
 
         if (tablesData.containsKey(tbl_name)) {
@@ -123,11 +126,12 @@ public class OpenDocumentSpreadsheet {
      * Returns tables' data as ArrayList
      */
     public List<List<String>> getTableData(String tblName) {
-        if (Utils.isNullStr(tblName))
+        if (Utils.isNullStr(tblName)) {
             tblName = currentTable;
+        }
 
         List<List<String>> list = null;
-        if (tablesData.containsKey(tblName)){
+        if (tablesData.containsKey(tblName)) {
             list = tablesData.get(tblName);
         }
 
@@ -138,12 +142,14 @@ public class OpenDocumentSpreadsheet {
      * Gets table header list
      */
     public List<String> getTableHeader(String tbl_name) {
-        if (Utils.isNullStr(tbl_name))
+        if (Utils.isNullStr(tbl_name)) {
             tbl_name = currentTable;
+        }
 
         List<String> list = null;
-        if (tablesHeaders.containsKey(tbl_name))
+        if (tablesHeaders.containsKey(tbl_name)) {
             list = tablesHeaders.get(tbl_name);
+        }
 
         return list;
     }
@@ -152,17 +158,19 @@ public class OpenDocumentSpreadsheet {
      * Gets table header list
      */
     public int getTableColCount(String tbl_name) {
-        if (Utils.isNullStr(tbl_name))
+        if (Utils.isNullStr(tbl_name)) {
             tbl_name = currentTable;
+        }
 
         int i = 0;
-        if (tablesHeaders == null)
+        if (tablesHeaders == null) {
             return i;
+        }
 
         if (tablesHeaders.containsKey(tbl_name)) {
             try {
-                if ( tablesHeaders.get(tbl_name) != null){
-                    i =  tablesHeaders.get(tbl_name).size();
+                if (tablesHeaders.get(tbl_name) != null) {
+                    i = tablesHeaders.get(tbl_name).size();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -179,15 +187,18 @@ public class OpenDocumentSpreadsheet {
 
         int i = 0;
 
-        if (Utils.isNullStr(tbl_name))
+        if (Utils.isNullStr(tbl_name)) {
             tbl_name = currentTable;
-        if (tablesData == null)
+        }
+        if (tablesData == null) {
             return i;
+        }
 
         if (tablesData.containsKey(tbl_name)) {
             try {
-                if (tablesData.get(tbl_name) != null)
+                if (tablesData.get(tbl_name) != null) {
                     i = tablesData.get(tbl_name).size();
+                }
             } catch (Exception e) {
                 // do nothing return 0
                 e.printStackTrace();
@@ -201,8 +212,9 @@ public class OpenDocumentSpreadsheet {
      * Checks if table exists
      */
     public boolean tableExists(String tblName) {
-        if (tables == null)
+        if (tables == null) {
             return false;
+        }
         return tables.contains(tblName);
 
     }
@@ -212,30 +224,35 @@ public class OpenDocumentSpreadsheet {
      */
     public boolean isEmptySheet(String tblName) {
 
-        if (Utils.isNullStr(tblName))
+        if (Utils.isNullStr(tblName)) {
             tblName = currentTable;
+        }
         // data does not exist
-        if (tablesData == null)
+        if (tablesData == null) {
             return true;
+        }
 
         // Table does not exist
-        if (!tablesData.containsKey(tblName))
+        if (!tablesData.containsKey(tblName)) {
             return true;
+        }
 
         try {
             List<List<String>> rows = tablesData.get(tblName);
 
             // no data rows
-            if (rows == null || rows.size() == 0)
+            if (rows == null || rows.size() == 0) {
                 return true;
+            }
             for (int n = 0; n < rows.size(); n++) {
                 try {
                     List<String> row = rows.get(n);
 
                     // If row contains any String data, then it is not empty,
                     // return false
-                    if (!Utils.isEmptyList(row))
+                    if (!Utils.isEmptyList(row)) {
                         return false;
+                    }
                 } catch (Exception e) {
                     continue;
                 }

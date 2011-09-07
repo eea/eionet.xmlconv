@@ -37,52 +37,50 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * SyncUplSchemaAction
+ * @author Enriko Käsper, Tieto Estonia SyncUplSchemaAction
  */
 
-    public class SyncUplSchemaAction extends Action {
+public class SyncUplSchemaAction extends Action {
 
-        private static LoggerIF _logger = GDEMServices.getLogger();
+    private static LoggerIF _logger = GDEMServices.getLogger();
 
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
-        public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        ActionMessages errors = new ActionMessages();
+        ActionMessages messages = new ActionMessages();
 
+        SyncUplSchemaForm form = (SyncUplSchemaForm) actionForm;
 
-            ActionMessages errors = new ActionMessages();
-            ActionMessages messages = new ActionMessages();
+        String schemaId = form.getSchemaId();
+        String schemaFile = form.getUplSchemaFileName();
+        String schemaUrl = form.getSchemaUrl();
+        String uplSchemaId = form.getUplSchemaId();
 
-            SyncUplSchemaForm form = (SyncUplSchemaForm) actionForm;
+        httpServletRequest.setAttribute("schemaId", schemaId);
+        String user_name = (String) httpServletRequest.getSession().getAttribute("user");
 
-            String schemaId = form.getSchemaId();
-            String schemaFile = form.getUplSchemaFileName();
-            String schemaUrl = form.getSchemaUrl();
-            String uplSchemaId = form.getUplSchemaId();
-
-            httpServletRequest.setAttribute("schemaId", schemaId);
-            String user_name = (String) httpServletRequest.getSession().getAttribute("user");
-
-            if (isCancelled(httpServletRequest)) {
-                return actionMapping.findForward("success");
-            }
-
-            try {
-                SchemaManager sm = new SchemaManager();
-                sm.storeRemoteSchema(user_name, schemaUrl, schemaFile, schemaId, uplSchemaId);
-
-                messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.cached"));
-
-            } catch (DCMException e) {
-                //e.printStackTrace();
-                _logger.error("Unable to sync local schema",e);
-                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-            }
-            saveMessages(httpServletRequest.getSession(),messages);
-            saveErrors(httpServletRequest.getSession(),errors);
-
-            //saveMessages(httpServletRequest,messages);
-            //saveErrors(httpServletRequest,errors);
-
+        if (isCancelled(httpServletRequest)) {
             return actionMapping.findForward("success");
         }
+
+        try {
+            SchemaManager sm = new SchemaManager();
+            sm.storeRemoteSchema(user_name, schemaUrl, schemaFile, schemaId, uplSchemaId);
+
+            messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.cached"));
+
+        } catch (DCMException e) {
+            // e.printStackTrace();
+            _logger.error("Unable to sync local schema", e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+        }
+        saveMessages(httpServletRequest.getSession(), messages);
+        saveErrors(httpServletRequest.getSession(), errors);
+
+        // saveMessages(httpServletRequest,messages);
+        // saveErrors(httpServletRequest,errors);
+
+        return actionMapping.findForward("success");
     }
+}

@@ -45,8 +45,8 @@ public class AddStylesheetAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         StylesheetForm form = (StylesheetForm) actionForm;
         String desc = form.getDescription();
@@ -58,8 +58,8 @@ public class AddStylesheetAction extends Action {
         httpServletRequest.setAttribute("schema", schema);
 
         if (isCancelled(httpServletRequest)) {
-            if(schema!=null)
-                return new ActionForward("/do/schemaStylesheets?schema="+schema,true);  //actionMapping.findForward("success");
+            if (schema != null)
+                return new ActionForward("/do/schemaStylesheets?schema=" + schema, true); // actionMapping.findForward("success");
             else
                 return actionMapping.findForward("list");
         }
@@ -83,18 +83,12 @@ public class AddStylesheetAction extends Action {
             return actionMapping.findForward("fail");
         }
 
-        /*try {
-            IXmlCtx xml = new XmlContext();
-            xml.setWellFormednessChecking();
-            xml.checkFromInputStream((new InputFile(schema)).getSrcInputStream());
-        } catch (Exception e) {
-            _logger.error("schema not valid",e);
-            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.error.notvalid"));
-            httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-            return actionMapping.findForward("fail");
-        }*/
-
-
+        /*
+         * try { IXmlCtx xml = new XmlContext(); xml.setWellFormednessChecking(); xml.checkFromInputStream((new
+         * InputFile(schema)).getSrcInputStream()); } catch (Exception e) { _logger.error("schema not valid",e);
+         * errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.error.notvalid"));
+         * httpServletRequest.getSession().setAttribute("dcm.errors", errors); return actionMapping.findForward("fail"); }
+         */
 
         if (schema == null || schema.equals("")) {
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.validation"));
@@ -113,9 +107,9 @@ public class AddStylesheetAction extends Action {
         }
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);
         httpServletRequest.getSession().setAttribute("dcm.messages", messages);
-        //new schema might be added, remove the schemas list form the session.
+        // new schema might be added, remove the schemas list form the session.
         httpServletRequest.getSession().removeAttribute("conversion.schemas");
-        return new ActionForward("/do/schemaStylesheets?schema="+schema,true);  //actionMapping.findForward("success");
+        return new ActionForward("/do/schemaStylesheets?schema=" + schema, true); // actionMapping.findForward("success");
     }
 
 }

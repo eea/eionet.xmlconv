@@ -20,16 +20,16 @@ import eionet.gdem.services.LoggerIF;
 
 /**
  * Action for deleting XML files from reporitory
- *
+ * 
  * @author Enriko Käsper (TietoEnator)
- *
+ * 
  */
 public class DeleteUplXmlFileAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
 
@@ -42,7 +42,7 @@ public class DeleteUplXmlFileAction extends Action {
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplXmlFile.deleted"));
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error deleting XML file",e);
+            _logger.error("Error deleting XML file", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);

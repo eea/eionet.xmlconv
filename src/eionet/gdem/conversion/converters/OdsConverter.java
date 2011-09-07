@@ -38,7 +38,8 @@ import eionet.gdem.utils.Utils;
 public class OdsConverter extends ConvertStartegy {
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException, Exception {
+    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException,
+            Exception {
         FileOutputStream xmlOut = null;
         String xmlFile = tmpFolder + "gdem_out" + System.currentTimeMillis() + ".xml";
         String odsFile = tmpFolder + "gdem_out" + System.currentTimeMillis() + ".ods";
@@ -52,16 +53,15 @@ public class OdsConverter extends ConvertStartegy {
             else
                 odp.makeSpreadsheet(xmlFile, odsFile);
 
-
         } catch (FileNotFoundException e) {
             _logger.error("Error " + e.toString(), e);
             throw new GDEMException("Error transforming OpenDocument Spreadhseet " + e.toString(), e);
-        }
-        finally{
-            if (xmlOut!=null){
+        } finally {
+            if (xmlOut != null) {
                 try {
                     xmlOut.close();
-                } catch (IOException ioe) {}
+                } catch (IOException ioe) {
+                }
             }
         }
         try {
@@ -72,6 +72,5 @@ public class OdsConverter extends ConvertStartegy {
 
         return odsFile;
     }
-
 
 }

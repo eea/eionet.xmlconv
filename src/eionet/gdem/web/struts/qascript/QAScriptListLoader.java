@@ -30,9 +30,8 @@ import eionet.gdem.services.LoggerIF;
 
 /**
  * Sotres qa scripts list in the session
- *
- * @author Enriko Käsper, Tieto Estonia
- * QAScriptListLoader
+ * 
+ * @author Enriko Käsper, Tieto Estonia QAScriptListLoader
  */
 
 public class QAScriptListLoader {
@@ -41,11 +40,10 @@ public class QAScriptListLoader {
 
     public final static String QASCRIPT_LIST_ATTR = "qascript.qascriptList";
 
-    public static QAScriptListHolder loadQAScriptList(HttpServletRequest httpServletRequest, boolean reload) throws DCMException{
-
+    public static QAScriptListHolder loadQAScriptList(HttpServletRequest httpServletRequest, boolean reload) throws DCMException {
 
         Object st = httpServletRequest.getSession().getAttribute(QASCRIPT_LIST_ATTR);
-        if(st==null || !(st instanceof QAScriptListHolder) || reload){
+        if (st == null || !(st instanceof QAScriptListHolder) || reload) {
             st = new QAScriptListHolder();
 
             String user_name = (String) httpServletRequest.getSession().getAttribute("user");
@@ -60,9 +58,10 @@ public class QAScriptListLoader {
             httpServletRequest.getSession().setAttribute(QASCRIPT_LIST_ATTR, st);
         }
 
-        return (QAScriptListHolder)st;
+        return (QAScriptListHolder) st;
     }
-    public static void clearList(HttpServletRequest httpServletRequest){
+
+    public static void clearList(HttpServletRequest httpServletRequest) {
         httpServletRequest.getSession().removeAttribute(QASCRIPT_LIST_ATTR);
     }
 }

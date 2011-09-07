@@ -41,17 +41,16 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 /**
- * SearchCRSandboxAction
- * Add selected scripts into workqueue.
- *
+ * SearchCRSandboxAction Add selected scripts into workqueue.
+ * 
  * @author Enriko Käsper, Tieto Estonia
  */
 
 public class AddToWorkqueueAction extends Action {
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ActionErrors errors = new ActionErrors();
         ActionMessages messages = new ActionMessages();
@@ -73,8 +72,7 @@ public class AddToWorkqueueAction extends Action {
             return actionMapping.findForward("error");
         }
         if (Utils.isNullStr(schemaUrl) && cForm.isShowScripts()) {
-            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(
-                    "error.qasandbox.error.qasandbox.missingSchemaUrl"));
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.error.qasandbox.missingSchemaUrl"));
             saveErrors(httpServletRequest, errors);
             return actionMapping.findForward("error");
         }
@@ -89,8 +87,7 @@ public class AddToWorkqueueAction extends Action {
             WorkqueueManager wqm = new WorkqueueManager();
             if (cForm.isShowScripts()) {
                 List<String> jobIds = wqm.addSchemaScriptsToWorkqueue(userName, sourceUrl, schemaUrl);
-                messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("message.qasandbox.jobsAdded", jobIds
-                        .toString()));
+                messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("message.qasandbox.jobsAdded", jobIds.toString()));
             } else {
                 String jobId = wqm.addQAScriptToWorkqueue(userName, sourceUrl, content, scriptType);
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("message.qasandbox.jobAdded", jobId));

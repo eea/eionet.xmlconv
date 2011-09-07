@@ -61,37 +61,39 @@ public class OpenDocument {
     private String strOdsOutFile = null;
     private String strContentFile = null;
 
-    public OpenDocument(){
+    public OpenDocument() {
 
     }
-    public void setContentFile(String strContentFile){
+
+    public void setContentFile(String strContentFile) {
         this.strContentFile = strContentFile;
     }
 
-    public void createOdsFile(String strOut)throws Exception{
+    public void createOdsFile(String strOut) throws Exception {
 
         FileOutputStream result_file_output = new FileOutputStream(strOut);
 
-        try{
+        try {
             createOdsFile(result_file_output);
-        }
-        finally{
-            if (result_file_output!=null){
+        } finally {
+            if (result_file_output != null) {
                 try {
                     result_file_output.close();
-                } catch (IOException ioe) {}
+                } catch (IOException ioe) {
+                }
             }
         }
 
     }
-    /*
-     * Method unzips the ods file, replaces content.xml and meta.xml
-     * and finally zips it together again
-     */
-    public void createOdsFile(OutputStream out)throws Exception{
 
-        if (strContentFile==null)
+    /*
+     * Method unzips the ods file, replaces content.xml and meta.xml and finally zips it together again
+     */
+    public void createOdsFile(OutputStream out) throws Exception {
+
+        if (strContentFile == null) {
             throw new Exception("Content file is not set!");
+        }
 
         initOdsFiles();
 
@@ -100,66 +102,67 @@ public class OpenDocument {
         ZipOutputStream zip_out = new ZipOutputStream(zip_file_output);
 
         try {
-            //unzip template ods file to temp directory
+            // unzip template ods file to temp directory
             ZipUtil.unzip(strOdsTemplateFile, strWorkingFolder);
-            //copy conent file into temp directory
-            Utils.copyFile(new File(strContentFile), new File(strWorkingFolder + File.separator +CONTENT_FILE_NAME));
-            //try to transform meta with XSL, if it fails then copy meta file into temp directory
-            try{
+            // copy conent file into temp directory
+            Utils.copyFile(new File(strContentFile), new File(strWorkingFolder + File.separator + CONTENT_FILE_NAME));
+            // try to transform meta with XSL, if it fails then copy meta file into temp directory
+            try {
                 convertMetaFile();
+            } catch (Throwable t) {
+                Utils.copyFile(new File(strMetaFile), new File(strWorkingFolder + File.separator + META_FILE_NAME));
             }
-            catch(Throwable t){
-                Utils.copyFile(new File(strMetaFile), new File(strWorkingFolder  + File.separator + META_FILE_NAME));
-            }
-            //zip temp directory
-            ZipUtil.zipDir(strWorkingFolder,zip_out);
+            // zip temp directory
+            ZipUtil.zipDir(strWorkingFolder, zip_out);
             zip_out.finish();
             zip_out.close();
 
-            //Fill outputstream
+            // Fill outputstream
             result_file_input = new FileInputStream(strOdsOutFile);
-            Streams.drain(result_file_input,out);
+            Streams.drain(result_file_input, out);
 
         } catch (IOException ioe) {
             throw new Exception("Could not create OpenDocument Spreadsheet file: " + ioe.toString());
         } finally {
-            if (zip_out!=null){
+            if (zip_out != null) {
                 try {
                     zip_out.close();
-                } catch (IOException ioe) {}
+                } catch (IOException ioe) {
+                }
             }
-            if (zip_file_output!=null){
+            if (zip_file_output != null) {
                 try {
                     zip_file_output.close();
-                } catch (IOException ioe) {}
+                } catch (IOException ioe) {
+                }
             }
-            if (result_file_input!=null){
+            if (result_file_input != null) {
                 try {
                     result_file_input.close();
-                } catch (IOException ioe) {}
+                } catch (IOException ioe) {
+                }
             }
 
         }
-        try{
-            //	delete working folder and temporary ods file
+        try {
+            // delete working folder and temporary ods file
             Utils.deleteFolder(strWorkingFolder);
             Utils.deleteFile(strOdsOutFile);
+        } catch (Exception ioe) {
+            // couldn't delete temp files
         }
-        catch(Exception ioe){
-            //couldn't delete temp files
-        }
-
 
     }
-    private void prepareWorkingFolder() throws Exception{
 
+    private void prepareWorkingFolder() throws Exception {
 
         // get temporary folder
         String tmpFilePath = Properties.tmpFolder;
-        if (tmpFilePath==null)
+        if (tmpFilePath == null) {
             throw new Exception("Missing property: tmp.folder");
-        else if (!tmpFilePath.endsWith(File.separator))
+        } else if (!tmpFilePath.endsWith(File.separator)) {
             tmpFilePath = new File(tmpFilePath).getAbsolutePath() + File.separator;
+        }
 
         // build working folder name
         StringBuffer buf = new StringBuffer(tmpFilePath);
@@ -172,25 +175,28 @@ public class OpenDocument {
 
         strWorkingFolder = workginFolder.getAbsolutePath();
     }
-    private void initOdsFiles() throws Exception{
+
+    private void initOdsFiles() throws Exception {
 
         prepareWorkingFolder();
-        if (strWorkingFolder==null)
+        if (strWorkingFolder == null) {
             throw new Exception("Working folder is not created!");
+        }
 
         // get ods-folder path
         String odsFolder = Properties.odsFolder;
-        if (odsFolder==null)
+        if (odsFolder == null) {
             throw new Exception("Missing property: ods.folder");
-        else if (!odsFolder.endsWith(File.separator))
+        } else if (!odsFolder.endsWith(File.separator)) {
             odsFolder = new File(odsFolder).getAbsolutePath() + File.separator;
-
+        }
 
         String tmpFilePath = Properties.tmpFolder;
-        if (tmpFilePath==null)
+        if (tmpFilePath == null) {
             throw new Exception("Missing property: tmp.folder");
-        else if (!tmpFilePath.endsWith(File.separator))
+        } else if (!tmpFilePath.endsWith(File.separator)) {
             tmpFilePath = new File(tmpFilePath).getAbsolutePath() + File.separator;
+        }
 
         strOdsOutFile = tmpFilePath + "gdem_out" + System.currentTimeMillis() + ".ods";
         strOdsTemplateFile = odsFolder + ODS_TEMPLATE_FILE_NAME;
@@ -199,30 +205,30 @@ public class OpenDocument {
     }
 
     /*
-     * Finds schema-url attributes from content file (stored in xsl) table:table attribute
-     * and transforms the values into meta.xml file user defined properties
+     * Finds schema-url attributes from content file (stored in xsl) table:table attribute and transforms the values into meta.xml
+     * file user defined properties
      */
-    private void convertMetaFile() throws Exception{
+    private void convertMetaFile() throws Exception {
         String schemaUrl = null;
         FileOutputStream os = null;
         FileInputStream in = null;
         StringBuffer tableSchemaUrls = new StringBuffer();
 
-        try{
-            IXmlCtx ctx=new XmlContext();
+        try {
+            IXmlCtx ctx = new XmlContext();
             ctx.checkFromFile(strContentFile);
-            IXQuery xQuery=ctx.getQueryManager();
+            IXQuery xQuery = ctx.getQueryManager();
             List elements = xQuery.getElements("table:table");
             for (int i = 0; i < elements.size(); i++) {
                 HashMap attr_map = (HashMap) elements.get(i);
-                if (attr_map.containsKey(OdsReader.SCHEMA_ATTR_NAME) && Utils.isNullStr(schemaUrl)){
-                    schemaUrl = (String)attr_map.get(OdsReader.SCHEMA_ATTR_NAME);
+                if (attr_map.containsKey(OdsReader.SCHEMA_ATTR_NAME) && Utils.isNullStr(schemaUrl)) {
+                    schemaUrl = (String) attr_map.get(OdsReader.SCHEMA_ATTR_NAME);
                 }
-                if (attr_map.containsKey(OdsReader.TBL_SCHEMAS_ATTR_NAME)){
-                    if (attr_map.containsKey("table:name")){
-                        String schema_url = (String)attr_map.get(OdsReader.TBL_SCHEMAS_ATTR_NAME);
-                        String name = (String)attr_map.get("table:name");
-                        if (!Utils.isNullStr(schema_url) && !Utils.isNullStr(name)){
+                if (attr_map.containsKey(OdsReader.TBL_SCHEMAS_ATTR_NAME)) {
+                    if (attr_map.containsKey("table:name")) {
+                        String schema_url = (String) attr_map.get(OdsReader.TBL_SCHEMAS_ATTR_NAME);
+                        String name = (String) attr_map.get("table:name");
+                        if (!Utils.isNullStr(schema_url) && !Utils.isNullStr(name)) {
                             tableSchemaUrls.append(OdsReader.TABLE_NAME);
                             tableSchemaUrls.append(name);
                             tableSchemaUrls.append(";");
@@ -233,8 +239,8 @@ public class OpenDocument {
                     }
                 }
             }
-            if (!Utils.isNullStr(schemaUrl)){
-                os = new FileOutputStream(strWorkingFolder  + File.separator + META_FILE_NAME);
+            if (!Utils.isNullStr(schemaUrl)) {
+                os = new FileOutputStream(strWorkingFolder + File.separator + META_FILE_NAME);
                 in = new FileInputStream(strMetaFile);
                 Map<String, String> parameters = new HashMap<String, String>();
                 parameters.put(OdsReader.SCHEMA_ATTR_NAME, schemaUrl);
@@ -244,25 +250,26 @@ public class OpenDocument {
                 cs.setXslParams(parameters);
                 conversionContext.executeConversion(cs);
 
-                //XSLTransformer transform = new XSLTransformer();
-                //transform.transform(strMetaXslFile, new InputSource(in), os, parameters);
+                // XSLTransformer transform = new XSLTransformer();
+                // transform.transform(strMetaXslFile, new InputSource(in), os, parameters);
             }
 
         } catch (Exception ex) {
             System.out.println("Error converting meta.xml");
             throw ex;
-            //_logger.error("Error reading conversions.xml file ", ex);
-        }
-        finally{
-            if (os!=null){
+            // _logger.error("Error reading conversions.xml file ", ex);
+        } finally {
+            if (os != null) {
                 try {
                     os.close();
-                } catch (IOException ioe) {}
+                } catch (IOException ioe) {
+                }
             }
-            if (in!=null){
+            if (in != null) {
                 try {
                     in.close();
-                } catch (IOException ioe) {}
+                } catch (IOException ioe) {
+                }
             }
 
         }

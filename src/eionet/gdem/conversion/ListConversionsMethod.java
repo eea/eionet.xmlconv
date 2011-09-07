@@ -24,7 +24,7 @@ import eionet.gdem.services.db.dao.IConvTypeDao;
  * @author Enriko Käsper, TietoEnator Estonia AS
  */
 
-public class ListConversionsMethod extends RemoteServiceMethod{
+public class ListConversionsMethod extends RemoteServiceMethod {
 
     private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
@@ -35,12 +35,11 @@ public class ListConversionsMethod extends RemoteServiceMethod{
         List ddTables = DDServiceClient.getDDTables();
         List convs = Conversion.getConversions();
 
-        if (schema != null && schema.startsWith(Properties.ddURL) && ddTables!=null) {
+        if (schema != null && schema.startsWith(Properties.ddURL) && ddTables != null) {
             // schema is from DD
             // parse tbl id
             // check tbl id
-            String tblId = schema.substring(schema.indexOf("id=TBL") + 6,
-                    schema.length());
+            String tblId = schema.substring(schema.indexOf("id=TBL") + 6, schema.length());
             boolean existsInDD = false;
             for (Iterator iter = ddTables.iterator(); iter.hasNext();) {
                 Hashtable element = (Hashtable) iter.next();
@@ -53,17 +52,13 @@ public class ListConversionsMethod extends RemoteServiceMethod{
             if (existsInDD) {
                 for (int i = 0; i < convs.size(); i++) {
                     Hashtable h = new Hashtable();
-                    h.put("convert_id", "DD_TBL" + tblId + "_CONV"
+                    h.put("convert_id", "DD_TBL" + tblId + "_CONV" + ((ConversionDto) convs.get(i)).getConvId());
+                    h.put("xsl",
+                            Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv="
                             + ((ConversionDto) convs.get(i)).getConvId());
-                    h.put("xsl", Properties.gdemURL + "/do/getStylesheet?id="
-                            + tblId + "&conv="
-                            + ((ConversionDto) convs.get(i)).getConvId());
-                    h.put("description", ((ConversionDto) convs.get(i))
-                            .getDescription());
-                    h.put("content_type_out", ((ConversionDto) convs.get(i))
-                            .getContentType());
-                    h.put("result_type", ((ConversionDto) convs.get(i))
-                            .getResultType());
+                    h.put("description", ((ConversionDto) convs.get(i)).getDescription());
+                    h.put("content_type_out", ((ConversionDto) convs.get(i)).getContentType());
+                    h.put("result_type", ((ConversionDto) convs.get(i)).getResultType());
                     h.put("xml_schema", schema);
                     v.add(h);
                 }
@@ -71,27 +66,22 @@ public class ListConversionsMethod extends RemoteServiceMethod{
 
         }
         //
-        if (schema == null && ddTables!=null) {
+        if (schema == null && ddTables != null) {
 
             for (int i = 0; i < ddTables.size(); i++) {
                 Hashtable schemaDD = (Hashtable) ddTables.get(i);
                 String tblId = (String) schemaDD.get("tblId");
-                String schemaUrl = Properties.ddURL + "/GetSchema?id=TBL"
-                + tblId;
+                String schemaUrl = Properties.ddURL + "/GetSchema?id=TBL" + tblId;
 
                 for (int j = 0; j < convs.size(); j++) {
                     Hashtable h = new Hashtable();
-                    h.put("convert_id", "DD_TBL" + tblId + "_CONV"
+                    h.put("convert_id", "DD_TBL" + tblId + "_CONV" + ((ConversionDto) convs.get(j)).getConvId());
+                    h.put("xsl",
+                            Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv="
                             + ((ConversionDto) convs.get(j)).getConvId());
-                    h.put("xsl", Properties.gdemURL + "/do/getStylesheet?id="
-                            + tblId + "&conv="
-                            + ((ConversionDto) convs.get(j)).getConvId());
-                    h.put("description", ((ConversionDto) convs.get(j))
-                            .getDescription());
-                    h.put("content_type_out", ((ConversionDto) convs.get(j))
-                            .getContentType());
-                    h.put("result_type", ((ConversionDto) convs.get(j))
-                            .getResultType());
+                    h.put("description", ((ConversionDto) convs.get(j)).getDescription());
+                    h.put("content_type_out", ((ConversionDto) convs.get(j)).getContentType());
+                    h.put("result_type", ((ConversionDto) convs.get(j)).getResultType());
                     h.put("xml_schema", schemaUrl);
                     v.add(h);
                 }
@@ -107,13 +97,14 @@ public class ListConversionsMethod extends RemoteServiceMethod{
 
         } catch (Exception e) {
             _logger.error("Error getting data from the DB", e);
-            throw new GDEMException("Error getting data from the DB "
-                    + e.toString(), e);
+            throw new GDEMException("Error getting data from the DB " + e.toString(), e);
         }
         return v;
     }
+
     /**
      * Get a distinct list of XML Schemas returned from listConversions() method
+     *
      * @return
      * @throws GDEMException
      */
@@ -134,6 +125,7 @@ public class ListConversionsMethod extends RemoteServiceMethod{
 
     /**
      * Check if listConversions method contains specified schema
+     *
      * @param xmlSchema
      * @return
      * @throws GDEMException

@@ -22,17 +22,14 @@
 package eionet.gdem.utils.system;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * EnvironmentVar
+ * @author Enriko Käsper, Tieto Estonia EnvironmentVar
  */
 
-class EnvironmentVar
-{
+class EnvironmentVar {
     public String fName = null;
     public String fValue = null;
 
-    public EnvironmentVar(String name, String value)
-    {
+    public EnvironmentVar(String name, String value) {
         fName = name;
         fValue = value;
     }

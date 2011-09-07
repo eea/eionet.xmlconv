@@ -44,8 +44,8 @@ public class AddUplSchemaAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
         UplSchemaForm form = (UplSchemaForm) actionForm;
@@ -63,7 +63,7 @@ public class AddUplSchemaAction extends Action {
             return actionMapping.findForward("success");
         }
 
-        if ((schemaFile == null || schemaFile.getFileSize() == 0) && Utils.isNullStr(schemaUrl) ) {
+        if ((schemaFile == null || schemaFile.getFileSize() == 0) && Utils.isNullStr(schemaUrl)) {
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.validation"));
             saveErrors(httpServletRequest, errors);
             httpServletRequest.getSession().setAttribute("dcm.errors", errors);
@@ -72,39 +72,41 @@ public class AddUplSchemaAction extends Action {
 
         try {
             SchemaManager sm = new SchemaManager();
-            String fileName ="";
-            String tmpSchemaUrl ="";
-            //generate unique file name
-            if(schemaFile!=null){
-                fileName = sm.generateUniqueSchemaFilename(user, Utils.extractExtension(schemaFile.getFileName(),"xsd"));
-                if (Utils.isNullStr(schemaUrl)){
+            String fileName = "";
+            String tmpSchemaUrl = "";
+            // generate unique file name
+            if (schemaFile != null) {
+                fileName = sm.generateUniqueSchemaFilename(user, Utils.extractExtension(schemaFile.getFileName(), "xsd"));
+                if (Utils.isNullStr(schemaUrl)) {
                     tmpSchemaUrl = Properties.gdemURL + "/schema/" + fileName;
-                    schemaUrl=tmpSchemaUrl;
+                    schemaUrl = tmpSchemaUrl;
                 }
             }
-            //Add row to T_SCHEMA table
+            // Add row to T_SCHEMA table
             String schemaID = sm.addSchema(user, schemaUrl, desc, schemaLang, doValidation);
-            if(schemaFile!=null && schemaFile.getFileSize()>0){
-                //	Change the filename to schema-UniqueIDxsd
-                fileName = sm.generateSchemaFilenameByID(Properties.schemaFolder,schemaID, Utils.extractExtension(schemaFile.getFileName()));
-            //	Add row to T_UPL_SCHEMA table
+            if (schemaFile != null && schemaFile.getFileSize() > 0) {
+                // Change the filename to schema-UniqueIDxsd
+                fileName =
+                        sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaID,
+                                Utils.extractExtension(schemaFile.getFileName()));
+                // Add row to T_UPL_SCHEMA table
                 sm.addUplSchema(user, schemaFile, fileName, schemaID);
-            //	Update T_SCHEMA table set
-                if (!Utils.isNullStr(tmpSchemaUrl)){
+                // Update T_SCHEMA table set
+                if (!Utils.isNullStr(tmpSchemaUrl)) {
                     schemaUrl = Properties.gdemURL + "/schema/" + fileName;
                 }
                 sm.update(user, schemaID, schemaUrl, desc, schemaLang, doValidation, null, null);
             }
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.inserted"));
         } catch (DCMException e) {
-            _logger.error("Error adding upload schema",e);
+            _logger.error("Error adding upload schema", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);
         httpServletRequest.getSession().setAttribute("dcm.messages", messages);
         saveErrors(httpServletRequest, errors);
         saveMessages(httpServletRequest, messages);
-        //new schema might be added, remove the schemas list form the session.
+        // new schema might be added, remove the schemas list form the session.
         httpServletRequest.getSession().removeAttribute("conversion.schemas");
         QAScriptListLoader.clearList(httpServletRequest);
 

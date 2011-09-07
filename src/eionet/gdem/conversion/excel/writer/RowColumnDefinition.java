@@ -22,8 +22,7 @@
 package eionet.gdem.conversion.excel.writer;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * Column
+ * @author Enriko Käsper, Tieto Estonia Column
  */
 
 public class RowColumnDefinition {
@@ -31,18 +30,20 @@ public class RowColumnDefinition {
     private short styleIndex;
     private String styleName;
 
-
     public RowColumnDefinition(String dataType, short styleIndex, String styleName) {
         this.dataType = dataType;
         this.styleIndex = styleIndex;
         this.styleName = styleName;
     }
+
     public String getDataType() {
         return dataType;
     }
+
     public short getStyleIndex() {
         return styleIndex;
     }
+
     public String getStyleName() {
         return styleName;
     }

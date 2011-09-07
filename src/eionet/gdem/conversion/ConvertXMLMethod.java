@@ -42,23 +42,19 @@ import eionet.gdem.utils.xml.XmlContext;
 import eionet.gdem.utils.xml.XmlException;
 
 /**
- * Conversion Service methods that executes XML conversions to other file types
- * using XSL transformations.
+ * Conversion Service methods that executes XML conversions to other file types using XSL transformations.
  *
  * @author Enriko Käsper, TietoEnator Estonia AS
  */
 
 public class ConvertXMLMethod extends RemoteServiceMethod {
 
-
-    public static  final String CONTENTTYPE_KEY = "content-type";
-    public static  final String FILENAME_KEY = "filename";
+    public static final String CONTENTTYPE_KEY = "content-type";
+    public static final String FILENAME_KEY = "filename";
     public static final String CONTENT_KEY = "content";
 
-    private IStyleSheetDao styleSheetDao = GDEMServices.getDaoService()
-            .getStyleSheetDao();
-    private IConvTypeDao convTypeDao = GDEMServices.getDaoService()
-            .getConvTypeDao();
+    private IStyleSheetDao styleSheetDao = GDEMServices.getDaoService().getStyleSheetDao();
+    private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
@@ -68,17 +64,13 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
      * @param sourceURL
      *            URL of the XML file to be converted
      * @param convertId
-     *            ID of desired conversion as the follows: - If conversion ID
-     *            begins with the DD DCM will generate appropriate stylesheet on
-     *            the fly. - If conversion ID is number the DCM will consider
-     *            consider hand coded conversion
-     * @return Hashtable containing two elements: - content-type (String) -
-     *         content (Byte array)
+     *            ID of desired conversion as the follows: - If conversion ID begins with the DD DCM will generate appropriate
+     *            stylesheet on the fly. - If conversion ID is number the DCM will consider consider hand coded conversion
+     * @return Hashtable containing two elements: - content-type (String) - content (Byte array)
      * @throws GDEMException
      *             Thrown in case of errors
      */
-    public Hashtable convert(String sourceURL, String convertId)
-            throws GDEMException {
+    public Hashtable convert(String sourceURL, String convertId) throws GDEMException {
         OutputStream resultStream = null;
         String cnvFileName = null;
         String cnvTypeOut = null;
@@ -99,68 +91,54 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
                 src = new InputFile(sourceURL);
                 src.setAuthentication(getTicket());
                 src.setTrustedMode(isTrustedMode());
-                cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ? DEFAULT_FILE_NAME
-                        : src.getFileNameNoExtension();
+                cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ? DEFAULT_FILE_NAME : src.getFileNameNoExtension();
 
                 try {
-                    HashMap styleSheetData = styleSheetDao
-                            .getStylesheetInfo(convertId);
+                    HashMap styleSheetData = styleSheetDao.getStylesheetInfo(convertId);
 
-                    if (styleSheetData == null){
-                        throw new GDEMException(
-                                "No stylesheet info for convertID= "
-                                        + convertId);
+                    if (styleSheetData == null) {
+                        throw new GDEMException("No stylesheet info for convertID= " + convertId);
                     }
-                    xslFile = getXslFolder()
-                            + (String) styleSheetData.get("xsl");
-                    cnvTypeOut = (String) styleSheetData
-                            .get("content_type_out");
+                    xslFile = getXslFolder() + (String) styleSheetData.get("xsl");
+                    cnvTypeOut = (String) styleSheetData.get("content_type_out");
 
                     Hashtable convType = convTypeDao.getConvType(cnvTypeOut);
 
                     if (convType != null) {
                         try {
-                            cnvContentType = (String) convType
-                                    .get("content_type");
+                            cnvContentType = (String) convType.get("content_type");
                             cnvFileExt = (String) convType.get("file_ext");
                         } catch (Exception e) {
                             _logger.error("error getting conv types", e);
                             // Take no action, use default params
                         }
                     }
-                    if (cnvContentType == null){
+                    if (cnvContentType == null) {
                         cnvContentType = RemoteServiceMethod.DEFAULT_CONTENT_TYPE;
                     }
-                    if (cnvFileExt == null){
+                    if (cnvFileExt == null) {
                         cnvFileExt = DEFAULT_FILE_EXT;
                     }
 
                 } catch (Exception e) {
                     _logger.error("error getting con types", e);
-                    throw new GDEMException(
-                            "Error getting stylesheet info from repository for "
-                                    + convertId, e);
+                    throw new GDEMException("Error getting stylesheet info from repository for " + convertId, e);
                 }
                 if (isHttpRequest()) {
                     try {
                         HttpMethodResponseWrapper httpResponse = getHttpResponse();
                         httpResponse.setContentType(cnvContentType);
-                        httpResponse.setContentDisposition(cnvFileName + "."
-                                + cnvFileExt);
+                        httpResponse.setContentDisposition(cnvFileName + "." + cnvFileExt);
                         resultStream = httpResponse.getOutputStream();
                     } catch (IOException e) {
-                        _logger
-                                .error("Error getting response outputstream ",
-                                        e);
-                        throw new GDEMException(
-                                "Error getting response outputstream "
-                                        + e.toString(), e);
+                        _logger.error("Error getting response outputstream ", e);
+                        throw new GDEMException("Error getting response outputstream " + e.toString(), e);
                     }
                 }
 
-                outputFileName = executeConversion(src.getSrcInputStream(),
-                        xslFile, resultStream, src.getCdrParams(), cnvFileExt,
-                        cnvTypeOut);
+                outputFileName =
+                    executeConversion(src.getSrcInputStream(), xslFile, resultStream, src.getCdrParams(), cnvFileExt,
+                            cnvTypeOut);
 
             } catch (MalformedURLException mfe) {
                 _logger.error("Bad URL", mfe);
@@ -176,8 +154,9 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
                 throw new GDEMException("Convert error: " + e.toString(), e);
             } finally {
                 try {
-                    if (src != null)
+                    if (src != null) {
                         src.close();
+                    }
                 } catch (Exception e) {
                 }
             }
@@ -195,16 +174,14 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
                 Utils.deleteFile(outputFileName);
             } catch (Exception e) {
 
-                _logger.error("Couldn't delete the result file: "
-                        + outputFileName, e);
+                _logger.error("Couldn't delete the result file: " + outputFileName, e);
             }
 
             return result;
         }
     }
 
-    public Hashtable convertDDTable(String sourceURL, String convertId)
-            throws GDEMException {
+    public Hashtable convertDDTable(String sourceURL, String convertId) throws GDEMException {
         OutputStream result = null;
         Hashtable h = new Hashtable();
         String outputFileName = null;
@@ -219,13 +196,11 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
         // prase idtable and id conversion
         if (convertId.startsWith("DD")) {
             tblId = convertId.substring(6, convertId.indexOf("_CONV"));
-            convId = convertId.substring(convertId.indexOf("_CONV") + 5,
-                    convertId.length());
+            convId = convertId.substring(convertId.indexOf("_CONV") + 5, convertId.length());
         }
 
         ConversionDto conv = Conversion.getConversionById(convId);
-        String format = Properties.metaXSLFolder + File.separatorChar
-                + conv.getStylesheet();
+        String format = Properties.metaXSLFolder + File.separatorChar + conv.getStylesheet();
         String url = getDDTableDefUrl(tblId);
 
         try {
@@ -233,8 +208,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
             src = new InputFile(sourceURL);
             src.setAuthentication(getTicket());
             src.setTrustedMode(isTrustedMode());
-            cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ? DEFAULT_FILE_NAME
-                    : src.getFileNameNoExtension();
+            cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ? DEFAULT_FILE_NAME : src.getFileNameNoExtension();
 
             try {
                 cnvTypeOut = conv.getResultType();
@@ -242,45 +216,40 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
 
                 if (convType != null) {
                     try {
-                        cnvContentType = (String) convType.get("content_type");//content type used in HTTP header
+                        cnvContentType = (String) convType.get("content_type");// content type used in HTTP header
                         cnvFileExt = (String) convType.get("file_ext");
-                        cnvTypeOut = (String) convType.get("conv_type");//content type ID
+                        cnvTypeOut = (String) convType.get("conv_type");// content type ID
                     } catch (Exception e) {
                         _logger.error("Error getting conversion types ", e);
                         // Take no action, use default params
                     }
                 }
-                if (cnvContentType == null)
+                if (cnvContentType == null) {
                     cnvContentType = DEFAULT_CONTENT_TYPE;
-                if (cnvFileExt == null)
+                }
+                if (cnvFileExt == null) {
                     cnvFileExt = DEFAULT_FILE_EXT;
+                }
 
             } catch (Exception e) {
-                _logger.error(
-                        "Error getting stylesheet info from repository for "
-                                + convertId, e);
-                throw new GDEMException(
-                        "Error getting stylesheet info from repository for "
-                                + convertId, e);
+                _logger.error("Error getting stylesheet info from repository for " + convertId, e);
+                throw new GDEMException("Error getting stylesheet info from repository for " + convertId, e);
             }
             if (isHttpRequest()) {
                 try {
                     HttpMethodResponseWrapper httpResult = getHttpResponse();
                     httpResult.setContentType(cnvContentType);
-                    httpResult.setContentDisposition(cnvFileName + "."
-                            + cnvFileExt);
+                    httpResult.setContentDisposition(cnvFileName + "." + cnvFileExt);
                     result = httpResult.getOutputStream();
 
                 } catch (IOException e) {
                     _logger.error("Error getting response outputstream ", e);
-                    throw new GDEMException(
-                            "Error getting response outputstream "
-                                    + e.toString(), e);
+                    throw new GDEMException("Error getting response outputstream " + e.toString(), e);
                 }
             }
 
-            outputFileName = executeConversion(src.getSrcInputStream(), byteIn,
-                    result, src.getCdrParams(), cnvFileExt, cnvTypeOut);
+            outputFileName =
+                executeConversion(src.getSrcInputStream(), byteIn, result, src.getCdrParams(), cnvFileExt, cnvTypeOut);
 
         } catch (MalformedURLException mfe) {
             _logger.error("Bad URL", mfe);
@@ -295,8 +264,9 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
             throw new GDEMException("Error converting", e);
         } finally {
             try {
-                if (src != null)
+                if (src != null) {
                     src.close();
+                }
             } catch (Exception e) {
                 _logger.error("Error converting", e);
             }
@@ -318,25 +288,25 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
             // deleteFile(htmlFileName);
             Utils.deleteFile(outputFileName);
         } catch (Exception e) {
-            _logger.error("Couldn't delete the result file: " + outputFileName,
-                    e);
+            _logger.error("Couldn't delete the result file: " + outputFileName, e);
         }
 
         return h;
 
     }
+
     /**
-     * The method checks if the given file is XML and calls convert methdo.
-     * If the file is not XML, then the method tries to unzip it and find an XML from zip file.
+     * The method checks if the given file is XML and calls convert methdo. If the file is not XML, then the method tries to unzip
+     * it and find an XML from zip file.
      *
      * @param fileInput
      * @param convertId
      * @param fileName
      * @return
-     * @throws GDEMException	no XML file found from given input stream
+     * @throws GDEMException
+     *             no XML file found from given input stream
      */
-    public Hashtable convertPush(InputStream fileInput, String convertId,
-            String fileName) throws GDEMException {
+    public Hashtable convertPush(InputStream fileInput, String convertId, String fileName) throws GDEMException {
         String filePath = null;
         Hashtable result = null;
         String tmpFolderName = null;
@@ -345,9 +315,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
         try {
             // Store the file into temporary folder
             tmpFolderName = Utils.createUniqueTmpFolder();
-            filePath = tmpFolderName
-                    + File.separator
-                    + (Utils.isNullStr(fileName) ? DEFAULT_FILE_NAME : fileName);
+            filePath = tmpFolderName + File.separator + (Utils.isNullStr(fileName) ? DEFAULT_FILE_NAME : fileName);
 
             File file = new File(filePath);
             FileOutputStream outStream = new FileOutputStream(file);
@@ -361,31 +329,28 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
                 x.checkFromFile(filePath);
                 isXml = true;
             } catch (XmlException xmle) {
-                _logger
-                        .debug("The file is not well-formed XML, try to unzip it.");
+                _logger.debug("The file is not well-formed XML, try to unzip it.");
             }
 
             // try to unzip the input file, if it is not XML
             if (!isXml) {
                 try {
-                    File zipFolder = new File(tmpFolderName + File.separator
-                            + "zip");
+                    File zipFolder = new File(tmpFolderName + File.separator + "zip");
                     zipFolder.mkdir();
                     ZipUtil.unzip(filePath, zipFolder.getPath());
                     String zippedXml = Utils.findXMLFromFolder(zipFolder);
-                    if (zippedXml == null)
+                    if (zippedXml == null) {
                         throw new GDEMException("Could not find XML");
-                    else
+                    } else {
                         filePath = zippedXml;
+                    }
                 } catch (Exception e) {
-                    _logger
-                            .error("The file is not well-formed XML or zipped XML. Unable to convert it.");
-                    throw new GDEMException(
-                            "The file is not well-formed XML or zipped XML. Unable to convert it.");
+                    _logger.error("The file is not well-formed XML or zipped XML. Unable to convert it.");
+                    throw new GDEMException("The file is not well-formed XML or zipped XML. Unable to convert it.");
                 }
             }
 
-            //Creates an URI for temprarily stored XML file and calll convert method with it
+            // Creates an URI for temprarily stored XML file and calll convert method with it
             String fileUri = Utils.getURIfromPath(filePath, false);
             result = convert(fileUri, convertId);
 
@@ -397,16 +362,17 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
             try {
                 Utils.deleteFolder(tmpFolderName);
             } catch (Exception e) {
-                _logger.error(
-                        "Couldn't delete the temporary folder: " + tmpFolderName, e);
+                _logger.error("Couldn't delete the temporary folder: " + tmpFolderName, e);
             }
         }
 
         return result;
 
     }
+
     /**
      * Choose the correct converter for given content type and execute the conversion
+     *
      * @param source
      * @param xslt
      * @param result
@@ -416,11 +382,9 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
      * @return
      * @throws Exception
      */
-    private String executeConversion(InputStream source, Object xslt,
-            OutputStream result, Map<String, String> params, String cnvFileExt,
-            String cnvTypeOut) throws Exception {
-        ConvertContext ctx = new ConvertContext(source, xslt, result,
-                cnvFileExt);
+    private String executeConversion(InputStream source, Object xslt, OutputStream result, Map<String, String> params,
+            String cnvFileExt, String cnvTypeOut) throws Exception {
+        ConvertContext ctx = new ConvertContext(source, xslt, result, cnvFileExt);
         ConvertStartegy cs = null;
         if (cnvTypeOut.startsWith("HTML")) {
             cs = new HTMLConverter();
@@ -438,14 +402,14 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
         cs.setXslParams(params);
         return ctx.executeConversion(cs);
     }
+
     /**
      * Creates DD table definition URL. If it is a test, then the definition should be in xml stored locally.
      */
-    private String getDDTableDefUrl(String tblId){
-        if(GDEMServices.isTestConnection()){
+    private String getDDTableDefUrl(String tblId) {
+        if (GDEMServices.isTestConnection()) {
             return "file://".concat(getClass().getClassLoader().getResource("seed-DD-tabledef-" + tblId + ".xml").getFile());
-        }
-        else{
+        } else {
             return Properties.ddURL + "/GetTableDef?id=" + tblId;
         }
 

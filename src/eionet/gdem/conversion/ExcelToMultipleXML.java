@@ -82,7 +82,7 @@ public class ExcelToMultipleXML {
             result.setStatusCode(ConversionResultDto.STATUS_ERR_VALIDATION);
             result.setStatusDescription("Empty URL.");
         } else {
-            InputFile inputFile=null;
+            InputFile inputFile = null;
             try {
                 inputFile = new InputFile(fileUrl);
                 inputFile.setTrustedMode(true);
@@ -95,12 +95,13 @@ public class ExcelToMultipleXML {
                 result.setStatusCode(ConversionResultDto.STATUS_ERR_SYSTEM);
                 result.setStatusDescription(e.getMessage());
                 LOGGER.error("", e);
-            }
-            finally{
+            } finally {
                 try {
-                    if (inputFile != null)
+                    if (inputFile != null) {
                         inputFile.close();
-                } catch (Exception e) {	}
+                    }
+                } catch (Exception e) {
+                }
             }
 
         }
@@ -171,16 +172,16 @@ public class ExcelToMultipleXML {
                         if (!"EXCEL".equalsIgnoreCase((String) schemaInfo.get("schema_lang"))) {
                             result.setStatusCode(ConversionResultDto.STATUS_ERR_SCHEMA_NOT_FOUND);
                             result.setStatusDescription("Schema '" + schemaUrl
-                                    + "' with schema lang: EXCEL not found. Found schema lang: "
-                                    + schemaInfo.get("schema_lang"));
+                                    + "' with schema lang: EXCEL not found. Found schema lang: " + schemaInfo.get("schema_lang"));
                         }
                         // validate expiration date - should be in the future.
-                        else if (!Utils.isNullStr(schemaInfo.get("expire_date")) &&
-                                    (new Date()).after(Utils.parseDate((String)schemaInfo.get("expire_date"),"yyyy-MM-dd HH:mm:ss"))) {
-                                result.setStatusCode(ConversionResultDto.STATUS_ERR_SCHEMA_NOT_FOUND);
-                                result.setStatusDescription("The conversion to XML is not allowed for obsolete Schemas! " +
-                                        " This version of Schema '" + schemaUrl
-                                        + "' expired on: " + (String)schemaInfo.get("expire_date"));
+                        else if (!Utils.isNullStr(schemaInfo.get("expire_date"))
+                                && (new Date()).after(Utils.parseDate((String) schemaInfo.get("expire_date"),
+                                "yyyy-MM-dd HH:mm:ss"))) {
+                            result.setStatusCode(ConversionResultDto.STATUS_ERR_SCHEMA_NOT_FOUND);
+                            result.setStatusDescription("The conversion to XML is not allowed for obsolete Schemas! "
+                                    + " This version of Schema '" + schemaUrl + "' expired on: "
+                                    + (String) schemaInfo.get("expire_date"));
                         } else if (stylesheets != null) {
                             applyTransformation(result, xmlTmpFileLocation, stylesheets);
                         }
@@ -193,7 +194,7 @@ public class ExcelToMultipleXML {
                     result.setStatusCode(ConversionResultDto.STATUS_ERR_SYSTEM);
                     result.setStatusDescription(e.getMessage());
                 } finally {
-                    if(!LOGGER.isDebugEnabled()){
+                    if (!LOGGER.isDebugEnabled()) {
                         Utils.deleteFile(xmlTmpFileLocation);
                         Utils.deleteFile(xlsTmpFileLocation);
                     }
@@ -204,9 +205,9 @@ public class ExcelToMultipleXML {
         return result;
     }
 
-    private static final void applyTransformation(ConversionResultDto result, String xmlTmpFileLocation,
-            Vector<Object> stylesheets) throws FileNotFoundException, GDEMException, Exception,
-            UnsupportedEncodingException, IOException {
+    private static final void
+    applyTransformation(ConversionResultDto result, String xmlTmpFileLocation, Vector<Object> stylesheets)
+    throws FileNotFoundException, GDEMException, Exception, UnsupportedEncodingException, IOException {
         Map<Object, Object> stylesheet;
         InputStream xslFis;
         InputStream xmlFis;
@@ -226,7 +227,7 @@ public class ExcelToMultipleXML {
             for (int i = 0; i < chain.size(); i++) {
                 conversionId = chain.get(i);
                 stylesheet = stylesheetMap.get(conversionId);
-                LOGGER.debug("convert->i=" + i +";conversionId=" + conversionId + ";xsl=" +stylesheet.get("xsl"));
+                LOGGER.debug("convert->i=" + i + ";conversionId=" + conversionId + ";xsl=" + stylesheet.get("xsl"));
                 // avoid conversion duplication.
                 if (!doneConversions.containsKey(conversionId)) {
                     if (i == 0) {
@@ -245,10 +246,11 @@ public class ExcelToMultipleXML {
                     xmlConv.convert(xmlFis, xslFis, out, "xml");
                     doneConversions.put(conversionId, out.toString("UTF-8"));
 
-                    if(!LOGGER.isDebugEnabled()){
-                        //store tmp files in server, if debug is enabled
+                    if (!LOGGER.isDebugEnabled()) {
+                        // store tmp files in server, if debug is enabled
                         ByteArrayInputStream tmpFis = new ByteArrayInputStream(out.toByteArray());
-                        FileOutputStream tmpFile = new FileOutputStream(Utils.getUniqueTmpFileName(transformFileNameToExtension("tmpOutput", "xml")));
+                        FileOutputStream tmpFile =
+                            new FileOutputStream(Utils.getUniqueTmpFileName(transformFileNameToExtension("tmpOutput", "xml")));
                         Streams.drain(tmpFis, tmpFile);
                         tmpFile.close();
                         tmpFis.close();
@@ -269,8 +271,7 @@ public class ExcelToMultipleXML {
         // populate xmls map with values that should be returned.
         for (Map.Entry<String, String> me : doneConversions.entrySet()) {
             if (toReturn.contains(me.getKey())) {
-                xmls.put(transformFileNameToExtension((String) stylesheetMap.get(me.getKey()).get("xsl"), "xml"), me
-                        .getValue());
+                xmls.put(transformFileNameToExtension((String) stylesheetMap.get(me.getKey()).get("xsl"), "xml"), me.getValue());
             }
         }
 
@@ -300,8 +301,7 @@ public class ExcelToMultipleXML {
             while (entries.hasMoreElements()) {
                 entry = entries.nextElement();
                 if (!entry.isDirectory() && "content.xml".equals(entry.getName())) {
-                    copyInputStream(zipFile.getInputStream(entry), new BufferedOutputStream(
-                            new FileOutputStream(result)));
+                    copyInputStream(zipFile.getInputStream(entry), new BufferedOutputStream(new FileOutputStream(result)));
                 }
             }
 
@@ -310,7 +310,7 @@ public class ExcelToMultipleXML {
             throw e;
         } finally {
             // delete tmp ods file
-            if(!LOGGER.isDebugEnabled()){
+            if (!LOGGER.isDebugEnabled()) {
                 Utils.deleteFile(tmpOds);
             }
         }
@@ -420,12 +420,10 @@ public class ExcelToMultipleXML {
      * Builds conversion order.
      *
      * @param stylesheetMap
-     * @return list of lists of conversion ID-s where the first element of the
-     *         list (second list) is conversion id that does not depend on any
-     *         of the conversion, the second depends on the first, etc, the last
-     *         has no conversion ID that is depended on it. Example (pairs
-     *         conversion id and depends on): 1 -> null, 2 -> 1, 3 -> 2, 4->
-     *         null, 5 -> 2; the result will be: [[1, 2, 3], [1, 2, 5], [4]]
+     * @return list of lists of conversion ID-s where the first element of the list (second list) is conversion id that does not
+     *         depend on any of the conversion, the second depends on the first, etc, the last has no conversion ID that is depended
+     *         on it. Example (pairs conversion id and depends on): 1 -> null, 2 -> 1, 3 -> 2, 4-> null, 5 -> 2; the result will be:
+     *         [[1, 2, 3], [1, 2, 5], [4]]
      */
     private static final List<List<String>> buildConversionChains(Map<String, Map<Object, Object>> stylesheetMap) {
         List<List<String>> result = new LinkedList<List<String>>();
@@ -492,8 +490,9 @@ public class ExcelToMultipleXML {
         byte[] buffer = new byte[1024];
         int len;
 
-        while ((len = in.read(buffer)) >= 0)
+        while ((len = in.read(buffer)) >= 0) {
             out.write(buffer, 0, len);
+        }
 
         in.close();
         out.close();
@@ -538,8 +537,7 @@ public class ExcelToMultipleXML {
         private String statusDescription;
 
         /**
-         * Converted XML files according to style sheets. Map key is file name,
-         * map value is file content.
+         * Converted XML files according to style sheets. Map key is file name, map value is file content.
          */
         private Map<String, String> convertedXmls;
 
@@ -595,13 +593,11 @@ public class ExcelToMultipleXML {
     }
 
     public static void main(String[] args) throws Exception {
-         GDEMServices.setTestConnection(true);
-         ConversionResultDto res = new ExcelToMultipleXML().convert(new
-         FileInputStream("c:\\temp\\lichab.xls"),
-         "hz.xls");
-         System.err.println(res.getStatusDescription());
-         System.err.println(res.getConvertedXmls());
-        //testOrderByByDOn();
+        GDEMServices.setTestConnection(true);
+        ConversionResultDto res = new ExcelToMultipleXML().convert(new FileInputStream("c:\\temp\\lichab.xls"), "hz.xls");
+        System.err.println(res.getStatusDescription());
+        System.err.println(res.getConvertedXmls());
+        // testOrderByByDOn();
 
     }
 

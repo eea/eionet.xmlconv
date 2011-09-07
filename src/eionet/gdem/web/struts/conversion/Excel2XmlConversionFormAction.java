@@ -15,13 +15,14 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * Excel2XmlConversionFormAction
+ * @author Enriko Käsper, TietoEnator Estonia AS Excel2XmlConversionFormAction
  */
 
 public class Excel2XmlConversionFormAction extends Action {
     private static LoggerIF _logger = GDEMServices.getLogger();
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         return actionMapping.findForward("success");
     }
 }

@@ -34,75 +34,62 @@ public class SyncUplSchemaForm extends ActionForm {
      */
     private static final long serialVersionUID = 1L;
 
-    //T_SCHEMA & T_UPL_SCHEMA table
+    // T_SCHEMA & T_UPL_SCHEMA table
     private String schemaId;
     private String schemaUrl;
     private String uplSchemaId;
     private String schemaFile;
     private String uplSchemaFileName;
 
-
-
     public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         return null;
     }
-
 
     public String getSchemaId() {
         return schemaId;
     }
 
-
     public void setSchemaId(String schemaId) {
         this.schemaId = schemaId;
     }
-
 
     public String getSchemaUrl() {
         return schemaUrl;
     }
 
-
     public void setSchemaUrl(String schemaUrl) {
         this.schemaUrl = schemaUrl;
     }
-
 
     public String getUplSchemaId() {
         return uplSchemaId;
     }
 
-
     public void setUplSchemaId(String uplSchemaId) {
         this.uplSchemaId = uplSchemaId;
     }
-
 
     public String getSchemaFile() {
         return schemaFile;
     }
 
-
     public void setSchemaFile(String schemaFile) {
         this.schemaFile = schemaFile;
     }
-
 
     public String getUplSchemaFileName() {
         return uplSchemaFileName;
     }
 
-
     public void setUplSchemaFileName(String uplSchemaFileName) {
         this.uplSchemaFileName = uplSchemaFileName;
     }
 
-
     public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
-        schemaId=null;
-        schemaUrl=null;
-        uplSchemaId=null;
-        schemaFile=null;
-        uplSchemaFileName=null;
+        schemaId = null;
+        schemaUrl = null;
+        uplSchemaId = null;
+        schemaFile = null;
+        uplSchemaFileName = null;
     }
 }

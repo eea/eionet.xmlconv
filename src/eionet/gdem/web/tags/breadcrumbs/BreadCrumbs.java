@@ -33,7 +33,7 @@ public class BreadCrumbs {
     }
 
     public void addToTrail(String referer, BreadCrumb bc, int level) {
-        if (level == 0 &&  trail.size() > 0)
+        if (level == 0 && trail.size() > 0)
             return;
 
         if (level > 0 && level < trail.size()) {

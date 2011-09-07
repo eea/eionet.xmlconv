@@ -29,15 +29,11 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.utils.SecurityUtil;
 
-
-
 public class RootElemManager {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    private  IRootElemDao rootElemDao = GDEMServices.getDaoService().getRootElemDao();
-
-
+    private IRootElemDao rootElemDao = GDEMServices.getDaoService().getRootElemDao();
 
     public void delete(String user, String elemId) throws DCMException {
 
@@ -63,7 +59,6 @@ public class RootElemManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
     }
-
 
     public void add(String user, String schemaId, String elemName, String namespace) throws DCMException {
 

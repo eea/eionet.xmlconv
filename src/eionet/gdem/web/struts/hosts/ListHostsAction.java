@@ -50,31 +50,34 @@ public class ListHostsAction extends BaseAction {
 
     private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();;
 
-    public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request,
+            HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
-        List result=new ArrayList();
+        List result = new ArrayList();
 
         try {
-            if(	checkPermission(request, Names.ACL_HOST_PATH, "v")) {
+            if (checkPermission(request, Names.ACL_HOST_PATH, "v")) {
                 Vector list = hostDao.getHosts(null);
-                for (int i=0; i<list.size(); i++){
-                    Hashtable host = (Hashtable)list.get(i);
-                    HostDto h=new HostDto();
-                    h.setId((String)host.get("host_id"));
-                    h.setHostname((String)host.get("host_name"));
-                    h.setUsername((String)host.get("user_name"));
+                for (int i = 0; i < list.size(); i++) {
+                    Hashtable host = (Hashtable) list.get(i);
+                    HostDto h = new HostDto();
+                    h.setId((String) host.get("host_id"));
+                    h.setHostname((String) host.get("host_name"));
+                    h.setUsername((String) host.get("user_name"));
                     result.add(h);
                 }
             } else {
-                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.vnoperm", translate(map, request, "label.hosts")));
+                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.vnoperm",
+                        translate(map, request, "label.hosts")));
             }
         } catch (Exception e) {
             _logger.error("", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
         }
 
-        if(errors.size()>0)	request.getSession().setAttribute("dcm.errors", errors);
-        request.setAttribute("hosts.list",result);
+        if (errors.size() > 0)
+            request.getSession().setAttribute("dcm.errors", errors);
+        request.setAttribute("hosts.list", result);
 
         return map.findForward("success");
 

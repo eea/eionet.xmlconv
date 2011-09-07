@@ -31,7 +31,8 @@ import eionet.gdem.GDEMException;
 
 public class TextConverter extends ConvertStartegy {
 
-    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException, Exception {
+    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException,
+            Exception {
         String outFile = tmpFolder + "gdem_out" + System.currentTimeMillis() + "." + cnvFileExt;
         if (result != null)
             runXslTransformation(source, xslt, result);

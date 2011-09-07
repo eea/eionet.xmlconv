@@ -39,32 +39,34 @@ import eionet.gdem.services.db.dao.IBackupDao;
 import eionet.gdem.utils.Utils;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * BackupManager
+ * @author Enriko Käsper, Tieto Estonia BackupManager
  */
 
 public class BackupManager {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    private  IBackupDao backupDao = GDEMServices.getDaoService().getBackupDao();
+    private IBackupDao backupDao = GDEMServices.getDaoService().getBackupDao();
 
-    public void backupFile(String folderName, String fileName, String id, String user){
+    public void backupFile(String folderName, String fileName, String id, String user) {
 
         File origFile = new File(folderName, fileName);
-        if(!origFile.exists())return; //there's nothing to backup since file does not exist
+        if (!origFile.exists())
+            return; // there's nothing to backup since file does not exist
 
         long timestamp = System.currentTimeMillis();
-        String backupFileName = Constants.BACKUP_FILE_PREFIX + id + "_" + timestamp + fileName.substring(fileName.lastIndexOf("."));
+        String backupFileName =
+                Constants.BACKUP_FILE_PREFIX + id + "_" + timestamp + fileName.substring(fileName.lastIndexOf("."));
 
-        //backup folder is the subfolder
+        // backup folder is the subfolder
         String backupFolderName = folderName + File.separator + Constants.BACKUP_FOLDER_NAME;
         File backupFolder = new File(backupFolderName);
-        if(!backupFolder.exists())backupFolder.mkdir(); //create backup folder if it does not exist
+        if (!backupFolder.exists())
+            backupFolder.mkdir(); // create backup folder if it does not exist
 
         File backupFile = new File(backupFolderName, backupFileName);
 
-        try{
+        try {
             Utils.copyFile(origFile, backupFile);
             BackupDto backup = new BackupDto();
             backup.setFileName(backupFileName);
@@ -72,31 +74,34 @@ public class BackupManager {
             backup.setUser(user);
             backup.setTimestamp(new Timestamp(timestamp));
             backupDao.addBackup(backup);
-        }
-        catch(Exception e){
-            _logger.error("Unable to create backupfile - copy original file " + origFile.getPath() + " to " +
-                    backupFile.getPath() + ". " + e.toString());
+        } catch (Exception e) {
+            _logger.error("Unable to create backupfile - copy original file " + origFile.getPath() + " to " + backupFile.getPath()
+                    + ". " + e.toString());
             e.printStackTrace();
         }
     }
-    public List<BackupDto> getBackups(String objectId) throws DCMException{
+
+    public List<BackupDto> getBackups(String objectId) throws DCMException {
         try {
             return backupDao.getBackups(objectId);
         } catch (Exception e) {
-            //e.printStackTrace();
+            // e.printStackTrace();
             _logger.error("Error getting backups for QA script: " + objectId, e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
     }
+
     /**
      * Remove backup files and refereces in database
-     * @param nofDays - number of days to keep
+     * 
+     * @param nofDays
+     *            - number of days to keep
      * @return
      * @throws DCMException
      */
-    public int purgeBackup(int nofDays) throws DCMException{
-        int result =0;
+    public int purgeBackup(int nofDays) throws DCMException {
+        int result = 0;
 
         Calendar purgeDate = Calendar.getInstance();
         purgeDate.add(Calendar.DATE, -nofDays);
@@ -104,33 +109,33 @@ public class BackupManager {
         SimpleDateFormat sf = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
         _logger.info("Purge backup files created before: " + sf.format(new Date(purgeDate.getTimeInMillis())));
 
-        long purgeDateInMillis =purgeDate.getTimeInMillis() ;
+        long purgeDateInMillis = purgeDate.getTimeInMillis();
         Timestamp ts = new Timestamp(purgeDateInMillis);
 
         File backupFolder = new File(Properties.queriesFolder, Constants.BACKUP_FOLDER_NAME);
 
-        if(backupFolder.exists() && backupFolder.isDirectory()){
+        if (backupFolder.exists() && backupFolder.isDirectory()) {
             File[] files = backupFolder.listFiles();
-            for (int i=0;i<files.length; i++){
+            for (int i = 0; i < files.length; i++) {
                 String fileName = files[i].getName();
-                //check if it is backup file
-                if (!files[i].isFile() || !fileName.startsWith(Constants.BACKUP_FILE_PREFIX)) continue;
+                // check if it is backup file
+                if (!files[i].isFile() || !fileName.startsWith(Constants.BACKUP_FILE_PREFIX))
+                    continue;
                 int start = fileName.indexOf("_", Constants.BACKUP_FILE_PREFIX.length());
                 int end = fileName.lastIndexOf(".");
-                String fileTimestamp = fileName.substring(start+1, end);
+                String fileTimestamp = fileName.substring(start + 1, end);
 
                 long lFileTimestamp = 0;
-                try{
+                try {
                     lFileTimestamp = Long.parseLong(fileTimestamp);
-                }catch(ClassCastException e){
+                } catch (ClassCastException e) {
                     continue;
                 }
-                if(lFileTimestamp<purgeDateInMillis){
-                    try{
+                if (lFileTimestamp < purgeDateInMillis) {
+                    try {
                         files[i].delete();
                         result++;
-                    }
-                    catch(Exception ioe){
+                    } catch (Exception ioe) {
                         _logger.error("Unable to delete backup file: " + files[i].getPath(), ioe);
                     }
                 }
@@ -138,11 +143,11 @@ public class BackupManager {
             }
         }
         _logger.info("Number of back files deleted: " + result);
-        //remove database rows
+        // remove database rows
         try {
             backupDao.removeBackupsOlderThan(ts);
         } catch (Exception e) {
-            //e.printStackTrace();
+            // e.printStackTrace();
             _logger.error("Error removing backups.", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
@@ -150,5 +155,3 @@ public class BackupManager {
     }
 
 }
-
-

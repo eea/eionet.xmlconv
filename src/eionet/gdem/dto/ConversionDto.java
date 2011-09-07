@@ -30,7 +30,6 @@ public class ConversionDto implements Serializable {
     private String stylesheet;
     private String contentType;
 
-
     /**
      * @param args
      */
@@ -39,58 +38,45 @@ public class ConversionDto implements Serializable {
 
     }
 
-
     public String getConvId() {
         return convId;
     }
-
 
     public void setConvId(String convId) {
         this.convId = convId;
     }
 
-
     public String getDescription() {
         return description;
     }
-
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-
     public String getResultType() {
         return resultType;
     }
-
 
     public void setResultType(String resultType) {
         this.resultType = resultType;
     }
 
-
     public String getStylesheet() {
         return stylesheet;
     }
-
 
     public void setStylesheet(String stylesheet) {
         this.stylesheet = stylesheet;
     }
 
-
-
-
     public String getContentType() {
         return contentType;
     }
 
-
     public void setContentType(String contentType) {
         this.contentType = contentType;
     }
-
 
     public String toString() {
         return "convId=" + convId + " description=" + description + " resultType=" + resultType + " stylesheet=" + stylesheet;

@@ -45,29 +45,29 @@ import eionet.gdem.utils.xml.XSLTransformer;
 
 public class GetStylesheetAction extends Action {
 
-    public static XSLTransformer transform=new XSLTransformer();
+    public static XSLTransformer transform = new XSLTransformer();
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse response) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
+            HttpServletResponse response) {
 
         ActionMessages errors = new ActionMessages();
         String metaXSLFolder = Properties.metaXSLFolder;
         String tableDefURL = Properties.ddURL;
-        DynaValidatorForm loginForm=(DynaValidatorForm) actionForm;
+        DynaValidatorForm loginForm = (DynaValidatorForm) actionForm;
         String id = (String) loginForm.get("id");
         String convId = (String) loginForm.get("conv");
 
         try {
             ConversionDto conv = Conversion.getConversionById(convId);
-            String format = metaXSLFolder + File.separatorChar+ conv.getStylesheet();
+            String format = metaXSLFolder + File.separatorChar + conv.getStylesheet();
             String url = tableDefURL + "/GetTableDef?id=" + id;
-            ByteArrayInputStream byteIn=XslGenerator.convertXML(url, format);
+            ByteArrayInputStream byteIn = XslGenerator.convertXML(url, format);
             int bufLen = 0;
             byte[] buf = new byte[1024];
 
-            //byteIn.re
+            // byteIn.re
 
             response.setContentType("text/xml");
             while ((bufLen = byteIn.read(buf)) != -1)
@@ -76,16 +76,15 @@ public class GetStylesheetAction extends Action {
             byteIn.close();
             return null;
 
-
         } catch (Exception ge) {
-            _logger.error("Error getting stylesheet",ge);
+            _logger.error("Error getting stylesheet", ge);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.generation"));
-            //request.getSession().setAttribute("dcm.errors", errors);
+            // request.getSession().setAttribute("dcm.errors", errors);
             request.setAttribute("dcm.errors", errors);
             return actionMapping.findForward("fail");
         }
 
-        //return null;
+        // return null;
 
     }
 

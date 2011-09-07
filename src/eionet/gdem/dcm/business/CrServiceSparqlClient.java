@@ -39,7 +39,7 @@ import eionet.gdem.exceptions.DCMException;
 
 /**
  * Content Registry SPARQL endpoint client. The class executes SPARQL queries in CR eg. search XML files by XML Schema from CR.
- *
+ * 
  * @author Enriko Käsper
  */
 public class CrServiceSparqlClient {
@@ -58,7 +58,7 @@ public class CrServiceSparqlClient {
 
     /**
      * Search XML files through CR SPARQL endpoint.
-     *
+     * 
      * @param schema
      *            XML schema
      * @return the list of CR file objects
@@ -106,9 +106,9 @@ public class CrServiceSparqlClient {
     }
 
     private static String getXmlFilesBySchemaQuery(String schema) {
-        StringBuilder query = new StringBuilder("PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#> " +
-                "SELECT ?file, ?lastModified WHERE { " +
-                "?file cr:xmlSchema \"");
+        StringBuilder query =
+                new StringBuilder("PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#> "
+                        + "SELECT ?file, ?lastModified WHERE { " + "?file cr:xmlSchema \"");
         query.append(schema);
         query.append("\" . OPTIONAL { ?file cr:contentLastModified ?lastModified } } ORDER BY ?file");
 
@@ -117,7 +117,7 @@ public class CrServiceSparqlClient {
 
     /**
      * The testing purposes
-     *
+     * 
      * @return
      */
     public static List<CrFileDto> getMockXmlFilesBySchema(String schemaUrl) {

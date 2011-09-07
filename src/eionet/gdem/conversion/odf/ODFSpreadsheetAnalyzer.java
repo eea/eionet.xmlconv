@@ -71,26 +71,18 @@ public class ODFSpreadsheetAnalyzer {
      * </p>
      * <ol>
      * <li>Parse the input stream into a <code>Document</code></li>
-     * <li>From the root element, determine the namespace prefixes for that
-     * correspond to <code>office:</code>, <code>text:</code>,
+     * <li>From the root element, determine the namespace prefixes for that correspond to <code>office:</code>, <code>text:</code>,
      * <code>table:</code>, and <code>dc:</code>.</li>
-     * <li>For each child element of the <code>&lt;office:meta&gt;</code>
-     * element, process it with the
-     * {@link #processElement(Element,OpenDocumentMetadata) processElement()}
-     * method, except for <code>&lt;meta:document-statistic&gt;</code>, which
-     * is handled with the
-     * {@link #processStatistic(Element,OpenDocumentMetadata)
-     * processStatistic()}, and <code>&lt;meta:user-defined&gt;</code>, which
-     * is handled with the
-     * {@link #processUserDefined(Element,OpenDocumentMetadata)
-     * processUserDefined()} method. </li>
+     * <li>For each child element of the <code>&lt;office:meta&gt;</code> element, process it with the
+     * {@link #processElement(Element,OpenDocumentMetadata) processElement()} method, except for
+     * <code>&lt;meta:document-statistic&gt;</code>, which is handled with the
+     * {@link #processStatistic(Element,OpenDocumentMetadata) processStatistic()}, and <code>&lt;meta:user-defined&gt;</code>, which
+     * is handled with the {@link #processUserDefined(Element,OpenDocumentMetadata) processUserDefined()} method.</li>
      * </ol>
      *
      * @param metaStream
-     *            an <code>InputStream</code> that contains OpenDocument
-     *            content.
-     * @return an <code>OpenDocumentSpreadsheet</code> structure that
-     *         represents the file's spreadsheet information.
+     *            an <code>InputStream</code> that contains OpenDocument content.
+     * @return an <code>OpenDocumentSpreadsheet</code> structure that represents the file's spreadsheet information.
      */
     public OpenDocumentSpreadsheet analyzeSpreadsheet(InputStream metaStream) {
         DocumentBuilder builder;
@@ -103,11 +95,9 @@ public class ODFSpreadsheetAnalyzer {
             builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             doc = builder.parse(metaStream);
             findNamespaces(doc.getDocumentElement());
-            spreadsheetElement = (Element) doc.getElementsByTagName(
-                    officeNamespace + "spreadsheet").item(0);
+            spreadsheetElement = (Element) doc.getElementsByTagName(officeNamespace + "spreadsheet").item(0);
             if (spreadsheetElement != null) {
-                NodeList tableNodes = spreadsheetElement
-                        .getElementsByTagName(tableNamespace + "table");
+                NodeList tableNodes = spreadsheetElement.getElementsByTagName(tableNamespace + "table");
                 if (tableNodes.getLength() == 0) {
                     throw new GDEMException("No tables found");
                 }
@@ -130,8 +120,7 @@ public class ODFSpreadsheetAnalyzer {
      * Analyze the content file in a <code>File</code> which is a .zip file.
      *
      * @param inputFile
-     *            a <code>File</code> that contains OpenDocument
-     *            content-information information.
+     *            a <code>File</code> that contains OpenDocument content-information information.
      */
     public OpenDocumentSpreadsheet analyzeZip(InputStream inputStream) {
         OpenDocumentSpreadsheet spreadsheet = null;
@@ -166,12 +155,10 @@ public class ODFSpreadsheetAnalyzer {
     }
 
     /**
-     * Finds the namespace prefixes associated with OpenDocument, Dublin Core,
-     * and OpenDocument meta elements.
+     * Finds the namespace prefixes associated with OpenDocument, Dublin Core, and OpenDocument meta elements.
      *
      * <p>
-     * This function presumes that all the namespaces are in the root element.
-     * If they aren't, this breaks.
+     * This function presumes that all the namespaces are in the root element. If they aren't, this breaks.
      * </p>
      *
      * @param rootElement
@@ -223,19 +210,19 @@ public class ODFSpreadsheetAnalyzer {
      *            the spreadsheet object to be set.
      *
      */
-    protected void processTable(Element tblElement,
-            OpenDocumentSpreadsheet spreadsheetResult) {
+    protected void processTable(Element tblElement, OpenDocumentSpreadsheet spreadsheetResult) {
         String tbl_name = tblElement.getAttribute(tableNamespace + "name");
 
-        if (Utils.isNullStr(tbl_name))
+        if (Utils.isNullStr(tbl_name)) {
             return;
+        }
 
         spreadsheetResult.addTable(tbl_name);
 
-        NodeList rowNodes = tblElement.getElementsByTagName(tableNamespace
-                + "table-row");
-        if (rowNodes.getLength() == 0)
+        NodeList rowNodes = tblElement.getElementsByTagName(tableNamespace + "table-row");
+        if (rowNodes.getLength() == 0) {
             return;
+        }
 
         for (int rowNo = 0; rowNo < rowNodes.getLength(); rowNo++) {
             Element row = (Element) rowNodes.item(rowNo);
@@ -254,19 +241,17 @@ public class ODFSpreadsheetAnalyzer {
      * Put the content of the table's first row into spreadheet object.
      *
      * @param element
-     *            the first element of <code>&lt;table:table-row&gt;</code>
-     *            element.
+     *            the first element of <code>&lt;table:table-row&gt;</code> element.
      * @param spreadsheetResult
      *            the spreadsheet object to be set.
      *
      */
-    protected void processHeaderRow(Element rowElement,
-            OpenDocumentSpreadsheet spreadsheetResult) {
+    protected void processHeaderRow(Element rowElement, OpenDocumentSpreadsheet spreadsheetResult) {
 
-        NodeList cellNodes = rowElement.getElementsByTagName(tableNamespace
-                + "table-cell");
-        if (cellNodes.getLength() == 0)
+        NodeList cellNodes = rowElement.getElementsByTagName(tableNamespace + "table-cell");
+        if (cellNodes.getLength() == 0) {
             return;
+        }
 
         for (int cellNo = 0; cellNo < cellNodes.getLength(); cellNo++) {
             Element cell = (Element) cellNodes.item(cellNo);
@@ -284,35 +269,30 @@ public class ODFSpreadsheetAnalyzer {
      * Put the content of the table's first row into spreadheet object.
      *
      * @param element
-     *            the first element of <code>&lt;table:table-row&gt;</code>
-     *            element.
+     *            the first element of <code>&lt;table:table-row&gt;</code> element.
      * @param spreadsheetResult
      *            the spreadsheet object to be set.
      *
      */
-    protected void processDataRow(Element rowElement,
-            OpenDocumentSpreadsheet spreadsheetResult) {
+    protected void processDataRow(Element rowElement, OpenDocumentSpreadsheet spreadsheetResult) {
 
         List<String> list_data_row = new ArrayList<String>();
         // number of columns in the table (the number of header cells)
         int i_tblcol_count = spreadsheetResult.getTableColCount(null);
 
         // rows-repeated attribute
-        String str_rows_repeated = rowElement.getAttribute(tableNamespace
-                + "number-rows-repeated");
+        String str_rows_repeated = rowElement.getAttribute(tableNamespace + "number-rows-repeated");
         int i_rows_repeated = getNumberRepeated(str_rows_repeated, 1);
 
-        NodeList cellNodes = rowElement.getElementsByTagName(tableNamespace
-                + "table-cell");
-        if (cellNodes.getLength() == 0){
+        NodeList cellNodes = rowElement.getElementsByTagName(tableNamespace + "table-cell");
+        if (cellNodes.getLength() == 0) {
             return;
         }
 
         for (int cellNo = 0; cellNo < cellNodes.getLength(); cellNo++) {
             Element cell = (Element) cellNodes.item(cellNo);
 
-            String str_cols_repeated = cell.getAttribute(tableNamespace
-                    + "number-columns-repeated");
+            String str_cols_repeated = cell.getAttribute(tableNamespace + "number-columns-repeated");
             int i_cols_repeated = getNumberRepeated(str_cols_repeated, 1);
 
             String cell_value = processCell(cell);
@@ -321,19 +301,19 @@ public class ODFSpreadsheetAnalyzer {
             for (int l = 0; l < i_cols_repeated; l++) {
                 list_data_row.add(cell_value);
                 // don't add more data columns as header columns
-                if (i_tblcol_count == list_data_row.size()){
+                if (i_tblcol_count == list_data_row.size()) {
                     break;
                 }
             }
             // don't add more data columns as header columns
-            if (i_tblcol_count == list_data_row.size()){
+            if (i_tblcol_count == list_data_row.size()) {
                 break;
             }
 
         }
         // This is empty row and repeated more than 1 times.
         // It is probably the last one - don't add it to spreadsheet
-        if (i_rows_repeated > 100 && Utils.isEmptyList(list_data_row)){
+        if (i_rows_repeated > 100 && Utils.isEmptyList(list_data_row)) {
             return;
         }
 
@@ -349,8 +329,7 @@ public class ODFSpreadsheetAnalyzer {
      * Get the content from p:text node - cell value
      *
      * @param element
-     *            the first element of <code>&lt;table:table-cell&gt;</code>
-     *            element.
+     *            the first element of <code>&lt;table:table-cell&gt;</code> element.
      *
      * @return content inside text:p tag
      */
@@ -366,8 +345,7 @@ public class ODFSpreadsheetAnalyzer {
     }
 
     /**
-     * parses string to int if possible. If the source is not castable as int,
-     * then return default_value.
+     * parses string to int if possible. If the source is not castable as int, then return default_value.
      *
      * @param str_number
      *            the number in String
@@ -378,8 +356,9 @@ public class ODFSpreadsheetAnalyzer {
      */
     private int getNumberRepeated(String str_number, int default_value) {
         int i_number = default_value;
-        if (Utils.isNullStr(str_number))
+        if (Utils.isNullStr(str_number)) {
             return i_number;
+        }
 
         try {
             i_number = Integer.parseInt(str_number);

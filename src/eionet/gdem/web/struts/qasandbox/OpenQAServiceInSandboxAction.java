@@ -42,9 +42,8 @@ import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 
 /**
- * EditQAScriptInSandboxAction
- * Find all the scripts for the given XML schema and allow to execute them in sandox
- *
+ * EditQAScriptInSandboxAction Find all the scripts for the given XML schema and allow to execute them in sandox
+ * 
  * @author Enriko Käsper, Tieto Estonia
  */
 
@@ -52,8 +51,8 @@ public class OpenQAServiceInSandboxAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
 
         // get the schemas list from the session
@@ -97,8 +96,8 @@ public class OpenQAServiceInSandboxAction extends Action {
             cForm.setSchema(schema);
             if (Utils.isNullList(cForm.getSchema().getQascripts()) && cForm.getSchema().isDoValidation()) {
                 cForm.setScriptId("-1");
-            } else if (!Utils.isNullList(cForm.getSchema().getQascripts())
-                    && cForm.getSchema().getQascripts().size() == 1 && !cForm.getSchema().isDoValidation()) {
+            } else if (!Utils.isNullList(cForm.getSchema().getQascripts()) && cForm.getSchema().getQascripts().size() == 1
+                    && !cForm.getSchema().isDoValidation()) {
                 cForm.setScriptId(cForm.getSchema().getQascripts().get(0).getScriptId());
             }
         } catch (DCMException e) {

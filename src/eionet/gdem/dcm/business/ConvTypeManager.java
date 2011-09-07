@@ -32,7 +32,7 @@ import eionet.gdem.services.db.dao.IConvTypeDao;
 
 /**
  * ConvTypeManager
- *
+ * 
  * @author Enriko Käsper, Tieto Estonia
  */
 
@@ -43,7 +43,7 @@ public class ConvTypeManager {
 
     /**
      * Get conversion type mappings
-     *
+     * 
      * @param convTypeId
      *            (HTML, XML, ...)
      * @return

@@ -41,11 +41,12 @@ import eionet.gdem.utils.Utils;
 /**
  * @deprecated
  *
- * @author Enriko Käsper, TietoEnator Estonia AS
- * ConversionServlet
+ * @author Enriko Käsper, TietoEnator Estonia AS ConversionServlet
  */
+@Deprecated
 public class ConversionServlet extends HttpServlet {
 
+    @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
         String url = req.getParameter("url");
@@ -54,7 +55,9 @@ public class ConversionServlet extends HttpServlet {
         String split = req.getParameter("split");
         String sheet_param = req.getParameter("sheet_name");
         String cdrFile = req.getParameter("cdrFile");
-        if (split == null) split = "all";
+        if (split == null) {
+            split = "all";
+        }
 
         String list = req.getParameter("list");
 
@@ -63,15 +66,17 @@ public class ConversionServlet extends HttpServlet {
             handleError(req, res, new GDEMException(err_message), Names.ERROR_JSP);
             return;
         }
-        //if the url is not entered manually, then use the URL selcted from list of CDR XML files
-        if(Utils.isNullStr(url))url=cdrFile;
+        // if the url is not entered manually, then use the URL selcted from list of CDR XML files
+        if (Utils.isNullStr(url)) {
+            url = cdrFile;
+        }
 
         try {
-            //do the conversion
+            // do the conversion
             String ticket = getTicket(req);
             if (Utils.isNullStr(list)) {
                 // For testing
-                //System.out.println("Start: " + Long.toString(System.currentTimeMillis()));
+                // System.out.println("Start: " + Long.toString(System.currentTimeMillis()));
                 if (format.equalsIgnoreCase(Names.EXCEL2XML_CONV_PARAM)) {
                     if (split.equals("split")) {
                         convertExcel2XML_split(res, url, sheet_param, ticket);
@@ -81,8 +86,8 @@ public class ConversionServlet extends HttpServlet {
                 } else {
                     convertXML(res, url, format, save, ticket);
                 }
-                //For testing
-                //System.out.println("End: " + Long.toString(System.currentTimeMillis()));
+                // For testing
+                // System.out.println("End: " + Long.toString(System.currentTimeMillis()));
             } else {
                 listConversions(res, list);
             }
@@ -90,27 +95,29 @@ public class ConversionServlet extends HttpServlet {
         } catch (GDEMException ge) {
             handleError(req, res, ge, Names.ERROR_JSP);
             return;
-            //throw new ServletException("Conversion failed " + ge.toString());
+            // throw new ServletException("Conversion failed " + ge.toString());
         }
 
     }
 
-
-    private void convertXML(HttpServletResponse response, String url, String format, String save, String ticket) throws GDEMException, IOException{
+    private void convertXML(HttpServletResponse response, String url, String format, String save, String ticket)
+    throws GDEMException, IOException {
         ConversionService cnv = new ConversionService();
         cnv.setTrustedMode(false);
         cnv.setTicket(ticket);
 
-        boolean save_src =false;
-        if (save != null) save_src = true;
+        boolean save_src = false;
+        if (save != null) {
+            save_src = true;
+        }
         Hashtable result = null;
 
         if (!save_src) {
-            //System.out.println("Response ");
-            //FIXME add HttpResultWrapper
+            // System.out.println("Response ");
+            // FIXME add HttpResultWrapper
             result = cnv.convert(url, format);
         } else {
-            //System.out.println("File ");
+            // System.out.println("File ");
             result = cnv.convert(url, format);
             String contentType = (String) result.get("content-type");
             byte[] content = (byte[]) result.get("content");
@@ -119,14 +126,15 @@ public class ConversionServlet extends HttpServlet {
             int bufLen = 0;
             byte[] buf = new byte[1024];
 
-            while ((bufLen = byteIn.read(buf)) != -1)
+            while ((bufLen = byteIn.read(buf)) != -1) {
                 response.getOutputStream().write(buf, 0, bufLen);
+            }
             byteIn.close();
         }
     }
 
-
-    private void convertExcel2XML_split(HttpServletResponse res, String url, String sheet_param, String ticket) throws GDEMException{
+    private void convertExcel2XML_split(HttpServletResponse res, String url, String sheet_param, String ticket)
+    throws GDEMException {
         ConversionService cnv = new ConversionService();
         cnv.setTrustedMode(false);
         cnv.setTicket(ticket);
@@ -135,7 +143,7 @@ public class ConversionServlet extends HttpServlet {
         Vector result = null;
 
         if (sheet_param != null) {
-            //hidden value for sheet_param, that returns the array of result. Returns all sheets.
+            // hidden value for sheet_param, that returns the array of result. Returns all sheets.
             if (sheet_param.equals("showarray")) {
                 show_array = true;
                 sheet_param = null;
@@ -143,23 +151,24 @@ public class ConversionServlet extends HttpServlet {
         }
 
         if (!show_array) {
-            //System.out.println("Response");
-            //FIXME
+            // System.out.println("Response");
+            // FIXME
             result = cnv.convertDD_XML_split(url, sheet_param);
         } else {
             result = cnv.convertDD_XML_split(url, sheet_param);
             String str_result = result.toString();
-            //System.out.println(str_result);
+            // System.out.println(str_result);
 
-            byte[] content = (byte[]) str_result.getBytes();
+            byte[] content = str_result.getBytes();
             try {
                 res.setContentType("text/plain");
                 ByteArrayInputStream byteIn = new ByteArrayInputStream(content);
                 int bufLen = 0;
                 byte[] buf = new byte[1024];
 
-                while ((bufLen = byteIn.read(buf)) != -1)
+                while ((bufLen = byteIn.read(buf)) != -1) {
                     res.getOutputStream().write(buf, 0, bufLen);
+                }
                 byteIn.close();
             } catch (IOException e) {
                 throw new GDEMException(e.toString(), e);
@@ -167,8 +176,8 @@ public class ConversionServlet extends HttpServlet {
         }
     }
 
-
-    private void convertExcel2XML(HttpServletResponse res, String url, String format, String save, String ticket) throws GDEMException{
+    private void convertExcel2XML(HttpServletResponse res, String url, String format, String save, String ticket)
+    throws GDEMException {
         ConversionService cnv = new ConversionService();
         cnv.setTrustedMode(false);
         cnv.setTicket(ticket);
@@ -176,18 +185,22 @@ public class ConversionServlet extends HttpServlet {
         boolean save_src = false;
         Vector result = null;
 
-        if (save != null) save_src = true;
+        if (save != null) {
+            save_src = true;
+        }
         if (!save_src) {
-            //System.out.println("Response ");
-            //FIXME
+            // System.out.println("Response ");
+            // FIXME
             result = cnv.convertDD_XML(url);
         } else {
-            //System.out.println("File ");
+            // System.out.println("File ");
             result = cnv.convertDD_XML(url);
             String contentType = "text/xml";
             String result_code = (String) result.get(0);
 
-            if (result_code == null) result_code = "";
+            if (result_code == null) {
+                result_code = "";
+            }
 
             if (result_code.equals("0")) {
                 byte[] content = (byte[]) result.get(1);
@@ -198,8 +211,9 @@ public class ConversionServlet extends HttpServlet {
                     int bufLen = 0;
                     byte[] buf = new byte[1024];
 
-                    while ((bufLen = byteIn.read(buf)) != -1)
+                    while ((bufLen = byteIn.read(buf)) != -1) {
                         res.getOutputStream().write(buf, 0, bufLen);
+                    }
                     byteIn.close();
                 } catch (IOException e) {
                     throw new GDEMException(e.toString(), e);
@@ -213,7 +227,6 @@ public class ConversionServlet extends HttpServlet {
         }
     }
 
-
     private void listConversions(HttpServletResponse res, String list) throws GDEMException, IOException {
         ConversionServiceIF cnv = new ConversionService();
         Vector conversions = null;
@@ -221,53 +234,56 @@ public class ConversionServlet extends HttpServlet {
 
         conversions = cnv.listConversions(list);
         res.setContentType("text/html");
-        if (conversions.size() == 0)
+        if (conversions.size() == 0) {
             res.getWriter().write("<h1>No conversions available for schema: " + list + "</h1>");
-        else {
+        } else {
             res.getWriter().write("<h1>Available formats for schema: " + list + "</h1>");
             res.getWriter().write("<table border='1'>");
             res.getWriter().write("<tr><th>Format ID</th><th>Format description</th></tr>");
             for (int i = 0; i < conversions.size(); i++) {
                 xslD = (Hashtable) conversions.elementAt(i);
-                res.getWriter().write("<tr><td>" + (String) xslD.get("xsl") + "</td><td>" + (String) xslD.get("description") + "</td></tr>");
+                res.getWriter().write(
+                        "<tr><td>" + (String) xslD.get("xsl") + "</td><td>" + (String) xslD.get("description") + "</td></tr>");
             }
             res.getWriter().write("</table>");
         }
     }
 
-
     /**
      * handle error and direct to the correct JSP
      */
-    protected void handleError(HttpServletRequest req, HttpServletResponse res, Exception err, String jspName) throws ServletException, IOException {
-        //System.out.println(errMsg);
+    protected void handleError(HttpServletRequest req, HttpServletResponse res, Exception err, String jspName)
+    throws ServletException, IOException {
+        // System.out.println(errMsg);
         HttpSession sess = req.getSession(true);
-        //GDEMException err= new GDEMException(errMsg);
+        // GDEMException err= new GDEMException(errMsg);
 
         sess.setAttribute("gdem.exception", err);
-        if (Utils.isNullStr(jspName)) jspName = Names.ERROR_JSP;
+        if (Utils.isNullStr(jspName)) {
+            jspName = Names.ERROR_JSP;
+        }
 
-        //req.getRequestDispatcher(jspName).forward(req,res);
+        // req.getRequestDispatcher(jspName).forward(req,res);
 
         res.sendRedirect(res.encodeRedirectURL(req.getContextPath() + "/" + jspName));
 
         return;
     }
 
-    private String getTicket(HttpServletRequest req){
-          String ticket=null;
+    private String getTicket(HttpServletRequest req) {
+        String ticket = null;
         HttpSession httpSession = req.getSession(false);
         if (httpSession != null) {
-            ticket = (String)httpSession.getAttribute(Names.TICKET_ATT);
+            ticket = (String) httpSession.getAttribute(Names.TICKET_ATT);
         }
 
         return ticket;
     }
 
-
     /**
      * doPost()
      */
+    @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         doGet(req, res);
     }

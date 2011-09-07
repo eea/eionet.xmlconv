@@ -7,11 +7,11 @@ import java.io.Serializable;
 
 /**
  * Business object representing uploaded XML files
- *
+ * 
  * @author Enriko Käsper (TietoEnator)
- *
+ * 
  */
-public class UplXmlFile  implements Serializable {
+public class UplXmlFile implements Serializable {
     private String id;
     private String fileName;
     private String title;

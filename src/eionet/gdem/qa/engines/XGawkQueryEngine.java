@@ -21,7 +21,6 @@
 
 package eionet.gdem.qa.engines;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -29,25 +28,24 @@ import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * XGawkQueryEngine
+ * @author Enriko Käsper, Tieto Estonia XGawkQueryEngine
  */
 
 public class XGawkQueryEngine extends ExternalQueryEngine {
 
     @Override
-    protected String getShellCommand(String dataFile, String scriptFile,
-            Map<String, String> params) {
-        return Properties.xgawkCommand + getVariables(params)+ " -f " + scriptFile + " " + dataFile;
+    protected String getShellCommand(String dataFile, String scriptFile, Map<String, String> params) {
+        return Properties.xgawkCommand + getVariables(params) + " -f " + scriptFile + " " + dataFile;
     }
-    protected String getVariables(Map<String, String> params){
+
+    protected String getVariables(Map<String, String> params) {
 
         String ret = "";
-        if(!Utils.isNullHashMap(params)){
+        if (!Utils.isNullHashMap(params)) {
             StringBuffer buf = new StringBuffer();
             Iterator<String> it = params.keySet().iterator();
 
-            while (it.hasNext()){
+            while (it.hasNext()) {
                 String key = it.next();
                 String value = params.get(key);
                 buf.append(" -v ");
@@ -56,7 +54,7 @@ public class XGawkQueryEngine extends ExternalQueryEngine {
                 buf.append(value);
                 buf.append("\"");
             }
-            ret=buf.toString();
+            ret = buf.toString();
         }
 
         return ret;

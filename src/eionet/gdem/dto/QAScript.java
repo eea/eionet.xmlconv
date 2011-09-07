@@ -21,11 +21,10 @@
 package eionet.gdem.dto;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * QAScript
+ * @author Enriko Käsper, Tieto Estonia QAScript
  */
 
-public class QAScript{
+public class QAScript {
 
     String scriptId;
     String description;
@@ -43,86 +42,111 @@ public class QAScript{
     public String getScriptContent() {
         return scriptContent;
     }
+
     public void setScriptContent(String scriptContent) {
         this.scriptContent = scriptContent;
     }
+
     public String getFilePath() {
         return filePath;
     }
+
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
+
     String filePath;
 
     public String getModified() {
         return modified;
     }
+
     public void setModified(String modified) {
         this.modified = modified;
     }
+
     public String getChecksum() {
         return checksum;
     }
+
     public void setChecksum(String checksum) {
         this.checksum = checksum;
     }
+
     public QAScript() {
         super();
     }
+
     public String getScriptId() {
         return scriptId;
     }
+
     public void setScriptId(String queryId) {
         this.scriptId = queryId;
     }
+
     public String getDescription() {
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
     }
+
     public String getShortName() {
         return shortName;
     }
+
     public void setShortName(String shortName) {
         this.shortName = shortName;
     }
+
     public String getFileName() {
         return fileName;
     }
+
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
+
     public String getSchemaId() {
         return schemaId;
     }
+
     public void setSchemaId(String schemaId) {
         this.schemaId = schemaId;
     }
+
     public String getResultType() {
         return resultType;
     }
+
     public void setResultType(String resultType) {
         this.resultType = resultType;
     }
+
     public String getScriptType() {
         return scriptType;
     }
+
     public void setScriptType(String queryType) {
         this.scriptType = queryType;
     }
+
     public String getSchema() {
         return schema;
     }
+
     public void setSchema(String schema) {
         this.schema = schema;
     }
+
     public String getUpperLimit() {
         return upperLimit;
     }
+
     public void setUpperLimit(String upperLimit) {
         this.upperLimit = upperLimit;
     }
-
 
 }

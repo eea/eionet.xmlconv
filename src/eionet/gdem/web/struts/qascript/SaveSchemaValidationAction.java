@@ -46,8 +46,8 @@ public class SaveSchemaValidationAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         SchemaElemForm form = (SchemaElemForm) actionForm;
         String schemaId = form.getSchemaId();

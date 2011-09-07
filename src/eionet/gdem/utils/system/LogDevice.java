@@ -24,8 +24,7 @@ package eionet.gdem.utils.system;
 import eionet.gdem.services.LoggerModule;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * LogDevice
+ * @author Enriko Käsper, Tieto Estonia LogDevice
  */
 
 public class LogDevice extends LoggerModule implements ILogDevice {

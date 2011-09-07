@@ -22,60 +22,74 @@
  */
 
 package eionet.gdem.qa;
+
 import java.io.OutputStream;
 
 import eionet.gdem.GDEMException;
+
 /**
-* Interface for XQuery Engine implementation
-*/
+ * Interface for XQuery Engine implementation
+ */
 
 public interface XQEngineIF {
 
-  public static final String DEFAULT_ENCODING ="UTF-8";
-  public static final String DEFAULT_OUTPUTTYPE ="html";
-  public static final String HTML_CONTENT_TYPE ="html";
-  public static final String XML_CONTENT_TYPE="xml";
+    public static final String DEFAULT_ENCODING = "UTF-8";
+    public static final String DEFAULT_OUTPUTTYPE = "html";
+    public static final String HTML_CONTENT_TYPE = "html";
+    public static final String XML_CONTENT_TYPE = "xml";
 
-  /**
-   * processes the XQuery
-   * @param xqScript the XQscript object with required attributes
-   * @return the result of XQuery
-   * @throws eionet.gdem.GDEMException
-   */
-  public String getResult(XQScript script) throws GDEMException;
-  public void getResult(XQScript script, OutputStream out) throws GDEMException;
+    /**
+     * processes the XQuery
+     * 
+     * @param xqScript
+     *            the XQscript object with required attributes
+     * @return the result of XQuery
+     * @throws eionet.gdem.GDEMException
+     */
+    public String getResult(XQScript script) throws GDEMException;
 
-  /**
-   * processes the XQuery
-   * @param xqScript the XQuery script
-   * @param params XQuery parameter name value pairs
-   * in format {name1=value1, name2=value2, ... , nameN=valueN}
-   * @return the result of XQuery
-   * @throws eionet.gdem.GDEMException
-   */
-  /*
-  public String getResult(String xqScript, String params[]) throws GDEMException;
+    public void getResult(XQScript script, OutputStream out) throws GDEMException;
 
-  public void getResult(String xqScript, String params[], OutputStream out) throws GDEMException;
-  */
-  /**
-   * get encoding for XQuery engine to use. If not set use default encoding UTF-8.
-   * @return
-   */
-  public String getEncoding();
-  /**
-   * set encoding parameter for XQuery engine. If not set use default encoding UTF-8.
-   * @param encoding
-   */
-  public void setEncoding(String encoding);
-  /**
-   * get output type of the XQuery script result. Default is text/html.
-   * @return
-   */
-  public String getOutputType();
-  /**
-   * set output type for XQuery engine. If output type is text/xml, then the XML declaration is omitted to the result.
-   * @param outputType
-   */
-  public void setOutputType(String outputType);
+    /**
+     * processes the XQuery
+     * 
+     * @param xqScript
+     *            the XQuery script
+     * @param params
+     *            XQuery parameter name value pairs in format {name1=value1, name2=value2, ... , nameN=valueN}
+     * @return the result of XQuery
+     * @throws eionet.gdem.GDEMException
+     */
+    /*
+     * public String getResult(String xqScript, String params[]) throws GDEMException;
+     * 
+     * public void getResult(String xqScript, String params[], OutputStream out) throws GDEMException;
+     */
+    /**
+     * get encoding for XQuery engine to use. If not set use default encoding UTF-8.
+     * 
+     * @return
+     */
+    public String getEncoding();
+
+    /**
+     * set encoding parameter for XQuery engine. If not set use default encoding UTF-8.
+     * 
+     * @param encoding
+     */
+    public void setEncoding(String encoding);
+
+    /**
+     * get output type of the XQuery script result. Default is text/html.
+     * 
+     * @return
+     */
+    public String getOutputType();
+
+    /**
+     * set output type for XQuery engine. If output type is text/xml, then the XML declaration is omitted to the result.
+     * 
+     * @param outputType
+     */
+    public void setOutputType(String outputType);
 }

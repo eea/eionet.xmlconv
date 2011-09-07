@@ -34,103 +34,93 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 
-
-
 /**
-* Handler of storing methods for the GDEM
-*/
+ * Handler of storing methods for the GDEM
+ */
 public class SaveHandler {
 
-  private static LoggerIF _logger = GDEMServices.getLogger();
-  private static final int BUF_SIZE = 1024;
+    private static LoggerIF _logger = GDEMServices.getLogger();
+    private static final int BUF_SIZE = 1024;
 
+    static void handleWorkqueue(HttpServletRequest req, String action) {
+        AppUser user = SecurityUtil.getUser(req, Names.USER_ATT);
+        String user_name = null;
+        if (user != null)
+            user_name = user.getUserName();
 
-   static void handleWorkqueue(HttpServletRequest req, String action) {
-      AppUser user = SecurityUtil.getUser(req, Names.USER_ATT);
-      String user_name = null;
-       if(user != null)
-         user_name = user.getUserName();
-
-      if(action.equals(Names.WQ_DEL_ACTION)) {
-         try {
-            if(!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "d")) {
-               req.setAttribute(Names.ERROR_ATT, "You don't have permissions to delete jobs!");
-               return;
-            }
-         }
-         catch (Exception e) {
-            req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
-            return;
-         }
-
-         StringBuffer err_buf = new StringBuffer();
-         //String del_id = (String)req.getParameter("ID");
-         String[] jobs= req.getParameterValues("jobID");
-
-         try {
-            if(jobs.length>0){
-                //delete also result files from file system tmp folder
-                try{
-                    for (int i=0;i<jobs.length;i++){
-                        String jobData[] = GDEMServices.getDaoService().getXQJobDao().getXQJobData(jobs[i]);
-                        if(jobData==null || jobData.length<3)continue;
-                        String resultFile = jobData[2];
-                        try{
-                            Utils.deleteFile(resultFile);
-                        }
-                        catch(Exception e){
-                            _logger.error("Could not delete job result file: " + resultFile + "." + e.getMessage());
-                        }
-                        //delete xquery files, if they are stored in tmp folder
-                        String xqFile = jobData[1];
-                        try{
-                            //Important!!!: delete only, when the file is stored in tmp folder
-                            if(xqFile.startsWith(Properties.tmpFolder))
-                                Utils.deleteFile(xqFile);
-                        }
-                        catch(Exception e){
-                            _logger.error("Could not delete XQuery script file: " + xqFile + "." + e.getMessage());
-                        }
-                    }
+        if (action.equals(Names.WQ_DEL_ACTION)) {
+            try {
+                if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "d")) {
+                    req.setAttribute(Names.ERROR_ATT, "You don't have permissions to delete jobs!");
+                    return;
                 }
-                catch(Exception e){
-                    _logger.error("Could not delete job result files!" + e.getMessage());
-                }
-                GDEMServices.getDaoService().getXQJobDao().endXQJobs(jobs);
-            }
-
-         }
-         catch (Exception e) {
-            err_buf.append("Cannot delete job: " + e.toString() + jobs);
-         }
-         if(err_buf.length() > 0)
-            req.setAttribute(Names.ERROR_ATT, err_buf.toString());
-      }
-      else if(action.equals(Names.WQ_RESTART_ACTION)) {
-          try {
-             if(!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "u")) {
-                req.setAttribute(Names.ERROR_ATT, "You don't have permissions to restart the jobs!");
+            } catch (Exception e) {
+                req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
                 return;
-             }
-          }
-          catch (Exception e) {
-             req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
-             return;
-          }
+            }
 
-          StringBuffer err_buf = new StringBuffer();
-          String[] jobs= req.getParameterValues("jobID");
+            StringBuffer err_buf = new StringBuffer();
+            // String del_id = (String)req.getParameter("ID");
+            String[] jobs = req.getParameterValues("jobID");
 
-          try {
-             if(jobs.length>0)
-                 GDEMServices.getDaoService().getXQJobDao().changeXQJobsStatuses(jobs, Constants.XQ_RECEIVED);
+            try {
+                if (jobs.length > 0) {
+                    // delete also result files from file system tmp folder
+                    try {
+                        for (int i = 0; i < jobs.length; i++) {
+                            String jobData[] = GDEMServices.getDaoService().getXQJobDao().getXQJobData(jobs[i]);
+                            if (jobData == null || jobData.length < 3)
+                                continue;
+                            String resultFile = jobData[2];
+                            try {
+                                Utils.deleteFile(resultFile);
+                            } catch (Exception e) {
+                                _logger.error("Could not delete job result file: " + resultFile + "." + e.getMessage());
+                            }
+                            // delete xquery files, if they are stored in tmp folder
+                            String xqFile = jobData[1];
+                            try {
+                                // Important!!!: delete only, when the file is stored in tmp folder
+                                if (xqFile.startsWith(Properties.tmpFolder))
+                                    Utils.deleteFile(xqFile);
+                            } catch (Exception e) {
+                                _logger.error("Could not delete XQuery script file: " + xqFile + "." + e.getMessage());
+                            }
+                        }
+                    } catch (Exception e) {
+                        _logger.error("Could not delete job result files!" + e.getMessage());
+                    }
+                    GDEMServices.getDaoService().getXQJobDao().endXQJobs(jobs);
+                }
 
-          }
-          catch (Exception e) {
-             err_buf.append("Cannot restart jobs: " + e.toString() + jobs);
-          }
-          if(err_buf.length() > 0)
-             req.setAttribute(Names.ERROR_ATT, err_buf.toString());
-       }
-     }
+            } catch (Exception e) {
+                err_buf.append("Cannot delete job: " + e.toString() + jobs);
+            }
+            if (err_buf.length() > 0)
+                req.setAttribute(Names.ERROR_ATT, err_buf.toString());
+        } else if (action.equals(Names.WQ_RESTART_ACTION)) {
+            try {
+                if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "u")) {
+                    req.setAttribute(Names.ERROR_ATT, "You don't have permissions to restart the jobs!");
+                    return;
+                }
+            } catch (Exception e) {
+                req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
+                return;
+            }
+
+            StringBuffer err_buf = new StringBuffer();
+            String[] jobs = req.getParameterValues("jobID");
+
+            try {
+                if (jobs.length > 0)
+                    GDEMServices.getDaoService().getXQJobDao().changeXQJobsStatuses(jobs, Constants.XQ_RECEIVED);
+
+            } catch (Exception e) {
+                err_buf.append("Cannot restart jobs: " + e.toString() + jobs);
+            }
+            if (err_buf.length() > 0)
+                req.setAttribute(Names.ERROR_ATT, err_buf.toString());
+        }
+    }
 }

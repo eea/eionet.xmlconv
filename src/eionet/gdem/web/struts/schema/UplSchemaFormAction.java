@@ -41,8 +41,8 @@ public class UplSchemaFormAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
         UplSchemaHolder holder = null;
 
@@ -54,7 +54,7 @@ public class UplSchemaFormAction extends Action {
 
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Upload schema form error",e);
+            _logger.error("Upload schema form error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveMessages(httpServletRequest, errors);
         }

@@ -32,7 +32,6 @@ public class XmlManager implements IXUpdate {
 
     protected IXmlCtx ctx = null;
 
-
     public XmlManager() {
 
     }
@@ -65,11 +64,12 @@ public class XmlManager implements IXUpdate {
         }
     }
 
-    public void deleteElement(String parentId,String name) throws XmlException {
+    public void deleteElement(String parentId, String name) throws XmlException {
         try {
             String xpath = "//*[@id='" + parentId + "']/" + name;
             Node node = XPathAPI.selectSingleNode(ctx.getDocument(), xpath);
-            if (node == null) return;
+            if (node == null)
+                return;
             Node parent = node.getParentNode();
             ((Element) parent).removeChild(node);
         } catch (Exception e) {

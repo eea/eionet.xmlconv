@@ -52,10 +52,9 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
 
 /**
- * EditQAScriptInSandboxAction
- * Execute the QA script and display the results.
- * If the result of QA script is not html, then wire the result directly into Servlet OutputStream.
- *
+ * EditQAScriptInSandboxAction Execute the QA script and display the results. If the result of QA script is not html, then wire the
+ * result directly into Servlet OutputStream.
+ * 
  * @author Enriko Käsper, Tieto Estonia
  */
 
@@ -65,8 +64,8 @@ public class RunScriptAction extends Action {
     private static final String HTML_CHARACTER_ENCODING = "utf-8";
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
 
         QASandboxForm cForm = (QASandboxForm) actionForm;
@@ -175,7 +174,6 @@ public class RunScriptAction extends Action {
                     output.close();
                     return null;
                 } else {
-
 
                     result = xq.getResult();
                     cForm.setResult(result);

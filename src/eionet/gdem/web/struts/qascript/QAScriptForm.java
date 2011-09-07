@@ -46,15 +46,11 @@ public class QAScriptForm extends ActionForm {
     private String schema;
     private String upperLimit;
 
-
-
-    public ActionErrors validate(ActionMapping actionMapping,
-            HttpServletRequest httpServletRequest) {
+    public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         return null;
     }
 
-    public void reset(ActionMapping actionMapping,
-            HttpServletRequest httpServletRequest) {
+    public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         scriptId = null;
         description = null;
         shortName = null;
@@ -165,6 +161,7 @@ public class QAScriptForm extends ActionForm {
     public void setSchema(String schema) {
         this.schema = schema;
     }
+
     public String getFilePath() {
         return filePath;
     }

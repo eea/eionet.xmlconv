@@ -29,10 +29,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
-
-
 public class MemoryCache implements Comparator {
-    //private static final WDSLogger logger = WDSLogger.getLogger(MemoryCache.class);
+    // private static final WDSLogger logger = WDSLogger.getLogger(MemoryCache.class);
 
     private int maxSize = 100;
 
@@ -42,10 +40,9 @@ public class MemoryCache implements Comparator {
 
     private Object lock = new Object();
 
-
     /**
      * Spring constructor injection
-     *
+     * 
      */
     public MemoryCache(int maxSize, int evictionPercentage) {
         cache = new TreeMap();
@@ -53,21 +50,17 @@ public class MemoryCache implements Comparator {
         this.evictionPercentage = evictionPercentage;
     }
 
-
     public int getMaxSize() {
         return maxSize;
     }
-
 
     public void setMaxSize(int maxSize) {
         this.maxSize = maxSize;
     }
 
-
     public int getEvictionPercentage() {
         return this.evictionPercentage;
     }
-
 
     public void put(String key, Object document, long timeToLive) {
         CacheItem entry = new CacheItem(key, document, timeToLive);
@@ -77,20 +70,17 @@ public class MemoryCache implements Comparator {
         synchronized (lock) {
             cache.put(key, entry);
         }
-        //logger.debug("Transformed content put in cache! Transform: " + key);
+        // logger.debug("Transformed content put in cache! Transform: " + key);
 
     }
 
-
     /**
-     * The eviction policy will keep n items in the cache, and then start evicting
-     * x items ordered-by least used first.
-     * n = max size of cache
-     * x = (eviction_percentage/100) * n
-     *
+     * The eviction policy will keep n items in the cache, and then start evicting x items ordered-by least used first. n = max size
+     * of cache x = (eviction_percentage/100) * n
+     * 
      */
     protected void evict() {
-        //logger.debug("Calling evict... cacheSize: " + cache.size() + " maxSize: " + getMaxSize());
+        // logger.debug("Calling evict... cacheSize: " + cache.size() + " maxSize: " + getMaxSize());
         synchronized (lock) {
             if (this.getMaxSize() >= cache.size()) {
                 return;
@@ -110,14 +100,13 @@ public class MemoryCache implements Comparator {
                 }
 
                 CacheItem entry = (CacheItem) it.next();
-                //logger.debug("Evicting: " + entry.getKey());
+                // logger.debug("Evicting: " + entry.getKey());
                 cache.remove(entry.getKey());
 
                 count++;
             }
         }
     }
-
 
     public Object remove(String key) {
         CacheItem entry = (CacheItem) cache.get(key);
@@ -131,7 +120,6 @@ public class MemoryCache implements Comparator {
 
     }
 
-
     public CacheItem get(String key) {
         CacheItem entry = (CacheItem) cache.get(key);
         if (entry == null) {
@@ -140,13 +128,12 @@ public class MemoryCache implements Comparator {
         long now = new Date().getTime();
         long lifeTime = entry.getTimeToLive() * 1000;
         if ((entry.getLastAccessed() + lifeTime) < now) {
-            //logger.debug("Transformed content expired for key: "+key);
+            // logger.debug("Transformed content expired for key: "+key);
             return null; // expire it
         }
-        //logger.debug("Transformed content found in cache! Transform: " + key);
+        // logger.debug("Transformed content found in cache! Transform: " + key);
         return entry;
     }
-
 
     public Object getContent(String key) {
         CacheItem entry = (CacheItem) get(key);
@@ -155,7 +142,6 @@ public class MemoryCache implements Comparator {
         }
         return null;
     }
-
 
     public int compare(Object o1, Object o2) {
         CacheItem e1 = (CacheItem) o1;
@@ -168,11 +154,9 @@ public class MemoryCache implements Comparator {
         return 1;
     }
 
-
     public String constructKey(String url, String stylesheet) {
         return url + ":" + stylesheet;
     }
-
 
     public void clearCache() {
         cache.clear();

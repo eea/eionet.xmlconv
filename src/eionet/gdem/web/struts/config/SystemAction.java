@@ -43,8 +43,8 @@ public class SystemAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
@@ -62,12 +62,11 @@ public class SystemAction extends Action {
                 httpServletRequest.getSession().setAttribute("dcm.errors", errors);
                 return actionMapping.findForward("success");
             }
-            if (qaTimeout == null || qaTimeout.equals("") || qaTimeout<=0) {
+            if (qaTimeout == null || qaTimeout.equals("") || qaTimeout <= 0) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.config.system.qatimeout.validation"));
                 httpServletRequest.getSession().setAttribute("dcm.errors", errors);
                 return actionMapping.findForward("success");
             }
-
 
             DcmProperties dcmProp = new DcmProperties();
 

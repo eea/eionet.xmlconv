@@ -30,12 +30,10 @@ import java.io.StringWriter;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 
-
 public class XmlSerialization implements IXmlSerializer {
 
     private XMLSerializer xmlSerializer;
     private IXmlCtx ctx = null;
-
 
     public XmlSerialization() {
         xmlSerializer = new XMLSerializer();
@@ -50,11 +48,8 @@ public class XmlSerialization implements IXmlSerializer {
 
     public XmlSerialization(IXmlCtx ctx) {
         this();
-        this.ctx=ctx;
+        this.ctx = ctx;
     }
-
-
-
 
     public ByteArrayOutputStream serializeToOutStream() throws XmlException {
         ByteArrayOutputStream byteOutputStream = null;
@@ -68,7 +63,6 @@ public class XmlSerialization implements IXmlSerializer {
         }
         return byteOutputStream;
     }
-
 
     public void serializeToFs(String fullFileName) throws XmlException {
         try {
@@ -102,11 +96,10 @@ public class XmlSerialization implements IXmlSerializer {
 
         StringWriter stringOut;
         try {
-            OutputFormat format    = new OutputFormat (ctx.getDocument());
+            OutputFormat format = new OutputFormat(ctx.getDocument());
             format.setOmitXMLDeclaration(true);
-            stringOut = new StringWriter ();
-            XMLSerializer serial   = new XMLSerializer (stringOut,
-                                                          format);
+            stringOut = new StringWriter();
+            XMLSerializer serial = new XMLSerializer(stringOut, format);
             serial.serialize(ctx.getDocument());
 
         } catch (IOException ioe) {

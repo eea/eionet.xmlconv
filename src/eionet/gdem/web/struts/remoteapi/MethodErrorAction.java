@@ -16,8 +16,7 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * MethodErrorAction
+ * @author Enriko Käsper, TietoEnator Estonia AS MethodErrorAction
  */
 
 public class MethodErrorAction extends BaseMethodAction {
@@ -25,30 +24,28 @@ public class MethodErrorAction extends BaseMethodAction {
     private static LoggerIF _logger = GDEMServices.getLogger();
 
     /**
-     * Purpose of this action is show error messages of given request.
-     * XMLErrorResult should be stored in session already.
+     * Purpose of this action is show error messages of given request. XMLErrorResult should be stored in session already.
      */
-    public ActionForward execute(ActionMapping map, ActionForm actionForm,
-            HttpServletRequest request, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request,
+            HttpServletResponse httpServletResponse) {
 
-        //Create ccustom HTTP response wrapper
-        HttpMethodResponseWrapper httpResult = new HttpMethodResponseWrapper(
-                httpServletResponse);
-        //Create error XML formatter
+        // Create ccustom HTTP response wrapper
+        HttpMethodResponseWrapper httpResult = new HttpMethodResponseWrapper(httpServletResponse);
+        // Create error XML formatter
         XMLErrorResult errorResult = getServiceError(request);
         if (errorResult == null) {
-            //no errors int the session
+            // no errors int the session
             errorResult = new XMLErrorResult();
             errorResult.setError("Unknown error happened.");
             errorResult.setBadRequestStatus();
         }
         try {
-            //flush the error into servlet outputstream
+            // flush the error into servlet outputstream
             httpResult.flushXML(errorResult);
         } catch (Exception e) {
             _logger.error("Unable to flush XML error: " + e.toString());
         }
-        //Do nothing
+        // Do nothing
         return map.findForward(null);
     }
 }

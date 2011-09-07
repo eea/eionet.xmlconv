@@ -48,8 +48,8 @@ public class LoginAction extends Action {
     private static LoggerIF _logger = GDEMServices.getLogger();
     protected final String GDEM_SSAclName = "/stylesheets";
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) throws IOException {
         ActionMessages loginMessages = new ActionMessages();
         ActionErrors errors = new ActionErrors();
         ActionForward ret = null;
@@ -58,7 +58,7 @@ public class LoginAction extends Action {
         String username = (String) loginForm.get("username");
         String password = (String) loginForm.get("password");
 
-        if(Utils.isNullStr(username) && Utils.isNullStr(username)){
+        if (Utils.isNullStr(username) && Utils.isNullStr(username)) {
             return actionMapping.findForward("loginForm"); // openlogin form
         }
 
@@ -78,9 +78,9 @@ public class LoginAction extends Action {
         httpServletRequest.getSession().setAttribute("dcm.messages", loginMessages);
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 
-        //go back to the previous page
-        String afterLogin = (String)httpServletRequest.getSession().getAttribute(AfterCASLoginAction.AFTER_LOGIN_ATTR_NAME);
-        if (afterLogin != null && !afterLogin.toLowerCase().contains("/tiles/layout.jsp")){
+        // go back to the previous page
+        String afterLogin = (String) httpServletRequest.getSession().getAttribute(AfterCASLoginAction.AFTER_LOGIN_ATTR_NAME);
+        if (afterLogin != null && !afterLogin.toLowerCase().contains("/tiles/layout.jsp")) {
             httpServletResponse.sendRedirect(afterLogin);
             return null;
         }
@@ -89,11 +89,11 @@ public class LoginAction extends Action {
 
     }
 
-
     private void doLogin(String username, String password, HttpServletRequest httpServletRequest) throws Exception {
         try {
             AppUser aclUser = new AppUser();
-            if (!Utils.isNullStr(username)) aclUser.authenticate(username, password);
+            if (!Utils.isNullStr(username))
+                aclUser.authenticate(username, password);
             if (!SecurityUtil.hasPerm(username, GDEM_SSAclName, "v")) // GDEM_readPermission))
                 throw new Exception("Not allowed to use the Styelsheet Repository");
             // session.setAttribute(Names.USER_ATT, aclUser);

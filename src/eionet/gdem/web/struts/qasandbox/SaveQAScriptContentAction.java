@@ -39,9 +39,8 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 /**
- * EditQAScriptInSandboxAction
- * The action saves the changes of QA script content into file system.
- *
+ * EditQAScriptInSandboxAction The action saves the changes of QA script content into file system.
+ * 
  * @author Enriko Käsper, Tieto Estonia
  */
 
@@ -49,8 +48,8 @@ public class SaveQAScriptContentAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ActionErrors errors = new ActionErrors();
         ActionMessages messages = new ActionMessages();

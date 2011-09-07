@@ -22,8 +22,7 @@
 package eionet.gdem.conversion.datadict;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * DDElement
+ * @author Enriko Käsper, Tieto Estonia DDElement
  */
 
 public class DDElement {
@@ -69,8 +68,9 @@ public class DDElement {
     public void setElmIdf(String elmIdf) {
         this.elmIdf = elmIdf;
     }
-    public boolean equals(DDElement ddElm){
-        if(getElmIdf()!=null && ddElm!=null && ddElm.getElmIdf()!=null){
+
+    public boolean equals(DDElement ddElm) {
+        if (getElmIdf() != null && ddElm != null && ddElm.getElmIdf() != null) {
             return getElmIdf().equalsIgnoreCase(ddElm.getElmIdf());
         }
         return false;

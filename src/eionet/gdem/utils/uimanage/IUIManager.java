@@ -24,35 +24,50 @@ import java.util.Map;
 
 import org.w3c.dom.Node;
 
-
 public interface IUIManager {
 
     /**
      * Replaces selected cell with new cell whose type attribute is set to blank
-     * @param row Row that contains cell being removed
-     * @param col Cols attribute of cell being removed
+     * 
+     * @param row
+     *            Row that contains cell being removed
+     * @param col
+     *            Cols attribute of cell being removed
      * @throws Exception
      */
     public void removeCell(int row, int col) throws Exception;
+
     /**
-     * Creates cell node that consists of content node which is image filename or text,
-     * link node with URL, and style node that contains children nodes describing style
-     * @param col Cell's cols attribute value.
-     * @param type Type of content stored in cell.
-     * @param link Value of link node.
-     * @param content Value of content node.
-     * @param styleMap Map which is used for creating style node. Key is style child node name and value is child node value.
+     * Creates cell node that consists of content node which is image filename or text, link node with URL, and style node that
+     * contains children nodes describing style
+     * 
+     * @param col
+     *            Cell's cols attribute value.
+     * @param type
+     *            Type of content stored in cell.
+     * @param link
+     *            Value of link node.
+     * @param content
+     *            Value of content node.
+     * @param styleMap
+     *            Map which is used for creating style node. Key is style child node name and value is child node value.
      * @return Cell node with cols and type attributes and children nodes content, link and style
      * @throws Exception
      */
     public Node createCell(int col, String type, String link, String content, Map styleMap) throws Exception;
+
     /**
-     * Creates cell node that consists of content node which is image filename or text,
-     * and style node that contains children nodes describing style
-     * @param col Cell's cols attribute value.
-     * @param type Type of content stored in cell.
-     * @param content Value of content node.
-     * @param styleMap Map which is used for creating style node. Key is style child node name and value is child node value.
+     * Creates cell node that consists of content node which is image filename or text, and style node that contains children nodes
+     * describing style
+     * 
+     * @param col
+     *            Cell's cols attribute value.
+     * @param type
+     *            Type of content stored in cell.
+     * @param content
+     *            Value of content node.
+     * @param styleMap
+     *            Map which is used for creating style node. Key is style child node name and value is child node value.
      * @return Cell node with cols and type attributes and children nodes content and style.
      * @throws Exception
      */

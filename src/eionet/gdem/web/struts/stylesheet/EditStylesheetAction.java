@@ -46,19 +46,16 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 
-public class EditStylesheetAction extends LookupDispatchAction  {
+public class EditStylesheetAction extends LookupDispatchAction {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
     /*
-     * The method uploads the file from user's filesystem to the repository.
-     * Saves all the other changes made onthe form execpt the file source in textarea
-     *
+     * The method uploads the file from user's filesystem to the repository. Saves all the other changes made onthe form execpt the
+     * file source in textarea
      */
-    public ActionForward upload(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)  {
-
+    public ActionForward upload(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
@@ -84,20 +81,16 @@ public class EditStylesheetAction extends LookupDispatchAction  {
                 x.setWellFormednessChecking();
                 x.checkFromInputStream(new ByteArrayInputStream(xslFile.getFileData()));
             } catch (Exception e) {
-                _logger.error("stylesheet not valid",e);
+                _logger.error("stylesheet not valid", e);
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.notvalid"));
             }
         }
 
-        /*try {
-            IXmlCtx x = new XmlContext();
-            x.setWellFormednessChecking();
-            x.checkFromInputStream((new InputFile(schema)).getSrcInputStream());
-        } catch (Exception e) {
-            _logger.error("schema not valid",e);
-            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.error.notvalid"));
-        }*/
-
+        /*
+         * try { IXmlCtx x = new XmlContext(); x.setWellFormednessChecking(); x.checkFromInputStream((new
+         * InputFile(schema)).getSrcInputStream()); } catch (Exception e) { _logger.error("schema not valid",e);
+         * errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.error.notvalid")); }
+         */
 
         if (errors.isEmpty()) {
             try {
@@ -105,7 +98,7 @@ public class EditStylesheetAction extends LookupDispatchAction  {
                 st.update(user, stylesheetId, schema, xslFile, type, desc, dependsOn);
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.updated"));
             } catch (DCMException e) {
-                _logger.error("Edit stylesheet error",e);
+                _logger.error("Edit stylesheet error", e);
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             }
         }
@@ -118,14 +111,12 @@ public class EditStylesheetAction extends LookupDispatchAction  {
         httpServletRequest.setAttribute("schema", schema);
         return findForward(actionMapping, "success", stylesheetId);
     }
-    /*
-     * The method saves all the changes made on the form.
-     * Saves also modifications made to the file source textarea
-     *
-     */
-    public ActionForward save(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)  {
 
+    /*
+     * The method saves all the changes made on the form. Saves also modifications made to the file source textarea
+     */
+    public ActionForward save(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
@@ -139,7 +130,7 @@ public class EditStylesheetAction extends LookupDispatchAction  {
         String xslContent = form.getXslContent();
         String xslFileName = form.getXslFileName();
         String checksum = form.getChecksum();
-        boolean updateContent=false;
+        boolean updateContent = false;
         String newChecksum = null;
         String dependsOn = form.getDependsOn();
 
@@ -149,22 +140,23 @@ public class EditStylesheetAction extends LookupDispatchAction  {
             return findForward(actionMapping, "success", stylesheetId);
         }
 
-        if (!Utils.isNullStr(xslFileName) && !Utils.isNullStr(xslContent) &&
-                xslContent.indexOf(Constants.FILEREAD_EXCEPTION)==-1) {
+        if (!Utils.isNullStr(xslFileName) && !Utils.isNullStr(xslContent)
+                && xslContent.indexOf(Constants.FILEREAD_EXCEPTION) == -1) {
 
-            //compare checksums
-            try{
+            // compare checksums
+            try {
                 newChecksum = Utils.getChecksumFromString(xslContent);
+            } catch (Exception e) {
+                _logger.error("unable to create checksum");
             }
-            catch(Exception e){
-             _logger.error("unable to create checksum");
-            }
-            if(checksum==null)checksum="";
-            if(newChecksum==null)newChecksum="";
+            if (checksum == null)
+                checksum = "";
+            if (newChecksum == null)
+                newChecksum = "";
 
             updateContent = !checksum.equals(newChecksum);
 
-            if(updateContent){
+            if (updateContent) {
 
                 try {
                     IXmlCtx x = new XmlContext();
@@ -172,7 +164,7 @@ public class EditStylesheetAction extends LookupDispatchAction  {
                     String charset = httpServletRequest.getCharacterEncoding();
                     x.checkFromInputStream(new ByteArrayInputStream(xslContent.getBytes(charset)));
                 } catch (Exception e) {
-                    _logger.error("stylesheet not valid",e);
+                    _logger.error("stylesheet not valid", e);
                     errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.notvalid"));
                 }
 
@@ -182,10 +174,10 @@ public class EditStylesheetAction extends LookupDispatchAction  {
         if (errors.isEmpty()) {
             try {
                 StylesheetManager st = new StylesheetManager();
-                st.updateContent(user, stylesheetId, schema, xslFileName, type, desc,xslContent, updateContent, dependsOn);
+                st.updateContent(user, stylesheetId, schema, xslFileName, type, desc, xslContent, updateContent, dependsOn);
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.updated"));
             } catch (DCMException e) {
-                _logger.error("Edit stylesheet error",e);
+                _logger.error("Edit stylesheet error", e);
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             }
         }
@@ -199,21 +191,23 @@ public class EditStylesheetAction extends LookupDispatchAction  {
 
         return findForward(actionMapping, "success", stylesheetId);
     }
-    public ActionForward cancel(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)  {
+
+    public ActionForward cancel(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         return actionMapping.findForward("success");
     }
 
-    protected Map<String,String> getKeyMethodMap() {
-         Map<String,String> map = new HashMap<String,String>();
-         map.put("label.stylesheet.save", "save");
-         map.put("label.stylesheet.upload", "upload");
-         return map;
+    protected Map<String, String> getKeyMethodMap() {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("label.stylesheet.save", "save");
+        map.put("label.stylesheet.upload", "upload");
+        return map;
     }
-    private ActionForward findForward(ActionMapping actionMapping, String f, String stylesheetId){
+
+    private ActionForward findForward(ActionMapping actionMapping, String f, String stylesheetId) {
         ActionForward forward = actionMapping.findForward(f);
-         StringBuffer path = new StringBuffer(forward.getPath());
-         path.append("?stylesheetId=" + stylesheetId);
+        StringBuffer path = new StringBuffer(forward.getPath());
+        path.append("?stylesheetId=" + stylesheetId);
         forward = new RedirectingActionForward(path.toString());
         return forward;
     }

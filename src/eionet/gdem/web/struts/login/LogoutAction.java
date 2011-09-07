@@ -20,14 +20,13 @@ import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.utils.SecurityUtil;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * LogoutAction
+ * @author Enriko Käsper, TietoEnator Estonia AS LogoutAction
  */
 
-public class LogoutAction   extends Action {
+public class LogoutAction extends Action {
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, GDEMException {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) throws IOException, GDEMException {
 
         httpServletRequest.setCharacterEncoding("UTF-8");
 
@@ -35,11 +34,10 @@ public class LogoutAction   extends Action {
         httpServletRequest.getSession().invalidate();
 
         String logoutURL = SecurityUtil.getLogoutURL(httpServletRequest);
-        if (logoutURL!=null){
+        if (logoutURL != null) {
             httpServletResponse.sendRedirect(logoutURL);
             return null;
         }
         return actionMapping.findForward("home");
     }
 }
-

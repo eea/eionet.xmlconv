@@ -29,40 +29,37 @@ public class CRConversionFormAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    public ActionForward execute(ActionMapping actionMapping,
-            ActionForm actionForm, HttpServletRequest httpServletRequest,
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
 
-        //get the schemas list from the session
-        Object schemasInSession = httpServletRequest.getSession().getAttribute(
-        "conversion.schemas");
+        // get the schemas list from the session
+        Object schemasInSession = httpServletRequest.getSession().getAttribute("conversion.schemas");
 
-        //reset the form in the session
+        // reset the form in the session
         ConversionForm cForm = (ConversionForm) actionForm;
         cForm.resetAll(actionMapping, httpServletRequest);
 
         try {
-            //if schemas list is not stored in the session, then load it from the database
-            if (schemasInSession == null
-                    || ((ArrayList) schemasInSession).size() == 0) {
+            // if schemas list is not stored in the session, then load it from the database
+            if (schemasInSession == null || ((ArrayList) schemasInSession).size() == 0) {
                 schemasInSession = loadSchemas();
-                httpServletRequest.getSession().setAttribute(
-                        "conversion.schemas", schemasInSession);
+                httpServletRequest.getSession().setAttribute("conversion.schemas", schemasInSession);
             }
         } catch (DCMException e) {
             e.printStackTrace();
             _logger.error("Serach CR Conversions error", e);
-            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e
-                    .getErrorCode()));
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveMessages(httpServletRequest, errors);
         }
 
         saveErrors(httpServletRequest, errors);
         return actionMapping.findForward("success");
     }
+
     /**
      * load schemas form db
+     * 
      * @return
      * @throws DCMException
      */

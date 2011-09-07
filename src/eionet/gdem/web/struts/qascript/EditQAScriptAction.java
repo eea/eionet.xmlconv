@@ -52,12 +52,11 @@ public class EditQAScriptAction extends LookupDispatchAction {
     private static LoggerIF _logger = GDEMServices.getLogger();
 
     /*
-     * The method uploads the file from user's filesystem to the repository.
-     * Saves all the other changes made onthe form execpt the file source in
-     * textarea
+     * The method uploads the file from user's filesystem to the repository. Saves all the other changes made onthe form execpt the
+     * file source in textarea
      */
-    public ActionForward upload(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward upload(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
@@ -102,11 +101,10 @@ public class EditQAScriptAction extends LookupDispatchAction {
     }
 
     /*
-     * The method saves all the changes made on the form. Saves also
-     * modifications made to the file source textarea
+     * The method saves all the changes made on the form. Saves also modifications made to the file source textarea
      */
-    public ActionForward save(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward save(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
@@ -151,9 +149,9 @@ public class EditQAScriptAction extends LookupDispatchAction {
             updateContent = !checksum.equals(newChecksum);
         }
 
-
-        //upper limit between 0 and 10Gb
-        if (upperLimit == null || !Utils.isNum(upperLimit) || Integer.parseInt(upperLimit) <= 0 || Integer.parseInt(upperLimit) > 10000) {
+        // upper limit between 0 and 10Gb
+        if (upperLimit == null || !Utils.isNum(upperLimit) || Integer.parseInt(upperLimit) <= 0
+                || Integer.parseInt(upperLimit) > 10000) {
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.upperlimit.validation"));
             saveErrors(httpServletRequest.getSession(), errors);
         }
@@ -180,8 +178,8 @@ public class EditQAScriptAction extends LookupDispatchAction {
         return findForward(actionMapping, "success", scriptId);
     }
 
-    public ActionForward cancel(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward cancel(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         return actionMapping.findForward("success");
     }
 

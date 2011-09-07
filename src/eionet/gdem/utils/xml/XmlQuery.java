@@ -31,7 +31,6 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Attr;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -40,7 +39,7 @@ public class XmlQuery implements IXQuery {
     private IXmlCtx ctx = null;
 
     public XmlQuery(IXmlCtx ctx) {
-        this.ctx=ctx;
+        this.ctx = ctx;
     }
 
     public Node findElementByAttrs(String parentId, Map<String, String> attributes) throws XmlException {
@@ -57,7 +56,7 @@ public class XmlQuery implements IXQuery {
             ++i;
         }
         xpath += "]";
-        //System.out.println(xpath);
+        // System.out.println(xpath);
         Node result = null;
         try {
             result = XPathAPI.selectSingleNode(ctx.getDocument(), xpath);
@@ -67,22 +66,20 @@ public class XmlQuery implements IXQuery {
         return result;
     }
 
-
     public String getAttributeValue(String elementId, String attribute) throws XmlException {
-        String xpath = "//*[@id='"+elementId+"']/@"+attribute;
+        String xpath = "//*[@id='" + elementId + "']/@" + attribute;
         Attr el = null;
-        String result=null;
+        String result = null;
         try {
-            el =(Attr) XPathAPI.selectSingleNode(ctx.getDocument(), xpath);
-            if(el!=null ) {
-                result=el.getValue();
+            el = (Attr) XPathAPI.selectSingleNode(ctx.getDocument(), xpath);
+            if (el != null) {
+                result = el.getValue();
             }
         } catch (TransformerException e) {
             throw new XmlException(e);
         }
         return result;
     }
-
 
     public String getElementValue(String parentId, String name) throws XmlException {
         String value = null;
@@ -91,14 +88,14 @@ public class XmlQuery implements IXQuery {
             Node textNode = XPathAPI.selectSingleNode(ctx.getDocument(), xpath);
             if (textNode != null) {
                 value = textNode.getNodeValue().trim();
-                if (value.equalsIgnoreCase("")) value = null;
+                if (value.equalsIgnoreCase(""))
+                    value = null;
             }
         } catch (TransformerException e) {
             throw new XmlException(e);
         }
         return value;
     }
-
 
     public Node findElementById(String id) throws XmlException {
         String xpath = "//*[@id='" + id + "']";
@@ -112,46 +109,50 @@ public class XmlQuery implements IXQuery {
     }
 
     public List<String> getElementIdentifiers(String elementName) throws XmlException {
-        String xpath = "//"+elementName;
+        String xpath = "//" + elementName;
         List<String> result = new ArrayList<String>();
         try {
             NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
             for (int i = 0; i < nodes.getLength(); i++) {
-                String id=nodes.item(i).getAttributes().getNamedItem("id").getNodeValue();
-                if(id!=null) result.add(id);
+                String id = nodes.item(i).getAttributes().getNamedItem("id").getNodeValue();
+                if (id != null)
+                    result.add(id);
             }
         } catch (Exception e) {
             throw new XmlException(e);
         }
         return result;
     }
+
     public List<Map<String, String>> getElements(String elementName) throws XmlException {
-        String xpath = "//"+elementName;
+        String xpath = "//" + elementName;
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
         try {
             NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
             for (int i = 0; i < nodes.getLength(); i++) {
                 Map<String, String> attr_map = new HashMap<String, String>();
                 for (int j = 0; j < nodes.item(i).getAttributes().getLength(); j++) {
-                    String attr_name=nodes.item(i).getAttributes().item(j).getNodeName();
-                    String attr_value=nodes.item(i).getAttributes().item(j).getNodeValue();
-                    attr_map.put(attr_name,attr_value);
+                    String attr_name = nodes.item(i).getAttributes().item(j).getNodeName();
+                    String attr_value = nodes.item(i).getAttributes().item(j).getNodeValue();
+                    attr_map.put(attr_name, attr_value);
                 }
-                if(attr_map!=null) result.add(attr_map);
+                if (attr_map != null)
+                    result.add(attr_map);
             }
         } catch (Exception e) {
             throw new XmlException(e);
         }
         return result;
     }
+
     public List<String> getElementValues(String elementName) throws XmlException {
-        String xpath = "//"+elementName;
+        String xpath = "//" + elementName;
         List<String> result = new ArrayList<String>();
         try {
             NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
             for (int i = 0; i < nodes.getLength(); i++) {
                 Node child = nodes.item(i).getFirstChild();
-                if(child!=null){
+                if (child != null) {
                     String value = child.getNodeValue();
                     result.add(value);
                 }
@@ -161,15 +162,17 @@ public class XmlQuery implements IXQuery {
         }
         return result;
     }
+
     public List<String> getSchemaElements() throws XmlException {
         String xpath = "//xs:element";
         List<String> result = new ArrayList<String>();
         try {
             NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
             for (int i = 0; i < nodes.getLength(); i++) {
-                if(nodes.item(i).getAttributes()!=null && nodes.item(i).getAttributes().getNamedItem("name")!=null){
-                    String elemName=nodes.item(i).getAttributes().getNamedItem("name").getNodeValue();
-                    if(elemName!=null) result.add(elemName);
+                if (nodes.item(i).getAttributes() != null && nodes.item(i).getAttributes().getNamedItem("name") != null) {
+                    String elemName = nodes.item(i).getAttributes().getNamedItem("name").getNodeValue();
+                    if (elemName != null)
+                        result.add(elemName);
                 }
             }
         } catch (Exception e) {
@@ -177,14 +180,15 @@ public class XmlQuery implements IXQuery {
         }
         return result;
     }
+
     public String getSchemaElementType(String elementName) throws XmlException {
-        String xpath = "//xs:element[@name='" + elementName +"']//xs:restriction";
+        String xpath = "//xs:element[@name='" + elementName + "']//xs:restriction";
         String base = null;
         try {
             NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
-            if (nodes.getLength()>0) {
-                if(nodes.item(0).getAttributes()!=null && nodes.item(0).getAttributes().getNamedItem("base")!=null)
-                    base=nodes.item(0).getAttributes().getNamedItem("base").getNodeValue();
+            if (nodes.getLength() > 0) {
+                if (nodes.item(0).getAttributes() != null && nodes.item(0).getAttributes().getNamedItem("base") != null)
+                    base = nodes.item(0).getAttributes().getNamedItem("base").getNodeValue();
             }
         } catch (Exception e) {
             throw new XmlException(e);
@@ -198,9 +202,10 @@ public class XmlQuery implements IXQuery {
         try {
             NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
             for (int i = 0; i < nodes.getLength(); i++) {
-                if(nodes.item(i).getAttributes()!=null && nodes.item(i).getAttributes().getNamedItem("schemaLocation")!=null){
-                    String schemaLocation=nodes.item(i).getAttributes().getNamedItem("schemaLocation").getNodeValue();
-                    if(schemaLocation!=null) result.add(schemaLocation);
+                if (nodes.item(i).getAttributes() != null && nodes.item(i).getAttributes().getNamedItem("schemaLocation") != null) {
+                    String schemaLocation = nodes.item(i).getAttributes().getNamedItem("schemaLocation").getNodeValue();
+                    if (schemaLocation != null)
+                        result.add(schemaLocation);
                 }
             }
         } catch (Exception e) {
@@ -209,20 +214,20 @@ public class XmlQuery implements IXQuery {
         return result;
     }
 
-    public Map<String, String> getSchemaElementWithMultipleValues()
-            throws XmlException {
+    public Map<String, String> getSchemaElementWithMultipleValues() throws XmlException {
         String xpath = "//xs:element[@maxOccurs='unbounded']";
         Map<String, String> elements = new HashMap<String, String>();
         try {
             NodeList nodes = XPathAPI.selectNodeList(ctx.getDocument(), xpath);
             for (int i = 0; i < nodes.getLength(); i++) {
-                if(nodes.item(i).getAttributes()!=null && nodes.item(i).getAttributes().getNamedItem("ref")!=null
-                         && nodes.item(i).getAttributes().getNamedItem("dd:multiValueDelim")!=null){
+                if (nodes.item(i).getAttributes() != null && nodes.item(i).getAttributes().getNamedItem("ref") != null
+                        && nodes.item(i).getAttributes().getNamedItem("dd:multiValueDelim") != null) {
                     String elemName = nodes.item(i).getAttributes().getNamedItem("ref").getNodeValue();
                     String delimiter = nodes.item(i).getAttributes().getNamedItem("dd:multiValueDelim").getNodeValue();
-                    if(elemName!=null){
-                        //get elem name without namespace
-                        if(elemName.contains(":"))elemName = elemName.substring(elemName.indexOf(":") + 1);
+                    if (elemName != null) {
+                        // get elem name without namespace
+                        if (elemName.contains(":"))
+                            elemName = elemName.substring(elemName.indexOf(":") + 1);
                         elements.put(elemName, delimiter);
                     }
                 }

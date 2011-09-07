@@ -38,65 +38,69 @@ import eionet.gdem.conversion.excel.writer.ExcelXMLHandler;
 
 
 /**
-* This class is creating handlers for creating Excel file from xml
-* called from ConversionService
-* @author Enriko Käsper
-*/
+ * This class is creating handlers for creating Excel file from xml
+ * called from ConversionService
+ * @author Enriko Käsper
+ */
 
 public class ExcelProcessor  {
-  public ExcelProcessor() {
-  }
-  public void makeExcel(String sIn, String sOut) throws GDEMException {
-    try
-    {
-        FileOutputStream outStream = new FileOutputStream(sOut);
-        makeExcel(sIn, outStream);
-        outStream.close();
-
-//        InputSource is = new InputSource(
-
+    public ExcelProcessor() {
     }
-    catch(Exception e)
-    {
-       throw new GDEMException("ErrorConversionHandler - couldn't save the Excel file: " + e.toString(), e);
+    public void makeExcel(String sIn, String sOut) throws GDEMException {
+        try
+        {
+            FileOutputStream outStream = new FileOutputStream(sOut);
+            makeExcel(sIn, outStream);
+            outStream.close();
+
+            //        InputSource is = new InputSource(
+
+        }
+        catch(Exception e)
+        {
+            throw new GDEMException("ErrorConversionHandler - couldn't save the Excel file: " + e.toString(), e);
+        }
     }
-  }
-  public void makeExcel(String sIn, OutputStream sOut) throws GDEMException {
+    public void makeExcel(String sIn, OutputStream sOut) throws GDEMException {
 
-      if (sIn == null) return;
-      if (sOut == null) return;
+        if (sIn == null) {
+            return;
+        }
+        if (sOut == null) {
+            return;
+        }
 
-      try{
-        ExcelConversionHandlerIF excel = ExcelUtils.getExcelConversionHandler();
-        //excel.setFileName(sOut);
+        try{
+            ExcelConversionHandlerIF excel = ExcelUtils.getExcelConversionHandler();
+            //excel.setFileName(sOut);
 
-        ExcelXMLHandler handler=new ExcelXMLHandler(excel);
-        SAXParserFactory spfact = SAXParserFactory.newInstance();
-        SAXParser parser = spfact.newSAXParser();
-        XMLReader reader = parser.getXMLReader();
-        spfact.setValidating(true);
+            ExcelXMLHandler handler=new ExcelXMLHandler(excel);
+            SAXParserFactory spfact = SAXParserFactory.newInstance();
+            SAXParser parser = spfact.newSAXParser();
+            XMLReader reader = parser.getXMLReader();
+            spfact.setValidating(true);
 
-        reader.setContentHandler(handler);
-        reader.parse(sIn);
-        excel.writeToFile(sOut);
-      }
-      catch (Exception e){
-        throw new GDEMException("Error generating Excel file: " + e.toString(), e);
-      }
+            reader.setContentHandler(handler);
+            reader.parse(sIn);
+            excel.writeToFile(sOut);
+        }
+        catch (Exception e){
+            throw new GDEMException("Error generating Excel file: " + e.toString(), e);
+        }
 
-      return;
-  }
-  public static void main(String[] args){
-    String srcFile = "E:\\Projects\\gdem\\tmp\\medium.xml";
-    String excelFile = "E:\\Projects\\gdem\\tmp\\medium.xls";
-    //String srcFile = "F:\\Projects\\gdem\\test\\content2.xml";
-    //String srcFile = "http://reportek2.eionet.eu.int/AAAcolqv1nta/envqwkktq/EE_bodies.xml";
-    try{
-      ExcelProcessor processor = new ExcelProcessor();
-      processor.makeExcel(srcFile, excelFile);
+        return;
     }
-    catch(Exception e){
-      System.out.println(e.toString());
+    public static void main(String[] args){
+        String srcFile = "C:/Projects/EEA/webapps/xmlconv/ROOT/tmp/gdem_out1314612515459.xml";
+        String excelFile = "C:/Projects/EEA/webapps/xmlconv/ROOT/tmp/gdem_out1314612515459.xls";
+        //String srcFile = "F:\\Projects\\gdem\\test\\content2.xml";
+        //String srcFile = "http://reportek2.eionet.eu.int/AAAcolqv1nta/envqwkktq/EE_bodies.xml";
+        try{
+            ExcelProcessor processor = new ExcelProcessor();
+            processor.makeExcel(srcFile, excelFile);
+        }
+        catch(Exception e){
+            System.out.println(e.toString());
+        }
     }
-  }
 }

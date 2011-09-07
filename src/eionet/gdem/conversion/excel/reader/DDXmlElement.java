@@ -22,8 +22,7 @@
 package eionet.gdem.conversion.excel.reader;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * DDXmlElement
+ * @author Enriko Käsper, Tieto Estonia DDXmlElement
  */
 
 public class DDXmlElement {
@@ -31,8 +30,8 @@ public class DDXmlElement {
     private String name;
     private String localName;
     private String attributes;
-    private int colIndex=-1;
-    private boolean isMainTable=false;
+    private int colIndex = -1;
+    private boolean isMainTable = false;
 
     public DDXmlElement(String name, String localName, String attributes) {
         super();
@@ -40,12 +39,15 @@ public class DDXmlElement {
         this.localName = localName;
         this.attributes = attributes;
     }
+
     public String getName() {
         return name;
     }
+
     public String getLocalName() {
         return localName;
     }
+
     public String getAttributes() {
         return attributes;
     }
@@ -65,6 +67,5 @@ public class DDXmlElement {
     public void setMainTable(boolean isMainTable) {
         this.isMainTable = isMainTable;
     }
-
 
 }

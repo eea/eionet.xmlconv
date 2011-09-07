@@ -58,7 +58,7 @@ public class QAScriptManager {
 
     /**
      * Returns QAScript object with all the data incl. file contebnt
-     *
+     * 
      * @param queryId
      * @return
      * @throws DCMException
@@ -83,7 +83,6 @@ public class QAScriptManager {
                 qaScript.setFileName((String) scriptData.get("query"));
                 qaScript.setUpperLimit((String) scriptData.get("upper_limit"));
 
-
                 String queryFolder = Properties.queriesFolder;
 
                 if (!Utils.isNullStr(qaScript.getFileName())) {
@@ -94,8 +93,7 @@ public class QAScriptManager {
                     try {
                         queryContent = Utils.readStrFromFile(queryFolder + qaScript.getFileName());
                     } catch (IOException e) {
-                        queryContent = Constants.FILEREAD_EXCEPTION + queryFolder + qaScript.getFileName() + "\n "
-                                + e.toString();
+                        queryContent = Constants.FILEREAD_EXCEPTION + queryFolder + qaScript.getFileName() + "\n " + e.toString();
                     }
                     qaScript.setScriptContent(queryContent);
                     String checksum = null;
@@ -123,8 +121,8 @@ public class QAScriptManager {
 
     }
 
-    public void update(String user, String scriptId, String shortName, String schemaId, String resultType,
-            String descr, String scriptType, String curFileName, FormFile file, String upperLimit) throws DCMException {
+    public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
+            String scriptType, String curFileName, FormFile file, String upperLimit) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
@@ -170,7 +168,7 @@ public class QAScriptManager {
 
     /**
      * Update script properties
-     *
+     * 
      * @param user
      * @param scriptId
      * @param shortName
@@ -183,9 +181,8 @@ public class QAScriptManager {
      * @param updateContent
      * @throws DCMException
      */
-    public void update(String user, String scriptId, String shortName, String schemaId, String resultType,
-            String descr, String scriptType, String curFileName, String upperLimit, String content, boolean updateContent)
-            throws DCMException {
+    public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
+            String scriptType, String curFileName, String upperLimit, String content, boolean updateContent) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
@@ -203,8 +200,8 @@ public class QAScriptManager {
         }
 
         try {
-            if (!Utils.isNullStr(curFileName) && !Utils.isNullStr(content)
-                    && content.indexOf(Constants.FILEREAD_EXCEPTION) == -1 && updateContent) {
+            if (!Utils.isNullStr(curFileName) && !Utils.isNullStr(content) && content.indexOf(Constants.FILEREAD_EXCEPTION) == -1
+                    && updateContent) {
 
                 // create backup of existing file
                 BackupManager bum = new BackupManager();
@@ -222,9 +219,8 @@ public class QAScriptManager {
     }
 
     /**
-     * Checks if the script with the given filename exists whether in db or in
-     * fs
-     *
+     * Checks if the script with the given filename exists whether in db or in fs
+     * 
      * @param fileName
      * @return
      * @throws SQLException
@@ -248,7 +244,7 @@ public class QAScriptManager {
 
     /**
      * Store QA script file into file system
-     *
+     * 
      * @param file
      * @param fileName
      * @throws FileNotFoundException
@@ -272,7 +268,7 @@ public class QAScriptManager {
 
     /**
      * Store QA script content into file system
-     *
+     * 
      * @param user
      * @param scriptId
      * @param fileContent
@@ -309,7 +305,7 @@ public class QAScriptManager {
 
     /**
      * Delete the selected QA script from database and file system
-     *
+     * 
      * @param user
      * @param scriptId
      * @throws DCMException
@@ -351,7 +347,7 @@ public class QAScriptManager {
 
     /**
      * Add a new QA script into the repository
-     *
+     * 
      * @param user
      * @param shortName
      * @param schemaId
@@ -363,8 +359,8 @@ public class QAScriptManager {
      * @return
      * @throws DCMException
      */
-    public String add(String user, String shortName, String schemaId, String schema, String resultType,
-            String description, String scriptType, FormFile scriptFile, String upperLimit) throws DCMException {
+    public String add(String user, String shortName, String schemaId, String schema, String resultType, String description,
+            String scriptType, FormFile scriptFile, String upperLimit) throws DCMException {
 
         String scriptId = null;
         try {
@@ -409,7 +405,7 @@ public class QAScriptManager {
 
     /**
      * Update schema validation flag
-     *
+     * 
      * @param user
      * @param schemaId
      * @param validate

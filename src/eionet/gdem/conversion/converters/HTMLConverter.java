@@ -31,7 +31,8 @@ import eionet.gdem.GDEMException;
 
 public class HTMLConverter extends ConvertStartegy {
 
-    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException, Exception {
+    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException,
+            Exception {
         String htmlFile = tmpFolder + "gdem_" + System.currentTimeMillis() + ".html";
         if (result != null)
             runXslTransformation(source, xslt, result);

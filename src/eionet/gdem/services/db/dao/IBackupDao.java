@@ -6,12 +6,11 @@ import java.util.List;
 
 import eionet.gdem.dto.BackupDto;
 
-public interface IBackupDao extends IDbSchema{
+public interface IBackupDao extends IDbSchema {
 
+    public void addBackup(BackupDto backup) throws SQLException;
 
-      public void addBackup(BackupDto backup) throws SQLException;
+    public List<BackupDto> getBackups(String objectID) throws SQLException;
 
-      public List<BackupDto> getBackups(String objectID) throws SQLException;
-
-      public void removeBackupsOlderThan(Timestamp purgeDate) throws SQLException;
+    public void removeBackupsOlderThan(Timestamp purgeDate) throws SQLException;
 }

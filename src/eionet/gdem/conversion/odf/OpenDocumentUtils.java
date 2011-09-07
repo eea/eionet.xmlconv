@@ -19,7 +19,6 @@
  */
 package eionet.gdem.conversion.odf;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
@@ -44,8 +43,7 @@ public class OpenDocumentUtils {
         ZipInputStream zipStream = new ZipInputStream(input);
         ZipEntry zipEntry = null;
         try {
-            while (zipStream.available() == 1
-                    && (zipEntry = zipStream.getNextEntry()) != null) {
+            while (zipStream.available() == 1 && (zipEntry = zipStream.getNextEntry()) != null) {
                 if (zipEntry != null) {
                     if ("content.xml".equals(zipEntry.getName())) {
                         // content file found, it is OpenDocument.

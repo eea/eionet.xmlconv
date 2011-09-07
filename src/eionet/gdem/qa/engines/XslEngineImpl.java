@@ -38,8 +38,7 @@ import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * XslEngineImpl
+ * @author Enriko Käsper, Tieto Estonia XslEngineImpl
  */
 
 public class XslEngineImpl extends QAScriptEngineStrategy {
@@ -55,26 +54,27 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
 
         try {
 
-            //build InputSource for xsl
-            if(!Utils.isNullStr(script.getScriptSource())){
-                tmpXslFile= Utils.saveStrToFile(null, script.getScriptSource(), "xsl");
-            }
-            else if(!Utils.isNullStr(script.getScriptFileName())){
-                fisXsl=new FileInputStream(script.getScriptFileName());
-            }
-            else{
+            // build InputSource for xsl
+            if (!Utils.isNullStr(script.getScriptSource())) {
+                tmpXslFile = Utils.saveStrToFile(null, script.getScriptSource(), "xsl");
+            } else if (!Utils.isNullStr(script.getScriptFileName())) {
+                fisXsl = new FileInputStream(script.getScriptFileName());
+            } else {
                 throw new GDEMException("XQuery engine could not find script source or script file name!");
             }
-            //Build InputSource for xml file
+            // Build InputSource for xml file
             src = new InputFile(script.getSrcFileUrl());
-            //streamXml = src.getSrcInputStream();
+            // streamXml = src.getSrcInputStream();
 
-            //execute xsl transformation
+            // execute xsl transformation
 
-            //XSLTransformer transformer = new XSLTransformer();
-            //transformer.transform(tmpXslFile==null?script.getScriptFileName():tmpXslFile, new InputSource(fisXsl), result, parseParams(script.getParams()));
+            // XSLTransformer transformer = new XSLTransformer();
+            // transformer.transform(tmpXslFile==null?script.getScriptFileName():tmpXslFile, new InputSource(fisXsl), result,
+            // parseParams(script.getParams()));
 
-            ConvertContext ctx = new ConvertContext(src.getSrcInputStream(), tmpXslFile==null?script.getScriptFileName():tmpXslFile, result,null);
+            ConvertContext ctx =
+                    new ConvertContext(src.getSrcInputStream(), tmpXslFile == null ? script.getScriptFileName() : tmpXslFile,
+                            result, null);
             ConvertStartegy cs = new XMLConverter();
 
             Map<String, String> params = src.getCdrParams();
@@ -82,30 +82,28 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
             cs.setXslParams(params);
             ctx.executeConversion(cs);
 
-
-            if(tmpXslFile!=null){
+            if (tmpXslFile != null) {
                 Utils.deleteFile(tmpXslFile);
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-              _logger.error("==== CATCHED EXCEPTION " + e.toString() );
-            throw new GDEMException (e.getMessage());
-        }
-        finally{
+            _logger.error("==== CATCHED EXCEPTION " + e.toString());
+            throw new GDEMException(e.getMessage());
+        } finally {
             if (src != null) {
-                try{
+                try {
                     src.close();
 
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
-            if(fisXsl!=null){
+            if (fisXsl != null) {
                 try {
                     fisXsl.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-          }
+            }
         }
 
     }

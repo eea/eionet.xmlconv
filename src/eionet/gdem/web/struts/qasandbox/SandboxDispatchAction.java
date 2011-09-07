@@ -35,34 +35,33 @@ import org.apache.struts.actions.LookupDispatchAction;
 import eionet.gdem.dto.Schema;
 
 /**
- * SearchCRSandboxAction
- * The axction  dispatches the original sandbox request to the correct action.
- *
+ * SearchCRSandboxAction The axction dispatches the original sandbox request to the correct action.
+ * 
  * @author Enriko Käsper, Tieto Estonia
  */
 
 public class SandboxDispatchAction extends LookupDispatchAction {
 
-    public ActionForward searchXml(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward searchXml(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         return actionMapping.findForward("search");
     }
 
-    public ActionForward extractSchema(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward extractSchema(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         return actionMapping.findForward("extract");
     }
 
-    public ActionForward findScripts(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward findScripts(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         return actionMapping.findForward("find");
     }
 
-    public ActionForward manualUrl(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward manualUrl(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         QASandboxForm cForm = (QASandboxForm) actionForm;
         Schema schema = cForm.getSchema();
@@ -73,21 +72,21 @@ public class SandboxDispatchAction extends LookupDispatchAction {
         return actionMapping.findForward("success");
     }
 
-    public ActionForward addToWorkqueue(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward addToWorkqueue(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         return actionMapping.findForward("workqueue");
 
     }
 
-    public ActionForward saveFile(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward saveFile(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         return actionMapping.findForward("save");
     }
 
-    public ActionForward runScript(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward runScript(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         return actionMapping.findForward("run");
     }

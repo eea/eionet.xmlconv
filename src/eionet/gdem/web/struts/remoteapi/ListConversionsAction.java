@@ -24,56 +24,53 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.BaseAction;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * ListConversionAction
+ * @author Enriko Käsper, TietoEnator Estonia AS ListConversionAction
  */
 
-public class ListConversionsAction  extends BaseAction {
+public class ListConversionsAction extends BaseAction {
     private static LoggerIF _logger = GDEMServices.getLogger();
 
     public static final String SCHEMA_PARAM_NAME = "schema";
 
     /**
-     * Purpose of this action is to execute ConversionService method listConversions.
-     * The request could have schema parameter
+     * Purpose of this action is to execute ConversionService method listConversions. The request could have schema parameter
      */
-    public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) throws ServletException{
+    public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request,
+            HttpServletResponse httpServletResponse) throws ServletException {
 
-
-        //create custom HttpServletResponseWrapper
+        // create custom HttpServletResponseWrapper
         HttpMethodResponseWrapper methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
-        //get request parameters
+        // get request parameters
         Map params = request.getParameterMap();
 
-        try{
+        try {
             String schema = null;
-            if(params.containsKey(SCHEMA_PARAM_NAME))
-                schema = (String)((Object[]) params.get(SCHEMA_PARAM_NAME))[0];
-            if(Utils.isNullStr(schema))schema=null;
+            if (params.containsKey(SCHEMA_PARAM_NAME))
+                schema = (String) ((Object[]) params.get(SCHEMA_PARAM_NAME))[0];
+            if (Utils.isNullStr(schema))
+                schema = null;
 
-            //Call ConversionService
+            // Call ConversionService
             ConversionServiceIF cs = new ConversionService();
             Vector v = cs.listConversions(schema);
 
-            //parse the result of Conversion Service method and format it as XML
+            // parse the result of Conversion Service method and format it as XML
             ListConversionsResult xmlResult = new ListConversionsResult();
             xmlResult.setResult(v);
             xmlResult.writeXML();
-            //flush the result into servlet outputstream
+            // flush the result into servlet outputstream
             methodResponse.flushXML(xmlResult);
-        }
-        catch(Exception e){
-                _logger.error(e.toString());
-                try{
-                    //if error happened, then flush the error in XML format into servlet outputstream
-                    methodResponse.flushXMLError(HttpServletResponse.SC_BAD_REQUEST,e.getMessage(),map.getPath(),params);
-                }
-                catch(Exception ge){
-                    _logger.error("Unable to flush XML error: " + ge.toString());
-                    throw new ServletException (ge);
-                }
+        } catch (Exception e) {
+            _logger.error(e.toString());
+            try {
+                // if error happened, then flush the error in XML format into servlet outputstream
+                methodResponse.flushXMLError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage(), map.getPath(), params);
+            } catch (Exception ge) {
+                _logger.error("Unable to flush XML error: " + ge.toString());
+                throw new ServletException(ge);
             }
-        //Do nothing, then response is already sent.
+        }
+        // Do nothing, then response is already sent.
         return map.findForward(null);
     }
 }

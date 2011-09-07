@@ -40,17 +40,16 @@ import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 
 /**
- * QASandboxFormAction
- * Open sandbox form. Optionally load the form from session.
- *
+ * QASandboxFormAction Open sandbox form. Optionally load the form from session.
+ * 
  * @author Enriko Käsper, Tieto Estonia
  */
 
 public class QASandboxFormAction extends Action {
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
 
         // get the schemas list from the session
@@ -86,7 +85,7 @@ public class QASandboxFormAction extends Action {
 
     /**
      * load schemas form db
-     *
+     * 
      * @return
      * @throws DCMException
      */

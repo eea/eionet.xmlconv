@@ -47,7 +47,6 @@ public class StylesheetForm extends ActionForm {
         return null;
     }
 
-
     public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         schema = null;
         outputtype = null;
@@ -55,111 +54,89 @@ public class StylesheetForm extends ActionForm {
         xslfile = null;
     }
 
-
     public String getDescription() {
         return description;
     }
-
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-
     public String getOutputtype() {
         return outputtype;
     }
-
 
     public void setOutputtype(String outputtype) {
         this.outputtype = outputtype;
     }
 
-
     public String getSchema() {
         return schema;
     }
-
 
     public void setSchema(String schema) {
         this.schema = schema;
     }
 
-
     public FormFile getXslfile() {
         return xslfile;
     }
-
 
     public void setXslfile(FormFile xslfile) {
         this.xslfile = xslfile;
     }
 
-
     public String getSchemaId() {
         return schemaId;
     }
-
 
     public void setSchemaId(String schemaId) {
         this.schemaId = schemaId;
     }
 
-
     public String getXsl() {
         return xsl;
     }
-
 
     public void setXsl(String xsl) {
         this.xsl = xsl;
     }
 
-
     public String getStylesheetId() {
         return stylesheetId;
     }
-
 
     public void setStylesheetId(String stylesheetId) {
         this.stylesheetId = stylesheetId;
     }
 
-
     public String getXslContent() {
         return xslContent;
     }
-
 
     public void setXslContent(String xslContent) {
         this.xslContent = xslContent;
     }
 
-
     public String getXslFileName() {
         return xslFileName;
     }
-
 
     public void setXslFileName(String xslFileName) {
         this.xslFileName = xslFileName;
     }
 
-
     public String getModified() {
         return modified;
     }
-
 
     public void setModified(String modified) {
         this.modified = modified;
     }
 
-
     public String getChecksum() {
         return checksum;
     }
-
 
     public void setChecksum(String checksum) {
         this.checksum = checksum;
@@ -172,9 +149,9 @@ public class StylesheetForm extends ActionForm {
         return dependsOn;
     }
 
-
     /**
-     * @param dependsOn the dependsOn to set
+     * @param dependsOn
+     *            the dependsOn to set
      */
     public void setDependsOn(String dependsOn) {
         this.dependsOn = dependsOn;

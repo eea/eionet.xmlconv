@@ -34,11 +34,8 @@ public class AddStylesheetHolder {
         return convTypes;
     }
 
-
     public void setConvTypes(List convTypes) {
         this.convTypes = convTypes;
     }
-
-
 
 }

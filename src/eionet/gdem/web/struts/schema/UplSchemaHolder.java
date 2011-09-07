@@ -30,45 +30,36 @@ public class UplSchemaHolder {
     boolean ssdPrm;
     boolean ssuPrm;
 
-
     public UplSchemaHolder() {
     }
-
 
     public List getSchemas() {
         return schemas;
     }
 
-
     public void setSchemas(List schemas) {
         this.schemas = schemas;
     }
-
 
     public boolean isSsdPrm() {
         return ssdPrm;
     }
 
-
     public void setSsdPrm(boolean ssdPrm) {
         this.ssdPrm = ssdPrm;
     }
-
 
     public boolean isSsiPrm() {
         return ssiPrm;
     }
 
-
     public void setSsiPrm(boolean ssiPrm) {
         this.ssiPrm = ssiPrm;
     }
 
-
     public boolean isSsuPrm() {
         return ssiPrm;
     }
-
 
     public void setSsuPrm(boolean ssuPrm) {
         this.ssuPrm = ssuPrm;

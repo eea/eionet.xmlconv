@@ -26,8 +26,7 @@ import eionet.gdem.dto.Schema;
 
 public class QAScriptListHolder {
     /**
-     * @author Enriko Käsper, Tieto Estonia
-     * QAScriptListHolder
+     * @author Enriko Käsper, Tieto Estonia QAScriptListHolder
      */
 
     private List<Schema> qascripts;
@@ -38,76 +37,60 @@ public class QAScriptListHolder {
     boolean qsiPrm;
     boolean qsuPrm;
 
-
-
     public boolean isQsuPrm() {
         return qsuPrm;
     }
-
 
     public void setQsuPrm(boolean qsuPrm) {
         this.qsuPrm = qsuPrm;
     }
 
-
     public boolean isQsiPrm() {
         return qsiPrm;
     }
-
 
     public void setQsiPrm(boolean qsiPrm) {
         this.qsiPrm = qsiPrm;
     }
 
-
     public QAScriptListHolder() {
     }
-
 
     public List<Schema> getQascripts() {
         return qascripts;
     }
 
-
     public void setQascripts(List<Schema> qascripts) {
         this.qascripts = qascripts;
     }
-
 
     public boolean isSsiPrm() {
         return ssiPrm;
     }
 
-
     public void setSsiPrm(boolean ssiPrm) {
         this.ssiPrm = ssiPrm;
     }
-
 
     public boolean isSsdPrm() {
         return ssdPrm;
     }
 
-
     public void setSsdPrm(boolean ssdPrm) {
         this.ssdPrm = ssdPrm;
     }
-
 
     public boolean isWqiPrm() {
         return wqiPrm;
     }
 
-
     public void setWqiPrm(boolean wqiPrm) {
         this.wqiPrm = wqiPrm;
     }
 
-
     public boolean isWquPrm() {
         return wquPrm;
     }
-
 
     public void setWquPrm(boolean wquPrm) {
         this.wquPrm = wquPrm;

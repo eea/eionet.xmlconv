@@ -21,7 +21,6 @@
  * Original Code: Kaido Laine (TietoEnator)
  */
 
-
 package eionet.gdem.qa.servlets;
 
 import java.util.Timer;
@@ -36,27 +35,26 @@ import eionet.gdem.qa.WQChecker;
 import eionet.gdem.services.GDEMServices;
 
 /**
-* Servlet started automatically when the servlet engine starts
-* Runs the scheduled Workqueue checker - checks if new jobs received
-*/
+ * Servlet started automatically when the servlet engine starts Runs the scheduled Workqueue checker - checks if new jobs received
+ */
 
 public class WQCheckerServlet extends HttpServlet {
 
-  public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config) throws ServletException {
 
-      try {
-          (new Timer(true)).scheduleAtFixedRate( new WQChecker(), 0, Properties.wqCheckInterval );
-          try {
-              GDEMServices.getDaoService().getXQJobDao().changeJobStatusByStatus(Constants.XQ_DOWNLOADING_SRC, Constants.XQ_RECEIVED);
-              GDEMServices.getDaoService().getXQJobDao().changeJobStatusByStatus(Constants.XQ_PROCESSING, Constants.XQ_RECEIVED);
-          }
-          catch (Exception e) {
-              GDEMServices.getLogger().error("Error reseting active jobs: " + e.toString());
-          }
-    } catch (Exception e) {
-      //better error handling here!!
-      throw new ServletException(e.getMessage(), e);
+        try {
+            (new Timer(true)).scheduleAtFixedRate(new WQChecker(), 0, Properties.wqCheckInterval);
+            try {
+                GDEMServices.getDaoService().getXQJobDao()
+                        .changeJobStatusByStatus(Constants.XQ_DOWNLOADING_SRC, Constants.XQ_RECEIVED);
+                GDEMServices.getDaoService().getXQJobDao().changeJobStatusByStatus(Constants.XQ_PROCESSING, Constants.XQ_RECEIVED);
+            } catch (Exception e) {
+                GDEMServices.getLogger().error("Error reseting active jobs: " + e.toString());
+            }
+        } catch (Exception e) {
+            // better error handling here!!
+            throw new ServletException(e.getMessage(), e);
+        }
     }
-  }
 
 }

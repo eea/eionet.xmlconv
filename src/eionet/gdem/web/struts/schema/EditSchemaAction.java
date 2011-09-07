@@ -43,8 +43,8 @@ public class EditSchemaAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
 
@@ -65,12 +65,12 @@ public class EditSchemaAction extends Action {
                 return actionMapping.findForward("back");
             } catch (DCMException e) {
                 e.printStackTrace();
-                _logger.error("Error editing schema",e);
+                _logger.error("Error editing schema", e);
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             }
         }
-        errors =form.validate(actionMapping, httpServletRequest);
-        if(errors.size()>0){
+        errors = form.validate(actionMapping, httpServletRequest);
+        if (errors.size() > 0) {
             httpServletRequest.getSession().setAttribute("dcm.errors", errors);
             return actionMapping.findForward("fail");
         }
@@ -79,7 +79,6 @@ public class EditSchemaAction extends Action {
             httpServletRequest.getSession().setAttribute("dcm.errors", errors);
             return actionMapping.findForward("success");
         }
-
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
 
@@ -91,7 +90,7 @@ public class EditSchemaAction extends Action {
             httpServletRequest.setAttribute("schema", schema);
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error editing schema",e);
+            _logger.error("Error editing schema", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);

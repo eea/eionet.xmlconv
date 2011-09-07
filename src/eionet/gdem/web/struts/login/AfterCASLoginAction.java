@@ -21,27 +21,27 @@ import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * AfterCASLoginAction
+ * @author Enriko Käsper, TietoEnator Estonia AS AfterCASLoginAction
  */
 
-public class AfterCASLoginAction  extends Action {
+public class AfterCASLoginAction extends Action {
 
     /** */
     public static final String AFTER_LOGIN_ATTR_NAME = "afterLogin";
 
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) throws IOException {
 
-        //Store user in session
+        // Store user in session
         AppUser aclUser = SecurityUtil.getUser(httpServletRequest, Names.USER_ATT);
 
-        //remove session data, that contains permission related attributes
+        // remove session data, that contains permission related attributes
         QAScriptListLoader.clearList(httpServletRequest);
         StylesheetListLoader.clearList(httpServletRequest);
 
-        String afterLogin = (String)httpServletRequest.getSession().getAttribute(AFTER_LOGIN_ATTR_NAME);
+        String afterLogin = (String) httpServletRequest.getSession().getAttribute(AFTER_LOGIN_ATTR_NAME);
 
-        if (afterLogin != null && !afterLogin.toLowerCase().contains("/tiles/layout.jsp")){
+        if (afterLogin != null && !afterLogin.toLowerCase().contains("/tiles/layout.jsp")) {
             httpServletResponse.sendRedirect(afterLogin);
             return null;
         }
@@ -50,4 +50,3 @@ public class AfterCASLoginAction  extends Action {
 
     }
 }
-

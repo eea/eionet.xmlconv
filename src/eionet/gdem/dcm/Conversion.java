@@ -33,24 +33,21 @@ import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 
-
 public class Conversion {
 
-    private static LoggerIF _logger=GDEMServices.getLogger();
-    public static String CONVERSION_ELEMENT="conversion";
-    private static List conversions =new ArrayList();
-
-
+    private static LoggerIF _logger = GDEMServices.getLogger();
+    public static String CONVERSION_ELEMENT = "conversion";
+    private static List conversions = new ArrayList();
 
     static {
         try {
 
-            IXmlCtx ctx=new XmlContext();
+            IXmlCtx ctx = new XmlContext();
             ctx.checkFromFile(Properties.convFile);
-            IXQuery xQuery=ctx.getQueryManager();
+            IXQuery xQuery = ctx.getQueryManager();
             List identifiers = xQuery.getElementIdentifiers(CONVERSION_ELEMENT);
             for (int i = 0; i < identifiers.size(); i++) {
-                String id=(String) identifiers.get(i);
+                String id = (String) identifiers.get(i);
                 ConversionDto resObject = new ConversionDto();
                 resObject.setConvId(id);
                 resObject.setDescription(xQuery.getElementValue(id, "description"));
@@ -67,22 +64,19 @@ public class Conversion {
 
     }
 
-
     public static List getConversions() {
         return conversions;
     }
 
-
     public static ConversionDto getConversionById(String convId) {
-        ConversionDto conversion=null;
+        ConversionDto conversion = null;
         for (int i = 0; i < conversions.size(); i++) {
             if (((ConversionDto) conversions.get(i)).getConvId().compareTo(convId) == 0) {
-                conversion=(ConversionDto) conversions.get(i);
+                conversion = (ConversionDto) conversions.get(i);
                 break;
             }
         }
         return conversion;
     }
-
 
 }

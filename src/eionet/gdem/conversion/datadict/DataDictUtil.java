@@ -30,18 +30,15 @@ import java.util.Map;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
-import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.DDServiceClient;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
-import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * DataDictUtil
+ * @author Enriko Käsper, Tieto Estonia DataDictUtil
  */
 
 public class DataDictUtil {
@@ -50,13 +47,13 @@ public class DataDictUtil {
     public static final String SCHEMA_SERVLET = "GetSchema";
     public static final String CONTAINER_SCHEMA_SERVLET = "GetContainerSchema";
 
-    private static LoggerIF logger=GDEMServices.getLogger();
+    private static LoggerIF logger = GDEMServices.getLogger();
 
     public static String getInstanceUrl(String schema_url) throws GDEMException {
 
         try {
 
-            //throws Exception, if not correct URL
+            // throws Exception, if not correct URL
             URL schemaURL = new URL(schema_url);
 
             String id = getSchemaIdParamFromUrl(schema_url);
@@ -64,27 +61,24 @@ public class DataDictUtil {
             String type = id.substring(0, 3);
             id = id.substring(3);
 
-            int path_idx = schema_url.toLowerCase().indexOf(
-                    SCHEMA_SERVLET.toLowerCase());
+            int path_idx = schema_url.toLowerCase().indexOf(SCHEMA_SERVLET.toLowerCase());
             String path = schema_url.substring(0, path_idx);
 
-            String instance_url = path + INSTANCE_SERVLET + "?id=" + id
-                    + "&type=" + type.toLowerCase();
+            String instance_url = path + INSTANCE_SERVLET + "?id=" + id + "&type=" + type.toLowerCase();
 
-            //throws Exception, if not correct URL
+            // throws Exception, if not correct URL
             URL instanceURL = new URL(instance_url);
             return instance_url;
         } catch (MalformedURLException e) {
-            throw new GDEMException("Error getting Instance file URL: "
-                    + e.toString() + " - " + schema_url);
+            throw new GDEMException("Error getting Instance file URL: " + e.toString() + " - " + schema_url);
         } catch (Exception e) {
-            throw new GDEMException("Error getting Instance file URL: "
-                    + e.toString() + " - " + schema_url);
+            throw new GDEMException("Error getting Instance file URL: " + e.toString() + " - " + schema_url);
         }
     }
 
     /**
      * Extract id parameter value from URL if available, otherwise return empty String
+     * 
      * @param schemaUrl
      * @return
      */
@@ -105,39 +99,39 @@ public class DataDictUtil {
 
     /**
      * gather all element definitions
+     * 
      * @param instance
      * @param schemaUrl
      */
-    public static Map<String, DDElement> importDDTableSchemaElemDefs(String schemaUrl){
-        InputStream inputStream =null;
+    public static Map<String, DDElement> importDDTableSchemaElemDefs(String schemaUrl) {
+        InputStream inputStream = null;
         Map<String, DDElement> elemDefs = new HashMap<String, DDElement>();
         try {
-            //get element definitions for given schema
-            //DataDictUtil.getSchemaElemDefs(elemDefs, schemaUrl);
+            // get element definitions for given schema
+            // DataDictUtil.getSchemaElemDefs(elemDefs, schemaUrl);
 
-            //load imported schema URLs
-            IXmlCtx ctx=new XmlContext();
+            // load imported schema URLs
+            IXmlCtx ctx = new XmlContext();
             URL url = new URL(schemaUrl);
             inputStream = url.openStream();
             ctx.checkFromInputStream(inputStream);
 
-            IXQuery xQuery=ctx.getQueryManager();
+            IXQuery xQuery = ctx.getQueryManager();
 
-            //run recursively the same function for importing elem defs for imported schemas
+            // run recursively the same function for importing elem defs for imported schemas
             List<String> schemas = xQuery.getSchemaImports();
             Map<String, String> multiValueElements = xQuery.getSchemaElementWithMultipleValues();
 
             for (int i = 0; i < schemas.size(); i++) {
-                String schema=(String) schemas.get(i);
+                String schema = (String) schemas.get(i);
                 DataDictUtil.importDDElementSchemaDefs(elemDefs, schema);
             }
 
-            for(Map.Entry<String, String> entry : multiValueElements.entrySet()){
+            for (Map.Entry<String, String> entry : multiValueElements.entrySet()) {
                 DDElement multiValueElement = null;
-                if(elemDefs.containsKey(entry.getKey())){
+                if (elemDefs.containsKey(entry.getKey())) {
                     multiValueElement = elemDefs.get(entry.getKey());
-                }
-                else{
+                } else {
                     multiValueElement = new DDElement(entry.getKey());
                 }
                 multiValueElement.setHasMultipleValues(true);
@@ -146,48 +140,49 @@ public class DataDictUtil {
             }
         } catch (Exception ex) {
             logger.error("Error reading schema file ", ex);
-        }
-        finally{
-            try{
+        } finally {
+            try {
                 inputStream.close();
-            }catch(Exception e){}
+            } catch (Exception e) {
+            }
         }
         return elemDefs;
     }
 
-    public static Map<String, DDElement> importDDElementSchemaDefs(Map<String, DDElement> elemDefs, String schemaUrl){
-        InputStream inputStream =null;
-        if(elemDefs==null) elemDefs = new HashMap<String, DDElement>();
+    public static Map<String, DDElement> importDDElementSchemaDefs(Map<String, DDElement> elemDefs, String schemaUrl) {
+        InputStream inputStream = null;
+        if (elemDefs == null)
+            elemDefs = new HashMap<String, DDElement>();
 
         try {
-            IXmlCtx ctx=new XmlContext();
+            IXmlCtx ctx = new XmlContext();
             URL url = new URL(schemaUrl);
             inputStream = url.openStream();
             ctx.checkFromInputStream(inputStream);
 
-            IXQuery xQuery=ctx.getQueryManager();
+            IXQuery xQuery = ctx.getQueryManager();
             List<String> elemNames = xQuery.getSchemaElements();
             for (int i = 0; i < elemNames.size(); i++) {
                 String elemName = elemNames.get(i);
-                DDElement element = elemDefs.containsKey(elemName)?
-                                    elemDefs.get(elemName):
-                                    new DDElement(elemName);
+                DDElement element = elemDefs.containsKey(elemName) ? elemDefs.get(elemName) : new DDElement(elemName);
                 element.setSchemaDataType(xQuery.getSchemaElementType(elemName));
                 elemDefs.put(elemName, element);
             }
         } catch (Exception ex) {
             logger.error("Error reading schema file ", ex);
-        }
-        finally{
-            try{
+        } finally {
+            try {
                 inputStream.close();
-            }catch(Exception e){}
+            } catch (Exception e) {
+            }
         }
         return elemDefs;
 
     }
+
     /**
      * Returns the DD container schema URL. It holds the elements definitions
+     * 
      * @param schema_url
      * @return
      * @throws GDEMException
@@ -202,18 +197,16 @@ public class DataDictUtil {
             URL InstanceURL = new URL(containerSchemaUrl);
             return containerSchemaUrl;
         } catch (MalformedURLException e) {
-            throw new GDEMException("Error getting Container Schema URL: "
-                    + e.toString() + " - " + schema_url);
+            throw new GDEMException("Error getting Container Schema URL: " + e.toString() + " - " + schema_url);
         } catch (Exception e) {
-            throw new GDEMException("Error getting Container Schema URL: "
-                    + e.toString() + " - " + schema_url);
+            throw new GDEMException("Error getting Container Schema URL: " + e.toString() + " - " + schema_url);
         }
     }
 
     /**
-     * Check is schema is DD schema and if it does not belong to latest released version of dataset.
-     * In that case QA may want to warn users about using obsolete schema.
-     *
+     * Check is schema is DD schema and if it does not belong to latest released version of dataset. In that case QA may want to
+     * warn users about using obsolete schema.
+     * 
      * @param xmlSchema
      * @return
      */
@@ -224,9 +217,7 @@ public class DataDictUtil {
 
         String id = getSchemaIdParamFromUrl(xmlSchema);
 
-        if (id.length() > 4
-                && (id.startsWith(DD_XMLInstance.DST_TYPE) || id
-                        .startsWith(DD_XMLInstance.TBL_TYPE))) {
+        if (id.length() > 4 && (id.startsWith(DD_XMLInstance.DST_TYPE) || id.startsWith(DD_XMLInstance.TBL_TYPE))) {
 
             Map<String, String> dataset = null;
 
@@ -236,10 +227,9 @@ public class DataDictUtil {
 
             if (dataset != null) {
                 String status = (String) dataset.get("status");
-                boolean isLatestReleased = (dataset.get("isLatestReleased") == null ||
-                            "true".equals((String) dataset.get("isLatestReleased"))) ?
-                                    true
-                                    : false;
+                boolean isLatestReleased =
+                        (dataset.get("isLatestReleased") == null || "true".equals((String) dataset.get("isLatestReleased"))) ? true
+                                : false;
 
                 if (!isLatestReleased && "Released".equalsIgnoreCase(status)) {
                     return true;
@@ -248,10 +238,10 @@ public class DataDictUtil {
         }
         return false;
     }
+
     /**
-     * Retreive dataset released information from Data Dictionary for XML schema
-     * If it is not DD schema, then return null
-     *
+     * Retreive dataset released information from Data Dictionary for XML schema If it is not DD schema, then return null
+     * 
      * @param xmlSchema
      * @return
      */
@@ -265,9 +255,7 @@ public class DataDictUtil {
 
         String id = getSchemaIdParamFromUrl(xmlSchema);
 
-        if (id.length() > 4
-                && (id.startsWith(DD_XMLInstance.DST_TYPE) || id
-                        .startsWith(DD_XMLInstance.TBL_TYPE))) {
+        if (id.length() > 4 && (id.startsWith(DD_XMLInstance.DST_TYPE) || id.startsWith(DD_XMLInstance.TBL_TYPE))) {
 
             String type = id.substring(0, 3);
             String dsId = id.substring(3);
@@ -277,9 +265,8 @@ public class DataDictUtil {
     }
 
     /**
-     * Retreive dataset released information from Data Dictionary for given ID and type
-     * If it is not DD schema, then return null
-     *
+     * Retreive dataset released information from Data Dictionary for given ID and type If it is not DD schema, then return null
+     * 
      * @param xmlSchema
      * @return
      */

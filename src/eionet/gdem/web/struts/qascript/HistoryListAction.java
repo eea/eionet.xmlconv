@@ -43,8 +43,8 @@ public class HistoryListAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
         List<BackupDto> l = null;
@@ -53,7 +53,7 @@ public class HistoryListAction extends Action {
 
         try {
             BackupManager bm = new BackupManager();
-            l  = bm.getBackups(scriptId);
+            l = bm.getBackups(scriptId);
 
         } catch (DCMException e) {
             e.printStackTrace();

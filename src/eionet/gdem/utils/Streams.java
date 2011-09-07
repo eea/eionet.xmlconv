@@ -33,11 +33,10 @@ import java.io.Writer;
 
 /**
  * Utility functions related to Streams.
- *
+ * 
  */
 public class Streams {
     static final int BLOCK_SIZE = 4096;
-
 
     public static void drain(InputStream r, OutputStream w) throws IOException {
         byte[] bytes = new byte[BLOCK_SIZE];
@@ -55,7 +54,6 @@ public class Streams {
 
     }
 
-
     public static void drain(Reader r, Writer w) throws IOException {
         char[] bytes = new char[BLOCK_SIZE];
         try {
@@ -72,13 +70,11 @@ public class Streams {
 
     }
 
-
     public static void drain(Reader r, OutputStream os) throws IOException {
         Writer w = new OutputStreamWriter(os);
         drain(r, w);
         w.flush();
     }
-
 
     public static void drain(InputStream is, Writer w) throws IOException {
         Reader r = new InputStreamReader(is);
@@ -86,13 +82,11 @@ public class Streams {
         w.flush();
     }
 
-
     public static byte[] drain(InputStream r) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         drain(r, bytes);
         return bytes.toByteArray();
     }
-
 
     public static String getAsString(InputStream is) {
         int c = 0;
@@ -102,18 +96,18 @@ public class Streams {
             loop: while (true) {
                 // read chars into a buffer which grows as needed
                 switch (c = is.read()) {
-                case -1:
-                    break loop;
+                    case -1:
+                        break loop;
 
-                default:
-                    if (--room < 0) {
-                        buf = new char[offset + 128];
-                        room = buf.length - offset - 1;
-                        System.arraycopy(lineBuffer, 0, buf, 0, offset);
-                        lineBuffer = buf;
-                    }
-                    buf[offset++] = (char) c;
-                    break;
+                    default:
+                        if (--room < 0) {
+                            buf = new char[offset + 128];
+                            room = buf.length - offset - 1;
+                            System.arraycopy(lineBuffer, 0, buf, 0, offset);
+                            lineBuffer = buf;
+                        }
+                        buf[offset++] = (char) c;
+                        break;
                 }
             }
         } catch (IOException ioe) {

@@ -23,38 +23,21 @@ package eionet.gdem.qa.engines;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.util.HashMap;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
 import eionet.gdem.GDEMException;
-import eionet.gdem.Properties;
 import eionet.gdem.qa.QAResultPostProcessor;
 import eionet.gdem.qa.XQEngineIF;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.utils.xml.IXQuery;
-import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.IXmlSerializer;
-import eionet.gdem.utils.xml.XmlContext;
-import eionet.gdem.utils.xml.XmlException;
-import eionet.gdem.utils.xml.XmlSerialization;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * QAScriptEngineStrategy
+ * @author Enriko Käsper, Tieto Estonia QAScriptEngineStrategy
  */
 
-public abstract class QAScriptEngineStrategy  implements XQEngineIF{
-
+public abstract class QAScriptEngineStrategy implements XQEngineIF {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
     private String encoding = null;
@@ -62,80 +45,83 @@ public abstract class QAScriptEngineStrategy  implements XQEngineIF{
 
     protected abstract void runQuery(XQScript script, OutputStream result) throws GDEMException;
 
-    public void getResult(XQScript script,OutputStream out) throws GDEMException  {
+    public void getResult(XQScript script, OutputStream out) throws GDEMException {
         try {
             setOutputType(script.getOutputType());
             runQuery(script, out);
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new GDEMException(e.toString());
         }
     }
 
-    public String getResult(XQScript script) throws GDEMException  {
+    public String getResult(XQScript script) throws GDEMException {
         ByteArrayOutputStream result = new ByteArrayOutputStream();
-        String res="";
+        String res = "";
         getResult(script, result);
-        try{
+        try {
             res = result.toString(DEFAULT_ENCODING);
-            if (_logger.enable(LoggerIF.DEBUG)){
-                _logger.debug("RESULT: \n" + res.substring(0,300));
+            if (_logger.enable(LoggerIF.DEBUG)) {
+                _logger.debug("RESULT: \n" + res.substring(0, 300));
             }
 
         } catch (Exception e) {
-            _logger.error("==== CATCHED EXCEPTION " + e.toString() );
+            _logger.error("==== CATCHED EXCEPTION " + e.toString());
         }
 
-        //add "red coloured warning" if script is expired
-        if (script.getOutputType().equals(XQScript.SCRIPT_RESULTTYPE_HTML) &&
-                script.getSchema() != null ) {
+        // add "red coloured warning" if script is expired
+        if (script.getOutputType().equals(XQScript.SCRIPT_RESULTTYPE_HTML) && script.getSchema() != null) {
 
             QAResultPostProcessor postProcessor = new QAResultPostProcessor();
-            res=postProcessor.processQAResult(res, script.getSchema());
+            res = postProcessor.processQAResult(res, script.getSchema());
         }
 
         return res;
     }
 
     public String getEncoding() {
-        if(Utils.isNullStr(encoding))encoding=DEFAULT_ENCODING;
+        if (Utils.isNullStr(encoding))
+            encoding = DEFAULT_ENCODING;
 
         return encoding;
     }
+
     public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
+
     public String getOutputType() {
-        if(Utils.isNullStr(outputType))outputType=DEFAULT_OUTPUTTYPE;
+        if (Utils.isNullStr(outputType))
+            outputType = DEFAULT_OUTPUTTYPE;
         return outputType;
     }
-    public void setOutputType(String _outputType) {
-        outputType= (_outputType==null) ? DEFAULT_OUTPUTTYPE : _outputType.trim().toLowerCase();
-        outputType = (outputType.equals("txt"))?"text":outputType;
 
-        if(outputType.equals("xml") || outputType.equals("html") ||
-                outputType.equals("text") ||outputType.equals("xhtml"))
+    public void setOutputType(String _outputType) {
+        outputType = (_outputType == null) ? DEFAULT_OUTPUTTYPE : _outputType.trim().toLowerCase();
+        outputType = (outputType.equals("txt")) ? "text" : outputType;
+
+        if (outputType.equals("xml") || outputType.equals("html") || outputType.equals("text") || outputType.equals("xhtml"))
             this.outputType = outputType;
         else
             this.outputType = DEFAULT_OUTPUTTYPE;
     }
-    public HashMap parseParams(String[] xqParams) throws GDEMException{
-        HashMap<String,String> paramsMap = new HashMap<String,String>();
 
-        if (xqParams!=null){
-            for (int p=0; p<xqParams.length; p++) {
+    public HashMap parseParams(String[] xqParams) throws GDEMException {
+        HashMap<String, String> paramsMap = new HashMap<String, String>();
+
+        if (xqParams != null) {
+            for (int p = 0; p < xqParams.length; p++) {
                 String arg = xqParams[p];
                 int eq = arg.indexOf("=");
-                if (eq<1 || eq>=arg.length()-1) {
+                if (eq < 1 || eq >= arg.length() - 1) {
                     throw new GDEMException("Bad param=value pair");
-                    //handleError("Bad param=value pair", true);
+                    // handleError("Bad param=value pair", true);
                 }
-                String argname = arg.substring(0,eq);
-                paramsMap.put(argname, arg.substring(eq+1));
+                String argname = arg.substring(0, eq);
+                paramsMap.put(argname, arg.substring(eq + 1));
             }
 
         }
         return paramsMap;
     }
 }
-

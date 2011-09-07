@@ -36,7 +36,8 @@ import eionet.gdem.utils.Utils;
 public class ExcelConverter extends ConvertStartegy {
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException, Exception {
+    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException,
+            Exception {
         String xmlFile = tmpFolder + "gdem_out" + System.currentTimeMillis() + ".xml";
         String excelFile = tmpFolder + "gdem_" + System.currentTimeMillis() + ".xls";
         try {

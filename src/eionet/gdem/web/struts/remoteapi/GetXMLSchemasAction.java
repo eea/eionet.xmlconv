@@ -22,8 +22,7 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * GetSchemasAction
+ * @author Enriko Käsper, TietoEnator Estonia AS GetSchemasAction
  */
 
 public class GetXMLSchemasAction extends BaseMethodAction {
@@ -31,42 +30,39 @@ public class GetXMLSchemasAction extends BaseMethodAction {
     private static LoggerIF _logger = GDEMServices.getLogger();
 
     /**
-     * Purpose of this action is to execute ConversionService method listConversions.
-     * The request could have schema parameter
+     * Purpose of this action is to execute ConversionService method listConversions. The request could have schema parameter
      */
-    public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) throws ServletException{
+    public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request,
+            HttpServletResponse httpServletResponse) throws ServletException {
 
-
-        //create custom HttpServletResponseWrapper
+        // create custom HttpServletResponseWrapper
         HttpMethodResponseWrapper methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
-        //get request parameters
+        // get request parameters
         Map params = request.getParameterMap();
 
-        try{
+        try {
 
-            //Call ConversionService
+            // Call ConversionService
             ConversionServiceIF cs = new ConversionService();
             List schemas = cs.getXMLSchemas();
 
-            //parse the result of Conversion Service method and format it as XML
+            // parse the result of Conversion Service method and format it as XML
             GetXMLSchemasResult xmlResult = new GetXMLSchemasResult();
             xmlResult.setResult(schemas);
             xmlResult.writeXML();
-            //flush the result into servlet outputstream
+            // flush the result into servlet outputstream
             methodResponse.flushXML(xmlResult);
-        }
-        catch(Exception e){
-                _logger.error(e.toString());
-                try{
-                    //if error happened, then flush the error in XML format into servlet outputstream
-                    methodResponse.flushXMLError(HttpServletResponse.SC_BAD_REQUEST,e.getMessage(),map.getPath(),params);
-                }
-                catch(Exception ge){
-                    _logger.error("Unable to flush XML error: " + ge.toString());
-                    throw new ServletException (ge);
-                }
+        } catch (Exception e) {
+            _logger.error(e.toString());
+            try {
+                // if error happened, then flush the error in XML format into servlet outputstream
+                methodResponse.flushXMLError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage(), map.getPath(), params);
+            } catch (Exception ge) {
+                _logger.error("Unable to flush XML error: " + ge.toString());
+                throw new ServletException(ge);
             }
-        //Do nothing, then response is already sent.
+        }
+        // Do nothing, then response is already sent.
         return map.findForward(null);
     }
 }

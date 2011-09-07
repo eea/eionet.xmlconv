@@ -41,30 +41,28 @@ public class CDRServiceClient {
     protected String serviceName = "";
     protected ServiceClientIF client = null;
 
-
     protected void load() throws Exception {
-        if ( serviceUrl == null || serviceUrl.equals("")) throw new Exception("serviceUrl is missing!");
+        if (serviceUrl == null || serviceUrl.equals(""))
+            throw new Exception("serviceUrl is missing!");
         client = ServiceClients.getServiceClient(serviceName, serviceUrl);
     }
-
 
     protected void getProps() {
         serviceUrl = Properties.cdrServUrl;
     }
 
-
     protected Object execute(String method, Vector params) throws Exception {
-        if (client == null) load();
+        if (client == null)
+            load();
         return client.getValue(method, params);
     }
-
 
     public void execute(HttpServletRequest req) throws Exception {
     }
 
-
-    public static List searchXMLFiles(String schemaURL) throws Exception{
-        if ( Utils.isNullStr(schemaURL)) throw new Exception("schemaURL is missing!");
+    public static List searchXMLFiles(String schemaURL) throws Exception {
+        if (Utils.isNullStr(schemaURL))
+            throw new Exception("schemaURL is missing!");
 
         CDRServiceClient d = new CDRServiceClient();
         List list = null;
@@ -80,7 +78,6 @@ public class CDRServiceClient {
         }
         return list;
     }
-
 
     public static void main(String args[]) {
         String schemaURL = "http://waste.eionet.eu.int/schemas/dir200053ec/schema.xsd";

@@ -44,10 +44,8 @@ public class SaveHostAction extends BaseAction {
 
     private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
 
-
-
-
-    public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request,
+            HttpServletResponse httpServletResponse) {
         ActionMessages messages = new ActionMessages();
         ActionMessages errors = new ActionMessages();
 
@@ -57,28 +55,30 @@ public class SaveHostAction extends BaseAction {
 
         DynaValidatorForm hostForm = (DynaValidatorForm) actionForm;
         String hostId = processFormStr((String) hostForm.get("id"));
-        String host= (String) hostForm.get("host");
-        String username= (String) hostForm.get("username");
-        String password= (String) hostForm.get("password");
+        String host = (String) hostForm.get("host");
+        String username = (String) hostForm.get("username");
+        String password = (String) hostForm.get("password");
 
         try {
-            if(hostId==null) { //Add new host
+            if (hostId == null) { // Add new host
                 _logger.debug("ADDING NEW HOST !!!");
-                if(	checkPermission(request, Names.ACL_HOST_PATH, "i")) {
+                if (checkPermission(request, Names.ACL_HOST_PATH, "i")) {
                     hostDao.addHost(host, username, password);
                     hostForm.getMap().clear();
                     messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.inserted"));
                 } else {
-                    errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.inoperm", translate(map, request, "label.hosts")));
+                    errors.add(ActionMessages.GLOBAL_MESSAGE,
+                            new ActionMessage("error.inoperm", translate(map, request, "label.hosts")));
                 }
-            } else { //Update host
+            } else { // Update host
                 _logger.debug("UPDATE HOST !!!");
-                if(	checkPermission(request, Names.ACL_HOST_PATH, "u")) {
+                if (checkPermission(request, Names.ACL_HOST_PATH, "u")) {
                     hostDao.updateHost(hostId, host, username, password);
                     hostForm.getMap().clear();
                     messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.updated"));
                 } else {
-                    errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.unoperm", translate(map, request, "label.hosts")));
+                    errors.add(ActionMessages.GLOBAL_MESSAGE,
+                            new ActionMessage("error.unoperm", translate(map, request, "label.hosts")));
                 }
             }
         } catch (Exception e) {
@@ -86,33 +86,35 @@ public class SaveHostAction extends BaseAction {
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
         }
 
-        if(errors.size()>0)	{
+        if (errors.size() > 0) {
             request.getSession().setAttribute("dcm.errors", errors);
             return map.getInputForward();
         }
-        if(messages.size()>0) request.getSession().setAttribute("dcm.messages", messages);
+        if (messages.size() > 0)
+            request.getSession().setAttribute("dcm.messages", messages);
 
         return map.findForward("success");
 
     }
 
     private boolean checkConnection(String url, String username, String password) {
-        boolean result=false;
+        boolean result = false;
         InputFile src = null;
         try {
             src = new InputFile(url);
             src.setAuthentication(Utils.getEncodedAuthentication(username, password));
             src.setTrustedMode(false);
             src.getSrcInputStream();
-            result=true;
-        } catch(Exception e) {
+            result = true;
+        } catch (Exception e) {
             _logger.error("", e);
-        }
-        finally{
-            if (src!=null){
-                try{
+        } finally {
+            if (src != null) {
+                try {
                     src.close();
-                }catch(Exception e){};
+                } catch (Exception e) {
+                }
+                ;
             }
         }
         return result;

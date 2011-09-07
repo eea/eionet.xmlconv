@@ -21,8 +21,7 @@ import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * ConvertDDXMLMethod
+ * @author Enriko Käsper, TietoEnator Estonia AS ConvertDDXMLMethod
  */
 
 public class ConvertDDXMLMethod extends RemoteServiceMethod {
@@ -36,8 +35,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
      *            url: URL of the srouce Excel file
      * @return Vector result: error_code, xml_url, error_message
      */
-    public Vector convertDD_XML(String sourceURL)
-            throws GDEMException {
+    public Vector convertDD_XML(String sourceURL) throws GDEMException {
         OutputStream result = null;
         String cnvFileName = null;
         ByteArrayInputStream in_stream_tmp = null;
@@ -46,8 +44,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
         ByteArrayOutputStream out_stream_tmp = new ByteArrayOutputStream();
         Vector v_result = new Vector();
 
-        String outFileName = getTmpFolder() + "gdem_" + System.currentTimeMillis()
-                + ".xml";
+        String outFileName = getTmpFolder() + "gdem_" + System.currentTimeMillis() + ".xml";
         String error_mess = null;
 
         try {
@@ -55,8 +52,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
             src = new InputFile(sourceURL);
             src.setAuthentication(getTicket());
             src.setTrustedMode(isTrustedMode());
-            cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ?
-                    DEFAULT_FILE_NAME:src.getFileNameNoExtension();
+            cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ? DEFAULT_FILE_NAME : src.getFileNameNoExtension();
 
             if (isHttpRequest()) {
                 try {
@@ -66,31 +62,27 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
                     result = httpResponse.getOutputStream();
                 } catch (IOException e) {
                     _logger.error("Error getting response outputstream ", e);
-                    throw new GDEMException(
-                            "Error getting response outputstream "
-                                    + e.toString(), e);
+                    throw new GDEMException("Error getting response outputstream " + e.toString(), e);
                 }
             }
-            if (result == null)
+            if (result == null) {
                 result = new FileOutputStream(outFileName);
+            }
 
             // Read inputstream into Bytearrayoutputstream
             Streams.drain(src.getSrcInputStream(), out_stream_tmp);
             // Detect the file format
-            DDXMLConverter converter = DDXMLConverter
-                    .getConverter(out_stream_tmp);
+            DDXMLConverter converter = DDXMLConverter.getConverter(out_stream_tmp);
 
             if (converter == null) {
-                _logger
-                        .error(
-                                "Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.",
-                                null);
+                _logger.error(
+                        "Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.",
+                        null);
                 throw new GDEMException(
-                        "Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.");
+                "Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.");
             }
             // create new inputstrema from tmp Bytearrayoutputstream
-            in_stream_tmp = new ByteArrayInputStream(out_stream_tmp
-                    .toByteArray());
+            in_stream_tmp = new ByteArrayInputStream(out_stream_tmp.toByteArray());
 
             converter.setHttpResponse(isHttpRequest());
             str_result = converter.convertDD_XML(in_stream_tmp, result);
@@ -105,8 +97,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
         } catch (IOException ioe) {
             _logger.error("Error opening URL ", ioe);
             if (isHttpRequest()) {
-                throw new GDEMException("Error opening URL " + ioe.toString(),
-                        ioe);
+                throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
             } else {
                 error_mess = "Error opening URL " + ioe.toString();
             }
@@ -120,19 +111,23 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
         } finally {
             try {
                 if (src != null)
+                {
                     src.close();
-                // if (result!=null) result.close();
+                    // if (result!=null) result.close();
+                }
             } catch (Exception e) {
                 _logger.error("", e);
             }
             try {
-                if (in_stream_tmp != null)
+                if (in_stream_tmp != null) {
                     in_stream_tmp.close();
+                }
             } catch (Exception e) {
             }
             try {
-                if (out_stream_tmp != null)
+                if (out_stream_tmp != null) {
                     out_stream_tmp.close();
+                }
             } catch (Exception e) {
             }
 
@@ -144,18 +139,19 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
         // Creates response Vector
         int result_code = 1;
         if (!Utils.isNullStr(str_result)) {
-            if (str_result.equals("OK"))
+            if (str_result.equals("OK")) {
                 result_code = 0;
+            }
         }
         byte[] file = Utils.fileToBytes(outFileName);
 
         v_result.add(String.valueOf(result_code));
-        if (result_code == 0){
+        if (result_code == 0) {
             v_result.add(file);
             v_result.add(cnvFileName + ".xml");
-        }
-        else
+        } else {
             v_result.add(error_mess);
+        }
 
         try {
             Utils.deleteFile(outFileName);
@@ -165,9 +161,9 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
 
         return v_result;
     }
+
     /**
-     * Converts DataDictionary MS Excel sheets to
-     * different XML files, where one xml file is dataset table.
+     * Converts DataDictionary MS Excel sheets to different XML files, where one xml file is dataset table.
      *
      * @param String
      *            url: URL of the srouce Excel file
@@ -189,8 +185,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
             src.setAuthentication(getTicket());
             src.setTrustedMode(isTrustedMode());
 
-            cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ?
-                    DEFAULT_FILE_NAME:src.getFileNameNoExtension();
+            cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ? DEFAULT_FILE_NAME : src.getFileNameNoExtension();
             if (isHttpRequest()) {
                 try {
                     HttpMethodResponseWrapper httpResponse = getHttpResponse();
@@ -199,32 +194,26 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
                     result = httpResponse.getOutputStream();
                 } catch (IOException e) {
                     _logger.error("Error getting response outputstream ", e);
-                    throw new GDEMException(
-                            "Error getting response outputstream "
-                                    + e.toString(), e);
+                    throw new GDEMException("Error getting response outputstream " + e.toString(), e);
                 }
             }
             // Read inputstream into Bytearrayoutputstream
             Streams.drain(src.getSrcInputStream(), out_stream_tmp);
             // Detect the file format
-            DDXMLConverter converter = DDXMLConverter
-                    .getConverter(out_stream_tmp);
+            DDXMLConverter converter = DDXMLConverter.getConverter(out_stream_tmp);
 
             if (converter == null) {
-                _logger
-                        .error(
-                                "Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.",
-                                null);
+                _logger.error(
+                        "Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.",
+                        null);
                 throw new GDEMException(
-                        "Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.");
+                "Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.");
             }
             // create new inputstrema from tmp Bytearrayoutputstream
-            in_stream_tmp = new ByteArrayInputStream(out_stream_tmp
-                    .toByteArray());
+            in_stream_tmp = new ByteArrayInputStream(out_stream_tmp.toByteArray());
 
             converter.setHttpResponse(isHttpRequest());
-            v_result = converter.convertDD_XML_split(in_stream_tmp, result,
-                    sheet_param);
+            v_result = converter.convertDD_XML_split(in_stream_tmp, result, sheet_param);
 
         } catch (MalformedURLException mfe) {
             _logger.error("Bad URL ", mfe);
@@ -236,8 +225,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
         } catch (IOException ioe) {
             _logger.error("Error opening URL ", ioe);
             if (isHttpRequest()) {
-                throw new GDEMException("Error opening URL " + ioe.toString(),
-                        ioe);
+                throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
             } else {
                 error_mess = "Error opening URL " + ioe.toString();
             }
@@ -250,18 +238,21 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
             }
         } finally {
             try {
-                if (src != null)
+                if (src != null) {
                     src.close();
+                }
             } catch (Exception e) {
             }
             try {
-                if (in_stream_tmp != null)
+                if (in_stream_tmp != null) {
                     in_stream_tmp.close();
+                }
             } catch (Exception e) {
             }
             try {
-                if (out_stream_tmp != null)
+                if (out_stream_tmp != null) {
                     out_stream_tmp.close();
+                }
             } catch (Exception e) {
             }
         }

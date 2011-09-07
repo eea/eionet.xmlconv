@@ -27,12 +27,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * AsyncStreamReader
+ * @author Enriko Käsper, Tieto Estonia AsyncStreamReader
  */
 
-class AsyncStreamReader extends Thread
-{
+class AsyncStreamReader extends Thread {
     private StringBuffer fBuffer = null;
     private InputStream fInputStream = null;
     private String fThreadId = null;
@@ -41,8 +39,7 @@ class AsyncStreamReader extends Thread
 
     private String fNewLine = null;
 
-    public AsyncStreamReader(InputStream inputStream, StringBuffer buffer, ILogDevice logDevice, String threadId)
-    {
+    public AsyncStreamReader(InputStream inputStream, StringBuffer buffer, ILogDevice logDevice, String threadId) {
         fInputStream = inputStream;
         fBuffer = buffer;
         fThreadId = threadId;
@@ -55,39 +52,34 @@ class AsyncStreamReader extends Thread
         return fBuffer.toString();
     }
 
-    public void run()
-    {
+    public void run() {
         try {
             readCommandOutput();
         } catch (Exception ex) {
-            //ex.printStackTrace(); //DEBUG
+            // ex.printStackTrace(); //DEBUG
         }
     }
 
-    private void readCommandOutput() throws IOException
-    {
+    private void readCommandOutput() throws IOException {
         BufferedReader bufOut = new BufferedReader(new InputStreamReader(fInputStream));
         String line = null;
-        while ( (fStop == false) && ((line = bufOut.readLine()) != null) )
-        {
+        while ((fStop == false) && ((line = bufOut.readLine()) != null)) {
             fBuffer.append(line + fNewLine);
             printToDisplayDevice(line);
         }
         bufOut.close();
-        //printToConsole("END OF: " + fThreadId); //DEBUG
+        // printToConsole("END OF: " + fThreadId); //DEBUG
     }
 
     public void stopReading() {
         fStop = true;
     }
 
-    private void printToDisplayDevice(String line)
-    {
-        if( fLogDevice != null )
+    private void printToDisplayDevice(String line) {
+        if (fLogDevice != null)
             fLogDevice.log(line);
-        else
-        {
-            //printToConsole(line);//DEBUG
+        else {
+            // printToConsole(line);//DEBUG
         }
     }
 

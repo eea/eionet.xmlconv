@@ -10,8 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
- * Custom implementation of HttpServletResponseWrapper. Adds writeXML
- * functionality.
+ * Custom implementation of HttpServletResponseWrapper. Adds writeXML functionality.
  *
  * @author Enriko Käsper, TietoEnator Estonia AS
  */
@@ -31,13 +30,11 @@ public class HttpMethodResponseWrapper extends HttpServletResponseWrapper {
      * @param contentDisposition
      */
     public void setContentDisposition(String contentDisposition) {
-        setHeader("Content-Disposition", "inline;filename=\""
-                + contentDisposition + "\"");
+        setHeader("Content-Disposition", "inline;filename=\"" + contentDisposition + "\"");
     }
 
     /**
-     * Configures the response header and writes the XML result into servlet
-     * output stream.
+     * Configures the response header and writes the XML result into servlet output stream.
      *
      * @param xmlResult
      * @throws Exception
@@ -45,15 +42,15 @@ public class HttpMethodResponseWrapper extends HttpServletResponseWrapper {
     public void flushXML(XMLResultStrategy xmlResult) throws Exception {
         setStatus(xmlResult.getStatus());
         setContentType(xmlResult.getContentType());
-        if (xmlResult.getContentLength() > 0)
+        if (xmlResult.getContentLength() > 0) {
             setContentLength(xmlResult.getContentLength());
+        }
         xmlResult.writeXML(getOutputStream());
         flush();
     }
 
     /**
-     * Creates XMLErrorResult object with given parameters and writes the XML
-     * into servlet output
+     * Creates XMLErrorResult object with given parameters and writes the XML into servlet output
      *
      * @param status
      *            HTTP Status Code
@@ -65,8 +62,7 @@ public class HttpMethodResponseWrapper extends HttpServletResponseWrapper {
      *            Request parameters
      * @throws Exception
      */
-    public void flushXMLError(int status, String errMessage, String method,
-            Map params) throws Exception {
+    public void flushXMLError(int status, String errMessage, String method, Map params) throws Exception {
         XMLErrorResult errorResult = new XMLErrorResult();
         errorResult.setError(errMessage);
         errorResult.setMethod(method);

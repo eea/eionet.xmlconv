@@ -32,23 +32,20 @@ public class CustomDomParser extends DOMParser {
     String _mimeEncoding = "UTF-8";
 
     public CustomDomParser() {
-          super();
+        super();
     }
 
     public CustomDomParser(XMLParserConfiguration config) {
-          super(config);
-       }
-
+        super(config);
+    }
 
     private void setMimeEncoding(String encoding) {
         _mimeEncoding = encoding;
     }
 
-
     private String getMimeEncoding() {
         return (_mimeEncoding);
     }
-
 
     public String getJavaEncoding() {
         String javaEncoding = null;
@@ -61,15 +58,16 @@ public class CustomDomParser extends DOMParser {
             else
                 javaEncoding = EncodingMap.getIANA2JavaMapping(mimeEncoding);
         }
-        if (javaEncoding == null) javaEncoding = "UTF8";
+        if (javaEncoding == null)
+            javaEncoding = "UTF8";
         return (javaEncoding);
-    }//getJavaEncoding()
+    }// getJavaEncoding()
 
-
-    public void startGeneralEntity(String name, XMLResourceIdentifier identifier, String encoding, Augmentations augs) throws XNIException {
+    public void startGeneralEntity(String name, XMLResourceIdentifier identifier, String encoding, Augmentations augs)
+            throws XNIException {
         if (encoding != null) {
             setMimeEncoding(encoding);
         }
         super.startGeneralEntity(name, identifier, encoding, augs);
-    }//startGeneralEntity
+    }// startGeneralEntity
 }

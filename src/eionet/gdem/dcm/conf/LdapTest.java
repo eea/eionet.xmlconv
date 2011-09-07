@@ -37,11 +37,9 @@ public class LdapTest {
 
     private String url;
 
-
     public LdapTest(String url) {
         this.url = url;
     }
-
 
     protected DirContext getDirContext() throws NamingException {
         Hashtable env = new Hashtable();
@@ -52,13 +50,11 @@ public class LdapTest {
         return ctx;
     }
 
-
     protected void closeContext(DirContext ctx) throws NamingException {
         if (ctx != null) {
             ctx.close();
         }
     }
-
 
     public boolean test() {
         try {
@@ -70,6 +66,5 @@ public class LdapTest {
             return false;
         }
     }
-
 
 }

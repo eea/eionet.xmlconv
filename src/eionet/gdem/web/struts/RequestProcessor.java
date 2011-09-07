@@ -29,15 +29,13 @@ import org.apache.struts.tiles.TilesRequestProcessor;
 
 public class RequestProcessor extends TilesRequestProcessor {
 
-
     public RequestProcessor() {
         super();
     }
 
-
     /**
      * Preprocess every action that is called from struts framework
-     *
+     * 
      */
     public boolean processPreprocess(HttpServletRequest request, HttpServletResponse response) {
         request.setAttribute("servletPath", request.getServletPath());
@@ -53,29 +51,32 @@ public class RequestProcessor extends TilesRequestProcessor {
         ActionMessages messages = (ActionMessages) request.getSession().getAttribute("dcm.messages");
         if (messages != null) {
             request.getSession().setAttribute("dcm.messages", null);
-            if (!messages.isEmpty()) request.setAttribute("dcm.messages", messages);
+            if (!messages.isEmpty())
+                request.setAttribute("dcm.messages", messages);
         }
         return true;
     }
 
-
-//	protected ActionForward processActionPerform(HttpServletRequest request, HttpServletResponse response, Action action, ActionForm form, ActionMapping mapping) throws IOException, ServletException {
-//		String path = request.getPathInfo();
-//		String query = request.getQueryString();
-//		if (query != null && query.length() > 0) path += "?" + query;
-//
-//		boolean loggedIn = false;
-//		Object objUser = request.getSession().getAttribute("user");
-//
-//		if (objUser == null && (path.indexOf("/editUI") == 0 || path.indexOf("/ldapForm") == 0 || path.indexOf("/dbForm") == 0 || path.indexOf("/addUplSchemaForm") == 0 || path.indexOf("/addStylesheetForm") == 0)) {
-//			String casLoginUrl = getServletContext().getInitParameter("edu.yale.its.tp.cas.client.filter.loginUrl") + "?service=" + request.getRequestURL();
-//			response.sendRedirect("/do/login");
-//		}
-//
-//
-//
-//		return super.processActionPerform(request, response, action, form, mapping);
-//	}
-//
+    // protected ActionForward processActionPerform(HttpServletRequest request, HttpServletResponse response, Action action,
+    // ActionForm form, ActionMapping mapping) throws IOException, ServletException {
+    // String path = request.getPathInfo();
+    // String query = request.getQueryString();
+    // if (query != null && query.length() > 0) path += "?" + query;
+    //
+    // boolean loggedIn = false;
+    // Object objUser = request.getSession().getAttribute("user");
+    //
+    // if (objUser == null && (path.indexOf("/editUI") == 0 || path.indexOf("/ldapForm") == 0 || path.indexOf("/dbForm") == 0 ||
+    // path.indexOf("/addUplSchemaForm") == 0 || path.indexOf("/addStylesheetForm") == 0)) {
+    // String casLoginUrl = getServletContext().getInitParameter("edu.yale.its.tp.cas.client.filter.loginUrl") + "?service=" +
+    // request.getRequestURL();
+    // response.sendRedirect("/do/login");
+    // }
+    //
+    //
+    //
+    // return super.processActionPerform(request, response, action, form, mapping);
+    // }
+    //
 
 }

@@ -41,17 +41,16 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 
 /**
- * SearchCRSandboxAction
- * Find all the scripts for the given XML schema and allow to execute them in sandox
- *
+ * SearchCRSandboxAction Find all the scripts for the given XML schema and allow to execute them in sandox
+ * 
  * @author Enriko Käsper, Tieto Estonia
-*/
+ */
 
 public class FindQAScriptsAction extends Action {
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ActionErrors errors = new ActionErrors();
 
@@ -66,7 +65,7 @@ public class FindQAScriptsAction extends Action {
             return actionMapping.findForward("error");
         }
         try {
-            //cForm.setScriptId(null);
+            // cForm.setScriptId(null);
 
             SchemaManager sm = new SchemaManager();
             String schemaId = sm.getSchemaId(schemaUrl);
@@ -87,8 +86,8 @@ public class FindQAScriptsAction extends Action {
             if (Utils.isNullStr(cForm.getScriptId())) {
                 if (Utils.isNullList(cForm.getSchema().getQascripts()) && cForm.getSchema().isDoValidation()) {
                     cForm.setScriptId("-1");
-                } else if (!Utils.isNullList(cForm.getSchema().getQascripts())
-                        && cForm.getSchema().getQascripts().size() == 1 && !cForm.getSchema().isDoValidation()) {
+                } else if (!Utils.isNullList(cForm.getSchema().getQascripts()) && cForm.getSchema().getQascripts().size() == 1
+                        && !cForm.getSchema().isDoValidation()) {
                     cForm.setScriptId(cForm.getSchema().getQascripts().get(0).getScriptId());
                 }
             }

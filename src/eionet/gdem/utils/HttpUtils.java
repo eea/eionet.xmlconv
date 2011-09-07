@@ -35,15 +35,14 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * HttpUtils
+ * @author Enriko Käsper, Tieto Estonia HttpUtils
  */
 
 public class HttpUtils {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    public static byte[] downloadRemoteFile(String url) throws Exception{
+    public static byte[] downloadRemoteFile(String url) throws Exception {
 
         byte[] responseBody = null;
         HttpClient client = new HttpClient();
@@ -52,54 +51,52 @@ public class HttpUtils {
         GetMethod method = new GetMethod(url);
 
         try {
-          // Execute the method.
-          int statusCode = client.executeMethod(method);
+            // Execute the method.
+            int statusCode = client.executeMethod(method);
 
-          if (statusCode != HttpStatus.SC_OK) {
-            _logger.error("Method failed: " + method.getStatusLine());
-            throw new DCMException(BusinessConstants.EXCEPTION_SCHEMAOPEN_ERROR,method.getStatusLine().toString());
-          }
+            if (statusCode != HttpStatus.SC_OK) {
+                _logger.error("Method failed: " + method.getStatusLine());
+                throw new DCMException(BusinessConstants.EXCEPTION_SCHEMAOPEN_ERROR, method.getStatusLine().toString());
+            }
 
-          // Read the response body.
-          responseBody = method.getResponseBody();
+            // Read the response body.
+            responseBody = method.getResponseBody();
 
-          // Deal with the response.
-          // Use caution: ensure correct character encoding and is not binary data
-          //System.out.println(new String(responseBody));
+            // Deal with the response.
+            // Use caution: ensure correct character encoding and is not binary data
+            // System.out.println(new String(responseBody));
 
         } catch (HttpException e) {
             _logger.error("Fatal protocol violation: " + e.getMessage());
-          e.printStackTrace();
-          throw e;
+            e.printStackTrace();
+            throw e;
         } catch (IOException e) {
             _logger.error("Fatal transport error: " + e.getMessage());
-          e.printStackTrace();
-          throw e;
+            e.printStackTrace();
+            throw e;
         } finally {
-          // Release the connection.
-          method.releaseConnection();
+            // Release the connection.
+            method.releaseConnection();
         }
         return responseBody;
     }
 
     /**
-     * Method checks whether the resource behind the given URL exist.
-     * The method calls HEAD request and if the resonse code is 200, then returns true.
-     * If exception is thrown or response code is something else, then the result is false.
-     *
+     * Method checks whether the resource behind the given URL exist. The method calls HEAD request and if the resonse code is 200,
+     * then returns true. If exception is thrown or response code is something else, then the result is false.
+     * 
      * @param url
      * @return
      */
-    public static boolean urlExists(String url){
-
+    public static boolean urlExists(String url) {
 
         HttpClient client = new HttpClient();
 
-        // 	Create a method instance.
+        // Create a method instance.
         HeadMethod method = new HeadMethod(url);
 
         try {
-      // 	Execute the method.
+            // Execute the method.
             int statusCode = client.executeMethod(method);
 
             return statusCode == HttpStatus.SC_OK;
@@ -112,7 +109,7 @@ public class HttpUtils {
             e.printStackTrace();
             return false;
         } finally {
-    // 	Release the connection.
+            // Release the connection.
             method.releaseConnection();
         }
     }

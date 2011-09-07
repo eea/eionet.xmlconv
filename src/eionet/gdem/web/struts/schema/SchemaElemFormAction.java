@@ -44,8 +44,8 @@ public class SchemaElemFormAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
         SchemaElemForm form = (SchemaElemForm) actionForm;
         String schemaId = (String) httpServletRequest.getParameter("schemaId");
@@ -61,7 +61,7 @@ public class SchemaElemFormAction extends Action {
         try {
             SchemaManager sm = new SchemaManager();
             seHolder = sm.getSchemaElems(user, schemaId);
-            if (seHolder==null || seHolder.getSchema()==null)
+            if (seHolder == null || seHolder.getSchema() == null)
                 throw new DCMException(BusinessConstants.EXCEPTION_SCHEMA_NOT_EXIST);
             form.setSchema(seHolder.getSchema().getSchema());
             form.setDescription(seHolder.getSchema().getDescription());
@@ -74,20 +74,20 @@ public class SchemaElemFormAction extends Action {
             form.setDtd(seHolder.getSchema().getIsDTD());
             String fileName = seHolder.getSchema().getUplSchemaFileName();
             form.setExpireDateObj(seHolder.getSchema().getExpireDate());
-            if(seHolder.getSchema().getUplSchema()!=null && !Utils.isNullStr(fileName)){
+            if (seHolder.getSchema().getUplSchema() != null && !Utils.isNullStr(fileName)) {
                 form.setUplSchemaId(seHolder.getSchema().getUplSchema().getUplSchemaId());
                 form.setUplSchemaFileUrl(seHolder.getSchema().getUplSchema().getUplSchemaFileUrl());
                 form.setLastModified(seHolder.getSchema().getUplSchema().getLastModified());
                 form.setUplSchemaFileName(fileName);
-                form.setUplSchemaFileUrl(Properties.gdemURL + "/schema/" +fileName);
+                form.setUplSchemaFileUrl(Properties.gdemURL + "/schema/" + fileName);
             }
-            seHolder.setSchemaIdRemoteUrl(Utils.isURL(seHolder.getSchema().getSchema()) &&
-                    !seHolder.getSchema().getSchema().startsWith(SecurityUtil.getUrlWithContextPath(httpServletRequest)));
+            seHolder.setSchemaIdRemoteUrl(Utils.isURL(seHolder.getSchema().getSchema())
+                    && !seHolder.getSchema().getSchema().startsWith(SecurityUtil.getUrlWithContextPath(httpServletRequest)));
             httpServletRequest.getSession().setAttribute("schema.rootElements", seHolder);
 
         } catch (DCMException e) {
-            //e.printStackTrace();
-            _logger.error("Schema element form error",e);
+            // e.printStackTrace();
+            _logger.error("Schema element form error", e);
             errors.add("stylesheet", new ActionMessage(e.getErrorCode()));
             saveErrors(httpServletRequest, errors);
             return actionMapping.findForward("fail");

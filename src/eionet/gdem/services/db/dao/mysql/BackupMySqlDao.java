@@ -11,39 +11,29 @@ import java.util.List;
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.services.db.dao.IBackupDao;
 
-
 public class BackupMySqlDao extends MySqlBaseDao implements IBackupDao {
 
+    public BackupMySqlDao() {
+    }
 
-    public BackupMySqlDao(){}
+    private static final String qInsertBackup = "INSERT INTO " + BACKUP_TABLE + " ( " + BACKUP_OBJECT_ID_FLD + ", "
+            + BACKUP_FILENAME_FLD + ", " + BACKUP_TIMESTAMP_FLD + ", " + BACKUP_USER_FLD + ") " + " VALUES (?,?,?,?)";
+    private static final String qBackup = "SELECT " + BACKUP_ID_FLD + ", " + BACKUP_OBJECT_ID_FLD + ", " + BACKUP_FILENAME_FLD
+            + ", " + BACKUP_TIMESTAMP_FLD + ", " + BACKUP_USER_FLD + " FROM " + BACKUP_TABLE;
 
-    private static final String qInsertBackup = "INSERT INTO " + BACKUP_TABLE
-    + " ( "
-    + BACKUP_OBJECT_ID_FLD + ", "
-    + BACKUP_FILENAME_FLD + ", "
-    + BACKUP_TIMESTAMP_FLD + ", "
-    + BACKUP_USER_FLD
-    + ") "
-    + " VALUES (?,?,?,?)";
-    private static final String qBackup = "SELECT " + BACKUP_ID_FLD + ", "
-    + BACKUP_OBJECT_ID_FLD + ", "
-    + BACKUP_FILENAME_FLD + ", "
-    + BACKUP_TIMESTAMP_FLD + ", "
-    + BACKUP_USER_FLD
-    + " FROM " + BACKUP_TABLE;
+    private static final String qBackupByObjectId = qBackup + " WHERE " + BACKUP_OBJECT_ID_FLD + "=? ORDER BY "
+            + BACKUP_TIMESTAMP_FLD + " DESC";
 
-    private static final String qBackupByObjectId = qBackup + " WHERE " + BACKUP_OBJECT_ID_FLD +
-        "=? ORDER BY " + BACKUP_TIMESTAMP_FLD + " DESC";
-
-    private static final String qDeleteBackups = "DELETE FROM " + BACKUP_TABLE + " WHERE " +
-        BACKUP_TIMESTAMP_FLD +  "< ?";
+    private static final String qDeleteBackups = "DELETE FROM " + BACKUP_TABLE + " WHERE " + BACKUP_TIMESTAMP_FLD + "< ?";
 
     public void addBackup(BackupDto backup) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
-        if (isDebugMode){ logger.debug("Query is " + qInsertBackup);}
-        try{
+        if (isDebugMode) {
+            logger.debug("Query is " + qInsertBackup);
+        }
+        try {
             conn = getConnection();
             pstmt = conn.prepareStatement(qInsertBackup);
             pstmt.setString(1, backup.getQueryId());
@@ -51,19 +41,21 @@ public class BackupMySqlDao extends MySqlBaseDao implements IBackupDao {
             pstmt.setTimestamp(3, backup.getTimestamp());
             pstmt.setString(4, backup.getUser());
             pstmt.executeUpdate();
-        }finally{
-            closeAllResources(null,pstmt,conn);
+        } finally {
+            closeAllResources(null, pstmt, conn);
         }
     }
 
     public List<BackupDto> getBackups(String objectID) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        ResultSet rs =null;
+        ResultSet rs = null;
         List<BackupDto> result = null;
 
-        if (isDebugMode){ logger.debug("Query is " + qBackupByObjectId);}
-        try{
+        if (isDebugMode) {
+            logger.debug("Query is " + qBackupByObjectId);
+        }
+        try {
             conn = getConnection();
             pstmt = conn.prepareStatement(qBackupByObjectId);
             pstmt.setString(1, objectID);
@@ -78,11 +70,9 @@ public class BackupMySqlDao extends MySqlBaseDao implements IBackupDao {
                 backup.setUser(rs.getString(BACKUP_USER_FLD));
                 result.add(backup);
             }
+        } finally {
+            closeAllResources(rs, pstmt, conn);
         }
-        finally {
-            closeAllResources(rs,pstmt,conn);
-        }
-
 
         return result;
     }
@@ -91,14 +81,16 @@ public class BackupMySqlDao extends MySqlBaseDao implements IBackupDao {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
-        if (isDebugMode){ logger.debug("Query is " + qDeleteBackups);}
-        try{
+        if (isDebugMode) {
+            logger.debug("Query is " + qDeleteBackups);
+        }
+        try {
             conn = getConnection();
             pstmt = conn.prepareStatement(qDeleteBackups);
             pstmt.setTimestamp(1, purgeDate);
             pstmt.executeUpdate();
-        }finally{
-            closeAllResources(null,pstmt,conn);
+        } finally {
+            closeAllResources(null, pstmt, conn);
         }
     }
 

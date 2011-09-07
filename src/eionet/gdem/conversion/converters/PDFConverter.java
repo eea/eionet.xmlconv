@@ -31,7 +31,8 @@ import eionet.gdem.GDEMException;
 
 public class PDFConverter extends ConvertStartegy {
 
-    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException, Exception {
+    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException,
+            Exception {
         String pdfFile = tmpFolder + "gdem_" + System.currentTimeMillis() + ".pdf";
         if (result != null)
             runFOPTransformation(source, xslt, result);

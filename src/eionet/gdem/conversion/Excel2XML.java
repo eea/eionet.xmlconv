@@ -23,22 +23,24 @@
 
 package eionet.gdem.conversion;
 
-
 import eionet.gdem.conversion.excel.ExcelUtils;
 
 /**
-* This class is returns MS Excel specific handlers for DDXMLConverter
-* @author Enriko Käsper
-*/
+ * This class is returns MS Excel specific handlers for DDXMLConverter
+ *
+ * @author Enriko Käsper
+ */
 
-public class Excel2XML extends DDXMLConverter
-{
+public class Excel2XML extends DDXMLConverter {
     private final static String FORMAT_NAME = "MS Excel";
 
-    public SourceReaderIF getSourceReader(){
+    @Override
+    public SourceReaderIF getSourceReader() {
         return ExcelUtils.getExcelReader();
     }
-    public String getSourceFormatName(){
+
+    @Override
+    public String getSourceFormatName() {
         return FORMAT_NAME;
     }
 }

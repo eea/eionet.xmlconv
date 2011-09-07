@@ -106,12 +106,15 @@ public class XSLTransformer {
 
     /**
      * returns TransformerFactory instance
+     * 
      * @return
      */
-    public TransformerFactory getTransformerFactoryInstance(){
+    public TransformerFactory getTransformerFactoryInstance() {
         return transformerFactory;
     }
-    public void transform(String xslt, InputSource inputSource, OutputStream os, Map<String, Object>  parameters) throws TransformException {
+
+    public void transform(String xslt, InputSource inputSource, OutputStream os, Map<String, Object> parameters)
+            throws TransformException {
         if (xslt == null) {
             try { // if no stylesheet specified simply drain the stream
                 Streams.drain(inputSource.getByteStream(), os);
@@ -126,11 +129,12 @@ public class XSLTransformer {
                 throw new TransformException(e);
             }
             InputStreamReader ssreader = new InputStreamReader(is);
-            transformStream(xslt, ssreader, inputSource,  new StreamResult(os), parameters);
+            transformStream(xslt, ssreader, inputSource, new StreamResult(os), parameters);
         }
     }
 
-    public void transform(String xslt, InputSource inputSource, Writer writer, Map<String, Object>  parameters) throws TransformException {
+    public void transform(String xslt, InputSource inputSource, Writer writer, Map<String, Object> parameters)
+            throws TransformException {
         if (xslt == null) {
             try { // if no stylesheet specified simply drain the stream
                 Streams.drain(inputSource.getByteStream(), writer);
@@ -149,16 +153,16 @@ public class XSLTransformer {
         }
     }
 
-    public void transform(String xsltName, String xslContent, InputSource inputSource, OutputStream os, Map<String, Object>  parameters) throws TransformException {
-          ByteArrayInputStream bais=new ByteArrayInputStream(xslContent.getBytes());
-          InputStreamReader ssreader = new InputStreamReader(bais);
-          transformStream(xsltName, ssreader, inputSource,  new StreamResult(os), parameters);
+    public void transform(String xsltName, String xslContent, InputSource inputSource, OutputStream os,
+            Map<String, Object> parameters) throws TransformException {
+        ByteArrayInputStream bais = new ByteArrayInputStream(xslContent.getBytes());
+        InputStreamReader ssreader = new InputStreamReader(bais);
+        transformStream(xsltName, ssreader, inputSource, new StreamResult(os), parameters);
 
     }
 
-
     /**
-     *
+     * 
      * @param xsltName
      * @param xslIs
      * @param is
@@ -166,15 +170,15 @@ public class XSLTransformer {
      * @param parameters
      * @throws TransformException
      */
-    public void transform(String xsltName, InputStream xslIs, InputStream is, OutputStream os, Map<String, Object>  parameters) throws TransformException {
+    public void transform(String xsltName, InputStream xslIs, InputStream is, OutputStream os, Map<String, Object> parameters)
+            throws TransformException {
         InputStreamReader ssreader = new InputStreamReader(xslIs);
-          transformStream(xsltName, ssreader, new InputSource(is),  new StreamResult(os), parameters);
+        transformStream(xsltName, ssreader, new InputSource(is), new StreamResult(os), parameters);
 
     }
 
-
-
-    private static void transformStream(String xslt, InputStreamReader xslReader, InputSource inputSource, StreamResult streamResult, Map<String, Object> parameters) throws TransformException {
+    private static void transformStream(String xslt, InputStreamReader xslReader, InputSource inputSource,
+            StreamResult streamResult, Map<String, Object> parameters) throws TransformException {
         if (xslt == null) {
             throw new TransformException("Invalid Transform, no stylesheet set!");
         }
@@ -201,13 +205,12 @@ public class XSLTransformer {
             // Set it to solve Entities via cache
             reader.setEntityResolver(new TransformDTDEntityResolver(dtds));
 
-
             // Parse the stylesheet.
             final InputSource xstyle = new InputSource(xslReader);
             xstyle.setSystemId(xslt);
             reader.parse(xstyle);
 
-            //Get the Templates object from the ContentHandler.
+            // Get the Templates object from the ContentHandler.
             Templates templates = templatesHandler.getTemplates();
 
             // Create a ContentHandler to handle parsing of the XML source.
@@ -227,11 +230,11 @@ public class XSLTransformer {
 
             final Transformer processor = handler.getTransformer();
 
-            if(parameters!=null) {
+            if (parameters != null) {
                 //
                 // Get the transform variables (parameters)
                 //
-                for (Map.Entry<String, Object> param : parameters.entrySet()){
+                for (Map.Entry<String, Object> param : parameters.entrySet()) {
                     processor.setParameter(param.getKey(), param.getValue());
                 }
             }

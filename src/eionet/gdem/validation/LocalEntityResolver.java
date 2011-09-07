@@ -7,10 +7,11 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 import eionet.gdem.utils.Utils;
+
 /**
  * The class replaces the remote DTD location to locally stored DTD, if the SYSTEM id matches
- * @author Enriko Käsper, TietoEnator Estonia AS
- * LocalEntityResolver
+ * 
+ * @author Enriko Käsper, TietoEnator Estonia AS LocalEntityResolver
  */
 
 public class LocalEntityResolver implements EntityResolver {
@@ -18,18 +19,16 @@ public class LocalEntityResolver implements EntityResolver {
     private String localSystemId = null;
     private String localId = null;
 
-    public LocalEntityResolver(String _localSystemId, String _localId){
-        localSystemId=_localSystemId;
-        localId=_localId;
+    public LocalEntityResolver(String _localSystemId, String _localId) {
+        localSystemId = _localSystemId;
+        localId = _localId;
     }
 
     public InputSource resolveEntity(String publicId, String systemId) {
 
-
         if (!Utils.isNullStr(getLocalId()) && !Utils.isNullStr(getLocalSystemId()) && systemId.equals(getLocalSystemId())) {
             return new InputSource(getLocalId());
-        }
-        else {
+        } else {
             // use the default behaviour
             return null;
         }

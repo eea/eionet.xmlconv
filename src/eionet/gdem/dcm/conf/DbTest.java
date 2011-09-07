@@ -36,7 +36,6 @@ public class DbTest {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
     public void tstDbParams(String url, String user, String psw) throws Exception {
 
         Connection con = null;
@@ -58,10 +57,12 @@ public class DbTest {
             throw new DCMException(BusinessConstants.EXCEPTION_PARAM_DB_TEST_FAILED);
         } finally {
             // Close connection
-            if (rset != null) rset.close();
+            if (rset != null)
+                rset.close();
             if (stmt != null) {
                 stmt.close();
-                if (!con.getAutoCommit()) con.commit();
+                if (!con.getAutoCommit())
+                    con.commit();
             }
             if (con != null) {
                 con.close();

@@ -33,43 +33,45 @@ import eionet.gdem.conversion.odf.OpenDocument;
 public class OpenDocumentProcessor {
 
     /*
-    * This class is creating handlers for creating OpenDocument file from xml
-    * called from ConversionService
-    */
-      public OpenDocumentProcessor() {
-      }
-      public void makeSpreadsheet(String sIn, String sOut) throws GDEMException {
+     * This class is creating handlers for creating OpenDocument file from xml called from ConversionService
+     */
+    public OpenDocumentProcessor() {
+    }
+
+    public void makeSpreadsheet(String sIn, String sOut) throws GDEMException {
         FileOutputStream out = null;
-        try
-        {
+        try {
             out = new FileOutputStream(sOut);
-            makeSpreadsheet(sIn,out);
+            makeSpreadsheet(sIn, out);
             out.close();
+        } catch (Exception e) {
+            throw new GDEMException("ErrorConversionHandler - couldn't save the OpenDocumentSpreadheet file: " + e.toString(), e);
         }
-        catch(Exception e)
-        {
-           throw new GDEMException("ErrorConversionHandler - couldn't save the OpenDocumentSpreadheet file: " + e.toString(), e);
-        }
-        if (out!=null){
+        if (out != null) {
             try {
                 out.close();
-            } catch (IOException ioe) {}
+            } catch (IOException ioe) {
+            }
         }
-      }
-      public void makeSpreadsheet(String sIn, OutputStream sOut) throws GDEMException {
+    }
 
-          if (sIn == null) return;
-          if (sOut == null) return;
+    public void makeSpreadsheet(String sIn, OutputStream sOut) throws GDEMException {
 
-          try{
-                OpenDocument od = new OpenDocument();
-                od.setContentFile(sIn);
-                od.createOdsFile(sOut);
-          }
-          catch (Exception e){
+        if (sIn == null) {
+            return;
+        }
+        if (sOut == null) {
+            return;
+        }
+
+        try {
+            OpenDocument od = new OpenDocument();
+            od.setContentFile(sIn);
+            od.createOdsFile(sOut);
+        } catch (Exception e) {
             throw new GDEMException("Error generating OpenDocument Spreadsheet file: " + e.toString(), e);
-          }
+        }
 
-          return;
-      }
+        return;
+    }
 }

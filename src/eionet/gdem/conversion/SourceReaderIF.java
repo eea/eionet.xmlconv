@@ -32,48 +32,56 @@ import eionet.gdem.conversion.datadict.DD_XMLInstance;
 /**
  *
  * Generic source file reader interface
+ *
  * @author Enriko Käsper
-*/
-public interface SourceReaderIF
-{
+ */
+public interface SourceReaderIF {
 
-/**
-* If the source file is generated from Data Dictionary,
-* then it should contain XML Shema in metada or somewhere in content
-* @return - XML Schema URL
-*/
-public String getXMLSchema();
+    /**
+     * If the source file is generated from Data Dictionary, then it should contain XML Shema in metada or somewhere in content
+     *
+     * @return - XML Schema URL
+     */
+    public String getXMLSchema();
 
-/**
-* Initialize the Source file from InputStream
-* @param InputStream input - input Excel file
-*/
-public void initReader(InputStream input) throws GDEMException;
+    /**
+     * Initialize the Source file from InputStream
+     *
+     * @param InputStream
+     *            input - input Excel file
+     */
+    public void initReader(InputStream input) throws GDEMException;
 
+    /**
+     * Goes through the source file and writes the data into DD_XMLInstance as xml
+     *
+     * @param DD_XMLInstance
+     *            instance - XML instance file, where the structure xml has been efined before
+     * @throws Exception
+     */
+    public void writeContentToInstance(DD_XMLInstance instance) throws Exception;
 
-/**
-* Goes through the source file and writes the data into DD_XMLInstance as xml
-* @param DD_XMLInstance instance - XML instance file, where the structure xml has been efined before
- * @throws Exception
-*/
-public void writeContentToInstance(DD_XMLInstance instance)throws Exception;
-/**
-* Finds the first sheet name, that is not DO_NOT_DELETE_THIS_SHEET
-* @return - sheet name
-*/
-public String getFirstSheetName();
-/**
-* If the spurce file is generated from Data Dictionary,
-* then it finds the XML Shemas for each spreadsheet
-* @return - Spreadsheet name
-*/
-public Map<String, String> getSheetSchemas();
+    /**
+     * Finds the first sheet name, that is not DO_NOT_DELETE_THIS_SHEET
+     *
+     * @return - sheet name
+     */
+    public String getFirstSheetName();
 
-/**
-* Check if sheet has data or not
-* @param sheet_name - sheet name
-* @return boolean - true if has data
-*/
-public boolean isEmptySheet(String sheet_name);
+    /**
+     * If the spurce file is generated from Data Dictionary, then it finds the XML Shemas for each spreadsheet
+     *
+     * @return - Spreadsheet name
+     */
+    public Map<String, String> getSheetSchemas();
+
+    /**
+     * Check if sheet has data or not
+     *
+     * @param sheet_name
+     *            - sheet name
+     * @return boolean - true if has data
+     */
+    public boolean isEmptySheet(String sheet_name);
 
 }

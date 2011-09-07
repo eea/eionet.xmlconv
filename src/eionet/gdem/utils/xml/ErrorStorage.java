@@ -27,7 +27,6 @@ public class ErrorStorage {
     private String waringMessage = "";
     private String fatalErrorMessage = "";
 
-
     public ErrorStorage() {
     }
 
@@ -70,11 +69,12 @@ public class ErrorStorage {
         }
     }
 
-
     public String getErrors() {
         StringBuffer sb = new StringBuffer();
-        if (errorMessage != null) sb.append(errorMessage);
-        if (fatalErrorMessage != null) sb.append(fatalErrorMessage);
+        if (errorMessage != null)
+            sb.append(errorMessage);
+        if (fatalErrorMessage != null)
+            sb.append(fatalErrorMessage);
         return sb.toString();
     }
 

@@ -44,7 +44,6 @@ public class XmlCommon {
     private CustomDomParser parser;
     private ErrorStorage errorStorage;
 
-
     public XmlCommon() {
         parser = new CustomDomParser();
         errorStorage = new ErrorStorage();
@@ -52,15 +51,16 @@ public class XmlCommon {
             public void error(SAXParseException ex) throws SAXException {
                 errorStorage.setErrorMessage(ex.getMessage());
             }
+
             public void fatalError(SAXParseException ex) throws SAXException {
                 errorStorage.setFatalErrorMessage(ex.getMessage());
             }
+
             public void warning(SAXParseException ex) throws SAXException {
                 errorStorage.setWaringMessage(ex.getMessage());
             }
         });
     }
-
 
     public void checkFromInputStream(InputStream inputStream) throws XmlException {
         try {
@@ -93,20 +93,19 @@ public class XmlCommon {
             }
 
         } catch (SAXException saxe) {
-            //saxe.printStackTrace();
+            // saxe.printStackTrace();
             throw new XmlException("Failure reasons: " + saxe.getMessage());
         } catch (IOException ioe) {
             throw new XmlException("Failure reasons: " + ioe.getMessage());
-        } catch(XmlException e) {
+        } catch (XmlException e) {
             throw e;
         }
     }
 
-
     public void setWellFormednessChecking() throws XmlException {
         try {
             parser.setFeature("http://apache.org/xml/features/validation/schema", false);
-            //parser.setFeature("http://xml.org/sax/features/namespaces", false);
+            // parser.setFeature("http://xml.org/sax/features/namespaces", false);
 
             parser.setFeature("http://xml.org/sax/features/validation", false);
 
@@ -143,18 +142,16 @@ public class XmlCommon {
         }
     }
 
-
     public void createXMLDocument() throws XmlException {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            document=builder.newDocument();
+            document = builder.newDocument();
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
             throw new XmlException(e);
         }
 
     }
-
 
     public void createXMLDocument(String docTypeName, String systemId) throws XmlException {
         try {
@@ -164,22 +161,21 @@ public class XmlCommon {
             xmlDoc.appendChild(name);
             xmlDoc.appendChild(dtd);
             Document res = (Document) xmlDoc;
-            document=res;
+            document = res;
         } catch (Exception e) {
             throw new XmlException(e);
         }
 
     }
 
-
     public void checkFromString(String xml) throws XmlException {
         StringReader strR = null;
         try {
             // strReader = new StringReader(stringOut.toString());
             // source = new InputSource(strReader);
-            strR  = new StringReader(xml);
+            strR = new StringReader(xml);
             InputSource input = new InputSource(strR);
-            //setWellFormednessChecking();
+            // setWellFormednessChecking();
             parser.parse(input);
             document = parser.getDocument();
             if (!errorStorage.isEmpty()) {
@@ -187,11 +183,11 @@ public class XmlCommon {
             }
 
         } catch (SAXException saxe) {
-            //saxe.printStackTrace();
+            // saxe.printStackTrace();
             throw new XmlException("Failure reasons: " + saxe.getMessage());
         } catch (IOException ioe) {
             throw new XmlException("Failure reasons: " + ioe.getMessage());
-        } catch(XmlException e) {
+        } catch (XmlException e) {
             throw e;
         } finally {
             try {
@@ -202,10 +198,5 @@ public class XmlCommon {
             }
         }
     }
-
-
-
-
-
 
 }

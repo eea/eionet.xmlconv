@@ -17,29 +17,29 @@ public class BaseAction extends Action {
 
     public static final String KEY_REQDTO = "dto";
 
-    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         return null;
     }
 
     protected boolean checkPermission(HttpServletRequest request, String acl, String permission) throws Exception {
-        String username=(String) request.getSession().getAttribute("user");
-        boolean result = username!=null && SecurityUtil.hasPerm(username, "/" + acl, permission);
+        String username = (String) request.getSession().getAttribute("user");
+        boolean result = username != null && SecurityUtil.hasPerm(username, "/" + acl, permission);
         return result;
     }
 
     protected String processFormStr(String arg) {
-        String result=null;
-        if(arg!=null) {
-            if(!arg.trim().equalsIgnoreCase("")) {
-                result=arg.trim();
+        String result = null;
+        if (arg != null) {
+            if (!arg.trim().equalsIgnoreCase("")) {
+                result = arg.trim();
             }
         }
         return result;
     }
 
-
     protected String translate(ActionMapping map, HttpServletRequest req, String key) {
-        MessageResources msgRes=getMessageResources(map);
+        MessageResources msgRes = getMessageResources(map);
         return msgRes.getMessage(req.getLocale(), key);
     }
 
@@ -49,8 +49,5 @@ public class BaseAction extends Action {
         msgRes.setReturnNull(true);
         return msgRes;
     }
-
-
-
 
 }

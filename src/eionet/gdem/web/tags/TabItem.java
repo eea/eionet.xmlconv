@@ -10,10 +10,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * TabItem
+ * @author Enriko Käsper, TietoEnator Estonia AS TabItem
  */
-
 
 public class TabItem extends TagSupport {
 
@@ -25,29 +23,25 @@ public class TabItem extends TagSupport {
 
     private String selectedTab;
 
-
     public TabItem() {
     }
 
     public int doStartTag() throws JspException {
         try {
-            HttpServletRequestWrapper r = (HttpServletRequestWrapper) pageContext
-                    .getRequest();
+            HttpServletRequestWrapper r = (HttpServletRequestWrapper) pageContext.getRequest();
             pageContext.getOut().print("<li");
-            String spath = (String) pageContext.getRequest().getAttribute(
-                    "ServletPath");
+            String spath = (String) pageContext.getRequest().getAttribute("ServletPath");
             if (spath == null) {
                 spath = r.getServletPath();
             }
 
             String sel = selectedTab;
-            if( sel == null)
+            if (sel == null)
                 sel = "";
-            if (id.equalsIgnoreCase(sel)){
-                //selected tab
+            if (id.equalsIgnoreCase(sel)) {
+                // selected tab
                 pageContext.getOut().print(" id=\"currenttab\"><span>");
-            }
-            else{
+            } else {
                 pageContext.getOut().print(" id=\"");
                 pageContext.getOut().print(id);
                 pageContext.getOut().print("\"><a href=\"");
@@ -66,7 +60,7 @@ public class TabItem extends TagSupport {
     public int doEndTag() {
         try {
             String sel = selectedTab;
-            if( sel == null)
+            if (sel == null)
                 sel = "";
             if (id.equalsIgnoreCase(sel))
                 pageContext.getOut().print("</span>");

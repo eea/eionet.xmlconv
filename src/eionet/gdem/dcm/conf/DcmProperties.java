@@ -38,7 +38,6 @@ public class DcmProperties {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
     public void setDbParams(String url, String user, String psw) throws DCMException {
 
         String filePath = Properties.appHome + File.separatorChar + "gdem.properties";
@@ -67,7 +66,6 @@ public class DcmProperties {
             throw new DCMException(BusinessConstants.EXCEPTION_PARAM_DB_FAILED);
         }
     }
-
 
     public void setLdapParams(String url, String context, String userDir, String attrUid) throws DCMException {
 
@@ -99,7 +97,6 @@ public class DcmProperties {
         }
     }
 
-
     public void setSystemParams(Long qaTimeout, String cmdXGawk) throws DCMException {
 
         String filePath = Properties.appHome + File.separatorChar + "gdem.properties";
@@ -122,8 +119,8 @@ public class DcmProperties {
             out.write(st.toString());
             out.close();
 
-            Properties.xgawkCommand=cmdXGawk;
-            Properties.qaTimeout =Long.valueOf(qaTimeout);
+            Properties.xgawkCommand = cmdXGawk;
+            Properties.qaTimeout = Long.valueOf(qaTimeout);
 
         } catch (IOException e) {
             _logger.error("Saving system parameters failed!", e);

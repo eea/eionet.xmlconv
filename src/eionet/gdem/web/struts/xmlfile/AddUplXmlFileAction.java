@@ -22,16 +22,16 @@ import eionet.gdem.services.LoggerIF;
 
 /**
  * Action for adding XML files into reporitory
- *
+ * 
  * @author Enriko Käsper (TietoEnator)
- *
+ * 
  */
 public class AddUplXmlFileAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
         UplXmlFileForm form = (UplXmlFileForm) actionForm;
@@ -52,22 +52,19 @@ public class AddUplXmlFileAction extends Action {
             return actionMapping.findForward("fail");
         }
 
-        /*IXmlCtx x = new XmlContext();
-        try {
-            x.setWellFormednessChecking();
-            x.checkFromInputStream(new ByteArrayInputStream(xmlfile.getFileData()));
-        } catch (Exception e) {
-            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplXmlFile.error.notvalid"));
-            httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-            return actionMapping.findForward("fail");
-        }*/
+        /*
+         * IXmlCtx x = new XmlContext(); try { x.setWellFormednessChecking(); x.checkFromInputStream(new
+         * ByteArrayInputStream(xmlfile.getFileData())); } catch (Exception e) { errors.add(ActionMessages.GLOBAL_MESSAGE, new
+         * ActionMessage("label.uplXmlFile.error.notvalid")); httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+         * return actionMapping.findForward("fail"); }
+         */
 
         try {
             UplXmlFileManager fm = new UplXmlFileManager();
             fm.addUplXmlFile(user, xmlfile, title);
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplXmlFile.inserted"));
         } catch (DCMException e) {
-            _logger.error("Error adding upload XML file",e);
+            _logger.error("Error adding upload XML file", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);

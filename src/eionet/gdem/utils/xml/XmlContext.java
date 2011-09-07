@@ -28,11 +28,9 @@ public class XmlContext extends XmlCommon implements IXmlCtx {
     public XmlContext() {
     }
 
-
     public IXUpdate getManager() {
         return new XmlManager(this);
     }
-
 
     public IXmlSerializer getSerializer() {
         return new XmlSerialization(this);
@@ -42,11 +40,9 @@ public class XmlContext extends XmlCommon implements IXmlCtx {
         return new XmlQuery(this);
     }
 
-
     public Document getDocument() {
         return document;
     }
-
 
     public void setDocument(Document document) {
         this.document = document;

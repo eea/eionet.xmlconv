@@ -44,8 +44,8 @@ public class ConvTypeAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ConvTypeHolder ctHolder = new ConvTypeHolder();
         ActionMessages errors = new ActionMessages();
@@ -71,7 +71,7 @@ public class ConvTypeAction extends Action {
 
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error getting conv types",e);
+            _logger.error("Error getting conv types", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveErrors(httpServletRequest, errors);
         }

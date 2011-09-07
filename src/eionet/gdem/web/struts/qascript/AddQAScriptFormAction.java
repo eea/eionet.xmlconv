@@ -30,14 +30,13 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * AddQAScriptFormAction
+ * @author Enriko Käsper, Tieto Estonia AddQAScriptFormAction
  */
 
-public class AddQAScriptFormAction  extends Action {
+public class AddQAScriptFormAction extends Action {
 
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         QAScriptForm form = (QAScriptForm) actionForm;
         String schemaId = (String) httpServletRequest.getParameter("schemaId");

@@ -29,25 +29,20 @@ class JspUtils {
 
     public static BreadCrumbs getBreadCrumbs(PageContext pageContext) {
         HttpSession session = pageContext.getSession();
-        BreadCrumbs breadcrumbs = (BreadCrumbs) session
-                .getAttribute("com.eurodyn.web.tags.breadcrumbs");
+        BreadCrumbs breadcrumbs = (BreadCrumbs) session.getAttribute("com.eurodyn.web.tags.breadcrumbs");
         if (breadcrumbs == null) {
             breadcrumbs = new BreadCrumbs();
-            session.setAttribute(
-                    "com.eurodyn.web.tags.breadcrumbs",
-                    breadcrumbs);
+            session.setAttribute("com.eurodyn.web.tags.breadcrumbs", breadcrumbs);
         }
         return breadcrumbs;
     }
 
     public static String getUri(HttpServletRequest request) {
         String uri;
-        Object requestUri = request
-                .getAttribute("javax.servlet.forward.request_uri");
+        Object requestUri = request.getAttribute("javax.servlet.forward.request_uri");
         if (requestUri != null) {
             uri = requestUri.toString();
-            Object queryString = request
-                    .getAttribute("javax.servlet.forward.query_string");
+            Object queryString = request.getAttribute("javax.servlet.forward.query_string");
             if (queryString != null) {
                 uri += "?" + queryString;
             }

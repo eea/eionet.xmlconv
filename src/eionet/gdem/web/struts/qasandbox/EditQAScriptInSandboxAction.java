@@ -33,7 +33,6 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.QAScriptManager;
-import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
@@ -45,19 +44,19 @@ import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 
 /**
- * EditQAScriptInSandboxAction Open selected QA script content and allow to edit
- * it.
- *
+ * EditQAScriptInSandboxAction Open selected QA script content and allow to edit it.
+ * 
  * @author Enriko Käsper, Tieto Estonia
- *
+ * 
  */
 
 public class EditQAScriptInSandboxAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    @Override
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
 
         // get the schemas list from the session
@@ -68,12 +67,12 @@ public class EditQAScriptInSandboxAction extends Action {
 
         String scriptIdParam = null;
         if (httpServletRequest.getParameter("scriptId") != null) {
-            scriptIdParam = (String) httpServletRequest.getParameter("scriptId");
+            scriptIdParam = httpServletRequest.getParameter("scriptId");
         }
         boolean reset = false;
         // request comes from Schema Queries page
         if (httpServletRequest.getParameter("reset") != null) {
-            reset = "true".equals((String) httpServletRequest.getParameter("reset"));
+            reset = "true".equals(httpServletRequest.getParameter("reset"));
         }
         if (Utils.isNullStr(scriptIdParam)) {
 

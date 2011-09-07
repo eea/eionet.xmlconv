@@ -23,7 +23,6 @@
 
 package eionet.gdem.services;
 
-
 import eionet.gdem.services.db.dao.DCMDaoFactory;
 
 /**
@@ -31,54 +30,80 @@ import eionet.gdem.services.db.dao.DCMDaoFactory;
  */
 public class GDEMServices {
 
-  private static LoggerIF _logger=null;
+    private static LoggerIF _logger = null;
 
-  private static boolean testConnection = false;
+    private static boolean testConnection = false;
 
-  public static DCMDaoFactory getDaoService(){
-      return DCMDaoFactory.getDaoFactory(DCMDaoFactory.MYSQL_DB);
-  }
-
-  public static LoggerIF getLogger()   {
-    if (_logger==null)
-      try {
-        _logger=new LoggerModule();
-      } catch (Exception e ) {
-        //whatever exception occurs here we still have to log the messages somewhere,
-        //so we use a dummy logger instead that logs messages to System.err
-        _logger=new DummyLogger();
-      }
-
-    return _logger;
-  }
-
-  static class DummyLogger implements LoggerIF {
-
-    public boolean enable(int level) {      return true;    }
-
-    public void debug(Object msg) { fatal(msg, null); }
-    public void debug(Object msg, Throwable t) { fatal(msg); }
-
-    public void info(Object msg) { fatal(msg, null);}
-    public void info(Object msg, Throwable t) { fatal(msg);}
-
-    public void warning(Object msg) {fatal(msg, null);}
-    public void warning(Object msg, Throwable t) {fatal(msg);}
-
-    public void error(Object msg) {fatal(msg, null); }
-    public void error(Object msg, Throwable t) {fatal(msg);}
-
-    public void fatal(Object msg) {  fatal(msg,null); }
-    public void fatal(Object msg, Throwable t) {
-      System.err.println("===================================================");
-      System.err.println("Error " + msg );
-      System.err.println("===================================================");
-      if (t!= null)
-        t.printStackTrace(System.err);
+    public static DCMDaoFactory getDaoService() {
+        return DCMDaoFactory.getDaoFactory(DCMDaoFactory.MYSQL_DB);
     }
 
-  }
-  public static boolean isTestConnection() {
+    public static LoggerIF getLogger() {
+        if (_logger == null)
+            try {
+                _logger = new LoggerModule();
+            } catch (Exception e) {
+                // whatever exception occurs here we still have to log the messages somewhere,
+                // so we use a dummy logger instead that logs messages to System.err
+                _logger = new DummyLogger();
+            }
+
+        return _logger;
+    }
+
+    static class DummyLogger implements LoggerIF {
+
+        public boolean enable(int level) {
+            return true;
+        }
+
+        public void debug(Object msg) {
+            fatal(msg, null);
+        }
+
+        public void debug(Object msg, Throwable t) {
+            fatal(msg);
+        }
+
+        public void info(Object msg) {
+            fatal(msg, null);
+        }
+
+        public void info(Object msg, Throwable t) {
+            fatal(msg);
+        }
+
+        public void warning(Object msg) {
+            fatal(msg, null);
+        }
+
+        public void warning(Object msg, Throwable t) {
+            fatal(msg);
+        }
+
+        public void error(Object msg) {
+            fatal(msg, null);
+        }
+
+        public void error(Object msg, Throwable t) {
+            fatal(msg);
+        }
+
+        public void fatal(Object msg) {
+            fatal(msg, null);
+        }
+
+        public void fatal(Object msg, Throwable t) {
+            System.err.println("===================================================");
+            System.err.println("Error " + msg);
+            System.err.println("===================================================");
+            if (t != null)
+                t.printStackTrace(System.err);
+        }
+
+    }
+
+    public static boolean isTestConnection() {
         return testConnection;
     }
 

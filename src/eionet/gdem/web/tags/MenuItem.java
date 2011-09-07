@@ -51,17 +51,15 @@ public class MenuItem extends TagSupport {
 
     public int doStartTag() throws JspException {
         try {
-            HttpServletRequestWrapper r = (HttpServletRequestWrapper) pageContext
-                    .getRequest();
+            HttpServletRequestWrapper r = (HttpServletRequestWrapper) pageContext.getRequest();
             pageContext.getOut().print("<li");
-            String spath = (String) pageContext.getRequest().getAttribute(
-                    "ServletPath");
+            String spath = (String) pageContext.getRequest().getAttribute("ServletPath");
             if (spath == null) {
                 spath = r.getServletPath();
             }
 
             String prefix = selectedPrefix;
-            if( prefix == null)
+            if (prefix == null)
                 prefix = action;
             if (spath != null && spath.startsWith(prefix))
                 pageContext.getOut().print(" class=\"selected\"");

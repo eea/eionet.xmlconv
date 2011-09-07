@@ -58,12 +58,15 @@ public class SchemaElemForm extends ValidatorForm {
     private String lastModified;
 
     private String uplSchemaId;
+
     public String getDefaultSchemaLang() {
         return Schema.getDefaultSchemaLang();
     }
+
     public String getDescription() {
         return description;
     }
+
     public String getDtdId() {
         return dtdId;
     }
@@ -75,8 +78,10 @@ public class SchemaElemForm extends ValidatorForm {
     public String getExpireDate() {
         return expireDate;
     }
+
     public String getLongExpireDate() {
-        if(expireDateObj==null) return "";
+        if (expireDateObj == null)
+            return "";
 
         return Utils.getDate(expireDateObj);
     }
@@ -145,7 +150,7 @@ public class SchemaElemForm extends ValidatorForm {
         uplSchemaFileUrl = null;
         schemaFile = null;
         lastModified = null;
-        expireDate=null;
+        expireDate = null;
     }
 
     public void setDescription(String description) {
@@ -175,14 +180,13 @@ public class SchemaElemForm extends ValidatorForm {
 
     public void setExpireDate(String strExpireDate) throws ParseException {
         this.expireDate = strExpireDate;
-        if(Utils.isNullStr(strExpireDate))
-            expireDateObj=null;
+        if (Utils.isNullStr(strExpireDate))
+            expireDateObj = null;
         else
-            try{
-                this.expireDateObj = Utils.parseDate(strExpireDate,"dd/MM/yyyy");
-            }
-            catch(Exception e){
-                //invalid date, validator should catch this
+            try {
+                this.expireDateObj = Utils.parseDate(strExpireDate, "dd/MM/yyyy");
+            } catch (Exception e) {
+                // invalid date, validator should catch this
             }
     }
 
@@ -221,8 +225,8 @@ public class SchemaElemForm extends ValidatorForm {
     public void setUplSchemaId(String uplSchemaId) {
         this.uplSchemaId = uplSchemaId;
     }
-    public ActionErrors validate(ActionMapping mapping,
-            HttpServletRequest request){
+
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         return super.validate(mapping, request);
     }
 }

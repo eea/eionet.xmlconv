@@ -37,16 +37,15 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * SchemaQAScriptsFormAction
+ * @author Enriko Käsper, Tieto Estonia SchemaQAScriptsFormAction
  */
 
-public class SchemaQAScriptsFormAction  extends Action {
+public class SchemaQAScriptsFormAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         QAScriptListHolder st = new QAScriptListHolder();
         ActionMessages messages = new ActionMessages();
@@ -58,13 +57,11 @@ public class SchemaQAScriptsFormAction  extends Action {
             schemaId = (String) httpServletRequest.getAttribute("schemaId");
         }
 
-
         if (schemaId == null || schemaId.equals("")) {
             return actionMapping.findForward("fail");
         }
 
         httpServletRequest.setAttribute("schemaId", schemaId);
-
 
         try {
             SchemaManager sm = new SchemaManager();
@@ -74,7 +71,7 @@ public class SchemaQAScriptsFormAction  extends Action {
 
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error getting schema QA scripts",e);
+            _logger.error("Error getting schema QA scripts", e);
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         saveErrors(httpServletRequest, messages);

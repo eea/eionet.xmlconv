@@ -44,34 +44,34 @@ public class HostDetailsAction extends BaseAction {
     private static LoggerIF _logger = GDEMServices.getLogger();
     private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();;
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
+            HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
         DynaValidatorForm hostForm = (DynaValidatorForm) actionForm;
         String hostId = (String) hostForm.get("id");
 
-
         try {
-            if(	checkPermission(request, Names.ACL_HOST_PATH, "u")) {
+            if (checkPermission(request, Names.ACL_HOST_PATH, "u")) {
                 Vector hosts = hostDao.getHosts(hostId);
 
-                if (hosts!=null){
-                    Hashtable host = (Hashtable)hosts.get(0);
-                    hostForm.set("id", (String)host.get("host_id"));
-                    hostForm.set("host", (String)host.get("host_name"));
-                    hostForm.set("username", (String)host.get("user_name"));
-                    hostForm.set("password", (String)host.get("pwd"));
+                if (hosts != null) {
+                    Hashtable host = (Hashtable) hosts.get(0);
+                    hostForm.set("id", (String) host.get("host_id"));
+                    hostForm.set("host", (String) host.get("host_name"));
+                    hostForm.set("username", (String) host.get("user_name"));
+                    hostForm.set("password", (String) host.get("pwd"));
                 }
             } else {
-                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.unoperm", translate(actionMapping, request, "label.hosts")));
+                errors.add(ActionMessages.GLOBAL_MESSAGE,
+                        new ActionMessage("error.unoperm", translate(actionMapping, request, "label.hosts")));
             }
         } catch (Exception e) {
             _logger.error("", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
         }
 
-        if(errors.size()>0)	{
-            //request.getSession().setAttribute("dcm.errors", errors);
+        if (errors.size() > 0) {
+            // request.getSession().setAttribute("dcm.errors", errors);
             saveErrors(request, errors);
             return actionMapping.getInputForward();
         }

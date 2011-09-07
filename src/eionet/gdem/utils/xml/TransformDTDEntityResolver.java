@@ -40,12 +40,14 @@ public class TransformDTDEntityResolver implements EntityResolver {
         this.dtds = dtds;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
      */
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
         try {
-            // System.out.println("TSER: ( " + publicId  + " Taking " + systemId + " from cache");
+            // System.out.println("TSER: ( " + publicId + " Taking " + systemId + " from cache");
 
             byte[] dtd = (byte[]) dtds.get(systemId);
             if (dtd == null) {

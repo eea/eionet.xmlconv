@@ -42,18 +42,16 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IHostDao;
 
-
 /**
- * Several commmone class for reading files from url
- * Is able to read the host credentials from database
- * and pass the basic auth to remote server for files with limited access
- *
+ * Several commmone class for reading files from url Is able to read the host credentials from database and pass the basic auth to
+ * remote server for files with limited access
+ * 
  * NB! Always call close() method in finally block, otherwise the InputStream stays open
  */
-public class InputFile  {
+public class InputFile {
 
     private String ticket = null;
-    private URL url=null;
+    private URL url = null;
     private InputStream is = null;
     private boolean isTrustedMode = false;
     private String strFileNameNoExtension = null;
@@ -61,34 +59,32 @@ public class InputFile  {
     private String strHostName = null;
     private String strFolderName = null;
     boolean isClosed = false;
-    //instance = strHostName + strFolderName + "/" + strFileName
+    // instance = strHostName + strFolderName + "/" + strFileName
     private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-
     /**
      * Initializes InputUrl object and sets the URI from str_url
-     * @param str_url - the URL of source file
+     * 
+     * @param str_url
+     *            - the URL of source file
      * @throws IOException
      * @throws MalformedURLException
      */
-    public InputFile(String str_url) throws IOException, MalformedURLException{
+    public InputFile(String str_url) throws IOException, MalformedURLException {
 
         // Java's URL class doesn't escape certain characters with % +hexidecimal digits.
         // This is a bug in the class java.net.URL.
         // The correct way to create a URL object is to use class called java.net.URI (Java 1.4 and later).
 
-        //this.url = new URL(str_url);
+        // this.url = new URL(str_url);
         setURL(str_url);
     }
 
-
     /*
-     * get source file from url as InputStream
-     * user basic auth, if we know the credentials
+     * get source file from url as InputStream user basic auth, if we know the credentials
      */
-    public InputStream getSrcInputStream() throws IOException{
+    public InputStream getSrcInputStream() throws IOException {
         fillInputStream();
         return is;
     }
@@ -96,128 +92,129 @@ public class InputFile  {
     /**
      * save the InputFile to the specified text file
      */
-    public String saveSrcFile()throws IOException {
+    public String saveSrcFile() throws IOException {
 
         fillInputStream();
 
         FileOutputStream fos = null;
-        String fileName=null;
-        String tmpFileName=Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + ".xml";
+        String fileName = null;
+        String tmpFileName = Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + ".xml";
 
-        try{
-            File file =new File(tmpFileName);
-            fos=new FileOutputStream(file);
+        try {
+            File file = new File(tmpFileName);
+            fos = new FileOutputStream(file);
 
             int bufLen = 0;
             byte[] buf = new byte[1024];
 
-            while ( (bufLen=is.read( buf ))!= -1 )
-                fos.write(buf, 0, bufLen );
+            while ((bufLen = is.read(buf)) != -1)
+                fos.write(buf, 0, bufLen);
 
-            fileName=tmpFileName;
-        }
-        finally{
+            fileName = tmpFileName;
+        } finally {
             close();
-            if(fos!=null){
-                try{
+            if (fos != null) {
+                try {
                     fos.flush();
                     fos.close();
+                } catch (Exception e) {
                 }
-                catch(Exception e){}
             }
         }
-
 
         return fileName;
 
     }
+
     /**
      * closes inputstream of source file
-     *
+     * 
      */
-    public void close(){
-        try{
-            if (is!=null && !isClosed){
+    public void close() {
+        try {
+            if (is != null && !isClosed) {
                 is.close();
-                isClosed=true;
+                isClosed = true;
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             _logger.warning("Closing inputstream in FileInput: " + e.toString());
         }
 
     }
+
     /**
      * Sets the authentication ticket for the source file
+     * 
      * @param _ticket
      */
-    public void setAuthentication(String _ticket){
+    public void setAuthentication(String _ticket) {
         this.ticket = _ticket;
     }
+
     /**
-     * Sets the boolean to use authentication ticket
-     * for grabbing the source file or not. true - use ticket
+     * Sets the boolean to use authentication ticket for grabbing the source file or not. true - use ticket
+     * 
      * @param _ticket
      */
-    public void setTrustedMode(boolean mode){
-        this.isTrustedMode=mode;
+    public void setTrustedMode(boolean mode) {
+        this.isTrustedMode = mode;
     }
+
     /**
-     * Extracts the file name from URL path eg: BasicQuality.xml
-     * where the full url is
+     * Extracts the file name from URL path eg: BasicQuality.xml where the full url is
      * http://cdrtest.eionet.europa.eu/al/eea/colrjhlyq/envrjhqwa/BasicQuality.xml
      */
     public String getFileName() {
         return strFileName;
     }
+
     /**
-     * Extracts the file name without file extension from URL path eg: BasicQuality
-     * where the full url is
+     * Extracts the file name without file extension from URL path eg: BasicQuality where the full url is
      * http://cdrtest.eionet.europa.eu/al/eea/colrjhlyq/envrjhqwa/BasicQuality.xml
      */
     public String getFileNameNoExtension() {
         return strFileNameNoExtension;
     }
+
     /**
      * Return source file URL as a String
      */
-    public String toString(){
-        return (url==null)?null:url.toString();
+    public String toString() {
+        return (url == null) ? null : url.toString();
     }
+
     /**
-     * Extracts the full host name from URL eg: http://cdrtest.eionet.europa.eu
-     * where the full url is
+     * Extracts the full host name from URL eg: http://cdrtest.eionet.europa.eu where the full url is
      * http://cdrtest.eionet.europa.eu/al/eea/colrjhlyq/envrjhqwa/BasicQuality.xml
      */
-    public String getHostName(){
+    public String getHostName() {
         return strHostName;
     }
+
     /**
-     * Extracts the folder from URL path eg: /al/eea/colrjhlyq/envrjhqwa
-     * where the full url is
+     * Extracts the folder from URL path eg: /al/eea/colrjhlyq/envrjhqwa where the full url is
      * http://cdrtest.eionet.europa.eu/al/eea/colrjhlyq/envrjhqwa/BasicQuality.xml
      */
-    public String getFolderName(){
+    public String getFolderName() {
         return strFolderName;
     }
+
     /**
-     * Exscracts CDR file info from URL and returns it as a map of paramters
-     * If the source file is a file from CDR then the Map contains the following
-     * parameters: envelopeurl, envelopepath, instance, filename
+     * Exscracts CDR file info from URL and returns it as a map of paramters If the source file is a file from CDR then the Map
+     * contains the following parameters: envelopeurl, envelopepath, instance, filename
+     * 
      * @return
      */
-    public Map<String, String> getCdrParams(){
+    public Map<String, String> getCdrParams() {
         String strEnvelopeUrl = null;
         String strInstance = null;
         Map<String, String> h = new HashMap<String, String>();
-        if(getHostName()!=null && getFolderName()!=null){
+        if (getHostName() != null && getFolderName() != null) {
             strEnvelopeUrl = getHostName().concat(getFolderName());
         }
-        if(getHostName()!=null && getFolderName()!=null &&
-                getFileName()!=null){
-            strInstance = getHostName().concat(getFolderName()).concat(
-                    (getFolderName().endsWith("/")?"":"/")).concat(
-                            getFileName());
+        if (getHostName() != null && getFolderName() != null && getFileName() != null) {
+            strInstance =
+                    getHostName().concat(getFolderName()).concat((getFolderName().endsWith("/") ? "" : "/")).concat(getFileName());
         }
         h.put("filename", getFileName());
         h.put("envelopeurl", strEnvelopeUrl);
@@ -226,17 +223,19 @@ public class InputFile  {
 
         return h;
     }
-    public URL getURL(){
+
+    public URL getURL() {
         return this.url;
     }
 
     /**
      * Get the authentication ticket for the source file, if available
+     * 
      * @param _ticket
      */
-    public String getAuthentication(){
-        if (Utils.isNullStr(ticket) && isTrustedMode){
-            String host=url.getHost();
+    public String getAuthentication() {
+        if (Utils.isNullStr(ticket) && isTrustedMode) {
+            String host = url.getHost();
             getHostCredentials(host);
         }
         return ticket;
@@ -247,105 +246,109 @@ public class InputFile  {
      */
 
     /*
-     * Get Host credentials from database. There could be restriciton for accesing files in differemnt servers.
-     * Username and password are saved in the T_HOST table for these cases
-     *
+     * Get Host credentials from database. There could be restriciton for accesing files in differemnt servers. Username and
+     * password are saved in the T_HOST table for these cases
      */
     private void getHostCredentials(String host) {
         try {
 
-            Vector v=hostDao.getHosts(host);
+            Vector v = hostDao.getHosts(host);
 
-
-            if (v==null) return;
-            if (v.size()>0){
-                Hashtable h = (Hashtable)v.get(0);
-                String user = (String)h.get("user_name");
-                String pwd = (String)h.get("pwd");
-                this.ticket =Utils.getEncodedAuthentication(user,pwd);
+            if (v == null)
+                return;
+            if (v.size() > 0) {
+                Hashtable h = (Hashtable) v.get(0);
+                String user = (String) h.get("user_name");
+                String pwd = (String) h.get("pwd");
+                this.ticket = Utils.getEncodedAuthentication(user, pwd);
 
             }
 
-        } catch (Exception e ) {
+        } catch (Exception e) {
             _logger.error("Error getting host data from the DB " + e.toString());
             _logger.error("Conversion proceeded");
         }
     }
+
     /**
      * Opens URLConnection and reads the source into InputStream
+     * 
      * @throws IOException
      */
-    private void fillInputStream() throws IOException{
+    private void fillInputStream() throws IOException {
 
-        isClosed=false;
+        isClosed = false;
         URLConnection uc = url.openConnection();
 
         ticket = getAuthentication();
         uc.addRequestProperty("Accept", "*/*");
 
-        if (ticket!=null){
-            //String auth = Utils.getEncodedAuthentication(user,pwd);
+        if (ticket != null) {
+            // String auth = Utils.getEncodedAuthentication(user,pwd);
             uc.addRequestProperty("Authorization", " Basic " + ticket);
         }
 
         this.is = uc.getInputStream();
     }
+
     /**
      * Stores the URL
+     * 
      * @param str_url
      * @throws MalformedURLException
      */
-    private void setURL(String str_url) throws MalformedURLException{
-        try{
+    private void setURL(String str_url) throws MalformedURLException {
+        try {
             URI uri = new URI(escapeSpaces(str_url));
             parseUri(uri);
 
             this.url = uri.toURL();
 
-        }
-        catch(URISyntaxException ue){
+        } catch (URISyntaxException ue) {
             throw new MalformedURLException(ue.toString());
-        }
-        catch(IllegalArgumentException ae){
+        } catch (IllegalArgumentException ae) {
             throw new MalformedURLException(ae.toString());
         }
 
     }
+
     /*
      * escape reserved characters in source URI
      */
-    private String escapeSpaces(String str_uri){
+    private String escapeSpaces(String str_uri) {
         return Utils.Replace(str_uri, " ", "%20");
     }
+
     /*
-     * extracts filename from URI's path
-     * [scheme:][//authority][path][?query][#fragment]
+     * extracts filename from URI's path [scheme:][//authority][path][?query][#fragment]
      */
-    private void parseUri(URI uri){
+    private void parseUri(URI uri) {
 
         this.strHostName = uri.getScheme() + "://" + uri.getAuthority();
         findFileName(uri.getPath());
     }
+
     /*
      * extracts filename and folder from URI's path
      */
-    private void findFileName(String str_uri){
+    private void findFileName(String str_uri) {
 
         String fileName = null;
         String folderName = null;
-        if(Utils.isNullStr(str_uri)) return;
+        if (Utils.isNullStr(str_uri))
+            return;
 
-        if(str_uri.endsWith("/"))str_uri = str_uri.substring(0,str_uri.length()-1);
+        if (str_uri.endsWith("/"))
+            str_uri = str_uri.substring(0, str_uri.length() - 1);
 
         int lastSlash = str_uri.lastIndexOf("/");
 
-        if (lastSlash > -1){
-            fileName=str_uri.substring(lastSlash+1);
-            folderName = str_uri.substring(0,lastSlash);
-        }
-        else{
-            fileName=str_uri;
-            folderName="";
+        if (lastSlash > -1) {
+            fileName = str_uri.substring(lastSlash + 1);
+            folderName = str_uri.substring(0, lastSlash);
+        } else {
+            fileName = str_uri;
+            folderName = "";
         }
 
         findFileNameNoExtension(fileName);
@@ -353,38 +356,34 @@ public class InputFile  {
         this.strFileName = fileName;
         this.strFolderName = folderName;
     }
+
     /*
      * extracts filename without file extension from URI's path
      */
     private void findFileNameNoExtension(String strFileName) {
 
         String name = null;
-        if(Utils.isNullStr(strFileName)) return;
+        if (Utils.isNullStr(strFileName))
+            return;
 
         int lastDot = strFileName.lastIndexOf(".");
 
         if (lastDot > -1)
-            name=strFileName.substring(0,lastDot);
+            name = strFileName.substring(0, lastDot);
         else
-            name=strFileName;
+            name = strFileName;
 
         this.strFileNameNoExtension = name;
     }
 
-
-
     public static void main(String args[]) {
         String str_url = "http://localhost:8080/xmlconv/tmp/IrelandePERD a&ta.xml?sss";
-        InputFile in =null;
-        try{
+        InputFile in = null;
+        try {
             /*
-            URI _uri = new URI(str_url);
-            URL uri = _uri.toURL();
-            System.out.println("path" + uri.getPath());
-            System.out.println("host" + uri.getHost());
-            System.out.println("query" + uri.getQuery());
-            System.out.println("authority" + uri.getAuthority());
-            System.out.println("file" + uri.getFile());
+             * URI _uri = new URI(str_url); URL uri = _uri.toURL(); System.out.println("path" + uri.getPath());
+             * System.out.println("host" + uri.getHost()); System.out.println("query" + uri.getQuery());
+             * System.out.println("authority" + uri.getAuthority()); System.out.println("file" + uri.getFile());
              */
             in = new InputFile(str_url);
             System.out.println(in.getHostName());
@@ -393,23 +392,22 @@ public class InputFile  {
             System.out.println(in.getFileNameNoExtension());
             System.out.println(in.getCdrParams().toString());
         }
-        //catch(URISyntaxException ue){
-            //System.out.println(ue.toString());
-            //throw new MalformedURLException(ue.toString());
-        //}
+        // catch(URISyntaxException ue){
+        // System.out.println(ue.toString());
+        // throw new MalformedURLException(ue.toString());
+        // }
         catch (MalformedURLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-        finally{
-            if (in!=null){
-                try{
+        } finally {
+            if (in != null) {
+                try {
                     in.close();
+                } catch (Exception e) {
                 }
-                catch(Exception e){}
             }
         }
     }

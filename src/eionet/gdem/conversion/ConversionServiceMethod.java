@@ -15,7 +15,7 @@ import eionet.gdem.dcm.remote.RemoteServiceMethod;
  * @author Enriko Käsper, TietoEnator Estonia AS
  */
 
-public abstract class ConversionServiceMethod extends RemoteServiceMethod{
+public abstract class ConversionServiceMethod extends RemoteServiceMethod {
 
     public static final String DEFAULT_CONTENT_TYPE = "text/plain";
 
@@ -40,39 +40,50 @@ public abstract class ConversionServiceMethod extends RemoteServiceMethod{
         tmpFolder = Properties.tmpFolder + File.separatorChar; // props.getString("tmp.folder");
     }
 
+    @Override
     public String getTicket() {
         return ticket;
     }
 
+    @Override
     public void setTicket(String ticket) {
         this.ticket = ticket;
     }
 
+    @Override
     public boolean isTrustedMode() {
         return trustedMode;
     }
 
+    @Override
     public void setTrustedMode(boolean trustedMode) {
         this.trustedMode = trustedMode;
     }
 
+    @Override
     public boolean isHttpRequest() {
         return isHttpRequest;
     }
 
+    @Override
     public HttpMethodResponseWrapper getHttpResponse() {
         return httpResponse;
     }
 
+    @Override
     public void setHttpResponse(HttpMethodResponseWrapper httpResult) {
-        if (httpResult!=null) isHttpRequest=true;
+        if (httpResult != null) {
+            isHttpRequest = true;
+        }
         this.httpResponse = httpResult;
     }
 
+    @Override
     public String getXslFolder() {
         return xslFolder;
     }
 
+    @Override
     public String getTmpFolder() {
         return tmpFolder;
     }

@@ -36,8 +36,7 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.system.SysCommandExecutor;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * SystemQueryEngineImpl
+ * @author Enriko Käsper, Tieto Estonia SystemQueryEngineImpl
  */
 
 public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
@@ -49,22 +48,20 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
     protected void runQuery(XQScript script, OutputStream result) throws GDEMException {
 
         String tmpScriptFile = null;
-        InputFile src =null;
+        InputFile src = null;
 
         try {
 
-            //build InputSource for xsl
-            if(!Utils.isNullStr(script.getScriptSource())){
-                tmpScriptFile= Utils.saveStrToFile(null, script.getScriptSource(), "xgawk");
+            // build InputSource for xsl
+            if (!Utils.isNullStr(script.getScriptSource())) {
+                tmpScriptFile = Utils.saveStrToFile(null, script.getScriptSource(), "xgawk");
                 script.setScriptFileName(tmpScriptFile);
-            }
-            else if(!Utils.isNullStr(script.getScriptFileName())){
-                //fisXsl=new FileInputStream(script.getScriptFileName());
-            }
-            else{
+            } else if (!Utils.isNullStr(script.getScriptFileName())) {
+                // fisXsl=new FileInputStream(script.getScriptFileName());
+            } else {
                 throw new GDEMException("XQuery engine could not find script source or script file name!");
             }
-            //Build InputSource for xml file
+            // Build InputSource for xml file
             src = new InputFile(script.getSrcFileUrl());
             String srcFile = src.saveSrcFile();
 
@@ -84,44 +81,41 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
             _logger.debug("Command error: " + cmdError);
 
             String cmdOutput = cmdExecutor.getCommandOutput();
-            //_logger.debug("Command output: " + cmdOutput);
+            // _logger.debug("Command output: " + cmdOutput);
             boolean throwError = false;
 
-            if(Utils.isNullStr(cmdOutput) && !Utils.isNullStr(cmdError)){
+            if (Utils.isNullStr(cmdOutput) && !Utils.isNullStr(cmdError)) {
                 Streams.drain(new StringReader(cmdError), result);
-                throwError=true;
-            }
-            else
+                throwError = true;
+            } else
                 Streams.drain(new StringReader(cmdOutput), result);
 
-            //clean tmp files
-            if(tmpScriptFile!=null){
+            // clean tmp files
+            if (tmpScriptFile != null) {
                 Utils.deleteFile(tmpScriptFile);
             }
-            if(srcFile!=null){
+            if (srcFile != null) {
                 Utils.deleteFile(srcFile);
             }
-            if(throwError)
+            if (throwError)
                 throw new GDEMException(cmdError);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-              _logger.error("==== CATCHED EXCEPTION " + e.toString() );
-            throw new GDEMException (e.getMessage());
-        }
-        finally{
-            try{
+            _logger.error("==== CATCHED EXCEPTION " + e.toString());
+            throw new GDEMException(e.getMessage());
+        } finally {
+            try {
                 result.close();
                 result.flush();
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 _logger.warning(e);
             }
             if (src != null) {
-                try{
+                try {
                     src.close();
 
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
         }
 

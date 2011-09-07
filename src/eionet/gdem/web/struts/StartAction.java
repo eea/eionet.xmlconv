@@ -25,32 +25,31 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.LoggerIF;
 
 public class StartAction extends Action {
 
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException{
+    private static LoggerIF LOGGER = GDEMServices.getLogger();
 
-        System.out.println("------------StartAction-----------");
-        System.out.println(httpServletRequest.getQueryString());
-        HttpSession session=httpServletRequest.getSession();
+    @Override
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) throws IOException {
 
-        for (java.util.Enumeration e = httpServletRequest.getParameterNames(); e.hasMoreElements();) {
-            System.out.println(e.nextElement());
-        }
+        LOGGER.debug("------------StartAction-----------");
 
         if (httpServletRequest.getParameter("login") != null) {
-            System.out.println("------------login-----------");
+            LOGGER.debug("------------login-----------");
             return actionMapping.findForward("loginForm"); // manual login
         }
 
-        return actionMapping.findForward("home"); // manual login
+        return actionMapping.findForward("home");
     }
 
 }

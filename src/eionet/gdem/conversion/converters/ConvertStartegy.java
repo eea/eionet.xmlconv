@@ -49,21 +49,22 @@ import eionet.gdem.utils.xml.XSLTransformer;
 
 public abstract class ConvertStartegy {
 
-    public String xslFolder = Properties.xslFolder+ File.separatorChar; //props.getString("xsl.folder");
-    public String tmpFolder = Properties.tmpFolder+ File.separatorChar; //props.getString("tmp.folder");
-    public static final String XML_FOLDER_URI_PARAM="xml_folder_uri";
-    public static final String DD_DOMAIN_PARAM="dd_domain";
+    public String xslFolder = Properties.xslFolder + File.separatorChar; // props.getString("xsl.folder");
+    public String tmpFolder = Properties.tmpFolder + File.separatorChar; // props.getString("tmp.folder");
+    public static final String XML_FOLDER_URI_PARAM = "xml_folder_uri";
+    public static final String DD_DOMAIN_PARAM = "dd_domain";
 
     private Map<String, String> xslParams = null;
     private static LoggerIF _logger = GDEMServices.getLogger();
     private static XSLTransformer transform = new XSLTransformer();
 
-    public abstract String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException, Exception;
+    public abstract String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt)
+            throws GDEMException, Exception;
 
     /*
-     *  sets the map of xsl global paramters for this strategy
+     * sets the map of xsl global paramters for this strategy
      */
-    public void setXslParams(Map<String, String> map){
+    public void setXslParams(Map<String, String> map) {
         this.xslParams = map;
     }
 
@@ -76,17 +77,19 @@ public abstract class ConvertStartegy {
             Transformer transformer = tFactory.newTransformer(new StreamSource(xslStream));
             transformer.setErrorListener(errors);
 
-            transformer.setParameter(DD_DOMAIN_PARAM,Properties.ddURL);
+            transformer.setParameter(DD_DOMAIN_PARAM, Properties.ddURL);
             setTransformerParameters(transformer);
             long l = 0L;
-            if(_logger.enable(LoggerIF.DEBUG)){
+            if (_logger.enable(LoggerIF.DEBUG)) {
                 l = System.currentTimeMillis();
             }
             transformer.transform(new StreamSource(in), new StreamResult(out));
-            if(_logger.enable(LoggerIF.DEBUG)){
-                _logger.debug((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis() - l).append(" ms").toString());
+            if (_logger.enable(LoggerIF.DEBUG)) {
+                _logger.debug((new StringBuilder()).append("generate: transformation needed ")
+                        .append(System.currentTimeMillis() - l).append(" ms").toString());
             }
-            //System.out.println((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis() - l).append(" ms").toString());
+            // System.out.println((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis()
+            // - l).append(" ms").toString());
         } catch (TransformerConfigurationException tce) {
             throw new GDEMException("Error transforming XML - incorrect stylesheet file: " + tce.toString(), tce);
         } catch (TransformerException tfe) {
@@ -97,7 +100,6 @@ public abstract class ConvertStartegy {
             throw new GDEMException("Error transforming XML: " + th.toString());
         }
     }
-
 
     protected void runFOPTransformation(InputStream in, InputStream xsl, OutputStream out) throws GDEMException {
         try {
@@ -116,46 +118,49 @@ public abstract class ConvertStartegy {
             transformer.setErrorListener(errors);
 
             long l = 0L;
-            if(_logger.enable(LoggerIF.DEBUG)){
+            if (_logger.enable(LoggerIF.DEBUG)) {
                 l = System.currentTimeMillis();
             }
             transformer.transform(src, res);
-            if(_logger.enable(LoggerIF.DEBUG)){
-                _logger.debug((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis() - l).append(" ms").toString());
+            if (_logger.enable(LoggerIF.DEBUG)) {
+                _logger.debug((new StringBuilder()).append("generate: transformation needed ")
+                        .append(System.currentTimeMillis() - l).append(" ms").toString());
             }
 
         } catch (TransformerConfigurationException tce) {
             throw new GDEMException("Error transforming XML to PDF - incorrect stylesheet file: " + tce.toString(), tce);
         } catch (TransformerException tfe) {
-            throw new GDEMException("Error transforming XML to PDF - it's not probably well-formed xml file: " + tfe.toString(), tfe);
+            throw new GDEMException("Error transforming XML to PDF - it's not probably well-formed xml file: " + tfe.toString(),
+                    tfe);
         } catch (Throwable e) {
             _logger.error("Error " + e.toString(), e);
             throw new GDEMException("Error transforming XML to PDF " + e.toString());
         }
     }
+
     /*
      * sets the map of xsl global parameters to xsl transformer
      */
-    private void setTransformerParameters(Transformer transformer){
+    private void setTransformerParameters(Transformer transformer) {
 
-        if(xslParams==null)return;
+        if (xslParams == null)
+            return;
 
         Iterator<String> keys = xslParams.keySet().iterator();
-        while ( keys.hasNext()) {
+        while (keys.hasNext()) {
             String key = keys.next();
             String value = xslParams.get(key);
-            if(value!=null)
-                transformer.setParameter(key,value);
+            if (value != null)
+                transformer.setParameter(key, value);
         }
 
-        //sets base URI for xmlfiles uploaded into xmlconv
-        String xmlFilePathURI = Utils.getURIfromPath(eionet.gdem.Properties.xmlfileFolderPath,true);
+        // sets base URI for xmlfiles uploaded into xmlconv
+        String xmlFilePathURI = Utils.getURIfromPath(eionet.gdem.Properties.xmlfileFolderPath, true);
 
-        if(xmlFilePathURI!=null){
-            transformer.setParameter(XML_FOLDER_URI_PARAM,xmlFilePathURI);
+        if (xmlFilePathURI != null) {
+            transformer.setParameter(XML_FOLDER_URI_PARAM, xmlFilePathURI);
         }
 
     }
-
 
 }

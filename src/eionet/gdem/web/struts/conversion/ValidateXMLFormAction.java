@@ -22,49 +22,48 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS
- * ValidateXMLFormAction
+ * @author Enriko Käsper, TietoEnator Estonia AS ValidateXMLFormAction
  */
 
-public class ValidateXMLFormAction  extends Action {
+public class ValidateXMLFormAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
     /*
      * (non-Javadoc)
-     * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * 
+     * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm,
+     * javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
         ArrayList schemas = null;
 
-        //load the list of schemas from the session
-        Object schemasInSession = httpServletRequest.getSession().getAttribute(
-        "conversion.schemas");
+        // load the list of schemas from the session
+        Object schemasInSession = httpServletRequest.getSession().getAttribute("conversion.schemas");
 
-        //reset the form in the session
+        // reset the form in the session
         ConversionForm cForm = (ConversionForm) actionForm;
 
         try {
-            //if schemas list is not stored in the session, then load it from the database
-            if (schemasInSession == null
-                    || ((ArrayList) schemasInSession).size() == 0) {
+            // if schemas list is not stored in the session, then load it from the database
+            if (schemasInSession == null || ((ArrayList) schemasInSession).size() == 0) {
                 schemasInSession = loadSchemas();
-                httpServletRequest.getSession().setAttribute(
-                        "conversion.schemas", schemasInSession);
+                httpServletRequest.getSession().setAttribute("conversion.schemas", schemasInSession);
             }
         } catch (DCMException e) {
             e.printStackTrace();
             _logger.error("Serach CR Conversions error", e);
-            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e
-                    .getErrorCode()));
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveMessages(httpServletRequest, errors);
         }
         return actionMapping.findForward("success");
     }
+
     /**
      * Load the list of schemas from the databases
+     * 
      * @return
      * @throws DCMException
      */

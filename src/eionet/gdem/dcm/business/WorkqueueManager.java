@@ -38,7 +38,7 @@ import eionet.gdem.utils.SecurityUtil;
 
 /**
  * WorkqueueManager
- *
+ * 
  * @author Enriko Käsper, Tieto Estonia
  */
 
@@ -51,7 +51,7 @@ public class WorkqueueManager {
         WorkqueueJob job = null;
         try {
             String[] jobData = jobDao.getXQJobData(jobId);
-            if(jobData!=null && jobData.length > 4){
+            if (jobData != null && jobData.length > 4) {
                 job = new WorkqueueJob();
                 job.setUrl(jobData[0]);
                 job.setScriptFile(jobData[1]);
@@ -70,9 +70,8 @@ public class WorkqueueManager {
     }
 
     /**
-     * Adds a new jobs into the workqueue using script content sent as the
-     * method parameter
-     *
+     * Adds a new jobs into the workqueue using script content sent as the method parameter
+     * 
      * @param user
      * @param sourceUrl
      * @param scriptContent
@@ -109,15 +108,14 @@ public class WorkqueueManager {
 
     /**
      * Adds new jobs into the workqueue by the goven XML Schema
-     *
+     * 
      * @param user
      * @param sourceUrl
      * @param schemaUrl
      * @return
      * @throws DCMException
      */
-    public List<String> addSchemaScriptsToWorkqueue(String user, String sourceUrl, String schemaUrl)
-            throws DCMException {
+    public List<String> addSchemaScriptsToWorkqueue(String user, String sourceUrl, String schemaUrl) throws DCMException {
 
         List<String> result = new ArrayList<String>();
         try {

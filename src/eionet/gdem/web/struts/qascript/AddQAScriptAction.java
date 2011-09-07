@@ -40,16 +40,15 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * AddQAScriptAction
+ * @author Enriko Käsper, Tieto Estonia AddQAScriptAction
  */
 
-public class AddQAScriptAction  extends Action {
+public class AddQAScriptAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         QAScriptForm form = (QAScriptForm) actionForm;
         String scriptId = form.getScriptId();
@@ -67,7 +66,7 @@ public class AddQAScriptAction  extends Action {
         httpServletRequest.setAttribute("schemaId", schemaId);
 
         if (isCancelled(httpServletRequest)) {
-            if(schema!=null)
+            if (schema != null)
                 return findForward(actionMapping, "cancel", schemaId);
             else
                 return actionMapping.findForward("list");
@@ -86,12 +85,13 @@ public class AddQAScriptAction  extends Action {
             saveErrors(httpServletRequest.getSession(), errors);
         }
 
-        //upper limit between 0 and 10Gb
-        if (upperLimit == null || !Utils.isNum(upperLimit) || Integer.parseInt(upperLimit) <= 0 || Integer.parseInt(upperLimit) > 10000) {
+        // upper limit between 0 and 10Gb
+        if (upperLimit == null || !Utils.isNum(upperLimit) || Integer.parseInt(upperLimit) <= 0
+                || Integer.parseInt(upperLimit) > 10000) {
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.upperlimit.validation"));
             saveErrors(httpServletRequest.getSession(), errors);
         }
-        if(errors.size()>0){
+        if (errors.size() > 0) {
             return actionMapping.findForward("fail");
         }
 
@@ -99,7 +99,7 @@ public class AddQAScriptAction  extends Action {
             QAScriptManager qm = new QAScriptManager();
             qm.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit);
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.inserted"));
-            //clear qascript list in session
+            // clear qascript list in session
             QAScriptListLoader.loadQAScriptList(httpServletRequest, true);
         } catch (DCMException e) {
             e.printStackTrace();
@@ -111,13 +111,13 @@ public class AddQAScriptAction  extends Action {
         saveErrors(httpServletRequest.getSession(), errors);
         saveMessages(httpServletRequest.getSession(), messages);
 
-
         return findForward(actionMapping, "success", schemaId);
     }
-    private ActionForward findForward(ActionMapping actionMapping, String f, String schemaId){
+
+    private ActionForward findForward(ActionMapping actionMapping, String f, String schemaId) {
         ActionForward forward = actionMapping.findForward(f);
-         StringBuffer path = new StringBuffer(forward.getPath());
-         path.append("?schemaId=" + schemaId);
+        StringBuffer path = new StringBuffer(forward.getPath());
+        path.append("?schemaId=" + schemaId);
         forward = new RedirectingActionForward(path.toString());
         return forward;
     }

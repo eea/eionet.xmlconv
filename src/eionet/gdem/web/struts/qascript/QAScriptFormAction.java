@@ -32,7 +32,6 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.QAScriptManager;
-import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
@@ -42,8 +41,8 @@ public class QAScriptFormAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
 
@@ -75,7 +74,7 @@ public class QAScriptFormAction extends Action {
 
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("QA Script form error",e);
+            _logger.error("QA Script form error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveErrors(httpServletRequest, errors);
         }

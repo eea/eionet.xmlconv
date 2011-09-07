@@ -27,8 +27,7 @@ import java.util.List;
 import eionet.gdem.conversion.datadict.DDTable;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * ConversionMetadata
+ * @author Enriko Käsper, Tieto Estonia ConversionMetadata
  */
 
 public class ConversionTableMetadata {
@@ -43,7 +42,6 @@ public class ConversionTableMetadata {
     private String tblsNamespaces;
     private List<DDTable> tbl;
 
-
     public ConversionTableMetadata() {
         this.dstIdf = "";
         this.dstNr = "";
@@ -56,71 +54,91 @@ public class ConversionTableMetadata {
         this.tblsNamespaces = "";
         this.tbl = new ArrayList<DDTable>();
     }
+
     public List<DDTable> getTbl() {
         return tbl;
     }
+
     public void setTbl(List<DDTable> tbl) {
         this.tbl = tbl;
     }
+
     public String getDstIdf() {
         return dstIdf;
     }
+
     public void setDstIdf(String dstIdf) {
         this.dstIdf = dstIdf;
     }
+
     public String getDstNr() {
         return dstNr;
     }
+
     public void setDstNr(String dstNr) {
         this.dstNr = dstNr;
     }
+
     public String getDstNsID() {
         return dstNsID;
     }
+
     public void setDstNsID(String dstNsID) {
         this.dstNsID = dstNsID;
     }
+
     public String getDstNsURL() {
         return dstNsURL;
     }
+
     public void setDstNsURL(String dstNsURL) {
         this.dstNsURL = dstNsURL;
     }
+
     public String getDstSchemaURL() {
         return dstSchemaURL;
     }
+
     public void setDstSchemaURL(String dstSchemaURL) {
         this.dstSchemaURL = dstSchemaURL;
     }
+
     public String getDstSchemaLocation() {
         return dstSchemaLocation;
     }
+
     public void setDstSchemaLocation(String dstSchemaLocation) {
         this.dstSchemaLocation = dstSchemaLocation;
     }
+
     public String getDstsNsID() {
         return dstsNsID;
     }
+
     public void setDstsNsID(String dstsNsID) {
         this.dstsNsID = dstsNsID;
     }
+
     public String getDstsNsURL() {
         return dstsNsURL;
     }
+
     public void setDstsNsURL(String dstsNsURL) {
         this.dstsNsURL = dstsNsURL;
     }
+
     public String getTblsNamespaces() {
         return tblsNamespaces;
     }
+
     public void setTblsNamespaces(String tblsNamespaces) {
         this.tblsNamespaces = tblsNamespaces;
     }
+
     @Override
     public String toString() {
-        return "ConversionTableMetadata [dstIdf=" + dstIdf + ", dstNr=" + dstNr + ", dstNsID=" + dstNsID
-                + ", dstNsURL=" + dstNsURL + ", dstSchemaLocation=" + dstSchemaLocation + ", dstSchemaURL="
-                + dstSchemaURL + ", dstsNsID=" + dstsNsID + ", dstsNsURL=" + dstsNsURL + ", tbl=" + tbl
-                + ", tblsNamespaces=" + tblsNamespaces + "]";
+        return "ConversionTableMetadata [dstIdf=" + dstIdf + ", dstNr=" + dstNr + ", dstNsID=" + dstNsID + ", dstNsURL="
+                + dstNsURL + ", dstSchemaLocation=" + dstSchemaLocation + ", dstSchemaURL=" + dstSchemaURL + ", dstsNsID="
+                + dstsNsID + ", dstsNsURL=" + dstsNsURL + ", tbl=" + tbl + ", tblsNamespaces=" + tblsNamespaces + "]";
     }
 }

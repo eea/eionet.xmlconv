@@ -79,7 +79,7 @@ public class ListTag extends TagSupport {
 
             if (itr.hasNext()) {
                 buffer.append("<div");
-                if (classStyle!=null && classStyle.length()>0)
+                if (classStyle != null && classStyle.length() > 0)
                     buffer.append(" class=\"" + classStyle + "\"");
                 buffer.append("><a href=\"");
                 buffer.append(url);
@@ -87,8 +87,7 @@ public class ListTag extends TagSupport {
                 buffer.append(label);
                 buffer.append("<\\/a>");
                 buffer.append("<\\/div>");
-            }
-            else{
+            } else {
                 buffer.append("<div");
                 if (classStyleEnd != null && classStyleEnd.length() > 0)
                     buffer.append(" class=\"" + classStyleEnd + "\"");

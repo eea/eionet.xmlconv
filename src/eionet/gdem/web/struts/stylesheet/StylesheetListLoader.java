@@ -30,9 +30,8 @@ import eionet.gdem.services.LoggerIF;
 
 /**
  * Loads stylesheet list and stores it in session
- *
- * @author Enriko Käsper, Tieto Estonia
- * StylesheetListLoader
+ * 
+ * @author Enriko Käsper, Tieto Estonia StylesheetListLoader
  */
 
 public class StylesheetListLoader {
@@ -42,17 +41,17 @@ public class StylesheetListLoader {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    public static StylesheetListHolder loadStylesheetList(HttpServletRequest httpServletRequest, boolean reload) throws DCMException{
-
+    public static StylesheetListHolder loadStylesheetList(HttpServletRequest httpServletRequest, boolean reload)
+            throws DCMException {
 
         Object st = httpServletRequest.getSession().getAttribute(STYLESHEET_LIST_ATTR);
-        if(st==null || !(st instanceof StylesheetListHolder) || reload){
+        if (st == null || !(st instanceof StylesheetListHolder) || reload) {
             st = new StylesheetListHolder();
 
             String user_name = (String) httpServletRequest.getSession().getAttribute("user");
             try {
                 SchemaManager sm = new SchemaManager();
-                st = sm.getSchemas(user_name,"handcoded");
+                st = sm.getSchemas(user_name, "handcoded");
             } catch (DCMException e) {
                 e.printStackTrace();
                 _logger.error("Error getting stylesheet list", e);
@@ -61,19 +60,20 @@ public class StylesheetListLoader {
             httpServletRequest.getSession().setAttribute(STYLESHEET_LIST_ATTR, st);
         }
 
-        return (StylesheetListHolder)st;
+        return (StylesheetListHolder) st;
     }
-    public static StylesheetListHolder loadStylesheetGeneratedList(HttpServletRequest httpServletRequest, boolean reload) throws DCMException{
 
+    public static StylesheetListHolder loadStylesheetGeneratedList(HttpServletRequest httpServletRequest, boolean reload)
+            throws DCMException {
 
         Object st = httpServletRequest.getSession().getAttribute(STYLESHEET_GENERATED_LIST_ATTR);
-        if(st==null || !(st instanceof StylesheetListHolder) || reload){
+        if (st == null || !(st instanceof StylesheetListHolder) || reload) {
             st = new StylesheetListHolder();
 
             String user_name = (String) httpServletRequest.getSession().getAttribute("user");
             try {
                 SchemaManager sm = new SchemaManager();
-                st = sm.getSchemas(user_name,"generated");
+                st = sm.getSchemas(user_name, "generated");
             } catch (DCMException e) {
                 e.printStackTrace();
                 _logger.error("Error getting stylesheet generated list", e);
@@ -82,9 +82,10 @@ public class StylesheetListLoader {
             httpServletRequest.getSession().setAttribute(STYLESHEET_GENERATED_LIST_ATTR, st);
         }
 
-        return (StylesheetListHolder)st;
+        return (StylesheetListHolder) st;
     }
-    public static void clearList(HttpServletRequest httpServletRequest){
+
+    public static void clearList(HttpServletRequest httpServletRequest) {
         httpServletRequest.getSession().removeAttribute(STYLESHEET_LIST_ATTR);
         httpServletRequest.getSession().removeAttribute(STYLESHEET_GENERATED_LIST_ATTR);
     }

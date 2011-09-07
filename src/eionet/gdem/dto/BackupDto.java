@@ -25,9 +25,8 @@ import java.sql.Timestamp;
 
 /**
  * Business object representing backed-up files stored in T_BACKUP table
- *
- * @author Enriko Käsper, Tieto Estonia
- * BackupDto
+ * 
+ * @author Enriko Käsper, Tieto Estonia BackupDto
  */
 
 public class BackupDto {
@@ -41,30 +40,39 @@ public class BackupDto {
     public String getBackupId() {
         return backupId;
     }
+
     public void setBackupId(String backupId) {
         this.backupId = backupId;
     }
+
     public String getQueryId() {
         return queryId;
     }
+
     public void setQueryId(String queryId) {
         this.queryId = queryId;
     }
+
     public Timestamp getTimestamp() {
         return timestamp;
     }
+
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
     }
+
     public String getFileName() {
         return fileName;
     }
+
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
+
     public String getUser() {
         return user;
     }
+
     public void setUser(String user) {
         this.user = user;
     }

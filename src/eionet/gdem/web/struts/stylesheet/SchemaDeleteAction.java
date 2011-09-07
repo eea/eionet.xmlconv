@@ -41,8 +41,8 @@ public class SchemaDeleteAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         SchemaElemForm form = (SchemaElemForm) actionForm;
         String schemaId = form.getSchemaId();
@@ -57,7 +57,7 @@ public class SchemaDeleteAction extends Action {
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheets.deleted"));
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error deleting schema",e);
+            _logger.error("Error deleting schema", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         // saveErrors(httpServletRequest, errors);

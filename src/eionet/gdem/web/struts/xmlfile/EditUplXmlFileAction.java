@@ -21,16 +21,16 @@ import eionet.gdem.services.LoggerIF;
 
 /**
  * Action for editing XML file metadata
- *
+ * 
  * @author Enriko Käsper (TietoEnator)
- *
+ * 
  */
 public class EditUplXmlFileAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
 
@@ -52,7 +52,7 @@ public class EditUplXmlFileAction extends Action {
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplXmlFile.updated"));
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error editing uploaded XML file",e);
+            _logger.error("Error editing uploaded XML file", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);

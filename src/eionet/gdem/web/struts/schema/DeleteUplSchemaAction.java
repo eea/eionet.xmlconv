@@ -40,8 +40,8 @@ public class DeleteUplSchemaAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
 
@@ -51,35 +51,35 @@ public class DeleteUplSchemaAction extends Action {
 
         String forward = "success";
         String user_name = (String) httpServletRequest.getSession().getAttribute("user");
-        boolean deleteSchema = httpServletRequest.getParameter("deleteSchema")!=null;
+        boolean deleteSchema = httpServletRequest.getParameter("deleteSchema") != null;
 
         try {
             SchemaManager sm = new SchemaManager();
             int schemaDeleted = sm.deleteUplSchema(user_name, schemaId, deleteSchema);
-            if(schemaDeleted==2)
+            if (schemaDeleted == 2)
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.deleted"));
 
-            if(deleteSchema && (schemaDeleted==1 || schemaDeleted==3))
+            if (deleteSchema && (schemaDeleted == 1 || schemaDeleted == 3))
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.deleted"));
 
-            if(deleteSchema && (schemaDeleted==0 || schemaDeleted==2)){
+            if (deleteSchema && (schemaDeleted == 0 || schemaDeleted == 2)) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.notdeleted"));
             }
-            if(!deleteSchema){
+            if (!deleteSchema) {
                 httpServletRequest.setAttribute("schemaId", schemaId);
-                forward="success_deletefile";
+                forward = "success_deletefile";
             }
         } catch (DCMException e) {
-            //e.printStackTrace();
-            _logger.error("Error deleting root schema",e);
+            // e.printStackTrace();
+            _logger.error("Error deleting root schema", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-            forward="fail";
+            forward = "fail";
         }
-        saveMessages(httpServletRequest.getSession(),messages);
-        saveErrors(httpServletRequest.getSession(),errors);
+        saveMessages(httpServletRequest.getSession(), messages);
+        saveErrors(httpServletRequest.getSession(), errors);
 
-        saveMessages(httpServletRequest,messages);
-        saveErrors(httpServletRequest,errors);
+        saveMessages(httpServletRequest, messages);
+        saveErrors(httpServletRequest, errors);
 
         return actionMapping.findForward(forward);
     }

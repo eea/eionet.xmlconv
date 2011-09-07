@@ -53,8 +53,7 @@ public interface Constants {
     public static final String RESULT_SCRIPTTITLE_PRM = "SCRIPT_TITLE";
 
     /**
-     * Default parameter name of the source URL to be given to the XQuery script
-     * by the QA service
+     * Default parameter name of the source URL to be given to the XQuery script by the QA service
      */
     public static final String XQ_SOURCE_PARAM_NAME = "source_url";
     public static final String XQ_SCRIPT_ID_PARAM = "script_id";

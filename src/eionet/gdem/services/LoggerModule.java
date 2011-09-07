@@ -26,108 +26,106 @@ package eionet.gdem.services;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-
 /**
  * Interface for logger
- *
- * Date:    27.04.04<BR>
- *
- * @author  Rando Valt
+ * 
+ * Date: 27.04.04<BR>
+ * 
+ * @author Rando Valt
  * @version $Revision: 1.1 $
  */
 
 public class LoggerModule implements LoggerIF {
 
+    // private static GDEMLogger logger;
+    Logger logger;
 
-  //private static GDEMLogger logger;
-  Logger logger;
-
-
-
-/**
- * Package local method for initializing Logger. Does not do anything as the com.tee.xmlserver.Logger
- * will be initialized by the servlet container.
- */
-  public LoggerModule() {
-    logger = Logger.getLogger(LoggerModule.class);
-  }
-
-  private Level convSeverity(int severity) {
-    switch (severity) {
-      case EMERGENCY:
-        return Level.FATAL;
-      case ERROR:
-        return Level.ERROR;
-      case WARNING:
-        return Level.WARN;
-      case INFO:
-        return Level.INFO;
-      case DEBUG:
-      default:
-        return Level.DEBUG;
+    /**
+     * Package local method for initializing Logger. Does not do anything as the com.tee.xmlserver.Logger will be initialized by the
+     * servlet container.
+     */
+    public LoggerModule() {
+        logger = Logger.getLogger(LoggerModule.class);
     }
-  }
-/**
- * Guard function to decide, whether the message of the given level shoul;d be logged.<BR><BR>
- *
- * Log level values can be between 1 and 5: 1 is the most silent, 5 the most talkative.
- */
-  public boolean enable(int level)  {
-    return logger.isEnabledFor(convSeverity(level));
-  }
-/**
- * Logs debug level message.
- */
-  public void debug(Object msg) {
-    logger.debug(msg);
-  }
 
-  public void debug(Object msg, Throwable t)  {
-    logger.debug(msg, t);
-  }
+    private Level convSeverity(int severity) {
+        switch (severity) {
+            case EMERGENCY:
+                return Level.FATAL;
+            case ERROR:
+                return Level.ERROR;
+            case WARNING:
+                return Level.WARN;
+            case INFO:
+                return Level.INFO;
+            case DEBUG:
+            default:
+                return Level.DEBUG;
+        }
+    }
 
-/**
- * Logs info level message.
- */
-  public void info(Object msg)  {
-    logger.info(msg);
-  }
+    /**
+     * Guard function to decide, whether the message of the given level shoul;d be logged.<BR>
+     * <BR>
+     * 
+     * Log level values can be between 1 and 5: 1 is the most silent, 5 the most talkative.
+     */
+    public boolean enable(int level) {
+        return logger.isEnabledFor(convSeverity(level));
+    }
 
-  public void info(Object msg, Throwable t) {
-    logger.info(msg, t);
-  }
+    /**
+     * Logs debug level message.
+     */
+    public void debug(Object msg) {
+        logger.debug(msg);
+    }
 
-/**
- * Logs debug warning message.
- */
-  public void warning(Object msg) {
-    logger.warn(msg);
-  }
+    public void debug(Object msg, Throwable t) {
+        logger.debug(msg, t);
+    }
 
-  public void warning(Object msg, Throwable t)  {
-    logger.warn(msg, t);
-  }
+    /**
+     * Logs info level message.
+     */
+    public void info(Object msg) {
+        logger.info(msg);
+    }
 
-/**
- * Logs error level message.
- */
-  public void error(Object msg) {
-    logger.error(msg);
-  }
+    public void info(Object msg, Throwable t) {
+        logger.info(msg, t);
+    }
 
-  public void error(Object msg, Throwable t)  {
-    logger.error(msg,t);
-  }
+    /**
+     * Logs debug warning message.
+     */
+    public void warning(Object msg) {
+        logger.warn(msg);
+    }
 
-/**
- * Logs error level message.
- */
-  public void fatal(Object msg) {
-    logger.fatal(msg);
-  }
+    public void warning(Object msg, Throwable t) {
+        logger.warn(msg, t);
+    }
 
-  public void fatal(Object msg, Throwable t)  {
-    logger.fatal(msg, t);
-  }
+    /**
+     * Logs error level message.
+     */
+    public void error(Object msg) {
+        logger.error(msg);
+    }
+
+    public void error(Object msg, Throwable t) {
+        logger.error(msg, t);
+    }
+
+    /**
+     * Logs error level message.
+     */
+    public void fatal(Object msg) {
+        logger.fatal(msg);
+    }
+
+    public void fatal(Object msg, Throwable t) {
+        logger.fatal(msg, t);
+    }
 }
-

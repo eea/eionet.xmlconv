@@ -44,18 +44,17 @@ import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 
 /**
- * SearchCRSandboxAction
- * Search XML files from Content Registry
- *
+ * SearchCRSandboxAction Search XML files from Content Registry
+ * 
  * @author Enriko Käsper, Tieto Estonia
- *
+ * 
  */
 
 public class SearchCRSandboxAction extends Action {
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ActionErrors errors = new ActionErrors();
 
@@ -105,10 +104,9 @@ public class SearchCRSandboxAction extends Action {
     }
 
     /**
-     * check if schema passed as request parameter exists in the list of schemas
-     * stored in the session. If there is no schema list in the session, then
-     * create it
-     *
+     * check if schema passed as request parameter exists in the list of schemas stored in the session. If there is no schema list
+     * in the session, then create it
+     * 
      * @param httpServletRequest
      * @param schema
      * @return

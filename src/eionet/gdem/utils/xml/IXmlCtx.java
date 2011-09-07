@@ -29,12 +29,9 @@ public interface IXmlCtx {
 
     public void setWellFormednessChecking() throws XmlException;
 
-
     public void setValidationChecking() throws XmlException;
 
-
     public void checkFromInputStream(InputStream inputStream) throws XmlException;
-
 
     public void checkFromFile(String fullFileName) throws XmlException;
 
@@ -42,21 +39,15 @@ public interface IXmlCtx {
 
     public void createXMLDocument() throws XmlException;
 
-
     public void createXMLDocument(String docTypeName, String systemId) throws XmlException;
-
 
     public IXUpdate getManager();
 
-
     public IXmlSerializer getSerializer();
-
 
     public IXQuery getQueryManager();
 
-
     public Document getDocument();
-
 
     public void setDocument(Document document);
 

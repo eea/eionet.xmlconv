@@ -71,6 +71,7 @@ import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
 
 /**
  * Business logic for managing XML schemas in XMLCONV.
+ * 
  * @author Enriko Käsper
  */
 public class SchemaManager {
@@ -101,8 +102,7 @@ public class SchemaManager {
 
             Vector stylesheets = schemaDao.getSchemaStylesheets(schemaId);
 
-            if (!Utils.isNullVector(schemaDao.getSchemaQueries(schemaId)) ||
-                    uplSchemaDao.checkUplSchemaFK(schemaId))
+            if (!Utils.isNullVector(schemaDao.getSchemaQueries(schemaId)) || uplSchemaDao.checkUplSchemaFK(schemaId))
                 hasOtherStuff = true;
 
             // dbM.removeSchema( schemaId, true, false, !hasOtherStuff);
@@ -137,7 +137,7 @@ public class SchemaManager {
     /**
      * Method creates StylesheetListHolder object, that stores the list of stylesheets both for handcoded and generated. The object
      * stores also user permissions info to manage stylesheets.
-     *
+     * 
      * @param user_name
      *            user name stored in HTTP session.This for checking user permisssions
      * @param type
@@ -303,7 +303,7 @@ public class SchemaManager {
     /**
      * Method creates QAScriptListHolder object, that stores the list of qa script The object stores also user permissions info to
      * manage stylesheets.
-     *
+     * 
      * @param user_name
      *            user name stored in HTTP session.This for checking user permisssions
      * @return
@@ -352,8 +352,8 @@ public class SchemaManager {
                 sc.setId((String) schema.get("schema_id"));
                 sc.setSchema((String) schema.get("xml_schema"));
                 sc.setDescription((String) schema.get("description"));
-                boolean validate = (!Utils.isNullStr((String) schema.get("validate")) && ((String) schema.get("validate"))
-                        .equals("1"));
+                boolean validate =
+                        (!Utils.isNullStr((String) schema.get("validate")) && ((String) schema.get("validate")).equals("1"));
                 sc.setDoValidation(validate);
 
                 Vector qascripts = new Vector();
@@ -467,8 +467,9 @@ public class SchemaManager {
                 schema.setSchema((String) schemaHash.get("xml_schema"));
                 schema.setDescription((String) schemaHash.get("description"));
                 schema.setSchemaLang((String) schemaHash.get("schema_lang"));
-                boolean validate = (!Utils.isNullStr((String) schemaHash.get("validate")) && ((String) schemaHash.get("validate"))
-                        .equals("1"));
+                boolean validate =
+                        (!Utils.isNullStr((String) schemaHash.get("validate")) && ((String) schemaHash.get("validate"))
+                                .equals("1"));
                 schema.setDoValidation(validate);
                 schema.setDtdPublicId((String) schemaHash.get("dtd_public_id"));
                 schema.setExpireDate(Utils.parseDate((String) schemaHash.get("expire_date"), "yyyy-MM-dd HH:mm:ss"));
@@ -530,7 +531,7 @@ public class SchemaManager {
 
     /**
      * Get DD Schemas and append schemas founf from database
-     *
+     * 
      * @return
      * @throws DCMException
      */
@@ -559,7 +560,8 @@ public class SchemaManager {
                 try {
                     d = Utils.parseDate((String) schema.get("dateReleased"), "ddMMyy");
                 } catch (Exception e) {
-                    _logger.error("Unable to parse DataDictionary dataset released date: " + (String) schema.get("dateReleased"), e);
+                    _logger.error("Unable to parse DataDictionary dataset released date: " + (String) schema.get("dateReleased"),
+                            e);
                 }
                 sc.setDatasetReleased(d);
                 schemas.add(sc);
@@ -785,7 +787,7 @@ public class SchemaManager {
     }
 
     /**
-     *
+     * 
      * @param user
      *            - user name stored in Http session attribute
      * @param schemaId
@@ -815,8 +817,8 @@ public class SchemaManager {
             HashMap<String, String> uplSchema = uplSchemaDao.getUplSchemaByFkSchemaId(schemaId);
 
             if (delSchema) {
-                if (!Utils.isNullVector(schemaDao.getSchemaQueries(schemaId)) ||
-                        !Utils.isNullVector(schemaDao.getSchemaStylesheets(schemaId)))
+                if (!Utils.isNullVector(schemaDao.getSchemaQueries(schemaId))
+                        || !Utils.isNullVector(schemaDao.getSchemaStylesheets(schemaId)))
                     delSchema = false;
             }
 
@@ -854,7 +856,7 @@ public class SchemaManager {
 
     /**
      * Get Schemas and stylesheets generated from DataDictioanry.
-     *
+     * 
      * @param getStylesheets
      *            - generate also stylesheet information
      * @return
@@ -880,7 +882,8 @@ public class SchemaManager {
                 try {
                     d = Utils.parseDate((String) schema.get("dateReleased"), "ddMMyy");
                 } catch (Exception e) {
-                    _logger.error("Unable to parse DataDictionary dataset released date: " + (String) schema.get("dateReleased"), e);
+                    _logger.error("Unable to parse DataDictionary dataset released date: " + (String) schema.get("dateReleased"),
+                            e);
                 }
                 sc.setDatasetReleased(d);
                 List ddStylesheets = Conversion.getConversions();
@@ -1046,7 +1049,7 @@ public class SchemaManager {
 
     /**
      * If the schema is stored in local repository, then this method returns the file name of locally stored schema
-     *
+     * 
      * @param schemaUrl
      *            remote schema URL
      * @return filename stored in schemas folder
@@ -1107,7 +1110,7 @@ public class SchemaManager {
 
     /**
      * Returns the list of xml files retreived from CR sparql client
-     *
+     * 
      * @return
      * @throws Exception
      */
@@ -1122,7 +1125,7 @@ public class SchemaManager {
 
     /**
      * Returns the list of DD tables retreived from xml-rpc request
-     *
+     * 
      * @return
      */
     protected List getDDTables() {
@@ -1164,7 +1167,7 @@ public class SchemaManager {
 
     /**
      * compares the differences between remote schema and the local copy of it
-     *
+     * 
      * @param schemaUrl
      * @param schemaFile
      * @return if the result is empty string, then the files are identical, otherwise BusinessConstants with AppReosurce identifier
@@ -1200,15 +1203,16 @@ public class SchemaManager {
             return BusinessConstants.WARNING_LOCALFILE_NOTAVAILABLE;
         }
         // compare
-        result = remoteSchemaHash.equals(fileHash) && remoteSchemaHash.length() > 0 ?
-                BusinessConstants.WARNING_FILES_IDENTICAL : BusinessConstants.WARNING_FILES_NOTIDENTICAL;
+        result =
+                remoteSchemaHash.equals(fileHash) && remoteSchemaHash.length() > 0 ? BusinessConstants.WARNING_FILES_IDENTICAL
+                        : BusinessConstants.WARNING_FILES_NOTIDENTICAL;
 
         return result;
     }
 
     /**
      * Download remote schema from specified URL and return it as byte array
-     *
+     * 
      * @param url
      * @return
      * @throws DCMException
@@ -1231,7 +1235,7 @@ public class SchemaManager {
     /**
      * Method tries to download the remote XML Schema and store it in the local cache. Method registers the schema in T_UPL_SCHEMA
      * table.
-     *
+     * 
      * @param user
      * @param schemaUrl
      * @param schemaFileName
@@ -1239,13 +1243,14 @@ public class SchemaManager {
      * @param uplSchemaId
      * @throws DCMException
      */
-    public void storeRemoteSchema(String user, String schemaUrl, String schemaFileName,
-            String schemaId, String uplSchemaId) throws DCMException {
+    public void storeRemoteSchema(String user, String schemaUrl, String schemaFileName, String schemaId, String uplSchemaId)
+            throws DCMException {
 
         byte[] remoteSchema = downloadRemoteSchema(schemaUrl);
         ByteArrayInputStream in = new ByteArrayInputStream(remoteSchema);
         if (Utils.isNullStr(schemaFileName))
-            schemaFileName = generateSchemaFilenameByID(Properties.schemaFolder, schemaId, Utils.extractExtension(schemaUrl, "xsd"));
+            schemaFileName =
+                    generateSchemaFilenameByID(Properties.schemaFolder, schemaId, Utils.extractExtension(schemaUrl, "xsd"));
         if (Utils.isNullStr(uplSchemaId))
             addUplSchema(user, in, schemaFileName, schemaId);
         else

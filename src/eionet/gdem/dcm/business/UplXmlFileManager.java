@@ -30,26 +30,29 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.xmlfile.UplXmlFileHolder;
 
 /**
- * Business logic for uploading XML files into XMLCONV repository,
- * editing file metadata and deleting files.
- *
+ * Business logic for uploading XML files into XMLCONV repository, editing file metadata and deleting files.
+ * 
  * @author Enriko Käsper (TietoEnator)
- *
+ * 
  */
 
 public class UplXmlFileManager {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-    private  IUPLXmlFileDao uplXmlFileDao = GDEMServices.getDaoService().getUPLXmlFileDao();
+    private IUPLXmlFileDao uplXmlFileDao = GDEMServices.getDaoService().getUPLXmlFileDao();
 
     /**
      * Stores the new XML file in server filesystem and adds the metadata into database
-     *
-     * @param user			User name
-     * @param xmlfile		FormFile uploaded through webform.
-     * @param title			String inserted into webform
-     * @throws DCMException If the database or file storing operation fails
+     * 
+     * @param user
+     *            User name
+     * @param xmlfile
+     *            FormFile uploaded through webform.
+     * @param title
+     *            String inserted into webform
+     * @throws DCMException
+     *             If the database or file storing operation fails
      */
     public void addUplXmlFile(String user, FormFile xmlfile, String title) throws DCMException {
 
@@ -60,7 +63,7 @@ public class UplXmlFileManager {
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error adding XML file",e);
+            _logger.error("Error adding XML file", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         try {
@@ -69,17 +72,17 @@ public class UplXmlFileManager {
             if (fileExists(fileName)) {
                 throw new DCMException(BusinessConstants.EXCEPTION_XMLFILE_FILE_EXISTS);
             }
-            //write XML file into filesystem
+            // write XML file into filesystem
             storeXmlFile(xmlfile, fileName);
             xmlfile.destroy();
 
-            //store metadata in DB
+            // store metadata in DB
             uplXmlFileDao.addUplXmlFile(fileName, title);
 
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error adding xml file",e);
+            _logger.error("Error adding xml file", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -87,10 +90,13 @@ public class UplXmlFileManager {
 
     /**
      * Deletes the specified XML file from filesystem and deletes the metadata from database
-     *
-     * @param user				User name, that is used to check the permission
-     * @param uplXmlFileId		XML file ID
-     * @throws DCMException 	If database or file deleting operation fails
+     * 
+     * @param user
+     *            User name, that is used to check the permission
+     * @param uplXmlFileId
+     *            XML file ID
+     * @throws DCMException
+     *             If database or file deleting operation fails
      */
     public void deleteUplXmlFile(String user, String uplXmlFileId) throws DCMException {
 
@@ -111,38 +117,41 @@ public class UplXmlFileManager {
         try {
             String xmlfilename = uplXmlFileDao.getUplXmlFileName(uplXmlFileId);
 
-
             if (xmlfilename != null) {
-                //delete XML file from filesystem
+                // delete XML file from filesystem
                 try {
                     Utils.deleteFile(Properties.xmlfileFolderPath + "/" + xmlfilename);
                 } catch (Exception e) {
-                    _logger.error("Error deleting uploaded XML file",e);
+                    _logger.error("Error deleting uploaded XML file", e);
                     throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 
                 }
             }
-            //delete metadata from DB
+            // delete metadata from DB
             uplXmlFileDao.removeUplXmlFile(uplXmlFileId);
 
         } catch (Exception e) {
-            _logger.error("Error deleting uploaded XML file",e);
+            _logger.error("Error deleting uploaded XML file", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
     }
 
-
     /**
      * Updates XML file metadata in database.
-     *
-     * @param user				User name, that is used to check the permission
-     * @param xmlFileId			XML file unique ID
-     * @param title				XML file title
-     * @throws DCMException 	If database or file deleting operation fails
+     * 
+     * @param user
+     *            User name, that is used to check the permission
+     * @param xmlFileId
+     *            XML file unique ID
+     * @param title
+     *            XML file title
+     * @throws DCMException
+     *             If database or file deleting operation fails
      */
 
-    public void updateUplXmlFile(String user, String xmlFileId, String title, String curFileName, FormFile file) throws DCMException {
+    public void updateUplXmlFile(String user, String xmlFileId, String title, String curFileName, FormFile file)
+            throws DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_XMLFILE_PATH, "u")) {
@@ -166,11 +175,11 @@ public class UplXmlFileManager {
                         throw new DCMException(BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS);
                     }
                 }
-                //write XML file into filesystem
+                // write XML file into filesystem
                 storeXmlFile(file, curFileName);
                 file.destroy();
             }
-            //update metadata in DB
+            // update metadata in DB
             uplXmlFileDao.updateUplXmlFile(xmlFileId, title);
 
         } catch (Exception e) {
@@ -182,7 +191,7 @@ public class UplXmlFileManager {
 
     /**
      * Returns UplXmlFile bean with XML file metada.
-     *
+     * 
      * @param xmlFileId
      * @return
      * @throws DCMException
@@ -193,12 +202,13 @@ public class UplXmlFileManager {
         try {
 
             Hashtable ht = uplXmlFileDao.getUplXmlFileById(xmlFileId);
-            String file_name= (String) ht.get("file_name");
+            String file_name = (String) ht.get("file_name");
             String title = (String) ht.get("title");
             String lastModified = "";
-            if(!Utils.isNullStr(file_name)){
-                File f = new File(Properties.xmlfileFolderPath + File.separatorChar +  file_name);
-                if (f != null && f.exists()) lastModified = Utils.getDateTime(new Date(f.lastModified()));
+            if (!Utils.isNullStr(file_name)) {
+                File f = new File(Properties.xmlfileFolderPath + File.separatorChar + file_name);
+                if (f != null && f.exists())
+                    lastModified = Utils.getDateTime(new Date(f.lastModified()));
             }
 
             xmlfile.setTitle(title);
@@ -213,11 +223,12 @@ public class UplXmlFileManager {
         return xmlfile;
 
     }
+
     /**
      * Get all the XML files stored in repository.
-     *
+     * 
      * @param user_name
-     * @return					Vector containing UplXmlFile objects
+     * @return Vector containing UplXmlFile objects
      * @throws DCMException
      */
     public UplXmlFileHolder getUplXmlFiles(String user_name) throws DCMException {
@@ -242,9 +253,8 @@ public class UplXmlFileManager {
 
             xmlfiles = new ArrayList();
 
-            //query DB
+            // query DB
             Vector xmlfileVec = uplXmlFileDao.getUplXmlFile();
-
 
             // create UplXmlFile objects and add them into Vector
             for (int i = 0; i < xmlfileVec.size(); i++) {
@@ -254,9 +264,10 @@ public class UplXmlFileManager {
                 String title = (String) hash.get("title");
                 String lastModified = "";
 
-                if(!Utils.isNullStr(fileName)){
-                    File f = new File(Properties.xmlfileFolderPath + File.separatorChar +  fileName);
-                    if (f != null && f.exists()) lastModified = Utils.getDateTime(new Date(f.lastModified()));
+                if (!Utils.isNullStr(fileName)) {
+                    File f = new File(Properties.xmlfileFolderPath + File.separatorChar + fileName);
+                    if (f != null && f.exists())
+                        lastModified = Utils.getDateTime(new Date(f.lastModified()));
                 }
 
                 UplXmlFile uplXmlFile = new UplXmlFile();
@@ -270,16 +281,16 @@ public class UplXmlFileManager {
                 xh.setXmlfiles(xmlfiles);
             }
         } catch (Exception e) {
-            _logger.error("Error getting uploaded XML files",e);
+            _logger.error("Error getting uploaded XML files", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return xh;
 
     }
+
     /**
-     * Checks if the xml file with the given filename exists whether in db or in
-     * fs
-     *
+     * Checks if the xml file with the given filename exists whether in db or in fs
+     * 
      * @param fileName
      * @return
      * @throws SQLException
@@ -300,8 +311,10 @@ public class UplXmlFileManager {
         return file.exists();
 
     }
+
     /**
      * Stores the xml file into filesystem
+     * 
      * @param file
      * @param fileName
      * @throws FileNotFoundException

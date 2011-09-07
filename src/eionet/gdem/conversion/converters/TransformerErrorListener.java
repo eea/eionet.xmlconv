@@ -31,11 +31,10 @@ import eionet.gdem.services.LoggerIF;
 
 /**
  * ErrorListener for XSLT Transformer
- * @author Enriko Käsper, TietoEnator Estonia AS
- * TransformerErrorListener
+ * 
+ * @author Enriko Käsper, TietoEnator Estonia AS TransformerErrorListener
  */
-public class TransformerErrorListener implements
-        javax.xml.transform.ErrorListener {
+public class TransformerErrorListener implements javax.xml.transform.ErrorListener {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
@@ -53,20 +52,17 @@ public class TransformerErrorListener implements
             if (cause instanceof SAXException) {
                 throw te;
             } else {
-                throw new TransformerException(
-                        formatTransformerException(2, te));
+                throw new TransformerException(formatTransformerException(2, te));
             }
         } else {
             throw new TransformerException(formatTransformerException(2, te));
         }
     }
 
-    public static String formatTransformerException(int errType,
-            TransformerException te) {
-        String[] errorTypes = { "WARNING", "ERROR", "FATAL ERROR" };
+    public static String formatTransformerException(int errType, TransformerException te) {
+        String[] errorTypes = {"WARNING", "ERROR", "FATAL ERROR"};
         String msg = te.getMessageAndLocation();
-        String msgout = "The XSLT processor reported the following "
-                + errorTypes[errType] + ":\n" + msg;
+        String msgout = "The XSLT processor reported the following " + errorTypes[errType] + ":\n" + msg;
         return msgout;
     }
 

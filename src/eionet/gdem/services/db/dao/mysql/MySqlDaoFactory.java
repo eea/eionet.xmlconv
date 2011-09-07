@@ -1,6 +1,5 @@
 package eionet.gdem.services.db.dao.mysql;
 
-
 import eionet.gdem.services.db.dao.DCMDaoFactory;
 import eionet.gdem.services.db.dao.IBackupDao;
 import eionet.gdem.services.db.dao.IConvTypeDao;
@@ -15,51 +14,45 @@ import eionet.gdem.services.db.dao.IXFBrowserDao;
 import eionet.gdem.services.db.dao.IXFormDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 
+public class MySqlDaoFactory extends DCMDaoFactory {
 
-
-
-
-public class MySqlDaoFactory extends DCMDaoFactory{
-
-
-
-    public IStyleSheetDao getStyleSheetDao(){
+    public IStyleSheetDao getStyleSheetDao() {
         return new StyleSheetMySqlDao();
     }
 
-    public IXFormDao getXFormDao(){
+    public IXFormDao getXFormDao() {
         return new XFormMySqlDao();
     }
 
-    public IHostDao getHostDao(){
+    public IHostDao getHostDao() {
         return new HostMySqlDao();
     }
 
-    public IQueryDao getQueryDao(){
+    public IQueryDao getQueryDao() {
         return new QueryMySqlDao();
     }
 
-    public IRootElemDao getRootElemDao(){
+    public IRootElemDao getRootElemDao() {
         return new RootElemMySqlDao();
     }
 
-    public IUPLSchemaDao getUPLSchemaDao(){
+    public IUPLSchemaDao getUPLSchemaDao() {
         return new UPLSchemaMySqlDao();
     }
 
-    public IXFBrowserDao getXFBrowserDao(){
+    public IXFBrowserDao getXFBrowserDao() {
         return new XFBrowserMySqlDao();
     }
 
-    public ISchemaDao getSchemaDao(){
+    public ISchemaDao getSchemaDao() {
         return new SchemaMySqlDao();
     }
 
-    public IXQJobDao getXQJobDao(){
+    public IXQJobDao getXQJobDao() {
         return new XQJobMySqlDao();
     }
 
-    public IConvTypeDao getConvTypeDao(){
+    public IConvTypeDao getConvTypeDao() {
         return new ConvTypeMySqlDao();
     }
 
@@ -70,7 +63,5 @@ public class MySqlDaoFactory extends DCMDaoFactory{
     public IBackupDao getBackupDao() {
         return new BackupMySqlDao();
     }
-
-
 
 }

@@ -33,39 +33,35 @@ import com.wutka.dtd.DTDParser;
 import eionet.gdem.exceptions.DCMException;
 
 /**
- * @author Enriko Käsper, Tieto Estonia
- * DocumentAnalyser
+ * @author Enriko Käsper, Tieto Estonia DocumentAnalyser
  */
 
 public class DocumentAnalyser {
 
+    public static boolean sourceIsXMLSchema(byte[] bytes) throws DCMException {
 
-    public static boolean sourceIsXMLSchema(byte[] bytes) throws DCMException{
-
-        try{
+        try {
             ByteArrayInputStream is = new ByteArrayInputStream(bytes);
             javax.xml.validation.Schema s =
-                SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(new
-                StreamSource(is));
+                    SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(new StreamSource(is));
 
             return true;
-        }
-        catch(Exception e){
-            //e.printStackTrace();
+        } catch (Exception e) {
+            // e.printStackTrace();
             return false;
         }
 
     }
-    public static boolean sourceIsDTD(byte[] bytes) throws DCMException{
 
-        try{
+    public static boolean sourceIsDTD(byte[] bytes) throws DCMException {
+
+        try {
             ByteArrayInputStream is = new ByteArrayInputStream(bytes);
             DTDParser dtdparser = new DTDParser(new InputStreamReader(is));
             dtdparser.parse();
             return true;
-        }
-        catch(Exception e){
-            //e.printStackTrace();
+        } catch (Exception e) {
+            // e.printStackTrace();
             return false;
         }
 

@@ -32,60 +32,50 @@ public class SchemaElemHolder {
     private List<RootElem> rootElem;
     private boolean xsduPrm;
     private boolean xsddPrm;
-    private boolean isSchemaIdRemoteUrl=false;
-
+    private boolean isSchemaIdRemoteUrl = false;
 
     public boolean isXsddPrm() {
         return xsddPrm;
     }
 
-
     public void setXsddPrm(boolean xsddPrm) {
         this.xsddPrm = xsddPrm;
     }
 
-
     public SchemaElemHolder() {
     }
-
 
     public List<RootElem> getRootElem() {
         return rootElem;
     }
 
-
     public void setRootElem(List<RootElem> rootElem) {
         this.rootElem = rootElem;
     }
-
 
     public Schema getSchema() {
         return schema;
     }
 
-
     public void setSchema(Schema schema) {
         this.schema = schema;
     }
-
 
     public boolean isXsduPrm() {
         return xsduPrm;
     }
 
-
     public void setXsduPrm(boolean xsduPrm) {
         this.xsduPrm = xsduPrm;
     }
-    public boolean isRootElemsPresent(){
-        return rootElem!=null && rootElem.size()>0;
-    }
 
+    public boolean isRootElemsPresent() {
+        return rootElem != null && rootElem.size() > 0;
+    }
 
     public void setSchemaIdRemoteUrl(boolean isSchemaIdRemoteUrl) {
         this.isSchemaIdRemoteUrl = isSchemaIdRemoteUrl;
     }
-
 
     public boolean isSchemaIdRemoteUrl() {
         return isSchemaIdRemoteUrl;

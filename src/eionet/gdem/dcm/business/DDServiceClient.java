@@ -37,31 +37,27 @@ public class DDServiceClient {
     protected String serviceName = null;
     protected String serviceUrl = null;
     protected ServiceClientIF client = null;
-    private static Map<String,String> mockDataset =null;
-
-
+    private static Map<String, String> mockDataset = null;
 
     protected void load() throws Exception {
-        if (serviceName == null || serviceName.equals("") || serviceUrl == null || serviceUrl.equals("")) throw new Exception("serviceName or serviceUrl is missing!");
+        if (serviceName == null || serviceName.equals("") || serviceUrl == null || serviceUrl.equals(""))
+            throw new Exception("serviceName or serviceUrl is missing!");
         client = ServiceClients.getServiceClient(serviceName, serviceUrl);
     }
-
 
     protected void getProps() {
         serviceName = Properties.invServName;
         serviceUrl = Properties.invServUrl;
     }
 
-
     protected Object execute(String method, Vector params) throws Exception {
-        if (client == null) load();
+        if (client == null)
+            load();
         return client.getValue(method, params);
     }
 
-
     public void execute(HttpServletRequest req) throws Exception {
     }
-
 
     public static List getDDTables() {
         DDServiceClient d = new DDServiceClient();
@@ -77,6 +73,7 @@ public class DDServiceClient {
         }
         return list;
     }
+
     public static Map<String, String> getDatasetWithReleaseInfo(String type, String id) {
         DDServiceClient d = new DDServiceClient();
         Map result = null;
@@ -94,15 +91,16 @@ public class DDServiceClient {
         return result;
     }
 
-
     /**
      * The testing purposes
+     * 
      * @return
      */
-    public static Map<String,String> getMockDataset(String type, String id) {
+    public static Map<String, String> getMockDataset(String type, String id) {
         return mockDataset;
     }
-    public static void setMockDataset(Map<String,String> mockDataset) {
+
+    public static void setMockDataset(Map<String, String> mockDataset) {
         DDServiceClient.mockDataset = mockDataset;
     }
 }

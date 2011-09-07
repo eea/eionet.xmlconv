@@ -23,7 +23,7 @@ package eionet.gdem.dto;
 
 /**
  * WorkqueueJob
- *
+ * 
  * @author Enriko Käsper, Tieto Estonia
  */
 
@@ -39,36 +39,47 @@ public class WorkqueueJob {
     public String getUrl() {
         return url;
     }
+
     public void setUrl(String url) {
         this.url = url;
     }
+
     public String getScriptFile() {
         return scriptFile;
     }
+
     public void setScriptFile(String scriptFile) {
         this.scriptFile = scriptFile;
     }
+
     public String getResultFile() {
         return resultFile;
     }
+
     public void setResultFile(String resultFile) {
         this.resultFile = resultFile;
     }
+
     public int getStatus() {
         return status;
     }
+
     public void setStatus(int status) {
         this.status = status;
     }
+
     public String getScriptId() {
         return scriptId;
     }
+
     public void setScriptId(String scriptId) {
         this.scriptId = scriptId;
     }
+
     public String getSrcFile() {
         return srcFile;
     }
+
     public void setSrcFile(String srcFile) {
         this.srcFile = srcFile;
     }

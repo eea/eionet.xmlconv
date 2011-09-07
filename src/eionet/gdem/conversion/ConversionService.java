@@ -39,33 +39,36 @@ import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 /**
- * Conversion Service Facade.
- * The service is able to execute different conversions
- * that are called through XML/RPC and HTTP POST and GET.
+ * Conversion Service Facade. The service is able to execute different conversions that are called through XML/RPC and HTTP POST and
+ * GET.
  *
  * @author Enriko Käsper
  */
 
-public class ConversionService extends RemoteService
-                implements ConversionServiceIF{
-
-
+public class ConversionService extends RemoteService implements ConversionServiceIF {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
     public ConversionService() {
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     *
      * @see eionet.gdem.conversion.ConversionServiceIF#listConversions()
      */
 
+    @Override
     public Vector listConversions() throws GDEMException {
         return listConversions(null);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see eionet.gdem.conversion.ConversionServiceIF#listConversions(java.lang.String)
      */
+    @Override
     public Vector listConversions(String schema) throws GDEMException {
 
         ListConversionsMethod method = new ListConversionsMethod();
@@ -73,8 +76,8 @@ public class ConversionService extends RemoteService
 
         return v;
     }
-    public Hashtable convert(String sourceURL, String convertId,
-            String username, String password) throws GDEMException {
+
+    public Hashtable convert(String sourceURL, String convertId, String username, String password) throws GDEMException {
 
         try {
             setTicket(Utils.getEncodedAuthentication(username, password));
@@ -90,42 +93,54 @@ public class ConversionService extends RemoteService
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see eionet.gdem.conversion.ConversionServiceIF#convert(java.lang.String, java.lang.String)
      */
+    @Override
     public Hashtable convert(String sourceURL, String convertId) throws GDEMException {
 
-        if(!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG))
+        if (!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG)) {
             _logger.debug("ConversionService.convert method called through XML-rpc.");
+        }
         ConvertXMLMethod convertMethod = new ConvertXMLMethod();
         setGlobalParameters(convertMethod);
         return convertMethod.convert(sourceURL, convertId);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see eionet.gdem.conversion.ConversionServiceIF#convertDD_XML(java.lang.String)
      */
+    @Override
     public Vector convertDD_XML(String sourceURL) throws GDEMException {
 
-        if(!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG))
+        if (!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG)) {
             _logger.debug("ConversionService.convertDD_XML method called through XML-rpc.");
+        }
 
         ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
         setGlobalParameters(convertDDXMLMethod);
         return convertDDXMLMethod.convertDD_XML(sourceURL);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see eionet.gdem.conversion.ConversionServiceIF#convertDD_XML_split(java.lang.String, java.lang.String)
      */
+    @Override
     public Vector convertDD_XML_split(String sourceURL, String sheet_param) throws GDEMException {
 
-        if(!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG))
+        if (!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG)) {
             _logger.debug("ConversionService.convertDD_XML_split method called through XML-rpc.");
+        }
 
         ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
         setGlobalParameters(convertDDXMLMethod);
-        return convertDDXMLMethod.convertDD_XML_split(sourceURL,sheet_param);
+        return convertDDXMLMethod.convertDD_XML_split(sourceURL, sheet_param);
     }
 
     public boolean existsXMLSchema(String xmlSchema) throws GDEMException {
@@ -133,36 +148,41 @@ public class ConversionService extends RemoteService
         return method.existsXMLSchema(xmlSchema);
     }
 
-
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see eionet.gdem.conversion.ConversionServiceIF#convertPush(byte[],java.lang.String,java.lang.String)
      */
-    public Hashtable convertPush(byte file[], String convertId, String filename)throws GDEMException {
+    @Override
+    public Hashtable convertPush(byte file[], String convertId, String filename) throws GDEMException {
 
-        if(!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG))
+        if (!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG)) {
             _logger.debug("ConversionService.convertPush method called through XML-rpc.");
+        }
 
         InputStream input = null;
 
-        try{
+        try {
             input = new ByteArrayInputStream(file);
             ConvertXMLMethod convertMethod = new ConvertXMLMethod();
             setGlobalParameters(convertMethod);
             return convertMethod.convertPush(input, convertId, filename);
-        }
-        finally{
-            try{
+        } finally {
+            try {
                 input.close();
+            } catch (Exception e) {
             }
-            catch(Exception e){}
 
         }
 
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     *
      * @see eionet.gdem.conversion.ConversionServiceIF#convertPush(java.lang.String,java.lang.String)
      */
+    @Override
     public Hashtable convertPush(InputStream fileInput, String convertId, String fileName) throws GDEMException {
 
         ConvertXMLMethod convertMethod = new ConvertXMLMethod();
@@ -170,6 +190,7 @@ public class ConversionService extends RemoteService
         return convertMethod.convertPush(fileInput, convertId, fileName);
     }
 
+    @Override
     public Vector getXMLSchemas() throws GDEMException {
         ListConversionsMethod method = new ListConversionsMethod();
         return method.getXMLSchemas();
@@ -178,6 +199,7 @@ public class ConversionService extends RemoteService
     /**
      * {@inheritDoc}
      */
+    @Override
     public Vector<Object> convertExcelToXMLPush(byte[] file, String fileName) throws GDEMException {
         ConversionResultDto dto = new ExcelToMultipleXML().convert(new ByteArrayInputStream(file), fileName);
         return convertResult(dto);
@@ -186,6 +208,7 @@ public class ConversionService extends RemoteService
     /**
      * {@inheritDoc}
      */
+    @Override
     public Vector<Object> convertExcelToXML(String fileUrl) throws GDEMException {
         ConversionResultDto dto = new ExcelToMultipleXML().convert(fileUrl);
         return convertResult(dto);

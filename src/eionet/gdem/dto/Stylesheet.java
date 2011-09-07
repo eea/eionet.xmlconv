@@ -37,7 +37,6 @@ public class Stylesheet implements Serializable {
     private String checksum;
     private String dependsOn;
 
-
     /**
      * @return the dependsOn
      */
@@ -45,113 +44,92 @@ public class Stylesheet implements Serializable {
         return dependsOn;
     }
 
-
     /**
-     * @param dependsOn the dependsOn to set
+     * @param dependsOn
+     *            the dependsOn to set
      */
     public void setDependsOn(String dependsOn) {
         this.dependsOn = dependsOn;
     }
 
-
     public String getConvId() {
         return convId;
     }
-
 
     public void setConvId(String convId) {
         this.convId = convId;
     }
 
-
     public String getType() {
         return type;
     }
-
 
     public void setType(String type) {
         this.type = type;
     }
 
-
     public String getXsl() {
         return xsl;
     }
-
 
     public void setXsl(String xsl) {
         this.xsl = xsl;
     }
 
-
     public String getXsl_descr() {
         return xsl_descr;
     }
-
 
     public void setXsl_descr(String xsl_descr) {
         this.xsl_descr = xsl_descr;
     }
 
-
     public String getModified() {
         return modified;
     }
-
 
     public void setModified(String modified) {
         this.modified = modified;
     }
 
-
     public boolean isDdConv() {
         return ddConv;
     }
-
 
     public void setDdConv(boolean ddConv) {
         this.ddConv = ddConv;
     }
 
-
     public String getSchema() {
         return schema;
     }
-
 
     public void setSchema(String schema) {
         this.schema = schema;
     }
 
-
     public String getXslContent() {
         return xslContent;
     }
-
 
     public void setXslContent(String content) {
         this.xslContent = content;
     }
 
-
     public String getXslFileName() {
         return xslFileName;
     }
-
 
     public void setXslFileName(String xslFileName) {
         this.xslFileName = xslFileName;
     }
 
-
     public String getChecksum() {
         return checksum;
     }
 
-
     public void setChecksum(String checksum) {
         this.checksum = checksum;
     }
-
 
 }

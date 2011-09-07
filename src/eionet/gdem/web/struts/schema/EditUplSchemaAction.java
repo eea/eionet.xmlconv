@@ -43,8 +43,8 @@ public class EditUplSchemaAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
 
@@ -60,28 +60,27 @@ public class EditUplSchemaAction extends Action {
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
 
-
         try {
             SchemaManager sm = new SchemaManager();
             // sm.uplUpdate( user, schemaId, description);
-            if(file!=null && file.getFileSize() > 0){
-                if(Utils.isNullStr(fileName)){
-                //	Change the filename to schema-UniqueIDxsd
-                    fileName = sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaId, Utils.extractExtension(file.getFileName(),"xsd"));
+            if (file != null && file.getFileSize() > 0) {
+                if (Utils.isNullStr(fileName)) {
+                    // Change the filename to schema-UniqueIDxsd
+                    fileName =
+                            sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaId,
+                                    Utils.extractExtension(file.getFileName(), "xsd"));
                     sm.addUplSchema(user, file, fileName, schemaId);
-                }
-                else if (uplSchemaId!=null){
+                } else if (uplSchemaId != null) {
                     sm.updateUplSchema(user, uplSchemaId, schemaId, fileName, file);
                 }
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.updated"));
-            }
-            else{
+            } else {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.upload.validation"));
             }
 
         } catch (DCMException e) {
-            //e.printStackTrace();
-            _logger.error("Error editing uploaded schema",e);
+            // e.printStackTrace();
+            _logger.error("Error editing uploaded schema", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         httpServletRequest.setAttribute("schemaId", schemaId);
@@ -89,8 +88,8 @@ public class EditUplSchemaAction extends Action {
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);
         httpServletRequest.getSession().setAttribute("dcm.messages", messages);
 
-        saveErrors(httpServletRequest,errors);
-        saveMessages(httpServletRequest,messages);
+        saveErrors(httpServletRequest, errors);
+        saveMessages(httpServletRequest, messages);
 
         return actionMapping.findForward("success");
     }

@@ -40,8 +40,8 @@ public class StylesheetDeleteAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
-
-    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
@@ -56,7 +56,7 @@ public class StylesheetDeleteAction extends Action {
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.deleted"));
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error deleting stylesheet",e);
+            _logger.error("Error deleting stylesheet", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
 

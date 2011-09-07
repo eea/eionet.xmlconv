@@ -54,7 +54,7 @@ public class GDEMException extends Exception {
 
     /**
      * Prints this exception and its backtrace to the given print stream.
-     *
+     * 
      * @param ps
      *            the print stream.
      */
@@ -68,7 +68,7 @@ public class GDEMException extends Exception {
 
     /**
      * Prints this exception and its backtrace to the given print writer.
-     *
+     * 
      * @param pw
      *            - the print writer.
      */
@@ -82,12 +82,12 @@ public class GDEMException extends Exception {
 
     /**
      * Returns the message of original cause.
-     *
+     * 
      * @return cause message
      */
     public String getCauseMessage() {
 
-        if(cause != null && cause.getMessage() != null){
+        if (cause != null && cause.getMessage() != null) {
             return cause.getMessage();
         }
         return "";
