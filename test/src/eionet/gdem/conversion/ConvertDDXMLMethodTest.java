@@ -3,12 +3,11 @@
  */
 package eionet.gdem.conversion;
 
-import java.io.ByteArrayInputStream;
 import java.util.List;
-import java.util.Vector;
 
 import junit.framework.TestCase;
 import eionet.gdem.GDEMException;
+import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.utils.xml.IXQuery;
@@ -30,6 +29,7 @@ public class ConvertDDXMLMethodTest extends TestCase {
     /**
      * Set up test case properties
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         TestUtils.setUpReleasedDataset();
@@ -37,36 +37,35 @@ public class ConvertDDXMLMethodTest extends TestCase {
 
     public void testConvertDD_XML() throws Exception {
 
-        Vector<Object> v = convertExcel();
-        assertEquals(3, v.size());
-        assertEquals("0", (String) v.get(0));
-        assertEquals("seed-dates.xml", (String) v.get(2));
+        ConversionResultDto result = convertExcel();
+        assertEquals("0", result.getStatusCode());
+        assertTrue(result.getConvertedXmls().containsKey("seed-dates.xml"));
     }
 
     public void testConvertDD_XMLDates() throws Exception {
-        Vector<Object> v = convertExcel();
-        IXmlCtx ctx = getXmlFromConversionResult(v);
+        ConversionResultDto result = convertExcel();
+        IXmlCtx ctx = getXmlFromConversionResult(result);
         IXQuery xQuery = ctx.getQueryManager();
 
         // TEST if result XML contains ND_EndDate values in 2008-02-01 format and not in numeric format: 39479
         List<String> dateValues = xQuery.getElementValues("dd487:ND_EndDate");
         assertTrue(dateValues.size() > 0);
         for (int i = 0; i < dateValues.size() - 1; i++) {
-            String dateValue = (String) dateValues.get(i);
+            String dateValue = dateValues.get(i);
             assertEquals(dateValue, "2008-02-01");
         }
     }
 
     public void testConvertDD_XMLIntegers() throws Exception {
-        Vector<Object> v = convertExcel();
-        IXmlCtx ctx = getXmlFromConversionResult(v);
+        ConversionResultDto result = convertExcel();
+        IXmlCtx ctx = getXmlFromConversionResult(result);
         IXQuery xQuery = ctx.getQueryManager();
 
         // TEST if result XML contains ND_NoOfSamples values in numeric format and they are not converted to dates
         List<String> numValues = xQuery.getElementValues("dd487:ND_NoOfSamples");
         assertTrue(numValues.size() > 0);
         for (int i = 0; i < numValues.size(); i++) {
-            String numValue = (String) numValues.get(i);
+            String numValue = numValues.get(i);
             if (numValue.length() > 0) {
                 int intValue = Integer.parseInt(numValue);
                 assertEquals(intValue, i + 1);
@@ -75,15 +74,15 @@ public class ConvertDDXMLMethodTest extends TestCase {
     }
 
     public void testConvertDD_XMLDouble() throws Exception {
-        Vector<Object> v = convertExcel();
-        IXmlCtx ctx = getXmlFromConversionResult(v);
+        ConversionResultDto result = convertExcel();
+        IXmlCtx ctx = getXmlFromConversionResult(result);
         IXQuery xQuery = ctx.getQueryManager();
 
         // TEST if result XML contains ND_MaxValue values in numeric format and they are not converted to dates
         List<String> numValues = xQuery.getElementValues("dd487:ND_MaxValue");
         assertTrue(numValues.size() > 3);
         for (int i = 0; i < numValues.size(); i++) {
-            String numValue = (String) numValues.get(i);
+            String numValue = numValues.get(i);
             if (numValue.length() > 0) {
                 switch (i) {
                     case 0:
@@ -105,34 +104,31 @@ public class ConvertDDXMLMethodTest extends TestCase {
     }
 
     public void testConvertDD_XMLYearsInDateFields() throws Exception {
-        Vector<Object> v = convertExcel();
-        IXmlCtx ctx = getXmlFromConversionResult(v);
+        ConversionResultDto result = convertExcel();
+        IXmlCtx ctx = getXmlFromConversionResult(result);
         IXQuery xQuery = ctx.getQueryManager();
 
         // TEST if result XML contains ND_EndDate values in 2008 in numeric format and not in date format
         List<String> dateValues = xQuery.getElementValues("dd487:ND_EndDate");
         assertTrue(dateValues.size() > 0);
-        String dateValue = (String) dateValues.get(dateValues.size() - 1);
+        String dateValue = dateValues.get(dateValues.size() - 1);
         assertEquals(dateValue, "2008");
     }
 
-    private Vector<Object> convertExcel() throws GDEMException {
+    private ConversionResultDto convertExcel() throws GDEMException {
 
         ConvertDDXMLMethod convMethod = new ConvertDDXMLMethod();
-        Vector<Object> v = convMethod.convertDD_XML(TestUtils.getSeedURL(TestConstants.SEED_DATES_XLS, this));
+        ConversionResultDto result = convMethod.convertDD_XML(TestUtils.getSeedURL(TestConstants.SEED_DATES_XLS, this));
 
-        return v;
+        return result;
 
     }
 
-    private IXmlCtx getXmlFromConversionResult(Vector<Object> v) throws XmlException {
+    private IXmlCtx getXmlFromConversionResult(ConversionResultDto result) throws XmlException {
 
-        byte[] xml = (byte[]) v.get(1);
-
-        // parse date values from result XML
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(xml);
+        String xml = result.getConvertedXmls().get("seed-dates.xml");
         IXmlCtx ctx = new XmlContext();
-        ctx.checkFromInputStream(inputStream);
+        ctx.checkFromString(xml);
 
         return ctx;
     }

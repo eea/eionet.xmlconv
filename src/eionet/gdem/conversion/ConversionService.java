@@ -32,8 +32,8 @@ import java.util.Map;
 import java.util.Vector;
 
 import eionet.gdem.GDEMException;
-import eionet.gdem.conversion.ExcelToMultipleXML.ConversionResultDto;
 import eionet.gdem.dcm.remote.RemoteService;
+import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
@@ -115,7 +115,7 @@ public class ConversionService extends RemoteService implements ConversionServic
      * @see eionet.gdem.conversion.ConversionServiceIF#convertDD_XML(java.lang.String)
      */
     @Override
-    public Vector convertDD_XML(String sourceURL) throws GDEMException {
+    public Hashtable convertDD_XML(String sourceURL) throws GDEMException {
 
         if (!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG)) {
             _logger.debug("ConversionService.convertDD_XML method called through XML-rpc.");
@@ -123,7 +123,23 @@ public class ConversionService extends RemoteService implements ConversionServic
 
         ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
         setGlobalParameters(convertDDXMLMethod);
-        return convertDDXMLMethod.convertDD_XML(sourceURL);
+        ConversionResultDto result = convertDDXMLMethod.convertDD_XML(sourceURL);
+        return convertExcelResult(result);
+    }
+
+    @Override
+    public ConversionResultDto convertDD_XML(String sourceURL, boolean split, String sheetName) throws GDEMException {
+
+        ConversionResultDto result = null;
+        ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
+        setGlobalParameters(convertDDXMLMethod);
+        if (split){
+            result = convertDDXMLMethod.convertDD_XML_split(sourceURL, sheetName);
+        }
+        else{
+            result = convertDDXMLMethod.convertDD_XML(sourceURL);
+        }
+        return result;
     }
 
     /*
@@ -132,7 +148,7 @@ public class ConversionService extends RemoteService implements ConversionServic
      * @see eionet.gdem.conversion.ConversionServiceIF#convertDD_XML_split(java.lang.String, java.lang.String)
      */
     @Override
-    public Vector convertDD_XML_split(String sourceURL, String sheet_param) throws GDEMException {
+    public Hashtable convertDD_XML_split(String sourceURL, String sheetParam) throws GDEMException {
 
         if (!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG)) {
             _logger.debug("ConversionService.convertDD_XML_split method called through XML-rpc.");
@@ -140,7 +156,8 @@ public class ConversionService extends RemoteService implements ConversionServic
 
         ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
         setGlobalParameters(convertDDXMLMethod);
-        return convertDDXMLMethod.convertDD_XML_split(sourceURL, sheet_param);
+        ConversionResultDto result = convertDDXMLMethod.convertDD_XML_split(sourceURL, sheetParam);
+        return convertExcelResult(result);
     }
 
     public boolean existsXMLSchema(String xmlSchema) throws GDEMException {
@@ -227,6 +244,26 @@ public class ConversionService extends RemoteService implements ConversionServic
             }
         }
 
+        return result;
+    }
+    private static final Hashtable<String, Object> convertExcelResult(ConversionResultDto dto) {
+        Hashtable<String, Object> result = new Hashtable<String, Object>();
+
+        result.put("resultCode", dto.getStatusCode());
+        result.put("resultDescription", dto.getStatusDescription());
+        result.put("conversionLog", dto.getConversionLogAsHtml());
+        Vector<Hashtable<String, Object>> convertedFiles = new Vector<Hashtable<String, Object>>();
+
+        //run through sheets if available
+        if (dto.getConvertedXmls() != null) {
+            for (Map.Entry<String, String> entry : dto.getConvertedXmls().entrySet()) {
+                Hashtable<String, Object> convertedFile = new Hashtable<String, Object>();
+                convertedFile.put("fileName", entry.getKey());
+                convertedFile.put("content", entry.getValue());
+                convertedFiles.add(convertedFile);
+            }
+        }
+        result.put("convertedFiles", convertedFiles);
         return result;
     }
 }

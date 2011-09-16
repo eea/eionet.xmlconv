@@ -19,6 +19,8 @@
             <form-property name="url" type="java.lang.String"/>
             <form-property name="sheet" type="java.lang.String"/>
             <form-property name="split" type="java.lang.String"/>
+            <form-property name="showConversionLog" type="java.lang.Boolean"/>
+            <form-property name="conversionLog" type="java.lang.String"/>
         </form-bean>
 
         <form-bean name="UplSchemaForm" type="eionet.gdem.web.struts.schema.UplSchemaForm" />
@@ -178,11 +180,12 @@
             <forward name="error" path="/do/listConversionsByXML" redirect="false"/>
             <forward name="errorCR" path="/do/searchCR" redirect="false"/>
         </action>
-        <action path="/excel2XmlConversionForm" name="ExcelConversionForm" type="eionet.gdem.web.struts.conversion.Excel2XmlConversionFormAction" input="/excel2XmlConv.jsp" scope="session">
-            <forward name="success" path="/excel2XmlConv.jsp" redirect="true"/>
+        <action path="/excel2XmlConversionForm" name="ExcelConversionForm" type="eionet.gdem.web.struts.conversion.Excel2XmlConversionFormAction" input="/excel2XmlConv.jsp" scope="request">
+            <forward name="success" path="/excel2XmlConv.jsp" redirect="false"/>
         </action>
         <action path="/excel2XmlConversion"  name="ExcelConversionForm"  type="eionet.gdem.web.struts.conversion.Excel2XmlConversionAction" scope="request">
             <forward name="error" path="/do/excel2XmlConversionForm" redirect="false"/>
+            <forward name="success" path="/excel2XmlConv.jsp" redirect="false"/>
         </action>
         <action path="/crConversionForm" name="ConversionForm" type="eionet.gdem.web.struts.conversion.CRConversionFormAction" input="/crConversion.jsp" scope="session">
             <forward name="success" path="/crConversion.jsp" redirect="true"/>

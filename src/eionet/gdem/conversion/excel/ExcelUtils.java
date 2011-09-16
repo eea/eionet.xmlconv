@@ -25,6 +25,7 @@ package eionet.gdem.conversion.excel;
 
 import java.io.InputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -75,12 +76,7 @@ public class ExcelUtils {
         } catch (Exception e) {
             return false;
         } finally {
-            try {
-                if (input != null) {
-                    input.close();
-                }
-            } catch (Exception e) {
-            }
+            IOUtils.closeQuietly(input);
         }
     }
 
@@ -95,12 +91,7 @@ public class ExcelUtils {
         } catch (Exception e) {
             return false;
         } finally {
-            try {
-                if (input != null) {
-                    input.close();
-                }
-            } catch (Exception e) {
-            }
+            IOUtils.closeQuietly(input);
         }
     }
 }

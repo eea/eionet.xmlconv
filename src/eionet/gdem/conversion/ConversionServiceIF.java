@@ -11,6 +11,7 @@ import java.util.Vector;
 import eionet.gdem.GDEMException;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.remote.RemoteServiceIF;
+import eionet.gdem.dto.ConversionResultDto;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS ConversionServiceIF
@@ -48,18 +49,19 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      *
      * @param String
      *            url: URL of the srouce Excel file
-     * @return Vector result: error_code, xml_url, error_message
+     * @return ConversionResultDto result object
      */
-    public Vector convertDD_XML(String sourceURL) throws GDEMException;
+    public Hashtable<String, Object> convertDD_XML(String sourceURL) throws GDEMException;
 
     /**
      * Converts DataDictionary MS Excel sheets to different XML files, where one xml file is dataset table.
      *
      * @param String
      *            url: URL of the srouce Excel file
-     * @return Vector result: error_code, xml_url, error_message
+     *            sheetParam: Sheetname to convert
+     * @return ConversionResultDto result object
      */
-    public Vector convertDD_XML_split(String sourceURL, String sheet_param) throws GDEMException;
+    public Hashtable<String, Object> convertDD_XML_split(String sourceURL, String sheetParam) throws GDEMException;
 
     /**
      * If Conversion Service is called through HTTP, then set the HTTP Response object
@@ -135,4 +137,16 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      *             if some unpredictable error occurs.
      */
     Vector<Object> convertExcelToXML(String fileUrl) throws GDEMException;
+
+    /**
+    /**
+     * Converts DataDictionary MS Excel sheets to XML files.
+     *
+     * @param sourceURL URL of the srouce Excel file
+     * @param split if true, then split the sheets into different files
+     * @param sheetName Sheet name to convert
+     * @return ConversionResultDto
+     * @throws GDEMException
+     */
+    public ConversionResultDto convertDD_XML(String sourceURL, boolean split, String sheetName) throws GDEMException;
 }

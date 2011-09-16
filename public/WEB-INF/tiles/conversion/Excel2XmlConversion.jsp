@@ -32,7 +32,7 @@
             </tr>
             <tr>
                 <td>
-                    <html:text property="url" style="width: 30em;" styleId="inpUrl" />
+                    <html:text name="ExcelConversionForm" property="url" style="width: 45em;" styleId="inpUrl" size="200"/>
                 </td>
             </tr>
             <tr>
@@ -47,17 +47,22 @@
             </tr>
             <tr>
                 <td>
-                    <input type="radio" name="split" id="split1" value="all" onclick="sheet_name.disabled=true" checked="checked"/><label for="split1"><bean:message key="label.conversion.excel.allsheets"/></label>
+                    <html:radio property="split" styleId="split1" value="all" onclick="sheet.disabled=true" />
+                    <label for="split1"><bean:message key="label.conversion.excel.allsheets"/></label>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <input type="radio" name="split" id="split2" value="split" onclick="sheet_name.disabled=false"/><label for="split2"><bean:message key="label.conversion.excel.sheetname"/></label>
+                    <html:radio property="split"  styleId="split2" value="split" onclick="sheet.disabled=false"/>
+                    <label for="split2"><bean:message key="label.conversion.excel.sheetname"/></label>
                     <html:text property="sheet" onfocus="split[1].checked=true"/>
                 </td>
             </tr>
                 <tr>
-                  <td>&nbsp;</td>
+                  <td>
+                    <html:checkbox name="ExcelConversionForm" property="showConversionLog" styleId ="chkConversion" />
+                    <label for="chkConversion"><bean:message key="label.conversion.excel.showConversionLog"/></label>
+                  </td>
                 </tr>
                 <tr>
                   <td align="center">
@@ -66,13 +71,17 @@
                     </html:submit>
                   </td>
                 </tr>
-                <tr>
-                  <td>&nbsp;</td>
-                </tr>
-                <tr>
-                    <td><bean:message key="label.conversion.excel.warning"/>
-                    </td>
-                </tr>
+                <logic:notEmpty name="ExcelConversionForm" property="conversionLog">
+                    <tr>
+                      <td><bean:write name="ExcelConversionForm" property="conversionLog" filter="false"/></td>
+                    </tr>
+                </logic:notEmpty>
+                <logic:empty name="ExcelConversionForm" property="conversionLog">
+                    <tr>
+                        <td><bean:message key="label.conversion.excel.warning"/>
+                        </td>
+                    </tr>
+                </logic:empty>
         </table>
       <!--/fieldset-->
     </html:form>

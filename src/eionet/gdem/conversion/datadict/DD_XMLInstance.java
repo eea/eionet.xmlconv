@@ -56,8 +56,9 @@ public class DD_XMLInstance {
     private String currentRowName;
     private String currentRowAttrs;
     private String encoding;
+    private String instanceUrl;
 
-    public DD_XMLInstance() {
+    public DD_XMLInstance(String instanceUrl) {
         this.tables = new ArrayList<DDXmlElement>();
         this.row_attrs = new HashMap<String, DDXmlElement>();
         this.elements = new HashMap<String, List<DDXmlElement>>();
@@ -65,7 +66,7 @@ public class DD_XMLInstance {
         this.leads = new HashMap<String, String>();
         this.elemDefs = new HashMap<String, Map<String, DDElement>>();
         this.encoding = DEFAULT_ENCODING;
-
+        this.instanceUrl = instanceUrl;
         this.lineTerminator = File.separator.equals("/") ? "\r\n" : "\n";
     }
 
@@ -92,8 +93,9 @@ public class DD_XMLInstance {
      * inserts row attributes into Hashtable, where keys are table names
      */
     public void addRowAttributes(String tblName, String rowName, String attributes) {
-        if (tblName == null)
+        if (tblName == null) {
             return;
+        }
         DDXmlElement attribute = new DDXmlElement(rowName, null, attributes);
 
         row_attrs.put(tblName, attribute);
@@ -104,8 +106,9 @@ public class DD_XMLInstance {
      * inserts element names, localNames and attributes into Hashtable, where keys are table names
      */
     public void addElement(String tblName, String name, String localName, String attributes) {
-        if (tblName == null)
+        if (tblName == null) {
             return;
+        }
         DDXmlElement element = new DDXmlElement(name, localName, attributes);
         List<DDXmlElement> tblElements = null;
 
@@ -243,14 +246,16 @@ public class DD_XMLInstance {
 
     private void startRootElement() throws IOException {
         String root_attributes = getRootTagAttributes();
-        if (root_attributes == null)
+        if (root_attributes == null) {
             root_attributes = "";
+        }
         String rootTagOut = getRootTagName();
 
-        if (root_attributes.indexOf("xmlns:xsi") > -1)
+        if (root_attributes.indexOf("xmlns:xsi") > -1) {
             rootTagOut += root_attributes;
-        else
+        } else {
             rootTagOut += namespaces.toString() + root_attributes;
+        }
         writer.write("<" + rootTagOut + ">");
         writer.write(lineTerminator);
     }
@@ -261,20 +266,22 @@ public class DD_XMLInstance {
 
     protected String escape(String s) {
 
-        if (s == null)
+        if (s == null) {
             return null;
+        }
 
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
-            if (c == '<')
+            if (c == '<') {
                 buf.append("&lt;");
-            else if (c == '>')
+            } else if (c == '>') {
                 buf.append("&gt;");
-            else if (c == '&')
+            } else if (c == '&') {
                 buf.append("&amp;");
-            else
+            } else {
                 buf.append(c);
+            }
         }
 
         return buf.toString();
@@ -286,9 +293,10 @@ public class DD_XMLInstance {
             setTypeTable();
         }
 
-        String lead = (String) leads.get(leadName);
-        if (lead == null)
+        String lead = leads.get(leadName);
+        if (lead == null) {
             lead = "";
+        }
 
         return lead;
     }
@@ -314,5 +322,19 @@ public class DD_XMLInstance {
 
     public String getType() {
         return type;
+    }
+
+    /**
+     * @return the instanceUrl
+     */
+    public String getInstanceUrl() {
+        return instanceUrl;
+    }
+
+    /**
+     * @param instanceUrl the instanceUrl to set
+     */
+    public void setInstanceUrl(String instanceUrl) {
+        this.instanceUrl = instanceUrl;
     }
 }

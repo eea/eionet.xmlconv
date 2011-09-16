@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.IOUtils;
+
 import eionet.gdem.conversion.SourceReaderIF;
 
 public class OpenDocumentUtils {
@@ -34,9 +36,10 @@ public class OpenDocumentUtils {
     public static SourceReaderIF getSpreadhseetReader() {
         return new OdsReader();
     }
-
-    /*
-     * returns true, if inputstream is zip file
+    /**
+     * Returns true, if inputstream is zip file
+     * @param input
+     * @return
      */
     public static boolean isSpreadsheetFile(InputStream input) {
 
@@ -54,12 +57,7 @@ public class OpenDocumentUtils {
         } catch (IOException ioe) {
             return false;
         } finally {
-            try {
-                // and finally we close stream
-                zipStream.close();
-            } catch (IOException ioe) {
-                // intentionally left blank
-            }
+            IOUtils.closeQuietly(zipStream);
         }
         return false;
 

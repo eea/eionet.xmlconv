@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,7 +36,10 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.UUID;
 import java.util.Vector;
+
+import org.apache.commons.io.IOUtils;
 
 import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
@@ -45,7 +49,7 @@ import eionet.gdem.services.db.dao.IHostDao;
 /**
  * Several commmone class for reading files from url Is able to read the host credentials from database and pass the basic auth to
  * remote server for files with limited access
- * 
+ *
  * NB! Always call close() method in finally block, otherwise the InputStream stays open
  */
 public class InputFile {
@@ -65,7 +69,7 @@ public class InputFile {
 
     /**
      * Initializes InputUrl object and sets the URI from str_url
-     * 
+     *
      * @param str_url
      *            - the URL of source file
      * @throws IOException
@@ -81,8 +85,10 @@ public class InputFile {
         setURL(str_url);
     }
 
-    /*
+    /**
      * get source file from url as InputStream user basic auth, if we know the credentials
+     * @return
+     * @throws IOException
      */
     public InputStream getSrcInputStream() throws IOException {
         fillInputStream();
@@ -90,36 +96,32 @@ public class InputFile {
     }
 
     /**
-     * save the InputFile to the specified text file
+     * save the InputFile to the specified text file with default extension
      */
     public String saveSrcFile() throws IOException {
+        return saveSrcFile("xml");
+    }
+    /**
+     * save the InputFile to the specified text file with given extension
+     * @param extension
+     * @return
+     * @throws IOException
+     */
+    public String saveSrcFile(String extension) throws IOException {
 
         fillInputStream();
 
-        FileOutputStream fos = null;
-        String fileName = null;
-        String tmpFileName = Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + ".xml";
+        OutputStream outputStream = null;
+        String fileName = Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + "-" + UUID.randomUUID() + "." + extension;
+        File file = new File(fileName);
 
         try {
-            File file = new File(tmpFileName);
-            fos = new FileOutputStream(file);
+            outputStream = new FileOutputStream(file);
+            IOUtils.copy(is, outputStream);
 
-            int bufLen = 0;
-            byte[] buf = new byte[1024];
-
-            while ((bufLen = is.read(buf)) != -1)
-                fos.write(buf, 0, bufLen);
-
-            fileName = tmpFileName;
         } finally {
             close();
-            if (fos != null) {
-                try {
-                    fos.flush();
-                    fos.close();
-                } catch (Exception e) {
-                }
-            }
+            IOUtils.closeQuietly(outputStream);
         }
 
         return fileName;
@@ -128,7 +130,7 @@ public class InputFile {
 
     /**
      * closes inputstream of source file
-     * 
+     *
      */
     public void close() {
         try {
@@ -144,7 +146,7 @@ public class InputFile {
 
     /**
      * Sets the authentication ticket for the source file
-     * 
+     *
      * @param _ticket
      */
     public void setAuthentication(String _ticket) {
@@ -153,7 +155,7 @@ public class InputFile {
 
     /**
      * Sets the boolean to use authentication ticket for grabbing the source file or not. true - use ticket
-     * 
+     *
      * @param _ticket
      */
     public void setTrustedMode(boolean mode) {
@@ -179,6 +181,7 @@ public class InputFile {
     /**
      * Return source file URL as a String
      */
+    @Override
     public String toString() {
         return (url == null) ? null : url.toString();
     }
@@ -202,7 +205,7 @@ public class InputFile {
     /**
      * Exscracts CDR file info from URL and returns it as a map of paramters If the source file is a file from CDR then the Map
      * contains the following parameters: envelopeurl, envelopepath, instance, filename
-     * 
+     *
      * @return
      */
     public Map<String, String> getCdrParams() {
@@ -214,7 +217,7 @@ public class InputFile {
         }
         if (getHostName() != null && getFolderName() != null && getFileName() != null) {
             strInstance =
-                    getHostName().concat(getFolderName()).concat((getFolderName().endsWith("/") ? "" : "/")).concat(getFileName());
+                getHostName().concat(getFolderName()).concat((getFolderName().endsWith("/") ? "" : "/")).concat(getFileName());
         }
         h.put("filename", getFileName());
         h.put("envelopeurl", strEnvelopeUrl);
@@ -230,7 +233,7 @@ public class InputFile {
 
     /**
      * Get the authentication ticket for the source file, if available
-     * 
+     *
      * @param _ticket
      */
     public String getAuthentication() {
@@ -254,8 +257,9 @@ public class InputFile {
 
             Vector v = hostDao.getHosts(host);
 
-            if (v == null)
+            if (v == null) {
                 return;
+            }
             if (v.size() > 0) {
                 Hashtable h = (Hashtable) v.get(0);
                 String user = (String) h.get("user_name");
@@ -272,7 +276,7 @@ public class InputFile {
 
     /**
      * Opens URLConnection and reads the source into InputStream
-     * 
+     *
      * @throws IOException
      */
     private void fillInputStream() throws IOException {
@@ -293,7 +297,7 @@ public class InputFile {
 
     /**
      * Stores the URL
-     * 
+     *
      * @param str_url
      * @throws MalformedURLException
      */
@@ -335,11 +339,13 @@ public class InputFile {
 
         String fileName = null;
         String folderName = null;
-        if (Utils.isNullStr(str_uri))
+        if (Utils.isNullStr(str_uri)) {
             return;
+        }
 
-        if (str_uri.endsWith("/"))
+        if (str_uri.endsWith("/")) {
             str_uri = str_uri.substring(0, str_uri.length() - 1);
+        }
 
         int lastSlash = str_uri.lastIndexOf("/");
 
@@ -363,15 +369,17 @@ public class InputFile {
     private void findFileNameNoExtension(String strFileName) {
 
         String name = null;
-        if (Utils.isNullStr(strFileName))
+        if (Utils.isNullStr(strFileName)) {
             return;
+        }
 
         int lastDot = strFileName.lastIndexOf(".");
 
-        if (lastDot > -1)
+        if (lastDot > -1) {
             name = strFileName.substring(0, lastDot);
-        else
+        } else {
             name = strFileName;
+        }
 
         this.strFileNameNoExtension = name;
     }

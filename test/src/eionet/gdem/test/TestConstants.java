@@ -21,6 +21,7 @@ public class TestConstants {
     public static final String SEED_RIVERS_XLS = "seed-rivers.xls";
     public static final String SEED_DATES_XLS = "seed-dates.xls";
     public static final String SEED_MULTIVALUES_XLS = "seed-multivalues.xls";
+    public static final String SEED_VALIDATION_WARNINGS_XLS = "seed-validation-warnings.xls";
     public static final String SEED_MULTIVALUES_XLSX = "seed-multivalues07.xlsx";
 
     public static final String SEED_MULTIVALUES_ODS = "seed-multivalues.ods";

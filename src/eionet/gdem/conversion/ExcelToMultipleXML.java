@@ -43,6 +43,7 @@ import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConv
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.converters.XMLConverter;
+import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.DCMDaoFactory;
 import eionet.gdem.services.db.dao.ISchemaDao;
@@ -496,100 +497,6 @@ public class ExcelToMultipleXML {
 
         in.close();
         out.close();
-    }
-
-    /**
-     * The DTO structure that keeps conversion result from Excel to XML.
-     *
-     * @author Vadim Gerassimov
-     *
-     */
-    public static class ConversionResultDto {
-
-        /**
-         * Value: 0 Indicates that conversion went OK.
-         */
-        public static final String STATUS_OK = "0";
-
-        /**
-         * Value: 1 Indicates validation errors (not enough some data)
-         */
-        public static final String STATUS_ERR_VALIDATION = "1";
-
-        /**
-         * Value: 2 Indicates that some unpredictable system error occurred.
-         */
-        public static final String STATUS_ERR_SYSTEM = "2";
-
-        /**
-         * Value 3: Indicates that the schema by URL and version was not found.
-         */
-        public static final String STATUS_ERR_SCHEMA_NOT_FOUND = "3";
-
-        /**
-         * Conversion status code. See Dto public constants.
-         */
-        private String statusCode;
-
-        /**
-         * Status description. In case of errors - explained error information
-         */
-        private String statusDescription;
-
-        /**
-         * Converted XML files according to style sheets. Map key is file name, map value is file content.
-         */
-        private Map<String, String> convertedXmls;
-
-        public ConversionResultDto() {
-            super();
-        }
-
-        /**
-         * @return the statusCode
-         */
-        public String getStatusCode() {
-            return statusCode;
-        }
-
-        /**
-         * @param statusCode
-         *            the statusCode to set
-         */
-        public void setStatusCode(String statusCode) {
-            this.statusCode = statusCode;
-        }
-
-        /**
-         * @return the statusDescription
-         */
-        public String getStatusDescription() {
-            return statusDescription;
-        }
-
-        /**
-         * @param statusDescription
-         *            the statusDescription to set
-         */
-        public void setStatusDescription(String statusDescription) {
-            this.statusDescription = statusDescription;
-        }
-
-        /**
-         * @return the convertedXmls
-         */
-        public Map<String, String> getConvertedXmls() {
-            return convertedXmls;
-        }
-
-        /**
-         * @param convertedXmls
-         *            the convertedXmls to set
-         */
-        public void setConvertedXmls(Map<String, String> convertedXmls) {
-            this.convertedXmls = convertedXmls;
-        }
-
     }
 
     public static void main(String[] args) throws Exception {

@@ -51,11 +51,12 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 
@@ -66,7 +67,7 @@ public class Utils {
 
     private static Map<Character, String> xmlEscapes = null;
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    private static final Logger LOGGER = Logger.getLogger(Utils.class);
 
     /**
      * saving an URL stream to the specified text file
@@ -88,8 +89,9 @@ public class Utils {
             int bufLen = 0;
             byte[] buf = new byte[1024];
 
-            while ((bufLen = is.read(buf)) != -1)
+            while ((bufLen = is.read(buf)) != -1) {
                 fos.write(buf, 0, bufLen);
+            }
 
             fileName = tmpFileName;
         } finally {
@@ -118,7 +120,7 @@ public class Utils {
 
     /**
      * Stores a String in a text file
-     * 
+     *
      * @param String
      *            fileName:
      * @param String
@@ -128,11 +130,12 @@ public class Utils {
      */
     public static String saveStrToFile(String fileName, String str, String extension) throws IOException {
 
-        if (fileName == null)
+        if (fileName == null) {
             fileName = Properties.tmpFolder + "gdem_" + System.currentTimeMillis() + "." + extension;
-        else {
-            if (extension != null)
+        } else {
+            if (extension != null) {
                 fileName = fileName + "." + extension;
+            }
         }
 
         FileWriter fos = new FileWriter(new File(fileName));
@@ -147,70 +150,84 @@ public class Utils {
         BufferedReader fis = new BufferedReader(new FileReader(fileName));
         StringBuffer s = new StringBuffer();
         String line = null;
-        while ((line = fis.readLine()) != null)
+        while ((line = fis.readLine()) != null) {
             s.append(line + "\n");
+        }
 
         fis.close();
         return s.toString();
     }
 
-    public static void deleteFile(String fName) {
-        File f = new File(fName);
-        if (f.exists())
-            f.delete();
-
+    public static void deleteFile(String fileName) {
+        deleteFile(new File(fileName));
     }
-
+    public static void deleteFile(File file) {
+        if (file != null && file.exists() && file.isFile()) {
+            try {
+                file.delete();
+            } catch (SecurityException e) {
+                LOGGER.error("Security exception when trying to delete " + file, e);
+            } catch (RuntimeException e) {
+                LOGGER.error("Unexpected RuntimeException when trying to delete " + file, e);
+            }
+        }
+    }
     static void log(Object msg) {
         Properties.logger.info(msg);
     }
 
     public static boolean isNullStr(Object o) {
-        if (o == null || !(o instanceof String))
+        if (o == null || !(o instanceof String)) {
             return true;
+        }
 
         return isNullStr((String) o);
     }
 
     public static boolean isNullStr(String s) {
-        if (s == null || s.trim().equals(""))
+        if (s == null || s.trim().equals("")) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     public static boolean isNullVector(Vector v) {
-        if (v == null)
+        if (v == null) {
             return true;
-        else if (v.size() == 0)
+        } else if (v.size() == 0) {
             return true;
+        }
 
         return false;
     }
 
     public static boolean isNullList(List l) {
-        if (l == null)
+        if (l == null) {
             return true;
-        else if (l.size() == 0)
+        } else if (l.size() == 0) {
             return true;
+        }
 
         return false;
     }
 
     public static boolean isNullHashtable(Hashtable h) {
-        if (h == null)
+        if (h == null) {
             return true;
-        else if (h.isEmpty())
+        } else if (h.isEmpty()) {
             return true;
+        }
 
         return false;
     }
 
     public static boolean isNullHashMap(Map h) {
-        if (h == null)
+        if (h == null) {
             return true;
-        else if (h.isEmpty())
+        } else if (h.isEmpty()) {
             return true;
+        }
 
         return false;
     }
@@ -220,7 +237,7 @@ public class Utils {
      */
     public static boolean isURL(String s) {
         try {
-            URL url = new URL(s);
+            new URL(s);
         } catch (MalformedURLException e) {
             return false;
         }
@@ -233,7 +250,7 @@ public class Utils {
      */
     public static boolean isNum(String s) {
         try {
-            int i = Integer.parseInt(s);
+            Integer.parseInt(s);
         } catch (Exception e) {
             return false;
         }
@@ -268,10 +285,11 @@ public class Utils {
         byte[] b_decoded = Base64.decodeBase64(str.getBytes());
         String str_decoded = new String(b_decoded);
         int sep = str_decoded.indexOf(":");
-        if (sep > 0)
+        if (sep > 0) {
             return str_decoded.substring(0, sep);
-        else
+        } else {
             return null;
+        }
     }
 
     /**
@@ -281,10 +299,11 @@ public class Utils {
         byte[] b_decoded = Base64.decodeBase64(str.getBytes());
         String str_decoded = new String(b_decoded);
         int sep = str_decoded.indexOf(":");
-        if (sep > 0)
+        if (sep > 0) {
             return str_decoded.substring(sep + 1);
-        else
+        } else {
             return null;
+        }
     }
 
     /**
@@ -305,10 +324,11 @@ public class Utils {
 
         for (int i = 0; i < in.length(); i++) {
             char c = in.charAt(i);
-            if (c == '\'')
+            if (c == '\'') {
                 ret.append("''");
-            else
+            } else {
                 ret.append(c);
+            }
         }
         ret.append('\'');
 
@@ -317,22 +337,26 @@ public class Utils {
 
     public static String escapeXML(String text) {
 
-        if (text == null)
+        if (text == null) {
             return "";
-        if (text.length() == 0)
+        }
+        if (text.length() == 0) {
             return text;
+        }
 
         StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < text.length(); i++)
+        for (int i = 0; i < text.length(); i++) {
             buf.append(escapeXML(i, text));
+        }
 
         return buf.toString();
     }
 
     public static String escapeXML(int pos, String text) {
 
-        if (xmlEscapes == null)
+        if (xmlEscapes == null) {
             setXmlEscapes();
+        }
         Character c = new Character(text.charAt(pos));
 
         for (String esc : xmlEscapes.values()) {
@@ -361,7 +385,7 @@ public class Utils {
             }
         }
 
-        String esc = (String) xmlEscapes.get(c);
+        String esc = xmlEscapes.get(c);
         if (esc != null) {
             return esc;
         } else {
@@ -396,14 +420,15 @@ public class Utils {
             int bufLen = 0;
             byte[] buf = new byte[1024];
 
-            while ((bufLen = fis.read(buf)) != -1)
+            while ((bufLen = fis.read(buf)) != -1) {
                 baos.write(buf, 0, bufLen);
+            }
 
         } catch (FileNotFoundException fne) {
-            _logger.error("File not found " + fileName, fne);
+            LOGGER.error("File not found " + fileName, fne);
             throw new GDEMException("File not found " + fileName, fne);
         } catch (Exception e) {
-            _logger.error("", e);
+            LOGGER.error("", e);
             throw new GDEMException("Exception " + e.toString(), e);
         } finally {
             if (fis != null) {
@@ -422,31 +447,35 @@ public class Utils {
         Iterator<String> keysIterator = hash.keySet().iterator();
         while (keysIterator.hasNext()) {
             String key = keysIterator.next();
-            if (key.equalsIgnoreCase(val))
+            if (key.equalsIgnoreCase(val)) {
                 return true;
+            }
         }
         return false;
     }
 
     /**
      * checks if list contains any String values or not
-     * 
+     *
      * @param list
      *            The list that will be investigated
-     * 
+     *
      * @return value true, if the list does not contain any String values, otherwise true
      */
     public static boolean isEmptyList(List<String> list) {
         boolean ret = true;
-        if (list == null)
+        if (list == null) {
             return ret;
-        if (list.size() == 0)
+        }
+        if (list.size() == 0) {
             return ret;
+        }
 
         for (int i = 0; i < list.size(); i++) {
             String str_value = list.get(i);
-            if (!Utils.isNullStr(str_value))
+            if (!Utils.isNullStr(str_value)) {
                 return false;
+            }
         }
 
         return ret;
@@ -464,7 +493,7 @@ public class Utils {
     }
 
     /**
-     * 
+     *
      * @param in
      * @param out
      * @throws Exception
@@ -482,10 +511,12 @@ public class Utils {
                 fos.write(buf, 0, i);
             }
         } finally {
-            if (fis != null)
+            if (fis != null) {
                 fis.close();
-            if (fos != null)
+            }
+            if (fos != null) {
                 fos.close();
+            }
         }
     }
 
@@ -553,7 +584,7 @@ public class Utils {
     }
 
     /**
-     * 
+     *
      * @param date
      * @return
      */
@@ -562,7 +593,7 @@ public class Utils {
     }
 
     /**
-     * 
+     *
      * @param date
      * @return
      */
@@ -571,28 +602,30 @@ public class Utils {
     }
 
     /**
-     * 
+     *
      * @param date
      * @param pattern
      * @return
      */
     public static String getFormat(Date date, String pattern) {
 
-        if (date == null)
+        if (date == null) {
             return null;
+        }
 
         SimpleDateFormat formatter = null;
-        if (pattern == null)
+        if (pattern == null) {
             formatter = new SimpleDateFormat();
-        else
+        } else {
             formatter = new SimpleDateFormat(pattern);
+        }
 
         return formatter.format(date);
     }
 
     /**
      * parses String to Date
-     * 
+     *
      * @param String
      *            date
      * @param pattern
@@ -617,7 +650,7 @@ public class Utils {
 
     /**
      * formats timestamp (millis from 1 Jan 1970) into string using pattern
-     * 
+     *
      * @param String
      *            timestamp
      * @param pattern
@@ -626,8 +659,9 @@ public class Utils {
      */
     public static String formatTimestampDate(String timestamp) {
 
-        if (timestamp == null)
+        if (timestamp == null) {
             return null;
+        }
 
         long l = 0;
         try {
@@ -642,7 +676,7 @@ public class Utils {
 
     /**
      * Generates checksum (MD5) value from filepath
-     * 
+     *
      * @param filename
      * @return
      * @throws IOException
@@ -655,8 +689,9 @@ public class Utils {
             return getChecksumValue(in);
         } finally {
             try {
-                if (in != null)
+                if (in != null) {
                     in.close();
+                }
             } catch (Exception e) {
             }
             ;
@@ -666,7 +701,7 @@ public class Utils {
 
     /**
      * Generates checksum (MD5) value from string value
-     * 
+     *
      * @param src
      * @return
      * @throws IOException
@@ -679,8 +714,9 @@ public class Utils {
             return getChecksumValue(in);
         } finally {
             try {
-                if (in != null)
+                if (in != null) {
                     in.close();
+                }
             } catch (Exception e) {
             }
             ;
@@ -689,7 +725,7 @@ public class Utils {
 
     /**
      * Greneretes checksum value from given inputsource
-     * 
+     *
      * @param is
      * @return
      * @throws NoSuchAlgorithmException
@@ -716,14 +752,16 @@ public class Utils {
 
     public static String stringArray2String(String[] arr, String sep) {
 
-        if (arr == null || arr.length == 0)
+        if (arr == null || arr.length == 0) {
             return null;
+        }
         StringBuffer buf = new StringBuffer();
 
         for (int i = 0; i < arr.length; i++) {
             buf.append(arr[i]);
-            if (i < arr.length - 1)
+            if (i < arr.length - 1) {
                 buf.append(sep);
+            }
         }
 
         return buf.toString();
@@ -732,7 +770,7 @@ public class Utils {
     /**
      * Method constructs a URI from specified file and folder path. If the file or folder does not exists, then it return null
      * value.
-     * 
+     *
      * @param strPath
      *            Folder path. eg: /usr/prj/xmlconv/xmlfiles
      * @param isDirectory
@@ -752,7 +790,7 @@ public class Utils {
 
     /**
      * generates unique temporary file name with full path
-     * 
+     *
      * @param fileName
      * @return
      */
@@ -761,16 +799,17 @@ public class Utils {
         buf.append(Properties.tmpFolder);
         buf.append("xmlconv_");
         buf.append(System.currentTimeMillis());
-        if (fileName != null)
+        if (fileName != null) {
             buf.append(fileName);
-        else
+        } else {
             buf.append(".tmp");
+        }
         return buf.toString();
     }
 
     /**
      * generates unique temporary folder name and creates the directory
-     * 
+     *
      * @return fill path
      */
     public static String createUniqueTmpFolder() {
@@ -795,7 +834,7 @@ public class Utils {
 
     /**
      * Generates foldername
-     * 
+     *
      * @param folderName
      *            , n >0, if folder with the same name already exists in the tmp folder ex: getGeneratedFolderName( test, 1 )=
      *            test_1 getGeneratedFolderName( test_1, 2 )= test_2
@@ -821,7 +860,7 @@ public class Utils {
 
     /**
      * deletes the folder, where specified file locates
-     * 
+     *
      * @param filePath
      */
     public static void deleteParentFolder(String filePath) {
@@ -834,15 +873,16 @@ public class Utils {
         File oTmpFolder = new File(Properties.tmpFolder);
 
         // if parent folder is system tmp folder, then delete only the specifieds file
-        if (oFolder.equals(oTmpFolder))
+        if (oFolder.equals(oTmpFolder)) {
             deleteFile(filePath);
-        else
+        } else {
             deleteFolder(folder);
+        }
     }
 
     /**
      * Find the first XML file stored in specified folder
-     * 
+     *
      * @param folder
      *            folder path
      * @return
@@ -853,7 +893,7 @@ public class Utils {
 
     /**
      * Find the first XML file stored in specified folder
-     * 
+     *
      * @param folder
      *            File object
      * @return
@@ -879,8 +919,9 @@ public class Utils {
         for (int i = 0; files != null && i < files.length; i++) {
             if (files[i].isDirectory()) {
                 String xmlFile = findXMLFromFolder(files[i].getAbsolutePath());
-                if (xmlFile != null)
+                if (xmlFile != null) {
                     return xmlFile;
+                }
             }
         }
 
@@ -889,7 +930,7 @@ public class Utils {
     }
 
     /**
-     * 
+     *
      * @param s
      * @return
      */
@@ -898,7 +939,7 @@ public class Utils {
     }
 
     /**
-     * 
+     *
      * @param src
      * @param algorithm
      * @return
@@ -911,7 +952,7 @@ public class Utils {
     }
 
     /**
-     * 
+     *
      * @param srcBytes
      * @param algorithm
      * @return
@@ -934,8 +975,9 @@ public class Utils {
             Byte byteWrapper = new Byte(dstBytes[i]);
             int k = byteWrapper.intValue();
             String s = Integer.toHexString(k);
-            if (s.length() == 1)
+            if (s.length() == 1) {
                 s = "0" + s;
+            }
             buf.append(s.substring(s.length() - 2));
         }
 
@@ -943,7 +985,7 @@ public class Utils {
     }
 
     /**
-     * 
+     *
      * @param srcBytes
      * @param algorithm
      * @return
@@ -979,8 +1021,9 @@ public class Utils {
             Byte byteWrapper = new Byte(dstBytes[i]);
             int k = byteWrapper.intValue();
             String s = Integer.toHexString(k);
-            if (s.length() == 1)
+            if (s.length() == 1) {
                 s = "0" + s;
+            }
             buf.append(s.substring(s.length() - 2));
         }
 
@@ -1009,7 +1052,7 @@ public class Utils {
     /**
      * Utility method for checking whether the resource exists. The resource can be web or file system resource that matches the URI
      * with "http", "https" or "file" schemes Returns false, if the resource does not exist
-     * 
+     *
      * @param strUri
      * @return
      */
@@ -1028,5 +1071,19 @@ public class Utils {
             return false;
         }
         return false;
+    }
+    /**
+     * Escape HTML characters and replace new lines with HTML brake tag.
+     *
+     * @param s
+     * @return escaped string
+     */
+    public static String escapeHtml(String s) {
+
+        if (!StringUtils.isBlank(s)) {
+            s = StringEscapeUtils.escapeHtml4(s);
+            s = s.replaceAll("\n", "<br/>");
+        }
+        return s;
     }
 }

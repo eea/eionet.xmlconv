@@ -23,6 +23,7 @@ import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
+import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
@@ -34,6 +35,7 @@ import eionet.gdem.utils.Utils;
 public class Excel2XmlConversionAction extends Action {
     private static LoggerIF _logger = GDEMServices.getLogger();
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) throws IOException {
         ActionErrors errors = new ActionErrors();
@@ -44,9 +46,8 @@ public class Excel2XmlConversionAction extends Action {
         String url = processFormStr((String) cForm.get("url"));
         String split = processFormStr((String) cForm.get("split"));
         String sheet = processFormStr((String) cForm.get("sheet"));
+        Boolean showConversionLog = processFormBoolean((Boolean) cForm.get("showConversionLog"));
 
-        // create custom HttpServletResponseWrapper
-        HttpMethodResponseWrapper methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
         // get request parameters
         try {
             // parse request parameters
@@ -60,37 +61,51 @@ public class Excel2XmlConversionAction extends Action {
                 httpServletRequest.getSession().setAttribute("dcm.errors", errors);
                 return actionMapping.findForward("error");
             }
-            if (split.equals("split") && Utils.isNullStr(sheet)) {
+            if (split.equals("split") && Utils.isNullStr(sheet) && !showConversionLog) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.conversion.insertSheet"));
                 httpServletRequest.getSession().setAttribute("dcm.errors", errors);
                 return actionMapping.findForward("error");
             }
-
-            // call ConversionService
             ConversionServiceIF cs = new ConversionService();
-            // set up the servlet outputstream form converter
-            cs.setHttpResponse(methodResponse);
             cs.setTicket(ticket);
+            ConversionResultDto conversionResult = null;
             // execute conversion
             if (split.equals("split")) {
-                cs.convertDD_XML_split(url, sheet);
+                conversionResult = cs.convertDD_XML(url, true, sheet);
             } else {
-                cs.convertDD_XML(url);
+                conversionResult = cs.convertDD_XML(url, false, null);
+            }
+            String conversionLog  = conversionResult.getConversionLogAsHtml();
+            if (!Utils.isNullStr(conversionLog)){
+                cForm.set("conversionLog", conversionLog);
+            }
+            else{
+                cForm.set("conversionLog", "Conversion log not found!");
             }
             // flush the content
-            methodResponse.flush();
+            if (!showConversionLog &&
+                    (ConversionResultDto.STATUS_OK.equals(conversionResult.getStatusCode()) ||
+                            ConversionResultDto.STATUS_ERR_VALIDATION.equals(conversionResult.getStatusCode()))) {
+                if (conversionResult.getConvertedXmls().size()>0) {
+                    String firstXml = conversionResult.getConvertedXmls().keySet().iterator().next();
+                    String resultFile = conversionResult.getConvertedXmls().get(firstXml);
+                    // create custom HttpServletResponseWrapper
+                    HttpMethodResponseWrapper methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
+                    methodResponse.setContentType("text/xml");
+                    methodResponse.setContentDisposition(firstXml);
+                    methodResponse.getOutputStream().write(resultFile.getBytes("UTF-8"));
+                    methodResponse.flush();
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
             _logger.error("Error testing conversion", e);
             HttpSession sess = httpServletRequest.getSession(true);
-            // GDEMException err= new GDEMException(errMsg);
-
             sess.setAttribute("gdem.exception", new GDEMException("Error testing conversion: " + e.getMessage()));
-
             httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/" + Names.ERROR_JSP);
+            return actionMapping.findForward(null);
         }
-        // Do nothing, then response is already sent.
-        return actionMapping.findForward(null);
+        return actionMapping.findForward("success");
     }
 
     private String processFormStr(String arg) {
@@ -101,5 +116,11 @@ public class Excel2XmlConversionAction extends Action {
             }
         }
         return result;
+    }
+    private Boolean processFormBoolean(Boolean arg) {
+        if (arg == null) {
+            arg = false;
+        }
+        return arg;
     }
 }

@@ -24,12 +24,14 @@
 package eionet.gdem.conversion.excel.reader;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -46,8 +48,11 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.DDXMLConverter;
 import eionet.gdem.conversion.SourceReaderIF;
+import eionet.gdem.conversion.SourceReaderLogger;
+import eionet.gdem.conversion.SourceReaderLogger.ReaderTypeEnum;
 import eionet.gdem.conversion.datadict.DDElement;
 import eionet.gdem.conversion.datadict.DD_XMLInstance;
+import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -57,19 +62,42 @@ import eionet.gdem.utils.Utils;
  */
 
 public class ExcelReader implements SourceReaderIF {
+    /**
+     * Excel eorkbook to be converted.
+     */
     private Workbook wb = null;
+    /**
+     * Excel sheet name where Data Dictionary writes XML Schema information.
+     */
     private static final String SCHEMA_SHEET_NAME = "DO_NOT_DELETE_THIS_SHEET";
+    /**
+     * Default date format pattern.
+     */
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+    /**
+     * Date formatter
+     */
     private static DataFormatter formatter = new DataFormatter(new Locale("en", "US"));
-
+    /**
+     * Boolean indicates if Excel file is in 2007 version format or not
+     */
     private boolean isExcel2007 = false;
+
+    /**
+     * Logger object for writing conversion log.
+     */
+    private SourceReaderLogger readerLogger;
+    /**
+     * List of Excel sheet names.
+     */
+    private List<String> excelSheetNames = new ArrayList<String>();
 
     public ExcelReader(boolean excel2007) {
         isExcel2007 = excel2007;
     }
 
     @Override
-    public void initReader(InputStream input) throws GDEMException {
+    public void initReader(InputStream input, ConversionResultDto resultObject) throws GDEMException {
         try {
             if (!isExcel2007) {
                 POIFSFileSystem fs = new POIFSFileSystem(input);
@@ -81,6 +109,14 @@ public class ExcelReader implements SourceReaderIF {
         } catch (Exception e) {
             throw new GDEMException("ErrorConversionHandler - couldn't open Excel file: " + e.toString());
         }
+        readerLogger = new SourceReaderLogger(resultObject, ReaderTypeEnum.EXCEL);
+        readerLogger.logStartWorkbook();
+        excelSheetNames = getSheetNames();
+        readerLogger.logNumberOfSheets(wb.getNumberOfSheets(), StringUtils.join(excelSheetNames, ", "));
+    }
+    @Override
+    public void closeReader(){
+        readerLogger.logEndWorkbook();
     }
 
     @Override
@@ -151,23 +187,29 @@ public class ExcelReader implements SourceReaderIF {
 
     @Override
     public void writeContentToInstance(DD_XMLInstance instance) throws Exception {
+
         List<DDXmlElement> tables = instance.getTables();
-        if (tables == null) {
-            throw new GDEMException("could not find tables from DD instance file");
-        }
-        if (wb == null) {
+        if (tables == null || wb == null) {
+            readerLogger.logNoDefinitionsForTables();
             return;
         }
 
         for (int i = 0; i < tables.size(); i++) {
             DDXmlElement table = tables.get(i);
-            String tblLocalname = table.getLocalName();
+            String tblLocalName = table.getLocalName();
             String tblName = table.getName();
             String tblAttrs = table.getAttributes();
 
-            Sheet sheet = getSheet(tblLocalname);
-            Sheet metaSheet = getMetaSheet(tblLocalname);
+            readerLogger.logStartSheet(tblLocalName);
+            readerLogger.logSheetSchema(instance.getInstanceUrl(), tblLocalName);
+            if (!excelSheetNames.contains(tblLocalName)) {
+                readerLogger.logSheetNotFound(tblLocalName);
+            }
+            Sheet sheet = getSheet(tblLocalName);
+            Sheet metaSheet = getMetaSheet(tblLocalName);
+
             if (sheet == null) {
+                readerLogger.logEmptySheet(tblLocalName);
                 continue;
             }
             int firstRow = sheet.getFirstRowNum();
@@ -183,15 +225,17 @@ public class ExcelReader implements SourceReaderIF {
                 metaRow = metaSheet.getRow(firstRow);
                 setColumnMappings(metaRow, elements, false);
             }
+            logColumnMappings(tblLocalName, row, metaRow, elements);
 
             instance.writeTableStart(tblName, tblAttrs);
             instance.setCurRow(tblName);
 
-            Map<String, DDElement> elemDefs = instance.getElemDefs(tblLocalname);
+            Map<String, DDElement> elemDefs = instance.getElemDefs(tblLocalName);
 
             // read data
             // there are no data rows in the Excel file. We create empty table
             firstRow = (firstRow == lastRow) ? lastRow : firstRow + 1;
+            int countRows = 0;
 
             for (int j = firstRow; j <= lastRow; j++) {
                 row = (firstRow == 0) ? null : sheet.getRow(j);
@@ -200,6 +244,7 @@ public class ExcelReader implements SourceReaderIF {
                 if (isEmptyRow(row)) {
                     continue;
                 }
+                countRows++;
 
                 instance.writeRowStart();
                 for (int k = 0; k < elements.size(); k++) {
@@ -236,10 +281,16 @@ public class ExcelReader implements SourceReaderIF {
                 instance.writeRowEnd();
             }
             instance.writeTableEnd(tblName);
+            readerLogger.logNumberOfRows(countRows, tblLocalName);
+            readerLogger.logEndSheet(tblLocalName);
         }
-
     }
 
+    /**
+     * Check if row is empty or not.
+     * @param row MS Excel row.
+     * @return boolean
+     */
     public boolean isEmptyRow(Row row) {
         if (row == null) {
             return true;
@@ -279,18 +330,20 @@ public class ExcelReader implements SourceReaderIF {
         return true;
     }
 
-    /*
-     * method goes through 4 rows and search the best fit of XML Schema. The deault row is 4.
+    /**
+     * Method goes through 4 rows and search the best fit of XML Schema. The deault row is 4.
+     * @param schemaSheet
+     * @return
      */
-    private String findSchemaFromSheet(Sheet schema_sheet) {
+    private String findSchemaFromSheet(Sheet schemaSheet) {
         Row schemaRow = null;
         Cell schemaCell = null;
 
         for (int i = 3; i > -1; i--) {
-            if (schema_sheet.getLastRowNum() < i) {
+            if (schemaSheet.getLastRowNum() < i) {
                 continue;
             }
-            schemaRow = schema_sheet.getRow(i);
+            schemaRow = schemaSheet.getRow(i);
             if (schemaRow == null) {
                 continue;
             }
@@ -306,10 +359,10 @@ public class ExcelReader implements SourceReaderIF {
         }
         return null;
     }
-
-    /*
-     * method goes through rows after XML Schema and finds schemas for Excel sheets (DataDict tables). cell(0) =sheet name; cell(1)=
-     * XML schema
+    /**
+     * Method goes through rows after XML Schema and finds schemas for Excel sheets (DataDict tables). cell(0) =sheet name; cell(1)=XML schema
+     * @param schemaSheet sheet name
+     * @return Map
      */
     private Map<String, String> findSheetSchemas(Sheet schemaSheet) {
 
@@ -353,6 +406,11 @@ public class ExcelReader implements SourceReaderIF {
         return result;
     }
 
+    /**
+     * Get Sheet object by sheet name.
+     * @param name sheet name
+     * @return Sheet
+     */
     private Sheet getSheet(String name) {
         Sheet sheet = wb.getSheet(name.trim());
 
@@ -371,6 +429,26 @@ public class ExcelReader implements SourceReaderIF {
         return null;
     }
 
+    /**
+     * Returns the list of MS Excel sheet names.
+     *
+     * @return
+     */
+    private List<String> getSheetNames() {
+        List<String> list = new ArrayList<String>();
+        for (int i = 0; i < wb.getNumberOfSheets(); i++) {
+            String sheetName = wb.getSheetName(i);
+            list.add(sheetName);
+        }
+        return list;
+    }
+
+    /**
+     * Reads cell value and formats it according to element type defined in XML Schema.
+     * @param cell
+     * @param schemaType
+     * @return
+     */
     protected String cellValueToString(Cell cell, String schemaType) {
         String value = "";
         switch (cell.getCellType()) {
@@ -401,17 +479,24 @@ public class ExcelReader implements SourceReaderIF {
 
         return value.trim();
     }
-
-    /*
+    /**
      * DD can generate additional "-meta" sheets with GIS elements for one DD table. In XML these should be handled as 1 table. This
      * is method for finding these kind of sheets and parsing these in parallel with the main sheet
+     * @param mainSheetName
+     * @return
      */
-    private Sheet getMetaSheet(String main_sheet_name) {
-        return getSheet(main_sheet_name + DDXMLConverter.META_SHEET_NAME);
+    private Sheet getMetaSheet(String mainSheetName) {
+        return getSheet(mainSheetName + DDXMLConverter.META_SHEET_NAME);
     }
 
+    /**
+     * Read column header.
+     *
+     * @param row
+     * @param elements
+     * @param mainTable
+     */
     private void setColumnMappings(Row row, List<DDXmlElement> elements, boolean mainTable) {
-        // read column header
 
         if (row == null || elements == null) {
             return;
@@ -436,13 +521,83 @@ public class ExcelReader implements SourceReaderIF {
 
     }
 
-    private String getCellValue(Row row, Integer col_idx, String schemaType) {
-        Cell cell = (col_idx == null || row == null) ? null : row.getCell(col_idx);
+    /**
+     * Goes through all columns and logs missing and redundant columns into conversion log.
+     * @param sheetName Excel sheet name.
+     * @param row Excel Row object
+     * @param metaRow Excel meta sheet row
+     * @param elements List of XML elements
+     */
+    private void logColumnMappings(String sheetName, Row row, Row metaRow, List<DDXmlElement> elements) {
+
+        int nofColumns = row.getLastCellNum() - row.getFirstCellNum();
+        readerLogger.logNumberOfColumns(nofColumns, sheetName);
+        if (metaRow != null) {
+            int nofMetaColumns = row.getLastCellNum() - row.getFirstCellNum();
+            readerLogger.logNumberOfColumns(nofMetaColumns, sheetName + DDXMLConverter.META_SHEET_NAME);
+        }
+
+        List<String> missingColumns = new ArrayList<String>();
+        List<String> elemNames = new ArrayList<String>();
+        for (DDXmlElement element : elements) {
+            if (element.getColIndex() < 0) {
+                missingColumns.add(element.getLocalName());
+            }
+            elemNames.add(element.getLocalName().toLowerCase());
+        }
+        if(missingColumns.size() > 0){
+            readerLogger.logMissingColumns(StringUtils.join(missingColumns, ", "), sheetName);
+        }
+        List<String> extraColumns = getExtraColumns(row, elemNames);
+        if(extraColumns.size() > 0){
+            readerLogger.logExtraColumns(StringUtils.join(extraColumns, ", "), sheetName);
+        }
+
+        if (metaRow != null) {
+            List<String> extraMetaColumns = getExtraColumns(metaRow, elemNames);
+            if(extraMetaColumns.size() > 0){
+                readerLogger.logExtraColumns(StringUtils.join(extraColumns, ", "), sheetName  + DDXMLConverter.META_SHEET_NAME);
+            }
+        }
+
+    }
+    /**
+     * Find redundant columns from the list of columns
+     * @param row
+     * @param elemNames
+     * @return
+     */
+    private List<String> getExtraColumns(Row row, List<String> elemNames) {
+        List<String> extraColumns = new ArrayList<String>();
+        for (int k = row.getFirstCellNum(); k < row.getLastCellNum(); k++) {
+            Cell cell = row.getCell(k);
+            String colName = cellValueToString(cell, null);
+            colName = colName != null ? colName.trim() : "";
+            if (!Utils.isNullStr(colName) && !elemNames.contains(colName.toLowerCase())) {
+                extraColumns.add(colName);
+            }
+        }
+        return extraColumns;
+    }
+
+    /**
+     * Get cell String value.
+     * @param row
+     * @param colIdx
+     * @param schemaType
+     * @return
+     */
+    private String getCellValue(Row row, Integer colIdx, String schemaType) {
+        Cell cell = (colIdx == null || row == null) ? null : row.getCell(colIdx);
         String data = (cell == null) ? "" : cellValueToString(cell, schemaType);
         return data;
     }
 
-    // if date formatted cell value is not higher than 4 digit number, then it is probably a year
+    /**
+     * If date formatted cell value is not higher than 4 digit number, then it is probably a year.
+     * @param doubleCellValue
+     * @return boolean
+     */
     private boolean isYearValue(double doubleCellValue) {
         return doubleCellValue < 3000 && doubleCellValue > 0;
     }

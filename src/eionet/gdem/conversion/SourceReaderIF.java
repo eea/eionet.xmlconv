@@ -28,6 +28,7 @@ import java.util.Map;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.datadict.DD_XMLInstance;
+import eionet.gdem.dto.ConversionResultDto;
 
 /**
  *
@@ -49,8 +50,9 @@ public interface SourceReaderIF {
      *
      * @param InputStream
      *            input - input Excel file
+     * @param resultObject Object for storing conversin log messages.
      */
-    public void initReader(InputStream input) throws GDEMException;
+    public void initReader(InputStream input, ConversionResultDto resultObject) throws GDEMException;
 
     /**
      * Goes through the source file and writes the data into DD_XMLInstance as xml
@@ -83,5 +85,10 @@ public interface SourceReaderIF {
      * @return boolean - true if has data
      */
     public boolean isEmptySheet(String sheet_name);
+
+    /**
+     * Source reader ended it's job. Do some closing stuff.
+     */
+    public void closeReader();
 
 }

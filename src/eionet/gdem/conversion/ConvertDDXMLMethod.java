@@ -1,23 +1,43 @@
 /*
- * Created on 25.02.2008
+ * The contents of this file are subject to the Mozilla Public
+ * License Version 1.1 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of
+ * the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS
+ * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+ * implied. See the License for the specific language governing
+ * rights and limitations under the License.
+ *
+ * The Original Code is XMLCONV - Conversion and QA Service
+ *
+ * The Initial Owner of the Original Code is European Environment
+ * Agency. Portions created by TripleDev or Zero Technologies are Copyright
+ * (C) European Environment Agency.  All Rights Reserved.
+ *
+ * Contributor(s):
+ *        Enriko Käsper
  */
 package eionet.gdem.conversion;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.util.Vector;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.remote.RemoteServiceMethod;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
+import eionet.gdem.dto.ConversionLogDto;
+import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.utils.InputFile;
-import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -26,140 +46,19 @@ import eionet.gdem.utils.Utils;
 
 public class ConvertDDXMLMethod extends RemoteServiceMethod {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(ConvertDDXMLMethod.class);
 
     /**
      * Converts DataDictionary MS Excel file to XML
      *
      * @param String
-     *            url: URL of the srouce Excel file
+     *            sourceUrl: URL of the srouce Excel file
      * @return Vector result: error_code, xml_url, error_message
+     * @throws UnsupportedEncodingException
      */
-    public Vector convertDD_XML(String sourceURL) throws GDEMException {
-        OutputStream result = null;
-        String cnvFileName = null;
-        ByteArrayInputStream in_stream_tmp = null;
-        InputFile src = null;
-        String str_result = null;
-        ByteArrayOutputStream out_stream_tmp = new ByteArrayOutputStream();
-        Vector v_result = new Vector();
-
-        String outFileName = getTmpFolder() + "gdem_" + System.currentTimeMillis() + ".xml";
-        String error_mess = null;
-
-        try {
-
-            src = new InputFile(sourceURL);
-            src.setAuthentication(getTicket());
-            src.setTrustedMode(isTrustedMode());
-            cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ? DEFAULT_FILE_NAME : src.getFileNameNoExtension();
-
-            if (isHttpRequest()) {
-                try {
-                    HttpMethodResponseWrapper httpResponse = getHttpResponse();
-                    httpResponse.setContentType("text/xml");
-                    httpResponse.setContentDisposition(cnvFileName + ".xml");
-                    result = httpResponse.getOutputStream();
-                } catch (IOException e) {
-                    _logger.error("Error getting response outputstream ", e);
-                    throw new GDEMException("Error getting response outputstream " + e.toString(), e);
-                }
-            }
-            if (result == null) {
-                result = new FileOutputStream(outFileName);
-            }
-
-            // Read inputstream into Bytearrayoutputstream
-            Streams.drain(src.getSrcInputStream(), out_stream_tmp);
-            // Detect the file format
-            DDXMLConverter converter = DDXMLConverter.getConverter(out_stream_tmp);
-
-            if (converter == null) {
-                _logger.error(
-                        "Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.",
-                        null);
-                throw new GDEMException(
-                "Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.");
-            }
-            // create new inputstrema from tmp Bytearrayoutputstream
-            in_stream_tmp = new ByteArrayInputStream(out_stream_tmp.toByteArray());
-
-            converter.setHttpResponse(isHttpRequest());
-            str_result = converter.convertDD_XML(in_stream_tmp, result);
-
-        } catch (MalformedURLException mfe) {
-            _logger.error("Bad URL ", mfe);
-            if (isHttpRequest()) {
-                throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
-            } else {
-                error_mess = "Bad URL : " + mfe.toString();
-            }
-        } catch (IOException ioe) {
-            _logger.error("Error opening URL ", ioe);
-            if (isHttpRequest()) {
-                throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
-            } else {
-                error_mess = "Error opening URL " + ioe.toString();
-            }
-        } catch (Exception e) {
-            _logger.error("", e);
-            if (isHttpRequest()) {
-                throw new GDEMException(e.toString(), e);
-            } else {
-                error_mess = e.toString();
-            }
-        } finally {
-            try {
-                if (src != null)
-                {
-                    src.close();
-                    // if (result!=null) result.close();
-                }
-            } catch (Exception e) {
-                _logger.error("", e);
-            }
-            try {
-                if (in_stream_tmp != null) {
-                    in_stream_tmp.close();
-                }
-            } catch (Exception e) {
-            }
-            try {
-                if (out_stream_tmp != null) {
-                    out_stream_tmp.close();
-                }
-            } catch (Exception e) {
-            }
-
-        }
-
-        if (isHttpRequest()) {
-            return v_result;
-        }
-        // Creates response Vector
-        int result_code = 1;
-        if (!Utils.isNullStr(str_result)) {
-            if (str_result.equals("OK")) {
-                result_code = 0;
-            }
-        }
-        byte[] file = Utils.fileToBytes(outFileName);
-
-        v_result.add(String.valueOf(result_code));
-        if (result_code == 0) {
-            v_result.add(file);
-            v_result.add(cnvFileName + ".xml");
-        } else {
-            v_result.add(error_mess);
-        }
-
-        try {
-            Utils.deleteFile(outFileName);
-        } catch (Exception e) {
-            _logger.error("Couldn't delete the result file", e);
-        }
-
-        return v_result;
+    public ConversionResultDto convertDD_XML(String sourceUrl) throws GDEMException {
+        return convertDD_XML(sourceUrl, false, null);
     }
 
     /**
@@ -169,103 +68,135 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
      *            url: URL of the srouce Excel file
      * @return Vector result: error_code, xml_url, error_message
      */
-    public Vector convertDD_XML_split(String sourceURL, String sheet_param) throws GDEMException {
-        OutputStream result = null;
-        ByteArrayOutputStream out_stream_tmp = new ByteArrayOutputStream();
-        ByteArrayInputStream in_stream_tmp = null;
+    public ConversionResultDto convertDD_XML_split(String sourceUrl, String sheetName) throws GDEMException {
+        return convertDD_XML(sourceUrl, true, sheetName);
+    }
 
-        InputFile src = null;
-        String error_mess = null;
-        String cnvFileName = null;
-        Vector v_result = null;
+    /**
+     * Method that calls converter to do the conversion.
+     * @param sourceUrl
+     * @param split
+     * @param sheetName
+     * @return
+     * @throws GDEMException
+     */
+    private ConversionResultDto convertDD_XML(String sourceUrl, boolean split, String sheetName) throws GDEMException {
+        OutputStream resultStream = null;
+        String sourceFileName = null;
+        File file = null;
+        ConversionResultDto resultObject = null;
+        String errorMessage = null;
 
         try {
+            InputFile sourceFile = getInptFile(sourceUrl);
+            file = new File(sourceFile.saveSrcFile("tmp"));
+            sourceFileName =
+                Utils.isNullStr(sourceFile.getFileNameNoExtension()) ? DEFAULT_FILE_NAME : sourceFile.getFileNameNoExtension();
+            resultStream = getResultOutputStream(sourceFileName);
 
-            src = new InputFile(sourceURL);
-            src.setAuthentication(getTicket());
-            src.setTrustedMode(isTrustedMode());
-
-            cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ? DEFAULT_FILE_NAME : src.getFileNameNoExtension();
-            if (isHttpRequest()) {
-                try {
-                    HttpMethodResponseWrapper httpResponse = getHttpResponse();
-                    httpResponse.setContentType("text/xml");
-                    httpResponse.setContentDisposition(cnvFileName + ".xml");
-                    result = httpResponse.getOutputStream();
-                } catch (IOException e) {
-                    _logger.error("Error getting response outputstream ", e);
-                    throw new GDEMException("Error getting response outputstream " + e.toString(), e);
-                }
-            }
-            // Read inputstream into Bytearrayoutputstream
-            Streams.drain(src.getSrcInputStream(), out_stream_tmp);
             // Detect the file format
-            DDXMLConverter converter = DDXMLConverter.getConverter(out_stream_tmp);
+            DDXMLConverter converter = DDXMLConverter.getConverter(file);
 
             if (converter == null) {
-                _logger.error(
-                        "Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.",
-                        null);
+                LOGGER.error("Could not detect the format of source file. "
+                        + "Converter waits MS Excel or OpenDocument Spreadsheet file.", null);
                 throw new GDEMException(
                 "Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.");
             }
-            // create new inputstrema from tmp Bytearrayoutputstream
-            in_stream_tmp = new ByteArrayInputStream(out_stream_tmp.toByteArray());
-
             converter.setHttpResponse(isHttpRequest());
-            v_result = converter.convertDD_XML_split(in_stream_tmp, result, sheet_param);
-
+            if (split) {
+                resultObject = converter.convertDD_XML_split(new FileInputStream(file), resultStream, sheetName);
+            } else {
+                resultObject = converter.convertDD_XML(new FileInputStream(file), resultStream);
+                if (!isHttpRequest()) {
+                    resultObject.addConvertedXml(sourceFileName + ".xml",
+                            new String(((ByteArrayOutputStream) resultStream).toByteArray(), "UTF-8"));
+                }
+            }
         } catch (MalformedURLException mfe) {
-            _logger.error("Bad URL ", mfe);
-            if (isHttpRequest()) {
-                throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
-            } else {
-                error_mess = "Bad URL : " + mfe.toString();
-            }
+            errorMessage = handleConversionException("Bad URL. ", mfe);
         } catch (IOException ioe) {
-            _logger.error("Error opening URL ", ioe);
-            if (isHttpRequest()) {
-                throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
-            } else {
-                error_mess = "Error opening URL " + ioe.toString();
-            }
+            errorMessage = handleConversionException("Error opening URL. ", ioe);
         } catch (Exception e) {
-            _logger.error("", e);
-            if (isHttpRequest()) {
-                throw new GDEMException(e.toString(), e);
-            } else {
-                error_mess = e.toString();
-            }
+            errorMessage = handleConversionException("Error converting Excel file. ", e);
         } finally {
-            try {
-                if (src != null) {
-                    src.close();
-                }
-            } catch (Exception e) {
-            }
-            try {
-                if (in_stream_tmp != null) {
-                    in_stream_tmp.close();
-                }
-            } catch (Exception e) {
-            }
-            try {
-                if (out_stream_tmp != null) {
-                    out_stream_tmp.close();
-                }
-            } catch (Exception e) {
-            }
+            IOUtils.closeQuietly(resultStream);
+            Utils.deleteFile(file);
         }
+        // Creates response Object, if error occurred
+        if (errorMessage != null) {
+            if (resultObject == null) {
+                resultObject = new ConversionResultDto();
+            }
+            resultObject.setStatusCode(ConversionResultDto.STATUS_ERR_SYSTEM);
+            resultObject.setStatusDescription(errorMessage);
+            resultObject.addConversionLog(ConversionLogDto.ConversionLogType.CRITICAL, errorMessage, "System");
+        }
+        resultObject.setSourceUrl(sourceUrl);
+        if (isHttpRequest()
+                && (ConversionResultDto.STATUS_ERR_SYSTEM.equals(resultObject.getStatusCode()) || ConversionResultDto.STATUS_ERR_SCHEMA_NOT_FOUND
+                        .equals(resultObject.getStatusCode()))) {
+            throw new GDEMException(resultObject.getStatusDescription());
+        }
+
+        return resultObject;
+    }
+
+    /**
+     * Returns source file as InputFile object
+     * @param sourceUrl
+     * @return
+     * @throws MalformedURLException
+     * @throws IOException
+     */
+    private InputFile getInptFile(String sourceUrl) throws MalformedURLException, IOException {
+        InputFile src = new InputFile(sourceUrl);
+        src.setAuthentication(getTicket());
+        src.setTrustedMode(isTrustedMode());
+
+        return src;
+    }
+
+    /**
+     * Get OutpuStram where to write the conversion result.
+     * @param outputFileName
+     * @return
+     * @throws GDEMException
+     */
+    private OutputStream getResultOutputStream(String outputFileName) throws GDEMException {
+        OutputStream resultStream = null;
         if (isHttpRequest()) {
-            return v_result;
+            try {
+                HttpMethodResponseWrapper httpResponse = getHttpResponse();
+                httpResponse.setContentType("text/xml");
+                httpResponse.setContentDisposition(outputFileName + ".xml");
+                resultStream = httpResponse.getOutputStream();
+            } catch (IOException e) {
+                LOGGER.error("Error getting response outputstream ", e);
+                throw new GDEMException("Error getting response outputstream " + e.toString(), e);
+            }
         }
-        // Creates response Vector
-
-        if (Utils.isNullVector(v_result) && !Utils.isNullStr(error_mess)) {
-            v_result.add("1");
-            v_result.add(error_mess);
+        if (resultStream == null) {
+            // resultStream = new FileOutputStream(outputFileName);
+            resultStream = new ByteArrayOutputStream();
         }
+        return resultStream;
+    }
 
-        return v_result;
+    /**
+     * Handle exceptions - throws Exception if the call is coming from web page, otherwise logs and returns error message.
+     * @param errorMessage
+     * @param e
+     * @return
+     * @throws GDEMException
+     */
+    private String handleConversionException(String errorMessage, Exception e) throws GDEMException {
+        LOGGER.error(errorMessage, e);
+        if (isHttpRequest()) {
+            throw new GDEMException(errorMessage + e.toString(), e);
+        } else {
+            errorMessage = errorMessage + e.toString();
+        }
+        return errorMessage;
     }
 }
