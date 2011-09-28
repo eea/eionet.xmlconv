@@ -140,7 +140,6 @@ public class ODFSpreadsheetAnalyzer {
                         // analyze is made and we can break the loop
                         break;
                     }
-                    zipStream.closeEntry();
                 }
             }
         } catch (IOException ioe) {
