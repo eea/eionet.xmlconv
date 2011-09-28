@@ -1,4 +1,4 @@
-package eionet.gdem.conversion;
+package eionet.gdem.conversion.spreadsheet;
 
 import eionet.gdem.conversion.excel.ExcelUtils;
 
@@ -9,6 +9,13 @@ import eionet.gdem.conversion.excel.ExcelUtils;
  */
 
 public class Excel20072XML extends DDXMLConverter {
+    /**
+     * Class constructor.
+     */
+    Excel20072XML(){
+        super();
+    }
+
     private final static String FORMAT_NAME = "MS Excel 2007";
 
     @Override

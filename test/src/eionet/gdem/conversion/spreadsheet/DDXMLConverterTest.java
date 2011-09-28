@@ -1,17 +1,21 @@
 /*
  * Created on 08.05.2008
  */
-package eionet.gdem.conversion;
+package eionet.gdem.conversion.spreadsheet;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
+import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.datadict.DD_XMLInstance;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.ConversionResultDto;
+import eionet.gdem.dto.ConvertedFileDto;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.utils.xml.IXQuery;
@@ -28,7 +32,7 @@ public class DDXMLConverterTest extends TestCase {
      * Test DD schema verification method
      */
     public void testGetInvalidSchemaMessage() throws Exception {
-        MockDDXMLConverter ddConverter = new MockDDXMLConverter(new Excel2XML());
+        MockDDXMLConverter ddConverter = new MockDDXMLConverter(new Excel2XML(), null);
 
         Map<String, String> dataset = new HashMap<String, String>();
         dataset.put("id", "1111");
@@ -46,7 +50,7 @@ public class DDXMLConverterTest extends TestCase {
         assertNull(message);
 
         // schema is INVALID DD schema
-        MockDDXMLConverter ddExcelConverter = new MockDDXMLConverter(new Excel2XML());
+        MockDDXMLConverter ddExcelConverter = new MockDDXMLConverter(new Excel2XML(), null);
         message = ddExcelConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=DST1111289389");
         assertEquals(
                 Properties.getMessage(BusinessConstants.ERROR_CONVERSION_INVALID_TEMPLATE,
@@ -80,7 +84,8 @@ public class DDXMLConverterTest extends TestCase {
 
     public void testConvertDDExcelToXml_MultipleValues() throws Exception {
 
-        MockDDXMLConverter converter = new MockDDXMLConverter(new Excel2XML());
+        MockDDXMLConverter converter = new MockDDXMLConverter(new Excel2XML(), new File(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_XLS)
+                .getFile()));
         Map<String, String> dataset = new HashMap<String, String>();
         dataset.put("id", "6585");
         dataset.put("status", "Released");
@@ -88,15 +93,15 @@ public class DDXMLConverterTest extends TestCase {
         converter.setDataset(dataset);
 
         ConversionResultDto conversionResult =
-            converter.convertDD_XML_split(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_XLS)
-                    .getFile(), null);
+            converter.convertDD_XML_split(null, null);
         assertTestConvertDD_MultipleValuesresults(conversionResult);
 
     }
 
     public void testConvertDDExcel2007ToXml_MultipleValues() throws Exception {
 
-        MockDDXMLConverter converter = new MockDDXMLConverter(new Excel20072XML());
+        MockDDXMLConverter converter = new MockDDXMLConverter(new Excel20072XML(), new File(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_XLSX)
+                .getFile()));
         Map<String, String> dataset = new HashMap<String, String>();
         dataset.put("id", "6585");
         dataset.put("status", "Released");
@@ -104,15 +109,15 @@ public class DDXMLConverterTest extends TestCase {
         converter.setDataset(dataset);
 
         ConversionResultDto conversionResult =
-            converter.convertDD_XML_split(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_XLSX)
-                    .getFile(), null);
+            converter.convertDD_XML_split(null, null);
         assertTestConvertDD_MultipleValuesresults(conversionResult);
 
     }
 
     public void testConvertDDOdsToXml_MultipleValues() throws Exception {
-
-        MockDDXMLConverter converter = new MockDDXMLConverter(new Ods2Xml());
+        File inFile = new File(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_ODS)
+                .getFile());
+        MockDDXMLConverter converter = new MockDDXMLConverter(new Ods2Xml(), inFile);
         Map<String, String> dataset = new HashMap<String, String>();
         dataset.put("id", "6585");
         dataset.put("status", "Released");
@@ -120,20 +125,19 @@ public class DDXMLConverterTest extends TestCase {
         converter.setDataset(dataset);
 
         ConversionResultDto conversionResult =
-            converter.convertDD_XML_split(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_ODS)
-                    .getFile(), null);
+            converter.convertDD_XML_split(null, null);
         assertTestConvertDD_MultipleValuesresults(conversionResult);
     }
 
     private void assertTestConvertDD_MultipleValuesresults(ConversionResultDto conversionResult) throws Exception {
 
         assertEquals(ConversionResultDto.STATUS_OK, conversionResult.getStatusCode());
-        assertTrue(conversionResult.getConvertedXmls().containsKey("GW-Body_Characterisation.xml"));
+        assertNotNull(conversionResult.getConvertedFileByFileName("GW-Body_Characterisation.xml"));
 
-        String xml = conversionResult.getConvertedXmls().get("GW-Body_Characterisation.xml");
+        ConvertedFileDto xml = conversionResult.getConvertedFileByFileName("GW-Body_Characterisation.xml");
 
         IXmlCtx ctx = new XmlContext();
-        ctx.checkFromString(xml);
+        ctx.checkFromInputStream(new ByteArrayInputStream(xml.getFileContentAsByteArray()));
         IXQuery xQuery = ctx.getQueryManager();
 
         List<String> multipleValues = xQuery.getElementValues("dd37:Stratigraphy");
@@ -149,7 +153,8 @@ public class DDXMLConverterTest extends TestCase {
 
     public void testConvertDDExcelToXml_Warning() throws Exception {
 
-        MockDDXMLConverter converter = new MockDDXMLConverter(new Excel2XML());
+        MockDDXMLConverter converter = new MockDDXMLConverter(new Excel2XML(), new File(this.getClass().getClassLoader().getResource(TestConstants.SEED_VALIDATION_WARNINGS_XLS)
+                .getFile()));
         Map<String, String> dataset = new HashMap<String, String>();
         dataset.put("id", "6585");
         dataset.put("status", "Released");
@@ -157,10 +162,9 @@ public class DDXMLConverterTest extends TestCase {
         converter.setDataset(dataset);
 
         ConversionResultDto conversionResult =
-            converter.convertDD_XML_split(this.getClass().getClassLoader().getResource(TestConstants.SEED_VALIDATION_WARNINGS_XLS)
-                    .getFile(), null);
+            converter.convertDD_XML_split(null, null);
         assertEquals(ConversionResultDto.STATUS_ERR_VALIDATION, conversionResult.getStatusCode());
-        assertTrue(conversionResult.getConvertedXmls().containsKey("GW-Body_Characterisation.xml"));
+        assertNotNull(conversionResult.getConvertedFileByFileName("GW-Body_Characterisation.xml"));
         assertTrue(conversionResult.getConversionLogAsHtml().contains("WARNING"));
         assertTrue(conversionResult.getConversionLogAsHtml().contains("GWNameNew"));
     }
@@ -170,9 +174,21 @@ public class DDXMLConverterTest extends TestCase {
         Map<String, String> datasetResult = null;
         private DDXMLConverter spreadsheetReader;
 
-        public MockDDXMLConverter(DDXMLConverter spreadsheetReader) {
+        public MockDDXMLConverter(DDXMLConverter spreadsheetReader, File inFile) throws GDEMException {
             super();
             this.spreadsheetReader = spreadsheetReader;
+            try{
+                initConverter(inFile);
+                startConverter(new ConversionResultDto(), null);
+            }
+            catch(GDEMException e){
+                if (inFile == null){
+                    //do nothing
+                }
+                else{
+                    throw e;
+                }
+            }
         }
 
         @Override
@@ -185,10 +201,9 @@ public class DDXMLConverterTest extends TestCase {
         }
 
         @Override
-        protected void importSheetSchemas(SourceReaderIF spreadsheet, DD_XMLInstance instance, String xml_schema,
-                ConversionResultDto resultObject) {
+        protected void importSheetSchemas(SourceReaderIF spreadsheet, DD_XMLInstance instance, String xml_schema) {
             String localSchemaUrl = TestUtils.getSeedURL(TestConstants.SEED_GW_SCHEMA, this);
-            super.importSheetSchemas(spreadsheet, instance, localSchemaUrl, resultObject);
+            super.importSheetSchemas(spreadsheet, instance, localSchemaUrl);
         }
 
         @Override

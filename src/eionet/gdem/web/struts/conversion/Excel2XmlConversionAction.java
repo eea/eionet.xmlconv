@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -24,8 +26,6 @@ import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dto.ConversionResultDto;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -33,7 +33,8 @@ import eionet.gdem.utils.Utils;
  */
 
 public class Excel2XmlConversionAction extends Action {
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(Excel2XmlConversionAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
@@ -47,6 +48,7 @@ public class Excel2XmlConversionAction extends Action {
         String split = processFormStr((String) cForm.get("split"));
         String sheet = processFormStr((String) cForm.get("sheet"));
         Boolean showConversionLog = processFormBoolean((Boolean) cForm.get("showConversionLog"));
+        HttpMethodResponseWrapper methodResponse = null;
 
         // get request parameters
         try {
@@ -68,6 +70,11 @@ public class Excel2XmlConversionAction extends Action {
             }
             ConversionServiceIF cs = new ConversionService();
             cs.setTicket(ticket);
+            if (!showConversionLog){
+                methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
+                cs.setHttpResponse(methodResponse);
+            }
+            cs.setTrustedMode(true  );
             ConversionResultDto conversionResult = null;
             // execute conversion
             if (split.equals("split")) {
@@ -82,28 +89,25 @@ public class Excel2XmlConversionAction extends Action {
             else{
                 cForm.set("conversionLog", "Conversion log not found!");
             }
-            // flush the content
-            if (!showConversionLog &&
-                    (ConversionResultDto.STATUS_OK.equals(conversionResult.getStatusCode()) ||
-                            ConversionResultDto.STATUS_ERR_VALIDATION.equals(conversionResult.getStatusCode()))) {
-                if (conversionResult.getConvertedXmls().size()>0) {
-                    String firstXml = conversionResult.getConvertedXmls().keySet().iterator().next();
-                    String resultFile = conversionResult.getConvertedXmls().get(firstXml);
-                    // create custom HttpServletResponseWrapper
-                    HttpMethodResponseWrapper methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
-                    methodResponse.setContentType("text/xml");
-                    methodResponse.setContentDisposition(firstXml);
-                    methodResponse.getOutputStream().write(resultFile.getBytes("UTF-8"));
-                    methodResponse.flush();
-                }
-            }
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Error testing conversion", e);
+            LOGGER.error("Error testing conversion", e);
             HttpSession sess = httpServletRequest.getSession(true);
             sess.setAttribute("gdem.exception", new GDEMException("Error testing conversion: " + e.getMessage()));
             httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/" + Names.ERROR_JSP);
-            return actionMapping.findForward(null);
+            return null;
+        }
+        finally{
+            if (methodResponse != null){
+                try{
+                    methodResponse.flush();
+                    return null;
+                }
+                catch(Exception e){
+                    LOGGER.error("Unable to flush contetn. ", e);
+                    e.printStackTrace();
+                }
+            }
         }
         return actionMapping.findForward("success");
     }

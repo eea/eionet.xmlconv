@@ -26,10 +26,12 @@ package eionet.gdem.qa;
 import java.sql.SQLException;
 import java.util.TimerTask;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IXQJobDao;
 
 /**
@@ -37,51 +39,46 @@ import eionet.gdem.services.db.dao.IXQJobDao;
  */
 
 public class WQChecker extends TimerTask implements Constants {
-    private static LoggerIF _logger;
+
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(WQChecker.class);
 
     private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
 
     public WQChecker() {
-        _logger = GDEMServices.getLogger();
-        /*
-         * try { _db=GDEMServices.getDbModule(); } catch (Exception e) { _db=null; _logger.fatal("Initializing DB Pool failed: " +
-         * e.toString() , e);
-         * 
-         * }
-         */
     }
 
     /**
      * override of Thread run() method, checks for new jobs in DB
      */
+    @Override
     public void run() {
         // get new received jobs from the DB
         String[] newJobs = null;
         try {
             int activeJobs = xqJobDao.countActiveJobs();
             if (activeJobs >= Properties.wqMaxJobs) {
-                if (_logger.enable(_logger.DEBUG))
-                    _logger.debug("The number of active jobs is greater or equal than max jobs allowed to run in parallel: active jobs:"
-                            + activeJobs + "; max jobs: " + Properties.wqMaxJobs);
+                LOGGER.debug("The number of active jobs is greater or equal than max jobs allowed to run in parallel: active jobs:"
+                        + activeJobs + "; max jobs: " + Properties.wqMaxJobs);
             } else {
                 newJobs = xqJobDao.getJobsLimit(XQ_RECEIVED, Properties.wqMaxJobs - activeJobs);
             }
 
         } catch (SQLException sqe) {
-            _logger.fatal("*** SQL error getting jobs from DB: " + sqe.toString());
+            LOGGER.fatal("*** SQL error getting jobs from DB: " + sqe.toString());
         } catch (Exception e) {
-            _logger.error("*** error when getting received jobs:  " + e.toString());
+            LOGGER.error("*** error when getting received jobs:  " + e.toString());
         }
 
         XQueryTask xq;
-        if (newJobs != null)
+        if (newJobs != null) {
             for (int i = 0; i < newJobs.length; i++) {
-                if (_logger.enable(_logger.DEBUG))
-                    _logger.info("*** waiting job: " + newJobs[i]);
+                LOGGER.debug("*** waiting job: " + newJobs[i]);
 
                 xq = new XQueryTask(newJobs[i]);
                 xq.start();
             }
+        }
     }
 
 }

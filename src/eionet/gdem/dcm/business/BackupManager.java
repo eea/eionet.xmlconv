@@ -28,13 +28,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IBackupDao;
 import eionet.gdem.utils.Utils;
 
@@ -44,7 +46,8 @@ import eionet.gdem.utils.Utils;
 
 public class BackupManager {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(BackupManager.class);
 
     private IBackupDao backupDao = GDEMServices.getDaoService().getBackupDao();
 
@@ -52,17 +55,21 @@ public class BackupManager {
 
         File origFile = new File(folderName, fileName);
         if (!origFile.exists())
+        {
             return; // there's nothing to backup since file does not exist
+        }
 
         long timestamp = System.currentTimeMillis();
         String backupFileName =
-                Constants.BACKUP_FILE_PREFIX + id + "_" + timestamp + fileName.substring(fileName.lastIndexOf("."));
+            Constants.BACKUP_FILE_PREFIX + id + "_" + timestamp + fileName.substring(fileName.lastIndexOf("."));
 
         // backup folder is the subfolder
         String backupFolderName = folderName + File.separator + Constants.BACKUP_FOLDER_NAME;
         File backupFolder = new File(backupFolderName);
         if (!backupFolder.exists())
+        {
             backupFolder.mkdir(); // create backup folder if it does not exist
+        }
 
         File backupFile = new File(backupFolderName, backupFileName);
 
@@ -75,7 +82,7 @@ public class BackupManager {
             backup.setTimestamp(new Timestamp(timestamp));
             backupDao.addBackup(backup);
         } catch (Exception e) {
-            _logger.error("Unable to create backupfile - copy original file " + origFile.getPath() + " to " + backupFile.getPath()
+            LOGGER.error("Unable to create backupfile - copy original file " + origFile.getPath() + " to " + backupFile.getPath()
                     + ". " + e.toString());
             e.printStackTrace();
         }
@@ -86,7 +93,7 @@ public class BackupManager {
             return backupDao.getBackups(objectId);
         } catch (Exception e) {
             // e.printStackTrace();
-            _logger.error("Error getting backups for QA script: " + objectId, e);
+            LOGGER.error("Error getting backups for QA script: " + objectId, e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -94,7 +101,7 @@ public class BackupManager {
 
     /**
      * Remove backup files and refereces in database
-     * 
+     *
      * @param nofDays
      *            - number of days to keep
      * @return
@@ -107,7 +114,7 @@ public class BackupManager {
         purgeDate.add(Calendar.DATE, -nofDays);
 
         SimpleDateFormat sf = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
-        _logger.info("Purge backup files created before: " + sf.format(new Date(purgeDate.getTimeInMillis())));
+        LOGGER.info("Purge backup files created before: " + sf.format(new Date(purgeDate.getTimeInMillis())));
 
         long purgeDateInMillis = purgeDate.getTimeInMillis();
         Timestamp ts = new Timestamp(purgeDateInMillis);
@@ -119,8 +126,9 @@ public class BackupManager {
             for (int i = 0; i < files.length; i++) {
                 String fileName = files[i].getName();
                 // check if it is backup file
-                if (!files[i].isFile() || !fileName.startsWith(Constants.BACKUP_FILE_PREFIX))
+                if (!files[i].isFile() || !fileName.startsWith(Constants.BACKUP_FILE_PREFIX)) {
                     continue;
+                }
                 int start = fileName.indexOf("_", Constants.BACKUP_FILE_PREFIX.length());
                 int end = fileName.lastIndexOf(".");
                 String fileTimestamp = fileName.substring(start + 1, end);
@@ -136,19 +144,19 @@ public class BackupManager {
                         files[i].delete();
                         result++;
                     } catch (Exception ioe) {
-                        _logger.error("Unable to delete backup file: " + files[i].getPath(), ioe);
+                        LOGGER.error("Unable to delete backup file: " + files[i].getPath(), ioe);
                     }
                 }
 
             }
         }
-        _logger.info("Number of back files deleted: " + result);
+        LOGGER.info("Number of back files deleted: " + result);
         // remove database rows
         try {
             backupDao.removeBackupsOlderThan(ts);
         } catch (Exception e) {
             // e.printStackTrace();
-            _logger.error("Error removing backups.", e);
+            LOGGER.error("Error removing backups.", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return result;

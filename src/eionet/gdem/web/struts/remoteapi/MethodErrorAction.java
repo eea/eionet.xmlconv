@@ -26,6 +26,7 @@ public class MethodErrorAction extends BaseMethodAction {
     /**
      * Purpose of this action is show error messages of given request. XMLErrorResult should be stored in session already.
      */
+    @Override
     public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request,
             HttpServletResponse httpServletResponse) {
 
@@ -46,6 +47,6 @@ public class MethodErrorAction extends BaseMethodAction {
             _logger.error("Unable to flush XML error: " + e.toString());
         }
         // Do nothing
-        return map.findForward(null);
+        return null;
     }
 }

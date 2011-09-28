@@ -8,6 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.Conversion;
@@ -15,7 +18,6 @@ import eionet.gdem.dcm.business.DDServiceClient;
 import eionet.gdem.dcm.remote.RemoteServiceMethod;
 import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 
 /**
@@ -28,7 +30,8 @@ public class ListConversionsMethod extends RemoteServiceMethod {
 
     private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(ConvertXMLMethod.class);
 
     public Vector listConversions(String schema) throws GDEMException {
         Vector v = new Vector();
@@ -96,7 +99,7 @@ public class ListConversionsMethod extends RemoteServiceMethod {
             }
 
         } catch (Exception e) {
-            _logger.error("Error getting data from the DB", e);
+            LOGGER.error("Error getting data from the DB", e);
             throw new GDEMException("Error getting data from the DB " + e.toString(), e);
         }
         return v;

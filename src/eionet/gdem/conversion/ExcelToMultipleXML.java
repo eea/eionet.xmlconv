@@ -27,6 +27,7 @@ import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -48,7 +49,6 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.DCMDaoFactory;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.InputFile;
-import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -210,15 +210,15 @@ public class ExcelToMultipleXML {
     applyTransformation(ConversionResultDto result, String xmlTmpFileLocation, Vector<Object> stylesheets)
     throws FileNotFoundException, GDEMException, Exception, UnsupportedEncodingException, IOException {
         Map<Object, Object> stylesheet;
-        InputStream xslFis;
-        InputStream xmlFis;
-        ByteArrayOutputStream out;
+        InputStream xslFis = null;
+        InputStream xmlFis = null;
+        ByteArrayOutputStream out = null;
         XMLConverter xmlConv = new XMLConverter();
 
-        HashMap<String, String> xmls = new HashMap<String, String>();
+        HashMap<String, byte[]> xmls = new HashMap<String, byte[]>();
         Map<String, Map<Object, Object>> stylesheetMap = toMap(stylesheets);
         // key is conversion id, value is XML string.
-        Map<String, String> doneConversions = new HashMap<String, String>();
+        Map<String, byte[]> doneConversions = new HashMap<String, byte[]>();
         List<List<String>> conversionChains = buildConversionChains(stylesheetMap);
         String conversionId;
         // set of conversion id-s that are returned to end user.
@@ -237,29 +237,37 @@ public class ExcelToMultipleXML {
                         LOGGER.debug("use content.xml");
                     } else {
                         // apply transformation against previous generated XML.
-                        xmlFis = new ByteArrayInputStream(doneConversions.get(chain.get(i - 1)).getBytes("UTF-8"));
+                        xmlFis = new ByteArrayInputStream(doneConversions.get(chain.get(i - 1)));
 
                         LOGGER.debug("use previous generated XML");
                     }
+                    try{
+                        xslFis = new FileInputStream(Properties.xslFolder + File.separatorChar + stylesheet.get("xsl"));
+                        out = new ByteArrayOutputStream();
+                        xmlConv.convert(xmlFis, xslFis, out, "xml");
+                        doneConversions.put(conversionId, out.toByteArray());
 
-                    xslFis = new FileInputStream(Properties.xslFolder + File.separatorChar + stylesheet.get("xsl"));
-                    out = new ByteArrayOutputStream();
-                    xmlConv.convert(xmlFis, xslFis, out, "xml");
-                    doneConversions.put(conversionId, out.toString("UTF-8"));
-
-                    if (!LOGGER.isDebugEnabled()) {
-                        // store tmp files in server, if debug is enabled
-                        ByteArrayInputStream tmpFis = new ByteArrayInputStream(out.toByteArray());
-                        FileOutputStream tmpFile =
-                            new FileOutputStream(Utils.getUniqueTmpFileName(transformFileNameToExtension("tmpOutput", "xml")));
-                        Streams.drain(tmpFis, tmpFile);
-                        tmpFile.close();
-                        tmpFis.close();
+                        if (!LOGGER.isDebugEnabled()) {
+                            // store tmp files in server, if debug is enabled
+                            ByteArrayInputStream tmpFis =null;
+                            FileOutputStream tmpFile =null;
+                            try{
+                                tmpFis = new ByteArrayInputStream(out.toByteArray());
+                                tmpFile =
+                                    new FileOutputStream(Utils.getUniqueTmpFileName(transformFileNameToExtension("tmpOutput", "xml")));
+                                IOUtils.copy(tmpFis, tmpFile);
+                            }
+                            finally{
+                                IOUtils.closeQuietly(tmpFile);
+                                IOUtils.closeQuietly(tmpFis);
+                            }
+                        }
                     }
-
-                    xslFis.close();
-                    xmlFis.close();
-                    out.close();
+                    finally{
+                        IOUtils.closeQuietly(xslFis);
+                        IOUtils.closeQuietly(xmlFis);
+                        IOUtils.closeQuietly(out);
+                    }
                 }
             }
 
@@ -270,7 +278,7 @@ public class ExcelToMultipleXML {
         }
 
         // populate xmls map with values that should be returned.
-        for (Map.Entry<String, String> me : doneConversions.entrySet()) {
+        for (Map.Entry<String, byte[]> me : doneConversions.entrySet()) {
             if (toReturn.contains(me.getKey())) {
                 xmls.put(transformFileNameToExtension((String) stylesheetMap.get(me.getKey()).get("xsl"), "xml"), me.getValue());
             }
@@ -488,15 +496,13 @@ public class ExcelToMultipleXML {
     }
 
     private static final void copyInputStream(InputStream in, OutputStream out) throws IOException {
-        byte[] buffer = new byte[1024];
-        int len;
-
-        while ((len = in.read(buffer)) >= 0) {
-            out.write(buffer, 0, len);
+        try{
+            IOUtils.copy(in, out);
         }
-
-        in.close();
-        out.close();
+        finally{
+            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(out);
+        }
     }
 
     public static void main(String[] args) throws Exception {

@@ -35,6 +35,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.IOUtils;
+
 public class ZipUtil {
 
     static final int BUFFER = 2156;
@@ -47,7 +49,7 @@ public class ZipUtil {
 
     /**
      * Function zips all the files in directory and subdirectories and adds these into zip file
-     * 
+     *
      * @param dir2zip
      *            - directory that will be zipped
      * @param outZip
@@ -82,8 +84,9 @@ public class ZipUtil {
                 continue;
             }
             // Do not zip mimetype file anymore
-            if (dirList[i].equals(MIMETYPE_FILE))
+            if (dirList[i].equals(MIMETYPE_FILE)) {
                 continue;
+            }
 
             // if we reached herem the f is not directory
             zipFile(f, outZip, sourceDir, true);
@@ -91,7 +94,7 @@ public class ZipUtil {
     }
 
     /**
-     * 
+     *
      * @param f
      *            - File that will be zipped
      * @param outZip
@@ -163,22 +166,27 @@ public class ZipUtil {
 
             // extract file if not a directory
             if (!entry.isDirectory()) {
-                BufferedInputStream is = new BufferedInputStream(zipFile.getInputStream(entry));
-                int currentByte;
-                // establish buffer for writing file
-                byte data[] = new byte[BUFFER];
+                BufferedInputStream is = null;
+                BufferedOutputStream dest = null;
+                try{
+                    is = new BufferedInputStream(zipFile.getInputStream(entry));
+                    int currentByte;
+                    // establish buffer for writing file
+                    byte data[] = new byte[BUFFER];
 
-                // write the current file to disk
-                FileOutputStream fos = new FileOutputStream(destFile);
-                BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
+                    // write the current file to disk
+                    FileOutputStream fos = new FileOutputStream(destFile);
+                    dest = new BufferedOutputStream(fos, BUFFER);
 
-                // read and write until last byte is encountered
-                while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
-                    dest.write(data, 0, currentByte);
+                    // read and write until last byte is encountered
+                    while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
+                        dest.write(data, 0, currentByte);
+                    }
                 }
-                dest.flush();
-                dest.close();
-                is.close();
+                finally{
+                    IOUtils.closeQuietly(dest);
+                    IOUtils.closeQuietly(is);
+                }
             }
         }
         zipFile.close();
@@ -186,9 +194,10 @@ public class ZipUtil {
 
     private static boolean getDirContainsMimeFile(String dir) {
         File file = new File(dir, MIMETYPE_FILE);
-        if (file.exists())
+        if (file.exists()) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 }

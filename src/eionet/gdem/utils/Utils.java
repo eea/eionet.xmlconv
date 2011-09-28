@@ -25,7 +25,6 @@ package eionet.gdem.utils;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,6 +33,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -48,13 +48,16 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.Vector;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
+import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.utils.xml.IXmlCtx;
@@ -407,22 +410,11 @@ public class Utils {
      */
     public static byte[] fileToBytes(String fileName) throws GDEMException {
 
-        ByteArrayOutputStream baos = null;
-        FileInputStream fis = null;
+        InputStream fis = null;
         try {
-
-            // log("========= open fis " + fileName);
             fis = new FileInputStream(fileName);
-            // log("========= fis opened");
 
-            baos = new ByteArrayOutputStream();
-
-            int bufLen = 0;
-            byte[] buf = new byte[1024];
-
-            while ((bufLen = fis.read(buf)) != -1) {
-                baos.write(buf, 0, bufLen);
-            }
+            return IOUtils.toByteArray(fis);
 
         } catch (FileNotFoundException fne) {
             LOGGER.error("File not found " + fileName, fne);
@@ -431,15 +423,8 @@ public class Utils {
             LOGGER.error("", e);
             throw new GDEMException("Exception " + e.toString(), e);
         } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (Exception e) {
-
-                }
-            }
+            IOUtils.closeQuietly(fis);
         }
-        return baos.toByteArray();
     }
 
     public static boolean containsKeyIgnoreCase(Map<String, String> hash, String val) {
@@ -511,12 +496,8 @@ public class Utils {
                 fos.write(buf, 0, i);
             }
         } finally {
-            if (fis != null) {
-                fis.close();
-            }
-            if (fos != null) {
-                fos.close();
-            }
+            IOUtils.closeQuietly(fis);
+            IOUtils.closeQuietly(fos);
         }
     }
 
@@ -795,15 +776,20 @@ public class Utils {
      * @return
      */
     public static String getUniqueTmpFileName(String fileName) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(Properties.tmpFolder);
-        buf.append("xmlconv_");
+        buf.append(Constants.TMP_FILE_PREFIX);
         buf.append(System.currentTimeMillis());
+        buf.append("-" + UUID.randomUUID());
         if (fileName != null) {
+            if (!fileName.startsWith(".")){
+                buf.append("-");
+            }
             buf.append(fileName);
         } else {
             buf.append(".tmp");
         }
+
         return buf.toString();
     }
 
@@ -1086,4 +1072,50 @@ public class Utils {
         }
         return s;
     }
-}
+    /**
+     * Reads the XML declaration from instance file
+     */
+    public static String getEncodingFromStream(String str_url) {
+        BufferedReader br = null;
+        try {
+            URL url = new URL(str_url);
+            // ins = new DataInputStream(url.openStream());
+            br = new BufferedReader(new InputStreamReader(url.openStream()));
+            String xml_decl = br.readLine();
+
+            if (xml_decl == null) {
+                return null;
+            }
+            if (!xml_decl.startsWith("<?xml version=") && !xml_decl.endsWith("?>")) {
+                return null;
+            }
+            int idx = xml_decl.indexOf("encoding=");
+            if (idx == -1) {
+                return null;
+            }
+            String start = xml_decl.substring(idx + 10);
+            int end_idx = start.indexOf("\"");
+            if (end_idx == -1) {
+                return null;
+            }
+            String enc = start.substring(0, end_idx);
+
+            return enc;
+        } catch (MalformedURLException e) {
+            LOGGER.debug("It is not url: " + str_url + "; " + e.toString());
+            return null;
+        } catch (IOException e) {
+            LOGGER.debug("could not read encoding from url: " + str_url + "; " + e.toString());
+            return null;
+        } catch (Exception e) {
+            return null;
+            // couldn't read encoding
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (IOException e) {
+            }
+        }
+    }}

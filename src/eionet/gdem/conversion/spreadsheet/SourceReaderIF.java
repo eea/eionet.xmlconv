@@ -21,9 +21,9 @@
  * Original Code: Enriko Käsper (TietoEnator)
  */
 
-package eionet.gdem.conversion;
+package eionet.gdem.conversion.spreadsheet;
 
-import java.io.InputStream;
+import java.io.File;
 import java.util.Map;
 
 import eionet.gdem.GDEMException;
@@ -48,11 +48,10 @@ public interface SourceReaderIF {
     /**
      * Initialize the Source file from InputStream
      *
-     * @param InputStream
-     *            input - input Excel file
-     * @param resultObject Object for storing conversin log messages.
+     * @param File
+     *            input - input Excel or OpenDocument File
      */
-    public void initReader(InputStream input, ConversionResultDto resultObject) throws GDEMException;
+    public void initReader(File input) throws GDEMException;
 
     /**
      * Goes through the source file and writes the data into DD_XMLInstance as xml
@@ -91,4 +90,9 @@ public interface SourceReaderIF {
      */
     public void closeReader();
 
+    /**
+     * Source reader ended it's job. Do some closing stuff.
+     * @param resultObject Object for storing conversion log messages.
+     */
+    public void startReader(ConversionResultDto resultObject);
 }

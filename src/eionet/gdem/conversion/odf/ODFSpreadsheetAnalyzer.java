@@ -34,6 +34,7 @@ import java.util.zip.ZipInputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -92,6 +93,7 @@ public class ODFSpreadsheetAnalyzer {
 
         try {
             spreadsheetResult = new OpenDocumentSpreadsheet();
+            //TODO check if it is possible to use SAX instead of DOM here. It does not perform well with large XML files.
             builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             doc = builder.parse(metaStream);
             findNamespaces(doc.getDocumentElement());
@@ -124,8 +126,9 @@ public class ODFSpreadsheetAnalyzer {
      */
     public OpenDocumentSpreadsheet analyzeZip(InputStream inputStream) {
         OpenDocumentSpreadsheet spreadsheet = null;
-        ZipInputStream zipStream = new ZipInputStream(inputStream);
+        ZipInputStream zipStream = null;
         try {
+            zipStream = new ZipInputStream(inputStream);
             while (zipStream.available() == 1) {
                 // read possible contentEntry
                 ZipEntry cententEntry = zipStream.getNextEntry();
@@ -136,20 +139,14 @@ public class ODFSpreadsheetAnalyzer {
                         spreadsheet = analyzeSpreadsheet(zipStream);
                         // analyze is made and we can break the loop
                         break;
-
                     }
+                    zipStream.closeEntry();
                 }
             }
         } catch (IOException ioe) {
-            System.out.println(ioe.toString());
-            // IO error
+            ioe.printStackTrace();
         } finally {
-            try {
-                // and finally we close stream
-                zipStream.close();
-            } catch (IOException ioe) {
-                // intentionally left blank
-            }
+            IOUtils.closeQuietly(zipStream);
         }
         return spreadsheet;
     }

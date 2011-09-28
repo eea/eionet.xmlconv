@@ -31,10 +31,10 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
-import eionet.gdem.conversion.SourceReaderIF;
 import eionet.gdem.conversion.excel.reader.ExcelReader;
 import eionet.gdem.conversion.excel.writer.ExcelConversionHandler;
 import eionet.gdem.conversion.excel.writer.ExcelConversionHandlerIF;
+import eionet.gdem.conversion.spreadsheet.SourceReaderIF;
 
 public class ExcelUtils {
 

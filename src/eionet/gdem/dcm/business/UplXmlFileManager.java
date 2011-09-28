@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.Properties;
@@ -31,9 +32,9 @@ import eionet.gdem.web.struts.xmlfile.UplXmlFileHolder;
 
 /**
  * Business logic for uploading XML files into XMLCONV repository, editing file metadata and deleting files.
- * 
+ *
  * @author Enriko Käsper (TietoEnator)
- * 
+ *
  */
 
 public class UplXmlFileManager {
@@ -44,7 +45,7 @@ public class UplXmlFileManager {
 
     /**
      * Stores the new XML file in server filesystem and adds the metadata into database
-     * 
+     *
      * @param user
      *            User name
      * @param xmlfile
@@ -90,7 +91,7 @@ public class UplXmlFileManager {
 
     /**
      * Deletes the specified XML file from filesystem and deletes the metadata from database
-     * 
+     *
      * @param user
      *            User name, that is used to check the permission
      * @param uplXmlFileId
@@ -139,7 +140,7 @@ public class UplXmlFileManager {
 
     /**
      * Updates XML file metadata in database.
-     * 
+     *
      * @param user
      *            User name, that is used to check the permission
      * @param xmlFileId
@@ -151,7 +152,7 @@ public class UplXmlFileManager {
      */
 
     public void updateUplXmlFile(String user, String xmlFileId, String title, String curFileName, FormFile file)
-            throws DCMException {
+    throws DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_XMLFILE_PATH, "u")) {
@@ -191,7 +192,7 @@ public class UplXmlFileManager {
 
     /**
      * Returns UplXmlFile bean with XML file metada.
-     * 
+     *
      * @param xmlFileId
      * @return
      * @throws DCMException
@@ -207,8 +208,9 @@ public class UplXmlFileManager {
             String lastModified = "";
             if (!Utils.isNullStr(file_name)) {
                 File f = new File(Properties.xmlfileFolderPath + File.separatorChar + file_name);
-                if (f != null && f.exists())
+                if (f != null && f.exists()) {
                     lastModified = Utils.getDateTime(new Date(f.lastModified()));
+                }
             }
 
             xmlfile.setTitle(title);
@@ -226,7 +228,7 @@ public class UplXmlFileManager {
 
     /**
      * Get all the XML files stored in repository.
-     * 
+     *
      * @param user_name
      * @return Vector containing UplXmlFile objects
      * @throws DCMException
@@ -266,8 +268,9 @@ public class UplXmlFileManager {
 
                 if (!Utils.isNullStr(fileName)) {
                     File f = new File(Properties.xmlfileFolderPath + File.separatorChar + fileName);
-                    if (f != null && f.exists())
+                    if (f != null && f.exists()) {
                         lastModified = Utils.getDateTime(new Date(f.lastModified()));
+                    }
                 }
 
                 UplXmlFile uplXmlFile = new UplXmlFile();
@@ -290,7 +293,7 @@ public class UplXmlFileManager {
 
     /**
      * Checks if the xml file with the given filename exists whether in db or in fs
-     * 
+     *
      * @param fileName
      * @return
      * @throws SQLException
@@ -314,7 +317,7 @@ public class UplXmlFileManager {
 
     /**
      * Stores the xml file into filesystem
-     * 
+     *
      * @param file
      * @param fileName
      * @throws FileNotFoundException
@@ -322,17 +325,19 @@ public class UplXmlFileManager {
      */
     public void storeXmlFile(FormFile file, String fileName) throws FileNotFoundException, IOException {
 
+        OutputStream output = null;
         InputStream in = file.getInputStream();
         String filepath = new String(Properties.xmlfileFolderPath + "/" + fileName);
-        OutputStream w = new FileOutputStream(filepath);
-        int bytesRead = 0;
-        byte[] buffer = new byte[8192];
-        while ((bytesRead = in.read(buffer, 0, 8192)) != -1) {
-            w.write(buffer, 0, bytesRead);
+
+        try{
+            output = new FileOutputStream(filepath);
+            IOUtils.copy(in, output);
         }
-        w.close();
-        in.close();
-        file.destroy();
+        finally{
+            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(output);
+            file.destroy();
+        }
 
     }
 

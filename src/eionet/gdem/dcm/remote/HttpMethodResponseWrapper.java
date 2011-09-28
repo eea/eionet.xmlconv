@@ -3,11 +3,14 @@
  */
 package eionet.gdem.dcm.remote;
 
+import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
+
+import eionet.gdem.utils.Streams;
 
 /**
  * Custom implementation of HttpServletResponseWrapper. Adds writeXML functionality.
@@ -40,13 +43,34 @@ public class HttpMethodResponseWrapper extends HttpServletResponseWrapper {
      * @throws Exception
      */
     public void flushXML(XMLResultStrategy xmlResult) throws Exception {
-        setStatus(xmlResult.getStatus());
-        setContentType(xmlResult.getContentType());
-        if (xmlResult.getContentLength() > 0) {
-            setContentLength(xmlResult.getContentLength());
+
+        try{
+            setStatus(xmlResult.getStatus());
+            setContentType(xmlResult.getContentType());
+            if (xmlResult.getContentLength() > 0) {
+                setContentLength(xmlResult.getContentLength());
+            }
+            xmlResult.writeXML(getOutputStream());
         }
-        xmlResult.writeXML(getOutputStream());
-        flush();
+        finally{
+            flush();
+        }
+    }
+
+    /**
+     * Configures the response header and writes the XML result into servlet output stream.
+     *
+     * @param xmlResult
+     * @throws Exception
+     */
+    public void flushBytes(byte[] bytes) throws Exception {
+
+        try{
+            Streams.drain(new ByteArrayInputStream(bytes), getOutputStream());
+        }
+        finally{
+            flush();
+        }
     }
 
     /**
@@ -79,7 +103,7 @@ public class HttpMethodResponseWrapper extends HttpServletResponseWrapper {
      */
     public void flush() throws Exception {
         OutputStream os = getOutputStream();
-        os.flush();
+        //os.flush();
         os.close();
     }
 

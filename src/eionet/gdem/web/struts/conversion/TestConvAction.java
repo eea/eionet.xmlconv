@@ -34,6 +34,7 @@ public class TestConvAction extends Action {
 
     private static LoggerIF _logger = GDEMServices.getLogger();
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) throws IOException {
 
@@ -78,8 +79,6 @@ public class TestConvAction extends Action {
             cs.setTicket(ticket);
             // execute conversion
             cs.convert(url, convert_id);
-            // flush the content
-            methodResponse.flush();
         } catch (Exception e) {
             e.printStackTrace();
             _logger.error("Error testing conversion", e);
@@ -94,7 +93,19 @@ public class TestConvAction extends Action {
 
             httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/" + Names.ERROR_JSP);
         }
+        finally{
+            if (methodResponse != null){
+                try{
+                    // flush the content
+                    methodResponse.flush();
+                }
+                catch(Exception e){
+                    _logger.error("Unable to close Servlet Output Stream.", e);
+                    e.printStackTrace();
+                }
+            }
+        }
         // Do nothing, then response is already sent.
-        return actionMapping.findForward(null);
+        return null;
     }
 }

@@ -21,7 +21,7 @@
  * Original Code: Enriko Käsper (TietoEnator)
  */
 
-package eionet.gdem.conversion;
+package eionet.gdem.conversion.excel;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -29,10 +29,10 @@ import java.io.OutputStream;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.xml.sax.XMLReader;
 
 import eionet.gdem.GDEMException;
-import eionet.gdem.conversion.excel.ExcelUtils;
 import eionet.gdem.conversion.excel.writer.ExcelConversionHandlerIF;
 import eionet.gdem.conversion.excel.writer.ExcelXMLHandler;
 
@@ -47,18 +47,18 @@ public class ExcelProcessor  {
     public ExcelProcessor() {
     }
     public void makeExcel(String sIn, String sOut) throws GDEMException {
+        FileOutputStream outStream = null;
         try
         {
-            FileOutputStream outStream = new FileOutputStream(sOut);
+            outStream = new FileOutputStream(sOut);
             makeExcel(sIn, outStream);
-            outStream.close();
-
-            //        InputSource is = new InputSource(
-
         }
         catch(Exception e)
         {
             throw new GDEMException("ErrorConversionHandler - couldn't save the Excel file: " + e.toString(), e);
+        }
+        finally{
+            IOUtils.closeQuietly(outStream);
         }
     }
     public void makeExcel(String sIn, OutputStream sOut) throws GDEMException {

@@ -35,6 +35,7 @@ public class ListConversionsAction extends BaseAction {
     /**
      * Purpose of this action is to execute ConversionService method listConversions. The request could have schema parameter
      */
+    @Override
     public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request,
             HttpServletResponse httpServletResponse) throws ServletException {
 
@@ -45,10 +46,12 @@ public class ListConversionsAction extends BaseAction {
 
         try {
             String schema = null;
-            if (params.containsKey(SCHEMA_PARAM_NAME))
+            if (params.containsKey(SCHEMA_PARAM_NAME)) {
                 schema = (String) ((Object[]) params.get(SCHEMA_PARAM_NAME))[0];
-            if (Utils.isNullStr(schema))
+            }
+            if (Utils.isNullStr(schema)) {
                 schema = null;
+            }
 
             // Call ConversionService
             ConversionServiceIF cs = new ConversionService();
@@ -71,6 +74,6 @@ public class ListConversionsAction extends BaseAction {
             }
         }
         // Do nothing, then response is already sent.
-        return map.findForward(null);
+        return null;
     }
 }

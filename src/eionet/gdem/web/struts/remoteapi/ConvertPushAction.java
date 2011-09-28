@@ -37,9 +37,10 @@ public class ConvertPushAction extends BaseAction {
     /**
      * Purpose of this action is to execute Conversion Service convertPush method. The request should contain multipart/form-data
      * and convert_id parameter
-     * 
+     *
      * @throws ServletException
      */
+    @Override
     public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request,
             HttpServletResponse httpServletResponse) throws ServletException {
 
@@ -58,10 +59,12 @@ public class ConvertPushAction extends BaseAction {
             params = fu.getRequestParams();
 
             // get convert_id parameter
-            if (params.containsKey(CONVERT_ID_PARAM_NAME))
+            if (params.containsKey(CONVERT_ID_PARAM_NAME)) {
                 convert_id = (String) params.get(CONVERT_ID_PARAM_NAME);
-            if (Utils.isNullStr(convert_id))
+            }
+            if (Utils.isNullStr(convert_id)) {
                 throw new GDEMException(CONVERT_ID_PARAM_NAME + " parameter is missing from request.");
+            }
 
             // get the file as inputstream from request
             fileInput = fu.getFileAsInputStream(CONVERT_FILE_PARAM_NAME);
@@ -73,8 +76,6 @@ public class ConvertPushAction extends BaseAction {
             cs.setHttpResponse(methodResponse);
             // execute conversion
             cs.convertPush(fileInput, convert_id, fileName);
-            // flush the content
-            methodResponse.flush();
         } catch (Exception e) {
             _logger.error(e.toString());
             try {
@@ -85,6 +86,16 @@ public class ConvertPushAction extends BaseAction {
                 throw new ServletException(ge);
             }
         } finally {
+            if (methodResponse != null){
+                try{
+                    // flush the content
+                    methodResponse.flush();
+                }
+                catch(Exception e){
+                    _logger.error("Unable to close Servlet Output Stream.", e);
+                    e.printStackTrace();
+                }
+            }
             try {
                 fileInput.close();
             } catch (Exception e) {
@@ -92,6 +103,6 @@ public class ConvertPushAction extends BaseAction {
             }
         }
         // Do nothing, the response is already sent.
-        return map.findForward(null);
+        return null;
     }
 }

@@ -21,14 +21,14 @@
  * Original Code: Enriko Käsper (TietoEnator)
  * Created on 20.07.2006
  */
-package eionet.gdem.conversion;
+package eionet.gdem.conversion.odf;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 
+import org.apache.commons.io.IOUtils;
+
 import eionet.gdem.GDEMException;
-import eionet.gdem.conversion.odf.OpenDocument;
 
 public class OpenDocumentProcessor {
 
@@ -43,15 +43,11 @@ public class OpenDocumentProcessor {
         try {
             out = new FileOutputStream(sOut);
             makeSpreadsheet(sIn, out);
-            out.close();
         } catch (Exception e) {
             throw new GDEMException("ErrorConversionHandler - couldn't save the OpenDocumentSpreadheet file: " + e.toString(), e);
         }
-        if (out != null) {
-            try {
-                out.close();
-            } catch (IOException ioe) {
-            }
+        finally{
+            IOUtils.closeQuietly(out);
         }
     }
 

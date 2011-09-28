@@ -7,13 +7,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import junit.framework.TestCase;
+import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 /**
  * This is a class for unit testing the <code>eionet.gdem.utils.Utils</code> class.
- * 
+ *
  * @author Enriko Käsper, TietoEnator Estonia AS UtilsTest
  */
 
@@ -21,7 +22,7 @@ public class UtilsTest extends TestCase {
 
     /**
      * The methods test helper date formatting methods
-     * 
+     *
      * @throws Exception
      */
     public void testDateTime() throws Exception {
@@ -52,5 +53,10 @@ public class UtilsTest extends TestCase {
 
         boolean b4 = Utils.resourceExists("https://svn.eionet.europa.eu/thereisnoschema");
         assertFalse(b4);
+    }
+    public void testGetTmpUniqueFileName(){
+        assertTrue(Utils.getUniqueTmpFileName(null).endsWith(".tmp"));
+        assertTrue(Utils.getUniqueTmpFileName("filename.xml").endsWith("filename.xml"));
+        assertTrue(Utils.getUniqueTmpFileName(null).startsWith(Properties.tmpFolder + Constants.TMP_FILE_PREFIX));
     }
 }

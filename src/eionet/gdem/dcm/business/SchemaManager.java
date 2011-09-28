@@ -38,6 +38,9 @@ import java.util.Vector;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.commons.collections.comparators.NullComparator;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.Properties;
@@ -46,7 +49,6 @@ import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.Conversion;
-import eionet.gdem.dto.CdrFileDto;
 import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.dto.CrFileDto;
 import eionet.gdem.dto.QAScript;
@@ -56,7 +58,6 @@ import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.dto.UplSchema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.services.db.dao.IUPLSchemaDao;
@@ -71,12 +72,13 @@ import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
 
 /**
  * Business logic for managing XML schemas in XMLCONV.
- * 
+ *
  * @author Enriko Käsper
  */
 public class SchemaManager {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(SchemaManager.class);
 
     private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
     private IRootElemDao rootElemDao = GDEMServices.getDaoService().getRootElemDao();
@@ -88,13 +90,13 @@ public class SchemaManager {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "d")) {
-                _logger.debug("You don't have permissions to delete schemas!");
+                LOGGER.debug("You don't have permissions to delete schemas!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_DELETE);
             }
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.debug(e.toString(), e);
+            LOGGER.debug(e.toString(), e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -102,8 +104,9 @@ public class SchemaManager {
 
             Vector stylesheets = schemaDao.getSchemaStylesheets(schemaId);
 
-            if (!Utils.isNullVector(schemaDao.getSchemaQueries(schemaId)) || uplSchemaDao.checkUplSchemaFK(schemaId))
+            if (!Utils.isNullVector(schemaDao.getSchemaQueries(schemaId)) || uplSchemaDao.checkUplSchemaFK(schemaId)) {
                 hasOtherStuff = true;
+            }
 
             // dbM.removeSchema( schemaId, true, false, !hasOtherStuff);
             schemaDao.removeSchema(schemaId, true, false, false, !hasOtherStuff);
@@ -115,20 +118,21 @@ public class SchemaManager {
                     String xslFile = (String) hash.get("xsl");
 
                     String xslFolder = Properties.xslFolder;
-                    if (!xslFolder.endsWith(File.separator))
+                    if (!xslFolder.endsWith(File.separator)) {
                         xslFolder = xslFolder + File.separator;
+                    }
 
                     try {
                         Utils.deleteFile(xslFolder + xslFile);
                     } catch (Exception e) {
-                        _logger.debug("Error deleting file", e);
+                        LOGGER.debug("Error deleting file", e);
                         throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
                     }
                 }
             }
 
         } catch (Exception e) {
-            _logger.debug("Error removing schema", e);
+            LOGGER.debug("Error removing schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -137,7 +141,7 @@ public class SchemaManager {
     /**
      * Method creates StylesheetListHolder object, that stores the list of stylesheets both for handcoded and generated. The object
      * stores also user permissions info to manage stylesheets.
-     * 
+     *
      * @param user_name
      *            user name stored in HTTP session.This for checking user permisssions
      * @param type
@@ -149,8 +153,9 @@ public class SchemaManager {
     public StylesheetListHolder getSchemas(String user_name, String type) throws DCMException {
 
         StylesheetListHolder st = new StylesheetListHolder();
-        if (Utils.isNullStr(type))
+        if (Utils.isNullStr(type)) {
             type = "handcoded";
+        }
 
         boolean ssiPrm = false;
         boolean ssdPrm = false;
@@ -168,8 +173,9 @@ public class SchemaManager {
             // By default show only handcoded stylesheets
             if (type.equals("handcoded") || type.equals("all")) {
                 hcSchemas = schemaDao.getSchemas(null);
-                if (hcSchemas == null)
+                if (hcSchemas == null) {
                     hcSchemas = new Vector();
+                }
 
                 for (int i = 0; i < hcSchemas.size(); i++) {
                     HashMap schema = (HashMap) hcSchemas.get(i);
@@ -214,7 +220,7 @@ public class SchemaManager {
             }
 
         } catch (Exception e) {
-            _logger.debug("Error getting schema", e);
+            LOGGER.debug("Error getting schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return st;
@@ -266,8 +272,9 @@ public class SchemaManager {
                 if (!xsl.startsWith(Properties.gdemURL + "/do/getStylesheet?id=")) {
 
                     File f = new File(Properties.xslFolder + File.separatorChar + xsl);
-                    if (f != null && f.exists())
+                    if (f != null && f.exists()) {
                         last_modified = Utils.getDateTime(new Date(f.lastModified()));
+                    }
                     // DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(f.lastModified()));
                     xslUrl = Names.XSL_FOLDER + (String) hash.get("xsl");
                     type = (String) hash.get("result_type");
@@ -294,7 +301,7 @@ public class SchemaManager {
             schemas.add(sc);
             st.setHandCodedStylesheets(schemas);
         } catch (Exception e) {
-            _logger.debug("Errror getting schema stylesheets", e);
+            LOGGER.debug("Errror getting schema stylesheets", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return st;
@@ -303,7 +310,7 @@ public class SchemaManager {
     /**
      * Method creates QAScriptListHolder object, that stores the list of qa script The object stores also user permissions info to
      * manage stylesheets.
-     * 
+     *
      * @param user_name
      *            user name stored in HTTP session.This for checking user permisssions
      * @return
@@ -343,8 +350,9 @@ public class SchemaManager {
             st.setQsuPrm(qsuPrm);
 
             hcSchemas = schemaDao.getSchemas(schemaId);
-            if (hcSchemas == null)
+            if (hcSchemas == null) {
                 hcSchemas = new Vector();
+            }
 
             for (int i = 0; i < hcSchemas.size(); i++) {
                 HashMap schema = (HashMap) hcSchemas.get(i);
@@ -353,7 +361,7 @@ public class SchemaManager {
                 sc.setSchema((String) schema.get("xml_schema"));
                 sc.setDescription((String) schema.get("description"));
                 boolean validate =
-                        (!Utils.isNullStr((String) schema.get("validate")) && ((String) schema.get("validate")).equals("1"));
+                    (!Utils.isNullStr((String) schema.get("validate")) && ((String) schema.get("validate")).equals("1"));
                 sc.setDoValidation(validate);
 
                 Vector qascripts = new Vector();
@@ -374,20 +382,23 @@ public class SchemaManager {
                     qases.add(qas);
 
                     // get file last modified only if schemaId is known
-                    if (schemaId != null)
+                    if (schemaId != null) {
                         if (!Utils.isNullStr(qas.getFileName())) {
                             qas.setFilePath(Names.QUERY_FOLDER + qas.getFileName());
                             String queryFolder = Properties.queriesFolder;
-                            if (!queryFolder.endsWith(File.separator))
+                            if (!queryFolder.endsWith(File.separator)) {
                                 queryFolder = queryFolder + File.separator;
+                            }
                             try {
                                 File f = new File(queryFolder + qas.getFileName());
-                                if (f != null && f.exists())
+                                if (f != null && f.exists()) {
                                     qas.setModified(Utils.getDateTime(new Date(f.lastModified())));
+                                }
                             } catch (Exception e) {
                             }
 
                         }
+                    }
 
                 }
                 if (qases.size() > 0) {
@@ -402,7 +413,7 @@ public class SchemaManager {
             }
 
         } catch (Exception e) {
-            _logger.debug("Error getting schemas with QA scripts", e);
+            LOGGER.debug("Error getting schemas with QA scripts", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return st;
@@ -414,13 +425,13 @@ public class SchemaManager {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
-                _logger.debug("You don't have permissions to delete schemas!");
+                LOGGER.debug("You don't have permissions to delete schemas!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_UPDATE);
             }
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.debug("Error updating schema", e);
+            LOGGER.debug("Error updating schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -431,7 +442,7 @@ public class SchemaManager {
             schemaDao.updateSchema(schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate);
 
         } catch (Exception e) {
-            _logger.debug("Error updating schema", e);
+            LOGGER.debug("Error updating schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -456,8 +467,9 @@ public class SchemaManager {
 
             Vector list = schemaDao.getSchemas(schemaId, false);
 
-            if (list == null)
+            if (list == null) {
                 list = new Vector();
+            }
 
             if (list.size() > 0) {
 
@@ -468,8 +480,8 @@ public class SchemaManager {
                 schema.setDescription((String) schemaHash.get("description"));
                 schema.setSchemaLang((String) schemaHash.get("schema_lang"));
                 boolean validate =
-                        (!Utils.isNullStr((String) schemaHash.get("validate")) && ((String) schemaHash.get("validate"))
-                                .equals("1"));
+                    (!Utils.isNullStr((String) schemaHash.get("validate")) && ((String) schemaHash.get("validate"))
+                            .equals("1"));
                 schema.setDoValidation(validate);
                 schema.setDtdPublicId((String) schemaHash.get("dtd_public_id"));
                 schema.setExpireDate(Utils.parseDate((String) schemaHash.get("expire_date"), "yyyy-MM-dd HH:mm:ss"));
@@ -487,8 +499,9 @@ public class SchemaManager {
                     if (!Utils.isNullStr(uplSchemaFile)) {
                         try {
                             File f = new File(Properties.schemaFolder, uplSchemaFile);
-                            if (f != null)
+                            if (f != null) {
                                 uplSchema.setLastModified(Utils.getDateTime(new Date(f.lastModified())));
+                            }
                         } catch (Exception e) {
                         }
                     }
@@ -502,10 +515,11 @@ public class SchemaManager {
                 se.setSchema(schema);
             }
 
-            Vector root_elems = (Vector) rootElemDao.getSchemaRootElems(schemaId);
+            Vector root_elems = rootElemDao.getSchemaRootElems(schemaId);
 
-            if (root_elems == null)
+            if (root_elems == null) {
                 root_elems = new Vector();
+            }
 
             for (int i = 0; i < root_elems.size(); i++) {
                 HashMap hash = (HashMap) root_elems.get(i);
@@ -522,7 +536,7 @@ public class SchemaManager {
 
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Error getting root elements", e);
+            LOGGER.error("Error getting root elements", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return se;
@@ -531,7 +545,7 @@ public class SchemaManager {
 
     /**
      * Get DD Schemas and append schemas founf from database
-     * 
+     *
      * @return
      * @throws DCMException
      */
@@ -560,7 +574,7 @@ public class SchemaManager {
                 try {
                     d = Utils.parseDate((String) schema.get("dateReleased"), "ddMMyy");
                 } catch (Exception e) {
-                    _logger.error("Unable to parse DataDictionary dataset released date: " + (String) schema.get("dateReleased"),
+                    LOGGER.error("Unable to parse DataDictionary dataset released date: " + (String) schema.get("dateReleased"),
                             e);
                 }
                 sc.setDatasetReleased(d);
@@ -571,8 +585,9 @@ public class SchemaManager {
             // append handcoded conversions
             hcSchemas = schemaDao.getSchemasWithStl();
 
-            if (hcSchemas == null)
+            if (hcSchemas == null) {
                 hcSchemas = new Vector();
+            }
 
             for (int i = 0; i < hcSchemas.size(); i++) {
                 HashMap schema = (HashMap) hcSchemas.get(i);
@@ -589,7 +604,7 @@ public class SchemaManager {
             Collections.sort(schemas, comparator);
 
         } catch (Exception e) {
-            _logger.debug("Error getting schema", e);
+            LOGGER.debug("Error getting schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -638,7 +653,7 @@ public class SchemaManager {
             }
 
         } catch (Exception e) {
-            _logger.error("Error getting schema stylesheets", e);
+            LOGGER.error("Error getting schema stylesheets", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return stls;
@@ -691,7 +706,7 @@ public class SchemaManager {
             }
 
         } catch (Exception e) {
-            _logger.error("Error getting uploaded schema", e);
+            LOGGER.error("Error getting uploaded schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return sc;
@@ -699,7 +714,7 @@ public class SchemaManager {
     }
 
     public String addSchema(String user, String schemaUrl, String descr, String schemaLang, boolean doValidation)
-            throws DCMException {
+    throws DCMException {
         String schemaID = null;
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "i")) {
@@ -708,7 +723,7 @@ public class SchemaManager {
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error adding upoaded schema", e);
+            LOGGER.error("Error adding upoaded schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         try {
@@ -718,13 +733,14 @@ public class SchemaManager {
             if (!Utils.isNullStr(schemaID)) {
                 throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_URL_EXISTS);
             }
-            if (schemaID == null)
+            if (schemaID == null) {
                 schemaID = schemaDao.addSchema(schemaUrl, descr, schemaLang, doValidation, null);
+            }
 
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error adding uploaded schema", e);
+            LOGGER.error("Error adding uploaded schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return schemaID;
@@ -739,7 +755,7 @@ public class SchemaManager {
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error adding upoaded schema", e);
+            LOGGER.error("Error adding upoaded schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
     }
@@ -753,7 +769,7 @@ public class SchemaManager {
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error adding upoaded schema", e);
+            LOGGER.error("Error adding upoaded schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         try {
@@ -764,30 +780,32 @@ public class SchemaManager {
                     throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_URL_EXISTS);
                 }
             }
-
+            OutputStream output = null;
             String filepath = new String(Properties.schemaFolder + File.separatorChar + fileName);
-            OutputStream w = new FileOutputStream(filepath);
-            int bytesRead = 0;
-            byte[] buffer = new byte[8192];
-            while ((bytesRead = fileInputStream.read(buffer, 0, 8192)) != -1) {
-                w.write(buffer, 0, bytesRead);
+
+            try{
+                output = new FileOutputStream(filepath);
+                IOUtils.copy(fileInputStream, output);
             }
-            w.close();
-            fileInputStream.close();
+            finally{
+                IOUtils.closeQuietly(fileInputStream);
+                IOUtils.closeQuietly(output);
+            }
+
 
             uplSchemaDao.addUplSchema(fileName, null, fkSchemaId);
 
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error adding upoaded schema", e);
+            LOGGER.error("Error adding upoaded schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
     }
 
     /**
-     * 
+     *
      * @param user
      *            - user name stored in Http session attribute
      * @param schemaId
@@ -803,13 +821,13 @@ public class SchemaManager {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "d")) {
-                _logger.debug("You don't have permissions to delete schemas!");
+                LOGGER.debug("You don't have permissions to delete schemas!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_DELETE);
             }
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error deleting upoaded schema", e);
+            LOGGER.error("Error deleting upoaded schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -818,8 +836,9 @@ public class SchemaManager {
 
             if (delSchema) {
                 if (!Utils.isNullVector(schemaDao.getSchemaQueries(schemaId))
-                        || !Utils.isNullVector(schemaDao.getSchemaStylesheets(schemaId)))
+                        || !Utils.isNullVector(schemaDao.getSchemaStylesheets(schemaId))) {
                     delSchema = false;
+                }
             }
 
             // delete uploaded files and schema if needed
@@ -828,24 +847,25 @@ public class SchemaManager {
             // delete uplSchema files only if db operation succeeded
             if (uplSchema != null) {
 
-                String schemaFile = (String) uplSchema.get("upl_schema_file");
+                String schemaFile = uplSchema.get("upl_schema_file");
 
                 if (schemaFile != null) {
                     try {
                         Utils.deleteFile(Properties.schemaFolder + "/" + schemaFile);
                     } catch (Exception e) {
-                        _logger.error("Error deleting upoladed schema file", e);
+                        LOGGER.error("Error deleting upoladed schema file", e);
                         throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
                     }
                     ret = ret + 2;
                 }
             }
         } catch (Exception e) {
-            _logger.error("Error deleting uploaded schema", e);
+            LOGGER.error("Error deleting uploaded schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
-        if (delSchema)
+        if (delSchema) {
             ret++;
+        }
         return ret;
 
     }
@@ -856,7 +876,7 @@ public class SchemaManager {
 
     /**
      * Get Schemas and stylesheets generated from DataDictioanry.
-     * 
+     *
      * @param getStylesheets
      *            - generate also stylesheet information
      * @return
@@ -882,7 +902,7 @@ public class SchemaManager {
                 try {
                     d = Utils.parseDate((String) schema.get("dateReleased"), "ddMMyy");
                 } catch (Exception e) {
-                    _logger.error("Unable to parse DataDictionary dataset released date: " + (String) schema.get("dateReleased"),
+                    LOGGER.error("Unable to parse DataDictionary dataset released date: " + (String) schema.get("dateReleased"),
                             e);
                 }
                 sc.setDatasetReleased(d);
@@ -912,7 +932,7 @@ public class SchemaManager {
 
             Collections.sort(schemas, comparatorChain);
         } catch (Exception e) {
-            _logger.error("Error getting DD schemas", e);
+            LOGGER.error("Error getting DD schemas", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return schemas;
@@ -935,7 +955,7 @@ public class SchemaManager {
             schema.setExpireDate(Utils.parseDate((String) sch.get("expire_date"), "yyyy-MM-dd HH:mm:ss"));
 
         } catch (Exception e) {
-            _logger.error("Error getting schema", e);
+            LOGGER.error("Error getting schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return schema;
@@ -945,13 +965,13 @@ public class SchemaManager {
         try {
             return schemaDao.getSchemaID(schema);
         } catch (SQLException e) {
-            _logger.error("Error getting schema", e);
+            LOGGER.error("Error getting schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
     }
 
     public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, FormFile file)
-            throws DCMException {
+    throws DCMException {
 
         try {
             InputStream fileInputStream = file.getInputStream();
@@ -960,23 +980,23 @@ public class SchemaManager {
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error adding upoaded schema", e);
+            LOGGER.error("Error adding upoaded schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
     }
 
     public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, InputStream fileInputStream)
-            throws DCMException {
+    throws DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
-                _logger.debug("You don't have permissions to update schemas!");
+                LOGGER.debug("You don't have permissions to update schemas!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_UPDATE);
             }
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error updating uploaded schema", e);
+            LOGGER.error("Error updating uploaded schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -984,15 +1004,17 @@ public class SchemaManager {
             // store the uploaded content into schema folder with the given filename
             if (fileInputStream != null && !Utils.isNullStr(fileName)) {
 
+                OutputStream output = null;
                 String filepath = new String(Properties.schemaFolder + File.separatorChar + fileName);
-                OutputStream w = new FileOutputStream(filepath);
-                int bytesRead = 0;
-                byte[] buffer = new byte[8192];
-                while ((bytesRead = fileInputStream.read(buffer, 0, 8192)) != -1) {
-                    w.write(buffer, 0, bytesRead);
+
+                try{
+                    output = new FileOutputStream(filepath);
+                    IOUtils.copy(fileInputStream, output);
                 }
-                w.close();
-                fileInputStream.close();
+                finally{
+                    IOUtils.closeQuietly(fileInputStream);
+                    IOUtils.closeQuietly(output);
+                }
             }
 
             // DB update needed
@@ -1002,7 +1024,7 @@ public class SchemaManager {
             // _logger.error("Error updating uploaded schema", dcme);
             // throw dcme;
         } catch (Exception e) {
-            _logger.error("Error updating uploaded schema", e);
+            LOGGER.error("Error updating uploaded schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -1032,15 +1054,16 @@ public class SchemaManager {
             if (!Utils.isNullStr(uplSchemaFile)) {
                 try {
                     File f = new File(Properties.schemaFolder, uplSchemaFile);
-                    if (f != null)
+                    if (f != null) {
                         uplSchema.setLastModified(Utils.getDateTime(new Date(f.lastModified())));
+                    }
                 } catch (Exception e) {
                 }
             }
 
         } catch (Exception e) {
             // e.printStackTrace();
-            _logger.error("Error getting uploaded schema", e);
+            LOGGER.error("Error getting uploaded schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return uplSchema;
@@ -1049,7 +1072,7 @@ public class SchemaManager {
 
     /**
      * If the schema is stored in local repository, then this method returns the file name of locally stored schema
-     * 
+     *
      * @param schemaUrl
      *            remote schema URL
      * @return filename stored in schemas folder
@@ -1066,51 +1089,17 @@ public class SchemaManager {
 
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Error getting uploaded schema", e);
+            LOGGER.error("Error getting uploaded schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return retURL;
 
     }
 
-    public ArrayList getCdrFiles(String schema) throws DCMException {
-
-        ArrayList files = new ArrayList();
-        try {
-            // retrive conversions for DD tables
-            List cdrFiles = CDRServiceClient.searchXMLFiles(schema);
-
-            for (int i = 0; i < cdrFiles.size(); i++) {
-                Hashtable xmlfile = (Hashtable) cdrFiles.get(i);
-                String url = (String) xmlfile.get("url");
-
-                CdrFileDto cf = new CdrFileDto();
-                cf.setUrl(url);
-                cf.setCountry((String) xmlfile.get("country"));
-                cf.setIso((String) xmlfile.get("iso"));
-                cf.setPartofyear((String) xmlfile.get("partofyear"));
-                cf.setTitle((String) xmlfile.get("title"));
-                // year and endyear are Integers, if not null
-                Object endyear = xmlfile.get("endyear");
-                if (endyear instanceof Integer)
-                    cf.setEndyear(((Integer) endyear).intValue());
-
-                Object year = (Integer) xmlfile.get("year");
-                if (year instanceof Integer)
-                    cf.setYear(((Integer) year).intValue());
-
-                files.add(cf);
-            }
-        } catch (Exception e) {
-            _logger.error("Error getting XML files from CDR for schema", e);
-            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-        }
-        return files;
-    }
 
     /**
      * Returns the list of xml files retreived from CR sparql client
-     * 
+     *
      * @return
      * @throws Exception
      */
@@ -1125,7 +1114,7 @@ public class SchemaManager {
 
     /**
      * Returns the list of DD tables retreived from xml-rpc request
-     * 
+     *
      * @return
      */
     protected List getDDTables() {
@@ -1135,8 +1124,9 @@ public class SchemaManager {
     public String generateUniqueSchemaFilename(String filepart, String ext) throws DCMException {
 
         String ret = "";
-        if (Utils.isNullStr(ext))
+        if (Utils.isNullStr(ext)) {
             ext = Schema.getDefaultSchemaLang().toLowerCase();
+        }
         StringBuilder uniq = new StringBuilder(filepart);
 
         try {
@@ -1147,7 +1137,7 @@ public class SchemaManager {
             ret = "schema-".concat(hash).concat(".").concat(ext);
 
         } catch (Exception e) {
-            _logger.error("Error generating unque schema file name", e);
+            LOGGER.error("Error generating unque schema file name", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return ret;
@@ -1156,8 +1146,9 @@ public class SchemaManager {
 
     public String generateSchemaFilenameByID(String folderName, String schemaID, String ext) throws DCMException {
 
-        if (Utils.isNullStr(ext))
+        if (Utils.isNullStr(ext)) {
             ext = Schema.getDefaultSchemaLang().toLowerCase();
+        }
         String fileName = "schema-".concat(schemaID).concat(".").concat(ext);
         fileName = MultipartFileUpload.getUniqueFileName(folderName, fileName);
 
@@ -1167,7 +1158,7 @@ public class SchemaManager {
 
     /**
      * compares the differences between remote schema and the local copy of it
-     * 
+     *
      * @param schemaUrl
      * @param schemaFile
      * @return if the result is empty string, then the files are identical, otherwise BusinessConstants with AppReosurce identifier
@@ -1189,8 +1180,9 @@ public class SchemaManager {
         }
         // make local file md5
         // if there is no local file, then there is nothing to diff
-        if (Utils.isNullStr(schemaFile))
+        if (Utils.isNullStr(schemaFile)) {
             return "";
+        }
 
         File f = new File(Properties.schemaFolder, schemaFile);
         if (!f.exists()) {
@@ -1204,15 +1196,15 @@ public class SchemaManager {
         }
         // compare
         result =
-                remoteSchemaHash.equals(fileHash) && remoteSchemaHash.length() > 0 ? BusinessConstants.WARNING_FILES_IDENTICAL
-                        : BusinessConstants.WARNING_FILES_NOTIDENTICAL;
+            remoteSchemaHash.equals(fileHash) && remoteSchemaHash.length() > 0 ? BusinessConstants.WARNING_FILES_IDENTICAL
+                    : BusinessConstants.WARNING_FILES_NOTIDENTICAL;
 
-        return result;
+            return result;
     }
 
     /**
      * Download remote schema from specified URL and return it as byte array
-     * 
+     *
      * @param url
      * @return
      * @throws DCMException
@@ -1235,7 +1227,7 @@ public class SchemaManager {
     /**
      * Method tries to download the remote XML Schema and store it in the local cache. Method registers the schema in T_UPL_SCHEMA
      * table.
-     * 
+     *
      * @param user
      * @param schemaUrl
      * @param schemaFileName
@@ -1244,17 +1236,19 @@ public class SchemaManager {
      * @throws DCMException
      */
     public void storeRemoteSchema(String user, String schemaUrl, String schemaFileName, String schemaId, String uplSchemaId)
-            throws DCMException {
+    throws DCMException {
 
         byte[] remoteSchema = downloadRemoteSchema(schemaUrl);
         ByteArrayInputStream in = new ByteArrayInputStream(remoteSchema);
-        if (Utils.isNullStr(schemaFileName))
+        if (Utils.isNullStr(schemaFileName)) {
             schemaFileName =
-                    generateSchemaFilenameByID(Properties.schemaFolder, schemaId, Utils.extractExtension(schemaUrl, "xsd"));
-        if (Utils.isNullStr(uplSchemaId))
+                generateSchemaFilenameByID(Properties.schemaFolder, schemaId, Utils.extractExtension(schemaUrl, "xsd"));
+        }
+        if (Utils.isNullStr(uplSchemaId)) {
             addUplSchema(user, in, schemaFileName, schemaId);
-        else
+        } else {
             updateUplSchema(user, uplSchemaId, schemaId, schemaFileName, in);
+        }
 
     }
 

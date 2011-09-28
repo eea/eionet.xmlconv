@@ -19,7 +19,13 @@
  *        Enriko Käsper
  */
 
-package eionet.gdem.conversion;
+package eionet.gdem.conversion.spreadsheet;
+
+import java.math.BigDecimal;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
@@ -33,6 +39,11 @@ import eionet.gdem.dto.ConversionResultDto;
  * @author Enriko Käsper
  */
 public class SourceReaderLogger {
+
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(SourceReaderLogger.class);
+
+    private long startTimestamp = 0;
 
     /**
      * Enum storing reader type messages.
@@ -68,6 +79,7 @@ public class SourceReaderLogger {
      * Start reading spreadsheet.
      */
     public void logStartWorkbook() {
+        startTimestamp = System.currentTimeMillis();
         conversionResult.addConversionLog(ConversionLogType.INFO,
                 Properties.getMessage(BusinessConstants.CONVERSION_LOG_START_SPREADSHEET), ConversionLogDto.CATEGORY_WORKBOOK);
     }
@@ -154,6 +166,7 @@ public class SourceReaderLogger {
 
     /**
      * The following columns are missing: missingColumns on sheet sheetName
+     *
      * @param missingColumns
      * @param sheetName
      */
@@ -165,6 +178,7 @@ public class SourceReaderLogger {
 
     /**
      * End reading sheet:
+     *
      * @param sheetName
      */
     public void logEndSheet(String sheetName) {
@@ -175,11 +189,13 @@ public class SourceReaderLogger {
 
     /**
      * Found numberOfRows records on sheet: sheetName
+     *
      * @param numberOfRows
      * @param sheetName
      */
     public void logNumberOfRows(int numberOfRows, String sheetName) {
-        conversionResult.addConversionLog(ConversionLogType.INFO,
+        conversionResult.addConversionLog(
+                ConversionLogType.INFO,
                 Properties.getMessage(BusinessConstants.CONVERSION_LOG_NOF_RECORDS, new String[] {Integer.toString(numberOfRows),
                         sheetName}), ConversionLogDto.CATEGORY_SHEET + ": " + sheetName);
     }
@@ -187,21 +203,28 @@ public class SourceReaderLogger {
     /**
      * End reading spreadsheet.
      */
-    public void logEndWorkbook() {
-        conversionResult.addConversionLog(ConversionLogType.INFO,
-                Properties.getMessage(BusinessConstants.CONVERSION_LOG_END_SPREADSHEET),
-                ConversionLogDto.CATEGORY_WORKBOOK);
+    public void logEndWorkbook(long fileSize) {
+        BigDecimal totalTime = new BigDecimal(System.currentTimeMillis() - startTimestamp).divide(new BigDecimal("1000.0"));
+        String fileSizeMessage = "";
+        if(fileSize >0){
+            fileSizeMessage = FileUtils.byteCountToDisplaySize(fileSize);
+        }
+        String message =
+            Properties.getMessage(BusinessConstants.CONVERSION_LOG_END_SPREADSHEET, new String[] {fileSizeMessage, totalTime.toPlainString()});
+        conversionResult.addConversionLog(ConversionLogType.INFO, message, ConversionLogDto.CATEGORY_WORKBOOK);
+        LOGGER.info(message);
     }
 
     /**
      * Sheet schema is: schemaUrl
+     *
      * @param instanceUrl
      * @param tblLocalName
      */
     public void logSheetSchema(String instanceUrl, String sheetName) {
         conversionResult.addConversionLog(ConversionLogType.INFO,
-                Properties.getMessage(BusinessConstants.CONVERSION_LOG_SHEET_SCHEMA, new String[] {
-                        instanceUrl}), ConversionLogDto.CATEGORY_SHEET + ": " + sheetName);
+                Properties.getMessage(BusinessConstants.CONVERSION_LOG_SHEET_SCHEMA, new String[] {instanceUrl}),
+                ConversionLogDto.CATEGORY_SHEET + ": " + sheetName);
     }
 
 }

@@ -18,11 +18,11 @@ import eionet.gdem.utils.Utils;
 /**
  * The class acts as a adapter between XQuery engine and source file to be analyzed. If QA knows the login information for source
  * file, then it appends the information to the URL of source file parameter.
- * 
+ *
  * XQuery engine asks the file from generated URL from xmlconv instead of the original URL.
- * 
+ *
  * @author kaspeenr
- * 
+ *
  */
 public class SourceFileManager {
 
@@ -32,7 +32,7 @@ public class SourceFileManager {
 
     /**
      * reads file from remote URL and writes it to the response stream using HTTP basic authentication
-     * 
+     *
      * @param httpResponse
      * @param ticket
      * @param auth
@@ -69,8 +69,9 @@ public class SourceFileManager {
             int bufLen = 0;
             byte[] buf = new byte[BYTE_BUF];
 
-            while ((bufLen = is.read(buf)) != -1)
+            while ((bufLen = is.read(buf)) != -1) {
                 httpResponse.getOutputStream().write(buf, 0, bufLen);
+            }
         } finally {
             if (source != null) {
                 try {
@@ -91,7 +92,7 @@ public class SourceFileManager {
 
     /**
      * reads file from remote URL and writes it to the response stream without authentication
-     * 
+     *
      * @param httpResponse
      * @param ticket
      * @param auth
@@ -124,8 +125,9 @@ public class SourceFileManager {
             int bufLen = 0;
             byte[] buf = new byte[BYTE_BUF];
 
-            while ((bufLen = is.read(buf)) != -1)
+            while ((bufLen = is.read(buf)) != -1){
                 httpResponse.getOutputStream().write(buf, 0, bufLen);
+            }
         } finally {
             if (source != null) {
                 try {
@@ -146,7 +148,7 @@ public class SourceFileManager {
 
     /**
      * Generates the URL for retreiving source file through QA with credentials
-     * 
+     *
      * @param ticket
      * @param source_url
      * @param isTrustedMode
@@ -155,7 +157,7 @@ public class SourceFileManager {
      * @throws MalformedURLException
      */
     public static String getSourceFileAdapterURL(String ticket, String source_url, boolean isTrustedMode)
-            throws MalformedURLException, IOException {
+    throws MalformedURLException, IOException {
         StringBuffer ret = new StringBuffer();
         InputFile source = null;
 
@@ -163,12 +165,14 @@ public class SourceFileManager {
             source = new InputFile(source_url);
 
             // the source URL is already the URL of Source file Adapter
-            if (source_url.indexOf(Constants.GETSOURCE_URL) > -1)
+            if (source_url.indexOf(Constants.GETSOURCE_URL) > -1) {
                 return source.toString();
+            }
 
             source.setTrustedMode(isTrustedMode);
-            if (Utils.isNullStr(ticket))
+            if (Utils.isNullStr(ticket)) {
                 ticket = source.getAuthentication();
+            }
 
             /*
              * pass authentication information as ticket parameter and source file URl as source_url parameter

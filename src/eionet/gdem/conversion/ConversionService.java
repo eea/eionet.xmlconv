@@ -27,15 +27,17 @@ package eionet.gdem.conversion;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.GDEMException;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.dto.ConversionResultDto;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -47,7 +49,8 @@ import eionet.gdem.utils.Utils;
 
 public class ConversionService extends RemoteService implements ConversionServiceIF {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(ConversionService.class);
 
     public ConversionService() {
     }
@@ -88,7 +91,7 @@ public class ConversionService extends RemoteService implements ConversionServic
             return convertMethod.convert(sourceURL, convertId);
 
         } catch (IOException ex) {
-            _logger.error("Error creating ticket ", ex);
+            LOGGER.error("Error creating ticket ", ex);
             throw new GDEMException("Error creating ticket", ex);
         }
     }
@@ -101,8 +104,8 @@ public class ConversionService extends RemoteService implements ConversionServic
     @Override
     public Hashtable convert(String sourceURL, String convertId) throws GDEMException {
 
-        if (!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG)) {
-            _logger.debug("ConversionService.convert method called through XML-rpc.");
+        if (!isHTTPRequest() && LOGGER.isDebugEnabled()) {
+            LOGGER.debug("ConversionService.convert method called through XML-rpc.");
         }
         ConvertXMLMethod convertMethod = new ConvertXMLMethod();
         setGlobalParameters(convertMethod);
@@ -117,14 +120,14 @@ public class ConversionService extends RemoteService implements ConversionServic
     @Override
     public Hashtable convertDD_XML(String sourceURL) throws GDEMException {
 
-        if (!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG)) {
-            _logger.debug("ConversionService.convertDD_XML method called through XML-rpc.");
+        if (!isHTTPRequest() && LOGGER.isDebugEnabled()) {
+            LOGGER.debug("ConversionService.convertDD_XML method called through XML-rpc.");
         }
 
         ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
         setGlobalParameters(convertDDXMLMethod);
         ConversionResultDto result = convertDDXMLMethod.convertDD_XML(sourceURL);
-        return convertExcelResult(result);
+        return ConvertDDXMLMethod.convertExcelResult(result);
     }
 
     @Override
@@ -150,14 +153,14 @@ public class ConversionService extends RemoteService implements ConversionServic
     @Override
     public Hashtable convertDD_XML_split(String sourceURL, String sheetParam) throws GDEMException {
 
-        if (!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG)) {
-            _logger.debug("ConversionService.convertDD_XML_split method called through XML-rpc.");
+        if (!isHTTPRequest() && LOGGER.isDebugEnabled()) {
+            LOGGER.debug("ConversionService.convertDD_XML_split method called through XML-rpc.");
         }
 
         ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
         setGlobalParameters(convertDDXMLMethod);
         ConversionResultDto result = convertDDXMLMethod.convertDD_XML_split(sourceURL, sheetParam);
-        return convertExcelResult(result);
+        return ConvertDDXMLMethod.convertExcelResult(result);
     }
 
     public boolean existsXMLSchema(String xmlSchema) throws GDEMException {
@@ -173,8 +176,8 @@ public class ConversionService extends RemoteService implements ConversionServic
     @Override
     public Hashtable convertPush(byte file[], String convertId, String filename) throws GDEMException {
 
-        if (!isHTTPRequest() && _logger.enable(LoggerIF.DEBUG)) {
-            _logger.debug("ConversionService.convertPush method called through XML-rpc.");
+        if (!isHTTPRequest() && LOGGER.isDebugEnabled()) {
+            LOGGER.debug("ConversionService.convertPush method called through XML-rpc.");
         }
 
         InputStream input = null;
@@ -238,32 +241,16 @@ public class ConversionService extends RemoteService implements ConversionServic
         result.add(dto.getStatusDescription());
 
         if (dto.getConvertedXmls() != null) {
-            for (Map.Entry<String, String> entry : dto.getConvertedXmls().entrySet()) {
+            for (Map.Entry<String, byte[]> entry : dto.getConvertedXmls().entrySet()) {
                 result.add(entry.getKey());
-                result.add(entry.getValue());
+                try {
+                    result.add(new String(entry.getValue(), "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
-        return result;
-    }
-    private static final Hashtable<String, Object> convertExcelResult(ConversionResultDto dto) {
-        Hashtable<String, Object> result = new Hashtable<String, Object>();
-
-        result.put("resultCode", dto.getStatusCode());
-        result.put("resultDescription", dto.getStatusDescription());
-        result.put("conversionLog", dto.getConversionLogAsHtml());
-        Vector<Hashtable<String, Object>> convertedFiles = new Vector<Hashtable<String, Object>>();
-
-        //run through sheets if available
-        if (dto.getConvertedXmls() != null) {
-            for (Map.Entry<String, String> entry : dto.getConvertedXmls().entrySet()) {
-                Hashtable<String, Object> convertedFile = new Hashtable<String, Object>();
-                convertedFile.put("fileName", entry.getKey());
-                convertedFile.put("content", entry.getValue());
-                convertedFiles.add(convertedFile);
-            }
-        }
-        result.put("convertedFiles", convertedFiles);
         return result;
     }
 }

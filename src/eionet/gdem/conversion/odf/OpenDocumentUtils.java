@@ -26,7 +26,7 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.IOUtils;
 
-import eionet.gdem.conversion.SourceReaderIF;
+import eionet.gdem.conversion.spreadsheet.SourceReaderIF;
 
 public class OpenDocumentUtils {
 
@@ -43,9 +43,10 @@ public class OpenDocumentUtils {
      */
     public static boolean isSpreadsheetFile(InputStream input) {
 
-        ZipInputStream zipStream = new ZipInputStream(input);
+        ZipInputStream zipStream=null;
         ZipEntry zipEntry = null;
         try {
+            zipStream = new ZipInputStream(input);
             while (zipStream.available() == 1 && (zipEntry = zipStream.getNextEntry()) != null) {
                 if (zipEntry != null) {
                     if ("content.xml".equals(zipEntry.getName())) {

@@ -93,7 +93,11 @@ public class ConversionResultDto {
     /**
      * Converted XML files according to style sheets. Map key is file name, map value is file content.
      */
-    private Map<String, String> convertedXmls;
+    private Map<String, byte[]> convertedXmls;
+    /**
+     * References to converted files if they are stored temporarily in filesystem.
+     */
+    private List<ConvertedFileDto> convertedFiles;
 
     public ConversionResultDto() {
         super();
@@ -132,7 +136,7 @@ public class ConversionResultDto {
     /**
      * @return the convertedXmls
      */
-    public Map<String, String> getConvertedXmls() {
+    public Map<String, byte[]> getConvertedXmls() {
         return convertedXmls;
     }
 
@@ -140,7 +144,7 @@ public class ConversionResultDto {
      * @param convertedXmls
      *            the convertedXmls to set
      */
-    public void setConvertedXmls(Map<String, String> convertedXmls) {
+    public void setConvertedXmls(Map<String, byte[]> convertedXmls) {
         this.convertedXmls = convertedXmls;
     }
 
@@ -152,11 +156,26 @@ public class ConversionResultDto {
      * @param convertedXml
      *            XML content
      */
-    public void addConvertedXml(String xmlName, String convertedXml) {
+    public void addConvertedXml(String xmlName, byte[] convertedXml) {
         if (this.convertedXmls == null) {
-            this.convertedXmls = new LinkedHashMap<String, String>();
+            this.convertedXmls = new LinkedHashMap<String, byte[]>();
         }
         this.convertedXmls.put(xmlName, convertedXml);
+    }
+
+    /**
+     * Add new files into the conversion result object.
+     *
+     * @param xmlName
+     *            file name
+     * @param convertedXml
+     *            XML content
+     */
+    public void addConvertedFile(String fileName, String filePath) {
+        if (this.convertedFiles == null) {
+            this.convertedFiles = new ArrayList<ConvertedFileDto>();
+        }
+        this.convertedFiles.add(new ConvertedFileDto(fileName, filePath));
     }
 
     /**
@@ -318,5 +337,22 @@ public class ConversionResultDto {
         strBuilder.append("</div>");
 
         return strBuilder.toString();
+    }
+
+    /**
+     * @return
+     */
+    public List<ConvertedFileDto> getConvertedFiles() {
+        return this.convertedFiles;
+    }
+    public ConvertedFileDto getConvertedFileByFileName(String fileName){
+        if(convertedFiles!=null){
+            for (ConvertedFileDto convertedFile :convertedFiles){
+                if (convertedFile.getFileName().equals(fileName)){
+                    return convertedFile;
+                }
+            }
+        }
+        return null;
     }
 }

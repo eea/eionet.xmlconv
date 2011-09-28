@@ -31,6 +31,9 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.Constants;
@@ -52,13 +55,14 @@ import eionet.gdem.utils.Utils;
 
 public class QAScriptManager {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(QAScriptManager.class);
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
     private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
 
     /**
      * Returns QAScript object with all the data incl. file contebnt
-     * 
+     *
      * @param queryId
      * @return
      * @throws DCMException
@@ -70,8 +74,9 @@ public class QAScriptManager {
             if (!queryId.equals("")) {
                 HashMap scriptData = queryDao.getQueryInfo(queryId);
 
-                if (scriptData == null)
+                if (scriptData == null) {
                     scriptData = new HashMap<String, String>();
+                }
 
                 qaScript.setScriptId((String) scriptData.get("query_id"));
                 qaScript.setSchemaId((String) scriptData.get("schema_id"));
@@ -87,8 +92,9 @@ public class QAScriptManager {
 
                 if (!Utils.isNullStr(qaScript.getFileName())) {
                     qaScript.setFilePath(Names.QUERY_FOLDER + qaScript.getFileName());
-                    if (!queryFolder.endsWith(File.separator))
+                    if (!queryFolder.endsWith(File.separator)) {
                         queryFolder = queryFolder + File.separator;
+                    }
                     String queryContent = null;
                     try {
                         queryContent = Utils.readStrFromFile(queryFolder + qaScript.getFileName());
@@ -105,8 +111,9 @@ public class QAScriptManager {
                     qaScript.setChecksum(checksum);
                     try {
                         File f = new File(queryFolder + qaScript.getFileName());
-                        if (f != null && f.exists())
+                        if (f != null && f.exists()) {
                             qaScript.setModified(Utils.getDateTime(new Date(f.lastModified())));
+                        }
                     } catch (Exception e) {
                     }
 
@@ -114,7 +121,7 @@ public class QAScriptManager {
             }
 
         } catch (Exception e) {
-            _logger.error("Error getting QA script", e);
+            LOGGER.error("Error getting QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return qaScript;
@@ -130,12 +137,12 @@ public class QAScriptManager {
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error updating QA script", e);
+            LOGGER.error("Error updating QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
         if (Utils.isNullStr(scriptId) || Utils.isNullStr(schemaId)) {
-            _logger.error("Cannot update QA script. Script ID or schema ID is empty.");
+            LOGGER.error("Cannot update QA script. Script ID or schema ID is empty.");
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -160,7 +167,7 @@ public class QAScriptManager {
             throw e;
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Error updating QA script", e);
+            LOGGER.error("Error updating QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -168,7 +175,7 @@ public class QAScriptManager {
 
     /**
      * Update script properties
-     * 
+     *
      * @param user
      * @param scriptId
      * @param shortName
@@ -190,12 +197,12 @@ public class QAScriptManager {
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error updating QA script", e);
+            LOGGER.error("Error updating QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
         if (Utils.isNullStr(scriptId) || Utils.isNullStr(schemaId)) {
-            _logger.error("Cannot update QA script. Script ID or schema ID is empty.");
+            LOGGER.error("Cannot update QA script. Script ID or schema ID is empty.");
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -212,7 +219,7 @@ public class QAScriptManager {
             queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit);
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Error updating QA script", e);
+            LOGGER.error("Error updating QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -220,7 +227,7 @@ public class QAScriptManager {
 
     /**
      * Checks if the script with the given filename exists whether in db or in fs
-     * 
+     *
      * @param fileName
      * @return
      * @throws SQLException
@@ -244,7 +251,7 @@ public class QAScriptManager {
 
     /**
      * Store QA script file into file system
-     * 
+     *
      * @param file
      * @param fileName
      * @throws FileNotFoundException
@@ -252,23 +259,25 @@ public class QAScriptManager {
      */
     public void storeQAScriptFile(FormFile file, String fileName) throws FileNotFoundException, IOException {
 
+        OutputStream output = null;
         InputStream in = file.getInputStream();
         String filepath = new String(Properties.queriesFolder + "/" + fileName);
-        OutputStream w = new FileOutputStream(filepath);
-        int bytesRead = 0;
-        byte[] buffer = new byte[8192];
-        while ((bytesRead = in.read(buffer, 0, 8192)) != -1) {
-            w.write(buffer, 0, bytesRead);
+
+        try{
+            output = new FileOutputStream(filepath);
+            IOUtils.copy(in, output);
         }
-        w.close();
-        in.close();
-        file.destroy();
+        finally{
+            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(output);
+            file.destroy();
+        }
 
     }
 
     /**
      * Store QA script content into file system
-     * 
+     *
      * @param user
      * @param scriptId
      * @param fileContent
@@ -277,17 +286,17 @@ public class QAScriptManager {
      * @throws DCMException
      */
     public void storeQAScriptFromString(String user, String scriptId, String fileContent) throws FileNotFoundException,
-            IOException, DCMException {
+    IOException, DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
-                _logger.debug("You don't have permissions to update QA script!");
+                LOGGER.debug("You don't have permissions to update QA script!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
             }
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error updating QA script content", e);
+            LOGGER.error("Error updating QA script content", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -305,7 +314,7 @@ public class QAScriptManager {
 
     /**
      * Delete the selected QA script from database and file system
-     * 
+     *
      * @param user
      * @param scriptId
      * @throws DCMException
@@ -313,18 +322,18 @@ public class QAScriptManager {
     public void delete(String user, String scriptId) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "d")) {
-                _logger.debug("You don't have permissions to delete QA script!");
+                LOGGER.debug("You don't have permissions to delete QA script!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_DELETE);
             }
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error deleting QA script", e);
+            LOGGER.error("Error deleting QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
         if (Utils.isNullStr(scriptId)) {
-            _logger.error("Cannot delete QA script. Script ID is empty.");
+            LOGGER.error("Cannot delete QA script. Script ID is empty.");
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -333,21 +342,22 @@ public class QAScriptManager {
             String fileName = (String) hash.get("query");
 
             String queriesFolder = Properties.queriesFolder;
-            if (!queriesFolder.endsWith(File.separator))
+            if (!queriesFolder.endsWith(File.separator)) {
                 queriesFolder = queriesFolder + File.separator;
+            }
             Utils.deleteFile(queriesFolder + fileName);
 
             queryDao.removeQuery(scriptId);
 
         } catch (Exception e) {
-            _logger.error("Error deleting QA script", e);
+            LOGGER.error("Error deleting QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
     }
 
     /**
      * Add a new QA script into the repository
-     * 
+     *
      * @param user
      * @param shortName
      * @param schemaId
@@ -365,13 +375,13 @@ public class QAScriptManager {
         String scriptId = null;
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "i")) {
-                _logger.debug("You don't have permissions to insert QA script!");
+                LOGGER.debug("You don't have permissions to insert QA script!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_INSERT);
             }
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error deleting QA script", e);
+            LOGGER.error("Error deleting QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -397,7 +407,7 @@ public class QAScriptManager {
             throw e;
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Error updating QA script", e);
+            LOGGER.error("Error updating QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return scriptId;
@@ -405,7 +415,7 @@ public class QAScriptManager {
 
     /**
      * Update schema validation flag
-     * 
+     *
      * @param user
      * @param schemaId
      * @param validate
@@ -414,13 +424,13 @@ public class QAScriptManager {
     public void updateSchemaValidation(String user, String schemaId, boolean validate) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
-                _logger.debug("You don't have permissions to update XML Schema validationt!");
+                LOGGER.debug("You don't have permissions to update XML Schema validationt!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_UPDATE);
             }
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error updating schema validation", e);
+            LOGGER.error("Error updating schema validation", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -428,7 +438,7 @@ public class QAScriptManager {
             schemaDao.updateSchemaValidate(schemaId, validate);
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Error updating XML Schema", e);
+            LOGGER.error("Error updating XML Schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 

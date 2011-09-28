@@ -23,7 +23,8 @@
 
 package eionet.gdem.conversion.excel.reader;
 
-import java.io.InputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -46,12 +47,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import eionet.gdem.GDEMException;
-import eionet.gdem.conversion.DDXMLConverter;
-import eionet.gdem.conversion.SourceReaderIF;
-import eionet.gdem.conversion.SourceReaderLogger;
-import eionet.gdem.conversion.SourceReaderLogger.ReaderTypeEnum;
 import eionet.gdem.conversion.datadict.DDElement;
 import eionet.gdem.conversion.datadict.DD_XMLInstance;
+import eionet.gdem.conversion.spreadsheet.DDXMLConverter;
+import eionet.gdem.conversion.spreadsheet.SourceReaderIF;
+import eionet.gdem.conversion.spreadsheet.SourceReaderLogger;
+import eionet.gdem.conversion.spreadsheet.SourceReaderLogger.ReaderTypeEnum;
 import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.utils.Utils;
 
@@ -91,24 +92,35 @@ public class ExcelReader implements SourceReaderIF {
      * List of Excel sheet names.
      */
     private List<String> excelSheetNames = new ArrayList<String>();
+    /**
+     * Excel file size.
+     */
+    private long inputFileLength = 0;
 
     public ExcelReader(boolean excel2007) {
         isExcel2007 = excel2007;
     }
 
     @Override
-    public void initReader(InputStream input, ConversionResultDto resultObject) throws GDEMException {
+    public void initReader(File inputFile) throws GDEMException {
+        if (inputFile == null){
+            throw new GDEMException("Input file is missing");
+        }
         try {
             if (!isExcel2007) {
-                POIFSFileSystem fs = new POIFSFileSystem(input);
+                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(inputFile));
                 wb = new HSSFWorkbook(fs);
             } else {
-                OPCPackage p = OPCPackage.open(input);
+                OPCPackage p = OPCPackage.open(new FileInputStream(inputFile));
                 wb = WorkbookFactory.create(p);
             }
         } catch (Exception e) {
             throw new GDEMException("ErrorConversionHandler - couldn't open Excel file: " + e.toString());
         }
+        inputFileLength = inputFile.length();
+    }
+    @Override
+    public void startReader(ConversionResultDto resultObject){
         readerLogger = new SourceReaderLogger(resultObject, ReaderTypeEnum.EXCEL);
         readerLogger.logStartWorkbook();
         excelSheetNames = getSheetNames();
@@ -116,7 +128,7 @@ public class ExcelReader implements SourceReaderIF {
     }
     @Override
     public void closeReader(){
-        readerLogger.logEndWorkbook();
+        readerLogger.logEndWorkbook(inputFileLength);
     }
 
     @Override
@@ -148,7 +160,6 @@ public class ExcelReader implements SourceReaderIF {
         if (wb == null) {
             return null;
         }
-
         for (int i = 0; i < wb.getNumberOfSheets(); i++) {
             String sheet_name = wb.getSheetName(i).trim();
             if (sheet_name.equalsIgnoreCase(SCHEMA_SHEET_NAME)) {

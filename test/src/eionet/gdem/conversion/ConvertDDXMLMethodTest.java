@@ -3,11 +3,13 @@
  */
 package eionet.gdem.conversion;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import junit.framework.TestCase;
 import eionet.gdem.GDEMException;
 import eionet.gdem.dto.ConversionResultDto;
+import eionet.gdem.dto.ConvertedFileDto;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.utils.xml.IXQuery;
@@ -39,7 +41,7 @@ public class ConvertDDXMLMethodTest extends TestCase {
 
         ConversionResultDto result = convertExcel();
         assertEquals("0", result.getStatusCode());
-        assertTrue(result.getConvertedXmls().containsKey("seed-dates.xml"));
+        assertNotNull(result.getConvertedFileByFileName("seed-dates.xml"));
     }
 
     public void testConvertDD_XMLDates() throws Exception {
@@ -124,11 +126,11 @@ public class ConvertDDXMLMethodTest extends TestCase {
 
     }
 
-    private IXmlCtx getXmlFromConversionResult(ConversionResultDto result) throws XmlException {
+    private IXmlCtx getXmlFromConversionResult(ConversionResultDto result) throws XmlException, GDEMException {
 
-        String xml = result.getConvertedXmls().get("seed-dates.xml");
+        ConvertedFileDto xml = result.getConvertedFileByFileName("seed-dates.xml");
         IXmlCtx ctx = new XmlContext();
-        ctx.checkFromString(xml);
+        ctx.checkFromInputStream(new ByteArrayInputStream(xml.getFileContentAsByteArray()));
 
         return ctx;
     }

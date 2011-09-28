@@ -21,7 +21,7 @@
  * Original Code: Enriko Käsper (TietoEnator)
  */
 
-package eionet.gdem.conversion;
+package eionet.gdem.conversion.spreadsheet;
 
 import eionet.gdem.conversion.excel.ExcelUtils;
 
@@ -32,6 +32,13 @@ import eionet.gdem.conversion.excel.ExcelUtils;
  */
 
 public class Excel2XML extends DDXMLConverter {
+    /**
+     * Class constructor.
+     */
+    Excel2XML(){
+        super();
+    }
+
     private final static String FORMAT_NAME = "MS Excel";
 
     @Override

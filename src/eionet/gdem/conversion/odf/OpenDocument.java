@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.IOUtils;
+
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.converters.ConvertContext;
 import eionet.gdem.conversion.converters.ConvertStartegy;
@@ -71,17 +73,12 @@ public class OpenDocument {
 
     public void createOdsFile(String strOut) throws Exception {
 
-        FileOutputStream result_file_output = new FileOutputStream(strOut);
+        FileOutputStream resultFileOutput = new FileOutputStream(strOut);
 
         try {
-            createOdsFile(result_file_output);
+            createOdsFile(resultFileOutput);
         } finally {
-            if (result_file_output != null) {
-                try {
-                    result_file_output.close();
-                } catch (IOException ioe) {
-                }
-            }
+            IOUtils.closeQuietly(resultFileOutput);
         }
 
     }
@@ -124,25 +121,9 @@ public class OpenDocument {
         } catch (IOException ioe) {
             throw new Exception("Could not create OpenDocument Spreadsheet file: " + ioe.toString());
         } finally {
-            if (zip_out != null) {
-                try {
-                    zip_out.close();
-                } catch (IOException ioe) {
-                }
-            }
-            if (zip_file_output != null) {
-                try {
-                    zip_file_output.close();
-                } catch (IOException ioe) {
-                }
-            }
-            if (result_file_input != null) {
-                try {
-                    result_file_input.close();
-                } catch (IOException ioe) {
-                }
-            }
-
+            IOUtils.closeQuietly(zip_out);
+            IOUtils.closeQuietly(zip_file_output);
+            IOUtils.closeQuietly(result_file_input);
         }
         try {
             // delete working folder and temporary ods file
@@ -259,19 +240,8 @@ public class OpenDocument {
             throw ex;
             // _logger.error("Error reading conversions.xml file ", ex);
         } finally {
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (IOException ioe) {
-                }
-            }
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException ioe) {
-                }
-            }
-
+            IOUtils.closeQuietly(os);
+            IOUtils.closeQuietly(in);
         }
     }
 }

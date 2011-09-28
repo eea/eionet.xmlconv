@@ -22,7 +22,7 @@
  * Created on 28.04.2006
  */
 
-package eionet.gdem.conversion;
+package eionet.gdem.conversion.spreadsheet;
 
 import eionet.gdem.conversion.odf.OpenDocumentUtils;
 
@@ -33,6 +33,13 @@ import eionet.gdem.conversion.odf.OpenDocumentUtils;
  */
 
 public class Ods2Xml extends DDXMLConverter {
+
+    /**
+     * Class constructor.
+     */
+    Ods2Xml(){
+        super();
+    }
 
     private final static String FORMAT_NAME = "OpenDocument Spreadsheet";
 

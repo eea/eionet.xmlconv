@@ -23,10 +23,9 @@
  */
 package eionet.gdem.conversion.odf;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -35,22 +34,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.catcode.odf.ODFMetaFileAnalyzer;
 import com.catcode.odf.OpenDocumentMetadata;
 
 import eionet.gdem.GDEMException;
-import eionet.gdem.conversion.DDXMLConverter;
-import eionet.gdem.conversion.SourceReaderIF;
-import eionet.gdem.conversion.SourceReaderLogger;
-import eionet.gdem.conversion.SourceReaderLogger.ReaderTypeEnum;
 import eionet.gdem.conversion.datadict.DDElement;
 import eionet.gdem.conversion.datadict.DD_XMLInstance;
 import eionet.gdem.conversion.excel.reader.DDXmlElement;
+import eionet.gdem.conversion.spreadsheet.DDXMLConverter;
+import eionet.gdem.conversion.spreadsheet.SourceReaderIF;
+import eionet.gdem.conversion.spreadsheet.SourceReaderLogger;
+import eionet.gdem.conversion.spreadsheet.SourceReaderLogger.ReaderTypeEnum;
 import eionet.gdem.dto.ConversionResultDto;
-import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -79,6 +76,10 @@ public class OdsReader implements SourceReaderIF {
     private SourceReaderLogger readerLogger;
 
     List<String> odsSheetNames = new ArrayList<String>();
+    /**
+     * Ods file size.
+     */
+    private long inputFileLength = 0;
 
     @Override
     public String getXMLSchema() {
@@ -98,26 +99,25 @@ public class OdsReader implements SourceReaderIF {
      * @param InputStream input: Source ods file
      */
     @Override
-    public void initReader(InputStream input, ConversionResultDto resultObject) throws GDEMException {
-
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+    public void initReader(File inFile) throws GDEMException {
+        if (inFile == null){
+            throw new GDEMException("Input file is missing");
+        }
         try {
-            Streams.drain(input, outStream);
-
-            // ODF analyzer closes the stream after parsing content. We need to
-            // keep the stream availabl in Outputstream.
+            // ODF analyzer closes the stream after parsing content.
             ODFSpreadsheetAnalyzer odfSpreadsheetAnalyzer = new ODFSpreadsheetAnalyzer();
-            spreadsheet = odfSpreadsheetAnalyzer.analyzeZip(new ByteArrayInputStream(outStream.toByteArray()));
+            spreadsheet = odfSpreadsheetAnalyzer.analyzeZip(new FileInputStream(inFile));
 
             ODFMetaFileAnalyzer odfMetaAnalyzer = new ODFMetaFileAnalyzer();
-            metadata = odfMetaAnalyzer.analyzeZip(new ByteArrayInputStream(outStream.toByteArray()));
+            metadata = odfMetaAnalyzer.analyzeZip(new FileInputStream(inFile));
 
         } catch (IOException e) {
             // throw e;
-        } finally {
-            IOUtils.closeQuietly(input);
-            IOUtils.closeQuietly(outStream);
         }
+        inputFileLength = inFile.length();
+    }
+    @Override
+    public void startReader(ConversionResultDto resultObject){
         readerLogger = new SourceReaderLogger(resultObject, ReaderTypeEnum.ODS);
         readerLogger.logStartWorkbook();
         odsSheetNames = getSheetNames();
@@ -125,7 +125,7 @@ public class OdsReader implements SourceReaderIF {
     }
     @Override
     public void closeReader(){
-        readerLogger.logEndWorkbook();
+        readerLogger.logEndWorkbook(inputFileLength);
     }
 
     /*

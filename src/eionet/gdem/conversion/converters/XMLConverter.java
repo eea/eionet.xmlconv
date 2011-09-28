@@ -27,21 +27,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.io.IOUtils;
+
 import eionet.gdem.GDEMException;
+import eionet.gdem.utils.Utils;
 
 public class XMLConverter extends ConvertStartegy {
 
+    @Override
     public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException,
-            Exception {
-        String xmlFile = tmpFolder + "gdem_out" + System.currentTimeMillis() + "." + cnvFileExt;
-        if (result != null)
+    Exception {
+        String xmlFile =  Utils.getUniqueTmpFileName("." + cnvFileExt);
+        if (result != null) {
             runXslTransformation(source, xslt, result);
-        else
+        } else {
             try {
-                runXslTransformation(source, xslt, new FileOutputStream(xmlFile));
+                result = new FileOutputStream(xmlFile);
+                runXslTransformation(source, xslt, result);
             } catch (IOException e) {
                 throw new GDEMException("Error creating XML output file " + e.toString(), e);
             }
+            finally{
+                IOUtils.closeQuietly(result);
+            }
+        }
         return xmlFile;
     }
 

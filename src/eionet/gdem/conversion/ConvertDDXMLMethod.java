@@ -20,23 +20,26 @@
  */
 package eionet.gdem.conversion;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.util.Hashtable;
+import java.util.Vector;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import eionet.gdem.GDEMException;
+import eionet.gdem.conversion.spreadsheet.DDXMLConverter;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.remote.RemoteServiceMethod;
 import eionet.gdem.dto.ConversionLogDto;
 import eionet.gdem.dto.ConversionResultDto;
+import eionet.gdem.dto.ConvertedFileDto;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 
@@ -74,6 +77,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
 
     /**
      * Method that calls converter to do the conversion.
+     *
      * @param sourceUrl
      * @param split
      * @param sheetName
@@ -84,7 +88,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
         OutputStream resultStream = null;
         String sourceFileName = null;
         File file = null;
-        ConversionResultDto resultObject = null;
+        ConversionResultDto resultObject = new ConversionResultDto();
         String errorMessage = null;
 
         try {
@@ -92,26 +96,29 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
             file = new File(sourceFile.saveSrcFile("tmp"));
             sourceFileName =
                 Utils.isNullStr(sourceFile.getFileNameNoExtension()) ? DEFAULT_FILE_NAME : sourceFile.getFileNameNoExtension();
-            resultStream = getResultOutputStream(sourceFileName);
 
             // Detect the file format
-            DDXMLConverter converter = DDXMLConverter.getConverter(file);
-
-            if (converter == null) {
-                LOGGER.error("Could not detect the format of source file. "
-                        + "Converter waits MS Excel or OpenDocument Spreadsheet file.", null);
-                throw new GDEMException(
-                "Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.");
-            }
-            converter.setHttpResponse(isHttpRequest());
-            if (split) {
-                resultObject = converter.convertDD_XML_split(new FileInputStream(file), resultStream, sheetName);
-            } else {
-                resultObject = converter.convertDD_XML(new FileInputStream(file), resultStream);
-                if (!isHttpRequest()) {
-                    resultObject.addConvertedXml(sourceFileName + ".xml",
-                            new String(((ByteArrayOutputStream) resultStream).toByteArray(), "UTF-8"));
+            DDXMLConverter converter = DDXMLConverter.getConverter(file, resultObject, sheetName);
+            boolean doConversion = converter.isValidSchema() && ((split && converter.isValidSheetSchemas()) || !split);
+            if (doConversion) {
+                resultStream = getResultOutputStream(sourceFileName);
+                converter.setHttpResponse(isHttpRequest());
+                if (split) {
+                    resultObject = converter.convertDD_XML_split(resultStream, sheetName);
+                } else {
+                    String tmpFileName = Utils.getUniqueTmpFileName(".xml");
+                    if (resultStream == null) {
+                        resultStream = new FileOutputStream(tmpFileName);
+                    }
+                    resultObject = converter.convertDD_XML(resultStream);
+                    if (!isHttpRequest()) {
+                        // resultObject.addConvertedXml(sourceFileName + ".xml",
+                        // ((ByteArrayOutputStream) resultStream).toByteArray());
+                        resultObject.addConvertedFile(sourceFileName + ".xml", tmpFileName);
+                    }
                 }
+            }
+            if (isHttpRequest()) {
             }
         } catch (MalformedURLException mfe) {
             errorMessage = handleConversionException("Bad URL. ", mfe);
@@ -144,6 +151,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
 
     /**
      * Returns source file as InputFile object
+     *
      * @param sourceUrl
      * @return
      * @throws MalformedURLException
@@ -159,6 +167,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
 
     /**
      * Get OutpuStram where to write the conversion result.
+     *
      * @param outputFileName
      * @return
      * @throws GDEMException
@@ -176,15 +185,12 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
                 throw new GDEMException("Error getting response outputstream " + e.toString(), e);
             }
         }
-        if (resultStream == null) {
-            // resultStream = new FileOutputStream(outputFileName);
-            resultStream = new ByteArrayOutputStream();
-        }
         return resultStream;
     }
 
     /**
      * Handle exceptions - throws Exception if the call is coming from web page, otherwise logs and returns error message.
+     *
      * @param errorMessage
      * @param e
      * @return
@@ -193,10 +199,37 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
     private String handleConversionException(String errorMessage, Exception e) throws GDEMException {
         LOGGER.error(errorMessage, e);
         if (isHttpRequest()) {
-            throw new GDEMException(errorMessage + e.toString(), e);
+            throw new GDEMException(errorMessage + e.getMessage(), e);
         } else {
-            errorMessage = errorMessage + e.toString();
+            errorMessage = errorMessage + e.getMessage();
         }
         return errorMessage;
+    }
+
+    /**
+     * Converts conversion result object into Hashtable that is used in XML-RPC method result
+     *
+     * @param dto
+     * @return
+     * @throws IOException
+     */
+    public static final Hashtable<String, Object> convertExcelResult(ConversionResultDto dto) throws GDEMException {
+        Hashtable<String, Object> result = new Hashtable<String, Object>();
+
+        result.put("resultCode", dto.getStatusCode());
+        result.put("resultDescription", dto.getStatusDescription());
+        result.put("conversionLog", dto.getConversionLogAsHtml());
+        Vector<Hashtable<String, Object>> convertedFiles = new Vector<Hashtable<String, Object>>();
+
+        if (dto.getConvertedFiles() != null) {
+            for (ConvertedFileDto convertedFileDto : dto.getConvertedFiles()) {
+                Hashtable<String, Object> convertedFile = new Hashtable<String, Object>();
+                convertedFile.put("fileName", convertedFileDto.getFileName());
+                convertedFile.put("content", convertedFileDto.getFileContentAsByteArray());
+                convertedFiles.add(convertedFile);
+            }
+        }
+        result.put("convertedFiles", convertedFiles);
+        return result;
     }
 }

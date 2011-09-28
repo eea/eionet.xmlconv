@@ -22,28 +22,49 @@
 
 package eionet.gdem.conversion.converters;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.io.IOUtils;
+
 public class ConvertContext {
 
     private InputStream source;
-    private Object xsl;
-    private OutputStream result;
+    private String xslName;
+    private InputStream xslStream;
+    private OutputStream resultStream;
     private String cnvFileExt;
 
-    public ConvertContext(InputStream source, Object xsl, OutputStream result, String cnvFileExt) {
+    public ConvertContext(InputStream source, String xslName, OutputStream result, String cnvFileExt) {
         this.cnvFileExt = cnvFileExt;
-        this.result = result;
+        this.resultStream = result;
         this.source = source;
-        this.xsl = xsl;
+        this.xslName = xslName;
+        this.xslStream = null;
+    }
+    public ConvertContext(InputStream source, InputStream xslStream, OutputStream result, String cnvFileExt) {
+        this.cnvFileExt = cnvFileExt;
+        this.resultStream = result;
+        this.source = source;
+        this.xslName = null;
+        this.xslStream = xslStream;
     }
 
     public String executeConversion(ConvertStartegy converter) throws Exception {
-        if (xsl instanceof String)
-            xsl = new FileInputStream((String) xsl);
-        return converter.convert(source, (InputStream) xsl, result, cnvFileExt);
+        String strResult = null;
+
+        if (xslStream == null){
+            xslStream = new BufferedInputStream(new FileInputStream(xslName));
+        }
+        try{
+            strResult = converter.convert(source, xslStream, resultStream, cnvFileExt);
+        }
+        finally{
+            IOUtils.closeQuietly(xslStream);
+        }
+        return strResult;
     }
 
 }

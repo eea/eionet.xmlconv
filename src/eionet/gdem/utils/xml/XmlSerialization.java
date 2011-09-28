@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 
@@ -51,6 +52,7 @@ public class XmlSerialization implements IXmlSerializer {
         this.ctx = ctx;
     }
 
+    @Override
     public ByteArrayOutputStream serializeToOutStream() throws XmlException {
         ByteArrayOutputStream byteOutputStream = null;
         try {
@@ -64,18 +66,22 @@ public class XmlSerialization implements IXmlSerializer {
         return byteOutputStream;
     }
 
+    @Override
     public void serializeToFs(String fullFileName) throws XmlException {
+        FileOutputStream fileOutputStream = null;
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(fullFileName);
+            fileOutputStream = new FileOutputStream(fullFileName);
             xmlSerializer.setOutputByteStream(fileOutputStream);
             xmlSerializer.serialize(ctx.getDocument());
-            fileOutputStream.flush();
-            fileOutputStream.close();
         } catch (IOException ioe) {
             throw new XmlException("Error occurred while serializing XML document. Reason: " + ioe.getMessage());
         }
+        finally{
+            IOUtils.closeQuietly(fileOutputStream);
+        }
     }
 
+    @Override
     public ByteArrayInputStream serializeToInStream() throws XmlException {
         ByteArrayInputStream byteInputStream = null;
         try {
@@ -92,6 +98,7 @@ public class XmlSerialization implements IXmlSerializer {
         return byteInputStream;
     }
 
+    @Override
     public String serializeToString() throws XmlException {
 
         StringWriter stringOut;

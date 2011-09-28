@@ -33,6 +33,9 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
@@ -41,7 +44,6 @@ import eionet.gdem.dcm.business.SourceFileManager;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
@@ -51,7 +53,7 @@ import eionet.gdem.validation.ValidationService;
 /**
  * QA Service Service Facade. The service is able to execute different QA related methods that are called through XML/RPC and HTTP
  * POST and GET.
- * 
+ *
  * @author Enriko Käsper
  */
 public class XQueryService extends RemoteService implements Constants {
@@ -62,7 +64,8 @@ public class XQueryService extends RemoteService implements Constants {
 
     private SchemaManager schManager = new SchemaManager();
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(XQueryService.class);
 
     public XQueryService() {
         // for remote clients use trusted mode
@@ -90,7 +93,7 @@ public class XQueryService extends RemoteService implements Constants {
 
     /**
      * Request from XML/RPC client Stores the source files and starts a job in the workqueue
-     * 
+     *
      * @param Hashtable
      *            files: Structure with XMLschemas as a keys and values are list of XML Files
      * @return Hashtable result: Structure with JOB ids as a keys and source files as values
@@ -99,15 +102,17 @@ public class XQueryService extends RemoteService implements Constants {
 
         Vector result = new Vector();
 
-        if (files == null)
+        if (files == null) {
             return result;
+        }
 
         Enumeration _schemas = files.keys();
         while (_schemas.hasMoreElements()) {
             String _schema = _schemas.nextElement().toString();
             Vector _files = (Vector) files.get(_schema);
-            if (Utils.isNullVector(_files))
+            if (Utils.isNullVector(_files)) {
                 continue;
+            }
 
             for (int i = 0; i < _files.size(); i++) {
                 String _file = (String) _files.get(i);
@@ -119,7 +124,7 @@ public class XQueryService extends RemoteService implements Constants {
 
     /**
      * Stores one source file and starts a job in the workqueue
-     * 
+     *
      * @param String
      *            schema: XML Schema URL
      * @param String
@@ -131,10 +136,11 @@ public class XQueryService extends RemoteService implements Constants {
     // }
     public Vector analyzeXMLFiles(String schema, String orig_file, Vector result) throws GDEMException {
 
-        _logger.info("XML/RPC call for analyze xml: " + orig_file);
+        LOGGER.info("XML/RPC call for analyze xml: " + orig_file);
 
-        if (result == null)
+        if (result == null) {
             result = new Vector();
+        }
         Vector outputTypes = null;
         // get all possible xqueries from db
         String newId = "-1"; // should not be returned with value -1;
@@ -153,7 +159,7 @@ public class XQueryService extends RemoteService implements Constants {
             file = SourceFileManager.getSourceFileAdapterURL(getTicket(), file, isTrustedMode());
         } catch (Exception e) {
             String err_mess = "File URL is incorrect";
-            _logger.error(err_mess + "; " + e.toString());
+            LOGGER.error(err_mess + "; " + e.toString());
             throw new GDEMException(err_mess, e);
         }
 
@@ -166,7 +172,7 @@ public class XQueryService extends RemoteService implements Constants {
                 String content_type = (String) _querie.get("content_type_id");
                 String fileExtension = getExtension(outputTypes, content_type);
                 String resultFile =
-                        Properties.tmpFolder + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "." + fileExtension;
+                    Properties.tmpFolder + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "." + fileExtension;
                 try {
                     int int_qID = 0;
                     try {
@@ -175,10 +181,11 @@ public class XQueryService extends RemoteService implements Constants {
                         int_qID = 0;
                     }
                     // if it is a XQuery script, then append the system folder
-                    if (int_qID != JOB_VALIDATION && query_file.startsWith(Properties.gdemURL + "/" + Constants.QUERIES_FOLDER))
+                    if (int_qID != JOB_VALIDATION && query_file.startsWith(Properties.gdemURL + "/" + Constants.QUERIES_FOLDER)) {
                         query_file =
-                                Utils.Replace(query_file, Properties.gdemURL + "/" + Constants.QUERIES_FOLDER,
-                                        Properties.queriesFolder);
+                            Utils.Replace(query_file, Properties.gdemURL + "/" + Constants.QUERIES_FOLDER,
+                                    Properties.queriesFolder);
+                    }
                     newId = xqJobDao.startXQJob(file, query_file, resultFile, int_qID);
                 } catch (SQLException sqe) {
                     throw new GDEMException("DB operation failed: " + sqe.toString());
@@ -190,27 +197,32 @@ public class XQueryService extends RemoteService implements Constants {
             }
         }
 
-        _logger.info("Analyze xml result: " + result.toString());
+        LOGGER.info("Analyze xml result: " + result.toString());
         return result;
     }
 
     private String getExtension(Vector outputTypes, String content_type) {
         String ret = "html";
-        if (outputTypes == null)
+        if (outputTypes == null) {
             return ret;
-        if (content_type == null)
+        }
+        if (content_type == null) {
             return ret;
+        }
 
         for (int i = 0; i < outputTypes.size(); i++) {
             Hashtable outType = (Hashtable) outputTypes.get(i);
-            if (outType == null)
+            if (outType == null) {
                 continue;
+            }
             if (!outType.containsKey("conv_type") || !outType.containsKey("file_ext") || outType.get("conv_type") == null
-                    || outType.get("file_ext") == null)
+                    || outType.get("file_ext") == null) {
                 continue;
+            }
             String typeId = (String) outType.get("conv_type");
-            if (!content_type.equalsIgnoreCase(typeId))
+            if (!content_type.equalsIgnoreCase(typeId)) {
                 continue;
+            }
             ret = (String) outType.get("file_ext");
         }
 
@@ -219,7 +231,7 @@ public class XQueryService extends RemoteService implements Constants {
 
     /**
      * Request from XML/RPC client Stores the xqScript and starts a job in the workqueue
-     * 
+     *
      * @param String
      *            url: URL of the srouce XML
      * @param String
@@ -230,7 +242,7 @@ public class XQueryService extends RemoteService implements Constants {
     public String analyze(String sourceURL, String xqScript, String scriptType) throws GDEMException {
         String xqFile = "";
 
-        _logger.info("XML/RPC call for analyze xml: " + sourceURL);
+        LOGGER.info("XML/RPC call for analyze xml: " + sourceURL);
         // save XQScript in a text file for the WQ
         try {
             xqFile = Utils.saveStrToFile(xqScript, scriptType);
@@ -252,15 +264,15 @@ public class XQueryService extends RemoteService implements Constants {
 
         } catch (SQLException sqe) {
             sqe.printStackTrace();
-            _logger.error("DB operation failed: " + sqe.toString());
+            LOGGER.error("DB operation failed: " + sqe.toString());
             throw new GDEMException("DB operation failed: " + sqe.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            _logger.error("Source file URL is wrong: " + e.toString());
+            LOGGER.error("Source file URL is wrong: " + e.toString());
             throw new GDEMException("Source file URL is wrong: " + e.toString());
         } catch (IOException e) {
             e.printStackTrace();
-            _logger.error("Error opening source file: " + e.toString());
+            LOGGER.error("Error opening source file: " + e.toString());
             throw new GDEMException("Error opening source file: " + e.toString());
         }
         return newId;
@@ -268,14 +280,14 @@ public class XQueryService extends RemoteService implements Constants {
 
     /**
      * Checks if the job is ready (or error) and returns the result (or error message)
-     * 
+     *
      * @param String
      *            jobId
      * @return String fileName where the client can download the result Returns a Hash including code and result
      */
     public Hashtable getResult(String jobId) throws GDEMException {
 
-        _logger.info("XML/RPC call for getting result with JOB ID: " + jobId);
+        LOGGER.info("XML/RPC call for getting result with JOB ID: " + jobId);
 
         String[] jobData = null;
         HashMap scriptData = null;
@@ -295,14 +307,15 @@ public class XQueryService extends RemoteService implements Constants {
             throw new GDEMException("Error gettign XQJob data from DB: " + sqle.toString());
         }
 
-        _logger.info("XQuerySrevice found status for job (" + jobId + "):" + String.valueOf(status));
+        LOGGER.info("XQuerySrevice found status for job (" + jobId + "):" + String.valueOf(status));
 
         Hashtable ret = result(status, jobData, scriptData, jobId);
-        if (_logger.enable(_logger.INFO)) {
+        if (LOGGER.isInfoEnabled()) {
             String result = ret.toString();
-            if (result.length() > 100)
+            if (result.length() > 100) {
                 result = result.substring(0, 100).concat("....");
-            _logger.info("result: " + result);
+            }
+            LOGGER.info("result: " + result);
         }
 
         // remove the job from the queue / DB when the status won't change= FATAL or READY
@@ -310,27 +323,28 @@ public class XQueryService extends RemoteService implements Constants {
             try {
                 xqJobDao.endXQJob(jobId);
 
-                _logger.info("Delete the job: " + jobId);
+                LOGGER.info("Delete the job: " + jobId);
             } catch (SQLException sqle) {
                 throw new GDEMException("Error getting XQJob data from DB: " + sqle.toString());
             }
             // delete files only, if debug is not enabled
-            if (status == XQ_READY && !_logger.enable(LoggerIF.DEBUG)) {
+            if (status == XQ_READY && !LOGGER.isDebugEnabled()) {
                 // delete the result from filesystem
                 String resultFile = jobData[2];
                 try {
                     Utils.deleteFile(resultFile);
                 } catch (Exception e) {
-                    _logger.error("Could not delete job result file: " + resultFile + "." + e.getMessage());
+                    LOGGER.error("Could not delete job result file: " + resultFile + "." + e.getMessage());
                 }
                 // delete XQuery file, if it is stored in tmp folder
                 String xqFile = jobData[1];
                 try {
                     // Important!!!: delete only, when the file is stored in tmp folder
-                    if (xqFile.startsWith(Properties.tmpFolder))
+                    if (xqFile.startsWith(Properties.tmpFolder)) {
                         Utils.deleteFile(xqFile);
+                    }
                 } catch (Exception e) {
-                    _logger.error("Could not delete job result file: " + xqFile + "." + e.getMessage());
+                    LOGGER.error("Could not delete job result file: " + xqFile + "." + e.getMessage());
                 }
             }
         }
@@ -352,14 +366,16 @@ public class XQueryService extends RemoteService implements Constants {
             resultCode = JOB_LIGHT_ERROR;
             resultValue = "*** No such job or the job result has been already downloaded. ***";
         } else {
-            if (status == XQ_READY)
+            if (status == XQ_READY) {
                 resultCode = JOB_READY;
-            else if (status == XQ_LIGHT_ERR)
+            } else if (status == XQ_LIGHT_ERR) {
                 resultCode = JOB_LIGHT_ERROR;
-            else if (status == XQ_FATAL_ERR)
+            } else if (status == XQ_FATAL_ERR) {
                 resultCode = JOB_FATAL_ERROR;
-            else
+            }
+            else {
                 resultCode = -1; // not expected to reach here
+            }
 
             try {
                 int xq_id = 0;
@@ -390,8 +406,8 @@ public class XQueryService extends RemoteService implements Constants {
             h.put(RESULT_SCRIPTTITLE_PRM, script_title);
         } catch (Exception e) {
             String err_mess =
-                    "JobID: " + jobId + "; Creating result Hashtable for getResult method failed result: " + e.toString();
-            _logger.error(err_mess);
+                "JobID: " + jobId + "; Creating result Hashtable for getResult method failed result: " + e.toString();
+            LOGGER.error(err_mess);
             throw new GDEMException(err_mess, e);
         }
 
@@ -401,7 +417,7 @@ public class XQueryService extends RemoteService implements Constants {
 
     /**
      * Request from XML/RPC client running the QA script on the fly
-     * 
+     *
      * @param String
      *            url: URL of the srouce XML
      * @param String
@@ -414,14 +430,14 @@ public class XQueryService extends RemoteService implements Constants {
         String file_url = null;
         String content_type = "text/html";
         byte[] result_bytes;
-        _logger.debug("==xmlconv== runQAScript: id=" + script_id + " file_url=" + orig_file_url + "; ");
+        LOGGER.debug("==xmlconv== runQAScript: id=" + script_id + " file_url=" + orig_file_url + "; ");
 
         try {
             // get the trusted URL from source file adapter
             file_url = SourceFileManager.getSourceFileAdapterURL(getTicket(), orig_file_url, isTrustedMode());
         } catch (Exception e) {
             String err_mess = "File URL is incorrect";
-            _logger.error(err_mess + "; " + e.toString());
+            LOGGER.error(err_mess + "; " + e.toString());
             throw new GDEMException(err_mess, e);
         }
         if (script_id.equals(String.valueOf(JOB_VALIDATION))) {
@@ -431,7 +447,7 @@ public class XQueryService extends RemoteService implements Constants {
                 result_bytes = val_result.getBytes();
             } catch (Exception e) {
                 String err_mess = "Could not execute runQAMethod";
-                _logger.error(err_mess + "; " + e.toString());
+                LOGGER.error(err_mess + "; " + e.toString());
                 throw new GDEMException(err_mess, e);
 
             }
@@ -451,11 +467,12 @@ public class XQueryService extends RemoteService implements Constants {
 
                 if (Utils.isNullStr(xqScript) || hash == null) {
                     String err_mess = "Could not find QA script with id: " + script_id;
-                    _logger.error(err_mess);
+                    LOGGER.error(err_mess);
                     throw new GDEMException(err_mess, new Exception());
                 } else {
-                    if (!Utils.isNullStr((String) hash.get("meta_type")))
+                    if (!Utils.isNullStr((String) hash.get("meta_type"))) {
                         content_type = (String) hash.get("meta_type");
+                    }
                     outstream = new ByteArrayOutputStream();
                     XQScript xq = new XQScript(xqScript, pars, (String) hash.get("content_type"));
                     xq.setScriptType((String) hash.get("script_type"));
@@ -473,15 +490,16 @@ public class XQueryService extends RemoteService implements Constants {
                 throw new GDEMException("Error getting data from DB: " + sqle.toString());
             } catch (Exception e) {
                 String err_mess = "Could not execute runQAMethod";
-                _logger.error(err_mess + "; " + e.toString());
+                LOGGER.error(err_mess + "; " + e.toString());
                 throw new GDEMException(err_mess, e);
             } finally {
-                if (outstream != null)
+                if (outstream != null) {
                     try {
                         outstream.flush();
                         outstream.close();
                     } catch (Exception e) {
                     }
+                }
             }
         }
         result.add(content_type);

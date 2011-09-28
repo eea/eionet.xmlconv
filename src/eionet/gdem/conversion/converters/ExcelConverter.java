@@ -27,36 +27,44 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.GDEMException;
-import eionet.gdem.conversion.ExcelProcessor;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
+import eionet.gdem.conversion.excel.ExcelProcessor;
 import eionet.gdem.utils.Utils;
 
 public class ExcelConverter extends ConvertStartegy {
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(ExcelConverter.class);
 
+    @Override
     public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException,
-            Exception {
-        String xmlFile = tmpFolder + "gdem_out" + System.currentTimeMillis() + ".xml";
-        String excelFile = tmpFolder + "gdem_" + System.currentTimeMillis() + ".xls";
+    Exception {
+        String xmlFile = Utils.getUniqueTmpFileName(".xml");
+        String excelFile = Utils.getUniqueTmpFileName(".xls");
+        OutputStream xmlOut = null;
         try {
-            runXslTransformation(source, xslt, new FileOutputStream(xmlFile));
+            xmlOut = new FileOutputStream(xmlFile);
+            runXslTransformation(source, xslt, xmlOut);
             ExcelProcessor ep = new ExcelProcessor();
-            if (result != null)
+            if (result != null) {
                 ep.makeExcel(xmlFile, result);
-            else
+            } else {
                 ep.makeExcel(xmlFile, excelFile);
-
-            try {
-                Utils.deleteFile(xmlFile);
-            } catch (Exception e) {
-                _logger.error("Couldn't delete the result file: " + xmlFile, e);
             }
-
         } catch (FileNotFoundException e) {
-            _logger.error("Error " + e.toString(), e);
+            LOGGER.error("Error " + e.toString(), e);
             throw new GDEMException("Error transforming Excel " + e.toString(), e);
+        }
+        finally{
+            IOUtils.closeQuietly(xmlOut);
+        }
+        try {
+            Utils.deleteFile(xmlFile);
+        } catch (Exception e) {
+            LOGGER.error("Couldn't delete the result file: " + xmlFile, e);
         }
         return excelFile;
     }

@@ -70,6 +70,7 @@ public interface Constants {
 
     public static final int URL_TEXT_LEN = 100;
 
+    public static final String TMP_FILE_PREFIX = "xmlconv_tmp_";
     public static final String BACKUP_FILE_PREFIX = "bup_";
     public static final String BACKUP_FOLDER_NAME = "backup";
 

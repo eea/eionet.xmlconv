@@ -42,8 +42,8 @@ public class ConversionServiceTest extends TestCase {
 
         assertEquals("0", result.get("resultCode"));
 
-        Hashtable<String, String> convertedFile = ((Vector<Hashtable<String, String>>)result.get("convertedFiles")).get(0);
-        String strXML = convertedFile.get("content");
+        Hashtable<String, byte[]> convertedFile = ((Vector<Hashtable<String, byte[]>>)result.get("convertedFiles")).get(0);
+        String strXML = new String(convertedFile.get("content"), "UTF-8");
         assertTrue(strXML.indexOf(TestConstants.STRCONTENT_RESULT) > 0);
     }
 
@@ -61,11 +61,11 @@ public class ConversionServiceTest extends TestCase {
         Hashtable<String, Object> result = convService.convertDD_XML_split(TestUtils.getSeedURL(TestConstants.SEED_RIVERS_XLS, this), "BasicQuality");
 
         // sheet name + .xml
-        Hashtable<String, String> convertedFile = ((Vector<Hashtable<String, String>>)result.get("convertedFiles")).get(0);
+        Hashtable<String, byte[]> convertedFile = ((Vector<Hashtable<String, byte[]>>)result.get("convertedFiles")).get(0);
         assertEquals("BasicQuality.xml", convertedFile.get("fileName"));
-        assertEquals(1, ((Vector<Hashtable<String, String>>)result.get("convertedFiles")).size());
+        assertEquals(1, ((Vector<Hashtable<String, byte[]>>)result.get("convertedFiles")).size());
 
-        String strXML = convertedFile.get("content");
+        String strXML = new String(convertedFile.get("content"), "UTF-8");
         assertTrue(strXML.indexOf(TestConstants.STRCONTENT_RESULT) > 0);
     }
 
@@ -82,7 +82,7 @@ public class ConversionServiceTest extends TestCase {
         Hashtable<String, Object> result = convService.convertDD_XML_split(TestUtils.getSeedURL(TestConstants.SEED_RIVERS_XLS, this), "NOSHEET");
 
         assertEquals("3", result.get("resultCode"));
-        assertEquals(0, ((Vector<Hashtable<String, String>>)result.get("convertedFiles")).size());
+        assertEquals(0, ((Vector<Hashtable<String, byte[]>>)result.get("convertedFiles")).size());
     }
 
 }

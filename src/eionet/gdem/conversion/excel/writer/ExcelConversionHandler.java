@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -404,14 +405,15 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF {
     @Override
     public void writeToFile() throws GDEMException {
         // Write the output to a file
+        FileOutputStream fileOut = null;
         try {
-            FileOutputStream fileOut = new FileOutputStream(fileName);
+            fileOut = new FileOutputStream(fileName);
             wb.write(fileOut);
-            fileOut.close();
-            // System.out.println("closed");
-
         } catch (Exception e) {
             throw new GDEMException("ErrorConversionHandler - couldn't save the Excel file: " + e.toString());
+        }
+        finally{
+            IOUtils.closeQuietly(fileOut);
         }
     }
 

@@ -19,14 +19,14 @@
                 <Parameters>
                     <Parameter Name="url" Type="STRING"/>
                 </Parameters>
-                <Value Type="ARRAY"/>
+                <Value Type="STRUCT"/>
             </Method>
             <Method Name="convertDD_XML_split" Auth="false">
                 <Parameters>
                     <Parameter Name="url" Type="STRING"/>
                     <Parameter Name="sheet_name" Type="STRING"/>
                 </Parameters>
-                <Value Type="ARRAY"/>
+                <Value Type="STRUCT"/>
             </Method>
             <Method Name="convert" Auth="false">
                 <Parameters>

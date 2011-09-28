@@ -32,6 +32,7 @@ public class GetXMLSchemasAction extends BaseMethodAction {
     /**
      * Purpose of this action is to execute ConversionService method listConversions. The request could have schema parameter
      */
+    @Override
     public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request,
             HttpServletResponse httpServletResponse) throws ServletException {
 
@@ -63,6 +64,6 @@ public class GetXMLSchemasAction extends BaseMethodAction {
             }
         }
         // Do nothing, then response is already sent.
-        return map.findForward(null);
+        return null;
     }
 }

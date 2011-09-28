@@ -27,20 +27,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.io.IOUtils;
+
 import eionet.gdem.GDEMException;
+import eionet.gdem.utils.Utils;
 
 public class PDFConverter extends ConvertStartegy {
 
+    @Override
     public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException,
-            Exception {
-        String pdfFile = tmpFolder + "gdem_" + System.currentTimeMillis() + ".pdf";
-        if (result != null)
+    Exception {
+        String pdfFile =  Utils.getUniqueTmpFileName(".pdf");
+        if (result != null) {
             runFOPTransformation(source, xslt, result);
-        else {
+        } else {
             try {
-                runFOPTransformation(source, xslt, new FileOutputStream(pdfFile));
+                result = new FileOutputStream(pdfFile);
+                runFOPTransformation(source, xslt, result);
             } catch (IOException e) {
                 throw new GDEMException("Error creating PDF output file " + e.toString(), e);
+            }
+            finally{
+                IOUtils.closeQuietly(result);
             }
         }
         return pdfFile;
