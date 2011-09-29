@@ -28,15 +28,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.Properties;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 /**
  * Usage of following class can go as ...
  * <P>
- * 
+ *
  * <PRE>
  * <CODE>
  * 		SysCommandExecutor cmdExecutor = new SysCommandExecutor();
@@ -45,26 +46,29 @@ import eionet.gdem.utils.Utils;
  * 		int exitStatus = cmdExecutor.runCommand(commandLine);
  * </CODE>
  * </PRE>
- * 
+ *
  * </P>
- * 
+ *
  * OR
- * 
+ *
  * <P>
- * 
+ *
  * <PRE>
  * <CODE>
  * 		SysCommandExecutor cmdExecutor = new SysCommandExecutor();
  * 		int exitStatus = cmdExecutor.runCommand(commandLine);
- * 
+ *
  * 		String cmdError = cmdExecutor.getCommandError();
  * 		String cmdOutput = cmdExecutor.getCommandOutput();
  * </CODE>
  * </PRE>
- * 
+ *
  * </P>
  */
 public class SysCommandExecutor {
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(SysCommandExecutor.class);
+
     private ILogDevice fOuputLogDevice = null;
     private ILogDevice fErrorLogDevice = null;
     private String fWorkingDirectory = null;
@@ -78,16 +82,15 @@ public class SysCommandExecutor {
     private long timeout = 0;
 
     public long getTimeout() {
-        if (timeout == 0)
+        if (timeout == 0) {
             timeout = Properties.qaTimeout;
+        }
         return timeout;
     }
 
     public void setTimeout(long timeout) {
         this.timeout = timeout;
     }
-
-    private static LoggerIF logger = GDEMServices.getLogger();
 
     public void setOutputLogDevice(ILogDevice logDevice) {
         fOuputLogDevice = logDevice;
@@ -102,8 +105,9 @@ public class SysCommandExecutor {
     }
 
     public void setEnvironmentVar(String name, String value) {
-        if (fEnvironmentVarList == null)
+        if (fEnvironmentVarList == null) {
             fEnvironmentVarList = new ArrayList<EnvironmentVar>();
+        }
 
         fEnvironmentVarList.add(new EnvironmentVar(name, value));
     }
@@ -136,7 +140,7 @@ public class SysCommandExecutor {
 
             // if we get this far then we never got an exit value from the worker thread as a result of a timeout
             String errorMessage = "The command [" + commandLine + "] timed out.";
-            logger.error(errorMessage);
+            LOGGER.error(errorMessage);
             throw new RuntimeException(errorMessage);
         } catch (InterruptedException ex) {
             worker.interrupt();
@@ -149,10 +153,11 @@ public class SysCommandExecutor {
     private Process runCommandHelper(String commandLine) throws IOException {
         Process process = null;
         commandLine = validateSystemAndMassageCommand(commandLine);
-        if (fWorkingDirectory == null)
+        if (fWorkingDirectory == null) {
             process = Runtime.getRuntime().exec(commandLine, getEnvTokens());
-        else
+        } else {
             process = Runtime.getRuntime().exec(commandLine, getEnvTokens(), new File(fWorkingDirectory));
+        }
 
         return process;
     }
@@ -173,14 +178,15 @@ public class SysCommandExecutor {
     }
 
     private String[] getEnvTokens() {
-        if (fEnvironmentVarList == null)
+        if (fEnvironmentVarList == null) {
             return null;
+        }
 
         String[] envTokenArray = new String[fEnvironmentVarList.size()];
         Iterator<EnvironmentVar> envVarIter = fEnvironmentVarList.iterator();
         int nEnvVarIndex = 0;
         while (envVarIter.hasNext() == true) {
-            EnvironmentVar envVar = (EnvironmentVar) (envVarIter.next());
+            EnvironmentVar envVar = (envVarIter.next());
             String envVarToken = envVar.fName + "=" + envVar.fValue;
             envTokenArray[nEnvVarIndex++] = envVarToken;
         }
@@ -190,7 +196,7 @@ public class SysCommandExecutor {
 
     /**
      * Validates that the system is running a supported OS and returns a system-appropriate command line.
-     * 
+     *
      * @param originalCommand
      * @return
      */
@@ -210,8 +216,8 @@ public class SysCommandExecutor {
             massagedCommand = originalCommand;
         } else {
             String errorMessage =
-                    "Unable to run on this system which is not Solaris, Linux, or some Windows (actual OS type: \'" + osName
-                            + "\').";
+                "Unable to run on this system which is not Solaris, Linux, or some Windows (actual OS type: \'" + osName
+                + "\').";
             throw new RuntimeException(errorMessage);
         }
 

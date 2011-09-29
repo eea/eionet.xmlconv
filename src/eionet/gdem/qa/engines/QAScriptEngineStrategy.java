@@ -25,12 +25,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.GDEMException;
 import eionet.gdem.qa.QAResultPostProcessor;
 import eionet.gdem.qa.XQEngineIF;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -39,12 +40,14 @@ import eionet.gdem.utils.Utils;
 
 public abstract class QAScriptEngineStrategy implements XQEngineIF {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(QAScriptEngineStrategy.class);
     private String encoding = null;
     private String outputType = null;
 
     protected abstract void runQuery(XQScript script, OutputStream result) throws GDEMException;
 
+    @Override
     public void getResult(XQScript script, OutputStream out) throws GDEMException {
         try {
             setOutputType(script.getOutputType());
@@ -55,18 +58,17 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
         }
     }
 
+    @Override
     public String getResult(XQScript script) throws GDEMException {
         ByteArrayOutputStream result = new ByteArrayOutputStream();
         String res = "";
         getResult(script, result);
         try {
             res = result.toString(DEFAULT_ENCODING);
-            if (_logger.enable(LoggerIF.DEBUG)) {
-                _logger.debug("RESULT: \n" + res.substring(0, 300));
-            }
+            LOGGER.debug("RESULT: \n" + res.substring(0, 300));
 
         } catch (Exception e) {
-            _logger.error("==== CATCHED EXCEPTION " + e.toString());
+            LOGGER.error("==== CATCHED EXCEPTION " + e.toString());
         }
 
         // add "red coloured warning" if script is expired
@@ -79,31 +81,38 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
         return res;
     }
 
+    @Override
     public String getEncoding() {
-        if (Utils.isNullStr(encoding))
+        if (Utils.isNullStr(encoding)) {
             encoding = DEFAULT_ENCODING;
+        }
 
         return encoding;
     }
 
+    @Override
     public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
 
+    @Override
     public String getOutputType() {
-        if (Utils.isNullStr(outputType))
+        if (Utils.isNullStr(outputType)) {
             outputType = DEFAULT_OUTPUTTYPE;
+        }
         return outputType;
     }
 
+    @Override
     public void setOutputType(String _outputType) {
         outputType = (_outputType == null) ? DEFAULT_OUTPUTTYPE : _outputType.trim().toLowerCase();
         outputType = (outputType.equals("txt")) ? "text" : outputType;
 
-        if (outputType.equals("xml") || outputType.equals("html") || outputType.equals("text") || outputType.equals("xhtml"))
+        if (outputType.equals("xml") || outputType.equals("html") || outputType.equals("text") || outputType.equals("xhtml")) {
             this.outputType = outputType;
-        else
+        } else {
             this.outputType = DEFAULT_OUTPUTTYPE;
+        }
     }
 
     public HashMap parseParams(String[] xqParams) throws GDEMException {

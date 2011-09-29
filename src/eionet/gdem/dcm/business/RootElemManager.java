@@ -21,17 +21,20 @@
 
 package eionet.gdem.dcm.business;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.utils.SecurityUtil;
 
 public class RootElemManager {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(RootElemManager.class);
 
     private IRootElemDao rootElemDao = GDEMServices.getDaoService().getRootElemDao();
 
@@ -39,13 +42,13 @@ public class RootElemManager {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "d")) {
-                _logger.debug("You don't have permissions to delete root element!");
+                LOGGER.debug("You don't have permissions to delete root element!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_ELEMENT_DELETE);
             }
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.debug(e.toString(), e);
+            LOGGER.debug(e.toString(), e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -55,7 +58,7 @@ public class RootElemManager {
         try {
             rootElemDao.removeRootElem(elemId);
         } catch (Exception e) {
-            _logger.debug(e.toString(), e);
+            LOGGER.debug(e.toString(), e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
     }
@@ -64,20 +67,20 @@ public class RootElemManager {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "i")) {
-                _logger.debug("You don't have permissions to insert root elements!");
+                LOGGER.debug("You don't have permissions to insert root elements!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_ELEMENT_INSERT);
             }
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.debug(e.toString(), e);
+            LOGGER.debug(e.toString(), e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
         try {
             rootElemDao.addRootElem(schemaId, elemName, namespace);
         } catch (Exception e) {
-            _logger.debug(e.toString(), e);
+            LOGGER.debug(e.toString(), e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
     }

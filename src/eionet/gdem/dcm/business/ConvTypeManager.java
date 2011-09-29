@@ -23,27 +23,30 @@ package eionet.gdem.dcm.business;
 
 import java.util.Hashtable;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.ConvType;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 
 /**
  * ConvTypeManager
- * 
+ *
  * @author Enriko Käsper, Tieto Estonia
  */
 
 public class ConvTypeManager {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(ConvTypeManager.class);
     private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
     /**
      * Get conversion type mappings
-     * 
+     *
      * @param convTypeId
      *            (HTML, XML, ...)
      * @return
@@ -54,8 +57,9 @@ public class ConvTypeManager {
         try {
 
             Hashtable type = convTypeDao.getConvType(convTypeId);
-            if (type == null)
+            if (type == null) {
                 return null;
+            }
             convType = new ConvType();
             convType.setContType(type.get("content_type") == null ? null : (String) type.get("content_type"));
             convType.setConvType(type.get("conv_type") == null ? null : (String) type.get("conv_type"));
@@ -64,7 +68,7 @@ public class ConvTypeManager {
 
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Error getting conv types", e);
+            LOGGER.error("Error getting conv types", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return convType;

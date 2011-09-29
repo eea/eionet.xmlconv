@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 
@@ -27,8 +25,6 @@ import eionet.gdem.utils.Utils;
 public class SourceFileManager {
 
     private static final int BYTE_BUF = 1024;
-
-    private static LoggerIF _logger = GDEMServices.getLogger();
 
     /**
      * reads file from remote URL and writes it to the response stream using HTTP basic authentication

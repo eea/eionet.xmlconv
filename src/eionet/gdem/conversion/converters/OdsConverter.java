@@ -29,15 +29,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.odf.OpenDocumentProcessor;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 public class OdsConverter extends ConvertStartegy {
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(OdsConverter.class);
 
     @Override
     public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException,
@@ -57,7 +58,7 @@ public class OdsConverter extends ConvertStartegy {
             }
 
         } catch (FileNotFoundException e) {
-            _logger.error("Error " + e.toString(), e);
+            LOGGER.error("Error " + e.toString(), e);
             throw new GDEMException("Error transforming OpenDocument Spreadhseet " + e.toString(), e);
         } finally {
             IOUtils.closeQuietly(xmlOut);
@@ -65,7 +66,7 @@ public class OdsConverter extends ConvertStartegy {
         try {
             Utils.deleteFile(xmlFile);
         } catch (Exception e) {
-            _logger.error("Couldn't delete the result file: " + xmlFile, e);
+            LOGGER.error("Couldn't delete the result file: " + xmlFile, e);
         }
 
         return odsFile;

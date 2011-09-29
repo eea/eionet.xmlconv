@@ -7,45 +7,52 @@ import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.utils.Utils;
 
 public class HostMySqlDao extends MySqlBaseDao implements IHostDao {
 
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(HostMySqlDao.class);
+
     private static final String qAddHost = "INSERT INTO " + HOST_TABLE + " ( " + HOST_NAME_FLD + ", " + USER_FLD + ", " + PWD_FLD
-            + ") VALUES (?,?,?)";
+    + ") VALUES (?,?,?)";
     private static final String qUpdateHost = "UPDATE " + HOST_TABLE + " SET " + HOST_NAME_FLD + "=?" + ", " + USER_FLD + "=?"
-            + ", " + PWD_FLD + "=?" + " WHERE " + HOST_ID_FLD + "=?";
+    + ", " + PWD_FLD + "=?" + " WHERE " + HOST_ID_FLD + "=?";
     private static final String qRemoveHost = "DELETE FROM " + HOST_TABLE + " WHERE " + HOST_ID_FLD + "=?";
     private static final String qAllHosts = "SELECT " + HOST_ID_FLD + ", " + HOST_NAME_FLD + ", " + USER_FLD + ", " + PWD_FLD
-            + " FROM " + HOST_TABLE + " ORDER BY " + HOST_NAME_FLD;
+    + " FROM " + HOST_TABLE + " ORDER BY " + HOST_NAME_FLD;
     private static final String qHostByID = "SELECT " + HOST_ID_FLD + ", " + HOST_NAME_FLD + ", " + USER_FLD + ", " + PWD_FLD
-            + " FROM " + HOST_TABLE + " WHERE " + HOST_ID_FLD + "=?" + " ORDER BY " + HOST_NAME_FLD;
+    + " FROM " + HOST_TABLE + " WHERE " + HOST_ID_FLD + "=?" + " ORDER BY " + HOST_NAME_FLD;
     private static final String qHostByName = "SELECT " + HOST_ID_FLD + ", " + HOST_NAME_FLD + ", " + USER_FLD + ", " + PWD_FLD
-            + " FROM " + HOST_TABLE + " WHERE " + HOST_NAME_FLD + " like ? " + " ORDER BY " + HOST_NAME_FLD;
+    + " FROM " + HOST_TABLE + " WHERE " + HOST_NAME_FLD + " like ? " + " ORDER BY " + HOST_NAME_FLD;
 
     public HostMySqlDao() {
     }
 
     /*
      * public String addHost(String hostName, String userName, String pwd) throws SQLException {
-     * 
+     *
      * hostName = (hostName == null ? "" : hostName);
-     * 
+     *
      * String sql = "INSERT INTO " + HOST_TABLE + " ( " + HOST_NAME_FLD + ", " + USER_FLD + ", " + PWD_FLD + ") VALUES (" +
      * Utils.strLiteral(hostName) + ", " + Utils.strLiteral(userName) + ", " + Utils.strLiteral(pwd) + ")";
-     * 
+     *
      * _executeUpdate(sql);
-     * 
+     *
      * return _getLastInsertID(); }
      */
+    @Override
     public String addHost(String hostName, String userName, String pwd) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         hostName = (hostName == null ? "" : hostName);
 
         if (isDebugMode) {
-            logger.debug("Query is " + qAddHost);
+            LOGGER.debug("Query is " + qAddHost);
         }
         try {
             conn = getConnection();
@@ -62,23 +69,24 @@ public class HostMySqlDao extends MySqlBaseDao implements IHostDao {
 
     /*
      * public void updateHost(String hostId, String hostName, String userName, String pwd) throws SQLException {
-     * 
+     *
      * hostName = (hostName == null ? "" : hostName);
-     * 
+     *
      * String sql = "UPDATE " + HOST_TABLE + " SET " + HOST_NAME_FLD + "=" + Utils.strLiteral(hostName) + ", " + USER_FLD + "=" +
      * Utils.strLiteral(userName) + ", " + PWD_FLD + "=" + Utils.strLiteral(pwd) + " WHERE " + HOST_ID_FLD + "=" + hostId;
-     * 
+     *
      * _executeUpdate(sql);
-     * 
+     *
      * }
      */
+    @Override
     public void updateHost(String hostId, String hostName, String userName, String pwd) throws SQLException {
         hostName = (hostName == null ? "" : hostName);
         Connection conn = null;
         PreparedStatement pstmt = null;
 
         if (isDebugMode) {
-            logger.debug("Query is " + qUpdateHost);
+            LOGGER.debug("Query is " + qUpdateHost);
         }
         try {
             conn = getConnection();
@@ -95,17 +103,18 @@ public class HostMySqlDao extends MySqlBaseDao implements IHostDao {
 
     /*
      * public void removeHost(String hostId) throws SQLException {
-     * 
+     *
      * String sql = "DELETE FROM " + HOST_TABLE + " WHERE " + HOST_ID_FLD + "=" + hostId; _executeUpdate(sql);
-     * 
+     *
      * }
      */
+    @Override
     public void removeHost(String hostId) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
         if (isDebugMode) {
-            logger.debug("Query is " + qRemoveHost);
+            LOGGER.debug("Query is " + qRemoveHost);
         }
         try {
             conn = getConnection();
@@ -119,25 +128,26 @@ public class HostMySqlDao extends MySqlBaseDao implements IHostDao {
 
     /*
      * public Vector getHosts(String host) throws SQLException {
-     * 
+     *
      * StringBuffer sql_buf = new StringBuffer("SELECT " + HOST_ID_FLD + ", " + HOST_NAME_FLD + ", " + USER_FLD + ", " + PWD_FLD +
      * " FROM " + HOST_TABLE); if (!Utils.isNullStr(host)) { if (Utils.isNum(host)) { sql_buf.append(" WHERE " + HOST_ID_FLD + "=" +
      * host); } else { sql_buf.append(" WHERE " + HOST_NAME_FLD + " like '%" + host + "%'"); } } sql_buf.append(" ORDER BY " +
      * HOST_NAME_FLD);
-     * 
+     *
      * String r[][] = _executeStringQuery(sql_buf.toString());
-     * 
+     *
      * Vector v = new Vector();
-     * 
+     *
      * for (int i = 0; i < r.length; i++) { Hashtable h = new Hashtable(); h.put("host_id", r[i][0]); h.put("host_name", r[i][1]);
      * h.put("user_name", r[i][2]); h.put("pwd", r[i][3]); v.add(h); }
-     * 
+     *
      * return v; }
      */
     private static final int ALL_HOSTS = 1;
     private static final int HOST_BY_ID = 2;
     private static final int HOST_BY_NAME = 3;
 
+    @Override
     public Vector getHosts(String host) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -173,7 +183,7 @@ public class HostMySqlDao extends MySqlBaseDao implements IHostDao {
             }
 
             if (isDebugMode) {
-                logger.debug("Query is "
+                LOGGER.debug("Query is "
                         + ((queryType == ALL_HOSTS) ? qAllHosts : (queryType == HOST_BY_ID) ? qHostByID : qHostByName));
             }
             rs = pstmt.executeQuery();

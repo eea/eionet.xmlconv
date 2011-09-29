@@ -25,17 +25,20 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.Properties;
 import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 
 public class Conversion {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(Conversion.class);
     public static String CONVERSION_ELEMENT = "conversion";
     private static List conversions = new ArrayList();
 
@@ -59,7 +62,7 @@ public class Conversion {
                 conversions.add(resObject);
             }
         } catch (Exception ex) {
-            _logger.error("Error reading conversions.xml file ", ex);
+            LOGGER.error("Error reading conversions.xml file ", ex);
         }
 
     }

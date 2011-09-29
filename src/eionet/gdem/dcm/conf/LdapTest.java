@@ -28,12 +28,13 @@ import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class LdapTest {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(LdapTest.class);
 
     private String url;
 
@@ -62,7 +63,7 @@ public class LdapTest {
             closeContext(ctx);
             return true;
         } catch (Exception e) {
-            _logger.error("Testing ldap connection failed!", e);
+            LOGGER.error("Testing ldap connection failed!", e);
             return false;
         }
     }

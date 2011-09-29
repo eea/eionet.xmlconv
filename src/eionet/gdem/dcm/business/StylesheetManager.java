@@ -35,6 +35,8 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.Constants;
@@ -45,7 +47,6 @@ import eionet.gdem.dto.ConvType;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.services.db.dao.IStyleSheetDao;
@@ -54,7 +55,9 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.stylesheet.ConvTypeHolder;
 
 public class StylesheetManager {
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(StylesheetManager.class);
+
     private IStyleSheetDao styleSheetDao = GDEMServices.getDaoService().getStyleSheetDao();;
     private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
     private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
@@ -63,13 +66,13 @@ public class StylesheetManager {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "d")) {
-                _logger.debug("You don't have permissions to delete stylesheet!");
+                LOGGER.debug("You don't have permissions to delete stylesheet!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_STYLEHEET_DELETE);
             }
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error deleting stylesheet", e);
+            LOGGER.error("Error deleting stylesheet", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -96,7 +99,7 @@ public class StylesheetManager {
              * if(vDb.size()==0) { dbM.removeSchema( schemaId, true, true, true); }
              */
         } catch (Exception e) {
-            _logger.error("Error deleting stylesheet", e);
+            LOGGER.error("Error deleting stylesheet", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -121,7 +124,7 @@ public class StylesheetManager {
             ctHolder.setConvTypes(convs);
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Error getting conv types", e);
+            LOGGER.error("Error getting conv types", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return ctHolder;
@@ -137,7 +140,7 @@ public class StylesheetManager {
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error adding stylesheet", e);
+            LOGGER.error("Error adding stylesheet", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         try {
@@ -170,7 +173,7 @@ public class StylesheetManager {
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error adding stylesheet", e);
+            LOGGER.error("Error adding stylesheet", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -226,7 +229,7 @@ public class StylesheetManager {
             }
 
         } catch (Exception e) {
-            _logger.error("Error getting stylesheet", e);
+            LOGGER.error("Error getting stylesheet", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return st;
@@ -263,7 +266,7 @@ public class StylesheetManager {
                 }
             }
         } catch (Exception e) {
-            _logger.error("Error getting stylesheet", e);
+            LOGGER.error("Error getting stylesheet", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return result;
@@ -278,7 +281,7 @@ public class StylesheetManager {
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error updating stylesheet", e);
+            LOGGER.error("Error updating stylesheet", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         try {
@@ -326,7 +329,7 @@ public class StylesheetManager {
             throw e;
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Error updating stylesheet", e);
+            LOGGER.error("Error updating stylesheet", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -341,7 +344,7 @@ public class StylesheetManager {
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error updating stylesheet", e);
+            LOGGER.error("Error updating stylesheet", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -358,7 +361,7 @@ public class StylesheetManager {
             styleSheetDao.updateStylesheet(xsl_id, schemaID, descr, fileName, type, dependsOn);
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Error updating stylesheet", e);
+            LOGGER.error("Error updating stylesheet", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 

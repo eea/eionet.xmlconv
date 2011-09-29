@@ -38,20 +38,24 @@ import net.sf.saxon.query.DynamicQueryContext;
 import net.sf.saxon.query.StaticQueryContext;
 import net.sf.saxon.query.XQueryExpression;
 import net.sf.saxon.value.StringValue;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 public class SaxonImpl extends QAScriptEngineStrategy {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(SaxonImpl.class);
 
     public SaxonImpl() {
     }
 
+    @Override
     protected void runQuery(XQScript script, OutputStream result) throws GDEMException {
 
         // Source sourceInput = null;
@@ -78,15 +82,17 @@ public class SaxonImpl extends QAScriptEngineStrategy {
         outputProps.setProperty(OutputKeys.INDENT, "no");
         outputProps.setProperty(OutputKeys.ENCODING, DEFAULT_ENCODING);
         // if the output is html, then use method="xml" in output, otherwise, it's not valid xml
-        if (getOutputType().equals(HTML_CONTENT_TYPE))
+        if (getOutputType().equals(HTML_CONTENT_TYPE)) {
             outputProps.setProperty(OutputKeys.METHOD, XML_CONTENT_TYPE);
-        else
+        } else {
             outputProps.setProperty(OutputKeys.METHOD, getOutputType());
+        }
         // add xml declaration only, if the output should be XML
-        if (getOutputType().equals(XML_CONTENT_TYPE))
+        if (getOutputType().equals(XML_CONTENT_TYPE)) {
             outputProps.setProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-        else
+        } else {
             outputProps.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        }
 
         // query script
 
@@ -101,15 +107,16 @@ public class SaxonImpl extends QAScriptEngineStrategy {
         String s = "";
 
         try {
-            if (!Utils.isNullStr(script.getScriptSource()))
+            if (!Utils.isNullStr(script.getScriptSource())) {
                 queryReader = new StringReader(script.getScriptSource());
-            else if (!Utils.isNullStr(script.getScriptFileName()))
+            } else if (!Utils.isNullStr(script.getScriptFileName())) {
                 queryReader = new FileReader(script.getScriptFileName());
-            else
+            } else {
                 throw new GDEMException("XQuery engine could not find script source or script file name!");
+            }
 
             // handle xq Parameters, extract from Saxon code
-            if (script.getParams() != null)
+            if (script.getParams() != null) {
                 for (int p = 0; p < script.getParams().length; p++) {
                     String arg = script.getParams()[p];
                     int eq = arg.indexOf("=");
@@ -125,10 +132,12 @@ public class SaxonImpl extends QAScriptEngineStrategy {
                         // parameters starting with "+" are taken as inputdocuments
                         // List sources = Transform.loadDocuments(arg.substring(eq+1), true, config);
                         // dynamicEnv.setParameter(argname.substring(1), sources);
-                    } else
+                    } else {
                         dynamicEnv.setParameter(argname, new StringValue(arg.substring(eq + 1)));
+                    }
 
                 }
+            }
 
             // QueryProcessor xquery = new QueryProcessor(config, staticEnv);
 
@@ -162,10 +171,10 @@ public class SaxonImpl extends QAScriptEngineStrategy {
             try {
                 errMsg = parseErrors(errMsg, staticEnv);
             } catch (Exception ex) {
-                _logger.error("Unable to parse exception string: " + ex.toString());
+                LOGGER.error("Unable to parse exception string: " + ex.toString());
             }
 
-            _logger.error("==== CATCHED EXCEPTION " + errMsg);
+            LOGGER.error("==== CATCHED EXCEPTION " + errMsg);
             throw new GDEMException(errMsg);
             // listener.error(e);
         } finally {
@@ -182,9 +191,9 @@ public class SaxonImpl extends QAScriptEngineStrategy {
                 try {
                     errMsg = parseErrors(errMsg, staticEnv);
                 } catch (Exception ex) {
-                    _logger.error("Unable to parse exception string: " + ex.toString());
+                    LOGGER.error("Unable to parse exception string: " + ex.toString());
                 }
-                _logger.error(errMsg);
+                LOGGER.error(errMsg);
                 throw new GDEMException(errMsg);
             }
         }
@@ -195,8 +204,9 @@ public class SaxonImpl extends QAScriptEngineStrategy {
     // if the error messages contains staticEnv.baseURI, then remove it
     private String parseErrors(String err, StaticQueryContext staticEnv) {
 
-        if (err == null)
+        if (err == null) {
             return null;
+        }
 
         String search_base = Constants.TICKET_PARAM + "=";
         String baseURI = (staticEnv == null) ? null : staticEnv.getBaseURI();
@@ -211,10 +221,12 @@ public class SaxonImpl extends QAScriptEngineStrategy {
         while ((found = err.indexOf(search_base, last)) >= 0) {
             buf.append(err.substring(last, found));
             last = err.indexOf("&", found);
-            if (last < 0)
+            if (last < 0) {
                 last = err.indexOf(" ", found);
-            if (last < 0)
+            }
+            if (last < 0) {
                 last = err.length() - 1;
+            }
         }
         buf.append(err.substring(last));
 

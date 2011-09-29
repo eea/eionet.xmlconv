@@ -9,20 +9,26 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.Utils;
 
 public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(SchemaMySqlDao.class);
+
     private static final String qSchemaID = "SELECT " + SCHEMA_ID_FLD + " FROM " + SCHEMA_TABLE + " WHERE " + XML_SCHEMA_FLD
-            + "= ?";
+    + "= ?";
 
     private static final String qInsertSchema = "INSERT INTO " + SCHEMA_TABLE + " ( " + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD
-            + ", " + SCHEMA_LANG_FLD + ", " + SCHEMA_VALIDATE_FLD + ", " + DTD_PUBLIC_ID_FLD + ")" + " VALUES (?,?,?,?,?)";
+    + ", " + SCHEMA_LANG_FLD + ", " + SCHEMA_VALIDATE_FLD + ", " + DTD_PUBLIC_ID_FLD + ")" + " VALUES (?,?,?,?,?)";
 
     private static final String qUpdateSchema = "UPDATE  " + SCHEMA_TABLE + " SET " + XML_SCHEMA_FLD + "= ?" + ", "
-            + SCHEMA_DESCR_FLD + "= ?" + ", " + SCHEMA_LANG_FLD + "= ?" + ", " + SCHEMA_VALIDATE_FLD + "= ?" + ", "
-            + DTD_PUBLIC_ID_FLD + "= ? " + ", " + EXPIRE_DATE_FLD + "= ? " + "" + " WHERE " + SCHEMA_ID_FLD + "= ?";
+    + SCHEMA_DESCR_FLD + "= ?" + ", " + SCHEMA_LANG_FLD + "= ?" + ", " + SCHEMA_VALIDATE_FLD + "= ?" + ", "
+    + DTD_PUBLIC_ID_FLD + "= ? " + ", " + EXPIRE_DATE_FLD + "= ? " + "" + " WHERE " + SCHEMA_ID_FLD + "= ?";
 
     private static final String qDeleteStyleSheets = "DELETE FROM " + XSL_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?";
     private static final String qDeleteQueries = "DELETE FROM " + QUERY_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?";
@@ -31,37 +37,39 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
     private static final String qDeleteSchemaFiles = "DELETE FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_FK_SCHEMA_ID + "= ?";
 
     private static final String qSchemaBase = "SELECT " + SCHEMA_ID_FLD + "," + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD + ", "
-            + DTD_PUBLIC_ID_FLD + ", " + SCHEMA_VALIDATE_FLD + ", " + SCHEMA_LANG_FLD + ", " + EXPIRE_DATE_FLD + " FROM "
-            + SCHEMA_TABLE;
+    + DTD_PUBLIC_ID_FLD + ", " + SCHEMA_VALIDATE_FLD + ", " + SCHEMA_LANG_FLD + ", " + EXPIRE_DATE_FLD + " FROM "
+    + SCHEMA_TABLE;
 
     private static final String qAllSchemas = qSchemaBase + " ORDER BY " + XML_SCHEMA_FLD;
     private static final String qSchemaById = qSchemaBase + " WHERE " + SCHEMA_ID_FLD + " =  ?" + " ORDER BY " + XML_SCHEMA_FLD;
     private static final String qSchemaByName = qSchemaBase + " WHERE " + XML_SCHEMA_FLD + " =  ?" + " ORDER BY " + XML_SCHEMA_FLD;
 
     private static final String qSchemaStylesheets = "SELECT " + CNV_ID_FLD + ", " + XSL_FILE_FLD + ", " + DESCR_FLD + ","
-            + RESULT_TYPE_FLD + "," + DEPENDS_ON + " FROM " + XSL_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?" + " ORDER BY "
-            + RESULT_TYPE_FLD;
+    + RESULT_TYPE_FLD + "," + DEPENDS_ON + " FROM " + XSL_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?" + " ORDER BY "
+    + RESULT_TYPE_FLD;
 
     private static final String qSchemaQueries = "SELECT " + QUERY_ID_FLD + ", " + QUERY_FILE_FLD + ", " + DESCR_FLD + ","
-            + SHORT_NAME_FLD + "," + QUERY_SCRIPT_TYPE + "," + QUERY_RESULT_TYPE + "," + UPPER_LIMIT_FLD + " FROM " + QUERY_TABLE
-            + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?" + " ORDER BY " + SHORT_NAME_FLD;
+    + SHORT_NAME_FLD + "," + QUERY_SCRIPT_TYPE + "," + QUERY_RESULT_TYPE + "," + UPPER_LIMIT_FLD + " FROM " + QUERY_TABLE
+    + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?" + " ORDER BY " + SHORT_NAME_FLD;
 
     private static final String qSchemasWithStl = "SELECT DISTINCT S." + SCHEMA_ID_FLD + ", S." + XML_SCHEMA_FLD + ", S."
-            + SCHEMA_DESCR_FLD + " FROM " + SCHEMA_TABLE + " S" + " JOIN " + XSL_TABLE + " ST ON S." + SCHEMA_ID_FLD + " = ST."
-            + XSL_SCHEMA_ID_FLD + " ORDER BY S." + XML_SCHEMA_FLD;
+    + SCHEMA_DESCR_FLD + " FROM " + SCHEMA_TABLE + " S" + " JOIN " + XSL_TABLE + " ST ON S." + SCHEMA_ID_FLD + " = ST."
+    + XSL_SCHEMA_ID_FLD + " ORDER BY S." + XML_SCHEMA_FLD;
 
     private static final String qUpdateSchemaValidate = "UPDATE  " + SCHEMA_TABLE + " SET " + SCHEMA_VALIDATE_FLD + "= ?"
-            + " WHERE " + SCHEMA_ID_FLD + "= ? ";
+    + " WHERE " + SCHEMA_ID_FLD + "= ? ";
 
     public SchemaMySqlDao() {
     }
 
+    @Override
     public String addSchema(String xmlSchema, String description) throws SQLException {
         return addSchema(xmlSchema, description, null, false, null);
     }
 
+    @Override
     public String addSchema(String xmlSchema, String description, String schemaLang, boolean doValidate, String public_id)
-            throws SQLException {
+    throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         description = (description == null ? "" : description);
@@ -69,7 +77,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
         String strValidate = doValidate ? "1" : "0";
 
         if (isDebugMode) {
-            logger.debug("Query is " + qInsertSchema);
+            LOGGER.debug("Query is " + qInsertSchema);
         }
         try {
             conn = getConnection();
@@ -86,6 +94,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
         return getSchemaID(xmlSchema);
     }
 
+    @Override
     public void updateSchema(String schema_id, String xmlSchema, String description, String schemaLang, boolean doValidate,
             String public_id, Date expireDate) throws SQLException {
         Connection conn = null;
@@ -96,7 +105,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
         String strValidate = doValidate ? "1" : "0";
 
         if (isDebugMode) {
-            logger.debug("Query is " + qUpdateSchema);
+            LOGGER.debug("Query is " + qUpdateSchema);
         }
         try {
             conn = getConnection();
@@ -106,10 +115,11 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
             pstmt.setString(3, schemaLang);
             pstmt.setString(4, strValidate);
             pstmt.setString(5, public_id);
-            if (expireDate == null)
+            if (expireDate == null) {
                 pstmt.setNull(6, Types.DATE);
-            else
+            } else {
                 pstmt.setDate(6, new java.sql.Date(expireDate.getTime()));
+            }
             pstmt.setInt(7, Integer.parseInt(schema_id));
             pstmt.executeUpdate();
         } finally {
@@ -117,13 +127,14 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
         }
     }
 
+    @Override
     public void updateSchemaValidate(String schema_id, boolean validate) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         String strValidate = (validate) ? "1" : "0";
 
         if (isDebugMode) {
-            logger.debug("Query is " + qUpdateSchemaValidate);
+            LOGGER.debug("Query is " + qUpdateSchemaValidate);
         }
         try {
             conn = getConnection();
@@ -136,6 +147,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
         }
     }
 
+    @Override
     public void removeSchema(String schemaId, boolean del_stylesheets, boolean del_queries, boolean del_upl_schemas,
             boolean del_self) throws SQLException {
         Connection conn = null;
@@ -150,7 +162,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
                 pstmt = conn.prepareStatement(qDeleteStyleSheets);
                 pstmt.setInt(1, schemaIdInt);
                 if (isDebugMode) {
-                    logger.debug("Query is " + qDeleteStyleSheets);
+                    LOGGER.debug("Query is " + qDeleteStyleSheets);
                 }
                 pstmt.executeUpdate();
                 pstmt.close();
@@ -160,7 +172,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
                 pstmt = conn.prepareStatement(qDeleteQueries);
                 pstmt.setInt(1, schemaIdInt);
                 if (isDebugMode) {
-                    logger.debug("Query is " + qDeleteQueries);
+                    LOGGER.debug("Query is " + qDeleteQueries);
                 }
                 pstmt.executeUpdate();
                 pstmt.close();
@@ -171,7 +183,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
                 pstmt = conn.prepareStatement(qDeleteSchemaFiles);
                 pstmt.setInt(1, schemaIdInt);
                 if (isDebugMode) {
-                    logger.debug("Query is " + qDeleteSchemaFiles);
+                    LOGGER.debug("Query is " + qDeleteSchemaFiles);
                 }
                 pstmt.executeUpdate();
                 pstmt.close();
@@ -182,7 +194,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
                 pstmt = conn.prepareStatement(qDeleteRootElement);
                 pstmt.setInt(1, schemaIdInt);
                 if (isDebugMode) {
-                    logger.debug("Query is " + qDeleteRootElement);
+                    LOGGER.debug("Query is " + qDeleteRootElement);
                 }
                 pstmt.executeUpdate();
                 pstmt.close();
@@ -191,20 +203,22 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
                 pstmt = conn.prepareStatement(qDeleteSchema);
                 pstmt.setInt(1, schemaIdInt);
                 if (isDebugMode) {
-                    logger.debug("Query is " + qDeleteSchema);
+                    LOGGER.debug("Query is " + qDeleteSchema);
                 }
                 pstmt.executeUpdate();
             }
             conn.commit();
         } catch (SQLException sqle) {
-            if (conn != null)
+            if (conn != null) {
                 conn.rollback();
+            }
             throw new SQLException(sqle.getMessage(), sqle.getSQLState());
         } finally {
             closeAllResources(null, pstmt, conn);
         }
     }
 
+    @Override
     public Vector getSchemas(String schemaId) throws SQLException {
         return getSchemas(schemaId, true);
     }
@@ -213,6 +227,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
     private static final int SCHEMA_BY_ID = 2;
     private static final int SCHEMA_BY_NAME = 3;
 
+    @Override
     public Vector getSchemas(String schemaId, boolean stylesheets) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -247,7 +262,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
             }
 
             if (isDebugMode) {
-                logger.debug("Query is "
+                LOGGER.debug("Query is "
                         + ((queryType == ALL_SCHEMAS) ? qAllSchemas : (queryType == SCHEMA_BY_ID) ? qSchemaById : qSchemaByName));
             }
             rs = pstmt.executeQuery();
@@ -277,23 +292,28 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
         return v;
     }
 
+    @Override
     public HashMap getSchema(String schema_id) throws SQLException {
         return getSchema(schema_id, false);
     }
 
+    @Override
     public HashMap getSchema(String schema_id, boolean stylesheets) throws SQLException {
 
         Vector schemas = getSchemas(schema_id, stylesheets);
 
-        if (schemas == null)
+        if (schemas == null) {
             return null;
-        if (schemas.size() == 0)
+        }
+        if (schemas.size() == 0) {
             return null;
+        }
 
         return (HashMap) schemas.get(0);
 
     }
 
+    @Override
     public String getSchemaID(String schema) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -301,7 +321,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
         String[][] r = null;
 
         if (isDebugMode) {
-            logger.debug("Query is " + qSchemaID);
+            LOGGER.debug("Query is " + qSchemaID);
         }
 
         try {
@@ -311,8 +331,9 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
             rs = pstmt.executeQuery();
 
             r = getResults(rs);
-            if (r.length == 0)
+            if (r.length == 0) {
                 return null;
+            }
         } finally {
             closeAllResources(rs, pstmt, conn);
         }
@@ -321,6 +342,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 
     }
 
+    @Override
     public Vector getSchemaStylesheets(String schemaId) throws SQLException {
         Connection conn = null;
         try {
@@ -348,7 +370,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
         }
 
         if (isDebugMode) {
-            logger.debug("Query is " + qSchemaStylesheets);
+            LOGGER.debug("Query is " + qSchemaStylesheets);
         }
 
         try {
@@ -375,6 +397,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 
     }
 
+    @Override
     public Vector getSchemaQueries(String schemaId) throws SQLException {
         Connection conn = null;
         try {
@@ -392,8 +415,9 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
         ResultSet rs = null;
         Vector v = null;
 
-        if (schemaId == null)
+        if (schemaId == null) {
             throw new SQLException("Schema ID not defined");
+        }
         try {
             id = Integer.parseInt(schemaId);
         } catch (NumberFormatException n) {
@@ -401,7 +425,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
         }
 
         if (isDebugMode) {
-            logger.debug("Query is " + qSchemaQueries);
+            LOGGER.debug("Query is " + qSchemaQueries);
         }
 
         try {
@@ -430,6 +454,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 
     }
 
+    @Override
     public Vector getSchemasWithStl() throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -437,7 +462,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
         Vector v = null;
 
         if (isDebugMode) {
-            logger.debug("Query is " + qSchemasWithStl);
+            LOGGER.debug("Query is " + qSchemasWithStl);
         }
 
         try {

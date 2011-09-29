@@ -26,15 +26,17 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 public class DbTest {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(DbTest.class);
 
     public void tstDbParams(String url, String user, String psw) throws Exception {
 
@@ -52,17 +54,19 @@ public class DbTest {
             rset = stmt.executeQuery(sql);
 
         } catch (Exception e) {
-            _logger.debug("Testing database connection failed!", e);
+            LOGGER.debug("Testing database connection failed!", e);
             e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_PARAM_DB_TEST_FAILED);
         } finally {
             // Close connection
-            if (rset != null)
+            if (rset != null) {
                 rset.close();
+            }
             if (stmt != null) {
                 stmt.close();
-                if (!con.getAutoCommit())
+                if (!con.getAutoCommit()) {
                     con.commit();
+                }
             }
             if (con != null) {
                 con.close();

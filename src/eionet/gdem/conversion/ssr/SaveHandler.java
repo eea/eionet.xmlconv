@@ -25,12 +25,14 @@ package eionet.gdem.conversion.ssr;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.tee.uit.security.AppUser;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 
@@ -39,14 +41,15 @@ import eionet.gdem.utils.Utils;
  */
 public class SaveHandler {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
-    private static final int BUF_SIZE = 1024;
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(SaveHandler.class);
 
     static void handleWorkqueue(HttpServletRequest req, String action) {
         AppUser user = SecurityUtil.getUser(req, Names.USER_ATT);
         String user_name = null;
-        if (user != null)
+        if (user != null) {
             user_name = user.getUserName();
+        }
 
         if (action.equals(Names.WQ_DEL_ACTION)) {
             try {
@@ -69,26 +72,28 @@ public class SaveHandler {
                     try {
                         for (int i = 0; i < jobs.length; i++) {
                             String jobData[] = GDEMServices.getDaoService().getXQJobDao().getXQJobData(jobs[i]);
-                            if (jobData == null || jobData.length < 3)
+                            if (jobData == null || jobData.length < 3) {
                                 continue;
+                            }
                             String resultFile = jobData[2];
                             try {
                                 Utils.deleteFile(resultFile);
                             } catch (Exception e) {
-                                _logger.error("Could not delete job result file: " + resultFile + "." + e.getMessage());
+                                LOGGER.error("Could not delete job result file: " + resultFile + "." + e.getMessage());
                             }
                             // delete xquery files, if they are stored in tmp folder
                             String xqFile = jobData[1];
                             try {
                                 // Important!!!: delete only, when the file is stored in tmp folder
-                                if (xqFile.startsWith(Properties.tmpFolder))
+                                if (xqFile.startsWith(Properties.tmpFolder)) {
                                     Utils.deleteFile(xqFile);
+                                }
                             } catch (Exception e) {
-                                _logger.error("Could not delete XQuery script file: " + xqFile + "." + e.getMessage());
+                                LOGGER.error("Could not delete XQuery script file: " + xqFile + "." + e.getMessage());
                             }
                         }
                     } catch (Exception e) {
-                        _logger.error("Could not delete job result files!" + e.getMessage());
+                        LOGGER.error("Could not delete job result files!" + e.getMessage());
                     }
                     GDEMServices.getDaoService().getXQJobDao().endXQJobs(jobs);
                 }
@@ -96,8 +101,9 @@ public class SaveHandler {
             } catch (Exception e) {
                 err_buf.append("Cannot delete job: " + e.toString() + jobs);
             }
-            if (err_buf.length() > 0)
+            if (err_buf.length() > 0) {
                 req.setAttribute(Names.ERROR_ATT, err_buf.toString());
+            }
         } else if (action.equals(Names.WQ_RESTART_ACTION)) {
             try {
                 if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "u")) {
@@ -113,14 +119,16 @@ public class SaveHandler {
             String[] jobs = req.getParameterValues("jobID");
 
             try {
-                if (jobs.length > 0)
+                if (jobs.length > 0) {
                     GDEMServices.getDaoService().getXQJobDao().changeXQJobsStatuses(jobs, Constants.XQ_RECEIVED);
+                }
 
             } catch (Exception e) {
                 err_buf.append("Cannot restart jobs: " + e.toString() + jobs);
             }
-            if (err_buf.length() > 0)
+            if (err_buf.length() > 0) {
                 req.setAttribute(Names.ERROR_ATT, err_buf.toString());
+            }
         }
     }
 }

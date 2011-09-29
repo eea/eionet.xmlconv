@@ -8,30 +8,34 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.services.db.dao.IBackupDao;
 
 public class BackupMySqlDao extends MySqlBaseDao implements IBackupDao {
 
-    public BackupMySqlDao() {
-    }
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(BackupMySqlDao.class);
 
     private static final String qInsertBackup = "INSERT INTO " + BACKUP_TABLE + " ( " + BACKUP_OBJECT_ID_FLD + ", "
-            + BACKUP_FILENAME_FLD + ", " + BACKUP_TIMESTAMP_FLD + ", " + BACKUP_USER_FLD + ") " + " VALUES (?,?,?,?)";
+    + BACKUP_FILENAME_FLD + ", " + BACKUP_TIMESTAMP_FLD + ", " + BACKUP_USER_FLD + ") " + " VALUES (?,?,?,?)";
     private static final String qBackup = "SELECT " + BACKUP_ID_FLD + ", " + BACKUP_OBJECT_ID_FLD + ", " + BACKUP_FILENAME_FLD
-            + ", " + BACKUP_TIMESTAMP_FLD + ", " + BACKUP_USER_FLD + " FROM " + BACKUP_TABLE;
+    + ", " + BACKUP_TIMESTAMP_FLD + ", " + BACKUP_USER_FLD + " FROM " + BACKUP_TABLE;
 
     private static final String qBackupByObjectId = qBackup + " WHERE " + BACKUP_OBJECT_ID_FLD + "=? ORDER BY "
-            + BACKUP_TIMESTAMP_FLD + " DESC";
+    + BACKUP_TIMESTAMP_FLD + " DESC";
 
     private static final String qDeleteBackups = "DELETE FROM " + BACKUP_TABLE + " WHERE " + BACKUP_TIMESTAMP_FLD + "< ?";
 
+    @Override
     public void addBackup(BackupDto backup) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
         if (isDebugMode) {
-            logger.debug("Query is " + qInsertBackup);
+            LOGGER.debug("Query is " + qInsertBackup);
         }
         try {
             conn = getConnection();
@@ -46,6 +50,7 @@ public class BackupMySqlDao extends MySqlBaseDao implements IBackupDao {
         }
     }
 
+    @Override
     public List<BackupDto> getBackups(String objectID) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -53,7 +58,7 @@ public class BackupMySqlDao extends MySqlBaseDao implements IBackupDao {
         List<BackupDto> result = null;
 
         if (isDebugMode) {
-            logger.debug("Query is " + qBackupByObjectId);
+            LOGGER.debug("Query is " + qBackupByObjectId);
         }
         try {
             conn = getConnection();
@@ -77,12 +82,13 @@ public class BackupMySqlDao extends MySqlBaseDao implements IBackupDao {
         return result;
     }
 
+    @Override
     public void removeBackupsOlderThan(Timestamp purgeDate) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
         if (isDebugMode) {
-            logger.debug("Query is " + qDeleteBackups);
+            LOGGER.debug("Query is " + qDeleteBackups);
         }
         try {
             conn = getConnection();

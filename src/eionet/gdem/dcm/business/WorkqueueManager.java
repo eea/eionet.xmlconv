@@ -26,25 +26,28 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQueryService;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.SecurityUtil;
 
 /**
  * WorkqueueManager
- * 
+ *
  * @author Enriko Käsper, Tieto Estonia
  */
 
 public class WorkqueueManager {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(WorkqueueManager.class);
     private IXQJobDao jobDao = GDEMServices.getDaoService().getXQJobDao();
 
     public WorkqueueJob getWqJob(String jobId) throws DCMException {
@@ -62,7 +65,7 @@ public class WorkqueueManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Error getting workqueue job", e);
+            LOGGER.error("Error getting workqueue job", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return job;
@@ -71,7 +74,7 @@ public class WorkqueueManager {
 
     /**
      * Adds a new jobs into the workqueue using script content sent as the method parameter
-     * 
+     *
      * @param user
      * @param sourceUrl
      * @param scriptContent
@@ -80,18 +83,18 @@ public class WorkqueueManager {
      * @throws DCMException
      */
     public String addQAScriptToWorkqueue(String user, String sourceUrl, String scriptContent, String scriptType)
-            throws DCMException {
+    throws DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_WQ_PATH, "i")) {
-                _logger.debug("You don't have permissions jobs into workqueue!");
+                LOGGER.debug("You don't have permissions jobs into workqueue!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
             }
 
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error adding job to workqueue", e);
+            LOGGER.error("Error adding job to workqueue", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         XQueryService xqE = new XQueryService();
@@ -100,7 +103,7 @@ public class WorkqueueManager {
             String result = xqE.analyze(sourceUrl, scriptContent, scriptType);
             return result;
         } catch (Exception e) {
-            _logger.error("Error adding job to workqueue", e);
+            LOGGER.error("Error adding job to workqueue", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -108,7 +111,7 @@ public class WorkqueueManager {
 
     /**
      * Adds new jobs into the workqueue by the goven XML Schema
-     * 
+     *
      * @param user
      * @param sourceUrl
      * @param schemaUrl
@@ -120,14 +123,14 @@ public class WorkqueueManager {
         List<String> result = new ArrayList<String>();
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_WQ_PATH, "i")) {
-                _logger.debug("You don't have permissions jobs into workqueue!");
+                LOGGER.debug("You don't have permissions jobs into workqueue!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
             }
 
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error adding job to workqueue", e);
+            LOGGER.error("Error adding job to workqueue", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         XQueryService xqE = new XQueryService();
@@ -146,7 +149,7 @@ public class WorkqueueManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Error adding job to workqueue", e);
+            LOGGER.error("Error adding job to workqueue", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return result;

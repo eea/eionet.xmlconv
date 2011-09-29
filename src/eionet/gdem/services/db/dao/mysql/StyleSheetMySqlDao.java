@@ -7,38 +7,44 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.services.db.dao.IStyleSheetDao;
 import eionet.gdem.utils.Utils;
 
 public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
 
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(StyleSheetMySqlDao.class);
+
     private static final String qInsertStylesheet = "INSERT INTO " + XSL_TABLE + " ( " + XSL_SCHEMA_ID_FLD + ", "
-            + RESULT_TYPE_FLD + ", " + XSL_FILE_FLD + ", " + DESCR_FLD + ", " + DEPENDS_ON + ") " + " VALUES (?,?,?,?,?)";
+    + RESULT_TYPE_FLD + ", " + XSL_FILE_FLD + ", " + DESCR_FLD + ", " + DEPENDS_ON + ") " + " VALUES (?,?,?,?,?)";
 
     private static final String qStylesheetByFileName = "SELECT " + CNV_ID_FLD + " FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD
-            + "= ? ";
+    + "= ? ";
 
     private static final String qUpdateStyleSheet = "UPDATE  " + XSL_TABLE + " SET " + DESCR_FLD + "= ? " + ", "
-            + XSL_SCHEMA_ID_FLD + "= ? " + ", " + RESULT_TYPE_FLD + "= ? " + ", " + DEPENDS_ON + "= ?" + " WHERE " + CNV_ID_FLD
-            + "= ?";
+    + XSL_SCHEMA_ID_FLD + "= ? " + ", " + RESULT_TYPE_FLD + "= ? " + ", " + DEPENDS_ON + "= ?" + " WHERE " + CNV_ID_FLD
+    + "= ?";
 
     private static final String qUpdateStyleSheetFN = "UPDATE  " + XSL_TABLE + " SET " + XSL_FILE_FLD + "= ? " + ", " + DESCR_FLD
-            + "= ? " + ", " + XSL_SCHEMA_ID_FLD + "= ? " + ", " + RESULT_TYPE_FLD + "= ? " + ", " + DEPENDS_ON + "= ?" + " WHERE "
-            + CNV_ID_FLD + "= ? ";
+    + "= ? " + ", " + XSL_SCHEMA_ID_FLD + "= ? " + ", " + RESULT_TYPE_FLD + "= ? " + ", " + DEPENDS_ON + "= ?" + " WHERE "
+    + CNV_ID_FLD + "= ? ";
 
     private static final String qRemoveStylesheet = "DELETE FROM " + XSL_TABLE + " WHERE " + CNV_ID_FLD + "= ? ";
 
     private static final String qStylesheetInfoBase = "SELECT " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD + "," + XSL_FILE_FLD + ", "
-            + XSL_TABLE + "." + DESCR_FLD + "," + RESULT_TYPE_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ", " + XSL_TABLE
-            + "." + DEPENDS_ON + " FROM " + XSL_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE + " ON " + XSL_TABLE + "."
-            + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD;
+    + XSL_TABLE + "." + DESCR_FLD + "," + RESULT_TYPE_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ", " + XSL_TABLE
+    + "." + DEPENDS_ON + " FROM " + XSL_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE + " ON " + XSL_TABLE + "."
+    + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD;
 
     private static final String qStylesheetInfoByFileName = qStylesheetInfoBase + " WHERE " + XSL_FILE_FLD + "= ?";
     private static final String qStylesheetInfoByID = qStylesheetInfoBase + " WHERE " + CNV_ID_FLD + "= ?";
 
     private static final String qCheckStylesheetFile = "SELECT COUNT(*) FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD + "= ?";
     private static final String qCheckStylesheetFileID = "SELECT COUNT(*) FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD + "= ? "
-            + "and " + CNV_ID_FLD + "= ?";
+    + "and " + CNV_ID_FLD + "= ?";
 
     public StyleSheetMySqlDao() {
     }
@@ -46,25 +52,26 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
     /*
      * public String addStylesheet(String xmlSchemaID, String resultType, String xslFileName, String description) throws
      * SQLException {
-     * 
+     *
      * description = (description == null ? "" : description);
-     * 
+     *
      * String sql = "INSERT INTO " + XSL_TABLE + " ( " + XSL_SCHEMA_ID_FLD + ", " + RESULT_TYPE_FLD + ", " + XSL_FILE_FLD + ", " +
      * DESCR_FLD + ") VALUES ('" + xmlSchemaID + "', '" + resultType + "', " + Utils.strLiteral(xslFileName) + ", " +
      * Utils.strLiteral(description) + ")";
-     * 
+     *
      * _executeUpdate(sql);
-     * 
+     *
      * sql = "SELECT " + CNV_ID_FLD + " FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD + "=" + Utils.strLiteral(xslFileName);
-     * 
+     *
      * String[][] r = _executeStringQuery(sql);
-     * 
+     *
      * if (r.length == 0) throw new SQLException("Error when returning id  for " + xslFileName + " ");
-     * 
+     *
      * return r[0][0]; }
      */
+    @Override
     public String addStylesheet(String xmlSchemaID, String resultType, String xslFileName, String description, String dependsOn)
-            throws SQLException {
+    throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -73,7 +80,7 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
         description = (description == null ? "" : description);
 
         if (isDebugMode) {
-            logger.debug("Query is " + qInsertStylesheet);
+            LOGGER.debug("Query is " + qInsertStylesheet);
         }
 
         try {
@@ -91,15 +98,17 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
 
             pstmt.executeUpdate();
 
-            if (pstmt != null)
+            if (pstmt != null) {
                 pstmt.close();
+            }
 
             pstmt = conn.prepareStatement(qStylesheetByFileName);
             pstmt.setString(1, xslFileName);
             rs = pstmt.executeQuery();
             String[][] r = getResults(rs);
-            if (r.length == 0)
+            if (r.length == 0) {
                 throw new SQLException("Error when returning id  for " + xslFileName + " ");
+            }
             result = r[0][0];
         } finally {
             closeAllResources(rs, pstmt, conn);
@@ -111,22 +120,23 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
     /*
      * public void updateStylesheet(String xsl_id, String schema_id, String description, String fileName, String content_type)
      * throws SQLException {
-     * 
+     *
      * description = (description == null ? "" : description); String sql; if (fileName == null || fileName.equals("")) { sql =
      * "UPDATE  " + XSL_TABLE + " SET " + DESCR_FLD + "=" + Utils.strLiteral(description) + ", " + XSL_SCHEMA_ID_FLD + "=" +
      * schema_id + ", " + RESULT_TYPE_FLD + "=" + Utils.strLiteral(content_type) + " WHERE " + CNV_ID_FLD + "=" + xsl_id; } else {
      * sql = "UPDATE  " + XSL_TABLE + " SET " + XSL_FILE_FLD + "=" + Utils.strLiteral(fileName) + ", " + DESCR_FLD + "=" +
      * Utils.strLiteral(description) + ", " + XSL_SCHEMA_ID_FLD + "=" + schema_id + ", " + RESULT_TYPE_FLD + "=" +
      * Utils.strLiteral(content_type) + " WHERE " + CNV_ID_FLD + "=" + xsl_id; }
-     * 
+     *
      * _executeUpdate(sql);
-     * 
+     *
      * }
      */
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void updateStylesheet(String xsl_id, String schema_id, String description, String fileName, String content_type,
             String dependsOn) throws SQLException {
         Connection conn = null;
@@ -162,7 +172,7 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
                 pstmt.setInt(6, Integer.parseInt(xsl_id));
             }
             if (isDebugMode) {
-                logger.debug("Query is " + (isEmptyFileName ? qUpdateStyleSheet : qUpdateStyleSheetFN));
+                LOGGER.debug("Query is " + (isEmptyFileName ? qUpdateStyleSheet : qUpdateStyleSheetFN));
             }
             pstmt.executeUpdate();
         } finally {
@@ -173,17 +183,18 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
 
     /*
      * public void removeStylesheet(String convertId) throws SQLException {
-     * 
+     *
      * String sql = "DELETE FROM " + XSL_TABLE + " WHERE " + CNV_ID_FLD + "=" + convertId; _executeUpdate(sql);
-     * 
+     *
      * }
      */
+    @Override
     public void removeStylesheet(String convertId) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
         if (isDebugMode) {
-            logger.debug("Query is " + qRemoveStylesheet);
+            LOGGER.debug("Query is " + qRemoveStylesheet);
         }
 
         try {
@@ -198,28 +209,29 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
 
     /*
      * public HashMap getStylesheetInfo(String convertId) throws SQLException {
-     * 
+     *
      * int id = 0; String xslName = null; try { id = Integer.parseInt(convertId); } catch (NumberFormatException n) { if
      * (convertId.endsWith("xsl")) xslName = convertId; else throw new SQLException("not numeric ID or xsl file name: " +
      * convertId); }
-     * 
+     *
      * String sql = "SELECT " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD + "," + XSL_FILE_FLD + ", " + XSL_TABLE + "." + DESCR_FLD + ","
      * + RESULT_TYPE_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + " FROM " + XSL_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE +
      * " ON " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD; if (xslName != null) { sql +=
      * " WHERE " + XSL_FILE_FLD + "=" + Utils.strLiteral(xslName);
-     * 
+     *
      * } else { sql += " WHERE " + CNV_ID_FLD + "=" + id; }
-     * 
+     *
      * String r[][] = _executeStringQuery(sql);
-     * 
+     *
      * HashMap h = null;
-     * 
+     *
      * if (r.length > 0) { h = new HashMap(); h.put("convert_id", convertId); h.put("schema_id", r[0][0]); h.put("xsl", r[0][1]);
      * h.put("description", r[0][2]); h.put("content_type_out", r[0][3]); h.put("xml_schema", r[0][4]); }
-     * 
+     *
      * return h; }
      */
 
+    @Override
     public HashMap getStylesheetInfo(String convertId) throws SQLException {
         int id = 0;
         Connection conn = null;
@@ -233,14 +245,15 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
         try {
             id = Integer.parseInt(convertId);
         } catch (NumberFormatException n) {
-            if (byFile)
+            if (byFile) {
                 xslName = convertId;
-            else
+            } else {
                 throw new SQLException("not numeric ID or xsl file name: " + convertId);
+            }
         }
 
         if (isDebugMode) {
-            logger.debug("Query is " + (byFile ? qStylesheetInfoByFileName : qStylesheetInfoByID));
+            LOGGER.debug("Query is " + (byFile ? qStylesheetInfoByFileName : qStylesheetInfoByID));
         }
 
         try {
@@ -273,18 +286,19 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
 
     /*
      * public boolean checkStylesheetFile(String xslFileName) throws SQLException {
-     * 
+     *
      * int id = 0;
-     * 
+     *
      * String sql = "SELECT COUNT(*) FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD + "=" + Utils.strLiteral(xslFileName);
-     * 
+     *
      * String r[][] = _executeStringQuery(sql);
-     * 
+     *
      * String count = r[0][0]; if (count.equals("0")) { return false; } else { return true; }
-     * 
+     *
      * }
      */
 
+    @Override
     public boolean checkStylesheetFile(String xslFileName) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -292,7 +306,7 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
         boolean result = false;
 
         if (isDebugMode) {
-            logger.debug("Query is " + qCheckStylesheetFile);
+            LOGGER.debug("Query is " + qCheckStylesheetFile);
         }
 
         try {
@@ -302,8 +316,9 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
             rs = pstmt.executeQuery();
             String[][] r = getResults(rs);
             String count = r[0][0];
-            if (!count.equals("0"))
+            if (!count.equals("0")) {
                 result = true;
+            }
         } finally {
             closeAllResources(rs, pstmt, conn);
         }
@@ -312,14 +327,15 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
 
     /*
      * public boolean checkStylesheetFile(String xsl_id, String xslFileName) throws SQLException { int id = 0;
-     * 
+     *
      * String sql = "SELECT COUNT(*) FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD + "=" + Utils.strLiteral(xslFileName) + "and "
      * +CNV_ID_FLD+"="+xsl_id;
-     * 
+     *
      * String r[][] = _executeStringQuery(sql);
-     * 
+     *
      * String count = r[0][0]; if (count.equals("0")) { return false; } else { return true; } }
      */
+    @Override
     public boolean checkStylesheetFile(String xsl_id, String xslFileName) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -327,7 +343,7 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
         boolean result = false;
 
         if (isDebugMode) {
-            logger.debug("Query is " + qCheckStylesheetFileID);
+            LOGGER.debug("Query is " + qCheckStylesheetFileID);
         }
 
         try {
@@ -338,8 +354,9 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
             rs = pstmt.executeQuery();
             String[][] r = getResults(rs);
             String count = r[0][0];
-            if (!count.equals("0"))
+            if (!count.equals("0")) {
                 result = true;
+            }
         } finally {
             closeAllResources(rs, pstmt, conn);
         }

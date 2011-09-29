@@ -38,16 +38,19 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.fop.apps.Driver;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.XSLTransformer;
 
 public abstract class ConvertStartegy {
+
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(ConvertStartegy.class);
 
     public String xslFolder = Properties.xslFolder + File.separatorChar; // props.getString("xsl.folder");
     public String tmpFolder = Properties.tmpFolder + File.separatorChar; // props.getString("tmp.folder");
@@ -55,11 +58,10 @@ public abstract class ConvertStartegy {
     public static final String DD_DOMAIN_PARAM = "dd_domain";
 
     private Map<String, String> xslParams = null;
-    private static LoggerIF _logger = GDEMServices.getLogger();
     private static XSLTransformer transform = new XSLTransformer();
 
     public abstract String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt)
-            throws GDEMException, Exception;
+    throws GDEMException, Exception;
 
     /*
      * sets the map of xsl global paramters for this strategy
@@ -79,23 +81,18 @@ public abstract class ConvertStartegy {
 
             transformer.setParameter(DD_DOMAIN_PARAM, Properties.ddURL);
             setTransformerParameters(transformer);
-            long l = 0L;
-            if (_logger.enable(LoggerIF.DEBUG)) {
-                l = System.currentTimeMillis();
-            }
+            long l = System.currentTimeMillis();
             transformer.transform(new StreamSource(in), new StreamResult(out));
-            if (_logger.enable(LoggerIF.DEBUG)) {
-                _logger.debug((new StringBuilder()).append("generate: transformation needed ")
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug((new StringBuilder()).append("generate: transformation needed ")
                         .append(System.currentTimeMillis() - l).append(" ms").toString());
             }
-            // System.out.println((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis()
-            // - l).append(" ms").toString());
         } catch (TransformerConfigurationException tce) {
             throw new GDEMException("Error transforming XML - incorrect stylesheet file: " + tce.toString(), tce);
         } catch (TransformerException tfe) {
             throw new GDEMException("Error transforming XML - it's not probably well-formed xml file: " + tfe.toString(), tfe);
         } catch (Throwable th) {
-            _logger.error("Error " + th.toString(), th);
+            LOGGER.error("Error " + th.toString(), th);
             th.printStackTrace(System.out);
             throw new GDEMException("Error transforming XML: " + th.toString());
         }
@@ -117,13 +114,10 @@ public abstract class ConvertStartegy {
             setTransformerParameters(transformer);
             transformer.setErrorListener(errors);
 
-            long l = 0L;
-            if (_logger.enable(LoggerIF.DEBUG)) {
-                l = System.currentTimeMillis();
-            }
+            long l =  System.currentTimeMillis();
             transformer.transform(src, res);
-            if (_logger.enable(LoggerIF.DEBUG)) {
-                _logger.debug((new StringBuilder()).append("generate: transformation needed ")
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug((new StringBuilder()).append("generate: transformation needed ")
                         .append(System.currentTimeMillis() - l).append(" ms").toString());
             }
 
@@ -133,7 +127,7 @@ public abstract class ConvertStartegy {
             throw new GDEMException("Error transforming XML to PDF - it's not probably well-formed xml file: " + tfe.toString(),
                     tfe);
         } catch (Throwable e) {
-            _logger.error("Error " + e.toString(), e);
+            LOGGER.error("Error " + e.toString(), e);
             throw new GDEMException("Error transforming XML to PDF " + e.toString());
         }
     }
@@ -143,15 +137,17 @@ public abstract class ConvertStartegy {
      */
     private void setTransformerParameters(Transformer transformer) {
 
-        if (xslParams == null)
+        if (xslParams == null) {
             return;
+        }
 
         Iterator<String> keys = xslParams.keySet().iterator();
         while (keys.hasNext()) {
             String key = keys.next();
             String value = xslParams.get(key);
-            if (value != null)
+            if (value != null) {
                 transformer.setParameter(key, value);
+            }
         }
 
         // sets base URI for xmlfiles uploaded into xmlconv

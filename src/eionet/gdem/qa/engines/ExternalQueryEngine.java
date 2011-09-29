@@ -25,11 +25,12 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.GDEMException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.qa.XQueryService;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
@@ -40,7 +41,8 @@ import eionet.gdem.utils.system.SysCommandExecutor;
  */
 
 public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(ExternalQueryEngine.class);
 
     protected abstract String getShellCommand(String dataFile, String scriptFile, Map<String, String> params);
 
@@ -71,14 +73,14 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
 
             String cmd = getShellCommand(srcFile, script.getScriptFileName(), params);
 
-            _logger.debug("Execute command: " + cmd);
+            LOGGER.debug("Execute command: " + cmd);
 
             SysCommandExecutor cmdExecutor = new SysCommandExecutor();
             int exitStatus = cmdExecutor.runCommand(cmd);
-            _logger.debug("Exit status: " + exitStatus);
+            LOGGER.debug("Exit status: " + exitStatus);
 
             String cmdError = cmdExecutor.getCommandError();
-            _logger.debug("Command error: " + cmdError);
+            LOGGER.debug("Command error: " + cmdError);
 
             String cmdOutput = cmdExecutor.getCommandOutput();
             // _logger.debug("Command output: " + cmdOutput);
@@ -87,8 +89,9 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
             if (Utils.isNullStr(cmdOutput) && !Utils.isNullStr(cmdError)) {
                 Streams.drain(new StringReader(cmdError), result);
                 throwError = true;
-            } else
+            } else {
                 Streams.drain(new StringReader(cmdOutput), result);
+            }
 
             // clean tmp files
             if (tmpScriptFile != null) {
@@ -97,18 +100,19 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
             if (srcFile != null) {
                 Utils.deleteFile(srcFile);
             }
-            if (throwError)
+            if (throwError) {
                 throw new GDEMException(cmdError);
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("==== CATCHED EXCEPTION " + e.toString());
+            LOGGER.error("==== CATCHED EXCEPTION " + e.toString());
             throw new GDEMException(e.getMessage());
         } finally {
             try {
                 result.close();
                 result.flush();
             } catch (Exception e) {
-                _logger.warning(e);
+                LOGGER.warn(e);
             }
             if (src != null) {
                 try {

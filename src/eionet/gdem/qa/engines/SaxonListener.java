@@ -26,21 +26,22 @@ package eionet.gdem.qa.engines;
 import javax.xml.transform.TransformerException;
 
 import net.sf.saxon.StandardErrorListener;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Extension of the Saxon error listener to catch all the errors and feedback them to user
  */
 public class SaxonListener extends StandardErrorListener {
 
-    private StringBuffer _errBuf; // in this buffer we collect all the error messages
-    private boolean _hasErrors = false;
-    private LoggerIF _logger;
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(SaxonListener.class);
 
+    private StringBuilder _errBuf; // in this buffer we collect all the error messages
+    private boolean _hasErrors = false;
     public SaxonListener() {
-        _logger = GDEMServices.getLogger();
-        _errBuf = new StringBuffer();
+        _errBuf = new StringBuilder();
     }
 
     boolean hasErrors() {
@@ -49,13 +50,14 @@ public class SaxonListener extends StandardErrorListener {
 
     /**
      * Returns all the error messages gathered when processing the XQuery script
-     * 
+     *
      * @return String errors - all the errors
      */
     public String getErrors() {
         return _errBuf.toString();
     }
 
+    @Override
     public void error(TransformerException exception) throws TransformerException {
         _hasErrors = true;
         String message = "Error " + getLocationMessage(exception) + "\n  " + getExpandedMessage(exception);
@@ -64,6 +66,7 @@ public class SaxonListener extends StandardErrorListener {
         super.error(exception);
     }
 
+    @Override
     public void warning(TransformerException exception) throws TransformerException {
         _hasErrors = true;
         String message = "";

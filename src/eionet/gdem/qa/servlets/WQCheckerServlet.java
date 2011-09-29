@@ -29,6 +29,9 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.qa.WQChecker;
@@ -39,20 +42,23 @@ import eionet.gdem.services.GDEMServices;
  */
 
 public class WQCheckerServlet extends HttpServlet {
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(WQCheckerServlet.class);
 
+    @Override
     public void init(ServletConfig config) throws ServletException {
 
         try {
             (new Timer(true)).scheduleAtFixedRate(new WQChecker(), 0, Properties.wqCheckInterval);
             try {
                 GDEMServices.getDaoService().getXQJobDao()
-                        .changeJobStatusByStatus(Constants.XQ_DOWNLOADING_SRC, Constants.XQ_RECEIVED);
+                .changeJobStatusByStatus(Constants.XQ_DOWNLOADING_SRC, Constants.XQ_RECEIVED);
                 GDEMServices.getDaoService().getXQJobDao().changeJobStatusByStatus(Constants.XQ_PROCESSING, Constants.XQ_RECEIVED);
             } catch (Exception e) {
-                GDEMServices.getLogger().error("Error reseting active jobs: " + e.toString());
+                LOGGER.error("Error reseting active jobs: " + e.toString());
             }
         } catch (Exception e) {
-            // better error handling here!!
+            e.printStackTrace();
             throw new ServletException(e.getMessage(), e);
         }
     }

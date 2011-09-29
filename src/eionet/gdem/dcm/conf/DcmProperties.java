@@ -28,15 +28,17 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 public class DcmProperties {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(DcmProperties.class);
 
     public void setDbParams(String url, String user, String psw) throws DCMException {
 
@@ -61,7 +63,7 @@ public class DcmProperties {
             out.write(st.toString());
             out.close();
         } catch (IOException e) {
-            _logger.error("Saving database parameters failed!", e);
+            LOGGER.error("Saving database parameters failed!", e);
             e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_PARAM_DB_FAILED);
         }
@@ -91,7 +93,7 @@ public class DcmProperties {
             out.write(st.toString());
             out.close();
         } catch (IOException e) {
-            _logger.error("Saving ldap parameters failed!", e);
+            LOGGER.error("Saving ldap parameters failed!", e);
             e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_PARAM_LDAP_FAILED);
         }
@@ -123,7 +125,7 @@ public class DcmProperties {
             Properties.qaTimeout = Long.valueOf(qaTimeout);
 
         } catch (IOException e) {
-            _logger.error("Saving system parameters failed!", e);
+            LOGGER.error("Saving system parameters failed!", e);
             e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_PARAM_SYSTEM_FAILED);
         }

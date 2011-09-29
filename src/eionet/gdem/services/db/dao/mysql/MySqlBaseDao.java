@@ -12,26 +12,28 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 public abstract class MySqlBaseDao {
 
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(MySqlBaseDao.class);
+
     private static DataSource ds = null;
 
-    // ResourceBundle props;
-    protected static LoggerIF logger = GDEMServices.getLogger();
-
-    protected static boolean isDebugMode = logger.enable(LoggerIF.DEBUG);
+    protected static boolean isDebugMode = LOGGER.isDebugEnabled();
 
     public MySqlBaseDao() {
     }
 
     /**
      * Init JNDI datasource
-     * 
+     *
      * @throws NamingException
      */
     private static void initDataSource() throws NamingException {
@@ -39,31 +41,33 @@ public abstract class MySqlBaseDao {
             InitialContext ctx = new InitialContext();
             ds = (DataSource) ctx.lookup("java:comp/env/jdbc/GDEM_DB");
         } catch (NamingException e) {
-            logger.fatal("Initialization of datasource  (jdbc/GDEM_DB) failed: ", e);
+            LOGGER.fatal("Initialization of datasource  (jdbc/GDEM_DB) failed: ", e);
         }
     }
 
     /**
      * Returns new database connection.
-     * 
+     *
      * @throw ServiceException if no connections were available.
      */
     public static synchronized Connection getConnection() throws SQLException {
-        if (GDEMServices.isTestConnection())
+        if (GDEMServices.isTestConnection()) {
             return getSimpleConnection();
-        else
+        } else {
             return getJNDIConnection();
+        }
     }
 
     /**
      * Returns new database connection. Read properties from Context
-     * 
+     *
      * @throw ServiceException if no connections were available.
      */
     public static synchronized Connection getJNDIConnection() throws SQLException {
         try {
-            if (ds == null)
+            if (ds == null) {
                 initDataSource();
+            }
             return ds.getConnection();
         } catch (Exception e) {
             throw new SQLException("Failed to get connection through JNDI: " + e.toString());
@@ -72,7 +76,7 @@ public abstract class MySqlBaseDao {
 
     /**
      * Returns new database connection. Read properties from gdem.properties
-     * 
+     *
      * @return
      * @throws SQLException
      * @throws GDEMException
@@ -80,20 +84,24 @@ public abstract class MySqlBaseDao {
     private static synchronized Connection getSimpleConnection() throws SQLException {
 
         String drv = Properties.dbDriver;
-        if (drv == null || drv.trim().length() == 0)
+        if (drv == null || drv.trim().length() == 0) {
             throw new SQLException("Failed to get connection, missing property: " + Properties.dbDriver);
+        }
 
         String url = Properties.dbUrl;
-        if (url == null || url.trim().length() == 0)
+        if (url == null || url.trim().length() == 0) {
             throw new SQLException("Failed to get connection, missing property: " + Properties.dbUrl);
+        }
 
         String usr = Properties.dbUser;
-        if (usr == null || usr.trim().length() == 0)
+        if (usr == null || usr.trim().length() == 0) {
             throw new SQLException("Failed to get connection, missing property: " + Properties.dbUser);
+        }
 
         String pwd = Properties.dbPwd;
-        if (pwd == null || pwd.trim().length() == 0)
+        if (pwd == null || pwd.trim().length() == 0) {
             throw new SQLException("Failed to get connection, missing property: " + Properties.dbPwd);
+        }
 
         try {
             Class.forName(drv);
@@ -168,15 +176,16 @@ public abstract class MySqlBaseDao {
                 String row[] = new String[colCnt]; // Row of the result set
 
                 // Retrieve the columns of the result set
-                for (int i = 0; i < colCnt; ++i)
+                for (int i = 0; i < colCnt; ++i) {
                     row[i] = rset.getString(i + 1);
+                }
 
                 rvec.addElement(row); // Store the row into the vector
             }
         } catch (SQLException e) {
             // logger.error("Error occurred when processing result set: " +
             // sql,e);
-            logger.error(e);
+            LOGGER.error(e);
             throw new SQLException("Error occurred when processing result set: " + "");
         }
 
@@ -184,8 +193,9 @@ public abstract class MySqlBaseDao {
         if (rvec.size() > 0) {
             rval = new String[rvec.size()][];
 
-            for (int i = 0; i < rvec.size(); ++i)
+            for (int i = 0; i < rvec.size(); ++i) {
                 rval[i] = (String[]) rvec.elementAt(i);
+            }
         }
 
         // Success
@@ -203,8 +213,9 @@ public abstract class MySqlBaseDao {
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(qry);
         rs.clearWarnings();
-        if (rs.next())
+        if (rs.next()) {
             lastInsertId = rs.getString(1);
+        }
         closeAllResources(rs, stmt, con);
         return lastInsertId;
     }

@@ -28,11 +28,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.DDServiceClient;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
@@ -41,13 +43,14 @@ import eionet.gdem.utils.xml.XmlContext;
  * @author Enriko Käsper, Tieto Estonia DataDictUtil
  */
 
-public class DataDictUtil {
+public class  DataDictUtil{
+
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(DataDictUtil.class);
 
     public static final String INSTANCE_SERVLET = "GetXmlInstance";
     public static final String SCHEMA_SERVLET = "GetSchema";
     public static final String CONTAINER_SCHEMA_SERVLET = "GetContainerSchema";
-
-    private static LoggerIF logger = GDEMServices.getLogger();
 
     public static String getInstanceUrl(String schema_url) throws GDEMException {
 
@@ -78,7 +81,7 @@ public class DataDictUtil {
 
     /**
      * Extract id parameter value from URL if available, otherwise return empty String
-     * 
+     *
      * @param schemaUrl
      * @return
      */
@@ -99,7 +102,7 @@ public class DataDictUtil {
 
     /**
      * gather all element definitions
-     * 
+     *
      * @param instance
      * @param schemaUrl
      */
@@ -123,7 +126,7 @@ public class DataDictUtil {
             Map<String, String> multiValueElements = xQuery.getSchemaElementWithMultipleValues();
 
             for (int i = 0; i < schemas.size(); i++) {
-                String schema = (String) schemas.get(i);
+                String schema = schemas.get(i);
                 DataDictUtil.importDDElementSchemaDefs(elemDefs, schema);
             }
 
@@ -139,7 +142,7 @@ public class DataDictUtil {
                 elemDefs.put(entry.getKey(), multiValueElement);
             }
         } catch (Exception ex) {
-            logger.error("Error reading schema file ", ex);
+            LOGGER.error("Error reading schema file ", ex);
         } finally {
             try {
                 inputStream.close();
@@ -151,8 +154,9 @@ public class DataDictUtil {
 
     public static Map<String, DDElement> importDDElementSchemaDefs(Map<String, DDElement> elemDefs, String schemaUrl) {
         InputStream inputStream = null;
-        if (elemDefs == null)
+        if (elemDefs == null) {
             elemDefs = new HashMap<String, DDElement>();
+        }
 
         try {
             IXmlCtx ctx = new XmlContext();
@@ -169,7 +173,7 @@ public class DataDictUtil {
                 elemDefs.put(elemName, element);
             }
         } catch (Exception ex) {
-            logger.error("Error reading schema file ", ex);
+            LOGGER.error("Error reading schema file ", ex);
         } finally {
             try {
                 inputStream.close();
@@ -182,7 +186,7 @@ public class DataDictUtil {
 
     /**
      * Returns the DD container schema URL. It holds the elements definitions
-     * 
+     *
      * @param schema_url
      * @return
      * @throws GDEMException
@@ -206,7 +210,7 @@ public class DataDictUtil {
     /**
      * Check is schema is DD schema and if it does not belong to latest released version of dataset. In that case QA may want to
      * warn users about using obsolete schema.
-     * 
+     *
      * @param xmlSchema
      * @return
      */
@@ -226,10 +230,10 @@ public class DataDictUtil {
             dataset = getDatasetReleaseInfo(type.toLowerCase(), dsId);
 
             if (dataset != null) {
-                String status = (String) dataset.get("status");
+                String status = dataset.get("status");
                 boolean isLatestReleased =
-                        (dataset.get("isLatestReleased") == null || "true".equals((String) dataset.get("isLatestReleased"))) ? true
-                                : false;
+                    (dataset.get("isLatestReleased") == null || "true".equals(dataset.get("isLatestReleased"))) ? true
+                            : false;
 
                 if (!isLatestReleased && "Released".equalsIgnoreCase(status)) {
                     return true;
@@ -241,7 +245,7 @@ public class DataDictUtil {
 
     /**
      * Retreive dataset released information from Data Dictionary for XML schema If it is not DD schema, then return null
-     * 
+     *
      * @param xmlSchema
      * @return
      */
@@ -266,7 +270,7 @@ public class DataDictUtil {
 
     /**
      * Retreive dataset released information from Data Dictionary for given ID and type If it is not DD schema, then return null
-     * 
+     *
      * @param xmlSchema
      * @return
      */

@@ -10,46 +10,53 @@ import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.services.db.dao.IUPLXmlFileDao;
 
 /**
  * MySql implementationd for uplodaed XML file database object.
- * 
+ *
  * @author Enriko Käsper (TietoEnator)
- * 
+ *
  */
 public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
 
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(UplXmlFileMySqlDao.class);
+
     // query for getting all XML files
     private static final String qUplXmlFile = "SELECT " + FILE_ID_FLD + ", " + FILE_NAME_FLD + ", " + FILE_TITLE_FLD + " FROM "
-            + FILE_TABLE + " WHERE " + FILE_TYPE_FLD + "='" + XML_FILE_TYPE + "'" + " ORDER BY " + FILE_NAME_FLD;
+    + FILE_TABLE + " WHERE " + FILE_TYPE_FLD + "='" + XML_FILE_TYPE + "'" + " ORDER BY " + FILE_NAME_FLD;
 
     // query for getting 1 row by file ID
     private static final String qUplXmlFileByID = "SELECT " + FILE_ID_FLD + ", " + FILE_NAME_FLD + "," + FILE_TITLE_FLD + " FROM "
-            + FILE_TABLE + " WHERE " + FILE_ID_FLD + "= ?";
+    + FILE_TABLE + " WHERE " + FILE_ID_FLD + "= ?";
     // query for inserting new XML file
     private static final String qInsertUplXmlFile = "INSERT INTO " + FILE_TABLE + " ( " + FILE_NAME_FLD + " ," + FILE_TITLE_FLD
-            + ", " + FILE_TYPE_FLD + ") " + "VALUES (?,?,?)";
+    + ", " + FILE_TYPE_FLD + ") " + "VALUES (?,?,?)";
     // query for updating XML file row
     private static final String qUpdateUplXmlFile = "UPDATE  " + FILE_TABLE + " SET " + FILE_TITLE_FLD + "= ? " + ", "
-            + FILE_TYPE_FLD + "= ? " + " WHERE " + FILE_ID_FLD + "= ? ";
+    + FILE_TYPE_FLD + "= ? " + " WHERE " + FILE_ID_FLD + "= ? ";
 
     // query for deleting XML file row
     private static final String qRemoveUplXmlFile = "DELETE FROM " + FILE_TABLE + " WHERE " + FILE_ID_FLD + "= ?";
 
     // query for checking duplicate xml files by file name
     private static final String checkUplXmlFile = "SELECT COUNT(*) FROM " + FILE_TABLE + " WHERE " + FILE_TYPE_FLD + "='"
-            + XML_FILE_TYPE + "' AND " + FILE_NAME_FLD + "= ?";
+    + XML_FILE_TYPE + "' AND " + FILE_NAME_FLD + "= ?";
 
     // query for getting xml file name by ID
     private static final String qUplXmlFileNameById = "SELECT " + FILE_NAME_FLD + " FROM " + FILE_TABLE + " WHERE " + FILE_ID_FLD
-            + "= ?";
+    + "= ?";
 
     private SchemaMySqlDao schemaDao;
 
     public UplXmlFileMySqlDao() {
     }
 
+    @Override
     public Vector getUplXmlFile() throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -57,7 +64,7 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
         Vector v = null;
 
         if (isDebugMode) {
-            logger.debug("Query is " + qUplXmlFile);
+            LOGGER.debug("Query is " + qUplXmlFile);
         }
 
         try {
@@ -79,12 +86,13 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
         return v;
     }
 
+    @Override
     public void removeUplXmlFile(String uplXmlFileId) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
         if (isDebugMode) {
-            logger.debug("Query is " + qRemoveUplXmlFile);
+            LOGGER.debug("Query is " + qRemoveUplXmlFile);
         }
 
         try {
@@ -97,6 +105,7 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
         }
     }
 
+    @Override
     public void updateUplXmlFile(String uplXmlFileId, String title) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -108,7 +117,7 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
             conn.setAutoCommit(false);
 
             if (isDebugMode) {
-                logger.debug("Query is " + qUpdateUplXmlFile);
+                LOGGER.debug("Query is " + qUpdateUplXmlFile);
             }
             pstmt = conn.prepareStatement(qUpdateUplXmlFile);
             pstmt.setString(1, title);
@@ -119,8 +128,9 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
 
             conn.commit();
         } catch (SQLException sqle) {
-            if (conn != null)
+            if (conn != null) {
                 conn.rollback();
+            }
             throw new SQLException(sqle.getMessage(), sqle.getSQLState());
         } finally {
             closeAllResources(null, pstmt, conn);
@@ -128,6 +138,7 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
 
     }
 
+    @Override
     public String getUplXmlFileName(String uplXmlFileId) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -135,7 +146,7 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
         String result = null;
 
         if (isDebugMode) {
-            logger.debug("Query is " + qUplXmlFileNameById);
+            LOGGER.debug("Query is " + qUplXmlFileNameById);
         }
 
         try {
@@ -146,8 +157,9 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
             rs = pstmt.executeQuery();
 
             String[][] r = getResults(rs);
-            if (r.length == 0)
+            if (r.length == 0) {
                 return null;
+            }
 
             result = r[0][0];
         } finally {
@@ -156,6 +168,7 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
         return result;
     }
 
+    @Override
     public Hashtable getUplXmlFileById(String xmlFileId) throws SQLException {
         int id = 0;
         Connection conn = null;
@@ -163,8 +176,9 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
         ResultSet rs = null;
         Hashtable h = null;
 
-        if (xmlFileId == null)
+        if (xmlFileId == null) {
             throw new SQLException("XML file ID not defined");
+        }
         try {
             id = Integer.parseInt(xmlFileId);
         } catch (NumberFormatException n) {
@@ -172,7 +186,7 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
         }
 
         if (isDebugMode) {
-            logger.debug("Query is " + qUplXmlFileByID);
+            LOGGER.debug("Query is " + qUplXmlFileByID);
         }
 
         try {
@@ -192,12 +206,13 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
         return h;
     }
 
+    @Override
     public String addUplXmlFile(String xmlFileName, String title) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
         if (isDebugMode) {
-            logger.debug("Query is " + qInsertUplXmlFile);
+            LOGGER.debug("Query is " + qInsertUplXmlFile);
         }
         try {
             conn = getConnection();
@@ -212,6 +227,7 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
         return getLastInsertID();
     }
 
+    @Override
     public boolean checkUplXmlFile(String xmlFileName) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -219,7 +235,7 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
         boolean result = false;
 
         if (isDebugMode) {
-            logger.debug("Query is " + checkUplXmlFile);
+            LOGGER.debug("Query is " + checkUplXmlFile);
         }
 
         try {
@@ -229,8 +245,9 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
             rs = pstmt.executeQuery();
             String[][] r = getResults(rs);
             String count = r[0][0];
-            if (!count.equals("0"))
+            if (!count.equals("0")) {
                 result = true;
+            }
         } finally {
             closeAllResources(rs, pstmt, conn);
         }

@@ -16,6 +16,8 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.Properties;
@@ -24,7 +26,6 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.UplXmlFile;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IUPLXmlFileDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
@@ -39,7 +40,8 @@ import eionet.gdem.web.struts.xmlfile.UplXmlFileHolder;
 
 public class UplXmlFileManager {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(UplXmlFileManager.class);
 
     private IUPLXmlFileDao uplXmlFileDao = GDEMServices.getDaoService().getUPLXmlFileDao();
 
@@ -64,7 +66,7 @@ public class UplXmlFileManager {
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error adding XML file", e);
+            LOGGER.error("Error adding XML file", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         try {
@@ -83,7 +85,7 @@ public class UplXmlFileManager {
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error adding xml file", e);
+            LOGGER.error("Error adding xml file", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -105,13 +107,13 @@ public class UplXmlFileManager {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_XMLFILE_PATH, "d")) {
-                _logger.debug("You don't have permissions to delete xml files!");
+                LOGGER.debug("You don't have permissions to delete xml files!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_XMLFILE_DELETE);
             }
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error deleting uploaded xnl file", e);
+            LOGGER.error("Error deleting uploaded xnl file", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -123,7 +125,7 @@ public class UplXmlFileManager {
                 try {
                     Utils.deleteFile(Properties.xmlfileFolderPath + "/" + xmlfilename);
                 } catch (Exception e) {
-                    _logger.error("Error deleting uploaded XML file", e);
+                    LOGGER.error("Error deleting uploaded XML file", e);
                     throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
 
                 }
@@ -132,7 +134,7 @@ public class UplXmlFileManager {
             uplXmlFileDao.removeUplXmlFile(uplXmlFileId);
 
         } catch (Exception e) {
-            _logger.error("Error deleting uploaded XML file", e);
+            LOGGER.error("Error deleting uploaded XML file", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -156,13 +158,13 @@ public class UplXmlFileManager {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_XMLFILE_PATH, "u")) {
-                _logger.debug("You don't have permissions to update xml file!");
+                LOGGER.debug("You don't have permissions to update xml file!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_XMLFILE_UPDATE);
             }
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            _logger.error("Error updating uploaded XML file", e);
+            LOGGER.error("Error updating uploaded XML file", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -184,7 +186,7 @@ public class UplXmlFileManager {
             uplXmlFileDao.updateUplXmlFile(xmlFileId, title);
 
         } catch (Exception e) {
-            _logger.error("Error updating uploaded XML file", e);
+            LOGGER.error("Error updating uploaded XML file", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
@@ -219,7 +221,7 @@ public class UplXmlFileManager {
             xmlfile.setLastModified(lastModified);
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Error getting uploaded XML file", e);
+            LOGGER.error("Error getting uploaded XML file", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return xmlfile;
@@ -284,7 +286,7 @@ public class UplXmlFileManager {
                 xh.setXmlfiles(xmlfiles);
             }
         } catch (Exception e) {
-            _logger.error("Error getting uploaded XML files", e);
+            LOGGER.error("Error getting uploaded XML files", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return xh;

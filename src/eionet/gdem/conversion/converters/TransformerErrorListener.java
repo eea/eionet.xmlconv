@@ -24,28 +24,31 @@ package eionet.gdem.conversion.converters;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
-
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 /**
  * ErrorListener for XSLT Transformer
- * 
+ *
  * @author Enriko Käsper, TietoEnator Estonia AS TransformerErrorListener
  */
 public class TransformerErrorListener implements javax.xml.transform.ErrorListener {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(TransformerErrorListener.class);
 
+    @Override
     public void warning(TransformerException te) throws TransformerException {
-        _logger.error(formatTransformerException(0, te));
+        LOGGER.error(formatTransformerException(0, te));
     }
 
+    @Override
     public void error(TransformerException te) throws TransformerException {
         throw new TransformerException(formatTransformerException(1, te));
     }
 
+    @Override
     public void fatalError(TransformerException te) throws TransformerException {
         Throwable cause = te.getException();
         if (cause != null) {

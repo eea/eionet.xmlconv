@@ -26,14 +26,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.converters.ConvertContext;
 import eionet.gdem.conversion.converters.ConvertStartegy;
 import eionet.gdem.conversion.converters.XMLConverter;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.qa.XQueryService;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 
@@ -43,7 +44,8 @@ import eionet.gdem.utils.Utils;
 
 public class XslEngineImpl extends QAScriptEngineStrategy {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(XslEngineImpl.class);
 
     @Override
     protected void runQuery(XQScript script, OutputStream result) throws GDEMException {
@@ -73,8 +75,8 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
             // parseParams(script.getParams()));
 
             ConvertContext ctx =
-                    new ConvertContext(src.getSrcInputStream(), tmpXslFile == null ? script.getScriptFileName() : tmpXslFile,
-                            result, null);
+                new ConvertContext(src.getSrcInputStream(), tmpXslFile == null ? script.getScriptFileName() : tmpXslFile,
+                        result, null);
             ConvertStartegy cs = new XMLConverter();
 
             Map<String, String> params = src.getCdrParams();
@@ -87,7 +89,7 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("==== CATCHED EXCEPTION " + e.toString());
+            LOGGER.error("==== CATCHED EXCEPTION " + e.toString());
             throw new GDEMException(e.getMessage());
         } finally {
             if (src != null) {
