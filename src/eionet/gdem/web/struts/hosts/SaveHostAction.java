@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.hosts;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -33,17 +35,18 @@ import org.apache.struts.validator.DynaValidatorForm;
 
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.BaseAction;
 
 public class SaveHostAction extends BaseAction {
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(SaveHostAction.class);
 
     private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
 
+    @Override
     public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request,
             HttpServletResponse httpServletResponse) {
         ActionMessages messages = new ActionMessages();
@@ -61,7 +64,7 @@ public class SaveHostAction extends BaseAction {
 
         try {
             if (hostId == null) { // Add new host
-                _logger.debug("ADDING NEW HOST !!!");
+                LOGGER.debug("ADDING NEW HOST !!!");
                 if (checkPermission(request, Names.ACL_HOST_PATH, "i")) {
                     hostDao.addHost(host, username, password);
                     hostForm.getMap().clear();
@@ -71,7 +74,7 @@ public class SaveHostAction extends BaseAction {
                             new ActionMessage("error.inoperm", translate(map, request, "label.hosts")));
                 }
             } else { // Update host
-                _logger.debug("UPDATE HOST !!!");
+                LOGGER.debug("UPDATE HOST !!!");
                 if (checkPermission(request, Names.ACL_HOST_PATH, "u")) {
                     hostDao.updateHost(hostId, host, username, password);
                     hostForm.getMap().clear();
@@ -82,7 +85,7 @@ public class SaveHostAction extends BaseAction {
                 }
             }
         } catch (Exception e) {
-            _logger.error("", e);
+            LOGGER.error("", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
         }
 
@@ -90,8 +93,9 @@ public class SaveHostAction extends BaseAction {
             request.getSession().setAttribute("dcm.errors", errors);
             return map.getInputForward();
         }
-        if (messages.size() > 0)
+        if (messages.size() > 0) {
             request.getSession().setAttribute("dcm.messages", messages);
+        }
 
         return map.findForward("success");
 
@@ -107,7 +111,7 @@ public class SaveHostAction extends BaseAction {
             src.getSrcInputStream();
             result = true;
         } catch (Exception e) {
-            _logger.error("", e);
+            LOGGER.error("", e);
         } finally {
             if (src != null) {
                 try {

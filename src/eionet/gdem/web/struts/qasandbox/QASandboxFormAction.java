@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.qasandbox;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -32,69 +34,46 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
-import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
-import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 
 /**
  * QASandboxFormAction Open sandbox form. Optionally load the form from session.
- * 
+ *
  * @author Enriko Käsper, Tieto Estonia
  */
 
 public class QASandboxFormAction extends Action {
-    private static LoggerIF _logger = GDEMServices.getLogger();
 
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(QASandboxFormAction.class);
+
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
-
-        // get the schemas list from the session
-        Object schemasInSession = httpServletRequest.getSession().getAttribute("qascript.qascriptList");
 
         // reset the form in the session
         QASandboxForm cForm = (QASandboxForm) actionForm;
 
         boolean resetForm = true;
         if (httpServletRequest.getParameter("reset") != null) {
-            resetForm = !"false".equals((String) httpServletRequest.getParameter("reset"));
+            resetForm = !"false".equals(httpServletRequest.getParameter("reset"));
         }
         if (resetForm) {
             cForm.resetAll(actionMapping, httpServletRequest);
         }
 
         try {
-            // if schemas list is not stored in the session, then load it from
-            // the database
-            if (schemasInSession == null || ((QAScriptListHolder) schemasInSession).getQascripts().size() == 0) {
-                QAScriptListLoader.loadQAScriptList(httpServletRequest, true);
-            }
+            httpServletRequest.setAttribute(QAScriptListLoader.QASCRIPT_LIST_ATTR, QAScriptListLoader.getList(httpServletRequest));
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("QA Sandbox fomr error error", e);
+            LOGGER.error("QA Sandbox fomr error error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveMessages(httpServletRequest, errors);
         }
 
         saveErrors(httpServletRequest, errors);
         return actionMapping.findForward("success");
-    }
-
-    /**
-     * load schemas form db
-     * 
-     * @return
-     * @throws DCMException
-     */
-    private QAScriptListHolder loadSchemas(String userName) throws DCMException {
-
-        QAScriptListHolder schemas = null;
-        SchemaManager sm = new SchemaManager();
-
-        schemas = sm.getSchemasWithQAScripts(userName);
-        return schemas;
     }
 }

@@ -18,6 +18,7 @@ import com.tee.uit.security.AppUser;
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.utils.SecurityUtil;
+import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS LogoutAction
@@ -25,12 +26,14 @@ import eionet.gdem.utils.SecurityUtil;
 
 public class LogoutAction extends Action {
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) throws IOException, GDEMException {
 
         httpServletRequest.setCharacterEncoding("UTF-8");
 
         AppUser user = SecurityUtil.getUser(httpServletRequest, Names.USER_ATT);
+        QAScriptListLoader.clearPermissions(httpServletRequest);
         httpServletRequest.getSession().invalidate();
 
         String logoutURL = SecurityUtil.getLogoutURL(httpServletRequest);

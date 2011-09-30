@@ -35,6 +35,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.ErrorHandler;
@@ -52,17 +54,19 @@ import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.QAResultPostProcessor;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 
 /**
  * The class offers validation methods for XMLCONV and remote clients
- * 
+ *
  * @author Enriko Käsper, TietoEnator Estonia AS ValidationService
  */
 
 public class ValidationService {
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(ValidationService.class);
+
     private StringBuffer errors;
     private StringBuffer htmlErrors;
     private String uriXml;
@@ -70,7 +74,6 @@ public class ValidationService {
     private ErrorHandler errHandler;
     private String ticket = null;
     private boolean trustedMode = true;// false for web clients
-    private static LoggerIF _logger = GDEMServices.getLogger();
     private String originalSchema = null; // original URL
 
     private String validatedSchema = null; // system URL
@@ -89,7 +92,7 @@ public class ValidationService {
 
     /**
      * Constructor for web client
-     * 
+     *
      * @param list
      */
     public ValidationService(boolean list) {
@@ -100,7 +103,7 @@ public class ValidationService {
 
     /**
      * validate XML, read the schema or DTD from the header of XML
-     * 
+     *
      * @param srcUrl
      * @return
      * @throws DCMException
@@ -112,7 +115,7 @@ public class ValidationService {
     /**
      * Validate XML. If schema is null, then read the schema or DTD from the header of XML. If schema or DTD is defined, then ignore
      * the defined schema or DTD
-     * 
+     *
      * @param srcUrl
      * @param schema
      * @return Formatted text with results (errors or OK)
@@ -204,8 +207,9 @@ public class ValidationService {
                 return GErrorHandler.formatResultText("ERROR: Failed to read schema document from the following URL: "
                         + getValidatedSchema(), null);
             }
-            if (errHandler instanceof GErrorHandler)
+            if (errHandler instanceof GErrorHandler) {
                 ((GErrorHandler) errHandler).setSchema(getOriginalSchema());
+            }
             InputSource is = new InputSource(src_stream);
             reader.parse(is);
 
@@ -221,10 +225,11 @@ public class ValidationService {
             if (e instanceof SAXException) {
                 se = ((SAXException) e).getException();
             }
-            if (se != null)
+            if (se != null) {
                 se.printStackTrace(System.err);
-            else
+            } else {
                 e.printStackTrace(System.err);
+            }
             return GErrorHandler.formatResultText("ERROR: The parser could not check the document. " + e.getMessage(), null);
             // throw new GDEMException("Error parsing: " + e.toString());
         }
@@ -251,7 +256,7 @@ public class ValidationService {
 
     /**
      * Read default namespace from XML file
-     * 
+     *
      * @return
      * @throws IOException
      * @throws ParserConfigurationException
@@ -291,21 +296,21 @@ public class ValidationService {
 
     /**
      * Set the noNamespaceSchemaLocation property
-     * 
+     *
      * @param reader
      * @param schema
      * @throws SAXNotRecognizedException
      * @throws SAXNotSupportedException
      */
     private void setNoNamespaceSchemaProperty(XMLReader reader, String schema) throws SAXNotRecognizedException,
-            SAXNotSupportedException {
+    SAXNotSupportedException {
         setLocalSchemaUrl(schema);
         reader.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation", getValidatedSchema());
     }
 
     /**
      * Set the schemaLocation property. The value is "namespace schemaLocation".
-     * 
+     *
      * @param reader
      * @param namespace
      * @param schema
@@ -313,7 +318,7 @@ public class ValidationService {
      * @throws SAXNotSupportedException
      */
     private void setNamespaceSchemaProperty(XMLReader reader, String namespace, String schema) throws SAXNotRecognizedException,
-            SAXNotSupportedException {
+    SAXNotSupportedException {
         setLocalSchemaUrl(schema);
         reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", namespace + " "
                 + getValidatedSchema());
@@ -321,7 +326,7 @@ public class ValidationService {
 
     /**
      * sets the local URL of given schema, if available
-     * 
+     *
      * @param schema
      * @return
      */
@@ -339,7 +344,7 @@ public class ValidationService {
             }
         } catch (DCMException e) {
             // ignore local schema, use the original schema from remote URL
-            _logger.error(e);
+            LOGGER.error(e);
         }
         setOriginalSchema(schema);
         setValidatedSchema(systemURL);

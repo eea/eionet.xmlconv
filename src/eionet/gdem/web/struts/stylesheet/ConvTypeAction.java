@@ -21,11 +21,13 @@
 
 package eionet.gdem.web.struts.stylesheet;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -35,31 +37,33 @@ import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.business.StylesheetManager;
+import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 public class ConvTypeAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(ConvTypeAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
         ConvTypeHolder ctHolder = new ConvTypeHolder();
         ActionMessages errors = new ActionMessages();
 
-        String schema = (String) httpServletRequest.getParameter("schema");
+        String schema = httpServletRequest.getParameter("schema");
         httpServletRequest.setAttribute("schema", schema);
 
         try {
             StylesheetManager sm = new StylesheetManager();
             ctHolder = sm.getConvTypes();
             SchemaManager schemaMan = new SchemaManager();
-            ArrayList schemas = schemaMan.getDDSchemas();
 
-            httpServletRequest.getSession().setAttribute("stylesheet.DDSchemas", schemas);
+            StylesheetListHolder stylesheetList = StylesheetListLoader.getGeneratedList(httpServletRequest);
+            List<Schema> schemas = stylesheetList.getDdStylesheets();
+            httpServletRequest.setAttribute("stylesheet.DDSchemas", schemas);
 
             if (!Utils.isNullStr(schema)) {
                 String schemaId = schemaMan.getSchemaId(schema);
@@ -71,7 +75,7 @@ public class ConvTypeAction extends Action {
 
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error getting conv types", e);
+            LOGGER.error("Error getting conv types", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveErrors(httpServletRequest, errors);
         }

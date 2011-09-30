@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.schema;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -35,20 +37,20 @@ import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 
 public class SchemaElemFormAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(SchemaElemFormAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
         SchemaElemForm form = (SchemaElemForm) actionForm;
-        String schemaId = (String) httpServletRequest.getParameter("schemaId");
+        String schemaId = httpServletRequest.getParameter("schemaId");
         String user = (String) httpServletRequest.getSession().getAttribute("user");
 
         if (schemaId != null && schemaId != "") {
@@ -61,8 +63,9 @@ public class SchemaElemFormAction extends Action {
         try {
             SchemaManager sm = new SchemaManager();
             seHolder = sm.getSchemaElems(user, schemaId);
-            if (seHolder == null || seHolder.getSchema() == null)
+            if (seHolder == null || seHolder.getSchema() == null) {
                 throw new DCMException(BusinessConstants.EXCEPTION_SCHEMA_NOT_EXIST);
+            }
             form.setSchema(seHolder.getSchema().getSchema());
             form.setDescription(seHolder.getSchema().getDescription());
             form.setSchemaId(schemaId);
@@ -87,7 +90,7 @@ public class SchemaElemFormAction extends Action {
 
         } catch (DCMException e) {
             // e.printStackTrace();
-            _logger.error("Schema element form error", e);
+            LOGGER.error("Schema element form error", e);
             errors.add("stylesheet", new ActionMessage(e.getErrorCode()));
             saveErrors(httpServletRequest, errors);
             return actionMapping.findForward("fail");

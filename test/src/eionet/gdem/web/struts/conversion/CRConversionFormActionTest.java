@@ -20,6 +20,7 @@ public class CRConversionFormActionTest extends MockStrutsTestCase {
         super(testName);
     }
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         setConfigFile(TestUtils.getStrutsConfigLocation());
@@ -41,7 +42,7 @@ public class CRConversionFormActionTest extends MockStrutsTestCase {
         verifyInputTilesForward("/crConversion.jsp");
         verifyNoActionErrors();
 
-        List schemasInSession = (List) request.getSession().getAttribute("conversion.schemas");
+        List schemasInSession = (List) request.getAttribute("conversion.schemas");
         assertTrue(schemasInSession.size() > 0);
 
     }

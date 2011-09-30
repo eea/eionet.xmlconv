@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.qasandbox;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -35,20 +37,21 @@ import org.apache.struts.action.ActionMessages;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 
 /**
  * SearchCRSandboxAction Find all the scripts for the given XML schema and allow to execute them in sandox
- * 
+ *
  * @author Enriko Käsper, Tieto Estonia
  */
 
 public class FindQAScriptsAction extends Action {
-    private static LoggerIF _logger = GDEMServices.getLogger();
 
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(FindQAScriptsAction.class);
+
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
@@ -69,8 +72,7 @@ public class FindQAScriptsAction extends Action {
 
             SchemaManager sm = new SchemaManager();
             String schemaId = sm.getSchemaId(schemaUrl);
-            String userName = (String) httpServletRequest.getSession().getAttribute("user");
-            QAScriptListHolder qaScripts = sm.getSchemasWithQAScripts(userName, schemaId);
+            QAScriptListHolder qaScripts = sm.getSchemasWithQAScripts(schemaId);
 
             if (qaScripts != null && !Utils.isNullList(qaScripts.getQascripts())) {
                 Schema newSchema = qaScripts.getQascripts().get(0);
@@ -93,12 +95,12 @@ public class FindQAScriptsAction extends Action {
             }
         } catch (DCMException e) {
             // e.printStackTrace();
-            _logger.error("Error searching XML files", e);
+            LOGGER.error("Error searching XML files", e);
             saveErrors(httpServletRequest, errors);
             return actionMapping.findForward("error");
         } catch (Exception e) {
             // e.printStackTrace();
-            _logger.error("Error searching XML files", e);
+            LOGGER.error("Error searching XML files", e);
             saveErrors(httpServletRequest, errors);
             return actionMapping.findForward("error");
         }

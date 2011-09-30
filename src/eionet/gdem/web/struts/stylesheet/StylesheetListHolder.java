@@ -23,10 +23,12 @@ package eionet.gdem.web.struts.stylesheet;
 
 import java.util.List;
 
+import eionet.gdem.dto.Schema;
+
 public class StylesheetListHolder {
 
-    private List handCodedStylesheets;
-    private List ddStylesheets;
+    private List<Schema> handCodedStylesheets;
+    private List<Schema> ddStylesheets;
     boolean ssiPrm;
     boolean ssdPrm;
     boolean convPrm;
@@ -35,19 +37,19 @@ public class StylesheetListHolder {
     public StylesheetListHolder() {
     }
 
-    public List getDdStylesheets() {
+    public List<Schema> getDdStylesheets() {
         return ddStylesheets;
     }
 
-    public void setDdStylesheets(List ddStylesheets) {
+    public void setDdStylesheets(List<Schema> ddStylesheets) {
         this.ddStylesheets = ddStylesheets;
     }
 
-    public List getHandCodedStylesheets() {
+    public List<Schema> getHandCodedStylesheets() {
         return handCodedStylesheets;
     }
 
-    public void setHandCodedStylesheets(List handCodedStylesheets) {
+    public void setHandCodedStylesheets(List<Schema> handCodedStylesheets) {
         this.handCodedStylesheets = handCodedStylesheets;
     }
 

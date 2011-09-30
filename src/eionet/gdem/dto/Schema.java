@@ -167,6 +167,7 @@ public class Schema implements Serializable {
         this.crfiles = crfiles;
     }
 
+    @Override
     public boolean equals(Object oSchema) {
         if (oSchema instanceof Schema) {
             if (oSchema != null && ((Schema) oSchema).getSchema() != null && getSchema() != null) {
@@ -197,8 +198,9 @@ public class Schema implements Serializable {
     public boolean isDDSchema() {
         boolean ret = false;
 
-        if (id != null)
+        if (id != null) {
             ret = id.startsWith("TBL");
+        }
 
         return ret;
     }
@@ -220,8 +222,9 @@ public class Schema implements Serializable {
     }
 
     public String getSchemaLang() {
-        if (schemaLang == null)
+        if (schemaLang == null) {
             schemaLang = getDefaultSchemaLang();
+        }
         return schemaLang;
     }
 

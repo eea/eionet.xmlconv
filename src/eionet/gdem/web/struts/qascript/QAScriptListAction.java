@@ -23,6 +23,8 @@ package eionet.gdem.web.struts.qascript;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -31,23 +33,23 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 public class QAScriptListAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(QAScriptListAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
 
         try {
-            QAScriptListLoader.loadQAScriptList(httpServletRequest, false);
+            httpServletRequest.setAttribute(QAScriptListLoader.QASCRIPT_LIST_ATTR, QAScriptListLoader.getList(httpServletRequest));
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error getting QA scripts list", e);
+            LOGGER.error("Error getting QA scripts list", e);
             errors.add("schema", new ActionMessage("label.exception.unknown"));
             saveErrors(httpServletRequest, errors);
         }

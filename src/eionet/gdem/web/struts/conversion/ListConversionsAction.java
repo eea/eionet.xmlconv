@@ -5,11 +5,14 @@ package eionet.gdem.web.struts.conversion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -26,10 +29,10 @@ import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.InputAnalyser;
+import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS ListConversionsAction
@@ -37,10 +40,12 @@ import eionet.gdem.validation.InputAnalyser;
 
 public class ListConversionsAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(ListConversionsAction.class);
 
     private IRootElemDao rootElemDao = GDEMServices.getDaoService().getRootElemDao();
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
@@ -132,16 +137,17 @@ public class ListConversionsAction extends Action {
                             cForm.setSchemas(schemas);
                         }
                         // no schemas found from the header, show schema selection on the form
-                        if (cForm.getSchemas() == null || cForm.getSchemas().size() == 0)
+                        if (cForm.getSchemas() == null || cForm.getSchemas().size() == 0) {
                             cForm.setShowSchemaSelection(true);
-                        else
+                        } else {
                             cForm.setShowSchemaSelection(false);
+                        }
 
                     }
                 }
-                if (cForm.getSchemas() == null || cForm.getSchemas().size() == 0)
+                if (cForm.getSchemas() == null || cForm.getSchemas().size() == 0) {
                     cForm.setShowSchemaSelection(true);
-                else {
+                } else {
                     // set default conversion ID
                     if (idConv == null && cForm.getSchemas().get(0).getStylesheets().size() > 0) {
                         idConv = ((Stylesheet) (cForm.getSchemas().get(0).getStylesheets().get(0))).getConvId();
@@ -159,14 +165,14 @@ public class ListConversionsAction extends Action {
                 cForm.setAction("search");
             } catch (DCMException e) {
                 e.printStackTrace();
-                _logger.error("Error listing conversions", e);
+                LOGGER.error("Error listing conversions", e);
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
                 // saveMessages(httpServletRequest, errors);
                 httpServletRequest.getSession().setAttribute("dcm.errors", errors);
                 return actionMapping.findForward("error");
             } catch (Exception e) {
                 e.printStackTrace();
-                _logger.error("Error listing conversions", e);
+                LOGGER.error("Error listing conversions", e);
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(BusinessConstants.EXCEPTION_GENERAL));
                 // saveMessages(httpServletRequest, errors);
                 httpServletRequest.getSession().setAttribute("dcm.errors", errors);
@@ -182,22 +188,18 @@ public class ListConversionsAction extends Action {
     /**
      * check if schema passed as request parameter exists in the list of schemas stored in the session. If there is no schema list
      * in the session, then create it
-     * 
+     *
      * @param httpServletRequest
      * @param schema
      * @return
      * @throws DCMException
      */
     private boolean schemaExists(HttpServletRequest httpServletRequest, String schema) throws DCMException {
-        Object schemasInSession = httpServletRequest.getSession().getAttribute("conversion.schemas");
-        if (schemasInSession == null || ((ArrayList) schemasInSession).size() == 0) {
-            SchemaManager sm = new SchemaManager();
-            schemasInSession = sm.getSchemas();
-            httpServletRequest.getSession().setAttribute("conversion.schemas", schemasInSession);
-        }
+        List<Schema> schemasInCache = StylesheetListLoader.getConversionSchemasList(httpServletRequest);
+
         Schema oSchema = new Schema();
         oSchema.setSchema(schema);
-        return ((ArrayList) schemasInSession).contains(oSchema);
+        return schemasInCache.contains(oSchema);
     }
 
 }

@@ -150,25 +150,17 @@ public class SchemaManager {
      * @return
      * @throws DCMException
      */
-    public StylesheetListHolder getSchemas(String user_name, String type) throws DCMException {
+    public StylesheetListHolder getSchemas(String type) throws DCMException {
 
         StylesheetListHolder st = new StylesheetListHolder();
         if (Utils.isNullStr(type)) {
             type = "handcoded";
         }
-
-        boolean ssiPrm = false;
-        boolean ssdPrm = false;
         Vector hcSchemas;
-        ArrayList schemas;
+        ArrayList<Schema> schemas;
 
         try {
-            schemas = new ArrayList();
-            ssiPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "i");
-            ssdPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "d");
-
-            st.setSsdPrm(ssdPrm);
-            st.setSsiPrm(ssiPrm);
+            schemas = new ArrayList<Schema>();
 
             // By default show only handcoded stylesheets
             if (type.equals("handcoded") || type.equals("all")) {
@@ -190,7 +182,7 @@ public class SchemaManager {
                         stylesheets = (Vector) schema.get("stylesheets");
                     }
 
-                    ArrayList stls = new ArrayList();
+                    ArrayList<Stylesheet> stls = new ArrayList<Stylesheet>();
                     for (int j = 0; j < stylesheets.size(); j++) {
                         HashMap stylesheet = (HashMap) stylesheets.get(j);
                         Stylesheet stl = new Stylesheet();
@@ -227,22 +219,15 @@ public class SchemaManager {
 
     }
 
-    public StylesheetListHolder getSchemaStylesheets(String schema, String user_name) throws DCMException {
+    public StylesheetListHolder getSchemaStylesheetsList(String schema) throws DCMException {
         StylesheetListHolder st = new StylesheetListHolder();
 
         Vector hcSchemas;
-        ArrayList schemas;
+        ArrayList<Schema> schemas;
 
         try {
 
-            schemas = new ArrayList();
-            boolean ssiPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "i");
-            boolean ssdPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_STYLESHEETS_PATH, "d");
-            boolean convPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_TESTCONVERSION_PATH, "x");
-
-            st.setSsdPrm(ssdPrm);
-            st.setSsiPrm(ssiPrm);
-            st.setConvPrm(convPrm);
+            schemas = new ArrayList<Schema>();
 
             String schemaId = schemaDao.getSchemaID(schema);
 
@@ -254,17 +239,15 @@ public class SchemaManager {
 
             ConversionServiceIF cs = new ConversionService();
             Vector stylesheets = cs.listConversions(schema);
-            ArrayList stls = new ArrayList();
+            ArrayList<Stylesheet> stls = new ArrayList<Stylesheet>();
             Schema sc = new Schema();
             sc.setId(schemaId);
             sc.setSchema(schema);
 
             for (int i = 0; i < stylesheets.size(); i++) {
                 Hashtable hash = (Hashtable) stylesheets.get(i);
-                String convert_id = (String) hash.get("convert_id");
                 String xsl = (String) hash.get("xsl");
                 String type;
-                String description = (String) hash.get("description");
                 String last_modified = "";
                 boolean ddConv = false;
                 String xslUrl;
@@ -316,39 +299,18 @@ public class SchemaManager {
      * @return
      * @throws DCMException
      */
-    public QAScriptListHolder getSchemasWithQAScripts(String user_name) throws DCMException {
-        return getSchemasWithQAScripts(user_name, null);
+    public QAScriptListHolder getSchemasWithQAScripts() throws DCMException {
+        return getSchemasWithQAScripts(null);
     }
 
-    public QAScriptListHolder getSchemasWithQAScripts(String user_name, String schemaId) throws DCMException {
+    public QAScriptListHolder getSchemasWithQAScripts(String schemaId) throws DCMException {
 
         QAScriptListHolder st = new QAScriptListHolder();
-
-        boolean ssiPrm = false;
-        boolean ssdPrm = false;
-        boolean wqiPrm = false;
-        boolean wquPrm = false;
-        boolean qsiPrm = false;
-        boolean qsuPrm = false;
         Vector hcSchemas;
         List<Schema> schemas;
 
         try {
             schemas = new ArrayList<Schema>();
-            ssiPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "i");
-            ssdPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "d");
-            wqiPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "i");
-            wquPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QUERIES_PATH, "u");
-            qsiPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QASANDBOX_PATH, "i");
-            qsuPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_QASANDBOX_PATH, "u");
-
-            st.setSsdPrm(ssdPrm);
-            st.setSsiPrm(ssiPrm);
-            st.setWqiPrm(wqiPrm);
-            st.setWquPrm(wquPrm);
-            st.setQsiPrm(qsiPrm);
-            st.setQsuPrm(qsuPrm);
-
             hcSchemas = schemaDao.getSchemas(schemaId);
             if (hcSchemas == null) {
                 hcSchemas = new Vector();
@@ -544,15 +506,15 @@ public class SchemaManager {
     }
 
     /**
-     * Get DD Schemas and append schemas founf from database
+     * Get DD Schemas and append schemas found from database
      *
      * @return
      * @throws DCMException
      */
-    public ArrayList getSchemas() throws DCMException {
+    public List<Schema> getSchemas() throws DCMException {
 
-        ArrayList schemas = new ArrayList();
-        ArrayList schemasChk = new ArrayList();
+        List<Schema> schemas = new ArrayList<Schema>();
+        List<String> schemasChk = new ArrayList<String>();
         Vector hcSchemas;
 
         try {
@@ -585,19 +547,17 @@ public class SchemaManager {
             // append handcoded conversions
             hcSchemas = schemaDao.getSchemasWithStl();
 
-            if (hcSchemas == null) {
-                hcSchemas = new Vector();
-            }
-
-            for (int i = 0; i < hcSchemas.size(); i++) {
-                HashMap schema = (HashMap) hcSchemas.get(i);
-                if (!schemasChk.contains(schema.get("xml_schema"))) {
-                    Schema sc = new Schema();
-                    sc.setId((String) schema.get("schema_id"));
-                    sc.setSchema((String) schema.get("xml_schema"));
-                    sc.setDescription((String) schema.get("description"));
-                    schemas.add(sc);
-                    schemasChk.add(schema.get("xml_schema"));
+            if (hcSchemas != null) {
+                for (int i = 0; i < hcSchemas.size(); i++) {
+                    HashMap schema = (HashMap) hcSchemas.get(i);
+                    if (!schemasChk.contains(schema.get("xml_schema"))) {
+                        Schema sc = new Schema();
+                        sc.setId((String) schema.get("schema_id"));
+                        sc.setSchema((String) schema.get("xml_schema"));
+                        sc.setDescription((String) schema.get("description"));
+                        schemas.add(sc);
+                        schemasChk.add((String)schema.get("xml_schema"));
+                    }
                 }
             }
             BeanComparator comparator = new BeanComparator("schema", new NullComparator());

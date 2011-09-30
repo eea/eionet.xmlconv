@@ -6,6 +6,8 @@ package eionet.gdem.web.struts.xmlfile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -15,25 +17,25 @@ import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.UplXmlFileManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 /**
  * Action for deleting XML files from reporitory
- * 
+ *
  * @author Enriko Käsper (TietoEnator)
- * 
+ *
  */
 public class DeleteUplXmlFileAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(DeleteUplXmlFileAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
 
-        String xmlfileId = (String) httpServletRequest.getParameter("xmlfileId");
+        String xmlfileId = httpServletRequest.getParameter("xmlfileId");
         String user_name = (String) httpServletRequest.getSession().getAttribute("user");
 
         try {
@@ -42,7 +44,7 @@ public class DeleteUplXmlFileAction extends Action {
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplXmlFile.deleted"));
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error deleting XML file", e);
+            LOGGER.error("Error deleting XML file", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);

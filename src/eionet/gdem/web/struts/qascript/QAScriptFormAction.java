@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.qascript;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -34,20 +36,20 @@ import org.apache.struts.action.ActionMessages;
 import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 public class QAScriptFormAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(QAScriptFormAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
 
         QAScriptForm form = (QAScriptForm) actionForm;
-        String scriptId = (String) httpServletRequest.getParameter("scriptId");
+        String scriptId = httpServletRequest.getParameter("scriptId");
 
         if (scriptId == null || scriptId.equals("")) {
             scriptId = (String) httpServletRequest.getAttribute("scriptId");
@@ -70,11 +72,11 @@ public class QAScriptFormAction extends Action {
             form.setScriptContent(qaScript.getScriptContent());
             form.setUpperLimit(qaScript.getUpperLimit());
 
-            QAScriptListLoader.loadQAScriptList(httpServletRequest, false);
+            httpServletRequest.setAttribute(QAScriptListLoader.QASCRIPT_LIST_ATTR, QAScriptListLoader.getList(httpServletRequest));
 
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("QA Script form error", e);
+            LOGGER.error("QA Script form error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveErrors(httpServletRequest, errors);
         }

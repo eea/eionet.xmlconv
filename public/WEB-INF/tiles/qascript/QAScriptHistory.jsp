@@ -34,7 +34,7 @@
 
     <div class="visualClear">&nbsp;</div>
 
-    <logic:present name="qascript.history" scope="session">
+    <logic:present name="qascript.history">
         <div style="width: 97%">
             <table class="datatable" width="100%">
                 <col style="width:10%"/>
@@ -48,7 +48,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <logic:iterate indexId="index" id="backup" name="qascript.history" scope="session" type="BackupDto">
+                    <logic:iterate indexId="index" id="backup" name="qascript.history" type="BackupDto">
                     <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
                         <td align="center">
                             <a  href="<bean:write name="webRoot"/>/<%=Names.QUERY_FOLDER%>/<%=Constants.BACKUP_FOLDER_NAME%>/<bean:write name="backup" property="fileName" />" title="<bean:write name="backup" property="fileName" />">

@@ -10,7 +10,7 @@
 
 
 
-    <logic:equal name="ssdPrm" value="true"  name="qascript.qascriptList" scope="session" property="ssiPrm" >
+    <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" scope="session" property="ssiPrm" >
         <div id="operations">
             <ul>
                    <li>
@@ -29,7 +29,7 @@
 
     <div class="visualClear">&nbsp;</div>
 
-    <logic:present name="qascripts" name="qascript.qascriptList" scope="session" property="qascripts" >
+    <logic:present name="qascripts" name="qascript.qascriptList" property="qascripts" >
         <div style="width: 97%">
             <table class="datatable" width="100%">
                 <col/>
@@ -41,7 +41,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <logic:iterate indexId="index" id="schema" name="qascript.qascriptList" scope="session" property="qascripts" type="Schema">
+                    <logic:iterate indexId="index" id="schema" name="qascript.qascriptList" property="qascripts" type="Schema">
                         <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
                             <td title="<bean:write name="schema" property="schema"/>">
                                 <html:link page="/do/schemaQAScripts" paramId="schemaId" paramName="schema" paramProperty="id" title="view QA scripts for this XML Schema" >

@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.qasandbox;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -35,36 +37,32 @@ import org.apache.struts.action.ActionMessages;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 
 /**
  * EditQAScriptInSandboxAction Find all the scripts for the given XML schema and allow to execute them in sandox
- * 
+ *
  * @author Enriko Käsper, Tieto Estonia
  */
 
 public class OpenQAServiceInSandboxAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(OpenQAServiceInSandboxAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
 
-        // get the schemas list from the session
-        Object schemasInSession = httpServletRequest.getSession().getAttribute("qascript.qascriptList");
-
         // reset the form in the session
         QASandboxForm cForm = (QASandboxForm) actionForm;
-        String userName = (String) httpServletRequest.getSession().getAttribute("user");
 
         String schemaIdParam = null;
         if (httpServletRequest.getParameter("schemaId") != null) {
-            schemaIdParam = (String) httpServletRequest.getParameter("schemaId");
+            schemaIdParam = httpServletRequest.getParameter("schemaId");
         }
         if (Utils.isNullStr(schemaIdParam)) {
 
@@ -74,16 +72,12 @@ public class OpenQAServiceInSandboxAction extends Action {
         }
 
         try {
-            // if schemas list is not stored in the session, then load it from
-            // the database
-            if (schemasInSession == null || ((QAScriptListHolder) schemasInSession).getQascripts().size() == 0) {
-                QAScriptListLoader.loadQAScriptList(httpServletRequest, true);
-            }
+            httpServletRequest.setAttribute(QAScriptListLoader.QASCRIPT_LIST_ATTR, QAScriptListLoader.getList(httpServletRequest));
             cForm.setShowScripts(true);
             cForm.setSourceUrl("");
 
             SchemaManager sm = new SchemaManager();
-            QAScriptListHolder qascripts = sm.getSchemasWithQAScripts(userName, schemaIdParam);
+            QAScriptListHolder qascripts = sm.getSchemasWithQAScripts(schemaIdParam);
             Schema schema = null;
 
             if (qascripts == null || qascripts.getQascripts() == null || qascripts.getQascripts().size() == 0) {
@@ -102,7 +96,7 @@ public class OpenQAServiceInSandboxAction extends Action {
             }
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("QA Sandbox fomr error error", e);
+            LOGGER.error("QA Sandbox fomr error error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveMessages(httpServletRequest, errors);
         }

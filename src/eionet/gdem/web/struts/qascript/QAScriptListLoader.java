@@ -23,45 +23,89 @@ package eionet.gdem.web.struts.qascript;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
+import eionet.gdem.utils.SecurityUtil;
 
 /**
- * Sotres qa scripts list in the session
- * 
+ * Sotres qa scripts list in the system cache.
+ *
  * @author Enriko Käsper, Tieto Estonia QAScriptListLoader
  */
 
 public class QAScriptListLoader {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(QAScriptListLoader.class);
 
     public final static String QASCRIPT_LIST_ATTR = "qascript.qascriptList";
+    public final static String QASCRIPT_PERMISSIONS_ATTR = "qascript.permissions";
 
-    public static QAScriptListHolder loadQAScriptList(HttpServletRequest httpServletRequest, boolean reload) throws DCMException {
+    private static QAScriptListHolder loadQAScriptList(HttpServletRequest httpServletRequest, boolean reload) throws DCMException {
 
-        Object st = httpServletRequest.getSession().getAttribute(QASCRIPT_LIST_ATTR);
+        Object st = httpServletRequest.getSession().getServletContext().getAttribute(QASCRIPT_LIST_ATTR);
         if (st == null || !(st instanceof QAScriptListHolder) || reload) {
             st = new QAScriptListHolder();
-
-            String user_name = (String) httpServletRequest.getSession().getAttribute("user");
             try {
                 SchemaManager sm = new SchemaManager();
-                st = sm.getSchemasWithQAScripts(user_name);
+                st = sm.getSchemasWithQAScripts(null);
             } catch (DCMException e) {
                 e.printStackTrace();
-                _logger.error("Error getting QA scripts list", e);
+                LOGGER.error("Error getting QA scripts list", e);
                 throw e;
             }
-            httpServletRequest.getSession().setAttribute(QASCRIPT_LIST_ATTR, st);
+            httpServletRequest.getSession().getServletContext().setAttribute(QASCRIPT_LIST_ATTR, st);
+        }
+        Object permissions = httpServletRequest.getSession().getAttribute(QASCRIPT_PERMISSIONS_ATTR);
+        if (permissions == null || !(permissions instanceof QAScriptListHolder)) {
+            loadPermissions(httpServletRequest);
         }
 
         return (QAScriptListHolder) st;
     }
 
     public static void clearList(HttpServletRequest httpServletRequest) {
-        httpServletRequest.getSession().removeAttribute(QASCRIPT_LIST_ATTR);
+        httpServletRequest.getSession().getServletContext().removeAttribute(QASCRIPT_LIST_ATTR);
+    }
+    public static void reloadList(HttpServletRequest httpServletRequest) throws DCMException {
+        loadQAScriptList(httpServletRequest, true);
+    }
+    public static QAScriptListHolder getList(HttpServletRequest httpServletRequest) throws DCMException {
+        return loadQAScriptList(httpServletRequest, false);
+    }
+    public static void loadPermissions(HttpServletRequest httpServletRequest){
+        String user_name = (String) httpServletRequest.getSession().getAttribute("user");
+        try {
+            httpServletRequest.getSession().setAttribute(QASCRIPT_PERMISSIONS_ATTR, loadQAScriptPermissions(user_name));
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("Error getting QA script permissions", e);
+        }
+    }
+
+    public static void clearPermissions(HttpServletRequest httpServletRequest) {
+        httpServletRequest.getSession().removeAttribute(QASCRIPT_PERMISSIONS_ATTR);
+    }
+    private static QAScriptListHolder loadQAScriptPermissions(String userName) throws Exception{
+        QAScriptListHolder qa = new QAScriptListHolder();
+
+        boolean ssiPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_QUERIES_PATH, "i");
+        boolean ssdPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_QUERIES_PATH, "d");
+        boolean wqiPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_WQ_PATH, "i");
+        boolean wquPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_QUERIES_PATH, "u");
+        boolean qsiPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_QASANDBOX_PATH, "i");
+        boolean qsuPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_QASANDBOX_PATH, "u");
+
+        qa.setSsdPrm(ssdPrm);
+        qa.setSsiPrm(ssiPrm);
+        qa.setWqiPrm(wqiPrm);
+        qa.setWquPrm(wquPrm);
+        qa.setQsiPrm(qsiPrm);
+        qa.setQsuPrm(qsuPrm);
+        return qa;
     }
 }

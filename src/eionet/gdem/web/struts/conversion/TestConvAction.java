@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -22,8 +24,6 @@ import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -32,7 +32,8 @@ import eionet.gdem.utils.Utils;
 
 public class TestConvAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(TestConvAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
@@ -81,7 +82,7 @@ public class TestConvAction extends Action {
             cs.convert(url, convert_id);
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Error testing conversion", e);
+            LOGGER.error("Error testing conversion", e);
             HttpSession sess = httpServletRequest.getSession(true);
             // GDEMException err= new GDEMException(errMsg);
 
@@ -100,7 +101,7 @@ public class TestConvAction extends Action {
                     methodResponse.flush();
                 }
                 catch(Exception e){
-                    _logger.error("Unable to close Servlet Output Stream.", e);
+                    LOGGER.error("Unable to close Servlet Output Stream.", e);
                     e.printStackTrace();
                 }
             }

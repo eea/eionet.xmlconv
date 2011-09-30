@@ -100,11 +100,11 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/editStylesheetForm</url-pattern>
+        <url-pattern>/do/stylesheetEditForm</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/editSchemaForm</url-pattern>
+        <url-pattern>/do/schemaElemForm</url-pattern>
     </filter-mapping>
 
 
@@ -144,10 +144,6 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
-        <servlet-name>ConversionServlet</servlet-name>
-        <servlet-class>eionet.gdem.conversion.ConversionServlet	</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>RpcRouter</servlet-name>
         <servlet-class>com.tee.uit.servlets.XmlRpcRouter</servlet-class>
     </servlet>
@@ -158,10 +154,6 @@
     <servlet-mapping>
         <servlet-name>SandBox</servlet-name>
         <url-pattern>/sandbox</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ConversionServlet</servlet-name>
-        <url-pattern>/convert</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>XQueryServlet</servlet-name>

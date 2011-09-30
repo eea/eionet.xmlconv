@@ -10,6 +10,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -18,8 +20,6 @@ import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.MultipartFileUpload;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.BaseAction;
@@ -29,7 +29,8 @@ import eionet.gdem.web.struts.BaseAction;
  */
 
 public class ConvertPushAction extends BaseAction {
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(ConvertPushAction.class);
 
     public static final String CONVERT_ID_PARAM_NAME = "convert_id";
     public static final String CONVERT_FILE_PARAM_NAME = "convert_file";
@@ -77,12 +78,12 @@ public class ConvertPushAction extends BaseAction {
             // execute conversion
             cs.convertPush(fileInput, convert_id, fileName);
         } catch (Exception e) {
-            _logger.error(e.toString());
+            LOGGER.error(e.toString());
             try {
                 // error happened
                 methodResponse.flushXMLError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage(), map.getPath(), params);
             } catch (Exception ge) {
-                _logger.error("Unable to flush XML error: " + ge.toString());
+                LOGGER.error("Unable to flush XML error: " + ge.toString());
                 throw new ServletException(ge);
             }
         } finally {
@@ -92,14 +93,14 @@ public class ConvertPushAction extends BaseAction {
                     methodResponse.flush();
                 }
                 catch(Exception e){
-                    _logger.error("Unable to close Servlet Output Stream.", e);
+                    LOGGER.error("Unable to close Servlet Output Stream.", e);
                     e.printStackTrace();
                 }
             }
             try {
                 fileInput.close();
             } catch (Exception e) {
-                _logger.error("Unable to close inputstream.");
+                LOGGER.error("Unable to close inputstream.");
             }
         }
         // Do nothing, the response is already sent.

@@ -15,7 +15,7 @@ import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
 
 /**
  * This is a class for unit testing the <code>eionet.gdem.dcm.business.SchemaManager</code> class.
- * 
+ *
  * @author Enriko Käsper, TietoEnator Estonia AS SchemaManagerTest
  */
 
@@ -24,7 +24,7 @@ public class SchemaManagerDDTest extends TestCase {
     /**
      * Test getDDSchemas method. The result should be ordered list of Schema objects. The schemas are ordered by table names,
      * dataset names and dateRelased descending.
-     * 
+     *
      * @throws Exception
      */
     public void testGetDDSchemas() throws Exception {
@@ -39,13 +39,13 @@ public class SchemaManagerDDTest extends TestCase {
     /**
      * Test getSchemas(String user_name, String type) method. The result should be ordered list of Schema objects. The schemas are
      * ordered by table names, dataset names and dateRelased descending.
-     * 
+     *
      * @throws Exception
      */
     public void testGetSchemasGenerated() throws Exception {
         MockSchemaManager mockSchemaManager = new MockSchemaManager();
 
-        StylesheetListHolder stylesheetList = mockSchemaManager.getSchemas(null, "generated");
+        StylesheetListHolder stylesheetList = mockSchemaManager.getSchemas("generated");
         List schemas = stylesheetList.getDdStylesheets();
 
         // verify the results
@@ -54,7 +54,7 @@ public class SchemaManagerDDTest extends TestCase {
 
     /**
      * Verifies that the list of schemas contains the same data as defined in getDDTables() method
-     * 
+     *
      * @param schemas
      * @throws Exception
      */
@@ -85,6 +85,7 @@ public class SchemaManagerDDTest extends TestCase {
         /**
          * Override getDDTables and construct the result of xml-rpc method (DDServiceClient.getDDTables())
          */
+        @Override
         public List getDDTables() {
 
             Hashtable hash1 = new Hashtable();

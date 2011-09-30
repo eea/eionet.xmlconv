@@ -9,6 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -17,8 +19,6 @@ import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -27,10 +27,11 @@ import eionet.gdem.utils.Utils;
 
 public class ConvertAction extends BaseMethodAction {
 
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(ConvertAction.class);
+
     protected static final String CONVERT_ID_PARAM_NAME = "convert_id";
     protected static final String URL_PARAM_NAME = "url";
-
-    private static LoggerIF _logger = GDEMServices.getLogger();
 
     /**
      * Purpose of this action is to execute <code>ConversionService</code> convert method. The method expects 2 request parameters:
@@ -70,12 +71,12 @@ public class ConvertAction extends BaseMethodAction {
             // execute conversion
             cs.convert(url, convert_id);
         } catch (Exception e) {
-            _logger.error(e.toString());
+            LOGGER.error(e.toString());
             try {
                 // error happened
                 methodResponse.flushXMLError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage(), map.getPath(), params);
             } catch (Exception ge) {
-                _logger.error("Unable to flush XML error: " + ge.toString());
+                LOGGER.error("Unable to flush XML error: " + ge.toString());
                 throw new ServletException(ge);
             }
         }
@@ -86,7 +87,7 @@ public class ConvertAction extends BaseMethodAction {
                     methodResponse.flush();
                 }
                 catch(Exception e){
-                    _logger.error("Unable to close Servlet Output Stream.", e);
+                    LOGGER.error("Unable to close Servlet Output Stream.", e);
                     e.printStackTrace();
                 }
             }

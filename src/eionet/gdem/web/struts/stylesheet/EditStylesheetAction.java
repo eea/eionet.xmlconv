@@ -28,6 +28,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -40,15 +42,14 @@ import org.apache.struts.upload.FormFile;
 import eionet.gdem.Constants;
 import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 
 public class EditStylesheetAction extends LookupDispatchAction {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(EditStylesheetAction.class);
 
     /*
      * The method uploads the file from user's filesystem to the repository. Saves all the other changes made onthe form execpt the
@@ -81,7 +82,7 @@ public class EditStylesheetAction extends LookupDispatchAction {
                 x.setWellFormednessChecking();
                 x.checkFromInputStream(new ByteArrayInputStream(xslFile.getFileData()));
             } catch (Exception e) {
-                _logger.error("stylesheet not valid", e);
+                LOGGER.error("stylesheet not valid", e);
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.notvalid"));
             }
         }
@@ -97,8 +98,9 @@ public class EditStylesheetAction extends LookupDispatchAction {
                 StylesheetManager st = new StylesheetManager();
                 st.update(user, stylesheetId, schema, xslFile, type, desc, dependsOn);
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.updated"));
+                StylesheetListLoader.reloadStylesheetList(httpServletRequest);
             } catch (DCMException e) {
-                _logger.error("Edit stylesheet error", e);
+                LOGGER.error("Edit stylesheet error", e);
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             }
         }
@@ -147,12 +149,14 @@ public class EditStylesheetAction extends LookupDispatchAction {
             try {
                 newChecksum = Utils.getChecksumFromString(xslContent);
             } catch (Exception e) {
-                _logger.error("unable to create checksum");
+                LOGGER.error("unable to create checksum");
             }
-            if (checksum == null)
+            if (checksum == null) {
                 checksum = "";
-            if (newChecksum == null)
+            }
+            if (newChecksum == null) {
                 newChecksum = "";
+            }
 
             updateContent = !checksum.equals(newChecksum);
 
@@ -164,7 +168,7 @@ public class EditStylesheetAction extends LookupDispatchAction {
                     String charset = httpServletRequest.getCharacterEncoding();
                     x.checkFromInputStream(new ByteArrayInputStream(xslContent.getBytes(charset)));
                 } catch (Exception e) {
-                    _logger.error("stylesheet not valid", e);
+                    LOGGER.error("stylesheet not valid", e);
                     errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.notvalid"));
                 }
 
@@ -176,8 +180,9 @@ public class EditStylesheetAction extends LookupDispatchAction {
                 StylesheetManager st = new StylesheetManager();
                 st.updateContent(user, stylesheetId, schema, xslFileName, type, desc, xslContent, updateContent, dependsOn);
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.updated"));
+                StylesheetListLoader.reloadStylesheetList(httpServletRequest);
             } catch (DCMException e) {
-                _logger.error("Edit stylesheet error", e);
+                LOGGER.error("Edit stylesheet error", e);
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             }
         }
@@ -197,6 +202,7 @@ public class EditStylesheetAction extends LookupDispatchAction {
         return actionMapping.findForward("success");
     }
 
+    @Override
     protected Map<String, String> getKeyMethodMap() {
         Map<String, String> map = new HashMap<String, String>();
         map.put("label.stylesheet.save", "save");

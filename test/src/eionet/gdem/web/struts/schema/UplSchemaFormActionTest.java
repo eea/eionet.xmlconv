@@ -20,6 +20,7 @@ public class UplSchemaFormActionTest extends MockStrutsTestCase {
         super(testName);
     }
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         setConfigFile(TestUtils.getStrutsConfigLocation());
@@ -37,9 +38,8 @@ public class UplSchemaFormActionTest extends MockStrutsTestCase {
         verifyTilesForward("success", "/uplSchema.jsp");
         verifyNoActionErrors();
 
-        // test if the list of schemas is stored in session attribute
-        HttpSession session = request.getSession();
-        UplSchemaHolder holder = (UplSchemaHolder) session.getAttribute("schemas.uploaded");
+        // test if the list of schemas is stored in request attribute
+        UplSchemaHolder holder = (UplSchemaHolder) request.getAttribute("schemas.uploaded");
         assertTrue(holder.getSchemas().size() > 0);
     }
 }

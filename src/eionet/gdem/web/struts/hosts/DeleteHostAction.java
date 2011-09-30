@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.hosts;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -34,15 +36,16 @@ import org.apache.struts.validator.DynaValidatorForm;
 
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.web.struts.BaseAction;
 
 public class DeleteHostAction extends BaseAction {
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(DeleteHostAction.class);
 
     private static IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
             HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
@@ -59,7 +62,7 @@ public class DeleteHostAction extends BaseAction {
                         new ActionMessage("error.dnoperm", translate(actionMapping, request, "label.hosts")));
             }
         } catch (Exception e) {
-            _logger.error("", e);
+            LOGGER.error("", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
         }
 
@@ -67,8 +70,9 @@ public class DeleteHostAction extends BaseAction {
             request.getSession().setAttribute("dcm.errors", errors);
             return actionMapping.getInputForward();
         }
-        if (messages.size() > 0)
+        if (messages.size() > 0) {
             request.getSession().setAttribute("dcm.messages", messages);
+        }
 
         return actionMapping.findForward("success");
 

@@ -26,6 +26,8 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -36,13 +38,15 @@ import org.apache.struts.action.ActionMessages;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
+import eionet.gdem.web.struts.qascript.QAScriptListLoader;
+import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
 
 public class EditSchemaAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(EditSchemaAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
@@ -65,7 +69,7 @@ public class EditSchemaAction extends Action {
                 return actionMapping.findForward("back");
             } catch (DCMException e) {
                 e.printStackTrace();
-                _logger.error("Error editing schema", e);
+                LOGGER.error("Error editing schema", e);
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             }
         }
@@ -88,9 +92,13 @@ public class EditSchemaAction extends Action {
 
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.updated"));
             httpServletRequest.setAttribute("schema", schema);
+            // clear qascript list in cache
+            QAScriptListLoader.reloadList(httpServletRequest);
+            StylesheetListLoader.reloadStylesheetList(httpServletRequest);
+            StylesheetListLoader.reloadConversionSchemasList(httpServletRequest);
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error editing schema", e);
+            LOGGER.error("Error editing schema", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);

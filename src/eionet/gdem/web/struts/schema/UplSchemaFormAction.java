@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.schema;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -34,13 +36,13 @@ import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 public class UplSchemaFormAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(UplSchemaFormAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
@@ -51,16 +53,16 @@ public class UplSchemaFormAction extends Action {
         try {
             SchemaManager sm = new SchemaManager();
             holder = sm.getUplSchemas(user);
+            httpServletRequest.setAttribute("schemas.uploaded", holder);
 
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Upload schema form error", e);
+            LOGGER.error("Upload schema form error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveMessages(httpServletRequest, errors);
         }
         saveMessages(httpServletRequest, errors);
 
-        httpServletRequest.getSession().setAttribute("schemas.uploaded", holder);
         return actionMapping.findForward("success");
     }
 }

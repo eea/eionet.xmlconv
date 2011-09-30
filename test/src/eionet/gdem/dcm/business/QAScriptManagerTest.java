@@ -32,6 +32,7 @@ public class QAScriptManagerTest extends DBTestCase {
     /**
      * Set up test case properties
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         TestUtils.setUpProperties(this);
@@ -40,16 +41,17 @@ public class QAScriptManagerTest extends DBTestCase {
     /**
      * Load the data which will be inserted for the test
      */
+    @Override
     protected IDataSet getDataSet() throws Exception {
         IDataSet loadedDataSet =
-                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_QA_XML));
+            new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_QA_XML));
         return loadedDataSet;
     }
 
     /**
      * The method adds QA Script into DB, then it edits the properties and finally deletes the added schema. After each operation it
      * scheks the properties values.
-     * 
+     *
      * @throws Exception
      */
     public void testAddQAScript() throws Exception {
@@ -68,7 +70,7 @@ public class QAScriptManagerTest extends DBTestCase {
         QAScriptManager qm = new QAScriptManager();
 
         MockFormFile scriptFile =
-                new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_QASCRIPT_XQUERY).getFile());
+            new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_QASCRIPT_XQUERY).getFile());
         // add qa script into db and upoload schema file
         String scriptId = qm.add(user, shortName, schemaId, schema, resultType, description, scriptType, scriptFile, upperLimit);
 
@@ -86,7 +88,7 @@ public class QAScriptManagerTest extends DBTestCase {
 
     /**
      * The method test if it is possible to update schema validation flag
-     * 
+     *
      * @throws Exception
      */
     public void testUpdateSchemaValidation() throws Exception {
@@ -95,7 +97,7 @@ public class QAScriptManagerTest extends DBTestCase {
         String schemaId = "62";
 
         SchemaManager sm = new SchemaManager();
-        QAScriptListHolder st = sm.getSchemasWithQAScripts(user, schemaId);
+        QAScriptListHolder st = sm.getSchemasWithQAScripts(schemaId);
         Schema schema = st.getQascripts().get(0);
         boolean validate = schema.isDoValidation();
 
@@ -103,7 +105,7 @@ public class QAScriptManagerTest extends DBTestCase {
         QAScriptManager qm = new QAScriptManager();
         qm.updateSchemaValidation(user, schemaId, !validate);
 
-        QAScriptListHolder st2 = sm.getSchemasWithQAScripts(user, schemaId);
+        QAScriptListHolder st2 = sm.getSchemasWithQAScripts(schemaId);
         Schema schema2 = st2.getQascripts().get(0);
 
         assertEquals(!validate, schema2.isDoValidation());
@@ -111,7 +113,7 @@ public class QAScriptManagerTest extends DBTestCase {
 
     /**
      * The method deletes a qa script and checks if it succeeded
-     * 
+     *
      * @throws Exception
      */
     public void testDeleteQAScript() throws Exception {
@@ -120,7 +122,7 @@ public class QAScriptManagerTest extends DBTestCase {
         String schemaId = "62";
 
         SchemaManager sm = new SchemaManager();
-        QAScriptListHolder st = sm.getSchemasWithQAScripts(user, schemaId);
+        QAScriptListHolder st = sm.getSchemasWithQAScripts(schemaId);
         Schema schema = st.getQascripts().get(0);
         int countQAScripts = schema.getQascripts().size();
 
@@ -128,7 +130,7 @@ public class QAScriptManagerTest extends DBTestCase {
         QAScriptManager qm = new QAScriptManager();
         qm.delete(user, schema.getQascripts().get(0).getScriptId());
 
-        QAScriptListHolder st2 = sm.getSchemasWithQAScripts(user, schemaId);
+        QAScriptListHolder st2 = sm.getSchemasWithQAScripts(schemaId);
         Schema schema2 = st2.getQascripts().get(0);
         int countQAScripts2 = schema2.getQascripts().size();
 
@@ -137,7 +139,7 @@ public class QAScriptManagerTest extends DBTestCase {
 
     /**
      * The method checks if qa script file exists
-     * 
+     *
      * @throws Exception
      */
     public void testQAScriptFileExists() throws Exception {
@@ -160,7 +162,7 @@ public class QAScriptManagerTest extends DBTestCase {
 
     /**
      * The method updates QA Script properties and verifies the values in database afterwards.
-     * 
+     *
      * @throws Exception
      */
     public void testUpdateQAScript() throws Exception {
@@ -196,7 +198,7 @@ public class QAScriptManagerTest extends DBTestCase {
 
     /**
      * The method updates QA Script properties and verifies the values in database afterwards.
-     * 
+     *
      * @throws Exception
      */
     public void testUpdateQAScriptFile() throws Exception {
@@ -213,7 +215,7 @@ public class QAScriptManagerTest extends DBTestCase {
         String user = TestConstants.TEST_ADMIN_USER;
 
         MockFormFile scriptFile =
-                new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_QASCRIPT_XQUERY2).getFile());
+            new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_QASCRIPT_XQUERY2).getFile());
 
         QAScriptManager qm = new QAScriptManager();
 
@@ -233,7 +235,7 @@ public class QAScriptManagerTest extends DBTestCase {
 
     /**
      * The method updates QA Script content in file system
-     * 
+     *
      * @throws Exception
      */
     public void testStoreQAScriptFromString() throws Exception {

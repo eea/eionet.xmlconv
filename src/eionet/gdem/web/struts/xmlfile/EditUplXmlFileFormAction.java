@@ -6,6 +6,8 @@ package eionet.gdem.web.struts.xmlfile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -17,27 +19,27 @@ import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.UplXmlFileManager;
 import eionet.gdem.dto.UplXmlFile;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 /**
  * Action for opening Edit XML file metadata form
- * 
+ *
  * @author Enriko Käsper (TietoEnator)
- * 
+ *
  */
 
 public class EditUplXmlFileFormAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(EditUplXmlFileFormAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
 
         EditUplXmlFileForm form = (EditUplXmlFileForm) actionForm;
-        String xmlfileId = (String) httpServletRequest.getParameter("xmlfileId");
+        String xmlfileId = httpServletRequest.getParameter("xmlfileId");
 
         try {
             UplXmlFileManager fm = new UplXmlFileManager();
@@ -52,7 +54,7 @@ public class EditUplXmlFileFormAction extends Action {
 
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error editing uploaded XML file", e);
+            LOGGER.error("Error editing uploaded XML file", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveErrors(httpServletRequest, errors);
         }

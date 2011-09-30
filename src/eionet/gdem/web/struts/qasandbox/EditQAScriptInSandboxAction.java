@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.qasandbox;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -37,30 +39,25 @@ import eionet.gdem.dto.QAScript;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 
 /**
  * EditQAScriptInSandboxAction Open selected QA script content and allow to edit it.
- * 
+ *
  * @author Enriko Käsper, Tieto Estonia
- * 
+ *
  */
 
 public class EditQAScriptInSandboxAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(EditQAScriptInSandboxAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
-
-        // get the schemas list from the session
-        Object schemasInSession = httpServletRequest.getSession().getAttribute("qascript.qascriptList");
 
         // reset the form in the session
         QASandboxForm cForm = (QASandboxForm) actionForm;
@@ -82,11 +79,7 @@ public class EditQAScriptInSandboxAction extends Action {
         }
 
         try {
-            // if schemas list is not stored in the session, then load it from
-            // the database
-            if (schemasInSession == null || ((QAScriptListHolder) schemasInSession).getQascripts().size() == 0) {
-                schemasInSession = QAScriptListLoader.loadQAScriptList(httpServletRequest, true);
-            }
+            httpServletRequest.setAttribute(QAScriptListLoader.QASCRIPT_LIST_ATTR, QAScriptListLoader.getList(httpServletRequest));
             // reset field values
             if (reset) {
                 cForm.setSourceUrl("");
@@ -123,7 +116,7 @@ public class EditQAScriptInSandboxAction extends Action {
             }
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("QA Sandbox fomr error error", e);
+            LOGGER.error("QA Sandbox fomr error error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveMessages(httpServletRequest, errors);
         }

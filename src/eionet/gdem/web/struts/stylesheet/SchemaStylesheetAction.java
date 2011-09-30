@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.stylesheet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -34,19 +36,18 @@ import org.apache.struts.action.DynaActionForm;
 
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 public class SchemaStylesheetAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(SchemaStylesheetAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
         StylesheetListHolder st = new StylesheetListHolder();
         ActionMessages messages = new ActionMessages();
-        String user_name = (String) httpServletRequest.getSession().getAttribute("user");
 
         DynaActionForm df = (DynaActionForm) actionForm;
         String schema = (String) df.get("schema");
@@ -63,16 +64,16 @@ public class SchemaStylesheetAction extends Action {
 
         try {
             SchemaManager sm = new SchemaManager();
-            st = sm.getSchemaStylesheets(schema, user_name);
+            st = sm.getSchemaStylesheetsList(schema);
+            httpServletRequest.setAttribute("schema.stylesheets", st);
 
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error getting stylesheet", e);
+            LOGGER.error("Error getting stylesheet", e);
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         saveErrors(httpServletRequest, messages);
 
-        httpServletRequest.getSession().setAttribute("schema.stylesheets", st);
         return actionMapping.findForward("success");
     }
 }

@@ -25,6 +25,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -36,13 +38,13 @@ import eionet.gdem.Constants;
 import eionet.gdem.dcm.business.BackupManager;
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 public class HistoryListAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(HistoryListAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
@@ -57,11 +59,11 @@ public class HistoryListAction extends Action {
 
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error getting history for QA scripts list", e);
+            LOGGER.error("Error getting history for QA scripts list", e);
             errors.add("history", new ActionMessage("label.exception.unknown"));
             saveErrors(httpServletRequest, errors);
         }
-        httpServletRequest.getSession().setAttribute("qascript.history", l);
+        httpServletRequest.setAttribute("qascript.history", l);
         httpServletRequest.setAttribute("script_id", scriptId);
         return actionMapping.findForward("success");
     }

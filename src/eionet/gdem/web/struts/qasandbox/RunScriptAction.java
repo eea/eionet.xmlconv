@@ -26,6 +26,8 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -45,8 +47,6 @@ import eionet.gdem.dto.ConvType;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
@@ -54,16 +54,19 @@ import eionet.gdem.validation.ValidationService;
 /**
  * EditQAScriptInSandboxAction Execute the QA script and display the results. If the result of QA script is not html, then wire the
  * result directly into Servlet OutputStream.
- * 
+ *
  * @author Enriko Käsper, Tieto Estonia
  */
 
 public class RunScriptAction extends Action {
 
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(RunScriptAction.class);
+
     private static final String HTML_CONTENT_TYPE = "text/html";
     private static final String HTML_CHARACTER_ENCODING = "utf-8";
-    private static LoggerIF _logger = GDEMServices.getLogger();
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
@@ -192,7 +195,7 @@ public class RunScriptAction extends Action {
                 }
             }
         } catch (Exception e) {
-            _logger.error("Error executing QA script", e);
+            LOGGER.error("Error executing QA script", e);
             saveErrors(httpServletRequest, errors);
             return actionMapping.findForward("error");
         }

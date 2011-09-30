@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.qascript;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -34,8 +36,6 @@ import org.apache.struts.action.RedirectingActionForward;
 
 import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 /**
  * @author Enriko Käsper, Tieto Estonia DeleteQAScriptAction
@@ -43,18 +43,22 @@ import eionet.gdem.services.LoggerIF;
 
 public class DeleteQAScriptAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(DeleteQAScriptAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
         QAScriptForm form = (QAScriptForm) actionForm;
         String scriptId = form.getScriptId();
-        if (scriptId == null || scriptId.length() == 0)
-            scriptId = (String) httpServletRequest.getParameter("scriptId");
+        if (scriptId == null || scriptId.length() == 0) {
+            scriptId = httpServletRequest.getParameter("scriptId");
+        }
         String schemaId = form.getSchemaId();
-        if (schemaId == null || schemaId.length() == 0)
-            schemaId = (String) httpServletRequest.getParameter("schemaId");
+        if (schemaId == null || schemaId.length() == 0) {
+            schemaId = httpServletRequest.getParameter("schemaId");
+        }
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
         ActionMessages errors = new ActionMessages();
@@ -66,9 +70,11 @@ public class DeleteQAScriptAction extends Action {
             QAScriptManager qm = new QAScriptManager();
             qm.delete(user, scriptId);
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.deleted"));
+            // clear qascript list in cache
+            QAScriptListLoader.reloadList(httpServletRequest);
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error deleting QA script", e);
+            LOGGER.error("Error deleting QA script", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         // saveErrors(httpServletRequest, errors);

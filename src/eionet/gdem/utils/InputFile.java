@@ -40,10 +40,11 @@ import java.util.UUID;
 import java.util.Vector;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IHostDao;
 
 /**
@@ -53,6 +54,9 @@ import eionet.gdem.services.db.dao.IHostDao;
  * NB! Always call close() method in finally block, otherwise the InputStream stays open
  */
 public class InputFile {
+
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(InputFile.class);
 
     private String ticket = null;
     private URL url = null;
@@ -65,7 +69,6 @@ public class InputFile {
     boolean isClosed = false;
     // instance = strHostName + strFolderName + "/" + strFileName
     private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
-    private static LoggerIF _logger = GDEMServices.getLogger();
 
     /**
      * Initializes InputUrl object and sets the URI from str_url
@@ -139,7 +142,7 @@ public class InputFile {
                 isClosed = true;
             }
         } catch (Exception e) {
-            _logger.warning("Closing inputstream in FileInput: " + e.toString());
+            LOGGER.warn("Closing inputstream in FileInput: " + e.toString());
         }
 
     }
@@ -269,8 +272,8 @@ public class InputFile {
             }
 
         } catch (Exception e) {
-            _logger.error("Error getting host data from the DB " + e.toString());
-            _logger.error("Conversion proceeded");
+            LOGGER.error("Error getting host data from the DB " + e.toString());
+            LOGGER.error("Conversion proceeded");
         }
     }
 

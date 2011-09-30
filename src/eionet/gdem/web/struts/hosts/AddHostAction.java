@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.hosts;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -32,17 +34,17 @@ import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
 
 import eionet.gdem.conversion.ssr.Names;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.web.struts.BaseAction;
 
 public class AddHostAction extends BaseAction {
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(AddHostAction.class);
 
     /**
      * Purpose of this action is to forward user to Add host form and clean up form bean that might be filled up in previous edit
      * actions.
      */
+    @Override
     public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request,
             HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
@@ -54,7 +56,7 @@ public class AddHostAction extends BaseAction {
                         translate(map, request, "label.hosts")));
             }
         } catch (Exception e) {
-            _logger.error("", e);
+            LOGGER.error("", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
         }
         if (errors.size() > 0) {

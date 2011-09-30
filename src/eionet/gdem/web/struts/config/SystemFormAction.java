@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.config;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -34,13 +36,13 @@ import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
 
 import eionet.gdem.Properties;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 public class SystemFormAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(SystemFormAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         ActionErrors errors = new ActionErrors();
@@ -49,7 +51,7 @@ public class SystemFormAction extends Action {
             form.set("cmdXGawk", Properties.xgawkCommand);
             form.set("qaTimeout", Long.valueOf(Properties.qaTimeout));
         } catch (Exception e) {
-            _logger.error("Error setting system configuration form", e);
+            LOGGER.error("Error setting system configuration form", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
             saveMessages(httpServletRequest, errors);
         }

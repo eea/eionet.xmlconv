@@ -29,6 +29,7 @@ public class AfterCASLoginAction extends Action {
     /** */
     public static final String AFTER_LOGIN_ATTR_NAME = "afterLogin";
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) throws IOException {
 
@@ -36,8 +37,8 @@ public class AfterCASLoginAction extends Action {
         AppUser aclUser = SecurityUtil.getUser(httpServletRequest, Names.USER_ATT);
 
         // remove session data, that contains permission related attributes
-        QAScriptListLoader.clearList(httpServletRequest);
-        StylesheetListLoader.clearList(httpServletRequest);
+        QAScriptListLoader.loadPermissions(httpServletRequest);
+        StylesheetListLoader.loadPermissions(httpServletRequest);
 
         String afterLogin = (String) httpServletRequest.getSession().getAttribute(AFTER_LOGIN_ATTR_NAME);
 

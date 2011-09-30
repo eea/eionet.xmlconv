@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.stylesheet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -33,14 +35,14 @@ import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.web.struts.schema.SchemaElemForm;
 
 public class SchemaDeleteAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(SchemaDeleteAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
@@ -54,10 +56,14 @@ public class SchemaDeleteAction extends Action {
         try {
             SchemaManager sm = new SchemaManager();
             sm.deleteSchemaStylesheets(user_name, schemaId);
+            StylesheetListLoader.reloadStylesheetList(httpServletRequest);
+            StylesheetListLoader.reloadConversionSchemasList(httpServletRequest);
+
+
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheets.deleted"));
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error deleting schema", e);
+            LOGGER.error("Error deleting schema", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         // saveErrors(httpServletRequest, errors);

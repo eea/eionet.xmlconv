@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.config;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -36,14 +38,14 @@ import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.conf.DcmProperties;
 import eionet.gdem.dcm.conf.LdapTest;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.SecurityUtil;
 
 public class LdapAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(LdapAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
@@ -84,12 +86,12 @@ public class LdapAction extends Action {
             dcmProp.setLdapParams(url, context, userDir, attrUid);
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Ldap parameters saving error", e);
+            LOGGER.error("Ldap parameters saving error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveErrors(httpServletRequest, errors);
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Ldap parameters saving error", e);
+            LOGGER.error("Ldap parameters saving error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.exception.unknown"));
             saveErrors(httpServletRequest, errors);
         }

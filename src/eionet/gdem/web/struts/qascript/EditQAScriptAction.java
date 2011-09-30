@@ -27,6 +27,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -39,8 +41,6 @@ import org.apache.struts.upload.FormFile;
 import eionet.gdem.Constants;
 import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -49,7 +49,8 @@ import eionet.gdem.utils.Utils;
 
 public class EditQAScriptAction extends LookupDispatchAction {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(EditQAScriptAction.class);
 
     /*
      * The method uploads the file from user's filesystem to the repository. Saves all the other changes made onthe form execpt the
@@ -86,8 +87,11 @@ public class EditQAScriptAction extends LookupDispatchAction {
             qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, content, upperLimit);
 
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.updated"));
+
+            // clear qascript list in cache
+            QAScriptListLoader.reloadList(httpServletRequest);
         } catch (DCMException e) {
-            _logger.error("Edit QA script error", e);
+            LOGGER.error("Edit QA script error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
 
@@ -139,12 +143,14 @@ public class EditQAScriptAction extends LookupDispatchAction {
             try {
                 newChecksum = Utils.getChecksumFromString(scriptContent);
             } catch (Exception e) {
-                _logger.error("unable to create checksum");
+                LOGGER.error("unable to create checksum");
             }
-            if (checksum == null)
+            if (checksum == null) {
                 checksum = "";
-            if (newChecksum == null)
+            }
+            if (newChecksum == null) {
                 newChecksum = "";
+            }
 
             updateContent = !checksum.equals(newChecksum);
         }
@@ -162,8 +168,10 @@ public class EditQAScriptAction extends LookupDispatchAction {
                 qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, upperLimit,
                         scriptContent, updateContent);
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.updated"));
+                // clear qascript list in cache
+                QAScriptListLoader.reloadList(httpServletRequest);
             } catch (DCMException e) {
-                _logger.error("Edit QA script error", e);
+                LOGGER.error("Edit QA script error", e);
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             }
         }
@@ -183,6 +191,7 @@ public class EditQAScriptAction extends LookupDispatchAction {
         return actionMapping.findForward("success");
     }
 
+    @Override
     protected Map<String, String> getKeyMethodMap() {
         Map<String, String> map = new HashMap<String, String>();
         map.put("label.qascript.save", "save");

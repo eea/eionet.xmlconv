@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.qasandbox;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -34,8 +36,6 @@ import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
@@ -43,13 +43,16 @@ import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 
 /**
  * SearchCRSandboxAction Extract the XML schema from the inserted source URL of XML file and find available QA scripts.
- * 
+ *
  * @author Enriko Käsper, Tieto Estonia
  */
 
 public class ExtractSchemaAction extends Action {
-    private static LoggerIF _logger = GDEMServices.getLogger();
 
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(ExtractSchemaAction.class);
+
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
@@ -82,8 +85,9 @@ public class ExtractSchemaAction extends Action {
                 if (schemaExists(httpServletRequest, schemaUrl)) {
                     cForm.setSchemaUrl(schemaUrl);
                 } else if (!Utils.isNullStr(schemaUrl)) {
-                    if (oSchema == null)
+                    if (oSchema == null) {
                         oSchema = new Schema();
+                    }
 
                     oSchema.setSchema(null);
                     oSchema.setDoValidation(false);
@@ -99,12 +103,12 @@ public class ExtractSchemaAction extends Action {
             }
         } catch (DCMException e) {
             // e.printStackTrace();
-            _logger.error("Error extracting schema from XML file", e);
+            LOGGER.error("Error extracting schema from XML file", e);
             saveErrors(httpServletRequest, errors);
             return actionMapping.findForward("error");
         } catch (Exception e) {
             // e.printStackTrace();
-            _logger.error("Error extracting schema from XML file", e);
+            LOGGER.error("Error extracting schema from XML file", e);
             saveErrors(httpServletRequest, errors);
             return actionMapping.findForward("error");
         }
@@ -115,20 +119,17 @@ public class ExtractSchemaAction extends Action {
     /**
      * check if schema passed as request parameter exists in the list of schemas stored in the session. If there is no schema list
      * in the session, then create it
-     * 
+     *
      * @param httpServletRequest
      * @param schema
      * @return
      * @throws DCMException
      */
     private boolean schemaExists(HttpServletRequest httpServletRequest, String schema) throws DCMException {
-        Object schemasInSession = httpServletRequest.getSession().getAttribute("qascript.qascriptList");
-        if (schemasInSession == null || ((QAScriptListHolder) schemasInSession).getQascripts().size() == 0) {
-            schemasInSession = QAScriptListLoader.loadQAScriptList(httpServletRequest, true);
-        }
+        QAScriptListHolder schemasInSession = QAScriptListLoader.getList(httpServletRequest);
         Schema oSchema = new Schema();
         oSchema.setSchema(schema);
-        return ((QAScriptListHolder) schemasInSession).getQascripts().contains(oSchema);
+        return schemasInSession.getQascripts().contains(oSchema);
     }
 
     private String findSchemaFromXml(String xml) {

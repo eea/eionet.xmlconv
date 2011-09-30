@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.qascript;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -35,8 +37,6 @@ import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -45,13 +45,14 @@ import eionet.gdem.utils.Utils;
 
 public class AddQAScriptAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(AddQAScriptAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
         QAScriptForm form = (QAScriptForm) actionForm;
-        String scriptId = form.getScriptId();
         String schemaId = form.getSchemaId();
         String shortName = form.getShortName();
         String desc = form.getDescription();
@@ -66,10 +67,11 @@ public class AddQAScriptAction extends Action {
         httpServletRequest.setAttribute("schemaId", schemaId);
 
         if (isCancelled(httpServletRequest)) {
-            if (schema != null)
+            if (schema != null) {
                 return findForward(actionMapping, "cancel", schemaId);
-            else
+            } else {
                 return actionMapping.findForward("list");
+            }
         }
 
         ActionMessages errors = new ActionMessages();
@@ -99,11 +101,11 @@ public class AddQAScriptAction extends Action {
             QAScriptManager qm = new QAScriptManager();
             qm.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit);
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.inserted"));
-            // clear qascript list in session
-            QAScriptListLoader.loadQAScriptList(httpServletRequest, true);
+            // clear qascript list in cache
+            QAScriptListLoader.reloadList(httpServletRequest);
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Add QA Script error", e);
+            LOGGER.error("Add QA Script error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveErrors(httpServletRequest.getSession(), errors);
             return actionMapping.findForward("fail");

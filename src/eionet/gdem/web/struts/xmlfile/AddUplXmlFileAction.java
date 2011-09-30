@@ -7,6 +7,8 @@ package eionet.gdem.web.struts.xmlfile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -17,19 +19,19 @@ import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.dcm.business.UplXmlFileManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 /**
  * Action for adding XML files into reporitory
- * 
+ *
  * @author Enriko Käsper (TietoEnator)
- * 
+ *
  */
 public class AddUplXmlFileAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(AddUplXmlFileAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
@@ -64,7 +66,7 @@ public class AddUplXmlFileAction extends Action {
             fm.addUplXmlFile(user, xmlfile, title);
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplXmlFile.inserted"));
         } catch (DCMException e) {
-            _logger.error("Error adding upload XML file", e);
+            LOGGER.error("Error adding upload XML file", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);

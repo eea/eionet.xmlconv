@@ -6,14 +6,14 @@ package eionet.gdem.web.struts.remoteapi;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.remote.XMLErrorResult;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS MethodErrorAction
@@ -21,7 +21,8 @@ import eionet.gdem.services.LoggerIF;
 
 public class MethodErrorAction extends BaseMethodAction {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(MethodErrorAction.class);
 
     /**
      * Purpose of this action is show error messages of given request. XMLErrorResult should be stored in session already.
@@ -44,7 +45,7 @@ public class MethodErrorAction extends BaseMethodAction {
             // flush the error into servlet outputstream
             httpResult.flushXML(errorResult);
         } catch (Exception e) {
-            _logger.error("Unable to flush XML error: " + e.toString());
+            LOGGER.error("Unable to flush XML error: " + e.toString());
         }
         // Do nothing
         return null;

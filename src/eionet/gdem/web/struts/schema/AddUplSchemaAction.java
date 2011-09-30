@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.schema;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -35,15 +37,16 @@ import org.apache.struts.upload.FormFile;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
+import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
 
 public class AddUplSchemaAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(AddUplSchemaAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
@@ -87,8 +90,8 @@ public class AddUplSchemaAction extends Action {
             if (schemaFile != null && schemaFile.getFileSize() > 0) {
                 // Change the filename to schema-UniqueIDxsd
                 fileName =
-                        sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaID,
-                                Utils.extractExtension(schemaFile.getFileName()));
+                    sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaID,
+                            Utils.extractExtension(schemaFile.getFileName()));
                 // Add row to T_UPL_SCHEMA table
                 sm.addUplSchema(user, schemaFile, fileName, schemaID);
                 // Update T_SCHEMA table set
@@ -98,17 +101,17 @@ public class AddUplSchemaAction extends Action {
                 sm.update(user, schemaID, schemaUrl, desc, schemaLang, doValidation, null, null);
             }
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.inserted"));
+            QAScriptListLoader.reloadList(httpServletRequest);
+            StylesheetListLoader.reloadStylesheetList(httpServletRequest);
+            StylesheetListLoader.reloadConversionSchemasList(httpServletRequest);
         } catch (DCMException e) {
-            _logger.error("Error adding upload schema", e);
+            LOGGER.error("Error adding upload schema", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);
         httpServletRequest.getSession().setAttribute("dcm.messages", messages);
         saveErrors(httpServletRequest, errors);
         saveMessages(httpServletRequest, messages);
-        // new schema might be added, remove the schemas list form the session.
-        httpServletRequest.getSession().removeAttribute("conversion.schemas");
-        QAScriptListLoader.clearList(httpServletRequest);
 
         return actionMapping.findForward("success");
     }

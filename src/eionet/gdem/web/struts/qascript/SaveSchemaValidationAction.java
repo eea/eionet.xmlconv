@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.qascript;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -34,8 +36,6 @@ import org.apache.struts.action.RedirectingActionForward;
 
 import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.web.struts.schema.SchemaElemForm;
 
 /**
@@ -44,8 +44,10 @@ import eionet.gdem.web.struts.schema.SchemaElemForm;
 
 public class SaveSchemaValidationAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(SaveSchemaValidationAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
@@ -65,7 +67,7 @@ public class SaveSchemaValidationAction extends Action {
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.validation.updated"));
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error updateing schema validation", e);
+            LOGGER.error("Error updateing schema validation", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
 

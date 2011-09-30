@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -19,8 +21,6 @@ import org.apache.struts.action.ActionMessages;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
 
@@ -30,8 +30,10 @@ import eionet.gdem.validation.ValidationService;
 
 public class ValidateXMLAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(ValidateXMLAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
@@ -63,10 +65,11 @@ public class ValidateXMLAction extends Action {
                 ValidationService v = new ValidationService(true);
                 v.setTrustedMode(false);
                 v.setTicket(ticket);
-                if (schema == null) // schema defined in header
+                if (schema == null) {
                     v.validate(url);
-                else
+                } else {
                     v.validateSchema(url, schema);
+                }
                 valid = v.getErrorList();
                 validatedSchema = v.getValidatedSchemaURL();
                 originalSchema = v.getOriginalSchema();
@@ -78,18 +81,19 @@ public class ValidateXMLAction extends Action {
             }
             httpServletRequest.setAttribute("conversion.valid", valid);
             httpServletRequest.setAttribute("conversion.originalSchema", originalSchema);
-            if (!originalSchema.equals(validatedSchema))
+            if (!originalSchema.equals(validatedSchema)) {
                 httpServletRequest.setAttribute("conversion.validatedSchema", validatedSchema);
+            }
             httpServletRequest.setAttribute("conversion.warningMessage", warningMessage);
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error validating xml", e);
+            LOGGER.error("Error validating xml", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveErrors(httpServletRequest, errors);
             return actionMapping.findForward("error");
         } catch (Exception e) {
             e.printStackTrace();
-            _logger.error("Error validating xml", e);
+            LOGGER.error("Error validating xml", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(BusinessConstants.EXCEPTION_GENERAL));
             saveErrors(httpServletRequest, errors);
             return actionMapping.findForward("error");

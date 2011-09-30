@@ -24,19 +24,19 @@
         <div id="operations">
               <ul>
                    <li>
-                    <logic:equal name="qsuPrm" value="true"  name="qascript.qascriptList" scope="session" property="qsuPrm" >
+                    <logic:equal name="qsuPrm" value="true"  name="qascript.permissions" scope="session" property="qsuPrm" >
                         <html:link page="/do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="QAScriptForm" paramProperty="scriptId" titleKey="label.qasandbox.label.qasandbox.editScript">
                             <bean:message key="label.qascript.run" />
                         </html:link>
                     </logic:equal>
-                    <logic:notEqual name="qsuPrm" value="true"  name="qascript.qascriptList" scope="session" property="qsuPrm" >
+                    <logic:notEqual name="qsuPrm" value="true"  name="qascript.permissions" scope="session" property="qsuPrm" >
                         <a href="openQAServiceInSandbox?scriptId=<bean:write name="QAScriptForm" property="scriptId" />&amp;schemaId=<bean:write name="QAScriptForm" property="schemaId" />" title="<bean:message key="label.qascript.runservice.title" />">
                             <bean:message key="label.qascript.run" />
                         </a>
                     </logic:notEqual>
 
                 </li>
-                <logic:equal name="ssdPrm" value="true"  name="qascript.qascriptList" scope="session" property="ssdPrm" >
+                <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" scope="session" property="ssdPrm" >
                     <li>
                         <html:link page="/do/editQAScriptForm" paramId="scriptId" paramName="QAScriptForm" paramProperty="scriptId" title="edit QA Script" >
                             <bean:message key="label.qascript.edit" />

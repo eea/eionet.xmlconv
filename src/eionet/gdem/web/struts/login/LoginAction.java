@@ -26,6 +26,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -38,16 +40,16 @@ import org.apache.struts.validator.DynaValidatorForm;
 import com.tee.uit.security.AppUser;
 
 import eionet.gdem.conversion.ssr.Names;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 
 public class LoginAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(LoginAction.class);
     protected final String GDEM_SSAclName = "/stylesheets";
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) throws IOException {
         ActionMessages loginMessages = new ActionMessages();
@@ -64,13 +66,13 @@ public class LoginAction extends Action {
 
         try {
             doLogin(username, password, httpServletRequest);
-            _logger.debug("Success login");
+            LOGGER.debug("Success login");
             ret = actionMapping.findForward("home");
             httpServletRequest.getSession().setAttribute("user", username);
             loginForm.getMap().clear();
         } catch (Exception e) {
             loginForm.set("password", null);
-            _logger.error("Fail login", e);
+            LOGGER.error("Fail login", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.login.error.invalid"));
             ret = actionMapping.getInputForward();
         }
@@ -92,16 +94,18 @@ public class LoginAction extends Action {
     private void doLogin(String username, String password, HttpServletRequest httpServletRequest) throws Exception {
         try {
             AppUser aclUser = new AppUser();
-            if (!Utils.isNullStr(username))
+            if (!Utils.isNullStr(username)) {
                 aclUser.authenticate(username, password);
-            if (!SecurityUtil.hasPerm(username, GDEM_SSAclName, "v")) // GDEM_readPermission))
+            }
+            if (!SecurityUtil.hasPerm(username, GDEM_SSAclName, "v")) {
                 throw new Exception("Not allowed to use the Styelsheet Repository");
+            }
             // session.setAttribute(Names.USER_ATT, aclUser);
             // add object into session becouse of old bussines ligic
             httpServletRequest.getSession().setAttribute(Names.USER_ATT, aclUser);
             httpServletRequest.getSession().setAttribute(Names.TICKET_ATT, Utils.getEncodedAuthentication(username, password));
         } catch (Exception dire) {
-            _logger.debug("Authentication failed " + dire.toString(), dire);
+            LOGGER.debug("Authentication failed " + dire.toString(), dire);
             throw new Exception("Authentication failed ");
         }
 

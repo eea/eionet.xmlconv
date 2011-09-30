@@ -27,6 +27,8 @@ import java.io.File;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -39,16 +41,17 @@ import eionet.gdem.Properties;
 import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dcm.XslGenerator;
 import eionet.gdem.dto.ConversionDto;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.xml.XSLTransformer;
 
 public class GetStylesheetAction extends Action {
 
     public static XSLTransformer transform = new XSLTransformer();
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(GetStylesheetAction.class);
 
+
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
             HttpServletResponse response) {
 
@@ -70,14 +73,15 @@ public class GetStylesheetAction extends Action {
             // byteIn.re
 
             response.setContentType("text/xml");
-            while ((bufLen = byteIn.read(buf)) != -1)
+            while ((bufLen = byteIn.read(buf)) != -1) {
                 response.getOutputStream().write(buf, 0, bufLen);
+            }
 
             byteIn.close();
             return null;
 
         } catch (Exception ge) {
-            _logger.error("Error getting stylesheet", ge);
+            LOGGER.error("Error getting stylesheet", ge);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.generation"));
             // request.getSession().setAttribute("dcm.errors", errors);
             request.setAttribute("dcm.errors", errors);

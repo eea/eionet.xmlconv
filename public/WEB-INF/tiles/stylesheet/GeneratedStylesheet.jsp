@@ -34,7 +34,7 @@
                 </tr>
             </thead>
             <tbody>
-                <logic:iterate indexId="index" id="schema" name="stylesheet.generatedList" scope="session" property="ddStylesheets" type="Schema">
+                <logic:iterate indexId="index" id="schema" name="stylesheet.generatedList" property="ddStylesheets" type="Schema">
                 <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
                     <td align="center">
                         <html:link action="/schemaStylesheets" paramId="schema" paramName="schema" paramProperty="schema">

@@ -45,7 +45,7 @@
                                 <option selected="selected" value="">
                                     --
                                 </option>
-                                <logic:iterate id="schema" name="stylesheet.DDSchemas" scope="session"  type="Schema">
+                                <logic:iterate id="schema" name="stylesheet.DDSchemas" type="Schema">
                                     <option value="<bean:write name="schema" property="schema" />">
                                         <bean:write name="schema" property="schema" />
                                         <logic:notEqual name="schema" property="table" value="">

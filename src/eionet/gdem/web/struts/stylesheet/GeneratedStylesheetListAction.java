@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.stylesheet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -32,22 +34,23 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 public class GeneratedStylesheetListAction extends Action {
-    private static LoggerIF _logger = GDEMServices.getLogger();
 
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(GeneratedStylesheetListAction.class);
+
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
 
         try {
-            StylesheetListLoader.loadStylesheetGeneratedList(httpServletRequest, false);
+            httpServletRequest.setAttribute(StylesheetListLoader.STYLESHEET_GENERATED_LIST_ATTR, StylesheetListLoader.getGeneratedList(httpServletRequest));
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error getting stylesheet list", e);
+            LOGGER.error("Error getting stylesheet list", e);
             errors.add("schema", new ActionMessage("label.exception.unknown"));
             saveErrors(httpServletRequest, errors);
         }

@@ -26,6 +26,8 @@ import java.io.ByteArrayInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -36,15 +38,15 @@ import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 
 public class AddStylesheetAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(AddStylesheetAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
@@ -58,10 +60,11 @@ public class AddStylesheetAction extends Action {
         httpServletRequest.setAttribute("schema", schema);
 
         if (isCancelled(httpServletRequest)) {
-            if (schema != null)
+            if (schema != null) {
                 return new ActionForward("/do/schemaStylesheets?schema=" + schema, true); // actionMapping.findForward("success");
-            else
+            } else {
                 return actionMapping.findForward("list");
+            }
         }
 
         ActionMessages errors = new ActionMessages();
@@ -100,15 +103,15 @@ public class AddStylesheetAction extends Action {
             StylesheetManager st = new StylesheetManager();
             st.add(user, schema, xslFile, type, desc, dependsOn);
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.inserted"));
+            StylesheetListLoader.reloadStylesheetList(httpServletRequest);
+            StylesheetListLoader.reloadConversionSchemasList(httpServletRequest);
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Add stylesheet error", e);
+            LOGGER.error("Add stylesheet error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);
         httpServletRequest.getSession().setAttribute("dcm.messages", messages);
-        // new schema might be added, remove the schemas list form the session.
-        httpServletRequest.getSession().removeAttribute("conversion.schemas");
         return new ActionForward("/do/schemaStylesheets?schema=" + schema, true); // actionMapping.findForward("success");
     }
 

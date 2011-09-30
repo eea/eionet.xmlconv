@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.schema;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -33,8 +35,6 @@ import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 /**
  * @author Enriko Käsper, Tieto Estonia SyncUplSchemaAction
@@ -42,8 +42,10 @@ import eionet.gdem.services.LoggerIF;
 
 public class SyncUplSchemaAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(SyncUplSchemaAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
@@ -72,7 +74,7 @@ public class SyncUplSchemaAction extends Action {
 
         } catch (DCMException e) {
             // e.printStackTrace();
-            _logger.error("Unable to sync local schema", e);
+            LOGGER.error("Unable to sync local schema", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         saveMessages(httpServletRequest.getSession(), messages);

@@ -24,6 +24,8 @@ package eionet.gdem.web.struts.stylesheet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -33,19 +35,19 @@ import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 public class StylesheetDeleteAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(StylesheetDeleteAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
-        String stylesheetId = (String) httpServletRequest.getParameter("conversionId");
+        String stylesheetId = httpServletRequest.getParameter("conversionId");
         String user_name = (String) httpServletRequest.getSession().getAttribute("user");
 
         httpServletRequest.setAttribute("schema", httpServletRequest.getParameter("schema"));
@@ -53,10 +55,12 @@ public class StylesheetDeleteAction extends Action {
         try {
             StylesheetManager sm = new StylesheetManager();
             sm.delete(user_name, stylesheetId);
+            StylesheetListLoader.reloadStylesheetList(httpServletRequest);
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.deleted"));
+            StylesheetListLoader.reloadStylesheetList(httpServletRequest);
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Error deleting stylesheet", e);
+            LOGGER.error("Error deleting stylesheet", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
 

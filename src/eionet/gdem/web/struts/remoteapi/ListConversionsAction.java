@@ -10,6 +10,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -18,8 +20,6 @@ import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.remote.ListConversionsResult;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.BaseAction;
 
@@ -28,7 +28,8 @@ import eionet.gdem.web.struts.BaseAction;
  */
 
 public class ListConversionsAction extends BaseAction {
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(ListConversionsAction.class);
 
     public static final String SCHEMA_PARAM_NAME = "schema";
 
@@ -64,12 +65,12 @@ public class ListConversionsAction extends BaseAction {
             // flush the result into servlet outputstream
             methodResponse.flushXML(xmlResult);
         } catch (Exception e) {
-            _logger.error(e.toString());
+            LOGGER.error(e.toString());
             try {
                 // if error happened, then flush the error in XML format into servlet outputstream
                 methodResponse.flushXMLError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage(), map.getPath(), params);
             } catch (Exception ge) {
-                _logger.error("Unable to flush XML error: " + ge.toString());
+                LOGGER.error("Unable to flush XML error: " + ge.toString());
                 throw new ServletException(ge);
             }
         }

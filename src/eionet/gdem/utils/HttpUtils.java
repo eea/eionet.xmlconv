@@ -28,11 +28,11 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.HeadMethod;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 
 /**
  * @author Enriko Käsper, Tieto Estonia HttpUtils
@@ -40,7 +40,8 @@ import eionet.gdem.services.LoggerIF;
 
 public class HttpUtils {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(HttpUtils.class);
 
     public static byte[] downloadRemoteFile(String url) throws Exception {
 
@@ -55,7 +56,7 @@ public class HttpUtils {
             int statusCode = client.executeMethod(method);
 
             if (statusCode != HttpStatus.SC_OK) {
-                _logger.error("Method failed: " + method.getStatusLine());
+                LOGGER.error("Method failed: " + method.getStatusLine());
                 throw new DCMException(BusinessConstants.EXCEPTION_SCHEMAOPEN_ERROR, method.getStatusLine().toString());
             }
 
@@ -67,11 +68,11 @@ public class HttpUtils {
             // System.out.println(new String(responseBody));
 
         } catch (HttpException e) {
-            _logger.error("Fatal protocol violation: " + e.getMessage());
+            LOGGER.error("Fatal protocol violation: " + e.getMessage());
             e.printStackTrace();
             throw e;
         } catch (IOException e) {
-            _logger.error("Fatal transport error: " + e.getMessage());
+            LOGGER.error("Fatal transport error: " + e.getMessage());
             e.printStackTrace();
             throw e;
         } finally {
@@ -84,7 +85,7 @@ public class HttpUtils {
     /**
      * Method checks whether the resource behind the given URL exist. The method calls HEAD request and if the resonse code is 200,
      * then returns true. If exception is thrown or response code is something else, then the result is false.
-     * 
+     *
      * @param url
      * @return
      */
@@ -101,11 +102,11 @@ public class HttpUtils {
 
             return statusCode == HttpStatus.SC_OK;
         } catch (HttpException e) {
-            _logger.error("Fatal protocol violation: " + e.getMessage());
+            LOGGER.error("Fatal protocol violation: " + e.getMessage());
             e.printStackTrace();
             return false;
         } catch (IOException e) {
-            _logger.error("Fatal transport error: " + e.getMessage());
+            LOGGER.error("Fatal transport error: " + e.getMessage());
             e.printStackTrace();
             return false;
         } finally {

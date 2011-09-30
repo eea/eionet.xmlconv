@@ -21,11 +21,13 @@
 
 package eionet.gdem.web.struts.stylesheet;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -35,23 +37,24 @@ import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.business.StylesheetManager;
+import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 
 public class EditStylesheetFormAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(EditStylesheetFormAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
         ActionMessages errors = new ActionMessages();
 
         StylesheetForm form = (StylesheetForm) actionForm;
-        String stylesheetId = (String) httpServletRequest.getParameter("stylesheetId");
+        String stylesheetId = httpServletRequest.getParameter("stylesheetId");
 
         if (stylesheetId == null || stylesheetId.equals("")) {
             stylesheetId = (String) httpServletRequest.getAttribute("stylesheetId");
@@ -81,21 +84,21 @@ public class EditStylesheetFormAction extends Action {
 
             SchemaManager schema = new SchemaManager();
             StylesheetManager styleMan = new StylesheetManager();
-            ArrayList schemas = schema.getDDSchemas();
 
-            httpServletRequest.getSession().setAttribute("stylesheet.DDSchemas", schemas);
+            StylesheetListHolder stylesheetList = StylesheetListLoader.getGeneratedList(httpServletRequest);
+            List<Schema> schemas = stylesheetList.getDdStylesheets();
+            httpServletRequest.setAttribute("stylesheet.DDSchemas", schemas);
 
             String schemaId = schema.getSchemaId(stylesheet.getSchema());
             if (!Utils.isNullStr(schemaId)) {
                 httpServletRequest.setAttribute("schemaInfo", schema.getSchema(schemaId));
                 httpServletRequest.setAttribute("existingStylesheets", styleMan.getSchemaStylesheets(schemaId, stylesheetId));
             }
-
-            StylesheetListLoader.loadStylesheetList(httpServletRequest, false);
+            httpServletRequest.setAttribute(StylesheetListLoader.STYLESHEET_LIST_ATTR, StylesheetListLoader.getStylesheetList(httpServletRequest));
 
         } catch (DCMException e) {
             e.printStackTrace();
-            _logger.error("Edit stylesheet error", e);
+            LOGGER.error("Edit stylesheet error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveErrors(httpServletRequest, errors);
         }

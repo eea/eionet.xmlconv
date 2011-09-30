@@ -11,7 +11,7 @@
 
 <logic:present name="schemas.uploaded">
 
-    <logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssiPrm" >
+    <logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" property="ssiPrm" >
         <div id="operations">
           <ul>
            <li><a href="addUplSchemaForm"><bean:message key="label.uplSchema.add" /></a></li>
@@ -27,10 +27,10 @@
     <tiles:insert definition="Error" />
 
 
-    <logic:present name="schemas" name="schemas.uploaded" scope="session" property="schemas" >
+    <logic:present name="schemas" name="schemas.uploaded" property="schemas" >
         <html:form action="/deleteUplSchema" method="post">
             <table class="datatable" width="100%">
-                <logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >
+                <logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" property="ssdPrm" >
                     <col style="width:5%"/>
                 </logic:equal>
                 <col/>
@@ -38,7 +38,7 @@
                 <col style="width:45%"/>
                 <thead>
                     <tr>
-                        <logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >
+                        <logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" property="ssdPrm" >
                             <th scope="col"></th>
                         </logic:equal>
                         <th scope="col"><span title="Schema"><bean:message key="label.table.uplSchema.schema"/></span></th>
@@ -47,9 +47,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <logic:iterate indexId="index" id="schema" name="schemas.uploaded" scope="session" property="schemas" type="UplSchema">
+                    <logic:iterate indexId="index" id="schema" name="schemas.uploaded" property="schemas" type="UplSchema">
                         <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
-                            <logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >
+                            <logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" property="ssdPrm" >
                                 <td align="center" >
                                     <bean:define id="schemaId"  name="schema" property="schemaId" />
                                     <html:radio property="schemaId" value="${schemaId}" />
@@ -73,7 +73,7 @@
                     </logic:iterate>
                 </tbody>
             </table>
-            <logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" scope="session" property="ssdPrm" >
+            <logic:equal name="ssdPrm" value="true"  name="schemas.uploaded" property="ssdPrm" >
                 <div class="boxbottombuttons">
                     <input type="button"  class="button" value="<bean:message key="label.schema.delete"/>" onclick="return submitAction(1,'deleteUplSchema?deleteSchema=true');" />
                 </div>
@@ -81,7 +81,7 @@
         </html:form>
     </logic:present>
 
-    <logic:notPresent name="schemas" name="schemas.uploaded" scope="session" property="schemas" >
+    <logic:notPresent name="schemas" name="schemas.uploaded" property="schemas" >
         <div class="success">
             <bean:message key="label.uplSchema.noSchemas"/>
         </div>

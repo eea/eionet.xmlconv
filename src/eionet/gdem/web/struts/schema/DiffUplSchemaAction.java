@@ -26,6 +26,8 @@ import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -36,8 +38,6 @@ import org.apache.struts.action.ActionMessages;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.DocumentAnalyser;
 
@@ -47,8 +47,10 @@ import eionet.gdem.utils.xml.DocumentAnalyser;
 
 public class DiffUplSchemaAction extends Action {
 
-    private static LoggerIF _logger = GDEMServices.getLogger();
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(DiffUplSchemaAction.class);
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         ActionMessages errors = new ActionMessages();
@@ -72,8 +74,9 @@ public class DiffUplSchemaAction extends Action {
 
             // check validity - it is really schema
             boolean isSchemaOrDTD = DocumentAnalyser.sourceIsXMLSchema(remoteSchema) || DocumentAnalyser.sourceIsDTD(remoteSchema);
-            if (!isSchemaOrDTD)
+            if (!isSchemaOrDTD) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(BusinessConstants.WARNING_SCHEMA_NOTVALID));
+            }
 
             String result = sm.diffRemoteSchema(remoteSchema, schemaFile);
 
@@ -98,7 +101,7 @@ public class DiffUplSchemaAction extends Action {
 
         } catch (DCMException e) {
             // e.printStackTrace();
-            _logger.error("Unable to diff schemas", e);
+            LOGGER.error("Unable to diff schemas", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             forward = "fail";
         }
