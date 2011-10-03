@@ -21,16 +21,22 @@
 
 package eionet.gdem.utils.system;
 
-import eionet.gdem.services.LoggerModule;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import eionet.gdem.dcm.business.QAScriptManager;
 
 /**
  * @author Enriko Käsper, Tieto Estonia LogDevice
  */
 
-public class LogDevice extends LoggerModule implements ILogDevice {
+public class LogDevice implements ILogDevice {
 
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(QAScriptManager.class);
+    @Override
     public void log(String c) {
-        debug(c);
+        LOGGER.debug(c);
 
     }
 

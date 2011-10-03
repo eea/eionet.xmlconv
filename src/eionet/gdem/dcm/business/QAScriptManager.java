@@ -43,7 +43,6 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.LoggerIF;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.SecurityUtil;
