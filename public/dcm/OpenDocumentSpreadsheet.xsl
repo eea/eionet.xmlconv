@@ -103,7 +103,7 @@
             <xsl:element name="table:table-cell">
                 <xsl:element name="text:p">
                     <xsl:element name="xsl:choose">
-                        <xsl:element name="xsl:when"><xsl:attribute name="test">count($row/*[local-name()= $elemIdentifier])=0 or string-join($row/*[local-name()= $elemIdentifier ],'')=''</xsl:attribute>&#160;</xsl:element>
+                        <xsl:element name="xsl:when"><xsl:attribute name="test">count($row/*[local-name()= $elemIdentifier])=0 or string-join($row/*[local-name()= $elemIdentifier ],'')=''</xsl:attribute></xsl:element>
                         <xsl:element name="xsl:otherwise"><xsl:element name="xsl:value-of"><xsl:attribute name="select">string-join($row/*[local-name()= $elemIdentifier ],$multiValueSeparator)</xsl:attribute></xsl:element></xsl:element>
                     </xsl:element>
                 </xsl:element>
