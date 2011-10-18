@@ -100,10 +100,11 @@ public class SourceReaderLogger {
      * @param sheetNames
      */
     public void logNumberOfSheets(int numberOfSheets, String sheetNames) {
+        String plural = (numberOfSheets != 1) ? "s" : "";
         conversionResult.addConversionLog(
                 ConversionLogType.INFO,
                 Properties.getMessage(BusinessConstants.CONVERSION_LOG_NOF_SHEETS, new String[] {Integer.toString(numberOfSheets),
-                        sheetNames}), ConversionLogDto.CATEGORY_WORKBOOK);
+                        sheetNames, plural}), ConversionLogDto.CATEGORY_WORKBOOK);
     }
 
     /**
@@ -146,10 +147,11 @@ public class SourceReaderLogger {
      * @param sheetName
      */
     public void logNumberOfColumns(int nofColumns, String sheetName) {
+        String plural = (nofColumns != 1) ? "s" : "";
         conversionResult.addConversionLog(
                 ConversionLogType.INFO,
                 Properties.getMessage(BusinessConstants.CONVERSION_LOG_NOF_COLS, new String[] {Integer.toString(nofColumns),
-                        sheetName}), ConversionLogDto.CATEGORY_SHEET + ": " + sheetName);
+                        sheetName, plural}), ConversionLogDto.CATEGORY_SHEET + ": " + sheetName);
     }
 
     /**
@@ -194,10 +196,11 @@ public class SourceReaderLogger {
      * @param sheetName
      */
     public void logNumberOfRows(int numberOfRows, String sheetName) {
+        String plural = (numberOfRows != 1) ? "s" : "";
         conversionResult.addConversionLog(
                 ConversionLogType.INFO,
                 Properties.getMessage(BusinessConstants.CONVERSION_LOG_NOF_RECORDS, new String[] {Integer.toString(numberOfRows),
-                        sheetName}), ConversionLogDto.CATEGORY_SHEET + ": " + sheetName);
+                        sheetName, plural}), ConversionLogDto.CATEGORY_SHEET + ": " + sheetName);
     }
 
     /**

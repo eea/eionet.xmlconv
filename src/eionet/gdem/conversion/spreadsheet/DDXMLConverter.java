@@ -189,12 +189,14 @@ public abstract class DDXMLConverter {
                         resultObject.addConvertedFile(sheetName + ".xml", tmpFileName);
                     }
                 } catch (Exception e) {
+                    LOGGER.error(e.getMessage());
                     resultObject.addConversionLog(ConversionLogType.ERROR,
-                            "Could not find xml schema for this sheet " + sheetName, ConversionLogDto.CATEGORY_SHEET + ": "
+                            "System error occourd during converting this sheet " + sheetName, ConversionLogDto.CATEGORY_SHEET + ": "
                             + sheetName);
                 } finally {
                     if (!isHttpResponse()) {
                         IOUtils.closeQuietly(outStream);
+                        outStream = null;
                     }
                 }
                 if (!Utils.isNullStr(sheetParam)) {
@@ -202,6 +204,7 @@ public abstract class DDXMLConverter {
                 }
             }
         } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             throw new GDEMException("Error generating XML files from " + getSourceFormatName() + " file: " + e.toString(), e);
         }
         sourcefile.closeReader();
