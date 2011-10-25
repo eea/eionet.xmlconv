@@ -31,6 +31,8 @@ import javax.servlet.ServletContextListener;
 import eionet.gdem.Properties;
 import eionet.gdem.dto.ConvType;
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.web.struts.qascript.QAScriptListLoader;
+import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
 
 public class AppServletContextListener implements ServletContextListener {
 
@@ -42,8 +44,9 @@ public class AppServletContextListener implements ServletContextListener {
 
     /**
      * Method that is triggered once on start of application (context initialization):
-     * 
+     *
      */
+    @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         System.out.println("Application started !");
         try {
@@ -62,6 +65,10 @@ public class AppServletContextListener implements ServletContextListener {
             servletContextEvent.getServletContext().setAttribute("qascript.resulttypes",
                     loadConvTypes(XQScript.SCRIPT_RESULTTYPES));
             servletContextEvent.getServletContext().setAttribute("qascript.scriptlangs", loadConvTypes(XQScript.SCRIPT_LANGS));
+            servletContextEvent.getServletContext().setAttribute(QAScriptListLoader.QASCRIPT_PERMISSIONS_ATTR,
+                    QAScriptListLoader.loadQAScriptPermissions(null));
+            servletContextEvent.getServletContext().setAttribute(StylesheetListLoader.STYLESHEET_PERMISSIONS_ATTR,
+                    StylesheetListLoader.loadStylesheetPermissions(null));
 
         } catch (Exception e1) {
             e1.printStackTrace();
@@ -91,8 +98,9 @@ public class AppServletContextListener implements ServletContextListener {
 
     /**
      * Method that is triggered once on destroy of servlet context
-     * 
+     *
      */
+    @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         System.out.println("Application terminated !");
     }
