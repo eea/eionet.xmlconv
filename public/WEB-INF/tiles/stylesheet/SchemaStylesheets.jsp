@@ -34,7 +34,7 @@
                         </li>
                     </ul>
                 </div>
-                <logic:equal name="ssiPrm" value="true"  name="stylesheet.permissions" scope="session" property="ssiPrm" >
+                <logic:equal name="ssiPrm" value="true"  name="stylesheet.permissions" property="ssiPrm" >
                     <div id="operations">
                           <ul>
                                <li><a href="addStylesheetForm?schema=<bean:write name="schema" property="schema" />"><bean:message key="label.stylesheet.add" /></a></li>
@@ -56,7 +56,7 @@
 
             <logic:present name="stylesheets" name="schema" scope="page" property="stylesheets" >
                     <table class="datatable" width="100%">
-                        <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" scope="session" property="ssdPrm" >
+                        <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" property="ssdPrm" >
                             <col style="width:10px"/>
                         </logic:equal>
                         <col style="width:10px"/>
@@ -66,7 +66,7 @@
                         <col/>
                         <thead>
                             <tr>
-                                <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" scope="session" property="ssdPrm" >
+                                <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" property="ssdPrm" >
                                       <th scope="col">&#160;</th>
                                 </logic:equal>
                                   <th scope="col">&#160;</th>
@@ -80,7 +80,7 @@
                             <logic:iterate indexId="index" id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">
                                 <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
                                     <bean:define id="convId" name="stylesheet" property="convId" />
-                                    <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" scope="session" property="ssdPrm" >
+                                    <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" property="ssdPrm" >
                                         <td align="center">
                                             <input type="radio" name="conversionId" value="${convId}" />
                                         </td>
@@ -135,7 +135,7 @@
                         </tbody>
                     </table>
                     <div class="boxbottombuttons">
-                        <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" scope="session" property="ssdPrm" >
+                        <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" property="ssdPrm" >
                                <input type="button"  class="button" value="<bean:message key="label.stylesheet.delete"/>" onclick="return submitAction(1,'deleteStylesheet');" />
                         </logic:equal>
 

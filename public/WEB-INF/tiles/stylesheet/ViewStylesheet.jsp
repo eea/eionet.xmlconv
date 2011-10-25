@@ -16,7 +16,7 @@
                         <bean:message key="label.stylesheet.run" />
                     </a>
                 </li>
-                <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" scope="session" property="ssdPrm" >
+                <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" property="ssdPrm" >
                     <li>
                         <html:link page="/do/stylesheetEditForm" paramId="stylesheetId" paramName="stylesheetForm" paramProperty="stylesheetId" title="edit stylesheet" >
                             <bean:message key="label.stylesheet.edit" />

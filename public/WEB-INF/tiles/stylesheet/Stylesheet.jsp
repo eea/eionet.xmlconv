@@ -10,7 +10,7 @@
 
 <logic:present name="stylesheet.stylesheetList">
 
-    <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" scope="session" property="ssiPrm" >
+    <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" property="ssiPrm" >
         <div id="operations">
             <ul>
                 <li><a href="addStylesheetForm"><bean:message key="label.stylesheet.add" /></a></li>
@@ -39,7 +39,7 @@
                 <col/>
                 <thead>
                     <tr>
-                        <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" scope="session" property="ssdPrm" >
+                        <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" property="ssdPrm" >
                             <th scope="col" class="scope-col"></th>
                         </logic:equal>
                         <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.title"/></th>
@@ -49,7 +49,7 @@
                 <tbody>
                     <logic:iterate indexId="index" id="schema" name="stylesheet.stylesheetList" property="handCodedStylesheets" type="Schema">
                     <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
-                        <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" scope="session" property="ssdPrm" >
+                        <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" property="ssdPrm" >
                             <td align="center">
                                 <bean:define id="schemaId" name="schema" property="id" />
                                 <html:radio property="schemaId" value="${schemaId}" />
@@ -75,14 +75,14 @@
                     </tr>
                 </tbody>
             </table>
-            <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" scope="session" property="ssdPrm" >
+            <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" property="ssdPrm" >
                 <div class="boxbottombuttons">
                        <input type="button"  class="button" value="<bean:message key="label.schema.delete"/>" onclick="return submitAction(1,'deleteSchema');" />
                    </div>
                </logic:equal>
         </html:form>
     </logic:present>
-    <logic:notPresent name="handCodedStylesheets" name="stylesheet.stylesheetList" scope="session" property="handCodedStylesheets" >
+    <logic:notPresent name="handCodedStylesheets" name="stylesheet.stylesheetList" property="handCodedStylesheets" >
         <div class="success">
             <bean:message key="label.stylesheet.noHandCodedConversions"/>
         </div>

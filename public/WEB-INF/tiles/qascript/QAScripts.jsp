@@ -10,7 +10,7 @@
 
 
 
-    <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" scope="session" property="ssiPrm" >
+    <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" property="ssiPrm" >
         <div id="operations">
             <ul>
                    <li>
