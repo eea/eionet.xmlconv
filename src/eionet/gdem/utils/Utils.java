@@ -175,9 +175,6 @@ public class Utils {
             }
         }
     }
-    static void log(Object msg) {
-        Properties.logger.info(msg);
-    }
 
     public static boolean isNullStr(Object o) {
         if (o == null || !(o instanceof String)) {

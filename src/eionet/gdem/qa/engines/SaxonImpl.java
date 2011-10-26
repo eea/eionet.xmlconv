@@ -66,10 +66,9 @@ public class SaxonImpl extends QAScriptEngineStrategy {
         // our own extension of Saxon's error listener to send feedback to the user
         SaxonListener listener = new SaxonListener();
         config.setErrorListener(listener);
+        config.setURIResolver(new QAURIResolver());
 
-        // config.setRecoveryPolicy(Configuration.DO_NOT_RECOVER);
-
-        config.setHostLanguage(config.XQUERY);
+        config.setHostLanguage(Configuration.XQUERY);
         config.setLineNumbering(true);
         StaticQueryContext staticEnv = new StaticQueryContext(config);
         // staticEnv.setConfiguration(config);
@@ -93,18 +92,12 @@ public class SaxonImpl extends QAScriptEngineStrategy {
         } else {
             outputProps.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         }
-
-        // query script
-
-        // staticEnv.setBaseURI(new File(script).toURI().toString());
-        String xmlFilePathURI = Utils.getURIfromPath(eionet.gdem.Properties.xmlfileFolderPath, true);
-
-        if (xmlFilePathURI != null) {
-            staticEnv.setBaseURI(xmlFilePathURI);
+        String queriesPathURI = Utils.getURIfromPath(eionet.gdem.Properties.queriesFolder, true);
+        if (queriesPathURI != null) {
+            staticEnv.setBaseURI(queriesPathURI);
         }
 
         Reader queryReader = null;
-        String s = "";
 
         try {
             if (!Utils.isNullStr(script.getScriptSource())) {
@@ -138,9 +131,6 @@ public class SaxonImpl extends QAScriptEngineStrategy {
 
                 }
             }
-
-            // QueryProcessor xquery = new QueryProcessor(config, staticEnv);
-
             // compile Query
             XQueryExpression exp;
             try {
@@ -153,7 +143,6 @@ public class SaxonImpl extends QAScriptEngineStrategy {
             }
 
             try {
-
                 // evaluating
                 exp.run(dynamicEnv, new StreamResult(result), outputProps);
                 result.close();
@@ -197,7 +186,6 @@ public class SaxonImpl extends QAScriptEngineStrategy {
                 throw new GDEMException(errMsg);
             }
         }
-        // return s;
     }
 
     // if URL contains ticket information, then remove it

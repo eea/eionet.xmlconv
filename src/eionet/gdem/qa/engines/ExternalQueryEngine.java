@@ -28,9 +28,9 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.qa.XQueryService;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
@@ -69,7 +69,7 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
 
             InputFile srcOrigFile = new InputFile(script.getOrigFileUrl());
             Map<String, String> params = srcOrigFile.getCdrParams();
-            params.put(XQueryService.XQ_SOURCE_PARAM_NAME, script.getOrigFileUrl());
+            params.put(Constants.XQ_SOURCE_PARAM_NAME, script.getOrigFileUrl());
 
             String cmd = getShellCommand(srcFile, script.getScriptFileName(), params);
 

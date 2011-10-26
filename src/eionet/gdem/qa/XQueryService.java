@@ -56,7 +56,7 @@ import eionet.gdem.validation.ValidationService;
  *
  * @author Enriko Käsper
  */
-public class XQueryService extends RemoteService implements Constants {
+public class XQueryService extends RemoteService{
 
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
     private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
@@ -181,7 +181,7 @@ public class XQueryService extends RemoteService implements Constants {
                         int_qID = 0;
                     }
                     // if it is a XQuery script, then append the system folder
-                    if (int_qID != JOB_VALIDATION && query_file.startsWith(Properties.gdemURL + "/" + Constants.QUERIES_FOLDER)) {
+                    if (int_qID != Constants.JOB_VALIDATION && query_file.startsWith(Properties.gdemURL + "/" + Constants.QUERIES_FOLDER)) {
                         query_file =
                             Utils.Replace(query_file, Properties.gdemURL + "/" + Constants.QUERIES_FOLDER,
                                     Properties.queriesFolder);
@@ -297,7 +297,7 @@ public class XQueryService extends RemoteService implements Constants {
 
             if (jobData == null) { // no such job
                 // throw new GDEMException("** No such job with ID=" + jobId + " in the queue.");
-                status = XQ_JOBNOTFOUND_ERR;
+                status = Constants.XQ_JOBNOTFOUND_ERR;
             } else {
                 scriptData = queryDao.getQueryInfo(jobData[5]);
 
@@ -317,61 +317,30 @@ public class XQueryService extends RemoteService implements Constants {
             }
             LOGGER.info("result: " + result);
         }
-
-        // remove the job from the queue / DB when the status won't change= FATAL or READY
-        if (status == XQ_FATAL_ERR || status == XQ_READY) {
-            try {
-                xqJobDao.endXQJob(jobId);
-
-                LOGGER.info("Delete the job: " + jobId);
-            } catch (SQLException sqle) {
-                throw new GDEMException("Error getting XQJob data from DB: " + sqle.toString());
-            }
-            // delete files only, if debug is not enabled
-            if (status == XQ_READY && !LOGGER.isDebugEnabled()) {
-                // delete the result from filesystem
-                String resultFile = jobData[2];
-                try {
-                    Utils.deleteFile(resultFile);
-                } catch (Exception e) {
-                    LOGGER.error("Could not delete job result file: " + resultFile + "." + e.getMessage());
-                }
-                // delete XQuery file, if it is stored in tmp folder
-                String xqFile = jobData[1];
-                try {
-                    // Important!!!: delete only, when the file is stored in tmp folder
-                    if (xqFile.startsWith(Properties.tmpFolder)) {
-                        Utils.deleteFile(xqFile);
-                    }
-                } catch (Exception e) {
-                    LOGGER.error("Could not delete job result file: " + xqFile + "." + e.getMessage());
-                }
-            }
-        }
         return ret;
     }
 
     // Hashtable to be composed for the getResult() method return value
     private Hashtable result(int status, String[] jobData, HashMap scriptData, String jobId) throws GDEMException {
-        Hashtable h = new Hashtable();
+        Hashtable<String, String> h = new Hashtable<String, String>();
         int resultCode;
         String resultValue = "";
         String metatype = "";
         String script_title = "";
 
-        if (status == XQ_RECEIVED || status == XQ_DOWNLOADING_SRC || status == XQ_PROCESSING) {
-            resultCode = JOB_NOT_READY;
+        if (status == Constants.XQ_RECEIVED || status == Constants.XQ_DOWNLOADING_SRC || status == Constants.XQ_PROCESSING) {
+            resultCode = Constants.JOB_NOT_READY;
             resultValue = "*** Not ready ***";
-        } else if (status == XQ_JOBNOTFOUND_ERR) {
-            resultCode = JOB_LIGHT_ERROR;
+        } else if (status == Constants.XQ_JOBNOTFOUND_ERR) {
+            resultCode = Constants.JOB_LIGHT_ERROR;
             resultValue = "*** No such job or the job result has been already downloaded. ***";
         } else {
-            if (status == XQ_READY) {
-                resultCode = JOB_READY;
-            } else if (status == XQ_LIGHT_ERR) {
-                resultCode = JOB_LIGHT_ERROR;
-            } else if (status == XQ_FATAL_ERR) {
-                resultCode = JOB_FATAL_ERROR;
+            if (status == Constants.XQ_READY) {
+                resultCode = Constants.JOB_READY;
+            } else if (status == Constants.XQ_LIGHT_ERR) {
+                resultCode = Constants.JOB_LIGHT_ERROR;
+            } else if (status == Constants.XQ_FATAL_ERR) {
+                resultCode = Constants.JOB_FATAL_ERROR;
             }
             else {
                 resultCode = -1; // not expected to reach here
@@ -384,7 +353,7 @@ public class XQueryService extends RemoteService implements Constants {
                 } catch (NumberFormatException n) {
                 }
 
-                if (xq_id == JOB_VALIDATION) {
+                if (xq_id == Constants.JOB_VALIDATION) {
                     metatype = "text/html";
                     script_title = "XML Schema validation";
                 } else if (xq_id > 0) {
@@ -394,16 +363,16 @@ public class XQueryService extends RemoteService implements Constants {
 
                 resultValue = Utils.readStrFromFile(jobData[2]);
             } catch (Exception ioe) {
-                resultCode = JOB_FATAL_ERROR;
+                resultCode = Constants.JOB_FATAL_ERROR;
                 resultValue = "<error>Error reading the XQ value from the file:" + jobData[2] + "</error>";
             }
 
         }
         try {
-            h.put(RESULT_CODE_PRM, Integer.toString(resultCode));
-            h.put(RESULT_VALUE_PRM, resultValue);
-            h.put(RESULT_METATYPE_PRM, metatype);
-            h.put(RESULT_SCRIPTTITLE_PRM, script_title);
+            h.put(Constants.RESULT_CODE_PRM, Integer.toString(resultCode));
+            h.put(Constants.RESULT_VALUE_PRM, resultValue);
+            h.put(Constants.RESULT_METATYPE_PRM, metatype);
+            h.put(Constants.RESULT_SCRIPTTITLE_PRM, script_title);
         } catch (Exception e) {
             String err_mess =
                 "JobID: " + jobId + "; Creating result Hashtable for getResult method failed result: " + e.toString();
@@ -440,7 +409,7 @@ public class XQueryService extends RemoteService implements Constants {
             LOGGER.error(err_mess + "; " + e.toString());
             throw new GDEMException(err_mess, e);
         }
-        if (script_id.equals(String.valueOf(JOB_VALIDATION))) {
+        if (script_id.equals(String.valueOf(Constants.JOB_VALIDATION))) {
             try {
                 ValidationService vs = new ValidationService();
                 String val_result = vs.validate(file_url);
@@ -453,7 +422,7 @@ public class XQueryService extends RemoteService implements Constants {
             }
         } else {
             String[] pars = new String[1];
-            pars[0] = XQ_SOURCE_PARAM_NAME + "=" + file_url;
+            pars[0] = Constants.XQ_SOURCE_PARAM_NAME + "=" + file_url;
 
             try {
                 String xqScript = queryDao.getQueryText(script_id);

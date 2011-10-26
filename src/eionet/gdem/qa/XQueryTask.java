@@ -1,4 +1,5 @@
-/**
+package eionet.gdem.qa;
+/*
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
@@ -20,18 +21,11 @@
  *
  * Original Code: Kaido Laine (TietoEnator)
  */
-
-/**
- * XQuery job in the workqueue
- */
-
-package eionet.gdem.qa;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -50,109 +44,90 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
 
 /**
- * A task executing the XQuery task and storing the result of processing
+ * XQuery job in the workqueue. A task executing the XQuery task and storing the results of processing.
  */
-public class XQueryTask extends Thread implements Constants {
+public class XQueryTask extends Thread {
 
     /** */
     private static final Log LOGGER = LogFactory.getLog(XQueryTask.class);
-
-    private String _scriptFile;
-    private String _resultFile;
-    private String _jobId;
-    private String _queryID;
-
-    private String _url; // source url for XML
-
+    /** Script file name. */
+    private String scriptFile;
+    /** Result file name. */
+    private String resultFile;
+    /** Job ID to be executed. */
+    private String jobId;
+    /** query ID to be executed. */
+    private String queryID;
+    /** Source url for XML. */
+    private String url;
+    /** Dao for getting job data. */
     private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
+    /** Dao for getting query data. */
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
+    /** Service for getting schema data. */
     private SchemaManager schemaManager;
 
-    public XQueryTask(String jobId) {
-        _jobId = jobId;
+    /**
+     * Create QA job thread and initialize variables. Class constructor.
+     *
+     * @param qaJobId
+     *            Job ID in database to be executed.
+     */
+    public XQueryTask(String qaJobId) {
+        jobId = qaJobId;
         schemaManager = new SchemaManager();
-
-        // inits variables from DB where the waiting task is stored
-        // URL, XQ_FILE, RESULT_FILE
         initVariables();
-
         // set MIN priority for this thread->
         setPriority(MIN_PRIORITY);
     }
 
     /**
-     * run XQuery script: steps: - download the source from URL - run XQuery - store the result in a text file
+     * Run XQuery script: steps: - download the source from URL - run XQuery - store the result in a text file.
      */
     @Override
     public void run() {
         try {
-            LOGGER.info("Job ID=  " + _jobId + " started getting source file.");
+            LOGGER.info("Job ID=  " + jobId + " started getting source file.");
 
             String srcFile = null;
-
-            // Do not download the source file, because the file is downloaded
-            // by xquery or validator engine
-
-            /*
-             *
-             * if (Utils.isNullStr(_savedSrcFile)){ //Status to DOWNLOADING source: changeStatus(XQ_DOWNLOADING_SRC);
-             *
-             * //read source from the URL and store it:
-             *
-             *
-             * try { InputFile inputfile = new InputFile(_url); inputfile.setTrustedMode(true); srcFile=inputfile.saveSrcFile();
-             * //srcFile=Utils.saveSrcFile(_url);
-             *
-             * if(_logger.enable(_logger.DEBUG)) _logger.debug("==== Source XML was stored to " + srcFile);
-             *
-             * changeFileJobsStatus(srcFile, XQ_DOWNLOADING_SRC); //if the URL is not responding, set the status to easy_err and try
-             * again in 2 hrs or smth... } catch (Exception e ) { handleError(e.toString(), true); return; } } else{ //The source
-             * file is stored already before srcFile = _savedSrcFile; }
-             */
-            // saved ok:
-
-            // do not save the source file, use safe URL instead:
-            // getsource?ticket=..&source_url=..
-            // XQuery wants to get the full URL of the file, otherwise it's not
-            // possible to calculate envelope_url and compare filenames.
-            srcFile = _url;
+            srcFile = url;
 
             // status to -processing
-            changeStatus(XQ_PROCESSING);
+            changeStatus(Constants.XQ_PROCESSING);
 
             // Do validation
-            if (_queryID.equals(String.valueOf(JOB_VALIDATION))) {
-                LOGGER.info("Job ID=" + _jobId + " Validation started");
+            if (queryID.equals(String.valueOf(Constants.JOB_VALIDATION))) {
+                LOGGER.info("Job ID=" + jobId + " Validation started");
 
                 try {
-                    LOGGER.info("** XQuery starts, ID=" + _jobId + " schema: " + _scriptFile + " result will be stored to "
-                            + _resultFile);
+                    LOGGER.info("** XQuery starts, ID=" + jobId + " schema: " + scriptFile + " result will be stored to "
+                            + resultFile);
                     ValidationService vs = new ValidationService();
 
                     // XML Schema should be in schemaLocation attribute
-                    String result = vs.validateSchema(srcFile, _scriptFile);
+                    String result = vs.validateSchema(srcFile, scriptFile);
 
                     LOGGER.debug("Validation proceeded, now store to the result file");
 
-                    Utils.saveStrToFile(_resultFile, result, null);
+                    Utils.saveStrToFile(resultFile, result, null);
                 } catch (Exception e) {
                     handleError("Error during validation:" + e.toString(), true);
                     return;
-                } finally {
                 }
-            } else {// Do xq job
-                LOGGER.info("Job ID=" + _jobId + " XQ processing started");
+            } else {
+                // Do xq job
+                LOGGER.info("Job ID=" + jobId + " XQ processing started");
 
                 // read query info from DB.
-                HashMap query = getQueryInfo(_queryID);
-                String content_type = null;
+                Map query = getQueryInfo(queryID);
+                String contentType = null;
                 String scriptType = null;
                 Schema schema = null;
                 boolean schemaExpired = false;
                 boolean isNotLatestReleasedDDSchema = false;
 
                 if (query != null && query.containsKey("content_type")) {
-                    content_type = (String) query.get("content_type");
+                    contentType = (String) query.get("content_type");
                 }
                 // get script type if it comes from T_QUERY table
                 if (query != null && query.containsKey("script_type")) {
@@ -172,18 +147,18 @@ public class XQueryTask extends Thread implements Constants {
                 // guess it by file extension
                 if (Utils.isNullStr(scriptType)) {
                     scriptType =
-                        _scriptFile.endsWith(XQScript.SCRIPT_LANG_XSL) ? XQScript.SCRIPT_LANG_XSL : _scriptFile
+                        scriptFile.endsWith(XQScript.SCRIPT_LANG_XSL) ? XQScript.SCRIPT_LANG_XSL : scriptFile
                                 .endsWith(XQScript.SCRIPT_LANG_XGAWK) ? XQScript.SCRIPT_LANG_XGAWK
                                         : XQScript.SCRIPT_LANG_XQUERY;
                 }
-                String[] xqParam = {XQ_SOURCE_PARAM_NAME + "=" + srcFile};
+                String[] xqParam = {Constants.XQ_SOURCE_PARAM_NAME + "=" + srcFile};
 
                 try {
-                    LOGGER.info("** XQuery starts, ID=" + _jobId + " params: "
-                            + (xqParam == null ? "<< no params >>" : xqParam[0]) + " result will be stored to " + _resultFile);
-                    LOGGER.debug("Script: \n" + _scriptFile);
-                    XQScript xq = new XQScript(null, xqParam, content_type);
-                    xq.setScriptFileName(_scriptFile);
+                    LOGGER.info("** XQuery starts, ID=" + jobId + " params: " + (xqParam == null ? "<< no params >>" : xqParam[0])
+                            + " result will be stored to " + resultFile);
+                    LOGGER.debug("Script: \n" + scriptFile);
+                    XQScript xq = new XQScript(null, xqParam, contentType);
+                    xq.setScriptFileName(scriptFile);
                     xq.setScriptType(scriptType);
                     xq.setSrcFileUrl(srcFile);
                     xq.setSchema(schema);
@@ -192,11 +167,12 @@ public class XQueryTask extends Thread implements Constants {
                     try {
                         // if result type is HTML and schema is expired parse
                         // result (add warning) before writing to file
-                        if ((schemaExpired || isNotLatestReleasedDDSchema) && content_type.equals(XQScript.SCRIPT_RESULTTYPE_HTML)) {
+                        if ((schemaExpired || isNotLatestReleasedDDSchema)
+                                && contentType.equals(XQScript.SCRIPT_RESULTTYPE_HTML)) {
                             String res = xq.getResult();
-                            Utils.saveStrToFile(_resultFile, res, null);
+                            Utils.saveStrToFile(resultFile, res, null);
                         } else {
-                            out = new FileOutputStream(new File(_resultFile));
+                            out = new FileOutputStream(new File(resultFile));
                             xq.getResult(out);
                         }
                     } catch (IOException ioe) {
@@ -214,8 +190,8 @@ public class XQueryTask extends Thread implements Constants {
                 }
             }
 
-            changeStatus(XQ_READY);
-            LOGGER.info("Job ID=" + _jobId + " succeeded");
+            changeStatus(Constants.XQ_READY);
+            LOGGER.info("Job ID=" + jobId + " succeeded");
 
             // all done, thread stops here, job is waiting for pulling from the
             // client side
@@ -225,59 +201,54 @@ public class XQueryTask extends Thread implements Constants {
         }
     }
 
-    // read data from the DB where it is stored for further processing
+    /**
+     * Read data from the DB where it is stored for further processing.
+     */
     private void initVariables() {
         try {
 
-            // URL, XQ, RESULT
-            String[] jobData = xqJobDao.getXQJobData(_jobId);
-
+            String[] jobData = xqJobDao.getXQJobData(jobId);
             if (jobData == null) {
-                handleError("No such job: " + _jobId, true);
+                handleError("No such job: " + jobId, true);
             }
-
-            _url = jobData[0];
-            _scriptFile = jobData[1];
-            _resultFile = jobData[2]; // just a file name, file is not created
-            // yet
-            // _savedSrcFile=jobData[4]; //if the source file is saved loally
-            // already, we won't ownload it again
-            _queryID = jobData[5];
+            url = jobData[0];
+            scriptFile = jobData[1];
+            resultFile = jobData[2]; // just a file name, file is not created
+            queryID = jobData[5];
         } catch (SQLException sqe) {
             handleError("Error getting WQ data from the DB: " + sqe.toString(), true);
         }
     }
 
     /**
-     * Changes the status to ERROR and finishes the thread normally saves the error message as the result of the job?
+     * Changes the status to ERROR and finishes the thread normally saves the error message as the result of the job.
+     * @param error Error message.
+     * @param fatal True if the error is fatal and there is no result.
      */
     private void handleError(String error, boolean fatal) {
-
         LOGGER.error("Error handling started: <<< " + error + " >>> ");
-
         try {
-            int err_status;
-
+            int errStatus;
             if (fatal) {
-                err_status = XQ_FATAL_ERR;
+                errStatus = Constants.XQ_FATAL_ERR;
             } else {
-                err_status = XQ_LIGHT_ERR;
+                errStatus = Constants.XQ_LIGHT_ERR;
             }
 
-            changeStatus(err_status);
+            changeStatus(errStatus);
 
             // if result file already ok, store the error message in the file:
-            if (_resultFile == null) {
-                _resultFile = Properties.tmpFolder + "gdem_error" + _jobId + ".txt";
+            if (resultFile == null) {
+                resultFile = Properties.tmpFolder + "gdem_error" + jobId + ".txt";
             }
 
-            LOGGER.info("******* The error message is stored to: " + _resultFile);
+            LOGGER.info("******* The error message is stored to: " + resultFile);
 
             if (error == null) {
-                error = "No error message for job=" + _jobId;
+                error = "No error message for job=" + jobId;
             }
 
-            Utils.saveStrToFile(_resultFile, "<error>" + error + "</error>", null);
+            Utils.saveStrToFile(resultFile, "<error>" + error + "</error>", null);
 
         } catch (Exception e) {
             // what to do if exception occurs here...
@@ -289,31 +260,28 @@ public class XQueryTask extends Thread implements Constants {
             System.err.println("=============================================================================");
         }
     }
-
+    /**
+     * Change job status in DB.
+     * @param status Job status to be stored in DB.
+     * @throws Exception Unable to store data into DB.
+     */
     private void changeStatus(int status) throws Exception {
         try {
-            xqJobDao.changeJobStatus(_jobId, status);
-
+            xqJobDao.changeJobStatus(jobId, status);
         } catch (Exception e) {
             LOGGER.error("Database exception when changing job status. " + e.toString());
             throw e;
         }
     }
 
-    private void changeFileJobsStatus(String savedFile, int status) {
-        try {
-            xqJobDao.changeFileJobsStatus(_url, savedFile, status);
-
-        } catch (Exception e) {
-            handleError(e.toString(), false);
-        }
-    }
-
-    /*
-     * loads Query info from database
+    /**
+     * Loads Query info from database.
+     *
+     * @param id Query Id to be queried from DB.
+     * @return Map with query data.
      */
-    private HashMap getQueryInfo(String id) {
-        HashMap query = null;
+    private Map getQueryInfo(String id) {
+        Map query = null;
         if (id != null) {
             try {
                 query = queryDao.getQueryInfo(id);
@@ -323,7 +291,11 @@ public class XQueryTask extends Thread implements Constants {
         }
         return query;
     }
-
+    /**
+     * Query Schema information from DB.
+     * @param schemaUrl Schema Url or unique ID in DB to be queried.
+     * @return Schema object.
+     */
     private Schema getSchema(String schemaUrl) {
         try {
             if (schemaUrl != null) {

@@ -84,4 +84,13 @@ public interface IXQJobDao extends IDbSchema {
      * @throws SQLException
      */
     public int countActiveJobs() throws SQLException;
+
+    /**
+     * Get all finished jobs from DB.
+     * 
+     * @return Job data.
+     * @throws SQLException
+     *             DB error occurred.
+     */
+    public String[][] getXQFinishedJobs() throws SQLException;
 }

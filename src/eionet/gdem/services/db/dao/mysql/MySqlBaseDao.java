@@ -2,6 +2,7 @@ package eionet.gdem.services.db.dao.mysql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -218,5 +219,27 @@ public abstract class MySqlBaseDao {
         }
         closeAllResources(rs, stmt, con);
         return lastInsertId;
+    }
+
+    protected String[][] executeSimpleQuery(String query) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String r[][];
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + query);
+        }
+
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(query);
+            rs = pstmt.executeQuery();
+            r = getResults(rs);
+        } finally {
+            closeAllResources(rs, pstmt, conn);
+        }
+        return r;
+
     }
 }

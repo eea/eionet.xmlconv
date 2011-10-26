@@ -29,12 +29,12 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.converters.ConvertContext;
 import eionet.gdem.conversion.converters.ConvertStartegy;
 import eionet.gdem.conversion.converters.XMLConverter;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.qa.XQueryService;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 
@@ -80,7 +80,7 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
             ConvertStartegy cs = new XMLConverter();
 
             Map<String, String> params = src.getCdrParams();
-            params.put(XQueryService.XQ_SOURCE_PARAM_NAME, script.getOrigFileUrl());
+            params.put(Constants.XQ_SOURCE_PARAM_NAME, script.getOrigFileUrl());
             cs.setXslParams(params);
             ctx.executeConversion(cs);
 

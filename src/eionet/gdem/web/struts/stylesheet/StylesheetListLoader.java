@@ -54,7 +54,7 @@ public class StylesheetListLoader {
     /**
      * Expire time in milliseconds for updating generated stylesheets list from DD
      */
-    public final static long STYLESHEET_GENERATED_LIST_ATTR_EXPIRE = 180000L;
+    public final static long STYLESHEET_GENERATED_LIST_ATTR_EXPIRE = 1800000L;
 
     public static long generatedListTimestamp = 0L;
 
@@ -126,7 +126,7 @@ public class StylesheetListLoader {
     public static void clearPermissions(HttpServletRequest httpServletRequest) {
         httpServletRequest.getSession().removeAttribute(STYLESHEET_PERMISSIONS_ATTR);
     }
-    private static StylesheetListHolder loadStylesheetPermissions(String userName) throws Exception{
+    public static StylesheetListHolder loadStylesheetPermissions(String userName) throws Exception{
         StylesheetListHolder st = new StylesheetListHolder();
         boolean ssiPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_STYLESHEETS_PATH, "i");
         boolean ssdPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_STYLESHEETS_PATH, "d");
@@ -136,7 +136,7 @@ public class StylesheetListLoader {
         st.setConvPrm(convPrm);
         return st;
     }
-    private static StylesheetListHolder loadStylesheetList(HttpServletRequest httpServletRequest, boolean reload)
+    public static StylesheetListHolder loadStylesheetList(HttpServletRequest httpServletRequest, boolean reload)
     throws DCMException {
 
         Object st = httpServletRequest.getSession().getServletContext().getAttribute(STYLESHEET_LIST_ATTR);

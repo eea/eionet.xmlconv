@@ -21,6 +21,8 @@
 
 package eionet.gdem.dto;
 
+import java.util.Date;
+
 /**
  * WorkqueueJob
  * 
@@ -29,59 +31,132 @@ package eionet.gdem.dto;
 
 public class WorkqueueJob {
 
+    private String jobId;
     private String url;
     private String scriptFile;
     private String resultFile;
     private int status;
     private String scriptId;
     private String srcFile;
+    private Date jobTimestamp;
 
+    /**
+     * @return the jobId
+     */
+    public String getJobId() {
+        return jobId;
+    }
+
+    /**
+     * @param jobId
+     *            the jobId to set
+     */
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
+    }
+
+    /**
+     * @return the url
+     */
     public String getUrl() {
         return url;
     }
 
+    /**
+     * @param url
+     *            the url to set
+     */
     public void setUrl(String url) {
         this.url = url;
     }
 
+    /**
+     * @return the scriptFile
+     */
     public String getScriptFile() {
         return scriptFile;
     }
 
+    /**
+     * @param scriptFile
+     *            the scriptFile to set
+     */
     public void setScriptFile(String scriptFile) {
         this.scriptFile = scriptFile;
     }
 
+    /**
+     * @return the resultFile
+     */
     public String getResultFile() {
         return resultFile;
     }
 
+    /**
+     * @param resultFile
+     *            the resultFile to set
+     */
     public void setResultFile(String resultFile) {
         this.resultFile = resultFile;
     }
 
+    /**
+     * @return the status
+     */
     public int getStatus() {
         return status;
     }
 
+    /**
+     * @param status
+     *            the status to set
+     */
     public void setStatus(int status) {
         this.status = status;
     }
 
+    /**
+     * @return the scriptId
+     */
     public String getScriptId() {
         return scriptId;
     }
 
+    /**
+     * @param scriptId
+     *            the scriptId to set
+     */
     public void setScriptId(String scriptId) {
         this.scriptId = scriptId;
     }
 
+    /**
+     * @return the srcFile
+     */
     public String getSrcFile() {
         return srcFile;
     }
 
+    /**
+     * @param srcFile
+     *            the srcFile to set
+     */
     public void setSrcFile(String srcFile) {
         this.srcFile = srcFile;
     }
 
+    /**
+     * @return the jobTimestamp
+     */
+    public Date getJobTimestamp() {
+        return jobTimestamp;
+    }
+
+    /**
+     * @param jobTimestamp
+     *            the jobTimestamp to set
+     */
+    public void setJobTimestamp(Date jobTimestamp) {
+        this.jobTimestamp = jobTimestamp;
+    }
 }

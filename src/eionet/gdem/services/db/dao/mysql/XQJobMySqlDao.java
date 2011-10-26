@@ -17,54 +17,49 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     /** */
     private static final Log LOGGER = LogFactory.getLog(XQJobMySqlDao.class);
 
-    private static final String qXQJobData = "SELECT " + URL_FLD + "," + XQ_FILE_FLD + "," + RESULT_FILE_FLD + ", " + STATUS_FLD
-    + ", " + SRC_FILE_FLD + ", " + XQ_ID_FLD + " FROM " + WQ_TABLE + " WHERE " + JOB_ID_FLD + "= ?";
+    /** Base query for getting all fields from WQ_TABLE */
+    private static final String qXQJobDataBase = "SELECT " + URL_FLD + "," + XQ_FILE_FLD + "," + RESULT_FILE_FLD + ", "
+            + STATUS_FLD + ", " + SRC_FILE_FLD + ", " + XQ_ID_FLD + ", " + JOB_ID_FLD + ", " + TIMESTAMP_FLD + " FROM " + WQ_TABLE;
+
+    private static final String qXQJobData = qXQJobDataBase + " WHERE " + JOB_ID_FLD + "= ?";
+
+    private static final String qXQFinishedJobs = qXQJobDataBase + " WHERE " + STATUS_FLD + ">=" + Constants.XQ_READY
+            + " ORDER BY " + JOB_ID_FLD;
 
     private static final String qStartXQJob = "INSERT INTO " + WQ_TABLE + " (" + URL_FLD + "," + XQ_FILE_FLD + ", "
-    + RESULT_FILE_FLD + "," + STATUS_FLD + "," + XQ_ID_FLD + "," + TIMESTAMP_FLD + ") " + "VALUES (?,?,?,?,?,{fn now()})";
+            + RESULT_FILE_FLD + "," + STATUS_FLD + "," + XQ_ID_FLD + "," + TIMESTAMP_FLD + ") " + "VALUES (?,?,?,?,?,{fn now()})";
 
     private static final String qCheckJobID = "SELECT " + JOB_ID_FLD + " FROM " + WQ_TABLE + " WHERE " + XQ_FILE_FLD + " = ?"
-    + " AND " + RESULT_FILE_FLD + " =  ?";
+            + " AND " + RESULT_FILE_FLD + " =  ?";
 
     private static final String qChangeJobStatus = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + TIMESTAMP_FLD
-    + "= NOW() " + " WHERE " + JOB_ID_FLD + "= ?";
+            + "= NOW() " + " WHERE " + JOB_ID_FLD + "= ?";
 
     private static final String qChangeFileJobsStatus = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + SRC_FILE_FLD
-    + "= ? " + ", " + TIMESTAMP_FLD + "= NOW() " + " WHERE " + URL_FLD + "= ? " + " AND " + STATUS_FLD + "< ? ";
+            + "= ? " + ", " + TIMESTAMP_FLD + "= NOW() " + " WHERE " + URL_FLD + "= ? " + " AND " + STATUS_FLD + "< ? ";
 
     private static final String qJobs = "SELECT " + JOB_ID_FLD + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + "= ? ORDER BY "
-    + JOB_ID_FLD;
+            + JOB_ID_FLD;
 
     private static final String qJobsLimit = "SELECT " + JOB_ID_FLD + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD
-    + "= ? ORDER BY " + JOB_ID_FLD + " LIMIT 0,?";
+            + "= ? ORDER BY " + JOB_ID_FLD + " LIMIT 0,?";
 
     private static final String qEndXQJob = "DELETE FROM " + WQ_TABLE + " WHERE " + JOB_ID_FLD + "= ?";
 
     private static final String qEndXQJobs = "DELETE FROM " + WQ_TABLE + " WHERE " + JOB_ID_FLD + " IN ";
 
     private static final String qJobData = "SELECT " + JOB_ID_FLD + ", " + URL_FLD + "," + XQ_FILE_FLD + ", " + RESULT_FILE_FLD
-    + ", " + STATUS_FLD + ", " + TIMESTAMP_FLD + ", " + XQ_ID_FLD + " FROM " + WQ_TABLE + " ORDER BY " + JOB_ID_FLD;
+            + ", " + STATUS_FLD + ", " + TIMESTAMP_FLD + ", " + XQ_ID_FLD + " FROM " + WQ_TABLE + " ORDER BY " + JOB_ID_FLD;
 
     private static final String qChangeJobsStatuses = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + TIMESTAMP_FLD
-    + "= NOW() " + " WHERE " + JOB_ID_FLD + " IN  ";
+            + "= NOW() " + " WHERE " + JOB_ID_FLD + " IN  ";
 
     private static final String qRestartActiveXQJobs = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + TIMESTAMP_FLD
-    + "= NOW() " + " WHERE " + STATUS_FLD + "= ?";
+            + "= NOW() " + " WHERE " + STATUS_FLD + "= ?";
 
     private static final String qCountActiveJobs = "SELECT COUNT(*) " + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + "="
-    + Constants.XQ_DOWNLOADING_SRC + " OR " + STATUS_FLD + "=" + Constants.XQ_PROCESSING;
+            + Constants.XQ_DOWNLOADING_SRC + " OR " + STATUS_FLD + "=" + Constants.XQ_PROCESSING;
 
-    /*
-     * public String[] getXQJobData(String jobId) throws SQLException { String sql = "SELECT " + URL_FLD + "," + XQ_FILE_FLD + "," +
-     * RESULT_FILE_FLD + ", " + STATUS_FLD + ", " + SRC_FILE_FLD + ", " + XQ_ID_FLD + " FROM " + WQ_TABLE + " WHERE " + JOB_ID_FLD +
-     * "=" + jobId;
-     *
-     * String[][] r = _executeStringQuery(sql); String s[];
-     *
-     * if (r.length == 0) s = null; else s = r[0];
-     *
-     * return s; }
-     */
     @Override
     public String[] getXQJobData(String jobId) throws SQLException {
         Connection conn = null;
@@ -93,30 +88,15 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
         return s;
     }
 
-    /*
-     * public String startXQJob(String url, String xqFile, String resultFile) throws SQLException { return startXQJob(url, xqFile,
-     * resultFile, JOB_FROMSTRING); }
-     */
+    @Override
+    public String[][] getXQFinishedJobs() throws SQLException {
+        return executeSimpleQuery(qXQFinishedJobs);
+    }
+
     @Override
     public String startXQJob(String url, String xqFile, String resultFile) throws SQLException {
         return startXQJob(url, xqFile, resultFile, JOB_FROMSTRING);
     }
-
-    /*
-     * public String startXQJob(String url, String xqFile, String resultFile, int xqID) throws SQLException { String sql =
-     * "INSERT INTO " + WQ_TABLE + " (" + URL_FLD + "," + XQ_FILE_FLD + ", " + RESULT_FILE_FLD + "," + STATUS_FLD + "," +
-     * TIMESTAMP_FLD + "," + XQ_ID_FLD + ") VALUES ('" + url + "', '" + xqFile + "','" + resultFile + "', " + XQ_RECEIVED +
-     * ", NOW()," + xqID + ")";
-     *
-     * _executeUpdate(sql);
-     *
-     * sql = "SELECT " + JOB_ID_FLD + " FROM " + WQ_TABLE + " WHERE " + XQ_FILE_FLD + " = '" + xqFile + "' AND " + RESULT_FILE_FLD +
-     * " = '" + resultFile + "'";
-     *
-     * String r[][] = _executeStringQuery(sql);
-     *
-     * return r[0][0]; }
-     */
 
     @Override
     public String startXQJob(String url, String xqFile, String resultFile, int xqID) throws SQLException {
@@ -152,12 +132,6 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
 
     }
 
-    /*
-     * public void changeJobStatus(String jobId, int status) throws SQLException { String sql = "UPDATE " + WQ_TABLE + " SET " +
-     * STATUS_FLD + "=" + status + // String sql="UPDATE " + WQ_TABLE + " SET STATUS=" + status + ", " + TIMESTAMP_FLD + "= NOW()" +
-     * " WHERE " + JOB_ID_FLD + "=" + jobId; _executeUpdate(sql); }
-     */
-
     @Override
     public void changeJobStatus(String jobId, int status) throws SQLException {
         Connection conn = null;
@@ -176,13 +150,6 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             closeAllResources(null, pstmt, conn);
         }
     }
-
-    /*
-     * public void changeFileJobsStatus(String url, String savedFile, int status) throws SQLException { String sql = "UPDATE " +
-     * WQ_TABLE + " SET " + STATUS_FLD + "=" + status + ", " + SRC_FILE_FLD + "=" + Utils.strLiteral(savedFile) + // String
-     * sql="UPDATE " + WQ_TABLE + " SET STATUS=" + status + ", " + TIMESTAMP_FLD + "= NOW()" + " WHERE " + URL_FLD + "=" +
-     * Utils.strLiteral(url) + " AND " + STATUS_FLD + "<" + status; _executeUpdate(sql); }
-     */
 
     @Override
     public void changeFileJobsStatus(String url, String savedFile, int status) throws SQLException {
@@ -204,17 +171,6 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             closeAllResources(null, pstmt, conn);
         }
     }
-
-    /*
-     * public String[] getJobs(int status) throws SQLException { String sql = "SELECT " + JOB_ID_FLD + " FROM " + WQ_TABLE +
-     * " WHERE " + STATUS_FLD + "=" + status;
-     *
-     * String[][] r = _executeStringQuery(sql); String[] s = null;
-     *
-     * if (r.length > 0) { s = new String[r.length];
-     *
-     * for (int i = 0; i < r.length; i++) s[i] = r[i][0]; } return s; }
-     */
 
     @Override
     public String[] getJobs(int status) throws SQLException {
@@ -280,13 +236,6 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
         return s;
     }
 
-    /*
-     * public void endXQJob(String jobId) throws SQLException { String sql = "DELETE FROM " + WQ_TABLE + " WHERE " + JOB_ID_FLD +
-     * "=" + jobId;
-     *
-     * _executeUpdate(sql); }
-     */
-
     @Override
     public void endXQJob(String jobId) throws SQLException {
         Connection conn = null;
@@ -305,36 +254,9 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
         }
     }
 
-    /*
-     * public String[][] getJobData() throws SQLException { String sql = "SELECT " + JOB_ID_FLD + ", " + URL_FLD + "," + XQ_FILE_FLD
-     * + ", " + RESULT_FILE_FLD + ", " + STATUS_FLD + ", " + TIMESTAMP_FLD + ", " + XQ_ID_FLD + " FROM " + WQ_TABLE + " ORDER BY " +
-     * JOB_ID_FLD;
-     *
-     * return _executeStringQuery(sql);
-     *
-     * }
-     */
-
     @Override
     public String[][] getJobData() throws SQLException {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        String[][] r = null;
-
-        if (isDebugMode) {
-            LOGGER.debug("Query is " + qJobData);
-        }
-
-        try {
-            conn = getConnection();
-            pstmt = conn.prepareStatement(qJobData);
-            rs = pstmt.executeQuery();
-            r = getResults(rs);
-        } finally {
-            closeAllResources(rs, pstmt, conn);
-        }
-        return r;
+        return executeSimpleQuery(qJobData);
     }
 
     @Override

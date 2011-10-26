@@ -34,6 +34,9 @@ import org.apache.log4j.Logger;
  */
 public class Properties {
 
+    /** Logger class. */
+    public static final Logger LOGGER = Logger.getLogger(Properties.class);
+
     /** Application classes (WEB-INF/classes) path in file system. */
     public static String appHome = null;
     /** Folder for temporary files. */
@@ -48,7 +51,7 @@ public class Properties {
     public static String schemaFolder = "/schema/";
     /** Folder for XML files. */
     public static String xmlfileFolder = "xmlfile";
-    /** Full path to xmlfileFolder. Calclated at context init. */
+    /** Full path to xmlfileFolder. Calculated at context init. */
     public static String xmlfileFolderPath = "/xmlfile/";
 
     /** Conversion service installation. */
@@ -105,10 +108,14 @@ public class Properties {
     public static String xgawkCommand = null;
     /** timeout for running external QA program in command line in milliseconds, default 120sec. */
     public static long qaTimeout = 120000L;
-    /** Maximum number of jobs executed in workqueue simultaniosly. */
+    /** Maximum number of jobs executed in workqueue simultaneously. */
     public static int wqMaxJobs = 20;
-    /** period for checking new jobs in the workqueue in milliseconds, default 20sec. */
-    public static long wqCheckInterval = 20000L;
+    /** period for checking new jobs in the workqueue in seconds, default 20sec. */
+    public static int wqCheckInterval = 20;
+    /** interval of deleting finished jobs in SECONDS, default 2hours=7200sec. */
+    public static int wqCleanInterval = 7200;
+    /** maximum age of finished workqueue job stored in the queue in HOURS, default 24 hours. */
+    public static int wqJobMaxAge = 24;
     /** Maximum size (MB) of XML file sent to manual QA for XML Schema validation. */
     public static int qaValidationXmlUpperLimit = 200;
 
@@ -118,8 +125,6 @@ public class Properties {
     private static ResourceBundle ldapProps;
     /** Resource bundle for Messages. */
     private static ResourceBundle applicationResources;
-    /** Logger class. */
-    public static final Logger logger = Logger.getLogger(Properties.class);
 
     /** Date pattern used for displaying date values on UI. */
     public static String dateFormatPattern = "dd MMM yyyy";
@@ -127,96 +132,62 @@ public class Properties {
     public static String timeFormatPattern = "dd MMM yyyy hh:mm:ss";
 
     static {
-
         if (props == null) {
             props = ResourceBundle.getBundle("gdem");
             try {
-                queriesFolder = props.getString("queries.folder");
-
-                // xformsFolder=props.getString("xforms.folder");
-
-                xslFolder = checkPath(props.getString("xsl.folder"));
-                tmpFolder = props.getString("tmp.folder");
-                odsFolder = checkPath(props.getString("ods.folder"));
-
-                xmlfileFolder = props.getString("xmlfile.folder");
+                // filesystem properties
+                queriesFolder = getStringProperty("queries.folder");
+                xslFolder = checkPath(getStringProperty("xsl.folder"));
+                tmpFolder = getStringProperty("tmp.folder");
+                odsFolder = checkPath(getStringProperty("ods.folder"));
+                xmlfileFolder = getStringProperty("xmlfile.folder");
 
                 // DB connection settings
-                dbDriver = props.getString("db.driver");
-                dbUrl = props.getString("db.url");
-                dbUser = props.getString("db.user");
-                dbPwd = props.getString("db.pwd");
+                dbDriver = getStringProperty("db.driver");
+                dbUrl = getStringProperty("db.url");
+                dbUser = getStringProperty("db.user");
+                dbPwd = getStringProperty("db.pwd");
 
-                engineClass = props.getString("xq.engine.implementator");
                 // DCM settings
-                ddURL = props.getString("dd.url");
-                gdemURL = props.getString("gdem.url");
+                ddURL = getStringProperty("dd.url");
+                gdemURL = getStringProperty("gdem.url");
 
+                // Remote application URLS
                 // settings for incoming services from DD
-                invServUrl = props.getString("dd.rpc.url");
-                invServName = props.getString("dd.rpcservice.name");
-
+                invServUrl = getStringProperty("dd.rpc.url");
+                invServName = getStringProperty("dd.rpcservice.name");
                 // settings for incoming services from CDR
-                cdrServUrl = props.getString("cdr.url");
-
+                cdrServUrl = getStringProperty("cdr.url");
                 // settings for incoming services from Content Registry
-                crSparqlEndpoint = props.getString("cr.sparql.endpoint");
+                crSparqlEndpoint = getStringProperty("cr.sparql.endpoint");
 
+                // QA Service properties
+                engineClass = getStringProperty("xq.engine.implementator");
+                // period in milliseconds
+                wqCheckInterval = getIntProperty("wq.check.interval");
                 // period in seconds
-                String frequency = props.getString("wq.check.interval");
-                Float f = new Float(frequency);
-                wqCheckInterval = (long) (f.floatValue() * 1000);
-
+                wqCleanInterval = getIntProperty("wq.clean.job.interval");
+                // period in hours
+                wqJobMaxAge = getIntProperty("wq.job.max.age");
                 // maximum number of jobs executed at the same time
-                String maxJobs = props.getString("wq.max.jobs");
-                try {
-                    if (maxJobs != null && maxJobs.length() > 0) {
-                        wqMaxJobs = Integer.parseInt(maxJobs);
-                    }
-                } catch (Exception e) {
-                    logger.error("\"wq.max.jobs\" property is not defined or is not numeric in gdem.properties");
-                }
+                wqMaxJobs = getIntProperty("wq.max.jobs");
+                // default value of the maximum size of XML file sent to ad-hoc QA
+                qaValidationXmlUpperLimit = getIntProperty("qa.validation.xml.upper_limit");
+                // external QA program timeout
+                qaTimeout = getIntProperty("external.qa.timeout");
+                // exteranal QA program
+                xgawkCommand = getStringProperty("external.qa.command.xgawk");
 
-                dateFormatPattern = props.getString("date.format.pattern");
-                timeFormatPattern = props.getString("time.format.pattern");
-
-                try {
-                    services_installed = Integer.parseInt(props.getString("gdem.services"));
-                } catch (Exception e) {
-                    logger.error("\"gdem.services\" property is not defined or is not numeric in gdem.properties");
-                }
-
-                String ooServicePortStr = props.getString("openoffice.service.port");
-                try {
-                    if (ooServicePortStr != null && ooServicePortStr.length() > 0) {
-                        openOfficePort = Integer.parseInt(ooServicePortStr);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                // maximum number of jobs executed at the same time
-                String sQaTimeout = props.getString("external.qa.timeout");
-                try {
-                    if (sQaTimeout != null && sQaTimeout.length() > 0) {
-                        qaTimeout = Long.parseLong(sQaTimeout);
-                    }
-                } catch (Exception e) {
-                    logger.error("\"external.qa.timeout\" property is not defined or is not numeric in gdem.properties");
-                }
-                try {
-                    qaValidationXmlUpperLimit = Integer.parseInt(props.getString("qa.validation.xml.upper_limit"));
-                } catch (Exception e) {
-                    logger.error("\"qa.validation.xml.upper_limit\" property is not defined or is not numeric in gdem.properties");
-                }
-
-                xgawkCommand = props.getString("external.qa.command.xgawk");
+                dateFormatPattern = getStringProperty("date.format.pattern");
+                timeFormatPattern = getStringProperty("time.format.pattern");
+                services_installed = getIntProperty("gdem.services");
+                openOfficePort = getIntProperty("openoffice.service.port");
 
             } catch (MissingResourceException mse) {
-                logger.error("Missing property in gdem.properties");
+                LOGGER.error("Missing property in gdem.properties");
                 mse.printStackTrace();
-                // no error handling? go with the default values??
             } catch (Exception e) {
-                logger.error("Error when reading properties from gdem.properties");
+                LOGGER.error("Error when reading properties from gdem.properties");
                 e.printStackTrace();
             }
         }
@@ -239,6 +210,26 @@ public class Properties {
 
     }
 
+    private static String getStringProperty(String key) {
+        String value = props.getString(key);
+        LOGGER.debug("XMLCONV configuration value loaded from gdem.properties \"" + key + "\"=" + value);
+        return value;
+    }
+
+    private static int getIntProperty(String key) {
+        int intValue = 0;
+        String strValue = props.getString(key);
+        try {
+            if (strValue != null && strValue.length() > 0) {
+                intValue = Integer.parseInt(strValue);
+                LOGGER.debug("XMLCONV configuration value loaded from gdem.properties \"" + key + "\"=" + intValue);
+            }
+        } catch (Exception e) {
+            LOGGER.error("\"" + strValue + "\" property is not defined or is not numeric in gdem.properties");
+        }
+        return intValue;
+    }
+
     private static String checkPath(String path) {
         if (path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);
@@ -246,10 +237,26 @@ public class Properties {
         return path;
     }
 
+    /**
+     * Load message property from resource bundle.
+     *
+     * @param key
+     *            Resource bundle key.
+     * @return String value.
+     */
     public static String getMessage(String key) {
         return applicationResources.getString(key);
     }
 
+    /**
+     * Load message property with parameters from resource bundle.
+     *
+     * @param key
+     *            Resource bundle key.
+     * @param replacement
+     *            Replacement array.
+     * @return
+     */
     public static String getMessage(String key, Object[] replacement) {
         return MessageFormat.format(applicationResources.getString(key), replacement);
     }

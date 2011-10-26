@@ -90,7 +90,7 @@ public class QAScriptListLoader {
     public static void clearPermissions(HttpServletRequest httpServletRequest) {
         httpServletRequest.getSession().removeAttribute(QASCRIPT_PERMISSIONS_ATTR);
     }
-    private static QAScriptListHolder loadQAScriptPermissions(String userName) throws Exception{
+    public  static QAScriptListHolder loadQAScriptPermissions(String userName) throws Exception{
         QAScriptListHolder qa = new QAScriptListHolder();
 
         boolean ssiPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_QUERIES_PATH, "i");
