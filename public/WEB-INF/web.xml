@@ -117,6 +117,9 @@
     <listener>
         <listener-class>eionet.gdem.web.listeners.AppServletContextListener</listener-class>
     </listener>
+    <listener>
+        <listener-class>eionet.gdem.web.listeners.JobScheduler</listener-class>
+    </listener>
     <servlet>
         <servlet-name>action</servlet-name>
         <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
@@ -135,29 +138,12 @@
         <servlet-class>eionet.gdem.conversion.ssr.Main</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>SandBox</servlet-name>
-        <servlet-class>eionet.gdem.qa.servlets.SandBox</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>XQueryServlet</servlet-name>
-        <servlet-class>eionet.gdem.qa.servlets.WQCheckerServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet>
         <servlet-name>RpcRouter</servlet-name>
         <servlet-class>com.tee.uit.servlets.XmlRpcRouter</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Main</servlet-name>
         <url-pattern>/main</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>SandBox</servlet-name>
-        <url-pattern>/sandbox</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>XQueryServlet</servlet-name>
-        <url-pattern>/XQueryServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>RpcRouter</servlet-name>
