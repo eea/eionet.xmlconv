@@ -79,14 +79,12 @@ public class ConvertAction extends BaseMethodAction {
                 LOGGER.error("Unable to flush XML error: " + ge.toString());
                 throw new ServletException(ge);
             }
-        }
-        finally{
-            if (methodResponse != null){
-                try{
+        } finally {
+            if (methodResponse != null) {
+                try {
                     // flush the content
                     methodResponse.flush();
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     LOGGER.error("Unable to close Servlet Output Stream.", e);
                     e.printStackTrace();
                 }

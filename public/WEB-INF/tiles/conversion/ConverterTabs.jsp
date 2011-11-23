@@ -17,6 +17,9 @@
         <ed:tabItem href="/do/excel2XmlConversionForm" title="Convert spreadsheet to DD XML" id="excel2xml" selectedTab="<%=selectedTab%>">
             <bean:message key="label.conversion.tab.excel2xml"/>
         </ed:tabItem>
+        <ed:tabItem href="/do/json2XmlForm" title="Convert JSON to XML" id="json2xml" selectedTab="<%=selectedTab%>">
+            <bean:message key="label.conversion.tab.json2xml"/>
+        </ed:tabItem>
     </ul>
 </div>
 <div id="tabbedmenuend"></div>

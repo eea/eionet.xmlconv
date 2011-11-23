@@ -65,7 +65,10 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
         getResult(script, result);
         try {
             res = result.toString(DEFAULT_ENCODING);
-            LOGGER.debug("RESULT: \n" + res.substring(0, 300));
+            if (LOGGER.isDebugEnabled()){
+                String logResult = res.length()>299 ?  res.substring(0, 300) : res;
+                LOGGER.debug("RESULT: \n" + logResult);
+            }
 
         } catch (Exception e) {
             LOGGER.error("==== CATCHED EXCEPTION " + e.toString());

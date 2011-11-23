@@ -30,6 +30,7 @@
   <definition name="addUplXmlFile" path="/WEB-INF/tiles/xmlfile/AddUplXmlFile.jsp" />
   <definition name="editUplXmlFile" path="/WEB-INF/tiles/xmlfile/EditUplXmlFile.jsp" />
   <definition name="excel2XmlConversion" path="/WEB-INF/tiles/conversion/Excel2XmlConversion.jsp" />
+  <definition name="json2XmlConversion" path="/WEB-INF/tiles/conversion/Json2Xml.jsp" />
   <definition name="crConversion" path="/WEB-INF/tiles/conversion/CRConversion.jsp" />
   <definition name="validateXML" path="/WEB-INF/tiles/conversion/ValidateXML.jsp" />
   <definition name="qaScripts" path="/WEB-INF/tiles/qascript/QAScripts.jsp" />
@@ -100,6 +101,10 @@
      <definition name="/excel2XmlConv.jsp" extends="base">
          <put name="title"  value="label.conversion.excel2xml.heading"/>
          <put name="body" type="definition" value="excel2XmlConversion"/>
+    </definition>
+     <definition name="/json2Xml.jsp" extends="base">
+         <put name="title"  value="label.conversion.json2xml.heading"/>
+         <put name="body" type="definition" value="json2XmlConversion"/>
     </definition>
       <definition name="/uplSchema.jsp" extends="base">
          <put name="title"  value="label.schemas.title"/>

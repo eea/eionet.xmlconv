@@ -1,0 +1,154 @@
+/*
+ * The contents of this file are subject to the Mozilla Public
+ * License Version 1.1 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of
+ * the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS
+ * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+ * implied. See the License for the specific language governing
+ * rights and limitations under the License.
+ *
+ * The Original Code is XMLCONV - Conversion and QA Service
+ *
+ * The Initial Owner of the Original Code is European Environment
+ * Agency. Portions created by TripleDev or Zero Technologies are Copyright
+ * (C) European Environment Agency.  All Rights Reserved.
+ *
+ * Contributor(s):
+ *        Enriko Käsper
+ */
+
+package eionet.gdem.qa.functions;
+
+import java.io.IOException;
+
+import net.sf.json.JSON;
+import net.sf.json.JSONSerializer;
+import net.sf.json.xml.XMLSerializer;
+
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+
+import eionet.gdem.utils.xml.XmlContext;
+import eionet.gdem.utils.xml.XmlException;
+
+/**
+ * The class implements some static methods for converting JSON contents to XML format.
+ *
+ * The methods can be used in XQuery scripts. Eg.:
+ * <pre>
+ *     declare namespace xmlconv-ext="java:eionet.gdem.qa.functions.Json";
+ *     let $jsonResultXmlDoc := xmlconv-ext:jsonRequest2xml($URL)
+ * </pre>
+ *
+ * @author Enriko Käsper
+ */
+public class Json {
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(Json.class);
+
+    /**
+     * Method converts the URL response into XML Document object. If the response is not in JSON format,
+     * then JsonError object is converted to XML.
+     * @param requestUrl Request URL to JSON format content.
+     * @return Document object Returns the JSON or {@link JsonError} object in XML format.
+     * @throws XmlException
+     */
+    public static Document jsonRequest2xml(String requestUrl) throws XmlException {
+        String xml = jsonRequest2xmlString(requestUrl);
+        XmlContext xmlContext = new XmlContext();
+        xmlContext.checkFromString(xml);
+        return xmlContext.getDocument();
+    }
+
+    /**
+     * Method converts the URL response body into XML format and returns it as String. If the response is not in JSON format, then JsonError object is converted to XML.
+     * @param requestUrl Request URL to JSON format content.
+     * @return String of XML
+     */
+    public static String jsonRequest2xmlString(String requestUrl) {
+        JsonError error = null;
+        String responseString = null;
+        String xml = null;
+        GetMethod method = null;
+
+        // Create an instance of HttpClient.
+        HttpClient client = new HttpClient();
+
+        try {
+            // Create a method instance.
+            method = new GetMethod(requestUrl);
+
+            // Provide custom retry handler is necessary
+            method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+            // Execute the method.
+            int statusCode = client.executeMethod(method);
+
+            if (statusCode != HttpStatus.SC_OK) {
+                LOGGER.error("Method failed: " + method.getStatusLine());
+                error = new JsonError(statusCode, method.getStatusText());
+            } else {
+                // Read the response body.
+                byte[] responseBody = method.getResponseBody();
+                responseString = new String(responseBody, "UTF-8");
+            }
+        } catch (HttpException e) {
+            LOGGER.error("Fatal protocol violation: " + e.getMessage());
+            e.printStackTrace();
+            error = new JsonError(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Fatal protocol violation.");
+        } catch (IOException e) {
+            LOGGER.error("Fatal transport error: " + e.getMessage());
+            error = new JsonError(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Fatal transport error.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            LOGGER.error("Error: " + e.getMessage());
+            e.printStackTrace();
+            error = new JsonError(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Error." + e.getMessage());
+        } finally {
+            // Release the connection.
+            if (method != null) {
+                method.releaseConnection();
+            }
+        }
+        if (responseString != null) {
+            xml = jsonString2xml(responseString);
+        } else if (error != null) {
+            xml = jsonString2xml(error);
+        } else {
+            xml = jsonString2xml(new JsonError());
+        }
+        return xml;
+    }
+
+    /**
+     * Method converts the given JSON format String or any other POJO into XML. The return type is String.
+     * @param jsonObject JSON format String or any other Java Object (POJO)
+     * @return String of XML
+     */
+    public static String jsonString2xml(Object jsonObject) {
+        String xml = null;
+        try {
+            JSON json = JSONSerializer.toJSON(jsonObject);
+            XMLSerializer xmlSerializer = new XMLSerializer();
+            xmlSerializer.setRootName("root");
+            xmlSerializer.setElementName("element");
+            xmlSerializer.setTypeHintsEnabled(false);
+            xml = xmlSerializer.write(json);
+        } catch (Exception e) {
+            LOGGER.error("Unable to serialise JSON object to XML: " + e.getMessage());
+            if (!(jsonObject instanceof JsonError)) {
+                JsonError errorObject = new JsonError("Unable to serialise JSON object to XML: " + e.getMessage());
+                xml = jsonString2xml(errorObject);
+            }
+        }
+        return xml;
+    }
+}

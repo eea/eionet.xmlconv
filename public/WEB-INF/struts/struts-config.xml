@@ -183,6 +183,7 @@
         <action path="/excel2XmlConversionForm" name="ExcelConversionForm" type="eionet.gdem.web.struts.conversion.Excel2XmlConversionFormAction" input="/excel2XmlConv.jsp" scope="request">
             <forward name="success" path="/excel2XmlConv.jsp" redirect="false"/>
         </action>
+        <action path="/json2XmlForm"  parameter="/json2Xml.jsp" scope="request" validate="false" type="org.apache.struts.actions.ForwardAction"/>
         <action path="/excel2XmlConversion"  name="ExcelConversionForm"  type="eionet.gdem.web.struts.conversion.Excel2XmlConversionAction" scope="request">
             <forward name="error" path="/do/excel2XmlConversionForm" redirect="false"/>
             <forward name="success" path="/excel2XmlConv.jsp" redirect="false"/>
@@ -348,6 +349,8 @@
             <forward name="fail" path="/api/methodError" />
         </action>
         <action path="/methodError"  scope="request" type="eionet.gdem.web.struts.remoteapi.MethodErrorAction">
+        </action>
+        <action path="/convertJson2Xml" scope="request" type="eionet.gdem.web.struts.remoteapi.ConvertJson2XmlAction">
         </action>
 
  <!--  LDAP form -->
