@@ -50,7 +50,7 @@ import eionet.gdem.GDEMException;
  * request.
  * 
  * @author Enriko Käsper
- * @version $Revision: 1.2 $
+ * @version $Revision: 10280 $
  */
 public class MultipartFileUpload {
 
