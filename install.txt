@@ -1,6 +1,0 @@
-Installation guide:
-
-1. Copy the acl folder into ${app.home} folder
-2. Copy the GDEMServices.xml into ${app.home} folder
-
--- TODO gdem.properties ${app.home} folders must be created (by app)
