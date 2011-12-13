@@ -119,23 +119,6 @@
       <description>Usually the url in question will be figured out by the taglib, however you may override it with this attribute. </description>
     </attribute>
   </tag>
-   <tag>
-    <name>ui-renderer</name>
-    <tag-class>eionet.gdem.web.tags.UIRendererTag</tag-class>
-    <description>
-       Render UI templates
-    </description>
-    <attribute>
-        <name>id</name>
-        <required>true</required>
-        <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-        <name>enableJs</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-    </attribute>
-  </tag>
   <tag>
     <name>tabItem</name>
     <tag-class>eionet.gdem.web.tags.TabItem</tag-class>
