@@ -208,8 +208,6 @@
             <artifactId>batik</artifactId>
             <version>1.0</version>
         </dependency>
-        <!-- !castor.jar -->
-        <!-- !Eionet dir -->
         <!-- fop -->
         <dependency>
             <groupId>org.apache</groupId>
@@ -222,7 +220,6 @@
             <artifactId>matadata-aggregator</artifactId>
             <version>1.0</version>
         </dependency>
-        <!-- !uit-* -->
         <dependency>
             <groupId>org.apache.avalon.framework</groupId>
             <artifactId>avalon-framework-api</artifactId>
