@@ -164,6 +164,7 @@ public class Utils {
     public static void deleteFile(String fileName) {
         deleteFile(new File(fileName));
     }
+
     public static void deleteFile(File file) {
         if (file != null && file.exists() && file.isFile()) {
             try {
@@ -774,12 +775,12 @@ public class Utils {
      */
     public static String getUniqueTmpFileName(String fileName) {
         StringBuilder buf = new StringBuilder();
-        buf.append(Properties.tmpFolder);
+        buf.append(Properties.tmpFolder + File.separator);
         buf.append(Constants.TMP_FILE_PREFIX);
         buf.append(System.currentTimeMillis());
         buf.append("-" + UUID.randomUUID());
         if (fileName != null) {
-            if (!fileName.startsWith(".")){
+            if (!fileName.startsWith(".")) {
                 buf.append("-");
             }
             buf.append(fileName);
@@ -1056,6 +1057,7 @@ public class Utils {
         }
         return false;
     }
+
     /**
      * Escape HTML characters and replace new lines with HTML brake tag.
      *
@@ -1070,6 +1072,7 @@ public class Utils {
         }
         return s;
     }
+
     /**
      * Reads the XML declaration from instance file
      */
@@ -1116,4 +1119,5 @@ public class Utils {
             } catch (IOException e) {
             }
         }
-    }}
+    }
+}

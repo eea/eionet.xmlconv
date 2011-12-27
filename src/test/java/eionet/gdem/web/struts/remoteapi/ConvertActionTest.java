@@ -22,7 +22,7 @@ import eionet.gdem.utils.xml.XmlContext;
 
 /**
  * This unittest tests the Struts action that calls Conversion Service convert method
- * 
+ *
  * @author Enriko Käsper, TietoEnator Estonia AS ConvertActionTest
  */
 
@@ -39,6 +39,7 @@ public class ConvertActionTest extends DBTestCase {
     /**
      * Set up test case properties
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         TestUtils.setUpProperties(this);
@@ -47,6 +48,7 @@ public class ConvertActionTest extends DBTestCase {
     /**
      * Load the data which will be inserted for the test
      */
+    @Override
     protected IDataSet getDataSet() throws Exception {
         IDataSet loadedDataSet =
                 new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_CONVERSIONS_XML));

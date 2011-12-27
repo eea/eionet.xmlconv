@@ -93,9 +93,9 @@ public class StylesheetManager {
             /*
              * //removing schema if it doesnt have stylesheets String schema = (String)hash.get("xml_schema"); String schemaId =
              * (String)hash.get("schema_id");
-             *
+             * 
              * Vector vDb = dbM.listConversions(schema);
-             *
+             * 
              * if(vDb.size()==0) { dbM.removeSchema( schemaId, true, true, true); }
              */
         } catch (Exception e) {
@@ -154,11 +154,10 @@ public class StylesheetManager {
             OutputStream output = null;
             String filepath = new String(Properties.xslFolder + "/" + file.getFileName());
 
-            try{
+            try {
                 output = new FileOutputStream(filepath);
                 IOUtils.copy(in, output);
-            }
-            finally{
+            } finally {
                 IOUtils.closeQuietly(in);
                 IOUtils.closeQuietly(output);
                 file.destroy();
@@ -273,7 +272,7 @@ public class StylesheetManager {
     }
 
     public void update(String user, String xsl_id, String schema, FormFile file, String type, String descr, String dependsOn)
-    throws DCMException {
+            throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_STYLEHEET_UPDATE);
@@ -298,11 +297,10 @@ public class StylesheetManager {
                 OutputStream output = null;
                 String filepath = new String(Properties.xslFolder + "/" + fileName);
 
-                try{
+                try {
                     output = new FileOutputStream(filepath);
                     IOUtils.copy(in, output);
-                }
-                finally{
+                } finally {
                     IOUtils.closeQuietly(in);
                     IOUtils.closeQuietly(output);
                     file.destroy();
@@ -313,8 +311,9 @@ public class StylesheetManager {
 
                 String fileNameOld = (String) hash.get("xsl");
                 String xslFolder = Properties.xslFolder;
-
-                Utils.deleteFile(xslFolder + File.separatorChar + fileNameOld);
+                if (!fileNameOld.equals(fileName)) {
+                    Utils.deleteFile(xslFolder + File.separatorChar + fileNameOld);
+                }
 
             }
             String schemaID = schemaDao.getSchemaID(schema);

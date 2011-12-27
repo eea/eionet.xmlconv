@@ -3,6 +3,7 @@
  */
 package eionet.gdem.utils;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -54,9 +55,10 @@ public class UtilsTest extends TestCase {
         boolean b4 = Utils.resourceExists("https://svn.eionet.europa.eu/thereisnoschema");
         assertFalse(b4);
     }
-    public void testGetTmpUniqueFileName(){
+
+    public void testGetTmpUniqueFileName() {
         assertTrue(Utils.getUniqueTmpFileName(null).endsWith(".tmp"));
         assertTrue(Utils.getUniqueTmpFileName("filename.xml").endsWith("filename.xml"));
-        assertTrue(Utils.getUniqueTmpFileName(null).startsWith(Properties.tmpFolder + Constants.TMP_FILE_PREFIX));
+        assertTrue(Utils.getUniqueTmpFileName(null).startsWith(Properties.tmpFolder + File.separator + Constants.TMP_FILE_PREFIX));
     }
 }

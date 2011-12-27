@@ -189,6 +189,7 @@ public class SchemaManager {
                         stl.setConvId((String) stylesheet.get("convert_id"));
                         stl.setType((String) stylesheet.get("content_type_out"));
                         stl.setXsl(Names.XSL_FOLDER + (String) stylesheet.get("xsl"));
+                        stl.setXslFileName((String) stylesheet.get("xsl"));
                         stl.setXsl_descr((String) stylesheet.get("description"));
                         stl.setDdConv(false);
                         stls.add(stl);
@@ -271,6 +272,7 @@ public class SchemaManager {
                 // st.setConvId(1);
                 stl.setType(type);
                 stl.setXsl(xslUrl);
+                stl.setXslFileName(xsl);
                 stl.setXsl_descr((String) hash.get("description"));
                 stl.setModified(last_modified);
                 stl.setConvId((String) hash.get("convert_id"));
@@ -323,7 +325,7 @@ public class SchemaManager {
                 sc.setSchema((String) schema.get("xml_schema"));
                 sc.setDescription((String) schema.get("description"));
                 boolean validate =
-                    (!Utils.isNullStr((String) schema.get("validate")) && ((String) schema.get("validate")).equals("1"));
+                        (!Utils.isNullStr((String) schema.get("validate")) && ((String) schema.get("validate")).equals("1"));
                 sc.setDoValidation(validate);
 
                 Vector qascripts = new Vector();
@@ -442,8 +444,8 @@ public class SchemaManager {
                 schema.setDescription((String) schemaHash.get("description"));
                 schema.setSchemaLang((String) schemaHash.get("schema_lang"));
                 boolean validate =
-                    (!Utils.isNullStr((String) schemaHash.get("validate")) && ((String) schemaHash.get("validate"))
-                            .equals("1"));
+                        (!Utils.isNullStr((String) schemaHash.get("validate")) && ((String) schemaHash.get("validate"))
+                                .equals("1"));
                 schema.setDoValidation(validate);
                 schema.setDtdPublicId((String) schemaHash.get("dtd_public_id"));
                 schema.setExpireDate(Utils.parseDate((String) schemaHash.get("expire_date"), "yyyy-MM-dd HH:mm:ss"));
@@ -536,8 +538,7 @@ public class SchemaManager {
                 try {
                     d = Utils.parseDate((String) schema.get("dateReleased"), "ddMMyy");
                 } catch (Exception e) {
-                    LOGGER.error("Unable to parse DataDictionary dataset released date: " + (String) schema.get("dateReleased"),
-                            e);
+                    LOGGER.error("Unable to parse DataDictionary dataset released date: " + (String) schema.get("dateReleased"), e);
                 }
                 sc.setDatasetReleased(d);
                 schemas.add(sc);
@@ -556,7 +557,7 @@ public class SchemaManager {
                         sc.setSchema((String) schema.get("xml_schema"));
                         sc.setDescription((String) schema.get("description"));
                         schemas.add(sc);
-                        schemasChk.add((String)schema.get("xml_schema"));
+                        schemasChk.add((String) schema.get("xml_schema"));
                     }
                 }
             }
@@ -574,8 +575,7 @@ public class SchemaManager {
 
     public ArrayList getSchemaStylesheets(String schema) throws DCMException {
 
-        Vector hcSchemas;
-        ArrayList stls = new ArrayList();
+        ArrayList<Stylesheet> stls = new ArrayList<Stylesheet>();
 
         try {
 
@@ -584,30 +584,26 @@ public class SchemaManager {
 
             for (int i = 0; i < stylesheets.size(); i++) {
                 Hashtable hash = (Hashtable) stylesheets.get(i);
-                String convert_id = (String) hash.get("convert_id");
-                String xsl = (String) hash.get("xsl");
-                String type;
+                String convertId = (String) hash.get("convert_id");
+                String xslFileName = (String) hash.get("xsl");
+                String type = (String) hash.get("result_type");
                 String description = (String) hash.get("description");
-                String last_modified = "";
                 boolean ddConv = false;
                 String xslUrl;
 
-                if (!xsl.startsWith(Properties.gdemURL + "/do/getStylesheet?id=")) {
-                    xslUrl = Properties.gdemURL + "/" + Names.XSL_FOLDER + (String) hash.get("xsl");
-
-                    type = (String) hash.get("result_type");
+                if (!xslFileName.startsWith(Properties.gdemURL + "/do/getStylesheet?id=")) {
+                    xslUrl = Properties.gdemURL + "/" + Names.XSL_FOLDER + xslFileName;
                 } else {
                     xslUrl = (String) hash.get("xsl");
                     ddConv = true;
-                    type = (String) hash.get("result_type");
                 }
 
                 Stylesheet stl = new Stylesheet();
-                // st.setConvId(1);
+                stl.setConvId(convertId);
                 stl.setType(type);
                 stl.setXsl(xslUrl);
-                stl.setXsl_descr((String) hash.get("description"));
-                stl.setConvId((String) hash.get("convert_id"));
+                stl.setXslFileName(xslFileName);
+                stl.setXsl_descr(description);
                 stl.setDdConv(ddConv);
                 stls.add(stl);
             }
@@ -674,7 +670,7 @@ public class SchemaManager {
     }
 
     public String addSchema(String user, String schemaUrl, String descr, String schemaLang, boolean doValidation)
-    throws DCMException {
+            throws DCMException {
         String schemaID = null;
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "i")) {
@@ -743,15 +739,13 @@ public class SchemaManager {
             OutputStream output = null;
             String filepath = new String(Properties.schemaFolder + File.separatorChar + fileName);
 
-            try{
+            try {
                 output = new FileOutputStream(filepath);
                 IOUtils.copy(fileInputStream, output);
-            }
-            finally{
+            } finally {
                 IOUtils.closeQuietly(fileInputStream);
                 IOUtils.closeQuietly(output);
             }
-
 
             uplSchemaDao.addUplSchema(fileName, null, fkSchemaId);
 
@@ -811,7 +805,7 @@ public class SchemaManager {
 
                 if (schemaFile != null) {
                     try {
-                        Utils.deleteFile(Properties.schemaFolder + "/" + schemaFile);
+                        Utils.deleteFile(Properties.schemaFolder + File.separator + schemaFile);
                     } catch (Exception e) {
                         LOGGER.error("Error deleting upoladed schema file", e);
                         throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
@@ -862,8 +856,7 @@ public class SchemaManager {
                 try {
                     d = Utils.parseDate((String) schema.get("dateReleased"), "ddMMyy");
                 } catch (Exception e) {
-                    LOGGER.error("Unable to parse DataDictionary dataset released date: " + (String) schema.get("dateReleased"),
-                            e);
+                    LOGGER.error("Unable to parse DataDictionary dataset released date: " + (String) schema.get("dateReleased"), e);
                 }
                 sc.setDatasetReleased(d);
                 List ddStylesheets = Conversion.getConversions();
@@ -931,7 +924,7 @@ public class SchemaManager {
     }
 
     public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, FormFile file)
-    throws DCMException {
+            throws DCMException {
 
         try {
             InputStream fileInputStream = file.getInputStream();
@@ -946,7 +939,7 @@ public class SchemaManager {
     }
 
     public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, InputStream fileInputStream)
-    throws DCMException {
+            throws DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
@@ -967,11 +960,10 @@ public class SchemaManager {
                 OutputStream output = null;
                 String filepath = new String(Properties.schemaFolder + File.separatorChar + fileName);
 
-                try{
+                try {
                     output = new FileOutputStream(filepath);
                     IOUtils.copy(fileInputStream, output);
-                }
-                finally{
+                } finally {
                     IOUtils.closeQuietly(fileInputStream);
                     IOUtils.closeQuietly(output);
                 }
@@ -1055,7 +1047,6 @@ public class SchemaManager {
         return retURL;
 
     }
-
 
     /**
      * Returns the list of xml files retreived from CR sparql client
@@ -1156,10 +1147,10 @@ public class SchemaManager {
         }
         // compare
         result =
-            remoteSchemaHash.equals(fileHash) && remoteSchemaHash.length() > 0 ? BusinessConstants.WARNING_FILES_IDENTICAL
-                    : BusinessConstants.WARNING_FILES_NOTIDENTICAL;
+                remoteSchemaHash.equals(fileHash) && remoteSchemaHash.length() > 0 ? BusinessConstants.WARNING_FILES_IDENTICAL
+                        : BusinessConstants.WARNING_FILES_NOTIDENTICAL;
 
-            return result;
+        return result;
     }
 
     /**
@@ -1196,13 +1187,13 @@ public class SchemaManager {
      * @throws DCMException
      */
     public void storeRemoteSchema(String user, String schemaUrl, String schemaFileName, String schemaId, String uplSchemaId)
-    throws DCMException {
+            throws DCMException {
 
         byte[] remoteSchema = downloadRemoteSchema(schemaUrl);
         ByteArrayInputStream in = new ByteArrayInputStream(remoteSchema);
         if (Utils.isNullStr(schemaFileName)) {
             schemaFileName =
-                generateSchemaFilenameByID(Properties.schemaFolder, schemaId, Utils.extractExtension(schemaUrl, "xsd"));
+                    generateSchemaFilenameByID(Properties.schemaFolder, schemaId, Utils.extractExtension(schemaUrl, "xsd"));
         }
         if (Utils.isNullStr(uplSchemaId)) {
             addUplSchema(user, in, schemaFileName, schemaId);

@@ -18,7 +18,7 @@ import eionet.gdem.utils.Utils;
 
 /**
  * Implementation of listQueries and listQAScripts methods.
- * 
+ *
  * @author Enriko Käsper, TietoEnator Estonia AS
  */
 public class ListQueriesMethod extends RemoteServiceMethod {
@@ -59,12 +59,12 @@ public class ListQueriesMethod extends RemoteServiceMethod {
     /**
      * List all possible QA scripts (XQueries, XML Schemas, DTD, XSLT?) for this XML Schema. If schema is null, then all possible QA
      * scripts are returned
-     * 
+     *
      * @param schema
      *            URL of XML schema
      * @return array of Hastables with the following keys: qyery_id, short_name, description, query, schema_id, xml_schema,
      *         content_type_out, type
-     * 
+     *
      * @throws GDEMException
      */
     public Vector listQueries(String schema) throws GDEMException {
@@ -123,7 +123,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
 
     /**
      * List all XQueries and their modification times for this namespace returns also XML Schema validation.
-     * 
+     *
      * @param schema
      * @return result is an Array of Arrays that contains 3 fields (script_id, description, last modification)
      * @throws GDEMException
@@ -151,8 +151,9 @@ public class ListQueriesMethod extends RemoteServiceMethod {
                 }
             }
             Vector queries = (Vector) h.get("queries");
-            if (Utils.isNullVector(queries))
+            if (Utils.isNullVector(queries)) {
                 return result;
+            }
 
             for (int i = 0; i < queries.size(); i++) {
                 HashMap hQueries = (HashMap) queries.get(i);
@@ -171,7 +172,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
                 resultQuery = new Vector<String>();
                 resultQuery.add(queryId);
                 resultQuery.add(queryDescription);
-                File f = new File(Properties.queriesFolder + queryFile);
+                File f = new File(Properties.queriesFolder + File.separator + queryFile);
                 String last_modified = "";
 
                 if (f != null) {

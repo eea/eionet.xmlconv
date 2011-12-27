@@ -21,6 +21,7 @@
 
 package eionet.gdem.web.struts.qasandbox;
 
+import java.io.File;
 import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletRequest;
@@ -144,11 +145,11 @@ public class RunScriptAction extends Action {
 
             }
             XQScript xq = null;
-            if (showScripts) {
+            if (showScripts && qascript != null && qascript.getScriptContent() != null) {
                 // run script by ID
                 // read scriptContent from file
                 try {
-                    scriptContent = Utils.readStrFromFile(Properties.queriesFolder + qascript.getFileName());
+                    scriptContent = Utils.readStrFromFile(Properties.queriesFolder + File.separator + qascript.getFileName());
                 } catch (Exception e) {
                     errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.fileNotFound"));
                     saveErrors(httpServletRequest, errors);

@@ -104,12 +104,12 @@
                                     <td>
                                         <logic:notEqual name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >
                                             <a  href="<bean:write name="stylesheet" property="xsl" />">
-                                                <bean:write name="stylesheet" property="xsl" />
+                                                <bean:write name="stylesheet" property="xslFileName" />
                                             </a>&#160;
                                         </logic:notEqual>
                                         <logic:equal name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >
                                             <a  href="<bean:write name="webRoot"/>/<bean:write name="stylesheet" property="xsl" />">
-                                                <bean:write name="webRoot"/>/<bean:write name="stylesheet" property="xsl" />
+                                                <bean:write name="stylesheet" property="xslFileName" />
                                             </a>&#160;
                                         </logic:equal>
                                     </td>

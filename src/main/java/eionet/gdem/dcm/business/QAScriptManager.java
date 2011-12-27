@@ -260,13 +260,12 @@ public class QAScriptManager {
 
         OutputStream output = null;
         InputStream in = file.getInputStream();
-        String filepath = new String(Properties.queriesFolder + "/" + fileName);
+        String filepath = new String(Properties.queriesFolder + File.separator + fileName);
 
-        try{
+        try {
             output = new FileOutputStream(filepath);
             IOUtils.copy(in, output);
-        }
-        finally{
+        } finally {
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(output);
             file.destroy();
@@ -285,7 +284,7 @@ public class QAScriptManager {
      * @throws DCMException
      */
     public void storeQAScriptFromString(String user, String scriptId, String fileContent) throws FileNotFoundException,
-    IOException, DCMException {
+            IOException, DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {

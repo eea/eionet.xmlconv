@@ -57,7 +57,7 @@ import eionet.gdem.validation.ValidationService;
  *
  * @author Enriko Käsper
  */
-public class XQueryService extends RemoteService{
+public class XQueryService extends RemoteService {
 
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
     private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
@@ -135,9 +135,9 @@ public class XQueryService extends RemoteService{
     // public Hashtable analyze(String schema, String file) throws GDEMException{
     // return analyze(schema,file, null);
     // }
-    public Vector analyzeXMLFiles(String schema, String orig_file, Vector result) throws GDEMException {
+    public Vector analyzeXMLFiles(String schema, String origFile, Vector result) throws GDEMException {
 
-        LOGGER.info("XML/RPC call for analyze xml: " + orig_file);
+        LOGGER.info("XML/RPC call for analyze xml: " + origFile);
 
         if (result == null) {
             result = new Vector();
@@ -145,9 +145,9 @@ public class XQueryService extends RemoteService{
         Vector outputTypes = null;
         // get all possible xqueries from db
         String newId = "-1"; // should not be returned with value -1;
-        String file = orig_file;
+        String file = origFile;
 
-        Vector _queries = listQueries(schema);
+        Vector queries = listQueries(schema);
 
         try {
             outputTypes = convTypeDao.getConvTypes();
@@ -164,37 +164,39 @@ public class XQueryService extends RemoteService{
             throw new GDEMException(err_mess, e);
         }
 
-        if (!Utils.isNullVector(_queries)) {
+        if (!Utils.isNullVector(queries)) {
 
-            for (int j = 0; j < _queries.size(); j++) {
-                Hashtable _querie = (Hashtable) _queries.get(j);
-                String query_id = String.valueOf(_querie.get("query_id"));
-                String query_file = (String) _querie.get("query");
-                String content_type = (String) _querie.get("content_type_id");
-                String fileExtension = getExtension(outputTypes, content_type);
+            for (int j = 0; j < queries.size(); j++) {
+                Hashtable query = (Hashtable) queries.get(j);
+                String query_id = String.valueOf(query.get("query_id"));
+                String queryFile = (String) query.get("query");
+                String contentType = (String) query.get("content_type_id");
+                String fileExtension = getExtension(outputTypes, contentType);
                 String resultFile =
-                    Properties.tmpFolder + File.separatorChar + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "." + fileExtension;
+                        Properties.tmpFolder + File.separatorChar + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "."
+                                + fileExtension;
                 try {
-                    int int_qID = 0;
+                    int queryId = 0;
                     try {
-                        int_qID = Integer.parseInt(query_id);
+                        queryId = Integer.parseInt(query_id);
                     } catch (NumberFormatException n) {
-                        int_qID = 0;
+                        queryId = 0;
                     }
                     // if it is a XQuery script, then append the system folder
-                    if (int_qID != Constants.JOB_VALIDATION && query_file.startsWith(Properties.gdemURL + "/" + Constants.QUERIES_FOLDER)) {
-                        query_file =
-                            Utils.Replace(query_file, Properties.gdemURL + "/" + Constants.QUERIES_FOLDER,
-                                    Properties.queriesFolder);
+                    if (queryId != Constants.JOB_VALIDATION
+                            && queryFile.startsWith(Properties.gdemURL + "/" + Constants.QUERIES_FOLDER)) {
+                        queryFile =
+                                Utils.Replace(queryFile, Properties.gdemURL + "/" + Constants.QUERIES_FOLDER,
+                                        Properties.queriesFolder + File.separator);
                     }
-                    newId = xqJobDao.startXQJob(file, query_file, resultFile, int_qID);
+                    newId = xqJobDao.startXQJob(file, queryFile, resultFile, queryId);
                 } catch (SQLException sqe) {
                     throw new GDEMException("DB operation failed: " + sqe.toString());
                 }
-                Vector _res = new Vector();
-                _res.add(newId);
-                _res.add(orig_file);
-                result.add(_res);
+                Vector queryResult = new Vector();
+                queryResult.add(newId);
+                queryResult.add(origFile);
+                result.add(queryResult);
             }
         }
 
@@ -342,8 +344,7 @@ public class XQueryService extends RemoteService{
                 resultCode = Constants.JOB_LIGHT_ERROR;
             } else if (status == Constants.XQ_FATAL_ERR) {
                 resultCode = Constants.JOB_FATAL_ERROR;
-            }
-            else {
+            } else {
                 resultCode = -1; // not expected to reach here
             }
 
@@ -376,7 +377,7 @@ public class XQueryService extends RemoteService{
             h.put(Constants.RESULT_SCRIPTTITLE_PRM, script_title);
         } catch (Exception e) {
             String err_mess =
-                "JobID: " + jobId + "; Creating result Hashtable for getResult method failed result: " + e.toString();
+                    "JobID: " + jobId + "; Creating result Hashtable for getResult method failed result: " + e.toString();
             LOGGER.error(err_mess);
             throw new GDEMException(err_mess, e);
         }

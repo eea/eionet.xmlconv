@@ -154,7 +154,7 @@ public class UplXmlFileManager {
      */
 
     public void updateUplXmlFile(String user, String xmlFileId, String title, String curFileName, FormFile file)
-    throws DCMException {
+            throws DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_XMLFILE_PATH, "u")) {
@@ -329,13 +329,12 @@ public class UplXmlFileManager {
 
         OutputStream output = null;
         InputStream in = file.getInputStream();
-        String filepath = new String(Properties.xmlfileFolder + "/" + fileName);
+        String filepath = new String(Properties.xmlfileFolder + File.separator + fileName);
 
-        try{
+        try {
             output = new FileOutputStream(filepath);
             IOUtils.copy(in, output);
-        }
-        finally{
+        } finally {
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(output);
             file.destroy();
