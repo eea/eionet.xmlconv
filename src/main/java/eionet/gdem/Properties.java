@@ -94,9 +94,6 @@ public class Properties {
     /** LDAP UID attribute. */
     public static String ldapAttrUid = null;
 
-    /** DCM settings from the properties file of incoming services from CDR. CDR doesn't use Service names. */
-    public static String cdrServUrl = null;
-
     /** OpenOffice port. */
     public static int openOfficePort = 8100;
     /** Implementation class for QA queries. Saxon is the default value, not hard-coded. */
@@ -154,8 +151,6 @@ public class Properties {
                 // settings for incoming services from DD
                 invServUrl = getStringProperty("dd.rpc.url");
                 invServName = getStringProperty("dd.rpcservice.name");
-                // settings for incoming services from CDR
-                cdrServUrl = getStringProperty("cdr.url");
                 // settings for incoming services from Content Registry
                 crSparqlEndpoint = getStringProperty("cr.sparql.endpoint");
 
