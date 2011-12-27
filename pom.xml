@@ -50,6 +50,7 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>pre-test</id>
                         <phase>process-test-resources</phase>
                         <configuration>
                             <tasks>
@@ -61,24 +62,41 @@
                                     dir="${project.build.directory}/test-classes/xmlfile" />
                                 <mkdir
                                     dir="${project.build.directory}/test-classes/schema" />
-                                <copy todir="${project.build.directory}/test-classes/webapp/WEB-INF">
+                                <copy todir="${project.build.directory}/test-classes/WEB-INF">
                                     <fileset dir="src/main/webapp/WEB-INF" />
                                 </copy>
                                 <copy todir="${project.build.directory}/test-classes/dcm">
                                     <fileset dir="src/main/webapp/dcm" />
                                 </copy>
+                                <copy todir="${project.build.directory}/test-classes/acl">
+                                    <fileset dir="acl" />
+                                </copy>
+                                <!-- FIXME after updating Maven version from 2.0.4 the following lines can be removed -->
+                                <move file="${project.build.directory}/classes/gdem.properties" toFile="${project.build.directory}/classes/gdem.properties.tmp"/>
+                                <move file="${project.build.directory}/classes/uit.properties" toFile="${project.build.directory}/classes/uit.properties.tmp"/>
+                                <move file="${project.build.directory}/classes/log4j.xml" toFile="${project.build.directory}/classes/log4j.xml.tmp"/>
                             </tasks>
                         </configuration>
                         <goals>
                             <goal>run</goal>
                         </goals>
                     </execution>
-                </executions>
+                    <!-- FIXME after updating Maven version from 2.0.4 the following lines can be removed -->
+                    <execution>
+                        <id>post-test</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <tasks>
+                                <move file="${project.build.directory}/classes/gdem.properties.tmp" toFile="${project.build.directory}/classes/gdem.properties"/>
+                                <move file="${project.build.directory}/classes/uit.properties.tmp" toFile="${project.build.directory}/classes/uit.properties"/>
+                                <move file="${project.build.directory}/classes/log4j.xml.tmp" toFile="${project.build.directory}/classes/log4j.xml"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>                </executions>
             </plugin>
-        </plugins>
-
-        <pluginManagement>
-            <plugins>
                 <!-- maven-compiler-plugin -->
 
                 <plugin>
@@ -150,7 +168,6 @@
                 </plugin>
 
             </plugins>
-        </pluginManagement>
 
         <!-- filters for src/main/resources and src/test/resources -->
 
@@ -181,7 +198,6 @@
                 </includes>
                 <excludes>
                     <exclude>*.properties</exclude>
-                    <exclude>*.xml</exclude>
                 </excludes>
             </testResource>
             <testResource>
@@ -189,7 +205,6 @@
                 <filtering>true</filtering>
                 <includes>
                     <include>*.properties</include>
-                    <include>*.xml</include>
                 </includes>
             </testResource>
         </testResources>
