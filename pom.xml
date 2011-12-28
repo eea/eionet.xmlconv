@@ -50,6 +50,27 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>create-dirs</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <loadproperties srcFile="${env}.properties"/>
+                                <mkdir dir="${app.home}"/>
+                                <mkdir dir="${app.home}/tmp"/>
+                                <mkdir dir="${app.home}/log"/>
+                                <mkdir dir="${app.home}/acl"/>
+                                <mkdir dir="${app.home}/queries"/>
+                                <mkdir dir="${app.home}/schema"/>
+                                <mkdir dir="${app.home}/xsl"/>
+                                <mkdir dir="${app.home}/xmlfile"/>
+                                <copy file="GDEMServices.xml" todir="${app.home}" overwrite="true"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>pre-test</id>
                         <phase>process-test-resources</phase>
                         <configuration>
