@@ -10,6 +10,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import eionet.gdem.Properties;
 import eionet.gdem.dto.Schema;
+import eionet.gdem.test.TestUtils;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
 
@@ -20,6 +21,15 @@ import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
  */
 
 public class SchemaManagerDDTest extends TestCase {
+
+    /**
+     * Set up test case properties
+     */
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        TestUtils.setUpProperties(this);
+    }
 
     /**
      * Test getDDSchemas method. The result should be ordered list of Schema objects. The schemas are ordered by table names,
