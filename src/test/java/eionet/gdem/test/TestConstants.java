@@ -5,7 +5,7 @@ package eionet.gdem.test;
 
 /**
  * The class holds different constant values used in test cases.
- * 
+ *
  * @author Enriko Käsper, TietoEnator Estonia AS TestConstants
  */
 
@@ -34,6 +34,7 @@ public class TestConstants {
     public static final String SEED_GW_CONTAINER_SCHEMA = "schema/seed-gw-schema-container.xsd";
     public static final String SEED_XLIFF_DTD = "schema/xliff.dtd";
     public static final String SEED_XLIFF_XML = "seed-xliff.xml";
+    public static final String SEED_XLIFF2_XML = "seed-xliff-2.xml";
     public static final String SEED_GENERALREPORT_SCHEMA = "seed-generalreport.xsd";
     public static final String SEED_GENERALREPORT_SCHEMA_UPD = "seed-generalreportUPD.xsd";
     public static final String SEED_QASCRIPT_XQUERY = "seed-qascript.xquery";

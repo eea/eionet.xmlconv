@@ -50,6 +50,7 @@ public class UplXmlFileManagerTest extends DBTestCase {
     /**
      * Set up test case properties
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         TestUtils.setUpProperties(this);
@@ -58,6 +59,7 @@ public class UplXmlFileManagerTest extends DBTestCase {
     /**
      * Load the data which will be inserted for the test
      */
+    @Override
     protected IDataSet getDataSet() throws Exception {
         IDataSet loadedDataSet =
                 new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_UPLXML_XML));
@@ -66,7 +68,7 @@ public class UplXmlFileManagerTest extends DBTestCase {
 
     /**
      * The method adds XML file into DB. After each operation it scheks the properties values.
-     * 
+     *
      * @throws Exception
      */
     public void testAddXml() throws Exception {
@@ -91,7 +93,7 @@ public class UplXmlFileManagerTest extends DBTestCase {
 
     /**
      * The test should throw exception, because the file already exists
-     * 
+     *
      * @throws Exception
      */
     public void testAddDuplicateXml() throws Exception {
@@ -117,7 +119,7 @@ public class UplXmlFileManagerTest extends DBTestCase {
 
     /**
      * The method checks if xml file exists
-     * 
+     *
      * @throws Exception
      */
     public void testQAScriptFileExists() throws Exception {
@@ -139,7 +141,7 @@ public class UplXmlFileManagerTest extends DBTestCase {
 
     /**
      * The method updates xml file properties and verifies the values in database afterwards.
-     * 
+     *
      * @throws Exception
      */
     public void testUpdateXml() throws Exception {
@@ -150,7 +152,7 @@ public class UplXmlFileManagerTest extends DBTestCase {
 
         String user = TestConstants.TEST_ADMIN_USER;
 
-        MockFormFile xmlFile = new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_XLIFF_XML).getFile());
+        MockFormFile xmlFile = new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_XLIFF2_XML).getFile());
 
         UplXmlFileManager xm = new UplXmlFileManager();
 
@@ -167,7 +169,7 @@ public class UplXmlFileManagerTest extends DBTestCase {
 
     /**
      * The method deletes a xml and checks if it succeeded
-     * 
+     *
      * @throws Exception
      */
     public void testDeleteXml() throws Exception {

@@ -85,6 +85,7 @@ public class UplXmlFileManager {
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.error("Error adding xml file", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
