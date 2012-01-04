@@ -46,7 +46,7 @@ public class UIManager implements IUIManager {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.eurodyn.webdashboards.util.uimanage.IUIManager#removeCell(int, int)
      */
 
@@ -70,7 +70,7 @@ public class UIManager implements IUIManager {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.eurodyn.webdashboards.util.uimanage.IUIManager#createCell(int, java.lang.String, java.lang.String, java.lang.String,
      * java.util.Map)
      */
@@ -107,7 +107,7 @@ public class UIManager implements IUIManager {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.eurodyn.webdashboards.util.uimanage.IUIManager#createCell(int, java.lang.String, java.lang.String, java.util.Map)
      */
     public Node createCell(int col, String type, String content, Map styleMap) throws Exception {

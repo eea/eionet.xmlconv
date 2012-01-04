@@ -40,7 +40,7 @@ import eionet.gdem.web.struts.login.AfterCASLoginAction;
 
 /**
  * This is a class containing some utility methods for keeping security.
- * 
+ *
  * @author Enriko Käsper
  */
 public class SecurityUtil {
@@ -118,7 +118,7 @@ public class SecurityUtil {
     }
 
     /**
-     * 
+     *
      * @param request
      * @return
      * @throws GDEMException
@@ -154,7 +154,7 @@ public class SecurityUtil {
     }
 
     /**
-     * 
+     *
      * @param request
      * @return
      * @throws GDEMException
@@ -179,7 +179,7 @@ public class SecurityUtil {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public static String getUrlWithContextPath(HttpServletRequest request) {

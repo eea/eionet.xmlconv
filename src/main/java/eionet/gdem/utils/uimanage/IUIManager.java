@@ -28,7 +28,7 @@ public interface IUIManager {
 
     /**
      * Replaces selected cell with new cell whose type attribute is set to blank
-     * 
+     *
      * @param row
      *            Row that contains cell being removed
      * @param col
@@ -40,7 +40,7 @@ public interface IUIManager {
     /**
      * Creates cell node that consists of content node which is image filename or text, link node with URL, and style node that
      * contains children nodes describing style
-     * 
+     *
      * @param col
      *            Cell's cols attribute value.
      * @param type
@@ -59,7 +59,7 @@ public interface IUIManager {
     /**
      * Creates cell node that consists of content node which is image filename or text, and style node that contains children nodes
      * describing style
-     * 
+     *
      * @param col
      *            Cell's cols attribute value.
      * @param type

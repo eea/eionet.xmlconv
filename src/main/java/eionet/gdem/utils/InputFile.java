@@ -48,10 +48,10 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IHostDao;
 
 /**
- * Several commmone class for reading files from url Is able to read the host credentials from database and pass the basic auth to
+ * Several commmon class for reading files from url. Is able to read the host credentials from database and pass the basic auth to
  * remote server for files with limited access
  *
- * NB! Always call close() method in finally block, otherwise the InputStream stays open
+ * NB! Always call close() method in finally block, otherwise the InputStream stays open.
  */
 public class InputFile {
 
@@ -71,7 +71,7 @@ public class InputFile {
     private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
 
     /**
-     * Initializes InputUrl object and sets the URI from str_url
+     * Initializes InputUrl object and sets the URI from str_url.
      *
      * @param str_url
      *            - the URL of source file
@@ -89,7 +89,7 @@ public class InputFile {
     }
 
     /**
-     * get source file from url as InputStream user basic auth, if we know the credentials
+     * get source file from url as InputStream user basic auth, if we know the credentials.
      * @return
      * @throws IOException
      */
@@ -99,13 +99,13 @@ public class InputFile {
     }
 
     /**
-     * save the InputFile to the specified text file with default extension
+     * save the InputFile to the specified text file with default extension.
      */
     public String saveSrcFile() throws IOException {
         return saveSrcFile("xml");
     }
     /**
-     * save the InputFile to the specified text file with given extension
+     * save the InputFile to the specified text file with given extension.
      * @param extension
      * @return
      * @throws IOException
@@ -132,7 +132,7 @@ public class InputFile {
     }
 
     /**
-     * closes inputstream of source file
+     * closes inputstream of source file.
      *
      */
     public void close() {
@@ -148,7 +148,7 @@ public class InputFile {
     }
 
     /**
-     * Sets the authentication ticket for the source file
+     * Sets the authentication ticket for the source file.
      *
      * @param _ticket
      */
@@ -159,14 +159,14 @@ public class InputFile {
     /**
      * Sets the boolean to use authentication ticket for grabbing the source file or not. true - use ticket
      *
-     * @param _ticket
+     * @param mode
      */
     public void setTrustedMode(boolean mode) {
         this.isTrustedMode = mode;
     }
 
     /**
-     * Extracts the file name from URL path eg: BasicQuality.xml where the full url is
+     * Extracts the file name from URL path. E.g: BasicQuality.xml where the full url is
      * http://cdrtest.eionet.europa.eu/al/eea/colrjhlyq/envrjhqwa/BasicQuality.xml
      */
     public String getFileName() {
@@ -174,7 +174,7 @@ public class InputFile {
     }
 
     /**
-     * Extracts the file name without file extension from URL path eg: BasicQuality where the full url is
+     * Extracts the file name without file extension from URL path. E.g: BasicQuality where the full url is
      * http://cdrtest.eionet.europa.eu/al/eea/colrjhlyq/envrjhqwa/BasicQuality.xml
      */
     public String getFileNameNoExtension() {
@@ -182,7 +182,7 @@ public class InputFile {
     }
 
     /**
-     * Return source file URL as a String
+     * Return source file URL as a String.
      */
     @Override
     public String toString() {
@@ -190,7 +190,7 @@ public class InputFile {
     }
 
     /**
-     * Extracts the full host name from URL eg: http://cdrtest.eionet.europa.eu where the full url is
+     * Extracts the full host name from URL. E.g: http://cdrtest.eionet.europa.eu where the full url is
      * http://cdrtest.eionet.europa.eu/al/eea/colrjhlyq/envrjhqwa/BasicQuality.xml
      */
     public String getHostName() {
@@ -198,7 +198,7 @@ public class InputFile {
     }
 
     /**
-     * Extracts the folder from URL path eg: /al/eea/colrjhlyq/envrjhqwa where the full url is
+     * Extracts the folder from URL path. E.g: /al/eea/colrjhlyq/envrjhqwa where the full url is
      * http://cdrtest.eionet.europa.eu/al/eea/colrjhlyq/envrjhqwa/BasicQuality.xml
      */
     public String getFolderName() {
@@ -206,7 +206,7 @@ public class InputFile {
     }
 
     /**
-     * Exscracts CDR file info from URL and returns it as a map of paramters If the source file is a file from CDR then the Map
+     * Extracts CDR file info from URL and returns it as a map of parameters. If the source file is a file from CDR then the Map
      * contains the following parameters: envelopeurl, envelopepath, instance, filename
      *
      * @return
@@ -235,7 +235,7 @@ public class InputFile {
     }
 
     /**
-     * Get the authentication ticket for the source file, if available
+     * Get the authentication ticket for the source file, if available.
      *
      * @param _ticket
      */

@@ -37,7 +37,7 @@ public class CacheItem {
 
     /**
      * Constructs a CacheItem object
-     * 
+     *
      * @param key
      * @param timeToLive
      *            ms to keep this in the cache
@@ -53,7 +53,7 @@ public class CacheItem {
 
     /**
      * Set the cache's last accessed stamp
-     * 
+     *
      * @param lastAccessed
      *            the cache's last access stamp
      */
@@ -63,7 +63,7 @@ public class CacheItem {
 
     /**
      * Get the cache's lastAccessed stamp
-     * 
+     *
      * @return the cache's last accessed stamp
      */
     public long getLastAccessed() {
@@ -72,7 +72,7 @@ public class CacheItem {
 
     /**
      * Set the content in the cache
-     * 
+     *
      * @param content
      *            the content being cached
      */
@@ -82,7 +82,7 @@ public class CacheItem {
 
     /**
      * Get the content
-     * 
+     *
      * @return the content being cached
      */
     public Object getContent() {

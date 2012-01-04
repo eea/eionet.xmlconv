@@ -42,7 +42,7 @@ public class TransformDTDEntityResolver implements EntityResolver {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
      */
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {

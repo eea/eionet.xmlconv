@@ -30,7 +30,7 @@ public class TransformException extends Exception {
 
     /**
      * Constructs a new <code>TransformException</code> with specified detail message.
-     * 
+     *
      * @param msg
      *            the error message.
      */
@@ -40,7 +40,7 @@ public class TransformException extends Exception {
 
     /**
      * Constructs a new <code>TransformException</code> with specified nested <code>Throwable</code>.
-     * 
+     *
      * @param nested
      *            the exception or error that caused this exception to be thrown.
      */
@@ -50,7 +50,7 @@ public class TransformException extends Exception {
 
     /**
      * Constructs a new <code>TransformException</code> with specified detail message and nested <code>Throwable</code>.
-     * 
+     *
      * @param msg
      *            the error message.
      * @param nested

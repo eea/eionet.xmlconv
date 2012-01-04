@@ -1,4 +1,4 @@
-/**
+/*
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
@@ -64,7 +64,7 @@ import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 
 /**
- * Several common methods for file handling etc
+ * Several common methods for file handling etc.
  */
 public class Utils {
 
@@ -73,7 +73,7 @@ public class Utils {
     private static final Logger LOGGER = Logger.getLogger(Utils.class);
 
     /**
-     * saving an URL stream to the specified text file
+     * saving an URL stream to the specified text file.
      */
     public static String saveSrcFile(String srcUrl) throws IOException {
 
@@ -122,7 +122,7 @@ public class Utils {
     }
 
     /**
-     * Stores a String in a text file
+     * Stores a String in a text file.
      *
      * @param String
      *            fileName:
@@ -234,7 +234,7 @@ public class Utils {
     }
 
     /**
-     * Checks if the given string is a well-formed URL
+     * Checks if the given string is a well-formed URL.
      */
     public static boolean isURL(String s) {
         try {
@@ -247,7 +247,7 @@ public class Utils {
     }
 
     /**
-     * Checks if the given string is number
+     * Checks if the given string is number.
      */
     public static boolean isNum(String s) {
         try {
@@ -260,7 +260,7 @@ public class Utils {
     }
 
     /**
-     * A method for replacing substrings in string
+     * A method for replacing substrings in string.
      */
     public static String Replace(String str, String oldStr, String replace) {
         str = (str != null ? str : "");
@@ -279,7 +279,7 @@ public class Utils {
     }
 
     /**
-     * A method for decoding the BASIC auth from request header
+     * A method for decoding the BASIC auth from request header.
      */
     public static String getEncodedUsername(String str) throws java.io.IOException {
 
@@ -294,7 +294,7 @@ public class Utils {
     }
 
     /**
-     * A method for decoding the BASIC auth from request header
+     * A method for decoding the BASIC auth from request header.
      */
     public static String getEncodedPwd(String str) throws java.io.IOException {
         byte[] b_decoded = Base64.decodeBase64(str.getBytes());
@@ -308,7 +308,7 @@ public class Utils {
     }
 
     /**
-     * A method for encoding the BASIC auth for request header
+     * A method for encoding the BASIC auth for request header.
      */
     public static String getEncodedAuthentication(String user, String pwd) throws java.io.IOException {
         String auth = user + ":" + pwd;
@@ -317,7 +317,7 @@ public class Utils {
     }
 
     /**
-     * A method for escaping apostrophes
+     * A method for escaping apostrophes.
      */
     public static String strLiteral(String in) {
         in = (in != null ? in : "");
@@ -404,7 +404,7 @@ public class Utils {
     }
 
     /**
-     * reads temporary file from dis and returs as a bytearray
+     * reads temporary file from disk and returns as a bytearray.
      */
     public static byte[] fileToBytes(String fileName) throws GDEMException {
 
@@ -438,7 +438,7 @@ public class Utils {
     }
 
     /**
-     * checks if list contains any String values or not
+     * checks if list contains any String values or not.
      *
      * @param list
      *            The list that will be investigated
@@ -464,8 +464,8 @@ public class Utils {
         return ret;
     }
 
-    /*
-     * Creates random name using timestamp
+    /**
+     * Creates random name using timestamp.
      */
     public static String getRandomName() {
 
@@ -603,7 +603,7 @@ public class Utils {
     }
 
     /**
-     * parses String to Date
+     * parses String to Date.
      *
      * @param String
      *            date
@@ -628,7 +628,7 @@ public class Utils {
     }
 
     /**
-     * formats timestamp (millis from 1 Jan 1970) into string using pattern
+     * formats timestamp (millis from 1 Jan 1970) into string using pattern.
      *
      * @param String
      *            timestamp
@@ -654,7 +654,7 @@ public class Utils {
     }
 
     /**
-     * Generates checksum (MD5) value from filepath
+     * Generates checksum (MD5) value from filepath.
      *
      * @param filename
      * @return
@@ -679,7 +679,7 @@ public class Utils {
     }
 
     /**
-     * Generates checksum (MD5) value from string value
+     * Generates checksum (MD5) value from string value.
      *
      * @param src
      * @return
@@ -703,7 +703,7 @@ public class Utils {
     }
 
     /**
-     * Greneretes checksum value from given inputsource
+     * Generates checksum value from given inputsource.
      *
      * @param is
      * @return
@@ -768,7 +768,7 @@ public class Utils {
     }
 
     /**
-     * generates unique temporary file name with full path
+     * generates unique temporary file name with full path.
      *
      * @param fileName
      * @return
@@ -792,7 +792,7 @@ public class Utils {
     }
 
     /**
-     * generates unique temporary folder name and creates the directory
+     * generates unique temporary folder name and creates the directory.
      *
      * @return fill path
      */
@@ -817,7 +817,7 @@ public class Utils {
     }
 
     /**
-     * Generates foldername
+     * Generates foldername.
      *
      * @param folderName
      *            , n >0, if folder with the same name already exists in the tmp folder ex: getGeneratedFolderName( test, 1 )=
@@ -843,7 +843,7 @@ public class Utils {
     }
 
     /**
-     * deletes the folder, where specified file locates
+     * deletes the folder, where specified file locates.
      *
      * @param filePath
      */
@@ -865,7 +865,7 @@ public class Utils {
     }
 
     /**
-     * Find the first XML file stored in specified folder
+     * Find the first XML file stored in specified folder.
      *
      * @param folder
      *            folder path
@@ -876,7 +876,7 @@ public class Utils {
     }
 
     /**
-     * Find the first XML file stored in specified folder
+     * Find the first XML file stored in specified folder.
      *
      * @param folder
      *            File object
@@ -1015,7 +1015,7 @@ public class Utils {
     }
 
     /**
-     * Extracts file extension from filename
+     * Extracts file extension from filename.
      */
     public static String extractExtension(String strFilename) {
         return extractExtension(strFilename, "xml");
@@ -1059,7 +1059,7 @@ public class Utils {
     }
 
     /**
-     * Escape HTML characters and replace new lines with HTML brake tag.
+     * Escape HTML characters and replace new lines with HTML break tag.
      *
      * @param s
      * @return escaped string
@@ -1074,7 +1074,7 @@ public class Utils {
     }
 
     /**
-     * Reads the XML declaration from instance file
+     * Reads the XML declaration from instance file.
      */
     public static String getEncodingFromStream(String str_url) {
         BufferedReader br = null;

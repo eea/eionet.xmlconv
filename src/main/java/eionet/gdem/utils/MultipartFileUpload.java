@@ -43,12 +43,11 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import eionet.gdem.GDEMException;
 
 /**
- * 
  * Provides methods for uploading file from the client computer to the server. using commons-fileupload-0.1.jar
- * 
+ *
  * File is uploaded to the same computer, where the servlet engine is running. File content is transferred using MIME-multipart HTTP
  * request.
- * 
+ *
  * @author Enriko Käsper
  * @version $Revision: 10280 $
  */
@@ -77,7 +76,7 @@ public class MultipartFileUpload {
 
     /**
      * Constructor. Creates a new FileUploadAdapter object
-     * 
+     *
      * @param String
      *            folderName - folder for the uploaded file
      */
@@ -98,8 +97,8 @@ public class MultipartFileUpload {
     }
 
     /**
-     * Sets folder name where to insert uploaded file
-     * 
+     * Sets folder name where to insert uploaded file.
+     *
      * @param String
      *            folderName - folder for the uploaded file
      */
@@ -108,8 +107,8 @@ public class MultipartFileUpload {
     }
 
     /**
-     * Sets folder name where to insert uploaded file
-     * 
+     * Sets folder name where to insert uploaded file.
+     *
      * @param String
      *            folderName - folder for the uploaded file
      */
@@ -118,7 +117,7 @@ public class MultipartFileUpload {
     }
 
     /**
-     * Returns filename from request
+     * Returns filename from request.
      */
     public String getFileName() {
         return _fileName;
@@ -129,7 +128,7 @@ public class MultipartFileUpload {
     }
 
     /**
-     * Checks whether file with the specified filename already exists in the destination folder
+     * Checks whether file with the specified filename already exists in the destination folder.
      */
     public boolean getFileExists() {
 
@@ -211,12 +210,12 @@ public class MultipartFileUpload {
         }
     }
 
-    /*
+    /**
      * Stores uploaded file in the filesystem with the original filename. If the file with the same name exisits, appends next
      * available number at the end of the filename.
-     * 
+     *
      * @return File name
-     * 
+     *
      * @throws GDEMException Thrown in case of missing data or error during file writing.
      */
     public String saveFile() throws GDEMException {
@@ -247,14 +246,14 @@ public class MultipartFileUpload {
         return fileName;
     }
 
-    /*
+    /**
      * Stores uploaded file in the filesystem with specified name. Renames the existing file, if needed. Otherwise overwrites
      * exisitng file
-     * 
+     *
      * @param destFileName Destination file name.
-     * 
+     *
      * @param keepExisitng true, if rename existing file before saving the new faile. false, if overwrite exisitng file
-     * 
+     *
      * @throws GDEMException Thrown in case of missing data or error during file writing.
      */
     public void saveFileAs(String saveAs, boolean keepExisting) throws GDEMException {
@@ -293,8 +292,8 @@ public class MultipartFileUpload {
     }
 
     /**
-     * Generates filename
-     * 
+     * Generates filename.
+     *
      * @param fileName
      *            , n >0, if file with the same name already exists in the tmp folder ex: genFileName( test.xls, 1 )= test_1.xls
      *            genFileName( test_1.xls, 2 )= test_2.xls
@@ -320,13 +319,13 @@ public class MultipartFileUpload {
     }
 
     /**
-     * Finds unique filename using genFileName method
-     * 
+     * Finds unique filename using genFileName method.
+     *
      * @param folderName
      *            Folder where the file will be stored
      * @param fileName
      *            File name that should be used for generating the unique filename
-     * 
+     *
      * @return Filename that does not exist in the folder
      */
     public static File getUniqueFile(String folderName, String fileName) {
@@ -349,7 +348,7 @@ public class MultipartFileUpload {
     }
 
     /**
-     * Returns filename from filename with full path in: "C:\TEMP\test.txt" out: "test.txt"
+     * Returns filename from filename with full path in: "C:\TEMP\test.txt" out: "test.txt".
      */
     private String getFileItemName(String fileName) {
         int i = fileName.lastIndexOf("\\");
@@ -365,13 +364,13 @@ public class MultipartFileUpload {
     }
 
     /**
-     * Appends current date value at the end of the filename
-     * 
+     * Appends current date value at the end of the filename.
+     *
      * @param folderName
      *            Folder where the file will be stored
      * @param fileName
      *            File name that should be used for generating the unique filename
-     * 
+     *
      * @return Filename with appended date (in format yyMMddHHmmss)
      */
     private File getDateAappendedFile(String folderName, String fileName) {
@@ -391,8 +390,8 @@ public class MultipartFileUpload {
 
     }
 
-    /*
-     * Stores fileItems into list
+    /**
+     * Stores fileItems into list.
      */
     private void addFileItem(FileItem item) {
         if (fileItems == null)
@@ -402,8 +401,8 @@ public class MultipartFileUpload {
 
     }
 
-    /*
-     * returns file item for sepcified fieldName
+    /**
+     * returns file item for sepcified fieldName.
      */
     private FileItem getFileItem(String fieldName) {
         if (fileItems == null)
@@ -421,7 +420,7 @@ public class MultipartFileUpload {
 
     /**
      * returns the file name for specified fieldName. Useful for posting several fileitems.
-     * 
+     *
      * @param fieldName
      *            - file item field name
      * @return
@@ -443,12 +442,12 @@ public class MultipartFileUpload {
     /**
      * Stores uploaded file in the filesystem with the original filename. If the file with the same name exisits, appends next
      * available number at the end of the filename.
-     * 
+     *
      * @param fieldName
      *            - file item field name
      * @param folderdName
      *            - target folder
-     * 
+     *
      * @return File name
      * @throws GDEMException
      *             Thrown in case of missing data or error during file writing.
@@ -525,8 +524,8 @@ public class MultipartFileUpload {
     }
 
     /**
-     * eemaldab faili nimest veidrad s�mbolid
-     * 
+     * eemaldab faili nimest veidrad symbolid
+     *
      * @param fileName
      * @return
      */

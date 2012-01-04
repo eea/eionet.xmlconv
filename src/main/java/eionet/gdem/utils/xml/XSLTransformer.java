@@ -106,7 +106,7 @@ public class XSLTransformer {
 
     /**
      * returns TransformerFactory instance
-     * 
+     *
      * @return
      */
     public TransformerFactory getTransformerFactoryInstance() {
@@ -162,7 +162,7 @@ public class XSLTransformer {
     }
 
     /**
-     * 
+     *
      * @param xsltName
      * @param xslIs
      * @param is

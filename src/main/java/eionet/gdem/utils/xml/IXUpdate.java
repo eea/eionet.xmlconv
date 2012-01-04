@@ -29,7 +29,7 @@ public interface IXUpdate {
 
     /**
      * Update text value of the existing XML element.
-     * 
+     *
      */
     public void updateElement(String parentId, String name, String newValue) throws XmlException;
 

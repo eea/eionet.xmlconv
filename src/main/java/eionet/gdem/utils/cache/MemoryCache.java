@@ -42,7 +42,7 @@ public class MemoryCache implements Comparator {
 
     /**
      * Spring constructor injection
-     * 
+     *
      */
     public MemoryCache(int maxSize, int evictionPercentage) {
         cache = new TreeMap();
@@ -77,7 +77,7 @@ public class MemoryCache implements Comparator {
     /**
      * The eviction policy will keep n items in the cache, and then start evicting x items ordered-by least used first. n = max size
      * of cache x = (eviction_percentage/100) * n
-     * 
+     *
      */
     protected void evict() {
         // logger.debug("Calling evict... cacheSize: " + cache.size() + " maxSize: " + getMaxSize());
