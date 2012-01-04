@@ -20,7 +20,7 @@ public interface IUPLXmlFileDao extends IDbSchema {
      * @return Vector containing all fields as HashMap from UPL_XMLFILE table
      */
 
-    public Vector getUplXmlFile() throws SQLException;
+    Vector getUplXmlFile() throws SQLException;
 
     /**
      * Adds a new uploaded xml file to the database
@@ -29,7 +29,7 @@ public interface IUPLXmlFileDao extends IDbSchema {
      *            - xml file name
      * @return The ID of the added xml file
      */
-    public String addUplXmlFile(String name, String description) throws SQLException;
+    String addUplXmlFile(String name, String description) throws SQLException;
 
     /**
      * Removes the uploaded xml file from the uploaded xml file table
@@ -37,7 +37,7 @@ public interface IUPLXmlFileDao extends IDbSchema {
      * @param uplXmlFileId
      *            - file Id
      */
-    public void removeUplXmlFile(String uplXmlFileId) throws SQLException;
+    void removeUplXmlFile(String uplXmlFileId) throws SQLException;
 
     /**
      * returns xml file name for requested xml file id
@@ -46,7 +46,7 @@ public interface IUPLXmlFileDao extends IDbSchema {
      * @return
      * @throws SQLException
      */
-    public String getUplXmlFileName(String uplXmlFileId) throws SQLException;
+    String getUplXmlFileName(String uplXmlFileId) throws SQLException;
 
     /**
      * returns a UplXmlFile object with specified ID
@@ -55,7 +55,7 @@ public interface IUPLXmlFileDao extends IDbSchema {
      * @return
      * @throws SQLException
      */
-    public Hashtable getUplXmlFileById(String uplXmlFileId) throws SQLException;
+    Hashtable getUplXmlFileById(String uplXmlFileId) throws SQLException;
 
     /**
      * updates XML file object properties
@@ -65,7 +65,7 @@ public interface IUPLXmlFileDao extends IDbSchema {
      * @param fileName
      * @throws SQLException
      */
-    public void updateUplXmlFile(String uplXmlFileId, String title, String fileName) throws SQLException;
+    void updateUplXmlFile(String uplXmlFileId, String title, String fileName) throws SQLException;
 
     /**
      * check if there are any XML files stored in DB with specified name. XML file name should be unique.
@@ -74,5 +74,5 @@ public interface IUPLXmlFileDao extends IDbSchema {
      * @return
      * @throws SQLException
      */
-    public boolean checkUplXmlFile(String xmlFileName) throws SQLException;
+    boolean checkUplXmlFile(String xmlFileName) throws SQLException;
 }

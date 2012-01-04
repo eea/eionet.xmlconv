@@ -61,7 +61,8 @@ public abstract class RemoteServiceMethod {
     }
 
     public void setHttpResponse(HttpMethodResponseWrapper httpResult) {
-        if (httpResult!=null) isHttpRequest=true;
+        if (httpResult != null)
+            isHttpRequest = true;
         this.httpResponse = httpResult;
     }
 
@@ -80,6 +81,5 @@ public abstract class RemoteServiceMethod {
     public void setQueriesFolder(String queriesFolder) {
         this.queriesFolder = queriesFolder;
     }
-
 
 }

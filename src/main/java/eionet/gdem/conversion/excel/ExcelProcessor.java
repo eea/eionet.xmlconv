@@ -90,7 +90,8 @@ public class ExcelProcessor  {
 
         return;
     }
-    public static void main(String[] args){
+
+    public static void main(String[] args) {
         String srcFile = "C:/Projects/EEA/webapps/xmlconv/ROOT/tmp/gdem_out1314612515459.xml";
         String excelFile = "C:/Projects/EEA/webapps/xmlconv/ROOT/tmp/gdem_out1314612515459.xls";
         //String srcFile = "F:\\Projects\\gdem\\test\\content2.xml";

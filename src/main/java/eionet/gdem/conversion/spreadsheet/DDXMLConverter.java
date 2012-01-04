@@ -125,7 +125,8 @@ public abstract class DDXMLConverter {
         sourcefile.initReader(inFile);
         setInitialized(true);
     }
-    public void startConverter(ConversionResultDto resultObject, String sheetParam) throws GDEMException{
+
+    public void startConverter(ConversionResultDto resultObject, String sheetParam) throws GDEMException {
         this.resultObject = resultObject;
         sourcefile.startReader(resultObject);
         this.xmlSchema = sourcefile.getXMLSchema();

@@ -44,64 +44,74 @@ public class ConvertedFileDto {
     private String fileName;
     private String filePath;
     private String fileUrl;
+
     /**
      * Class constructor.
+     *
      * @param fileName2
      * @param filePath2
      */
     public ConvertedFileDto(String fileName, String filePath) {
-        this.fileName=fileName;
-        this.filePath=filePath;
+        this.fileName = fileName;
+        this.filePath = filePath;
     }
+
     /**
      * @return the fileName
      */
     public String getFileName() {
         return fileName;
     }
+
     /**
-     * @param fileName the fileName to set
+     * @param fileName
+     *            the fileName to set
      */
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
+
     /**
      * @return the filePath
      */
     public String getFilePath() {
         return filePath;
     }
+
     /**
-     * @param filePath the filePath to set
+     * @param filePath
+     *            the filePath to set
      */
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
+
     /**
      * @return the fileUrl
      */
     public String getFileUrl() {
         return fileUrl;
     }
+
     /**
-     * @param fileUrl the fileUrl to set
+     * @param fileUrl
+     *            the fileUrl to set
      */
     public void setFileUrl(String fileUrl) {
         this.fileUrl = fileUrl;
     }
-    public byte[] getFileContentAsByteArray() throws GDEMException{
+
+    public byte[] getFileContentAsByteArray() throws GDEMException {
         FileInputStream fis = null;
         File convFile = new File(getFilePath());
         byte[] result;
-        try{
+        try {
             fis = new FileInputStream(convFile);
             result = IOUtils.toByteArray(fis);
-        }
-        catch(IOException e){
+        } catch (IOException e) {
             LOGGER.error("Converted file not found: " + getFilePath());
-            throw new GDEMException("Converted file not found: "+ getFileName());
-        }
-        finally{
+            throw new GDEMException("Converted file not found: " + getFileName());
+        } finally {
             IOUtils.closeQuietly(fis);
         }
         Utils.deleteFile(convFile);

@@ -17,7 +17,7 @@
  *
  * Contributors(s):
  *    Original code: Nedeljko Pavlovic (ED)
- *    							 Alfeldi Istvan (ED)
+ *                                 Alfeldi Istvan (ED)
  */
 
 package eionet.gdem.conversion.converters;
@@ -44,6 +44,7 @@ public class ConvertContext {
         this.xslName = xslName;
         this.xslStream = null;
     }
+
     public ConvertContext(InputStream source, InputStream xslStream, OutputStream result, String cnvFileExt) {
         this.cnvFileExt = cnvFileExt;
         this.resultStream = result;
@@ -55,13 +56,12 @@ public class ConvertContext {
     public String executeConversion(ConvertStartegy converter) throws Exception {
         String strResult = null;
 
-        if (xslStream == null){
+        if (xslStream == null) {
             xslStream = new BufferedInputStream(new FileInputStream(xslName));
         }
-        try{
+        try {
             strResult = converter.convert(source, xslStream, resultStream, cnvFileExt);
-        }
-        finally{
+        } finally {
             IOUtils.closeQuietly(xslStream);
         }
         return strResult;

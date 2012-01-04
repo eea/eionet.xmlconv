@@ -70,7 +70,7 @@ public class Excel2XmlConversionAction extends Action {
             }
             ConversionServiceIF cs = new ConversionService();
             cs.setTicket(ticket);
-            if (!showConversionLog){
+            if (!showConversionLog) {
                 methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
                 cs.setHttpResponse(methodResponse);
             }

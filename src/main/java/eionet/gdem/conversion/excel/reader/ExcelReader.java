@@ -103,7 +103,7 @@ public class ExcelReader implements SourceReaderIF {
 
     @Override
     public void initReader(File inputFile) throws GDEMException {
-        if (inputFile == null){
+        if (inputFile == null) {
             throw new GDEMException("Input file is missing");
         }
         try {
@@ -119,15 +119,17 @@ public class ExcelReader implements SourceReaderIF {
         }
         inputFileLength = inputFile.length();
     }
+
     @Override
-    public void startReader(ConversionResultDto resultObject){
+    public void startReader(ConversionResultDto resultObject) {
         readerLogger = new SourceReaderLogger(resultObject, ReaderTypeEnum.EXCEL);
         readerLogger.logStartWorkbook();
         excelSheetNames = getSheetNames();
         readerLogger.logNumberOfSheets(wb.getNumberOfSheets(), StringUtils.join(excelSheetNames, ", "));
     }
+
     @Override
-    public void closeReader(){
+    public void closeReader() {
         readerLogger.logEndWorkbook(inputFileLength);
     }
 
@@ -299,7 +301,9 @@ public class ExcelReader implements SourceReaderIF {
 
     /**
      * Check if row is empty or not.
-     * @param row MS Excel row.
+     *
+     * @param row
+     *            MS Excel row.
      * @return boolean
      */
     public boolean isEmptyRow(Row row) {
@@ -343,6 +347,7 @@ public class ExcelReader implements SourceReaderIF {
 
     /**
      * Method goes through 4 rows and search the best fit of XML Schema. The deault row is 4.
+     *
      * @param schemaSheet
      * @return
      */
@@ -370,9 +375,13 @@ public class ExcelReader implements SourceReaderIF {
         }
         return null;
     }
+
     /**
-     * Method goes through rows after XML Schema and finds schemas for Excel sheets (DataDict tables). cell(0) =sheet name; cell(1)=XML schema
-     * @param schemaSheet sheet name
+     * Method goes through rows after XML Schema and finds schemas for Excel sheets (DataDict tables). cell(0) =sheet name;
+     * cell(1)=XML schema
+     *
+     * @param schemaSheet
+     *            sheet name
      * @return Map
      */
     private Map<String, String> findSheetSchemas(Sheet schemaSheet) {
@@ -419,7 +428,9 @@ public class ExcelReader implements SourceReaderIF {
 
     /**
      * Get Sheet object by sheet name.
-     * @param name sheet name
+     *
+     * @param name
+     *            sheet name
      * @return Sheet
      */
     private Sheet getSheet(String name) {
@@ -456,6 +467,7 @@ public class ExcelReader implements SourceReaderIF {
 
     /**
      * Reads cell value and formats it according to element type defined in XML Schema.
+     *
      * @param cell
      * @param schemaType
      * @return
@@ -490,9 +502,11 @@ public class ExcelReader implements SourceReaderIF {
 
         return value.trim();
     }
+
     /**
      * DD can generate additional "-meta" sheets with GIS elements for one DD table. In XML these should be handled as 1 table. This
      * is method for finding these kind of sheets and parsing these in parallel with the main sheet
+     *
      * @param mainSheetName
      * @return
      */
@@ -534,10 +548,15 @@ public class ExcelReader implements SourceReaderIF {
 
     /**
      * Goes through all columns and logs missing and redundant columns into conversion log.
-     * @param sheetName Excel sheet name.
-     * @param row Excel Row object
-     * @param metaRow Excel meta sheet row
-     * @param elements List of XML elements
+     *
+     * @param sheetName
+     *            Excel sheet name.
+     * @param row
+     *            Excel Row object
+     * @param metaRow
+     *            Excel meta sheet row
+     * @param elements
+     *            List of XML elements
      */
     private void logColumnMappings(String sheetName, Row row, Row metaRow, List<DDXmlElement> elements) {
 
@@ -556,24 +575,26 @@ public class ExcelReader implements SourceReaderIF {
             }
             elemNames.add(element.getLocalName().toLowerCase());
         }
-        if(missingColumns.size() > 0){
+        if (missingColumns.size() > 0) {
             readerLogger.logMissingColumns(StringUtils.join(missingColumns, ", "), sheetName);
         }
         List<String> extraColumns = getExtraColumns(row, elemNames);
-        if(extraColumns.size() > 0){
+        if (extraColumns.size() > 0) {
             readerLogger.logExtraColumns(StringUtils.join(extraColumns, ", "), sheetName);
         }
 
         if (metaRow != null) {
             List<String> extraMetaColumns = getExtraColumns(metaRow, elemNames);
-            if(extraMetaColumns.size() > 0){
-                readerLogger.logExtraColumns(StringUtils.join(extraColumns, ", "), sheetName  + DDXMLConverter.META_SHEET_NAME);
+            if (extraMetaColumns.size() > 0) {
+                readerLogger.logExtraColumns(StringUtils.join(extraColumns, ", "), sheetName + DDXMLConverter.META_SHEET_NAME);
             }
         }
 
     }
+
     /**
      * Find redundant columns from the list of columns
+     *
      * @param row
      * @param elemNames
      * @return
@@ -593,6 +614,7 @@ public class ExcelReader implements SourceReaderIF {
 
     /**
      * Get cell String value.
+     *
      * @param row
      * @param colIdx
      * @param schemaType
@@ -606,6 +628,7 @@ public class ExcelReader implements SourceReaderIF {
 
     /**
      * If date formatted cell value is not higher than 4 digit number, then it is probably a year.
+     *
      * @param doubleCellValue
      * @return boolean
      */

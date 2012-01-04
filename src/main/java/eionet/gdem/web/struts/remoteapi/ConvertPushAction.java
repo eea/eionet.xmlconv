@@ -88,7 +88,7 @@ public class ConvertPushAction extends BaseAction {
             }
         } finally {
             if (methodResponse != null){
-                try{
+                try {
                     // flush the content
                     methodResponse.flush();
                 }

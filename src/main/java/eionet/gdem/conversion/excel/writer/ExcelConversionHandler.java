@@ -411,8 +411,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF {
             wb.write(fileOut);
         } catch (Exception e) {
             throw new GDEMException("ErrorConversionHandler - couldn't save the Excel file: " + e.toString());
-        }
-        finally{
+        } finally {
             IOUtils.closeQuietly(fileOut);
         }
     }

@@ -254,20 +254,23 @@ public class ConversionResultDto {
     }
 
     /**
-     * @param sourceUrl the sourceUrl to set
+     * @param sourceUrl
+     *            the sourceUrl to set
      */
     public void setSourceUrl(String sourceUrl) {
         this.sourceUrl = sourceUrl;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
         return "ConversionResultDto [statusCode=" + statusCode + ", statusDescription=" + statusDescription + ", conversionLogs="
-        + conversionLogs + ", containsWarnings=" + containsWarnings + ", containsErrors=" + containsErrors
-        + ", containsInfos=" + containsInfos + ", sourceUrl=" + sourceUrl + ", convertedXmls=" + convertedXmls + "]";
+                + conversionLogs + ", containsWarnings=" + containsWarnings + ", containsErrors=" + containsErrors
+                + ", containsInfos=" + containsInfos + ", sourceUrl=" + sourceUrl + ", convertedXmls=" + convertedXmls + "]";
     }
 
     public String getConversionLogAsHtml() {
@@ -309,22 +312,20 @@ public class ConversionResultDto {
         strBuilder.append("</div>");
         return strBuilder.toString();
     }
-    private String getResultAsHtml(){
+
+    private String getResultAsHtml() {
         StringBuilder strBuilder = new StringBuilder();
         String resultClass = "";
-        if (STATUS_OK.equals(getStatusCode())){
-            resultClass="system-msg";
+        if (STATUS_OK.equals(getStatusCode())) {
+            resultClass = "system-msg";
+        } else if (STATUS_ERR_VALIDATION.equals(getStatusCode())) {
+            resultClass = "caution-msg";
+        } else if (STATUS_ERR_SYSTEM.equals(getStatusCode())) {
+            resultClass = "error-msg";
+        } else if (STATUS_ERR_SCHEMA_NOT_FOUND.equals(getStatusCode())) {
+            resultClass = "error-msg";
         }
-        else if (STATUS_ERR_VALIDATION.equals(getStatusCode())){
-            resultClass="caution-msg";
-        }
-        else if (STATUS_ERR_SYSTEM.equals(getStatusCode())){
-            resultClass="error-msg";
-        }
-        else if (STATUS_ERR_SCHEMA_NOT_FOUND.equals(getStatusCode())){
-            resultClass="error-msg";
-        }
-        if (!Utils.isNullStr(resultClass)){
+        if (!Utils.isNullStr(resultClass)) {
             resultClass = "class=\"" + resultClass + "\"";
         }
         strBuilder.append("<div ");
@@ -345,10 +346,11 @@ public class ConversionResultDto {
     public List<ConvertedFileDto> getConvertedFiles() {
         return this.convertedFiles;
     }
-    public ConvertedFileDto getConvertedFileByFileName(String fileName){
-        if(convertedFiles!=null){
-            for (ConvertedFileDto convertedFile :convertedFiles){
-                if (convertedFile.getFileName().equals(fileName)){
+
+    public ConvertedFileDto getConvertedFileByFileName(String fileName) {
+        if (convertedFiles != null) {
+            for (ConvertedFileDto convertedFile : convertedFiles) {
+                if (convertedFile.getFileName().equals(fileName)) {
                     return convertedFile;
                 }
             }

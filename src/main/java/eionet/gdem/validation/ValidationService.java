@@ -302,7 +302,7 @@ public class ValidationService {
      * @throws SAXNotSupportedException
      */
     private void setNoNamespaceSchemaProperty(XMLReader reader, String schema) throws SAXNotRecognizedException,
-    SAXNotSupportedException {
+            SAXNotSupportedException {
         setLocalSchemaUrl(schema);
         reader.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation", getValidatedSchema());
     }
@@ -317,7 +317,7 @@ public class ValidationService {
      * @throws SAXNotSupportedException
      */
     private void setNamespaceSchemaProperty(XMLReader reader, String namespace, String schema) throws SAXNotRecognizedException,
-    SAXNotSupportedException {
+            SAXNotSupportedException {
         setLocalSchemaUrl(schema);
         reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", namespace + " "
                 + getValidatedSchema());
