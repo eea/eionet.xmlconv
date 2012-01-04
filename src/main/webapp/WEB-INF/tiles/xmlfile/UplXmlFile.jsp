@@ -73,7 +73,7 @@
                                 </a>
                             </td>
                             <td>
-                                    <bean:write name="xmlfile" property="title" />
+                                <bean:write name="xmlfile" property="title" />
                             </td>
                             <td>
                                 <logic:notEqual name="fileExists" value=""  name="xmlfile" property="lastModified" >
@@ -94,6 +94,7 @@
             <div class="boxbottombuttons">
                 <logic:equal name="ssdPrm" value="true"  name="xmlfiles.uploaded" property="ssdPrm" >
                     <input type="button"  class="button" value="<bean:message key="label.delete"/>" onclick="return submitAction(1,'deleteUplXmlFile');" />
+                    <input type="button"  class="button" value="Rename" onclick="return submitAction(1,'renameUplXmlFileForm');" />
                 </logic:equal>
             </div>
         </html:form>
@@ -104,7 +105,6 @@
         </div>
     </logic:notPresent>
     <div class="visualClear">&nbsp;</div>
-
 
 </logic:present>
 

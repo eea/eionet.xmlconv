@@ -69,6 +69,7 @@ public class EditStylesheetAction extends LookupDispatchAction {
         String stylesheetId = form.getStylesheetId();
         String user = (String) httpServletRequest.getSession().getAttribute("user");
         String dependsOn = form.getDependsOn();
+        String curFileName = form.getXslFileName();
 
         httpServletRequest.setAttribute("stylesheetId", stylesheetId);
 
@@ -96,7 +97,7 @@ public class EditStylesheetAction extends LookupDispatchAction {
         if (errors.isEmpty()) {
             try {
                 StylesheetManager st = new StylesheetManager();
-                st.update(user, stylesheetId, schema, xslFile, type, desc, dependsOn);
+                st.update(user, stylesheetId, schema, xslFile, curFileName, type, desc, dependsOn);
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.updated"));
                 StylesheetListLoader.reloadStylesheetList(httpServletRequest);
             } catch (DCMException e) {

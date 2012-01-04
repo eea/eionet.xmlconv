@@ -6,35 +6,27 @@
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 
 <html:xhtml/>
-
-        <ed:breadcrumbs-push label="Upload XML File" level="1" />
-        <h1><bean:message key="label.title.uplXmlFile.add"/></h1>
+        <ed:breadcrumbs-push label="Edit XML File" level="2" />
+        <h1>Rename XML file</h1>
 
         <%-- include Error display --%>
         <tiles:insert definition="Error" />
 
-            <html:form action="/addUplXmlFile" method="post" enctype="multipart/form-data">
+            <html:form action="/renameUplXmlFile" method="post">
               <table class="formtable">
                 <col class="labelcol"/>
                 <col class="entrycol"/>
                 <tr class="zebraeven">
                     <td>
-                    <label class="question required" for="fileXml">
+                        <label class="question">
                         <bean:message key="label.uplXmlFile.xmlfile"/>
                     </label>
                   </td>
                   <td>
-                    <html:file property="xmlfile" styleId="fileXml" size="68" />
-                  </td>
-                </tr>
-                <tr>
-                    <td>
-                    <label class="question" for="txtTitle">
-                        <bean:message key="label.uplXmlFile.title"/>
-                    </label>
-                  </td>
-                  <td>
-                    <html:text property="title" style="width:400px" styleId="txtTitle" />
+                        <html:text property="xmlFilePath" style="width:400px" styleId="txtTitle" />
+                        <html:hidden  property="xmlfileId" />
+                        <html:hidden  property="title" />
+                        <html:hidden  property="xmlFileName" />
                   </td>
                 </tr>
                 <tr>
@@ -44,7 +36,7 @@
                   <td>&nbsp;</td>
                   <td>
                     <html:submit styleClass="button">
-                        <bean:message key="label.uplXmlFile.upload"/>
+                        <bean:message key="label.ok"/>
                     </html:submit>
                     <html:cancel styleClass="button">
                         <bean:message key="label.cancel"/>

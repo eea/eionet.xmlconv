@@ -52,7 +52,7 @@
                     </label>
                   </td>
                   <td>
-                    <html:textarea property="title"  rows="3" cols="30" style="width:400px" styleId="txtTitle"/>
+                    <html:text property="title" style="width:400px" styleId="txtTitle" />
                   </td>
                 </tr>
                 <tr>

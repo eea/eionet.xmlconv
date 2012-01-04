@@ -184,13 +184,48 @@ public class UplXmlFileManager {
                 file.destroy();
             }
             // update metadata in DB
-            uplXmlFileDao.updateUplXmlFile(xmlFileId, title);
+            uplXmlFileDao.updateUplXmlFile(xmlFileId, title, curFileName);
 
         } catch (Exception e) {
             LOGGER.error("Error updating uploaded XML file", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
+    }
+
+    public void renameXmlFile(String user, String xmlFileId, String title, String curFileName, String newFileName) throws DCMException {
+        try {
+            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_XMLFILE_PATH, "u")) {
+                LOGGER.debug("You don't have permissions to update xml file!");
+                throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_XMLFILE_UPDATE);
+            }
+        } catch (DCMException e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error renaming uploaded XML file", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
+
+        try {
+            // check if file exists
+            if (fileExists(newFileName)) {
+                throw new DCMException("label.uplXmlFile.error.fileExists");
+            }
+            // rename file
+            File originalFile = new File(Properties.xmlfileFolder + "/" + curFileName);
+            File newFile = new File(Properties.xmlfileFolder + "/" + newFileName);
+            boolean renameSuccess = originalFile.renameTo(newFile);
+            if (!renameSuccess) {
+                LOGGER.error("Failed to rename file: " + originalFile + " -> " + newFile);
+                throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+            }
+
+            // update metadata in DB
+            uplXmlFileDao.updateUplXmlFile(xmlFileId, title, newFileName);
+        } catch (SQLException e) {
+            LOGGER.error("Error updating uploaded XML file", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
     }
 
     /**

@@ -243,6 +243,13 @@
         <action path="/editUplXmlFile"  scope="request" type="eionet.gdem.web.struts.xmlfile.EditUplXmlFileAction" name="EditUplXmlFileForm" cancellable="true">
             <forward name="success" path="/do/uplXmlFiles"  redirect="true"/>
         </action>
+        <action path="/renameUplXmlFileForm" name="EditUplXmlFileForm" type="eionet.gdem.web.struts.xmlfile.RenameUplXmlFileFormAction" scope="request">
+            <forward name="success" path="/renameUplXmlFile.jsp" redirect="true" />
+            <forward name="fail" path="/do/uplXmlFiles"  redirect="true"/>
+        </action>
+        <action path="/renameUplXmlFile"  scope="request" type="eionet.gdem.web.struts.xmlfile.RenameUplXmlFileAction" name="EditUplXmlFileForm" cancellable="true">
+            <forward name="success" path="/do/uplXmlFiles"  redirect="true"/>
+        </action>
 
 
         <!-- action path="/stylesheetList" type="eionet.gdem.web.struts.stylesheet.StylesheetListAction">

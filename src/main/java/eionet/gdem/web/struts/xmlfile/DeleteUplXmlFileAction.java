@@ -6,6 +6,7 @@ package eionet.gdem.web.struts.xmlfile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
@@ -36,6 +37,11 @@ public class DeleteUplXmlFileAction extends Action {
         ActionMessages messages = new ActionMessages();
 
         String xmlfileId = httpServletRequest.getParameter("xmlfileId");
+        if (StringUtils.isEmpty(xmlfileId)) {
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplXmlFile.error.notSelected"));
+            httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+            return actionMapping.findForward("success");
+        }
         String user_name = (String) httpServletRequest.getSession().getAttribute("user");
 
         try {

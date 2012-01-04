@@ -271,7 +271,7 @@ public class StylesheetManager {
         return result;
     }
 
-    public void update(String user, String xsl_id, String schema, FormFile file, String type, String descr, String dependsOn)
+    public void update(String user, String xsl_id, String schema, FormFile file, String curFileName, String type, String descr, String dependsOn)
             throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "u")) {
@@ -287,43 +287,26 @@ public class StylesheetManager {
             String fileName = file.getFileName().trim();
 
             if (fileName != null && !fileName.equals("")) {
-                if (!styleSheetDao.checkStylesheetFile(xsl_id, fileName)) {
-                    if (styleSheetDao.checkStylesheetFile(fileName)) {
-                        throw new DCMException(BusinessConstants.EXCEPTION_STYLEHEET_FILE_EXISTS);
-                    }
-                }
-
                 InputStream in = file.getInputStream();
                 OutputStream output = null;
-                String filepath = new String(Properties.xslFolder + "/" + fileName);
+                String filepath = new String(Properties.xslFolder + "/" + curFileName);
 
-                try {
+                try{
                     output = new FileOutputStream(filepath);
                     IOUtils.copy(in, output);
-                } finally {
+                }
+                finally{
                     IOUtils.closeQuietly(in);
                     IOUtils.closeQuietly(output);
                     file.destroy();
                 }
-
-                // delete Old xsl
-                HashMap hash = styleSheetDao.getStylesheetInfo(xsl_id);
-
-                String fileNameOld = (String) hash.get("xsl");
-                String xslFolder = Properties.xslFolder;
-                if (!fileNameOld.equals(fileName)) {
-                    Utils.deleteFile(xslFolder + File.separatorChar + fileNameOld);
-                }
-
             }
             String schemaID = schemaDao.getSchemaID(schema);
 
             if (schemaID == null) {
                 schemaID = schemaDao.addSchema(schema, null);
             }
-            styleSheetDao.updateStylesheet(xsl_id, schemaID, descr, fileName, type, dependsOn);
-        } catch (DCMException e) {
-            throw e;
+            styleSheetDao.updateStylesheet(xsl_id, schemaID, descr, curFileName, type, dependsOn);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("Error updating stylesheet", e);

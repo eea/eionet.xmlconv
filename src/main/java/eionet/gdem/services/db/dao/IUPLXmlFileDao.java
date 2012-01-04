@@ -9,14 +9,14 @@ import java.util.Vector;
 
 /**
  * Database object interface for uploaded XML files.
- * 
+ *
  * @author Enriko Käsper (TietoEnator)
- * 
+ *
  */
 public interface IUPLXmlFileDao extends IDbSchema {
     /**
      * returns all uploaded xml files
-     * 
+     *
      * @return Vector containing all fields as HashMap from UPL_XMLFILE table
      */
 
@@ -24,7 +24,7 @@ public interface IUPLXmlFileDao extends IDbSchema {
 
     /**
      * Adds a new uploaded xml file to the database
-     * 
+     *
      * @param name
      *            - xml file name
      * @return The ID of the added xml file
@@ -33,7 +33,7 @@ public interface IUPLXmlFileDao extends IDbSchema {
 
     /**
      * Removes the uploaded xml file from the uploaded xml file table
-     * 
+     *
      * @param uplXmlFileId
      *            - file Id
      */
@@ -41,7 +41,7 @@ public interface IUPLXmlFileDao extends IDbSchema {
 
     /**
      * returns xml file name for requested xml file id
-     * 
+     *
      * @param uplXmlFileId
      * @return
      * @throws SQLException
@@ -50,7 +50,7 @@ public interface IUPLXmlFileDao extends IDbSchema {
 
     /**
      * returns a UplXmlFile object with specified ID
-     * 
+     *
      * @param uplXmlFileId
      * @return
      * @throws SQLException
@@ -59,16 +59,17 @@ public interface IUPLXmlFileDao extends IDbSchema {
 
     /**
      * updates XML file object properties
-     * 
+     *
      * @param uplXmlFileId
      * @param title
+     * @param fileName
      * @throws SQLException
      */
-    public void updateUplXmlFile(String uplXmlFileId, String title) throws SQLException;
+    public void updateUplXmlFile(String uplXmlFileId, String title, String fileName) throws SQLException;
 
     /**
      * check if there are any XML files stored in DB with specified name. XML file name should be unique.
-     * 
+     *
      * @param xmlFileName
      * @return
      * @throws SQLException

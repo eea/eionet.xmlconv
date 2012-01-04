@@ -38,7 +38,7 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
     + ", " + FILE_TYPE_FLD + ") " + "VALUES (?,?,?)";
     // query for updating XML file row
     private static final String qUpdateUplXmlFile = "UPDATE  " + FILE_TABLE + " SET " + FILE_TITLE_FLD + "= ? " + ", "
-    + FILE_TYPE_FLD + "= ? " + " WHERE " + FILE_ID_FLD + "= ? ";
+    + FILE_TYPE_FLD + "= ?, " + FILE_NAME_FLD + " = ? "+ " WHERE " + FILE_ID_FLD + "= ? ";
 
     // query for deleting XML file row
     private static final String qRemoveUplXmlFile = "DELETE FROM " + FILE_TABLE + " WHERE " + FILE_ID_FLD + "= ?";
@@ -106,7 +106,7 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
     }
 
     @Override
-    public void updateUplXmlFile(String uplXmlFileId, String title) throws SQLException {
+    public void updateUplXmlFile(String uplXmlFileId, String title, String fileName) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
@@ -122,7 +122,8 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
             pstmt = conn.prepareStatement(qUpdateUplXmlFile);
             pstmt.setString(1, title);
             pstmt.setString(2, XML_FILE_TYPE);
-            pstmt.setInt(3, Integer.parseInt(uplXmlFileId));
+            pstmt.setString(3, fileName);
+            pstmt.setInt(4, Integer.parseInt(uplXmlFileId));
             pstmt.executeUpdate();
             pstmt.close();
 
