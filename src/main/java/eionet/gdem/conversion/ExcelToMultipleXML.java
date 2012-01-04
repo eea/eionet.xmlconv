@@ -178,7 +178,7 @@ public class ExcelToMultipleXML {
                         // validate expiration date - should be in the future.
                         else if (!Utils.isNullStr(schemaInfo.get("expire_date"))
                                 && (new Date()).after(Utils.parseDate((String) schemaInfo.get("expire_date"),
-                                "yyyy-MM-dd HH:mm:ss"))) {
+                                        "yyyy-MM-dd HH:mm:ss"))) {
                             result.setStatusCode(ConversionResultDto.STATUS_ERR_SCHEMA_NOT_FOUND);
                             result.setStatusDescription("The conversion to XML is not allowed for obsolete Schemas! "
                                     + " This version of Schema '" + schemaUrl + "' expired on: "
@@ -207,8 +207,8 @@ public class ExcelToMultipleXML {
     }
 
     private static final void
-    applyTransformation(ConversionResultDto result, String xmlTmpFileLocation, Vector<Object> stylesheets)
-    throws FileNotFoundException, GDEMException, Exception, UnsupportedEncodingException, IOException {
+            applyTransformation(ConversionResultDto result, String xmlTmpFileLocation, Vector<Object> stylesheets)
+                    throws FileNotFoundException, GDEMException, Exception, UnsupportedEncodingException, IOException {
         Map<Object, Object> stylesheet;
         InputStream xslFis = null;
         InputStream xmlFis = null;
@@ -241,7 +241,7 @@ public class ExcelToMultipleXML {
 
                         LOGGER.debug("use previous generated XML");
                     }
-                    try{
+                    try {
                         xslFis = new FileInputStream(Properties.xslFolder + File.separatorChar + stylesheet.get("xsl"));
                         out = new ByteArrayOutputStream();
                         xmlConv.convert(xmlFis, xslFis, out, "xml");
@@ -249,21 +249,20 @@ public class ExcelToMultipleXML {
 
                         if (!LOGGER.isDebugEnabled()) {
                             // store tmp files in server, if debug is enabled
-                            ByteArrayInputStream tmpFis =null;
-                            FileOutputStream tmpFile =null;
-                            try{
+                            ByteArrayInputStream tmpFis = null;
+                            FileOutputStream tmpFile = null;
+                            try {
                                 tmpFis = new ByteArrayInputStream(out.toByteArray());
                                 tmpFile =
-                                    new FileOutputStream(Utils.getUniqueTmpFileName(transformFileNameToExtension("tmpOutput", "xml")));
+                                        new FileOutputStream(Utils.getUniqueTmpFileName(transformFileNameToExtension("tmpOutput",
+                                                "xml")));
                                 IOUtils.copy(tmpFis, tmpFile);
-                            }
-                            finally{
+                            } finally {
                                 IOUtils.closeQuietly(tmpFile);
                                 IOUtils.closeQuietly(tmpFis);
                             }
                         }
-                    }
-                    finally{
+                    } finally {
                         IOUtils.closeQuietly(xslFis);
                         IOUtils.closeQuietly(xmlFis);
                         IOUtils.closeQuietly(out);
@@ -496,10 +495,9 @@ public class ExcelToMultipleXML {
     }
 
     private static final void copyInputStream(InputStream in, OutputStream out) throws IOException {
-        try{
+        try {
             IOUtils.copy(in, out);
-        }
-        finally{
+        } finally {
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(out);
         }

@@ -1,5 +1,5 @@
 /**
- * The contents of this file are subject to the Mozilla Public
+ * The contents of this file are subject to the Mozilla
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
@@ -43,7 +43,7 @@ public interface ExcelConversionHandlerIF {
      * @param name
      *            - MS Excel file name (full path)
      */
-    public void setFileName(String name);
+    void setFileName(String name);
 
     /**
      * Adds a new worksheet into workbook
@@ -51,7 +51,7 @@ public interface ExcelConversionHandlerIF {
      * @param sheetName
      *            - name of the new worksheet
      */
-    public void addWorksheets(String sheetName);
+    void addWorksheets(String sheetName);
 
     /**
      * Adds a new row to the active worksheet
@@ -61,7 +61,7 @@ public interface ExcelConversionHandlerIF {
      * @param def_type
      *            - default data type
      */
-    public void addRow(String def_style, String def_type);
+    void addRow(String def_style, String def_type);
 
     /**
      * Adds several new rows to the active worksheet
@@ -73,7 +73,7 @@ public interface ExcelConversionHandlerIF {
      * @param repeated
      *            - the number of new rows
      */
-    public void addRows(String def_style, String def_type, int repeated);
+    void addRows(String def_style, String def_type, int repeated);
 
     /**
      * Adds a new column to the active worksheet
@@ -83,7 +83,7 @@ public interface ExcelConversionHandlerIF {
      * @param def_type
      *            - default data type
      */
-    public void addColumn(String def_style, String def_type);
+    void addColumn(String def_style, String def_type);
 
     /**
      * Adds several new columns to the active worksheet
@@ -95,7 +95,7 @@ public interface ExcelConversionHandlerIF {
      * @param repeated
      *            - the number of new rows
      */
-    public void addColumns(String def_style, String def_type, int repeated);
+    void addColumns(String def_style, String def_type, int repeated);
 
     /**
      * Adds a new cell to the active worksheet and active row
@@ -107,7 +107,7 @@ public interface ExcelConversionHandlerIF {
      * @param style_name
      *            - style name
      */
-    public void addCell(String type, String str_value, String style_name);
+    void addCell(String type, String str_value, String style_name);
 
     /**
      * Adds several empty cells to the active worksheet and active row
@@ -119,7 +119,7 @@ public interface ExcelConversionHandlerIF {
      * @param repeated
      *            - the number of new cells
      */
-    public void addCells(String type, String style_name, int repeated);
+    void addCells(String type, String style_name, int repeated);
 
     /**
      * Adds a new Excel style to the active workbook
@@ -127,7 +127,7 @@ public interface ExcelConversionHandlerIF {
      * @param ExcelStyle
      *            - predefined excel style
      */
-    public void addStyle(ExcelStyleIF style);
+    void addStyle(ExcelStyleIF style);
 
     /**
      * Returns the excel style by style name
@@ -138,15 +138,15 @@ public interface ExcelConversionHandlerIF {
      *            - Excel objects family (sheet, row, column, cell)
      * @return excel style object
      */
-    public ExcelStyleIF getStyleByName(String name, String family);
+    ExcelStyleIF getStyleByName(String name, String family);
 
     /**
      * Writes the EXCEL workbook object into file
      */
-    public void writeToFile() throws GDEMException;
+    void writeToFile() throws GDEMException;
 
     /**
      * Writes the EXCEL workbook object into output stream
      */
-    public void writeToFile(OutputStream outstream) throws GDEMException;
+    void writeToFile(OutputStream outstream) throws GDEMException;
 }

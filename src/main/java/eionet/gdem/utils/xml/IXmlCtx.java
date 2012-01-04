@@ -1,5 +1,5 @@
 /*
- * The contents of this file are subject to the Mozilla Public
+ * The contents of this file are subject to the Mozilla
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
@@ -27,28 +27,28 @@ import org.w3c.dom.Document;
 
 public interface IXmlCtx {
 
-    public void setWellFormednessChecking() throws XmlException;
+    void setWellFormednessChecking() throws XmlException;
 
-    public void setValidationChecking() throws XmlException;
+    void setValidationChecking() throws XmlException;
 
-    public void checkFromInputStream(InputStream inputStream) throws XmlException;
+    void checkFromInputStream(InputStream inputStream) throws XmlException;
 
-    public void checkFromFile(String fullFileName) throws XmlException;
+    void checkFromFile(String fullFileName) throws XmlException;
 
-    public void checkFromString(String xmlString) throws XmlException;
+    void checkFromString(String xmlString) throws XmlException;
 
-    public void createXMLDocument() throws XmlException;
+    void createXMLDocument() throws XmlException;
 
-    public void createXMLDocument(String docTypeName, String systemId) throws XmlException;
+    void createXMLDocument(String docTypeName, String systemId) throws XmlException;
 
-    public IXUpdate getManager();
+    IXUpdate getManager();
 
-    public IXmlSerializer getSerializer();
+    IXmlSerializer getSerializer();
 
-    public IXQuery getQueryManager();
+    IXQuery getQueryManager();
 
-    public Document getDocument();
+    Document getDocument();
 
-    public void setDocument(Document document);
+    void setDocument(Document document);
 
 }

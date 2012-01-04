@@ -32,9 +32,9 @@ public interface IXQuery {
      * Finds element which conatins given attributes map. For this elemebnt will be searched under element with provided ID .
      *
      */
-    public Node findElementByAttrs(String parentId, Map<String, String> attributes) throws XmlException;
+    Node findElementByAttrs(String parentId, Map<String, String> attributes) throws XmlException;
 
-    public String getAttributeValue(String parentId, String attribute) throws XmlException;
+    String getAttributeValue(String parentId, String attribute) throws XmlException;
 
     /**
      * Gets value of element which parent is specified by ID.
@@ -47,13 +47,13 @@ public interface IXQuery {
      * @throws XmlException
      *             Thrown in case of system erros
      */
-    public String getElementValue(String parentId, String name) throws XmlException;
+    String getElementValue(String parentId, String name) throws XmlException;
 
     /**
      * Finds element by Id in a DOM Document
      *
      */
-    public Node findElementById(String id) throws XmlException;
+    Node findElementById(String id) throws XmlException;
 
     /**
      * Retruns list of all identifiers for the specifed element
@@ -62,7 +62,7 @@ public interface IXQuery {
      * @return
      * @throws XmlException
      */
-    public List<String> getElementIdentifiers(String elementName) throws XmlException;
+    List<String> getElementIdentifiers(String elementName) throws XmlException;
 
     /**
      * Retruns list of all elements attributes for the specifed element name
@@ -71,7 +71,7 @@ public interface IXQuery {
      * @return
      * @throws XmlException
      */
-    public List<Map<String, String>> getElements(String elementName) throws XmlException;
+    List<Map<String, String>> getElements(String elementName) throws XmlException;
 
     /**
      * returns the list of element values
@@ -80,7 +80,7 @@ public interface IXQuery {
      * @return
      * @throws XmlException
      */
-    public List<String> getElementValues(String elementName) throws XmlException;
+    List<String> getElementValues(String elementName) throws XmlException;
 
     /**
      * returns the list XML Schema element names from xs:element name attribute
@@ -88,7 +88,7 @@ public interface IXQuery {
      * @return
      * @throws XmlException
      */
-    public List<String> getSchemaElements() throws XmlException;
+    List<String> getSchemaElements() throws XmlException;
 
     /**
      * returns the xs:restriction/@base for gievn element from XML Schema
@@ -96,7 +96,7 @@ public interface IXQuery {
      * @return
      * @throws XmlException
      */
-    public String getSchemaElementType(String elementName) throws XmlException;
+    String getSchemaElementType(String elementName) throws XmlException;
 
     /**
      * returns the list XML Schema imports from xs:import schemaLocation attribute
@@ -104,7 +104,7 @@ public interface IXQuery {
      * @return
      * @throws XmlException
      */
-    public List<String> getSchemaImports() throws XmlException;
+    List<String> getSchemaImports() throws XmlException;
 
     /**
      * returns the list XML Schema elements that may have multiple values
@@ -112,6 +112,6 @@ public interface IXQuery {
      * @return
      * @throws XmlException
      */
-    public Map<String, String> getSchemaElementWithMultipleValues() throws XmlException;
+    Map<String, String> getSchemaElementWithMultipleValues() throws XmlException;
 
 }

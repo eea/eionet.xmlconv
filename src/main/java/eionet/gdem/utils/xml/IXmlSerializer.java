@@ -5,12 +5,12 @@ import java.io.ByteArrayOutputStream;
 
 public interface IXmlSerializer {
 
-    public ByteArrayOutputStream serializeToOutStream() throws XmlException;
+    ByteArrayOutputStream serializeToOutStream() throws XmlException;
 
-    public void serializeToFs(String fullFileName) throws XmlException;
+    void serializeToFs(String fullFileName) throws XmlException;
 
-    public ByteArrayInputStream serializeToInStream() throws XmlException;
+    ByteArrayInputStream serializeToInStream() throws XmlException;
 
-    public String serializeToString() throws XmlException;
+    String serializeToString() throws XmlException;
 
 }
