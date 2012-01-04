@@ -8,7 +8,7 @@ import java.util.Vector;
 
 public interface IUPLSchemaDao extends IDbSchema {
     /**
-     * returns all uploaded schemas
+     * returns all uploaded schemas.
      *
      * @return Vector containing all fields as HashMap from UPL_SCHEMA table
      */
@@ -16,7 +16,7 @@ public interface IUPLSchemaDao extends IDbSchema {
     Vector getUplSchema() throws SQLException;
 
     /**
-     * Adds a new uploaded Schema to the database
+     * Adds a new uploaded Schema to the database.
      *
      * @param schema
      *            - xml schema name
@@ -25,7 +25,7 @@ public interface IUPLSchemaDao extends IDbSchema {
     String addUplSchema(String schema, String description, String fk_schema_id) throws SQLException;
 
     /**
-     * Removes the uploaded xml schema from the uploaded schema table
+     * Removes the uploaded xml schema from the uploaded schema table.
      *
      * @param uplSchemaId
      *            - schema Id
@@ -33,7 +33,7 @@ public interface IUPLSchemaDao extends IDbSchema {
     void removeUplSchema(String uplSchemaId) throws SQLException;
 
     /**
-     * returns schema for requested schema id
+     * returns schema for requested schema id.
      *
      * @param uplSchemaId
      * @return
@@ -42,7 +42,7 @@ public interface IUPLSchemaDao extends IDbSchema {
     String getUplSchema(String uplSchemaId) throws SQLException;
 
     /**
-     * Returns the uploaded schema identified with the given ID
+     * Returns the uploaded schema identified with the given ID.
      *
      * @param schemaId
      * @return
@@ -62,7 +62,7 @@ public interface IUPLSchemaDao extends IDbSchema {
     boolean checkUplSchemaFile(String schemaFileName) throws SQLException;
 
     /**
-     * Checks if specified schema foregin ID is already registered in T_UPL_SCHEMA table
+     * Checks if specified schema foregin ID is already registered in T_UPL_SCHEMA table.
      *
      * @param schemaFK
      * @return true, if FK ID exists in the database
@@ -71,7 +71,7 @@ public interface IUPLSchemaDao extends IDbSchema {
     boolean checkUplSchemaFK(String schemaFK) throws SQLException;
 
     /**
-     * Returns the uploaded schema identified with the given schema URL
+     * Returns the uploaded schema identified with the given schema URL.
      *
      * @param schemaURL
      * @return
@@ -80,7 +80,7 @@ public interface IUPLSchemaDao extends IDbSchema {
     HashMap<String, String> getUplSchemaByUrl(String schemaURL) throws SQLException;
 
     /**
-     * Gets all schemas from T_SCHEMA table with LEFT JOIN T_UPL_SCHEMA
+     * Gets all schemas from T_SCHEMA table with LEFT JOIN T_UPL_SCHEMA.
      *
      * @return Lis of HashMaps
      * @throws SQLException
@@ -88,7 +88,7 @@ public interface IUPLSchemaDao extends IDbSchema {
     ArrayList<HashMap<String, String>> getSchemas() throws SQLException;
 
     /**
-     * Returns the uploaded schema identified with the given ID
+     * Returns the uploaded schema identified with the given ID.
      *
      * @param schemaId
      * @return

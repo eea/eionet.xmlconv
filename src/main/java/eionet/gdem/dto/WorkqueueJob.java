@@ -24,8 +24,8 @@ package eionet.gdem.dto;
 import java.util.Date;
 
 /**
- * WorkqueueJob
- * 
+ * WorkqueueJob.
+ *
  * @author Enriko Käsper, Tieto Estonia
  */
 

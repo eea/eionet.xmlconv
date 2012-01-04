@@ -1,4 +1,4 @@
-/**
+/*
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
@@ -31,9 +31,9 @@ import org.xml.sax.helpers.DefaultHandler;
 import eionet.gdem.utils.Utils;
 
 /**
- * Handler for parsing xml document extening SAX DefaultHandler This class is calling different ExcelConversionhandler methods,
+ * Handler for parsing xml document extening SAX DefaultHandler. This class is calling different ExcelConversionhandler methods,
  * which is actuially creating Excel file
- * 
+ *
  * @author Enriko Käsper
  */
 

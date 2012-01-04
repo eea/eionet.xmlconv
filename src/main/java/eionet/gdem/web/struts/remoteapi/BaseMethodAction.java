@@ -14,15 +14,15 @@ import eionet.gdem.web.struts.BaseAction;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS BaseMethodAction
- * 
+ *
  *         Abstract action for remote service HTTP methods
  */
 
 public class BaseMethodAction extends BaseAction {
 
     /**
-     * Store the error result in Session
-     * 
+     * Store the error result in Session.
+     *
      * @param request
      * @param errorMsg
      * @param methodName
@@ -38,8 +38,8 @@ public class BaseMethodAction extends BaseAction {
     }
 
     /**
-     * Get error result from session attribute
-     * 
+     * Get error result from session attribute.
+     *
      * @param request
      * @return
      */

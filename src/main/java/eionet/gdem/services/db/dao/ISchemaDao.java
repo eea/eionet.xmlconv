@@ -7,7 +7,7 @@ import java.util.Vector;
 
 public interface ISchemaDao extends IDbSchema {
     /**
-     * Adds a new Schema to the database
+     * Adds a new Schema to the database.
      *
      * @param xmlSchema
      *            - xml schema (http://eionet.eea.eu.int/RASchema"
@@ -25,7 +25,7 @@ public interface ISchemaDao extends IDbSchema {
             throws SQLException;
 
     /**
-     * Updates a Schema properties in the database
+     * Updates a Schema properties in the database.
      *
      * @param schema_id
      *            - id from database, used as a constraint
@@ -44,7 +44,7 @@ public interface ISchemaDao extends IDbSchema {
             String public_id, Date expireDate) throws SQLException;
 
     /**
-     * Updates a Schema validate properties in the database
+     * Updates a Schema validate properties in the database.
      *
      * @param String
      *            schema_id - id from database, used as a constraint
@@ -56,7 +56,7 @@ public interface ISchemaDao extends IDbSchema {
     String addSchema(String xmlSchema, String description) throws SQLException;
 
     /**
-     * Removes the schema and all it's related stuff if needed
+     * Removes the schema and all it's related stuff if needed.
      *
      * @param schemaId
      * @param del_stylesheets
@@ -69,26 +69,26 @@ public interface ISchemaDao extends IDbSchema {
             throws SQLException;
 
     /**
-     * Gets the data of one or several schemas from the repository Vector contains HashMaps with schema and it's stylesheets
+     * Gets the data of one or several schemas from the repository. Vector contains HashMaps with schema and its stylesheets
      * information
      */
     Vector getSchemas(String schemaId) throws SQLException;
 
     /**
-     * Gets the data of one or several schemas from the repository Vector contains HashMaps with schema and it's stylesheets
+     * Gets the data of one or several schemas from the repository. Vector contains HashMaps with schema and its stylesheets
      * information if needed
      */
     Vector getSchemas(String schemaId, boolean stylesheets) throws SQLException;
 
     /**
-     * Gets the data of one schema from the repository HashMap contains only one row from schema table
+     * Gets the data of one schema from the repository. HashMap contains only one row from schema table
      */
     HashMap getSchema(String schema_id) throws SQLException;
 
     HashMap getSchema(String schema_id, boolean stylesheets) throws SQLException;
 
     /**
-     * returns the schema ID from the repository
+     * returns the schema ID from the repository.
      *
      * @param - schema URL
      * @return schema ID
@@ -96,7 +96,7 @@ public interface ISchemaDao extends IDbSchema {
     String getSchemaID(String schema) throws SQLException;
 
     /**
-     * returns all stylesheets for schema ID
+     * returns all stylesheets for schema ID.
      *
      * @param - schema ID
      * @return Vector containing HashMaps with styleheet info
@@ -107,7 +107,7 @@ public interface ISchemaDao extends IDbSchema {
     Vector getSchemaQueries(String schemaId) throws SQLException;
 
     /**
-     * retturns all schemas which have stylesheets
+     * returns all schemas which have stylesheets.
      *
      * @return
      * @throws SQLException

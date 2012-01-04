@@ -6,8 +6,8 @@ import java.util.HashMap;
 public interface IStyleSheetDao extends IDbSchema {
 
     /**
-     * Adds a new Stylesheet to the database
-     * 
+     * Adds a new Stylesheet to the database.
+     *
      * @param xmlSchemaID
      *            - xml schema ID
      * @param resultType
@@ -26,8 +26,8 @@ public interface IStyleSheetDao extends IDbSchema {
             throws SQLException;
 
     /**
-     * Updates stylesheet properties in the database
-     * 
+     * Updates stylesheet properties in the database.
+     *
      * @param String
      *            xsl_id - id from database, used as a constraint
      * @param String
@@ -45,14 +45,14 @@ public interface IStyleSheetDao extends IDbSchema {
             String dependsOn) throws SQLException;
 
     /**
-     * Removes the stylesheet from the stylesheets table
-     * 
+     * Removes the stylesheet from the stylesheets table.
+     *
      * @param - convert ID
      */
     public void removeStylesheet(String convertId) throws SQLException;
 
     /**
-     * Gets the data of the stylesheet from the repository
+     * Gets the data of the stylesheet from the repository.
      */
     public HashMap getStylesheetInfo(String convertId) throws SQLException;
 

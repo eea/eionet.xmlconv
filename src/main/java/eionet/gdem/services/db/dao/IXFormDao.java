@@ -6,15 +6,15 @@ import java.util.Vector;
 
 public interface IXFormDao extends IDbSchema {
     /**
-     * Removes the xform from the xformss table
-     * 
+     * Removes the xform from the xformss table.
+     *
      * @param - xform ID
      */
     public void removeXForm(String xformId) throws SQLException;
 
     /**
-     * returns XForm file name for specified schema
-     * 
+     * returns XForm file name for specified schema.
+     *
      * @param - XML schema url
      * @return Hashtable contining XForm url
      */
@@ -22,8 +22,8 @@ public interface IXFormDao extends IDbSchema {
     public Hashtable getXForm(String XMLSchema) throws SQLException;
 
     /**
-     * returns XForm information
-     * 
+     * returns XForm information.
+     *
      * @param - XForm id
      * @return Hashtable contining XForm info
      */
@@ -31,8 +31,8 @@ public interface IXFormDao extends IDbSchema {
     public Hashtable getXFormByID(String xform_id) throws SQLException;
 
     /**
-     * returns XForm file info for specified schemas
-     * 
+     * returns XForm file info for specified schemas.
+     *
      * @param - array of XML schema urls
      * @return Hashtable contining schema url as key and XForm url as value
      */
@@ -40,8 +40,8 @@ public interface IXFormDao extends IDbSchema {
     public Hashtable getXForms(Vector XMLSchemas) throws SQLException;
 
     /**
-     * returns XForm file names for specified schemas
-     * 
+     * returns XForm file names for specified schemas.
+     *
      * @param - array of XML schema urls
      * @return Hashtable contining schema url as key and XForm url as value
      */
@@ -49,16 +49,16 @@ public interface IXFormDao extends IDbSchema {
     public Hashtable getXFormNames(Vector XMLSchemas) throws SQLException;
 
     /**
-     * returns all XForm file names
-     * 
+     * returns all XForm file names.
+     *
      * @return Hashtable contining schema url as key and XForm url as value
      */
 
     public Hashtable getXForms() throws SQLException;
 
     /**
-     * Adds a new XForm to the database
-     * 
+     * Adds a new XForm to the database.
+     *
      * @param xmlSchemaID
      *            - xml schema ID
      * @param xform
@@ -72,8 +72,8 @@ public interface IXFormDao extends IDbSchema {
     public String addXForm(String xmlSchemaID, String xform, String title, String description) throws SQLException;
 
     /**
-     * Updates a XForm properties in the database
-     * 
+     * Updates a XForm properties in the database.
+     *
      * @param xform_id
      *            - id from database, used as a constraint
      * @param schema_id

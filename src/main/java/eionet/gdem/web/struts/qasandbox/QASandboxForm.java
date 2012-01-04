@@ -30,8 +30,8 @@ import org.apache.struts.action.ActionMapping;
 import eionet.gdem.dto.Schema;
 
 /**
- * SandboxForm
- * 
+ * SandboxForm.
+ *
  * @author Enriko Käsper, Tieto Estonia
  */
 

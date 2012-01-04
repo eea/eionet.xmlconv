@@ -1,4 +1,4 @@
-/**
+/*
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
@@ -45,7 +45,7 @@ import eionet.gdem.utils.Utils;
 
 /**
  * The class anayses XML file and extracts XML Schema, DTD, namespace and root element information.
- * 
+ *
  * @author Enriko Käsper, TietoEnator Estonia AS InputAnalyser
  */
 public class InputAnalyser {
@@ -63,7 +63,7 @@ public class InputAnalyser {
 
     /**
      * Parse XML and load information from XML.
-     * 
+     *
      * @param srcUrl
      * @return
      * @throws DCMException
@@ -102,8 +102,8 @@ public class InputAnalyser {
     }
 
     /**
-     * Parse info from InputStream
-     * 
+     * Parse info from InputStream.
+     *
      * @param input
      * @return
      * @throws GDEMException

@@ -33,7 +33,7 @@ import java.io.Writer;
 
 /**
  * Utility functions related to Streams.
- * 
+ *
  */
 public class Streams {
     static final int BLOCK_SIZE = 4096;

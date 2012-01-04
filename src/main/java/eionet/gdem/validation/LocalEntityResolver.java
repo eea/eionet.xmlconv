@@ -9,8 +9,8 @@ import org.xml.sax.InputSource;
 import eionet.gdem.utils.Utils;
 
 /**
- * The class replaces the remote DTD location to locally stored DTD, if the SYSTEM id matches
- * 
+ * The class replaces the remote DTD location to locally stored DTD, if the SYSTEM id matches.
+ *
  * @author Enriko Käsper, TietoEnator Estonia AS LocalEntityResolver
  */
 

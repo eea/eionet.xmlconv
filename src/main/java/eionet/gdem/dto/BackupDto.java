@@ -24,8 +24,8 @@ package eionet.gdem.dto;
 import java.sql.Timestamp;
 
 /**
- * Business object representing backed-up files stored in T_BACKUP table
- * 
+ * Business object representing backed-up files stored in T_BACKUP table.
+ *
  * @author Enriko Käsper, Tieto Estonia BackupDto
  */
 

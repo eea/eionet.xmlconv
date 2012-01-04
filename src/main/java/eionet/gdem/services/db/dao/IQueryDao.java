@@ -11,8 +11,8 @@ public interface IQueryDao extends IDbSchema {
             String script_type, String upperLimit) throws SQLException;
 
     /**
-     * Updates a Query properties in the database
-     * 
+     * Updates a Query properties in the database.
+     *
      * @param String
      *            query_id - id from database, used as a constraint
      * @param String
@@ -40,8 +40,8 @@ public interface IQueryDao extends IDbSchema {
     public String getQueryText(String queryId) throws SQLException;
 
     /**
-     * returns all records from T_QUERY WHERE XML_SCHEMA=xmlSchema
-     * 
+     * returns all records from T_QUERY WHERE XML_SCHEMA=xmlSchema.
+     *
      * @param String
      *            xmlSchema - xmlSchema as an URL
      * @return Vector contining all fields as Hashtable from T_QUERY table

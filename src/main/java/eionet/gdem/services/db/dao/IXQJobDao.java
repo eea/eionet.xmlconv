@@ -5,7 +5,7 @@ import java.sql.SQLException;
 public interface IXQJobDao extends IDbSchema {
 
     /**
-     * Gets information about the received job in Workqueue
+     * Gets information about the received job in Workqueue.
      *
      * @param String
      *            jobId @ return String[]
@@ -13,7 +13,7 @@ public interface IXQJobDao extends IDbSchema {
     String[] getXQJobData(String jobId) throws SQLException;
 
     /**
-     * Creates a new job in the queue XQ Script is saved earlier in the db
+     * Creates a new job in the queue XQ Script is saved earlier in the db.
      *
      * @param String
      *            url, String xqFile, String resultFile
@@ -25,7 +25,7 @@ public interface IXQJobDao extends IDbSchema {
     String startXQJob(String url, String xqFile, String resultFile, int xqID) throws SQLException;
 
     /**
-     * Changes the status of the job in the table also changes the time_stamp showing when the new task was started
+     * Changes the status of the job in the table also changes the time_stamp showing when the new task was started.
      */
     void changeJobStatus(String jobId, int status) throws SQLException;
 
@@ -36,21 +36,21 @@ public interface IXQJobDao extends IDbSchema {
     void changeFileJobsStatus(String url, String savedFile, int status) throws SQLException;
 
     /**
-     * Returns job IDs in the Workqueue with the given status
+     * Returns job IDs in the Workqueue with the given status.
      *
      * @return String[]
      */
     String[] getJobs(int status) throws SQLException;
 
     /**
-     * Returns job IDs in the Workqueue with the given status and limits the rows with the given limit
+     * Returns job IDs in the Workqueue with the given status and limits the rows with the given limit.
      *
      * @return String[]
      */
     String[] getJobsLimit(int status, int max_rows) throws SQLException;
 
     /**
-     * Removes the XQJob No checking performed by this method
+     * Removes the XQJob No checking performed by this method.
      */
     void endXQJob(String jobId) throws SQLException;
 
@@ -65,7 +65,7 @@ public interface IXQJobDao extends IDbSchema {
     void changeXQJobsStatuses(String[] jobIds, int status) throws SQLException;
 
     /**
-     * returns all the job data in the WQ table
+     * returns all the job data in the WQ table.
      *
      * @return String[][] containing all fields as HashMap from T_CONVTYPE table
      */
@@ -78,7 +78,7 @@ public interface IXQJobDao extends IDbSchema {
     void changeJobStatusByStatus(int currentStatus, int newStatus) throws SQLException;
 
     /**
-     * Countr the active jobs (N_STATUS=1 or 2) in DB
+     * Countr the active jobs (N_STATUS=1 or 2) in DB.
      *
      * @return
      * @throws SQLException

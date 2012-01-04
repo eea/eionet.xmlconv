@@ -1,4 +1,4 @@
-/**
+/*
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
@@ -27,9 +27,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 
 public class GDEMException extends Exception {
-    /**
-     * The cause for this exception.
-     */
+    /** The cause for this exception.  */
     protected Exception cause = null;
 
     public GDEMException(String msg) {
@@ -54,7 +52,7 @@ public class GDEMException extends Exception {
 
     /**
      * Prints this exception and its backtrace to the given print stream.
-     * 
+     *
      * @param ps
      *            the print stream.
      */
@@ -68,7 +66,7 @@ public class GDEMException extends Exception {
 
     /**
      * Prints this exception and its backtrace to the given print writer.
-     * 
+     *
      * @param pw
      *            - the print writer.
      */
@@ -82,7 +80,7 @@ public class GDEMException extends Exception {
 
     /**
      * Returns the message of original cause.
-     * 
+     *
      * @return cause message
      */
     public String getCauseMessage() {

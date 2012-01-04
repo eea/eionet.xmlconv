@@ -35,8 +35,8 @@ import org.apache.struts.actions.LookupDispatchAction;
 import eionet.gdem.dto.Schema;
 
 /**
- * SearchCRSandboxAction The axction dispatches the original sandbox request to the correct action.
- * 
+ * SearchCRSandboxAction. The axction dispatches the original sandbox request to the correct action.
+ *
  * @author Enriko Käsper, Tieto Estonia
  */
 

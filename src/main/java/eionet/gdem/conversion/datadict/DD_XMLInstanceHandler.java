@@ -33,8 +33,8 @@ import org.xml.sax.helpers.LocatorImpl;
 import eionet.gdem.utils.Utils;
 
 /**
- * Handler for parsing xml instance document from datadictionary extening SAX helpers DefaultHandler
- * 
+ * Handler for parsing xml instance document from datadictionary extening SAX helpers DefaultHandler.
+ *
  * @author Enriko Käsper
  */
 

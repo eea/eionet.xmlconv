@@ -8,8 +8,8 @@ public interface IRootElemDao extends IDbSchema {
     public Vector getSchemaRootElems(String schemaId) throws SQLException;
 
     /**
-     * find possible schema matching for given root element and namespace
-     * 
+     * find possible schema matching for given root element and namespace.
+     *
      * @param - rootElem root element name
      * @param - namespace
      * @return Vector containing HashMaps with schema info (same as getSchemas)
@@ -18,14 +18,14 @@ public interface IRootElemDao extends IDbSchema {
 
     /**
      * Removes the root element mapping from the root element table
-     * 
+     *
      * @param - root element ID
      */
     public void removeRootElem(String rootElemId) throws SQLException;
 
     /**
-     * Adds a new root element mapping to the database
-     * 
+     * Adds a new root element mapping to the database.
+     *
      * @param xmlSchemaID
      *            - xml schema ID
      * @param elemName

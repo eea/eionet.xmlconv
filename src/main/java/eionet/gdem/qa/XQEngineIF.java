@@ -1,4 +1,4 @@
-/**
+/*
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
@@ -28,9 +28,8 @@ import java.io.OutputStream;
 import eionet.gdem.GDEMException;
 
 /**
- * Interface for XQuery Engine implementation
+ * Interface for XQuery Engine implementation.
  */
-
 public interface XQEngineIF {
 
     public static final String DEFAULT_ENCODING = "UTF-8";
@@ -39,8 +38,8 @@ public interface XQEngineIF {
     public static final String XML_CONTENT_TYPE = "xml";
 
     /**
-     * processes the XQuery
-     * 
+     * processes the XQuery.
+     *
      * @param xqScript
      *            the XQscript object with required attributes
      * @return the result of XQuery
@@ -51,8 +50,8 @@ public interface XQEngineIF {
     public void getResult(XQScript script, OutputStream out) throws GDEMException;
 
     /**
-     * processes the XQuery
-     * 
+     * processes the XQuery.
+     *
      * @param xqScript
      *            the XQuery script
      * @param params
@@ -62,33 +61,33 @@ public interface XQEngineIF {
      */
     /*
      * public String getResult(String xqScript, String params[]) throws GDEMException;
-     * 
+     *
      * public void getResult(String xqScript, String params[], OutputStream out) throws GDEMException;
      */
     /**
      * get encoding for XQuery engine to use. If not set use default encoding UTF-8.
-     * 
+     *
      * @return
      */
     public String getEncoding();
 
     /**
      * set encoding parameter for XQuery engine. If not set use default encoding UTF-8.
-     * 
+     *
      * @param encoding
      */
     public void setEncoding(String encoding);
 
     /**
      * get output type of the XQuery script result. Default is text/html.
-     * 
+     *
      * @return
      */
     public String getOutputType();
 
     /**
      * set output type for XQuery engine. If output type is text/xml, then the XML declaration is omitted to the result.
-     * 
+     *
      * @param outputType
      */
     public void setOutputType(String outputType);

@@ -40,7 +40,7 @@ import eionet.gdem.conversion.datadict.DDTable;
 import eionet.gdem.utils.Utils;
 
 /**
- * The class tests, if it is possible to convert CDDA MS access file into XML format using Jackcess library
+ * The class tests, if it is possible to convert CDDA MS access file into XML format using Jackcess library.
  *
  * @author Enriko Käsper, Tieto Estonia MdbConversionTest
  */
