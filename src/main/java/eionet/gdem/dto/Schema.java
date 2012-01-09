@@ -177,6 +177,14 @@ public class Schema implements Serializable {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        if (id != null) {
+            return id.hashCode();
+        }
+        return 42;
+    }
+
     public String getLabel() {
         StringBuilder label = new StringBuilder(schema);
         if (id != null && isDDSchema() && getTable() != null) {

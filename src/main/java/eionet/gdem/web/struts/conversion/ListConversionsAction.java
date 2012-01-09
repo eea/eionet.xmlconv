@@ -21,8 +21,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
-import eionet.gdem.conversion.ConversionService;
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
@@ -48,7 +46,7 @@ public class ListConversionsAction extends Action {
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
-        String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
+        //String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
         ActionErrors errors = new ActionErrors();
 
         ArrayList<Schema> schemas = new ArrayList<Schema>();
@@ -77,7 +75,7 @@ public class ListConversionsAction extends Action {
             // search available conversions
             try {
                 SchemaManager sm = new SchemaManager();
-                ConversionService cs = new ConversionService();
+                // ConversionService cs = new ConversionService();
                 // list conversions by selected schema
                 if (!Utils.isNullStr(schema)) {
                     if (!schemaExists(httpServletRequest, schema)) {

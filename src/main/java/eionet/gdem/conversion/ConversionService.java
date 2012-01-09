@@ -191,6 +191,7 @@ public class ConversionService extends RemoteService implements ConversionServic
             try {
                 input.close();
             } catch (Exception e) {
+                LOGGER.error("Exception: ", e);
             }
 
         }

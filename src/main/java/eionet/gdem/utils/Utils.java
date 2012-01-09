@@ -672,6 +672,7 @@ public class Utils {
                     in.close();
                 }
             } catch (Exception e) {
+                LOGGER.error("Exception: ", e);
             }
             ;
         }
@@ -697,6 +698,7 @@ public class Utils {
                     in.close();
                 }
             } catch (Exception e) {
+                LOGGER.error("Exception: ", e);
             }
             ;
         }
@@ -1117,6 +1119,7 @@ public class Utils {
                     br.close();
                 }
             } catch (IOException e) {
+                LOGGER.error("Exception: ", e);
             }
         }
     }
