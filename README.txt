@@ -17,6 +17,7 @@ Crete local.properties file by copying the contents from default.properties as a
 Edit the values of system paths, DB url and other proeprties to what is relevant.
 
 "app.home" property represents the system folder which is the root for subfolders where all content files will be stored.
+Tomcat user should have write permissions on "app.home" subfolders.
 
 If it is a first time install then acl folder should be copied manually into ${app.home}/acl
 
