@@ -57,7 +57,7 @@ import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.utils.Utils;
 
 /**
- * The main class, which is calling POI HSSF methods for reading Excel file
+ * The main class, which is calling POI HSSF methods for reading Excel file.
  *
  * @author Enriko Käsper
  */
@@ -76,11 +76,11 @@ public class ExcelReader implements SourceReaderIF {
      */
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
     /**
-     * Date formatter
+     * Date formatter.
      */
     private static DataFormatter formatter = new DataFormatter(new Locale("en", "US"));
     /**
-     * Boolean indicates if Excel file is in 2007 version format or not
+     * Boolean indicates if Excel file is in 2007 version format or not.
      */
     private boolean isExcel2007 = false;
 
@@ -97,6 +97,10 @@ public class ExcelReader implements SourceReaderIF {
      */
     private long inputFileLength = 0;
 
+    /**
+     * Class constructor.
+     * @param excel2007 true if the file is Excel 2007 or newer.
+     */
     public ExcelReader(boolean excel2007) {
         isExcel2007 = excel2007;
     }
@@ -140,18 +144,18 @@ public class ExcelReader implements SourceReaderIF {
             return null;
         }
 
-        Sheet schema_sheet = wb.getSheet(SCHEMA_SHEET_NAME);
+        Sheet schemaSheet = wb.getSheet(SCHEMA_SHEET_NAME);
 
-        if (schema_sheet == null) {
+        if (schemaSheet == null) {
             for (int i = 0; i < wb.getNumberOfSheets(); i++) {
-                schema_sheet = wb.getSheetAt(i);
-                String schema = findSchemaFromSheet(schema_sheet);
+                schemaSheet = wb.getSheetAt(i);
+                String schema = findSchemaFromSheet(schemaSheet);
                 if (schema != null) {
                     return schema;
                 }
             }
         } else {
-            return findSchemaFromSheet(schema_sheet);
+            return findSchemaFromSheet(schemaSheet);
         }
         return null;
     }
@@ -163,11 +167,11 @@ public class ExcelReader implements SourceReaderIF {
             return null;
         }
         for (int i = 0; i < wb.getNumberOfSheets(); i++) {
-            String sheet_name = wb.getSheetName(i).trim();
-            if (sheet_name.equalsIgnoreCase(SCHEMA_SHEET_NAME)) {
+            String sheetName = wb.getSheetName(i).trim();
+            if (sheetName.equalsIgnoreCase(SCHEMA_SHEET_NAME)) {
                 continue;
             }
-            return sheet_name;
+            return sheetName;
         }
         return null;
 
@@ -324,16 +328,16 @@ public class ExcelReader implements SourceReaderIF {
     }
 
     @Override
-    public boolean isEmptySheet(String sheet_name) {
+    public boolean isEmptySheet(String sheetName) {
 
-        Sheet sheet = getSheet(sheet_name);
-        int row_count = sheet.getLastRowNum();
-        if (row_count < 1) {
+        Sheet sheet = getSheet(sheetName);
+        int rowCount = sheet.getLastRowNum();
+        if (rowCount < 1) {
             return true;
         }
 
         // check if the first row has any data
-        for (int i = 1; i <= row_count; i++) {
+        for (int i = 1; i <= rowCount; i++) {
             Row row = sheet.getRow(i);
             if (isEmptyRow(row)) {
                 continue;
@@ -348,8 +352,8 @@ public class ExcelReader implements SourceReaderIF {
     /**
      * Method goes through 4 rows and search the best fit of XML Schema. The deault row is 4.
      *
-     * @param schemaSheet
-     * @return
+     * @param schemaSheet Schema sheet name.
+     * @return schema URL.
      */
     private String findSchemaFromSheet(Sheet schemaSheet) {
         Row schemaRow = null;
@@ -454,7 +458,7 @@ public class ExcelReader implements SourceReaderIF {
     /**
      * Returns the list of MS Excel sheet names.
      *
-     * @return
+     * @return List of sheet names.
      */
     private List<String> getSheetNames() {
         List<String> list = new ArrayList<String>();
@@ -475,29 +479,29 @@ public class ExcelReader implements SourceReaderIF {
     protected String cellValueToString(Cell cell, String schemaType) {
         String value = "";
         switch (cell.getCellType()) {
-            case HSSFCell.CELL_TYPE_FORMULA:
-                break;
-            case HSSFCell.CELL_TYPE_NUMERIC:
-                if (HSSFDateUtil.isCellDateFormatted(cell) && !isYearValue(cell.getNumericCellValue())) {
-                    Date dateValue = cell.getDateCellValue();
-                    value = Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
-                } else if (HSSFDateUtil.isValidExcelDate(cell.getNumericCellValue()) && schemaType != null
-                        && schemaType.equals("xs:date") && !isYearValue(cell.getNumericCellValue())) {
-                    Date dateValue = cell.getDateCellValue();
-                    value = Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
-                } else {
-                    value = formatter.formatCellValue(cell);
-                }
-                break;
-            case HSSFCell.CELL_TYPE_STRING:
-                RichTextString richText = cell.getRichStringCellValue();
-                value = richText.toString();
-                break;
-            case HSSFCell.CELL_TYPE_BOOLEAN:
-                value = Boolean.toString(cell.getBooleanCellValue());
-                break;
-            case HSSFCell.CELL_TYPE_ERROR:
-                break;
+        case HSSFCell.CELL_TYPE_FORMULA:
+            break;
+        case HSSFCell.CELL_TYPE_NUMERIC:
+            if (HSSFDateUtil.isCellDateFormatted(cell) && !isYearValue(cell.getNumericCellValue())) {
+                Date dateValue = cell.getDateCellValue();
+                value = Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
+            } else if (HSSFDateUtil.isValidExcelDate(cell.getNumericCellValue()) && schemaType != null
+                    && schemaType.equals("xs:date") && !isYearValue(cell.getNumericCellValue())) {
+                Date dateValue = cell.getDateCellValue();
+                value = Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
+            } else {
+                value = formatter.formatCellValue(cell);
+            }
+            break;
+        case HSSFCell.CELL_TYPE_STRING:
+            RichTextString richText = cell.getRichStringCellValue();
+            value = richText.toString();
+            break;
+        case HSSFCell.CELL_TYPE_BOOLEAN:
+            value = Boolean.toString(cell.getBooleanCellValue());
+            break;
+        case HSSFCell.CELL_TYPE_ERROR:
+            break;
         }
 
         return value.trim();
@@ -517,9 +521,9 @@ public class ExcelReader implements SourceReaderIF {
     /**
      * Read column header.
      *
-     * @param row
-     * @param elements
-     * @param mainTable
+     * @param row Excel row object
+     * @param elements List of DD table elements
+     * @param mainTable true if the table is main table.
      */
     private void setColumnMappings(Row row, List<DDXmlElement> elements, boolean mainTable) {
 
@@ -593,11 +597,11 @@ public class ExcelReader implements SourceReaderIF {
     }
 
     /**
-     * Find redundant columns from the list of columns
+     * Find redundant columns from the list of columns.
      *
-     * @param row
-     * @param elemNames
-     * @return
+     * @param row Excel row.
+     * @param elemNames DD element names.
+     * @return List of extra columns added to sheet.
      */
     private List<String> getExtraColumns(Row row, List<String> elemNames) {
         List<String> extraColumns = new ArrayList<String>();
@@ -615,10 +619,10 @@ public class ExcelReader implements SourceReaderIF {
     /**
      * Get cell String value.
      *
-     * @param row
-     * @param colIdx
-     * @param schemaType
-     * @return
+     * @param row Excel row.
+     * @param colIdx Column index
+     * @param schemaType Schema type
+     * @return Textual cell value.
      */
     private String getCellValue(Row row, Integer colIdx, String schemaType) {
         Cell cell = (colIdx == null || row == null) ? null : row.getCell(colIdx);
@@ -629,8 +633,8 @@ public class ExcelReader implements SourceReaderIF {
     /**
      * If date formatted cell value is not higher than 4 digit number, then it is probably a year.
      *
-     * @param doubleCellValue
-     * @return boolean
+     * @param doubleCellValue Numeric cell value.
+     * @return boolean is year value.
      */
     private boolean isYearValue(double doubleCellValue) {
         return doubleCellValue < 3000 && doubleCellValue > 0;

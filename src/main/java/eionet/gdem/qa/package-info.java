@@ -1,6 +1,7 @@
 /**
- * QA Service classes. Contains QA methods for remote clients,
- * QA script engine implementations and workqueue mechanism classes.
+ * Quality Assurance service root package. The classes provide methods for running QA scripts on XML files.
+ * The methods are available remotely over XML-RPC and HTTP protocols.
  */
 
 package eionet.gdem.qa;
+

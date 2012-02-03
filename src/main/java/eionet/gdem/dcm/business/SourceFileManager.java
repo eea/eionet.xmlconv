@@ -87,7 +87,7 @@ public class SourceFileManager {
     }
 
     /**
-     * reads file from remote URL and writes it to the response stream without authentication
+     * reads file from remote URL and writes it to the response stream without authentication.
      *
      * @param httpResponse
      * @param ticket
@@ -113,7 +113,7 @@ public class SourceFileManager {
             is = uc.getInputStream();
 
             // set response properties
-            httpResponse.setContentType(contentType);
+            httpResponse.setContentType("text/xml;charset=utf-8");
             httpResponse.setContentLength(contentLength);
             httpResponse.setCharacterEncoding(contentEncoding);
 
@@ -121,7 +121,7 @@ public class SourceFileManager {
             int bufLen = 0;
             byte[] buf = new byte[BYTE_BUF];
 
-            while ((bufLen = is.read(buf)) != -1){
+            while ((bufLen = is.read(buf)) != -1) {
                 httpResponse.getOutputStream().write(buf, 0, bufLen);
             }
         } finally {
@@ -129,12 +129,14 @@ public class SourceFileManager {
                 try {
                     source.close();
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
             if (is != null) {
                 try {
                     is.close();
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
             httpResponse.getOutputStream().close();
@@ -143,7 +145,7 @@ public class SourceFileManager {
     }
 
     /**
-     * Generates the URL for retreiving source file through QA with credentials
+     * Generates the URL for retreiving source file through QA with credentials.
      *
      * @param ticket
      * @param source_url
@@ -199,6 +201,7 @@ public class SourceFileManager {
                 try {
                     source.close();
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }

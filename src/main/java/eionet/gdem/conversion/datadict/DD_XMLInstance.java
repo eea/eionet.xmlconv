@@ -191,6 +191,18 @@ public class DD_XMLInstance {
         writer.flush();
     }
 
+    /**
+     * Write data into XML element.
+     *
+     * @param elemName
+     *            XML element name.
+     * @param attributes
+     *            Element attributes part.
+     * @param data
+     *            Text added between XML tags.
+     * @throws Exception
+     *             Exception when writing data.
+     */
     public void writeElement(String elemName, String attributes, String data) throws Exception {
         addString(getLead("elm") + "<" + elemName + attributes + ">");
         addString(Utils.escapeXML(data));
@@ -332,7 +344,8 @@ public class DD_XMLInstance {
     }
 
     /**
-     * @param instanceUrl the instanceUrl to set
+     * @param instanceUrl
+     *            the instanceUrl to set
      */
     public void setInstanceUrl(String instanceUrl) {
         this.instanceUrl = instanceUrl;

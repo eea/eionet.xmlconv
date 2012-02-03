@@ -61,4 +61,12 @@ public class UtilsTest extends TestCase {
         assertTrue(Utils.getUniqueTmpFileName("filename.xml").endsWith("filename.xml"));
         assertTrue(Utils.getUniqueTmpFileName(null).startsWith(Properties.tmpFolder + File.separator + Constants.TMP_FILE_PREFIX));
     }
+
+    public void testEscapeXml() {
+        assertEquals("&amp;ok", Utils.escapeXML("&ok"));
+        assertEquals("&amp;ok", Utils.escapeXML("&amp;ok"));
+        assertEquals("?", Utils.escapeXML("\u001A"));
+        assertEquals("&#57344;", Utils.escapeXML("\uE000"));
+        assertEquals("\u00F6", Utils.escapeXML("\u00F6"));
+    }
 }

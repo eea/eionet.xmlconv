@@ -336,6 +336,13 @@ public class Utils {
         return ret.toString();
     }
 
+    /**
+     * The method escape all suspicious characters in string for using it in XML.
+     *
+     * @param text
+     *            any string
+     * @return XML escaped string
+     */
     public static String escapeXML(String text) {
 
         if (text == null) {
@@ -353,6 +360,15 @@ public class Utils {
         return buf.toString();
     }
 
+    /**
+     * Escape single character in text. If the character is already escaped, then avoid double escaping.
+     *
+     * @param pos
+     *            Character position in text.
+     * @param text
+     *            Text to be escaped.
+     * @return Return escaped character.
+     */
     public static String escapeXML(int pos, String text) {
 
         if (xmlEscapes == null) {
@@ -375,7 +391,8 @@ public class Utils {
                 String sub = text.substring(pos + 2, semicolonPos);
                 if (sub != null) {
                     try {
-                        // if the string between # and ; is a number then return true,
+                        // if the string between # and ; is a number then return
+                        // true,
                         // because it is most probably an escape sequence
                         if (Integer.parseInt(sub) >= 0) {
                             return c.toString();
@@ -389,11 +406,16 @@ public class Utils {
         String esc = xmlEscapes.get(c);
         if (esc != null) {
             return esc;
+        } else if ((int) c > 10000) {
+            return "&#" + (int) c + ";";
         } else {
             return c.toString();
         }
     }
 
+    /**
+     * Set XML character escapes.
+     */
     private static void setXmlEscapes() {
         xmlEscapes = new HashMap<Character, String>();
         xmlEscapes.put(new Character('&'), "&amp;");
@@ -401,6 +423,7 @@ public class Utils {
         xmlEscapes.put(new Character('>'), "&gt;");
         xmlEscapes.put(new Character('"'), "&quot;");
         xmlEscapes.put(new Character('\''), "&apos;");
+        xmlEscapes.put('\u001A', "?");
     }
 
     /**
@@ -858,7 +881,8 @@ public class Utils {
         File oFolder = new File(folder);
         File oTmpFolder = new File(Properties.tmpFolder);
 
-        // if parent folder is system tmp folder, then delete only the specifieds file
+        // if parent folder is system tmp folder, then delete only the
+        // specifieds file
         if (oFolder.equals(oTmpFolder)) {
             deleteFile(filePath);
         } else {
@@ -1026,7 +1050,8 @@ public class Utils {
     public static String extractExtension(String strFilename, String defaultExt) {
         String strExtension = "";
         int index = strFilename.lastIndexOf('.');
-        // if the "." is before the 5 chars at the end of file name, then it's not probably a file name
+        // if the "." is before the 5 chars at the end of file name, then it's
+        // not probably a file name
         if (index > strFilename.length() - 5) {
             strExtension = strFilename.substring(index + 1, strFilename.length());
             strExtension = strExtension.toLowerCase();
