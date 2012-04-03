@@ -65,7 +65,7 @@ public class ConvertJson2XmlAction extends Action {
         try {
             // parse request parameters
             if (params.containsKey(JSON_PARAM_NAME)) {
-                jsonParam = ((String[])params.get(JSON_PARAM_NAME))[0];
+                jsonParam = ((String[]) params.get(JSON_PARAM_NAME))[0];
             }
             if (Utils.isNullStr(jsonParam)) {
                 throw new GDEMException("Missing request parameter: " + JSON_PARAM_NAME);
@@ -111,23 +111,26 @@ public class ConvertJson2XmlAction extends Action {
 
     /**
      * Append request parameters to the json web service URL.
-     * @param jsonParamUrl Json service URL received from request parameter
-     * @param params map of request parameters
+     *
+     * @param jsonParamUrl
+     *            Json service URL received from request parameter
+     * @param params
+     *            map of request parameters
      * @return URL string
      */
-    private String getJsonServiceUrl(String jsonParamUrl, Map<?,?> params) {
+    private String getJsonServiceUrl(String jsonParamUrl, Map<?, ?> params) {
         StringBuilder strBuilder = new StringBuilder(jsonParamUrl);
         boolean urlContainsParams = jsonParamUrl.contains("?");
 
-        for (Map.Entry<?,?> param : params.entrySet()){
-            String key = (String)param.getKey();
-            if (!JSON_PARAM_NAME.equals(key)){
+        for (Map.Entry<?, ?> param : params.entrySet()) {
+            String key = (String) param.getKey();
+            if (!JSON_PARAM_NAME.equals(key)) {
                 if (!urlContainsParams) {
                     strBuilder.append("?");
                     urlContainsParams = true;
                 }
-                if (params.get(key)!= null){
-                    for (String value : (String[])params.get(key)){
+                if (params.get(key) != null) {
+                    for (String value : (String[]) params.get(key)) {
                         strBuilder.append("&");
                         strBuilder.append(key + "=");
                         strBuilder.append(value);
