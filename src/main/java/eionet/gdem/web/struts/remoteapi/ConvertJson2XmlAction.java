@@ -52,8 +52,8 @@ public class ConvertJson2XmlAction extends Action {
     protected static final String JSON_PARAM_NAME = "json";
 
     /**
-     * The purpose of this action is to execute <code>Json</code> static methods to convert json string or URL to XML format.
-     * The method expects either url or json parameters.
+     * The purpose of this action is to execute <code>Json</code> static methods to convert json string or URL to XML format. The
+     * method expects either url or json parameters.
      */
     @Override
     public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request,
@@ -65,13 +65,17 @@ public class ConvertJson2XmlAction extends Action {
         try {
             // parse request parameters
             if (params.containsKey(JSON_PARAM_NAME)) {
-                jsonParam = (String) ((Object[]) params.get(JSON_PARAM_NAME))[0];
+                jsonParam = ((String[])params.get(JSON_PARAM_NAME))[0];
             }
             if (Utils.isNullStr(jsonParam)) {
                 throw new GDEMException("Missing request parameter: " + JSON_PARAM_NAME);
             }
             String xml = "";
             if (jsonParam.startsWith("http:")) {
+                // append other parameters to service Url
+                if (params.size() > 1) {
+                    jsonParam = getJsonServiceUrl(jsonParam, params);
+                }
                 xml = Json.jsonRequest2xmlString(jsonParam);
             } else {
                 xml = Json.jsonString2xml(jsonParam);
@@ -103,5 +107,34 @@ public class ConvertJson2XmlAction extends Action {
 
         // Do nothing, then response is already sent.
         return null;
+    }
+
+    /**
+     * Append request parameters to the json web service URL.
+     * @param jsonParamUrl Json service URL received from request parameter
+     * @param params map of request parameters
+     * @return URL string
+     */
+    private String getJsonServiceUrl(String jsonParamUrl, Map<?,?> params) {
+        StringBuilder strBuilder = new StringBuilder(jsonParamUrl);
+        boolean urlContainsParams = jsonParamUrl.contains("?");
+
+        for (Map.Entry<?,?> param : params.entrySet()){
+            String key = (String)param.getKey();
+            if (!JSON_PARAM_NAME.equals(key)){
+                if (!urlContainsParams) {
+                    strBuilder.append("?");
+                    urlContainsParams = true;
+                }
+                if (params.get(key)!= null){
+                    for (String value : (String[])params.get(key)){
+                        strBuilder.append("&");
+                        strBuilder.append(key + "=");
+                        strBuilder.append(value);
+                    }
+                }
+            }
+        }
+        return strBuilder.toString();
     }
 }
