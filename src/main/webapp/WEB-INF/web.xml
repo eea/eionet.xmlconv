@@ -117,6 +117,9 @@
         <servlet-name>action</servlet-name>
     </filter-mapping>
     <listener>
+        <listener-class>eionet.gdem.web.listeners.ApplicationCache</listener-class>
+    </listener>
+    <listener>
         <listener-class>eionet.gdem.web.listeners.AppServletContextListener</listener-class>
     </listener>
     <listener>

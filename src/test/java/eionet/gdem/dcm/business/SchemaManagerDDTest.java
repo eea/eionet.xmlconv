@@ -4,11 +4,11 @@
 package eionet.gdem.dcm.business;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 import junit.framework.TestCase;
 import eionet.gdem.Properties;
+import eionet.gdem.dto.DDDatasetTable;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.utils.Utils;
@@ -96,31 +96,25 @@ public class SchemaManagerDDTest extends TestCase {
          * Override getDDTables and construct the result of xml-rpc method (DDServiceClient.getDDTables())
          */
         @Override
-        public List getDDTables() {
+        public List<DDDatasetTable> getDDTables() {
 
-            Hashtable hash1 = new Hashtable();
-            hash1.put("shortName", "AggregatedData_NO3");
-            hash1.put("identifier", "AggregatedData_NO3");
-            hash1.put("tblId", "3279");
-            hash1.put("dataSet", "Eionet-Water: Ground");
-            hash1.put("dateReleased", "190805");
+            DDDatasetTable ddTable1 = new DDDatasetTable("3279");
+            ddTable1.setShortName("AggregatedData_NO3");
+            ddTable1.setDataSet("Eionet-Water: Ground");
+            ddTable1.setDateReleased("190805");
 
-            Hashtable hash2 = new Hashtable();
-            hash2.put("shortName", "AggregatedData_NO3");
-            hash2.put("identifier", "AggregatedData_NO3");
-            hash2.put("tblId", "3351");
-            hash2.put("dataSet", "Eionet-Water: Ground");
-            hash2.put("dateReleased", "020606");
+            DDDatasetTable hash2 = new DDDatasetTable("3351");
+            hash2.setShortName("AggregatedData_NO3");
+            hash2.setDataSet("Eionet-Water: Ground");
+            hash2.setDateReleased("020606");
 
-            Hashtable hash3 = new Hashtable();
-            hash3.put("shortName", "AggregatedData_NH4");
-            hash3.put("identifier", "AggregatedData_NH4");
-            hash3.put("tblId", "4558");
-            hash3.put("dataSet", "WISE-SOE: Ground");
-            hash3.put("dateReleased", "111007");
+            DDDatasetTable hash3 = new DDDatasetTable("4558");
+            hash3.setShortName("AggregatedData_NH4");
+            hash3.setDataSet("WISE-SOE: Ground");
+            hash3.setDateReleased("111007");
 
-            ArrayList list = new ArrayList();
-            list.add(hash1);
+            List<DDDatasetTable> list = new ArrayList<DDDatasetTable>();
+            list.add(ddTable1);
             list.add(hash2);
             list.add(hash3);
             return list;

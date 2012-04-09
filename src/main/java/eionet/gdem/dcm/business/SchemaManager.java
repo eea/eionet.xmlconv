@@ -51,6 +51,7 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.dto.CrFileDto;
+import eionet.gdem.dto.DDDatasetTable;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.dto.RootElem;
 import eionet.gdem.dto.Schema;
@@ -325,7 +326,7 @@ public class SchemaManager {
                 sc.setSchema((String) schema.get("xml_schema"));
                 sc.setDescription((String) schema.get("description"));
                 boolean validate =
-                        (!Utils.isNullStr((String) schema.get("validate")) && ((String) schema.get("validate")).equals("1"));
+                    (!Utils.isNullStr((String) schema.get("validate")) && ((String) schema.get("validate")).equals("1"));
                 sc.setDoValidation(validate);
 
                 Vector qascripts = new Vector();
@@ -444,8 +445,8 @@ public class SchemaManager {
                 schema.setDescription((String) schemaHash.get("description"));
                 schema.setSchemaLang((String) schemaHash.get("schema_lang"));
                 boolean validate =
-                        (!Utils.isNullStr((String) schemaHash.get("validate")) && ((String) schemaHash.get("validate"))
-                                .equals("1"));
+                    (!Utils.isNullStr((String) schemaHash.get("validate")) && ((String) schemaHash.get("validate"))
+                            .equals("1"));
                 schema.setDoValidation(validate);
                 schema.setDtdPublicId((String) schemaHash.get("dtd_public_id"));
                 schema.setExpireDate(Utils.parseDate((String) schemaHash.get("expire_date"), "yyyy-MM-dd HH:mm:ss"));
@@ -522,23 +523,22 @@ public class SchemaManager {
         try {
 
             // retrive conversions for DD tables
-            List ddTables = getDDTables();
+            List<DDDatasetTable> ddTables = getDDTables();
 
-            for (int i = 0; i < ddTables.size(); i++) {
-                Hashtable schema = (Hashtable) ddTables.get(i);
-                String tblId = (String) schema.get("tblId");
+            for (DDDatasetTable ddTable : ddTables) {
+                String tblId = ddTable.getTblId();
                 String schemaUrl = Properties.ddURL + "/GetSchema?id=TBL" + tblId;
 
                 Schema sc = new Schema();
                 sc.setId("TBL" + tblId);
                 sc.setSchema(schemaUrl);
-                sc.setTable((String) schema.get("shortName"));
-                sc.setDataset((String) schema.get("dataSet"));
+                sc.setTable(ddTable.getShortName());
+                sc.setDataset(ddTable.getDataSet());
                 Date d = null;
                 try {
-                    d = Utils.parseDate((String) schema.get("dateReleased"), "ddMMyy");
+                    d = Utils.parseDate(ddTable.getDateReleased(), "ddMMyy");
                 } catch (Exception e) {
-                    LOGGER.error("Unable to parse DataDictionary dataset released date: " + (String) schema.get("dateReleased"), e);
+                    LOGGER.error("Unable to parse DataDictionary dataset released date: " + ddTable.getDateReleased(), e);
                 }
                 sc.setDatasetReleased(d);
                 schemas.add(sc);
@@ -670,7 +670,7 @@ public class SchemaManager {
     }
 
     public String addSchema(String user, String schemaUrl, String descr, String schemaLang, boolean doValidation)
-            throws DCMException {
+    throws DCMException {
         String schemaID = null;
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "i")) {
@@ -842,29 +842,26 @@ public class SchemaManager {
 
         try {
             // retrive conversions for DD tables
-            List ddTables = getDDTables();
-            for (int i = 0; i < ddTables.size(); i++) {
-                Hashtable schema = (Hashtable) ddTables.get(i);
-                String tblId = (String) schema.get("tblId");
+            List<DDDatasetTable> ddTables = getDDTables();
+            for (DDDatasetTable ddTable : ddTables) {
+                String tblId = ddTable.getTblId();
                 String schemaUrl = Properties.ddURL + "/GetSchema?id=TBL" + tblId;
                 Schema sc = new Schema();
                 sc.setId("TBL" + tblId);
                 sc.setSchema(schemaUrl);
-                sc.setTable((String) schema.get("shortName"));
-                sc.setDataset((String) schema.get("dataSet"));
+                sc.setTable(ddTable.getShortName());
+                sc.setDataset(ddTable.getDataSet());
                 Date d = null;
                 try {
-                    d = Utils.parseDate((String) schema.get("dateReleased"), "ddMMyy");
+                    d = Utils.parseDate(ddTable.getDateReleased(), "ddMMyy");
                 } catch (Exception e) {
-                    LOGGER.error("Unable to parse DataDictionary dataset released date: " + (String) schema.get("dateReleased"), e);
+                    LOGGER.error("Unable to parse DataDictionary dataset released date: " + ddTable.getDateReleased(), e);
                 }
                 sc.setDatasetReleased(d);
-                List ddStylesheets = Conversion.getConversions();
+                List<ConversionDto> ddStylesheets = Conversion.getConversions();
                 ArrayList stls = new ArrayList();
 
-                for (int j = 0; j < ddStylesheets.size(); j++) {
-                    ConversionDto ddConv = ((ConversionDto) ddStylesheets.get(j));
-
+                for (ConversionDto ddConv : ddStylesheets) {
                     String convId = ddConv.getConvId();
                     String xsl_url = Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv=" + convId;
 
@@ -924,7 +921,7 @@ public class SchemaManager {
     }
 
     public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, FormFile file)
-            throws DCMException {
+    throws DCMException {
 
         try {
             InputStream fileInputStream = file.getInputStream();
@@ -939,7 +936,7 @@ public class SchemaManager {
     }
 
     public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, InputStream fileInputStream)
-            throws DCMException {
+    throws DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
@@ -1068,7 +1065,7 @@ public class SchemaManager {
      *
      * @return
      */
-    protected List getDDTables() {
+    protected List<DDDatasetTable> getDDTables() {
         return DDServiceClient.getDDTables();
     }
 
@@ -1147,10 +1144,10 @@ public class SchemaManager {
         }
         // compare
         result =
-                remoteSchemaHash.equals(fileHash) && remoteSchemaHash.length() > 0 ? BusinessConstants.WARNING_FILES_IDENTICAL
-                        : BusinessConstants.WARNING_FILES_NOTIDENTICAL;
+            remoteSchemaHash.equals(fileHash) && remoteSchemaHash.length() > 0 ? BusinessConstants.WARNING_FILES_IDENTICAL
+                    : BusinessConstants.WARNING_FILES_NOTIDENTICAL;
 
-        return result;
+            return result;
     }
 
     /**
@@ -1187,13 +1184,13 @@ public class SchemaManager {
      * @throws DCMException
      */
     public void storeRemoteSchema(String user, String schemaUrl, String schemaFileName, String schemaId, String uplSchemaId)
-            throws DCMException {
+    throws DCMException {
 
         byte[] remoteSchema = downloadRemoteSchema(schemaUrl);
         ByteArrayInputStream in = new ByteArrayInputStream(remoteSchema);
         if (Utils.isNullStr(schemaFileName)) {
             schemaFileName =
-                    generateSchemaFilenameByID(Properties.schemaFolder, schemaId, Utils.extractExtension(schemaUrl, "xsd"));
+                generateSchemaFilenameByID(Properties.schemaFolder, schemaId, Utils.extractExtension(schemaUrl, "xsd"));
         }
         if (Utils.isNullStr(uplSchemaId)) {
             addUplSchema(user, in, schemaFileName, schemaId);

@@ -47,11 +47,12 @@ import eionet.gdem.dcm.business.WorkqueueManager;
 import eionet.gdem.qa.WQCheckerJob;
 import eionet.gdem.qa.WQCleanerJob;
 import eionet.gdem.qa.WQExecutor;
+import eionet.gdem.web.job.DDTablesCacheUpdater;
 
 /**
  * ContextListener for initialising scheduled jobs with quartz
  *
- * @author Enriko Käsper
+ * @author Enriko Käsper, TripleDev
  */
 @SuppressWarnings("unchecked")
 public class JobScheduler implements ServletContextListener {
@@ -72,7 +73,10 @@ public class JobScheduler implements ServletContextListener {
                                 WQCheckerJob.class.getName()).build()),
                                 Pair.of(new Integer(Properties.wqCleanInterval),
                                         newJob(WQCleanerJob.class).withIdentity(WQCleanerJob.class.getSimpleName(),
-                                                WQCleanerJob.class.getName()).build())};
+                                                WQCleanerJob.class.getName()).build()),
+                                                Pair.of(new Integer(Properties.ddTablesUpdateInterval),
+                                                        newJob(DDTablesCacheUpdater.class).withIdentity(DDTablesCacheUpdater.class.getSimpleName(),
+                                                                DDTablesCacheUpdater.class.getName()).build()) };
     }
 
     /**
@@ -131,7 +135,6 @@ public class JobScheduler implements ServletContextListener {
 
     /*
      * (non-Javadoc)
-     *
      * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
      */
     @Override

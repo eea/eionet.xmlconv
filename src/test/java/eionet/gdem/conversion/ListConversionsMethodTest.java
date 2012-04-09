@@ -12,13 +12,14 @@ import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 
 import eionet.gdem.dcm.remote.ListConversionsResult;
+import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 /**
  * This unittest tests the Conversion Service listConversions method
- * 
+ *
  * @author Enriko Käsper, TietoEnator Estonia AS ListConversionsMethodTest
  */
 
@@ -35,6 +36,7 @@ public class ListConversionsMethodTest extends DBTestCase {
     /**
      * Set up test case properties
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         TestUtils.setUpProperties(this);
@@ -43,9 +45,10 @@ public class ListConversionsMethodTest extends DBTestCase {
     /**
      * Load the data which will be inserted for the test
      */
+    @Override
     protected IDataSet getDataSet() throws Exception {
         IDataSet loadedDataSet =
-                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_CONVERSIONS_XML));
+            new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_CONVERSIONS_XML));
         return loadedDataSet;
     }
 
@@ -56,7 +59,7 @@ public class ListConversionsMethodTest extends DBTestCase {
 
         ConversionService cs = new ConversionService();
         // get all conversions
-        Vector v = cs.listConversions();
+        Vector<Hashtable<String, String>> v = cs.listConversions();
         // we don't know the exact number of schemas will be returned, because DD stylesheets has been created dynamically
         assertTrue(v.size() > 83);
     }
@@ -68,16 +71,16 @@ public class ListConversionsMethodTest extends DBTestCase {
         // get conversions for 1 schema
         ConversionService cs = new ConversionService();
         String schema = "http://waste.eionet.europa.eu/schemas/waste/schema.xsd";
-        Vector v = cs.listConversions(schema);
+        Vector<Hashtable<String, String>> v = cs.listConversions(schema);
         assertEquals(3, v.size());
 
         // analyze the conversion hashtable at index 0
-        Hashtable h = (Hashtable) v.get(0);
-        String convert_id = (String) h.get(ListConversionsResult.CONVERT_ID_TAG);
-        String xsl = (String) h.get(ListConversionsResult.XSL_TAG);
-        String content_type_out = (String) h.get(ListConversionsResult.CONTENT_TYPE_TAG);
-        String result_type = (String) h.get(ListConversionsResult.RESULT_TYPE_TAG);
-        String xml_schema = (String) h.get(ListConversionsResult.XML_SCHEMA_TAG);
+        Hashtable<String, String> h = v.get(0);
+        String convert_id = h.get(ListConversionsResult.CONVERT_ID_TAG);
+        String xsl = h.get(ListConversionsResult.XSL_TAG);
+        String content_type_out = h.get(ListConversionsResult.CONTENT_TYPE_TAG);
+        String result_type = h.get(ListConversionsResult.RESULT_TYPE_TAG);
+        String xml_schema = h.get(ListConversionsResult.XML_SCHEMA_TAG);
 
         assertEquals("169", convert_id);
         assertEquals("dir75442_excel.xsl", xsl);
@@ -86,12 +89,12 @@ public class ListConversionsMethodTest extends DBTestCase {
         assertEquals(schema, xml_schema);
 
         // analyze the conversion hashtable at index 1
-        Hashtable h2 = (Hashtable) v.get(1);
-        String convert_id2 = (String) h2.get(ListConversionsResult.CONVERT_ID_TAG);
-        String xsl2 = (String) h2.get(ListConversionsResult.XSL_TAG);
-        String content_type_out2 = (String) h2.get(ListConversionsResult.CONTENT_TYPE_TAG);
-        String result_type2 = (String) h2.get(ListConversionsResult.RESULT_TYPE_TAG);
-        String xml_schema2 = (String) h2.get(ListConversionsResult.XML_SCHEMA_TAG);
+        Hashtable<String, String> h2 = v.get(1);
+        String convert_id2 = h2.get(ListConversionsResult.CONVERT_ID_TAG);
+        String xsl2 = h2.get(ListConversionsResult.XSL_TAG);
+        String content_type_out2 = h2.get(ListConversionsResult.CONTENT_TYPE_TAG);
+        String result_type2 = h2.get(ListConversionsResult.RESULT_TYPE_TAG);
+        String xml_schema2 = h2.get(ListConversionsResult.XML_SCHEMA_TAG);
 
         assertEquals("171", convert_id2);
         assertEquals("dir75442_html.xsl", xsl2);
@@ -112,4 +115,40 @@ public class ListConversionsMethodTest extends DBTestCase {
         assertTrue(schemas.size() > 36);
     }
 
+    /**
+     * Test getMapFromConversionObject method which serialises the object into correct Hastable structure.
+     */
+    public void testGetMapFromConversionObject() {
+        ListConversionsMethod listConvMethod = new ListConversionsMethod();
+        ConversionDto conversionObject = new ConversionDto();
+        conversionObject.setStylesheet("stylesheet");
+        conversionObject.setConvId("11");
+        conversionObject.setResultType("RDF");
+        conversionObject.setContentType("application/rdf+xml;charset=UTF-8");
+        conversionObject.setXmlSchema("schema");
+
+        Hashtable<String, String> h = listConvMethod.getMapFromConversionObject(conversionObject);
+        assertEquals("stylesheet", h.get(ListConversionsMethod.KEY_XSL));
+        assertEquals("11", h.get(ListConversionsMethod.KEY_CONVERT_ID));
+        assertEquals("RDF", h.get(ListConversionsMethod.KEY_RESULT_TYPE));
+        assertEquals("application/rdf+xml;charset=UTF-8", h.get(ListConversionsMethod.KEY_CONTENTTYPE_OUT));
+        assertEquals("schema", h.get(ListConversionsMethod.KEY_XML_SCHEMA));
+
+    }
+    /**
+     * Test if listConversions method returns generated conversion if local conversion is available.
+     * @throws Exception
+     */
+    public void testGeneratedConversionsIgnoring() throws Exception{
+        ListConversionsMethod listConvMethod = new ListConversionsMethod();
+        Vector<Hashtable<String, String>> conversions = listConvMethod.listConversions("http://dd.eionet.europa.eu/GetSchema?id=TBL6592");
+
+        int countRdfConversions = 0;
+        for (Hashtable<String, String> conversion : conversions){
+            if ("RDF".equals(conversion.get(ListConversionsMethod.KEY_RESULT_TYPE))){
+                countRdfConversions++;
+            }
+        }
+        assertEquals(1, countRdfConversions);
+    }
 }

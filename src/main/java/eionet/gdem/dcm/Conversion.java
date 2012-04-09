@@ -40,22 +40,28 @@ public class Conversion {
     /** */
     private static final Log LOGGER = LogFactory.getLog(Conversion.class);
     public static String CONVERSION_ELEMENT = "conversion";
-    private static List conversions = new ArrayList();
+    /** List of generated conversions. */
+    private static List<ConversionDto> conversions = new ArrayList<ConversionDto>();
 
+    /**
+     * Load generated conversion types from dcm/conversions.xml.
+     */
     static {
         try {
 
             IXmlCtx ctx = new XmlContext();
             ctx.checkFromFile(Properties.convFile);
             IXQuery xQuery = ctx.getQueryManager();
-            List identifiers = xQuery.getElementIdentifiers(CONVERSION_ELEMENT);
+            List<String> identifiers = xQuery.getElementIdentifiers(CONVERSION_ELEMENT);
             for (int i = 0; i < identifiers.size(); i++) {
-                String id = (String) identifiers.get(i);
+                String id = identifiers.get(i);
                 ConversionDto resObject = new ConversionDto();
                 resObject.setConvId(id);
                 resObject.setDescription(xQuery.getElementValue(id, "description"));
                 resObject.setResultType(xQuery.getElementValue(id, "result_type"));
                 resObject.setStylesheet(xQuery.getElementValue(id, "stylesheet"));
+                resObject.setIgnoreGeneratedIfManualExists(xQuery.getElementValue(id, "ignore_if_manual") != null
+                        && "true".equals(xQuery.getElementValue(id, "ignore_if_manual")));
                 Hashtable convType = GDEMServices.getDaoService().getConvTypeDao().getConvType(resObject.getResultType());
 
                 resObject.setContentType((String) convType.get("content_type"));
@@ -67,15 +73,27 @@ public class Conversion {
 
     }
 
-    public static List getConversions() {
+    /**
+     * Get the list of generated conversion types.
+     *
+     * @return
+     */
+    public static List<ConversionDto> getConversions() {
         return conversions;
     }
 
+    /**
+     * Get generated conversion type by ID.
+     *
+     * @param convId
+     *            Conversion ID stored in xml conf.
+     * @return ConversionDto object.
+     */
     public static ConversionDto getConversionById(String convId) {
         ConversionDto conversion = null;
         for (int i = 0; i < conversions.size(); i++) {
-            if (((ConversionDto) conversions.get(i)).getConvId().compareTo(convId) == 0) {
-                conversion = (ConversionDto) conversions.get(i);
+            if ((conversions.get(i)).getConvId().compareTo(convId) == 0) {
+                conversion = conversions.get(i);
                 break;
             }
         }

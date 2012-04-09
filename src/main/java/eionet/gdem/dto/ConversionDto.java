@@ -29,6 +29,8 @@ public class ConversionDto implements Serializable {
     private String resultType;
     private String stylesheet;
     private String contentType;
+    private String xmlSchema;
+    private boolean ignoreGeneratedIfManualExists = false;
 
     /**
      * @param args
@@ -78,8 +80,45 @@ public class ConversionDto implements Serializable {
         this.contentType = contentType;
     }
 
+    /**
+     * @return the xmlSchema
+     */
+    public String getXmlSchema() {
+        return xmlSchema;
+    }
+
+    /**
+     * @param xmlSchema
+     *            the xmlSchema to set
+     */
+    public void setXmlSchema(String xmlSchema) {
+        this.xmlSchema = xmlSchema;
+    }
+
+    /**
+     * @return the ignoreGeneratedIfManualExists
+     */
+    public boolean isIgnoreGeneratedIfManualExists() {
+        return ignoreGeneratedIfManualExists;
+    }
+
+    /**
+     * @param ignoreGeneratedIfManualExists
+     *            the ignoreGeneratedIfManualExists to set
+     */
+    public void setIgnoreGeneratedIfManualExists(boolean ignoreGeneratedIfManualExists) {
+        this.ignoreGeneratedIfManualExists = ignoreGeneratedIfManualExists;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
     public String toString() {
-        return "convId=" + convId + " description=" + description + " resultType=" + resultType + " stylesheet=" + stylesheet;
+        return "ConversionDto [convId=" + convId + ", description=" + description + ", resultType=" + resultType + ", stylesheet="
+        + stylesheet + ", contentType=" + contentType + ", xmlSchema=" + xmlSchema + ", ignoreGeneratedIfManualExists="
+        + ignoreGeneratedIfManualExists + "]";
     }
 
 }

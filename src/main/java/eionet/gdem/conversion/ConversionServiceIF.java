@@ -20,13 +20,21 @@ import eionet.gdem.dto.ConversionResultDto;
 public interface ConversionServiceIF extends RemoteServiceIF {
 
     /**
-     * List all possible conversions
+     * List available conversions.
+     *
+     * @return List of conversions.
+     * @throws GDEMException
      */
-
     Vector listConversions() throws GDEMException;
 
     /**
-     * List all possible conversions for this namespace
+     * List available conversions for given schema. If schema is not given as a parameter, then all possible conversions will be
+     * returned.
+     *
+     * @param schema
+     *            XML Schema URL for which conversions will be returned.
+     * @return List of conversions.
+     * @throws GDEMException
      */
     Vector listConversions(String schema) throws GDEMException;
 

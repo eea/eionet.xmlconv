@@ -3,9 +3,10 @@
  */
 package eionet.gdem.conversion;
 
+import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import org.apache.commons.logging.Log;
@@ -17,124 +18,188 @@ import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dcm.business.DDServiceClient;
 import eionet.gdem.dcm.remote.RemoteServiceMethod;
 import eionet.gdem.dto.ConversionDto;
+import eionet.gdem.dto.DDDatasetTable;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 
 /**
- * Implementation of listConversions method
+ * Implementation of listConversions method.
  *
  * @author Enriko Käsper, TietoEnator Estonia AS
  */
 
 public class ListConversionsMethod extends RemoteServiceMethod {
 
+    /** Conversion ID property key in ListConversions method result. */
+    public static final String KEY_CONVERT_ID = "convert_id";
+    /** URL to XSL stylesheet property in ListConversions method result. */
+    public static final String KEY_XSL = "xsl";
+    /** Conversion description name property in ListConversions method result. */
+    public static final String KEY_DESCRIPTION = "description";
+    /** Conversion output content type property in ListConversions method result. */
+    public static final String KEY_CONTENTTYPE_OUT = "content_type_out";
+    /** Conversion output result type property in ListConversions method result. */
+    public static final String KEY_RESULT_TYPE = "result_type";
+    /** XML Schema URL property in ListConversions method result. */
+    public static final String KEY_XML_SCHEMA = "xml_schema";
+
+    /** */
     private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
     /** */
     private static final Log LOGGER = LogFactory.getLog(ConvertXMLMethod.class);
 
-    public Vector listConversions(String schema) throws GDEMException {
-        Vector v = new Vector();
-        List ddTables = DDServiceClient.getDDTables();
-        List convs = Conversion.getConversions();
+    /**
+     * List available conversions for given schema. If schema is not given as a parameter, then all possible conversions will be
+     * returned.
+     *
+     * @param schema
+     *            XML Schema URL for which conversions will be returned.
+     * @return List of conversions.
+     * @throws GDEMException
+     *             Error occurred on reading data from database or from Data Dictionary.
+     */
+    public Vector<Hashtable<String, String>> listConversions(String schema) throws GDEMException {
+        Vector<Hashtable<String, String>> v = new Vector<Hashtable<String, String>>();
+        List<DDDatasetTable> ddTables = DDServiceClient.getDDTables();
+        List<ConversionDto> generatedConversionTypes = Conversion.getConversions();
+        Set<String> handcodedConvTypes = new HashSet<String>();
 
-        if (schema != null && schema.startsWith(Properties.ddURL) && ddTables != null) {
-            // schema is from DD
-            // parse tbl id
-            // check tbl id
-            String tblId = schema.substring(schema.indexOf("id=TBL") + 6, schema.length());
-            boolean existsInDD = false;
-            for (Iterator iter = ddTables.iterator(); iter.hasNext();) {
-                Hashtable element = (Hashtable) iter.next();
-                if (((String) element.get("tblId")).equalsIgnoreCase(tblId)) {
-                    existsInDD = true;
-                    break;
-                }
-            }
-
-            if (existsInDD) {
-                for (int i = 0; i < convs.size(); i++) {
-                    Hashtable h = new Hashtable();
-                    h.put("convert_id", "DD_TBL" + tblId + "_CONV" + ((ConversionDto) convs.get(i)).getConvId());
-                    h.put("xsl",
-                            Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv="
-                            + ((ConversionDto) convs.get(i)).getConvId());
-                    h.put("description", ((ConversionDto) convs.get(i)).getDescription());
-                    h.put("content_type_out", ((ConversionDto) convs.get(i)).getContentType());
-                    h.put("result_type", ((ConversionDto) convs.get(i)).getResultType());
-                    h.put("xml_schema", schema);
-                    v.add(h);
-                }
-            }
-
-        }
-        //
-        if (schema == null && ddTables != null) {
-
-            for (int i = 0; i < ddTables.size(); i++) {
-                Hashtable schemaDD = (Hashtable) ddTables.get(i);
-                String tblId = (String) schemaDD.get("tblId");
-                String schemaUrl = Properties.ddURL + "/GetSchema?id=TBL" + tblId;
-
-                for (int j = 0; j < convs.size(); j++) {
-                    Hashtable h = new Hashtable();
-                    h.put("convert_id", "DD_TBL" + tblId + "_CONV" + ((ConversionDto) convs.get(j)).getConvId());
-                    h.put("xsl",
-                            Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv="
-                            + ((ConversionDto) convs.get(j)).getConvId());
-                    h.put("description", ((ConversionDto) convs.get(j)).getDescription());
-                    h.put("content_type_out", ((ConversionDto) convs.get(j)).getContentType());
-                    h.put("result_type", ((ConversionDto) convs.get(j)).getResultType());
-                    h.put("xml_schema", schemaUrl);
-                    v.add(h);
-                }
-
-            }
-        }
-        // retriving handocoded transformations
+        // retrieving hand-coded conversions
         try {
-            Vector vDb = convTypeDao.listConversions(schema);
-            for (int i = 0; i < vDb.size(); i++) {
-                v.add(vDb.get(i));
+            Vector<ConversionDto> dbConversions = convTypeDao.listConversions(schema);
+            for (ConversionDto conversion : dbConversions) {
+                v.add(getMapFromConversionObject(conversion));
+                handcodedConvTypes.add(conversion.getResultType() + conversion.getXmlSchema());
             }
-
         } catch (Exception e) {
             LOGGER.error("Error getting data from the DB", e);
             throw new GDEMException("Error getting data from the DB " + e.toString(), e);
+        }
+        // get generated conversions for given DD schema
+        if (schema != null && schema.startsWith(Properties.ddURL) && ddTables != null) {
+            String tblId = schema.substring(schema.indexOf("id=TBL") + 6, schema.length());
+            if (isSchemaExistsInDD(ddTables, tblId)) {
+                for (ConversionDto genConversion : generatedConversionTypes) {
+                    if (!genConversion.isIgnoreGeneratedIfManualExists()
+                            || !handcodedConvTypes.contains(genConversion.getResultType() + schema)) {
+                        Hashtable<String, String> h = getMapForDDTable(genConversion, tblId, schema);
+                        v.add(h);
+                    }
+                }
+            }
+        }
+        // get generated conversions for all DD schemas
+        if (schema == null && ddTables != null) {
+            for (DDDatasetTable ddTable : ddTables) {
+                String schemaUrl = Properties.ddURL + "/GetSchema?id=TBL" + ddTable.getTblId();
+                for (ConversionDto genConversion : generatedConversionTypes) {
+                    if (!genConversion.isIgnoreGeneratedIfManualExists()
+                            || !handcodedConvTypes.contains(genConversion.getResultType() + schemaUrl)) {
+                        Hashtable<String, String> h = getMapForDDTable(genConversion, ddTable.getTblId(), schemaUrl);
+                        v.add(h);
+                    }
+                }
+            }
         }
         return v;
     }
 
     /**
-     * Get a distinct list of XML Schemas returned from listConversions() method
+     * Get a distinct list of XML Schemas returned from listConversions() method.
      *
-     * @return
+     * @return List of XML schemas.
      * @throws GDEMException
+     *             Error occurred on reading data from database.
      */
-    public Vector getXMLSchemas() throws GDEMException {
-        Vector conv = listConversions(null);
-        Vector schemas = new Vector();
+    public Vector<String> getXMLSchemas() throws GDEMException {
+        Vector<Hashtable<String, String>> conv = listConversions(null);
+        Vector<String> schemas = new Vector<String>();
 
         for (int i = 0; i < conv.size(); i++) {
-            Hashtable schema = (Hashtable) conv.get(i);
-            // System.out.println( i + " - " + schema.get("xml_schema") );
+            Hashtable<String, String> schema = conv.get(i);
             if (!schemas.contains(schema.get("xml_schema"))) {
                 schemas.add(schema.get("xml_schema"));
             }
         }
-
         return schemas;
     }
 
     /**
-     * Check if listConversions method contains specified schema
+     * Check if listConversions method contains specified schema.
      *
      * @param xmlSchema
      * @return
      * @throws GDEMException
+     *             System error.
      */
     public boolean existsXMLSchema(String xmlSchema) throws GDEMException {
-        List schemas = getXMLSchemas();
+        List<String> schemas = getXMLSchemas();
         return schemas.contains(xmlSchema);
+    }
+
+    /**
+     * Checks if the given dataset table ID exists in the list of schemas retrieved from Data Dictionary.
+     *
+     * @param ddTables
+     *            List of DD schemas.
+     * @return true, if table ID exists in DD.
+     */
+    public boolean isSchemaExistsInDD(List<DDDatasetTable> ddTables, String tblId) {
+        boolean existsInDD = false;
+        for (DDDatasetTable ddTable : ddTables) {
+            if (ddTable.getTblId() != null && ddTable.getTblId().equalsIgnoreCase(tblId)) {
+                existsInDD = true;
+                break;
+            }
+        }
+        return existsInDD;
+    }
+
+    /**
+     * Converts ConversionDto object to Hashtable with correct keys.
+     *
+     * @param conversionObject
+     *            Conversion object contains info about stylesheet, conversion type and XML Shcema.
+     * @return Map with correct keys.
+     */
+    protected Hashtable<String, String> getMapFromConversionObject(ConversionDto conversionObject) {
+
+        if (conversionObject == null) {
+            return null;
+        }
+
+        Hashtable<String, String> h = new Hashtable<String, String>();
+        h.put(KEY_CONVERT_ID, conversionObject.getConvId() == null ? "" : conversionObject.getConvId());
+        h.put(KEY_XSL, conversionObject.getStylesheet() == null ? "" : conversionObject.getStylesheet());
+        h.put(KEY_XML_SCHEMA, conversionObject.getXmlSchema() == null ? "" : conversionObject.getXmlSchema());
+        h.put(KEY_CONTENTTYPE_OUT, conversionObject.getContentType() == null ? "" : conversionObject.getContentType());
+        h.put(KEY_RESULT_TYPE, conversionObject.getResultType() == null ? "" : conversionObject.getResultType());
+        h.put(KEY_DESCRIPTION, conversionObject.getDescription() == null ? "" : conversionObject.getDescription());
+
+        return h;
+    }
+
+    /**
+     * Create converion Map object for DD table.
+     *
+     * @param conversionObject
+     *            Conversion object contains info about stylesheet, conversion type and XML Shcema.
+     * @param tblId
+     *            Data Dictionary table ID
+     * @param schemaUrl
+     *            URL of XML schema.
+     * @return Map with correct keys.
+     */
+    protected Hashtable<String, String> getMapForDDTable(ConversionDto conversionObject, String tblId, String schemaUrl) {
+        if (conversionObject == null) {
+            return null;
+        }
+        Hashtable<String, String> h = getMapFromConversionObject(conversionObject);
+        h.put(KEY_CONVERT_ID, "DD_TBL" + tblId + "_CONV" + conversionObject.getConvId());
+        h.put(KEY_XSL, Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv=" + conversionObject.getConvId());
+        h.put(KEY_XML_SCHEMA, schemaUrl == null ? "" : schemaUrl);
+
+        return h;
     }
 }

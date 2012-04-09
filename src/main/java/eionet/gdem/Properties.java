@@ -112,6 +112,8 @@ public class Properties {
     public static int wqJobMaxAge = 24;
     /** Maximum size (MB) of XML file sent to manual QA for XML Schema validation. */
     public static int qaValidationXmlUpperLimit = 200;
+    /** period for updating DD dataset tables data in seconds, default 1hour=3600sec */
+    public static int ddTablesUpdateInterval = 3600;
 
     /** Resource bundle for gdem properties. */
     private static ResourceBundle props;
@@ -170,6 +172,8 @@ public class Properties {
                 qaTimeout = getIntProperty("external.qa.timeout");
                 // exteranal QA program
                 xgawkCommand = getStringProperty("external.qa.command.xgawk");
+                // period in seconds
+                ddTablesUpdateInterval = getIntProperty("dd.tables.update.job.interval");
 
                 dateFormatPattern = getStringProperty("date.format.pattern");
                 timeFormatPattern = getStringProperty("time.format.pattern");

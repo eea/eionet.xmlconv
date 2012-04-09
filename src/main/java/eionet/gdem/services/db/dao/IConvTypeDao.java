@@ -4,12 +4,14 @@ import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import eionet.gdem.dto.ConversionDto;
+
 public interface IConvTypeDao extends IDbSchema {
 
     /**
      * returns all records from t_STYLESHEET WHERE XML_SCHEMA=xmlSchema.
      */
-    public Vector listConversions(String xmlSchema) throws SQLException;
+    public Vector<ConversionDto> listConversions(String xmlSchema) throws SQLException;
 
     public Vector getConvTypes() throws SQLException;
 

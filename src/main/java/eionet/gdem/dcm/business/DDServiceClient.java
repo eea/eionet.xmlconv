@@ -21,69 +21,133 @@
 
 package eionet.gdem.dcm.business;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
 
 import com.tee.uit.client.ServiceClientIF;
 import com.tee.uit.client.ServiceClients;
 
 import eionet.gdem.Properties;
+import eionet.gdem.dto.DDDatasetTable;
+import eionet.gdem.web.listeners.ApplicationCache;
 
+/**
+ *
+ * DD service client class queries data from Data Dictionary over xml-rpc.
+ *
+ * @author Enriko Käsper
+ */
 public class DDServiceClient {
 
+    /** DD xml rpc service name. */
     protected String serviceName = null;
+    /** DD xml rpc service URL. */
     protected String serviceUrl = null;
+    /** UIT client. */
     protected ServiceClientIF client = null;
+    /** Dataset for testing the service interface. */
     private static Map<String, String> mockDataset = null;
 
+    /**
+     * Load service properties.
+     *
+     * @throws Exception
+     *             if properties are missing in eionet.properties file.
+     */
     protected void load() throws Exception {
-        if (serviceName == null || serviceName.equals("") || serviceUrl == null || serviceUrl.equals(""))
+        if (serviceName == null || serviceName.equals("") || serviceUrl == null || serviceUrl.equals("")) {
             throw new Exception("serviceName or serviceUrl is missing!");
+        }
         client = ServiceClients.getServiceClient(serviceName, serviceUrl);
     }
 
+    /**
+     * Get property values from Propeties.
+     */
     protected void getProps() {
         serviceName = Properties.invServName;
         serviceUrl = Properties.invServUrl;
     }
 
+    /**
+     * Execute xml rpc method.
+     *
+     * @param method
+     *            String method name
+     * @param params
+     *            Vector method parameters
+     * @return Return the result from xml rpc method
+     * @throws Exception
+     *             when call to remote service fails or service is unresponsive.
+     */
     protected Object execute(String method, Vector params) throws Exception {
-        if (client == null)
+        if (client == null) {
             load();
+        }
         return client.getValue(method, params);
     }
 
-    public void execute(HttpServletRequest req) throws Exception {
+    /**
+     * Get DD dataset tables data from XMLCONV cache or call getDSTables method from DD.
+     *
+     * @return the list of DDDatasetTable objects.
+     */
+    public static List<DDDatasetTable> getDDTables() {
+        List<DDDatasetTable> ddTables = ApplicationCache.getDDTables();
+        if (ddTables == null || ddTables.size() == 0) {
+            ddTables = getDDTablesFromDD();
+        }
+        return ddTables;
     }
 
-    public static List getDDTables() {
+    /**
+     * Call getDSTables method from DD.
+     *
+     * @return the list of DDDatasetTable objects.
+     */
+    public static List<DDDatasetTable> getDDTablesFromDD() {
         DDServiceClient d = new DDServiceClient();
-        List list = null;
+        List<DDDatasetTable> list = null;
         try {
-            Vector b = new Vector();
             d.getProps();
             d.load();
-            Object res = d.execute("getDSTables", b);
-            list = (List) res;
+            Object res = d.execute("getDSTables", new Vector<Object>());
+            if (res != null && res instanceof List<?>) {
+                list = new ArrayList<DDDatasetTable>();
+                for (Hashtable<String, String> resultItem : (List<Hashtable<String, String>>) res) {
+                    if (resultItem.containsKey("tblId") && resultItem.get("tblId") != null) {
+                        DDDatasetTable ddTable = new DDDatasetTable(resultItem.get("tblId"));
+                        ddTable.setDataSet(resultItem.get("dataSet"));
+                        ddTable.setShortName(resultItem.get("shortName"));
+                        ddTable.setDateReleased(resultItem.get("ddMMyy"));
+                        list.add(ddTable);
+                    }
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
     }
 
+    /**
+     * Call getDatasetWithReleaseInfo method from DD.
+     *
+     * @return the list of DDDatasetTable objects.
+     */
     public static Map<String, String> getDatasetWithReleaseInfo(String type, String id) {
         DDServiceClient d = new DDServiceClient();
         Map result = null;
         try {
-            Vector b = new Vector();
-            b.add(type);
-            b.add(id);
+            Vector<String> params = new Vector<String>();
+            params.add(type);
+            params.add(id);
             d.getProps();
             d.load();
-            Object res = d.execute("getDatasetWithReleaseInfo", b);
+            Object res = d.execute("getDatasetWithReleaseInfo", params);
             result = (Map<String, String>) res;
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,14 +156,20 @@ public class DDServiceClient {
     }
 
     /**
-     * The testing purposes
-     * 
+     * Method for testing purposes.
+     *
      * @return
      */
     public static Map<String, String> getMockDataset(String type, String id) {
         return mockDataset;
     }
 
+    /**
+     * Setter method for testing purpoeses.
+     *
+     * @param mockDataset
+     *            Set fake data.
+     */
     public static void setMockDataset(Map<String, String> mockDataset) {
         DDServiceClient.mockDataset = mockDataset;
     }

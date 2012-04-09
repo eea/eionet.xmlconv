@@ -596,6 +596,11 @@
             <version>2.1.4</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>1.6.1</version>
+        </dependency>
     </dependencies>
     <reporting>
         <plugins>
