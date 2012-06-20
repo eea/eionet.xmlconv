@@ -23,7 +23,9 @@ If it is a first time install then acl folder should be copied manually into ${a
 
 2. Building the war:
 ====================
-Execute command: mvn install
+2.1 Execute command: mvn install
+
+2.2 Rename *.acl.dist files to *.acl files in %app.home%/acls folder and revise the contents of acladmin.group file
 
 3. Deploy 
 ===========

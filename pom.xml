@@ -67,6 +67,10 @@
                                 <mkdir dir="${app.home}/xsl"/>
                                 <mkdir dir="${app.home}/xmlfile"/>
                                 <copy file="GDEMServices.xml" todir="${app.home}" overwrite="true"/>
+								<copy todir="${app.home}/acl" overwrite="false">
+									<fileset dir="acl"/>
+									<globmapper from="*" to="*.dist"/>
+								</copy>
                             </tasks>
                         </configuration>
                     </execution>
