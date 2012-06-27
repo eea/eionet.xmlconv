@@ -1,3 +1,5 @@
+package eionet.gdem.dcm.business;
+
 /*
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
@@ -18,8 +20,6 @@
  * Contributors(s):
  *    Original code: Istvan Alfeldi (ED)
  */
-
-package eionet.gdem.dcm.business;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -80,11 +80,19 @@ public class SchemaManager {
 
     /** */
     private static final Log LOGGER = LogFactory.getLog(SchemaManager.class);
-
+    /** */
     private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
+    /** */
     private IRootElemDao rootElemDao = GDEMServices.getDaoService().getRootElemDao();
+    /** */
     private IUPLSchemaDao uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
 
+    /**
+     * Deletes XML Schema and related stylesheets from database.
+     * @param user login name
+     * @param schemaId XML Schema database ID.
+     * @throws DCMException in case of database error occurs.
+     */
     public void deleteSchemaStylesheets(String user, String schemaId) throws DCMException {
 
         boolean hasOtherStuff = false;
@@ -143,13 +151,11 @@ public class SchemaManager {
      * Method creates StylesheetListHolder object, that stores the list of stylesheets both for handcoded and generated. The object
      * stores also user permissions info to manage stylesheets.
      *
-     * @param user_name
-     *            user name stored in HTTP session.This for checking user permisssions
      * @param type
      *            if type==null, then show only handcoded stylesheets. If type==generated, then show only generated stylesheets. If
      *            type==both, then show both handcoded and generated stylesheets
-     * @return
-     * @throws DCMException
+     * @return StylesheetListHolder object holding schema stylesheet and user permission information
+     * @throws DCMException in case of database error occurs.
      */
     public StylesheetListHolder getSchemas(String type) throws DCMException {
 
@@ -221,6 +227,12 @@ public class SchemaManager {
 
     }
 
+    /**
+     * Get XML Schema and related stylesheets information.
+     * @param schema XML Schema URL or database ID.
+     * @return StylesheetListHolder object holding schema stylesheet and user permission information
+     * @throws DCMException in case of database error occurs.
+     */
     public StylesheetListHolder getSchemaStylesheetsList(String schema) throws DCMException {
         StylesheetListHolder st = new StylesheetListHolder();
 
@@ -250,7 +262,7 @@ public class SchemaManager {
                 Hashtable hash = (Hashtable) stylesheets.get(i);
                 String xsl = (String) hash.get("xsl");
                 String type;
-                String last_modified = "";
+                String lastModified = "";
                 boolean ddConv = false;
                 String xslUrl;
 
@@ -258,7 +270,7 @@ public class SchemaManager {
 
                     File f = new File(Properties.xslFolder + File.separatorChar + xsl);
                     if (f != null && f.exists()) {
-                        last_modified = Utils.getDateTime(new Date(f.lastModified()));
+                        lastModified = Utils.getDateTime(new Date(f.lastModified()));
                     }
                     // DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(f.lastModified()));
                     xslUrl = Names.XSL_FOLDER + (String) hash.get("xsl");
@@ -275,7 +287,7 @@ public class SchemaManager {
                 stl.setXsl(xslUrl);
                 stl.setXslFileName(xsl);
                 stl.setXsl_descr((String) hash.get("description"));
-                stl.setModified(last_modified);
+                stl.setModified(lastModified);
                 stl.setConvId((String) hash.get("convert_id"));
                 stl.setDdConv(ddConv);
                 stls.add(stl);
@@ -297,15 +309,19 @@ public class SchemaManager {
      * Method creates QAScriptListHolder object, that stores the list of qa script The object stores also user permissions info to
      * manage stylesheets.
      *
-     * @param user_name
-     *            user name stored in HTTP session.This for checking user permisssions
-     * @return
-     * @throws DCMException
+     * @return QAScriptListHolder object holding QA script and permissions info.
+     * @throws DCMException in case of database error.
      */
     public QAScriptListHolder getSchemasWithQAScripts() throws DCMException {
         return getSchemasWithQAScripts(null);
     }
 
+    /**
+     * Get XML Schema info with related QA scripts.
+     * @param schemaId XML Schema database ID.
+     * @return QAScriptListHolder holding XML Schema and QA scripts information.
+     * @throws DCMException in case of database error.
+     */
     public QAScriptListHolder getSchemasWithQAScripts(String schemaId) throws DCMException {
 
         QAScriptListHolder st = new QAScriptListHolder();
@@ -360,6 +376,7 @@ public class SchemaManager {
                                     qas.setModified(Utils.getDateTime(new Date(f.lastModified())));
                                 }
                             } catch (Exception e) {
+                                LOGGER.error("Unable to read QA script file last modified time.", e);
                             }
 
                         }
@@ -369,7 +386,7 @@ public class SchemaManager {
                 if (qases.size() > 0) {
                     sc.setQascripts(qases);
                 }
-                if (qases.size() > 0 || schemaId != null || sc.isDoValidation() == true) {
+                if (qases.size() > 0 || schemaId != null || sc.isDoValidation()) {
                     schemas.add(sc);
                 }
             }
@@ -385,6 +402,18 @@ public class SchemaManager {
 
     }
 
+    /**
+     * Update XML Schema object in database.
+     * @param user user name stored in HTTP session.This for checking user permisssions
+     * @param schemaId XML Schema database ID.
+     * @param schema XML Schema URL.
+     * @param description description
+     * @param schemaLang schema language (XSD or DTD).
+     * @param doValidation is schema validation part of QA.
+     * @param dtdPublicId DTD public ID
+     * @param expireDate date when the XML Schema is expired and it should not be part of QA after that date.
+     * @throws DCMException in case of database error.
+     */
     public void update(String user, String schemaId, String schema, String description, String schemaLang, boolean doValidation,
             String dtdPublicId, Date expireDate) throws DCMException {
 
@@ -400,9 +429,6 @@ public class SchemaManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
-        // StringBuffer err_buf = new StringBuffer();
-        // String del_id= (String)req.getParameter(Names.XSD_DEL_ID);
-
         try {
             schemaDao.updateSchema(schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate);
 
@@ -413,19 +439,28 @@ public class SchemaManager {
 
     }
 
-    public SchemaElemHolder getSchemaElems(String user_name, String schemaId) throws DCMException {
+    /**
+     * Get XML schema information from database. The info can be queried by XML Schema URL or by schema database ID.
+     * The return object holds also information about the user permissions and Schema root elements.
+     * @param userName User login name who is asking the schema information
+     * @param schemaId Accepts both type of IDs: XML schema numeric database ID or XML Schema URL
+     * @return SchemaElemHolder object holding XML Schema and user rights information
+     * @throws DCMException in case of database error occurred.
+     */
+    public SchemaElemHolder getSchemaElems(String userName, String schemaId) throws DCMException {
 
         SchemaElemHolder se = new SchemaElemHolder();
 
         boolean xsduPrm = false;
         boolean xsddPrm = false;
+        String schemaDbId = "0";
         Schema schema;
-        ArrayList elems;
+        List<RootElem> elems;
 
         try {
-            elems = new ArrayList();
-            xsduPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "u");
-            xsddPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "d");
+            elems = new ArrayList<RootElem>();
+            xsduPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_SCHEMA_PATH, "u");
+            xsddPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_SCHEMA_PATH, "d");
 
             se.setXsduPrm(xsduPrm);
             se.setXsddPrm(xsddPrm);
@@ -441,6 +476,7 @@ public class SchemaManager {
                 schema = new Schema();
 
                 HashMap schemaHash = (HashMap) list.get(0);
+                schemaDbId = (String) schemaHash.get("schema_id");
                 schema.setSchema((String) schemaHash.get("xml_schema"));
                 schema.setDescription((String) schemaHash.get("description"));
                 schema.setSchemaLang((String) schemaHash.get("schema_lang"));
@@ -452,7 +488,7 @@ public class SchemaManager {
                 schema.setExpireDate(Utils.parseDate((String) schemaHash.get("expire_date"), "yyyy-MM-dd HH:mm:ss"));
 
                 // get uploaded schema information
-                HashMap uplSchemaMap = uplSchemaDao.getUplSchemaByFkSchemaId(schemaId);
+                HashMap uplSchemaMap = uplSchemaDao.getUplSchemaByFkSchemaId(schemaDbId);
 
                 if (uplSchemaMap != null && uplSchemaMap.get("upl_schema_file") != null) {
                     UplSchema uplSchema = new UplSchema();
@@ -468,6 +504,7 @@ public class SchemaManager {
                                 uplSchema.setLastModified(Utils.getDateTime(new Date(f.lastModified())));
                             }
                         } catch (Exception e) {
+                            LOGGER.error("unable to read schema file last modified time.", e);
                         }
                     }
                     uplSchema.setUplSchemaId(uplSchemaId);
@@ -480,14 +517,14 @@ public class SchemaManager {
                 se.setSchema(schema);
             }
 
-            Vector root_elems = rootElemDao.getSchemaRootElems(schemaId);
+            Vector rootElems = rootElemDao.getSchemaRootElems(schemaDbId);
 
-            if (root_elems == null) {
-                root_elems = new Vector();
+            if (rootElems == null) {
+                rootElems = new Vector();
             }
 
-            for (int i = 0; i < root_elems.size(); i++) {
-                HashMap hash = (HashMap) root_elems.get(i);
+            for (int i = 0; i < rootElems.size(); i++) {
+                HashMap hash = (HashMap) rootElems.get(i);
 
                 RootElem rElem = new RootElem();
                 rElem.setElemId((String) hash.get("rootelem_id"));
@@ -509,10 +546,10 @@ public class SchemaManager {
     }
 
     /**
-     * Get DD Schemas and append schemas found from database
+     * Get DD Schemas and append schemas found from database.
      *
-     * @return
-     * @throws DCMException
+     * @return list of XML Schemas
+     * @throws DCMException in case of database error.
      */
     public List<Schema> getSchemas() throws DCMException {
 
@@ -573,6 +610,13 @@ public class SchemaManager {
 
     }
 
+    /**
+     * Get stylesheet information for given XML Schema.
+     * @param schema XML Schema URL or database ID
+     * @return List of styleseeht objects.
+     * @throws DCMException in case of database error.
+     */
+
     public ArrayList getSchemaStylesheets(String schema) throws DCMException {
 
         ArrayList<Stylesheet> stls = new ArrayList<Stylesheet>();
@@ -615,7 +659,13 @@ public class SchemaManager {
         return stls;
     }
 
-    public UplSchemaHolder getUplSchemas(String user_name) throws DCMException {
+    /**
+     * Get uploaded schema files and permissions.
+     * @param userName user login name.
+     * @return UplSchemaHolder object holding schema and permissions information.
+     * @throws DCMException in case of database error.
+     */
+    public UplSchemaHolder getUplSchemas(String userName) throws DCMException {
 
         UplSchemaHolder sc = new UplSchemaHolder();
         ArrayList schemas;
@@ -626,9 +676,9 @@ public class SchemaManager {
 
         try {
 
-            ssiPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "i");
-            ssdPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "d");
-            ssuPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SCHEMA_PATH, "u");
+            ssiPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_SCHEMA_PATH, "i");
+            ssdPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_SCHEMA_PATH, "d");
+            ssuPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_SCHEMA_PATH, "u");
 
             sc.setSsdPrm(ssdPrm);
             sc.setSsiPrm(ssiPrm);
@@ -669,6 +719,16 @@ public class SchemaManager {
 
     }
 
+    /**
+     * Add new XML Schema into database.
+     * @param user login name
+     * @param schemaUrl XML Schema URL.
+     * @param descr description
+     * @param schemaLang Schema language (XSD or DTD)
+     * @param doValidation is schema part of QA.
+     * @return the database ID of added XML Schema
+     * @throws DCMException in case of database error.
+     */
     public String addSchema(String user, String schemaUrl, String descr, String schemaLang, boolean doValidation)
     throws DCMException {
         String schemaID = null;
@@ -702,6 +762,14 @@ public class SchemaManager {
         return schemaID;
     }
 
+    /**
+     * Store uploaded XML Schema file in the system.
+     * @param user login name
+     * @param file Struts FormFile object holding XML Schema content
+     * @param fileName file name
+     * @param fkSchemaId XML Schema object ID.
+     * @throws DCMException in case of IO or database errors.
+     */
     public void addUplSchema(String user, FormFile file, String fileName, String fkSchemaId) throws DCMException {
 
         try {
@@ -716,6 +784,14 @@ public class SchemaManager {
         }
     }
 
+    /**
+     * Store uploaded XML Schema file in the system.
+     * @param user login name
+     * @param fileInputStream file content
+     * @param fileName file name
+     * @param fkSchemaId XML Schema object ID.
+     * @throws DCMException in case of IO or database errors.
+     */
     public void addUplSchema(String user, InputStream fileInputStream, String fileName, String fkSchemaId) throws DCMException {
 
         try {
@@ -767,7 +843,7 @@ public class SchemaManager {
      * @param delSchema
      *            - false=delete only row in T_UPL_SCHEMA (local file); true=delete both row in T_SCHEMA and T_UPL_SCHEMA
      * @return 0= nothing deleted; 1 = T_SCHEMA deleted; 2= T_UPL_SCHEMA deleted; 3= T_SCHEMA & T_UPL_SCHEMA deleted
-     * @throws DCMException
+     * @throws DCMException in case of database error.
      */
     public int deleteUplSchema(String user, String schemaId, boolean delSchema) throws DCMException {
 
@@ -824,17 +900,21 @@ public class SchemaManager {
 
     }
 
+    /**
+     * Get Data Dictionary XML Schemas without stylesheet information.
+     * @return list of XML Schema objects.
+     * @throws DCMException in case of database or DD service error.
+     */
     public ArrayList getDDSchemas() throws DCMException {
         return getDDSchemas(false);
     }
 
     /**
-     * Get Schemas and stylesheets generated from DataDictioanry.
+     * Get Schemas and stylesheets generated from DataDictionary.
      *
-     * @param getStylesheets
-     *            - generate also stylesheet information
-     * @return
-     * @throws DCMException
+     * @param getStylesheets true, if generate also stylesheet information. Otherwise stylesheet info is not returned.
+     * @return list of XML Schema objects.
+     * @throws DCMException in case of database or DD service error.
      */
     public ArrayList getDDSchemas(boolean getStylesheets) throws DCMException {
 
@@ -863,11 +943,11 @@ public class SchemaManager {
 
                 for (ConversionDto ddConv : ddStylesheets) {
                     String convId = ddConv.getConvId();
-                    String xsl_url = Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv=" + convId;
+                    String xslUrl = Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv=" + convId;
 
                     Stylesheet stl = new Stylesheet();
                     stl.setType(ddConv.getResultType());
-                    stl.setXsl(xsl_url);
+                    stl.setXsl(xslUrl);
                     stl.setXsl_descr(ddConv.getDescription());
                     stl.setDdConv(true);
                     stls.add(stl);
@@ -888,6 +968,12 @@ public class SchemaManager {
         return schemas;
     }
 
+    /**
+     * Get XML schema information by database ID or schema URL.
+     * @param schemaId XML Schema database ID or URl.
+     * @return Schema object holding XML Schema information
+     * @throws DCMException in case of database error.
+     */
     public Schema getSchema(String schemaId) throws DCMException {
 
         HashMap sch = null;
@@ -911,6 +997,12 @@ public class SchemaManager {
         return schema;
     }
 
+    /**
+     * Get XML Schema database ID by Schema URL.
+     * @param schema Schema URL
+     * @return numeric database ID
+     * @throws DCMException in case of database error occurred.
+     */
     public String getSchemaId(String schema) throws DCMException {
         try {
             return schemaDao.getSchemaID(schema);
@@ -920,6 +1012,15 @@ public class SchemaManager {
         }
     }
 
+    /**
+     * Update uploaded XML Schema metadata or file content.
+     * @param user user login name
+     * @param uplSchemaId Uploaded XML Schema database ID.
+     * @param schemaId XML Schema database ID
+     * @param fileName XML Schema file name stored in the system.
+     * @param file new content of the XML Schema
+     * @throws DCMException in case of IO or database error.
+     */
     public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, FormFile file)
     throws DCMException {
 
@@ -935,6 +1036,15 @@ public class SchemaManager {
         }
     }
 
+    /**
+     * Update uploaded XML Schema metadata or file content.
+     * @param user user login name
+     * @param uplSchemaId Uploaded XML Schema database ID.
+     * @param schemaId XML Schema database ID
+     * @param fileName XML Schema file name stored in the system.
+     * @param fileInputStream new content of the XML Schema
+     * @throws DCMException in case of IO or database error.
+     */
     public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, InputStream fileInputStream)
     throws DCMException {
 
@@ -979,6 +1089,12 @@ public class SchemaManager {
 
     }
 
+    /**
+     * Get uploaded XML Schemas by database ID.
+     * @param schemaId XML Schema database ID.
+     * @return UplSchema object.
+     * @throws DCMException in case of database error.
+     */
     public UplSchema getUplSchemasById(String schemaId) throws DCMException {
 
         UplSchema uplSchema = new UplSchema();
@@ -1007,11 +1123,11 @@ public class SchemaManager {
                         uplSchema.setLastModified(Utils.getDateTime(new Date(f.lastModified())));
                     }
                 } catch (Exception e) {
+                    LOGGER.error("Error reading file last modified information", e);
                 }
             }
 
         } catch (Exception e) {
-            // e.printStackTrace();
             LOGGER.error("Error getting uploaded schema", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
@@ -1020,12 +1136,12 @@ public class SchemaManager {
     }
 
     /**
-     * If the schema is stored in local repository, then this method returns the file name of locally stored schema
+     * If the schema is stored in local repository, then this method returns the file name of locally stored schema.
      *
      * @param schemaUrl
      *            remote schema URL
      * @return filename stored in schemas folder
-     * @throws DCMException
+     * @throws DCMException in case of database error.
      */
     public String getUplSchemaURL(String schemaUrl) throws DCMException {
         String retURL = schemaUrl;
@@ -1046,10 +1162,11 @@ public class SchemaManager {
     }
 
     /**
-     * Returns the list of xml files retreived from CR sparql client
+     * Returns the list of xml files retrieved from CR sparql client.
      *
-     * @return
-     * @throws Exception
+     * @param schema URL of XML Schema
+     * @return list of CR file objects
+     * @throws DCMException in case of CR connection or SPARQL errors.
      */
     public List<CrFileDto> getCRFiles(String schema) throws DCMException {
 
@@ -1061,14 +1178,21 @@ public class SchemaManager {
     }
 
     /**
-     * Returns the list of DD tables retreived from xml-rpc request
+     * Returns the list of DD tables retrieved from xml-rpc request.
      *
-     * @return
+     * @return list of DD tables.
      */
     protected List<DDDatasetTable> getDDTables() {
         return DDServiceClient.getDDTables();
     }
 
+    /**
+     * Generates the unique filename for uploaded schemas.
+     * @param filepart prefix for file name.
+     * @param ext file extension
+     * @return generated file name
+     * @throws DCMException in case of IO error.
+     */
     public String generateUniqueSchemaFilename(String filepart, String ext) throws DCMException {
 
         String ret = "";
@@ -1092,6 +1216,14 @@ public class SchemaManager {
 
     }
 
+    /**
+     * Generates unique file name for uploaded schema file by database ID.
+     * @param folderName local folder for storing XML Schemas.
+     * @param schemaID XML Schema database ID.
+     * @param ext file extension.
+     * @return generated filename.
+     * @throws DCMException in case of IO error.
+     */
     public String generateSchemaFilenameByID(String folderName, String schemaID, String ext) throws DCMException {
 
         if (Utils.isNullStr(ext)) {
@@ -1105,13 +1237,13 @@ public class SchemaManager {
     }
 
     /**
-     * compares the differences between remote schema and the local copy of it
+     * Compares the differences between remote schema and the local copy of it.
      *
-     * @param schemaUrl
-     * @param schemaFile
+     * @param remoteSchema byte array of remote XML Schema.
+     * @param schemaFile local schema file name.
      * @return if the result is empty string, then the files are identical, otherwise BusinessConstants with AppReosurce identifier
      *         is returned
-     * @throws DCMException
+     * @throws DCMException in case of IO errors.
      */
     public String diffRemoteSchema(byte[] remoteSchema, String schemaFile) throws DCMException {
 
@@ -1151,11 +1283,11 @@ public class SchemaManager {
     }
 
     /**
-     * Download remote schema from specified URL and return it as byte array
+     * Download remote schema from specified URL and return it as byte array.
      *
-     * @param url
-     * @return
-     * @throws DCMException
+     * @param url URL of remote XML Schema.
+     * @return byte array of remote schema.
+     * @throws DCMException in case of connection error.
      */
     public byte[] downloadRemoteSchema(String url) throws DCMException {
         // download schema
@@ -1176,12 +1308,12 @@ public class SchemaManager {
      * Method tries to download the remote XML Schema and store it in the local cache. Method registers the schema in T_UPL_SCHEMA
      * table.
      *
-     * @param user
-     * @param schemaUrl
-     * @param schemaFileName
-     * @param schemaId
-     * @param uplSchemaId
-     * @throws DCMException
+     * @param user user login name
+     * @param schemaUrl XML Schema URL
+     * @param schemaFileName file name of remote schema
+     * @param schemaId XML Schema database ID.
+     * @param uplSchemaId uploaded schema file ID.
+     * @throws DCMException in case of HTTP connection or database errors.
      */
     public void storeRemoteSchema(String user, String schemaUrl, String schemaFileName, String schemaId, String uplSchemaId)
     throws DCMException {

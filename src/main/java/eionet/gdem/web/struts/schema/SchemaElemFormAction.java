@@ -91,9 +91,8 @@ public class SchemaElemFormAction extends Action {
         } catch (DCMException e) {
             // e.printStackTrace();
             LOGGER.error("Schema element form error", e);
-            errors.add("stylesheet", new ActionMessage(e.getErrorCode()));
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveErrors(httpServletRequest, errors);
-            return actionMapping.findForward("fail");
         }
 
         httpServletRequest.getSession().setAttribute("stylesheet.outputtype", seHolder);

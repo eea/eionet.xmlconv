@@ -9,10 +9,11 @@
 
     <ed:breadcrumbs-push label="XML Schema or DTD" level="2" />
 
+    <logic:notEmpty name="schemaForm" property="schema">
        <bean:define id="schemaURL" name="schemaForm" property="schema" />
        <bean:define id="id" name="schemaForm" property="schemaId" />
 
-    <div id="tabbedmenu">
+        <div id="tabbedmenu">
 
         <ul>
             <li id="currenttab">
@@ -30,7 +31,14 @@
             </li>
         </ul>
     </div>
+    </logic:notEmpty>
 
+    <h1><bean:message key="label.schema.view"/></h1>
+
+    <%-- include Error display --%>
+    <tiles:insert definition="Error" />
+
+    <logic:notEmpty name="schemaForm" property="schema">
 
         <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
             <div id="operations">
@@ -39,11 +47,6 @@
             </ul>
             </div>
         </logic:equal>
-
-        <h1><bean:message key="label.schema.view"/></h1>
-
-        <%-- include Error display --%>
-        <tiles:insert definition="Error" />
 
         <fieldset><legend><bean:message key="label.schema.fldset.properties"/></legend>
           <table class="datatable">
@@ -144,3 +147,4 @@
 
             </fieldset>
         </logic:equal>
+    </logic:notEmpty>

@@ -77,6 +77,17 @@ public class FileDownloadServlet extends HttpServlet {
     }
 
     /**
+     * Process POST request.
+     *
+     * @see HttpServlet#doGet(HttpServletRequest, HttpServletResponse).
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Process request with content.
+        processRequest(request, response, true);
+    }
+
+    /**
      * Process the actual request.
      *
      * @param request
@@ -90,7 +101,7 @@ public class FileDownloadServlet extends HttpServlet {
      * @throws ServletException
      */
     private void processRequest(HttpServletRequest request, HttpServletResponse response, boolean content) throws IOException,
-            ServletException {
+    ServletException {
 
         String urlPath = URLDecoder.decode(StringUtils.substringAfter(request.getRequestURI(), request.getContextPath()), "UTF-8");
         String filePath = Properties.appRootFolder + urlPath;
@@ -330,7 +341,7 @@ public class FileDownloadServlet extends HttpServlet {
      * @throws ServletException
      */
     private void handleFileNotFound(String message, HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
 
         LOGGER.info(message);
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -351,8 +362,8 @@ public class FileDownloadServlet extends HttpServlet {
         String[] acceptValues = acceptHeader.split("\\s*(,|;)\\s*");
         Arrays.sort(acceptValues);
         return Arrays.binarySearch(acceptValues, toAccept) > -1
-                || Arrays.binarySearch(acceptValues, toAccept.replaceAll("/.*$", "/*")) > -1
-                || Arrays.binarySearch(acceptValues, "*/*") > -1;
+        || Arrays.binarySearch(acceptValues, toAccept.replaceAll("/.*$", "/*")) > -1
+        || Arrays.binarySearch(acceptValues, "*/*") > -1;
     }
 
     /**
