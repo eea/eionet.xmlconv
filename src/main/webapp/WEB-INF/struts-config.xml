@@ -359,6 +359,9 @@
         </action>
         <action path="/convertJson2Xml" scope="request" type="eionet.gdem.web.struts.remoteapi.ConvertJson2XmlAction">
         </action>
+        <action path="/runQAScript" scope="request" type="eionet.gdem.web.struts.remoteapi.RunQAScriptAction">
+            <forward name="fail" path="/api/methodError" />
+        </action>
 
  <!--  LDAP form -->
         <action path="/ldapForm" type="eionet.gdem.web.struts.config.LdapFormAction"

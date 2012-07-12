@@ -23,7 +23,6 @@
 
 package eionet.gdem.qa;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -43,13 +42,11 @@ import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.business.SourceFileManager;
 import eionet.gdem.dcm.remote.RemoteService;
-import eionet.gdem.dto.Schema;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.validation.ValidationService;
 
 /**
  * QA Service Service Facade. The service is able to execute different QA related methods that are called through XML/RPC and HTTP
@@ -173,8 +170,8 @@ public class XQueryService extends RemoteService {
                 String contentType = (String) query.get("content_type_id");
                 String fileExtension = getExtension(outputTypes, contentType);
                 String resultFile =
-                        Properties.tmpFolder + File.separatorChar + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "."
-                                + fileExtension;
+                    Properties.tmpFolder + File.separatorChar + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "."
+                    + fileExtension;
                 try {
                     int queryId = 0;
                     try {
@@ -186,8 +183,8 @@ public class XQueryService extends RemoteService {
                     if (queryId != Constants.JOB_VALIDATION
                             && queryFile.startsWith(Properties.gdemURL + "/" + Constants.QUERIES_FOLDER)) {
                         queryFile =
-                                Utils.Replace(queryFile, Properties.gdemURL + "/" + Constants.QUERIES_FOLDER,
-                                        Properties.queriesFolder + File.separator);
+                            Utils.Replace(queryFile, Properties.gdemURL + "/" + Constants.QUERIES_FOLDER,
+                                    Properties.queriesFolder + File.separator);
                     }
                     newId = xqJobDao.startXQJob(file, queryFile, resultFile, queryId);
                 } catch (SQLException sqe) {
@@ -377,7 +374,7 @@ public class XQueryService extends RemoteService {
             h.put(Constants.RESULT_SCRIPTTITLE_PRM, script_title);
         } catch (Exception e) {
             String err_mess =
-                    "JobID: " + jobId + "; Creating result Hashtable for getResult method failed result: " + e.toString();
+                "JobID: " + jobId + "; Creating result Hashtable for getResult method failed result: " + e.toString();
             LOGGER.error(err_mess);
             throw new GDEMException(err_mess, e);
         }
@@ -387,111 +384,21 @@ public class XQueryService extends RemoteService {
     }
 
     /**
-     * Request from XML/RPC client running the QA script on the fly
+     * Remote method for running the QA script on the fly.
      *
-     * @param String
-     *            url: URL of the srouce XML
-     * @param String
-     *            xqScript: XQueryScript ID or -1 (XML Schema validation) to be processed
+     * @param String sourceUrl URL of the soucre XML
+     * @param String scriptId XQueryScript ID or -1 (XML Schema validation) to be processed
+     * @return Vector of 2 fields: content type and byte array
+     * @throws GDEMException in case of business logic error
      */
-    public Vector runQAScript(String orig_file_url, String script_id) throws GDEMException {
+    public Vector runQAScript(String sourceUrl, String scriptId) throws GDEMException {
 
-        Vector result = new Vector();
-        ByteArrayOutputStream outstream = null;
-        String file_url = null;
-        String content_type = "text/html";
-        byte[] result_bytes;
-        LOGGER.debug("==xmlconv== runQAScript: id=" + script_id + " file_url=" + orig_file_url + "; ");
-        try {
-            // get the trusted URL from source file adapter
-            file_url = SourceFileManager.getSourceFileAdapterURL(getTicket(), orig_file_url, isTrustedMode());
-        } catch (Exception e) {
-            String err_mess = "File URL is incorrect";
-            LOGGER.error(err_mess + "; " + e.toString(), e);
-            throw new GDEMException(err_mess, e);
+        if (!isHTTPRequest() && LOGGER.isDebugEnabled()) {
+            LOGGER.debug("ConversionService.convert method called through XML-rpc.");
         }
-        if (script_id.equals(String.valueOf(Constants.JOB_VALIDATION))) {
-            try {
-                ValidationService vs = new ValidationService();
-                String val_result = vs.validate(file_url);
-                result_bytes = val_result.getBytes();
-            } catch (Exception e) {
-                String err_mess = "Could not execute runQAMethod";
-                LOGGER.error(err_mess + "; " + e.toString());
-                throw new GDEMException(err_mess, e);
-
-            }
-        } else {
-            String[] pars = new String[1];
-            pars[0] = Constants.XQ_SOURCE_PARAM_NAME + "=" + file_url;
-
-            try {
-                String xqScript = queryDao.getQueryText(script_id);
-                HashMap hash = queryDao.getQueryInfo(script_id);
-                String schemaId = (String) hash.get("schema_id");
-                Schema schema = null;
-                // check because ISchemaDao.getSchema(null) returns first schema
-                if (schemaId != null) {
-                    schema = schManager.getSchema(schemaId);
-                }
-
-                if (Utils.isNullStr(xqScript) || hash == null) {
-                    String err_mess = "Could not find QA script with id: " + script_id;
-                    LOGGER.error(err_mess);
-                    throw new GDEMException(err_mess, new Exception());
-                } else {
-                    if (!Utils.isNullStr((String) hash.get("meta_type"))) {
-                        content_type = (String) hash.get("meta_type");
-                    }
-                    outstream = new ByteArrayOutputStream();
-                    LOGGER.debug("Script: " + xqScript);
-                    XQScript xq = new XQScript(xqScript, pars, (String) hash.get("content_type"));
-                    xq.setScriptType((String) hash.get("script_type"));
-                    xq.setSrcFileUrl(file_url);
-                    xq.setSchema(schema);
-
-                    String xqResult = xq.getResult();
-
-                    // xq.getResult(outstream);
-                    // result_bytes = outstream.toByteArray();
-                    result_bytes = xqResult.getBytes();
-
-                }
-            } catch (SQLException sqle) {
-                throw new GDEMException("Error getting data from DB: " + sqle.toString());
-            } catch (Exception e) {
-                String err_mess = "Could not execute runQAMethod";
-                LOGGER.error(err_mess + "; " + e.toString(), e);
-                throw new GDEMException(err_mess, e);
-            } finally {
-                if (outstream != null) {
-                    try {
-                        outstream.flush();
-                        outstream.close();
-                    } catch (Exception e) {
-                    }
-                }
-            }
-        }
-        result.add(content_type);
-        result.add(result_bytes);
-        return result;
-    }
-
-    public static void main(String args[]) {
-        try {
-            XQueryService xqs = new XQueryService();
-            // Vector v =
-            // xqs.listQAScripts("http://dd.eionet.eu.int/namespace.jsp?ns_id=10 http://dd.eionet.eu.int/GetSchema?id=TBL3227");
-            Vector v = xqs.runQAScript("http://cdr.eionet.eu.int/at/eea/ewn1/envq2hsrw/ProxyPressures.xml", "15");
-            // Hashtable h = xqs.getResult("383");
-            String s = new String((byte[]) v.get(1), "UTF-8");
-            System.out.println(s);
-            // System.out.println("h.toString()");
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
+        RunQAScriptMethod runQaMethod = new RunQAScriptMethod();
+        setGlobalParameters(runQaMethod);
+        return runQaMethod.runQAScript(sourceUrl, scriptId);
 
     }
-
 }
