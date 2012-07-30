@@ -67,10 +67,20 @@
                                 <mkdir dir="${app.home}/xsl"/>
                                 <mkdir dir="${app.home}/xmlfile"/>
                                 <copy file="GDEMServices.xml" todir="${app.home}" overwrite="true"/>
-								<copy todir="${app.home}/acl" overwrite="false">
-									<fileset dir="acl"/>
-									<globmapper from="*" to="*.dist"/>
+
+								<!-- Copy all files from acl directory into the same directory in app-home, unless they already exist in the latter. -->
+								<copy todir="${app.home}/acl">
+									<fileset dir="acl">
+										<present present="srconly" targetdir="${app.home}/acl"/>
+									</fileset>
 								</copy>
+
+								<!-- Always overwrite the acl directory's permissions definition file(s). -->
+								<copy todir="${app.home}/acl" overwrite="true">
+									<fileset dir="acl" includes="*.prms*"/>
+									<fileset dir="acl" includes="*.permissions*"/>
+								</copy>
+
                             </tasks>
                         </configuration>
                     </execution>
