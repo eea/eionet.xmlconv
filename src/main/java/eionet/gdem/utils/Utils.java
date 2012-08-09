@@ -60,6 +60,8 @@ import org.apache.log4j.Logger;
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
+import eionet.gdem.dcm.BusinessConstants;
+import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 
@@ -1148,4 +1150,73 @@ public class Utils {
             }
         }
     }
+
+    /**
+     * Compares the differences between remote schema and the local copy of it.
+     *
+     * @param remoteSchema byte array of remote XML Schema.
+     * @param schemaFile local schema file name.
+     * @return if the result is empty string, then the files are identical, otherwise BusinessConstants with AppReosurce identifier
+     *         is returned
+     * @throws DCMException in case of IO errors.
+     */
+    public static String diffRemoteFile(byte[] remoteFile, String localFile) throws DCMException {
+
+        String remoteFileHash = "";
+        String fileHash = "";
+        String result = "";
+
+        // make md5
+        try {
+            remoteFileHash = Utils.digest(remoteFile, "md5");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
+        // make local file md5
+        // if there is no local file, then there is nothing to diff
+        if (Utils.isNullStr(localFile)) {
+            return "";
+        }
+
+        File f = new File(localFile);
+        if (!f.exists()) {
+            return BusinessConstants.WARNING_LOCALFILE_NOTAVAILABLE;
+        }
+        try {
+            fileHash = Utils.digest(f, "md5");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return BusinessConstants.WARNING_LOCALFILE_NOTAVAILABLE;
+        }
+        // compare
+        result =
+            remoteFileHash.equals(fileHash) && remoteFileHash.length() > 0 ? BusinessConstants.WARNING_FILES_IDENTICAL
+                    : BusinessConstants.WARNING_FILES_NOTIDENTICAL;
+
+            return result;
+    }
+
+    /**
+     * Download remote schema from specified URL and return it as byte array.
+     *
+     * @param url URL of remote XML Schema.
+     * @return byte array of remote schema.
+     * @throws DCMException in case of connection error.
+     */
+    public static byte[] downloadRemoteFile(String url) throws DCMException {
+        // download schema
+        byte[] remoteFile = null;
+        try {
+            remoteFile = HttpUtils.downloadRemoteFile(url);
+        } catch (DCMException dce) {
+            dce.printStackTrace();
+            throw dce;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DCMException(BusinessConstants.EXCEPTION_SCHEMAOPEN_ERROR);
+        }
+        return remoteFile;
+    }
+
 }

@@ -92,6 +92,16 @@
               </td>
             </tr>
             <tr>
+                <td>
+                    <label class="question" for="txtUrl">
+                        <bean:message key="label.qascript.url"/>
+                     </label>
+                </td>
+                <td>
+                    <html:text styleId="txtUrl" property="url"  style="width:400px"/>
+                </td>
+            </tr>
+            <tr>
                 <td>&#160;</td>
               <td>
                 <html:submit styleClass="button" property="action">

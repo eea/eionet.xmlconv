@@ -53,7 +53,13 @@ public class QAScriptFormAction extends Action {
 
         if (scriptId == null || scriptId.equals("")) {
             scriptId = (String) httpServletRequest.getAttribute("scriptId");
+        } else {
+            httpServletRequest.getSession().setAttribute("scriptId", scriptId);
         }
+        if (scriptId == null || scriptId.equals("")) {
+            scriptId = (String) httpServletRequest.getSession().getAttribute("scriptId");
+        }
+
 
         try {
             QAScriptManager qm = new QAScriptManager();
@@ -71,6 +77,7 @@ public class QAScriptFormAction extends Action {
             form.setChecksum(qaScript.getChecksum());
             form.setScriptContent(qaScript.getScriptContent());
             form.setUpperLimit(qaScript.getUpperLimit());
+            form.setUrl(qaScript.getUrl());
 
             httpServletRequest.setAttribute(QAScriptListLoader.QASCRIPT_LIST_ATTR, QAScriptListLoader.getList(httpServletRequest));
 

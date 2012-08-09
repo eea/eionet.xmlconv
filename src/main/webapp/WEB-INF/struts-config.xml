@@ -64,6 +64,7 @@
 
         <form-bean name="QAScriptForm" type="eionet.gdem.web.struts.qascript.QAScriptForm" />
         <form-bean name="SyncUplSchemaForm" type="eionet.gdem.web.struts.schema.SyncUplSchemaForm" />
+        <form-bean name="SyncUplScriptForm" type="eionet.gdem.web.struts.qascript.SyncUplScriptForm" />
 
         <form-bean name="QASandboxForm" type="eionet.gdem.web.struts.qasandbox.QASandboxForm" />
 
@@ -139,6 +140,13 @@
             <forward name="success_deletefile" path="/do/schemaElemForm"  redirect="true"/>
             <forward name="fail" path="/do/schemaElemForm"  redirect="true"/>
         </action>
+
+        <action path="/diffUplScripts"  type="eionet.gdem.web.struts.qascript.DiffUplScriptAction" scope="request" name="QAScriptForm">
+            <forward name="success" path="/do/editQAScriptForm"   redirect="true"/>
+            <forward name="fail" path="/do/editQAScriptForm"   redirect="true"/>
+            <forward name="warning" path="/syncUplScript.jsp" />
+        </action>
+
         <action path="/diffUplSchemas"  type="eionet.gdem.web.struts.schema.DiffUplSchemaAction" scope="request" name="schemaForm">
             <forward name="success" path="/do/schemaElemForm"   redirect="true"/>
             <forward name="fail" path="/do/schemaElemForm"   redirect="true"/>
@@ -147,6 +155,10 @@
         <action path="/syncUplSchema"  type="eionet.gdem.web.struts.schema.SyncUplSchemaAction" scope="request" name="SyncUplSchemaForm" cancellable="true">
             <forward name="success" path="/do/schemaElemForm"   redirect="true"/>
         </action>
+        <action path="/syncUplScript"  type="eionet.gdem.web.struts.qascript.SyncUplScriptAction" scope="request" name="SyncUplScriptForm" cancellable="true">
+            <forward name="success" path="/do/editQAScriptForm"   redirect="true"/>
+        </action>
+
         <action path="/addUplSchemaForm"  parameter="/addUplSchema.jsp" scope="request" validate="false" type="org.apache.struts.actions.ForwardAction"/>
         <action path="/addUplSchema"  scope="request" type="eionet.gdem.web.struts.schema.AddUplSchemaAction" name="UplSchemaForm" cancellable="true">
             <forward name="success" path="/do/uplSchemas"  redirect="true"/>

@@ -60,6 +60,9 @@
         path="/WEB-INF/tiles/qascript/QAScriptHistory.jsp" />
     <definition name="syncUplSchema"
         path="/WEB-INF/tiles/schema/SyncUplSchema.jsp" />
+    <definition name="syncUplScript"
+        path="/WEB-INF/tiles/qascript/SyncUplScript.jsp" />
+
     <definition name="qaSandbox" path="/WEB-INF/tiles/qasandbox/QASandbox.jsp" />
     <definition name="qaSandboxResult"
         path="/WEB-INF/tiles/qasandbox/QASandboxResult.jsp" />
@@ -218,6 +221,10 @@
     <definition name="/syncUplSchema.jsp" extends="base">
         <put name="title" value="label.syncuplschema.title" />
         <put name="body" type="definition" value="syncUplSchema" />
+    </definition>
+    <definition name="/syncUplScript.jsp" extends="base">
+        <put name="title" value="label.syncuplscript.title" />
+        <put name="body" type="definition" value="syncUplScript" />
     </definition>
 
     <definition name="/qaSandbox.jsp" extends="base">

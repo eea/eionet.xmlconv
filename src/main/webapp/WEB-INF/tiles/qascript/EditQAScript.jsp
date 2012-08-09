@@ -115,6 +115,17 @@
                     )
               </td>
             </tr>
+            <tr>
+                <td>
+                    <label class="question" for="txtFile">
+                        <bean:message key="label.qascript.url"/>
+                     </label>
+                </td>
+                <td>
+                    <html:text styleId="txtUrl" property="url" size="64"/>
+                </td>
+            </tr>
+
                   <logic:present name="QAScriptForm" property="fileName">
                     <tr>
                           <td colspan="2">
@@ -149,6 +160,13 @@
                 <html:submit styleClass="button" property="action">
                     <bean:message key="label.qascript.upload"/>
                 </html:submit>
+
+               <logic:notEmpty  name="QAScriptForm" property="fileName">
+                    <input type="button"  class="button" value="<bean:message key="label.qascript.checkupdates"/>" onclick="return submitAction(1,'diffUplScripts');" />
+              </logic:notEmpty>
+
+
+
               </td>
             </tr>		  </table>
         </html:form>

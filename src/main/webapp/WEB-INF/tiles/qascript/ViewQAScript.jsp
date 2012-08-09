@@ -129,7 +129,20 @@
                     )
               </td>
             </tr>
-          </table>
+        <logic:notEmpty name="user">
+          <tr>
+            <th scope="row" class="scope-row"><bean:message
+                key="label.qascript.url" /></th>
+            <td>
+          <logic:notEmpty name="QAScriptForm" property="url">
+            <a href="<bean:write property="url" name="QAScriptForm"/>"
+              title="<bean:write property="url" name="QAScriptForm"/>">View</a>
+            </logic:notEmpty>
+            </td>
+          </tr>
+        </logic:notEmpty>
+
+  </table>
           <logic:present name="QAScriptForm" property="fileName">
               <pre><bean:write name="QAScriptForm" property="scriptContent"/></pre>
         </logic:present>

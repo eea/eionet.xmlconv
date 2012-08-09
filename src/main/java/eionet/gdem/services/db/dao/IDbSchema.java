@@ -73,6 +73,7 @@ public interface IDbSchema {
     String QUERY_RESULT_TYPE = "RESULT_TYPE";
     String QUERY_SCRIPT_TYPE = "SCRIPT_TYPE";
     String UPPER_LIMIT_FLD = "UPPER_LIMIT";
+    String QUERY_URL_FLD    = "URL";
 
     /**
      * Field names in SCHEMA table

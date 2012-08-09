@@ -21,6 +21,7 @@
 
 package eionet.gdem.dcm.business;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -86,6 +87,7 @@ public class QAScriptManager {
                 qaScript.setScriptType((String) scriptData.get("script_type"));
                 qaScript.setFileName((String) scriptData.get("query"));
                 qaScript.setUpperLimit((String) scriptData.get("upper_limit"));
+                qaScript.setUrl((String) scriptData.get("url"));
 
                 String queryFolder = Properties.queriesFolder;
 
@@ -128,7 +130,7 @@ public class QAScriptManager {
     }
 
     public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
-            String scriptType, String curFileName, FormFile file, String upperLimit) throws DCMException {
+            String scriptType, String curFileName, FormFile file, String upperLimit, String url) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
@@ -161,7 +163,7 @@ public class QAScriptManager {
 
                 storeQAScriptFile(file, curFileName);
             }
-            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit);
+            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url);
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
@@ -188,7 +190,7 @@ public class QAScriptManager {
      * @throws DCMException
      */
     public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
-            String scriptType, String curFileName, String upperLimit, String content, boolean updateContent) throws DCMException {
+            String scriptType, String curFileName, String upperLimit, String url, String content, boolean updateContent) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
@@ -215,7 +217,7 @@ public class QAScriptManager {
 
                 Utils.saveStrToFile(Properties.queriesFolder + File.separator + curFileName, content, null);
             }
-            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit);
+            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("Error updating QA script", e);
@@ -368,7 +370,7 @@ public class QAScriptManager {
      * @throws DCMException
      */
     public String add(String user, String shortName, String schemaId, String schema, String resultType, String description,
-            String scriptType, FormFile scriptFile, String upperLimit) throws DCMException {
+            String scriptType, FormFile scriptFile, String upperLimit, String url) throws DCMException {
 
         String scriptId = null;
         try {
@@ -399,7 +401,7 @@ public class QAScriptManager {
                 }
             }
 
-            scriptId = queryDao.addQuery(schemaId, shortName, fileName, description, resultType, scriptType, upperLimit);
+            scriptId = queryDao.addQuery(schemaId, shortName, fileName, description, resultType, scriptType, upperLimit, url);
             storeQAScriptFile(scriptFile, fileName);
         } catch (DCMException e) {
             throw e;
@@ -441,5 +443,79 @@ public class QAScriptManager {
         }
 
     }
+
+
+
+    /**
+     * Method tries to download the remote script and replace the local file. Method updates
+     * table.
+     *
+     * @param user user login name
+     * @param schemaUrl XML Schema URL
+     * @param schemaFileName file name of remote schema
+     * @param schemaId XML Schema database ID.
+     * @param uplSchemaId uploaded schema file ID.
+     * @throws DCMException in case of HTTP connection or database errors.
+     */
+    public void replaceScriptFromRemoteFile(String user, String remoteUrl, String fileName, String scriptId)
+    throws DCMException {
+
+        try {
+            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
+                LOGGER.debug("You don't have permissions to update QA script!");
+                throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
+            }
+        } catch (DCMException e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error updating QA script", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
+
+        byte[] remoteFile = Utils.downloadRemoteFile(remoteUrl);
+        ByteArrayInputStream in = new ByteArrayInputStream(remoteFile);
+
+
+        updateScript(fileName, in);
+
+    }
+
+
+    /**
+     * Update uploaded XML Schema metadata or file content.
+     * @param user user login name
+     * @param uplSchemaId Uploaded XML Schema database ID.
+     * @param schemaId XML Schema database ID
+     * @param fileName XML Schema file name stored in the system.
+     * @param fileInputStream new content of the XML Schema
+     * @throws DCMException in case of IO or database error.
+     */
+    public void updateScript(String fileName, InputStream fileInputStream)
+    throws DCMException {
+
+        try {
+            // store the uploaded content into schema folder with the given filename
+            if (fileInputStream != null && !Utils.isNullStr(fileName)) {
+
+                OutputStream output = null;
+                String filepath = new String(Properties.queriesFolder + File.separatorChar + fileName);
+
+                try {
+                    output = new FileOutputStream(filepath);
+                    IOUtils.copy(fileInputStream, output);
+                } finally {
+                    IOUtils.closeQuietly(fileInputStream);
+                    IOUtils.closeQuietly(output);
+                }
+            }
+
+
+        } catch (Exception e) {
+            LOGGER.error("Error updating remote script", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
+
+    }
+
 
 }

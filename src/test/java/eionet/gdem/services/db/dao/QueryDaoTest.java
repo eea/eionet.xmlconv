@@ -69,7 +69,7 @@ public class QueryDaoTest extends DBTestCase {
     /**
      * The method adds QA script into DB, then it edits the properties and finally deletes the added query. After each operation it
      * checks the properties values.
-     * 
+     *
      * @throws Exception
      */
     public void testQueryMethods() throws Exception {
@@ -81,6 +81,7 @@ public class QueryDaoTest extends DBTestCase {
         String content_type = "HTML";
         String script_type = "xquery";
         String upperLimit = "100";
+        String  url = "http://url.com";
 
         // get all uploaded queries
         List queries = queryDao.listQueries(null);
@@ -88,7 +89,8 @@ public class QueryDaoTest extends DBTestCase {
         int countQueries = queries.size();
 
         // add query int db
-        String queryId = queryDao.addQuery(schemaID, shortName, queryFileName, description, content_type, script_type, upperLimit);
+        String queryId = queryDao.addQuery(schemaID, shortName, queryFileName, description, content_type,
+                script_type, upperLimit, url);
 
         // count queries
         List queries2 = queryDao.listQueries(null);
@@ -108,13 +110,14 @@ public class QueryDaoTest extends DBTestCase {
         assertEquals((String) query.get("content_type"), content_type);
         assertEquals((String) query.get("script_type"), script_type);
         assertEquals((String) query.get("upper_limit"), upperLimit);
+        assertEquals((String) query.get("url"), url);
         // check boolean methods
         assertTrue(queryDao.checkQueryFile(queryFileName));
         assertTrue(queryDao.checkQueryFile(queryId, queryFileName));
 
         // upadate query fileds
         queryDao.updateQuery(queryId, schemaID, shortName + "UPD", description + "UPD", queryFileName, content_type, script_type,
-                upperLimit);
+                upperLimit, url);
 
         // Get query by ID and test if all upadted fields are in DB
         query = queryDao.getQueryInfo(queryId);

@@ -38,6 +38,7 @@ public class QAScript {
     String checksum;
     String scriptContent;
     String upperLimit;
+    String url;
 
     public String getScriptContent() {
         return scriptContent;
@@ -147,6 +148,14 @@ public class QAScript {
 
     public void setUpperLimit(String upperLimit) {
         this.upperLimit = upperLimit;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
 }

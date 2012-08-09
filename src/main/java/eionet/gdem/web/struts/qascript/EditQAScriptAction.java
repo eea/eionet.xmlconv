@@ -73,6 +73,8 @@ public class EditQAScriptAction extends LookupDispatchAction {
         String curFileName = form.getFileName();
         FormFile content = form.getScriptFile();
         String upperLimit = form.getUpperLimit();
+        String url = form.getUrl();
+
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
 
@@ -84,7 +86,7 @@ public class EditQAScriptAction extends LookupDispatchAction {
 
         try {
             QAScriptManager qm = new QAScriptManager();
-            qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, content, upperLimit);
+            qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, content, upperLimit, url);
 
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.updated"));
 
@@ -124,7 +126,9 @@ public class EditQAScriptAction extends LookupDispatchAction {
         String curFileName = form.getFileName();
         String scriptContent = form.getScriptContent();
         String upperLimit = form.getUpperLimit();
+        String url = form.getUrl();
         String checksum = form.getChecksum();
+
         boolean updateContent = false;
         String newChecksum = null;
 
@@ -166,7 +170,7 @@ public class EditQAScriptAction extends LookupDispatchAction {
             try {
                 QAScriptManager qm = new QAScriptManager();
                 qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, upperLimit,
-                        scriptContent, updateContent);
+                        url, scriptContent, updateContent);
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.updated"));
                 // clear qascript list in cache
                 QAScriptListLoader.reloadList(httpServletRequest);

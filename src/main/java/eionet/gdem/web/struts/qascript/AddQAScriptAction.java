@@ -61,6 +61,7 @@ public class AddQAScriptAction extends Action {
         String scriptType = form.getScriptType();
         FormFile scriptFile = form.getScriptFile();
         String upperLimit = form.getUpperLimit();
+        String url = form.getUrl();
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
 
@@ -99,7 +100,7 @@ public class AddQAScriptAction extends Action {
 
         try {
             QAScriptManager qm = new QAScriptManager();
-            qm.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit);
+            qm.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit, url);
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.inserted"));
             // clear qascript list in cache
             QAScriptListLoader.reloadList(httpServletRequest);

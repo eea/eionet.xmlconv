@@ -8,7 +8,7 @@ public interface IQueryDao extends IDbSchema {
     public static String FILEREAD_EXCEPTION = "Unable to read the file: ";
 
     public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description, String content_type,
-            String script_type, String upperLimit) throws SQLException;
+            String script_type, String upperLimit, String url) throws SQLException;
 
     /**
      * Updates a Query properties in the database.
@@ -29,9 +29,10 @@ public interface IQueryDao extends IDbSchema {
      *            script_type - xquery, xsl, xgawk
      * @param String
      *            upperLimit - result upper limit in MB
+     *  @param String url - original url of the XQ file
      */
     public void updateQuery(String query_id, String schema_id, String short_name, String description, String fileName,
-            String content_type, String script_type, String upperLimit) throws SQLException;
+            String content_type, String script_type, String upperLimit, String url) throws SQLException;
 
     public void removeQuery(String queryId) throws SQLException;
 
