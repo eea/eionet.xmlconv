@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.upload.FormFile;
@@ -373,6 +374,9 @@ public class QAScriptManager {
             String scriptType, FormFile scriptFile, String upperLimit, String url) throws DCMException {
 
         String scriptId = null;
+        //If remote file URL and local file are specified use local file
+
+
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "i")) {
                 LOGGER.debug("You don't have permissions to insert QA script!");
@@ -385,8 +389,14 @@ public class QAScriptManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
+        boolean useLocalFile = !Utils.isNullStr(scriptFile.getFileName());
         try {
-            String fileName = scriptFile.getFileName().trim();
+            String fileName = "";
+            if (useLocalFile) {
+                fileName = scriptFile.getFileName().trim();
+            } else {
+                fileName = StringUtils.substringAfterLast(url, "/");
+            }
             // upload file
             if (!Utils.isNullStr(fileName)) {
                 // check if file exists
@@ -402,7 +412,11 @@ public class QAScriptManager {
             }
 
             scriptId = queryDao.addQuery(schemaId, shortName, fileName, description, resultType, scriptType, upperLimit, url);
-            storeQAScriptFile(scriptFile, fileName);
+            if (useLocalFile) {
+                storeQAScriptFile(scriptFile, fileName);
+            } else {
+                replaceScriptFromRemoteFile(user, url, fileName);
+            }
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
@@ -457,7 +471,7 @@ public class QAScriptManager {
      * @param uplSchemaId uploaded schema file ID.
      * @throws DCMException in case of HTTP connection or database errors.
      */
-    public void replaceScriptFromRemoteFile(String user, String remoteUrl, String fileName, String scriptId)
+    public void replaceScriptFromRemoteFile(String user, String remoteUrl, String fileName)
     throws DCMException {
 
         try {

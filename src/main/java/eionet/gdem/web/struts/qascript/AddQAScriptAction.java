@@ -52,6 +52,11 @@ public class AddQAScriptAction extends Action {
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
+        ActionMessages errors = new ActionMessages();
+        ActionMessages messages = new ActionMessages();
+
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
+
         QAScriptForm form = (QAScriptForm) actionForm;
         String schemaId = form.getSchemaId();
         String shortName = form.getShortName();
@@ -59,11 +64,29 @@ public class AddQAScriptAction extends Action {
         String schema = form.getSchema();
         String resultType = form.getResultType();
         String scriptType = form.getScriptType();
-        FormFile scriptFile = form.getScriptFile();
-        String upperLimit = form.getUpperLimit();
         String url = form.getUrl();
 
-        String user = (String) httpServletRequest.getSession().getAttribute("user");
+        // if URL is filled download from the remote source
+//        if (!Utils.isNullStr(url)) {
+//            QAScriptManager qam = new QAScriptManager();
+//            String fileName = StringUtils.substringAfterLast(url, "/");
+//            try {
+//                if (qam.fileExists(fileName)) {
+//                    errors.add(ActionMessages.GLOBAL_MESSAGE , new ActionMessage(BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS));
+//                    saveErrors(httpServletRequest.getSession(), errors);
+//                }
+//                qam.replaceScriptFromRemoteFile(user, url, fileName);
+//                form.setFileName(fileName);
+//            } catch (Exception e) {
+//                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.download.error"));
+//                saveErrors(httpServletRequest.getSession(), errors);
+//            }
+//
+//        }
+
+        FormFile scriptFile = form.getScriptFile();
+        String upperLimit = form.getUpperLimit();
+
 
         httpServletRequest.setAttribute("schemaId", schemaId);
 
@@ -75,10 +98,8 @@ public class AddQAScriptAction extends Action {
             }
         }
 
-        ActionMessages errors = new ActionMessages();
-        ActionMessages messages = new ActionMessages();
 
-        if (scriptFile == null || scriptFile.getFileSize() == 0) {
+        if ((scriptFile == null || scriptFile.getFileSize() == 0) && Utils.isNullStr(url))  {
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.file.validation"));
             saveErrors(httpServletRequest.getSession(), errors);
         }

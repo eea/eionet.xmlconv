@@ -110,6 +110,9 @@
               </td>
             </tr>
         </table>
-        <div><html:hidden property="schemaId" /></div>
+        <div>
+            <html:hidden property="schemaId" />
+            <html:hidden property="fileName" />
+        </div>
     </html:form>
 

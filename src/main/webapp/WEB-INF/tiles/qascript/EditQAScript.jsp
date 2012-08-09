@@ -123,6 +123,7 @@
                 </td>
                 <td>
                     <html:text styleId="txtUrl" property="url" size="64"/>
+
                 </td>
             </tr>
 

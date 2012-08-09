@@ -67,7 +67,7 @@ public class SyncUplScriptAction extends Action {
         try {
             QAScriptManager qm = new QAScriptManager();
 
-            qm.replaceScriptFromRemoteFile(user_name, url, scriptFileName, scriptId);
+            qm.replaceScriptFromRemoteFile(user_name, url, scriptFileName);
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplScript.cached"));
 
         } catch (Exception e) {
