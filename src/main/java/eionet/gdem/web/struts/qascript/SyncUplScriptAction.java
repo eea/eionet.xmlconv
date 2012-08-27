@@ -33,6 +33,8 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
+import eionet.gdem.Properties;
+import eionet.gdem.dcm.business.BackupManager;
 import eionet.gdem.dcm.business.QAScriptManager;
 
 /**
@@ -68,6 +70,9 @@ public class SyncUplScriptAction extends Action {
             QAScriptManager qm = new QAScriptManager();
 
             qm.replaceScriptFromRemoteFile(user_name, url, scriptFileName);
+
+            BackupManager bum = new BackupManager();
+            bum.backupFile(Properties.queriesFolder, scriptFileName, scriptId, user_name);
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplScript.cached"));
 
         } catch (Exception e) {

@@ -81,24 +81,45 @@
                     <html:text styleId="txtUpperLimit" size="3" property="upperLimit" />
                 </td>
             </tr>
+
             <tr class="zebraeven">
               <td>
-                <label class="question required" for="txtFile">
-                    <bean:message key="label.qascript.fileName"/>
+                <label class="question required">
+                    <bean:message key="label.qascript.tab.title"/>
                  </label>
+                 <div style="font-size:75%"><i>Enter file or URL</i></div>
               </td>
               <td>
-                <html:file property="scriptFile" styleId="txtFile" style="width:400px" size="64" />
+                &#160;
               </td>
             </tr>
-            <tr>
-                <td>
-                    <label class="question" for="txtUrl">
-                        <bean:message key="label.qascript.url"/>
-                     </label>
-                </td>
-                <td>
-                    <html:text styleId="txtUrl" property="url"  style="width:400px"/>
+
+            <tr class="zebraeven">
+                <td colspan="2">
+                    <!-- div style="border:1px solid"-->
+                    <table class="formtable">
+                    <tr class="zebraeven">
+                        <td>
+                            <label class="question" for="txtFile">
+                                <bean:message key="label.qascript.fileName"/>
+                            </label>
+                        </td>
+                        <td>
+                            <html:file property="scriptFile" styleId="txtFile" style="width:400px" size="64" />
+                        </td>
+                     </tr>
+                     <tr class="zebraeven">
+                        <td>
+                            <label class="question" for="txtUrl">
+                                <bean:message key="label.qascript.url"/>
+                            </label>
+                        </td>
+                        <td>
+                            <html:text styleId="txtUrl" property="url"  style="width:400px"/>
+                        </td>
+                    </tr>
+                  </table>
+                  <!-- /div-->
                 </td>
             </tr>
             <tr>

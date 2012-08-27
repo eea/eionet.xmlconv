@@ -401,7 +401,7 @@ public class QAScriptManager {
             if (!Utils.isNullStr(fileName)) {
                 // check if file exists
                 if (fileExists(fileName)) {
-                    throw new DCMException(BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS);
+                    throw new DCMException((useLocalFile ? BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS : BusinessConstants.EXCEPTION_QAREMOTESCRIPT_FILE_EXISTS) );
                 }
             }
             if (Utils.isNullStr(schemaId) || "0".equals(schemaId)) {

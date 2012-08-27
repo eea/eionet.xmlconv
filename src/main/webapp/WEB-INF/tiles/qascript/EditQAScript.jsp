@@ -115,9 +115,19 @@
                     )
               </td>
             </tr>
+            <tr class="zebraeven">
+                <td>&#160;</td>
+              <td>
+                <html:submit styleClass="button" property="action">
+                    <bean:message key="label.qascript.upload"/>
+                </html:submit>
+                <html:file property="scriptFile" style="width:400px" size="64" />
+              </td>
+            </tr>
+
             <tr>
                 <td>
-                    <label class="question" for="txtFile">
+                    <label class="question" for="txtUrl">
                         <bean:message key="label.qascript.url"/>
                      </label>
                 </td>
@@ -126,7 +136,14 @@
 
                 </td>
             </tr>
-
+            <tr>
+                <td></td>
+                <td>
+                    <logic:notEmpty  name="QAScriptForm" property="fileName">
+                        <input type="button"  class="button" value="<bean:message key="label.qascript.checkupdates"/>" onclick="return submitAction(1,'diffUplScripts');" />
+                    </logic:notEmpty>
+                </td>
+            </tr>
                   <logic:present name="QAScriptForm" property="fileName">
                     <tr>
                           <td colspan="2">
@@ -148,28 +165,14 @@
             <tr>
               <td colspan="2">&#160;</td>
              </tr>
-            <tr>
+            <!-- tr>
               <td>&#160;</td>
               <td>
                 <html:file property="scriptFile" style="width:400px" size="64" />
               </td>
-            </tr>
+            </tr-->
             </logic:present>
-            <tr>
-                <td>&#160;</td>
-              <td>
-                <html:submit styleClass="button" property="action">
-                    <bean:message key="label.qascript.upload"/>
-                </html:submit>
-
-               <logic:notEmpty  name="QAScriptForm" property="fileName">
-                    <input type="button"  class="button" value="<bean:message key="label.qascript.checkupdates"/>" onclick="return submitAction(1,'diffUplScripts');" />
-              </logic:notEmpty>
-
-
-
-              </td>
-            </tr>		  </table>
+         </table>
         </html:form>
 </div>
 

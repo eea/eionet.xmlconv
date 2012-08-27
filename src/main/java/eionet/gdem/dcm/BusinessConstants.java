@@ -69,6 +69,7 @@ public class BusinessConstants {
     public static final String EXCEPTION_DELETE_DD_XSL = "label.stylesheet.error.deleteDD";
 
     public static final String EXCEPTION_QASCRIPT_FILE_EXISTS = "label.qascript.error.fileExists";
+    public static final String EXCEPTION_QAREMOTESCRIPT_FILE_EXISTS = "label.qascript.error.remoteFileExists";
 
     public static final String ERROR_CONVERSION_OBSOLETE_TEMPLATE = "error.conversion.obsolete.template";
     public static final String ERROR_CONVERSION_INVALID_TEMPLATE = "error.conversion.invalid.template";
