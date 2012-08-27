@@ -98,7 +98,9 @@
                 <td colspan="2">
                     <!-- div style="border:1px solid"-->
                     <table class="formtable">
-                    <tr class="zebraeven">
+                      <col class="labelcol"/>
+                      <col class="entrycol"/>
+                      <tr class="zebraeven">
                         <td>
                             <label class="question" for="txtFile">
                                 <bean:message key="label.qascript.fileName"/>
@@ -115,7 +117,7 @@
                             </label>
                         </td>
                         <td>
-                            <html:text styleId="txtUrl" property="url"  style="width:400px"/>
+                            <html:text styleId="txtUrl" property="url"  style="width:680px"/>
                         </td>
                     </tr>
                   </table>

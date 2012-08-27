@@ -29,8 +29,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -52,6 +50,7 @@ import java.util.UUID;
 import java.util.Vector;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -134,7 +133,6 @@ public class Utils {
      *            ext: file extension
      */
     public static String saveStrToFile(String fileName, String str, String extension) throws IOException {
-
         if (fileName == null) {
             fileName = Properties.tmpFolder + File.separatorChar + "gdem_" + System.currentTimeMillis() + "." + extension;
         } else {
@@ -142,26 +140,32 @@ public class Utils {
                 fileName = fileName + "." + extension;
             }
         }
+        FileUtils.writeStringToFile(new File(fileName), str, "UTF-8");
 
-        FileWriter fos = new FileWriter(new File(fileName));
-        fos.write(str);
-        fos.flush();
-        fos.close();
         return fileName;
     }
 
     public static String readStrFromFile(String fileName) throws java.io.IOException {
-
-        BufferedReader fis = new BufferedReader(new FileReader(fileName));
+        FileInputStream fis = null;
+        BufferedReader bufr = null;
         StringBuffer s = new StringBuffer();
-        String line = null;
-        while ((line = fis.readLine()) != null) {
-            s.append(line + "\n");
-        }
+        try {
 
-        fis.close();
+            fis = new FileInputStream(fileName);
+            bufr = new BufferedReader(new InputStreamReader(fis, "utf-8"));
+
+            String line = null;
+            while ((line = bufr.readLine()) != null) {
+                s.append(line + "\n");
+            }
+        } finally {
+            if (fis != null) {
+                fis.close();
+            }
+        }
         return s.toString();
     }
+
 
     public static void deleteFile(String fileName) {
         deleteFile(new File(fileName));
@@ -1154,11 +1158,14 @@ public class Utils {
     /**
      * Compares the differences between remote schema and the local copy of it.
      *
-     * @param remoteSchema byte array of remote XML Schema.
-     * @param schemaFile local schema file name.
+     * @param remoteSchema
+     *            byte array of remote XML Schema.
+     * @param schemaFile
+     *            local schema file name.
      * @return if the result is empty string, then the files are identical, otherwise BusinessConstants with AppReosurce identifier
      *         is returned
-     * @throws DCMException in case of IO errors.
+     * @throws DCMException
+     *             in case of IO errors.
      */
     public static String diffRemoteFile(byte[] remoteFile, String localFile) throws DCMException {
 
@@ -1191,18 +1198,20 @@ public class Utils {
         }
         // compare
         result =
-            remoteFileHash.equals(fileHash) && remoteFileHash.length() > 0 ? BusinessConstants.WARNING_FILES_IDENTICAL
-                    : BusinessConstants.WARNING_FILES_NOTIDENTICAL;
+                remoteFileHash.equals(fileHash) && remoteFileHash.length() > 0 ? BusinessConstants.WARNING_FILES_IDENTICAL
+                        : BusinessConstants.WARNING_FILES_NOTIDENTICAL;
 
-            return result;
+        return result;
     }
 
     /**
      * Download remote schema from specified URL and return it as byte array.
      *
-     * @param url URL of remote XML Schema.
+     * @param url
+     *            URL of remote XML Schema.
      * @return byte array of remote schema.
-     * @throws DCMException in case of connection error.
+     * @throws DCMException
+     *             in case of connection error.
      */
     public static byte[] downloadRemoteFile(String url) throws DCMException {
         // download schema

@@ -132,7 +132,7 @@
                      </label>
                 </td>
                 <td>
-                    <html:text styleId="txtUrl" property="url" size="64"/>
+                    <html:text styleId="txtUrl" property="url" size="107"/>
 
                 </td>
             </tr>
@@ -147,6 +147,9 @@
                   <logic:present name="QAScriptForm" property="fileName">
                     <tr>
                           <td colspan="2">
+                           <label class="question" for="txtUrl">
+                                <bean:message key="label.qascript.source"/>
+                            </label>
                             <html:textarea property="scriptContent" style="width: 98%;" rows="20" cols="55" styleId="txtFile"/>
                           </td>
                     </tr>
