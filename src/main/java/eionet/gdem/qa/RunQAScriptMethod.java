@@ -21,6 +21,7 @@ import eionet.gdem.dto.Schema;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.utils.xml.FeedbackAnalyzer;
 import eionet.gdem.validation.ValidationService;
 
 /**
@@ -149,6 +150,11 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
         } else {
             result.add(contentType);
             result.add(strResult.getBytes());
+
+            HashMap<String, String> fbResult = FeedbackAnalyzer.getFeedbackResultFromStr(strResult);
+            result.add(fbResult.get(Constants.RESULT_FEEDBACKSTATUS_PRM).getBytes());
+            result.add((fbResult.get(Constants.RESULT_FEEDBACKMESSAGE_PRM).getBytes()));
+
         }
         return result;
     }

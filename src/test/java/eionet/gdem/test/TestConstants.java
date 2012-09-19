@@ -40,6 +40,7 @@ public class TestConstants {
     public static final String SEED_QASCRIPT_XQUERY = "seed-qascript.xquery";
     public static final String SEED_QASCRIPT_XQUERY2 = "seed-qascript2.xquery";
     public static final String SEED_QASCRIPT_TEST = "test.xquery";
+    public final static String SEED_FEEDBACKANALYZE_TEST  = "seed-feedback-error.html";
 
     // TEST RESULT PROPERTIES
     public final static String HTML_CONTENTYPE_RESULT = "text/html;charset=UTF-8";
@@ -51,6 +52,7 @@ public class TestConstants {
     public final static String OZ_HTML_FILENAME_RESULT = "seed-ozone-station.html";
     public final static String OZ_SQL_FILENAME_RESULT = "seed-ozone-station.sql";
     public final static String STRCONTENT_RESULT = "Conversion works!";
+
 
     // USER PROPERTIES
     public final static String TEST_USER = "tester";

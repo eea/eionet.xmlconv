@@ -47,6 +47,7 @@ import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.utils.xml.FeedbackAnalyzer;
 
 /**
  * QA Service Service Facade. The service is able to execute different QA related methods that are called through XML/RPC and HTTP
@@ -307,7 +308,7 @@ public class XQueryService extends RemoteService {
             throw new GDEMException("Error gettign XQJob data from DB: " + sqle.toString());
         }
 
-        LOGGER.info("XQuerySrevice found status for job (" + jobId + "):" + String.valueOf(status));
+        LOGGER.info("XQueryService found status for job (" + jobId + "):" + String.valueOf(status));
 
         Hashtable ret = result(status, jobData, scriptData, jobId);
         if (LOGGER.isInfoEnabled()) {
@@ -327,6 +328,9 @@ public class XQueryService extends RemoteService {
         String resultValue = "";
         String metatype = "";
         String script_title = "";
+
+        String feedbackStatus = Constants.XQ_FEEDBACKSTATUS_UNKNOWN;
+        String feedbackMsg = "";
 
         if (status == Constants.XQ_RECEIVED || status == Constants.XQ_DOWNLOADING_SRC || status == Constants.XQ_PROCESSING) {
             resultCode = Constants.JOB_NOT_READY;
@@ -361,6 +365,12 @@ public class XQueryService extends RemoteService {
                 }
 
                 resultValue = Utils.readStrFromFile(jobData[2]);
+                HashMap<String, String> feedbackResult = FeedbackAnalyzer.getFeedbackResultFromFile(jobData[2]);
+
+                feedbackStatus = feedbackResult.get(Constants.RESULT_FEEDBACKSTATUS_PRM);
+                feedbackMsg = feedbackResult.get(Constants.RESULT_FEEDBACKMESSAGE_PRM);
+
+
             } catch (Exception ioe) {
                 resultCode = Constants.JOB_FATAL_ERROR;
                 resultValue = "<error>Error reading the XQ value from the file:" + jobData[2] + "</error>";
@@ -372,6 +382,9 @@ public class XQueryService extends RemoteService {
             h.put(Constants.RESULT_VALUE_PRM, resultValue);
             h.put(Constants.RESULT_METATYPE_PRM, metatype);
             h.put(Constants.RESULT_SCRIPTTITLE_PRM, script_title);
+            h.put(Constants.RESULT_FEEDBACKSTATUS_PRM, feedbackStatus);
+            h.put(Constants.RESULT_FEEDBACKMESSAGE_PRM, feedbackMsg);
+
         } catch (Exception e) {
             String err_mess =
                 "JobID: " + jobId + "; Creating result Hashtable for getResult method failed result: " + e.toString();
@@ -386,7 +399,7 @@ public class XQueryService extends RemoteService {
     /**
      * Remote method for running the QA script on the fly.
      *
-     * @param String sourceUrl URL of the soucre XML
+     * @param String sourceUrl URL of the source XML
      * @param String scriptId XQueryScript ID or -1 (XML Schema validation) to be processed
      * @return Vector of 2 fields: content type and byte array
      * @throws GDEMException in case of business logic error

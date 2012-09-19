@@ -52,6 +52,13 @@ public interface Constants {
     String RESULT_METATYPE_PRM = "METATYPE";
     String RESULT_SCRIPTTITLE_PRM = "SCRIPT_TITLE";
 
+    //Script feedback variables for CDR
+    String RESULT_FEEDBACKSTATUS_PRM = "FEEDBACK_STATUS";
+    String RESULT_FEEDBACKMESSAGE_PRM = "FEEDBACK_MESSAGE";
+
+    //Feedback Status values
+    String XQ_FEEDBACKSTATUS_UNKNOWN = "UNKNOWN";
+
     /**
      * Default parameter name of the source URL to be given to the XQuery script by the QA service
      */
