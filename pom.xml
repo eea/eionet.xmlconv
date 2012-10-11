@@ -9,7 +9,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <env>local</env>
-        <java.version>1.6</java.version>
+        <java_version>1.6</java_version>
     </properties>
 
     <version>2.0</version>
@@ -168,9 +168,9 @@
                 <configuration>
                     <verbose>false</verbose>
                     <fork>false</fork>
-                    <compilerVersion>${java.version}</compilerVersion>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <compilerVersion>${java_version}</compilerVersion>
+                    <source>${java_version}</source>
+                    <target>${java_version}</target>
                 </configuration>
             </plugin>
 
