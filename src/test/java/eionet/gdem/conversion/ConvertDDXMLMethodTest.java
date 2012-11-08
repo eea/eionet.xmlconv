@@ -87,18 +87,18 @@ public class ConvertDDXMLMethodTest extends TestCase {
             String numValue = numValues.get(i);
             if (numValue.length() > 0) {
                 switch (i) {
-                    case 0:
-                        assertEquals(numValue, "0.00001");
-                        break;
-                    case 1:
-                        assertEquals(numValue, "0.1");
-                        break;
-                    case 2:
-                        assertEquals(numValue, "131.12");
-                        break;
-                    case 3:
-                        assertEquals(numValue, "23");
-                        break;
+                case 0:
+                    assertEquals(numValue, "0.00001");
+                    break;
+                case 1:
+                    assertEquals(numValue, "0.1");
+                    break;
+                case 2:
+                    assertEquals(numValue, "131.12");
+                    break;
+                case 3:
+                    assertEquals(numValue, "23");
+                    break;
                 }
 
             }
@@ -120,6 +120,7 @@ public class ConvertDDXMLMethodTest extends TestCase {
     private ConversionResultDto convertExcel() throws GDEMException {
 
         ConvertDDXMLMethod convMethod = new ConvertDDXMLMethod();
+        convMethod.setCheckSchemaValidity(false);
         ConversionResultDto result = convMethod.convertDD_XML(TestUtils.getSeedURL(TestConstants.SEED_DATES_XLS, this));
 
         return result;

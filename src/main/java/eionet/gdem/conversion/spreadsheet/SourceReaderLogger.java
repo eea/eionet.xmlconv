@@ -229,5 +229,25 @@ public class SourceReaderLogger {
                 Properties.getMessage(BusinessConstants.CONVERSION_LOG_SHEET_SCHEMA, new String[] {instanceUrl}),
                 ConversionLogDto.CATEGORY_SHEET + ": " + sheetName);
     }
+    /**
+     * Log system warning:
+     *
+     * @param sheetName
+     */
+    public void logSystemWarning(String sheetName, String warnMessage) {
+        conversionResult.addConversionLog(ConversionLogType.WARNING,
+                Properties.getMessage(BusinessConstants.CONVERSION_LOG_WARNING, new String[] {sheetName, warnMessage}),
+                ConversionLogDto.CATEGORY_SHEET + ": " + sheetName);
+    }
 
+    /**
+     * Log system info:
+     *
+     * @param sheetName
+     */
+    public void logInfo(String sheetName, String infoMessage) {
+        conversionResult.addConversionLog(ConversionLogType.INFO,
+                infoMessage,
+                ConversionLogDto.CATEGORY_SHEET + ": " + sheetName);
+    }
 }

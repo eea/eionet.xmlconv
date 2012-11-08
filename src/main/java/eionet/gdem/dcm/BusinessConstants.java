@@ -89,5 +89,6 @@ public class BusinessConstants {
     public static final String CONVERSION_LOG_NOF_RECORDS = "conversion.log.nof.records";
     public static final String CONVERSION_LOG_END_SPREADSHEET = "conversion.log.end.spreadsheet";
     public static final String CONVERSION_LOG_SHEET_SCHEMA = "conversion.log.sheet.schema";
+    public static final String CONVERSION_LOG_WARNING = "conversion.log.warning";
 
 }

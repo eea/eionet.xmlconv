@@ -49,6 +49,7 @@ import eionet.gdem.utils.Utils;
 
 public class ConvertDDXMLMethod extends RemoteServiceMethod {
 
+    private boolean checkSchemaValidity = false;
     /** */
     private static final Log LOGGER = LogFactory.getLog(ConvertDDXMLMethod.class);
 
@@ -99,7 +100,9 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
 
             // Detect the file format
             DDXMLConverter converter = DDXMLConverter.getConverter(file, resultObject, sheetName);
-            boolean doConversion = converter.isValidSchema() && ((split && converter.isValidSheetSchemas()) || !split);
+            boolean doConversion =
+                (converter.isValidSchema() && ((split && converter.isValidSheetSchemas()) || !split))
+                || !isCheckSchemaValidity();
             if (doConversion) {
                 resultStream = getResultOutputStream(sourceFileName);
                 converter.setHttpResponse(isHttpRequest());
@@ -117,8 +120,6 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
                         resultObject.addConvertedFile(sourceFileName + ".xml", tmpFileName);
                     }
                 }
-            }
-            if (isHttpRequest()) {
             }
         } catch (MalformedURLException mfe) {
             errorMessage = handleConversionException("Bad URL. ", mfe);
@@ -232,4 +233,19 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
         result.put("convertedFiles", convertedFiles);
         return result;
     }
+
+    /**
+     * @return the checkSchemaValidity
+     */
+    public boolean isCheckSchemaValidity() {
+        return checkSchemaValidity;
+    }
+
+    /**
+     * @param checkSchemaValidity the checkSchemaValidity to set
+     */
+    public void setCheckSchemaValidity(boolean checkSchemaValidity) {
+        this.checkSchemaValidity = checkSchemaValidity;
+    }
+
 }

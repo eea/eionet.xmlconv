@@ -242,8 +242,12 @@ public class ExcelReader implements SourceReaderIF {
                 metaRow = metaSheet.getRow(firstRow);
                 setColumnMappings(metaRow, elements, false);
             }
-            logColumnMappings(tblLocalName, row, metaRow, elements);
-
+            try {
+                logColumnMappings(tblLocalName, row, metaRow, elements);
+            } catch (Exception e) {
+                e.printStackTrace();
+                readerLogger.logSystemWarning(tblLocalName, "cannot write log about missing or ectra columns.");
+            }
             instance.writeTableStart(tblName, tblAttrs);
             instance.setCurRow(tblName);
 
@@ -582,13 +586,13 @@ public class ExcelReader implements SourceReaderIF {
         if (missingColumns.size() > 0) {
             readerLogger.logMissingColumns(StringUtils.join(missingColumns, ", "), sheetName);
         }
-        List<String> extraColumns = getExtraColumns(row, elemNames);
+        List<String> extraColumns = getExtraColumns(sheetName, row, elemNames);
         if (extraColumns.size() > 0) {
             readerLogger.logExtraColumns(StringUtils.join(extraColumns, ", "), sheetName);
         }
 
         if (metaRow != null) {
-            List<String> extraMetaColumns = getExtraColumns(metaRow, elemNames);
+            List<String> extraMetaColumns = getExtraColumns(sheetName, metaRow, elemNames);
             if (extraMetaColumns.size() > 0) {
                 readerLogger.logExtraColumns(StringUtils.join(extraColumns, ", "), sheetName + DDXMLConverter.META_SHEET_NAME);
             }
@@ -603,16 +607,25 @@ public class ExcelReader implements SourceReaderIF {
      * @param elemNames DD element names.
      * @return List of extra columns added to sheet.
      */
-    private List<String> getExtraColumns(Row row, List<String> elemNames) {
+    private List<String> getExtraColumns(String sheetName, Row row, List<String> elemNames) {
         List<String> extraColumns = new ArrayList<String>();
+        List<Integer> emptyColumns = new ArrayList<Integer>();
         for (int k = row.getFirstCellNum(); k < row.getLastCellNum(); k++) {
             Cell cell = row.getCell(k);
-            String colName = cellValueToString(cell, null);
+            String colName = (cell != null) ? cellValueToString(cell, null) : null;
             colName = colName != null ? colName.trim() : "";
-            if (!Utils.isNullStr(colName) && !elemNames.contains(colName.toLowerCase())) {
+
+            if (colName.equals("")) {
+                emptyColumns.add(k);
+            } else if (!Utils.isNullStr(colName) && !elemNames.contains(colName.toLowerCase())) {
                 extraColumns.add(colName);
             }
         }
+        if (emptyColumns.size() > 0) {
+            readerLogger.logInfo(sheetName, "Found column(s): " + StringUtils.join(emptyColumns, ", ")
+                    + " without column caption. The column(s) will be ignored.");
+        }
+
         return extraColumns;
     }
 

@@ -146,6 +146,7 @@ public abstract class DDXMLConverter {
             parseConversionResults();
             sourcefile.closeReader();
         } catch (Exception e) {
+            e.printStackTrace();
             throw new GDEMException("Error generating XML file from " + getSourceFormatName() + " file: " + e.toString(), e);
         }
         return resultObject;
