@@ -622,8 +622,8 @@ public class ExcelReader implements SourceReaderIF {
             }
         }
         if (emptyColumns.size() > 0) {
-            readerLogger.logInfo(sheetName, "Found column(s): " + StringUtils.join(emptyColumns, ", ")
-                    + " without column caption. The column(s) will be ignored.");
+            readerLogger.logInfo(sheetName, "Found data from column(s): " + StringUtils.join(emptyColumns, ", ")
+                    + ", but no column heading is available. The column(s) will be ignored.");
         }
 
         return extraColumns;
