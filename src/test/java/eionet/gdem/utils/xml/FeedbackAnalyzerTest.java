@@ -30,7 +30,8 @@ import eionet.gdem.test.TestUtils;
 public class FeedbackAnalyzerTest extends TestCase {
 
     public void testFeedBackFileERROR() {
-        HashMap<String, String> fbResult = FeedbackAnalyzer.getFeedbackResultFromFile(TestUtils.getSeedURL(TestConstants.SEED_FEEDBACKANALYZE_TEST, this));
+        HashMap<String, String> fbResult =
+            FeedbackAnalyzer.getFeedbackResultFromFile(TestUtils.getSeedPath(TestConstants.SEED_FEEDBACKANALYZE_TEST, this));
 
         String fbStatus = fbResult.get(Constants.RESULT_FEEDBACKSTATUS_PRM);
         String fbMsg = fbResult.get(Constants.RESULT_FEEDBACKMESSAGE_PRM);
@@ -40,10 +41,8 @@ public class FeedbackAnalyzerTest extends TestCase {
 
     public void testFeedbackStringWithNoAttributes() {
 
-        String qaResult = "<div style=\"font-size:13px;\" class=\"feedbacktext\" >"
-                + "<h1>Header</h1><div>This is text</div>"
-                + "</div>";
-
+        String qaResult =
+            "<div style=\"font-size:13px;\" class=\"feedbacktext\" >" + "<h1>Header</h1><div>This is text</div>" + "</div>";
 
         HashMap<String, String> fbResult = FeedbackAnalyzer.getFeedbackResultFromStr(qaResult);
 
@@ -51,16 +50,13 @@ public class FeedbackAnalyzerTest extends TestCase {
 
         assertTrue(fbStatus.equals(Constants.XQ_FEEDBACKSTATUS_UNKNOWN));
 
-
     }
-
 
     public void testFeedbackStringWarning() {
 
-        String qaResult = "<span><div style=\"font-size:13px;\" class=\"WARNING\" id=\"feedbackStatus\">There are some warnings</div>"
-                + "<h1>Header</h1><div>This is text</div>"
-                + "</span>";
-
+        String qaResult =
+            "<span><div style=\"font-size:13px;\" class=\"WARNING\" id=\"feedbackStatus\">There are some warnings</div>"
+            + "<h1>Header</h1><div>This is text</div>" + "</span>";
 
         HashMap<String, String> fbResult = FeedbackAnalyzer.getFeedbackResultFromStr(qaResult);
 

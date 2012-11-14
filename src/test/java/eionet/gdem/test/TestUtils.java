@@ -76,6 +76,19 @@ public class TestUtils {
     }
 
     /**
+     * Construct path from seed file name.
+     *
+     * @param seedName
+     *            eg. "seed.xml"
+     * @return
+     */
+    public static String getSeedPath(String seedName, Object obj) {
+
+        String filename = obj.getClass().getClassLoader().getResource(seedName).getFile();
+        return filename;
+    }
+
+    /**
      * Method for executing Struts action.execute() methods. The method returns MockServletResponse object and it's header and
      * outputstream can be validated.
      *

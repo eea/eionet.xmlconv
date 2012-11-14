@@ -49,7 +49,7 @@ import eionet.gdem.utils.Utils;
 
 public class ConvertDDXMLMethod extends RemoteServiceMethod {
 
-    private boolean checkSchemaValidity = false;
+    private boolean checkSchemaValidity = true;
     /** */
     private static final Log LOGGER = LogFactory.getLog(ConvertDDXMLMethod.class);
 
