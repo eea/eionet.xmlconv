@@ -93,7 +93,7 @@ public class ODFSpreadsheetAnalyzer {
 
         try {
             spreadsheetResult = new OpenDocumentSpreadsheet();
-            //TODO check if it is possible to use SAX instead of DOM here. It does not perform well with large XML files.
+            // TODO check if it is possible to use SAX instead of DOM here. It does not perform well with large XML files.
             builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             doc = builder.parse(metaStream);
             findNamespaces(doc.getDocumentElement());
@@ -322,7 +322,7 @@ public class ODFSpreadsheetAnalyzer {
     }
 
     /**
-     * Get the content from p:text node - cell value
+     * Get the content from p:text node or officde:value attribute - cell value
      *
      * @param element
      *            the first element of <code>&lt;table:table-cell&gt;</code> element.
@@ -330,14 +330,31 @@ public class ODFSpreadsheetAnalyzer {
      * @return content inside text:p tag
      */
     protected String processCell(Element cellElement) {
-        String cell_value = null;
-        if (cellElement.hasChildNodes()) {
-            Element ptext = (Element) cellElement.getFirstChild();
-            if (ptext != null && ptext.hasChildNodes()) {
-                cell_value = ptext.getFirstChild().getNodeValue();
+        String cellValue = null;
+        if (cellElement.hasAttribute(officeNamespace + "value-type")) {
+            String valueType = cellElement.getAttribute(officeNamespace + "value-type");
+            if ("date".equals(valueType)) {
+                if (cellElement.hasAttribute(officeNamespace + "date-value")) {
+                    cellValue = cellElement.getAttribute(officeNamespace + "date-value");
+                }
+            } else if ("time".equals(valueType)) {
+                if (cellElement.hasAttribute(officeNamespace + "time-value")) {
+                    cellValue = cellElement.getAttribute(officeNamespace + "time-value");
+                }
+            } else {
+                if (cellElement.hasAttribute(officeNamespace + "value")) {
+                    cellValue = cellElement.getAttribute(officeNamespace + "value");
+                }
             }
         }
-        return cell_value;
+        // get value from p:text
+        if (Utils.isNullStr(cellValue) && cellElement.hasChildNodes()) {
+            Element ptext = (Element) cellElement.getFirstChild();
+            if (ptext != null && ptext.hasChildNodes()) {
+                cellValue = ptext.getFirstChild().getNodeValue();
+            }
+        }
+        return cellValue;
     }
 
     /**
