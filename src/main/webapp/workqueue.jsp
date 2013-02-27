@@ -81,6 +81,7 @@ function doRestart(){
         <%
             boolean wqdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "d");
             boolean wquPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "u");
+            boolean wqvPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "v");
 
             String[][] list = null;
             try{
@@ -202,9 +203,16 @@ function doRestart(){
                             <a href="<%=xqFileURL%>" rel="nofollow"><%=xqText%></a>
                         </td>
                         <td>
-                            <% if (resultFile != null) { %>
-                            <a href="<%=tmpFolder + resultFile%>" rel="nofollow">Show result</a>
-                            <% } else { out.println("*** Not ready ***"); } %>
+                            <% if (resultFile != null) {
+                                if (wqvPrm) {%>
+                                    <a href="<%=tmpFolder + resultFile%>" rel="nofollow">Job result</a>
+                                <% } else { %>
+                                    <div title="Log in to see job result">Job result</div>
+                                <%
+                                }
+                            } else {
+                                out.println("*** Not ready ***");
+                            } %>
                         </td>
                         <td>
                             <%=statusName%>
