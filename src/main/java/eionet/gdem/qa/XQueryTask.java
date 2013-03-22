@@ -1,4 +1,5 @@
 package eionet.gdem.qa;
+
 /*
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
@@ -147,11 +148,11 @@ public class XQueryTask extends Thread {
                 // guess it by file extension
                 if (Utils.isNullStr(scriptType)) {
                     scriptType =
-                        scriptFile.endsWith(XQScript.SCRIPT_LANG_XSL) ? XQScript.SCRIPT_LANG_XSL : scriptFile
-                                .endsWith(XQScript.SCRIPT_LANG_XGAWK) ? XQScript.SCRIPT_LANG_XGAWK
+                        scriptFile.endsWith(XQScript.SCRIPT_LANG_XSL) ? XQScript.SCRIPT_LANG_XSL
+                                : scriptFile.endsWith(XQScript.SCRIPT_LANG_XGAWK) ? XQScript.SCRIPT_LANG_XGAWK
                                         : XQScript.SCRIPT_LANG_XQUERY;
                 }
-                String[] xqParam = {Constants.XQ_SOURCE_PARAM_NAME + "=" + srcFile};
+                String[] xqParam = { Constants.XQ_SOURCE_PARAM_NAME + "=" + srcFile };
 
                 try {
                     LOGGER.info("** XQuery starts, ID=" + jobId + " params: " + (xqParam == null ? "<< no params >>" : xqParam[0])
@@ -167,8 +168,7 @@ public class XQueryTask extends Thread {
                     try {
                         // if result type is HTML and schema is expired parse
                         // result (add warning) before writing to file
-                        if ((schemaExpired || isNotLatestReleasedDDSchema)
-                                && contentType.equals(XQScript.SCRIPT_RESULTTYPE_HTML)) {
+                        if ((schemaExpired || isNotLatestReleasedDDSchema) && contentType.equals(XQScript.SCRIPT_RESULTTYPE_HTML)) {
                             String res = xq.getResult();
                             Utils.saveStrToFile(resultFile, res, null);
                         } else {
@@ -177,6 +177,13 @@ public class XQueryTask extends Thread {
                         }
                     } catch (IOException ioe) {
                         throw new GDEMException(ioe.toString());
+                    } catch (GDEMException e) {
+                        // store error in feedback, it could be XML processing error
+                        StringBuilder errBuilder = new StringBuilder();
+                        errBuilder.append("<div class=\"feedbacktext\"><h2>Unexpected error occured!</h2>");
+                        errBuilder.append(Utils.escapeXML(e.toString()));
+                        errBuilder.append("</div>");
+                        IOUtils.write(errBuilder.toString(), out);
                     } finally {
                         IOUtils.closeQuietly(out);
                     }
@@ -260,6 +267,7 @@ public class XQueryTask extends Thread {
             System.err.println("=============================================================================");
         }
     }
+
     /**
      * Change job status in DB.
      * @param status Job status to be stored in DB.
@@ -291,6 +299,7 @@ public class XQueryTask extends Thread {
         }
         return query;
     }
+
     /**
      * Query Schema information from DB.
      * @param schemaUrl Schema Url or unique ID in DB to be queried.

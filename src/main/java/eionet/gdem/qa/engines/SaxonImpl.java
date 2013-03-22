@@ -131,7 +131,7 @@ public class SaxonImpl extends QAScriptEngineStrategy {
 
                 }
             }
-            // compile Query
+            // compile XQuery
             XQueryExpression exp;
             try {
                 exp = staticEnv.compileQuery(queryReader);
@@ -143,17 +143,11 @@ public class SaxonImpl extends QAScriptEngineStrategy {
             }
 
             try {
-                // evaluating
+                // evaluating XQuery
                 exp.run(dynamicEnv, new StreamResult(result), outputProps);
-                result.close();
             } catch (net.sf.saxon.trans.XPathException e) {
                 listener.error(e);
-            } catch (java.io.IOException e) {
-                throw e;
             }
-
-            // s = result.getBuffer().toString();
-            // result.close(); //??
 
         } catch (Exception e) {
             String errMsg = (listener.hasErrors() ? listener.getErrors() : e.toString());
@@ -174,7 +168,6 @@ public class SaxonImpl extends QAScriptEngineStrategy {
                     e.printStackTrace();
                 }
             }
-
             if (listener.hasErrors() || dynamicListener.hasErrors()) {
                 String errMsg = listener.getErrors() + dynamicListener.getErrors();
                 try {
@@ -196,28 +189,15 @@ public class SaxonImpl extends QAScriptEngineStrategy {
             return null;
         }
 
-        String search_base = Constants.TICKET_PARAM + "=";
         String baseURI = (staticEnv == null) ? null : staticEnv.getBaseURI();
 
         if (baseURI != null && err.indexOf(baseURI) > 0) {
             err = eionet.gdem.utils.Utils.Replace(err, baseURI, "xquery");
         }
-        StringBuffer buf = new StringBuffer();
-        int found = 0;
-        int last = 0;
 
-        while ((found = err.indexOf(search_base, last)) >= 0) {
-            buf.append(err.substring(last, found));
-            last = err.indexOf("&", found);
-            if (last < 0) {
-                last = err.indexOf(" ", found);
-            }
-            if (last < 0) {
-                last = err.length() - 1;
-            }
-        }
-        buf.append(err.substring(last));
-
-        return buf.toString();
+        err = err.replaceAll(Constants.TICKET_PARAM + "=.*?&", "");
+        err = err.replaceAll(Constants.TICKET_PARAM + "%3D.*?%26", "");
+        err = err.replaceAll("systemId:.*source_url=", "systemId: ");
+        return err;
     }
 }
