@@ -21,10 +21,13 @@ public class TestConstants {
     public static final String SEED_RIVERS_XLS = "seed-rivers.xls";
     public static final String SEED_DATES_XLS = "seed-dates.xls";
     public static final String SEED_MULTIVALUES_XLS = "seed-multivalues.xls";
+    public static final String SEED_FORMULAS_XLS = "seed-formulas.xls";
     public static final String SEED_VALIDATION_WARNINGS_XLS = "seed-validation-warnings.xls";
     public static final String SEED_MULTIVALUES_XLSX = "seed-multivalues07.xlsx";
+    public static final String SEED_FORMULAS_XLSX = "seed-formulas07.xlsx";
 
     public static final String SEED_MULTIVALUES_ODS = "seed-multivalues.ods";
+    public static final String SEED_FORMULAS_ODS = "seed-formulas.ods";
     public static final String SEED_GENERAL_REPORT_XML = "seed-general-report.xml";
     public static final String SEED_GENERAL_REPORT_ZIP = "seed-general-report.zip";
     public static final String SEED_OZONE_STATION_XML = "seed-ozone-station.xml";

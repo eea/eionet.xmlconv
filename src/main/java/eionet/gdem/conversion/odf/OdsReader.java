@@ -51,34 +51,43 @@ import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.utils.Utils;
 
 /**
- * The class is responsible for reading OpenDocument Spreadsheets
+ * The class is responsible for reading OpenDocument Spreadsheets.
  *
  * @author Enriko Käsper
  */
 
 public class OdsReader implements SourceReaderIF {
+
+    /**Object containing OpenDocument file attributes. */
     private OpenDocumentMetadata metadata = null;
 
+    /** Object containing OpenDocument file sheets' data. */
     private OpenDocumentSpreadsheet spreadsheet = null;
 
-    public final static String SCHEMA_ATTR_NAME = "schema-url";
+    /** OpenDocument spreadsheet attribute name containing DD dataset schema url.*/
+    public static final String SCHEMA_ATTR_NAME = "schema-url";
 
-    public final static String TBL_SCHEMAS_ATTR_NAME = "table-schema-urls";
+    /** OpenDocument spreadsheet attribute name containing DD table schema urls.*/
+    public static final String TBL_SCHEMAS_ATTR_NAME = "table-schema-urls";
 
-    private final static String TBL_SEPARATOR = ";";
+    /** Separator tokenizing table schmeas in TBL_SCHEMAS_ATTR_NAME attribute.*/
+    private static final String TBL_SEPARATOR = ";";
 
-    private final static String TBL_PROPERTIES_SEPARATOR = ",";
+    /** */
+    private static final String TBL_PROPERTIES_SEPARATOR = ",";
 
-    public final static String TABLE_NAME = "tableName=";
+    /** */
+    public static final String TABLE_NAME = "tableName=";
 
-    public final static String TABLE_SCHEMA_URL = "tableSchemaURL=";
+    /** */
+    public  static final String TABLE_SCHEMA_URL = "tableSchemaURL=";
 
+    /** */
     private SourceReaderLogger readerLogger;
 
+    /** */
     List<String> odsSheetNames = new ArrayList<String>();
-    /**
-     * Ods file size.
-     */
+    /** Ods file size. */
     private long inputFileLength = 0;
 
     @Override
@@ -93,14 +102,12 @@ public class OdsReader implements SourceReaderIF {
 
     /*
      * Intializes OdsReader. Reades ODS file into Java objects
-     *
      * @see eionet.gdem.conversion.SourceReaderIF#initReader(java.io.InputStream)
-     *
      * @param InputStream input: Source ods file
      */
     @Override
     public void initReader(File inFile) throws GDEMException {
-        if (inFile == null){
+        if (inFile == null) {
             throw new GDEMException("Input file is missing");
         }
         try {
@@ -116,21 +123,22 @@ public class OdsReader implements SourceReaderIF {
         }
         inputFileLength = inFile.length();
     }
+
     @Override
-    public void startReader(ConversionResultDto resultObject){
+    public void startReader(ConversionResultDto resultObject) {
         readerLogger = new SourceReaderLogger(resultObject, ReaderTypeEnum.ODS);
         readerLogger.logStartWorkbook();
         odsSheetNames = getSheetNames();
         readerLogger.logNumberOfSheets(spreadsheet.getTables().size(), StringUtils.join(odsSheetNames, ", "));
     }
+
     @Override
-    public void closeReader(){
+    public void closeReader() {
         readerLogger.logEndWorkbook(inputFileLength);
     }
 
     /*
      * (non-Javadoc)
-     *
      * @see eionet.gdem.conversion.SourceReaderIF#writeContentToInstance(eionet.gdem.conversion.excel.DD_XMLInstance)
      */
     @Override
@@ -182,52 +190,52 @@ public class OdsReader implements SourceReaderIF {
             int countRows = 0;
 
             for (int j = 0; j < listTableData.size() || emptySheet; j++) {
-                List<String> list_row = listTableData.get(j);
-                List<String> list_metarow =
-                    (listMetaTableData != null && listMetaTableData.size() > j) ? listMetaTableData.get(j) : null;
+                List<String> listRow = listTableData.get(j);
+                List<String> listMetaRow =
+                        (listMetaTableData != null && listMetaTableData.size() > j) ? listMetaTableData.get(j) : null;
 
-                    // don't convert empty rows.
-                    if (Utils.isEmptyList(list_row) && !emptySheet) {
-                        continue;
+                // don't convert empty rows.
+                if (Utils.isEmptyList(listRow) && !emptySheet) {
+                    continue;
+                }
+                countRows++;
+
+                instance.writeRowStart();
+                for (int k = 0; k < elements.size(); k++) {
+                    DDXmlElement elem = elements.get(k);
+                    String elemName = elem.getName();
+                    String elemLocalName = elem.getLocalName();
+                    String elemAttributes = elem.getAttributes();
+                    int colIndex = elem.getColIndex();
+                    boolean isMainTable = elem.isMainTable();
+
+                    boolean hasMultipleValues = false;
+                    String delim = null;
+
+                    // get element definition info
+                    if (elemDefs != null && elemDefs.containsKey(elemLocalName)) {
+                        delim = elemDefs.get(elemLocalName).getDelimiter();
+                        hasMultipleValues = elemDefs.get(elemLocalName).isHasMultipleValues();
                     }
-                    countRows++;
 
-                    instance.writeRowStart();
-                    for (int k = 0; k < elements.size(); k++) {
-                        DDXmlElement elem = elements.get(k);
-                        String elemName = elem.getName();
-                        String elemLocalName = elem.getLocalName();
-                        String elemAttributes = elem.getAttributes();
-                        int colIndex = elem.getColIndex();
-                        boolean isMainTable = elem.isMainTable();
-
-                        boolean hasMultipleValues = false;
-                        String delim = null;
-
-                        // get element definition info
-                        if (elemDefs != null && elemDefs.containsKey(elemLocalName)) {
-                            delim = elemDefs.get(elemLocalName).getDelimiter();
-                            hasMultipleValues = elemDefs.get(elemLocalName).isHasMultipleValues();
-                        }
-
-                        String data = "";
-                        if (colIndex > -1 && !emptySheet) {
-                            data = (isMainTable) ? getListStringValue(list_row, colIndex) : getListStringValue(list_metarow, colIndex);
-                        }
-                        if (hasMultipleValues && !Utils.isNullStr(delim)) {
-                            String[] values = data.split(delim);
-                            for (String value : values) {
-                                instance.writeElement(elemName, elemAttributes, value.trim());
-                            }
-                        } else {
-                            instance.writeElement(elemName, elemAttributes, data);
-                        }
-
+                    String data = "";
+                    if (colIndex > -1 && !emptySheet) {
+                        data = (isMainTable) ? getListStringValue(listRow, colIndex) : getListStringValue(listMetaRow, colIndex);
                     }
-                    instance.writeRowEnd();
-                    if (emptySheet) {
-                        break;
+                    if (hasMultipleValues && !Utils.isNullStr(delim)) {
+                        String[] values = data.split(delim);
+                        for (String value : values) {
+                            instance.writeElement(elemName, elemAttributes, value.trim());
+                        }
+                    } else {
+                        instance.writeElement(elemName, elemAttributes, data);
                     }
+
+                }
+                instance.writeRowEnd();
+                if (emptySheet) {
+                    break;
+                }
             }
             instance.writeTableEnd(tblName);
             readerLogger.logNumberOfRows(countRows, tblLocalName);
@@ -248,10 +256,11 @@ public class OdsReader implements SourceReaderIF {
 
         return spreadsheet.getTableName(0);
     }
+
     /**
      * Returns the list of MS Excel sheet names.
      *
-     * @return
+     * @return List of Strings.
      */
     private List<String> getSheetNames() {
         List<String> list = new ArrayList<String>();
@@ -272,42 +281,42 @@ public class OdsReader implements SourceReaderIF {
                 return resultMap;
             }
 
-            StringTokenizer st_tbl = new StringTokenizer(ret, TBL_SEPARATOR);
-            if (st_tbl.countTokens() == 0) {
+            StringTokenizer stTbl = new StringTokenizer(ret, TBL_SEPARATOR);
+            if (stTbl.countTokens() == 0) {
                 return resultMap;
             }
             resultMap = new HashMap<String, String>();
-            while (st_tbl.hasMoreTokens()) {
-                String tbl = st_tbl.nextToken();
-                StringTokenizer st_tbl_props = new StringTokenizer(tbl, TBL_PROPERTIES_SEPARATOR);
-                if (st_tbl_props.countTokens() < 2) {
+            while (stTbl.hasMoreTokens()) {
+                String tbl = stTbl.nextToken();
+                StringTokenizer stTblProps = new StringTokenizer(tbl, TBL_PROPERTIES_SEPARATOR);
+                if (stTblProps.countTokens() < 2) {
                     continue;
                 }
 
-                String tbl_name = null;
-                String tbl_schema = null;
+                String tblName = null;
+                String tblSchema = null;
 
-                while (st_tbl_props.hasMoreTokens()) {
-                    String token = st_tbl_props.nextToken();
+                while (stTblProps.hasMoreTokens()) {
+                    String token = stTblProps.nextToken();
                     if (token.startsWith(TABLE_NAME)) {
-                        tbl_name = token.substring(TABLE_NAME.length());
+                        tblName = token.substring(TABLE_NAME.length());
                     }
                     if (token.startsWith(TABLE_SCHEMA_URL)) {
-                        tbl_schema = token.substring(TABLE_SCHEMA_URL.length());
+                        tblSchema = token.substring(TABLE_SCHEMA_URL.length());
                     }
                 }
-                if (Utils.isNullStr(tbl_name) || Utils.isNullStr(tbl_schema)) {
+                if (Utils.isNullStr(tblName) || Utils.isNullStr(tblSchema)) {
                     continue;
                 }
 
                 // check if table exists
                 if (spreadsheet != null) {
-                    if (!spreadsheet.tableExists(tbl_name)) {
+                    if (!spreadsheet.tableExists(tblName)) {
                         continue;
                     }
                 }
-                if (!resultMap.containsKey(tbl_name)) {
-                    resultMap.put(tbl_name, tbl_schema);
+                if (!resultMap.containsKey(tblName)) {
+                    resultMap.put(tblName, tblSchema);
                 }
             }
 
@@ -316,18 +325,19 @@ public class OdsReader implements SourceReaderIF {
     }
 
     @Override
-    public boolean isEmptySheet(String sheet_name) {
+    public boolean isEmptySheet(String sheetName) {
         if (spreadsheet == null) {
             return true;
         }
 
-        return spreadsheet.isEmptySheet(sheet_name);
+        return spreadsheet.isEmptySheet(sheetName);
     }
+
     /**
      * DD can generate additional "-meta" sheets with GIS elements for one DD table. In XML these should be handled as 1 table. This
      * is method for finding these kind of sheets and parsing these in parallel with the main sheet
-     * @param mainSheetName
-     * @return
+     * @param mainSheetName Name of DD main table.
+     * @return Matrix of values retreived from meta table.
      */
     private List<List<String>> getMetaTableData(String mainSheetName) {
         return spreadsheet.getTableData(mainSheetName + DDXMLConverter.META_SHEET_NAME_ODS);
@@ -335,17 +345,18 @@ public class OdsReader implements SourceReaderIF {
 
     /**
      * Get the list of meta table column names.
-     * @param mainSheetName
-     * @return
+     * @param mainSheetName Name of DD main table.
+     * @return List of meta table column names.
      */
     private List<String> getMetaTableHeader(String mainSheetName) {
         return spreadsheet.getTableHeader(mainSheetName + DDXMLConverter.META_SHEET_NAME_ODS);
     }
+
     /**
      * Set mappings in case user has changed columns ordering.
-     * @param listHeaderRow
-     * @param elements
-     * @param isMainTable
+     * @param listHeaderRow List of column names.
+     * @param elements List of DD XML elements.
+     * @param isMainTable true if DD main table, false if GIS table.
      */
     private void setColumnMappings(List<String> listHeaderRow, List<DDXmlElement> elements, boolean isMainTable) {
         for (int j = 0; j < elements.size(); j++) {
@@ -359,14 +370,15 @@ public class OdsReader implements SourceReaderIF {
             }
         }
     }
+
     /**
      * Goes through all columns and logs missing and redundant columns into conversion log.
-     * @param sheetName
-     * @param row
-     * @param metaRow
-     * @param elements
+     * @param sheetName Spreadsheet name.
+     * @param row List of cell values in a row.
+     * @param metaRow List of column names.
+     * @param elements List of DD XML elements.
      */
-    private void logColumnMappings(String sheetName,  List<String> row,  List<String> metaRow, List<DDXmlElement> elements) {
+    private void logColumnMappings(String sheetName, List<String> row, List<String> metaRow, List<DDXmlElement> elements) {
 
         readerLogger.logNumberOfColumns(row.size(), sheetName);
         if (metaRow != null) {
@@ -381,27 +393,28 @@ public class OdsReader implements SourceReaderIF {
             }
             elemNames.add(element.getLocalName().toLowerCase());
         }
-        if(missingColumns.size() > 0){
+        if (missingColumns.size() > 0) {
             readerLogger.logMissingColumns(StringUtils.join(missingColumns, ", "), sheetName);
         }
         List<String> extraColumns = getExtraColumns(row, elemNames);
-        if(extraColumns.size() > 0){
+        if (extraColumns.size() > 0) {
             readerLogger.logExtraColumns(StringUtils.join(extraColumns, ", "), sheetName);
         }
 
         if (metaRow != null) {
             List<String> extraMetaColumns = getExtraColumns(metaRow, elemNames);
-            if(extraMetaColumns.size() > 0){
-                readerLogger.logExtraColumns(StringUtils.join(extraColumns, ", "), sheetName  + DDXMLConverter.META_SHEET_NAME);
+            if (extraMetaColumns.size() > 0) {
+                readerLogger.logExtraColumns(StringUtils.join(extraColumns, ", "), sheetName + DDXMLConverter.META_SHEET_NAME);
             }
         }
 
     }
+
     /**
-     * Find redundant columns from the list of columns
+     * Find redundant columns from the list of columns.
      * @param row list of column names
      * @param elemNames list of XML element names
-     * @return
+     * @return List of Strings.
      */
     private List<String> getExtraColumns(List<String> row, List<String> elemNames) {
         List<String> extraColumns = new ArrayList<String>();
@@ -413,11 +426,12 @@ public class OdsReader implements SourceReaderIF {
         }
         return extraColumns;
     }
+
     /**
-     * Get cell value.
-     * @param list
-     * @param colIdx
-     * @return
+     * Get cell value from the list of cell values.
+     * @param list of cell values
+     * @param colIdx column index.
+     * @return string value from list of cell values.
      */
     private String getListStringValue(List<String> list, Integer colIdx) {
 
@@ -435,4 +449,11 @@ public class OdsReader implements SourceReaderIF {
         return data.trim();
     }
 
+    /**
+     * Returns OpenDocumentSpreadsheet object.
+     * @return OpenDocumentSpreadsheet object.
+     */
+    protected OpenDocumentSpreadsheet getSpreadsheet() {
+        return this.spreadsheet;
+    }
 }

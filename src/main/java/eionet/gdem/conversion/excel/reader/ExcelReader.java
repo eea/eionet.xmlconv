@@ -40,6 +40,7 @@ import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -97,6 +98,9 @@ public class ExcelReader implements SourceReaderIF {
      */
     private long inputFileLength = 0;
 
+    /** Formula evaluator used for calculating formulas in cell. */
+    private FormulaEvaluator evaluator;
+
     /**
      * Class constructor.
      * @param excel2007 true if the file is Excel 2007 or newer.
@@ -122,6 +126,8 @@ public class ExcelReader implements SourceReaderIF {
             throw new GDEMException("ErrorConversionHandler - couldn't open Excel file: " + e.toString());
         }
         inputFileLength = inputFile.length();
+        evaluator = wb.getCreationHelper().createFormulaEvaluator();
+
     }
 
     @Override
@@ -474,40 +480,45 @@ public class ExcelReader implements SourceReaderIF {
     }
 
     /**
-     * Reads cell value and formats it according to element type defined in XML Schema.
+     * Reads cell value and formats it according to element type defined in XML Schema. If the cell contains formula,
+     * then calculated value is returned.
      *
-     * @param cell
-     * @param schemaType
-     * @return
+     * @param cell Spreadsheet Cell object.
+     * @param schemaType XML Schema data type for given cell.
+     * @return string value of the cell.
      */
     protected String cellValueToString(Cell cell, String schemaType) {
         String value = "";
-        switch (cell.getCellType()) {
-        case HSSFCell.CELL_TYPE_FORMULA:
-            break;
-        case HSSFCell.CELL_TYPE_NUMERIC:
-            if (HSSFDateUtil.isCellDateFormatted(cell) && !isYearValue(cell.getNumericCellValue())) {
-                Date dateValue = cell.getDateCellValue();
-                value = Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
-            } else if (HSSFDateUtil.isValidExcelDate(cell.getNumericCellValue()) && schemaType != null
-                    && schemaType.equals("xs:date") && !isYearValue(cell.getNumericCellValue())) {
-                Date dateValue = cell.getDateCellValue();
-                value = Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
-            } else {
-                value = formatter.formatCellValue(cell);
-            }
-            break;
-        case HSSFCell.CELL_TYPE_STRING:
-            RichTextString richText = cell.getRichStringCellValue();
-            value = richText.toString();
-            break;
-        case HSSFCell.CELL_TYPE_BOOLEAN:
-            value = Boolean.toString(cell.getBooleanCellValue());
-            break;
-        case HSSFCell.CELL_TYPE_ERROR:
-            break;
-        }
 
+        if (cell != null) {
+            switch (evaluator.evaluateInCell(cell).getCellType()) {
+                case HSSFCell.CELL_TYPE_NUMERIC:
+                    if (HSSFDateUtil.isCellDateFormatted(cell) && !isYearValue(cell.getNumericCellValue())) {
+                        Date dateValue = cell.getDateCellValue();
+                        value = Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
+                    } else if (HSSFDateUtil.isValidExcelDate(cell.getNumericCellValue()) && schemaType != null
+                            && schemaType.equals("xs:date") && !isYearValue(cell.getNumericCellValue())) {
+                        Date dateValue = cell.getDateCellValue();
+                        value = Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
+                    } else {
+                        value = formatter.formatCellValue(cell);
+                    }
+                    break;
+                case HSSFCell.CELL_TYPE_STRING:
+                    RichTextString richText = cell.getRichStringCellValue();
+                    value = richText.toString();
+                    break;
+                case HSSFCell.CELL_TYPE_BOOLEAN:
+                    value = Boolean.toString(cell.getBooleanCellValue());
+                    break;
+                case HSSFCell.CELL_TYPE_ERROR:
+                    break;
+                case HSSFCell.CELL_TYPE_FORMULA:
+                    break;
+                default:
+                    break;
+            }
+        }
         return value.trim();
     }
 
@@ -515,8 +526,8 @@ public class ExcelReader implements SourceReaderIF {
      * DD can generate additional "-meta" sheets with GIS elements for one DD table. In XML these should be handled as 1 table. This
      * is method for finding these kind of sheets and parsing these in parallel with the main sheet
      *
-     * @param mainSheetName
-     * @return
+     * @param mainSheetName Main sheet name.
+     * @return Spreadsheet Sheet object.
      */
     private Sheet getMetaSheet(String mainSheetName) {
         return getSheet(mainSheetName + DDXMLConverter.META_SHEET_NAME);
@@ -603,6 +614,7 @@ public class ExcelReader implements SourceReaderIF {
     /**
      * Find redundant columns from the list of columns.
      *
+     * @param sheetName Excel sheet name.
      * @param row Excel row.
      * @param elemNames DD element names.
      * @return List of extra columns added to sheet.
@@ -651,5 +663,13 @@ public class ExcelReader implements SourceReaderIF {
      */
     private boolean isYearValue(double doubleCellValue) {
         return doubleCellValue < 3000 && doubleCellValue > 0;
+    }
+
+    /**
+     * Return Workbook object.
+     * @return Workbook object.
+     */
+    protected Workbook getWorkbook() {
+        return this.wb;
     }
 }
