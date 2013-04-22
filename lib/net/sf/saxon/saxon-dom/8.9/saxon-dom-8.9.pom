@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sf.saxon</groupId>
+  <artifactId>saxon-dom</artifactId>
+  <version>8.9</version>
+  <name>Saxon DOM</name>
+
+  <description>Saxon support library for third-party object model DOM</description>
+  <url>http://saxon.sf.net</url>
+  <licenses>
+    <license>
+      <name>Mozilla Public License Version 1.0</name>
+      <url>http://www.mozilla.org/MPL/MPL-1.0.txt</url>
+    </license>
+
+  </licenses>
+  <scm>
+    <url>http://cvs.sourceforge.net/viewcvs.py/saxon</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>saxon</artifactId>
+      <version>8.9</version>
+    </dependency>
+  </dependencies>
+</project>
