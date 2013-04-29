@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+<!--
+     You can run this change log on your database as many times as you want, it will ignore the
+     changes that are already applied. It also means that you can't modify an existing revision.
+     Always add to the end.
+
+     Use the maven goals: liquibase:update and liquibase:status
+     Potentially with -Dliquibase.dropFirst=true
+     $Id$
+ -->
+    <changeSet author="kasperen" id="rev-1">
+        <createTable tableName="T_BACKUP">
+            <column autoIncrement="true" name="BACKUP_ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValueNumeric="0" name="OBJECT_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="F_TIMESTAMP" type="TIMESTAMP"/>
+            <column defaultValue="" name="FILE_NAME" type="VARCHAR(255)"/>
+            <column defaultValue="" name="USER" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-2">
+        <createTable tableName="T_CONVTYPE">
+            <column defaultValue="" name="CONV_TYPE" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="text/plain" name="CONTENT_TYPE" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="txt" name="FILE_EXT" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="DESCRIPTION" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-3">
+        <createTable tableName="T_FILE">
+            <column autoIncrement="true" name="FILE_ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="FILE_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="TITLE" type="VARCHAR(255)"/>
+            <column defaultValue="" name="TYPE" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="PARENT_TYPE" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="PARENT_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-4">
+        <createTable tableName="T_HOST">
+            <column autoIncrement="true" name="HOST_ID" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="HOST_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="USER" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="PWD" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-5">
+        <createTable tableName="T_QUERY">
+            <column autoIncrement="true" name="QUERY_ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column defaultValue="Query" name="SHORT_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="QUERY_FILENAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="SCHEMA_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="HTML" name="RESULT_TYPE" type="VARCHAR(50)"/>
+            <column name="SCRIPT_TYPE" type="VARCHAR(50)"/>
+            <column defaultValueNumeric="10" name="UPPER_LIMIT" type="INT"/>
+            <column name="URL" type="VARCHAR(1024)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-6">
+        <createTable tableName="T_ROOT_ELEM">
+            <column autoIncrement="true" name="ROOTELEM_ID" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="ELEM_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAMESPACE" type="VARCHAR(255)"/>
+            <column defaultValueNumeric="0" name="SCHEMA_ID" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-7">
+        <createTable tableName="T_SCHEMA">
+            <column autoIncrement="true" name="SCHEMA_ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="XML_SCHEMA" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="DTD_PUBLIC_ID" type="VARCHAR(255)"/>
+            <column defaultValue="'0'" name="VALIDATE" type="enum('0','1')"/>
+            <column defaultValue="XSD" name="SCHEMA_LANG" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EXPIRE_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-8">
+        <createTable tableName="T_STYLESHEET">
+            <column autoIncrement="true" name="CONVERT_ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column defaultValue="HTML" name="RESULT_TYPE" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="XSL_FILENAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="SCHEMA_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DEPENDS_ON" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-9">
+        <createTable tableName="T_UPL_SCHEMA">
+            <column autoIncrement="true" name="SCHEMA_ID" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="SCHEMA_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="DESCRIPTION" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="FK_SCHEMA_ID" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-10">
+        <createTable tableName="T_XFSBROWSER">
+            <column autoIncrement="true" name="BROWSER_ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="BROWSER_TYPE" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="BROWSER_TITLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STYLESHEET" type="VARCHAR(255)"/>
+            <column defaultValueNumeric="0" name="PRIORITY" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-11">
+        <createTable tableName="T_XQJOBS">
+            <column autoIncrement="true" name="JOB_ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="URL" type="VARCHAR(255)"/>
+            <column name="XQ_FILE" type="VARCHAR(255)"/>
+            <column name="RESULT_FILE" type="VARCHAR(255)"/>
+            <column name="STATUS" type="INT"/>
+            <column name="TIME_STAMP" type="DATETIME"/>
+            <column name="N_STATUS" type="INT"/>
+            <column defaultValueNumeric="0" name="QUERY_ID" type="INT"/>
+            <column name="SRC_FILE" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-12">
+        <createIndex indexName="CONV_TYPE" tableName="T_CONVTYPE" unique="true">
+            <column name="CONV_TYPE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-13">
+        <createIndex indexName="QUERY_FILENAME" tableName="T_QUERY" unique="true">
+            <column name="QUERY_FILENAME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-14">
+        <createIndex indexName="XML_SCHEMA" tableName="T_SCHEMA" unique="true">
+            <column name="XML_SCHEMA"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-15">
+        <createIndex indexName="XSL_FILENAME" tableName="T_STYLESHEET" unique="true">
+            <column name="XSL_FILENAME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-16">
+        <createIndex indexName="fk_dependson" tableName="T_STYLESHEET" unique="false">
+            <column name="DEPENDS_ON"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-17">
+        <createIndex indexName="SCHEMA_ID" tableName="T_UPL_SCHEMA" unique="false">
+            <column name="SCHEMA_ID"/>
+            <column name="SCHEMA_NAME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-18">
+        <createIndex indexName="SCHEMA_NAME" tableName="T_UPL_SCHEMA" unique="true">
+            <column name="SCHEMA_NAME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-19">
+        <createIndex indexName="BROWSER_TYPE" tableName="T_XFSBROWSER" unique="true">
+            <column name="BROWSER_TYPE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-20">
+        <sql>INSERT IGNORE INTO T_CONVTYPE VALUES ('HTML','text/html;charset=UTF-8','html','HTML files');
+            INSERT IGNORE INTO T_CONVTYPE VALUES ('XML','text/xml;charset=UTF-8','xml','');
+            INSERT IGNORE INTO T_CONVTYPE VALUES ('EXCEL','application/vnd.ms-excel','xls','');
+            INSERT IGNORE INTO T_CONVTYPE VALUES ('PDF','application/pdf','pdf','');
+            INSERT IGNORE INTO T_CONVTYPE VALUES ('SQL','text/plain','sql','');
+            INSERT IGNORE INTO T_CONVTYPE VALUES ('ODS','application/vnd.oasis.opendocument.spreadsheet','ods','OpenDocument Spreadsheet');
+            INSERT IGNORE INTO T_CONVTYPE VALUES ('TEXT','text/plain','txt','Simple text files - tab/comma/... separated values');
+            INSERT IGNORE INTO T_CONVTYPE VALUES ('RDF','application/rdf+xml','rdf','Semantic Web resources');
+            INSERT IGNORE INTO T_CONVTYPE VALUES ('KML','application/vnd.google-earth.kml+xml','kml','Google Earth Keyhole Markup Language');
+        </sql>
+    </changeSet>
+</databaseChangeLog>

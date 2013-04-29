@@ -9,6 +9,6 @@
         username="${db.user}"
         password="${db.password}"
         driverClassName="${db.driver}"
-        url="${db.host}">
+        url="${db.jdbcurl.encoded}">
     </Resource>
 </Context>
