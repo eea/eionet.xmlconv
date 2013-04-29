@@ -239,15 +239,8 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>Update live databse</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>update</goal>
-                        </goals>
-                    </execution>
-                    <execution>
                         <id>Update TEST database</id>
-                        <phase>test-compile</phase>
+                        <phase>process-test-resources</phase>
                         <configuration>
                             <skip>${maven.test.skip}</skip>
                             <propertyFile>target/test-classes/liquibase.properties</propertyFile>
