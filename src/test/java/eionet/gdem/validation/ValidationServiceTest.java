@@ -1,5 +1,22 @@
 /*
- * Created on 31.01.2008
+ * The contents of this file are subject to the Mozilla Public
+ * License Version 1.1 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of
+ * the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS
+ * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+ * implied. See the License for the specific language governing
+ * rights and limitations under the License.
+ *
+ * The Original Code is XMLCONV - Conversion and QA Service
+ *
+ * The Initial Owner of the Original Code is European Environment
+ * Agency. Portions created by TripleDev or Zero Technologies are Copyright
+ * (C) European Environment Agency.  All Rights Reserved.
+ *
+ * Contributor(s):
+ *        Enriko Käsper (TripleDev)
  */
 package eionet.gdem.validation;
 
@@ -31,6 +48,7 @@ public class ValidationServiceTest extends DBTestCase {
     /**
      * Set up test case properties
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         TestUtils.setUpProperties(this);
@@ -39,6 +57,7 @@ public class ValidationServiceTest extends DBTestCase {
     /**
      * Load the data which will be inserted for the test
      */
+    @Override
     protected IDataSet getDataSet() throws Exception {
         IDataSet loadedDataSet =
                 new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_UPL_SCHEMAS_XML));
@@ -51,14 +70,13 @@ public class ValidationServiceTest extends DBTestCase {
      * @throws Exception
      */
     public void testValidateInvalidXML() throws Exception {
-        ValidationService validService = new ValidationService(true);
+        ValidationService validService = new ValidationService();
         String s =
-                validService.validateSchema(TestUtils.getSeedURL(TestConstants.SEED_GW_INVALID_XML, this),
-                        TestUtils.getSeedURL(TestConstants.SEED_GW_SCHEMA, this));
+                validService.validateSchema(TestUtils.getSeedURL(TestConstants.SEED_GW_INVALID_XML, this), TestUtils.getSeedURL(TestConstants.SEED_GW_SCHEMA, this));
 
         // System.out.println(s);
 
-        assertTrue(s.startsWith("[ERROR"));
+        assertTrue(s.indexOf("<span id=\"feedbackStatus\" class=\"ERROR\"") > 0);
         // error objects are stored in errors list
         assertTrue(validService.getErrorList().size() > 0);
     }
@@ -69,15 +87,15 @@ public class ValidationServiceTest extends DBTestCase {
      * @throws Exception
      */
     public void testValidateValidXML() throws Exception {
-        ValidationService validService = new ValidationService(true);
+        ValidationService validService = new ValidationService();
         String s =
-                validService.validateSchema(TestUtils.getSeedURL(TestConstants.SEED_GW_VALID_XML, this),
-                        TestUtils.getSeedURL(TestConstants.SEED_GW_SCHEMA, this));
+                validService.validateSchema(TestUtils.getSeedURL(TestConstants.SEED_GW_VALID_XML, this), TestUtils.getSeedURL(TestConstants.SEED_GW_SCHEMA, this));
 
         // System.out.println(s);
 
         assertTrue(s.startsWith("<div"));
-        assertTrue(s.indexOf("OK") > 0);
+        assertTrue(s.indexOf("<p>OK</p>") > 0);
+        assertTrue(s.indexOf("<span id=\"feedbackStatus\" class=\"INFO\"") > 0);
         // check if errors list is empty
         assertTrue(validService.getErrorList() == null || validService.getErrorList().size() == 0);
     }
@@ -89,13 +107,13 @@ public class ValidationServiceTest extends DBTestCase {
      * @throws Exception
      */
     public void testValidateValidXMLAgainstLocalSchema() throws Exception {
-        ValidationService validService = new ValidationService(true);
+        ValidationService validService = new ValidationService();
         String s = validService.validate(TestUtils.getSeedURL(TestConstants.SEED_GW_VALID_XML, this));
 
-        //System.out.println(s);
+        // System.out.println(s);
 
         assertTrue(s.startsWith("<div"));
-        assertTrue(s.indexOf("OK") > 0);
+        assertTrue(s.indexOf("<span id=\"feedbackStatus\" class=\"INFO\"") > 0);
         assertEquals(validService.getValidatedSchemaURL(), Properties.gdemURL.concat("/").concat(TestConstants.SEED_GW_SCHEMA));
         assertEquals(validService.getOriginalSchema(), "http://dd.eionet.europa.eu/GetSchema?id=TBL4564");
         // check if errors list is empty
@@ -108,7 +126,7 @@ public class ValidationServiceTest extends DBTestCase {
      * @throws Exception
      */
     public void testSetLocalSchema() throws Exception {
-        ValidationService validService = new ValidationService(true);
+        ValidationService validService = new ValidationService();
         validService.setLocalSchemaUrl("http://dd.eionet.europa.eu/GetSchema?id=TBL4564");
 
         assertTrue(validService.getValidatedSchema().endsWith(TestConstants.SEED_GW_SCHEMA));
@@ -127,13 +145,13 @@ public class ValidationServiceTest extends DBTestCase {
      * @throws Exception
      */
     public void testValidateValidXMLAgainstLocalDTD() throws Exception {
-        ValidationService validService = new ValidationService(true);
+        ValidationService validService = new ValidationService();
         String s = validService.validate(TestUtils.getSeedURL(TestConstants.SEED_XLIFF_XML, this));
 
         // System.out.println(s);
 
         assertTrue(s.startsWith("<div"));
-        assertTrue(s.indexOf("OK") > 0);
+        assertTrue(s.indexOf("<span id=\"feedbackStatus\" class=\"INFO\"") > 0);
         assertEquals(validService.getValidatedSchemaURL(), Properties.gdemURL.concat("/").concat(TestConstants.SEED_XLIFF_DTD));
         assertEquals(validService.getOriginalSchema(), "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd");
         // check if errors list is empty
@@ -146,14 +164,29 @@ public class ValidationServiceTest extends DBTestCase {
      * @throws Exception
      */
     public void testXMLAgainstUnavailableSchema() throws Exception {
-        ValidationService validService = new ValidationService(true);
+        ValidationService validService = new ValidationService();
         String s =
-                validService.validateSchema(TestUtils.getSeedURL(TestConstants.SEED_XLIFF_XML, this),
-                        "https://svn.eionet.europa.eu/thereisnoschema");
+                validService.validateSchema(TestUtils.getSeedURL(TestConstants.SEED_XLIFF_XML, this), "https://svn.eionet.europa.eu/thereisnoschema");
 
         // System.out.println(s);
 
         assertTrue(s.startsWith("<div"));
-        assertTrue(s.indexOf("ERROR") > 0);
+        assertTrue(s.indexOf("<span id=\"feedbackStatus\" class=\"ERROR\"") > 0);
+    }
+
+    /**
+     * Validate XML against XML schema that should block submission in CDR.
+     *
+     * @throws Exception
+     */
+    public void testXMLAgainstBlockerSchema() throws Exception {
+        ValidationService validService = new ValidationService();
+        String s =
+                validService.validateSchema(TestUtils.getSeedURL(TestConstants.SEED_GW_INVALID_XML, this), "http://dd.eionet.europa.eu/GetSchema?id=TBL111");
+
+        // System.out.println(s);
+
+        assertTrue(s.startsWith("<div"));
+        assertTrue(s.indexOf("<span id=\"feedbackStatus\" class=\"BLOCKER\"") > 0);
     }
 }

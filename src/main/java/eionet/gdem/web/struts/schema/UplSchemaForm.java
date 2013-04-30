@@ -38,16 +38,20 @@ public class UplSchemaForm extends ActionForm {
     private String schemaUrl;
     private boolean doValidation = false;
     private String schemaLang;
+    /** Block file submission if Schema validation fails. The flag used in QA service. */
+    private boolean blockerValidation = false;
 
     // T_UPL_SCHEMA
     private String uplSchemaId;
     private FormFile schemaFile;
     private String schemaFileName;
 
+    @Override
     public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         return null;
     }
 
+    @Override
     public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         schemaFile = null;
         description = null;
@@ -127,4 +131,19 @@ public class UplSchemaForm extends ActionForm {
     public String getDefaultSchemaLang() {
         return Schema.getDefaultSchemaLang();
     }
+
+    /**
+     * @return the blockerValidation
+     */
+    public boolean isBlockerValidation() {
+        return blockerValidation;
+    }
+
+    /**
+     * @param blockerValidation the blockerValidation to set
+     */
+    public void setBlockerValidation(boolean blockerValidation) {
+        this.blockerValidation = blockerValidation;
+    }
+
 }

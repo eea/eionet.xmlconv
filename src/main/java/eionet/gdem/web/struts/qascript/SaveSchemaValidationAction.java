@@ -54,6 +54,7 @@ public class SaveSchemaValidationAction extends Action {
         SchemaElemForm form = (SchemaElemForm) actionForm;
         String schemaId = form.getSchemaId();
         boolean validate = form.isDoValidation();
+        boolean blocker = form.isBlockerValidation();
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
         ActionMessages errors = new ActionMessages();
@@ -63,7 +64,7 @@ public class SaveSchemaValidationAction extends Action {
 
         try {
             QAScriptManager qm = new QAScriptManager();
-            qm.updateSchemaValidation(user, schemaId, validate);
+            qm.updateSchemaValidation(user, schemaId, validate, blocker);
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.validation.updated"));
         } catch (DCMException e) {
             e.printStackTrace();

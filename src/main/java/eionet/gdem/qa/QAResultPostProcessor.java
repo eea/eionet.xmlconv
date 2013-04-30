@@ -47,7 +47,7 @@ import eionet.gdem.utils.xml.XmlSerialization;
 /**
  * @author Enriko Käsper
  *
- *         The class processes QA results and add warnings/errors if required.
+ * The class processes QA results and add warnings/errors if required.
  */
 public class QAResultPostProcessor {
 

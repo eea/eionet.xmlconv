@@ -245,4 +245,10 @@
             INSERT IGNORE INTO T_CONVTYPE VALUES ('KML','application/vnd.google-earth.kml+xml','kml','Google Earth Keyhole Markup Language');
         </sql>
     </changeSet>
+    <changeSet author="kasperen" id="rev-21">
+        <addColumn tableName="T_SCHEMA">
+            <column name="BLOCKER" type="enum('0','1')" defaultValue="0"/>
+		</addColumn>
+		<sql>UPDATE T_SCHEMA SET BLOCKER = '0';</sql>
+    </changeSet>
 </databaseChangeLog>

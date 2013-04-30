@@ -120,8 +120,8 @@ public class ConversionService extends RemoteService implements ConversionServic
     @Override
     public Hashtable convertDD_XML(String sourceURL) throws GDEMException {
 
-        if (!isHTTPRequest() && LOGGER.isDebugEnabled()) {
-            LOGGER.debug("ConversionService.convertDD_XML method called through XML-rpc.");
+        if (!isHTTPRequest()) {
+            LOGGER.info("ConversionService.convertDD_XML method called through XML-RPC: " + sourceURL);
         }
 
         ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
@@ -153,8 +153,8 @@ public class ConversionService extends RemoteService implements ConversionServic
     @Override
     public Hashtable convertDD_XML_split(String sourceURL, String sheetParam) throws GDEMException {
 
-        if (!isHTTPRequest() && LOGGER.isDebugEnabled()) {
-            LOGGER.debug("ConversionService.convertDD_XML_split method called through XML-rpc.");
+        if (!isHTTPRequest()) {
+            LOGGER.info("ConversionService.convertDD_XML_split method called through XML-RPC: " + sourceURL);
         }
 
         ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();

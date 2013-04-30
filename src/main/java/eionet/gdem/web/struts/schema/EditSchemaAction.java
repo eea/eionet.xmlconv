@@ -60,6 +60,7 @@ public class EditSchemaAction extends Action {
         String schemaLang = form.getSchemaLang();
         boolean doValidation = form.isDoValidation();
         Date expireDate = form.getExpireDateObj();
+        boolean blocker = form.isBlockerValidation();
 
         if (isCancelled(httpServletRequest)) {
             try {
@@ -88,7 +89,7 @@ public class EditSchemaAction extends Action {
 
         try {
             SchemaManager sm = new SchemaManager();
-            sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdId, expireDate);
+            sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdId, expireDate, blocker);
 
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.updated"));
             httpServletRequest.setAttribute("schema", schema);

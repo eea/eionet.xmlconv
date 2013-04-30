@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
   <!-- T_SCHEMA -->
-  <t_schema SCHEMA_ID="83" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD"/>
-  <t_schema SCHEMA_ID="1" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4564" DESCRIPTION="Groundwater schema" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD"/>
-  <t_schema SCHEMA_ID="2" XML_SCHEMA="http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" DESCRIPTION="XLIFF schema stored locally" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="DTD"/>
-  <t_schema SCHEMA_ID="3" XML_SCHEMA="http://www.dummy.com" DESCRIPTION="Delete it" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-  <t_schema SCHEMA_ID="4" XML_SCHEMA="http://www.unknown.com" DESCRIPTION="Update it" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-  
+  <t_schema SCHEMA_ID="83" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD" BLOCKER="0"/>
+  <t_schema SCHEMA_ID="1" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4564" DESCRIPTION="Groundwater schema" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD" BLOCKER="0"/>
+  <t_schema SCHEMA_ID="2" XML_SCHEMA="http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" DESCRIPTION="XLIFF schema stored locally" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="DTD" BLOCKER="0"/>
+  <t_schema SCHEMA_ID="3" XML_SCHEMA="http://www.dummy.com" DESCRIPTION="Delete it" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+  <t_schema SCHEMA_ID="4" XML_SCHEMA="http://www.unknown.com" DESCRIPTION="Update it" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+  <t_schema SCHEMA_ID="5" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL111" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="1"/>
+
   <!-- T_UPL_SCHEMA -->
   <t_upl_schema SCHEMA_ID="8" SCHEMA_NAME="xliff.dtd" DESCRIPTION="" FK_SCHEMA_ID="2"/>
   <t_upl_schema SCHEMA_ID="9" SCHEMA_NAME="seed-gw-schema.xsd" DESCRIPTION="" FK_SCHEMA_ID="1"/>

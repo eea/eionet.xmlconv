@@ -106,6 +106,21 @@
                     </logic:notPresent>
                   </td>
                 </tr>
+                <tr>
+                    <td>
+                    <label class="question" for="txtBlockerValidation">
+                        <bean:message key="label.schema.isBlockerValidation"/>
+                    </label>
+                  </td>
+                  <td>
+                    <logic:present name="user">
+                        <html:checkbox property="blockerValidation" styleId="txtBlockerValidation"/>
+                    </logic:present>
+                    <logic:notPresent name="user">
+                        <bean:write name="schemaForm" property="blockerValidation" />
+                    </logic:notPresent>
+                  </td>
+                </tr>
                 <tr class="zebraeven">
                     <td>
                     <label class="question" for="txtExpireDate">

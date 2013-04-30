@@ -5,24 +5,33 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
+/**
+ *
+ * DAO interface class for XML Schema database operations.
+ *
+ * @author Enriko Käsper
+ */
 public interface ISchemaDao extends IDbSchema {
     /**
      * Adds a new Schema to the database.
      *
      * @param xmlSchema
      *            - xml schema (http://eionet.eea.eu.int/RASchema"
-     * @param xsdDescription
+     * @param description
      *            - text describing the schema
      * @param schemaLang
      *            - SD, DTD, ..
      * @param doValidate
      *            - use schema for validatin
-     * @param public_id
+     * @param publicId
      *            - dtd id
+     * @param blocker If true, then failed XML Schema validation blocks releasing of envelope in CDR.
      * @return The ID of the added schema
+     * @throws SQLException in case of database operation.
      */
-    String addSchema(String xmlSchema, String description, String schemaLang, boolean doValidate, String public_id)
-            throws SQLException;
+            String
+            addSchema(String xmlSchema, String description, String schemaLang, boolean doValidate, String publicId, boolean blocker)
+                    throws SQLException;
 
     /**
      * Updates a Schema properties in the database.
@@ -33,84 +42,118 @@ public interface ISchemaDao extends IDbSchema {
      *            - xml schema (http://eionet.eea.eu.int/RASchema"
      * @param schemaLang
      *            - SD, DTD, ..
-     * @param doValidate
-     *            - use schema for validatin
-     * @param xsdDescription
-     *            - text describing the schema
-     * @param public_id
+     * @param doValidation
+     *            - use schema for validating
+     * @param publicId
      *            - dtd id
+     * @param blocker If true, then failed XML Schema validation blocks releasing of envelope in CDR.
+     * @throws SQLException in case of database error.
      */
     void updateSchema(String schema_id, String xmlSchema, String description, String schemaLang, boolean doValidation,
-            String public_id, Date expireDate) throws SQLException;
+            String publicId, Date expireDate, boolean blocker) throws SQLException;
 
     /**
      * Updates a Schema validate properties in the database.
      *
-     * @param String
-     *            schema_id - id from database, used as a constraint
-     * @param String
-     *            validate - validate property
+     * @param schemaId - id from database, used as a constraint
+     * @param validate - validate property
+     * @param blocker If true, then failed XML Schema validation blocks releasing of envelope in CDR.
+     * @throws SQLException in case of database error.
      */
-    void updateSchemaValidate(String schema_id, boolean validate) throws SQLException;
+    void updateSchemaValidate(String schemaId, boolean validate, boolean blocker) throws SQLException;
 
+    /**
+     * Add XML Schema into database.
+     * @param xmlSchema XML Schema url.
+     * @param description Schema textual description.
+     * @return Primary key of newely added Schema.
+     * @throws SQLException in case of database error.
+     */
     String addSchema(String xmlSchema, String description) throws SQLException;
 
     /**
      * Removes the schema and all it's related stuff if needed.
      *
-     * @param schemaId
-     * @param del_stylesheets
-     * @param del_queries
-     * @param del_upl_schemas
-     * @param del_self
-     * @throws SQLException
+     * @param schemaId XML Schema database numeric id or URL.
+     * @param delStylesheets
+     * @param delQueries
+     * @param delUplSchemas
+     * @param delSelf
+     * @throws SQLException in case of database error.
      */
-    void removeSchema(String schemaId, boolean del_stylesheets, boolean del_queries, boolean del_upl_schemas, boolean del_self)
+    void removeSchema(String schemaId, boolean delStylesheets, boolean delQueries, boolean delUplSchemas, boolean delSelf)
             throws SQLException;
 
     /**
      * Gets the data of one or several schemas from the repository. Vector contains HashMaps with schema and its stylesheets
-     * information
+     * information.
+     *
+     * @param schemaId XML Schema database numeric id or URL.
+     * @return List of Schemas.
+     * @throws SQLException in case of database error.
      */
     Vector getSchemas(String schemaId) throws SQLException;
 
     /**
      * Gets the data of one or several schemas from the repository. Vector contains HashMaps with schema and its stylesheets
-     * information if needed
+     * information if needed.
+     *
+     * @param schemaId XML Schema database numeric id or URL.
+     * @param stylesheets true if the result contains also Schema related stylesheets information.
+     * @return List of Schemas.
+     * @throws SQLException in case of database error.
      */
     Vector getSchemas(String schemaId, boolean stylesheets) throws SQLException;
 
     /**
      * Gets the data of one schema from the repository. HashMap contains only one row from schema table
+     *
+     * @param schemaId XML Schema database numeric id or URL.
+     * @return HashMap with XML Schema info.
+     * @throws SQLException in case of database error.
      */
-    HashMap getSchema(String schema_id) throws SQLException;
+    HashMap getSchema(String schemaId) throws SQLException;
 
-    HashMap getSchema(String schema_id, boolean stylesheets) throws SQLException;
+    /**
+     *
+     * @param schemaId XML Schema database numeric id or URL.
+     * @param stylesheets
+     * @return
+     * @throws SQLException in case of database error.
+     */
+    HashMap getSchema(String schemaId, boolean stylesheets) throws SQLException;
 
     /**
      * returns the schema ID from the repository.
      *
-     * @param - schema URL
+     * @param schemaId XML Schema database numeric id or URL.
      * @return schema ID
+     * @throws SQLException in case of database error.
      */
     String getSchemaID(String schema) throws SQLException;
 
     /**
      * returns all stylesheets for schema ID.
      *
-     * @param - schema ID
+     * @param schemaId XML Schema database numeric id or URL.
      * @return Vector containing HashMaps with styleheet info
+     * @throws SQLException in case of database error.
      */
-
     Vector getSchemaStylesheets(String schemaId) throws SQLException;
 
+    /**
+     * Get XML Schemas with related QA scripts information.
+     * @param schemaId XML Schema database numeric id or URL.
+     * @return List of XML Schemas.
+     * @throws SQLException in case of database error.
+     */
     Vector getSchemaQueries(String schemaId) throws SQLException;
 
     /**
-     * returns all schemas which have stylesheets.
+     * Returns all schemas which have stylesheets.
      *
-     * @return
-     * @throws SQLException
+     * @return List of XML Schemas.
+     * @throws SQLException in case of database error.
      */
     Vector getSchemasWithStl() throws SQLException;
 

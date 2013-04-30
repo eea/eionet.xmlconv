@@ -80,7 +80,7 @@ public class OdsReader implements SourceReaderIF {
     public static final String TABLE_NAME = "tableName=";
 
     /** */
-    public  static final String TABLE_SCHEMA_URL = "tableSchemaURL=";
+    public static final String TABLE_SCHEMA_URL = "tableSchemaURL=";
 
     /** */
     private SourceReaderLogger readerLogger;
@@ -119,7 +119,7 @@ public class OdsReader implements SourceReaderIF {
             metadata = odfMetaAnalyzer.analyzeZip(new FileInputStream(inFile));
 
         } catch (IOException e) {
-            // throw e;
+            throw new GDEMException("Unable to open ODS file. ", e);
         }
         inputFileLength = inFile.length();
     }
@@ -310,10 +310,8 @@ public class OdsReader implements SourceReaderIF {
                 }
 
                 // check if table exists
-                if (spreadsheet != null) {
-                    if (!spreadsheet.tableExists(tblName)) {
-                        continue;
-                    }
+                if (spreadsheet != null && !spreadsheet.tableExists(tblName)) {
+                    continue;
                 }
                 if (!resultMap.containsKey(tblName)) {
                     resultMap.put(tblName, tblSchema);

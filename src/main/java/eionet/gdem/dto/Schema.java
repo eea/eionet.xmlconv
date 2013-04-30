@@ -47,6 +47,7 @@ public class Schema implements Serializable {
     private List<QAScript> qascripts;
     private UplSchema uplSchema;
     private Date expireDate;
+    private boolean blocker = false;
 
     public Date getExpireDate() {
         return expireDate;
@@ -72,7 +73,7 @@ public class Schema implements Serializable {
         this.qascripts = qascripts;
     }
 
-    private static String[] schemaLanguages = {"XSD", "DTD", "EXCEL"};
+    private static String[] schemaLanguages = { "XSD", "DTD", "EXCEL" };
     private static String defaultSchemaLang = "XSD";
 
     public Schema() {
@@ -253,4 +254,19 @@ public class Schema implements Serializable {
         Date now = new Date();
         return expDate != null && expDate.before(now);
     }
+
+    /**
+     * @return the blocker
+     */
+    public boolean isBlocker() {
+        return blocker;
+    }
+
+    /**
+     * @param blocker the blocker to set
+     */
+    public void setBlocker(boolean blocker) {
+        this.blocker = blocker;
+    }
+
 }

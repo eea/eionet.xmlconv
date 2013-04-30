@@ -23,9 +23,11 @@ package eionet.gdem.dto;
 
 import java.io.Serializable;
 
+import eionet.gdem.validation.ValidatorErrorType;
+
 public class ValidateDto implements Serializable {
 
-    private String type;
+    private ValidatorErrorType type;
     private int line;
     private int column;
     private String description;
@@ -42,11 +44,11 @@ public class ValidateDto implements Serializable {
         this.description = description;
     }
 
-    public String getType() {
+    public ValidatorErrorType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(ValidatorErrorType type) {
         this.type = type;
     }
 
@@ -66,6 +68,7 @@ public class ValidateDto implements Serializable {
         return line;
     }
 
+    @Override
     public String toString() {
         return type + ": line " + line + ", col " + column + " - " + description;
     }

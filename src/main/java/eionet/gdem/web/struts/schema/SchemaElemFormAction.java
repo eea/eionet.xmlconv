@@ -73,6 +73,7 @@ public class SchemaElemFormAction extends Action {
             form.setElemName("");
             form.setNamespace("");
             form.setDoValidation(seHolder.getSchema().isDoValidation());
+            form.setBlockerValidation(seHolder.getSchema().isBlocker());
             form.setSchemaLang(seHolder.getSchema().getSchemaLang());
             form.setDtd(seHolder.getSchema().getIsDTD());
             String fileName = seHolder.getSchema().getUplSchemaFileName();

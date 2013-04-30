@@ -86,6 +86,14 @@
                 </tr>
                 <tr>
                     <th scope="row" class="scope-row">
+                        <bean:message key="label.schema.isBlockerValidation"/>
+                      </th>
+                  <td>
+                        <bean:write name="schemaForm" property="blockerValidation" />
+                  </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="scope-row">
                         <bean:message key="label.schema.expireDate"/>
                       </th>
                   <td>

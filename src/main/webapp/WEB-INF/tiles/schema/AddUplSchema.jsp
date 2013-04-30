@@ -70,6 +70,16 @@
                   </td>
                 </tr>
                 <tr>
+                          <td>
+                    <label class="question" for="txtBlockerValidation">
+                        <bean:message key="label.schema.isBlockerValidation"/>
+                    </label>
+                  </td>
+                  <td>
+                    <html:checkbox property="blockerValidation"  styleId="txtBlockerValidation"/>
+                  </td>
+                </tr>
+                <tr>
                   <td colspan="2">&nbsp;</td>
                 </tr>
                 <tr>

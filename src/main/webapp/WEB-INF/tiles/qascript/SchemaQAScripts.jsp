@@ -72,12 +72,25 @@
                             <bean:write  name="schema"	 property="doValidation" />
                         </logic:equal>
                     </td>
-                    <td>
+                    <td rowspan="2" style="vertical-align:bottom">
                         <logic:equal name="ssiPrm" value="true"  name="qascript.permissions" property="ssiPrm" >
                             <!-- save button -->
                                    <input type="button"  class="button" value="<bean:message key="label.save"/>" onclick="return submitAction(1,'saveSchemaValidation');" />
                             <input type="hidden" name="schemaId" value="${schemaId}" />
                             <input type="hidden" name="schema" value="${schemaUrl}" />
+                        </logic:equal>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="question" for="blockerValidation"><bean:message key="label.qascript.schema.isBlockerValidation"/></label>
+                    </td>
+                    <td>
+                        <logic:equal name="ssiPrm" value="true"  name="qascript.permissions" property="ssiPrm" >
+                            <html:checkbox name="schema" property="blocker" styleId="blockerValidation" />
+                        </logic:equal>
+                        <logic:equal name="ssiPrm" value="false"  name="qascript.permissions" property="ssiPrm" >
+                            <bean:write  name="schema"   property="blocker" />
                         </logic:equal>
                     </td>
                 </tr>

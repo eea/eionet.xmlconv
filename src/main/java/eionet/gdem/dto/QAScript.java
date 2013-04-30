@@ -39,6 +39,7 @@ public class QAScript {
     String scriptContent;
     String upperLimit;
     String url;
+    private boolean blocker = false;
 
     public String getScriptContent() {
         return scriptContent;
@@ -156,6 +157,20 @@ public class QAScript {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    /**
+     * @return the blocker
+     */
+    public boolean isBlocker() {
+        return blocker;
+    }
+
+    /**
+     * @param blocker the blocker to set
+     */
+    public void setBlocker(boolean blocker) {
+        this.blocker = blocker;
     }
 
 }

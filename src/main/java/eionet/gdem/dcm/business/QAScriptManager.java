@@ -58,15 +58,17 @@ public class QAScriptManager {
 
     /** */
     private static final Log LOGGER = LogFactory.getLog(QAScriptManager.class);
+    /** */
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
+    /** */
     private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
 
     /**
-     * Returns QAScript object with all the data incl. file contebnt
+     * Returns QAScript object with all the data incl. file content.
      *
-     * @param queryId
-     * @return
-     * @throws DCMException
+     * @param queryId QA script Id.
+     * @return QAScript object.
+     * @throws DCMException if database operation fails.
      */
     public QAScript getQAScript(String queryId) throws DCMException {
         QAScript qaScript = new QAScript();
@@ -130,6 +132,21 @@ public class QAScriptManager {
 
     }
 
+    /**
+     * Update QA script record in database.
+     * @param user logged in user name.
+     * @param scriptId QA script Id.
+     * @param shortName QA script short name.
+     * @param schemaId XML Schema Id.
+     * @param resultType QA script execution result type (XML, HTML, ...).
+     * @param descr QA script textual description.
+     * @param scriptType QA script type (XQUERY, XSL, XGAWK).
+     * @param curFileName QA script file name.
+     * @param file FormFile uploaded through web interface.
+     * @param upperLimit Maximum size of XML to be sent to ad-hoc QA.
+     * @param url URL of the QA script file if maintained in web.
+     * @throws DCMException if DB or file operation fails.
+     */
     public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
             String scriptType, String curFileName, FormFile file, String upperLimit, String url) throws DCMException {
         try {
@@ -176,7 +193,7 @@ public class QAScriptManager {
     }
 
     /**
-     * Update script properties
+     * Update script properties.
      *
      * @param user
      * @param scriptId
@@ -191,7 +208,8 @@ public class QAScriptManager {
      * @throws DCMException
      */
     public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
-            String scriptType, String curFileName, String upperLimit, String url, String content, boolean updateContent) throws DCMException {
+            String scriptType, String curFileName, String upperLimit, String url, String content, boolean updateContent)
+            throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
@@ -228,10 +246,10 @@ public class QAScriptManager {
     }
 
     /**
-     * Checks if the script with the given filename exists whether in db or in fs
+     * Checks if the script with the given filename exists whether in db or in fs.
      *
-     * @param fileName
-     * @return
+     * @param fileName QA scriptfile name.
+     * @return true if file exists.
      * @throws SQLException
      */
     public boolean fileExists(String fileName) throws SQLException {
@@ -252,12 +270,12 @@ public class QAScriptManager {
     }
 
     /**
-     * Store QA script file into file system
+     * Store QA script file into file system.
      *
-     * @param file
-     * @param fileName
+     * @param file FormFile object uploaded through web interface.
+     * @param fileName File name.
      * @throws FileNotFoundException
-     * @throws IOException
+     * @throws IOException file store operations failed.
      */
     public void storeQAScriptFile(FormFile file, String fileName) throws FileNotFoundException, IOException {
 
@@ -277,7 +295,7 @@ public class QAScriptManager {
     }
 
     /**
-     * Store QA script content into file system
+     * Store QA script content into file system.
      *
      * @param user
      * @param scriptId
@@ -374,8 +392,7 @@ public class QAScriptManager {
             String scriptType, FormFile scriptFile, String upperLimit, String url) throws DCMException {
 
         String scriptId = null;
-        //If remote file URL and local file are specified use local file
-
+        // If remote file URL and local file are specified use local file
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "i")) {
@@ -401,7 +418,8 @@ public class QAScriptManager {
             if (!Utils.isNullStr(fileName)) {
                 // check if file exists
                 if (fileExists(fileName)) {
-                    throw new DCMException((useLocalFile ? BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS : BusinessConstants.EXCEPTION_QAREMOTESCRIPT_FILE_EXISTS) );
+                    throw new DCMException((useLocalFile ? BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS
+                            : BusinessConstants.EXCEPTION_QAREMOTESCRIPT_FILE_EXISTS));
                 }
             }
             if (Utils.isNullStr(schemaId) || "0".equals(schemaId)) {
@@ -428,14 +446,15 @@ public class QAScriptManager {
     }
 
     /**
-     * Update schema validation flag
+     * Update schema validation and blocker flag.
      *
-     * @param user
-     * @param schemaId
-     * @param validate
-     * @throws DCMException
+     * @param user logged in username.
+     * @param schemaId XML Schema Id.
+     * @param validate XML Schema validation is part of QA.
+     * @blocker return blocker flag in QA if XML Schema validation fails.
+     * @throws DCMException if database operation fails.
      */
-    public void updateSchemaValidation(String user, String schemaId, boolean validate) throws DCMException {
+    public void updateSchemaValidation(String user, String schemaId, boolean validate, boolean blocker) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
                 LOGGER.debug("You don't have permissions to update XML Schema validationt!");
@@ -449,7 +468,7 @@ public class QAScriptManager {
         }
 
         try {
-            schemaDao.updateSchemaValidate(schemaId, validate);
+            schemaDao.updateSchemaValidate(schemaId, validate, blocker);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("Error updating XML Schema", e);
@@ -458,21 +477,15 @@ public class QAScriptManager {
 
     }
 
-
-
     /**
-     * Method tries to download the remote script and replace the local file. Method updates
-     * table.
+     * Method tries to download the remote script and replace the local file. Method updates table.
      *
-     * @param user user login name
-     * @param schemaUrl XML Schema URL
-     * @param schemaFileName file name of remote schema
-     * @param schemaId XML Schema database ID.
-     * @param uplSchemaId uploaded schema file ID.
+     * @param user user login name.
+     * @param remoteUrl where to download script file.
+     * @param fileName QA script file name.
      * @throws DCMException in case of HTTP connection or database errors.
      */
-    public void replaceScriptFromRemoteFile(String user, String remoteUrl, String fileName)
-    throws DCMException {
+    public void replaceScriptFromRemoteFile(String user, String remoteUrl, String fileName) throws DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
@@ -489,23 +502,17 @@ public class QAScriptManager {
         byte[] remoteFile = Utils.downloadRemoteFile(remoteUrl);
         ByteArrayInputStream in = new ByteArrayInputStream(remoteFile);
 
-
         updateScript(fileName, in);
 
     }
 
-
     /**
-     * Update uploaded XML Schema metadata or file content.
-     * @param user user login name
-     * @param uplSchemaId Uploaded XML Schema database ID.
-     * @param schemaId XML Schema database ID
-     * @param fileName XML Schema file name stored in the system.
-     * @param fileInputStream new content of the XML Schema
+     * Update QA script content from InputStream.
+     * @param fileName QA script file name stored in the system.
+     * @param fileInputStream new content of the QA script
      * @throws DCMException in case of IO or database error.
      */
-    public void updateScript(String fileName, InputStream fileInputStream)
-    throws DCMException {
+    public void updateScript(String fileName, InputStream fileInputStream) throws DCMException {
 
         try {
             // store the uploaded content into schema folder with the given filename
@@ -523,13 +530,11 @@ public class QAScriptManager {
                 }
             }
 
-
         } catch (Exception e) {
             LOGGER.error("Error updating remote script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
     }
-
 
 }

@@ -38,6 +38,7 @@ public class SchemaManagerDBTest extends DBTestCase {
     /**
      * Set up test case properties
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         TestUtils.setUpProperties(this);
@@ -46,16 +47,17 @@ public class SchemaManagerDBTest extends DBTestCase {
     /**
      * Load the data which will be inserted for the test
      */
+    @Override
     protected IDataSet getDataSet() throws Exception {
         IDataSet loadedDataSet =
-                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_UPL_SCHEMAS_XML));
+            new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_UPL_SCHEMAS_XML));
         return loadedDataSet;
     }
 
     /**
      * The method adds UPL schema into DB, then it edits the properties and finally deletes the added schema. After each operation
      * it scheks the properties values.
-     * 
+     *
      * @throws Exception
      */
     public void testUPLSchemaMethods() throws Exception {
@@ -70,7 +72,7 @@ public class SchemaManagerDBTest extends DBTestCase {
         int countSchemas = schemas.getSchemas().size();
 
         MockFormFile file =
-                new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA).getFile());
+            new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA).getFile());
         String fileName = sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaId, "xsd");
         // add schema int db and upoload schema file
         sm.addUplSchema(user, file, fileName, schemaId);
@@ -100,7 +102,7 @@ public class SchemaManagerDBTest extends DBTestCase {
 
     /**
      * The method test if it gets the local file insted of remote URL
-     * 
+     *
      * @throws Exception
      */
     public void testGetSchemaByURL() throws Exception {
@@ -141,7 +143,7 @@ public class SchemaManagerDBTest extends DBTestCase {
 
     /**
      * Test schema update DB method
-     * 
+     *
      * @throws Exception
      */
     public void testUpdateSchema() throws Exception {
@@ -152,10 +154,11 @@ public class SchemaManagerDBTest extends DBTestCase {
         String schema = "www.schema.com";
         String schemaLang = "XSD";
         boolean doValidation = false;
+        boolean blockValidation = true;
         String dtdPublicId = "";
         Date expireDate = null;
 
-        sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate);
+        sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate, blockValidation);
         Schema sch = sm.getSchema(schemaId);
 
         assertEquals(description, sch.getDescription());
@@ -168,7 +171,7 @@ public class SchemaManagerDBTest extends DBTestCase {
         cal.set(Calendar.MILLISECOND, 0);
         expireDate = new Date(cal.getTimeInMillis());
 
-        sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate);
+        sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate, false);
         sch = sm.getSchema(schemaId);
         assertEquals(expireDate, sch.getExpireDate());
 

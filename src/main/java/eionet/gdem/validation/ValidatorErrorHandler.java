@@ -1,4 +1,4 @@
-/**
+/*
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
@@ -9,21 +9,20 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * The Original Code is "EINRC-7 / GDEM project".
+ * The Original Code is XMLCONV - Conversion and QA Service
  *
- * The Initial Developer of the Original Code is TietoEnator.
- * The Original Code code was developed for the European
- * Environment Agency (EEA) under the IDA/EINRC framework contract.
+ * The Initial Owner of the Original Code is European Environment
+ * Agency. Portions created by TripleDev or Zero Technologies are Copyright
+ * (C) European Environment Agency.  All Rights Reserved.
  *
- * Copyright (C) 2000-2004 by European Environment Agency.  All
- * Rights Reserved.
- *
- * Original Code: Enriko Käsper (TietoEnator)
+ * Contributor(s):
+ *        Enriko Käsper (TripleDev)
  */
 
 package eionet.gdem.validation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -32,35 +31,36 @@ import org.xml.sax.helpers.DefaultHandler;
 import eionet.gdem.dto.ValidateDto;
 
 /**
- * Callback methods for validation errors
- * 
- * @author Enriko Käsper, TietoEnator Estonia AS ValidatorErrorHandler
+ * Callback methods for validation errors. Store errors in the list of ValidateDto objects.
+ *
+ * @author Enriko Käsper, TripleDev
  */
 public class ValidatorErrorHandler extends DefaultHandler {
-    // private StringBuffer errContainer;
-    // private StringBuffer htmlErrContainer;
 
-    private ArrayList errContainer;
+    /** List of errors. */
+    private List<ValidateDto> errContainer = new ArrayList<ValidateDto>();
 
-    public ValidatorErrorHandler(ArrayList errContainer) {
-        this.errContainer = errContainer;
-    }
-
+    @Override
     public void warning(SAXParseException ex) throws SAXException {
-        // System.out.println("WARNING: " + ex.getMessage());
-        addError("WARNING", ex);
+        addError(ValidatorErrorType.WARNING, ex);
     }
 
+    @Override
     public void error(SAXParseException ex) throws SAXException {
-        addError("ERROR", ex);
+        addError(ValidatorErrorType.ERROR, ex);
     }
 
+    @Override
     public void fatalError(SAXParseException ex) throws SAXException {
-        // System.out.println("FATAL ERROR: " + ex.getMessage());
-        addError("FATAL ERROR", ex);
+        addError(ValidatorErrorType.FATAL_ERROR, ex);
     }
 
-    private void addError(String type, SAXParseException ex) {
+    /**
+     * Create ValidateDto object from the SAX error and add it to the error container.
+     * @param type ERROR, WARNING or FATAL_ERROR
+     * @param ex SAXParseException
+     */
+    private void addError(ValidatorErrorType type, SAXParseException ex) {
         ValidateDto val = new ValidateDto();
         val.setType(type);
         val.setDescription(ex.getMessage());
@@ -70,7 +70,11 @@ public class ValidatorErrorHandler extends DefaultHandler {
         errContainer.add(val);
     }
 
-    public ArrayList getErrors() {
+    /**
+     * Get the list of errors found by XML Schema validator.
+     * @return List of ValidateDto objects
+     */
+    public List<ValidateDto> getErrors() {
         return errContainer;
     }
 

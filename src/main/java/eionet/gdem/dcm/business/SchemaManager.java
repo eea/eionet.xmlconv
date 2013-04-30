@@ -342,8 +342,11 @@ public class SchemaManager {
                 sc.setSchema((String) schema.get("xml_schema"));
                 sc.setDescription((String) schema.get("description"));
                 boolean validate =
-                    (!Utils.isNullStr((String) schema.get("validate")) && ((String) schema.get("validate")).equals("1"));
+                        (!Utils.isNullStr((String) schema.get("validate")) && ((String) schema.get("validate")).equals("1"));
                 sc.setDoValidation(validate);
+                boolean blocker =
+                        (!Utils.isNullStr((String) schema.get("blocker")) && ((String) schema.get("blocker")).equals("1"));
+                sc.setBlocker(blocker);
 
                 Vector qascripts = new Vector();
                 if (schema.containsKey("queries")) {
@@ -412,10 +415,11 @@ public class SchemaManager {
      * @param doValidation is schema validation part of QA.
      * @param dtdPublicId DTD public ID
      * @param expireDate date when the XML Schema is expired and it should not be part of QA after that date.
+     * @param blocker return blocker flag in QA for failed XML Schema validation.
      * @throws DCMException in case of database error.
      */
     public void update(String user, String schemaId, String schema, String description, String schemaLang, boolean doValidation,
-            String dtdPublicId, Date expireDate) throws DCMException {
+            String dtdPublicId, Date expireDate, boolean blocker) throws DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
@@ -430,7 +434,7 @@ public class SchemaManager {
         }
 
         try {
-            schemaDao.updateSchema(schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate);
+            schemaDao.updateSchema(schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate, blocker);
 
         } catch (Exception e) {
             LOGGER.error("Error updating schema", e);
@@ -481,11 +485,14 @@ public class SchemaManager {
                 schema.setDescription((String) schemaHash.get("description"));
                 schema.setSchemaLang((String) schemaHash.get("schema_lang"));
                 boolean validate =
-                    (!Utils.isNullStr((String) schemaHash.get("validate")) && ((String) schemaHash.get("validate"))
-                            .equals("1"));
+                        (!Utils.isNullStr((String) schemaHash.get("validate")) &&
+                                ((String) schemaHash.get("validate")).equals("1"));
                 schema.setDoValidation(validate);
                 schema.setDtdPublicId((String) schemaHash.get("dtd_public_id"));
                 schema.setExpireDate(Utils.parseDate((String) schemaHash.get("expire_date"), "yyyy-MM-dd HH:mm:ss"));
+                boolean blocker =
+                        (!Utils.isNullStr((String) schemaHash.get("blocker")) && ((String) schemaHash.get("blocker")).equals("1"));
+                schema.setBlocker(blocker);
 
                 // get uploaded schema information
                 HashMap uplSchemaMap = uplSchemaDao.getUplSchemaByFkSchemaId(schemaDbId);
@@ -726,11 +733,12 @@ public class SchemaManager {
      * @param descr description
      * @param schemaLang Schema language (XSD or DTD)
      * @param doValidation is schema part of QA.
+     * @param blocker return blocker flag in QA for failed XML Schema validation.
      * @return the database ID of added XML Schema
      * @throws DCMException in case of database error.
      */
-    public String addSchema(String user, String schemaUrl, String descr, String schemaLang, boolean doValidation)
-    throws DCMException {
+    public String addSchema(String user, String schemaUrl, String descr, String schemaLang, boolean doValidation, boolean blocker)
+            throws DCMException {
         String schemaID = null;
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "i")) {
@@ -750,7 +758,7 @@ public class SchemaManager {
                 throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_URL_EXISTS);
             }
             if (schemaID == null) {
-                schemaID = schemaDao.addSchema(schemaUrl, descr, schemaLang, doValidation, null);
+                schemaID = schemaDao.addSchema(schemaUrl, descr, schemaLang, doValidation, null, blocker);
             }
 
         } catch (DCMException e) {
@@ -982,13 +990,17 @@ public class SchemaManager {
         try {
 
             sch = schemaDao.getSchema(schemaId);
-            schema = new Schema();
-            schema.setId(schemaId);
-            schema.setSchema((String) sch.get("xml_schema"));
-            schema.setDescription((String) sch.get("description"));
-            schema.setDtdPublicId((String) sch.get("dtd_public_id"));
-            schema.setSchemaLang((String) sch.get("schema_lang"));
-            schema.setExpireDate(Utils.parseDate((String) sch.get("expire_date"), "yyyy-MM-dd HH:mm:ss"));
+            if (sch != null) {
+                schema = new Schema();
+                schema.setId(schemaId);
+                schema.setSchema((String) sch.get("xml_schema"));
+                schema.setDescription((String) sch.get("description"));
+                schema.setDtdPublicId((String) sch.get("dtd_public_id"));
+                schema.setSchemaLang((String) sch.get("schema_lang"));
+                schema.setExpireDate(Utils.parseDate((String) sch.get("expire_date"), "yyyy-MM-dd HH:mm:ss"));
+                boolean blocker = (!Utils.isNullStr((String) sch.get("blocker")) && ((String) sch.get("blocker")).equals("1"));
+                schema.setBlocker(blocker);
+            }
 
         } catch (Exception e) {
             LOGGER.error("Error getting schema", e);
@@ -1022,7 +1034,7 @@ public class SchemaManager {
      * @throws DCMException in case of IO or database error.
      */
     public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, FormFile file)
-    throws DCMException {
+            throws DCMException {
 
         try {
             InputStream fileInputStream = file.getInputStream();
@@ -1046,7 +1058,7 @@ public class SchemaManager {
      * @throws DCMException in case of IO or database error.
      */
     public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, InputStream fileInputStream)
-    throws DCMException {
+            throws DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
@@ -1276,10 +1288,10 @@ public class SchemaManager {
         }
         // compare
         result =
-            remoteSchemaHash.equals(fileHash) && remoteSchemaHash.length() > 0 ? BusinessConstants.WARNING_FILES_IDENTICAL
-                    : BusinessConstants.WARNING_FILES_NOTIDENTICAL;
+                remoteSchemaHash.equals(fileHash) && remoteSchemaHash.length() > 0 ? BusinessConstants.WARNING_FILES_IDENTICAL
+                        : BusinessConstants.WARNING_FILES_NOTIDENTICAL;
 
-            return result;
+        return result;
     }
 
     /**
@@ -1316,13 +1328,13 @@ public class SchemaManager {
      * @throws DCMException in case of HTTP connection or database errors.
      */
     public void storeRemoteSchema(String user, String schemaUrl, String schemaFileName, String schemaId, String uplSchemaId)
-    throws DCMException {
+            throws DCMException {
 
         byte[] remoteSchema = downloadRemoteSchema(schemaUrl);
         ByteArrayInputStream in = new ByteArrayInputStream(remoteSchema);
         if (Utils.isNullStr(schemaFileName)) {
             schemaFileName =
-                generateSchemaFilenameByID(Properties.schemaFolder, schemaId, Utils.extractExtension(schemaUrl, "xsd"));
+                    generateSchemaFilenameByID(Properties.schemaFolder, schemaId, Utils.extractExtension(schemaUrl, "xsd"));
         }
         if (Utils.isNullStr(uplSchemaId)) {
             addUplSchema(user, in, schemaFileName, schemaId);

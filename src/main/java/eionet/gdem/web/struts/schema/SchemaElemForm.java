@@ -47,6 +47,8 @@ public class SchemaElemForm extends ValidatorForm {
     private boolean dtd = false;
     private String expireDate;
     private Date expireDateObj;
+    /** Block file submission if Schema validation fails. The flag used in QA service. */
+    private boolean blockerValidation = false;
 
     // uploaded schema file
     private String uplSchemaFileName;
@@ -80,8 +82,9 @@ public class SchemaElemForm extends ValidatorForm {
     }
 
     public String getLongExpireDate() {
-        if (expireDateObj == null)
+        if (expireDateObj == null) {
             return "";
+        }
 
         return Utils.getDate(expireDateObj);
     }
@@ -138,6 +141,7 @@ public class SchemaElemForm extends ValidatorForm {
         return dtd;
     }
 
+    @Override
     public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         schema = null;
         description = null;
@@ -180,14 +184,15 @@ public class SchemaElemForm extends ValidatorForm {
 
     public void setExpireDate(String strExpireDate) throws ParseException {
         this.expireDate = strExpireDate;
-        if (Utils.isNullStr(strExpireDate))
+        if (Utils.isNullStr(strExpireDate)) {
             expireDateObj = null;
-        else
+        } else {
             try {
                 this.expireDateObj = Utils.parseDate(strExpireDate, "dd/MM/yyyy");
             } catch (Exception e) {
                 // invalid date, validator should catch this
             }
+        }
     }
 
     public void setLastModified(String lastModified) {
@@ -226,7 +231,23 @@ public class SchemaElemForm extends ValidatorForm {
         this.uplSchemaId = uplSchemaId;
     }
 
+    @Override
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         return super.validate(mapping, request);
     }
+
+    /**
+     * @return the blockerValidation
+     */
+    public boolean isBlockerValidation() {
+        return blockerValidation;
+    }
+
+    /**
+     * @param blockerValidation the blockerValidation to set
+     */
+    public void setBlockerValidation(boolean blockerValidation) {
+        this.blockerValidation = blockerValidation;
+    }
+
 }

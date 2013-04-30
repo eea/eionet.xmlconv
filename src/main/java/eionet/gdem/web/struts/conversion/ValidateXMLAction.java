@@ -3,7 +3,7 @@
  */
 package eionet.gdem.web.struts.conversion;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +20,7 @@ import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
+import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
@@ -57,12 +58,12 @@ public class ValidateXMLAction extends Action {
         }
 
         try {
-            ArrayList valid;
+            List<ValidateDto> valid;
             String validatedSchema = null;
             String originalSchema = null;
             String warningMessage = null;
             try {
-                ValidationService v = new ValidationService(true);
+                ValidationService v = new ValidationService();
                 v.setTrustedMode(false);
                 v.setTicket(ticket);
                 if (schema == null) {

@@ -58,6 +58,7 @@ public class AddUplSchemaAction extends Action {
         String schemaUrl = form.getSchemaUrl();
         boolean doValidation = form.isDoValidation();
         String schemaLang = form.getSchemaLang();
+        boolean blocker = form.isBlockerValidation();
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
 
@@ -86,19 +87,18 @@ public class AddUplSchemaAction extends Action {
                 }
             }
             // Add row to T_SCHEMA table
-            String schemaID = sm.addSchema(user, schemaUrl, desc, schemaLang, doValidation);
+            String schemaID = sm.addSchema(user, schemaUrl, desc, schemaLang, doValidation, blocker);
             if (schemaFile != null && schemaFile.getFileSize() > 0) {
                 // Change the filename to schema-UniqueIDxsd
                 fileName =
-                    sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaID,
-                            Utils.extractExtension(schemaFile.getFileName()));
+                    sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaID, Utils.extractExtension(schemaFile.getFileName()));
                 // Add row to T_UPL_SCHEMA table
                 sm.addUplSchema(user, schemaFile, fileName, schemaID);
                 // Update T_SCHEMA table set
                 if (!Utils.isNullStr(tmpSchemaUrl)) {
                     schemaUrl = Properties.gdemURL + "/schema/" + fileName;
                 }
-                sm.update(user, schemaID, schemaUrl, desc, schemaLang, doValidation, null, null);
+                sm.update(user, schemaID, schemaUrl, desc, schemaLang, doValidation, null, null, blocker);
             }
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.inserted"));
             QAScriptListLoader.reloadList(httpServletRequest);

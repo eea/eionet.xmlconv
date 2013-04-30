@@ -103,15 +103,17 @@ public class QAScriptManagerTest extends DBTestCase {
         QAScriptListHolder st = sm.getSchemasWithQAScripts(schemaId);
         Schema schema = st.getQascripts().get(0);
         boolean validate = schema.isDoValidation();
+        boolean blocker = schema.isBlocker();
 
         // update validation flag
         QAScriptManager qm = new QAScriptManager();
-        qm.updateSchemaValidation(user, schemaId, !validate);
+        qm.updateSchemaValidation(user, schemaId, !validate, !blocker);
 
         QAScriptListHolder st2 = sm.getSchemasWithQAScripts(schemaId);
         Schema schema2 = st2.getQascripts().get(0);
 
         assertEquals(!validate, schema2.isDoValidation());
+        assertEquals(!blocker, schema2.isBlocker());
     }
 
     /**

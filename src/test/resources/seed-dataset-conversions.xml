@@ -48,83 +48,83 @@
     <T_QUERY QUERY_ID="75" DESCRIPTION="" SHORT_NAME="Nid_water 2008 NVZ_DES_GIS" QUERY_FILENAME="nid_nvz_des_08_4945.xquery" SCHEMA_ID="121" RESULT_TYPE="HTML"/>
     <T_QUERY QUERY_ID="76" DESCRIPTION="" SHORT_NAME="Nid_water 2008 NVZ_POT_GIS" QUERY_FILENAME="nid_nvz_pot_08_4946.xquery" SCHEMA_ID="122" RESULT_TYPE="HTML"/>
     <T_QUERY QUERY_ID="77" DESCRIPTION="" SHORT_NAME="Nid_water 2008 WTA RiskAreas" QUERY_FILENAME="nid_wta_riskareas_08_4943.xquery" SCHEMA_ID="123" RESULT_TYPE="HTML"/>
-    <T_SCHEMA SCHEMA_ID="1" XML_SCHEMA="http://roddev.eionet.eu.int/waterdemo/water_measurements.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="14" XML_SCHEMA="http://roddev.eionet.eu.int/eper/eper_examples.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="20" XML_SCHEMA="http://www.lisa.org/tmx/tmx14.dtd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="24" XML_SCHEMA="http://roddev.eionet.eu.int/waterdemo/water_methods.xsd" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="25" XML_SCHEMA="http://roddev.eionet.eu.int/waterdemo/water_stations.xsd" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="33" XML_SCHEMA="http://195.250.186.33:8080/datadict/public/GetSchema?id=TBL1752" DESCRIPTION="" DTD_PUBLIC_ID="null" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="34" XML_SCHEMA="http://213.35.204.178:81/datadict/public/GetSchema?id=TBL1637" DESCRIPTION="sss" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="35" XML_SCHEMA="http://213.35.204.178:81/datadict/public/GetSchema?id=TBL1646" DESCRIPTION="" DTD_PUBLIC_ID="null" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="37" XML_SCHEMA="http://dd.eionet.eu.int/GetSchema?id=TBL2001" DESCRIPTION="" DTD_PUBLIC_ID="null" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="39" XML_SCHEMA="http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" DESCRIPTION="" DTD_PUBLIC_ID="null" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="40" XML_SCHEMA="http://www.w3.org/1999/02/22-rdf-syntax-ns" DESCRIPTION="" DTD_PUBLIC_ID="null" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="41" XML_SCHEMA="http://dd.eionet.eu.int/GetSchema?id=TBL1637" DESCRIPTION="GW-Body_Characterisation table" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="42" XML_SCHEMA="http://dd.eionet.eu.int/GetSchema?id=TBL2551" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="43" XML_SCHEMA=" http://dd.eionet.eu.int/GetSchema?id=TBL1926" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="44" XML_SCHEMA="http://dd.eionet.eu.int/GetSchema?id=TBL1927" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="45" XML_SCHEMA="http://dd.eionet.eu.int/GetSchema?id=TBL1926" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="46" XML_SCHEMA="http://dd.eionet.eu.int/GetSchema?id=TBL1924" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="47" XML_SCHEMA="http://dd.eionet.eu.int/GetSchema?id=TBL1925" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="48" XML_SCHEMA="http://converters.eionet.eu.int" DESCRIPTION="Fake XML schema" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="49" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=10 http://dd.eionet.eu.int/GetSchema?id=TBL3243" DESCRIPTION="Eionet-Water: Rivers -  Physical Characteristics of River Monitoring Stations" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="50" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=10 http://dd.eionet.eu.int/GetSchema?id=TBL3227" DESCRIPTION="Eionet-Water: Rivers - Proxy Pressures" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="51" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=10 http://dd.eionet.eu.int/GetSchema?id=TBL3260" DESCRIPTION="Eionet-Water: Rivers - Hazardous Substances in Rivers" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="52" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=10 http://dd.eionet.eu.int/GetSchema?id=TBL3242" DESCRIPTION="Eionet-Water: Rivers - Nutrients in Rivers" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="53" XML_SCHEMA="http://dd.eionet.eu.int/GetSchema?id=TBL3282" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="54" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=207 http://dd.eionet.eu.int/GetSchema?id=TBL1924" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="55" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=207 http://dd.eionet.eu.int/GetSchema?id=TBL1925" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="56" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=207 http://dd.eionet.eu.int/GetSchema?id=TBL1926" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="57" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=207 http://dd.eionet.eu.int/GetSchema?id=TBL1927" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="58" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1917" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -  Monthly 1 hour maximum ozone concentrations" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="59" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1968" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -  Exceedance of ozone long-term objective for health protection" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="60" XML_SCHEMA="http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1919" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -   Exceedance of ozone alert threshold values" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="61" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1921" DESCRIPTION="Summer ozone exceedances (2002/3/EC) - Comment" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="62" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1920" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -   Exceedance of ozone information threshold values" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="63" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1922" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -  Station meta-information" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="64" XML_SCHEMA="http://cdrtest.eionet.eu.int/xmlexports/hazardouswaste/schema.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="66" XML_SCHEMA="http://cdrtest.eionet.eu.int/xmlexports/dir200053ec/schema.xsd" DESCRIPTION="sada" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="67" XML_SCHEMA=" http://cdrtest.eionet.eu.int/xmlexports/dir200053ec/schema.xsd" DESCRIPTION="Directive 2000/53sdasda" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="68" XML_SCHEMA="http://waste.eionet.europa.eu/schemas/dir200053ec/schema.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="69" XML_SCHEMA="http://rod.eionet.eu.int/events.rss" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="74" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=207%20http://dd.eionet.eu.int/GetSchema?id=TBL1925" DESCRIPTION="Monthly ozone information" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="75" XML_SCHEMA="http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1922" DESCRIPTION="Ozone stations" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="76" XML_SCHEMA="http://dd.eionet.europa.eu/namespace.jsp?ns_id=8 http://dd.eionet.europa.eu/GetSchema?id=TBL3285" DESCRIPTION="GW - Saltwater Intrusion" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="80" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL3282" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="81" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL3400" DESCRIPTION="GW" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="82" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL3405" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="83" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="84" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/gml_art17.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="85" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/habitats.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="86" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/species.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="87" XML_SCHEMA="http://cdrtest.eionet.eu.int/xmlexports/dir9243eec/schema.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="88" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL3530" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="89" XML_SCHEMA="http://waste.eionet.europa.eu/schemas/hazardouswaste/schema.xsd" DESCRIPTION="Waste questionnaire" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="90" XML_SCHEMA="http://rod.eionet.eu.int/obligations/269" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="91" XML_SCHEMA="http://waste.eionet.europa.eu/schemas/packagingwaste/schema.xsd" DESCRIPTION="Packaging waste Directive: 94/62" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="92" XML_SCHEMA="http://cdrtest.eionet.eu.int/xmlexports/dir200053ec/schema2.xsd" DESCRIPTION="test" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="95" XML_SCHEMA="http://waste.eionet.europa.eu/schemas/oilwaste/schema.xsd" DESCRIPTION="Oil Waste Directive 75/439" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="100" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL3453" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="101" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL3739" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="102" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL3816" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="103" XML_SCHEMA="http://waste.eionet.europa.eu/schemas/waste/schema.xsd" DESCRIPTION="Waste Directive 75/442" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="104" XML_SCHEMA="http://waste.eionet.europa.eu/schemas/sewagesludge/schema.xsd" DESCRIPTION="Sewage Sludge Directive 86/278" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="109" XML_SCHEMA="test" DESCRIPTION="rtes" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="110" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4361" DESCRIPTION="Summer ozone 2007 1h-max" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="111" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4022" DESCRIPTION="Summer ozone 2007 alert" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="112" XML_SCHEMA="http://cdrtest.eionet.europa.eu/xmlexports/dir199913ec/schema.xsd" DESCRIPTION="VOC solvents Directive 1999/19EC" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="113" XML_SCHEMA="http://water.eionet.europa.eu/schemas/dir200060ec/Monitoring.xsd" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="114" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4947" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="115" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4949" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="116" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4948" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="117" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4950" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="118" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4951" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="119" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4952" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="120" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4944" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="121" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4945" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="122" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4946" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="123" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4943" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <T_SCHEMA SCHEMA_ID="124" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL6592" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD"/>
+    <T_SCHEMA SCHEMA_ID="1" XML_SCHEMA="http://roddev.eionet.eu.int/waterdemo/water_measurements.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="14" XML_SCHEMA="http://roddev.eionet.eu.int/eper/eper_examples.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="20" XML_SCHEMA="http://www.lisa.org/tmx/tmx14.dtd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="24" XML_SCHEMA="http://roddev.eionet.eu.int/waterdemo/water_methods.xsd" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="25" XML_SCHEMA="http://roddev.eionet.eu.int/waterdemo/water_stations.xsd" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="33" XML_SCHEMA="http://195.250.186.33:8080/datadict/public/GetSchema?id=TBL1752" DESCRIPTION="" DTD_PUBLIC_ID="null" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="34" XML_SCHEMA="http://213.35.204.178:81/datadict/public/GetSchema?id=TBL1637" DESCRIPTION="sss" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="35" XML_SCHEMA="http://213.35.204.178:81/datadict/public/GetSchema?id=TBL1646" DESCRIPTION="" DTD_PUBLIC_ID="null" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="37" XML_SCHEMA="http://dd.eionet.eu.int/GetSchema?id=TBL2001" DESCRIPTION="" DTD_PUBLIC_ID="null" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="39" XML_SCHEMA="http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" DESCRIPTION="" DTD_PUBLIC_ID="null" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="40" XML_SCHEMA="http://www.w3.org/1999/02/22-rdf-syntax-ns" DESCRIPTION="" DTD_PUBLIC_ID="null" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="41" XML_SCHEMA="http://dd.eionet.eu.int/GetSchema?id=TBL1637" DESCRIPTION="GW-Body_Characterisation table" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="42" XML_SCHEMA="http://dd.eionet.eu.int/GetSchema?id=TBL2551" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="43" XML_SCHEMA=" http://dd.eionet.eu.int/GetSchema?id=TBL1926" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="44" XML_SCHEMA="http://dd.eionet.eu.int/GetSchema?id=TBL1927" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="45" XML_SCHEMA="http://dd.eionet.eu.int/GetSchema?id=TBL1926" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="46" XML_SCHEMA="http://dd.eionet.eu.int/GetSchema?id=TBL1924" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="47" XML_SCHEMA="http://dd.eionet.eu.int/GetSchema?id=TBL1925" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="48" XML_SCHEMA="http://converters.eionet.eu.int" DESCRIPTION="Fake XML schema" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD" BLOCKER="1"/>
+    <T_SCHEMA SCHEMA_ID="49" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=10 http://dd.eionet.eu.int/GetSchema?id=TBL3243" DESCRIPTION="Eionet-Water: Rivers -  Physical Characteristics of River Monitoring Stations" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="50" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=10 http://dd.eionet.eu.int/GetSchema?id=TBL3227" DESCRIPTION="Eionet-Water: Rivers - Proxy Pressures" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD" BLOCKER="1"/>
+    <T_SCHEMA SCHEMA_ID="51" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=10 http://dd.eionet.eu.int/GetSchema?id=TBL3260" DESCRIPTION="Eionet-Water: Rivers - Hazardous Substances in Rivers" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="52" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=10 http://dd.eionet.eu.int/GetSchema?id=TBL3242" DESCRIPTION="Eionet-Water: Rivers - Nutrients in Rivers" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD" BLOCKER="1"/>
+    <T_SCHEMA SCHEMA_ID="53" XML_SCHEMA="http://dd.eionet.eu.int/GetSchema?id=TBL3282" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="54" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=207 http://dd.eionet.eu.int/GetSchema?id=TBL1924" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="55" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=207 http://dd.eionet.eu.int/GetSchema?id=TBL1925" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="56" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=207 http://dd.eionet.eu.int/GetSchema?id=TBL1926" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="57" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=207 http://dd.eionet.eu.int/GetSchema?id=TBL1927" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD" BLOCKER="1"/>
+    <T_SCHEMA SCHEMA_ID="58" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1917" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -  Monthly 1 hour maximum ozone concentrations" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="59" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1968" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -  Exceedance of ozone long-term objective for health protection" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="60" XML_SCHEMA="http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1919" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -   Exceedance of ozone alert threshold values" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="61" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1921" DESCRIPTION="Summer ozone exceedances (2002/3/EC) - Comment" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="62" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1920" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -   Exceedance of ozone information threshold values" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="63" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1922" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -  Station meta-information" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="64" XML_SCHEMA="http://cdrtest.eionet.eu.int/xmlexports/hazardouswaste/schema.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="66" XML_SCHEMA="http://cdrtest.eionet.eu.int/xmlexports/dir200053ec/schema.xsd" DESCRIPTION="sada" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="67" XML_SCHEMA=" http://cdrtest.eionet.eu.int/xmlexports/dir200053ec/schema.xsd" DESCRIPTION="Directive 2000/53sdasda" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="68" XML_SCHEMA="http://waste.eionet.europa.eu/schemas/dir200053ec/schema.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD" BLOCKER="1"/>
+    <T_SCHEMA SCHEMA_ID="69" XML_SCHEMA="http://rod.eionet.eu.int/events.rss" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="74" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=207%20http://dd.eionet.eu.int/GetSchema?id=TBL1925" DESCRIPTION="Monthly ozone information" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="75" XML_SCHEMA="http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1922" DESCRIPTION="Ozone stations" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="76" XML_SCHEMA="http://dd.eionet.europa.eu/namespace.jsp?ns_id=8 http://dd.eionet.europa.eu/GetSchema?id=TBL3285" DESCRIPTION="GW - Saltwater Intrusion" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="80" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL3282" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="81" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL3400" DESCRIPTION="GW" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="82" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL3405" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="83" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD" BLOCKER="1"/>
+    <T_SCHEMA SCHEMA_ID="84" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/gml_art17.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="85" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/habitats.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="86" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/species.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD" BLOCKER="1"/>
+    <T_SCHEMA SCHEMA_ID="87" XML_SCHEMA="http://cdrtest.eionet.eu.int/xmlexports/dir9243eec/schema.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="88" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL3530" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="89" XML_SCHEMA="http://waste.eionet.europa.eu/schemas/hazardouswaste/schema.xsd" DESCRIPTION="Waste questionnaire" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="90" XML_SCHEMA="http://rod.eionet.eu.int/obligations/269" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="91" XML_SCHEMA="http://waste.eionet.europa.eu/schemas/packagingwaste/schema.xsd" DESCRIPTION="Packaging waste Directive: 94/62" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="92" XML_SCHEMA="http://cdrtest.eionet.eu.int/xmlexports/dir200053ec/schema2.xsd" DESCRIPTION="test" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="95" XML_SCHEMA="http://waste.eionet.europa.eu/schemas/oilwaste/schema.xsd" DESCRIPTION="Oil Waste Directive 75/439" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="100" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL3453" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="101" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL3739" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="102" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL3816" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="103" XML_SCHEMA="http://waste.eionet.europa.eu/schemas/waste/schema.xsd" DESCRIPTION="Waste Directive 75/442" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="104" XML_SCHEMA="http://waste.eionet.europa.eu/schemas/sewagesludge/schema.xsd" DESCRIPTION="Sewage Sludge Directive 86/278" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="109" XML_SCHEMA="test" DESCRIPTION="rtes" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="110" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4361" DESCRIPTION="Summer ozone 2007 1h-max" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="111" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4022" DESCRIPTION="Summer ozone 2007 alert" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="112" XML_SCHEMA="http://cdrtest.eionet.europa.eu/xmlexports/dir199913ec/schema.xsd" DESCRIPTION="VOC solvents Directive 1999/19EC" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="113" XML_SCHEMA="http://water.eionet.europa.eu/schemas/dir200060ec/Monitoring.xsd" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="114" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4947" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="115" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4949" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="116" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4948" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="117" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4950" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="118" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4951" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="119" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4952" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="120" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4944" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="121" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4945" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="122" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4946" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="123" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4943" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="124" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL6592" DESCRIPTION="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
     <T_STYLESHEET CONVERT_ID="1" DESCRIPTION="Simple table" RESULT_TYPE="HTML" XSL_FILENAME="simpletablehtml.xsl" SCHEMA_ID="1"/>
     <T_STYLESHEET CONVERT_ID="39" DESCRIPTION="Average yearly pH value per station" RESULT_TYPE="HTML" XSL_FILENAME="averagephhtml.xsl" SCHEMA_ID="1"/>
     <T_STYLESHEET CONVERT_ID="40" DESCRIPTION="Simple excel table" RESULT_TYPE="EXCEL" XSL_FILENAME="water_excel.xsl" SCHEMA_ID="1"/>

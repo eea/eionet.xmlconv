@@ -85,6 +85,7 @@ public interface IDbSchema {
     String SCHEMA_VALIDATE_FLD = "VALIDATE";
     String SCHEMA_LANG_FLD = "SCHEMA_LANG";
     String EXPIRE_DATE_FLD = "EXPIRE_DATE";
+    String SCHEMA_BLOCKER_FLD = "BLOCKER";
 
     /**
      * Field names in UPL_SCHEMA table
