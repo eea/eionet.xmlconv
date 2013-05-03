@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.converters.ConvertContext;
-import eionet.gdem.conversion.converters.ConvertStartegy;
+import eionet.gdem.conversion.converters.ConvertStrategy;
 import eionet.gdem.conversion.converters.XMLConverter;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.InputFile;
@@ -77,7 +77,7 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
             ConvertContext ctx =
                 new ConvertContext(src.getSrcInputStream(), tmpXslFile == null ? script.getScriptFileName() : tmpXslFile,
                         result, null);
-            ConvertStartegy cs = new XMLConverter();
+            ConvertStrategy cs = new XMLConverter();
 
             Map<String, String> params = src.getCdrParams();
             params.put(Constants.XQ_SOURCE_PARAM_NAME, script.getOrigFileUrl());

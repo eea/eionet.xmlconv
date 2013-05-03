@@ -53,7 +53,7 @@ public class ConvertContext {
         this.xslStream = xslStream;
     }
 
-    public String executeConversion(ConvertStartegy converter) throws Exception {
+    public String executeConversion(ConvertStrategy converter) throws Exception {
         String strResult = null;
 
         if (xslStream == null) {

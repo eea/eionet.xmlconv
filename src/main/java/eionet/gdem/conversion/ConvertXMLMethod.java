@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.converters.ConvertContext;
-import eionet.gdem.conversion.converters.ConvertStartegy;
+import eionet.gdem.conversion.converters.ConvertStrategy;
 import eionet.gdem.conversion.converters.ExcelConverter;
 import eionet.gdem.conversion.converters.HTMLConverter;
 import eionet.gdem.conversion.converters.OdsConverter;
@@ -382,7 +382,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
      */
     private String executeConversion(ConvertContext ctx, Map<String, String> params,
             String cnvTypeOut) throws Exception {
-        ConvertStartegy cs = null;
+        ConvertStrategy cs = null;
         if (cnvTypeOut.startsWith("HTML")) {
             cs = new HTMLConverter();
         } else if (cnvTypeOut.equals("PDF")) {

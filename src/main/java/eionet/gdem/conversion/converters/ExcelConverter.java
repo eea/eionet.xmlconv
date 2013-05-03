@@ -35,7 +35,7 @@ import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.excel.ExcelProcessor;
 import eionet.gdem.utils.Utils;
 
-public class ExcelConverter extends ConvertStartegy {
+public class ExcelConverter extends ConvertStrategy {
     /** */
     private static final Log LOGGER = LogFactory.getLog(ExcelConverter.class);
 

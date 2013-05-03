@@ -258,4 +258,46 @@ public class Properties {
         return MessageFormat.format(applicationResources.getString(key), replacement);
     }
 
+    /**
+     * @return the xslFolder
+     */
+    public static String getXslFolder() {
+        return xslFolder;
+    }
+
+    /**
+     * @param xslFolder the xslFolder to set
+     */
+    public static void setXslFolder(String xslFolder) {
+        Properties.xslFolder = xslFolder;
+    }
+
+    /**
+     * @return the xmlfileFolder
+     */
+    public static String getXmlfileFolder() {
+        return xmlfileFolder;
+    }
+
+    /**
+     * @param xmlfileFolder the xmlfileFolder to set
+     */
+    public static void setXmlfileFolder(String xmlfileFolder) {
+        Properties.xmlfileFolder = xmlfileFolder;
+    }
+
+    /**
+     * @return the tmpFolder
+     */
+    public static String getTmpFolder() {
+        return tmpFolder;
+    }
+
+    /**
+     * @param tmpFolder the tmpFolder to set
+     */
+    public static void setTmpFolder(String tmpFolder) {
+        Properties.tmpFolder = tmpFolder;
+    }
+
 }

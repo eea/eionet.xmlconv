@@ -36,7 +36,7 @@ import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.odf.OpenDocumentProcessor;
 import eionet.gdem.utils.Utils;
 
-public class OdsConverter extends ConvertStartegy {
+public class OdsConverter extends ConvertStrategy {
     /** */
     private static final Log LOGGER = LogFactory.getLog(OdsConverter.class);
 

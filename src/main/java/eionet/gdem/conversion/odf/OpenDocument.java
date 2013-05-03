@@ -37,7 +37,7 @@ import org.apache.commons.io.IOUtils;
 
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.converters.ConvertContext;
-import eionet.gdem.conversion.converters.ConvertStartegy;
+import eionet.gdem.conversion.converters.ConvertStrategy;
 import eionet.gdem.conversion.converters.XMLConverter;
 import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
@@ -227,7 +227,7 @@ public class OpenDocument {
                 parameters.put(OdsReader.SCHEMA_ATTR_NAME, schemaUrl);
                 parameters.put(OdsReader.TBL_SCHEMAS_ATTR_NAME, tableSchemaUrls.toString());
                 ConvertContext conversionContext = new ConvertContext(in, strMetaXslFile, os, "xml");
-                ConvertStartegy cs = new XMLConverter();
+                ConvertStrategy cs = new XMLConverter();
                 cs.setXslParams(parameters);
                 conversionContext.executeConversion(cs);
 

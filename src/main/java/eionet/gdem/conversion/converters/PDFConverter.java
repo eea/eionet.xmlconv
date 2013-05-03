@@ -32,7 +32,7 @@ import org.apache.commons.io.IOUtils;
 import eionet.gdem.GDEMException;
 import eionet.gdem.utils.Utils;
 
-public class PDFConverter extends ConvertStartegy {
+public class PDFConverter extends ConvertStrategy {
 
     @Override
     public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException,
