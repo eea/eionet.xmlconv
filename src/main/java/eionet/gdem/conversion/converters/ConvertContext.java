@@ -59,6 +59,9 @@ public class ConvertContext {
         if (xslStream == null) {
             xslStream = new BufferedInputStream(new FileInputStream(xslName));
         }
+        if (xslName != null) {
+            converter.setXslPath(xslName);
+        }
         try {
             strResult = converter.convert(source, xslStream, resultStream, cnvFileExt);
         } finally {

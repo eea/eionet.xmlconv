@@ -57,14 +57,18 @@ public abstract class ConvertStartegy {
     public static final String XML_FOLDER_URI_PARAM = "xml_folder_uri";
     public static final String DD_DOMAIN_PARAM = "dd_domain";
 
+    /** Map of paramters sent to XSL transformer. */
     private Map<String, String> xslParams = null;
+    /** Absolute path to XSL file. */
+    private String xslPath;
     private static XSLTransformer transform = new XSLTransformer();
 
     public abstract String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt)
-    throws GDEMException, Exception;
+            throws GDEMException, Exception;
 
-    /*
-     * sets the map of xsl global paramters for this strategy
+    /**
+     * sets the map of xsl global paramters for this strategy.
+     * @param map Map of String key value pairs.
      */
     public void setXslParams(Map<String, String> map) {
         this.xslParams = map;
@@ -76,7 +80,12 @@ public abstract class ConvertStartegy {
             TransformerErrorListener errors = new TransformerErrorListener();
             tFactory.setErrorListener(errors);
 
-            Transformer transformer = tFactory.newTransformer(new StreamSource(xslStream));
+            StreamSource transformerSource = new StreamSource(xslStream);
+            if (getXslPath() != null) {
+                transformerSource.setSystemId(getXslPath());
+            }
+
+            Transformer transformer = tFactory.newTransformer(transformerSource);
             transformer.setErrorListener(errors);
 
             transformer.setParameter(DD_DOMAIN_PARAM, Properties.ddURL);
@@ -84,8 +93,8 @@ public abstract class ConvertStartegy {
             long l = System.currentTimeMillis();
             transformer.transform(new StreamSource(in), new StreamResult(out));
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug((new StringBuilder()).append("generate: transformation needed ")
-                        .append(System.currentTimeMillis() - l).append(" ms").toString());
+                LOGGER.debug((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis()
+                        - l).append(" ms").toString());
             }
         } catch (TransformerConfigurationException tce) {
             throw new GDEMException("Error transforming XML - incorrect stylesheet file: " + tce.toString(), tce);
@@ -105,35 +114,39 @@ public abstract class ConvertStartegy {
             driver.setOutputStream(out);
             Result res = new SAXResult(driver.getContentHandler());
             Source src = new StreamSource(in);
-            Source xsltSrc = new StreamSource(xsl);
             TransformerFactory transformerFactory = transform.getTransformerFactoryInstance();
             TransformerErrorListener errors = new TransformerErrorListener();
 
             transformerFactory.setErrorListener(errors);
-            Transformer transformer = transformerFactory.newTransformer(xsltSrc);
+            StreamSource transformerSource = new StreamSource(xsl);
+            if (getXslPath() != null) {
+                transformerSource.setSystemId(getXslPath());
+            }
+
+            Transformer transformer = transformerFactory.newTransformer(transformerSource);
             setTransformerParameters(transformer);
             transformer.setErrorListener(errors);
 
-            long l =  System.currentTimeMillis();
+            long l = System.currentTimeMillis();
             transformer.transform(src, res);
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug((new StringBuilder()).append("generate: transformation needed ")
-                        .append(System.currentTimeMillis() - l).append(" ms").toString());
+                LOGGER.debug((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis()
+                        - l).append(" ms").toString());
             }
 
         } catch (TransformerConfigurationException tce) {
             throw new GDEMException("Error transforming XML to PDF - incorrect stylesheet file: " + tce.toString(), tce);
         } catch (TransformerException tfe) {
-            throw new GDEMException("Error transforming XML to PDF - it's not probably well-formed xml file: " + tfe.toString(),
-                    tfe);
+            throw new GDEMException("Error transforming XML to PDF - it's not probably well-formed xml file: " + tfe.toString(), tfe);
         } catch (Throwable e) {
             LOGGER.error("Error " + e.toString(), e);
             throw new GDEMException("Error transforming XML to PDF " + e.toString());
         }
     }
 
-    /*
-     * sets the map of xsl global parameters to xsl transformer
+    /**
+     * Sets the map of xsl global parameters to xsl transformer.
+     * @param transformer XSL transformer object.
      */
     private void setTransformerParameters(Transformer transformer) {
 
@@ -157,6 +170,20 @@ public abstract class ConvertStartegy {
             transformer.setParameter(XML_FOLDER_URI_PARAM, xmlFilePathURI);
         }
 
+    }
+
+    /**
+     * @return the xslPath
+     */
+    public String getXslPath() {
+        return xslPath;
+    }
+
+    /**
+     * @param xslPath the xslPath to set
+     */
+    public void setXslPath(String xslPath) {
+        this.xslPath = xslPath;
     }
 
 }
