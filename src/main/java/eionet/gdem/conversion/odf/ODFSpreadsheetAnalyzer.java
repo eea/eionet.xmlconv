@@ -75,10 +75,7 @@ public class ODFSpreadsheetAnalyzer {
      * <li>From the root element, determine the namespace prefixes for that correspond to <code>office:</code>, <code>text:</code>,
      * <code>table:</code>, and <code>dc:</code>.</li>
      * <li>For each child element of the <code>&lt;office:meta&gt;</code> element, process it with the
-     * {@link #processElement(Element,OpenDocumentMetadata) processElement()} method, except for
-     * <code>&lt;meta:document-statistic&gt;</code>, which is handled with the
-     * {@link #processStatistic(Element,OpenDocumentMetadata) processStatistic()}, and <code>&lt;meta:user-defined&gt;</code>, which
-     * is handled with the {@link #processUserDefined(Element,OpenDocumentMetadata) processUserDefined()} method.</li>
+     * {@link #processTable(Element,OpenDocumentSpreadsheet) processTable()} method.</li>
      * </ol>
      *
      * @param metaStream
@@ -152,10 +149,7 @@ public class ODFSpreadsheetAnalyzer {
 
     /**
      * Finds the namespace prefixes associated with OpenDocument, Dublin Core, and OpenDocument meta elements.
-     *
-     * <p>
      * This function presumes that all the namespaces are in the root element. If they aren't, this breaks.
-     * </p>
      *
      * @param rootElement
      *            the root element of the document.

@@ -157,9 +157,9 @@ public class InputFile {
     }
 
     /**
-     * Sets the boolean to use authentication ticket for grabbing the source file or not. true - use ticket
+     * Sets the boolean to use authentication ticket for grabbing the source file or not.
      *
-     * @param mode
+     * @param mode If true - use ticket
      */
     public void setTrustedMode(boolean mode) {
         this.isTrustedMode = mode;
@@ -236,8 +236,6 @@ public class InputFile {
 
     /**
      * Get the authentication ticket for the source file, if available.
-     *
-     * @param _ticket
      */
     public String getAuthentication() {
         if (Utils.isNullStr(ticket) && isTrustedMode) {
@@ -251,7 +249,7 @@ public class InputFile {
      * PRIVATE METHODS
      */
 
-    /*
+    /**
      * Get Host credentials from database. There could be restriciton for accesing files in differemnt servers. Username and
      * password are saved in the T_HOST table for these cases
      */
@@ -278,7 +276,7 @@ public class InputFile {
     }
 
     /**
-     * Opens URLConnection and reads the source into InputStream
+     * Opens URLConnection and reads the source into InputStream.
      *
      * @throws IOException
      */
@@ -299,7 +297,7 @@ public class InputFile {
     }
 
     /**
-     * Stores the URL
+     * Stores the URL.
      *
      * @param str_url
      * @throws MalformedURLException
@@ -319,15 +317,15 @@ public class InputFile {
 
     }
 
-    /*
-     * escape reserved characters in source URI
+    /**
+     * escape reserved characters in source URI.
      */
     private String escapeSpaces(String str_uri) {
         return Utils.Replace(str_uri, " ", "%20");
     }
 
-    /*
-     * extracts filename from URI's path [scheme:][//authority][path][?query][#fragment]
+    /**
+     * extracts filename from URI's path [scheme:][//authority][path][?query][#fragment].
      */
     private void parseUri(URI uri) {
 
@@ -335,8 +333,8 @@ public class InputFile {
         findFileName(uri.getPath());
     }
 
-    /*
-     * extracts filename and folder from URI's path
+    /**
+     * extracts filename and folder from URI's path.
      */
     private void findFileName(String str_uri) {
 
@@ -366,8 +364,8 @@ public class InputFile {
         this.strFolderName = folderName;
     }
 
-    /*
-     * extracts filename without file extension from URI's path
+    /**
+     * extracts filename without file extension from URI's path.
      */
     private void findFileNameNoExtension(String strFileName) {
 

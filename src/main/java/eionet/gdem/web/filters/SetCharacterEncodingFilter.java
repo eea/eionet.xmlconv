@@ -65,7 +65,7 @@ public class SetCharacterEncodingFilter implements Filter {
      *
      * @param request
      *            The servlet request we are processing
-     * @param result
+     * @param response
      *            The servlet response we are creating
      * @param chain
      *            The filter chain we are processing

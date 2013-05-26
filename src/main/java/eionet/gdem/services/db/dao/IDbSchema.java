@@ -3,59 +3,59 @@ package eionet.gdem.services.db.dao;
 public interface IDbSchema {
 
     /**
-     * Table for storing file info in repository
+     * Table for storing file info in repository.
      */
     String FILE_TABLE = "T_FILE";
     /**
-     * Table for XForms browsers
+     * Table for XForms browsers.
      */
     String XFBROWSER_TABLE = "T_XFBROWSER";
 
     /**
-     * Table for XQuery Workqueue
+     * Table for XQuery Workqueue.
      */
     String WQ_TABLE = "T_XQJOBS";
 
     /**
-     * Table for stylesheets in the DB
+     * Table for stylesheets in the DB.
      */
     String XSL_TABLE = "T_STYLESHEET";
 
     /**
-     * Table for queries in the DB
+     * Table for queries in the DB.
      */
     String QUERY_TABLE = "T_QUERY";
 
     /**
-     * Table for xml schemas in the DB
+     * Table for xml schemas in the DB.
      */
     String SCHEMA_TABLE = "T_SCHEMA";
 
     /**
-     * Table for uploaded xml schemas in the DB
+     * Table for uploaded xml schemas in the DB.
      */
     String UPL_SCHEMA_TABLE = "T_UPL_SCHEMA";
 
     /**
-     * Table for root element mappings for schemas in the DB
+     * Table for root element mappings for schemas in the DB.
      */
     String ROOTELEM_TABLE = "T_ROOT_ELEM";
 
     /**
-     * Table for hosts with usernames and passwords in the DB
+     * Table for hosts with usernames and passwords in the DB.
      */
     String HOST_TABLE = "T_HOST";
 
     /**
-     * Table for conversion types
+     * Table for conversion types.
      */
     String CONVTYPE_TABLE = "T_CONVTYPE";
     /**
-     * Table for backup files
+     * Table for backup files.
      */
     String BACKUP_TABLE = "T_BACKUP";
     /**
-     * Field names in XSL table
+     * Field names in XSL table.
      */
     String CNV_ID_FLD = "CONVERT_ID";
     String XSL_SCHEMA_ID_FLD = "SCHEMA_ID";
@@ -65,7 +65,7 @@ public interface IDbSchema {
     String DEPENDS_ON = "DEPENDS_ON";
 
     /**
-     * Field names in QUERY table
+     * Field names in QUERY table.
      */
     String QUERY_ID_FLD = "QUERY_ID";
     String SHORT_NAME_FLD = "SHORT_NAME";
@@ -76,7 +76,7 @@ public interface IDbSchema {
     String QUERY_URL_FLD    = "URL";
 
     /**
-     * Field names in SCHEMA table
+     * Field names in SCHEMA table.
      */
     String SCHEMA_ID_FLD = "SCHEMA_ID";
     String XML_SCHEMA_FLD = "XML_SCHEMA";
@@ -88,7 +88,7 @@ public interface IDbSchema {
     String SCHEMA_BLOCKER_FLD = "BLOCKER";
 
     /**
-     * Field names in UPL_SCHEMA table
+     * Field names in UPL_SCHEMA table.
      */
     String UPL_SCHEMA_ID_FLD = "SCHEMA_ID";
     String UPL_SCHEMA_FLD = "SCHEMA_NAME";
@@ -96,7 +96,7 @@ public interface IDbSchema {
     String UPL_FK_SCHEMA_ID = "FK_SCHEMA_ID";
 
     /**
-     * Field names in ROOT ELEMENTS table
+     * Field names in ROOT ELEMENTS table.
      */
     String ROOTELEM_ID_FLD = "ROOTELEM_ID";
     String ELEM_SCHEMA_ID_FLD = "SCHEMA_ID";
@@ -104,7 +104,7 @@ public interface IDbSchema {
     String ELEM_NAME_FLD = "ELEM_NAME";
 
     /*
-     * T_XQJOBS
+     * T_XQJOBS.
      */
     String JOB_ID_FLD = "JOB_ID";
     String URL_FLD = "URL";
@@ -116,7 +116,7 @@ public interface IDbSchema {
     String SRC_FILE_FLD = "SRC_FILE";
 
     /**
-     * Field names in FILE table
+     * Field names in FILE table.
      */
     String FILE_ID_FLD = "FILE_ID";
     String FILE_NAME_FLD = "FILE_NAME";
@@ -128,19 +128,19 @@ public interface IDbSchema {
     String FILE_DEFAULT_FLD = "F_DEFAULT";
 
     /**
-     * TYPE values in FILE table
+     * TYPE values in FILE table.
      */
     String XFORM_FILE_TYPE = "xform";
     String CSS_FILE_TYPE = "css";
     String IMAGE_FILE_TYPE = "image";
     String XML_FILE_TYPE = "xml";
     /**
-     * PARENT_TYPE values in FILE table
+     * PARENT_TYPE values in FILE table.
      */
     String SCHEMA_FILE_PARENT = "xml_schema";
 
     /**
-     * Field names in XFBROWSER table
+     * Field names in XFBROWSER table.
      */
     String BROWSER_ID_FLD = "BROWSER_ID";
     String BROWSER_TYPE_FLD = "BROWSER_TYPE";
@@ -149,7 +149,7 @@ public interface IDbSchema {
     String BROWSER_PRIORITY_FLD = "PRIORITY";
 
     /**
-     * Field names in HOSTS table
+     * Field names in HOSTS table.
      */
     String HOST_ID_FLD = "HOST_ID";
     String HOST_NAME_FLD = "HOST_NAME";
@@ -157,7 +157,7 @@ public interface IDbSchema {
     String PWD_FLD = "PWD";
 
     /**
-     * Field names in CONVTYPE table
+     * Field names in CONVTYPE table.
      */
     String CONV_TYPE_FLD = "CONV_TYPE";
     String CONTENT_TYPE_FLD = "CONTENT_TYPE";
@@ -165,7 +165,7 @@ public interface IDbSchema {
     String CONVTYPE_DESCRIPTION_FLD = "DESCRIPTION";
 
     /**
-     * Field names in BACKUP table
+     * Field names in BACKUP table.
      */
     String BACKUP_ID_FLD = "BACKUP_ID";
     String BACKUP_OBJECT_ID_FLD = "OBJECT_ID";

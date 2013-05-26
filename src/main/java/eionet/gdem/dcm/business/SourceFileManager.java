@@ -31,7 +31,6 @@ public class SourceFileManager {
      *
      * @param httpResponse
      * @param ticket
-     * @param auth
      * @param source_url
      * @throws IOException
      */
@@ -90,8 +89,6 @@ public class SourceFileManager {
      * reads file from remote URL and writes it to the response stream without authentication.
      *
      * @param httpResponse
-     * @param ticket
-     * @param auth
      * @param source_url
      * @throws IOException
      */

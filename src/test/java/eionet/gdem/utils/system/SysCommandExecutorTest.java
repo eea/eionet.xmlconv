@@ -46,8 +46,8 @@ public class SysCommandExecutorTest extends TestCase {
         int status = exe.runCommand("echo OK");
         String out = exe.getCommandOutput();
 
-        assertEquals(status, 0);
-        assertEquals(out, "OK" + System.getProperty("line.separator"));
+        assertEquals(0, status);
+        assertEquals("OK" + System.getProperty("line.separator"), out);
     }
 
     /**

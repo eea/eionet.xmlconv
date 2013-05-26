@@ -54,13 +54,13 @@ public class FileUpload {
     private static Object fileLock = new Object();
     private static Object SessionIdLock = new Object();
 
-    // integer for generating unique name for temporary file
+    /** integer for generating unique name for temporary file. */
     private static int HOW_LONG = 6;
 
     private String _folderName; // tmp folder for files
     private String _fileName;
 
-    // System's line separator
+    /** System's line separator. */
     private static String lineSep;
     // +RV020508
     private int lenRcvd;
@@ -68,8 +68,7 @@ public class FileUpload {
     /**
      * Constructor. Creates a new FileUpload object
      *
-     * @param String
-     *            folderName - folder for the uploaded file
+     * @param fldName - folder for the uploaded file
      */
     public FileUpload(String fldName) throws GDEMException {
         if (fldName == null) {
@@ -82,10 +81,10 @@ public class FileUpload {
     }
 
     /**
-     * Generates filename
+     * Generates filename.
      *
      * @param fileName
-     *            , n >0, if file with the same name already exists in the tmp folder ex: genFileName( test.xls, 1 )= test_1.xls
+     * @param n set larger than 0, if file with the same name already exists in the tmp folder ex: genFileName( test.xls, 1 )= test_1.xls
      *            genFileName( test_1.xls, 2 )= test_2.xls
      */
     private String genFileName(String fileName, int n) {
@@ -104,9 +103,9 @@ public class FileUpload {
     }
 
     /**
-     * Reads line from ServletInputStream
+     * Reads line from ServletInputStream.
      *
-     * Returns null, if EOF is reached.
+     * @return null, if EOF is reached.
      */
     // +RV020508 removed exception handling and propagated exceptions to caller
     private String readLine(byte buf[], int i[], ServletInputStream stream, String charEncoding) throws IOException {
@@ -131,7 +130,7 @@ public class FileUpload {
     }
 
     /**
-     * Returns filename, uploaded to the server
+     * Returns filename, uploaded to the server.
      */
     public String getFileName() {
         return _fileName;
@@ -142,7 +141,7 @@ public class FileUpload {
     }
 
     /**
-     * Returns filename from filename with full path in: "C:\TEMP\test.txt" out: "test.txt"
+     * Returns filename from filename with full path in: "C:\TEMP\test.txt" out: "test.txt".
      */
     private String getFileName(String fileName) {
         int i = fileName.lastIndexOf("\\");
@@ -158,7 +157,7 @@ public class FileUpload {
     }
 
     /**
-     * Returns unique number, used for temporary file name
+     * Returns unique number, used for temporary file name.
      */
     private String getSessionId() {
         String s = "";
@@ -174,10 +173,10 @@ public class FileUpload {
     }
 
     /**
-     * Uploads file from client to the server Parses HttpRequestInputstream and writes bytes to the specified folder in the same
+     * Uploads file from client to the server. Parses HttpRequestInputstream and writes bytes to the specified folder in the same
      * computer, where servlet runs
      *
-     * @param HttpRequestInputstream
+     * @param req
      */
     public File uploadFile(HttpServletRequest req) throws GDEMException {
 
@@ -276,8 +275,7 @@ public class FileUpload {
                                 fileOut.write(bt1, 0, int1[0] - lineSep.length() * bt0);
                                 fWrite = true;
                             }
-                        }
-                        finally{
+                        } finally {
                             IOUtils.closeQuietly(fileOut);
                         }
                         if (fWrite) {
@@ -303,8 +301,7 @@ public class FileUpload {
                                 throw new GDEMException("Error renaming temporary file: " + _ex.toString());
                             }
 
-                        } // end-if file = 0kb or does not exist
-                        else {
+                        } else { // end-if file = 0kb or does not exist
                             tmpFile.delete();
                             throw new GDEMException("File: " + fileName + " does not exist or contains no data.");
                         }
@@ -319,8 +316,7 @@ public class FileUpload {
             }
         } catch (IOException e) {
             throw new GDEMException("Error uploading file: " + e.toString());
-        }
-        finally{
+        } finally {
             IOUtils.closeQuietly(si);
         }
 

@@ -8,14 +8,14 @@ public interface IXFormDao extends IDbSchema {
     /**
      * Removes the xform from the xformss table.
      *
-     * @param - xform ID
+     * @param xformId - xform ID
      */
     public void removeXForm(String xformId) throws SQLException;
 
     /**
      * returns XForm file name for specified schema.
      *
-     * @param - XML schema url
+     * @param XMLSchema - XML schema url
      * @return Hashtable contining XForm url
      */
 
@@ -24,7 +24,7 @@ public interface IXFormDao extends IDbSchema {
     /**
      * returns XForm information.
      *
-     * @param - XForm id
+     * @param xform_id - XForm id
      * @return Hashtable contining XForm info
      */
 
@@ -33,7 +33,7 @@ public interface IXFormDao extends IDbSchema {
     /**
      * returns XForm file info for specified schemas.
      *
-     * @param - array of XML schema urls
+     * @param XMLSchemas - array of XML schema urls
      * @return Hashtable contining schema url as key and XForm url as value
      */
 
@@ -42,7 +42,7 @@ public interface IXFormDao extends IDbSchema {
     /**
      * returns XForm file names for specified schemas.
      *
-     * @param - array of XML schema urls
+     * @param XMLSchemas - array of XML schema urls
      * @return Hashtable contining schema url as key and XForm url as value
      */
 

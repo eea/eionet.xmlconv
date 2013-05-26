@@ -28,16 +28,11 @@ public interface IStyleSheetDao extends IDbSchema {
     /**
      * Updates stylesheet properties in the database.
      *
-     * @param String
-     *            xsl_id - id from database, used as a constraint
-     * @param String
-     *            schema_id - schema id
-     * @param String
-     *            description - text describing the query
-     * @param String
-     *            fileName - query file name
-     * @param String
-     *            content_type - result content type
+     * @param xsl_id - id from database, used as a constraint
+     * @param schema_id - schema id
+     * @param description - text describing the query
+     * @param fileName - query file name
+     * @param content_type - result content type
      * @param dependsOn
      *            stylesheet id the current stylesheet depends on
      */
@@ -47,7 +42,7 @@ public interface IStyleSheetDao extends IDbSchema {
     /**
      * Removes the stylesheet from the stylesheets table.
      *
-     * @param - convert ID
+     * @param convertId - The identifier of the stylesheet.
      */
     public void removeStylesheet(String convertId) throws SQLException;
 

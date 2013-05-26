@@ -125,12 +125,9 @@ public class Utils {
     /**
      * Stores a String in a text file.
      *
-     * @param String
-     *            fileName:
-     * @param String
-     *            str: text to be stored
-     * @param String
-     *            ext: file extension
+     * @param fileName - file name to save to. Can be null.
+     * @param str - text to be stored
+     * @param ext - file extension
      */
     public static String saveStrToFile(String fileName, String str, String extension) throws IOException {
         if (fileName == null) {
@@ -433,7 +430,7 @@ public class Utils {
     }
 
     /**
-     * reads temporary file from disk and returns as a bytearray.
+     * Reads temporary file from disk and returns as a bytearray.
      */
     public static byte[] fileToBytes(String fileName) throws GDEMException {
 
@@ -467,7 +464,7 @@ public class Utils {
     }
 
     /**
-     * checks if list contains any String values or not.
+     * Checks if list contains any String values or not.
      *
      * @param list
      *            The list that will be investigated
@@ -546,7 +543,9 @@ public class Utils {
         folder.delete();
     }
 
-    // Returns the contents of the file in a byte array.
+    /**
+     * Returns the contents of the file in a byte array.
+     */
     public static byte[] getBytesFromFile(File file) throws IOException {
         InputStream is = null;
         byte[] bytes = null;
@@ -634,8 +633,7 @@ public class Utils {
     /**
      * parses String to Date.
      *
-     * @param String
-     *            date
+     * @param date
      * @param pattern
      * @return Date object
      * @throws ParseException
@@ -659,8 +657,7 @@ public class Utils {
     /**
      * formats timestamp (millis from 1 Jan 1970) into string using pattern.
      *
-     * @param String
-     *            timestamp
+     * @param timestamp
      * @param pattern
      * @return Date object
      * @throws ParseException
@@ -823,7 +820,7 @@ public class Utils {
     }
 
     /**
-     * generates unique temporary folder name and creates the directory.
+     * Generates unique temporary folder name and creates the directory.
      *
      * @return fill path
      */
@@ -874,7 +871,7 @@ public class Utils {
     }
 
     /**
-     * deletes the folder, where specified file locates.
+     * Deletes the folder, where specified file locates.
      *
      * @param filePath
      */

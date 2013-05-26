@@ -54,10 +54,9 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
     private static final Log LOGGER = LogFactory.getLog(ConvertDDXMLMethod.class);
 
     /**
-     * Converts DataDictionary MS Excel file to XML
+     * Converts DataDictionary MS Excel file to XML.
      *
-     * @param String
-     *            sourceUrl: URL of the srouce Excel file
+     * @param sourceUrl - URL of the srouce Excel file
      * @return Vector result: error_code, xml_url, error_message
      * @throws UnsupportedEncodingException
      */
@@ -68,8 +67,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
     /**
      * Converts DataDictionary MS Excel sheets to different XML files, where one xml file is dataset table.
      *
-     * @param String
-     *            url: URL of the srouce Excel file
+     * @param sourceUrl - URL of the source Excel file
      * @return Vector result: error_code, xml_url, error_message
      */
     public ConversionResultDto convertDD_XML_split(String sourceUrl, String sheetName) throws GDEMException {
@@ -151,7 +149,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
     }
 
     /**
-     * Returns source file as InputFile object
+     * Returns source file as InputFile object.
      *
      * @param sourceUrl
      * @return
@@ -208,7 +206,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
     }
 
     /**
-     * Converts conversion result object into Hashtable that is used in XML-RPC method result
+     * Converts conversion result object into Hashtable that is used in XML-RPC method result.
      *
      * @param dto
      * @return

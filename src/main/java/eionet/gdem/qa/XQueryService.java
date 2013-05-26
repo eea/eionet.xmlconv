@@ -72,7 +72,7 @@ public class XQueryService extends RemoteService {
     }
 
     /**
-     * List all possible XQueries for this namespace
+     * List all possible XQueries for this namespace.
      */
     public Vector listQueries(String schema) throws GDEMException {
 
@@ -82,7 +82,7 @@ public class XQueryService extends RemoteService {
     }
 
     /**
-     * List all XQueries and their modification times for this namespace returns also XML Schema validation
+     * List all XQueries and their modification times for this namespace returns also XML Schema validation.
      */
     public Vector listQAScripts(String schema) throws GDEMException {
         ListQueriesMethod method = new ListQueriesMethod();
@@ -91,10 +91,9 @@ public class XQueryService extends RemoteService {
     }
 
     /**
-     * Request from XML/RPC client Stores the source files and starts a job in the workqueue
+     * Request from XML/RPC client Stores the source files and starts a job in the workqueue.
      *
-     * @param Hashtable
-     *            files: Structure with XMLschemas as a keys and values are list of XML Files
+     * @param files - Structure with XMLschemas as a keys and values are list of XML Files
      * @return Hashtable result: Structure with JOB ids as a keys and source files as values
      */
     public Vector analyzeXMLFiles(Hashtable files) throws GDEMException {
@@ -122,17 +121,19 @@ public class XQueryService extends RemoteService {
     }
 
     /**
-     * Stores one source file and starts a job in the workqueue
+     * Stores one source file and starts a job in the workqueue.
      *
-     * @param String
-     *            schema: XML Schema URL
-     * @param String
-     *            file: Source file URL
+     * @param schema - XML Schema URL
+     * @param file - Source file URL
      * @return Hashtable result: Structure with JOB ids as a keys and source files as values
      */
     // public Hashtable analyze(String schema, String file) throws GDEMException{
     // return analyze(schema,file, null);
     // }
+
+    /**
+     *
+     */
     public Vector analyzeXMLFiles(String schema, String origFile, Vector result) throws GDEMException {
 
         LOGGER.info("XML/RPC call for analyze xml: " + origFile);
@@ -231,14 +232,11 @@ public class XQueryService extends RemoteService {
     }
 
     /**
-     * Request from XML/RPC client Stores the xqScript and starts a job in the workqueue
+     * Request from XML/RPC client Stores the xqScript and starts a job in the workqueue.
      *
-     * @param String
-     *            url: URL of the srouce XML
-     * @param String
-     *            xqScript: XQueryScript to be processed
-     * @param String
-     *            scriptType: xquery, xsl or xgawk
+     * @param sourceURL - URL of the source XML
+     * @param xqScript - XQueryScript to be processed
+     * @param scriptType - xquery, xsl or xgawk
      */
     public String analyze(String sourceURL, String xqScript, String scriptType) throws GDEMException {
         String xqFile = "";
@@ -280,11 +278,10 @@ public class XQueryService extends RemoteService {
     }
 
     /**
-     * Checks if the job is ready (or error) and returns the result (or error message)
+     * Checks if the job is ready (or error) and returns the result (or error message).
      *
-     * @param String
-     *            jobId
-     * @return String fileName where the client can download the result Returns a Hash including code and result
+     * @param jobId
+     * @return Hash including code and result
      */
     public Hashtable getResult(String jobId) throws GDEMException {
 
@@ -321,7 +318,9 @@ public class XQueryService extends RemoteService {
         return ret;
     }
 
-    // Hashtable to be composed for the getResult() method return value
+    /**
+     * Hashtable to be composed for the getResult() method return value.
+     */
     private Hashtable result(int status, String[] jobData, HashMap scriptData, String jobId) throws GDEMException {
         Hashtable<String, String> h = new Hashtable<String, String>();
         int resultCode;
@@ -399,8 +398,8 @@ public class XQueryService extends RemoteService {
     /**
      * Remote method for running the QA script on the fly.
      *
-     * @param String sourceUrl URL of the source XML
-     * @param String scriptId XQueryScript ID or -1 (XML Schema validation) to be processed
+     * @param sourceUrl URL of the source XML
+     * @param scriptId XQueryScript ID or -1 (XML Schema validation) to be processed
      * @return Vector of 2 fields: content type and byte array
      * @throws GDEMException in case of business logic error
      */

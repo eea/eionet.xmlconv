@@ -61,7 +61,8 @@ public class MultipartFileUpload {
     // private static int HOW_LONG = 6;
     private static final String DEFAULT_ENCODING = "UTF-8";
 
-    private String _folderName; // tmp folder for files
+    /** tmp folder for files. */
+    private String _folderName;
     private String _fileName;
     private FileItem _fileItem;
     private DiskFileItemFactory factory = null;
@@ -77,8 +78,6 @@ public class MultipartFileUpload {
     /**
      * Constructor. Creates a new FileUploadAdapter object
      *
-     * @param String
-     *            folderName - folder for the uploaded file
      */
     public MultipartFileUpload(boolean uploadAtOnce) {
 
@@ -99,18 +98,14 @@ public class MultipartFileUpload {
     /**
      * Sets folder name where to insert uploaded file.
      *
-     * @param String
-     *            folderName - folder for the uploaded file
+     * @param fldName - folder for the uploaded file
      */
     public void setFolder(String fldName) {
         _folderName = fldName;
     }
 
     /**
-     * Sets folder name where to insert uploaded file.
      *
-     * @param String
-     *            folderName - folder for the uploaded file
      */
     public HashMap getRequestParams() {
         return _params;
@@ -147,8 +142,7 @@ public class MultipartFileUpload {
     /**
      * @param request
      *            Servlet request
-     * @return the calculated trigger
-     * @throws XFormsException
+     * @throws GDEMException
      *             If an error occurs
      */
     public void processMultiPartRequest(HttpServletRequest request) throws GDEMException {
@@ -250,10 +244,8 @@ public class MultipartFileUpload {
      * Stores uploaded file in the filesystem with specified name. Renames the existing file, if needed. Otherwise overwrites
      * exisitng file
      *
-     * @param destFileName Destination file name.
-     *
-     * @param keepExisitng true, if rename existing file before saving the new faile. false, if overwrite exisitng file
-     *
+     * @param saveAs Destination file name.
+     * @param keepExisting true, if rename existing file before saving the new faile. false, if overwrite exisitng file
      * @throws GDEMException Thrown in case of missing data or error during file writing.
      */
     public void saveFileAs(String saveAs, boolean keepExisting) throws GDEMException {
@@ -295,7 +287,7 @@ public class MultipartFileUpload {
      * Generates filename.
      *
      * @param fileName
-     *            , n >0, if file with the same name already exists in the tmp folder ex: genFileName( test.xls, 1 )= test_1.xls
+     * @param n set larger than 0, if file with the same name already exists in the tmp folder ex: genFileName( test.xls, 1 )= test_1.xls
      *            genFileName( test_1.xls, 2 )= test_2.xls
      */
     public static String getGeneratedFileName(String fileName, int n) {
@@ -445,7 +437,7 @@ public class MultipartFileUpload {
      *
      * @param fieldName
      *            - file item field name
-     * @param folderdName
+     * @param folderName
      *            - target folder
      *
      * @return File name

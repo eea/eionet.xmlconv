@@ -55,8 +55,7 @@ public interface ConversionServiceIF extends RemoteServiceIF {
     /**
      * Converts DataDictionary MS Excel file to XML
      *
-     * @param String
-     *            url: URL of the srouce Excel file
+     * @param sourceURL - URL of the source Excel file
      * @return ConversionResultDto result object
      */
     Hashtable<String, Object> convertDD_XML(String sourceURL) throws GDEMException;
@@ -64,14 +63,14 @@ public interface ConversionServiceIF extends RemoteServiceIF {
     /**
      * Converts DataDictionary MS Excel sheets to different XML files, where one xml file is dataset table.
      *
-     * @param String
-     *            url: URL of the srouce Excel file sheetParam: Sheetname to convert
+     * @param sourceURL URL of the source Excel file
+     * @param sheetParam - Sheetname to convert
      * @return ConversionResultDto result object
      */
     Hashtable<String, Object> convertDD_XML_split(String sourceURL, String sheetParam) throws GDEMException;
 
     /**
-     * If Conversion Service is called through HTTP, then set the HTTP Response object
+     * If Conversion Service is called through HTTP, then set the HTTP Response object.
      *
      * @param httpResponse
      */
@@ -85,13 +84,14 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      *            file content as InputStream
      * @param convertId
      *            Stylesheet ID.
+     * @param fileName
      * @return returns the Hashtable that has exactly the same structure as convert method.
      * @throws GDEMException
      */
     Hashtable convertPush(InputStream file, String convertId, String fileName) throws GDEMException;
 
     /**
-     * Method for xml-rpc clients file is base64 encoded bytearray
+     * Method for xml-rpc clients file is base64 encoded bytearray.
      *
      * @param file
      *            base64 encoded bytearray
@@ -104,7 +104,7 @@ public interface ConversionServiceIF extends RemoteServiceIF {
     Hashtable convertPush(byte[] file, String convertId, String filename) throws GDEMException;
 
     /**
-     * Set base64 authentication info for receiveing remote URLs
+     * Set base64 authentication info for receiveing remote URLs.
      *
      * @param _ticket
      */
@@ -112,7 +112,7 @@ public interface ConversionServiceIF extends RemoteServiceIF {
     void setTicket(String _ticket);
 
     /**
-     * Get a distinct list of XML Schemas returned from listConversions() method
+     * Get a distinct list of XML Schemas returned from listConversions() method.
      *
      * @return
      * @throws GDEMException
@@ -120,7 +120,7 @@ public interface ConversionServiceIF extends RemoteServiceIF {
     List getXMLSchemas() throws GDEMException;
 
     /**
-     * Converts excel file to a set of XML files by XSL teplates specified in xmlconv
+     * Converts excel file to a set of XML files by XSL teplates specified in xmlconv.
      *
      * @param file
      *            excel file as an byte array
@@ -134,7 +134,7 @@ public interface ConversionServiceIF extends RemoteServiceIF {
     Vector<Object> convertExcelToXMLPush(byte[] file, String fileName) throws GDEMException;
 
     /**
-     * Converts excel file to a set of XML files by XSL teplates specified in xmlconv
+     * Converts excel file to a set of XML files by XSL teplates specified in xmlconv.
      *
      * @param fileUrl
      *            the URL of the file.

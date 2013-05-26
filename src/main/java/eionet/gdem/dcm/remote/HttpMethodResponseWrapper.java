@@ -17,7 +17,6 @@ import eionet.gdem.utils.Streams;
  *
  * @author Enriko Käsper, TietoEnator Estonia AS
  */
-
 public class HttpMethodResponseWrapper extends HttpServletResponseWrapper {
 
     private static final String DEFAULT_ENCODING = "UTF-8";
@@ -60,7 +59,7 @@ public class HttpMethodResponseWrapper extends HttpServletResponseWrapper {
     /**
      * Configures the response header and writes the XML result into servlet output stream.
      *
-     * @param xmlResult
+     * @param bytes
      * @throws Exception
      */
     public void flushBytes(byte[] bytes) throws Exception {
@@ -74,7 +73,7 @@ public class HttpMethodResponseWrapper extends HttpServletResponseWrapper {
     }
 
     /**
-     * Creates XMLErrorResult object with given parameters and writes the XML into servlet output
+     * Creates XMLErrorResult object with given parameters and writes the XML into servlet output.
      *
      * @param status
      *            HTTP Status Code

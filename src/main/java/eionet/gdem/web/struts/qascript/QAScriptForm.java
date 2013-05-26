@@ -15,7 +15,8 @@
  * Agency.  Portions created by Tieto Eesti are Copyright
  * (C) European Environment Agency.  All Rights Reserved.
  *
- * Contributor(s):* Enriko Käsper, Tieto Estonia
+ * Contributor(s):
+ * Enriko Käsper, Tieto Estonia
  */
 
 package eionet.gdem.web.struts.qascript;
@@ -27,10 +28,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 
+/**
+ * @author Enriko Käsper, Tieto Estonia
+ */
 public class QAScriptForm extends ActionForm {
-    /**
-     * @author Enriko Käsper, Tieto Estonia QAScriptForm
-     */
     private String scriptId;
     private String description;
     private String shortName;

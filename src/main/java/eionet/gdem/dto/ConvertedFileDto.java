@@ -48,55 +48,34 @@ public class ConvertedFileDto {
     /**
      * Class constructor.
      *
-     * @param fileName2
-     * @param filePath2
+     * @param fileName
+     * @param filePath
      */
     public ConvertedFileDto(String fileName, String filePath) {
         this.fileName = fileName;
         this.filePath = filePath;
     }
 
-    /**
-     * @return the fileName
-     */
     public String getFileName() {
         return fileName;
     }
 
-    /**
-     * @param fileName
-     *            the fileName to set
-     */
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
-    /**
-     * @return the filePath
-     */
     public String getFilePath() {
         return filePath;
     }
 
-    /**
-     * @param filePath
-     *            the filePath to set
-     */
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
 
-    /**
-     * @return the fileUrl
-     */
     public String getFileUrl() {
         return fileUrl;
     }
 
-    /**
-     * @param fileUrl
-     *            the fileUrl to set
-     */
     public void setFileUrl(String fileUrl) {
         this.fileUrl = fileUrl;
     }
