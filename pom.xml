@@ -704,7 +704,7 @@
                     <linkXref>false</linkXref>
                     <sourceEncoding>utf-8</sourceEncoding>
                     <minimumTokens>300</minimumTokens>
-                    <targetJdk>1.6</targetJdk>
+                    <targetJdk>${java_version}</targetJdk>
                 </configuration>
             </plugin>
             <plugin>
@@ -714,6 +714,11 @@
                 <configuration>
                     <configLocation>${checkstyle.config.location}</configLocation>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>
             </plugin>
         </plugins>
     </reporting>
