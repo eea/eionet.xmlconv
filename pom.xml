@@ -40,7 +40,14 @@
             <url>http://download.java.net/maven/2/</url>
             <layout>default</layout>
         </repository>
-
+        <repository>
+            <id>eea</id>
+            <name>EAA Release Repository</name>
+            <url>http://archiva.eionet.europa.eu/repository/internal</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <!-- the build configuration -->
@@ -259,13 +266,13 @@
                 <!-- Maven 2.0.4 requires version 2.2 -->
                 <!-- <version>2.5.2</version> -->
                 <configuration>
-                   <formats>
-                       <format>xml</format>
-                   </formats>
+                    <formats>
+                        <format>xml</format>
+                    </formats>
                 </configuration>
             </plugin>
 
-          </plugins>
+        </plugins>
 
         <!-- filters for src/main/resources and src/test/resources -->
 
@@ -314,7 +321,7 @@
     <!-- dependencies -->
 
     <dependencies>
-        <!-- batik.jar used by fop-->
+        <!-- batik.jar used by fop -->
         <dependency>
             <groupId>org.apache</groupId>
             <artifactId>batik</artifactId>
