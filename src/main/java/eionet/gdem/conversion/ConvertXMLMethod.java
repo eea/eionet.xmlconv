@@ -211,7 +211,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
      * Use automatically generated XSL for converting XML with Data Dictionary XML Schema.
      * @param sourceURL URL of source XML file.
      * @param convertId Conversion ID.
-     * @param conversionParameters Map of parameters forwarded to conversion engine.
+     * @param externalParameters Map of parameters forwarded to conversion engine.
      * @return conversion result as key value pairs in Hashtable.
      * @throws GDEMException in case of conversion Exception.
      */
