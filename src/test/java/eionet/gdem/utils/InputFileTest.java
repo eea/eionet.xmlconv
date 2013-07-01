@@ -11,19 +11,19 @@ import junit.framework.TestCase;
 /**
  * JUnit test test InputFile functionality. InputFile is responsible for parsing retreived URL - escapes the URL, extracts the file
  * name, host and folder.
- * 
+ *
  * @author Enriko Käsper, TietoEnator Estonia AS InputFileTest
  */
 
 public class InputFileTest extends TestCase {
 
     /**
-     * The method tests, if InputFile class extracts correct strings from URL
-     * 
+     * The method tests, if InputFile class extracts correct strings from URL.
+     *
      * @throws Exception
      */
 
-    public void testPublicMethods() throws Exception {
+    public void testPublicMethodsOnURLWithParams() throws Exception {
         InputFile inputFile =
                 new InputFile("http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/general report.xml?param=11&param2=22");
 
@@ -44,11 +44,11 @@ public class InputFileTest extends TestCase {
     }
 
     /**
-     * Test the public methods with different URL
-     * 
+     * Test the public methods with different URL.
+     *
      * @throws Exception
      */
-    public static void testPublicMethods2() throws Exception {
+    public static void testPublicMethodsOnURLWithFragment() throws Exception {
         InputFile inputFile = new InputFile("http://localhost:8080/xmlconv/just a file.dddd#999");
 
         assertEquals("just a file.dddd", inputFile.getFileName());

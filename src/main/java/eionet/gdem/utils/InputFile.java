@@ -48,8 +48,9 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IHostDao;
 
 /**
- * Several commmon class for reading files from url. Is able to read the host credentials from database and pass the basic auth to
- * remote server for files with limited access
+ * Utility class for reading files from URL.
+ * The class reads the host credentials from database and if it runs in trusted mode, then it passes the basic authentication info
+ * to remote server for files with limited access.
  *
  * NB! Always call close() method in finally block, otherwise the InputStream stays open.
  */
@@ -58,40 +59,48 @@ public class InputFile {
     /** */
     private static final Log LOGGER = LogFactory.getLog(InputFile.class);
 
+    /** Authentication ticket: Base64 encoded username and password. */
     private String ticket = null;
+    /** URL of the inpurt file. */
     private URL url = null;
+    /** InputStream of input file data retrieved from URLConnection. */
     private InputStream is = null;
+    /** Allowed to use ticket when requesting input file. */
     private boolean isTrustedMode = false;
-    private String strFileNameNoExtension = null;
+    /** File name without extension extracted from URL.*/
     private String strFileName = null;
+    /** File name extracted from URL.*/
+    private String strFileNameNoExtension = null;
+    /** Host name extracted from URL.*/
     private String strHostName = null;
+    /** Folder name (path before file name) extracted from URL.*/
     private String strFolderName = null;
+    /** Status of InputStream. */
     boolean isClosed = false;
-    // instance = strHostName + strFolderName + "/" + strFileName
+
+    /** DAO for getting authorisation for known hosts.*/
     private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
 
     /**
      * Initializes InputUrl object and sets the URI from str_url.
      *
-     * @param str_url
-     *            - the URL of source file
-     * @throws IOException
-     * @throws MalformedURLException
+     * @param strUrl - the URL of source file
+     * @throws MalformedURLException wrong URL.
      */
-    public InputFile(String str_url) throws IOException, MalformedURLException {
+    public InputFile(String strUrl) throws MalformedURLException {
 
         // Java's URL class doesn't escape certain characters with % +hexidecimal digits.
         // This is a bug in the class java.net.URL.
         // The correct way to create a URL object is to use class called java.net.URI (Java 1.4 and later).
 
         // this.url = new URL(str_url);
-        setURL(str_url);
+        setURL(strUrl);
     }
 
     /**
-     * get source file from url as InputStream user basic auth, if we know the credentials.
-     * @return
-     * @throws IOException
+     * Get source file from url as InputStream user basic auth, if we know the credentials.
+     * @return InputStream of source file.
+     * @throws IOException the source is not available.
      */
     public InputStream getSrcInputStream() throws IOException {
         fillInputStream();
@@ -99,23 +108,28 @@ public class InputFile {
     }
 
     /**
-     * save the InputFile to the specified text file with default extension.
+     * Save the InputFile to the specified text file with default extension.
+     * @return Full path of file.
+     * @throws IOException if it's not possible to save file in the filesystem.
      */
     public String saveSrcFile() throws IOException {
         return saveSrcFile("xml");
     }
+
     /**
-     * save the InputFile to the specified text file with given extension.
-     * @param extension
-     * @return
-     * @throws IOException
+     * Save the InputFile to the specified text file with given extension.
+     * @param extension file extension to use when storing source file temporarily.
+     * @return Full path of file.
+     * @throws IOException if it's not possible to save file in the filesystem.
      */
     public String saveSrcFile(String extension) throws IOException {
 
         fillInputStream();
 
         OutputStream outputStream = null;
-        String fileName = Properties.tmpFolder + File.separatorChar + "gdem_" + System.currentTimeMillis() + "-" + UUID.randomUUID() + "." + extension;
+        String fileName =
+                Properties.tmpFolder + File.separatorChar + "gdem_" + System.currentTimeMillis() + "-" + UUID.randomUUID() + "."
+                        + extension;
         File file = new File(fileName);
 
         try {
@@ -132,8 +146,7 @@ public class InputFile {
     }
 
     /**
-     * closes inputstream of source file.
-     *
+     * Closes InputStream of input file.
      */
     public void close() {
         try {
@@ -150,10 +163,10 @@ public class InputFile {
     /**
      * Sets the authentication ticket for the source file.
      *
-     * @param _ticket
+     * @param ticket authentication value.
      */
-    public void setAuthentication(String _ticket) {
-        this.ticket = _ticket;
+    public void setAuthentication(String ticket) {
+        this.ticket = ticket;
     }
 
     /**
@@ -168,6 +181,7 @@ public class InputFile {
     /**
      * Extracts the file name from URL path. E.g: BasicQuality.xml where the full url is
      * http://cdrtest.eionet.europa.eu/al/eea/colrjhlyq/envrjhqwa/BasicQuality.xml
+     * @return file name
      */
     public String getFileName() {
         return strFileName;
@@ -176,6 +190,7 @@ public class InputFile {
     /**
      * Extracts the file name without file extension from URL path. E.g: BasicQuality where the full url is
      * http://cdrtest.eionet.europa.eu/al/eea/colrjhlyq/envrjhqwa/BasicQuality.xml
+    * @return file name without extension
      */
     public String getFileNameNoExtension() {
         return strFileNameNoExtension;
@@ -183,6 +198,7 @@ public class InputFile {
 
     /**
      * Return source file URL as a String.
+     * @return source URL as String
      */
     @Override
     public String toString() {
@@ -192,6 +208,7 @@ public class InputFile {
     /**
      * Extracts the full host name from URL. E.g: http://cdrtest.eionet.europa.eu where the full url is
      * http://cdrtest.eionet.europa.eu/al/eea/colrjhlyq/envrjhqwa/BasicQuality.xml
+     * @return host name from source URL.
      */
     public String getHostName() {
         return strHostName;
@@ -200,6 +217,7 @@ public class InputFile {
     /**
      * Extracts the folder from URL path. E.g: /al/eea/colrjhlyq/envrjhqwa where the full url is
      * http://cdrtest.eionet.europa.eu/al/eea/colrjhlyq/envrjhqwa/BasicQuality.xml
+     * @return path without file name
      */
     public String getFolderName() {
         return strFolderName;
@@ -209,7 +227,7 @@ public class InputFile {
      * Extracts CDR file info from URL and returns it as a map of parameters. If the source file is a file from CDR then the Map
      * contains the following parameters: envelopeurl, envelopepath, instance, filename
      *
-     * @return
+     * @return Map of parameters extracted from URL and can be sent to Conversion Service.
      */
     public Map<String, String> getCdrParams() {
         String strEnvelopeUrl = null;
@@ -220,7 +238,7 @@ public class InputFile {
         }
         if (getHostName() != null && getFolderName() != null && getFileName() != null) {
             strInstance =
-                getHostName().concat(getFolderName()).concat((getFolderName().endsWith("/") ? "" : "/")).concat(getFileName());
+                    getHostName().concat(getFolderName()).concat((getFolderName().endsWith("/") ? "" : "/")).concat(getFileName());
         }
         h.put("filename", getFileName());
         h.put("envelopeurl", strEnvelopeUrl);
@@ -236,6 +254,8 @@ public class InputFile {
 
     /**
      * Get the authentication ticket for the source file, if available.
+     *
+     * @return authentication ticket
      */
     public String getAuthentication() {
         if (Utils.isNullStr(ticket) && isTrustedMode) {
@@ -250,8 +270,10 @@ public class InputFile {
      */
 
     /**
-     * Get Host credentials from database. There could be restriciton for accesing files in differemnt servers. Username and
-     * password are saved in the T_HOST table for these cases
+     * Get Host credentials from database. There could be restriction for accessing files in different servers. Username and
+     * password are saved in the T_HOST table for these cases.
+     *
+     * @param host URL.
      */
     private void getHostCredentials(String host) {
         try {
@@ -278,7 +300,7 @@ public class InputFile {
     /**
      * Opens URLConnection and reads the source into InputStream.
      *
-     * @throws IOException
+     * @throws IOException in case the reading of InuptStream from URLConnection fails.
      */
     private void fillInputStream() throws IOException {
 
@@ -299,12 +321,12 @@ public class InputFile {
     /**
      * Stores the URL.
      *
-     * @param str_url
-     * @throws MalformedURLException
+     * @param strUrl URL of input file
+     * @throws MalformedURLException Invalid URL.
      */
-    private void setURL(String str_url) throws MalformedURLException {
+    private void setURL(String strUrl) throws MalformedURLException {
         try {
-            URI uri = new URI(escapeSpaces(str_url));
+            URI uri = new URI(escapeSpaces(strUrl));
             parseUri(uri);
 
             this.url = uri.toURL();
@@ -318,14 +340,17 @@ public class InputFile {
     }
 
     /**
-     * escape reserved characters in source URI.
+     * Escape spaces with %20 in source URI.
+     * @param strUri URI of input file.
+     * @return Escaped URI.
      */
-    private String escapeSpaces(String str_uri) {
-        return Utils.Replace(str_uri, " ", "%20");
+    private String escapeSpaces(String strUri) {
+        return Utils.Replace(strUri, " ", "%20");
     }
 
     /**
-     * extracts filename from URI's path [scheme:][//authority][path][?query][#fragment].
+     * Extracts filename from URI's path [scheme:][//authority][path][?query][#fragment].
+     * @param uri URI of input file.
      */
     private void parseUri(URI uri) {
 
@@ -334,27 +359,28 @@ public class InputFile {
     }
 
     /**
-     * extracts filename and folder from URI's path.
+     * Extracts filename and folder from URI's path.
+     * @param strUri URI of input file.
      */
-    private void findFileName(String str_uri) {
+    private void findFileName(String strUri) {
 
         String fileName = null;
         String folderName = null;
-        if (Utils.isNullStr(str_uri)) {
+        if (Utils.isNullStr(strUri)) {
             return;
         }
 
-        if (str_uri.endsWith("/")) {
-            str_uri = str_uri.substring(0, str_uri.length() - 1);
+        if (strUri.endsWith("/")) {
+            strUri = strUri.substring(0, strUri.length() - 1);
         }
 
-        int lastSlash = str_uri.lastIndexOf("/");
+        int lastSlash = strUri.lastIndexOf("/");
 
         if (lastSlash > -1) {
-            fileName = str_uri.substring(lastSlash + 1);
-            folderName = str_uri.substring(0, lastSlash);
+            fileName = strUri.substring(lastSlash + 1);
+            folderName = strUri.substring(0, lastSlash);
         } else {
-            fileName = str_uri;
+            fileName = strUri;
             folderName = "";
         }
 
@@ -365,7 +391,8 @@ public class InputFile {
     }
 
     /**
-     * extracts filename without file extension from URI's path.
+     * Extracts filename without file extension from URI's path.
+     * @param strFileName File name extracted from URI of input file.
      */
     private void findFileNameNoExtension(String strFileName) {
 
@@ -385,39 +412,4 @@ public class InputFile {
         this.strFileNameNoExtension = name;
     }
 
-    public static void main(String args[]) {
-        String str_url = "http://localhost:8080/xmlconv/tmp/IrelandePERD a&ta.xml?sss";
-        InputFile in = null;
-        try {
-            /*
-             * URI _uri = new URI(str_url); URL uri = _uri.toURL(); System.out.println("path" + uri.getPath());
-             * System.out.println("host" + uri.getHost()); System.out.println("query" + uri.getQuery());
-             * System.out.println("authority" + uri.getAuthority()); System.out.println("file" + uri.getFile());
-             */
-            in = new InputFile(str_url);
-            System.out.println(in.getHostName());
-            System.out.println(in.getFolderName());
-            System.out.println(in.getFileName());
-            System.out.println(in.getFileNameNoExtension());
-            System.out.println(in.getCdrParams().toString());
-        }
-        // catch(URISyntaxException ue){
-        // System.out.println(ue.toString());
-        // throw new MalformedURLException(ue.toString());
-        // }
-        catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (Exception e) {
-                }
-            }
-        }
-    }
 }
