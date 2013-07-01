@@ -25,19 +25,23 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.BaseAction;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS ListConversionAction
+ * @author Enriko Käsper, TietoEnator Estonia AS
  */
 
 public class ConvertPushAction extends BaseAction {
     /** */
     private static final Log LOGGER = LogFactory.getLog(ConvertPushAction.class);
 
+    /** Conversion ID. */
     public static final String CONVERT_ID_PARAM_NAME = "convert_id";
+    /** Binary data of the file. */
     public static final String CONVERT_FILE_PARAM_NAME = "convert_file";
+    /** File name or URL of the file original location. */
+    public static final String FILE_NAME_PARAM_NAME = "file_name";
 
     /**
      * Purpose of this action is to execute Conversion Service convertPush method. The request should contain multipart/form-data
-     * and convert_id parameter
+     * and convert_id parameter. file_name parameter can be used to overwrite the value with full URL.
      *
      * @throws ServletException
      */
@@ -69,7 +73,12 @@ public class ConvertPushAction extends BaseAction {
 
             // get the file as inputstream from request
             fileInput = fu.getFileAsInputStream(CONVERT_FILE_PARAM_NAME);
-            fileName = fu.getFileName(CONVERT_FILE_PARAM_NAME);
+            // get file name from parameter, if this is not provided then use real file name from multipart content.
+            if (params.containsKey(FILE_NAME_PARAM_NAME)) {
+                fileName = (String) params.get(FILE_NAME_PARAM_NAME);
+            } else {
+                fileName = fu.getFileName(CONVERT_FILE_PARAM_NAME);
+            }
 
             // call ConversionService
             ConversionServiceIF cs = new ConversionService();
@@ -87,12 +96,11 @@ public class ConvertPushAction extends BaseAction {
                 throw new ServletException(ge);
             }
         } finally {
-            if (methodResponse != null){
+            if (methodResponse != null) {
                 try {
                     // flush the content
                     methodResponse.flush();
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     LOGGER.error("Unable to close Servlet Output Stream.", e);
                     e.printStackTrace();
                 }

@@ -15,13 +15,15 @@
             .row{
                 display:block;
                 width:100%;
+                margin-top:3px;
             }
             label{
                 width: 10em;
                 background-color: #f0f0f0;
                 vertical-align: top;
-                margin: 3px;
+                margin-top: 5px;
                 float: left;
+                display:block;
             }
             input[type="text"], input[type="file"]{
                 width: 500px;
@@ -50,15 +52,16 @@
                 xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
                 xmlDoc.async="false";
                 xmlDoc.onreadystatechange=verify;
+                xmlDoc.load(xmlFile);
             }
-            //FF
-            else if( document.implementation && document.implementation.createDocument )
+            else
             {
-                xmlDoc=document.implementation.createDocument("","",null);
-                xmlDoc.async=false;
-                xmlDoc.onreadystatechange=verify;
+                var xmlhttp = new window.XMLHttpRequest();
+                xmlhttp.open("GET", xmlFile, false);
+                xmlhttp.send(null);
+                var xmlDoc = xmlhttp.responseXML.documentElement;
+
             }
-            xmlDoc.load(xmlFile);
             return xmlDoc;
         }
         function verify()
@@ -139,6 +142,10 @@
             }
         }
         function init() {
+            var str = new String(window.location);
+            var n = str.lastIndexOf('/');
+            var path = str.substring(0, n + 1);
+            document.getElementById("server").value = path + "api";
             //loadSchemas();
         }
         window.onload = init;
@@ -150,7 +157,7 @@
         <form action="api/listConversions" method="get">
             <fieldset>
                 <legend>1. "listConversions" method - search for available conversions</legend>
-                <div class="row" style="display:none">
+                <div class="row" style="display:inline">
                     <label for="server">Server URL:</label><input type="text" id="server" name="server" value="api"/>
                 </div>
                 <div class="row">
@@ -166,7 +173,7 @@
             </fieldset>
         </form>
 
-        <form name="convert" action="http://localhost:8080/xmlconv/api/convert" method="post">
+        <form name="convert" action="api/convert" method="post">
             <fieldset>
                 <legend>2. "convert" method - insert the URL of XML file and execute the conversion</legend>
                 <label for="url">URL of XML file:</label><input type="text" id="url" name="url"/>
@@ -177,14 +184,21 @@
             </fieldset>
         </form>
 
-        <form name="convertPush" method="post" enctype="multipart/form-data" action="http://localhost:8080/xmlconv/api/convertPush">
+        <form name="convertPush" method="post" enctype="multipart/form-data" action="api/convertPush">
             <fieldset>
                 <legend>3. "convertPush" method - upload the XML (or zipped XML) file from local machine and execute the conversion</legend>
-                <label for="convert_file">Upload XML file:</label><input type="file" id="convert_file" name="convert_file"/>
-                <br/>
-                <label for="convert_id">Conversion ID:</label><input type="text" id="convert_id2" name="convert_id"/>
-                <br/>
-                <input type="submit" value="Convert">
+                <div class="row">
+                    <label for="convert_file">Upload XML file:</label><input type="file" id="convert_file" name="convert_file"/>
+                </div>
+                <div class="row">
+                    <label for="convert_id2">Conversion ID:</label><input type="text" id="convert_id2" name="convert_id"/>
+                </div>
+                <div class="row">
+                    <label for="file_name">File name or URL:</label><input type="text" id="file_name" name="file_name"/>
+                </div>
+                <div class="row">
+                    <input type="submit" value="Convert">
+                </div>
             </fieldset>
         </form>
 </body>
