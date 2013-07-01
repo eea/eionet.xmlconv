@@ -16,7 +16,7 @@ import eionet.gdem.utils.Utils;
 
 /**
  * This unittest tests the Conversion Service convert method
- * 
+ *
  * @author Enriko Käsper, TietoEnator Estonia AS ConvertXmlMethodTest
  */
 
@@ -33,6 +33,7 @@ public class ConvertXMLMethodTest extends DBTestCase {
     /**
      * Set up test case properties
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         TestUtils.setUpProperties(this);
@@ -41,6 +42,7 @@ public class ConvertXMLMethodTest extends DBTestCase {
     /**
      * Load the data which will be inserted for the test
      */
+    @Override
     protected IDataSet getDataSet() throws Exception {
         IDataSet loadedDataSet =
                 new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_CONVERSIONS_XML));
@@ -129,6 +131,22 @@ public class ConvertXMLMethodTest extends DBTestCase {
         String strContent = new String(content, "UTF-8");
         // test if the converion result contains some text from seed..xml file
         assertTrue(strContent.indexOf(TestConstants.STRCONTENT_RESULT) > 0);
+
+    }
+
+    /**
+     * Tests convertPush method with XML file. Validate if the URL from file name is in the result of HTML.
+     */
+    public void testConvertPushWithURLinFileName() throws Exception {
+        String envelopeUrl = "http://cdrtest.eionet.europa.eu/envelope";
+        ConversionService cs = new ConversionService();
+        byte[] bytes = Utils.fileToBytes(getClass().getClassLoader().getResource(TestConstants.SEED_GENERAL_REPORT_XML).getFile());
+        Hashtable<String, Object> h = cs.convertPush(bytes, "168", envelopeUrl + "/" + TestConstants.GR_HTML_FILENAME_RESULT);
+
+        byte[] content = (byte[]) h.get(ConvertXMLMethod.CONTENT_KEY);
+        String strContent = new String(content, "UTF-8");
+        // test if the conversion result contains envelope URL passed with parameter.
+        assertTrue(strContent.indexOf("envelope: " + envelopeUrl) > 0);
 
     }
 }

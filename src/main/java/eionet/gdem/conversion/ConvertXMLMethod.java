@@ -4,6 +4,7 @@
 package eionet.gdem.conversion;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -51,41 +52,58 @@ import eionet.gdem.utils.xml.XmlException;
 
 public class ConvertXMLMethod extends RemoteServiceMethod {
 
+    /** Content type key name used in conversion result Hashtable. */
     public static final String CONTENTTYPE_KEY = "content-type";
+    /** Filename key name used in conversion result Hashtable. */
     public static final String FILENAME_KEY = "filename";
+    /** Content key name used in conversion result Hashtable. */
     public static final String CONTENT_KEY = "content";
 
+    /** Dao for retrieving stylesheet info from DB. */
     private IStyleSheetDao styleSheetDao = GDEMServices.getDaoService().getStyleSheetDao();
+    /** Dao for retrieving conversion type info from DB. */
     private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
     /** */
     private static final Log LOGGER = LogFactory.getLog(ConvertXMLMethod.class);
 
     /**
+     * @see #convert(sourceURL, convertId, conversionParameters).
+     * @param sourceURL @see #convert(sourceURL, convertId, conversionParameters)
+     * @param convertId @see #convert(sourceURL, convertId, conversionParameters)
+     * @return @see #convert(sourceURL, convertId, conversionParameters)
+     * @throws GDEMException @see #convert(sourceURL, convertId, conversionParameters)
+     */
+    public Hashtable<String, Object> convert(String sourceURL, String convertId) throws GDEMException {
+        return convert(sourceURL, convertId, null);
+    }
+
+    /**
      * Converts the XML file to a specific format.
      *
-     * @param sourceURL
-     *            URL of the XML file to be converted
-     * @param convertId
-     *            ID of desired conversion as the follows: - If conversion ID begins with the DD DCM will generate appropriate
-     *            stylesheet on the fly. - If conversion ID is number the DCM will consider consider hand coded conversion
+     * @param sourceURL URL of the XML file to be converted
+     * @param convertId ID of desired conversion as the follows: - If conversion ID begins with the DD DCM will generate appropriate
+     *            stylesheet on the fly. - If conversion ID is number the DCM will consider consider hand coded conversion.
+     * @param externalParameters Map of parameters passed to conversion engine.
      * @return Hashtable containing two elements: - content-type (String) - content (Byte array)
-     * @throws GDEMException
-     *             Thrown in case of errors
+     * @throws GDEMException Thrown in case of conversion errors.
      */
-    public Hashtable convert(String sourceURL, String convertId) throws GDEMException {
-        OutputStream resultStream = null;
+    public Hashtable<String, Object> convert(String sourceURL, String convertId, Map<String, String> externalParameters)
+            throws GDEMException {
+        OutputStream resultStream = new ByteArrayOutputStream();
         String cnvFileName = null;
         String cnvTypeOut = null;
         String cnvFileExt = null;
         String cnvContentType = null;
+        Map<String, String> conversionParameters;
 
         LOGGER.debug("sourceURL=" + sourceURL + "convertId=" + convertId);
+
         if (convertId.startsWith("DD")) {
-            return convertDDTable(sourceURL, convertId);
+            return convertDDTable(sourceURL, convertId, externalParameters);
         } else {
 
-            Hashtable result = new Hashtable();
+            Hashtable<String, Object> result = new Hashtable<String, Object>();
             String xslFile = null;
             String outputFileName = null;
             InputFile src = null;
@@ -95,6 +113,12 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
                 src.setAuthentication(getTicket());
                 src.setTrustedMode(isTrustedMode());
                 cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ? DEFAULT_FILE_NAME : src.getFileNameNoExtension();
+
+                conversionParameters = src.getCdrParams();
+                //override default CDR parameters if they are set up externally.
+                if (externalParameters != null) {
+                    conversionParameters.putAll(externalParameters);
+                }
 
                 try {
                     HashMap styleSheetData = styleSheetDao.getStylesheetInfo(convertId);
@@ -139,8 +163,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
                     }
                 }
                 ConvertContext ctx = new ConvertContext(src.getSrcInputStream(), xslFile, resultStream, cnvFileExt);
-                outputFileName =
-                    executeConversion(ctx, src.getCdrParams(), cnvTypeOut);
+                outputFileName = executeConversion(ctx, conversionParameters, cnvTypeOut);
 
             } catch (MalformedURLException mfe) {
                 LOGGER.error("Bad URL", mfe);
@@ -170,7 +193,8 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
                 return result;
             }
 
-            byte[] file = Utils.fileToBytes(outputFileName);
+            // byte[] file = Utils.fileToBytes(outputFileName);
+            byte[] file = ((ByteArrayOutputStream) resultStream).toByteArray();
             result.put(CONTENT_KEY, file);
             try {
                 Utils.deleteFile(outputFileName);
@@ -183,9 +207,18 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
         }
     }
 
-    public Hashtable convertDDTable(String sourceURL, String convertId) throws GDEMException {
+    /**
+     * Use automatically generated XSL for converting XML with Data Dictionary XML Schema.
+     * @param sourceURL URL of source XML file.
+     * @param convertId Conversion ID.
+     * @param conversionParameters Map of parameters forwarded to conversion engine.
+     * @return conversion result as key value pairs in Hashtable.
+     * @throws GDEMException in case of conversion Exception.
+     */
+    public Hashtable<String, Object> convertDDTable(String sourceURL, String convertId, Map<String, String> externalParameters)
+            throws GDEMException {
         OutputStream result = null;
-        Hashtable h = new Hashtable();
+        Hashtable<String, Object> h = new Hashtable<String, Object>();
         String outputFileName = null;
         InputFile src = null;
         String tblId = "";
@@ -194,8 +227,9 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
         String cnvTypeOut = null;
         String cnvFileExt = null;
         String cnvContentType = null;
+        Map<String, String> conversionParameters = null;
 
-        // prase idtable and id conversion
+        // parse table ID and conversion ID
         if (convertId.startsWith("DD")) {
             tblId = convertId.substring(6, convertId.indexOf("_CONV"));
             convId = convertId.substring(convertId.indexOf("_CONV") + 5, convertId.length());
@@ -213,15 +247,21 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
             src.setTrustedMode(isTrustedMode());
             cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ? DEFAULT_FILE_NAME : src.getFileNameNoExtension();
 
+            conversionParameters = src.getCdrParams();
+            //override default CDR parameters if they are set up externally.
+            if (externalParameters != null) {
+                conversionParameters.putAll(externalParameters);
+            }
+
             try {
                 cnvTypeOut = conv.getResultType();
                 Hashtable convType = convTypeDao.getConvType(cnvTypeOut);
 
                 if (convType != null) {
                     try {
-                        cnvContentType = (String) convType.get("content_type");// content type used in HTTP header
+                        cnvContentType = (String) convType.get("content_type"); // content type used in HTTP header
                         cnvFileExt = (String) convType.get("file_ext");
-                        cnvTypeOut = (String) convType.get("conv_type");// content type ID
+                        cnvTypeOut = (String) convType.get("conv_type"); // content type ID
                     } catch (Exception e) {
                         LOGGER.error("Error getting conversion types ", e);
                         // Take no action, use default params
@@ -251,8 +291,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
                 }
             }
             ConvertContext ctx = new ConvertContext(src.getSrcInputStream(), byteIn, result, cnvFileExt);
-            outputFileName =
-                executeConversion(ctx, src.getCdrParams(), cnvTypeOut);
+            outputFileName = executeConversion(ctx, conversionParameters, cnvTypeOut);
 
         } catch (MalformedURLException mfe) {
             LOGGER.error("Bad URL", mfe);
@@ -293,24 +332,30 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
     }
 
     /**
-     * The method checks if the given file is XML and calls convert methdo. If the file is not XML, then the method tries to unzip
-     * it and find an XML from zip file.
+     * The method checks if the given file is XML and calls convert method. If the file is not XML, then the method tries to unzip
+     * it and find an XML from zip file. File name value is used in the result of the conversion.
+     * File name parameter can be URL. In this case the CDR envelope URL is extracted from URL and passed to converter.
      *
-     * @param fileInput
-     * @param convertId
-     * @param fileName
-     * @return
-     * @throws GDEMException
-     *             no XML file found from given input stream
+     * @param fileInput InputStream with the source XML file to be converted.
+     * @param convertId Conversion(XSL) ID.
+     * @param fileName File name or URL of the input file.
+     * @return Conversion result.
+     * @throws GDEMException no XML file found from given input stream or XSL is missing with the given id.
      */
-    public Hashtable convertPush(InputStream fileInput, String convertId, String fileName) throws GDEMException {
+    public Hashtable<String, Object> convertPush(InputStream fileInput, String convertId, String fileName) throws GDEMException {
         String filePath = null;
-        Hashtable result = null;
+        Hashtable<String, Object> result = null;
         String tmpFolderName = null;
         boolean isXml = false;
         FileOutputStream outStream = null;
+        Map<String, String> cdrParams = null;
 
         try {
+            if (Utils.isURL(fileName)) {
+                InputFile inputFile = new InputFile(fileName);
+                fileName = inputFile.getFileName();
+                cdrParams = inputFile.getCdrParams();
+            }
             // Store the file into temporary folder
             tmpFolderName = Utils.createUniqueTmpFolder();
             filePath = tmpFolderName + File.separator + (Utils.isNullStr(fileName) ? DEFAULT_FILE_NAME : fileName);
@@ -347,9 +392,9 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
                 }
             }
 
-            // Creates an URI for temprarily stored XML file and calll convert method with it
+            // Creates an URI for temporarily stored XML file and call convert method with it
             String fileUri = Utils.getURIfromPath(filePath, false);
-            result = convert(fileUri, convertId);
+            result = convert(fileUri, convertId, cdrParams);
 
         } catch (Exception e) {
             LOGGER.error(e.toString());
@@ -369,19 +414,14 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
     }
 
     /**
-     * Choose the correct converter for given content type and execute the conversion
-     *
-     * @param source
-     * @param xslt
-     * @param result
-     * @param params
-     * @param cnvFileExt
-     * @param cnvTypeOut
-     * @return
-     * @throws Exception
+     * Choose the correct converter for given content type and execute the conversion.
+     * @param ctx ConvertContext
+     * @param params Map of parameters passed to converter.
+     * @param cnvTypeOut Output type of conversion.
+     * @return File name of conversion result with correct extension.
+     * @throws Exception in case of conversion error occurs
      */
-    private String executeConversion(ConvertContext ctx, Map<String, String> params,
-            String cnvTypeOut) throws Exception {
+    private String executeConversion(ConvertContext ctx, Map<String, String> params, String cnvTypeOut) throws Exception {
         ConvertStrategy cs = null;
         if (cnvTypeOut.startsWith("HTML")) {
             cs = new HTMLConverter();
@@ -402,6 +442,8 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
 
     /**
      * Creates DD table definition URL. If it is a test, then the definition should be in xml stored locally.
+     * @param tblId Numeric ID of Data Dictionary table.
+     * @return URL of DD table definition XML.
      */
     private String getDDTableDefUrl(String tblId) {
         if (GDEMServices.isTestConnection()) {

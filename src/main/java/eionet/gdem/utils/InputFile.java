@@ -238,7 +238,7 @@ public class InputFile {
         }
         if (getHostName() != null && getFolderName() != null && getFileName() != null) {
             strInstance =
-                    getHostName().concat(getFolderName()).concat((getFolderName().endsWith("/") ? "" : "/")).concat(getFileName());
+                    getHostName().concat(getFolderName()).concat(getFolderName().endsWith("/") ? "" : "/").concat(getFileName());
         }
         h.put("filename", getFileName());
         h.put("envelopeurl", strEnvelopeUrl);
