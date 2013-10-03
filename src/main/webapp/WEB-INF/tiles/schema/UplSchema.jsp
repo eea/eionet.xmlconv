@@ -82,7 +82,7 @@
     </logic:present>
 
     <logic:notPresent name="schemas" name="schemas.uploaded" property="schemas" >
-        <div class="success">
+        <div class="advice-msg">
             <bean:message key="label.uplSchema.noSchemas"/>
         </div>
     </logic:notPresent>

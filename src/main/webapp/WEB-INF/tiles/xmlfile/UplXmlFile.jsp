@@ -100,7 +100,7 @@
         </html:form>
     </logic:present>
     <logic:notPresent name="xmlfiles" name="xmlfiles.uploaded" property="xmlfiles" >
-        <div class="success">
+        <div class="advice-msg">
             <bean:message key="label.uplXmlFile.noXmlFiles"/>
         </div>
     </logic:notPresent>

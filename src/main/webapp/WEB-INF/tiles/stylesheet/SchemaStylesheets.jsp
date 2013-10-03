@@ -143,7 +143,7 @@
                     </div>
             </logic:present>
             <logic:notPresent name="stylesheets" name="schema" scope="page" property="stylesheets" >
-                <div class="success">
+                <div class="advice-msg">
                     <bean:message key="label.schema.noStylesheets"/>
                 </div>
             </logic:notPresent>

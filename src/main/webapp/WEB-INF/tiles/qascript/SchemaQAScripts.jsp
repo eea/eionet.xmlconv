@@ -176,7 +176,7 @@
 
             </logic:present>
             <logic:notPresent name="qascripts" name="schema" scope="page" property="qascripts" >
-                <div class="success">
+                <div class="advice-msg">
                     <bean:message key="label.schema.noQAScripts"/>
                 </div>
             </logic:notPresent>

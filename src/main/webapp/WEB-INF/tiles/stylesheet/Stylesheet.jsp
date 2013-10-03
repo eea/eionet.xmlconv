@@ -83,7 +83,7 @@
         </html:form>
     </logic:present>
     <logic:notPresent name="handCodedStylesheets" name="stylesheet.stylesheetList" property="handCodedStylesheets" >
-        <div class="success">
+        <div class="advice-msg">
             <bean:message key="label.stylesheet.noHandCodedConversions"/>
         </div>
     </logic:notPresent>
