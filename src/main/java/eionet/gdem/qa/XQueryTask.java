@@ -29,6 +29,7 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -101,6 +102,10 @@ public class XQueryTask extends Thread {
                 LOGGER.info("Job ID=" + jobId + " Validation started");
 
                 try {
+					// validate only the first XML Schema
+                    if (scriptFile.contains(" ")) {
+                        scriptFile = StringUtils.substringBefore(scriptFile, " ");
+                    }
                     LOGGER.info("** XQuery starts, ID=" + jobId + " schema: " + scriptFile + " result will be stored to "
                             + resultFile);
                     ValidationService vs = new ValidationService();
