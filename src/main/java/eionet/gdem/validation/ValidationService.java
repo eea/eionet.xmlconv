@@ -31,6 +31,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.resolver.tools.CatalogResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
@@ -159,6 +160,7 @@ public class ValidationService {
             XMLReader reader = parser.getXMLReader();
 
             reader.setErrorHandler(errHandler);
+            reader.setEntityResolver(new CatalogResolver());
 
             // make parser to validate
             reader.setFeature("http://xml.org/sax/features/validation", true);
