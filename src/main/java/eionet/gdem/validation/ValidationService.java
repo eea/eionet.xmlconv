@@ -28,6 +28,8 @@ import java.util.List;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -160,7 +162,8 @@ public class ValidationService {
             XMLReader reader = parser.getXMLReader();
 
             reader.setErrorHandler(errHandler);
-            reader.setEntityResolver(new CatalogResolver());
+            XmlconvCatalogResolver catalogResolver = new XmlconvCatalogResolver();
+            reader.setEntityResolver(catalogResolver);
 
             // make parser to validate
             reader.setFeature("http://xml.org/sax/features/validation", true);
@@ -341,5 +344,25 @@ public class ValidationService {
 
     public void setWarningMessage(String warningMessage) {
         this.warningMessage = warningMessage;
+    }
+
+    /**
+     *
+     * Extends CatalogResolver used by validation service to be able to log the usage of resources.
+     *
+     * @author Enriko Käsper
+     */
+    public class XmlconvCatalogResolver extends CatalogResolver {
+        @Override
+        public Source resolve(String href, String base) throws TransformerException {
+            LOGGER.info("Validation service resolves uri=" + href + " ; base=" + base);
+            return super.resolve(href, base);
+        }
+
+        @Override
+        public InputSource resolveEntity(String publicId, String systemId) {
+            LOGGER.info("Validation Service resolves entity with publicId=" + publicId + " ; systemId=" + systemId);
+            return super.resolveEntity(publicId, systemId);
+        }
     }
 }
