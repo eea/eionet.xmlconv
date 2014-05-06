@@ -73,10 +73,13 @@
                                 <mkdir dir="${app.home}/acl" />
                                 <mkdir dir="${app.home}/queries" />
                                 <mkdir dir="${app.home}/schema" />
+                                <mkdir dir="${app.home}/schema-cache" />
                                 <mkdir dir="${app.home}/xsl" />
                                 <mkdir dir="${app.home}/xmlfile" />
                                 <copy file="GDEMServices.xml"
                                     todir="${app.home}" overwrite="true" />
+                                <copy file="supportfiles/catalog.xml"
+                                    todir="${app.home}" />
 
                                 <!-- Copy all files from acl directory into
                                     the same directory in app-home, unless they already exist in the latter. -->
