@@ -47,7 +47,7 @@
                   <td>
                     <logic:present name="stylesheetForm" property="schemas">
                         <logic:iterate indexId="index" id="relatedSchema" name="stylesheetForm" property="schemas" type="Schema">
-                            <a href="viewSchemaForm?schemaId=<bean:write name="relatedSchema" property="id" />" title="view XML Schema properties"><bean:write name="relatedSchema" property="schema"/></a>
+                            <a href="schemaStylesheets?schema=<bean:write name="relatedSchema" property="schema" />" title="view XML Schema stylesheets"><bean:write name="relatedSchema" property="schema"/></a>
                             <br/>
                         </logic:iterate>
                     </logic:present>
