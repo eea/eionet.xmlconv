@@ -21,17 +21,26 @@
 
 package eionet.gdem.qa;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Calendar;
 import java.util.List;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.WorkqueueManager;
 import eionet.gdem.dto.WorkqueueJob;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
@@ -41,41 +50,25 @@ import eionet.gdem.test.TestUtils;
  *
  * @author Enriko Käsper
  */
-public class WQCleanerJobTest  extends DBTestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class WQCleanerJobTest{
+
+    @Autowired
+    private IDatabaseTester databaseTester;
 
     /**
-     * Provide a connection to the database.
+     * Set up test case properties and databaseTester.
      */
-    public WQCleanerJobTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
+    @Before
+    public void setUp() throws Exception {
+        TestUtils.setUpProperties(this);
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_QA_XML);
     }
 
-    /**
-     * Set up test case properties
-     */
-    @Override
-    protected void setUp() throws Exception {
-        try {
-            super.setUp();
-            TestUtils.setUpProperties(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
-    }
-
-    /**
-     * Load the data which will be inserted for the test
-     */
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-            new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_QA_XML));
-        return loadedDataSet;
-    }
-
-    public void testCanDelete() throws Exception{
-        Properties.wqJobMaxAge = 24;//24 hours
+    @Test
+    public void testCanDelete() throws Exception {
+        Properties.wqJobMaxAge = 24;// 24 hours
 
         WorkqueueJob job = new WorkqueueJob();
         job.setStatus(Constants.XQ_PROCESSING);
@@ -104,10 +97,11 @@ public class WQCleanerJobTest  extends DBTestCase {
         assertTrue(WQCleanerJob.canDeleteJob(job));
     }
 
-    public void testCleanWorkqueueJobs() throws Exception{
+    @Test
+    public void testCleanWorkqueueJobs() throws Exception {
         WorkqueueManager manager = new WorkqueueManager();
         List<WorkqueueJob> jobs = manager.getFinishedJobs();
-        assertTrue(jobs.size()>0);
+        assertTrue(jobs.size() > 0);
 
         WQCleanerJob cleaner = new WQCleanerJob();
         cleaner.execute(null);

@@ -114,10 +114,10 @@
                   </td>
                   <td>
                     <logic:present name="user">
-                        <html:checkbox property="blockerValidation" styleId="txtBlockerValidation"/>
+                        <html:checkbox property="blocker" styleId="txtBlockerValidation"/>
                     </logic:present>
                     <logic:notPresent name="user">
-                        <bean:write name="schemaForm" property="blockerValidation" />
+                        <bean:write name="schemaForm" property="blocker" />
                     </logic:notPresent>
                   </td>
                 </tr>

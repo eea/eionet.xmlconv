@@ -21,12 +21,22 @@
 
 package eionet.gdem.dcm.business;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eionet.gdem.dto.UplXmlFile;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
@@ -36,34 +46,20 @@ import eionet.gdem.web.struts.xmlfile.UplXmlFileHolder;
 /**
  * @author Enriko Käsper, Tieto Estonia UplXmlFileManagerTest
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class UplXmlFileManagerTest{
 
-public class UplXmlFileManagerTest extends DBTestCase {
-
-    /**
-     * Provide a connection to the database.
-     */
-    public UplXmlFileManagerTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
-    }
+    @Autowired
+    private IDatabaseTester databaseTester;
 
     /**
-     * Set up test case properties
+     * Set up test case properties and databaseTester.
      */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-    }
-
-    /**
-     * Load the data which will be inserted for the test
-     */
-    @Override
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_UPLXML_XML));
-        return loadedDataSet;
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_UPLXML_XML);
     }
 
     /**
@@ -71,6 +67,7 @@ public class UplXmlFileManagerTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testAddXml() throws Exception {
 
         String title = "XLIFF xml file";
@@ -96,6 +93,7 @@ public class UplXmlFileManagerTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testAddDuplicateXml() throws Exception {
         Exception dcmException = null;
 
@@ -122,6 +120,7 @@ public class UplXmlFileManagerTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testQAScriptFileExists() throws Exception {
 
         UplXmlFileManager xm = new UplXmlFileManager();
@@ -144,6 +143,7 @@ public class UplXmlFileManagerTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testUpdateXml() throws Exception {
 
         String xmlFileId = "1";
@@ -172,6 +172,7 @@ public class UplXmlFileManagerTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testDeleteXml() throws Exception {
 
         String user = TestConstants.TEST_ADMIN_USER;

@@ -9,10 +9,12 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Repository;
 
 import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.utils.Utils;
 
+@Repository("hostDao")
 public class HostMySqlDao extends MySqlBaseDao implements IHostDao {
 
     /** */
@@ -30,21 +32,6 @@ public class HostMySqlDao extends MySqlBaseDao implements IHostDao {
     private static final String qHostByName = "SELECT " + HOST_ID_FLD + ", " + HOST_NAME_FLD + ", " + USER_FLD + ", " + PWD_FLD
     + " FROM " + HOST_TABLE + " WHERE " + HOST_NAME_FLD + " like ? " + " ORDER BY " + HOST_NAME_FLD;
 
-    public HostMySqlDao() {
-    }
-
-    /*
-     * public String addHost(String hostName, String userName, String pwd) throws SQLException {
-     *
-     * hostName = (hostName == null ? "" : hostName);
-     *
-     * String sql = "INSERT INTO " + HOST_TABLE + " ( " + HOST_NAME_FLD + ", " + USER_FLD + ", " + PWD_FLD + ") VALUES (" +
-     * Utils.strLiteral(hostName) + ", " + Utils.strLiteral(userName) + ", " + Utils.strLiteral(pwd) + ")";
-     *
-     * _executeUpdate(sql);
-     *
-     * return _getLastInsertID(); }
-     */
     @Override
     public String addHost(String hostName, String userName, String pwd) throws SQLException {
         Connection conn = null;

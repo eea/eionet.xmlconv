@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 <!--
      You can run this change log on your database as many times as you want, it will ignore the
      changes that are already applied. It also means that you can't modify an existing revision.
@@ -119,7 +119,7 @@
             </column>
             <column name="DESCRIPTION" type="VARCHAR(255)"/>
             <column name="DTD_PUBLIC_ID" type="VARCHAR(255)"/>
-            <column defaultValue="'0'" name="VALIDATE" type="enum('0','1')"/>
+            <column defaultValue="0" name="VALIDATE" type="enum('0','1')"/>
             <column defaultValue="XSD" name="SCHEMA_LANG" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -248,7 +248,88 @@
     <changeSet author="kasperen" id="rev-21">
         <addColumn tableName="T_SCHEMA">
             <column name="BLOCKER" type="enum('0','1')" defaultValue="0"/>
-		</addColumn>
-		<sql>UPDATE T_SCHEMA SET BLOCKER = '0';</sql>
+        </addColumn>
+        <sql>UPDATE T_SCHEMA SET BLOCKER = '0';</sql>
     </changeSet>
+    <changeSet author="kasperen" id="rev-22" failOnError="false">
+        <comment>Remove obsolete table.</comment>
+        <dropTable tableName="T_XFSBROWSER"/>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-23" dbms="mysql">
+        <comment>Ensure that all tables use InnoDB.</comment>
+        <sql>
+            ALTER TABLE t_backup ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE t_convtype ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE t_file ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE t_host ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE t_query ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE t_root_elem ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE t_schema ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE t_stylesheet ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE t_upl_schema ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE t_xqjobs ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        </sql>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-24">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="T_STYLESHEET_SCHEMA"/>
+            </not>
+        </preConditions>
+        <comment>Add new table for storing many-to-many relations between stylesheets and schemas.</comment>
+        <createTable tableName="T_STYLESHEET_SCHEMA">
+            <column autoIncrement="true" name="STYLESHEET_SCHEMA_ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValueNumeric="0" name="STYLESHEET_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="SCHEMA_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+             <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-25">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="T_STYLESHEET_SCHEMA" foreignKeyName="FK_STYLESHEET_SCHEMA_ID"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="STYLESHEET_ID" baseTableName="T_STYLESHEET_SCHEMA"
+        constraintName="FK_STYLESHEET_SCHEMA_ID" deferrable="false" initiallyDeferred="false"
+        onDelete="CASCADE" onUpdate="CASCADE"
+        referencedColumnNames="CONVERT_ID" referencedTableName="T_STYLESHEET" referencesUniqueColumn="false"/>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-26">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="T_STYLESHEET_SCHEMA" foreignKeyName="FK_SCHEMA_STYLESHEET_ID"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="SCHEMA_ID" baseTableName="T_STYLESHEET_SCHEMA"
+        constraintName="FK_SCHEMA_STYLESHEET_ID" deferrable="false" initiallyDeferred="false"
+        onDelete="CASCADE" onUpdate="CASCADE"
+        referencedColumnNames="SCHEMA_ID" referencedTableName="T_SCHEMA" referencesUniqueColumn="false"/>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-27">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="UNIQUE_STYLESHEET_SCHEMA" tableName="T_STYLESHEET_SCHEMA"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="UNIQUE_STYLESHEET_SCHEMA" tableName="T_STYLESHEET_SCHEMA" unique="true">
+            <column name="STYLESHEET_ID"/>
+            <column name="SCHEMA_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="kasperen" id="rev-28">
+        <comment>Convert one-to-many relations data to many-to-many relations.</comment>
+        <sql>
+            INSERT IGNORE INTO T_STYLESHEET_SCHEMA (SCHEMA_ID, STYLESHEET_ID) SELECT SCHEMA_ID, CONVERT_ID FROM T_STYLESHEET WHERE SCHEMA_ID>0;;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

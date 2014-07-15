@@ -76,7 +76,7 @@
                     </label>
                   </td>
                   <td>
-                    <html:checkbox property="blockerValidation"  styleId="txtBlockerValidation"/>
+                    <html:checkbox property="blockerValidation" styleId="txtBlockerValidation"/>
                   </td>
                 </tr>
                 <tr>

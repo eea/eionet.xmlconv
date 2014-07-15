@@ -25,24 +25,23 @@ response.setDateHeader("Expires", 0);
             <bean:message name="title"/>
         </title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <!--  EEA central styles -->
         <link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/print.css" media="print" />
         <link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/handheld.css" media="handheld" />
         <link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen" />
+        <!--  local style -->
         <link rel="stylesheet" type="text/css" href="<c:url value="/css/main.css"/>" media="screen" />
         <link rel="shortcut icon" href="<c:url value="/images/favicon.ico"/>" type="image/x-icon" />
-
-        <link type="text/css" href="<c:url value="/css/smoothness/jquery-ui-1.8.16.custom.css" />" rel="stylesheet" />
-        <script type="text/javascript" src="<c:url value="/scripts/jquery-1.6.2.min.js" />"></script>
-        <script type="text/javascript" src="<c:url value="/scripts/jquery-ui-1.8.16.custom.min.js" />"></script>
-
+        <!-- jQuery javascripts and css-->
+        <link href="<c:url value="/css/smoothness/jquery-ui-1.10.3.min.css" />" rel="stylesheet" type="text/css"/>
+        <script type="text/javascript" src="<c:url value="/scripts/jquery-1.9.1.min.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/scripts/jquery-ui-1.10.3.min.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/scripts/jquery-validate-1.11.1.min.js" />"></script>
+        <!-- local javascripts -->
         <script type="text/javascript" src="<c:url value="/scripts/admin.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/scripts/pageops.js"/>"></script>
-        <script type="text/javascript">
-            // <![CDATA[
-                parentLocation='<%=request.getRequestURI()%>';
-                applicationRoot='<%=request.getContextPath()%>';
-            // ]]>
-        </script>
+
+        <tiles:insert attribute="specific_header" ignore="true"/>
     </head>
 
     <body>

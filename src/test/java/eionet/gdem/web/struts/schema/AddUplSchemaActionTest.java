@@ -22,7 +22,7 @@ import eionet.gdem.test.mocks.MockStrutsMultipartRequestSimulator;
 
 public class AddUplSchemaActionTest extends MockStrutsTestCase {
 
-    private IUPLSchemaDao uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
+    private IUPLSchemaDao uplSchemaDao;
     private String schemaUrl = "Upadted URL";
     private String description = "Updated description";
 
@@ -30,6 +30,7 @@ public class AddUplSchemaActionTest extends MockStrutsTestCase {
         super(testName);
     }
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         // set struts-confg file location
@@ -38,7 +39,8 @@ public class AddUplSchemaActionTest extends MockStrutsTestCase {
         context.setAttribute("javax.servlet.context.tempdir", new File(TestUtils.getStrutsTempDir(this)));
         setInitParameter("validating", "false");
         // setup database
-        DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
+        DbHelper.setUpSpringContextWithDatabaseTester(TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
+        uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
         TestUtils.setUpProperties(this);
     }
 

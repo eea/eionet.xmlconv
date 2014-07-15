@@ -71,4 +71,31 @@ table.formtable {
     width: 75%;
 }
 /* REDESIGNED PART END */
+}
 
+.link-xquery {
+    background: transparent url(../images/xquery.png) 0% 1px no-repeat;
+    padding: 2px 0px 2px 18px;
+}
+.ui-autocomplete {
+    font-size:0.8em;
+}
+.delSchemaLink {
+    margin-left: 0.7em;
+}
+.delNewSchemaLink {
+    margin-left: 0.7em;
+}
+.newSchemaContainer, .schemaContainer {
+    padding-bottom: 0.2em;
+}
+.newSchemaContainer input.error {
+    border: 1px solid orange;
+    background: transparent;
+    font-style: normal;
+}
+.newSchemaContainer label.error {
+    margin-left: 0.7em;
+    font-style: italic;
+    color: orange;
+}

@@ -68,6 +68,7 @@ public interface Constants {
     // Folder for temporary files - to be placed under public
     String TMP_FOLDER = "tmp/";
     String QUERIES_FOLDER = "queries/";
+    String SCHEMA_FOLDER = "schemas/";
 
     // Public constants for SourceFileAdapter
     String GETSOURCE_URL = "/do/getsource";

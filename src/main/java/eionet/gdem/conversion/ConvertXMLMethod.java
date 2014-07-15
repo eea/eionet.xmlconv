@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -34,6 +33,7 @@ import eionet.gdem.dcm.XslGenerator;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.remote.RemoteServiceMethod;
 import eionet.gdem.dto.ConversionDto;
+import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IStyleSheetDao;
@@ -115,19 +115,19 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
                 cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ? DEFAULT_FILE_NAME : src.getFileNameNoExtension();
 
                 conversionParameters = src.getCdrParams();
-                //override default CDR parameters if they are set up externally.
+                // override default CDR parameters if they are set up externally.
                 if (externalParameters != null) {
                     conversionParameters.putAll(externalParameters);
                 }
 
                 try {
-                    HashMap styleSheetData = styleSheetDao.getStylesheetInfo(convertId);
+                    Stylesheet styleSheetData = styleSheetDao.getStylesheet(convertId);
 
                     if (styleSheetData == null) {
                         throw new GDEMException("No stylesheet info for convertID= " + convertId);
                     }
-                    xslFile = getXslFolder() + (String) styleSheetData.get("xsl");
-                    cnvTypeOut = (String) styleSheetData.get("content_type_out");
+                    xslFile = styleSheetData.getXslFileFullPath();
+                    cnvTypeOut = styleSheetData.getType();
 
                     Hashtable convType = convTypeDao.getConvType(cnvTypeOut);
 
@@ -248,7 +248,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
             cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ? DEFAULT_FILE_NAME : src.getFileNameNoExtension();
 
             conversionParameters = src.getCdrParams();
-            //override default CDR parameters if they are set up externally.
+            // override default CDR parameters if they are set up externally.
             if (externalParameters != null) {
                 conversionParameters.putAll(externalParameters);
             }

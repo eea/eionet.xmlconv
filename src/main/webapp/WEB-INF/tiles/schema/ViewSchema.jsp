@@ -89,7 +89,7 @@
                         <bean:message key="label.schema.isBlockerValidation"/>
                       </th>
                   <td>
-                        <bean:write name="schemaForm" property="blockerValidation" />
+                        <bean:write name="schemaForm" property="blocker" />
                   </td>
                 </tr>
                 <tr>

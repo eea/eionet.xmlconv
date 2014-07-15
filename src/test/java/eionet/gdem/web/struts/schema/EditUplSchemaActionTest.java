@@ -23,7 +23,7 @@ import eionet.gdem.test.mocks.MockStrutsMultipartRequestSimulator;
 
 public class EditUplSchemaActionTest extends MockStrutsTestCase {
 
-    private IUPLSchemaDao uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
+    private IUPLSchemaDao uplSchemaDao;
     private String uplSchemaId = "8";
     private String schemaId = "2";
     private String schemaFileName = "xliff.dtd";
@@ -32,6 +32,7 @@ public class EditUplSchemaActionTest extends MockStrutsTestCase {
         super(testName);
     }
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         // set struts-confg file location
@@ -39,8 +40,9 @@ public class EditUplSchemaActionTest extends MockStrutsTestCase {
         // set tempdir property for executing multi-part requests. Struts tries to save the sent file temprarily
         context.setAttribute("javax.servlet.context.tempdir", new File(TestUtils.getStrutsTempDir(this)));
         setInitParameter("validating", "false");
-        // setup database
-        DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
+        // setup database & Spring context
+        DbHelper.setUpSpringContextWithDatabaseTester(TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
+        uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
         TestUtils.setUpProperties(this);
     }
 
@@ -109,8 +111,8 @@ public class EditUplSchemaActionTest extends MockStrutsTestCase {
 
         // Get schema by ID and test if all inserted fields are NOT in DB
         Hashtable schema = uplSchemaDao.getUplSchemaById(uplSchemaId);
-        assertTrue(schemaFileName.equals((String) schema.get("upl_schema_file")));
-        assertTrue(uplSchemaId.equals((String) schema.get("upl_schema_id")));
+        assertTrue(schemaFileName.equals(schema.get("upl_schema_file")));
+        assertTrue(uplSchemaId.equals(schema.get("upl_schema_id")));
 
     }
 

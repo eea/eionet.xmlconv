@@ -24,10 +24,20 @@ package eionet.gdem.web.struts.stylesheet;
 import java.util.List;
 
 import eionet.gdem.dto.Schema;
+import eionet.gdem.dto.Stylesheet;
 
+/**
+ * Wrapper object holding stylesheet related information displayed on web forms.
+ *
+ * @author Enriko Käsper
+ */
 public class StylesheetListHolder {
 
+    /** List of Stylesheet objects. */
+    private List<Stylesheet> stylesheetList;
+    /** List of Schema and related Stylesheet objects. */
     private List<Schema> handCodedStylesheets;
+    /** List of DD Schemas and related generated stylesheets. */
     private List<Schema> ddStylesheets;
     boolean ssiPrm;
     boolean ssdPrm;
@@ -83,6 +93,20 @@ public class StylesheetListHolder {
 
     public void setHandcoded(boolean handcoded) {
         this.handcoded = handcoded;
+    }
+
+    /**
+     * @return the stylesheetList
+     */
+    public List<Stylesheet> getStylesheetList() {
+        return stylesheetList;
+    }
+
+    /**
+     * @param stylesheetList the stylesheetList to set
+     */
+    public void setStylesheetList(List<Stylesheet> stylesheetList) {
+        this.stylesheetList = stylesheetList;
     }
 
 }

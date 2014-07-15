@@ -21,12 +21,19 @@
 
 package eionet.gdem.web.struts.stylesheet;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
+
+import eionet.gdem.dto.Schema;
+import eionet.gdem.dto.Stylesheet;
 
 public class StylesheetForm extends ActionForm {
 
@@ -42,11 +49,21 @@ public class StylesheetForm extends ActionForm {
     private String modified;
     private String checksum;
     private String dependsOn;
+    /** List of related XML Schemas. */
+    private List<Schema> schemas;
+    /** List of new related XML Schemas. */
+    private List<String> newSchemas;
+    /** If any related schema lang=EXCEL then show depends on selection on the form. */
+    private boolean showDependsOnInfo;
+    /** List of stylesheets available for dependsOn attribute. */
+    private List<Stylesheet> existingStylesheets;
 
+    @Override
     public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         return null;
     }
 
+    @Override
     public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         schema = null;
         outputtype = null;
@@ -157,4 +174,63 @@ public class StylesheetForm extends ActionForm {
         this.dependsOn = dependsOn;
     }
 
+    /**
+     * @return the schemas
+     */
+    public List<Schema> getSchemas() {
+        return schemas;
+    }
+
+    /**
+     * @param schemas the schemas to set
+     */
+    public void setSchemas(List<Schema> schemas) {
+        this.schemas = schemas;
+    }
+
+    /**
+     * @return the showDependsOnInfo
+     */
+    public boolean isShowDependsOnInfo() {
+        return showDependsOnInfo;
+    }
+
+    /**
+     * @param showDependsOnInfo the showDependsOnInfo to set
+     */
+    public void setShowDependsOnInfo(boolean showDependsOnInfo) {
+        this.showDependsOnInfo = showDependsOnInfo;
+    }
+
+    /**
+     * @return the existingStylesheets
+     */
+    public List<Stylesheet> getExistingStylesheets() {
+        return existingStylesheets;
+    }
+
+    /**
+     * @param existingStylesheets the existingStylesheets to set
+     */
+    public void setExistingStylesheets(List<Stylesheet> existingStylesheets) {
+        this.existingStylesheets = existingStylesheets;
+    }
+
+    /**
+     * @return the newSchemas
+     */
+    public List<String> getNewSchemas() {
+        if (newSchemas == null) {
+            newSchemas = new ArrayList<String>();
+            newSchemas.add("");
+        }
+        return newSchemas;
+    }
+
+    /**
+     * @param newSchemas the newSchemas to set
+     */
+    public void setNewSchemas(String newSchemas[]) {
+        this.newSchemas = Arrays.asList(newSchemas);
+    }
 }

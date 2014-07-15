@@ -3,7 +3,10 @@ package eionet.gdem.services.db.dao;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
+
+import eionet.gdem.dto.Schema;
 
 /**
  *
@@ -75,14 +78,12 @@ public interface ISchemaDao extends IDbSchema {
      * Removes the schema and all it's related stuff if needed.
      *
      * @param schemaId XML Schema database numeric id or URL.
-     * @param delStylesheets
      * @param delQueries
      * @param delUplSchemas
      * @param delSelf
      * @throws SQLException in case of database error.
      */
-    void removeSchema(String schemaId, boolean delStylesheets, boolean delQueries, boolean delUplSchemas, boolean delSelf)
-            throws SQLException;
+    void removeSchema(String schemaId, boolean delQueries, boolean delUplSchemas, boolean delSelf) throws SQLException;
 
     /**
      * Gets the data of one or several schemas from the repository. Vector contains HashMaps with schema and its stylesheets
@@ -156,5 +157,12 @@ public interface ISchemaDao extends IDbSchema {
      * @throws SQLException in case of database error.
      */
     Vector getSchemasWithStl() throws SQLException;
+
+    /**
+     * Get all XML Schemas with the reference to uploaded file if exists and
+     * count related stylesheets and QA scripts.
+     * @return List of Schema objects.
+     */
+    public List<Schema> getSchemasWithRelations();
 
 }

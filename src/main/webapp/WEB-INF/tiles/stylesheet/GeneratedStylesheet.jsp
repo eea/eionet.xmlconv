@@ -8,7 +8,7 @@
 
 <ed:breadcrumbs-push label="Stylesheets" level="1" />
 
-<logic:present name="stylesheet.generatedList">
+<logic:present name="stylesheet.generatedListHolder">
     <h1 class="documentFirstHeading">
         <bean:message key="label.stylesheet.generated"/>
     </h1>
@@ -29,12 +29,12 @@
                     <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.table"/></th>
                     <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.dataset"/></th>
                     <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.datasetReleased"/></th>
-                    <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.title"/></th>
+                    <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.xmlschema"/></th>
                     <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.stylesheets"/></th>
                 </tr>
             </thead>
             <tbody>
-                <logic:iterate indexId="index" id="schema" name="stylesheet.generatedList" property="ddStylesheets" type="Schema">
+                <logic:iterate indexId="index" id="schema" name="stylesheet.generatedListHolder" property="ddStylesheets" type="Schema">
                 <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
                     <td align="center">
                         <html:link action="/schemaStylesheets" paramId="schema" paramName="schema" paramProperty="schema">
@@ -57,8 +57,8 @@
                     </td>
                     <td>
                         <logic:iterate id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">
-                        <a  href="<bean:write name="stylesheet" property="xsl" />" title="<bean:write name="stylesheet" property="xsl_descr" />">
-                            <bean:write name="stylesheet" property="xsl_descr" />
+                        <a  href="<bean:write name="stylesheet" property="xsl" />" title="<bean:write name="stylesheet" property="description" />">
+                            <bean:write name="stylesheet" property="description" />
                         </a>&#160;
                         </logic:iterate>
                     </td>

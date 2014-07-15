@@ -3,17 +3,25 @@
  */
 package eionet.gdem.dcm.business;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.util.Calendar;
 import java.util.Date;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.UplSchema;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
@@ -24,34 +32,20 @@ import eionet.gdem.web.struts.schema.UplSchemaHolder;
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS SchemaManagerDBTest
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class SchemaManagerDBTest{
 
-public class SchemaManagerDBTest extends DBTestCase {
-
-    /**
-     * Provide a connection to the database.
-     */
-    public SchemaManagerDBTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
-    }
+    @Autowired
+    private IDatabaseTester databaseTester;
 
     /**
-     * Set up test case properties
+     * Set up test case properties.
      */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-    }
-
-    /**
-     * Load the data which will be inserted for the test
-     */
-    @Override
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-            new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_UPL_SCHEMAS_XML));
-        return loadedDataSet;
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
     }
 
     /**
@@ -60,6 +54,7 @@ public class SchemaManagerDBTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testUPLSchemaMethods() throws Exception {
         String descr = "test General report schema";
         String schemaId = "83";
@@ -67,7 +62,7 @@ public class SchemaManagerDBTest extends DBTestCase {
 
         SchemaManager sm = new SchemaManager();
         // get all schemas
-        UplSchemaHolder schemas = sm.getUplSchemas(user);
+        UplSchemaHolder schemas = sm.getAllSchemas(user);
         // count schemas stored in data file
         int countSchemas = schemas.getSchemas().size();
 
@@ -78,7 +73,7 @@ public class SchemaManagerDBTest extends DBTestCase {
         sm.addUplSchema(user, file, fileName, schemaId);
 
         // count schemas
-        UplSchemaHolder schemas2 = sm.getUplSchemas(user);
+        UplSchemaHolder schemas2 = sm.getAllSchemas(user);
         int countSchemas2 = schemas2.getSchemas().size();
 
         // The number of schemas shouldn't be inreased, because the number of schemas is the same
@@ -93,7 +88,7 @@ public class SchemaManagerDBTest extends DBTestCase {
         sm.deleteUplSchema(user, schemaId, false);
 
         // count schemas
-        UplSchemaHolder schemas3 = sm.getUplSchemas(user);
+        UplSchemaHolder schemas3 = sm.getAllSchemas(user);
         int countSchemas3 = schemas3.getSchemas().size();
 
         // check if the number of schemas is the same
@@ -105,6 +100,7 @@ public class SchemaManagerDBTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testGetSchemaByURL() throws Exception {
         String schemaUrl1 = "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd";
         String schemaUrl2 = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd";
@@ -118,6 +114,7 @@ public class SchemaManagerDBTest extends DBTestCase {
         assertEquals(url2, schemaUrl2);
     }
 
+    @Test
     public void testDiffRemoteSchema() throws Exception {
         SchemaManager sm = new SchemaManager();
 
@@ -146,6 +143,7 @@ public class SchemaManagerDBTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testUpdateSchema() throws Exception {
         SchemaManager sm = new SchemaManager();
         String description = "updated";

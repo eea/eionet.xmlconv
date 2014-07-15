@@ -1,5 +1,6 @@
 package eionet.gdem.services.db.dao.mysql;
 
+import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.services.db.dao.DCMDaoFactory;
 import eionet.gdem.services.db.dao.IBackupDao;
 import eionet.gdem.services.db.dao.IConvTypeDao;
@@ -10,58 +11,58 @@ import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.services.db.dao.IStyleSheetDao;
 import eionet.gdem.services.db.dao.IUPLSchemaDao;
 import eionet.gdem.services.db.dao.IUPLXmlFileDao;
-import eionet.gdem.services.db.dao.IXFBrowserDao;
-import eionet.gdem.services.db.dao.IXFormDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 
 public class MySqlDaoFactory extends DCMDaoFactory {
 
+    @Override
     public IStyleSheetDao getStyleSheetDao() {
-        return new StyleSheetMySqlDao();
+        return (IStyleSheetDao) SpringApplicationContext.getBean("stylehseetDao");
     }
 
-    public IXFormDao getXFormDao() {
-        return new XFormMySqlDao();
-    }
-
+    @Override
     public IHostDao getHostDao() {
-        return new HostMySqlDao();
+        return (IHostDao) SpringApplicationContext.getBean("hostDao");
     }
 
+    @Override
     public IQueryDao getQueryDao() {
-        return new QueryMySqlDao();
+        return (IQueryDao) SpringApplicationContext.getBean("queryDao");
     }
 
+    @Override
     public IRootElemDao getRootElemDao() {
-        return new RootElemMySqlDao();
+        return (IRootElemDao) SpringApplicationContext.getBean("rootElemDao");
     }
 
+    @Override
     public IUPLSchemaDao getUPLSchemaDao() {
-        return new UPLSchemaMySqlDao();
+        return (IUPLSchemaDao) SpringApplicationContext.getBean("uplSchemaDao");
     }
 
-    public IXFBrowserDao getXFBrowserDao() {
-        return new XFBrowserMySqlDao();
-    }
-
+    @Override
     public ISchemaDao getSchemaDao() {
-        return new SchemaMySqlDao();
+        return (ISchemaDao) SpringApplicationContext.getBean("schemaDao");
     }
 
+    @Override
     public IXQJobDao getXQJobDao() {
-        return new XQJobMySqlDao();
+        return (IXQJobDao) SpringApplicationContext.getBean("xqJobDao");
     }
 
+    @Override
     public IConvTypeDao getConvTypeDao() {
-        return new ConvTypeMySqlDao();
+        return (IConvTypeDao) SpringApplicationContext.getBean("convTypeDao");
     }
 
+    @Override
     public IUPLXmlFileDao getUPLXmlFileDao() {
-        return new UplXmlFileMySqlDao();
+        return (IUPLXmlFileDao) SpringApplicationContext.getBean("uplXmlFileDao");
     }
 
+    @Override
     public IBackupDao getBackupDao() {
-        return new BackupMySqlDao();
+        return (IBackupDao) SpringApplicationContext.getBean("backupDao");
     }
 
 }

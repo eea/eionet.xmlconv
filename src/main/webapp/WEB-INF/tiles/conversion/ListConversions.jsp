@@ -90,7 +90,7 @@
                                     <input type="radio" name="conversionId" id="r_<bean:write name="stylesheet" property="convId" />"  value="<bean:write name="stylesheet" property="convId" />" />
                                 </logic:notEqual>
                                 <label for="r_<bean:write name="stylesheet" property="convId" />"><bean:write name="stylesheet" property="type" />
-                                &nbsp;-&nbsp;<bean:write name="stylesheet" property="xsl_descr" /></label><br/>
+                                &nbsp;-&nbsp;<bean:write name="stylesheet" property="description" /></label><br/>
                             </logic:iterate>
                         </logic:iterate>
                   </td>

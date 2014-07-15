@@ -1,53 +1,50 @@
 package eionet.gdem.qa;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eionet.gdem.Constants;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 /**
  * This unittest tests the QA Service listQueries and listQAScripts method
- * 
+ *
  * @author Enriko Käsper, TietoEnator Estonia AS ListConversionsMethodTest
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class ListQueriesMethodTest {
 
-public class ListQueriesMethodTest extends DBTestCase {
-
-    /**
-     * Provide a connection to the database.
-     */
-    public ListQueriesMethodTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
-    }
+    @Autowired
+    private IDatabaseTester databaseTester;
 
     /**
-     * Set up test case properties
+     * Set up test case properties and databaseTester.
      */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-    }
-
-    /**
-     * Load the data which will be inserted for the test
-     */
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_QA_XML));
-        return loadedDataSet;
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_QA_XML);
     }
 
     /**
      * Tests that the result of listConversions method contains the right data as defined in seed xml file.
      */
+    @Test
     public void testListConversionsXSDResult() throws Exception {
 
         ListQueriesMethod qm = new ListQueriesMethod();
@@ -56,12 +53,13 @@ public class ListQueriesMethodTest extends DBTestCase {
         assertTrue(v.size() == 1);
         Hashtable ht = (Hashtable) v.get(0);
 
-        assertEquals((String) ht.get(ListQueriesMethod.KEY_TYPE), "xsd");
-        assertEquals((String) ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_ID), "HTML");
-        assertEquals((String) ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_OUT), ListQueriesMethod.DEFAULT_QA_CONTENT_TYPE);
-        assertEquals((String) ht.get(ListQueriesMethod.KEY_UPPER_LIMIT), String.valueOf(ListQueriesMethod.VALIDATION_UPPER_LIMIT));
+        assertEquals(ht.get(ListQueriesMethod.KEY_TYPE), "xsd");
+        assertEquals(ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_ID), "HTML");
+        assertEquals(ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_OUT), ListQueriesMethod.DEFAULT_QA_CONTENT_TYPE);
+        assertEquals(ht.get(ListQueriesMethod.KEY_UPPER_LIMIT), String.valueOf(ListQueriesMethod.VALIDATION_UPPER_LIMIT));
     }
 
+    @Test
     public void testListConversionsXQueryResult() throws Exception {
 
         ListQueriesMethod qas = new ListQueriesMethod();
@@ -71,12 +69,13 @@ public class ListQueriesMethodTest extends DBTestCase {
 
         Hashtable ht = (Hashtable) v.get(0);
 
-        assertEquals((String) ht.get(ListQueriesMethod.KEY_TYPE), Constants.QA_TYPE_XQUERY);
-        assertEquals((String) ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_ID), "HTML");
-        assertEquals((String) ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_OUT), ListQueriesMethod.DEFAULT_QA_CONTENT_TYPE);
-        assertEquals((String) ht.get(ListQueriesMethod.KEY_UPPER_LIMIT), "20");
+        assertEquals(ht.get(ListQueriesMethod.KEY_TYPE), Constants.QA_TYPE_XQUERY);
+        assertEquals(ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_ID), "HTML");
+        assertEquals(ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_OUT), ListQueriesMethod.DEFAULT_QA_CONTENT_TYPE);
+        assertEquals(ht.get(ListQueriesMethod.KEY_UPPER_LIMIT), "20");
     }
 
+    @Test
     public void testListConversionsAllQueries() throws Exception {
 
         ListQueriesMethod qas = new ListQueriesMethod();

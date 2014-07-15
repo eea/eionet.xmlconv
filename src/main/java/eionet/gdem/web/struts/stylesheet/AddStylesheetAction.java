@@ -21,25 +21,18 @@
 
 package eionet.gdem.web.struts.stylesheet;
 
-import java.io.ByteArrayInputStream;
+import com.mysql.jdbc.StringUtils;
+import eionet.gdem.dcm.BusinessConstants;
+import eionet.gdem.dcm.business.StylesheetManager;
+import eionet.gdem.dto.Stylesheet;
+import eionet.gdem.exceptions.DCMException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts.action.*;
+import org.apache.struts.upload.FormFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
-import org.apache.struts.upload.FormFile;
-
-import eionet.gdem.dcm.business.StylesheetManager;
-import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
 
 public class AddStylesheetAction extends Action {
 
@@ -51,17 +44,16 @@ public class AddStylesheetAction extends Action {
             HttpServletResponse httpServletResponse) {
 
         StylesheetForm form = (StylesheetForm) actionForm;
-        String desc = form.getDescription();
-        String schema = form.getSchema();
-        String type = form.getOutputtype();
+        Stylesheet stylesheet = AddEditStylehseetUtils.convertFormToStylesheetDto(form, httpServletRequest);
+
         FormFile xslFile = form.getXslfile();
         String user = (String) httpServletRequest.getSession().getAttribute("user");
-        String dependsOn = form.getDependsOn();
+        String schema = (form.getNewSchemas() == null || form.getNewSchemas().size() == 0) ? null : form.getNewSchemas().get(0);
         httpServletRequest.setAttribute("schema", schema);
 
         if (isCancelled(httpServletRequest)) {
             if (schema != null) {
-                return new ActionForward("/do/schemaStylesheets?schema=" + schema, true); // actionMapping.findForward("success");
+                return new ActionForward("/do/schemaStylesheets?schema=" + schema, true);
             } else {
                 return actionMapping.findForward("list");
             }
@@ -75,44 +67,38 @@ public class AddStylesheetAction extends Action {
             httpServletRequest.getSession().setAttribute("dcm.errors", errors);
             return actionMapping.findForward("fail");
         }
-
-        IXmlCtx x = new XmlContext();
+        stylesheet.setXslFileName(xslFile.getFileName());
         try {
-            x.setWellFormednessChecking();
-            x.checkFromInputStream(new ByteArrayInputStream(xslFile.getFileData()));
+            stylesheet.setXslContent(new String(xslFile.getFileData(), "UTF-8"));
         } catch (Exception e) {
-            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.notvalid"));
-            httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-            return actionMapping.findForward("fail");
+            LOGGER.error("Error in edit stylesheet action when trying to load XSL file content from FormFile object", e);
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(BusinessConstants.EXCEPTION_GENERAL));
+        } finally {
+            xslFile.destroy();
+        }
+        AddEditStylehseetUtils.validateXslFile(stylesheet, errors);
+
+        if (errors.isEmpty()) {
+            try {
+                StylesheetManager stylesheetManager = new StylesheetManager();
+                // stylesheetManager.add(user, schema, xslFile, type, desc, dependsOn);
+                stylesheetManager.add(stylesheet, user);
+                messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.inserted"));
+                StylesheetListLoader.reloadStylesheetList(httpServletRequest);
+                StylesheetListLoader.reloadConversionSchemasList(httpServletRequest);
+            } catch (DCMException e) {
+                e.printStackTrace();
+                LOGGER.error("Add stylesheet error", e);
+                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
+            }
         }
 
-        /*
-         * try { IXmlCtx xml = new XmlContext(); xml.setWellFormednessChecking(); xml.checkFromInputStream((new
-         * InputFile(schema)).getSrcInputStream()); } catch (Exception e) { _logger.error("schema not valid",e);
-         * errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.error.notvalid"));
-         * httpServletRequest.getSession().setAttribute("dcm.errors", errors); return actionMapping.findForward("fail"); }
-         */
-
-        if (schema == null || schema.equals("")) {
-            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.validation"));
-            httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-            return actionMapping.findForward("fail");
-        }
-
-        try {
-            StylesheetManager st = new StylesheetManager();
-            st.add(user, schema, xslFile, type, desc, dependsOn);
-            messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.inserted"));
-            StylesheetListLoader.reloadStylesheetList(httpServletRequest);
-            StylesheetListLoader.reloadConversionSchemasList(httpServletRequest);
-        } catch (DCMException e) {
-            e.printStackTrace();
-            LOGGER.error("Add stylesheet error", e);
-            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
-        }
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);
         httpServletRequest.getSession().setAttribute("dcm.messages", messages);
-        return new ActionForward("/do/schemaStylesheets?schema=" + schema, true); // actionMapping.findForward("success");
+        if (!StringUtils.isNullOrEmpty(schema)) {
+            return new ActionForward("/do/schemaStylesheets?schema=" + schema, true);
+        } else {
+            return actionMapping.findForward("fail");
+        }
     }
-
 }

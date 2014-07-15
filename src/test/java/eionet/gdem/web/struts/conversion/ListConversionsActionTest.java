@@ -3,9 +3,6 @@
  */
 package eionet.gdem.web.struts.conversion;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.Schema;
@@ -16,23 +13,20 @@ import eionet.gdem.test.TestUtils;
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS ListConversionsActionTest
  */
-
 public class ListConversionsActionTest extends MockStrutsTestCase {
-
-    private static final Log LOGGER = LogFactory.getLog(ListConversionsActionTest.class);
 
     public ListConversionsActionTest(String testName) {
         super(testName);
     }
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         setContextDirectory(TestUtils.getContextDirectory());
         setInitParameter("validating", "false");
 
-        // setup database
-        DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_CONVERSIONS_XML);
-
+        // setup database and Spring context
+        DbHelper.setUpSpringContextWithDatabaseTester(TestConstants.SEED_DATASET_CONVERSIONS_XML);
     }
 
     /**
@@ -103,7 +97,7 @@ public class ListConversionsActionTest extends MockStrutsTestCase {
         actionPerform();
         verifyForward("success");
         verifyInputTilesForward("/listConv.jsp");
-        String[] errMess = {BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED};
+        String[] errMess = { BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED };
         verifyActionErrors(errMess);
 
         ConversionForm cForm = (ConversionForm) request.getSession().getAttribute("ConversionForm");

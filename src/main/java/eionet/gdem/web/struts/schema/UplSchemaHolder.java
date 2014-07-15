@@ -23,21 +23,33 @@ package eionet.gdem.web.struts.schema;
 
 import java.util.List;
 
+import eionet.gdem.dto.Schema;
+
+/**
+ *
+ * Holds the list of Schemas and user permissions displayed on Schemas page.
+ *
+ * @author Enriko Käsper
+ */
 public class UplSchemaHolder {
 
-    private List schemas;
+    /** Holds the list of Schema objects. */
+    private List<Schema> schemas;
+    /** Has insert permission. */
     boolean ssiPrm;
+    /** Has delete permission. */
     boolean ssdPrm;
+    /** Has update permission. */
     boolean ssuPrm;
 
     public UplSchemaHolder() {
     }
 
-    public List getSchemas() {
+    public List<Schema> getSchemas() {
         return schemas;
     }
 
-    public void setSchemas(List schemas) {
+    public void setSchemas(List<Schema> schemas) {
         this.schemas = schemas;
     }
 

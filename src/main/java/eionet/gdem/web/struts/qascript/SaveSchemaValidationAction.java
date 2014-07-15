@@ -21,22 +21,15 @@
 
 package eionet.gdem.web.struts.qascript;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
-import org.apache.struts.action.RedirectingActionForward;
-
 import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.web.struts.schema.SchemaElemForm;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts.action.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Enriko Käsper, Tieto Estonia SchemaValidationFormAction
@@ -54,7 +47,7 @@ public class SaveSchemaValidationAction extends Action {
         SchemaElemForm form = (SchemaElemForm) actionForm;
         String schemaId = form.getSchemaId();
         boolean validate = form.isDoValidation();
-        boolean blocker = form.isBlockerValidation();
+        boolean blocker = form.isBlocker();
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
         ActionMessages errors = new ActionMessages();

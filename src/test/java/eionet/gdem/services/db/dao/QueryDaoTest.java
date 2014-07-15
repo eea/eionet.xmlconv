@@ -21,14 +21,21 @@
 
 package eionet.gdem.services.db.dao;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.List;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import eionet.gdem.services.GDEMServices;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
@@ -36,34 +43,23 @@ import eionet.gdem.test.TestUtils;
 /**
  * @author Enriko Käsper, Tieto Estonia QueryDaoTest
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class QueryDaoTest {
 
-public class QueryDaoTest extends DBTestCase {
+    @Autowired
+    private IDatabaseTester databaseTester;
 
-    private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
-
-    /**
-     * Provide a connection to the database.
-     */
-    public QueryDaoTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
-    }
+    @Autowired
+    private IQueryDao queryDao;
 
     /**
-     * Set up test case properties
+     * Set up test case properties and databaseTester.
      */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-    }
-
-    /**
-     * Load the data which will be inserted for the test
-     */
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_QA_XML));
-        return loadedDataSet;
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_QA_XML);
     }
 
     /**
@@ -72,6 +68,7 @@ public class QueryDaoTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testQueryMethods() throws Exception {
 
         String queryFileName = "script.xquery";
@@ -81,7 +78,7 @@ public class QueryDaoTest extends DBTestCase {
         String content_type = "HTML";
         String script_type = "xquery";
         String upperLimit = "100";
-        String  url = "http://url.com";
+        String url = "http://url.com";
 
         // get all uploaded queries
         List queries = queryDao.listQueries(null);
@@ -89,8 +86,8 @@ public class QueryDaoTest extends DBTestCase {
         int countQueries = queries.size();
 
         // add query int db
-        String queryId = queryDao.addQuery(schemaID, shortName, queryFileName, description, content_type,
-                script_type, upperLimit, url);
+        String queryId =
+                queryDao.addQuery(schemaID, shortName, queryFileName, description, content_type, script_type, upperLimit, url);
 
         // count queries
         List queries2 = queryDao.listQueries(null);
@@ -102,27 +99,26 @@ public class QueryDaoTest extends DBTestCase {
         // get the query Object BY query ID
         HashMap query = queryDao.getQueryInfo(queryId);
 
-        assertEquals((String) query.get("schema_id"), schemaID);
-        assertEquals((String) query.get("query"), queryFileName);
-        assertEquals((String) query.get("description"), description);
-        assertEquals((String) query.get("schema_id"), schemaID);
-        assertEquals((String) query.get("short_name"), shortName);
-        assertEquals((String) query.get("content_type"), content_type);
-        assertEquals((String) query.get("script_type"), script_type);
-        assertEquals((String) query.get("upper_limit"), upperLimit);
-        assertEquals((String) query.get("url"), url);
+        assertEquals(query.get("schema_id"), schemaID);
+        assertEquals(query.get("query"), queryFileName);
+        assertEquals(query.get("description"), description);
+        assertEquals(query.get("schema_id"), schemaID);
+        assertEquals(query.get("short_name"), shortName);
+        assertEquals(query.get("content_type"), content_type);
+        assertEquals(query.get("script_type"), script_type);
+        assertEquals(query.get("upper_limit"), upperLimit);
+        assertEquals(query.get("url"), url);
         // check boolean methods
         assertTrue(queryDao.checkQueryFile(queryFileName));
         assertTrue(queryDao.checkQueryFile(queryId, queryFileName));
 
         // upadate query fileds
-        queryDao.updateQuery(queryId, schemaID, shortName + "UPD", description + "UPD", queryFileName, content_type, script_type,
-                upperLimit, url);
+        queryDao.updateQuery(queryId, schemaID, shortName + "UPD", description + "UPD", queryFileName, content_type, script_type, upperLimit, url);
 
         // Get query by ID and test if all upadted fields are in DB
         query = queryDao.getQueryInfo(queryId);
-        assertEquals((String) query.get("description"), description + "UPD");
-        assertEquals((String) query.get("short_name"), shortName + "UPD");
+        assertEquals(query.get("description"), description + "UPD");
+        assertEquals(query.get("short_name"), shortName + "UPD");
 
         // delete inserted query
         queryDao.removeQuery(queryId);

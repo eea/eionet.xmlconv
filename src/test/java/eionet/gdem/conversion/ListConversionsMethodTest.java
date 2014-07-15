@@ -3,16 +3,24 @@
  */
 package eionet.gdem.conversion;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eionet.gdem.dcm.remote.ListConversionsResult;
 import eionet.gdem.dto.ConversionDto;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
@@ -23,38 +31,26 @@ import eionet.gdem.test.TestUtils;
  * @author Enriko Käsper, TietoEnator Estonia AS ListConversionsMethodTest
  */
 
-public class ListConversionsMethodTest extends DBTestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class ListConversionsMethodTest {
+
+    @Autowired
+    private IDatabaseTester databaseTester;
 
     /**
-     * Provide a connection to the database.
+     * Set up test case properties and databaseTester.
      */
-    public ListConversionsMethodTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
-    }
-
-    /**
-     * Set up test case properties
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-    }
-
-    /**
-     * Load the data which will be inserted for the test
-     */
-    @Override
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-            new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_CONVERSIONS_XML));
-        return loadedDataSet;
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_CONVERSIONS_XML);
     }
 
     /**
      * Tests that the result of listConversions method contains the right data as defined in seed xml file.
      */
+    @Test
     public void testListConversions() throws Exception {
 
         ConversionService cs = new ConversionService();
@@ -67,6 +63,7 @@ public class ListConversionsMethodTest extends DBTestCase {
     /**
      * Tests that the result of listConversions method contains the right data as defined in seed xml file.
      */
+    @Test
     public void testListConversionsWithSchema() throws Exception {
         // get conversions for 1 schema
         ConversionService cs = new ConversionService();
@@ -106,6 +103,7 @@ public class ListConversionsMethodTest extends DBTestCase {
     /**
      * Tests that the result of getXMLSchemas method contains the right data as defined in seed xml file.
      */
+    @Test
     public void testGetXMLSchemas() throws Exception {
 
         ConversionService cs = new ConversionService();
@@ -118,6 +116,7 @@ public class ListConversionsMethodTest extends DBTestCase {
     /**
      * Test getMapFromConversionObject method which serialises the object into correct Hastable structure.
      */
+    @Test
     public void testGetMapFromConversionObject() {
         ListConversionsMethod listConvMethod = new ListConversionsMethod();
         ConversionDto conversionObject = new ConversionDto();
@@ -139,6 +138,7 @@ public class ListConversionsMethodTest extends DBTestCase {
      * Test if listConversions method returns generated conversion if local conversion is available.
      * @throws Exception
      */
+    @Test
     public void testGeneratedConversionsIgnoring() throws Exception{
         ListConversionsMethod listConvMethod = new ListConversionsMethod();
         Vector<Hashtable<String, String>> conversions = listConvMethod.listConversions("http://dd.eionet.europa.eu/GetSchema?id=TBL6592");

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.struts.action.ActionMapping;
+import org.junit.Ignore;
 
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.DDServiceClient;
@@ -21,7 +22,7 @@ import eionet.gdem.web.struts.BaseAction;
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS TestUtils
  */
-
+@Ignore
 public class TestUtils {
 
     /**
@@ -33,15 +34,6 @@ public class TestUtils {
         GDEMServices.setTestConnection(true);
         Properties.metaXSLFolder = Properties.appRootFolder + "/dcm";
         Properties.convFile = Properties.metaXSLFolder + "/conversions.xml";
-
-        /*
-         * GDEMServices.setTestConnection(true); String conversions_filename =
-         * obj.getClass().getClassLoader().getResource("dcm/conversions.xml").getFile(); Properties.convFile = conversions_filename;
-         * Properties.metaXSLFolder = obj.getClass().getClassLoader().getResource("dcm").getFile(); Properties.schemaFolder =
-         * obj.getClass().getClassLoader().getResource("schema").getFile(); Properties.queriesFolder =
-         * obj.getClass().getClassLoader().getResource("queries").getFile(); Properties.xmlfileFolder =
-         * obj.getClass().getClassLoader().getResource("xmlfile").getFile();
-         */
     }
 
     /**

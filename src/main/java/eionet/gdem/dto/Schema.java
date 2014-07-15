@@ -30,24 +30,48 @@ import eionet.gdem.Properties;
 
 public class Schema implements Serializable {
 
+    /** XML Schema unique numeric ID. */
     private String id;
+    /** XML Schema URL. */
     private String schema;
+    /** XML Schema textual description. */
     private String description;
+    /** List of related XSL stylesheets. */
     private List stylesheets;
+    /** Is it XML Schema or DTD. */
     boolean isDTD = false;
+    /** DTD public id. */
     private String dtdPublicId;
+    /** Data Dictionary table identifier if the schema describes dataset table. */
     private String table;
+    /** Data Dictionary dataset identifier if the schema describes dataset. */
     private String dataset;
+    /** List of Central Data Repository files confirming to given schema. */
     private List<CdrFileDto> cdrfiles;
+    /** List of Content Registry files confirming to given schema. */
     private List<CrFileDto> crfiles;
+    /** Date when Data Dictionary dataset was released. */
     private Date datasetReleased;
+    /** XML Schema validation is part of QA. */
     private boolean doValidation = false;
+    /** XML Schema language: XML_SCHEMA or DTD. */
     private String schemaLang;
+    /** Uploaded XML Schema file name. */
     private String uplSchemaFileName;
+    /** List of related QA scripts. */
     private List<QAScript> qascripts;
+    /** Uploaded Schema file object. */
     private UplSchema uplSchema;
+    /** XML Schema expire date. */
     private Date expireDate;
+    /** Does failed XML Schema validation returns blocker QA. */
     private boolean blocker = false;
+    /** Number of related stylesheets. */
+    private int countStylesheets;
+    /** Number of related QA scripts. */
+    private int countQaScripts;
+    /** Related stylesheet ID. */
+    private String stylesheetSchemaId;
 
     public Date getExpireDate() {
         return expireDate;
@@ -267,6 +291,48 @@ public class Schema implements Serializable {
      */
     public void setBlocker(boolean blocker) {
         this.blocker = blocker;
+    }
+
+    /**
+     * @return the countStylesheets
+     */
+    public int getCountStylesheets() {
+        return countStylesheets;
+    }
+
+    /**
+     * @param countStylesheets the countStylesheets to set
+     */
+    public void setCountStylesheets(int countStylesheets) {
+        this.countStylesheets = countStylesheets;
+    }
+
+    /**
+     * @return the countQaScripts
+     */
+    public int getCountQaScripts() {
+        return countQaScripts;
+    }
+
+    /**
+     * @param countQaScripts the countQaScripts to set
+     */
+    public void setCountQaScripts(int countQaScripts) {
+        this.countQaScripts = countQaScripts;
+    }
+
+    /**
+     * @return the stylesheetSchemaId
+     */
+    public String getStylesheetSchemaId() {
+        return stylesheetSchemaId;
+    }
+
+    /**
+     * @param stylesheetSchemaId the stylesheetSchemaId to set
+     */
+    public void setStylesheetSchemaId(String stylesheetSchemaId) {
+        this.stylesheetSchemaId = stylesheetSchemaId;
     }
 
 }

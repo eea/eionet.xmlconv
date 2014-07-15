@@ -1,366 +1,302 @@
 package eionet.gdem.services.db.dao.mysql;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.mysql.jdbc.StringUtils;
+
+import eionet.gdem.dto.Schema;
+import eionet.gdem.dto.Stylesheet;
+import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.services.db.dao.IStyleSheetDao;
 import eionet.gdem.utils.Utils;
 
+/**
+ *
+ * DAO for stylesheets.
+ *
+ * @author Enriko Käsper
+ */
+@Repository("stylehseetDao")
 public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
+
+    /**
+     * Spring Jdbc template for accessing data storage.
+     */
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    /**
+     * Spring Named Jdbc template for accessing data storage.
+     */
+    @Autowired
+    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    /**
+     * Schema DAO.
+     */
+    @Autowired
+    private ISchemaDao schemaDao;
 
     /** */
     private static final Log LOGGER = LogFactory.getLog(StyleSheetMySqlDao.class);
 
-    private static final String qInsertStylesheet = "INSERT INTO " + XSL_TABLE + " ( " + XSL_SCHEMA_ID_FLD + ", "
-    + RESULT_TYPE_FLD + ", " + XSL_FILE_FLD + ", " + DESCR_FLD + ", " + DEPENDS_ON + ") " + " VALUES (?,?,?,?,?)";
+    /** SQL for inserting stylesheet record. */
+    private static final String INSERT_STYLESHEET = "INSERT INTO " + XSL_TABLE + " ( " + RESULT_TYPE_FLD + ", " + XSL_FILE_FLD
+            + ", " + DESCR_FLD + ", " + DEPENDS_ON + ") " + " VALUES (?,?,?,?)";
 
-    private static final String qStylesheetByFileName = "SELECT " + CNV_ID_FLD + " FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD
-    + "= ? ";
+    /** SQL for getting stylesheet by unique file name. */
+    private static final String GET_STYLESHEET_BY_FILENAME = "SELECT " + CNV_ID_FLD + " FROM " + XSL_TABLE + " WHERE "
+            + XSL_FILE_FLD + "= ? ";
 
-    private static final String qUpdateStyleSheet = "UPDATE  " + XSL_TABLE + " SET " + DESCR_FLD + "= ? " + ", "
-    + XSL_SCHEMA_ID_FLD + "= ? " + ", " + RESULT_TYPE_FLD + "= ? " + ", " + DEPENDS_ON + "= ?" + " WHERE " + CNV_ID_FLD
-    + "= ?";
+    /** SQL for updating stylesheet record. */
+    private static final String UPDATE_STYLESHEET = "UPDATE  " + XSL_TABLE + " SET " + DESCR_FLD + "= ? " + ", " + ", "
+            + RESULT_TYPE_FLD + "= ? " + ", " + DEPENDS_ON + "= ?" + " WHERE " + CNV_ID_FLD + "= ?";
 
-    private static final String qUpdateStyleSheetFN = "UPDATE  " + XSL_TABLE + " SET " + XSL_FILE_FLD + "= ? " + ", " + DESCR_FLD
-    + "= ? " + ", " + XSL_SCHEMA_ID_FLD + "= ? " + ", " + RESULT_TYPE_FLD + "= ? " + ", " + DEPENDS_ON + "= ?" + " WHERE "
-    + CNV_ID_FLD + "= ? ";
+    /** SQL for updating stylesheet record with file name field. */
+    private static final String UPDATE_STYLESHEET_FILENAME = "UPDATE  " + XSL_TABLE + " SET " + XSL_FILE_FLD + "= ? " + ", "
+            + DESCR_FLD + "= ? " + ", " + RESULT_TYPE_FLD + "= ? " + ", " + DEPENDS_ON + "= ?" + " WHERE " + CNV_ID_FLD + "= ? ";
 
-    private static final String qRemoveStylesheet = "DELETE FROM " + XSL_TABLE + " WHERE " + CNV_ID_FLD + "= ? ";
+    /** SQL for deleting stylesheet record. */
+    private static final String DELETE_STYLESHEET = "DELETE FROM " + XSL_TABLE + " WHERE " + CNV_ID_FLD + "= ? ";
 
-    private static final String qStylesheetInfoBase = "SELECT " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD + "," + XSL_FILE_FLD + ", "
-    + XSL_TABLE + "." + DESCR_FLD + "," + RESULT_TYPE_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ", " + XSL_TABLE
-    + "." + DEPENDS_ON + " FROM " + XSL_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE + " ON " + XSL_TABLE + "."
-    + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD;
+    /** SQL for querying T_STYLESHEET records without filter. */
+    private static final String GET_STYLESHEET_INFO_BASE_SQL = "select xsl.CONVERT_ID, xsl.XSL_FILENAME, xsl.DESCRIPTION, "
+            + "xsl.RESULT_TYPE, xsl.DEPENDS_ON from T_STYLESHEET xsl ";
 
-    private static final String qStylesheetInfoByFileName = qStylesheetInfoBase + " WHERE " + XSL_FILE_FLD + "= ?";
-    private static final String qStylesheetInfoByID = qStylesheetInfoBase + " WHERE " + CNV_ID_FLD + "= ?";
+    /** SQL for querying T_STYLESHEET record filtered by FILE_NAME field. */
+    private static final String GET_STYLESHEET_BY_FILENAME_SQL = GET_STYLESHEET_INFO_BASE_SQL + " WHERE " + XSL_FILE_FLD + "= ?";
+    /** SQL for querying T_STYLESHEET record filtered by CONVERT_ID field. */
+    private static final String GET_STYLESHEET_BY_ID_SQL = GET_STYLESHEET_INFO_BASE_SQL + " WHERE " + CNV_ID_FLD + "= ?";
 
-    private static final String qCheckStylesheetFile = "SELECT COUNT(*) FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD + "= ?";
-    private static final String qCheckStylesheetFileID = "SELECT COUNT(*) FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD + "= ? "
-    + "and " + CNV_ID_FLD + "= ?";
+    /** SQL for querying stylesheet schemas. */
+    private static final String GET_STYLESHEET_SCHEMAS = "select s.SCHEMA_ID, s.XML_SCHEMA, s.DESCRIPTION, s.SCHEMA_LANG, "
+            + "xs.STYLESHEET_SCHEMA_ID from "
+            + "T_STYLESHEET_SCHEMA xs inner join T_SCHEMA s on xs.SCHEMA_ID=s.SCHEMA_ID WHERE xs.STYLESHEET_ID = ?";
+    /** SQL for counting stylesheets by file name. */
+    private static final String COUNT_STYLESHEETS_BY_FILENAME = "SELECT COUNT(*) FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD
+            + "= ?";
+    /** SQL for counting stylesheets by file name and id. */
+    private static final String COUNT_STYLESHEETS_BY_FILENAME_AND_ID = "SELECT COUNT(*) FROM " + XSL_TABLE + " WHERE "
+            + XSL_FILE_FLD + "= ? and " + CNV_ID_FLD + "= ?";
 
-    public StyleSheetMySqlDao() {
-    }
+    /** Get all stylesheets.*/
+    private static final String GET_STYLESHEETS_SQL = "select CONVERT_ID, DESCRIPTION, RESULT_TYPE, XSL_FILENAME "
+            + "from T_STYLESHEET order by XSL_FILENAME";
+    /** SQL for deleting all schema stylesheet relations except the given list of schema Ids. */
+    private static final String DELETE_STYLESHEET_SCHEMAS = "DELETE FROM T_STYLESHEET_SCHEMA "
+            + "where STYLESHEET_ID = :stylesheetId AND SCHEMA_ID NOT IN ( :schemaIds )";
+    /** SQL for inserting new stylehseet schema relation. */
+    private static final String INSERT_STYLESHEET_SCHEMA =
+            "INSERT IGNORE INTO T_STYLESHEET_SCHEMA (STYLESHEET_ID, SCHEMA_ID) VALUES (?, ?)";
 
-    /*
-     * public String addStylesheet(String xmlSchemaID, String resultType, String xslFileName, String description) throws
-     * SQLException {
-     *
-     * description = (description == null ? "" : description);
-     *
-     * String sql = "INSERT INTO " + XSL_TABLE + " ( " + XSL_SCHEMA_ID_FLD + ", " + RESULT_TYPE_FLD + ", " + XSL_FILE_FLD + ", " +
-     * DESCR_FLD + ") VALUES ('" + xmlSchemaID + "', '" + resultType + "', " + Utils.strLiteral(xslFileName) + ", " +
-     * Utils.strLiteral(description) + ")";
-     *
-     * _executeUpdate(sql);
-     *
-     * sql = "SELECT " + CNV_ID_FLD + " FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD + "=" + Utils.strLiteral(xslFileName);
-     *
-     * String[][] r = _executeStringQuery(sql);
-     *
-     * if (r.length == 0) throw new SQLException("Error when returning id  for " + xslFileName + " ");
-     *
-     * return r[0][0]; }
-     */
     @Override
-    public String addStylesheet(String xmlSchemaID, String resultType, String xslFileName, String description, String dependsOn)
-    throws SQLException {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        String result = null;
-
-        description = (description == null ? "" : description);
+    @Transactional
+    public String addStylesheet(Stylesheet stylesheet) throws SQLException {
 
         if (isDebugMode) {
-            LOGGER.debug("Query is " + qInsertStylesheet);
+            LOGGER.debug("Query is " + INSERT_STYLESHEET);
         }
 
-        try {
-            conn = getConnection();
-            pstmt = conn.prepareStatement(qInsertStylesheet);
-            pstmt.setInt(1, Integer.parseInt(xmlSchemaID));
-            pstmt.setString(2, resultType);
-            pstmt.setString(3, xslFileName);
-            pstmt.setString(4, description);
-            if (Utils.isNullStr(dependsOn)) {
-                pstmt.setNull(5, Types.INTEGER);
-            } else {
-                pstmt.setInt(5, Integer.parseInt(dependsOn));
-            }
+        jdbcTemplate.update(INSERT_STYLESHEET, stylesheet.getType(), stylesheet.getXslFileName(), stylesheet.getDescription(), stylesheet.getDependsOn());
+        String newStylesheetId =
+                jdbcTemplate.queryForObject(GET_STYLESHEET_BY_FILENAME, String.class, stylesheet.getXslFileName());
+        stylesheet.setConvId(newStylesheetId);
+        updateStylesheetSchemas(stylesheet);
 
-            pstmt.executeUpdate();
-
-            if (pstmt != null) {
-                pstmt.close();
-            }
-
-            pstmt = conn.prepareStatement(qStylesheetByFileName);
-            pstmt.setString(1, xslFileName);
-            rs = pstmt.executeQuery();
-            String[][] r = getResults(rs);
-            if (r.length == 0) {
-                throw new SQLException("Error when returning id  for " + xslFileName + " ");
-            }
-            result = r[0][0];
-        } finally {
-            closeAllResources(rs, pstmt, conn);
-        }
-
-        return result;
+        return newStylesheetId;
     }
 
-    /*
-     * public void updateStylesheet(String xsl_id, String schema_id, String description, String fileName, String content_type)
-     * throws SQLException {
-     *
-     * description = (description == null ? "" : description); String sql; if (fileName == null || fileName.equals("")) { sql =
-     * "UPDATE  " + XSL_TABLE + " SET " + DESCR_FLD + "=" + Utils.strLiteral(description) + ", " + XSL_SCHEMA_ID_FLD + "=" +
-     * schema_id + ", " + RESULT_TYPE_FLD + "=" + Utils.strLiteral(content_type) + " WHERE " + CNV_ID_FLD + "=" + xsl_id; } else {
-     * sql = "UPDATE  " + XSL_TABLE + " SET " + XSL_FILE_FLD + "=" + Utils.strLiteral(fileName) + ", " + DESCR_FLD + "=" +
-     * Utils.strLiteral(description) + ", " + XSL_SCHEMA_ID_FLD + "=" + schema_id + ", " + RESULT_TYPE_FLD + "=" +
-     * Utils.strLiteral(content_type) + " WHERE " + CNV_ID_FLD + "=" + xsl_id; }
-     *
-     * _executeUpdate(sql);
-     *
-     * }
-     */
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void updateStylesheet(String xsl_id, String schema_id, String description, String fileName, String content_type,
-            String dependsOn) throws SQLException {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        description = (description == null ? "" : description);
-
-        boolean isEmptyFileName = (fileName == null || fileName.equals(""));
-
-        try {
-            conn = getConnection();
-            if (isEmptyFileName) {
-                pstmt = conn.prepareStatement(qUpdateStyleSheet);
-                pstmt.setString(1, description);
-                pstmt.setInt(2, Integer.parseInt(schema_id));
-                pstmt.setString(3, content_type);
-                if (Utils.isNullStr(dependsOn)) {
-                    pstmt.setNull(4, Types.INTEGER);
-                } else {
-                    pstmt.setInt(4, Integer.parseInt(dependsOn));
-                }
-                pstmt.setInt(5, Integer.parseInt(xsl_id));
-            } else {
-                pstmt = conn.prepareStatement(qUpdateStyleSheetFN);
-                pstmt.setString(1, fileName);
-                pstmt.setString(2, description);
-                pstmt.setInt(3, Integer.parseInt(schema_id));
-                pstmt.setString(4, content_type);
-                if (Utils.isNullStr(dependsOn)) {
-                    pstmt.setNull(5, Types.INTEGER);
-                } else {
-                    pstmt.setInt(5, Integer.parseInt(dependsOn));
-                }
-                pstmt.setInt(6, Integer.parseInt(xsl_id));
-            }
-            if (isDebugMode) {
-                LOGGER.debug("Query is " + (isEmptyFileName ? qUpdateStyleSheet : qUpdateStyleSheetFN));
-            }
-            pstmt.executeUpdate();
-        } finally {
-            closeAllResources(null, pstmt, conn);
-        }
-
-    }
-
-    /*
-     * public void removeStylesheet(String convertId) throws SQLException {
-     *
-     * String sql = "DELETE FROM " + XSL_TABLE + " WHERE " + CNV_ID_FLD + "=" + convertId; _executeUpdate(sql);
-     *
-     * }
-     */
-    @Override
-    public void removeStylesheet(String convertId) throws SQLException {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
+    @Transactional
+    public void deleteStylesheet(String convertId) throws SQLException {
 
         if (isDebugMode) {
-            LOGGER.debug("Query is " + qRemoveStylesheet);
+            LOGGER.debug("Query is " + DELETE_STYLESHEET);
         }
-
-        try {
-            conn = getConnection();
-            pstmt = conn.prepareStatement(qRemoveStylesheet);
-            pstmt.setInt(1, Integer.parseInt(convertId));
-            pstmt.executeUpdate();
-        } finally {
-            closeAllResources(null, pstmt, conn);
-        }
+        jdbcTemplate.update(DELETE_STYLESHEET, convertId);
     }
-
-    /*
-     * public HashMap getStylesheetInfo(String convertId) throws SQLException {
-     *
-     * int id = 0; String xslName = null; try { id = Integer.parseInt(convertId); } catch (NumberFormatException n) { if
-     * (convertId.endsWith("xsl")) xslName = convertId; else throw new SQLException("not numeric ID or xsl file name: " +
-     * convertId); }
-     *
-     * String sql = "SELECT " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD + "," + XSL_FILE_FLD + ", " + XSL_TABLE + "." + DESCR_FLD + ","
-     * + RESULT_TYPE_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + " FROM " + XSL_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE +
-     * " ON " + XSL_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD; if (xslName != null) { sql +=
-     * " WHERE " + XSL_FILE_FLD + "=" + Utils.strLiteral(xslName);
-     *
-     * } else { sql += " WHERE " + CNV_ID_FLD + "=" + id; }
-     *
-     * String r[][] = _executeStringQuery(sql);
-     *
-     * HashMap h = null;
-     *
-     * if (r.length > 0) { h = new HashMap(); h.put("convert_id", convertId); h.put("schema_id", r[0][0]); h.put("xsl", r[0][1]);
-     * h.put("description", r[0][2]); h.put("content_type_out", r[0][3]); h.put("xml_schema", r[0][4]); }
-     *
-     * return h; }
-     */
-
-    @Override
-    public HashMap getStylesheetInfo(String convertId) throws SQLException {
-        int id = 0;
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        HashMap h = null;
-        String xslName = null;
-
-        boolean byFile = convertId.endsWith("xsl");
-
-        try {
-            id = Integer.parseInt(convertId);
-        } catch (NumberFormatException n) {
-            if (byFile) {
-                xslName = convertId;
-            } else {
-                throw new SQLException("not numeric ID or xsl file name: " + convertId);
-            }
-        }
-
-        if (isDebugMode) {
-            LOGGER.debug("Query is " + (byFile ? qStylesheetInfoByFileName : qStylesheetInfoByID));
-        }
-
-        try {
-            conn = getConnection();
-            if (byFile) {
-                pstmt = conn.prepareStatement(qStylesheetInfoByFileName);
-                pstmt.setString(1, xslName);
-            } else {
-                pstmt = conn.prepareStatement(qStylesheetInfoByID);
-                pstmt.setInt(1, id);
-            }
-            rs = pstmt.executeQuery();
-
-            String[][] r = getResults(rs);
-            if (r.length > 0) {
-                h = new HashMap();
-                h.put("convert_id", convertId);
-                h.put("schema_id", r[0][0]);
-                h.put("xsl", r[0][1]);
-                h.put("description", r[0][2]);
-                h.put("content_type_out", r[0][3]);
-                h.put("xml_schema", r[0][4]);
-                h.put("depends_on", r[0][5]);
-            }
-        } finally {
-            closeAllResources(rs, pstmt, conn);
-        }
-        return h;
-    }
-
-    /*
-     * public boolean checkStylesheetFile(String xslFileName) throws SQLException {
-     *
-     * int id = 0;
-     *
-     * String sql = "SELECT COUNT(*) FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD + "=" + Utils.strLiteral(xslFileName);
-     *
-     * String r[][] = _executeStringQuery(sql);
-     *
-     * String count = r[0][0]; if (count.equals("0")) { return false; } else { return true; }
-     *
-     * }
-     */
 
     @Override
     public boolean checkStylesheetFile(String xslFileName) throws SQLException {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        boolean result = false;
 
         if (isDebugMode) {
-            LOGGER.debug("Query is " + qCheckStylesheetFile);
+            LOGGER.debug("Query is " + COUNT_STYLESHEETS_BY_FILENAME);
         }
-
-        try {
-            conn = getConnection();
-            pstmt = conn.prepareStatement(qCheckStylesheetFile);
-            pstmt.setString(1, xslFileName);
-            rs = pstmt.executeQuery();
-            String[][] r = getResults(rs);
-            String count = r[0][0];
-            if (!count.equals("0")) {
-                result = true;
-            }
-        } finally {
-            closeAllResources(rs, pstmt, conn);
-        }
-        return result;
+        Integer countStylesheets = jdbcTemplate.queryForObject(COUNT_STYLESHEETS_BY_FILENAME, Integer.class, xslFileName);
+        return (countStylesheets != null && countStylesheets > 0);
     }
 
-    /*
-     * public boolean checkStylesheetFile(String xsl_id, String xslFileName) throws SQLException { int id = 0;
-     *
-     * String sql = "SELECT COUNT(*) FROM " + XSL_TABLE + " WHERE " + XSL_FILE_FLD + "=" + Utils.strLiteral(xslFileName) + "and "
-     * +CNV_ID_FLD+"="+xsl_id;
-     *
-     * String r[][] = _executeStringQuery(sql);
-     *
-     * String count = r[0][0]; if (count.equals("0")) { return false; } else { return true; } }
-     */
     @Override
-    public boolean checkStylesheetFile(String xsl_id, String xslFileName) throws SQLException {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        boolean result = false;
-
+    public boolean checkStylesheetFile(String xslId, String xslFileName) throws SQLException {
         if (isDebugMode) {
-            LOGGER.debug("Query is " + qCheckStylesheetFileID);
+            LOGGER.debug("Query is " + COUNT_STYLESHEETS_BY_FILENAME);
         }
-
-        try {
-            conn = getConnection();
-            pstmt = conn.prepareStatement(qCheckStylesheetFileID);
-            pstmt.setString(1, xslFileName);
-            pstmt.setInt(2, Integer.parseInt(xsl_id));
-            rs = pstmt.executeQuery();
-            String[][] r = getResults(rs);
-            String count = r[0][0];
-            if (!count.equals("0")) {
-                result = true;
-            }
-        } finally {
-            closeAllResources(rs, pstmt, conn);
-        }
-        return result;
+        Integer countStylesheets =
+                jdbcTemplate.queryForObject(COUNT_STYLESHEETS_BY_FILENAME_AND_ID, Integer.class, xslFileName, xslId);
+        return (countStylesheets != null && countStylesheets > 0);
     }
 
+    @Override
+    public List<Stylesheet> getStylesheets() {
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + GET_STYLESHEETS_SQL);
+        }
+
+        final List<Stylesheet> stylesheets = new ArrayList<Stylesheet>();
+        jdbcTemplate.query(GET_STYLESHEETS_SQL, new RowCallbackHandler() {
+
+            @Override
+            public void processRow(ResultSet rs) throws SQLException {
+                Stylesheet stylesheet = new Stylesheet();
+                stylesheet.setConvId(rs.getString("CONVERT_ID"));
+                stylesheet.setDescription(rs.getString("DESCRIPTION"));
+                stylesheet.setType(rs.getString("RESULT_TYPE"));
+                stylesheet.setXslFileName(rs.getString("XSL_FILENAME"));
+                stylesheets.add(stylesheet);
+            }
+        });
+        return stylesheets;
+
+    }
+
+    @Override
+    public Stylesheet getStylesheet(String convertId) {
+
+        boolean findById = convertId.matches("\\d+");
+
+        String query = (findById ? GET_STYLESHEET_BY_ID_SQL : GET_STYLESHEET_BY_FILENAME_SQL);
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + query);
+        }
+        Stylesheet stylesheet = null;
+        try {
+            stylesheet = jdbcTemplate.queryForObject(query, new String[] { convertId }, new StylesheetRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            LOGGER.warn("No stylesheet found with id=" + convertId, e);
+        }
+
+        if (stylesheet != null) {
+            List<Schema> schemas =
+                    jdbcTemplate.query(GET_STYLESHEET_SCHEMAS, new String[] { stylesheet.getConvId() }, new SchemaRowMapper());
+            stylesheet.setSchemas(schemas);
+            if (schemas != null) {
+                List<String> schemaIds = new ArrayList<String>();
+                for (Schema schema : schemas) {
+                    schemaIds.add(schema.getId());
+                }
+                stylesheet.setSchemaIds(schemaIds);
+            }
+        }
+
+        return stylesheet;
+
+    }
+
+    /**
+    *
+    * Map T_STYLESHEET table fields to Stylesheet object properties.
+    *
+    * @author Enriko Käsper
+    */
+    class StylesheetRowMapper implements RowMapper<Stylesheet> {
+        @Override
+        public Stylesheet mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Stylesheet stylesheet = new Stylesheet();
+            stylesheet.setConvId(rs.getString("xsl.CONVERT_ID"));
+            stylesheet.setDescription(rs.getString("xsl.DESCRIPTION"));
+            stylesheet.setType(rs.getString("xsl.RESULT_TYPE"));
+            stylesheet.setXslFileName(rs.getString("xsl.XSL_FILENAME"));
+            stylesheet.setDependsOn(rs.getString("xsl.DEPENDS_ON"));
+            return stylesheet;
+        }
+    }
+
+    /**
+    *
+    * Map T_SCHEMA table fields to Schema object properties.
+    *
+    * @author Enriko Käsper
+    */
+    class SchemaRowMapper implements RowMapper<Schema> {
+        @Override
+        public Schema mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Schema schema = new Schema();
+            schema.setId(rs.getString("s.SCHEMA_ID"));
+            schema.setSchema(rs.getString("s.XML_SCHEMA"));
+            schema.setDescription(rs.getString("s.DESCRIPTION"));
+            schema.setSchemaLang(rs.getString("s.SCHEMA_LANG"));
+            schema.setStylesheetSchemaId(rs.getString("xs.STYLESHEET_SCHEMA_ID"));
+            return schema;
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateStylesheet(Stylesheet stylesheet) throws SQLException {
+
+        String description = (stylesheet.getDescription() == null ? "" : stylesheet.getDescription());
+        boolean isEmptyFileName = (stylesheet.getXslFileName() == null || stylesheet.getXslFileName().equals(""));
+        Integer dependsOnValue = Utils.isNullStr(stylesheet.getDependsOn()) ? 0 : Integer.parseInt(stylesheet.getDependsOn());
+
+        if (isEmptyFileName) {
+            jdbcTemplate.update(UPDATE_STYLESHEET, description, stylesheet.getType(), dependsOnValue, Integer.parseInt(stylesheet.getConvId()));
+        } else {
+            jdbcTemplate.update(UPDATE_STYLESHEET_FILENAME, stylesheet.getXslFileName(), description, stylesheet.getType(), dependsOnValue, Integer.parseInt(stylesheet.getConvId()));
+        }
+        updateStylesheetSchemas(stylesheet);
+
+    }
+
+    /**
+     * Update many-to-many relations between stylesheet ans schemas.
+     * @param stylesheet Stylesheet dto object
+     * @throws SQLException in case of database error
+     */
+    private void updateStylesheetSchemas(Stylesheet stylesheet) throws SQLException {
+        List<String> schemaIds = new ArrayList<String>();
+
+        // add new schemas
+        if (stylesheet.getSchemaUrls() != null) {
+            for (String schema : stylesheet.getSchemaUrls()) {
+                if (!StringUtils.isEmptyOrWhitespaceOnly(schema)) {
+                    String schemaId = schemaDao.getSchemaID(schema);
+                    if (schemaId == null) {
+                        schemaId = schemaDao.addSchema(schema, null);
+                    }
+                    schemaIds.add(schemaId);
+                    jdbcTemplate.update(INSERT_STYLESHEET_SCHEMA, stylesheet.getConvId(), schemaId);
+                }
+            }
+        }
+        if (stylesheet.getSchemaIds() != null) {
+            schemaIds.addAll(stylesheet.getSchemaIds());
+        }
+        // delete unneeded schemas
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        if (schemaIds == null || schemaIds.size() == 0) {
+            parameters.addValue("schemaIds", "");
+        } else {
+            parameters.addValue("schemaIds", schemaIds);
+        }
+        parameters.addValue("stylesheetId", stylesheet.getConvId());
+
+        namedParameterJdbcTemplate.update(DELETE_STYLESHEET_SCHEMAS, parameters);
+    }
 }

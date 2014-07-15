@@ -10,9 +10,9 @@
         <ed:breadcrumbs-push label="View stylesheet" level="3" />
 
         <div id="operations">
-              <ul>
-                   <li>
-                       <a href="searchCR?conversionId=<bean:write name="stylesheetForm" property="stylesheetId" />&amp;schemaUrl=<bean:write name="stylesheetForm" property="schema" />">
+            <ul>
+                <li>
+                    <a href="searchCR?conversionId=<bean:write name="stylesheetForm" property="stylesheetId" />&amp;schemaUrl=<bean:write name="stylesheetForm" property="schema" />">
                         <bean:message key="label.stylesheet.run" />
                     </a>
                 </li>
@@ -22,7 +22,7 @@
                             <bean:message key="label.stylesheet.edit" />
                         </html:link>
                     </li>
-                       <li>
+                    <li>
                         <a href="deleteStylesheet?conversionId=<bean:write name="stylesheetForm" property="stylesheetId" />&amp;schema=<bean:write name="stylesheetForm" property="schema" />" title="delete stylesheet" onclick='return stylesheetDelete("<bean:write name="stylesheetForm" property="xsl" />");'>
                             <bean:message key="label.stylesheet.delete" />
                         </a>
@@ -45,9 +45,12 @@
                     <bean:message key="label.stylesheet.schema"/>
                 </th>
                   <td>
-                    <a  href="<bean:write name="stylesheetForm" property="schema" />" title="<bean:write name="stylesheetForm" property="schema" />">
-                        <bean:write name="stylesheetForm" property="schema" />
-                    </a>&#160;
+                    <logic:present name="stylesheetForm" property="schemas">
+                        <logic:iterate indexId="index" id="relatedSchema" name="stylesheetForm" property="schemas" type="Schema">
+                            <a href="viewSchemaForm?schemaId=<bean:write name="relatedSchema" property="id" />" title="view XML Schema properties"><bean:write name="relatedSchema" property="schema"/></a>
+                            <br/>
+                        </logic:iterate>
+                    </logic:present>
                 </td>
             </tr>
             <tr>
@@ -60,8 +63,7 @@
             </tr>
 
 
-            <logic:present name="schemaInfo" scope="request">
-            <logic:equal name="schemaInfo" property="schemaLang" value="EXCEL">
+            <logic:equal name="stylesheetForm" property="showDependsOnInfo" value="true">
 
                 <bean:define id="depOn" name="stylesheetForm" property="dependsOn" scope="request" type="java.lang.String" />
                 <tr>
@@ -69,18 +71,17 @@
                         <bean:message key="label.stylesheet.dependsOn"/>
                     </th>
                     <td>
-                         <logic:iterate id="st" scope="request" name="existingStylesheets">
+                         <logic:iterate id="st" scope="request" name="stylesheetForm" property="existingStylesheets" type="Stylesheet">
                              <logic:equal name="st" property="convId" value="<%=depOn %>">
-                                 <bean:write name="st" property="xslFileName" />
+                                <a href="stylesheetViewForm?stylesheetId=<bean:write name="st" property="convId" />" title="Open depending stylesheet page">
+                                    <bean:write name="st" property="xslFileName" />
+                                </a>
                              </logic:equal>
                          </logic:iterate>
-                        <bean:write name="stylesheetForm" property="dependsOn" />
-
                      </td>
                 </tr>
 
             </logic:equal>
-            </logic:present>
 
 
             <tr>
@@ -96,17 +97,17 @@
                     <bean:message key="label.stylesheet.xslfile"/>
                 </th>
               <td>
-                    <a  href="<bean:write name="webRoot"/>/<bean:write property="xsl" name="stylesheetForm"/>" title="<bean:write property="xsl" name="stylesheetForm"/>">
+                    <a  href="<bean:write name="webRoot"/>/<bean:write property="xsl" name="stylesheetForm"/>" title="<bean:write property="xsl" name="stylesheetForm"/>" class="link-xsl">
                                 <bean:write property="xslFileName" name="stylesheetForm"/>
                     </a>
-                    &#160;&#160;&#160;&#160;&#160;&#160;(<bean:message key="label.lastmodified"/>:
+                    <span style="margin-left:10px">(<bean:message key="label.lastmodified"/>:
                     <logic:present name="stylesheetForm" property="modified">
                         <bean:write property="modified" name="stylesheetForm"/>
                     </logic:present>
                     <logic:notPresent name="stylesheetForm" property="modified">
                         <span style="color:red"><bean:message key="label.fileNotFound"/></span>
                     </logic:notPresent>
-                    )
+                    )</span>
               </td>
             </tr>
           </table>

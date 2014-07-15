@@ -48,24 +48,24 @@ public class StylesheetDeleteAction extends Action {
         ActionMessages errors = new ActionMessages();
         ActionMessages messages = new ActionMessages();
         String stylesheetId = httpServletRequest.getParameter("conversionId");
-        String user_name = (String) httpServletRequest.getSession().getAttribute("user");
+        String userName = (String) httpServletRequest.getSession().getAttribute("user");
 
         httpServletRequest.setAttribute("schema", httpServletRequest.getParameter("schema"));
 
         try {
             StylesheetManager sm = new StylesheetManager();
-            sm.delete(user_name, stylesheetId);
+            sm.delete(userName, stylesheetId);
             StylesheetListLoader.reloadStylesheetList(httpServletRequest);
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.deleted"));
             StylesheetListLoader.reloadStylesheetList(httpServletRequest);
+            StylesheetListLoader.reloadConversionSchemasList(httpServletRequest);
         } catch (DCMException e) {
             e.printStackTrace();
             LOGGER.error("Error deleting stylesheet", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
-
-        httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-        httpServletRequest.getSession().setAttribute("dcm.messages", messages);
+        saveErrors(httpServletRequest.getSession(), errors);
+        saveMessages(httpServletRequest.getSession(), messages);
 
         return actionMapping.findForward("success");
     }

@@ -3,12 +3,15 @@
  */
 package eionet.gdem.test;
 
+import org.junit.Ignore;
+
 /**
  * The class holds different constant values used in test cases.
  *
  * @author Enriko Käsper, TietoEnator Estonia AS TestConstants
  */
 
+@Ignore
 public class TestConstants {
 
     // SEED FILES with test data

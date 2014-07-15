@@ -21,16 +21,25 @@
 
 package eionet.gdem.dcm.business;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.List;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.dto.BackupDto;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
@@ -39,31 +48,20 @@ import eionet.gdem.test.TestUtils;
  * @author Enriko Käsper, Tieto Estonia BackupManagerTest
  */
 
-public class BackupManagerTest extends DBTestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class BackupManagerTest {
+
+    @Autowired
+    private IDatabaseTester databaseTester;
 
     /**
-     * Provide a connection to the database.
+     * Set up test case properties and databaseTester.
      */
-    public BackupManagerTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
-    }
-
-    /**
-     * Set up test case properties
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-    }
-
-    /**
-     * Load the data which will be inserted for the test
-     */
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_QA_XML));
-        return loadedDataSet;
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_QA_XML);
     }
 
     /**
@@ -72,6 +70,7 @@ public class BackupManagerTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testFileBackup() throws Exception {
 
         String folderName = Properties.queriesFolder;

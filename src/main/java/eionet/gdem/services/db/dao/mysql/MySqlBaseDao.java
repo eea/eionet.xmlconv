@@ -29,9 +29,6 @@ public abstract class MySqlBaseDao {
 
     protected static boolean isDebugMode = LOGGER.isDebugEnabled();
 
-    public MySqlBaseDao() {
-    }
-
     /**
      * Init JNDI datasource
      *

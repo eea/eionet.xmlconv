@@ -26,9 +26,8 @@ public class CRConversionFormActionTest extends MockStrutsTestCase {
         setContextDirectory(TestUtils.getContextDirectory());
         setInitParameter("validating", "false");
 
-        // setup database
-        DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_CONVERSIONS_XML);
-
+        // setup database and Spring context
+        DbHelper.setUpSpringContextWithDatabaseTester(TestConstants.SEED_DATASET_CONVERSIONS_XML);
     }
 
     /**

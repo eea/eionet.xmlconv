@@ -3,16 +3,24 @@
  */
 package eionet.gdem.services.db.dao;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eionet.gdem.dcm.business.SchemaManager;
-import eionet.gdem.services.GDEMServices;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
@@ -20,42 +28,32 @@ import eionet.gdem.test.TestUtils;
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS UPLSchemaDAOTest
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class UPLSchemaDaoTest {
 
-public class UPLSchemaDaoTest extends DBTestCase {
+    @Autowired
+    private IDatabaseTester databaseTester;
 
-    private IUPLSchemaDao uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
-
-    /**
-     * Provide a connection to the database.
-     */
-    public UPLSchemaDaoTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
-    }
+    @Autowired
+    private IUPLSchemaDao uplSchemaDao;
 
     /**
-     * Set up test case properties
+     * Set up test case properties and databaseTester.
      */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-    }
-
-    /**
-     * Load the data which will be inserted for the test
-     */
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_UPL_SCHEMAS_XML));
-        return loadedDataSet;
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
     }
 
     /**
      * The method adds UPL schema into DB, then it edits the properties and finally deletes the added schema. After each operation
-     * it scheks the properties values.
-     * 
+     * it ccheks the properties values.
+     *
      * @throws Exception
      */
+    @Test
     public void testUPLSchemaMethods() throws Exception {
         String schemaId = "83";
         String fileName = "schema.xsd";
@@ -80,15 +78,15 @@ public class UPLSchemaDaoTest extends DBTestCase {
         // the method should return the file name of locally stored schema by FK_SCHEMA_ID
         HashMap uploadedSchema = uplSchemaDao.getUplSchemaByFkSchemaId(schemaId);
         String uplSchemaId = (String) uploadedSchema.get("upl_schema_id");
-        assertEquals((String) uploadedSchema.get("schema_id"), schemaId);
-        assertEquals((String) uploadedSchema.get("xml_schema"), url);
-        assertEquals((String) uploadedSchema.get("upl_schema_file"), fileName);
+        assertEquals(uploadedSchema.get("schema_id"), schemaId);
+        assertEquals(uploadedSchema.get("xml_schema"), url);
+        assertEquals(uploadedSchema.get("upl_schema_file"), fileName);
 
         // Get schema by ID and test if all inserted fields are in DB
         Hashtable schema = uplSchemaDao.getUplSchemaById(uplSchemaId);
-        assertEquals((String) schema.get("schema_id"), schemaId);
-        assertEquals((String) schema.get("xml_schema"), url);
-        assertEquals((String) schema.get("upl_schema_file"), fileName);
+        assertEquals(schema.get("schema_id"), schemaId);
+        assertEquals(schema.get("xml_schema"), url);
+        assertEquals(schema.get("upl_schema_file"), fileName);
 
         // check boolean methods
         assertTrue(uplSchemaDao.checkUplSchemaFile(fileName));
@@ -101,8 +99,8 @@ public class UPLSchemaDaoTest extends DBTestCase {
 
         // Get schema by ID and test if all upadted fields are in DB
         schema = uplSchemaDao.getUplSchemaById(uplSchemaId);
-        assertEquals((String) schema.get("upl_schema_id"), uplSchemaId);
-        assertEquals((String) schema.get("upl_schema_file"), fileName + "UPD");
+        assertEquals(schema.get("upl_schema_id"), uplSchemaId);
+        assertEquals(schema.get("upl_schema_file"), fileName + "UPD");
 
         // delete inserted schema
         uplSchemaDao.removeUplSchema(uplSchemaId);
@@ -117,7 +115,7 @@ public class UPLSchemaDaoTest extends DBTestCase {
 
     /**
      * The method test if it gets the local file name by URL
-     * 
+     *
      * @throws Exception
      */
     public void testGetSchemaByURL() throws Exception {
@@ -127,7 +125,7 @@ public class UPLSchemaDaoTest extends DBTestCase {
         SchemaManager sm = new SchemaManager();
 
         HashMap schema1 = uplSchemaDao.getUplSchemaByUrl(schemaUrl1);
-        assertEquals((String) schema1.get("schema"), "xliff.dtd");
+        assertEquals(schema1.get("schema"), "xliff.dtd");
 
         HashMap schema2 = uplSchemaDao.getUplSchemaByUrl(schemaUrl2);
         assertTrue(schema2 == null);

@@ -12,11 +12,13 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Repository;
 
 import eionet.gdem.Properties;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.utils.Utils;
 
+@Repository("queryDao")
 public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
     /** */
@@ -66,9 +68,6 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
     private static final String qCheckQueryFileByIdAndName = "SELECT COUNT(*) FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD
             + "=?" + " and " + QUERY_ID_FLD + "=?";;
-
-    public QueryMySqlDao() {
-    }
 
     @Override
     public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description, String content_type,

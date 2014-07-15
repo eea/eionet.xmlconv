@@ -37,6 +37,7 @@ import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.web.struts.schema.SchemaElemForm;
 
+@Deprecated
 public class SchemaDeleteAction extends Action {
 
     /** */

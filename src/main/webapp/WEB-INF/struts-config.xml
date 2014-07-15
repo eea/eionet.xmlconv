@@ -96,7 +96,7 @@
         <action path="/schemaStylesheets" type="eionet.gdem.web.struts.stylesheet.SchemaStylesheetAction" name="schemaStyleForm">
             <forward name="success" path="/schemaStylesheets.jsp" redirect="true"/>
         </action>
-        <action path="/deleteStylesheet"  scope="request" type="eionet.gdem.web.struts.stylesheet.StylesheetDeleteAction">
+        <action path="/deleteStylesheet"  scope="request" type="eionet.gdem.web.struts.stylesheet.StylesheetDeleteAction" name="stylesheetForm">
             <forward name="success" path="/do/schemaStylesheets" redirect="true"/>
         </action>
         <action path="/addStylesheetForm" type="eionet.gdem.web.struts.stylesheet.ConvTypeAction">

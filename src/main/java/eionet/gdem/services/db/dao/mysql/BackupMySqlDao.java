@@ -10,10 +10,12 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Repository;
 
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.services.db.dao.IBackupDao;
 
+@Repository("backupDao")
 public class BackupMySqlDao extends MySqlBaseDao implements IBackupDao {
 
     /** */

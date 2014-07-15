@@ -3,13 +3,21 @@
  */
 package eionet.gdem.dcm.business;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import eionet.gdem.Properties;
 import eionet.gdem.dto.DDDatasetTable;
 import eionet.gdem.dto.Schema;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
@@ -20,14 +28,12 @@ import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
  * @author Enriko Käsper, TietoEnator Estonia AS SchemaManagerTest
  */
 
-public class SchemaManagerDDTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class SchemaManagerDDTest {
 
-    /**
-     * Set up test case properties
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
     }
 
@@ -37,6 +43,7 @@ public class SchemaManagerDDTest extends TestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testGetDDSchemas() throws Exception {
         MockSchemaManager mockSchemaManager = new MockSchemaManager();
 
@@ -52,11 +59,12 @@ public class SchemaManagerDDTest extends TestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testGetSchemasGenerated() throws Exception {
         MockSchemaManager mockSchemaManager = new MockSchemaManager();
 
         StylesheetListHolder stylesheetList = mockSchemaManager.getSchemas("generated");
-        List schemas = stylesheetList.getDdStylesheets();
+        List<Schema> schemas = stylesheetList.getDdStylesheets();
 
         // verify the results
         verifyDDSchemasResults(schemas);
@@ -68,23 +76,23 @@ public class SchemaManagerDDTest extends TestCase {
      * @param schemas
      * @throws Exception
      */
-    private void verifyDDSchemasResults(List schemas) throws Exception {
+    private void verifyDDSchemasResults(List<Schema> schemas) throws Exception {
         // the list should contain 3 Schema objects
         assertEquals(3, schemas.size());
 
-        Schema schema1 = (Schema) schemas.get(0);
+        Schema schema1 = schemas.get(0);
         assertEquals("WISE-SOE: Ground", schema1.getDataset());
         assertEquals(Utils.parseDate("11.10.2007", "dd.MM.yyyy"), schema1.getDatasetReleased());
         assertEquals("AggregatedData_NH4", schema1.getTable());
         assertEquals(Properties.ddURL + "/GetSchema?id=TBL4558", schema1.getSchema());
 
-        Schema schema2 = (Schema) schemas.get(1);
+        Schema schema2 = schemas.get(1);
         assertEquals("Eionet-Water: Ground", schema2.getDataset());
         assertEquals(Utils.parseDate("02.06.2006", "dd.MM.yyyy"), schema2.getDatasetReleased());
         assertEquals("AggregatedData_NO3", schema2.getTable());
         assertEquals(Properties.ddURL + "/GetSchema?id=TBL3351", schema2.getSchema());
 
-        Schema schema3 = (Schema) schemas.get(2);
+        Schema schema3 = schemas.get(2);
         assertEquals("Eionet-Water: Ground", schema3.getDataset());
         assertEquals(Utils.parseDate("19.08.2005", "dd.MM.yyyy"), schema3.getDatasetReleased());
         assertEquals("AggregatedData_NO3", schema3.getTable());

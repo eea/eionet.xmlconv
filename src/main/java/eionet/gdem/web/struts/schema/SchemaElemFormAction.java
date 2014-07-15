@@ -21,24 +21,18 @@
 
 package eionet.gdem.web.struts.schema;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
-
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts.action.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class SchemaElemFormAction extends Action {
 
@@ -73,7 +67,7 @@ public class SchemaElemFormAction extends Action {
             form.setElemName("");
             form.setNamespace("");
             form.setDoValidation(seHolder.getSchema().isDoValidation());
-            form.setBlockerValidation(seHolder.getSchema().isBlocker());
+            form.setBlocker(seHolder.getSchema().isBlocker());
             form.setSchemaLang(seHolder.getSchema().getSchemaLang());
             form.setDtd(seHolder.getSchema().getIsDTD());
             String fileName = seHolder.getSchema().getUplSchemaFileName();

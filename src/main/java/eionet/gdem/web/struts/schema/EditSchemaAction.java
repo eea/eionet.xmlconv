@@ -21,25 +21,18 @@
 
 package eionet.gdem.web.struts.schema;
 
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
-
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts.action.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 
 public class EditSchemaAction extends Action {
 
@@ -60,7 +53,7 @@ public class EditSchemaAction extends Action {
         String schemaLang = form.getSchemaLang();
         boolean doValidation = form.isDoValidation();
         Date expireDate = form.getExpireDateObj();
-        boolean blocker = form.isBlockerValidation();
+        boolean blocker = form.isBlocker();
 
         if (isCancelled(httpServletRequest)) {
             try {

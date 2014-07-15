@@ -7,78 +7,79 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.stereotype.Repository;
 
+import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.dto.UplSchema;
 import eionet.gdem.services.db.dao.IUPLSchemaDao;
 
+@Repository("uplSchemaDao")
 public class UPLSchemaMySqlDao extends MySqlBaseDao implements IUPLSchemaDao {
+
+    /**
+     * Jdbc template for accessing data storage.
+     */
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     /** */
     private static final Log LOGGER = LogFactory.getLog(UPLSchemaMySqlDao.class);
 
     // T_SCHEMA LEFT JOIN T_UPL_SCHEMA
     private static final String qSchemas = "SELECT " + "S." + SCHEMA_ID_FLD + ", " + "S." + XML_SCHEMA_FLD + ", " + "S."
-    + SCHEMA_DESCR_FLD + ", " + "U." + UPL_SCHEMA_ID_FLD + ", " + "U." + UPL_SCHEMA_FLD + " FROM " + SCHEMA_TABLE
-    + " S LEFT JOIN " + UPL_SCHEMA_TABLE + " U ON S." + SCHEMA_ID_FLD + "=U." + UPL_FK_SCHEMA_ID + " ORDER BY S."
-    + XML_SCHEMA_FLD;
+            + SCHEMA_DESCR_FLD + ", " + "U." + UPL_SCHEMA_ID_FLD + ", " + "U." + UPL_SCHEMA_FLD + " FROM " + SCHEMA_TABLE
+            + " S LEFT JOIN " + UPL_SCHEMA_TABLE + " U ON S." + SCHEMA_ID_FLD + "=U." + UPL_FK_SCHEMA_ID + " ORDER BY S."
+            + XML_SCHEMA_FLD;
 
     private static final String qUplSchema = "SELECT " + UPL_SCHEMA_ID_FLD + ", " + UPL_SCHEMA_FLD + ", " + UPL_SCHEMA_DESC + ", "
-    + UPL_FK_SCHEMA_ID + " FROM " + UPL_SCHEMA_TABLE + " ORDER BY " + UPL_SCHEMA_FLD;
+            + UPL_FK_SCHEMA_ID + " FROM " + UPL_SCHEMA_TABLE + " ORDER BY " + UPL_SCHEMA_FLD;
 
     private static final String qInsertUplSchema = "INSERT INTO " + UPL_SCHEMA_TABLE + " ( " + UPL_SCHEMA_FLD + " ,"
-    + UPL_SCHEMA_DESC + " ," + UPL_FK_SCHEMA_ID + ") " + "VALUES (?,?,?)";
+            + UPL_SCHEMA_DESC + " ," + UPL_FK_SCHEMA_ID + ") " + "VALUES (?,?,?)";
 
     public static final String qRemoveUplSchema = "DELETE FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_SCHEMA_ID_FLD + "= ?";
 
     private static final String qUplSchemaByID = "SELECT " + "S." + SCHEMA_ID_FLD + ", " + "S." + XML_SCHEMA_FLD + ", " + "S."
-    + SCHEMA_DESCR_FLD + ", " + "U." + UPL_SCHEMA_ID_FLD + ", " + "U." + UPL_SCHEMA_FLD + " FROM " + SCHEMA_TABLE
-    + " S RIGHT JOIN " + UPL_SCHEMA_TABLE + " U ON S." + SCHEMA_ID_FLD + "=U." + UPL_FK_SCHEMA_ID + " WHERE U."
-    + SCHEMA_ID_FLD + "= ?";
+            + SCHEMA_DESCR_FLD + ", " + "U." + UPL_SCHEMA_ID_FLD + ", " + "U." + UPL_SCHEMA_FLD + " FROM " + SCHEMA_TABLE
+            + " S RIGHT JOIN " + UPL_SCHEMA_TABLE + " U ON S." + SCHEMA_ID_FLD + "=U." + UPL_FK_SCHEMA_ID + " WHERE U."
+            + SCHEMA_ID_FLD + "= ?";
 
     private static final String qUplSchemaByFkId = "SELECT " + "S." + SCHEMA_ID_FLD + ", " + "S." + XML_SCHEMA_FLD + ", " + "S."
-    + SCHEMA_DESCR_FLD + ", " + "U." + UPL_SCHEMA_ID_FLD + ", " + "U." + UPL_SCHEMA_FLD + " FROM " + SCHEMA_TABLE
-    + " S LEFT JOIN " + UPL_SCHEMA_TABLE + " U ON S." + SCHEMA_ID_FLD + "=U." + UPL_FK_SCHEMA_ID + " WHERE S."
-    + SCHEMA_ID_FLD + "= ?";
+            + SCHEMA_DESCR_FLD + ", " + "U." + UPL_SCHEMA_ID_FLD + ", " + "U." + UPL_SCHEMA_FLD + " FROM " + SCHEMA_TABLE
+            + " S LEFT JOIN " + UPL_SCHEMA_TABLE + " U ON S." + SCHEMA_ID_FLD + "=U." + UPL_FK_SCHEMA_ID + " WHERE S."
+            + SCHEMA_ID_FLD + "= ?";
 
     private static final String qUplSchemaByURL = "SELECT U." + SCHEMA_ID_FLD + ", " + "U." + UPL_SCHEMA_FLD + "," + "S."
-    + SCHEMA_DESCR_FLD + "," + "S." + XML_SCHEMA_FLD + " FROM " + SCHEMA_TABLE + " S RIGHT JOIN " + UPL_SCHEMA_TABLE
-    + " U ON S." + SCHEMA_ID_FLD + "=U." + UPL_FK_SCHEMA_ID + " WHERE S." + XML_SCHEMA_FLD + "= ?";
+            + SCHEMA_DESCR_FLD + "," + "S." + XML_SCHEMA_FLD + " FROM " + SCHEMA_TABLE + " S RIGHT JOIN " + UPL_SCHEMA_TABLE
+            + " U ON S." + SCHEMA_ID_FLD + "=U." + UPL_FK_SCHEMA_ID + " WHERE S." + XML_SCHEMA_FLD + "= ?";
 
     private static final String qUpdateUplSchema = "UPDATE  " + UPL_SCHEMA_TABLE + " SET " + UPL_SCHEMA_FLD + "= ?, "
-    + UPL_SCHEMA_DESC + "= ?, " + UPL_FK_SCHEMA_ID + "= ? " + " WHERE " + UPL_SCHEMA_ID_FLD + "= ?";
+            + UPL_SCHEMA_DESC + "= ?, " + UPL_FK_SCHEMA_ID + "= ? " + " WHERE " + UPL_SCHEMA_ID_FLD + "= ?";
 
     private static final String qUpdateSchema = "UPDATE  " + SCHEMA_TABLE + " SET " + SCHEMA_DESCR_FLD + "= ? " + " WHERE "
-    + XML_SCHEMA_FLD + "= ? ";
+            + XML_SCHEMA_FLD + "= ? ";
 
     private static final String qUplSchemaByUplSchemaId = "SELECT " + UPL_SCHEMA_FLD + " FROM " + UPL_SCHEMA_TABLE + " WHERE "
-    + UPL_SCHEMA_ID_FLD + "= ?";
+            + UPL_SCHEMA_ID_FLD + "= ?";
 
     private static final String checkUplSchemaFile = "SELECT COUNT(*) FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_SCHEMA_FLD
-    + "= ?";
+            + "= ?";
 
     private static final String checkUplSchemaFK = "SELECT COUNT(*) FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_FK_SCHEMA_ID
-    + "!='' AND " + UPL_FK_SCHEMA_ID + "= ?";
+            + "!='' AND " + UPL_FK_SCHEMA_ID + "= ?";
 
     public UPLSchemaMySqlDao() {
     }
 
-    /*
-     * public Vector getUplSchema() throws SQLException {
-     *
-     * String sql = "SELECT " + UPL_SCHEMA_ID_FLD + ", " + UPL_SCHEMA_FLD + ", " + UPL_SCHEMA_DESC + " FROM " + UPL_SCHEMA_TABLE +
-     * " ORDER BY " + UPL_SCHEMA_FLD;
-     *
-     * String r[][] = _executeStringQuery(sql);
-     *
-     * Vector v = new Vector();
-     *
-     * for (int i = 0; i < r.length; i++) { Hashtable h = new Hashtable(); h.put("id", r[i][0]); h.put("schema", r[i][1]);
-     * h.put("description", r[i][2]); v.add(h); } return v; }
-     */
     @Override
     public Vector getUplSchema() throws SQLException {
         Connection conn = null;
@@ -111,47 +112,30 @@ public class UPLSchemaMySqlDao extends MySqlBaseDao implements IUPLSchemaDao {
     }
 
     @Override
-    public ArrayList<HashMap<String, String>> getSchemas() throws SQLException {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        ArrayList<HashMap<String, String>> l = null;
+    public List<UplSchema> getUploadedSchemas() throws SQLException {
 
         if (isDebugMode) {
             LOGGER.debug("Query is " + qSchemas);
         }
 
-        try {
-            conn = getConnection();
-            pstmt = conn.prepareStatement(qSchemas);
-            rs = pstmt.executeQuery();
-            String[][] r = getResults(rs);
-            l = new ArrayList<HashMap<String, String>>(r.length);
-            for (int i = 0; i < r.length; i++) {
-                HashMap<String, String> h = new HashMap<String, String>();
-                h.put("schema_id", r[i][0]);
-                h.put("xml_schema", r[i][1]);
-                h.put("description", r[i][2]);
-                h.put("upl_schema_id", r[i][3]);
-                h.put("upl_schema_file", r[i][4]);
-                l.add(h);
+        final List<UplSchema> schemas = new ArrayList<UplSchema>();
+        jdbcTemplate.query(qSchemas, new RowCallbackHandler() {
+
+            @Override
+            public void processRow(ResultSet rs) throws SQLException {
+                UplSchema uplSchema = new UplSchema();
+                uplSchema.setSchemaId(rs.getString(1));
+                uplSchema.setSchemaUrl(rs.getString(2));
+                uplSchema.setDescription(rs.getString(3));
+                uplSchema.setUplSchemaId(rs.getString(4));
+                uplSchema.setUplSchemaFile(rs.getString(5));
+                uplSchema.setUplSchemaFileUrl(Properties.gdemURL + "/" + Constants.SCHEMA_FOLDER + rs.getString(5));
+                schemas.add(uplSchema);
             }
-        } finally {
-            closeAllResources(rs, pstmt, conn);
-        }
-        return l;
+        });
+        return schemas;
     }
 
-    /*
-     * public String addUplSchema(String schema, String description) throws SQLException {
-     *
-     * String sql = "INSERT INTO " + UPL_SCHEMA_TABLE + " ( " + UPL_SCHEMA_FLD + " ," + UPL_SCHEMA_DESC + ") VALUES (" +
-     * Utils.strLiteral(schema) + ", " + Utils.strLiteral(description) + ")";
-     *
-     * _executeUpdate(sql);
-     *
-     * return _getLastInsertID(); }
-     */
     @Override
     public String addUplSchema(String schema, String description, String fk_schema_id) throws SQLException {
         Connection conn = null;
@@ -176,10 +160,8 @@ public class UPLSchemaMySqlDao extends MySqlBaseDao implements IUPLSchemaDao {
 
     /*
      * public void removeUplSchema(String uplSchemaId) throws SQLException {
-     *
      * String sql = "DELETE FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_SCHEMA_ID_FLD + "=" + uplSchemaId; _executeUpdate(sql); //
      * System.out.println(sql);
-     *
      * }
      */
     @Override
@@ -203,21 +185,14 @@ public class UPLSchemaMySqlDao extends MySqlBaseDao implements IUPLSchemaDao {
 
     /*
      * public void updateUplSchema(String schema_id, String description) throws SQLException {
-     *
      * description = (description == null ? "" : description);
-     *
      * String sql = "UPDATE  " + UPL_SCHEMA_TABLE + " SET " + SCHEMA_DESCR_FLD + "=" + Utils.strLiteral(description) + " WHERE " +
      * UPL_SCHEMA_ID_FLD + "=" + schema_id;
-     *
      * _executeUpdate(sql);
-     *
      * Hashtable sch = getUplSchemaById(schema_id); String schema = (String) sch.get("schema");
-     *
      * sql = "UPDATE  " + SCHEMA_TABLE + " SET " + SCHEMA_DESCR_FLD + "=" + Utils.strLiteral(description) + " WHERE " +
      * XML_SCHEMA_FLD + "=" + Utils.strLiteral(Properties.gdemURL + "/schema/" + schema);
-     *
      * _executeUpdate(sql);
-     *
      * }
      */
 
@@ -268,13 +243,9 @@ public class UPLSchemaMySqlDao extends MySqlBaseDao implements IUPLSchemaDao {
 
     /*
      * public String getUplSchema(String uplSchemaId) throws SQLException {
-     *
      * String sql = "SELECT " + UPL_SCHEMA_FLD + " FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_SCHEMA_ID_FLD + "=" + uplSchemaId;
-     *
      * String[][] r = _executeStringQuery(sql);
-     *
      * if (r.length == 0) return null;
-     *
      * return r[0][0]; }
      */
 
@@ -310,19 +281,13 @@ public class UPLSchemaMySqlDao extends MySqlBaseDao implements IUPLSchemaDao {
 
     /*
      * public Hashtable getUplSchemaById(String schemaId) throws SQLException {
-     *
      * int id = 0;
-     *
      * if (schemaId == null) throw new SQLException("Schema ID not defined"); try { id = Integer.parseInt(schemaId); } catch
      * (NumberFormatException n) { throw new SQLException("not numeric ID " + schemaId); }
-     *
      * String sql = "SELECT " + SCHEMA_ID_FLD + ", " + UPL_SCHEMA_FLD + "," + UPL_SCHEMA_DESC + " FROM " + UPL_SCHEMA_TABLE +
      * " WHERE " + SCHEMA_ID_FLD + "=" + id;
-     *
      * String[][] r = _executeStringQuery(sql);
-     *
      * Hashtable h = new Hashtable(); h.put("schema_id", r[0][0]); h.put("schema", r[0][1]); h.put("description", r[0][2]);
-     *
      * return h; }
      */
 

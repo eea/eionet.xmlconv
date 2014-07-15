@@ -7,9 +7,19 @@
   <t_schema SCHEMA_ID="3" XML_SCHEMA="http://www.dummy.com" DESCRIPTION="Delete it" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
   <t_schema SCHEMA_ID="4" XML_SCHEMA="http://www.unknown.com" DESCRIPTION="Update it" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
   <t_schema SCHEMA_ID="5" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL111" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="1"/>
+  <t_schema SCHEMA_ID="6" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL112" DESCRIPTION="No relations" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="1"/>
 
   <!-- T_UPL_SCHEMA -->
   <t_upl_schema SCHEMA_ID="8" SCHEMA_NAME="xliff.dtd" DESCRIPTION="" FK_SCHEMA_ID="2"/>
   <t_upl_schema SCHEMA_ID="9" SCHEMA_NAME="seed-gw-schema.xsd" DESCRIPTION="" FK_SCHEMA_ID="1"/>
   <t_upl_schema SCHEMA_ID="10" SCHEMA_NAME="seed-gw-schema-delete.xsd" DESCRIPTION="Delete it" FK_SCHEMA_ID="3"/>
+
+  <t_query QUERY_ID="1" DESCRIPTION="The script is checking 1. EWN Code 2. min mean max values 3. Land use percentage = 100%" SHORT_NAME="Script for checking Groundwater bodies&apos; metadata" QUERY_FILENAME="GW_Body_rules2551.xql" SCHEMA_ID="1" RESULT_TYPE="HTML"/>
+  <t_query QUERY_ID="3" DESCRIPTION="" SHORT_NAME="Ozone monthly - Station meta-information" QUERY_FILENAME="ozone1927_1.xql" SCHEMA_ID="1" RESULT_TYPE="HTML"/>
+
+  <t_stylesheet CONVERT_ID="1" DESCRIPTION="Simple table" RESULT_TYPE="HTML" XSL_FILENAME="simpletablehtml.xsl"/>
+  <t_stylesheet CONVERT_ID="2" DESCRIPTION="Average yearly pH value per station" RESULT_TYPE="HTML" XSL_FILENAME="averagephhtml.xsl"/>
+
+  <t_stylesheet_schema STYLESHEET_ID="1" SCHEMA_ID="1"/>
+  <t_stylesheet_schema STYLESHEET_ID="2" SCHEMA_ID="1"/>
 </dataset>

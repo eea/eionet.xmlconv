@@ -1,10 +1,12 @@
 package eionet.gdem.services.db.dao;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
+
+import eionet.gdem.dto.UplSchema;
 
 public interface IUPLSchemaDao extends IDbSchema {
     /**
@@ -82,10 +84,10 @@ public interface IUPLSchemaDao extends IDbSchema {
     /**
      * Gets all schemas from T_SCHEMA table with LEFT JOIN T_UPL_SCHEMA.
      *
-     * @return Lis of HashMaps
+     * @return List of UplSchema objects
      * @throws SQLException
      */
-    ArrayList<HashMap<String, String>> getSchemas() throws SQLException;
+    List<UplSchema> getUploadedSchemas() throws SQLException;
 
     /**
      * Returns the uploaded schema identified with the given ID.

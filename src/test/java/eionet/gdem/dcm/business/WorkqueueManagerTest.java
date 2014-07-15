@@ -21,14 +21,22 @@
 
 package eionet.gdem.dcm.business;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
@@ -37,39 +45,28 @@ import eionet.gdem.utils.Utils;
 /**
  * @author Enriko Käsper, Tieto Estonia WorkqueueManagerTest
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class WorkqueueManagerTest {
 
-public class WorkqueueManagerTest extends DBTestCase {
-
-    /**
-     * Provide a connection to the database.
-     */
-    public WorkqueueManagerTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
-    }
+    @Autowired
+    private IDatabaseTester databaseTester;
 
     /**
-     * Set up test case properties
+     * Set up test case properties and databaseTester.
      */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-    }
-
-    /**
-     * Load the data which will be inserted for the test
-     */
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_QA_XML));
-        return loadedDataSet;
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_QA_XML);
     }
 
     /**
      * The method adds a new QA job into the workqueue
-     * 
+     *
      * @throws Exception
      */
+    @Test
     public void testAddQAScriptToWorkqueue() throws Exception {
 
         String user = TestConstants.TEST_ADMIN_USER;
@@ -94,9 +91,10 @@ public class WorkqueueManagerTest extends DBTestCase {
 
     /**
      * The method adds several jobs to workqueue
-     * 
+     *
      * @throws Exception
      */
+    @Test
     public void testAddSchemaScriptsToWorkqueue() throws Exception {
 
         String user = TestConstants.TEST_ADMIN_USER;

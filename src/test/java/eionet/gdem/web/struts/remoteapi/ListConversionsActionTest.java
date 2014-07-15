@@ -3,16 +3,24 @@
  */
 package eionet.gdem.web.struts.remoteapi;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eionet.gdem.dcm.remote.ListConversionsResult;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
@@ -26,36 +34,26 @@ import eionet.gdem.utils.xml.XmlContext;
  * @author Enriko Käsper, TietoEnator Estonia AS testListConversionsTest
  */
 
-public class ListConversionsActionTest extends DBTestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class ListConversionsActionTest {
+
+    @Autowired
+    private IDatabaseTester databaseTester;
 
     /**
-     * Provide a connection to the database.
+     * Set up test case properties and databaseTester.
      */
-    public ListConversionsActionTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
-    }
-
-    /**
-     * Set up test case properties
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-    }
-
-    /**
-     * Load the data which will be inserted for the test
-     */
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_CONVERSIONS_XML));
-        return loadedDataSet;
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_CONVERSIONS_XML);
     }
 
     /**
      * Tests action execution
      */
+    @Test
     public void testExecute() throws Exception {
         // call the request
         MockServletResponse response = TestUtils.executeAction(new ListConversionsAction(), new HashMap());
@@ -79,10 +77,11 @@ public class ListConversionsActionTest extends DBTestCase {
     /**
      * Tests action execution with parameters
      */
+    @Test
     public void testExecuteWithParams() throws Exception {
 
         String schema = "http://waste.eionet.europa.eu/schemas/waste/schema.xsd";
-        String param1[] = {schema};
+        String param1[] = { schema };
         Map map = new HashMap();
         map.put(ListConversionsAction.SCHEMA_PARAM_NAME, param1);
 
@@ -106,27 +105,27 @@ public class ListConversionsActionTest extends DBTestCase {
 
         // validate the converison Ids
         List converIds = xQuery.getElementValues(ListConversionsResult.CONVERT_ID_TAG);
-        assertEquals("169", (String) converIds.get(0));
-        assertEquals("171", (String) converIds.get(1));
+        assertEquals("169", converIds.get(0));
+        assertEquals("171", converIds.get(1));
 
         // validate the xsl file names
         List xsl = xQuery.getElementValues(ListConversionsResult.XSL_TAG);
-        assertEquals("dir75442_excel.xsl", (String) xsl.get(0));
-        assertEquals("dir75442_html.xsl", (String) xsl.get(1));
+        assertEquals("dir75442_excel.xsl", xsl.get(0));
+        assertEquals("dir75442_html.xsl", xsl.get(1));
 
         // validate content types
         List contentTypes = xQuery.getElementValues(ListConversionsResult.CONTENT_TYPE_TAG);
-        assertEquals(TestConstants.EXCEL_CONTENTYPE_RESULT, (String) contentTypes.get(0));
-        assertEquals(TestConstants.HTML_CONTENTYPE_RESULT, (String) contentTypes.get(1));
+        assertEquals(TestConstants.EXCEL_CONTENTYPE_RESULT, contentTypes.get(0));
+        assertEquals(TestConstants.HTML_CONTENTYPE_RESULT, contentTypes.get(1));
 
         // validate result types
         List resultTypes = xQuery.getElementValues(ListConversionsResult.RESULT_TYPE_TAG);
-        assertEquals("EXCEL", (String) resultTypes.get(0));
-        assertEquals("HTML", (String) resultTypes.get(1));
+        assertEquals("EXCEL", resultTypes.get(0));
+        assertEquals("HTML", resultTypes.get(1));
 
         // validate schemas
         List schemas = xQuery.getElementValues(ListConversionsResult.XML_SCHEMA_TAG);
-        assertEquals(schema, (String) schemas.get(0));
-        assertEquals(schema, (String) schemas.get(1));
+        assertEquals(schema, schemas.get(0));
+        assertEquals(schema, schemas.get(1));
     }
 }

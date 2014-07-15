@@ -31,7 +31,9 @@ import org.apache.commons.logging.LogFactory;
 
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.business.SchemaManager;
+import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.dto.Schema;
+import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
@@ -40,7 +42,7 @@ import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 /**
  * Loads stylesheet list and stores it in the system cache.
  *
- * @author Enriko Käsper, Tieto Estonia StylesheetListLoader
+ * @author Enriko Käsper
  */
 
 public class StylesheetListLoader {
@@ -48,8 +50,11 @@ public class StylesheetListLoader {
     /** */
     private static final Log LOGGER = LogFactory.getLog(QAScriptListLoader.class);
     public static final String CONVERSION_SCHEMAS_ATTR = "conversion.schemas";
-    public static final String STYLESHEET_LIST_ATTR = "stylesheet.stylesheetList";
-    public static final String STYLESHEET_GENERATED_LIST_ATTR = "stylesheet.generatedList";
+    /** Context key attribute name holding handcoded stylesheet list. */
+    public static final String STYLESHEET_LIST_ATTR = "stylesheet.stylesheetListHolder";
+    /** Context key attribute name holding generated stylesheet list. */
+    public static final String STYLESHEET_GENERATED_LIST_ATTR = "stylesheet.generatedListHolder";
+    /** Session key attribute name holding user permissions. */
     public static final String STYLESHEET_PERMISSIONS_ATTR = "stylesheet.permissions";
     /**
      * Expire time in milliseconds for updating generated stylesheets list from DD
@@ -151,27 +156,37 @@ public class StylesheetListLoader {
         return st;
     }
 
-    public static StylesheetListHolder loadStylesheetList(HttpServletRequest httpServletRequest, boolean reload)
+    /**
+     * Load stylesheets info and permissions store it in the context.
+     * @param httpServletRequest
+     * @param reload
+     * @return
+     * @throws DCMException
+     */
+    private static StylesheetListHolder loadStylesheetList(HttpServletRequest httpServletRequest, boolean reload)
             throws DCMException {
 
-        Object st = httpServletRequest.getSession().getServletContext().getAttribute(STYLESHEET_LIST_ATTR);
-        if (st == null || !(st instanceof StylesheetListHolder) || reload) {
-            st = new StylesheetListHolder();
+        Object holder = httpServletRequest.getSession().getServletContext().getAttribute(STYLESHEET_LIST_ATTR);
+        if (holder == null || !(holder instanceof StylesheetListHolder) || reload) {
+            StylesheetListHolder stylesheetsHolder = new StylesheetListHolder();
             try {
-                SchemaManager sm = new SchemaManager();
-                st = sm.getSchemas("handcoded");
+                StylesheetManager stylesheetManager = new StylesheetManager();
+                List<Stylesheet> stylesheets = stylesheetManager.getStylesheets();
+                stylesheetsHolder.setStylesheetList(stylesheets);
+                holder = stylesheetsHolder;
             } catch (DCMException e) {
                 e.printStackTrace();
                 LOGGER.error("Error getting stylesheet list", e);
                 throw e;
             }
-            httpServletRequest.getSession().getServletContext().setAttribute(STYLESHEET_LIST_ATTR, st);
+            httpServletRequest.getSession().getServletContext().setAttribute(STYLESHEET_LIST_ATTR, stylesheetsHolder);
         }
+
         Object permissions = httpServletRequest.getSession().getServletContext().getAttribute(STYLESHEET_PERMISSIONS_ATTR);
         if (permissions == null || !(permissions instanceof QAScriptListHolder)) {
             loadPermissions(httpServletRequest);
         }
-        return (StylesheetListHolder) st;
+        return (StylesheetListHolder) holder;
     }
 
     private static List<Schema> loadConversionSchemasList(HttpServletRequest httpServletRequest, boolean reload)

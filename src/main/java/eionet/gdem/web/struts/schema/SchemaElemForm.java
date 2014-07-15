@@ -21,18 +21,16 @@
 
 package eionet.gdem.web.struts.schema;
 
-import java.text.ParseException;
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
+import eionet.gdem.dto.Schema;
+import eionet.gdem.utils.Utils;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.validator.ValidatorForm;
 
-import eionet.gdem.dto.Schema;
-import eionet.gdem.utils.Utils;
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.Date;
 
 public class SchemaElemForm extends ValidatorForm {
 
@@ -47,8 +45,10 @@ public class SchemaElemForm extends ValidatorForm {
     private boolean dtd = false;
     private String expireDate;
     private Date expireDateObj;
-    /** Block file submission if Schema validation fails. The flag used in QA service. */
-    private boolean blockerValidation = false;
+    /**
+     * Block file submission if Schema validation fails. The flag used in QA service.
+     */
+    private boolean blocker = false;
 
     // uploaded schema file
     private String uplSchemaFileName;
@@ -149,6 +149,7 @@ public class SchemaElemForm extends ValidatorForm {
         namespace = null;
         schemaLang = Schema.getDefaultSchemaLang();
         doValidation = false;
+        blocker = false;
         dtd = false;
         uplSchemaFileName = null;
         uplSchemaFileUrl = null;
@@ -237,17 +238,17 @@ public class SchemaElemForm extends ValidatorForm {
     }
 
     /**
-     * @return the blockerValidation
+     * @return the blocker
      */
-    public boolean isBlockerValidation() {
-        return blockerValidation;
+    public boolean isBlocker() {
+        return blocker;
     }
 
     /**
-     * @param blockerValidation the blockerValidation to set
+     * @param blocker the blocker to set
      */
-    public void setBlockerValidation(boolean blockerValidation) {
-        this.blockerValidation = blockerValidation;
+    public void setBlocker(boolean blocker) {
+        this.blocker = blocker;
     }
 
 }

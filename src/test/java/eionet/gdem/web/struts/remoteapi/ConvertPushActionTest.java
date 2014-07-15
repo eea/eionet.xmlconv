@@ -1,17 +1,22 @@
-/*
- * Created on 19.03.2008
- */
 package eionet.gdem.web.struts.remoteapi;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eionet.gdem.dcm.remote.XMLErrorResult;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
@@ -24,43 +29,33 @@ import eionet.gdem.utils.xml.XmlContext;
  * @author Enriko Käsper, TietoEnator Estonia AS ConvertPushActionTest
  */
 
-public class ConvertPushActionTest extends DBTestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class ConvertPushActionTest {
+
+    @Autowired
+    private IDatabaseTester databaseTester;
 
     /**
-     * Provide a connection to the database.
+     * Set up test case properties and databaseTester.
      */
-    public ConvertPushActionTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
-    }
-
-    /**
-     * Set up test case properties
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-    }
-
-    /**
-     * Load the data which will be inserted for the test
-     */
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_CONVERSIONS_XML));
-        return loadedDataSet;
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_CONVERSIONS_XML);
     }
 
     /**
      * Tests execute method - validate the result file and metadata( content type and file name)
      */
+    @Test
     public void testExecute() throws Exception {
 
         String seedFile = getClass().getClassLoader().getResource(TestConstants.SEED_GENERAL_REPORT_XML).getFile();
         String fileContentType = TestConstants.XML_CONTENTYPE_RESULT;
         String fileParamName = ConvertPushAction.CONVERT_FILE_PARAM_NAME;
 
-        String param1[] = {"168"};
+        String param1[] = { "168" };
         Map map = new HashMap();
         map.put(ConvertPushAction.CONVERT_ID_PARAM_NAME, param1);
 
@@ -69,9 +64,7 @@ public class ConvertPushActionTest extends DBTestCase {
                 TestUtils.executeActionMultipart(new ConvertPushAction(), map, fileParamName, seedFile, fileContentType);
 
         assertEquals(TestConstants.HTML_CONTENTYPE_RESULT, response.getContentType());
-        assertEquals(
-                new StringBuilder("inline;filename=\"").append(TestConstants.GR_HTML_FILENAME_RESULT).append("\"").toString(),
-                response.getHeader("Content-Disposition"));
+        assertEquals(new StringBuilder("inline;filename=\"").append(TestConstants.GR_HTML_FILENAME_RESULT).append("\"").toString(), response.getHeader("Content-Disposition"));
         // test if the converion result contains some text from seed..xml file
         assertTrue(response.getOutputStream().toString().indexOf(TestConstants.STRCONTENT_RESULT) > 0);
     }
@@ -79,13 +72,14 @@ public class ConvertPushActionTest extends DBTestCase {
     /**
      * Tests convertPush method with zipped XML file. Validate the result file and metadata( content type and file name)
      */
+    @Test
     public void testExecuteZip() throws Exception {
 
         String seedFile = getClass().getClassLoader().getResource(TestConstants.SEED_GENERAL_REPORT_ZIP).getFile();
         String fileContentType = TestConstants.ZIP_CONTENTYPE_RESULT;
         String fileParamName = ConvertPushAction.CONVERT_FILE_PARAM_NAME;
 
-        String param1[] = {"168"};
+        String param1[] = { "168" };
         Map map = new HashMap();
         map.put(ConvertPushAction.CONVERT_ID_PARAM_NAME, param1);
 
@@ -94,9 +88,7 @@ public class ConvertPushActionTest extends DBTestCase {
                 TestUtils.executeActionMultipart(new ConvertPushAction(), map, fileParamName, seedFile, fileContentType);
 
         assertEquals(TestConstants.HTML_CONTENTYPE_RESULT, response.getContentType());
-        assertEquals(
-                new StringBuilder("inline;filename=\"").append(TestConstants.GR_HTML_FILENAME_RESULT).append("\"").toString(),
-                response.getHeader("Content-Disposition"));
+        assertEquals(new StringBuilder("inline;filename=\"").append(TestConstants.GR_HTML_FILENAME_RESULT).append("\"").toString(), response.getHeader("Content-Disposition"));
         // test if the converion result contains some text from seed..xml file
         assertTrue(response.getOutputStream().toString().indexOf(TestConstants.STRCONTENT_RESULT) > 0);
     }
@@ -104,13 +96,14 @@ public class ConvertPushActionTest extends DBTestCase {
     /**
      * Tests convert method - the conversion should fail and result should be error XML
      */
+    @Test
     public void testExecuteError() throws Exception {
 
         String seedFile = getClass().getClassLoader().getResource(TestConstants.SEED_GENERAL_REPORT_XML).getFile();
         String fileContentType = TestConstants.XML_CONTENTYPE_RESULT;
         String fileParamName = ConvertPushAction.CONVERT_FILE_PARAM_NAME;
 
-        String param1[] = {"-999"};
+        String param1[] = { "-999" };
         Map map = new HashMap();
         map.put(ConvertPushAction.CONVERT_ID_PARAM_NAME, param1);
 

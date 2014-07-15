@@ -21,12 +21,19 @@
 
 package eionet.gdem.services.db.dao;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eionet.gdem.Constants;
-import eionet.gdem.services.GDEMServices;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
@@ -36,41 +43,26 @@ import eionet.gdem.test.TestUtils;
  *
  * @author Enriko Käsper, Tieto Estonia QueryDaoTest
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class XQJobDaoTest {
 
-public class XQJobDaoTest extends DBTestCase {
+    @Autowired
+    private IDatabaseTester databaseTester;
 
-    private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
-
-    /**
-     * Provide a connection to the database.
-     */
-    public XQJobDaoTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
-    }
+    @Autowired
+    private IXQJobDao xqJobDao;
 
     /**
-     * Set up test case properties
+     * Set up test case properties and databaseTester.
      */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_QA_XML);
     }
 
-    /**
-     * Load the data which will be inserted for the test
-     */
-    @Override
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-            new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_QA_XML));
-        return loadedDataSet;
-    }
-
-    /**
-     * @throws Exception
-     */
+    @Test
     public void testQueryMethods() throws Exception {
         assertEquals(1, xqJobDao.getJobs(Constants.XQ_PROCESSING).length);
         assertEquals(1, xqJobDao.getJobs(Constants.XQ_READY).length);

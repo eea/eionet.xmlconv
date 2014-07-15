@@ -153,13 +153,16 @@ public class XQueryTask extends Thread {
                 // guess it by file extension
                 if (Utils.isNullStr(scriptType)) {
                     scriptType =
-                        scriptFile.endsWith(XQScript.SCRIPT_LANG_XSL) ? XQScript.SCRIPT_LANG_XSL
-                                : scriptFile.endsWith(XQScript.SCRIPT_LANG_XGAWK) ? XQScript.SCRIPT_LANG_XGAWK
-                                        : XQScript.SCRIPT_LANG_XQUERY;
+                            scriptFile.endsWith(XQScript.SCRIPT_LANG_XSL) ? XQScript.SCRIPT_LANG_XSL
+                                    : scriptFile.endsWith(XQScript.SCRIPT_LANG_XGAWK) ? XQScript.SCRIPT_LANG_XGAWK
+                                            : XQScript.SCRIPT_LANG_XQUERY;
                 }
                 String[] xqParam = { Constants.XQ_SOURCE_PARAM_NAME + "=" + srcFile };
 
                 try {
+                    if (scriptFile.contains(" ")) {
+                        scriptFile = StringUtils.substringBefore(scriptFile, " ");
+                    }
                     LOGGER.info("** XQuery starts, ID=" + jobId + " params: " + (xqParam == null ? "<< no params >>" : xqParam[0])
                             + " result will be stored to " + resultFile);
                     LOGGER.debug("Script: \n" + scriptFile);

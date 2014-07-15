@@ -3,15 +3,23 @@
  */
 package eionet.gdem.web.struts.remoteapi;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eionet.gdem.dcm.remote.XMLErrorResult;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
@@ -26,42 +34,30 @@ import eionet.gdem.utils.xml.XmlContext;
  * @author Enriko Käsper, TietoEnator Estonia AS ConvertActionTest
  */
 
-public class ConvertActionTest extends DBTestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class ConvertActionTest {
+
+    @Autowired
+    private IDatabaseTester databaseTester;
 
     /**
-     * Provide a connection to the database.
+     * Set up test case properties and databaseTester.
      */
-    public ConvertActionTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
-    }
-
-    /**
-     * Set up test case properties
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-    }
-
-    /**
-     * Load the data which will be inserted for the test
-     */
-    @Override
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_CONVERSIONS_XML));
-        return loadedDataSet;
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_CONVERSIONS_XML);
     }
 
     /**
      * Tests execute method - validate the result file and metadata( content type and file name)
      */
+    @Test
     public void testExecute() throws Exception {
 
-        String param1[] = {TestUtils.getSeedURL(TestConstants.SEED_GENERAL_REPORT_XML, this)};
-        String param2[] = {"168"};
+        String param1[] = { TestUtils.getSeedURL(TestConstants.SEED_GENERAL_REPORT_XML, this) };
+        String param2[] = { "168" };
         Map map = new HashMap();
         map.put(ConvertAction.URL_PARAM_NAME, param1);
         map.put(ConvertAction.CONVERT_ID_PARAM_NAME, param2);
@@ -70,9 +66,7 @@ public class ConvertActionTest extends DBTestCase {
         MockServletResponse response = TestUtils.executeAction(new ConvertAction(), map);
 
         assertEquals(TestConstants.HTML_CONTENTYPE_RESULT, response.getContentType());
-        assertEquals(
-                new StringBuilder("inline;filename=\"").append(TestConstants.GR_HTML_FILENAME_RESULT).append("\"").toString(),
-                response.getHeader("Content-Disposition"));
+        assertEquals(new StringBuilder("inline;filename=\"").append(TestConstants.GR_HTML_FILENAME_RESULT).append("\"").toString(), response.getHeader("Content-Disposition"));
         // test if the converion result contains some text from seed..xml file
         assertTrue(response.getOutputStream().toString().indexOf(TestConstants.STRCONTENT_RESULT) > 0);
     }
@@ -80,10 +74,11 @@ public class ConvertActionTest extends DBTestCase {
     /**
      * Tests convert method - validate the result file and metadata( content type and file name)
      */
+    @Test
     public void testExecuteDDTableHTML() throws Exception {
 
-        String param1[] = {TestUtils.getSeedURL(TestConstants.SEED_OZONE_STATION_XML, this)};
-        String param2[] = {"DD_TBL3453_CONV5"};
+        String param1[] = { TestUtils.getSeedURL(TestConstants.SEED_OZONE_STATION_XML, this) };
+        String param2[] = { "DD_TBL3453_CONV5" };
         Map map = new HashMap();
         map.put(ConvertAction.URL_PARAM_NAME, param1);
         map.put(ConvertAction.CONVERT_ID_PARAM_NAME, param2);
@@ -92,9 +87,7 @@ public class ConvertActionTest extends DBTestCase {
         MockServletResponse response = TestUtils.executeAction(new ConvertAction(), map);
 
         assertEquals(TestConstants.HTML_CONTENTYPE_RESULT, response.getContentType());
-        assertEquals(
-                new StringBuilder("inline;filename=\"").append(TestConstants.OZ_HTML_FILENAME_RESULT).append("\"").toString(),
-                response.getHeader("Content-Disposition"));
+        assertEquals(new StringBuilder("inline;filename=\"").append(TestConstants.OZ_HTML_FILENAME_RESULT).append("\"").toString(), response.getHeader("Content-Disposition"));
         // test if the converion result contains some text from seed..xml file
         assertTrue(response.getOutputStream().toString().indexOf(TestConstants.STRCONTENT_RESULT) > 0);
     }
@@ -102,10 +95,11 @@ public class ConvertActionTest extends DBTestCase {
     /**
      * Tests convert method - the conversion should fail and result should be error XML
      */
+    @Test
     public void testExecuteError() throws Exception {
 
-        String param1[] = {TestUtils.getSeedURL(TestConstants.SEED_GENERAL_REPORT_XML, this)};
-        String param2[] = {"-99"};
+        String param1[] = { TestUtils.getSeedURL(TestConstants.SEED_GENERAL_REPORT_XML, this) };
+        String param2[] = { "-99" };
         Map<String, String[]> map = new HashMap<String, String[]>();
         map.put(ConvertAction.URL_PARAM_NAME, param1);
         map.put(ConvertAction.CONVERT_ID_PARAM_NAME, param2);

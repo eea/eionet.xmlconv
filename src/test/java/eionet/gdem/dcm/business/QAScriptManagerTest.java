@@ -1,14 +1,24 @@
-/*
- * Created on 01.12.20098
- */
 package eionet.gdem.dcm.business;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import eionet.gdem.Properties;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.dto.Schema;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
@@ -18,34 +28,20 @@ import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS SchemaManagerDBTest
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class QAScriptManagerTest {
 
-public class QAScriptManagerTest extends DBTestCase {
-
-    /**
-     * Provide a connection to the database.
-     */
-    public QAScriptManagerTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
-    }
+    @Autowired
+    private IDatabaseTester databaseTester;
 
     /**
-     * Set up test case properties
+     * Set up test case properties and databaseTester.
      */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-    }
-
-    /**
-     * Load the data which will be inserted for the test
-     */
-    @Override
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-            new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_QA_XML));
-        return loadedDataSet;
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_QA_XML);
     }
 
     /**
@@ -54,6 +50,7 @@ public class QAScriptManagerTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testAddQAScript() throws Exception {
 
         String queryFileName = TestConstants.SEED_QASCRIPT_XQUERY;
@@ -71,10 +68,10 @@ public class QAScriptManagerTest extends DBTestCase {
         QAScriptManager qm = new QAScriptManager();
 
         MockFormFile scriptFile =
-            new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_QASCRIPT_XQUERY).getFile());
-        // add qa script into db and upoload schema file
-        String scriptId = qm.add(user, shortName, schemaId, schema, resultType, description, scriptType, scriptFile,
-                upperLimit, url);
+                new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_QASCRIPT_XQUERY).getFile());
+        // add qa script into db and upload schema file
+        String scriptId =
+                qm.add(user, shortName, schemaId, schema, resultType, description, scriptType, scriptFile, upperLimit, url);
 
         // query script by id and compare fields
         QAScript qascript = qm.getQAScript(scriptId);
@@ -94,6 +91,7 @@ public class QAScriptManagerTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testUpdateSchemaValidation() throws Exception {
 
         String user = TestConstants.TEST_ADMIN_USER;
@@ -121,6 +119,7 @@ public class QAScriptManagerTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testDeleteQAScript() throws Exception {
 
         String user = TestConstants.TEST_ADMIN_USER;
@@ -147,6 +146,7 @@ public class QAScriptManagerTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testQAScriptFileExists() throws Exception {
 
         // delete qa script
@@ -170,6 +170,7 @@ public class QAScriptManagerTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testUpdateQAScript() throws Exception {
 
         String description = "QA script description";
@@ -208,6 +209,7 @@ public class QAScriptManagerTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testUpdateQAScriptFile() throws Exception {
 
         String description = "QA script description";
@@ -222,8 +224,11 @@ public class QAScriptManagerTest extends DBTestCase {
 
         String user = TestConstants.TEST_ADMIN_USER;
 
+        //delete test file if exists
+        FileUtils.deleteQuietly(new File(Properties.queriesFolder + File.separator + TestConstants.SEED_QASCRIPT_XQUERY2));
+
         MockFormFile scriptFile =
-            new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_QASCRIPT_XQUERY2).getFile());
+                new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_QASCRIPT_XQUERY2).getFile());
 
         QAScriptManager qm = new QAScriptManager();
 
@@ -247,6 +252,7 @@ public class QAScriptManagerTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testStoreQAScriptFromString() throws Exception {
 
         String scriptId = "49";

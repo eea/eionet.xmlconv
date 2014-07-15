@@ -22,6 +22,11 @@ public interface IDbSchema {
     String XSL_TABLE = "T_STYLESHEET";
 
     /**
+     * Table for schema stylesheets many-to-many in the DB.
+     */
+    String XSL_SCHEMA_TABLE = "T_STYLESHEET_SCHEMA";
+
+    /**
      * Table for queries in the DB.
      */
     String QUERY_TABLE = "T_QUERY";
@@ -172,5 +177,10 @@ public interface IDbSchema {
     String BACKUP_FILENAME_FLD = "FILE_NAME";
     String BACKUP_TIMESTAMP_FLD = "F_TIMESTAMP";
     String BACKUP_USER_FLD = "USER";
+
+    /**
+     * Field names in STYLESHEET_SCHEMA table.
+     */
+    String STYLESHEET_ID_FLD = "STYLESHEET_ID";
 
 }

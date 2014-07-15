@@ -21,23 +21,6 @@
 
 package eionet.gdem.dcm.business;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts.upload.FormFile;
-
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
@@ -49,6 +32,16 @@ import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts.upload.FormFile;
+
+import java.io.*;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.HashMap;
 
 /**
  * @author Enriko Käsper, Tieto Estonia QAScriptManager
@@ -457,7 +450,7 @@ public class QAScriptManager {
     public void updateSchemaValidation(String user, String schemaId, boolean validate, boolean blocker) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
-                LOGGER.debug("You don't have permissions to update XML Schema validationt!");
+                LOGGER.debug("You don't have permissions to update XML Schema validation!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_UPDATE);
             }
         } catch (DCMException e) {

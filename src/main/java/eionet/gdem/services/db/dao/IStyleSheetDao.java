@@ -1,58 +1,61 @@
 package eionet.gdem.services.db.dao;
 
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.List;
+
+import eionet.gdem.dto.Stylesheet;
 
 public interface IStyleSheetDao extends IDbSchema {
 
     /**
-     * Adds a new Stylesheet to the database.
-     *
-     * @param xmlSchemaID
-     *            - xml schema ID
-     * @param resultType
-     *            - conversion type out: EXCEL, HTML, PDF, XML
-     * @param xslFileName
-     *            - xslFileName in the folder
-     * @param xslDescription
-     *            - text describing the stylesheet
-     * @param content_type
-     *            - result file content_type
-     * @param dependsOn
-     *            stylesheet id the current stylesheet depends on
-     * @return The ID of the added stylesheet
+     * Updates stylesheet properties in database.
+     * @param stylehseet Stylesheet object.
+     * @throws SQLException in case of database exception
      */
-    public String addStylesheet(String xmlSchemaID, String resultType, String xslFileName, String description, String dependsOn)
-            throws SQLException;
+    public void updateStylesheet(Stylesheet stylehseet) throws SQLException;
 
     /**
-     * Updates stylesheet properties in the database.
-     *
-     * @param xsl_id - id from database, used as a constraint
-     * @param schema_id - schema id
-     * @param description - text describing the query
-     * @param fileName - query file name
-     * @param content_type - result content type
-     * @param dependsOn
-     *            stylesheet id the current stylesheet depends on
+     * Adds new stylesheet into database.
+     * @param stylehseet Stylesheet object.
+     * @throws SQLException in case of database exception
      */
-    public void updateStylesheet(String xsl_id, String schema_id, String description, String fileName, String content_type,
-            String dependsOn) throws SQLException;
+    public String addStylesheet(Stylesheet stylehseet) throws SQLException;
 
     /**
-     * Removes the stylesheet from the stylesheets table.
+     * Deletes the stylesheet from the stylesheets table.
      *
      * @param convertId - The identifier of the stylesheet.
+     * @throws SQLException in case of database exception
      */
-    public void removeStylesheet(String convertId) throws SQLException;
+    public void deleteStylesheet(String convertId) throws SQLException;
 
     /**
-     * Gets the data of the stylesheet from the repository.
+     * Check if stylesheet file with given name exists in the database.
+     * @param xslFileName Stylesheet file name
+     * @return true if file exists
+     * @throws SQLException in case of database exception
      */
-    public HashMap getStylesheetInfo(String convertId) throws SQLException;
-
     public boolean checkStylesheetFile(String xslFileName) throws SQLException;
 
-    public boolean checkStylesheetFile(String xsl_id, String xslFileName) throws SQLException;
+    /**
+     * Check if stylesheet file with given name and id exists in the database.
+     * @param xslId Stylesheet ID in database table.
+     * @param xslFileName Stylesheet file name
+     * @return true if file exists
+     * @throws SQLException in case of database exception
+     */
+    public boolean checkStylesheetFile(String xslId, String xslFileName) throws SQLException;
 
+    /**
+     * Get all stylesheets stored in database.
+     * @return List of Stylesheet objects.
+     */
+    public List<Stylesheet> getStylesheets();
+
+    /**
+     * Get stylesheet object by unique numeric ID.
+     * @param convertId stylesheet ID.
+     * @return Stylehseet DTo object.
+     */
+    public Stylesheet getStylesheet(String convertId);
 }

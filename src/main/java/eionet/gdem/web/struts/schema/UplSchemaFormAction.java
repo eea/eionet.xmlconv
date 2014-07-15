@@ -37,6 +37,12 @@ import org.apache.struts.action.ActionMessages;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 
+/**
+ *
+ * Displays the list of all schemas stored in database.
+ *
+ * @author Enriko Käsper
+ */
 public class UplSchemaFormAction extends Action {
 
     /** */
@@ -52,7 +58,7 @@ public class UplSchemaFormAction extends Action {
 
         try {
             SchemaManager sm = new SchemaManager();
-            holder = sm.getUplSchemas(user);
+            holder = sm.getAllSchemas(user);
             httpServletRequest.setAttribute("schemas.uploaded", holder);
 
         } catch (DCMException e) {

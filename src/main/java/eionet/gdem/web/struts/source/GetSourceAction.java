@@ -14,6 +14,7 @@ import eionet.gdem.utils.Utils;
 
 public class GetSourceAction extends Action {
 
+    @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
@@ -29,6 +30,7 @@ public class GetSourceAction extends Action {
                 manager.getFileNoAuthentication(httpServletResponse, source_url);
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }

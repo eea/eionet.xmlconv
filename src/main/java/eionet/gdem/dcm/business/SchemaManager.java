@@ -117,8 +117,7 @@ public class SchemaManager {
                 hasOtherStuff = true;
             }
 
-            // dbM.removeSchema( schemaId, true, false, !hasOtherStuff);
-            schemaDao.removeSchema(schemaId, true, false, false, !hasOtherStuff);
+            schemaDao.removeSchema(schemaId, false, false, !hasOtherStuff);
 
             // delete stylesheet files only if db operation succeeded
             if (stylesheets != null) {
@@ -164,7 +163,7 @@ public class SchemaManager {
             type = "handcoded";
         }
         Vector hcSchemas;
-        ArrayList<Schema> schemas;
+        List<Schema> schemas;
 
         try {
             schemas = new ArrayList<Schema>();
@@ -197,7 +196,7 @@ public class SchemaManager {
                         stl.setType((String) stylesheet.get("content_type_out"));
                         stl.setXsl(Names.XSL_FOLDER + (String) stylesheet.get("xsl"));
                         stl.setXslFileName((String) stylesheet.get("xsl"));
-                        stl.setXsl_descr((String) stylesheet.get("description"));
+                        stl.setDescription((String) stylesheet.get("description"));
                         stl.setDdConv(false);
                         stls.add(stl);
                     }
@@ -211,10 +210,10 @@ public class SchemaManager {
                 }
             }
 
-            // if type==all, then show both handcoded and generated styleseheets
-            // if type==generated, then show only generated from DD sttyleseets
+            // if type==all, then show both handcoded and generated stylesheets
+            // if type==generated, then show only generated from DD stylesheets
             if (type.equals("generated") || type.equals("all")) {
-                // retrive conversions for DD tables
+                // retrieve conversions for DD tables
                 schemas = getDDSchemas(true);
                 st.setDdStylesheets(schemas);
             }
@@ -236,7 +235,6 @@ public class SchemaManager {
     public StylesheetListHolder getSchemaStylesheetsList(String schema) throws DCMException {
         StylesheetListHolder st = new StylesheetListHolder();
 
-        Vector hcSchemas;
         ArrayList<Schema> schemas;
 
         try {
@@ -286,7 +284,7 @@ public class SchemaManager {
                 stl.setType(type);
                 stl.setXsl(xslUrl);
                 stl.setXslFileName(xsl);
-                stl.setXsl_descr((String) hash.get("description"));
+                stl.setDescription((String) hash.get("description"));
                 stl.setModified(lastModified);
                 stl.setConvId((String) hash.get("convert_id"));
                 stl.setDdConv(ddConv);
@@ -485,8 +483,7 @@ public class SchemaManager {
                 schema.setDescription((String) schemaHash.get("description"));
                 schema.setSchemaLang((String) schemaHash.get("schema_lang"));
                 boolean validate =
-                        (!Utils.isNullStr((String) schemaHash.get("validate")) &&
-                                ((String) schemaHash.get("validate")).equals("1"));
+                        (!Utils.isNullStr((String) schemaHash.get("validate")) && ((String) schemaHash.get("validate")).equals("1"));
                 schema.setDoValidation(validate);
                 schema.setDtdPublicId((String) schemaHash.get("dtd_public_id"));
                 schema.setExpireDate(Utils.parseDate((String) schemaHash.get("expire_date"), "yyyy-MM-dd HH:mm:ss"));
@@ -654,7 +651,7 @@ public class SchemaManager {
                 stl.setType(type);
                 stl.setXsl(xslUrl);
                 stl.setXslFileName(xslFileName);
-                stl.setXsl_descr(description);
+                stl.setDescription(description);
                 stl.setDdConv(ddConv);
                 stls.add(stl);
             }
@@ -667,15 +664,15 @@ public class SchemaManager {
     }
 
     /**
-     * Get uploaded schema files and permissions.
+     * Get all schemas with relations to files, stylesheets and QA scripts and permissions.
      * @param userName user login name.
      * @return UplSchemaHolder object holding schema and permissions information.
      * @throws DCMException in case of database error.
      */
-    public UplSchemaHolder getUplSchemas(String userName) throws DCMException {
+    public UplSchemaHolder getAllSchemas(String userName) throws DCMException {
 
         UplSchemaHolder sc = new UplSchemaHolder();
-        ArrayList schemas;
+        List<Schema> schemas;
 
         boolean ssiPrm = false;
         boolean ssdPrm = false;
@@ -691,29 +688,8 @@ public class SchemaManager {
             sc.setSsiPrm(ssiPrm);
             sc.setSsuPrm(ssuPrm);
 
-            schemas = new ArrayList();
+            schemas = schemaDao.getSchemasWithRelations();
 
-            ArrayList schemaList = uplSchemaDao.getSchemas();
-
-            for (int i = 0; i < schemaList.size(); i++) {
-                HashMap hash = (HashMap) schemaList.get(i);
-                String schemaId = (String) hash.get("schema_id");
-                // String schema = Properties.gdemURL + "/schema/" + (String) hash.get("schema");
-                String schema = (String) hash.get("xml_schema");
-                String desc = (String) hash.get("description");
-                String uplSchemaId = (String) hash.get("upl_schema_id");
-                String uplSchemaFile = (String) hash.get("upl_schema_file");
-                String uplSchemaFileUrl = Properties.gdemURL + "/schema/" + (String) hash.get("upl_schema_file");
-
-                UplSchema uplSchema = new UplSchema();
-                uplSchema.setSchemaId(schemaId);
-                uplSchema.setSchemaUrl(schema);
-                uplSchema.setDescription(desc);
-                uplSchema.setUplSchemaId(uplSchemaId);
-                uplSchema.setUplSchemaFile(uplSchemaFile);
-                uplSchema.setUplSchemaFileUrl(uplSchemaFileUrl);
-                schemas.add(uplSchema);
-            }
             if (schemas.size() > 0) {
                 sc.setSchemas(schemas);
             }
@@ -880,7 +856,7 @@ public class SchemaManager {
             }
 
             // delete uploaded files and schema if needed
-            schemaDao.removeSchema(schemaId, false, false, true, delSchema);
+            schemaDao.removeSchema(schemaId, false, true, delSchema);
 
             // delete uplSchema files only if db operation succeeded
             if (uplSchema != null) {
@@ -913,7 +889,7 @@ public class SchemaManager {
      * @return list of XML Schema objects.
      * @throws DCMException in case of database or DD service error.
      */
-    public ArrayList getDDSchemas() throws DCMException {
+    public List getDDSchemas() throws DCMException {
         return getDDSchemas(false);
     }
 
@@ -924,9 +900,9 @@ public class SchemaManager {
      * @return list of XML Schema objects.
      * @throws DCMException in case of database or DD service error.
      */
-    public ArrayList getDDSchemas(boolean getStylesheets) throws DCMException {
+    public List getDDSchemas(boolean getStylesheets) throws DCMException {
 
-        ArrayList schemas = new ArrayList();
+        List schemas = new ArrayList();
 
         try {
             // retrive conversions for DD tables
@@ -956,7 +932,7 @@ public class SchemaManager {
                     Stylesheet stl = new Stylesheet();
                     stl.setType(ddConv.getResultType());
                     stl.setXsl(xslUrl);
-                    stl.setXsl_descr(ddConv.getDescription());
+                    stl.setDescription(ddConv.getDescription());
                     stl.setDdConv(true);
                     stls.add(stl);
                 }

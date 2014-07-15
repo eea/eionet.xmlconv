@@ -1,47 +1,41 @@
 package eionet.gdem.qa;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
-public class QAResultPostProcessorTest extends DBTestCase {
-    /**
-     * Provide a connection to the database.
-     */
-    public QAResultPostProcessorTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
-    }
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class QAResultPostProcessorTest {
+
+    @Autowired
+    private IDatabaseTester databaseTester;
 
     /**
-     * Set up test case properties
+     * Set up test case properties and databaseTester.
      */
-    protected void setUp() throws Exception {
-        try {
-            super.setUp();
-            TestUtils.setUpProperties(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
+    @Before
+    public void setUp() throws Exception {
+        TestUtils.setUpProperties(this);
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_QA_XML);
     }
 
-    /**
-     * Load the data which will be inserted for the test
-     */
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_QA_XML));
-        return loadedDataSet;
-    }
-
+    @Test
     public void testExpiredSchemaQAResult() {
         QAResultPostProcessor postProcessor = new QAResultPostProcessor();
         String message = postProcessor.getWarningMessage("http://localhost/not_existing.xsd");
@@ -52,6 +46,7 @@ public class QAResultPostProcessorTest extends DBTestCase {
         assertNull(message2);
     }
 
+    @Test
     public void testObsoleteDDSchemaQAResult() {
         MockQAResultPostProcessor qaPostProcessor = new MockQAResultPostProcessor();
         Map<String, String> dataset = new HashMap<String, String>();
@@ -88,6 +83,7 @@ public class QAResultPostProcessorTest extends DBTestCase {
 
         Map<String, String> datasetResult = null;
 
+        @Override
         protected Map getDataset(String xmlSchema) {
             return datasetResult;
         }

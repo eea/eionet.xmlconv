@@ -21,14 +21,13 @@
 
 package eionet.gdem.web.struts.schema;
 
-import javax.servlet.http.HttpServletRequest;
-
+import eionet.gdem.dto.Schema;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 
-import eionet.gdem.dto.Schema;
+import javax.servlet.http.HttpServletRequest;
 
 public class UplSchemaForm extends ActionForm {
 

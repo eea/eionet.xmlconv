@@ -19,53 +19,50 @@
  */
 package eionet.gdem.qa;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Vector;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eionet.gdem.Constants;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 /**
  * This unittest tests the QA Service listQAScripts method.
- * 
+ *
  * @author Enriko Käsper
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class ListQAScriptsMethodTest {
 
-public class ListQAScriptsMethodTest extends DBTestCase {
-
-    /**
-     * Provide a connection to the database.
-     */
-    public ListQAScriptsMethodTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
-    }
+    @Autowired
+    private IDatabaseTester databaseTester;
 
     /**
-     * Set up test case properties
+     * Set up test case properties and databaseTester.
      */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-    }
-
-    /**
-     * Load the data which will be inserted for the test
-     */
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_QA_XML));
-        return loadedDataSet;
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_QA_XML);
     }
 
     /**
      * Tests that the result of listQAScripts method contains the right data as defined in seed xml file.
      */
+    @Test
     public void testListConversionsXSDResult() throws Exception {
 
         XQueryService qm = new XQueryService();
@@ -74,11 +71,12 @@ public class ListQAScriptsMethodTest extends DBTestCase {
         assertTrue(listQaResult.size() == 1);
         Vector resultQuery = (Vector) listQaResult.get(0);
 
-        assertEquals((String) resultQuery.get(0), String.valueOf(Constants.JOB_VALIDATION));
-        assertEquals((String) resultQuery.get(2), "");
-        assertEquals((String) resultQuery.get(3), String.valueOf(ListQueriesMethod.VALIDATION_UPPER_LIMIT));
+        assertEquals(resultQuery.get(0), String.valueOf(Constants.JOB_VALIDATION));
+        assertEquals(resultQuery.get(2), "");
+        assertEquals(resultQuery.get(3), String.valueOf(ListQueriesMethod.VALIDATION_UPPER_LIMIT));
     }
 
+    @Test
     public void testListConversionsXQueryResult() throws Exception {
 
         ListQueriesMethod qas = new ListQueriesMethod();
@@ -88,8 +86,8 @@ public class ListQAScriptsMethodTest extends DBTestCase {
 
         Vector ht = (Vector) listQaResult.get(0);
 
-        assertEquals((String) ht.get(0), "48");
-        assertEquals((String) ht.get(1), "Article 17 - General report species check");
-        assertEquals((String) ht.get(3), "20");
+        assertEquals(ht.get(0), "48");
+        assertEquals(ht.get(1), "Article 17 - General report species check");
+        assertEquals(ht.get(3), "20");
     }
 }

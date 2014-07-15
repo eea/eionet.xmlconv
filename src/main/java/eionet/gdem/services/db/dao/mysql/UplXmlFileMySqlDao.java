@@ -12,6 +12,7 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Repository;
 
 import eionet.gdem.services.db.dao.IUPLXmlFileDao;
 
@@ -21,6 +22,7 @@ import eionet.gdem.services.db.dao.IUPLXmlFileDao;
  * @author Enriko Käsper (TietoEnator)
  *
  */
+@Repository("uplXmlFileDao")
 public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
 
     /** */
@@ -50,11 +52,6 @@ public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
     // query for getting xml file name by ID
     private static final String qUplXmlFileNameById = "SELECT " + FILE_NAME_FLD + " FROM " + FILE_TABLE + " WHERE " + FILE_ID_FLD
     + "= ?";
-
-    private SchemaMySqlDao schemaDao;
-
-    public UplXmlFileMySqlDao() {
-    }
 
     @Override
     public Vector getUplXmlFile() throws SQLException {

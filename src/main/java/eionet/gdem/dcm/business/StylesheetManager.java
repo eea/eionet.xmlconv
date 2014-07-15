@@ -22,22 +22,17 @@
 package eionet.gdem.dcm.business;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
@@ -54,6 +49,12 @@ import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.stylesheet.ConvTypeHolder;
 
+/**
+ *
+ * Business logic for managing Stylesheet objects in database and XSLT files in file system.
+ *
+ * @author Enriko Käsper
+ */
 public class StylesheetManager {
     /** */
     private static final Log LOGGER = LogFactory.getLog(StylesheetManager.class);
@@ -62,6 +63,12 @@ public class StylesheetManager {
     private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
     private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
+    /**
+     * Deletes stylesheet data from db and XSLT file from file system if provided user has appropriate permissions.
+     * @param user logged in user name.
+     * @param stylesheetId stylesheet unique ID.
+     * @throws DCMException in case of database or file system Exception.
+     */
     public void delete(String user, String stylesheetId) throws DCMException {
 
         try {
@@ -81,26 +88,13 @@ public class StylesheetManager {
         }
 
         try {
-            HashMap hash = styleSheetDao.getStylesheetInfo(stylesheetId);
-            String fileName = (String) hash.get("xsl");
-            String xslFolder = Properties.xslFolder;
-            if (!xslFolder.endsWith(File.separator)) {
-                xslFolder = xslFolder + File.separator;
-            }
-            Utils.deleteFile(xslFolder + fileName);
-            styleSheetDao.removeStylesheet(stylesheetId);
+            Stylesheet stylesheet = styleSheetDao.getStylesheet(stylesheetId);
+            Utils.deleteFile(stylesheet.getXslFileFullPath());
+            styleSheetDao.deleteStylesheet(stylesheetId);
 
-            /*
-             * //removing schema if it doesnt have stylesheets String schema = (String)hash.get("xml_schema"); String schemaId =
-             * (String)hash.get("schema_id");
-             * 
-             * Vector vDb = dbM.listConversions(schema);
-             * 
-             * if(vDb.size()==0) { dbM.removeSchema( schemaId, true, true, true); }
-             */
         } catch (Exception e) {
-            LOGGER.error("Error deleting stylesheet", e);
-            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+            LOGGER.error("Error deleting stylesheet. stylesheetId=" + stylesheetId, e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL, "Error deleting stylesheet. stylesheetId=" + stylesheetId);
         }
 
     }
@@ -131,7 +125,13 @@ public class StylesheetManager {
 
     }
 
-    public void add(String user, String schema, FormFile file, String type, String descr, String dependsOn) throws DCMException {
+    /**
+     * Add new stylesheet file into repository.
+     * @param styleseet Stylesheet DTO.
+     * @param user logged in user name.
+     * @throws DCMException if saving of file or database update failed.
+     */
+    public void add(Stylesheet stylesheet, String user) throws DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "i")) {
@@ -144,31 +144,17 @@ public class StylesheetManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         try {
-            String fileName = file.getFileName();
+            String fileName = stylesheet.getXslFileName();
 
             if (styleSheetDao.checkStylesheetFile(fileName)) {
                 throw new DCMException(BusinessConstants.EXCEPTION_STYLEHEET_FILE_EXISTS);
             }
 
-            InputStream in = file.getInputStream();
-            OutputStream output = null;
-            String filepath = new String(Properties.xslFolder + "/" + file.getFileName());
+            String filepath = new String(Properties.xslFolder + "/" + stylesheet.getXslFileName());
 
-            try {
-                output = new FileOutputStream(filepath);
-                IOUtils.copy(in, output);
-            } finally {
-                IOUtils.closeQuietly(in);
-                IOUtils.closeQuietly(output);
-                file.destroy();
-            }
+            Utils.saveStrToFile(filepath, stylesheet.getXslContent(), null);
 
-            String schemaID = schemaDao.getSchemaID(schema);
-            if (schemaID == null) {
-                schemaID = schemaDao.addSchema(schema, null);
-            }
-
-            styleSheetDao.addStylesheet(schemaID, type, fileName, descr, dependsOn);
+            styleSheetDao.addStylesheet(stylesheet);
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
@@ -178,60 +164,53 @@ public class StylesheetManager {
 
     }
 
+    /**
+     * Read stylesheet data from database and XSLT file contents from file system.
+     * @param stylesheetId Numeric primary key or xsl file name.
+     * @return Stylesheet object
+     * @throws DCMException in case of database or file system Exception.
+     */
     public Stylesheet getStylesheet(String stylesheetId) throws DCMException {
-        Stylesheet st = new Stylesheet();
+        Stylesheet stylesheet = null;
 
         try {
             if (!stylesheetId.equals("")) {
-                HashMap xsl = styleSheetDao.getStylesheetInfo(stylesheetId);
+                stylesheet = styleSheetDao.getStylesheet(stylesheetId);
 
-                if (xsl == null) {
-                    xsl = new HashMap();
-                }
+                if (stylesheet != null && !Utils.isNullStr(stylesheet.getXslFileName())) {
+                    stylesheet.setXsl(Names.XSL_FOLDER + stylesheet.getXslFileName());
 
-                st.setSchema((String) xsl.get("xml_schema"));
-                st.setXsl_descr((String) xsl.get("description"));
-                st.setType((String) xsl.get("content_type_out"));
-                String xslFolder = Properties.xslFolder;
-                st.setConvId(stylesheetId);
-                st.setDependsOn((String) xsl.get("depends_on"));
-
-                if (!Utils.isNullStr((String) xsl.get("xsl"))) {
-                    st.setXsl(Names.XSL_FOLDER + xsl.get("xsl"));
-                    st.setXslFileName((String) xsl.get("xsl"));
-                    if (!xslFolder.endsWith(File.separator)) {
-                        xslFolder = xslFolder + File.separator;
-                    }
                     String xslText = null;
                     try {
-                        xslText = Utils.readStrFromFile(xslFolder + xsl.get("xsl"));
+                        // xslText = Utils.readStrFromFile(stylesheet.getXslFileFullPath());
+                        xslText = FileUtils.readFileToString(new File(stylesheet.getXslFileFullPath()), "utf-8");
                     } catch (IOException e) {
-                        xslText = Constants.FILEREAD_EXCEPTION + xslFolder + xsl.get("xsl") + "\n " + e.toString();
+                        xslText = Constants.FILEREAD_EXCEPTION + stylesheet.getXslFileFullPath() + "\n " + e.toString();
                     }
-                    st.setXslContent(xslText);
+                    stylesheet.setXslContent(xslText);
                     String checksum = null;
                     try {
-                        checksum = Utils.getChecksumFromFile(xslFolder + xsl.get("xsl"));
+                        checksum = Utils.getChecksumFromFile(stylesheet.getXslFileFullPath());
                     } catch (IOException e) {
                         checksum = "";
                     }
-                    st.setChecksum(checksum);
+                    stylesheet.setChecksum(checksum);
                     try {
-                        File f = new File(xslFolder + xsl.get("xsl"));
+                        File f = new File(stylesheet.getXslFileFullPath());
                         if (f != null && f.exists()) {
-                            st.setModified(Utils.getDateTime(new Date(f.lastModified())));
+                            stylesheet.setModified(Utils.getDateTime(new Date(f.lastModified())));
                         }
                     } catch (Exception e) {
                     }
-
                 }
             }
 
         } catch (Exception e) {
-            LOGGER.error("Error getting stylesheet", e);
-            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+            LOGGER.error("Error getting stylesheet. stylesheetId=" + stylesheetId, e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL, "The requested stylesheet does not exist in the system. stylesheetId="
+                    + stylesheetId);
         }
-        return st;
+        return stylesheet;
 
     }
 
@@ -271,52 +250,42 @@ public class StylesheetManager {
         return result;
     }
 
-    public void update(String user, String xsl_id, String schema, FormFile file, String curFileName, String type, String descr, String dependsOn)
-            throws DCMException {
+    /**
+     * Get list of all stylesheets.
+     * @return List of Stylesheet dto objects.
+     * @throws DCMException in case of database exception
+     */
+    public List<Stylesheet> getStylesheets() throws DCMException {
+        List<Stylesheet> stylesheets;
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "u")) {
-                throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_STYLEHEET_UPDATE);
-            }
-        } catch (DCMException e) {
-            throw e;
-        } catch (Exception e) {
-            LOGGER.error("Error updating stylesheet", e);
-            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-        }
-        try {
-            String fileName = file.getFileName().trim();
-
-            if (fileName != null && !fileName.equals("")) {
-                InputStream in = file.getInputStream();
-                OutputStream output = null;
-                String filepath = new String(Properties.xslFolder + "/" + curFileName);
-
-                try{
-                    output = new FileOutputStream(filepath);
-                    IOUtils.copy(in, output);
-                }
-                finally{
-                    IOUtils.closeQuietly(in);
-                    IOUtils.closeQuietly(output);
-                    file.destroy();
+            stylesheets = styleSheetDao.getStylesheets();
+            if (stylesheets != null) {
+                for (Stylesheet stylesheet : stylesheets) {
+                    if (!Utils.isNullStr(stylesheet.getXslFileName())) {
+                        File xslFile = new File(Properties.xslFolder + File.separatorChar + stylesheet.getXslFileName());
+                        if (xslFile != null && xslFile.exists()) {
+                            stylesheet.setLastModifiedTime(new Date(xslFile.lastModified()));
+                            stylesheet.setModified(Utils.getDateTime(stylesheet.getLastModifiedTime()));
+                        }
+                    }
                 }
             }
-            String schemaID = schemaDao.getSchemaID(schema);
 
-            if (schemaID == null) {
-                schemaID = schemaDao.addSchema(schema, null);
-            }
-            styleSheetDao.updateStylesheet(xsl_id, schemaID, descr, curFileName, type, dependsOn);
         } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error("Error updating stylesheet", e);
-            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+            LOGGER.error("Error getting stylesheets", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL, "Error getting stylesheets from database!");
         }
-
+        return stylesheets;
     }
 
-    public void updateContent(String user, String xsl_id, String schema, String fileName, String type, String descr,
-            String fileContent, boolean updateContent, String dependsOn) throws DCMException {
+    /**
+     * Update stylesheet file content and properties.
+     * @param styleseet Stylesheet DTO.
+     * @param user logged in user name.
+     * @param updateContent update XML file content.
+     * @throws DCMException if saving of file or database update failed.
+     */
+    public void update(Stylesheet styleseet, String user, boolean updateContent) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_STYLEHEET_UPDATE);
@@ -329,16 +298,11 @@ public class StylesheetManager {
         }
 
         try {
-            if (!Utils.isNullStr(fileName) && !Utils.isNullStr(fileContent)
-                    && fileContent.indexOf(Constants.FILEREAD_EXCEPTION) == -1 && updateContent) {
-                Utils.saveStrToFile(Properties.xslFolder + File.separator + fileName, fileContent, null);
+            if (!Utils.isNullStr(styleseet.getXslFileName()) && !Utils.isNullStr(styleseet.getXslContent())
+                    && styleseet.getXslContent().indexOf(Constants.FILEREAD_EXCEPTION) == -1 && updateContent) {
+                Utils.saveStrToFile(Properties.xslFolder + File.separator + styleseet.getXslFileName(), styleseet.getXslContent(), null);
             }
-            String schemaID = schemaDao.getSchemaID(schema);
-
-            if (schemaID == null) {
-                schemaID = schemaDao.addSchema(schema, null);
-            }
-            styleSheetDao.updateStylesheet(xsl_id, schemaID, descr, fileName, type, dependsOn);
+            styleSheetDao.updateStylesheet(styleseet);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("Error updating stylesheet", e);
@@ -346,5 +310,4 @@ public class StylesheetManager {
         }
 
     }
-
 }

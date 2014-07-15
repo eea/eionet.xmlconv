@@ -20,11 +20,19 @@
  */
 package eionet.gdem.validation;
 
-import org.dbunit.DBTestCase;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eionet.gdem.Properties;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
@@ -35,33 +43,20 @@ import eionet.gdem.test.TestUtils;
  * @author Enriko Käsper, TietoEnator Estonia AS ValidationServiceTest
  */
 
-public class ValidationServiceTest extends DBTestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class ValidationServiceTest {
+
+    @Autowired
+    private IDatabaseTester databaseTester;
 
     /**
-     * Provide a connection to the database.
+     * Set up test case properties and databaseTester.
      */
-    public ValidationServiceTest(String name) {
-        super(name);
-        DbHelper.setUpConnectionProperties();
-    }
-
-    /**
-     * Set up test case properties
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-    }
-
-    /**
-     * Load the data which will be inserted for the test
-     */
-    @Override
-    protected IDataSet getDataSet() throws Exception {
-        IDataSet loadedDataSet =
-                new FlatXmlDataSet(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_DATASET_UPL_SCHEMAS_XML));
-        return loadedDataSet;
+        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
     }
 
     /**
@@ -69,6 +64,7 @@ public class ValidationServiceTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testValidateInvalidXML() throws Exception {
         ValidationService validService = new ValidationService();
         String s =
@@ -86,6 +82,7 @@ public class ValidationServiceTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testValidateValidXML() throws Exception {
         ValidationService validService = new ValidationService();
         String s =
@@ -106,6 +103,7 @@ public class ValidationServiceTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testValidateValidXMLAgainstLocalSchema() throws Exception {
         ValidationService validService = new ValidationService();
         String s = validService.validate(TestUtils.getSeedURL(TestConstants.SEED_GW_VALID_XML, this));
@@ -125,6 +123,7 @@ public class ValidationServiceTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testSetLocalSchema() throws Exception {
         ValidationService validService = new ValidationService();
         validService.setLocalSchemaUrl("http://dd.eionet.europa.eu/GetSchema?id=TBL4564");
@@ -144,6 +143,7 @@ public class ValidationServiceTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testValidateValidXMLAgainstLocalDTD() throws Exception {
         ValidationService validService = new ValidationService();
         String s = validService.validate(TestUtils.getSeedURL(TestConstants.SEED_XLIFF_XML, this));
@@ -163,6 +163,7 @@ public class ValidationServiceTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testXMLAgainstUnavailableSchema() throws Exception {
         ValidationService validService = new ValidationService();
         String s =
@@ -179,6 +180,7 @@ public class ValidationServiceTest extends DBTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testXMLAgainstBlockerSchema() throws Exception {
         ValidationService validService = new ValidationService();
         String s =

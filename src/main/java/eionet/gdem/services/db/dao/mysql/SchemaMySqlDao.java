@@ -5,64 +5,87 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.stereotype.Repository;
 
+import eionet.gdem.dto.Schema;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.Utils;
 
+/**
+ *
+ * DAO for Schema objects.
+ *
+ * @author Enriko Käsper
+ */
+@Repository("schemaDao")
 public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
+
+    /**
+     * Jdbc template for accessing data storage.
+     */
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     /** */
     private static final Log LOGGER = LogFactory.getLog(SchemaMySqlDao.class);
 
     private static final String qSchemaID = "SELECT " + SCHEMA_ID_FLD + " FROM " + SCHEMA_TABLE + " WHERE " + XML_SCHEMA_FLD
-    + "= ?";
+            + "= ?";
 
     private static final String qInsertSchema = "INSERT INTO " + SCHEMA_TABLE + " ( " + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD
-    + ", " + SCHEMA_LANG_FLD + ", " + SCHEMA_VALIDATE_FLD + ", " + DTD_PUBLIC_ID_FLD + ", " + SCHEMA_BLOCKER_FLD + ")"
-    + " VALUES (?,?,?,?,?,?)";
+            + ", " + SCHEMA_LANG_FLD + ", " + SCHEMA_VALIDATE_FLD + ", " + DTD_PUBLIC_ID_FLD + ", " + SCHEMA_BLOCKER_FLD + ")"
+            + " VALUES (?,?,?,?,?,?)";
 
     private static final String qUpdateSchema = "UPDATE  " + SCHEMA_TABLE + " SET " + XML_SCHEMA_FLD + "= ?" + ", "
-    + SCHEMA_DESCR_FLD + "= ?" + ", " + SCHEMA_LANG_FLD + "= ?" + ", " + SCHEMA_VALIDATE_FLD + "= ?" + ", "
-    + DTD_PUBLIC_ID_FLD + "= ? " + ", " + EXPIRE_DATE_FLD + "= ? ," + SCHEMA_BLOCKER_FLD + "= ? " + " WHERE "
-    + SCHEMA_ID_FLD + "= ?";
+            + SCHEMA_DESCR_FLD + "= ?" + ", " + SCHEMA_LANG_FLD + "= ?" + ", " + SCHEMA_VALIDATE_FLD + "= ?" + ", "
+            + DTD_PUBLIC_ID_FLD + "= ? " + ", " + EXPIRE_DATE_FLD + "= ? ," + SCHEMA_BLOCKER_FLD + "= ? " + " WHERE "
+            + SCHEMA_ID_FLD + "= ?";
 
-    private static final String qDeleteStyleSheets = "DELETE FROM " + XSL_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?";
     private static final String qDeleteQueries = "DELETE FROM " + QUERY_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?";
     private static final String qDeleteRootElement = "DELETE FROM " + ROOTELEM_TABLE + " WHERE " + ELEM_SCHEMA_ID_FLD + "= ?";
     private static final String qDeleteSchema = "DELETE FROM " + SCHEMA_TABLE + " WHERE " + SCHEMA_ID_FLD + "= ?";
     private static final String qDeleteSchemaFiles = "DELETE FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_FK_SCHEMA_ID + "= ?";
 
     private static final String qSchemaBase = "SELECT " + SCHEMA_ID_FLD + "," + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD + ", "
-    + DTD_PUBLIC_ID_FLD + ", " + SCHEMA_VALIDATE_FLD + ", " + SCHEMA_LANG_FLD + ", " + EXPIRE_DATE_FLD + ", "
-    + SCHEMA_BLOCKER_FLD + " FROM " + SCHEMA_TABLE;
+            + DTD_PUBLIC_ID_FLD + ", " + SCHEMA_VALIDATE_FLD + ", " + SCHEMA_LANG_FLD + ", " + EXPIRE_DATE_FLD + ", "
+            + SCHEMA_BLOCKER_FLD + " FROM " + SCHEMA_TABLE;
 
     private static final String qAllSchemas = qSchemaBase + " ORDER BY " + XML_SCHEMA_FLD;
     private static final String qSchemaById = qSchemaBase + " WHERE " + SCHEMA_ID_FLD + " =  ?" + " ORDER BY " + XML_SCHEMA_FLD;
     private static final String qSchemaByName = qSchemaBase + " WHERE " + XML_SCHEMA_FLD + " =  ?" + " ORDER BY " + XML_SCHEMA_FLD;
 
     private static final String qSchemaStylesheets = "SELECT " + CNV_ID_FLD + ", " + XSL_FILE_FLD + ", " + DESCR_FLD + ","
-    + RESULT_TYPE_FLD + "," + DEPENDS_ON + " FROM " + XSL_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?" + " ORDER BY "
-    + RESULT_TYPE_FLD;
+            + RESULT_TYPE_FLD + "," + DEPENDS_ON + " FROM " + XSL_SCHEMA_TABLE + " XS, " + XSL_TABLE + " X WHERE XS."
+            + STYLESHEET_ID_FLD + " = X." + CNV_ID_FLD + " AND XS." + XSL_SCHEMA_ID_FLD + "= ?" + " ORDER BY " + RESULT_TYPE_FLD;
 
     private static final String qSchemaQueries = "SELECT " + QUERY_ID_FLD + ", " + QUERY_FILE_FLD + ", " + DESCR_FLD + ","
-    + SHORT_NAME_FLD + "," + QUERY_SCRIPT_TYPE + "," + QUERY_RESULT_TYPE + "," + UPPER_LIMIT_FLD + " FROM " + QUERY_TABLE
-    + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?" + " ORDER BY " + SHORT_NAME_FLD;
+            + SHORT_NAME_FLD + "," + QUERY_SCRIPT_TYPE + "," + QUERY_RESULT_TYPE + "," + UPPER_LIMIT_FLD + " FROM " + QUERY_TABLE
+            + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?" + " ORDER BY " + SHORT_NAME_FLD;
 
     private static final String qSchemasWithStl = "SELECT DISTINCT S." + SCHEMA_ID_FLD + ", S." + XML_SCHEMA_FLD + ", S."
-    + SCHEMA_DESCR_FLD + " FROM " + SCHEMA_TABLE + " S" + " JOIN " + XSL_TABLE + " ST ON S." + SCHEMA_ID_FLD + " = ST."
-    + XSL_SCHEMA_ID_FLD + " ORDER BY S." + XML_SCHEMA_FLD;
+            + SCHEMA_DESCR_FLD + " FROM " + SCHEMA_TABLE + " S" + " JOIN " + XSL_SCHEMA_TABLE + " ST ON S." + SCHEMA_ID_FLD
+            + " = ST." + XSL_SCHEMA_ID_FLD + " ORDER BY S." + XML_SCHEMA_FLD;
 
     private static final String qUpdateSchemaValidate = "UPDATE  " + SCHEMA_TABLE + " SET " + SCHEMA_VALIDATE_FLD + "= ?, "
-    + SCHEMA_BLOCKER_FLD + "= ? WHERE " + SCHEMA_ID_FLD + "= ? ";
+            + SCHEMA_BLOCKER_FLD + "= ? WHERE " + SCHEMA_ID_FLD + "= ? ";
 
-    public SchemaMySqlDao() {
-    }
+    /** Get all XML schemas with uploaded schema file, count stylesheets and count QA scripts info.*/
+    private static final String GET_LIST_OF_SCHEMAS_SQL =
+            "select S.SCHEMA_ID, S.XML_SCHEMA, S.DESCRIPTION, U.SCHEMA_ID, U.SCHEMA_NAME, "
+                    + "(select count(*) from T_QUERY Q WHERE Q.SCHEMA_ID=S.SCHEMA_ID) as COUNT_QASCRIPTS, "
+                    + "(select count(*) from T_STYLESHEET_SCHEMA XSL WHERE XSL.SCHEMA_ID=S.SCHEMA_ID) as COUNT_STYLESHEETS "
+                    + "from T_SCHEMA S left join T_UPL_SCHEMA U on S.SCHEMA_ID = U.FK_SCHEMA_ID order by S.XML_SCHEMA";
 
     @Override
     public String addSchema(String xmlSchema, String description) throws SQLException {
@@ -156,8 +179,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
     }
 
     @Override
-    public void removeSchema(String schemaId, boolean del_stylesheets, boolean del_queries, boolean del_upl_schemas,
-            boolean del_self) throws SQLException {
+    public void removeSchema(String schemaId, boolean del_queries, boolean del_upl_schemas, boolean del_self) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
@@ -165,16 +187,8 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
             conn = getConnection();
             conn.setAutoCommit(false);
             int schemaIdInt = Integer.parseInt(schemaId);
-            // delete all stylesheets at first
-            if (del_stylesheets) {
-                pstmt = conn.prepareStatement(qDeleteStyleSheets);
-                pstmt.setInt(1, schemaIdInt);
-                if (isDebugMode) {
-                    LOGGER.debug("Query is " + qDeleteStyleSheets);
-                }
-                pstmt.executeUpdate();
-                pstmt.close();
-            }
+
+            // Stylesheet links will be deleted with cascade DELETE
 
             if (del_queries) {
                 pstmt = conn.prepareStatement(qDeleteQueries);
@@ -492,6 +506,32 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
         }
 
         return v;
+
+    }
+
+    @Override
+    public List<Schema> getSchemasWithRelations() {
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + GET_LIST_OF_SCHEMAS_SQL);
+        }
+
+        final List<Schema> schemas = new ArrayList<Schema>();
+        jdbcTemplate.query(GET_LIST_OF_SCHEMAS_SQL, new RowCallbackHandler() {
+
+            @Override
+            public void processRow(ResultSet rs) throws SQLException {
+                Schema schema = new Schema();
+                schema.setId(rs.getString("S.SCHEMA_ID"));
+                schema.setSchema(rs.getString("S.XML_SCHEMA"));
+                schema.setDescription(rs.getString("S.DESCRIPTION"));
+                schema.setUplSchemaFileName(rs.getString("U.SCHEMA_NAME"));
+                schema.setCountQaScripts(rs.getInt("COUNT_QASCRIPTS"));
+                schema.setCountStylesheets(rs.getInt("COUNT_STYLESHEETS"));
+                schemas.add(schema);
+            }
+        });
+        return schemas;
 
     }
 
