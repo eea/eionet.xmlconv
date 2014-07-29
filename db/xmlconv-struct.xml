@@ -255,7 +255,7 @@
         <comment>Remove obsolete table.</comment>
         <dropTable tableName="T_XFSBROWSER"/>
     </changeSet>
-    <changeSet author="kasperen" id="rev-23" dbms="mysql">
+    <changeSet author="kasperen" id="rev-23" dbms="mysql" runOnChange="true">
         <comment>Ensure that all tables use InnoDB.</comment>
         <sql>
             ALTER TABLE T_BACKUP ENGINE=InnoDB DEFAULT CHARSET=utf8;
