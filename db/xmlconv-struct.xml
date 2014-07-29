@@ -258,16 +258,16 @@
     <changeSet author="kasperen" id="rev-23" dbms="mysql">
         <comment>Ensure that all tables use InnoDB.</comment>
         <sql>
-            ALTER TABLE t_backup ENGINE=InnoDB DEFAULT CHARSET=utf8;
-            ALTER TABLE t_convtype ENGINE=InnoDB DEFAULT CHARSET=utf8;
-            ALTER TABLE t_file ENGINE=InnoDB DEFAULT CHARSET=utf8;
-            ALTER TABLE t_host ENGINE=InnoDB DEFAULT CHARSET=utf8;
-            ALTER TABLE t_query ENGINE=InnoDB DEFAULT CHARSET=utf8;
-            ALTER TABLE t_root_elem ENGINE=InnoDB DEFAULT CHARSET=utf8;
-            ALTER TABLE t_schema ENGINE=InnoDB DEFAULT CHARSET=utf8;
-            ALTER TABLE t_stylesheet ENGINE=InnoDB DEFAULT CHARSET=utf8;
-            ALTER TABLE t_upl_schema ENGINE=InnoDB DEFAULT CHARSET=utf8;
-            ALTER TABLE t_xqjobs ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE T_BACKUP ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE T_CONVTYPE ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE T_FILE ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE T_HOST ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE T_QUERY ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE T_ROOT_ELEM ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE T_SCHEMA ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE T_STYLESHEET ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE T_UPL_SCHEMA ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE T_XQJOBS ENGINE=InnoDB DEFAULT CHARSET=utf8;
         </sql>
     </changeSet>
     <changeSet author="kasperen" id="rev-24">
