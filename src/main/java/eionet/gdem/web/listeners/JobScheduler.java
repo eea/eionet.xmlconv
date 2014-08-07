@@ -21,36 +21,29 @@
 
 package eionet.gdem.web.listeners;
 
-import static org.quartz.CronScheduleBuilder.cronSchedule;
-import static org.quartz.JobBuilder.newJob;
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
-import static org.quartz.TriggerBuilder.newTrigger;
-
-import java.text.ParseException;
-
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SchedulerFactory;
-import org.quartz.SimpleTrigger;
-import org.quartz.Trigger;
-import org.quartz.impl.StdSchedulerFactory;
-
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.WorkqueueManager;
 import eionet.gdem.qa.WQCheckerJob;
 import eionet.gdem.qa.WQCleanerJob;
 import eionet.gdem.qa.WQExecutor;
 import eionet.gdem.web.job.DDTablesCacheUpdater;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import java.text.ParseException;
+
+import static org.quartz.CronScheduleBuilder.cronSchedule;
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
+import static org.quartz.TriggerBuilder.newTrigger;
 
 /**
- * ContextListener for initialising scheduled jobs with quartz
+ * ContextListener for initialising scheduled jobs with quartz.
  *
  * @author Enriko Käsper, TripleDev
  */
@@ -144,6 +137,7 @@ public class JobScheduler implements ServletContextListener {
             try {
                 quartzScheduler.shutdown(false);
             } catch (SchedulerException e) {
+                LOGGER.error("Failed proper shutdown of " + quartzScheduler.getClass().getSimpleName(), e);
             }
         }
         WQExecutor.getInstance().shutdown();
