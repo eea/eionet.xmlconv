@@ -20,9 +20,10 @@
 
 package eionet.gdem.dcm.business;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import eionet.gdem.Properties;
+import eionet.gdem.dcm.BusinessConstants;
+import eionet.gdem.dto.CrFileDto;
+import eionet.gdem.exceptions.DCMException;
 import org.apache.log4j.Logger;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryLanguage;
@@ -32,10 +33,8 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sparql.SPARQLRepository;
 
-import eionet.gdem.Properties;
-import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.dto.CrFileDto;
-import eionet.gdem.exceptions.DCMException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Content Registry SPARQL endpoint client. The class executes SPARQL queries in CR eg. search XML files by XML Schema from CR.
@@ -108,9 +107,9 @@ public class CrServiceSparqlClient {
     private static String getXmlFilesBySchemaQuery(String schema) {
         StringBuilder query =
                 new StringBuilder("PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#> "
-                        + "SELECT ?file, ?lastModified WHERE { " + "?file cr:xmlSchema \"");
+                        + "SELECT ?file, ?lastModified WHERE { ?file cr:xmlSchema <");
         query.append(schema);
-        query.append("\" . OPTIONAL { ?file cr:contentLastModified ?lastModified } } ORDER BY ?file");
+        query.append("> . OPTIONAL { ?file cr:contentLastModified ?lastModified } } ORDER BY ?file");
 
         return query.toString();
     }
