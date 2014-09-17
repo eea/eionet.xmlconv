@@ -479,6 +479,7 @@ public class SchemaManager {
 
                 HashMap schemaHash = (HashMap) list.get(0);
                 schemaDbId = (String) schemaHash.get("schema_id");
+                schema.setId(schemaDbId);
                 schema.setSchema((String) schemaHash.get("xml_schema"));
                 schema.setDescription((String) schemaHash.get("description"));
                 schema.setSchemaLang((String) schemaHash.get("schema_lang"));

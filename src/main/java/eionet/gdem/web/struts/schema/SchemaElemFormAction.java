@@ -21,18 +21,19 @@
 
 package eionet.gdem.web.struts.schema;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts.action.*;
+
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class SchemaElemFormAction extends Action {
 
@@ -47,11 +48,14 @@ public class SchemaElemFormAction extends Action {
         String schemaId = httpServletRequest.getParameter("schemaId");
         String user = (String) httpServletRequest.getSession().getAttribute("user");
 
-        if (schemaId != null && schemaId != "") {
-            httpServletRequest.getSession().setAttribute("schemaId", schemaId);
-        } else {
-            schemaId = (String) httpServletRequest.getSession().getAttribute("schemaId");
+        if (schemaId == null || schemaId.trim().isEmpty()) {
+            schemaId = httpServletRequest.getParameter("schema");
         }
+
+        if (schemaId == null || schemaId.trim().isEmpty()) {
+            return actionMapping.findForward("error");
+        }
+
         SchemaElemHolder seHolder = new SchemaElemHolder();
 
         try {
@@ -60,6 +64,7 @@ public class SchemaElemFormAction extends Action {
             if (seHolder == null || seHolder.getSchema() == null) {
                 throw new DCMException(BusinessConstants.EXCEPTION_SCHEMA_NOT_EXIST);
             }
+            schemaId = seHolder.getSchema().getId();
             form.setSchema(seHolder.getSchema().getSchema());
             form.setDescription(seHolder.getSchema().getDescription());
             form.setSchemaId(schemaId);
@@ -82,16 +87,14 @@ public class SchemaElemFormAction extends Action {
             seHolder.setSchemaIdRemoteUrl(Utils.isURL(seHolder.getSchema().getSchema())
                     && !seHolder.getSchema().getSchema().startsWith(SecurityUtil.getUrlWithContextPath(httpServletRequest)));
             httpServletRequest.getSession().setAttribute("schema.rootElements", seHolder);
-
+            httpServletRequest.getSession().setAttribute("stylesheet.outputtype", seHolder);
+            return actionMapping.findForward("success");
         } catch (DCMException e) {
             // e.printStackTrace();
             LOGGER.error("Schema element form error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("error");
         }
-
-        httpServletRequest.getSession().setAttribute("stylesheet.outputtype", seHolder);
-        return actionMapping.findForward("success");
-
     }
 }
