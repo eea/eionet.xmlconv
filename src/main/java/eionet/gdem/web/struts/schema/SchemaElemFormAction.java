@@ -53,7 +53,7 @@ public class SchemaElemFormAction extends Action {
         }
 
         if (schemaId == null || schemaId.trim().isEmpty()) {
-            return actionMapping.findForward("error");
+            return actionMapping.findForward("fail");
         }
 
         SchemaElemHolder seHolder = new SchemaElemHolder();
@@ -94,7 +94,7 @@ public class SchemaElemFormAction extends Action {
             LOGGER.error("Schema element form error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveErrors(httpServletRequest, errors);
-            return actionMapping.findForward("error");
+            return actionMapping.findForward("fail");
         }
     }
 }
