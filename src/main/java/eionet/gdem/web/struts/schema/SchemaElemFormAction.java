@@ -52,15 +52,12 @@ public class SchemaElemFormAction extends Action {
             schemaId = httpServletRequest.getParameter("schema");
         }
 
-        if (schemaId == null || schemaId.trim().isEmpty()) {
-            return actionMapping.findForward("fail");
-        }
-
-        SchemaElemHolder seHolder = new SchemaElemHolder();
-
         try {
+            if (schemaId == null || schemaId.trim().isEmpty()) {
+                throw new DCMException(BusinessConstants.EXCEPTION_SCHEMA_NOT_EXIST);
+            }
             SchemaManager sm = new SchemaManager();
-            seHolder = sm.getSchemaElems(user, schemaId);
+            SchemaElemHolder seHolder = sm.getSchemaElems(user, schemaId);
             if (seHolder == null || seHolder.getSchema() == null) {
                 throw new DCMException(BusinessConstants.EXCEPTION_SCHEMA_NOT_EXIST);
             }

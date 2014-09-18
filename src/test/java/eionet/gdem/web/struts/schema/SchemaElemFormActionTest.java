@@ -51,7 +51,7 @@ public class SchemaElemFormActionTest extends MockStrutsTestCase {
         setRequestPathInfo("/schemaElemForm");
         actionPerform();
         verifyForward("fail");
-        verifyInputTilesForward("/uplSchema.jsp");
+        verifyInputTilesForward("/schema.jsp");
         String[] errMess = {BusinessConstants.EXCEPTION_SCHEMA_NOT_EXIST};
         verifyActionErrors(errMess);
     }
