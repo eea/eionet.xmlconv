@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-  <t_file file_id="1" file_name="seed-ozone-station.xml" title="Boundaries of EU  countries" type="xml" parent_type="" parent_id="0"/>
-  <t_file file_id="2" file_name="some.xml" title="Unknown" type="xml" parent_type="" parent_id="0"/>
+  <T_FILE file_id="1" file_name="seed-ozone-station.xml" title="Boundaries of EU  countries" type="xml" parent_type="" parent_id="0"/>
+  <T_FILE file_id="2" file_name="some.xml" title="Unknown" type="xml" parent_type="" parent_id="0"/>
 </dataset>

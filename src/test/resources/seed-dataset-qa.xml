@@ -1,41 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-    <t_query QUERY_ID="25" DESCRIPTION="" SHORT_NAME="Summer ozone - information" QUERY_FILENAME="sum-oz_info_1920_1.xql" SCHEMA_ID="62" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
-    <t_query QUERY_ID="26" DESCRIPTION="" SHORT_NAME="Summer ozone - alert" QUERY_FILENAME="sum-oz_alert_1919_2.xql" SCHEMA_ID="60" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
-    <t_query QUERY_ID="27" DESCRIPTION="" SHORT_NAME="Summer ozone - stations" QUERY_FILENAME="sum-oz_stations_1922.xql" SCHEMA_ID="63" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
-    <t_query QUERY_ID="28" DESCRIPTION="" SHORT_NAME="Summer ozone - health" QUERY_FILENAME="sum-oz_health_1968_3.xql" SCHEMA_ID="59" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
-    <t_query QUERY_ID="44" DESCRIPTION="ä" SHORT_NAME="Article 17 - species report checks" QUERY_FILENAME="art17_species.xquery" SCHEMA_ID="86" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
-    <t_query QUERY_ID="46" DESCRIPTION="a" SHORT_NAME="Article 17 - habitat report" QUERY_FILENAME="art17_habitats.xquery" SCHEMA_ID="85" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
-    <t_query QUERY_ID="47" DESCRIPTION="Validates mandatory fields, sitecodes and their coverages and period fields" SHORT_NAME="General report" QUERY_FILENAME="art17_report.xquery" SCHEMA_ID="83" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="20"/>
-    <t_query QUERY_ID="48" DESCRIPTION="Checks species names and suggest fuzzy matching alternatves if found from the list of European species" SHORT_NAME="Article 17 - General report species check" QUERY_FILENAME="art17_general_report_species.xquery" SCHEMA_ID="83" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="20"/>
-    <t_query QUERY_ID="49" DESCRIPTION="" SHORT_NAME="test" QUERY_FILENAME="test.xquery" SCHEMA_ID="62" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
-    <t_query QUERY_ID="50" DESCRIPTION="" SHORT_NAME="test" QUERY_FILENAME="seed-qascript2.xquery" SCHEMA_ID="62" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
-    <t_query QUERY_ID="51" DESCRIPTION="" SHORT_NAME="test expired html" QUERY_FILENAME="test_expired-html.xquery" SCHEMA_ID="58" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
-    <t_query QUERY_ID="52" DESCRIPTION="" SHORT_NAME="test not expired html" QUERY_FILENAME="test_notexpired-html.xquery" SCHEMA_ID="88" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
-    <t_query QUERY_ID="53" DESCRIPTION="" SHORT_NAME="test expired xml" QUERY_FILENAME="test_expired-xml.xquery" SCHEMA_ID="89" RESULT_TYPE="XML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
-    <t_schema SCHEMA_ID="58" XML_SCHEMA="http://localhost/not_existing.xsd" DESCRIPTION="Expired dummy" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" EXPIRE_DATE="2010-11-11 00:00:00.000000000" BLOCKER="0"/>
-    <t_schema SCHEMA_ID="59" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1968" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -  Exceedance of ozone long-term objective for health protection" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
-    <t_schema SCHEMA_ID="60" XML_SCHEMA="http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1919" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -   Exceedance of ozone alert threshold values" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0" />
-    <t_schema SCHEMA_ID="61" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1921" DESCRIPTION="Summer ozone exceedances (2002/3/EC) - Comment" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0" />
-    <t_schema SCHEMA_ID="62" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1920" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -   Exceedance of ozone information threshold values" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0" />
-    <t_schema SCHEMA_ID="63" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1922" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -  Station meta-information" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"  BLOCKER="0"/>
-    <t_schema SCHEMA_ID="83" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0" />
-    <t_schema SCHEMA_ID="84" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/gml_art17.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"  BLOCKER="0" />
-    <t_schema SCHEMA_ID="85" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/habitats.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0" />
-    <t_schema SCHEMA_ID="86" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/species.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD" BLOCKER="0"/>
-    <t_schema SCHEMA_ID="87" XML_SCHEMA="http://cdrtest.eionet.eu.int/xmlexports/dir9243eec/schema.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD" BLOCKER="0"/>
-    <t_schema SCHEMA_ID="88" XML_SCHEMA="http://localhost/not_existing2.xsd" DESCRIPTION="Not Expired dummy" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
-    <t_schema SCHEMA_ID="89" XML_SCHEMA="http://localhost/not_existing3.xsd" DESCRIPTION="Expired dummy XML" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" EXPIRE_DATE="2008-01-31 23:12:11.001502300"/>
-    <t_host HOST_ID="1" HOST_NAME="http://cdr.eionet.europa.eu" USER="test" PWD="test"/>
-    <t_xqjobs JOB_ID="1288" URL="http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="4" QUERY_ID="0" SRC_FILE=""/>
-    <t_xqjobs JOB_ID="1289" URL="http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="3" QUERY_ID="0" SRC_FILE=""/>
-    <t_xqjobs JOB_ID="1290" URL="http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="2" QUERY_ID="0" SRC_FILE=""/>
-    <t_convtype CONV_TYPE="HTML" CONTENT_TYPE="text/html;charset=UTF-8" FILE_EXT="html" DESCRIPTION="HTML files"/>
-    <t_convtype CONV_TYPE="XML" CONTENT_TYPE="text/xml;charset=UTF-8" FILE_EXT="xml" DESCRIPTION=""/>
-    <t_convtype CONV_TYPE="EXCEL" CONTENT_TYPE="application/vnd.ms-excel" FILE_EXT="xls" DESCRIPTION=""/>
-    <t_convtype CONV_TYPE="PDF" CONTENT_TYPE="application/pdf" FILE_EXT="pdf" DESCRIPTION=""/>
-    <t_convtype CONV_TYPE="SQL" CONTENT_TYPE="text/plain" FILE_EXT="sql" DESCRIPTION=""/>
-    <t_convtype CONV_TYPE="ODS" CONTENT_TYPE="application/vnd.oasis.opendocument.spreadsheet" FILE_EXT="ods" DESCRIPTION="OpenDocument Spreadsheet"/>
-    <t_convtype CONV_TYPE="TEXT" CONTENT_TYPE="text/plain" FILE_EXT="txt" DESCRIPTION="Simple text files - tab, comma, ... separated values"/>
-    <t_convtype CONV_TYPE="RDF" CONTENT_TYPE="application/rdf+xml" FILE_EXT="rdf" DESCRIPTION="Semantic Web resources"/>
+    <T_QUERY QUERY_ID="25" DESCRIPTION="" SHORT_NAME="Summer ozone - information" QUERY_FILENAME="sum-oz_info_1920_1.xql" SCHEMA_ID="62" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
+    <T_QUERY QUERY_ID="26" DESCRIPTION="" SHORT_NAME="Summer ozone - alert" QUERY_FILENAME="sum-oz_alert_1919_2.xql" SCHEMA_ID="60" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
+    <T_QUERY QUERY_ID="27" DESCRIPTION="" SHORT_NAME="Summer ozone - stations" QUERY_FILENAME="sum-oz_stations_1922.xql" SCHEMA_ID="63" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
+    <T_QUERY QUERY_ID="28" DESCRIPTION="" SHORT_NAME="Summer ozone - health" QUERY_FILENAME="sum-oz_health_1968_3.xql" SCHEMA_ID="59" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
+    <T_QUERY QUERY_ID="44" DESCRIPTION="ä" SHORT_NAME="Article 17 - species report checks" QUERY_FILENAME="art17_species.xquery" SCHEMA_ID="86" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
+    <T_QUERY QUERY_ID="46" DESCRIPTION="a" SHORT_NAME="Article 17 - habitat report" QUERY_FILENAME="art17_habitats.xquery" SCHEMA_ID="85" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
+    <T_QUERY QUERY_ID="47" DESCRIPTION="Validates mandatory fields, sitecodes and their coverages and period fields" SHORT_NAME="General report" QUERY_FILENAME="art17_report.xquery" SCHEMA_ID="83" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="20"/>
+    <T_QUERY QUERY_ID="48" DESCRIPTION="Checks species names and suggest fuzzy matching alternatves if found from the list of European species" SHORT_NAME="Article 17 - General report species check" QUERY_FILENAME="art17_general_report_species.xquery" SCHEMA_ID="83" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="20"/>
+    <T_QUERY QUERY_ID="49" DESCRIPTION="" SHORT_NAME="test" QUERY_FILENAME="test.xquery" SCHEMA_ID="62" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
+    <T_QUERY QUERY_ID="50" DESCRIPTION="" SHORT_NAME="test" QUERY_FILENAME="seed-qascript2.xquery" SCHEMA_ID="62" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
+    <T_QUERY QUERY_ID="51" DESCRIPTION="" SHORT_NAME="test expired html" QUERY_FILENAME="test_expired-html.xquery" SCHEMA_ID="58" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
+    <T_QUERY QUERY_ID="52" DESCRIPTION="" SHORT_NAME="test not expired html" QUERY_FILENAME="test_notexpired-html.xquery" SCHEMA_ID="88" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
+    <T_QUERY QUERY_ID="53" DESCRIPTION="" SHORT_NAME="test expired xml" QUERY_FILENAME="test_expired-xml.xquery" SCHEMA_ID="89" RESULT_TYPE="XML" SCRIPT_TYPE="xquery" UPPER_LIMIT="10"/>
+    <T_SCHEMA SCHEMA_ID="58" XML_SCHEMA="http://localhost/not_existing.xsd" DESCRIPTION="Expired dummy" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" EXPIRE_DATE="2010-11-11 00:00:00.000000000" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="59" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1968" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -  Exceedance of ozone long-term objective for health protection" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="60" XML_SCHEMA="http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1919" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -   Exceedance of ozone alert threshold values" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0" />
+    <T_SCHEMA SCHEMA_ID="61" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1921" DESCRIPTION="Summer ozone exceedances (2002/3/EC) - Comment" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0" />
+    <T_SCHEMA SCHEMA_ID="62" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1920" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -   Exceedance of ozone information threshold values" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0" />
+    <T_SCHEMA SCHEMA_ID="63" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1922" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -  Station meta-information" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"  BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="83" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0" />
+    <T_SCHEMA SCHEMA_ID="84" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/gml_art17.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"  BLOCKER="0" />
+    <T_SCHEMA SCHEMA_ID="85" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/habitats.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0" />
+    <T_SCHEMA SCHEMA_ID="86" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/species.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="87" XML_SCHEMA="http://cdrtest.eionet.eu.int/xmlexports/dir9243eec/schema.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD" BLOCKER="0"/>
+    <T_SCHEMA SCHEMA_ID="88" XML_SCHEMA="http://localhost/not_existing2.xsd" DESCRIPTION="Not Expired dummy" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD"/>
+    <T_SCHEMA SCHEMA_ID="89" XML_SCHEMA="http://localhost/not_existing3.xsd" DESCRIPTION="Expired dummy XML" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" EXPIRE_DATE="2008-01-31 23:12:11.001502300"/>
+
+    <T_HOST HOST_ID="1" HOST_NAME="http://cdr.eionet.europa.eu" USER="test" PWD="test"/>
+
+    <T_XQJOBS JOB_ID="1288" URL="http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="4" QUERY_ID="0" SRC_FILE=""/>
+    <T_XQJOBS JOB_ID="1289" URL="http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="3" QUERY_ID="0" SRC_FILE=""/>
+    <T_XQJOBS JOB_ID="1290" URL="http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="2" QUERY_ID="0" SRC_FILE=""/>
+    <T_CONVTYPE CONV_TYPE="HTML" CONTENT_TYPE="text/html;charset=UTF-8" FILE_EXT="html" DESCRIPTION="HTML files"/>
+    <T_CONVTYPE CONV_TYPE="XML" CONTENT_TYPE="text/xml;charset=UTF-8" FILE_EXT="xml" DESCRIPTION=""/>
+    <T_CONVTYPE CONV_TYPE="EXCEL" CONTENT_TYPE="application/vnd.ms-excel" FILE_EXT="xls" DESCRIPTION=""/>
+    <T_CONVTYPE CONV_TYPE="PDF" CONTENT_TYPE="application/pdf" FILE_EXT="pdf" DESCRIPTION=""/>
+    <T_CONVTYPE CONV_TYPE="SQL" CONTENT_TYPE="text/plain" FILE_EXT="sql" DESCRIPTION=""/>
+    <T_CONVTYPE CONV_TYPE="ODS" CONTENT_TYPE="application/vnd.oasis.opendocument.spreadsheet" FILE_EXT="ods" DESCRIPTION="OpenDocument Spreadsheet"/>
+    <T_CONVTYPE CONV_TYPE="TEXT" CONTENT_TYPE="text/plain" FILE_EXT="txt" DESCRIPTION="Simple text files - tab, comma, ... separated values"/>
+    <T_CONVTYPE CONV_TYPE="RDF" CONTENT_TYPE="application/rdf+xml" FILE_EXT="rdf" DESCRIPTION="Semantic Web resources"/>
 </dataset>
