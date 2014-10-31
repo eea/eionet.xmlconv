@@ -14,8 +14,9 @@ import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 
 /**
- * The class acts as a adapter between XQuery engine and source file to be analyzed. If QA knows the login information for source
- * file, then it appends the information to the URL of source file parameter.
+ * The class acts as a adapter between XQuery engine and source file to be analyzed.
+ * If QA application knows the login information for source file, then it appends the
+ * information to the URL of source file parameter.
  *
  * XQuery engine asks the file from generated URL from xmlconv instead of the original URL.
  *
@@ -27,11 +28,11 @@ public class SourceFileManager {
     private static final int BYTE_BUF = 1024;
 
     /**
-     * reads file from remote URL and writes it to the response stream using HTTP basic authentication
+     * Reads file from remote URL and writes it to the response stream using HTTP basic authentication.
      *
      * @param httpResponse
      * @param ticket
-     * @param source_url
+     * @param source_url - the URL to fetch.
      * @throws IOException
      */
     public void getFileBasicAuthentication(HttpServletResponse httpResponse, String ticket, String source_url) throws IOException {
@@ -81,15 +82,14 @@ public class SourceFileManager {
                 }
             }
             httpResponse.getOutputStream().close();
-            httpResponse.getOutputStream().flush();
         }
     }
 
     /**
-     * reads file from remote URL and writes it to the response stream without authentication.
+     * Reads file from remote URL and writes it to the response stream without authentication.
      *
      * @param httpResponse
-     * @param source_url
+     * @param source_url - the URL to fetch.
      * @throws IOException
      */
     public void getFileNoAuthentication(HttpServletResponse httpResponse, String source_url) throws IOException {
@@ -137,12 +137,11 @@ public class SourceFileManager {
                 }
             }
             httpResponse.getOutputStream().close();
-            httpResponse.getOutputStream().flush();
         }
     }
 
     /**
-     * Generates the URL for retreiving source file through QA with credentials.
+     * Generates the URL for retrieving source file through QA with credentials.
      *
      * @param ticket
      * @param source_url
