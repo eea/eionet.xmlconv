@@ -23,6 +23,13 @@
 
 package eionet.gdem.utils;
 
+import eionet.gdem.Properties;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.db.dao.IHostDao;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,14 +45,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Vector;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import eionet.gdem.Properties;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.db.dao.IHostDao;
 
 /**
  * Utility class for reading files from URL.
@@ -151,6 +150,7 @@ public class InputFile {
     public void close() {
         try {
             if (is != null && !isClosed) {
+                LOGGER.info("Close inputstream for file: " + url.toString());
                 is.close();
                 isClosed = true;
             }
@@ -314,7 +314,7 @@ public class InputFile {
             // String auth = Utils.getEncodedAuthentication(user,pwd);
             uc.addRequestProperty("Authorization", " Basic " + ticket);
         }
-
+        LOGGER.info("Start download file: " + url.toString());
         this.is = uc.getInputStream();
     }
 

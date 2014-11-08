@@ -1,143 +1,126 @@
 package eionet.gdem.dcm.business;
 
+import eionet.gdem.Constants;
+import eionet.gdem.Properties;
+import eionet.gdem.utils.InputFile;
+import eionet.gdem.utils.Utils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import javax.servlet.http.HttpServletResponse;
-
-import eionet.gdem.Constants;
-import eionet.gdem.Properties;
-import eionet.gdem.utils.InputFile;
-import eionet.gdem.utils.Utils;
-
 /**
  * The class acts as a adapter between XQuery engine and source file to be analyzed.
  * If QA application knows the login information for source file, then it appends the
  * information to the URL of source file parameter.
- *
+ * <p/>
  * XQuery engine asks the file from generated URL from xmlconv instead of the original URL.
  *
  * @author kaspeenr
- *
  */
 public class SourceFileManager {
 
+    /** */
+    private static final Log LOGGER = LogFactory.getLog(SourceFileManager.class);
+    /**
+     * Buffer size used when reading InputStream.
+     */
     private static final int BYTE_BUF = 1024;
 
     /**
      * Reads file from remote URL and writes it to the response stream using HTTP basic authentication.
      *
-     * @param httpResponse
-     * @param ticket
-     * @param source_url - the URL to fetch.
-     * @throws IOException
+     * @param httpResponse - HTTP Servlet Response
+     * @param ticket       basic authentication token.
+     * @param sourceUrl    - the URL to fetch.
+     * @throws IOException - in case something happens during streaming the URL source.
      */
-    public void getFileBasicAuthentication(HttpServletResponse httpResponse, String ticket, String source_url) throws IOException {
+    public void getFileBasicAuthentication(HttpServletResponse httpResponse, String ticket, String sourceUrl) throws IOException {
 
-        InputFile source = null;
-        InputStream is = null;
+        InputFile sourceFile = null;
+        InputStream sourceFileInputStream = null;
+        int bufLen = 0;
         try {
-            source = new InputFile(source_url);
-            URL url = source.getURL();
+            LOGGER.info("Start to download file: " + sourceUrl);
 
+            sourceFile = new InputFile(sourceUrl);
+            URL url = sourceFile.getURL();
             // open connection to source URL
             URLConnection uc = url.openConnection();
 
             if (ticket != null) {
                 uc.addRequestProperty("Authorization", " Basic " + ticket);
+                LOGGER.info("Add basic authorization to request.");
             }
 
             // read response properties from URLConnection
             String contentType = uc.getContentType();
             int contentLength = uc.getContentLength();
             String contentEncoding = uc.getContentEncoding();
-            is = uc.getInputStream();
 
+            // log response header
+            StringBuilder logBuilder = new StringBuilder("Response header properties: ");
+            logBuilder.append(contentType != null ? "Content-Type=" + contentType + "; " : "");
+            logBuilder.append("Content-Length=" + contentLength);
+            logBuilder.append(contentEncoding != null ? "Content-Encoding=" + contentEncoding + "; " : "");
+            LOGGER.info(logBuilder.toString());
+
+            sourceFileInputStream = uc.getInputStream();
+
+            // If content type is null, then fall back to most likely content type
+            if (contentType == null || "text/xml".equals(contentType)) {
+                contentType = "text/xml;charset=utf-8";
+            }
             // set response properties
             httpResponse.setContentType(contentType);
             httpResponse.setContentLength(contentLength);
             httpResponse.setCharacterEncoding(contentEncoding);
 
-            // write data into response
-            int bufLen = 0;
+            // stream data to servlet response
             byte[] buf = new byte[BYTE_BUF];
-
-            while ((bufLen = is.read(buf)) != -1) {
+            while ((bufLen = sourceFileInputStream.read(buf)) != -1) {
                 httpResponse.getOutputStream().write(buf, 0, bufLen);
             }
+        } catch (IOException ioe) {
+            LOGGER.error("Failed to download file: " + sourceUrl + ". The exception is: " + ioe.toString());
+            if (bufLen > 0) {
+                LOGGER.info("Bytes read: " + bufLen);
+            }
+            throw ioe;
+        } catch (Exception e) {
+            LOGGER.error("Failed to download file: " + sourceUrl + ". The exception is: " + e.toString());
+            if (bufLen > 0) {
+                LOGGER.info("Bytes read: " + bufLen);
+            }
         } finally {
-            if (source != null) {
-                try {
-                    source.close();
-                } catch (Exception e) {
-                }
+            sourceFile.close();
+            IOUtils.closeQuietly(sourceFileInputStream);
+            try {
+                httpResponse.getOutputStream().close();
+            } catch (IOException e) {
+                LOGGER.error("Failed to close HttpServletResponse OutputStream for file: " + sourceUrl + ". The exception is: " + e
+                        .toString());
+                throw e;
             }
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (Exception e) {
-                }
-            }
-            httpResponse.getOutputStream().close();
+            LOGGER.info("All resources closed for file: " + sourceUrl);
         }
     }
 
     /**
      * Reads file from remote URL and writes it to the response stream without authentication.
      *
-     * @param httpResponse
-     * @param source_url - the URL to fetch.
-     * @throws IOException
+     * @param httpResponse - HTTP Servlet Response
+     * @param sourceUrl    - the URL to fetch.
+     * @throws IOException - in case something happens during streaming the URL source.
      */
-    public void getFileNoAuthentication(HttpServletResponse httpResponse, String source_url) throws IOException {
-
-        InputFile source = null;
-        InputStream is = null;
-        try {
-            source = new InputFile(source_url);
-            URL url = source.getURL();
-
-            // open connection to source URL
-            URLConnection uc = url.openConnection();
-
-            // read response properties from URLConnection
-            String contentType = uc.getContentType();
-            int contentLength = uc.getContentLength();
-            String contentEncoding = uc.getContentEncoding();
-            is = uc.getInputStream();
-
-            // set response properties
-            httpResponse.setContentType("text/xml;charset=utf-8");
-            httpResponse.setContentLength(contentLength);
-            httpResponse.setCharacterEncoding(contentEncoding);
-
-            // write data into response
-            int bufLen = 0;
-            byte[] buf = new byte[BYTE_BUF];
-
-            while ((bufLen = is.read(buf)) != -1) {
-                httpResponse.getOutputStream().write(buf, 0, bufLen);
-            }
-        } finally {
-            if (source != null) {
-                try {
-                    source.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            httpResponse.getOutputStream().close();
-        }
+    public void getFileNoAuthentication(HttpServletResponse httpResponse, String sourceUrl) throws IOException {
+        getFileBasicAuthentication(httpResponse, null, sourceUrl);
     }
 
     /**
@@ -151,7 +134,7 @@ public class SourceFileManager {
      * @throws MalformedURLException
      */
     public static String getSourceFileAdapterURL(String ticket, String source_url, boolean isTrustedMode)
-    throws MalformedURLException, IOException {
+            throws MalformedURLException, IOException {
         StringBuffer ret = new StringBuffer();
         InputFile source = null;
 

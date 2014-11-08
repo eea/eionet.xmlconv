@@ -3,13 +3,6 @@
  */
 package eionet.gdem.test;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.struts.action.ActionMapping;
-import org.junit.Ignore;
-
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.DDServiceClient;
 import eionet.gdem.services.GDEMServices;
@@ -18,6 +11,12 @@ import eionet.gdem.test.mocks.MockServletMultipartRequest;
 import eionet.gdem.test.mocks.MockServletRequest;
 import eionet.gdem.test.mocks.MockServletResponse;
 import eionet.gdem.web.struts.BaseAction;
+import org.apache.struts.action.ActionMapping;
+import org.junit.Ignore;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS TestUtils
@@ -37,9 +36,7 @@ public class TestUtils {
     }
 
     /**
-     * get struts config location
-     *
-     * @param obj
+     * Gets Struts config location.
      */
     public static String getStrutsConfigLocation() {
         return Properties.appRootFolder + "/webapp/WEB-INF/struts-config.xml";
