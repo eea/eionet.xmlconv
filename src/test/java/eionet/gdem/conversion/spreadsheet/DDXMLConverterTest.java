@@ -3,13 +3,6 @@
  */
 package eionet.gdem.conversion.spreadsheet;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import junit.framework.TestCase;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.datadict.DD_XMLInstance;
@@ -21,6 +14,13 @@ import eionet.gdem.test.TestUtils;
 import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
+import junit.framework.TestCase;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS DDXMLConverterTest
@@ -68,8 +68,8 @@ public class DDXMLConverterTest extends TestCase {
 
         message = ddConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=TBL3739");
         assertEquals(
-                Properties.getMessage(BusinessConstants.ERROR_CONVERSION_OBSOLETE_TEMPLATE,
-                        new String[] {ddConverter.getSourceFormatName(), "02 Nov 2009", "2222"}), message);
+                (Properties.getMessage(BusinessConstants.ERROR_CONVERSION_OBSOLETE_TEMPLATE,
+                        new String[] {ddConverter.getSourceFormatName(), "02 Nov 2009", "2222"})).toLowerCase(), message.toLowerCase());
 
         // schema is not RELEASED, but OK
         message = ddConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=TBL3739");

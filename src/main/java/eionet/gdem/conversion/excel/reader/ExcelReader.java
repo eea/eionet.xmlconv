@@ -522,7 +522,7 @@ public class ExcelReader implements SourceReaderIF {
                     break;
             }
         }
-        return StringUtils.strip(value.trim(), String.valueOf(NON_BREAKING_SPACE));
+        return StringUtils.strip(value.trim(), String.valueOf(NON_BREAKING_SPACE)).trim();
     }
 
     /**
