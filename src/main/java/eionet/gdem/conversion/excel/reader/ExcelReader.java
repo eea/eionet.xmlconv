@@ -23,15 +23,15 @@
 
 package eionet.gdem.conversion.excel.reader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
+import eionet.gdem.GDEMException;
+import eionet.gdem.conversion.datadict.DDElement;
+import eionet.gdem.conversion.datadict.DD_XMLInstance;
+import eionet.gdem.conversion.spreadsheet.DDXMLConverter;
+import eionet.gdem.conversion.spreadsheet.SourceReaderIF;
+import eionet.gdem.conversion.spreadsheet.SourceReaderLogger;
+import eionet.gdem.conversion.spreadsheet.SourceReaderLogger.ReaderTypeEnum;
+import eionet.gdem.dto.ConversionResultDto;
+import eionet.gdem.utils.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -47,15 +47,14 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
-import eionet.gdem.GDEMException;
-import eionet.gdem.conversion.datadict.DDElement;
-import eionet.gdem.conversion.datadict.DD_XMLInstance;
-import eionet.gdem.conversion.spreadsheet.DDXMLConverter;
-import eionet.gdem.conversion.spreadsheet.SourceReaderIF;
-import eionet.gdem.conversion.spreadsheet.SourceReaderLogger;
-import eionet.gdem.conversion.spreadsheet.SourceReaderLogger.ReaderTypeEnum;
-import eionet.gdem.dto.ConversionResultDto;
-import eionet.gdem.utils.Utils;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * The main class, which is calling POI HSSF methods for reading Excel file.
@@ -98,11 +97,18 @@ public class ExcelReader implements SourceReaderIF {
      */
     private long inputFileLength = 0;
 
-    /** Formula evaluator used for calculating formulas in cell. */
+    /**
+     * Formula evaluator used for calculating formulas in cell.
+     */
     private FormulaEvaluator evaluator;
+    /**
+     * Non-breaking space unicode.
+     */
+    final char NON_BREAKING_SPACE = 0x00A0;
 
     /**
      * Class constructor.
+     *
      * @param excel2007 true if the file is Excel 2007 or newer.
      */
     public ExcelReader(boolean excel2007) {
@@ -316,8 +322,7 @@ public class ExcelReader implements SourceReaderIF {
     /**
      * Check if row is empty or not.
      *
-     * @param row
-     *            MS Excel row.
+     * @param row MS Excel row.
      * @return boolean
      */
     public boolean isEmptyRow(Row row) {
@@ -394,8 +399,7 @@ public class ExcelReader implements SourceReaderIF {
      * Method goes through rows after XML Schema and finds schemas for Excel sheets (DataDict tables). cell(0) =sheet name;
      * cell(1)=XML schema
      *
-     * @param schemaSheet
-     *            sheet name
+     * @param schemaSheet sheet name
      * @return Map
      */
     private Map<String, String> findSheetSchemas(Sheet schemaSheet) {
@@ -443,8 +447,7 @@ public class ExcelReader implements SourceReaderIF {
     /**
      * Get Sheet object by sheet name.
      *
-     * @param name
-     *            sheet name
+     * @param name sheet name
      * @return Sheet
      */
     private Sheet getSheet(String name) {
@@ -483,7 +486,7 @@ public class ExcelReader implements SourceReaderIF {
      * Reads cell value and formats it according to element type defined in XML Schema. If the cell contains formula,
      * then calculated value is returned.
      *
-     * @param cell Spreadsheet Cell object.
+     * @param cell       Spreadsheet Cell object.
      * @param schemaType XML Schema data type for given cell.
      * @return string value of the cell.
      */
@@ -519,7 +522,7 @@ public class ExcelReader implements SourceReaderIF {
                     break;
             }
         }
-        return value.trim();
+        return StringUtils.strip(value.trim(), String.valueOf(NON_BREAKING_SPACE));
     }
 
     /**
@@ -536,8 +539,8 @@ public class ExcelReader implements SourceReaderIF {
     /**
      * Read column header.
      *
-     * @param row Excel row object
-     * @param elements List of DD table elements
+     * @param row       Excel row object
+     * @param elements  List of DD table elements
      * @param mainTable true if the table is main table.
      */
     private void setColumnMappings(Row row, List<DDXmlElement> elements, boolean mainTable) {
@@ -568,14 +571,10 @@ public class ExcelReader implements SourceReaderIF {
     /**
      * Goes through all columns and logs missing and redundant columns into conversion log.
      *
-     * @param sheetName
-     *            Excel sheet name.
-     * @param row
-     *            Excel Row object
-     * @param metaRow
-     *            Excel meta sheet row
-     * @param elements
-     *            List of XML elements
+     * @param sheetName Excel sheet name.
+     * @param row       Excel Row object
+     * @param metaRow   Excel meta sheet row
+     * @param elements  List of XML elements
      */
     private void logColumnMappings(String sheetName, Row row, Row metaRow, List<DDXmlElement> elements) {
 
@@ -615,7 +614,7 @@ public class ExcelReader implements SourceReaderIF {
      * Find redundant columns from the list of columns.
      *
      * @param sheetName Excel sheet name.
-     * @param row Excel row.
+     * @param row       Excel row.
      * @param elemNames DD element names.
      * @return List of extra columns added to sheet.
      */
@@ -644,8 +643,8 @@ public class ExcelReader implements SourceReaderIF {
     /**
      * Get cell String value.
      *
-     * @param row Excel row.
-     * @param colIdx Column index
+     * @param row        Excel row.
+     * @param colIdx     Column index
      * @param schemaType Schema type
      * @return Textual cell value.
      */
@@ -667,6 +666,7 @@ public class ExcelReader implements SourceReaderIF {
 
     /**
      * Return Workbook object.
+     *
      * @return Workbook object.
      */
     protected Workbook getWorkbook() {
