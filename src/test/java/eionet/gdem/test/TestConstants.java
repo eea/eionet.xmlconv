@@ -58,7 +58,7 @@ public class TestConstants {
     public final static String OZ_HTML_FILENAME_RESULT = "seed-ozone-station.html";
     public final static String OZ_SQL_FILENAME_RESULT = "seed-ozone-station.sql";
     public final static String STRCONTENT_RESULT = "Conversion works!";
-
+    public final static String NETWORK_FILE_TO_TEST = "http://converters.eionet.europa.eu/dropdownmenus.txt";
 
     // USER PROPERTIES
     public final static String TEST_USER = "tester";

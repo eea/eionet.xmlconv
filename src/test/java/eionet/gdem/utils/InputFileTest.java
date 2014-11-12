@@ -3,10 +3,21 @@
  */
 package eionet.gdem.utils;
 
+import eionet.gdem.Properties;
+import eionet.gdem.test.ApplicationTestContext;
+import eionet.gdem.test.TestConstants;
+import eionet.gdem.test.TestUtils;
+import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 /**
  * JUnit test test InputFile functionality. InputFile is responsible for parsing retreived URL - escapes the URL, extracts the file
@@ -15,14 +26,24 @@ import junit.framework.TestCase;
  * @author Enriko Käsper, TietoEnator Estonia AS InputFileTest
  */
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {ApplicationTestContext.class})
 public class InputFileTest extends TestCase {
+
+    /**
+     * Set up test case properties and databaseTester.
+     */
+    @Before
+    public void setUp() throws Exception {
+        TestUtils.setUpProperties(this);
+    }
 
     /**
      * The method tests, if InputFile class extracts correct strings from URL.
      *
      * @throws Exception
      */
-
+    @Test
     public void testPublicMethodsOnURLWithParams() throws Exception {
         InputFile inputFile =
                 new InputFile("http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/general report.xml?param=11&param2=22");
@@ -48,7 +69,8 @@ public class InputFileTest extends TestCase {
      *
      * @throws Exception
      */
-    public static void testPublicMethodsOnURLWithFragment() throws Exception {
+    @Test
+    public void testPublicMethodsOnURLWithFragment() throws Exception {
         InputFile inputFile = new InputFile("http://localhost:8080/xmlconv/just a file.dddd#999");
 
         assertEquals("just a file.dddd", inputFile.getFileName());
@@ -66,4 +88,36 @@ public class InputFileTest extends TestCase {
         assertEquals(cdrParams, inputFile.getCdrParams());
     }
 
-}
+    @Test
+    public void testFetchInputFileStoringLocally() throws Exception {
+        InputFile inputFile = new InputFile(TestConstants.NETWORK_FILE_TO_TEST);
+        inputFile.setStoreLocally(true);
+        long sizeOfTmpDirectoryInitial = (new File(Properties.tmpFolder)).list().length;
+
+        InputStream inputStream = inputFile.getSrcInputStream();
+        long sizeOfTmpDirectoryAfterDownlaod = (new File(Properties.tmpFolder)).list().length;
+
+        assertEquals(sizeOfTmpDirectoryInitial + 1, sizeOfTmpDirectoryAfterDownlaod);
+
+        inputFile.close();
+        long sizeOfTmpDirectoryFinal = (new File(Properties.tmpFolder)).list().length;
+
+        assertEquals(sizeOfTmpDirectoryInitial, sizeOfTmpDirectoryFinal);
+    }
+
+    @Test
+    public void testFetchInputFileNotStoringLocally() throws Exception {
+        InputFile inputFile = new InputFile(TestConstants.NETWORK_FILE_TO_TEST);
+
+        long sizeOfTmpDirectoryInitial = (new File(Properties.tmpFolder)).list().length;
+
+        InputStream inputStream = inputFile.getSrcInputStream();
+        long sizeOfTmpDirectoryAfterDownlaod = (new File(Properties.tmpFolder)).list().length;
+
+        assertEquals(sizeOfTmpDirectoryInitial, sizeOfTmpDirectoryAfterDownlaod);
+
+        inputFile.close();
+        long sizeOfTmpDirectoryFinal = (new File(Properties.tmpFolder)).list().length;
+
+        assertEquals(sizeOfTmpDirectoryInitial, sizeOfTmpDirectoryFinal);
+    }}

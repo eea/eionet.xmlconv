@@ -26,11 +26,13 @@ package eionet.gdem.utils;
 import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IHostDao;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,7 +52,7 @@ import java.util.Vector;
  * Utility class for reading files from URL.
  * The class reads the host credentials from database and if it runs in trusted mode, then it passes the basic authentication info
  * to remote server for files with limited access.
- *
+ * <p/>
  * NB! Always call close() method in finally block, otherwise the InputStream stays open.
  */
 public class InputFile {
@@ -58,26 +60,54 @@ public class InputFile {
     /** */
     private static final Log LOGGER = LogFactory.getLog(InputFile.class);
 
-    /** Authentication ticket: Base64 encoded username and password. */
+    /**
+     * Authentication ticket: Base64 encoded username and password.
+     */
     private String ticket = null;
-    /** URL of the inpurt file. */
+    /**
+     * URL of the inpurt file.
+     */
     private URL url = null;
-    /** InputStream of input file data retrieved from URLConnection. */
-    private InputStream is = null;
-    /** Allowed to use ticket when requesting input file. */
+    /**
+     * InputStream of input file data retrieved from URLConnection.
+     */
+    private InputStream inputStream = null;
+    /**
+     * Allowed to use ticket when requesting input file.
+     */
     private boolean isTrustedMode = false;
-    /** File name without extension extracted from URL.*/
+    /**
+     * File name without extension extracted from URL.
+     */
     private String strFileName = null;
-    /** File name extracted from URL.*/
+    /**
+     * File name extracted from URL.
+     */
     private String strFileNameNoExtension = null;
-    /** Host name extracted from URL.*/
+    /**
+     * Host name extracted from URL.
+     */
     private String strHostName = null;
-    /** Folder name (path before file name) extracted from URL.*/
+    /**
+     * Folder name (path before file name) extracted from URL.
+     */
     private String strFolderName = null;
-    /** Status of InputStream. */
+    /**
+     * Status of InputStream.
+     */
     boolean isClosed = false;
+    /**
+     * Store the content of URL in local storage before streaming the result to requester.
+     */
+    boolean storeLocally = false;
+    /**
+     * Location in local storage if the file is stored locally temporarily.
+     */
+    String tmpFileLocation = null;
 
-    /** DAO for getting authorisation for known hosts.*/
+    /**
+     * DAO for getting authorisation for known hosts.
+     */
     private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
 
     /**
@@ -98,16 +128,18 @@ public class InputFile {
 
     /**
      * Get source file from url as InputStream user basic auth, if we know the credentials.
+     *
      * @return InputStream of source file.
      * @throws IOException the source is not available.
      */
     public InputStream getSrcInputStream() throws IOException {
         fillInputStream();
-        return is;
+        return inputStream;
     }
 
     /**
      * Save the InputFile to the specified text file with default extension.
+     *
      * @return Full path of file.
      * @throws IOException if it's not possible to save file in the filesystem.
      */
@@ -117,6 +149,7 @@ public class InputFile {
 
     /**
      * Save the InputFile to the specified text file with given extension.
+     *
      * @param extension file extension to use when storing source file temporarily.
      * @return Full path of file.
      * @throws IOException if it's not possible to save file in the filesystem.
@@ -124,21 +157,7 @@ public class InputFile {
     public String saveSrcFile(String extension) throws IOException {
 
         fillInputStream();
-
-        OutputStream outputStream = null;
-        String fileName =
-                Properties.tmpFolder + File.separatorChar + "gdem_" + System.currentTimeMillis() + "-" + UUID.randomUUID() + "."
-                        + extension;
-        File file = new File(fileName);
-
-        try {
-            outputStream = new FileOutputStream(file);
-            IOUtils.copy(is, outputStream);
-
-        } finally {
-            close();
-            IOUtils.closeQuietly(outputStream);
-        }
+        String fileName = saveFileInLocalStorage(extension);
 
         return fileName;
 
@@ -149,10 +168,15 @@ public class InputFile {
      */
     public void close() {
         try {
-            if (is != null && !isClosed) {
-                LOGGER.info("Close inputstream for file: " + url.toString());
-                is.close();
+            if (inputStream != null && !isClosed) {
+                inputStream.close();
                 isClosed = true;
+                if (storeLocally && tmpFileLocation != null) {
+                    FileUtils.deleteQuietly(new File(tmpFileLocation));
+                    LOGGER.info("Deleted temporary file: " + tmpFileLocation);
+                } else {
+                    LOGGER.info("Closed inputstream for URL: " + url.toString());
+                }
             }
         } catch (Exception e) {
             LOGGER.warn("Closing inputstream in FileInput: " + e.toString());
@@ -181,6 +205,7 @@ public class InputFile {
     /**
      * Extracts the file name from URL path. E.g: BasicQuality.xml where the full url is
      * http://cdrtest.eionet.europa.eu/al/eea/colrjhlyq/envrjhqwa/BasicQuality.xml
+     *
      * @return file name
      */
     public String getFileName() {
@@ -190,7 +215,8 @@ public class InputFile {
     /**
      * Extracts the file name without file extension from URL path. E.g: BasicQuality where the full url is
      * http://cdrtest.eionet.europa.eu/al/eea/colrjhlyq/envrjhqwa/BasicQuality.xml
-    * @return file name without extension
+     *
+     * @return file name without extension
      */
     public String getFileNameNoExtension() {
         return strFileNameNoExtension;
@@ -198,6 +224,7 @@ public class InputFile {
 
     /**
      * Return source file URL as a String.
+     *
      * @return source URL as String
      */
     @Override
@@ -208,6 +235,7 @@ public class InputFile {
     /**
      * Extracts the full host name from URL. E.g: http://cdrtest.eionet.europa.eu where the full url is
      * http://cdrtest.eionet.europa.eu/al/eea/colrjhlyq/envrjhqwa/BasicQuality.xml
+     *
      * @return host name from source URL.
      */
     public String getHostName() {
@@ -217,6 +245,7 @@ public class InputFile {
     /**
      * Extracts the folder from URL path. E.g: /al/eea/colrjhlyq/envrjhqwa where the full url is
      * http://cdrtest.eionet.europa.eu/al/eea/colrjhlyq/envrjhqwa/BasicQuality.xml
+     *
      * @return path without file name
      */
     public String getFolderName() {
@@ -265,7 +294,24 @@ public class InputFile {
         return ticket;
     }
 
-    /*
+    /**
+     * Is the URL content stored locally.
+     *
+     * @return true if the file is stored locally.
+     */
+    public boolean isStoreLocally() {
+        return storeLocally;
+    }
+
+    /**
+     * Set the flag to store URL content locally.
+     *
+     * @param storeLocally status flag to store the file locally.
+     */
+    public void setStoreLocally(boolean storeLocally) {
+        this.storeLocally = storeLocally;
+    }
+/*
      * PRIVATE METHODS
      */
 
@@ -315,11 +361,17 @@ public class InputFile {
             uc.addRequestProperty("Authorization", " Basic " + ticket);
         }
         LOGGER.info("Start download file: " + url.toString());
-        this.is = uc.getInputStream();
+        this.inputStream = uc.getInputStream();
+
+        if (storeLocally) {
+            tmpFileLocation = saveFileInLocalStorage("tmp");
+            isClosed = false;
+            inputStream = new FileInputStream(tmpFileLocation);
+        }
     }
 
     /**
-     * Stores the URL.
+     * Stores the URL of remote file.
      *
      * @param strUrl URL of input file
      * @throws MalformedURLException Invalid URL.
@@ -336,11 +388,11 @@ public class InputFile {
         } catch (IllegalArgumentException ae) {
             throw new MalformedURLException(ae.toString());
         }
-
     }
 
     /**
      * Escape spaces with %20 in source URI.
+     *
      * @param strUri URI of input file.
      * @return Escaped URI.
      */
@@ -350,6 +402,7 @@ public class InputFile {
 
     /**
      * Extracts filename from URI's path [scheme:][//authority][path][?query][#fragment].
+     *
      * @param uri URI of input file.
      */
     private void parseUri(URI uri) {
@@ -360,6 +413,7 @@ public class InputFile {
 
     /**
      * Extracts filename and folder from URI's path.
+     *
      * @param strUri URI of input file.
      */
     private void findFileName(String strUri) {
@@ -392,6 +446,7 @@ public class InputFile {
 
     /**
      * Extracts filename without file extension from URI's path.
+     *
      * @param strFileName File name extracted from URI of input file.
      */
     private void findFileNameNoExtension(String strFileName) {
@@ -412,4 +467,30 @@ public class InputFile {
         this.strFileNameNoExtension = name;
     }
 
+    /**
+     * Saves the inputStream as local file in tmp folder.
+     *
+     * @param extension file extension
+     * @return full path to file
+     * @throws IOException if file system operation fails.
+     */
+    private String saveFileInLocalStorage(String extension) throws IOException {
+        String fileName =
+                Properties.tmpFolder + File.separatorChar + "gdem_" + System.currentTimeMillis() + "-" + UUID.randomUUID() + "."
+                        + extension;
+        File file = new File(fileName);
+
+        OutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(file);
+            IOUtils.copy(inputStream, outputStream);
+            LOGGER.info("File stored locally url=" + url.toString() + " at " + fileName);
+        } finally {
+            close();
+            IOUtils.closeQuietly(outputStream);
+        }
+
+        return fileName;
+
+    }
 }

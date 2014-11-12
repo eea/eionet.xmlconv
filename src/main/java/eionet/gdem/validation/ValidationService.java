@@ -21,26 +21,6 @@
 
 package eionet.gdem.validation;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.util.List;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.xml.resolver.tools.CatalogResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.XMLReader;
-
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
@@ -51,6 +31,24 @@ import eionet.gdem.qa.QAFeedbackType;
 import eionet.gdem.qa.QAResultPostProcessor;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.xml.resolver.tools.CatalogResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.util.List;
 
 /**
  * The class offers validation methods for XMLCONV and remote clients.
@@ -120,6 +118,7 @@ public class ValidationService {
             src = new InputFile(srcUrl);
             src.setTrustedMode(trustedMode);
             src.setAuthentication(ticket);
+            src.setStoreLocally(true);
             return validateSchema(src.getSrcInputStream(), schema);
         } catch (MalformedURLException mfe) {
             throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED);

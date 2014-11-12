@@ -3,6 +3,7 @@ package eionet.gdem.dcm.business;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.test.ApplicationTestContext;
+import eionet.gdem.test.TestConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -26,7 +27,7 @@ public class SourceFileMangerTest {
 
         SourceFileManager sourceFileManger = new SourceFileManager();
         MockHttpServletResponse httpResponse = new MockHttpServletResponse();
-        sourceFileManger.getFileNoAuthentication(httpResponse, "http://converters.eionet.europa.eu/dropdownmenus.txt");
+        sourceFileManger.getFileNoAuthentication(httpResponse, TestConstants.NETWORK_FILE_TO_TEST);
         assertEquals("text/plain; charset=UTF-8", httpResponse.getContentType());
         assertTrue(httpResponse.getContentLength() > 0);
         assertTrue(httpResponse.getContentAsString().length() > 0);
@@ -38,7 +39,7 @@ public class SourceFileMangerTest {
         SourceFileManager sourceFileManger = new SourceFileManager();
         MockHttpServletResponse httpResponse = new MockHttpServletResponse();
         //when();
-        sourceFileManger.getFileBasicAuthentication(httpResponse, null, "http://converters.eionet.europa.eu/dropdownmenus.txt");
+        sourceFileManger.getFileBasicAuthentication(httpResponse, null, TestConstants.NETWORK_FILE_TO_TEST);
         assertEquals("text/plain; charset=UTF-8", httpResponse.getContentType());
         assertTrue(httpResponse.getContentLength() > 0);
         assertTrue(httpResponse.getContentAsString().length() > 0);
