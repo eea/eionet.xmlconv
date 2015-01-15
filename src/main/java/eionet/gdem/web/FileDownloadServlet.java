@@ -496,7 +496,7 @@ public class FileDownloadServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		LOGGER.info(message);
-		response.sendError(HttpServletResponse.SC_FORBIDDEN, message);
+		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
 	}
 
     // Inner classes ------------------------------------------------------------------------------
