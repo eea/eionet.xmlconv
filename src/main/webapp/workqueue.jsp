@@ -103,7 +103,7 @@ function doRestart(){
             if (logvPrm){
         %>
         <p>
-            <a href="log/gdem.log">View log file</a>
+            <a href='<%= Properties.getStringProperty("log.file")%>'>View log file</a>
         </p>
         <%
             }

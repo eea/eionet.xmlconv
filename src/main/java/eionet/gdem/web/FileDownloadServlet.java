@@ -470,7 +470,7 @@ public class FileDownloadServlet extends HttpServlet {
 
 		String securityMessage = null;
 		try {
-			if (urlPath.startsWith("/log/")) {
+			if (urlPath.contains(Properties.getStringProperty("log.file"))) {
 				String username = (String) request.getSession().getAttribute("user");
 				if (!SecurityUtil.hasPerm(username, "/" + Names.ACL_LOGFILE_PATH, "v")) {
 					securityMessage = "You don't have permissions to view log file: " + urlPath;

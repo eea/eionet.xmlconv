@@ -23,11 +23,11 @@
 
 package eionet.gdem;
 
+import org.apache.log4j.Logger;
+
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-
-import org.apache.log4j.Logger;
 
 /**
  * Several settings and properties for XMLCONV application.
@@ -207,7 +207,7 @@ public class Properties {
 
     }
 
-    private static String getStringProperty(String key) {
+    public static String getStringProperty(String key) {
         String value = props.getString(key);
         LOGGER.debug("XMLCONV configuration value loaded from gdem.properties \"" + key + "\"=" + value);
         return value;
