@@ -16,6 +16,17 @@
  */
 package eionet.gdem.web;
 
+import eionet.gdem.Properties;
+import eionet.gdem.conversion.ssr.Names;
+import eionet.gdem.utils.SecurityUtil;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -26,17 +37,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
-
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-
-import eionet.gdem.Properties;
 
 /**
  *
@@ -105,6 +105,12 @@ public class FileDownloadServlet extends HttpServlet {
 
         String urlPath = URLDecoder.decode(StringUtils.substringAfter(request.getRequestURI(), request.getContextPath()), "UTF-8");
         String filePath = Properties.appRootFolder + urlPath;
+
+		String securityMessage = checkPermissions(request, urlPath);
+		if (securityMessage != null) {
+			handleNotAuthorised(securityMessage, request, response);
+			return;
+		}
 
         // Get the file object from the file store
         File file = new File(filePath);
@@ -453,6 +459,45 @@ public class FileDownloadServlet extends HttpServlet {
             }
         }
     }
+
+	/**
+	 * Check if user has permissions to see log file.
+	 * @param request HTTP servlet request
+	 * @param urlPath request URL
+	 * @return null if user has permissions, otherwise error message
+	 */
+	private String checkPermissions(HttpServletRequest request, String urlPath) {
+
+		String securityMessage = null;
+		try {
+			if (urlPath.startsWith("/log/")) {
+				String username = (String) request.getSession().getAttribute("user");
+				if (!SecurityUtil.hasPerm(username, "/" + Names.ACL_LOGFILE_PATH, "v")) {
+					securityMessage = "You don't have permissions to view log file: " + urlPath;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.error("Unable to check permissions: " + urlPath, e);
+			securityMessage = "Unable to check permissions: " + urlPath;
+		}
+		return securityMessage;
+	}
+
+	/**
+	 * Handles HTTP 401 error.
+	 * @param message error message to display for a user.
+	 * @param request HTTP servlet request
+	 * @param response HTTP servlet response
+	 * @throws IOException
+	 * @throws ServletException
+	 */
+	private void handleNotAuthorised(String message, HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		LOGGER.info(message);
+		response.sendError(HttpServletResponse.SC_FORBIDDEN, message);
+	}
 
     // Inner classes ------------------------------------------------------------------------------
 

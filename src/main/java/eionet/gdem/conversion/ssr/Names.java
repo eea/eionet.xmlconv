@@ -72,6 +72,7 @@ public interface Names {
     public static final String ACL_CONFIG_PATH = "config";
     public static final String ACL_XMLFILE_PATH = "xmlfile";
     public static final String ACL_QASANDBOX_PATH = "qasandbox";
+	public static final String ACL_LOGFILE_PATH = "logfile";
 
     public static final String RPC_SERVICE_NAME = "XService";
     public static final String EXCEL_CONVERSION_JSP = "excel2xml_conversion.jsp";

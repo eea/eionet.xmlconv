@@ -82,6 +82,7 @@ function doRestart(){
             boolean wqdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "d");
             boolean wquPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "u");
             boolean wqvPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "v");
+            boolean logvPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_LOGFILE_PATH, "v");
 
             String[][] list = null;
             try{
@@ -98,6 +99,15 @@ function doRestart(){
             <div class="error-msg"><%=err%></div>
         <%}    %>
         <p>Currently there are following jobs in the queue...</p>
+        <%
+            if (logvPrm){
+        %>
+        <p>
+            <a href="log/gdem.log">View log file</a>
+        </p>
+        <%
+            }
+        %>
         <div id="main_table">
         <form id="jobs" action="main" method="post">
             <table class="datatable" width="100%">
