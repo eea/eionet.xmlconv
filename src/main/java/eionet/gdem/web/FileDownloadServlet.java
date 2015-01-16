@@ -16,6 +16,7 @@
  */
 package eionet.gdem.web;
 
+import com.tee.uit.security.AppUser;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.utils.SecurityUtil;
@@ -471,8 +472,8 @@ public class FileDownloadServlet extends HttpServlet {
 		String securityMessage = null;
 		try {
 			if (urlPath.contains(Properties.getStringProperty("log.file"))) {
-				String username = (String) request.getSession().getAttribute("user");
-				if (!SecurityUtil.hasPerm(username, "/" + Names.ACL_LOGFILE_PATH, "v")) {
+				AppUser aclUser = SecurityUtil.getUser(request, Names.USER_ATT);
+				if (aclUser != null && !SecurityUtil.hasPerm(aclUser.getUserName(), "/" + Names.ACL_LOGFILE_PATH, "v")) {
 					securityMessage = "You don't have permissions to view log file: " + urlPath;
 				}
 			}
