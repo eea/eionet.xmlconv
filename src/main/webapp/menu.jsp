@@ -1,4 +1,4 @@
-<%@ page import="eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.SecurityUtil,com.tee.uit.security.AppUser, eionet.gdem.Properties" %>
+<%@ page import="eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.SecurityUtil,eionet.acl.AppUser, eionet.gdem.Properties" %>
 <%!
     //
     private boolean serviceInstalled(int service){

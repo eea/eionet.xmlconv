@@ -161,7 +161,7 @@
     </servlet>
     <servlet>
         <servlet-name>RpcRouter</servlet-name>
-        <servlet-class>com.tee.uit.servlets.XmlRpcRouter</servlet-class>
+        <servlet-class>eionet.rpcserver.servlets.XmlRpcRouter</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>downloadServlet</servlet-name>

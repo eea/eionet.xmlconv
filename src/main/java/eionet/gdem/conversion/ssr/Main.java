@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.tee.uit.security.AppUser;
+import eionet.acl.AppUser;
 
 import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;

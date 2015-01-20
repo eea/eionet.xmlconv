@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import com.tee.uit.client.ServiceClientIF;
-import com.tee.uit.client.ServiceClients;
+import eionet.rpcclient.ServiceClientIF;
+import eionet.rpcclient.ServiceClients;
 
 import eionet.gdem.Properties;
 import eionet.gdem.dto.DDDatasetTable;

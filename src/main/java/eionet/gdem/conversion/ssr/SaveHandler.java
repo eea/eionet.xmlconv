@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.tee.uit.security.AppUser;
+import eionet.acl.AppUser;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;

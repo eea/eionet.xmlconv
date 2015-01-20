@@ -16,7 +16,7 @@
  */
 package eionet.gdem.web;
 
-import com.tee.uit.security.AppUser;
+import eionet.acl.AppUser;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.utils.SecurityUtil;
