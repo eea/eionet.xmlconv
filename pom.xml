@@ -351,7 +351,7 @@
     <!-- dependencies -->
 
     <dependencies>
-        <!-- batik.jar used by fop -->
+        <!-- batik.jar used by fop: exact version (1.0) cannot be found -->
         <dependency>
             <groupId>org.apache</groupId>
             <artifactId>batik</artifactId>
@@ -359,11 +359,11 @@
         </dependency>
         <!-- fop -->
         <dependency>
-            <groupId>org.apache</groupId>
+            <groupId>fop</groupId>
             <artifactId>fop</artifactId>
             <version>0.20.5</version>
         </dependency>
-        <!-- MetadataAggregator -->
+        <!-- MetadataAggregator: cannot be found -->
         <dependency>
             <groupId>metadata</groupId>
             <artifactId>matadata-aggregator</artifactId>
@@ -518,11 +518,13 @@
             <artifactId>log4j</artifactId>
             <version>1.2.13</version>
         </dependency>
+        <!--Version cannot be found-->
         <dependency>
             <groupId>org.openrdf</groupId>
             <artifactId>openrdf-sesame</artifactId>
             <version>2.5.1</version>
         </dependency>
+        <!--Cannot be found-->
         <dependency>
             <groupId>org.openrdf</groupId>
             <artifactId>openrdf-alibaba</artifactId>
@@ -554,23 +556,23 @@
             <version>3.7</version>
         </dependency>
         <dependency>
-            <groupId>quartz</groupId>
+            <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>2.1.0</version>
         </dependency>
-        <!-- saxon8 -->
+        <!-- saxon8: exact version (8.9) cannot be found-->
         <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>saxon</artifactId>
             <version>8.9</version>
         </dependency>
-        <!-- saxon8-dom -->
+        <!-- saxon8-dom: exact version (8.9) cannot be found -->
         <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>saxon-dom</artifactId>
             <version>8.9</version>
         </dependency>
-        <!-- saxon8-xqj -->
+        <!-- saxon8-xqj: exact version (8.9) cannot be found -->
         <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>saxon-xqj</artifactId>
@@ -701,6 +703,7 @@
             <version>2.3</version>
             <scope>test</scope>
         </dependency>
+        <!--cannot be found-->
         <dependency>
             <groupId>struts</groupId>
             <artifactId>strutstest</artifactId>
