@@ -117,26 +117,18 @@
                         <phase>process-test-resources</phase>
                         <configuration>
                             <tasks>
-                                <mkdir
-                                    dir="${project.build.directory}/test-classes/xsl" />
-                                <mkdir
-                                    dir="${project.build.directory}/test-classes/tmp" />
-                                <mkdir
-                                    dir="${project.build.directory}/test-classes/queries" />
-                                <mkdir
-                                    dir="${project.build.directory}/test-classes/xmlfile" />
-                                <mkdir
-                                    dir="${project.build.directory}/test-classes/schema" />
-                                <copy
-                                    todir="${project.build.directory}/test-classes/WEB-INF">
+                                <mkdir dir="${project.build.directory}/test-classes/xsl" />
+                                <mkdir dir="${project.build.directory}/test-classes/tmp" />
+                                <mkdir dir="${project.build.directory}/test-classes/queries" />
+                                <mkdir dir="${project.build.directory}/test-classes/xmlfile" />
+                                <mkdir dir="${project.build.directory}/test-classes/schema" />
+                                <copy todir="${project.build.directory}/test-classes/WEB-INF">
                                     <fileset dir="src/main/webapp/WEB-INF" />
                                 </copy>
-                                <copy
-                                    todir="${project.build.directory}/test-classes/dcm">
+                                <copy todir="${project.build.directory}/test-classes/dcm">
                                     <fileset dir="src/main/webapp/dcm" />
                                 </copy>
-                                <copy
-                                    todir="${project.build.directory}/test-classes/acl">
+                                <copy todir="${project.build.directory}/test-classes/acl">
                                     <fileset dir="acl" />
                                 </copy>
                                 <!-- FIXME after updating Maven version from
@@ -197,7 +189,6 @@
             </plugin>
 
             <!-- maven-eclipse-plugin -->
-
             <plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>
                 <version>2.7</version>
@@ -351,43 +342,35 @@
     <!-- dependencies -->
 
     <dependencies>
-        <!-- batik.jar used by fop: exact version (1.0) cannot be found -->
-        <dependency>
-            <groupId>org.apache</groupId>
-            <artifactId>batik</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <!-- fop -->
-        <dependency>
-            <groupId>fop</groupId>
-            <artifactId>fop</artifactId>
-            <version>0.20.5</version>
-        </dependency>
-        <!-- MetadataAggregator: cannot be found -->
-        <dependency>
-            <groupId>metadata</groupId>
-            <artifactId>matadata-aggregator</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.avalon.framework</groupId>
-            <artifactId>avalon-framework-api</artifactId>
-            <version>4.3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>cas</groupId>
-            <artifactId>casclient</artifactId>
-            <version>2.1.1</version>
-        </dependency>
+		<!-- Standard Java libraries -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+
+		<!-- Apache commons and other Apache libraries -->
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>3.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -439,92 +422,114 @@
             <artifactId>commons-validator</artifactId>
             <version>1.3.1</version>
         </dependency>
-        <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>1.6.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.wutka</groupId>
-            <artifactId>dtdparser</artifactId>
-            <version>1.21</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.ezmorph</groupId>
-            <artifactId>ezmorph</artifactId>
-            <version>1.0.6</version>
-        </dependency>
-        <!-- for geronimo-stax-api_1.0_spec-1.0 -->
-        <dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
-            <version>1.0</version>
-        </dependency>
+
+		<!-- Libraries for Conversion and QA service -->
+
+		<!-- XML parsing and transforming libraries used by Conversion service-->
+		<dependency>
+			<groupId>xalan</groupId>
+			<artifactId>xalan</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xmlParserAPIs</artifactId>
+			<version>2.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>xmlrpc</groupId>
+			<artifactId>xmlrpc</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlbeans</groupId>
+			<artifactId>xmlbeans</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>xom</groupId>
+			<artifactId>xom</artifactId>
+			<version>1.2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>xml-resolver</groupId>
+			<artifactId>xml-resolver</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<!-- for geronimo-stax-api_1.0_spec-1.0 -->
+		<dependency>
+			<groupId>stax</groupId>
+			<artifactId>stax-api</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.wutka</groupId>
+			<artifactId>dtdparser</artifactId>
+			<version>1.21</version>
+		</dependency>
+
+		<!-- MS Excel conversion libraries -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml-schemas</artifactId>
+			<version>3.7</version>
+		</dependency>
+
+		<!-- PDF conversion -->
+		<!-- Apache FOP used for XSL-FO transformations to generate PDF files from XML. -->
+		<dependency>
+			<groupId>fop</groupId>
+			<artifactId>fop</artifactId>
+			<version>0.20.5</version>
+		</dependency>
+		<!-- batik.jar used by fop: exact version (1.0) cannot be found from central repo. -->
+		<dependency>
+			<groupId>org.apache</groupId>
+			<artifactId>batik</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<!-- Libraries for parsing MS Access files -->
         <dependency>
             <groupId>com.healthmarketscience.jackcess</groupId>
             <artifactId>jackcess</artifactId>
             <version>1.1.21</version>
         </dependency>
-        <dependency>
-            <groupId>com.artofsolving</groupId>
-            <artifactId>jodconverter</artifactId>
-            <version>2.2.1</version>
-        </dependency>
-        <!-- for json-lib-2.4-jdk15 -->
+
+        <!-- JSON library -->
         <dependency>
             <groupId>net.sf.json-lib</groupId>
             <artifactId>json-lib</artifactId>
             <version>2.4</version>
         </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jsp-api</artifactId>
-            <version>2.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.openoffice</groupId>
-            <artifactId>juh</artifactId>
-            <version>3.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openoffice</groupId>
-            <artifactId>jurt</artifactId>
-            <version>3.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openoffice</groupId>
-            <artifactId>ridl</artifactId>
-            <version>3.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openoffice</groupId>
-            <artifactId>unoil</artifactId>
-            <version>3.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.13</version>
-        </dependency>
-        <!--Version cannot be found-->
-        <dependency>
-            <groupId>org.openrdf</groupId>
-            <artifactId>openrdf-sesame</artifactId>
-            <version>2.5.1</version>
-        </dependency>
-        <!--Cannot be found-->
+		<!-- dependency for json-lib -->
+		<dependency>
+			<groupId>net.sf.ezmorph</groupId>
+			<artifactId>ezmorph</artifactId>
+			<version>1.0.6</version>
+		</dependency>
+
+        <!-- RDF parsing -->
         <dependency>
             <groupId>org.openrdf</groupId>
             <artifactId>openrdf-alibaba</artifactId>
@@ -535,126 +540,62 @@
             <artifactId>virt-sesame</artifactId>
             <version>2.0</version>
         </dependency>
+		<dependency>
+			<groupId>org.openrdf</groupId>
+			<artifactId>openrdf-sesame</artifactId>
+			<version>2.5.1</version>
+		</dependency>
         <dependency>
             <groupId>virtuoso</groupId>
             <artifactId>virtjdbc</artifactId>
             <version>3.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>3.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml-schemas</artifactId>
-            <version>3.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <!-- saxon8: exact version (8.9) cannot be found-->
-        <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon</artifactId>
-            <version>8.9</version>
-        </dependency>
-        <!-- saxon8-dom: exact version (8.9) cannot be found -->
-        <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon-dom</artifactId>
-            <version>8.9</version>
-        </dependency>
-        <!-- saxon8-xqj: exact version (8.9) cannot be found -->
-        <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon-xqj</artifactId>
-            <version>8.9</version>
-        </dependency>
-        <dependency>
-            <groupId>xml-resolver</groupId>
-            <artifactId>xml-resolver</artifactId>
-            <version>1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.5.6</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.6</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>taglibs</groupId>
-            <artifactId>standard</artifactId>
-            <version>1.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.struts</groupId>
-            <artifactId>struts-core</artifactId>
-            <version>1.3.10</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.struts</groupId>
-            <artifactId>struts-el</artifactId>
-            <version>1.3.10</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.struts</groupId>
-            <artifactId>struts-extras</artifactId>
-            <version>1.3.10</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.struts</groupId>
-            <artifactId>struts-taglib</artifactId>
-            <version>1.3.10</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.struts</groupId>
-            <artifactId>struts-tiles</artifactId>
-            <version>1.3.10</version>
-        </dependency>
-        <dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-            <version>2.6.0</version>
-        </dependency>
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>2.6.2</version>
-        </dependency>
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xmlParserAPIs</artifactId>
-            <version>2.6.2</version>
-        </dependency>
-        <dependency>
-            <groupId>xmlrpc</groupId>
-            <artifactId>xmlrpc</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xmlbeans</groupId>
-            <artifactId>xmlbeans</artifactId>
-            <version>2.5.0</version>
-        </dependency>
-        <dependency>
-            <groupId>xom</groupId>
-            <artifactId>xom</artifactId>
-            <version>1.2.5</version>
-        </dependency>
+
+		<!-- OpenOffice libraries used by Excel and ODT conversion functionality. -->
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>juh</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>jurt</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>ridl</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>unoil</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.artofsolving</groupId>
+			<artifactId>jodconverter</artifactId>
+			<version>2.2.1</version>
+		</dependency>
+
+		<!-- Saxon 8.9 libraries for executing XQuery scripts-->
+		<dependency>
+			<groupId>net.sf.saxon</groupId>
+			<artifactId>saxon</artifactId>
+			<version>8.9</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.saxon</groupId>
+			<artifactId>saxon-dom</artifactId>
+			<version>8.9</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.saxon</groupId>
+			<artifactId>saxon-xqj</artifactId>
+			<version>8.9</version>
+		</dependency>
+
+		<!-- EIONET dependencies -->
         <dependency>
             <groupId>eionet</groupId>
             <artifactId>acl</artifactId>
@@ -680,65 +621,60 @@
             <artifactId>eionet-dir</artifactId>
             <version>2.5</version>
         </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.6</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dbunit</groupId>
-            <artifactId>dbunit</artifactId>
-            <version>2.4.9</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>2.3</version>
-            <scope>test</scope>
-        </dependency>
-        <!--cannot be found-->
-        <dependency>
-            <groupId>struts</groupId>
-            <artifactId>strutstest</artifactId>
-            <version>2.1.4</version>
-            <scope>test</scope>
-        </dependency>
+
+		<!-- Web App dependencies -->
+
+		<!-- CRON jobs -->
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+        <!-- Caching -->
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
             <version>1.6.1</version>
         </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-mxj</artifactId>
-            <version>5.0.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-mxj-db-files</artifactId>
-            <version>5.0.12</version>
-            <scope>test</scope>
-        </dependency>
-        <!--Liquibase-->
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <version>3.1.1</version>
-        </dependency>
+		<!-- MetadataAggregator: cannot be found from central repo-->
+		<dependency>
+			<groupId>metadata</groupId>
+			<artifactId>matadata-aggregator</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<!--Central Authentication Service (CAS) Client-->
+		<dependency>
+			<groupId>cas</groupId>
+			<artifactId>casclient</artifactId>
+			<version>2.1.1</version>
+		</dependency>
 
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
-        </dependency>
+		<!-- Struts dependencies -->
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts-core</artifactId>
+			<version>1.3.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts-el</artifactId>
+			<version>1.3.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts-extras</artifactId>
+			<version>1.3.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts-taglib</artifactId>
+			<version>1.3.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts-tiles</artifactId>
+			<version>1.3.10</version>
+		</dependency>
 
         <!-- Spring 3 dependencies -->
         <dependency>
@@ -766,12 +702,100 @@
             <artifactId>spring-tx</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
+		<!-- Database dependencies -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>3.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
+		</dependency>
+
+		<!-- LOGGING -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.13</version>
+		</dependency>
+		<!-- slf4j is needed for dbunit -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.5.6</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.5.6</version>
+			<type>jar</type>
+		</dependency>
+		<!-- Avalon dependency for commons-logging -->
+		<dependency>
+			<groupId>org.apache.avalon.framework</groupId>
+			<artifactId>avalon-framework-api</artifactId>
+			<version>4.3.1</version>
+		</dependency>
+
+		<!-- TESTing dependencies -->
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.dbunit</groupId>
+			<artifactId>dbunit</artifactId>
+			<version>2.4.9</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-mxj-db-files</artifactId>
+			<version>5.0.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-mxj</artifactId>
+			<version>5.0.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>2.3</version>
+			<scope>test</scope>
+		</dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
+		<dependency>
+			<groupId>struts</groupId>
+			<artifactId>strutstest</artifactId>
+			<version>2.1.4</version>
+			<scope>test</scope>
+		</dependency>
+
     </dependencies>
     <reporting>
         <plugins>
