@@ -495,8 +495,7 @@
 			<version>3.7</version>
 		</dependency>
 
-		<!-- PDF conversion -->
-		<!-- Apache FOP used for XSL-FO transformations to generate PDF files from XML. -->
+		<!-- XSL-FO (pdf) conversion -->
 		<dependency>
 			<groupId>fop</groupId>
 			<artifactId>fop</artifactId>
@@ -509,7 +508,7 @@
 			<version>1.0</version>
 		</dependency>
 
-		<!-- Libraries for parsing MS Access files -->
+		<!-- Library for parsing MS Access files -->
         <dependency>
             <groupId>com.healthmarketscience.jackcess</groupId>
             <artifactId>jackcess</artifactId>
@@ -529,7 +528,7 @@
 			<version>1.0.6</version>
 		</dependency>
 
-        <!-- RDF parsing -->
+        <!-- Libraries for parsing RDF and executing SPARQL queries in SPARQL endpoints (Content Registry). -->
         <dependency>
             <groupId>org.openrdf</groupId>
             <artifactId>openrdf-alibaba</artifactId>
@@ -576,6 +575,12 @@
 			<groupId>com.artofsolving</groupId>
 			<artifactId>jodconverter</artifactId>
 			<version>2.2.1</version>
+		</dependency>
+		<!-- Metadata aggregator is used for analysing ODF files http://books.evc-cit.info/odf_utils/-->
+		<dependency>
+			<groupId>metadata</groupId>
+			<artifactId>matadata-aggregator</artifactId>
+			<version>1.0</version>
 		</dependency>
 
 		<!-- Saxon 8.9 libraries for executing XQuery scripts-->
@@ -636,12 +641,6 @@
             <artifactId>ehcache</artifactId>
             <version>1.6.1</version>
         </dependency>
-		<!-- MetadataAggregator: cannot be found from central repo-->
-		<dependency>
-			<groupId>metadata</groupId>
-			<artifactId>matadata-aggregator</artifactId>
-			<version>1.0</version>
-		</dependency>
 		<!--Central Authentication Service (CAS) Client-->
 		<dependency>
 			<groupId>cas</groupId>
@@ -751,7 +750,7 @@
 			<version>4.3.1</version>
 		</dependency>
 
-		<!-- TESTing dependencies -->
+		<!-- TEST dependencies -->
 
 		<dependency>
 			<groupId>junit</groupId>
