@@ -21,6 +21,7 @@
 
 package eionet.gdem.web.struts.stylesheet;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +68,18 @@ public class EditStylesheetFormAction extends Action {
 
         try {
             Stylesheet stylesheet = stylesheetManager.getStylesheet(stylesheetId);
+            
+            if (stylesheet == null) {
+                try {
+                    httpServletResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
+                }
+                catch (IOException ex) {
+                    LOGGER.error("Failed to set 404 response status", ex);
+                }
+                
+                return actionMapping.findForward(null);
+            }
+            
             form.setDescription(stylesheet.getDescription());
             form.setOutputtype(stylesheet.getType());
             form.setStylesheetId(stylesheet.getConvId());
