@@ -23,7 +23,7 @@ import eionet.gdem.test.mocks.MockStrutsMultipartRequestSimulator;
 public class AddUplSchemaActionTest extends MockStrutsTestCase {
 
     private IUPLSchemaDao uplSchemaDao;
-    private String schemaUrl = "Upadted URL";
+    private String schemaUrl = "http://some.valid.url.eu/schema";
     private String description = "Updated description";
 
     public AddUplSchemaActionTest(String testName) {
@@ -132,5 +132,21 @@ public class AddUplSchemaActionTest extends MockStrutsTestCase {
         int countUplSchema2 = uplSchemaDao.getUplSchema().size();
         assertEquals(countUplSchema, countUplSchema2);
 
+    }
+    
+    public void testFailedMalformedUrl() throws Exception {
+        request = new MockStrutsMultipartRequestSimulator(config.getServletContext());
+        setRequestPathInfo("/addUplSchema");
+
+        HttpSession session = request.getSession();
+        session.setAttribute("user", TestConstants.TEST_ADMIN_USER);
+
+        addRequestParameter("schemaUrl", "ht://malf.ormed");
+        addRequestParameter("description", description);
+        ((MockStrutsMultipartRequestSimulator) request).writeFile("schemaFile",
+                getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA).getFile(), "text/xml");
+
+        actionPerform();
+        verifyForward("fail");
     }
 }

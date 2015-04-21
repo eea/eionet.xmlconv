@@ -77,6 +77,13 @@ public class EditSchemaAction extends Action {
             httpServletRequest.getSession().setAttribute("dcm.errors", errors);
             return actionMapping.findForward("success");
         }
+        
+        if (!(new SchemaUrlValidator().isValidUrlSet(schema))) {
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.uplSchema.validation.urlFormat"));
+            httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+            
+            return actionMapping.findForward("success");
+        }
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
 

@@ -402,7 +402,11 @@
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
         </dependency>
-
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.4.0</version>
+        </dependency>
 		<!-- Libraries for Conversion and QA service -->
 
 		<!-- XML parsing and transforming libraries used by Conversion service-->

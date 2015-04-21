@@ -73,7 +73,11 @@ public class AddUplSchemaAction extends Action {
             httpServletRequest.getSession().setAttribute("dcm.errors", errors);
             return actionMapping.findForward("fail");
         }
-
+        
+        if (!(new SchemaUrlValidator().isValidUrlSet(schemaUrl))) {
+            return this.onValidationFailure(actionMapping, httpServletRequest, errors, "label.uplSchema.validation.urlFormat");
+        }
+        
         try {
             SchemaManager sm = new SchemaManager();
             String fileName = "";
@@ -114,5 +118,13 @@ public class AddUplSchemaAction extends Action {
         saveMessages(httpServletRequest, messages);
 
         return actionMapping.findForward("success");
+    }
+    
+    private ActionForward onValidationFailure(ActionMapping actionMapping, HttpServletRequest httpServletRequest, ActionMessages errors, String messageKey) {
+        errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(messageKey));
+        saveErrors(httpServletRequest, errors);
+        httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+        
+        return actionMapping.findForward("fail");
     }
 }
