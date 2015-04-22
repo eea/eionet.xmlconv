@@ -89,6 +89,15 @@ public class EditSchemaAction extends Action {
 
         try {
             SchemaManager sm = new SchemaManager();
+            String schemaIdByUrl = sm.getSchemaId(schema);
+            
+            if (schemaIdByUrl != null && !schemaIdByUrl.equals(schemaId)) {
+                String schemaTargetUrl = String.format("viewSchemaForm?schemaId=%s", schemaIdByUrl);
+                ActionMessage errorMessage = new ActionMessage("label.schema.url.exists", schemaTargetUrl);
+                
+                return this.onActionError(actionMapping, httpServletRequest, errors, errorMessage);
+            }
+            
             sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdId, expireDate, blocker);
 
             messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.schema.updated"));
@@ -104,6 +113,13 @@ public class EditSchemaAction extends Action {
         }
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);
         httpServletRequest.getSession().setAttribute("dcm.messages", messages);
+
+        return actionMapping.findForward("success");
+    }
+    
+    private ActionForward onActionError(ActionMapping actionMapping, HttpServletRequest httpServletRequest, ActionMessages errors, ActionMessage message) {
+        errors.add(ActionMessages.GLOBAL_MESSAGE, message);
+        httpServletRequest.getSession().setAttribute("dcm.errors", errors);
 
         return actionMapping.findForward("success");
     }
