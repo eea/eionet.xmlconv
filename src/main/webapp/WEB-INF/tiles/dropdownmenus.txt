@@ -49,7 +49,7 @@
            <li><a href="http://bd.eionet.europa.eu/">Biological Diversity</a></li>
            <li><a href="http://cca.eionet.europa.eu/">Climate Change impacts, vulnerability and Adaptation</a></li>
            <li><a href="http://icm.eionet.europa.eu/">Inland, Coastal and Marine waters</a></li>
-           <li><a href="http://sia.eionet.europa.eu/">Spatial Information and Analysis</a></li>
+           <li><a href="http://uls.eionet.europa.eu/">Urban, Land and Soil systems</a></li>
            <li><a href="http://scp.eionet.europa.eu/">Sustainable Consumption and Production</a></li>
           </ul>
          </li>
