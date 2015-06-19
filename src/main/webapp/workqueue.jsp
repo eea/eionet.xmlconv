@@ -130,6 +130,7 @@ function doRestart(){
                 </thead>
                 <tbody>
                 <%
+                eionet.gdem.services.db.dao.IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
                 for (int i=0; i<list.length; i++){
                     String jobId = list[i][0];
                     String url = list[i][1];
@@ -140,12 +141,17 @@ function doRestart(){
                     String timeStamp = list[i][5];
                     String xqStringID = list[i][6];
 
-                       int xqID =0;
+                      int xqID =0;
+                      String scriptType = "";
                       try {
                         xqID=Integer.parseInt(xqStringID);
+                        java.util.HashMap query = queryDao.getQueryInfo(xqStringID);
+                        if (query != null){
+                        	scriptType = (String)query.get("script_type");	
+                        }                        
                       } catch(NumberFormatException n) {
                         xqID = 0;
-                      }
+                      } catch (Exception e) {e.printStackTrace();}
 
                     String xqFileURL = "";
                     String xqText = "Show script";
@@ -210,7 +216,11 @@ function doRestart(){
                             <a href="<%=url%>" rel="nofollow"><%=urlName%></a>
                         </td>
                       <td>
-                            <a href="<%=xqFileURL%>" rel="nofollow"><%=xqText%></a>
+                      		<%if (!eionet.gdem.qa.XQScript.SCRIPT_LANG_FME.equals(scriptType)){%>
+                            	<a href="<%=xqFileURL%>" rel="nofollow"><%=xqText%></a>
+                            <%}else{%>
+                            	FME
+                            <%}%>
                         </td>
                         <td>
                             <% if (resultFile != null) {

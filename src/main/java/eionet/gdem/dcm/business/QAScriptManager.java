@@ -27,6 +27,7 @@ import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
@@ -93,10 +94,12 @@ public class QAScriptManager {
                         queryFolder = queryFolder + File.separator;
                     }
                     String queryContent = null;
-                    try {
-                        queryContent = Utils.readStrFromFile(queryFolder + qaScript.getFileName());
-                    } catch (IOException e) {
-                        queryContent = Constants.FILEREAD_EXCEPTION + queryFolder + qaScript.getFileName() + "\n " + e.toString();
+                    if (!qaScript.getScriptType().equals(XQScript.SCRIPT_LANG_FME)){
+                    	try {
+                            queryContent = Utils.readStrFromFile(queryFolder + qaScript.getFileName());
+                        } catch (IOException e) {
+                            queryContent = Constants.FILEREAD_EXCEPTION + queryFolder + qaScript.getFileName() + "\n " + e.toString();
+                        }
                     }
                     qaScript.setScriptContent(queryContent);
                     String checksum = null;
@@ -229,6 +232,12 @@ public class QAScriptManager {
 
                 Utils.saveStrToFile(Properties.queriesFolder + File.separator + curFileName, content, null);
             }
+            
+            // If the script type is 'FME' update the 'fileName'
+        	if (XQScript.SCRIPT_LANG_FME.equals(scriptType)){
+        		curFileName = StringUtils.substringAfterLast(url, "/");
+        	}            
+            
             queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url);
         } catch (Exception e) {
             e.printStackTrace();
@@ -426,7 +435,10 @@ public class QAScriptManager {
             if (useLocalFile) {
                 storeQAScriptFile(scriptFile, fileName);
             } else {
-                replaceScriptFromRemoteFile(user, url, fileName);
+            	// If the script type is 'FME' there is no file to download
+            	if (!XQScript.SCRIPT_LANG_FME.equals(scriptType)){
+            		replaceScriptFromRemoteFile(user, url, fileName);
+            	}
             }
         } catch (DCMException e) {
             throw e;

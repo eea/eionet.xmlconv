@@ -41,6 +41,7 @@ import org.apache.struts.upload.FormFile;
 import eionet.gdem.Constants;
 import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -157,6 +158,12 @@ public class EditQAScriptAction extends LookupDispatchAction {
             }
 
             updateContent = !checksum.equals(newChecksum);
+        }
+        
+        // Zip result type can only be selected for FME scripts
+        if (!XQScript.SCRIPT_LANG_FME.equals(scriptType) && XQScript.SCRIPT_RESULTTYPE_ZIP.equals(resultType)) {
+        	errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.zip.validation"));
+            saveErrors(httpServletRequest.getSession(), errors);
         }
 
         // upper limit between 0 and 10Gb

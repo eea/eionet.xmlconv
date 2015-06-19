@@ -156,6 +156,12 @@ public class RunScriptAction extends Action {
                     return actionMapping.findForward("error");
                 }
             }
+            
+            if (XQScript.SCRIPT_LANG_FME.equals(qascript.getScriptType())){
+            	scriptType = XQScript.SCRIPT_LANG_FME;
+            	scriptContent = qascript.getUrl();
+            }
+            
             String[] pars = new String[1];
             pars[0] = Constants.XQ_SOURCE_PARAM_NAME + "=" + sourceUrl;
             xq = new XQScript(scriptContent, pars, xqResultType);

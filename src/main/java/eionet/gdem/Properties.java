@@ -93,6 +93,19 @@ public class Properties {
     public static String ldapUserDir = null;
     /** LDAP UID attribute. */
     public static String ldapAttrUid = null;
+    
+    /** FME host. */
+    public static String fmeHost = null;
+    /** FME port. */
+    public static String fmePort = null;
+    /** FME user login. */
+    public static String fmeUser = null;
+    /** FME user password. */
+    public static String fmePassword = null;
+    /** FME token expiration. */
+	public static String fmeTokenExpiration = null;
+    /** FME token timeunit. */
+    public static String fmeTokenTimeunit = null;
 
     /** OpenOffice port. */
     public static int openOfficePort = 8100;
@@ -119,6 +132,8 @@ public class Properties {
     private static ResourceBundle props;
     /** Resource bundle for LDAP properties. */
     private static ResourceBundle ldapProps;
+    /** Resource bundle for FME properties. */
+    private static ResourceBundle fmeProps;
     /** Resource bundle for Messages. */
     private static ResourceBundle applicationResources;
 
@@ -196,6 +211,20 @@ public class Properties {
                 ldapContext = ldapProps.getString("ldap.context");
                 ldapUserDir = ldapProps.getString("ldap.user.dir");
                 ldapAttrUid = ldapProps.getString("ldap.attr.uid");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (fmeProps == null) {
+        	fmeProps = ResourceBundle.getBundle("fme");
+            try {
+                fmeHost = fmeProps.getString("fme.host");
+                fmePort = fmeProps.getString("fme.port");
+                fmeUser = fmeProps.getString("fme.user");
+                fmePassword = fmeProps.getString("fme.password");
+                fmeTokenExpiration = fmeProps.getString("fme.token.expiration");
+                fmeTokenTimeunit = fmeProps.getString("fme.token.timeunit");
 
             } catch (Exception e) {
                 e.printStackTrace();
