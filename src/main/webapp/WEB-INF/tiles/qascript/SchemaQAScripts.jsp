@@ -69,7 +69,7 @@
                             <html:checkbox name="schema" property="doValidation" styleId="validatefield" />
                         </logic:equal>
                         <logic:equal name="ssiPrm" value="false"  name="qascript.permissions" property="ssiPrm" >
-                            <bean:write  name="schema"	 property="doValidation" />
+                            <bean:write  name="schema" property="doValidation" />
                         </logic:equal>
                     </td>
                     <td rowspan="2" style="vertical-align:bottom">
@@ -131,18 +131,18 @@
                     </logic:equal>
                     <td>
                         <logic:equal name="qsuPrm" value="true"  name="qascript.permissions" property="qsuPrm" >
-	                        <%--  If scriptType is NOT 'FME' --%>
-							<logic:notEqual name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-	                            <html:link page="/do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.label.qasandbox.editScript">
-	                                <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img>
-	                            </html:link>
+                            <%--  If scriptType is NOT 'FME' --%>
+                            <logic:notEqual name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+                                <html:link page="/do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.label.qasandbox.editScript">
+                                    <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img>
+                                </html:link>
                             </logic:notEqual>
                             <%--  If scriptType is 'FME' --%>
-							<logic:equal name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-								<a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=<bean:write name="schema" property="id"/>" title="<bean:message key="label.qascript.runservice.title" />">
-                                	<img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img>
-                            	</a>
-							</logic:equal>
+                            <logic:equal name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+                                <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=<bean:write name="schema" property="id"/>" title="<bean:message key="label.qascript.runservice.title" />">
+                                    <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img>
+                                </a>
+                            </logic:equal>
                         </logic:equal>
                         <logic:notEqual name="qsuPrm" value="true"  name="qascript.permissions" property="qsuPrm" >
                             <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=<bean:write name="schema" property="id"/>" title="<bean:message key="label.qascript.runservice.title" />">
@@ -164,10 +164,10 @@
                         <a  href="<bean:write name="webRoot"/>/<bean:write name="qascript" property="filePath" />" title="open QA script file">
                             <bean:write name="qascript" property="fileName" />
                         </a>
-					</logic:notEqual>
-					<logic:equal name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-						<bean:write name="qascript" property="fileName" />
-					</logic:equal>
+                    </logic:notEqual>
+                    <logic:equal name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+                        <bean:write name="qascript" property="fileName" />
+                    </logic:equal>
                     </td>
                     <td>
                     <%--  If scriptType is 'FME' don't show the script Last Modified Date --%>
@@ -178,7 +178,7 @@
                         <logic:equal name="fileNotExists" value=""  name="qascript" property="modified" >
                             <span style="color:red"><bean:message key="label.fileNotFound"/></span>
                         </logic:equal>
-					</logic:notEqual>
+                    </logic:notEqual>
                     </td>
                 </tr>
             </logic:iterate>

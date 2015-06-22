@@ -146,20 +146,20 @@ function doRestart(){
                       try {
                         xqID=Integer.parseInt(xqStringID);
                         java.util.HashMap query = queryDao.getQueryInfo(xqStringID);
-                        if (query != null){
-                        	scriptType = (String)query.get("script_type");	
-                        }                        
+                        if (query != null) {
+                            scriptType = (String)query.get("script_type");
+                        }
                       } catch(NumberFormatException n) {
                         xqID = 0;
                       } catch (Exception e) {e.printStackTrace();}
 
                     String xqFileURL = "";
                     String xqText = "Show script";
-                    if (xqID == Constants.JOB_VALIDATION){
+                    if (xqID == Constants.JOB_VALIDATION) {
                         xqText = "Show XML Schema";
                         xqFileURL = xqLongFileName;
                     }
-                    else if (xqID == Constants.JOB_FROMSTRING){
+                    else if (xqID == Constants.JOB_FROMSTRING) {
                         xqFileURL = tmpFolder + xqFile;
                     }
                     else{
@@ -187,7 +187,7 @@ function doRestart(){
                         statusName="RECOVERABLE ERROR";
 
 
-                    if(url.indexOf(Constants.GETSOURCE_URL)>0 && url.indexOf(Constants.SOURCE_URL_PARAM)>0){
+                    if(url.indexOf(Constants.GETSOURCE_URL)>0 && url.indexOf(Constants.SOURCE_URL_PARAM)>0) {
                         int idx = url.indexOf(Constants.SOURCE_URL_PARAM);
                         url = url.substring(idx + Constants.SOURCE_URL_PARAM.length() + 1);
                     }
@@ -198,7 +198,7 @@ function doRestart(){
         %>
                     <tr <% if (i % 2 != 0) %>class="zebraeven"<% else %>class="zebraodd"<%;%>>
                             <%
-                            if (wqdPrm || wquPrm){
+                            if (wqdPrm || wquPrm) {
                             %>
                                 <td>
                                     <input type="checkbox" name="jobID" id="job_<%=jobId%>" value="<%=jobId%>"/>
@@ -216,10 +216,10 @@ function doRestart(){
                             <a href="<%=url%>" rel="nofollow"><%=urlName%></a>
                         </td>
                       <td>
-                      		<%if (!eionet.gdem.qa.XQScript.SCRIPT_LANG_FME.equals(scriptType)){%>
-                            	<a href="<%=xqFileURL%>" rel="nofollow"><%=xqText%></a>
+                            <%if (!eionet.gdem.qa.XQScript.SCRIPT_LANG_FME.equals(scriptType)) {%>
+                                <a href="<%=xqFileURL%>" rel="nofollow"><%=xqText%></a>
                             <%}else{%>
-                            	FME
+                                FME
                             <%}%>
                         </td>
                         <td>
@@ -248,11 +248,11 @@ function doRestart(){
              </table>
             <div id="hidden_elements">
             <%
-            if (wqdPrm || wquPrm){%>
-                <% if (wqdPrm){%>
+            if (wqdPrm || wquPrm) {%>
+                <% if (wqdPrm) {%>
                     <input type="button" value="Delete" onclick="return doDelete();"/>
                 <%}%>
-                <% if (wquPrm){%>
+                <% if (wquPrm) {%>
                     <input type="button" value="Restart" onclick="return doRestart();"/>
                 <%}%>
                 <input class="form-element" type="button" name="selectAll" id="selectAll" value="Select All" onclick="toggleSelect('jobID'); return false"/>

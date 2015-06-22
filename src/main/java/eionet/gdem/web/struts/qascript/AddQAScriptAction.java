@@ -98,21 +98,21 @@ public class AddQAScriptAction extends Action {
                 return actionMapping.findForward("list");
             }
         }
-        
-        
+
+
         // FME script type validations
-        if (XQScript.SCRIPT_LANG_FME.equals(scriptType)){
+        if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
             if (url == null || url.equals("")) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.fme.url.validation"));
                 saveErrors(httpServletRequest.getSession(), errors);
             }
         // Other script type validations
-        } else {            
+        } else {
             if ((scriptFile == null || scriptFile.getFileSize() == 0) && Utils.isNullStr(url))  {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.file.validation"));
                 saveErrors(httpServletRequest.getSession(), errors);
             }
-            
+
             // Zip result type can only be selected for FME scripts
             if (XQScript.SCRIPT_RESULTTYPE_ZIP.equals(resultType)) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.zip.validation"));

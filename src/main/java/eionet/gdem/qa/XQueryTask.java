@@ -171,11 +171,11 @@ public class XQueryTask extends Thread {
                     xq.setScriptType(scriptType);
                     xq.setSrcFileUrl(srcFile);
                     xq.setSchema(schema);
-                    
-                    if (XQScript.SCRIPT_LANG_FME.equals(scriptType)){
-	                    if (query != null && query.containsKey("url")) {
-	                        xq.setScriptSource((String) query.get("url"));
-	                    }
+
+                    if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
+                        if (query != null && query.containsKey("url")) {
+                            xq.setScriptSource((String) query.get("url"));
+                        }
                     }
 
                     FileOutputStream out = null;

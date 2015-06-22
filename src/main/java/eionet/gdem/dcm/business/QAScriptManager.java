@@ -94,8 +94,8 @@ public class QAScriptManager {
                         queryFolder = queryFolder + File.separator;
                     }
                     String queryContent = null;
-                    if (!qaScript.getScriptType().equals(XQScript.SCRIPT_LANG_FME)){
-                    	try {
+                    if (!qaScript.getScriptType().equals(XQScript.SCRIPT_LANG_FME)) {
+                        try {
                             queryContent = Utils.readStrFromFile(queryFolder + qaScript.getFileName());
                         } catch (IOException e) {
                             queryContent = Constants.FILEREAD_EXCEPTION + queryFolder + qaScript.getFileName() + "\n " + e.toString();
@@ -232,12 +232,12 @@ public class QAScriptManager {
 
                 Utils.saveStrToFile(Properties.queriesFolder + File.separator + curFileName, content, null);
             }
-            
+
             // If the script type is 'FME' update the 'fileName'
-        	if (XQScript.SCRIPT_LANG_FME.equals(scriptType)){
-        		curFileName = StringUtils.substringAfterLast(url, "/");
-        	}            
-            
+            if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
+                curFileName = StringUtils.substringAfterLast(url, "/");
+            }
+
             queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url);
         } catch (Exception e) {
             e.printStackTrace();
@@ -435,10 +435,10 @@ public class QAScriptManager {
             if (useLocalFile) {
                 storeQAScriptFile(scriptFile, fileName);
             } else {
-            	// If the script type is 'FME' there is no file to download
-            	if (!XQScript.SCRIPT_LANG_FME.equals(scriptType)){
-            		replaceScriptFromRemoteFile(user, url, fileName);
-            	}
+                // If the script type is 'FME' there is no file to download
+                if (!XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
+                    replaceScriptFromRemoteFile(user, url, fileName);
+                }
             }
         } catch (DCMException e) {
             throw e;

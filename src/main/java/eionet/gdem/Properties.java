@@ -93,7 +93,7 @@ public class Properties {
     public static String ldapUserDir = null;
     /** LDAP UID attribute. */
     public static String ldapAttrUid = null;
-    
+
     /** FME host. */
     public static String fmeHost = null;
     /** FME port. */
@@ -103,7 +103,7 @@ public class Properties {
     /** FME user password. */
     public static String fmePassword = null;
     /** FME token expiration. */
-	public static String fmeTokenExpiration = null;
+    public static String fmeTokenExpiration = null;
     /** FME token timeunit. */
     public static String fmeTokenTimeunit = null;
 
@@ -217,7 +217,7 @@ public class Properties {
             }
         }
         if (fmeProps == null) {
-        	fmeProps = ResourceBundle.getBundle("fme");
+            fmeProps = ResourceBundle.getBundle("fme");
             try {
                 fmeHost = fmeProps.getString("fme.host");
                 fmePort = fmeProps.getString("fme.port");

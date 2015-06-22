@@ -159,10 +159,10 @@ public class EditQAScriptAction extends LookupDispatchAction {
 
             updateContent = !checksum.equals(newChecksum);
         }
-        
+
         // Zip result type can only be selected for FME scripts
         if (!XQScript.SCRIPT_LANG_FME.equals(scriptType) && XQScript.SCRIPT_RESULTTYPE_ZIP.equals(resultType)) {
-        	errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.zip.validation"));
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.zip.validation"));
             saveErrors(httpServletRequest.getSession(), errors);
         }
 

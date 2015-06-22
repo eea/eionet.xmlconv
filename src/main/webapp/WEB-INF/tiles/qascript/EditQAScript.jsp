@@ -103,38 +103,38 @@
                      </label>
                 </td>
               <td>
-              		<%--  If scriptType is 'FME' don't show the link to the local script file --%>
-					<logic:notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-	                    <a  href="<bean:write name="webRoot"/>/<bean:write property="filePath" name="QAScriptForm"/>" title="<bean:write property="filePath" name="QAScriptForm"/>">
-	                                <bean:write property="fileName" name="QAScriptForm"/>
-	                    </a>                    
-	                    &#160;&#160;&#160;&#160;&#160;&#160;(<bean:message key="label.lastmodified"/>:
-	                    <logic:present name="QAScriptForm" property="modified">
-	                        <bean:write property="modified" name="QAScriptForm"/>
-	                    </logic:present>
-	                    <logic:notPresent name="QAScriptForm" property="modified">
-	                        <span style="color:red"><bean:message key="label.fileNotFound"/></span>
-	                    </logic:notPresent>
-	                    )
+                <%--  If scriptType is 'FME' don't show the link to the local script file --%>
+                  <logic:notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+                    <a  href="<bean:write name="webRoot"/>/<bean:write property="filePath" name="QAScriptForm"/>" title="<bean:write property="filePath" name="QAScriptForm"/>">
+                        <bean:write property="fileName" name="QAScriptForm"/>
+                    </a>
+                      &#160;&#160;&#160;&#160;&#160;&#160;(<bean:message key="label.lastmodified"/>:
+                      <logic:present name="QAScriptForm" property="modified">
+                          <bean:write property="modified" name="QAScriptForm"/>
+                      </logic:present>
+                      <logic:notPresent name="QAScriptForm" property="modified">
+                          <span style="color:red"><bean:message key="label.fileNotFound"/></span>
+                      </logic:notPresent>
+                      )
                     </logic:notEqual>
                     <%--  If scriptType is 'FME' don't show the link to the local script file --%>
-					<logic:equal name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-						<bean:write property="fileName" name="QAScriptForm"/>
-					</logic:equal>
+                    <logic:equal name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+                        <bean:write property="fileName" name="QAScriptForm"/>
+                    </logic:equal>
               </td>
             </tr>
-            
+
             <%--  If scriptType is 'FME' don't show the FileUpload --%>
-			<logic:notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-	            <tr class="zebraeven">
-	                <td>&#160;</td>
-	              <td>
-	                <html:submit styleClass="button" property="action">
-	                    <bean:message key="label.qascript.upload"/>
-	                </html:submit>
-	                <html:file property="scriptFile" style="width:400px" size="64" />
-	              </td>
-	            </tr>
+            <logic:notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+                <tr class="zebraeven">
+                    <td>&#160;</td>
+                  <td>
+                    <html:submit styleClass="button" property="action">
+                        <bean:message key="label.qascript.upload"/>
+                    </html:submit>
+                    <html:file property="scriptFile" style="width:400px" size="64" />
+                  </td>
+                </tr>
             </logic:notEqual>
 
             <tr>
@@ -149,19 +149,19 @@
                 </td>
             </tr>
             <%--  If scriptType is 'FME' don't show the 'Check for updates' --%>
-			<logic:notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-	            <tr>
-	                <td></td>
-	                <td>
-	                    <logic:notEmpty  name="QAScriptForm" property="fileName">
-	                        <input type="button"  class="button" value="<bean:message key="label.qascript.checkupdates"/>" onclick="return submitAction(1,'diffUplScripts');" />
-	                    </logic:notEmpty>
-	                </td>
-	            </tr>
+            <logic:notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+                <tr>
+                    <td></td>
+                    <td>
+                        <logic:notEmpty  name="QAScriptForm" property="fileName">
+                            <input type="button"  class="button" value="<bean:message key="label.qascript.checkupdates"/>" onclick="return submitAction(1,'diffUplScripts');" />
+                        </logic:notEmpty>
+                    </td>
+                </tr>
             </logic:notEqual>
                   <logic:present name="QAScriptForm" property="fileName">
-					<%--  If scriptType is 'FME' don't show the script content --%>
-					<logic:notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+                    <%--  If scriptType is 'FME' don't show the script content --%>
+                    <logic:notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
                     <tr>
                           <td colspan="2">
                            <label class="question" for="txtUrl">
