@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.dto.Schema;
+import eionet.gdem.qa.engines.FMEQueryEngine;
 import eionet.gdem.qa.engines.SaxonImpl;
 import eionet.gdem.qa.engines.XGawkQueryEngine;
 import eionet.gdem.qa.engines.XslEngineImpl;
@@ -50,11 +51,12 @@ public class XQScript {
     public static final String SCRIPT_LANG_XQUERY = "xquery";
     public static final String SCRIPT_LANG_XSL = "xsl";
     public static final String SCRIPT_LANG_XGAWK = "xgawk";
+    public static final String SCRIPT_LANG_FME = "fme";
 
-    public static String[] SCRIPT_LANGS = {SCRIPT_LANG_XQUERY, SCRIPT_LANG_XSL, SCRIPT_LANG_XGAWK};
+    public static String[] SCRIPT_LANGS = {SCRIPT_LANG_XQUERY, SCRIPT_LANG_XSL, SCRIPT_LANG_XGAWK, SCRIPT_LANG_FME};
 
     public static enum ScriptLang {
-        SCRIPT_LANG_XQUERY("xquery"), SCRIPT_LANG_XSL("xsl"), SCRIPT_LANG_XGAWK("xgawk");
+        SCRIPT_LANG_XQUERY("xquery"), SCRIPT_LANG_XSL("xsl"), SCRIPT_LANG_XGAWK("xgawk"), SCRIPT_LANG_FME("fme");
         private String value;
 
         ScriptLang(String value) {
@@ -69,11 +71,12 @@ public class XQScript {
     public static final String SCRIPT_RESULTTYPE_XML = "XML";
     public static final String SCRIPT_RESULTTYPE_TEXT = "TEXT";
     public static final String SCRIPT_RESULTTYPE_HTML = "HTML";
+    public static final String SCRIPT_RESULTTYPE_ZIP = "ZIP";
 
-    public static String[] SCRIPT_RESULTTYPES = {SCRIPT_RESULTTYPE_XML, SCRIPT_RESULTTYPE_TEXT, SCRIPT_RESULTTYPE_HTML};
+    public static String[] SCRIPT_RESULTTYPES = {SCRIPT_RESULTTYPE_HTML, SCRIPT_RESULTTYPE_XML, SCRIPT_RESULTTYPE_TEXT, SCRIPT_RESULTTYPE_ZIP};
 
     public static enum ScriptResultType {
-        XML, TEXT, HTML
+    	HTML, XML, TEXT, ZIP
     }
 
     // XQ Engine instance
@@ -117,6 +120,8 @@ public class XQScript {
                     _engine = new XslEngineImpl();
                 } else if (XQScript.SCRIPT_LANG_XGAWK.equals(scriptType)) {
                     _engine = new XGawkQueryEngine();
+                } else if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
+                    _engine = new FMEQueryEngine();
                 } else {// default is xquery
                     _engine = new SaxonImpl();
                 }

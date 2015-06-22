@@ -124,6 +124,10 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                     xq.setScriptType((String) hash.get("script_type"));
                     xq.setSrcFileUrl(fileUrl);
                     xq.setSchema(schema);
+                    
+                    if (XQScript.SCRIPT_LANG_FME.equals(xq.getScriptType())){
+                    	xq.setScriptSource((String) hash.get("url"));
+                    }
 
                     strResult = xq.getResult();
                 }

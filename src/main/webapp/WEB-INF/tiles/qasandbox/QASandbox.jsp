@@ -144,9 +144,17 @@
                      <label class="question" for="selScriptType">
                         <bean:message key="label.qasandbox.scriptType" />
                     </label>
-                    <html:select property="scriptType" styleId="selScriptType">
-                        <html:options collection="qascript.scriptlangs" property="convType"/>
-                    </html:select>
+                    <logic:present name="QASandboxForm" property="scriptId">
+	                    <html:select property="scriptType" styleId="selScriptType" disabled="true">
+	                        <html:options collection="qascript.scriptlangs" property="convType"/>
+	                    </html:select>
+	                    <html:hidden property="scriptType" />
+                    </logic:present>
+                    <logic:notPresent name="QASandboxForm" property="scriptId">
+	                    <html:select property="scriptType" styleId="selScriptType">
+	                        <html:options collection="qascript.scriptlangs" property="convType"/>
+	                    </html:select>
+                    </logic:notPresent>
                 </td>
             </tr>
                 <tr>
@@ -226,9 +234,12 @@
                                         </html:link>
                                         (<bean:write name="qascript" property="scriptType" />)
                                         <logic:equal name="qsuPrm" value="true"  name="qascript.permissions" property="qsuPrm" >
-                                            <html:link page="/do/editQAScriptInSandbox" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.editScriptTitle">
-                                                <bean:message key="label.qasandbox.editScript" />
-                                            </html:link>
+                                        	<%--  If scriptType is NOT 'FME' --%>
+											<logic:notEqual name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+	                                            <html:link page="/do/editQAScriptInSandbox" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.editScriptTitle">
+	                                                <bean:message key="label.qasandbox.editScript" />
+	                                            </html:link>
+                                            </logic:notEqual>
                                         </logic:equal>
                                     </span>
                                 </td>

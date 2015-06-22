@@ -331,5 +331,11 @@
             INSERT IGNORE INTO T_STYLESHEET_SCHEMA (SCHEMA_ID, STYLESHEET_ID) SELECT SCHEMA_ID, CONVERT_ID FROM T_STYLESHEET WHERE SCHEMA_ID>0;;
         </sql>
     </changeSet>
+    <changeSet author="tierrike" id="rev-29">
+    	<comment>Add 'ZIP' file type</comment>
+        <sql>
+        	INSERT IGNORE INTO T_CONVTYPE VALUES ('ZIP','application/zip','zip','');            
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
