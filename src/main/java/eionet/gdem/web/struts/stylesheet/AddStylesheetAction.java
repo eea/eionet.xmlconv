@@ -67,6 +67,12 @@ public class AddStylesheetAction extends Action {
             httpServletRequest.getSession().setAttribute("dcm.errors", errors);
             return actionMapping.findForward("fail");
         }
+        String description = form.getDescription();
+        if (description == null || description.isEmpty()) {
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.descriptionMissing"));
+            httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+            return actionMapping.findForward("fail");
+        }
         stylesheet.setXslFileName(xslFile.getFileName());
         try {
             stylesheet.setXslContent(new String(xslFile.getFileData(), "UTF-8"));

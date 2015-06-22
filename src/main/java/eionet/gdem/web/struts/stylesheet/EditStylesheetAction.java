@@ -86,7 +86,10 @@ public class EditStylesheetAction extends LookupDispatchAction {
         if (isCancelled(httpServletRequest)) {
             return findForward(actionMapping, "success", stylesheet.getConvId());
         }
-
+        String description = form.getDescription();
+        if (description == null || description.isEmpty()) {
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.descriptionMissing"));
+        }
         if (xslFile != null && xslFile.getFileSize() != 0) {
             if (StringUtils.isNullOrEmpty(stylesheet.getXslFileName())) {
                 stylesheet.setXslFileName(xslFile.getFileName());
@@ -155,7 +158,10 @@ public class EditStylesheetAction extends LookupDispatchAction {
         if (isCancelled(httpServletRequest)) {
             return findForward(actionMapping, "success", stylesheet.getConvId());
         }
-
+        String description = form.getDescription();
+        if (description == null || description.isEmpty()) {
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.descriptionMissing"));
+        }
         if (!Utils.isNullStr(stylesheet.getXslFileName()) && !Utils.isNullStr(stylesheet.getXslContent())
                 && stylesheet.getXslContent().indexOf(Constants.FILEREAD_EXCEPTION) == -1) {
 
