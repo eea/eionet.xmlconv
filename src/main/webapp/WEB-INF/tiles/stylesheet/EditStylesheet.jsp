@@ -142,7 +142,7 @@
                       </label>
                 </th>
               <td>
-                <html:textarea property="description"  rows="3" cols="30" style="width:500px" styleId="txtDescription"/>
+                <html:text property="description"  style="width:500px" styleId="txtDescription"/>
                 <html:hidden property="stylesheetId" />
               </td>
             </tr>
