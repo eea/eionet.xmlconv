@@ -64,12 +64,14 @@ public class AddStylesheetAction extends Action {
 
         if (xslFile == null || xslFile.getFileSize() == 0) {
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.validation"));
+            saveErrors(httpServletRequest, errors);
             httpServletRequest.getSession().setAttribute("dcm.errors", errors);
             return actionMapping.findForward("fail");
         }
         String description = form.getDescription();
         if (description == null || description.isEmpty()) {
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.descriptionMissing"));
+            saveErrors(httpServletRequest, errors);
             httpServletRequest.getSession().setAttribute("dcm.errors", errors);
             return actionMapping.findForward("fail");
         }
@@ -98,7 +100,6 @@ public class AddStylesheetAction extends Action {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             }
         }
-
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);
         httpServletRequest.getSession().setAttribute("dcm.messages", messages);
         if (!StringUtils.isNullOrEmpty(schema)) {

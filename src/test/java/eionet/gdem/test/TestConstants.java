@@ -47,6 +47,7 @@ public class TestConstants {
     public static final String SEED_QASCRIPT_XQUERY2 = "seed-qascript2.xquery";
     public static final String SEED_QASCRIPT_TEST = "test.xquery";
     public final static String SEED_FEEDBACKANALYZE_TEST  = "seed-feedback-error.html";
+    public static final String SEED_XSLSCRIPT_TEST = "seed-art17-general.xsl";
 
     // TEST RESULT PROPERTIES
     public final static String HTML_CONTENTYPE_RESULT = "text/html;charset=UTF-8";
