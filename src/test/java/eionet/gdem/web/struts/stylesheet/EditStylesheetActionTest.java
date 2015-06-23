@@ -3,7 +3,6 @@ package eionet.gdem.web.struts.stylesheet;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.test.mocks.MockStrutsMultipartRequestSimulator;
-import junit.framework.TestCase;
 import servletunit.struts.MockStrutsTestCase;
 
 import javax.servlet.http.HttpSession;
