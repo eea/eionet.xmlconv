@@ -1,9 +1,7 @@
 package eionet.gdem.qa.engines;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -60,11 +58,8 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 				LOGGER.error("FME workspace failed: " + script.getScriptSource());
 				throw new Exception("FME workspace failed");
 			} else {
-				// We get an InputStream
-				InputStream runContentsStream = runMethod.getResponseBodyAsStream();
-				String runContents = IOUtils.toString(runContentsStream);
-				PrintStream ps = new PrintStream(result);
-				ps.print(runContents);
+				// We get an InputStream and copy it to the 'result' OutputStream
+				IOUtils.copy(runMethod.getResponseBodyAsStream(), result);
 			}
 
 		} catch (Exception e) {
