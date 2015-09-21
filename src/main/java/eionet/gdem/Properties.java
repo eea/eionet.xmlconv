@@ -22,7 +22,6 @@
  */
 package eionet.gdem;
 
-import com.sun.javafx.binding.StringFormatter;
 import eionet.gdem.configuration.ConfigurationException;
 import eionet.gdem.configuration.ConfigurationFactory;
 import eionet.gdem.configuration.ConfigurationService;
@@ -240,7 +239,7 @@ public class Properties {
 
     private static void initConifigurationService() {
 
-        // initialize here in due to xmlconv static method calls,
+        // initialize here due to xmlconv static method calls,
         // we make sure that the ConfigurationService runs first
         Set<String> resourcesToHandle = new HashSet<String>();
         resourcesToHandle.add("gdem.properties");
@@ -254,7 +253,6 @@ public class Properties {
             configurationService.cacheAll();
         } catch (ConfigurationException e) {
             LOGGER.error(e.getMessage());
-            System.out.println(e.getMessage());
         }
     }
 
