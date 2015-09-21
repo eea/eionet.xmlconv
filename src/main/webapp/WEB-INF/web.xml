@@ -45,6 +45,7 @@
         <param-value>
             classpath:spring-app-context.xml,
             classpath:spring-datasource-context.xml
+            classpath:runtime-config.xml
         </param-value>
     </context-param>
 

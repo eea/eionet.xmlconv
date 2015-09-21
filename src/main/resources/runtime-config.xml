@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+">
+    
+    <bean id="configurationFactory" class="eionet.gdem.configuration.ConfigurationFactory">
+        <constructor-arg>
+            <set>
+                <value>gdem.properties</value>
+                <value>eionetdir.properties</value>
+                <value>CatalogManager.properties</value>
+                <value>fme.properties</value>
+                <value>ApplicationResources.properties</value>
+            </set>
+        </constructor-arg>
+    </bean>
+    
+    <bean id="configurationService" class="eionet.gdem.configuration.RuntimeConfigurationService">
+        <constructor-arg name="resources" value="#{configurationFactory.resources}" type="java.util.Map" />
+    </bean>
+    
+    <bean id="configurationPostProcessor" class="eionet.gdem.configuration.ConfigurationPlaceholderConfigurer">
+        <constructor-arg ref="configurationService" />
+    </bean>
+    
+    
+</beans>
