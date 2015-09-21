@@ -25,6 +25,7 @@ import java.util.HashMap;
 
 import junit.framework.TestCase;
 import eionet.gdem.Properties;
+import org.junit.Test;
 
 /**
  * @author Enriko Käsper, Tieto Estonia XGawkQueryEngineTest
@@ -32,6 +33,7 @@ import eionet.gdem.Properties;
 
 public class XGawkQueryEngineTest extends TestCase {
 
+    @Test
     public void testGetShellCommand() throws Exception {
         String dataFile = "data.xml";
         String scriptFile = "script.xml";
@@ -43,6 +45,8 @@ public class XGawkQueryEngineTest extends TestCase {
 
     }
 
+    //TODO(refactor): HashMap.get, Iterators does not gurantee that the objects will fetched in the same order the were inserted
+    @Test
     public void testGetShellCommandWithParams() throws Exception {
         String dataFile = "data.xml";
         String scriptFile = "script.xml";
@@ -52,8 +56,8 @@ public class XGawkQueryEngineTest extends TestCase {
 
         XGawkQueryEngine engine = new XGawkQueryEngine();
         String command = engine.getShellCommand(dataFile, scriptFile, params);
-
-        assertEquals(Properties.xgawkCommand + " -v param2=\"param2value\" -v source_url=\"http://localhost/dummy.xml\" "
+        
+        assertEquals(Properties.xgawkCommand + " -v source_url=\"http://localhost/dummy.xml\" -v param2=\"param2value\" "
                 + "-f script.xml data.xml", command);
 
     }
