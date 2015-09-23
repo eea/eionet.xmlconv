@@ -1,14 +1,5 @@
-<?xml version='1.0' encoding='utf-8'?>
-<Context antiJARLocking="true" path="xmlconv">
-    <Resource name="jdbc/GDEM_DB"
-        auth="Container"
-        type="javax.sql.DataSource"
-        maxActive="100"
-        maxIdle="30"
-        maxWait="10000"
-        username="${config.db.user}"
-        password="${config.db.password}"
-        driverClassName="${config.db.driver}"
-        url="${config.db.jdbcurl.encoded}">
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/xmlconv">
+  <Resource auth="Container" driverClassName="${config.db.driver}" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/GDEM_DB" password="${config.db.password}" type="javax.sql.DataSource" url="${config.db.jdbcurl.encoded}" username="${config.db.user}">
     </Resource>
 </Context>

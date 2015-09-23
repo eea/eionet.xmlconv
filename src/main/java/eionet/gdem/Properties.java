@@ -248,7 +248,7 @@ public class Properties {
         resourcesToHandle.add("fme.properties");
         resourcesToHandle.add("ApplicationResources.properties");
         try {
-            configurationFactory = new ConfigurationFactory(resourcesToHandle);
+            configurationFactory = new ConfigurationFactory(resourcesToHandle, "docker_config_xmlconv");
             configurationService = new RuntimeConfigurationService(configurationFactory.getResources(), new SystemPropertyProviderImpl());
             configurationService.cacheAll();
         } catch (ConfigurationException e) {

@@ -57,7 +57,7 @@ public class XGawkQueryEngineTest extends TestCase {
         XGawkQueryEngine engine = new XGawkQueryEngine();
         String command = engine.getShellCommand(dataFile, scriptFile, params);
         
-        assertEquals(Properties.xgawkCommand + " -v source_url=\"http://localhost/dummy.xml\" -v param2=\"param2value\" "
+        assertEquals(Properties.xgawkCommand + " -v param2=\"param2value\" -v source_url=\"http://localhost/dummy.xml\" "
                 + "-f script.xml data.xml", command);
 
     }

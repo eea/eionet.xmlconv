@@ -6,7 +6,7 @@
 ">
     
     <bean id="configurationFactory" class="eionet.gdem.configuration.ConfigurationFactory">
-        <constructor-arg>
+        <constructor-arg index="0">
             <set>
                 <value>gdem.properties</value>
                 <value>eionetdir.properties</value>
@@ -15,6 +15,7 @@
                 <value>ApplicationResources.properties</value>
             </set>
         </constructor-arg>
+        <constructor-arg index="1" value="docker_config_xmlconv" />
     </bean>
     
     <bean id="configurationService" class="eionet.gdem.configuration.RuntimeConfigurationService">
