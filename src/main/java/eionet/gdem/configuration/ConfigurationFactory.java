@@ -55,6 +55,8 @@ public final class ConfigurationFactory {
         try {
             Properties configurationProperties = f.get();
             this.propertiesList.add(configurationProperties);
+            System.setProperty("config.log.file", configurationProperties.getProperty("config.log.file"));
+            System.setProperty("app.host", configurationProperties.getProperty("app.host"));
             LOGGER.info("Successfully loaded properties.");
         } catch (ConfigurationException ex) {
             Logger.getLogger(ConfigurationFactory.class.getName()).log(Level.INFO, null, ex);
