@@ -1,6 +1,5 @@
 package eionet.gdem.configuration;
 
-import com.sun.javafx.binding.StringFormatter;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;

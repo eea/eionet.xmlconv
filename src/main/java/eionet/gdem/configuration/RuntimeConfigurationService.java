@@ -1,6 +1,5 @@
 package eionet.gdem.configuration;
 
-import com.sun.javafx.binding.StringFormatter;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -101,12 +100,12 @@ public final class RuntimeConfigurationService implements ConfigurationService {
                 value = systemPropertyProvider.get(placeholder);
             }
             if (value == null) {
-                throw new UnResolvedPropertyException(StringFormatter.format("Could not resolve placeholder ${%s}", placeholder).getValue());
+                throw new UnResolvedPropertyException("Could not resolve placeholder ${" + placeholder + "}");
             }
         }
         for (String item : placeholders) {
             if (visited.contains(item)) {
-                throw new UnResolvedPropertyException(StringFormatter.format("Could not resolve placeholder ${%s}", item).getValue());
+                throw new UnResolvedPropertyException("Could not resolve placeholder ${" + item + "}");
             }
             visited.push(item);
             String resolved = traverse(visited, item);
