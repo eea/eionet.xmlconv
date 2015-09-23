@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 
 public final class ConfigurationFactory {
 
+    private static final Logger LOGGER = Logger.getLogger(ConfigurationFactory.class.getName());
+    
     private final Set<String> resourceNames;
     private final List<Properties> propertiesList;
     private final Map<String, String> resources;
@@ -43,14 +45,17 @@ public final class ConfigurationFactory {
     }
 
     void loadConfigurationPropertiesFromSystemVariable(String key) {
-        String value = System.getenv(key);
+        LOGGER.info("Configuration factory initialization from system property: " + key);
+        String value = System.getProperty(key);
         if (value == null) {
             return;
         }
+        LOGGER.info("Found file path for configuration : " + value);
         FileConfigurationSourceProvider f = new FileConfigurationSourceProvider(value);
         try {
             Properties configurationProperties = f.get();
             this.propertiesList.add(configurationProperties);
+            LOGGER.info("Successfully loaded properties.");
         } catch (ConfigurationException ex) {
             Logger.getLogger(ConfigurationFactory.class.getName()).log(Level.INFO, null, ex);
         }

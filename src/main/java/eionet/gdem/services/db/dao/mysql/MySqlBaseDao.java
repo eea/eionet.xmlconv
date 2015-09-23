@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
+import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.services.GDEMServices;
 
 public abstract class MySqlBaseDao {
@@ -37,9 +38,9 @@ public abstract class MySqlBaseDao {
     private static void initDataSource() throws NamingException {
         try {
             InitialContext ctx = new InitialContext();
-            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/GDEM_DB");
+            ds = (DataSource) SpringApplicationContext.getBean("dataSource");
         } catch (NamingException e) {
-            LOGGER.fatal("Initialization of datasource  (jdbc/GDEM_DB) failed: ", e);
+            LOGGER.fatal("Initialization of datasource failed: ", e);
         }
     }
 

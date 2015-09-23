@@ -15,7 +15,7 @@
                 <value>ApplicationResources.properties</value>
             </set>
         </constructor-arg>
-        <constructor-arg index="1" value="docker_config_xmlconv" />
+        <constructor-arg index="1" value="docker.config.xmlconv" />
     </bean>
     
     <bean id="configurationService" class="eionet.gdem.configuration.RuntimeConfigurationService">

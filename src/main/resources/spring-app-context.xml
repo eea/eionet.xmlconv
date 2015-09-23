@@ -26,8 +26,6 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <context:property-placeholder location="classpath:gdem.properties" />
-
     <bean id="springApplicationContext" class="eionet.gdem.SpringApplicationContext"/>
 
 </beans>
