@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
-    version="2.4">
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
     <display-name>Conversion and Quality Assessment Service</display-name>
     <context-param>
         <param-name>edu.yale.its.tp.cas.client.filter.loginUrl</param-name>
         <param-value>https://sso.eionet.europa.eu/login</param-value>
     </context-param>
+    <!-- Spring configuration -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath:spring-app-context.xml,
+            classpath:spring-datasource-context.xml
+            classpath:runtime-config.xml
+        </param-value>
+    </context-param>
+
     <filter>
         <filter-name>Set Character Encoding</filter-name>
         <filter-class>eionet.gdem.web.filters.SetCharacterEncodingFilter</filter-class>
@@ -35,19 +49,6 @@
             <param-value>true</param-value>
         </init-param>
     </filter>
-    <!-- Spring configuration -->
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
-
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>
-            classpath:spring-app-context.xml,
-            classpath:spring-datasource-context.xml
-            classpath:runtime-config.xml
-        </param-value>
-    </context-param>
 
     <!-- Filter Mappings -->
     <filter-mapping>
@@ -122,10 +123,10 @@
         <filter-name>CAS Filter</filter-name>
         <url-pattern>/do/schemaElemForm</url-pattern>
     </filter-mapping>
-	<filter-mapping>
-		<filter-name>CAS Filter</filter-name>
-		<url-pattern>/log/*</url-pattern>
-	</filter-mapping>
+    <filter-mapping>
+        <filter-name>CAS Filter</filter-name>
+        <url-pattern>/log/*</url-pattern>
+    </filter-mapping>
 
 
 
@@ -196,10 +197,10 @@
         <servlet-name>downloadServlet</servlet-name>
         <url-pattern>/tmp/*</url-pattern>
     </servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>downloadServlet</servlet-name>
-		<url-pattern>/log/*</url-pattern>
-	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>downloadServlet</servlet-name>
+        <url-pattern>/log/*</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>downloadServlet</servlet-name>
         <url-pattern>/xmlfile/*</url-pattern>
