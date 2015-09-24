@@ -9,6 +9,7 @@
         <constructor-arg index="0">
             <set>
                 <value>gdem.properties</value>
+                <value>uit.properties</value>
                 <value>eionetdir.properties</value>
                 <value>CatalogManager.properties</value>
                 <value>fme.properties</value>
@@ -18,12 +19,8 @@
         <constructor-arg index="1" value="docker.config.xmlconv" />
     </bean>
     
-    <bean id="configurationService" class="eionet.gdem.configuration.RuntimeConfigurationService">
-        <constructor-arg name="resources" value="#{configurationFactory.resources}" type="java.util.Map" />
-    </bean>
-    
     <bean id="configurationPostProcessor" class="eionet.gdem.configuration.ConfigurationPlaceholderConfigurer">
-        <constructor-arg ref="configurationService" />
+        <constructor-arg value="#{configurationFactory.configurationService}"  />
     </bean>
     
     

@@ -1,22 +1,30 @@
 package eionet.gdem.configuration;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 public final class ConfigurationFactory {
 
     private static final Logger LOGGER = Logger.getLogger(ConfigurationFactory.class.getName());
-    
+
     private final Set<String> resourceNames;
     private final List<Properties> propertiesList;
     private final Map<String, String> resources;
     private final CircularReferenceValidator circularReferenceValidator;
     private final UnResolvedPropertyValidator unResolvedPropertyValidator;
+    private final ConfigurationService configurationService;
+
+    public ConfigurationService getConfigurationService() {
+        return configurationService;
+    }
 
     public Map<String, String> getResources() {
         return resources;
@@ -42,6 +50,9 @@ public final class ConfigurationFactory {
         circularReferenceValidator.validate();
         unResolvedPropertyValidator = new UnResolvedPropertyValidator(resources, new SystemPropertyProviderImpl());
         unResolvedPropertyValidator.validate();
+        configurationService = new RuntimeConfigurationService(resources, new SystemPropertyProviderImpl());
+        configurationService.cacheAll();
+
     }
 
     void loadConfigurationPropertiesFromSystemVariable(String key) {

@@ -18,7 +18,6 @@
  * Contributor(s):
  *        Enriko Käsper
  */
-
 package eionet.gdem.web.listeners;
 
 import eionet.gdem.Properties;
@@ -50,32 +49,19 @@ import static org.quartz.TriggerBuilder.newTrigger;
 @SuppressWarnings("unchecked")
 public class JobScheduler implements ServletContextListener {
 
-    /** */
+    /**
+     *      */
     private static final Log LOGGER = LogFactory.getLog(JobScheduler.class);
 
-    /** */
+    /**
+     *      */
     private static Scheduler quartzScheduler = null;
 
-    private static final Pair<Integer, JobDetail>[] intervalJobs;
-
-    static {
-        intervalJobs =
-            new Pair[] {
-                Pair.of(new Integer(Properties.wqCheckInterval),
-                        newJob(WQCheckerJob.class).withIdentity(WQCheckerJob.class.getSimpleName(),
-                                WQCheckerJob.class.getName()).build()),
-                                Pair.of(new Integer(Properties.wqCleanInterval),
-                                        newJob(WQCleanerJob.class).withIdentity(WQCleanerJob.class.getSimpleName(),
-                                                WQCleanerJob.class.getName()).build()),
-                                                Pair.of(new Integer(Properties.ddTablesUpdateInterval),
-                                                        newJob(DDTablesCacheUpdater.class).withIdentity(DDTablesCacheUpdater.class.getSimpleName(),
-                                                                DDTablesCacheUpdater.class.getName()).build()) };
-    }
+    private static Pair<Integer, JobDetail>[] intervalJobs;
 
     /**
      *
-     * @return
-     * @throws SchedulerException
+     * @return @throws SchedulerException
      */
     private static void init() throws SchedulerException {
 
@@ -92,11 +78,11 @@ public class JobScheduler implements ServletContextListener {
      * @throws ParseException
      */
     public static synchronized void scheduleCronJob(String cronExpression, JobDetail jobDetails) throws SchedulerException,
-    ParseException {
+            ParseException {
 
-        Trigger trigger =
-            newTrigger().withIdentity(jobDetails.getKey().getName(), jobDetails.getKey().getGroup())
-            .withSchedule(cronSchedule(cronExpression)).forJob(jobDetails.getKey()).build();
+        Trigger trigger
+                = newTrigger().withIdentity(jobDetails.getKey().getName(), jobDetails.getKey().getGroup())
+                .withSchedule(cronSchedule(cronExpression)).forJob(jobDetails.getKey()).build();
 
         if (quartzScheduler == null) {
             init();
@@ -113,11 +99,11 @@ public class JobScheduler implements ServletContextListener {
      * @throws ParseException
      */
     public static synchronized void scheduleIntervalJob(int repeatInterval, JobDetail jobDetails) throws SchedulerException,
-    ParseException {
+            ParseException {
 
-        SimpleTrigger trigger =
-            newTrigger().withIdentity(jobDetails.getKey().getName(), jobDetails.getKey().getGroup()).startNow()
-            .withSchedule(simpleSchedule().withIntervalInSeconds(repeatInterval).repeatForever()).build();
+        SimpleTrigger trigger
+                = newTrigger().withIdentity(jobDetails.getKey().getName(), jobDetails.getKey().getGroup()).startNow()
+                .withSchedule(simpleSchedule().withIntervalInSeconds(repeatInterval).repeatForever()).build();
 
         if (quartzScheduler == null) {
             init();
@@ -144,11 +130,23 @@ public class JobScheduler implements ServletContextListener {
     }
 
     /**
-     * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent) {@inheritDoc}
+     * @see
+     * javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
+     * {@inheritDoc}
      */
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-
+        intervalJobs
+                = new Pair[]{
+                    Pair.of(new Integer(Properties.wqCheckInterval),
+                            newJob(WQCheckerJob.class).withIdentity(WQCheckerJob.class.getSimpleName(),
+                            WQCheckerJob.class.getName()).build()),
+                    Pair.of(new Integer(Properties.wqCleanInterval),
+                            newJob(WQCleanerJob.class).withIdentity(WQCleanerJob.class.getSimpleName(),
+                            WQCleanerJob.class.getName()).build()),
+                    Pair.of(new Integer(Properties.ddTablesUpdateInterval),
+                            newJob(DDTablesCacheUpdater.class).withIdentity(DDTablesCacheUpdater.class.getSimpleName(),
+                            DDTablesCacheUpdater.class.getName()).build())};
         // schedule interval jobs
         for (Pair<Integer, JobDetail> job : intervalJobs) {
 

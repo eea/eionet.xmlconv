@@ -235,23 +235,9 @@ public class Properties {
     public static String timeFormatPattern = "dd MMM yyyy hh:mm:ss";
 
     private static void initConifigurationService() {
+        configurationFactory = (ConfigurationFactory) SpringApplicationContext.getBean("configurationFactory");
+        configurationService = configurationFactory.getConfigurationService();
 
-        // initialize here due to xmlconv static method calls,
-        // we make sure that the ConfigurationService runs first
-        Set<String> resourcesToHandle = new HashSet<String>();
-        resourcesToHandle.add("gdem.properties");
-        resourcesToHandle.add("uit.properties");
-        resourcesToHandle.add("CatalogManager.properties");
-        resourcesToHandle.add("fme.properties");
-        resourcesToHandle.add("ApplicationResources.properties");
-        try {
-            configurationFactory = new ConfigurationFactory(resourcesToHandle, "docker.config.xmlconv");
-            configurationService = new RuntimeConfigurationService(configurationFactory.getResources(), new SystemPropertyProviderImpl());
-            configurationService.cacheAll();
-            
-        } catch (ConfigurationException e) {
-            LOGGER.error(e.getMessage());
-        }
     }
 
     static {
