@@ -7,8 +7,7 @@ import java.util.Properties;
 
 /**
  * Loads a property file from System Property
- 
- * @author Ervis Zyka <ez@eworx.gr>
+ * 
  */
 public class PropertiesSystemVariableConfigurationResourceProvider implements ConfigurationResourceProvider<Properties> {
 

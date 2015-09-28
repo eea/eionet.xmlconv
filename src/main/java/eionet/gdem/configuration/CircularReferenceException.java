@@ -1,9 +1,5 @@
 package eionet.gdem.configuration;
 
-/**
- *
- * @author Ervis Zyka <ez@eworx.gr>
- */
 public class CircularReferenceException extends ConfigurationException{
 
     public CircularReferenceException(String message) {

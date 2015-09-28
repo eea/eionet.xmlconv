@@ -32,7 +32,7 @@ public class UnResolvedPropertyValidator implements ConfigurationValidator {
         for (String key : resources.keySet()) {
             try {
                 traverse(resources, new ArrayDeque<String>(), key);
-            } catch (UnResolvedPropertyException ure) {
+            } catch (UnresolvedPropertyException ure) {
                 throw new ConfigurationException("Configuration error for placeholder ${" + key + "}: " + ure.getMessage());
             }
         }
@@ -43,9 +43,9 @@ public class UnResolvedPropertyValidator implements ConfigurationValidator {
      *
      * @param visited The placeholder nodes we have visited so far
      * @param placeholder The placeholder we are currently checking to resolve
-     * @throws UnResolvedPropertyException
+     * @throws UnresolvedPropertyException
      */
-    void traverse(Map<String, String> resources, Deque<String> visited, String placeholder) throws UnResolvedPropertyException {
+    void traverse(Map<String, String> resources, Deque<String> visited, String placeholder) throws UnresolvedPropertyException {
         // TODO(ezyk): Remove recursion, implement with iteration
         visited.push(placeholder);
         String value = resources.get(placeholder);
@@ -54,12 +54,12 @@ public class UnResolvedPropertyValidator implements ConfigurationValidator {
         if (value == null && placeholders.isEmpty() && systemPropertyProvider != null) {
             value = systemPropertyProvider.get(placeholder);
             if (value == null) {
-                throw new UnResolvedPropertyException("Configuration error for placeholder ${" + placeholder + "}: No value was found.");
+                throw new UnresolvedPropertyException("Configuration error for placeholder ${" + placeholder + "}: No value was found.");
             }
         }
         for (String item : placeholders) {
             if (visited.contains(item)) {
-                throw new UnResolvedPropertyException("Configuration error for placeholder ${" + item + "}: Circular reference.");
+                throw new UnresolvedPropertyException("Configuration error for placeholder ${" + item + "}: Circular reference.");
             }
             visited.push(item);
             traverse(resources, visited, item);

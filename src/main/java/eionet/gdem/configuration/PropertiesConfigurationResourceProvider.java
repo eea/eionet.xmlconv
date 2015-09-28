@@ -29,7 +29,7 @@ public class PropertiesConfigurationResourceProvider implements ConfigurationRes
     public Properties get() throws ConfigurationException {
         try {
             Properties properties = new Properties();
-            InputStream inStream = this.getClass().getClassLoader().getResourceAsStream(resourceName);
+            InputStream inStream = this.getClass().getClassLoader().getResource(resourceName).openStream();
             if (inStream == null) {
                 throw new ConfigurationException("Error while trying to load file " + resourceName);
             }

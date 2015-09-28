@@ -22,7 +22,7 @@ package eionet.gdem;
 import eionet.gdem.configuration.ConfigurationException;
 import eionet.gdem.configuration.ConfigurationFactory;
 import eionet.gdem.configuration.ConfigurationService;
-import eionet.gdem.configuration.UnResolvedPropertyException;
+import eionet.gdem.configuration.UnresolvedPropertyException;
 import org.apache.log4j.Logger;
 
 import java.text.MessageFormat;
@@ -304,7 +304,7 @@ public class Properties {
         try {
             String value = configurationService.get(key);
             return value;
-        } catch (UnResolvedPropertyException ue) {
+        } catch (UnresolvedPropertyException ue) {
             LOGGER.error(ue.getMessage());
             return null;
         }
@@ -314,7 +314,7 @@ public class Properties {
         try {
             String value = configurationService.get(key);
             return Integer.valueOf(value);
-        } catch (UnResolvedPropertyException ue) {
+        } catch (UnresolvedPropertyException ue) {
             LOGGER.error(ue.getMessage());
             return 0;
         } catch (NumberFormatException nfe) {
@@ -335,7 +335,7 @@ public class Properties {
         }
         try {
             return configurationService.get(key);
-        } catch (UnResolvedPropertyException e) {
+        } catch (UnresolvedPropertyException e) {
             return null;
         }
     }

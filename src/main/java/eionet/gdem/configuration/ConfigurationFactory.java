@@ -1,17 +1,12 @@
 package eionet.gdem.configuration;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import org.openrdf.sail.rdbms.schema.HashTable;
 
 public final class ConfigurationFactory {
 
@@ -61,8 +56,6 @@ public final class ConfigurationFactory {
         }
         resources = (new MapConfigurationResourceProvider(propertiesList).get());
         configurationService = new RuntimeConfigurationService(resources, new SystemPropertyProviderImpl());
-        configurationService.cacheAll();
-        (new PropertySerializer("acl.properties", configurationService)).serialize();
         if (this.validators != null) {
             executeConfigurationValidators();
         }
@@ -103,7 +96,6 @@ public final class ConfigurationFactory {
         try {
             Properties configurationProperties = f.get();
             this.propertiesList.add(configurationProperties);
-            System.out.println(configurationProperties);
             LOGGER.info("Successfully loaded properties.");
         } catch (ConfigurationException ex) {
             Logger.getLogger(ConfigurationFactory.class.getName()).log(Level.INFO, null, ex);

@@ -1,26 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eionet.gdem.configuration;
 
-import eionet.acl.AccessController;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.Properties;
-import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Ervis Zyka <ez@eworx.gr>
- */
 public final class PropertySerializer {
 
     private static final Logger LOGGER = Logger.getLogger(PropertySerializer.class.getName());
@@ -68,7 +56,7 @@ public final class PropertySerializer {
         } catch (IOException ex) {
             Logger.getLogger(PropertySerializer.class.getName()).log(Level.SEVERE, null, ex);
             throw new ConfigurationException(ex.getMessage());
-        } catch (UnResolvedPropertyException ex) {
+        } catch (UnresolvedPropertyException ex) {
             Logger.getLogger(PropertySerializer.class.getName()).log(Level.SEVERE, null, ex);
             throw new ConfigurationException(ex.getMessage());
         }

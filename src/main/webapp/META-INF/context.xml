@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context antiJARLocking="true" path="/xmlconv">
-  <Resource auth="Container" driverClassName="${config.db.driver}" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/GDEM_DB" password="${config.db.password}" type="javax.sql.DataSource" url="${config.db.jdbcurl.encoded}" username="${config.db.user}">
+    <Environment name="acl/propertiesfile" value="${config.acl.propertiesfile}" type="java.lang.String" override="false" />
+    <Resource auth="Container" driverClassName="${config.db.driver}" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/GDEM_DB" password="${config.db.password}" type="javax.sql.DataSource" url="${config.db.jdbcurl.encoded}" username="${config.db.user}">
     </Resource>
 </Context>

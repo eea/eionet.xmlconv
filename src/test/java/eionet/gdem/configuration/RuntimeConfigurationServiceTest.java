@@ -18,7 +18,7 @@ import org.junit.Test;
 public class RuntimeConfigurationServiceTest {
 
     @Test
-    public void testResolve() throws UnResolvedPropertyException {
+    public void testResolve() throws UnresolvedPropertyException {
         Map<String, String> map = new HashMap<String, String>();
         map.put("a", "${b}");
         map.put("b", "${c}/${d}");
@@ -37,7 +37,7 @@ public class RuntimeConfigurationServiceTest {
     }
 
     @Test
-    public void testGetWhenValueIsResolvedFromSystemPropertiesWhenIsShared() throws UnResolvedPropertyException {
+    public void testGetWhenValueIsResolvedFromSystemPropertiesWhenIsShared() throws UnresolvedPropertyException {
         Map<String, String> map = new HashMap<String, String>();
         SystemPropertyProvider fake = new SystemPropertyProvider() {
 
@@ -67,7 +67,7 @@ public class RuntimeConfigurationServiceTest {
     }
 
     @Test
-    public void testGetSystemPropertyValueOverridesLocalValue() throws UnResolvedPropertyException {
+    public void testGetSystemPropertyValueOverridesLocalValue() throws UnresolvedPropertyException {
         Map<String, String> map = new HashMap<String, String>();
         SystemPropertyProvider fake = new SystemPropertyProvider() {
 
@@ -95,8 +95,8 @@ public class RuntimeConfigurationServiceTest {
 
     }
 
-    @Test(expected = UnResolvedPropertyException.class)
-    public void testGetExceptionIsThrowWhenValueCannotBeResolved() throws UnResolvedPropertyException {
+    @Test(expected = UnresolvedPropertyException.class)
+    public void testGetExceptionIsThrowWhenValueCannotBeResolved() throws UnresolvedPropertyException {
         Map<String, String> map = new HashMap<String, String>();
         map.put("a", "${b}/${b}");
         map.put("b", "${c}");
@@ -113,7 +113,7 @@ public class RuntimeConfigurationServiceTest {
 
     }
 
-    public void testInvalidate() throws UnResolvedPropertyException {
+    public void testInvalidate() throws UnresolvedPropertyException {
         Map<String, String> map = new HashMap<String, String>();
         map.put("a", "${b}");
         map.put("b", "${c}/${d}");

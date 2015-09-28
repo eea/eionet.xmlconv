@@ -8,10 +8,7 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.util.PropertyPlaceholderHelper;
 import org.springframework.util.StringValueResolver;
 
-/**
- *
- * @author Ervis Zyka <ez@eworx.gr>
- */
+
 public class ConfigurationPlaceholderConfigurer extends PropertyPlaceholderConfigurer {
 
     private final ConfigurationService configurationService;
@@ -33,7 +30,7 @@ public class ConfigurationPlaceholderConfigurer extends PropertyPlaceholderConfi
     String get(String key) {
         try {
             return configurationService.get(key);
-        } catch (UnResolvedPropertyException e) {
+        } catch (UnresolvedPropertyException e) {
             return null;
         }
     }

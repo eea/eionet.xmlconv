@@ -41,10 +41,10 @@ public final class RuntimeConfigurationService implements ConfigurationService {
      *
      * @param key Property key
      * @return Property value
-     * @throws UnResolvedPropertyException
+     * @throws UnresolvedPropertyException
      */
     @Override
-    public String get(String key) throws UnResolvedPropertyException {
+    public String get(String key) throws UnresolvedPropertyException {
         String value = cachedResources.get(key);
         if (value == null) {
             value = addToCache(key);
@@ -57,9 +57,9 @@ public final class RuntimeConfigurationService implements ConfigurationService {
      *
      * @param key
      * @return The resolved value
-     * @throws UnResolvedPropertyException
+     * @throws UnresolvedPropertyException
      */
-    String addToCache(String key) throws UnResolvedPropertyException {
+    String addToCache(String key) throws UnresolvedPropertyException {
         String value = resolve(key);
         cachedResources.put(key, value);
         return value;
@@ -70,9 +70,9 @@ public final class RuntimeConfigurationService implements ConfigurationService {
      *
      * @param key
      * @return The resolved value
-     * @throws UnResolvedPropertyException
+     * @throws UnresolvedPropertyException
      */
-    String resolve(String key) throws UnResolvedPropertyException {
+    String resolve(String key) throws UnresolvedPropertyException {
         String value = traverse(new ArrayDeque<String>(), key);
         return value;
 
@@ -85,9 +85,9 @@ public final class RuntimeConfigurationService implements ConfigurationService {
      * @param visited
      * @param placeholder
      * @return
-     * @throws UnResolvedPropertyException
+     * @throws UnresolvedPropertyException
      */
-    String traverse(Deque<String> visited, String placeholder) throws UnResolvedPropertyException {
+    String traverse(Deque<String> visited, String placeholder) throws UnresolvedPropertyException {
         // TODO(ezyk): Remove recursion, implement with iteration
         visited.push(placeholder);
 
@@ -100,12 +100,12 @@ public final class RuntimeConfigurationService implements ConfigurationService {
                 value = systemPropertyProvider.get(placeholder);
             }
             if (value == null) {
-                throw new UnResolvedPropertyException("Could not resolve placeholder ${" + placeholder + "}");
+                throw new UnresolvedPropertyException("Could not resolve placeholder " + placeholder);
             }
         }
         for (String item : placeholders) {
             if (visited.contains(item)) {
-                throw new UnResolvedPropertyException("Invalid circular reference. Could not resolve placeholder ${" + item + "}");
+                throw new UnresolvedPropertyException("Invalid circular reference. Could not resolve placeholder " + item);
             }
             visited.push(item);
             String resolved = traverse(visited, item);
@@ -125,7 +125,7 @@ public final class RuntimeConfigurationService implements ConfigurationService {
         for (String key : resources.keySet()) {
             try {
                 get(key);
-            } catch (UnResolvedPropertyException ex) {
+            } catch (UnresolvedPropertyException ex) {
                 Logger.getLogger(RuntimeConfigurationService.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
