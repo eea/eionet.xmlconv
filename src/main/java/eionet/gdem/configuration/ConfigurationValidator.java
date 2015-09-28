@@ -1,5 +1,7 @@
 package eionet.gdem.configuration;
 
+import java.util.Map;
+
 /**
  *
  * Generic configuration validator.Classes that implement this interface can 
@@ -7,5 +9,5 @@ package eionet.gdem.configuration;
  * 
  */
 public interface ConfigurationValidator {
-    void validate() throws ConfigurationException;
+    void validate(Map<String, String> resources) throws ConfigurationException;
 }

@@ -2,14 +2,14 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
     
+    <bean id="systemPropertyProvider" class="eionet.gdem.configuration.SystemPropertyProviderImpl"/>
     <bean id="configurationFactory" class="eionet.gdem.configuration.ConfigurationFactory">
         <constructor-arg index="0">
             <set>
+                <value>acl.properties</value>
                 <value>gdem.properties</value>
-                <value>uit.properties</value>
                 <value>eionetdir.properties</value>
                 <value>CatalogManager.properties</value>
                 <value>fme.properties</value>
@@ -17,8 +17,15 @@
             </set>
         </constructor-arg>
         <constructor-arg index="1" value="docker.config.xmlconv" />
+        <constructor-arg index="2">
+            <list>
+                <bean class="eionet.gdem.configuration.CircularReferenceValidator" />
+                <bean class="eionet.gdem.configuration.UnResolvedPropertyValidator">
+                    <constructor-arg ref="systemPropertyProvider" />
+                </bean>
+            </list>
+        </constructor-arg>
     </bean>
-    
     <bean id="configurationPostProcessor" class="eionet.gdem.configuration.ConfigurationPlaceholderConfigurer">
         <constructor-arg value="#{configurationFactory.configurationService}"  />
     </bean>

@@ -13,11 +13,9 @@ import java.util.Set;
  */
 public class UnResolvedPropertyValidator implements ConfigurationValidator {
 
-    private final Map<String, String> resources;
     private final SystemPropertyProvider systemPropertyProvider;
 
-    public UnResolvedPropertyValidator(Map<String, String> resources, SystemPropertyProvider systemPropertyProvider) {
-        this.resources = resources;
+    public UnResolvedPropertyValidator(SystemPropertyProvider systemPropertyProvider) {
         this.systemPropertyProvider = systemPropertyProvider;
     }
 
@@ -30,10 +28,10 @@ public class UnResolvedPropertyValidator implements ConfigurationValidator {
      * @throws ConfigurationException
      */
     @Override
-    public void validate() throws ConfigurationException {
+    public void validate(Map<String, String> resources) throws ConfigurationException {
         for (String key : resources.keySet()) {
             try {
-                traverse(new ArrayDeque<String>(), key);
+                traverse(resources, new ArrayDeque<String>(), key);
             } catch (UnResolvedPropertyException ure) {
                 throw new ConfigurationException("Configuration error for placeholder ${" + key + "}: " + ure.getMessage());
             }
@@ -47,7 +45,7 @@ public class UnResolvedPropertyValidator implements ConfigurationValidator {
      * @param placeholder The placeholder we are currently checking to resolve
      * @throws UnResolvedPropertyException
      */
-    void traverse(Deque<String> visited, String placeholder) throws UnResolvedPropertyException {
+    void traverse(Map<String, String> resources, Deque<String> visited, String placeholder) throws UnResolvedPropertyException {
         // TODO(ezyk): Remove recursion, implement with iteration
         visited.push(placeholder);
         String value = resources.get(placeholder);
@@ -64,7 +62,7 @@ public class UnResolvedPropertyValidator implements ConfigurationValidator {
                 throw new UnResolvedPropertyException("Configuration error for placeholder ${" + item + "}: Circular reference.");
             }
             visited.push(item);
-            traverse(visited, item);
+            traverse(resources, visited, item);
         }
     }
 

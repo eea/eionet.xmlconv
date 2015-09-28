@@ -19,26 +19,12 @@ import java.util.Set;
  */
 public class CircularReferenceValidator implements ConfigurationValidator {
 
-    private final Map<String, String> resources;
-
-    public CircularReferenceValidator(Map<String, String> resources) {
-        this.resources = resources;
-    }
-
-    /**
-     * Validation method that traverse all {@link java.util.Properties} keys in
-     * order to find a circular reference.If a Circular reference is found a
-     * {@link eionet.gdem.configuration.ConfigurationException} is thrown in
-     * order to mark the application configuration as invalid.
-     *
-     * @throws ConfigurationException
-     */
     @Override
-    public void validate() throws ConfigurationException {
+    public void validate(Map<String, String> resources) throws ConfigurationException {
         for (String key : resources.keySet()) {
             String value = resources.get(key);
             try {
-                traverse(new ArrayDeque<String>(), key);
+                traverse(resources, new ArrayDeque<String>(), key);
             } catch (CircularReferenceException cre) {
                 throw new ConfigurationException("Circular reference caused configuration error for placeholder ${" + key + "} : " + cre.getMessage());
             }
@@ -53,7 +39,7 @@ public class CircularReferenceValidator implements ConfigurationValidator {
      * dependencies
      * @throws CircularReferenceException
      */
-    void traverse(Deque<String> visited, String placeholder) throws CircularReferenceException {
+    void traverse(Map<String, String> resources, Deque<String> visited, String placeholder) throws CircularReferenceException {
         // TODO(ezyk): Remove recursion, implement with iteration
         visited.push(placeholder);
         String value = resources.get(placeholder);
@@ -64,10 +50,10 @@ public class CircularReferenceValidator implements ConfigurationValidator {
         Set<String> placeholders = placeholderProvider.extract(value);
         for (String item : placeholders) {
             if (visited.contains(item)) {
-                throw new CircularReferenceException("Circular reference for placeholder ${"+item+"}");
+                throw new CircularReferenceException("Circular reference for placeholder ${" + item + "}");
             }
             visited.push(item);
-            traverse(visited, item);
+            traverse(resources, visited, item);
         }
     }
 

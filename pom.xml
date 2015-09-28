@@ -139,8 +139,8 @@
                                             file="${project.build.directory}/classes/gdem.properties"
                                             toFile="${project.build.directory}/classes/gdem.properties.tmp" />
                                         <move
-                                            file="${project.build.directory}/classes/uit.properties"
-                                            toFile="${project.build.directory}/classes/uit.properties.tmp" />
+                                            file="${project.build.directory}/classes/acl.properties"
+                                            toFile="${project.build.directory}/classes/acl.properties.tmp" />
                                         <move
                                             file="${project.build.directory}/classes/log4j.xml"
                                             toFile="${project.build.directory}/classes/log4j.xml.tmp" />
@@ -161,8 +161,8 @@
                                             file="${project.build.directory}/classes/gdem.properties.tmp"
                                             toFile="${project.build.directory}/classes/gdem.properties" />
                                         <move
-                                            file="${project.build.directory}/classes/uit.properties.tmp"
-                                            toFile="${project.build.directory}/classes/uit.properties" />
+                                            file="${project.build.directory}/classes/acl.properties.tmp"
+                                            toFile="${project.build.directory}/classes/acl.properties" />
                                         <move
                                             file="${project.build.directory}/classes/log4j.xml.tmp"
                                             toFile="${project.build.directory}/classes/log4j.xml" />
@@ -605,7 +605,7 @@
         <dependency>
             <groupId>eionet</groupId>
             <artifactId>acl</artifactId>
-            <version>2.0</version>
+            <version>3.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>eionet</groupId>

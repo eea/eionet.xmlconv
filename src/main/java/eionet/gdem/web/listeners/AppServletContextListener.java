@@ -20,7 +20,6 @@
  */
 package eionet.gdem.web.listeners;
 
-import eionet.acl.AccessController;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +33,6 @@ import eionet.gdem.dto.ConvType;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
-import java.lang.reflect.Field;
-import static java.time.Clock.system;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -69,7 +63,7 @@ public class AppServletContextListener implements ApplicationListener {
      */
     private void checkFolders() {
         String[] folders
-                = {Properties.xslFolder, Properties.queriesFolder, Properties.tmpFolder, Properties.xmlfileFolder,
+                = {Properties.xslFolder, Properties.getXslFolder(), Properties.getTmpFolder(), Properties.getXmlfileFolder(),
                     Properties.schemaFolder};
 
         for (String folder : folders) {

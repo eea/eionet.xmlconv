@@ -1,15 +1,17 @@
 package eionet.gdem.configuration;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.openrdf.sail.rdbms.schema.HashTable;
 
 public final class ConfigurationFactory {
 
@@ -18,9 +20,69 @@ public final class ConfigurationFactory {
     private final Set<String> resourceNames;
     private final List<Properties> propertiesList;
     private final Map<String, String> resources;
-    private final CircularReferenceValidator circularReferenceValidator;
-    private final UnResolvedPropertyValidator unResolvedPropertyValidator;
     private final ConfigurationService configurationService;
+    private final List<ConfigurationValidator> validators;
+    private final List<ConfigurationCallback> callbacks;
+
+    public ConfigurationFactory(Set<String> resourceNames) throws ConfigurationException {
+        this(resourceNames, null, null, null);
+    }
+
+    public ConfigurationFactory(Set<String> resourceNames, String configSystemKey) throws ConfigurationException {
+        this(resourceNames, configSystemKey, null, null);
+    }
+
+    public ConfigurationFactory(Set<String> resourceNames, String configSystemKey, List<ConfigurationValidator> validators) throws ConfigurationException {
+        this(resourceNames, configSystemKey, validators, null);
+    }
+
+    /**
+     *
+     * @param resourceNames
+     * @param configSystemKey
+     * @param validators
+     * @param callbacks
+     * @throws ConfigurationException
+     */
+    public ConfigurationFactory(Set<String> resourceNames, String configSystemKey, List<ConfigurationValidator> validators, List<ConfigurationCallback> callbacks) throws ConfigurationException {
+
+        this.resourceNames = resourceNames;
+        this.validators = validators;
+        this.callbacks = callbacks;
+
+        propertiesList = new ArrayList<Properties>();
+        if (configSystemKey != null) {
+            loadConfigurationPropertiesFromSystemVariable(configSystemKey);
+        }
+        for (String resourceName : this.resourceNames) {
+            PropertiesConfigurationResourceProvider p = new PropertiesConfigurationResourceProvider(resourceName);
+            Properties properties = p.get();
+            propertiesList.add(properties);
+        }
+        resources = (new MapConfigurationResourceProvider(propertiesList).get());
+        configurationService = new RuntimeConfigurationService(resources, new SystemPropertyProviderImpl());
+        configurationService.cacheAll();
+        (new PropertySerializer("acl.properties", configurationService)).serialize();
+        if (this.validators != null) {
+            executeConfigurationValidators();
+        }
+        if (this.callbacks != null) {
+            executeConfigurationCallbacks();
+        }
+
+    }
+
+    public void executeConfigurationCallbacks() {
+        for (ConfigurationCallback callback : callbacks) {
+            callback.execute();
+        }
+    }
+
+    public void executeConfigurationValidators() throws ConfigurationException {
+        for (ConfigurationValidator validator : validators) {
+            validator.validate(resources);
+        }
+    }
 
     public ConfigurationService getConfigurationService() {
         return configurationService;
@@ -28,31 +90,6 @@ public final class ConfigurationFactory {
 
     public Map<String, String> getResources() {
         return resources;
-    }
-
-    public ConfigurationFactory(Set<String> resourceNames) throws ConfigurationException {
-        this(resourceNames, null);
-    }
-
-    public ConfigurationFactory(Set<String> resourceNames, String configSystemKey) throws ConfigurationException {
-        this.resourceNames = resourceNames;
-        propertiesList = new ArrayList<Properties>();
-        if (configSystemKey != null) {
-            loadConfigurationPropertiesFromSystemVariable(configSystemKey);
-        }
-        for (String resourceName : resourceNames) {
-            PropertiesConfigurationResourceProvider p = new PropertiesConfigurationResourceProvider(resourceName);
-            Properties properties = p.get();
-            propertiesList.add(properties);
-        }
-        resources = (new MapConfigurationResourceProvider(propertiesList).get());
-        this.circularReferenceValidator = new CircularReferenceValidator(resources);
-        circularReferenceValidator.validate();
-        unResolvedPropertyValidator = new UnResolvedPropertyValidator(resources, new SystemPropertyProviderImpl());
-        unResolvedPropertyValidator.validate();
-        configurationService = new RuntimeConfigurationService(resources, new SystemPropertyProviderImpl());
-        configurationService.cacheAll();
-
     }
 
     void loadConfigurationPropertiesFromSystemVariable(String key) {
@@ -66,6 +103,7 @@ public final class ConfigurationFactory {
         try {
             Properties configurationProperties = f.get();
             this.propertiesList.add(configurationProperties);
+            System.out.println(configurationProperties);
             LOGGER.info("Successfully loaded properties.");
         } catch (ConfigurationException ex) {
             Logger.getLogger(ConfigurationFactory.class.getName()).log(Level.INFO, null, ex);

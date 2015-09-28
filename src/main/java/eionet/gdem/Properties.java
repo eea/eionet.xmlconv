@@ -22,14 +22,10 @@ package eionet.gdem;
 import eionet.gdem.configuration.ConfigurationException;
 import eionet.gdem.configuration.ConfigurationFactory;
 import eionet.gdem.configuration.ConfigurationService;
-import eionet.gdem.configuration.RuntimeConfigurationService;
-import eionet.gdem.configuration.SystemPropertyProviderImpl;
 import eionet.gdem.configuration.UnResolvedPropertyException;
 import org.apache.log4j.Logger;
 
 import java.text.MessageFormat;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Several settings and properties for XMLCONV application.
@@ -42,7 +38,6 @@ public class Properties {
      * Logger class.
      */
     public static final Logger LOGGER = Logger.getLogger(Properties.class);
-
     /**
      * Application classes (WEB-INF/classes) path in file system.
      */
@@ -244,7 +239,7 @@ public class Properties {
         initConifigurationService();
         // filesystem properties
         queriesFolder = getStringProperty("queries.folder");
-        xslFolder = checkPath(getStringProperty("xsl.folder"));
+        xslFolder = (getStringProperty("xsl.folder"));
         tmpFolder = getStringProperty("tmp.folder");
         xmlfileFolder = getStringProperty("xmlfile.folder");
         schemaFolder = getStringProperty("schema.folder");
@@ -310,6 +305,7 @@ public class Properties {
             String value = configurationService.get(key);
             return value;
         } catch (UnResolvedPropertyException ue) {
+            LOGGER.error(ue.getMessage());
             return null;
         }
     }
@@ -319,17 +315,12 @@ public class Properties {
             String value = configurationService.get(key);
             return Integer.valueOf(value);
         } catch (UnResolvedPropertyException ue) {
+            LOGGER.error(ue.getMessage());
             return 0;
         } catch (NumberFormatException nfe) {
+            LOGGER.error(nfe.getMessage());
             return 0;
         }
-    }
-
-    private static String checkPath(String path) {
-        if (path.endsWith("/")) {
-            path = path.substring(0, path.length() - 1);
-        }
-        return path;
     }
 
     /**
@@ -407,4 +398,7 @@ public class Properties {
         Properties.tmpFolder = tmpFolder;
     }
 
+    public static String getSchemaFolder() {
+        return getStringProperty("schema.folder");
+    }
 }

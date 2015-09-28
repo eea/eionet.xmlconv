@@ -105,7 +105,7 @@ public final class RuntimeConfigurationService implements ConfigurationService {
         }
         for (String item : placeholders) {
             if (visited.contains(item)) {
-                throw new UnResolvedPropertyException("Could not resolve placeholder ${" + item + "}");
+                throw new UnResolvedPropertyException("Invalid circular reference. Could not resolve placeholder ${" + item + "}");
             }
             visited.push(item);
             String resolved = traverse(visited, item);

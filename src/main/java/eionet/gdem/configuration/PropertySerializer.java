@@ -24,11 +24,11 @@ import java.util.logging.Logger;
 public final class PropertySerializer {
 
     private static final Logger LOGGER = Logger.getLogger(PropertySerializer.class.getName());
-    private final Set<String> resourceNames;
+    private final String resourceName;
     private final ConfigurationService configurationService;
 
-    public PropertySerializer(Set<String> resourceNames, ConfigurationService configurationService) throws ConfigurationException {
-        this.resourceNames = resourceNames;
+    public PropertySerializer(String resourceName, ConfigurationService configurationService) throws ConfigurationException {
+        this.resourceName = resourceName;
         this.configurationService = configurationService;
     }
 
@@ -43,37 +43,35 @@ public final class PropertySerializer {
     void serializeProperties(Properties properties, String filename) throws IOException {
         LOGGER.log(Level.INFO, "Attempting to serialize properties to filepath: {0}", filename);
         properties.store(new OutputStreamWriter(new FileOutputStream(new File(filename))), null);
-        
+
     }
 
     public void serialize() throws ConfigurationException {
 
-        for (String resourceName : resourceNames) {
-            try {
-                URL resourceUrl = getResourceURL(resourceName);
-                String filename = resourceUrl.getFile();
-                Properties properties = getProperties(resourceName);
-                for (Object o : properties.keySet()) {
-                    String key = (String) o;
-                    String value = configurationService.get(key);
-                    properties.put(key, value);
-                }
-                serializeProperties(properties, filename);
-                LOGGER.log(Level.INFO, "Successfully serialized property file located at: {0}", properties);
-            } catch (ConfigurationException ex) {
-                Logger.getLogger(PropertySerializer.class.getName()).log(Level.SEVERE, null, ex);
-                throw new ConfigurationException(ex.getMessage());
-            } catch (NullPointerException ex) {
-                Logger.getLogger(PropertySerializer.class.getName()).log(Level.SEVERE, null, ex);
-                throw new ConfigurationException(ex.getMessage());
-            } catch (IOException ex) {
-                Logger.getLogger(PropertySerializer.class.getName()).log(Level.SEVERE, null, ex);
-                throw new ConfigurationException(ex.getMessage());
-            } catch (UnResolvedPropertyException ex) {
-                Logger.getLogger(PropertySerializer.class.getName()).log(Level.SEVERE, null, ex);
-                throw new ConfigurationException(ex.getMessage());
+        try {
+            URL resourceUrl = getResourceURL(resourceName);
+            String filename = resourceUrl.getFile();
+            Properties properties = getProperties(resourceName);
+            for (Object o : properties.keySet()) {
+                String key = (String) o;
+                String value = configurationService.get(key);
+                properties.put(key, value);
             }
-            
+            serializeProperties(properties, filename);
+            LOGGER.log(Level.INFO, "Successfully serialized property file located at: {0}", filename);
+        } catch (ConfigurationException ex) {
+            Logger.getLogger(PropertySerializer.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ConfigurationException(ex.getMessage());
+        } catch (NullPointerException ex) {
+            Logger.getLogger(PropertySerializer.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ConfigurationException(ex.getMessage());
+        } catch (IOException ex) {
+            Logger.getLogger(PropertySerializer.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ConfigurationException(ex.getMessage());
+        } catch (UnResolvedPropertyException ex) {
+            Logger.getLogger(PropertySerializer.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ConfigurationException(ex.getMessage());
         }
+
     }
 }
