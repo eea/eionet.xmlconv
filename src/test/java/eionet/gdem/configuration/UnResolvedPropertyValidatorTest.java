@@ -65,8 +65,8 @@ public class UnResolvedPropertyValidatorTest {
     @Test
     public void testParsingGdemProperties() throws ConfigurationException {
 
-        UnResolvedPropertyValidator validator = new UnResolvedPropertyValidator(gdem, systemProvider);
-        validator.validate();
+        UnResolvedPropertyValidator validator = new UnResolvedPropertyValidator(systemProvider);
+        validator.validate(gdem);
     }
 
     @Test
@@ -83,8 +83,8 @@ public class UnResolvedPropertyValidatorTest {
 
             }
         };
-        UnResolvedPropertyValidator validator = new UnResolvedPropertyValidator(properties, provider);
-        validator.validate();
+        UnResolvedPropertyValidator validator = new UnResolvedPropertyValidator(provider);
+        validator.validate(properties);
     }
 
     @Test
@@ -103,8 +103,8 @@ public class UnResolvedPropertyValidatorTest {
 
             }
         };
-        UnResolvedPropertyValidator validator = new UnResolvedPropertyValidator(properties, provider);
-        validator.validate();
+        UnResolvedPropertyValidator validator = new UnResolvedPropertyValidator(provider);
+        validator.validate(properties);
     }
 
     @Test(expected = ConfigurationException.class)
@@ -120,8 +120,8 @@ public class UnResolvedPropertyValidatorTest {
 
             }
         };
-        UnResolvedPropertyValidator validator = new UnResolvedPropertyValidator(properties, fake);
-        validator.validate();
+        UnResolvedPropertyValidator validator = new UnResolvedPropertyValidator(fake);
+        validator.validate(properties);
     }
 
     public void testValidationIsOkWhenResolvedBothByPropertiesAndBySystemProperties() throws ConfigurationException {
@@ -141,8 +141,8 @@ public class UnResolvedPropertyValidatorTest {
 
             }
         };
-        UnResolvedPropertyValidator validator = new UnResolvedPropertyValidator(properties, fake);
-        validator.validate();
+        UnResolvedPropertyValidator validator = new UnResolvedPropertyValidator(fake);
+        validator.validate(properties);
     }
 
     @Test(expected = ConfigurationException.class)
@@ -159,8 +159,8 @@ public class UnResolvedPropertyValidatorTest {
 
             }
         };
-        UnResolvedPropertyValidator validator = new UnResolvedPropertyValidator(properties, fake);
-        validator.validate();
+        UnResolvedPropertyValidator validator = new UnResolvedPropertyValidator(fake);
+        validator.validate(properties);
 
     }
 
@@ -180,8 +180,8 @@ public class UnResolvedPropertyValidatorTest {
 
             }
         };
-        UnResolvedPropertyValidator validator = new UnResolvedPropertyValidator(properties, fake);
-        validator.validate();
+        UnResolvedPropertyValidator validator = new UnResolvedPropertyValidator(fake);
+        validator.validate(properties);
 
     }
 
