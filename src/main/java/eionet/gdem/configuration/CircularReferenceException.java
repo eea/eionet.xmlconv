@@ -1,14 +1,20 @@
 package eionet.gdem.configuration;
 
-public class CircularReferenceException extends ConfigurationException{
+public class CircularReferenceException extends Exception {
 
-    public CircularReferenceException(String message) {
-        super(message);
-    }
-
-    public CircularReferenceException(String message, Throwable cause) {
-        super(message, cause);
+    private final String propertyName;
+    
+    public CircularReferenceException(String propertyName) {
+        this.propertyName = propertyName;
     }
     
+    public String getPropertyName() {
+        return propertyName;
+    }
+
+    @Override
+    public String getMessage() {
+        return String.format("Circular dependency caused by property: %s", this.getPropertyName());
+    }
     
 }

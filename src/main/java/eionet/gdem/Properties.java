@@ -19,10 +19,10 @@
  */
 package eionet.gdem;
 
-import eionet.gdem.configuration.ConfigurationException;
-import eionet.gdem.configuration.ConfigurationFactory;
-import eionet.gdem.configuration.ConfigurationService;
+import eionet.gdem.configuration.CircularReferenceException;
+import eionet.gdem.configuration.ConfigurationPropertyResolver;
 import eionet.gdem.configuration.UnresolvedPropertyException;
+import eionet.gdem.configuration.util.ConfigurationLoadException;
 import org.apache.log4j.Logger;
 
 import java.text.MessageFormat;
@@ -32,8 +32,7 @@ import java.text.MessageFormat;
  */
 public class Properties {
 
-    private static ConfigurationFactory configurationFactory;
-    private static ConfigurationService configurationService;
+    private static ConfigurationPropertyResolver configurationService;
     /**
      * Logger class.
      */
@@ -230,9 +229,7 @@ public class Properties {
     public static String timeFormatPattern = "dd MMM yyyy hh:mm:ss";
 
     private static void initConifigurationService() {
-        configurationFactory = (ConfigurationFactory) SpringApplicationContext.getBean("configurationFactory");
-        configurationService = configurationFactory.getConfigurationService();
-
+        configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
     }
 
     static {
@@ -302,21 +299,27 @@ public class Properties {
 
     public static String getStringProperty(String key) {
         try {
-            String value = configurationService.get(key);
-            return value;
-        } catch (UnresolvedPropertyException ue) {
-            LOGGER.error(ue.getMessage());
+            return configurationService.resolveValue(key);
+        }
+        catch (CircularReferenceException ex) {
+            LOGGER.error(ex.getMessage());
+            return null;
+        }
+        catch (ConfigurationLoadException ex) {
+            LOGGER.error(ex.getMessage());
+            return null;
+        }
+        catch (UnresolvedPropertyException ex) {
+            LOGGER.error(ex.getMessage());
             return null;
         }
     }
-
+    
     private static int getIntProperty(String key) {
+        String value = getStringProperty(key);
+        
         try {
-            String value = configurationService.get(key);
             return Integer.valueOf(value);
-        } catch (UnresolvedPropertyException ue) {
-            LOGGER.error(ue.getMessage());
-            return 0;
         } catch (NumberFormatException nfe) {
             LOGGER.error(nfe.getMessage());
             return 0;
@@ -330,14 +333,7 @@ public class Properties {
      * @return String value.
      */
     public static String getMessage(String key) {
-        if (configurationService == null) {
-            initConifigurationService();
-        }
-        try {
-            return configurationService.get(key);
-        } catch (UnresolvedPropertyException e) {
-            return null;
-        }
+        return getStringProperty(key);
     }
 
     /**
@@ -401,4 +397,5 @@ public class Properties {
     public static String getSchemaFolder() {
         return getStringProperty("schema.folder");
     }
+    
 }

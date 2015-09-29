@@ -2,8 +2,9 @@ package eionet.gdem.configuration;
 
 /**
  *
- * Interface that provides System Properties to the client.
+ * @author Ervis Zyka <ez@eworx.gr>
  */
 public interface SystemPropertyProvider {
-    String get(String key);
+    
+    String getPropertyValue(String propertyName);
 }

@@ -28,13 +28,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import eionet.gdem.Properties;
-import eionet.gdem.configuration.ConfigurationFactory;
 import eionet.gdem.dto.ConvType;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
 import javax.servlet.ServletContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -47,14 +45,10 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 @Component
 public class AppServletContextListener implements ApplicationListener {
 
-    @Autowired
-    private ConfigurationFactory configurationFactory;
-
     private static final Log LOGGER = LogFactory.getLog(AppServletContextListener.class);
 
-    /**
-     * Public constuctor
-     */
+
+    
     public AppServletContextListener() {
     }
 

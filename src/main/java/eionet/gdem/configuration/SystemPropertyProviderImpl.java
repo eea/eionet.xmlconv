@@ -1,15 +1,14 @@
 package eionet.gdem.configuration;
 
 /**
- * Wrapper class in order to access System Properties.
  *
+ * @author Ervis Zyka <ez@eworx.gr>
  */
 public class SystemPropertyProviderImpl implements SystemPropertyProvider {
 
-
     @Override
-    public String get(String value) {
-        return System.getProperty(value);
+    public String getPropertyValue(String propertyName) {
+        return System.getProperty(propertyName);
     }
-
+    
 }
