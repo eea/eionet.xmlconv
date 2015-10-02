@@ -10,18 +10,41 @@
     <context:property-placeholder location="classpath:gdem.properties" />
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
-        destroy-method="close">
+          destroy-method="close">
         <property name="driverClassName" value="${test.db.driver}" />
         <property name="url" value="${test.db.jdbcurl}" />
         <property name="username" value="${test.db.user}" />
         <property name="password" value="${test.db.password}" />
         <!-- The following two properties required because MySQL kills idle
-            connections after 8 hours. -->
+        connections after 8 hours. -->
         <property name="validationQuery" value="SELECT 1" />
         <property name="testOnBorrow" value="true" />
     </bean>
 
     <bean name="databaseTester" class="org.dbunit.DataSourceDatabaseTester">
         <constructor-arg ref="dataSource" />
+    </bean>
+       <bean id="appConfigDefinitionProvider" class="eionet.propertyplaceholderresolver.ConfigurationDefinitionProviderImpl">
+        <constructor-arg index="0">
+            <array>
+                <value>acl.properties</value>
+                <value>gdem.properties</value>
+                <value>eionetdir.properties</value>
+                <value>CatalogManager.properties</value>
+                <value>fme.properties</value>
+                <value>ApplicationResources.properties</value>
+            </array>
+        </constructor-arg>
+    </bean>
+    
+    <bean id="configurationPropertyResolver" class="eionet.propertyplaceholderresolver.ConfigurationPropertyResolverImpl">
+        <constructor-arg ref="appConfigDefinitionProvider" />
+    </bean>
+    
+    <bean id="configurationPostProcessor" class="eionet.propertyplaceholderresolver.spring.EionetPlaceholderConfigurer">
+        <constructor-arg ref="configurationPropertyResolver" />
+    </bean>
+    <bean id="accessControllerInit" class="eionet.acl.AccessController">
+        <constructor-arg index="0" ref="configurationPropertyResolver" />
     </bean>
 </beans>

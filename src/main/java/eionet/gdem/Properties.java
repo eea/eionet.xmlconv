@@ -19,10 +19,9 @@
  */
 package eionet.gdem;
 
-import eionet.gdem.configuration.CircularReferenceException;
-import eionet.gdem.configuration.ConfigurationPropertyResolver;
-import eionet.gdem.configuration.UnresolvedPropertyException;
-import eionet.gdem.configuration.util.ConfigurationLoadException;
+import eionet.propertyplaceholderresolver.CircularReferenceException;
+import eionet.propertyplaceholderresolver.ConfigurationPropertyResolver;
+import eionet.propertyplaceholderresolver.UnresolvedPropertyException;
 import org.apache.log4j.Logger;
 
 import java.text.MessageFormat;
@@ -302,10 +301,6 @@ public class Properties {
             return configurationService.resolveValue(key);
         }
         catch (CircularReferenceException ex) {
-            LOGGER.error(ex.getMessage());
-            return null;
-        }
-        catch (ConfigurationLoadException ex) {
             LOGGER.error(ex.getMessage());
             return null;
         }

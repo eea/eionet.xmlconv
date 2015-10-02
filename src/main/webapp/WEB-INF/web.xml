@@ -17,7 +17,7 @@
         <param-value>
             classpath:spring-app-context.xml,
             classpath:spring-datasource-context.xml
-            classpath:runtime-config.xml
+            classpath:spring-runtime.xml
         </param-value>
     </context-param>
 
