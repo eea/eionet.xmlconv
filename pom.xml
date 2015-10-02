@@ -377,6 +377,14 @@
                 <enabled>true</enabled>
             </releases>
         </repository>
+        <repository>
+            <id>archiva.snapshots</id>
+            <name>Internal Snapshot Repository</name>
+            <url>http://archiva.eionet.europa.eu/repository/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
         <!--
         <repository>
             <id>ehcache-repo</id>
