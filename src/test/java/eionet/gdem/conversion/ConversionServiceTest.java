@@ -78,6 +78,28 @@ public class ConversionServiceTest extends TestCase {
     }
 
     /**
+     * Test DataDictionary MS Excel file to XML conversion ConvertDD_XML_split method. This test will check if sheet names that exceed maximum length will be
+     * correctly parsed. File seed-wise.xlsx should be in the root of test classes. MS Excel file should contain text "Conversion works!" in one of the cells.
+     * Test parses the result Vector and checks, if XML file contains string "Conversion works!"
+     *
+     * @throws Exception
+     */
+    public void testConvertDD_LongSheetNamne_XML_split() throws Exception {
+        // System.out.println(filename);
+
+        ConversionServiceIF convService = new ConversionService();
+        Hashtable<String, Object> result = convService.convertDD_XML_split(TestUtils.getSeedURL("seed-wise.xlsx", this), "BiologyEQRClassificationProcedure");
+
+        // sheet name + .xml
+        Hashtable<String, byte[]> convertedFile = ((Vector<Hashtable<String, byte[]>>)result.get("convertedFiles")).get(0);
+        assertEquals("BiologyEQRClassificationProcedu.xml", convertedFile.get("fileName"));
+        assertEquals(1, ((Vector<Hashtable<String, byte[]>>)result.get("convertedFiles")).size());
+
+        String strXML = new String(convertedFile.get("content"), "UTF-8");
+        assertTrue(strXML.indexOf(TestConstants.STRCONTENT_RESULT) > 0);
+    }
+
+    /**
      * Test DataDictionary MS Excel file to XML conversion ConvertDD_XML_split method. Parse the result, if the Excel does not
      * contain specified sheet
      *
