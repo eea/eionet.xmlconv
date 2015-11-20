@@ -84,7 +84,7 @@ public class ConversionServiceTest extends TestCase {
      *
      * @throws Exception
      */
-    public void testConvertDD_LongSheetNamne_XML_split() throws Exception {
+    public void testConvertDD_LongSheetName_XML_split() throws Exception {
         // System.out.println(filename);
 
         ConversionServiceIF convService = new ConversionService();
