@@ -154,12 +154,11 @@ public abstract class DDXMLConverter {
 
     public ConversionResultDto convertDD_XML_split(OutputStream outStream, String sheetParam)
     throws GDEMException {
-
         try {
             if (isHttpResponse() && Utils.isNullStr(sheetParam)) {
                 sheetParam = sourcefile.getFirstSheetName();
             }
-            if (sheetParam.length() > 31) {
+            if (sheetParam != null && sheetParam.length() > 31) {
                 sheetParam = sheetParam.substring(0,31);
             }
             for (Map.Entry<String, String> entry : sheetSchemas.entrySet()) {

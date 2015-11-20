@@ -226,7 +226,7 @@ public class ExcelReader implements SourceReaderIF {
         for (int i = 0; i < tables.size(); i++) {
             DDXmlElement table = tables.get(i);
             String tblLocalName = table.getLocalName();
-            if (tblLocalName.length() > 31) {
+            if (tblLocalName != null && tblLocalName.length() > 31) {
                 tblLocalName = tblLocalName.substring(0,31);
             }
             String tblName = table.getName();
@@ -438,7 +438,7 @@ public class ExcelReader implements SourceReaderIF {
                 if (sheetValue == null) {
                     continue;
                 }
-                if (sheetValue.length() > 31) {
+                if (sheetValue != null && sheetValue.length() > 31) {
                     sheetValue = sheetValue.substring(0,31);
                 }
                 Sheet sheet = getSheet(sheetValue);
