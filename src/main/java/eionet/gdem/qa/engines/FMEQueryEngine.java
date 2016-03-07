@@ -24,7 +24,9 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
     private HttpClient client_ = null;
 
-    /** Security token for authentication. */
+    /**
+     * Security token for authentication.
+     */
     private String token_ = null;
 
     private String fmeUrl = null;
@@ -43,9 +45,10 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
     protected void runQuery(XQScript script, OutputStream result)
             throws GDEMException {
 
+        PostMethod runMethod = null;
         try {
             // for the request to run the service
-            PostMethod runMethod = new PostMethod(script.getScriptSource());
+            runMethod = new PostMethod(script.getScriptSource());
 
             runMethod.addParameter("token", token_);
 
@@ -65,6 +68,10 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
         } catch (Exception e) {
             throw new GDEMException(e.toString(), e);
+        } finally {
+            if (runMethod != null) {
+                runMethod.releaseConnection();
+            }
         }
 
     }
