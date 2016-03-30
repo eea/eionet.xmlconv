@@ -23,30 +23,122 @@
     <profiles>
         <profile>
             <id>docker</id>
+            <properties>
+                <docker.maven.plugin.version>0.14.2</docker.maven.plugin.version>
+                <docker.database.alias>database</docker.database.alias>
+                <docker.database.image>mysql</docker.database.image>
+                <docker.tomcat.host>${docker.host.address}:${tomcat.port}</docker.tomcat.host>
+                <docker.tomcat.url>http://${docker.host.address}:${tomcat.port}</docker.tomcat.url>
+                <docker.database.user>test</docker.database.user>
+                <docker.database.password>test</docker.database.password>
+                <tomcat.port>58080</tomcat.port>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>2.3.2</version>
-                        <inherited>true</inherited>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker.maven.plugin.version}</version>
                         <configuration>
-                            <verbose>false</verbose>
-                            <fork>false</fork>
-                            <compilerVersion>${java_version}</compilerVersion>
-                            <source>${java_version}</source>
-                            <target>${java_version}</target>
-                        </configuration>
-                    </plugin>
+                            <images>
+                                <image>
+                                    <alias>${docker.database.alias}</alias>
+                                    <name>${docker.database.image}</name>
+                                    <run>
+                                        <ports>
+                                            <!-- will automap container port 3306 to a random host port which can be reference by database.port placeholder -->
+                                            <port>database.port:3306</port>
+                                        </ports>
+                                        <env>
+                                            <MYSQL_ROOT_PASSWORD>toor</MYSQL_ROOT_PASSWORD>
+                                            <MYSQL_DATABASE>xmlconv</MYSQL_DATABASE>
+                                            <MYSQL_USER>test</MYSQL_USER>
+                                            <MYSQL_PASSWORD>test</MYSQL_PASSWORD>
+                                        </env>
+                                    </run>
+                                </image>
+                                <image>
+                                    <alias>tomcat</alias>
+                                    <name>dockerrepo.eionet.europa.eu:5000/${project.artifactId}</name>
+                                    <build>
+                                        <from>tomcat:7</from>
+                                        <maintainer>Ervis Zyka &lt;ez@eworx.gr&gt;</maintainer>
+                                        <tags>
+                                            <tag>latest</tag>
+                                            <tag>${project.version}</tag>
+                                        </tags>
+                                        <assembly>
+                                            <descriptorRef>rootWar</descriptorRef>
+                                        </assembly>
+                                        <runCmds>
+                                            <run>rm -rf /usr/local/tomcat/conf/logging.properties /usr/local/tomcat/webapps/*</run>
+                                            <run>mv /maven/ROOT.war /usr/local/tomcat/webapps/ROOT.war</run>
+                                        </runCmds>
+                                        <optimise>true</optimise>
 
+                                        <!-- Expose ports -->
+                                        <ports>
+                                            <port>8080</port>
+                                            <port>8009</port>
+                                        </ports>
+                                    </build>
+
+                                    <run>
+                                        <!-- Assign dynamically mapped ports to maven variables (which can be reused in integration tests) -->
+                                        <ports>
+                                            <port>tomcat.port:8080</port>
+                                        </ports>
+                                        <env>
+                                            <TOMCAT_PORT>${tomcat.port}</TOMCAT_PORT>
+                                            <TOMCAT_URL>http://localhost:${tomcat.port}</TOMCAT_URL>
+                                            <APP_HOST>localhost:${tomcat.port}</APP_HOST>
+                                            <APP_HOME>/xmlconv</APP_HOME>
+                                            <INIT_ADMINS>niknakas,zykaerv,roug</INIT_ADMINS>
+                                            <DATADICT_URL>http://dd.eionet.europa.eu</DATADICT_URL>
+                                            <DATADICT_RPC_ENDPOINT>http://dd.eionet.europa.eu/rpcrouter</DATADICT_RPC_ENDPOINT>
+                                            <CR_SPARQL_ENDPOINT>http://cr.eionet.europa.eu/sparql</CR_SPARQL_ENDPOINT>
+                                            <CDR_URL>http://cdr.eionet.europa.eu/example</CDR_URL>
+                                            <DATABASE_URL>jdbc:mysql://database:3306/xmlconv?autoReconnect=true&amp;characterEncoding=UTF-8&amp;emptyStringsConvertToZero=false&amp;jdbcCompliantTruncation=false</DATABASE_URL>
+                                            <DATABASE_USER>root</DATABASE_USER>
+                                            <DATABASE_PASSWORD>toor</DATABASE_PASSWORD>
+                                            <LOG_FILEPATH>/xmlconv/xmlconv.log</LOG_FILEPATH>
+                                            <CATALINA_OPTS>-Djava.security.egd=file:/dev/./urandom -Dapp.home=${APP_HOME} -Dapp.host=${APP_HOST} -Dconfig.log.file=${LOG_FILEPATH} -Dinitial.admin=${INIT_ADMINS} -Dconfig.gdem.url=${TOMCAT_URL} -Dconfig.dd.url=${DATADICT_URL} -Dconfig.dd.rpc.url=${DATADICT_RPC_ENDPOINT} -Dconfig.cr.sparql.endpoint=${CR_SPARQL_ENDPOINT} -Dconfig.cdr.url=${CDR_URL} -Dconfig.db.jdbcurl=${DATABASE_URL} -Dconfig.db.driver=com.mysql.jdbc.Driver -Dconfig.db.user=${DATABASE_USER} -Dconfig.db.password=${DATABASE_PASSWORD}</CATALINA_OPTS>
+                                            <JAVA_OPTS>-Xmx3072m</JAVA_OPTS>
+                                        </env>
+                                        <wait>
+                                            <url>http://${docker.host.address}:${tomcat.port}/</url>
+                                            <time>20000</time>
+                                        </wait>
+                                        <links>
+                                            <link>database:database</link>
+                                        </links>
+                                        <log>
+                                            <prefix>TC</prefix>
+                                            <color>cyan</color>
+                                        </log>
+                                    </run>
+                                </image>
+                            </images>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>start</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                    <goal>start</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <filtering>false</filtering>
-                    </resource>
-                </resources>
-                <finalName>xmlconv</finalName>
             </build>
         </profile>
         <profile>
@@ -721,7 +813,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.6</version>
+            <version>5.1.38</version>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>

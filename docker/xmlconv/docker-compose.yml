@@ -1,0 +1,35 @@
+server:
+    image: dockerrepo.eionet.europa.eu:5000/xmlconv
+    environment:
+        - CATALINA_OPTS="-Djava.security.egd=file:/dev/./urandom -Dapp.home=/xmlconv -Dapp.host=localhost:58080 -Dconfig.log.file=/xmlconv/xmlconv.log -Dinitial.admin=niknakas,zykaerv,roug -Dconfig.gdem.url=http://localhost:58080 -Dconfig.dd.url=http://dd.eionet.europa.eu -Dconfig.dd.rpc.url=http://dd.eionet.europa.eu/rpcrouter -Dconfig.cr.sparql.endpoint=http://cr.eionet.europa.eu/sparql -Dconfig.cdr.url=http://cdr.eionet.europa.eu/example -Dconfig.db.driver=com.mysql.jdbc.Driver -Dconfig.db.user=test -Dconfig.db.password=test -Dconfig.db.jdbcurl=jdbc:mysql://database:3306/xmlconv?autoReconnect=true&amp;characterEncoding=UTF-8&amp;emptyStringsConvertToZero=false&amp;jdbcCompliantTruncation=false "
+        - JAVA_OPTS=-Xmx3072m
+    ports:
+        - "58080:8080"
+    volumes_from:
+        - data_server
+    links:
+        - database:database
+
+database:
+    image: mysql
+    environment:
+        - MYSQL_ROOT_PASSWORD=toor
+        - MYSQL_DATABASE=xmlconv
+        - MYSQL_USER=test
+        - MYSQL_PASSWORD=test
+    volumes_from:
+        - data_db
+
+
+data_server:
+    image: alpine
+    volumes:
+        - /xmlconv
+    command: /bin/true
+
+data_db:
+    image: alpine
+    volumes:
+        - /var/lib/mysql
+    command: /bin/true
+        
