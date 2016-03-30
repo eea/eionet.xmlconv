@@ -154,12 +154,13 @@ public abstract class DDXMLConverter {
 
     public ConversionResultDto convertDD_XML_split(OutputStream outStream, String sheetParam)
     throws GDEMException {
-
         try {
             if (isHttpResponse() && Utils.isNullStr(sheetParam)) {
                 sheetParam = sourcefile.getFirstSheetName();
             }
-
+            if (sheetParam != null && sheetParam.length() > 31) {
+                sheetParam = sheetParam.substring(0,31);
+            }
             for (Map.Entry<String, String> entry : sheetSchemas.entrySet()) {
                 String sheetName = entry.getKey();
                 String sheetSchema = entry.getValue();
@@ -371,6 +372,9 @@ public abstract class DDXMLConverter {
             }
         }
         if (!Utils.isNullStr(sheetName)) {
+            if (sheetName.length() > 31) {
+                sheetName = sheetName.substring(0,31);
+            }
             if (!Utils.containsKeyIgnoreCase(sheetSchemas, sheetName)) {
                 isValidSheetSchema = false;
                 resultObject.setStatusCode(ConversionResultDto.STATUS_ERR_SCHEMA_NOT_FOUND);

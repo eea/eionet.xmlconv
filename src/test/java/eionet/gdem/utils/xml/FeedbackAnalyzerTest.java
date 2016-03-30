@@ -65,4 +65,13 @@ public class FeedbackAnalyzerTest extends TestCase {
         assertTrue(fbStatus.equals("WARNING"));
 
     }
+
+    public void testNestedFeedbackMessage() {
+        String qaResult = "<div id=\"wrapper\"><p>This is a test HTML</p><div id=\"feedbackStatus\" class=\"INFO\">" +
+                "This paragraph contains the feedback message with <b>bold</b> words and <i>italic</i> words.</div>" +
+                "<div id=\"anotherText\">This is the next part of the HTML file</div></div>";
+        HashMap<String, String> fbResult = FeedbackAnalyzer.getFeedbackResultFromStr(qaResult);
+        String fbMessage = fbResult.get(Constants.RESULT_FEEDBACKMESSAGE_PRM);
+        assertEquals("Wrong result message", "This paragraph contains the feedback message with bold words and italic words.",fbMessage);
+    }
 }
