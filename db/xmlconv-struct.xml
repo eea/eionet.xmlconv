@@ -342,8 +342,8 @@
             Add an extra field in the QA scripts table in order to delcare activation/deactivation of the script.
         </comment>
         <addColumn tableName="T_QUERY">
-            <column name="ACTIVATED" type="TINYINT(1)" defaultValue="1"/>
+            <column name="ACTIVE" type="TINYINT(1)" defaultValue="1"/>
         </addColumn>
-        <addNotNullConstraint tableName="T_QUERY" columnName="ACTIVATED" columnDataType="TINYINT(1)"/>
+        <addNotNullConstraint tableName="T_QUERY" columnName="ACTIVE" columnDataType="TINYINT(1)"/>
     </changeSet>
 </databaseChangeLog>
