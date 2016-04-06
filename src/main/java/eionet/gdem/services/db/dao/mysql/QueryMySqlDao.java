@@ -28,7 +28,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
             + QUERY_FILE_FLD + ", " + QUERY_TABLE + "." + DESCR_FLD + "," + SCHEMA_TABLE + "." + SCHEMA_ID_FLD + ","
             + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ", " + QUERY_TABLE + "." + RESULT_TYPE_FLD + ", " + CONVTYPE_TABLE + "."
             + CONTENT_TYPE_FLD + ", " + QUERY_TABLE + "." + QUERY_SCRIPT_TYPE + "," + QUERY_TABLE + "." + UPPER_LIMIT_FLD
-            + ", " + QUERY_TABLE + "." + QUERY_URL_FLD
+            + ", " + QUERY_TABLE + "." + QUERY_URL_FLD + "," + ACTIVE_FLD
             + " FROM " + QUERY_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE + " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "="
             + SCHEMA_TABLE + "." + SCHEMA_ID_FLD + " LEFT OUTER JOIN " + CONVTYPE_TABLE + " ON " + QUERY_TABLE + "."
             + RESULT_TYPE_FLD + "=" + CONVTYPE_TABLE + "." + CONV_TYPE_FLD;
@@ -42,7 +42,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
     private static final String qQueryInfo = "SELECT " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "," + QUERY_FILE_FLD + ", "
             + QUERY_TABLE + "." + DESCR_FLD + "," + SHORT_NAME_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ","
             + QUERY_TABLE + "." + RESULT_TYPE_FLD + ", " + CONVTYPE_TABLE + "." + CONTENT_TYPE_FLD + "," + QUERY_TABLE + "."
-            + QUERY_SCRIPT_TYPE + "," + QUERY_TABLE + "." + UPPER_LIMIT_FLD + "," + QUERY_TABLE + "." + QUERY_URL_FLD
+            + QUERY_SCRIPT_TYPE + "," + QUERY_TABLE + "." + UPPER_LIMIT_FLD + "," + QUERY_TABLE + "." + QUERY_URL_FLD + "," + ACTIVE_FLD
             + " FROM " + QUERY_TABLE + " LEFT OUTER JOIN "
             + SCHEMA_TABLE + " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD
             + " LEFT OUTER JOIN " + CONVTYPE_TABLE + " ON " + QUERY_TABLE + "." + RESULT_TYPE_FLD + "=" + CONVTYPE_TABLE + "."
@@ -50,7 +50,9 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
     private static final String qQueryInfoByID = qQueryInfo + " WHERE " + QUERY_ID_FLD + "=?";
     private static final String qQueryInfoByFileName = qQueryInfo + " WHERE " + QUERY_FILE_FLD + "=?";
-
+    
+    private static final String qQueryUpdateActive = "UPDATE " + QUERY_TABLE + " SET " + ACTIVE_FLD + "=? WHERE " + QUERY_ID_FLD + "=?" ;
+    
     private static final String qRemoveQuery = "DELETE FROM " + QUERY_TABLE + " WHERE " + QUERY_ID_FLD + "=?";
     private static final String qUpdateQuery = "UPDATE  " + QUERY_TABLE + " SET " + QUERY_FILE_FLD + "=?" + ", " + SHORT_NAME_FLD
             + "=?" + ", " + DESCR_FLD + "=?" + ", " + XSL_SCHEMA_ID_FLD + "=?" + ", " + RESULT_TYPE_FLD + "=?" + ", "
@@ -68,6 +70,8 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
     private static final String qCheckQueryFileByIdAndName = "SELECT COUNT(*) FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD
             + "=?" + " and " + QUERY_ID_FLD + "=?";;
+    
+    
 
     @Override
     public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description, String content_type,
@@ -216,6 +220,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
                 h.put("script_type", r[0][7]);
                 h.put("upper_limit", r[0][8]);
                 h.put("url", r[0][9]);
+                h.put("is_active", r[0][10]);
             }
 
         } finally {
@@ -315,6 +320,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
                 h.put("content_type_out", r[i][7]);
                 h.put("script_type", r[i][8]);
                 h.put("upper_limit", r[i][9]);
+                h.put("is_active", r[i][10]);
                 v.add(h);
             }
         } finally {
@@ -379,6 +385,36 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
             closeAllResources(rs, pstmt, conn);
         }
 
+    }
+    
+    @Override
+    public void activateQuery (String query_id) throws SQLException {
+         setQueryActivation(query_id, true);
+    }
+    
+    @Override
+    public void deactivateQuery (String query_id) throws SQLException {
+         setQueryActivation(query_id, false);
+    }
+    
+    public void setQueryActivation (String query_id, boolean set_active) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + qQueryUpdateActive);
+        }
+        
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(qQueryUpdateActive);
+            pstmt.setBoolean(1, set_active);
+            pstmt.setString(2, query_id);
+            pstmt.executeUpdate();
+        } finally {
+            closeAllResources(rs, pstmt, conn);
+        }
     }
 
 }

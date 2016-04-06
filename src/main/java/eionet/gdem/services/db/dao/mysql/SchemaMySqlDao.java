@@ -70,7 +70,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
             + STYLESHEET_ID_FLD + " = X." + CNV_ID_FLD + " AND XS." + XSL_SCHEMA_ID_FLD + "= ?" + " ORDER BY " + RESULT_TYPE_FLD;
 
     private static final String qSchemaQueries = "SELECT " + QUERY_ID_FLD + ", " + QUERY_FILE_FLD + ", " + DESCR_FLD + ","
-            + SHORT_NAME_FLD + "," + QUERY_SCRIPT_TYPE + "," + QUERY_RESULT_TYPE + "," + UPPER_LIMIT_FLD + " FROM " + QUERY_TABLE
+            + SHORT_NAME_FLD + "," + QUERY_SCRIPT_TYPE + "," + QUERY_RESULT_TYPE + "," + UPPER_LIMIT_FLD + "," + ACTIVE_FLD + " FROM " + QUERY_TABLE
             + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?" + " ORDER BY " + SHORT_NAME_FLD;
 
     private static final String qSchemasWithStl = "SELECT DISTINCT S." + SCHEMA_ID_FLD + ", S." + XML_SCHEMA_FLD + ", S."
@@ -467,6 +467,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
                 h.put("script_type", r[i][4]);
                 h.put("result_type", r[i][5]);
                 h.put("upper_limit", r[i][6]);
+                h.put("is_active", r[i][7]);
                 v.add(h);
             }
         } finally {

@@ -85,6 +85,7 @@ public class QAScriptManager {
                 qaScript.setFileName((String) scriptData.get("query"));
                 qaScript.setUpperLimit((String) scriptData.get("upper_limit"));
                 qaScript.setUrl((String) scriptData.get("url"));
+                qaScript.setActive((String) scriptData.get("is_active"));
 
                 String queryFolder = Properties.queriesFolder;
 
@@ -121,6 +122,7 @@ public class QAScriptManager {
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.error("Error getting QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
@@ -539,6 +541,42 @@ public class QAScriptManager {
             LOGGER.error("Error updating remote script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
+
+    }
+    
+    public void activateDeactivate (String user, String scriptId, boolean setActive) throws DCMException {
+        try {
+            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
+                LOGGER.debug("You don't have permissions to activate QA script!");
+                throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
+            }
+        } catch (DCMException e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error activating QA script", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
+        
+        if (Utils.isNullStr(scriptId)) {
+            LOGGER.error("Cannot activate QA script. Script ID is empty.");
+            throw new DCMException(BusinessConstants.EXCEPTION_NO_QASCRIPT_SELECTED);
+        }
+        
+        try {
+            if (setActive){
+                System.out.println(this.getClass().toString() + " : "+ scriptId);
+                queryDao.activateQuery(scriptId);
+            }
+            else {
+                queryDao.deactivateQuery(scriptId);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("Error with setting active field of QA script", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
+        
+        
 
     }
 

@@ -118,6 +118,7 @@
                       <th scope="col"><bean:message key="label.qascript.description"/></th>
                       <th scope="col"><bean:message key="label.qascript.fileName"/></th>
                       <th scope="col"><bean:message key="label.lastmodified"/></th>
+                      <th scope="col"><bean:message key="label.qascript.isActive"/></th>
                    </tr>
                 </thead>
                <tbody>
@@ -180,6 +181,9 @@
                         </logic:equal>
                     </logic:notEqual>
                     </td>
+                    <td>
+                        <bean:write name="qascript" property="active" />
+                    </td>
                 </tr>
             </logic:iterate>
             </tbody>
@@ -187,6 +191,14 @@
                 <div class="boxbottombuttons">
                     <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" property="ssdPrm" >
                            <input type="button"  class="button" value="<bean:message key="label.qascript.delete"/>" onclick="return submitAction(2,'deleteQAScript');" />
+                        <input type="hidden" name="schemaId" value="${schemaId}" />
+                    </logic:equal>
+                    <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" property="ssdPrm" >
+                           <input type="button"  class="button" value="<bean:message key="label.qascript.activate"/>" onclick="return submitAction(2,'activateQAScript');" />
+                        <input type="hidden" name="schemaId" value="${schemaId}" />
+                    </logic:equal>
+                    <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" property="ssdPrm" >
+                           <input type="button"  class="button" value="<bean:message key="label.qascript.deactivate"/>" onclick="return submitAction(2,'deactivateQAScript');" />
                         <input type="hidden" name="schemaId" value="${schemaId}" />
                     </logic:equal>
                 </div>

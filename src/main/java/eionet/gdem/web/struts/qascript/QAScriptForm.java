@@ -47,6 +47,7 @@ public class QAScriptForm extends ActionForm {
     private String schema;
     private String upperLimit;
     private String url;
+    private boolean active;
 
     @Override
     public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
@@ -69,8 +70,17 @@ public class QAScriptForm extends ActionForm {
         schema = null;
         upperLimit = "10";
         url = null;
+        active = true;
     }
 
+    public boolean getActive() {
+        return active;
+    }
+
+    public void setActive(boolean isActive) {
+        this.active = isActive;
+    }
+    
     public String getScriptId() {
         return scriptId;
     }

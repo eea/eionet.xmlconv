@@ -129,6 +129,7 @@ public class EditQAScriptAction extends LookupDispatchAction {
         String upperLimit = form.getUpperLimit();
         String url = form.getUrl();
         String checksum = form.getChecksum();
+        boolean active = form.getActive();
 
         boolean updateContent = false;
         String newChecksum = null;
@@ -179,6 +180,7 @@ public class EditQAScriptAction extends LookupDispatchAction {
                 qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, upperLimit,
                         url, scriptContent, updateContent);
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.updated"));
+                qm.activateDeactivate(user, scriptId, active);
                 // clear qascript list in cache
                 QAScriptListLoader.reloadList(httpServletRequest);
             } catch (DCMException e) {

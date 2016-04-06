@@ -39,7 +39,8 @@ public class BusinessConstants {
     public static final String EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE = "label.autorization.qascript.update";
     public static final String EXCEPTION_AUTORIZATION_QASCRIPT_DELETE = "label.autorization.qascript.delete";
     public static final String EXCEPTION_AUTORIZATION_QASCRIPT_INSERT = "label.autorization.qascript.insert";
-
+    public static final String EXCEPTION_NO_QASCRIPT_SELECTED = "label.qascript.notSelected";
+    
     // public static final String EXCEPTION_PARAM_DB_SAVED =
     // "label.editParam.db.saved";
     public static final String EXCEPTION_PARAM_DB_FAILED = "label.editParam.db.failed";
