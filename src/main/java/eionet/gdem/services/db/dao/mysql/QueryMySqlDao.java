@@ -28,7 +28,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
             + QUERY_FILE_FLD + ", " + QUERY_TABLE + "." + DESCR_FLD + "," + SCHEMA_TABLE + "." + SCHEMA_ID_FLD + ","
             + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ", " + QUERY_TABLE + "." + RESULT_TYPE_FLD + ", " + CONVTYPE_TABLE + "."
             + CONTENT_TYPE_FLD + ", " + QUERY_TABLE + "." + QUERY_SCRIPT_TYPE + "," + QUERY_TABLE + "." + UPPER_LIMIT_FLD
-            + ", " + QUERY_TABLE + "." + QUERY_URL_FLD + "," + ACTIVE_FLD
+            + ", " + QUERY_TABLE + "." + QUERY_URL_FLD + ", " + QUERY_TABLE +"."+ACTIVE_FLD
             + " FROM " + QUERY_TABLE + " LEFT OUTER JOIN " + SCHEMA_TABLE + " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "="
             + SCHEMA_TABLE + "." + SCHEMA_ID_FLD + " LEFT OUTER JOIN " + CONVTYPE_TABLE + " ON " + QUERY_TABLE + "."
             + RESULT_TYPE_FLD + "=" + CONVTYPE_TABLE + "." + CONV_TYPE_FLD;
@@ -320,10 +320,11 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
                 h.put("content_type_out", r[i][7]);
                 h.put("script_type", r[i][8]);
                 h.put("upper_limit", r[i][9]);
-                h.put("is_active", r[i][10]);
+                h.put("is_active", r[i][11]);
                 v.add(h);
             }
-        } finally {
+        }
+        finally {
             closeAllResources(rs, pstmt, conn);
         }
 
