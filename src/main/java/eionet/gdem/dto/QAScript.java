@@ -162,7 +162,6 @@ public class QAScript {
     }
     
     public void setActive (String isActive) {
-        System.out.println("setting is active to "+ this.scriptId + " found: "+ isActive);
         this.active = isActive.equals("1");
     } 
     
