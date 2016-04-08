@@ -3,6 +3,7 @@
  */
 package eionet.gdem.qa;
 
+import eionet.gdem.services.db.dao.IQueryDao;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Hashtable;
@@ -33,6 +34,9 @@ public class XQueryServiceTest {
     @Autowired
     private IDatabaseTester databaseTester;
 
+    @Autowired
+    private IQueryDao queryDao;
+     
     @Autowired
     private IXQJobDao xqJobDao;
 
@@ -122,5 +126,29 @@ public class XQueryServiceTest {
 
         assertTrue(ok);
 
+    }
+    
+    @Test
+    public void testListQAScriptsDeactivated () throws Exception {
+        XQueryService qm = new XQueryService();
+        queryDao.deactivateQuery("26");
+        Vector listQaResult = qm.listQAScripts("60");
+        assertTrue(listQaResult.size()==0);
+        
+        queryDao.activateQuery("26");
+        listQaResult = qm.listQAScripts("60");
+        assertTrue(listQaResult.size()==1);
+    }
+    
+    @Test
+    public void testListQueriesDeactivated () throws Exception {
+        XQueryService qm = new XQueryService();
+        queryDao.deactivateQuery("26");
+        Vector listQaResult = qm.listQueries("http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1919");
+        assertTrue(listQaResult.size()==0);
+        
+        queryDao.activateQuery("26");
+        listQaResult = qm.listQueries("http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1919");
+        assertTrue(listQaResult.size()==1);
     }
 }
