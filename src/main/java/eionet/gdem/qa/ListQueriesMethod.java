@@ -15,6 +15,7 @@ import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.Utils;
+import java.util.Map;
 
 /**
  * Implementation of listQueries and listQAScripts methods.
@@ -109,6 +110,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
             if (queries != null) {
                 for (int i = 0; i < queries.size(); i++) {
                     Hashtable ht = (Hashtable) queries.get(i);
+                    if (!isActive(ht)) continue;
                     ht.put(KEY_TYPE, Constants.QA_TYPE_XQUERY);
                     // return full URL of XQuerys
                     ht.put(KEY_QUERY, Properties.gdemURL + "/" + Constants.QUERIES_FOLDER + (String) ht.get("query"));
@@ -157,6 +159,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
 
             for (int i = 0; i < queries.size(); i++) {
                 HashMap hQueries = (HashMap) queries.get(i);
+                if (!isActive(hQueries)) continue;
                 String queryId = (String) hQueries.get("query_id");
                 String queryFile = (String) hQueries.get("query");
                 String queryDescription = (String) hQueries.get("descripton");
@@ -189,5 +192,9 @@ public class ListQueriesMethod extends RemoteServiceMethod {
         }
 
         return result;
+    }
+    
+    private boolean isActive(Map query){
+        return query.get("is_active").equals("1");
     }
 }
