@@ -547,7 +547,7 @@ public class QAScriptManager {
     public void activateDeactivate (String user, String scriptId, boolean setActive) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
-                LOGGER.debug("You don't have permissions to activate QA script!");
+                LOGGER.debug("You don't have permissions to activate or deactivate QA script!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
             }
         } catch (DCMException e) {
