@@ -49,7 +49,7 @@ public class DeactivateQAScriptAction extends Action {
             QAScriptListLoader.reloadList(httpServletRequest);
         } catch (DCMException e) {
             e.printStackTrace();
-            LOGGER.error("Error activating QA script", e);
+            LOGGER.error("Error deactivating QA script", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
         }
         // saveErrors(httpServletRequest, errors);
