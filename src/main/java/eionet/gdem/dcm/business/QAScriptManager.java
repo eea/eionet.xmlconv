@@ -544,6 +544,13 @@ public class QAScriptManager {
 
     }
     
+    /**
+     * Set/Unset "ACTIVE" flag on a specific scriptId 
+     * @param user
+     * @param scriptId
+     * @param setActive
+     * @throws DCMException 
+     */
     public void activateDeactivate (String user, String scriptId, boolean setActive) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
