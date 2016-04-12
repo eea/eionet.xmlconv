@@ -108,6 +108,7 @@ public class QueryDaoTest {
         assertEquals(query.get("script_type"), script_type);
         assertEquals(query.get("upper_limit"), upperLimit);
         assertEquals(query.get("url"), url);
+        assertEquals(query.get("is_active"), "1");
         // check boolean methods
         assertTrue(queryDao.checkQueryFile(queryFileName));
         assertTrue(queryDao.checkQueryFile(queryId, queryFileName));
@@ -120,6 +121,16 @@ public class QueryDaoTest {
         assertEquals(query.get("description"), description + "UPD");
         assertEquals(query.get("short_name"), shortName + "UPD");
 
+        //deactivate QA Script in order to 
+        queryDao.deactivateQuery(queryId);
+        query = queryDao.getQueryInfo(queryId);
+        assertEquals(query.get("is_active"), "0");
+        
+        //reactivate QA Script in order to 
+        queryDao.activateQuery(queryId);
+        query = queryDao.getQueryInfo(queryId);
+        assertEquals(query.get("is_active"), "1");
+        
         // delete inserted query
         queryDao.removeQuery(queryId);
 
