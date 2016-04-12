@@ -560,12 +560,12 @@ public class QAScriptManager {
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            LOGGER.error("Error activating QA script", e);
+            LOGGER.error("Error setting activation status for QA script.", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         
         if (Utils.isNullStr(scriptId)) {
-            LOGGER.error("Cannot activate QA script. Script ID is empty.");
+            LOGGER.error("Cannot set activation status for QA script. Script ID is empty.");
             throw new DCMException(BusinessConstants.EXCEPTION_NO_QASCRIPT_SELECTED);
         }
         
@@ -578,8 +578,7 @@ public class QAScriptManager {
                 queryDao.deactivateQuery(scriptId);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error("Error with setting active field of QA script", e);
+            LOGGER.error("Error setting activation status for QA script.", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         
