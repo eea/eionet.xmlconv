@@ -540,22 +540,13 @@
             <version>1.0</version>
         </dependency>
 
-        <!-- Saxon 8.9 libraries for executing XQuery scripts-->
+        <!-- Saxon library for executing XQuery scripts-->
         <dependency>
             <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon</artifactId>
-            <version>8.9</version>
+            <artifactId>Saxon-HE</artifactId>
+            <version>9.7.0-4</version>
         </dependency>
-        <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon-dom</artifactId>
-            <version>8.9</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon-xqj</artifactId>
-            <version>8.9</version>
-        </dependency>
+
 
         <!-- EIONET dependencies -->
         <dependency>
