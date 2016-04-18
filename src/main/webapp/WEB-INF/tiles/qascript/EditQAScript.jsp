@@ -155,11 +155,15 @@
                      </label>
                 </td>
                 <td>
-                    <html:select name="QAScriptForm" property="active" >
-                        <html:option value="true">true</html:option>
-                        <html:option value="false">false</html:option>
-                    </html:select>
-                    <html:hidden name="QAScriptForm" property="active" />
+                   <%-- <logic:equal name="QAScriptForm" property="active" value="true">
+                        
+                        <input name="actives" type="checkbox" checked="checked"/>
+                    </logic:equal>
+                    <logic:notEqual name="QAScriptForm" property="active" value="true">
+                        <input name="actives" type="checkbox" />
+                    </logic:notEqual> --%>
+                    <html:checkbox  name="QAScriptForm" property="active"/>
+                    <html:hidden property="active" name="QAScriptForm" value="false"/>
                 </td>
             </tr>
             <%--  If scriptType is 'FME' don't show the 'Check for updates' --%>

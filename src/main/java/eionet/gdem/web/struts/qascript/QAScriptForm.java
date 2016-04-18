@@ -72,7 +72,7 @@ public class QAScriptForm extends ActionForm {
         url = null;
         active = true;
     }
-
+    
     public boolean getActive() {
         return active;
     }

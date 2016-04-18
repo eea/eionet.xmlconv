@@ -182,7 +182,12 @@
                     </logic:notEqual>
                     </td>
                     <td>
-                        <bean:write name="qascript" property="active" />
+                        <logic:equal name="qascript" property="active" value="true">
+                            <input type="checkbox" checked="checked" disabled/>
+                        </logic:equal>
+                        <logic:notEqual name="qascript" property="active" value="true">
+                            <input type="checkbox" disabled/>
+                        </logic:notEqual>
                     </td>
                 </tr>
             </logic:iterate>

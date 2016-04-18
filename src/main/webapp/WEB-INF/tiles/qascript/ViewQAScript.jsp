@@ -124,7 +124,12 @@
                 <bean:message key="label.qascript.isActive"/>
             </th>
             <td>
-                <bean:write name="QAScriptForm" property="active" />
+                <logic:equal name="QAScriptForm" property="active" value="true">
+                    <input type="checkbox" checked="checked" disabled/>
+                </logic:equal>
+                <logic:notEqual name="QAScriptForm" property="active" value="true">
+                    <input type="checkbox" disabled/>
+                </logic:notEqual>
             </td>
         </tr>
 
