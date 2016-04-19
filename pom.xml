@@ -418,26 +418,33 @@
             <artifactId>xalan</artifactId>
             <version>2.6.0</version>
         </dependency>
+
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
-            <version>2.6.2</version>
+            <version>2.11.0</version>
         </dependency>
         <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xmlParserAPIs</artifactId>
-            <version>2.6.2</version>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.4.01</version>
         </dependency>
-        <dependency>
-            <groupId>xom</groupId>
-            <artifactId>xom</artifactId>
-            <version>1.2.5</version>
-        </dependency>
+        <!--
+     <dependency>
+         <groupId>xerces</groupId>
+         <artifactId>xmlParserAPIs</artifactId>
+         <version>2.6.2</version>
+     </dependency>
+     <dependency>
+         <groupId>xom</groupId>
+         <artifactId>xom</artifactId>
+         <version>1.2.5</version>
+     </dependency>-->
         <dependency>
             <groupId>xml-resolver</groupId>
             <artifactId>xml-resolver</artifactId>
             <version>1.2</version>
-        </dependency>
+        </dependency><!--
         <dependency>
             <groupId>stax</groupId>
             <artifactId>stax-api</artifactId>
@@ -447,7 +454,7 @@
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>1.6.1</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.wutka</groupId>
             <artifactId>dtdparser</artifactId>
@@ -471,12 +478,18 @@
             <version>3.7</version>
         </dependency>
 
-        <!-- XSL-FO (pdf) conversion -->
+        <!-- XSL-FO (pdf) conversion
         <dependency>
             <groupId>fop</groupId>
             <artifactId>fop</artifactId>
             <version>0.20.5</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>fop</artifactId>
+            <version>2.1</version>
         </dependency>
+
         <!-- batik.jar used by fop: exact version (1.0) cannot be found from central repo. -->
         <dependency>
             <groupId>org.apache</groupId>
@@ -540,22 +553,18 @@
             <version>1.0</version>
         </dependency>
 
-        <!-- Saxon 8.9 libraries for executing XQuery scripts-->
+        <!-- Saxon library for executing XQuery scripts-->
         <dependency>
             <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon</artifactId>
-            <version>8.9</version>
+            <artifactId>Saxon-HE</artifactId>
+            <version>9.7.0-4</version>
         </dependency>
+        <!--
         <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon-dom</artifactId>
-            <version>8.9</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon-xqj</artifactId>
-            <version>8.9</version>
-        </dependency>
+            <groupId>sxxon</groupId>
+            <artifactId>sxxon</artifactId>
+            <version>9.7.0.4</version>
+        </dependency>-->
 
         <!-- EIONET dependencies -->
         <dependency>

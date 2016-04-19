@@ -20,11 +20,13 @@
 
 package eionet.gdem.dto;
 
+import java.io.Serializable;
+
 /**
  * @author Enriko Käsper, Tieto Estonia QAScript
  */
 
-public class QAScript {
+public class QAScript implements Serializable {
 
     String scriptId;
     String description;

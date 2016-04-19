@@ -23,20 +23,15 @@
 
 package eionet.gdem.qa.engines;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
+import java.net.URI;
 import java.util.Properties;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.stream.StreamResult;
 
-import net.sf.saxon.Configuration;
-import net.sf.saxon.query.DynamicQueryContext;
-import net.sf.saxon.query.StaticQueryContext;
-import net.sf.saxon.query.XQueryExpression;
+import net.sf.saxon.lib.FeatureKeys;
+import net.sf.saxon.s9api.*;
 import net.sf.saxon.value.StringValue;
 
 import org.apache.commons.logging.Log;
@@ -52,19 +47,46 @@ public class SaxonImpl extends QAScriptEngineStrategy {
     /** */
     private static final Log LOGGER = LogFactory.getLog(SaxonImpl.class);
 
-    public SaxonImpl() {
+    public SaxonImpl() throws GDEMException {
     }
 
     @Override
     protected void runQuery(XQScript script, OutputStream result) throws GDEMException {
 
+        SaxonListener listener = new SaxonListener();
+
+        Processor proc = new Processor(false);
+        //System.err.println(proc.getSaxonEdition());
+        //proc.setConfigurationProperty("http://saxon.sf.net/feature/generateByteCode", "false");
+        proc.setConfigurationProperty("http://saxon.sf.net/feature/timing", "true");
+        proc.setConfigurationProperty("http://saxon.sf.net/feature/trace-external-functions", "true");
+        proc.setConfigurationProperty("http://saxon.sf.net/feature/allow-multithreading", "true");
+        proc.setConfigurationProperty("http://saxon.sf.net/feature/optimizationLevel", "0");
+
+        XQueryCompiler comp = proc.newXQueryCompiler();
+
+        String queriesPathURI = Utils.getURIfromPath(eionet.gdem.Properties.queriesFolder, true);
+        comp.setBaseURI(new File(queriesPathURI).toURI());
+        comp.setErrorListener(listener);
+        try {
+            Serializer out = proc.newSerializer(result);
+            XQueryExecutable exp = comp.compile(script.getScriptSource());
+            XQueryEvaluator ev = exp.load();
+            ev.setExternalVariable(new QName("source_url"), new XdmAtomicValue(script.getSrcFileUrl()));
+            XdmValue val = ev.evaluate();
+            proc.writeXdmValue(val, out);
+        } catch (SaxonApiException e) {
+            e.printStackTrace();
+        }
+    }
+/*
         // Source sourceInput = null;
         // StringBuffer err_buf = new StringBuffer();
 
         Configuration config = new Configuration();
 
         // our own extension of Saxon's error listener to send feedback to the user
-        SaxonListener listener = new SaxonListener();
+
         config.setErrorListener(listener);
         config.setURIResolver(new QAURIResolver());
 
@@ -199,5 +221,5 @@ public class SaxonImpl extends QAScriptEngineStrategy {
         err = err.replaceAll(Constants.TICKET_PARAM + "%3D.*?%26", "");
         err = err.replaceAll("systemId:.*source_url=", "systemId: ");
         return err;
-    }
+    }*/
 }

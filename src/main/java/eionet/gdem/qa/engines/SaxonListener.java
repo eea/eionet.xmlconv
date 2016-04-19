@@ -25,8 +25,8 @@ package eionet.gdem.qa.engines;
 
 import javax.xml.transform.TransformerException;
 
-import net.sf.saxon.StandardErrorListener;
 
+import net.sf.saxon.lib.StandardErrorListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -58,7 +58,7 @@ public class SaxonListener extends StandardErrorListener {
     }
 
     @Override
-    public void error(TransformerException exception) throws TransformerException {
+    public void error(TransformerException exception) {
         _hasErrors = true;
         String message = "Error " + getLocationMessage(exception) + "\n  " + getExpandedMessage(exception);
 
@@ -67,7 +67,7 @@ public class SaxonListener extends StandardErrorListener {
     }
 
     @Override
-    public void warning(TransformerException exception) throws TransformerException {
+    public void warning(TransformerException exception) {
         _hasErrors = true;
         String message = "";
         if (exception.getLocator() != null) {

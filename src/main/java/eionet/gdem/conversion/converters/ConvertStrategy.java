@@ -40,7 +40,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.fop.apps.Driver;
+//import org.apache.fop.apps.Driver;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
@@ -145,10 +145,11 @@ public abstract class ConvertStrategy {
      */
     protected void runFOPTransformation(InputStream in, InputStream xsl, OutputStream out) throws GDEMException {
         try {
-            Driver driver = new Driver();
-            driver.setRenderer(Driver.RENDER_PDF);
-            driver.setOutputStream(out);
-            Result res = new SAXResult(driver.getContentHandler());
+            //Driver driver = new Driver();
+            //driver.setRenderer(Driver.RENDER_PDF);
+            //driver.setOutputStream(out);
+            //Result res = new SAXResult(driver.getContentHandler());
+            Result res = null;
             Source src = new StreamSource(in);
             TransformerFactory transformerFactory = transform.getTransformerFactoryInstance();
             TransformerErrorListener errors = new TransformerErrorListener();

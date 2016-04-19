@@ -48,7 +48,6 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
 import net.sf.saxon.Configuration;
-import net.sf.saxon.FeatureKeys;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -74,7 +73,7 @@ public class XSLTransformer {
                     saxFactory.setValidating(false);
                     saxFactory.setNamespaceAware(true);
                     transformerFactory = ((SAXTransformerFactory) tFactory);
-                    transformerFactory.setAttribute(FeatureKeys.RECOVERY_POLICY, Configuration.RECOVER_SILENTLY);
+                    //transformerFactory.setAttribute(FeatureKeys.RECOVERY_POLICY, Configuration.RECOVER_SILENTLY);
                 }
             } catch (MissingResourceException mre) {
                 mre.printStackTrace();

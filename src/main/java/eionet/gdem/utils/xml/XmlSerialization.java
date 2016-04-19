@@ -39,7 +39,7 @@ public class XmlSerialization implements IXmlSerializer {
     public XmlSerialization() {
         xmlSerializer = new XMLSerializer();
         OutputFormat outputFormat = new OutputFormat();
-        outputFormat.setAllowJavaNames(true);
+        //outputFormat.setAllowJavaNames(true);
         outputFormat.setEncoding("UTF-8");
         outputFormat.setVersion("1.0");
         outputFormat.setIndenting(true);
