@@ -150,19 +150,12 @@
             </tr>
             <tr class="zebraeven">
                 <td>
-                    <label class="question" for="selContentType">
+                    <label class="question" for="isActive">
                         <bean:message key="label.qascript.isActive"/>
-                     </label>
+                    </label>
                 </td>
                 <td>
-                   <%-- <logic:equal name="QAScriptForm" property="active" value="true">
-                        
-                        <input name="actives" type="checkbox" checked="checked"/>
-                    </logic:equal>
-                    <logic:notEqual name="QAScriptForm" property="active" value="true">
-                        <input name="actives" type="checkbox" />
-                    </logic:notEqual> --%>
-                    <html:checkbox  name="QAScriptForm" property="active"/>
+                    <html:checkbox  name="QAScriptForm" property="active" styleId="isActive"/>
                     <html:hidden property="active" name="QAScriptForm" value="false"/>
                 </td>
             </tr>
