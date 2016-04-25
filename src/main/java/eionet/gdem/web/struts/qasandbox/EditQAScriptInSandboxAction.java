@@ -95,7 +95,7 @@ public class EditQAScriptInSandboxAction extends Action {
             if ("0".equals(scriptIdParam)) {
                 cForm.setScriptId(scriptIdParam);
                 cForm.setScriptContent("");
-                cForm.setScriptType(XQScript.SCRIPT_LANG_XQUERY);
+                cForm.setScriptType(XQScript.SCRIPT_LANG_XQUERY1);
                 return actionMapping.findForward("success");
             }
             QAScriptManager qm = new QAScriptManager();
@@ -116,7 +116,7 @@ public class EditQAScriptInSandboxAction extends Action {
             }
         } catch (DCMException e) {
             e.printStackTrace();
-            LOGGER.error("QA Sandbox fomr error error", e);
+            LOGGER.error("QA Sandbox form error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveMessages(httpServletRequest, errors);
         }

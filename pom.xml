@@ -40,6 +40,11 @@
             </snapshots>
         </repository>
         <repository>
+            <id>basex</id>
+            <name>BaseX Maven Repository</name>
+            <url>http://files.basex.org/maven</url>
+        </repository>
+        <repository>
             <id>org.springframework.maven.release</id>
             <name>Spring Maven Repository</name>
             <url>http://maven.springframework.org/release</url>
@@ -558,6 +563,11 @@
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
             <version>9.7.0-4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.basex</groupId>
+            <artifactId>basex</artifactId>
+            <version>8.4.3</version>
         </dependency>
         <!--
         <dependency>

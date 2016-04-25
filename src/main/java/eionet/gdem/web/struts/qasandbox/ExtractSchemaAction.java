@@ -139,7 +139,7 @@ public class ExtractSchemaAction extends Action {
             String schemaOrDTD = analyser.getSchemaOrDTD();
             return schemaOrDTD;
         } catch (Exception e) {
-            // do nothoing - did not find XML Schema
+            // do nothing - did not find XML Schema
             // handleError(request, response, e);
         }
         return null;

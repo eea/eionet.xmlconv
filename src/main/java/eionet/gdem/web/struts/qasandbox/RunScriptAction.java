@@ -111,7 +111,7 @@ public class RunScriptAction extends Action {
 
             // VALIDATION! if it is a validation job, then do the action and get
             // out of here
-            if (scriptId.equals(String.valueOf(Constants.JOB_VALIDATION))) {
+            if (String.valueOf(Constants.JOB_VALIDATION).equals(scriptId)) {
                 try {
                     ValidationService vs = new ValidationService();
                     vs.setTrustedMode(false);
@@ -136,7 +136,10 @@ public class RunScriptAction extends Action {
             if (!Utils.isNullStr(scriptId) && !"0".equals(scriptId)) {
                 qascript = qm.getQAScript(scriptId);
                 String resultType = qascript.getResultType();
-                // get correct putput type by convTypeId
+                if (qascript != null && qascript.getScriptType() != null) {
+                    scriptType = qascript.getScriptType();
+                }
+                // get correct output type by convTypeId
                 ConvType cType = ctm.getConvType(resultType);
                 if (cType != null && !Utils.isNullStr(cType.getContType())) {
                     outputContentType = cType.getContType();
@@ -157,24 +160,29 @@ public class RunScriptAction extends Action {
                 }
             }
 
-            if (XQScript.SCRIPT_LANG_FME.equals(qascript.getScriptType())) {
-                scriptType = XQScript.SCRIPT_LANG_FME;
-                scriptContent = qascript.getUrl();
+            if (qascript != null && qascript.getScriptType() != null) {
+                if (XQScript.SCRIPT_LANG_FME.equals(qascript.getScriptType())) {
+                    scriptType = XQScript.SCRIPT_LANG_FME;
+                    scriptContent = qascript.getUrl();
+                }
             }
 
             String[] pars = new String[1];
             pars[0] = Constants.XQ_SOURCE_PARAM_NAME + "=" + sourceUrl;
+            if (xqResultType == null) {
+                xqResultType = XQScript.SCRIPT_RESULTTYPE_HTML;
+            }
             xq = new XQScript(scriptContent, pars, xqResultType);
             xq.setScriptType(scriptType);
             xq.setSrcFileUrl(sourceUrl);
 
-            if (qascript.getSchemaId() != null) {
+            if (qascript != null && qascript.getSchemaId() != null) {
                 xq.setSchema(schM.getSchema(qascript.getSchemaId()));
             }
 
             OutputStream output = null;
             try {
-                // write the result directly to servlet boutputstream
+                // write the result directly to servlet outputstream
                 if (!outputContentType.startsWith(HTML_CONTENT_TYPE)) {
                     httpServletResponse.setContentType(outputContentType);
                     httpServletResponse.setCharacterEncoding(HTML_CHARACTER_ENCODING);
@@ -184,10 +192,8 @@ public class RunScriptAction extends Action {
                     output.close();
                     return null;
                 } else {
-
                     result = xq.getResult();
                     cForm.setResult(result);
-
                 }
             } catch (GDEMException ge) {
                 result = ge.getMessage();

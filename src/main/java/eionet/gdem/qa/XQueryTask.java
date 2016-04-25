@@ -155,7 +155,7 @@ public class XQueryTask extends Thread {
                     scriptType =
                             scriptFile.endsWith(XQScript.SCRIPT_LANG_XSL) ? XQScript.SCRIPT_LANG_XSL
                                     : scriptFile.endsWith(XQScript.SCRIPT_LANG_XGAWK) ? XQScript.SCRIPT_LANG_XGAWK
-                                            : XQScript.SCRIPT_LANG_XQUERY;
+                                            : XQScript.SCRIPT_LANG_XQUERY1;
                 }
                 String[] xqParam = { Constants.XQ_SOURCE_PARAM_NAME + "=" + srcFile };
 

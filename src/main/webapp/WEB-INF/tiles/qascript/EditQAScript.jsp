@@ -75,11 +75,11 @@
             <tr class="zebraeven">
                 <td>
                     <label class="question" for="selScriptType">
-                          <bean:message key="label.qascript.scripttype"/>
-                      </label>
+                        <bean:message key="label.qascript.scripttype"/>
+                    </label>
                 </td>
                 <td>
-                    <html:select name="QAScriptForm" property="scriptType" styleId="selScriptType" disabled="true">
+                    <html:select name="QAScriptForm" property="scriptType" styleId="selScriptType" disabled="false">
                         <html:options collection="qascript.scriptlangs" property="convType"/>
                     </html:select>
                     <html:hidden name="QAScriptForm" property="scriptType" />

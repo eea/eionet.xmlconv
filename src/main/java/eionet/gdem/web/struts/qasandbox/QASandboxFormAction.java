@@ -68,7 +68,7 @@ public class QASandboxFormAction extends Action {
             httpServletRequest.setAttribute(QAScriptListLoader.QASCRIPT_LIST_ATTR, QAScriptListLoader.getList(httpServletRequest));
         } catch (DCMException e) {
             e.printStackTrace();
-            LOGGER.error("QA Sandbox fomr error error", e);
+            LOGGER.error("QA Sandbox form error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveMessages(httpServletRequest, errors);
         }

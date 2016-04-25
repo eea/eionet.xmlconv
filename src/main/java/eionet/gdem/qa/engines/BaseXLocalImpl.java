@@ -19,9 +19,9 @@ import java.io.OutputStream;
  * @author George Sofianos
  *
  */
-public class BasexImpl extends QAScriptEngineStrategy {
+public class BaseXLocalImpl extends QAScriptEngineStrategy {
 
-    private static final Logger logger = LoggerFactory.getLogger(BasexImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(BaseXLocalImpl.class);
 
     @Override
     protected void runQuery(XQScript script, OutputStream result) throws GDEMException {

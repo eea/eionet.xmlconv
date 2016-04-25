@@ -28,10 +28,7 @@ import java.io.OutputStream;
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.dto.Schema;
-import eionet.gdem.qa.engines.FMEQueryEngine;
-import eionet.gdem.qa.engines.SaxonImpl;
-import eionet.gdem.qa.engines.XGawkQueryEngine;
-import eionet.gdem.qa.engines.XslEngineImpl;
+import eionet.gdem.qa.engines.*;
 
 /**
  * Class for XQ script used by the workqueue XQTask and XQ sandbox
@@ -48,12 +45,13 @@ public class XQScript {
 
     private boolean srcFileDownloaded;
 
-    public static final String SCRIPT_LANG_XQUERY = "xquery";
+    public static final String SCRIPT_LANG_XQUERY1 = "xquery 1.0";
+    public static final String SCRIPT_LANG_XQUERY3 = "xquery 3.0+";
     public static final String SCRIPT_LANG_XSL = "xsl";
     public static final String SCRIPT_LANG_XGAWK = "xgawk";
     public static final String SCRIPT_LANG_FME = "fme";
 
-    public static String[] SCRIPT_LANGS = {SCRIPT_LANG_XQUERY, SCRIPT_LANG_XSL, SCRIPT_LANG_XGAWK, SCRIPT_LANG_FME};
+    public static String[] SCRIPT_LANGS = {SCRIPT_LANG_XQUERY3, SCRIPT_LANG_XQUERY1, SCRIPT_LANG_XSL, SCRIPT_LANG_XGAWK, SCRIPT_LANG_FME, };
 
     public static enum ScriptLang {
         SCRIPT_LANG_XQUERY("xquery"), SCRIPT_LANG_XSL("xsl"), SCRIPT_LANG_XGAWK("xgawk"), SCRIPT_LANG_FME("fme");
@@ -96,7 +94,7 @@ public class XQScript {
         scriptSource = xqScript;
         params = scriptParams;
         outputType = _outputType;
-        scriptType = SCRIPT_LANG_XQUERY;
+        scriptType = SCRIPT_LANG_XQUERY1;
     }
 
     /**
@@ -122,7 +120,11 @@ public class XQScript {
                     _engine = new XGawkQueryEngine();
                 } else if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
                     _engine = new FMEQueryEngine();
-                } else {// default is xquery
+                } else if (XQScript.SCRIPT_LANG_XQUERY3.equals(scriptType)) {
+                    // XQUERY 3.0+
+                    _engine = new BaseXServerImpl();
+                } else {
+                    // LEGACY XQUERY 1.0
                     _engine = new SaxonImpl();
                 }
             } catch (Exception e) {

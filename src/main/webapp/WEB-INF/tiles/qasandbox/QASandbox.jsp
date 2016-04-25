@@ -145,7 +145,7 @@
                         <bean:message key="label.qasandbox.scriptType" />
                     </label>
                     <logic:present name="QASandboxForm" property="scriptId">
-                      <html:select property="scriptType" styleId="selScriptType" disabled="true">
+                      <html:select property="scriptType" styleId="selScriptType" disabled="false">
                           <html:options collection="qascript.scriptlangs" property="convType"/>
                       </html:select>
                       <html:hidden property="scriptType" />
