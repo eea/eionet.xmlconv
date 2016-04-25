@@ -45,5 +45,9 @@ public interface IQueryDao extends IDbSchema {
     public boolean checkQueryFile(String queryFileName) throws SQLException;
 
     public boolean checkQueryFile(String query_id, String queryFileName) throws SQLException;
+    
+    public void activateQuery (String queryId) throws SQLException;
+    
+    public void deactivateQuery (String queryId) throws SQLException;
 
 }

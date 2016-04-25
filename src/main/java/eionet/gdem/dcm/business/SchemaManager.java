@@ -361,6 +361,7 @@ public class SchemaManager {
                     qas.setShortName((String) qascript.get("short_name"));
                     qas.setScriptType((String) qascript.get("script_type"));
                     qas.setResultType((String) qascript.get("result_type"));
+                    qas.setActive((String) qascript.get("is_active"));
                     qases.add(qas);
 
                     // get file last modified only if schemaId is known
@@ -396,6 +397,7 @@ public class SchemaManager {
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.error("Error getting schemas with QA scripts", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }

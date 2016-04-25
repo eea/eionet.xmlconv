@@ -119,6 +119,19 @@
             <bean:write name="QAScriptForm" property="upperLimit" />
           </td>
         </tr>
+        <tr>
+            <th scope="row" class="scope-row">
+                <bean:message key="label.qascript.isActive"/>
+            </th>
+            <td>
+                <logic:equal name="QAScriptForm" property="active" value="true">
+                    <input type="checkbox" checked="checked" disabled/>
+                </logic:equal>
+                <logic:notEqual name="QAScriptForm" property="active" value="true">
+                    <input type="checkbox" disabled/>
+                </logic:notEqual>
+            </td>
+        </tr>
 
             <tr>
                 <th scope="row" class="scope-row">

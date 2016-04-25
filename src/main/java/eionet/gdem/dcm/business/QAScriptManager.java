@@ -85,6 +85,7 @@ public class QAScriptManager {
                 qaScript.setFileName((String) scriptData.get("query"));
                 qaScript.setUpperLimit((String) scriptData.get("upper_limit"));
                 qaScript.setUrl((String) scriptData.get("url"));
+                qaScript.setActive((String) scriptData.get("is_active"));
 
                 String queryFolder = Properties.queriesFolder;
 
@@ -121,6 +122,7 @@ public class QAScriptManager {
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.error("Error getting QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
@@ -539,6 +541,48 @@ public class QAScriptManager {
             LOGGER.error("Error updating remote script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
+
+    }
+    
+    /**
+     * Set/Unset "ACTIVE" flag on a specific scriptId 
+     * @param user
+     * @param scriptId
+     * @param setActive
+     * @throws DCMException 
+     */
+    public void activateDeactivate (String user, String scriptId, boolean setActive) throws DCMException {
+        try {
+            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
+                LOGGER.debug("You don't have permissions to activate or deactivate QA script!");
+                throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
+            }
+        } catch (DCMException e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error setting activation status for QA script.", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
+        
+        if (Utils.isNullStr(scriptId)) {
+            LOGGER.error("Cannot set activation status for QA script. Script ID is empty.");
+            throw new DCMException(BusinessConstants.EXCEPTION_NO_QASCRIPT_SELECTED);
+        }
+        
+        try {
+            if (setActive){
+                System.out.println(this.getClass().toString() + " : "+ scriptId);
+                queryDao.activateQuery(scriptId);
+            }
+            else {
+                queryDao.deactivateQuery(scriptId);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Error setting activation status for QA script.", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
+        
+        
 
     }
 

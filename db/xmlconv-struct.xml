@@ -337,5 +337,13 @@
             INSERT IGNORE INTO T_CONVTYPE VALUES ('ZIP','application/zip','zip','');
         </sql>
     </changeSet>
-
+    <changeSet author="kopanalk" id="rev-30">
+        <comment>
+            Adding a new column in the T_QUERY table in order to support activation/deactivation of QAScripts
+        </comment>
+        <sql>
+            ALTER TABLE T_QUERY ADD ACTIVE BOOLEAN NOT NULL DEFAULT "1";
+        </sql>
+    </changeSet>
+    
 </databaseChangeLog>

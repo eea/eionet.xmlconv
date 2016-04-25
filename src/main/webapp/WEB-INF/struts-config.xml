@@ -276,6 +276,12 @@
         <action path="/deleteQAScript"  name="QAScriptForm"  scope="request" type="eionet.gdem.web.struts.qascript.DeleteQAScriptAction">
             <forward name="success" path="/do/schemaQAScripts"  redirect="true"/>
         </action>
+        <action path="/activateQAScript"  name="QAScriptForm"  scope="request" type="eionet.gdem.web.struts.qascript.ActivateQAScriptAction">
+            <forward name="success" path="/do/schemaQAScripts"  redirect="true"/>
+        </action>
+        <action path="/deactivateQAScript"  name="QAScriptForm"  scope="request" type="eionet.gdem.web.struts.qascript.DeactivateQAScriptAction">
+            <forward name="success" path="/do/schemaQAScripts"  redirect="true"/>
+        </action>
         <action path="/addQAScriptForm"  name="QAScriptForm" type="eionet.gdem.web.struts.qascript.AddQAScriptFormAction" scope="request" input="/addQAScript.jsp">
             <forward name="success" path="/addQAScript.jsp" redirect="true"/>
         </action>

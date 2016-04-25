@@ -78,6 +78,7 @@ public class QAScriptFormAction extends Action {
             form.setScriptContent(qaScript.getScriptContent());
             form.setUpperLimit(qaScript.getUpperLimit());
             form.setUrl(qaScript.getUrl());
+            form.setActive(qaScript.isActive());
 
             httpServletRequest.setAttribute(QAScriptListLoader.QASCRIPT_LIST_ATTR, QAScriptListLoader.getList(httpServletRequest));
 

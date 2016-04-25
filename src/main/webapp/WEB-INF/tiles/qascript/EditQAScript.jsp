@@ -148,6 +148,17 @@
 
                 </td>
             </tr>
+            <tr class="zebraeven">
+                <td>
+                    <label class="question" for="isActive">
+                        <bean:message key="label.qascript.isActive"/>
+                    </label>
+                </td>
+                <td>
+                    <html:checkbox  name="QAScriptForm" property="active" styleId="isActive"/>
+                    <html:hidden property="active" name="QAScriptForm" value="false"/>
+                </td>
+            </tr>
             <%--  If scriptType is 'FME' don't show the 'Check for updates' --%>
             <logic:notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
                 <tr>
@@ -181,6 +192,7 @@
                         <html:hidden property="checksum" name="QAScriptForm" />
                         <html:hidden property="scriptId" name="QAScriptForm" />
                         <html:hidden property="schemaId" name="QAScriptForm" />
+                        <html:hidden property="active" name="QAScriptForm"/>
                       </td>
                 </tr>
             <tr>

@@ -41,6 +41,8 @@ public class QAScript implements Serializable {
     String scriptContent;
     String upperLimit;
     String url;
+    boolean active;
+    
     private boolean blocker = false;
 
     public String getScriptContent() {
@@ -159,6 +161,14 @@ public class QAScript implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+    
+    public void setActive (String isActive) {
+        this.active = isActive.equals("1");
+    } 
+    
+    public boolean isActive () {
+        return this.active;
     }
 
     /**
