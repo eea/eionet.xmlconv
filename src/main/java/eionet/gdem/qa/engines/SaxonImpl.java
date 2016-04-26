@@ -53,9 +53,9 @@ public class SaxonImpl extends QAScriptEngineStrategy {
     @Override
     protected void runQuery(XQScript script, OutputStream result) throws GDEMException {
 
-        SaxonListener listener = new SaxonListener();
-
         Processor proc = new Processor(false);
+        proc.setConfigurationProperty("http://saxon.sf.net/feature/uriResolverClass", "eionet.gdem.qa.engines.QAURIResolver");
+        proc.setConfigurationProperty("http://saxon.sf.net/feature/errorListenerClass", "eionet.gdem.qa.engines.SaxonListener");
         //System.err.println(proc.getSaxonEdition());
         //proc.setConfigurationProperty("http://saxon.sf.net/feature/generateByteCode", "false");
         proc.setConfigurationProperty("http://saxon.sf.net/feature/timing", "true");
@@ -67,9 +67,24 @@ public class SaxonImpl extends QAScriptEngineStrategy {
 
         String queriesPathURI = Utils.getURIfromPath(eionet.gdem.Properties.queriesFolder, true);
         comp.setBaseURI(new File(queriesPathURI).toURI());
-        comp.setErrorListener(listener);
+        //comp.setErrorListener(listener);
         try {
             Serializer out = proc.newSerializer(result);
+            out.setOutputProperty(Serializer.Property.INDENT, "no");
+            out.setOutputProperty(Serializer.Property.ENCODING, DEFAULT_ENCODING);
+            // if the output is html, then use method="xml" in output, otherwise, it's not valid xml
+            if (getOutputType().equals(HTML_CONTENT_TYPE)) {
+                out.setOutputProperty(Serializer.Property.METHOD, XML_CONTENT_TYPE);
+            } else {
+                out.setOutputProperty(Serializer.Property.METHOD, getOutputType());
+            }
+            // add xml declaration only, if the output should be XML
+            if (getOutputType().equals(XML_CONTENT_TYPE)) {
+                out.setOutputProperty(Serializer.Property.OMIT_XML_DECLARATION, "no");
+            } else {
+                out.setOutputProperty(Serializer.Property.OMIT_XML_DECLARATION, "yes");
+            }
+
             XQueryExecutable exp = comp.compile(script.getScriptSource());
             XQueryEvaluator ev = exp.load();
             ev.setExternalVariable(new QName("source_url"), new XdmAtomicValue(script.getSrcFileUrl()));

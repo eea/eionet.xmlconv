@@ -71,7 +71,7 @@ public class WorkqueueManagerTest {
 
         String user = TestConstants.TEST_ADMIN_USER;
         String sourceUrl = "http://test.eu/test.xml";
-        String scriptType = XQScript.SCRIPT_LANG_XQUERY;
+        String scriptType = XQScript.SCRIPT_LANG_XQUERY1;
         String scriptContent =
                 "xquery version \"1.0\";\n let $numbers := (1,2,3,4) "
                         + "\n for $n in $numbers \n return \n <number>{data($n)}</number>\n";

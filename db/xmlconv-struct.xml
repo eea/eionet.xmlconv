@@ -345,5 +345,13 @@
             ALTER TABLE T_QUERY ADD ACTIVE BOOLEAN NOT NULL DEFAULT "1";
         </sql>
     </changeSet>
+    <changeSet author="sofiageo" id="rev-31">
+        <comment>
+            Renamed "xquery" string to "xquery 1.0" in order to  distinguish from "xquery 3.0"
+        </comment>
+        <sql>
+            UPDATE T_QUERY SET `SCRIPT_TYPE` = "xquery 1.0" WHERE `SCRIPT_TYPE` = "xquery";
+        </sql>
+    </changeSet>
     
 </databaseChangeLog>

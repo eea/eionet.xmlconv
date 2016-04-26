@@ -21,7 +21,8 @@
 
 package eionet.gdem.qa.engines;
 
-import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import junit.framework.TestCase;
 import eionet.gdem.Properties;
@@ -46,7 +47,7 @@ public class XGawkQueryEngineTest extends TestCase {
     public void testGetShellCommandWithParams() throws Exception {
         String dataFile = "data.xml";
         String scriptFile = "script.xml";
-        HashMap params = new HashMap();
+        Map params = new TreeMap<String, String>();
         params.put("param2", "param2value");
         params.put("source_url", "http://localhost/dummy.xml");
 

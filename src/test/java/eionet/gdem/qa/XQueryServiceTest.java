@@ -24,7 +24,7 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS XQueryServiceTst
+ * @author Enriko Käsper, TietoEnator Estonia AS XQueryServiceTest
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)

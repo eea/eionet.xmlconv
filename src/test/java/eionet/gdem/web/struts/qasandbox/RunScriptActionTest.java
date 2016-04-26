@@ -80,8 +80,8 @@ public class RunScriptActionTest extends MockStrutsTestCase {
 
         addRequestParameter("schemaUrl", "http://air-climate.eionet.europa.eu/schemas/dir199913ec/schema.xsd");
         addRequestParameter("sourceUrl", "http://cdr.eionet.europa.eu/fi/euvocsol/envsfurdw/questionnaire_voc_solvents.xml");
-        addRequestParameter("scriptType", "xquery");
-        addRequestParameter("scriptContent", "xquery version \"1.0\" \n\r string(4)");
+        addRequestParameter("scriptType", "xquery 1.0");
+        addRequestParameter("scriptContent", "xquery version \"1.0\";\n\r string(4)");
 
         actionPerform();
         verifyForward("success");
