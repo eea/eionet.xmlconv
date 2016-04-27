@@ -735,17 +735,17 @@
             <artifactId>commons-logging</artifactId>
             <version>1.2</version>
         </dependency>
-        <!--
+
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.13</version>
-        </dependency>-->
-        <dependency>
+        </dependency>
+        <!--<dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>2.5</version>
-        </dependency>
+        </dependency>-->
 
         <!-- slf4j is needed for dbunit -->
         <dependency>

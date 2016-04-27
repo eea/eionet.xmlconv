@@ -23,29 +23,20 @@
 
 package eionet.gdem.qa.engines;
 
-import java.io.*;
-import java.net.URI;
-import java.util.Properties;
-
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.stream.StreamResult;
-
-import net.sf.saxon.lib.FeatureKeys;
-import net.sf.saxon.s9api.*;
-import net.sf.saxon.value.StringValue;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.Utils;
+import net.sf.saxon.s9api.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.OutputStream;
 
 public class SaxonImpl extends QAScriptEngineStrategy {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SaxonImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SaxonImpl.class);
 
     public SaxonImpl() throws GDEMException {
     }
@@ -58,10 +49,10 @@ public class SaxonImpl extends QAScriptEngineStrategy {
         proc.setConfigurationProperty("http://saxon.sf.net/feature/errorListenerClass", "eionet.gdem.qa.engines.SaxonListener");
         //System.err.println(proc.getSaxonEdition());
         //proc.setConfigurationProperty("http://saxon.sf.net/feature/generateByteCode", "false");
-        proc.setConfigurationProperty("http://saxon.sf.net/feature/timing", "true");
-        proc.setConfigurationProperty("http://saxon.sf.net/feature/trace-external-functions", "true");
-        proc.setConfigurationProperty("http://saxon.sf.net/feature/allow-multithreading", "true");
-        proc.setConfigurationProperty("http://saxon.sf.net/feature/optimizationLevel", "0");
+        //proc.setConfigurationProperty("http://saxon.sf.net/feature/timing", "true");
+        //proc.setConfigurationProperty("http://saxon.sf.net/feature/trace-external-functions", "true");
+        //proc.setConfigurationProperty("http://saxon.sf.net/feature/allow-multithreading", "true");
+        //proc.setConfigurationProperty("http://saxon.sf.net/feature/optimizationLevel", "0");
 
         XQueryCompiler comp = proc.newXQueryCompiler();
 
@@ -91,7 +82,8 @@ public class SaxonImpl extends QAScriptEngineStrategy {
             XdmValue val = ev.evaluate();
             proc.writeXdmValue(val, out);
         } catch (SaxonApiException e) {
-            e.printStackTrace();
+            logger.debug("Error in xquery script: " + e.getMessage());
+            throw new GDEMException(e.getMessage(), e);
         }
     }
 /*
