@@ -98,6 +98,38 @@ public class DcmProperties {
             throw new DCMException(BusinessConstants.EXCEPTION_PARAM_LDAP_FAILED);
         }
     }
+    public void setBasexParams(String url, String user, String psw) throws DCMException {
+
+        String filePath = Properties.appHome + File.separatorChar + "gdem.properties";
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            String line = null;
+            StringBuffer st = new StringBuffer();
+
+            while ((line = reader.readLine()) != null) {
+                // process the line
+                line = findSetProp(line, "basexserver.url", url);
+                line = findSetProp(line, "basexserver.user", user);
+                line = findSetProp(line, "basexserver.password", psw);
+                st.append(line);
+                st.append("\n");
+            }
+
+            BufferedWriter out = new BufferedWriter(new FileWriter(filePath));
+            out.write(st.toString());
+            out.close();
+
+            Properties.basexServerPassword = psw;
+            Properties.basexServerUrl = url;
+            Properties.basexServerUser = user;
+
+        } catch (IOException e) {
+            LOGGER.error("Saving BaseX server parameters failed!", e);
+            e.printStackTrace();
+            throw new DCMException(BusinessConstants.EXCEPTION_PARAM_BASEXSERVER_FAILED);
+        }
+    }
 
     public void setSystemParams(Long qaTimeout, String cmdXGawk) throws DCMException {
 

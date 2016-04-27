@@ -70,6 +70,13 @@ public class Properties {
     /** DB connection password. */
     public static String dbPwd = null;
 
+    /** BaseX Server Url */
+    public static String basexServerUrl = null;
+    /** BaseX Server User */
+    public static String basexServerUser = null;
+    /** BaseX Server Password */
+    public static String basexServerPassword = null;
+
     /** conversion.xml file location, listing all available generated conversions. */
     public static String convFile = null;
     /** XSL folder for generated conversions. */
@@ -159,6 +166,11 @@ public class Properties {
                 dbUrl = getStringProperty("db.url");
                 dbUser = getStringProperty("db.user");
                 dbPwd = getStringProperty("db.pwd");
+
+                // BaseX server connection settings
+                basexServerUrl = getStringProperty("basexserver.url");
+                basexServerUser = getStringProperty("basexserver.user");
+                basexServerPassword = getStringProperty("basexserver.password");
 
                 // DCM settings
                 ddURL = getStringProperty("dd.url");

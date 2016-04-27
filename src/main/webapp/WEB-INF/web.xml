@@ -75,6 +75,10 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>CAS Filter</filter-name>
+        <url-pattern>/do/basexForm</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>CAS Filter</filter-name>
         <url-pattern>/do/systemForm</url-pattern>
     </filter-mapping>
     <filter-mapping>

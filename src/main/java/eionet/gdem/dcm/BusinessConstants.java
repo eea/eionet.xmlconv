@@ -45,6 +45,8 @@ public class BusinessConstants {
     // "label.editParam.db.saved";
     public static final String EXCEPTION_PARAM_DB_FAILED = "label.editParam.db.failed";
     public static final String EXCEPTION_PARAM_DB_TEST_FAILED = "label.editParam.db.testFailed";
+    public static final String EXCEPTION_PARAM_BASEXSERVER_FAILED = "label.editParam.basexserver.failed";
+    public static final String EXCEPTION_PARAM_BASEXSERVER_TEST_FAILED = "label.editParam.basexserver.testfailed";
     // public static final String EXCEPTION_PARAM_LDAP_SAVED =
     // "label.editParam.ldap.saved";
     public static final String EXCEPTION_PARAM_LDAP_FAILED = "label.editParam.ldap.failed";
