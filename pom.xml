@@ -61,13 +61,13 @@
             <name>ehcache repository</name>
             <url>http://oss.sonatype.org/content/repositories/sourceforge-releases</url>
         </repository>
-        -->
+
         <repository>
             <id>maven2-repository.dev.java.net</id>
             <name>Java.net Repository for Maven</name>
             <url>http://download.java.net/maven/2/</url>
             <layout>default</layout>
-        </repository>
+        </repository>-->
     </repositories>
 
     <!-- the build configuration -->
@@ -283,7 +283,7 @@
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
-                <version>3.4.2</version>
+                <version>3.5.0</version>
                 <configuration>
                     <propertyFile>target/classes/liquibase.properties</propertyFile>
                     <changeLogFile>${liquibase.changeLogFile}</changeLogFile>
@@ -717,10 +717,16 @@
             <artifactId>liquibase-core</artifactId>
             <version>3.5.0</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>2.4.5</version>
         </dependency>
 
         <!-- LOGGING -->
@@ -729,22 +735,29 @@
             <artifactId>commons-logging</artifactId>
             <version>1.2</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.13</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.5</version>
         </dependency>
+
         <!-- slf4j is needed for dbunit -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.5.6</version>
+            <version>1.7.21</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.6</version>
+            <version>1.7.21</version>
             <type>jar</type>
         </dependency>
         <!-- Avalon dependency for commons-logging -->

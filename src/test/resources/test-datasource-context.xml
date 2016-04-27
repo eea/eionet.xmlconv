@@ -9,16 +9,21 @@
 
     <context:property-placeholder location="classpath:gdem.properties" />
 
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
-        destroy-method="close">
-        <property name="driverClassName" value="${test.db.driver}" />
-        <property name="url" value="${test.db.jdbcurl}" />
-        <property name="username" value="${test.db.user}" />
-        <property name="password" value="${test.db.password}" />
-        <!-- The following two properties required because MySQL kills idle
-            connections after 8 hours. -->
-        <property name="validationQuery" value="SELECT 1" />
-        <property name="testOnBorrow" value="true" />
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg ref="hikariConfig" />
+    </bean>
+
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+        <property name="poolName" value="springHikariCP" />
+        <property name="connectionTestQuery" value="SELECT 1" />
+        <property name="dataSourceClassName" value="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" />
+        <property name="dataSourceProperties">
+            <props>
+                <prop key="url">${test.db.jdbcurl}</prop>
+                <prop key="user">${test.db.user}</prop>
+                <prop key="password">${test.db.password}</prop>
+            </props>
+        </property>
     </bean>
 
     <bean name="databaseTester" class="org.dbunit.DataSourceDatabaseTester">
