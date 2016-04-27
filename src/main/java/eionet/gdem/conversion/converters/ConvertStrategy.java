@@ -23,6 +23,7 @@
 package eionet.gdem.conversion.converters;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
@@ -46,6 +47,10 @@ import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.XSLTransformer;
+import org.apache.fop.apps.Fop;
+import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.MimeConstants;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -143,13 +148,11 @@ public abstract class ConvertStrategy {
      * @param out OutputStream for conversion result.
      * @throws GDEMException In case of unexpected XML or XSL errors.
      */
-    protected void runFOPTransformation(InputStream in, InputStream xsl, OutputStream out) throws GDEMException {
+    protected void runFOPTransformation(InputStream in, InputStream xsl, OutputStream out) throws GDEMException, IOException, SAXException {
+        FopFactory fopFactory = FopFactory.newInstance(new File("fop.xconf"));
         try {
-            //Driver driver = new Driver();
-            //driver.setRenderer(Driver.RENDER_PDF);
-            //driver.setOutputStream(out);
-            //Result res = new SAXResult(driver.getContentHandler());
-            Result res = null;
+            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
+            Result res = new SAXResult(fop.getDefaultHandler());
             Source src = new StreamSource(in);
             TransformerFactory transformerFactory = transform.getTransformerFactoryInstance();
             TransformerErrorListener errors = new TransformerErrorListener();
