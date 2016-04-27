@@ -40,7 +40,8 @@
             <form-property name="password" type="java.lang.String"/>
         </form-bean>
         <form-bean name="basexForm" type="org.apache.struts.validator.DynaValidatorForm">
-            <form-property name="dbUrl" type="java.lang.String"/>
+            <form-property name="host" type="java.lang.String"/>
+            <form-property name="port" type="java.lang.String"/>
             <form-property name="user" type="java.lang.String"/>
             <form-property name="password" type="java.lang.String"/>
         </form-bean>

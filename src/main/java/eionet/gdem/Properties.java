@@ -70,8 +70,10 @@ public class Properties {
     /** DB connection password. */
     public static String dbPwd = null;
 
-    /** BaseX Server Url */
-    public static String basexServerUrl = null;
+    /** BaseX Server Host */
+    public static String basexServerHost = null;
+    /** BaseX Server Port */
+    public static String basexServerPort = null;
     /** BaseX Server User */
     public static String basexServerUser = null;
     /** BaseX Server Password */
@@ -168,7 +170,8 @@ public class Properties {
                 dbPwd = getStringProperty("db.pwd");
 
                 // BaseX server connection settings
-                basexServerUrl = getStringProperty("basexserver.url");
+                basexServerHost = getStringProperty("basexserver.host");
+                basexServerPort = getStringProperty("basexserver.port");
                 basexServerUser = getStringProperty("basexserver.user");
                 basexServerPassword = getStringProperty("basexserver.password");
 

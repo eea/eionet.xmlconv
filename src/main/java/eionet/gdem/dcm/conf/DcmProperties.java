@@ -98,7 +98,7 @@ public class DcmProperties {
             throw new DCMException(BusinessConstants.EXCEPTION_PARAM_LDAP_FAILED);
         }
     }
-    public void setBasexParams(String url, String user, String psw) throws DCMException {
+    public void setBasexParams(String host, String port, String user, String psw) throws DCMException {
 
         String filePath = Properties.appHome + File.separatorChar + "gdem.properties";
 
@@ -109,7 +109,8 @@ public class DcmProperties {
 
             while ((line = reader.readLine()) != null) {
                 // process the line
-                line = findSetProp(line, "basexserver.url", url);
+                line = findSetProp(line, "basexserver.host", host);
+                line = findSetProp(line, "basexserver.port", port);
                 line = findSetProp(line, "basexserver.user", user);
                 line = findSetProp(line, "basexserver.password", psw);
                 st.append(line);
@@ -120,8 +121,9 @@ public class DcmProperties {
             out.write(st.toString());
             out.close();
 
+            Properties.basexServerPort = port;
             Properties.basexServerPassword = psw;
-            Properties.basexServerUrl = url;
+            Properties.basexServerHost = host;
             Properties.basexServerUser = user;
 
         } catch (IOException e) {

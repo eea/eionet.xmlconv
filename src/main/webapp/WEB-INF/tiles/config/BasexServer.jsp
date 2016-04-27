@@ -44,10 +44,18 @@
       <col style="width:75%"/>
       <tr>
         <td>
-          <label class="question" for="dbUrl"><bean:message key="label.config.basexserver.url" /></label>
+          <label class="question" for="host"><bean:message key="label.config.basexserver.host" /></label>
         </td>
         <td>
-          <html:text property="dbUrl" maxlength="255" style="width: 30em;" styleId="dbUrl"/>
+          <html:text property="host" maxlength="255" style="width: 30em;" styleId="host"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label class="question" for="port"><bean:message key="label.config.basexserver.port" /></label>
+        </td>
+        <td>
+          <html:text property="port" maxlength="255" style="width: 30em;" styleId="port"/>
         </td>
       </tr>
       <tr>

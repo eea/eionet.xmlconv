@@ -25,7 +25,8 @@ public class BaseXFormAction extends Action {
         ActionErrors errors = new ActionErrors();
         try {
             DynaValidatorForm form = (DynaValidatorForm) actionForm;
-            form.set("dbUrl", Properties.basexServerUrl);
+            form.set("host", Properties.basexServerHost);
+            form.set("port", Properties.basexServerPort);
             form.set("user", Properties.basexServerUser);
             form.set("password", Properties.basexServerPassword);
         } catch (Exception e) {

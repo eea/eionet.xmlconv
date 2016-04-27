@@ -31,7 +31,8 @@ public class BaseXAction extends Action {
 
         DynaValidatorForm form = (DynaValidatorForm) actionForm;
 
-        String dbUrl = (String) form.get("dbUrl");
+        String host = (String) form.get("host");
+        String port = (String) form.get("port");
         String dbUser = (String) form.get("user");
         String dbPwd = (String) form.get("password");
         String user = (String) httpServletRequest.getSession().getAttribute("user");
@@ -44,14 +45,14 @@ public class BaseXAction extends Action {
                 return actionMapping.findForward("success");
             }
 
-            if (dbUrl == null || dbUrl.equals("")) {
+            if (host == null || host.equals("")) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.config.ldap.url.validation"));
                 httpServletRequest.getSession().setAttribute("dcm.errors", errors);
                 return actionMapping.findForward("success");
             }
             DcmProperties dcmProp = new DcmProperties();
 
-            dcmProp.setBasexParams(dbUrl, dbUser, dbPwd);
+            dcmProp.setBasexParams(host, port, dbUser, dbPwd);
 
         } catch (DCMException e) {
             e.printStackTrace();
