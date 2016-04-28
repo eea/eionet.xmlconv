@@ -39,6 +39,7 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import net.sf.saxon.s9api.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 //import org.apache.fop.apps.Driver;
@@ -110,34 +111,29 @@ public abstract class ConvertStrategy {
      */
     protected void runXslTransformation(InputStream in, InputStream xslStream, OutputStream out) throws GDEMException {
         try {
-            TransformerFactory tFactory = transform.getTransformerFactoryInstance();
+            Processor proc = new Processor(false);
+            XsltCompiler comp = proc.newXsltCompiler();
             TransformerErrorListener errors = new TransformerErrorListener();
-            tFactory.setErrorListener(errors);
-
-            StreamSource transformerSource = new StreamSource(xslStream);
-            if (getXslPath() != null) {
-                transformerSource.setSystemId(getXslPath());
-            }
-
-            Transformer transformer = tFactory.newTransformer(transformerSource);
-            transformer.setErrorListener(errors);
-
-            transformer.setParameter(DD_DOMAIN_PARAM, Properties.ddURL);
-            setTransformerParameters(transformer);
-            long l = System.currentTimeMillis();
-            transformer.transform(new StreamSource(in), new StreamResult(out));
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis()
-                        - l).append(" ms").toString());
-            }
-        } catch (TransformerConfigurationException tce) {
-            throw new GDEMException("Error transforming XML - incorrect stylesheet file: " + tce.toString(), tce);
-        } catch (TransformerException tfe) {
-            throw new GDEMException("Error transforming XML - it's not probably well-formed xml file: " + tfe.toString(), tfe);
-        } catch (Throwable th) {
-            LOGGER.error("Error " + th.toString(), th);
-            th.printStackTrace(System.out);
-            throw new GDEMException("Error transforming XML: " + th.toString());
+            XsltExecutable exp = comp.compile(new StreamSource(xslStream));
+            XdmNode source = proc.newDocumentBuilder().build(new StreamSource(in));
+            Serializer ser = proc.newSerializer(out);
+            ser.setOutputProperty(Serializer.Property.METHOD, "html");
+            ser.setOutputProperty(Serializer.Property.INDENT, "yes");
+            XsltTransformer trans = exp.load();
+            trans.setErrorListener(errors);
+            trans.setInitialContextNode(source);
+            trans.setDestination(ser);
+            trans.transform();
+        //} catch (TransformerConfigurationException tce) {
+        //    throw new GDEMException("Error transforming XML - incorrect stylesheet file: " + tce.toString(), tce);
+        //} catch (TransformerException tfe) {
+        //    throw new GDEMException("Error transforming XML - it's not probably well-formed xml file: " + tfe.toString(), tfe);
+        //} catch (Throwable th) {
+        //    LOGGER.error("Error " + th.toString(), th);
+        //    th.printStackTrace(System.out);
+        //    throw new GDEMException("Error transforming XML: " + th.toString());
+        } catch (SaxonApiException e) {
+            throw new GDEMException("Error transforming XML: " + e.getMessage(), e);
         }
     }
 
@@ -149,7 +145,7 @@ public abstract class ConvertStrategy {
      * @throws GDEMException In case of unexpected XML or XSL errors.
      */
     protected void runFOPTransformation(InputStream in, InputStream xsl, OutputStream out) throws GDEMException, IOException, SAXException {
-        FopFactory fopFactory = FopFactory.newInstance(new File("fop.xconf"));
+        /*FopFactory fopFactory = FopFactory.newInstance(new File("fop.xconf"));
         try {
             Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
             Result res = new SAXResult(fop.getDefaultHandler());
@@ -182,7 +178,7 @@ public abstract class ConvertStrategy {
         } catch (Throwable e) {
             LOGGER.error("Error " + e.toString(), e);
             throw new GDEMException("Error transforming XML to PDF " + e.toString());
-        }
+        }*/
     }
 
     /**

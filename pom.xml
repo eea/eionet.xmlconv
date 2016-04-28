@@ -441,11 +441,11 @@
         <!-- Libraries for Conversion and QA service -->
 
         <!-- XML parsing and transforming libraries used by Conversion service-->
-        <dependency>
+        <!--<dependency>
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
             <version>2.6.0</version>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>xerces</groupId>
