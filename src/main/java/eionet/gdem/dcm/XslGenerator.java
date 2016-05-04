@@ -59,7 +59,7 @@ public class XslGenerator {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             Map<String, Object> parameters = new HashMap<String, Object>();
             parameters.put("dd_domain", Properties.ddURL);
-            //transform.transform(xslFile, new InputSource(src.getSrcInputStream()), os, parameters);
+            transform.transform(xslFile, new InputSource(src.getSrcInputStream()), os, parameters);
             result = os.toByteArray();
         } catch (MalformedURLException mfe) {
             throw new GDEMException("Bad URL : " + mfe.toString(), mfe);

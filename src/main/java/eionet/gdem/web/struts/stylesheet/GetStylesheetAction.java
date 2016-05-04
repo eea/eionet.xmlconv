@@ -41,11 +41,9 @@ import eionet.gdem.Properties;
 import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dcm.XslGenerator;
 import eionet.gdem.dto.ConversionDto;
-import eionet.gdem.utils.xml.XSLTransformer;
 
 public class GetStylesheetAction extends Action {
 
-    public static XSLTransformer transform = new XSLTransformer();
 
     /** */
     private static final Log LOGGER = LogFactory.getLog(GetStylesheetAction.class);
