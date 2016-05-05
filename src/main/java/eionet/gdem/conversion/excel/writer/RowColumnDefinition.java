@@ -23,6 +23,7 @@ package eionet.gdem.conversion.excel.writer;
 
 /**
  * @author Enriko Käsper, Tieto Estonia Column
+ * @author George Sofianos
  */
 
 public class RowColumnDefinition {
@@ -30,6 +31,12 @@ public class RowColumnDefinition {
     private short styleIndex;
     private String styleName;
 
+    /**
+     * Constructor.
+     * @param dataType Data type
+     * @param styleIndex Style index
+     * @param styleName Style name
+     */
     public RowColumnDefinition(String dataType, short styleIndex, String styleName) {
         this.dataType = dataType;
         this.styleIndex = styleIndex;

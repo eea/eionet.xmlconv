@@ -30,8 +30,8 @@ import eionet.gdem.conversion.excel.ExcelStyleIF;
 import eionet.gdem.conversion.excel.ExcelUtils;
 
 /**
- * Handler for parsing xml document extening SAX BaseHandler This class is calling different ExcelConversionhandler methods, which
- * is actuially creating Excel file
+ * Handler for parsing xml document extending SAX BaseHandler This class is calling different ExcelConversionhandler methods, which
+ * is actuially creating Excel file.
  *
  * @author Enriko Käsper
  */
@@ -56,6 +56,10 @@ public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags {
 
     private boolean bOK = false;
 
+    /**
+     * Excel to XML handler constructor.
+     * @param excel Conversion handler
+     */
     public ExcelXMLHandler(ExcelConversionHandlerIF excel) {
         this.excel = excel;
     }
@@ -129,7 +133,7 @@ public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags {
 
     @Override
     public void characters(char[] ch, int start, int len) {
-        if (bOK == true) {
+        if (bOK) {
             fieldData.append(ch, start, len);
         }
     }

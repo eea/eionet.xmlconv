@@ -36,38 +36,47 @@ import eionet.gdem.conversion.excel.writer.ExcelConversionHandler;
 import eionet.gdem.conversion.excel.writer.ExcelConversionHandlerIF;
 import eionet.gdem.conversion.spreadsheet.SourceReaderIF;
 
+/**
+ * Excel conversion utilities.
+ */
 public class ExcelUtils {
 
     /**
-     * returns a valid ExcelConversionHandlerIF
+     * Returns a valid ExcelConversionHandlerIF
+     * @return Excel conversion handler
      */
     public static ExcelConversionHandlerIF getExcelConversionHandler() {
         return new ExcelConversionHandler();
     }
 
     /**
-     * returns a valid ExcelStyleIF
+     * Returns a valid ExcelStyleIF
+     * @return  Excel style
      */
     public static ExcelStyleIF getExcelStyle() {
         return new ExcelStyle();
     }
 
     /**
-     * returns a valid ExcelReaderIF
+     * Returns a valid ExcelReaderIF
+     * @return Excel reader
      */
     public static SourceReaderIF getExcelReader() {
         return new ExcelReader(false);
     }
 
     /**
-     * returns a valid ExcelReaderIF
+     * Returns a valid ExcelReaderIF
+     * @return Excel2007 reader
      */
     public static SourceReaderIF getExcel2007Reader() {
         return new ExcelReader(true);
     }
 
-    /*
-     * returns true, if inputstream can be opened with MS Excel
+    /**
+     * Returns true, if InputStream can be opened with MS Excel.
+     * @param input InputStream
+     * @return True, if InputStream can be opened with MS Excel.
      */
     public static boolean isExcelFile(InputStream input) {
         try {
@@ -81,7 +90,9 @@ public class ExcelUtils {
     }
 
     /**
-     * determines if stream is Excel 2007 file
+     * Determines if stream is Excel 2007 file.
+     * @param input InputStream
+     * @return True if InputStream is Excel 2007 file.
      */
     public static boolean isExcel2007File(InputStream input) {
         try {

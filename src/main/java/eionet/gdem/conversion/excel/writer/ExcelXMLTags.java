@@ -78,7 +78,7 @@ public interface ExcelXMLTags {
      */
     String STYLE_TAG = "style:style";
     /**
-     * Style properties tag - <CODE>&lt;style:properties fo:text-align='center' fo:font-size='16pt'&gt;</C ODE>
+     * Style properties tag - <CODE>&lt;style:properties fo:text-align='center' fo:font-size='16pt'&gt;</CODE>
      */
     String STYLE_PROP_TAG = "style:properties";
     // ATTRIBUTES

@@ -27,7 +27,7 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 
 /**
- * This class is mapping styles between xml (fo:style) and sytles defined in poi HSSF
+ * This class is mapping styles between xml (fo:style) and sytles defined in poi HSSF.
  *
  * @author Enriko Käsper
  */
@@ -45,6 +45,9 @@ public class ExcelStyle implements ExcelStyleIF {
     // width - - the width in units of 1/256th of a character width
     private short column_width = 0;
 
+    /**
+     * Default constructor
+     */
     public ExcelStyle() {
     }
 

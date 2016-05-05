@@ -23,6 +23,7 @@ package eionet.gdem.conversion.excel.reader;
 
 /**
  * @author Enriko Käsper, Tieto Estonia DDXmlElement
+ * @author George Sofianos
  */
 
 public class DDXmlElement {
@@ -33,6 +34,12 @@ public class DDXmlElement {
     private int colIndex = -1;
     private boolean isMainTable = false;
 
+    /**
+     * DD Xml Element constructor
+     * @param name Element name
+     * @param localName Element local name
+     * @param attributes Element attributes
+     */
     public DDXmlElement(String name, String localName, String attributes) {
         super();
         this.name = name;
