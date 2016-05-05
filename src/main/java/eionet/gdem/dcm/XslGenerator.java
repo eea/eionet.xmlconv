@@ -21,24 +21,20 @@
 
 package eionet.gdem.dcm;
 
+import eionet.gdem.GDEMException;
+import eionet.gdem.conversion.converters.TransformerErrorListener;
+import eionet.gdem.utils.InputFile;
+import eionet.gdem.utils.cache.MemoryCache;
+import net.sf.saxon.s9api.*;
+
+import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.xml.sax.InputSource;
-
-import eionet.gdem.GDEMException;
-import eionet.gdem.Properties;
-import eionet.gdem.utils.InputFile;
-import eionet.gdem.utils.cache.MemoryCache;
-import eionet.gdem.utils.xml.XSLTransformer;
 
 public class XslGenerator {
 
-    public static XSLTransformer transform = new XSLTransformer();
     public static MemoryCache MemCache = new MemoryCache(10000, 10);
 
     public static ByteArrayInputStream convertXML(String xmlURL, String conversionURL) throws GDEMException, Exception {
@@ -57,9 +53,26 @@ public class XslGenerator {
         try {
             src = new InputFile(sourceURL);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            Map<String, Object> parameters = new HashMap<String, Object>();
-            parameters.put("dd_domain", Properties.ddURL);
-            transform.transform(xslFile, new InputSource(src.getSrcInputStream()), os, parameters);
+
+            Processor proc = new Processor(false);
+            XsltCompiler comp = proc.newXsltCompiler();
+            TransformerErrorListener errors = new TransformerErrorListener();
+            StreamSource transformerSource = new StreamSource(xslFile);
+            transformerSource.setSystemId(xslFile);
+
+            XsltExecutable exp = comp.compile(transformerSource);
+            XdmNode source = proc.newDocumentBuilder().build(new StreamSource(sourceURL));
+            Serializer ser = proc.newSerializer(os);
+            ser.setOutputProperty(Serializer.Property.METHOD, "html");
+            ser.setOutputProperty(Serializer.Property.INDENT, "yes");
+            XsltTransformer trans = exp.load();
+            trans.setInitialContextNode(source);
+            trans.setParameter(new QName("dd_domain"), new XdmAtomicValue(eionet.gdem.Properties.ddURL));
+
+            trans.setErrorListener(errors);
+            trans.setDestination(ser);
+            trans.transform();
+
             result = os.toByteArray();
         } catch (MalformedURLException mfe) {
             throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
