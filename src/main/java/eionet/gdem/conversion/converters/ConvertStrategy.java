@@ -111,8 +111,8 @@ public abstract class ConvertStrategy {
             XsltExecutable exp = comp.compile(transformerSource);
             XdmNode source = proc.newDocumentBuilder().build(new StreamSource(in));
             Serializer ser = proc.newSerializer(out);
-            ser.setOutputProperty(Serializer.Property.METHOD, "html");
-            ser.setOutputProperty(Serializer.Property.INDENT, "yes");
+            //ser.setOutputProperty(Serializer.Property.METHOD, "html");
+            //ser.setOutputProperty(Serializer.Property.INDENT, "yes");
             XsltTransformer trans = exp.load();
             trans.setInitialContextNode(source);
             trans.setParameter(new QName(DD_DOMAIN_PARAM), new XdmAtomicValue(eionet.gdem.Properties.ddURL));
@@ -155,8 +155,8 @@ public abstract class ConvertStrategy {
             XsltExecutable exp = comp.compile(transformerSource);
             XdmNode source = proc.newDocumentBuilder().build(new StreamSource(in));
             Serializer ser = proc.newSerializer(out);
-            ser.setOutputProperty(Serializer.Property.METHOD, "html");
-            ser.setOutputProperty(Serializer.Property.INDENT, "yes");
+            //ser.setOutputProperty(Serializer.Property.METHOD, "html");
+            //ser.setOutputProperty(Serializer.Property.INDENT, "yes");
             XsltTransformer trans = exp.load();
             trans.setErrorListener(errors);
             trans.setInitialContextNode(source);
