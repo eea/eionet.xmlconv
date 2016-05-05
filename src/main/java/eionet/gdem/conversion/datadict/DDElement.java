@@ -22,7 +22,9 @@
 package eionet.gdem.conversion.datadict;
 
 /**
+ * DD element.
  * @author Enriko Käsper, Tieto Estonia DDElement
+ * @author George Sofianos
  */
 
 public class DDElement {
@@ -31,6 +33,10 @@ public class DDElement {
     private String delimiter;
     private boolean hasMultipleValues = false;
 
+    /**
+     * DD element constructor
+     * @param elmIdf Element id
+     */
     public DDElement(String elmIdf) {
         this.elmIdf = elmIdf;
         this.schemaDataType = "xs:string";
@@ -69,6 +75,11 @@ public class DDElement {
         this.elmIdf = elmIdf;
     }
 
+    /**
+     * DD element equals.
+     * @param ddElm DD element
+     * @return True if this element is equal with ddElm
+     */
     public boolean equals(DDElement ddElm) {
         if (getElmIdf() != null && ddElm != null && ddElm.getElmIdf() != null) {
             return getElmIdf().equalsIgnoreCase(ddElm.getElmIdf());

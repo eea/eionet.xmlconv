@@ -43,7 +43,7 @@ import eionet.gdem.utils.xml.XmlContext;
  * @author Enriko Käsper, Tieto Estonia DataDictUtil
  */
 
-public class  DataDictUtil{
+public class DataDictUtil {
 
     /** */
     private static final Log LOGGER = LogFactory.getLog(DataDictUtil.class);
@@ -52,6 +52,12 @@ public class  DataDictUtil{
     public static final String SCHEMA_SERVLET = "GetSchema";
     public static final String CONTAINER_SCHEMA_SERVLET = "GetContainerSchema";
 
+    /**
+     * Constructs instance file URL using schema ID.
+     * @param schema_url Schema URL
+     * @return Instance URL
+     * @throws GDEMException In case of unexpected error.
+     */
     public static String getInstanceUrl(String schema_url) throws GDEMException {
 
         try {
@@ -80,10 +86,10 @@ public class  DataDictUtil{
     }
 
     /**
-     * Extract id parameter value from URL if available, otherwise return empty String
+     * Extract id parameter value from URL if available, otherwise return empty String.
      *
-     * @param schemaUrl
-     * @return
+     * @param schemaUrl Schema URL
+     * @return ID
      */
     public static String getSchemaIdParamFromUrl(String schemaUrl) {
 
@@ -103,8 +109,7 @@ public class  DataDictUtil{
     /**
      * gather all element definitions
      *
-     * @param instance
-     * @param schemaUrl
+     * @param schemaUrl Schema URL
      */
     public static Map<String, DDElement> importDDTableSchemaElemDefs(String schemaUrl) {
         InputStream inputStream = null;
@@ -152,6 +157,12 @@ public class  DataDictUtil{
         return elemDefs;
     }
 
+    /**
+     * Import element definitions
+     * @param elemDefs Element definitions
+     * @param schemaUrl Schema URL
+     * @return
+     */
     public static Map<String, DDElement> importDDElementSchemaDefs(Map<String, DDElement> elemDefs, String schemaUrl) {
         InputStream inputStream = null;
         if (elemDefs == null) {
@@ -187,9 +198,9 @@ public class  DataDictUtil{
     /**
      * Returns the DD container schema URL. It holds the elements definitions
      *
-     * @param schema_url
-     * @return
-     * @throws GDEMException
+     * @param schema_url Schema URL
+     * @return Container schema url
+     * @throws GDEMException In case of unexpected error
      */
     public static String getContainerSchemaUrl(String schema_url) throws GDEMException {
 
@@ -211,8 +222,8 @@ public class  DataDictUtil{
      * Check is schema is DD schema and if it does not belong to latest released version of dataset. In that case QA may want to
      * warn users about using obsolete schema.
      *
-     * @param xmlSchema
-     * @return
+     * @param xmlSchema XML Schema
+     * @return True if DD schema does not belong to latest released version of dataset.
      */
     public static boolean isDDSchemaAndNotLatestReleased(String xmlSchema) {
         if (xmlSchema == null) {
@@ -244,10 +255,10 @@ public class  DataDictUtil{
     }
 
     /**
-     * Retreive dataset released information from Data Dictionary for XML schema If it is not DD schema, then return null
+     * Retreive dataset released information from Data Dictionary for XML schema. If it is not DD schema, then return null
      *
-     * @param xmlSchema
-     * @return
+     * @param xmlSchema XML Schema
+     * @return Dataset released information for xml schema
      */
     public static Map<String, String> getDatasetReleaseInfoForSchema(String xmlSchema) {
 
@@ -271,8 +282,9 @@ public class  DataDictUtil{
     /**
      * Retreive dataset released information from Data Dictionary for given ID and type If it is not DD schema, then return null
      *
-     * @param xmlSchema
-     * @return
+     * @param type Dataset type.
+     * @param dsId Dataset ID.
+     * @return Dataset release information.
      */
     public static Map<String, String> getDatasetReleaseInfo(String type, String dsId) {
         if (!GDEMServices.isTestConnection()) {

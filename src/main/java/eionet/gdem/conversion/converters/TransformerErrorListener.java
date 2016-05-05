@@ -29,9 +29,10 @@ import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
 
 /**
- * ErrorListener for XSLT Transformer
+ * ErrorListener for XSLT Transformer.
  *
  * @author Enriko Käsper, TietoEnator Estonia AS TransformerErrorListener
+ * @author George Sofianos
  */
 public class TransformerErrorListener implements javax.xml.transform.ErrorListener {
 
@@ -62,6 +63,12 @@ public class TransformerErrorListener implements javax.xml.transform.ErrorListen
         }
     }
 
+    /**
+     * Formats transformer exceptions.
+     * @param errType The error type
+     * @param te The transformer exception
+     * @return Formatted error message
+     */
     public static String formatTransformerException(int errType, TransformerException te) {
         String[] errorTypes = {"WARNING", "ERROR", "FATAL ERROR"};
         String msg = te.getMessageAndLocation();

@@ -35,6 +35,11 @@ import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.excel.ExcelProcessor;
 import eionet.gdem.utils.Utils;
 
+/**
+ * Converts XML files to Excel.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class ExcelConverter extends ConvertStrategy {
     /** */
     private static final Log LOGGER = LogFactory.getLog(ExcelConverter.class);

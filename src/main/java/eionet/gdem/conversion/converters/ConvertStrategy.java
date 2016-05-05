@@ -25,7 +25,6 @@ package eionet.gdem.conversion.converters;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
-import net.sf.saxon.lib.FeatureKeys;
 import net.sf.saxon.s9api.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,7 +33,6 @@ import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.Transformer;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +49,7 @@ import java.util.Map;
  * type specific conversions.
  *
  * @author Enriko Käsper
+ * @author George Sofianos
  */
 public abstract class ConvertStrategy {
 
@@ -140,6 +139,8 @@ public abstract class ConvertStrategy {
      * @param xsl InputStream containing XSL-FO content.
      * @param out OutputStream for conversion result.
      * @throws GDEMException In case of unexpected XML or XSL errors.
+     * @throws IOException In case of unexpected XML or XSL errors.
+     * @throws SAXException In case of unexpected XML or XSL errors.
      */
     protected void runFOPTransformation(InputStream in, InputStream xsl, OutputStream out) throws GDEMException, IOException, SAXException {
         FopFactory fopFactory = FopFactory.newInstance(new File("fop.xconf"));
