@@ -39,7 +39,9 @@ import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
 
 /**
- * Main Servlet
+ * Main Servlet.
+ * @author Unknown
+ * @author George Sofianos
  */
 public class Main extends HttpServlet implements Names {
 
@@ -58,13 +60,21 @@ public class Main extends HttpServlet implements Names {
     protected HashMap acls;
 
     /**
-     * returns the current Http session (old controller servlet)
+     * Returns the current Http session (old controller servlet)
+     * @param req Servlet request
      */
     protected HttpSession getSession(HttpServletRequest req) {
         session = (HttpSession) req.getAttribute(Names.SESS_ATT);
         return session;
     }
 
+    /**
+     * Handles Get method
+     * @param req Servlet request
+     * @param res Servlet response
+     * @throws ServletException Servlet Exception
+     * @throws IOException IO Exception
+     */
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
         req.setCharacterEncoding(setEncoding());
@@ -98,7 +108,11 @@ public class Main extends HttpServlet implements Names {
     }
 
     /**
-     * doPost()
+     * Post method
+     * @param req Servlet request
+     * @param res Servlet response
+     * @throws ServletException Servlet Exception
+     * @throws IOException IO Exception
      */
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         doGet(req, res);
@@ -106,11 +120,16 @@ public class Main extends HttpServlet implements Names {
 
     /**
      * Login to Stylesheet Repository
+     * @param req Servlet request
+     * @param res Servlet response
+     * @throws IOException IO Exception
+     * @throws ServletException Servlet Exception
      */
     protected void doLogin(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         String u = req.getParameter("j_username");
         String p = req.getParameter("j_passwd");
 
+        // TODO check this, since it hides a field.
         // here we set session as a request attribute
         HttpSession session = req.getSession();
 
@@ -142,7 +161,13 @@ public class Main extends HttpServlet implements Names {
     }
 
     /**
-     * handle error and direct to the correct JSP
+     * Handle error and direct to the correct JSP
+     * @param req Servlet request
+     * @param res Servlet response
+     * @param errMsg Error message
+     * @param action Action
+     * @throws ServletException Servlet Exception
+     * @throws IOException IO Exception
      */
     protected void handleError(HttpServletRequest req, HttpServletResponse res, String errMsg, String action)
             throws ServletException, IOException {
@@ -165,6 +190,14 @@ public class Main extends HttpServlet implements Names {
         }
     }
 
+    /**
+     * Dispatch method
+     * @param req Servlet request
+     * @param res Servlet response
+     * @param action Action
+     * @throws ServletException Servlet Exception
+     * @throws IOException IO Exception
+     */
     private void dispatch(HttpServletRequest req, HttpServletResponse res, String action) throws ServletException, IOException {
 
         String jspName = index_jsp;
@@ -191,6 +224,10 @@ public class Main extends HttpServlet implements Names {
         req.getRequestDispatcher(jspName).forward(req, res);
     }
 
+    /**
+     * Logout Method
+     * @param req Servlet request
+     */
     private void doLogout(HttpServletRequest req) {
 
         // groups=null;
@@ -205,6 +242,11 @@ public class Main extends HttpServlet implements Names {
 
     }
 
+    /**
+     * Guard method
+     * @param sess Http session
+     * @return True if user ?
+     */
     private boolean guard(HttpSession sess) {
         if (sess.getAttribute(USER_ATT) == null)
             return false;
@@ -212,6 +254,10 @@ public class Main extends HttpServlet implements Names {
             return true;
     }
 
+    /**
+     * Gets welcome file
+     * @return welcome file
+     */
     private String getWelcomeFile() {
 
         String welcomefile = null;
@@ -236,6 +282,11 @@ public class Main extends HttpServlet implements Names {
         return welcomefile;
     }
 
+    /**
+     * Checks if service is installed
+     * @param service Service
+     * @return True if service is installed
+     */
     private boolean serviceInstalled(int service) {
 
         int services_installed = Properties.services_installed;
@@ -251,6 +302,10 @@ public class Main extends HttpServlet implements Names {
             return false;
     }
 
+    /**
+     * Gets encoding
+     * @return Encoding
+     */
     protected String setEncoding() {
         return "UTF-8";
     }

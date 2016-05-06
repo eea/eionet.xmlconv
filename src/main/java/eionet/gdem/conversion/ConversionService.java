@@ -45,6 +45,7 @@ import eionet.gdem.utils.Utils;
  * GET.
  *
  * @author Enriko Käsper
+ * @author George Sofianos
  */
 
 public class ConversionService extends RemoteService implements ConversionServiceIF {
@@ -52,6 +53,9 @@ public class ConversionService extends RemoteService implements ConversionServic
     /** */
     private static final Log LOGGER = LogFactory.getLog(ConversionService.class);
 
+    /**
+     * Default constructor
+     */
     public ConversionService() {
     }
 
@@ -80,6 +84,15 @@ public class ConversionService extends RemoteService implements ConversionServic
         return v;
     }
 
+    /**
+     * Creates ticket hash table
+     * @param sourceURL Source URL
+     * @param convertId Convert ID
+     * @param username Username
+     * @param password Password
+     * @return Ticket Hash table
+     * @throws GDEMException If an error occurs.
+     */
     public Hashtable convert(String sourceURL, String convertId, String username, String password) throws GDEMException {
 
         try {
@@ -163,6 +176,12 @@ public class ConversionService extends RemoteService implements ConversionServic
         return ConvertDDXMLMethod.convertExcelResult(result);
     }
 
+    /**
+     * Checks if XML Schema exists
+     * @param xmlSchema XML Schema
+     * @return True if schema exists
+     * @throws GDEMException If an error occurs.
+     */
     public boolean existsXMLSchema(String xmlSchema) throws GDEMException {
         ListConversionsMethod method = new ListConversionsMethod();
         return method.existsXMLSchema(xmlSchema);
@@ -174,7 +193,7 @@ public class ConversionService extends RemoteService implements ConversionServic
      * @see eionet.gdem.conversion.ConversionServiceIF#convertPush(byte[],java.lang.String,java.lang.String)
      */
     @Override
-    public Hashtable convertPush(byte file[], String convertId, String filename) throws GDEMException {
+    public Hashtable convertPush(byte[] file, String convertId, String filename) throws GDEMException {
 
         if (!isHTTPRequest() && LOGGER.isDebugEnabled()) {
             LOGGER.debug("ConversionService.convertPush method called through XML-rpc.");
@@ -235,7 +254,12 @@ public class ConversionService extends RemoteService implements ConversionServic
         return convertResult(dto);
     }
 
-    private static final Vector<Object> convertResult(ConversionResultDto dto) {
+    /**
+     * Converts result
+     * @param dto Result transfer object
+     * @return Converted result
+     */
+    private static Vector<Object> convertResult(ConversionResultDto dto) {
         Vector<Object> result = new Vector<Object>();
 
         result.add(dto.getStatusCode());

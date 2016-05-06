@@ -23,7 +23,7 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      * List available conversions.
      *
      * @return List of conversions.
-     * @throws GDEMException
+     * @throws GDEMException If an error occurs
      */
     Vector listConversions() throws GDEMException;
 
@@ -34,7 +34,7 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      * @param schema
      *            XML Schema URL for which conversions will be returned.
      * @return List of conversions.
-     * @throws GDEMException
+     * @throws GDEMException If an error occurs
      */
     Vector listConversions(String schema) throws GDEMException;
 
@@ -57,6 +57,7 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      *
      * @param sourceURL - URL of the source Excel file
      * @return ConversionResultDto result object
+     * @throws GDEMException If an error occurs
      */
     Hashtable<String, Object> convertDD_XML(String sourceURL) throws GDEMException;
 
@@ -66,6 +67,7 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      * @param sourceURL URL of the source Excel file
      * @param sheetParam - Sheetname to convert
      * @return ConversionResultDto result object
+     * @throws GDEMException If an error occurs
      */
     Hashtable<String, Object> convertDD_XML_split(String sourceURL, String sheetParam) throws GDEMException;
 
@@ -84,9 +86,9 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      *            file content as InputStream
      * @param convertId
      *            Stylesheet ID.
-     * @param fileName
+     * @param fileName File name
      * @return returns the Hashtable that has exactly the same structure as convert method.
-     * @throws GDEMException
+     * @throws GDEMException If an error occurs
      */
     Hashtable convertPush(InputStream file, String convertId, String fileName) throws GDEMException;
 
@@ -97,16 +99,16 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      *            base64 encoded bytearray
      * @param convertId
      *            Stylesheet ID
-     * @param fileName
+     * @param filename File name
      * @return returns the Hashtable that has exactly the same structure as convert method.
-     * @throws GDEMException
+     * @throws GDEMException If an error occurs
      */
     Hashtable convertPush(byte[] file, String convertId, String filename) throws GDEMException;
 
     /**
      * Set base64 authentication info for receiveing remote URLs.
      *
-     * @param _ticket
+     * @param _ticket Ticket
      */
     @Override
     void setTicket(String _ticket);
@@ -114,8 +116,8 @@ public interface ConversionServiceIF extends RemoteServiceIF {
     /**
      * Get a distinct list of XML Schemas returned from listConversions() method.
      *
-     * @return
-     * @throws GDEMException
+     * @return List of XML Schemas
+     * @throws GDEMException If an error occurs
      */
     List getXMLSchemas() throws GDEMException;
 
@@ -154,8 +156,8 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      *            if true, then split the sheets into different files
      * @param sheetName
      *            Sheet name to convert
-     * @return ConversionResultDto
-     * @throws GDEMException
+     * @return ConversionResultDto Result transfer object
+     * @throws GDEMException If an error occurs
      */
     ConversionResultDto convertDD_XML(String sourceURL, boolean split, String sheetName) throws GDEMException;
 }

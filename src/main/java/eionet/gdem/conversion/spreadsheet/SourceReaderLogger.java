@@ -52,7 +52,11 @@ public class SourceReaderLogger {
         EXCEL("MS Excel"), ODS("OpenOffice Spreadsheet");
         private String message;
 
-        private ReaderTypeEnum(String message) {
+        /**
+         * Constructor
+         * @param message Reader type
+         */
+        ReaderTypeEnum(String message) {
             this.message = message;
         }
 
@@ -70,6 +74,11 @@ public class SourceReaderLogger {
      */
     private ReaderTypeEnum readerType;
 
+    /**
+     * Sets conversion result and reader type
+     * @param conversionResult Conversion result
+     * @param readerType Reader type
+     */
     public SourceReaderLogger(ConversionResultDto conversionResult, ReaderTypeEnum readerType) {
         this.conversionResult = conversionResult;
         this.readerType = readerType;
@@ -96,8 +105,8 @@ public class SourceReaderLogger {
     /**
      * Found " + numberOfSheets + " sheets from the workbook
      *
-     * @param numberOfSheets
-     * @param sheetNames
+     * @param numberOfSheets Number of workbook sheets
+     * @param sheetNames Sheet names
      */
     public void logNumberOfSheets(int numberOfSheets, String sheetNames) {
         String plural = (numberOfSheets != 1) ? "s" : "";
@@ -110,7 +119,7 @@ public class SourceReaderLogger {
     /**
      * Start reading sheet:
      *
-     * @param sheetName
+     * @param sheetName Sheet name
      */
     public void logStartSheet(String sheetName) {
         conversionResult.addConversionLog(ConversionLogType.INFO,
@@ -121,7 +130,7 @@ public class SourceReaderLogger {
     /**
      * Unable to find sheet
      *
-     * @param sheetName
+     * @param sheetName Sheet name
      */
     public void logSheetNotFound(String sheetName) {
         conversionResult.addConversionLog(ConversionLogType.WARNING,
@@ -132,7 +141,7 @@ public class SourceReaderLogger {
     /**
      * Sheet is missing or empty. Skip converting this sheet:
      *
-     * @param sheetName
+     * @param sheetName Sheet name
      */
     public void logEmptySheet(String sheetName) {
         conversionResult.addConversionLog(ConversionLogType.INFO,
@@ -143,8 +152,8 @@ public class SourceReaderLogger {
     /**
      * "Found nofColumns columns on sheet: sheetName
      *
-     * @param nofColumns
-     * @param sheetName
+     * @param nofColumns Number of columns
+     * @param sheetName Sheet name
      */
     public void logNumberOfColumns(int nofColumns, String sheetName) {
         String plural = (nofColumns != 1) ? "s" : "";
@@ -157,8 +166,8 @@ public class SourceReaderLogger {
     /**
      * Found redundant columns: extraColumns on sheet sheetName
      *
-     * @param extraColumns
-     * @param sheetName
+     * @param extraColumns Extra columns
+     * @param sheetName Sheet name
      */
     public void logExtraColumns(String extraColumns, String sheetName) {
         conversionResult.addConversionLog(ConversionLogType.WARNING,
@@ -169,8 +178,8 @@ public class SourceReaderLogger {
     /**
      * The following columns are missing: missingColumns on sheet sheetName
      *
-     * @param missingColumns
-     * @param sheetName
+     * @param missingColumns Missing columns
+     * @param sheetName Sheet name
      */
     public void logMissingColumns(String missingColumns, String sheetName) {
         conversionResult.addConversionLog(ConversionLogType.WARNING,
@@ -181,7 +190,7 @@ public class SourceReaderLogger {
     /**
      * End reading sheet:
      *
-     * @param sheetName
+     * @param sheetName Sheet name
      */
     public void logEndSheet(String sheetName) {
         conversionResult.addConversionLog(ConversionLogType.INFO,
@@ -192,8 +201,8 @@ public class SourceReaderLogger {
     /**
      * Found numberOfRows records on sheet: sheetName
      *
-     * @param numberOfRows
-     * @param sheetName
+     * @param numberOfRows Number of rows
+     * @param sheetName Sheet name
      */
     public void logNumberOfRows(int numberOfRows, String sheetName) {
         String plural = (numberOfRows != 1) ? "s" : "";
@@ -205,11 +214,12 @@ public class SourceReaderLogger {
 
     /**
      * End reading spreadsheet.
+     * @param fileSize File size
      */
     public void logEndWorkbook(long fileSize) {
         BigDecimal totalTime = new BigDecimal(System.currentTimeMillis() - startTimestamp).divide(new BigDecimal("1000.0"));
         String fileSizeMessage = "";
-        if(fileSize >0){
+        if (fileSize > 0) {
             fileSizeMessage = FileUtils.byteCountToDisplaySize(fileSize);
         }
         String message =
@@ -221,8 +231,8 @@ public class SourceReaderLogger {
     /**
      * Sheet schema is: schemaUrl
      *
-     * @param instanceUrl
-     * @param tblLocalName
+     * @param instanceUrl Instance URL
+     * @param tblLocalName Table local name
      */
     public void logSheetSchema(String instanceUrl, String sheetName) {
         conversionResult.addConversionLog(ConversionLogType.INFO,
@@ -232,7 +242,8 @@ public class SourceReaderLogger {
     /**
      * Log system warning:
      *
-     * @param sheetName
+     * @param sheetName Sheet name
+     * @param warnMessage Warning message
      */
     public void logSystemWarning(String sheetName, String warnMessage) {
         conversionResult.addConversionLog(ConversionLogType.WARNING,
@@ -243,7 +254,8 @@ public class SourceReaderLogger {
     /**
      * Log system info:
      *
-     * @param sheetName
+     * @param sheetName Sheet name
+     * @param infoMessage Information message
      */
     public void logInfo(String sheetName, String infoMessage) {
         conversionResult.addConversionLog(ConversionLogType.INFO,

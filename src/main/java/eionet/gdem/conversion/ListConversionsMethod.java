@@ -128,7 +128,7 @@ public class ListConversionsMethod extends RemoteServiceMethod {
     /**
      * Check if listConversions method contains specified schema.
      *
-     * @param xmlSchema
+     * @param xmlSchema XML Schema
      * @return
      * @throws GDEMException
      *             System error.
@@ -143,6 +143,7 @@ public class ListConversionsMethod extends RemoteServiceMethod {
      *
      * @param ddTables
      *            List of DD schemas.
+     * @param tblId Table id
      * @return true, if table ID exists in DD.
      */
     public boolean isSchemaExistsInDD(List<DDDatasetTable> ddTables, String tblId) {

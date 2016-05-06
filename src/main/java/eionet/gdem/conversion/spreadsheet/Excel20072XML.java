@@ -3,7 +3,7 @@ package eionet.gdem.conversion.spreadsheet;
 import eionet.gdem.conversion.excel.ExcelUtils;
 
 /**
- * This class is returns MS Excel specific handlers for DDXMLConverter
+ * This class is returns MS Excel specific handlers for DDXMLConverter.
  *
  * @author Kaido Laine
  */
@@ -16,7 +16,7 @@ public class Excel20072XML extends DDXMLConverter {
         super();
     }
 
-    private final static String FORMAT_NAME = "MS Excel 2007";
+    private static final String FORMAT_NAME = "MS Excel 2007";
 
     @Override
     public SourceReaderIF getSourceReader() {

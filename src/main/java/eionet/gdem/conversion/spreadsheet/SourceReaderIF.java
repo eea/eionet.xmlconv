@@ -31,10 +31,10 @@ import eionet.gdem.conversion.datadict.DD_XMLInstance;
 import eionet.gdem.dto.ConversionResultDto;
 
 /**
- *
- * Generic source file reader interface
+ * Generic source file reader interface.
  *
  * @author Enriko Käsper
+ * @author George Sofianos
  */
 public interface SourceReaderIF {
 
@@ -43,38 +43,39 @@ public interface SourceReaderIF {
      *
      * @return - XML Schema URL
      */
-    public String getXMLSchema();
+    String getXMLSchema();
 
     /**
      * Initialize the Source file from InputStream
      *
-     * @param File
-     *            input - input Excel or OpenDocument File
+     * @param input
+     *            input Excel or OpenDocument File
+     * @throws GDEMException If an error occurs.
      */
-    public void initReader(File input) throws GDEMException;
+    void initReader(File input) throws GDEMException;
 
     /**
      * Goes through the source file and writes the data into DD_XMLInstance as xml
      *
-     * @param DD_XMLInstance
-     *            instance - XML instance file, where the structure xml has been efined before
-     * @throws Exception
+     * @param instance
+     *            XML instance file, where the structure xml has been efined before
+     * @throws Exception If an error occurs.
      */
-    public void writeContentToInstance(DD_XMLInstance instance) throws Exception;
+    void writeContentToInstance(DD_XMLInstance instance) throws Exception;
 
     /**
      * Finds the first sheet name, that is not DO_NOT_DELETE_THIS_SHEET
      *
      * @return - sheet name
      */
-    public String getFirstSheetName();
+    String getFirstSheetName();
 
     /**
      * If the spurce file is generated from Data Dictionary, then it finds the XML Shemas for each spreadsheet
      *
      * @return - Spreadsheet name
      */
-    public Map<String, String> getSheetSchemas();
+    Map<String, String> getSheetSchemas();
 
     /**
      * Check if sheet has data or not
@@ -83,16 +84,16 @@ public interface SourceReaderIF {
      *            - sheet name
      * @return boolean - true if has data
      */
-    public boolean isEmptySheet(String sheet_name);
+    boolean isEmptySheet(String sheet_name);
 
     /**
      * Source reader ended it's job. Do some closing stuff.
      */
-    public void closeReader();
+    void closeReader();
 
     /**
      * Source reader ended it's job. Do some closing stuff.
      * @param resultObject Object for storing conversion log messages.
      */
-    public void startReader(ConversionResultDto resultObject);
+    void startReader(ConversionResultDto resultObject);
 }

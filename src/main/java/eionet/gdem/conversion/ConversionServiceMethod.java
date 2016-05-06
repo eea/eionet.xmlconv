@@ -10,7 +10,7 @@ import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.remote.RemoteServiceMethod;
 
 /**
- * Abstract class for holding ConversionService methods
+ * Abstract class for holding ConversionService methods.
  *
  * @author Enriko Käsper, TietoEnator Estonia AS
  */
@@ -29,12 +29,15 @@ public abstract class ConversionServiceMethod extends RemoteServiceMethod {
 
     private String ticket = null;
 
-    private boolean trustedMode = false;// false for web clients
+    private boolean trustedMode = false; // false for web clients
 
     private boolean isHttpRequest = false;
 
     private HttpMethodResponseWrapper httpResponse = null;
 
+    /**
+     * Default constructor
+     */
     public ConversionServiceMethod() {
         xslFolder = Properties.xslFolder + File.separatorChar; // props.getString("xsl.folder");
         tmpFolder = Properties.tmpFolder + File.separatorChar; // props.getString("tmp.folder");

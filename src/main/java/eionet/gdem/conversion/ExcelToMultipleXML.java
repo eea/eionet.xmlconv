@@ -52,9 +52,9 @@ import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 
 /**
- *
+ * Splits Excel to multiple XML files.
  * @author Vadim Gerassimov
- *
+ * @author George Sofianos
  */
 public class ExcelToMultipleXML {
 
@@ -113,7 +113,7 @@ public class ExcelToMultipleXML {
     /**
      * Converts Excel file to XML by specified XSL-s.
      *
-     * @param file
+     * @param source
      *            file binary data.
      * @param fileName
      *            file name.
@@ -206,7 +206,18 @@ public class ExcelToMultipleXML {
         return result;
     }
 
-    private static final void
+    /**
+     * Applies transformation
+     * @param result Result transfer object
+     * @param xmlTmpFileLocation XML temporary file location
+     * @param stylesheets Stylesheets
+     * @throws FileNotFoundException If file is not found
+     * @throws GDEMException If an error occurs
+     * @throws Exception If an error occurs
+     * @throws UnsupportedEncodingException Unsupported encoding exception
+     * @throws IOException IO Exception
+     */
+    private static void
             applyTransformation(ConversionResultDto result, String xmlTmpFileLocation, Vector<Object> stylesheets)
                     throws FileNotFoundException, GDEMException, Exception, UnsupportedEncodingException, IOException {
         Map<Object, Object> stylesheet;
@@ -286,6 +297,13 @@ public class ExcelToMultipleXML {
         result.setConvertedXmls(xmls);
     }
 
+    /**
+     * Converts Excel file to XML
+     * @param xlsFilePath Excel file
+     * @param fileName File name
+     * @return Converted file
+     * @throws Exception If an error occurs.
+     */
     private static String convertToXml(String xlsFilePath, String fileName) throws Exception {
         String tmpOds = Utils.getUniqueTmpFileName(transformFileNameToExtension(fileName, "ods"));
         String result = Utils.getUniqueTmpFileName(transformFileNameToExtension(fileName, "xml"));
@@ -326,14 +344,27 @@ public class ExcelToMultipleXML {
         return result;
     }
 
-    private static final String saveXlsToTmpFile(InputStream source, String fileName) throws Exception {
+    /**
+     * Saves Excel file to temporary file
+     * @param source Source InputStream
+     * @param fileName  File name
+     * @return Result
+     * @throws Exception If an error occurs
+     */
+    private static String saveXlsToTmpFile(InputStream source, String fileName) throws Exception {
         String result = Utils.getUniqueTmpFileName(transformFileNameToExtension(fileName, "xls"));
         copyInputStream(source, new BufferedOutputStream(new FileOutputStream((result))));
 
         return result;
     }
 
-    private static final String transformFileNameToExtension(String fileName, String ext) {
+    /**
+     * Adds extension to file name
+     * @param fileName File name
+     * @param ext Extension
+     * @return Transformed name
+     */
+    private static String transformFileNameToExtension(String fileName, String ext) {
         String fname = fileName;
         String actualFileExt = Utils.extractExtension(fname, null);
 
@@ -346,8 +377,10 @@ public class ExcelToMultipleXML {
         return fname;
     }
 
-    /*
+    /**
      * First element of the array is schema, second - release date.
+     * @param xlsSource Excel InputStream
+     * @throws GDEMException If an error occurs.
      */
     private String[] getSchemaAndReleaseDate(InputStream xlsSource) throws GDEMException {
         String[] result = new String[2];
@@ -378,8 +411,15 @@ public class ExcelToMultipleXML {
         return result;
     }
 
+    /**
+     * Extracts cell value
+     * @param schemaSheet Schema sheet
+     * @param rowId Row id
+     * @param cellId Cell id
+     * @return Cell value
+     */
     @SuppressWarnings("deprecation")
-    private static final String extractCellValue(HSSFSheet schemaSheet, int rowId, int cellId) {
+    private static String extractCellValue(HSSFSheet schemaSheet, int rowId, int cellId) {
         String result = null;
 
         if (schemaSheet != null) {
@@ -400,8 +440,13 @@ public class ExcelToMultipleXML {
         return result;
     }
 
+    /**
+     * Converts stylesheets vector to map
+     * @param stylesheets Stylesheets
+     * @return Map
+     */
     @SuppressWarnings("unchecked")
-    private static final Map<String, Map<Object, Object>> toMap(Vector<Object> stylesheets) {
+    private static Map<String, Map<Object, Object>> toMap(Vector<Object> stylesheets) {
         Map<String, Map<Object, Object>> result = new HashMap<String, Map<Object, Object>>();
         Map<Object, Object> map;
         String convertId;
@@ -414,7 +459,12 @@ public class ExcelToMultipleXML {
         return result;
     }
 
-    private static final Map<String, String> toConvertIdOutputFileName(Map<String, Map<Object, Object>> stylesheetMap) {
+    /**
+     * Converts stylesheetmap
+     * @param stylesheetMap Stylesheet map
+     * @return Converted map
+     */
+    private static Map<String, String> toConvertIdOutputFileName(Map<String, Map<Object, Object>> stylesheetMap) {
         Map<String, String> result = new HashMap<String, String>();
 
         for (Map.Entry<String, Map<Object, Object>> me : stylesheetMap.entrySet()) {
@@ -427,13 +477,13 @@ public class ExcelToMultipleXML {
     /**
      * Builds conversion order.
      *
-     * @param stylesheetMap
+     * @param stylesheetMap Stylesheet map
      * @return list of lists of conversion ID-s where the first element of the list (second list) is conversion id that does not
      *         depend on any of the conversion, the second depends on the first, etc, the last has no conversion ID that is depended
      *         on it. Example (pairs conversion id and depends on): 1 -> null, 2 -> 1, 3 -> 2, 4-> null, 5 -> 2; the result will be:
      *         [[1, 2, 3], [1, 2, 5], [4]]
      */
-    private static final List<List<String>> buildConversionChains(Map<String, Map<Object, Object>> stylesheetMap) {
+    private static List<List<String>> buildConversionChains(Map<String, Map<Object, Object>> stylesheetMap) {
         List<List<String>> result = new LinkedList<List<String>>();
         // final String convertIdKey = "convert_id";
         final String dependsOnKey = "depends_on";
@@ -494,7 +544,13 @@ public class ExcelToMultipleXML {
         return result;
     }
 
-    private static final void copyInputStream(InputStream in, OutputStream out) throws IOException {
+    /**
+     * Copies InputStream
+     * @param in InputStream
+     * @param out OutputStream
+     * @throws IOException IO Exception
+     */
+    private static void copyInputStream(InputStream in, OutputStream out) throws IOException {
         try {
             IOUtils.copy(in, out);
         } finally {
@@ -503,26 +559,12 @@ public class ExcelToMultipleXML {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        GDEMServices.setTestConnection(true);
-        ConversionResultDto res = new ExcelToMultipleXML().convert(new FileInputStream("c:\\temp\\lichab.xls"), "hz.xls");
-        System.err.println(res.getStatusDescription());
-        System.err.println(res.getConvertedXmls());
-        // testOrderByByDOn();
-
-    }
-
-    private static void testOrderByByDOn() {
-        Map<String, Map<Object, Object>> stylesheets = new HashMap<String, Map<Object, Object>>();
-        stylesheets.put("1", getObjectMap("1", null));
-        stylesheets.put("2", getObjectMap("2", "1"));
-        stylesheets.put("3", getObjectMap("3", "2"));
-        stylesheets.put("4", getObjectMap("4", null));
-        stylesheets.put("5", getObjectMap("5", "2"));
-
-        System.err.println(buildConversionChains(stylesheets));
-    }
-
+    /**
+     * Gets object map
+     * @param convertId Convert id
+     * @param dependsOn Depends on
+     * @return Object map
+     */
     private static Map<Object, Object> getObjectMap(String convertId, String dependsOn) {
         Map<Object, Object> result = new HashMap<Object, Object>();
         result.put("convert_id", convertId);

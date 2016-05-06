@@ -37,13 +37,20 @@ import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 
 /**
- * Handler of storing methods for the GDEM
+ * Handler of storing methods for the GDEM.
+ * @author Unknown
+ * @author George Sofianos
  */
 public class SaveHandler {
 
     /** */
     private static final Log LOGGER = LogFactory.getLog(SaveHandler.class);
 
+    /**
+     * Handles work queue
+     * @param req Servlet request
+     * @param action Action
+     */
     static void handleWorkqueue(HttpServletRequest req, String action) {
         AppUser user = SecurityUtil.getUser(req, Names.USER_ATT);
         String user_name = null;
@@ -71,7 +78,7 @@ public class SaveHandler {
                     // delete also result files from file system tmp folder
                     try {
                         for (int i = 0; i < jobs.length; i++) {
-                            String jobData[] = GDEMServices.getDaoService().getXQJobDao().getXQJobData(jobs[i]);
+                            String[] jobData = GDEMServices.getDaoService().getXQJobDao().getXQJobData(jobs[i]);
                             if (jobData == null || jobData.length < 3) {
                                 continue;
                             }

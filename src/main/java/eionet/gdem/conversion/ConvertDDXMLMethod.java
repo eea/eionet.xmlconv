@@ -44,7 +44,9 @@ import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 
 /**
+ * DDXML Conversion method class.
  * @author Enriko Käsper, TietoEnator Estonia AS ConvertDDXMLMethod
+ * @author George Sofianos
  */
 
 public class ConvertDDXMLMethod extends RemoteServiceMethod {
@@ -59,6 +61,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
      * @param sourceUrl - URL of the srouce Excel file
      * @return Vector result: error_code, xml_url, error_message
      * @throws UnsupportedEncodingException
+     * @throws GDEMException If an error occurs
      */
     public ConversionResultDto convertDD_XML(String sourceUrl) throws GDEMException {
         return convertDD_XML(sourceUrl, false, null);
@@ -68,7 +71,9 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
      * Converts DataDictionary MS Excel sheets to different XML files, where one xml file is dataset table.
      *
      * @param sourceUrl - URL of the source Excel file
+     * @param sheetName Sheet name
      * @return Vector result: error_code, xml_url, error_message
+     * @throws GDEMException If an error occurs
      */
     public ConversionResultDto convertDD_XML_split(String sourceUrl, String sheetName) throws GDEMException {
         return convertDD_XML(sourceUrl, true, sheetName);
@@ -77,11 +82,11 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
     /**
      * Method that calls converter to do the conversion.
      *
-     * @param sourceUrl
-     * @param split
-     * @param sheetName
-     * @return
-     * @throws GDEMException
+     * @param sourceUrl Source URL
+     * @param split Split or not
+     * @param sheetName Sheet name
+     * @return Result transfer object
+     * @throws GDEMException If an error occurs.
      */
     private ConversionResultDto convertDD_XML(String sourceUrl, boolean split, String sheetName) throws GDEMException {
         OutputStream resultStream = null;
@@ -151,10 +156,10 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
     /**
      * Returns source file as InputFile object.
      *
-     * @param sourceUrl
-     * @return
-     * @throws MalformedURLException
-     * @throws IOException
+     * @param sourceUrl Source URL
+     * @return Input File
+     * @throws MalformedURLException If URL is malformed
+     * @throws IOException IO Exception
      */
     private InputFile getInptFile(String sourceUrl) throws MalformedURLException, IOException {
         InputFile src = new InputFile(sourceUrl);
@@ -167,9 +172,9 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
     /**
      * Get OutpuStram where to write the conversion result.
      *
-     * @param outputFileName
-     * @return
-     * @throws GDEMException
+     * @param outputFileName Output file name
+     * @return OutputStream
+     * @throws GDEMException If an error occurs
      */
     private OutputStream getResultOutputStream(String outputFileName) throws GDEMException {
         OutputStream resultStream = null;
@@ -190,10 +195,10 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
     /**
      * Handle exceptions - throws Exception if the call is coming from web page, otherwise logs and returns error message.
      *
-     * @param errorMessage
-     * @param e
-     * @return
-     * @throws GDEMException
+     * @param errorMessage Error message
+     * @param e Exception
+     * @return Error message
+     * @throws GDEMException If an error occurs
      */
     private String handleConversionException(String errorMessage, Exception e) throws GDEMException {
         LOGGER.error(errorMessage, e);
@@ -208,9 +213,10 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
     /**
      * Converts conversion result object into Hashtable that is used in XML-RPC method result.
      *
-     * @param dto
-     * @return
-     * @throws IOException
+     * @param dto Result transfer object
+     * @return Hash table with result
+     * @throws IOException IO Exception
+     * @throws GDEMException If an error occurs
      */
     public static final Hashtable<String, Object> convertExcelResult(ConversionResultDto dto) throws GDEMException {
         Hashtable<String, Object> result = new Hashtable<String, Object>();

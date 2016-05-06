@@ -30,14 +30,25 @@ import org.apache.commons.io.IOUtils;
 
 import eionet.gdem.GDEMException;
 
+/**
+ * Processes OpenDocument files.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class OpenDocumentProcessor {
 
-    /*
+    /**
      * This class is creating handlers for creating OpenDocument file from xml called from ConversionService
      */
     public OpenDocumentProcessor() {
     }
 
+    /**
+     * Creates ODS Spreadsheet
+     * @param sIn Input String
+     * @param sOut Output String
+     * @throws GDEMException If an error occurs.
+     */
     public void makeSpreadsheet(String sIn, String sOut) throws GDEMException {
         FileOutputStream out = null;
         try {
@@ -51,6 +62,12 @@ public class OpenDocumentProcessor {
         }
     }
 
+    /**
+     * Creates ODS Spreadsheet
+     * @param sIn Input String
+     * @param sOut Output String
+     * @throws GDEMException If an error occurs.
+     */
     public void makeSpreadsheet(String sIn, OutputStream sOut) throws GDEMException {
 
         if (sIn == null) {
