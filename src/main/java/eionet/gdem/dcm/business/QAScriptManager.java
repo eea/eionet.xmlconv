@@ -45,7 +45,9 @@ import java.util.Date;
 import java.util.HashMap;
 
 /**
+ * QA Script manager.
  * @author Enriko Käsper, Tieto Estonia QAScriptManager
+ * @author George Sofianos
  */
 
 public class QAScriptManager {
@@ -193,17 +195,17 @@ public class QAScriptManager {
     /**
      * Update script properties.
      *
-     * @param user
-     * @param scriptId
-     * @param shortName
-     * @param schemaId
-     * @param resultType
-     * @param descr
-     * @param scriptType
-     * @param curFileName
-     * @param content
-     * @param updateContent
-     * @throws DCMException
+     * @param user logged in user name.
+     * @param scriptId QA script Id.
+     * @param shortName QA script short name.
+     * @param schemaId XML Schema Id.
+     * @param resultType QA script execution result type (XML, HTML, ...).
+     * @param descr QA script textual description.
+     * @param scriptType QA script type (XQUERY, XSL, XGAWK).
+     * @param curFileName QA script file name.
+     * @param content File content
+     * @param updateContent Update content
+     * @throws DCMException If an error occurs.
      */
     public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
             String scriptType, String curFileName, String upperLimit, String url, String content, boolean updateContent)
@@ -254,7 +256,7 @@ public class QAScriptManager {
      *
      * @param fileName QA scriptfile name.
      * @return true if file exists.
-     * @throws SQLException
+     * @throws SQLException If an error occurs.
      */
     public boolean fileExists(String fileName) throws SQLException {
 
@@ -278,7 +280,7 @@ public class QAScriptManager {
      *
      * @param file FormFile object uploaded through web interface.
      * @param fileName File name.
-     * @throws FileNotFoundException
+     * @throws FileNotFoundException File is not found.
      * @throws IOException file store operations failed.
      */
     public void storeQAScriptFile(FormFile file, String fileName) throws FileNotFoundException, IOException {
@@ -301,12 +303,12 @@ public class QAScriptManager {
     /**
      * Store QA script content into file system.
      *
-     * @param user
-     * @param scriptId
-     * @param fileContent
-     * @throws FileNotFoundException
-     * @throws IOException
-     * @throws DCMException
+     * @param user logged in user name.
+     * @param scriptId QA script Id.
+     * @param fileContent File content
+     * @throws FileNotFoundException File not found
+     * @throws IOException IO Exception
+     * @throws DCMException If an error occurs.
      */
     public void storeQAScriptFromString(String user, String scriptId, String fileContent) throws FileNotFoundException,
             IOException, DCMException {
@@ -338,9 +340,9 @@ public class QAScriptManager {
     /**
      * Delete the selected QA script from database and file system
      *
-     * @param user
-     * @param scriptId
-     * @throws DCMException
+     * @param user logged in user name.
+     * @param scriptId QA script Id.
+     * @throws DCMException If an error occurs.
      */
     public void delete(String user, String scriptId) throws DCMException {
         try {
@@ -381,16 +383,16 @@ public class QAScriptManager {
     /**
      * Add a new QA script into the repository
      *
-     * @param user
-     * @param shortName
-     * @param schemaId
-     * @param schema
-     * @param resultType
-     * @param description
-     * @param scriptType
-     * @param scriptFile
-     * @return
-     * @throws DCMException
+     * @param user logged in user name.
+     * @param shortName QA script short name.
+     * @param schemaId XML Schema Id.
+     * @param resultType QA script execution result type (XML, HTML, ...).
+     * @param description QA script textual description.
+     * @param scriptType QA script type (XQUERY, XSL, XGAWK).
+     * @param schema Schema
+     * @param scriptFile QA script file
+     * @return Script id
+     * @throws DCMException If an error occurs.
      */
     public String add(String user, String shortName, String schemaId, String schema, String resultType, String description,
             String scriptType, FormFile scriptFile, String upperLimit, String url) throws DCMException {
@@ -458,7 +460,7 @@ public class QAScriptManager {
      * @param user logged in username.
      * @param schemaId XML Schema Id.
      * @param validate XML Schema validation is part of QA.
-     * @blocker return blocker flag in QA if XML Schema validation fails.
+     * @param blocker return blocker flag in QA if XML Schema validation fails.
      * @throws DCMException if database operation fails.
      */
     public void updateSchemaValidation(String user, String schemaId, boolean validate, boolean blocker) throws DCMException {
@@ -546,10 +548,10 @@ public class QAScriptManager {
     
     /**
      * Set/Unset "ACTIVE" flag on a specific scriptId 
-     * @param user
-     * @param scriptId
-     * @param setActive
-     * @throws DCMException 
+     * @param user User
+     * @param scriptId Script id
+     * @param setActive Active flag
+     * @throws DCMException If an error occurs.
      */
     public void activateDeactivate (String user, String scriptId, boolean setActive) throws DCMException {
         try {

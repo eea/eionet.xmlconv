@@ -61,7 +61,7 @@ public class CrServiceSparqlClient {
      * @param schema
      *            XML schema
      * @return the list of CR file objects
-     * @throws DCMException
+     * @throws DCMException If an error occurs
      */
     public static List<CrFileDto> getXmlFilesBySchema(String schema) throws DCMException {
 
@@ -104,6 +104,11 @@ public class CrServiceSparqlClient {
         return result;
     }
 
+    /**
+     * Gets SPARQL Query for fetching xml files by schema
+     * @param schema XML Schema
+     * @return Query result
+     */
     private static String getXmlFilesBySchemaQuery(String schema) {
         StringBuilder query =
                 new StringBuilder("PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#> "
@@ -116,8 +121,9 @@ public class CrServiceSparqlClient {
 
     /**
      * The testing purposes
-     *
-     * @return
+     * TODO check possibility of replacing this.
+     * @param schemaUrl Schema URL
+     * @return Result XML files
      */
     public static List<CrFileDto> getMockXmlFilesBySchema(String schemaUrl) {
         return mockXmlFiles;

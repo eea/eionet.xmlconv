@@ -33,7 +33,7 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 
 /**
- * ConvTypeManager
+ * ConvTypeManager.
  *
  * @author Enriko Käsper, Tieto Estonia
  */
@@ -50,7 +50,7 @@ public class ConvTypeManager {
      * @param convTypeId
      *            (HTML, XML, ...)
      * @return
-     * @throws DCMException
+     * @throws DCMException If an error occurs.
      */
     public ConvType getConvType(String convTypeId) throws DCMException {
         ConvType convType = null;

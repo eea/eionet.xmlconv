@@ -99,6 +99,11 @@ public class StylesheetManager {
 
     }
 
+    /**
+     * Gets conversion types
+     * @return Conversion types
+     * @throws DCMException If an error occurs.
+     */
     public ConvTypeHolder getConvTypes() throws DCMException {
         ConvTypeHolder ctHolder = new ConvTypeHolder();
         ArrayList convs;
@@ -127,7 +132,7 @@ public class StylesheetManager {
 
     /**
      * Add new stylesheet file into repository.
-     * @param styleseet Stylesheet DTO.
+     * @param stylesheet Stylesheet DTO.
      * @param user logged in user name.
      * @throws DCMException if saving of file or database update failed.
      */
@@ -224,6 +229,7 @@ public class StylesheetManager {
      * @param excludeStylesheetId
      *            stylesheet id to be excluded in returning result. If the value is null then no exclusion is done.
      * @return list of {@link Stylesheet} -s.
+     * @throws DCMException If an error occurs.
      */
     @SuppressWarnings("unchecked")
     public List<Stylesheet> getSchemaStylesheets(String schemaId, String excludeStylesheetId) throws DCMException {

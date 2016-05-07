@@ -45,7 +45,7 @@ import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 
 /**
- * WorkqueueManager
+ * Work Queue Manager.
  *
  * @author Enriko Käsper, Tieto Estonia
  */
@@ -91,7 +91,7 @@ public class WorkqueueManager {
      * @param scriptType
      *            Script title.
      * @return Job ID.
-     * @throws DCMException
+     * @throws DCMException If an error occurs.
      */
     public String addQAScriptToWorkqueue(String user, String sourceUrl, String scriptContent, String scriptType)
     throws DCMException {
@@ -130,7 +130,7 @@ public class WorkqueueManager {
      * @param schemaUrl
      *            XML Schema URL.
      * @return List of job IDs.
-     * @throws DCMException
+     * @throws DCMException If an error occurs.
      */
     public List<String> addSchemaScriptsToWorkqueue(String user, String sourceUrl, String schemaUrl) throws DCMException {
 
@@ -169,6 +169,11 @@ public class WorkqueueManager {
         return result;
     }
 
+    /**
+     * Gets finished jobs.
+     * @return List of finish jobs
+     * @throws DCMException If an error occurs.
+     */
     public List<WorkqueueJob> getFinishedJobs() throws DCMException {
         List<WorkqueueJob> jobs = new ArrayList<WorkqueueJob>();
         try {
@@ -189,6 +194,12 @@ public class WorkqueueManager {
 
     }
 
+    /**
+     * Parses Job data
+     * @param jobData Job data
+     * @return Job
+     * @throws ParseException If an error occurs.
+     */
     private WorkqueueJob parseJobData(String[] jobData) throws ParseException {
         WorkqueueJob job = null;
         if (jobData != null && jobData.length > 4) {
@@ -208,8 +219,8 @@ public class WorkqueueManager {
     /**
      * Remove the job from the queue and delete temporary files.
      *
-     * @param job
-     * @throws GDEMException
+     * @param job Work queue job
+     * @throws GDEMException If an error occurs.
      */
     public void endXQJob(WorkqueueJob job) throws DCMException {
         // remove the job from the queue / DB when the status won't change= FATAL or READY

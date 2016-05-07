@@ -31,6 +31,11 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.utils.SecurityUtil;
 
+/**
+ * Root element manager.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class RootElemManager {
 
     /** */
@@ -38,6 +43,12 @@ public class RootElemManager {
 
     private IRootElemDao rootElemDao = GDEMServices.getDaoService().getRootElemDao();
 
+    /**
+     * Delete element
+     * @param user User
+     * @param elemId Element id
+     * @throws DCMException If an error occurs.
+     */
     public void delete(String user, String elemId) throws DCMException {
 
         try {
@@ -63,6 +74,14 @@ public class RootElemManager {
         }
     }
 
+    /**
+     * Adds element
+     * @param user User
+     * @param schemaId Schema id
+     * @param elemName Element id
+     * @param namespace Namespace
+     * @throws DCMException If an error occurs.
+     */
     public void add(String user, String schemaId, String elemName, String namespace) throws DCMException {
 
         try {

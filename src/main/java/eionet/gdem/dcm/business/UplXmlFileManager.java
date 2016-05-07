@@ -150,6 +150,8 @@ public class UplXmlFileManager {
      *            XML file unique ID
      * @param title
      *            XML file title
+     * @param curFileName Current file name
+     * @param file Form file
      * @throws DCMException
      *             If database or file deleting operation fails
      */
@@ -193,6 +195,15 @@ public class UplXmlFileManager {
 
     }
 
+    /**
+     * Renames XML File
+     * @param user User
+     * @param xmlFileId XML file id
+     * @param title Title
+     * @param curFileName Current file name
+     * @param newFileName New file name
+     * @throws DCMException If an error occurs.
+     */
     public void renameXmlFile(String user, String xmlFileId, String title, String curFileName, String newFileName) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_XMLFILE_PATH, "u")) {
@@ -231,9 +242,9 @@ public class UplXmlFileManager {
     /**
      * Returns UplXmlFile bean with XML file metada.
      *
-     * @param xmlFileId
-     * @return
-     * @throws DCMException
+     * @param xmlFileId XML file id
+     * @return Uploaded XML file
+     * @throws DCMException If an error occurs.
      */
     public UplXmlFile getUplXmlFileById(String xmlFileId) throws DCMException {
 
@@ -267,9 +278,9 @@ public class UplXmlFileManager {
     /**
      * Get all the XML files stored in repository.
      *
-     * @param user_name
+     * @param user_name User
      * @return Vector containing UplXmlFile objects
-     * @throws DCMException
+     * @throws DCMException If an error occurs.
      */
     public UplXmlFileHolder getUplXmlFiles(String user_name) throws DCMException {
 
@@ -332,9 +343,9 @@ public class UplXmlFileManager {
     /**
      * Checks if the xml file with the given filename exists whether in db or in fs
      *
-     * @param fileName
-     * @return
-     * @throws SQLException
+     * @param fileName File name
+     * @return True if file exists
+     * @throws SQLException If an error occurs.
      */
     public boolean fileExists(String fileName) throws SQLException {
 
@@ -356,10 +367,10 @@ public class UplXmlFileManager {
     /**
      * Stores the xml file into filesystem
      *
-     * @param file
-     * @param fileName
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @param file Form file
+     * @param fileName File name
+     * @throws FileNotFoundException File not found
+     * @throws IOException IO Exception
      */
     public void storeXmlFile(FormFile file, String fileName) throws FileNotFoundException, IOException {
 
