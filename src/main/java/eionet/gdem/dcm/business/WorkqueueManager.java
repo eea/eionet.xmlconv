@@ -220,7 +220,7 @@ public class WorkqueueManager {
      * Remove the job from the queue and delete temporary files.
      *
      * @param job Work queue job
-     * @throws GDEMException If an error occurs.
+     * @throws DCMException If an error occurs.
      */
     public void endXQJob(WorkqueueJob job) throws DCMException {
         // remove the job from the queue / DB when the status won't change= FATAL or READY

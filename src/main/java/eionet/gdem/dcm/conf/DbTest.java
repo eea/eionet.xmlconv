@@ -33,11 +33,23 @@ import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
 
+/**
+ * Database connection test class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class DbTest {
 
     /** */
     private static final Log LOGGER = LogFactory.getLog(DbTest.class);
 
+    /**
+     * Test database connection
+     * @param url Connection url
+     * @param user User
+     * @param psw Password
+     * @throws Exception If an error occurs.
+     */
     public void tstDbParams(String url, String user, String psw) throws Exception {
 
         Connection con = null;

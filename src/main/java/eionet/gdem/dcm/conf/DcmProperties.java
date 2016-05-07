@@ -35,11 +35,23 @@ import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
 
+/**
+ * DCM Properties class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class DcmProperties {
 
     /** */
     private static final Log LOGGER = LogFactory.getLog(DcmProperties.class);
 
+    /**
+     * Set database parameters.
+     * @param url Connection url
+     * @param user User
+     * @param psw Password
+     * @throws DCMException If an error occurs.
+     */
     public void setDbParams(String url, String user, String psw) throws DCMException {
 
         String filePath = Properties.appHome + File.separatorChar + "gdem.properties";
@@ -69,6 +81,14 @@ public class DcmProperties {
         }
     }
 
+    /**
+     * Sets LDAP Parameters
+     * @param url Connection url
+     * @param context Context
+     * @param userDir User Directory
+     * @param attrUid UID Attribute
+     * @throws DCMException If an error occurs.
+     */
     public void setLdapParams(String url, String context, String userDir, String attrUid) throws DCMException {
 
         String filePath = Properties.appHome + File.separatorChar + "eionetdir.properties";
@@ -98,6 +118,15 @@ public class DcmProperties {
             throw new DCMException(BusinessConstants.EXCEPTION_PARAM_LDAP_FAILED);
         }
     }
+
+    /**
+     * Sets BaseX Parameters
+     * @param host Host
+     * @param port Port
+     * @param user User
+     * @param psw Password
+     * @throws DCMException If an error occurs.
+     */
     public void setBasexParams(String host, String port, String user, String psw) throws DCMException {
 
         String filePath = Properties.appHome + File.separatorChar + "gdem.properties";
@@ -133,6 +162,12 @@ public class DcmProperties {
         }
     }
 
+    /**
+     * Sets system parameters
+     * @param qaTimeout QA timeout
+     * @param cmdXGawk XGawk command
+     * @throws DCMException If an error occurs.
+     */
     public void setSystemParams(Long qaTimeout, String cmdXGawk) throws DCMException {
 
         String filePath = Properties.appHome + File.separatorChar + "gdem.properties";
@@ -165,6 +200,13 @@ public class DcmProperties {
         }
     }
 
+    /**
+     * Sets property value
+     * @param line Line
+     * @param key Key
+     * @param value Value
+     * @return Line
+     */
     private String findSetProp(String line, String key, String value) {
         if (line.startsWith(key + "=")) {
             line = key + "=" + value;

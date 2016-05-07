@@ -31,6 +31,11 @@ import javax.naming.directory.InitialDirContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * LDAP Connection test class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class LdapTest {
 
     /** */
@@ -38,10 +43,20 @@ public class LdapTest {
 
     private String url;
 
+    /**
+     * Constructor
+     * @param url Connection URL
+     */
     public LdapTest(String url) {
         this.url = url;
     }
 
+    /**
+     * Gets DirContext
+     * TODO check if possible to replace with a modern library like in UNS application.
+     * @return DirContext
+     * @throws NamingException If an error occurs.
+     */
     protected DirContext getDirContext() throws NamingException {
         Hashtable env = new Hashtable();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
@@ -51,12 +66,21 @@ public class LdapTest {
         return ctx;
     }
 
+    /**
+     * Closes context
+     * @param ctx Context
+     * @throws NamingException If an error occurs.
+     */
     protected void closeContext(DirContext ctx) throws NamingException {
         if (ctx != null) {
             ctx.close();
         }
     }
 
+    /**
+     * Tests connection
+     * @return True if test completed.
+     */
     public boolean test() {
         try {
             DirContext ctx = getDirContext();
