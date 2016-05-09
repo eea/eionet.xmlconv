@@ -24,6 +24,8 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import eionet.gdem.xml.VtdHandler;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
@@ -64,11 +66,15 @@ public class QAResultPostProcessor {
      * @return
      */
     public String processQAResult(String result, Schema xmlSchema) {
-        //this.warnMessage = getWarningMessage(xmlSchema);
-        //if (warnMessage != null) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        this.warnMessage = getWarningMessage(xmlSchema);
+        if (warnMessage != null) {
+            VtdHandler vdt = new VtdHandler();
+            vdt.addWarningMessage(result, warnMessage, out);
         //    result = addExpWarning(result, warnMessage);
-        //}
-        return result;
+        }
+
+        return new String(out.toByteArray());
     }
 
     public String processQAResult(String result, String xmlSchemaUrl) {
