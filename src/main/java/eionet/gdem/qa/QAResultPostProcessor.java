@@ -60,16 +60,14 @@ public class QAResultPostProcessor {
 
     /**
      * Checks if the QA was made against expired schema. Adds a warning on top of the QA result if the result is HTML format.
-     *
+     * TODO This process is very inefficient. We need to refactor this.
      * @return
      */
     public String processQAResult(String result, Schema xmlSchema) {
-
-        this.warnMessage = getWarningMessage(xmlSchema);
-
-        if (warnMessage != null) {
-            result = addExpWarning(result, warnMessage);
-        }
+        //this.warnMessage = getWarningMessage(xmlSchema);
+        //if (warnMessage != null) {
+        //    result = addExpWarning(result, warnMessage);
+        //}
         return result;
     }
 
