@@ -23,6 +23,7 @@ package eionet.gdem.dcm;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.converters.TransformerErrorListener;
+import eionet.gdem.qa.engines.SaxonProcessor;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.cache.MemoryCache;
 import net.sf.saxon.s9api.*;
@@ -33,11 +34,23 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+/**
+ * XSL scripts generator.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class XslGenerator {
 
     public static MemoryCache MemCache = new MemoryCache(10000, 10);
 
-    public static ByteArrayInputStream convertXML(String xmlURL, String conversionURL) throws GDEMException, Exception {
+    /**
+     * Converts XML
+     * @param xmlURL The XML URL
+     * @param conversionURL Conversion URL
+     * @return InputStream
+     * @throws GDEMException If an error occurs.
+     */
+    public static ByteArrayInputStream convertXML(String xmlURL, String conversionURL) throws GDEMException {
         String cacheId = xmlURL + "_" + conversionURL;
         byte[] result = (byte[]) MemCache.getContent(cacheId);
         if (result == null) {
@@ -47,6 +60,13 @@ public class XslGenerator {
         return new ByteArrayInputStream(result);
     }
 
+    /**
+     * Creates dynamic XSL file
+     * @param sourceURL Source URL
+     * @param xslFile XSL file
+     * @return XSL byte array
+     * @throws GDEMException If an error occurs.
+     */
     private static byte[] makeDynamicXSL(String sourceURL, String xslFile) throws GDEMException {
         InputFile src = null;
         byte[] result = null;
@@ -54,7 +74,7 @@ public class XslGenerator {
             src = new InputFile(sourceURL);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-            Processor proc = new Processor(false);
+            Processor proc = SaxonProcessor.getProcessor();
             XsltCompiler comp = proc.newXsltCompiler();
             TransformerErrorListener errors = new TransformerErrorListener();
             StreamSource transformerSource = new StreamSource(xslFile);

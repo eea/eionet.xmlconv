@@ -2,13 +2,16 @@
 <Context>
     <Resource name="jdbc/GDEM_DB"
         auth="Container"
+        factory="com.zaxxer.hikari.HikariJNDIFactory"
         type="javax.sql.DataSource"
-        maxActive="100"
-        maxIdle="30"
-        maxWait="10000"
-        username="${db.user}"
-        password="${db.password}"
-        driverClassName="${db.driver}"
-        url="${db.jdbcurl.encoded}">
+        minimumIdle="5"
+        maximumPoolSize="30"
+        dataSourceClassName="com.mysql.jdbc.jdbc2.optional.MysqlDataSource"
+        dataSource.user="${db.user}"
+        dataSource.password="${db.password}"
+        dataSource.cachePrepStmts="true"
+        dataSource.prepStmtCacheSize="250"
+        dataSource.prepStmtCacheSqlLimit="2048"
+        dataSource.url="${db.jdbcurl.encoded}">
     </Resource>
 </Context>

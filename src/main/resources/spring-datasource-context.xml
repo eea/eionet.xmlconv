@@ -14,13 +14,17 @@
 
     <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
         <property name="poolName" value="springHikariCP" />
-        <property name="connectionTestQuery" value="SELECT 1" />
+        <property name="minimumIdle" value="5"/>
+        <property name="maximumPoolSize" value="30"/>
         <property name="dataSourceClassName" value="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" />
         <property name="dataSourceProperties">
             <props>
                 <prop key="url">${db.url}</prop>
                 <prop key="user">${db.user}</prop>
                 <prop key="password">${db.pwd}</prop>
+                <prop key="cachePrepStmts">true</prop>
+                <prop key="prepStmtCacheSize">250</prop>
+                <prop key="prepStmtCacheSqlLimit">2048</prop>
             </props>
         </property>
     </bean>

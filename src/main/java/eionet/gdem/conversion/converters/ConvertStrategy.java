@@ -24,6 +24,7 @@ package eionet.gdem.conversion.converters;
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
+import eionet.gdem.qa.engines.SaxonProcessor;
 import eionet.gdem.utils.Utils;
 import net.sf.saxon.s9api.*;
 import org.apache.commons.logging.Log;
@@ -100,7 +101,7 @@ public abstract class ConvertStrategy {
      */
     protected void runXslTransformation(InputStream in, InputStream xslStream, OutputStream out) throws GDEMException {
         try {
-            Processor proc = new Processor(false);
+            Processor proc = SaxonProcessor.getProcessor();
             XsltCompiler comp = proc.newXsltCompiler();
             TransformerErrorListener errors = new TransformerErrorListener();
             StreamSource transformerSource = new StreamSource(xslStream);
@@ -146,7 +147,7 @@ public abstract class ConvertStrategy {
         FopFactory fopFactory = FopFactory.newInstance(new File("fop.xconf"));
         try {
             Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
-            Processor proc = new Processor(false);
+            Processor proc = SaxonProcessor.getProcessor();
             XsltCompiler comp = proc.newXsltCompiler();
             TransformerErrorListener errors = new TransformerErrorListener();
             StreamSource transformerSource = new StreamSource(xsl);
