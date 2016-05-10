@@ -3,18 +3,17 @@
 ****************************************
 
 Prerequisites:
- * Java 1.6
- * Maven 2.0.4 or higher
- * Tomcat 5.5 or higher
- * MySql 5.5 or higher
-
+ * Java 1.6 or higher
+ * Maven 3.0 or higher
+ * Tomcat 6
+ * MySql 5.5
 
 Quick Installation Guide:
 
 1. Setup environment properties:
 ================================
 Crete local.properties file by copying the contents from default.properties as an example.
-Edit the values of system paths, DB url and other proeprties to what is relevant.
+Edit the values of system paths, DB url and other properties to what is relevant.
 
 "app.home" property represents the system folder which is the root for subfolders where all content files will be stored.
 Tomcat user should have write permissions on "app.home" subfolders.
@@ -30,8 +29,15 @@ If it is a first time install then acl folder should be copied manually into ${a
 3. Deploy 
 ===========
 If build goes well, Maven says BUILD SUCCESSFUL and you will have xmlconv.war file in "target" directory.
-Bow it's possible to deploy the WAR into your Tomcat's webapps directory (either manually or via Tomcat's web console like we do at our demo site). 
+It's possible to deploy the WAR into your Tomcat's webapps directory (either manually or via Tomcat's web console like we do at our demo site).
 
+4. BaseX XQuery Client/Server
+===========
+4.x You can setup a BaseX server that will be responsible to execute XQuery 3.0 scripts. To do that, you need to pull the basexhttp image from
+https://hub.docker.com/r/basex/basexhttp/
+
+Make sure to change to default username and password of the server.
+You can configure the XMLCONV application to connect to the BaseX server through the "Configure" menu.
 
 
 Differences with the ANT build version:

@@ -30,7 +30,6 @@ import net.sf.saxon.s9api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.OutputStream;
 import java.net.URI;
 
@@ -57,8 +56,6 @@ public class SaxonImpl extends QAScriptEngineStrategy {
         Processor proc = SaxonProcessor.getProcessor();
         XQueryCompiler comp = proc.newXQueryCompiler();
 
-
-        //new File(queriesPathURI).toURI()
         String queriesPathURI = Utils.getURIfromPath(eionet.gdem.Properties.queriesFolder, true);
         comp.setBaseURI(URI.create(queriesPathURI));
         try {
