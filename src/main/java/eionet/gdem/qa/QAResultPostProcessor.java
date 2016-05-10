@@ -19,11 +19,13 @@
  */
 package eionet.gdem.qa;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import eionet.gdem.GDEMException;
 import eionet.gdem.xml.VtdHandler;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
@@ -62,22 +64,27 @@ public class QAResultPostProcessor {
 
     /**
      * Checks if the QA was made against expired schema. Adds a warning on top of the QA result if the result is HTML format.
-     * TODO This process is very inefficient. We need to refactor this.
-     * @return
+     * @return Result
+     * @throws GDEMException If an error occurs.
      */
-    public String processQAResult(String result, Schema xmlSchema) {
+    public String processQAResult(String result, Schema xmlSchema) throws GDEMException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         this.warnMessage = getWarningMessage(xmlSchema);
         if (warnMessage != null) {
             VtdHandler vdt = new VtdHandler();
             vdt.addWarningMessage(result, warnMessage, out);
-        //    result = addExpWarning(result, warnMessage);
+        } else {
+            try {
+                out.write(result.getBytes());
+            } catch (IOException e) {
+                throw new GDEMException("Couldn't write to OutputStream: " + e.getMessage());
+            }
         }
 
         return new String(out.toByteArray());
     }
 
-    public String processQAResult(String result, String xmlSchemaUrl) {
+    public String processQAResult(String result, String xmlSchemaUrl) throws GDEMException {
 
         Schema schema = getSchemaObject(xmlSchemaUrl);
         return processQAResult(result, schema);

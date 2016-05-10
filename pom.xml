@@ -781,8 +781,8 @@
         </dependency>
         -->
         <dependency>
-            <groupId>ximpleware</groupId>
-            <artifactId>vdt-xml</artifactId>
+            <groupId>com.ximpleware</groupId>
+            <artifactId>vtd-xml</artifactId>
             <version>2.12</version>
         </dependency>
         <!-- TEST dependencies -->

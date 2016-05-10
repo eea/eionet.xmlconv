@@ -21,6 +21,7 @@
 
 package eionet.gdem.validation;
 
+import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
@@ -143,8 +144,9 @@ public class ValidationService {
      * @param schema XML Schema URL.
      * @return Validation result as HTML snippet.
      * @throws DCMException in case of unknnown system error.
+     * @throws GDEMException in case of parser error.
      */
-    public String validateSchema(InputStream srcStream, String schema) throws DCMException {
+    public String validateSchema(InputStream srcStream, String schema) throws DCMException, GDEMException {
 
         String result = "";
         boolean isDTD = false;

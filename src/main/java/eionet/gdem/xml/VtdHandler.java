@@ -1,12 +1,15 @@
 package eionet.gdem.xml;
 
 import com.ximpleware.*;
+import eionet.gdem.GDEMException;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
 /**
+ * Implements a handler for the VTD-XML parser. This is a fast an efficient XML parser
+ * that can make small modifications to XML files like adding a warning message to the result HTML.
  * @author George Sofianos
  */
 public class VtdHandler implements XmlHandler {
@@ -21,8 +24,8 @@ public class VtdHandler implements XmlHandler {
         return false;
     }
 
-
-    public void addWarningMessage(String xml, String warningMessage, OutputStream out) {
+    @Override
+    public void addWarningMessage(String xml, String warningMessage, OutputStream out) throws GDEMException {
         try {
             VTDGen vg = new VTDGen();
             vg.setDoc(xml.getBytes());
@@ -37,23 +40,23 @@ public class VtdHandler implements XmlHandler {
             xm.output(out);
             out.flush();
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            throw new GDEMException("Error: " + e.getMessage());
         } catch (EntityException e) {
-            e.printStackTrace();
+            throw new GDEMException("Error: " + e.getMessage());
         } catch (XPathParseException e) {
-            e.printStackTrace();
+            throw new GDEMException("Error: " + e.getMessage());
         } catch (ParseException e) {
-            e.printStackTrace();
+            throw new GDEMException("Error: " + e.getMessage());
         } catch (NavException e) {
-            e.printStackTrace();
+            throw new GDEMException("Error: " + e.getMessage());
         } catch (XPathEvalException e) {
-            e.printStackTrace();
+            throw new GDEMException("Error: " + e.getMessage());
         } catch (ModifyException e) {
-            e.printStackTrace();
+            throw new GDEMException("Error: " + e.getMessage());
         } catch (TranscodeException e) {
-            e.printStackTrace();
+            throw new GDEMException("Error: " + e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new GDEMException("Error: " + e.getMessage());
         }
     }
 }
