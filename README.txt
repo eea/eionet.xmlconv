@@ -39,6 +39,10 @@ https://hub.docker.com/r/basex/basexhttp/
 Make sure to change to default username and password of the server.
 You can configure the XMLCONV application to connect to the BaseX server through the "Configure" menu.
 
+5. Rancher Based deployments:
+5.1 To build the application for use with the rancher environment, you need to change the env variable in pom.xml from local to rancher.
+  This will make the application use the configuration from rancher.properties. This is a temporary solution until the full dockerization of XMLCONV.
+
 
 Differences with the ANT build version:
 =======================================
