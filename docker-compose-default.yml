@@ -19,11 +19,11 @@ basex:
 
 test-data:
   image: tianon/true
-  labels:    
+  labels:
     io.rancher.container.start_once: true
   volumes:
     - /var/local/xmlconv:/home/dev-gso/eea
-tomcat:  
+tomcat:
   image: tomcat:6-jre8
   ports:
     - "58080:8080"
@@ -39,6 +39,7 @@ tomcat:
     - test-data
   labels:
     io.rancher.sidekicks: test-data, scpserver
+    io.rancher.scheduler.affinity:host_label: hostname=dev-mil-02
 scpserver:
   image: eeacms/scp-server
   ports:
