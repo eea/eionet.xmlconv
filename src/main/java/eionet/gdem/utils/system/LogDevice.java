@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import eionet.gdem.dcm.business.QAScriptManager;
 
 /**
+ * Log device implementation.
  * @author Enriko Käsper, Tieto Estonia LogDevice
  */
 

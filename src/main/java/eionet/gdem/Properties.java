@@ -31,6 +31,8 @@ import java.util.ResourceBundle;
 
 /**
  * Several settings and properties for XMLCONV application.
+ * @author Unknown
+ * @author George Sofianos
  */
 public class Properties {
 
@@ -251,12 +253,22 @@ public class Properties {
 
     }
 
+    /**
+     * Gets property value from key
+     * @param key Key
+     * @return Value
+     */
     public static String getStringProperty(String key) {
         String value = props.getString(key);
         LOGGER.debug("XMLCONV configuration value loaded from gdem.properties \"" + key + "\"=" + value);
         return value;
     }
 
+    /**
+     * Gets property numeric value from key
+     * @param key Key
+     * @return Value
+     */
     private static int getIntProperty(String key) {
         int intValue = 0;
         String strValue = props.getString(key);
@@ -271,6 +283,11 @@ public class Properties {
         return intValue;
     }
 
+    /**
+     * Checks path
+     * @param path Path
+     * @return Removes trailing slash
+     */
     private static String checkPath(String path) {
         if (path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);

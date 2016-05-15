@@ -23,6 +23,11 @@
 
 package eionet.gdem;
 
+/**
+ * Constants interface.
+ * TODO: interfaces should have methods
+ * @author Unknown
+ */
 public interface Constants {
     // constants:
     // XQuery job statuses in the DB: (internal)

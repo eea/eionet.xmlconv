@@ -27,8 +27,17 @@ import eionet.gdem.services.db.dao.DCMDaoFactory;
 
 /**
  * Container class for GDEM Services e.g. DBService
+ * @author Unknown
+ * @author George Sofianos
  */
-public class GDEMServices {
+public final class GDEMServices {
+
+    /**
+     * Utility class constructor
+     */
+    private GDEMServices() {
+        // do nothing
+    }
 
     private static boolean testConnection = false;
 

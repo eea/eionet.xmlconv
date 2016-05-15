@@ -32,24 +32,39 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
+/**
+ * UI Manager class.
+ * @author Unknown
+ * @author George Sofianos
+ *
+ */
 public class UIManager implements IUIManager {
 
     Document doc = null;
 
+    /**
+     * Constructor
+     * @param doc Document
+     */
     public UIManager(Document doc) {
         this.doc = doc;
     }
 
+    /**
+     * Default constructor
+     */
     public UIManager() {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.eurodyn.webdashboards.util.uimanage.IUIManager#removeCell(int, int)
+    /**
+     * Removes cell
+     * @param row
+     *            Row that contains cell being removed
+     * @param col
+     *            Cols attribute of cell being removed
+     * @throws Exception If an error occurs.
      */
-
     public void removeCell(int row, int col) throws Exception {
 
         try {
@@ -68,11 +83,20 @@ public class UIManager implements IUIManager {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.eurodyn.webdashboards.util.uimanage.IUIManager#createCell(int, java.lang.String, java.lang.String, java.lang.String,
-     * java.util.Map)
+    /**
+     * Creates cell
+     * @param col
+     *            Cell's cols attribute value.
+     * @param type
+     *            Type of content stored in cell.
+     * @param link
+     *            Value of link node.
+     * @param content
+     *            Value of content node.
+     * @param styleMap
+     *            Map which is used for creating style node. Key is style child node name and value is child node value.
+     * @return Node
+     * @throws Exception If an error occurs.
      */
     public Node createCell(int col, String type, String link, String content, Map styleMap) throws Exception {
         try {
@@ -105,10 +129,18 @@ public class UIManager implements IUIManager {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.eurodyn.webdashboards.util.uimanage.IUIManager#createCell(int, java.lang.String, java.lang.String, java.util.Map)
+    /**
+     * Creates cell
+     * @param col
+     *            Cell's cols attribute value.
+     * @param type
+     *            Type of content stored in cell.
+     * @param content
+     *            Value of content node.
+     * @param styleMap
+     *            Map which is used for creating style node. Key is style child node name and value is child node value.
+     * @return Node
+     * @throws Exception If an error occurs.
      */
     public Node createCell(int col, String type, String content, Map styleMap) throws Exception {
         Node cell = createCell(col, type, null, content, styleMap);

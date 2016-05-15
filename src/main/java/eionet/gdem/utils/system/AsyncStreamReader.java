@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
+ * Async stream reader.
  * @author Enriko Käsper, Tieto Estonia AsyncStreamReader
  */
 
@@ -39,6 +40,13 @@ class AsyncStreamReader extends Thread {
 
     private String fNewLine = null;
 
+    /**
+     * Constructor
+     * @param inputStream InputStream
+     * @param buffer Buffer
+     * @param logDevice Log device
+     * @param threadId Thread Id
+     */
     public AsyncStreamReader(InputStream inputStream, StringBuffer buffer, ILogDevice logDevice, String threadId) {
         fInputStream = inputStream;
         fBuffer = buffer;
@@ -52,6 +60,10 @@ class AsyncStreamReader extends Thread {
         return fBuffer.toString();
     }
 
+    /**
+     * Runs stream reader.
+     * TODO: possibility of adding logging
+     */
     public void run() {
         try {
             readCommandOutput();
@@ -60,6 +72,10 @@ class AsyncStreamReader extends Thread {
         }
     }
 
+    /**
+     * Reads command output
+     * @throws IOException If an error occurs.
+     */
     private void readCommandOutput() throws IOException {
         BufferedReader bufOut = new BufferedReader(new InputStreamReader(fInputStream));
         String line = null;
@@ -71,10 +87,17 @@ class AsyncStreamReader extends Thread {
         // printToConsole("END OF: " + fThreadId); //DEBUG
     }
 
+    /**
+     * Stops reading.
+     */
     public void stopReading() {
         fStop = true;
     }
 
+    /**
+     * Prints to display device
+     * @param line Line to print
+     */
     private void printToDisplayDevice(String line) {
         if (fLogDevice != null)
             fLogDevice.log(line);
@@ -83,6 +106,11 @@ class AsyncStreamReader extends Thread {
         }
     }
 
+    /**
+     * Prints to console
+     * TODO: remove maybe
+     * @param line Line
+     */
     private synchronized void printToConsole(String line) {
         System.out.println(line);
     }
