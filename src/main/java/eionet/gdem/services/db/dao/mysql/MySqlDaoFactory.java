@@ -13,6 +13,11 @@ import eionet.gdem.services.db.dao.IUPLSchemaDao;
 import eionet.gdem.services.db.dao.IUPLXmlFileDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 
+/**
+ * MySQL Dao factory.
+ *
+ * @author Unknown
+ */
 public class MySqlDaoFactory extends DCMDaoFactory {
 
     @Override

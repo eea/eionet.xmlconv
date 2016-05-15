@@ -16,10 +16,14 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
 
+/**
+ * MySQL base dao class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public abstract class MySqlBaseDao {
 
     /** */
@@ -32,7 +36,7 @@ public abstract class MySqlBaseDao {
     /**
      * Init JNDI datasource
      *
-     * @throws NamingException
+     * @throws NamingException If an error occurs.
      */
     private static void initDataSource() throws NamingException {
         try {
@@ -46,7 +50,7 @@ public abstract class MySqlBaseDao {
     /**
      * Returns new database connection.
      *
-     * @throw ServiceException if no connections were available.
+     * @throws SQLException If an error occurs.
      */
     public static synchronized Connection getConnection() throws SQLException {
         if (GDEMServices.isTestConnection()) {
@@ -59,7 +63,7 @@ public abstract class MySqlBaseDao {
     /**
      * Returns new database connection. Read properties from Context
      *
-     * @throw ServiceException if no connections were available.
+     * @throws SQLException If an error occurs.
      */
     public static synchronized Connection getJNDIConnection() throws SQLException {
         try {
@@ -75,9 +79,8 @@ public abstract class MySqlBaseDao {
     /**
      * Returns new database connection. Read properties from gdem.properties
      *
-     * @return
-     * @throws SQLException
-     * @throws GDEMException
+     * @return Connection
+     * @throws SQLException If an error occurs.
      */
     private static synchronized Connection getSimpleConnection() throws SQLException {
 
@@ -110,6 +113,13 @@ public abstract class MySqlBaseDao {
         }
     }
 
+    /**
+     * Closes all resources.
+     * TODO: improve this and add logging
+     * @param rs Resultset
+     * @param pstmt Prepared statement
+     * @param conn Connection
+     */
     public static void closeAllResources(ResultSet rs, Statement pstmt, Connection conn) {
         try {
             if (rs != null) {
@@ -128,6 +138,10 @@ public abstract class MySqlBaseDao {
         }
     }
 
+    /**
+     * Closes connection
+     * @param conn Connection
+     */
     public static void closeConnection(Connection conn) {
         try {
             if ((conn != null) && (!conn.isClosed())) {
@@ -139,6 +153,10 @@ public abstract class MySqlBaseDao {
         }
     }
 
+    /**
+     * Commits connection
+     * @param conn connection
+     */
     public static void commit(Connection conn) {
         try {
             conn.commit();
@@ -147,6 +165,10 @@ public abstract class MySqlBaseDao {
         }
     }
 
+    /**
+     * Rollbacks connection
+     * @param conn connection
+     */
     public static void rollback(Connection conn) {
         try {
             conn.rollback();
@@ -155,9 +177,15 @@ public abstract class MySqlBaseDao {
         }
     }
 
+    /**
+     * Returns result
+     * @param rset Resultset
+     * @return Results
+     * @throws SQLException If an error occurs.
+     */
     public static String[][] getResults(ResultSet rset) throws SQLException {
         Vector rvec = new Vector(); // Return value as Vector
-        String rval[][] = {}; // Return value
+        String[][] rval = {}; // Return value
 
         // if (logger.enable(logger.DEBUG)) logger.debug(sql);
 
@@ -171,7 +199,7 @@ public abstract class MySqlBaseDao {
             int colCnt = md.getColumnCount();
 
             while (rset.next()) {
-                String row[] = new String[colCnt]; // Row of the result set
+                String[] row = new String[colCnt]; // Row of the result set
 
                 // Retrieve the columns of the result set
                 for (int i = 0; i < colCnt; ++i) {
@@ -200,6 +228,11 @@ public abstract class MySqlBaseDao {
         return rval;
     }
 
+    /**
+     * Returns last insert id
+     * @return Insert id
+     * @throws SQLException If an error occurs.
+     */
     protected String getLastInsertID() throws SQLException {
         Connection con = null;
         String lastInsertId = null;
@@ -218,11 +251,17 @@ public abstract class MySqlBaseDao {
         return lastInsertId;
     }
 
+    /**
+     * Executes simple query.
+     * @param query SQL query
+     * @return Result
+     * @throws SQLException If an error occurs.
+     */
     protected String[][] executeSimpleQuery(String query) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String r[][];
+        String[][] r;
 
         if (isDebugMode) {
             LOGGER.debug("Query is " + query);

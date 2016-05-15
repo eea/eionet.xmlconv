@@ -2,12 +2,17 @@ package eionet.gdem.services.db.dao;
 
 import java.sql.SQLException;
 
+/**
+ * XQ Job Dao Interface.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public interface IXQJobDao extends IDbSchema {
 
     /**
      * Gets information about the received job in Workqueue.
      *
-     * @param jobId
+     * @param jobId Job Id
      * @return jobs a array of Strings
      * @throws SQLException
      *             DB error occurred.
@@ -17,9 +22,9 @@ public interface IXQJobDao extends IDbSchema {
     /**
      * Creates a new job in the queue XQ Script is saved earlier in the db.
      *
-     * @param url
-     * @param xqFile
-     * @param resultFile
+     * @param url URL
+     * @param xqFile XQ File
+     * @param resultFile Result file
      * @throws SQLException
      *             DB error occurred.
      */
@@ -28,9 +33,9 @@ public interface IXQJobDao extends IDbSchema {
     /**
      * Creates a new job in the queue XQ Script is saved earlier in the db.
      *
-     * @param url
-     * @param xqFile
-     * @param resultFile
+     * @param url URL
+     * @param xqFile XQ File
+     * @param resultFile Result file
      * @param xqID - query id from db
      * @throws SQLException
      *             DB error occurred.
@@ -39,6 +44,8 @@ public interface IXQJobDao extends IDbSchema {
 
     /**
      * Changes the status of the job in the table also changes the time_stamp showing when the new task was started.
+     * @param jobId Job Id
+     * @param status Status
      * @throws SQLException
      *             DB error occurred.
      */
@@ -47,6 +54,9 @@ public interface IXQJobDao extends IDbSchema {
     /**
      * Changes the status of the jobs in the table and sets the downloaded file local src THe jobs should have the sam source url.
      * also changes the time_stamp showing when the new task was started
+     * @param url URL
+     * @param savedFile Saved file
+     * @param status Status
      * @throws SQLException
      *             DB error occurred.
      */
@@ -54,8 +64,8 @@ public interface IXQJobDao extends IDbSchema {
 
     /**
      * Returns job IDs in the Workqueue with the given status.
-     *
-     * @return
+     * @param status Status
+     * @return Jobs array
      * @throws SQLException
      *             DB error occurred.
      */
@@ -63,8 +73,9 @@ public interface IXQJobDao extends IDbSchema {
 
     /**
      * Returns job IDs in the Workqueue with the given status and limits the rows with the given limit.
-     *
-     * @return
+     * @param status Status
+     * @param max_rows Maximum Rows
+     * @return Jobs limit
      * @throws SQLException
      *             DB error occurred.
      */
@@ -72,6 +83,7 @@ public interface IXQJobDao extends IDbSchema {
 
     /**
      * Removes the XQJob No checking performed by this method.
+     * @param jobId Job Id
      * @throws SQLException
      *             DB error occurred.
      */
@@ -79,6 +91,7 @@ public interface IXQJobDao extends IDbSchema {
 
     /**
      * Removes the XQJobs. No checking performed by this method
+     * @param jobIds Job IDs
      * @throws SQLException
      *             DB error occurred.
      */
@@ -86,6 +99,8 @@ public interface IXQJobDao extends IDbSchema {
 
     /**
      * changes the job status for several jobs. No checking performed by this method
+     * @param jobIds Job Ids
+     * @param status Status
      * @throws SQLException
      *             DB error occurred.
      */
@@ -102,6 +117,8 @@ public interface IXQJobDao extends IDbSchema {
 
     /**
      * Removes the XQJobs. No checking performed by this method
+     * @param currentStatus Current status
+     * @param newStatus New Status
      * @throws SQLException
      *             DB error occurred.
      */

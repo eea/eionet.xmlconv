@@ -16,6 +16,10 @@ import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.Utils;
 
+/**
+ * Root element MySQL Dao class.
+ * @author Unknown
+ */
 @Repository("rootElemDao")
 public class RootElemMySqlDao extends MySqlBaseDao implements IRootElemDao {
 

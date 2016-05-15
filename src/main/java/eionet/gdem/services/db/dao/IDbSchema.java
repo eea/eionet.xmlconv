@@ -1,5 +1,10 @@
 package eionet.gdem.services.db.dao;
 
+/**
+ * DB Schema interface.
+ * TODO: interfaces should have methods
+ * @author Unknown
+ */
 public interface IDbSchema {
 
     /**

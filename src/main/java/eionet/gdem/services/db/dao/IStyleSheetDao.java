@@ -5,6 +5,11 @@ import java.util.List;
 
 import eionet.gdem.dto.Stylesheet;
 
+/**
+ * Stylesheet dao interface.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public interface IStyleSheetDao extends IDbSchema {
 
     /**
@@ -12,14 +17,14 @@ public interface IStyleSheetDao extends IDbSchema {
      * @param stylehseet Stylesheet object.
      * @throws SQLException in case of database exception
      */
-    public void updateStylesheet(Stylesheet stylehseet) throws SQLException;
+    void updateStylesheet(Stylesheet stylehseet) throws SQLException;
 
     /**
      * Adds new stylesheet into database.
      * @param stylehseet Stylesheet object.
      * @throws SQLException in case of database exception
      */
-    public String addStylesheet(Stylesheet stylehseet) throws SQLException;
+    String addStylesheet(Stylesheet stylehseet) throws SQLException;
 
     /**
      * Deletes the stylesheet from the stylesheets table.
@@ -27,7 +32,7 @@ public interface IStyleSheetDao extends IDbSchema {
      * @param convertId - The identifier of the stylesheet.
      * @throws SQLException in case of database exception
      */
-    public void deleteStylesheet(String convertId) throws SQLException;
+    void deleteStylesheet(String convertId) throws SQLException;
 
     /**
      * Check if stylesheet file with given name exists in the database.
@@ -35,7 +40,7 @@ public interface IStyleSheetDao extends IDbSchema {
      * @return true if file exists
      * @throws SQLException in case of database exception
      */
-    public boolean checkStylesheetFile(String xslFileName) throws SQLException;
+    boolean checkStylesheetFile(String xslFileName) throws SQLException;
 
     /**
      * Check if stylesheet file with given name and id exists in the database.
@@ -44,18 +49,18 @@ public interface IStyleSheetDao extends IDbSchema {
      * @return true if file exists
      * @throws SQLException in case of database exception
      */
-    public boolean checkStylesheetFile(String xslId, String xslFileName) throws SQLException;
+    boolean checkStylesheetFile(String xslId, String xslFileName) throws SQLException;
 
     /**
      * Get all stylesheets stored in database.
      * @return List of Stylesheet objects.
      */
-    public List<Stylesheet> getStylesheets();
+    List<Stylesheet> getStylesheets();
 
     /**
      * Get stylesheet object by unique numeric ID.
      * @param convertId stylesheet ID.
      * @return Stylehseet DTo object.
      */
-    public Stylesheet getStylesheet(String convertId);
+    Stylesheet getStylesheet(String convertId);
 }

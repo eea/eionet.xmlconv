@@ -118,8 +118,8 @@ public interface ISchemaDao extends IDbSchema {
     /**
      *
      * @param schemaId XML Schema database numeric id or URL.
-     * @param stylesheets
-     * @return
+     * @param stylesheets stylesheets
+     * @return Schema map
      * @throws SQLException in case of database error.
      */
     HashMap getSchema(String schemaId, boolean stylesheets) throws SQLException;
@@ -127,7 +127,7 @@ public interface ISchemaDao extends IDbSchema {
     /**
      * returns the schema ID from the repository.
      *
-     * @param schemaId XML Schema database numeric id or URL.
+     * @param schema XML Schema database numeric id or URL.
      * @return schema ID
      * @throws SQLException in case of database error.
      */
@@ -163,6 +163,6 @@ public interface ISchemaDao extends IDbSchema {
      * count related stylesheets and QA scripts.
      * @return List of Schema objects.
      */
-    public List<Schema> getSchemasWithRelations();
+    List<Schema> getSchemasWithRelations();
 
 }

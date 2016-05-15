@@ -18,6 +18,11 @@ import eionet.gdem.Properties;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.utils.Utils;
 
+/**
+ * Query MySQL Dao class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 @Repository("queryDao")
 public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
@@ -70,9 +75,21 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
     private static final String qCheckQueryFileByIdAndName = "SELECT COUNT(*) FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD
             + "=?" + " and " + QUERY_ID_FLD + "=?";;
-    
-    
 
+
+    /**
+     * Adds Query
+     * @param xmlSchemaID Xml Schema Id
+     * @param shortName Short name
+     * @param queryFileName Query file name
+     * @param description Description
+     * @param content_type Content type
+     * @param script_type Script type
+     * @param upperLimit Upper limit
+     * @param url URL
+     * @return Result
+     * @throws SQLException
+     */
     @Override
     public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description, String content_type,
             String script_type, String upperLimit, String url) throws SQLException {
@@ -120,6 +137,19 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
         return result;
     }
 
+    /**
+     * Update query
+     * @param query_id - id from database, used as a constraint
+     * @param schema_id - schema id
+     * @param short_name - db field for title
+     * @param description - text describing the query
+     * @param fileName - query file name
+     * @param content_type - result content type
+     * @param script_type - xquery, xsl, xgawk
+     * @param upperLimit - result upper limit in MB
+     * @param url - original url of the XQ file
+     * @throws SQLException If an error occurs.
+     */
     @Override
     public void updateQuery(String query_id, String schema_id, String short_name, String description, String fileName,
             String content_type, String script_type, String upperLimit, String url) throws SQLException {
@@ -389,16 +419,22 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
     }
     
     @Override
-    public void activateQuery (String query_id) throws SQLException {
+    public void activateQuery(String query_id) throws SQLException {
          setQueryActivation(query_id, true);
     }
     
     @Override
-    public void deactivateQuery (String query_id) throws SQLException {
+    public void deactivateQuery(String query_id) throws SQLException {
          setQueryActivation(query_id, false);
     }
-    
-    public void setQueryActivation (String query_id, boolean set_active) throws SQLException {
+
+    /**
+     * Sets query activation
+     * @param query_id Query Id
+     * @param set_active Active
+     * @throws SQLException If an error occurs.
+     */
+    public void setQueryActivation(String query_id, boolean set_active) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;

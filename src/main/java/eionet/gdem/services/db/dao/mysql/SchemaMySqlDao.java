@@ -23,7 +23,6 @@ import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.Utils;
 
 /**
- *
  * DAO for Schema objects.
  *
  * @author Enriko Käsper
@@ -377,6 +376,13 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 
     }
 
+    /**
+     * Gets Schema stylesheets
+     * @param schemaId Schema Id
+     * @param conn Connection
+     * @return Stylesheet list
+     * @throws SQLException If an error occurs.
+     */
     private Vector getSchemaStylesheets(String schemaId, Connection conn) throws SQLException {
         int id = 0;
         PreparedStatement pstmt = null;
@@ -432,6 +438,13 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 
     }
 
+    /**
+     * Gets Schema queries list
+     * @param schemaId Schema id
+     * @param conn Connection
+     * @return Queries list
+     * @throws SQLException If an error occurs.
+     */
     private Vector getSchemaQueries(String schemaId, Connection conn) throws SQLException {
         int id = 0;
         PreparedStatement pstmt = null;

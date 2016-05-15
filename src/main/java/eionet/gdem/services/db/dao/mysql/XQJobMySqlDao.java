@@ -13,6 +13,10 @@ import eionet.gdem.Constants;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 
+/**
+ * XQ job MySQL Dao class.
+ * @author Unknown
+ */
 @Repository("xqJobDao")
 public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants {
 

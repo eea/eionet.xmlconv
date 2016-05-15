@@ -22,6 +22,10 @@ import eionet.gdem.Properties;
 import eionet.gdem.dto.UplSchema;
 import eionet.gdem.services.db.dao.IUPLSchemaDao;
 
+/**
+ * Upload Schema Dao class.
+ * @author Unknown
+ */
 @Repository("uplSchemaDao")
 public class UPLSchemaMySqlDao extends MySqlBaseDao implements IUPLSchemaDao {
 
@@ -77,6 +81,9 @@ public class UPLSchemaMySqlDao extends MySqlBaseDao implements IUPLSchemaDao {
     private static final String checkUplSchemaFK = "SELECT COUNT(*) FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_FK_SCHEMA_ID
             + "!='' AND " + UPL_FK_SCHEMA_ID + "= ?";
 
+    /**
+     * Default constructor.
+     */
     public UPLSchemaMySqlDao() {
     }
 
