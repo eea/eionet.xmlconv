@@ -46,7 +46,7 @@ public final class BaseXClient {
         // receive server response
         final String[] response = receive().split(":");
         final String code, nonce;
-        if(response.length > 1) {
+        if (response.length > 1) {
             // support for digest authentication
             code = username + ':' + response[0] + ':' + password;
             nonce = response[1];
@@ -195,7 +195,7 @@ public final class BaseXClient {
      */
     private static void receive(final InputStream input, final OutputStream output)
             throws IOException {
-        for(int b; (b = input.read()) > 0;) {
+        for (int b; (b = input.read()) > 0;) {
             // read next byte if 0xFF is received
             output.write(b == 0xFF ? input.read() : b);
         }
@@ -222,9 +222,9 @@ public final class BaseXClient {
     private void send(final InputStream input) throws IOException {
         final BufferedInputStream bis = new BufferedInputStream(input);
         final BufferedOutputStream bos = new BufferedOutputStream(out);
-        for(int b; (b = bis.read()) != -1;) {
+        for (int b; (b = bis.read()) != -1;) {
             // 0x00 and 0xFF will be prefixed by 0xFF
-            if(b == 0x00 || b == 0xFF) bos.write(0xFF);
+            if (b == 0x00 || b == 0xFF) bos.write(0xFF);
             bos.write(b);
         }
         bos.write(0);
@@ -243,12 +243,12 @@ public final class BaseXClient {
         try {
             final MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(pw.getBytes());
-            for(final byte b : md.digest()) {
+            for (final byte b : md.digest()) {
                 final String s = Integer.toHexString(b & 0xFF);
-                if(s.length() == 1) sb.append('0');
+                if (s.length() == 1) sb.append('0');
                 sb.append(s);
             }
-        } catch(final NoSuchAlgorithmException ex) {
+        } catch (final NoSuchAlgorithmException ex) {
             // should not occur
             ex.printStackTrace();
         }
@@ -323,20 +323,20 @@ public final class BaseXClient {
          * @throws IOException I/O exception
          */
         public boolean more() throws IOException {
-            if(cache == null) {
+            if (cache == null) {
                 out.write(4);
                 send(id);
                 cache = new ArrayList();
                 final ByteArrayOutputStream os = new ByteArrayOutputStream();
-                while(in.read() > 0) {
+                while (in.read() > 0) {
                     receive(in, os);
                     cache.add(os.toByteArray());
                     os.reset();
                 }
-                if(!ok()) throw new IOException(receive());
+                if (!ok()) throw new IOException(receive());
                 pos = 0;
             }
-            if(pos < cache.size()) return true;
+            if (pos < cache.size()) return true;
             cache = null;
             return false;
         }
@@ -396,7 +396,7 @@ public final class BaseXClient {
             out.write(code);
             send(arg);
             final String s = receive();
-            if(!ok()) throw new IOException(receive());
+            if (!ok()) throw new IOException(receive());
             return s;
         }
     }

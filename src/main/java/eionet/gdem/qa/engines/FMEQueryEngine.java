@@ -31,6 +31,10 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
     private String fmeUrl = null;
 
+    /**
+     * Default constructor.
+     * @throws Exception If an error occurs.
+     */
     public FMEQueryEngine() throws Exception {
         client_ = new HttpClient();
 
@@ -79,7 +83,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
     /**
      * Gets a user token from the FME server.
      *
-     * @throws Exception
+     * @throws Exception If an error occurs.
      */
     private void getConnectionInfo() throws Exception {
 

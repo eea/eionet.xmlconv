@@ -34,27 +34,43 @@ import eionet.gdem.Properties;
  *
  * @author Enriko Käsper
  */
-public class WQExecutor {
+public final class WQExecutor {
     /** */
     private static final Log LOGGER = LogFactory.getLog(WQCheckerJob.class);
 
     private ExecutorService executor;
     private static WQExecutor wqExecutor;
 
-    private WQExecutor()
-    {
+    /**
+     * Private default constructor
+     */
+    private WQExecutor() {
         executor = Executors.newFixedThreadPool(Properties.wqMaxJobs);
         LOGGER.debug("WQExecutor started");
     }
+
+    /**
+     * Returns Executor instance
+     * @return Executor
+     */
     public static WQExecutor getInstance() {
         if (wqExecutor == null) {
             wqExecutor = new WQExecutor();
         }
         return wqExecutor;
     }
+
+    /**
+     * Executes task
+     * @param task Task to execute
+     */
     public void execute(Runnable task){
         executor.execute(task);
     }
+
+    /**
+     * Shuts down executor.
+     */
     public void shutdown(){
         executor.shutdown();
     }

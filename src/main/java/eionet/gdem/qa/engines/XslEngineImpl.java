@@ -39,6 +39,7 @@ import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 
 /**
+ * XSL engine implementation.
  * @author Enriko Käsper, Tieto Estonia XslEngineImpl
  */
 

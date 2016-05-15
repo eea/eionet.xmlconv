@@ -39,6 +39,8 @@ import eionet.gdem.services.db.dao.IXQJobDao;
 
 /**
  * Periodical check of received jobs for the XQEngine The interval is specified in gdem.properties.
+ * @author Unknown
+ * @author George Sofianos
  */
 public class WQCheckerJob implements Job {
 

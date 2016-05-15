@@ -14,6 +14,10 @@ import org.springframework.stereotype.Repository;
 import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.utils.Utils;
 
+/**
+ * Host MySQL Dao class.
+ * @author Unknown
+ */
 @Repository("hostDao")
 public class HostMySqlDao extends MySqlBaseDao implements IHostDao {
 

@@ -15,6 +15,10 @@ import org.springframework.stereotype.Repository;
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.services.db.dao.IBackupDao;
 
+/**
+ * Backup MySQL Dao class.
+ * @author Unknown
+ */
 @Repository("backupDao")
 public class BackupMySqlDao extends MySqlBaseDao implements IBackupDao {
 

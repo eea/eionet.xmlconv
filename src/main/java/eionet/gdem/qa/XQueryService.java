@@ -66,6 +66,9 @@ public class XQueryService extends RemoteService {
     /** */
     private static final Log LOGGER = LogFactory.getLog(XQueryService.class);
 
+    /**
+     * Default constructor.
+     */
     public XQueryService() {
         // for remote clients use trusted mode
         setTrustedMode(true);
@@ -73,6 +76,8 @@ public class XQueryService extends RemoteService {
 
     /**
      * List all possible XQueries for this namespace.
+     * @param schema Schema
+     * @throws GDEMException If an error occurs.
      */
     public Vector listQueries(String schema) throws GDEMException {
 
@@ -83,6 +88,8 @@ public class XQueryService extends RemoteService {
 
     /**
      * List all XQueries and their modification times for this namespace returns also XML Schema validation.
+     * @param schema Schema
+     * @throws GDEMException If an error occurs.
      */
     public Vector listQAScripts(String schema) throws GDEMException {
         ListQueriesMethod method = new ListQueriesMethod();
@@ -95,6 +102,7 @@ public class XQueryService extends RemoteService {
      *
      * @param files - Structure with XMLschemas as a keys and values are list of XML Files
      * @return Hashtable result: Structure with JOB ids as a keys and source files as values
+     * @throws GDEMException If an error occurs.
      */
     public Vector analyzeXMLFiles(Hashtable files) throws GDEMException {
 
@@ -132,7 +140,12 @@ public class XQueryService extends RemoteService {
     // }
 
     /**
-     *
+     * Analyzes XML files
+     * @param schema XML Schema
+     * @param origFile Original file
+     * @param result Result
+     * @return Processed result
+     * @throws GDEMException If an error occurs.
      */
     public Vector analyzeXMLFiles(String schema, String origFile, Vector result) throws GDEMException {
 
@@ -203,6 +216,12 @@ public class XQueryService extends RemoteService {
         return result;
     }
 
+    /**
+     * Gets file extension
+     * @param outputTypes Output Types
+     * @param content_type Content type
+     * @return Extension
+     */
     private String getExtension(Vector outputTypes, String content_type) {
         String ret = "html";
         if (outputTypes == null) {
@@ -237,6 +256,7 @@ public class XQueryService extends RemoteService {
      * @param sourceURL - URL of the source XML
      * @param xqScript - XQueryScript to be processed
      * @param scriptType - xquery, xsl or xgawk
+     * @throws GDEMException If an error occurs.
      */
     public String analyze(String sourceURL, String xqScript, String scriptType) throws GDEMException {
         String xqFile = "";
@@ -280,8 +300,9 @@ public class XQueryService extends RemoteService {
     /**
      * Checks if the job is ready (or error) and returns the result (or error message).
      *
-     * @param jobId
+     * @param jobId Job Id
      * @return Hash including code and result
+     * @throws GDEMException If an error occurs.
      */
     public Hashtable getResult(String jobId) throws GDEMException {
 
@@ -320,6 +341,12 @@ public class XQueryService extends RemoteService {
 
     /**
      * Hashtable to be composed for the getResult() method return value.
+     * @param status Status
+     * @param jobData Job data
+     * @param scriptData Script data
+     * @param jobId Job Id
+     * @return Result
+     * @throws GDEMException If an error occurs.
      */
     private Hashtable result(int status, String[] jobData, HashMap scriptData, String jobId) throws GDEMException {
         Hashtable<String, String> h = new Hashtable<String, String>();

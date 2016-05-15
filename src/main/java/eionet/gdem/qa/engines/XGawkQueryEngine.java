@@ -38,6 +38,11 @@ public class XGawkQueryEngine extends ExternalQueryEngine {
         return Properties.xgawkCommand + getVariables(params) + " -f " + scriptFile + " " + dataFile;
     }
 
+    /**
+     * Gets variables
+     * @param params Parameters
+     * @return Variables
+     */
     protected String getVariables(Map<String, String> params) {
 
         String ret = "";

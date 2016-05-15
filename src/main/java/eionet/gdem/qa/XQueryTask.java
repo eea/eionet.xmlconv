@@ -157,7 +157,7 @@ public class XQueryTask extends Thread {
                                     : scriptFile.endsWith(XQScript.SCRIPT_LANG_XGAWK) ? XQScript.SCRIPT_LANG_XGAWK
                                             : XQScript.SCRIPT_LANG_XQUERY1;
                 }
-                String[] xqParam = { Constants.XQ_SOURCE_PARAM_NAME + "=" + srcFile };
+                String[] xqParam = {Constants.XQ_SOURCE_PARAM_NAME + "=" + srcFile};
 
                 try {
                     if (scriptFile.contains(" ")) {

@@ -50,6 +50,7 @@ import eionet.gdem.utils.xml.XmlSerialization;
 
 /**
  * @author Enriko Käsper
+ * @author George Sofianos
  *
  * The class processes QA results and add warnings/errors if required.
  */
@@ -64,7 +65,9 @@ public class QAResultPostProcessor {
 
     /**
      * Checks if the QA was made against expired schema. Adds a warning on top of the QA result if the result is HTML format.
-     * @return Result
+     * @param result QA result
+     * @param xmlSchema XML Schema
+     * @return Processed result
      * @throws GDEMException If an error occurs.
      */
     public String processQAResult(String result, Schema xmlSchema) throws GDEMException {
@@ -84,6 +87,13 @@ public class QAResultPostProcessor {
         return new String(out.toByteArray());
     }
 
+    /**
+     * Process QA result
+     * @param result Result
+     * @param xmlSchemaUrl Schema URL
+     * @return Processed result
+     * @throws GDEMException If an error occurs.
+     */
     public String processQAResult(String result, String xmlSchemaUrl) throws GDEMException {
 
         Schema schema = getSchemaObject(xmlSchemaUrl);
@@ -93,9 +103,9 @@ public class QAResultPostProcessor {
     /**
      * Returns warning message for given schema URL.
      *
-     * @param xmlSchemaUrl
-     * @return
-     * @throws DCMException
+     * @param xmlSchemaUrl XML Schema URL
+     * @return Warning message
+     * @throws DCMException If an error occurs.
      */
     public String getWarningMessage(String xmlSchemaUrl) {
 
@@ -109,8 +119,8 @@ public class QAResultPostProcessor {
     /**
      * Returns warning message if schema is expired.
      *
-     * @param xmlSchema
-     * @return
+     * @param xmlSchema XML Schema
+     * @return Warning message
      */
     private String getWarningMessage(Schema xmlSchema) {
 
@@ -130,9 +140,8 @@ public class QAResultPostProcessor {
     /**
      * Get Schema object from database
      *
-     * @param xmlSchemaUrl
-     * @return
-     * @throws DCMException
+     * @param xmlSchemaUrl XML Schema URL
+     * @return Schema object
      */
     private Schema getSchemaObject(String xmlSchemaUrl) {
 
@@ -158,8 +167,8 @@ public class QAResultPostProcessor {
     /**
      * Check if given XML Schema is marked as expired in XMLCONV repository. Returns error message, otherwise null.
      *
-     * @param xmlSchema
-     * @return
+     * @param xmlSchema XML Schema
+     * @return Schema Expired message
      */
     private String getLocalSchemaExpiredMessage(Schema xmlSchema) {
 
@@ -177,8 +186,8 @@ public class QAResultPostProcessor {
      * Check if schema is the latest released version in DD (in case of DD schema). If it is not latest released then return warning
      * message.
      *
-     * @param xmlSchema
-     * @return
+     * @param xmlSchema XML Schema
+     * @return Schema expired message.
      */
     private String getDDSchemaExpiredMessage(Schema xmlSchema) {
 
@@ -202,6 +211,13 @@ public class QAResultPostProcessor {
         return null;
     }
 
+    /**
+     * Adds warning to result
+     * TODO: remove it in the future not in use any more since we use a new XML parser.
+     * @param htmlResult HTML result
+     * @param warnMessage warning message
+     * @return Processed result.
+     */
     private String addExpWarning(String htmlResult, String warnMessage) {
 
         try {
@@ -230,6 +246,13 @@ public class QAResultPostProcessor {
         return htmlResult;
     }
 
+    /**
+     * Parses div nodes and adds warning node to result
+     * @param divElements Div elements
+     * @param warnMessage Warning message
+     * @return true if feedbacktext class is found
+     * @throws XmlException If an error occurs.
+     */
     private boolean parseDivNodes(NodeList divElements, String warnMessage) throws XmlException {
         boolean feedBackDivFound = false;
         try {
@@ -269,8 +292,8 @@ public class QAResultPostProcessor {
     /**
      * Get DD XML Schema released info
      *
-     * @param xmlSchema
-     * @return
+     * @param xmlSchema XML Schema
+     * @return Dataset Map
      */
     protected Map<String, String> getDataset(String xmlSchema) {
         return DataDictUtil.getDatasetReleaseInfoForSchema(xmlSchema);

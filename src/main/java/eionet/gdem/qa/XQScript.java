@@ -31,7 +31,9 @@ import eionet.gdem.dto.Schema;
 import eionet.gdem.qa.engines.*;
 
 /**
- * Class for XQ script used by the workqueue XQTask and XQ sandbox
+ * Class for XQ script used by the workqueue XQTask and XQ sandbox.
+ * @author Unknown
+ * @author George Sofianos
  */
 public class XQScript {
     private String[] params; // parameter name + value pairs
@@ -57,6 +59,10 @@ public class XQScript {
         SCRIPT_LANG_XQUERY("xquery"), SCRIPT_LANG_XSL("xsl"), SCRIPT_LANG_XGAWK("xgawk"), SCRIPT_LANG_FME("fme");
         private String value;
 
+        /**
+         * Constructor
+         * @param value value
+         */
         ScriptLang(String value) {
             this.value = value;
         }
@@ -81,8 +87,8 @@ public class XQScript {
     private XQEngineIF _engine;
 
     /**
-     * @param xqScript
-     * @param params
+     * @param xqScript Script
+     * @param scriptParams
      *            XQ parameter name + value pairs in an array in format {name1=value1, name2=value2, ... , nameN=valueN} if no
      *            parameters, null should be passed
      */
@@ -90,6 +96,12 @@ public class XQScript {
         this(xqScript, scriptParams, XQEngineIF.DEFAULT_OUTPUTTYPE);
     }
 
+    /**
+     * Constructor
+     * @param xqScript Script
+     * @param scriptParams Parameters
+     * @param _outputType Output type
+     */
     public XQScript(String xqScript, String[] scriptParams, String _outputType) {
         scriptSource = xqScript;
         params = scriptParams;
@@ -99,17 +111,27 @@ public class XQScript {
 
     /**
      * Result of the XQsrcipt
+     * @throws GDEMException If an error occurs.
      */
     public String getResult() throws GDEMException {
         initEngine();
         return _engine.getResult(this);
     }
 
+    /**
+     * Gets XQ result
+     * @param out Output Stream
+     * @throws GDEMException If an error occurs.
+     */
     public void getResult(OutputStream out) throws GDEMException {
         initEngine();
         _engine.getResult(this, out);
     }
 
+    /**
+     * Initializes QA engine
+     * @throws GDEMException If an error occurs.
+     */
     private void initEngine() throws GDEMException {
 
         if (_engine == null) {
@@ -133,6 +155,10 @@ public class XQScript {
         }
     }
 
+    /**
+     * Returns original file URL.
+     * @return File URL
+     */
     public String getOrigFileUrl() {
         if (srcFileUrl != null && srcFileUrl.indexOf(Constants.GETSOURCE_URL) > -1
                 && srcFileUrl.indexOf(Constants.SOURCE_URL_PARAM) > -1) {

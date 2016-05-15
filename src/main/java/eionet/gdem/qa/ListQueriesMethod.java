@@ -66,7 +66,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
      * @return array of Hastables with the following keys: qyery_id, short_name, description, query, schema_id, xml_schema,
      *         content_type_out, type
      *
-     * @throws GDEMException
+     * @throws GDEMException If an error occurs.
      */
     public Vector listQueries(String schema) throws GDEMException {
 
@@ -126,9 +126,9 @@ public class ListQueriesMethod extends RemoteServiceMethod {
     /**
      * List all XQueries and their modification times for this namespace returns also XML Schema validation.
      *
-     * @param schema
+     * @param schema Schema to use
      * @return result is an Array of Arrays that contains 3 fields (script_id, description, last modification)
-     * @throws GDEMException
+     * @throws GDEMException If an error occurs.
      */
     public Vector listQAScripts(String schema) throws GDEMException {
         Vector<Vector<String>> result = new Vector<Vector<String>>();
@@ -193,7 +193,12 @@ public class ListQueriesMethod extends RemoteServiceMethod {
 
         return result;
     }
-    
+
+    /**
+     * Returns if script is active.
+     * @param query Query map
+     * @return True if script is active.
+     */
     private boolean isActive(Map query){
         return query.get("is_active").equals("1");
     }

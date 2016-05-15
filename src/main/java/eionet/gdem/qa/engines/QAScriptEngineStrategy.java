@@ -45,6 +45,12 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
     private String encoding = null;
     private String outputType = null;
 
+    /**
+     * Runs query
+     * @param script Script to run
+     * @param result Result
+     * @throws GDEMException If an error occurs.
+     */
     protected abstract void runQuery(XQScript script, OutputStream result) throws GDEMException;
 
     @Override
@@ -66,7 +72,7 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
         try {
             res = result.toString(DEFAULT_ENCODING);
             if (LOGGER.isDebugEnabled()){
-                String logResult = res.length()>299 ?  res.substring(0, 300) : res;
+                String logResult = res.length() > 299 ?  res.substring(0, 300) : res;
                 LOGGER.debug("RESULT: \n" + logResult);
             }
 
@@ -118,6 +124,12 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
         }
     }
 
+    /**
+     * Parses parameters
+     * @param xqParams xquery parameters
+     * @return Parameter map
+     * @throws GDEMException If an error occurs.
+     */
     public HashMap parseParams(String[] xqParams) throws GDEMException {
         HashMap<String, String> paramsMap = new HashMap<String, String>();
 

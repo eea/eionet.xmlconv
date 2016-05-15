@@ -31,7 +31,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Extension of the Saxon error listener to catch all the errors and feedback them to user
+ * Extension of the Saxon error listener to catch all the errors and feedback them to user.
+ *
+ * @author Unknown
+ * @author George Sofianos
  */
 public class SaxonListener extends StandardErrorListener {
 
@@ -40,10 +43,18 @@ public class SaxonListener extends StandardErrorListener {
 
     private StringBuilder _errBuf; // in this buffer we collect all the error messages
     private boolean _hasErrors = false;
+
+    /**
+     * Default constructor
+     */
     public SaxonListener() {
         _errBuf = new StringBuilder();
     }
 
+    /**
+     * Returns if listener has errors
+     * @return
+     */
     boolean hasErrors() {
         return _hasErrors;
     }

@@ -60,7 +60,7 @@ public class Json {
      * then JsonError object is converted to XML.
      * @param requestUrl Request URL to JSON format content.
      * @return Document object Returns the JSON or {@link JsonError} object in XML format.
-     * @throws XmlException
+     * @throws XmlException If an error occurs.
      */
     public static Document jsonRequest2xml(String requestUrl) throws XmlException {
         String xml = jsonRequest2xmlString(requestUrl);

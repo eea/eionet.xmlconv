@@ -44,6 +44,13 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
     /** */
     private static final Log LOGGER = LogFactory.getLog(ExternalQueryEngine.class);
 
+    /**
+     * Gets shell command
+     * @param dataFile data file
+     * @param scriptFile script file
+     * @param params parameters
+     * @return
+     */
     protected abstract String getShellCommand(String dataFile, String scriptFile, Map<String, String> params);
 
     @Override
