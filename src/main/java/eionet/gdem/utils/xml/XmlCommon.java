@@ -37,6 +37,11 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
+/**
+ * XML Common class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class XmlCommon {
 
     protected Document document = null;
@@ -44,6 +49,9 @@ public class XmlCommon {
     private DocumentBuilder parser;
     private ErrorStorage errorStorage;
 
+    /**
+     * Default constructor.
+     */
     public XmlCommon() {
         parser = new DocumentBuilderImpl();
         errorStorage = new ErrorStorage();
@@ -62,6 +70,11 @@ public class XmlCommon {
         });
     }
 
+    /**
+     * Parses file from InputStream
+     * @param inputStream InputStream
+     * @throws XmlException If an error occurs.
+     */
     public void checkFromInputStream(InputStream inputStream) throws XmlException {
         try {
             InputSource contentForParsing = new InputSource(inputStream);
@@ -83,6 +96,11 @@ public class XmlCommon {
         }
     }
 
+    /**
+     * Parses XML from file.
+     * @param fullFileName File name
+     * @throws XmlException If an error occurs.
+     */
     public void checkFromFile(String fullFileName) throws XmlException {
         try {
             document = parser.parse(fullFileName);
@@ -100,6 +118,11 @@ public class XmlCommon {
         }
     }
 
+    /**
+     * Sets wellformedness checking.
+     * TODO: Check if we need to enable this in Saxon
+     * @throws XmlException If an error occurs.
+     */
     public void setWellFormednessChecking() throws XmlException {
         /**try {
             parser.setFeature("http://apache.org/xml/features/validation/schema", false);
@@ -122,6 +145,11 @@ public class XmlCommon {
 */
     }
 
+    /**
+     * Sets Validation checking
+     * TODO: Check if we need to enable this in Saxon
+     * @throws XmlException If an error occurs.
+     */
     public void setValidationChecking() throws XmlException {
        /* try {
             parser.setFeature("http://xml.org/sax/features/validation", true);
@@ -140,6 +168,10 @@ public class XmlCommon {
         }*/
     }
 
+    /**
+     * Creates XML Document
+     * @throws XmlException If an error occurs.
+     */
     public void createXMLDocument() throws XmlException {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -151,6 +183,13 @@ public class XmlCommon {
 
     }
 
+    /**
+     * Creates XML Document
+     * TODO: Check if we need to enable this
+     * @param docTypeName Doctype name
+     * @param systemId System Id
+     * @throws XmlException If an error occurs.
+     */
     public void createXMLDocument(String docTypeName, String systemId) throws XmlException {
        /** try {
             DocumentImpl xmlDoc = new DocumentImpl();
@@ -166,6 +205,12 @@ public class XmlCommon {
 */
     }
 
+    /**
+     * Parses XML from string
+     * TODO: check if we need to improve this
+     * @param xml XML file
+     * @throws XmlException If an error occurs.
+     */
     public void checkFromString(String xml) throws XmlException {
         StringReader strR = null;
         try {

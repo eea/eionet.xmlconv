@@ -33,11 +33,25 @@ import com.wutka.dtd.DTDParser;
 import eionet.gdem.exceptions.DCMException;
 
 /**
+ * Document analyzer utility class.
  * @author Enriko Käsper, Tieto Estonia DocumentAnalyser
+ * @author George Sofianos
  */
+public final class DocumentAnalyser {
 
-public class DocumentAnalyser {
+    /**
+     * Private constructor
+     */
+    private DocumentAnalyser() {
+        // do nothing
+    }
 
+    /**
+     * Checks if source is XML Schema
+     * @param bytes File
+     * @return True if source is XML Schema
+     * @throws DCMException If an error occurs.
+     */
     public static boolean sourceIsXMLSchema(byte[] bytes) throws DCMException {
 
         try {
@@ -53,6 +67,12 @@ public class DocumentAnalyser {
 
     }
 
+    /**
+     * Checks if source is DTD schema.
+     * @param bytes File
+     * @return True if source is DTD schema.
+     * @throws DCMException If an error occurs.
+     */
     public static boolean sourceIsDTD(byte[] bytes) throws DCMException {
 
         try {

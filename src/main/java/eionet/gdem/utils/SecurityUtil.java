@@ -42,13 +42,23 @@ import eionet.gdem.web.struts.login.AfterCASLoginAction;
  * This is a class containing some utility methods for keeping security.
  *
  * @author Enriko Käsper
+ * @author George Sofianos
  */
-public class SecurityUtil {
+public final class SecurityUtil {
 
     /**
-     * Returns current user, or 'null', if the current session does not have user attached to it.
+     * Private constructor
      */
-    public static final AppUser getUser(HttpServletRequest request, String attrName) {
+    private SecurityUtil() {
+        // do nothing
+    }
+    /**
+     * Returns current user, or 'null', if the current session does not have user attached to it.
+     *
+     * @param request Request
+     * @param attrName Attribute name
+     */
+    public static AppUser getUser(HttpServletRequest request, String attrName) {
 
         HttpSession session = request.getSession();
         AppUser user = session == null ? null : (AppUser) session.getAttribute(attrName);
@@ -80,7 +90,12 @@ public class SecurityUtil {
     }
 
     /**
-     *
+     * Checks if user has permissions
+     * @param usr User
+     * @param aclPath ACL Path
+     * @param prm Permissions
+     * @return True if user has permissions.
+     * @throws Exception If an error occurs.
      */
     public static boolean hasPerm(String usr, String aclPath, String prm) throws Exception {
         if (!aclPath.startsWith("/"))
@@ -118,10 +133,10 @@ public class SecurityUtil {
     }
 
     /**
-     *
-     * @param request
-     * @return
-     * @throws GDEMException
+     * Returns login URL
+     * @param request Request
+     * @return login URL
+     * @throws GDEMException If an error occurs.
      */
     public static String getLoginURL(HttpServletRequest request) throws GDEMException {
 
@@ -154,10 +169,10 @@ public class SecurityUtil {
     }
 
     /**
-     *
-     * @param request
-     * @return
-     * @throws GDEMException
+     * Returns logout URL
+     * @param request Request
+     * @return Logoug URL
+     * @throws GDEMException If an error occurs.
      */
     public static String getLogoutURL(HttpServletRequest request) throws GDEMException {
 
@@ -179,8 +194,9 @@ public class SecurityUtil {
     }
 
     /**
-     *
-     * @return
+     * Returns URL with context path
+     * @param request Request
+     * @return URL with context path
      */
     public static String getUrlWithContextPath(HttpServletRequest request) {
 
@@ -207,6 +223,11 @@ public class SecurityUtil {
         return url.toString();
     }
 
+    /**
+     * Returns Real request URL
+     * @param request Request
+     * @return Real request URL
+     */
     public static String getRealRequestURL(HttpServletRequest request) {
 
         HttpServletRequest tmpRequest = request;
@@ -222,8 +243,16 @@ public class SecurityUtil {
     }
 }
 
+/**
+ * CAS User class.
+ * @author Unknown
+ */
 class CASUser extends AppUser {
 
+    /**
+     * Constructor
+     * @param userName Username
+     */
     public CASUser(String userName) {
         this.authenticatedUserName = userName;
     }

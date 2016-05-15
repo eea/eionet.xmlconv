@@ -21,12 +21,20 @@
 
 package eionet.gdem.utils.xml;
 
+/**
+ * Error storage class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class ErrorStorage {
 
     private String errorMessage = "";
     private String waringMessage = "";
     private String fatalErrorMessage = "";
 
+    /**
+     * Default constructor
+     */
     public ErrorStorage() {
     }
 
@@ -34,6 +42,10 @@ public class ErrorStorage {
         return errorMessage;
     }
 
+    /**
+     * Sets error message
+     * @param errorMessage Error message
+     */
     public void setErrorMessage(String errorMessage) {
         if (errorMessage.length() > 128)
             errorMessage = errorMessage.substring(0, 128) + "...";
@@ -45,6 +57,10 @@ public class ErrorStorage {
         return fatalErrorMessage;
     }
 
+    /**
+     * Sets fatal error message.
+     * @param fatalErrorMessage Fatal error message
+     */
     public void setFatalErrorMessage(String fatalErrorMessage) {
         if (fatalErrorMessage.length() > 128)
             fatalErrorMessage = fatalErrorMessage.substring(0, 128) + "...";
@@ -55,12 +71,20 @@ public class ErrorStorage {
         return waringMessage;
     }
 
+    /**
+     * Sets warning message
+     * @param waringMessage Warning message
+     */
     public void setWaringMessage(String waringMessage) {
         if (waringMessage.length() > 128)
             waringMessage = waringMessage.substring(0, 128) + "...";
         this.waringMessage += waringMessage + "  ";
     }
 
+    /**
+     * Checks if error message is empty
+     * @return True if error message is empty
+     */
     public boolean isEmpty() {
         if (errorMessage.equalsIgnoreCase("") && fatalErrorMessage.equalsIgnoreCase("")) {
             return true;
@@ -69,6 +93,10 @@ public class ErrorStorage {
         }
     }
 
+    /**
+     * Gets errors string
+     * @return errors
+     */
     public String getErrors() {
         StringBuffer sb = new StringBuffer();
         if (errorMessage != null)

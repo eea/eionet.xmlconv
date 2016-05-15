@@ -21,6 +21,10 @@
 
 package eionet.gdem.utils.xml;
 
+/**
+ * Transform Exception class.
+ * @author Unknown
+ */
 public class TransformException extends Exception {
     /**
      * Constructs a new <code>TransformException</code>

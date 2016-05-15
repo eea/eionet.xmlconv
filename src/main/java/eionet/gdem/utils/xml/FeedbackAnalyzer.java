@@ -20,10 +20,11 @@ import org.xml.sax.helpers.DefaultHandler;
 import eionet.gdem.Constants;
 
 /**
- * Analyzes feedback HTML response
- *
+ * Analyzes feedback HTML response.
+ * @author Unknown
+ * @author George Sofianos
  */
-public class FeedbackAnalyzer {
+public final class FeedbackAnalyzer {
 
     /**
      * Default private constructor for util class

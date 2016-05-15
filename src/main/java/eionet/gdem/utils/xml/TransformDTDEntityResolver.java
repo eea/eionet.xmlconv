@@ -33,17 +33,29 @@ import org.xml.sax.SAXException;
 
 import eionet.gdem.utils.Streams;
 
+/**
+ * DTD entity resolver.
+ * @author Unknown
+ * @author george Sofianos
+ */
 public class TransformDTDEntityResolver implements EntityResolver {
     private Map<String, byte[]> dtds;
 
+    /**
+     * Constructor
+     * @param dtds dtds
+     */
     public TransformDTDEntityResolver(Map<String, byte[]> dtds) {
         this.dtds = dtds;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
+    /**
+     * Returns resolver entity.
+     * @param publicId Public Id
+     * @param systemId System Id
+     * @return Resolver entity
+     * @throws SAXException If an error occurs.
+     * @throws IOException If an error occurs.
      */
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
         try {

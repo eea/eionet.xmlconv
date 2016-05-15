@@ -35,14 +35,28 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
 
 /**
+ * HTTP Utilities.
+ * TODO: Check if we can replace this with an open source library
  * @author Enriko Käsper, Tieto Estonia HttpUtils
  */
 
-public class HttpUtils {
+public final class HttpUtils {
 
+    /**
+     * Private constructor
+     */
+    private HttpUtils() {
+        // do nothing
+    }
     /** */
     private static final Log LOGGER = LogFactory.getLog(HttpUtils.class);
 
+    /**
+     * Downloads remote file
+     * @param url URL
+     * @return Downloaded file
+     * @throws Exception If an error occurs.
+     */
     public static byte[] downloadRemoteFile(String url) throws Exception {
 
         byte[] responseBody = null;
@@ -86,8 +100,8 @@ public class HttpUtils {
      * Method checks whether the resource behind the given URL exist. The method calls HEAD request and if the resonse code is 200,
      * then returns true. If exception is thrown or response code is something else, then the result is false.
      *
-     * @param url
-     * @return
+     * @param url URL
+     * @return True if resource behind the url exists.
      */
     public static boolean urlExists(String url) {
 

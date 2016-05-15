@@ -33,11 +33,25 @@ import java.io.Writer;
 
 /**
  * Utility functions related to Streams.
- *
+ * @author Unknown
+ * @author George Sofianos
  */
-public class Streams {
+public final class Streams {
+
+    /**
+     * Private constructor
+     */
+    private Streams() {
+        // do nothing
+    }
     static final int BLOCK_SIZE = 4096;
 
+    /**
+     * Drains InputStream
+     * @param r Read
+     * @param w Write
+     * @throws IOException If an error occurs.
+     */
     public static void drain(InputStream r, OutputStream w) throws IOException {
         byte[] bytes = new byte[BLOCK_SIZE];
         try {
@@ -54,6 +68,12 @@ public class Streams {
 
     }
 
+    /**
+     * Drains InputStream
+     * @param r Read
+     * @param w Write
+     * @throws IOException If an error occurs.
+     */
     public static void drain(Reader r, Writer w) throws IOException {
         char[] bytes = new char[BLOCK_SIZE];
         try {
@@ -70,27 +90,51 @@ public class Streams {
 
     }
 
+    /**
+     * Drains InputStream
+     * @param r Read
+     * @param os OutputStream
+     * @throws IOException If an error occurs.
+     */
     public static void drain(Reader r, OutputStream os) throws IOException {
         Writer w = new OutputStreamWriter(os);
         drain(r, w);
         w.flush();
     }
 
+    /**
+     * Drains InputStream
+     * @param is InputStream
+     * @param w Writer
+     * @throws IOException If an error occurs.
+     */
     public static void drain(InputStream is, Writer w) throws IOException {
         Reader r = new InputStreamReader(is);
         drain(r, w);
         w.flush();
     }
 
+    /**
+     * Drains Stream
+     * @param r InputStream
+     * @return Content
+     * @throws IOException If an error occurs.
+     */
     public static byte[] drain(InputStream r) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         drain(r, bytes);
         return bytes.toByteArray();
     }
 
+    /**
+     * Returns Stream as String
+     * @param is InputStream
+     * @return Content
+     */
     public static String getAsString(InputStream is) {
         int c = 0;
-        char lineBuffer[] = new char[128], buf[] = lineBuffer;
+        char[] lineBuffer = new char[128];
+        char[] buf = lineBuffer;
         int room = buf.length, offset = 0;
         try {
             loop: while (true) {
