@@ -79,6 +79,9 @@ public class QAScript implements Serializable {
         this.checksum = checksum;
     }
 
+    /**
+     * Default constructor
+     */
     public QAScript() {
         super();
     }
@@ -163,11 +166,11 @@ public class QAScript implements Serializable {
         this.url = url;
     }
     
-    public void setActive (String isActive) {
+    public void setActive(String isActive) {
         this.active = isActive.equals("1");
     } 
     
-    public boolean isActive () {
+    public boolean isActive() {
         return this.active;
     }
 

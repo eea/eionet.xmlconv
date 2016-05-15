@@ -54,6 +54,10 @@ public class CrFileDto implements Serializable {
         this.lastModified = lastModified;
     }
 
+    /**
+     * Gets label
+     * @return Label
+     */
     public String getLabel() {
         StringBuilder label = new StringBuilder(getUrl());
         if (getLastModified() != null && getLastModified().length() > 0) {

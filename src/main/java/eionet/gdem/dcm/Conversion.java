@@ -35,6 +35,9 @@ import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 
+/**
+ * Conversion class.
+ */
 public class Conversion {
 
     /** */

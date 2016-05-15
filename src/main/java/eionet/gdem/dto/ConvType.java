@@ -23,6 +23,9 @@ package eionet.gdem.dto;
 
 import java.io.Serializable;
 
+/**
+ * Conversion type class.
+ */
 public class ConvType implements Serializable {
 
     private String convType;
@@ -30,6 +33,9 @@ public class ConvType implements Serializable {
     private String fileExt;
     private String description;
 
+    /**
+     * Default constructor.
+     */
     public ConvType() {
 
     }

@@ -48,8 +48,8 @@ public class ConvertedFileDto {
     /**
      * Class constructor.
      *
-     * @param fileName
-     * @param filePath
+     * @param fileName File name
+     * @param filePath File path
      */
     public ConvertedFileDto(String fileName, String filePath) {
         this.fileName = fileName;
@@ -80,6 +80,11 @@ public class ConvertedFileDto {
         this.fileUrl = fileUrl;
     }
 
+    /**
+     * Get file content as byte array
+     * @return File contents
+     * @throws GDEMException If an error occurs.
+     */
     public byte[] getFileContentAsByteArray() throws GDEMException {
         FileInputStream fis = null;
         File convFile = new File(getFilePath());

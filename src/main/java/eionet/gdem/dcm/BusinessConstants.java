@@ -21,6 +21,9 @@
 
 package eionet.gdem.dcm;
 
+/**
+ * Business constants class.
+ */
 public class BusinessConstants {
 
     public static final String EXCEPTION_GENERAL = "label.exception.unknown";

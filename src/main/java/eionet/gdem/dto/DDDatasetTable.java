@@ -32,7 +32,10 @@ public class DDDatasetTable {
     private String dataSet;
     private String dateReleased;
 
-
+    /**
+     * Constructor
+     * @param tblId Table id
+     */
     public DDDatasetTable(String tblId) {
         super();
         this.tblId = tblId;

@@ -17,13 +17,16 @@ public class GetXMLSchemasResult extends XMLResultStrategy {
 
     private List schemas = null;
 
+    /**
+     * Default constructor
+     */
     public GetXMLSchemasResult() {
     }
 
     /**
      * Set the data
      *
-     * @param list
+     * @param list XML schema list
      */
     public void setResult(List list) {
         schemas = list;

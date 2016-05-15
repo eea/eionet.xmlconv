@@ -1,5 +1,8 @@
 package eionet.gdem.dto;
 
+/**
+ * Host Data transfer object.
+ */
 public class HostDto {
 
     String id;

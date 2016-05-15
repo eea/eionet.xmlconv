@@ -23,6 +23,9 @@ package eionet.gdem.dto;
 
 import java.io.Serializable;
 
+/**
+ * Upload schema class.
+ */
 public class UplSchema implements Serializable {
 
     private String uplSchemaId;
@@ -41,6 +44,9 @@ public class UplSchema implements Serializable {
         this.lastModified = lastModified;
     }
 
+    /**
+     * Default constructor
+     */
     public UplSchema() {
 
     }

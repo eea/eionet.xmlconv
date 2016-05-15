@@ -7,6 +7,7 @@ package eionet.gdem.dcm.remote;
  *  that are called through XML/RPC and HTTP POST and GET.
  *
  * @author Enriko Käsper
+ * @author George Sofianos
  */
 public abstract class RemoteService implements RemoteServiceIF {
 
@@ -57,20 +58,22 @@ public abstract class RemoteService implements RemoteServiceIF {
     public boolean isHTTPRequest() {
         return isHttpRequest;
     }
-    /* (non-Javadoc)
-     * @see eionet.gdem.services.RemoteServiceIF#setHttpResponse(eionet.gdem.dcm.results.HttpMethodResponseWrapper)
+
+    /** (non-Javadoc)
+     * Sets http response
+     * @param httpResponse HTTP response
      */
     public void setHttpResponse(HttpMethodResponseWrapper httpResponse) {
-        if (httpResponse!=null) isHttpRequest=true;
+        if (httpResponse != null) isHttpRequest = true;
         this.httpResponse = httpResponse;
     }
-    /** Assign ticket and HTTPResponse to the executed method.
-     *
-     * @param method
+    /**
+     * Assign ticket and HTTPResponse to the executed method.
+     * @param method Remote service method
      */
     protected void setGlobalParameters(RemoteServiceMethod method){
         //if it's a xml-rpc request, then use trusted account for getting remote URLs
-        if(!isHttpRequest)
+        if (!isHttpRequest)
             setTrustedMode(true);
 
         method.setTicket(getTicket());
