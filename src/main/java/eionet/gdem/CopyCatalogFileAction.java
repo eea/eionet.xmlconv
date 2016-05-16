@@ -1,9 +1,5 @@
 package eionet.gdem;
 
-import eionet.propertyplaceholderresolver.CircularReferenceException;
-import eionet.propertyplaceholderresolver.ConfigurationPropertyResolver;
-import eionet.propertyplaceholderresolver.UnresolvedPropertyException;
-import eionet.propertyplaceholderresolver.util.ConfigurationLoadException;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -18,8 +14,12 @@ public class CopyCatalogFileAction {
 
     private static final Logger LOGGER = Logger.getLogger(CopyCatalogFileAction.class.getName());
 
-    public CopyCatalogFileAction(ConfigurationPropertyResolver configurationPropertyResolver) throws UnresolvedPropertyException, CircularReferenceException, ConfigurationLoadException, IOException {
-        String target = configurationPropertyResolver.resolveValue("catalogs");
+    public CopyCatalogFileAction( ) throws IOException  {
+        
+        String target = Properties.getStringProperty("catalogs");
+        if ( new File(target ) .exists() ) {
+            return;
+        }
         String resource = this.getClass().getClassLoader().getResource("catalog.xml").getFile();
         copyFile(resource, target);
 
@@ -27,9 +27,9 @@ public class CopyCatalogFileAction {
 
     void copyFile(String source, String target) throws IOException {
         File sourceFile = new File(source);
-        File targetDirectory = new File(target);
-        FileUtils.copyFile(sourceFile, targetDirectory);
-        LOGGER.log(Level.INFO, "Successfully copied directory...{0}", target);
+        File targetFile = new File(target);
+        FileUtils.copyFile(sourceFile, targetFile);
+        LOGGER.log(Level.INFO, "Successfully copied file...{0}", target);
     }
 
 }

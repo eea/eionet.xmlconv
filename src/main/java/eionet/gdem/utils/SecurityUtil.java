@@ -37,6 +37,7 @@ import eionet.acl.AppUser;
 import edu.yale.its.tp.cas.client.filter.CASFilter;
 import eionet.gdem.GDEMException;
 import eionet.gdem.web.struts.login.AfterCASLoginAction;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * This is a class containing some utility methods for keeping security.
@@ -44,6 +45,14 @@ import eionet.gdem.web.struts.login.AfterCASLoginAction;
  * @author Enriko Käsper
  */
 public class SecurityUtil {
+    
+    private static AccessController accessController ;
+    
+    @Autowired
+    public SecurityUtil( AccessController accessController)  {
+        this.accessController = accessController;
+    }
+
 
     /**
      * Returns current user, or 'null', if the current session does not have user attached to it.
@@ -92,7 +101,7 @@ public class SecurityUtil {
         while (i != -1 && !has) {
             String subPath = aclPath.substring(0, i);
             try {
-                acl = AccessController.getAcl(subPath);
+                acl = accessController.getAcl(subPath);
             } catch (Exception e) {
                 acl = null;
             }
@@ -105,7 +114,7 @@ public class SecurityUtil {
 
         if (!has) {
             try {
-                acl = AccessController.getAcl(aclPath);
+                acl = accessController.getAcl(aclPath);
             } catch (Exception e) {
                 acl = null;
             }
