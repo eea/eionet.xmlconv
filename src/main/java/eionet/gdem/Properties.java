@@ -23,6 +23,9 @@
 
 package eionet.gdem;
 
+import eionet.propertyplaceholderresolver.CircularReferenceException;
+import eionet.propertyplaceholderresolver.ConfigurationPropertyResolver;
+import eionet.propertyplaceholderresolver.UnresolvedPropertyException;
 import org.apache.log4j.Logger;
 
 import java.text.MessageFormat;
@@ -36,7 +39,10 @@ import java.util.ResourceBundle;
  */
 public class Properties {
 
-    /** Logger class. */
+    private static ConfigurationPropertyResolver configurationService;
+    /**
+     * Logger class.
+     */
     public static final Logger LOGGER = Logger.getLogger(Properties.class);
 
     /** Application classes (WEB-INF/classes) path in file system. */
@@ -153,103 +159,78 @@ public class Properties {
     /** Time pattern used for displaying time values on UI. */
     public static String timeFormatPattern = "dd MMM yyyy hh:mm:ss";
 
+    private static void initConifigurationService() {
+        configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
+    }
+
     static {
-        if (props == null) {
-            props = ResourceBundle.getBundle("gdem");
-            try {
-                // filesystem properties
-                queriesFolder = getStringProperty("queries.folder");
-                xslFolder = checkPath(getStringProperty("xsl.folder"));
-                tmpFolder = getStringProperty("tmp.folder");
-                xmlfileFolder = getStringProperty("xmlfile.folder");
-                schemaFolder = getStringProperty("schema.folder");
-                appRootFolder = getStringProperty("root.folder");
+        initConifigurationService();
+        // filesystem properties
+        queriesFolder = getStringProperty("queries.folder");
+        xslFolder = checkPath(getStringProperty("xsl.folder"));
+        tmpFolder = getStringProperty("tmp.folder");
+        xmlfileFolder = getStringProperty("xmlfile.folder");
+        schemaFolder = getStringProperty("schema.folder");
+        appRootFolder = getStringProperty("root.folder");
 
-                // DB connection settings
-                dbDriver = getStringProperty("db.driver");
-                dbUrl = getStringProperty("db.url");
-                dbUser = getStringProperty("db.user");
-                dbPwd = getStringProperty("db.pwd");
+        // DB connection settings
+        dbDriver = getStringProperty("db.driver");
+        dbUrl = getStringProperty("db.url");
+        dbUser = getStringProperty("db.user");
+        dbPwd = getStringProperty("db.pwd");
 
-                // BaseX server connection settings
-                basexServerHost = getStringProperty("basexserver.host");
-                basexServerPort = getStringProperty("basexserver.port");
-                basexServerUser = getStringProperty("basexserver.user");
-                basexServerPassword = getStringProperty("basexserver.password");
+        // BaseX server connection settings
+        basexServerHost = getStringProperty("basexserver.host");
+        basexServerPort = getStringProperty("basexserver.port");
+        basexServerUser = getStringProperty("basexserver.user");
+        basexServerPassword = getStringProperty("basexserver.password");
 
-                // DCM settings
-                ddURL = getStringProperty("dd.url");
-                gdemURL = getStringProperty("gdem.url");
+        // DCM settings
+        ddURL = getStringProperty("dd.url");
+        gdemURL = getStringProperty("gdem.url");
 
-                // Remote application URLS
-                // settings for incoming services from DD
-                invServUrl = getStringProperty("dd.rpc.url");
-                invServName = getStringProperty("dd.rpcservice.name");
-                // settings for incoming services from Content Registry
-                crSparqlEndpoint = getStringProperty("cr.sparql.endpoint");
+        // Remote application URLS
+        // settings for incoming services from DD
+        invServUrl = getStringProperty("dd.rpc.url");
+        invServName = getStringProperty("dd.rpcservice.name");
+        // settings for incoming services from Content Registry
+        crSparqlEndpoint = getStringProperty("cr.sparql.endpoint");
 
-                // QA Service properties
-                engineClass = getStringProperty("xq.engine.implementator");
-                // period in milliseconds
-                wqCheckInterval = getIntProperty("wq.check.interval");
-                // period in seconds
-                wqCleanInterval = getIntProperty("wq.clean.job.interval");
-                // period in hours
-                wqJobMaxAge = getIntProperty("wq.job.max.age");
-                // maximum number of jobs executed at the same time
-                wqMaxJobs = getIntProperty("wq.max.jobs");
-                // default value of the maximum size of XML file sent to ad-hoc QA
-                qaValidationXmlUpperLimit = getIntProperty("qa.validation.xml.upper_limit");
-                // external QA program timeout
-                qaTimeout = getIntProperty("external.qa.timeout");
-                // exteranal QA program
-                xgawkCommand = getStringProperty("external.qa.command.xgawk");
-                // period in seconds
-                ddTablesUpdateInterval = getIntProperty("dd.tables.update.job.interval");
+        // QA Service properties
+        engineClass = getStringProperty("xq.engine.implementator");
+        // period in milliseconds
+        wqCheckInterval = getIntProperty("wq.check.interval");
+        // period in seconds
+        wqCleanInterval = getIntProperty("wq.clean.job.interval");
+        // period in hours
+        wqJobMaxAge = getIntProperty("wq.job.max.age");
+        // maximum number of jobs executed at the same time
+        wqMaxJobs = getIntProperty("wq.max.jobs");
+        // default value of the maximum size of XML file sent to ad-hoc QA
+        qaValidationXmlUpperLimit = getIntProperty("qa.validation.xml.upper_limit");
+        // external QA program timeout
+        qaTimeout = getIntProperty("external.qa.timeout");
+        // exteranal QA program
+        xgawkCommand = getStringProperty("external.qa.command.xgawk");
+        // period in seconds
+        ddTablesUpdateInterval = getIntProperty("dd.tables.update.job.interval");
 
-                dateFormatPattern = getStringProperty("date.format.pattern");
-                timeFormatPattern = getStringProperty("time.format.pattern");
-                services_installed = getIntProperty("gdem.services");
-                openOfficePort = getIntProperty("openoffice.service.port");
+        dateFormatPattern = getStringProperty("date.format.pattern");
+        timeFormatPattern = getStringProperty("time.format.pattern");
+        services_installed = getIntProperty("gdem.services");
+        openOfficePort = getIntProperty("openoffice.service.port");
 
-            } catch (MissingResourceException mse) {
-                LOGGER.error("Missing property in gdem.properties");
-                mse.printStackTrace();
-            } catch (Exception e) {
-                LOGGER.error("Error when reading properties from gdem.properties");
-                e.printStackTrace();
-            }
-        }
+        ldapUrl = getStringProperty("ldap.url");
+        ldapContext = getStringProperty("ldap.context");
+        ldapUserDir = getStringProperty("ldap.user.dir");
+        ldapAttrUid = getStringProperty("ldap.attr.uid");
 
-        if (ldapProps == null) {
-            ldapProps = ResourceBundle.getBundle("eionetdir");
-            try {
-                ldapUrl = ldapProps.getString("ldap.url");
-                ldapContext = ldapProps.getString("ldap.context");
-                ldapUserDir = ldapProps.getString("ldap.user.dir");
-                ldapAttrUid = ldapProps.getString("ldap.attr.uid");
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        if (fmeProps == null) {
-            fmeProps = ResourceBundle.getBundle("fme");
-            try {
-                fmeHost = fmeProps.getString("fme.host");
-                fmePort = fmeProps.getString("fme.port");
-                fmeUser = fmeProps.getString("fme.user");
-                fmePassword = fmeProps.getString("fme.password");
-                fmeTokenExpiration = fmeProps.getString("fme.token.expiration");
-                fmeTokenTimeunit = fmeProps.getString("fme.token.timeunit");
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        if (applicationResources == null) {
-            applicationResources = ResourceBundle.getBundle("ApplicationResources");
-        }
+        fmeHost = getStringProperty("fme.host");
+        fmePort = getStringProperty("fme.port");
+        fmeUser = getStringProperty("fme.user");
+        fmePassword = getStringProperty("fme.password");
+        fmeTokenExpiration = getStringProperty("fme.token.expiration");
+        fmeTokenTimeunit = getStringProperty("fme.token.timeunit");
 
     }
 
@@ -259,9 +240,17 @@ public class Properties {
      * @return Value
      */
     public static String getStringProperty(String key) {
-        String value = props.getString(key);
-        LOGGER.debug("XMLCONV configuration value loaded from gdem.properties \"" + key + "\"=" + value);
-        return value;
+        try {
+            return configurationService.resolveValue(key);
+        }
+        catch (CircularReferenceException ex) {
+            LOGGER.error(ex.getMessage());
+            return null;
+        }
+        catch (UnresolvedPropertyException ex) {
+            LOGGER.error(ex.getMessage());
+            return null;
+        }
     }
 
     /**
@@ -270,17 +259,14 @@ public class Properties {
      * @return Value
      */
     private static int getIntProperty(String key) {
-        int intValue = 0;
-        String strValue = props.getString(key);
+        String value = getStringProperty(key);
+
         try {
-            if (strValue != null && strValue.length() > 0) {
-                intValue = Integer.parseInt(strValue);
-                LOGGER.debug("XMLCONV configuration value loaded from gdem.properties \"" + key + "\"=" + intValue);
-            }
-        } catch (Exception e) {
-            LOGGER.error("\"" + strValue + "\" property is not defined or is not numeric in gdem.properties");
+            return Integer.valueOf(value);
+        } catch (NumberFormatException nfe) {
+            LOGGER.error(nfe.getMessage());
+            return 0;
         }
-        return intValue;
     }
 
     /**
@@ -303,7 +289,7 @@ public class Properties {
      * @return String value.
      */
     public static String getMessage(String key) {
-        return applicationResources.getString(key);
+        return getStringProperty(key);
     }
 
     /**
@@ -316,7 +302,12 @@ public class Properties {
      * @return
      */
     public static String getMessage(String key, Object[] replacement) {
-        return MessageFormat.format(applicationResources.getString(key), replacement);
+
+        String message = MessageFormat.format(getMessage(key), replacement);
+        if (message != null) {
+            return message;
+        }
+        return null;
     }
 
     /**
@@ -359,6 +350,10 @@ public class Properties {
      */
     public static void setTmpFolder(String tmpFolder) {
         Properties.tmpFolder = tmpFolder;
+    }
+
+    public static String getSchemaFolder() {
+        return getStringProperty("schema.folder");
     }
 
 }

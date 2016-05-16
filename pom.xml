@@ -23,186 +23,175 @@
     <url>http://maven.apache.org</url>
 
     <!-- configuration of Maven repositories to be used -->
-
-    <repositories>
-        <repository>
-            <id>project-local</id>
-            <name>project-local repository</name>
-            <layout>default</layout>
-            <url>file:///${basedir}/lib</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>eea</id>
-            <name>EAA Release Repository</name>
-            <url>http://archiva.eionet.europa.eu/repository/internal</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>basex</id>
-            <name>BaseX Maven Repository</name>
-            <url>http://files.basex.org/maven</url>
-        </repository>
-        <repository>
-            <id>org.springframework.maven.release</id>
-            <name>Spring Maven Repository</name>
-            <url>http://maven.springframework.org/release</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-        <!--
-        <repository>
-            <id>ehcache-repo</id>
-            <name>ehcache repository</name>
-            <url>http://oss.sonatype.org/content/repositories/sourceforge-releases</url>
-        </repository>-->
-    </repositories>
-
-    <!-- the build configuration -->
-    <build>
-        <plugins>
-
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.0.0</version>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.2</version>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.2</version>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.7</version>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.4</version>
-            </plugin>
-
-            <!-- Creating dirs -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <id>create-dirs</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <properties>
+                <docker.maven.plugin.version>0.14.2</docker.maven.plugin.version>
+                <docker.database.alias>database</docker.database.alias>
+                <docker.database.image>mysql</docker.database.image>
+                <docker.tomcat.host>${docker.host.address}:${tomcat.port}</docker.tomcat.host>
+                <docker.tomcat.url>http://${docker.host.address}:${tomcat.port}</docker.tomcat.url>
+                <docker.database.user>test</docker.database.user>
+                <docker.database.password>test</docker.database.password>
+                <tomcat.port>58080</tomcat.port>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker.maven.plugin.version}</version>
                         <configuration>
-                            <tasks>
-                                <loadproperties srcFile="${env}.properties" />
-                                <mkdir dir="${app.home}" />
-                                <mkdir dir="${app.home}/tmp" />
-                                <mkdir dir="${app.home}/log" />
-                                <mkdir dir="${app.home}/acl" />
-                                <mkdir dir="${app.home}/queries" />
-                                <mkdir dir="${app.home}/schema" />
-                                <mkdir dir="${app.home}/schema-cache" />
-                                <mkdir dir="${app.home}/xsl" />
-                                <mkdir dir="${app.home}/xmlfile" />
-                                <copy file="GDEMServices.xml"
-                                    todir="${app.home}" overwrite="true" />
-                                <copy file="supportfiles/catalog.xml"
-                                    todir="${app.home}" />
+                            <images>
+                                <image>
+                                    <alias>${docker.database.alias}</alias>
+                                    <name>${docker.database.image}</name>
+                                    <run>
+                                        <ports>
+                                            <!-- will automap container port 3306 to a random host port which can be reference by database.port placeholder -->
+                                            <port>database.port:3306</port>
+                                        </ports>
+                                        <env>
+                                            <MYSQL_ROOT_PASSWORD>toor</MYSQL_ROOT_PASSWORD>
+                                            <MYSQL_DATABASE>xmlconv</MYSQL_DATABASE>
+                                            <MYSQL_USER>test</MYSQL_USER>
+                                            <MYSQL_PASSWORD>test</MYSQL_PASSWORD>
+                                        </env>
+                                    </run>
+                                </image>
+                                <image>
+                                    <alias>tomcat</alias>
+                                    <name>dockerrepo.eionet.europa.eu:5000/${project.artifactId}</name>
+                                    <build>
+                                        <from>tomcat:7</from>
+                                        <maintainer>Ervis Zyka &lt;ez@eworx.gr&gt;</maintainer>
+                                        <tags>
+                                            <tag>latest</tag>
+                                            <tag>${project.version}</tag>
+                                        </tags>
+                                        <assembly>
+                                            <descriptorRef>rootWar</descriptorRef>
+                                        </assembly>
+                                        <runCmds>
+                                            <run>rm -rf /usr/local/tomcat/conf/logging.properties /usr/local/tomcat/webapps/*</run>
+                                            <run>mv /maven/ROOT.war /usr/local/tomcat/webapps/ROOT.war</run>
+                                        </runCmds>
+                                        <optimise>true</optimise>
 
-                                <!-- Copy all files from acl directory into
-                                    the same directory in app-home, unless they already exist in the latter. -->
-                                <copy todir="${app.home}/acl">
-                                    <fileset dir="acl">
-                                        <present present="srconly"
-                                            targetdir="${app.home}/acl" />
-                                    </fileset>
-                                </copy>
+                                        <!-- Expose ports -->
+                                        <ports>
+                                            <port>8080</port>
+                                            <port>8009</port>
+                                        </ports>
+                                    </build>
 
-                                <!-- Always overwrite the acl directory's
-                                    permissions definition file(s). -->
-                                <copy todir="${app.home}/acl"
-                                    overwrite="true">
-                                    <fileset dir="acl" includes="*.prms*" />
-                                    <fileset dir="acl"
-                                        includes="*.permissions*" />
-                                </copy>
+                                    <run>
+                                        <!-- Assign dynamically mapped ports to maven variables (which can be reused in integration tests) -->
+                                        <ports>
+                                            <port>tomcat.port:8080</port>
+                                        </ports>
+                                        <env>
+                                            <TOMCAT_PORT>${tomcat.port}</TOMCAT_PORT>
+                                            <TOMCAT_URL>http://localhost:${tomcat.port}</TOMCAT_URL>
+                                            <APP_HOST>localhost:${tomcat.port}</APP_HOST>
+                                            <APP_HOME>/xmlconv</APP_HOME>
+                                            <INIT_ADMINS>niknakas,zykaerv,roug</INIT_ADMINS>
+                                            <DATADICT_URL>http://dd.eionet.europa.eu</DATADICT_URL>
+                                            <DATADICT_RPC_ENDPOINT>http://dd.eionet.europa.eu/rpcrouter</DATADICT_RPC_ENDPOINT>
+                                            <CR_SPARQL_ENDPOINT>http://cr.eionet.europa.eu/sparql</CR_SPARQL_ENDPOINT>
+                                            <CDR_URL>http://cdr.eionet.europa.eu/example</CDR_URL>
+                                            <DATABASE_URL>jdbc:mysql://database:3306/xmlconv?autoReconnect=true&amp;characterEncoding=UTF-8&amp;emptyStringsConvertToZero=false&amp;jdbcCompliantTruncation=false</DATABASE_URL>
+                                            <DATABASE_USER>root</DATABASE_USER>
+                                            <DATABASE_PASSWORD>toor</DATABASE_PASSWORD>
+                                            <LOG_FILEPATH>/xmlconv/xmlconv.log</LOG_FILEPATH>
+                                            <CATALINA_OPTS>-Djava.security.egd=file:/dev/./urandom -Dapp.home=${APP_HOME} -Dapp.host=${APP_HOST} -Dconfig.log.file=${LOG_FILEPATH} -Dinitial.admin=${INIT_ADMINS} -Dconfig.gdem.url=${TOMCAT_URL} -Dconfig.dd.url=${DATADICT_URL} -Dconfig.dd.rpc.url=${DATADICT_RPC_ENDPOINT} -Dconfig.cr.sparql.endpoint=${CR_SPARQL_ENDPOINT} -Dconfig.cdr.url=${CDR_URL} -Dconfig.db.jdbcurl=${DATABASE_URL} -Dconfig.db.driver=com.mysql.jdbc.Driver -Dconfig.db.user=${DATABASE_USER} -Dconfig.db.password=${DATABASE_PASSWORD}</CATALINA_OPTS>
+                                            <JAVA_OPTS>-Xmx3072m</JAVA_OPTS>
+                                        </env>
+                                        <wait>
+                                            <url>http://${docker.host.address}:${tomcat.port}/</url>
+                                            <time>20000</time>
+                                        </wait>
+                                        <links>
+                                            <link>database:database</link>
+                                        </links>
+                                        <log>
+                                            <prefix>TC</prefix>
+                                            <color>cyan</color>
+                                        </log>
+                                    </run>
+                                </image>
+                            </images>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>start</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                    <goal>start</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>development</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <!-- the build configuration -->
+            <build>
 
-                            </tasks>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>pre-test</id>
-                        <phase>process-test-resources</phase>
-                        <configuration>
-                            <tasks>
-                                <mkdir dir="${project.build.directory}/test-classes/xsl" />
-                                <mkdir dir="${project.build.directory}/test-classes/tmp" />
-                                <mkdir dir="${project.build.directory}/test-classes/queries" />
-                                <mkdir dir="${project.build.directory}/test-classes/xmlfile" />
-                                <mkdir dir="${project.build.directory}/test-classes/schema" />
-                                <copy todir="${project.build.directory}/test-classes/WEB-INF">
-                                    <fileset dir="src/main/webapp/WEB-INF" />
-                                </copy>
-                                <copy todir="${project.build.directory}/test-classes/dcm">
-                                    <fileset dir="src/main/webapp/dcm" />
-                                </copy>
-                                <copy todir="${project.build.directory}/test-classes/acl">
-                                    <fileset dir="acl" />
-                                </copy>
-                                <!-- FIXME after updating Maven version from
-                                    2.0.4 the following lines can be removed -->
-                                <move
-                                    file="${project.build.directory}/classes/gdem.properties"
-                                    toFile="${project.build.directory}/classes/gdem.properties.tmp" />
-                                <move
-                                    file="${project.build.directory}/classes/uit.properties"
-                                    toFile="${project.build.directory}/classes/uit.properties.tmp" />
-                                <move
-                                    file="${project.build.directory}/classes/log4j.xml"
-                                    toFile="${project.build.directory}/classes/log4j.xml.tmp" />
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <!-- FIXME after updating Maven version from 2.0.4 the
-                        following lines can be removed -->
-                    <execution>
-                        <id>post-test</id>
-                        <phase>test</phase>
-                        <configuration>
-                            <tasks>
-                                <move
-                                    file="${project.build.directory}/classes/gdem.properties.tmp"
-                                    toFile="${project.build.directory}/classes/gdem.properties" />
-                                <move
-                                    file="${project.build.directory}/classes/uit.properties.tmp"
-                                    toFile="${project.build.directory}/classes/uit.properties" />
-                                <move
-                                    file="${project.build.directory}/classes/log4j.xml.tmp"
-                                    toFile="${project.build.directory}/classes/log4j.xml" />
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- maven-compiler-plugin -->
+                <!-- filters for src/main/resources and src/test/resources -->
+
+                <filters>
+                    <filter>${env}.properties</filter>
+                </filters>
+                <plugins>
+                    <!-- Creating dirs -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.3</version>
+                        <executions>
+                            <execution>
+                                <id>pre-test</id>
+                                <phase>process-test-resources</phase>
+                                <configuration>
+                                    <tasks>
+                                        <mkdir dir="${project.build.directory}/test-classes/xsl" />
+                                        <mkdir dir="${project.build.directory}/test-classes/tmp" />
+                                        <mkdir dir="${project.build.directory}/test-classes/queries" />
+                                        <mkdir dir="${project.build.directory}/test-classes/xmlfile" />
+                                        <mkdir dir="${project.build.directory}/test-classes/schema" />
+                                        <copy todir="${project.build.directory}/test-classes/WEB-INF">
+                                            <fileset dir="src/main/webapp/WEB-INF" />
+                                        </copy>
+                                        <copy todir="${project.build.directory}/test-classes/dcm">
+                                            <fileset dir="src/main/webapp/dcm" />
+                                        </copy>
+                                        <copy todir="${project.build.directory}/test-classes/acl">
+                                            <fileset dir="acl" />
+                                        </copy>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- maven-compiler-plugin -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -227,51 +216,52 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.10</version>
-            </plugin>
+                    <plugin>
+                        <groupId>eionet</groupId>
+                        <artifactId>property-placeholder-resolver</artifactId>
+                        <version>1.0</version>
+                    </plugin>
 
-            <!-- maven-war-plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <filters>
-                        <filter>${basedir}/${env}.properties</filter>
-                    </filters>
-                    <webResources>
-                        <resource>
-                            <directory>${basedir}/src/main/webapp/META-INF</directory>
-                            <filtering>true</filtering>
-                            <targetPath>META-INF</targetPath>
-                            <includes>
-                                <include>context.xml</include>
-                            </includes>
-                        </resource>
-                        <resource>
-                            <directory>${basedir}/src/main/webapp/WEB-INF</directory>
-                            <filtering>true</filtering>
-                            <targetPath>WEB-INF</targetPath>
-                            <includes>
-                                <include>web.xml</include>
-                            </includes>
-                        </resource>
-                        <resource>
-                            <directory>${basedir}/db</directory>
-                            <targetPath>WEB-INF/classes/db</targetPath>
-                            <includes>
-                                <include>xmlconv-struct.xml</include>
-                            </includes>
-                        </resource>
-                        <!-- <resource> <directory>${basedir}/src/main/webapp/pages/common</directory>
-                            <filtering>true</filtering> <targetPath>pages/common</targetPath> <includes>
-                            <include>dropdownmenus.txt</include> </includes> </resource> -->
-                    </webResources>
-                </configuration>
-            </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.10</version>
+                    </plugin>
+
+                    <!-- maven-war-plugin -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>2.6</version>
+                        <configuration>
+                            <filters>
+                                <filter>${basedir}/${env}.properties</filter>
+                            </filters>
+                            <webResources>
+                                <resource>
+                                    <directory>${basedir}/src/main/webapp/META-INF</directory>
+                                    <filtering>false</filtering>
+                                    <targetPath>META-INF</targetPath>
+                                    <includes>
+                                        <include>context.xml</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+                                    <filtering>false</filtering>
+                                    <targetPath>WEB-INF</targetPath>
+                                    <includes>
+                                        <include>web.xml</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <filtering>false</filtering>
+                                    <directory>${basedir}/src/main/resources</directory>
+                                    <targetPath>WEB-INF/classes</targetPath>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
 
             <plugin>
                 <groupId>org.liquibase</groupId>
@@ -309,59 +299,89 @@
 
         </plugins>
 
-        <!-- filters for src/main/resources and src/test/resources -->
+                <!-- filtering corrupts the xsl files -->
+                <testResources>
+                    <testResource>
+                        <directory>src/test/resources</directory>
+                        <filtering>false</filtering>
+                        <includes>
+                            <include>**/*.*</include>
+                        </includes>
+                        <excludes>
+                            <exclude>*.properties</exclude>
+                        </excludes>
+                    </testResource>
+                    <testResource>
+                        <directory>src/test/resources</directory>
+                        <filtering>true</filtering>
+                        <includes>
+                            <include>*.properties</include>
+                        </includes>
+                        <excludes>
+                            <exclude>**/*config.*</exclude>
+                        </excludes>
+                    </testResource>
+                    <testResource>
+                        <directory>src/test/resources</directory>
+                        <filtering>false</filtering>
+                        <includes>
+                            <include>**/*config.*</include>
+                            <include>**/spring-runtine.xml</include>
+                        </includes>
+                    </testResource>
+                </testResources>
 
-        <filters>
-            <filter>${env}.properties</filter>
-        </filters>
-
-        <!-- resources for the main code -->
-
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-                <includes>
-                    <include>spring-*.xml</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>*.*</include>
-                </includes>
-                <excludes>
-                    <exclude>spring-*.xml</exclude>
-                </excludes>
-            </resource>
-        </resources>
-
-        <!-- filtering corrupts the xsl files -->
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <filtering>false</filtering>
-                <includes>
-                    <include>**/*.*</include>
-                </includes>
-                <excludes>
-                    <exclude>*.properties</exclude>
-                </excludes>
-            </testResource>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>*.properties</include>
-                </includes>
-            </testResource>
-        </testResources>
-
-        <!-- name of the bundled project when it is finally built -->
-        <finalName>xmlconv</finalName>
-
-    </build>
+                <!-- name of the bundled project when it is finally built -->
+                <finalName>xmlconv</finalName>
+            </build>
+        </profile>
+    </profiles>
+    <repositories>
+        <repository>
+            <id>project-local</id>
+            <name>project-local repository</name>
+            <layout>default</layout>
+            <url>file:///${basedir}/lib</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>eea</id>
+            <name>EAA Release Repository</name>
+            <url>http://archiva.eionet.europa.eu/repository/internal</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>archiva.snapshots</id>
+            <name>Internal Snapshot Repository</name>
+            <url>http://archiva.eionet.europa.eu/repository/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>basex</id>
+            <name>BaseX Maven Repository</name>
+            <url>http://files.basex.org/maven</url>
+        </repository>
+        <repository>
+            <id>org.springframework.maven.release</id>
+            <name>Spring Maven Repository</name>
+            <url>http://maven.springframework.org/release</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <!--
+        <repository>
+            <id>ehcache-repo</id>
+            <name>ehcache repository</name>
+            <url>http://oss.sonatype.org/content/repositories/sourceforge-releases</url>
+        </repository>-->
+    </repositories>
 
     <!-- dependencies -->
 
@@ -412,7 +432,7 @@
             <version>3.0</version>
         </dependency>
         <dependency>
-        <groupId>commons-codec</groupId>
+            <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.5</version>
         </dependency>
@@ -521,7 +541,6 @@
             <artifactId>fop</artifactId>
             <version>2.1</version>
         </dependency>
-
         <!-- batik.jar used by fop: exact version (1.0) cannot be found from central repo. -->
         <dependency>
             <groupId>org.apache</groupId>
@@ -601,22 +620,22 @@
         <dependency>
             <groupId>eionet</groupId>
             <artifactId>acl</artifactId>
-            <version>2.0</version>
+            <version>4.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>eionet</groupId>
             <artifactId>rpcserver</artifactId>
-            <version>2.0</version>
+            <version>3.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>eionet</groupId>
             <artifactId>definition</artifactId>
-            <version>2.0</version>
+            <version>3.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>eionet</groupId>
             <artifactId>rpcclient</artifactId>
-            <version>2.0</version>
+            <version>3.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>eionet</groupId>
@@ -710,12 +729,6 @@
             <artifactId>liquibase-core</artifactId>
             <version>3.5.0</version>
         </dependency>
-        <!--<dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
-        </dependency>-->
-
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
@@ -728,18 +741,11 @@
             <artifactId>commons-logging</artifactId>
             <version>1.2</version>
         </dependency>
-
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.13</version>
         </dependency>
-        <!--<dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.5</version>
-        </dependency>-->
-
         <!-- slf4j is needed for dbunit -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -753,14 +759,6 @@
             <version>1.7.21</version>
             <type>jar</type>
         </dependency>
-        <!-- Avalon dependency for commons-logging -->
-        <!--
-        <dependency>
-            <groupId>org.apache.avalon.framework</groupId>
-            <artifactId>avalon-framework-api</artifactId>
-            <version>4.3.1</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>com.ximpleware</groupId>
             <artifactId>vtd-xml</artifactId>
@@ -810,7 +808,18 @@
             <version>2.1.4</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>eionet</groupId>
+            <artifactId>property-placeholder-resolver</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>3.0.10</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
 

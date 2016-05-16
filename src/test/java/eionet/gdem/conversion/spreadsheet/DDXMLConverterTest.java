@@ -11,6 +11,7 @@ import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.dto.ConvertedFileDto;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
@@ -18,6 +19,9 @@ import junit.framework.TestCase;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,10 +70,14 @@ public class DDXMLConverterTest extends TestCase {
         dataset.put("idOfLatestReleased", "2222");
         ddConverter.setDataset(dataset);
 
+        String theDate  = "02/11/2009";
+        DateFormat format = new SimpleDateFormat("d/MM/yyyy");
+        Date date = format.parse(theDate);
+
         message = ddConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=TBL3739");
         assertEquals(
                 (Properties.getMessage(BusinessConstants.ERROR_CONVERSION_OBSOLETE_TEMPLATE,
-                        new String[] {ddConverter.getSourceFormatName(), "02 Nov 2009", "2222"})).toLowerCase(), message.toLowerCase());
+                        new String[] {ddConverter.getSourceFormatName(), Utils.getDate(date), "2222"})).toLowerCase(), message.toLowerCase());
 
         // schema is not RELEASED, but OK
         message = ddConverter.getInvalidSchemaMessage("http://dd.eionet.europa.eu/GetSchema?id=TBL3739");

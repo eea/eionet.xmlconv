@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
     <bean id="appConfigDefinitionProvider" class="eionet.propertyplaceholderresolver.ConfigurationDefinitionProviderImpl">
         <constructor-arg index="0">
             <array>
+                <value>env.properties</value>
                 <value>acl.properties</value>
                 <value>gdem.properties</value>
                 <value>eionetdir.properties</value>
@@ -19,35 +17,19 @@
             </array>
         </constructor-arg>
     </bean>
-
+    
     <bean id="configurationPropertyResolver" class="eionet.propertyplaceholderresolver.ConfigurationPropertyResolverImpl">
         <constructor-arg ref="appConfigDefinitionProvider" />
     </bean>
-
+    
     <bean id="configurationPostProcessor" class="eionet.propertyplaceholderresolver.spring.EionetPlaceholderConfigurer">
         <constructor-arg ref="configurationPropertyResolver" />
     </bean>
-    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
-        <constructor-arg ref="hikariConfig" />
-    </bean>
-
-    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
-        <property name="poolName" value="springHikariCP" />
-        <property name="connectionTestQuery" value="SELECT 1" />
-        <property name="dataSourceClassName" value="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" />
-        <property name="dataSourceProperties">
-            <props>
-                <prop key="url">${test.db.jdbcurl}</prop>
-                <prop key="user">${test.db.user}</prop>
-                <prop key="password">${test.db.password}</prop>
-            </props>
-        </property>
-
-
-    <bean name="databaseTester" class="org.dbunit.DataSourceDatabaseTester">
-        <constructor-arg ref="dataSource" />
-    </bean>
-
+    
+    <bean id="catalogCopyManager" class="eionet.gdem.CopyCatalogFileAction" depends-on="configurationPostProcessor"/>
+    
+    <bean id="copyAclFiles" class="eionet.gdem.acl.CopyAclFiles" depends-on="configurationPostProcessor"/>
+    
     <bean id="aclProperties" class="eionet.acl.AclProperties">
         <property name="ownerPermission" value="${owner.permission}" />
         <property name="anonymousAccess" value="${anonymous.access}" />
@@ -64,9 +46,9 @@
         <property name="dbUser" value="${acl.db.user}" />
         <property name="dbPwd" value="${acl.db.pwd}" />
     </bean>
-
+    
     <bean id="accessController" class="eionet.acl.AccessController">
         <constructor-arg index="0" ref="aclProperties" />
     </bean>
-
+    
 </beans>

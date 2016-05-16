@@ -56,21 +56,7 @@ public class JobScheduler implements ServletContextListener {
     /** */
     private static Scheduler quartzScheduler = null;
 
-    private static final Pair<Integer, JobDetail>[] intervalJobs;
-
-    static {
-        intervalJobs =
-            new Pair[] {
-                Pair.of(new Integer(Properties.wqCheckInterval),
-                        newJob(WQCheckerJob.class).withIdentity(WQCheckerJob.class.getSimpleName(),
-                                WQCheckerJob.class.getName()).build()),
-                                Pair.of(new Integer(Properties.wqCleanInterval),
-                                        newJob(WQCleanerJob.class).withIdentity(WQCleanerJob.class.getSimpleName(),
-                                                WQCleanerJob.class.getName()).build()),
-                                                Pair.of(new Integer(Properties.ddTablesUpdateInterval),
-                                                        newJob(DDTablesCacheUpdater.class).withIdentity(DDTablesCacheUpdater.class.getSimpleName(),
-                                                                DDTablesCacheUpdater.class.getName()).build()) };
-    }
+    private static Pair<Integer, JobDetail>[] intervalJobs;
 
     /**
      *
@@ -151,7 +137,17 @@ public class JobScheduler implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-
+        intervalJobs
+                = new Pair[]{
+                    Pair.of(new Integer(Properties.wqCheckInterval),
+                            newJob(WQCheckerJob.class).withIdentity(WQCheckerJob.class.getSimpleName(),
+                            WQCheckerJob.class.getName()).build()),
+                    Pair.of(new Integer(Properties.wqCleanInterval),
+                            newJob(WQCleanerJob.class).withIdentity(WQCleanerJob.class.getSimpleName(),
+                            WQCleanerJob.class.getName()).build()),
+                    Pair.of(new Integer(Properties.ddTablesUpdateInterval),
+                            newJob(DDTablesCacheUpdater.class).withIdentity(DDTablesCacheUpdater.class.getSimpleName(),
+                            DDTablesCacheUpdater.class.getName()).build())};
         // schedule interval jobs
         for (Pair<Integer, JobDetail> job : intervalJobs) {
 
