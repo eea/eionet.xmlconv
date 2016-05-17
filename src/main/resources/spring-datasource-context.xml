@@ -8,7 +8,6 @@
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
 
-    <context:property-placeholder location="classpath:gdem.properties" />
     <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
         <constructor-arg ref="hikariConfig" />
     </bean>
@@ -28,6 +27,7 @@
                 <prop key="prepStmtCacheSqlLimit">2048</prop>
             </props>
         </property>
+    </bean>
 
     <!-- Runs on Tomcat stratup. -->
     <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">

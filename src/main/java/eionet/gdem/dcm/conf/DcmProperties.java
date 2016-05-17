@@ -54,7 +54,7 @@ public class DcmProperties {
      */
     public void setDbParams(String url, String user, String psw) throws DCMException {
 
-        String filePath = Properties.appHome + File.separatorChar + "gdem.properties";
+        String filePath = Properties.appHome + File.separatorChar + "env.properties";
 
         try {
 
@@ -64,9 +64,9 @@ public class DcmProperties {
 
             while ((line = reader.readLine()) != null) {
                 // process the line
-                line = findSetProp(line, "db.url", url);
-                line = findSetProp(line, "db.user", user);
-                line = findSetProp(line, "db.pwd", psw);
+                line = findSetProp(line, "config.db.jdbcurl", url);
+                line = findSetProp(line, "config.db.user", user);
+                line = findSetProp(line, "config.db.password", psw);
                 st.append(line);
                 st.append("\n");
             }
@@ -129,7 +129,7 @@ public class DcmProperties {
      */
     public void setBasexParams(String host, String port, String user, String psw) throws DCMException {
 
-        String filePath = Properties.appHome + File.separatorChar + "gdem.properties";
+        String filePath = Properties.appHome + File.separatorChar + "env.properties";
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(filePath));

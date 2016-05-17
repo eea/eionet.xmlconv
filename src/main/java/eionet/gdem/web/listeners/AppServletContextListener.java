@@ -85,10 +85,10 @@ public class AppServletContextListener implements ApplicationListener {
 
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
-        System.out.println("Application started !");
+        //System.out.println("Application started !");
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
         if (event instanceof ContextClosedEvent) {
-            System.out.println("Application terminated !");;
+            //System.out.println("Application terminated !");;
             return;
         }
         if (!(event instanceof ContextRefreshedEvent)) {

@@ -10,6 +10,7 @@
     <bean id="appConfigDefinitionProvider" class="eionet.propertyplaceholderresolver.ConfigurationDefinitionProviderImpl">
         <constructor-arg index="0">
             <array>
+                <value>env.properties</value>
                 <value>acl.properties</value>
                 <value>gdem.properties</value>
                 <value>eionetdir.properties</value>
@@ -42,6 +43,7 @@
                 <prop key="password">${test.db.password}</prop>
             </props>
         </property>
+    </bean>
 
 
     <bean name="databaseTester" class="org.dbunit.DataSourceDatabaseTester">

@@ -7,6 +7,12 @@ import java.io.File;
 
 import javax.servlet.http.HttpSession;
 
+import eionet.gdem.test.ApplicationTestContext;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.services.GDEMServices;
@@ -19,18 +25,20 @@ import eionet.gdem.test.mocks.MockStrutsMultipartRequestSimulator;
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS AddUplSchemaAction
  */
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
 public class AddUplSchemaActionTest extends MockStrutsTestCase {
 
     private IUPLSchemaDao uplSchemaDao;
     private String schemaUrl = "http://some.valid.url.eu/schema";
     private String description = "Updated description";
 
-    public AddUplSchemaActionTest(String testName) {
-        super(testName);
-    }
+    //public AddUplSchemaActionTest(String testName) {
+    //    super(testName);
+   // }
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         // set struts-confg file location
@@ -50,6 +58,7 @@ public class AddUplSchemaActionTest extends MockStrutsTestCase {
      * @throws Exception
      *
      */
+    @Test
     public void testSuccessfulForward() throws Exception {
         int countUplSchema = uplSchemaDao.getUplSchema().size();
         // overwrite the default StrutsRequestSimulator and mock multipartrequest object
@@ -83,6 +92,7 @@ public class AddUplSchemaActionTest extends MockStrutsTestCase {
      * @throws Exception
      *
      */
+    @Test
     public void testFailedNotPermissions() throws Exception {
 
         int countUplSchema = uplSchemaDao.getUplSchema().size();
@@ -112,6 +122,7 @@ public class AddUplSchemaActionTest extends MockStrutsTestCase {
     /**
      * test failed adding, the form should display error message: "schema file not found"
      */
+    @Test
     public void testFailedFileNotFound() throws Exception {
 
         int countUplSchema = uplSchemaDao.getUplSchema().size();
@@ -133,7 +144,7 @@ public class AddUplSchemaActionTest extends MockStrutsTestCase {
         assertEquals(countUplSchema, countUplSchema2);
 
     }
-    
+    @Test
     public void testFailedMalformedUrl() throws Exception {
         request = new MockStrutsMultipartRequestSimulator(config.getServletContext());
         setRequestPathInfo("/addUplSchema");

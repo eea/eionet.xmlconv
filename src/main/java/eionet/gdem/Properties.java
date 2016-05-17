@@ -159,15 +159,11 @@ public class Properties {
     /** Time pattern used for displaying time values on UI. */
     public static String timeFormatPattern = "dd MMM yyyy hh:mm:ss";
 
-    private static void initConifigurationService() {
-        configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
-    }
-
     static {
-        initConifigurationService();
+        configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
         queriesFolder = getStringProperty("queries.folder");
-        xslFolder = checkPath(getStringProperty("xsl.folder"));
+        xslFolder = getStringProperty("xsl.folder");
         tmpFolder = getStringProperty("tmp.folder");
         xmlfileFolder = getStringProperty("xmlfile.folder");
         schemaFolder = getStringProperty("schema.folder");

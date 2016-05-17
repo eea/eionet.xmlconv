@@ -1,7 +1,0 @@
-v:view
-i:insert
-u:update
-d:delete
-w:write
-x:execute
-c:control ACL
