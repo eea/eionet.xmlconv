@@ -386,6 +386,9 @@
             <id>basex</id>
             <name>BaseX Maven Repository</name>
             <url>http://files.basex.org/maven</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>org.springframework.maven.release</id>

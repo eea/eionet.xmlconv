@@ -124,6 +124,8 @@ public class Properties {
     /** FME token timeunit. */
     public static String fmeTokenTimeunit = null;
 
+    /** OpenOffice host. */
+    public static String openOfficeHost = null;
     /** OpenOffice port. */
     public static int openOfficePort = 8100;
     /** Implementation class for QA queries. Saxon is the default value, not hard-coded. */
@@ -214,7 +216,10 @@ public class Properties {
         dateFormatPattern = getStringProperty("date.format.pattern");
         timeFormatPattern = getStringProperty("time.format.pattern");
         services_installed = getIntProperty("gdem.services");
+
+        openOfficeHost = getStringProperty("openoffice.service.host");
         openOfficePort = getIntProperty("openoffice.service.port");
+
 
         ldapUrl = getStringProperty("ldap.url");
         ldapContext = getStringProperty("ldap.context");

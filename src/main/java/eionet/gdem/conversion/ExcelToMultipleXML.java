@@ -310,7 +310,7 @@ public class ExcelToMultipleXML {
 
         try {
             // connect to an OpenOffice.org instance
-            OpenOfficeConnection connection = new SocketOpenOfficeConnection(Properties.openOfficePort);
+            OpenOfficeConnection connection = new SocketOpenOfficeConnection(Properties.openOfficeHost, Properties.openOfficePort);
             connection.connect();
 
             // convert
