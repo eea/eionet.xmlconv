@@ -16,296 +16,262 @@
         <checkstyle.config.location>${basedir}/docs/checkstyle.xml</checkstyle.config.location>
         <spring.version>3.2.4.RELEASE</spring.version>
         <liquibase.changeLogFile>db/xmlconv-struct.xml</liquibase.changeLogFile>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <version>2.1-SNAPSHOT</version>
     <name>xmlconv</name>
     <url>http://maven.apache.org</url>
 
-    <!-- configuration of Maven repositories to be used -->
-    <profiles>
-        <profile>
-            <id>docker</id>
-            <properties>
-                <docker.maven.plugin.version>0.14.2</docker.maven.plugin.version>
-                <docker.database.alias>database</docker.database.alias>
-                <docker.database.image>mysql</docker.database.image>
-                <docker.tomcat.host>${docker.host.address}:${tomcat.port}</docker.tomcat.host>
-                <docker.tomcat.url>http://${docker.host.address}:${tomcat.port}</docker.tomcat.url>
-                <docker.database.user>test</docker.database.user>
-                <docker.database.password>test</docker.database.password>
-                <tomcat.port>58080</tomcat.port>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>docker-maven-plugin</artifactId>
-                        <version>${docker.maven.plugin.version}</version>
+    <repositories>
+        <repository>
+            <id>project-local</id>
+            <name>project-local repository</name>
+            <layout>default</layout>
+            <url>file:///${basedir}/lib</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>eea</id>
+            <name>EAA Release Repository</name>
+            <url>http://archiva.eionet.europa.eu/repository/internal</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>archiva.snapshots</id>
+            <name>Internal Snapshot Repository</name>
+            <url>http://archiva.eionet.europa.eu/repository/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>basex</id>
+            <name>BaseX Maven Repository</name>
+            <url>http://files.basex.org/maven</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>org.springframework.maven.release</id>
+            <name>Spring Maven Repository</name>
+            <url>http://maven.springframework.org/release</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.15.1</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <images>
+                        <image>
+                            <alias>mysql</alias>
+                            <name>mysql:5.5</name>
+                            <run>
+                                <ports>
+                                    <port>3336:3306</port>
+                                </ports>
+                                <env>
+                                    <MYSQL_ROOT_PASSWORD>12345</MYSQL_ROOT_PASSWORD>
+                                    <MYSQL_DATABASE>xmlconv</MYSQL_DATABASE>
+                                    <MYSQL_USER>testuser</MYSQL_USER>
+                                    <MYSQL_PASSWORD>testpassword</MYSQL_PASSWORD>
+                                </env>
+                                <wait>
+                                    <log>mysqld: ready for connections.</log>
+                                    <time>20000</time>
+                                </wait>
+                            </run>
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>logs</goal>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Creating dirs -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>copy-local-properties</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
                         <configuration>
-                            <images>
-                                <image>
-                                    <alias>${docker.database.alias}</alias>
-                                    <name>${docker.database.image}</name>
-                                    <run>
-                                        <ports>
-                                            <!-- will automap container port 3306 to a random host port which can be reference by database.port placeholder -->
-                                            <port>database.port:3306</port>
-                                        </ports>
-                                        <env>
-                                            <MYSQL_ROOT_PASSWORD>toor</MYSQL_ROOT_PASSWORD>
-                                            <MYSQL_DATABASE>xmlconv</MYSQL_DATABASE>
-                                            <MYSQL_USER>test</MYSQL_USER>
-                                            <MYSQL_PASSWORD>test</MYSQL_PASSWORD>
-                                        </env>
-                                    </run>
-                                </image>
-                                <image>
-                                    <alias>tomcat</alias>
-                                    <name>dockerrepo.eionet.europa.eu:5000/${project.artifactId}</name>
-                                    <build>
-                                        <from>tomcat:7</from>
-                                        <maintainer>Ervis Zyka &lt;ez@eworx.gr&gt;</maintainer>
-                                        <tags>
-                                            <tag>latest</tag>
-                                            <tag>${project.version}</tag>
-                                        </tags>
-                                        <assembly>
-                                            <descriptorRef>rootWar</descriptorRef>
-                                        </assembly>
-                                        <runCmds>
-                                            <run>rm -rf /usr/local/tomcat/conf/logging.properties /usr/local/tomcat/webapps/*</run>
-                                            <run>mv /maven/ROOT.war /usr/local/tomcat/webapps/ROOT.war</run>
-                                        </runCmds>
-                                        <optimise>true</optimise>
-
-                                        <!-- Expose ports -->
-                                        <ports>
-                                            <port>8080</port>
-                                            <port>8009</port>
-                                        </ports>
-                                    </build>
-
-                                    <run>
-                                        <!-- Assign dynamically mapped ports to maven variables (which can be reused in integration tests) -->
-                                        <ports>
-                                            <port>tomcat.port:8080</port>
-                                        </ports>
-                                        <env>
-                                            <TOMCAT_PORT>${tomcat.port}</TOMCAT_PORT>
-                                            <TOMCAT_URL>http://localhost:${tomcat.port}</TOMCAT_URL>
-                                            <APP_HOST>localhost:${tomcat.port}</APP_HOST>
-                                            <APP_HOME>/xmlconv</APP_HOME>
-                                            <INIT_ADMINS>niknakas,zykaerv,roug</INIT_ADMINS>
-                                            <DATADICT_URL>http://dd.eionet.europa.eu</DATADICT_URL>
-                                            <DATADICT_RPC_ENDPOINT>http://dd.eionet.europa.eu/rpcrouter</DATADICT_RPC_ENDPOINT>
-                                            <CR_SPARQL_ENDPOINT>http://cr.eionet.europa.eu/sparql</CR_SPARQL_ENDPOINT>
-                                            <CDR_URL>http://cdr.eionet.europa.eu/example</CDR_URL>
-                                            <DATABASE_URL>jdbc:mysql://database:3306/xmlconv?autoReconnect=true&amp;characterEncoding=UTF-8&amp;emptyStringsConvertToZero=false&amp;jdbcCompliantTruncation=false</DATABASE_URL>
-                                            <DATABASE_USER>root</DATABASE_USER>
-                                            <DATABASE_PASSWORD>toor</DATABASE_PASSWORD>
-                                            <LOG_FILEPATH>/xmlconv/xmlconv.log</LOG_FILEPATH>
-                                            <CATALINA_OPTS>-Djava.security.egd=file:/dev/./urandom -Dapp.home=${APP_HOME} -Dapp.host=${APP_HOST} -Dconfig.log.file=${LOG_FILEPATH} -Dinitial.admin=${INIT_ADMINS} -Dconfig.gdem.url=${TOMCAT_URL} -Dconfig.dd.url=${DATADICT_URL} -Dconfig.dd.rpc.url=${DATADICT_RPC_ENDPOINT} -Dconfig.cr.sparql.endpoint=${CR_SPARQL_ENDPOINT} -Dconfig.cdr.url=${CDR_URL} -Dconfig.db.jdbcurl=${DATABASE_URL} -Dconfig.db.driver=com.mysql.jdbc.Driver -Dconfig.db.user=${DATABASE_USER} -Dconfig.db.password=${DATABASE_PASSWORD}</CATALINA_OPTS>
-                                            <JAVA_OPTS>-Xmx3072m</JAVA_OPTS>
-                                        </env>
-                                        <wait>
-                                            <url>http://${docker.host.address}:${tomcat.port}/</url>
-                                            <time>20000</time>
-                                        </wait>
-                                        <links>
-                                            <link>database:database</link>
-                                        </links>
-                                        <log>
-                                            <prefix>TC</prefix>
-                                            <color>cyan</color>
-                                        </log>
-                                    </run>
-                                </image>
-                            </images>
+                            <tasks>
+                                <copy file="${basedir}/${env}.properties"
+                                      toFile="${project.build.directory}/classes/env.properties" />
+                            </tasks>
                         </configuration>
-                        <executions>
-                            <execution>
-                                <id>start</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                    <goal>start</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>stop</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>stop</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>development</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <!-- the build configuration -->
-            <build>
+                    </execution>
+                    <execution>
+                        <id>pre-test</id>
+                        <phase>process-test-resources</phase>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="${project.build.directory}/test-classes/xsl" />
+                                <mkdir dir="${project.build.directory}/test-classes/tmp" />
+                                <mkdir dir="${project.build.directory}/test-classes/queries" />
+                                <mkdir dir="${project.build.directory}/test-classes/xmlfile" />
+                                <mkdir dir="${project.build.directory}/test-classes/schema" />
+                                <copy todir="${project.build.directory}/test-classes/WEB-INF">
+                                    <fileset dir="src/main/webapp/WEB-INF" />
+                                </copy>
+                                <copy todir="${project.build.directory}/test-classes/dcm">
+                                    <fileset dir="src/main/webapp/dcm" />
+                                </copy>
+                                <copy todir="${project.build.directory}/test-classes/acl">
+                                    <fileset dir="acl" />
+                                </copy>
+                                <copy file="${basedir}/${env}.properties"
+                                      toFile="${project.build.directory}/test-classes/env.properties" />
+                                <copy todir="${project.build.directory}/test-classes/db">
+                                    <fileset dir="db" />
+                                </copy>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- maven-compiler-plugin -->
 
-            <!-- filters for src/main/resources and src/test/resources -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <verbose>false</verbose>
+                    <fork>false</fork>
+                    <compilerVersion>${java_version}</compilerVersion>
+                    <source>${java_version}</source>
+                    <target>${java_version}</target>
+                </configuration>
+            </plugin>
 
-            <filters>
-                <filter>${env}.properties</filter>
-            </filters>
+            <!-- maven-surefire-plugin-->
+            <!-- This is used for Unit testing -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19.1</version>
+                <configuration>
+                    <excludes>**/*.java</excludes>
+                </configuration>
+            </plugin>
 
-            <plugins>
-                <!-- Creating dirs -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                    <version>1.8</version>
-                    <executions>
-                        <execution>
-                            <id>copy-local-properties</id>
-                            <phase>prepare-package</phase>
-                            <goals>
-                                <goal>run</goal>
-                            </goals>
-                            <configuration>
-                                <tasks>
-                                    <copy file="${basedir}/${env}.properties"
-                                          toFile="${project.build.directory}/classes/env.properties" />
-                                </tasks>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>pre-test</id>
-                            <phase>process-test-resources</phase>
-                            <configuration>
-                                <tasks>
-                                    <mkdir dir="${project.build.directory}/test-classes/xsl" />
-                                    <mkdir dir="${project.build.directory}/test-classes/tmp" />
-                                    <mkdir dir="${project.build.directory}/test-classes/queries" />
-                                    <mkdir dir="${project.build.directory}/test-classes/xmlfile" />
-                                    <mkdir dir="${project.build.directory}/test-classes/schema" />
-                                    <copy todir="${project.build.directory}/test-classes/WEB-INF">
-                                        <fileset dir="src/main/webapp/WEB-INF" />
-                                    </copy>
-                                    <copy todir="${project.build.directory}/test-classes/dcm">
-                                        <fileset dir="src/main/webapp/dcm" />
-                                    </copy>
-                                    <copy todir="${project.build.directory}/test-classes/acl">
-                                        <fileset dir="acl" />
-                                    </copy>
-                                    <copy file="${basedir}/${env}.properties"
-                                          toFile="${project.build.directory}/test-classes/env.properties" />
-                                </tasks>
-                            </configuration>
-                            <goals>
-                                <goal>run</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <!-- maven-compiler-plugin -->
+            <!-- maven-failsafe-plugin -->
+            <!-- This is used for Integration testing -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.19.1</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.5.1</version>
-                    <inherited>true</inherited>
-                    <configuration>
-                        <verbose>false</verbose>
-                        <fork>false</fork>
-                        <compilerVersion>${java_version}</compilerVersion>
-                        <source>${java_version}</source>
-                        <target>${java_version}</target>
-                    </configuration>
-                </plugin>
 
-                <!-- maven-surefire-plugin -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.19.1</version>
-                </plugin>
 
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.10</version>
-                </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+            </plugin>
 
-                <!-- maven-war-plugin -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>2.6</version>
-                    <configuration>
-                        <filters>
-                            <filter>${basedir}/${env}.properties</filter>
-                        </filters>
-                        <webResources>
-                            <resource>
-                                <directory>${basedir}/src/main/webapp/META-INF</directory>
-                                <filtering>false</filtering>
-                                <targetPath>META-INF</targetPath>
-                                <includes>
-                                    <include>context.xml</include>
-                                </includes>
-                            </resource>
-                            <resource>
-                                <directory>${basedir}/src/main/webapp/WEB-INF</directory>
-                                <filtering>false</filtering>
-                                <targetPath>WEB-INF</targetPath>
-                                <includes>
-                                    <include>web.xml</include>
-                                </includes>
-                            </resource>
-                            <resource>
-                                <filtering>false</filtering>
-                                <directory>${basedir}/src/main/resources</directory>
-                                <targetPath>WEB-INF/classes</targetPath>
-                            </resource>
-                            <resource>
-                                <directory>${basedir}/db</directory>
-                                <targetPath>WEB-INF/classes/db</targetPath>
-                                <filtering>false</filtering>
-                                <includes>
-                                    <include>xmlconv-struct.xml</include>
-                                </includes>
-                            </resource>
-                            <resource>
-                                <directory>${basedir}/acl</directory>
-                                <targetPath>WEB-INF/classes/acl</targetPath>
-                                <filtering>false</filtering>
-                            </resource>
-                        </webResources>
-                    </configuration>
-                </plugin>
+            <!-- maven-war-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <filters>
+                        <filter>${basedir}/${env}.properties</filter>
+                    </filters>
+                    <webResources>
+                        <resource>
+                            <directory>${basedir}/src/main/webapp/META-INF</directory>
+                            <filtering>false</filtering>
+                            <targetPath>META-INF</targetPath>
+                            <includes>
+                                <include>context.xml</include>
+                            </includes>
+                        </resource>
+                        <resource>
+                            <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+                            <filtering>false</filtering>
+                            <targetPath>WEB-INF</targetPath>
+                            <includes>
+                                <include>web.xml</include>
+                            </includes>
+                        </resource>
+                        <resource>
+                            <filtering>false</filtering>
+                            <directory>${basedir}/src/main/resources</directory>
+                            <targetPath>WEB-INF/classes</targetPath>
+                        </resource>
+                        <resource>
+                            <directory>${basedir}/db</directory>
+                            <targetPath>WEB-INF/classes/db</targetPath>
+                            <filtering>false</filtering>
+                            <includes>
+                                <include>xmlconv-struct.xml</include>
+                            </includes>
+                        </resource>
+                        <resource>
+                            <directory>${basedir}/acl</directory>
+                            <targetPath>WEB-INF/classes/acl</targetPath>
+                            <filtering>false</filtering>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
 
-                <plugin>
-                    <groupId>org.liquibase</groupId>
-                    <artifactId>liquibase-maven-plugin</artifactId>
-                    <version>3.5.0</version>
-                    <configuration>
-                        <propertyFile>target/classes/liquibase.properties</propertyFile>
-                        <changeLogFile>${liquibase.changeLogFile}</changeLogFile>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>Update TEST database</id>
-                            <phase>process-test-resources</phase>
-                            <configuration>
-                                <skip>${maven.test.skip}</skip>
-                                <propertyFile>target/test-classes/liquibase.properties</propertyFile>
-                            </configuration>
-                            <goals>
-                                <goal>update</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
+
 
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -353,473 +319,429 @@
 
             <!-- name of the bundled project when it is finally built -->
             <finalName>xmlconv</finalName>
+
         </build>
-    </profile>
-    </profiles>
-    <repositories>
-        <repository>
-            <id>project-local</id>
-            <name>project-local repository</name>
-            <layout>default</layout>
-            <url>file:///${basedir}/lib</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>eea</id>
-            <name>EAA Release Repository</name>
-            <url>http://archiva.eionet.europa.eu/repository/internal</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>archiva.snapshots</id>
-            <name>Internal Snapshot Repository</name>
-            <url>http://archiva.eionet.europa.eu/repository/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>basex</id>
-            <name>BaseX Maven Repository</name>
-            <url>http://files.basex.org/maven</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>org.springframework.maven.release</id>
-            <name>Spring Maven Repository</name>
-            <url>http://maven.springframework.org/release</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-    </repositories>
 
-    <!-- dependencies -->
-    <dependencies>
-        <!-- Standard Java libraries -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jsp-api</artifactId>
-            <version>2.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>taglibs</groupId>
-            <artifactId>standard</artifactId>
-            <version>1.1.2</version>
-        </dependency>
+        <!-- dependencies -->
+        <dependencies>
+            <!-- Standard Java libraries -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>2.5</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>jstl</artifactId>
+                <version>1.1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>jsp-api</artifactId>
+                <version>2.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>taglibs</groupId>
+                <artifactId>standard</artifactId>
+                <version>1.1.2</version>
+            </dependency>
 
-        <!-- Apache commons and other Apache libraries -->
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.2</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.5</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-validator</groupId>
-            <artifactId>commons-validator</artifactId>
-            <version>1.4.0</version>
-        </dependency>
-        <!-- Libraries for Conversion and QA service -->
+            <!-- Apache commons and other Apache libraries -->
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>2.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.5</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>1.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-validator</groupId>
+                <artifactId>commons-validator</artifactId>
+                <version>1.4.0</version>
+            </dependency>
+            <!-- Libraries for Conversion and QA service -->
 
-        <!-- XML parsing and transforming libraries used by Conversion service-->
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>2.11.0</version>
-        </dependency>
-        <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-            <version>1.4.01</version>
-        </dependency>
+            <!-- XML parsing and transforming libraries used by Conversion service-->
+            <dependency>
+                <groupId>xerces</groupId>
+                <artifactId>xercesImpl</artifactId>
+                <version>2.11.0</version>
+            </dependency>
+            <dependency>
+                <groupId>xml-apis</groupId>
+                <artifactId>xml-apis</artifactId>
+                <version>1.4.01</version>
+            </dependency>
 
-        <!-- StAX parsers -->
-        <dependency>
-            <groupId>com.fasterxml.woodstox</groupId>
-            <artifactId>woodstox-core</artifactId>
-            <version>5.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.staxmate</groupId>
-            <artifactId>staxmate</artifactId>
-            <version>2.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.io7m.xom</groupId>
-            <artifactId>xom</artifactId>
-            <version>1.2.10</version>
-        </dependency>
-        <dependency>
-            <groupId>xml-resolver</groupId>
-            <artifactId>xml-resolver</artifactId>
-            <version>1.2</version>
-        </dependency>
-        <!--<dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>1.6.1</version>
-        </dependency>-->
-        <dependency>
-            <groupId>com.wutka</groupId>
-            <artifactId>dtdparser</artifactId>
-            <version>1.21</version>
-        </dependency>
+            <!-- StAX parsers -->
+            <dependency>
+                <groupId>com.fasterxml.woodstox</groupId>
+                <artifactId>woodstox-core</artifactId>
+                <version>5.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.staxmate</groupId>
+                <artifactId>staxmate</artifactId>
+                <version>2.3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.io7m.xom</groupId>
+                <artifactId>xom</artifactId>
+                <version>1.2.10</version>
+            </dependency>
+            <dependency>
+                <groupId>xml-resolver</groupId>
+                <artifactId>xml-resolver</artifactId>
+                <version>1.2</version>
+            </dependency>
+            <!--<dependency>
+                <groupId>stax</groupId>
+                <artifactId>stax-api</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>dom4j</groupId>
+                <artifactId>dom4j</artifactId>
+                <version>1.6.1</version>
+            </dependency>-->
+            <dependency>
+                <groupId>com.wutka</groupId>
+                <artifactId>dtdparser</artifactId>
+                <version>1.21</version>
+            </dependency>
 
-        <!-- MS Excel conversion libraries -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>3.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml-schemas</artifactId>
-            <version>3.7</version>
-        </dependency>
+            <!-- MS Excel conversion libraries -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>3.7</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>3.7</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml-schemas</artifactId>
+                <version>3.7</version>
+            </dependency>
 
-        <!-- XSL-FO (pdf) conversion
-        <dependency>
-            <groupId>fop</groupId>
-            <artifactId>fop</artifactId>
-            <version>0.20.5</version>
-        </dependency>-->
-        <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>fop</artifactId>
-            <version>2.1</version>
-        </dependency>
-        <!-- batik.jar used by fop: exact version (1.0) cannot be found from central repo. -->
-        <dependency>
-            <groupId>org.apache</groupId>
-            <artifactId>batik</artifactId>
-            <version>1.0</version>
-        </dependency>
+            <!-- XSL-FO (pdf) conversion
+            <dependency>
+                <groupId>fop</groupId>
+                <artifactId>fop</artifactId>
+                <version>0.20.5</version>
+            </dependency>-->
+            <dependency>
+                <groupId>org.apache.xmlgraphics</groupId>
+                <artifactId>fop</artifactId>
+                <version>2.1</version>
+            </dependency>
+            <!-- batik.jar used by fop: exact version (1.0) cannot be found from central repo. -->
+            <dependency>
+                <groupId>org.apache</groupId>
+                <artifactId>batik</artifactId>
+                <version>1.0</version>
+            </dependency>
 
-        <!-- Library for parsing MS Access files -->
-        <dependency>
-            <groupId>com.healthmarketscience.jackcess</groupId>
-            <artifactId>jackcess</artifactId>
-            <version>1.1.21</version>
-        </dependency>
+            <!-- Library for parsing MS Access files -->
+            <dependency>
+                <groupId>com.healthmarketscience.jackcess</groupId>
+                <artifactId>jackcess</artifactId>
+                <version>1.1.21</version>
+            </dependency>
 
-        <!-- JSON library -->
-        <dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <version>2.4</version>
-            <classifier>jdk15</classifier>
-        </dependency>
-        <!-- dependency for json-lib -->
-        <dependency>
-            <groupId>net.sf.ezmorph</groupId>
-            <artifactId>ezmorph</artifactId>
-            <version>1.0.6</version>
-        </dependency>
+            <!-- JSON library -->
+            <dependency>
+                <groupId>net.sf.json-lib</groupId>
+                <artifactId>json-lib</artifactId>
+                <version>2.4</version>
+                <classifier>jdk15</classifier>
+            </dependency>
+            <!-- dependency for json-lib -->
+            <dependency>
+                <groupId>net.sf.ezmorph</groupId>
+                <artifactId>ezmorph</artifactId>
+                <version>1.0.6</version>
+            </dependency>
 
-        <!-- Libraries for parsing RDF and executing SPARQL queries in SPARQL endpoints (Content Registry). -->
-        <dependency>
-            <groupId>org.openrdf</groupId>
-            <artifactId>openrdf-alibaba</artifactId>
-            <version>2.0-beta7</version>
-        </dependency>
-        <dependency>
-            <groupId>virtuoso</groupId>
-            <artifactId>virt-sesame</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openrdf</groupId>
-            <artifactId>openrdf-sesame</artifactId>
-            <version>2.5.1</version>
-        </dependency>
-        <dependency>
-            <groupId>virtuoso</groupId>
-            <artifactId>virtjdbc</artifactId>
-            <version>3.0</version>
-        </dependency>
+            <!-- Libraries for parsing RDF and executing SPARQL queries in SPARQL endpoints (Content Registry). -->
+            <dependency>
+                <groupId>org.openrdf</groupId>
+                <artifactId>openrdf-alibaba</artifactId>
+                <version>2.0-beta7</version>
+            </dependency>
+            <dependency>
+                <groupId>virtuoso</groupId>
+                <artifactId>virt-sesame</artifactId>
+                <version>2.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openrdf</groupId>
+                <artifactId>openrdf-sesame</artifactId>
+                <version>2.5.1</version>
+            </dependency>
+            <dependency>
+                <groupId>virtuoso</groupId>
+                <artifactId>virtjdbc</artifactId>
+                <version>3.0</version>
+            </dependency>
 
-        <!-- OpenOffice libraries used by Excel and ODT conversion functionality. -->
-        <dependency>
-            <groupId>com.artofsolving</groupId>
-            <artifactId>jodconverter</artifactId>
-            <version>2.2.1</version>
-        </dependency>
-        <!-- Metadata aggregator is used for analysing ODF files http://books.evc-cit.info/odf_utils/-->
-        <dependency>
-            <groupId>metadata</groupId>
-            <artifactId>matadata-aggregator</artifactId>
-            <version>1.0</version>
-        </dependency>
+            <!-- OpenOffice libraries used by Excel and ODT conversion functionality. -->
+            <dependency>
+                <groupId>com.artofsolving</groupId>
+                <artifactId>jodconverter</artifactId>
+                <version>2.2.1</version>
+            </dependency>
+            <!-- Metadata aggregator is used for analysing ODF files http://books.evc-cit.info/odf_utils/-->
+            <dependency>
+                <groupId>metadata</groupId>
+                <artifactId>matadata-aggregator</artifactId>
+                <version>1.0</version>
+            </dependency>
 
-        <!-- Saxon library for executing XQuery scripts-->
-        <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>Saxon-HE</artifactId>
-            <version>9.7.0-4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.basex</groupId>
-            <artifactId>basex</artifactId>
-            <version>8.4.3</version>
-        </dependency>
+            <!-- Saxon library for executing XQuery scripts-->
+            <dependency>
+                <groupId>net.sf.saxon</groupId>
+                <artifactId>Saxon-HE</artifactId>
+                <version>9.7.0-4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.basex</groupId>
+                <artifactId>basex</artifactId>
+                <version>8.4.3</version>
+            </dependency>
 
-        <!-- EIONET dependencies -->
-        <dependency>
-            <groupId>eionet</groupId>
-            <artifactId>acl</artifactId>
-            <version>4.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>eionet</groupId>
-            <artifactId>rpcserver</artifactId>
-            <version>3.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>eionet</groupId>
-            <artifactId>definition</artifactId>
-            <version>3.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>eionet</groupId>
-            <artifactId>rpcclient</artifactId>
-            <version>3.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>eionet</groupId>
-            <artifactId>eionet-dir</artifactId>
-            <version>2.5</version>
-        </dependency>
+            <!-- EIONET dependencies -->
+            <dependency>
+                <groupId>eionet</groupId>
+                <artifactId>acl</artifactId>
+                <version>4.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>eionet</groupId>
+                <artifactId>rpcserver</artifactId>
+                <version>3.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>eionet</groupId>
+                <artifactId>definition</artifactId>
+                <version>3.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>eionet</groupId>
+                <artifactId>rpcclient</artifactId>
+                <version>3.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>eionet</groupId>
+                <artifactId>eionet-dir</artifactId>
+                <version>2.5</version>
+            </dependency>
 
-        <!-- Web App dependencies -->
+            <!-- Web App dependencies -->
 
-        <!-- CRON jobs -->
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <!-- Caching -->
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>1.6.1</version>
-        </dependency>
-        <!--Central Authentication Service (CAS) Client-->
-        <dependency>
-            <groupId>cas</groupId>
-            <artifactId>casclient</artifactId>
-            <version>2.1.1</version>
-        </dependency>
+            <!-- CRON jobs -->
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>2.1.0</version>
+            </dependency>
+            <!-- Caching -->
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>1.6.1</version>
+            </dependency>
+            <!--Central Authentication Service (CAS) Client-->
+            <dependency>
+                <groupId>cas</groupId>
+                <artifactId>casclient</artifactId>
+                <version>2.1.1</version>
+            </dependency>
 
-        <!-- Struts dependencies -->
-        <dependency>
-            <groupId>org.apache.struts</groupId>
-            <artifactId>struts-core</artifactId>
-            <version>1.3.10</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.struts</groupId>
-            <artifactId>struts-el</artifactId>
-            <version>1.3.10</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.struts</groupId>
-            <artifactId>struts-extras</artifactId>
-            <version>1.3.10</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.struts</groupId>
-            <artifactId>struts-taglib</artifactId>
-            <version>1.3.10</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.struts</groupId>
-            <artifactId>struts-tiles</artifactId>
-            <version>1.3.10</version>
-        </dependency>
+            <!-- Struts dependencies -->
+            <dependency>
+                <groupId>org.apache.struts</groupId>
+                <artifactId>struts-core</artifactId>
+                <version>1.3.10</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.struts</groupId>
+                <artifactId>struts-el</artifactId>
+                <version>1.3.10</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.struts</groupId>
+                <artifactId>struts-extras</artifactId>
+                <version>1.3.10</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.struts</groupId>
+                <artifactId>struts-taglib</artifactId>
+                <version>1.3.10</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.struts</groupId>
+                <artifactId>struts-tiles</artifactId>
+                <version>1.3.10</version>
+            </dependency>
 
-        <!-- Spring 3 dependencies -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
+            <!-- Spring 3 dependencies -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
 
-        <!-- Database dependencies -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.38</version>
-        </dependency>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <version>3.5.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>2.4.5</version>
-        </dependency>
+            <!-- Database dependencies -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.38</version>
+            </dependency>
+            <dependency>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-core</artifactId>
+                <version>3.5.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>2.4.5</version>
+            </dependency>
 
-        <!-- LOGGING -->
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.13</version>
-        </dependency>
-        <!-- slf4j is needed for dbunit -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.21</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.21</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>com.ximpleware</groupId>
-            <artifactId>vtd-xml</artifactId>
-            <version>2.12</version>
-        </dependency>
-        <!-- TEST dependencies -->
+            <!-- LOGGING -->
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.2</version>
+            </dependency>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.13</version>
+            </dependency>
+            <!-- slf4j is needed for dbunit -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.21</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>1.7.21</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>com.ximpleware</groupId>
+                <artifactId>vtd-xml</artifactId>
+                <version>2.12</version>
+            </dependency>
+            <!-- TEST dependencies -->
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dbunit</groupId>
-            <artifactId>dbunit</artifactId>
-            <version>2.4.9</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-mxj-db-files</artifactId>
-            <version>5.0.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-mxj</artifactId>
-            <version>5.0.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>2.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>struts</groupId>
-            <artifactId>strutstest</artifactId>
-            <version>2.1.4</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>eionet</groupId>
-            <artifactId>property-placeholder-resolver</artifactId>
-            <version>1.0</version>
-            <type>jar</type>
-        </dependency>
-    </dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.11</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.dbunit</groupId>
+                <artifactId>dbunit</artifactId>
+                <version>2.4.9</version>
+                <scope>test</scope>
+            </dependency>
+            <!--<dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-mxj-db-files</artifactId>
+                <version>5.0.12</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-mxj</artifactId>
+                <version>5.0.12</version>
+                <scope>test</scope>
+            </dependency>-->
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>2.3</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>struts</groupId>
+                <artifactId>strutstest</artifactId>
+                <version>2.1.4</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>eionet</groupId>
+                <artifactId>property-placeholder-resolver</artifactId>
+                <version>1.0</version>
+                <type>jar</type>
+            </dependency>
+        </dependencies>
 
 
     <reporting>
