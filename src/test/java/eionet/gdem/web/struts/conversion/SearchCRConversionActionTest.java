@@ -10,20 +10,24 @@ import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.CrServiceSparqlClient;
 import eionet.gdem.dto.CrFileDto;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS SearchCRConversionActionTest
  */
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
 public class SearchCRConversionActionTest extends MockStrutsTestCase {
 
-    public SearchCRConversionActionTest(String testName) {
-        super(testName);
-    }
-
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         setContextDirectory(TestUtils.getContextDirectory());
@@ -36,6 +40,7 @@ public class SearchCRConversionActionTest extends MockStrutsTestCase {
     /**
      * test if the form is successfully forwarding and stores the schemas list in session
      */
+    @Test
     public void testSuccessfulForward() {
 
         String schemaUrl = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd";
@@ -57,6 +62,7 @@ public class SearchCRConversionActionTest extends MockStrutsTestCase {
     /**
      * test if the form is successfully forwarding and stores the schemas list in session
      */
+    @Test
     public void testFailedForward() {
 
         String schemaUrl = "No such schema";

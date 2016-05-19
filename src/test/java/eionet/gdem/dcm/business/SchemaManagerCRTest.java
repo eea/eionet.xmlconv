@@ -24,22 +24,29 @@ package eionet.gdem.dcm.business;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
 import eionet.gdem.dto.CrFileDto;
+import eionet.gdem.test.ApplicationTestContext;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * This is a class for unit testing the <code>eionet.gdem.dcm.business.SchemaManager</code> class.
  * 
  * @author Enriko Käsper, Tieto Estonia SchemaManagerCRTest
  */
-
-public class SchemaManagerCRTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class SchemaManagerCRTest {
 
     /**
      * Test getCrFiles method. The result should be list of CrFileDto objects.
      * 
      * @throws Exception
      */
+    @Test
     public void testGetCrFiles() throws Exception {
         MockSchemaManager mockSchemaManager = new MockSchemaManager();
         List<CrFileDto> crFiles = mockSchemaManager.getCRFiles("http://test.com/schema.xsd");

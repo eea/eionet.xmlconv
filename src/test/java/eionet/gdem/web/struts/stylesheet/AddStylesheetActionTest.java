@@ -1,5 +1,6 @@
 package eionet.gdem.web.struts.stylesheet;
 
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.test.mocks.MockStrutsMultipartRequestSimulator;
@@ -7,16 +8,20 @@ import servletunit.struts.MockStrutsTestCase;
 
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author George Sofianos
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
 public class AddStylesheetActionTest extends MockStrutsTestCase {
 
-  public AddStylesheetActionTest(String testName) {
-    super(testName);
-  }
-
+  @Before
   public void setUp() throws Exception {
     super.setUp();
     // set struts-confg file location
@@ -26,7 +31,7 @@ public class AddStylesheetActionTest extends MockStrutsTestCase {
     setInitParameter("validating", "false");
     TestUtils.setUpProperties(this);
   }
-
+  @Test
   public void testAddStylesheetWithoutDescription() throws Exception {
     request = new MockStrutsMultipartRequestSimulator(config.getServletContext());
     setRequestPathInfo("/stylesheetAdd");

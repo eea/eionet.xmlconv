@@ -3,22 +3,25 @@
  */
 package eionet.gdem.web.struts.schema;
 
+import eionet.gdem.test.ApplicationTestContext;
 import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS UplSchemaFormActionTest
  */
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
 public class UplSchemaFormActionTest extends MockStrutsTestCase {
 
-    public UplSchemaFormActionTest(String testName) {
-        super(testName);
-    }
-
-    @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         setContextDirectory(TestUtils.getContextDirectory());
@@ -27,7 +30,7 @@ public class UplSchemaFormActionTest extends MockStrutsTestCase {
         // setup database
         DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
     }
-
+    @Test
     public void testSuccessfulForward() {
 
         setRequestPathInfo("/uplSchemas");

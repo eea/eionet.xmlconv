@@ -24,15 +24,20 @@ package eionet.gdem.qa.engines;
 import java.util.Map;
 import java.util.TreeMap;
 
-import junit.framework.TestCase;
 import eionet.gdem.Properties;
+import eionet.gdem.test.ApplicationTestContext;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Enriko Käsper, Tieto Estonia XGawkQueryEngineTest
  */
-
-public class XGawkQueryEngineTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class XGawkQueryEngineTest {
 
     @Test
     public void testGetShellCommand() throws Exception {

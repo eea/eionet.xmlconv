@@ -3,10 +3,10 @@
  */
 package eionet.gdem.conversion;
 
+import eionet.gdem.test.ApplicationTestContext;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,23 +14,30 @@ import org.apache.commons.logging.LogFactory;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests ConversionService methods
  *
  * @author Enriko Käsper, TietoEnator Estonia AS ConversionServiceTest
  */
-
-public class ConversionServiceTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class ConversionServiceTest {
 
     private static final Log LOGGER = LogFactory.getLog(ConversionServiceTest.class);
 
     /**
      * Set up test case properties
      */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         DbHelper.setUpConnectionProperties();
         TestUtils.setUpProperties(this);
         TestUtils.setUpReleasedDataset();
@@ -43,6 +50,7 @@ public class ConversionServiceTest extends TestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testConvertDD_XML() throws Exception {
 
         ConversionServiceIF convService = new ConversionService();
@@ -62,6 +70,7 @@ public class ConversionServiceTest extends TestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testConvertDD_XML_split() throws Exception {
         // System.out.println(filename);
 
@@ -84,6 +93,7 @@ public class ConversionServiceTest extends TestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testConvertDD_LongSheetName_XML_split() throws Exception {
         // System.out.println(filename);
 
@@ -105,6 +115,7 @@ public class ConversionServiceTest extends TestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testConvertDD_XML_split_nosheet() throws Exception {
         // System.out.println(filename);
 

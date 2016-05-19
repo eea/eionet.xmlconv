@@ -23,13 +23,20 @@ package eionet.gdem.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
 import eionet.gdem.Properties;
 import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.qa.QAFeedbackType;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *
@@ -37,8 +44,10 @@ import eionet.gdem.utils.xml.XmlContext;
  *
  * @author Enriko Käsper
  */
-public class ValidationServiceFeedbackTest extends TestCase {
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class ValidationServiceFeedbackTest {
+    @Test
     public void testBlockerFeedback() {
 
         ValidationServiceFeedback feedback = new ValidationServiceFeedback();
@@ -50,7 +59,7 @@ public class ValidationServiceFeedbackTest extends TestCase {
         assertTrue(feedbackText2.contains("<span id=\"feedbackStatus\" class=\"ERROR\""));
 
     }
-
+    @Test
     public void testFeedbackIsXml() throws Exception {
 
         List<ValidateDto> validationErrors = new ArrayList<ValidateDto>();

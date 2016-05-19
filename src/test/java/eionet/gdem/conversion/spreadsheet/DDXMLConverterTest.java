@@ -9,13 +9,13 @@ import eionet.gdem.conversion.datadict.DD_XMLInstance;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.dto.ConvertedFileDto;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
-import junit.framework.TestCase;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -25,16 +25,26 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS DDXMLConverterTest
  */
-
-public class DDXMLConverterTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class DDXMLConverterTest {
 
     /**
      * Test DD schema verification method
      */
+    @Test
     public void testGetInvalidSchemaMessage() throws Exception {
         MockDDXMLConverter ddConverter = new MockDDXMLConverter(new Excel2XML(), null);
 
@@ -89,7 +99,8 @@ public class DDXMLConverterTest extends TestCase {
         assertNull(message);
 
     }
-
+    
+    @Test
     public void testConvertDDExcelToXml_MultipleValues() throws Exception {
 
         MockDDXMLConverter converter = new MockDDXMLConverter(new Excel2XML(), new File(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_XLS)
@@ -106,6 +117,7 @@ public class DDXMLConverterTest extends TestCase {
 
     }
 
+    @Test
     public void testConvertDDExcel2007ToXml_MultipleValues() throws Exception {
 
         MockDDXMLConverter converter = new MockDDXMLConverter(new Excel20072XML(), new File(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_XLSX)
@@ -121,7 +133,7 @@ public class DDXMLConverterTest extends TestCase {
         assertTestConvertDD_MultipleValuesresults(conversionResult);
 
     }
-
+    @Test
     public void testConvertDDOdsToXml_MultipleValues() throws Exception {
         File inFile = new File(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_ODS)
                 .getFile());
@@ -136,7 +148,7 @@ public class DDXMLConverterTest extends TestCase {
             converter.convertDD_XML_split(null, null);
         assertTestConvertDD_MultipleValuesresults(conversionResult);
     }
-
+    
     private void assertTestConvertDD_MultipleValuesresults(ConversionResultDto conversionResult) throws Exception {
 
         assertEquals(ConversionResultDto.STATUS_OK, conversionResult.getStatusCode());
@@ -158,7 +170,7 @@ public class DDXMLConverterTest extends TestCase {
         assertEquals("2", multipleValues.get(5));
         assertEquals("3", multipleValues.get(6));
     }
-
+    @Test
     public void testConvertDDExcelToXml_Warning() throws Exception {
 
         MockDDXMLConverter converter = new MockDDXMLConverter(new Excel2XML(), new File(this.getClass().getClassLoader().getResource(TestConstants.SEED_VALIDATION_WARNINGS_XLS)

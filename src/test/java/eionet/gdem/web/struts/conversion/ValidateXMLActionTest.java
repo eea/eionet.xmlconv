@@ -8,20 +8,24 @@ import java.util.List;
 import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS ValidateXMLActionTest
  */
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
 public class ValidateXMLActionTest extends MockStrutsTestCase {
 
-    public ValidateXMLActionTest(String testName) {
-        super(testName);
-    }
-
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         setContextDirectory(TestUtils.getContextDirectory());
@@ -36,6 +40,7 @@ public class ValidateXMLActionTest extends MockStrutsTestCase {
     /**
      * test if the form is successfully forwarded and retreives no validation errors
      */
+    @Test
     public void testSuccessfulForwardValidXML() {
 
         String url = TestUtils.getSeedURL(TestConstants.SEED_GW_VALID_XML, this);
@@ -58,6 +63,7 @@ public class ValidateXMLActionTest extends MockStrutsTestCase {
     /**
      * test if the form is successfully forwarded and retreives validation errors
      */
+    @Test
     public void testSuccessfulForwardInvalidXML() {
 
         String url = TestUtils.getSeedURL(TestConstants.SEED_GW_INVALID_XML, this);
@@ -79,6 +85,7 @@ public class ValidateXMLActionTest extends MockStrutsTestCase {
     /**
      * test if the form is successfully formwarding The form should get an error message
      */
+    @Test
     public void testFailedForward() {
 
         String url = "It is not an URL";
@@ -97,6 +104,7 @@ public class ValidateXMLActionTest extends MockStrutsTestCase {
     /**
      * test if the form is successfully formwarding The form should get an error message
      */
+    @Test
     public void testFailedForwardWithoutURL() {
 
         setRequestPathInfo("/validateXML");
