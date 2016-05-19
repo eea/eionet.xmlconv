@@ -1,58 +1,86 @@
-server:
-    image: dockerrepo.eionet.europa.eu:5000/xmlconv
-    environment:
-        CATALINA_OPTS: |-
-            "-Djava.security.egd=file:/dev/./urandom"
-            "-Dapp.home=/xmlconv"
-            "-Dapp.host=localhost:58080"
-            "-Dconfig.log.file=/xmlconv/xmlconv.log"
-            "-Dinitial.admin=niknakas,zykaerv,roug"
-            "-Dconfig.gdem.url=http://localhost:58080"
-            "-Dconfig.dd.url=http://dd.eionet.europa.eu"
-            "-Dconfig.dd.rpc.url=http://dd.eionet.europa.eu/rpcrouter"
-            "-Dconfig.cr.sparql.endpoint=http://cr.eionet.europa.eu/sparql"
-            "-Dconfig.cdr.url=http://cdr.eionet.europa.eu/example"
-            "-Dconfig.db.driver=com.mysql.jdbc.Driver"
-            "-Dconfig.db.user=test"
-            "-Dconfig.db.password=test"
-            "-Dconfig.db.jdbcurl=jdbc:mysql://database:3306/xmlconv?autoReconnect=true&characterEncoding=UTF-8&emptyStringsConvertToZero=false&jdbcCompliantTruncation=false"
-        JAVA_OPTS: -Xmx3072m
-    ports:
-        - "58080:8080"
-    volumes_from:
-        - data_server
-    links:
-        - database:database
-    labels:
-          io.rancher.sidekicks: data_server
-
-database:
-    image: mysql
-    environment:
-        - MYSQL_ROOT_PASSWORD=toor
-        - MYSQL_DATABASE=xmlconv
-        - MYSQL_USER=test
-        - MYSQL_PASSWORD=test
-    volumes_from:
-        - data_db
-    labels:
-          io.rancher.sidekicks: data_db
+##
+# @authors George Sofianos, Aris Katsanas
+# This docker compose file is for having an XMLCONV demo stack on rancher. 
+# Please change the passwords before running it through rancher-compose.
+##
 
 
-data_server:
-    image: tianon/true
-    volumes:
-        - /xmlconv
-    labels:
-        io.rancher.container.start_once: "true"
-        #io.rancher.scheduler.affinity:host_label: hostname=swarm11-eeasites
+## DATABASE CONTAINERS
+mysql:
+  image: mysql:5.5
+  ports:
+    - "53306:3306"
+  environment: 
+    MYSQL_ROOT_PASSWORD: xxxxx
+  volumes_from:
+    - data-mysql
+  labels:
+    io.rancher.sidekicks: data-mysql
 
-data_db:
-    image: tianon/true
-    volumes:
-        - /var/lib/mysql
-    labels:
-        io.rancher.container.start_once: "true"
-        #io.rancher.scheduler.affinity:host_label: hostname=swarm11-eeasites
+## XQUERY CONTAINERS
+basex:
+  image: basex/basexhttp:8.4.4
+  ports:
+    - "51984:1984"
+  io.rancher.scheduler.affinity:host_label: publicip=178.239.183.128
+  volumes:
+    - /var/local/basex/BasexData:/srv/BasexData
 
-        
+## DATA CONTAINERS
+data-mysql:
+  image: tianon/true
+  labels:
+    io.rancher.container.start_once: true
+  volumes:
+    - /var/lib/mysql:/var/lib/mysql
+
+data-xmlconv:
+  image: tianon/true
+  labels:
+    io.rancher.container.start_once: true
+  volumes:
+    - /opt/xmlconv:/opt/xmlconv
+
+## TOMCAT SERVER
+xmlconv-tomcat:  
+  image: dev4ka/xmlconv:1.1
+  ports:
+    - "51080:8080"
+  env_file: .env
+  depends_on:
+    - mysql
+    - data-xmlconv
+    - scpserver
+    - basex
+    - libreoffice
+  links:
+    - mysql
+    - basex
+    - libreoffice
+  volumes_from:
+    - data-xmlconv
+    - libreoffice
+  labels:
+    io.rancher.sidekicks: data-xmlconv, scpserver, libreoffice
+    io.rancher.scheduler.affinity:host_label: publicip=178.239.183.132
+
+## Libreoffice Centos
+libreoffice:
+  image: xcgd/libreoffice
+  volumes_from:
+    - data-xmlconv
+
+scpserver:
+  image: eeacms/scp-server
+  ports:
+  - 52222:22
+  environment:
+    AUTHORIZED_KEYS:
+     ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCt9rYOQEufwJ4QehXhhBLSnpKxHmj6EJq9F+Vm6WLVNEcihfQJHQgKVBCnwrt/A5cXXQ8ikhlyXpBnGSycRNibb5QapCuS0E1laymuiMbTDIv9EsvkMZ9HPvMJFTvrPH9rlkL721/UaUZ+iGeYFJvLERCoHQd5PwutNSLYazClVTmrvfcAF+RZxIu9t8OTK7xcQeMK5EnA/0Ol5ZbIbK9efH9iR3rtR3HMSm4NMkheqBw7zVUjaynRRueBOF7qjP6PLcSQtW5vIG3GBGhMCoJ7wfnAHonifofgL/jXw47apPdays1Bt1sE0QtO3iVB9bceOmMkv0pRcCPuf1xkgyXrf89tIsEExDpDYYO/P2LTGrz0FjwnnJan+/2Lo9LgSlfoYyuR0bXlQbKsBvhrK4HC1aG93mmRHJNdPZD3sKV82GbdrWtNT1SgySjvRsc7Kag5GGAGr/NpfZfJoY2UG/GjrCj+z5zlCrM4J2crAIfdmYDm9rT7PQTzHC751hOnR0MqOvw5XbgBOJTCLdRwb/F9usFmvcY9/leEdqWYp0Q4UE40IcNlboFW0s3DrUII3ANvQuaEEse8stlnI5QfmEQ2E7z0Zag9djNtDSobsH+YCpxI9g3jppzA1RYYCtryP4fnnJVFgwOt6WP92IHojKbu3AE13CO123wKLNKHlLemTQ== gso@eworx.gr
+    #  Add your key here
+    #  ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAteQ38qb7....uC839w== authorized key
+    DATADIR: /opt/
+    USERID: 0
+    GROUPID: 0
+  volumes_from:
+  - data-xmlconv
