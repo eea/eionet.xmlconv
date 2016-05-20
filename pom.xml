@@ -507,21 +507,13 @@
 
             <!-- Libraries for parsing RDF and executing SPARQL queries in SPARQL endpoints (Content Registry). -->
             <dependency>
-                <groupId>virtuoso</groupId>
-                <artifactId>virtjdbc</artifactId>
-                <version>4.0</version>
-            </dependency>
-            <dependency>
-                <groupId>virtuoso</groupId>
-                <artifactId>virt-sesame</artifactId>
-                <version>2.7.3</version>
-            </dependency>
-            <dependency>
                 <groupId>org.openrdf.sesame</groupId>
                 <artifactId>sesame-repository-sparql</artifactId>
                 <version>4.1.2</version>
             </dependency>
-            <!-- OpenOffice libraries used by Excel and ODT conversion functionality.  -->
+            <!-- OpenOffice libraries used by Excel and ODT conversion functionality.
+                TODO: REMOVE THIS AND ITS IMPLEMENTATION
+            -->
             <dependency>
                 <groupId>com.artofsolving</groupId>
                 <artifactId>jodconverter</artifactId>
