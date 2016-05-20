@@ -27,14 +27,16 @@ import net.sf.json.JSON;
 import net.sf.json.JSONSerializer;
 import net.sf.json.xml.XMLSerializer;
 
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
+import org.apache.http.impl.client.HttpClients;
 import org.w3c.dom.Document;
 
 import eionet.gdem.utils.xml.XmlContext;
@@ -73,37 +75,41 @@ public class Json {
      * Method converts the URL response body into XML format and returns it as String. If the response is not in JSON format, then JsonError object is converted to XML.
      * @param requestUrl Request URL to JSON format content.
      * @return String of XML
+     * @throws IOException If an IO error occurs.
      */
     public static String jsonRequest2xmlString(String requestUrl) {
         JsonError error = null;
         String responseString = null;
         String xml = null;
-        GetMethod method = null;
+        HttpGet method = null;
 
         // Create an instance of HttpClient.
-        HttpClient client = new HttpClient();
-
+        CloseableHttpClient client = HttpClients.custom().setRetryHandler(new DefaultHttpRequestRetryHandler(3, false)).build();
+        CloseableHttpResponse response = null;
         try {
             // Create a method instance.
-            method = new GetMethod(requestUrl);
+            method = new HttpGet(requestUrl);
 
             // Provide custom retry handler is necessary
-            method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+            //method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
             // Execute the method.
-            int statusCode = client.executeMethod(method);
+            response = client.execute(method);
+
+            int statusCode = response.getStatusLine().getStatusCode();
 
             if (statusCode != HttpStatus.SC_OK) {
-                LOGGER.error("Method failed: " + method.getStatusLine());
-                error = new JsonError(statusCode, method.getStatusText());
+                LOGGER.error("Method failed: " + response.getStatusLine());
+                error = new JsonError(statusCode, response.getStatusLine().getReasonPhrase());
             } else {
                 // Read the response body.
-                byte[] responseBody = method.getResponseBody();
+                HttpEntity entity = response.getEntity();
+                byte[] responseBody = IOUtils.toByteArray(entity.getContent());
                 responseString = new String(responseBody, "UTF-8");
             }
-        } catch (HttpException e) {
+        /*} catch (HttpException e) {
             LOGGER.error("Fatal protocol violation: " + e.getMessage());
             e.printStackTrace();
-            error = new JsonError(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Fatal protocol violation.");
+            error = new JsonError(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Fatal protocol violation.");*/
         } catch (IOException e) {
             LOGGER.error("Fatal transport error: " + e.getMessage());
             error = new JsonError(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Fatal transport error.");

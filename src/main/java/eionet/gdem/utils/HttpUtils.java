@@ -22,17 +22,19 @@
 package eionet.gdem.utils;
 
 import java.io.IOException;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.HeadMethod;
+import java.io.InputStream;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 /**
  * HTTP Utilities.
@@ -55,43 +57,47 @@ public final class HttpUtils {
      * Downloads remote file
      * @param url URL
      * @return Downloaded file
-     * @throws Exception If an error occurs.
+     * @throws DCMException If an error occurs.
+     * @throws IOException If an error occurs.
      */
-    public static byte[] downloadRemoteFile(String url) throws Exception {
-
+    public static byte[] downloadRemoteFile(String url) throws DCMException, IOException {
         byte[] responseBody = null;
-        HttpClient client = new HttpClient();
+        CloseableHttpClient client = HttpClients.createDefault();
 
         // Create a method instance.
-        GetMethod method = new GetMethod(url);
-
+        HttpGet method = new HttpGet(url);
+        // Execute the method.
+        CloseableHttpResponse response = null;
         try {
-            // Execute the method.
-            int statusCode = client.executeMethod(method);
+            response = client.execute(method);
+            HttpEntity entity = response.getEntity();
+            int statusCode = response.getStatusLine().getStatusCode();
 
             if (statusCode != HttpStatus.SC_OK) {
-                LOGGER.error("Method failed: " + method.getStatusLine());
-                throw new DCMException(BusinessConstants.EXCEPTION_SCHEMAOPEN_ERROR, method.getStatusLine().toString());
+                LOGGER.error("Method failed: " + response.getStatusLine().getReasonPhrase());
+                throw new DCMException(BusinessConstants.EXCEPTION_SCHEMAOPEN_ERROR, response.getStatusLine().getReasonPhrase());
             }
 
             // Read the response body.
-            responseBody = method.getResponseBody();
+            InputStream instream = entity.getContent();
+            responseBody = IOUtils.toByteArray(instream);
 
             // Deal with the response.
             // Use caution: ensure correct character encoding and is not binary data
             // System.out.println(new String(responseBody));
-
-        } catch (HttpException e) {
+            /*catch (HttpException e) {
             LOGGER.error("Fatal protocol violation: " + e.getMessage());
             e.printStackTrace();
-            throw e;
+            throw e;*/
         } catch (IOException e) {
             LOGGER.error("Fatal transport error: " + e.getMessage());
             e.printStackTrace();
             throw e;
         } finally {
             // Release the connection.
+            response.close();
             method.releaseConnection();
+            client.close();
         }
         return responseBody;
     }
@@ -102,23 +108,24 @@ public final class HttpUtils {
      *
      * @param url URL
      * @return True if resource behind the url exists.
+     * @throws IOException If an IO error occurs.
      */
     public static boolean urlExists(String url) {
 
-        HttpClient client = new HttpClient();
+        CloseableHttpClient client = HttpClients.createDefault();
 
         // Create a method instance.
-        HeadMethod method = new HeadMethod(url);
-
+        HttpHead method = new HttpHead(url);
+        CloseableHttpResponse response = null;
         try {
             // Execute the method.
-            int statusCode = client.executeMethod(method);
-
+            response = client.execute(method);
+            int statusCode = response.getStatusLine().getStatusCode();
             return statusCode == HttpStatus.SC_OK;
-        } catch (HttpException e) {
+        /*} catch (HttpException e) {
             LOGGER.error("Fatal protocol violation: " + e.getMessage());
             e.printStackTrace();
-            return false;
+            return false;*/
         } catch (IOException e) {
             LOGGER.error("Fatal transport error: " + e.getMessage());
             e.printStackTrace();
@@ -126,6 +133,11 @@ public final class HttpUtils {
         } finally {
             // Release the connection.
             method.releaseConnection();
+            try {
+                response.close();
+            } catch (IOException e) {
+                // do nothing
+            }
         }
     }
 }

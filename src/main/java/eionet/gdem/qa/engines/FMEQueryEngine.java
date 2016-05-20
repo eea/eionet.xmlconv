@@ -3,8 +3,6 @@ package eionet.gdem.qa.engines;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,6 +10,12 @@ import org.apache.commons.logging.LogFactory;
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.qa.XQScript;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 /**
  * Execute an FME query. Runs synchronously.
@@ -22,7 +26,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
     private static final Log LOGGER = LogFactory.getLog(FMEQueryEngine.class);
 
-    private HttpClient client_ = null;
+    private CloseableHttpClient client_ = null;
 
     /**
      * Security token for authentication.
@@ -36,7 +40,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
      * @throws Exception If an error occurs.
      */
     public FMEQueryEngine() throws Exception {
-        client_ = new HttpClient();
+        client_ = HttpClients.createDefault();
 
         try {
             getConnectionInfo();
@@ -49,25 +53,25 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
     protected void runQuery(XQScript script, OutputStream result)
             throws GDEMException {
 
-        PostMethod runMethod = null;
+        HttpPost runMethod = null;
+        CloseableHttpResponse response = null;
         try {
-            // for the request to run the service
-            runMethod = new PostMethod(script.getScriptSource());
-
-            runMethod.addParameter("token", token_);
-
-            runMethod.addParameter("opt_showresult", "true");
-            runMethod.addParameter("opt_servicemode", "sync");
-
-            runMethod.addParameter("source_xml", script.getOrigFileUrl()); // XML file
-            runMethod.addParameter("format", script.getOutputType()); // Output format
-
-            if (client_.executeMethod(runMethod) != 200) {
+            java.net.URI uri = new URIBuilder(script.getScriptSource())
+                .addParameter("token", token_)
+                .addParameter("opt_showresult", "true")
+                .addParameter("opt_servicemode", "sync")
+                .addParameter("source_xml", script.getOrigFileUrl()) // XML file
+                .addParameter("format", script.getOutputType())
+                .build(); // Output format
+            runMethod = new HttpPost(uri);
+             response = client_.execute(runMethod);
+            if (response.getStatusLine().getStatusCode() != 200) {
                 LOGGER.error("FME workspace failed: " + script.getScriptSource());
                 throw new Exception("FME workspace failed");
             } else {
+                HttpEntity entity = response.getEntity();
                 // We get an InputStream and copy it to the 'result' OutputStream
-                IOUtils.copy(runMethod.getResponseBodyAsStream(), result);
+                IOUtils.copy(entity.getContent(), result);
             }
 
         } catch (Exception e) {
@@ -92,14 +96,16 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         fmeUrl = "http://" + Properties.fmeHost + ":" + Properties.fmePort
                 + "/fmetoken/generate";
 
-        PostMethod method = new PostMethod(fmeUrl);
-        method.addParameter("user", Properties.fmeUser);
-        method.addParameter("password", Properties.fmePassword);
-        method.addParameter("expiration", Properties.fmeTokenExpiration);
-        method.addParameter("timeunit", Properties.fmeTokenTimeunit);
-
-        if (client_.executeMethod(method) == 200) {
-            token_ = method.getResponseBodyAsString();
+        java.net.URI uri = new URIBuilder(fmeUrl)
+            .addParameter("user", Properties.fmeUser)
+            .addParameter("password", Properties.fmePassword)
+            .addParameter("expiration", Properties.fmeTokenExpiration)
+            .addParameter("timeunit", Properties.fmeTokenTimeunit).build();
+        HttpPost method = new HttpPost(uri);
+        CloseableHttpResponse response = client_.execute(method);
+        if (response.getStatusLine().getStatusCode() == 200) {
+            HttpEntity entity = response.getEntity();
+            token_ = entity.getContent().toString();
         } else {
             LOGGER.error("FME authentication failed. Could not retrieve a Token");
             throw new GDEMException("FME authentication failed");

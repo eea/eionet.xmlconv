@@ -1141,6 +1141,7 @@ public final class Utils {
      *
      * @param strUri
      * @return
+     * @throws IOException If an IO error occurs.
      */
     public static boolean resourceExists(String strUri) {
         strUri = StringUtils.replace(strUri, "\\", "/");
