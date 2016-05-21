@@ -11,8 +11,8 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -31,6 +31,8 @@ import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS ListConversionsAction
@@ -39,7 +41,7 @@ import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
 public class ListConversionsAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ListConversionsAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ListConversionsAction.class);
 
     private IRootElemDao rootElemDao = GDEMServices.getDaoService().getRootElemDao();
 

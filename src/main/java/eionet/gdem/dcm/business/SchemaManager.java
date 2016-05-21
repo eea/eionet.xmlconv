@@ -39,8 +39,8 @@ import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.commons.collections.comparators.NullComparator;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.Properties;
@@ -70,6 +70,8 @@ import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.schema.SchemaElemHolder;
 import eionet.gdem.web.struts.schema.UplSchemaHolder;
 import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Business logic for managing XML schemas in XMLCONV.
@@ -79,7 +81,7 @@ import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
 public class SchemaManager {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SchemaManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaManager.class);
     /** */
     private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
     /** */

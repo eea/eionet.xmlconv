@@ -27,8 +27,8 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -51,6 +51,8 @@ import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * EditQAScriptInSandboxAction Execute the QA script and display the results. If the result of QA script is not html, then wire the
@@ -62,7 +64,7 @@ import eionet.gdem.validation.ValidationService;
 public class RunScriptAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(RunScriptAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RunScriptAction.class);
 
     private static final String HTML_CONTENT_TYPE = "text/html";
     private static final String HTML_CHARACTER_ENCODING = "utf-8";

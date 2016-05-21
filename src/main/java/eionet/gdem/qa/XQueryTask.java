@@ -28,10 +28,11 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
 
+import eionet.gdem.logging.Markers;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
@@ -44,6 +45,8 @@ import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * XQuery job in the workqueue. A task executing the XQuery task and storing the results of processing.
@@ -51,7 +54,7 @@ import eionet.gdem.validation.ValidationService;
 public class XQueryTask extends Thread {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(XQueryTask.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XQueryTask.class);
     /** Script file name. */
     private String scriptFile;
     /** Result file name. */
@@ -273,7 +276,7 @@ public class XQueryTask extends Thread {
 
         } catch (Exception e) {
             // what to do if exception occurs here...
-            LOGGER.fatal("** Error occured when handling XQ error: " + e.toString());
+            LOGGER.error(Markers.fatal, "** Error occured when handling XQ error: " + e.toString());
 
             // probably not needed -> 3 rows
             System.err.println("=============================================================================");

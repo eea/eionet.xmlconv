@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
@@ -16,6 +16,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Execute an FME query. Runs synchronously.
@@ -24,7 +26,7 @@ import org.apache.http.impl.client.HttpClients;
  */
 public class FMEQueryEngine extends QAScriptEngineStrategy {
 
-    private static final Log LOGGER = LogFactory.getLog(FMEQueryEngine.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FMEQueryEngine.class);
 
     private CloseableHttpClient client_ = null;
 

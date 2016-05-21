@@ -25,8 +25,8 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
@@ -35,6 +35,8 @@ import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.system.SysCommandExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Enriko Käsper, Tieto Estonia SystemQueryEngineImpl
@@ -42,7 +44,7 @@ import eionet.gdem.utils.system.SysCommandExecutor;
 
 public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ExternalQueryEngine.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExternalQueryEngine.class);
 
     /**
      * Gets shell command
@@ -119,7 +121,7 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
                 result.close();
                 result.flush();
             } catch (Exception e) {
-                LOGGER.warn(e);
+                LOGGER.warn(e.getMessage());
             }
             if (src != null) {
                 try {

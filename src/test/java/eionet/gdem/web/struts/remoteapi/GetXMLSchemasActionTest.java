@@ -29,6 +29,8 @@ import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 
+import javax.sql.DataSource;
+
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS GetXMLSchemasActionTest
  */
@@ -38,7 +40,7 @@ import eionet.gdem.utils.xml.XmlContext;
 public class GetXMLSchemasActionTest {
 
     @Autowired
-    private IDatabaseTester databaseTester;
+    private DataSource db;
 
     /**
      * Set up test case properties and databaseTester.
@@ -46,7 +48,7 @@ public class GetXMLSchemasActionTest {
     @Before
     public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_CONVERSIONS_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_CONVERSIONS_XML);
     }
 
     /**

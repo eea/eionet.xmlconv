@@ -28,8 +28,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
@@ -43,6 +43,8 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Work Queue Manager.
@@ -53,7 +55,7 @@ import eionet.gdem.utils.Utils;
 public class WorkqueueManager {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(WorkqueueManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkqueueManager.class);
     /** Dao for getting job data. */
     private static IXQJobDao jobDao = GDEMServices.getDaoService().getXQJobDao();
 

@@ -26,10 +26,12 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.*;
 import org.apache.struts.upload.FormFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,7 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 public class AddStylesheetAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(AddStylesheetAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AddStylesheetAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

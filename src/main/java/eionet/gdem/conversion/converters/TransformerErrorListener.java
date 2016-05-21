@@ -24,8 +24,9 @@ package eionet.gdem.conversion.converters;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 /**
@@ -37,7 +38,7 @@ import org.xml.sax.SAXException;
 public class TransformerErrorListener implements javax.xml.transform.ErrorListener {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(TransformerErrorListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransformerErrorListener.class);
 
     @Override
     public void warning(TransformerException te) throws TransformerException {

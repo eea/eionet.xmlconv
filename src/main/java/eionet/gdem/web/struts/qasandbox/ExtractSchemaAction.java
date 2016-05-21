@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.qasandbox;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -40,6 +40,8 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * SearchCRSandboxAction Extract the XML schema from the inserted source URL of XML file and find available QA scripts.
@@ -50,7 +52,7 @@ import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 public class ExtractSchemaAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ExtractSchemaAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExtractSchemaAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

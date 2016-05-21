@@ -6,7 +6,7 @@
     <artifactId>xmlconv</artifactId>
     <packaging>war</packaging>
     <prerequisites>
-        <maven>3.0</maven>
+        <maven>3.0.3</maven>
     </prerequisites>
 
     <properties>
@@ -202,7 +202,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
-                    <excludes>**/*.java</excludes>
+                    <excludes>
+                        <exclude>**/*.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
 
@@ -244,14 +246,14 @@
                         <filter>${basedir}/${env}.properties</filter>
                     </filters>
                     <webResources>
-                        <resource>
+                        <!--<resource>
                             <directory>${basedir}/src/main/webapp/META-INF</directory>
                             <filtering>false</filtering>
                             <targetPath>META-INF</targetPath>
                             <includes>
                                 <include>context.xml</include>
                             </includes>
-                        </resource>
+                        </resource>-->
                         <resource>
                             <directory>${basedir}/src/main/webapp/WEB-INF</directory>
                             <filtering>false</filtering>
@@ -455,17 +457,17 @@
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
-                <version>3.7</version>
+                <version>3.14</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
-                <version>3.7</version>
+                <version>3.14</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml-schemas</artifactId>
-                <version>3.7</version>
+                <version>3.14</version>
             </dependency>
 
             <!-- XSL-FO (pdf) conversion -->
@@ -628,7 +630,7 @@
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
-                <version>5.1.38</version>
+                <version>5.1.39</version>
             </dependency>
             <dependency>
                 <groupId>org.liquibase</groupId>
@@ -638,10 +640,10 @@
             <dependency>
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP</artifactId>
-                <version>2.4.5</version>
+                <version>2.4.6</version>
             </dependency>
 
-            <!-- LOGGING -->
+            <!-- LOGGING
             <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
@@ -651,20 +653,31 @@
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.13</version>
-            </dependency>
+            </dependency>-->
             <!-- slf4j is needed for dbunit -->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>1.7.21</version>
-                <type>jar</type>
             </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.21</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.1.7</version>
+            </dependency>
+
+
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
                 <version>1.7.21</version>
-                <type>jar</type>
             </dependency>
+
             <dependency>
                 <groupId>com.ximpleware</groupId>
                 <artifactId>vtd-xml</artifactId>
@@ -681,7 +694,7 @@
             <dependency>
                 <groupId>org.dbunit</groupId>
                 <artifactId>dbunit</artifactId>
-                <version>2.4.9</version>
+                <version>2.5.2</version>
                 <scope>test</scope>
             </dependency>
 

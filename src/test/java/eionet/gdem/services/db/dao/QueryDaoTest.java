@@ -40,6 +40,8 @@ import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
+import javax.sql.DataSource;
+
 /**
  * @author Enriko Käsper, Tieto Estonia QueryDaoTest
  */
@@ -48,7 +50,7 @@ import eionet.gdem.test.TestUtils;
 public class QueryDaoTest {
 
     @Autowired
-    private IDatabaseTester databaseTester;
+    private DataSource db;
 
     @Autowired
     private IQueryDao queryDao;
@@ -59,7 +61,7 @@ public class QueryDaoTest {
     @Before
     public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_QA_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_QA_XML);
     }
 
     /**

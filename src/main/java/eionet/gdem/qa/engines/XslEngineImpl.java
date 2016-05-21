@@ -26,8 +26,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
@@ -37,6 +37,8 @@ import eionet.gdem.conversion.converters.XMLConverter;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * XSL engine implementation.
@@ -46,7 +48,7 @@ import eionet.gdem.utils.Utils;
 public class XslEngineImpl extends QAScriptEngineStrategy {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(XslEngineImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XslEngineImpl.class);
 
     @Override
     protected void runQuery(XQScript script, OutputStream result) throws GDEMException {

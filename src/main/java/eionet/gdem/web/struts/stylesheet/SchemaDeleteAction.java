@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.stylesheet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -36,12 +36,14 @@ import org.apache.struts.action.ActionMessages;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.web.struts.schema.SchemaElemForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Deprecated
 public class SchemaDeleteAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SchemaDeleteAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaDeleteAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

@@ -26,8 +26,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -40,11 +40,13 @@ import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConvTypeAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ConvTypeAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConvTypeAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

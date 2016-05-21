@@ -24,8 +24,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Properties;
 import eionet.gdem.dto.ConvType;
@@ -33,6 +33,9 @@ import eionet.gdem.qa.XQScript;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
 import javax.servlet.ServletContext;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -45,7 +48,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 @Component
 public class AppServletContextListener implements ApplicationListener {
 
-    private static final Log LOGGER = LogFactory.getLog(AppServletContextListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppServletContextListener.class);
 
 
     

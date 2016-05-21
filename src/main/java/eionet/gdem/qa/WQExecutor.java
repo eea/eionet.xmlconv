@@ -24,10 +24,12 @@ package eionet.gdem.qa;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * WorkQueue executor class initiates the ThreadPool for running QA jobs.
@@ -36,7 +38,7 @@ import eionet.gdem.Properties;
  */
 public final class WQExecutor {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(WQCheckerJob.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WQCheckerJob.class);
 
     private ExecutorService executor;
     private static WQExecutor wqExecutor;

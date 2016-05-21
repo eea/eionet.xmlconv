@@ -10,8 +10,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -36,7 +37,7 @@ public class UPLSchemaMySqlDao extends MySqlBaseDao implements IUPLSchemaDao {
     private JdbcTemplate jdbcTemplate;
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(UPLSchemaMySqlDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UPLSchemaMySqlDao.class);
 
     // T_SCHEMA LEFT JOIN T_UPL_SCHEMA
     private static final String qSchemas = "SELECT " + "S." + SCHEMA_ID_FLD + ", " + "S." + XML_SCHEMA_FLD + ", " + "S."

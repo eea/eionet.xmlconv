@@ -26,11 +26,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The object stores all the needed information about the converted file.
@@ -39,7 +41,7 @@ import eionet.gdem.utils.Utils;
  */
 public class ConvertedFileDto {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ConvertedFileDto.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConvertedFileDto.class);
 
     private String fileName;
     private String filePath;

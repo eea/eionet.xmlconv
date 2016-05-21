@@ -28,8 +28,8 @@ import net.sf.json.JSONSerializer;
 import net.sf.json.xml.XMLSerializer;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -37,6 +37,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import eionet.gdem.utils.xml.XmlContext;
@@ -55,7 +57,7 @@ import eionet.gdem.utils.xml.XmlException;
  */
 public class Json {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(Json.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Json.class);
 
     /**
      * Method converts the URL response into XML Document object. If the response is not in JSON format,

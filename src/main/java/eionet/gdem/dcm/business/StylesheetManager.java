@@ -31,8 +31,8 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
@@ -48,6 +48,8 @@ import eionet.gdem.services.db.dao.IStyleSheetDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.stylesheet.ConvTypeHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -57,7 +59,7 @@ import eionet.gdem.web.struts.stylesheet.ConvTypeHolder;
  */
 public class StylesheetManager {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(StylesheetManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StylesheetManager.class);
 
     private IStyleSheetDao styleSheetDao = GDEMServices.getDaoService().getStyleSheetDao();;
     private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();

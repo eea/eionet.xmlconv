@@ -28,8 +28,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import eionet.gdem.GDEMException;
 import eionet.gdem.xml.VtdHandler;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -57,7 +59,7 @@ import eionet.gdem.utils.xml.XmlSerialization;
 public class QAResultPostProcessor {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(QAResultPostProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QAResultPostProcessor.class);
 
     private SchemaManager schemaManager = new SchemaManager();
 

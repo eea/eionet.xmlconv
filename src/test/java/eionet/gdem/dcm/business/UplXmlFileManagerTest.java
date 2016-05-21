@@ -43,6 +43,8 @@ import eionet.gdem.test.TestUtils;
 import eionet.gdem.test.mocks.MockFormFile;
 import eionet.gdem.web.struts.xmlfile.UplXmlFileHolder;
 
+import javax.sql.DataSource;
+
 /**
  * @author Enriko Käsper, Tieto Estonia UplXmlFileManagerTest
  */
@@ -51,7 +53,7 @@ import eionet.gdem.web.struts.xmlfile.UplXmlFileHolder;
 public class UplXmlFileManagerTest{
 
     @Autowired
-    private IDatabaseTester databaseTester;
+    private DataSource db;
 
     /**
      * Set up test case properties and databaseTester.
@@ -59,7 +61,7 @@ public class UplXmlFileManagerTest{
     @Before
     public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_UPLXML_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_UPLXML_XML);
     }
 
     /**

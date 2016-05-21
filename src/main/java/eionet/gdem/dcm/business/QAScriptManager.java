@@ -35,9 +35,11 @@ import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.upload.FormFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.sql.SQLException;
@@ -53,7 +55,7 @@ import java.util.HashMap;
 public class QAScriptManager {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(QAScriptManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptManager.class);
     /** */
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
     /** */

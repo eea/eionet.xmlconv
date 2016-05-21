@@ -30,8 +30,8 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.spreadsheet.DDXMLConverter;
@@ -42,6 +42,8 @@ import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.dto.ConvertedFileDto;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * DDXML Conversion method class.
@@ -53,7 +55,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
 
     private boolean checkSchemaValidity = true;
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ConvertDDXMLMethod.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConvertDDXMLMethod.class);
 
     /**
      * Converts DataDictionary MS Excel file to XML.

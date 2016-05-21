@@ -27,8 +27,8 @@ import java.io.File;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -41,12 +41,14 @@ import eionet.gdem.Properties;
 import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dcm.XslGenerator;
 import eionet.gdem.dto.ConversionDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GetStylesheetAction extends Action {
 
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(GetStylesheetAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GetStylesheetAction.class);
 
 
     @Override

@@ -8,8 +8,8 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
@@ -19,6 +19,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -31,7 +33,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(classes = { ApplicationTestContext.class })
 public class ConversionServiceTest {
 
-    private static final Log LOGGER = LogFactory.getLog(ConversionServiceTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConversionServiceTest.class);
 
     /**
      * Set up test case properties

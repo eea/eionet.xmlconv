@@ -28,8 +28,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
@@ -39,6 +39,8 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IBackupDao;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Backup manager.
@@ -49,7 +51,7 @@ import eionet.gdem.utils.Utils;
 public class BackupManager {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(BackupManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BackupManager.class);
 
     private IBackupDao backupDao = GDEMServices.getDaoService().getBackupDao();
 

@@ -6,11 +6,14 @@ package eionet.gdem.web.struts.schema;
 import java.io.File;
 
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
 import eionet.gdem.test.ApplicationTestContext;
+import org.dbunit.IDatabaseTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import servletunit.struts.MockStrutsTestCase;
@@ -28,6 +31,9 @@ import eionet.gdem.test.mocks.MockStrutsMultipartRequestSimulator;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
 public class AddUplSchemaActionTest extends MockStrutsTestCase {
+
+    @Autowired
+    private DataSource db;
 
     private IUPLSchemaDao uplSchemaDao;
     private String schemaUrl = "http://some.valid.url.eu/schema";
@@ -47,7 +53,7 @@ public class AddUplSchemaActionTest extends MockStrutsTestCase {
         context.setAttribute("javax.servlet.context.tempdir", new File(TestUtils.getStrutsTempDir(this)));
         setInitParameter("validating", "false");
         // setup database
-        DbHelper.setUpSpringContextWithDatabaseTester(TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
         uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
         TestUtils.setUpProperties(this);
     }

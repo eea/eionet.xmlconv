@@ -5,8 +5,9 @@ import eionet.gdem.Properties;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -27,7 +28,7 @@ import java.net.URLConnection;
 public class SourceFileManager {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SourceFileManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SourceFileManager.class);
     /**
      * Buffer size used when reading InputStream.
      */

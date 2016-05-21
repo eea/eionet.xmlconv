@@ -20,6 +20,8 @@ import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
+import javax.sql.DataSource;
+
 /**
  * This unittest tests the QA Service listQueries and listQAScripts method
  *
@@ -30,7 +32,7 @@ import eionet.gdem.test.TestUtils;
 public class ListQueriesMethodTest {
 
     @Autowired
-    private IDatabaseTester databaseTester;
+    private DataSource db;
 
     /**
      * Set up test case properties and databaseTester.
@@ -38,7 +40,7 @@ public class ListQueriesMethodTest {
     @Before
     public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_QA_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_QA_XML);
     }
 
     /**

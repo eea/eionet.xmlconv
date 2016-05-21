@@ -28,8 +28,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -38,6 +38,8 @@ import org.apache.struts.action.ActionMapping;
 import eionet.gdem.GDEMException;
 import eionet.gdem.qa.functions.Json;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Struts action class for converting json URL or content to XML format.
@@ -46,7 +48,7 @@ import eionet.gdem.utils.Utils;
  */
 public class ConvertJson2XmlAction extends Action {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ConvertJson2XmlAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConvertJson2XmlAction.class);
 
     /** parameter name for passing json content or URL */
     protected static final String JSON_PARAM_NAME = "json";

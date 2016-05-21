@@ -32,9 +32,11 @@ import eionet.gdem.qa.QAFeedbackType;
 import eionet.gdem.qa.QAResultPostProcessor;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.xml.resolver.tools.CatalogResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
@@ -59,7 +61,7 @@ import java.util.List;
 
 public class ValidationService {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ValidationService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ValidationService.class);
 
     /** */
     private String uriXml;
@@ -296,7 +298,7 @@ public class ValidationService {
             }
         } catch (DCMException e) {
             // ignore local schema, use the original schema from remote URL
-            LOGGER.error(e);
+            LOGGER.error(e.getMessage());
         }
         setOriginalSchema(schema);
         setValidatedSchema(systemURL);

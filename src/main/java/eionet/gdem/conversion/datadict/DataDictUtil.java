@@ -28,8 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
@@ -38,6 +38,8 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Enriko Käsper, Tieto Estonia DataDictUtil
@@ -46,7 +48,7 @@ import eionet.gdem.utils.xml.XmlContext;
 public class DataDictUtil {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(DataDictUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataDictUtil.class);
 
     public static final String INSTANCE_SERVLET = "GetXmlInstance";
     public static final String SCHEMA_SERVLET = "GetSchema";

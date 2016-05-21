@@ -27,8 +27,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -43,6 +43,8 @@ import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Enriko Käsper, Tieto Estonia EditQAScriptAction
@@ -51,7 +53,7 @@ import eionet.gdem.utils.Utils;
 public class EditQAScriptAction extends LookupDispatchAction {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(EditQAScriptAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EditQAScriptAction.class);
 
     /*
      * The method uploads the file from user's filesystem to the repository. Saves all the other changes made onthe form execpt the

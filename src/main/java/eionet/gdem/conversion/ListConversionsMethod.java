@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
@@ -21,6 +21,8 @@ import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.dto.DDDatasetTable;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IConvTypeDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of listConversions method.
@@ -47,7 +49,7 @@ public class ListConversionsMethod extends RemoteServiceMethod {
     private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ConvertXMLMethod.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConvertXMLMethod.class);
 
     /**
      * List available conversions for given schema. If schema is not given as a parameter, then all possible conversions will be

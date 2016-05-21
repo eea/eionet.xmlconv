@@ -25,6 +25,8 @@ import eionet.gdem.test.TestUtils;
 import eionet.gdem.test.mocks.MockFormFile;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 
+import javax.sql.DataSource;
+
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS SchemaManagerDBTest
  */
@@ -33,7 +35,7 @@ import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 public class QAScriptManagerTest {
 
     @Autowired
-    private IDatabaseTester databaseTester;
+    private DataSource db;
 
     /**
      * Set up test case properties and databaseTester.
@@ -41,7 +43,7 @@ public class QAScriptManagerTest {
     @Before
     public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_QA_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_QA_XML);
     }
 
     /**

@@ -5,8 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import eionet.gdem.Constants;
@@ -21,7 +22,7 @@ import eionet.gdem.utils.Utils;
 public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(XQJobMySqlDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XQJobMySqlDao.class);
 
     /** Base query for getting all fields from WQ_TABLE */
     private static final String qXQJobDataBase = "SELECT " + URL_FLD + "," + XQ_FILE_FLD + "," + RESULT_FILE_FLD + ", "

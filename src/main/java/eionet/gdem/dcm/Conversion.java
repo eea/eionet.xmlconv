@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Properties;
 import eionet.gdem.dto.ConversionDto;
@@ -34,6 +34,8 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Conversion class.
@@ -41,7 +43,7 @@ import eionet.gdem.utils.xml.XmlContext;
 public class Conversion {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(Conversion.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Conversion.class);
     public static String CONVERSION_ELEMENT = "conversion";
     /** List of generated conversions. */
     private static List<ConversionDto> conversions = new ArrayList<ConversionDto>();

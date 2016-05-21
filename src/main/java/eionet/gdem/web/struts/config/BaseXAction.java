@@ -4,23 +4,25 @@ import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.conf.DcmProperties;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.SecurityUtil;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.*;
 import org.apache.struts.validator.DynaValidatorForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * BaseX Server configuration
+ * BaseX Server configuration.
  * @author George Sofianos
  *
  */
 public class BaseXAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(BaseXAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseXAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

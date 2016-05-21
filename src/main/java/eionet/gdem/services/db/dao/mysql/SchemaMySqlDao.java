@@ -11,8 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -37,7 +38,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
     private JdbcTemplate jdbcTemplate;
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SchemaMySqlDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaMySqlDao.class);
 
     private static final String qSchemaID = "SELECT " + SCHEMA_ID_FLD + " FROM " + SCHEMA_TABLE + " WHERE " + XML_SCHEMA_FLD
             + "= ?";

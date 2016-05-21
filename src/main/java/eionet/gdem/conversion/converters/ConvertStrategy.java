@@ -27,11 +27,13 @@ import eionet.gdem.Properties;
 import eionet.gdem.qa.engines.SaxonProcessor;
 import eionet.gdem.utils.Utils;
 import net.sf.saxon.s9api.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
@@ -55,7 +57,7 @@ import java.util.Map;
 public abstract class ConvertStrategy {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ConvertStrategy.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConvertStrategy.class);
 
     /** System folder where XSL files are stored. */
     public String xslFolder = Properties.getXslFolder() + File.separatorChar;

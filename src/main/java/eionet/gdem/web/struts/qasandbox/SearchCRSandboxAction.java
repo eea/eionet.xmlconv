@@ -26,8 +26,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -42,6 +42,8 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * SearchCRSandboxAction Search XML files from Content Registry
@@ -53,7 +55,7 @@ import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 public class SearchCRSandboxAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SearchCRSandboxAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SearchCRSandboxAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

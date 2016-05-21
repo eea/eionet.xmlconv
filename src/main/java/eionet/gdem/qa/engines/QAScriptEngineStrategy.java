@@ -25,14 +25,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.qa.QAResultPostProcessor;
 import eionet.gdem.qa.XQEngineIF;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Enriko Käsper, Tieto Estonia QAScriptEngineStrategy
@@ -41,7 +43,7 @@ import eionet.gdem.utils.Utils;
 public abstract class QAScriptEngineStrategy implements XQEngineIF {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(QAScriptEngineStrategy.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptEngineStrategy.class);
     private String encoding = null;
     private String outputType = null;
 

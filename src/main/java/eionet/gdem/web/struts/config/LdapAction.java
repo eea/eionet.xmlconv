@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.config;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -39,11 +39,13 @@ import eionet.gdem.dcm.conf.DcmProperties;
 import eionet.gdem.dcm.conf.LdapTest;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.SecurityUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LdapAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(LdapAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LdapAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

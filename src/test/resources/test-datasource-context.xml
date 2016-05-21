@@ -28,7 +28,7 @@
     <bean id="configurationPostProcessor" class="eionet.propertyplaceholderresolver.spring.EionetPlaceholderConfigurer">
         <constructor-arg ref="configurationPropertyResolver" />
     </bean>
-    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+    <!--<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
         <constructor-arg ref="hikariConfig" />
     </bean>
 
@@ -36,18 +36,27 @@
         <property name="poolName" value="springHikariCP" />
         <property name="minimumIdle" value="5"/>
         <property name="maximumPoolSize" value="30"/>
-        <property name="connectionTestQuery" value="SELECT 1"/>
+        <property name="connectionTestQuery" value="SELECT 1 FROM DUAL"/>
+        <property name="initializationFailFast" value="true" />
         <property name="dataSourceClassName" value="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" />
         <property name="dataSourceProperties">
             <props>
-                <prop key="url">${db.url}</prop>
-                <prop key="user">${db.user}</prop>
-                <prop key="password">${db.pwd}</prop>
+                <prop key="url">${test.db.jdbcurl}</prop>
+                <prop key="user">${test.db.user}</prop>
+                <prop key="password">${test.db.password}</prop>
                 <prop key="cachePrepStmts">true</prop>
                 <prop key="prepStmtCacheSize">250</prop>
                 <prop key="prepStmtCacheSqlLimit">2048</prop>
             </props>
         </property>
+    </bean>-->
+
+    <bean name="dataSource" class="org.springframework.jdbc.datasource.SingleConnectionDataSource">
+        <property name="driverClassName" value="${test.db.driver}" />
+        <property name="username" value="${test.db.user}" />
+        <property name="password" value="${test.db.password}" />
+        <property name="url" value="${test.db.jdbcurl}" />
+        <property name="suppressClose" value="true" />
     </bean>
 
 

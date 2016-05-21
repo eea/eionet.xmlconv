@@ -7,8 +7,9 @@ import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import eionet.gdem.services.db.dao.IHostDao;
@@ -22,7 +23,7 @@ import eionet.gdem.utils.Utils;
 public class HostMySqlDao extends MySqlBaseDao implements IHostDao {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(HostMySqlDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HostMySqlDao.class);
 
     private static final String qAddHost = "INSERT INTO " + HOST_TABLE + " ( " + HOST_NAME_FLD + ", " + USER_FLD + ", " + PWD_FLD
     + ") VALUES (?,?,?)";

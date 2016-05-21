@@ -25,8 +25,8 @@ package eionet.gdem.conversion.ssr;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.acl.AppUser;
 
@@ -35,6 +35,8 @@ import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handler of storing methods for the GDEM.
@@ -44,7 +46,7 @@ import eionet.gdem.utils.Utils;
 public class SaveHandler {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SaveHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SaveHandler.class);
 
     /**
      * Handles work queue

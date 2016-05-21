@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.qasandbox;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -37,6 +37,8 @@ import org.apache.struts.action.ActionMessages;
 import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * EditQAScriptInSandboxAction The action saves the changes of QA script content into file system.
@@ -47,7 +49,7 @@ import eionet.gdem.utils.Utils;
 public class SaveQAScriptContentAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SaveQAScriptContentAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SaveQAScriptContentAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

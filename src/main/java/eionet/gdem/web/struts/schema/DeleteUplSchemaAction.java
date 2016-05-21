@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.schema;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -37,11 +37,13 @@ import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DeleteUplSchemaAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(DeleteUplSchemaAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeleteUplSchemaAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

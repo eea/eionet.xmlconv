@@ -24,14 +24,16 @@ package eionet.gdem.conversion.spreadsheet;
 import java.math.BigDecimal;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.ConversionLogDto;
 import eionet.gdem.dto.ConversionLogDto.ConversionLogType;
 import eionet.gdem.dto.ConversionResultDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Logger writes log messages into ConversionResultDto.
@@ -41,7 +43,7 @@ import eionet.gdem.dto.ConversionResultDto;
 public class SourceReaderLogger {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SourceReaderLogger.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SourceReaderLogger.class);
 
     private long startTimestamp = 0;
 

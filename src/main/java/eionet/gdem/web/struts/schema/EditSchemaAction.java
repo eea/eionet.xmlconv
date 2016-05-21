@@ -26,9 +26,11 @@ import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,7 +39,7 @@ import java.util.Date;
 public class EditSchemaAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(EditSchemaAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EditSchemaAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

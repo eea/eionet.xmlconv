@@ -6,14 +6,16 @@ package eionet.gdem.web.struts.remoteapi;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.remote.XMLErrorResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS MethodErrorAction
@@ -22,7 +24,7 @@ import eionet.gdem.dcm.remote.XMLErrorResult;
 public class MethodErrorAction extends BaseMethodAction {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(MethodErrorAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodErrorAction.class);
 
     /**
      * Purpose of this action is show error messages of given request. XMLErrorResult should be stored in session already.

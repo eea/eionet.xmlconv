@@ -23,13 +23,15 @@ package eionet.gdem.web.struts.qascript;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.SecurityUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Sotres qa scripts list in the system cache.
@@ -40,7 +42,7 @@ import eionet.gdem.utils.SecurityUtil;
 public class QAScriptListLoader {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(QAScriptListLoader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptListLoader.class);
 
     public final static String QASCRIPT_LIST_ATTR = "qascript.qascriptList";
     public final static String QASCRIPT_PERMISSIONS_ATTR = "qascript.permissions";

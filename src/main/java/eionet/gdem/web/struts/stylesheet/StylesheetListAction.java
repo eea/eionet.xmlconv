@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.stylesheet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -34,11 +34,13 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.exceptions.DCMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StylesheetListAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(StylesheetListAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StylesheetListAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

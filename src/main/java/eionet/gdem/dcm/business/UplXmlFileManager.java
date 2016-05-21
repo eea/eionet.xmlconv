@@ -16,8 +16,8 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.Properties;
@@ -30,6 +30,8 @@ import eionet.gdem.services.db.dao.IUPLXmlFileDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.xmlfile.UplXmlFileHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Business logic for uploading XML files into XMLCONV repository, editing file metadata and deleting files.
@@ -41,7 +43,7 @@ import eionet.gdem.web.struts.xmlfile.UplXmlFileHolder;
 public class UplXmlFileManager {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(UplXmlFileManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UplXmlFileManager.class);
 
     private IUPLXmlFileDao uplXmlFileDao = GDEMServices.getDaoService().getUPLXmlFileDao();
 

@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
@@ -23,6 +23,8 @@ import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.FeedbackAnalyzer;
 import eionet.gdem.validation.ValidationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of run ad-hoc QA script methods.
@@ -63,7 +65,7 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(RunQAScriptMethod.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RunQAScriptMethod.class);
 
     /**
      * Remote method for running the QA script on the fly.

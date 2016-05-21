@@ -28,11 +28,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Usage of following class can go as ...
@@ -67,7 +69,7 @@ import eionet.gdem.utils.Utils;
  */
 public class SysCommandExecutor {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SysCommandExecutor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SysCommandExecutor.class);
 
     private ILogDevice fOuputLogDevice = null;
     private ILogDevice fErrorLogDevice = null;

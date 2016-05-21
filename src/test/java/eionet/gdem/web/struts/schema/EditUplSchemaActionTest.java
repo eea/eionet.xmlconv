@@ -7,7 +7,10 @@ import java.io.File;
 import java.util.Hashtable;
 
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
+import org.dbunit.IDatabaseTester;
+import org.springframework.beans.factory.annotation.Autowired;
 import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.services.GDEMServices;
@@ -29,6 +32,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
 public class EditUplSchemaActionTest extends MockStrutsTestCase {
+    @Autowired
+    private DataSource db;
 
     private IUPLSchemaDao uplSchemaDao;
     private String uplSchemaId = "8";
@@ -44,7 +49,7 @@ public class EditUplSchemaActionTest extends MockStrutsTestCase {
         context.setAttribute("javax.servlet.context.tempdir", new File(TestUtils.getStrutsTempDir(this)));
         setInitParameter("validating", "false");
         // setup database & Spring context
-        DbHelper.setUpSpringContextWithDatabaseTester(TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
         uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
         TestUtils.setUpProperties(this);
     }

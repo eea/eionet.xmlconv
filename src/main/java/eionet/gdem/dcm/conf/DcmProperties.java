@@ -28,12 +28,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * DCM Properties class.
@@ -43,7 +45,7 @@ import eionet.gdem.exceptions.DCMException;
 public class DcmProperties {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(DcmProperties.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DcmProperties.class);
 
     /**
      * Set database parameters.

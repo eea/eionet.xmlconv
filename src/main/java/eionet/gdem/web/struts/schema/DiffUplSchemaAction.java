@@ -26,8 +26,8 @@ import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -40,6 +40,8 @@ import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.DocumentAnalyser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Enriko Käsper, Tieto Estonia DiffUplSchemaAction
@@ -48,7 +50,7 @@ import eionet.gdem.utils.xml.DocumentAnalyser;
 public class DiffUplSchemaAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(DiffUplSchemaAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DiffUplSchemaAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

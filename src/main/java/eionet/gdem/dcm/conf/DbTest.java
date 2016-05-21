@@ -26,12 +26,14 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Database connection test class.
@@ -41,7 +43,7 @@ import eionet.gdem.exceptions.DCMException;
 public class DbTest {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(DbTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DbTest.class);
 
     /**
      * Test database connection

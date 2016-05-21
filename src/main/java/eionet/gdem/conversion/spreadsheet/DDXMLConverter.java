@@ -34,8 +34,10 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.XMLReader;
 
 import eionet.gdem.GDEMException;
@@ -61,7 +63,7 @@ import eionet.gdem.utils.Utils;
 public abstract class DDXMLConverter {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(DDXMLConverter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DDXMLConverter.class);
 
     public static final String META_SHEET_NAME = "-meta";
     public static final String META_SHEET_NAME_ODS = "_meta";

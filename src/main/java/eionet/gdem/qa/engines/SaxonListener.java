@@ -27,8 +27,9 @@ import javax.xml.transform.TransformerException;
 
 
 import net.sf.saxon.lib.StandardErrorListener;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Extension of the Saxon error listener to catch all the errors and feedback them to user.
@@ -39,7 +40,7 @@ import org.apache.commons.logging.LogFactory;
 public class SaxonListener extends StandardErrorListener {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SaxonListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SaxonListener.class);
 
     private StringBuilder _errBuf; // in this buffer we collect all the error messages
     private boolean _hasErrors = false;

@@ -23,15 +23,18 @@ package eionet.gdem.web.listeners;
 
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.WorkqueueManager;
+import eionet.gdem.logging.Markers;
 import eionet.gdem.qa.WQCheckerJob;
 import eionet.gdem.qa.WQCleanerJob;
 import eionet.gdem.qa.WQExecutor;
 import eionet.gdem.web.job.DDTablesCacheUpdater;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -51,7 +54,7 @@ import static org.quartz.TriggerBuilder.newTrigger;
 public class JobScheduler implements ServletContextListener {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(JobScheduler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobScheduler.class);
 
     /** */
     private static Scheduler quartzScheduler = null;
@@ -155,7 +158,7 @@ public class JobScheduler implements ServletContextListener {
                 scheduleIntervalJob(job.getLeft(), job.getRight());
                 LOGGER.debug(job.getRight().getKey().getName() + " scheduled, interval=" + job.getLeft());
             } catch (Exception e) {
-                LOGGER.fatal("Error when scheduling " + job.getRight().getKey().getName(), e);
+                LOGGER.error(Markers.fatal, "Error when scheduling " + job.getRight().getKey().getName(), e);
             }
         }
         WorkqueueManager.resetActiveJobs();

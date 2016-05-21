@@ -15,8 +15,8 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
@@ -43,6 +43,8 @@ import eionet.gdem.utils.ZipUtil;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 import eionet.gdem.utils.xml.XmlException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Conversion Service methods that executes XML conversions to other file types using XSL transformations.
@@ -65,7 +67,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
     private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ConvertXMLMethod.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConvertXMLMethod.class);
 
     /**
      * @see #convert(sourceURL, convertId, conversionParameters).

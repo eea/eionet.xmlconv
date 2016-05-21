@@ -32,13 +32,12 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import eionet.gdem.GDEMException;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Conversion Service Facade. The service is able to execute different conversions that are called through XML/RPC and HTTP POST and
@@ -51,7 +50,7 @@ import eionet.gdem.utils.Utils;
 public class ConversionService extends RemoteService implements ConversionServiceIF {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ConversionService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConversionService.class);
 
     /**
      * Default constructor

@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.schema;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.*;
 
 import eionet.gdem.Properties;
@@ -34,11 +34,13 @@ import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SchemaElemFormAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SchemaElemFormAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaElemFormAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

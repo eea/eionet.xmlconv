@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -18,9 +18,11 @@ import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.UplXmlFileManager;
 import eionet.gdem.exceptions.DCMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Action for deleting XML files from reporitory
+ * Action for deleting XML files from reporitory.
  *
  * @author Enriko Käsper (TietoEnator)
  *
@@ -28,7 +30,7 @@ import eionet.gdem.exceptions.DCMException;
 public class DeleteUplXmlFileAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(DeleteUplXmlFileAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeleteUplXmlFileAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

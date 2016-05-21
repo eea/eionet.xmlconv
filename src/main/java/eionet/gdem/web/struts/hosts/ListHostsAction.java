@@ -29,8 +29,8 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -43,11 +43,13 @@ import eionet.gdem.dto.HostDto;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.web.struts.BaseAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ListHostsAction extends BaseAction {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ListHostsAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ListHostsAction.class);
 
     protected final String GDEM_SSAclName = "/stylesheets";
 

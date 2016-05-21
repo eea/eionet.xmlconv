@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.qasandbox;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -36,6 +36,8 @@ import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * QASandboxFormAction Open sandbox form. Optionally load the form from session.
@@ -46,7 +48,7 @@ import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 public class QASandboxFormAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(QASandboxFormAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QASandboxFormAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

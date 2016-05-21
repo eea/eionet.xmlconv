@@ -1,23 +1,25 @@
 package eionet.gdem.web.struts.config;
 
 import eionet.gdem.Properties;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.*;
 import org.apache.struts.validator.DynaValidatorForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Configuration of BaseX Server connection parameters
+ * Configuration of BaseX Server connection parameters.
  * @author George Sofianos
  *
  */
 public class BaseXFormAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(BaseXFormAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseXFormAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

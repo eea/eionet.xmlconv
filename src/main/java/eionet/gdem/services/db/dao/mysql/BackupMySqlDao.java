@@ -8,8 +8,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import eionet.gdem.dto.BackupDto;
@@ -23,7 +24,7 @@ import eionet.gdem.services.db.dao.IBackupDao;
 public class BackupMySqlDao extends MySqlBaseDao implements IBackupDao {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(BackupMySqlDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BackupMySqlDao.class);
 
     private static final String qInsertBackup = "INSERT INTO " + BACKUP_TABLE + " ( " + BACKUP_OBJECT_ID_FLD + ", "
     + BACKUP_FILENAME_FLD + ", " + BACKUP_TIMESTAMP_FLD + ", " + BACKUP_USER_FLD + ") " + " VALUES (?,?,?,?)";

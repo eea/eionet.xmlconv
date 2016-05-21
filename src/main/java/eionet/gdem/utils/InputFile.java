@@ -28,8 +28,9 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IHostDao;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,7 +59,7 @@ import java.util.Vector;
 public class InputFile {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(InputFile.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InputFile.class);
 
     /**
      * Authentication ticket: Base64 encoded username and password.

@@ -21,8 +21,8 @@
 
 package eionet.gdem.dcm.business;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
@@ -30,6 +30,8 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.utils.SecurityUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Root element manager.
@@ -39,7 +41,7 @@ import eionet.gdem.utils.SecurityUtil;
 public class RootElemManager {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(RootElemManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RootElemManager.class);
 
     private IRootElemDao rootElemDao = GDEMServices.getDaoService().getRootElemDao();
 

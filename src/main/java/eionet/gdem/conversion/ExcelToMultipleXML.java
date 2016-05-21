@@ -28,8 +28,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -50,6 +50,8 @@ import eionet.gdem.services.db.dao.DCMDaoFactory;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Splits Excel to multiple XML files.
@@ -58,7 +60,7 @@ import eionet.gdem.utils.Utils;
  */
 public class ExcelToMultipleXML {
 
-    private static final Log LOGGER = LogFactory.getLog(ExcelToMultipleXML.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExcelToMultipleXML.class);
 
     private static final String SCHEMA_SHEET_NAME = "DO_NOT_DELETE_THIS_SHEET";
     private static final int SCHEMA_ROW_IDX = 3;

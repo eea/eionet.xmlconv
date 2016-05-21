@@ -28,8 +28,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -47,6 +47,8 @@ import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -57,7 +59,7 @@ import eionet.gdem.utils.Utils;
 public class EditStylesheetAction extends LookupDispatchAction {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(EditStylesheetAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EditStylesheetAction.class);
 
     /**
      * The method uploads XSL file from user's filesystem to the repository. Saves all the other changes made on the form except the

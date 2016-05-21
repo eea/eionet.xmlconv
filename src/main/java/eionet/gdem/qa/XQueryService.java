@@ -33,8 +33,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
@@ -48,6 +48,8 @@ import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.FeedbackAnalyzer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * QA Service Service Facade. The service is able to execute different QA related methods that are called through XML/RPC and HTTP
@@ -64,7 +66,7 @@ public class XQueryService extends RemoteService {
     private SchemaManager schManager = new SchemaManager();
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(XQueryService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XQueryService.class);
 
     /**
      * Default constructor.

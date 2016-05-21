@@ -21,6 +21,9 @@
 
 package eionet.gdem.web.filters;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -30,12 +33,12 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 public class SetCharacterEncodingFilter implements Filter {
 
-    private static final Log LOGGER = LogFactory.getLog(SetCharacterEncodingFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SetCharacterEncodingFilter.class);
     /**
      * The default character encoding to set for requests that pass through this filter.
      */

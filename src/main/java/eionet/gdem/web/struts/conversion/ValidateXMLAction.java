@@ -8,8 +8,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -24,6 +24,8 @@ import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS ValidateXMLAction
@@ -32,7 +34,7 @@ import eionet.gdem.validation.ValidationService;
 public class ValidateXMLAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ValidateXMLAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ValidateXMLAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

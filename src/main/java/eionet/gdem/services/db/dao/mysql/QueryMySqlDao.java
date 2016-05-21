@@ -10,8 +10,9 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import eionet.gdem.Properties;
@@ -27,7 +28,7 @@ import eionet.gdem.utils.Utils;
 public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(QueryMySqlDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QueryMySqlDao.class);
 
     private static final String qListQueries = "SELECT " + QUERY_TABLE + "." + QUERY_ID_FLD + ", " + SHORT_NAME_FLD + ", "
             + QUERY_FILE_FLD + ", " + QUERY_TABLE + "." + DESCR_FLD + "," + SCHEMA_TABLE + "." + SCHEMA_ID_FLD + ","

@@ -7,8 +7,9 @@ import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import eionet.gdem.dto.ConversionDto;
@@ -24,7 +25,7 @@ import eionet.gdem.services.db.dao.IConvTypeDao;
 public class ConvTypeMySqlDao extends MySqlBaseDao implements IConvTypeDao {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ConvTypeMySqlDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConvTypeMySqlDao.class);
 
     private static final String qListAllConversions = "SELECT X." + CNV_ID_FLD + ", X." + XSL_FILE_FLD + ", X." + DESCR_FLD + ", "
             + RESULT_TYPE_FLD + ", S." + XML_SCHEMA_FLD + ", " + CONVTYPE_TABLE + "." + CONTENT_TYPE_FLD + " FROM " + XSL_TABLE

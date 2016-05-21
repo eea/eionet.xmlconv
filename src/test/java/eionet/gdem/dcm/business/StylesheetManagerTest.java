@@ -27,17 +27,19 @@ import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
+import javax.sql.DataSource;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
 public class StylesheetManagerTest {
 
     @Autowired
-    private IDatabaseTester databaseTester;
+    private DataSource db;
 
     @Before
     public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_CONVERSIONS_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_CONVERSIONS_XML);
     }
 
     @Rule

@@ -13,12 +13,13 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import eionet.gdem.Properties;
 import eionet.gdem.SpringApplicationContext;
+import eionet.gdem.logging.Markers;
 import eionet.gdem.services.GDEMServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * MySQL base dao class.
@@ -28,7 +29,7 @@ import eionet.gdem.services.GDEMServices;
 public abstract class MySqlBaseDao {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(MySqlBaseDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MySqlBaseDao.class);
 
     private static DataSource ds = null;
 
@@ -44,7 +45,7 @@ public abstract class MySqlBaseDao {
             InitialContext ctx = new InitialContext();
             ds = (DataSource) SpringApplicationContext.getBean("dataSource");
         } catch (NamingException e) {
-            LOGGER.fatal("Initialization of datasource failed: ", e);
+            LOGGER.error(Markers.fatal, "Initialization of datasource failed: ", e);
         }
     }
 
@@ -212,7 +213,7 @@ public abstract class MySqlBaseDao {
         } catch (SQLException e) {
             // logger.error("Error occurred when processing result set: " +
             // sql,e);
-            LOGGER.error(e);
+            LOGGER.error(e.getMessage());
             throw new SQLException("Error occurred when processing result set: " + "");
         }
 

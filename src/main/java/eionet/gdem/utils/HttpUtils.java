@@ -24,8 +24,8 @@ package eionet.gdem.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
 import org.apache.http.HttpEntity;
@@ -35,6 +35,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * HTTP Utilities.
@@ -51,7 +53,7 @@ public final class HttpUtils {
         // do nothing
     }
     /** */
-    private static final Log LOGGER = LogFactory.getLog(HttpUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
 
     /**
      * Downloads remote file

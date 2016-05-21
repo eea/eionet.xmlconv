@@ -24,14 +24,16 @@ import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -41,7 +43,7 @@ import eionet.gdem.utils.xml.XmlContext;
  */
 public class AddEditStylehseetUtils {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(AddEditStylehseetUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AddEditStylehseetUtils.class);
 
 
     /**
