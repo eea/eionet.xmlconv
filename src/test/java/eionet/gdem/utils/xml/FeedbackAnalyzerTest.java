@@ -22,13 +22,22 @@ package eionet.gdem.utils.xml;
 
 import java.util.HashMap;
 
+import eionet.gdem.test.ApplicationTestContext;
 import junit.framework.TestCase;
 import eionet.gdem.Constants;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-public class FeedbackAnalyzerTest extends TestCase {
+import static org.junit.Assert.*;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class FeedbackAnalyzerTest {
+    @Test
     public void testFeedBackFileERROR() {
         HashMap<String, String> fbResult =
             FeedbackAnalyzer.getFeedbackResultFromFile(TestUtils.getSeedPath(TestConstants.SEED_FEEDBACKANALYZE_TEST, this));
@@ -39,6 +48,7 @@ public class FeedbackAnalyzerTest extends TestCase {
         assertTrue(fbMsg.equals("This delivery is not acceptable because it contains fatal errors."));
     }
 
+    @Test
     public void testFeedbackStringWithNoAttributes() {
 
         String qaResult =
@@ -52,6 +62,7 @@ public class FeedbackAnalyzerTest extends TestCase {
 
     }
 
+    @Test
     public void testFeedbackStringWarning() {
 
         String qaResult =
@@ -66,6 +77,7 @@ public class FeedbackAnalyzerTest extends TestCase {
 
     }
 
+    @Test
     public void testNestedFeedbackMessage() {
         String qaResult = "<div id=\"wrapper\"><p>This is a test HTML</p><div id=\"feedbackStatus\" class=\"INFO\">" +
                 "This paragraph contains the feedback message with <b>bold</b> words and <i>italic</i> words.</div>" +

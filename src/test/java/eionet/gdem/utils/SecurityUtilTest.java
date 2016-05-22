@@ -3,12 +3,19 @@
  */
 package eionet.gdem.utils;
 
+import eionet.gdem.test.ApplicationTestContext;
 import junit.framework.TestCase;
 import edu.yale.its.tp.cas.client.filter.CASFilter;
 import eionet.gdem.test.mocks.MockHttpSession;
 import eionet.gdem.test.mocks.MockServletContext;
 import eionet.gdem.test.mocks.MockServletRequest;
 import eionet.gdem.web.struts.login.AfterCASLoginAction;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * This class tests teh different methods in SecurityUtil class. Ttested methods are: getLoginUrl(), getLogoutUrl,
@@ -17,13 +24,16 @@ import eionet.gdem.web.struts.login.AfterCASLoginAction;
  * @author Enriko Käsper, TietoEnator Estonia AS SecurityUtilTest
  */
 
-public class SecurityUtilTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class SecurityUtilTest {
 
     /**
      * If port=80 and scheme=http, then the returned URL should not contain port number
      * 
      * @throws Exception
      */
+    @Test
     public void testGetUrlWithContextPath1() throws Exception {
         MockServletRequest req = new MockServletRequest();
         req.setServerName("testserver");
@@ -33,7 +43,6 @@ public class SecurityUtilTest extends TestCase {
 
         String url = SecurityUtil.getUrlWithContextPath(req);
         assertEquals("http://testserver/context", url);
-
     }
 
     /**
@@ -41,6 +50,7 @@ public class SecurityUtilTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testGetUrlWithContextPath2() throws Exception {
         MockServletRequest req = new MockServletRequest();
         req.setServerName("testserver");
@@ -58,6 +68,7 @@ public class SecurityUtilTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testGetUrlWithContextPath3() throws Exception {
         MockServletRequest req = new MockServletRequest();
         req.setServerName("testserver");
@@ -75,6 +86,7 @@ public class SecurityUtilTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testGetUrlWithContextPath4() throws Exception {
         MockServletRequest req = new MockServletRequest();
         req.setServerName("testserver");
@@ -84,7 +96,6 @@ public class SecurityUtilTest extends TestCase {
 
         String url = SecurityUtil.getUrlWithContextPath(req);
         assertEquals("https://testserver:8080/context", url);
-
     }
 
     /**
@@ -92,6 +103,7 @@ public class SecurityUtilTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testGetLoginUrlLocal() throws Exception {
         MockServletContext context = new MockServletContext();
         MockHttpSession session = new MockHttpSession();
@@ -117,6 +129,7 @@ public class SecurityUtilTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testGetLoginUrlSSO() throws Exception {
         MockServletContext context = new MockServletContext();
         MockHttpSession session = new MockHttpSession();
@@ -143,6 +156,7 @@ public class SecurityUtilTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testGetLogoutUrlLocal() throws Exception {
         MockServletContext context = new MockServletContext();
         MockHttpSession session = new MockHttpSession();
@@ -166,6 +180,7 @@ public class SecurityUtilTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testGetLogoutUrlSSO() throws Exception {
         MockServletContext context = new MockServletContext();
         MockHttpSession session = new MockHttpSession();

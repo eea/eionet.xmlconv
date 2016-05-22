@@ -19,6 +19,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * JUnit test test InputFile functionality. InputFile is responsible for parsing retreived URL - escapes the URL, extracts the file
  * name, host and folder.
@@ -28,7 +30,7 @@ import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ApplicationTestContext.class})
-public class InputFileTest extends TestCase {
+public class InputFileTest {
 
     /**
      * Set up test case properties and databaseTester.

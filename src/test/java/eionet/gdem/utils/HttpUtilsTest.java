@@ -21,14 +21,24 @@
 
 package eionet.gdem.utils;
 
+import eionet.gdem.test.ApplicationTestContext;
 import junit.framework.TestCase;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.junit.Assert.*;
 
 /**
+ * TODO: Maybe replace this.
  * @author Enriko Käsper, Tieto Estonia HttpUtilsTest
+ *
  */
-
-public class HttpUtilsTest extends TestCase {
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class HttpUtilsTest {
+    @Test
     public void testUrlExists() throws Exception {
 
         boolean b1 = HttpUtils.urlExists("https://svn.eionet.europa.eu");

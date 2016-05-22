@@ -21,21 +21,32 @@
 
 package eionet.gdem.qa.functions;
 
+import eionet.gdem.test.ApplicationTestContext;
 import junit.framework.TestCase;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.junit.Assert.*;
 
 /**
  * Test Json to XML conversion methods.
  * 
  * @author Enriko Käsper
  */
-public class JsonTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class JsonTest {
 
+    @Test
     public void testJsonString2xml() {
         String resultXmlSubstr = "<element>json</element><element>is</element><element>easy</element>";
         String xml = Json.jsonString2xml("['json','is','easy']");
         assertTrue(xml.contains(resultXmlSubstr));
     }
 
+    @Test
     public void testJsonString2xmlInvalid() {
         String resultXmlSubstr = "<code>400</code>";
         String xml = Json.jsonString2xml("this is not a json string");
@@ -43,6 +54,7 @@ public class JsonTest extends TestCase {
         assertTrue(xml.contains(resultXmlSubstr));
     }
 
+    @Test
     public void testJson2xmlError() {
         String resultXmlSubstr = "<root><error><code>500</code><details/><message>Error Executing Task.</message></error></root>";
         String json = "{ \"error\" : {\"code\" : 500, \"message\" : \"Error Executing Task.\", \"details\" : [] }}";
@@ -51,6 +63,7 @@ public class JsonTest extends TestCase {
         assertTrue(xml.contains(resultXmlSubstr));
     }
 
+    @Test
     public void testJson2xmlResult() {
         String resultXmlSubstr =
             "<results><element><dataType>GPString</dataType><paramName>outputPointXML</paramName><value>&lt;fields&gt;&lt;field id=\"FR_985461\" code=\"IT\" status=\"FR\" x=\"3811754.01892\" y=\"2884556.77332\"/&gt;&lt;/fields&gt;</value></element></results>";

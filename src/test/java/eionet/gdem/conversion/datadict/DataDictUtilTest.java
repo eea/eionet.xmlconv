@@ -23,19 +23,29 @@ package eionet.gdem.conversion.datadict;
 
 import java.util.Map;
 
+import eionet.gdem.test.ApplicationTestContext;
 import junit.framework.TestCase;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.junit.Assert.*;
 
 /**
+ *
  * @author Enriko Käsper, Tieto Estonia DataDictUtilTest
  */
-
-public class DataDictUtilTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class DataDictUtilTest {
 
     /**
      * Tests convert method - validate the result file and metadata( content type and file name)
      */
+    @Test
     public void testGetElementsDefs() throws Exception {
         String schemaUrl = TestUtils.getSeedURL(TestConstants.SEED_GW_CONTAINER_SCHEMA, this);
         Map<String, DDElement> elemDefs = DataDictUtil.importDDElementSchemaDefs(null, schemaUrl);
@@ -51,6 +61,7 @@ public class DataDictUtilTest extends TestCase {
     /**
      * Tests DD schema URL handling
      */
+    @Test
     public void testDDUrlhandling() throws Exception {
         assertEquals("http://dd.eionet.europa.eu/GetXmlInstance?id=3739&type=tbl",
                 DataDictUtil.getInstanceUrl("http://dd.eionet.europa.eu/GetSchema?id=TBL3739"));
@@ -63,11 +74,12 @@ public class DataDictUtilTest extends TestCase {
     /**
      * Tests convert method - validate the result file and metadata( content type and file name)
      */
+    @Test
     public void testGetContainerSchemaUrl() throws Exception {
         String url = DataDictUtil.getContainerSchemaUrl("http://dd.eionet.europa.eu/GetSchema?id=TBL4948");
         assertEquals("http://dd.eionet.europa.eu/GetContainerSchema?id=TBL4948", url);
     }
-
+    @Test
     public void testMultivalueElementsDefs() throws Exception {
         String schemaUrl = TestUtils.getSeedURL(TestConstants.SEED_GW_SCHEMA, this);
 

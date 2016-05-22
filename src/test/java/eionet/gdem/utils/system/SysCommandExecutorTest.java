@@ -21,22 +21,30 @@
 
 package eionet.gdem.utils.system;
 
+import eionet.gdem.test.ApplicationTestContext;
 import junit.framework.TestCase;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.junit.Assert.*;
 
 /**
  * JUnit test test System Command functionality.
  * 
  * @author Enriko Käsper, Tieto Estonia SysCommandExecutorTest
  */
-
-public class SysCommandExecutorTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class SysCommandExecutorTest {
 
     /**
      * The method tests, if the system is able to execute some simple commands
      * 
      * @throws Exception
      */
-
+    @Test
     public void testCommand() throws Exception {
 
         SysCommandExecutor exe = new SysCommandExecutor();
@@ -55,7 +63,7 @@ public class SysCommandExecutorTest extends TestCase {
      * 
      * @throws Exception
      */
-
+    @Test
     public void testCommandTimeout() throws Exception {
 
         Exception eTimeout = null;

@@ -31,6 +31,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  *
  * Test Excel reader methods.
@@ -39,7 +41,7 @@ import java.io.File;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ApplicationTestContext.class})
-public class ExcelReaderTest extends TestCase{
+public class ExcelReaderTest {
 
     @Test
     public void testTrimIntegerValues() throws Exception {

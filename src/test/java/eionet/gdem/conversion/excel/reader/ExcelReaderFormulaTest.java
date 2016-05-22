@@ -21,12 +21,19 @@ package eionet.gdem.conversion.excel.reader;
 
 import java.io.File;
 
+import eionet.gdem.test.ApplicationTestContext;
 import junit.framework.TestCase;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import eionet.gdem.test.TestConstants;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -34,8 +41,10 @@ import eionet.gdem.test.TestConstants;
  *
  * @author Enriko Käsper
  */
-public class ExcelReaderFormulaTest extends TestCase{
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class ExcelReaderFormulaTest {
+    @Test
     public void testGetFormulaValueXls() throws Exception{
         File inFile = new File(this.getClass().getClassLoader().getResource(TestConstants.SEED_FORMULAS_XLS)
                 .getFile());
