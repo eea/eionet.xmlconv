@@ -28,6 +28,7 @@ import eionet.gdem.services.GDEMServices;
 import javax.sql.DataSource;
 
 /**
+ * TODO: See if it is possible to delete all commented out methods
  * Helper class for db related stuff - connection, etc
  *
  * @author Enriko Käsper, TietoEnator Estonia AS DbHelper
@@ -84,7 +85,7 @@ public class DbHelper {
         //System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD, Properties.dbPwd);
     }
 
-    public static void setUpDatabase(Object obj, String dataset) throws Exception {
+    //public static void setUpDatabase(Object obj, String dataset) throws Exception {
 
         //GDEMServices.setTestConnection(true);
         //AbstractDatabaseTester databaseTester =
@@ -94,5 +95,5 @@ public class DbHelper {
         //databaseTester.setDataSet(dataSet);
         //databaseTester.onSetup();
 
-    }
+//    }
 }

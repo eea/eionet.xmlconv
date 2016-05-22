@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.Hashtable;
 
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
 import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.dcm.BusinessConstants;
@@ -31,6 +32,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(classes = { ApplicationTestContext.class })
 public class DeleteUplSchemaActiontest extends MockStrutsTestCase {
 
+    @Autowired
+    private DataSource db;
+
     private IUPLSchemaDao uplSchemaDao;
     private String schemaId = "3";
     private String uplSchemaId = "10";
@@ -45,7 +49,7 @@ public class DeleteUplSchemaActiontest extends MockStrutsTestCase {
         context.setAttribute("javax.servlet.context.tempdir", new File(TestUtils.getStrutsTempDir(this)));
         setInitParameter("validating", "false");
         // setup database
-        DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
         TestUtils.setUpProperties(this);
     }
 

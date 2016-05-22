@@ -4,7 +4,9 @@
 package eionet.gdem.web.struts.schema;
 
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.test.ApplicationTestContext;
@@ -23,6 +25,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
 public class SchemaElemFormActionTest extends MockStrutsTestCase {
+    @Autowired
+    private DataSource db;
 
     @Before
     public void setUp() throws Exception {
@@ -31,7 +35,7 @@ public class SchemaElemFormActionTest extends MockStrutsTestCase {
         setInitParameter("validating", "false");
 
         // setup database
-        DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
 
     }
     @Test

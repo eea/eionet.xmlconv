@@ -42,6 +42,7 @@ public class InputAnalyserTest {
      * 
      * @throws Exception
      */
+    @Test
     public void testDTDFinder() throws Exception {
         InputAnalyser analyser = new InputAnalyser();
         analyser.parseXML(TestUtils.getSeedURL(TestConstants.SEED_XLIFF_XML, this));
