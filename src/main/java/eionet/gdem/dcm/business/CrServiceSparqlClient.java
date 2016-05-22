@@ -24,7 +24,6 @@ import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.CrFileDto;
 import eionet.gdem.exceptions.DCMException;
-import org.apache.log4j.Logger;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
@@ -32,6 +31,8 @@ import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sparql.SPARQLRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class CrServiceSparqlClient {
      */
     private static String endpointURL = Properties.crSparqlEndpoint;
 
-    private static final Logger LOGGER = Logger.getLogger(CrServiceSparqlClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CrServiceSparqlClient.class);
 
     /**
      * List of xml files for testing purposes

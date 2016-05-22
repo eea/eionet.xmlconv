@@ -1,12 +1,15 @@
 package eionet.gdem.acl;
 
 import eionet.gdem.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+
 
 /**
  *
@@ -14,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class CopyAclFiles {
 
-    private static final Logger LOGGER = Logger.getLogger(CopyAclFiles.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CopyAclFiles.class.getName());
     // Copy acl files at startup
     public CopyAclFiles( ) throws IOException, URISyntaxException   {
         String appHome = Properties.getStringProperty("app.home");
@@ -40,7 +43,7 @@ public class CopyAclFiles {
         File sourceFile = new File(source.toURI());
         File targetDirectory = new File(target);
         org.apache.commons.io.FileUtils.copyFile(sourceFile, targetDirectory);
-        LOGGER.log(Level.INFO, "Successfully copied file...{0}", target);
+        LOGGER.info("Successfully copied file...{0}", target);
     }
 }
  

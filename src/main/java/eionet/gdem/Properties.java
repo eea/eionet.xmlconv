@@ -26,7 +26,8 @@ package eionet.gdem;
 import eionet.propertyplaceholderresolver.CircularReferenceException;
 import eionet.propertyplaceholderresolver.ConfigurationPropertyResolver;
 import eionet.propertyplaceholderresolver.UnresolvedPropertyException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
@@ -43,7 +44,7 @@ public class Properties {
     /**
      * Logger class.
      */
-    public static final Logger LOGGER = Logger.getLogger(Properties.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(Properties.class);
 
     /** Application classes (WEB-INF/classes) path in file system. */
     public static String appHome = null;

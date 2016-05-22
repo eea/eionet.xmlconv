@@ -21,7 +21,8 @@ import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.utils.SecurityUtil;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -51,7 +52,7 @@ public class FileDownloadServlet extends HttpServlet {
     private static final int DEFAULT_BUFFER_SIZE = 10240; // ..bytes = 10KB.
     private static final long DEFAULT_EXPIRE_TIME = 604800000L; // ..ms = 1 week.
     private static final String MULTIPART_BOUNDARY = "MULTIPART_BYTERANGES";
-    private static final Logger LOGGER = Logger.getLogger(FileDownloadServlet.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileDownloadServlet.class);
 
     // Actions ------------------------------------------------------------------------------------
 

@@ -1,13 +1,15 @@
 package eionet.gdem.cas;
 
 import edu.yale.its.tp.cas.client.filter.CASFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import org.apache.log4j.Logger;
 
 /**
  *
@@ -22,7 +24,7 @@ import org.apache.log4j.Logger;
 public class xmlconvCASFilter extends CASFilter {
 
     /** Static logger for this class. */
-    private static final Logger LOGGER = Logger.getLogger(xmlconvCASFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(xmlconvCASFilter.class);
 
     /** FQN of this class. */
     private static final String CLASS_NAME = xmlconvCASFilter.class.getName();

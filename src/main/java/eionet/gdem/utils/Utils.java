@@ -54,7 +54,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
@@ -63,6 +62,8 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Several common methods for file handling etc.
@@ -79,7 +80,7 @@ public final class Utils {
     }
     private static Map<Character, String> xmlEscapes = null;
 
-    private static final Logger LOGGER = Logger.getLogger(Utils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
 
     /**
      * Saving an URL stream to the specified text file.

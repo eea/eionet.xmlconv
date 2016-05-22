@@ -2,9 +2,9 @@ package eionet.gdem;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -12,7 +12,7 @@ import org.apache.commons.io.FileUtils;
  */
 public class CopyCatalogFileAction {
 
-    private static final Logger LOGGER = Logger.getLogger(CopyCatalogFileAction.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CopyCatalogFileAction.class.getName());
 
     public CopyCatalogFileAction( ) throws IOException  {
         
@@ -29,7 +29,7 @@ public class CopyCatalogFileAction {
         File sourceFile = new File(source);
         File targetFile = new File(target);
         FileUtils.copyFile(sourceFile, targetFile);
-        LOGGER.log(Level.INFO, "Successfully copied file...{0}", target);
+        LOGGER.info("Successfully copied file...{0}", target);
     }
 
 }

@@ -5,7 +5,8 @@ import eionet.acl.AclProperties;
 import eionet.propertyplaceholderresolver.CircularReferenceException;
 import eionet.propertyplaceholderresolver.ConfigurationPropertyResolver;
 import eionet.propertyplaceholderresolver.UnresolvedPropertyException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 
 /**
@@ -14,7 +15,7 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public class AclPropertiesBuilder implements FactoryBean<AclProperties> {
 
-    private static final Logger LOGGER = Logger.getLogger(AclInitializerImpl.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(AclInitializerImpl.class);
 
     
     private AclProperties aclProperties;
