@@ -661,20 +661,20 @@
                 <version>1.7.21</version>
             </dependency>
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>1.7.21</version>
-            </dependency>
-            <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>1.1.7</version>
             </dependency>
-
-
+            <!-- Intercepts logging from log4j and redirects it to slf4j -->
             <dependency>
                 <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>1.7.21</version>
+            </dependency>
+            <!-- Intercepts logging from apache commons logging and redirects it to slf4j -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
                 <version>1.7.21</version>
             </dependency>
 
