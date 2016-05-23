@@ -38,28 +38,60 @@ import eionet.gdem.dto.Schema;
  * SearchCRSandboxAction. The axction dispatches the original sandbox request to the correct action.
  *
  * @author Enriko Käsper, Tieto Estonia
+ * @author George Sofianos
  */
 
 public class SandboxDispatchAction extends LookupDispatchAction {
-
+    /**
+     * Search XML
+     * @param actionMapping Action mapping
+     * @param actionForm Action form
+     * @param httpServletRequest Request
+     * @param httpServletResponse Response
+     * @return Action forward
+     */
     public ActionForward searchXml(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
         return actionMapping.findForward("search");
     }
 
+    /**
+     * Extract Schema
+     * @param actionMapping Action mapping
+     * @param actionForm Action form
+     * @param httpServletRequest Request
+     * @param httpServletResponse Response
+     * @return Action forward
+     */
     public ActionForward extractSchema(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
         return actionMapping.findForward("extract");
     }
 
+    /**
+     * Finds scripts
+     * @param actionMapping Action mapping
+     * @param actionForm Action form
+     * @param httpServletRequest Request
+     * @param httpServletResponse Response
+     * @return Action forward
+     */
     public ActionForward findScripts(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
         return actionMapping.findForward("find");
     }
 
+    /**
+     * Manual URL
+     * @param actionMapping Action mapping
+     * @param actionForm Action form
+     * @param httpServletRequest Request
+     * @param httpServletResponse Response
+     * @return Action forward
+     */
     public ActionForward manualUrl(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
@@ -72,6 +104,14 @@ public class SandboxDispatchAction extends LookupDispatchAction {
         return actionMapping.findForward("success");
     }
 
+    /**
+     * Add to workqueue
+     * @param actionMapping Action mapping
+     * @param actionForm Action form
+     * @param httpServletRequest Request
+     * @param httpServletResponse Response
+     * @return Action forward
+     */
     public ActionForward addToWorkqueue(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
@@ -79,18 +119,38 @@ public class SandboxDispatchAction extends LookupDispatchAction {
 
     }
 
+    /**
+     * Saves file
+     * @param actionMapping Action mapping
+     * @param actionForm Action form
+     * @param httpServletRequest Request
+     * @param httpServletResponse Response
+     * @return Action forward
+     */
     public ActionForward saveFile(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
         return actionMapping.findForward("save");
     }
 
+    /**
+     * Runs script
+     * @param actionMapping Action mapping
+     * @param actionForm Action form
+     * @param httpServletRequest Request
+     * @param httpServletResponse Response
+     * @return Action forward
+     */
     public ActionForward runScript(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
         return actionMapping.findForward("run");
     }
 
+    /**
+     * Returns key method map
+     * @return Key method map
+     */
     protected Map<String, String> getKeyMethodMap() {
         Map<String, String> map = new HashMap<String, String>();
         map.put("label.qasandbox.searchXML", "searchXml");

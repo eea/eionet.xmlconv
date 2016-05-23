@@ -72,6 +72,13 @@ public class SaveSchemaValidationAction extends Action {
         return findForward(actionMapping, "success", schemaId);
     }
 
+    /**
+     * Finds forward
+     * @param actionMapping Action mapping
+     * @param f F
+     * @param scriptId Script Id
+     * @return Action forward
+     */
     private ActionForward findForward(ActionMapping actionMapping, String f, String scriptId) {
         ActionForward forward = actionMapping.findForward(f);
         StringBuffer path = new StringBuffer(forward.getPath());

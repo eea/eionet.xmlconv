@@ -38,6 +38,11 @@ import eionet.gdem.exceptions.DCMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Add element action class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class AddElemAction extends Action {
 
     /** */

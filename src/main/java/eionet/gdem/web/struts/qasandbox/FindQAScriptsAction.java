@@ -43,7 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * SearchCRSandboxAction Find all the scripts for the given XML schema and allow to execute them in sandox
+ * SearchCRSandboxAction Find all the scripts for the given XML schema and allow to execute them in sandbox.
  *
  * @author Enriko Käsper, Tieto Estonia
  */

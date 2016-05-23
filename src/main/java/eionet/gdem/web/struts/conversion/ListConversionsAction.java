@@ -189,10 +189,10 @@ public class ListConversionsAction extends Action {
      * check if schema passed as request parameter exists in the list of schemas stored in the session. If there is no schema list
      * in the session, then create it
      *
-     * @param httpServletRequest
-     * @param schema
-     * @return
-     * @throws DCMException
+     * @param httpServletRequest Request
+     * @param schema Schema
+     * @return True if schema exists
+     * @throws DCMException If an error occurs.
      */
     private boolean schemaExists(HttpServletRequest httpServletRequest, String schema) throws DCMException {
         List<Schema> schemasInCache = StylesheetListLoader.getConversionSchemasList(httpServletRequest);

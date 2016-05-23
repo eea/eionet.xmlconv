@@ -33,9 +33,11 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-
-
-
+/**
+ * Sets character encoding filter.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class SetCharacterEncodingFilter implements Filter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SetCharacterEncodingFilter.class);
@@ -103,6 +105,7 @@ public class SetCharacterEncodingFilter implements Filter {
      *
      * @param filterConfig
      *            The filter configuration object
+     * @throws ServletException If an error occurs.
      */
     public void init(FilterConfig filterConfig) throws ServletException {
 

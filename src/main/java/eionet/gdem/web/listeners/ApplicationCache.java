@@ -79,7 +79,7 @@ public class ApplicationCache implements ServletContextListener {
     @SuppressWarnings("unchecked")
     public static List<DDDatasetTable> getDDTables() {
 
-        Element element = getCache()!=null ? getCache().get(DD_TABLES_CACHE) : null;
+        Element element = getCache() != null ? getCache().get(DD_TABLES_CACHE) : null;
 
         return element == null || element.getValue() == null ? Collections.EMPTY_LIST : (List<DDDatasetTable>) element.getValue();
 

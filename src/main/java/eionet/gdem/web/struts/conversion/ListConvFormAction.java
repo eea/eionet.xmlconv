@@ -39,6 +39,11 @@ import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * List Conversion form action class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class ListConvFormAction extends Action {
 
     /** */

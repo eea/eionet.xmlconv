@@ -45,6 +45,11 @@ import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Login action class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class LoginAction extends Action {
 
     /** */
@@ -93,6 +98,13 @@ public class LoginAction extends Action {
 
     }
 
+    /**
+     * Do login
+     * @param username Username
+     * @param password Password
+     * @param httpServletRequest Request
+     * @throws Exception If an error occurs.
+     */
     private void doLogin(String username, String password, HttpServletRequest httpServletRequest) throws Exception {
         try {
             AppUser aclUser = new AppUser();

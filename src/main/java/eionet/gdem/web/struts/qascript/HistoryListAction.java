@@ -41,6 +41,11 @@ import eionet.gdem.exceptions.DCMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * History List action.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class HistoryListAction extends Action {
 
     /** */

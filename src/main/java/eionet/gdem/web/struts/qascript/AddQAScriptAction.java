@@ -156,6 +156,13 @@ public class AddQAScriptAction extends Action {
         return findForward(actionMapping, "success", schemaId);
     }
 
+    /**
+     * Finds forward
+     * @param actionMapping Action mapping
+     * @param f F
+     * @param schemaId schema Id
+     * @return Action forward
+     */
     private ActionForward findForward(ActionMapping actionMapping, String f, String schemaId) {
         ActionForward forward = actionMapping.findForward(f);
         StringBuffer path = new StringBuffer(forward.getPath());

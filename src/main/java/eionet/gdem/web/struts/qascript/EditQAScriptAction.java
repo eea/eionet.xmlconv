@@ -55,9 +55,14 @@ public class EditQAScriptAction extends LookupDispatchAction {
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(EditQAScriptAction.class);
 
-    /*
+    /**
      * The method uploads the file from user's filesystem to the repository. Saves all the other changes made onthe form execpt the
      * file source in textarea
+     * @param actionMapping Action mapping
+     * @param actionForm Action form
+     * @param httpServletRequest Request
+     * @param httpServletResponse Response
+     * @return Action forward
      */
     public ActionForward upload(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
@@ -109,8 +114,13 @@ public class EditQAScriptAction extends LookupDispatchAction {
         return findForward(actionMapping, "success", scriptId);
     }
 
-    /*
+    /**
      * The method saves all the changes made on the form. Saves also modifications made to the file source textarea
+     * @param actionMapping Action mapping
+     * @param actionForm Action form
+     * @param httpServletRequest Request
+     * @param httpServletResponse Response
+     * @return Action forward
      */
     public ActionForward save(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
@@ -201,6 +211,14 @@ public class EditQAScriptAction extends LookupDispatchAction {
         return findForward(actionMapping, "success", scriptId);
     }
 
+    /**
+     * Cancel action
+     * @param actionMapping Action mapping
+     * @param actionForm Action form
+     * @param httpServletRequest Request
+     * @param httpServletResponse Response
+     * @return Action forward
+     */
     public ActionForward cancel(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         return actionMapping.findForward("success");
@@ -214,6 +232,13 @@ public class EditQAScriptAction extends LookupDispatchAction {
         return map;
     }
 
+    /**
+     * Finds forward
+     * @param actionMapping Action mapping
+     * @param f F
+     * @param scriptId Script Id
+     * @return Action forward
+     */
     private ActionForward findForward(ActionMapping actionMapping, String f, String scriptId) {
         ActionForward forward = actionMapping.findForward(f);
         StringBuffer path = new StringBuffer(forward.getPath());

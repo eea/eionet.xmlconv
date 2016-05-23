@@ -43,6 +43,11 @@ import eionet.gdem.web.struts.BaseAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Host detail action class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class HostDetailsAction extends BaseAction {
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(HostDetailsAction.class);

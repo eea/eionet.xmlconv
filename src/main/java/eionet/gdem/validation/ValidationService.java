@@ -57,6 +57,7 @@ import java.util.List;
  * The class offers validation methods for XMLCONV and remote clients.
  *
  * @author Enriko Käsper, TripleDev
+ * @author George Sofianos
  */
 
 public class ValidationService {
@@ -256,8 +257,8 @@ public class ValidationService {
      *
      * @param reader XMLReader.
      * @param schema XML Schema URL.
-     * @throws SAXNotRecognizedException
-     * @throws SAXNotSupportedException
+     * @throws SAXNotRecognizedException If an error occurs.
+     * @throws SAXNotSupportedException If an error occurs.
      */
     private void setNoNamespaceSchemaProperty(XMLReader reader, String schema) throws SAXNotRecognizedException,
             SAXNotSupportedException {
@@ -271,8 +272,8 @@ public class ValidationService {
      * @param reader XMLReader.
      * @param namespace XML Schema default namespace.
      * @param schema XML Schema URL.
-     * @throws SAXNotRecognizedException
-     * @throws SAXNotSupportedException
+     * @throws SAXNotRecognizedException If an error occurs.
+     * @throws SAXNotSupportedException If an error occurs.
      */
     private void setNamespaceSchemaProperty(XMLReader reader, String namespace, String schema) throws SAXNotRecognizedException,
             SAXNotSupportedException {

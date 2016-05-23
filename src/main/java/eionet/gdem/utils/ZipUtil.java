@@ -37,13 +37,30 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
 
-public class ZipUtil {
+/**
+ * Zip Utility class.
+ * @author Unknown
+ * @author George Sofianos
+ */
+public final class ZipUtil {
 
     static final int BUFFER = 2156;
     static final String MIMETYPE_FILE = "mimetype";
 
-    public static void zipDir(String dir2zip, ZipOutputStream outZip) throws IOException {
+    /**
+     * Private constructor.
+     */
+    private ZipUtil() {
+        // do nothing
+    }
 
+    /**
+     * Zips Directory to zip file
+     * @param dir2zip Directory
+     * @param outZip Output zip file
+     * @throws IOException
+     */
+    public static void zipDir(String dir2zip, ZipOutputStream outZip) throws IOException {
         zipDir(dir2zip, outZip, dir2zip);
     }
 
@@ -56,7 +73,7 @@ public class ZipUtil {
      *            - ZipOutputStream represents the zip file, where the files will be placed
      * @param sourceDir
      *            - root directory, where the zipping started
-     * @throws IOException
+     * @throws IOException If an error occurs.
      */
     public static void zipDir(String dir2zip, ZipOutputStream outZip, String sourceDir) throws IOException {
         // create a new File object based on the directory we have to zip
@@ -103,7 +120,7 @@ public class ZipUtil {
      *            - root directory, where the zipping started
      * @param doCompress
      *            - don't comress the file, if doCompress=true
-     * @throws IOException
+     * @throws IOException If an error occurs.
      */
     public static void zipFile(File f, ZipOutputStream outZip, String sourceDir, boolean doCompress) throws IOException {
 
@@ -137,6 +154,12 @@ public class ZipUtil {
 
     }
 
+    /**
+     * Unzips files to output directory.
+     * @param inZip Zip file
+     * @param outDir Output directory
+     * @throws IOException If an error occurs.
+     */
     public static void unzip(String inZip, String outDir) throws IOException {
 
         File sourceZipFile = new File(inZip);
@@ -172,7 +195,7 @@ public class ZipUtil {
                     is = new BufferedInputStream(zipFile.getInputStream(entry));
                     int currentByte;
                     // establish buffer for writing file
-                    byte data[] = new byte[BUFFER];
+                    byte[] data = new byte[BUFFER];
 
                     // write the current file to disk
                     FileOutputStream fos = new FileOutputStream(destFile);
@@ -192,6 +215,11 @@ public class ZipUtil {
         zipFile.close();
     }
 
+    /**
+     * Find file type in directory
+     * @param dir Directory
+     * @return True if file type exists in directory.
+     */
     private static boolean getDirContainsMimeFile(String dir) {
         File file = new File(dir, MIMETYPE_FILE);
         if (file.exists()) {

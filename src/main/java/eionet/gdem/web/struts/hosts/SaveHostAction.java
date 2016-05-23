@@ -42,6 +42,11 @@ import eionet.gdem.web.struts.BaseAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Saves host action class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class SaveHostAction extends BaseAction {
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(SaveHostAction.class);
@@ -103,6 +108,13 @@ public class SaveHostAction extends BaseAction {
 
     }
 
+    /**
+     * Checks connection
+     * @param url URL
+     * @param username Username
+     * @param password Password
+     * @return True if connection is valid.
+     */
     private boolean checkConnection(String url, String username, String password) {
         boolean result = false;
         InputFile src = null;

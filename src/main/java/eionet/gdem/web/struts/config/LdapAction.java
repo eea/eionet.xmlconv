@@ -42,6 +42,11 @@ import eionet.gdem.utils.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Ldap Action class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class LdapAction extends Action {
 
     /** */

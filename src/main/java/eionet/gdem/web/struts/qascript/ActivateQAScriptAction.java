@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Activate QA script action.
  * @author eworx-alk
  */
 public class ActivateQAScriptAction extends Action {
@@ -61,6 +61,13 @@ public class ActivateQAScriptAction extends Action {
         return findForward(actionMapping, "success", schemaId);
     }
 
+    /**
+     * Finds forward
+     * @param actionMapping Action mapping
+     * @param f F
+     * @param schemaId Schema Id
+     * @return Action forward
+     */
     private ActionForward findForward(ActionMapping actionMapping, String f, String schemaId) {
         ActionForward forward = actionMapping.findForward(f);
         StringBuffer path = new StringBuffer(forward.getPath());

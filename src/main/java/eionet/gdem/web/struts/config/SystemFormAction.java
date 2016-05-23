@@ -39,6 +39,11 @@ import eionet.gdem.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * System form action.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class SystemFormAction extends Action {
 
     /** */

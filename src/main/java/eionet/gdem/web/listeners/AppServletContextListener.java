@@ -45,13 +45,19 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+/**
+ * Application Context Listener.
+ * @author Unknown
+ * @author George Sofianos
+ */
 @Component
 public class AppServletContextListener implements ApplicationListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppServletContextListener.class);
 
-
-    
+    /**
+     * Default Constructor
+     */
     public AppServletContextListener() {
     }
 
@@ -74,6 +80,11 @@ public class AppServletContextListener implements ApplicationListener {
         }
     }
 
+    /**
+     * Gets conversion types
+     * @param types Conversion types
+     * @return List of conversion types
+     */
     public static List<ConvType> loadConvTypes(String[] types) {
 
         List<ConvType> l = new ArrayList<ConvType>(types.length);

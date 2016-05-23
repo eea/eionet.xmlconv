@@ -32,10 +32,10 @@ import eionet.gdem.qa.QAFeedbackType;
 import eionet.gdem.utils.Utils;
 
 /**
- *
  * Builds ValidationService result object. Formats validation errors as HTML.
- *
+ * TODO: This class looks inefficient, check for replacing methods
  * @author Enriko Käsper
+ * @author George Sofianos
  */
 public class ValidationServiceFeedback {
 

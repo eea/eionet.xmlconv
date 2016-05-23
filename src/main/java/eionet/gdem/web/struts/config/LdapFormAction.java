@@ -39,6 +39,11 @@ import eionet.gdem.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * LDAP Form action class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class LdapFormAction extends Action {
 
     /** */

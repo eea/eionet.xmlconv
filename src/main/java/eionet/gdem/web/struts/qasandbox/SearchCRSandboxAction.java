@@ -46,7 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * SearchCRSandboxAction Search XML files from Content Registry
+ * SearchCRSandboxAction Search XML files from Content Registry.
  *
  * @author Enriko Käsper, Tieto Estonia
  *
@@ -113,10 +113,10 @@ public class SearchCRSandboxAction extends Action {
      * check if schema passed as request parameter exists in the list of schemas stored in the session. If there is no schema list
      * in the session, then create it
      *
-     * @param httpServletRequest
-     * @param schema
-     * @return
-     * @throws DCMException
+     * @param httpServletRequest Request
+     * @param schema Schema
+     * @return True if schema exists.
+     * @throws DCMException If an error occurs.
      */
     private boolean schemaExists(HttpServletRequest httpServletRequest, String schema) throws DCMException {
         QAScriptListHolder schemasInSession =  QAScriptListLoader.getList(httpServletRequest);

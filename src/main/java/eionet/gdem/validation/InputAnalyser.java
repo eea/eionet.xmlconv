@@ -30,6 +30,8 @@ import java.net.MalformedURLException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
@@ -47,8 +49,11 @@ import eionet.gdem.utils.Utils;
  * The class anayses XML file and extracts XML Schema, DTD, namespace and root element information.
  *
  * @author Enriko Käsper, TietoEnator Estonia AS InputAnalyser
+ * @author George Sofianos
  */
 public class InputAnalyser {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(InputAnalyser.class);
     private String schemaOrDTD = null;
     private String rootElement = null;
     private String namespace = null;
@@ -57,6 +62,9 @@ public class InputAnalyser {
     private String schemaNamespace = null;
     private boolean isDTD = false;
 
+    /**
+     * Default Constructor
+     */
     public InputAnalyser() {
 
     }
@@ -64,9 +72,9 @@ public class InputAnalyser {
     /**
      * Parse XML and load information from XML.
      *
-     * @param srcUrl
-     * @return
-     * @throws DCMException
+     * @param srcUrl Source url
+     * @return Parsed XML
+     * @throws DCMException If an error occurs.
      */
     public String parseXML(String srcUrl) throws DCMException {
         InputFile src = null;
@@ -104,10 +112,10 @@ public class InputAnalyser {
     /**
      * Parse info from InputStream.
      *
-     * @param input
-     * @return
-     * @throws GDEMException
-     * @throws SAXException
+     * @param input InputStream
+     * @return Parsed XML
+     * @throws GDEMException If an error occurs.
+     * @throws SAXException If an error occurs.
      */
     public String parseXML(InputStream input) throws GDEMException, SAXException {
         try {
@@ -130,11 +138,9 @@ public class InputAnalyser {
             try {
                 parser.setProperty("http://xml.org/sax/properties/lexical-handler", doctype_reader);
             } catch (SAXNotRecognizedException e) {
-                System.err.println("Installed XML parser does not provide lexical events...");
-                // return e.toString();
+                LOGGER.error("Installed XML parser does not provide lexical events...");
             } catch (SAXNotSupportedException e) {
-                System.err.println("Cannot turn on comment processing here");
-                // return e.toString();
+                LOGGER.error("Cannot turn on comment processing here");
             }
 
             reader.setContentHandler(handler);
@@ -183,6 +189,10 @@ public class InputAnalyser {
         return this.namespace;
     }
 
+    /**
+     * Returns if xml has namespace.
+     * @return True if xml has namespace
+     */
     public boolean hasNamespace() {
         return this.hasNamespace;
     }
@@ -231,16 +241,4 @@ public class InputAnalyser {
         this.namespace = namespace;
     }
 
-    public static void main(String[] argv) {
-        InputAnalyser sch = new InputAnalyser();//
-        /*
-         * try{ //sch.parseXML("http://localhost:8080/gdem/xml/meta.xml");
-         * //sch.parseXML("http://reporter.ceetel.net:18180/ro/eea/ewn3/envqhw5eg/test.xml");
-         * //sch.parseXML("http://195.250.186.59:8080/gdem/countrynames.tmx"); } catch(GDEMException e){
-         * System.out.println(e.toString()); }
-         */
-        System.out.println("start tag: " + sch.getRootElement());
-        System.out.println("schema or dtd: " + sch.getSchemaOrDTD());
-        System.out.println("ns: " + sch.getNamespace());
-    }
 }

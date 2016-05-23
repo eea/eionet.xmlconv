@@ -76,7 +76,7 @@ public class Excel2XmlConversionAction extends Action {
                 methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
                 cs.setHttpResponse(methodResponse);
             }
-            cs.setTrustedMode(true  );
+            cs.setTrustedMode(true);
             ConversionResultDto conversionResult = null;
             // execute conversion
             if (split.equals("split")) {
@@ -105,8 +105,8 @@ public class Excel2XmlConversionAction extends Action {
                     methodResponse.flush();
                     return null;
                 }
-                catch(Exception e){
-                    LOGGER.error("Unable to flush contetn. ", e);
+                catch (Exception e) {
+                    LOGGER.error("Unable to flush content. ", e);
                     e.printStackTrace();
                 }
             }
@@ -114,6 +114,11 @@ public class Excel2XmlConversionAction extends Action {
         return actionMapping.findForward("success");
     }
 
+    /**
+     * Process String
+     * @param arg Argument
+     * @return Result
+     */
     private String processFormStr(String arg) {
         String result = null;
         if (arg != null) {
@@ -123,6 +128,12 @@ public class Excel2XmlConversionAction extends Action {
         }
         return result;
     }
+
+    /**
+     * Process Boolean
+     * @param arg Argument
+     * @return Result
+     */
     private Boolean processFormBoolean(Boolean arg) {
         if (arg == null) {
             arg = false;

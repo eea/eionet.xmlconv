@@ -44,7 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * EditQAScriptInSandboxAction Find all the scripts for the given XML schema and allow to execute them in sandox
+ * EditQAScriptInSandboxAction Find all the scripts for the given XML schema and allow to execute them in sandbox.
  *
  * @author Enriko Käsper, Tieto Estonia
  */

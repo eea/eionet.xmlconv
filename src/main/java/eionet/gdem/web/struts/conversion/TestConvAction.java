@@ -102,7 +102,7 @@ public class TestConvAction extends Action {
                     // flush the content
                     methodResponse.flush();
                 }
-                catch(Exception e){
+                catch (Exception e) {
                     LOGGER.error("Unable to close Servlet Output Stream.", e);
                     e.printStackTrace();
                 }

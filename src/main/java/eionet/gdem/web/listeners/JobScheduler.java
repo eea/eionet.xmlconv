@@ -49,6 +49,7 @@ import static org.quartz.TriggerBuilder.newTrigger;
  * ContextListener for initialising scheduled jobs with quartz.
  *
  * @author Enriko Käsper, TripleDev
+ * @author George Sofianos
  */
 @SuppressWarnings("unchecked")
 public class JobScheduler implements ServletContextListener {
@@ -62,9 +63,8 @@ public class JobScheduler implements ServletContextListener {
     private static Pair<Integer, JobDetail>[] intervalJobs;
 
     /**
-     *
-     * @return
-     * @throws SchedulerException
+     * Initialize Job Scheduler
+     * @throws SchedulerException If an error occurs.
      */
     private static void init() throws SchedulerException {
 
@@ -74,11 +74,11 @@ public class JobScheduler implements ServletContextListener {
     }
 
     /**
-     *
-     * @param cronExpression
-     * @param jobDetails
-     * @throws SchedulerException
-     * @throws ParseException
+     * Schedules cron job.
+     * @param cronExpression Cron expression
+     * @param jobDetails Job details
+     * @throws SchedulerException If an error occurs.
+     * @throws ParseException If an error occurs.
      */
     public static synchronized void scheduleCronJob(String cronExpression, JobDetail jobDetails) throws SchedulerException,
     ParseException {
@@ -95,11 +95,11 @@ public class JobScheduler implements ServletContextListener {
     }
 
     /**
-     *
-     * @param repeatInterval
-     * @param jobDetails
-     * @throws SchedulerException
-     * @throws ParseException
+     * Schedules interval job.
+     * @param repeatInterval Repeat interval
+     * @param jobDetails Job Details
+     * @throws SchedulerException If an error occurs.
+     * @throws ParseException If an error occurs.
      */
     public static synchronized void scheduleIntervalJob(int repeatInterval, JobDetail jobDetails) throws SchedulerException,
     ParseException {
@@ -121,7 +121,6 @@ public class JobScheduler implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-
         if (quartzScheduler != null) {
             try {
                 quartzScheduler.shutdown(false);

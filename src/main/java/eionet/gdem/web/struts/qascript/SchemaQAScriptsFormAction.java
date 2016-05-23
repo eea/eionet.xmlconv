@@ -68,7 +68,7 @@ public class SchemaQAScriptsFormAction extends Action {
 
         try {
             SchemaManager sm = new SchemaManager();
-            st = sm.getSchemasWithQAScripts( schemaId);
+            st = sm.getSchemasWithQAScripts(schemaId);
             httpServletRequest.setAttribute(QAScriptListLoader.QASCRIPT_LIST_ATTR, QAScriptListLoader.getList(httpServletRequest));
             httpServletRequest.setAttribute("schema.qascripts", st);
 
