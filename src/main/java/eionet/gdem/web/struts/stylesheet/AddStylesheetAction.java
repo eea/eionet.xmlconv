@@ -36,6 +36,11 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Add stylesheet action.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class AddStylesheetAction extends Action {
 
     /** */

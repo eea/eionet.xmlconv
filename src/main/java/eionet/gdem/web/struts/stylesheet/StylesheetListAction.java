@@ -37,6 +37,11 @@ import eionet.gdem.exceptions.DCMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Stylesheet list action.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class StylesheetListAction extends Action {
 
     /** */

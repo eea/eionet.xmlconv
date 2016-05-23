@@ -7,17 +7,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Copy Catalog class.
  * @author Ervis Zyka <ez@eworx.gr>
  */
 public class CopyCatalogFileAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CopyCatalogFileAction.class.getName());
 
-    public CopyCatalogFileAction( ) throws IOException  {
+    /**
+     * Default constructor
+     * @throws IOException If an error occurs.
+     */
+    public CopyCatalogFileAction() throws IOException {
         
         String target = Properties.getStringProperty("catalogs");
-        if ( new File(target ) .exists() ) {
+        if (new File(target).exists()) {
             return;
         }
         String resource = this.getClass().getClassLoader().getResource("catalog.xml").getFile();
@@ -25,6 +29,12 @@ public class CopyCatalogFileAction {
 
     }
 
+    /**
+     * Copy file
+     * @param source Source
+     * @param target Target
+     * @throws IOException If an error occurs.
+     */
     void copyFile(String source, String target) throws IOException {
         File sourceFile = new File(source);
         File targetFile = new File(target);

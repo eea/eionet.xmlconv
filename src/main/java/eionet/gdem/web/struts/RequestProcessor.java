@@ -27,15 +27,24 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.tiles.TilesRequestProcessor;
 
+/**
+ * Request processor.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class RequestProcessor extends TilesRequestProcessor {
-
+    /**
+     * Default constructor.
+     */
     public RequestProcessor() {
         super();
     }
 
     /**
      * Preprocess every action that is called from struts framework
-     * 
+     * @param request Request
+     * @param response Response
+     * @return True if processed.
      */
     public boolean processPreprocess(HttpServletRequest request, HttpServletResponse response) {
         request.setAttribute("servletPath", request.getServletPath());
@@ -56,7 +65,7 @@ public class RequestProcessor extends TilesRequestProcessor {
         }
         return true;
     }
-
+    // TODO: Remove deprecated code
     // protected ActionForward processActionPerform(HttpServletRequest request, HttpServletResponse response, Action action,
     // ActionForm form, ActionMapping mapping) throws IOException, ServletException {
     // String path = request.getPathInfo();

@@ -25,8 +25,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
+/**
+ * JSP Utils.
+ * @author Unknown
+ * @author George Sofianos
+ */
 class JspUtils {
-
+    /**
+     * Returns breadcrumbs
+     * @param pageContext Context
+     * @return Breadcrumbs
+     */
     public static BreadCrumbs getBreadCrumbs(PageContext pageContext) {
         HttpSession session = pageContext.getSession();
         BreadCrumbs breadcrumbs = (BreadCrumbs) session.getAttribute("com.eurodyn.web.tags.breadcrumbs");
@@ -37,6 +46,11 @@ class JspUtils {
         return breadcrumbs;
     }
 
+    /**
+     * Returns URI
+     * @param request Request
+     * @return URI
+     */
     public static String getUri(HttpServletRequest request) {
         String uri;
         Object requestUri = request.getAttribute("javax.servlet.forward.request_uri");

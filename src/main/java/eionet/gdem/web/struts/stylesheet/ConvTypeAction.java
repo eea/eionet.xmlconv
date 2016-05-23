@@ -43,6 +43,11 @@ import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Convert type action.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class ConvTypeAction extends Action {
 
     /** */

@@ -39,6 +39,11 @@ import eionet.gdem.web.struts.schema.SchemaElemForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Delete Schema action.
+ * @author Unknown
+ * @author George Sofianos
+ */
 @Deprecated
 public class SchemaDeleteAction extends Action {
 

@@ -28,6 +28,11 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+/**
+ * Menu Item class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class MenuItem extends TagSupport {
 
     private String title;
@@ -46,9 +51,17 @@ public class MenuItem extends TagSupport {
         this.title = title;
     }
 
+    /**
+     * Default constructor.
+     */
     public MenuItem() {
     }
 
+    /**
+     * Starts tag
+     * @return Int
+     * @throws JspException If an error occurs.
+     */
     public int doStartTag() throws JspException {
         try {
             HttpServletRequestWrapper r = (HttpServletRequestWrapper) pageContext.getRequest();
@@ -83,6 +96,10 @@ public class MenuItem extends TagSupport {
         return EVAL_BODY_INCLUDE;
     }
 
+    /**
+     * Does end tag
+     * @return Int
+     */
     public int doEndTag() {
         try {
             pageContext.getOut().print("</a></li>");
@@ -108,6 +125,11 @@ public class MenuItem extends TagSupport {
         this.onclick = onclick;
     }
 
+    /**
+     * Gets path
+     * @param fullPath Full path
+     * @return Processed path
+     */
     private String getPath(String fullPath) {
         int i = fullPath.lastIndexOf('/');
         return fullPath.substring(0, i + 1);

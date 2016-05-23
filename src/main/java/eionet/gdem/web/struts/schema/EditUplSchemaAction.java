@@ -41,6 +41,10 @@ import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class EditUplSchemaAction extends Action {
 
     /** */

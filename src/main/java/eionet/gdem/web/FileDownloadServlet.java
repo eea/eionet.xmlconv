@@ -100,7 +100,7 @@ public class FileDownloadServlet extends HttpServlet {
      *            Whether the request body should be written (GET) or not (HEAD).
      * @throws IOException
      *             If something fails at I/O level.
-     * @throws ServletException
+     * @throws ServletException If an error occurs.
      */
     private void processRequest(HttpServletRequest request, HttpServletResponse response, boolean content) throws IOException,
     ServletException {
@@ -341,12 +341,12 @@ public class FileDownloadServlet extends HttpServlet {
     }
 
     /**
-     *
-     * @param message
-     * @param request
-     * @param response
-     * @throws IOException
-     * @throws ServletException
+     * Handles file not found
+     * @param message Message
+     * @param request Request
+     * @param response Response
+     * @throws IOException If an error occurs.
+     * @throws ServletException If an error occurs.
      */
     private void handleFileNotFound(String message, HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
@@ -491,8 +491,8 @@ public class FileDownloadServlet extends HttpServlet {
 	 * @param message error message to display for a user.
 	 * @param request HTTP servlet request
 	 * @param response HTTP servlet response
-	 * @throws IOException
-	 * @throws ServletException
+	 * @throws IOException If an error occurs.
+	 * @throws ServletException If an error occurs.
 	 */
 	private void handleNotAuthorised(String message, HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

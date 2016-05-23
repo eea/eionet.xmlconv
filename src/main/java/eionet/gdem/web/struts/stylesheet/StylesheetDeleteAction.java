@@ -38,6 +38,11 @@ import eionet.gdem.exceptions.DCMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Stylesheet delete action.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class StylesheetDeleteAction extends Action {
 
     /** */

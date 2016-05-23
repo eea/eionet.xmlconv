@@ -35,6 +35,11 @@ import org.apache.struts.upload.FormFile;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
 
+/**
+ * Stylesheet form class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class StylesheetForm extends ActionForm {
 
     private String schema;

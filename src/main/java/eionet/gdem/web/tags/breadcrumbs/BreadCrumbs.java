@@ -25,13 +25,27 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * BreadCrumbs.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class BreadCrumbs {
 
     private List trail = new ArrayList();
 
+    /**
+     * Default constructor
+     */
     public BreadCrumbs() {
     }
 
+    /**
+     * Adds to trail
+     * @param referer Referrer
+     * @param bc Breadcrumb
+     * @param level Level
+     */
     public void addToTrail(String referer, BreadCrumb bc, int level) {
         if (level == 0 && trail.size() > 0)
             return;
@@ -43,6 +57,10 @@ public class BreadCrumbs {
         trail.add(bc);
     }
 
+    /**
+     * Iterates
+     * @return Iterator
+     */
     public Iterator iterateTrail() {
         return trail.iterator();
     }

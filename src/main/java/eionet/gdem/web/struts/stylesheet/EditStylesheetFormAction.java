@@ -47,6 +47,11 @@ import eionet.gdem.exceptions.DCMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Edits stylesheet.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class EditStylesheetFormAction extends Action {
 
     /** */
@@ -95,7 +100,7 @@ public class EditStylesheetFormAction extends Action {
             // Define tag cannot set a null value
             form.setDependsOn(stylesheet.getDependsOn() == null ? "" : stylesheet.getDependsOn());
 
-            if(stylesheet.getSchemas().size()>0){
+            if (stylesheet.getSchemas().size() > 0) {
                 //set first schema for Run Conversion link
                 form.setSchema(stylesheet.getSchemas().get(0).getSchema());
                 // check if any related schema has type=EXCEL, if yes, then depends on info should be visible

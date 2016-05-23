@@ -29,6 +29,10 @@ import org.apache.struts.upload.FormFile;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class UplSchemaForm extends ActionForm {
 
     // T_SCHEMA table

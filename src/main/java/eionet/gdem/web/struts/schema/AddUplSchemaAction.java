@@ -43,6 +43,11 @@ import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Add upload schema action class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class AddUplSchemaAction extends Action {
 
     /** */
@@ -121,7 +126,15 @@ public class AddUplSchemaAction extends Action {
 
         return actionMapping.findForward("success");
     }
-    
+
+    /**
+     * Validation failure
+     * @param actionMapping Action mapping
+     * @param httpServletRequest Request
+     * @param errors Errors
+     * @param messageKey Message key
+     * @return Action forward
+     */
     private ActionForward onValidationFailure(ActionMapping actionMapping, HttpServletRequest httpServletRequest, ActionMessages errors, String messageKey) {
         errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(messageKey));
         saveErrors(httpServletRequest, errors);

@@ -36,6 +36,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
+/**
+ * Edit schema action class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class EditSchemaAction extends Action {
 
     /** */
@@ -118,7 +123,15 @@ public class EditSchemaAction extends Action {
 
         return actionMapping.findForward("success");
     }
-    
+
+    /**
+     * On Error action
+     * @param actionMapping Action mapping
+     * @param httpServletRequest Request
+     * @param errors Errors
+     * @param message Message
+     * @return Action forward
+     */
     private ActionForward onActionError(ActionMapping actionMapping, HttpServletRequest httpServletRequest, ActionMessages errors, ActionMessage message) {
         errors.add(ActionMessages.GLOBAL_MESSAGE, message);
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);

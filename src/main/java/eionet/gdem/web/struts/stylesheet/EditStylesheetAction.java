@@ -226,10 +226,10 @@ public class EditStylesheetAction extends LookupDispatchAction {
 
     /**
      * Returns the redirect path.
-     * @param actionMapping
-     * @param f
-     * @param stylesheetId
-     * @return
+     * @param actionMapping Action mapping
+     * @param f F
+     * @param stylesheetId Stylesheet Id
+     * @return Action forward
      */
     private ActionForward findForward(ActionMapping actionMapping, String f, String stylesheetId) {
         ActionForward forward = actionMapping.findForward(f);

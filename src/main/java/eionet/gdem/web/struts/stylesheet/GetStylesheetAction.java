@@ -44,6 +44,11 @@ import eionet.gdem.dto.ConversionDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Gets stylesheet action.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class GetStylesheetAction extends Action {
 
 
