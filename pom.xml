@@ -501,14 +501,6 @@
                 <artifactId>sesame-repository-sparql</artifactId>
                 <version>4.1.2</version>
             </dependency>
-            <!-- OpenOffice libraries used by Excel and ODT conversion functionality.
-                TODO: REMOVE THIS AND ITS IMPLEMENTATION
-            -->
-            <dependency>
-                <groupId>com.artofsolving</groupId>
-                <artifactId>jodconverter</artifactId>
-                <version>2.2.1</version>
-            </dependency>
             <!-- Metadata aggregator is used for analysing ODF files http://books.evc-cit.info/odf_utils/-->
             <dependency>
                 <groupId>metadata</groupId>

@@ -236,24 +236,6 @@ public class ConversionService extends RemoteService implements ConversionServic
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Vector<Object> convertExcelToXMLPush(byte[] file, String fileName) throws GDEMException {
-        ConversionResultDto dto = new ExcelToMultipleXML().convert(new ByteArrayInputStream(file), fileName);
-        return convertResult(dto);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Vector<Object> convertExcelToXML(String fileUrl) throws GDEMException {
-        ConversionResultDto dto = new ExcelToMultipleXML().convert(fileUrl);
-        return convertResult(dto);
-    }
-
-    /**
      * Converts result
      * @param dto Result transfer object
      * @return Converted result
