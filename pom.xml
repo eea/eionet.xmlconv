@@ -89,11 +89,12 @@
                                     <MYSQL_USER>testuser</MYSQL_USER>
                                     <MYSQL_PASSWORD>testpassword</MYSQL_PASSWORD>
                                 </env>
+                                <!--
                                 <volumes>
                                     <bind>
                                         <volume>/home/dev-gso/volumes/tmp:/var/lib/mysql</volume>
                                     </bind>
-                                </volumes>
+                                </volumes>-->
                                 <wait>
                                     <log>mysqld: ready for connections.</log>
                                     <time>20000</time>
