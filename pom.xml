@@ -17,7 +17,6 @@
         <spring.version>4.2.6.RELEASE</spring.version>
         <liquibase.changeLogFile>db/xmlconv-struct.xml</liquibase.changeLogFile>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <docker.host.address>${docker.host.address}</docker.host.address>
     </properties>
 
     <version>2.1-SNAPSHOT</version>
