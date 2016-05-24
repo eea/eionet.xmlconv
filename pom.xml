@@ -66,6 +66,23 @@
             </releases>
         </repository>
     </repositories>
+    <profiles>
+        <profile>
+            <id>deploy</id>
+            <properties>
+                <valid.images>mysql, tomcat</valid.images>
+            </properties>
+        </profile>
+        <profile>
+            <id>normal</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <valid.images>mysql</valid.images>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
@@ -75,6 +92,7 @@
                 <version>0.15.1</version>
                 <extensions>true</extensions>
                 <configuration>
+                    <image>${valid.images}</image>
                     <images>
                         <image>
                             <alias>mysql</alias>
@@ -101,6 +119,27 @@
                                 </wait>
                             </run>
                         </image>
+                        <image>
+                            <alias>tomcat</alias>
+                            <name>eeacms/xmlconv</name>
+                            <build>
+                                <from>tomcat:6</from>
+                                <maintainer>Aris Katsanas</maintainer>
+                                <tags>
+                                    <tag>latest</tag>
+                                    <tag>${project.version}</tag>
+                                </tags>
+                                <assembly>
+                                    <basedir>/usr/local/tomcat/webapps</basedir>
+                                    <descriptorRef>rootWar</descriptorRef>
+                                </assembly>
+                                <runCmds>
+                                    <run>rm -rf /usr/local/tomcat/conf/logging.properties</run>
+                                </runCmds>
+                                <optimise>true</optimise>
+                                <nocache>true</nocache>
+                            </build>
+                        </image>
                     </images>
                 </configuration>
                 <executions>
@@ -124,6 +163,14 @@
                         <goals>
                             <goal>logs</goal>
                             <goal>stop</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>build</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
                         </goals>
                     </execution>
                 </executions>
