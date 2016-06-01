@@ -25,10 +25,11 @@ public interface IXQJobDao extends IDbSchema {
      * @param url URL
      * @param xqFile XQ File
      * @param resultFile Result file
+     * @param xqType Script type
      * @throws SQLException
      *             DB error occurred.
      */
-    String startXQJob(String url, String xqFile, String resultFile) throws SQLException;
+    String startXQJob(String url, String xqFile, String resultFile, String xqType) throws SQLException;
 
     /**
      * Creates a new job in the queue XQ Script is saved earlier in the db.
@@ -37,10 +38,11 @@ public interface IXQJobDao extends IDbSchema {
      * @param xqFile XQ File
      * @param resultFile Result file
      * @param xqID - query id from db
+     * @param xqType Script Type
      * @throws SQLException
      *             DB error occurred.
      */
-    String startXQJob(String url, String xqFile, String resultFile, int xqID) throws SQLException;
+    String startXQJob(String url, String xqFile, String resultFile, int xqID, String xqType) throws SQLException;
 
     /**
      * Changes the status of the job in the table also changes the time_stamp showing when the new task was started.

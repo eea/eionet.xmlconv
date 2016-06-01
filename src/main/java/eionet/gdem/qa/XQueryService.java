@@ -42,6 +42,7 @@ import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.business.SourceFileManager;
 import eionet.gdem.dcm.remote.RemoteService;
+import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IQueryDao;
@@ -185,6 +186,7 @@ public class XQueryService extends RemoteService {
                 String query_id = String.valueOf(query.get("query_id"));
                 String queryFile = (String) query.get("query");
                 String contentType = (String) query.get("content_type_id");
+                String scriptType = (String) query.get("script_type");
                 String fileExtension = getExtension(outputTypes, contentType);
                 String resultFile =
                     Properties.tmpFolder + File.separatorChar + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "."
@@ -203,7 +205,7 @@ public class XQueryService extends RemoteService {
                             Utils.Replace(queryFile, Properties.gdemURL + "/" + Constants.QUERIES_FOLDER,
                                     Properties.queriesFolder + File.separator);
                     }
-                    newId = xqJobDao.startXQJob(file, queryFile, resultFile, queryId);
+                    newId = xqJobDao.startXQJob(file, queryFile, resultFile, queryId, scriptType);
                 } catch (SQLException sqe) {
                     throw new GDEMException("DB operation failed: " + sqe.toString());
                 }
@@ -266,7 +268,8 @@ public class XQueryService extends RemoteService {
         LOGGER.info("XML/RPC call for analyze xml: " + sourceURL);
         // save XQScript in a text file for the WQ
         try {
-            xqFile = Utils.saveStrToFile(xqScript, scriptType);
+            String extension = ScriptUtils.getExtensionFromScriptType(scriptType);
+            xqFile = Utils.saveStrToFile(xqScript, extension);
         } catch (FileNotFoundException fne) {
             throw new GDEMException("Folder does not exist: :" + fne.toString());
         } catch (IOException ioe) {
@@ -281,18 +284,15 @@ public class XQueryService extends RemoteService {
         try {
             // get the trusted URL from source file adapter
             sourceURL = SourceFileManager.getSourceFileAdapterURL(getTicket(), sourceURL, isTrustedMode());
-            newId = xqJobDao.startXQJob(sourceURL, xqFile, resultFile);
+            newId = xqJobDao.startXQJob(sourceURL, xqFile, resultFile, scriptType);
 
         } catch (SQLException sqe) {
-            sqe.printStackTrace();
             LOGGER.error("DB operation failed: " + sqe.toString());
             throw new GDEMException("DB operation failed: " + sqe.toString());
         } catch (MalformedURLException e) {
-            e.printStackTrace();
             LOGGER.error("Source file URL is wrong: " + e.toString());
             throw new GDEMException("Source file URL is wrong: " + e.toString());
         } catch (IOException e) {
-            e.printStackTrace();
             LOGGER.error("Error opening source file: " + e.toString());
             throw new GDEMException("Error opening source file: " + e.toString());
         }
@@ -325,7 +325,7 @@ public class XQueryService extends RemoteService {
                 status = Integer.valueOf(jobData[3]).intValue();
             }
         } catch (SQLException sqle) {
-            throw new GDEMException("Error gettign XQJob data from DB: " + sqle.toString());
+            throw new GDEMException("Error getting XQJob data from DB: " + sqle.toString());
         }
 
         LOGGER.info("XQueryService found status for job (" + jobId + "):" + String.valueOf(status));

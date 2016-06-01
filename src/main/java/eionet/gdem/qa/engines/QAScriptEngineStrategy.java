@@ -60,9 +60,8 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
         try {
             setOutputType(script.getOutputType());
             runQuery(script, out);
-
         } catch (Exception e) {
-            throw new GDEMException(e.toString(), e);
+            throw new GDEMException(e.getMessage(), e);
         }
     }
 

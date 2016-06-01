@@ -164,7 +164,6 @@ public class WorkqueueManager {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
             LOGGER.error("Error adding job to workqueue", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }

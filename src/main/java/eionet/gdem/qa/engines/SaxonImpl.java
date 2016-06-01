@@ -30,7 +30,7 @@ import net.sf.saxon.s9api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URI;
 
 /**
@@ -41,7 +41,7 @@ import java.net.URI;
 public class SaxonImpl extends QAScriptEngineStrategy {
 
     /** */
-    private static final Logger logger = LoggerFactory.getLogger(SaxonImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SaxonImpl.class);
 
     /**
      * Default Constructor
@@ -58,6 +58,8 @@ public class SaxonImpl extends QAScriptEngineStrategy {
 
         String queriesPathURI = Utils.getURIfromPath(eionet.gdem.Properties.queriesFolder, true);
         comp.setBaseURI(URI.create(queriesPathURI));
+
+        Reader queryReader = null;
         try {
             Serializer out = proc.newSerializer(result);
             out.setOutputProperty(Serializer.Property.INDENT, "no");
@@ -74,15 +76,34 @@ public class SaxonImpl extends QAScriptEngineStrategy {
             } else {
                 out.setOutputProperty(Serializer.Property.OMIT_XML_DECLARATION, "yes");
             }
+            if (!Utils.isNullStr(script.getScriptSource())) {
+                queryReader = new StringReader(script.getScriptSource());
+            } else if (!Utils.isNullStr(script.getScriptFileName())) {
+                queryReader = new FileReader(script.getScriptFileName());
+            } else {
+                throw new GDEMException("XQuery engine could not find script source or script file name!");
+            }
 
-            XQueryExecutable exp = comp.compile(script.getScriptSource());
+            XQueryExecutable exp = comp.compile(queryReader);
             XQueryEvaluator ev = exp.load();
             ev.setExternalVariable(new QName("source_url"), new XdmAtomicValue(script.getSrcFileUrl()));
             XdmValue val = ev.evaluate();
             proc.writeXdmValue(val, out);
         } catch (SaxonApiException e) {
-            logger.debug("Error in xquery script: " + e.getMessage());
+            LOGGER.debug("Error in XQuery script: " + e.getMessage());
             throw new GDEMException(e.getMessage(), e);
+        } catch (FileNotFoundException e) {
+            LOGGER.error("XQuery script file not found: " + e.getMessage());
+        } catch (IOException e) {
+            LOGGER.error("IO Error while reading script: " + e.getMessage());
+        } finally {
+            if (queryReader != null) {
+                try {
+                    queryReader.close();
+                } catch (IOException e) {
+                    LOGGER.error("Error while attempting to close reader: " + e.getMessage());
+                }
+            }
         }
     }
 }

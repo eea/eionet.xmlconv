@@ -353,5 +353,15 @@
             UPDATE T_QUERY SET `SCRIPT_TYPE` = "xquery 1.0" WHERE `SCRIPT_TYPE` = "xquery";
         </sql>
     </changeSet>
+    <changeSet author="sofiageo" id="rev-32">
+        <comment>
+            Added Script type to Jobs table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="XQ_TYPE" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
     
 </databaseChangeLog>

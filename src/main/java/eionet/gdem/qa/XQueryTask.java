@@ -63,6 +63,8 @@ public class XQueryTask extends Thread {
     private String jobId;
     /** query ID to be executed. */
     private String queryID;
+    /** Script type */
+    private String scriptType;
     /** Source url for XML. */
     private String url;
     /** Dao for getting job data. */
@@ -130,7 +132,6 @@ public class XQueryTask extends Thread {
                 // read query info from DB.
                 Map query = getQueryInfo(queryID);
                 String contentType = null;
-                String scriptType = null;
                 Schema schema = null;
                 boolean schemaExpired = false;
                 boolean isNotLatestReleasedDDSchema = false;
@@ -215,6 +216,8 @@ public class XQueryTask extends Thread {
             }
 
             changeStatus(Constants.XQ_READY);
+
+            // TODO: Change to failed if script has failed
             LOGGER.info("Job ID=" + jobId + " succeeded");
 
             // all done, thread stops here, job is waiting for pulling from the
@@ -230,7 +233,6 @@ public class XQueryTask extends Thread {
      */
     private void initVariables() {
         try {
-
             String[] jobData = xqJobDao.getXQJobData(jobId);
             if (jobData == null) {
                 handleError("No such job: " + jobId, true);
@@ -239,6 +241,7 @@ public class XQueryTask extends Thread {
             scriptFile = jobData[1];
             resultFile = jobData[2]; // just a file name, file is not created
             queryID = jobData[5];
+            scriptType = jobData[8];
         } catch (SQLException sqe) {
             handleError("Error getting WQ data from the DB: " + sqe.toString(), true);
         }
@@ -276,12 +279,7 @@ public class XQueryTask extends Thread {
 
         } catch (Exception e) {
             // what to do if exception occurs here...
-            LOGGER.error(Markers.fatal, "** Error occured when handling XQ error: " + e.toString());
-
-            // probably not needed -> 3 rows
-            System.err.println("=============================================================================");
-            System.err.println("** EXTREMELY FATAL ERROR OCCURED WHEN HANDLING ERROR: " + e.toString());
-            System.err.println("=============================================================================");
+            LOGGER.error(Markers.fatal, "** Error occurred when handling XQ error: " + e.toString());
         }
     }
 

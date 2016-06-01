@@ -26,8 +26,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -97,12 +95,10 @@ public class AddToWorkqueueAction extends Action {
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("message.qasandbox.jobAdded", jobId));
             }
         } catch (DCMException e) {
-            // e.printStackTrace();
             LOGGER.error("Error saving script content", e);
             saveErrors(httpServletRequest, errors);
             return actionMapping.findForward("error");
         } catch (Exception e) {
-            // e.printStackTrace();
             LOGGER.error("Error saving script content", e);
             saveErrors(httpServletRequest, errors);
             return actionMapping.findForward("error");
