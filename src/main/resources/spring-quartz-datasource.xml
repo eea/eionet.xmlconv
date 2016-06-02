@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+
+    <bean id="quartzDataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg ref="quartzHikariConfig" />
+    </bean>
+
+    <bean id="quartzHikariConfig" class="com.zaxxer.hikari.HikariConfig">
+        <property name="poolName" value="quartzHikariCP" />
+        <property name="minimumIdle" value="5"/>
+        <property name="maximumPoolSize" value="30"/>
+        <property name="dataSourceClassName" value="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" />
+        <property name="dataSourceProperties">
+            <props>
+                <prop key="url">${quartz.db.url}</prop>
+                <prop key="user">${quartz.db.user}</prop>
+                <prop key="password">${quartz.db.pwd}</prop>
+                <prop key="cachePrepStmts">true</prop>
+                <prop key="prepStmtCacheSize">250</prop>
+                <prop key="prepStmtCacheSqlLimit">2048</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Runs on Tomcat startup. -->
+    <bean id="quartz_liquibase" class="liquibase.integration.spring.SpringLiquibase">
+        <property name="dataSource" ref="quartzDataSource" />
+        <property name="changeLog" value="classpath:db/quartz-liquibase.xml" />
+    </bean>
+
+</beans>

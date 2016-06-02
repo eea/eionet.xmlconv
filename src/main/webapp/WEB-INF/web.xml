@@ -18,6 +18,7 @@
             classpath:spring-app-context.xml,
             classpath:spring-datasource-context.xml
             classpath:spring-runtime.xml
+            classpath:spring-quartz-datasource.xml
         </param-value>
     </context-param>
 

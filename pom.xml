@@ -325,6 +325,7 @@
                             <filtering>false</filtering>
                             <includes>
                                 <include>xmlconv-struct.xml</include>
+                                <include>quartz-liquibase.xml</include>
                             </includes>
                         </resource>
                         <resource>
