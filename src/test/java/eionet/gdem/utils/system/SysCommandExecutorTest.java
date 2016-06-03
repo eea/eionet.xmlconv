@@ -35,8 +35,6 @@ import static org.junit.Assert.*;
  * 
  * @author Enriko Käsper, Tieto Estonia SysCommandExecutorTest
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ApplicationTestContext.class })
 public class SysCommandExecutorTest {
 
     /**

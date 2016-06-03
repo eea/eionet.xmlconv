@@ -127,7 +127,7 @@
                             <alias>tomcat</alias>
                             <name>eeacms/xmlconv</name>
                             <build>
-                                <from>tomcat:6</from>
+                                <from>tomcat:6-jre8</from>
                                 <maintainer>Aris Katsanas</maintainer>
                                 <tags>
                                     <tag>latest</tag>
@@ -138,6 +138,7 @@
                                     <descriptorRef>rootWar</descriptorRef>
                                 </assembly>
                                 <runCmds>
+                                    <run>rm -rf /usr/local/tomcat/webapps/ROOT</run>
                                     <run>rm -rf /usr/local/tomcat/conf/logging.properties</run>
                                 </runCmds>
                                 <optimise>true</optimise>
