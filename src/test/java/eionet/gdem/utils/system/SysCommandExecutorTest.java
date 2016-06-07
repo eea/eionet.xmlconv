@@ -21,21 +21,21 @@
 
 package eionet.gdem.utils.system;
 
-import eionet.gdem.test.ApplicationTestContext;
-import junit.framework.TestCase;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.junit.rules.ExpectedException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * JUnit test test System Command functionality.
  * 
  * @author Enriko Käsper, Tieto Estonia SysCommandExecutorTest
+ * @author George Sofianos
  */
 public class SysCommandExecutorTest {
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
     /**
      * The method tests, if the system is able to execute some simple commands
@@ -44,12 +44,12 @@ public class SysCommandExecutorTest {
      */
     @Test
     public void testCommand() throws Exception {
-
         SysCommandExecutor exe = new SysCommandExecutor();
         exe.setOutputLogDevice(new LogDevice());
         exe.setErrorLogDevice(new LogDevice());
         exe.setTimeout(20000L);
         int status = exe.runCommand("echo OK");
+        Thread.sleep(1000);
         String out = exe.getCommandOutput();
 
         assertEquals(0, status);
@@ -63,19 +63,12 @@ public class SysCommandExecutorTest {
      */
     @Test
     public void testCommandTimeout() throws Exception {
-
-        Exception eTimeout = null;
         SysCommandExecutor exe = new SysCommandExecutor();
         exe.setOutputLogDevice(new LogDevice());
         exe.setErrorLogDevice(new LogDevice());
         exe.setTimeout(1L); // 1 second
-
-        try {
-            int status = exe.runCommand("sleep 3");
-        } catch (RuntimeException e) {
-            eTimeout = e;
-        }
-        // asset the exception object
-        assertNotNull("No expected exception", eTimeout);
+        exception.expect(RuntimeException.class);
+        exception.reportMissingExceptionWithMessage("No expected exception: %s");
+        int status = exe.runCommand("sleep 3");
     }
 }

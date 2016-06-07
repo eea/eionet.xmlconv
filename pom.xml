@@ -74,12 +74,19 @@
             </properties>
         </profile>
         <profile>
-            <id>normal</id>
+            <id>docker</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <valid.images>mysql</valid.images>
+            </properties>
+        </profile>
+        <profile>
+            <id>local</id>
+            <properties>
+                <docker.host.address>localhost</docker.host.address>
+                <valid.images>none</valid.images>
             </properties>
         </profile>
     </profiles>
@@ -89,7 +96,7 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.15.3</version>
+                <version>0.15.5</version>
                 <extensions>true</extensions>
                 <configuration>
                     <image>${valid.images}</image>
@@ -719,12 +726,12 @@
                 <artifactId>vtd-xml</artifactId>
                 <version>2.12</version>
             </dependency>
-            <!-- TEST dependencies -->
 
+            <!-- TEST dependencies -->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>4.12</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
