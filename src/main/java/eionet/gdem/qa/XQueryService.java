@@ -49,6 +49,16 @@ import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.FeedbackAnalyzer;
+import static eionet.gdem.web.listeners.JobScheduler.getQuartzScheduler;
+import java.util.logging.Level;
+import static org.quartz.JobBuilder.newJob;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SchedulerFactory;
+import org.quartz.Trigger;
+import static org.quartz.TriggerBuilder.newTrigger;
+import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -265,7 +275,7 @@ public class XQueryService extends RemoteService {
     public String analyze(String sourceURL, String xqScript, String scriptType) throws GDEMException {
         String xqFile = "";
 
-        LOGGER.info("XML/RPC call for analyze xml: " + sourceURL);
+        LOGGER.info("XML/RPC call for analyze xml (w/ quartz): " + sourceURL);
         // save XQScript in a text file for the WQ
         try {
             String extension = ScriptUtils.getExtensionFromScriptType(scriptType);
@@ -284,8 +294,26 @@ public class XQueryService extends RemoteService {
         try {
             // get the trusted URL from source file adapter
             sourceURL = SourceFileManager.getSourceFileAdapterURL(getTicket(), sourceURL, isTrustedMode());
+            
+            //save the job definition in the DB
             newId = xqJobDao.startXQJob(sourceURL, xqFile, resultFile, scriptType);
+//            
+            // ** Schedule the job with quartz to execute as soon as possibly.
+            // only the job_id is needed for the job to be executed
+            // Define sn anonymous job
+            JobDetail job1 = newJob(eionet.gdem.qa.XQueryJob.class)
+                .usingJobData("jobId", newId )
+                .build();
 
+            // Define a Trigger that will fire "now", and not repeat
+            Trigger trigger = newTrigger()
+                .startNow()
+                .build();
+
+            // Schedule the job
+            Scheduler quartzScheduler = getQuartzScheduler();
+            quartzScheduler.scheduleJob(job1, trigger);
+            
         } catch (SQLException sqe) {
             LOGGER.error("DB operation failed: " + sqe.toString());
             throw new GDEMException("DB operation failed: " + sqe.toString());
@@ -295,6 +323,9 @@ public class XQueryService extends RemoteService {
         } catch (IOException e) {
             LOGGER.error("Error opening source file: " + e.toString());
             throw new GDEMException("Error opening source file: " + e.toString());
+        } catch (SchedulerException e) {
+            LOGGER.error("Scheduler exception: " + e.toString());
+            throw new GDEMException("Scheduler exception: " + e.toString());
         }
         return newId;
     }
