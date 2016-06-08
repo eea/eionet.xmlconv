@@ -27,6 +27,7 @@ import java.util.List;
 import eionet.gdem.conversion.datadict.DDTable;
 
 /**
+ * TODO: Check if this isn't used any more.
  * @author Enriko Käsper, Tieto Estonia ConversionMetadata
  * @author George Sofianos
  */
