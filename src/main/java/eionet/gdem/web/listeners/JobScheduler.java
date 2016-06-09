@@ -60,6 +60,13 @@ public class JobScheduler implements ServletContextListener {
     /** */
     private static Scheduler quartzScheduler = null;
 
+    public static Scheduler getQuartzScheduler() throws SchedulerException {
+        if (quartzScheduler == null) {
+            init();
+        }
+        return quartzScheduler;
+    }
+
     private static Pair<Integer, JobDetail>[] intervalJobs;
 
     /**
