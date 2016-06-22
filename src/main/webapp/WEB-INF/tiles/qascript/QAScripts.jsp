@@ -10,7 +10,7 @@
 
 
 
-    <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" property="ssiPrm" >
+    <logic:equal value="true"  name="qascript.permissions" property="ssiPrm" >
         <div id="operations">
             <ul>
                    <li>
@@ -29,7 +29,7 @@
 
     <div class="visualClear">&nbsp;</div>
 
-    <logic:present name="qascripts" name="qascript.qascriptList" property="qascripts" >
+    <logic:present name="qascript.qascriptList" property="qascripts" >
         <div style="width: 97%">
             <table class="datatable" width="100%">
                 <col/>

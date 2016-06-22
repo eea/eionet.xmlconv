@@ -10,7 +10,7 @@
 
 <logic:present name="xmlfiles.uploaded">
 
-    <logic:equal name="ssiPrm" value="true"  name="xmlfiles.uploaded" property="ssiPrm" >
+    <logic:equal name="xmlfiles.uploaded" value="true"  property="ssiPrm" >
         <div id="operations">
           <ul>
               <li><a href="addUplXmlFileForm"><bean:message key="label.uplXmlFile.add" /></a></li>
@@ -27,13 +27,13 @@
 
     <div class="visualClear">&nbsp;</div>
 
-    <logic:present name="xmlfiles" name="xmlfiles.uploaded" property="xmlfiles" >
+    <logic:present name="xmlfiles.uploaded" property="xmlfiles" >
         <html:form action="/deleteUplXmlFile" method="post">
             <table class="datatable" width="100%">
-                <logic:equal name="ssdPrm" value="true"  name="xmlfiles.uploaded" property="ssuPrm" >
+                <logic:equal value="true"  name="xmlfiles.uploaded" property="ssuPrm" >
                     <col style="width:5%"/>
                 </logic:equal>
-                <logic:equal name="ssuPrm" value="true"  name="xmlfiles.uploaded" property="ssuPrm" >
+                <logic:equal value="true"  name="xmlfiles.uploaded" property="ssuPrm" >
                     <col style="width:5%"/>
                 </logic:equal>
                 <col style="width:30%"/>
@@ -41,10 +41,10 @@
                 <col style="width:25%"/>
                 <thead>
                     <tr>
-                        <logic:equal name="ssdPrm" value="true"  name="xmlfiles.uploaded" property="ssuPrm" >
+                        <logic:equal value="true"  name="xmlfiles.uploaded" property="ssuPrm" >
                             <th scope="col">&#160;</th>
                         </logic:equal>
-                        <logic:equal name="ssuPrm" value="true"  name="xmlfiles.uploaded" property="ssuPrm" >
+                        <logic:equal value="true"  name="xmlfiles.uploaded" property="ssuPrm" >
                             <th scope="col">&#160;</th>
                         </logic:equal>
                         <th scope="col"><span title="XML File"><bean:message key="label.table.uplXmlFile.xmlfile"/></span></th>
@@ -55,13 +55,13 @@
                 <tbody>
                     <logic:iterate indexId="index" id="xmlfile" name="xmlfiles.uploaded" property="xmlfiles" type="UplXmlFile">
                         <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
-                            <logic:equal name="ssdPrm" value="true"  name="xmlfiles.uploaded" property="ssdPrm" >
+                            <logic:equal value="true"  name="xmlfiles.uploaded" property="ssdPrm" >
                                 <td align="center" >
                                     <bean:define id="fileId" name="xmlfile" property="id" />
                                     <input type="radio" name="xmlfileId" value="${fileId}" />
                                 </td>
                             </logic:equal>
-                            <logic:equal name="ssuPrm" value="true"  name="xmlfiles.uploaded" property="ssuPrm" >
+                            <logic:equal value="true"  name="xmlfiles.uploaded" property="ssuPrm" >
                                 <td align="center" >
                                     <a href="editUplXmlFileForm?xmlfileId=<bean:write name="xmlfile" property="id" />">
                                         <img src="<bean:write name="webRoot"/>/images/edit.gif" alt="<bean:message key="label.edit" />" title="edit XML file" /></a>
@@ -76,10 +76,10 @@
                                 <bean:write name="xmlfile" property="title" />
                             </td>
                             <td>
-                                <logic:notEqual name="fileExists" value=""  name="xmlfile" property="lastModified" >
+                                <logic:notEqual value=""  name="xmlfile" property="lastModified" >
                                     <bean:write name="xmlfile" property="lastModified" />
                                 </logic:notEqual>
-                                <logic:equal name="fileNotExists" value=""  name="xmlfile" property="lastModified" >
+                                <logic:equal value=""  name="xmlfile" property="lastModified" >
                                     <span style="color:red"><bean:message key="label.fileNotFound"/></span>
                                 </logic:equal>
                             </td>
@@ -92,14 +92,14 @@
                 </tbody>
             </table>
             <div class="boxbottombuttons">
-                <logic:equal name="ssdPrm" value="true"  name="xmlfiles.uploaded" property="ssdPrm" >
+                <logic:equal value="true"  name="xmlfiles.uploaded" property="ssdPrm" >
                     <input type="button"  class="button" value="<bean:message key="label.delete"/>" onclick="return submitAction(1,'deleteUplXmlFile');" />
                     <input type="button"  class="button" value="Rename" onclick="return submitAction(1,'renameUplXmlFileForm');" />
                 </logic:equal>
             </div>
         </html:form>
     </logic:present>
-    <logic:notPresent name="xmlfiles" name="xmlfiles.uploaded" property="xmlfiles" >
+    <logic:notPresent name="xmlfiles.uploaded" property="xmlfiles" >
         <div class="advice-msg">
             <bean:message key="label.uplXmlFile.noXmlFiles"/>
         </div>

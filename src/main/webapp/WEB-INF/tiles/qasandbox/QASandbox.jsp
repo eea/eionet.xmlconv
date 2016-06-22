@@ -131,7 +131,7 @@
 
         <%-- QA script type & content --%>
         <logic:equal name="QASandboxForm" property="showScripts" value="false">
-            <logic:equal name="qsiPrm" value="true"  name="qascript.permissions" property="qsiPrm" >
+            <logic:equal value="true"  name="qascript.permissions" property="qsiPrm" >
             <tr class="zebraeven">
                 <td>
                      <label class="question">
@@ -179,13 +179,13 @@
                             <bean:message key="label.qasandbox.runNow"/>
                         </html:submit>
                         <%--  Add scripts to workqueue  --%>
-                        <logic:equal name="wqiPrm" value="true"  name="qascript.permissions" property="wqiPrm" >
+                        <logic:equal value="true"  name="qascript.permissions" property="wqiPrm" >
                             <html:submit styleClass="button" property="action">
                                 <bean:message key="label.qasandbox.addToWorkqueue"/>
                             </html:submit>
                         </logic:equal>
                         <%--  Save content to file --%>
-                        <logic:equal name="wquPrm" value="true"  name="qascript.permissions" property="wquPrm" >
+                        <logic:equal value="true"  name="qascript.permissions" property="wquPrm" >
                             <logic:equal name="QASandboxForm" property="showScripts" value="false">
                                 <logic:present name="QASandboxForm" property="scriptId">
                                     <logic:notEqual name="QASandboxForm" property="scriptId" value="0">
@@ -233,7 +233,7 @@
                                             <bean:write name="qascript" property="fileName" />
                                         </html:link>
                                         (<bean:write name="qascript" property="scriptType" />)
-                                        <logic:equal name="qsuPrm" value="true"  name="qascript.permissions" property="qsuPrm" >
+                                        <logic:equal value="true"  name="qascript.permissions" property="qsuPrm" >
                                           <%--  If scriptType is NOT 'FME' --%>
                                             <logic:notEqual name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
                                               <html:link page="/do/editQAScriptInSandbox" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.editScriptTitle">
@@ -255,7 +255,7 @@
                         </td>
                     </tr>
                 </logic:equal>
-                <logic:equal name="qsiPrm" value="true"  name="qascript.permissions" property="qsiPrm" >
+                <logic:equal value="true"  name="qascript.permissions" property="qsiPrm" >
                     <tr>
                         <td>
                             <html:link page="/do/editQAScriptInSandbox?scriptId=0" titleKey="label.qasandbox.editScriptTitle">
@@ -274,7 +274,7 @@
                             <bean:message key="label.qasandbox.runNow"/>
                         </html:submit>
                         <%--  Add scripts to workqueue  --%>
-                        <logic:equal name="wqiPrm" value="true"  name="qascript.permissions" property="wqiPrm" >
+                        <logic:equal value="true"  name="qascript.permissions" property="wqiPrm" >
                             <html:submit styleClass="button" property="action">
                                 <bean:message key="label.qasandbox.addToWorkqueue"/>
                             </html:submit>
