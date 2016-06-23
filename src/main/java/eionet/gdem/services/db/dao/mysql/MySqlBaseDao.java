@@ -1,7 +1,6 @@
 package eionet.gdem.services.db.dao.mysql;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -9,14 +8,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import eionet.gdem.Properties;
 import eionet.gdem.SpringApplicationContext;
-import eionet.gdem.logging.Markers;
-import eionet.gdem.services.GDEMServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,8 +25,6 @@ public abstract class MySqlBaseDao {
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(MySqlBaseDao.class);
 
-    private static DataSource ds = null;
-
     protected static boolean isDebugMode = LOGGER.isDebugEnabled();
 
     /**
@@ -40,79 +32,26 @@ public abstract class MySqlBaseDao {
      *
      * @throws NamingException If an error occurs.
      */
-    private static void initDataSource() throws NamingException {
-        try {
-            InitialContext ctx = new InitialContext();
-            ds = (DataSource) SpringApplicationContext.getBean("dataSource");
-        } catch (NamingException e) {
-            LOGGER.error(Markers.fatal, "Initialization of datasource failed: ", e);
+    private static class DataSourceHolder {
+        private static final DataSource CONNECTION;
+        static {
+            try {
+                CONNECTION = (DataSource) SpringApplicationContext.getBean("dataSource");
+                //CONNECTION = new ObjectFactory();
+            } catch (Exception e) {
+                throw new ExceptionInInitializerError(e);
+            }
         }
     }
 
     /**
      * Returns new database connection.
      *
+     * @return Connection from the LazyHolder Class (Initialization-on-demand holder idiom)
      * @throws SQLException If an error occurs.
      */
-    public static synchronized Connection getConnection() throws SQLException {
-        if (GDEMServices.isTestConnection()) {
-            return getSimpleConnection();
-        } else {
-            return getJNDIConnection();
-        }
-    }
-
-    /**
-     * Returns new database connection. Read properties from Context
-     *
-     * @throws SQLException If an error occurs.
-     */
-    public static synchronized Connection getJNDIConnection() throws SQLException {
-        try {
-            if (ds == null) {
-                initDataSource();
-            }
-            return ds.getConnection();
-        } catch (Exception e) {
-            throw new SQLException("Failed to get connection through JNDI: " + e.toString());
-        }
-    }
-
-    /**
-     * Returns new database connection. Read properties from gdem.properties
-     *
-     * @return Connection
-     * @throws SQLException If an error occurs.
-     */
-    private static synchronized Connection getSimpleConnection() throws SQLException {
-
-        String drv = Properties.dbDriver;
-        if (drv == null || drv.trim().length() == 0) {
-            throw new SQLException("Failed to get connection, missing property: " + Properties.dbDriver);
-        }
-
-        String url = Properties.dbUrl;
-        if (url == null || url.trim().length() == 0) {
-            throw new SQLException("Failed to get connection, missing property: " + Properties.dbUrl);
-        }
-
-        String usr = Properties.dbUser;
-        if (usr == null || usr.trim().length() == 0) {
-            throw new SQLException("Failed to get connection, missing property: " + Properties.dbUser);
-        }
-
-        String pwd = Properties.dbPwd;
-        if (pwd == null || pwd.trim().length() == 0) {
-            throw new SQLException("Failed to get connection, missing property: " + Properties.dbPwd);
-        }
-
-        try {
-            Class.forName(drv);
-            return DriverManager.getConnection(url, usr, pwd);
-        } catch (ClassNotFoundException e) {
-            throw new SQLException((new StringBuilder()).append("Failed to get connection, driver class not found: ").append(drv)
-                    .append(".").append(e.toString()).toString());
-        }
+    public static Connection getConnection() throws SQLException {
+        return DataSourceHolder.CONNECTION.getConnection();
     }
 
     /**
