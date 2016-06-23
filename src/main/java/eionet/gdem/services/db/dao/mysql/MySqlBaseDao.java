@@ -33,10 +33,10 @@ public abstract class MySqlBaseDao {
      * @throws NamingException If an error occurs.
      */
     private static class DataSourceHolder {
-        private static final DataSource CONNECTION;
+        private static final DataSource DATASOURCE;
         static {
             try {
-                CONNECTION = (DataSource) SpringApplicationContext.getBean("dataSource");
+                DATASOURCE = (DataSource) SpringApplicationContext.getBean("dataSource");
                 //CONNECTION = new ObjectFactory();
             } catch (Exception e) {
                 throw new ExceptionInInitializerError(e);
@@ -51,7 +51,7 @@ public abstract class MySqlBaseDao {
      * @throws SQLException If an error occurs.
      */
     public static Connection getConnection() throws SQLException {
-        return DataSourceHolder.CONNECTION.getConnection();
+        return DataSourceHolder.DATASOURCE.getConnection();
     }
 
     /**
