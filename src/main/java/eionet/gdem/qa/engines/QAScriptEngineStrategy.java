@@ -25,14 +25,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.qa.QAResultPostProcessor;
 import eionet.gdem.qa.XQEngineIF;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Enriko Käsper, Tieto Estonia QAScriptEngineStrategy
@@ -41,10 +43,16 @@ import eionet.gdem.utils.Utils;
 public abstract class QAScriptEngineStrategy implements XQEngineIF {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(QAScriptEngineStrategy.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptEngineStrategy.class);
     private String encoding = null;
     private String outputType = null;
 
+    /**
+     * Runs query
+     * @param script Script to run
+     * @param result Result
+     * @throws GDEMException If an error occurs.
+     */
     protected abstract void runQuery(XQScript script, OutputStream result) throws GDEMException;
 
     @Override
@@ -52,9 +60,8 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
         try {
             setOutputType(script.getOutputType());
             runQuery(script, out);
-
         } catch (Exception e) {
-            throw new GDEMException(e.toString(), e);
+            throw new GDEMException(e.getMessage(), e);
         }
     }
 
@@ -66,7 +73,7 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
         try {
             res = result.toString(DEFAULT_ENCODING);
             if (LOGGER.isDebugEnabled()){
-                String logResult = res.length()>299 ?  res.substring(0, 300) : res;
+                String logResult = res.length() > 299 ?  res.substring(0, 300) : res;
                 LOGGER.debug("RESULT: \n" + logResult);
             }
 
@@ -118,6 +125,12 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
         }
     }
 
+    /**
+     * Parses parameters
+     * @param xqParams xquery parameters
+     * @return Parameter map
+     * @throws GDEMException If an error occurs.
+     */
     public HashMap parseParams(String[] xqParams) throws GDEMException {
         HashMap<String, String> paramsMap = new HashMap<String, String>();
 

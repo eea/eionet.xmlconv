@@ -28,6 +28,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+/**
+ * Push tag.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class PushTag extends TagSupport {
     // private static final WDSLogger logger = WDSLogger.getLogger(PushTag.class);
 
@@ -37,6 +42,9 @@ public class PushTag extends TagSupport {
 
     private String level;
 
+    /**
+     * Default constructor.
+     */
     public PushTag() {
     }
 
@@ -60,6 +68,10 @@ public class PushTag extends TagSupport {
         return level;
     }
 
+    /**
+     * Sets level
+     * @param level Level
+     */
     public void setLevel(String level) {
         try {
             this.level = new Integer(level).toString();
@@ -69,6 +81,11 @@ public class PushTag extends TagSupport {
         }
     }
 
+    /**
+     * Ends tag
+     * @return Int
+     * @throws JspException If an error occurs.
+     */
     public int doEndTag() throws JspException {
         BreadCrumbs breadcrumbs = JspUtils.getBreadCrumbs(pageContext);
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();

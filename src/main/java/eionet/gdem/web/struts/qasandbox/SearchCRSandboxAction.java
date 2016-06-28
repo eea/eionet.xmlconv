@@ -26,8 +26,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -42,9 +42,11 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * SearchCRSandboxAction Search XML files from Content Registry
+ * SearchCRSandboxAction Search XML files from Content Registry.
  *
  * @author Enriko Käsper, Tieto Estonia
  *
@@ -53,7 +55,7 @@ import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 public class SearchCRSandboxAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SearchCRSandboxAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SearchCRSandboxAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
@@ -111,10 +113,10 @@ public class SearchCRSandboxAction extends Action {
      * check if schema passed as request parameter exists in the list of schemas stored in the session. If there is no schema list
      * in the session, then create it
      *
-     * @param httpServletRequest
-     * @param schema
-     * @return
-     * @throws DCMException
+     * @param httpServletRequest Request
+     * @param schema Schema
+     * @return True if schema exists.
+     * @throws DCMException If an error occurs.
      */
     private boolean schemaExists(HttpServletRequest httpServletRequest, String schema) throws DCMException {
         QAScriptListHolder schemasInSession =  QAScriptListLoader.getList(httpServletRequest);

@@ -32,6 +32,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.Date;
 
+/**
+ * Schema element form.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class SchemaElemForm extends ValidatorForm {
 
     private String schema;
@@ -81,6 +86,10 @@ public class SchemaElemForm extends ValidatorForm {
         return expireDate;
     }
 
+    /**
+     * Returns date
+     * @return date
+     */
     public String getLongExpireDate() {
         if (expireDateObj == null) {
             return "";
@@ -178,11 +187,20 @@ public class SchemaElemForm extends ValidatorForm {
         this.elemName = elemName;
     }
 
+    /**
+     * Sets expire date
+     * @param expireDate Expire date
+     */
     public void setExpireDateObj(Date expireDate) {
         this.expireDateObj = expireDate;
         this.expireDate = Utils.getFormat(expireDate, "dd/MM/yyyy");
     }
 
+    /**
+     * Sets expire date
+     * @param strExpireDate Expire date
+     * @throws ParseException If an error occurs.
+     */
     public void setExpireDate(String strExpireDate) throws ParseException {
         this.expireDate = strExpireDate;
         if (Utils.isNullStr(strExpireDate)) {

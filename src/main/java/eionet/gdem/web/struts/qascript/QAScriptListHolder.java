@@ -24,6 +24,11 @@ import java.util.List;
 
 import eionet.gdem.dto.Schema;
 
+/**
+ * QA Script List Holder.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class QAScriptListHolder {
     /**
      * @author Enriko Käsper, Tieto Estonia QAScriptListHolder
@@ -53,6 +58,9 @@ public class QAScriptListHolder {
         this.qsiPrm = qsiPrm;
     }
 
+    /**
+     * Default constructor
+     */
     public QAScriptListHolder() {
     }
 

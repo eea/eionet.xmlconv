@@ -23,6 +23,11 @@
 
 package eionet.gdem.validation;
 
+/**
+ * Unparsed Entity.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class UnparsedEntity {
 
     private String name;
@@ -30,6 +35,13 @@ public class UnparsedEntity {
     private String systemID;
     private String notationName;
 
+    /**
+     * Constructor
+     * @param name Name
+     * @param publicID Public Id
+     * @param systemID System Id
+     * @param notationName Notation name
+     */
     public UnparsedEntity(String name, String publicID, String systemID, String notationName) {
 
         this.name = name;
@@ -55,6 +67,11 @@ public class UnparsedEntity {
         return this.notationName;
     }
 
+    /**
+     * Equals Method
+     * @param o Object
+     * @return True if objects are equals
+     */
     public boolean equals(Object o) {
 
         if (o instanceof UnparsedEntity) {
@@ -70,6 +87,10 @@ public class UnparsedEntity {
 
     }
 
+    /**
+     * Gets hashcode
+     * @return Hash code
+     */
     public int hashCode() {
 
         if (publicID == null) {
@@ -80,6 +101,10 @@ public class UnparsedEntity {
 
     }
 
+    /**
+     * Returns toString
+     * @return Entity toString
+     */
     public String toString() {
 
         StringBuffer result = new StringBuffer(name);

@@ -28,6 +28,11 @@ import org.apache.commons.io.IOUtils;
 
 import eionet.gdem.conversion.spreadsheet.SourceReaderIF;
 
+/**
+ * OpenDocument utility class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class OpenDocumentUtils {
 
     /**
@@ -38,12 +43,12 @@ public class OpenDocumentUtils {
     }
     /**
      * Returns true, if inputstream is zip file
-     * @param input
-     * @return
+     * @param input InputStream
+     * @return True if InputStream is a zip file.
      */
     public static boolean isSpreadsheetFile(InputStream input) {
 
-        ZipInputStream zipStream=null;
+        ZipInputStream zipStream = null;
         ZipEntry zipEntry = null;
         try {
             zipStream = new ZipInputStream(input);

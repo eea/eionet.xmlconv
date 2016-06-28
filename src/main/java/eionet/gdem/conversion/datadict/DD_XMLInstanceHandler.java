@@ -36,6 +36,7 @@ import eionet.gdem.utils.Utils;
  * Handler for parsing xml instance document from datadictionary extening SAX helpers DefaultHandler.
  *
  * @author Enriko Käsper
+ * @author George Sofianos
  */
 
 public class DD_XMLInstanceHandler extends DefaultHandler {
@@ -51,14 +52,30 @@ public class DD_XMLInstanceHandler extends DefaultHandler {
     private int level = 0;
     private String cur_table = null;
 
+    /**
+     * Constructor.
+     * @param instance XML instance
+     */
     public DD_XMLInstanceHandler(DD_XMLInstance instance) {
         this.instance = instance;
     }
 
+    /**
+     * Adds namespaces.
+     * @param prefix Namespace prefix
+     * @param uri Namespace uri
+     */
     public void startPrefixMapping(String prefix, String uri) {
         instance.addNamespace(prefix, uri);
     }
 
+    /**
+     * Starts element.
+     * @param uri Uri
+     * @param localName Local name
+     * @param name Name
+     * @param attributes Attributes
+     */
     public void startElement(String uri, String localName, String name, Attributes attributes) {
 
         if (level == root_level) { // root level
@@ -85,9 +102,21 @@ public class DD_XMLInstanceHandler extends DefaultHandler {
         }
     }
 
+    /**
+     * Nothing
+     * @param ch ch
+     * @param start start
+     * @param len len
+     */
     public void characters(char[] ch, int start, int len) {
     }
 
+    /**
+     * Ends element
+     * @param uri Uri
+     * @param localName local name
+     * @param name name
+     */
     public void endElement(String uri, String localName, String name) {
         if (level > table_level) {
             if (localName.equalsIgnoreCase(ROW_TAG)) {
@@ -96,6 +125,11 @@ public class DD_XMLInstanceHandler extends DefaultHandler {
         }
     }
 
+    /**
+     * Converts attributes to String.
+     * @param attributes Attributes
+     * @return String of attributes
+     */
     private String attributesToString(Attributes attributes) {
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < attributes.getLength(); i++) {
@@ -109,6 +143,10 @@ public class DD_XMLInstanceHandler extends DefaultHandler {
 
     }
 
+    /**
+     * Sets document locator
+     * @param locator Locator
+     */
     public void setDocumentLocator(Locator locator) {
         Locator startloc = new LocatorImpl(locator);
         String encoding = getEncoding(startloc);
@@ -116,6 +154,11 @@ public class DD_XMLInstanceHandler extends DefaultHandler {
             instance.setEncoding(encoding);
     }
 
+    /**
+     * Gets Locator encoding.
+     * @param locator Locator
+     * @return Locator encoding
+     */
     private String getEncoding(Locator locator) {
         String encoding = null;
         Method getEncoding = null;

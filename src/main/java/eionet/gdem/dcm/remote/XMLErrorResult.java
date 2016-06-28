@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * Create XML result for remote method error
+ * Create XML result for remote method error.
  *
  * @author Enriko Käsper, TietoEnator Estonia AS
  */
@@ -30,7 +30,7 @@ public class XMLErrorResult extends XMLResultStrategy {
 
     /**
      * Set the request method name that was called
-     * @param m
+     * @param m method
      */
     public void setMethod(String m) {
         method = m;
@@ -38,7 +38,7 @@ public class XMLErrorResult extends XMLResultStrategy {
 
     /**
      * Set error message that is displayed to the client
-     * @param e
+     * @param e error
      */
     public void setError(String e) {
         error = e;
@@ -78,14 +78,15 @@ public class XMLErrorResult extends XMLResultStrategy {
 
     /**
      * Set request parameters
-     * @param requestParamters
+     * @param requestParamters Request parameters
      */
     public void setRequestParamters(Map requestParamters) {
         this.requestParamters = requestParamters;
     }
 
     /**
-     * write XML elements
+     * Write XML elements
+     * @throws Exception If an error occurs.
      */
     protected void writeElements() throws Exception {
         writeSimpleElement(ERROR_TAG, getError());
@@ -95,7 +96,7 @@ public class XMLErrorResult extends XMLResultStrategy {
 
     /**
      * Write request parameters as XML
-     * @throws Exception
+     * @throws Exception If an error occurs.
      */
     protected void writeRequestParamters() throws Exception {
 
@@ -125,10 +126,10 @@ public class XMLErrorResult extends XMLResultStrategy {
     }
     /**
      * Set HTTP Status code
-     * @param status2
+     * @param status2 Status
      */
     public void setStatus(int status2) {
-        this.status=status2;
+        this.status = status2;
     }
 
 }

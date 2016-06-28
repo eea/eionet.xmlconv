@@ -21,6 +21,9 @@
 
 package eionet.gdem.dcm;
 
+/**
+ * Business constants class.
+ */
 public class BusinessConstants {
 
     public static final String EXCEPTION_GENERAL = "label.exception.unknown";
@@ -39,11 +42,14 @@ public class BusinessConstants {
     public static final String EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE = "label.autorization.qascript.update";
     public static final String EXCEPTION_AUTORIZATION_QASCRIPT_DELETE = "label.autorization.qascript.delete";
     public static final String EXCEPTION_AUTORIZATION_QASCRIPT_INSERT = "label.autorization.qascript.insert";
-
+    public static final String EXCEPTION_NO_QASCRIPT_SELECTED = "label.qascript.notSelected";
+    
     // public static final String EXCEPTION_PARAM_DB_SAVED =
     // "label.editParam.db.saved";
     public static final String EXCEPTION_PARAM_DB_FAILED = "label.editParam.db.failed";
     public static final String EXCEPTION_PARAM_DB_TEST_FAILED = "label.editParam.db.testFailed";
+    public static final String EXCEPTION_PARAM_BASEXSERVER_FAILED = "label.editParam.basexserver.failed";
+    public static final String EXCEPTION_PARAM_BASEXSERVER_TEST_FAILED = "label.editParam.basexserver.testfailed";
     // public static final String EXCEPTION_PARAM_LDAP_SAVED =
     // "label.editParam.ldap.saved";
     public static final String EXCEPTION_PARAM_LDAP_FAILED = "label.editParam.ldap.failed";

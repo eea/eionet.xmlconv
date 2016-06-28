@@ -32,6 +32,11 @@ import org.apache.commons.io.IOUtils;
 import eionet.gdem.GDEMException;
 import eionet.gdem.utils.Utils;
 
+/**
+ * Converts XML to text.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class TextConverter extends ConvertStrategy {
 
     @Override
@@ -45,7 +50,7 @@ public class TextConverter extends ConvertStrategy {
                 result = new FileOutputStream(outFile);
                 runXslTransformation(source, xslt, result);
             } catch (IOException e) {
-                throw new GDEMException("Error creating TEXT output file with Xalan:" + e.toString(), e);
+                throw new GDEMException("Error creating TEXT output file:" + e.toString(), e);
             }
             finally{
                 IOUtils.closeQuietly(result);

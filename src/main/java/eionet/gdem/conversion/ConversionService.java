@@ -32,26 +32,29 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import eionet.gdem.GDEMException;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Conversion Service Facade. The service is able to execute different conversions that are called through XML/RPC and HTTP POST and
  * GET.
  *
  * @author Enriko Käsper
+ * @author George Sofianos
  */
 
 public class ConversionService extends RemoteService implements ConversionServiceIF {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ConversionService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConversionService.class);
 
+    /**
+     * Default constructor
+     */
     public ConversionService() {
     }
 
@@ -80,6 +83,15 @@ public class ConversionService extends RemoteService implements ConversionServic
         return v;
     }
 
+    /**
+     * Creates ticket hash table
+     * @param sourceURL Source URL
+     * @param convertId Convert ID
+     * @param username Username
+     * @param password Password
+     * @return Ticket Hash table
+     * @throws GDEMException If an error occurs.
+     */
     public Hashtable convert(String sourceURL, String convertId, String username, String password) throws GDEMException {
 
         try {
@@ -163,6 +175,12 @@ public class ConversionService extends RemoteService implements ConversionServic
         return ConvertDDXMLMethod.convertExcelResult(result);
     }
 
+    /**
+     * Checks if XML Schema exists
+     * @param xmlSchema XML Schema
+     * @return True if schema exists
+     * @throws GDEMException If an error occurs.
+     */
     public boolean existsXMLSchema(String xmlSchema) throws GDEMException {
         ListConversionsMethod method = new ListConversionsMethod();
         return method.existsXMLSchema(xmlSchema);
@@ -174,7 +192,7 @@ public class ConversionService extends RemoteService implements ConversionServic
      * @see eionet.gdem.conversion.ConversionServiceIF#convertPush(byte[],java.lang.String,java.lang.String)
      */
     @Override
-    public Hashtable convertPush(byte file[], String convertId, String filename) throws GDEMException {
+    public Hashtable convertPush(byte[] file, String convertId, String filename) throws GDEMException {
 
         if (!isHTTPRequest() && LOGGER.isDebugEnabled()) {
             LOGGER.debug("ConversionService.convertPush method called through XML-rpc.");
@@ -218,24 +236,11 @@ public class ConversionService extends RemoteService implements ConversionServic
     }
 
     /**
-     * {@inheritDoc}
+     * Converts result
+     * @param dto Result transfer object
+     * @return Converted result
      */
-    @Override
-    public Vector<Object> convertExcelToXMLPush(byte[] file, String fileName) throws GDEMException {
-        ConversionResultDto dto = new ExcelToMultipleXML().convert(new ByteArrayInputStream(file), fileName);
-        return convertResult(dto);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Vector<Object> convertExcelToXML(String fileUrl) throws GDEMException {
-        ConversionResultDto dto = new ExcelToMultipleXML().convert(fileUrl);
-        return convertResult(dto);
-    }
-
-    private static final Vector<Object> convertResult(ConversionResultDto dto) {
+    private static Vector<Object> convertResult(ConversionResultDto dto) {
         Vector<Object> result = new Vector<Object>();
 
         result.add(dto.getStatusCode());

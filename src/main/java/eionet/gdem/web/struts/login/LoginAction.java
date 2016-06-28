@@ -26,8 +26,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -42,11 +42,18 @@ import eionet.acl.AppUser;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Login action class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class LoginAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(LoginAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoginAction.class);
     protected final String GDEM_SSAclName = "/stylesheets";
 
     @Override
@@ -91,6 +98,13 @@ public class LoginAction extends Action {
 
     }
 
+    /**
+     * Do login
+     * @param username Username
+     * @param password Password
+     * @param httpServletRequest Request
+     * @throws Exception If an error occurs.
+     */
     private void doLogin(String username, String password, HttpServletRequest httpServletRequest) throws Exception {
         try {
             AppUser aclUser = new AppUser();

@@ -27,6 +27,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * File system Util class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class FSUtil {
     /**
      * method for uploading files
@@ -35,8 +40,10 @@ public class FSUtil {
      *            Directory where file will be uploaded
      * @param filename
      *            Name of file
-     * @param InputStream
+     * @param in
      *            Stream to be written to a file
+     * @throws IOException If an error occurs.
+     * @throws NullPointerException If an error occurs.
      */
     public void uploadFile(String path, String filename, InputStream in) throws IOException, NullPointerException {
         try {
@@ -66,6 +73,7 @@ public class FSUtil {
      *            Directory where file is located
      * @param filename
      *            Name of file
+     * @throws IOException If an error occurs.
      */
     public void deleteFile(String path, String filename) throws IOException {
         try {
@@ -82,6 +90,7 @@ public class FSUtil {
      * @param path
      *            Directory where files are located
      * @return Array of file names in directory specified in path
+     * @throws NullPointerException If an error occurs.
      */
     public String[] listFiles(String path) throws NullPointerException {
         try {

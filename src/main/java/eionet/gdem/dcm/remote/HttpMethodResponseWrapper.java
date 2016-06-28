@@ -21,6 +21,10 @@ public class HttpMethodResponseWrapper extends HttpServletResponseWrapper {
 
     private static final String DEFAULT_ENCODING = "UTF-8";
 
+    /**
+     * Constructor
+     * @param response HTTP response
+     */
     public HttpMethodResponseWrapper(HttpServletResponse response) {
         super(response);
         setCharacterEncoding(DEFAULT_ENCODING);
@@ -29,7 +33,7 @@ public class HttpMethodResponseWrapper extends HttpServletResponseWrapper {
     /**
      * Writes Content-Disposition row into response header
      *
-     * @param contentDisposition
+     * @param contentDisposition content disposition
      */
     public void setContentDisposition(String contentDisposition) {
         setHeader("Content-Disposition", "inline;filename=\"" + contentDisposition + "\"");
@@ -38,8 +42,8 @@ public class HttpMethodResponseWrapper extends HttpServletResponseWrapper {
     /**
      * Configures the response header and writes the XML result into servlet output stream.
      *
-     * @param xmlResult
-     * @throws Exception
+     * @param xmlResult XML result
+     * @throws Exception If an error occurs.
      */
     public void flushXML(XMLResultStrategy xmlResult) throws Exception {
 
@@ -59,15 +63,13 @@ public class HttpMethodResponseWrapper extends HttpServletResponseWrapper {
     /**
      * Configures the response header and writes the XML result into servlet output stream.
      *
-     * @param bytes
-     * @throws Exception
+     * @param bytes Bytes to write
+     * @throws Exception If an error occurs.
      */
     public void flushBytes(byte[] bytes) throws Exception {
-
-        try{
+        try {
             Streams.drain(new ByteArrayInputStream(bytes), getOutputStream());
-        }
-        finally{
+        } finally{
             flush();
         }
     }
@@ -83,7 +85,7 @@ public class HttpMethodResponseWrapper extends HttpServletResponseWrapper {
      *            Method name that was called over HTTP
      * @param params
      *            Request parameters
-     * @throws Exception
+     * @throws Exception If an error occurs
      */
     public void flushXMLError(int status, String errMessage, String method, Map params) throws Exception {
         XMLErrorResult errorResult = new XMLErrorResult();
@@ -98,7 +100,7 @@ public class HttpMethodResponseWrapper extends HttpServletResponseWrapper {
     /**
      * Flush and close the servlet outputstream.
      *
-     * @throws Exception
+     * @throws Exception If an error occurs
      */
     public void flush() throws Exception {
         OutputStream os = getOutputStream();

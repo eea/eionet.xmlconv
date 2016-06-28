@@ -34,14 +34,31 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * XML Query class.
+ * TODO: Find where this is used and possibly remove this. It uses XALAN which has bugs and it is very slow
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class XmlQuery implements IXQuery {
 
     private IXmlCtx ctx = null;
 
+    /**
+     * Constructor
+     * @param ctx Context
+     */
     public XmlQuery(IXmlCtx ctx) {
         this.ctx = ctx;
     }
 
+    /**
+     * Finds all elements by attribute
+     * @param parentId Parent Id
+     * @param attributes Attributes
+     * @return Node
+     * @throws XmlException If an error occurs.
+     */
     public Node findElementByAttrs(String parentId, Map<String, String> attributes) throws XmlException {
         String xpath = "//*[@id='" + parentId + "']/*[";
         Iterator<String> attrs = attributes.keySet().iterator();
@@ -66,6 +83,13 @@ public class XmlQuery implements IXQuery {
         return result;
     }
 
+    /**
+     * Returns attribute value
+     * @param elementId Element id
+     * @param attribute Attribute
+     * @return Attribute value
+     * @throws XmlException If an error occurs.
+     */
     public String getAttributeValue(String elementId, String attribute) throws XmlException {
         String xpath = "//*[@id='" + elementId + "']/@" + attribute;
         Attr el = null;
@@ -81,6 +105,15 @@ public class XmlQuery implements IXQuery {
         return result;
     }
 
+    /**
+     * Returns element value
+     * @param parentId
+     *            Identifier of the parent element.
+     * @param name
+     *            Name of the element we are searching for
+     * @return
+     * @throws XmlException If an error occurs.
+     */
     public String getElementValue(String parentId, String name) throws XmlException {
         String value = null;
         try {
@@ -97,6 +130,12 @@ public class XmlQuery implements IXQuery {
         return value;
     }
 
+    /**
+     * Finds element by Id
+     * @param id Id
+     * @return Element
+     * @throws XmlException If an error occurs.
+     */
     public Node findElementById(String id) throws XmlException {
         String xpath = "//*[@id='" + id + "']";
         Node result = null;
@@ -108,6 +147,12 @@ public class XmlQuery implements IXQuery {
         return result;
     }
 
+    /**
+     * Returns element identifiers
+     * @param elementName Element name
+     * @return Element identifiers list
+     * @throws XmlException If an error occurs.
+     */
     public List<String> getElementIdentifiers(String elementName) throws XmlException {
         String xpath = "//" + elementName;
         List<String> result = new ArrayList<String>();
@@ -124,6 +169,12 @@ public class XmlQuery implements IXQuery {
         return result;
     }
 
+    /**
+     * Returns elements list
+     * @param elementName Element name
+     * @return elements list
+     * @throws XmlException If an error occurs.
+     */
     public List<Map<String, String>> getElements(String elementName) throws XmlException {
         String xpath = "//" + elementName;
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
@@ -145,6 +196,12 @@ public class XmlQuery implements IXQuery {
         return result;
     }
 
+    /**
+     * Returns element values list
+     * @param elementName Element name
+     * @return element values list
+     * @throws XmlException If an error occurs.
+     */
     public List<String> getElementValues(String elementName) throws XmlException {
         String xpath = "//" + elementName;
         List<String> result = new ArrayList<String>();
@@ -163,6 +220,11 @@ public class XmlQuery implements IXQuery {
         return result;
     }
 
+    /**
+     * Returns schema elements
+     * @return Schema elements
+     * @throws XmlException If an error occurs.
+     */
     public List<String> getSchemaElements() throws XmlException {
         String xpath = "//xs:element";
         List<String> result = new ArrayList<String>();
@@ -181,6 +243,12 @@ public class XmlQuery implements IXQuery {
         return result;
     }
 
+    /**
+     * Returns schema element type
+     * @param elementName Element name
+     * @return Element type
+     * @throws XmlException If an error occurs.
+     */
     public String getSchemaElementType(String elementName) throws XmlException {
         String xpath = "//xs:element[@name='" + elementName + "']//xs:restriction";
         String base = null;
@@ -196,6 +264,11 @@ public class XmlQuery implements IXQuery {
         return base;
     }
 
+    /**
+     * Returns Schema imports
+     * @return Schema imports
+     * @throws XmlException If an error occurs.
+     */
     public List<String> getSchemaImports() throws XmlException {
         String xpath = "//xs:import";
         List<String> result = new ArrayList<String>();
@@ -214,6 +287,11 @@ public class XmlQuery implements IXQuery {
         return result;
     }
 
+    /**
+     * Returns schema element without multiple values
+     * @return Elements without multiple values
+     * @throws XmlException If an error occurs.
+     */
     public Map<String, String> getSchemaElementWithMultipleValues() throws XmlException {
         String xpath = "//xs:element[@maxOccurs='unbounded']";
         Map<String, String> elements = new HashMap<String, String>();

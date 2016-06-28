@@ -7,38 +7,49 @@ import java.io.File;
 import java.util.Hashtable;
 
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
 import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IUPLSchemaDao;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+import org.dbunit.IDatabaseTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS DeleteUplSchemaActiontest
  */
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
 public class DeleteUplSchemaActiontest extends MockStrutsTestCase {
 
-    private IUPLSchemaDao uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
+    @Autowired
+    private DataSource db;
+
+    private IUPLSchemaDao uplSchemaDao;
     private String schemaId = "3";
     private String uplSchemaId = "10";
 
-    public DeleteUplSchemaActiontest(String testName) {
-        super(testName);
-    }
-
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         // set struts-confg file location
+        uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
         setContextDirectory(TestUtils.getContextDirectory());
         // set tempdir property for executing multi-part requests. Struts tries to save the sent file temprarily
         context.setAttribute("javax.servlet.context.tempdir", new File(TestUtils.getStrutsTempDir(this)));
         setInitParameter("validating", "false");
         // setup database
-        DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
         TestUtils.setUpProperties(this);
     }
 
@@ -48,6 +59,7 @@ public class DeleteUplSchemaActiontest extends MockStrutsTestCase {
      * @throws Exception
      *
      */
+    @Test
     public void testSuccessfulForward() throws Exception {
 
         int countUplSchema = uplSchemaDao.getUplSchema().size();
@@ -81,6 +93,7 @@ public class DeleteUplSchemaActiontest extends MockStrutsTestCase {
      * @throws Exception
      *
      */
+    @Test
     public void testFailedNotPermissions() throws Exception {
 
         int countUplSchema = uplSchemaDao.getUplSchema().size();

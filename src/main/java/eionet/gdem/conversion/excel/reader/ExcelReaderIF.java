@@ -30,9 +30,10 @@ import eionet.gdem.GDEMException;
 import eionet.gdem.conversion.datadict.DD_XMLInstance;
 
 /**
- * The main class, which is calling POI HSSF methods for reading Excel file
+ * The main class, which is calling POI HSSF methods for reading Excel file.
  *
  * @author Enriko Käsper
+ * @author George Sofianos
  */
 public interface ExcelReaderIF {
 
@@ -41,37 +42,37 @@ public interface ExcelReaderIF {
      *
      * @return - XML Schema URL
      */
-    public String getXMLSchema();
+    String getXMLSchema();
 
     /**
      * Initialize the Excel Workbook from InputStream
      *
-     * @param InputStream
-     *            input - input Excel file
+     * @param input - input Excel file
+     * @throws GDEMException In case an error occurs.
      */
-    public void initReader(InputStream input) throws GDEMException;
+    void initReader(InputStream input) throws GDEMException;
 
     /**
      * Goes through the Excel worksheets and writes the data into DD_XMLInstance as xml
      *
-     * @param DD_XMLInstance
-     *            instance - XML instance file, where the structure xml has been efined before
+     * @param instance - XML instance file, where the structure xml has been defined before
+     * @throws GDEMException In case an error occurs.
      */
-    public void readDocumentToInstance(DD_XMLInstance instance) throws GDEMException;
+    void readDocumentToInstance(DD_XMLInstance instance) throws GDEMException;
 
     /**
      * Finds the first sheet name, that is not DO_NOT_DELETE_THIS_SHEET
      *
      * @return - Excel sheet name
      */
-    public String getFirstSheetName();
+    String getFirstSheetName();
 
     /**
-     * If the excel file is generated from Data Dictionary, then it finds the XML Shemas for each Excel sheet
+     * If the excel file is generated from Data Dictionary, then it finds the XML Schemas for each Excel sheet
      *
      * @return - Excel sheet name
      */
-    public Map<String, String> getSheetSchemas();
+    Map<String, String> getSheetSchemas();
 
     /**
      * Check if sheet has data or not
@@ -80,6 +81,6 @@ public interface ExcelReaderIF {
      *            - Excel sheet name
      * @return boolean - true if has data
      */
-    public boolean isEmptySheet(String sheet_name);
+     boolean isEmptySheet(String sheet_name);
 
 }

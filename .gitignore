@@ -1,3 +1,10 @@
 /.idea
 /xmlconv.iml
 /local.properties
+/target
+/xsl
+/queries
+/xmlfile
+/tmp
+/schema
+/bin/

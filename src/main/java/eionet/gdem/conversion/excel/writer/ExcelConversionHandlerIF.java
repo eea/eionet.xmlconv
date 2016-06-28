@@ -30,9 +30,10 @@ import eionet.gdem.conversion.excel.ExcelStyleIF;
 
 /**
  * The main class, which is calling POI HSSF methods for creating Excel fiile and adding data into it works together with
- * ExcelXMLHandler
+ * ExcelXMLHandler.
  *
  * @author Enriko Käsper
+ * @author George Sofianos
  */
 
 public interface ExcelConversionHandlerIF {
@@ -124,7 +125,7 @@ public interface ExcelConversionHandlerIF {
     /**
      * Adds a new Excel style to the active workbook
      *
-     * @param ExcelStyle
+     * @param style
      *            - predefined excel style
      */
     void addStyle(ExcelStyleIF style);
@@ -142,11 +143,14 @@ public interface ExcelConversionHandlerIF {
 
     /**
      * Writes the EXCEL workbook object into file
+     * @throws GDEMException In case an error occurs.
      */
     void writeToFile() throws GDEMException;
 
     /**
      * Writes the EXCEL workbook object into output stream
+     * @param outstream OutputStream
+     * @throws GDEMException In case an error occurs.
      */
     void writeToFile(OutputStream outstream) throws GDEMException;
 }

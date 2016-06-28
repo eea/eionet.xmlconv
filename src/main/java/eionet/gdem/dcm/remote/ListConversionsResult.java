@@ -24,20 +24,24 @@ public class ListConversionsResult extends XMLResultStrategy {
 
     private Vector conversions = null;
 
+    /**
+     * Default constructor
+     */
     public ListConversionsResult() {
     }
 
     /**
      * Set the data
      *
-     * @param list
+     * @param list Result list
      */
     public void setResult(Vector list) {
         conversions = list;
     }
 
     /**
-     * write data into XML
+     * Write data into XML
+     * @throws Exception If an error occurs
      */
     protected void writeElements() throws Exception {
         if (conversions == null)

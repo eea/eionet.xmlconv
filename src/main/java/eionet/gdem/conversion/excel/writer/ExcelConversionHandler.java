@@ -41,7 +41,7 @@ import eionet.gdem.conversion.excel.ExcelStyleIF;
 
 /**
  * The main class, which is calling POI HSSF methods for creating Excel file and adding data into it works together with
- * ExcelXMLHandler
+ * ExcelXMLHandler.
  *
  * @author Enriko Käsper
  */
@@ -59,6 +59,9 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF {
     private List<RowColumnDefinition> columns = null;
     private List<RowColumnDefinition> rows = null;
 
+    /**
+     * Default constructor.
+     */
     public ExcelConversionHandler() {
         wb = new HSSFWorkbook();
     }
@@ -282,6 +285,10 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF {
         }
     }
 
+    /**
+     * Adds style to workbook.
+     * @param style Style
+     */
     private void addStyleToWorkbook(ExcelStyleIF style) {
         HSSFFont font = wb.createFont();
         // Font Size eg.12
@@ -311,6 +318,11 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF {
 
     }
 
+    /**
+     * Checks if style exists in style list.
+     * @param style Style
+     * @return True if style exists.
+     */
     private boolean styleExists(ExcelStyleIF style) {
         if (style == null) {
             return false;
@@ -343,6 +355,12 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF {
         return null;
     }
 
+    /**
+     * Gets style id by name
+     * @param name Name of style
+     * @param family Family of style
+     * @return Style id if found, -1 if not.
+     */
     private short getStyleIdxByName(String name, String family) {
 
         if (styles == null) {
@@ -361,6 +379,11 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF {
         return -1;
     }
 
+    /**
+     * Gets default parameters object
+     * @param param Parameters
+     * @return default parameters object
+     */
     private Object getDefaultParams(String param) {
         if (param == null) {
             return null;

@@ -332,10 +332,36 @@
         </sql>
     </changeSet>
     <changeSet author="tierrike" id="rev-29">
-    	<comment>Add 'ZIP' file type</comment>
+        <comment>Add 'ZIP' file type</comment>
         <sql>
-        	INSERT IGNORE INTO T_CONVTYPE VALUES ('ZIP','application/zip','zip','');            
+            INSERT IGNORE INTO T_CONVTYPE VALUES ('ZIP','application/zip','zip','');
         </sql>
     </changeSet>
-
+    <changeSet author="kopanalk" id="rev-30">
+        <comment>
+            Adding a new column in the T_QUERY table in order to support activation/deactivation of QAScripts
+        </comment>
+        <sql>
+            ALTER TABLE T_QUERY ADD ACTIVE BOOLEAN NOT NULL DEFAULT "1";
+        </sql>
+    </changeSet>
+    <changeSet author="sofiageo" id="rev-31">
+        <comment>
+            Renamed "xquery" string to "xquery 1.0" in order to  distinguish from "xquery 3.0"
+        </comment>
+        <sql>
+            UPDATE T_QUERY SET `SCRIPT_TYPE` = "xquery 1.0" WHERE `SCRIPT_TYPE` = "xquery";
+        </sql>
+    </changeSet>
+    <changeSet author="sofiageo" id="rev-32">
+        <comment>
+            Added Script type to Jobs table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="XQ_TYPE" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    
 </databaseChangeLog>

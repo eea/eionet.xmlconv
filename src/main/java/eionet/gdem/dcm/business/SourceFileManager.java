@@ -5,8 +5,9 @@ import eionet.gdem.Properties;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -27,7 +28,7 @@ import java.net.URLConnection;
 public class SourceFileManager {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SourceFileManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SourceFileManager.class);
     /**
      * Buffer size used when reading InputStream.
      */
@@ -126,12 +127,12 @@ public class SourceFileManager {
     /**
      * Generates the URL for retrieving source file through QA with credentials.
      *
-     * @param ticket
-     * @param source_url
-     * @param isTrustedMode
+     * @param ticket Ticket Id
+     * @param source_url Source URL
+     * @param isTrustedMode Is trusted mode
      * @return URL
-     * @throws IOException
-     * @throws MalformedURLException
+     * @throws IOException IO Exception
+     * @throws MalformedURLException Malformed URL
      */
     public static String getSourceFileAdapterURL(String ticket, String source_url, boolean isTrustedMode)
             throws MalformedURLException, IOException {

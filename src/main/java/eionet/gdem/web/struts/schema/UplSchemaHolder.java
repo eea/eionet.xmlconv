@@ -42,6 +42,9 @@ public class UplSchemaHolder {
     /** Has update permission. */
     boolean ssuPrm;
 
+    /**
+     * Default constructor.
+     */
     public UplSchemaHolder() {
     }
 

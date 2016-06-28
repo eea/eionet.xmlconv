@@ -1,0 +1,57 @@
+##
+# @author George Sofianos
+# This docker compose file is for having an XMLCONV demo stack on rancher. 
+# Please change the passwords before running it through rancher-compose.
+##
+
+mysql:
+  image: mysql:5.5
+  ports:
+    - "53306:3306"
+  environment: 
+    MYSQL_ROOT_PASSWORD: xxxxx
+basex:
+  image: basex/basexhttp:8.4.4
+  ports:
+    - "51984:1984"
+#volumes_from:
+#   - ~/BasexData:/srv/BasexData
+
+test-data:
+  image: tianon/true
+  labels:
+    io.rancher.container.start_once: true
+  volumes:
+    - /var/local/xmlconv:/home/dev-gso/eea
+tomcat:
+  image: tomcat:6-jre8
+  ports:
+    - "58080:8080"
+  depends_on:
+    - mysql
+    - test-data
+    - scpserver
+    - basex
+  links:
+    - mysql
+    - basex
+  volumes_from:
+    - test-data
+  labels:
+    io.rancher.sidekicks: test-data, scpserver
+    io.rancher.scheduler.affinity:host_label: hostname=dev-mil-02
+scpserver:
+  image: eeacms/scp-server
+  ports:
+  - 52222:22
+  environment:
+    AUTHORIZED_KEYS:
+    #  Add your key here
+    #  ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAteQ38qb7....uC839w== authorized key
+    DATADIR: /home/dev-gso/eea
+    USERID: 0
+    GROUPID: 0
+  volumes_from:
+  - test-data
+
+

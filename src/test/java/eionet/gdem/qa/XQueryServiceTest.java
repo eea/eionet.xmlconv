@@ -3,6 +3,7 @@
  */
 package eionet.gdem.qa;
 
+import eionet.gdem.services.db.dao.IQueryDao;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Hashtable;
@@ -10,6 +11,7 @@ import java.util.Vector;
 
 import org.dbunit.IDatabaseTester;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +24,10 @@ import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
+import javax.sql.DataSource;
+
 /**
- * @author Enriko Käsper, TietoEnator Estonia AS XQueryServiceTst
+ * @author Enriko Käsper, TietoEnator Estonia AS XQueryServiceTest
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -31,8 +35,11 @@ import eionet.gdem.test.TestUtils;
 public class XQueryServiceTest {
 
     @Autowired
-    private IDatabaseTester databaseTester;
+    private DataSource db;
 
+    @Autowired
+    private IQueryDao queryDao;
+     
     @Autowired
     private IXQJobDao xqJobDao;
 
@@ -42,7 +49,7 @@ public class XQueryServiceTest {
     @Before
     public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_QA_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_QA_XML);
     }
 
 
@@ -122,5 +129,29 @@ public class XQueryServiceTest {
 
         assertTrue(ok);
 
+    }
+    
+    @Test
+    public void testListQAScriptsDeactivated () throws Exception {
+        XQueryService qm = new XQueryService();
+        queryDao.deactivateQuery("26");
+        Vector listQaResult = qm.listQAScripts("60");
+        assertTrue(listQaResult.size()==0);
+        
+        queryDao.activateQuery("26");
+        listQaResult = qm.listQAScripts("60");
+        assertTrue(listQaResult.size()==1);
+    }
+    
+    @Test
+    public void testListQueriesDeactivated () throws Exception {
+        XQueryService qm = new XQueryService();
+        queryDao.deactivateQuery("26");
+        Vector listQaResult = qm.listQueries("http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1919");
+        assertTrue(listQaResult.size()==0);
+        
+        queryDao.activateQuery("26");
+        listQaResult = qm.listQueries("http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1919");
+        assertTrue(listQaResult.size()==1);
     }
 }

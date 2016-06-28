@@ -2,7 +2,9 @@ package eionet.gdem.utils.xml;
 
 import java.io.FileReader;
 import java.io.StringReader;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -17,7 +19,19 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import eionet.gdem.Constants;
 
-public class FeedbackAnalyzer {
+/**
+ * Analyzes feedback HTML response.
+ * @author Unknown
+ * @author George Sofianos
+ */
+public final class FeedbackAnalyzer {
+
+    /**
+     * Default private constructor for util class
+     */
+    private FeedbackAnalyzer() {
+        //do nothing
+    }
 
 
     /**
@@ -32,7 +46,7 @@ public class FeedbackAnalyzer {
 
         InputSource is = null;
         FileReader fileReader = null;
-        HashMap <String, String> fbResult = null;
+        HashMap<String, String> fbResult = null;
         try {
             fileReader = new FileReader(fileName);
             is = new InputSource(fileReader);
@@ -54,7 +68,7 @@ public class FeedbackAnalyzer {
      * Parses the XQ feedback string from file and searches feedbackStatus and feedbackMessage parameters in the first element
      * (<div>).
      *
-     * @param InputSource
+     * @param is
      *            XQ Script result file
      * @return HashMap containing the element values
      */
@@ -102,7 +116,7 @@ public class FeedbackAnalyzer {
     public static HashMap<String, String> getFeedbackResultFromStr(String scriptResult) {
 
         InputSource is = new InputSource(new StringReader(scriptResult));
-        HashMap <String, String> fbResult = null;
+        HashMap<String, String> fbResult = null;
         try {
 
             fbResult =  getParsedFeedbackResult(is);
@@ -119,13 +133,14 @@ public class FeedbackAnalyzer {
      *
      */
     private static class FeedbackHandler extends DefaultHandler {
-        //if true nothing else is done
+        /**if true nothing else is done **/
         private boolean feedbackElementFound = false;
         private boolean parsingFeedBack = false;
 
         private String feedbackStatus = Constants.XQ_FEEDBACKSTATUS_UNKNOWN;
         private String feedbackMessage = "";
-
+        /** Stack to keep the nested feedbackStatus elements  **/
+        private Deque<Integer> feedbackStatusStack = new LinkedList<Integer>();
         StringBuilder fbTextBuilder = new StringBuilder();
 
         @Override
@@ -136,23 +151,24 @@ public class FeedbackAnalyzer {
                 if (idValue != null && idValue.equalsIgnoreCase("feedbackStatus")) {
                     feedbackElementFound = true;
                     feedbackStatus = StringUtils.defaultIfBlank(attributes.getValue("class"), Constants.XQ_FEEDBACKSTATUS_UNKNOWN);
-                    //feedbackMessage = StringUtils.defaultIfBlank(attributes.getValue("feedbackMessage"), "");
                     parsingFeedBack = true;
+                }
+            } else if (parsingFeedBack) {
+                feedbackStatusStack.push(1);
+            }
+        }
+
+        @Override
+        public void endElement(String uri, String localName, String qName) throws SAXException {
+            if (parsingFeedBack) {
+                if (feedbackStatusStack.size() == 0) {
+                    parsingFeedBack = false;
+                    feedbackMessage = fbTextBuilder.toString();
+                } else {
+                    feedbackStatusStack.pop();
                 }
             }
         }
-
-
-
-        @Override
-        public void endElement(String paramString1, String paramString2, String paramString3) throws SAXException {
-            if (parsingFeedBack) {
-                parsingFeedBack = false;
-                feedbackMessage = fbTextBuilder.toString();
-            }
-        }
-
-
 
         @Override
         public void characters(char[] characters, int i1, int i2) throws SAXException {
@@ -160,8 +176,6 @@ public class FeedbackAnalyzer {
                 fbTextBuilder.append(new String(characters, i1, i2));
             }
         }
-
-
 
         public String getFeedbackStatus() {
             return feedbackStatus;

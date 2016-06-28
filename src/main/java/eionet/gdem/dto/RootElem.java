@@ -23,12 +23,18 @@ package eionet.gdem.dto;
 
 import java.io.Serializable;
 
+/**
+ * Root element class.
+ */
 public class RootElem implements Serializable {
 
     private String elemId;
     private String namespace;
     private String name;
 
+    /**
+     * Default constructor.
+     */
     public RootElem() {
 
     }

@@ -30,6 +30,11 @@ import java.util.Map;
 
 import eionet.gdem.utils.Utils;
 
+/**
+ * OpenDocument Spreadsheet class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class OpenDocumentSpreadsheet {
 
     private String currentTable = null;
@@ -40,15 +45,15 @@ public class OpenDocumentSpreadsheet {
 
     private Map<String, List<String>> tablesHeaders;
 
+    /**
+     * Default Constructor.
+     */
     public OpenDocumentSpreadsheet() {
         this.tables = new ArrayList<String>();
         this.tablesData = new HashMap<String, List<List<String>>>();
         this.tablesHeaders = new HashMap<String, List<String>>();
     }
 
-    /*
-     *
-     */
     public void setCurrentTable(String currentTable) {
         this.currentTable = currentTable;
     }
@@ -57,23 +62,25 @@ public class OpenDocumentSpreadsheet {
         return this.currentTable;
     }
 
-    /*
+    /**
      * Adds table name to the tables vector
+     * @param tbl_name Table name
      */
     public void addTable(String tbl_name) {
         tables.add(tbl_name);
         setCurrentTable(tbl_name);
     }
 
-    /*
+    /**
      * Returns tables' list
      */
     public List<String> getTables() {
         return tables;
     }
 
-    /*
+    /**
      * Returns table name in specified index
+     * @param idx Index
      */
     public String getTableName(int idx) {
         if (idx <= tables.size()) {
@@ -83,8 +90,10 @@ public class OpenDocumentSpreadsheet {
         }
     }
 
-    /*
+    /**
      * Adds header list into headers Map
+     * @param tbl_name Table name
+     * @param value Value
      */
     public void addTableHeaderValue(String tbl_name, String value) {
         if (Utils.isNullStr(tbl_name)) {
@@ -103,8 +112,10 @@ public class OpenDocumentSpreadsheet {
 
     }
 
-    /*
+    /**
      * Adds data row into data Map
+     * @param tbl_name Table name
+     * @param row_list Row list
      */
     public void addTableDataRow(String tbl_name, List<String> row_list) {
         if (Utils.isNullStr(tbl_name)) {
@@ -122,8 +133,9 @@ public class OpenDocumentSpreadsheet {
         }
     }
 
-    /*
+    /**
      * Returns tables' data as ArrayList
+     * @param tblName Table name
      */
     public List<List<String>> getTableData(String tblName) {
         if (Utils.isNullStr(tblName)) {
@@ -138,8 +150,9 @@ public class OpenDocumentSpreadsheet {
         return list;
     }
 
-    /*
+    /**
      * Gets table header list
+     * @param tbl_name Table name
      */
     public List<String> getTableHeader(String tbl_name) {
         if (Utils.isNullStr(tbl_name)) {
@@ -154,8 +167,9 @@ public class OpenDocumentSpreadsheet {
         return list;
     }
 
-    /*
+    /**
      * Gets table header list
+     * @param tbl_name Table name
      */
     public int getTableColCount(String tbl_name) {
         if (Utils.isNullStr(tbl_name)) {
@@ -180,8 +194,9 @@ public class OpenDocumentSpreadsheet {
         return i;
     }
 
-    /*
+    /**
      * Gets table row count
+     * @param tbl_name Table name
      */
     public int getTableRowCount(String tbl_name) {
 
@@ -200,6 +215,7 @@ public class OpenDocumentSpreadsheet {
                     i = tablesData.get(tbl_name).size();
                 }
             } catch (Exception e) {
+                // Todo fix logger
                 // do nothing return 0
                 e.printStackTrace();
             }
@@ -208,8 +224,9 @@ public class OpenDocumentSpreadsheet {
         return i;
     }
 
-    /*
+    /**
      * Checks if table exists
+     * @param tblName Table name
      */
     public boolean tableExists(String tblName) {
         if (tables == null) {
@@ -219,8 +236,9 @@ public class OpenDocumentSpreadsheet {
 
     }
 
-    /*
+    /**
      * Checks if sheet contains any data.
+     * @param tblName Table name
      */
     public boolean isEmptySheet(String tblName) {
 

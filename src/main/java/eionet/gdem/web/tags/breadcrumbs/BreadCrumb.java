@@ -21,11 +21,21 @@
 
 package eionet.gdem.web.tags.breadcrumbs;
 
+/**
+ * Breadcrumb class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class BreadCrumb {
     private String url;
 
     private String label;
 
+    /**
+     * Constructor
+     * @param url URL
+     * @param label Label
+     */
     public BreadCrumb(String url, String label) {
         this.url = url;
         this.label = label;
@@ -39,10 +49,19 @@ public class BreadCrumb {
         return this.label;
     }
 
+    /**
+     * Hash code
+     * @return Hash code
+     */
     public int hashCode() {
         return this.url.hashCode() & this.label.hashCode();
     }
 
+    /**
+     * Equals
+     * @param obj Object
+     * @return True if equals
+     */
     public boolean equals(Object obj) {
         if (!(obj instanceof BreadCrumb)) {
             return false;
@@ -68,6 +87,10 @@ public class BreadCrumb {
         return u1.equals(u2) && this.label.equals(b.label);
     }
 
+    /**
+     * ToString
+     * @return String
+     */
     public String toString() {
         return "[" + this.label + "|" + this.url + "]";
     }

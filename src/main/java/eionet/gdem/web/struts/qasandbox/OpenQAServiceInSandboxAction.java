@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.qasandbox;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -40,9 +40,11 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * EditQAScriptInSandboxAction Find all the scripts for the given XML schema and allow to execute them in sandox
+ * EditQAScriptInSandboxAction Find all the scripts for the given XML schema and allow to execute them in sandbox.
  *
  * @author Enriko Käsper, Tieto Estonia
  */
@@ -50,7 +52,7 @@ import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 public class OpenQAServiceInSandboxAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(OpenQAServiceInSandboxAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpenQAServiceInSandboxAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

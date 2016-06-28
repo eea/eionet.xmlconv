@@ -31,6 +31,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import eionet.gdem.Properties;
 
+/**
+ * Stylesheet class.
+ */
 public class Stylesheet implements Serializable {
 
     /** Unique key of stylehseet. */
@@ -206,10 +209,9 @@ public class Stylesheet implements Serializable {
      * @return XSLT file path.
      */
     public String getXslFileFullPath() {
-        if(StringUtils.isNotBlank(getXslFileName())){
+        if (StringUtils.isNotBlank(getXslFileName())) {
             return Properties.xslFolder + File.separator + getXslFileName();
-        }
-        else{
+        } else {
             return null;
         }
     }

@@ -22,9 +22,14 @@
 package eionet.gdem.utils.system;
 
 /**
+ * Log device interface.
  * @author Enriko Käsper, Tieto Estonia ILogDevice
  */
 
 public interface ILogDevice {
-    public void log(String c);
+    /**
+     * Logs string
+     * @param c String to log
+     */
+    void log(String c);
 }

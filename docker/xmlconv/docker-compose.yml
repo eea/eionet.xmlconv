@@ -1,0 +1,86 @@
+##
+# @authors George Sofianos, Aris Katsanas
+# This docker compose file is for having an XMLCONV demo stack on rancher. 
+# Please change the passwords before running it through rancher-compose.
+##
+
+
+## DATABASE CONTAINERS
+mysql:
+  image: mysql:5.5
+  ports:
+    - "53306:3306"
+  environment: 
+    MYSQL_ROOT_PASSWORD: xxxxx
+  volumes_from:
+    - data-mysql
+  labels:
+    io.rancher.sidekicks: data-mysql
+
+## XQUERY CONTAINERS
+basex:
+  image: basex/basexhttp:8.4.4
+  ports:
+    - "51984:1984"
+  io.rancher.scheduler.affinity:host_label: publicip=178.239.183.128
+  volumes:
+    - /var/local/basex/BasexData:/srv/BasexData
+
+## DATA CONTAINERS
+data-mysql:
+  image: tianon/true
+  labels:
+    io.rancher.container.start_once: true
+  volumes:
+    - /var/lib/mysql:/var/lib/mysql
+
+data-xmlconv:
+  image: tianon/true
+  labels:
+    io.rancher.container.start_once: true
+  volumes:
+    - /opt/xmlconv:/opt/xmlconv
+
+## TOMCAT SERVER
+xmlconv-tomcat:  
+  image: dev4ka/xmlconv:1.1
+  ports:
+    - "51080:8080"
+  env_file: .env
+  depends_on:
+    - mysql
+    - data-xmlconv
+    - scpserver
+    - basex
+    - libreoffice
+  links:
+    - mysql
+    - basex
+    - libreoffice
+  volumes_from:
+    - data-xmlconv
+    - libreoffice
+  labels:
+    io.rancher.sidekicks: data-xmlconv, scpserver, libreoffice
+    io.rancher.scheduler.affinity:host_label: publicip=178.239.183.132
+
+## Libreoffice Centos
+libreoffice:
+  image: xcgd/libreoffice
+  volumes_from:
+    - data-xmlconv
+
+scpserver:
+  image: eeacms/scp-server
+  ports:
+  - 52222:22
+  environment:
+    AUTHORIZED_KEYS:
+     ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCt9rYOQEufwJ4QehXhhBLSnpKxHmj6EJq9F+Vm6WLVNEcihfQJHQgKVBCnwrt/A5cXXQ8ikhlyXpBnGSycRNibb5QapCuS0E1laymuiMbTDIv9EsvkMZ9HPvMJFTvrPH9rlkL721/UaUZ+iGeYFJvLERCoHQd5PwutNSLYazClVTmrvfcAF+RZxIu9t8OTK7xcQeMK5EnA/0Ol5ZbIbK9efH9iR3rtR3HMSm4NMkheqBw7zVUjaynRRueBOF7qjP6PLcSQtW5vIG3GBGhMCoJ7wfnAHonifofgL/jXw47apPdays1Bt1sE0QtO3iVB9bceOmMkv0pRcCPuf1xkgyXrf89tIsEExDpDYYO/P2LTGrz0FjwnnJan+/2Lo9LgSlfoYyuR0bXlQbKsBvhrK4HC1aG93mmRHJNdPZD3sKV82GbdrWtNT1SgySjvRsc7Kag5GGAGr/NpfZfJoY2UG/GjrCj+z5zlCrM4J2crAIfdmYDm9rT7PQTzHC751hOnR0MqOvw5XbgBOJTCLdRwb/F9usFmvcY9/leEdqWYp0Q4UE40IcNlboFW0s3DrUII3ANvQuaEEse8stlnI5QfmEQ2E7z0Zag9djNtDSobsH+YCpxI9g3jppzA1RYYCtryP4fnnJVFgwOt6WP92IHojKbu3AE13CO123wKLNKHlLemTQ== gso@eworx.gr
+    #  Add your key here
+    #  ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAteQ38qb7....uC839w== authorized key
+    DATADIR: /opt/
+    USERID: 0
+    GROUPID: 0
+  volumes_from:
+  - data-xmlconv

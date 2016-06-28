@@ -49,7 +49,7 @@ import eionet.gdem.GDEMException;
  * request.
  *
  * @author Enriko Käsper
- * @version $Revision: 10280 $
+ * @author George Sofianos
  */
 public class MultipartFileUpload {
 
@@ -77,7 +77,7 @@ public class MultipartFileUpload {
 
     /**
      * Constructor. Creates a new FileUploadAdapter object
-     *
+     * @param uploadAtOnce Upload at once
      */
     public MultipartFileUpload(boolean uploadAtOnce) {
 
@@ -91,6 +91,9 @@ public class MultipartFileUpload {
         this._uploadAtOnce = uploadAtOnce;
     }
 
+    /**
+     * Default constructor
+     */
     public MultipartFileUpload() {
         new MultipartFileUpload(true);
     }
@@ -227,7 +230,7 @@ public class MultipartFileUpload {
         if (_fileItem.getSize() == 0)
             return null; // There is nothing to save, file size is 0
 
-        File file = new File(_folderName, fileName);// getUniqueFile(_folderName, fileName);
+        File file = new File(_folderName, fileName); // getUniqueFile(_folderName, fileName);
         fileName = file.getName();
 
         if (_fileItem.getSize() > 0) {
@@ -286,7 +289,7 @@ public class MultipartFileUpload {
     /**
      * Generates filename.
      *
-     * @param fileName
+     * @param fileName File name
      * @param n set larger than 0, if file with the same name already exists in the tmp folder ex: genFileName( test.xls, 1 )= test_1.xls
      *            genFileName( test_1.xls, 2 )= test_2.xls
      */
@@ -333,6 +336,12 @@ public class MultipartFileUpload {
         return file;
     }
 
+    /**
+     * Returns unique file name
+     * @param folderName Directory name
+     * @param fileName File name
+     * @return Unique file name
+     */
     public static String getUniqueFileName(String folderName, String fileName) {
         File file = getUniqueFile(folderName, fileName);
         String strFileName = file.getName();
@@ -341,6 +350,7 @@ public class MultipartFileUpload {
 
     /**
      * Returns filename from filename with full path in: "C:\TEMP\test.txt" out: "test.txt".
+     * @param fileName File name
      */
     private String getFileItemName(String fileName) {
         int i = fileName.lastIndexOf("\\");
@@ -384,6 +394,7 @@ public class MultipartFileUpload {
 
     /**
      * Stores fileItems into list.
+     * @param item Item
      */
     private void addFileItem(FileItem item) {
         if (fileItems == null)
@@ -395,6 +406,7 @@ public class MultipartFileUpload {
 
     /**
      * returns file item for sepcified fieldName.
+     * @param fieldName Field name
      */
     private FileItem getFileItem(String fieldName) {
         if (fileItems == null)
@@ -476,6 +488,13 @@ public class MultipartFileUpload {
         return fileName;
     }
 
+    /**
+     * Returns file as InputStream
+     * @param fieldName Field name
+     * @return InputStream
+     * @throws GDEMException If an error occurs.
+     * @throws IOException If an error occurs.
+     */
     public InputStream getFileAsInputStream(String fieldName) throws GDEMException, IOException {
 
         FileItem fileItem = getFileItem(fieldName);
@@ -488,6 +507,10 @@ public class MultipartFileUpload {
         return fileItem.getInputStream();
     }
 
+    /**
+     * Gets encoding
+     * @return Encoding
+     */
     public String getEncoding() {
         if (encoding == null)
             encoding = DEFAULT_ENCODING;
@@ -502,6 +525,11 @@ public class MultipartFileUpload {
         return this._folderName;
     }
 
+    /**
+     * Returns escaped item name
+     * @param itemName Item name
+     * @return Escaped item name
+     */
     private String getEscapedItemName(String itemName) {
         String fileItemName = null;
         try {
@@ -516,10 +544,10 @@ public class MultipartFileUpload {
     }
 
     /**
-     * eemaldab faili nimest veidrad symbolid
+     * Removes strange symbols from file name
      *
-     * @param fileName
-     * @return
+     * @param fileName File name
+     * @return Processed file name
      */
     private String parseFileName(String fileName) {
         StringBuffer ret = new StringBuffer();
@@ -545,6 +573,10 @@ public class MultipartFileUpload {
         return ret.toString();
     }
 
+    /**
+     * Populates escaped characters list
+     *
+     */
     private void initEscapes() {
         fileNameEscapes.put(352, "S");
         fileNameEscapes.put(381, "Z");
@@ -558,6 +590,11 @@ public class MultipartFileUpload {
         fileNameEscapes.put(196, "A");
     }
 
+    /**
+     * Checks if character is restricted.
+     * @param c Character
+     * @return True if character is restricted
+     */
     private boolean isRestrictedChar(char c) {
         for (int i = 0; i < restrictedChars.length; i++) {
             if (c == restrictedChars[i])

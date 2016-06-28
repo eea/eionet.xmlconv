@@ -25,25 +25,37 @@ package eionet.gdem.qa.engines;
 
 import javax.xml.transform.TransformerException;
 
-import net.sf.saxon.StandardErrorListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import net.sf.saxon.lib.StandardErrorListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
- * Extension of the Saxon error listener to catch all the errors and feedback them to user
+ * Extension of the Saxon error listener to catch all the errors and feedback them to user.
+ *
+ * @author Unknown
+ * @author George Sofianos
  */
 public class SaxonListener extends StandardErrorListener {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SaxonListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SaxonListener.class);
 
     private StringBuilder _errBuf; // in this buffer we collect all the error messages
     private boolean _hasErrors = false;
+
+    /**
+     * Default constructor
+     */
     public SaxonListener() {
         _errBuf = new StringBuilder();
     }
 
+    /**
+     * Returns if listener has errors
+     * @return
+     */
     boolean hasErrors() {
         return _hasErrors;
     }
@@ -58,7 +70,7 @@ public class SaxonListener extends StandardErrorListener {
     }
 
     @Override
-    public void error(TransformerException exception) throws TransformerException {
+    public void error(TransformerException exception) {
         _hasErrors = true;
         String message = "Error " + getLocationMessage(exception) + "\n  " + getExpandedMessage(exception);
 
@@ -67,7 +79,7 @@ public class SaxonListener extends StandardErrorListener {
     }
 
     @Override
-    public void warning(TransformerException exception) throws TransformerException {
+    public void warning(TransformerException exception) {
         _hasErrors = true;
         String message = "";
         if (exception.getLocator() != null) {

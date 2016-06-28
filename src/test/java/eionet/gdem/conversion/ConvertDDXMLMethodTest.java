@@ -6,16 +6,24 @@ package eionet.gdem.conversion;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 
-import junit.framework.TestCase;
 import eionet.gdem.GDEMException;
 import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.dto.ConvertedFileDto;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
 import eionet.gdem.utils.xml.XmlException;
+import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Test DataDictionary MS Excel file to XML conversion.
@@ -25,25 +33,25 @@ import eionet.gdem.utils.xml.XmlException;
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS ConvertDDXMLMethodTest
  */
-
-public class ConvertDDXMLMethodTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class ConvertDDXMLMethodTest {
 
     /**
      * Set up test case properties
      */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TestUtils.setUpReleasedDataset();
     }
-
+    @Test
     public void testConvertDD_XML() throws Exception {
 
         ConversionResultDto result = convertExcel();
         assertEquals("0", result.getStatusCode());
         assertNotNull(result.getConvertedFileByFileName("seed-dates.xml"));
     }
-
+    @Test
     public void testConvertDD_XMLDates() throws Exception {
         ConversionResultDto result = convertExcel();
         IXmlCtx ctx = getXmlFromConversionResult(result);
@@ -57,7 +65,7 @@ public class ConvertDDXMLMethodTest extends TestCase {
             assertEquals(dateValue, "2008-02-01");
         }
     }
-
+    @Test
     public void testConvertDD_XMLIntegers() throws Exception {
         ConversionResultDto result = convertExcel();
         IXmlCtx ctx = getXmlFromConversionResult(result);
@@ -74,7 +82,7 @@ public class ConvertDDXMLMethodTest extends TestCase {
             }
         }
     }
-
+    @Test
     public void testConvertDD_XMLDouble() throws Exception {
         ConversionResultDto result = convertExcel();
         IXmlCtx ctx = getXmlFromConversionResult(result);
@@ -104,7 +112,7 @@ public class ConvertDDXMLMethodTest extends TestCase {
             }
         }
     }
-
+    @Test
     public void testConvertDD_XMLYearsInDateFields() throws Exception {
         ConversionResultDto result = convertExcel();
         IXmlCtx ctx = getXmlFromConversionResult(result);

@@ -26,18 +26,25 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.*;
 import org.apache.struts.upload.FormFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Add stylesheet action.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class AddStylesheetAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(AddStylesheetAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AddStylesheetAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
@@ -64,6 +71,14 @@ public class AddStylesheetAction extends Action {
 
         if (xslFile == null || xslFile.getFileSize() == 0) {
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.validation"));
+            saveErrors(httpServletRequest, errors);
+            httpServletRequest.getSession().setAttribute("dcm.errors", errors);
+            return actionMapping.findForward("fail");
+        }
+        String description = form.getDescription();
+        if (description == null || description.isEmpty()) {
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.descriptionMissing"));
+            saveErrors(httpServletRequest, errors);
             httpServletRequest.getSession().setAttribute("dcm.errors", errors);
             return actionMapping.findForward("fail");
         }
@@ -92,7 +107,6 @@ public class AddStylesheetAction extends Action {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             }
         }
-
         httpServletRequest.getSession().setAttribute("dcm.errors", errors);
         httpServletRequest.getSession().setAttribute("dcm.messages", messages);
         if (!StringUtils.isNullOrEmpty(schema)) {

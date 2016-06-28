@@ -21,32 +21,40 @@
 
 package eionet.gdem.qa.engines;
 
+import eionet.gdem.test.ApplicationTestContext;
 import javax.xml.transform.TransformerException;
 
-import junit.framework.TestCase;
 import eionet.gdem.test.TestUtils;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Testing QAURIResolver
  *
  * @author Enriko Käsper
  */
-public class QAURIResolverTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class QAURIResolverTest {
 
     /**
      * Set up test case properties
      */
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         try {
-            super.setUp();
             TestUtils.setUpProperties(this);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
     }
-
+    @Test
     public void testResolve() throws TransformerException {
 
         QAURIResolver resolver = new QAURIResolver();

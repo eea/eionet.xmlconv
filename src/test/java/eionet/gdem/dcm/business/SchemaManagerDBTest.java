@@ -29,6 +29,8 @@ import eionet.gdem.test.mocks.MockFormFile;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.schema.UplSchemaHolder;
 
+import javax.sql.DataSource;
+
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS SchemaManagerDBTest
  */
@@ -37,7 +39,7 @@ import eionet.gdem.web.struts.schema.UplSchemaHolder;
 public class SchemaManagerDBTest{
 
     @Autowired
-    private IDatabaseTester databaseTester;
+    private DataSource db;
 
     /**
      * Set up test case properties.
@@ -45,7 +47,7 @@ public class SchemaManagerDBTest{
     @Before
     public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
     }
 
     /**

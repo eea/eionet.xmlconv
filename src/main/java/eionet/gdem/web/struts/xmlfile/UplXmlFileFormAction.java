@@ -6,8 +6,8 @@ package eionet.gdem.web.struts.xmlfile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -18,9 +18,11 @@ import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.UplXmlFileManager;
 import eionet.gdem.exceptions.DCMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Action loading the list of XML files
+ * Action loading the list of XML files.
  *
  * @author Enriko Käsper (TietoEnator)
  *
@@ -28,7 +30,7 @@ import eionet.gdem.exceptions.DCMException;
 public class UplXmlFileFormAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(UplXmlFileFormAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UplXmlFileFormAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

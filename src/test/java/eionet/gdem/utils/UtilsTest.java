@@ -7,25 +7,34 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import junit.framework.TestCase;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * This is a class for unit testing the <code>eionet.gdem.utils.Utils</code> class.
  *
  * @author Enriko Käsper, TietoEnator Estonia AS UtilsTest
  */
-
-public class UtilsTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class UtilsTest {
 
     /**
      * The methods test helper date formatting methods
      *
      * @throws Exception
      */
+    @Test
     public void testDateTime() throws Exception {
 
         String strDate = "06.02.2008";
@@ -41,7 +50,7 @@ public class UtilsTest extends TestCase {
         assertEquals(Utils.getFormat(date, Properties.timeFormatPattern), Utils.getDateTime(date));
 
     }
-
+    @Test
     public void testResourceExists() {
         boolean b1 = Utils.resourceExists(TestUtils.getSeedURL(TestConstants.SEED_XLIFF_XML, this));
         assertTrue(b1);
@@ -55,13 +64,13 @@ public class UtilsTest extends TestCase {
         boolean b4 = Utils.resourceExists("https://svn.eionet.europa.eu/thereisnoschema");
         assertFalse(b4);
     }
-
+    @Test
     public void testGetTmpUniqueFileName() {
         assertTrue(Utils.getUniqueTmpFileName(null).endsWith(".tmp"));
         assertTrue(Utils.getUniqueTmpFileName("filename.xml").endsWith("filename.xml"));
         assertTrue(Utils.getUniqueTmpFileName(null).startsWith(Properties.tmpFolder + File.separator + Constants.TMP_FILE_PREFIX));
     }
-
+    @Test
     public void testEscapeXml() {
         assertEquals("&amp;ok", Utils.escapeXML("&ok"));
         assertEquals("&amp;ok", Utils.escapeXML("&amp;ok"));

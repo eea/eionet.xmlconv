@@ -16,6 +16,9 @@ import javax.xml.transform.stream.StreamResult;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+/**
+ * XML Result strategy.
+ */
 public abstract class XMLResultStrategy {
 
     private int status = HttpServletResponse.SC_OK;
@@ -27,9 +30,16 @@ public abstract class XMLResultStrategy {
 
     protected TransformerHandler hd = null;
 
+    /**
+     * Default constructor
+     */
     public XMLResultStrategy() {
     }
 
+    /**
+     * Writes elements.
+     * @throws Exception If an error occurs.
+     */
     protected abstract void writeElements() throws Exception;
 
     /**
@@ -40,7 +50,7 @@ public abstract class XMLResultStrategy {
 
     /**
      * Write the result into temporary outputstream
-     *
+     * @throws Exception If an error occurs.
      */
     public void writeXML() throws Exception {
         outputStreamBuffer = new ByteArrayOutputStream();
@@ -52,7 +62,7 @@ public abstract class XMLResultStrategy {
      *
      * @param out
      *            eg ServletOutputStream
-     * @throws Exception
+     * @throws Exception If an error occurs.
      */
     public void writeXML(OutputStream out) throws Exception {
         if (outputStreamBuffer == null)
@@ -67,8 +77,8 @@ public abstract class XMLResultStrategy {
     /**
      * Build the XML and write it to the given result
      *
-     * @param streamResult
-     * @throws Exception
+     * @param streamResult Stream result
+     * @throws Exception If an error occurs.
      */
     public void writeXML(StreamResult streamResult) throws Exception {
 
@@ -97,7 +107,7 @@ public abstract class XMLResultStrategy {
      *            element name
      * @param tag_value
      *            element value
-     * @throws SAXException
+     * @throws SAXException If an error occurs.
      */
     protected void writeSimpleElement(String tag_name, String tag_value) throws SAXException {
         writeSimpleElement(tag_name, tag_value, null);
@@ -112,7 +122,7 @@ public abstract class XMLResultStrategy {
      *            element value
      * @param attrs
      *            AttributesImpl
-     * @throws SAXException
+     * @throws SAXException If an error occurs.
      */
     protected void writeSimpleElement(String tag_name, String tag_value, AttributesImpl attrs) throws SAXException {
 

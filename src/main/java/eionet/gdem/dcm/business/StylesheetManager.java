@@ -31,8 +31,8 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
@@ -48,6 +48,8 @@ import eionet.gdem.services.db.dao.IStyleSheetDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.stylesheet.ConvTypeHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -57,7 +59,7 @@ import eionet.gdem.web.struts.stylesheet.ConvTypeHolder;
  */
 public class StylesheetManager {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(StylesheetManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StylesheetManager.class);
 
     private IStyleSheetDao styleSheetDao = GDEMServices.getDaoService().getStyleSheetDao();;
     private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
@@ -99,6 +101,11 @@ public class StylesheetManager {
 
     }
 
+    /**
+     * Gets conversion types
+     * @return Conversion types
+     * @throws DCMException If an error occurs.
+     */
     public ConvTypeHolder getConvTypes() throws DCMException {
         ConvTypeHolder ctHolder = new ConvTypeHolder();
         ArrayList convs;
@@ -127,7 +134,7 @@ public class StylesheetManager {
 
     /**
      * Add new stylesheet file into repository.
-     * @param styleseet Stylesheet DTO.
+     * @param stylesheet Stylesheet DTO.
      * @param user logged in user name.
      * @throws DCMException if saving of file or database update failed.
      */
@@ -224,6 +231,7 @@ public class StylesheetManager {
      * @param excludeStylesheetId
      *            stylesheet id to be excluded in returning result. If the value is null then no exclusion is done.
      * @return list of {@link Stylesheet} -s.
+     * @throws DCMException If an error occurs.
      */
     @SuppressWarnings("unchecked")
     public List<Stylesheet> getSchemaStylesheets(String schemaId, String excludeStylesheetId) throws DCMException {

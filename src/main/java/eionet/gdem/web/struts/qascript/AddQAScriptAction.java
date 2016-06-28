@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.qascript;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -39,6 +39,8 @@ import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Enriko Käsper, Tieto Estonia AddQAScriptAction
@@ -47,7 +49,7 @@ import eionet.gdem.utils.Utils;
 public class AddQAScriptAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(AddQAScriptAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AddQAScriptAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
@@ -98,21 +100,21 @@ public class AddQAScriptAction extends Action {
                 return actionMapping.findForward("list");
             }
         }
-        
-        
+
+
         // FME script type validations
-        if (XQScript.SCRIPT_LANG_FME.equals(scriptType)){
+        if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
             if (url == null || url.equals("")) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.fme.url.validation"));
                 saveErrors(httpServletRequest.getSession(), errors);
             }
         // Other script type validations
-        } else {            
+        } else {
             if ((scriptFile == null || scriptFile.getFileSize() == 0) && Utils.isNullStr(url))  {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.file.validation"));
                 saveErrors(httpServletRequest.getSession(), errors);
             }
-            
+
             // Zip result type can only be selected for FME scripts
             if (XQScript.SCRIPT_RESULTTYPE_ZIP.equals(resultType)) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.zip.validation"));
@@ -154,6 +156,13 @@ public class AddQAScriptAction extends Action {
         return findForward(actionMapping, "success", schemaId);
     }
 
+    /**
+     * Finds forward
+     * @param actionMapping Action mapping
+     * @param f F
+     * @param schemaId schema Id
+     * @return Action forward
+     */
     private ActionForward findForward(ActionMapping actionMapping, String f, String schemaId) {
         ActionForward forward = actionMapping.findForward(f);
         StringBuffer path = new StringBuffer(forward.getPath());

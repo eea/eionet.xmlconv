@@ -26,6 +26,10 @@ import java.util.List;
 import eionet.gdem.dto.RootElem;
 import eionet.gdem.dto.Schema;
 
+/**
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class SchemaElemHolder {
 
     private Schema schema;
@@ -42,6 +46,9 @@ public class SchemaElemHolder {
         this.xsddPrm = xsddPrm;
     }
 
+    /**
+     * Default constructor
+     */
     public SchemaElemHolder() {
     }
 

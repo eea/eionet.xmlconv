@@ -10,8 +10,9 @@ import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import eionet.gdem.services.db.dao.IUPLXmlFileDao;
@@ -26,7 +27,7 @@ import eionet.gdem.services.db.dao.IUPLXmlFileDao;
 public class UplXmlFileMySqlDao extends MySqlBaseDao implements IUPLXmlFileDao {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(UplXmlFileMySqlDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UplXmlFileMySqlDao.class);
 
     // query for getting all XML files
     private static final String qUplXmlFile = "SELECT " + FILE_ID_FLD + ", " + FILE_NAME_FLD + ", " + FILE_TITLE_FLD + " FROM "

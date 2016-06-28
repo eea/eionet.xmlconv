@@ -21,16 +21,26 @@
 
 package eionet.gdem.utils.xml;
 
-import junit.framework.TestCase;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.utils.Utils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.junit.Assert.*;
 
 /**
+ *
  * @author Enriko Käsper, Tieto Estonia DocumentAnalyserTest
+ * @author George Sofianos
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class DocumentAnalyserTest {
 
-public class DocumentAnalyserTest extends TestCase {
-
+    @Test
     public void testXMLSchema() throws Exception {
 
         String schemaFile = getClass().getClassLoader().getResource(TestConstants.SEED_GW_CONTAINER_SCHEMA).getFile();
@@ -44,6 +54,7 @@ public class DocumentAnalyserTest extends TestCase {
         assertFalse(isSchema);
     }
 
+    @Test
     public void testDTD() throws Exception {
 
         String schemaFile = getClass().getClassLoader().getResource(TestConstants.SEED_GW_SCHEMA).getFile();

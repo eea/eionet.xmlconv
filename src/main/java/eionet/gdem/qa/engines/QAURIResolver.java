@@ -26,10 +26,9 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
-
-import org.apache.log4j.Logger;
-
 import eionet.gdem.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Type for resolving QA URIs. If XML file is referenced from XQuery as file in the root folder, then it is resolved to correct
@@ -43,7 +42,7 @@ public class QAURIResolver implements URIResolver {
     /**
      * The logger.
      */
-    private static Logger LOGGER = Logger.getLogger(QAURIResolver.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(QAURIResolver.class);
 
     /*
      * (non-Javadoc)

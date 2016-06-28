@@ -24,8 +24,8 @@ package eionet.gdem.qa;
 import java.util.Calendar;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -35,6 +35,8 @@ import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.WorkqueueManager;
 import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * QA Service workqueue cleaner job. Deletes all jobs with status = (READY, FATAL_ERR) and finished more than 24 hours ago
@@ -45,7 +47,7 @@ import eionet.gdem.exceptions.DCMException;
 public class WQCleanerJob implements Job {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(WQCleanerJob.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WQCleanerJob.class);
     /** Dao for getting job data. */
     private WorkqueueManager jobsManager = new WorkqueueManager();
 

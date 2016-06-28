@@ -1,40 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
-    version="2.4">
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
     <display-name>Conversion and Quality Assessment Service</display-name>
     <context-param>
         <param-name>edu.yale.its.tp.cas.client.filter.loginUrl</param-name>
         <param-value>https://sso.eionet.europa.eu/login</param-value>
     </context-param>
-    <filter>
-        <filter-name>Set Character Encoding</filter-name>
-        <filter-class>eionet.gdem.web.filters.SetCharacterEncodingFilter</filter-class>
-        <init-param>
-            <param-name>encoding</param-name>
-            <param-value>UTF-8</param-value>
-        </init-param>
-    </filter>
-    <filter>
-        <filter-name>CAS Filter</filter-name>
-        <filter-class>edu.yale.its.tp.cas.client.filter.CASFilter</filter-class>
-        <init-param>
-            <param-name>edu.yale.its.tp.cas.client.filter.loginUrl</param-name>
-            <param-value>https://sso.eionet.europa.eu/login</param-value>
-        </init-param>
-        <init-param>
-            <param-name>edu.yale.its.tp.cas.client.filter.validateUrl</param-name>
-            <param-value>https://sso.eionet.europa.eu/serviceValidate</param-value>
-        </init-param>
-        <init-param>
-            <param-name>edu.yale.its.tp.cas.client.filter.serverName</param-name>
-            <param-value>${app.host}</param-value>
-        </init-param>
-        <init-param>
-            <param-name>edu.yale.its.tp.cas.client.filter.wrapRequest</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </filter>
     <!-- Spring configuration -->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -45,8 +17,22 @@
         <param-value>
             classpath:spring-app-context.xml,
             classpath:spring-datasource-context.xml
+            classpath:spring-runtime.xml
         </param-value>
     </context-param>
+
+    <filter>
+        <filter-name>Set Character Encoding</filter-name>
+        <filter-class>eionet.gdem.web.filters.SetCharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    <filter>
+        <filter-name>CAS Filter</filter-name>
+        <filter-class>eionet.gdem.cas.xmlconvCASFilter</filter-class>
+    </filter>
 
     <!-- Filter Mappings -->
     <filter-mapping>
@@ -72,6 +58,10 @@
     <filter-mapping>
         <filter-name>CAS Filter</filter-name>
         <url-pattern>/do/dbForm</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>CAS Filter</filter-name>
+        <url-pattern>/do/basexForm</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>CAS Filter</filter-name>
@@ -121,10 +111,10 @@
         <filter-name>CAS Filter</filter-name>
         <url-pattern>/do/schemaElemForm</url-pattern>
     </filter-mapping>
-	<filter-mapping>
-		<filter-name>CAS Filter</filter-name>
-		<url-pattern>/log/*</url-pattern>
-	</filter-mapping>
+    <filter-mapping>
+        <filter-name>CAS Filter</filter-name>
+        <url-pattern>/log/*</url-pattern>
+    </filter-mapping>
 
 
 
@@ -135,9 +125,6 @@
     </filter-mapping>
     <listener>
         <listener-class>eionet.gdem.web.listeners.ApplicationCache</listener-class>
-    </listener>
-    <listener>
-        <listener-class>eionet.gdem.web.listeners.AppServletContextListener</listener-class>
     </listener>
     <listener>
         <listener-class>eionet.gdem.web.listeners.JobScheduler</listener-class>
@@ -195,10 +182,10 @@
         <servlet-name>downloadServlet</servlet-name>
         <url-pattern>/tmp/*</url-pattern>
     </servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>downloadServlet</servlet-name>
-		<url-pattern>/log/*</url-pattern>
-	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>downloadServlet</servlet-name>
+        <url-pattern>/log/*</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>downloadServlet</servlet-name>
         <url-pattern>/xmlfile/*</url-pattern>

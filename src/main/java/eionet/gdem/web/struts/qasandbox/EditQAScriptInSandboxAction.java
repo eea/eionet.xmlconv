@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.qasandbox;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -41,6 +41,8 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * EditQAScriptInSandboxAction Open selected QA script content and allow to edit it.
@@ -52,7 +54,7 @@ import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 public class EditQAScriptInSandboxAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(EditQAScriptInSandboxAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EditQAScriptInSandboxAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
@@ -95,7 +97,7 @@ public class EditQAScriptInSandboxAction extends Action {
             if ("0".equals(scriptIdParam)) {
                 cForm.setScriptId(scriptIdParam);
                 cForm.setScriptContent("");
-                cForm.setScriptType(XQScript.SCRIPT_LANG_XQUERY);
+                cForm.setScriptType(XQScript.SCRIPT_LANG_XQUERY1);
                 return actionMapping.findForward("success");
             }
             QAScriptManager qm = new QAScriptManager();
@@ -116,7 +118,7 @@ public class EditQAScriptInSandboxAction extends Action {
             }
         } catch (DCMException e) {
             e.printStackTrace();
-            LOGGER.error("QA Sandbox fomr error error", e);
+            LOGGER.error("QA Sandbox form error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveMessages(httpServletRequest, errors);
         }

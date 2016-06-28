@@ -22,8 +22,14 @@ package eionet.gdem.conversion.odf;
 import java.io.File;
 import java.util.List;
 
-import junit.framework.TestCase;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static net.sf.ezmorph.test.ArrayAssertions.assertEquals;
 
 /**
  *
@@ -31,9 +37,11 @@ import eionet.gdem.test.TestConstants;
  *
  * @author Enriko Käsper
  */
-public class OdsReaderTest extends TestCase{
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class OdsReaderTest {
 
-
+    @Test
     public void testGetFormulaValueXls2007() throws Exception{
         File inFile = new File(this.getClass().getClassLoader().getResource(TestConstants.SEED_FORMULAS_ODS)
                 .getFile());

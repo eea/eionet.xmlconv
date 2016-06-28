@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.schema;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -40,11 +40,18 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Add upload schema action class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class AddUplSchemaAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(AddUplSchemaAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AddUplSchemaAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
@@ -119,7 +126,15 @@ public class AddUplSchemaAction extends Action {
 
         return actionMapping.findForward("success");
     }
-    
+
+    /**
+     * Validation failure
+     * @param actionMapping Action mapping
+     * @param httpServletRequest Request
+     * @param errors Errors
+     * @param messageKey Message key
+     * @return Action forward
+     */
     private ActionForward onValidationFailure(ActionMapping actionMapping, HttpServletRequest httpServletRequest, ActionMessages errors, String messageKey) {
         errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(messageKey));
         saveErrors(httpServletRequest, errors);

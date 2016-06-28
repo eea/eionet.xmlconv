@@ -26,7 +26,7 @@ package eionet.gdem.conversion.spreadsheet;
 import eionet.gdem.conversion.excel.ExcelUtils;
 
 /**
- * This class is returns MS Excel specific handlers for DDXMLConverter
+ * This class is returns MS Excel specific handlers for DDXMLConverter.
  *
  * @author Enriko Käsper
  */
@@ -39,7 +39,7 @@ public class Excel2XML extends DDXMLConverter {
         super();
     }
 
-    private final static String FORMAT_NAME = "MS Excel";
+    private static final String FORMAT_NAME = "MS Excel";
 
     @Override
     public SourceReaderIF getSourceReader() {

@@ -7,8 +7,9 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -16,11 +17,15 @@ import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.Utils;
 
+/**
+ * Root element MySQL Dao class.
+ * @author Unknown
+ */
 @Repository("rootElemDao")
 public class RootElemMySqlDao extends MySqlBaseDao implements IRootElemDao {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(RootElemMySqlDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RootElemMySqlDao.class);
 
     @Autowired
     private ISchemaDao schemaDao;

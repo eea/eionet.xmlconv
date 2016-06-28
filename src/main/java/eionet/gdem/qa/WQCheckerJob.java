@@ -26,8 +26,8 @@ package eionet.gdem.qa;
 
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import eionet.gdem.logging.Markers;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -36,14 +36,18 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IXQJobDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Periodical check of received jobs for the XQEngine The interval is specified in gdem.properties.
+ * @author Unknown
+ * @author George Sofianos
  */
 public class WQCheckerJob implements Job {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(WQCheckerJob.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WQCheckerJob.class);
     /** Dao for getting job data. */
     private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
 
@@ -67,7 +71,7 @@ public class WQCheckerJob implements Job {
             }
 
         } catch (SQLException sqe) {
-            LOGGER.fatal("*** SQL error getting jobs from DB: " + sqe.toString());
+            LOGGER.error(Markers.fatal, "*** SQL error getting jobs from DB: " + sqe.toString());
         } catch (Exception e) {
             LOGGER.error("*** error when getting received jobs:  " + e.toString());
         }

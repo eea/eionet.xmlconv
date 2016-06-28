@@ -20,11 +20,13 @@
 
 package eionet.gdem.dto;
 
+import java.io.Serializable;
+
 /**
  * @author Enriko Käsper, Tieto Estonia QAScript
  */
 
-public class QAScript {
+public class QAScript implements Serializable {
 
     String scriptId;
     String description;
@@ -39,6 +41,8 @@ public class QAScript {
     String scriptContent;
     String upperLimit;
     String url;
+    boolean active;
+    
     private boolean blocker = false;
 
     public String getScriptContent() {
@@ -75,6 +79,9 @@ public class QAScript {
         this.checksum = checksum;
     }
 
+    /**
+     * Default constructor
+     */
     public QAScript() {
         super();
     }
@@ -157,6 +164,14 @@ public class QAScript {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+    
+    public void setActive(String isActive) {
+        this.active = isActive.equals("1");
+    } 
+    
+    public boolean isActive() {
+        return this.active;
     }
 
     /**

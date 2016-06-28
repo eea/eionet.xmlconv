@@ -21,17 +21,25 @@
 
 package eionet.gdem.qa.engines;
 
-import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
-import junit.framework.TestCase;
 import eionet.gdem.Properties;
+import eionet.gdem.test.ApplicationTestContext;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Enriko Käsper, Tieto Estonia XGawkQueryEngineTest
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class XGawkQueryEngineTest {
 
-public class XGawkQueryEngineTest extends TestCase {
-
+    @Test
     public void testGetShellCommand() throws Exception {
         String dataFile = "data.xml";
         String scriptFile = "script.xml";
@@ -43,16 +51,18 @@ public class XGawkQueryEngineTest extends TestCase {
 
     }
 
+    //TODO(refactor): HashMap.get, Iterators does not gurantee that the objects will fetched in the same order the were inserted
+    @Test
     public void testGetShellCommandWithParams() throws Exception {
         String dataFile = "data.xml";
         String scriptFile = "script.xml";
-        HashMap params = new HashMap();
+        Map params = new TreeMap<String, String>();
         params.put("param2", "param2value");
         params.put("source_url", "http://localhost/dummy.xml");
 
         XGawkQueryEngine engine = new XGawkQueryEngine();
         String command = engine.getShellCommand(dataFile, scriptFile, params);
-
+        
         assertEquals(Properties.xgawkCommand + " -v param2=\"param2value\" -v source_url=\"http://localhost/dummy.xml\" "
                 + "-f script.xml data.xml", command);
 

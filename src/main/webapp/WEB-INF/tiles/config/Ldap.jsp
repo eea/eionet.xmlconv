@@ -26,6 +26,11 @@
                 </html:link>
             </li>
             <li id="currenttab"><span style="color: black; text-decoration: none;" title="<bean:message key="label.config.ldap"/>"><bean:message key="label.config.ldap" /></span></li>
+            <li>
+              <html:link page="/do/basexForm" titleKey="label.config.basexserver" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                <bean:message key="label.config.basexserver" />
+              </html:link>
+            </li>
         </ul>
     </div>
 

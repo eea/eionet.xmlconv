@@ -35,6 +35,11 @@ import java.util.Map;
 import eionet.gdem.conversion.excel.reader.DDXmlElement;
 import eionet.gdem.utils.Utils;
 
+/**
+ * DataDict XML Instance.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class DD_XMLInstance {
 
     public static final String DST_TYPE = "DST";
@@ -44,7 +49,7 @@ public class DD_XMLInstance {
     protected String lineTerminator = "\n";
     private OutputStreamWriter writer = null;
 
-    private String type = TBL_TYPE;// by default it's table
+    private String type = TBL_TYPE; // by default it's table
     private DDXmlElement root_tag;
     private List<DDXmlElement> tables;
     private HashMap<String, DDXmlElement> row_attrs;
@@ -58,6 +63,10 @@ public class DD_XMLInstance {
     private String encoding;
     private String instanceUrl;
 
+    /**
+     * Constructor
+     * @param instanceUrl XML instance URL
+     */
     public DD_XMLInstance(String instanceUrl) {
         this.tables = new ArrayList<DDXmlElement>();
         this.row_attrs = new HashMap<String, DDXmlElement>();
@@ -70,27 +79,40 @@ public class DD_XMLInstance {
         this.lineTerminator = File.separator.equals("/") ? "\r\n" : "\n";
     }
 
-    /*
-     * inserts the root_tag name and attributes into Hashtable
+    /**
+     * Inserts the root_tag name and attributes into Hashtable.
+     * @param name Tag name
+     * @param localName Tag local name
+     * @param attributes Tag attributes
      */
     public void setRootTag(String name, String localName, String attributes) {
         root_tag = new DDXmlElement(name, localName, attributes);
     }
 
-    /*
-     * creates the table name, localName and attributes into Hashtable and inserts it into Vector
+    /**
+     * Creates the table name, localName and attributes into Hashtable and inserts it into Vector.
+     * @param name Table name
+     * @param localName Table local name
+     * @param attributes Table attributes
      */
     public void addTable(String name, String localName, String attributes) {
         DDXmlElement table = new DDXmlElement(name, localName, attributes);
         tables.add(table);
     }
 
+    /**
+     * Adds table to table list.
+     * @param table Table
+     */
     public void addTable(DDXmlElement table) {
         tables.add(table);
     }
 
-    /*
-     * inserts row attributes into Hashtable, where keys are table names
+    /**
+     * Inserts row attributes into Hashtable, where keys are table names.
+     * @param tblName Table name
+     * @param rowName Row name
+     * @param attributes Row attributes
      */
     public void addRowAttributes(String tblName, String rowName, String attributes) {
         if (tblName == null) {
@@ -102,8 +124,12 @@ public class DD_XMLInstance {
 
     }
 
-    /*
-     * inserts element names, localNames and attributes into Hashtable, where keys are table names
+    /**
+     * Inserts element names, localNames and attributes into Hashtable, where keys are table names.
+     * @param tblName Table name
+     * @param name Element name
+     * @param localName Element local name
+     * @param attributes Element attributes
      */
     public void addElement(String tblName, String name, String localName, String attributes) {
         if (tblName == null) {
@@ -122,6 +148,11 @@ public class DD_XMLInstance {
         elements.put(tblName, tblElements);
     }
 
+    /**
+     * Adds namespace to namespaces list.
+     * @param prefix Namespace prefix
+     * @param uri Namespace uri
+     */
     public void addNamespace(String prefix, String uri) {
         namespaces.append(" xmlns:");
         namespaces.append(prefix);
@@ -130,6 +161,9 @@ public class DD_XMLInstance {
         namespaces.append("\"");
     }
 
+    /**
+     * Sets dataset type.
+     */
     public void setTypeDataset() {
         leads.put("tbl", "\t");
         leads.put("row", "\t\t");
@@ -137,6 +171,9 @@ public class DD_XMLInstance {
         this.type = DST_TYPE;
     }
 
+    /**
+     * Sets table type.
+     */
     public void setTypeTable() {
         leads.put("tbl", "");
         leads.put("row", "\t");
@@ -169,12 +206,19 @@ public class DD_XMLInstance {
         return this.tables;
     }
 
+    /**
+     * Gets table elements
+     * @param tbl_name Table name
+     * @return List of DD elements
+     */
     public List<DDXmlElement> getTblElements(String tbl_name) {
         return elements.get(tbl_name);
     }
 
     /**
      * Flush the written content into the output stream.
+     * @param outStream OutputStream
+     * @throws Exception If an error occurs.
      */
     public void startWritingXml(OutputStream outStream) throws Exception {
 
@@ -185,6 +229,7 @@ public class DD_XMLInstance {
 
     /**
      * Flush the written content into the output stream.
+     * @throws Exception If an error occurs.
      */
     public void flushXml() throws Exception {
         endRootElement();
@@ -211,16 +256,30 @@ public class DD_XMLInstance {
 
     }
 
+    /**
+     * Writes row start.
+     * @throws Exception If an error occurs.
+     */
     public void writeRowStart() throws Exception {
         addString(getLead("row") + "<" + currentRowName + currentRowAttrs + ">");
         newLine();
     }
 
+    /**
+     * Writes row end.
+     * @throws Exception If an error occurs.
+     */
     public void writeRowEnd() throws Exception {
         addString(getLead("row") + "</" + currentRowName + ">");
         newLine();
     }
 
+    /**
+     * Writes table start.
+     * @param tblName Table name
+     * @param attributes Attributes
+     * @throws Exception If an error occurs.
+     */
     public void writeTableStart(String tblName, String attributes) throws Exception {
         if (type.equals(DST_TYPE)) {
             addString(getLead("tbl") + "<" + tblName + attributes + ">");
@@ -228,6 +287,11 @@ public class DD_XMLInstance {
         }
     }
 
+    /**
+     * Writes table end.
+     * @param tblName Table name
+     * @throws Exception If an error occurs.
+     */
     public void writeTableEnd(String tblName) throws Exception {
         if (type.equals(DST_TYPE)) {
             addString(getLead("tbl") + "</" + tblName + ">");
@@ -235,20 +299,37 @@ public class DD_XMLInstance {
         }
     }
 
+    /**
+     * Set current row
+     * @param tblName Table name
+     */
     public void setCurRow(String tblName) {
         DDXmlElement rowElement = row_attrs.get(tblName);
         currentRowName = rowElement.getName();
         currentRowAttrs = rowElement.getAttributes();
     }
 
+    /**
+     * Adds string to writer
+     * @param s String
+     * @throws Exception If an error occurs.
+     */
     protected void addString(String s) throws Exception {
         writer.write(s);
     }
 
+    /**
+     * Adds a new line.
+     * @throws Exception If an error occurs.
+     */
     protected void newLine() throws Exception {
         writer.write(lineTerminator);
     }
 
+    /**
+     * Writes XML Header.
+     * @throws IOException If an error occurs.
+     */
     private void writeHeader() throws IOException {
         // writer.print("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>");
         String enc = (Utils.isNullStr(getEncoding())) ? DEFAULT_ENCODING : encoding;
@@ -256,6 +337,10 @@ public class DD_XMLInstance {
         writer.write(lineTerminator);
     }
 
+    /**
+     * Writes Root element.
+     * @throws IOException If an error occurs.
+     */
     private void startRootElement() throws IOException {
         String root_attributes = getRootTagAttributes();
         if (root_attributes == null) {
@@ -272,10 +357,19 @@ public class DD_XMLInstance {
         writer.write(lineTerminator);
     }
 
+    /**
+     * Writes root element end.
+     * @throws IOException If an error occurs.
+     */
     private void endRootElement() throws IOException {
         writer.write("</" + getRootTagName() + ">");
     }
 
+    /**
+     * Escapes special characters
+     * @param s String
+     * @return Escaped string
+     */
     protected String escape(String s) {
 
         if (s == null) {
@@ -299,6 +393,11 @@ public class DD_XMLInstance {
         return buf.toString();
     }
 
+    /**
+     * Get leads
+     * @param leadName Lead name
+     * @return Lead
+     */
     protected String getLead(String leadName) {
 
         if (leads == null || leads.size() == 0) {
@@ -317,10 +416,20 @@ public class DD_XMLInstance {
         this.elemDefs = elemDefs;
     }
 
+    /**
+     * Adds element definitions.
+     * @param sheet Sheet
+     * @param elemDefs Element definitions
+     */
     public void addElemDef(String sheet, Map<String, DDElement> elemDefs) {
         this.elemDefs.put(sheet, elemDefs);
     }
 
+    /**
+     * Gets element definitions
+     * @param sheet Sheet
+     * @return Element definitions
+     */
     public Map<String, DDElement> getElemDefs(String sheet) {
         if (elemDefs != null) {
             if (elemDefs.containsKey(sheet)) {

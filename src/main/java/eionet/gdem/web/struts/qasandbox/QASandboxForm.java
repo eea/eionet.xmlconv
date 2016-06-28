@@ -46,6 +46,11 @@ public class QASandboxForm extends ActionForm {
     private boolean showScripts;
     private String result;
 
+    /**
+     * Resets all
+     * @param actionMapping Action mapping
+     * @param httpServletRequest Request
+     */
     public void resetAll(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         super.reset(actionMapping, httpServletRequest);
         scriptId = null;
@@ -137,6 +142,12 @@ public class QASandboxForm extends ActionForm {
                 && (schema.isDoValidation() || (schema.getQascripts() != null && schema.getQascripts().size() > 0));
     }
 
+    /**
+     * Validates form
+     * @param mapping Mapping
+     * @param request Request
+     * @return Action errors
+     */
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = super.validate(mapping, request);
 

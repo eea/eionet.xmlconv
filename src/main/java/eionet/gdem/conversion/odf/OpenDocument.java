@@ -45,9 +45,13 @@ import eionet.gdem.utils.ZipUtil;
 import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/*
- *
+/**
+ * Class for OpenDocument documents.
+ * @author Unknown
+ * @author George Sofianos
  */
 public class OpenDocument {
 
@@ -56,6 +60,8 @@ public class OpenDocument {
     public static final String METAXSL_FILE_NAME = "meta.xsl";
     public static final String CONTENT_FILE_NAME = "content.xml";
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(OpenDocument.class);
+
     private String strWorkingFolder = null;
     private String strMetaFile = null;
     private String strMetaXslFile = null;
@@ -63,6 +69,9 @@ public class OpenDocument {
     private String strOdsOutFile = null;
     private String strContentFile = null;
 
+    /**
+     * Default constructor
+     */
     public OpenDocument() {
 
     }
@@ -71,6 +80,11 @@ public class OpenDocument {
         this.strContentFile = strContentFile;
     }
 
+    /**
+     * Creates ODS file.
+     * @param strOut Output String
+     * @throws Exception If an error occurs.
+     */
     public void createOdsFile(String strOut) throws Exception {
 
         FileOutputStream resultFileOutput = new FileOutputStream(strOut);
@@ -83,8 +97,10 @@ public class OpenDocument {
 
     }
 
-    /*
+    /**
      * Method unzips the ods file, replaces content.xml and meta.xml and finally zips it together again
+     * @param out OutputStream
+     * @throws Exception If an error occurs.
      */
     public void createOdsFile(OutputStream out) throws Exception {
 
@@ -130,11 +146,16 @@ public class OpenDocument {
             Utils.deleteFolder(strWorkingFolder);
             Utils.deleteFile(strOdsOutFile);
         } catch (Exception ioe) {
+            // TODO fix logger
             // couldn't delete temp files
         }
 
     }
 
+    /**
+     * Prepares working folder.
+     * @throws Exception If an error occurs.
+     */
     private void prepareWorkingFolder() throws Exception {
 
         // get temporary folder
@@ -157,6 +178,10 @@ public class OpenDocument {
         strWorkingFolder = workginFolder.getAbsolutePath();
     }
 
+    /**
+     * ODS files initialization.
+     * @throws Exception If an error occurs.
+     */
     private void initOdsFiles() throws Exception {
 
         prepareWorkingFolder();
@@ -185,9 +210,10 @@ public class OpenDocument {
         strMetaXslFile = odsFolder + METAXSL_FILE_NAME;
     }
 
-    /*
+    /**
      * Finds schema-url attributes from content file (stored in xsl) table:table attribute and transforms the values into meta.xml
      * file user defined properties
+     * @throws Exception If an error occurs.
      */
     private void convertMetaFile() throws Exception {
         String schemaUrl = null;
@@ -236,9 +262,8 @@ public class OpenDocument {
             }
 
         } catch (Exception ex) {
-            System.out.println("Error converting meta.xml");
+            LOGGER.error("Error converting meta.xml");
             throw ex;
-            // _logger.error("Error reading conversions.xml file ", ex);
         } finally {
             IOUtils.closeQuietly(os);
             IOUtils.closeQuietly(in);

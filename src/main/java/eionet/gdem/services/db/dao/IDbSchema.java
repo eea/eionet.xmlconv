@@ -1,5 +1,10 @@
 package eionet.gdem.services.db.dao;
 
+/**
+ * DB Schema interface.
+ * TODO: interfaces should have methods
+ * @author Unknown
+ */
 public interface IDbSchema {
 
     /**
@@ -79,6 +84,7 @@ public interface IDbSchema {
     String QUERY_SCRIPT_TYPE = "SCRIPT_TYPE";
     String UPPER_LIMIT_FLD = "UPPER_LIMIT";
     String QUERY_URL_FLD    = "URL";
+    String ACTIVE_FLD = "ACTIVE";
 
     /**
      * Field names in SCHEMA table.
@@ -119,6 +125,7 @@ public interface IDbSchema {
     String TIMESTAMP_FLD = "TIME_STAMP";
     String XQ_ID_FLD = "QUERY_ID";
     String SRC_FILE_FLD = "SRC_FILE";
+    String XQ_TYPE_FLD = "XQ_TYPE";
 
     /**
      * Field names in FILE table.

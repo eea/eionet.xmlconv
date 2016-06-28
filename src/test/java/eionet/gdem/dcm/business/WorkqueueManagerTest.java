@@ -42,6 +42,8 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.utils.Utils;
 
+import javax.sql.DataSource;
+
 /**
  * @author Enriko Käsper, Tieto Estonia WorkqueueManagerTest
  */
@@ -50,7 +52,7 @@ import eionet.gdem.utils.Utils;
 public class WorkqueueManagerTest {
 
     @Autowired
-    private IDatabaseTester databaseTester;
+    private DataSource db;
 
     /**
      * Set up test case properties and databaseTester.
@@ -58,7 +60,7 @@ public class WorkqueueManagerTest {
     @Before
     public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_QA_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_QA_XML);
     }
 
     /**
@@ -71,7 +73,7 @@ public class WorkqueueManagerTest {
 
         String user = TestConstants.TEST_ADMIN_USER;
         String sourceUrl = "http://test.eu/test.xml";
-        String scriptType = XQScript.SCRIPT_LANG_XQUERY;
+        String scriptType = XQScript.SCRIPT_LANG_XQUERY1;
         String scriptContent =
                 "xquery version \"1.0\";\n let $numbers := (1,2,3,4) "
                         + "\n for $n in $numbers \n return \n <number>{data($n)}</number>\n";

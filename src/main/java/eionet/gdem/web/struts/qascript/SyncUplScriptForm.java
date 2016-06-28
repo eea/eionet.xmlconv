@@ -27,6 +27,11 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
+/**
+ * Syncs upload script form.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class SyncUplScriptForm extends ActionForm {
 
     /**

@@ -44,6 +44,9 @@ public class StylesheetListHolder {
     boolean convPrm;
     boolean handcoded;
 
+    /**
+     * Default constructor
+     */
     public StylesheetListHolder() {
     }
 

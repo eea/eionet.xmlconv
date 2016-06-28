@@ -27,8 +27,8 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -40,10 +40,17 @@ import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.web.struts.BaseAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Host detail action class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class HostDetailsAction extends BaseAction {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(HostDetailsAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HostDetailsAction.class);
     private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();;
 
     @Override

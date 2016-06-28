@@ -22,6 +22,8 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.utils.Utils;
 
+import javax.sql.DataSource;
+
 /**
  * This unittest tests the Conversion Service convert method.
  *
@@ -33,7 +35,7 @@ import eionet.gdem.utils.Utils;
 public class ConvertXMLMethodTest{
 
     @Autowired
-    private IDatabaseTester databaseTester;
+    private DataSource db;
 
     /**
      * Set up test case properties and databaseTester.
@@ -41,7 +43,7 @@ public class ConvertXMLMethodTest{
     @Before
     public void setUp() throws Exception {
         TestUtils.setUpProperties(this);
-        DbHelper.setUpDefaultDatabaseTester(databaseTester, TestConstants.SEED_DATASET_CONVERSIONS_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_CONVERSIONS_XML);
     }
 
 

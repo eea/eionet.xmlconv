@@ -29,6 +29,10 @@ import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
 
+/**
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class ConvertContext {
 
     private InputStream source;
@@ -37,6 +41,13 @@ public class ConvertContext {
     private OutputStream resultStream;
     private String cnvFileExt;
 
+    /**
+     * Constructor.
+     * @param source Source
+     * @param xslName Xsl name
+     * @param result Result OutputStream
+     * @param cnvFileExt File extension
+     */
     public ConvertContext(InputStream source, String xslName, OutputStream result, String cnvFileExt) {
         this.cnvFileExt = cnvFileExt;
         this.resultStream = result;
@@ -45,6 +56,13 @@ public class ConvertContext {
         this.xslStream = null;
     }
 
+    /**
+     * Constructor.
+     * @param source Source
+     * @param xslStream Xsl stream
+     * @param result Result OutputStream
+     * @param cnvFileExt File extension
+     */
     public ConvertContext(InputStream source, InputStream xslStream, OutputStream result, String cnvFileExt) {
         this.cnvFileExt = cnvFileExt;
         this.resultStream = result;
@@ -53,6 +71,12 @@ public class ConvertContext {
         this.xslStream = xslStream;
     }
 
+    /**
+     * Executes Conversion.
+     * @param converter Converter
+     * @return Result
+     * @throws Exception If conversion can't be completed
+     */
     public String executeConversion(ConvertStrategy converter) throws Exception {
         String strResult = null;
 

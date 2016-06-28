@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.hosts;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -38,10 +38,12 @@ import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.web.struts.BaseAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DeleteHostAction extends BaseAction {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(DeleteHostAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeleteHostAction.class);
 
     private static IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
 

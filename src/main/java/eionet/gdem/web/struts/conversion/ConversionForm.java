@@ -15,6 +15,7 @@ import eionet.gdem.dto.Schema;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS ConversionForm
+ * @author George Sofianos
  */
 
 public class ConversionForm extends ActionForm {
@@ -34,11 +35,21 @@ public class ConversionForm extends ActionForm {
     private String action;
     private String errorForward = DEFAULT_ERROR_FORWARD;
 
+    /**
+     * Form validator
+     * @param actionMapping Action mapping
+     * @param httpServletRequest Request
+     * @return null
+     */
     public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
-
         return null;
     }
 
+    /**
+     * Resets all
+     * @param actionMapping Action mapping
+     * @param httpServletRequest Request
+     */
     public void resetAll(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         super.reset(actionMapping, httpServletRequest);
         schemaUrl = null;

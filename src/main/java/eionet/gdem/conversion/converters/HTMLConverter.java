@@ -32,6 +32,11 @@ import org.apache.commons.io.IOUtils;
 import eionet.gdem.GDEMException;
 import eionet.gdem.utils.Utils;
 
+/**
+ * Converts XML to HTML.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class HTMLConverter extends ConvertStrategy {
 
     @Override

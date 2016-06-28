@@ -18,71 +18,56 @@
  * Contributors(s):
  *    Original code: Nedeljko Pavlovic (ED)
  */
-
 package eionet.gdem.web.listeners;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 
 import eionet.gdem.Properties;
 import eionet.gdem.dto.ConvType;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
+import javax.servlet.ServletContext;
 
-public class AppServletContextListener implements ServletContextListener {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-    private static final Log LOGGER = LogFactory.getLog(AppServletContextListener.class);
+/**
+ * Application Context Listener.
+ * @author Unknown
+ * @author George Sofianos
+ */
+@Component
+public class AppServletContextListener implements ApplicationListener {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppServletContextListener.class);
 
     /**
-     * Public constuctor
+     * Default Constructor
      */
     public AppServletContextListener() {
-    }
-
-    /**
-     * Method that is triggered once on start of application (context initialization):
-     *
-     */
-    @Override
-    public void contextInitialized(ServletContextEvent servletContextEvent) {
-        System.out.println("Application started !");
-        try {
-
-            Properties.metaXSLFolder = servletContextEvent.getServletContext().getRealPath("/dcm");
-            Properties.convFile = servletContextEvent.getServletContext().getRealPath("/dcm/conversions.xml");
-            Properties.odsFolder = servletContextEvent.getServletContext().getRealPath("/opendoc/ods");
-            Properties.appHome = servletContextEvent.getServletContext().getRealPath("/WEB-INF/classes");
-
-            checkFolders();
-
-            servletContextEvent.getServletContext().setAttribute("qascript.resulttypes",
-                    loadConvTypes(XQScript.SCRIPT_RESULTTYPES));
-            servletContextEvent.getServletContext().setAttribute("qascript.scriptlangs", loadConvTypes(XQScript.SCRIPT_LANGS));
-            servletContextEvent.getServletContext().setAttribute(QAScriptListLoader.QASCRIPT_PERMISSIONS_ATTR,
-                    QAScriptListLoader.loadQAScriptPermissions(null));
-            servletContextEvent.getServletContext().setAttribute(StylesheetListLoader.STYLESHEET_PERMISSIONS_ATTR,
-                    StylesheetListLoader.loadStylesheetPermissions(null));
-
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
     }
 
     /**
      * Checks if such folders exists, if not, they are created.
      */
     private void checkFolders() {
-        String[] folders =
-                {Properties.xslFolder, Properties.queriesFolder, Properties.tmpFolder, Properties.xmlfileFolder,
-                        Properties.schemaFolder};
+        String[] folders
+                = {Properties.xslFolder, Properties.getXslFolder(), Properties.getTmpFolder(), Properties.getXmlfileFolder(),
+                    Properties.schemaFolder};
 
         for (String folder : folders) {
             File f = new File(folder);
@@ -96,14 +81,10 @@ public class AppServletContextListener implements ServletContextListener {
     }
 
     /**
-     * Method that is triggered once on destroy of servlet context
-     *
+     * Gets conversion types
+     * @param types Conversion types
+     * @return List of conversion types
      */
-    @Override
-    public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        System.out.println("Application terminated !");
-    }
-
     public static List<ConvType> loadConvTypes(String[] types) {
 
         List<ConvType> l = new ArrayList<ConvType>(types.length);
@@ -114,5 +95,44 @@ public class AppServletContextListener implements ServletContextListener {
             l.add(ct);
         }
         return l;
+    }
+
+    @Override
+    public void onApplicationEvent(ApplicationEvent event) {
+        //System.out.println("Application started !");
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+        if (event instanceof ContextClosedEvent) {
+            //System.out.println("Application terminated !");;
+            return;
+        }
+        if (!(event instanceof ContextRefreshedEvent)) {
+            return;
+        }
+        ContextRefreshedEvent e = (ContextRefreshedEvent) event;
+        ApplicationContext appContext = e.getApplicationContext();
+        if (!(appContext instanceof WebApplicationContext)) {
+            return;
+        }
+        WebApplicationContext ctx = (WebApplicationContext) e.getApplicationContext();
+        ServletContext context = ctx.getServletContext();
+        try {
+
+            Properties.metaXSLFolder = context.getRealPath("/dcm");
+            Properties.convFile = context.getRealPath("/dcm/conversions.xml");
+            Properties.odsFolder = context.getRealPath("/opendoc/ods");
+            Properties.appHome = context.getRealPath("/WEB-INF/classes");
+
+            checkFolders();
+            context.setAttribute("qascript.resulttypes",
+                    loadConvTypes(XQScript.SCRIPT_RESULTTYPES));
+            context.setAttribute("qascript.scriptlangs", loadConvTypes(XQScript.SCRIPT_LANGS));
+            context.setAttribute(QAScriptListLoader.QASCRIPT_PERMISSIONS_ATTR,
+                    QAScriptListLoader.loadQAScriptPermissions(null));
+            context.setAttribute(StylesheetListLoader.STYLESHEET_PERMISSIONS_ATTR,
+                    StylesheetListLoader.loadStylesheetPermissions(null));
+
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
     }
 }

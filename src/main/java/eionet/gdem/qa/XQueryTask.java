@@ -28,10 +28,11 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
 
+import eionet.gdem.logging.Markers;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
@@ -44,6 +45,8 @@ import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * XQuery job in the workqueue. A task executing the XQuery task and storing the results of processing.
@@ -51,7 +54,7 @@ import eionet.gdem.validation.ValidationService;
 public class XQueryTask extends Thread {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(XQueryTask.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XQueryTask.class);
     /** Script file name. */
     private String scriptFile;
     /** Result file name. */
@@ -60,6 +63,8 @@ public class XQueryTask extends Thread {
     private String jobId;
     /** query ID to be executed. */
     private String queryID;
+    /** Script type */
+    private String scriptType;
     /** Source url for XML. */
     private String url;
     /** Dao for getting job data. */
@@ -127,7 +132,6 @@ public class XQueryTask extends Thread {
                 // read query info from DB.
                 Map query = getQueryInfo(queryID);
                 String contentType = null;
-                String scriptType = null;
                 Schema schema = null;
                 boolean schemaExpired = false;
                 boolean isNotLatestReleasedDDSchema = false;
@@ -155,9 +159,9 @@ public class XQueryTask extends Thread {
                     scriptType =
                             scriptFile.endsWith(XQScript.SCRIPT_LANG_XSL) ? XQScript.SCRIPT_LANG_XSL
                                     : scriptFile.endsWith(XQScript.SCRIPT_LANG_XGAWK) ? XQScript.SCRIPT_LANG_XGAWK
-                                            : XQScript.SCRIPT_LANG_XQUERY;
+                                            : XQScript.SCRIPT_LANG_XQUERY1;
                 }
-                String[] xqParam = { Constants.XQ_SOURCE_PARAM_NAME + "=" + srcFile };
+                String[] xqParam = {Constants.XQ_SOURCE_PARAM_NAME + "=" + srcFile};
 
                 try {
                     if (scriptFile.contains(" ")) {
@@ -171,11 +175,11 @@ public class XQueryTask extends Thread {
                     xq.setScriptType(scriptType);
                     xq.setSrcFileUrl(srcFile);
                     xq.setSchema(schema);
-                    
-                    if (XQScript.SCRIPT_LANG_FME.equals(scriptType)){
-	                    if (query != null && query.containsKey("url")) {
-	                        xq.setScriptSource((String) query.get("url"));
-	                    }
+
+                    if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
+                        if (query != null && query.containsKey("url")) {
+                            xq.setScriptSource((String) query.get("url"));
+                        }
                     }
 
                     FileOutputStream out = null;
@@ -212,6 +216,8 @@ public class XQueryTask extends Thread {
             }
 
             changeStatus(Constants.XQ_READY);
+
+            // TODO: Change to failed if script has failed
             LOGGER.info("Job ID=" + jobId + " succeeded");
 
             // all done, thread stops here, job is waiting for pulling from the
@@ -227,7 +233,6 @@ public class XQueryTask extends Thread {
      */
     private void initVariables() {
         try {
-
             String[] jobData = xqJobDao.getXQJobData(jobId);
             if (jobData == null) {
                 handleError("No such job: " + jobId, true);
@@ -236,6 +241,7 @@ public class XQueryTask extends Thread {
             scriptFile = jobData[1];
             resultFile = jobData[2]; // just a file name, file is not created
             queryID = jobData[5];
+            scriptType = jobData[8];
         } catch (SQLException sqe) {
             handleError("Error getting WQ data from the DB: " + sqe.toString(), true);
         }
@@ -273,12 +279,7 @@ public class XQueryTask extends Thread {
 
         } catch (Exception e) {
             // what to do if exception occurs here...
-            LOGGER.fatal("** Error occured when handling XQ error: " + e.toString());
-
-            // probably not needed -> 3 rows
-            System.err.println("=============================================================================");
-            System.err.println("** EXTREMELY FATAL ERROR OCCURED WHEN HANDLING ERROR: " + e.toString());
-            System.err.println("=============================================================================");
+            LOGGER.error(Markers.fatal, "** Error occurred when handling XQ error: " + e.toString());
         }
     }
 

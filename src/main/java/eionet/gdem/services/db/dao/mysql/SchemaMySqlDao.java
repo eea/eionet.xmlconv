@@ -11,8 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -23,7 +24,6 @@ import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.Utils;
 
 /**
- *
  * DAO for Schema objects.
  *
  * @author Enriko Käsper
@@ -38,7 +38,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
     private JdbcTemplate jdbcTemplate;
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SchemaMySqlDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaMySqlDao.class);
 
     private static final String qSchemaID = "SELECT " + SCHEMA_ID_FLD + " FROM " + SCHEMA_TABLE + " WHERE " + XML_SCHEMA_FLD
             + "= ?";
@@ -70,7 +70,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
             + STYLESHEET_ID_FLD + " = X." + CNV_ID_FLD + " AND XS." + XSL_SCHEMA_ID_FLD + "= ?" + " ORDER BY " + RESULT_TYPE_FLD;
 
     private static final String qSchemaQueries = "SELECT " + QUERY_ID_FLD + ", " + QUERY_FILE_FLD + ", " + DESCR_FLD + ","
-            + SHORT_NAME_FLD + "," + QUERY_SCRIPT_TYPE + "," + QUERY_RESULT_TYPE + "," + UPPER_LIMIT_FLD + " FROM " + QUERY_TABLE
+            + SHORT_NAME_FLD + "," + QUERY_SCRIPT_TYPE + "," + QUERY_RESULT_TYPE + "," + UPPER_LIMIT_FLD + "," + ACTIVE_FLD + " FROM " + QUERY_TABLE
             + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?" + " ORDER BY " + SHORT_NAME_FLD;
 
     private static final String qSchemasWithStl = "SELECT DISTINCT S." + SCHEMA_ID_FLD + ", S." + XML_SCHEMA_FLD + ", S."
@@ -377,6 +377,13 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 
     }
 
+    /**
+     * Gets Schema stylesheets
+     * @param schemaId Schema Id
+     * @param conn Connection
+     * @return Stylesheet list
+     * @throws SQLException If an error occurs.
+     */
     private Vector getSchemaStylesheets(String schemaId, Connection conn) throws SQLException {
         int id = 0;
         PreparedStatement pstmt = null;
@@ -432,6 +439,13 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 
     }
 
+    /**
+     * Gets Schema queries list
+     * @param schemaId Schema id
+     * @param conn Connection
+     * @return Queries list
+     * @throws SQLException If an error occurs.
+     */
     private Vector getSchemaQueries(String schemaId, Connection conn) throws SQLException {
         int id = 0;
         PreparedStatement pstmt = null;
@@ -467,6 +481,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
                 h.put("script_type", r[i][4]);
                 h.put("result_type", r[i][5]);
                 h.put("upper_limit", r[i][6]);
+                h.put("is_active", r[i][7]);
                 v.add(h);
             }
         } finally {

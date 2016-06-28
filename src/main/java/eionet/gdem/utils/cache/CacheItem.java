@@ -23,6 +23,11 @@ package eionet.gdem.utils.cache;
 
 import java.util.Date;
 
+/**
+ * Cache Item class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class CacheItem {
     protected String key;
 
@@ -32,13 +37,16 @@ public class CacheItem {
 
     protected long timeToLive = 10 * 60 * 1000; // in ms, 10 minutes
 
+    /**
+     * Default private constructor
+     */
     private CacheItem() {
     }
 
     /**
      * Constructs a CacheItem object
      *
-     * @param key
+     * @param key Key
      * @param timeToLive
      *            ms to keep this in the cache
      * @param content

@@ -31,8 +31,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.BeanPredicate;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.functors.EqualPredicate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -44,11 +44,18 @@ import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Edits stylesheet.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class EditStylesheetFormAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(EditStylesheetFormAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EditStylesheetFormAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
@@ -93,7 +100,7 @@ public class EditStylesheetFormAction extends Action {
             // Define tag cannot set a null value
             form.setDependsOn(stylesheet.getDependsOn() == null ? "" : stylesheet.getDependsOn());
 
-            if(stylesheet.getSchemas().size()>0){
+            if (stylesheet.getSchemas().size() > 0) {
                 //set first schema for Run Conversion link
                 form.setSchema(stylesheet.getSchemas().get(0).getSchema());
                 // check if any related schema has type=EXCEL, if yes, then depends on info should be visible

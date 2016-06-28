@@ -28,6 +28,9 @@ import java.util.List;
 
 import eionet.gdem.Properties;
 
+/**
+ * Schema class.
+ */
 public class Schema implements Serializable {
 
     /** XML Schema unique numeric ID. */
@@ -97,9 +100,12 @@ public class Schema implements Serializable {
         this.qascripts = qascripts;
     }
 
-    private static String[] schemaLanguages = { "XSD", "DTD", "EXCEL" };
+    private static String[] schemaLanguages = {"XSD", "DTD", "EXCEL"};
     private static String defaultSchemaLang = "XSD";
 
+    /**
+     * Default constructor
+     */
     public Schema() {
 
     }
@@ -210,6 +216,10 @@ public class Schema implements Serializable {
         return 42;
     }
 
+    /**
+     * Gets label
+     * @return Label
+     */
     public String getLabel() {
         StringBuilder label = new StringBuilder(schema);
         if (id != null && isDDSchema() && getTable() != null) {
@@ -228,6 +238,10 @@ public class Schema implements Serializable {
         return label.toString();
     }
 
+    /**
+     * Returns if it is DD schema or not.
+     * @return True if it is DD schema.
+     */
     public boolean isDDSchema() {
         boolean ret = false;
 
@@ -254,6 +268,10 @@ public class Schema implements Serializable {
         this.doValidation = doValidation;
     }
 
+    /**
+     * Gets schema language
+     * @return Language
+     */
     public String getSchemaLang() {
         if (schemaLang == null) {
             schemaLang = getDefaultSchemaLang();
@@ -273,6 +291,10 @@ public class Schema implements Serializable {
         this.uplSchemaFileName = uplSchemaFile;
     }
 
+    /**
+     * Returns if schema is expired.
+     * @return True if schema is expired.
+     */
     public boolean isExpired() {
         Date expDate = getExpireDate();
         Date now = new Date();

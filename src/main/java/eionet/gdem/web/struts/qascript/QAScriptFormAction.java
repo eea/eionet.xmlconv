@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.qascript;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -36,11 +36,18 @@ import org.apache.struts.action.ActionMessages;
 import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * QA script form action class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class QAScriptFormAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(QAScriptFormAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptFormAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
@@ -78,6 +85,7 @@ public class QAScriptFormAction extends Action {
             form.setScriptContent(qaScript.getScriptContent());
             form.setUpperLimit(qaScript.getUpperLimit());
             form.setUrl(qaScript.getUrl());
+            form.setActive(qaScript.isActive());
 
             httpServletRequest.setAttribute(QAScriptListLoader.QASCRIPT_LIST_ATTR, QAScriptListLoader.getList(httpServletRequest));
 

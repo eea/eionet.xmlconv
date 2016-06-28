@@ -23,41 +23,72 @@
 
 package eionet.gdem.conversion.excel;
 
+/**
+ * This interface is defing the methods for mapping styles between xml (fo:style) and styles defined in Excel tool.
+ *
+ * @author Enriko Käsper
+ * @author George Sofianos
+ */
 public interface ExcelStyleIF {
 
-    /**
-     * This interface is defing the methods for mapping styles between xml (fo:style) and sytles defined in Excel tool
-     *
-     * @author Enriko Käsper
-     */
-
-    public static final String STYLE_FAMILY_TABLE = "table";
-    public static final String STYLE_FAMILY_TABLE_COLUMN = "table-column";
-    public static final String STYLE_FAMILY_TABLE_ROW = "table-row";
-    public static final String STYLE_FAMILY_TABLE_CELL = "table-cell";
+    String STYLE_FAMILY_TABLE = "table";
+    String STYLE_FAMILY_TABLE_COLUMN = "table-column";
+    String STYLE_FAMILY_TABLE_ROW = "table-row";
+    String STYLE_FAMILY_TABLE_CELL = "table-cell";
 
     /**
      * Get methods returns the differemt parameters defined in the ExcelSTyle object.
      *
      * @return excel style parameters
      */
-    public String getName();
+    /**
+     * Get Style name
+     * @return Style name
+     */
+    String getName();
 
-    public String getFamily();
+    /**
+     * Gets Style family
+     * @return Style family
+     */
+    String getFamily();
 
-    public boolean getItalic();
+    /**
+     * Gets Italic style
+     * @return True if style is Italic
+     */
+    boolean getItalic();
 
-    public short getFontWeight();
+    /**
+     * Gets Font weight
+     * @return Font weight
+     */
+    short getFontWeight();
 
-    public short getFontSize();
+    /**
+     * Gets Font size
+     * @return Font size
+     */
+    short getFontSize();
 
-    public String getFontName();
+    /**
+     * Gets Font name
+     * @return Font name
+     */
+    String getFontName();
 
-    public short getTextAlign();
+    /**
+     * Gets Text Align
+     * @return Text align
+     */
+    short getTextAlign();
 
-    public short getWorkbookIndex();
+    /**
+     * Gets Workbook index
+     * @return Workbook index
+     */
+    short getWorkbookIndex();
 
-    // set methods
     /**
      * Sets the name and family for created Excel style.
      *
@@ -66,68 +97,68 @@ public interface ExcelStyleIF {
      * @param family
      *            - excel object family, which has the current style (sheet, column, row, cell)
      */
-    public void setExcelStyle(String name, String family);
+    void setExcelStyle(String name, String family);
 
     /**
      * Sets the font italic parameter.
      *
-     * @param str_italic
+     * @param str_italic Italic
      */
-    public void setItalic(String str_italic);
+    void setItalic(String str_italic);
 
     /**
      * Sets the font weight parameter.
      *
-     * @param str_bold
+     * @param str_bold Bold
      */
-    public void setFontWeight(String str_bold);
+    void setFontWeight(String str_bold);
 
     /**
      * Sets the font size parameter.
      *
-     * @param str_size
+     * @param str_size Size
      */
-    public void setFontSize(String str_size);
+    void setFontSize(String str_size);
 
     /**
      * Sets the font name parameter.
      *
-     * @param str_fontname
+     * @param str_fontname Font name
      */
-    public void setFontName(String str_fontname);
+    void setFontName(String str_fontname);
 
     /**
      * Sets the font text align parameter.
      *
-     * @param str_align
+     * @param str_align Text align
      */
-    public void setTextAlgin(String str_align);
+    void setTextAlgin(String str_align);
 
     /**
      * Compares 2 excel styles (name &amp; family).
      *
-     * @param style
+     * @param style Style
+     * @return True if style is equal
      */
-    public boolean equals(ExcelStyleIF style);
+    boolean equals(ExcelStyleIF style);
 
     /**
      * Sets the index for the style, defined in 1 workbook.
      *
-     * @param index
+     * @param index Style Index
      */
-    public void setWorkbookIndex(short index);
+    void setWorkbookIndex(short index);
 
     /**
      * Gets the column width.
-     *
-     * @param index
+     * @return Column width
      */
-    public short getColumnWidth();
+    short getColumnWidth();
 
     /**
      * sets the column width "12cm" or "11pt".
      *
-     * @param column_width
+     * @param column_width Column width
      */
-    public void setColumnWidth(String column_width);
+    void setColumnWidth(String column_width);
 }

@@ -9,8 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -20,6 +20,8 @@ import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS ListConversionAction
@@ -28,7 +30,7 @@ import eionet.gdem.utils.Utils;
 public class ConvertAction extends BaseMethodAction {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ConvertAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConvertAction.class);
 
     protected static final String CONVERT_ID_PARAM_NAME = "convert_id";
     protected static final String URL_PARAM_NAME = "url";

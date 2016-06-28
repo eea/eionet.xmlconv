@@ -25,8 +25,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -38,11 +38,18 @@ import eionet.gdem.Constants;
 import eionet.gdem.dcm.business.BackupManager;
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.exceptions.DCMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * History List action.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class HistoryListAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(HistoryListAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HistoryListAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

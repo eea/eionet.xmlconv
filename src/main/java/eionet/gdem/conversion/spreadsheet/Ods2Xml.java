@@ -27,7 +27,7 @@ package eionet.gdem.conversion.spreadsheet;
 import eionet.gdem.conversion.odf.OpenDocumentUtils;
 
 /**
- * This class is creating handlers for creating XML file from OpenDocument Spreadsheet format called from ConversionService
+ * This class is creating handlers for creating XML file from OpenDocument Spreadsheet format called from ConversionService.
  *
  * @author Enriko Käsper
  */
@@ -41,7 +41,7 @@ public class Ods2Xml extends DDXMLConverter {
         super();
     }
 
-    private final static String FORMAT_NAME = "OpenDocument Spreadsheet";
+    private static final String FORMAT_NAME = "OpenDocument Spreadsheet";
 
     @Override
     public SourceReaderIF getSourceReader() {

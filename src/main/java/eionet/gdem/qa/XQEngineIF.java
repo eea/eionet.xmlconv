@@ -32,22 +32,28 @@ import eionet.gdem.GDEMException;
  */
 public interface XQEngineIF {
 
-    public static final String DEFAULT_ENCODING = "UTF-8";
-    public static final String DEFAULT_OUTPUTTYPE = "html";
-    public static final String HTML_CONTENT_TYPE = "html";
-    public static final String XML_CONTENT_TYPE = "xml";
+    String DEFAULT_ENCODING = "UTF-8";
+    String DEFAULT_OUTPUTTYPE = "html";
+    String HTML_CONTENT_TYPE = "html";
+    String XML_CONTENT_TYPE = "xml";
 
     /**
      * processes the XQuery.
      *
-     * @param xqScript
+     * @param script
      *            the XQscript object with required attributes
      * @return the result of XQuery
-     * @throws eionet.gdem.GDEMException
+     * @throws GDEMException If an error occurs.
      */
-    public String getResult(XQScript script) throws GDEMException;
+    String getResult(XQScript script) throws GDEMException;
 
-    public void getResult(XQScript script, OutputStream out) throws GDEMException;
+    /**
+     * Gets result
+     * @param script Script
+     * @param out OutputStream
+     * @throws GDEMException If an error occurs.
+     */
+    void getResult(XQScript script, OutputStream out) throws GDEMException;
 
     /**
      * processes the XQuery.
@@ -69,26 +75,26 @@ public interface XQEngineIF {
      *
      * @return
      */
-    public String getEncoding();
+    String getEncoding();
 
     /**
      * set encoding parameter for XQuery engine. If not set use default encoding UTF-8.
      *
-     * @param encoding
+     * @param encoding Encoding
      */
-    public void setEncoding(String encoding);
+    void setEncoding(String encoding);
 
     /**
      * get output type of the XQuery script result. Default is text/html.
      *
      * @return
      */
-    public String getOutputType();
+    String getOutputType();
 
     /**
      * set output type for XQuery engine. If output type is text/xml, then the XML declaration is omitted to the result.
      *
-     * @param outputType
+     * @param outputType Output Type
      */
-    public void setOutputType(String outputType);
+    void setOutputType(String outputType);
 }

@@ -32,10 +32,10 @@ import eionet.gdem.qa.QAFeedbackType;
 import eionet.gdem.utils.Utils;
 
 /**
- *
  * Builds ValidationService result object. Formats validation errors as HTML.
- *
+ * TODO: This class looks inefficient, check for replacing methods
  * @author Enriko Käsper
+ * @author George Sofianos
  */
 public class ValidationServiceFeedback {
 
@@ -79,7 +79,7 @@ public class ValidationServiceFeedback {
         String sizeCss = " font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;text-align:center";
         switch (type) {
             case BLOCKER:
-                appendFeedback("<span style=\"background-color: red;" + sizeCss + "\">ERROR</span>");
+                appendFeedback("<span style=\"background-color: red;" + sizeCss + "\">BLOCKER</span>");
                 break;
             case ERROR:
                 appendFeedback("<span style=\"background-color: red;" + sizeCss + "\">ERROR</span>");

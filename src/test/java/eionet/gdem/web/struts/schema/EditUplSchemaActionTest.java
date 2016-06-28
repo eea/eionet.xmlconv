@@ -7,32 +7,40 @@ import java.io.File;
 import java.util.Hashtable;
 
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
+import org.dbunit.IDatabaseTester;
+import org.springframework.beans.factory.annotation.Autowired;
 import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IUPLSchemaDao;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.test.mocks.MockStrutsMultipartRequestSimulator;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS EditUplSchemaActionTest
  */
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
 public class EditUplSchemaActionTest extends MockStrutsTestCase {
+    @Autowired
+    private DataSource db;
 
     private IUPLSchemaDao uplSchemaDao;
     private String uplSchemaId = "8";
     private String schemaId = "2";
     private String schemaFileName = "xliff.dtd";
 
-    public EditUplSchemaActionTest(String testName) {
-        super(testName);
-    }
-
-    @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         // set struts-confg file location
@@ -41,7 +49,7 @@ public class EditUplSchemaActionTest extends MockStrutsTestCase {
         context.setAttribute("javax.servlet.context.tempdir", new File(TestUtils.getStrutsTempDir(this)));
         setInitParameter("validating", "false");
         // setup database & Spring context
-        DbHelper.setUpSpringContextWithDatabaseTester(TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
         uplSchemaDao = GDEMServices.getDaoService().getUPLSchemaDao();
         TestUtils.setUpProperties(this);
     }
@@ -52,6 +60,7 @@ public class EditUplSchemaActionTest extends MockStrutsTestCase {
      * @throws Exception
      *
      */
+    @Test
     public void testSuccessfulForward() throws Exception {
 
         // overwrite the default StrutsRequestSimulator and mock multipartrequest object
@@ -87,6 +96,7 @@ public class EditUplSchemaActionTest extends MockStrutsTestCase {
      * @throws Exception
      *
      */
+    @Test
     public void testFailedNotPermissions() throws Exception {
 
         // overwrite the default StrutsRequestSimulator and mock multipartrequest object
@@ -119,6 +129,7 @@ public class EditUplSchemaActionTest extends MockStrutsTestCase {
     /**
      * test failed adding the new file, the form should display error message: "schema file not found"
      */
+    @Test
     public void testFailedFileNotFound() throws Exception {
 
         int countUplSchema = uplSchemaDao.getUplSchema().size();

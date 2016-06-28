@@ -39,6 +39,12 @@
             <form-property name="user" type="java.lang.String"/>
             <form-property name="password" type="java.lang.String"/>
         </form-bean>
+        <form-bean name="basexForm" type="org.apache.struts.validator.DynaValidatorForm">
+            <form-property name="host" type="java.lang.String"/>
+            <form-property name="port" type="java.lang.String"/>
+            <form-property name="user" type="java.lang.String"/>
+            <form-property name="password" type="java.lang.String"/>
+        </form-bean>
         <form-bean name="systemForm" type="org.apache.struts.validator.DynaValidatorForm">
             <form-property name="qaTimeout" type="java.lang.Long"/>
             <form-property name="cmdXGawk" type="java.lang.String"/>
@@ -276,6 +282,12 @@
         <action path="/deleteQAScript"  name="QAScriptForm"  scope="request" type="eionet.gdem.web.struts.qascript.DeleteQAScriptAction">
             <forward name="success" path="/do/schemaQAScripts"  redirect="true"/>
         </action>
+        <action path="/activateQAScript"  name="QAScriptForm"  scope="request" type="eionet.gdem.web.struts.qascript.ActivateQAScriptAction">
+            <forward name="success" path="/do/schemaQAScripts"  redirect="true"/>
+        </action>
+        <action path="/deactivateQAScript"  name="QAScriptForm"  scope="request" type="eionet.gdem.web.struts.qascript.DeactivateQAScriptAction">
+            <forward name="success" path="/do/schemaQAScripts"  redirect="true"/>
+        </action>
         <action path="/addQAScriptForm"  name="QAScriptForm" type="eionet.gdem.web.struts.qascript.AddQAScriptFormAction" scope="request" input="/addQAScript.jsp">
             <forward name="success" path="/addQAScript.jsp" redirect="true"/>
         </action>
@@ -395,6 +407,15 @@
             type="eionet.gdem.web.struts.config.DbAction" scope="request">
              <forward name="success" path="/do/dbForm" redirect="true"/>
         </action>
+<!-- BaseX Server form -->
+        <action path="/basexForm" type="eionet.gdem.web.struts.config.BaseXFormAction"
+                name="basexForm" scope="request" validate="false">
+            <forward name="success" path="/basexServer.jsp" redirect="true"/>
+        </action>
+        <action path="/basex" input="basexServer.jsp" name="basexForm"
+                type="eionet.gdem.web.struts.config.BaseXAction" scope="request">
+            <forward name="success" path="/do/basexForm" redirect="true" />
+        </action>
  <!--  System form -->
         <action path="/systemForm" type="eionet.gdem.web.struts.config.SystemFormAction"
         name="systemForm" scope="request" validate="false">
@@ -412,6 +433,7 @@
              <forward name="success" path="/do/purgeForm" redirect="true"/>
              <forward name="fail" path="/do/purgeForm" redirect="true"/>
         </action>
+
     </action-mappings>
 
 

@@ -28,8 +28,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -47,6 +47,8 @@ import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -57,7 +59,7 @@ import eionet.gdem.utils.Utils;
 public class EditStylesheetAction extends LookupDispatchAction {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(EditStylesheetAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EditStylesheetAction.class);
 
     /**
      * The method uploads XSL file from user's filesystem to the repository. Saves all the other changes made on the form except the
@@ -86,7 +88,10 @@ public class EditStylesheetAction extends LookupDispatchAction {
         if (isCancelled(httpServletRequest)) {
             return findForward(actionMapping, "success", stylesheet.getConvId());
         }
-
+        String description = form.getDescription();
+        if (description == null || description.isEmpty()) {
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.descriptionMissing"));
+        }
         if (xslFile != null && xslFile.getFileSize() != 0) {
             if (StringUtils.isNullOrEmpty(stylesheet.getXslFileName())) {
                 stylesheet.setXslFileName(xslFile.getFileName());
@@ -155,7 +160,10 @@ public class EditStylesheetAction extends LookupDispatchAction {
         if (isCancelled(httpServletRequest)) {
             return findForward(actionMapping, "success", stylesheet.getConvId());
         }
-
+        String description = form.getDescription();
+        if (description == null || description.isEmpty()) {
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.descriptionMissing"));
+        }
         if (!Utils.isNullStr(stylesheet.getXslFileName()) && !Utils.isNullStr(stylesheet.getXslContent())
                 && stylesheet.getXslContent().indexOf(Constants.FILEREAD_EXCEPTION) == -1) {
 
@@ -218,10 +226,10 @@ public class EditStylesheetAction extends LookupDispatchAction {
 
     /**
      * Returns the redirect path.
-     * @param actionMapping
-     * @param f
-     * @param stylesheetId
-     * @return
+     * @param actionMapping Action mapping
+     * @param f F
+     * @param stylesheetId Stylesheet Id
+     * @return Action forward
      */
     private ActionForward findForward(ActionMapping actionMapping, String f, String stylesheetId) {
         ActionForward forward = actionMapping.findForward(f);

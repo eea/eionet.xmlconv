@@ -22,30 +22,29 @@
 
 package eionet.gdem.conversion.converters;
 
+import eionet.gdem.GDEMException;
+import eionet.gdem.Properties;
+import eionet.gdem.qa.engines.SaxonProcessor;
+import eionet.gdem.utils.Utils;
+import net.sf.saxon.s9api.*;
+
+
+import org.apache.fop.apps.Fop;
+import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.MimeConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+
+import javax.xml.transform.stream.StreamSource;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.fop.apps.Driver;
-
-import eionet.gdem.GDEMException;
-import eionet.gdem.Properties;
-import eionet.gdem.utils.Utils;
-import eionet.gdem.utils.xml.XSLTransformer;
+//import org.apache.fop.apps.Driver;
 
 /**
  *
@@ -53,11 +52,12 @@ import eionet.gdem.utils.xml.XSLTransformer;
  * type specific conversions.
  *
  * @author Enriko Käsper
+ * @author George Sofianos
  */
 public abstract class ConvertStrategy {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ConvertStrategy.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConvertStrategy.class);
 
     /** System folder where XSL files are stored. */
     public String xslFolder = Properties.getXslFolder() + File.separatorChar;
@@ -72,8 +72,6 @@ public abstract class ConvertStrategy {
     private Map<String, String> xslParams = null;
     /** Absolute path to XSL file. */
     private String xslPath;
-    /** Transformer object responsible for XSL conversions. */
-    private static XSLTransformer transform = new XSLTransformer();
 
     /**
      * Method for converting XML source to output stream using XSLT stream.
@@ -105,34 +103,36 @@ public abstract class ConvertStrategy {
      */
     protected void runXslTransformation(InputStream in, InputStream xslStream, OutputStream out) throws GDEMException {
         try {
-            TransformerFactory tFactory = transform.getTransformerFactoryInstance();
+            Processor proc = SaxonProcessor.getProcessor();
+            XsltCompiler comp = proc.newXsltCompiler();
             TransformerErrorListener errors = new TransformerErrorListener();
-            tFactory.setErrorListener(errors);
-
             StreamSource transformerSource = new StreamSource(xslStream);
             if (getXslPath() != null) {
                 transformerSource.setSystemId(getXslPath());
             }
+            XsltExecutable exp = comp.compile(transformerSource);
+            XdmNode source = proc.newDocumentBuilder().build(new StreamSource(in));
+            Serializer ser = proc.newSerializer(out);
+            //ser.setOutputProperty(Serializer.Property.METHOD, "html");
+            //ser.setOutputProperty(Serializer.Property.INDENT, "yes");
+            XsltTransformer trans = exp.load();
+            trans.setInitialContextNode(source);
+            trans.setParameter(new QName(DD_DOMAIN_PARAM), new XdmAtomicValue(eionet.gdem.Properties.ddURL));
+            setTransformerParameters(trans);
+            trans.setErrorListener(errors);
+            trans.setDestination(ser);
+            trans.transform();
 
-            Transformer transformer = tFactory.newTransformer(transformerSource);
-            transformer.setErrorListener(errors);
-
-            transformer.setParameter(DD_DOMAIN_PARAM, Properties.ddURL);
-            setTransformerParameters(transformer);
-            long l = System.currentTimeMillis();
-            transformer.transform(new StreamSource(in), new StreamResult(out));
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis()
-                        - l).append(" ms").toString());
-            }
-        } catch (TransformerConfigurationException tce) {
-            throw new GDEMException("Error transforming XML - incorrect stylesheet file: " + tce.toString(), tce);
-        } catch (TransformerException tfe) {
-            throw new GDEMException("Error transforming XML - it's not probably well-formed xml file: " + tfe.toString(), tfe);
-        } catch (Throwable th) {
-            LOGGER.error("Error " + th.toString(), th);
-            th.printStackTrace(System.out);
-            throw new GDEMException("Error transforming XML: " + th.toString());
+        //} catch (TransformerConfigurationException tce) {
+        //    throw new GDEMException("Error transforming XML - incorrect stylesheet file: " + tce.toString(), tce);
+        //} catch (TransformerException tfe) {
+        //    throw new GDEMException("Error transforming XML - it's not probably well-formed xml file: " + tfe.toString(), tfe);
+        //} catch (Throwable th) {
+        //    LOGGER.error("Error " + th.toString(), th);
+        //    th.printStackTrace(System.out);
+        //    throw new GDEMException("Error transforming XML: " + th.toString());
+        } catch (SaxonApiException e) {
+            throw new GDEMException("Error transforming XML: " + e.getMessage(), e);
         }
     }
 
@@ -142,40 +142,45 @@ public abstract class ConvertStrategy {
      * @param xsl InputStream containing XSL-FO content.
      * @param out OutputStream for conversion result.
      * @throws GDEMException In case of unexpected XML or XSL errors.
+     * @throws IOException In case of unexpected XML or XSL errors.
+     * @throws SAXException In case of unexpected XML or XSL errors.
      */
-    protected void runFOPTransformation(InputStream in, InputStream xsl, OutputStream out) throws GDEMException {
+    protected void runFOPTransformation(InputStream in, InputStream xsl, OutputStream out) throws GDEMException, IOException, SAXException {
+        FopFactory fopFactory = FopFactory.newInstance(new File("fop.xconf"));
         try {
-            Driver driver = new Driver();
-            driver.setRenderer(Driver.RENDER_PDF);
-            driver.setOutputStream(out);
-            Result res = new SAXResult(driver.getContentHandler());
-            Source src = new StreamSource(in);
-            TransformerFactory transformerFactory = transform.getTransformerFactoryInstance();
+            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
+            Processor proc = SaxonProcessor.getProcessor();
+            XsltCompiler comp = proc.newXsltCompiler();
             TransformerErrorListener errors = new TransformerErrorListener();
-
-            transformerFactory.setErrorListener(errors);
             StreamSource transformerSource = new StreamSource(xsl);
             if (getXslPath() != null) {
                 transformerSource.setSystemId(getXslPath());
             }
-
-            Transformer transformer = transformerFactory.newTransformer(transformerSource);
-            setTransformerParameters(transformer);
-            transformer.setErrorListener(errors);
-
+            XsltExecutable exp = comp.compile(transformerSource);
+            XdmNode source = proc.newDocumentBuilder().build(new StreamSource(in));
+            Serializer ser = proc.newSerializer(out);
+            //ser.setOutputProperty(Serializer.Property.METHOD, "html");
+            //ser.setOutputProperty(Serializer.Property.INDENT, "yes");
+            XsltTransformer trans = exp.load();
+            trans.setErrorListener(errors);
+            trans.setInitialContextNode(source);
+            trans.setDestination(ser);
             long l = System.currentTimeMillis();
-            transformer.transform(src, res);
+            setTransformerParameters(trans);
+            trans.transform();
+
+            //Result res = new SAXResult(fop.getDefaultHandler());
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug((new StringBuilder()).append("generate: transformation needed ").append(System.currentTimeMillis()
                         - l).append(" ms").toString());
             }
 
-        } catch (TransformerConfigurationException tce) {
-            throw new GDEMException("Error transforming XML to PDF - incorrect stylesheet file: " + tce.toString(), tce);
-        } catch (TransformerException tfe) {
-            throw new GDEMException("Error transforming XML to PDF - it's not probably well-formed xml file: " + tfe.toString(),
-                    tfe);
-        } catch (Throwable e) {
+        //} catch (TransformerConfigurationException tce) {
+        //    throw new GDEMException("Error transforming XML to PDF - incorrect stylesheet file: " + tce.toString(), tce);
+        //} catch (TransformerException tfe) {
+        //    throw new GDEMException("Error transforming XML to PDF - it's not probably well-formed xml file: " + tfe.toString(),
+        //            tfe);
+        } catch (SaxonApiException e) {
             LOGGER.error("Error " + e.toString(), e);
             throw new GDEMException("Error transforming XML to PDF " + e.toString());
         }
@@ -185,7 +190,7 @@ public abstract class ConvertStrategy {
      * Sets the map of xsl global parameters to xsl transformer.
      * @param transformer XSL transformer object.
      */
-    private void setTransformerParameters(Transformer transformer) {
+    private void setTransformerParameters(XsltTransformer transformer) {
 
         if (xslParams == null) {
             return;
@@ -196,7 +201,7 @@ public abstract class ConvertStrategy {
             String key = keys.next();
             String value = xslParams.get(key);
             if (value != null) {
-                transformer.setParameter(key, value);
+                transformer.setParameter(new QName(key), new XdmAtomicValue(value));
             }
         }
 
@@ -204,7 +209,7 @@ public abstract class ConvertStrategy {
         String xmlFilePathURI = Utils.getURIfromPath(eionet.gdem.Properties.xmlfileFolder, true);
 
         if (xmlFilePathURI != null) {
-            transformer.setParameter(XML_FOLDER_URI_PARAM, xmlFilePathURI);
+            transformer.setParameter(new QName(XML_FOLDER_URI_PARAM), new XdmAtomicValue(xmlFilePathURI));
         }
 
     }

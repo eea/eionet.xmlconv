@@ -27,7 +27,9 @@ import java.util.List;
 import eionet.gdem.conversion.datadict.DDTable;
 
 /**
+ * TODO: Check if this isn't used any more.
  * @author Enriko Käsper, Tieto Estonia ConversionMetadata
+ * @author George Sofianos
  */
 
 public class ConversionTableMetadata {
@@ -42,6 +44,9 @@ public class ConversionTableMetadata {
     private String tblsNamespaces;
     private List<DDTable> tbl;
 
+    /**
+     * Constructor
+     */
     public ConversionTableMetadata() {
         this.dstIdf = "";
         this.dstNr = "";

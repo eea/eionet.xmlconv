@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.qasandbox;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -40,6 +40,8 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * SearchCRSandboxAction Extract the XML schema from the inserted source URL of XML file and find available QA scripts.
@@ -50,7 +52,7 @@ import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 public class ExtractSchemaAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ExtractSchemaAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExtractSchemaAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
@@ -120,10 +122,10 @@ public class ExtractSchemaAction extends Action {
      * check if schema passed as request parameter exists in the list of schemas stored in the session. If there is no schema list
      * in the session, then create it
      *
-     * @param httpServletRequest
-     * @param schema
-     * @return
-     * @throws DCMException
+     * @param httpServletRequest Request
+     * @param schema Schema
+     * @return True if schema exists.
+     * @throws DCMException If an error occurs.
      */
     private boolean schemaExists(HttpServletRequest httpServletRequest, String schema) throws DCMException {
         QAScriptListHolder schemasInSession = QAScriptListLoader.getList(httpServletRequest);
@@ -132,6 +134,11 @@ public class ExtractSchemaAction extends Action {
         return schemasInSession.getQascripts().contains(oSchema);
     }
 
+    /**
+     * Finds schema from XML
+     * @param xml XML
+     * @return Result
+     */
     private String findSchemaFromXml(String xml) {
         InputAnalyser analyser = new InputAnalyser();
         try {
@@ -139,7 +146,7 @@ public class ExtractSchemaAction extends Action {
             String schemaOrDTD = analyser.getSchemaOrDTD();
             return schemaOrDTD;
         } catch (Exception e) {
-            // do nothoing - did not find XML Schema
+            // do nothing - did not find XML Schema
             // handleError(request, response, e);
         }
         return null;

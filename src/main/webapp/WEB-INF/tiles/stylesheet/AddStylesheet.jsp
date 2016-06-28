@@ -87,7 +87,7 @@
                             </label>
                         </th>
                         <td>
-                            <textarea name="description"  rows="3" cols="30" style="width:400px" id="txtDescription"></textarea>
+                            <input type="text" name="description"  style="width:400px" id="txtDescription"/>
                         </td>
                     </tr>
                     <tr>

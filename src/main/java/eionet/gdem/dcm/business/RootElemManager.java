@@ -21,8 +21,8 @@
 
 package eionet.gdem.dcm.business;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
@@ -30,14 +30,27 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.utils.SecurityUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Root element manager.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class RootElemManager {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(RootElemManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RootElemManager.class);
 
     private IRootElemDao rootElemDao = GDEMServices.getDaoService().getRootElemDao();
 
+    /**
+     * Delete element
+     * @param user User
+     * @param elemId Element id
+     * @throws DCMException If an error occurs.
+     */
     public void delete(String user, String elemId) throws DCMException {
 
         try {
@@ -63,6 +76,14 @@ public class RootElemManager {
         }
     }
 
+    /**
+     * Adds element
+     * @param user User
+     * @param schemaId Schema id
+     * @param elemName Element id
+     * @param namespace Namespace
+     * @throws DCMException If an error occurs.
+     */
     public void add(String user, String schemaId, String elemName, String namespace) throws DCMException {
 
         try {

@@ -34,7 +34,14 @@ import org.apache.struts.action.ActionMapping;
  */
 
 public class AddQAScriptFormAction extends Action {
-
+    /**
+     * Executes action
+     * @param actionMapping Action mapping
+     * @param actionForm Action form
+     * @param httpServletRequest Request
+     * @param httpServletResponse Response
+     * @return Action forward
+     */
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 

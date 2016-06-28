@@ -21,10 +21,21 @@
 
 package eionet.gdem.exceptions;
 
+/**
+ * Authorization Exception.
+ * @author Unknown
+ */
 public class AuthorizationException extends Exception {
+    /**
+     * Default constructor
+     */
     public AuthorizationException() {
     }
 
+    /**
+     * Constructor
+     * @param message Exception message
+     */
     public AuthorizationException(String message) {
         super(message);
     }

@@ -21,6 +21,7 @@
 
 package eionet.gdem.validation;
 
+import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
@@ -31,9 +32,11 @@ import eionet.gdem.qa.QAFeedbackType;
 import eionet.gdem.qa.QAResultPostProcessor;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.xml.resolver.tools.CatalogResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
@@ -54,11 +57,12 @@ import java.util.List;
  * The class offers validation methods for XMLCONV and remote clients.
  *
  * @author Enriko Käsper, TripleDev
+ * @author George Sofianos
  */
 
 public class ValidationService {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ValidationService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ValidationService.class);
 
     /** */
     private String uriXml;
@@ -143,8 +147,9 @@ public class ValidationService {
      * @param schema XML Schema URL.
      * @return Validation result as HTML snippet.
      * @throws DCMException in case of unknnown system error.
+     * @throws GDEMException in case of parser error.
      */
-    public String validateSchema(InputStream srcStream, String schema) throws DCMException {
+    public String validateSchema(InputStream srcStream, String schema) throws DCMException, GDEMException {
 
         String result = "";
         boolean isDTD = false;
@@ -252,8 +257,8 @@ public class ValidationService {
      *
      * @param reader XMLReader.
      * @param schema XML Schema URL.
-     * @throws SAXNotRecognizedException
-     * @throws SAXNotSupportedException
+     * @throws SAXNotRecognizedException If an error occurs.
+     * @throws SAXNotSupportedException If an error occurs.
      */
     private void setNoNamespaceSchemaProperty(XMLReader reader, String schema) throws SAXNotRecognizedException,
             SAXNotSupportedException {
@@ -267,8 +272,8 @@ public class ValidationService {
      * @param reader XMLReader.
      * @param namespace XML Schema default namespace.
      * @param schema XML Schema URL.
-     * @throws SAXNotRecognizedException
-     * @throws SAXNotSupportedException
+     * @throws SAXNotRecognizedException If an error occurs.
+     * @throws SAXNotSupportedException If an error occurs.
      */
     private void setNamespaceSchemaProperty(XMLReader reader, String namespace, String schema) throws SAXNotRecognizedException,
             SAXNotSupportedException {
@@ -294,7 +299,7 @@ public class ValidationService {
             }
         } catch (DCMException e) {
             // ignore local schema, use the original schema from remote URL
-            LOGGER.error(e);
+            LOGGER.error(e.getMessage());
         }
         setOriginalSchema(schema);
         setValidatedSchema(systemURL);

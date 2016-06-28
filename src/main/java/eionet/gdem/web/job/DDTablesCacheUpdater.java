@@ -21,8 +21,8 @@ package eionet.gdem.web.job;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -30,6 +30,8 @@ import org.quartz.JobExecutionException;
 import eionet.gdem.dcm.business.DDServiceClient;
 import eionet.gdem.dto.DDDatasetTable;
 import eionet.gdem.web.listeners.ApplicationCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Job fills Data Dictionary dataset tables cache.
@@ -41,7 +43,7 @@ public class DDTablesCacheUpdater implements Job {
     /**
      * Class internal logger.
      */
-    private static Log logger = LogFactory.getLog(DDTablesCacheUpdater.class);
+    private static Logger logger = LoggerFactory.getLogger(DDTablesCacheUpdater.class);
 
     /**
      * Executes the job.

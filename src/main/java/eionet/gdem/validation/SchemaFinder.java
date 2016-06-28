@@ -23,6 +23,9 @@
 
 package eionet.gdem.validation;
 
+import eionet.gdem.logging.Markers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -35,12 +38,14 @@ import eionet.gdem.utils.Utils;
  * which is actuially creating Excel file
  *
  * @author Enriko Käsper
+ * @author George Sofianos
  */
 
 public class SchemaFinder extends DefaultHandler {
 
     private static String SCHEMA_REFERENCE = "schemaLocation";
     private static String NO_NS_SCHEMA_REFERENCE = "noNamespaceSchemaLocation";
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaFinder.class);
 
     private String startTag = null;
     private String startTagNamespace = null;
@@ -48,6 +53,14 @@ public class SchemaFinder extends DefaultHandler {
     private String schemaNamespace = null;
     private boolean hasNamespace = false;
 
+    /**
+     * Starts element
+     * @param uri URI
+     * @param localName Local name
+     * @param name Name
+     * @param attrs Attributes
+     * @throws SAXException If an error occurs.
+     */
     public void startElement(String uri, String localName, String name, Attributes attrs) throws SAXException {
         // System.out.println("element:" + uri + "||" + localName + "||" + name);
 
@@ -85,12 +98,20 @@ public class SchemaFinder extends DefaultHandler {
 
     }
 
+    /**
+     * Logs error
+     * @param e Error
+     */
     public void error(SAXParseException e) {
-        System.out.println("error on finding schema from xml");
+        LOGGER.error("error on finding schema from xml");
     }
 
+    /**
+     * Logs fatal error
+     * @param e Fatal error
+     */
     public void fatalError(SAXParseException e) {
-        System.out.println("fatal error on finding schema from xml");
+        LOGGER.error(Markers.fatal, "Fatal error on finding schema from xml");
     }
 
     public String getStartTag() {
@@ -101,6 +122,10 @@ public class SchemaFinder extends DefaultHandler {
         return this.startTagNamespace;
     }
 
+    /**
+     * Checks if schema has namespace
+     * @return True if schema has namespace
+     */
     public boolean hasNamespace() {
         return this.hasNamespace;
     }

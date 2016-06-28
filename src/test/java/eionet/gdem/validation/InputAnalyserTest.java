@@ -3,21 +3,28 @@
  */
 package eionet.gdem.validation;
 
-import junit.framework.TestCase;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS InputAnalyserTest
  */
-
-public class InputAnalyserTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class InputAnalyserTest {
 
     /**
      * Test if the method is able to extract XML schema from the XML file
      * 
      * @throws Exception
      */
+    @Test
     public void testSchemaFinder() throws Exception {
         InputAnalyser analyser = new InputAnalyser();
         analyser.parseXML(TestUtils.getSeedURL(TestConstants.SEED_GW_VALID_XML, this));
@@ -35,6 +42,7 @@ public class InputAnalyserTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testDTDFinder() throws Exception {
         InputAnalyser analyser = new InputAnalyser();
         analyser.parseXML(TestUtils.getSeedURL(TestConstants.SEED_XLIFF_XML, this));

@@ -26,11 +26,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.GDEMException;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The object stores all the needed information about the converted file.
@@ -39,7 +41,7 @@ import eionet.gdem.utils.Utils;
  */
 public class ConvertedFileDto {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ConvertedFileDto.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConvertedFileDto.class);
 
     private String fileName;
     private String filePath;
@@ -48,8 +50,8 @@ public class ConvertedFileDto {
     /**
      * Class constructor.
      *
-     * @param fileName
-     * @param filePath
+     * @param fileName File name
+     * @param filePath File path
      */
     public ConvertedFileDto(String fileName, String filePath) {
         this.fileName = fileName;
@@ -80,6 +82,11 @@ public class ConvertedFileDto {
         this.fileUrl = fileUrl;
     }
 
+    /**
+     * Get file content as byte array
+     * @return File contents
+     * @throws GDEMException If an error occurs.
+     */
     public byte[] getFileContentAsByteArray() throws GDEMException {
         FileInputStream fis = null;
         File convFile = new File(getFilePath());

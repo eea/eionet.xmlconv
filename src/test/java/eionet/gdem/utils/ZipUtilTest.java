@@ -6,17 +6,24 @@ package eionet.gdem.utils;
 import java.io.File;
 import java.io.FileInputStream;
 
-import junit.framework.TestCase;
 import eionet.gdem.Properties;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS ZipUtilsTest
  */
-
-public class ZipUtilTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
+public class ZipUtilTest {
 
     /**
      * Test ZipUtil unzip method. Exctract the seed...zip file into tmp directory and check that the unzipped file is well-formed
@@ -24,6 +31,7 @@ public class ZipUtilTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testUnzip() throws Exception {
         String zipSeed = getClass().getClassLoader().getResource(TestConstants.SEED_GENERAL_REPORT_ZIP).getFile();
         String strOutDir = Properties.tmpFolder + File.separator + "unzip";

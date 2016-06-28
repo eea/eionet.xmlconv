@@ -41,11 +41,14 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.catcode.odf.OpenDocumentMetadata;
-
 import eionet.gdem.GDEMException;
 import eionet.gdem.utils.Utils;
 
+/**
+ * Analyzer for ODF spreadsheets.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class ODFSpreadsheetAnalyzer {
 
     protected String officeNamespace;
@@ -118,7 +121,7 @@ public class ODFSpreadsheetAnalyzer {
     /**
      * Analyze the content file in a <code>File</code> which is a .zip file.
      *
-     * @param inputFile
+     * @param inputStream
      *            a <code>File</code> that contains OpenDocument content-information information.
      */
     public OpenDocumentSpreadsheet analyzeZip(InputStream inputStream) {
@@ -194,7 +197,7 @@ public class ODFSpreadsheetAnalyzer {
     /**
      * Put the content of the table element's spreadheet object.
      *
-     * @param element
+     * @param tblElement
      *            the <code>&lt;table:table&gt;</code> element.
      * @param spreadsheetResult
      *            the spreadsheet object to be set.
@@ -230,7 +233,7 @@ public class ODFSpreadsheetAnalyzer {
     /**
      * Put the content of the table's first row into spreadheet object.
      *
-     * @param element
+     * @param rowElement
      *            the first element of <code>&lt;table:table-row&gt;</code> element.
      * @param spreadsheetResult
      *            the spreadsheet object to be set.
@@ -258,7 +261,7 @@ public class ODFSpreadsheetAnalyzer {
     /**
      * Put the content of the table's first row into spreadheet object.
      *
-     * @param element
+     * @param rowElement
      *            the first element of <code>&lt;table:table-row&gt;</code> element.
      * @param spreadsheetResult
      *            the spreadsheet object to be set.
@@ -318,7 +321,7 @@ public class ODFSpreadsheetAnalyzer {
     /**
      * Get the content from p:text node or officde:value attribute - cell value
      *
-     * @param element
+     * @param cellElement
      *            the first element of <code>&lt;table:table-cell&gt;</code> element.
      *
      * @return content inside text:p tag

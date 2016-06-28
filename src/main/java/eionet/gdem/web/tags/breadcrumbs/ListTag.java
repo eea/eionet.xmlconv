@@ -28,6 +28,11 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
+/**
+ * List Tag class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class ListTag extends TagSupport {
 
     private String var;
@@ -40,6 +45,9 @@ public class ListTag extends TagSupport {
 
     private String classStyleEnd;
 
+    /**
+     * Default constructor.
+     */
     public ListTag() {
     }
 
@@ -59,6 +67,11 @@ public class ListTag extends TagSupport {
         this.delimiter = delimiter;
     }
 
+    /**
+     * Ends tag
+     * @return End tag
+     * @throws JspException If an error occurs.
+     */
     public int doEndTag() throws JspException {
         BreadCrumbs breadcrumbs = JspUtils.getBreadCrumbs(pageContext);
 

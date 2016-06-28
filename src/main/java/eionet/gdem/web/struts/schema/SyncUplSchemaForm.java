@@ -27,6 +27,10 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
+/**
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class SyncUplSchemaForm extends ActionForm {
 
     /**
@@ -41,6 +45,12 @@ public class SyncUplSchemaForm extends ActionForm {
     private String schemaFile;
     private String uplSchemaFileName;
 
+    /**
+     * Validates form
+     * @param actionMapping Action mapping
+     * @param httpServletRequest Request
+     * @return Action errors
+     */
     public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         return null;
     }
@@ -85,6 +95,11 @@ public class SyncUplSchemaForm extends ActionForm {
         this.uplSchemaFileName = uplSchemaFileName;
     }
 
+    /**
+     * Reset form
+     * @param actionMapping Action mapping
+     * @param httpServletRequest Request
+     */
     public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         schemaId = null;
         schemaUrl = null;

@@ -15,6 +15,7 @@ import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.Utils;
+import java.util.Map;
 
 /**
  * Implementation of listQueries and listQAScripts methods.
@@ -65,7 +66,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
      * @return array of Hastables with the following keys: qyery_id, short_name, description, query, schema_id, xml_schema,
      *         content_type_out, type
      *
-     * @throws GDEMException
+     * @throws GDEMException If an error occurs.
      */
     public Vector listQueries(String schema) throws GDEMException {
 
@@ -109,6 +110,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
             if (queries != null) {
                 for (int i = 0; i < queries.size(); i++) {
                     Hashtable ht = (Hashtable) queries.get(i);
+                    if (!isActive(ht)) continue;
                     ht.put(KEY_TYPE, Constants.QA_TYPE_XQUERY);
                     // return full URL of XQuerys
                     ht.put(KEY_QUERY, Properties.gdemURL + "/" + Constants.QUERIES_FOLDER + (String) ht.get("query"));
@@ -124,9 +126,9 @@ public class ListQueriesMethod extends RemoteServiceMethod {
     /**
      * List all XQueries and their modification times for this namespace returns also XML Schema validation.
      *
-     * @param schema
+     * @param schema Schema to use
      * @return result is an Array of Arrays that contains 3 fields (script_id, description, last modification)
-     * @throws GDEMException
+     * @throws GDEMException If an error occurs.
      */
     public Vector listQAScripts(String schema) throws GDEMException {
         Vector<Vector<String>> result = new Vector<Vector<String>>();
@@ -157,6 +159,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
 
             for (int i = 0; i < queries.size(); i++) {
                 HashMap hQueries = (HashMap) queries.get(i);
+                if (!isActive(hQueries)) continue;
                 String queryId = (String) hQueries.get("query_id");
                 String queryFile = (String) hQueries.get("query");
                 String queryDescription = (String) hQueries.get("descripton");
@@ -189,5 +192,14 @@ public class ListQueriesMethod extends RemoteServiceMethod {
         }
 
         return result;
+    }
+
+    /**
+     * Returns if script is active.
+     * @param query Query map
+     * @return True if script is active.
+     */
+    private boolean isActive(Map query){
+        return query.get("is_active").equals("1");
     }
 }

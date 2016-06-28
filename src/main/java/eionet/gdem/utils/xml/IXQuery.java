@@ -26,14 +26,28 @@ import java.util.Map;
 
 import org.w3c.dom.Node;
 
+/**
+ * XQuery interface.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public interface IXQuery {
 
     /**
      * Finds element which conatins given attributes map. For this elemebnt will be searched under element with provided ID .
-     *
+     * @param parentId Parent Id
+     * @param attributes Attributes
+     * @throws XmlException If an error occurs.
      */
     Node findElementByAttrs(String parentId, Map<String, String> attributes) throws XmlException;
 
+    /**
+     * Gets attribute value.
+     * @param parentId Parent Id
+     * @param attribute Attribute
+     * @return Attribute value
+     * @throws XmlException If an error occurs.
+     */
     String getAttributeValue(String parentId, String attribute) throws XmlException;
 
     /**
@@ -51,66 +65,67 @@ public interface IXQuery {
 
     /**
      * Finds element by Id in a DOM Document
-     *
+     * @param id Id
+     * @throws XmlException If an error occurs.
      */
     Node findElementById(String id) throws XmlException;
 
     /**
      * Retruns list of all identifiers for the specifed element
      *
-     * @param elementName
-     * @return
-     * @throws XmlException
+     * @param elementName Element name
+     * @return Element Identifiers list
+     * @throws XmlException If an error occurs.
      */
     List<String> getElementIdentifiers(String elementName) throws XmlException;
 
     /**
      * Retruns list of all elements attributes for the specifed element name
      *
-     * @param elementName
-     * @return
-     * @throws XmlException
+     * @param elementName Element name
+     * @return Elements list
+     * @throws XmlException If an error occurs.
      */
     List<Map<String, String>> getElements(String elementName) throws XmlException;
 
     /**
      * returns the list of element values
      *
-     * @param elementName
-     * @return
-     * @throws XmlException
+     * @param elementName Element name
+     * @return Element values
+     * @throws XmlException If an error occurs.
      */
     List<String> getElementValues(String elementName) throws XmlException;
 
     /**
      * returns the list XML Schema element names from xs:element name attribute
      *
-     * @return
-     * @throws XmlException
+     * @return Schema elements
+     * @throws XmlException If an error occurs.
      */
     List<String> getSchemaElements() throws XmlException;
 
     /**
      * returns the xs:restriction/@base for gievn element from XML Schema
      *
-     * @return
-     * @throws XmlException
+     * @return Element Type
+     * @throws XmlException If an error occurs.
      */
     String getSchemaElementType(String elementName) throws XmlException;
 
     /**
      * returns the list XML Schema imports from xs:import schemaLocation attribute
      *
-     * @return
-     * @throws XmlException
+     * @return Schema imports
+     * @throws XmlException If an error occurs.
      */
     List<String> getSchemaImports() throws XmlException;
 
     /**
      * returns the list XML Schema elements that may have multiple values
      *
-     * @return
-     * @throws XmlException
+     * @return XML schema elements with multiple values
+     * @throws XmlException If an error occurs.
      */
     Map<String, String> getSchemaElementWithMultipleValues() throws XmlException;
 

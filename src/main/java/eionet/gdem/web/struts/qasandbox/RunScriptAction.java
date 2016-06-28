@@ -27,8 +27,8 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -51,6 +51,8 @@ import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * EditQAScriptInSandboxAction Execute the QA script and display the results. If the result of QA script is not html, then wire the
@@ -62,7 +64,7 @@ import eionet.gdem.validation.ValidationService;
 public class RunScriptAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(RunScriptAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RunScriptAction.class);
 
     private static final String HTML_CONTENT_TYPE = "text/html";
     private static final String HTML_CHARACTER_ENCODING = "utf-8";
@@ -111,7 +113,7 @@ public class RunScriptAction extends Action {
 
             // VALIDATION! if it is a validation job, then do the action and get
             // out of here
-            if (scriptId.equals(String.valueOf(Constants.JOB_VALIDATION))) {
+            if (String.valueOf(Constants.JOB_VALIDATION).equals(scriptId)) {
                 try {
                     ValidationService vs = new ValidationService();
                     vs.setTrustedMode(false);
@@ -136,7 +138,10 @@ public class RunScriptAction extends Action {
             if (!Utils.isNullStr(scriptId) && !"0".equals(scriptId)) {
                 qascript = qm.getQAScript(scriptId);
                 String resultType = qascript.getResultType();
-                // get correct putput type by convTypeId
+                if (qascript != null && qascript.getScriptType() != null) {
+                    scriptType = qascript.getScriptType();
+                }
+                // get correct output type by convTypeId
                 ConvType cType = ctm.getConvType(resultType);
                 if (cType != null && !Utils.isNullStr(cType.getContType())) {
                     outputContentType = cType.getContType();
@@ -156,25 +161,30 @@ public class RunScriptAction extends Action {
                     return actionMapping.findForward("error");
                 }
             }
-            
-            if (XQScript.SCRIPT_LANG_FME.equals(qascript.getScriptType())){
-            	scriptType = XQScript.SCRIPT_LANG_FME;
-            	scriptContent = qascript.getUrl();
+
+            if (qascript != null && qascript.getScriptType() != null) {
+                if (XQScript.SCRIPT_LANG_FME.equals(qascript.getScriptType())) {
+                    scriptType = XQScript.SCRIPT_LANG_FME;
+                    scriptContent = qascript.getUrl();
+                }
             }
-            
+
             String[] pars = new String[1];
             pars[0] = Constants.XQ_SOURCE_PARAM_NAME + "=" + sourceUrl;
+            if (xqResultType == null) {
+                xqResultType = XQScript.SCRIPT_RESULTTYPE_HTML;
+            }
             xq = new XQScript(scriptContent, pars, xqResultType);
             xq.setScriptType(scriptType);
             xq.setSrcFileUrl(sourceUrl);
 
-            if (qascript.getSchemaId() != null) {
+            if (qascript != null && qascript.getSchemaId() != null) {
                 xq.setSchema(schM.getSchema(qascript.getSchemaId()));
             }
 
             OutputStream output = null;
             try {
-                // write the result directly to servlet boutputstream
+                // write the result directly to servlet outputstream
                 if (!outputContentType.startsWith(HTML_CONTENT_TYPE)) {
                     httpServletResponse.setContentType(outputContentType);
                     httpServletResponse.setCharacterEncoding(HTML_CHARACTER_ENCODING);
@@ -184,10 +194,8 @@ public class RunScriptAction extends Action {
                     output.close();
                     return null;
                 } else {
-
                     result = xq.getResult();
                     cForm.setResult(result);
-
                 }
             } catch (GDEMException ge) {
                 result = ge.getMessage();

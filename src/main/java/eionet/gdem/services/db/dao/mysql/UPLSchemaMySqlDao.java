@@ -10,8 +10,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -22,6 +23,10 @@ import eionet.gdem.Properties;
 import eionet.gdem.dto.UplSchema;
 import eionet.gdem.services.db.dao.IUPLSchemaDao;
 
+/**
+ * Upload Schema Dao class.
+ * @author Unknown
+ */
 @Repository("uplSchemaDao")
 public class UPLSchemaMySqlDao extends MySqlBaseDao implements IUPLSchemaDao {
 
@@ -32,7 +37,7 @@ public class UPLSchemaMySqlDao extends MySqlBaseDao implements IUPLSchemaDao {
     private JdbcTemplate jdbcTemplate;
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(UPLSchemaMySqlDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UPLSchemaMySqlDao.class);
 
     // T_SCHEMA LEFT JOIN T_UPL_SCHEMA
     private static final String qSchemas = "SELECT " + "S." + SCHEMA_ID_FLD + ", " + "S." + XML_SCHEMA_FLD + ", " + "S."
@@ -77,6 +82,9 @@ public class UPLSchemaMySqlDao extends MySqlBaseDao implements IUPLSchemaDao {
     private static final String checkUplSchemaFK = "SELECT COUNT(*) FROM " + UPL_SCHEMA_TABLE + " WHERE " + UPL_FK_SCHEMA_ID
             + "!='' AND " + UPL_FK_SCHEMA_ID + "= ?";
 
+    /**
+     * Default constructor.
+     */
     public UPLSchemaMySqlDao() {
     }
 

@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.hosts;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -39,10 +39,17 @@ import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.BaseAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Saves host action class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class SaveHostAction extends BaseAction {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SaveHostAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SaveHostAction.class);
 
     private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
 
@@ -101,6 +108,13 @@ public class SaveHostAction extends BaseAction {
 
     }
 
+    /**
+     * Checks connection
+     * @param url URL
+     * @param username Username
+     * @param password Password
+     * @return True if connection is valid.
+     */
     private boolean checkConnection(String url, String username, String password) {
         boolean result = false;
         InputFile src = null;

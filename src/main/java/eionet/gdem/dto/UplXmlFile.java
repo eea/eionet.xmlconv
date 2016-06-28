@@ -6,7 +6,7 @@ package eionet.gdem.dto;
 import java.io.Serializable;
 
 /**
- * Business object representing uploaded XML files
+ * Business object representing uploaded XML files.
  * 
  * @author Enriko Käsper (TietoEnator)
  * 
@@ -17,6 +17,9 @@ public class UplXmlFile implements Serializable {
     private String title;
     private String lastModified;
 
+    /**
+     * Default constructor
+     */
     public UplXmlFile() {
     }
 

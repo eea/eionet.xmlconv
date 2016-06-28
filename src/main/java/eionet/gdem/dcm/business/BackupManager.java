@@ -28,8 +28,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
@@ -39,18 +39,29 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IBackupDao;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * Backup manager.
  * @author Enriko Käsper, Tieto Estonia BackupManager
+ * @author George Sofianos
  */
 
 public class BackupManager {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(BackupManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BackupManager.class);
 
     private IBackupDao backupDao = GDEMServices.getDaoService().getBackupDao();
 
+    /**
+     * Backups file
+     * @param folderName Folder name
+     * @param fileName File name
+     * @param id Id
+     * @param user user
+     */
     public void backupFile(String folderName, String fileName, String id, String user) {
 
         File origFile = new File(folderName, fileName);
@@ -88,11 +99,16 @@ public class BackupManager {
         }
     }
 
+    /**
+     * Gets backup list
+     * @param objectId Object id
+     * @return Backups
+     * @throws DCMException If an error occurs.
+     */
     public List<BackupDto> getBackups(String objectId) throws DCMException {
         try {
             return backupDao.getBackups(objectId);
         } catch (Exception e) {
-            // e.printStackTrace();
             LOGGER.error("Error getting backups for QA script: " + objectId, e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
@@ -104,8 +120,8 @@ public class BackupManager {
      *
      * @param nofDays
      *            - number of days to keep
-     * @return
-     * @throws DCMException
+     * @return Number of files purged
+     * @throws DCMException If an error occurs.
      */
     public int purgeBackup(int nofDays) throws DCMException {
         int result = 0;

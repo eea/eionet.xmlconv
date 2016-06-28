@@ -23,6 +23,9 @@ package eionet.gdem.dto;
 
 import java.io.Serializable;
 
+/**
+ * Conversion data transfer object.
+ */
 public class ConversionDto implements Serializable {
     private String convId;
     private String description;

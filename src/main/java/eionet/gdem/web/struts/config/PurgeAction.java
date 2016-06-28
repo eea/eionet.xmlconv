@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.config;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -38,11 +38,18 @@ import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.business.BackupManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.SecurityUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Purge action class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class PurgeAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(PurgeAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PurgeAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,

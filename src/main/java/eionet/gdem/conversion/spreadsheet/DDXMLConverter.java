@@ -34,8 +34,10 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.XMLReader;
 
 import eionet.gdem.GDEMException;
@@ -55,11 +57,13 @@ import eionet.gdem.utils.Utils;
  * Abstract class contains the logic for converting spreadsheet like datafiles into DataDictionary XML Instance format. The
  * spreadsheets should be extracted from DD and include XML Schema information. Currently supported formats are MS Excel and
  * OpenDocument Spreadsheet.
+ * @author Unknown
+ * @author George Sofianos
  */
 public abstract class DDXMLConverter {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(DDXMLConverter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DDXMLConverter.class);
 
     public static final String META_SHEET_NAME = "-meta";
     public static final String META_SHEET_NAME_ODS = "_meta";
@@ -73,13 +77,32 @@ public abstract class DDXMLConverter {
     protected ConversionResultDto resultObject= null;
     protected Map<String, String> sheetSchemas = null;
 
+    /**
+     * Default constructor.
+     */
     DDXMLConverter() {
     }
 
+    /**
+     * Returns Reader
+     * @return Reader
+     */
     public abstract SourceReaderIF getSourceReader();
 
+    /**
+     * Gets Source format name
+     * @return Source format name
+     */
     public abstract String getSourceFormatName();
 
+    /**
+     * Gets converter
+     * @param inFile Input File
+     * @param resultObject Result object
+     * @param sheetParam Sheet parameters
+     * @return Converter
+     * @throws GDEMException If an error occurs.
+     */
     public static DDXMLConverter getConverter(File inFile, ConversionResultDto resultObject, String sheetParam) throws GDEMException {
         DDXMLConverter converter = null;
         try {
@@ -89,7 +112,7 @@ public abstract class DDXMLConverter {
         } catch (Exception e) {
             LOGGER.debug("Excel 2003 or older document failed: " + e.getMessage());
         }
-        if(!converter.isInitialized()){
+        if (!converter.isInitialized()) {
             try {
                 converter = new Excel20072XML();
                 converter.initConverter(inFile);
@@ -99,10 +122,10 @@ public abstract class DDXMLConverter {
             }
         }
 
-        if( !converter.isInitialized()){
+        if (!converter.isInitialized()) {
             // If it is a zip file, then it is OpenDocument
             try {
-                if(OpenDocumentUtils.isSpreadsheetFile(new FileInputStream(inFile))){
+                if (OpenDocumentUtils.isSpreadsheetFile(new FileInputStream(inFile))) {
                     converter = new Ods2Xml();
                     converter.initConverter(inFile);
                     LOGGER.debug("OpenDocument spreadsheet");
@@ -120,12 +143,24 @@ public abstract class DDXMLConverter {
         converter.startConverter(resultObject, sheetParam);
         return converter;
     }
-    public void initConverter(File inFile) throws GDEMException{
+
+    /**
+     * Initializes converter
+     * @param inFile Input file
+     * @throws GDEMException If an error occurs.
+     */
+    public void initConverter(File inFile) throws GDEMException {
         sourcefile = getSourceReader();
         sourcefile.initReader(inFile);
         setInitialized(true);
     }
 
+    /**
+     * Starts converter
+     * @param resultObject Result Object
+     * @param sheetParam Sheet parameter
+     * @throws GDEMException If an error occurs.
+     */
     public void startConverter(ConversionResultDto resultObject, String sheetParam) throws GDEMException {
         this.resultObject = resultObject;
         sourcefile.startReader(resultObject);
@@ -135,7 +170,12 @@ public abstract class DDXMLConverter {
         this.isValidSheetSchemas = isValidSheetSchemas(sheetSchemas, xmlSchema, sheetParam);
     }
 
-
+    /**
+     * Gets result transfer object
+     * @param outStream OutputStream
+     * @return Converted XML
+     * @throws GDEMException If an error occurs.
+     */
     public ConversionResultDto convertDD_XML(OutputStream outStream) throws GDEMException {
 
         try {
@@ -152,14 +192,22 @@ public abstract class DDXMLConverter {
         return resultObject;
     }
 
+    /**
+     * Gets result transfer object
+     * @param outStream OutputStream
+     * @param sheetParam Sheet parameters
+     * @return Converted XML
+     * @throws GDEMException If an error occurs.
+     */
     public ConversionResultDto convertDD_XML_split(OutputStream outStream, String sheetParam)
     throws GDEMException {
-
         try {
             if (isHttpResponse() && Utils.isNullStr(sheetParam)) {
                 sheetParam = sourcefile.getFirstSheetName();
             }
-
+            if (sheetParam != null && sheetParam.length() > 31) {
+                sheetParam = sheetParam.substring(0,31);
+            }
             for (Map.Entry<String, String> entry : sheetSchemas.entrySet()) {
                 String sheetName = entry.getKey();
                 String sheetSchema = entry.getValue();
@@ -225,6 +273,12 @@ public abstract class DDXMLConverter {
         this.httpResponse = httpResponse;
     }
 
+    /**
+     * Converts XML file
+     * @param xmlSchema XML schema
+     * @param outStream OutputStream
+     * @throws Exception If an error occurs.
+     */
     protected void doConversion(String xmlSchema, OutputStream outStream) throws Exception {
         String instanceUrl = DataDictUtil.getInstanceUrl(xmlSchema);
 
@@ -260,11 +314,12 @@ public abstract class DDXMLConverter {
 
 
     /**
-     * gather all element definitions
+     * Gather all element definitions
      *
-     * @param spreadsheet
-     * @param instance
-     * @throws Exception
+     * @param spreadsheet Spreadsheet
+     * @param instance XML Instance
+     * @param xmlSchema XML Schema
+     * @throws Exception If an error occurs
      */
     protected void importSheetSchemas(SourceReaderIF spreadsheet, DD_XMLInstance instance, String xmlSchema) {
         try {
@@ -275,6 +330,7 @@ public abstract class DDXMLConverter {
             }
             // if instance type is dataset, then import schemas for all pages
             else {
+                // TODO check for possible bug, sheetSchemas is also a field
                 Map<String, String> sheetSchemas = spreadsheet.getSheetSchemas();
                 for (Map.Entry<String, String> entry : sheetSchemas.entrySet()) {
                     String sheetName = entry.getKey();
@@ -292,12 +348,12 @@ public abstract class DDXMLConverter {
     }
 
     /**
-     * checks if the given schema belongs to the last released dataset in DD. Returns null, if schema is OK. Returns an error
+     * Checks if the given schema belongs to the last released dataset in DD. Returns null, if schema is OK. Returns an error
      * message, if the schema is not ok to convert.
      *
-     * @param xmlSchema
-     * @return error message
-     * @throws GDEMException
+     * @param xmlSchema XML Schema
+     * @return Invalid Schema error message
+     * @throws GDEMException If an error occurs
      */
     public String getInvalidSchemaMessage(String xmlSchema) throws GDEMException {
 
@@ -330,10 +386,21 @@ public abstract class DDXMLConverter {
         return result;
     }
 
+    /**
+     * Gets dataset info for the specific schema
+     * @param xmlSchema XML Schema
+     * @return Dataset info
+     */
     protected Map<String, String> getDataset(String xmlSchema) {
         return DataDictUtil.getDatasetReleaseInfoForSchema(xmlSchema);
     }
 
+    /**
+     * Checks if XML conforms to a valid schema
+     * @param xmlSchema XML Schema
+     * @return True if schema is valid.
+     * @throws GDEMException If an error occurs.
+     */
     private boolean isValidXmlSchema(String xmlSchema) throws GDEMException {
         boolean isValidXmlSchema = true;
         String invalidMess = null;
@@ -355,6 +422,13 @@ public abstract class DDXMLConverter {
         return isValidXmlSchema;
     }
 
+    /**
+     * Checks if sheet schemas are valid.
+     * @param sheetSchemas Sheet schemas
+     * @param xmlSchema XML Schema
+     * @param sheetName Sheet name
+     * @return True if sheet schemas are valid.
+     */
     private boolean isValidSheetSchemas(Map<String, String> sheetSchemas, String xmlSchema, String sheetName) {
         boolean isValidSheetSchema = true;
 
@@ -371,6 +445,9 @@ public abstract class DDXMLConverter {
             }
         }
         if (!Utils.isNullStr(sheetName)) {
+            if (sheetName.length() > 31) {
+                sheetName = sheetName.substring(0, 31);
+            }
             if (!Utils.containsKeyIgnoreCase(sheetSchemas, sheetName)) {
                 isValidSheetSchema = false;
                 resultObject.setStatusCode(ConversionResultDto.STATUS_ERR_SCHEMA_NOT_FOUND);
@@ -382,6 +459,9 @@ public abstract class DDXMLConverter {
         return isValidSheetSchema;
     }
 
+    /**
+     * Parses conversion results
+     */
     private void parseConversionResults() {
         if (resultObject.isContainsErrors()) {
             resultObject.setStatusCode(ConversionResultDto.STATUS_ERR_SYSTEM);

@@ -22,6 +22,7 @@
 package eionet.gdem.utils.system;
 
 /**
+ * Environment Variable class.
  * @author Enriko Käsper, Tieto Estonia EnvironmentVar
  */
 
@@ -29,6 +30,11 @@ class EnvironmentVar {
     public String fName = null;
     public String fValue = null;
 
+    /**
+     * Constructor
+     * @param name Name
+     * @param value Value
+     */
     public EnvironmentVar(String name, String value) {
         fName = name;
         fValue = value;

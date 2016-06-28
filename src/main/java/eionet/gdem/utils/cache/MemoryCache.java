@@ -29,6 +29,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
+/**
+ * Memory Cache.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class MemoryCache implements Comparator {
     // private static final WDSLogger logger = WDSLogger.getLogger(MemoryCache.class);
 
@@ -42,7 +47,8 @@ public class MemoryCache implements Comparator {
 
     /**
      * Spring constructor injection
-     *
+     * @param maxSize Maximum size
+     * @param evictionPercentage Eviction percentage
      */
     public MemoryCache(int maxSize, int evictionPercentage) {
         cache = new TreeMap();
@@ -62,6 +68,12 @@ public class MemoryCache implements Comparator {
         return this.evictionPercentage;
     }
 
+    /**
+     * Puts object in cache
+     * @param key Key
+     * @param document Document
+     * @param timeToLive TTL
+     */
     public void put(String key, Object document, long timeToLive) {
         CacheItem entry = new CacheItem(key, document, timeToLive);
         if (cache.size() > getMaxSize()) {
@@ -108,6 +120,11 @@ public class MemoryCache implements Comparator {
         }
     }
 
+    /**
+     * Remove item from cache
+     * @param key Key
+     * @return Entry
+     */
     public Object remove(String key) {
         CacheItem entry = (CacheItem) cache.get(key);
         if (entry == null) {
@@ -120,6 +137,11 @@ public class MemoryCache implements Comparator {
 
     }
 
+    /**
+     * Gets cache item
+     * @param key Key
+     * @return cache item
+     */
     public CacheItem get(String key) {
         CacheItem entry = (CacheItem) cache.get(key);
         if (entry == null) {
@@ -135,6 +157,11 @@ public class MemoryCache implements Comparator {
         return entry;
     }
 
+    /**
+     * Gets content from key
+     * @param key Key
+     * @return Content
+     */
     public Object getContent(String key) {
         CacheItem entry = (CacheItem) get(key);
         if (entry != null) {
@@ -143,6 +170,12 @@ public class MemoryCache implements Comparator {
         return null;
     }
 
+    /**
+     * Compares two objects in cache.
+     * @param o1 Object one
+     * @param o2 Object two
+     * @return 1 if object two is more recent, 0 if equal, and -1 if object one is more recent
+     */
     public int compare(Object o1, Object o2) {
         CacheItem e1 = (CacheItem) o1;
         CacheItem e2 = (CacheItem) o2;
@@ -154,10 +187,19 @@ public class MemoryCache implements Comparator {
         return 1;
     }
 
+    /**
+     * Constructs key
+     * @param url URL
+     * @param stylesheet Stylesheet
+     * @return Constructed key
+     */
     public String constructKey(String url, String stylesheet) {
         return url + ":" + stylesheet;
     }
 
+    /**
+     * Clears cache
+     */
     public void clearCache() {
         cache.clear();
     }

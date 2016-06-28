@@ -31,15 +31,24 @@ import org.apache.commons.io.IOUtils;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 
+/**
+ * XML Serialization class.
+ * TODO: Find out if this is still necessary or we can remove this
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class XmlSerialization implements IXmlSerializer {
 
     private XMLSerializer xmlSerializer;
     private IXmlCtx ctx = null;
 
+    /**
+     * Default constructor.
+     */
     public XmlSerialization() {
         xmlSerializer = new XMLSerializer();
         OutputFormat outputFormat = new OutputFormat();
-        outputFormat.setAllowJavaNames(true);
+        //outputFormat.setAllowJavaNames(true);
         outputFormat.setEncoding("UTF-8");
         outputFormat.setVersion("1.0");
         outputFormat.setIndenting(true);
@@ -47,6 +56,10 @@ public class XmlSerialization implements IXmlSerializer {
         xmlSerializer.setOutputFormat(outputFormat);
     }
 
+    /**
+     * Constructor
+     * @param ctx XML Context
+     */
     public XmlSerialization(IXmlCtx ctx) {
         this();
         this.ctx = ctx;

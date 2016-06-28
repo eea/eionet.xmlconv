@@ -21,15 +21,31 @@
 
 package eionet.gdem.utils.xml;
 
+/**
+ * XML Exception class.
+ * TODO: Add cause constructor
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class XmlException extends Exception {
-
+    /**
+     * Default constructor
+     */
     public XmlException() {
     }
 
+    /**
+     * Constructor
+     * @param msg Message
+     */
     public XmlException(String msg) {
         super(msg);
     }
 
+    /**
+     * Constructor
+     * @param e Exception
+     */
     public XmlException(Exception e) {
         super(e);
     }

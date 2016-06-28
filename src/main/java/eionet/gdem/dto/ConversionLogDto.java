@@ -21,7 +21,7 @@
 package eionet.gdem.dto;
 
 /**
- * Object that stores conversion log messages
+ * Object that stores conversion log messages.
  *
  * @author Enriko Käsper
  */
@@ -57,9 +57,9 @@ public class ConversionLogDto {
 
     /**
      * Constructor creating conversion log object with properties.
-     * @param type
-     * @param message
-     * @param category
+     * @param type type
+     * @param message message
+     * @param category category
      */
     public ConversionLogDto(ConversionLogType type, String message, String category) {
         this.type = type;

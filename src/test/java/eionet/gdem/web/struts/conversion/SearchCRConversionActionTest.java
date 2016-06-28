@@ -6,36 +6,47 @@ package eionet.gdem.web.struts.conversion;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.CrServiceSparqlClient;
 import eionet.gdem.dto.CrFileDto;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.sql.DataSource;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS SearchCRConversionActionTest
  */
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
 public class SearchCRConversionActionTest extends MockStrutsTestCase {
 
-    public SearchCRConversionActionTest(String testName) {
-        super(testName);
-    }
+    @Autowired
+    private DataSource db;
 
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         setContextDirectory(TestUtils.getContextDirectory());
         setInitParameter("validating", "false");
 
         // setup database
-        DbHelper.setUpDatabase(this, TestConstants.SEED_DATASET_CONVERSIONS_XML);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_CONVERSIONS_XML);
     }
 
     /**
      * test if the form is successfully forwarding and stores the schemas list in session
      */
+    @Test
     public void testSuccessfulForward() {
 
         String schemaUrl = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd";
@@ -57,6 +68,7 @@ public class SearchCRConversionActionTest extends MockStrutsTestCase {
     /**
      * test if the form is successfully forwarding and stores the schemas list in session
      */
+    @Test
     public void testFailedForward() {
 
         String schemaUrl = "No such schema";

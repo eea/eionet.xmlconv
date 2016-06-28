@@ -35,7 +35,7 @@ import eionet.gdem.utils.Utils;
  * The DTO structure that keeps conversion result from Excel to XML.
  *
  * @author Enriko Käsper
- *
+ * @author George Sofianos
  */
 public class ConversionResultDto {
 
@@ -99,6 +99,9 @@ public class ConversionResultDto {
      */
     private List<ConvertedFileDto> convertedFiles;
 
+    /**
+     * Default constructor
+     */
     public ConversionResultDto() {
         super();
     }
@@ -166,10 +169,10 @@ public class ConversionResultDto {
     /**
      * Add new files into the conversion result object.
      *
-     * @param xmlName
+     * @param fileName
      *            file name
-     * @param convertedXml
-     *            XML content
+     * @param filePath
+     *            file path
      */
     public void addConvertedFile(String fileName, String filePath) {
         if (this.convertedFiles == null) {
@@ -196,7 +199,7 @@ public class ConversionResultDto {
     /**
      * Add new conversion.
      *
-     * @param conversionLog
+     * @param conversionLog Conversion log
      */
     public void addConversionLog(ConversionLogDto conversionLog) {
         if (this.conversionLogs == null) {
@@ -217,9 +220,9 @@ public class ConversionResultDto {
     /**
      * Add new conversion log message.
      *
-     * @param type
-     * @param message
-     * @param category
+     * @param type type
+     * @param message message
+     * @param category category
      */
     public void addConversionLog(ConversionLogType type, String message, String category) {
         addConversionLog(new ConversionLogDto(type, message, category));
@@ -273,6 +276,10 @@ public class ConversionResultDto {
                 + ", containsInfos=" + containsInfos + ", sourceUrl=" + sourceUrl + ", convertedXmls=" + convertedXmls + "]";
     }
 
+    /**
+     * Gets conversion log as HTML
+     * @return
+     */
     public String getConversionLogAsHtml() {
         StringBuilder strBuilder = new StringBuilder();
 
@@ -313,6 +320,10 @@ public class ConversionResultDto {
         return strBuilder.toString();
     }
 
+    /**
+     * Gets result as HTML.
+     * @return Result
+     */
     private String getResultAsHtml() {
         StringBuilder strBuilder = new StringBuilder();
         String resultClass = "";
@@ -347,6 +358,11 @@ public class ConversionResultDto {
         return this.convertedFiles;
     }
 
+    /**
+     * Gets converted file by file name
+     * @param fileName File name
+     * @return Converted file
+     */
     public ConvertedFileDto getConvertedFileByFileName(String fileName) {
         if (convertedFiles != null) {
             for (ConvertedFileDto convertedFile : convertedFiles) {

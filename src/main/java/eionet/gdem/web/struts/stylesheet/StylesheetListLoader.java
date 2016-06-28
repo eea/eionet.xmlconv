@@ -26,8 +26,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.business.SchemaManager;
@@ -38,6 +38,8 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Loads stylesheet list and stores it in the system cache.
@@ -48,7 +50,7 @@ import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 public class StylesheetListLoader {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(QAScriptListLoader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptListLoader.class);
     public static final String CONVERSION_SCHEMAS_ATTR = "conversion.schemas";
     /** Context key attribute name holding handcoded stylesheet list. */
     public static final String STYLESHEET_LIST_ATTR = "stylesheet.stylesheetListHolder";

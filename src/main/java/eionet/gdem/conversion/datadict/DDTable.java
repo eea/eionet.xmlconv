@@ -25,6 +25,7 @@ import java.util.List;
 
 /**
  * @author Enriko Käsper, Tieto Estonia DDTable
+ * @author George Sofianos
  */
 
 public class DDTable {
@@ -35,9 +36,16 @@ public class DDTable {
     private String tblSchemaURL;
     private List<DDElement> elms;
 
+    /**
+     * Default constructor.
+     */
     public DDTable() {
     }
 
+    /**
+     * Constructor
+     * @param tblIdf2 Table id
+     */
     public DDTable(String tblIdf2) {
         this.tblIdf = tblIdf2;
     }

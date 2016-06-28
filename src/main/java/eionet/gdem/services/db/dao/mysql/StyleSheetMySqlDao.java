@@ -5,8 +5,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -53,7 +54,7 @@ public class StyleSheetMySqlDao extends MySqlBaseDao implements IStyleSheetDao {
     private ISchemaDao schemaDao;
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(StyleSheetMySqlDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StyleSheetMySqlDao.class);
 
     /** SQL for inserting stylesheet record. */
     private static final String INSERT_STYLESHEET = "INSERT INTO " + XSL_TABLE + " ( " + RESULT_TYPE_FLD + ", " + XSL_FILE_FLD

@@ -28,13 +28,25 @@ import org.apache.xerces.xni.XMLResourceIdentifier;
 import org.apache.xerces.xni.XNIException;
 import org.apache.xerces.xni.parser.XMLParserConfiguration;
 
+/**
+ * Custom DOM parser class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class CustomDomParser extends DOMParser {
     String _mimeEncoding = "UTF-8";
 
+    /**
+     * Default constructor.
+     */
     public CustomDomParser() {
         super();
     }
 
+    /**
+     * Constructor
+     * @param config Config
+     */
     public CustomDomParser(XMLParserConfiguration config) {
         super(config);
     }
@@ -47,6 +59,11 @@ public class CustomDomParser extends DOMParser {
         return (_mimeEncoding);
     }
 
+    /**
+     * Returns java encoding
+     * TODO: remove it maybe
+     * @return Java encoding
+     */
     public String getJavaEncoding() {
         String javaEncoding = null;
         String mimeEncoding = getMimeEncoding();
@@ -61,13 +78,21 @@ public class CustomDomParser extends DOMParser {
         if (javaEncoding == null)
             javaEncoding = "UTF8";
         return (javaEncoding);
-    }// getJavaEncoding()
+    }  // getJavaEncoding()
 
+    /**
+     * Starts general entity
+     * @param name Name
+     * @param identifier Identifier
+     * @param encoding Encoding
+     * @param augs Augmentations
+     * @throws XNIException If an error occurs.
+     */
     public void startGeneralEntity(String name, XMLResourceIdentifier identifier, String encoding, Augmentations augs)
             throws XNIException {
         if (encoding != null) {
             setMimeEncoding(encoding);
         }
         super.startGeneralEntity(name, identifier, encoding, augs);
-    }// startGeneralEntity
+    } // startGeneralEntity
 }

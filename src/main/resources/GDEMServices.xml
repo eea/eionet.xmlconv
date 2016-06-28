@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./services.xsd">
+    <Service Name="ConversionService" Provider="eionet.gdem.conversion.ConversionService">
+        <Methods>
+            <Method Name="convert" Auth="false">
+                <Parameters>
+                    <Parameter Name="url" Type="STRING"/>
+                    <Parameter Name="convert_id" Type="STRING"/>
+                </Parameters>
+                <Value Type="STRUCT"/>
+            </Method>
+            <Method Name="listConversions" Auth="false">
+                <Parameters>
+                    <Parameter Name="xml_schema" Type="STRING"/>
+                </Parameters>
+                <Value Type="ARRAY"/>
+            </Method>
+            <Method Name="convertDD_XML" Auth="false">
+                <Parameters>
+                    <Parameter Name="url" Type="STRING"/>
+                </Parameters>
+                <Value Type="STRUCT"/>
+            </Method>
+            <Method Name="convertDD_XML_split" Auth="false">
+                <Parameters>
+                    <Parameter Name="url" Type="STRING"/>
+                    <Parameter Name="sheet_name" Type="STRING"/>
+                </Parameters>
+                <Value Type="STRUCT"/>
+            </Method>
+            <Method Name="convert" Auth="false">
+                <Parameters>
+                    <Parameter Name="url" Type="STRING"/>
+                    <Parameter Name="convert_id" Type="STRING"/>
+                    <Parameter Name="username" Type="STRING"/>
+                    <Parameter Name="password" Type="STRING"/>
+                </Parameters>
+                <Value Type="STRUCT"/>
+            </Method>
+            <Method Name="convertPush" Auth="false">
+                <Parameters>
+                    <Parameter Name="convert_file" Type="BASE64"/>
+                    <Parameter Name="convert_id" Type="STRING"/>
+                    <Parameter Name="filename" Type="STRING"/>
+                </Parameters>
+                <Value Type="STRUCT"/>
+            </Method>
+            <Method Name="getXMLSchemas" Auth="false">
+                <Parameters/>
+                <Value Type="ARRAY"/>
+            </Method>
+        </Methods>
+    </Service>
+    <Service Name="XQueryService" Provider="eionet.gdem.qa.XQueryService">
+        <Methods>
+            <Method Name="analyze" Auth="false">
+                <Parameters>
+                    <Parameter Name="url" Type="STRING"/>
+                    <Parameter Name="xq_script" Type="STRING"/>
+                    <Parameter Name="script_type" Type="STRING"/>
+                </Parameters>
+                <Value Type="STRING"/>
+            </Method>
+            <Method Name="analyzeXMLFiles" Auth="false">
+                <Parameters>
+                    <Parameter Name="files" Type="STRUCT"/>
+                </Parameters>
+                <Value Type="ARRAY"/>
+            </Method>
+            <Method Name="listQueries" Auth="false">
+                <Parameters>
+                    <Parameter Name="xml_schema" Type="STRING"/>
+                </Parameters>
+                <Value Type="ARRAY"/>
+            </Method>
+            <Method Name="getResult" Auth="false">
+                <Parameters>
+                    <Parameter Name="job_id" Type="STRING"/>
+                </Parameters>
+                <Value Type="STRUCT"/>
+                <!--Member Name="CODE" Type="INT"/>
+                    <Member Name="RESULT" Type="STRING"/>
+                </Value-->
+            </Method>
+            <Method Name="listQAScripts" Auth="false">
+                <Parameters>
+                    <Parameter Name="xml_schema" Type="STRING"/>
+                </Parameters>
+                <Value Type="ARRAY"/>
+            </Method>
+            <Method Name="runQAScript" Auth="false">
+                <Parameters>
+                    <Parameter Name="url" Type="STRING"/>
+                    <Parameter Name="script_id" Type="STRING"/>
+                </Parameters>
+                <Value Type="ARRAY"/>
+            </Method>
+        </Methods>
+    </Service>
+    <Service Name="ValidationService" Provider="eionet.gdem.validation.ValidationService">
+        <Methods>
+            <Method Name="validate" Auth="false">
+                <Parameters>
+                    <Parameter Name="url" Type="STRING"/>
+                </Parameters>
+                <Value Type="STRING"/>
+            </Method>
+            <Method Name="validateSchema" Auth="false">
+                <Parameters>
+                    <Parameter Name="url" Type="STRING"/>
+                    <Parameter Name="xml_schema" Type="STRING"/>
+                </Parameters>
+                <Value Type="STRING"/>
+            </Method>
+        </Methods>
+    </Service>
+</Services>

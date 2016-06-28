@@ -12,6 +12,11 @@ import eionet.gdem.Constants;
 import eionet.gdem.dcm.business.SourceFileManager;
 import eionet.gdem.utils.Utils;
 
+/**
+ * Get Source action class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class GetSourceAction extends Action {
 
     @Override

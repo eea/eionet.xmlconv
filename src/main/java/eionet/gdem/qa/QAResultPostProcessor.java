@@ -19,13 +19,19 @@
  */
 package eionet.gdem.qa;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import eionet.gdem.GDEMException;
+import eionet.gdem.xml.VtdHandler;
+import org.apache.commons.io.output.ByteArrayOutputStream;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -46,13 +52,14 @@ import eionet.gdem.utils.xml.XmlSerialization;
 
 /**
  * @author Enriko Käsper
+ * @author George Sofianos
  *
  * The class processes QA results and add warnings/errors if required.
  */
 public class QAResultPostProcessor {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(QAResultPostProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QAResultPostProcessor.class);
 
     private SchemaManager schemaManager = new SchemaManager();
 
@@ -60,20 +67,36 @@ public class QAResultPostProcessor {
 
     /**
      * Checks if the QA was made against expired schema. Adds a warning on top of the QA result if the result is HTML format.
-     *
-     * @return
+     * @param result QA result
+     * @param xmlSchema XML Schema
+     * @return Processed result
+     * @throws GDEMException If an error occurs.
      */
-    public String processQAResult(String result, Schema xmlSchema) {
-
+    public String processQAResult(String result, Schema xmlSchema) throws GDEMException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
         this.warnMessage = getWarningMessage(xmlSchema);
-
         if (warnMessage != null) {
-            result = addExpWarning(result, warnMessage);
+            VtdHandler vdt = new VtdHandler();
+            vdt.addWarningMessage(result, warnMessage, out);
+        } else {
+            try {
+                out.write(result.getBytes());
+            } catch (IOException e) {
+                throw new GDEMException("Couldn't write to OutputStream: " + e.getMessage());
+            }
         }
-        return result;
+
+        return new String(out.toByteArray());
     }
 
-    public String processQAResult(String result, String xmlSchemaUrl) {
+    /**
+     * Process QA result
+     * @param result Result
+     * @param xmlSchemaUrl Schema URL
+     * @return Processed result
+     * @throws GDEMException If an error occurs.
+     */
+    public String processQAResult(String result, String xmlSchemaUrl) throws GDEMException {
 
         Schema schema = getSchemaObject(xmlSchemaUrl);
         return processQAResult(result, schema);
@@ -82,9 +105,9 @@ public class QAResultPostProcessor {
     /**
      * Returns warning message for given schema URL.
      *
-     * @param xmlSchemaUrl
-     * @return
-     * @throws DCMException
+     * @param xmlSchemaUrl XML Schema URL
+     * @return Warning message
+     * @throws DCMException If an error occurs.
      */
     public String getWarningMessage(String xmlSchemaUrl) {
 
@@ -98,8 +121,8 @@ public class QAResultPostProcessor {
     /**
      * Returns warning message if schema is expired.
      *
-     * @param xmlSchema
-     * @return
+     * @param xmlSchema XML Schema
+     * @return Warning message
      */
     private String getWarningMessage(Schema xmlSchema) {
 
@@ -119,9 +142,8 @@ public class QAResultPostProcessor {
     /**
      * Get Schema object from database
      *
-     * @param xmlSchemaUrl
-     * @return
-     * @throws DCMException
+     * @param xmlSchemaUrl XML Schema URL
+     * @return Schema object
      */
     private Schema getSchemaObject(String xmlSchemaUrl) {
 
@@ -147,8 +169,8 @@ public class QAResultPostProcessor {
     /**
      * Check if given XML Schema is marked as expired in XMLCONV repository. Returns error message, otherwise null.
      *
-     * @param xmlSchema
-     * @return
+     * @param xmlSchema XML Schema
+     * @return Schema Expired message
      */
     private String getLocalSchemaExpiredMessage(Schema xmlSchema) {
 
@@ -166,8 +188,8 @@ public class QAResultPostProcessor {
      * Check if schema is the latest released version in DD (in case of DD schema). If it is not latest released then return warning
      * message.
      *
-     * @param xmlSchema
-     * @return
+     * @param xmlSchema XML Schema
+     * @return Schema expired message.
      */
     private String getDDSchemaExpiredMessage(Schema xmlSchema) {
 
@@ -191,6 +213,13 @@ public class QAResultPostProcessor {
         return null;
     }
 
+    /**
+     * Adds warning to result
+     * TODO: remove it in the future not in use any more since we use a new XML parser.
+     * @param htmlResult HTML result
+     * @param warnMessage warning message
+     * @return Processed result.
+     */
     private String addExpWarning(String htmlResult, String warnMessage) {
 
         try {
@@ -219,6 +248,13 @@ public class QAResultPostProcessor {
         return htmlResult;
     }
 
+    /**
+     * Parses div nodes and adds warning node to result
+     * @param divElements Div elements
+     * @param warnMessage Warning message
+     * @return true if feedbacktext class is found
+     * @throws XmlException If an error occurs.
+     */
     private boolean parseDivNodes(NodeList divElements, String warnMessage) throws XmlException {
         boolean feedBackDivFound = false;
         try {
@@ -258,8 +294,8 @@ public class QAResultPostProcessor {
     /**
      * Get DD XML Schema released info
      *
-     * @param xmlSchema
-     * @return
+     * @param xmlSchema XML Schema
+     * @return Dataset Map
      */
     protected Map<String, String> getDataset(String xmlSchema) {
         return DataDictUtil.getDatasetReleaseInfoForSchema(xmlSchema);

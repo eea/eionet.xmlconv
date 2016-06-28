@@ -24,7 +24,6 @@ import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.CrFileDto;
 import eionet.gdem.exceptions.DCMException;
-import org.apache.log4j.Logger;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
@@ -32,13 +31,15 @@ import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sparql.SPARQLRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Content Registry SPARQL endpoint client. The class executes SPARQL queries in CR eg. search XML files by XML Schema from CR.
- * 
+ *
  * @author Enriko Käsper
  */
 public class CrServiceSparqlClient {
@@ -48,7 +49,7 @@ public class CrServiceSparqlClient {
      */
     private static String endpointURL = Properties.crSparqlEndpoint;
 
-    private static final Logger LOGGER = Logger.getLogger(CrServiceSparqlClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CrServiceSparqlClient.class);
 
     /**
      * List of xml files for testing purposes
@@ -57,11 +58,11 @@ public class CrServiceSparqlClient {
 
     /**
      * Search XML files through CR SPARQL endpoint.
-     * 
+     *
      * @param schema
      *            XML schema
      * @return the list of CR file objects
-     * @throws DCMException
+     * @throws DCMException If an error occurs
      */
     public static List<CrFileDto> getXmlFilesBySchema(String schema) throws DCMException {
 
@@ -104,10 +105,15 @@ public class CrServiceSparqlClient {
         return result;
     }
 
+    /**
+     * Gets SPARQL Query for fetching xml files by schema
+     * @param schema XML Schema
+     * @return Query result
+     */
     private static String getXmlFilesBySchemaQuery(String schema) {
         StringBuilder query =
                 new StringBuilder("PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#> "
-                        + "SELECT ?file, ?lastModified WHERE { ?file cr:xmlSchema <");
+                        + "SELECT DISTINCT ?file, ?lastModified WHERE { ?file cr:xmlSchema <");
         query.append(schema);
         query.append("> . OPTIONAL { ?file cr:contentLastModified ?lastModified } } ORDER BY ?file");
 
@@ -116,8 +122,9 @@ public class CrServiceSparqlClient {
 
     /**
      * The testing purposes
-     * 
-     * @return
+     * TODO check possibility of replacing this.
+     * @param schemaUrl Schema URL
+     * @return Result XML files
      */
     public static List<CrFileDto> getMockXmlFilesBySchema(String schemaUrl) {
         return mockXmlFiles;

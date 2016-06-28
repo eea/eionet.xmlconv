@@ -21,7 +21,7 @@
 
 package eionet.gdem.qa.functions;
 
-import org.apache.commons.httpclient.HttpStatus;
+import org.apache.http.HttpStatus;
 
 /**
  * Object for storing Json error message.
@@ -35,10 +35,20 @@ public class JsonError {
     /** Response message */
     String message;
 
+    /**
+     * Constructor
+     * @param code Code
+     * @param message Message
+     */
     public JsonError(Integer code, String message) {
         this.code = code;
         this.message = message;
     }
+
+    /**
+     * Constructor
+     * @param message message
+     */
     public JsonError(String message) {
         this.code = getDefaultErrorCode();
         this.message = message;

@@ -46,7 +46,7 @@ import eionet.gdem.Properties;
  * request.
  *
  * @author Rando Valt
- * @version $Revision: 10447 $
+ * @author George Sofianos
  */
 public class FileUpload {
 
@@ -69,6 +69,7 @@ public class FileUpload {
      * Constructor. Creates a new FileUpload object
      *
      * @param fldName - folder for the uploaded file
+     * @throws GDEMException If an error occurs.
      */
     public FileUpload(String fldName) throws GDEMException {
         if (fldName == null) {
@@ -83,7 +84,7 @@ public class FileUpload {
     /**
      * Generates filename.
      *
-     * @param fileName
+     * @param fileName File name
      * @param n set larger than 0, if file with the same name already exists in the tmp folder ex: genFileName( test.xls, 1 )= test_1.xls
      *            genFileName( test_1.xls, 2 )= test_2.xls
      */
@@ -105,10 +106,15 @@ public class FileUpload {
     /**
      * Reads line from ServletInputStream.
      *
+     * @param buf buffer
+     * @param i i
+     * @param stream InputStream
+     * @param charEncoding Encoding
      * @return null, if EOF is reached.
+     * @throws IOException If an error occurs.
      */
     // +RV020508 removed exception handling and propagated exceptions to caller
-    private String readLine(byte buf[], int i[], ServletInputStream stream, String charEncoding) throws IOException {
+    private String readLine(byte[] buf, int[] i, ServletInputStream stream, String charEncoding) throws IOException {
         i[0] = stream.readLine(buf, 0, buf.length); // may throw IOException
         if (i[0] == -1) {
             return null;
@@ -142,6 +148,7 @@ public class FileUpload {
 
     /**
      * Returns filename from filename with full path in: "C:\TEMP\test.txt" out: "test.txt".
+     * @param fileName File name
      */
     private String getFileName(String fileName) {
         int i = fileName.lastIndexOf("\\");
@@ -176,7 +183,8 @@ public class FileUpload {
      * Uploads file from client to the server. Parses HttpRequestInputstream and writes bytes to the specified folder in the same
      * computer, where servlet runs
      *
-     * @param req
+     * @param req request
+     * @throws GDEMException If an error occurs.
      */
     public File uploadFile(HttpServletRequest req) throws GDEMException {
 

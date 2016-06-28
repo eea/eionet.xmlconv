@@ -73,6 +73,7 @@
     <definition name="confDb" path="/WEB-INF/tiles/config/Db.jsp" />
     <definition name="system" path="/WEB-INF/tiles/config/System.jsp" />
     <definition name="purge" path="/WEB-INF/tiles/config/Purge.jsp" />
+    <definition name="basexServer" path="/WEB-INF/tiles/config/BasexServer.jsp" />
 
     <definition name="hosts" path="/WEB-INF/tiles/hosts/HostsList.jsp" />
     <definition name="hostDetails" path="/WEB-INF/tiles/hosts/HostDetails.jsp" />
@@ -162,6 +163,10 @@
     <definition name="/configDb.jsp" extends="base">
         <put name="title" value="label.config.db.admin" />
         <put name="body" type="definition" value="confDb" />
+    </definition>
+    <definition name="/basexServer.jsp" extends="base">
+        <put name="title" value="label.config.basexserver.title" />
+        <put name="body" type="definition" value="basexServer" />
     </definition>
     <definition name="/system.jsp" extends="base">
         <put name="title" value="label.config.system.admin" />

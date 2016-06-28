@@ -25,6 +25,9 @@ package eionet.gdem.dto;
 
 import java.io.Serializable;
 
+/**
+ * CDR file data transfer object.
+ */
 public class CdrFileDto implements Serializable {
 
     private String url;
@@ -35,6 +38,9 @@ public class CdrFileDto implements Serializable {
     private String title;
     private String iso;
 
+    /**
+     * Default constructor
+     */
     public CdrFileDto() {
     }
 
@@ -94,6 +100,10 @@ public class CdrFileDto implements Serializable {
         this.iso = iso;
     }
 
+    /**
+     * Gets file label
+     * @return Label
+     */
     public String getLabel() {
         StringBuilder label = new StringBuilder(country);
         label.append(" - ");

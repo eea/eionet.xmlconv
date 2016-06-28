@@ -27,8 +27,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -43,6 +43,8 @@ import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Enriko Käsper, Tieto Estonia EditQAScriptAction
@@ -51,11 +53,16 @@ import eionet.gdem.utils.Utils;
 public class EditQAScriptAction extends LookupDispatchAction {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(EditQAScriptAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EditQAScriptAction.class);
 
-    /*
+    /**
      * The method uploads the file from user's filesystem to the repository. Saves all the other changes made onthe form execpt the
      * file source in textarea
+     * @param actionMapping Action mapping
+     * @param actionForm Action form
+     * @param httpServletRequest Request
+     * @param httpServletResponse Response
+     * @return Action forward
      */
     public ActionForward upload(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
@@ -107,8 +114,13 @@ public class EditQAScriptAction extends LookupDispatchAction {
         return findForward(actionMapping, "success", scriptId);
     }
 
-    /*
+    /**
      * The method saves all the changes made on the form. Saves also modifications made to the file source textarea
+     * @param actionMapping Action mapping
+     * @param actionForm Action form
+     * @param httpServletRequest Request
+     * @param httpServletResponse Response
+     * @return Action forward
      */
     public ActionForward save(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
@@ -129,6 +141,7 @@ public class EditQAScriptAction extends LookupDispatchAction {
         String upperLimit = form.getUpperLimit();
         String url = form.getUrl();
         String checksum = form.getChecksum();
+        boolean active = form.getActive();
 
         boolean updateContent = false;
         String newChecksum = null;
@@ -159,10 +172,10 @@ public class EditQAScriptAction extends LookupDispatchAction {
 
             updateContent = !checksum.equals(newChecksum);
         }
-        
+
         // Zip result type can only be selected for FME scripts
         if (!XQScript.SCRIPT_LANG_FME.equals(scriptType) && XQScript.SCRIPT_RESULTTYPE_ZIP.equals(resultType)) {
-        	errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.zip.validation"));
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.zip.validation"));
             saveErrors(httpServletRequest.getSession(), errors);
         }
 
@@ -179,6 +192,7 @@ public class EditQAScriptAction extends LookupDispatchAction {
                 qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, upperLimit,
                         url, scriptContent, updateContent);
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.qascript.updated"));
+                qm.activateDeactivate(user, scriptId, active);
                 // clear qascript list in cache
                 QAScriptListLoader.reloadList(httpServletRequest);
             } catch (DCMException e) {
@@ -197,6 +211,14 @@ public class EditQAScriptAction extends LookupDispatchAction {
         return findForward(actionMapping, "success", scriptId);
     }
 
+    /**
+     * Cancel action
+     * @param actionMapping Action mapping
+     * @param actionForm Action form
+     * @param httpServletRequest Request
+     * @param httpServletResponse Response
+     * @return Action forward
+     */
     public ActionForward cancel(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
         return actionMapping.findForward("success");
@@ -210,6 +232,13 @@ public class EditQAScriptAction extends LookupDispatchAction {
         return map;
     }
 
+    /**
+     * Finds forward
+     * @param actionMapping Action mapping
+     * @param f F
+     * @param scriptId Script Id
+     * @return Action forward
+     */
     private ActionForward findForward(ActionMapping actionMapping, String f, String scriptId) {
         ActionForward forward = actionMapping.findForward(f);
         StringBuffer path = new StringBuffer(forward.getPath());

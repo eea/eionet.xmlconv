@@ -69,7 +69,7 @@
                             <html:checkbox name="schema" property="doValidation" styleId="validatefield" />
                         </logic:equal>
                         <logic:equal name="ssiPrm" value="false"  name="qascript.permissions" property="ssiPrm" >
-                            <bean:write  name="schema"	 property="doValidation" />
+                            <bean:write  name="schema" property="doValidation" />
                         </logic:equal>
                     </td>
                     <td rowspan="2" style="vertical-align:bottom">
@@ -118,6 +118,7 @@
                       <th scope="col"><bean:message key="label.qascript.description"/></th>
                       <th scope="col"><bean:message key="label.qascript.fileName"/></th>
                       <th scope="col"><bean:message key="label.lastmodified"/></th>
+                      <th scope="col"><bean:message key="label.qascript.isActive"/></th>
                    </tr>
                 </thead>
                <tbody>
@@ -131,18 +132,18 @@
                     </logic:equal>
                     <td>
                         <logic:equal name="qsuPrm" value="true"  name="qascript.permissions" property="qsuPrm" >
-	                        <%--  If scriptType is NOT 'FME' --%>
-							<logic:notEqual name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-	                            <html:link page="/do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.label.qasandbox.editScript">
-	                                <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img>
-	                            </html:link>
+                            <%--  If scriptType is NOT 'FME' --%>
+                            <logic:notEqual name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+                                <html:link page="/do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.label.qasandbox.editScript">
+                                    <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img>
+                                </html:link>
                             </logic:notEqual>
                             <%--  If scriptType is 'FME' --%>
-							<logic:equal name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-								<a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=<bean:write name="schema" property="id"/>" title="<bean:message key="label.qascript.runservice.title" />">
-                                	<img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img>
-                            	</a>
-							</logic:equal>
+                            <logic:equal name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+                                <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=<bean:write name="schema" property="id"/>" title="<bean:message key="label.qascript.runservice.title" />">
+                                    <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img>
+                                </a>
+                            </logic:equal>
                         </logic:equal>
                         <logic:notEqual name="qsuPrm" value="true"  name="qascript.permissions" property="qsuPrm" >
                             <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=<bean:write name="schema" property="id"/>" title="<bean:message key="label.qascript.runservice.title" />">
@@ -164,10 +165,10 @@
                         <a  href="<bean:write name="webRoot"/>/<bean:write name="qascript" property="filePath" />" title="open QA script file">
                             <bean:write name="qascript" property="fileName" />
                         </a>
-					</logic:notEqual>
-					<logic:equal name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-						<bean:write name="qascript" property="fileName" />
-					</logic:equal>
+                    </logic:notEqual>
+                    <logic:equal name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+                        <bean:write name="qascript" property="fileName" />
+                    </logic:equal>
                     </td>
                     <td>
                     <%--  If scriptType is 'FME' don't show the script Last Modified Date --%>
@@ -178,7 +179,15 @@
                         <logic:equal name="fileNotExists" value=""  name="qascript" property="modified" >
                             <span style="color:red"><bean:message key="label.fileNotFound"/></span>
                         </logic:equal>
-					</logic:notEqual>
+                    </logic:notEqual>
+                    </td>
+                    <td>
+                        <logic:equal name="qascript" property="active" value="true">
+                            <input type="checkbox" checked="checked" disabled/>
+                        </logic:equal>
+                        <logic:notEqual name="qascript" property="active" value="true">
+                            <input type="checkbox" disabled/>
+                        </logic:notEqual>
                     </td>
                 </tr>
             </logic:iterate>
@@ -187,6 +196,14 @@
                 <div class="boxbottombuttons">
                     <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" property="ssdPrm" >
                            <input type="button"  class="button" value="<bean:message key="label.qascript.delete"/>" onclick="return submitAction(2,'deleteQAScript');" />
+                        <input type="hidden" name="schemaId" value="${schemaId}" />
+                    </logic:equal>
+                    <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" property="ssdPrm" >
+                           <input type="button"  class="button" value="<bean:message key="label.qascript.activate"/>" onclick="return submitAction(2,'activateQAScript');" />
+                        <input type="hidden" name="schemaId" value="${schemaId}" />
+                    </logic:equal>
+                    <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" property="ssdPrm" >
+                           <input type="button"  class="button" value="<bean:message key="label.qascript.deactivate"/>" onclick="return submitAction(2,'deactivateQAScript');" />
                         <input type="hidden" name="schemaId" value="${schemaId}" />
                     </logic:equal>
                 </div>

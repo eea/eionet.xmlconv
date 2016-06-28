@@ -23,17 +23,19 @@ package eionet.gdem.dcm.business;
 
 import java.util.Hashtable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.ConvType;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IConvTypeDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * ConvTypeManager
+ * ConvTypeManager.
  *
  * @author Enriko Käsper, Tieto Estonia
  */
@@ -41,7 +43,7 @@ import eionet.gdem.services.db.dao.IConvTypeDao;
 public class ConvTypeManager {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(ConvTypeManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConvTypeManager.class);
     private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
     /**
@@ -50,7 +52,7 @@ public class ConvTypeManager {
      * @param convTypeId
      *            (HTML, XML, ...)
      * @return
-     * @throws DCMException
+     * @throws DCMException If an error occurs.
      */
     public ConvType getConvType(String convTypeId) throws DCMException {
         ConvType convType = null;

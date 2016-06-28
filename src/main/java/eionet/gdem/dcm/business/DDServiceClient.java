@@ -135,7 +135,8 @@ public class DDServiceClient {
 
     /**
      * Call getDatasetWithReleaseInfo method from DD.
-     *
+     * @param type Type
+     * @param id Id
      * @return the list of DDDatasetTable objects.
      */
     public static Map<String, String> getDatasetWithReleaseInfo(String type, String id) {
@@ -157,8 +158,10 @@ public class DDServiceClient {
 
     /**
      * Method for testing purposes.
-     *
-     * @return
+     * TODO check possibility of replacing this.
+     * @param type Type
+     * @param id Id
+     * @return Mock dataset
      */
     public static Map<String, String> getMockDataset(String type, String id) {
         return mockDataset;
@@ -166,7 +169,7 @@ public class DDServiceClient {
 
     /**
      * Setter method for testing purpoeses.
-     *
+     * TODO check possibility of replacing this.
      * @param mockDataset
      *            Set fake data.
      */

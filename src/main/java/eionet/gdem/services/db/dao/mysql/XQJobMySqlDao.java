@@ -5,23 +5,29 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import eionet.gdem.Constants;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 
+/**
+ * XQ job MySQL Dao class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 @Repository("xqJobDao")
 public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(XQJobMySqlDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XQJobMySqlDao.class);
 
     /** Base query for getting all fields from WQ_TABLE */
     private static final String qXQJobDataBase = "SELECT " + URL_FLD + "," + XQ_FILE_FLD + "," + RESULT_FILE_FLD + ", "
-            + STATUS_FLD + ", " + SRC_FILE_FLD + ", " + XQ_ID_FLD + ", " + JOB_ID_FLD + ", " + TIMESTAMP_FLD + " FROM " + WQ_TABLE;
+            + STATUS_FLD + ", " + SRC_FILE_FLD + ", " + XQ_ID_FLD + ", " + JOB_ID_FLD + ", " + TIMESTAMP_FLD + ", " + XQ_TYPE_FLD + " FROM " + WQ_TABLE;
 
     private static final String qXQJobData = qXQJobDataBase + " WHERE " + JOB_ID_FLD + "= ?";
 
@@ -29,7 +35,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             + " ORDER BY " + JOB_ID_FLD;
 
     private static final String qStartXQJob = "INSERT INTO " + WQ_TABLE + " (" + URL_FLD + "," + XQ_FILE_FLD + ", "
-            + RESULT_FILE_FLD + "," + STATUS_FLD + "," + XQ_ID_FLD + "," + TIMESTAMP_FLD + ") " + "VALUES (?,?,?,?,?,{fn now()})";
+            + RESULT_FILE_FLD + "," + STATUS_FLD + "," + XQ_ID_FLD + "," + TIMESTAMP_FLD + "," + XQ_TYPE_FLD + ") " + "VALUES (?,?,?,?,?,{fn now()},?)";
 
     private static final String qCheckJobID = "SELECT " + JOB_ID_FLD + " FROM " + WQ_TABLE + " WHERE " + XQ_FILE_FLD + " = ?"
             + " AND " + RESULT_FILE_FLD + " =  ?";
@@ -67,7 +73,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String s[];
+        String[] s;
 
         if (isDebugMode) {
             LOGGER.debug("Query is " + qXQJobData);
@@ -96,12 +102,12 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     }
 
     @Override
-    public String startXQJob(String url, String xqFile, String resultFile) throws SQLException {
-        return startXQJob(url, xqFile, resultFile, JOB_FROMSTRING);
+    public String startXQJob(String url, String xqFile, String resultFile, String scriptType) throws SQLException {
+        return startXQJob(url, xqFile, resultFile, JOB_FROMSTRING, scriptType);
     }
 
     @Override
-    public String startXQJob(String url, String xqFile, String resultFile, int xqID) throws SQLException {
+    public String startXQJob(String url, String xqFile, String resultFile, int xqID, String xqType) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -118,6 +124,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             pstmt.setString(3, resultFile);
             pstmt.setInt(4, XQ_RECEIVED);
             pstmt.setInt(5, xqID);
+            pstmt.setString(6, xqType);
             pstmt.executeUpdate();
             pstmt.close();
 
@@ -351,6 +358,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
                 try {
                     ret = Integer.parseInt(strC);
                 } catch (Exception e) {
+
                 }
 
             }

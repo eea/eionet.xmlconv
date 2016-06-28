@@ -54,7 +54,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
@@ -63,18 +62,30 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Several common methods for file handling etc.
+ * @author Unknown
+ * @author George Sofianos
  */
-public class Utils {
-
-    private static Map<Character, String> xmlEscapes = null;
-
-    private static final Logger LOGGER = Logger.getLogger(Utils.class);
+public final class Utils {
 
     /**
-     * saving an URL stream to the specified text file.
+     * Private constructor
+     */
+    private Utils() {
+        // do nothing
+    }
+    private static Map<Character, String> xmlEscapes = null;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
+
+    /**
+     * Saving an URL stream to the specified text file.
+     * @param srcUrl Source URL
+     * @throws IOException If an error occurs.
      */
     public static String saveSrcFile(String srcUrl) throws IOException {
 
@@ -118,6 +129,13 @@ public class Utils {
 
     }
 
+    /**
+     * Saves String to file
+     * @param str String
+     * @param extension Extension
+     * @return Result
+     * @throws IOException If an error occurs.
+     */
     public static String saveStrToFile(String str, String extension) throws IOException {
         return saveStrToFile(null, str, extension);
     }
@@ -127,7 +145,8 @@ public class Utils {
      *
      * @param fileName - file name to save to. Can be null.
      * @param str - text to be stored
-     * @param ext - file extension
+     * @param extension - file extension
+     * @throws IOException If an error occurs.
      */
     public static String saveStrToFile(String fileName, String str, String extension) throws IOException {
         if (fileName == null) {
@@ -142,6 +161,12 @@ public class Utils {
         return fileName;
     }
 
+    /**
+     * Reads String from File
+     * @param fileName
+     * @return Result
+     * @throws IOException If an error occurs.
+     */
     public static String readStrFromFile(String fileName) throws java.io.IOException {
         FileInputStream fis = null;
         BufferedReader bufr = null;
@@ -163,11 +188,18 @@ public class Utils {
         return s.toString();
     }
 
-
+    /**
+     * Deletes file
+     * @param fileName file name
+     */
     public static void deleteFile(String fileName) {
         deleteFile(new File(fileName));
     }
 
+    /**
+     * Deletes file
+     * @param file file
+     */
     public static void deleteFile(File file) {
         if (file != null && file.exists() && file.isFile()) {
             try {
@@ -180,6 +212,11 @@ public class Utils {
         }
     }
 
+    /**
+     * Is null or not a String
+     * @param o Object
+     * @return True if Null or not a string
+     */
     public static boolean isNullStr(Object o) {
         if (o == null || !(o instanceof String)) {
             return true;
@@ -188,6 +225,11 @@ public class Utils {
         return isNullStr((String) o);
     }
 
+    /**
+     * Is Null or empty String
+     * @param s String
+     * @return True if Null or empty String
+     */
     public static boolean isNullStr(String s) {
         if (s == null || s.trim().equals("")) {
             return true;
@@ -196,6 +238,11 @@ public class Utils {
         }
     }
 
+    /**
+     * Is Null or empty vector
+     * @param v Vector
+     * @return True if Null or empty vector
+     */
     public static boolean isNullVector(Vector v) {
         if (v == null) {
             return true;
@@ -206,6 +253,11 @@ public class Utils {
         return false;
     }
 
+    /**
+     * Is Null or empty list
+     * @param l List
+     * @return True if Null or empty list
+     */
     public static boolean isNullList(List l) {
         if (l == null) {
             return true;
@@ -216,6 +268,11 @@ public class Utils {
         return false;
     }
 
+    /**
+     * Is Null or empty hash table
+     * @param h hash table
+     * @return True if Null or empty hash table
+     */
     public static boolean isNullHashtable(Hashtable h) {
         if (h == null) {
             return true;
@@ -226,6 +283,11 @@ public class Utils {
         return false;
     }
 
+    /**
+     * Is Null or empty hash map
+     * @param h hash map
+     * @return True if Null or empty hash map
+     */
     public static boolean isNullHashMap(Map h) {
         if (h == null) {
             return true;
@@ -238,6 +300,8 @@ public class Utils {
 
     /**
      * Checks if the given string is a well-formed URL.
+     * @param s String
+     * @return True if is a well-formed URL
      */
     public static boolean isURL(String s) {
         try {
@@ -250,7 +314,8 @@ public class Utils {
     }
 
     /**
-     * Checks if the given string is number.
+     * Checks if the given string is number
+     * @return True if string can be parsed into number.
      */
     public static boolean isNum(String s) {
         try {
@@ -264,6 +329,10 @@ public class Utils {
 
     /**
      * A method for replacing substrings in string.
+     * @param str String
+     * @param oldStr Old string
+     * @param replace String to replace
+     * @return New string
      */
     public static String Replace(String str, String oldStr, String replace) {
         str = (str != null ? str : "");
@@ -283,8 +352,10 @@ public class Utils {
 
     /**
      * A method for decoding the BASIC auth from request header.
+     * @param str String
+     * @throws IOException If an error occurs.
      */
-    public static String getEncodedUsername(String str) throws java.io.IOException {
+    public static String getEncodedUsername(String str) throws IOException {
 
         byte[] b_decoded = Base64.decodeBase64(str.getBytes());
         String str_decoded = new String(b_decoded);
@@ -298,8 +369,10 @@ public class Utils {
 
     /**
      * A method for decoding the BASIC auth from request header.
+     * @param str String
+     * @throws IOException If an error occurs.
      */
-    public static String getEncodedPwd(String str) throws java.io.IOException {
+    public static String getEncodedPwd(String str) throws IOException {
         byte[] b_decoded = Base64.decodeBase64(str.getBytes());
         String str_decoded = new String(b_decoded);
         int sep = str_decoded.indexOf(":");
@@ -1069,6 +1142,7 @@ public class Utils {
      *
      * @param strUri
      * @return
+     * @throws IOException If an IO error occurs.
      */
     public static boolean resourceExists(String strUri) {
         strUri = StringUtils.replace(strUri, "\\", "/");

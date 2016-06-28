@@ -28,18 +28,38 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
+/**
+ * XML Manager class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class XmlManager implements IXUpdate {
 
     protected IXmlCtx ctx = null;
 
+    /**
+     * Default constructor.
+     */
     public XmlManager() {
 
     }
 
+    /**
+     * Constructor
+     * @param ctx Context
+     */
     public XmlManager(IXmlCtx ctx) {
         this.ctx = ctx;
     }
 
+    /**
+     * Update elements
+     * @param parentId Parent Id
+     * @param name Name
+     * @param newValue New Value
+     * @throws XmlException If an error occurs.
+     */
+    @Override
     public void updateElement(String parentId, String name, String newValue) throws XmlException {
         String xpath = "//*[@id='" + parentId + "']/" + name + "/text()";
         Node textNode = null;
@@ -64,6 +84,13 @@ public class XmlManager implements IXUpdate {
         }
     }
 
+    /**
+     * Deletes element
+     * @param parentId Parent Id
+     * @param name Name
+     * @throws XmlException If an error occurs.
+     */
+    @Override
     public void deleteElement(String parentId, String name) throws XmlException {
         try {
             String xpath = "//*[@id='" + parentId + "']/" + name;
@@ -77,11 +104,26 @@ public class XmlManager implements IXUpdate {
         }
     }
 
+    /**
+     * Insert element
+     * @param parentElementName Parent element name
+     * @param elementName element name
+     * @throws XmlException If an error occurs.
+     */
+    @Override
     public void insertElement(String parentElementName, String elementName) throws XmlException {
         // TODO Auto-generated method stub
 
     }
 
+    /**
+     * Inserts attribute
+     * @param parentElementName Parent element name
+     * @param attributeName Attribute name
+     * @param attributeValue Attribute value
+     * @throws XmlException If an error occurs.
+     */
+    @Override
     public void insertAttribute(String parentElementName, String attributeName, String attributeValue) throws XmlException {
         // TODO Auto-generated method stub
 

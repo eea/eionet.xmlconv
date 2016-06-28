@@ -24,37 +24,55 @@ package eionet.gdem.qa;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * WorkQueue executor class initiates the ThreadPool for running QA jobs.
  *
  * @author Enriko Käsper
  */
-public class WQExecutor {
+public final class WQExecutor {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(WQCheckerJob.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WQCheckerJob.class);
 
     private ExecutorService executor;
     private static WQExecutor wqExecutor;
 
-    private WQExecutor()
-    {
+    /**
+     * Private default constructor
+     */
+    private WQExecutor() {
         executor = Executors.newFixedThreadPool(Properties.wqMaxJobs);
         LOGGER.debug("WQExecutor started");
     }
+
+    /**
+     * Returns Executor instance
+     * @return Executor
+     */
     public static WQExecutor getInstance() {
         if (wqExecutor == null) {
             wqExecutor = new WQExecutor();
         }
         return wqExecutor;
     }
+
+    /**
+     * Executes task
+     * @param task Task to execute
+     */
     public void execute(Runnable task){
         executor.execute(task);
     }
+
+    /**
+     * Shuts down executor.
+     */
     public void shutdown(){
         executor.shutdown();
     }

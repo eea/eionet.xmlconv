@@ -33,8 +33,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Constants;
 import eionet.gdem.GDEMException;
@@ -42,12 +42,15 @@ import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.business.SourceFileManager;
 import eionet.gdem.dcm.remote.RemoteService;
+import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.FeedbackAnalyzer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * QA Service Service Facade. The service is able to execute different QA related methods that are called through XML/RPC and HTTP
@@ -64,8 +67,11 @@ public class XQueryService extends RemoteService {
     private SchemaManager schManager = new SchemaManager();
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(XQueryService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XQueryService.class);
 
+    /**
+     * Default constructor.
+     */
     public XQueryService() {
         // for remote clients use trusted mode
         setTrustedMode(true);
@@ -73,6 +79,8 @@ public class XQueryService extends RemoteService {
 
     /**
      * List all possible XQueries for this namespace.
+     * @param schema Schema
+     * @throws GDEMException If an error occurs.
      */
     public Vector listQueries(String schema) throws GDEMException {
 
@@ -83,6 +91,8 @@ public class XQueryService extends RemoteService {
 
     /**
      * List all XQueries and their modification times for this namespace returns also XML Schema validation.
+     * @param schema Schema
+     * @throws GDEMException If an error occurs.
      */
     public Vector listQAScripts(String schema) throws GDEMException {
         ListQueriesMethod method = new ListQueriesMethod();
@@ -95,6 +105,7 @@ public class XQueryService extends RemoteService {
      *
      * @param files - Structure with XMLschemas as a keys and values are list of XML Files
      * @return Hashtable result: Structure with JOB ids as a keys and source files as values
+     * @throws GDEMException If an error occurs.
      */
     public Vector analyzeXMLFiles(Hashtable files) throws GDEMException {
 
@@ -132,7 +143,12 @@ public class XQueryService extends RemoteService {
     // }
 
     /**
-     *
+     * Analyzes XML files
+     * @param schema XML Schema
+     * @param origFile Original file
+     * @param result Result
+     * @return Processed result
+     * @throws GDEMException If an error occurs.
      */
     public Vector analyzeXMLFiles(String schema, String origFile, Vector result) throws GDEMException {
 
@@ -170,6 +186,7 @@ public class XQueryService extends RemoteService {
                 String query_id = String.valueOf(query.get("query_id"));
                 String queryFile = (String) query.get("query");
                 String contentType = (String) query.get("content_type_id");
+                String scriptType = (String) query.get("script_type");
                 String fileExtension = getExtension(outputTypes, contentType);
                 String resultFile =
                     Properties.tmpFolder + File.separatorChar + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "."
@@ -188,7 +205,7 @@ public class XQueryService extends RemoteService {
                             Utils.Replace(queryFile, Properties.gdemURL + "/" + Constants.QUERIES_FOLDER,
                                     Properties.queriesFolder + File.separator);
                     }
-                    newId = xqJobDao.startXQJob(file, queryFile, resultFile, queryId);
+                    newId = xqJobDao.startXQJob(file, queryFile, resultFile, queryId, scriptType);
                 } catch (SQLException sqe) {
                     throw new GDEMException("DB operation failed: " + sqe.toString());
                 }
@@ -203,6 +220,12 @@ public class XQueryService extends RemoteService {
         return result;
     }
 
+    /**
+     * Gets file extension
+     * @param outputTypes Output Types
+     * @param content_type Content type
+     * @return Extension
+     */
     private String getExtension(Vector outputTypes, String content_type) {
         String ret = "html";
         if (outputTypes == null) {
@@ -237,6 +260,7 @@ public class XQueryService extends RemoteService {
      * @param sourceURL - URL of the source XML
      * @param xqScript - XQueryScript to be processed
      * @param scriptType - xquery, xsl or xgawk
+     * @throws GDEMException If an error occurs.
      */
     public String analyze(String sourceURL, String xqScript, String scriptType) throws GDEMException {
         String xqFile = "";
@@ -244,7 +268,8 @@ public class XQueryService extends RemoteService {
         LOGGER.info("XML/RPC call for analyze xml: " + sourceURL);
         // save XQScript in a text file for the WQ
         try {
-            xqFile = Utils.saveStrToFile(xqScript, scriptType);
+            String extension = ScriptUtils.getExtensionFromScriptType(scriptType);
+            xqFile = Utils.saveStrToFile(xqScript, extension);
         } catch (FileNotFoundException fne) {
             throw new GDEMException("Folder does not exist: :" + fne.toString());
         } catch (IOException ioe) {
@@ -259,18 +284,15 @@ public class XQueryService extends RemoteService {
         try {
             // get the trusted URL from source file adapter
             sourceURL = SourceFileManager.getSourceFileAdapterURL(getTicket(), sourceURL, isTrustedMode());
-            newId = xqJobDao.startXQJob(sourceURL, xqFile, resultFile);
+            newId = xqJobDao.startXQJob(sourceURL, xqFile, resultFile, scriptType);
 
         } catch (SQLException sqe) {
-            sqe.printStackTrace();
             LOGGER.error("DB operation failed: " + sqe.toString());
             throw new GDEMException("DB operation failed: " + sqe.toString());
         } catch (MalformedURLException e) {
-            e.printStackTrace();
             LOGGER.error("Source file URL is wrong: " + e.toString());
             throw new GDEMException("Source file URL is wrong: " + e.toString());
         } catch (IOException e) {
-            e.printStackTrace();
             LOGGER.error("Error opening source file: " + e.toString());
             throw new GDEMException("Error opening source file: " + e.toString());
         }
@@ -280,8 +302,9 @@ public class XQueryService extends RemoteService {
     /**
      * Checks if the job is ready (or error) and returns the result (or error message).
      *
-     * @param jobId
+     * @param jobId Job Id
      * @return Hash including code and result
+     * @throws GDEMException If an error occurs.
      */
     public Hashtable getResult(String jobId) throws GDEMException {
 
@@ -302,7 +325,7 @@ public class XQueryService extends RemoteService {
                 status = Integer.valueOf(jobData[3]).intValue();
             }
         } catch (SQLException sqle) {
-            throw new GDEMException("Error gettign XQJob data from DB: " + sqle.toString());
+            throw new GDEMException("Error getting XQJob data from DB: " + sqle.toString());
         }
 
         LOGGER.info("XQueryService found status for job (" + jobId + "):" + String.valueOf(status));
@@ -320,6 +343,12 @@ public class XQueryService extends RemoteService {
 
     /**
      * Hashtable to be composed for the getResult() method return value.
+     * @param status Status
+     * @param jobData Job data
+     * @param scriptData Script data
+     * @param jobId Job Id
+     * @return Result
+     * @throws GDEMException If an error occurs.
      */
     private Hashtable result(int status, String[] jobData, HashMap scriptData, String jobId) throws GDEMException {
         Hashtable<String, String> h = new Hashtable<String, String>();

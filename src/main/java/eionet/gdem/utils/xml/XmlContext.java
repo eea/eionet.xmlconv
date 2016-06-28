@@ -23,8 +23,15 @@ package eionet.gdem.utils.xml;
 
 import org.w3c.dom.Document;
 
+/**
+ * XML Context Class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class XmlContext extends XmlCommon implements IXmlCtx {
-
+    /**
+     * Default constructor
+     */
     public XmlContext() {
     }
 

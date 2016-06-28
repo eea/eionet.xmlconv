@@ -10,8 +10,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -20,6 +20,8 @@ import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.dcm.remote.GetXMLSchemasResult;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS GetSchemasAction
@@ -28,7 +30,7 @@ import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 public class GetXMLSchemasAction extends BaseMethodAction {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(GetXMLSchemasAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GetXMLSchemasAction.class);
 
     /**
      * Purpose of this action is to execute ConversionService method listConversions. The request could have schema parameter

@@ -35,9 +35,11 @@ import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.upload.FormFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.sql.SQLException;
@@ -45,13 +47,15 @@ import java.util.Date;
 import java.util.HashMap;
 
 /**
+ * QA Script manager.
  * @author Enriko Käsper, Tieto Estonia QAScriptManager
+ * @author George Sofianos
  */
 
 public class QAScriptManager {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(QAScriptManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptManager.class);
     /** */
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
     /** */
@@ -85,6 +89,7 @@ public class QAScriptManager {
                 qaScript.setFileName((String) scriptData.get("query"));
                 qaScript.setUpperLimit((String) scriptData.get("upper_limit"));
                 qaScript.setUrl((String) scriptData.get("url"));
+                qaScript.setActive((String) scriptData.get("is_active"));
 
                 String queryFolder = Properties.queriesFolder;
 
@@ -94,8 +99,8 @@ public class QAScriptManager {
                         queryFolder = queryFolder + File.separator;
                     }
                     String queryContent = null;
-                    if (!qaScript.getScriptType().equals(XQScript.SCRIPT_LANG_FME)){
-                    	try {
+                    if (!qaScript.getScriptType().equals(XQScript.SCRIPT_LANG_FME)) {
+                        try {
                             queryContent = Utils.readStrFromFile(queryFolder + qaScript.getFileName());
                         } catch (IOException e) {
                             queryContent = Constants.FILEREAD_EXCEPTION + queryFolder + qaScript.getFileName() + "\n " + e.toString();
@@ -121,6 +126,7 @@ public class QAScriptManager {
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.error("Error getting QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
@@ -191,17 +197,17 @@ public class QAScriptManager {
     /**
      * Update script properties.
      *
-     * @param user
-     * @param scriptId
-     * @param shortName
-     * @param schemaId
-     * @param resultType
-     * @param descr
-     * @param scriptType
-     * @param curFileName
-     * @param content
-     * @param updateContent
-     * @throws DCMException
+     * @param user logged in user name.
+     * @param scriptId QA script Id.
+     * @param shortName QA script short name.
+     * @param schemaId XML Schema Id.
+     * @param resultType QA script execution result type (XML, HTML, ...).
+     * @param descr QA script textual description.
+     * @param scriptType QA script type (XQUERY, XSL, XGAWK).
+     * @param curFileName QA script file name.
+     * @param content File content
+     * @param updateContent Update content
+     * @throws DCMException If an error occurs.
      */
     public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
             String scriptType, String curFileName, String upperLimit, String url, String content, boolean updateContent)
@@ -232,12 +238,12 @@ public class QAScriptManager {
 
                 Utils.saveStrToFile(Properties.queriesFolder + File.separator + curFileName, content, null);
             }
-            
+
             // If the script type is 'FME' update the 'fileName'
-        	if (XQScript.SCRIPT_LANG_FME.equals(scriptType)){
-        		curFileName = StringUtils.substringAfterLast(url, "/");
-        	}            
-            
+            if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
+                curFileName = StringUtils.substringAfterLast(url, "/");
+            }
+
             queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url);
         } catch (Exception e) {
             e.printStackTrace();
@@ -252,7 +258,7 @@ public class QAScriptManager {
      *
      * @param fileName QA scriptfile name.
      * @return true if file exists.
-     * @throws SQLException
+     * @throws SQLException If an error occurs.
      */
     public boolean fileExists(String fileName) throws SQLException {
 
@@ -276,7 +282,7 @@ public class QAScriptManager {
      *
      * @param file FormFile object uploaded through web interface.
      * @param fileName File name.
-     * @throws FileNotFoundException
+     * @throws FileNotFoundException File is not found.
      * @throws IOException file store operations failed.
      */
     public void storeQAScriptFile(FormFile file, String fileName) throws FileNotFoundException, IOException {
@@ -299,12 +305,12 @@ public class QAScriptManager {
     /**
      * Store QA script content into file system.
      *
-     * @param user
-     * @param scriptId
-     * @param fileContent
-     * @throws FileNotFoundException
-     * @throws IOException
-     * @throws DCMException
+     * @param user logged in user name.
+     * @param scriptId QA script Id.
+     * @param fileContent File content
+     * @throws FileNotFoundException File not found
+     * @throws IOException IO Exception
+     * @throws DCMException If an error occurs.
      */
     public void storeQAScriptFromString(String user, String scriptId, String fileContent) throws FileNotFoundException,
             IOException, DCMException {
@@ -336,9 +342,9 @@ public class QAScriptManager {
     /**
      * Delete the selected QA script from database and file system
      *
-     * @param user
-     * @param scriptId
-     * @throws DCMException
+     * @param user logged in user name.
+     * @param scriptId QA script Id.
+     * @throws DCMException If an error occurs.
      */
     public void delete(String user, String scriptId) throws DCMException {
         try {
@@ -379,16 +385,16 @@ public class QAScriptManager {
     /**
      * Add a new QA script into the repository
      *
-     * @param user
-     * @param shortName
-     * @param schemaId
-     * @param schema
-     * @param resultType
-     * @param description
-     * @param scriptType
-     * @param scriptFile
-     * @return
-     * @throws DCMException
+     * @param user logged in user name.
+     * @param shortName QA script short name.
+     * @param schemaId XML Schema Id.
+     * @param resultType QA script execution result type (XML, HTML, ...).
+     * @param description QA script textual description.
+     * @param scriptType QA script type (XQUERY, XSL, XGAWK).
+     * @param schema Schema
+     * @param scriptFile QA script file
+     * @return Script id
+     * @throws DCMException If an error occurs.
      */
     public String add(String user, String shortName, String schemaId, String schema, String resultType, String description,
             String scriptType, FormFile scriptFile, String upperLimit, String url) throws DCMException {
@@ -435,10 +441,10 @@ public class QAScriptManager {
             if (useLocalFile) {
                 storeQAScriptFile(scriptFile, fileName);
             } else {
-            	// If the script type is 'FME' there is no file to download
-            	if (!XQScript.SCRIPT_LANG_FME.equals(scriptType)){
-            		replaceScriptFromRemoteFile(user, url, fileName);
-            	}
+                // If the script type is 'FME' there is no file to download
+                if (!XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
+                    replaceScriptFromRemoteFile(user, url, fileName);
+                }
             }
         } catch (DCMException e) {
             throw e;
@@ -456,7 +462,7 @@ public class QAScriptManager {
      * @param user logged in username.
      * @param schemaId XML Schema Id.
      * @param validate XML Schema validation is part of QA.
-     * @blocker return blocker flag in QA if XML Schema validation fails.
+     * @param blocker return blocker flag in QA if XML Schema validation fails.
      * @throws DCMException if database operation fails.
      */
     public void updateSchemaValidation(String user, String schemaId, boolean validate, boolean blocker) throws DCMException {
@@ -539,6 +545,48 @@ public class QAScriptManager {
             LOGGER.error("Error updating remote script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
+
+    }
+    
+    /**
+     * Set/Unset "ACTIVE" flag on a specific scriptId 
+     * @param user User
+     * @param scriptId Script id
+     * @param setActive Active flag
+     * @throws DCMException If an error occurs.
+     */
+    public void activateDeactivate (String user, String scriptId, boolean setActive) throws DCMException {
+        try {
+            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
+                LOGGER.debug("You don't have permissions to activate or deactivate QA script!");
+                throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
+            }
+        } catch (DCMException e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error setting activation status for QA script.", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
+        
+        if (Utils.isNullStr(scriptId)) {
+            LOGGER.error("Cannot set activation status for QA script. Script ID is empty.");
+            throw new DCMException(BusinessConstants.EXCEPTION_NO_QASCRIPT_SELECTED);
+        }
+        
+        try {
+            if (setActive){
+                System.out.println(this.getClass().toString() + " : "+ scriptId);
+                queryDao.activateQuery(scriptId);
+            }
+            else {
+                queryDao.deactivateQuery(scriptId);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Error setting activation status for QA script.", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
+        
+        
 
     }
 

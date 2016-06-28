@@ -28,38 +28,71 @@ import org.xml.sax.ext.LexicalHandler;
 
 /**
  * Reads DTD information from the header of XML.
- *
+ * TODO: REMOVE deprecated methods
  * @author Enriko Käsper, TietoEnator Estonia AS SAXDoctypeReader
+ * @author George Sofianos
  */
 public class SAXDoctypeReader implements LexicalHandler {
 
     private String dtdSystemId = null;
     private String dtdPublicId = null;
 
+    /**
+     * Starts DTD
+     * @param name Name
+     * @param publicId Public Id
+     * @param systemId System Id
+     * @throws SAXException If an error occurs.
+     */
     public void startDTD(String name, String publicId, String systemId) throws SAXException {
-
         dtdSystemId = systemId;
         dtdPublicId = publicId;
-        // System.out.println("dtd: " + name + "-" + publicId + "-" +systemId);
-        // throw new SAXException("OK");
-
     }
 
+    /**
+     * Does nothing
+     * @throws SAXException If an error occurs.
+     */
     public void endDTD() throws SAXException {
     }
 
+    /**
+     * Does nothing
+     * @param name Name
+     * @throws SAXException If an error occurs.
+     */
     public void startEntity(String name) throws SAXException {
     }
 
+    /**
+     * Does nothing
+     * @param name Name
+     * @throws SAXException If an error occurs.
+     */
     public void endEntity(String name) throws SAXException {
     }
 
+    /**
+     * Does nothing
+     * @throws SAXException If an error occurs.
+     */
     public void startCDATA() throws SAXException {
     }
 
+    /**
+     * Does nothing
+     * @throws SAXException If an error occurs.
+     */
     public void endCDATA() throws SAXException {
     }
 
+    /**
+     * Does nothing
+     * @param text text
+     * @param start start
+     * @param length length
+     * @throws SAXException If an error occurs.
+     */
     public void comment(char[] text, int start, int length) throws SAXException {
 
         // String comment = new String(text, start, length);

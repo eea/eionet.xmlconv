@@ -25,6 +25,9 @@ import java.io.Serializable;
 
 import eionet.gdem.validation.ValidatorErrorType;
 
+/**
+ * Validate data transfer object.
+ */
 public class ValidateDto implements Serializable {
 
     private ValidatorErrorType type;
@@ -32,6 +35,9 @@ public class ValidateDto implements Serializable {
     private int column;
     private String description;
 
+    /**
+     * Default constructor
+     */
     public ValidateDto() {
 
     }

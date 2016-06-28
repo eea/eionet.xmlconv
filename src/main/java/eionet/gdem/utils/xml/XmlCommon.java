@@ -29,8 +29,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.xerces.dom.DocumentImpl;
-import org.apache.xerces.dom.DocumentTypeImpl;
+import net.sf.saxon.dom.DocumentBuilderImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -38,14 +37,23 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
+/**
+ * XML Common class.
+ * @author Unknown
+ * @author George Sofianos
+ */
 public class XmlCommon {
 
     protected Document document = null;
-    private CustomDomParser parser;
+    /** Saxon Tiny Tree DOM wrapper **/
+    private DocumentBuilder parser;
     private ErrorStorage errorStorage;
 
+    /**
+     * Default constructor.
+     */
     public XmlCommon() {
-        parser = new CustomDomParser();
+        parser = new DocumentBuilderImpl();
         errorStorage = new ErrorStorage();
         parser.setErrorHandler(new DefaultHandler() {
             public void error(SAXParseException ex) throws SAXException {
@@ -62,14 +70,18 @@ public class XmlCommon {
         });
     }
 
+    /**
+     * Parses file from InputStream
+     * @param inputStream InputStream
+     * @throws XmlException If an error occurs.
+     */
     public void checkFromInputStream(InputStream inputStream) throws XmlException {
         try {
             InputSource contentForParsing = new InputSource(inputStream);
-            parser.parse(contentForParsing);
+            document = parser.parse(contentForParsing);
             if (!errorStorage.isEmpty()) {
                 throw new XmlException("Failure reasons: " + errorStorage.getErrors());
             }
-            document = parser.getDocument();
         } catch (IOException ioe) {
             throw new XmlException("Failure reasons: " + ioe.getMessage());
         } catch (XmlException xmle) {
@@ -84,10 +96,14 @@ public class XmlCommon {
         }
     }
 
+    /**
+     * Parses XML from file.
+     * @param fullFileName File name
+     * @throws XmlException If an error occurs.
+     */
     public void checkFromFile(String fullFileName) throws XmlException {
         try {
-            parser.parse(fullFileName);
-            document = parser.getDocument();
+            document = parser.parse(fullFileName);
             if (!errorStorage.isEmpty()) {
                 throw new XmlException("Failure reasons:" + errorStorage.getErrors());
             }
@@ -102,8 +118,13 @@ public class XmlCommon {
         }
     }
 
+    /**
+     * Sets wellformedness checking.
+     * TODO: Check if we need to enable this in Saxon
+     * @throws XmlException If an error occurs.
+     */
     public void setWellFormednessChecking() throws XmlException {
-        try {
+        /**try {
             parser.setFeature("http://apache.org/xml/features/validation/schema", false);
             // parser.setFeature("http://xml.org/sax/features/namespaces", false);
 
@@ -121,11 +142,16 @@ public class XmlCommon {
         } catch (SAXException saxe) {
             throw new XmlException("Error occurred while setting Xerces features. Reason: " + saxe.getMessage());
         }
-
+*/
     }
 
+    /**
+     * Sets Validation checking
+     * TODO: Check if we need to enable this in Saxon
+     * @throws XmlException If an error occurs.
+     */
     public void setValidationChecking() throws XmlException {
-        try {
+       /* try {
             parser.setFeature("http://xml.org/sax/features/validation", true);
 
             parser.setFeature("http://xml.org/sax/features/external-general-entities", true);
@@ -139,9 +165,13 @@ public class XmlCommon {
             parser.setFeature("http://apache.org/xml/features/allow-java-encodings", true);
         } catch (SAXException saxe) {
             throw new XmlException("Error occurred while setting Xerces features. Reason: " + saxe.getMessage());
-        }
+        }*/
     }
 
+    /**
+     * Creates XML Document
+     * @throws XmlException If an error occurs.
+     */
     public void createXMLDocument() throws XmlException {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -153,8 +183,15 @@ public class XmlCommon {
 
     }
 
+    /**
+     * Creates XML Document
+     * TODO: Check if we need to enable this
+     * @param docTypeName Doctype name
+     * @param systemId System Id
+     * @throws XmlException If an error occurs.
+     */
     public void createXMLDocument(String docTypeName, String systemId) throws XmlException {
-        try {
+       /** try {
             DocumentImpl xmlDoc = new DocumentImpl();
             DocumentTypeImpl dtd = new DocumentTypeImpl(xmlDoc, docTypeName, null, systemId);
             Element name = xmlDoc.createElement(docTypeName);
@@ -165,9 +202,15 @@ public class XmlCommon {
         } catch (Exception e) {
             throw new XmlException(e);
         }
-
+*/
     }
 
+    /**
+     * Parses XML from string
+     * TODO: check if we need to improve this
+     * @param xml XML file
+     * @throws XmlException If an error occurs.
+     */
     public void checkFromString(String xml) throws XmlException {
         StringReader strR = null;
         try {
@@ -176,8 +219,7 @@ public class XmlCommon {
             strR = new StringReader(xml);
             InputSource input = new InputSource(strR);
             // setWellFormednessChecking();
-            parser.parse(input);
-            document = parser.getDocument();
+            document = parser.parse(input);
             if (!errorStorage.isEmpty()) {
                 throw new XmlException("Failure reasons:" + errorStorage.getErrors());
             }

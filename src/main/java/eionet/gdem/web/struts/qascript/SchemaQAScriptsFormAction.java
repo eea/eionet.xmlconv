@@ -24,8 +24,8 @@ package eionet.gdem.web.struts.qascript;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -35,6 +35,8 @@ import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Enriko Käsper, Tieto Estonia SchemaQAScriptsFormAction
@@ -43,7 +45,7 @@ import eionet.gdem.exceptions.DCMException;
 public class SchemaQAScriptsFormAction extends Action {
 
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SchemaQAScriptsFormAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaQAScriptsFormAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
@@ -66,7 +68,7 @@ public class SchemaQAScriptsFormAction extends Action {
 
         try {
             SchemaManager sm = new SchemaManager();
-            st = sm.getSchemasWithQAScripts( schemaId);
+            st = sm.getSchemasWithQAScripts(schemaId);
             httpServletRequest.setAttribute(QAScriptListLoader.QASCRIPT_LIST_ATTR, QAScriptListLoader.getList(httpServletRequest));
             httpServletRequest.setAttribute("schema.qascripts", st);
 

@@ -26,8 +26,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -39,6 +37,8 @@ import org.apache.struts.action.ActionMessages;
 import eionet.gdem.dcm.business.WorkqueueManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * SearchCRSandboxAction Add selected scripts into workqueue.
@@ -48,7 +48,7 @@ import eionet.gdem.utils.Utils;
 
 public class AddToWorkqueueAction extends Action {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(AddToWorkqueueAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AddToWorkqueueAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
@@ -95,12 +95,10 @@ public class AddToWorkqueueAction extends Action {
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("message.qasandbox.jobAdded", jobId));
             }
         } catch (DCMException e) {
-            // e.printStackTrace();
             LOGGER.error("Error saving script content", e);
             saveErrors(httpServletRequest, errors);
             return actionMapping.findForward("error");
         } catch (Exception e) {
-            // e.printStackTrace();
             LOGGER.error("Error saving script content", e);
             saveErrors(httpServletRequest, errors);
             return actionMapping.findForward("error");

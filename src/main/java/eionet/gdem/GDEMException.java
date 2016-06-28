@@ -26,14 +26,27 @@ package eionet.gdem;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
+/**
+ * GDEM Exception class.
+ * TODO: Rename it issue #30269
+ */
 public class GDEMException extends Exception {
     /** The cause for this exception.  */
     protected Exception cause = null;
 
+    /**
+     * Constructor
+     * @param msg Message
+     */
     public GDEMException(String msg) {
         super(msg);
     }
 
+    /**
+     * Constructor
+     * @param msg Message
+     * @param cause Cause
+     */
     public GDEMException(String msg, Exception cause) {
         super(msg);
         this.cause = cause;

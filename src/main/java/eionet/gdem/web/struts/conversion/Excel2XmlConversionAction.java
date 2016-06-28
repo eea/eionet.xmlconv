@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -27,6 +27,8 @@ import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS Excel2XmlConversionAction
@@ -34,7 +36,7 @@ import eionet.gdem.utils.Utils;
 
 public class Excel2XmlConversionAction extends Action {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(Excel2XmlConversionAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Excel2XmlConversionAction.class);
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
@@ -74,7 +76,7 @@ public class Excel2XmlConversionAction extends Action {
                 methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
                 cs.setHttpResponse(methodResponse);
             }
-            cs.setTrustedMode(true  );
+            cs.setTrustedMode(true);
             ConversionResultDto conversionResult = null;
             // execute conversion
             if (split.equals("split")) {
@@ -103,8 +105,8 @@ public class Excel2XmlConversionAction extends Action {
                     methodResponse.flush();
                     return null;
                 }
-                catch(Exception e){
-                    LOGGER.error("Unable to flush contetn. ", e);
+                catch (Exception e) {
+                    LOGGER.error("Unable to flush content. ", e);
                     e.printStackTrace();
                 }
             }
@@ -112,6 +114,11 @@ public class Excel2XmlConversionAction extends Action {
         return actionMapping.findForward("success");
     }
 
+    /**
+     * Process String
+     * @param arg Argument
+     * @return Result
+     */
     private String processFormStr(String arg) {
         String result = null;
         if (arg != null) {
@@ -121,6 +128,12 @@ public class Excel2XmlConversionAction extends Action {
         }
         return result;
     }
+
+    /**
+     * Process Boolean
+     * @param arg Argument
+     * @return Result
+     */
     private Boolean processFormBoolean(Boolean arg) {
         if (arg == null) {
             arg = false;

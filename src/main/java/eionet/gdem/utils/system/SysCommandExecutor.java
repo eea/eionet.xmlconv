@@ -28,11 +28,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 
 import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Usage of following class can go as ...
@@ -67,7 +69,7 @@ import eionet.gdem.utils.Utils;
  */
 public class SysCommandExecutor {
     /** */
-    private static final Log LOGGER = LogFactory.getLog(SysCommandExecutor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SysCommandExecutor.class);
 
     private ILogDevice fOuputLogDevice = null;
     private ILogDevice fErrorLogDevice = null;
@@ -81,6 +83,10 @@ public class SysCommandExecutor {
 
     private long timeout = 0;
 
+    /**
+     * Gets timeout
+     * @return Timeout
+     */
     public long getTimeout() {
         if (timeout == 0) {
             timeout = Properties.qaTimeout;
@@ -104,6 +110,11 @@ public class SysCommandExecutor {
         fWorkingDirectory = workingDirectory;
     }
 
+    /**
+     * Sets environment variable
+     * @param name Name
+     * @param value Value
+     */
     public void setEnvironmentVar(String name, String value) {
         if (fEnvironmentVarList == null) {
             fEnvironmentVarList = new ArrayList<EnvironmentVar>();
@@ -120,6 +131,12 @@ public class SysCommandExecutor {
         return fCmdError.toString();
     }
 
+    /**
+     * Runs command.
+     * @param commandLine Command
+     * @return Result
+     * @throws Exception If an error occurs.
+     */
     public int runCommand(String commandLine) throws Exception {
         /* run command */
         Process process = runCommandHelper(commandLine);
@@ -150,6 +167,12 @@ public class SysCommandExecutor {
 
     }
 
+    /**
+     * Runs command helper.
+     * @param commandLine Command
+     * @return Result
+     * @throws IOException If an error occurs.
+     */
     private Process runCommandHelper(String commandLine) throws IOException {
         Process process = null;
         commandLine = validateSystemAndMassageCommand(commandLine);
@@ -162,6 +185,11 @@ public class SysCommandExecutor {
         return process;
     }
 
+    /**
+     * Starts output and error read threads.
+     * @param processOut Output InputStream
+     * @param processErr Error InputStream
+     */
     private void startOutputAndErrorReadThreads(InputStream processOut, InputStream processErr) {
         fCmdOutput = new StringBuffer();
         fCmdOutputThread = new AsyncStreamReader(processOut, fCmdOutput, fOuputLogDevice, "OUTPUT");
@@ -172,11 +200,18 @@ public class SysCommandExecutor {
         fCmdErrorThread.start();
     }
 
+    /**
+     * Notify Output and error read threads to stop reading.
+     */
     private void notifyOutputAndErrorReadThreadsToStopReading() {
         fCmdOutputThread.stopReading();
         fCmdErrorThread.stopReading();
     }
 
+    /**
+     * Gets environment tokens
+     * @return Tokens array
+     */
     private String[] getEnvTokens() {
         if (fEnvironmentVarList == null) {
             return null;
@@ -197,8 +232,8 @@ public class SysCommandExecutor {
     /**
      * Validates that the system is running a supported OS and returns a system-appropriate command line.
      *
-     * @param originalCommand
-     * @return
+     * @param originalCommand Original command
+     * @return Command message
      */
     private static String validateSystemAndMassageCommand(final String originalCommand) {
         // make sure that we have a command
@@ -231,6 +266,10 @@ public class SysCommandExecutor {
         private final Process process;
         private Integer exitValue;
 
+        /**
+         * Constructor
+         * @param process Process
+         */
         Worker(final Process process) {
             this.process = process;
         }
