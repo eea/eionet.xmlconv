@@ -303,6 +303,7 @@ public class XQueryService extends RemoteService {
             // Define sn anonymous job
             JobDetail job1 = newJob(eionet.gdem.qa.XQueryJob.class)
                 .usingJobData("jobId", newId )
+                .requestRecovery()
                 .build();
 
             // Define a Trigger that will fire "now", and not repeat
