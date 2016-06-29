@@ -104,8 +104,14 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
             pars[0] = Constants.XQ_SOURCE_PARAM_NAME + "=" + fileUrl;
 
             try {
-                String xqScript = queryDao.getQueryText(scriptId);
-                HashMap hash = queryDao.getQueryInfo(scriptId);
+            	HashMap hash = queryDao.getQueryInfo(scriptId);
+            	String xqScript = "";
+            	// If the script type is not FME, the script content is retrieved.
+            	if (!XQScript.SCRIPT_LANG_FME.equals((String) hash.get("script_type"))) {
+            		xqScript = queryDao.getQueryText(scriptId);
+            	} else {
+            		xqScript = XQScript.SCRIPT_LANG_FME; // Dummy value
+            	}
                 String schemaId = (String) hash.get("schema_id");
                 Schema schema = null;
                 // check because ISchemaDao.getSchema(null) returns first schema
