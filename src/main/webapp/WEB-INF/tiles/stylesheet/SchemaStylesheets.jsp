@@ -34,7 +34,7 @@
                         </li>
                     </ul>
                 </div>
-                <logic:equal name="ssiPrm" value="true"  name="stylesheet.permissions" property="ssiPrm" >
+                <logic:equal value="true"  name="stylesheet.permissions" property="ssiPrm" >
                     <div id="operations">
                           <ul>
                                <li><a href="addStylesheetForm?schema=<bean:write name="schema" property="schema" />"><bean:message key="label.stylesheet.add" /></a></li>
@@ -54,9 +54,9 @@
     <logic:iterate indexId="index" id="schema" name="schema.stylesheets" property="handCodedStylesheets" type="Schema">
             <div class="visualClear">&nbsp;</div>
 
-            <logic:present name="stylesheets" name="schema" scope="page" property="stylesheets" >
+            <logic:present name="schema" scope="page" property="stylesheets" >
                     <table class="datatable" width="100%">
-                        <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" property="ssdPrm" >
+                        <logic:equal value="true"  name="stylesheet.permissions" property="ssdPrm" >
                             <col style="width:10px"/>
                         </logic:equal>
                         <col style="width:10px"/>
@@ -66,7 +66,7 @@
                         <col/>
                         <thead>
                             <tr>
-                                <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" property="ssdPrm" >
+                                <logic:equal value="true"  name="stylesheet.permissions" property="ssdPrm" >
                                       <th scope="col">&#160;</th>
                                 </logic:equal>
                                   <th scope="col">&#160;</th>
@@ -80,7 +80,7 @@
                             <logic:iterate indexId="index" id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">
                                 <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
                                     <bean:define id="convId" name="stylesheet" property="convId" />
-                                    <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" property="ssdPrm" >
+                                    <logic:equal value="true"  name="stylesheet.permissions" property="ssdPrm" >
                                         <td align="center">
                                             <input type="radio" name="conversionId" value="${convId}" />
                                         </td>
@@ -89,12 +89,12 @@
                                         <a href="searchCR?conversionId=${convId}&amp;schemaUrl=${schemaUrl}"><img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run conversion"></img></a>
                                     </td>
                                     <td align="center">
-                                        <logic:equal name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >
+                                        <logic:equal  value="false"  name="stylesheet"  property="ddConv" >
                                             <a href="stylesheetViewForm?stylesheetId=<bean:write name="stylesheet" property="convId" />" title="view stylehseet properties">
                                                 <bean:write name="stylesheet" property="type" />
                                             </a>
                                         </logic:equal>
-                                        <logic:equal name="ssdPrm" value="true"  name="stylesheet"  property="ddConv" >
+                                        <logic:equal value="true"  name="stylesheet"  property="ddConv" >
                                             <bean:write name="stylesheet" property="type" />
                                         </logic:equal>
                                     </td>
@@ -102,26 +102,26 @@
                                         <bean:write name="stylesheet" property="description" />
                                     </td>
                                     <td>
-                                        <logic:notEqual name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >
+                                        <logic:notEqual value="false"  name="stylesheet"  property="ddConv" >
                                             <a  href="<bean:write name="stylesheet" property="xsl" />" class="link-xsl">
                                                 <bean:write name="stylesheet" property="xslFileName" />
                                             </a>&#160;
                                         </logic:notEqual>
-                                        <logic:equal name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >
+                                        <logic:equal value="false"  name="stylesheet"  property="ddConv" >
                                             <a  href="<bean:write name="webRoot"/>/<bean:write name="stylesheet" property="xsl" />" class="link-xsl">
                                                 <bean:write name="stylesheet" property="xslFileName" />
                                             </a>&#160;
                                         </logic:equal>
                                     </td>
                                     <td align="center">
-                                        <logic:equal name="ssdPrm" value="true"  name="stylesheet"  property="ddConv" >
+                                        <logic:equal value="true"  name="stylesheet"  property="ddConv" >
                                             Generated
                                         </logic:equal>
-                                        <logic:equal name="ssdPrm" value="false"  name="stylesheet"  property="ddConv" >
-                                            <logic:notEqual name="fileExists" value=""  name="stylesheet" property="modified" >
+                                        <logic:equal value="false"  name="stylesheet"  property="ddConv" >
+                                            <logic:notEqual value=""  name="stylesheet" property="modified" >
                                                         <bean:write name="stylesheet" property="modified" />
                                             </logic:notEqual>
-                                            <logic:equal name="fileNotExists" value=""  name="stylesheet" property="modified" >
+                                            <logic:equal value=""  name="stylesheet" property="modified" >
                                                 <span style="color:red"><bean:message key="label.fileNotFound"/></span>
                                             </logic:equal>
                                         </logic:equal>
@@ -135,14 +135,14 @@
                         </tbody>
                     </table>
                     <div class="boxbottombuttons">
-                        <logic:equal name="ssdPrm" value="true"  name="stylesheet.permissions" property="ssdPrm" >
+                        <logic:equal value="true"  name="stylesheet.permissions" property="ssdPrm" >
                                <input type="button"  class="button" value="<bean:message key="label.stylesheet.delete"/>" onclick="return submitAction(1,'deleteStylesheet');" />
                         </logic:equal>
 
                         <input type="hidden" name="schemaUrl" value="${schemaUrl}" />
                     </div>
             </logic:present>
-            <logic:notPresent name="stylesheets" name="schema" scope="page" property="stylesheets" >
+            <logic:notPresent name="schema" scope="page" property="stylesheets" >
                 <div class="advice-msg">
                     <bean:message key="label.schema.noStylesheets"/>
                 </div>

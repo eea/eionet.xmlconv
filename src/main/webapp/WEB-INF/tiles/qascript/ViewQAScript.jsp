@@ -24,7 +24,7 @@
         <div id="operations">
               <ul>
                    <li>
-                    <logic:equal name="qsuPrm" value="true"  name="qascript.permissions" property="qsuPrm" >
+                    <logic:equal value="true"  name="qascript.permissions" property="qsuPrm" >
                         <%--  If scriptType is NOT 'FME' --%>
                         <logic:notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
                             <html:link page="/do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="QAScriptForm" paramProperty="scriptId" titleKey="label.qasandbox.label.qasandbox.editScript">
@@ -38,14 +38,14 @@
                             </a>
                         </logic:equal>
                     </logic:equal>
-                    <logic:notEqual name="qsuPrm" value="true"  name="qascript.permissions" property="qsuPrm" >
+                    <logic:notEqual value="true"  name="qascript.permissions" property="qsuPrm" >
                         <a href="openQAServiceInSandbox?scriptId=<bean:write name="QAScriptForm" property="scriptId" />&amp;schemaId=<bean:write name="QAScriptForm" property="schemaId" />" title="<bean:message key="label.qascript.runservice.title" />">
                             <bean:message key="label.qascript.run" />
                         </a>
                     </logic:notEqual>
 
                 </li>
-                <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" property="ssdPrm" >
+                <logic:equal  value="true"  name="qascript.permissions" property="ssdPrm" >
                     <li>
                         <html:link page="/do/editQAScriptForm" paramId="scriptId" paramName="QAScriptForm" paramProperty="scriptId" title="edit QA Script" >
                             <bean:message key="label.qascript.edit" />

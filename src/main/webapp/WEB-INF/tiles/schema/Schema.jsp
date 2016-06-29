@@ -151,11 +151,11 @@
                 <tr>
                     <td></td>
                    <td>
-              <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
+              <logic:equal value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
                        <input type="button"  class="button" value="<bean:message key="label.schema.save"/>" onclick="return submitAction(1,'schemaUpdate');" />
                     &nbsp;
                  </logic:equal>
-               <logic:equal name="xsddPrm" value="true"  name="schema.rootElements" scope="session" property="xsddPrm" >
+               <logic:equal value="true"  name="schema.rootElements" scope="session" property="xsddPrm" >
                        <input type="button"  class="button" value="<bean:message key="label.schema.delete"/>" onclick="return submitAction(1,'deleteUplSchema?deleteSchema=true');" />
               </logic:equal>
               </td>
@@ -183,7 +183,7 @@
                       </logic:notEmpty>
                 </td>
                 </tr>
-                  <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
+                  <logic:equal value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
                     <tr>
                         <td></td>
                         <td>
@@ -194,21 +194,21 @@
                 <tr>
                     <td></td>
                    <td>
-              <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
+              <logic:equal value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
                        <input type="button"  class="button" value="<bean:message key="label.uplSchema.upload"/>" onclick="return submitAction(1,'editUplSchema');" />
                  </logic:equal>
                <logic:notEmpty  name="schemaForm" property="uplSchemaFileName">
-                   <logic:equal name="xsddPrm" value="true"  name="schema.rootElements" scope="session" property="xsddPrm" >
+                   <logic:equal value="true"  name="schema.rootElements" scope="session" property="xsddPrm" >
                        <input type="button"  class="button" value="<bean:message key="label.schema.deleteFile"/>" onclick="return submitAction(1,'deleteUplSchema');" />
                   </logic:equal>
-                  <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
-                      <logic:equal name="schemaIdRemoteUrl" value="true"  name="schema.rootElements" scope="session" property="schemaIdRemoteUrl" >
+                  <logic:equal value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
+                      <logic:equal value="true"  name="schema.rootElements" scope="session" property="schemaIdRemoteUrl" >
                            <input type="button"  class="button" value="<bean:message key="label.uplSchema.checkupdates"/>" onclick="return submitAction(1,'diffUplSchemas');" />
                     </logic:equal>
                  </logic:equal>
               </logic:notEmpty>
                <logic:empty  name="schemaForm" property="uplSchemaFileName">
-                      <logic:equal name="schemaIdRemoteUrl" value="true"  name="schema.rootElements" scope="session" property="schemaIdRemoteUrl" >
+                      <logic:equal value="true"  name="schema.rootElements" scope="session" property="schemaIdRemoteUrl" >
                            <input type="button"  class="button" value="<bean:message key="label.uplSchema.createcopy"/>" onclick="return submitAction(1,'diffUplSchemas');" />
                     </logic:equal>
                </logic:empty>
@@ -224,13 +224,13 @@
                     <tr>
                         <th scope="col"><span title="Element name"><bean:message key="label.schema.table.element"/></span></th>
                         <th scope="col"><span title="Namespace"><bean:message key="label.schema.table.namespace"/></span></th>
-                        <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
+                        <logic:equal value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
                             <th scope="col"></th>
                         </logic:equal>
                     </tr>
                    </thead>
                    <tbody>
-                        <logic:present name="rootElem"  name="schema.rootElements" scope="session" property="rootElem" >
+                        <logic:present name="schema.rootElements" scope="session" property="rootElem" >
                             <logic:iterate indexId="index" id="elem" name="schema.rootElements" scope="session" property="rootElem" type="RootElem">
                                 <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
                                     <td>
@@ -239,7 +239,7 @@
                                     <td>
                                         <bean:write name="elem" property="namespace" />
                                     </td>
-                                    <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
+                                    <logic:equal value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
                                         <td align="center">
                                             <a href="deleteElem?elemId=<bean:write name="elem" property="elemId" />"
                                             onclick='return elementDelete("<bean:write name="elem" property="name" />");'>
@@ -254,7 +254,7 @@
                 </table>
             </logic:equal>
                 <logic:present name="user">
-                  <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
+                  <logic:equal value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
                     <table class="formtable">
                        <col class="labelcol"/>
                        <col class="entrycol"/>

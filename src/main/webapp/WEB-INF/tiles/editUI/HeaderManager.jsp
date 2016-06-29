@@ -25,7 +25,7 @@
 <tiles:insert definition="Error" />
 <br/>
 <div style="border: thin dashed #606060; padding: 1em;width:95%;">
-<ed:ui-renderer id="header" enableJs="true"/>
+<ui-renderer id="header" enableJs="true"/>
 </div>
 <br/>
 <br/>

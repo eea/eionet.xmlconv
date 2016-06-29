@@ -40,7 +40,7 @@
 
     <logic:notEmpty name="schemaForm" property="schema">
 
-        <logic:equal name="xsduPrm" value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
+        <logic:equal value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
             <div id="operations">
               <ul>
                    <li><a href="schemaElemForm?schemaId=<bean:write name="schemaForm" property="schemaId" />"><bean:message key="label.schema.edit.button" /></a></li>
@@ -138,7 +138,7 @@
                     </tr>
                    </thead>
                    <tbody>
-                        <logic:present name="rootElem"  name="schema.rootElements" scope="session" property="rootElem" >
+                        <logic:present name="schema.rootElements" scope="session" property="rootElem" >
                             <logic:iterate indexId="index" id="elem" name="schema.rootElements" scope="session" property="rootElem" type="RootElem">
                                 <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
                                     <td>

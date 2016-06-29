@@ -34,7 +34,7 @@
                 </div>
                 <div id="operations">
                       <ul>
-                        <logic:equal name="ssiPrm" value="true"  name="qascript.permissions" property="ssiPrm" >
+                        <logic:equal value="true"  name="qascript.permissions" property="ssiPrm" >
                                <li>
                                 <a href="addQAScriptForm?schemaId=<bean:write name="schema" property="id" />&amp;schema=<bean:write name="schema" property="schema" />">
                                     <bean:message key="label.qascript.add" />
@@ -65,15 +65,15 @@
                         <label class="question" for="validatefield"><bean:message key="label.qascript.schema.validate"/></label>
                     </td>
                     <td style="width:40px">
-                        <logic:equal name="ssiPrm" value="true"  name="qascript.permissions" property="ssiPrm" >
+                        <logic:equal value="true"  name="qascript.permissions" property="ssiPrm" >
                             <html:checkbox name="schema" property="doValidation" styleId="validatefield" />
                         </logic:equal>
-                        <logic:equal name="ssiPrm" value="false"  name="qascript.permissions" property="ssiPrm" >
+                        <logic:equal value="false"  name="qascript.permissions" property="ssiPrm" >
                             <bean:write  name="schema" property="doValidation" />
                         </logic:equal>
                     </td>
                     <td rowspan="2" style="vertical-align:bottom">
-                        <logic:equal name="ssiPrm" value="true"  name="qascript.permissions" property="ssiPrm" >
+                        <logic:equal value="true"  name="qascript.permissions" property="ssiPrm" >
                             <!-- save button -->
                                    <input type="button"  class="button" value="<bean:message key="label.save"/>" onclick="return submitAction(1,'saveSchemaValidation');" />
                             <input type="hidden" name="schemaId" value="${schemaId}" />
@@ -86,10 +86,10 @@
                         <label class="question" for="blockerValidation"><bean:message key="label.qascript.schema.isBlockerValidation"/></label>
                     </td>
                     <td>
-                        <logic:equal name="ssiPrm" value="true"  name="qascript.permissions" property="ssiPrm" >
+                        <logic:equal value="true"  name="qascript.permissions" property="ssiPrm" >
                             <html:checkbox name="schema" property="blocker" styleId="blockerValidation" />
                         </logic:equal>
-                        <logic:equal name="ssiPrm" value="false"  name="qascript.permissions" property="ssiPrm" >
+                        <logic:equal value="false"  name="qascript.permissions" property="ssiPrm" >
                             <bean:write  name="schema"   property="blocker" />
                         </logic:equal>
                     </td>
@@ -97,10 +97,10 @@
             </table>
         </html:form>
 
-        <logic:present name="qascripts" name="schema" scope="page" property="qascripts" >
+        <logic:present name="schema" scope="page" property="qascripts" >
             <html:form action="/searchCR" method="post">
             <table class="datatable" width="100%">
-                <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" property="ssdPrm" >
+                <logic:equal value="true"  name="qascript.permissions" property="ssdPrm" >
                     <col style="width:10px"/>
                 </logic:equal>
                 <col style="width:10px"/>
@@ -110,7 +110,7 @@
                 <thead>
 
                   <tr>
-                    <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" property="ssdPrm" >
+                    <logic:equal value="true"  name="qascript.permissions" property="ssdPrm" >
                           <th scope="col">&#160;</th>
                     </logic:equal>
                       <th scope="col">&#160;</th>
@@ -125,13 +125,13 @@
             <logic:iterate indexId="index" id="qascript" name="schema" scope="page" property="qascripts" type="QAScript">
                 <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
                     <bean:define id="scriptId" name="qascript" property="scriptId" />
-                    <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" property="ssdPrm" >
+                    <logic:equal value="true"  name="qascript.permissions" property="ssdPrm" >
                         <td align="center">
                             <input type="radio" name="scriptId" value="${scriptId}" />
                         </td>
                     </logic:equal>
                     <td>
-                        <logic:equal name="qsuPrm" value="true"  name="qascript.permissions" property="qsuPrm" >
+                        <logic:equal value="true"  name="qascript.permissions" property="qsuPrm" >
                             <%--  If scriptType is NOT 'FME' --%>
                             <logic:notEqual name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
                                 <html:link page="/do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.label.qasandbox.editScript">
@@ -145,7 +145,7 @@
                                 </a>
                             </logic:equal>
                         </logic:equal>
-                        <logic:notEqual name="qsuPrm" value="true"  name="qascript.permissions" property="qsuPrm" >
+                        <logic:notEqual value="true"  name="qascript.permissions" property="qsuPrm" >
                             <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=<bean:write name="schema" property="id"/>" title="<bean:message key="label.qascript.runservice.title" />">
                                 <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img>
                             </a>
@@ -173,10 +173,10 @@
                     <td>
                     <%--  If scriptType is 'FME' don't show the script Last Modified Date --%>
                     <logic:notEqual name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-                        <logic:notEqual name="fileExists" value=""  name="qascript" property="modified" >
+                        <logic:notEqual value=""  name="qascript" property="modified" >
                             <bean:write name="qascript" property="modified" />
                         </logic:notEqual>
-                        <logic:equal name="fileNotExists" value=""  name="qascript" property="modified" >
+                        <logic:equal value=""  name="qascript" property="modified" >
                             <span style="color:red"><bean:message key="label.fileNotFound"/></span>
                         </logic:equal>
                     </logic:notEqual>
@@ -194,15 +194,15 @@
             </tbody>
             </table>
                 <div class="boxbottombuttons">
-                    <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" property="ssdPrm" >
+                    <logic:equal value="true"  name="qascript.permissions" property="ssdPrm" >
                            <input type="button"  class="button" value="<bean:message key="label.qascript.delete"/>" onclick="return submitAction(2,'deleteQAScript');" />
                         <input type="hidden" name="schemaId" value="${schemaId}" />
                     </logic:equal>
-                    <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" property="ssdPrm" >
+                    <logic:equal value="true"  name="qascript.permissions" property="ssdPrm" >
                            <input type="button"  class="button" value="<bean:message key="label.qascript.activate"/>" onclick="return submitAction(2,'activateQAScript');" />
                         <input type="hidden" name="schemaId" value="${schemaId}" />
                     </logic:equal>
-                    <logic:equal name="ssdPrm" value="true"  name="qascript.permissions" property="ssdPrm" >
+                    <logic:equal value="true"  name="qascript.permissions" property="ssdPrm" >
                            <input type="button"  class="button" value="<bean:message key="label.qascript.deactivate"/>" onclick="return submitAction(2,'deactivateQAScript');" />
                         <input type="hidden" name="schemaId" value="${schemaId}" />
                     </logic:equal>
@@ -210,7 +210,7 @@
             </html:form>
 
             </logic:present>
-            <logic:notPresent name="qascripts" name="schema" scope="page" property="qascripts" >
+            <logic:notPresent name="schema" scope="page" property="qascripts" >
                 <div class="advice-msg">
                     <bean:message key="label.schema.noQAScripts"/>
                 </div>

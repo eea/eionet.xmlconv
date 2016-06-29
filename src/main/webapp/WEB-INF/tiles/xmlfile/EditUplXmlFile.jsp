@@ -30,7 +30,7 @@
                         <logic:present name="EditUplXmlFileForm" property="lastModified">
                             <bean:write property="lastModified" name="EditUplXmlFileForm"/>
                         </logic:present>
-                        <logic:equal name="fileNotExists" value=""  name="EditUplXmlFileForm" property="lastModified" >
+                        <logic:equal value=""  name="EditUplXmlFileForm" property="lastModified" >
                             <span style="color:red"><bean:message key="label.fileNotFound"/></span>
                         </logic:equal>
                         )
