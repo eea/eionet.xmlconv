@@ -28,7 +28,7 @@ public abstract class MySqlBaseDao {
     protected static boolean isDebugMode = LOGGER.isDebugEnabled();
 
     /**
-     * Init JNDI datasource
+     * DataSourceHolder Class with a static DATASOURCE to remove need for synchronized methods (Initialization-on-demand holder idiom)
      *
      * @throws NamingException If an error occurs.
      */
@@ -37,7 +37,6 @@ public abstract class MySqlBaseDao {
         static {
             try {
                 DATASOURCE = (DataSource) SpringApplicationContext.getBean("dataSource");
-                //CONNECTION = new ObjectFactory();
             } catch (Exception e) {
                 throw new ExceptionInInitializerError(e);
             }
@@ -47,7 +46,7 @@ public abstract class MySqlBaseDao {
     /**
      * Returns new database connection.
      *
-     * @return Connection from the LazyHolder Class (Initialization-on-demand holder idiom)
+     * @return Get a connection from the DataSourceHolder Class (Initialization-on-demand holder idiom)
      * @throws SQLException If an error occurs.
      */
     public static Connection getConnection() throws SQLException {
