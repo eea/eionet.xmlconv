@@ -104,27 +104,38 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
      * @throws Exception If an error occurs.
      */
     private void getConnectionInfo() throws Exception {
+    	
+    	HttpPost method = null;
+        CloseableHttpResponse response = null;
+        
+        try {
+            // We must first generate a security token for authentication
+            // purposes
+            fmeUrl = "http://" + Properties.fmeHost + ":" + Properties.fmePort
+                    + "/fmetoken/generate";
 
-        // We must first generate a security token for authentication
-        // purposes
-        fmeUrl = "http://" + Properties.fmeHost + ":" + Properties.fmePort
-                + "/fmetoken/generate";
-
-        java.net.URI uri = new URIBuilder(fmeUrl)
-            .addParameter("user", Properties.fmeUser)
-            .addParameter("password", Properties.fmePassword)
-            .addParameter("expiration", Properties.fmeTokenExpiration)
-            .addParameter("timeunit", Properties.fmeTokenTimeunit).build();
-        HttpPost method = new HttpPost(uri);
-        CloseableHttpResponse response = client_.execute(method);
-        if (response.getStatusLine().getStatusCode() == 200) {
-            HttpEntity entity = response.getEntity();
-            token_ = entity.getContent().toString();
-        } else {
-            LOGGER.error("FME authentication failed. Could not retrieve a Token");
-            throw new GDEMException("FME authentication failed");
+            java.net.URI uri = new URIBuilder(fmeUrl)
+                .addParameter("user", Properties.fmeUser)
+                .addParameter("password", Properties.fmePassword)
+                .addParameter("expiration", Properties.fmeTokenExpiration)
+                .addParameter("timeunit", Properties.fmeTokenTimeunit).build();
+            method = new HttpPost(uri);
+            response = client_.execute(method);
+            if (response.getStatusLine().getStatusCode() == 200) {
+                HttpEntity entity = response.getEntity();
+                token_ = entity.getContent().toString();
+            } else {
+                LOGGER.error("FME authentication failed. Could not retrieve a Token");
+                throw new GDEMException("FME authentication failed");
+            }        	
+        } catch (Exception e) {
+            throw new GDEMException(e.toString(), e);
+        } finally {
+            if (method != null) {
+            	method.releaseConnection();
+            }
         }
-
+        
     }
 
 }
