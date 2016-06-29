@@ -16,21 +16,30 @@ public class quartzConnectionProvider implements org.quartz.utils.ConnectionProv
     private static final Logger LOGGER = LoggerFactory.getLogger(MySqlBaseDao.class);
 
     private static DataSource ds = null;
- 
+    
+    private static class DataSourceHolder {
+        private static final DataSource DATASOURCE;
+        static {
+            try {
+                DATASOURCE = (DataSource) SpringApplicationContext.getBean("quartzDataSource");
+            } catch (Exception e) {
+                throw new ExceptionInInitializerError(e);
+            }
+        }
+    }
+    
     @Override
     public Connection getConnection() throws SQLException {
-        return ds.getConnection();
+        return DataSourceHolder.DATASOURCE.getConnection();
     }
 
     @Override
     public void shutdown() throws SQLException {
-        return;
+
     }
 
     @Override
     public void initialize() throws SQLException {
-        
-        ds = (DataSource) SpringApplicationContext.getBean("quartzDataSource");
         
     }
     
