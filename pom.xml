@@ -74,12 +74,19 @@
             </properties>
         </profile>
         <profile>
-            <id>normal</id>
+            <id>docker</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <valid.images>mysql</valid.images>
+            </properties>
+        </profile>
+        <profile>
+            <id>local</id>
+            <properties>
+                <docker.host.address>localhost</docker.host.address>
+                <valid.images>none</valid.images>
             </properties>
         </profile>
     </profiles>
@@ -89,7 +96,7 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.15.3</version>
+                <version>0.15.5</version>
                 <extensions>true</extensions>
                 <configuration>
                     <image>${valid.images}</image>
@@ -114,7 +121,11 @@
                                     </bind>
                                 </volumes>-->
                                 <wait>
-                                    <log>mysqld: ready for connections.</log>
+                                    <tcp>
+                                        <ports>
+                                            <port>3306</port>
+                                        </ports>
+                                    </tcp>
                                     <time>20000</time>
                                 </wait>
                             </run>
@@ -123,7 +134,7 @@
                             <alias>tomcat</alias>
                             <name>eeacms/xmlconv</name>
                             <build>
-                                <from>tomcat:6</from>
+                                <from>tomcat:6-jre8</from>
                                 <maintainer>Aris Katsanas</maintainer>
                                 <tags>
                                     <tag>latest</tag>
@@ -134,6 +145,7 @@
                                     <descriptorRef>rootWar</descriptorRef>
                                 </assembly>
                                 <runCmds>
+                                    <run>rm -rf /usr/local/tomcat/webapps/ROOT</run>
                                     <run>rm -rf /usr/local/tomcat/conf/logging.properties</run>
                                 </runCmds>
                                 <optimise>true</optimise>
@@ -268,6 +280,7 @@
                     </systemPropertyVariables>
                     <includes>
                         <include>**/*Test.java</include>
+                        <include>**/*IT.java</include>
                     </includes>
                 </configuration>
                 <executions>
@@ -279,8 +292,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -337,52 +348,41 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <formats>
-                        <format>xml</format>
-                    </formats>
-                </configuration>
-            </plugin>
-
         </plugins>
 
-            <!-- filtering corrupts the xsl files -->
-            <testResources>
-                <testResource>
-                    <directory>src/test/resources</directory>
-                    <filtering>false</filtering>
-                    <includes>
-                        <include>**/*.*</include>
-                    </includes>
-                    <excludes>
-                        <exclude>*.properties</exclude>
-                    </excludes>
-                </testResource>
-                <testResource>
-                    <directory>src/test/resources</directory>
-                    <filtering>true</filtering>
-                    <includes>
-                        <include>*.properties</include>
-                    </includes>
-                    <excludes>
-                        <exclude>**/*config.*</exclude>
-                    </excludes>
-                </testResource>
-                <testResource>
-                    <directory>src/test/resources</directory>
-                    <filtering>false</filtering>
-                    <includes>
-                        <include>**/*config.*</include>
-                    </includes>
-                </testResource>
-            </testResources>
+        <!-- filtering corrupts the xsl files -->
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+                <excludes>
+                    <exclude>*.properties</exclude>
+                </excludes>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.properties</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*config.*</exclude>
+                </excludes>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*config.*</include>
+                </includes>
+            </testResource>
+        </testResources>
 
-            <!-- name of the bundled project when it is finally built -->
-            <finalName>xmlconv</finalName>
+        <!-- name of the bundled project when it is finally built -->
+        <finalName>xmlconv</finalName>
 
         </build>
 
@@ -728,12 +728,12 @@
                 <artifactId>vtd-xml</artifactId>
                 <version>2.12</version>
             </dependency>
-            <!-- TEST dependencies -->
 
+            <!-- TEST dependencies -->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>4.12</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -753,6 +753,18 @@
                 <groupId>struts</groupId>
                 <artifactId>strutstest</artifactId>
                 <version>2.1.4</version>
+                <scope>test</scope>
+            </dependency>
+            <!--<dependency>
+                <groupId>org.apache.struts</groupId>
+                <artifactId>struts2-junit-plugin</artifactId>
+                <version>2.5</version>
+                <scope>test</scope>
+            </dependency>-->
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>2.0.54-beta</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

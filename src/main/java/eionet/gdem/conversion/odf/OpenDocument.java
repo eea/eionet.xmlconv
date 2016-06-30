@@ -45,6 +45,8 @@ import eionet.gdem.utils.ZipUtil;
 import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for OpenDocument documents.
@@ -57,6 +59,8 @@ public class OpenDocument {
     public static final String META_FILE_NAME = "meta.xml";
     public static final String METAXSL_FILE_NAME = "meta.xsl";
     public static final String CONTENT_FILE_NAME = "content.xml";
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(OpenDocument.class);
 
     private String strWorkingFolder = null;
     private String strMetaFile = null;
@@ -258,10 +262,8 @@ public class OpenDocument {
             }
 
         } catch (Exception ex) {
-            // TODO fix logger
-            System.out.println("Error converting meta.xml");
+            LOGGER.error("Error converting meta.xml");
             throw ex;
-            // _logger.error("Error reading conversions.xml file ", ex);
         } finally {
             IOUtils.closeQuietly(os);
             IOUtils.closeQuietly(in);

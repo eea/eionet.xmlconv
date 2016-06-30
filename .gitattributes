@@ -1,2 +1,6 @@
-pom.xml text
-*.java text
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text=auto
+
+pom.xml text eol=lf
+*.java text eol=lf
+*.jsp eol=lf
