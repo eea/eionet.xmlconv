@@ -58,27 +58,24 @@ public class JobScheduler implements ServletContextListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(JobScheduler.class);
 
     /** */
-    private static Scheduler quartzScheduler = null;
-
-    public static Scheduler getQuartzScheduler() throws SchedulerException {
-        if (quartzScheduler == null) {
-            init();
+    private static class QuartzSchedulerHolder {
+        private static final Scheduler QUARTZ_SCHEDULER;
+        static {
+            try {
+                SchedulerFactory schedFact = new StdSchedulerFactory();
+                QUARTZ_SCHEDULER = schedFact.getScheduler();
+                QUARTZ_SCHEDULER.start();
+            } catch (Exception e) {
+                throw new ExceptionInInitializerError(e);
+            }
         }
-        return quartzScheduler;
+    }
+        
+    public static Scheduler getQuartzScheduler() throws SchedulerException {
+        return QuartzSchedulerHolder.QUARTZ_SCHEDULER;
     }
 
     private static Pair<Integer, JobDetail>[] intervalJobs;
-
-    /**
-     * Initialize Job Scheduler
-     * @throws SchedulerException If an error occurs.
-     */
-    private static void init() throws SchedulerException {
-
-        SchedulerFactory schedFact = new StdSchedulerFactory();
-        quartzScheduler = schedFact.getScheduler();
-        quartzScheduler.start();
-    }
 
     /**
      * Schedules cron job.
@@ -94,11 +91,7 @@ public class JobScheduler implements ServletContextListener {
             newTrigger().withIdentity(jobDetails.getKey().getName(), jobDetails.getKey().getGroup())
             .withSchedule(cronSchedule(cronExpression)).forJob(jobDetails.getKey()).build();
 
-        if (quartzScheduler == null) {
-            init();
-        }
-
-        quartzScheduler.scheduleJob(jobDetails, trigger);
+        QuartzSchedulerHolder.QUARTZ_SCHEDULER.scheduleJob(jobDetails, trigger);
     }
 
     /**
@@ -115,11 +108,7 @@ public class JobScheduler implements ServletContextListener {
             newTrigger().withIdentity(jobDetails.getKey().getName(), jobDetails.getKey().getGroup()).startNow()
             .withSchedule(simpleSchedule().withIntervalInSeconds(repeatInterval).repeatForever()).build();
 
-        if (quartzScheduler == null) {
-            init();
-        }
-
-        quartzScheduler.scheduleJob(jobDetails, trigger);
+        QuartzSchedulerHolder.QUARTZ_SCHEDULER.scheduleJob(jobDetails, trigger);
     }
 
     /*
@@ -128,14 +117,14 @@ public class JobScheduler implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        if (quartzScheduler != null) {
+        if (QuartzSchedulerHolder.QUARTZ_SCHEDULER != null) {
             try {
-                quartzScheduler.shutdown(false);
+                QuartzSchedulerHolder.QUARTZ_SCHEDULER.shutdown(false);
                 Thread.sleep(1000);
             } catch (SchedulerException e) {
-                LOGGER.error("Failed proper shutdown of " + quartzScheduler.getClass().getSimpleName(), e);
+                LOGGER.error("Failed proper shutdown of " + QuartzSchedulerHolder.QUARTZ_SCHEDULER.getClass().getSimpleName(), e);
             } catch (InterruptedException e) {
-                LOGGER.error("Failed proper shutdown of " + quartzScheduler.getClass().getSimpleName(), e);
+                LOGGER.error("Failed proper shutdown of " + QuartzSchedulerHolder.QUARTZ_SCHEDULER.getClass().getSimpleName(), e);
             }
         }
         WQExecutor.getInstance().shutdown();
