@@ -68,6 +68,9 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     private static final String qCountActiveJobs = "SELECT COUNT(*) " + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + "="
             + Constants.XQ_DOWNLOADING_SRC + " OR " + STATUS_FLD + "=" + Constants.XQ_PROCESSING;
 
+    
+    private static final String qLastActiveJobTime =qXQJobDataBase + " wHERE "+ STATUS_FLD + "=" + Constants.XQ_PROCESSING +" ORDER BY TIME_STAMP desc limit 1";
+    
     @Override
     public String[] getXQJobData(String jobId) throws SQLException {
         Connection conn = null;
@@ -371,4 +374,34 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
         return ret;
     }
 
+    
+    @Override
+    public String[] getLatestProcessingJobStartTime() throws SQLException {
+              
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String[] s;
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + qLastActiveJobTime);
+        }
+
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(qLastActiveJobTime);
+            rs = pstmt.executeQuery();
+            String[][] r = getResults(rs);
+            if (r.length == 0) {
+                s = null;
+            } else {
+                s = r[0];
+            }
+        } finally {
+            closeAllResources(rs, pstmt, conn);
+        }
+        return s;
+    }
+
+    
 }
