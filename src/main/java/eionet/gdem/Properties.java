@@ -126,6 +126,7 @@ public class Properties {
     public static String fmeTokenTimeunit = null;
     /** FME timeout. */
     public static int fmeTimeout = 0;
+    public static int fmeRetryHours = 4;
 
     /** OpenOffice host. */
     public static String openOfficeHost = null;
@@ -236,7 +237,7 @@ public class Properties {
         fmeTokenExpiration = getStringProperty("fme.token.expiration");
         fmeTokenTimeunit = getStringProperty("fme.token.timeunit");
         fmeTimeout = getIntProperty("fme.timeout");
-
+        fmeRetryHours = getIntProperty("fme.retry.hours");
     }
 
     /**

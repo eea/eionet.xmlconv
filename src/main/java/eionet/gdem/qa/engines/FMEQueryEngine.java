@@ -63,36 +63,45 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
         HttpPost runMethod = null;
         CloseableHttpResponse response = null;
-        try {
-            java.net.URI uri = new URIBuilder(script.getScriptSource())
-                .addParameter("token", token_)
-                .addParameter("opt_showresult", "true")
-                .addParameter("opt_servicemode", "sync")
-                .addParameter("source_xml", script.getOrigFileUrl()) // XML file
-                .addParameter("format", script.getOutputType())
-                .build(); // Output format
-            runMethod = new HttpPost(uri);
-            
-            // Request Config (Timeout)
-            runMethod.setConfig(requestConfigBuilder.build());
-            
-             response = client_.execute(runMethod);
-            if (response.getStatusLine().getStatusCode() != 200) { // HTTP status code is not 200
-                LOGGER.error("The application has encountered an error. The FME QC process request failed. -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource() + " -- Response: " + response.toString());
-                throw new Exception("The application has encountered an error. The FME QC process request failed.");
-            } else {
-                HttpEntity entity = response.getEntity();
-                // We get an InputStream and copy it to the 'result' OutputStream
-                IOUtils.copy(entity.getContent(), result);
-            }
-        } catch (SocketTimeoutException e){ // Timeout Exceeded
-        	LOGGER.warn("The FME request has exceeded the allotted timeout. -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource());
-        	throw new GDEMException("The QC process executed is under process. You will need to excecute again the 'Run automatic QA' after 12 hours from your first QA execution. Sorry for the inconvenience.");
-        } catch (Exception e) {
-            throw new GDEMException(e.toString(), e);
-        } finally {
-            if (runMethod != null) {
-                runMethod.releaseConnection();
+        int count = 0;
+        int retryMilisecs = Properties.fmeRetryHours * 60 * 1000;
+        int timeoutMilisecs = Properties.fmeTimeout;
+        int retries = retryMilisecs / timeoutMilisecs;
+        retries = (retries <= 0) ? 1 : retries;
+        while (count < retries) {
+            try {
+                java.net.URI uri = new URIBuilder(script.getScriptSource())
+                        .addParameter("token", token_)
+                        .addParameter("opt_showresult", "true")
+                        .addParameter("opt_servicemode", "sync")
+                        .addParameter("source_xml", script.getOrigFileUrl()) // XML file
+                        .addParameter("format", script.getOutputType())
+                        .build(); // Output format
+                runMethod = new HttpPost(uri);
+
+                // Request Config (Timeout)
+                runMethod.setConfig(requestConfigBuilder.build());
+
+                response = client_.execute(runMethod);
+                if (response.getStatusLine().getStatusCode() != 200) { // HTTP status code is not 200
+                    LOGGER.error("The application has encountered an error. The FME QC process request failed. -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource() + " -- Response: " + response.toString());
+                    throw new Exception("The application has encountered an error. The FME QC process request failed.");
+                } else {
+                    HttpEntity entity = response.getEntity();
+                    // We get an InputStream and copy it to the 'result' OutputStream
+                    IOUtils.copy(entity.getContent(), result);
+                }
+                count = retries;
+            } catch (SocketTimeoutException e) { // Timeout Exceeded
+                LOGGER.warn("The FME request has exceeded the allotted timeout. -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource());
+                throw new GDEMException("The QC process executed is under process. You will need to excecute again the 'Run automatic QA' after 12 hours from your first QA execution. Sorry for the inconvenience.");
+            } catch (Exception e) {
+                throw new GDEMException(e.toString(), e);
+            } finally {
+                if (runMethod != null) {
+                    runMethod.releaseConnection();
+                }
+                count++;
             }
         }
 
