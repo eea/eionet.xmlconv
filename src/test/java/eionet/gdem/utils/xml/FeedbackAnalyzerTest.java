@@ -20,11 +20,8 @@
  */
 package eionet.gdem.utils.xml;
 
-import java.util.HashMap;
-
-import eionet.gdem.test.ApplicationTestContext;
-import junit.framework.TestCase;
 import eionet.gdem.Constants;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import org.junit.Test;
@@ -32,7 +29,10 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.*;
+import java.util.HashMap;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
@@ -40,7 +40,7 @@ public class FeedbackAnalyzerTest {
     @Test
     public void testFeedBackFileERROR() {
         HashMap<String, String> fbResult =
-            FeedbackAnalyzer.getFeedbackResultFromFile(TestUtils.getSeedPath(TestConstants.SEED_FEEDBACKANALYZE_TEST, this));
+                FeedbackAnalyzer.getFeedbackResultFromFile(TestUtils.getSeedPath(TestConstants.SEED_FEEDBACKANALYZE_TEST, this));
 
         String fbStatus = fbResult.get(Constants.RESULT_FEEDBACKSTATUS_PRM);
         String fbMsg = fbResult.get(Constants.RESULT_FEEDBACKMESSAGE_PRM);
@@ -52,7 +52,7 @@ public class FeedbackAnalyzerTest {
     public void testFeedbackStringWithNoAttributes() {
 
         String qaResult =
-            "<div style=\"font-size:13px;\" class=\"feedbacktext\" >" + "<h1>Header</h1><div>This is text</div>" + "</div>";
+                "<div style=\"font-size:13px;\" class=\"feedbacktext\" >" + "<h1>Header</h1><div>This is text</div>" + "</div>";
 
         HashMap<String, String> fbResult = FeedbackAnalyzer.getFeedbackResultFromStr(qaResult);
 
@@ -66,8 +66,8 @@ public class FeedbackAnalyzerTest {
     public void testFeedbackStringWarning() {
 
         String qaResult =
-            "<span><div style=\"font-size:13px;\" class=\"WARNING\" id=\"feedbackStatus\">There are some warnings</div>"
-            + "<h1>Header</h1><div>This is text</div>" + "</span>";
+                "<span><div style=\"font-size:13px;\" class=\"WARNING\" id=\"feedbackStatus\">There are some warnings</div>"
+                        + "<h1>Header</h1><div>This is text</div>" + "</span>";
 
         HashMap<String, String> fbResult = FeedbackAnalyzer.getFeedbackResultFromStr(qaResult);
 
@@ -84,6 +84,16 @@ public class FeedbackAnalyzerTest {
                 "<div id=\"anotherText\">This is the next part of the HTML file</div></div>";
         HashMap<String, String> fbResult = FeedbackAnalyzer.getFeedbackResultFromStr(qaResult);
         String fbMessage = fbResult.get(Constants.RESULT_FEEDBACKMESSAGE_PRM);
-        assertEquals("Wrong result message", "This paragraph contains the feedback message with bold words and italic words.",fbMessage);
+        assertEquals("Wrong result message", "This paragraph contains the feedback message with bold words and italic words.", fbMessage);
+    }
+
+    @Test
+    public void testSelfClosingTag() {
+        String qaResult =
+                "<span><div style=\"font-size:13px;\" class=\"WARNING\" id=\"feedbackStatus\">There are some warnings</div>"
+                        + "<h1>Header</h1><hr><link href=\"\"/><div>This is text</div>" + "</span>";
+        HashMap<String, String> fbResult = FeedbackAnalyzer.getFeedbackResultFromStr(qaResult);
+        String fbStatus = fbResult.get(Constants.RESULT_FEEDBACKSTATUS_PRM);
+        assertTrue(fbStatus.equals("WARNING"));
     }
 }

@@ -1,23 +1,16 @@
 package eionet.gdem.utils.xml;
 
-import java.io.FileReader;
-import java.io.StringReader;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedList;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
+import eionet.gdem.Constants;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import eionet.gdem.Constants;
+import java.io.FileInputStream;
+import java.util.HashMap;
 
 /**
  * Analyzes feedback HTML response.
@@ -26,13 +19,13 @@ import eionet.gdem.Constants;
  */
 public final class FeedbackAnalyzer {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FeedbackAnalyzer.class);
     /**
      * Default private constructor for util class
      */
     private FeedbackAnalyzer() {
         //do nothing
     }
-
 
     /**
      * Parses the XQ feedback string from file and searches feedbackStatus and feedbackMessage parameters in the first element
@@ -43,69 +36,40 @@ public final class FeedbackAnalyzer {
      * @return HashMap containing the element values
      */
     public static HashMap<String, String> getFeedbackResultFromFile(String fileName) {
-
-        InputSource is = null;
-        FileReader fileReader = null;
+        FileInputStream stream = null;
         HashMap<String, String> fbResult = null;
+
         try {
-            fileReader = new FileReader(fileName);
-            is = new InputSource(fileReader);
-
-            fbResult =  getParsedFeedbackResult(is);
-
+            stream = new FileInputStream(fileName);
+            Document document = Jsoup.parse(stream, "UTF-8", "");
+            fbResult = getFeedbackMap(document);
         } catch (Exception e) {
-            System.err.println("Error getting feedback result from file " + e);
+            LOGGER.error("Error getting feedback result from file " + e);
         } finally {
-            IOUtils.closeQuietly(fileReader);
+            IOUtils.closeQuietly(stream);
         }
-
-
         return fbResult;
     }
-
 
     /**
-     * Parses the XQ feedback string from file and searches feedbackStatus and feedbackMessage parameters in the first element
-     * (<div>).
-     *
-     * @param is
-     *            XQ Script result file
-     * @return HashMap containing the element values
+     * Returns feedback status and feedback message.
+     * @param document Jsoup Document
+     * @return feedback status and feedback message.
      */
-    private static HashMap<String, String> getParsedFeedbackResult(InputSource is) {
-
-        String fbStatus = Constants.XQ_FEEDBACKSTATUS_UNKNOWN;
+    private static HashMap<String, String> getFeedbackMap(Document document) {
+        HashMap<String, String> fbResult = new HashMap<String, String>();
+        String fbStatus = Constants.XQ_FEEDBACKSTATUS_UNKNOWN;;
         String fbMessage = "";
 
-        HashMap<String, String> fbResult = new HashMap<String, String>();
-        try {
-
-            FeedbackHandler handler = new FeedbackHandler();
-            SAXParserFactory spfact = SAXParserFactory.newInstance();
-            SAXParser parser = spfact.newSAXParser();
-            XMLReader reader = parser.getXMLReader();
-            reader.setContentHandler(handler);
-
-            //FeedbackXMLReader lexicalReader = new FeedbackXMLReader(); // parser.getXMLReader();
-
-            //DefaultHandler handler = new FeedbackXMLHandler();
-            //parser.setProperty("http://xml.org/sax/properties/lexical-handler", lexicalReader);
-
-            parser.parse(is, handler);
-            fbStatus = handler.getFeedbackStatus();
-            fbMessage = handler.getFeedbackMessage();
-
-        } catch (Exception e) {
-            System.err.println("Error parsing feedback result " + e);
+        Element feedbackStatus = document.select("#feedbackStatus").first();
+        if (feedbackStatus != null) {
+            fbStatus = StringUtils.defaultIfBlank(feedbackStatus.attr("class"), Constants.XQ_FEEDBACKSTATUS_UNKNOWN);
+            fbMessage = feedbackStatus.text();
         }
-
         fbResult.put(Constants.RESULT_FEEDBACKSTATUS_PRM, fbStatus);
         fbResult.put(Constants.RESULT_FEEDBACKMESSAGE_PRM, fbMessage);
-
         return fbResult;
-
     }
-
     /**
      * Parses the XQ feedback string from string and searches feedbackStatus and feedbackMessage parameters in the first element.
      *
@@ -115,75 +79,14 @@ public final class FeedbackAnalyzer {
      */
     public static HashMap<String, String> getFeedbackResultFromStr(String scriptResult) {
 
-        InputSource is = new InputSource(new StringReader(scriptResult));
+        Document document = Jsoup.parse(scriptResult);
         HashMap<String, String> fbResult = null;
         try {
-
-            fbResult =  getParsedFeedbackResult(is);
-
+            fbResult = getFeedbackMap(document);
         } catch (Exception e) {
-            System.err.println("Error getting feedback result from String " + e);
+            LOGGER.error("Error getting feedback result from file " + e);
         }
-
         return fbResult;
     }
 
-    /**
-     * Parses feedback xml/html.
-     *
-     */
-    private static class FeedbackHandler extends DefaultHandler {
-        /**if true nothing else is done **/
-        private boolean feedbackElementFound = false;
-        private boolean parsingFeedBack = false;
-
-        private String feedbackStatus = Constants.XQ_FEEDBACKSTATUS_UNKNOWN;
-        private String feedbackMessage = "";
-        /** Stack to keep the nested feedbackStatus elements  **/
-        private Deque<Integer> feedbackStatusStack = new LinkedList<Integer>();
-        StringBuilder fbTextBuilder = new StringBuilder();
-
-        @Override
-        public void startElement(String uri, String localName, String qName, Attributes attributes)
-                throws SAXException {
-            if (!feedbackElementFound) {
-                String idValue = attributes.getValue("id");
-                if (idValue != null && idValue.equalsIgnoreCase("feedbackStatus")) {
-                    feedbackElementFound = true;
-                    feedbackStatus = StringUtils.defaultIfBlank(attributes.getValue("class"), Constants.XQ_FEEDBACKSTATUS_UNKNOWN);
-                    parsingFeedBack = true;
-                }
-            } else if (parsingFeedBack) {
-                feedbackStatusStack.push(1);
-            }
-        }
-
-        @Override
-        public void endElement(String uri, String localName, String qName) throws SAXException {
-            if (parsingFeedBack) {
-                if (feedbackStatusStack.size() == 0) {
-                    parsingFeedBack = false;
-                    feedbackMessage = fbTextBuilder.toString();
-                } else {
-                    feedbackStatusStack.pop();
-                }
-            }
-        }
-
-        @Override
-        public void characters(char[] characters, int i1, int i2) throws SAXException {
-            if (parsingFeedBack) {
-                fbTextBuilder.append(new String(characters, i1, i2));
-            }
-        }
-
-        public String getFeedbackStatus() {
-            return feedbackStatus;
-        }
-
-        public String getFeedbackMessage() {
-            return feedbackMessage;
-        }
-
-    }
 }
