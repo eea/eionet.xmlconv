@@ -58,13 +58,12 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
     }
 
     @Override
-    protected void runQuery(XQScript script, OutputStream result)
-            throws GDEMException {
+    protected void runQuery(XQScript script, OutputStream result) throws GDEMException {
 
         HttpPost runMethod = null;
         CloseableHttpResponse response = null;
         int count = 0;
-        int retryMilisecs = Properties.fmeRetryHours * 60 * 1000;
+        int retryMilisecs = Properties.fmeRetryHours * 60 * 60 * 1000;
         int timeoutMilisecs = Properties.fmeTimeout;
         int retries = retryMilisecs / timeoutMilisecs;
         retries = (retries <= 0) ? 1 : retries;
@@ -81,7 +80,6 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
                 // Request Config (Timeout)
                 runMethod.setConfig(requestConfigBuilder.build());
-
                 response = client_.execute(runMethod);
                 if (response.getStatusLine().getStatusCode() != 200) { // HTTP status code is not 200
                     LOGGER.error("The application has encountered an error. The FME QC process request failed. -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource() + " -- Response: " + response.toString());
@@ -94,9 +92,8 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                 count = retries;
             } catch (SocketTimeoutException e) { // Timeout Exceeded
                 LOGGER.warn("The FME request has exceeded the allotted timeout. -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource());
-                throw new GDEMException("The QC process executed is under process. You will need to excecute again the 'Run automatic QA' after 12 hours from your first QA execution. Sorry for the inconvenience.");
             } catch (Exception e) {
-                throw new GDEMException(e.toString(), e);
+                LOGGER.warn("FME request error: " + e.getMessage());
             } finally {
                 if (runMethod != null) {
                     runMethod.releaseConnection();
