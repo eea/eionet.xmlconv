@@ -57,7 +57,7 @@ public class JobScheduler implements ServletContextListener {
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(JobScheduler.class);
 
-    /** */
+    /** holds the clustered quartz scheduler shared amongst instances*/
     private static class QuartzSchedulerHolder {
         private static final Scheduler QUARTZ_SCHEDULER;
         static {
@@ -70,13 +70,44 @@ public class JobScheduler implements ServletContextListener {
             }
         }
     }
+    
+    /** folds the in memory scheduled for private scheduling of each instance */
+    private static class QuartzLocalSchedulerHolder {
+        private static final Scheduler QUARTZ_LOCAL_SCHEDULER;
+        private static final String PROPERTIES_PATH = "local-quartz.properties";
+        static {
+            try {
+                StdSchedulerFactory sf = new StdSchedulerFactory();
+                sf.initialize(PROPERTIES_PATH);
+                QUARTZ_LOCAL_SCHEDULER = sf.getScheduler();
+                QUARTZ_LOCAL_SCHEDULER.start();
+            } catch (Exception e) {
+                throw new ExceptionInInitializerError(e);
+            }
+        }
+    }
         
     public static Scheduler getQuartzScheduler() throws SchedulerException {
         return QuartzSchedulerHolder.QUARTZ_SCHEDULER;
     }
 
     private static Pair<Integer, JobDetail>[] intervalJobs;
+    /**
+     * Schedules interval job locally.
+     * @param repeatInterval Repeat interval
+     * @param jobDetails Job Details
+     * @throws SchedulerException If an error occurs.
+     * @throws ParseException If an error occurs.
+     */
+    public static synchronized void scheduleLocalIntervalJob(int repeatInterval, JobDetail jobDetails) throws SchedulerException,
+    ParseException {
 
+        SimpleTrigger trigger =
+            newTrigger().withIdentity(jobDetails.getKey().getName(), jobDetails.getKey().getGroup()).startNow()
+            .withSchedule(simpleSchedule().withIntervalInSeconds(repeatInterval).repeatForever()).build();
+
+        QuartzLocalSchedulerHolder.QUARTZ_LOCAL_SCHEDULER.scheduleJob(jobDetails, trigger);
+    }
     /**
      * Schedules cron job.
      * @param cronExpression Cron expression
@@ -142,10 +173,7 @@ public class JobScheduler implements ServletContextListener {
                             WQCheckerJob.class.getName()).build()),
                     Pair.of(new Integer(Properties.wqCleanInterval),
                             newJob(WQCleanerJob.class).withIdentity(WQCleanerJob.class.getSimpleName(),
-                            WQCleanerJob.class.getName()).build()),
-                    Pair.of(new Integer(Properties.ddTablesUpdateInterval),
-                            newJob(DDTablesCacheUpdater.class).withIdentity(DDTablesCacheUpdater.class.getSimpleName(),
-                            DDTablesCacheUpdater.class.getName()).build())};
+                            WQCleanerJob.class.getName()).build())};
         // schedule interval jobs
         for (Pair<Integer, JobDetail> job : intervalJobs) {
 
@@ -153,9 +181,19 @@ public class JobScheduler implements ServletContextListener {
                 scheduleIntervalJob(job.getLeft(), job.getRight());
                 LOGGER.debug(job.getRight().getKey().getName() + " scheduled, interval=" + job.getLeft());
             } catch (Exception e) {
-                LOGGER.error(Markers.fatal, "Error when scheduling " + job.getRight().getKey().getName(), e);
+                if ( ! ( e instanceof org.quartz.ObjectAlreadyExistsException ) )  {
+                    LOGGER.error(Markers.fatal, "Error when scheduling " + job.getRight().getKey().getName(), e);
+                }    
             }
         }
+        try {
+            // DDTablesCacheUpdater is scheduled locally
+            scheduleLocalIntervalJob( Properties.ddTablesUpdateInterval , newJob(DDTablesCacheUpdater.class).withIdentity(DDTablesCacheUpdater.class.getSimpleName(),
+                    DDTablesCacheUpdater.class.getName()).build() );
+        } catch (Exception e) {
+                LOGGER.error(Markers.fatal, "Error when scheduling DDTablesCacheUpdater", e);
+        }
+
         WorkqueueManager.resetActiveJobs();
     }
 }
