@@ -126,7 +126,7 @@
                                             <port>3306</port>
                                         </ports>
                                     </tcp>
-                                    <time>20000</time>
+                                    <time>200000</time>
                                 </wait>
                             </run>
                         </image>
