@@ -8,7 +8,7 @@ import javax.servlet.ServletContext;
 
 /**
  *
- * @author Aris Katsanas <aka@eworx.gr>
+ * @author Aris Katsanas
  */
 public class CASFilterConfig extends Hashtable<String, String> implements FilterConfig {
 
@@ -75,7 +75,6 @@ public class CASFilterConfig extends Hashtable<String, String> implements Filter
 
     /**
      *
-     * @param defaultConfig
      * @return
      */
     public static CASFilterConfig getInstance() {

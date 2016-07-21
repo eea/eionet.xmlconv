@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Copy Catalog class.
- * @author Ervis Zyka <ez@eworx.gr>
+ * @author Ervis Zyka
  */
 public class CopyCatalogFileAction {
 

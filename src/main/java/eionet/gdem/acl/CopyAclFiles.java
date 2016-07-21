@@ -13,7 +13,7 @@ import java.net.URL;
 
 /**
  *
- * @author Aris Katsanas <aka@eworx.gr>
+ * @author Aris Katsanas
  */
 public class CopyAclFiles {
 
