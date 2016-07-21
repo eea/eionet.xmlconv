@@ -70,11 +70,11 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConvertXMLMethod.class);
 
     /**
-     * @see #convert(sourceURL, convertId, conversionParameters).
-     * @param sourceURL @see #convert(sourceURL, convertId, conversionParameters)
-     * @param convertId @see #convert(sourceURL, convertId, conversionParameters)
-     * @return @see #convert(sourceURL, convertId, conversionParameters)
-     * @throws GDEMException @see #convert(sourceURL, convertId, conversionParameters)
+     * @see #convert(sourceURL, convertId, externalParameters)
+     * @param sourceURL @see #convert(sourceURL, convertId, externalParameters)
+     * @param convertId @see #convert(sourceURL, convertId, externalParameters)
+     * @return @see #convert(sourceURL, convertId, externalParameters)
+     * @throws GDEMException @see #convert(sourceURL, convertId, externalParameters)
      */
     public Hashtable<String, Object> convert(String sourceURL, String convertId) throws GDEMException {
         return convert(sourceURL, convertId, null);

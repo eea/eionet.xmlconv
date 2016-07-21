@@ -148,7 +148,7 @@ public interface ExcelXMLTags {
      */
     String FONT_WEIGHT_ATTR = "fo:font-weight";
     /**
-     * Font family attribute - <CODE>&lt;fo:font-family='&apos;Luxi Sans&apos;'&gt;</CODE>
+     * Font family attribute - <CODE>&lt;fo:font-family='&quot;Luxi Sans&quot;'&gt;</CODE>
      */
     String FONT_FAMILY_ATTR = "fo:font-family";
 

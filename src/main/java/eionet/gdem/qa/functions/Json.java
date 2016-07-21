@@ -77,7 +77,6 @@ public class Json {
      * Method converts the URL response body into XML format and returns it as String. If the response is not in JSON format, then JsonError object is converted to XML.
      * @param requestUrl Request URL to JSON format content.
      * @return String of XML
-     * @throws IOException If an IO error occurs.
      */
     public static String jsonRequest2xmlString(String requestUrl) {
         JsonError error = null;

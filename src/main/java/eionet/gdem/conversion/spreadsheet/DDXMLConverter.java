@@ -319,7 +319,6 @@ public abstract class DDXMLConverter {
      * @param spreadsheet Spreadsheet
      * @param instance XML Instance
      * @param xmlSchema XML Schema
-     * @throws Exception If an error occurs
      */
     protected void importSheetSchemas(SourceReaderIF spreadsheet, DD_XMLInstance instance, String xmlSchema) {
         try {

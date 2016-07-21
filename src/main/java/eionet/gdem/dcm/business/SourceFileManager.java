@@ -20,7 +20,7 @@ import java.net.URLConnection;
  * The class acts as a adapter between XQuery engine and source file to be analyzed.
  * If QA application knows the login information for source file, then it appends the
  * information to the URL of source file parameter.
- * <p/>
+ *
  * XQuery engine asks the file from generated URL from xmlconv instead of the original URL.
  *
  * @author kaspeenr

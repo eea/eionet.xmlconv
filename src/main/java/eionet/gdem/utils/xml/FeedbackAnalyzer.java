@@ -29,7 +29,7 @@ public final class FeedbackAnalyzer {
 
     /**
      * Parses the XQ feedback string from file and searches feedbackStatus and feedbackMessage parameters in the first element
-     * (<div>).
+     * (&lt;div&gt;).
      *
      * @param fileName
      *            XQ Script result file

@@ -223,7 +223,7 @@ public class StylesheetManager {
 
     /**
      * Finds stylesheets that belong to specified schema.
-     * <p/>
+     *
      * Following fields in {@link Stylesheet} are populated: convId, xslFileName, dependsOn.
      *
      * @param schemaId

@@ -53,7 +53,7 @@ import java.util.Vector;
  * Utility class for reading files from URL.
  * The class reads the host credentials from database and if it runs in trusted mode, then it passes the basic authentication info
  * to remote server for files with limited access.
- * <p/>
+ *
  * NB! Always call close() method in finally block, otherwise the InputStream stays open.
  */
 public class InputFile {

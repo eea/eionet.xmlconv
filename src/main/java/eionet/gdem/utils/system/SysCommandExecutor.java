@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Usage of following class can go as ...
- * <P>
  *
  * <PRE>
  * <CODE>
@@ -49,11 +48,9 @@ import org.slf4j.LoggerFactory;
  * </CODE>
  * </PRE>
  *
- * </P>
  *
  * OR
  *
- * <P>
  *
  * <PRE>
  * <CODE>
@@ -65,7 +62,6 @@ import org.slf4j.LoggerFactory;
  * </CODE>
  * </PRE>
  *
- * </P>
  */
 public class SysCommandExecutor {
     /** */

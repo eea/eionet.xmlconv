@@ -110,7 +110,6 @@ public final class HttpUtils {
      *
      * @param url URL
      * @return True if resource behind the url exists.
-     * @throws IOException If an IO error occurs.
      */
     public static boolean urlExists(String url) {
 

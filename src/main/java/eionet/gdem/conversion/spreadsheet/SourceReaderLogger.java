@@ -234,7 +234,7 @@ public class SourceReaderLogger {
      * Sheet schema is: schemaUrl
      *
      * @param instanceUrl Instance URL
-     * @param tblLocalName Table local name
+     * @param sheetName Table local name
      */
     public void logSheetSchema(String instanceUrl, String sheetName) {
         conversionResult.addConversionLog(ConversionLogType.INFO,

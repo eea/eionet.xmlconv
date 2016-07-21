@@ -66,7 +66,7 @@ public class ApplicationCache implements ServletContextListener {
      * Update Data Dictionary tables data cache.
      *
      * @param ddTables
-     *            List<Hashtable<String,String>> DD info retrieved from xml-rpc method.
+     *            List of DD info retrieved from xml-rpc method.
      */
     public static void updateDDTablesCache(final List<DDDatasetTable> ddTables) {
         getCache().put(new Element(DD_TABLES_CACHE, ddTables));
@@ -74,7 +74,7 @@ public class ApplicationCache implements ServletContextListener {
 
     /**
      * Get Data Dictionary dataset tables.
-     * @return List<DDDatasetTable>
+     * @return List of DDDatasetTable
      */
     @SuppressWarnings("unchecked")
     public static List<DDDatasetTable> getDDTables() {

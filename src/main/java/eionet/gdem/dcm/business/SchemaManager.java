@@ -831,7 +831,7 @@ public class SchemaManager {
      *            - schema DB identifier that will be deleted
      * @param delSchema
      *            - false=delete only row in T_UPL_SCHEMA (local file); true=delete both row in T_SCHEMA and T_UPL_SCHEMA
-     * @return 0= nothing deleted; 1 = T_SCHEMA deleted; 2= T_UPL_SCHEMA deleted; 3= T_SCHEMA & T_UPL_SCHEMA deleted
+     * @return 0= nothing deleted; 1 = T_SCHEMA deleted; 2= T_UPL_SCHEMA deleted; 3= T_SCHEMA and T_UPL_SCHEMA deleted
      * @throws DCMException in case of database error.
      */
     public int deleteUplSchema(String user, String schemaId, boolean delSchema) throws DCMException {

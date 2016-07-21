@@ -62,7 +62,6 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
      *
      * @param sourceUrl - URL of the srouce Excel file
      * @return Vector result: error_code, xml_url, error_message
-     * @throws UnsupportedEncodingException
      * @throws GDEMException If an error occurs
      */
     public ConversionResultDto convertDD_XML(String sourceUrl) throws GDEMException {
@@ -217,7 +216,6 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
      *
      * @param dto Result transfer object
      * @return Hash table with result
-     * @throws IOException IO Exception
      * @throws GDEMException If an error occurs
      */
     public static final Hashtable<String, Object> convertExcelResult(ConversionResultDto dto) throws GDEMException {

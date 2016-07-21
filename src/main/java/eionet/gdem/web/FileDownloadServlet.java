@@ -59,7 +59,7 @@ public class FileDownloadServlet extends HttpServlet {
     /**
      * Process HEAD request. This returns the same headers as GET request, but without content.
      *
-     * @see HttpServlet#doHead(HttpServletRequest, HttpServletResponse).
+     * @see HttpServlet#doHead(HttpServletRequest, HttpServletResponse)
      */
     @Override
     protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -70,7 +70,7 @@ public class FileDownloadServlet extends HttpServlet {
     /**
      * Process GET request.
      *
-     * @see HttpServlet#doGet(HttpServletRequest, HttpServletResponse).
+     * @see HttpServlet#doGet(HttpServletRequest, HttpServletResponse)
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -81,7 +81,7 @@ public class FileDownloadServlet extends HttpServlet {
     /**
      * Process POST request.
      *
-     * @see HttpServlet#doGet(HttpServletRequest, HttpServletResponse).
+     * @see HttpServlet#doGet(HttpServletRequest, HttpServletResponse)
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

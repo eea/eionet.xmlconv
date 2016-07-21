@@ -107,7 +107,6 @@ public class QAResultPostProcessor {
      *
      * @param xmlSchemaUrl XML Schema URL
      * @return Warning message
-     * @throws DCMException If an error occurs.
      */
     public String getWarningMessage(String xmlSchemaUrl) {
 

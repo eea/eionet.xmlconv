@@ -706,7 +706,7 @@ public final class Utils {
     /**
      * parses String to Date.
      *
-     * @param date
+     * @param srtDate
      * @param pattern
      * @return Date object
      * @throws ParseException
@@ -731,9 +731,7 @@ public final class Utils {
      * formats timestamp (millis from 1 Jan 1970) into string using pattern.
      *
      * @param timestamp
-     * @param pattern
      * @return Date object
-     * @throws ParseException
      */
     public static String formatTimestampDate(String timestamp) {
 
@@ -921,7 +919,7 @@ public final class Utils {
      * Generates foldername.
      *
      * @param folderName
-     *            , n >0, if folder with the same name already exists in the tmp folder ex: getGeneratedFolderName( test, 1 )=
+     *            , n &gt;0, if folder with the same name already exists in the tmp folder ex: getGeneratedFolderName( test, 1 )=
      *            test_1 getGeneratedFolderName( test_1, 2 )= test_2
      */
     public static String getGeneratedFolderName(String folderName, int n) {
@@ -1072,7 +1070,7 @@ public final class Utils {
 
     /**
      *
-     * @param srcBytes
+     * @param f
      * @param algorithm
      * @return
      * @throws Exception
@@ -1142,7 +1140,6 @@ public final class Utils {
      *
      * @param strUri
      * @return
-     * @throws IOException If an IO error occurs.
      */
     public static boolean resourceExists(String strUri) {
         strUri = StringUtils.replace(strUri, "\\", "/");
@@ -1229,9 +1226,9 @@ public final class Utils {
     /**
      * Compares the differences between remote schema and the local copy of it.
      *
-     * @param remoteSchema
+     * @param remoteFile
      *            byte array of remote XML Schema.
-     * @param schemaFile
+     * @param localFile
      *            local schema file name.
      * @return if the result is empty string, then the files are identical, otherwise BusinessConstants with AppReosurce identifier
      *         is returned
