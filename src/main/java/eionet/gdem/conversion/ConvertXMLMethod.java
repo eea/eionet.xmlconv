@@ -70,11 +70,13 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConvertXMLMethod.class);
 
     /**
-     * @see #convert(sourceURL, convertId, externalParameters)
-     * @param sourceURL @see #convert(sourceURL, convertId, externalParameters)
-     * @param convertId @see #convert(sourceURL, convertId, externalParameters)
-     * @return @see #convert(sourceURL, convertId, externalParameters)
-     * @throws GDEMException @see #convert(sourceURL, convertId, externalParameters)
+     * Converts the XML file to a specific format.
+     * 
+     * @param sourceURL URL of the XML file to be converted
+     * @param convertId ID of desired conversion as the follows: - If conversion ID begins with the DD DCM will generate appropriate
+     *            stylesheet on the fly. - If conversion ID is number the DCM will consider consider hand coded conversion.
+     * @return Hashtable containing two elements: - content-type (String) - content (Byte array)
+     * @throws GDEMException Thrown in case of conversion errors.
      */
     public Hashtable<String, Object> convert(String sourceURL, String convertId) throws GDEMException {
         return convert(sourceURL, convertId, null);
