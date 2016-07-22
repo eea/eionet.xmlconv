@@ -38,7 +38,7 @@
         <property name="persistenceProvider" value="${persistence.provider}" />
         <property name="initialAdmin" value="${initial.admin}" />
         <property name="fileAclfolder" value="${file.aclfolder}" />
-        <property name="fileLocalusers" value="${file.localgroups}" />
+        <property name="fileLocalusers" value="${file.localusers}" />
         <property name="fileLocalgroups" value="${file.localgroups}" />
         <property name="filePermissions" value="${file.permissions}" />
         <property name="dbDriver" value="${acl.db.driver}" />
