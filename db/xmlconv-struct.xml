@@ -363,5 +363,15 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="katsanas" id="rev-33">
+        <comment>
+            Added INSTANCE to Jobs table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="INSTANCE" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
     
 </databaseChangeLog>
