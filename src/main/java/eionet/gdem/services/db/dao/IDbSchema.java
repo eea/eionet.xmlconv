@@ -126,6 +126,7 @@ public interface IDbSchema {
     String XQ_ID_FLD = "QUERY_ID";
     String SRC_FILE_FLD = "SRC_FILE";
     String XQ_TYPE_FLD = "XQ_TYPE";
+    String INSTANCE = "INSTANCE";
 
     /**
      * Field names in FILE table.

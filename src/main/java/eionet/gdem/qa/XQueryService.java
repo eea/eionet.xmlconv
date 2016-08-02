@@ -61,6 +61,7 @@ import static org.quartz.TriggerBuilder.newTrigger;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static org.quartz.JobBuilder.newJob;
 
 /**
  * QA Service Service Facade. The service is able to execute different QA related methods that are called through XML/RPC and HTTP

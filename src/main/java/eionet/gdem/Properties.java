@@ -127,10 +127,11 @@ public class Properties {
     /** FME timeout. */
     public static int fmeTimeout = 0;
 
-    /** OpenOffice host. */
-    public static String openOfficeHost = null;
-    /** OpenOffice port. */
-    public static int openOfficePort = 8100;
+    /** Hostname. */
+    public static String hostname = null;
+    /** Is Rancher Boolean. */
+    public static int isRancher = 0;
+
     /** Implementation class for QA queries. Saxon is the default value, not hard-coded. */
     public static String engineClass = "eionet.gdem.qa.engines.SaxonImpl";
     /** XGawk program executable command. */
@@ -220,9 +221,8 @@ public class Properties {
         timeFormatPattern = getStringProperty("time.format.pattern");
         services_installed = getIntProperty("gdem.services");
 
-        openOfficeHost = getStringProperty("openoffice.service.host");
-        openOfficePort = getIntProperty("openoffice.service.port");
-
+        hostname = getStringProperty("config.hostname") == null ? "hostname_not_set" : getStringProperty("config.hostname");
+        isRancher = getIntProperty("config.isRancher");
 
         ldapUrl = getStringProperty("ldap.url");
         ldapContext = getStringProperty("ldap.context");
@@ -359,6 +359,14 @@ public class Properties {
 
     public static String getSchemaFolder() {
         return getStringProperty("schema.folder");
+    }
+    
+    public static String getHostname() {
+        return hostname;
+    }
+
+    public static int getIsRancher() {
+        return isRancher;
     }
 
 }

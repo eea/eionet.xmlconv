@@ -153,4 +153,11 @@ public interface IXQJobDao extends IDbSchema {
     */
     String[] getLatestProcessingJobStartTime() throws SQLException;
 
+    /**
+    *Get Jobs Status By XMLCONV Instance
+    * @return Job data
+    * @throws SQLException
+    */
+    String[][] getJobsSumInstanceAndStatus() throws SQLException;
+    
 }
