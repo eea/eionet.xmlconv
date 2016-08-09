@@ -68,14 +68,6 @@ public class ServerStatusObject implements Serializable {
     }
     
     public void insertJobStatusByInstance ( String instanceName, String jobStatus , Integer jobCount){
-        boolean found = false;
-        int i;
-        for (i = 0 ; i < this.serverStatus.size() ; i++) {
-            if ( isNull(instanceName) && isNull( this.serverStatus.get(i).instanceName) || ( ! isNull( this.serverStatus.get(i).instanceName) && this.serverStatus.get(i).instanceName.equals(instanceName) ) ) {
-                found = true;
-                break;
-            }
-        }
         
         if ( isNull(instanceName)) instanceName = "null";
         
@@ -86,11 +78,28 @@ public class ServerStatusObject implements Serializable {
             newElem.jobs_by_status = new ArrayList <jobsByStatus> () ;
             newElem.jobs_by_status.add( new jobsByStatus(jobStatus , jobCount));
             this.serverStatus.add( newElem );
-            
             index.put( instanceName , this.serverStatus.size() - 1 );
         }
         else {
             this.serverStatus.get( index.get ( instanceName ) ).jobs_by_status.add( new jobsByStatus(jobStatus , jobCount) );
+        }
+        
+    }
+    
+    public void insertHealthStatusByInstance ( String instanceName, String healthStatus ){
+        
+        if ( isNull(instanceName)) instanceName = "null";
+        
+        if ( isNull( index.get ( instanceName ) ) ){
+            ServerStatus newElem = new ServerStatus ();
+            newElem.instanceName = instanceName ;
+            newElem.health = healthStatus ;
+            newElem.jobs_by_status = new ArrayList <jobsByStatus> () ;
+            this.serverStatus.add( newElem );
+            index.put( instanceName , this.serverStatus.size() - 1 );
+        }
+        else {
+            this.serverStatus.get( index.get ( instanceName ) ).health = healthStatus;
         }
         
     }

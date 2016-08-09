@@ -30,7 +30,7 @@ response.setDateHeader("Expires", 0);
     
     function fetchServerData () {
         var request = new XMLHttpRequest();
-        request.open('GET', '/xmlconv/webapi/serverstatus', true);
+        request.open('GET', '<c:url value="/webapi/serverstatus" />', true);
 
         request.onload = function() {
           if (request.status >= 200 && request.status < 400) {
@@ -89,11 +89,10 @@ function f_displayRow (data , odd_even ) {
     the_row = "<tr class=\""+( odd_even ? "odd" : "even")+"\">"+tbl_row+"</tr>";
     $("#t_serverStatus tbody").append(the_row);
 }
+    
+    fetchServerData();
+    window.xmlconvHostname = String('<%=Properties.getHostname()%>');
 
-(function () {
-        window.xmlconvHostname = String(<%=Properties.getHostname()%>);
-        fetchServerData();
-})();
     // ]]>
     </script>
     
