@@ -212,7 +212,7 @@ public class ValidationService {
             // if schema is not available, then do not parse the XML and throw error
             if (!Utils.resourceExists(getValidatedSchema())) {
                 return validationFeedback.formatFeedbackText("Failed to read schema document from the following URL: "
-                        + getValidatedSchema(), QAFeedbackType.ERROR, isBlocker);
+                        + getValidatedSchema(), QAFeedbackType.BLOCKER, isBlocker);
             }
             Schema schemaObj = schemaManager.getSchema(getOriginalSchema());
             if (schemaObj != null) {
@@ -224,21 +224,21 @@ public class ValidationService {
 
         } catch (SAXParseException se) {
             return validationFeedback.formatFeedbackText("Document is not well-formed. Column: " + se.getColumnNumber()
-                    + "; line:" + se.getLineNumber() + "; " + se.getMessage(), QAFeedbackType.ERROR, isBlocker);
+                    + "; line:" + se.getLineNumber() + "; " + se.getMessage(), QAFeedbackType.BLOCKER, isBlocker);
         } catch (IOException ioe) {
             return validationFeedback.formatFeedbackText("Due to an IOException, the parser could not check the document. "
-                    + ioe.getMessage(), QAFeedbackType.ERROR, isBlocker);
+                    + ioe.getMessage(), QAFeedbackType.BLOCKER, isBlocker);
         } catch (Exception e) {
             Exception se = e;
             if (e instanceof SAXException) {
                 se = ((SAXException) e).getException();
             }
             if (se != null) {
-                se.printStackTrace(System.err);
+                LOGGER.error( "SAX Exception" , se.getMessage() );
             } else {
-                e.printStackTrace(System.err);
+                LOGGER.error( "Uknown exception" , e.getStackTrace() );
             }
-            return validationFeedback.formatFeedbackText("The parser could not check the document. " + e.getMessage(), QAFeedbackType.ERROR, isBlocker);
+            return validationFeedback.formatFeedbackText("The parser could not check the document. " + e.getMessage(), QAFeedbackType.BLOCKER, isBlocker);
         }
 
         validationFeedback.setValidationErrors(getErrorList());
