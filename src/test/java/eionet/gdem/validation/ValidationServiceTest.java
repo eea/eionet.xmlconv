@@ -174,7 +174,7 @@ public class ValidationServiceTest {
         // System.out.println(s);
 
         assertTrue(s.startsWith("<div"));
-        assertTrue(s.indexOf("<span id=\"feedbackStatus\" class=\"ERROR\"") > 0);
+        assertTrue(s.indexOf("<span id=\"feedbackStatus\" class=\"BLOCKER\"") > 0);
     }
 
     /**
