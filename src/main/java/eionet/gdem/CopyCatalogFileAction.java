@@ -19,14 +19,12 @@ public class CopyCatalogFileAction {
      * @throws IOException If an error occurs.
      */
     public CopyCatalogFileAction() throws IOException {
-        
-        String target = Properties.getStringProperty("catalogs");
+        String target = Properties.catalogPath;
         if (new File(target).exists()) {
             return;
         }
         String resource = this.getClass().getClassLoader().getResource("catalog.xml").getFile();
         copyFile(resource, target);
-
     }
 
     /**

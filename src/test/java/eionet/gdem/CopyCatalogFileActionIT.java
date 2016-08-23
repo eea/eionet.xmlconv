@@ -28,7 +28,7 @@ public class CopyCatalogFileActionIT {
 
     @Test
     public void copyCatalogTest() throws IOException {
-        String target = Properties.getStringProperty("catalogs");
+        String target = Properties.catalogPath;
         if (FileUtils.getFile(target).exists()) {
             FileUtils.deleteQuietly(FileUtils.getFile(target));
         }
@@ -37,7 +37,7 @@ public class CopyCatalogFileActionIT {
 
     @Test
     public void catalogExistingTest() throws IOException {
-        String target = Properties.getStringProperty("catalogs");
+        String target = Properties.catalogPath;
         if (FileUtils.getFile(target).exists()) {
             FileUtils.deleteQuietly(FileUtils.getFile(target));
         }

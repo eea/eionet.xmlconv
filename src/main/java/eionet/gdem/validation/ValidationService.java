@@ -34,6 +34,9 @@ import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 
 
+import org.apache.xerces.util.XMLCatalogResolver;
+import org.apache.xerces.xni.XMLResourceIdentifier;
+import org.apache.xerces.xni.parser.XMLInputSource;
 import org.apache.xml.resolver.tools.CatalogResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,7 +170,11 @@ public class ValidationService {
 
             reader.setErrorHandler(errHandler);
             XmlconvCatalogResolver catalogResolver = new XmlconvCatalogResolver();
-            reader.setEntityResolver(catalogResolver);
+            CustomCatalogResolver resolver = new CustomCatalogResolver();
+            String[] catalogs = {Properties.catalogPath};
+            resolver.setPreferPublic(true);
+            resolver.setCatalogList(catalogs);
+            reader.setEntityResolver(resolver);
 
             // make parser to validate
             reader.setFeature("http://xml.org/sax/features/validation", true);
@@ -356,6 +363,14 @@ public class ValidationService {
      *
      * @author Enriko Käsper
      */
+    public class CustomCatalogResolver extends XMLCatalogResolver {
+        @Override
+        public XMLInputSource resolveEntity(XMLResourceIdentifier resourceIdentifier) throws IOException {
+            LOGGER.info("Validation Service resolves entity with publicId=" + resourceIdentifier.getPublicId() + " ; systemId=" + resourceIdentifier.getBaseSystemId());
+            return super.resolveEntity(resourceIdentifier);
+        }
+    }
+
     public class XmlconvCatalogResolver extends CatalogResolver {
         @Override
         public Source resolve(String href, String base) throws TransformerException {

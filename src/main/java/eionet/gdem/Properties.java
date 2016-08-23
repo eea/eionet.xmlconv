@@ -63,6 +63,9 @@ public class Properties {
     /** Parent folder for other user folders. */
     public static String appRootFolder = null;
 
+    /** Catalog path **/
+    public static String catalogPath = null;
+
     /** Conversion service installation. */
     public static final int CONV_SERVICE = 1;
     /** QA service installation. */
@@ -174,6 +177,7 @@ public class Properties {
         xmlfileFolder = getStringProperty("xmlfile.folder");
         schemaFolder = getStringProperty("schema.folder");
         appRootFolder = getStringProperty("root.folder");
+        catalogPath = getStringProperty("config.catalog");
 
         // DB connection settings
         dbDriver = getStringProperty("db.driver");

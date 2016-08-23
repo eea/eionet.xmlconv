@@ -1,13 +1,9 @@
 <?xml version="1.0"?>
-<!DOCTYPE catalog PUBLIC "-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN"
-	"http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd" [
-  <!ENTITY dir "schema-cache" >
-]>
+<!DOCTYPE catalog PUBLIC "-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN" "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd">
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
-
-<!-- W3C -->
-<!--
-  <system systemId="http://www.w3.org/1999/xlink.xsd" uri="&dir;/www.w3.org/1999/xlink.xsd"/>
-  <system systemId="http://www.w3.org/2001/xml.xsd" uri="&dir;/www.w3.org/2001/xml.xsd"/>
--->
+	<uri name="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0" uri="file:///opt/xmlconv/schema-cache/dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd"/>
+	<rewriteSystem systemIdStartString="http://inspire.ec.europa.eu" rewritePrefix="file:///opt/xmlconv/schema-cache/inspire.ec.europa.eu"/>
+	<rewriteSystem systemIdStartString="http://portele.de" rewritePrefix="file:///opt/xmlconv/schema-cache/portele.de"/>
+	<rewriteSystem systemIdStartString="http://www.w3.org" rewritePrefix="file:///opt/xmlconv/schema-cache/www.w3.org"/>
+	<rewriteSystem systemIdStartString="http://schemas.opengis.net" rewritePrefix="file:///opt/xmlconv/schema-cache/schemas.opengis.net"/>
 </catalog>
