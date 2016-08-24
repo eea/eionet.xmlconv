@@ -198,7 +198,7 @@ public class XQueryTask extends Thread {
                     } catch (GDEMException e) {
                         // store error in feedback, it could be XML processing error
                         StringBuilder errBuilder = new StringBuilder();
-                        errBuilder.append("<div class=\"feedbacktext\"><h2>Unexpected error occured!</h2>");
+                        errBuilder.append("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">Unexpected error occured!</span><h2>Unexpected error occured!</h2>");
                         errBuilder.append(Utils.escapeXML(e.toString()));
                         errBuilder.append("</div>");
                         IOUtils.write(errBuilder.toString(), out);
