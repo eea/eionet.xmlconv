@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE catalog PUBLIC "-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN" "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd">
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
-	<uri name="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0" uri="file:///opt/xmlconv/schema-cache/dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd"/>
+	<rewriteSystem systemIdStartString="http://dd.eionet.europa.eu" rewritePrefix="file:///opt/xmlconv/schema-cache/dd.eionet.europa.eu"/>
 	<rewriteSystem systemIdStartString="http://inspire.ec.europa.eu" rewritePrefix="file:///opt/xmlconv/schema-cache/inspire.ec.europa.eu"/>
 	<rewriteSystem systemIdStartString="http://portele.de" rewritePrefix="file:///opt/xmlconv/schema-cache/portele.de"/>
 	<rewriteSystem systemIdStartString="http://www.w3.org" rewritePrefix="file:///opt/xmlconv/schema-cache/www.w3.org"/>
