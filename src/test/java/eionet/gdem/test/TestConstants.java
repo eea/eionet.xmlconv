@@ -29,6 +29,7 @@ public class TestConstants {
     public static final String SEED_MULTIVALUES_XLSX = "seed-multivalues07.xlsx";
     public static final String SEED_FORMULAS_XLSX = "seed-formulas07.xlsx";
 
+    public static final String AQD_SCHEMALOCATION = "xmlfile/aqd-schemalocation.xml";
     public static final String SEED_MULTIVALUES_ODS = "seed-multivalues.ods";
     public static final String SEED_FORMULAS_ODS = "seed-formulas.ods";
     public static final String SEED_GENERAL_REPORT_XML = "seed-general-report.xml";

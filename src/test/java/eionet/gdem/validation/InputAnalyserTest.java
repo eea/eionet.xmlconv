@@ -3,6 +3,7 @@
  */
 package eionet.gdem.validation;
 
+import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
@@ -14,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS InputAnalyserTest
+ *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
@@ -51,5 +53,18 @@ public class InputAnalyserTest {
         assertEquals(analyser.isDTD(), true);
         assertEquals(analyser.getRootElement(), "xliff");
         assertEquals(analyser.getSchemaOrDTD(), "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd");
+    }
+    /**
+     * Tests if xmlconv is able to find schema from xsi:schemaLocation
+     * @throws Exception
+     */
+    @Test
+    public void testSchemaLocationFinder() throws DCMException {
+        InputAnalyser analyzer = new InputAnalyser();
+        analyzer.parseXML(TestUtils.getSeedURL(TestConstants.AQD_SCHEMALOCATION, this));
+
+        assertEquals(analyzer.hasNamespace(), true);
+        assertEquals(analyzer.getSchemaNamespace(), "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0");
+        assertEquals(analyzer.getSchemaOrDTD(), "http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd");
     }
 }

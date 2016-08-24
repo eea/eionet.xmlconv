@@ -83,7 +83,7 @@ public class SchemaFinder extends DefaultHandler {
                     // int l = sch_val.indexOf(" ");
                     // schemaLocation=sch_val.substring(l+1);
                     String schemaWithNS = attrs.getValue(i);
-                    String[] splitted = schemaWithNS.split(" ");
+                    String[] splitted = schemaWithNS.split("\\s+");
                     if (splitted.length > 1) {
                         setSchemaNamespace(splitted[0]);
                         setSchemaLocation(splitted[1]);
