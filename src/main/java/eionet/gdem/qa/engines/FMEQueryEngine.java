@@ -1,8 +1,10 @@
 package eionet.gdem.qa.engines;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.SocketTimeoutException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -135,7 +137,9 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
             response = client_.execute(method);
             if (response.getStatusLine().getStatusCode() == 200) {
                 HttpEntity entity = response.getEntity();
-                token_ = entity.getContent().toString();
+                InputStream stream = entity.getContent();
+                token_ = new String(IOUtils.toByteArray(stream), StandardCharsets.UTF_8);
+                IOUtils.closeQuietly(stream);
             } else {
                 LOGGER.error("FME authentication failed. Could not retrieve a Token");
                 throw new GDEMException("FME authentication failed");
