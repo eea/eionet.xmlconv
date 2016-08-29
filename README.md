@@ -1,36 +1,38 @@
+## QA and converters (XMLCONV) software
 
-## QA and Converters (XMLCONV) Software    
+### Prerequisites
 
-### Prerequisites:
+* Java 1.8
+* Maven 3.3.9
+* Tomcat 8 or higher
+* MySQL 5.5
+* Docker 1.6 or higher
 
-* Java 1.6
-* Maven 2.0.4 or higher
-* Tomcat 5.5 or higher
-* MySql 5.5 or higher
-
-
-## Quick Installation Guide:
+## Installation Guide
 
 Create local.properties file by copying the contents from default.properties as an example.
-Edit the values of system paths, DB url and other proeprties to what is relevant.
+Edit the values of system paths, database url and other properties to what is relevant.
 
 "app.home" property represents the system folder which is the root for subfolders where all content files will be stored.
-Tomcat user should have write permissions on "app.home" subfolders.
+Tomcat user should have write permissions on "app.home" subdirectories.
 
-If it is a first time install then acl folder should be copied manually into ${app.home}/acl
+### Development Phase, building the .war
 
+The default profile is using the docker maven plugin to setup a mysql database for use with the integration tests phase.
+Ideally, the mysql database should be using tmpfs filesystem, in order for the integration tests to run faster.
+To create a .war file for deployment with tomcat, you can run
 
+    $ mvn clean install
 
-### Building the war:
+If you need to use a custom mysql database defined in the local.properties file, you can create a .war file using:
 
-For developers that want to override properties at compile time, they can use the development profile
+    $ mvn -Plocal clean install
 
-	$ mvn -P development clean install -Dmaven.test.skip=true
+To skip the integration tests (not recommended), you can add -Dmaven.test.skip=true e.g
 
-If you want to resolve the placeholders inside the properties file when the application is deployed then:
-	
-	$ mvn -P docker clean install -Dmaven.test.skip=true
+    $ mvn -Plocal clean install -Dmaven.test.skip=true
 
+### Runtime configuration
 
 Now you need to register to the JVM the key/value pairs inside the local.properties file. In order to do that you have 2 options:
 
