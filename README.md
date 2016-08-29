@@ -1,4 +1,4 @@
-## QA and converters (XMLCONV) software
+## QA and Converters (XMLCONV) software
 
 ### Prerequisites
 
@@ -16,7 +16,7 @@ Edit the values of system paths, database url and other properties to what is re
 "app.home" property represents the system folder which is the root for subfolders where all content files will be stored.
 Tomcat user should have write permissions on "app.home" subdirectories.
 
-### Development Phase, building the .war
+### Development Phase - Building the .war
 
 The default profile is using the docker maven plugin to setup a mysql database for use with the integration tests phase.
 Ideally, the mysql database should be using tmpfs filesystem, in order for the integration tests to run faster.
@@ -24,7 +24,7 @@ To create a .war file for deployment with tomcat, you can run
 
     $ mvn clean install
 
-If you need to use a custom mysql database defined in the local.properties file, you can create a .war file using:
+If you want to use a custom mysql database for unit tests, define in the local.properties file the config.test.* properties for your own database, and then build the WAR :
 
     $ mvn -Plocal clean install
 
@@ -34,21 +34,25 @@ To skip the integration tests (not recommended), you can add -Dmaven.test.skip=t
 
 ### Runtime configuration
 
-Now you need to register to the JVM the key/value pairs inside the local.properties file. In order to do that you have 2 options:
+The Xmlconv application needs a number of configuration options, such as database connection information, FME credentials, BaseX server config etc.
 
-1. Add all properties to JVM using the CATALINA_OPTS variable that tomcat reads before it deploys the war file:
-	
-	
-		$ vim ${CATALINA_HOME}/bin/setenv.sh
+Every configuration option can be provided either in the properties file that the app is built with, or with an environmental variable at runtime. 
+The environmental configuration of a property is used if found. 
+This way, whatever the local.properties the app was built with, it can run at any host through environment configuration, for example by changing the database config and app.home.
+A helpful configuration key named initial.admin can be set to bootstrap in the ACLs the initial administrators at runtime. 
+In case you want to provide environmentally the key/value pairs you have to set CATALINA_OPTS in Tomcat with the key/value pairs you want to set:
 
-Manually add all key/value pairs that are inside the local.properties file.
+e.g. CATALINA_OPTS=-Dapp.home=/opt/xmlconv -Dapp.host=converstest.eionet.europa.eu -Dconfig.db.jdbcurl=jdbc:mysql://mysql:3306/xmlconv -Dconfig.db.driver=com.mysql.jdbc.Driver -Dconfig.db.user=root -Dconfig.db.password=xxxxx -Dbasexserver.host=basex -Dbasexserver.port=1984 -Dbasexserver.user=admin -Dbasexserver.password=admin
 
-	CATALINA_OPTS="-Dapp.home=/home/user/xmlconv -D...."
+### Docker configuration
 
-2. By convention the xmlconv application will search for a system property with the name docker.config.xmlconv. This system property should contain the absolute path for local.properties file. When the application starts if the path exists it will load and cache all the key-values defined in the local.properties. In order to register the values to the JVM you need to:
+After having built the WAR file with maven, it can be directly used in docker containers thanks to the environmental configuration. The Dockerfile can be used to build a ready-to-deploy image of xmlconv :
 
-		$ vim ${CATALINA_HOME}/bin/setenv.sh
+    $ docker build -t eeacms/xmlconv:latest .
 
-Inside setenv.sh
+There is a script docker.hub.sh that builds the WAR and pushes to the Docker Hub, one to the latest tag, and one with a timestamp, for versioning of images.
 
-	CATALINA_OPTS="-Ddocker.config.xmlconv=/home/user/local.properties -Dapp.host=localhost:8080 -Dconfig.log.file=/tmp/xmlconv.log"
+### Rancher deployments
+
+An example docker-compose for usage on Rancher deployments can be found on docker/xmlconv along with an example environment file.
+
