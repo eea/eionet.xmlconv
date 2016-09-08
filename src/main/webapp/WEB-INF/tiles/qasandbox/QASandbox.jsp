@@ -233,7 +233,7 @@
                                             <bean:write name="qascript" property="fileName" />
                                         </html:link>
                                         (<bean:write name="qascript" property="scriptType" />)
-                                        <logic:equal value="true"  name="qascript.permissions" property="qsuPrm" >
+                                        <logic:equal value="true" name="qascript.permissions" property="qsuPrm" >
                                           <%--  If scriptType is NOT 'FME' --%>
                                             <logic:notEqual name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
                                               <html:link page="/do/editQAScriptInSandbox" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.editScriptTitle">
@@ -284,4 +284,28 @@
             </logic:equal>
         </table>
     </html:form>
+    <logic:equal value="true" name="qascript.permissions" property="qsuPrm" >
+        <div>
+            <h3>Upload files</h3>
+            <div>
+            <form action="/qasandbox/upload"
+                  class="dropzone"
+                  id="my-dropzone"></form>
+            </div>
+        </div>
+    </logic:equal>
+    <script src="https://cdn.jsdelivr.net/dropzone/4.3.0/dropzone.min.js"></script>
+    <script>
+        Dropzone.options.myDropzone = {
+            acceptedFiles: "application/xml, text/xml",
+            maxFiles: "4",
+            createImageThumbnails: "false",
+            addRemoveLinks: "true",
+            init: function() {
+                this.on("success", function (file, responseText) {
+                    console.log(responseText);
+                });
+            }
+        };
+    </script>
 </div>

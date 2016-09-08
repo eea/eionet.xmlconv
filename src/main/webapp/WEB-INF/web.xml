@@ -115,10 +115,6 @@
         <filter-name>CAS Filter</filter-name>
         <url-pattern>/log/*</url-pattern>
     </filter-mapping>
-
-
-
-
     <filter-mapping>
         <filter-name>Set Character Encoding</filter-name>
         <servlet-name>action</servlet-name>
@@ -150,6 +146,14 @@
         <servlet-name>RpcRouter</servlet-name>
         <servlet-class>eionet.rpcserver.servlets.XmlRpcRouter</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TmpUploadServlet</servlet-name>
+        <servlet-class>eionet.gdem.web.struts.qasandbox.TmpUploadServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TmpUploadServlet</servlet-name>
+        <url-pattern>/qasandbox/upload</url-pattern>
+    </servlet-mapping>
     <servlet>
         <servlet-name>downloadServlet</servlet-name>
         <servlet-class>eionet.gdem.web.FileDownloadServlet</servlet-class>
