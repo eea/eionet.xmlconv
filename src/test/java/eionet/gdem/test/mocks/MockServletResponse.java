@@ -5,10 +5,8 @@ package eionet.gdem.test.mocks;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+
+import java.util.*;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
@@ -167,6 +165,11 @@ public class MockServletResponse implements HttpServletResponse {
         this.contentLength = length;
     }
 
+    @Override
+    public void setContentLengthLong(long l) {
+
+    }
+
     public void setContentType(String type) {
         this.contentType = type;
     }
@@ -188,6 +191,16 @@ public class MockServletResponse implements HttpServletResponse {
             return (String) headers.get(key);
         else
             return null;
+    }
+
+    @Override
+    public Collection<String> getHeaders(String s) {
+        return null;
+    }
+
+    @Override
+    public Collection<String> getHeaderNames() {
+        return null;
     }
 
     public int getStatus() {

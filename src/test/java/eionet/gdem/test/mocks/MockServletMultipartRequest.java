@@ -16,12 +16,25 @@ import javax.servlet.http.HttpServletRequest;
  * @author Enriko Käsper, TietoEnator Estonia AS MockHttpMultipartServletRequest
  */
 
-public class MockServletMultipartRequest extends MockServletRequest implements HttpServletRequest {
+public class MockServletMultipartRequest extends MockServletRequest {
 
     private String contentType = "multipart/form-data; ";
     private static String boundary = "---------------------------7d226f700d0";
     private static final int BUFF_SIZE = 1024;
     private static final byte[] buffer = new byte[BUFF_SIZE];
+
+    @Override
+    public String getMethod() {
+        return "POST";
+    }
+
+    @Override
+    public String getHeader(String arg0) {
+        if ("Content-length".equals(arg0)) {
+            return String.valueOf(getContentLength());
+        }
+        throw new UnsupportedOperationException();
+    }
 
     public String getContentType() {
         return contentType.concat("boundary=").concat(boundary);
