@@ -92,7 +92,7 @@ public class AppServletContextListener implements ApplicationListener {
            File f = new File(directory);
            try {
                FileUtils.cleanDirectory(f);
-           } catch (IOException e) {
+           } catch (Exception e) {
                LOGGER.error("Could not remove directory: " + f.getAbsolutePath());
            }
        }
