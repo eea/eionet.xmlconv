@@ -1,12 +1,12 @@
 package eionet.gdem.web.struts.qasandbox;
 
+import eionet.gdem.Properties;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.ProgressListener;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -32,8 +35,9 @@ public class TmpUploadServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        //LOGGER.info("The session Id is: " + session.getId());
         try {
+            String tmpdir = Properties.appRootFolder + File.separator + "tmpfile";
+            String sessionDir = tmpdir + File.separator + session.getId();
             ServletFileUpload upload = new ServletFileUpload(new DiskFileItemFactory());
             ProgressListenerImpl progressListener = new ProgressListenerImpl();
             upload.setProgressListener(progressListener);
@@ -49,33 +53,21 @@ public class TmpUploadServlet extends HttpServlet {
                     String fieldName = item.getFieldName();
                     String fileName = FilenameUtils.getName(item.getName());
                     InputStream fileContent = item.getInputStream();
-                    File uploadFile = new File(System.getProperty("java.io.tmpdir") + File.separator + session.getId() + fileName);
-                    //OutputStream fileOutput = new FileOutputStream(uploadFile);
-                    LOGGER.info("Saving temporary file: " + item.getName() + "for SessionId: " + session.getId());
-                    item.write(uploadFile);
-                    /*try {
-                        byte[] buf = new byte[1024];
-                        int len;
-                        while((len=fileContent.read(buf))>0){
-                            fileOutput.write(buf,0,len);
-                            //out.println(progressListener.getMessage());
-                            //out.flush();
-                        }
-                        fileOutput.close();
+                    try {
+                        Files.createDirectory(Paths.get(sessionDir));
+                    } catch (FileAlreadyExistsException e) {
+                        // Ignore
+                    }
 
-                        resp.setStatus(HttpServletResponse.SC_OK);
-                        out.write("{ status: OK, file: " + fileName + "}");
-                        out.flush();
-                        out.close();
-                    } catch (Exception e) {
-                        LOGGER.error("Error: " + e);
-                        resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                    }    */
+                    File uploadFile = new File(sessionDir + File.separator + fileName);
+                    LOGGER.info("Saving temporary file: " + item.getName() + " for SessionId: " + session.getId());
+                    item.write(uploadFile);
                     fileContent.close();
                     resp.setContentType("application/json");
                     resp.setStatus(HttpServletResponse.SC_OK);
+                    String outputUrl = "http://" + Properties.appHost + ("".equals(req.getContextPath()) ? "" : File.separator + req.getContextPath()) + File.separator + "tmpfile" + File.separator + session.getId() + File.separator + fileName;
                     PrintWriter out = resp.getWriter();
-                    out.write("{ success: OK }");
+                    out.write("{ \"url\": \"" + outputUrl + "\" }");
                     out.close();
                 }
             }

@@ -21,6 +21,7 @@
 package eionet.gdem.web.listeners;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,7 @@ import eionet.gdem.web.struts.qascript.QAScriptListLoader;
 import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
 import javax.servlet.ServletContext;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -67,7 +69,7 @@ public class AppServletContextListener implements ApplicationListener {
     private void checkFolders() {
         String[] folders
                 = {Properties.xslFolder, Properties.getXslFolder(), Properties.getTmpFolder(), Properties.getXmlfileFolder(),
-                    Properties.schemaFolder};
+                    Properties.schemaFolder, Properties.tmpfileDir};
 
         for (String folder : folders) {
             File f = new File(folder);
@@ -78,6 +80,22 @@ public class AppServletContextListener implements ApplicationListener {
                 }
             }
         }
+    }
+
+    /**
+     * Clears directories from left-over files
+     *
+     */
+    private void cleanDirectories() {
+       String[] directories = {Properties.tmpfileDir};
+       for (String directory : directories) {
+           File f = new File(directory);
+           try {
+               FileUtils.cleanDirectory(f);
+           } catch (IOException e) {
+               LOGGER.error("Could not remove directory: " + f.getAbsolutePath());
+           }
+       }
     }
 
     /**
@@ -121,7 +139,7 @@ public class AppServletContextListener implements ApplicationListener {
             Properties.convFile = context.getRealPath("/dcm/conversions.xml");
             Properties.odsFolder = context.getRealPath("/opendoc/ods");
             Properties.appHome = context.getRealPath("/WEB-INF/classes");
-
+            cleanDirectories();
             checkFolders();
             context.setAttribute("qascript.resulttypes",
                     loadConvTypes(XQScript.SCRIPT_RESULTTYPES));

@@ -4,6 +4,12 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<style>
+    .dz-success-mark { display:none; }
+    .dz-error-mark { display:none; }
+</style>
 
 <html:xhtml/>
 <div style="width:100%;">
@@ -285,27 +291,29 @@
         </table>
     </html:form>
     <logic:equal value="true" name="qascript.permissions" property="qsuPrm" >
-        <div>
-            <h3>Upload files</h3>
-            <div>
-            <form action="/qasandbox/upload"
-                  class="dropzone"
-                  id="my-dropzone"></form>
-            </div>
-        </div>
+        <h3>File Upload</h3>
+        <div id="previews" class="dropzone-previews"></div>
+        <button id="clickable">Select file</button>
     </logic:equal>
-    <script src="https://cdn.jsdelivr.net/dropzone/4.3.0/dropzone.min.js"></script>
+    <script type="text/javascript" src="<c:url value="/scripts/dropzone.min.js"/>"></script>
     <script>
-        Dropzone.options.myDropzone = {
-            acceptedFiles: "application/xml, text/xml",
-            maxFiles: "4",
+        new Dropzone("div#previews", {
+            url: "/qasandbox/upload",
+            clickable: "#clickable",
+            acceptedFiles: ".xml, .gml",
+            maxFiles: "1",
             createImageThumbnails: "false",
             addRemoveLinks: "true",
             init: function() {
                 this.on("success", function (file, responseText) {
-                    console.log(responseText);
+                    $("#txtSourceUrl").val(responseText.url)
+                });
+                this.on("addedfile", function() {
+                    if (this.files[1]!=null){
+                        this.removeFile(this.files[0]);
+                    }
                 });
             }
-        };
+        });
     </script>
 </div>

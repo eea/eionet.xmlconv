@@ -48,8 +48,13 @@ public class Properties {
 
     /** Application classes (WEB-INF/classes) path in file system. */
     public static String appHome = null;
+
+    /** App host **/
+    public static String appHost = null;
     /** Folder for temporary files. */
     public static String tmpFolder = null;
+    /** Tempfile directory for QASandbox */
+    public static String tmpfileDir = null;
     /** Folder for XSLs. */
     public static String xslFolder = null;
     /** Folder for OpenDocument helper files. */
@@ -174,10 +179,13 @@ public class Properties {
         queriesFolder = getStringProperty("queries.folder");
         xslFolder = getStringProperty("xsl.folder");
         tmpFolder = getStringProperty("tmp.folder");
+        tmpfileDir = getStringProperty("tmpfile.dir");
+
         xmlfileFolder = getStringProperty("xmlfile.folder");
         schemaFolder = getStringProperty("schema.folder");
         appRootFolder = getStringProperty("root.folder");
         catalogPath = getStringProperty("config.catalog");
+        appHost = getStringProperty("app.host");
 
         // DB connection settings
         dbDriver = getStringProperty("db.driver");

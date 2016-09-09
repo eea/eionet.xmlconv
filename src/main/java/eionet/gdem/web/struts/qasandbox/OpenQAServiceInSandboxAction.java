@@ -98,7 +98,7 @@ public class OpenQAServiceInSandboxAction extends Action {
             }
         } catch (DCMException e) {
             e.printStackTrace();
-            LOGGER.error("QA Sandbox fomr error error", e);
+            LOGGER.error("QA Sandbox form error error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveMessages(httpServletRequest, errors);
         }
