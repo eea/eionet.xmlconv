@@ -29,7 +29,7 @@ import org.apache.commons.io.IOUtils;
 
 
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,9 +85,9 @@ public class ConvertedFileDto {
     /**
      * Get file content as byte array
      * @return File contents
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public byte[] getFileContentAsByteArray() throws GDEMException {
+    public byte[] getFileContentAsByteArray() throws XMLConvException {
         FileInputStream fis = null;
         File convFile = new File(getFilePath());
         byte[] result;
@@ -96,7 +96,7 @@ public class ConvertedFileDto {
             result = IOUtils.toByteArray(fis);
         } catch (IOException e) {
             LOGGER.error("Converted file not found: " + getFilePath());
-            throw new GDEMException("Converted file not found: " + getFileName());
+            throw new XMLConvException("Converted file not found: " + getFileName());
         } finally {
             IOUtils.closeQuietly(fis);
         }

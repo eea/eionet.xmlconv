@@ -32,7 +32,7 @@ import java.util.Vector;
 
 
 import eionet.gdem.Constants;
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;

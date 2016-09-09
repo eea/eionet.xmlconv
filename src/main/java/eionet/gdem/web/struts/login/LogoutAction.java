@@ -15,7 +15,7 @@ import org.apache.struts.action.ActionMapping;
 
 import eionet.acl.AppUser;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.web.struts.qascript.QAScriptListLoader;
@@ -28,7 +28,7 @@ public class LogoutAction extends Action {
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
-            HttpServletResponse httpServletResponse) throws IOException, GDEMException {
+            HttpServletResponse httpServletResponse) throws IOException, XMLConvException {
 
         httpServletRequest.setCharacterEncoding("UTF-8");
 

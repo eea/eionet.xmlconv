@@ -25,7 +25,7 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.xml.VtdHandler;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
@@ -70,9 +70,9 @@ public class QAResultPostProcessor {
      * @param result QA result
      * @param xmlSchema XML Schema
      * @return Processed result
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public String processQAResult(String result, Schema xmlSchema) throws GDEMException {
+    public String processQAResult(String result, Schema xmlSchema) throws XMLConvException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         this.warnMessage = getWarningMessage(xmlSchema);
         if (warnMessage != null) {
@@ -82,7 +82,7 @@ public class QAResultPostProcessor {
             try {
                 out.write(result.getBytes());
             } catch (IOException e) {
-                throw new GDEMException("Couldn't write to OutputStream: " + e.getMessage());
+                throw new XMLConvException("Couldn't write to OutputStream: " + e.getMessage());
             }
         }
 
@@ -94,9 +94,9 @@ public class QAResultPostProcessor {
      * @param result Result
      * @param xmlSchemaUrl Schema URL
      * @return Processed result
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public String processQAResult(String result, String xmlSchemaUrl) throws GDEMException {
+    public String processQAResult(String result, String xmlSchemaUrl) throws XMLConvException {
 
         Schema schema = getSchemaObject(xmlSchemaUrl);
         return processQAResult(result, schema);

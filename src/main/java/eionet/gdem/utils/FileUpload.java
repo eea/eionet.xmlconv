@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 
 /**
@@ -69,9 +69,9 @@ public class FileUpload {
      * Constructor. Creates a new FileUpload object
      *
      * @param fldName - folder for the uploaded file
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public FileUpload(String fldName) throws GDEMException {
+    public FileUpload(String fldName) throws XMLConvException {
         if (fldName == null) {
             _folderName = Properties.xslFolder; // props.getString("xsl.folder");
         } else {
@@ -184,9 +184,9 @@ public class FileUpload {
      * computer, where servlet runs
      *
      * @param req request
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public File uploadFile(HttpServletRequest req) throws GDEMException {
+    public File uploadFile(HttpServletRequest req) throws XMLConvException {
 
         // helper arrays
         byte[] bt1 = new byte[4096];
@@ -204,7 +204,7 @@ public class FileUpload {
             int contentLength = req.getContentLength();
             lenRcvd = 0;
             if (contentLength == -1) {
-                throw new GDEMException("Invalid HTTP POST. Content length is unknown.");
+                throw new XMLConvException("Invalid HTTP POST. Content length is unknown.");
             }
             //
             int boundaryPos;
@@ -300,18 +300,18 @@ public class FileUpload {
                                     try {
                                         file.delete();
                                     } catch (Exception _ex) {
-                                        throw new GDEMException("Error deleting temporary file: " + _ex.toString());
+                                        throw new XMLConvException("Error deleting temporary file: " + _ex.toString());
                                     }
                                     tmpFile.renameTo(file);
                                     return file;
                                 } // sync
                             } catch (Exception _ex) {
-                                throw new GDEMException("Error renaming temporary file: " + _ex.toString());
+                                throw new XMLConvException("Error renaming temporary file: " + _ex.toString());
                             }
 
                         } else { // end-if file = 0kb or does not exist
                             tmpFile.delete();
-                            throw new GDEMException("File: " + fileName + " does not exist or contains no data.");
+                            throw new XMLConvException("File: " + fileName + " does not exist or contains no data.");
                         }
 
                     }
@@ -320,10 +320,10 @@ public class FileUpload {
             } // end while
             // +RV020508
             if (contentLength != lenRcvd) {
-                throw new GDEMException("Canceled upload: expected " + contentLength + " bytes, received " + lenRcvd + " bytes.");
+                throw new XMLConvException("Canceled upload: expected " + contentLength + " bytes, received " + lenRcvd + " bytes.");
             }
         } catch (IOException e) {
-            throw new GDEMException("Error uploading file: " + e.toString());
+            throw new XMLConvException("Error uploading file: " + e.toString());
         } finally {
             IOUtils.closeQuietly(si);
         }

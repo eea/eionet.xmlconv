@@ -16,7 +16,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
@@ -70,7 +70,7 @@ public class ConvertPushAction extends BaseAction {
                 convert_id = (String) params.get(CONVERT_ID_PARAM_NAME);
             }
             if (Utils.isNullStr(convert_id)) {
-                throw new GDEMException(CONVERT_ID_PARAM_NAME + " parameter is missing from request.");
+                throw new XMLConvException(CONVERT_ID_PARAM_NAME + " parameter is missing from request.");
             }
 
             // get the file as inputstream from request

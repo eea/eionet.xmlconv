@@ -1,7 +1,7 @@
 package eionet.gdem.xml;
 
 import com.ximpleware.*;
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public class VtdHandlerTest {
     }
 
     @Test
-    public void addWarningMessageTest() throws GDEMException, IOException {
+    public void addWarningMessageTest() throws XMLConvException, IOException {
         VtdHandler handler = new VtdHandler();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         String xml = "<html><div class=\"feedbacktext\">test</div></html>";
@@ -51,7 +51,7 @@ public class VtdHandlerTest {
     }
 
     @Test
-    public void addWarningWrongInput() throws GDEMException, IOException {
+    public void addWarningWrongInput() throws XMLConvException, IOException {
         VtdHandler handler = new VtdHandler();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         String xml = "<html><div class=\"feedback\">test</div></html>";
@@ -62,8 +62,8 @@ public class VtdHandlerTest {
     }
 
     @Test
-    public void addWarningNoXML() throws GDEMException, IOException {
-        exception.expect(GDEMException.class);
+    public void addWarningNoXML() throws XMLConvException, IOException {
+        exception.expect(XMLConvException.class);
         VtdHandler handler = new VtdHandler();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         String xml = "test";

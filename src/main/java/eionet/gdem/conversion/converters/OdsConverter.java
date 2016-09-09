@@ -32,7 +32,7 @@ import org.apache.commons.io.IOUtils;
 
 
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.odf.OpenDocumentProcessor;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ public class OdsConverter extends ConvertStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(OdsConverter.class);
 
     @Override
-    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException,
+    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws XMLConvException,
     Exception {
         FileOutputStream xmlOut = null;
         String xmlFile =  Utils.getUniqueTmpFileName(".xml");
@@ -61,7 +61,7 @@ public class OdsConverter extends ConvertStrategy {
 
         } catch (FileNotFoundException e) {
             LOGGER.error("Error " + e.toString(), e);
-            throw new GDEMException("Error transforming OpenDocument Spreadhseet " + e.toString(), e);
+            throw new XMLConvException("Error transforming OpenDocument Spreadhseet " + e.toString(), e);
         } finally {
             IOUtils.closeQuietly(xmlOut);
         }

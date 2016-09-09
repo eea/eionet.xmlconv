@@ -29,7 +29,7 @@ import java.util.Map;
 
 
 import eionet.gdem.Constants;
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Streams;
@@ -56,7 +56,7 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
     protected abstract String getShellCommand(String dataFile, String scriptFile, Map<String, String> params);
 
     @Override
-    protected void runQuery(XQScript script, OutputStream result) throws GDEMException {
+    protected void runQuery(XQScript script, OutputStream result) throws XMLConvException {
 
         String tmpScriptFile = null;
         InputFile src = null;
@@ -70,7 +70,7 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
             } else if (!Utils.isNullStr(script.getScriptFileName())) {
                 // fisXsl=new FileInputStream(script.getScriptFileName());
             } else {
-                throw new GDEMException("XQuery engine could not find script source or script file name!");
+                throw new XMLConvException("XQuery engine could not find script source or script file name!");
             }
             // Build InputSource for xml file
             src = new InputFile(script.getSrcFileUrl());
@@ -110,12 +110,12 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
                 Utils.deleteFile(srcFile);
             }
             if (throwError) {
-                throw new GDEMException(cmdError);
+                throw new XMLConvException(cmdError);
             }
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("==== CATCHED EXCEPTION " + e.toString());
-            throw new GDEMException(e.getMessage());
+            throw new XMLConvException(e.getMessage());
         } finally {
             try {
                 result.close();

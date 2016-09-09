@@ -1,6 +1,6 @@
 package eionet.gdem.qa.engines;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.qa.XQScript;
 import org.basex.core.BaseXException;
 import org.basex.core.Context;
@@ -24,7 +24,7 @@ public class BaseXLocalImpl extends QAScriptEngineStrategy {
     private static final Logger logger = LoggerFactory.getLogger(BaseXLocalImpl.class);
 
     @Override
-    protected void runQuery(XQScript script, OutputStream result) throws GDEMException {
+    protected void runQuery(XQScript script, OutputStream result) throws XMLConvException {
 
         Context context = new Context();
         try {

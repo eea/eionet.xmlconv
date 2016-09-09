@@ -21,7 +21,7 @@
 
 package eionet.gdem.dcm;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.converters.TransformerErrorListener;
 import eionet.gdem.qa.engines.SaxonProcessor;
 import eionet.gdem.utils.InputFile;
@@ -48,9 +48,9 @@ public class XslGenerator {
      * @param xmlURL The XML URL
      * @param conversionURL Conversion URL
      * @return InputStream
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public static ByteArrayInputStream convertXML(String xmlURL, String conversionURL) throws GDEMException {
+    public static ByteArrayInputStream convertXML(String xmlURL, String conversionURL) throws XMLConvException {
         String cacheId = xmlURL + "_" + conversionURL;
         byte[] result = (byte[]) MemCache.getContent(cacheId);
         if (result == null) {
@@ -65,9 +65,9 @@ public class XslGenerator {
      * @param sourceURL Source URL
      * @param xslFile XSL file
      * @return XSL byte array
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    private static byte[] makeDynamicXSL(String sourceURL, String xslFile) throws GDEMException {
+    private static byte[] makeDynamicXSL(String sourceURL, String xslFile) throws XMLConvException {
         InputFile src = null;
         byte[] result = null;
         try {
@@ -95,11 +95,11 @@ public class XslGenerator {
 
             result = os.toByteArray();
         } catch (MalformedURLException mfe) {
-            throw new GDEMException("Bad URL : " + mfe.toString(), mfe);
+            throw new XMLConvException("Bad URL : " + mfe.toString(), mfe);
         } catch (IOException ioe) {
-            throw new GDEMException("Error opening URL " + ioe.toString(), ioe);
+            throw new XMLConvException("Error opening URL " + ioe.toString(), ioe);
         } catch (Exception e) {
-            throw new GDEMException("Error converting: " + e.toString(), e);
+            throw new XMLConvException("Error converting: " + e.toString(), e);
         } finally {
             try {
                 if (src != null) {

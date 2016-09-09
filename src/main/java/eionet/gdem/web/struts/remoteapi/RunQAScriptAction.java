@@ -12,7 +12,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.qa.XQueryService;
 import eionet.gdem.utils.Utils;
@@ -54,13 +54,13 @@ public class RunQAScriptAction extends BaseMethodAction {
                 scriptId = (String) ((Object[]) params.get(SCRIPT_ID_PARAM_NAME))[0];
             }
             if (Utils.isNullStr(scriptId)) {
-                throw new GDEMException(SCRIPT_ID_PARAM_NAME + " parameter is missing from request.");
+                throw new XMLConvException(SCRIPT_ID_PARAM_NAME + " parameter is missing from request.");
             }
             if (params.containsKey(URL_PARAM_NAME)) {
                 url = (String) ((Object[]) params.get(URL_PARAM_NAME))[0];
             }
             if (Utils.isNullStr(url)) {
-                throw new GDEMException(URL_PARAM_NAME + " parameter is missing from request.");
+                throw new XMLConvException(URL_PARAM_NAME + " parameter is missing from request.");
             }
 
             // call XQueryService

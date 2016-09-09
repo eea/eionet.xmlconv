@@ -19,7 +19,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.conversion.ssr.Names;
@@ -86,12 +86,12 @@ public class TestConvAction extends Action {
             e.printStackTrace();
             LOGGER.error("Error testing conversion", e);
             HttpSession sess = httpServletRequest.getSession(true);
-            // GDEMException err= new GDEMException(errMsg);
+            // XMLConvException err= new XMLConvException(errMsg);
 
-            if (e instanceof GDEMException) {
+            if (e instanceof XMLConvException) {
                 sess.setAttribute("gdem.exception", e);
             } else {
-                sess.setAttribute("gdem.exception", new GDEMException("Error testing conversion."));
+                sess.setAttribute("gdem.exception", new XMLConvException("Error testing conversion."));
             }
 
             httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/" + Names.ERROR_JSP);

@@ -39,7 +39,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.catcode.odf.ODFMetaFileAnalyzer;
 import com.catcode.odf.OpenDocumentMetadata;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.datadict.DDElement;
 import eionet.gdem.conversion.datadict.DD_XMLInstance;
 import eionet.gdem.conversion.excel.reader.DDXmlElement;
@@ -106,9 +106,9 @@ public class OdsReader implements SourceReaderIF {
      * @param InputStream input: Source ods file
      */
     @Override
-    public void initReader(File inFile) throws GDEMException {
+    public void initReader(File inFile) throws XMLConvException {
         if (inFile == null) {
-            throw new GDEMException("Input file is missing");
+            throw new XMLConvException("Input file is missing");
         }
         try {
             // ODF analyzer closes the stream after parsing content.
@@ -119,7 +119,7 @@ public class OdsReader implements SourceReaderIF {
             metadata = odfMetaAnalyzer.analyzeZip(new FileInputStream(inFile));
 
         } catch (IOException e) {
-            throw new GDEMException("Unable to open ODS file. ", e);
+            throw new XMLConvException("Unable to open ODS file. ", e);
         }
         inputFileLength = inFile.length();
     }

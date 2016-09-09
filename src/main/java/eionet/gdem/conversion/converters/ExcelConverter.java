@@ -31,7 +31,7 @@ import org.apache.commons.io.IOUtils;
 
 
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.excel.ExcelProcessor;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
@@ -47,7 +47,7 @@ public class ExcelConverter extends ConvertStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExcelConverter.class);
 
     @Override
-    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException,
+    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws XMLConvException,
     Exception {
         String xmlFile = Utils.getUniqueTmpFileName(".xml");
         String excelFile = Utils.getUniqueTmpFileName(".xls");
@@ -63,7 +63,7 @@ public class ExcelConverter extends ConvertStrategy {
             }
         } catch (FileNotFoundException e) {
             LOGGER.error("Error " + e.toString(), e);
-            throw new GDEMException("Error transforming Excel " + e.toString(), e);
+            throw new XMLConvException("Error transforming Excel " + e.toString(), e);
         }
         finally{
             IOUtils.closeQuietly(xmlOut);

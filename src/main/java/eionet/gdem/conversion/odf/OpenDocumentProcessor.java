@@ -28,7 +28,7 @@ import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 
 /**
  * Processes OpenDocument files.
@@ -47,15 +47,15 @@ public class OpenDocumentProcessor {
      * Creates ODS Spreadsheet
      * @param sIn Input String
      * @param sOut Output String
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public void makeSpreadsheet(String sIn, String sOut) throws GDEMException {
+    public void makeSpreadsheet(String sIn, String sOut) throws XMLConvException {
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(sOut);
             makeSpreadsheet(sIn, out);
         } catch (Exception e) {
-            throw new GDEMException("ErrorConversionHandler - couldn't save the OpenDocumentSpreadheet file: " + e.toString(), e);
+            throw new XMLConvException("ErrorConversionHandler - couldn't save the OpenDocumentSpreadheet file: " + e.toString(), e);
         }
         finally{
             IOUtils.closeQuietly(out);
@@ -66,9 +66,9 @@ public class OpenDocumentProcessor {
      * Creates ODS Spreadsheet
      * @param sIn Input String
      * @param sOut Output String
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public void makeSpreadsheet(String sIn, OutputStream sOut) throws GDEMException {
+    public void makeSpreadsheet(String sIn, OutputStream sOut) throws XMLConvException {
 
         if (sIn == null) {
             return;
@@ -82,7 +82,7 @@ public class OpenDocumentProcessor {
             od.setContentFile(sIn);
             od.createOdsFile(sOut);
         } catch (Exception e) {
-            throw new GDEMException("Error generating OpenDocument Spreadsheet file: " + e.toString(), e);
+            throw new XMLConvException("Error generating OpenDocument Spreadsheet file: " + e.toString(), e);
         }
 
         return;

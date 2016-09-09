@@ -30,7 +30,7 @@ import java.util.Map;
 
 
 import eionet.gdem.Constants;
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.converters.ConvertContext;
 import eionet.gdem.conversion.converters.ConvertStrategy;
 import eionet.gdem.conversion.converters.XMLConverter;
@@ -51,7 +51,7 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(XslEngineImpl.class);
 
     @Override
-    protected void runQuery(XQScript script, OutputStream result) throws GDEMException {
+    protected void runQuery(XQScript script, OutputStream result) throws XMLConvException {
 
         FileInputStream fisXsl = null;
         String tmpXslFile = null;
@@ -65,7 +65,7 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
             } else if (!Utils.isNullStr(script.getScriptFileName())) {
                 fisXsl = new FileInputStream(script.getScriptFileName());
             } else {
-                throw new GDEMException("XQuery engine could not find script source or script file name!");
+                throw new XMLConvException("XQuery engine could not find script source or script file name!");
             }
             // Build InputSource for xml file
             src = new InputFile(script.getSrcFileUrl());
@@ -93,7 +93,7 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("==== CATCHED EXCEPTION " + e.toString());
-            throw new GDEMException(e.getMessage());
+            throw new XMLConvException(e.getMessage());
         } finally {
             if (src != null) {
                 try {

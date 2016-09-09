@@ -33,7 +33,7 @@ import org.apache.commons.io.IOUtils;
 
 
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.spreadsheet.DDXMLConverter;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.remote.RemoteServiceMethod;
@@ -62,9 +62,9 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
      *
      * @param sourceUrl - URL of the srouce Excel file
      * @return Vector result: error_code, xml_url, error_message
-     * @throws GDEMException If an error occurs
+     * @throws XMLConvException If an error occurs
      */
-    public ConversionResultDto convertDD_XML(String sourceUrl) throws GDEMException {
+    public ConversionResultDto convertDD_XML(String sourceUrl) throws XMLConvException {
         return convertDD_XML(sourceUrl, false, null);
     }
 
@@ -74,9 +74,9 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
      * @param sourceUrl - URL of the source Excel file
      * @param sheetName Sheet name
      * @return Vector result: error_code, xml_url, error_message
-     * @throws GDEMException If an error occurs
+     * @throws XMLConvException If an error occurs
      */
-    public ConversionResultDto convertDD_XML_split(String sourceUrl, String sheetName) throws GDEMException {
+    public ConversionResultDto convertDD_XML_split(String sourceUrl, String sheetName) throws XMLConvException {
         return convertDD_XML(sourceUrl, true, sheetName);
     }
 
@@ -87,9 +87,9 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
      * @param split Split or not
      * @param sheetName Sheet name
      * @return Result transfer object
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    private ConversionResultDto convertDD_XML(String sourceUrl, boolean split, String sheetName) throws GDEMException {
+    private ConversionResultDto convertDD_XML(String sourceUrl, boolean split, String sheetName) throws XMLConvException {
         OutputStream resultStream = null;
         String sourceFileName = null;
         File file = null;
@@ -148,7 +148,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
         if (isHttpRequest()
                 && (ConversionResultDto.STATUS_ERR_SYSTEM.equals(resultObject.getStatusCode()) || ConversionResultDto.STATUS_ERR_SCHEMA_NOT_FOUND
                         .equals(resultObject.getStatusCode()))) {
-            throw new GDEMException(resultObject.getStatusDescription());
+            throw new XMLConvException(resultObject.getStatusDescription());
         }
 
         return resultObject;
@@ -175,9 +175,9 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
      *
      * @param outputFileName Output file name
      * @return OutputStream
-     * @throws GDEMException If an error occurs
+     * @throws XMLConvException If an error occurs
      */
-    private OutputStream getResultOutputStream(String outputFileName) throws GDEMException {
+    private OutputStream getResultOutputStream(String outputFileName) throws XMLConvException {
         OutputStream resultStream = null;
         if (isHttpRequest()) {
             try {
@@ -187,7 +187,7 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
                 resultStream = httpResponse.getOutputStream();
             } catch (IOException e) {
                 LOGGER.error("Error getting response outputstream ", e);
-                throw new GDEMException("Error getting response outputstream " + e.toString(), e);
+                throw new XMLConvException("Error getting response outputstream " + e.toString(), e);
             }
         }
         return resultStream;
@@ -199,12 +199,12 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
      * @param errorMessage Error message
      * @param e Exception
      * @return Error message
-     * @throws GDEMException If an error occurs
+     * @throws XMLConvException If an error occurs
      */
-    private String handleConversionException(String errorMessage, Exception e) throws GDEMException {
+    private String handleConversionException(String errorMessage, Exception e) throws XMLConvException {
         LOGGER.error(errorMessage, e);
         if (isHttpRequest()) {
-            throw new GDEMException(errorMessage + e.getMessage(), e);
+            throw new XMLConvException(errorMessage + e.getMessage(), e);
         } else {
             errorMessage = errorMessage + e.getMessage();
         }
@@ -216,9 +216,9 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
      *
      * @param dto Result transfer object
      * @return Hash table with result
-     * @throws GDEMException If an error occurs
+     * @throws XMLConvException If an error occurs
      */
-    public static final Hashtable<String, Object> convertExcelResult(ConversionResultDto dto) throws GDEMException {
+    public static final Hashtable<String, Object> convertExcelResult(ConversionResultDto dto) throws XMLConvException {
         Hashtable<String, Object> result = new Hashtable<String, Object>();
 
         result.put("resultCode", dto.getStatusCode());

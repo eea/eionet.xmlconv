@@ -1,6 +1,6 @@
 package eionet.gdem.qa.engines;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.test.ApplicationTestContext;
 import org.junit.After;
@@ -43,7 +43,7 @@ public class SaxonImplTest {
         Assert.assertEquals("4", baos.toString("UTF-8"));
     }
 
-    @Test(expected = GDEMException.class)
+    @Test(expected = XMLConvException.class)
     public void testException() throws Exception {
         XQScript xq = new XQScript("xquery version \"1.0\"; x || y", new String[]{});
         SaxonImpl sax = new SaxonImpl();

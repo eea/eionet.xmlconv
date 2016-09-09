@@ -32,7 +32,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.commons.io.IOUtils;
 import org.xml.sax.XMLReader;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.excel.writer.ExcelConversionHandlerIF;
 import eionet.gdem.conversion.excel.writer.ExcelXMLHandler;
 
@@ -55,15 +55,15 @@ public class ExcelProcessor  {
      * Converts XML string to Excel
      * @param sIn Input string
      * @param sOut Output string
-     * @throws GDEMException In case an error occurs.
+     * @throws XMLConvException In case an error occurs.
      */
-    public void makeExcel(String sIn, String sOut) throws GDEMException {
+    public void makeExcel(String sIn, String sOut) throws XMLConvException {
         FileOutputStream outStream = null;
         try {
             outStream = new FileOutputStream(sOut);
             makeExcel(sIn, outStream);
         } catch (Exception e) {
-            throw new GDEMException("ErrorConversionHandler - couldn't save the Excel file: " + e.toString(), e);
+            throw new XMLConvException("ErrorConversionHandler - couldn't save the Excel file: " + e.toString(), e);
         } finally {
             IOUtils.closeQuietly(outStream);
         }
@@ -73,9 +73,9 @@ public class ExcelProcessor  {
      * Converts XML string to OutputStream
      * @param sIn Input string
      * @param sOut OutputStream
-     * @throws GDEMException In case an error occurs.
+     * @throws XMLConvException In case an error occurs.
      */
-    public void makeExcel(String sIn, OutputStream sOut) throws GDEMException {
+    public void makeExcel(String sIn, OutputStream sOut) throws XMLConvException {
 
         if (sIn == null) {
             return;
@@ -98,7 +98,7 @@ public class ExcelProcessor  {
             reader.parse(sIn);
             excel.writeToFile(sOut);
         } catch (Exception e) {
-            throw new GDEMException("Error generating Excel file: " + e.toString(), e);
+            throw new XMLConvException("Error generating Excel file: " + e.toString(), e);
         }
 
         return;

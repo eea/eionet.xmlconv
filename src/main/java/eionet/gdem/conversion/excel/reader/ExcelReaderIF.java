@@ -26,7 +26,7 @@ package eionet.gdem.conversion.excel.reader;
 import java.io.InputStream;
 import java.util.Map;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.datadict.DD_XMLInstance;
 
 /**
@@ -48,17 +48,17 @@ public interface ExcelReaderIF {
      * Initialize the Excel Workbook from InputStream
      *
      * @param input - input Excel file
-     * @throws GDEMException In case an error occurs.
+     * @throws XMLConvException In case an error occurs.
      */
-    void initReader(InputStream input) throws GDEMException;
+    void initReader(InputStream input) throws XMLConvException;
 
     /**
      * Goes through the Excel worksheets and writes the data into DD_XMLInstance as xml
      *
      * @param instance - XML instance file, where the structure xml has been defined before
-     * @throws GDEMException In case an error occurs.
+     * @throws XMLConvException In case an error occurs.
      */
-    void readDocumentToInstance(DD_XMLInstance instance) throws GDEMException;
+    void readDocumentToInstance(DD_XMLInstance instance) throws XMLConvException;
 
     /**
      * Finds the first sheet name, that is not DO_NOT_DELETE_THIS_SHEET

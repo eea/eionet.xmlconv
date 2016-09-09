@@ -1,6 +1,6 @@
 package eionet.gdem.qa.engines;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.Utils;
@@ -20,7 +20,7 @@ public class BaseXServerImpl extends QAScriptEngineStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseXServerImpl.class);
 
     @Override
-    protected void runQuery(XQScript script, OutputStream result) throws GDEMException {
+    protected void runQuery(XQScript script, OutputStream result) throws XMLConvException {
         Reader queryReader = null;
         try {
             int port = Integer.parseInt(Properties.basexServerPort);
@@ -41,9 +41,9 @@ public class BaseXServerImpl extends QAScriptEngineStrategy {
             query.close();
             session.close();
         } catch (IOException e) {
-            throw new GDEMException(e.getMessage(), e);
+            throw new XMLConvException(e.getMessage(), e);
         } catch (NumberFormatException e) {
-            throw new GDEMException("Wrong port number, please re-configure BaseX server connection parameters: " + e.getMessage(), e);
+            throw new XMLConvException("Wrong port number, please re-configure BaseX server connection parameters: " + e.getMessage(), e);
         } finally {
             try {
                 if (queryReader != null) {

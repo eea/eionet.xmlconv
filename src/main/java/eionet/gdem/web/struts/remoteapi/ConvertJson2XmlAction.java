@@ -35,7 +35,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.qa.functions.Json;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
@@ -70,7 +70,7 @@ public class ConvertJson2XmlAction extends Action {
                 jsonParam = ((String[]) params.get(JSON_PARAM_NAME))[0];
             }
             if (Utils.isNullStr(jsonParam)) {
-                throw new GDEMException("Missing request parameter: " + JSON_PARAM_NAME);
+                throw new XMLConvException("Missing request parameter: " + JSON_PARAM_NAME);
             }
             String xml = "";
             if (jsonParam.startsWith("http:")) {
@@ -89,7 +89,7 @@ public class ConvertJson2XmlAction extends Action {
 
             // write data into response
             httpServletResponse.getOutputStream().write(xml.getBytes());
-        } catch (GDEMException ge) {
+        } catch (XMLConvException ge) {
             ge.printStackTrace();
             LOGGER.error("Unable to convert JSON to XML. " + ge.toString());
             throw new ServletException(ge);

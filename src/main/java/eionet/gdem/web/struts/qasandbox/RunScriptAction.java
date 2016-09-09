@@ -38,7 +38,7 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.Constants;
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.business.ConvTypeManager;
@@ -197,7 +197,7 @@ public class RunScriptAction extends Action {
                     result = xq.getResult();
                     cForm.setResult(result);
                 }
-            } catch (GDEMException ge) {
+            } catch (XMLConvException ge) {
                 result = ge.getMessage();
                 if (output == null) {
                     cForm.setResult(result);

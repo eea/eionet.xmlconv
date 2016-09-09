@@ -2,7 +2,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ page import="java.io.PrintWriter"%>
-<%@ page import="eionet.gdem.GDEMException"%>
+<%@ page import="eionet.gdem.XMLConvException"%>
 
 <ed:breadcrumbs-push label="XML Services error" level="1" />
 <tiles:insert definition="TmpHeader">
@@ -34,9 +34,9 @@
         <%=message%>
     </div>
     <%
-    if(e != null && e instanceof GDEMException){
+    if(e != null && e instanceof XMLConvException){
         %>
-            <p><%=((GDEMException)e).getCauseMessage() %></p>
+            <p><%=((XMLConvException)e).getCauseMessage() %></p>
         <%
     }
     %>
