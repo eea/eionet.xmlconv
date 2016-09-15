@@ -10,7 +10,6 @@
     .dz-success-mark { display:none; }
     .dz-error-mark { display:none; }
 </style>
-
 <html:xhtml/>
 <div style="width:100%;">
 
@@ -23,22 +22,22 @@
     <html:form action="/executeSandboxAction" method="post">
         <table class="formtable">
 
-                   <%-- List of XML schemas  --%>
-                <tr class="zebraeven">
-                    <td>
-                         <label class="question" for="selSchema">
-                            <bean:message key="label.qasandbox.xmlSchema"/>
-                         </label>
-                     </td>
-                </tr>
-                <tr>
-                  <td>
-                      <bean:define id="schemas" name="qascript.qascriptList" property="qascripts"/>
-                    <html:select name="QASandboxForm" property="schemaUrl" styleId="selSchema">
-                        <html:option value="">--</html:option>
-                        <html:options collection="schemas" property="schema" labelProperty="label" />
-                    </html:select>
-                  </td>
+                <%-- List of XML schemas  --%>
+            <tr class="zebraeven">
+                <td>
+                     <label class="question" for="selSchema">
+                        <bean:message key="label.qasandbox.xmlSchema"/>
+                     </label>
+                 </td>
+            </tr>
+            <tr>
+                <td>
+                   <bean:define id="schemas" name="qascript.qascriptList" property="qascripts"/>
+                   <html:select name="QASandboxForm" property="schemaUrl" styleId="selSchema">
+                       <html:option value="">--</html:option>
+                       <html:options collection="schemas" property="schema" labelProperty="label" />
+                   </html:select>
+                </td>
             </tr>
             <tr>
                 <td>
@@ -50,25 +49,27 @@
                     </html:submit>
                 </td>
             </tr>
-
-            <tr>
-                <td>&nbsp;</td>
-            </tr>
-
-                   <%-- CR XML files  --%>
-
-                 <bean:define id="schema" name="QASandboxForm" property="schema" type="Schema"/>
-                <logic:present name="schema" property="crfiles">
-                      <bean:size id="countfiles" name="schema" property="crfiles"/>
-                      <bean:define id="crfiles" name="schema" property="crfiles"/>
-
-                    <tr class="zebraeven">
-                     <td>
-                         <label class="question" for="selXml">
-                            <bean:message key="label.qasandbox.CRxmlfiles" /> (<bean:write name="countfiles"/>)
-                        </label>
-                      </td>
+                    <tr>
+                        <td>&nbsp;</td>
                     </tr>
+        </table>
+    </html:form>
+
+
+    <html:form action="/executeSandboxAction" method="post">
+        <table class="formtable">
+    <%-- CR XML files  --%>
+    <bean:define id="schema" name="QASandboxForm" property="schema" type="Schema"/>
+    <logic:present name="schema" property="crfiles">
+    <bean:size id="countfiles" name="schema" property="crfiles"/>
+    <bean:define id="crfiles" name="schema" property="crfiles"/>
+    <tr class="zebraeven">
+        <td>
+           <label class="question" for="selXml">
+              <bean:message key="label.qasandbox.CRxmlfiles" /> (<bean:write name="countfiles"/>)
+          </label>
+        </td>
+    </tr>
                       <logic:greaterThan name="countfiles" value="0">
                         <tr>
                             <td>
@@ -97,7 +98,7 @@
                         <tr>
                             <td>
                                 <html:text property="sourceUrl" styleId="txtSourceUrl" size="120"/>
-                              </td>
+                            </td>
                         </tr>
                         <tr>
                             <td>
@@ -108,9 +109,13 @@
                         </tr>
                     </logic:equal>
             </logic:present>
+        </table>
+        </html:form>
 
             <%-- Insert URL manually --%>
             <logic:notPresent name="schema" property="crfiles">
+                <html:form action="/executeSandboxAction" method="post">
+                <table class="formtable">
                 <tr class="zebraeven">
                     <td>
                          <label class="question" for="txtSourceUrl">
@@ -120,24 +125,77 @@
                         </tr>
                         <tr>
                             <td>
-                        <html:text property="sourceUrl" styleId="txtSourceUrl" size="120"/>
-                      </td>
+                                <html:text property="sourceUrl" styleId="txtSourceUrl" size="120"/>
+                            </td>
                  </tr>
-                <tr>
+                 <tr>
                     <td>
                         <html:submit styleClass="button" property="action">
                             <bean:message key="label.qasandbox.extractSchema"/>
                         </html:submit>
                     </td>
-                </tr>
-             </logic:notPresent>
-            <tr>
-                <td>&nbsp;</td>
-            </tr>
-
+                 </tr>
+                 <tr>
+                   <td>&nbsp;</td>
+                 </tr>
+                </table>
+                </html:form>
+                <logic:equal value="true" name="qascript.permissions" property="qsuPrm" >
+                    <button style="float:right; margin-top:-45px;" id="clickable">Upload a file</button>
+                    <form action="/qasandbox/upload" id="my-dropzone" class="dropzone"></form>
+                <script type="text/javascript" src="<c:url value="/scripts/dropzone.min.js"/>"></script>
+                <script>
+                    $(document).on('click', '.dz-filename span', function(event) {
+                        for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
+                            if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).text()) {
+                                $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
+                            }
+                        }
+                    });
+                    Dropzone.options.myDropzone = {
+                        dictDefaultMessage: "",
+                        url: "/qasandbox/upload",
+                        clickable: "#clickable",
+                        acceptedFiles: ".xml, .gml",
+                        maxFiles: "1",
+                        createImageThumbnails: "false",
+                        addRemoveLinks: "true",
+                        init: function() {
+                            $.getJSON("/qasandbox/getFiles", function(data) {
+                            if (data.Data.length != 0) {
+                                $.each(data.Data, function (index, val) {
+                                    var mockFile = {name: val.name, size: val.size, url: val.url};
+                                    Dropzone.forElement("#my-dropzone").emit("addedfile", mockFile);
+                                    Dropzone.forElement("#my-dropzone").files.push(mockFile);
+                                });
+                            }
+                            });
+                            this.on("success", function (file, responseText) {
+                                $("#txtSourceUrl").val(responseText.url)
+                                //var mockFile = {name: file.name, size: file.size, url: responseText.url};
+                                //Dropzone.forElement("#my-dropzone").files.push(mockFile);
+                            });
+                            this.on("addedfile", function() {
+                                //if (this.files[1]!=null){
+                                 //   this.removeFile(this.files[0]);
+                                //}
+                            });
+                            this.on("uploadprogress", function(file, progress, bytesSent) {
+                                //console.log("Progress :" + progress);
+                            });
+                        }
+                    };
+                </script>
+                </logic:equal>
+            </logic:notPresent>
+    <html:form action="/executeSandboxAction" method="post">
+        <table class="formtable">
         <%-- QA script type & content --%>
         <logic:equal name="QASandboxForm" property="showScripts" value="false">
             <logic:equal value="true"  name="qascript.permissions" property="qsiPrm" >
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
             <tr class="zebraeven">
                 <td>
                      <label class="question">
@@ -273,6 +331,7 @@
                 <tr>
                     <td>&nbsp;</td>
                 </tr>
+
                 <tr>
                     <td>
                         <%--  Execute script --%>
@@ -290,30 +349,4 @@
             </logic:equal>
         </table>
     </html:form>
-    <logic:equal value="true" name="qascript.permissions" property="qsuPrm" >
-        <h3>File Upload</h3>
-        <div id="previews" class="dropzone-previews"></div>
-        <button id="clickable">Select file</button>
-    </logic:equal>
-    <script type="text/javascript" src="<c:url value="/scripts/dropzone.min.js"/>"></script>
-    <script>
-        new Dropzone("div#previews", {
-            url: "/qasandbox/upload",
-            clickable: "#clickable",
-            acceptedFiles: ".xml, .gml",
-            maxFiles: "1",
-            createImageThumbnails: "false",
-            addRemoveLinks: "true",
-            init: function() {
-                this.on("success", function (file, responseText) {
-                    $("#txtSourceUrl").val(responseText.url)
-                });
-                this.on("addedfile", function() {
-                    if (this.files[1]!=null){
-                        this.removeFile(this.files[0]);
-                    }
-                });
-            }
-        });
-    </script>
 </div>
