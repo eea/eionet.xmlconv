@@ -9,6 +9,14 @@
 <style>
     .dz-success-mark { display:none; }
     .dz-error-mark { display:none; }
+    #clickable {
+        margin-top: -85px;
+    }
+    @media screen and (-webkit-min-device-pixel-ratio:0) {
+        #clickable {
+            margin-top: -62px;
+        }
+    }
 </style>
 <html:xhtml/>
 <div style="width:100%;">
@@ -125,7 +133,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <html:text property="sourceUrl" styleId="txtSourceUrl" size="120"/>
+                                <html:text property="sourceUrl" styleId="txtSourceUrl" size="120" style="max-width: 780px;"/>
                             </td>
                  </tr>
                  <tr>
@@ -141,7 +149,7 @@
                 </table>
                 </html:form>
                 <logic:equal value="true" name="qascript.permissions" property="qsuPrm" >
-                    <button style="float:right; margin-top:-45px;" id="clickable">Upload a file</button>
+                    <button style="float:right;" id="clickable">Upload file</button>
                     <form action="/qasandbox/upload" id="my-dropzone" class="dropzone"></form>
                 <script type="text/javascript" src="<c:url value="/scripts/dropzone.min.js"/>"></script>
                 <script>
@@ -172,6 +180,13 @@
                             }
                             });
                             this.on("success", function (file, responseText) {
+                                $("#txtSourceUrl").val(responseText.url)
+                                //var button = document.createElement("button");
+                                //button.appendChild(document.createTextNode("Select"));
+                                //button.setAttribute("type", "button");
+                                //button.setAttribute("url", responseText.url);
+                                //button.className += "mybutton";
+                                //file.previewTemplate.appendChild(button);
                                 var mockFile = {name: file.name, size: file.size, url: responseText.url};
                                 Dropzone.forElement("#my-dropzone").files.push(mockFile);
                             });
