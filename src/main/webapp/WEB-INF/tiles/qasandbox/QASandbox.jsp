@@ -157,11 +157,12 @@
                         url: "/qasandbox/upload",
                         clickable: "#clickable",
                         acceptedFiles: ".xml, .gml",
-                        maxFiles: "1",
+                        maxFiles: "5",
+                        maxFilesize: "300",
                         createImageThumbnails: "false",
                         addRemoveLinks: "true",
                         init: function() {
-                            $.getJSON("/qasandbox/getFiles", function(data) {
+                            $.getJSON("/qasandbox/action?command=getFiles", function(data) {
                             if (data.Data.length != 0) {
                                 $.each(data.Data, function (index, val) {
                                     var mockFile = {name: val.name, size: val.size, url: val.url};
@@ -171,17 +172,14 @@
                             }
                             });
                             this.on("success", function (file, responseText) {
-                                $("#txtSourceUrl").val(responseText.url)
-                                //var mockFile = {name: file.name, size: file.size, url: responseText.url};
-                                //Dropzone.forElement("#my-dropzone").files.push(mockFile);
-                            });
-                            this.on("addedfile", function() {
-                                //if (this.files[1]!=null){
-                                 //   this.removeFile(this.files[0]);
-                                //}
+                                var mockFile = {name: file.name, size: file.size, url: responseText.url};
+                                Dropzone.forElement("#my-dropzone").files.push(mockFile);
                             });
                             this.on("uploadprogress", function(file, progress, bytesSent) {
                                 //console.log("Progress :" + progress);
+                            });
+                            this.on("removedfile", function(file) {
+                               $.get("/qasandbox/action", { command: "deleteFile", filename: file.name });
                             });
                         }
                     };
