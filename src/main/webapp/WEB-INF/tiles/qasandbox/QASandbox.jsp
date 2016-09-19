@@ -7,8 +7,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <style>
+    .dz-remove { display:none; }
     .dz-success-mark { display:none; }
     .dz-error-mark { display:none; }
+    .dz-details { margin-top: 20px; }
     #clickable {
         margin-top: -85px;
     }
@@ -152,10 +154,35 @@
                     <button style="float:right;" id="clickable">Upload file</button>
                     <form action="/qasandbox/upload" id="my-dropzone" class="dropzone"></form>
                 <script type="text/javascript" src="<c:url value="/scripts/dropzone.min.js"/>"></script>
+
+                <script id="mypreview" type="text/template">
+                    <div class="dz-preview dz-file-preview">
+                        <div class="dz-details">
+                            <div class="dz-size" data-dz-size></div>
+                            <div class="dz-filename">
+                                <span data-dz-name></span>
+                            </div>
+                            <button class="dz-select-button" type="button">Select</button>
+                            <button class="dz-remove-button" type="button" data-dz-remove>Remove</button>
+                        </div>
+                        <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                        <div class="dz-success-mark"><span>✔</span></div>
+                        <div class="dz-error-mark"><span>✘</span></div>
+                        <div class="dz-error-message"><span data-dz-errormessage></span></div>
+                    </div>
+                </script>
+
                 <script>
                     $(document).on('click', '.dz-filename span', function(event) {
                         for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
                             if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).text()) {
+                                $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
+                            }
+                        }
+                    });
+                    $(document).on('click', '.dz-select-button', function(event) {
+                        for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
+                            if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).siblings('.dz-filename').children('span').text()) {
                                 $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
                             }
                         }
@@ -168,7 +195,8 @@
                         maxFiles: "5",
                         maxFilesize: "300",
                         createImageThumbnails: "false",
-                        addRemoveLinks: "true",
+                        addRemoveLinks: "false",
+                        previewTemplate: document.getElementById("mypreview").innerHTML,
                         init: function() {
                             $.getJSON("/qasandbox/action?command=getFiles", function(data) {
                             if (data.Data.length != 0) {
@@ -181,12 +209,6 @@
                             });
                             this.on("success", function (file, responseText) {
                                 $("#txtSourceUrl").val(responseText.url)
-                                //var button = document.createElement("button");
-                                //button.appendChild(document.createTextNode("Select"));
-                                //button.setAttribute("type", "button");
-                                //button.setAttribute("url", responseText.url);
-                                //button.className += "mybutton";
-                                //file.previewTemplate.appendChild(button);
                                 var mockFile = {name: file.name, size: file.size, url: responseText.url};
                                 Dropzone.forElement("#my-dropzone").files.push(mockFile);
                             });
