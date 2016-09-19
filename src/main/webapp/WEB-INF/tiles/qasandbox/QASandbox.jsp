@@ -7,6 +7,27 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <style>
+    .dropzone .dz-preview .dz-progress {
+        height: 20px;
+        border: 1px solid #aaa;
+        max-width: 600px;
+        margin-bottom: 5px;
+    }
+    .dz-processing .dz-progress {
+        display:block;
+    }
+    .dz-complete .dz-progress {
+        display:none;
+    }
+    .dropzone .dz-preview .dz-progress .dz-upload {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: green; }
+    .dropzone .dz-preview .dz-error-message {
+        color: red;
+        display: none;
+    }
     .dz-remove { display:none; }
     .dz-success-mark { display:none; }
     .dz-error-mark { display:none; }
@@ -162,10 +183,10 @@
                             <div class="dz-filename">
                                 <span data-dz-name></span>
                             </div>
-                            <button class="dz-select-button" type="button">Select</button>
+                            <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
                             <button class="dz-remove-button" type="button" data-dz-remove>Remove</button>
+                            <button class="dz-select-button" type="button">Select</button>
                         </div>
-                        <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
                         <div class="dz-success-mark"><span>✔</span></div>
                         <div class="dz-error-mark"><span>✘</span></div>
                         <div class="dz-error-message"><span data-dz-errormessage></span></div>
@@ -203,6 +224,7 @@
                                 $.each(data.Data, function (index, val) {
                                     var mockFile = {name: val.name, size: val.size, url: val.url};
                                     Dropzone.forElement("#my-dropzone").emit("addedfile", mockFile);
+                                    Dropzone.forElement("#my-dropzone").emit("complete", mockFile);
                                     Dropzone.forElement("#my-dropzone").files.push(mockFile);
                                 });
                             }
@@ -214,6 +236,7 @@
                             });
                             this.on("uploadprogress", function(file, progress, bytesSent) {
                                 //console.log("Progress :" + progress);
+                                //$('.dz-upload').text(Math.round(progress) + "%")
                             });
                             this.on("removedfile", function(file) {
                                $.get("/qasandbox/action", { command: "deleteFile", filename: file.name });
