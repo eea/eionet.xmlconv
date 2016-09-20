@@ -173,24 +173,28 @@
                 </html:form>
                 <logic:equal value="true" name="qascript.permissions" property="qsuPrm" >
                     <button style="float:right;" id="clickable">Upload file</button>
-                    <form action="/qasandbox/upload" id="my-dropzone" class="dropzone"></form>
+                    <form action="/qasandbox/upload" id="my-dropzone" class="dropzone">
+                        <ul id="dropzone-previews" class="dropzone-previews"></ul>
+                    </form>
                 <script type="text/javascript" src="<c:url value="/scripts/dropzone.min.js"/>"></script>
 
                 <script id="mypreview" type="text/template">
-                    <div class="dz-preview dz-file-preview">
+                    <li class="dz-preview dz-file-preview">
                         <div class="dz-details">
-                            <div class="dz-size" data-dz-size></div>
                             <div class="dz-filename">
                                 <span data-dz-name></span>
+                                <span>(<span data-dz-size></span>)</span>
+                                <div style="float:right">
+                                    <button class="dz-remove-button" style="margin-left:5px" type="button" data-dz-remove>Remove</button>
+                                    <button class="dz-select-button" style="margin-left:5px" type="button">Select</button>
+                                </div>
                             </div>
                             <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
-                            <button class="dz-remove-button" type="button" data-dz-remove>Remove</button>
-                            <button class="dz-select-button" type="button">Select</button>
                         </div>
                         <div class="dz-success-mark"><span>✔</span></div>
                         <div class="dz-error-mark"><span>✘</span></div>
                         <div class="dz-error-message"><span data-dz-errormessage></span></div>
-                    </div>
+                    </li>
                 </script>
 
                 <script>
@@ -217,6 +221,7 @@
                         maxFilesize: "300",
                         createImageThumbnails: "false",
                         addRemoveLinks: "false",
+                        previewsContainer: "#dropzone-previews",
                         previewTemplate: document.getElementById("mypreview").innerHTML,
                         init: function() {
                             $.getJSON("/qasandbox/action?command=getFiles", function(data) {
