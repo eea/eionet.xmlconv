@@ -103,7 +103,7 @@ function doRestart(){
             if (logvPrm){
         %>
         <p>
-            <a href='<%= Properties.getStringProperty("log.file")%>'>View log file</a>
+            <a href='log/xmlconv.log'>View log file</a>
         </p>
         <%
             }
