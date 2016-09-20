@@ -65,7 +65,7 @@ public class TmpUploadServlet extends HttpServlet {
                     fileContent.close();
                     resp.setContentType("application/json");
                     resp.setStatus(HttpServletResponse.SC_OK);
-                    String outputUrl = "http://" + Properties.appHost + ("".equals(req.getContextPath()) ? "" : File.separator + req.getContextPath()) + File.separator + "tmpfile" + File.separator + session.getId() + File.separator + fileName;
+                    String outputUrl = "http://" + Properties.appHost + ("".equals(req.getContextPath()) ? "" : req.getContextPath()) + "/tmpfile/" + session.getId() + "/" + fileName;
                     PrintWriter out = resp.getWriter();
                     out.write("{ \"url\": \"" + outputUrl + "\" }");
                     out.close();

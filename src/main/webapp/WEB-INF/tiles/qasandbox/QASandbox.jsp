@@ -40,6 +40,18 @@
             margin-top: -62px;
         }
     }
+    @media screen and (-moz-os-version: windows-xp), screen and (-moz-os-version: windows-vista),
+    screen and (-moz-os-version: windows-win7), screen and (-moz-os-version: windows-win8),
+    screen and (-moz-os-version: windows-win10){
+        #clickable {
+            margin-top: -72px;
+        }
+    }
+    @media screen and (min-width:0\0) {
+        #clickable {
+            margin-top: -67px;
+        }
+    }
 </style>
 <html:xhtml/>
 <div style="width:100%;">
@@ -197,7 +209,8 @@
                     </li>
                 </script>
 
-                <script>
+                <script type="text/javascript">
+                    $.ajaxSetup({ cache: false });
                     $(document).on('click', '.dz-filename span', function(event) {
                         for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
                             if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).text()) {
@@ -207,14 +220,15 @@
                     });
                     $(document).on('click', '.dz-select-button', function(event) {
                         for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
-                            if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).siblings('.dz-filename').children('span').text()) {
+                            if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).parent().parent().children(':first').text()) {
                                 $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
                             }
                         }
                     });
+                    var ctx = '${pageContext.request.contextPath}';
                     Dropzone.options.myDropzone = {
                         dictDefaultMessage: "",
-                        url: "/qasandbox/upload",
+                        url: ctx + "/qasandbox/upload",
                         clickable: "#clickable",
                         acceptedFiles: ".xml, .gml",
                         maxFiles: "5",
@@ -224,7 +238,7 @@
                         previewsContainer: "#dropzone-previews",
                         previewTemplate: document.getElementById("mypreview").innerHTML,
                         init: function() {
-                            $.getJSON("/qasandbox/action?command=getFiles", function(data) {
+                            $.getJSON(ctx + "/qasandbox/action?command=getFiles", function(data) {
                             if (data.Data.length != 0) {
                                 $.each(data.Data, function (index, val) {
                                     var mockFile = {name: val.name, size: val.size, url: val.url};
@@ -244,7 +258,7 @@
                                 //$('.dz-upload').text(Math.round(progress) + "%")
                             });
                             this.on("removedfile", function(file) {
-                               $.get("/qasandbox/action", { command: "deleteFile", filename: file.name });
+                               $.get(ctx + "/qasandbox/action", { command: "deleteFile", filename: file.name });
                             });
                         }
                     };
