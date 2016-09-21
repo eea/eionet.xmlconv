@@ -74,7 +74,8 @@ public interface Names {
     String ACL_CONFIG_PATH = "config";
     String ACL_XMLFILE_PATH = "xmlfile";
     String ACL_QASANDBOX_PATH = "qasandbox";
-	String ACL_LOGFILE_PATH = "logfile";
+    String ACL_LOGFILE_PATH = "logfile";
+    String ACL_SERVERSTATUS_PATH = "serverstatus";
 
     String RPC_SERVICE_NAME = "XService";
     String EXCEL_CONVERSION_JSP = "excel2xml_conversion.jsp";

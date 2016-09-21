@@ -126,6 +126,7 @@ function doRestart(){
                         <th scope="col" class="scope-col">Job Result</th>
                         <th scope="col" class="scope-col">status</th>
                         <th scope="col" class="scope-col">Started at</th>
+                        <th scope="col" class="scope-col">Instance</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -140,6 +141,7 @@ function doRestart(){
                     int status = Integer.parseInt(list[i][4]);
                     String timeStamp = list[i][5];
                     String xqStringID = list[i][6];
+                    String instance = list[i][7];
 
                       int xqID =0;
                       String scriptType = "";
@@ -239,6 +241,13 @@ function doRestart(){
                         </td>
                         <td>
                             <%=timeStamp%>
+                        </td>
+                        <td>
+                            <% if (wqvPrm) { %>
+                                     <%=instance%>
+                            <%     } else { %>
+                                    <div title="Log in to see system info">-</div>
+                            <% } %>
                         </td>
                     </tr>
                     <%

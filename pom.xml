@@ -336,6 +336,7 @@
                             <filtering>false</filtering>
                             <includes>
                                 <include>xmlconv-struct.xml</include>
+                                <include>quartz-liquibase.xml</include>
                             </includes>
                         </resource>
                         <resource>
@@ -661,7 +662,7 @@
                 <version>1.3.10</version>
             </dependency>
 
-            <!-- Spring framework dependencies -->
+             <!-- Spring framework dependencies -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
@@ -687,6 +688,12 @@
                 <artifactId>spring-tx</artifactId>
                 <version>${spring.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+
 
             <!-- Database dependencies -->
             <dependency>
@@ -745,7 +752,23 @@
                 <artifactId>vtd-xml</artifactId>
                 <version>2.12</version>
             </dependency>
-
+            <!--Jackson Dependencies -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>2.8.0</version>
+            </dependency> 
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>2.8.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.8.0</version>
+            </dependency>
+            
             <!-- TEST dependencies -->
             <dependency>
                 <groupId>junit</groupId>
@@ -788,6 +811,12 @@
                 <groupId>eionet</groupId>
                 <artifactId>property-placeholder-resolver</artifactId>
                 <version>1.0</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.6.2</version>
                 <type>jar</type>
             </dependency>
         </dependencies>

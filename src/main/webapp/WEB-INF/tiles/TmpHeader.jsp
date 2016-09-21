@@ -127,6 +127,11 @@ response.setDateHeader("Expires", 0);
                     <bean:message key="label.menu.config"/>
                 </ed:menuItem>
             </ed:hasPermission>
+            <ed:hasPermission username="username" acl="serverstatus" permission="v">
+                <ed:menuItem action="/serverstatus.jsp"  title="View the server status">
+                    <bean:message key="label.menu.serverstatus"/>
+                </ed:menuItem>
+            </ed:hasPermission>
         </ul>
     </div> <!-- leftcolumn -->
 

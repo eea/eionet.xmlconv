@@ -143,4 +143,21 @@ public interface IXQJobDao extends IDbSchema {
      *             DB error occurred.
      */
     String[][] getXQFinishedJobs() throws SQLException;
+    
+    
+    
+    /**
+    *Get Latest Processing Job Start Time
+    * @return Job data
+    * @throws SQLException
+    */
+    String[] getLatestProcessingJobStartTime() throws SQLException;
+
+    /**
+    *Get Jobs Status By XMLCONV Instance
+    * @return Job data
+    * @throws SQLException
+    */
+    String[][] getJobsSumInstanceAndStatus() throws SQLException;
+    
 }
