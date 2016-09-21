@@ -5,6 +5,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <style>
     .dropzone .dz-preview .dz-progress {
@@ -12,6 +13,9 @@
         border: 1px solid #aaa;
         max-width: 600px;
         margin-bottom: 5px;
+    }
+    ul.dropzone-previews {
+        line-height: normal !important;
     }
     .dz-processing .dz-progress {
         display:block;
@@ -31,7 +35,7 @@
     .dz-remove { display:none; }
     .dz-success-mark { display:none; }
     .dz-error-mark { display:none; }
-    .dz-details { margin-top: 20px; }
+    .dz-details { margin-top: 10px; }
     #clickable {
         margin-top: -85px;
     }
@@ -183,86 +187,88 @@
                  </tr>
                 </table>
                 </html:form>
-                <logic:equal value="true" name="qascript.permissions" property="qsuPrm" >
-                    <button style="float:right;" id="clickable">Upload file</button>
-                    <form action="/qasandbox/upload" id="my-dropzone" class="dropzone">
-                        <ul id="dropzone-previews" class="dropzone-previews"></ul>
-                    </form>
-                <script type="text/javascript" src="<c:url value="/scripts/dropzone.min.js"/>"></script>
+                <logic:equal value="true" name="qascript.permissions" property="qsuPrm">
+                    <c:if test="${not(fn:contains(header['User-Agent'],'MSIE 9.0'))}">
+                        <button style="float:right;" id="clickable">Upload file</button>
+                        <form action="/qasandbox/upload" id="my-dropzone" class="dropzone">
+                            <ul id="dropzone-previews" class="dropzone-previews"></ul>
+                        </form>
+                        <script type="text/javascript" src="<c:url value="/scripts/dropzone.min.js"/>"></script>
 
-                <script id="mypreview" type="text/template">
-                    <li class="dz-preview dz-file-preview">
-                        <div class="dz-details">
-                            <div class="dz-filename">
-                                <span data-dz-name></span>
-                                <span>(<span data-dz-size></span>)</span>
-                                <div style="float:right">
-                                    <button class="dz-remove-button" style="margin-left:5px" type="button" data-dz-remove>Remove</button>
-                                    <button class="dz-select-button" style="margin-left:5px" type="button">Select</button>
+                        <script id="mypreview" type="text/template">
+                            <li class="dz-preview dz-file-preview">
+                                <div class="dz-details">
+                                    <div class="dz-filename">
+                                        <span data-dz-name></span>
+                                        <span>(<span data-dz-size></span>)</span>
+                                        <div style="float:right">
+                                            <button class="dz-remove-button" style="margin-left:5px" type="button" data-dz-remove>Remove</button>
+                                            <button class="dz-select-button" style="margin-left:5px" type="button">Select</button>
+                                        </div>
+                                    </div>
+                                    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
                                 </div>
-                            </div>
-                            <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
-                        </div>
-                        <div class="dz-success-mark"><span>✔</span></div>
-                        <div class="dz-error-mark"><span>✘</span></div>
-                        <div class="dz-error-message"><span data-dz-errormessage></span></div>
-                    </li>
-                </script>
+                                <div class="dz-success-mark"><span>✔</span></div>
+                                <div class="dz-error-mark"><span>✘</span></div>
+                                <div class="dz-error-message"><span data-dz-errormessage></span></div>
+                            </li>
+                        </script>
 
-                <script type="text/javascript">
-                    $.ajaxSetup({ cache: false });
-                    $(document).on('click', '.dz-filename span', function(event) {
-                        for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
-                            if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).text()) {
-                                $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
-                            }
-                        }
-                    });
-                    $(document).on('click', '.dz-select-button', function(event) {
-                        for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
-                            if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).parent().parent().children(':first').text()) {
-                                $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
-                            }
-                        }
-                    });
-                    var ctx = '${pageContext.request.contextPath}';
-                    Dropzone.options.myDropzone = {
-                        dictDefaultMessage: "",
-                        url: ctx + "/qasandbox/upload",
-                        clickable: "#clickable",
-                        acceptedFiles: ".xml, .gml",
-                        maxFiles: "5",
-                        maxFilesize: "300",
-                        createImageThumbnails: "false",
-                        addRemoveLinks: "false",
-                        previewsContainer: "#dropzone-previews",
-                        previewTemplate: document.getElementById("mypreview").innerHTML,
-                        init: function() {
-                            $.getJSON(ctx + "/qasandbox/action?command=getFiles", function(data) {
-                            if (data.Data.length != 0) {
-                                $.each(data.Data, function (index, val) {
-                                    var mockFile = {name: val.name, size: val.size, url: val.url};
-                                    Dropzone.forElement("#my-dropzone").emit("addedfile", mockFile);
-                                    Dropzone.forElement("#my-dropzone").emit("complete", mockFile);
-                                    Dropzone.forElement("#my-dropzone").files.push(mockFile);
-                                });
-                            }
+                        <script type="text/javascript">
+                            $.ajaxSetup({ cache: false });
+                            $(document).on('click', '.dz-filename span', function(event) {
+                                for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
+                                    if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).text()) {
+                                        $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
+                                    }
+                                }
                             });
-                            this.on("success", function (file, responseText) {
-                                $("#txtSourceUrl").val(responseText.url)
-                                var mockFile = {name: file.name, size: file.size, url: responseText.url};
-                                Dropzone.forElement("#my-dropzone").files.push(mockFile);
+                            $(document).on('click', '.dz-select-button', function(event) {
+                                for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
+                                    if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).parent().parent().children(':first').text()) {
+                                        $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
+                                    }
+                                }
                             });
-                            this.on("uploadprogress", function(file, progress, bytesSent) {
-                                //console.log("Progress :" + progress);
-                                //$('.dz-upload').text(Math.round(progress) + "%")
-                            });
-                            this.on("removedfile", function(file) {
-                               $.get(ctx + "/qasandbox/action", { command: "deleteFile", filename: file.name });
-                            });
-                        }
-                    };
-                </script>
+                            var ctx = '${pageContext.request.contextPath}';
+                            Dropzone.options.myDropzone = {
+                                dictDefaultMessage: "",
+                                url: ctx + "/qasandbox/upload",
+                                clickable: "#clickable",
+                                acceptedFiles: ".xml, .gml",
+                                maxFiles: "5",
+                                maxFilesize: "300",
+                                createImageThumbnails: "false",
+                                addRemoveLinks: "false",
+                                previewsContainer: "#dropzone-previews",
+                                previewTemplate: document.getElementById("mypreview").innerHTML,
+                                init: function() {
+                                    $.getJSON(ctx + "/qasandbox/action?command=getFiles", function(data) {
+                                    if (data.Data.length != 0) {
+                                        $.each(data.Data, function (index, val) {
+                                            var mockFile = {name: val.name, size: val.size, url: val.url};
+                                            Dropzone.forElement("#my-dropzone").emit("addedfile", mockFile);
+                                            Dropzone.forElement("#my-dropzone").emit("complete", mockFile);
+                                            Dropzone.forElement("#my-dropzone").files.push(mockFile);
+                                        });
+                                    }
+                                    });
+                                    this.on("success", function (file, responseText) {
+                                        $("#txtSourceUrl").val(responseText.url)
+                                        var mockFile = {name: file.name, size: file.size, url: responseText.url};
+                                        Dropzone.forElement("#my-dropzone").files.push(mockFile);
+                                    });
+                                    this.on("uploadprogress", function(file, progress, bytesSent) {
+                                        //console.log("Progress :" + progress);
+                                        //$('.dz-upload').text(Math.round(progress) + "%")
+                                    });
+                                    this.on("removedfile", function(file) {
+                                       $.get(ctx + "/qasandbox/action", { command: "deleteFile", filename: file.name });
+                                    });
+                                }
+                            };
+                        </script>
+                    </c:if>
                 </logic:equal>
             </logic:notPresent>
     <html:form action="/executeSandboxAction" method="post">
