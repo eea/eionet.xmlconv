@@ -7,7 +7,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import eionet.gdem.Constants;
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.remote.RemoteServiceMethod;
 import eionet.gdem.services.GDEMServices;
@@ -66,9 +66,9 @@ public class ListQueriesMethod extends RemoteServiceMethod {
      * @return array of Hastables with the following keys: qyery_id, short_name, description, query, schema_id, xml_schema,
      *         content_type_out, type
      *
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public Vector listQueries(String schema) throws GDEMException {
+    public Vector listQueries(String schema) throws XMLConvException {
 
         Vector v = new Vector();
         if (schema != null && schema.equals("")) {
@@ -118,7 +118,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
                 }
             }
         } catch (Exception e) {
-            throw new GDEMException("Error getting data from the DB " + e.toString(), e);
+            throw new XMLConvException("Error getting data from the DB " + e.toString(), e);
         }
         return v;
     }
@@ -128,9 +128,9 @@ public class ListQueriesMethod extends RemoteServiceMethod {
      *
      * @param schema Schema to use
      * @return result is an Array of Arrays that contains 3 fields (script_id, description, last modification)
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public Vector listQAScripts(String schema) throws GDEMException {
+    public Vector listQAScripts(String schema) throws XMLConvException {
         Vector<Vector<String>> result = new Vector<Vector<String>>();
         Vector<String> resultQuery = null;
         try {
@@ -188,7 +188,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
             }
 
         } catch (Exception e) {
-            throw new GDEMException("Error getting data from the DB " + e.toString(), e);
+            throw new XMLConvException("Error getting data from the DB " + e.toString(), e);
         }
 
         return result;

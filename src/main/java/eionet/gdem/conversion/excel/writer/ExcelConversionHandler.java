@@ -36,7 +36,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.excel.ExcelStyleIF;
 
 /**
@@ -426,26 +426,26 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF {
     }
 
     @Override
-    public void writeToFile() throws GDEMException {
+    public void writeToFile() throws XMLConvException {
         // Write the output to a file
         FileOutputStream fileOut = null;
         try {
             fileOut = new FileOutputStream(fileName);
             wb.write(fileOut);
         } catch (Exception e) {
-            throw new GDEMException("ErrorConversionHandler - couldn't save the Excel file: " + e.toString());
+            throw new XMLConvException("ErrorConversionHandler - couldn't save the Excel file: " + e.toString());
         } finally {
             IOUtils.closeQuietly(fileOut);
         }
     }
 
     @Override
-    public void writeToFile(OutputStream outstream) throws GDEMException {
+    public void writeToFile(OutputStream outstream) throws XMLConvException {
         // Write the output to Outputstream
         try {
             wb.write(outstream);
         } catch (Exception e) {
-            throw new GDEMException("ErrorConversionHandler - couldn't save the Excel file: " + e.toString());
+            throw new XMLConvException("ErrorConversionHandler - couldn't save the Excel file: " + e.toString());
         }
     }
 

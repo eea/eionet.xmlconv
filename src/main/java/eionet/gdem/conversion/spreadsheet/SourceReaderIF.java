@@ -26,7 +26,7 @@ package eionet.gdem.conversion.spreadsheet;
 import java.io.File;
 import java.util.Map;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.datadict.DD_XMLInstance;
 import eionet.gdem.dto.ConversionResultDto;
 
@@ -50,9 +50,9 @@ public interface SourceReaderIF {
      *
      * @param input
      *            input Excel or OpenDocument File
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    void initReader(File input) throws GDEMException;
+    void initReader(File input) throws XMLConvException;
 
     /**
      * Goes through the source file and writes the data into DD_XMLInstance as xml

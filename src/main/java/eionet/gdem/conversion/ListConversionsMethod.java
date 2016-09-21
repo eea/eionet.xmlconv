@@ -12,7 +12,7 @@ import java.util.Vector;
 
 
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dcm.business.DDServiceClient;
@@ -58,10 +58,10 @@ public class ListConversionsMethod extends RemoteServiceMethod {
      * @param schema
      *            XML Schema URL for which conversions will be returned.
      * @return List of conversions.
-     * @throws GDEMException
+     * @throws XMLConvException
      *             Error occurred on reading data from database or from Data Dictionary.
      */
-    public Vector<Hashtable<String, String>> listConversions(String schema) throws GDEMException {
+    public Vector<Hashtable<String, String>> listConversions(String schema) throws XMLConvException {
         Vector<Hashtable<String, String>> v = new Vector<Hashtable<String, String>>();
         List<DDDatasetTable> ddTables = DDServiceClient.getDDTables();
         List<ConversionDto> generatedConversionTypes = Conversion.getConversions();
@@ -76,7 +76,7 @@ public class ListConversionsMethod extends RemoteServiceMethod {
             }
         } catch (Exception e) {
             LOGGER.error("Error getting data from the DB", e);
-            throw new GDEMException("Error getting data from the DB " + e.toString(), e);
+            throw new XMLConvException("Error getting data from the DB " + e.toString(), e);
         }
         // get generated conversions for given DD schema
         if (schema != null && schema.startsWith(Properties.ddURL) && ddTables != null) {
@@ -111,10 +111,10 @@ public class ListConversionsMethod extends RemoteServiceMethod {
      * Get a distinct list of XML Schemas returned from listConversions() method.
      *
      * @return List of XML schemas.
-     * @throws GDEMException
+     * @throws XMLConvException
      *             Error occurred on reading data from database.
      */
-    public Vector<String> getXMLSchemas() throws GDEMException {
+    public Vector<String> getXMLSchemas() throws XMLConvException {
         Vector<Hashtable<String, String>> conv = listConversions(null);
         Vector<String> schemas = new Vector<String>();
 
@@ -132,10 +132,10 @@ public class ListConversionsMethod extends RemoteServiceMethod {
      *
      * @param xmlSchema XML Schema
      * @return
-     * @throws GDEMException
+     * @throws XMLConvException
      *             System error.
      */
-    public boolean existsXMLSchema(String xmlSchema) throws GDEMException {
+    public boolean existsXMLSchema(String xmlSchema) throws XMLConvException {
         List<String> schemas = getXMLSchemas();
         return schemas.contains(xmlSchema);
     }

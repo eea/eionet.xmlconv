@@ -25,7 +25,7 @@ package eionet.gdem.qa;
 
 import java.io.OutputStream;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 
 /**
  * Interface for XQuery Engine implementation.
@@ -43,17 +43,17 @@ public interface XQEngineIF {
      * @param script
      *            the XQscript object with required attributes
      * @return the result of XQuery
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    String getResult(XQScript script) throws GDEMException;
+    String getResult(XQScript script) throws XMLConvException;
 
     /**
      * Gets result
      * @param script Script
      * @param out OutputStream
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    void getResult(XQScript script, OutputStream out) throws GDEMException;
+    void getResult(XQScript script, OutputStream out) throws XMLConvException;
 
     /**
      * processes the XQuery.
@@ -63,12 +63,12 @@ public interface XQEngineIF {
      * @param params
      *            XQuery parameter name value pairs in format {name1=value1, name2=value2, ... , nameN=valueN}
      * @return the result of XQuery
-     * @throws eionet.gdem.GDEMException
+     * @throws eionet.gdem.XMLConvException
      */
     /*
-     * public String getResult(String xqScript, String params[]) throws GDEMException;
+     * public String getResult(String xqScript, String params[]) throws XMLConvException;
      *
-     * public void getResult(String xqScript, String params[], OutputStream out) throws GDEMException;
+     * public void getResult(String xqScript, String params[], OutputStream out) throws XMLConvException;
      */
     /**
      * get encoding for XQuery engine to use. If not set use default encoding UTF-8.

@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.XMLReader;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.datadict.DDElement;
 import eionet.gdem.conversion.datadict.DD_XMLInstance;
@@ -101,9 +101,9 @@ public abstract class DDXMLConverter {
      * @param resultObject Result object
      * @param sheetParam Sheet parameters
      * @return Converter
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public static DDXMLConverter getConverter(File inFile, ConversionResultDto resultObject, String sheetParam) throws GDEMException {
+    public static DDXMLConverter getConverter(File inFile, ConversionResultDto resultObject, String sheetParam) throws XMLConvException {
         DDXMLConverter converter = null;
         try {
             converter = new Excel2XML();
@@ -137,7 +137,7 @@ public abstract class DDXMLConverter {
         if (converter == null || !converter.isInitialized()) {
             LOGGER.error("Could not detect the format of source file. "
                     + "Converter waits MS Excel or OpenDocument Spreadsheet file.");
-            throw new GDEMException(
+            throw new XMLConvException(
             "Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.");
         }
         converter.startConverter(resultObject, sheetParam);
@@ -147,9 +147,9 @@ public abstract class DDXMLConverter {
     /**
      * Initializes converter
      * @param inFile Input file
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public void initConverter(File inFile) throws GDEMException {
+    public void initConverter(File inFile) throws XMLConvException {
         sourcefile = getSourceReader();
         sourcefile.initReader(inFile);
         setInitialized(true);
@@ -159,9 +159,9 @@ public abstract class DDXMLConverter {
      * Starts converter
      * @param resultObject Result Object
      * @param sheetParam Sheet parameter
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public void startConverter(ConversionResultDto resultObject, String sheetParam) throws GDEMException {
+    public void startConverter(ConversionResultDto resultObject, String sheetParam) throws XMLConvException {
         this.resultObject = resultObject;
         sourcefile.startReader(resultObject);
         this.xmlSchema = sourcefile.getXMLSchema();
@@ -174,9 +174,9 @@ public abstract class DDXMLConverter {
      * Gets result transfer object
      * @param outStream OutputStream
      * @return Converted XML
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public ConversionResultDto convertDD_XML(OutputStream outStream) throws GDEMException {
+    public ConversionResultDto convertDD_XML(OutputStream outStream) throws XMLConvException {
 
         try {
             if (outStream == null) {
@@ -187,7 +187,7 @@ public abstract class DDXMLConverter {
             sourcefile.closeReader();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new GDEMException("Error generating XML file from " + getSourceFormatName() + " file: " + e.toString(), e);
+            throw new XMLConvException("Error generating XML file from " + getSourceFormatName() + " file: " + e.toString(), e);
         }
         return resultObject;
     }
@@ -197,10 +197,10 @@ public abstract class DDXMLConverter {
      * @param outStream OutputStream
      * @param sheetParam Sheet parameters
      * @return Converted XML
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
     public ConversionResultDto convertDD_XML_split(OutputStream outStream, String sheetParam)
-    throws GDEMException {
+    throws XMLConvException {
         try {
             if (isHttpResponse() && Utils.isNullStr(sheetParam)) {
                 sheetParam = sourcefile.getFirstSheetName();
@@ -258,7 +258,7 @@ public abstract class DDXMLConverter {
             }
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
-            throw new GDEMException("Error generating XML files from " + getSourceFormatName() + " file: " + e.toString(), e);
+            throw new XMLConvException("Error generating XML files from " + getSourceFormatName() + " file: " + e.toString(), e);
         }
         sourcefile.closeReader();
         parseConversionResults();
@@ -352,9 +352,9 @@ public abstract class DDXMLConverter {
      *
      * @param xmlSchema XML Schema
      * @return Invalid Schema error message
-     * @throws GDEMException If an error occurs
+     * @throws XMLConvException If an error occurs
      */
-    public String getInvalidSchemaMessage(String xmlSchema) throws GDEMException {
+    public String getInvalidSchemaMessage(String xmlSchema) throws XMLConvException {
 
         String result = null;
 
@@ -398,9 +398,9 @@ public abstract class DDXMLConverter {
      * Checks if XML conforms to a valid schema
      * @param xmlSchema XML Schema
      * @return True if schema is valid.
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    private boolean isValidXmlSchema(String xmlSchema) throws GDEMException {
+    private boolean isValidXmlSchema(String xmlSchema) throws XMLConvException {
         boolean isValidXmlSchema = true;
         String invalidMess = null;
         if (xmlSchema == null) {

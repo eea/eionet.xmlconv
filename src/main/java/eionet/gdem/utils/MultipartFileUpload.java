@@ -40,7 +40,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 
 /**
  * Provides methods for uploading file from the client computer to the server. using commons-fileupload-0.1.jar
@@ -145,17 +145,17 @@ public class MultipartFileUpload {
     /**
      * @param request
      *            Servlet request
-     * @throws GDEMException
+     * @throws XMLConvException
      *             If an error occurs
      */
-    public void processMultiPartRequest(HttpServletRequest request) throws GDEMException {
+    public void processMultiPartRequest(HttpServletRequest request) throws XMLConvException {
 
         List items = null;
         setEncoding(request.getCharacterEncoding());
         try {
             items = upload.parseRequest(request);
         } catch (FileUploadException fue) {
-            throw new GDEMException(fue.toString());
+            throw new XMLConvException(fue.toString());
         }
 
         Iterator iter = items.iterator();
@@ -213,18 +213,18 @@ public class MultipartFileUpload {
      *
      * @return File name
      *
-     * @throws GDEMException Thrown in case of missing data or error during file writing.
+     * @throws XMLConvException Thrown in case of missing data or error during file writing.
      */
-    public String saveFile() throws GDEMException {
+    public String saveFile() throws XMLConvException {
 
         String fileName = getFileName();
 
         if (_folderName == null)
-            throw new GDEMException("Folder name is empty!");
+            throw new XMLConvException("Folder name is empty!");
         if (fileName == null)
-            throw new GDEMException("File name is empty!");
+            throw new XMLConvException("File name is empty!");
         if (_fileItem == null)
-            throw new GDEMException("No files found!");
+            throw new XMLConvException("No files found!");
         factory.setRepository(new File(_folderName));
 
         if (_fileItem.getSize() == 0)
@@ -237,7 +237,7 @@ public class MultipartFileUpload {
             try {
                 _fileItem.write(file);
             } catch (Exception e) {
-                throw new GDEMException(e.toString());
+                throw new XMLConvException(e.toString());
             }
         }
         return fileName;
@@ -249,16 +249,16 @@ public class MultipartFileUpload {
      *
      * @param saveAs Destination file name.
      * @param keepExisting true, if rename existing file before saving the new faile. false, if overwrite exisitng file
-     * @throws GDEMException Thrown in case of missing data or error during file writing.
+     * @throws XMLConvException Thrown in case of missing data or error during file writing.
      */
-    public void saveFileAs(String saveAs, boolean keepExisting) throws GDEMException {
+    public void saveFileAs(String saveAs, boolean keepExisting) throws XMLConvException {
 
         File file = null;
 
         if (_folderName == null)
-            throw new GDEMException("Folder name is empty!");
+            throw new XMLConvException("Folder name is empty!");
         if (_fileItem == null)
-            throw new GDEMException("No files found!");
+            throw new XMLConvException("No files found!");
 
         factory.setRepository(new File(_folderName));
 
@@ -281,7 +281,7 @@ public class MultipartFileUpload {
             try {
                 _fileItem.write(file);
             } catch (Exception e) {
-                throw new GDEMException(e.toString());
+                throw new XMLConvException(e.toString());
             }
         }
     }
@@ -453,22 +453,22 @@ public class MultipartFileUpload {
      *            - target folder
      *
      * @return File name
-     * @throws GDEMException
+     * @throws XMLConvException
      *             Thrown in case of missing data or error during file writing.
      */
-    public String saveFile(String fieldName, String folderName) throws GDEMException {
+    public String saveFile(String fieldName, String folderName) throws XMLConvException {
 
         folderName = (folderName == null) ? _folderName : folderName;
         if (folderName == null)
-            throw new GDEMException("Folder name is empty!");
+            throw new XMLConvException("Folder name is empty!");
 
         FileItem fileItem = getFileItem(fieldName);
         if (fileItem == null)
-            throw new GDEMException("No files found!");
+            throw new XMLConvException("No files found!");
 
         String fileName = getFileItemName(fileItem.getName());
         if (fileName == null)
-            throw new GDEMException("File name is empty!");
+            throw new XMLConvException("File name is empty!");
 
         factory.setRepository(new File(folderName));
 
@@ -482,7 +482,7 @@ public class MultipartFileUpload {
             try {
                 fileItem.write(file);
             } catch (Exception e) {
-                throw new GDEMException(e.toString());
+                throw new XMLConvException(e.toString());
             }
         }
         return fileName;
@@ -492,17 +492,17 @@ public class MultipartFileUpload {
      * Returns file as InputStream
      * @param fieldName Field name
      * @return InputStream
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      * @throws IOException If an error occurs.
      */
-    public InputStream getFileAsInputStream(String fieldName) throws GDEMException, IOException {
+    public InputStream getFileAsInputStream(String fieldName) throws XMLConvException, IOException {
 
         FileItem fileItem = getFileItem(fieldName);
         if (fileItem == null)
-            throw new GDEMException("No files found!");
+            throw new XMLConvException("No files found!");
 
         if (fileItem.getSize() == 0)
-            throw new GDEMException("File size is 0KB!"); // There is nothing to save, file size is 0
+            throw new XMLConvException("File size is 0KB!"); // There is nothing to save, file size is 0
 
         return fileItem.getInputStream();
     }

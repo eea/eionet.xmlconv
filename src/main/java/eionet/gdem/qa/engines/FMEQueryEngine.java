@@ -18,7 +18,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.qa.XQScript;
 
@@ -55,12 +55,12 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         try {
             getConnectionInfo();
         } catch (IOException e) {
-            throw new GDEMException(e.toString(), e);
+            throw new XMLConvException(e.toString(), e);
         }
     }
 
     @Override
-    protected void runQuery(XQScript script, OutputStream result) throws GDEMException {
+    protected void runQuery(XQScript script, OutputStream result) throws XMLConvException {
 
         HttpPost runMethod = null;
         CloseableHttpResponse response = null;
@@ -142,10 +142,10 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                 IOUtils.closeQuietly(stream);
             } else {
                 LOGGER.error("FME authentication failed. Could not retrieve a Token");
-                throw new GDEMException("FME authentication failed");
+                throw new XMLConvException("FME authentication failed");
             }        	
         } catch (Exception e) {
-            throw new GDEMException(e.toString(), e);
+            throw new XMLConvException(e.toString(), e);
         } finally {
             if (method != null) {
             	method.releaseConnection();

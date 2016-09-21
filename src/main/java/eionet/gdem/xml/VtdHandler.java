@@ -1,7 +1,7 @@
 package eionet.gdem.xml;
 
 import com.ximpleware.*;
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -25,7 +25,7 @@ public class VtdHandler implements XmlHandler {
     }
 
     @Override
-    public void addWarningMessage(String xml, String warningMessage, OutputStream out) throws GDEMException {
+    public void addWarningMessage(String xml, String warningMessage, OutputStream out) throws XMLConvException {
         try {
             VTDGen vg = new VTDGen();
             vg.setDoc(xml.getBytes());
@@ -40,23 +40,23 @@ public class VtdHandler implements XmlHandler {
             xm.output(out);
             out.flush();
         } catch (UnsupportedEncodingException e) {
-            throw new GDEMException("Error: " + e.getMessage());
+            throw new XMLConvException("Error: " + e.getMessage());
         } catch (EntityException e) {
-            throw new GDEMException("Error: " + e.getMessage());
+            throw new XMLConvException("Error: " + e.getMessage());
         } catch (XPathParseException e) {
-            throw new GDEMException("Error: " + e.getMessage());
+            throw new XMLConvException("Error: " + e.getMessage());
         } catch (ParseException e) {
-            throw new GDEMException("Error: " + e.getMessage());
+            throw new XMLConvException("Error: " + e.getMessage());
         } catch (NavException e) {
-            throw new GDEMException("Error: " + e.getMessage());
+            throw new XMLConvException("Error: " + e.getMessage());
         } catch (XPathEvalException e) {
-            throw new GDEMException("Error: " + e.getMessage());
+            throw new XMLConvException("Error: " + e.getMessage());
         } catch (ModifyException e) {
-            throw new GDEMException("Error: " + e.getMessage());
+            throw new XMLConvException("Error: " + e.getMessage());
         } catch (TranscodeException e) {
-            throw new GDEMException("Error: " + e.getMessage());
+            throw new XMLConvException("Error: " + e.getMessage());
         } catch (IOException e) {
-            throw new GDEMException("Error: " + e.getMessage());
+            throw new XMLConvException("Error: " + e.getMessage());
         }
     }
 }

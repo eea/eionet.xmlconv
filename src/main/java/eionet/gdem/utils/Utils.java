@@ -56,7 +56,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import eionet.gdem.Constants;
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
@@ -505,7 +505,7 @@ public final class Utils {
     /**
      * Reads temporary file from disk and returns as a bytearray.
      */
-    public static byte[] fileToBytes(String fileName) throws GDEMException {
+    public static byte[] fileToBytes(String fileName) throws XMLConvException {
 
         InputStream fis = null;
         try {
@@ -515,10 +515,10 @@ public final class Utils {
 
         } catch (FileNotFoundException fne) {
             LOGGER.error("File not found " + fileName, fne);
-            throw new GDEMException("File not found " + fileName, fne);
+            throw new XMLConvException("File not found " + fileName, fne);
         } catch (Exception e) {
             LOGGER.error("", e);
-            throw new GDEMException("Exception " + e.toString(), e);
+            throw new XMLConvException("Exception " + e.toString(), e);
         } finally {
             IOUtils.closeQuietly(fis);
         }

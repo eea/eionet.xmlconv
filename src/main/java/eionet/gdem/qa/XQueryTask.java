@@ -35,7 +35,7 @@ import org.apache.commons.lang.StringUtils;
 
 
 import eionet.gdem.Constants;
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.datadict.DataDictUtil;
 import eionet.gdem.dcm.business.SchemaManager;
@@ -194,8 +194,8 @@ public class XQueryTask extends Thread {
                             xq.getResult(out);
                         }
                     } catch (IOException ioe) {
-                        throw new GDEMException(ioe.toString());
-                    } catch (GDEMException e) {
+                        throw new XMLConvException(ioe.toString());
+                    } catch (XMLConvException e) {
                         // store error in feedback, it could be XML processing error
                         StringBuilder errBuilder = new StringBuilder();
                         errBuilder.append("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">Unexpected error occured!</span><h2>Unexpected error occured!</h2>");

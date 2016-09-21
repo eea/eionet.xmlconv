@@ -4,7 +4,59 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
+<style>
+    .dropzone .dz-preview .dz-progress {
+        height: 20px;
+        border: 1px solid #aaa;
+        max-width: 600px;
+        margin-bottom: 5px;
+    }
+    ul.dropzone-previews {
+        line-height: normal !important;
+    }
+    .dz-processing .dz-progress {
+        display:block;
+    }
+    .dz-complete .dz-progress {
+        display:none;
+    }
+    .dropzone .dz-preview .dz-progress .dz-upload {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: green; }
+    .dropzone .dz-preview .dz-error-message {
+        color: red;
+        display: none;
+    }
+    .dz-remove { display:none; }
+    .dz-success-mark { display:none; }
+    .dz-error-mark { display:none; }
+    .dz-details { margin-top: 10px; }
+    #clickable {
+        margin-top: -85px;
+    }
+    @media screen and (-webkit-min-device-pixel-ratio:0) {
+        #clickable {
+            margin-top: -62px;
+        }
+    }
+    @media screen and (-moz-os-version: windows-xp), screen and (-moz-os-version: windows-vista),
+    screen and (-moz-os-version: windows-win7), screen and (-moz-os-version: windows-win8),
+    screen and (-moz-os-version: windows-win10){
+        #clickable {
+            margin-top: -72px;
+        }
+    }
+    @media screen and (min-width:0\0) {
+        #clickable {
+            margin-top: -67px;
+        }
+    }
+</style>
 <html:xhtml/>
 <div style="width:100%;">
 
@@ -17,22 +69,22 @@
     <html:form action="/executeSandboxAction" method="post">
         <table class="formtable">
 
-                   <%-- List of XML schemas  --%>
-                <tr class="zebraeven">
-                    <td>
-                         <label class="question" for="selSchema">
-                            <bean:message key="label.qasandbox.xmlSchema"/>
-                         </label>
-                     </td>
-                </tr>
-                <tr>
-                  <td>
-                      <bean:define id="schemas" name="qascript.qascriptList" property="qascripts"/>
-                    <html:select name="QASandboxForm" property="schemaUrl" styleId="selSchema">
-                        <html:option value="">--</html:option>
-                        <html:options collection="schemas" property="schema" labelProperty="label" />
-                    </html:select>
-                  </td>
+                <%-- List of XML schemas  --%>
+            <tr class="zebraeven">
+                <td>
+                     <label class="question" for="selSchema">
+                        <bean:message key="label.qasandbox.xmlSchema"/>
+                     </label>
+                 </td>
+            </tr>
+            <tr>
+                <td>
+                   <bean:define id="schemas" name="qascript.qascriptList" property="qascripts"/>
+                   <html:select name="QASandboxForm" property="schemaUrl" styleId="selSchema">
+                       <html:option value="">--</html:option>
+                       <html:options collection="schemas" property="schema" labelProperty="label" />
+                   </html:select>
+                </td>
             </tr>
             <tr>
                 <td>
@@ -44,25 +96,27 @@
                     </html:submit>
                 </td>
             </tr>
-
-            <tr>
-                <td>&nbsp;</td>
-            </tr>
-
-                   <%-- CR XML files  --%>
-
-                 <bean:define id="schema" name="QASandboxForm" property="schema" type="Schema"/>
-                <logic:present name="schema" property="crfiles">
-                      <bean:size id="countfiles" name="schema" property="crfiles"/>
-                      <bean:define id="crfiles" name="schema" property="crfiles"/>
-
-                    <tr class="zebraeven">
-                     <td>
-                         <label class="question" for="selXml">
-                            <bean:message key="label.qasandbox.CRxmlfiles" /> (<bean:write name="countfiles"/>)
-                        </label>
-                      </td>
+                    <tr>
+                        <td>&nbsp;</td>
                     </tr>
+        </table>
+    </html:form>
+
+
+    <html:form action="/executeSandboxAction" method="post">
+        <table class="formtable">
+    <%-- CR XML files  --%>
+    <bean:define id="schema" name="QASandboxForm" property="schema" type="Schema"/>
+    <logic:present name="schema" property="crfiles">
+    <bean:size id="countfiles" name="schema" property="crfiles"/>
+    <bean:define id="crfiles" name="schema" property="crfiles"/>
+    <tr class="zebraeven">
+        <td>
+           <label class="question" for="selXml">
+              <bean:message key="label.qasandbox.CRxmlfiles" /> (<bean:write name="countfiles"/>)
+          </label>
+        </td>
+    </tr>
                       <logic:greaterThan name="countfiles" value="0">
                         <tr>
                             <td>
@@ -91,7 +145,7 @@
                         <tr>
                             <td>
                                 <html:text property="sourceUrl" styleId="txtSourceUrl" size="120"/>
-                              </td>
+                            </td>
                         </tr>
                         <tr>
                             <td>
@@ -102,9 +156,13 @@
                         </tr>
                     </logic:equal>
             </logic:present>
+        </table>
+        </html:form>
 
             <%-- Insert URL manually --%>
             <logic:notPresent name="schema" property="crfiles">
+                <html:form action="/executeSandboxAction" method="post">
+                <table class="formtable">
                 <tr class="zebraeven">
                     <td>
                          <label class="question" for="txtSourceUrl">
@@ -114,24 +172,113 @@
                         </tr>
                         <tr>
                             <td>
-                        <html:text property="sourceUrl" styleId="txtSourceUrl" size="120"/>
-                      </td>
+                                <html:text property="sourceUrl" styleId="txtSourceUrl" size="120" style="max-width: 780px;"/>
+                            </td>
                  </tr>
-                <tr>
+                 <tr>
                     <td>
                         <html:submit styleClass="button" property="action">
                             <bean:message key="label.qasandbox.extractSchema"/>
                         </html:submit>
                     </td>
-                </tr>
-             </logic:notPresent>
-            <tr>
-                <td>&nbsp;</td>
-            </tr>
+                 </tr>
+                 <tr>
+                   <td>&nbsp;</td>
+                 </tr>
+                </table>
+                </html:form>
+                <logic:equal value="true" name="qascript.permissions" property="qsuPrm">
+                    <c:if test="${not(fn:contains(header['User-Agent'],'MSIE 9.0'))}">
+                        <button style="float:right;" id="clickable">Upload file</button>
+                        <form action="/qasandbox/upload" id="my-dropzone" class="dropzone">
+                            <ul id="dropzone-previews" class="dropzone-previews"></ul>
+                        </form>
+                        <script type="text/javascript" src="<c:url value="/scripts/dropzone.min.js"/>"></script>
 
+                        <script id="mypreview" type="text/template">
+                            <li class="dz-preview dz-file-preview">
+                                <div class="dz-details">
+                                    <div class="dz-filename">
+                                        <span data-dz-name></span>
+                                        <span>(<span data-dz-size></span>)</span>
+                                        <div style="float:right">
+                                            <button class="dz-remove-button" style="margin-left:5px" type="button" data-dz-remove>Remove</button>
+                                            <button class="dz-select-button" style="margin-left:5px" type="button">Select</button>
+                                        </div>
+                                    </div>
+                                    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                                </div>
+                                <div class="dz-success-mark"><span>✔</span></div>
+                                <div class="dz-error-mark"><span>✘</span></div>
+                                <div class="dz-error-message"><span data-dz-errormessage></span></div>
+                            </li>
+                        </script>
+
+                        <script type="text/javascript">
+                            $.ajaxSetup({ cache: false });
+                            $(document).on('click', '.dz-filename span', function(event) {
+                                for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
+                                    if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).text()) {
+                                        $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
+                                    }
+                                }
+                            });
+                            $(document).on('click', '.dz-select-button', function(event) {
+                                for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
+                                    if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).parent().parent().children(':first').text()) {
+                                        $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
+                                    }
+                                }
+                            });
+                            var ctx = '${pageContext.request.contextPath}';
+                            Dropzone.options.myDropzone = {
+                                dictDefaultMessage: "",
+                                url: ctx + "/qasandbox/upload",
+                                clickable: "#clickable",
+                                acceptedFiles: ".xml, .gml",
+                                maxFiles: "5",
+                                maxFilesize: "300",
+                                createImageThumbnails: "false",
+                                addRemoveLinks: "false",
+                                previewsContainer: "#dropzone-previews",
+                                previewTemplate: document.getElementById("mypreview").innerHTML,
+                                init: function() {
+                                    $.getJSON(ctx + "/qasandbox/action?command=getFiles", function(data) {
+                                    if (data.Data.length != 0) {
+                                        $.each(data.Data, function (index, val) {
+                                            var mockFile = {name: val.name, size: val.size, url: val.url};
+                                            Dropzone.forElement("#my-dropzone").emit("addedfile", mockFile);
+                                            Dropzone.forElement("#my-dropzone").emit("complete", mockFile);
+                                            Dropzone.forElement("#my-dropzone").files.push(mockFile);
+                                        });
+                                    }
+                                    });
+                                    this.on("success", function (file, responseText) {
+                                        $("#txtSourceUrl").val(responseText.url)
+                                        var mockFile = {name: file.name, size: file.size, url: responseText.url};
+                                        Dropzone.forElement("#my-dropzone").files.push(mockFile);
+                                    });
+                                    this.on("uploadprogress", function(file, progress, bytesSent) {
+                                        //console.log("Progress :" + progress);
+                                        //$('.dz-upload').text(Math.round(progress) + "%")
+                                    });
+                                    this.on("removedfile", function(file) {
+                                       $.get(ctx + "/qasandbox/action", { command: "deleteFile", filename: file.name });
+                                    });
+                                }
+                            };
+                        </script>
+                    </c:if>
+                </logic:equal>
+            </logic:notPresent>
+    <html:form action="/executeSandboxAction" method="post">
+        <table class="formtable">
         <%-- QA script type & content --%>
         <logic:equal name="QASandboxForm" property="showScripts" value="false">
             <logic:equal value="true"  name="qascript.permissions" property="qsiPrm" >
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
             <tr class="zebraeven">
                 <td>
                      <label class="question">
@@ -233,7 +380,7 @@
                                             <bean:write name="qascript" property="fileName" />
                                         </html:link>
                                         (<bean:write name="qascript" property="scriptType" />)
-                                        <logic:equal value="true"  name="qascript.permissions" property="qsuPrm" >
+                                        <logic:equal value="true" name="qascript.permissions" property="qsuPrm" >
                                           <%--  If scriptType is NOT 'FME' --%>
                                             <logic:notEqual name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
                                               <html:link page="/do/editQAScriptInSandbox" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.editScriptTitle">
@@ -267,6 +414,7 @@
                 <tr>
                     <td>&nbsp;</td>
                 </tr>
+
                 <tr>
                     <td>
                         <%--  Execute script --%>

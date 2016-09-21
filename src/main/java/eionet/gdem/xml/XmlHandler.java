@@ -1,6 +1,6 @@
 package eionet.gdem.xml;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 
 import java.io.OutputStream;
 
@@ -30,7 +30,7 @@ public interface XmlHandler {
      * @param xml Input XML
      * @param warningMessage Warning message
      * @param out Output Stream
-     * @throws GDEMException In case of a parser error
+     * @throws XMLConvException In case of a parser error
      */
-    void addWarningMessage(String xml, String warningMessage, OutputStream out) throws GDEMException;
+    void addWarningMessage(String xml, String warningMessage, OutputStream out) throws XMLConvException;
 }

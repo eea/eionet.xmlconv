@@ -8,7 +8,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.remote.RemoteServiceIF;
 import eionet.gdem.dto.ConversionResultDto;
@@ -23,9 +23,9 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      * List available conversions.
      *
      * @return List of conversions.
-     * @throws GDEMException If an error occurs
+     * @throws XMLConvException If an error occurs
      */
-    Vector listConversions() throws GDEMException;
+    Vector listConversions() throws XMLConvException;
 
     /**
      * List available conversions for given schema. If schema is not given as a parameter, then all possible conversions will be
@@ -34,9 +34,9 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      * @param schema
      *            XML Schema URL for which conversions will be returned.
      * @return List of conversions.
-     * @throws GDEMException If an error occurs
+     * @throws XMLConvException If an error occurs
      */
-    Vector listConversions(String schema) throws GDEMException;
+    Vector listConversions(String schema) throws XMLConvException;
 
     /**
      * Converts the XML file to a specific format.
@@ -47,19 +47,19 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      *            ID of desired conversion as the follows: - If conversion ID begins with the DD DCM will generate appropriate
      *            stylesheet on the fly. - If conversion ID is number the DCM will consider consider hand coded conversion
      * @return Hashtable containing two elements: - content-type (String) - content (Byte array)
-     * @throws GDEMException
+     * @throws XMLConvException
      *             Thrown in case of errors
      */
-    Hashtable convert(String sourceURL, String convertId) throws GDEMException;
+    Hashtable convert(String sourceURL, String convertId) throws XMLConvException;
 
     /**
      * Converts DataDictionary MS Excel file to XML
      *
      * @param sourceURL - URL of the source Excel file
      * @return ConversionResultDto result object
-     * @throws GDEMException If an error occurs
+     * @throws XMLConvException If an error occurs
      */
-    Hashtable<String, Object> convertDD_XML(String sourceURL) throws GDEMException;
+    Hashtable<String, Object> convertDD_XML(String sourceURL) throws XMLConvException;
 
     /**
      * Converts DataDictionary MS Excel sheets to different XML files, where one xml file is dataset table.
@@ -67,9 +67,9 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      * @param sourceURL URL of the source Excel file
      * @param sheetParam - Sheetname to convert
      * @return ConversionResultDto result object
-     * @throws GDEMException If an error occurs
+     * @throws XMLConvException If an error occurs
      */
-    Hashtable<String, Object> convertDD_XML_split(String sourceURL, String sheetParam) throws GDEMException;
+    Hashtable<String, Object> convertDD_XML_split(String sourceURL, String sheetParam) throws XMLConvException;
 
     /**
      * If Conversion Service is called through HTTP, then set the HTTP Response object.
@@ -88,9 +88,9 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      *            Stylesheet ID.
      * @param fileName File name
      * @return returns the Hashtable that has exactly the same structure as convert method.
-     * @throws GDEMException If an error occurs
+     * @throws XMLConvException If an error occurs
      */
-    Hashtable convertPush(InputStream file, String convertId, String fileName) throws GDEMException;
+    Hashtable convertPush(InputStream file, String convertId, String fileName) throws XMLConvException;
 
     /**
      * Method for xml-rpc clients file is base64 encoded bytearray.
@@ -101,9 +101,9 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      *            Stylesheet ID
      * @param filename File name
      * @return returns the Hashtable that has exactly the same structure as convert method.
-     * @throws GDEMException If an error occurs
+     * @throws XMLConvException If an error occurs
      */
-    Hashtable convertPush(byte[] file, String convertId, String filename) throws GDEMException;
+    Hashtable convertPush(byte[] file, String convertId, String filename) throws XMLConvException;
 
     /**
      * Set base64 authentication info for receiveing remote URLs.
@@ -117,9 +117,9 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      * Get a distinct list of XML Schemas returned from listConversions() method.
      *
      * @return List of XML Schemas
-     * @throws GDEMException If an error occurs
+     * @throws XMLConvException If an error occurs
      */
-    List getXMLSchemas() throws GDEMException;
+    List getXMLSchemas() throws XMLConvException;
 
     /**
      * /** Converts DataDictionary MS Excel sheets to XML files.
@@ -131,7 +131,7 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      * @param sheetName
      *            Sheet name to convert
      * @return ConversionResultDto Result transfer object
-     * @throws GDEMException If an error occurs
+     * @throws XMLConvException If an error occurs
      */
-    ConversionResultDto convertDD_XML(String sourceURL, boolean split, String sheetName) throws GDEMException;
+    ConversionResultDto convertDD_XML(String sourceURL, boolean split, String sheetName) throws XMLConvException;
 }

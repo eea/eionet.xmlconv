@@ -31,7 +31,7 @@ import java.util.Map;
 
 
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.DDServiceClient;
 import eionet.gdem.services.GDEMServices;
@@ -58,9 +58,9 @@ public class DataDictUtil {
      * Constructs instance file URL using schema ID.
      * @param schema_url Schema URL
      * @return Instance URL
-     * @throws GDEMException In case of unexpected error.
+     * @throws XMLConvException In case of unexpected error.
      */
-    public static String getInstanceUrl(String schema_url) throws GDEMException {
+    public static String getInstanceUrl(String schema_url) throws XMLConvException {
 
         try {
 
@@ -81,9 +81,9 @@ public class DataDictUtil {
             URL instanceURL = new URL(instance_url);
             return instance_url;
         } catch (MalformedURLException e) {
-            throw new GDEMException("Error getting Instance file URL: " + e.toString() + " - " + schema_url);
+            throw new XMLConvException("Error getting Instance file URL: " + e.toString() + " - " + schema_url);
         } catch (Exception e) {
-            throw new GDEMException("Error getting Instance file URL: " + e.toString() + " - " + schema_url);
+            throw new XMLConvException("Error getting Instance file URL: " + e.toString() + " - " + schema_url);
         }
     }
 
@@ -202,9 +202,9 @@ public class DataDictUtil {
      *
      * @param schema_url Schema URL
      * @return Container schema url
-     * @throws GDEMException In case of unexpected error
+     * @throws XMLConvException In case of unexpected error
      */
-    public static String getContainerSchemaUrl(String schema_url) throws GDEMException {
+    public static String getContainerSchemaUrl(String schema_url) throws XMLConvException {
 
         try {
             URL SchemaURL = new URL(schema_url);
@@ -214,9 +214,9 @@ public class DataDictUtil {
             URL InstanceURL = new URL(containerSchemaUrl);
             return containerSchemaUrl;
         } catch (MalformedURLException e) {
-            throw new GDEMException("Error getting Container Schema URL: " + e.toString() + " - " + schema_url);
+            throw new XMLConvException("Error getting Container Schema URL: " + e.toString() + " - " + schema_url);
         } catch (Exception e) {
-            throw new GDEMException("Error getting Container Schema URL: " + e.toString() + " - " + schema_url);
+            throw new XMLConvException("Error getting Container Schema URL: " + e.toString() + " - " + schema_url);
         }
     }
 

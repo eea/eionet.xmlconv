@@ -22,7 +22,7 @@
 
 package eionet.gdem.conversion.converters;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.qa.engines.SaxonProcessor;
 import eionet.gdem.utils.Utils;
@@ -80,11 +80,11 @@ public abstract class ConvertStrategy {
      * @param result OutputStream for conversion result.
      * @param cnvFileExt File extension for conversion result.
      * @return Preferred file name for conversion result.
-     * @throws GDEMException In case of unexpected XML or XSL errors.
+     * @throws XMLConvException In case of unexpected XML or XSL errors.
      * @throws Exception In case of unexpected system error.
      */
     public abstract String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt)
-            throws GDEMException, Exception;
+            throws XMLConvException, Exception;
 
     /**
      * Sets the map of xsl global parameters for this strategy.
@@ -99,9 +99,9 @@ public abstract class ConvertStrategy {
      * @param in InputStream containing source XML.
      * @param xslStream InputStream containing XSL content.
      * @param out OutputStream for conversion result.
-     * @throws GDEMException In case of unexpected XML or XSL errors.
+     * @throws XMLConvException In case of unexpected XML or XSL errors.
      */
-    protected void runXslTransformation(InputStream in, InputStream xslStream, OutputStream out) throws GDEMException {
+    protected void runXslTransformation(InputStream in, InputStream xslStream, OutputStream out) throws XMLConvException {
         try {
             Processor proc = SaxonProcessor.getProcessor();
             XsltCompiler comp = proc.newXsltCompiler();
@@ -124,15 +124,15 @@ public abstract class ConvertStrategy {
             trans.transform();
 
         //} catch (TransformerConfigurationException tce) {
-        //    throw new GDEMException("Error transforming XML - incorrect stylesheet file: " + tce.toString(), tce);
+        //    throw new XMLConvException("Error transforming XML - incorrect stylesheet file: " + tce.toString(), tce);
         //} catch (TransformerException tfe) {
-        //    throw new GDEMException("Error transforming XML - it's not probably well-formed xml file: " + tfe.toString(), tfe);
+        //    throw new XMLConvException("Error transforming XML - it's not probably well-formed xml file: " + tfe.toString(), tfe);
         //} catch (Throwable th) {
         //    LOGGER.error("Error " + th.toString(), th);
         //    th.printStackTrace(System.out);
-        //    throw new GDEMException("Error transforming XML: " + th.toString());
+        //    throw new XMLConvException("Error transforming XML: " + th.toString());
         } catch (SaxonApiException e) {
-            throw new GDEMException("Error transforming XML: " + e.getMessage(), e);
+            throw new XMLConvException("Error transforming XML: " + e.getMessage(), e);
         }
     }
 
@@ -141,11 +141,11 @@ public abstract class ConvertStrategy {
      * @param in InputStream containing source XML.
      * @param xsl InputStream containing XSL-FO content.
      * @param out OutputStream for conversion result.
-     * @throws GDEMException In case of unexpected XML or XSL errors.
+     * @throws XMLConvException In case of unexpected XML or XSL errors.
      * @throws IOException In case of unexpected XML or XSL errors.
      * @throws SAXException In case of unexpected XML or XSL errors.
      */
-    protected void runFOPTransformation(InputStream in, InputStream xsl, OutputStream out) throws GDEMException, IOException, SAXException {
+    protected void runFOPTransformation(InputStream in, InputStream xsl, OutputStream out) throws XMLConvException, IOException, SAXException {
         FopFactory fopFactory = FopFactory.newInstance(new File("fop.xconf"));
         try {
             Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
@@ -176,13 +176,13 @@ public abstract class ConvertStrategy {
             }
 
         //} catch (TransformerConfigurationException tce) {
-        //    throw new GDEMException("Error transforming XML to PDF - incorrect stylesheet file: " + tce.toString(), tce);
+        //    throw new XMLConvException("Error transforming XML to PDF - incorrect stylesheet file: " + tce.toString(), tce);
         //} catch (TransformerException tfe) {
-        //    throw new GDEMException("Error transforming XML to PDF - it's not probably well-formed xml file: " + tfe.toString(),
+        //    throw new XMLConvException("Error transforming XML to PDF - it's not probably well-formed xml file: " + tfe.toString(),
         //            tfe);
         } catch (SaxonApiException e) {
             LOGGER.error("Error " + e.toString(), e);
-            throw new GDEMException("Error transforming XML to PDF " + e.toString());
+            throw new XMLConvException("Error transforming XML to PDF " + e.toString());
         }
     }
 

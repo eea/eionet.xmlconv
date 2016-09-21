@@ -27,10 +27,9 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 
 /**
- * GDEM Exception class.
- * TODO: Rename it issue #30269
+ * XMLConv Exception class.
  */
-public class GDEMException extends Exception {
+public class XMLConvException extends Exception {
     /** The cause for this exception.  */
     protected Exception cause = null;
 
@@ -38,7 +37,7 @@ public class GDEMException extends Exception {
      * Constructor
      * @param msg Message
      */
-    public GDEMException(String msg) {
+    public XMLConvException(String msg) {
         super(msg);
     }
 
@@ -47,7 +46,7 @@ public class GDEMException extends Exception {
      * @param msg Message
      * @param cause Cause
      */
-    public GDEMException(String msg, Exception cause) {
+    public XMLConvException(String msg, Exception cause) {
         super(msg);
         this.cause = cause;
     }

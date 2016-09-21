@@ -11,7 +11,7 @@ import org.apache.commons.io.IOUtils;
 
 
 import eionet.gdem.Constants;
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.business.SourceFileManager;
@@ -73,9 +73,9 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
      * @param sourceUrl URL of the soucre XML
      * @param scriptId XQueryScript ID or -1 (XML Schema validation) to be processed
      * @return Vector of 2 fields: content type and byte array
-     * @throws GDEMException in case of business logic error
+     * @throws XMLConvException in case of business logic error
      */
-    public Vector runQAScript(String sourceUrl, String scriptId) throws GDEMException {
+    public Vector runQAScript(String sourceUrl, String scriptId) throws XMLConvException {
 
         Vector result = new Vector();
         String fileUrl = null;
@@ -88,7 +88,7 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
         } catch (Exception e) {
             String errMess = "File URL is incorrect";
             LOGGER.error(errMess + "; " + e.toString(), e);
-            throw new GDEMException(errMess, e);
+            throw new XMLConvException(errMess, e);
         }
         if (scriptId.equals(String.valueOf(Constants.JOB_VALIDATION))) {
             try {
@@ -97,7 +97,7 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
             } catch (Exception e) {
                 String errMess = "Could not execute runQAMethod";
                 LOGGER.error(errMess + "; " + e.toString());
-                throw new GDEMException(errMess, e);
+                throw new XMLConvException(errMess, e);
             }
         } else {
             String[] pars = new String[1];
@@ -122,7 +122,7 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                 if (Utils.isNullStr(xqScript) || hash == null) {
                     String errMess = "Could not find QA script with id: " + scriptId;
                     LOGGER.error(errMess);
-                    throw new GDEMException(errMess, new Exception());
+                    throw new XMLConvException(errMess, new Exception());
                 } else {
                     if (!Utils.isNullStr((String) hash.get("meta_type"))) {
                         contentType = (String) hash.get("meta_type");
@@ -140,11 +140,11 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                     strResult = xq.getResult();
                 }
             } catch (SQLException sqle) {
-                throw new GDEMException("Error getting data from DB: " + sqle.toString());
+                throw new XMLConvException("Error getting data from DB: " + sqle.toString());
             } catch (Exception e) {
                 String errMess = "Could not execute runQAMethod";
                 LOGGER.error(errMess + "; " + e.toString(), e);
-                throw new GDEMException(errMess, e);
+                throw new XMLConvException(errMess, e);
             }
         }
         if (isHttpRequest()) {
@@ -157,7 +157,7 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                 IOUtils.write(strResult, outstream, "UTF-8");
             } catch (IOException e) {
                 LOGGER.error("Error getting response outputstream ", e);
-                throw new GDEMException("Error getting response outputstream " + e.toString(), e);
+                throw new XMLConvException("Error getting response outputstream " + e.toString(), e);
             }
         } else {
             result.add(contentType);

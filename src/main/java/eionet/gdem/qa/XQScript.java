@@ -26,7 +26,7 @@ package eionet.gdem.qa;
 import java.io.OutputStream;
 
 import eionet.gdem.Constants;
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.qa.engines.*;
 
@@ -111,9 +111,9 @@ public class XQScript {
 
     /**
      * Result of the XQsrcipt
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public String getResult() throws GDEMException {
+    public String getResult() throws XMLConvException {
         initEngine();
         return _engine.getResult(this);
     }
@@ -121,18 +121,18 @@ public class XQScript {
     /**
      * Gets XQ result
      * @param out Output Stream
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public void getResult(OutputStream out) throws GDEMException {
+    public void getResult(OutputStream out) throws XMLConvException {
         initEngine();
         _engine.getResult(this, out);
     }
 
     /**
      * Initializes QA engine
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    private void initEngine() throws GDEMException {
+    private void initEngine() throws XMLConvException {
 
         if (_engine == null) {
             try {
@@ -150,7 +150,7 @@ public class XQScript {
                     _engine = new SaxonImpl();
                 }
             } catch (Exception e) {
-                throw new GDEMException("Error initializing engine  " + e.toString());
+                throw new XMLConvException("Error initializing engine  " + e.toString());
             }
         }
     }

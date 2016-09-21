@@ -28,7 +28,7 @@ import java.util.HashMap;
 
 
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.qa.QAResultPostProcessor;
 import eionet.gdem.qa.XQEngineIF;
 import eionet.gdem.qa.XQScript;
@@ -51,22 +51,22 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
      * Runs query
      * @param script Script to run
      * @param result Result
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    protected abstract void runQuery(XQScript script, OutputStream result) throws GDEMException;
+    protected abstract void runQuery(XQScript script, OutputStream result) throws XMLConvException;
 
     @Override
-    public void getResult(XQScript script, OutputStream out) throws GDEMException {
+    public void getResult(XQScript script, OutputStream out) throws XMLConvException {
         try {
             setOutputType(script.getOutputType());
             runQuery(script, out);
         } catch (Exception e) {
-            throw new GDEMException(e.getMessage(), e);
+            throw new XMLConvException(e.getMessage(), e);
         }
     }
 
     @Override
-    public String getResult(XQScript script) throws GDEMException {
+    public String getResult(XQScript script) throws XMLConvException {
         ByteArrayOutputStream result = new ByteArrayOutputStream();
         String res = "";
         getResult(script, result);
@@ -129,9 +129,9 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
      * Parses parameters
      * @param xqParams xquery parameters
      * @return Parameter map
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public HashMap parseParams(String[] xqParams) throws GDEMException {
+    public HashMap parseParams(String[] xqParams) throws XMLConvException {
         HashMap<String, String> paramsMap = new HashMap<String, String>();
 
         if (xqParams != null) {
@@ -139,7 +139,7 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
                 String arg = xqParams[p];
                 int eq = arg.indexOf("=");
                 if (eq < 1 || eq >= arg.length() - 1) {
-                    throw new GDEMException("Bad param=value pair");
+                    throw new XMLConvException("Bad param=value pair");
                     // handleError("Bad param=value pair", true);
                 }
                 String argname = arg.substring(0, eq);

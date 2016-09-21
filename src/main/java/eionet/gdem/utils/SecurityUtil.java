@@ -35,7 +35,7 @@ import eionet.acl.AccessController;
 import eionet.acl.AppUser;
 
 import edu.yale.its.tp.cas.client.filter.CASFilter;
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.web.struts.login.AfterCASLoginAction;
 
 /**
@@ -136,9 +136,9 @@ public final class SecurityUtil {
      * Returns login URL
      * @param request Request
      * @return login URL
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public static String getLoginURL(HttpServletRequest request) throws GDEMException {
+    public static String getLoginURL(HttpServletRequest request) throws XMLConvException {
 
         String urlWithContextPath = getUrlWithContextPath(request);
         String result = "login";
@@ -158,7 +158,7 @@ public final class SecurityUtil {
                 loginUrl.append(URLEncoder.encode(urlWithContextPath + "/do/afterLogin", "UTF-8"));
                 result = loginUrl.toString();
             } catch (UnsupportedEncodingException e) {
-                throw new GDEMException(e.toString(), e);
+                throw new XMLConvException(e.toString(), e);
             }
         } else {
             // got to local login page
@@ -172,9 +172,9 @@ public final class SecurityUtil {
      * Returns logout URL
      * @param request Request
      * @return Logoug URL
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public static String getLogoutURL(HttpServletRequest request) throws GDEMException {
+    public static String getLogoutURL(HttpServletRequest request) throws XMLConvException {
 
         String result = "start";
 
@@ -186,7 +186,7 @@ public final class SecurityUtil {
                 buf.append("?url=").append(URLEncoder.encode(getUrlWithContextPath(request), "UTF-8"));
                 result = buf.toString();
             } catch (UnsupportedEncodingException e) {
-                throw new GDEMException(e.toString(), e);
+                throw new XMLConvException(e.toString(), e);
             }
         }
         // goto start page

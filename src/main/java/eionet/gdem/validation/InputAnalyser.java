@@ -39,7 +39,7 @@ import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.InputFile;
@@ -83,15 +83,15 @@ public class InputAnalyser {
             src.setTrustedMode(true);
             return parseXML(src.getSrcInputStream());
         } catch (MalformedURLException mfe) {
-            // throw new GDEMException("Bad URL : " + mfe.toString());
+            // throw new XMLConvException("Bad URL : " + mfe.toString());
             throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED);
         } catch (IOException ioe) {
-            // throw new GDEMException("Error opening URL " + ioe.toString());
+            // throw new XMLConvException("Error opening URL " + ioe.toString());
             throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_ERROR);
         } catch (SAXException e) {
             e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_XMLPARSING_ERROR);
-        } catch (GDEMException e) {
+        } catch (XMLConvException e) {
             e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         } catch (Exception e) {
@@ -114,10 +114,10 @@ public class InputAnalyser {
      *
      * @param input InputStream
      * @return Parsed XML
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      * @throws SAXException If an error occurs.
      */
-    public String parseXML(InputStream input) throws GDEMException, SAXException {
+    public String parseXML(InputStream input) throws XMLConvException, SAXException {
         try {
             InputSource is = new InputSource(input);
             SchemaFinder handler = new SchemaFinder();
@@ -171,7 +171,7 @@ public class InputAnalyser {
             throw se;
         } catch (Exception e) {
             e.printStackTrace(System.err);
-            throw new GDEMException("Error parsing: " + e.toString(), e);
+            throw new XMLConvException("Error parsing: " + e.toString(), e);
         }
 
         return "OK";

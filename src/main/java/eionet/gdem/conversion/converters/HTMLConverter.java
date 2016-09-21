@@ -29,7 +29,7 @@ import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -40,7 +40,7 @@ import eionet.gdem.utils.Utils;
 public class HTMLConverter extends ConvertStrategy {
 
     @Override
-    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws GDEMException,
+    public String convert(InputStream source, InputStream xslt, OutputStream result, String cnvFileExt) throws XMLConvException,
     Exception {
         String htmlFile = Utils.getUniqueTmpFileName(".html");
         if (result != null) {
@@ -50,7 +50,7 @@ public class HTMLConverter extends ConvertStrategy {
                 result = new FileOutputStream(htmlFile);
                 runXslTransformation(source, xslt, result);
             } catch (IOException e) {
-                throw new GDEMException("Error creating HTML output file " + e.toString(), e);
+                throw new XMLConvException("Error creating HTML output file " + e.toString(), e);
             }
             finally{
                 IOUtils.closeQuietly(result);

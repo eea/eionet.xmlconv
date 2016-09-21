@@ -23,7 +23,7 @@
 
 package eionet.gdem.qa.engines;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.Utils;
 import net.sf.saxon.s9api.*;
@@ -45,13 +45,13 @@ public class SaxonImpl extends QAScriptEngineStrategy {
 
     /**
      * Default Constructor
-     * @throws GDEMException If an error occurs.
+     * @throws XMLConvException If an error occurs.
      */
-    public SaxonImpl() throws GDEMException {
+    public SaxonImpl() throws XMLConvException {
     }
 
     @Override
-    protected void runQuery(XQScript script, OutputStream result) throws GDEMException {
+    protected void runQuery(XQScript script, OutputStream result) throws XMLConvException {
 
         Processor proc = SaxonProcessor.getProcessor();
         XQueryCompiler comp = proc.newXQueryCompiler();
@@ -81,7 +81,7 @@ public class SaxonImpl extends QAScriptEngineStrategy {
             } else if (!Utils.isNullStr(script.getScriptFileName())) {
                 queryReader = new FileReader(script.getScriptFileName());
             } else {
-                throw new GDEMException("XQuery engine could not find script source or script file name!");
+                throw new XMLConvException("XQuery engine could not find script source or script file name!");
             }
 
             XQueryExecutable exp = comp.compile(queryReader);
@@ -91,7 +91,7 @@ public class SaxonImpl extends QAScriptEngineStrategy {
             proc.writeXdmValue(val, out);
         } catch (SaxonApiException e) {
             LOGGER.debug("Error in XQuery script: " + e.getMessage());
-            throw new GDEMException(e.getMessage(), e);
+            throw new XMLConvException(e.getMessage(), e);
         } catch (FileNotFoundException e) {
             LOGGER.error("XQuery script file not found: " + e.getMessage());
         } catch (IOException e) {

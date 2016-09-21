@@ -3,7 +3,7 @@
  */
 package eionet.gdem.conversion.spreadsheet;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.datadict.DD_XMLInstance;
 import eionet.gdem.dcm.BusinessConstants;
@@ -194,14 +194,14 @@ public class DDXMLConverterTest {
         Map<String, String> datasetResult = null;
         private DDXMLConverter spreadsheetReader;
 
-        public MockDDXMLConverter(DDXMLConverter spreadsheetReader, File inFile) throws GDEMException {
+        public MockDDXMLConverter(DDXMLConverter spreadsheetReader, File inFile) throws XMLConvException {
             super();
             this.spreadsheetReader = spreadsheetReader;
             try{
                 initConverter(inFile);
                 startConverter(new ConversionResultDto(), null);
             }
-            catch(GDEMException e){
+            catch(XMLConvException e){
                 if (inFile == null){
                     //do nothing
                 }

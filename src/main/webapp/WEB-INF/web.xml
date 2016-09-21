@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
-         version="2.4">
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://java.sun.com/xml/ns/j2ee/web-app_3_1.xsd"
+         version="3.1">
     <display-name>Conversion and Quality Assessment Service</display-name>
     <context-param>
         <param-name>edu.yale.its.tp.cas.client.filter.loginUrl</param-name>
@@ -115,10 +115,6 @@
         <filter-name>CAS Filter</filter-name>
         <url-pattern>/log/*</url-pattern>
     </filter-mapping>
-
-
-
-
     <filter-mapping>
         <filter-name>Set Character Encoding</filter-name>
         <servlet-name>action</servlet-name>
@@ -150,6 +146,14 @@
         <servlet-name>RpcRouter</servlet-name>
         <servlet-class>eionet.rpcserver.servlets.XmlRpcRouter</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TmpUploadServlet</servlet-name>
+        <servlet-class>eionet.gdem.web.struts.qasandbox.TmpUploadServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TmpUploadServlet</servlet-name>
+        <url-pattern>/qasandbox/upload</url-pattern>
+    </servlet-mapping>
     <servlet>
         <servlet-name>downloadServlet</servlet-name>
         <servlet-class>eionet.gdem.web.FileDownloadServlet</servlet-class>
@@ -189,6 +193,10 @@
     <servlet-mapping>
         <servlet-name>downloadServlet</servlet-name>
         <url-pattern>/xmlfile/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>downloadServlet</servlet-name>
+        <url-pattern>/tmpfile/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>downloadServlet</servlet-name>

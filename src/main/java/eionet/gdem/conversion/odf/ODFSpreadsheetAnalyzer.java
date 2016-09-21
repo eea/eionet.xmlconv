@@ -41,7 +41,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -101,7 +101,7 @@ public class ODFSpreadsheetAnalyzer {
             if (spreadsheetElement != null) {
                 NodeList tableNodes = spreadsheetElement.getElementsByTagName(tableNamespace + "table");
                 if (tableNodes.getLength() == 0) {
-                    throw new GDEMException("No tables found");
+                    throw new XMLConvException("No tables found");
                 }
 
                 for (int tblNo = 0; tblNo < tableNodes.getLength(); tblNo++) {

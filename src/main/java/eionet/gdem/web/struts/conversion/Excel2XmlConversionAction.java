@@ -20,7 +20,7 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.conversion.ssr.Names;
@@ -95,7 +95,7 @@ public class Excel2XmlConversionAction extends Action {
             e.printStackTrace();
             LOGGER.error("Error testing conversion", e);
             HttpSession sess = httpServletRequest.getSession(true);
-            sess.setAttribute("gdem.exception", new GDEMException("Error testing conversion: " + e.getMessage()));
+            sess.setAttribute("gdem.exception", new XMLConvException("Error testing conversion: " + e.getMessage()));
             httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/" + Names.ERROR_JSP);
             return null;
         }

@@ -25,7 +25,7 @@ package eionet.gdem.conversion.excel.writer;
 
 import java.io.OutputStream;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.excel.ExcelStyleIF;
 
 /**
@@ -143,14 +143,14 @@ public interface ExcelConversionHandlerIF {
 
     /**
      * Writes the EXCEL workbook object into file
-     * @throws GDEMException In case an error occurs.
+     * @throws XMLConvException In case an error occurs.
      */
-    void writeToFile() throws GDEMException;
+    void writeToFile() throws XMLConvException;
 
     /**
      * Writes the EXCEL workbook object into output stream
      * @param outstream OutputStream
-     * @throws GDEMException In case an error occurs.
+     * @throws XMLConvException In case an error occurs.
      */
-    void writeToFile(OutputStream outstream) throws GDEMException;
+    void writeToFile(OutputStream outstream) throws XMLConvException;
 }

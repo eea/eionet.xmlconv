@@ -6,6 +6,7 @@ package eionet.gdem.test.mocks;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 
 /**
@@ -32,5 +33,20 @@ public class MockServletInputStream extends ServletInputStream {
 
     public int read(byte b[], int off, int len) throws IOException {
         return is.read(b, off, len);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
+    public boolean isReady() {
+        return false;
+    }
+
+    @Override
+    public void setReadListener(ReadListener readListener) {
+
     }
 }

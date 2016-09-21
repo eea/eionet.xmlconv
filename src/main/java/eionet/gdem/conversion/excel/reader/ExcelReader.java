@@ -23,7 +23,7 @@
 
 package eionet.gdem.conversion.excel.reader;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.datadict.DDElement;
 import eionet.gdem.conversion.datadict.DD_XMLInstance;
 import eionet.gdem.conversion.spreadsheet.DDXMLConverter;
@@ -116,9 +116,9 @@ public class ExcelReader implements SourceReaderIF {
     }
 
     @Override
-    public void initReader(File inputFile) throws GDEMException {
+    public void initReader(File inputFile) throws XMLConvException {
         if (inputFile == null) {
-            throw new GDEMException("Input file is missing");
+            throw new XMLConvException("Input file is missing");
         }
         try {
             if (!isExcel2007) {
@@ -129,7 +129,7 @@ public class ExcelReader implements SourceReaderIF {
                 wb = WorkbookFactory.create(p);
             }
         } catch (Exception e) {
-            throw new GDEMException("ErrorConversionHandler - couldn't open Excel file: " + e.toString());
+            throw new XMLConvException("ErrorConversionHandler - couldn't open Excel file: " + e.toString());
         }
         inputFileLength = inputFile.length();
         evaluator = wb.getCreationHelper().createFormulaEvaluator();

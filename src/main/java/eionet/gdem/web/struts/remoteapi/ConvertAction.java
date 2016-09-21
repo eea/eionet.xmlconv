@@ -15,7 +15,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
@@ -56,13 +56,13 @@ public class ConvertAction extends BaseMethodAction {
                 convert_id = (String) ((Object[]) params.get(CONVERT_ID_PARAM_NAME))[0];
             }
             if (Utils.isNullStr(convert_id)) {
-                throw new GDEMException(CONVERT_ID_PARAM_NAME + " parameter is missing from request.");
+                throw new XMLConvException(CONVERT_ID_PARAM_NAME + " parameter is missing from request.");
             }
             if (params.containsKey(URL_PARAM_NAME)) {
                 url = (String) ((Object[]) params.get(URL_PARAM_NAME))[0];
             }
             if (Utils.isNullStr(url)) {
-                throw new GDEMException(URL_PARAM_NAME + " parameter is missing from request.");
+                throw new XMLConvException(URL_PARAM_NAME + " parameter is missing from request.");
             }
 
             // call ConversionService

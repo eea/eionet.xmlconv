@@ -6,7 +6,7 @@ package eionet.gdem.conversion;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.dto.ConvertedFileDto;
 import eionet.gdem.test.ApplicationTestContext;
@@ -125,7 +125,7 @@ public class ConvertDDXMLMethodTest {
         assertEquals(dateValue, "2008");
     }
 
-    private ConversionResultDto convertExcel() throws GDEMException {
+    private ConversionResultDto convertExcel() throws XMLConvException {
 
         ConvertDDXMLMethod convMethod = new ConvertDDXMLMethod();
         convMethod.setCheckSchemaValidity(false);
@@ -135,7 +135,7 @@ public class ConvertDDXMLMethodTest {
 
     }
 
-    private IXmlCtx getXmlFromConversionResult(ConversionResultDto result) throws XmlException, GDEMException {
+    private IXmlCtx getXmlFromConversionResult(ConversionResultDto result) throws XmlException, XMLConvException {
 
         ConvertedFileDto xml = result.getConvertedFileByFileName("seed-dates.xml");
         IXmlCtx ctx = new XmlContext();
