@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
+import eionet.gdem.utils.xml.XPathQuery;
+import eionet.gdem.utils.xml.tiny.TinyTreeContext;
 import org.apache.commons.io.IOUtils;
 
 import eionet.gdem.Properties;
@@ -42,9 +44,7 @@ import eionet.gdem.conversion.converters.XMLConverter;
 import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.ZipUtil;
-import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -222,9 +222,10 @@ public class OpenDocument {
         StringBuffer tableSchemaUrls = new StringBuffer();
 
         try {
-            IXmlCtx ctx = new XmlContext();
-            ctx.checkFromFile(strContentFile);
-            IXQuery xQuery = ctx.getQueryManager();
+            // XXX: replace with VTD Context for faster XPATH.
+            TinyTreeContext ctx = new TinyTreeContext();
+            ctx.setFile(strContentFile);
+            XPathQuery xQuery = ctx.getQueryManager();
             List elements = xQuery.getElements("table:table");
             for (int i = 0; i < elements.size(); i++) {
                 HashMap attr_map = (HashMap) elements.get(i);

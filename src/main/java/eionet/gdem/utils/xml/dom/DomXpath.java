@@ -19,7 +19,7 @@
  *    Original code: Nedeljko Pavlovic (ED)
  */
 
-package eionet.gdem.utils.xml;
+package eionet.gdem.utils.xml.dom;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +29,9 @@ import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
+import eionet.gdem.utils.xml.IXmlCtx;
+import eionet.gdem.utils.xml.XPathQuery;
+import eionet.gdem.utils.xml.XmlException;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
@@ -36,11 +39,11 @@ import org.w3c.dom.NodeList;
 
 /**
  * XML Query class.
- * TODO: Find where this is used and possibly remove this. It uses XALAN which has bugs and it is very slow
+ * TODO: Check XPATH performance vs Saxon XPATH.
  * @author Unknown
  * @author George Sofianos
  */
-public class XmlQuery implements IXQuery {
+public class DomXpath implements XPathQuery {
 
     private IXmlCtx ctx = null;
 
@@ -48,7 +51,7 @@ public class XmlQuery implements IXQuery {
      * Constructor
      * @param ctx Context
      */
-    public XmlQuery(IXmlCtx ctx) {
+    public DomXpath(IXmlCtx ctx) {
         this.ctx = ctx;
     }
 

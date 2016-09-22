@@ -26,7 +26,7 @@ package eionet.gdem.utils.xml;
  * @author Unknown
  * @author George Sofianos
  */
-public interface IXUpdate {
+public interface XmlUpdater {
     /**
      * Inserts element
      * @param parentElementName Parent element name

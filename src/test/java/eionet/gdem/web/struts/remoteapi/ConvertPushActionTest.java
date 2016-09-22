@@ -7,7 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.dbunit.IDatabaseTester;
+import eionet.gdem.utils.xml.sax.SaxContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +23,6 @@ import eionet.gdem.test.TestUtils;
 import eionet.gdem.test.mocks.MockServletOutputStream;
 import eionet.gdem.test.mocks.MockServletResponse;
 import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
 
 import javax.sql.DataSource;
 
@@ -121,7 +120,7 @@ public class ConvertPushActionTest {
         assertTrue(response.getOutputStream().toString().indexOf(XMLErrorResult.ERROR_TAG) > 0);
 
         // check if the result is well-formed XML
-        IXmlCtx x = new XmlContext();
+        IXmlCtx x = new SaxContext();
         x.setWellFormednessChecking();
         x.checkFromInputStream(new ByteArrayInputStream(((MockServletOutputStream) response.getOutputStream()).toByteArray()));
     }

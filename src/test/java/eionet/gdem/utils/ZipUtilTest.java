@@ -10,9 +10,10 @@ import eionet.gdem.Properties;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import eionet.gdem.utils.xml.sax.SaxContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -51,7 +52,7 @@ public class ZipUtilTest {
         // test if the directory has 1 subitem
 
         // check if the extracted file is well-formed XML
-        IXmlCtx x = new XmlContext();
+        IXmlCtx x = new SaxContext();
         x.setWellFormednessChecking();
         x.checkFromInputStream(new FileInputStream(xmlFile));
     }

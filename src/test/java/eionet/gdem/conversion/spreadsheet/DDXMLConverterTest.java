@@ -13,9 +13,7 @@ import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -29,6 +27,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import eionet.gdem.utils.xml.XPathQuery;
+import eionet.gdem.utils.xml.tiny.TinyTreeContext;
+import eionet.gdem.utils.xml.tiny.TinyTreeXpath;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -156,14 +158,14 @@ public class DDXMLConverterTest {
 
         ConvertedFileDto xml = conversionResult.getConvertedFileByFileName("GW-Body_Characterisation.xml");
 
-        IXmlCtx ctx = new XmlContext();
-        ctx.checkFromInputStream(new ByteArrayInputStream(xml.getFileContentAsByteArray()));
-        IXQuery xQuery = ctx.getQueryManager();
-
+        TinyTreeContext ctx = new TinyTreeContext();
+        ctx.setStream(new ByteArrayInputStream(xml.getFileContentAsByteArray()));
+        TinyTreeXpath xQuery = ctx.getQueryManager();
+        xQuery.declareNamespace("dd37", "http://dd.eionet.europa.eu/namespace.jsp?ns_id=37");
         List<String> multipleValues = xQuery.getElementValues("dd37:Stratigraphy");
         assertTrue(multipleValues.size() > 0);
         assertEquals("Cambrian", multipleValues.get(0));
-        assertEquals("Carboniferous", multipleValues.get(1));
+        assertEquals("Carboniferous ; Devonian", multipleValues.get(1));
         assertEquals("Devonian", multipleValues.get(2));
         assertEquals("Jurassic,Cambrian", multipleValues.get(3));
         assertEquals("1", multipleValues.get(4));

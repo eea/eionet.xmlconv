@@ -19,7 +19,7 @@
  *    Original code: Nedeljko Pavlovic (ED)
  */
 
-package eionet.gdem.utils.xml;
+package eionet.gdem.utils.xml.dom;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +29,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import eionet.gdem.utils.xml.ErrorStorage;
+import eionet.gdem.utils.xml.XmlException;
 import net.sf.saxon.dom.DocumentBuilderImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

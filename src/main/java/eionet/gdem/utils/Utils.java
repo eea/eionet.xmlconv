@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.Vector;
 
+import eionet.gdem.utils.xml.sax.SaxContext;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -61,7 +62,6 @@ import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -989,7 +989,7 @@ public final class Utils {
         for (int i = 0; files != null && i < files.length; i++) {
             if (!files[i].isDirectory()) {
                 try {
-                    IXmlCtx x = new XmlContext();
+                    IXmlCtx x = new SaxContext();
                     x.setWellFormednessChecking();
                     x.checkFromFile(files[i].getAbsolutePath());
                     // XML file found

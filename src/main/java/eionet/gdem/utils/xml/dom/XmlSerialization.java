@@ -19,7 +19,7 @@
  *    Original code: Nedeljko Pavlovic (ED)
  */
 
-package eionet.gdem.utils.xml;
+package eionet.gdem.utils.xml.dom;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,17 +27,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import eionet.gdem.utils.xml.IXmlCtx;
+import eionet.gdem.utils.xml.XmlException;
+import eionet.gdem.utils.xml.XmlSerializer;
 import org.apache.commons.io.IOUtils;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 
 /**
  * XML Serialization class.
- * TODO: Find out if this is still necessary or we can remove this
  * @author Unknown
  * @author George Sofianos
+ * XXX: Methods are deprecated, replace ASAP.
  */
-public class XmlSerialization implements IXmlSerializer {
+public class XmlSerialization implements XmlSerializer {
 
     private XMLSerializer xmlSerializer;
     private IXmlCtx ctx = null;

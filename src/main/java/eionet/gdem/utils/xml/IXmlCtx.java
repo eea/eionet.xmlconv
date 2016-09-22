@@ -29,7 +29,6 @@ import org.w3c.dom.Document;
  * XML Context Interface.
  * @author Unknown
  * @author George Sofianos
- * TODO: Could remove hungarian notation.
  */
 public interface IXmlCtx {
 
@@ -84,19 +83,19 @@ public interface IXmlCtx {
      * Returns XML Manager
      * @return XML Manager
      */
-    IXUpdate getManager();
+    XmlUpdater getManager();
 
     /**
      * Returns serializer.
      * @return serializer
      */
-    IXmlSerializer getSerializer();
+    XmlSerializer getSerializer();
 
     /**
      * Returns query manager.
      * @return query manager.
      */
-    IXQuery getQueryManager();
+    XPathQuery getQueryManager();
 
     /**
      * Returns document.

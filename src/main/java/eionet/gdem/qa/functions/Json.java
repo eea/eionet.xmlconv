@@ -23,6 +23,7 @@ package eionet.gdem.qa.functions;
 
 import java.io.IOException;
 
+import eionet.gdem.utils.xml.dom.DomContext;
 import net.sf.json.JSON;
 import net.sf.json.JSONSerializer;
 import net.sf.json.xml.XMLSerializer;
@@ -41,7 +42,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-import eionet.gdem.utils.xml.XmlContext;
 import eionet.gdem.utils.xml.XmlException;
 
 /**
@@ -67,10 +67,11 @@ public class Json {
      * @throws XmlException If an error occurs.
      */
     public static Document jsonRequest2xml(String requestUrl) throws XmlException {
+        // XXX: This might consume a lot of resources.
         String xml = jsonRequest2xmlString(requestUrl);
-        XmlContext xmlContext = new XmlContext();
-        xmlContext.checkFromString(xml);
-        return xmlContext.getDocument();
+        DomContext domContext = new DomContext();
+        domContext.checkFromString(xml);
+        return domContext.getDocument();
     }
 
     /**

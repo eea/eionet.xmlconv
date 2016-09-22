@@ -35,9 +35,9 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.DDServiceClient;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
+import eionet.gdem.utils.xml.XPathQuery;
+import eionet.gdem.utils.xml.tiny.TinyTreeContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,12 +121,12 @@ public class DataDictUtil {
             // DataDictUtil.getSchemaElemDefs(elemDefs, schemaUrl);
 
             // load imported schema URLs
-            IXmlCtx ctx = new XmlContext();
+            // XXX: Replace this with VTD for faster XPATH.
+            TinyTreeContext ctx = new TinyTreeContext();
             URL url = new URL(schemaUrl);
             inputStream = url.openStream();
-            ctx.checkFromInputStream(inputStream);
-
-            IXQuery xQuery = ctx.getQueryManager();
+            ctx.setStream(inputStream);
+            XPathQuery xQuery = ctx.getQueryManager();
 
             // run recursively the same function for importing elem defs for imported schemas
             List<String> schemas = xQuery.getSchemaImports();
@@ -172,12 +172,12 @@ public class DataDictUtil {
         }
 
         try {
-            IXmlCtx ctx = new XmlContext();
+            TinyTreeContext ctx = new TinyTreeContext();
             URL url = new URL(schemaUrl);
             inputStream = url.openStream();
-            ctx.checkFromInputStream(inputStream);
+            ctx.setStream(inputStream);
 
-            IXQuery xQuery = ctx.getQueryManager();
+            XPathQuery xQuery = ctx.getQueryManager();
             List<String> elemNames = xQuery.getSchemaElements();
             for (int i = 0; i < elemNames.size(); i++) {
                 String elemName = elemNames.get(i);

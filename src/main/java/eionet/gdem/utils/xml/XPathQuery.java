@@ -27,11 +27,11 @@ import java.util.Map;
 import org.w3c.dom.Node;
 
 /**
- * XQuery interface.
+ * XPath interface.
  * @author Unknown
  * @author George Sofianos
  */
-public interface IXQuery {
+public interface XPathQuery {
 
     /**
      * Finds element which conatins given attributes map. For this elemebnt will be searched under element with provided ID .
