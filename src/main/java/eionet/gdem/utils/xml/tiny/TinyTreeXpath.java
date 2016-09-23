@@ -8,6 +8,7 @@ import org.w3c.dom.Node;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +52,22 @@ public class TinyTreeXpath implements XPathQuery {
 
     @Override
     public List<Map<String, String>> getElements(String elementName) throws XmlException {
-        return null;
+        List<Map<String, String>> result = new ArrayList<>();
+        String xpath = "//" + elementName;
+        try {
+            XPathSelector selector = compiler.compile(xpath).load();
+            selector.setContextItem(root);
+            Map<String, String> elements = new HashMap<>();
+            for (XdmItem item : selector) {
+                elements.put(((XdmNode) item).getNodeName().toString(), item.getStringValue());
+            }
+            if (elements != null) {
+                result.add(elements);
+            }
+        } catch (SaxonApiException e) {
+            throw new XmlException(e);
+        }
+        return result;
     }
 
     @Override

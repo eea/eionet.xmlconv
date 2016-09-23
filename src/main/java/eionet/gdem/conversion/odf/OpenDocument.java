@@ -33,8 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
-import eionet.gdem.utils.xml.XPathQuery;
 import eionet.gdem.utils.xml.tiny.TinyTreeContext;
+import eionet.gdem.utils.xml.tiny.TinyTreeXpath;
 import org.apache.commons.io.IOUtils;
 
 import eionet.gdem.Properties;
@@ -44,7 +44,6 @@ import eionet.gdem.conversion.converters.XMLConverter;
 import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.ZipUtil;
-import eionet.gdem.utils.xml.IXmlCtx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -222,10 +221,10 @@ public class OpenDocument {
         StringBuffer tableSchemaUrls = new StringBuffer();
 
         try {
-            // XXX: replace with VTD Context for faster XPATH.
             TinyTreeContext ctx = new TinyTreeContext();
             ctx.setFile(strContentFile);
-            XPathQuery xQuery = ctx.getQueryManager();
+            TinyTreeXpath xQuery = ctx.getQueryManager();
+            xQuery.declareNamespace("table", "http://openoffice.org/2000/table");
             List elements = xQuery.getElements("table:table");
             for (int i = 0; i < elements.size(); i++) {
                 HashMap attr_map = (HashMap) elements.get(i);
