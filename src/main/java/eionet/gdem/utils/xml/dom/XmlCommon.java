@@ -31,9 +31,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import eionet.gdem.utils.xml.ErrorStorage;
 import eionet.gdem.utils.xml.XmlException;
-import net.sf.saxon.dom.DocumentBuilderImpl;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -47,17 +46,20 @@ import org.xml.sax.helpers.DefaultHandler;
 public class XmlCommon {
 
     protected Document document = null;
-    /** Saxon Tiny Tree DOM wrapper **/
-    private DocumentBuilder parser;
+    private DocumentBuilderFactory factory;
     private ErrorStorage errorStorage;
+    private ErrorHandler handler;
 
     /**
      * Default constructor.
      */
     public XmlCommon() {
-        parser = new DocumentBuilderImpl();
+        factory = DocumentBuilderFactory.newInstance();
+        //The namespace aware factory is very important. Or else the XML parsing will fail.
+        factory.setNamespaceAware(true);
         errorStorage = new ErrorStorage();
-        parser.setErrorHandler(new DefaultHandler() {
+
+        handler = new DefaultHandler() {
             public void error(SAXParseException ex) throws SAXException {
                 errorStorage.setErrorMessage(ex.getMessage());
             }
@@ -69,7 +71,7 @@ public class XmlCommon {
             public void warning(SAXParseException ex) throws SAXException {
                 errorStorage.setWaringMessage(ex.getMessage());
             }
-        });
+        };
     }
 
     /**
@@ -80,6 +82,8 @@ public class XmlCommon {
     public void checkFromInputStream(InputStream inputStream) throws XmlException {
         try {
             InputSource contentForParsing = new InputSource(inputStream);
+            DocumentBuilder parser = factory.newDocumentBuilder();
+            parser.setErrorHandler(handler);
             document = parser.parse(contentForParsing);
             if (!errorStorage.isEmpty()) {
                 throw new XmlException("Failure reasons: " + errorStorage.getErrors());
@@ -105,7 +109,9 @@ public class XmlCommon {
      */
     public void checkFromFile(String fullFileName) throws XmlException {
         try {
+            DocumentBuilder parser = factory.newDocumentBuilder();
             document = parser.parse(fullFileName);
+            parser.setErrorHandler(handler);
             if (!errorStorage.isEmpty()) {
                 throw new XmlException("Failure reasons:" + errorStorage.getErrors());
             }
@@ -117,57 +123,57 @@ public class XmlCommon {
             throw new XmlException("Failure reasons: " + ioe.getMessage());
         } catch (XmlException e) {
             throw e;
+        } catch (ParserConfigurationException e) {
+            throw new XmlException("Failure reasons: " + e.getMessage());
         }
     }
 
     /**
      * Sets wellformedness checking.
-     * TODO: Check if we need to enable this in Saxon
      * @throws XmlException If an error occurs.
      */
     public void setWellFormednessChecking() throws XmlException {
-        /**try {
-            parser.setFeature("http://apache.org/xml/features/validation/schema", false);
+        try {
+            factory.setFeature("http://apache.org/xml/features/validation/schema", false);
             // parser.setFeature("http://xml.org/sax/features/namespaces", false);
 
-            parser.setFeature("http://xml.org/sax/features/validation", false);
+            factory.setFeature("http://xml.org/sax/features/validation", false);
 
-            parser.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            parser.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 
-            parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
-            parser.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
-            parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", false);
-            parser.setFeature("http://apache.org/xml/features/allow-java-encodings", true);
-        } catch (SAXException saxe) {
-            throw new XmlException("Error occurred while setting Xerces features. Reason: " + saxe.getMessage());
+            factory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            factory.setFeature("http://apache.org/xml/features/continue-after-fatal-error", false);
+            factory.setFeature("http://apache.org/xml/features/allow-java-encodings", true);
+        } catch (ParserConfigurationException e) {
+            throw new XmlException("Error occurred while setting Xerces features. Reason: " + e.getMessage());
         }
-*/
+
     }
 
     /**
      * Sets Validation checking
-     * TODO: Check if we need to enable this in Saxon
      * @throws XmlException If an error occurs.
      */
     public void setValidationChecking() throws XmlException {
-       /* try {
-            parser.setFeature("http://xml.org/sax/features/validation", true);
+        try {
+            factory.setFeature("http://xml.org/sax/features/validation", true);
 
-            parser.setFeature("http://xml.org/sax/features/external-general-entities", true);
-            parser.setFeature("http://xml.org/sax/features/external-parameter-entities", true);
-            parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", true);
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", true);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", true);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", true);
 
-            parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
-            parser.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", true);
-            parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", true);
-            parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", false);
-            parser.setFeature("http://apache.org/xml/features/allow-java-encodings", true);
-        } catch (SAXException saxe) {
-            throw new XmlException("Error occurred while setting Xerces features. Reason: " + saxe.getMessage());
-        }*/
+            factory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", true);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", true);
+            factory.setFeature("http://apache.org/xml/features/continue-after-fatal-error", false);
+            factory.setFeature("http://apache.org/xml/features/allow-java-encodings", true);
+        } catch (ParserConfigurationException e) {
+            throw new XmlException("Error occurred while setting Xerces features. Reason: " + e.getMessage());
+        }
     }
 
     /**
@@ -221,6 +227,8 @@ public class XmlCommon {
             strR = new StringReader(xml);
             InputSource input = new InputSource(strR);
             // setWellFormednessChecking();
+            DocumentBuilder parser = factory.newDocumentBuilder();
+            parser.setErrorHandler(handler);
             document = parser.parse(input);
             if (!errorStorage.isEmpty()) {
                 throw new XmlException("Failure reasons:" + errorStorage.getErrors());
@@ -233,6 +241,8 @@ public class XmlCommon {
             throw new XmlException("Failure reasons: " + ioe.getMessage());
         } catch (XmlException e) {
             throw e;
+        } catch (ParserConfigurationException e) {
+            throw new XmlException("Failure reasons: " + e.getMessage());
         } finally {
             try {
                 if (strR != null) {
