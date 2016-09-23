@@ -49,7 +49,7 @@ public class DataDictUtilTest {
     public void testGetElementsDefs() throws Exception {
         String schemaUrl = TestUtils.getSeedURL(TestConstants.SEED_GW_CONTAINER_SCHEMA, this);
         Map<String, DDElement> elemDefs = DataDictUtil.importDDElementSchemaDefs(null, schemaUrl);
-        assertEquals(elemDefs.size(), 43);
+        assertEquals(43, elemDefs.size());
 
         String type = elemDefs.get("GWEWN-Code").getSchemaDataType();
         assertEquals("xs:string", type);

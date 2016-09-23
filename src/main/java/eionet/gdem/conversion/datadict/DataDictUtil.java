@@ -37,7 +37,7 @@ import eionet.gdem.dcm.business.DDServiceClient;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XPathQuery;
-import eionet.gdem.utils.xml.tiny.TinyTreeContext;
+import eionet.gdem.utils.xml.dom.DomContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,11 +121,11 @@ public class DataDictUtil {
             // DataDictUtil.getSchemaElemDefs(elemDefs, schemaUrl);
 
             // load imported schema URLs
-            // XXX: Replace this with VTD for faster XPATH.
-            TinyTreeContext ctx = new TinyTreeContext();
+            // TODO: Replace this with VTD or Saxon for faster XPATH.
+            IXmlCtx ctx = new DomContext();
             URL url = new URL(schemaUrl);
             inputStream = url.openStream();
-            ctx.setStream(inputStream);
+            ctx.checkFromInputStream(inputStream);
             XPathQuery xQuery = ctx.getQueryManager();
 
             // run recursively the same function for importing elem defs for imported schemas
@@ -172,10 +172,11 @@ public class DataDictUtil {
         }
 
         try {
-            TinyTreeContext ctx = new TinyTreeContext();
+            // TODO: Replace this with VTD or Saxon for faster XPATH.
+            IXmlCtx ctx = new DomContext();
             URL url = new URL(schemaUrl);
             inputStream = url.openStream();
-            ctx.setStream(inputStream);
+            ctx.checkFromInputStream(inputStream);
 
             XPathQuery xQuery = ctx.getQueryManager();
             List<String> elemNames = xQuery.getSchemaElements();

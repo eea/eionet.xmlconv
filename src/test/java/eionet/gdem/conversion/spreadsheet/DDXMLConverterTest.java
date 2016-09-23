@@ -13,7 +13,6 @@ import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.utils.xml.IXmlCtx;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -28,7 +27,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import eionet.gdem.utils.xml.XPathQuery;
 import eionet.gdem.utils.xml.tiny.TinyTreeContext;
 import eionet.gdem.utils.xml.tiny.TinyTreeXpath;
 import org.junit.Test;
@@ -152,7 +150,6 @@ public class DDXMLConverterTest {
     }
     
     private void assertTestConvertDD_MultipleValuesresults(ConversionResultDto conversionResult) throws Exception {
-
         assertEquals(ConversionResultDto.STATUS_OK, conversionResult.getStatusCode());
         assertNotNull(conversionResult.getConvertedFileByFileName("GW-Body_Characterisation.xml"));
 
@@ -165,13 +162,14 @@ public class DDXMLConverterTest {
         List<String> multipleValues = xQuery.getElementValues("dd37:Stratigraphy");
         assertTrue(multipleValues.size() > 0);
         assertEquals("Cambrian", multipleValues.get(0));
-        assertEquals("Carboniferous ; Devonian", multipleValues.get(1));
+        assertEquals("Carboniferous", multipleValues.get(1));
         assertEquals("Devonian", multipleValues.get(2));
         assertEquals("Jurassic,Cambrian", multipleValues.get(3));
         assertEquals("1", multipleValues.get(4));
         assertEquals("2", multipleValues.get(5));
         assertEquals("3", multipleValues.get(6));
     }
+
     @Test
     public void testConvertDDExcelToXml_Warning() throws Exception {
 
