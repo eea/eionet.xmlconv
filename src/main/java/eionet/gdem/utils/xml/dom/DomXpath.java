@@ -224,7 +224,7 @@ public class DomXpath implements XPathQuery {
     }
 
     /**
-     * Returns schema elements
+     * Returns schema elements.
      * @return Schema elements
      * @throws XmlException If an error occurs.
      */
@@ -268,7 +268,7 @@ public class DomXpath implements XPathQuery {
     }
 
     /**
-     * Returns Schema imports
+     * Returns Schema imports.
      * @return Schema imports
      * @throws XmlException If an error occurs.
      */
@@ -291,7 +291,7 @@ public class DomXpath implements XPathQuery {
     }
 
     /**
-     * Returns schema element without multiple values
+     * Returns schema element without multiple values.
      * @return Elements without multiple values
      * @throws XmlException If an error occurs.
      */

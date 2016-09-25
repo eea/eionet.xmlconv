@@ -23,11 +23,18 @@ public class TinyTreeContext {
     private ErrorStorage errorStorage;
     private Processor proc;
 
+    /**
+     * Tiny tree Parser constructor
+     */
     public TinyTreeContext() {
         proc = new Processor(false);
         parser = proc.newDocumentBuilder();
     }
 
+    /**
+     * Parses file into tiny tree object.
+     * @param fileName - File path
+     */
     public void setFile(String fileName) {
         File file = new File(fileName);
         try {
@@ -41,6 +48,10 @@ public class TinyTreeContext {
         }
     }
 
+    /**
+     * Parses inputstream into tiny tree object.
+     * @param inputStream InputStream to parse.
+     */
     public void setStream(InputStream inputStream) {
         StreamSource source = new StreamSource(inputStream);
         try {

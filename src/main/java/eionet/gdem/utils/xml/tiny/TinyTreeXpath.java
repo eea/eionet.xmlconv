@@ -20,6 +20,11 @@ public class TinyTreeXpath implements XPathQuery {
     private XdmNode root = null;
     private XPathCompiler compiler;
 
+    /**
+     * Tiny Tree XPATH constructor.
+     * @param processor - Saxon Processor
+     * @param root - Document node
+     */
     public TinyTreeXpath(Processor processor, XdmNode root) {
         this.root = root;
         compiler = processor.newXPathCompiler();
@@ -105,6 +110,11 @@ public class TinyTreeXpath implements XPathQuery {
         return null;
     }
 
+    /**
+     * Adds namespace to XPATH compiler.
+     * @param prefix - Namespace prefix
+     * @param uri - Namespace uri
+     */
     public void declareNamespace(String prefix, String uri) {
         compiler.declareNamespace(prefix, uri);
     }

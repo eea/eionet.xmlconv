@@ -20,6 +20,9 @@ public class SaxContext implements IXmlCtx {
     private SAXParser parser;
     private ErrorStorage errorStorage;
 
+    /**
+     * SaX parser constructor.
+     */
     public SaxContext() {
         parser = new SAXParser();
         errorStorage = new ErrorStorage();
