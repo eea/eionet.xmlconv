@@ -225,7 +225,7 @@ public class OpenDocument {
             ctx.setFile(strContentFile);
             TinyTreeXpath xQuery = ctx.getQueryManager();
             xQuery.declareNamespace("table", "http://openoffice.org/2000/table");
-            List elements = xQuery.getElements("table:table");
+            List elements = xQuery.getElementAttributes("table:table");
             for (int i = 0; i < elements.size(); i++) {
                 HashMap attr_map = (HashMap) elements.get(i);
                 if (attr_map.containsKey(OdsReader.SCHEMA_ATTR_NAME) && Utils.isNullStr(schemaUrl)) {

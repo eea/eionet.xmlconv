@@ -80,13 +80,13 @@ public interface XPathQuery {
     List<String> getElementIdentifiers(String elementName) throws XmlException;
 
     /**
-     * Retruns list of all elements attributes for the specifed element name
+     * Returns list of all elements attributes for the specified element name
      *
      * @param elementName Element name
      * @return Elements list
      * @throws XmlException If an error occurs.
      */
-    List<Map<String, String>> getElements(String elementName) throws XmlException;
+    List<Map<String, String>> getElementAttributes(String elementName) throws XmlException;
 
     /**
      * returns the list of element values

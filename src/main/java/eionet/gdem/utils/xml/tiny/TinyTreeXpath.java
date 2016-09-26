@@ -56,18 +56,22 @@ public class TinyTreeXpath implements XPathQuery {
     }
 
     @Override
-    public List<Map<String, String>> getElements(String elementName) throws XmlException {
+    public List<Map<String, String>> getElementAttributes(String elementName) throws XmlException {
         List<Map<String, String>> result = new ArrayList<>();
-        String xpath = "//" + elementName;
         try {
-            XPathSelector selector = compiler.compile(xpath).load();
-            selector.setContextItem(root);
-            Map<String, String> elements = new HashMap<>();
-            for (XdmItem item : selector) {
-                elements.put(((XdmNode) item).getNodeName().toString(), item.getStringValue());
-            }
-            if (elements != null) {
-                result.add(elements);
+            XPathSelector elementSelector = compiler.compile("//" + elementName).load();
+            elementSelector.setContextItem(root);
+            Map<String, String> attributes = null;
+            for (XdmItem item : elementSelector) {
+                attributes = new HashMap<>();
+                XdmSequenceIterator attributeSequence = ((XdmNode) item).axisIterator(Axis.ATTRIBUTE);
+                while (attributeSequence.hasNext()) {
+                    XdmNode attribute = (XdmNode) attributeSequence.next();
+                    attributes.put(attribute.getNodeName().getLocalName(), attribute.getStringValue());
+                }
+                if (attributes != null) {
+                    result.add(attributes);
+                }
             }
         } catch (SaxonApiException e) {
             throw new XmlException(e);

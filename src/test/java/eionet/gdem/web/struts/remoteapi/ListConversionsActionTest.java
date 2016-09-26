@@ -102,7 +102,7 @@ public class ListConversionsActionTest {
 
         // There should be 3 conversions
         XPathQuery xQuery = x.getQueryManager();
-        List conversions = xQuery.getElements(ListConversionsResult.CONVERSION_TAG);
+        List conversions = xQuery.getElementAttributes(ListConversionsResult.CONVERSION_TAG);
         assertEquals(3, conversions.size());
 
         // validate the converison Ids

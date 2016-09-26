@@ -62,6 +62,7 @@ public class DomXpath implements XPathQuery {
      * @return Node
      * @throws XmlException If an error occurs.
      */
+    @Override
     public Node findElementByAttrs(String parentId, Map<String, String> attributes) throws XmlException {
         String xpath = "//*[@id='" + parentId + "']/*[";
         Iterator<String> attrs = attributes.keySet().iterator();
@@ -93,6 +94,7 @@ public class DomXpath implements XPathQuery {
      * @return Attribute value
      * @throws XmlException If an error occurs.
      */
+    @Override
     public String getAttributeValue(String elementId, String attribute) throws XmlException {
         String xpath = "//*[@id='" + elementId + "']/@" + attribute;
         Attr el = null;
@@ -117,6 +119,7 @@ public class DomXpath implements XPathQuery {
      * @return
      * @throws XmlException If an error occurs.
      */
+    @Override
     public String getElementValue(String parentId, String name) throws XmlException {
         String value = null;
         try {
@@ -139,6 +142,7 @@ public class DomXpath implements XPathQuery {
      * @return Element
      * @throws XmlException If an error occurs.
      */
+    @Override
     public Node findElementById(String id) throws XmlException {
         String xpath = "//*[@id='" + id + "']";
         Node result = null;
@@ -156,6 +160,7 @@ public class DomXpath implements XPathQuery {
      * @return Element identifiers list
      * @throws XmlException If an error occurs.
      */
+    @Override
     public List<String> getElementIdentifiers(String elementName) throws XmlException {
         String xpath = "//" + elementName;
         List<String> result = new ArrayList<String>();
@@ -173,12 +178,14 @@ public class DomXpath implements XPathQuery {
     }
 
     /**
-     * Returns elements list
+     * Returns Element Attributes.
      * @param elementName Element name
      * @return elements list
      * @throws XmlException If an error occurs.
+     *
      */
-    public List<Map<String, String>> getElements(String elementName) throws XmlException {
+    @Override
+    public List<Map<String, String>> getElementAttributes(String elementName) throws XmlException {
         String xpath = "//" + elementName;
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
         try {
@@ -205,6 +212,7 @@ public class DomXpath implements XPathQuery {
      * @return element values list
      * @throws XmlException If an error occurs.
      */
+    @Override
     public List<String> getElementValues(String elementName) throws XmlException {
         String xpath = "//" + elementName;
         List<String> result = new ArrayList<String>();
@@ -228,6 +236,7 @@ public class DomXpath implements XPathQuery {
      * @return Schema elements
      * @throws XmlException If an error occurs.
      */
+    @Override
     public List<String> getSchemaElements() throws XmlException {
         String xpath = "//xs:element";
         List<String> result = new ArrayList<String>();
@@ -252,6 +261,7 @@ public class DomXpath implements XPathQuery {
      * @return Element type
      * @throws XmlException If an error occurs.
      */
+    @Override
     public String getSchemaElementType(String elementName) throws XmlException {
         String xpath = "//xs:element[@name='" + elementName + "']//xs:restriction";
         String base = null;
@@ -272,6 +282,7 @@ public class DomXpath implements XPathQuery {
      * @return Schema imports
      * @throws XmlException If an error occurs.
      */
+    @Override
     public List<String> getSchemaImports() throws XmlException {
         String xpath = "//xs:import";
         List<String> result = new ArrayList<String>();
@@ -295,6 +306,7 @@ public class DomXpath implements XPathQuery {
      * @return Elements without multiple values
      * @throws XmlException If an error occurs.
      */
+    @Override
     public Map<String, String> getSchemaElementWithMultipleValues() throws XmlException {
         String xpath = "//xs:element[@maxOccurs='unbounded']";
         Map<String, String> elements = new HashMap<String, String>();
