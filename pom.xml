@@ -115,11 +115,11 @@
                                     <MYSQL_PASSWORD>testpassword</MYSQL_PASSWORD>
                                 </env>
 
-                                <volumes>
+                                <!--<volumes>
                                     <bind>
                                         <volume>/home/dev-gso/volumes/tmp:/var/lib/mysql</volume>
                                     </bind>
-                                </volumes>
+                                </volumes>-->
                                 <wait>
                                     <tcp>
                                         <ports>
