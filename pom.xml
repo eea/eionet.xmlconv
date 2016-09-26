@@ -114,8 +114,8 @@
                                     <MYSQL_USER>testuser</MYSQL_USER>
                                     <MYSQL_PASSWORD>testpassword</MYSQL_PASSWORD>
                                 </env>
-                                <!--
-                                <volumes>
+
+                                <!--<volumes>
                                     <bind>
                                         <volume>/home/dev-gso/volumes/tmp:/var/lib/mysql</volume>
                                     </bind>
@@ -240,7 +240,6 @@
                 </executions>
             </plugin>
             <!-- maven-compiler-plugin -->
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -539,7 +538,11 @@
                 <artifactId>fop</artifactId>
                 <version>2.1</version>
             </dependency>
-
+            <dependency>
+                <groupId>xalan</groupId>
+                <artifactId>xalan</artifactId>
+                <version>2.7.2</version>
+            </dependency>
             <!-- JSON library -->
             <dependency>
                 <groupId>net.sf.json-lib</groupId>

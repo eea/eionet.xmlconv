@@ -19,10 +19,13 @@
  *    Original code: Nedeljko Pavlovic (ED)
  */
 
-package eionet.gdem.utils.xml;
+package eionet.gdem.utils.xml.dom;
 
 import javax.xml.transform.TransformerException;
 
+import eionet.gdem.utils.xml.IXmlCtx;
+import eionet.gdem.utils.xml.XmlException;
+import eionet.gdem.utils.xml.XmlUpdater;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -33,7 +36,7 @@ import org.w3c.dom.Text;
  * @author Unknown
  * @author George Sofianos
  */
-public class XmlManager implements IXUpdate {
+public class XmlManager implements XmlUpdater {
 
     protected IXmlCtx ctx = null;
 

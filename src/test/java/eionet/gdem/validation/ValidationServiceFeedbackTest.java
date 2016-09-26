@@ -27,12 +27,14 @@ import eionet.gdem.Properties;
 import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.qa.QAFeedbackType;
 import eionet.gdem.test.ApplicationTestContext;
-import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import eionet.gdem.utils.xml.XPathQuery;
+import eionet.gdem.utils.xml.dom.DomContext;
+import eionet.gdem.utils.xml.tiny.TinyTreeContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -75,9 +77,9 @@ public class ValidationServiceFeedbackTest {
         String feedbackText = feedback.formatFeedbackText(false);
         assertTrue(feedbackText.contains("<span id=\"feedbackStatus\" class=\"WARNING\""));
 
-        IXmlCtx ctx = new XmlContext();
+        IXmlCtx ctx = new DomContext();
         ctx.checkFromString(feedbackText);
-        IXQuery xQuery = ctx.getQueryManager();
+        XPathQuery xQuery = ctx.getQueryManager();
         assertEquals(xQuery.findElementById("feedbackStatus").getTextContent(), Properties.getMessage("label.validation.result.warning"));
 
     }

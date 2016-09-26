@@ -19,8 +19,9 @@
  *    Original code: Nedeljko Pavlovic (ED)
  */
 
-package eionet.gdem.utils.xml;
+package eionet.gdem.utils.xml.dom;
 
+import eionet.gdem.utils.xml.*;
 import org.w3c.dom.Document;
 
 /**
@@ -28,23 +29,23 @@ import org.w3c.dom.Document;
  * @author Unknown
  * @author George Sofianos
  */
-public class XmlContext extends XmlCommon implements IXmlCtx {
+public class DomContext extends XmlCommon implements IXmlCtx {
     /**
      * Default constructor
      */
-    public XmlContext() {
+    public DomContext() {
     }
 
-    public IXUpdate getManager() {
+    public XmlUpdater getManager() {
         return new XmlManager(this);
     }
 
-    public IXmlSerializer getSerializer() {
+    public XmlSerializer getSerializer() {
         return new XmlSerialization(this);
     }
 
-    public IXQuery getQueryManager() {
-        return new XmlQuery(this);
+    public DomXpath getQueryManager() {
+        return new DomXpath(this);
     }
 
     public Document getDocument() {

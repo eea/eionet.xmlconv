@@ -24,14 +24,12 @@ import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
-
-
+import eionet.gdem.utils.xml.sax.SaxContext;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +79,7 @@ public class AddEditStylehseetUtils {
      */
     static void validateXslFile(Stylesheet stylesheet, ActionMessages errors) {
         try {
-            IXmlCtx x = new XmlContext();
+            IXmlCtx x = new SaxContext();
             x.setWellFormednessChecking();
             x.checkFromString(stylesheet.getXslContent());
         } catch (Exception e) {
