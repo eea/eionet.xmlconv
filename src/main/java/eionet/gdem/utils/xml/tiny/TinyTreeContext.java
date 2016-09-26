@@ -20,7 +20,6 @@ public class TinyTreeContext {
     protected XdmNode document = null;
     /** Saxon Tiny Tree DOM wrapper **/
     private DocumentBuilder parser;
-    private ErrorStorage errorStorage;
     private Processor proc;
 
     /**

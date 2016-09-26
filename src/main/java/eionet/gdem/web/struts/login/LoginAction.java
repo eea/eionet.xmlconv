@@ -67,7 +67,7 @@ public class LoginAction extends Action {
         String username = (String) loginForm.get("username");
         String password = (String) loginForm.get("password");
 
-        if (Utils.isNullStr(username) && Utils.isNullStr(username)) {
+        if (Utils.isNullStr(username) || Utils.isNullStr(password)) {
             return actionMapping.findForward("loginForm"); // openlogin form
         }
 

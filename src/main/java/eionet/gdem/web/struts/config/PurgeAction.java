@@ -71,7 +71,7 @@ public class PurgeAction extends Action {
                 httpServletRequest.getSession().setAttribute("dcm.errors", errors);
                 return actionMapping.findForward("success");
             }
-            if (nofDays == null || nofDays.equals("") || nofDays <= 0) {
+            if (nofDays == null || "".equals(nofDays.toString()) || nofDays <= 0) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.config.purge.validation"));
                 httpServletRequest.getSession().setAttribute("dcm.errors", errors);
                 return actionMapping.findForward("success");

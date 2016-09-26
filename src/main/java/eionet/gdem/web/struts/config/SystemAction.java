@@ -66,7 +66,7 @@ public class SystemAction extends Action {
                 httpServletRequest.getSession().setAttribute("dcm.errors", errors);
                 return actionMapping.findForward("success");
             }
-            if (qaTimeout == null || qaTimeout.equals("") || qaTimeout <= 0) {
+            if (qaTimeout == null || "".equals(qaTimeout.toString()) || qaTimeout <= 0) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.config.system.qatimeout.validation"));
                 httpServletRequest.getSession().setAttribute("dcm.errors", errors);
                 return actionMapping.findForward("success");
