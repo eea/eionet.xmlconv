@@ -172,6 +172,8 @@ public class Properties {
     public static String dateFormatPattern = "dd MMM yyyy";
     /** Time pattern used for displaying time values on UI. */
     public static String timeFormatPattern = "dd MMM yyyy hh:mm:ss";
+    /** Context path to be used in classes */
+    public static String contextPath;
 
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");

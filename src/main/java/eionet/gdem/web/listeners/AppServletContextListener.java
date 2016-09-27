@@ -139,6 +139,7 @@ public class AppServletContextListener implements ApplicationListener {
             Properties.convFile = context.getRealPath("/dcm/conversions.xml");
             Properties.odsFolder = context.getRealPath("/opendoc/ods");
             Properties.appHome = context.getRealPath("/WEB-INF/classes");
+            Properties.contextPath = context.getContextPath();
             cleanDirectories();
             checkFolders();
             context.setAttribute("qascript.resulttypes",
