@@ -464,6 +464,11 @@
                 <artifactId>httpclient</artifactId>
                 <version>4.5.2</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient-cache</artifactId>
+                <version>4.5.2</version>
+            </dependency>
             <!-- http://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>

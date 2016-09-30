@@ -241,9 +241,9 @@ public class ValidationService {
                 se = ((SAXException) e).getException();
             }
             if (se != null) {
-                LOGGER.error( "SAX Exception" , se.getMessage() );
+                LOGGER.error("SAX Exception", se.getMessage());
             } else {
-                LOGGER.error( "Uknown exception" , e.getStackTrace() );
+                LOGGER.error("Uknown exception", e.getStackTrace());
             }
             return validationFeedback.formatFeedbackText("The parser could not check the document. " + e.getMessage(), QAFeedbackType.BLOCKER, isBlocker);
         }

@@ -30,6 +30,8 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import eionet.gdem.dto.DDDatasetTable;
+import net.sf.ehcache.config.CacheConfiguration;
+import net.sf.ehcache.config.PersistenceConfiguration;
 
 /**
  * Type to hold all application caches.
@@ -69,6 +71,7 @@ public class ApplicationCache implements ServletContextListener {
      *            List of DD info retrieved from xml-rpc method.
      */
     public static void updateDDTablesCache(final List<DDDatasetTable> ddTables) {
+        // XXX: This fills the cache without reason.
         getCache().put(new Element(DD_TABLES_CACHE, ddTables));
     }
 
@@ -85,6 +88,10 @@ public class ApplicationCache implements ServletContextListener {
 
     }
 
+    public static Cache getHttpCache() {
+        return CacheManager.getInstance().getCache("http-cache");
+    }
+
     /**
      * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent) {@inheritDoc}
      */
@@ -92,6 +99,10 @@ public class ApplicationCache implements ServletContextListener {
     public void contextInitialized(final ServletContextEvent arg0) {
         CacheManager cacheManager = CacheManager.getInstance();
         cacheManager.addCache(APPLICATION_CACHE);
+
+        Cache httpCache = new Cache(new CacheConfiguration("http-cache", 100)
+                .persistence(new PersistenceConfiguration().strategy(PersistenceConfiguration.Strategy.LOCALTEMPSWAP)));
+        cacheManager.addCache(httpCache);
     }
 
 }
