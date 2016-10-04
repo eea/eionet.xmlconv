@@ -1,8 +1,8 @@
 package eionet.gdem.api.serverstatus.web.service.Impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.api.serverstatus.web.service.ServerStatusObject;
 import eionet.gdem.api.serverstatus.web.service.ServerStatusService;
 import eionet.gdem.services.db.dao.IXQJobDao;
@@ -46,7 +46,7 @@ public class ServerStatusServiceImpl implements ServerStatusService {
         this.ixqJobDao = ixqJobDao;
     }    
     @Override
-    public ServerStatusObject getServerStatus() throws GDEMException {
+    public ServerStatusObject getServerStatus() throws XMLConvException {
         int isRancher = Properties.getIsRancher();
                 
         ServerStatusObject res = new ServerStatusObject () ;

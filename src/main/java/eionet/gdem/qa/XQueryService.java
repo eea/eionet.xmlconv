@@ -276,7 +276,7 @@ public class XQueryService extends RemoteService {
     public String analyze(String sourceURL, String xqScript, String scriptType) throws XMLConvException {
         String xqFile = "";
 
-        LOGGER.info("XML/RPC call for analyze xml: " + sourceURL);
+        LOGGER.info("XML/RPC call for analyze xml with Quartz: " + sourceURL);
         // save XQScript in a text file for the WQ
         try {
             String extension = ScriptUtils.getExtensionFromScriptType(scriptType);
@@ -325,7 +325,6 @@ public class XQueryService extends RemoteService {
         } catch (IOException e) {
             LOGGER.error("Error opening source file: " + e.toString());
             throw new XMLConvException("Error opening source file: " + e.toString());
-            throw new GDEMException("Error opening source file: " + e.toString());
         } catch (SchedulerException e) {
             LOGGER.error("Scheduler exception: " + e.toString());
             throw new XMLConvException("Scheduler exception: " + e.toString());

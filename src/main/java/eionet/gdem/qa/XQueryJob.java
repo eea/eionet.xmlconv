@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
 
+import eionet.gdem.XMLConvException;
 import eionet.gdem.logging.Markers;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -35,7 +36,6 @@ import org.apache.commons.lang.StringUtils;
 
 
 import eionet.gdem.Constants;
-import eionet.gdem.GDEMException;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.datadict.DataDictUtil;
 import eionet.gdem.dcm.business.SchemaManager;
@@ -81,18 +81,8 @@ public class XQueryJob implements Job {
     /** Service for getting schema data. */
     private SchemaManager schemaManager;
 
-    /**
-     * Create QA job thread and initialize variables. Class constructor.
-     *
-     * @param qaJobId
-     *            Job ID in database to be executed.
-     */
     public XQueryJob() {
-        //jobId = qaJobId;
-        //schemaManager = new SchemaManager();
-        //initVariables();
-        // set MIN priority for this thread->
-        //setPriority(MIN_PRIORITY);
+
     }
 
     /**
@@ -204,8 +194,8 @@ public class XQueryJob implements Job {
                             xq.getResult(out);
                         }
                     } catch (IOException ioe) {
-                        throw new GDEMException(ioe.toString());
-                    } catch (GDEMException e) {
+                        throw new XMLConvException(ioe.toString());
+                    } catch (XMLConvException e) {
                         // store error in feedback, it could be XML processing error
                         StringBuilder errBuilder = new StringBuilder();
                         errBuilder.append("<div class=\"feedbacktext\"><h2>Unexpected error occured!</h2>");

@@ -1,6 +1,6 @@
 package eionet.gdem.api.serverstatus.web;
 
-import eionet.gdem.GDEMException;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.api.serverstatus.web.service.ServerStatusObject;
 import eionet.gdem.api.serverstatus.web.service.ServerStatusService;
 
@@ -42,14 +42,14 @@ public class ServerStatusRestController {
 
     
     @RequestMapping(value="/serverstatus",method = RequestMethod.GET)
-    public ResponseEntity<ServerStatusObject> returnServerStatus()throws GDEMException{
+    public ResponseEntity<ServerStatusObject> returnServerStatus()throws XMLConvException{
     
         ServerStatusObject results = serverStatusService.getServerStatus();
                 
         return new ResponseEntity <ServerStatusObject>( results ,HttpStatus.OK);
     }
     
-    @ExceptionHandler(GDEMException.class)
+    @ExceptionHandler(XMLConvException.class)
     public void HandleGDEMException(Exception exception, HttpServletResponse response) {
         exception.printStackTrace();
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
