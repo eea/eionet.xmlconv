@@ -379,4 +379,11 @@ public class Properties {
         return getStringProperty("schema.folder");
     }
 
+    public static String getHostname() {
+        return hostname;
+    }
+
+    public static int getIsRancher() {
+        return isRancher;
+    }
 }

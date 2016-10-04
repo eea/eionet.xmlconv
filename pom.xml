@@ -126,7 +126,7 @@
                         </image>
                         <image>
                             <alias>tomcat</alias>
-                            <name>tomcat</name>
+                            <name>eeacms/xmlconv</name>
                             <build>
                                 <from>tomcat:8.0-jre8</from>
                                 <maintainer>George Sofianos</maintainer>
