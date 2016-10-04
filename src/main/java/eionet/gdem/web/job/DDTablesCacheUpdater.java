@@ -22,14 +22,13 @@ package eionet.gdem.web.job;
 import java.util.List;
 
 
-
+import eionet.gdem.cache.CacheManagerUtil;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import eionet.gdem.dcm.business.DDServiceClient;
 import eionet.gdem.dto.DDDatasetTable;
-import eionet.gdem.web.listeners.ApplicationCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +59,7 @@ public class DDTablesCacheUpdater implements Job {
         try {
             List<DDDatasetTable> ddTables = DDServiceClient.getDDTablesFromDD();
 
-            ApplicationCache.updateDDTablesCache(ddTables);
+            CacheManagerUtil.updateDDTablesCache(ddTables);
             logger.debug("DD tables cache updated");
         } catch (Exception e) {
             logger.error("Error when updating DD tables cache: ", e);

@@ -27,12 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import eionet.gdem.cache.CacheManagerUtil;
 import eionet.rpcclient.ServiceClientIF;
 import eionet.rpcclient.ServiceClients;
 
 import eionet.gdem.Properties;
 import eionet.gdem.dto.DDDatasetTable;
-import eionet.gdem.web.listeners.ApplicationCache;
 
 /**
  *
@@ -96,7 +96,7 @@ public class DDServiceClient {
      * @return the list of DDDatasetTable objects.
      */
     public static List<DDDatasetTable> getDDTables() {
-        List<DDDatasetTable> ddTables = ApplicationCache.getDDTables();
+        List<DDDatasetTable> ddTables = CacheManagerUtil.getDDTables();
         if (ddTables == null || ddTables.size() == 0) {
             ddTables = getDDTablesFromDD();
         }

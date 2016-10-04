@@ -2,6 +2,7 @@ package eionet.gdem.dcm.business;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -23,23 +25,22 @@ import static org.junit.Assert.assertTrue;
 public class SourceFileMangerTest {
 
     @Test
-    public void downloadFileWithoutAuth() throws IOException {
+    public void downloadFileWithoutAuth() throws IOException, URISyntaxException {
 
-        SourceFileManager sourceFileManger = new SourceFileManager();
+        HttpFileManager httpFileManager = new HttpFileManager();
         MockHttpServletResponse httpResponse = new MockHttpServletResponse();
-        sourceFileManger.getFileNoAuthentication(httpResponse, TestConstants.NETWORK_FILE_TO_TEST);
+        httpFileManager.getHttpResponse(httpResponse, TestConstants.NETWORK_FILE_TO_TEST, null);
         assertEquals("text/plain; charset=UTF-8", httpResponse.getContentType());
         assertTrue(httpResponse.getContentLength() > 0);
         assertTrue(httpResponse.getContentAsString().length() > 0);
     }
 
     @Test
-    public void downloadFileWithAuth() throws IOException {
-
-        SourceFileManager sourceFileManger = new SourceFileManager();
+    public void downloadFileWithAuth() throws IOException, URISyntaxException {
+        HttpFileManager httpFileManager = new HttpFileManager();
         MockHttpServletResponse httpResponse = new MockHttpServletResponse();
         //when();
-        sourceFileManger.getFileBasicAuthentication(httpResponse, null, TestConstants.NETWORK_FILE_TO_TEST);
+        httpFileManager.getHttpResponse(httpResponse, TestConstants.NETWORK_FILE_TO_TEST, null);
         assertEquals("text/plain; charset=UTF-8", httpResponse.getContentType());
         assertTrue(httpResponse.getContentLength() > 0);
         assertTrue(httpResponse.getContentAsString().length() > 0);
@@ -51,8 +52,8 @@ public class SourceFileMangerTest {
         String ticket = "ticketValue";
 
         assertEquals(Properties.gdemURL + Constants.GETSOURCE_URL + "?ticket=" + ticket + "&source_url=" + url,
-                SourceFileManager.getSourceFileAdapterURL(ticket, url, true));
-        assertEquals(url, SourceFileManager.getSourceFileAdapterURL(null, url, false));
+                HttpFileManager.getSourceUrlWithTicket(ticket, url, true));
+        assertEquals(url, HttpFileManager.getSourceUrlWithTicket(null, url, false));
     }
 
 

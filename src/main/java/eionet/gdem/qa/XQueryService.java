@@ -33,15 +33,12 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
-
-
-
 import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.SchemaManager;
-import eionet.gdem.dcm.business.SourceFileManager;
 import eionet.gdem.dcm.remote.RemoteService;
+import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IConvTypeDao;
@@ -172,7 +169,7 @@ public class XQueryService extends RemoteService {
 
         try {
             // get the trusted URL from source file adapter
-            file = SourceFileManager.getSourceFileAdapterURL(getTicket(), file, isTrustedMode());
+            file = HttpFileManager.getSourceUrlWithTicket(getTicket(), file, isTrustedMode());
         } catch (Exception e) {
             String err_mess = "File URL is incorrect";
             LOGGER.error(err_mess + "; " + e.toString());
@@ -283,18 +280,12 @@ public class XQueryService extends RemoteService {
         // start a job in the Workqueue
         try {
             // get the trusted URL from source file adapter
-            sourceURL = SourceFileManager.getSourceFileAdapterURL(getTicket(), sourceURL, isTrustedMode());
+            sourceURL = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceURL, isTrustedMode());
             newId = xqJobDao.startXQJob(sourceURL, xqFile, resultFile, scriptType);
 
         } catch (SQLException sqe) {
             LOGGER.error("DB operation failed: " + sqe.toString());
             throw new XMLConvException("DB operation failed: " + sqe.toString());
-        } catch (MalformedURLException e) {
-            LOGGER.error("Source file URL is wrong: " + e.toString());
-            throw new XMLConvException("Source file URL is wrong: " + e.toString());
-        } catch (IOException e) {
-            LOGGER.error("Error opening source file: " + e.toString());
-            throw new XMLConvException("Error opening source file: " + e.toString());
         }
         return newId;
     }

@@ -56,6 +56,7 @@ import java.util.Vector;
  *
  * NB! Always call close() method in finally block, otherwise the InputStream stays open.
  */
+@Deprecated
 public class InputFile {
 
     /** */
