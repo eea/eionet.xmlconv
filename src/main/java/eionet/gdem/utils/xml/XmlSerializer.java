@@ -5,9 +5,8 @@ import java.io.ByteArrayOutputStream;
 
 /**
  * XML Serializer Interface.
- * TODO: Could remove hungarian notation
  */
-public interface IXmlSerializer {
+public interface XmlSerializer {
 
     /**
      * Serializes XML to input stream.

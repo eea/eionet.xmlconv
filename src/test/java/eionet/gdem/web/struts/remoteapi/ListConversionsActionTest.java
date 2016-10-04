@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dbunit.IDatabaseTester;
+import eionet.gdem.utils.xml.XPathQuery;
+import eionet.gdem.utils.xml.dom.DomContext;
+import eionet.gdem.utils.xml.tiny.TinyTreeContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,9 +28,7 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.test.mocks.MockServletOutputStream;
 import eionet.gdem.test.mocks.MockServletResponse;
-import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
 
 import javax.sql.DataSource;
 
@@ -66,12 +66,12 @@ public class ListConversionsActionTest {
         // System.out.println(response.getOutputStream().toString());
 
         // check if the result is well-formed XML
-        IXmlCtx x = new XmlContext();
+        IXmlCtx x = new DomContext();
         x.setWellFormednessChecking();
         x.checkFromInputStream(new ByteArrayInputStream(((MockServletOutputStream) response.getOutputStream()).toByteArray()));
 
         // count the conversions found from returned XML
-        IXQuery xQuery = x.getQueryManager();
+        XPathQuery xQuery = x.getQueryManager();
         List convertIds = xQuery.getElementValues(ListConversionsResult.CONVERT_ID_TAG);
         assertTrue(convertIds.size() > 83);
     }
@@ -96,13 +96,13 @@ public class ListConversionsActionTest {
         // System.out.println(response.getOutputStream().toString());
 
         // check if the result is well-formed XML
-        IXmlCtx x = new XmlContext();
+        IXmlCtx x = new DomContext();
         x.setWellFormednessChecking();
         x.checkFromInputStream(new ByteArrayInputStream(((MockServletOutputStream) response.getOutputStream()).toByteArray()));
 
         // There should be 3 conversions
-        IXQuery xQuery = x.getQueryManager();
-        List conversions = xQuery.getElements(ListConversionsResult.CONVERSION_TAG);
+        XPathQuery xQuery = x.getQueryManager();
+        List conversions = xQuery.getElementAttributes(ListConversionsResult.CONVERSION_TAG);
         assertEquals(3, conversions.size());
 
         // validate the converison Ids

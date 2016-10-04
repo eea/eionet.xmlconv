@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.util.Hashtable;
 import java.util.Map;
 
+import eionet.gdem.utils.xml.sax.SaxContext;
 import org.apache.commons.io.IOUtils;
 
 
@@ -41,7 +42,6 @@ import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.ZipUtil;
 import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
 import eionet.gdem.utils.xml.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -370,7 +370,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
             IOUtils.closeQuietly(outStream);
             // check if the stored file is XML
             try {
-                IXmlCtx x = new XmlContext();
+                IXmlCtx x = new SaxContext();
                 x.setWellFormednessChecking();
                 x.checkFromFile(filePath);
                 isXml = true;

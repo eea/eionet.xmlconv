@@ -26,6 +26,9 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import eionet.gdem.XMLConvException;
+import eionet.gdem.utils.xml.*;
+import eionet.gdem.utils.xml.dom.DomContext;
+import eionet.gdem.utils.xml.dom.XmlSerialization;
 import eionet.gdem.xml.VtdHandler;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
@@ -44,11 +47,6 @@ import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.IXmlSerializer;
-import eionet.gdem.utils.xml.XmlContext;
-import eionet.gdem.utils.xml.XmlException;
-import eionet.gdem.utils.xml.XmlSerialization;
 
 /**
  * @author Enriko Käsper
@@ -222,7 +220,7 @@ public class QAResultPostProcessor {
     private String addExpWarning(String htmlResult, String warnMessage) {
 
         try {
-            IXmlCtx ctx = new XmlContext();
+            IXmlCtx ctx = new DomContext();
             ctx.checkFromString(htmlResult);
 
             NodeList divElements = ctx.getDocument().getElementsByTagName("div");
@@ -237,7 +235,7 @@ public class QAResultPostProcessor {
             if (!foundFeedbackDiv) {
                 return htmlResult;
             } else {
-                IXmlSerializer serializer = new XmlSerialization(ctx);
+                XmlSerializer serializer = new XmlSerialization(ctx);
                 return serializer.serializeToString();
             }
         } catch (Exception e) {

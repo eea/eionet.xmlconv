@@ -27,11 +27,11 @@ import java.util.Map;
 import org.w3c.dom.Node;
 
 /**
- * XQuery interface.
+ * XPath interface.
  * @author Unknown
  * @author George Sofianos
  */
-public interface IXQuery {
+public interface XPathQuery {
 
     /**
      * Finds element which conatins given attributes map. For this elemebnt will be searched under element with provided ID .
@@ -80,13 +80,13 @@ public interface IXQuery {
     List<String> getElementIdentifiers(String elementName) throws XmlException;
 
     /**
-     * Retruns list of all elements attributes for the specifed element name
+     * Returns list of all elements attributes for the specified element name
      *
      * @param elementName Element name
      * @return Elements list
      * @throws XmlException If an error occurs.
      */
-    List<Map<String, String>> getElements(String elementName) throws XmlException;
+    List<Map<String, String>> getElementAttributes(String elementName) throws XmlException;
 
     /**
      * returns the list of element values

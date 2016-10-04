@@ -19,7 +19,7 @@
  *    Original code: Nedeljko Pavlovic (ED)
  */
 
-package eionet.gdem.utils.xml;
+package eionet.gdem.utils.xml.dom;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +29,9 @@ import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
+import eionet.gdem.utils.xml.IXmlCtx;
+import eionet.gdem.utils.xml.XPathQuery;
+import eionet.gdem.utils.xml.XmlException;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
@@ -36,11 +39,11 @@ import org.w3c.dom.NodeList;
 
 /**
  * XML Query class.
- * TODO: Find where this is used and possibly remove this. It uses XALAN which has bugs and it is very slow
+ * TODO: Check XPATH performance vs Saxon XPATH.
  * @author Unknown
  * @author George Sofianos
  */
-public class XmlQuery implements IXQuery {
+public class DomXpath implements XPathQuery {
 
     private IXmlCtx ctx = null;
 
@@ -48,7 +51,7 @@ public class XmlQuery implements IXQuery {
      * Constructor
      * @param ctx Context
      */
-    public XmlQuery(IXmlCtx ctx) {
+    public DomXpath(IXmlCtx ctx) {
         this.ctx = ctx;
     }
 
@@ -59,6 +62,7 @@ public class XmlQuery implements IXQuery {
      * @return Node
      * @throws XmlException If an error occurs.
      */
+    @Override
     public Node findElementByAttrs(String parentId, Map<String, String> attributes) throws XmlException {
         String xpath = "//*[@id='" + parentId + "']/*[";
         Iterator<String> attrs = attributes.keySet().iterator();
@@ -90,6 +94,7 @@ public class XmlQuery implements IXQuery {
      * @return Attribute value
      * @throws XmlException If an error occurs.
      */
+    @Override
     public String getAttributeValue(String elementId, String attribute) throws XmlException {
         String xpath = "//*[@id='" + elementId + "']/@" + attribute;
         Attr el = null;
@@ -114,6 +119,7 @@ public class XmlQuery implements IXQuery {
      * @return
      * @throws XmlException If an error occurs.
      */
+    @Override
     public String getElementValue(String parentId, String name) throws XmlException {
         String value = null;
         try {
@@ -136,6 +142,7 @@ public class XmlQuery implements IXQuery {
      * @return Element
      * @throws XmlException If an error occurs.
      */
+    @Override
     public Node findElementById(String id) throws XmlException {
         String xpath = "//*[@id='" + id + "']";
         Node result = null;
@@ -153,6 +160,7 @@ public class XmlQuery implements IXQuery {
      * @return Element identifiers list
      * @throws XmlException If an error occurs.
      */
+    @Override
     public List<String> getElementIdentifiers(String elementName) throws XmlException {
         String xpath = "//" + elementName;
         List<String> result = new ArrayList<String>();
@@ -170,12 +178,14 @@ public class XmlQuery implements IXQuery {
     }
 
     /**
-     * Returns elements list
+     * Returns Element Attributes.
      * @param elementName Element name
      * @return elements list
      * @throws XmlException If an error occurs.
+     *
      */
-    public List<Map<String, String>> getElements(String elementName) throws XmlException {
+    @Override
+    public List<Map<String, String>> getElementAttributes(String elementName) throws XmlException {
         String xpath = "//" + elementName;
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
         try {
@@ -202,6 +212,7 @@ public class XmlQuery implements IXQuery {
      * @return element values list
      * @throws XmlException If an error occurs.
      */
+    @Override
     public List<String> getElementValues(String elementName) throws XmlException {
         String xpath = "//" + elementName;
         List<String> result = new ArrayList<String>();
@@ -221,10 +232,11 @@ public class XmlQuery implements IXQuery {
     }
 
     /**
-     * Returns schema elements
+     * Returns schema elements.
      * @return Schema elements
      * @throws XmlException If an error occurs.
      */
+    @Override
     public List<String> getSchemaElements() throws XmlException {
         String xpath = "//xs:element";
         List<String> result = new ArrayList<String>();
@@ -249,6 +261,7 @@ public class XmlQuery implements IXQuery {
      * @return Element type
      * @throws XmlException If an error occurs.
      */
+    @Override
     public String getSchemaElementType(String elementName) throws XmlException {
         String xpath = "//xs:element[@name='" + elementName + "']//xs:restriction";
         String base = null;
@@ -265,10 +278,11 @@ public class XmlQuery implements IXQuery {
     }
 
     /**
-     * Returns Schema imports
+     * Returns Schema imports.
      * @return Schema imports
      * @throws XmlException If an error occurs.
      */
+    @Override
     public List<String> getSchemaImports() throws XmlException {
         String xpath = "//xs:import";
         List<String> result = new ArrayList<String>();
@@ -288,10 +302,11 @@ public class XmlQuery implements IXQuery {
     }
 
     /**
-     * Returns schema element without multiple values
+     * Returns schema element without multiple values.
      * @return Elements without multiple values
      * @throws XmlException If an error occurs.
      */
+    @Override
     public Map<String, String> getSchemaElementWithMultipleValues() throws XmlException {
         String xpath = "//xs:element[@maxOccurs='unbounded']";
         Map<String, String> elements = new HashMap<String, String>();

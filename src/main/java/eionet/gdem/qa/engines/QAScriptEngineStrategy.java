@@ -114,8 +114,8 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
     }
 
     @Override
-    public void setOutputType(String _outputType) {
-        outputType = (_outputType == null) ? DEFAULT_OUTPUTTYPE : _outputType.trim().toLowerCase();
+    public void setOutputType(String outputType) {
+        outputType = (outputType == null) ? DEFAULT_OUTPUTTYPE : outputType.trim().toLowerCase();
         outputType = (outputType.equals("txt")) ? "text" : outputType;
 
         if (outputType.equals("xml") || outputType.equals("html") || outputType.equals("text") || outputType.equals("xhtml")) {

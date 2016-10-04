@@ -1,10 +1,9 @@
 package eionet.gdem.utils.xml;
 
+import eionet.gdem.utils.xml.dom.XmlCommon;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests XML parsing

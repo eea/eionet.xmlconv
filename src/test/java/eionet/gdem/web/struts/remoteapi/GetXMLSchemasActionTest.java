@@ -10,7 +10,9 @@ import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.List;
 
-import org.dbunit.IDatabaseTester;
+import eionet.gdem.utils.xml.XPathQuery;
+import eionet.gdem.utils.xml.dom.DomContext;
+import eionet.gdem.utils.xml.tiny.TinyTreeContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,9 +27,7 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import eionet.gdem.test.mocks.MockServletOutputStream;
 import eionet.gdem.test.mocks.MockServletResponse;
-import eionet.gdem.utils.xml.IXQuery;
 import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
 
 import javax.sql.DataSource;
 
@@ -66,12 +66,12 @@ public class GetXMLSchemasActionTest {
         // System.out.println(response.getOutputStream().toString());
 
         // check if the result is well-formed XML
-        IXmlCtx x = new XmlContext();
+        IXmlCtx x = new DomContext();
         x.setWellFormednessChecking();
         x.checkFromInputStream(new ByteArrayInputStream(((MockServletOutputStream) response.getOutputStream()).toByteArray()));
 
         // count the schemas found from returned XML
-        IXQuery xQuery = x.getQueryManager();
+        XPathQuery xQuery = x.getQueryManager();
         List schemas = xQuery.getElementValues(GetXMLSchemasResult.SCHEMA_TAG);
         assertTrue(schemas.size() > 36);
     }

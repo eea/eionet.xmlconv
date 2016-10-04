@@ -68,18 +68,12 @@
     </repositories>
     <profiles>
         <profile>
-            <id>deploy</id>
-            <properties>
-                <valid.images>mysql, tomcat</valid.images>
-            </properties>
-        </profile>
-        <profile>
             <id>docker</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <valid.images>mysql</valid.images>
+                <valid.images>mysql, tomcat</valid.images>
             </properties>
         </profile>
         <profile>
@@ -114,8 +108,8 @@
                                     <MYSQL_USER>testuser</MYSQL_USER>
                                     <MYSQL_PASSWORD>testpassword</MYSQL_PASSWORD>
                                 </env>
-                                <!--
-                                <volumes>
+
+                                <!--<volumes>
                                     <bind>
                                         <volume>/home/dev-gso/volumes/tmp:/var/lib/mysql</volume>
                                     </bind>
@@ -132,10 +126,10 @@
                         </image>
                         <image>
                             <alias>tomcat</alias>
-                            <name>eeacms/xmlconv</name>
+                            <name>tomcat</name>
                             <build>
-                                <from>tomcat:6-jre8</from>
-                                <maintainer>Aris Katsanas</maintainer>
+                                <from>tomcat:8.0-jre8</from>
+                                <maintainer>George Sofianos</maintainer>
                                 <tags>
                                     <tag>latest</tag>
                                     <tag>${project.version}</tag>
@@ -151,6 +145,26 @@
                                 <optimise>true</optimise>
                                 <nocache>true</nocache>
                             </build>
+                            <run>
+                                <env>
+                                    <CATALINA_OPTS>-Dconfig.gdem.url=http://localhost:8080 -Dapp.home=/opt/xmlconv -Dapp.host=localhost:8080 -Dconfig.log.file=/opt/xmlconv/log/xmlconv.log -Dconfig.db.jdbcurl=jdbc:mysql://mysql:3306/xmlconv -Dconfig.db.driver=com.mysql.jdbc.Driver -Dconfig.db.user=testuser -Dconfig.db.password=testpassword -Dbasexserver.host=basex -Dbasexserver.port=1984 -Dbasexserver.user=admin -Dbasexserver.password=admin -Dfme_user=fme_user -Dfme_password=fme_password</CATALINA_OPTS>
+                                    <JAVA_OPTS>-Xmx3072m</JAVA_OPTS>
+                                </env>
+                                <ports>
+                                    <port>8080:8080</port>
+                                </ports>
+                                <wait>
+                                    <tcp>
+                                        <ports>
+                                            <port>8080</port>
+                                        </ports>
+                                    </tcp>
+                                    <time>200000</time>
+                                </wait>
+                                <links>
+                                    <link>mysql:mysql</link>
+                                </links>
+                            </run>
                         </image>
                     </images>
                 </configuration>
@@ -163,6 +177,7 @@
                         <phase>pre-integration-test</phase>
                         <goals>
                             <goal>stop</goal>
+                            <goal>build</goal>
                             <goal>start</goal>
                         </goals>
                     </execution>
@@ -175,14 +190,6 @@
                         <goals>
                             <goal>logs</goal>
                             <goal>stop</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>build</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>build</goal>
-                            <goal>push</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -240,7 +247,6 @@
                 </executions>
             </plugin>
             <!-- maven-compiler-plugin -->
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -540,7 +546,11 @@
                 <artifactId>fop</artifactId>
                 <version>2.1</version>
             </dependency>
-
+            <dependency>
+                <groupId>xalan</groupId>
+                <artifactId>xalan</artifactId>
+                <version>2.7.2</version>
+            </dependency>
             <!-- JSON library -->
             <dependency>
                 <groupId>net.sf.json-lib</groupId>

@@ -79,16 +79,15 @@ public abstract class XMLResultStrategy {
      *
      * @param streamResult Stream result
      * @throws Exception If an error occurs.
+     * XXX: Replace XALAN when possible.
      */
     public void writeXML(StreamResult streamResult) throws Exception {
-
-        SAXTransformerFactory tf = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
+        SAXTransformerFactory tf = new org.apache.xalan.processor.TransformerFactoryImpl();
         // SAX2.0 ContentHandler.
         hd = tf.newTransformerHandler();
         Transformer serializer = hd.getTransformer();
         serializer.setOutputProperty(OutputKeys.ENCODING, getEncoding());
         serializer.setOutputProperty(OutputKeys.INDENT, "yes");
-
         AttributesImpl attrs = new AttributesImpl();
         attrs.addAttribute("", "", RESPONSE_CODE_ATTR, "int", String.valueOf(getStatus()));
 

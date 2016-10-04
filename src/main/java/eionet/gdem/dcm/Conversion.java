@@ -31,9 +31,9 @@ import java.util.List;
 import eionet.gdem.Properties;
 import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.utils.xml.IXQuery;
+import eionet.gdem.utils.xml.XPathQuery;
+import eionet.gdem.utils.xml.dom.DomContext;
 import eionet.gdem.utils.xml.IXmlCtx;
-import eionet.gdem.utils.xml.XmlContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,10 +53,9 @@ public class Conversion {
      */
     static {
         try {
-
-            IXmlCtx ctx = new XmlContext();
+            IXmlCtx ctx = new DomContext();
             ctx.checkFromFile(Properties.convFile);
-            IXQuery xQuery = ctx.getQueryManager();
+            XPathQuery xQuery = ctx.getQueryManager();
             List<String> identifiers = xQuery.getElementIdentifiers(CONVERSION_ELEMENT);
             for (int i = 0; i < identifiers.size(); i++) {
                 String id = identifiers.get(i);
