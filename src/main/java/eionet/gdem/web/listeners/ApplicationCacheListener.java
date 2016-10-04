@@ -39,7 +39,7 @@ public class ApplicationCacheListener implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(final ServletContextEvent arg0) {
-        CacheManager.getInstance().shutdown();
+        CacheManagerUtil.shutdown();
     }
 
     /**

@@ -51,20 +51,18 @@ public final class CacheManagerUtil {
     private static void initializeCacheManager() {
         Configuration cacheManagerConfig = new Configuration()
                 .diskStore(new DiskStoreConfiguration()
-                .path(Properties.appHome + "/tmp/"));
+                .path(Properties.appRootFolder + "/tmp/"));
         cacheManager = new CacheManager(cacheManagerConfig);
         Cache appCache = new Cache(new CacheConfiguration(APPLICATION_CACHE, 10000)
                 .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
-                .eternal(true)
-                .timeToLiveSeconds(120)
-                .timeToIdleSeconds(60));
+                .eternal(true));
         cacheManager.addCache(appCache);
 
         Cache httpCache = new Cache(new CacheConfiguration()
                 .name("http-cache")
                 .maxBytesLocalDisk(1000, MemoryUnit.MEGABYTES)
                 .maxEntriesLocalDisk(100)
-                .maxEntriesLocalHeap(0)
+                .maxEntriesLocalHeap(1)
                 .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
                 .eternal(false)
                 .diskExpiryThreadIntervalSeconds(120)
@@ -74,5 +72,8 @@ public final class CacheManagerUtil {
 
     public static void create() {
         initializeCacheManager();
+    }
+    public static void shutdown() {
+        cacheManager.shutdown();
     }
 }
