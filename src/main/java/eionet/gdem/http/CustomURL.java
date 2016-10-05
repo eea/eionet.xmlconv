@@ -1,7 +1,9 @@
 package eionet.gdem.http;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
  *
@@ -21,5 +23,9 @@ public class CustomURL {
 
     public String getUri() {
         return uri.toString();
+    }
+
+    public URL getURL() throws MalformedURLException {
+        return uri.toURL();
     }
 }

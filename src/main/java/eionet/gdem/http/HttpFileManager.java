@@ -23,6 +23,8 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -57,7 +59,25 @@ public class HttpFileManager {
         return url.toString();
     }
 
-    public InputStream getInputStream(String url, String ticket, boolean isTrustedMode) throws IOException, URISyntaxException {
+    public InputStream getInputStream(String srcUrl, String ticket, boolean isTrustedMode) throws IOException, URISyntaxException {
+        CustomURL customURL = new CustomURL(srcUrl);
+        URL url = customURL.getURL();
+        URLConnection uc = url.openConnection();
+
+        if (ticket == null && isTrustedMode) {
+            ticket = getHostCredentials(customURL.getHost());
+        }
+        uc.addRequestProperty("Accept", "*/*");
+
+        if (ticket != null) {
+            // String auth = Utils.getEncodedAuthentication(user,pwd);
+            uc.addRequestProperty("Authorization", " Basic " + ticket);
+        }
+        LOGGER.info("Opened stream to file: " + url.toString());
+        return uc.getInputStream();
+    }
+
+    public InputStream getFileInputStream(String url, String ticket, boolean isTrustedMode) throws IOException, URISyntaxException {
         HttpEntity entity = downloadFile(url, ticket, isTrustedMode);
         if (entity != null) {
             return entity.getContent();

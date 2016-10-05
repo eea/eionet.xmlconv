@@ -120,7 +120,7 @@ public class ValidationService {
         HttpFileManager fileManager = new HttpFileManager();
         InputStream file = null;
         try {
-            file = fileManager.getInputStream(srcUrl, ticket, trustedMode);
+            file = fileManager.getFileInputStream(srcUrl, ticket, trustedMode);
             return validateSchema(srcUrl, file, schema);
         } catch (MalformedURLException mfe) {
             throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED);
@@ -241,7 +241,7 @@ public class ValidationService {
             if (se != null) {
                 LOGGER.error("SAX Exception", se.getMessage());
             } else {
-                LOGGER.error("Uknown exception", e.getStackTrace());
+                LOGGER.error("Unknown exception", e.getStackTrace());
             }
             return validationFeedback.formatFeedbackText("The parser could not check the document. " + e.getMessage(), QAFeedbackType.BLOCKER, isBlocker);
         }

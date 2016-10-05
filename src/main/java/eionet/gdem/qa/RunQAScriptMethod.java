@@ -113,7 +113,7 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
         try {
             HttpFileManager fileManager = new HttpFileManager();
             if (scriptId.equals(String.valueOf(Constants.JOB_VALIDATION))) {
-                InputStream file = fileManager.getInputStream(sourceUrl, getTicket(), isTrustedMode());
+                InputStream file = fileManager.getFileInputStream(sourceUrl, getTicket(), isTrustedMode());
                 ValidationService vs = new ValidationService();
                 strResult = vs.validateSchema(sourceUrl, file, null);
             } else {
