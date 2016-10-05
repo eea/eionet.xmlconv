@@ -36,7 +36,37 @@ public class HttpFileManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpFileManager.class);
 
     public void getHttpResponse(HttpServletResponse response, String ticket, String url) throws IOException, URISyntaxException {
-        HttpEntity entity = downloadFile(url, ticket, false);
+        HttpEntity entity = downloadFile(url, ticket);
+
+        String contentType = null;
+        Header contentTypeHeader = entity.getContentType();
+        if (contentTypeHeader != null) {
+            contentType = contentTypeHeader.getValue();
+        }
+        long contentLength = entity.getContentLength();
+
+        String contentEncoding = null;
+        Header contentEncodingHeader = entity.getContentEncoding();
+        if (contentEncodingHeader != null) {
+            contentEncoding = contentEncodingHeader.getValue();
+        }
+
+        // log response header
+        StringBuilder logBuilder = new StringBuilder("Response header properties: ");
+        logBuilder.append(contentType != null ? "Content-Type=" + contentType + "; " : "");
+        logBuilder.append("Content-Length=" + contentLength);
+        logBuilder.append(contentEncoding != null ? "Content-Encoding=" + contentEncoding + "; " : "");
+        LOGGER.info(logBuilder.toString());
+
+        // If content type is null, then fall back to most likely content type
+        if (contentType == null || "text/xml".equals(contentType)) {
+            contentType = "text/xml;charset=utf-8";
+        }
+        // set response properties
+        response.setContentType(contentType);
+        response.addHeader("Content-Length", Long.toString(contentLength));
+        //response.setContentLength(contentLength);
+        response.setCharacterEncoding(contentEncoding);
         entity.writeTo(response.getOutputStream());
     }
 
@@ -81,17 +111,16 @@ public class HttpFileManager {
         return uc.getInputStream();
     }
 
-    public InputStream getFileInputStream(String url, String ticket, boolean isTrustedMode) throws IOException, URISyntaxException {
-        HttpEntity entity = downloadFile(url, ticket, isTrustedMode);
+    public InputStream getFileInputStream(String url, String ticket) throws IOException, URISyntaxException {
+        HttpEntity entity = downloadFile(url, ticket);
         if (entity != null) {
             return entity.getContent();
         } else
             return null;
     }
 
-    private HttpEntity downloadFile(String url, String ticket, boolean isTrustedMode) throws IOException, URISyntaxException {
+    private HttpEntity downloadFile(String url, String ticket) throws IOException, URISyntaxException {
         LOGGER.info("Start to download file: " + url);
-        CustomURL file = new CustomURL(url);
         EhcacheHttpCacheStorage ehcacheHttpCacheStorage = new EhcacheHttpCacheStorage(CacheManagerUtil.getHttpCache());
         CacheConfig cacheConfig = CacheConfig.custom()
                 .setSharedCache(false)
@@ -112,49 +141,19 @@ public class HttpFileManager {
         HttpGet httpget = new HttpGet(url);
         if (ticket != null) {
             httpget.addHeader("Authorization", " Basic " + ticket);
-        } else if (ticket == null && isTrustedMode) {
-            ticket = getHostCredentials(file.getHost());
-            if (!Utils.isNullStr(ticket)) {
-                httpget.addHeader("Authorization", " Basic " + ticket);
-            }
         }
         CloseableHttpResponse response = client.execute(httpget, context);
 
         CacheResponseStatus responseStatus = context.getCacheResponseStatus();
+        switch (responseStatus) {
+            case VALIDATED:
+                LOGGER.info("The response was generated from the cache after validating the entry with the origin server.");
+            case CACHE_MISS:
+                LOGGER.info("Entry not found in cache.");
+            default:
+        }
         HttpEntity entity = response.getEntity();
-        //entity.writeTo(System.out);
-
-        String contentType = null;
-        Header contentTypeHeader = entity.getContentType();
-        if (contentTypeHeader != null) {
-            contentType = contentTypeHeader.getValue();
-        }
-        long contentLength = entity.getContentLength();
-
-        String contentEncoding = null;
-        Header contentEncodingHeader = entity.getContentEncoding();
-        if (contentEncodingHeader != null) {
-            contentEncoding = contentEncodingHeader.getValue();
-        }
-
-        // log response header
-        StringBuilder logBuilder = new StringBuilder("Response header properties: ");
-        logBuilder.append(contentType != null ? "Content-Type=" + contentType + "; " : "");
-        logBuilder.append("Content-Length=" + contentLength);
-        logBuilder.append(contentEncoding != null ? "Content-Encoding=" + contentEncoding + "; " : "");
-        LOGGER.info(logBuilder.toString());
-
-        // If content type is null, then fall back to most likely content type
-        if (contentType == null || "text/xml".equals(contentType)) {
-            contentType = "text/xml;charset=utf-8";
-        }
-        // set response properties
-        //httpResponse.setContentType(contentType);
-        //httpResponse.addHeader("Content-Length", Long.toString(contentLength));
-        //httpResponse.setContentLength(contentLength);
-        //httpResponse.setCharacterEncoding(contentEncoding);
         client.close();
-        //entity.writeTo(httpResponse.getOutputStream());
         response.close();
         return entity;
     }

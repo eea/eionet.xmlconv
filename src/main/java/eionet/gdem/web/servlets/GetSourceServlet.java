@@ -16,7 +16,7 @@ import java.io.IOException;
  *
  * @author George Sofianos
  */
-@WebServlet("/s/getSource")
+@WebServlet("/s/getsource")
 public class GetSourceServlet extends HttpServlet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GetSourceServlet.class);

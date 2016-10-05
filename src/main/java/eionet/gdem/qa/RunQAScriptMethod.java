@@ -111,16 +111,13 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
         String strResult;
         LOGGER.debug("==xmlconv== runQAScript: id=" + scriptId + " file_url=" + sourceUrl + "; ");
         try {
-            HttpFileManager fileManager = new HttpFileManager();
             if (scriptId.equals(String.valueOf(Constants.JOB_VALIDATION))) {
-                InputStream file = fileManager.getFileInputStream(sourceUrl, getTicket(), isTrustedMode());
                 ValidationService vs = new ValidationService();
-                strResult = vs.validateSchema(sourceUrl, file, null);
+                strResult = vs.validate(sourceUrl);
             } else {
-                fileUrl = fileManager.getSourceUrlWithTicket(getTicket(), sourceUrl, isTrustedMode());
+                fileUrl = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceUrl, isTrustedMode());
                 String[] pars = new String[1];
                 pars[0] = Constants.XQ_SOURCE_PARAM_NAME + "=" + fileUrl;
-
                 try {
                     HashMap hash = queryDao.getQueryInfo(scriptId);
                     String xqScript = "";
@@ -187,8 +184,6 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
 
             }
         } catch (DCMException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         } catch (URISyntaxException e) {
             e.printStackTrace();
