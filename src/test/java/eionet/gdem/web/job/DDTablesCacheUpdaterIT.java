@@ -2,7 +2,6 @@ package eionet.gdem.web.job;
 
 import eionet.gdem.cache.CacheManagerUtil;
 import eionet.gdem.test.ApplicationTestContext;
-import eionet.gdem.web.listeners.ApplicationCacheListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -32,13 +31,8 @@ public class DDTablesCacheUpdaterIT {
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
-    private ApplicationCacheListener cache = new ApplicationCacheListener();
     private ServletContextEvent event = mock(ServletContextEvent.class);
 
-    @Before
-    public void setUp() {
-        cache.contextInitialized(event);
-    }
     @Test
     public void testUpdateCache() throws SchedulerException {
         int emptyCacheSize = CacheManagerUtil.getDDTables().size();
@@ -53,10 +47,6 @@ public class DDTablesCacheUpdaterIT {
         DDTablesCacheUpdater updater = new DDTablesCacheUpdater();
         updater.execute(mockContext);
         assertTrue("Expected updated cache: ", CacheManagerUtil.getDDTables().size() > emptyCacheSize);
-    }
-    @After
-    public void tearDown() {
-        cache.contextDestroyed(event);
     }
 
 }

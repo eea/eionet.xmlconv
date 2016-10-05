@@ -58,10 +58,15 @@ public class TestUtils {
      *            eg. "seed.xml"
      * @return
      */
-    public static String getSeedURL(String seedName, Object obj) {
-
+    public static String getSeedURLOld(String seedName, Object obj) {
         String filename = obj.getClass().getClassLoader().getResource(seedName).getFile();
         return "file://".concat(filename);
+    }
+
+    //XXX: replace hardcoded port.
+    public static String getSeedURL(String seedName, Object obj) {
+        //String filename = obj.getClass().getClassLoader().getResource(seedName).getFile();
+        return "http://localhost:8081/".concat(seedName);
     }
 
     /**

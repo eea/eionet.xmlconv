@@ -73,7 +73,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <valid.images>mysql, tomcat</valid.images>
+                <valid.images>mysql, tomcat, httpd</valid.images>
             </properties>
         </profile>
         <profile>
@@ -163,7 +163,30 @@
                                 </wait>
                                 <links>
                                     <link>mysql:mysql</link>
+                                    <link>httpd:httpd</link>
                                 </links>
+                            </run>
+                        </image>
+                        <image>
+                            <alias>httpd</alias>
+                            <name>httpd:alpine</name>
+                            <run>
+                                <volumes>
+                                    <bind>
+                                        <volume>${project.build.directory}/test-classes:/usr/local/apache2/htdocs/</volume>
+                                    </bind>
+                                </volumes>
+                                <ports>
+                                    <port>8081:80</port>
+                                </ports>
+                                <wait>
+                                    <tcp>
+                                        <ports>
+                                            <port>80</port>
+                                        </ports>
+                                    </tcp>
+                                    <time>5000</time>
+                                </wait>
                             </run>
                         </image>
                     </images>

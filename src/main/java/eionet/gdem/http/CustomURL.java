@@ -26,6 +26,12 @@ public class CustomURL {
     }
 
     public URL getURL() throws MalformedURLException {
-        return uri.toURL();
+        URL temp = null;
+        try {
+            temp = uri.toURL();
+        } catch (IllegalArgumentException ae) {
+            throw new MalformedURLException(ae.toString());
+        }
+        return temp;
     }
 }

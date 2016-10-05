@@ -40,7 +40,11 @@ public class HttpFileManager {
         entity.writeTo(response.getOutputStream());
     }
 
-    public static String getSourceUrlWithTicket(String ticket, String sourceUrl, boolean isTrustedMode) {
+    public static String getSourceUrlWithTicket(String ticket, String sourceUrl, boolean isTrustedMode) throws URISyntaxException {
+        CustomURL uri = new CustomURL(sourceUrl);
+        if (Utils.isNullStr(ticket) && isTrustedMode) {
+            ticket = getHostCredentials(uri.getHost());
+        }
         StringBuffer url = new StringBuffer();
         if (isTrustedMode && !Utils.isNullStr(ticket)) {
                 url.append(Properties.gdemURL);
@@ -110,7 +114,9 @@ public class HttpFileManager {
             httpget.addHeader("Authorization", " Basic " + ticket);
         } else if (ticket == null && isTrustedMode) {
             ticket = getHostCredentials(file.getHost());
-            httpget.addHeader("Authorization", " Basic " + ticket);
+            if (!Utils.isNullStr(ticket)) {
+                httpget.addHeader("Authorization", " Basic " + ticket);
+            }
         }
         CloseableHttpResponse response = client.execute(httpget, context);
 
@@ -153,7 +159,7 @@ public class HttpFileManager {
         return entity;
     }
 
-    private String getHostCredentials(String host) {
+    private static String getHostCredentials(String host) {
         try {
             IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
             Vector v = hostDao.getHosts(host);

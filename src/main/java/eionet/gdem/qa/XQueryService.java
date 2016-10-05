@@ -26,7 +26,7 @@ package eionet.gdem.qa;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -286,6 +286,8 @@ public class XQueryService extends RemoteService {
         } catch (SQLException sqe) {
             LOGGER.error("DB operation failed: " + sqe.toString());
             throw new XMLConvException("DB operation failed: " + sqe.toString());
+        } catch (URISyntaxException e) {
+            throw new XMLConvException("URI syntax error: " + e);
         }
         return newId;
     }

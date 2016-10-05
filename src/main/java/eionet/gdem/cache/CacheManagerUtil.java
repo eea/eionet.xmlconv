@@ -17,7 +17,7 @@ import java.util.List;
  */
 public final class CacheManagerUtil {
 
-    private CacheManagerUtil() {
+    public CacheManagerUtil() {
         // do nothing
     }
     /**
@@ -48,7 +48,7 @@ public final class CacheManagerUtil {
         return cacheManager.getCache("http-cache");
     }
 
-    private static void initializeCacheManager() {
+    public void initializeCacheManager() {
         Configuration cacheManagerConfig = new Configuration()
                 .diskStore(new DiskStoreConfiguration()
                 .path(Properties.appRootFolder + "/tmp/"));
@@ -70,10 +70,7 @@ public final class CacheManagerUtil {
         cacheManager.addCache(httpCache);
     }
 
-    public static void create() {
-        initializeCacheManager();
-    }
-    public static void shutdown() {
+    public void destroyCacheManager() {
         cacheManager.shutdown();
     }
 }
