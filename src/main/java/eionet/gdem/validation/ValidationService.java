@@ -129,6 +129,7 @@ public class ValidationService {
         } catch (Exception e) {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         } finally {
+            fileManager.closeQuietly();
             if (file != null) {
                 try {
                     file.close();

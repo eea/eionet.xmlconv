@@ -17,6 +17,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.cache.CacheConfig;
 import org.apache.http.impl.client.cache.CachingHttpClients;
 import org.apache.http.impl.client.cache.ehcache.EhcacheHttpCacheStorage;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,9 @@ import java.util.Vector;
 public class HttpFileManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpFileManager.class);
+    private CloseableHttpClient client;
+    private CloseableHttpResponse response;
+
 
     public void getHttpResponse(HttpServletResponse response, String ticket, String url) throws IOException, URISyntaxException {
         HttpEntity entity = downloadFile(url, ticket);
@@ -115,12 +119,16 @@ public class HttpFileManager {
         HttpEntity entity = downloadFile(url, ticket);
         if (entity != null) {
             return entity.getContent();
-        } else
-            return null;
+        }
+        return null;
     }
 
     private HttpEntity downloadFile(String url, String ticket) throws IOException, URISyntaxException {
         LOGGER.info("Start to download file: " + url);
+
+        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+        cm.setMaxTotal(50);
+        cm.setDefaultMaxPerRoute(50);
         EhcacheHttpCacheStorage ehcacheHttpCacheStorage = new EhcacheHttpCacheStorage(CacheManagerUtil.getHttpCache());
         CacheConfig cacheConfig = CacheConfig.custom()
                 .setSharedCache(false)
@@ -131,18 +139,20 @@ public class HttpFileManager {
                 .setSocketTimeout(30000)
                 .setConnectTimeout(30000)
                 .build();
-        CloseableHttpClient client = CachingHttpClients.custom()
+        client = CachingHttpClients.custom()
                 .setCacheConfig(cacheConfig)
                 .setHttpCacheStorage(ehcacheHttpCacheStorage)
                 .setDefaultRequestConfig(requestConfig)
+                .setConnectionManager(cm)
                 .build();
 
         HttpCacheContext context = HttpCacheContext.create();
+
         HttpGet httpget = new HttpGet(url);
         if (ticket != null) {
             httpget.addHeader("Authorization", " Basic " + ticket);
         }
-        CloseableHttpResponse response = client.execute(httpget, context);
+        response = client.execute(httpget, context);
 
         CacheResponseStatus responseStatus = context.getCacheResponseStatus();
         switch (responseStatus) {
@@ -152,10 +162,21 @@ public class HttpFileManager {
                 LOGGER.info("Entry not found in cache.");
             default:
         }
-        HttpEntity entity = response.getEntity();
-        client.close();
-        response.close();
-        return entity;
+        int statusCode = response.getStatusLine().getStatusCode();
+        if (statusCode == HttpServletResponse.SC_OK) {
+            return response.getEntity();
+        } else {
+            throw new IOException("The file could not be retrieved");
+        }
+    }
+
+    public void closeQuietly() {
+        try {
+            client.close();
+            response.close();
+        } catch (IOException e) {
+            LOGGER.error("Could not close resource: " + e);
+        }
     }
 
     private static String getHostCredentials(String host) {
