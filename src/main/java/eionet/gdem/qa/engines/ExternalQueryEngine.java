@@ -21,6 +21,7 @@
 
 package eionet.gdem.qa.engines;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.Map;
@@ -30,11 +31,14 @@ import java.util.Map;
 
 import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
+import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Streams;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.utils.cdr.UrlUtils;
+import eionet.gdem.utils.file.CustomFileUtils;
 import eionet.gdem.utils.system.SysCommandExecutor;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,10 +61,7 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
 
     @Override
     protected void runQuery(XQScript script, OutputStream result) throws XMLConvException {
-
         String tmpScriptFile = null;
-        InputFile src = null;
-
         try {
 
             // build InputSource for xsl
@@ -72,12 +73,14 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
             } else {
                 throw new XMLConvException("XQuery engine could not find script source or script file name!");
             }
-            // Build InputSource for xml file
-            src = new InputFile(script.getSrcFileUrl());
-            String srcFile = src.saveSrcFile();
 
-            InputFile srcOrigFile = new InputFile(script.getOrigFileUrl());
-            Map<String, String> params = srcOrigFile.getCdrParams();
+            HttpFileManager fileManager = new HttpFileManager();
+            //TODO: Add ticket
+            InputStream sourceStream = fileManager.getFileInputStream(script.getSrcFileUrl(), null);
+            String srcFile = CustomFileUtils.saveFileInLocalStorage(sourceStream, "xml");
+
+            String originSourceUrl = script.getOrigFileUrl();
+            Map<String, String> params = UrlUtils.getCdrParams(originSourceUrl);
             params.put(Constants.XQ_SOURCE_PARAM_NAME, script.getOrigFileUrl());
 
             String cmd = getShellCommand(srcFile, script.getScriptFileName(), params);
@@ -114,7 +117,7 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LOGGER.error("==== CATCHED EXCEPTION " + e.toString());
+            LOGGER.error("==== Caught EXCEPTION " + e.toString());
             throw new XMLConvException(e.getMessage());
         } finally {
             try {
@@ -122,13 +125,6 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
                 result.flush();
             } catch (Exception e) {
                 LOGGER.warn(e.getMessage());
-            }
-            if (src != null) {
-                try {
-                    src.close();
-
-                } catch (Exception e) {
-                }
             }
         }
 

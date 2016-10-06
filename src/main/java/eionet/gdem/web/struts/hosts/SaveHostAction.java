@@ -36,7 +36,6 @@ import org.apache.struts.validator.DynaValidatorForm;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IHostDao;
-import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.BaseAction;
 import org.slf4j.Logger;
@@ -114,7 +113,7 @@ public class SaveHostAction extends BaseAction {
      * @param username Username
      * @param password Password
      * @return True if connection is valid.
-     */
+
     private boolean checkConnection(String url, String username, String password) {
         boolean result = false;
         InputFile src = null;
@@ -137,5 +136,5 @@ public class SaveHostAction extends BaseAction {
         }
         return result;
     }
-
+     */
 }

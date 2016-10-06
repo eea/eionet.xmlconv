@@ -113,6 +113,7 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
         try {
             if (scriptId.equals(String.valueOf(Constants.JOB_VALIDATION))) {
                 ValidationService vs = new ValidationService();
+                vs.setTicket(getTicket());
                 strResult = vs.validate(sourceUrl);
             } else {
                 fileUrl = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceUrl, isTrustedMode());

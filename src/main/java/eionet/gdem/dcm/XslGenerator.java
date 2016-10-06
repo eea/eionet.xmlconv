@@ -23,8 +23,8 @@ package eionet.gdem.dcm;
 
 import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.converters.TransformerErrorListener;
+import eionet.gdem.http.CustomURI;
 import eionet.gdem.qa.engines.SaxonProcessor;
-import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.cache.MemoryCache;
 import net.sf.saxon.s9api.*;
 
@@ -68,10 +68,10 @@ public class XslGenerator {
      * @throws XMLConvException If an error occurs.
      */
     private static byte[] makeDynamicXSL(String sourceURL, String xslFile) throws XMLConvException {
-        InputFile src = null;
         byte[] result = null;
         try {
-            src = new InputFile(sourceURL);
+            CustomURI uri = new CustomURI(sourceURL);
+            uri.getURL();
             ByteArrayOutputStream os = new ByteArrayOutputStream();
 
             Processor proc = SaxonProcessor.getProcessor();
@@ -81,6 +81,7 @@ public class XslGenerator {
             transformerSource.setSystemId(xslFile);
 
             XsltExecutable exp = comp.compile(transformerSource);
+            // TODO: Maybe replace this with HTTP file manager to take advantage of the file cache.
             XdmNode source = proc.newDocumentBuilder().build(new StreamSource(sourceURL));
             Serializer ser = proc.newSerializer(os);
             ser.setOutputProperty(Serializer.Property.METHOD, "html");
@@ -100,13 +101,6 @@ public class XslGenerator {
             throw new XMLConvException("Error opening URL " + ioe.toString(), ioe);
         } catch (Exception e) {
             throw new XMLConvException("Error converting: " + e.toString(), e);
-        } finally {
-            try {
-                if (src != null) {
-                    src.close();
-                }
-            } catch (Exception e) {
-            }
         }
         return result;
     }

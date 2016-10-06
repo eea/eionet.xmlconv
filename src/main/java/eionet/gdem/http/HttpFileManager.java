@@ -2,7 +2,6 @@ package eionet.gdem.http;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
-import eionet.gdem.cache.CacheManagerUtil;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.utils.Utils;
@@ -10,16 +9,12 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.cache.CacheResponseStatus;
 import org.apache.http.client.cache.HttpCacheContext;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.cache.CacheConfig;
-import org.apache.http.impl.client.cache.CachingHttpClients;
-import org.apache.http.impl.client.cache.ehcache.EhcacheHttpCacheStorage;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -38,6 +33,9 @@ public class HttpFileManager {
     private CloseableHttpClient client;
     private CloseableHttpResponse response;
 
+    public HttpFileManager() {
+        this.client = HttpCacheClientFactory.getInstance();
+    }
 
     public void getHttpResponse(HttpServletResponse response, String ticket, String url) throws IOException, URISyntaxException {
         HttpEntity entity = downloadFile(url, ticket);
@@ -75,7 +73,7 @@ public class HttpFileManager {
     }
 
     public static String getSourceUrlWithTicket(String ticket, String sourceUrl, boolean isTrustedMode) throws URISyntaxException {
-        CustomURL uri = new CustomURL(sourceUrl);
+        CustomURI uri = new CustomURI(sourceUrl);
         if (Utils.isNullStr(ticket) && isTrustedMode) {
             ticket = getHostCredentials(uri.getHost());
         }
@@ -98,7 +96,7 @@ public class HttpFileManager {
     }
 
     public InputStream getInputStream(String srcUrl, String ticket, boolean isTrustedMode) throws IOException, URISyntaxException {
-        CustomURL customURL = new CustomURL(srcUrl);
+        CustomURI customURL = new CustomURI(srcUrl);
         URL url = customURL.getURL();
         URLConnection uc = url.openConnection();
 
@@ -125,29 +123,7 @@ public class HttpFileManager {
 
     private HttpEntity downloadFile(String url, String ticket) throws IOException, URISyntaxException {
         LOGGER.info("Start to download file: " + url);
-
-        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
-        cm.setMaxTotal(50);
-        cm.setDefaultMaxPerRoute(50);
-        EhcacheHttpCacheStorage ehcacheHttpCacheStorage = new EhcacheHttpCacheStorage(CacheManagerUtil.getHttpCache());
-        CacheConfig cacheConfig = CacheConfig.custom()
-                .setSharedCache(false)
-                .setMaxCacheEntries(1000)
-                .setMaxObjectSize(524288000)
-                .build();
-        RequestConfig requestConfig = RequestConfig.custom()
-                .setSocketTimeout(30000)
-                .setConnectTimeout(30000)
-                .build();
-        client = CachingHttpClients.custom()
-                .setCacheConfig(cacheConfig)
-                .setHttpCacheStorage(ehcacheHttpCacheStorage)
-                .setDefaultRequestConfig(requestConfig)
-                .setConnectionManager(cm)
-                .build();
-
         HttpCacheContext context = HttpCacheContext.create();
-
         HttpGet httpget = new HttpGet(url);
         if (ticket != null) {
             httpget.addHeader("Authorization", " Basic " + ticket);
@@ -158,8 +134,10 @@ public class HttpFileManager {
         switch (responseStatus) {
             case VALIDATED:
                 LOGGER.info("The response was generated from the cache after validating the entry with the origin server.");
+                break;
             case CACHE_MISS:
                 LOGGER.info("Entry not found in cache.");
+                break;
             default:
         }
         int statusCode = response.getStatusLine().getStatusCode();
@@ -172,7 +150,7 @@ public class HttpFileManager {
 
     public void closeQuietly() {
         try {
-            client.close();
+            //client.close();
             response.close();
         } catch (IOException e) {
             LOGGER.error("Could not close resource: " + e);

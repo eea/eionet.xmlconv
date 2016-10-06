@@ -57,7 +57,7 @@ public final class CacheManagerUtil {
                 .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
                 .eternal(true));
         cacheManager.addCache(appCache);
-
+        //TODO: Make configurable from Properties
         Cache httpCache = new Cache(new CacheConfiguration()
                 .name("http-cache")
                 .maxBytesLocalDisk(1000, MemoryUnit.MEGABYTES)

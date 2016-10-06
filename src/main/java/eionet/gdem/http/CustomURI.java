@@ -9,11 +9,11 @@ import java.net.URL;
  *
  * @author George Sofianos
  */
-public class CustomURL {
+public class CustomURI {
 
     private URI uri;
 
-    public CustomURL(String url) throws URISyntaxException {
+    public CustomURI(String url) throws URISyntaxException {
         uri = new URI(url.replace(" ", "%20"));
     }
 
@@ -21,8 +21,8 @@ public class CustomURL {
         return uri.getScheme() + "://" + uri.getAuthority();
     }
 
-    public String getUri() {
-        return uri.toString();
+    public URI getUri() {
+        return uri;
     }
 
     public URL getURL() throws MalformedURLException {

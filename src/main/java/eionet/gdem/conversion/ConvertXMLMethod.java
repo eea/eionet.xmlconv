@@ -3,21 +3,15 @@
  */
 package eionet.gdem.conversion;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.util.Hashtable;
 import java.util.Map;
 
+import eionet.gdem.http.HttpFileManager;
+import eionet.gdem.utils.cdr.UrlUtils;
 import eionet.gdem.utils.xml.sax.SaxContext;
 import org.apache.commons.io.IOUtils;
-
-
 
 import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
@@ -38,7 +32,6 @@ import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IStyleSheetDao;
-import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.ZipUtil;
 import eionet.gdem.utils.xml.IXmlCtx;
@@ -106,19 +99,22 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
         if (convertId.startsWith("DD")) {
             return convertDDTable(sourceURL, convertId, externalParameters);
         } else {
-
             Hashtable<String, Object> result = new Hashtable<String, Object>();
             String xslFile = null;
             String outputFileName = null;
-            InputFile src = null;
-
+            InputStream sourceStream = null;
             try {
-                src = new InputFile(sourceURL);
-                src.setAuthentication(getTicket());
-                src.setTrustedMode(isTrustedMode());
-                cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ? DEFAULT_FILE_NAME : src.getFileNameNoExtension();
+                //TODO: Split method for local and remote files.
+                if (Utils.isURL(sourceURL)) {
+                    HttpFileManager fileManager = new HttpFileManager();
+                    sourceStream = fileManager.getFileInputStream(sourceURL, getTicket());
+                } else {
+                    // In case it is a local file
+                    sourceStream = new FileInputStream(sourceURL);
+                }
+                cnvFileName = Utils.isNullStr(UrlUtils.getFileNameNoExtension(sourceURL)) ? DEFAULT_FILE_NAME : UrlUtils.getFileNameNoExtension(sourceURL);
 
-                conversionParameters = src.getCdrParams();
+                conversionParameters = UrlUtils.getCdrParams(sourceURL);
                 // override default CDR parameters if they are set up externally.
                 if (externalParameters != null) {
                     conversionParameters.putAll(externalParameters);
@@ -166,7 +162,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
                         throw new XMLConvException("Error getting response outputstream " + e.toString(), e);
                     }
                 }
-                ConvertContext ctx = new ConvertContext(src.getSrcInputStream(), xslFile, resultStream, cnvFileExt);
+                ConvertContext ctx = new ConvertContext(sourceStream, xslFile, resultStream, cnvFileExt);
                 outputFileName = executeConversion(ctx, conversionParameters, cnvTypeOut);
 
             } catch (MalformedURLException mfe) {
@@ -182,13 +178,15 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
                 LOGGER.error("Error converting", e);
                 throw new XMLConvException("Convert error: " + e.toString(), e);
             } finally {
-                try {
-                    if (src != null) {
-                        src.close();
+                if (sourceStream != null) {
+                    try {
+                        sourceStream.close();
+                    } catch (IOException e) {
+                        // do nothing
                     }
-                } catch (Exception e) {
                 }
             }
+
 
             result.put(CONTENTTYPE_KEY, cnvContentType);
             result.put(FILENAME_KEY, cnvFileName + "." + cnvFileExt);
@@ -224,7 +222,6 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
         OutputStream result = null;
         Hashtable<String, Object> h = new Hashtable<String, Object>();
         String outputFileName = null;
-        InputFile src = null;
         String tblId = "";
         String convId = "";
         String cnvFileName = null;
@@ -243,15 +240,14 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
         LOGGER.debug("Conv: " + conv);
         String format = Properties.metaXSLFolder + File.separatorChar + conv.getStylesheet();
         String url = getDDTableDefUrl(tblId);
-
+        InputStream sourceStream = null;
         try {
             ByteArrayInputStream byteIn = XslGenerator.convertXML(url, format);
-            src = new InputFile(sourceURL);
-            src.setAuthentication(getTicket());
-            src.setTrustedMode(isTrustedMode());
-            cnvFileName = Utils.isNullStr(src.getFileNameNoExtension()) ? DEFAULT_FILE_NAME : src.getFileNameNoExtension();
+            HttpFileManager fileManager = new HttpFileManager();
+            sourceStream = fileManager.getFileInputStream(sourceURL, getTicket());
+            cnvFileName = Utils.isNullStr(UrlUtils.getFileNameNoExtension(sourceURL)) ? DEFAULT_FILE_NAME : UrlUtils.getFileNameNoExtension(sourceURL);
 
-            conversionParameters = src.getCdrParams();
+            conversionParameters = UrlUtils.getCdrParams(sourceURL);
             // override default CDR parameters if they are set up externally.
             if (externalParameters != null) {
                 conversionParameters.putAll(externalParameters);
@@ -294,7 +290,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
                     throw new XMLConvException("Error getting response outputstream " + e.toString(), e);
                 }
             }
-            ConvertContext ctx = new ConvertContext(src.getSrcInputStream(), byteIn, result, cnvFileExt);
+            ConvertContext ctx = new ConvertContext(sourceStream, byteIn, result, cnvFileExt);
             outputFileName = executeConversion(ctx, conversionParameters, cnvTypeOut);
 
         } catch (MalformedURLException mfe) {
@@ -309,12 +305,12 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
             LOGGER.error("Error converting", e);
             throw new XMLConvException("Error converting", e);
         } finally {
-            try {
-                if (src != null) {
-                    src.close();
+            if (sourceStream != null) {
+                try {
+                    sourceStream.close();
+                } catch (IOException e) {
+                    // do nothing
                 }
-            } catch (Exception e) {
-                LOGGER.error("Error converting", e);
             }
         }
 
@@ -356,9 +352,8 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
 
         try {
             if (Utils.isURL(fileName)) {
-                InputFile inputFile = new InputFile(fileName);
-                fileName = inputFile.getFileName();
-                cdrParams = inputFile.getCdrParams();
+                cdrParams = UrlUtils.getCdrParams(fileName);
+                fileName = UrlUtils.getFileName(fileName);
             }
             // Store the file into temporary folder
             tmpFolderName = Utils.createUniqueTmpFolder();
@@ -397,8 +392,8 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
             }
 
             // Creates an URI for temporarily stored XML file and call convert method with it
-            String fileUri = Utils.getURIfromPath(filePath, false);
-            result = convert(fileUri, convertId, cdrParams);
+            //String fileUri = Utils.getURIfromPath(filePath, false);
+            result = convert(filePath, convertId, cdrParams);
 
         } catch (Exception e) {
             LOGGER.error(e.toString());
