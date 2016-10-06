@@ -11,6 +11,7 @@ import org.apache.http.client.cache.CacheResponseStatus;
 import org.apache.http.client.cache.HttpCacheContext;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +71,7 @@ public class HttpFileManager {
         //response.setContentLength(contentLength);
         response.setCharacterEncoding(contentEncoding);
         entity.writeTo(response.getOutputStream());
+        HttpClientUtils.closeQuietly(this.response);
     }
 
     public static String getSourceUrlWithTicket(String ticket, String sourceUrl, boolean isTrustedMode) throws URISyntaxException {
@@ -150,7 +152,6 @@ public class HttpFileManager {
 
     public void closeQuietly() {
         try {
-            //client.close();
             response.close();
         } catch (IOException e) {
             LOGGER.error("Could not close resource: " + e);

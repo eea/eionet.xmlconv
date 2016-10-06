@@ -60,11 +60,9 @@ public final class CacheManagerUtil {
         //TODO: Make configurable from Properties
         Cache httpCache = new Cache(new CacheConfiguration()
                 .name("http-cache")
-                .maxBytesLocalDisk(1000, MemoryUnit.MEGABYTES)
-                .maxEntriesLocalDisk(100)
                 .maxEntriesLocalHeap(1)
+                .maxBytesLocalDisk(2, MemoryUnit.GIGABYTES)
                 .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
-                .eternal(false)
                 .diskExpiryThreadIntervalSeconds(120)
                 .persistence(new PersistenceConfiguration().strategy(PersistenceConfiguration.Strategy.LOCALTEMPSWAP)));
         cacheManager.addCache(httpCache);

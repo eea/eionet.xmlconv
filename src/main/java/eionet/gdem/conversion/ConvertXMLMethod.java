@@ -100,13 +100,13 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
             return convertDDTable(sourceURL, convertId, externalParameters);
         } else {
             Hashtable<String, Object> result = new Hashtable<String, Object>();
+            HttpFileManager fileManager = new HttpFileManager();
             String xslFile = null;
             String outputFileName = null;
             InputStream sourceStream = null;
             try {
                 //TODO: Split method for local and remote files.
                 if (Utils.isURL(sourceURL)) {
-                    HttpFileManager fileManager = new HttpFileManager();
                     sourceStream = fileManager.getFileInputStream(sourceURL, getTicket());
                 } else {
                     // In case it is a local file
@@ -178,13 +178,8 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
                 LOGGER.error("Error converting", e);
                 throw new XMLConvException("Convert error: " + e.toString(), e);
             } finally {
-                if (sourceStream != null) {
-                    try {
-                        sourceStream.close();
-                    } catch (IOException e) {
-                        // do nothing
-                    }
-                }
+                IOUtils.closeQuietly(sourceStream);
+                fileManager.closeQuietly();
             }
 
 
@@ -241,9 +236,9 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
         String format = Properties.metaXSLFolder + File.separatorChar + conv.getStylesheet();
         String url = getDDTableDefUrl(tblId);
         InputStream sourceStream = null;
+        HttpFileManager fileManager = new HttpFileManager();
         try {
             ByteArrayInputStream byteIn = XslGenerator.convertXML(url, format);
-            HttpFileManager fileManager = new HttpFileManager();
             sourceStream = fileManager.getFileInputStream(sourceURL, getTicket());
             cnvFileName = Utils.isNullStr(UrlUtils.getFileNameNoExtension(sourceURL)) ? DEFAULT_FILE_NAME : UrlUtils.getFileNameNoExtension(sourceURL);
 
@@ -305,13 +300,8 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
             LOGGER.error("Error converting", e);
             throw new XMLConvException("Error converting", e);
         } finally {
-            if (sourceStream != null) {
-                try {
-                    sourceStream.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
+            IOUtils.closeQuietly(sourceStream);
+            fileManager.closeQuietly();
         }
 
         h.put(CONTENTTYPE_KEY, cnvContentType);

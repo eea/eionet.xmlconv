@@ -39,6 +39,7 @@ import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.cdr.UrlUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +59,7 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
         FileInputStream fisXsl = null;
         String tmpXslFile = null;
         InputStream sourceStream = null;
+        HttpFileManager fileManager = new HttpFileManager();
         try {
             // build InputSource for xsl
             if (!Utils.isNullStr(script.getScriptSource())) {
@@ -68,7 +70,6 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
                 throw new XMLConvException("XQuery engine could not find script source or script file name!");
             }
             // Build InputSource for xml file
-            HttpFileManager fileManager = new HttpFileManager();
             sourceStream = fileManager.getFileInputStream(script.getSrcFileUrl(), null);
             // execute xsl transformation
 
@@ -90,20 +91,9 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
             LOGGER.error("==== Caught EXCEPTION " + e.toString());
             throw new XMLConvException(e.getMessage());
         } finally {
-            if (sourceStream != null) {
-                try {
-                    sourceStream.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
-            if (fisXsl != null) {
-                try {
-                    fisXsl.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            IOUtils.closeQuietly(sourceStream);
+            fileManager.closeQuietly();
+            IOUtils.closeQuietly(fisXsl);
         }
 
     }

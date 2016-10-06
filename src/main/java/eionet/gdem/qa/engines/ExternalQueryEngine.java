@@ -62,6 +62,7 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
     @Override
     protected void runQuery(XQScript script, OutputStream result) throws XMLConvException {
         String tmpScriptFile = null;
+        HttpFileManager fileManager = new HttpFileManager();
         try {
 
             // build InputSource for xsl
@@ -74,7 +75,6 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
                 throw new XMLConvException("XQuery engine could not find script source or script file name!");
             }
 
-            HttpFileManager fileManager = new HttpFileManager();
             //TODO: Add ticket
             InputStream sourceStream = fileManager.getFileInputStream(script.getSrcFileUrl(), null);
             String srcFile = CustomFileUtils.saveFileInLocalStorage(sourceStream, "xml");
@@ -120,6 +120,7 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
             LOGGER.error("==== Caught EXCEPTION " + e.toString());
             throw new XMLConvException(e.getMessage());
         } finally {
+            fileManager.closeQuietly();
             try {
                 result.close();
                 result.flush();

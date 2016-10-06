@@ -95,13 +95,13 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
         File file = null;
         ConversionResultDto resultObject = new ConversionResultDto();
         String errorMessage = null;
-
+        HttpFileManager fileManager = new HttpFileManager();
+        InputStream sourceStream = null;
         try {
             URL url = new CustomURI(sourceUrl).getURL();
-            HttpFileManager fileManager = new HttpFileManager();
-            InputStream stream = fileManager.getFileInputStream(sourceUrl, getTicket());
+             fileManager.getFileInputStream(sourceUrl, getTicket());
 
-            file = new File(CustomFileUtils.saveFileInLocalStorage(stream, "tmp"));
+            file = new File(CustomFileUtils.saveFileInLocalStorage(sourceStream, "tmp"));
             sourceFileName =
                 Utils.isNullStr(UrlUtils.getFileNameNoExtension(sourceUrl)) ? DEFAULT_FILE_NAME : UrlUtils.getFileNameNoExtension(sourceUrl);
 
@@ -135,7 +135,9 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
         } catch (Exception e) {
             errorMessage = handleConversionException("Error converting Excel file. ", e);
         } finally {
+            IOUtils.closeQuietly(sourceStream);
             IOUtils.closeQuietly(resultStream);
+            fileManager.closeQuietly();
             Utils.deleteFile(file);
         }
         // Creates response Object, if error occurred
