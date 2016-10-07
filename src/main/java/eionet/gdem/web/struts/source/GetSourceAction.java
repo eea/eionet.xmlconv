@@ -29,11 +29,14 @@ public class GetSourceAction extends Action {
 
         String ticket = httpServletRequest.getParameter(Constants.TICKET_PARAM);
         String url = httpServletRequest.getParameter(Constants.SOURCE_URL_PARAM);
+        HttpFileManager manager = null;
         try {
-            HttpFileManager manager = new HttpFileManager();
+            manager = new HttpFileManager();
             manager.getHttpResponse(httpServletResponse, ticket, url);
         } catch (Exception e) {
             LOGGER.error("Error: " + e);
+        } finally {
+            manager.closeQuietly();
         }
         return null;
     }

@@ -71,7 +71,6 @@ public class HttpFileManager {
         //response.setContentLength(contentLength);
         response.setCharacterEncoding(contentEncoding);
         entity.writeTo(response.getOutputStream());
-        HttpClientUtils.closeQuietly(this.response);
     }
 
     public static String getSourceUrlWithTicket(String ticket, String sourceUrl, boolean isTrustedMode) throws URISyntaxException {
