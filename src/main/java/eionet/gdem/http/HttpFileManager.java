@@ -152,7 +152,9 @@ public class HttpFileManager {
 
     public void closeQuietly() {
         try {
-            response.close();
+            if (response != null) {
+                response.close();
+            }
         } catch (IOException e) {
             LOGGER.error("Could not close resource: " + e);
         }
