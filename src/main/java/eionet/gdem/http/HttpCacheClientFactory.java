@@ -1,5 +1,6 @@
 package eionet.gdem.http;
 
+import eionet.gdem.Properties;
 import eionet.gdem.cache.CacheManagerUtil;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -23,12 +24,12 @@ public final class HttpCacheClientFactory {
             EhcacheHttpCacheStorage ehcacheHttpCacheStorage = new EhcacheHttpCacheStorage(CacheManagerUtil.getHttpCache());
             CacheConfig cacheConfig = CacheConfig.custom()
                     .setSharedCache(false)
-                    .setMaxCacheEntries(1000)
-                    .setMaxObjectSize(524288000)
+                    .setMaxCacheEntries(Properties.HTTP_CACHE_ENTRIES)
+                    .setMaxObjectSize(Properties.HTTP_CACHE_OBJECTSIZE)
                     .build();
             RequestConfig requestConfig = RequestConfig.custom()
-                    .setSocketTimeout(30000)
-                    .setConnectTimeout(30000)
+                    .setSocketTimeout(Properties.HTTP_SOCKET_TIMEOUT)
+                    .setConnectTimeout(Properties.HTTP_CONNECT_TIMEOUT)
                     .build();
             client = CachingHttpClients.custom()
                     .setCacheConfig(cacheConfig)

@@ -1,5 +1,6 @@
 package eionet.gdem.http;
 
+import eionet.gdem.Properties;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
 /**
@@ -18,8 +19,8 @@ public final class HttpConnectionManagerFactory {
     public static PoolingHttpClientConnectionManager getInstance() {
         if (manager == null) {
             PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
-            cm.setMaxTotal(50);
-            cm.setDefaultMaxPerRoute(50);
+            cm.setMaxTotal(Properties.HTTP_MANAGER_TOTAL);
+            cm.setDefaultMaxPerRoute(Properties.HTTP_MANAGER_ROUTE);
             manager = cm;
         }
         return manager;

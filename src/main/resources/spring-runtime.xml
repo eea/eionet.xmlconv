@@ -14,6 +14,8 @@
                 <value>CatalogManager.properties</value>
                 <value>fme.properties</value>
                 <value>ApplicationResources.properties</value>
+                <value>cache.properties</value>
+                <value>http.properties</value>
             </array>
         </constructor-arg>
     </bean>

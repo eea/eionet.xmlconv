@@ -25,6 +25,8 @@ public final class CacheManagerUtil {
      */
     public static final String APPLICATION_CACHE = "ApplicationCache";
 
+    public static final String HTTP_CACHE = "http-cache";
+
     /** Data Dictionary tables data cache name. */
     private static final String DD_TABLES_CACHE = "ddTables";
 
@@ -45,25 +47,24 @@ public final class CacheManagerUtil {
     }
 
     public static Cache getHttpCache() {
-        return cacheManager.getCache("http-cache");
+        return cacheManager.getCache(HTTP_CACHE);
     }
 
     public void initializeCacheManager() {
         Configuration cacheManagerConfig = new Configuration()
                 .diskStore(new DiskStoreConfiguration()
-                .path(Properties.appRootFolder + "/tmp/"));
+                .path(Properties.appRootFolder + Properties.CACHE_TEMP_DIR));
         cacheManager = new CacheManager(cacheManagerConfig);
         Cache appCache = new Cache(new CacheConfiguration(APPLICATION_CACHE, 10000)
                 .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
                 .eternal(true));
         cacheManager.addCache(appCache);
-        //TODO: Make configurable from Properties
         Cache httpCache = new Cache(new CacheConfiguration()
-                .name("http-cache")
+                .name(HTTP_CACHE)
                 .maxEntriesLocalHeap(1)
-                .maxBytesLocalDisk(2, MemoryUnit.GIGABYTES)
+                .maxBytesLocalDisk(Properties.CACHE_HTTP_SIZE, MemoryUnit.MEGABYTES)
                 .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
-                .diskExpiryThreadIntervalSeconds(120)
+                .diskExpiryThreadIntervalSeconds(Properties.CACHE_HTTP_EXPIRY)
                 .persistence(new PersistenceConfiguration().strategy(PersistenceConfiguration.Strategy.LOCALTEMPSWAP)));
         cacheManager.addCache(httpCache);
     }

@@ -96,6 +96,18 @@ public class Properties {
     /** BaseX Server Password */
     public static String basexServerPassword = null;
 
+    /** Cache Configuration */
+    public static final String CACHE_TEMP_DIR;
+    public static final long CACHE_HTTP_SIZE;
+    public static final int CACHE_HTTP_EXPIRY;
+    public static final int HTTP_CACHE_ENTRIES;
+    public static final long HTTP_CACHE_OBJECTSIZE;
+    public static final int HTTP_SOCKET_TIMEOUT;
+    public static final int HTTP_CONNECT_TIMEOUT;
+    public static final int HTTP_MANAGER_TOTAL;
+    public static final int HTTP_MANAGER_ROUTE;
+
+
     /** conversion.xml file location, listing all available generated conversions. */
     public static String convFile = null;
     /** XSL folder for generated conversions. */
@@ -201,6 +213,16 @@ public class Properties {
         basexServerUser = getStringProperty("basexserver.user");
         basexServerPassword = getStringProperty("basexserver.password");
 
+        CACHE_TEMP_DIR = getStringProperty("cache.temp.dir");
+        CACHE_HTTP_SIZE = getLongProperty("cache.http.size");
+        CACHE_HTTP_EXPIRY = getIntProperty("cache.http.expiryinterval");
+        HTTP_CACHE_ENTRIES = getIntProperty("http.cache.entries");
+        HTTP_CACHE_OBJECTSIZE = getLongProperty("http.cache.objectsize");
+        HTTP_SOCKET_TIMEOUT = getIntProperty("http.socket.timeout");
+        HTTP_CONNECT_TIMEOUT = getIntProperty("http.connect.timeout");
+        HTTP_MANAGER_TOTAL = getIntProperty("http.manager.total");
+        HTTP_MANAGER_ROUTE = getIntProperty("http.manager.route");
+
         // DCM settings
         ddURL = getStringProperty("dd.url");
         gdemURL = getStringProperty("gdem.url");
@@ -286,6 +308,17 @@ public class Properties {
         } catch (NumberFormatException nfe) {
             LOGGER.error(nfe.getMessage());
             return 0;
+        }
+    }
+
+    private static long getLongProperty(String key) {
+        String value = getStringProperty(key);
+
+        try {
+            return Long.valueOf(value);
+        } catch (NumberFormatException nfe) {
+            LOGGER.error(nfe.getMessage());
+            return 0L;
         }
     }
 
