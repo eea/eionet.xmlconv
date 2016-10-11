@@ -195,7 +195,7 @@ public class XQueryService extends RemoteService {
             for (int j = 0; j < queries.size(); j++) {
 
                 String query_id = String.valueOf( ( (Hashtable) queries.get(j)).get("query_id"));
-                newId = analyzeXMLFile( file, query_id , "" );
+                newId = analyzeXMLFile( file, query_id , schema );
 
                 Vector queryResult = new Vector();
                 queryResult.add(newId);
