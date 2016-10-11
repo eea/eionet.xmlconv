@@ -35,6 +35,7 @@ import eionet.acl.AccessController;
 import eionet.acl.AppUser;
 
 import edu.yale.its.tp.cas.client.filter.CASFilter;
+import eionet.acl.SignOnException;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.web.struts.login.AfterCASLoginAction;
 
@@ -97,12 +98,13 @@ public final class SecurityUtil {
      * @return True if user has permissions.
      * @throws Exception If an error occurs.
      */
-    public static boolean hasPerm(String usr, String aclPath, String prm) throws Exception {
+    public static boolean hasPerm(String usr, String aclPath, String prm) throws SignOnException {
+        AccessControlListIF acl;
+
         if (!aclPath.startsWith("/"))
             return false;
 
         boolean has = false;
-        AccessControlListIF acl = null;
         int i = aclPath.indexOf("/", 1);
         while (i != -1 && !has) {
             String subPath = aclPath.substring(0, i);

@@ -15,14 +15,13 @@ import org.slf4j.LoggerFactory;
 public class quartzConnectionProvider implements org.quartz.utils.ConnectionProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(MySqlBaseDao.class);
 
-    private static DataSource ds = null;
-    
     private static class DataSourceHolder {
         private static final DataSource DATASOURCE;
         static {
             try {
                 DATASOURCE = (DataSource) SpringApplicationContext.getBean("quartzDataSource");
             } catch (Exception e) {
+                LOGGER.error( "quartzDataSource" , e );
                 throw new ExceptionInInitializerError(e);
             }
         }

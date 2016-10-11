@@ -49,9 +49,17 @@ import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.FeedbackAnalyzer;
+
+import static eionet.gdem.Constants.JOB_VALIDATION;
+import static eionet.gdem.qa.ListQueriesMethod.DEFAULT_CONTENT_TYPE_ID;
 import static eionet.gdem.web.listeners.JobScheduler.getQuartzScheduler;
 import java.util.logging.Level;
+
+import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.quartz.JobBuilder.newJob;
+
+import eionet.gdem.validation.InputAnalyser;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -163,23 +171,16 @@ public class XQueryService extends RemoteService {
      */
     public Vector analyzeXMLFiles(String schema, String origFile, Vector result) throws XMLConvException {
 
-        LOGGER.info("XML/RPC call for analyze xml: " + origFile);
+        LOGGER.info("analyzeXMLFiles: " + origFile);
 
         if (result == null) {
             result = new Vector();
         }
-        Vector outputTypes = null;
         // get all possible xqueries from db
         String newId = "-1"; // should not be returned with value -1;
         String file = origFile;
 
         Vector queries = listQueries(schema);
-
-        try {
-            outputTypes = convTypeDao.getConvTypes();
-        } catch (SQLException sqe) {
-            throw new XMLConvException("DB operation failed: " + sqe.toString());
-        }
 
         try {
             // get the trusted URL from source file adapter
@@ -191,35 +192,11 @@ public class XQueryService extends RemoteService {
         }
 
         if (!Utils.isNullVector(queries)) {
-
             for (int j = 0; j < queries.size(); j++) {
-                Hashtable query = (Hashtable) queries.get(j);
-                String query_id = String.valueOf(query.get("query_id"));
-                String queryFile = (String) query.get("query");
-                String contentType = (String) query.get("content_type_id");
-                String scriptType = (String) query.get("script_type");
-                String fileExtension = getExtension(outputTypes, contentType);
-                String resultFile =
-                    Properties.tmpFolder + File.separatorChar + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "."
-                    + fileExtension;
-                try {
-                    int queryId = 0;
-                    try {
-                        queryId = Integer.parseInt(query_id);
-                    } catch (NumberFormatException n) {
-                        queryId = 0;
-                    }
-                    // if it is a XQuery script, then append the system folder
-                    if (queryId != Constants.JOB_VALIDATION
-                            && queryFile.startsWith(Properties.gdemURL + "/" + Constants.QUERIES_FOLDER)) {
-                        queryFile =
-                            Utils.Replace(queryFile, Properties.gdemURL + "/" + Constants.QUERIES_FOLDER,
-                                    Properties.queriesFolder + File.separator);
-                    }
-                    newId = xqJobDao.startXQJob(file, queryFile, resultFile, queryId, scriptType);
-                } catch (SQLException sqe) {
-                    throw new XMLConvException("DB operation failed: " + sqe.toString());
-                }
+
+                String query_id = String.valueOf( ( (Hashtable) queries.get(j)).get("query_id"));
+                newId = analyzeXMLFile( file, query_id , "" );
+
                 Vector queryResult = new Vector();
                 queryResult.add(newId);
                 queryResult.add(origFile);
@@ -276,7 +253,7 @@ public class XQueryService extends RemoteService {
     public String analyze(String sourceURL, String xqScript, String scriptType) throws XMLConvException {
         String xqFile = "";
 
-        LOGGER.info("XML/RPC call for analyze xml with Quartz: " + sourceURL);
+        LOGGER.info("XML/RPC call for analyze xml with custom script: " + sourceURL);
         // save XQScript in a text file for the WQ
         try {
             String extension = ScriptUtils.getExtensionFromScriptType(scriptType);
@@ -298,23 +275,8 @@ public class XQueryService extends RemoteService {
 
             //save the job definition in the DB
             newId = xqJobDao.startXQJob(sourceURL, xqFile, resultFile, scriptType);
-//
-            // ** Schedule the job with quartz to execute as soon as possibly.
-            // only the job_id is needed for the job to be executed
-            // Define sn anonymous job
-            JobDetail job1 = newJob(eionet.gdem.qa.XQueryJob.class)
-                .usingJobData("jobId", newId )
-                .requestRecovery()
-                .build();
-
-            // Define a Trigger that will fire "now", and not repeat
-            Trigger trigger = newTrigger()
-                .startNow()
-                .build();
-
-            // Schedule the job
-            Scheduler quartzScheduler = getQuartzScheduler();
-            quartzScheduler.scheduleJob(job1, trigger);
+            //
+            scheduleJob(newId);
 
         } catch (SQLException sqe) {
             LOGGER.error("DB operation failed: " + sqe.toString());
@@ -417,7 +379,7 @@ public class XQueryService extends RemoteService {
                 } catch (NumberFormatException n) {
                 }
 
-                if (xq_id == Constants.JOB_VALIDATION) {
+                if (xq_id == JOB_VALIDATION) {
                     metatype = "text/html";
                     script_title = "XML Schema validation";
                 } else if (xq_id > 0) {
@@ -455,6 +417,137 @@ public class XQueryService extends RemoteService {
 
         return h;
 
+    }
+
+
+    /**
+     * Schedule to workqueue one job with direct script id
+     * @param sourceURL
+     * @param scriptId
+     * @return the jobId on succesful scheduling
+     * @throws XMLConvException
+     */
+    public String analyzeXMLFile(String sourceURL, String scriptId) throws XMLConvException {
+        return analyzeXMLFile(sourceURL, scriptId, null);
+    }
+
+    /**
+     * Schedule to workqueue one job with direct script id and schema if needed for validation
+     * @param sourceURL
+     * @param scriptId
+     * @param schema
+     * @return the jobId on succesful scheduling
+     * @throws XMLConvException
+     */
+    public String analyzeXMLFile(String sourceURL, String scriptId, String schema) throws XMLConvException {
+
+        String jobId = "-1";
+        HashMap query;
+        try {
+
+            if ( String.valueOf(Constants.JOB_VALIDATION).equals(scriptId )  ){ // Validation
+                query = new HashMap();
+                if ( isEmpty(schema)){
+                    InputAnalyser analyser = new InputAnalyser();
+                    try {
+                        analyser.parseXML(sourceURL);
+                        schema = analyser.getSchemaOrDTD();
+                        //return schemaOrDTD;
+                    } catch (Exception e) {
+                        throw new XMLConvException("Could not extract schema");
+                    }
+                    //String schemaUrl = findSchemaFromXml(sourceUrl);
+                    query.put("query", schema);
+                }
+                //else {
+                query.put("query", schema);
+                    //Vector schemas = schemaDao.getSchemas(schema, false);
+                //}
+                query.put("query_id", "-1");
+                query.put("content_type_id", DEFAULT_CONTENT_TYPE_ID);
+                query.put("script_type", "xsd");
+
+            }
+            else{
+                query = queryDao.getQueryInfo( scriptId);
+            }
+            if (isNull(  query ) ){
+                throw new XMLConvException("Script ID does not exist");
+            }
+            if ( "0".equals(query.get("is_active") )){
+                throw new XMLConvException("Script is not active");
+            }
+            Vector outputTypes = convTypeDao.getConvTypes();
+
+            String query_id = String.valueOf(query.get("query_id"));
+            String queryFile = (String) query.get("query");
+            String contentType = (String) query.get("content_type_id");
+            String scriptType = (String) query.get("script_type");
+            String fileExtension = getExtension(outputTypes, contentType);
+            String resultFile =
+                    Properties.tmpFolder + File.separatorChar + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "."
+                            + fileExtension;
+
+            int queryId;
+            try {
+                queryId = Integer.parseInt(query_id);
+            } catch (NumberFormatException n) {
+                queryId = 0;
+            }
+            // if it is a XQuery script, then append the system folder
+            if (queryId != JOB_VALIDATION
+                    && queryFile.startsWith(Properties.gdemURL + "/" + Constants.QUERIES_FOLDER)) {
+                queryFile =
+                        Utils.Replace(queryFile, Properties.gdemURL + "/" + Constants.QUERIES_FOLDER,
+                                Properties.queriesFolder + File.separator);
+            }
+            else if (queryId != JOB_VALIDATION
+                    && ! queryFile.startsWith(Properties.gdemURL + "/" + Constants.QUERIES_FOLDER)) {
+                queryFile = Properties.queriesFolder + File.separator + queryFile;
+            }
+
+            sourceURL = SourceFileManager.getSourceFileAdapterURL(getTicket(), sourceURL, isTrustedMode());
+            //save the job definition in the DB
+            jobId = xqJobDao.startXQJob(sourceURL, queryFile, resultFile, queryId ,scriptType);
+            //
+            scheduleJob(jobId);
+
+        } catch (IOException e) {
+            LOGGER.error("AnalyzeXMLFile:" , e);
+            throw new XMLConvException(e.getMessage());
+        } catch (SQLException e) {
+            LOGGER.error("AnalyzeXMLFile:" , e);
+            throw new XMLConvException(e.getMessage());
+        } catch (SchedulerException e) {
+            LOGGER.error("AnalyzeXMLFile:" , e);
+            throw new XMLConvException(e.getMessage());
+        }
+
+        return jobId;
+    }
+
+    /**
+     *  Schedule a job with quartz
+     * @param JobID the id of the job
+     */
+    public void scheduleJob (String JobID) throws SchedulerException {
+        // ** Schedule the job with quartz to execute as soon as possibly.
+        // only the job_id is needed for the job to be executed
+        // Define sn anonymous job
+        JobDetail job1 = newJob(eionet.gdem.qa.XQueryJob.class)
+                .withIdentity(JobID, "XQueryJob")
+                .usingJobData("jobId", JobID )
+                .requestRecovery()
+                .build();
+
+        // Define a Trigger that will fire "now", and not repeat
+        Trigger trigger = newTrigger()
+                .startNow()
+                .build();
+
+        // Schedule the job
+        Scheduler quartzScheduler = getQuartzScheduler();
+        quartzScheduler.scheduleJob(job1, trigger);
     }
 
     /**

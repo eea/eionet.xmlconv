@@ -7,15 +7,6 @@ import eionet.gdem.api.serverstatus.web.service.ServerStatusObject;
 import eionet.gdem.api.serverstatus.web.service.ServerStatusService;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.services.impl.QueueJobsServiceImpl;
-import java.io.IOException;
-import static java.lang.Integer.parseInt;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import static java.util.Objects.isNull;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +17,16 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.GsonHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.logging.Level;
+
+import static java.lang.Integer.parseInt;
+import static java.util.Objects.isNull;
 
 /**
  *
@@ -81,7 +78,7 @@ public class ServerStatusServiceImpl implements ServerStatusService {
                 
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setAccept(Collections.singletonList(new MediaType("application","json")));
-        HttpEntity<?> requestEntity = new HttpEntity<Object>(requestHeaders);
+        HttpEntity<?> requestEntity = new HttpEntity<>(requestHeaders);
 
         // Create a new RestTemplate instance
         RestTemplate restTemplate = new RestTemplate();

@@ -45,16 +45,14 @@ import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * XQuery job in the workqueue. A task executing the XQuery task and storing the results of processing.
  */
-public class XQueryJob implements Job {
+public class XQueryJob implements Job, InterruptableJob {
 
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(XQueryJob.class);
@@ -64,7 +62,7 @@ public class XQueryJob implements Job {
     private String resultFile;
     /** Job ID to be executed. */
     private String jobId;
-
+    /** Setter to be able to parse the jobId from JobData **/
     public void setJobId(String jobId) {
         this.jobId = jobId;
     }
@@ -81,6 +79,8 @@ public class XQueryJob implements Job {
     /** Service for getting schema data. */
     private SchemaManager schemaManager;
 
+    private volatile Thread  thisThread;
+
     public XQueryJob() {
 
     }
@@ -90,6 +90,8 @@ public class XQueryJob implements Job {
      */
     @Override
     public void execute(JobExecutionContext paramJobExecutionContext) throws JobExecutionException {
+        thisThread = Thread.currentThread();
+
         try {
             
             LOGGER.info("Job ID=  " + jobId + " started getting source file.");
@@ -337,4 +339,12 @@ public class XQueryJob implements Job {
 
     }
 
+    @Override
+    public void interrupt() throws UnableToInterruptJobException {
+        LOGGER.info("Job " + this.jobId + "  -- INTERRUPTING --");
+        if (thisThread != null) {
+            // this call causes the ClosedByInterruptException to happen
+            thisThread.interrupt();
+        }
+    }
 }

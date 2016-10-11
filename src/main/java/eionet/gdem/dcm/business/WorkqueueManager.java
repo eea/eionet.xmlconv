@@ -21,19 +21,9 @@
 
 package eionet.gdem.dcm.business;
 
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
-
-
-
-
 import eionet.gdem.Constants;
-import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.WorkqueueJob;
@@ -43,8 +33,18 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
+import org.quartz.JobKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
+
+import static eionet.gdem.web.listeners.JobScheduler.getQuartzScheduler;
 
 /**
  * Work Queue Manager.
@@ -263,6 +263,86 @@ public class WorkqueueManager {
         } catch (Exception e) {
             LOGGER.error("Error reseting active jobs: " + e.toString());
         }
+    }
 
+    /**
+     * Restart jobs by id.
+     */
+    public static void restartJobs(String[] jobs) throws XMLConvException {
+        LOGGER.info("Request to restart jobs " + Utils.stringArray2String(jobs, "," ) );
+        try{
+            if (jobs.length > 0) {
+                GDEMServices.getDaoService().getXQJobDao().changeXQJobsStatuses(jobs, Constants.XQ_RECEIVED);
+                for (int i = 0; i < jobs.length; i ++){
+                    // check if job is running
+                    JobKey qJob = new JobKey(jobs[i] , "XQueryJob");
+                    if (getQuartzScheduler().checkExists( qJob)){
+                        LOGGER.info("Job with ID: " + jobs[i] + " is already scheduled and cannot be restarted");
+                    }
+                    //
+                    XQueryService xQueryService = new XQueryService();
+                    xQueryService.scheduleJob(jobs[i]);
+                }
+            }
+        }
+        catch (Exception e) {
+            throw new XMLConvException(e.getMessage());
+        }
+    }
+
+    /**
+     * Delete jobs by id.
+     */
+    public static void deleteJobs(String[] jobs) throws XMLConvException {
+        LOGGER.info("Request to deleteJobs jobs " + Utils.stringArray2String(jobs, "," ) );
+        try {
+            //String[] jobsToDelete;
+            List<String> jobsToDelete = new ArrayList<>();
+
+            if (jobs.length > 0) {
+                // delete also result files from file system tmp folder
+                try {
+                    for (String job : jobs) {
+                        String[] jobData = GDEMServices.getDaoService().getXQJobDao().getXQJobData(job);
+                        if (jobData == null || jobData.length < 3) {
+                            continue;
+                        }
+
+                        JobKey qJob = new JobKey(job, "XQueryJob");
+                        if (getQuartzScheduler().checkExists(qJob)) {
+                            LOGGER.info("Job with ID: " + job + " is already scheduled and cannot be deleted");
+                            continue;
+                        }
+
+                        jobsToDelete.add(job);
+
+                        String resultFile = jobData[2];
+                        try {
+                            Utils.deleteFile(resultFile);
+                        } catch (Exception e) {
+                            LOGGER.error("Could not delete job result file: " + resultFile + "." + e.getMessage());
+                        }
+                        // delete xquery files, if they are stored in tmp folder
+                        String xqFile = jobData[1];
+                        try {
+                            // Important!!!: delete only, when the file is stored in tmp folder
+                            if (xqFile.startsWith(Properties.tmpFolder)) {
+                                Utils.deleteFile(xqFile);
+                            }
+                        } catch (Exception e) {
+                            LOGGER.error("Could not delete XQuery script file: " + xqFile + "." + e.getMessage());
+                        }
+                    }
+                } catch (Exception e) {
+                    LOGGER.error("Could not delete job result files!" + e.getMessage());
+                }
+                jobs = new String[ jobsToDelete.size() ];
+                jobsToDelete.toArray( jobs );
+                GDEMServices.getDaoService().getXQJobDao().endXQJobs(jobs);
+            }
+
+        } catch (Exception e) {
+            throw new XMLConvException(e.getMessage());
+        }
     }
 }

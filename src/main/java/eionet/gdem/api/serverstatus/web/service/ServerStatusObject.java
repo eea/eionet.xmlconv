@@ -12,14 +12,14 @@ import static java.util.Objects.isNull;
  */
 public class ServerStatusObject implements Serializable {
 
-    private HashMap < String, Integer> index;
+    private HashMap < String, Integer> serverMap;
     
     public List <ServerStatus> serverStatus;
     public Long timestamp;
     
     public ServerStatusObject( ) {
         this.serverStatus = new ArrayList <ServerStatus> ();
-        this.index = new HashMap <String ,Integer> ();
+        this.serverMap = new HashMap <String ,Integer> ();
         this.timestamp = System.currentTimeMillis() / 1000L ; //http://stackoverflow.com/questions/732034
     }
     
@@ -71,17 +71,17 @@ public class ServerStatusObject implements Serializable {
         
         if ( isNull(instanceName)) instanceName = "null";
         
-        if ( isNull( index.get ( instanceName ) ) ){
+        if ( isNull( serverMap.get ( instanceName ) ) ){
             ServerStatus newElem = new ServerStatus ();
             newElem.instanceName = instanceName ;
             newElem.health = "NA";
             newElem.jobs_by_status = new ArrayList <jobsByStatus> () ;
             newElem.jobs_by_status.add( new jobsByStatus(jobStatus , jobCount));
             this.serverStatus.add( newElem );
-            index.put( instanceName , this.serverStatus.size() - 1 );
+            serverMap.put( instanceName , this.serverStatus.size() - 1 );
         }
         else {
-            this.serverStatus.get( index.get ( instanceName ) ).jobs_by_status.add( new jobsByStatus(jobStatus , jobCount) );
+            this.serverStatus.get( serverMap.get ( instanceName ) ).jobs_by_status.add( new jobsByStatus(jobStatus , jobCount) );
         }
         
     }
@@ -90,16 +90,16 @@ public class ServerStatusObject implements Serializable {
         
         if ( isNull(instanceName)) instanceName = "null";
         
-        if ( isNull( index.get ( instanceName ) ) ){
+        if ( isNull( serverMap.get ( instanceName ) ) ){
             ServerStatus newElem = new ServerStatus ();
             newElem.instanceName = instanceName ;
             newElem.health = healthStatus ;
             newElem.jobs_by_status = new ArrayList <jobsByStatus> () ;
             this.serverStatus.add( newElem );
-            index.put( instanceName , this.serverStatus.size() - 1 );
+            serverMap.put( instanceName , this.serverStatus.size() - 1 );
         }
         else {
-            this.serverStatus.get( index.get ( instanceName ) ).health = healthStatus;
+            this.serverStatus.get( serverMap.get ( instanceName ) ).health = healthStatus;
         }
         
     }

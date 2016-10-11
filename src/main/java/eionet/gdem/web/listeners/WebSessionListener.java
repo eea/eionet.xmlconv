@@ -23,7 +23,7 @@ public class WebSessionListener implements HttpSessionListener {
     @Override
     public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
         String id = httpSessionEvent.getSession().getId();
-        String sessionDir = Properties.appRootFolder + File.separator + "tmpfile" + File.separator + id;
+        String sessionDir = Properties.appRootFolder + "/tmpfile/" + id;
         File dir = new File(sessionDir);
         for(File file: dir.listFiles()) {
             file.delete();

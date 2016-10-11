@@ -22,11 +22,8 @@
 package eionet.gdem.web.listeners;
 
 import eionet.gdem.Properties;
-import eionet.gdem.dcm.business.WorkqueueManager;
 import eionet.gdem.logging.Markers;
-import eionet.gdem.qa.WQCheckerJob;
 import eionet.gdem.qa.WQCleanerJob;
-import eionet.gdem.qa.WQExecutor;
 import eionet.gdem.web.job.DDTablesCacheUpdater;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -71,7 +68,7 @@ public class JobScheduler implements ServletContextListener {
         }
     }
     
-    /** folds the in memory scheduled for private scheduling of each instance */
+    /** holds the in memory scheduled for private scheduling of each instance */
     private static class QuartzLocalSchedulerHolder {
         private static final Scheduler QUARTZ_LOCAL_SCHEDULER;
         private static final String PROPERTIES_PATH = "local-quartz.properties";
@@ -151,6 +148,7 @@ public class JobScheduler implements ServletContextListener {
         if (QuartzSchedulerHolder.QUARTZ_SCHEDULER != null) {
             try {
                 QuartzSchedulerHolder.QUARTZ_SCHEDULER.shutdown(false);
+                QuartzLocalSchedulerHolder.QUARTZ_LOCAL_SCHEDULER.shutdown(false);
                 Thread.sleep(1000);
             } catch (SchedulerException e) {
                 LOGGER.error("Failed proper shutdown of " + QuartzSchedulerHolder.QUARTZ_SCHEDULER.getClass().getSimpleName(), e);
@@ -158,7 +156,6 @@ public class JobScheduler implements ServletContextListener {
                 LOGGER.error("Failed proper shutdown of " + QuartzSchedulerHolder.QUARTZ_SCHEDULER.getClass().getSimpleName(), e);
             }
         }
-        WQExecutor.getInstance().shutdown();
     }
 
     /**
@@ -168,10 +165,7 @@ public class JobScheduler implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         intervalJobs
                 = new Pair[]{
-                    Pair.of(new Integer(Properties.wqCheckInterval),
-                            newJob(WQCheckerJob.class).withIdentity(WQCheckerJob.class.getSimpleName(),
-                            WQCheckerJob.class.getName()).build()),
-                    Pair.of(new Integer(Properties.wqCleanInterval),
+                      Pair.of(new Integer(Properties.wqCleanInterval),
                             newJob(WQCleanerJob.class).withIdentity(WQCleanerJob.class.getSimpleName(),
                             WQCleanerJob.class.getName()).build())};
         // schedule interval jobs
@@ -194,6 +188,5 @@ public class JobScheduler implements ServletContextListener {
                 LOGGER.error(Markers.fatal, "Error when scheduling DDTablesCacheUpdater", e);
         }
 
-        WorkqueueManager.resetActiveJobs();
     }
 }

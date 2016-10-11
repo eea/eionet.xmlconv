@@ -41,16 +41,16 @@ public interface Names {
     // JSP names
     String INDEX_JSP = "index.jsp";
     String ERROR_JSP = "error.jsp";
-    String STYLESHEET_JSP = "stylesheetEditForm.do";
-    String STYLESHEETS_JSP = "schemaStylesheets.do";
-    String ADD_XSL_JSP = "addStylesheetForm.do";
-    String TEST_CONVERSION_JSP = "testConversionForm.do";
-    String LIST_CONVERSION_JSP = "listConvForm.do";
+    String STYLESHEET_JSP = "do/stylesheetEditForm";
+    String STYLESHEETS_JSP = "do/schemaStylesheets";
+    String ADD_XSL_JSP = "do/addStylesheetForm";
+    String TEST_CONVERSION_JSP = "testConversionService.html";
+    String LIST_CONVERSION_JSP = "do/listConvForm";
     String TEST_CONVERSION_SERVLET = "convert";
-    String LOGIN_JSP = "start.do?login=true";
-    String SCHEMA_JSP = "schemaElemForm.do";
+    String LOGIN_JSP = "login.jsp";
+    String SCHEMA_JSP = "do/schemaElemForm";
     String LIST_WORKQUEUE_JSP = "workqueue.jsp";
-    String QUERIESINDEX_JSP = "qaScripts.do";
+    String QUERIESINDEX_JSP = "do/qaScripts";
 
     // actions
     String LOGIN_ACTION = "F";
