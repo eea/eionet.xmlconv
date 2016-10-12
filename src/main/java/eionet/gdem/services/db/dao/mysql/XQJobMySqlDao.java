@@ -38,8 +38,8 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     private static final String qStartXQJob = "INSERT INTO " + WQ_TABLE + " (" + URL_FLD + "," + XQ_FILE_FLD + ", "
             + RESULT_FILE_FLD + "," + STATUS_FLD + "," + XQ_ID_FLD + "," + TIMESTAMP_FLD + "," + XQ_TYPE_FLD + ") " + "VALUES (?,?,?,?,?,{fn now()},?)";
 
-    private static final String qCheckJobID = "SELECT " + JOB_ID_FLD + " FROM " + WQ_TABLE + " WHERE " + XQ_FILE_FLD + " = ?"
-            + " AND " + RESULT_FILE_FLD + " =  ?";
+    // use LAST_INSERT_ID to avoid duplicates in extreme cases http://stackoverflow.com/a/17112962/3771458
+    private static final String qGetJobID = "SELECT LAST_INSERT_ID()";
 
     private static final String qChangeJobStatus = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + INSTANCE + "= ?, " + TIMESTAMP_FLD
             + "= NOW() " + " WHERE " + JOB_ID_FLD + "= ?";
@@ -134,9 +134,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             pstmt.executeUpdate();
             pstmt.close();
 
-            pstmt = conn.prepareStatement(qCheckJobID);
-            pstmt.setString(1, xqFile);
-            pstmt.setString(2, resultFile);
+            pstmt = conn.prepareStatement(qGetJobID);
             rs = pstmt.executeQuery();
             r = getResults(rs);
         } finally {
