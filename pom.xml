@@ -100,7 +100,7 @@
                             <name>mysql:5.5</name>
                             <run>
                                 <ports>
-                                    <port>3336:3306</port>
+                                    <port>53336:3306</port>
                                 </ports>
                                 <env>
                                     <MYSQL_ROOT_PASSWORD>12345</MYSQL_ROOT_PASSWORD>
@@ -151,7 +151,7 @@
                                     <JAVA_OPTS>-Xmx3072m</JAVA_OPTS>
                                 </env>
                                 <ports>
-                                    <port>8080:8080</port>
+                                    <port>58080:8080</port>
                                 </ports>
                                 <wait>
                                     <tcp>
@@ -177,7 +177,7 @@
                                     </bind>
                                 </volumes>
                                 <ports>
-                                    <port>8081:80</port>
+                                    <port>58081:80</port>
                                 </ports>
                                 <wait>
                                     <tcp>
