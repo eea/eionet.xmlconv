@@ -173,7 +173,7 @@
                             <run>
                                 <volumes>
                                     <bind>
-                                        <volume>${project.build.directory}/test-classes:/usr/local/apache2/htdocs/</volume>
+                                        <volume>${project.basedir}/src/test/resources:/usr/local/apache2/htdocs/</volume>
                                     </bind>
                                 </volumes>
                                 <ports>
