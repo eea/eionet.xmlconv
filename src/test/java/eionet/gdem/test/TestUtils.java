@@ -63,10 +63,8 @@ public class TestUtils {
         return "file://".concat(filename);
     }
 
-    //XXX: replace hardcoded port.
     public static String getSeedURL(String seedName, Object obj) {
-        //String filename = obj.getClass().getClassLoader().getResource(seedName).getFile();
-        return "http://localhost:58081/".concat(seedName);
+        return Properties.getStringProperty("test.httpd.url").concat(seedName);
     }
 
     /**
