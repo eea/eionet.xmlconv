@@ -169,13 +169,22 @@
                         </image>
                         <image>
                             <alias>httpd</alias>
-                            <name>httpd:alpine</name>
+                            <name>httpd</name>
+                            <build>
+                                <from>httpd:alpine</from>
+                                <maintainer>George Sofianos</maintainer>
+                                <tags>
+                                    <tag>latest</tag>
+                                    <tag>${project.version}</tag>
+                                </tags>
+
+                                <assembly>
+                                    <mode>dir</mode>
+                                    <basedir>/usr/local/apache2/htdocs/</basedir>
+                                    <descriptor>httpd-assembly.xml</descriptor>
+                                </assembly>
+                            </build>
                             <run>
-                                <volumes>
-                                    <bind>
-                                        <volume>${project.basedir}/src/test/resources:/usr/local/apache2/htdocs/</volume>
-                                    </bind>
-                                </volumes>
                                 <ports>
                                     <port>58081:80</port>
                                 </ports>

@@ -1,0 +1,11 @@
+<assembly>
+    <fileSets>
+        <fileSet>
+            <directory>${project.build.directory}/test-classes/</directory>
+            <includes>
+                <include>**/**</include>
+            </includes>
+            <outputDirectory>.</outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>
