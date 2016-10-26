@@ -497,19 +497,19 @@ public class XQueryService extends RemoteService {
                 queryFile = Properties.queriesFolder + File.separator + queryFile;
             }
 
-            sourceURL = SourceFileManager.getSourceFileAdapterURL(getTicket(), sourceURL, isTrustedMode());
+            sourceURL = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceURL, isTrustedMode());
             //save the job definition in the DB
             jobId = xqJobDao.startXQJob(sourceURL, queryFile, resultFile, queryId ,scriptType);
             //
             scheduleJob(jobId);
 
-        } catch (IOException e) {
-            LOGGER.error("AnalyzeXMLFile:" , e);
-            throw new XMLConvException(e.getMessage());
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
         } catch (SchedulerException e) {
+            LOGGER.error("AnalyzeXMLFile:" , e);
+            throw new XMLConvException(e.getMessage());
+        } catch (URISyntaxException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
         }
