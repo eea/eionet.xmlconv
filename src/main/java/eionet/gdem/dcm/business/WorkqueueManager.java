@@ -34,6 +34,7 @@ import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import org.quartz.JobKey;
+import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -268,20 +269,39 @@ public class WorkqueueManager {
     /**
      * Restart jobs by id.
      */
-    public static void restartJobs(String[] jobs) throws XMLConvException {
-        LOGGER.info("Request to restart jobs " + Utils.stringArray2String(jobs, "," ) );
+    public static void restartJobs(String[] jobIds) throws XMLConvException {
+        LOGGER.info("Request to restart jobs " + Utils.stringArray2String(jobIds, "," ) );
+        XQueryService xQueryService = new XQueryService();
+        List<String> jobsToRestart = new ArrayList<>();
         try{
-            if (jobs.length > 0) {
-                GDEMServices.getDaoService().getXQJobDao().changeXQJobsStatuses(jobs, Constants.XQ_RECEIVED);
-                for (int i = 0; i < jobs.length; i ++){
-                    // check if job is running
-                    JobKey qJob = new JobKey(jobs[i] , "XQueryJob");
-                    if (getQuartzScheduler().checkExists( qJob)){
-                        LOGGER.info("Job with ID: " + jobs[i] + " is already scheduled and cannot be restarted");
+            if (jobIds.length > 0) {
+                for (String jobId : jobIds) {
+                    String[] jobData = GDEMServices.getDaoService().getXQJobDao().getXQJobData(jobId);
+                    if (jobData == null || jobData.length < 3) {
+                        continue;
                     }
-                    //
-                    XQueryService xQueryService = new XQueryService();
-                    xQueryService.scheduleJob(jobs[i]);
+                    // check if job is running
+                    JobKey qJob = new JobKey(jobId, "XQueryJob");
+                    if ( "2".equals(jobData[3]) && getQuartzScheduler().checkExists(qJob)) {
+                        try {
+                            // try to interrupt running job
+                            getQuartzScheduler().interrupt(qJob);
+                        }catch (UnableToInterruptJobException e) {
+                            LOGGER.info("Job with ID: " + jobId + " is running and cannot be interrupted and thus cannot be restarted");
+                            continue;
+                        }
+                    }
+                    jobsToRestart.add(jobId);
+                }
+                //
+                jobIds = new String[ jobsToRestart.size() ];
+                jobsToRestart.toArray(jobIds );
+                // Change the jobs' status
+                GDEMServices.getDaoService().getXQJobDao().changeXQJobsStatuses(jobIds, Constants.XQ_RECEIVED);
+                LOGGER.info("Jobs restarted: " + Utils.stringArray2String(jobIds, "," ));
+                for (String jobId : jobIds) {
+                    // and reschedule each job
+                    xQueryService.scheduleJob(jobId);
                 }
             }
         }
@@ -293,29 +313,32 @@ public class WorkqueueManager {
     /**
      * Delete jobs by id.
      */
-    public static void deleteJobs(String[] jobs) throws XMLConvException {
-        LOGGER.info("Request to deleteJobs jobs " + Utils.stringArray2String(jobs, "," ) );
+    public static void deleteJobs(String[] jobIds) throws XMLConvException {
+        LOGGER.info("Request to deleteJobs jobs " + Utils.stringArray2String(jobIds, "," ) );
         try {
-            //String[] jobsToDelete;
             List<String> jobsToDelete = new ArrayList<>();
 
-            if (jobs.length > 0) {
-                // delete also result files from file system tmp folder
+            if (jobIds.length > 0) {
                 try {
-                    for (String job : jobs) {
-                        String[] jobData = GDEMServices.getDaoService().getXQJobDao().getXQJobData(job);
+                    for (String jobId : jobIds) {
+                        String[] jobData = GDEMServices.getDaoService().getXQJobDao().getXQJobData(jobId);
                         if (jobData == null || jobData.length < 3) {
                             continue;
                         }
 
-                        JobKey qJob = new JobKey(job, "XQueryJob");
-                        if (getQuartzScheduler().checkExists(qJob)) {
-                            LOGGER.info("Job with ID: " + job + " is already scheduled and cannot be deleted");
-                            continue;
+                        JobKey qJob = new JobKey(jobId, "XQueryJob");
+                        if ( "2".equals(jobData[3]) && getQuartzScheduler().checkExists(qJob)) {
+                            try {
+                                // try to interrupt running job
+                                getQuartzScheduler().interrupt(qJob);
+                            }catch (UnableToInterruptJobException e) {
+                                LOGGER.info("Job with ID: " + jobId + " is running and cannot be interrupted and thus cannot be deleted");
+                                continue;
+                            }
                         }
 
-                        jobsToDelete.add(job);
-
+                        jobsToDelete.add(jobId);
+                        // delete also result files from file system tmp folder
                         String resultFile = jobData[2];
                         try {
                             Utils.deleteFile(resultFile);
@@ -333,12 +356,14 @@ public class WorkqueueManager {
                             LOGGER.error("Could not delete XQuery script file: " + xqFile + "." + e.getMessage());
                         }
                     }
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     LOGGER.error("Could not delete job result files!" + e.getMessage());
                 }
-                jobs = new String[ jobsToDelete.size() ];
-                jobsToDelete.toArray( jobs );
-                GDEMServices.getDaoService().getXQJobDao().endXQJobs(jobs);
+                jobIds = new String[ jobsToDelete.size() ];
+                jobsToDelete.toArray(jobIds );
+                GDEMServices.getDaoService().getXQJobDao().endXQJobs(jobIds);
+                LOGGER.info("Jobs deleted: " + Utils.stringArray2String(jobIds, "," ));
             }
 
         } catch (Exception e) {

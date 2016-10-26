@@ -38,21 +38,27 @@ public class ServerStatusServiceImpl implements ServerStatusService {
     private IXQJobDao ixqJobDao;
     private static final Logger LOGGER = LoggerFactory.getLogger(QueueJobsServiceImpl.class);
 
+    /** holds the clustered quartz scheduler shared amongst instances*/
+    private static class isRancher {
+        public static final int IS_RANCHER = Properties.getIsRancher();
+    }
+
     @Autowired
     public ServerStatusServiceImpl(@Qualifier("xqJobDao") IXQJobDao ixqJobDao) {
         this.ixqJobDao = ixqJobDao;
-    }    
+    }
+
     @Override
     public ServerStatusObject getServerStatus() throws XMLConvException {
-        int isRancher = Properties.getIsRancher();
-                
+
         ServerStatusObject res = new ServerStatusObject () ;
         
-        if (isRancher == 1 ) {
+        if ( isRancher.IS_RANCHER == 1 ) {
             try {
                 getRancherInfo ( res );
             } catch (IOException ex) {
-                java.util.logging.Logger.getLogger(ServerStatusServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error( "getRancherInfo: ", ex );
+                res = new ServerStatusObject () ;
             }
         }
         return getWorkqueueInfo( res );
@@ -62,14 +68,16 @@ public class ServerStatusServiceImpl implements ServerStatusService {
     private ServerStatusObject getWorkqueueInfo ( ServerStatusObject res ) {
         try {
             String [] [] queryResults = ixqJobDao.getJobsSumInstanceAndStatus();
-                        if ( isNull(queryResults) ) return null;
+            if ( isNull(queryResults) ) {
+                return ( isRancher.IS_RANCHER == 1) ? res : null;
+            }
             for ( int i = 0 ; i < queryResults.length ; i ++ ) {
                 res.insertJobStatusByInstance(queryResults [i][0], queryResults [i][1], parseInt ( queryResults [i][2]) );
             }
             return res;
 
         } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(ServerStatusServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error( "getWorkqueueInfo: ", ex);
             return null;
         }
     }
@@ -95,7 +103,7 @@ public class ServerStatusServiceImpl implements ServerStatusService {
         RancherStatus[] rancherStatus = mapper.readValue( responseBody , RancherStatus[].class );
         
         for (int i = 0; i < rancherStatus.length ; i ++) {
-            res.insertHealthStatusByInstance( rancherStatus[i].getName(), rancherStatus[i].getHealth_state());
+            res.insertHealthStatusByInstance( rancherStatus[i].getName(), rancherStatus[i].getHealth_state() + " / " + rancherStatus[i].getState());
         }
         
     }

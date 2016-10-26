@@ -30,8 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ServerStatusRestController {
 
-    //private final ServerStatusRestController qaService;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerStatusRestController.class);
     private static ServerStatusService serverStatusService ;
     
@@ -40,7 +38,6 @@ public class ServerStatusRestController {
         this.serverStatusService = serverStatusService;
     }
 
-    
     @RequestMapping(value="/serverstatus",method = RequestMethod.GET)
     public ResponseEntity<ServerStatusObject> returnServerStatus()throws XMLConvException{
     
@@ -50,8 +47,8 @@ public class ServerStatusRestController {
     }
     
     @ExceptionHandler(XMLConvException.class)
-    public void HandleGDEMException(Exception exception, HttpServletResponse response) {
-        exception.printStackTrace();
+    public void HandleXMLConvException(XMLConvException exception, HttpServletResponse response) {
+        LOGGER.error("ServerStatusRestContrl: " , exception);
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 }

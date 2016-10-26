@@ -44,6 +44,7 @@ public class XQScript {
     private String scriptFileName; // full path of script file
     private String srcFileUrl;
     private Schema schema;
+    private String jobId;
 
     private boolean srcFileDownloaded;
 
@@ -243,6 +244,14 @@ public class XQScript {
 
     public void setSchema(Schema schema) {
         this.schema = schema;
+    }
+    
+    public String getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
     }
 
 }

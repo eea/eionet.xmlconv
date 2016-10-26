@@ -151,9 +151,9 @@ public class JobScheduler implements ServletContextListener {
                 QuartzLocalSchedulerHolder.QUARTZ_LOCAL_SCHEDULER.shutdown(false);
                 Thread.sleep(1000);
             } catch (SchedulerException e) {
-                LOGGER.error("Failed proper shutdown of " + QuartzSchedulerHolder.QUARTZ_SCHEDULER.getClass().getSimpleName(), e);
+                LOGGER.error("Failed to shutdown the scheduler", e);
             } catch (InterruptedException e) {
-                LOGGER.error("Failed proper shutdown of " + QuartzSchedulerHolder.QUARTZ_SCHEDULER.getClass().getSimpleName(), e);
+                LOGGER.error("Failed to shutdown the scheduler", e);
             }
         }
     }

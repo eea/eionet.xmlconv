@@ -1,7 +1,6 @@
 package eionet.gdem.api.serverstatus.web.service;
 
 import eionet.gdem.XMLConvException;
-import java.util.HashMap;
 
 /**
  *
