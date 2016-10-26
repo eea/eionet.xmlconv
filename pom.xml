@@ -73,7 +73,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <valid.images>mysql, tomcat</valid.images>
+                <valid.images>mysql, tomcat, httpd</valid.images>
             </properties>
         </profile>
         <profile>
@@ -100,7 +100,7 @@
                             <name>mysql:5.5</name>
                             <run>
                                 <ports>
-                                    <port>3336:3306</port>
+                                    <port>53336:3306</port>
                                 </ports>
                                 <env>
                                     <MYSQL_ROOT_PASSWORD>12345</MYSQL_ROOT_PASSWORD>
@@ -151,7 +151,7 @@
                                     <JAVA_OPTS>-Xmx3072m</JAVA_OPTS>
                                 </env>
                                 <ports>
-                                    <port>8080:8080</port>
+                                    <port>58080:8080</port>
                                 </ports>
                                 <wait>
                                     <tcp>
@@ -163,7 +163,39 @@
                                 </wait>
                                 <links>
                                     <link>mysql:mysql</link>
+                                    <link>httpd:httpd</link>
                                 </links>
+                            </run>
+                        </image>
+                        <image>
+                            <alias>httpd</alias>
+                            <name>httpd</name>
+                            <build>
+                                <from>httpd:alpine</from>
+                                <maintainer>George Sofianos</maintainer>
+                                <tags>
+                                    <tag>latest</tag>
+                                    <tag>${project.version}</tag>
+                                </tags>
+
+                                <assembly>
+                                    <mode>dir</mode>
+                                    <basedir>/usr/local/apache2/htdocs/</basedir>
+                                    <descriptor>httpd-assembly.xml</descriptor>
+                                </assembly>
+                            </build>
+                            <run>
+                                <ports>
+                                    <port>58081:80</port>
+                                </ports>
+                                <wait>
+                                    <tcp>
+                                        <ports>
+                                            <port>80</port>
+                                        </ports>
+                                    </tcp>
+                                    <time>5000</time>
+                                </wait>
                             </run>
                         </image>
                     </images>
@@ -463,6 +495,11 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
+                <version>4.5.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient-cache</artifactId>
                 <version>4.5.2</version>
             </dependency>
             <!-- http://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
@@ -814,7 +851,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>2.0.54-beta</version>
+                <version>2.2.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

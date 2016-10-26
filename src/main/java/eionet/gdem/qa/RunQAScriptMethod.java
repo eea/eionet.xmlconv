@@ -1,20 +1,21 @@
 package eionet.gdem.qa;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Vector;
 
+import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.http.HttpFileManager;
 import org.apache.commons.io.IOUtils;
-
-
 
 import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.SchemaManager;
-import eionet.gdem.dcm.business.SourceFileManager;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.remote.RemoteServiceMethod;
 import eionet.gdem.dto.Schema;
@@ -33,35 +34,63 @@ import org.slf4j.LoggerFactory;
  */
 public class RunQAScriptMethod extends RemoteServiceMethod {
 
-    /** Query ID property key in ListQueries method result. */
+    /**
+     * Query ID property key in ListQueries method result.
+     */
     public static final String KEY_QUERY_ID = "query_id";
-    /** Query file property key in ListQueries method result. */
+    /**
+     * Query file property key in ListQueries method result.
+     */
     public static final String KEY_QUERY = "query";
-    /** Query short name property key in ListQueries method result. */
+    /**
+     * Query short name property key in ListQueries method result.
+     */
     public static final String KEY_SHORT_NAME = "short_name";
-    /** Query description property key in ListQueries method result. */
+    /**
+     * Query description property key in ListQueries method result.
+     */
     public static final String KEY_DESCRIPTION = "description";
-    /** Schema ID property key in ListQueries method result. */
+    /**
+     * Schema ID property key in ListQueries method result.
+     */
     public static final String KEY_SCHEMA_ID = "schema_id";
-    /** Schema URL property key in ListQueries method result. */
+    /**
+     * Schema URL property key in ListQueries method result.
+     */
     public static final String KEY_XML_SCHEMA = "xml_schema";
-    /** Type property key in ListQueries method result. */
+    /**
+     * Type property key in ListQueries method result.
+     */
     public static final String KEY_TYPE = "type";
-    /** Output content type property key in ListQueries method result. */
+    /**
+     * Output content type property key in ListQueries method result.
+     */
     public static final String KEY_CONTENT_TYPE_OUT = "content_type_out";
-    /** Output content type ID property key in ListQueries method result. */
+    /**
+     * Output content type ID property key in ListQueries method result.
+     */
     public static final String KEY_CONTENT_TYPE_ID = "content_type_id";
-    /** XML file upper limit property key in ListQueries method result. */
+    /**
+     * XML file upper limit property key in ListQueries method result.
+     */
     public static final String KEY_UPPER_LIMIT = "upper_limit";
-    /** Upper limit for xml file size to be sent to manual QA. */
+    /**
+     * Upper limit for xml file size to be sent to manual QA.
+     */
     public static final int VALIDATION_UPPER_LIMIT = Properties.qaValidationXmlUpperLimit;
 
-    /** QA script default output content type. */
+    /**
+     * QA script default output content type.
+     */
     public static final String DEFAULT_CONTENT_TYPE = "text/html";
 
-    /** Business logic class for XML Schemas. */
+    /**
+     * Business logic class for XML Schemas.
+     */
     private SchemaManager schManager = new SchemaManager();
-    /** DAO for getting query info. */
+    /**
+     * DAO for getting query info.
+     */
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
 
     /** */
@@ -70,103 +99,95 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
     /**
      * Remote method for running the QA script on the fly.
      *
-     * @param sourceUrl URL of the soucre XML
-     * @param scriptId XQueryScript ID or -1 (XML Schema validation) to be processed
+     * @param sourceUrl URL of the source XML
+     * @param scriptId  XQueryScript ID or -1 (XML Schema validation) to be processed
      * @return Vector of 2 fields: content type and byte array
      * @throws XMLConvException in case of business logic error
      */
     public Vector runQAScript(String sourceUrl, String scriptId) throws XMLConvException {
-
         Vector result = new Vector();
-        String fileUrl = null;
+        String fileUrl;
         String contentType = DEFAULT_QA_CONTENT_TYPE;
-        String strResult = null;
+        String strResult;
         LOGGER.debug("==xmlconv== runQAScript: id=" + scriptId + " file_url=" + sourceUrl + "; ");
         try {
-            // get the trusted URL from source file adapter
-            fileUrl = SourceFileManager.getSourceFileAdapterURL(getTicket(), sourceUrl, isTrustedMode());
-        } catch (Exception e) {
-            String errMess = "File URL is incorrect";
-            LOGGER.error(errMess + "; " + e.toString(), e);
-            throw new XMLConvException(errMess, e);
-        }
-        if (scriptId.equals(String.valueOf(Constants.JOB_VALIDATION))) {
-            try {
+            if (scriptId.equals(String.valueOf(Constants.JOB_VALIDATION))) {
                 ValidationService vs = new ValidationService();
-                strResult = vs.validate(fileUrl);
-            } catch (Exception e) {
-                String errMess = "Could not execute runQAMethod";
-                LOGGER.error(errMess + "; " + e.toString());
-                throw new XMLConvException(errMess, e);
-            }
-        } else {
-            String[] pars = new String[1];
-            pars[0] = Constants.XQ_SOURCE_PARAM_NAME + "=" + fileUrl;
-
-            try {
-            	HashMap hash = queryDao.getQueryInfo(scriptId);
-            	String xqScript = "";
-            	// If the script type is not FME, the script content is retrieved.
-            	if (!XQScript.SCRIPT_LANG_FME.equals((String) hash.get("script_type"))) {
-            		xqScript = queryDao.getQueryText(scriptId);
-            	} else {
-            		xqScript = XQScript.SCRIPT_LANG_FME; // Dummy value
-            	}
-                String schemaId = (String) hash.get("schema_id");
-                Schema schema = null;
-                // check because ISchemaDao.getSchema(null) returns first schema
-                if (schemaId != null) {
-                    schema = schManager.getSchema(schemaId);
-                }
-
-                if (Utils.isNullStr(xqScript) || hash == null) {
-                    String errMess = "Could not find QA script with id: " + scriptId;
-                    LOGGER.error(errMess);
-                    throw new XMLConvException(errMess, new Exception());
-                } else {
-                    if (!Utils.isNullStr((String) hash.get("meta_type"))) {
-                        contentType = (String) hash.get("meta_type");
+                vs.setTicket(getTicket());
+                strResult = vs.validate(sourceUrl);
+            } else {
+                fileUrl = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceUrl, isTrustedMode());
+                String[] pars = new String[1];
+                pars[0] = Constants.XQ_SOURCE_PARAM_NAME + "=" + fileUrl;
+                try {
+                    HashMap hash = queryDao.getQueryInfo(scriptId);
+                    String xqScript = "";
+                    // If the script type is not FME, the script content is retrieved.
+                    if (!XQScript.SCRIPT_LANG_FME.equals((String) hash.get("script_type"))) {
+                        xqScript = queryDao.getQueryText(scriptId);
+                    } else {
+                        xqScript = XQScript.SCRIPT_LANG_FME; // Dummy value
                     }
-                    LOGGER.debug("Script: " + xqScript);
-                    XQScript xq = new XQScript(xqScript, pars, (String) hash.get("content_type"));
-                    xq.setScriptType((String) hash.get("script_type"));
-                    xq.setSrcFileUrl(fileUrl);
-                    xq.setSchema(schema);
-
-                    if (XQScript.SCRIPT_LANG_FME.equals(xq.getScriptType())) {
-                        xq.setScriptSource((String) hash.get("url"));
+                    String schemaId = (String) hash.get("schema_id");
+                    Schema schema = null;
+                    // check because ISchemaDao.getSchema(null) returns first schema
+                    if (schemaId != null) {
+                        schema = schManager.getSchema(schemaId);
                     }
 
-                    strResult = xq.getResult();
+                    if (Utils.isNullStr(xqScript) || hash == null) {
+                        String errMess = "Could not find QA script with id: " + scriptId;
+                        LOGGER.error(errMess);
+                        throw new XMLConvException(errMess, new Exception());
+                    } else {
+                        if (!Utils.isNullStr((String) hash.get("meta_type"))) {
+                            contentType = (String) hash.get("meta_type");
+                        }
+                        LOGGER.debug("Script: " + xqScript);
+                        XQScript xq = new XQScript(xqScript, pars, (String) hash.get("content_type"));
+                        xq.setScriptType((String) hash.get("script_type"));
+                        xq.setSrcFileUrl(fileUrl);
+                        xq.setSchema(schema);
+
+                        if (XQScript.SCRIPT_LANG_FME.equals(xq.getScriptType())) {
+                            xq.setScriptSource((String) hash.get("url"));
+                        }
+
+                        strResult = xq.getResult();
+                    }
+                } catch (SQLException sqle) {
+                    throw new XMLConvException("Error getting data from DB: " + sqle.toString());
+                } catch (Exception e) {
+                    String errMess = "Could not execute runQAMethod";
+                    LOGGER.error(errMess + "; " + e.toString(), e);
+                    throw new XMLConvException(errMess, e);
                 }
-            } catch (SQLException sqle) {
-                throw new XMLConvException("Error getting data from DB: " + sqle.toString());
-            } catch (Exception e) {
-                String errMess = "Could not execute runQAMethod";
-                LOGGER.error(errMess + "; " + e.toString(), e);
-                throw new XMLConvException(errMess, e);
             }
-        }
-        if (isHttpRequest()) {
-            try {
-                HttpMethodResponseWrapper httpResponse = getHttpResponse();
-                httpResponse.setContentType(contentType);
-                httpResponse.setCharacterEncoding("UTF-8");
-                httpResponse.setContentDisposition("qaresult.xml");
-                OutputStream outstream = httpResponse.getOutputStream();
-                IOUtils.write(strResult, outstream, "UTF-8");
-            } catch (IOException e) {
-                LOGGER.error("Error getting response outputstream ", e);
-                throw new XMLConvException("Error getting response outputstream " + e.toString(), e);
+            if (isHttpRequest()) {
+                try {
+                    HttpMethodResponseWrapper httpResponse = getHttpResponse();
+                    httpResponse.setContentType(contentType);
+                    httpResponse.setCharacterEncoding("UTF-8");
+                    httpResponse.setContentDisposition("qaresult.xml");
+                    OutputStream outstream = httpResponse.getOutputStream();
+                    IOUtils.write(strResult, outstream, "UTF-8");
+                } catch (IOException e) {
+                    LOGGER.error("Error getting response outputstream ", e);
+                    throw new XMLConvException("Error getting response outputstream " + e.toString(), e);
+                }
+            } else {
+                result.add(contentType);
+                result.add(strResult.getBytes());
+
+                HashMap<String, String> fbResult = FeedbackAnalyzer.getFeedbackResultFromStr(strResult);
+                result.add(fbResult.get(Constants.RESULT_FEEDBACKSTATUS_PRM).getBytes());
+                result.add((fbResult.get(Constants.RESULT_FEEDBACKMESSAGE_PRM).getBytes()));
+
             }
-        } else {
-            result.add(contentType);
-            result.add(strResult.getBytes());
-
-            HashMap<String, String> fbResult = FeedbackAnalyzer.getFeedbackResultFromStr(strResult);
-            result.add(fbResult.get(Constants.RESULT_FEEDBACKSTATUS_PRM).getBytes());
-            result.add((fbResult.get(Constants.RESULT_FEEDBACKMESSAGE_PRM).getBytes()));
-
+        } catch (DCMException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
         return result;
     }

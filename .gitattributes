@@ -1,6 +1,7 @@
 # Set the default behavior, in case people don't have core.autocrlf set.
-* text=auto
+* text eol=lf
 
-pom.xml text eol=lf
-*.java text eol=lf
-*.jsp eol=lf
+pom.xml text
+*.java text
+*.jsp text
+*.properties text

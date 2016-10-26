@@ -30,6 +30,7 @@ import java.net.MalformedURLException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import eionet.gdem.http.HttpFileManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
@@ -42,7 +43,6 @@ import org.xml.sax.XMLReader;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 
 /**
@@ -77,11 +77,11 @@ public class InputAnalyser {
      * @throws DCMException If an error occurs.
      */
     public String parseXML(String srcUrl) throws DCMException {
-        InputFile src = null;
+        HttpFileManager fileManager = new HttpFileManager();
+        InputStream stream = null;
         try {
-            src = new InputFile(srcUrl);
-            src.setTrustedMode(true);
-            return parseXML(src.getSrcInputStream());
+            stream = fileManager.getInputStream(srcUrl, null, true);
+            return parseXML(stream);
         } catch (MalformedURLException mfe) {
             // throw new XMLConvException("Bad URL : " + mfe.toString());
             throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED);
@@ -97,13 +97,13 @@ public class InputAnalyser {
         } catch (Exception e) {
             e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-        }
-
-        finally {
-            try {
-                if (src != null)
-                    src.close();
-            } catch (Exception e) {
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    // do nothing
+                }
             }
         }
 

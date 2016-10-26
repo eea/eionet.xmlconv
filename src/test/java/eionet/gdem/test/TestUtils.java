@@ -58,10 +58,13 @@ public class TestUtils {
      *            eg. "seed.xml"
      * @return
      */
-    public static String getSeedURL(String seedName, Object obj) {
-
+    public static String getSeedURLOld(String seedName, Object obj) {
         String filename = obj.getClass().getClassLoader().getResource(seedName).getFile();
         return "file://".concat(filename);
+    }
+
+    public static String getSeedURL(String seedName, Object obj) {
+        return Properties.getStringProperty("test.httpd.url").concat(seedName);
     }
 
     /**

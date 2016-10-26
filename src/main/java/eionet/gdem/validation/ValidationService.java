@@ -28,9 +28,9 @@ import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.qa.QAFeedbackType;
 import eionet.gdem.qa.QAResultPostProcessor;
-import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 
 
@@ -67,8 +67,6 @@ public class ValidationService {
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidationService.class);
 
-    /** */
-    private String uriXml;
     /** ErrorHandler to use when doing XML Schema validation. */
     private ValidatorErrorHandler errHandler;
     /** Validation result object.*/
@@ -119,14 +117,11 @@ public class ValidationService {
      * @throws DCMException in case of unknown system error.
      */
     public String validateSchema(String srcUrl, String schema) throws DCMException {
-        InputFile src = null;
-        uriXml = srcUrl;
+        HttpFileManager fileManager = new HttpFileManager();
+        InputStream file = null;
         try {
-            src = new InputFile(srcUrl);
-            src.setTrustedMode(trustedMode);
-            src.setAuthentication(ticket);
-            src.setStoreLocally(true);
-            return validateSchema(src.getSrcInputStream(), schema);
+            file = fileManager.getFileInputStream(srcUrl, ticket);
+            return validateSchema(srcUrl, file, schema);
         } catch (MalformedURLException mfe) {
             throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED);
         } catch (IOException ioe) {
@@ -134,14 +129,18 @@ public class ValidationService {
         } catch (Exception e) {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         } finally {
-            if (src != null) {
-                src.close();
+            fileManager.closeQuietly();
+            if (file != null) {
+                try {
+                    file.close();
+                } catch (IOException e) {
+                    // do nothing
+                }
             }
         }
 
     }
 
-    /**
     /**
      * Validate XML. If schema is null, then read the schema or DTD from the header of XML. If schema or DTD is defined, then ignore
      * the defined schema or DTD.
@@ -152,7 +151,7 @@ public class ValidationService {
      * @throws DCMException in case of unknnown system error.
      * @throws XMLConvException in case of parser error.
      */
-    public String validateSchema(InputStream srcStream, String schema) throws DCMException, XMLConvException {
+    public String validateSchema(String sourceUrl, InputStream srcStream, String schema) throws DCMException, XMLConvException {
 
         String result = "";
         boolean isDTD = false;
@@ -186,7 +185,7 @@ public class ValidationService {
             reader.setFeature("http://apache.org/xml/features/continue-after-fatal-error", false);
 
             InputAnalyser inputAnalyser = new InputAnalyser();
-            inputAnalyser.parseXML(uriXml);
+            inputAnalyser.parseXML(sourceUrl);
             String namespace = inputAnalyser.getSchemaNamespace();
 
             // if schema is not in the parameter, then sniff it from the header of xml
@@ -241,9 +240,9 @@ public class ValidationService {
                 se = ((SAXException) e).getException();
             }
             if (se != null) {
-                LOGGER.error( "SAX Exception" , se.getMessage() );
+                LOGGER.error("SAX Exception", se.getMessage());
             } else {
-                LOGGER.error( "Uknown exception" , e.getStackTrace() );
+                LOGGER.error("Unknown exception", e.getStackTrace());
             }
             return validationFeedback.formatFeedbackText("The parser could not check the document. " + e.getMessage(), QAFeedbackType.BLOCKER, isBlocker);
         }

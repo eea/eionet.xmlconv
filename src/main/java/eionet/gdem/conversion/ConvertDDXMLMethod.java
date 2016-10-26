@@ -20,15 +20,16 @@
  */
 package eionet.gdem.conversion;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import eionet.gdem.http.CustomURI;
+import eionet.gdem.http.HttpFileManager;
+import eionet.gdem.utils.cdr.UrlUtils;
+import eionet.gdem.utils.file.CustomFileUtils;
 import org.apache.commons.io.IOUtils;
 
 
@@ -40,7 +41,6 @@ import eionet.gdem.dcm.remote.RemoteServiceMethod;
 import eionet.gdem.dto.ConversionLogDto;
 import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.dto.ConvertedFileDto;
-import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,12 +95,15 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
         File file = null;
         ConversionResultDto resultObject = new ConversionResultDto();
         String errorMessage = null;
-
+        HttpFileManager fileManager = new HttpFileManager();
+        InputStream sourceStream = null;
         try {
-            InputFile sourceFile = getInptFile(sourceUrl);
-            file = new File(sourceFile.saveSrcFile("tmp"));
+            URL url = new CustomURI(sourceUrl).getURL();
+            sourceStream = fileManager.getFileInputStream(sourceUrl, getTicket());
+
+            file = new File(CustomFileUtils.saveFileInLocalStorage(sourceStream, "tmp"));
             sourceFileName =
-                Utils.isNullStr(sourceFile.getFileNameNoExtension()) ? DEFAULT_FILE_NAME : sourceFile.getFileNameNoExtension();
+                Utils.isNullStr(UrlUtils.getFileNameNoExtension(sourceUrl)) ? DEFAULT_FILE_NAME : UrlUtils.getFileNameNoExtension(sourceUrl);
 
             // Detect the file format
             DDXMLConverter converter = DDXMLConverter.getConverter(file, resultObject, sheetName);
@@ -132,7 +135,9 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
         } catch (Exception e) {
             errorMessage = handleConversionException("Error converting Excel file. ", e);
         } finally {
+            IOUtils.closeQuietly(sourceStream);
             IOUtils.closeQuietly(resultStream);
+            fileManager.closeQuietly();
             Utils.deleteFile(file);
         }
         // Creates response Object, if error occurred
@@ -152,22 +157,6 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
         }
 
         return resultObject;
-    }
-
-    /**
-     * Returns source file as InputFile object.
-     *
-     * @param sourceUrl Source URL
-     * @return Input File
-     * @throws MalformedURLException If URL is malformed
-     * @throws IOException IO Exception
-     */
-    private InputFile getInptFile(String sourceUrl) throws MalformedURLException, IOException {
-        InputFile src = new InputFile(sourceUrl);
-        src.setAuthentication(getTicket());
-        src.setTrustedMode(isTrustedMode());
-
-        return src;
     }
 
     /**

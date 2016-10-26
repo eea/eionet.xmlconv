@@ -76,7 +76,7 @@ public interface Constants {
     String SCHEMA_FOLDER = "schemas/";
 
     // Public constants for SourceFileAdapter
-    String GETSOURCE_URL = "/do/getsource";
+    String GETSOURCE_URL = "/s/getsource";
     String AUTH_PARAM = "auth";
     String TICKET_PARAM = "ticket";
     String SOURCE_URL_PARAM = "source_url";

@@ -7,27 +7,7 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <bean id="appConfigDefinitionProvider" class="eionet.propertyplaceholderresolver.ConfigurationDefinitionProviderImpl">
-        <constructor-arg index="0">
-            <array>
-                <value>env.properties</value>
-                <value>acl.properties</value>
-                <value>gdem.properties</value>
-                <value>eionetdir.properties</value>
-                <value>CatalogManager.properties</value>
-                <value>fme.properties</value>
-                <value>ApplicationResources.properties</value>
-            </array>
-        </constructor-arg>
-    </bean>
 
-    <bean id="configurationPropertyResolver" class="eionet.propertyplaceholderresolver.ConfigurationPropertyResolverImpl">
-        <constructor-arg ref="appConfigDefinitionProvider" />
-    </bean>
-
-    <bean id="configurationPostProcessor" class="eionet.propertyplaceholderresolver.spring.EionetPlaceholderConfigurer">
-        <constructor-arg ref="configurationPropertyResolver" />
-    </bean>
     <!--<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
         <constructor-arg ref="hikariConfig" />
     </bean>
@@ -62,27 +42,6 @@
 
     <bean name="databaseTester" class="org.dbunit.DataSourceDatabaseTester">
         <constructor-arg ref="dataSource" />
-    </bean>
-
-    <bean id="aclProperties" class="eionet.acl.AclProperties">
-        <property name="ownerPermission" value="${owner.permission}" />
-        <property name="anonymousAccess" value="${anonymous.access}" />
-        <property name="authenticatedAccess" value="${authenticated.access}" />
-        <property name="defaultdocPermissions" value="${defaultdoc.permissions}" />
-        <property name="persistenceProvider" value="${persistence.provider}" />
-        <property name="initialAdmin" value="${initial.admin}" />
-        <property name="fileAclfolder" value="${file.aclfolder}" />
-        <property name="fileLocalusers" value="${file.localgroups}" />
-        <property name="fileLocalgroups" value="${file.localgroups}" />
-        <property name="filePermissions" value="${file.permissions}" />
-        <property name="dbDriver" value="${acl.db.driver}" />
-        <property name="dbUrl" value="${acl.db.url}" />
-        <property name="dbUser" value="${acl.db.user}" />
-        <property name="dbPwd" value="${acl.db.pwd}" />
-    </bean>
-
-    <bean id="accessController" class="eionet.acl.AccessController">
-        <constructor-arg index="0" ref="aclProperties" />
     </bean>
 
     <!-- Runs on Tomcat startup. -->

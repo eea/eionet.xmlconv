@@ -28,4 +28,6 @@
 
     <bean id="springApplicationContext" class="eionet.gdem.SpringApplicationContext"/>
 
+    <bean id="cacheManager" class="eionet.gdem.cache.CacheManagerUtil" init-method="initializeCacheManager"/>
+
 </beans>

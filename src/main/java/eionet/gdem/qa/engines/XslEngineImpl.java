@@ -23,6 +23,7 @@ package eionet.gdem.qa.engines;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
@@ -34,9 +35,11 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.converters.ConvertContext;
 import eionet.gdem.conversion.converters.ConvertStrategy;
 import eionet.gdem.conversion.converters.XMLConverter;
+import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.utils.InputFile;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.utils.cdr.UrlUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,10 +58,9 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
 
         FileInputStream fisXsl = null;
         String tmpXslFile = null;
-        InputFile src = null;
-
+        InputStream sourceStream = null;
+        HttpFileManager fileManager = new HttpFileManager();
         try {
-
             // build InputSource for xsl
             if (!Utils.isNullStr(script.getScriptSource())) {
                 tmpXslFile = Utils.saveStrToFile(null, script.getScriptSource(), "xsl");
@@ -68,21 +70,15 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
                 throw new XMLConvException("XQuery engine could not find script source or script file name!");
             }
             // Build InputSource for xml file
-            src = new InputFile(script.getSrcFileUrl());
-            // streamXml = src.getSrcInputStream();
-
+            sourceStream = fileManager.getFileInputStream(script.getSrcFileUrl(), null);
             // execute xsl transformation
 
-            // XSLTransformer transformer = new XSLTransformer();
-            // transformer.transform(tmpXslFile==null?script.getScriptFileName():tmpXslFile, new InputSource(fisXsl), result,
-            // parseParams(script.getParams()));
-
             ConvertContext ctx =
-                new ConvertContext(src.getSrcInputStream(), tmpXslFile == null ? script.getScriptFileName() : tmpXslFile,
+                new ConvertContext(sourceStream, tmpXslFile == null ? script.getScriptFileName() : tmpXslFile,
                         result, null);
             ConvertStrategy cs = new XMLConverter();
 
-            Map<String, String> params = src.getCdrParams();
+            Map<String, String> params = UrlUtils.getCdrParams(script.getSrcFileUrl());
             params.put(Constants.XQ_SOURCE_PARAM_NAME, script.getOrigFileUrl());
             cs.setXslParams(params);
             ctx.executeConversion(cs);
@@ -92,23 +88,12 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LOGGER.error("==== CATCHED EXCEPTION " + e.toString());
+            LOGGER.error("==== Caught EXCEPTION " + e.toString());
             throw new XMLConvException(e.getMessage());
         } finally {
-            if (src != null) {
-                try {
-                    src.close();
-
-                } catch (Exception e) {
-                }
-            }
-            if (fisXsl != null) {
-                try {
-                    fisXsl.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            IOUtils.closeQuietly(sourceStream);
+            fileManager.closeQuietly();
+            IOUtils.closeQuietly(fisXsl);
         }
 
     }
