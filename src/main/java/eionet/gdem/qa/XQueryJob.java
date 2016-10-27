@@ -201,6 +201,7 @@ public class XQueryJob implements Job, InterruptableJob {
                         errBuilder.append(Utils.escapeXML(e.toString()));
                         errBuilder.append("</div>");
                         IOUtils.write(errBuilder.toString(), out, "UTF-8");
+                        LOGGER.error("XQueryJob ID=" + this.jobId + " exception: " , e);
                     } finally {
                         IOUtils.closeQuietly(out);
                     }
