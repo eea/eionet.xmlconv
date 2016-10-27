@@ -53,7 +53,7 @@ public final class CacheManagerUtil {
     public void initializeCacheManager() {
         Configuration cacheManagerConfig = new Configuration()
                 .diskStore(new DiskStoreConfiguration()
-                .path(Properties.appRootFolder + Properties.CACHE_TEMP_DIR));
+                .path(Properties.CACHE_TEMP_DIR));
         cacheManager = new CacheManager(cacheManagerConfig);
         Cache appCache = new Cache(new CacheConfiguration(APPLICATION_CACHE, 10000)
                 .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
