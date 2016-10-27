@@ -474,10 +474,16 @@ public class FileDownloadServlet extends HttpServlet {
 		try {
 			if (urlPath.contains(Properties.getStringProperty("log.file"))) {
 				AppUser aclUser = SecurityUtil.getUser(request, Names.USER_ATT);
-				if (aclUser != null && !SecurityUtil.hasPerm(aclUser.getUserName(), "/" + Names.ACL_LOGFILE_PATH, "v")) {
+				if (aclUser == null || !SecurityUtil.hasPerm(aclUser.getUserName(), "/" + Names.ACL_LOGFILE_PATH, "v")) {
 					securityMessage = "You don't have permissions to view log file: " + urlPath;
 				}
 			}
+            if (urlPath.startsWith("/tmp")) {
+                AppUser aclUser = SecurityUtil.getUser(request, Names.USER_ATT);
+                if ( aclUser == null || !SecurityUtil.hasPerm(aclUser.getUserName(), "/" + Names.ACL_WQ_PATH, "v")) {
+                    securityMessage = "You don't have permissions to view result file: " + urlPath;
+                }
+            }
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOGGER.error("Unable to check permissions: " + urlPath, e);
