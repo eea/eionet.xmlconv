@@ -19,7 +19,7 @@
         <!-- encoders are assigned the type
              ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
         <encoder>
-            <pattern>[%-5p] %d{dd.MM.yy HH:mm:ss} - %c - %m%n</pattern>
+            <pattern>[${HOSTNAME}] [%-5p] %d{dd.MM.yy HH:mm:ss} - %c - %m%n</pattern>
         </encoder>
     </appender>
 
