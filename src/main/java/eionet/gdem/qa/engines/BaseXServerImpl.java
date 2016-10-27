@@ -24,13 +24,24 @@ public class BaseXServerImpl extends QAScriptEngineStrategy {
         Reader queryReader = null;
         try {
             int port = Integer.parseInt(Properties.basexServerPort);
-            BaseXClient session = new BaseXClient(Properties.basexServerHost, port, Properties.basexServerUser, Properties.basexServerPassword);
+            BaseXClient session = null;
+            try {
+                session = new BaseXClient(Properties.basexServerHost, port, Properties.basexServerUser, Properties.basexServerPassword);
+            } catch (IOException e) {
+                throw new XMLConvException("Error while connecting to BaseX server.", e);
+            }
             String input = null;
             if (!Utils.isNullStr(script.getScriptSource())) {
                 input = script.getScriptSource();
             } else if (!Utils.isNullStr(script.getScriptFileName())) {
-                queryReader = new FileReader(script.getScriptFileName());
-                input = new String(IOUtils.toByteArray(queryReader, "UTF-8"));
+                try {
+                    queryReader = new FileReader(script.getScriptFileName());
+                    input = new String(IOUtils.toByteArray(queryReader, "UTF-8"));
+                } catch (FileNotFoundException e) {
+                    throw new XMLConvException("Error while reading XQuery file: " + script.getScriptFileName(), e);
+                } catch (IOException e) {
+                    throw new XMLConvException("Error while reading XQuery file: " + script.getScriptFileName(), e);
+                }
             }
             BaseXClient.Query query = session.query(input);
             query.bind("$source_url", script.getSrcFileUrl());
@@ -41,17 +52,17 @@ public class BaseXServerImpl extends QAScriptEngineStrategy {
             LOGGER.debug("Query: "+ query.info().getBytes());
             query.close();
             session.close();
-        } catch (IOException e) {
-            throw new XMLConvException(e.getMessage(), e);
-        } catch (NumberFormatException e) {
+        }  catch (NumberFormatException e) {
             throw new XMLConvException("Wrong port number, please re-configure BaseX server connection parameters: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new XMLConvException("Error while executing XQuery script: " + script.getScriptFileName(), e);
         } finally {
             try {
                 if (queryReader != null) {
                     queryReader.close();
                 }
             } catch (IOException e) {
-                LOGGER.error("Error while reading xquery file: " + e.getMessage());
+                // do nothing
             }
         }
     }
