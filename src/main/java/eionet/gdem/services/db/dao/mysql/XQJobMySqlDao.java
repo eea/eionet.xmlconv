@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import eionet.gdem.Constants;
+import eionet.gdem.Properties;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 
@@ -37,10 +38,10 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     private static final String qStartXQJob = "INSERT INTO " + WQ_TABLE + " (" + URL_FLD + "," + XQ_FILE_FLD + ", "
             + RESULT_FILE_FLD + "," + STATUS_FLD + "," + XQ_ID_FLD + "," + TIMESTAMP_FLD + "," + XQ_TYPE_FLD + ") " + "VALUES (?,?,?,?,?,{fn now()},?)";
 
-    private static final String qCheckJobID = "SELECT " + JOB_ID_FLD + " FROM " + WQ_TABLE + " WHERE " + XQ_FILE_FLD + " = ?"
-            + " AND " + RESULT_FILE_FLD + " =  ?";
+    // use LAST_INSERT_ID to avoid duplicates in extreme cases http://stackoverflow.com/a/17112962/3771458
+    private static final String qGetJobID = "SELECT LAST_INSERT_ID()";
 
-    private static final String qChangeJobStatus = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + TIMESTAMP_FLD
+    private static final String qChangeJobStatus = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + INSTANCE + "= ?, " + TIMESTAMP_FLD
             + "= NOW() " + " WHERE " + JOB_ID_FLD + "= ?";
 
     private static final String qChangeFileJobsStatus = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + SRC_FILE_FLD
@@ -57,7 +58,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     private static final String qEndXQJobs = "DELETE FROM " + WQ_TABLE + " WHERE " + JOB_ID_FLD + " IN ";
 
     private static final String qJobData = "SELECT " + JOB_ID_FLD + ", " + URL_FLD + "," + XQ_FILE_FLD + ", " + RESULT_FILE_FLD
-            + ", " + STATUS_FLD + ", " + TIMESTAMP_FLD + ", " + XQ_ID_FLD + " FROM " + WQ_TABLE + " ORDER BY " + JOB_ID_FLD;
+            + ", " + STATUS_FLD + ", " + TIMESTAMP_FLD + ", " + XQ_ID_FLD +  ", " + INSTANCE + " FROM " + WQ_TABLE + " ORDER BY " + JOB_ID_FLD;
 
     private static final String qChangeJobsStatuses = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + TIMESTAMP_FLD
             + "= NOW() " + " WHERE " + JOB_ID_FLD + " IN  ";
@@ -67,6 +68,11 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
 
     private static final String qCountActiveJobs = "SELECT COUNT(*) " + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + "="
             + Constants.XQ_DOWNLOADING_SRC + " OR " + STATUS_FLD + "=" + Constants.XQ_PROCESSING;
+
+    
+    private static final String qLastActiveJobTime = qXQJobDataBase + " WHERE "+ STATUS_FLD + "=" + Constants.XQ_PROCESSING + " ORDER BY TIME_STAMP desc limit 1";
+    
+    private static final String qJobsByInstanceAndStatus = "SELECT INSTANCE, N_STATUS, COUNT(*) as JOBS_SUM FROM T_XQJOBS GROUP BY INSTANCE, N_STATUS";
 
     @Override
     public String[] getXQJobData(String jobId) throws SQLException {
@@ -128,9 +134,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             pstmt.executeUpdate();
             pstmt.close();
 
-            pstmt = conn.prepareStatement(qCheckJobID);
-            pstmt.setString(1, xqFile);
-            pstmt.setString(2, resultFile);
+            pstmt = conn.prepareStatement(qGetJobID);
             rs = pstmt.executeQuery();
             r = getResults(rs);
         } finally {
@@ -153,7 +157,8 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             conn = getConnection();
             pstmt = conn.prepareStatement(qChangeJobStatus);
             pstmt.setInt(1, status);
-            pstmt.setInt(2, Integer.parseInt(jobId));
+            pstmt.setString(2, Properties.getHostname() );
+            pstmt.setInt(3, Integer.parseInt(jobId));
             pstmt.executeUpdate();
         } finally {
             closeAllResources(null, pstmt, conn);
@@ -371,4 +376,60 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
         return ret;
     }
 
+    
+    @Override
+    public String[] getLatestProcessingJobStartTime() throws SQLException {
+              
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String[] s;
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + qLastActiveJobTime);
+        }
+
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(qLastActiveJobTime);
+            rs = pstmt.executeQuery();
+            String[][] r = getResults(rs);
+            if (r.length == 0) {
+                s = null;
+            } else {
+                s = r[0];
+            }
+        } finally {
+            closeAllResources(rs, pstmt, conn);
+        }
+        return s;
+    }
+
+    @Override
+    public String[][] getJobsSumInstanceAndStatus() throws SQLException{
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String[][] s;
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + qJobsByInstanceAndStatus);
+        }
+
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(qJobsByInstanceAndStatus);
+            rs = pstmt.executeQuery();
+            String[][] r = getResults(rs);
+            if (r.length == 0) {
+                s = null;
+            } else {
+                s = r;
+            }
+        } finally {
+            closeAllResources(rs, pstmt, conn);
+        }
+        return s;
+    }
+    
 }

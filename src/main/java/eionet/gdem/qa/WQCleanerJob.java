@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * QA Service workqueue cleaner job. Deletes all jobs with status = (READY, FATAL_ERR) and finished more than 24 hours ago
- * (parameter in gdem.proiperties).
+ * (parameter in gdem.properties).
  *
  * @author Enriko Käsper
  */

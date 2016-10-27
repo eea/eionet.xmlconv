@@ -388,6 +388,11 @@
             <forward name="fail" path="/api/methodError" />
         </action>
 
+   <!-- Methods for monitoring any problems with the processing of jobs in the queue-->
+        <action path="/latestJobStartTime" scope="request" type="eionet.gdem.web.struts.remoteapi.QueueMonitoringAction">
+            <forward name="fail" path="/api/methodError" />
+        </action>
+
  <!--  LDAP form -->
         <action path="/ldapForm" type="eionet.gdem.web.struts.config.LdapFormAction"
         name="ldapForm" scope="request" validate="false">

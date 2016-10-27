@@ -42,7 +42,7 @@ public class DDTablesCacheUpdater implements Job {
     /**
      * Class internal logger.
      */
-    private static Logger logger = LoggerFactory.getLogger(DDTablesCacheUpdater.class);
+    private static final Logger logger = LoggerFactory.getLogger(DDTablesCacheUpdater.class);
 
     /**
      * Executes the job.

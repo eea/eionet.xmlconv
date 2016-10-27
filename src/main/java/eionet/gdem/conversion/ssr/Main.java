@@ -139,6 +139,8 @@ public class Main extends HttpServlet implements Names {
 
             if (!Utils.isNullStr(u))
                 aclUser.authenticate(u, p);
+            else
+                throw new ServletException("Authentication failed: a username must be provided");
 
             // if (!SecurityUtil.hasPerm(u,GDEM_SSAclName, "v"))//GDEM_readPermission))
             // throw new ServletException("Not allowed to use the Styelsheet Repository");
@@ -200,7 +202,7 @@ public class Main extends HttpServlet implements Names {
      */
     private void dispatch(HttpServletRequest req, HttpServletResponse res, String action) throws ServletException, IOException {
 
-        String jspName = index_jsp;
+        String jspName = "do/qaScripts";
 
         if (action.equals(LOGOUT_ACTION))
             jspName = index_jsp;
@@ -221,7 +223,7 @@ public class Main extends HttpServlet implements Names {
             jspName = LIST_WORKQUEUE_JSP;
         }
 
-        req.getRequestDispatcher(jspName).forward(req, res);
+        res.sendRedirect(jspName);
     }
 
     /**

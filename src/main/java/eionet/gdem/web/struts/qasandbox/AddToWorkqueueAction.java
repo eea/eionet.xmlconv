@@ -50,6 +50,7 @@ public class AddToWorkqueueAction extends Action {
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(AddToWorkqueueAction.class);
 
+    private static WorkqueueManager workqueueManager = new WorkqueueManager();
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
@@ -86,12 +87,11 @@ public class AddToWorkqueueAction extends Action {
         try {
             String userName = (String) httpServletRequest.getSession().getAttribute("user");
 
-            WorkqueueManager wqm = new WorkqueueManager();
             if (cForm.isShowScripts()) {
-                List<String> jobIds = wqm.addSchemaScriptsToWorkqueue(userName, sourceUrl, schemaUrl);
+                List<String> jobIds = workqueueManager.addSchemaScriptsToWorkqueue(userName, sourceUrl, schemaUrl);
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("message.qasandbox.jobsAdded", jobIds.toString()));
             } else {
-                String jobId = wqm.addQAScriptToWorkqueue(userName, sourceUrl, content, scriptType);
+                String jobId = workqueueManager.addQAScriptToWorkqueue(userName, sourceUrl, content, scriptType);
                 messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("message.qasandbox.jobAdded", jobId));
             }
         } catch (DCMException e) {

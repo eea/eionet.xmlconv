@@ -41,16 +41,16 @@ public interface Names {
     // JSP names
     String INDEX_JSP = "index.jsp";
     String ERROR_JSP = "error.jsp";
-    String STYLESHEET_JSP = "stylesheetEditForm.do";
-    String STYLESHEETS_JSP = "schemaStylesheets.do";
-    String ADD_XSL_JSP = "addStylesheetForm.do";
-    String TEST_CONVERSION_JSP = "testConversionForm.do";
-    String LIST_CONVERSION_JSP = "listConvForm.do";
+    String STYLESHEET_JSP = "do/stylesheetEditForm";
+    String STYLESHEETS_JSP = "do/schemaStylesheets";
+    String ADD_XSL_JSP = "do/addStylesheetForm";
+    String TEST_CONVERSION_JSP = "testConversionService.html";
+    String LIST_CONVERSION_JSP = "do/listConvForm";
     String TEST_CONVERSION_SERVLET = "convert";
-    String LOGIN_JSP = "start.do?login=true";
-    String SCHEMA_JSP = "schemaElemForm.do";
+    String LOGIN_JSP = "login.jsp";
+    String SCHEMA_JSP = "do/schemaElemForm";
     String LIST_WORKQUEUE_JSP = "workqueue.jsp";
-    String QUERIESINDEX_JSP = "qaScripts.do";
+    String QUERIESINDEX_JSP = "do/qaScripts";
 
     // actions
     String LOGIN_ACTION = "F";
@@ -74,7 +74,8 @@ public interface Names {
     String ACL_CONFIG_PATH = "config";
     String ACL_XMLFILE_PATH = "xmlfile";
     String ACL_QASANDBOX_PATH = "qasandbox";
-	String ACL_LOGFILE_PATH = "logfile";
+    String ACL_LOGFILE_PATH = "logfile";
+    String ACL_SERVERSTATUS_PATH = "serverstatus";
 
     String RPC_SERVICE_NAME = "XService";
     String EXCEL_CONVERSION_JSP = "excel2xml_conversion.jsp";

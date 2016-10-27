@@ -363,5 +363,21 @@
             </column>
         </addColumn>
     </changeSet>
-    
+    <changeSet author="katsanas" id="rev-33">
+        <comment>
+            Added INSTANCE to Jobs table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="INSTANCE" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sofiageo" id="rev-34">
+        <comment>Fix XQ job bug. Refs #78104</comment>
+        <sql>
+            ALTER TABLE T_XQJOBS MODIFY COLUMN URL varchar(2048) NULL;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
 
+import eionet.gdem.XMLConvException;
 import eionet.gdem.logging.Markers;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -35,7 +36,6 @@ import org.apache.commons.lang.StringUtils;
 
 
 import eionet.gdem.Constants;
-import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.datadict.DataDictUtil;
 import eionet.gdem.dcm.business.SchemaManager;
@@ -45,22 +45,27 @@ import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
+import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * XQuery job in the workqueue. A task executing the XQuery task and storing the results of processing.
  */
-public class XQueryTask extends Thread {
+public class XQueryJob implements Job, InterruptableJob {
 
     /** */
-    private static final Logger LOGGER = LoggerFactory.getLogger(XQueryTask.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XQueryJob.class);
     /** Script file name. */
     private String scriptFile;
     /** Result file name. */
     private String resultFile;
     /** Job ID to be executed. */
     private String jobId;
+    /** Setter to be able to parse the jobId from JobData **/
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
+    }
     /** query ID to be executed. */
     private String queryID;
     /** Script type */
@@ -74,28 +79,25 @@ public class XQueryTask extends Thread {
     /** Service for getting schema data. */
     private SchemaManager schemaManager;
 
-    /**
-     * Create QA job thread and initialize variables. Class constructor.
-     *
-     * @param qaJobId
-     *            Job ID in database to be executed.
-     */
-    public XQueryTask(String qaJobId) {
-        jobId = qaJobId;
-        schemaManager = new SchemaManager();
-        initVariables();
-        // set MIN priority for this thread->
-        setPriority(MIN_PRIORITY);
+    private volatile Thread  thisThread;
+
+    public XQueryJob() {
+
     }
 
     /**
-     * Run XQuery script: steps: - download the source from URL - run XQuery - store the result in a text file.
+     * Run XQuery script
      */
     @Override
-    public void run() {
-        try {
-            LOGGER.info("Job ID=  " + jobId + " started getting source file.");
+    public void execute(JobExecutionContext paramJobExecutionContext) throws JobExecutionException {
+        thisThread = Thread.currentThread();
 
+        try {
+            
+            //LOGGER.info("Job ID=  " + jobId + " started.");
+            schemaManager = new SchemaManager();
+            initVariables();
+            
             String srcFile = null;
             srcFile = url;
 
@@ -104,14 +106,12 @@ public class XQueryTask extends Thread {
 
             // Do validation
             if (queryID.equals(String.valueOf(Constants.JOB_VALIDATION))) {
-                LOGGER.info("Job ID=" + jobId + " Validation started");
-
                 try {
 					// validate only the first XML Schema
                     if (scriptFile.contains(" ")) {
                         scriptFile = StringUtils.substringBefore(scriptFile, " ");
                     }
-                    LOGGER.info("** XQuery starts, ID=" + jobId + " schema: " + scriptFile + " result will be stored to "
+                    LOGGER.info("** XML Validation Job starting, ID=" + jobId + " schema: " + scriptFile + " result will be stored to "
                             + resultFile);
                     ValidationService vs = new ValidationService();
 
@@ -127,7 +127,7 @@ public class XQueryTask extends Thread {
                 }
             } else {
                 // Do xq job
-                LOGGER.info("Job ID=" + jobId + " XQ processing started");
+                //LOGGER.info("Job ID=" + jobId + " XQ processing started");
 
                 // read query info from DB.
                 Map query = getQueryInfo(queryID);
@@ -167,41 +167,40 @@ public class XQueryTask extends Thread {
                     if (scriptFile.contains(" ")) {
                         scriptFile = StringUtils.substringBefore(scriptFile, " ");
                     }
-                    LOGGER.info("** XQuery starts, ID=" + jobId + " params: " + (xqParam == null ? "<< no params >>" : xqParam[0])
-                            + " result will be stored to " + resultFile);
-                    LOGGER.debug("Script: \n" + scriptFile);
+
                     XQScript xq = new XQScript(null, xqParam, contentType);
                     xq.setScriptFileName(scriptFile);
                     xq.setScriptType(scriptType);
                     xq.setSrcFileUrl(srcFile);
                     xq.setSchema(schema);
+                    xq.setJobId(this.jobId);
 
                     if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
                         if (query != null && query.containsKey("url")) {
                             xq.setScriptSource((String) query.get("url"));
                         }
+                        LOGGER.info("** FME Job starts, ID=" + jobId + " params: " + (xqParam == null ? "<< no params >>" : xqParam[0])
+                                + " result will be stored to " + resultFile);
+                    }
+                    else{
+                        LOGGER.info("** XQuery Job starts, ID=" + jobId + " params: " + (xqParam == null ? "<< no params >>" : xqParam[0])
+                                + " result will be stored to " + resultFile);
                     }
 
                     FileOutputStream out = null;
                     try {
-                        // if result type is HTML and schema is expired parse
-                        // result (add warning) before writing to file
-                        if ((schemaExpired || isNotLatestReleasedDDSchema) && contentType.equals(XQScript.SCRIPT_RESULTTYPE_HTML)) {
-                            String res = xq.getResult();
-                            Utils.saveStrToFile(resultFile, res, null);
-                        } else {
-                            out = new FileOutputStream(new File(resultFile));
-                            xq.getResult(out);
-                        }
-                    } catch (IOException ioe) {
-                        throw new XMLConvException(ioe.toString());
+
+                        out = new FileOutputStream(new File(resultFile));
+                        // get results from the query engine
+                        xq.getResult(out);
+
                     } catch (XMLConvException e) {
                         // store error in feedback, it could be XML processing error
                         StringBuilder errBuilder = new StringBuilder();
                         errBuilder.append("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">Unexpected error occured!</span><h2>Unexpected error occured!</h2>");
                         errBuilder.append(Utils.escapeXML(e.toString()));
                         errBuilder.append("</div>");
-                        IOUtils.write(errBuilder.toString(), out);
+                        IOUtils.write(errBuilder.toString(), out, "UTF-8");
                     } finally {
                         IOUtils.closeQuietly(out);
                     }
@@ -211,14 +210,13 @@ public class XQueryTask extends Thread {
                 } catch (Exception e) {
                     handleError("Error processing QA script:" + e.toString(), true);
                     return;
-
                 }
             }
 
             changeStatus(Constants.XQ_READY);
 
             // TODO: Change to failed if script has failed
-            LOGGER.info("Job ID=" + jobId + " succeeded");
+            LOGGER.info("Job ID=" + jobId + " finished.");
 
             // all done, thread stops here, job is waiting for pulling from the
             // client side
@@ -337,4 +335,15 @@ public class XQueryTask extends Thread {
 
     }
 
+    @Override
+    public void interrupt() throws UnableToInterruptJobException {
+        LOGGER.info("Job " + this.jobId + "  -- INTERRUPTING --");
+        if (thisThread != null && XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
+            // this call causes the ClosedByInterruptException to happen
+            thisThread.interrupt();
+        }
+        else {
+            throw new UnableToInterruptJobException("unable to interrupt xq job");
+        }
+    }
 }
