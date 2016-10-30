@@ -90,10 +90,10 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.15.16</version>
+                <version>0.17.1</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <image>${valid.images}</image>
+                    <filter>${valid.images}</filter>
                     <images>
                         <image>
                             <alias>mysql</alias>
@@ -108,20 +108,18 @@
                                     <MYSQL_USER>testuser</MYSQL_USER>
                                     <MYSQL_PASSWORD>testpassword</MYSQL_PASSWORD>
                                 </env>
-
-                                <!--<volumes>
-                                    <bind>
-                                        <volume>/home/dev-gso/volumes/tmp:/var/lib/mysql</volume>
-                                    </bind>
-                                </volumes>-->
                                 <wait>
                                     <tcp>
+                                        <mode>direct</mode>
                                         <ports>
                                             <port>3306</port>
                                         </ports>
                                     </tcp>
                                     <time>200000</time>
                                 </wait>
+                                <tmpfs>
+                                    <mount>/var/lib/mysql:size=1G</mount>
+                                </tmpfs>
                             </run>
                         </image>
                         <image>
@@ -155,6 +153,7 @@
                                 </ports>
                                 <wait>
                                     <tcp>
+                                        <mode>direct</mode>
                                         <ports>
                                             <port>8080</port>
                                         </ports>
@@ -190,6 +189,7 @@
                                 </ports>
                                 <wait>
                                     <tcp>
+                                        <mode>direct</mode>
                                         <ports>
                                             <port>80</port>
                                         </ports>
@@ -220,7 +220,6 @@
                         <id>stop</id>
                         <phase>post-integration-test</phase>
                         <goals>
-                            <goal>logs</goal>
                             <goal>stop</goal>
                         </goals>
                     </execution>
