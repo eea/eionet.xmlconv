@@ -97,7 +97,7 @@ public class Properties {
     public static String basexServerPassword = null;
 
     /** Cache Configuration */
-    public static final String CACHE_TEMP_DIR;
+    public static String CACHE_TEMP_DIR;
     public static final long CACHE_HTTP_SIZE;
     public static final int CACHE_HTTP_EXPIRY;
     public static final int HTTP_CACHE_ENTRIES;
