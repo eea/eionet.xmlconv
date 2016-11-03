@@ -34,7 +34,12 @@ public class GetSourceAction extends Action {
             manager = new HttpFileManager();
             manager.getHttpResponse(httpServletResponse, ticket, url);
         } catch (Exception e) {
-            LOGGER.error("Error: " + e);
+            String exception = e.getClass().getSimpleName();
+            if ("ClientAbortException".equals(exception)) {
+                // do nothing
+            } else {
+                LOGGER.error("Error: " + e);
+            }
         } finally {
             manager.closeQuietly();
         }
