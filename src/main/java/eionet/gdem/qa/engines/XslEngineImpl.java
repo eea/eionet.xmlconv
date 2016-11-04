@@ -70,7 +70,7 @@ public class XslEngineImpl extends QAScriptEngineStrategy {
                 throw new XMLConvException("XQuery engine could not find script source or script file name!");
             }
             // Build InputSource for xml file
-            sourceStream = fileManager.getFileInputStream(script.getSrcFileUrl(), null);
+            sourceStream = fileManager.getFileInputStream(script.getSrcFileUrl(), null, false);
             // execute xsl transformation
 
             ConvertContext ctx =

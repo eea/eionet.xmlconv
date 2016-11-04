@@ -54,12 +54,13 @@ public class HttpFileManager {
             contentEncoding = contentEncodingHeader.getValue();
         }
 
+        // TODO: improve logging
         // log response header
-        StringBuilder logBuilder = new StringBuilder("Response header properties: ");
-        logBuilder.append(contentType != null ? "Content-Type=" + contentType + "; " : "");
-        logBuilder.append("Content-Length=" + contentLength);
-        logBuilder.append(contentEncoding != null ? "Content-Encoding=" + contentEncoding + "; " : "");
-        LOGGER.info(logBuilder.toString());
+        //StringBuilder logBuilder = new StringBuilder("Response header properties: ");
+        //logBuilder.append(contentType != null ? "Content-Type=" + contentType + "; " : "");
+        //logBuilder.append("Content-Length=" + contentLength);
+        //logBuilder.append(contentEncoding != null ? "Content-Encoding=" + contentEncoding + "; " : "");
+        //LOGGER.info(logBuilder.toString());
 
         // If content type is null, then fall back to most likely content type
         if (contentType == null || "text/xml".equals(contentType)) {
@@ -114,7 +115,11 @@ public class HttpFileManager {
         return uc.getInputStream();
     }
 
-    public InputStream getFileInputStream(String url, String ticket) throws IOException, URISyntaxException {
+    public InputStream getFileInputStream(String url, String ticket, boolean isTrustedMode) throws IOException, URISyntaxException {
+        CustomURI customURL = new CustomURI(url);
+        if (ticket == null && isTrustedMode) {
+            ticket = getHostCredentials(customURL.getHost());
+        }
         HttpEntity entity = downloadFile(url, ticket);
         if (entity != null) {
             return entity.getContent();

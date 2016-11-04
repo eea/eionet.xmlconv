@@ -37,7 +37,7 @@ public class HttpFileManagerTest {
 
     @Test
     public void testFileInputStream() throws IOException, URISyntaxException {
-        InputStream in = manager.getFileInputStream(Properties.gdemURL.concat("/dropdownmenus.txt"), null);
+        InputStream in = manager.getFileInputStream(Properties.gdemURL.concat("/dropdownmenus.txt"), null, false);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         IOUtils.copy(in, out);
         assertTrue("Empty file:", out.size() > 0);

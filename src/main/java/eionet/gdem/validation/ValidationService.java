@@ -120,7 +120,7 @@ public class ValidationService {
         HttpFileManager fileManager = new HttpFileManager();
         InputStream file = null;
         try {
-            file = fileManager.getFileInputStream(srcUrl, ticket);
+            file = fileManager.getFileInputStream(srcUrl, ticket, true);
             return validateSchema(srcUrl, file, schema);
         } catch (MalformedURLException mfe) {
             throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED);

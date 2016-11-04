@@ -38,7 +38,6 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.cdr.UrlUtils;
 import eionet.gdem.utils.file.CustomFileUtils;
 import eionet.gdem.utils.system.SysCommandExecutor;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,8 +74,7 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
                 throw new XMLConvException("XQuery engine could not find script source or script file name!");
             }
 
-            //TODO: Add ticket
-            InputStream sourceStream = fileManager.getFileInputStream(script.getSrcFileUrl(), null);
+            InputStream sourceStream = fileManager.getFileInputStream(script.getSrcFileUrl(), null, false);
             String srcFile = CustomFileUtils.saveFileInLocalStorage(sourceStream, "xml");
 
             String originSourceUrl = script.getOrigFileUrl();

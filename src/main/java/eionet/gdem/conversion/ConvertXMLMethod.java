@@ -107,7 +107,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
             try {
                 //TODO: Split method for local and remote files.
                 if (Utils.isURL(sourceURL)) {
-                    sourceStream = fileManager.getFileInputStream(sourceURL, getTicket());
+                    sourceStream = fileManager.getFileInputStream(sourceURL, getTicket(), isTrustedMode());
                 } else {
                     // In case it is a local file
                     sourceStream = new FileInputStream(sourceURL);
@@ -239,7 +239,7 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
         HttpFileManager fileManager = new HttpFileManager();
         try {
             ByteArrayInputStream byteIn = XslGenerator.convertXML(url, format);
-            sourceStream = fileManager.getFileInputStream(sourceURL, getTicket());
+            sourceStream = fileManager.getFileInputStream(sourceURL, getTicket(), isTrustedMode());
             cnvFileName = Utils.isNullStr(UrlUtils.getFileNameNoExtension(sourceURL)) ? DEFAULT_FILE_NAME : UrlUtils.getFileNameNoExtension(sourceURL);
 
             conversionParameters = UrlUtils.getCdrParams(sourceURL);
