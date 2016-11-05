@@ -7,11 +7,11 @@ import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.utils.Utils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.client.cache.CacheResponseStatus;
 import org.apache.http.client.cache.HttpCacheContext;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +26,8 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 /**
+ * Provides a custom Http File manager.
+ * Its purpose is to download files and serve them to the application in an efficient way.
  * @author George Sofianos
  */
 public class HttpFileManager {
@@ -38,8 +40,16 @@ public class HttpFileManager {
         this.client = HttpCacheClientFactory.getInstance();
     }
 
+    /**
+     * Fills outputstream with file content.
+     * @param response Servlet response
+     * @param ticket Authorization ticket
+     * @param url File url
+     * @throws IOException When an IO error occurs.
+     * @throws URISyntaxException When the URL provided isn't a valid URI.
+     */
     public void getHttpResponse(HttpServletResponse response, String ticket, String url) throws IOException, URISyntaxException {
-        HttpEntity entity = downloadFile(url, ticket);
+        HttpEntity entity = getFileEntity(url, ticket);
 
         String contentType = null;
         Header contentTypeHeader = entity.getContentType();
@@ -54,14 +64,6 @@ public class HttpFileManager {
             contentEncoding = contentEncodingHeader.getValue();
         }
 
-        // TODO: improve logging
-        // log response header
-        //StringBuilder logBuilder = new StringBuilder("Response header properties: ");
-        //logBuilder.append(contentType != null ? "Content-Type=" + contentType + "; " : "");
-        //logBuilder.append("Content-Length=" + contentLength);
-        //logBuilder.append(contentEncoding != null ? "Content-Encoding=" + contentEncoding + "; " : "");
-        //LOGGER.info(logBuilder.toString());
-
         // If content type is null, then fall back to most likely content type
         if (contentType == null || "text/xml".equals(contentType)) {
             contentType = "text/xml;charset=utf-8";
@@ -72,6 +74,7 @@ public class HttpFileManager {
         //response.setContentLength(contentLength);
         response.setCharacterEncoding(contentEncoding);
         entity.writeTo(response.getOutputStream());
+        response.getOutputStream().close();
     }
 
     public static String getSourceUrlWithTicket(String ticket, String sourceUrl, boolean isTrustedMode) throws URISyntaxException {
@@ -97,6 +100,16 @@ public class HttpFileManager {
         return url.toString();
     }
 
+    /**
+     * Opens stream to file url.
+     * @param srcUrl File Url
+     * @param ticket Authorization ticket
+     * @param isTrustedMode Request is from a trusted source.
+     * @return File input stream
+     * @throws IOException When an IO error occurs.
+     * @throws URISyntaxException When the URL provided isn't a valid URI.
+     * TODO: check if possible to remove and use getFileInputStream.
+     */
     public InputStream getInputStream(String srcUrl, String ticket, boolean isTrustedMode) throws IOException, URISyntaxException {
         CustomURI customURL = new CustomURI(srcUrl);
         URL url = customURL.getURL();
@@ -115,25 +128,44 @@ public class HttpFileManager {
         return uc.getInputStream();
     }
 
+    /**
+     * Opens Stream to file URL
+     * @param url File url
+     * @param ticket Authorization ticket
+     * @param isTrustedMode Request is from a trusted source.
+     * @return File input stream
+     * @throws IOException When an IO error occurs.
+     * @throws URISyntaxException When the URL provided isn't a valid URI.
+     */
     public InputStream getFileInputStream(String url, String ticket, boolean isTrustedMode) throws IOException, URISyntaxException {
         CustomURI customURL = new CustomURI(url);
         if (ticket == null && isTrustedMode) {
             ticket = getHostCredentials(customURL.getHost());
         }
-        HttpEntity entity = downloadFile(url, ticket);
+        HttpEntity entity = getFileEntity(url, ticket);
         if (entity != null) {
             return entity.getContent();
         }
         return null;
     }
 
-    private HttpEntity downloadFile(String url, String ticket) throws IOException, URISyntaxException {
+    /**
+     * Returns response entity that should include the requested file content.
+     * @param url File url
+     * @param ticket Authorization ticket
+     * @return Entity
+     * @throws IOException When an IO error occurs.
+     * @throws URISyntaxException When the URL provided isn't a valid URI.
+     */
+    private HttpEntity getFileEntity(String url, String ticket) throws IOException, URISyntaxException {
         LOGGER.info("Start to download file: " + url);
         HttpCacheContext context = HttpCacheContext.create();
         HttpGet httpget = new HttpGet(url);
         if (ticket != null) {
-            httpget.addHeader("Authorization", " Basic " + ticket);
+            httpget.addHeader(HttpHeaders.AUTHORIZATION, " Basic " + ticket);
         }
+        httpget.addHeader(HttpHeaders.ACCEPT, "*/*");
+        httpget.addHeader(HttpHeaders.ACCEPT_ENCODING, "gzip");
         response = client.execute(httpget, context);
 
         CacheResponseStatus responseStatus = context.getCacheResponseStatus();

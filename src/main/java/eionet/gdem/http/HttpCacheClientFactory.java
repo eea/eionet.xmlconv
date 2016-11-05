@@ -4,6 +4,7 @@ import eionet.gdem.Properties;
 import eionet.gdem.cache.CacheManagerUtil;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.StandardHttpRequestRetryHandler;
 import org.apache.http.impl.client.cache.CacheConfig;
 import org.apache.http.impl.client.cache.CachingHttpClients;
 import org.apache.http.impl.client.cache.ehcache.EhcacheHttpCacheStorage;
@@ -36,6 +37,7 @@ public final class HttpCacheClientFactory {
                     .setHttpCacheStorage(ehcacheHttpCacheStorage)
                     .setDefaultRequestConfig(requestConfig)
                     .setConnectionManager(HttpConnectionManagerFactory.getInstance())
+                    .setRetryHandler(new StandardHttpRequestRetryHandler())
                     .build();
         }
         return client;
