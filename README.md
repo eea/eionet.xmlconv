@@ -4,9 +4,9 @@
 
 * Java 1.8
 * Maven 3.3.9
-* Tomcat 8 or higher
+* Tomcat 8.0 or higher
 * MySQL 5.5
-* Docker 1.6 or higher
+* Docker 1.12 or higher
 
 ## Installation Guide
 
@@ -20,17 +20,15 @@ Tomcat user should have write permissions on "app.home" subdirectories.
 
 The default profile is using the docker maven plugin to setup a mysql database for use with the integration tests phase.
 Ideally, the mysql database should be using tmpfs filesystem, in order for the integration tests to run faster.
-To create a .war file for deployment with tomcat, you can run
+To create a .war file for deployment with tomcat, you can run any of the following commands:
 
-    $ mvn clean install
+To run unit and integration tests before building, run:
 
-If you want to use a custom mysql database for unit tests, define in the local.properties file the config.test.* properties for your own database, and then build the WAR :
-
-    $ mvn -Plocal clean install
+    $ mvn clean install -Denv=jenkins
 
 To skip the integration tests (not recommended), you can add -Dmaven.test.skip=true e.g
 
-    $ mvn -Plocal clean install -Dmaven.test.skip=true
+    $ mvn clean install -Dmaven.test.skip=true
 
 ### Runtime configuration
 
