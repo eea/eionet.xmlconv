@@ -56,6 +56,7 @@ public class ConversionService extends RemoteService implements ConversionServic
      * Default constructor
      */
     public ConversionService() {
+        setTrustedMode(true);
     }
 
     /*
