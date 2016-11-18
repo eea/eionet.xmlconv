@@ -9,9 +9,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.dbunit.IDatabaseTester;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +23,9 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 import javax.sql.DataSource;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS XQueryServiceTest
@@ -154,4 +155,5 @@ public class XQueryServiceTest {
         listQaResult = qm.listQueries("http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1919");
         assertTrue(listQaResult.size()==1);
     }
+   
 }

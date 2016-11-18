@@ -27,6 +27,7 @@ import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IQueryDao;
@@ -79,17 +80,17 @@ public class QAScriptManager {
                     scriptData = new HashMap<String, String>();
                 }
 
-                qaScript.setScriptId((String) scriptData.get("query_id"));
-                qaScript.setSchemaId((String) scriptData.get("schema_id"));
-                qaScript.setSchema((String) scriptData.get("xml_schema"));
-                qaScript.setDescription((String) scriptData.get("description"));
-                qaScript.setShortName((String) scriptData.get("short_name"));
-                qaScript.setResultType((String) scriptData.get("content_type"));
-                qaScript.setScriptType((String) scriptData.get("script_type"));
-                qaScript.setFileName((String) scriptData.get("query"));
-                qaScript.setUpperLimit((String) scriptData.get("upper_limit"));
-                qaScript.setUrl((String) scriptData.get("url"));
-                qaScript.setActive((String) scriptData.get("is_active"));
+                qaScript.setScriptId((String) scriptData.get(QaScriptView.QUERY_ID));
+                qaScript.setSchemaId((String) scriptData.get(QaScriptView.SCHEMA_ID));
+                qaScript.setSchema((String) scriptData.get(QaScriptView.XML_SCHEMA));
+                qaScript.setDescription((String) scriptData.get(QaScriptView.DESCRIPTION));
+                qaScript.setShortName((String) scriptData.get(QaScriptView.SHORT_NAME));
+                qaScript.setResultType((String) scriptData.get(QaScriptView.CONTENT_TYPE));
+                qaScript.setScriptType((String) scriptData.get(QaScriptView.SCRIPT_TYPE));
+                qaScript.setFileName((String) scriptData.get(QaScriptView.QUERY));
+                qaScript.setUpperLimit((String) scriptData.get(QaScriptView.UPPER_LIMIT));
+                qaScript.setUrl((String) scriptData.get(QaScriptView.URL));
+                qaScript.setActive((String) scriptData.get(QaScriptView.IS_ACTIVE));
 
                 String queryFolder = Properties.queriesFolder;
 
@@ -366,7 +367,7 @@ public class QAScriptManager {
 
         try {
             HashMap hash = queryDao.getQueryInfo(scriptId);
-            String fileName = (String) hash.get("query");
+            String fileName = (String) hash.get(QaScriptView.QUERY);
 
             String queriesFolder = Properties.queriesFolder;
             if (!queriesFolder.endsWith(File.separator)) {

@@ -379,5 +379,18 @@
             ALTER TABLE T_XQJOBS MODIFY COLUMN URL varchar(2048) NULL;
         </sql>
     </changeSet>
+    <changeSet author="vskiadas" id="rev-35">
+        <comment> Table for Storing the Users of the XMLCONV-rest api and their authorities
+        </comment>
+        <createTable tableName="T_API_USER">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="USERNAME" type="VARCHAR(255)"/>
+            <column name="EMAIL" type="VARCHAR(255)"/>
+            <column name="ENABLED" type="BOOLEAN"/>
+            <column name="AUTHORITIES" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>

@@ -22,32 +22,28 @@ package eionet.gdem.qa;
  *
  * Original Code: Kaido Laine (TietoEnator)
  */
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Map;
-
-import eionet.gdem.XMLConvException;
-import eionet.gdem.logging.Markers;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-
-
-
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.datadict.DataDictUtil;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
+import eionet.gdem.logging.Markers;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * XQuery job in the workqueue. A task executing the XQuery task and storing the results of processing.
@@ -136,18 +132,18 @@ public class XQueryJob implements Job, InterruptableJob {
                 boolean schemaExpired = false;
                 boolean isNotLatestReleasedDDSchema = false;
 
-                if (query != null && query.containsKey("content_type")) {
-                    contentType = (String) query.get("content_type");
+                if (query != null && query.containsKey(QaScriptView.CONTENT_TYPE)) {
+                    contentType = (String) query.get(QaScriptView.CONTENT_TYPE);
                 }
                 // get script type if it comes from T_QUERY table
-                if (query != null && query.containsKey("script_type")) {
-                    scriptType = (String) query.get("script_type");
+                if (query != null && query.containsKey(QaScriptView.SCRIPT_TYPE)) {
+                    scriptType = (String) query.get(QaScriptView.SCRIPT_TYPE);
                 }
 
                 // stylesheet - to check if it is expired
-                if (query != null && query.containsKey("xml_schema")) {
+                if (query != null && query.containsKey(QaScriptView.XML_SCHEMA)) {
                     // set schema if exists:
-                    schema = getSchema((String) query.get("xml_schema"));
+                    schema = getSchema((String) query.get(QaScriptView.XML_SCHEMA));
                     schemaExpired = (schema != null && schema.isExpired());
                     isNotLatestReleasedDDSchema = DataDictUtil.isDDSchemaAndNotLatestReleased(schema.getSchema());
 
@@ -176,8 +172,8 @@ public class XQueryJob implements Job, InterruptableJob {
                     xq.setJobId(this.jobId);
 
                     if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
-                        if (query != null && query.containsKey("url")) {
-                            xq.setScriptSource((String) query.get("url"));
+                        if (query != null && query.containsKey(QaScriptView.URL)) {
+                            xq.setScriptSource((String) query.get(QaScriptView.URL));
                         }
                         LOGGER.info("** FME Job starts, ID=" + jobId + " params: " + (xqParam == null ? "<< no params >>" : xqParam[0])
                                 + " result will be stored to " + resultFile);
