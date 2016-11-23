@@ -7,7 +7,9 @@ import eionet.gdem.test.TestConstants;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,6 +29,9 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
 public class HttpFileManagerTest {
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     private HttpFileManager manager;
 
@@ -60,6 +65,14 @@ public class HttpFileManagerTest {
         assertEquals(Properties.gdemURL + Constants.GETSOURCE_URL + "?ticket=" + ticket + "&source_url=" + url,
                 HttpFileManager.getSourceUrlWithTicket(ticket, url, true));
         assertEquals(url, HttpFileManager.getSourceUrlWithTicket(null, url, false));
+    }
+
+    @Test
+    public void testFileProxyUrl() throws IOException, URISyntaxException {
+        exception.expect(URISyntaxException.class);
+        String fileUrl = "http://trustedurl.com";
+        String url = Properties.gdemURL + Constants.GETSOURCE_URL + "&source_url=" + fileUrl;
+        manager.getFileInputStream(url, null, true);
     }
 
     @After

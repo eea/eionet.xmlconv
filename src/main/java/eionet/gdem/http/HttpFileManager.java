@@ -5,6 +5,7 @@ import eionet.gdem.Properties;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.utils.Utils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -70,11 +71,9 @@ public class HttpFileManager {
         }
         // set response properties
         response.setContentType(contentType);
-        response.addHeader("Content-Length", Long.toString(contentLength));
-        //response.setContentLength(contentLength);
+        response.setContentLengthLong(contentLength);
         response.setCharacterEncoding(contentEncoding);
         entity.writeTo(response.getOutputStream());
-        response.getOutputStream().close();
     }
 
     public static String getSourceUrlWithTicket(String ticket, String sourceUrl, boolean isTrustedMode) throws URISyntaxException {
@@ -158,6 +157,10 @@ public class HttpFileManager {
      * @throws URISyntaxException When the URL provided isn't a valid URI.
      */
     private HttpEntity getFileEntity(String url, String ticket) throws IOException, URISyntaxException {
+        if (StringUtils.contains(url, Constants.SOURCE_URL_PARAM)) {
+            LOGGER.error("File proxy URL detected, please fix");
+            throw new URISyntaxException(url, "File proxy URL detected, aborting download");
+        }
         LOGGER.info("Start to download file: " + url);
         HttpCacheContext context = HttpCacheContext.create();
         HttpGet httpget = new HttpGet(url);
@@ -177,6 +180,7 @@ public class HttpFileManager {
                 LOGGER.info("Entry not found in cache.");
                 break;
             default:
+                LOGGER.info("Response from cache: " + responseStatus);
         }
         int statusCode = response.getStatusLine().getStatusCode();
         if (statusCode == HttpServletResponse.SC_OK) {

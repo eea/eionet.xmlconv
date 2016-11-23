@@ -7,7 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-
+import eionet.gdem.Constants;
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -58,6 +59,9 @@ public class RunQAScriptAction extends BaseMethodAction {
             }
             if (params.containsKey(URL_PARAM_NAME)) {
                 url = (String) ((Object[]) params.get(URL_PARAM_NAME))[0];
+                if (StringUtils.contains(url, Constants.SOURCE_URL_PARAM)) {
+                    url = StringUtils.substringAfter(request.getParameter("url"), Constants.SOURCE_URL_PARAM + "=");
+                }
             }
             if (Utils.isNullStr(url)) {
                 throw new XMLConvException(URL_PARAM_NAME + " parameter is missing from request.");
