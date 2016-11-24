@@ -500,7 +500,7 @@ Ideally we should expose an endpoint which whould accept a number of parameters 
  - If the claims: **iss , aud**  exist and also that they  match the values explicitly set in the application.<br>
  - If the claim : **exp** exists and that it is not before the current date, meaning that the token has expired.<br>
  - If the **Key** used to sign the Token, matches the explicitly set key in the application.<br>
- - If the claim: **sub** exists, and also search the Database table **T_API_USER** for an enabled **user** with this value as<br>   **username**.<br>
+ - If the claim: **sub** exists, and also search the Database table **T_API_USER** for a **user** with this value as<br>   **username** and **enabled**=1 <br>
  When all the above checks are successfull, The mechanism will clarify the request as authenticated and allow the application to continue its normal workflow and serve the request.
  The session is not stored between requests from the same source, so each time a request is made against the secured endpoint,the request must contain a valid token.
  
