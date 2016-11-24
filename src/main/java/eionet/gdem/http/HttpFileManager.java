@@ -158,7 +158,7 @@ public class HttpFileManager {
      */
     private HttpEntity getFileEntity(String url, String ticket) throws IOException, URISyntaxException {
         if (StringUtils.contains(url, Constants.SOURCE_URL_PARAM)) {
-            LOGGER.error("File proxy URL detected, please fix");
+            LOGGER.error("File proxy URL detected: " + url);
             throw new URISyntaxException(url, "File proxy URL detected, aborting download");
         }
         LOGGER.info("Start to download file: " + url);

@@ -215,6 +215,7 @@ public class ValidationService {
             } else {
                 return validationFeedback.formatFeedbackText("Could not validate XML file. Unable to locate XML Schema reference.", QAFeedbackType.WARNING, isBlocker);
             }
+            // TODO: remove duplicate http client from resourceExists check.
             // if schema is not available, then do not parse the XML and throw error
             if (!Utils.resourceExists(getValidatedSchema())) {
                 return validationFeedback.formatFeedbackText("Failed to read schema document from the following URL: "

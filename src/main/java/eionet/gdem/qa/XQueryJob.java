@@ -24,16 +24,16 @@ package eionet.gdem.qa;
  */
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import eionet.gdem.XMLConvException;
 import eionet.gdem.logging.Markers;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-
-
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
@@ -45,6 +45,8 @@ import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,19 +93,13 @@ public class XQueryJob implements Job, InterruptableJob {
     @Override
     public void execute(JobExecutionContext paramJobExecutionContext) throws JobExecutionException {
         thisThread = Thread.currentThread();
-
         try {
-            
             //LOGGER.info("Job ID=  " + jobId + " started.");
             schemaManager = new SchemaManager();
             initVariables();
-            
-            String srcFile = null;
-            srcFile = url;
-
+            String srcFile = url;
             // status to -processing
             changeStatus(Constants.XQ_PROCESSING);
-
             // Do validation
             if (queryID.equals(String.valueOf(Constants.JOB_VALIDATION))) {
                 try {
@@ -114,10 +110,18 @@ public class XQueryJob implements Job, InterruptableJob {
                     LOGGER.info("** XML Validation Job starting, ID=" + jobId + " schema: " + scriptFile + " result will be stored to "
                             + resultFile);
                     ValidationService vs = new ValidationService();
-
+                    String query = new URI(srcFile).getQuery();
+                    List<NameValuePair> params = URLEncodedUtils.parse(query, StandardCharsets.UTF_8);
+                    for (NameValuePair param : params) {
+                        if (Constants.TICKET_PARAM.equals(param.getName())) {
+                            vs.setTicket(param.getValue());
+                        }
+                        if (Constants.SOURCE_URL_PARAM.equals(param.getName())) {
+                            srcFile = param.getValue();
+                        }
+                    }
                     // XML Schema should be in schemaLocation attribute
                     String result = vs.validateSchema(srcFile, scriptFile);
-
                     LOGGER.debug("Validation proceeded, now store to the result file");
 
                     Utils.saveStrToFile(resultFile, result, null);

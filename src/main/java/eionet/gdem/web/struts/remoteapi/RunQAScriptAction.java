@@ -1,5 +1,8 @@
 package eionet.gdem.web.struts.remoteapi;
 
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -9,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import eionet.gdem.Constants;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -60,7 +65,13 @@ public class RunQAScriptAction extends BaseMethodAction {
             if (params.containsKey(URL_PARAM_NAME)) {
                 url = (String) ((Object[]) params.get(URL_PARAM_NAME))[0];
                 if (StringUtils.contains(url, Constants.SOURCE_URL_PARAM)) {
-                    url = StringUtils.substringAfter(request.getParameter("url"), Constants.SOURCE_URL_PARAM + "=");
+                    String sourceUrl = new URI(url).getQuery();
+                    List<NameValuePair> parameters = URLEncodedUtils.parse(sourceUrl, StandardCharsets.UTF_8);
+                    for (NameValuePair param : parameters) {
+                        if (Constants.SOURCE_URL_PARAM.equals(param.getName())) {
+                            url = param.getValue();
+                        }
+                    }
                 }
             }
             if (Utils.isNullStr(url)) {
