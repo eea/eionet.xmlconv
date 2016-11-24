@@ -68,6 +68,36 @@ public class QaControllerTestIT {
         request.content(new Gson().toJson(requestBody));
         mockMvc.perform(request).andExpect(status().isOk());
     }
+    
+    @Test
+    public void testFailToScheduleQARequestOnFileBecauseOfEmptySourceUrl() throws Exception {
+        MockHttpServletRequestBuilder request = post("/asynctasks/qajobs");
+        request.contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(request).andExpect(status().isBadRequest());
+    }
+    
+    @Test
+    public void testFailToScheduleQARequestOnFileBecauseOfEmptyScriptId() throws Exception {
+        MockHttpServletRequestBuilder request = post("/asynctasks/qajobs");
+        request.contentType(MediaType.APPLICATION_JSON);
+        HashMap<String, String> requestBody = new HashMap<String, String>();
+        requestBody.put("sourceUrl", "http://example.library");
+        request.content(new Gson().toJson(requestBody));
+        mockMvc.perform(request).andDo(print());
+        mockMvc.perform(request).andExpect(status().isBadRequest());
+    }
+    
+    
+    @Test
+    public void testSuccessFullyScheduleQARequestOnFile() throws Exception {
+        MockHttpServletRequestBuilder request = post("/asynctasks/qajobs");
+        request.contentType(MediaType.APPLICATION_JSON);
+        HashMap<String, String> requestBody = new HashMap<String, String>();
+        requestBody.put("sourceUrl", "http://converterstest.eionet.europa.eu/xmlfile/aqd-labels.xml");
+        requestBody.put("scriptId", "-1");
+        request.content(new Gson().toJson(requestBody));
+        mockMvc.perform(request).andExpect(status().isOk());
+    }
 
     @Test
     public void testFailToScheduleQaRequestOnEnvelopeBecauseOfEmptyEnvelopeUrl() throws Exception {

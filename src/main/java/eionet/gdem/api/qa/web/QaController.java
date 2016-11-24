@@ -84,9 +84,8 @@ public class QaController {
           String jobId = xqueryService.analyzeXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId());
           xqueryService.analyzeXMLFile(envelopeWrapper.getSourceUrl(),envelopeWrapper.getScriptId(),null);
           LinkedHashMap<String,String> results = new LinkedHashMap<String,String>(); 
-          results.put("jobid",jobId);
+          results.put("jobId",jobId);
           return  new ResponseEntity<HashMap<String,String>>(results,HttpStatus.OK);
-
     }
 
     /**
@@ -144,14 +143,15 @@ public class QaController {
     * 
     **/
     @RequestMapping(value = "/qascripts", method = RequestMethod.GET)
-    public ResponseEntity<Vector> listQaScripts(@RequestParam(value = "schema", required = false) String schema, @RequestParam(value = "active", required = false, defaultValue = "true") String active) throws XMLConvException, BadRequestException {
+    public ResponseEntity<List<LinkedHashMap<String,String>>> listQaScripts(@RequestParam(value = "schema", required = false) String schema, @RequestParam(value = "active", required = false, defaultValue = "true") String active) throws XMLConvException, BadRequestException {
 
         if (!ACTIVE_STATUS.contains(active)) {
             throw new BadRequestException("parameter active value must be one of :" + ACTIVE_STATUS.toString());
         }
 
-        Vector results = qaService.listQAScripts(schema, active);
-        return new ResponseEntity<Vector>(results, HttpStatus.OK);
+        List<LinkedHashMap<String,String>> results = qaService.listQAScripts(schema, active);
+       
+        return new ResponseEntity<List<LinkedHashMap<String,String>>>(results, HttpStatus.OK);
     }
 
 

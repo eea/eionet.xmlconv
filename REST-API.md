@@ -272,10 +272,10 @@ https://taskman.eionet.europa.eu/issues/29005 regarding the REST API of the xmlc
    ```json
     "jobs": [
         {
-            "id": 123,
+            "jobId": 123,
             "fileUrl": "http://some.file.url.1" 
         }, {
-            "id": 456,
+            "jobId": 456,
             "fileUrl": "http://some.file.url.2" 
         }
     ]
@@ -315,7 +315,7 @@ https://taskman.eionet.europa.eu/issues/29005 regarding the REST API of the xmlc
 
 * **URL**
 
-  /restapi/asynctasks/qajobs/[jobid]
+  /restapi/asynctasks/qajobs/[jobId]
 
 * **Method:**
 
@@ -325,7 +325,7 @@ https://taskman.eionet.europa.eu/issues/29005 regarding the REST API of the xmlc
 
 *  **URL Params**
 
-   - **parameter:** id <br>
+   - **parameter:** jobId <br>
      **required:** yes <br>
      **allowedValues:** integers <br>
      **defaultValue:** none
@@ -406,28 +406,26 @@ https://taskman.eionet.europa.eu/issues/29005 regarding the REST API of the xmlc
    ```json
   [
     {
-     "schemaId": "26",
-     "queryId": "-1",
-     "upperLimit": "200",
-     "xmlSchema": "eper.xsd",
-     "type": "xsd",
-     "query": "eper.xsd",
-     "shortName": "XML Schema Validation",
-     "contentType": "text/html;charset=UTF-8",
-     "description": "EPER",
-     "contentTypeId": "HTML"
-   },
-   {
-     "schemaId": "420",
-     "queryId": "-1",
-     "upperLimit": "200",
-     "xmlSchema": "http://acm.eionet.europa.eu/schemas/reg2009443ec/cars_aggregated-2012.xsd",
-     "type": "",
-     "query": "http://acm.eionet.europa.eu/schemas/reg2009443ec/cars_aggregated-2012.xsd",
-     "shortName": "XML Schema Validation",
-     "contentType": "text/html;charset=UTF-8",
-     "description": "",
-     "contentTypeId": "HTML"
+       "id": "7",
+       "type": "xquery 1.0",
+       "outputType": "HTML",
+       "url": "http://converterstest.eionet.europa.eu/queries/EPRTR_ComplementaryValidationRule2.xquery",
+       "name": "Complementary Validation: Outliers",
+       "description": "Ozone stations min max longitudes and lattitudes degrees",
+       "isActive": "1", 
+       "runOnDemandMaxFileSizeMB": "200", 
+       "schemaUrl": "http://www.eionet.europa.eu/schemas/co2ldv/ValidationDetailedData_002.xsd" 
+    },
+    {
+      "id": "-1",
+      "type": "xsd",
+      "outputType": "HTML",
+      "url": "eper.xsd",
+      "name": "XML Schema Validation",
+      "description": "EPER",
+      "isActive": "1",
+      "runOnDemandMaxFileSizeMB": "200",
+      "schemaUrl": "eper.xsd"
     }
   ]
     ```

@@ -7,6 +7,7 @@ import org.w3c.dom.Document;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -32,7 +33,7 @@ public interface QaService {
     
     Hashtable<String,String> getJobResults(String jobId) throws XMLConvException;
     Vector runQaScript(String sourceUrl, String scriptId) throws XMLConvException;
-    Vector listQAScripts(String schema, String active) throws XMLConvException;
+    List<LinkedHashMap<String,String>> listQAScripts(String schema, String active) throws XMLConvException;
 
     XQueryService getXqueryService();
     

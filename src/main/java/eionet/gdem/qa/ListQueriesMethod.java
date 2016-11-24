@@ -235,6 +235,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
                             if (validate.equals("1")) {
 
                                 Hashtable ht = new Hashtable();
+                                ht.put(QaScriptView.IS_ACTIVE,"1");
                                 ht.put(QaScriptView.QUERY_ID, String.valueOf(Constants.JOB_VALIDATION));
                                 ht.put(QaScriptView.SHORT_NAME, "XML Schema Validation");
                                 ht.put(QaScriptView.QUERY, h.get("xml_schema"));

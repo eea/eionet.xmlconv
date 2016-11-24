@@ -3,6 +3,7 @@ package eionet.gdem.api.qa.service.impl;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
+import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQueryService;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -26,7 +27,7 @@ import java.util.*;
 public class QaServiceImpl implements QaService {
 
     private XQueryService xQueryService;
-    
+
     public QaServiceImpl() {
     }
 
@@ -109,9 +110,26 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
-    public Vector listQAScripts(String schema, String active) throws XMLConvException {
+    public List<LinkedHashMap<String, String>> listQAScripts(String schema, String active) throws XMLConvException {
         XQueryService xqueryService = new XQueryService();
-        return xqueryService.listQAScripts(schema, active);
+        Vector xqueryServiceResults = xqueryService.listQAScripts(schema, active);
+        List<LinkedHashMap<String, String>> resultsList = new LinkedList<LinkedHashMap<String, String>>();
+        for (Object xqueryServiceResult : xqueryServiceResults) {
+            Hashtable hs = (Hashtable) xqueryServiceResult;
+            LinkedHashMap<String, String> rearrangedResults = new LinkedHashMap<String, String>();
+            rearrangedResults.put(QaScriptView.QUERY_ID, (String) hs.get(QaScriptView.QUERY_ID));
+            rearrangedResults.put(QaScriptView.TYPE, (String) hs.get(QaScriptView.TYPE));
+            rearrangedResults.put(QaScriptView.CONTENT_TYPE_ID, (String) hs.get(QaScriptView.CONTENT_TYPE_ID));
+            rearrangedResults.put(QaScriptView.QUERY, (String) hs.get(QaScriptView.QUERY));
+            rearrangedResults.put(QaScriptView.SHORT_NAME, (String) hs.get(QaScriptView.SHORT_NAME));
+            rearrangedResults.put(QaScriptView.DESCRIPTION, (String) hs.get(QaScriptView.DESCRIPTION));
+            rearrangedResults.put(QaScriptView.IS_ACTIVE, (String) hs.get(QaScriptView.IS_ACTIVE));
+            rearrangedResults.put(QaScriptView.UPPER_LIMIT, (String) hs.get(QaScriptView.UPPER_LIMIT));
+            rearrangedResults.put(QaScriptView.XML_SCHEMA, (String) hs.get(QaScriptView.XML_SCHEMA));
+            resultsList.add(rearrangedResults);
+        }
+
+        return resultsList;
     }
 
     @Override
