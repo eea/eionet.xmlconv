@@ -141,7 +141,7 @@ public class QaServiceImpl implements QaService {
             rearrangedResults.put(QaScriptView.QUERY_ID, (String) hs.get(QaScriptView.QUERY_ID));
             rearrangedResults.put(QaScriptView.TYPE, (String) hs.get(QaScriptView.TYPE));
             rearrangedResults.put(QaScriptView.CONTENT_TYPE_ID, (String) hs.get(QaScriptView.CONTENT_TYPE_ID));
-            rearrangedResults.put(QaScriptView.QUERY, (String) hs.get(QaScriptView.QUERY));
+            rearrangedResults.put(QaScriptView.QUERY_AS_URL, (String) hs.get(QaScriptView.QUERY));
             rearrangedResults.put(QaScriptView.SHORT_NAME, (String) hs.get(QaScriptView.SHORT_NAME));
             rearrangedResults.put(QaScriptView.DESCRIPTION, (String) hs.get(QaScriptView.DESCRIPTION));
             rearrangedResults.put(QaScriptView.IS_ACTIVE, (String) hs.get(QaScriptView.IS_ACTIVE));
