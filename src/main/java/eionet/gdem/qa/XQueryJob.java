@@ -33,11 +33,9 @@ import java.util.Map;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.logging.Markers;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
-import eionet.gdem.conversion.datadict.DataDictUtil;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.services.GDEMServices;
@@ -45,6 +43,7 @@ import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.quartz.*;
@@ -64,13 +63,9 @@ public class XQueryJob implements Job, InterruptableJob {
     private String resultFile;
     /** Job ID to be executed. */
     private String jobId;
-    /** Setter to be able to parse the jobId from JobData **/
-    public void setJobId(String jobId) {
-        this.jobId = jobId;
-    }
     /** query ID to be executed. */
     private String queryID;
-    /** Script type */
+    /** Script type. */
     private String scriptType;
     /** Source url for XML. */
     private String url;
@@ -81,14 +76,16 @@ public class XQueryJob implements Job, InterruptableJob {
     /** Service for getting schema data. */
     private SchemaManager schemaManager;
 
-    private volatile Thread  thisThread;
+    private volatile Thread thisThread;
 
+    /**
+     * Public constructor.
+     */
     public XQueryJob() {
-
     }
 
     /**
-     * Run XQuery script
+     * Run XQuery script.
      */
     @Override
     public void execute(JobExecutionContext paramJobExecutionContext) throws JobExecutionException {
@@ -103,14 +100,13 @@ public class XQueryJob implements Job, InterruptableJob {
             // Do validation
             if (queryID.equals(String.valueOf(Constants.JOB_VALIDATION))) {
                 try {
-					// validate only the first XML Schema
+                    // validate only the first XML Schema
                     if (scriptFile.contains(" ")) {
                         scriptFile = StringUtils.substringBefore(scriptFile, " ");
                     }
-                    LOGGER.info("** XML Validation Job starting, ID=" + jobId + " schema: " + scriptFile + " result will be stored to "
-                            + resultFile);
+                    LOGGER.info("** XML Validation Job starting, ID=" + jobId + " schema: " + scriptFile + " result will be stored to " + resultFile);
                     ValidationService vs = new ValidationService();
-                    String query = new URI(srcFile).getQuery();
+                    String query = StringUtils.defaultIfEmpty(new URI(srcFile).getQuery(), "");
                     List<NameValuePair> params = URLEncodedUtils.parse(query, StandardCharsets.UTF_8);
                     for (NameValuePair param : params) {
                         if (Constants.TICKET_PARAM.equals(param.getName())) {
@@ -123,22 +119,18 @@ public class XQueryJob implements Job, InterruptableJob {
                     // XML Schema should be in schemaLocation attribute
                     String result = vs.validateSchema(srcFile, scriptFile);
                     LOGGER.debug("Validation proceeded, now store to the result file");
-
                     Utils.saveStrToFile(resultFile, result, null);
+                    changeStatus(Constants.XQ_READY);
                 } catch (Exception e) {
                     handleError("Error during validation:" + e.toString(), true);
-                    return;
                 }
             } else {
-                // Do xq job
-                //LOGGER.info("Job ID=" + jobId + " XQ processing started");
-
                 // read query info from DB.
                 Map query = getQueryInfo(queryID);
                 String contentType = null;
                 Schema schema = null;
-                boolean schemaExpired = false;
-                boolean isNotLatestReleasedDDSchema = false;
+                //boolean schemaExpired = false;
+                //boolean isNotLatestReleasedDDSchema = false;
 
                 if (query != null && query.containsKey("content_type")) {
                     contentType = (String) query.get("content_type");
@@ -152,13 +144,11 @@ public class XQueryJob implements Job, InterruptableJob {
                 if (query != null && query.containsKey("xml_schema")) {
                     // set schema if exists:
                     schema = getSchema((String) query.get("xml_schema"));
-                    schemaExpired = (schema != null && schema.isExpired());
-                    isNotLatestReleasedDDSchema = DataDictUtil.isDDSchemaAndNotLatestReleased(schema.getSchema());
-
+                    //schemaExpired = (schema != null && schema.isExpired());
+                    //isNotLatestReleasedDDSchema = DataDictUtil.isDDSchemaAndNotLatestReleased(schema.getSchema());
                 }
 
-                // get script type if it stored in filesystem and we have to
-                // guess it by file extension
+                // get script type if it stored in filesystem and we have to guess it by file extension.
                 if (Utils.isNullStr(scriptType)) {
                     scriptType =
                             scriptFile.endsWith(XQScript.SCRIPT_LANG_XSL) ? XQScript.SCRIPT_LANG_XSL
@@ -167,65 +157,44 @@ public class XQueryJob implements Job, InterruptableJob {
                 }
                 String[] xqParam = {Constants.XQ_SOURCE_PARAM_NAME + "=" + srcFile};
 
+                if (scriptFile.contains(" ")) {
+                    scriptFile = StringUtils.substringBefore(scriptFile, " ");
+                }
+
+                XQScript xq = new XQScript(null, xqParam, contentType);
+                xq.setScriptFileName(scriptFile);
+                xq.setScriptType(scriptType);
+                xq.setSrcFileUrl(srcFile);
+                xq.setSchema(schema);
+                xq.setJobId(this.jobId);
+
+                if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
+                    if (query != null && query.containsKey("url")) {
+                        xq.setScriptSource((String) query.get("url"));
+                    }
+                    LOGGER.info("** FME Job starts, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);
+                } else {
+                    LOGGER.info("** XQuery Job starts, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);
+                }
+
+                FileOutputStream out = null;
                 try {
-                    if (scriptFile.contains(" ")) {
-                        scriptFile = StringUtils.substringBefore(scriptFile, " ");
-                    }
-
-                    XQScript xq = new XQScript(null, xqParam, contentType);
-                    xq.setScriptFileName(scriptFile);
-                    xq.setScriptType(scriptType);
-                    xq.setSrcFileUrl(srcFile);
-                    xq.setSchema(schema);
-                    xq.setJobId(this.jobId);
-
-                    if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
-                        if (query != null && query.containsKey("url")) {
-                            xq.setScriptSource((String) query.get("url"));
-                        }
-                        LOGGER.info("** FME Job starts, ID=" + jobId + " params: " + (xqParam == null ? "<< no params >>" : xqParam[0])
-                                + " result will be stored to " + resultFile);
-                    }
-                    else{
-                        LOGGER.info("** XQuery Job starts, ID=" + jobId + " params: " + (xqParam == null ? "<< no params >>" : xqParam[0])
-                                + " result will be stored to " + resultFile);
-                    }
-
-                    FileOutputStream out = null;
-                    try {
-
-                        out = new FileOutputStream(new File(resultFile));
-                        // get results from the query engine
-                        xq.getResult(out);
-
-                    } catch (XMLConvException e) {
-                        // store error in feedback, it could be XML processing error
-                        StringBuilder errBuilder = new StringBuilder();
-                        errBuilder.append("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">Unexpected error occured!</span><h2>Unexpected error occured!</h2>");
-                        errBuilder.append(Utils.escapeXML(e.toString()));
-                        errBuilder.append("</div>");
-                        IOUtils.write(errBuilder.toString(), out, "UTF-8");
-                        LOGGER.error("XQueryJob ID=" + this.jobId + " exception: " , e);
-                    } finally {
+                    out = new FileOutputStream(new File(resultFile));
+                    xq.getResult(out);
+                    changeStatus(Constants.XQ_READY);
+                    LOGGER.info("Job ID=" + jobId + " finished.");
+                } catch (XMLConvException e) {
+                    changeStatus(Constants.XQ_FATAL_ERR);
+                    StringBuilder errBuilder = new StringBuilder();
+                    errBuilder.append("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">Unexpected error occured!</span><h2>Unexpected error occured!</h2>");
+                    errBuilder.append(Utils.escapeXML(e.toString()));
+                    errBuilder.append("</div>");
+                    IOUtils.write(errBuilder.toString(), out, "UTF-8");
+                    LOGGER.error("XQueryJob ID=" + this.jobId + " exception: ", e);
+                } finally {
                         IOUtils.closeQuietly(out);
-                    }
-
-                    LOGGER.debug("Script proceeded, now store to the result file");
-
-                } catch (Exception e) {
-                    handleError("Error processing QA script:" + e.toString(), true);
-                    return;
                 }
             }
-
-            changeStatus(Constants.XQ_READY);
-
-            // TODO: Change to failed if script has failed
-            LOGGER.info("Job ID=" + jobId + " finished.");
-
-            // all done, thread stops here, job is waiting for pulling from the
-            // client side
-
         } catch (Exception ee) {
             handleError("Error in thread run():" + ee.toString(), true);
         }
@@ -239,6 +208,7 @@ public class XQueryJob implements Job, InterruptableJob {
             String[] jobData = xqJobDao.getXQJobData(jobId);
             if (jobData == null) {
                 handleError("No such job: " + jobId, true);
+                return;
             }
             url = jobData[0];
             scriptFile = jobData[1];
@@ -264,22 +234,16 @@ public class XQueryJob implements Job, InterruptableJob {
             } else {
                 errStatus = Constants.XQ_LIGHT_ERR;
             }
-
             changeStatus(errStatus);
-
             // if result file already ok, store the error message in the file:
             if (resultFile == null) {
                 resultFile = Properties.tmpFolder + File.separatorChar + "gdem_error" + jobId + ".txt";
             }
-
             LOGGER.info("******* The error message is stored to: " + resultFile);
-
             if (error == null) {
                 error = "No error message for job=" + jobId;
             }
-
             Utils.saveStrToFile(resultFile, "<error>" + error + "</error>", null);
-
         } catch (Exception e) {
             // what to do if exception occurs here...
             LOGGER.error(Markers.fatal, "** Error occurred when handling XQ error: " + e.toString());
@@ -328,16 +292,21 @@ public class XQueryJob implements Job, InterruptableJob {
             if (schemaUrl != null) {
                 String schemaId = schemaManager.getSchemaId(schemaUrl);
                 if (schemaId != null) {
-                    Schema schema = schemaManager.getSchema(schemaId);
-                    return schema;
+                    return schemaManager.getSchema(schemaId);
                 }
             }
         } catch (Exception e) {
             LOGGER.error("getSchema() error : " + e.toString());
         }
-
         return null;
+    }
 
+    /**
+     * Setter to be able to parse the jobId from JobData.
+     * @param jobId Job id
+     */
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
     }
 
     @Override
@@ -346,9 +315,8 @@ public class XQueryJob implements Job, InterruptableJob {
         if (thisThread != null && XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
             // this call causes the ClosedByInterruptException to happen
             thisThread.interrupt();
-        }
-        else {
-            throw new UnableToInterruptJobException("unable to interrupt xq job");
+        } else {
+            throw new UnableToInterruptJobException("Unable to interrupt XQ job.");
         }
     }
 }

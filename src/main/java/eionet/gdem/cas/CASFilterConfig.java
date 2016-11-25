@@ -7,16 +7,13 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 
 /**
- *
+ * CAS Filter Config.
  * @author Aris Katsanas
  */
 public class CASFilterConfig extends Hashtable<String, String> implements FilterConfig {
 
-    /** */
     private static CASFilterConfig instance;
     private static Object lock = new Object();
-
-    /** */
     private String filterName;
     private ServletContext servletContext;
 
@@ -51,7 +48,7 @@ public class CASFilterConfig extends Hashtable<String, String> implements Filter
                 put(name, Properties.getStringProperty(name));
             }
         
-    }
+        }
     }
 
     /**

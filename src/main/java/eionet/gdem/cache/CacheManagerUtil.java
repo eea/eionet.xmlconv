@@ -12,11 +12,14 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
+ * Creates and manages cache.
  * @author George Sofianos
  */
 public final class CacheManagerUtil {
 
+    /**
+     * Public constructor
+     */
     public CacheManagerUtil() {
         // do nothing
     }
@@ -36,11 +39,19 @@ public final class CacheManagerUtil {
         return cacheManager;
     }
 
+    /**
+     * Updates Data Dictionary tables cache.
+     * @param ddTables data dictionary tables
+     */
     public static void updateDDTablesCache(final List<DDDatasetTable> ddTables) {
         // XXX: This fills the cache without reason.
         cacheManager.getCache(APPLICATION_CACHE).put(new Element(DD_TABLES_CACHE, ddTables));
     }
 
+    /**
+     * Returns last data dictionary tables entry.
+     * @return last data dictionary tables entry.
+     */
     public static List<DDDatasetTable> getDDTables() {
         Element element = cacheManager.getCache(APPLICATION_CACHE) != null ? cacheManager.getCache(APPLICATION_CACHE).get(DD_TABLES_CACHE) : null;
         return element == null || element.getValue() == null ? Collections.EMPTY_LIST : (List<DDDatasetTable>) element.getValue();
@@ -50,6 +61,9 @@ public final class CacheManagerUtil {
         return cacheManager.getCache(HTTP_CACHE);
     }
 
+    /**
+     * Cache manager initializer. Used by Spring DI.
+     */
     public void initializeCacheManager() {
         Configuration cacheManagerConfig = new Configuration()
                 .diskStore(new DiskStoreConfiguration()
@@ -69,6 +83,9 @@ public final class CacheManagerUtil {
         cacheManager.addCache(httpCache);
     }
 
+    /**
+     * Used to destroy the cache manager. Used by Spring DI.
+     */
     public void destroyCacheManager() {
         cacheManager.shutdown();
     }
