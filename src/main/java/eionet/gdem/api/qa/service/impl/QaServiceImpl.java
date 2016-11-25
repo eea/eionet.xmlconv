@@ -1,5 +1,6 @@
 package eionet.gdem.api.qa.service.impl;
 
+import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
@@ -105,7 +106,27 @@ public class QaServiceImpl implements QaService {
 
         XQueryService xqueryService = getXqueryService(); // new XQueryService();
         Hashtable<String, String> results = xqueryService.getResult(jobId);
+        int resultCode = Integer.parseInt(results.get(Constants.RESULT_CODE_PRM));
+        String executionStatus = "";
+        switch (resultCode) {
 
+            case Constants.JOB_READY:
+                executionStatus = "READY";
+                break;
+            case Constants.JOB_LIGHT_ERROR:
+                executionStatus = "LIGHT_ERROR";
+                break;
+
+            case Constants.JOB_FATAL_ERROR:
+                executionStatus = "FATAL_ERROR";
+                break;
+
+            case Constants.JOB_NOT_READY:
+                executionStatus = "NOT_READY";
+                break;
+
+        }
+        results.put("executionStatus", executionStatus);
         return results;
     }
 
