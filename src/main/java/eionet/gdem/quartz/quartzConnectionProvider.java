@@ -21,7 +21,7 @@ public class quartzConnectionProvider implements org.quartz.utils.ConnectionProv
             try {
                 DATASOURCE = (DataSource) SpringApplicationContext.getBean("quartzDataSource");
             } catch (Exception e) {
-                LOGGER.error( "quartzDataSource" , e );
+                LOGGER.error("quartzDataSource", e);
                 throw new ExceptionInInitializerError(e);
             }
         }
