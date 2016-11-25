@@ -95,7 +95,6 @@ https://taskman.eionet.europa.eu/issues/29005 regarding the REST API of the xmlc
   
    ```json
      {
-        "executionStatus": "2",
         "feedbackStatus": "ERROR",
         "feedbackMessage": "Some message",
         "feedbackContentType": "text/html;charset=UTF-8",
@@ -343,7 +342,7 @@ https://taskman.eionet.europa.eu/issues/29005 regarding the REST API of the xmlc
   
    ```json
     {
-     "executionStatus": "completed",
+     "executionStatus": "2",
      "feedbackStatus": "ERROR",
      "feedbackMessage": "Some message",
      "feedbackContentType": "text/html",
