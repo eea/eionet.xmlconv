@@ -551,7 +551,7 @@ Ideally we should expose an endpoint which whould accept a number of parameters 
    ```json
     "jobs": [
         {
-            "id": 89,
+            "jobId": 89,
             "fileUrl": "http://cdrtest.eionet.europa.eu/gr/colvjazdw/envvkyrww/AggDataByWaterBody_SampleTestFile_20151111_AggregatedDataByWaterBody.xml" 
        }  
          ]
