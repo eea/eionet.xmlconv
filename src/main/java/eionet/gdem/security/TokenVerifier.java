@@ -2,6 +2,7 @@ package eionet.gdem.security;
 
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.JWTVerifyException;
+import eionet.gdem.security.errors.JWTException;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -22,7 +23,7 @@ public class TokenVerifier {
     final String audience = "eea";
     final String issuer = "eea";
 
-    public String verify(String authToken) throws IOException {
+    public String verify(String authToken) throws IOException , JWTException {
 
         final JWTVerifier verifier = new JWTVerifier(secret, audience, issuer);
         String username = null;
@@ -35,17 +36,10 @@ public class TokenVerifier {
                 }
             }
 
-        } catch (NoSuchAlgorithmException ex) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException | IllegalStateException | SignatureException |  JWTVerifyException  ex) {
             Logger.getLogger(AuthenticationTokenFilter.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidKeyException ex) {
-            Logger.getLogger(AuthenticationTokenFilter.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalStateException ex) {
-            Logger.getLogger(AuthenticationTokenFilter.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SignatureException ex) {
-            Logger.getLogger(AuthenticationTokenFilter.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JWTVerifyException ex) {
-            Logger.getLogger(AuthenticationTokenFilter.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            throw new JWTException(ex);
+        } 
 
         return username;
     }

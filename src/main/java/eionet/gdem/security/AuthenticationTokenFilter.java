@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter {
 
     private static final String tokenHeader = "X-Auth-Token";
-
+    
     @Autowired
     private TokenVerifier verifier;
 
@@ -34,14 +34,15 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String authToken = httpRequest.getHeader(this.tokenHeader);
 
+
         if (authToken != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            String username = verifier.verify(authToken);
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            if (userDetails.isEnabled() && userDetails.getUsername().equals(username)) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+                String username = verifier.verify(authToken);
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                if (userDetails.isEnabled() && userDetails.getUsername().equals(username)) {
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
         }
         chain.doFilter(request, response);
     }
