@@ -166,9 +166,12 @@ public class QaController {
     }
 
     @ExceptionHandler(XMLConvException.class)
-    public void HandleXMLConvException(Exception exception, HttpServletResponse response) {
+    public ResponseEntity<HashMap<String, String>> HandleXMLConvException(Exception exception, HttpServletResponse response) {
         LOGGER.error("XMLConv Exception:",exception);
-        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+           HashMap<String, String> errorResult = new HashMap<String, String>();
+        errorResult.put("httpStatusCode", HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        errorResult.put("errorMessage", exception.getMessage());
+        return new ResponseEntity<HashMap<String, String>>(errorResult, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(UnsupportedOperationException.class)
