@@ -49,7 +49,7 @@ public class BaseXServerImpl extends QAScriptEngineStrategy {
             while (query.more()) {
                 result.write(query.next().getBytes());
             }
-            LOGGER.debug("Query: "+ query.info().getBytes());
+            LOGGER.debug("Query: "+ query.info());
             query.close();
             session.close();
         }  catch (NumberFormatException e) {

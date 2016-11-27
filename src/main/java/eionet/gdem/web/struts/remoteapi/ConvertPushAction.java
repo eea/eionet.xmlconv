@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-
+import org.apache.commons.io.IOUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -107,11 +107,7 @@ public class ConvertPushAction extends BaseAction {
                     e.printStackTrace();
                 }
             }
-            try {
-                fileInput.close();
-            } catch (Exception e) {
-                LOGGER.error("Unable to close inputstream.");
-            }
+            IOUtils.closeQuietly(fileInput);
         }
         // Do nothing, the response is already sent.
         return null;

@@ -30,7 +30,6 @@ public abstract class MySqlBaseDao {
     /**
      * DataSourceHolder Class with a static DATASOURCE to remove need for synchronized methods (Initialization-on-demand holder idiom)
      *
-     * @throws NamingException If an error occurs.
      */
     private static class DataSourceHolder {
         private static final DataSource DATASOURCE;

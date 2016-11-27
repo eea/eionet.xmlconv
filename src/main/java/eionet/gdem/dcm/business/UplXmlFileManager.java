@@ -378,7 +378,7 @@ public class UplXmlFileManager {
 
         OutputStream output = null;
         InputStream in = file.getInputStream();
-        String filepath = new String(Properties.xmlfileFolder + File.separator + fileName);
+        String filepath = Properties.xmlfileFolder + File.separator + fileName;
 
         try {
             output = new FileOutputStream(filepath);

@@ -289,7 +289,7 @@ public class QAScriptManager {
 
         OutputStream output = null;
         InputStream in = file.getInputStream();
-        String filepath = new String(Properties.queriesFolder + File.separator + fileName);
+        String filepath = Properties.queriesFolder + File.separator + fileName;
 
         try {
             output = new FileOutputStream(filepath);
@@ -530,7 +530,7 @@ public class QAScriptManager {
             if (fileInputStream != null && !Utils.isNullStr(fileName)) {
 
                 OutputStream output = null;
-                String filepath = new String(Properties.queriesFolder + File.separatorChar + fileName);
+                String filepath = Properties.queriesFolder + File.separatorChar + fileName;
 
                 try {
                     output = new FileOutputStream(filepath);

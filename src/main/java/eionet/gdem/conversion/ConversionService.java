@@ -36,6 +36,7 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.utils.Utils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -207,14 +208,8 @@ public class ConversionService extends RemoteService implements ConversionServic
             setGlobalParameters(convertMethod);
             return convertMethod.convertPush(input, convertId, filename);
         } finally {
-            try {
-                input.close();
-            } catch (Exception e) {
-                LOGGER.error("Exception: ", e);
-            }
-
+            IOUtils.closeQuietly(input);
         }
-
     }
 
     /*

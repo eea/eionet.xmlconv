@@ -307,9 +307,9 @@ public class ConversionResultDto {
                 strBuilder.append(">");
                 strBuilder.append(conversionLog.getType());
                 strBuilder.append("</td><td>");
-                strBuilder.append(StringEscapeUtils.escapeXml(conversionLog.getCategory()));
+                strBuilder.append(StringEscapeUtils.escapeXml10(conversionLog.getCategory()));
                 strBuilder.append("</td><td>");
-                strBuilder.append(StringEscapeUtils.escapeXml(conversionLog.getMessage()));
+                strBuilder.append(StringEscapeUtils.escapeXml10(conversionLog.getMessage()));
                 strBuilder.append("</td></tr>");
             }
             strBuilder.append("</table>");

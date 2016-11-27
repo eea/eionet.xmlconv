@@ -157,7 +157,7 @@ public class StylesheetManager {
                 throw new DCMException(BusinessConstants.EXCEPTION_STYLEHEET_FILE_EXISTS);
             }
 
-            String filepath = new String(Properties.xslFolder + "/" + stylesheet.getXslFileName());
+            String filepath = Properties.xslFolder + "/" + stylesheet.getXslFileName();
 
             Utils.saveStrToFile(filepath, stylesheet.getXslContent(), null);
 

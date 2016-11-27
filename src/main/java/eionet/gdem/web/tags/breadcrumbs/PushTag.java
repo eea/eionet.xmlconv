@@ -113,7 +113,7 @@ public class PushTag extends TagSupport {
             }
         }
 
-        breadcrumbs.addToTrail(referer, new BreadCrumb(uri, this.label), new Integer(level).intValue());
+        breadcrumbs.addToTrail(referer, new BreadCrumb(uri, this.label), Integer.parseInt(level));
 
         return EVAL_PAGE;
     }

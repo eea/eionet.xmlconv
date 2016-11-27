@@ -439,7 +439,7 @@ public class ExcelReader implements SourceReaderIF {
                     continue;
                 }
                 if (sheetValue != null && sheetValue.length() > 31) {
-                    sheetValue = sheetValue.substring(0,31);
+                    sheetValue = sheetValue.substring(0, 31);
                 }
                 Sheet sheet = getSheet(sheetValue);
                 if (sheet != null && !result.containsKey(sheetValue)) {

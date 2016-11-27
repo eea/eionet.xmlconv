@@ -99,7 +99,7 @@ public class SaveHandler {
 
             } catch (Exception e) {
                 LOGGER.error("Could not restart jobs!" + e.getMessage());
-                err_buf.append("Cannot restart jobs: " + e.toString() + jobs);
+                err_buf.append("Cannot restart jobs: " + e);
             }
             if (err_buf.length() > 0) {
                 req.setAttribute(Names.ERROR_ATT, err_buf.toString());

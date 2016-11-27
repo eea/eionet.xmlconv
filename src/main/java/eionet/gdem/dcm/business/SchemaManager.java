@@ -802,7 +802,7 @@ public class SchemaManager {
                 }
             }
             OutputStream output = null;
-            String filepath = new String(Properties.schemaFolder + File.separatorChar + fileName);
+            String filepath = Properties.schemaFolder + File.separatorChar + fileName;
 
             try {
                 output = new FileOutputStream(filepath);
@@ -1058,7 +1058,7 @@ public class SchemaManager {
             if (fileInputStream != null && !Utils.isNullStr(fileName)) {
 
                 OutputStream output = null;
-                String filepath = new String(Properties.schemaFolder + File.separatorChar + fileName);
+                String filepath = Properties.schemaFolder + File.separatorChar + fileName;
 
                 try {
                     output = new FileOutputStream(filepath);
