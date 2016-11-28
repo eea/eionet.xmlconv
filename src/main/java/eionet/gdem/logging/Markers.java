@@ -7,7 +7,7 @@ import org.slf4j.MarkerFactory;
  * @author George Sofianos
  */
 public final class Markers {
-    public static Marker fatal = MarkerFactory.getMarker("FATAL");
+    public static final Marker FATAL = MarkerFactory.getMarker("FATAL");
 
     /**
      * Private constructor

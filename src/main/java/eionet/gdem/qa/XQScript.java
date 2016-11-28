@@ -54,9 +54,9 @@ public class XQScript {
     public static final String SCRIPT_LANG_XGAWK = "xgawk";
     public static final String SCRIPT_LANG_FME = "fme";
 
-    public static String[] SCRIPT_LANGS = {SCRIPT_LANG_XQUERY3, SCRIPT_LANG_XQUERY1, SCRIPT_LANG_XSL, SCRIPT_LANG_XGAWK, SCRIPT_LANG_FME, };
+    public static final String[] SCRIPT_LANGS = {SCRIPT_LANG_XQUERY3, SCRIPT_LANG_XQUERY1, SCRIPT_LANG_XSL, SCRIPT_LANG_XGAWK, SCRIPT_LANG_FME, };
 
-    public static enum ScriptLang {
+    public enum ScriptLang {
         SCRIPT_LANG_XQUERY("xquery"), SCRIPT_LANG_XSL("xsl"), SCRIPT_LANG_XGAWK("xgawk"), SCRIPT_LANG_FME("fme");
         private String value;
 
@@ -78,14 +78,14 @@ public class XQScript {
     public static final String SCRIPT_RESULTTYPE_HTML = "HTML";
     public static final String SCRIPT_RESULTTYPE_ZIP = "ZIP";
 
-    public static String[] SCRIPT_RESULTTYPES = {SCRIPT_RESULTTYPE_HTML, SCRIPT_RESULTTYPE_XML, SCRIPT_RESULTTYPE_TEXT, SCRIPT_RESULTTYPE_ZIP};
+    public static final String[] SCRIPT_RESULTTYPES = {SCRIPT_RESULTTYPE_HTML, SCRIPT_RESULTTYPE_XML, SCRIPT_RESULTTYPE_TEXT, SCRIPT_RESULTTYPE_ZIP};
 
-    public static enum ScriptResultType {
+    public enum ScriptResultType {
     	HTML, XML, TEXT, ZIP
     }
 
     // XQ Engine instance
-    private XQEngineIF _engine;
+    private XQEngineIF engine;
 
     /**
      * @param xqScript Script
@@ -101,12 +101,12 @@ public class XQScript {
      * Constructor
      * @param xqScript Script
      * @param scriptParams Parameters
-     * @param _outputType Output type
+     * @param outputType Output type
      */
-    public XQScript(String xqScript, String[] scriptParams, String _outputType) {
-        scriptSource = xqScript;
-        params = scriptParams;
-        outputType = _outputType;
+    public XQScript(String xqScript, String[] scriptParams, String outputType) {
+        this.scriptSource = xqScript;
+        this.params = scriptParams;
+        this.outputType = outputType;
         scriptType = SCRIPT_LANG_XQUERY1;
     }
 
@@ -116,7 +116,7 @@ public class XQScript {
      */
     public String getResult() throws XMLConvException {
         initEngine();
-        return _engine.getResult(this);
+        return engine.getResult(this);
     }
 
     /**
@@ -126,7 +126,7 @@ public class XQScript {
      */
     public void getResult(OutputStream out) throws XMLConvException {
         initEngine();
-        _engine.getResult(this, out);
+        engine.getResult(this, out);
     }
 
     /**
@@ -135,20 +135,20 @@ public class XQScript {
      */
     private void initEngine() throws XMLConvException {
 
-        if (_engine == null) {
+        if (engine == null) {
             try {
                 if (XQScript.SCRIPT_LANG_XSL.equals(scriptType)) {
-                    _engine = new XslEngineImpl();
+                    engine = new XslEngineImpl();
                 } else if (XQScript.SCRIPT_LANG_XGAWK.equals(scriptType)) {
-                    _engine = new XGawkQueryEngine();
+                    engine = new XGawkQueryEngine();
                 } else if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
-                    _engine = new FMEQueryEngine();
+                    engine = new FMEQueryEngine();
                 } else if (XQScript.SCRIPT_LANG_XQUERY3.equals(scriptType)) {
                     // XQUERY 3.0+
-                    _engine = new BaseXServerImpl();
+                    engine = new BaseXServerImpl();
                 } else {
                     // LEGACY XQUERY 1.0
-                    _engine = new SaxonImpl();
+                    engine = new SaxonImpl();
                 }
             } catch (Exception e) {
                 throw new XMLConvException("Error initializing engine  " + e.toString());

@@ -175,17 +175,17 @@ public class JobScheduler implements ServletContextListener {
                 scheduleIntervalJob(job.getLeft(), job.getRight());
                 LOGGER.debug(job.getRight().getKey().getName() + " scheduled, interval=" + job.getLeft());
             } catch (Exception e) {
-                if ( ! ( e instanceof org.quartz.ObjectAlreadyExistsException ) )  {
-                    LOGGER.error(Markers.fatal, "Error when scheduling " + job.getRight().getKey().getName(), e);
+                if (!(e instanceof org.quartz.ObjectAlreadyExistsException))  {
+                    LOGGER.error(Markers.FATAL, "Error when scheduling " + job.getRight().getKey().getName(), e);
                 }    
             }
         }
         try {
             // DDTablesCacheUpdater is scheduled locally
-            scheduleLocalIntervalJob( Properties.ddTablesUpdateInterval , newJob(DDTablesCacheUpdater.class).withIdentity(DDTablesCacheUpdater.class.getSimpleName(),
-                    DDTablesCacheUpdater.class.getName()).build() );
+            scheduleLocalIntervalJob(Properties.ddTablesUpdateInterval, newJob(DDTablesCacheUpdater.class).withIdentity(DDTablesCacheUpdater.class.getSimpleName(),
+                    DDTablesCacheUpdater.class.getName()).build());
         } catch (Exception e) {
-                LOGGER.error(Markers.fatal, "Error when scheduling DDTablesCacheUpdater", e);
+                LOGGER.error(Markers.FATAL, "Error when scheduling DDTablesCacheUpdater", e);
         }
 
     }

@@ -23,6 +23,7 @@ package eionet.gdem.web.struts.qasandbox;
 
 import java.io.File;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -190,6 +191,7 @@ public class RunScriptAction extends Action {
                     httpServletResponse.setCharacterEncoding(HTML_CHARACTER_ENCODING);
                     output = httpServletResponse.getOutputStream();
                     xq.getResult(output);
+                    // TODO: remove flush and close
                     output.flush();
                     output.close();
                     return null;
@@ -203,7 +205,8 @@ public class RunScriptAction extends Action {
                     cForm.setResult(result);
                     return actionMapping.findForward("success");
                 } else {
-                    output.write(result.getBytes());
+                    output.write(result.getBytes(StandardCharsets.UTF_8));
+                    // TODO: remove flush and close
                     output.flush();
                     output.close();
                     return null;

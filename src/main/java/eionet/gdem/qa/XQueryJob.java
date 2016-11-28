@@ -246,7 +246,7 @@ public class XQueryJob implements Job, InterruptableJob {
             Utils.saveStrToFile(resultFile, "<error>" + error + "</error>", null);
         } catch (Exception e) {
             // what to do if exception occurs here...
-            LOGGER.error(Markers.fatal, "** Error occurred when handling XQ error: " + e.toString());
+            LOGGER.error(Markers.FATAL, "** Error occurred when handling XQ error: " + e.toString());
         }
     }
 

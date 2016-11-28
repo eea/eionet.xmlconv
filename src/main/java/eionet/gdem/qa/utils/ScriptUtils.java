@@ -13,7 +13,7 @@ public final class ScriptUtils {
      * Default constructor
      */
     private ScriptUtils() {
-        // do nothing
+        throw new AssertionError();
     }
 
     /**

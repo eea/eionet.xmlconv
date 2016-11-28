@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
@@ -97,7 +96,7 @@ public class Properties {
     public static String basexServerPassword = null;
 
     /** Cache Configuration */
-    public static String CACHE_TEMP_DIR;
+    public static final String CACHE_TEMP_DIR;
     public static final long CACHE_HTTP_SIZE;
     public static final int CACHE_HTTP_EXPIRY;
     public static final int HTTP_CACHE_ENTRIES;

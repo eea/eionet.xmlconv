@@ -111,7 +111,7 @@ public class SchemaFinder extends DefaultHandler {
      * @param e Fatal error
      */
     public void fatalError(SAXParseException e) {
-        LOGGER.error(Markers.fatal, "Fatal error on finding schema from xml");
+        LOGGER.error(Markers.FATAL, "Fatal error on finding schema from xml");
     }
 
     public String getStartTag() {
