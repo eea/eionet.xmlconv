@@ -107,26 +107,26 @@ public class QaServiceImpl implements QaService {
         XQueryService xqueryService = getXqueryService(); // new XQueryService();
         Hashtable<String, String> results = xqueryService.getResult(jobId);
         int resultCode = Integer.parseInt(results.get(Constants.RESULT_CODE_PRM));
-        String executionStatus = "";
+        String executionStatusName = "";
         switch (resultCode) {
 
             case Constants.JOB_READY:
-                executionStatus = "READY";
+                executionStatusName = "Ready";
                 break;
             case Constants.JOB_LIGHT_ERROR:
-                executionStatus = "LIGHT_ERROR";
+                executionStatusName = "Failed";
                 break;
 
             case Constants.JOB_FATAL_ERROR:
-                executionStatus = "FATAL_ERROR";
+                executionStatusName = "Failed";
                 break;
 
             case Constants.JOB_NOT_READY:
-                executionStatus = "NOT_READY";
+                executionStatusName = "Pending";
                 break;
 
         }
-        results.put("executionStatus", executionStatus);
+        results.put("executionStatusName", executionStatusName);
         return results;
     }
 
@@ -137,9 +137,13 @@ public class QaServiceImpl implements QaService {
         List<LinkedHashMap<String, String>> resultsList = new LinkedList<LinkedHashMap<String, String>>();
         for (Object xqueryServiceResult : xqueryServiceResults) {
             Hashtable hs = (Hashtable) xqueryServiceResult;
+            String scriptType = (String)hs.get(QaScriptView.SCRIPT_TYPE);
+            if (scriptType==null) {
+                scriptType ="xsd";
+            }
             LinkedHashMap<String, String> rearrangedResults = new LinkedHashMap<String, String>();
             rearrangedResults.put(QaScriptView.QUERY_ID, (String) hs.get(QaScriptView.QUERY_ID));
-            rearrangedResults.put(QaScriptView.TYPE, (String) hs.get(QaScriptView.TYPE));
+            rearrangedResults.put(QaScriptView.TYPE, scriptType);
             rearrangedResults.put(QaScriptView.CONTENT_TYPE_ID, (String) hs.get(QaScriptView.CONTENT_TYPE_ID));
             rearrangedResults.put(QaScriptView.QUERY_AS_URL, (String) hs.get(QaScriptView.QUERY));
             rearrangedResults.put(QaScriptView.SHORT_NAME, (String) hs.get(QaScriptView.SHORT_NAME));

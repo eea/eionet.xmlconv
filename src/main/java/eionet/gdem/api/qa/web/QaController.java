@@ -125,17 +125,19 @@ public class QaController {
      *
      */
     @RequestMapping(value = "/asynctasks/qajobs/{jobId}", method = RequestMethod.GET)
-    public ResponseEntity<LinkedHashMap<String, String>> getQAResultsForJob(@PathVariable String jobId) throws XMLConvException {
+    public ResponseEntity<LinkedHashMap<String, Object>> getQAResultsForJob(@PathVariable String jobId) throws XMLConvException, JsonProcessingException {
 
         Hashtable<String, String> results = qaService.getJobResults(jobId);
-        LinkedHashMap<String, String> jsonResults = new LinkedHashMap<String, String>();
-
-        jsonResults.put("executionStatus", results.get(Constants.RESULT_CODE_PRM));
+        LinkedHashMap<String, Object> jsonResults = new LinkedHashMap<String, Object>();
+        LinkedHashMap<String,String> executionStatusView = new LinkedHashMap<String,String>();
+        executionStatusView.put("statusId", results.get(Constants.RESULT_CODE_PRM));
+        executionStatusView.put("statusName",results.get("executionStatusName"));
+        jsonResults.put("executionStatus",executionStatusView);
         jsonResults.put("feedbackStatus", results.get(Constants.RESULT_FEEDBACKSTATUS_PRM));
         jsonResults.put("feedbackMessage", results.get(Constants.RESULT_FEEDBACKMESSAGE_PRM));
         jsonResults.put("feedbackContentType", results.get(Constants.RESULT_METATYPE_PRM));
         jsonResults.put("feedbackContent", results.get(Constants.RESULT_VALUE_PRM));
-        return new ResponseEntity<LinkedHashMap<String, String>>(jsonResults, HttpStatus.OK);
+        return new ResponseEntity<LinkedHashMap<String, Object>>(jsonResults, HttpStatus.OK);
     }
 
    /**
