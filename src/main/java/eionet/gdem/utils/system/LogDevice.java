@@ -21,7 +21,6 @@
 
 package eionet.gdem.utils.system;
 
-import eionet.gdem.dcm.business.QAScriptManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +32,7 @@ import org.slf4j.LoggerFactory;
 public class LogDevice implements ILogDevice {
 
     /** */
-    private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogDevice.class);
     @Override
     public void log(String c) {
         LOGGER.debug(c);

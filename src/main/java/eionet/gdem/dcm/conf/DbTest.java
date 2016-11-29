@@ -25,10 +25,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-
-
-
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
@@ -69,7 +65,6 @@ public class DbTest {
 
         } catch (Exception e) {
             LOGGER.debug("Testing database connection failed!", e);
-            e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_PARAM_DB_TEST_FAILED);
         } finally {
             // Close connection

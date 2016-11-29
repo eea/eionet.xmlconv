@@ -23,84 +23,53 @@
 
 package eionet.gdem;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
-
 /**
  * XMLConv Exception class.
  */
 public class XMLConvException extends Exception {
-    /** The cause for this exception.  */
-    protected Exception cause = null;
-
     /**
-     * Constructor
-     * @param msg Message
+     * Constructs a new exception with null as its detail message.
      */
-    public XMLConvException(String msg) {
-        super(msg);
+    public XMLConvException() {
+        super();
     }
 
     /**
-     * Constructor
-     * @param msg Message
-     * @param cause Cause
+     * Constructs a new exception with the specified detail message.
+     * @param s Exception message
      */
-    public XMLConvException(String msg, Exception cause) {
-        super(msg);
-        this.cause = cause;
+    public XMLConvException(String s) {
+        super(s);
     }
 
     /**
-     * Prints this exception and its backtrace to the standard error stream.
+     * Constructs a new exception with the specified detail message and cause.
+     * @param s Exception message
+     * @param cause Exception cause
      */
-    public void printStackTrace() {
-        super.printStackTrace();
-
-        if (this.cause != null) {
-            this.cause.printStackTrace();
-        }
+    public XMLConvException(String s, Throwable cause) {
+        super(s, cause);
     }
 
     /**
-     * Prints this exception and its backtrace to the given print stream.
-     *
-     * @param ps
-     *            the print stream.
+     * Constructs a new exception with the specified cause and a detail message of
+     * (cause==null ? null : cause.toString())
+     * (which typically contains the class and detail message of cause).
+     * @param cause Exception cause
      */
-    public void printStackTrace(PrintStream ps) {
-        super.printStackTrace(ps);
-
-        if (this.cause != null) {
-            this.cause.printStackTrace(ps);
-        }
+    public XMLConvException(Throwable cause) {
+        super(cause);
     }
 
     /**
-     * Prints this exception and its backtrace to the given print writer.
-     *
-     * @param pw
-     *            - the print writer.
+     * Constructs a new exception with the specified detail message, cause,
+     * suppression enabled or disabled, and writable stack trace enabled or disabled.
+     * @param s Exception message
+     * @param cause Exception cause
+     * @param b supression enabled
+     * @param b1 writable stack trace enabled
      */
-    public void printStackTrace(PrintWriter pw) {
-        super.printStackTrace(pw);
-        if (this.cause != null) {
-            this.cause.printStackTrace(pw);
-        }
-
+    protected XMLConvException(String s, Throwable cause, boolean b, boolean b1) {
+        super(s, cause, b, b1);
     }
-
-    /**
-     * Returns the message of original cause.
-     *
-     * @return cause message
-     */
-    public String getCauseMessage() {
-
-        if (cause != null && cause.getMessage() != null) {
-            return cause.getMessage();
-        }
-        return "";
-    }
-
 }

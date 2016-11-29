@@ -54,5 +54,5 @@
     </bean>
 
     <bean id="cacheManager" class="eionet.gdem.cache.CacheManagerUtil" init-method="initializeCacheManager" destroy-method="destroyCacheManager"/>
-    
+
 </beans>

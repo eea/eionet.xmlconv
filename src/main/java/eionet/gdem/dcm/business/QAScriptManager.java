@@ -555,7 +555,7 @@ public class QAScriptManager {
      * @param setActive Active flag
      * @throws DCMException If an error occurs.
      */
-    public void activateDeactivate (String user, String scriptId, boolean setActive) throws DCMException {
+    public void activateDeactivate(String user, String scriptId, boolean setActive) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
                 LOGGER.debug("You don't have permissions to activate or deactivate QA script!");

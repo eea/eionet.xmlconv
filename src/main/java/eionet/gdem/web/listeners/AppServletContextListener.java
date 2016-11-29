@@ -21,13 +21,8 @@
 package eionet.gdem.web.listeners;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-
-
-
 import eionet.gdem.Properties;
 import eionet.gdem.dto.ConvType;
 import eionet.gdem.qa.XQScript;
@@ -117,10 +112,8 @@ public class AppServletContextListener implements ApplicationListener {
 
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
-        //System.out.println("Application started !");
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
         if (event instanceof ContextClosedEvent) {
-            //System.out.println("Application terminated !");;
             return;
         }
         if (!(event instanceof ContextRefreshedEvent)) {
@@ -151,7 +144,7 @@ public class AppServletContextListener implements ApplicationListener {
                     StylesheetListLoader.loadStylesheetPermissions(null));
 
         } catch (Exception e1) {
-            e1.printStackTrace();
+            LOGGER.error("An exception occured while creating context" + e1);
         }
     }
 }

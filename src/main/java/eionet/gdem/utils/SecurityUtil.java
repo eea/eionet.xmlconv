@@ -96,7 +96,7 @@ public final class SecurityUtil {
      * @param aclPath ACL Path
      * @param prm Permissions
      * @return True if user has permissions.
-     * @throws Exception If an error occurs.
+     * @throws SignOnException If an error occurs.
      */
     public static boolean hasPerm(String usr, String aclPath, String prm) throws SignOnException {
         AccessControlListIF acl;

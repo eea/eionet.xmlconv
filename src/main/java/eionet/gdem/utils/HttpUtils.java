@@ -23,9 +23,9 @@ package eionet.gdem.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import eionet.gdem.http.HttpDefaultClientFactory;
 import org.apache.commons.io.IOUtils;
-
-
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
 import org.apache.http.HttpEntity;
@@ -34,26 +34,24 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * HTTP Utilities.
- * TODO: Check if we can replace this with an open source library
  * @author Enriko Käsper, Tieto Estonia HttpUtils
  */
 
 public final class HttpUtils {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
+
     /**
-     * Private constructor
+     * Private constructor to deal with reflection
      */
     private HttpUtils() {
-        // do nothing
+        throw new AssertionError();
     }
-    /** */
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
 
     /**
      * Downloads remote file
@@ -64,11 +62,9 @@ public final class HttpUtils {
      */
     public static byte[] downloadRemoteFile(String url) throws DCMException, IOException {
         byte[] responseBody = null;
-        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpClient client = HttpDefaultClientFactory.getInstance();
 
-        // Create a method instance.
         HttpGet method = new HttpGet(url);
-        // Execute the method.
         CloseableHttpResponse response = null;
         try {
             response = client.execute(method);
@@ -79,24 +75,12 @@ public final class HttpUtils {
                 LOGGER.error("Method failed: " + response.getStatusLine().getReasonPhrase());
                 throw new DCMException(BusinessConstants.EXCEPTION_SCHEMAOPEN_ERROR, response.getStatusLine().getReasonPhrase());
             }
-
-            // Read the response body.
             InputStream instream = entity.getContent();
             responseBody = IOUtils.toByteArray(instream);
-
-            // Deal with the response.
-            // Use caution: ensure correct character encoding and is not binary data
-            // System.out.println(new String(responseBody));
-            /*catch (HttpException e) {
-            LOGGER.error("Fatal protocol violation: " + e.getMessage());
-            e.printStackTrace();
-            throw e;*/
         } catch (IOException e) {
             LOGGER.error("Fatal transport error: " + e.getMessage());
-            e.printStackTrace();
             throw e;
         } finally {
-            // Release the connection.
             response.close();
             method.releaseConnection();
             client.close();
@@ -113,26 +97,17 @@ public final class HttpUtils {
      */
     public static boolean urlExists(String url) {
 
-        CloseableHttpClient client = HttpClients.createDefault();
-
-        // Create a method instance.
+        CloseableHttpClient client = HttpDefaultClientFactory.getInstance();
         HttpHead method = new HttpHead(url);
         CloseableHttpResponse response = null;
         try {
-            // Execute the method.
             response = client.execute(method);
             int statusCode = response.getStatusLine().getStatusCode();
             return statusCode == HttpStatus.SC_OK;
-        /*} catch (HttpException e) {
-            LOGGER.error("Fatal protocol violation: " + e.getMessage());
-            e.printStackTrace();
-            return false;*/
         } catch (IOException e) {
             LOGGER.error("Fatal transport error: " + e.getMessage());
-            e.printStackTrace();
             return false;
         } finally {
-            // Release the connection.
             method.releaseConnection();
             try {
                 response.close();

@@ -31,6 +31,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import eionet.gdem.http.HttpFileManager;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
@@ -46,28 +47,18 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
 
 /**
- * The class anayses XML file and extracts XML Schema, DTD, namespace and root element information.
- *
- * @author Enriko Käsper, TietoEnator Estonia AS InputAnalyser
- * @author George Sofianos
+ * The class analyses XML file and extracts XML Schema, DTD, namespace and root element information.
  */
 public class InputAnalyser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InputAnalyser.class);
-    private String schemaOrDTD = null;
-    private String rootElement = null;
-    private String namespace = null;
-    private String dtdPublicId = null;
-    private boolean hasNamespace = false;
-    private String schemaNamespace = null;
-    private boolean isDTD = false;
-
-    /**
-     * Default Constructor
-     */
-    public InputAnalyser() {
-
-    }
+    private String schemaOrDTD;
+    private String rootElement;
+    private String namespace;
+    private String dtdPublicId;
+    private boolean hasNamespace;
+    private String schemaNamespace;
+    private boolean isDTD;
 
     /**
      * Parse XML and load information from XML.
@@ -98,13 +89,7 @@ public class InputAnalyser {
             e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
+            IOUtils.closeQuietly(stream);
         }
 
     }
@@ -133,10 +118,10 @@ public class InputAnalyser {
             reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             reader.setFeature("http://xml.org/sax/features/namespaces", true);
 
-            SAXDoctypeReader doctype_reader = new SAXDoctypeReader();
+            SAXDoctypeReader doctypeReader = new SAXDoctypeReader();
             // turn on dtd handling
             try {
-                parser.setProperty("http://xml.org/sax/properties/lexical-handler", doctype_reader);
+                parser.setProperty("http://xml.org/sax/properties/lexical-handler", doctypeReader);
             } catch (SAXNotRecognizedException e) {
                 LOGGER.error("Installed XML parser does not provide lexical events...");
             } catch (SAXNotSupportedException e) {
@@ -159,19 +144,19 @@ public class InputAnalyser {
 
             // Find DTD, if schema is null
             if (schemaOrDTD == null) {
-                schemaOrDTD = Utils.isURL(doctype_reader.getDTD()) ? doctype_reader.getDTD() : null;
-                dtdPublicId = doctype_reader.getDTDPublicId();
+                schemaOrDTD = Utils.isURL(doctypeReader.getDTD()) ? doctypeReader.getDTD() : null;
+                dtdPublicId = doctypeReader.getDTDPublicId();
                 setDTD(true);
             }
-        } catch (SAXParseException se) {
-            se.printStackTrace(System.err);
-            throw (SAXException) se;
-        } catch (SAXException se) {
-            se.printStackTrace(System.err);
-            throw se;
+        } catch (SAXParseException e) {
+            LOGGER.error("XML Parsing exception: " + e);
+            throw (SAXException) e;
+        } catch (SAXException e) {
+            LOGGER.error("XML Parsing exception: " + e);
+            throw e;
         } catch (Exception e) {
-            e.printStackTrace(System.err);
-            throw new XMLConvException("Error parsing: " + e.toString(), e);
+            LOGGER.error("XML Parsing exception: " + e);
+            throw new XMLConvException("Error parsing: " + e, e);
         }
 
         return "OK";

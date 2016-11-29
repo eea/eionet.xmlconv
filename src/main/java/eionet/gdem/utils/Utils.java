@@ -1282,15 +1282,12 @@ public final class Utils {
      *             in case of connection error.
      */
     public static byte[] downloadRemoteFile(String url) throws DCMException {
-        // download schema
         byte[] remoteFile = null;
         try {
             remoteFile = HttpUtils.downloadRemoteFile(url);
         } catch (DCMException dce) {
-            dce.printStackTrace();
             throw dce;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_SCHEMAOPEN_ERROR);
         }
         return remoteFile;

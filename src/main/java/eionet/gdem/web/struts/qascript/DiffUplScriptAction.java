@@ -99,7 +99,6 @@ public class DiffUplScriptAction extends Action {
             }
 
         } catch (DCMException e) {
-            // e.printStackTrace();
             LOGGER.error("Unable to diff schemas", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             forward = "fail";

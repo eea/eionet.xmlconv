@@ -24,7 +24,14 @@ package eionet.gdem.dcm;
 /**
  * Business constants class.
  */
-public class BusinessConstants {
+public final class BusinessConstants {
+
+    /**
+     * Private constructor to deal with reflection.
+     */
+    private BusinessConstants() {
+        throw new AssertionError();
+    }
 
     public static final String EXCEPTION_GENERAL = "label.exception.unknown";
     public static final String EXCEPTION_AUTORIZATION_SCHEMA_DELETE = "label.autorization.schema.delete";

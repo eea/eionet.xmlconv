@@ -27,10 +27,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
-
-
-
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
@@ -55,11 +51,8 @@ public class DcmProperties {
      * @throws DCMException If an error occurs.
      */
     public void setDbParams(String url, String user, String psw) throws DCMException {
-
         String filePath = Properties.appHome + File.separatorChar + "env.properties";
-
         try {
-
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
             String line = null;
             StringBuffer st = new StringBuffer();
@@ -72,13 +65,11 @@ public class DcmProperties {
                 st.append(line);
                 st.append("\n");
             }
-
             BufferedWriter out = new BufferedWriter(new FileWriter(filePath));
             out.write(st.toString());
             out.close();
         } catch (IOException e) {
             LOGGER.error("Saving database parameters failed!", e);
-            e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_PARAM_DB_FAILED);
         }
     }
@@ -116,7 +107,6 @@ public class DcmProperties {
             out.close();
         } catch (IOException e) {
             LOGGER.error("Saving ldap parameters failed!", e);
-            e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_PARAM_LDAP_FAILED);
         }
     }
@@ -159,7 +149,6 @@ public class DcmProperties {
 
         } catch (IOException e) {
             LOGGER.error("Saving BaseX server parameters failed!", e);
-            e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_PARAM_BASEXSERVER_FAILED);
         }
     }
@@ -197,7 +186,6 @@ public class DcmProperties {
 
         } catch (IOException e) {
             LOGGER.error("Saving system parameters failed!", e);
-            e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_PARAM_SYSTEM_FAILED);
         }
     }
