@@ -83,7 +83,6 @@ public final class HttpUtils {
         } finally {
             response.close();
             method.releaseConnection();
-            client.close();
         }
         return responseBody;
     }
