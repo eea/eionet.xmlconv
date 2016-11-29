@@ -27,8 +27,6 @@ import eionet.gdem.http.CustomURI;
 import eionet.gdem.qa.engines.SaxonProcessor;
 import eionet.gdem.utils.cache.MemoryCache;
 import net.sf.saxon.s9api.*;
-import org.apache.commons.io.IOUtils;
-
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -104,8 +102,6 @@ public class XslGenerator {
             throw new XMLConvException("Error opening URL " + ioe.toString(), ioe);
         } catch (Exception e) {
             throw new XMLConvException("Error converting: " + e.toString(), e);
-        } finally {
-            IOUtils.closeQuietly(os);
         }
         return result;
     }
