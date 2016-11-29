@@ -132,6 +132,7 @@ public class QaController {
         LinkedHashMap<String,String> executionStatusView = new LinkedHashMap<String,String>();
         executionStatusView.put("statusId", results.get(Constants.RESULT_CODE_PRM));
         executionStatusView.put("statusName",results.get("executionStatusName"));
+        jsonResults.put("scriptTitle",results.get(Constants.RESULT_SCRIPTTITLE_PRM));
         jsonResults.put("executionStatus",executionStatusView);
         jsonResults.put("feedbackStatus", results.get(Constants.RESULT_FEEDBACKSTATUS_PRM));
         jsonResults.put("feedbackMessage", results.get(Constants.RESULT_FEEDBACKMESSAGE_PRM));

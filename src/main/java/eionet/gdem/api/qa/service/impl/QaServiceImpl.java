@@ -114,7 +114,7 @@ public class QaServiceImpl implements QaService {
                 executionStatusName = "Ready";
                 break;
             case Constants.JOB_LIGHT_ERROR:
-                executionStatusName = "Failed";
+                executionStatusName = "Not Found";
                 break;
 
             case Constants.JOB_FATAL_ERROR:
