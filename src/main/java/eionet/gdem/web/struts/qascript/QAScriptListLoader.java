@@ -24,9 +24,7 @@ package eionet.gdem.web.struts.qascript;
 import javax.servlet.http.HttpServletRequest;
 
 
-
-
-import eionet.gdem.conversion.ssr.Names;
+import eionet.gdem.Constants;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.SecurityUtil;
@@ -95,12 +93,12 @@ public class QAScriptListLoader {
     public  static QAScriptListHolder loadQAScriptPermissions(String userName) throws Exception{
         QAScriptListHolder qa = new QAScriptListHolder();
 
-        boolean ssiPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_QUERIES_PATH, "i");
-        boolean ssdPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_QUERIES_PATH, "d");
-        boolean wqiPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_WQ_PATH, "i");
-        boolean wquPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_QUERIES_PATH, "u");
-        boolean qsiPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_QASANDBOX_PATH, "i");
-        boolean qsuPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_QASANDBOX_PATH, "u");
+        boolean ssiPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_QUERIES_PATH, "i");
+        boolean ssdPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_QUERIES_PATH, "d");
+        boolean wqiPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_WQ_PATH, "i");
+        boolean wquPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_QUERIES_PATH, "u");
+        boolean qsiPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_QASANDBOX_PATH, "i");
+        boolean qsuPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_QASANDBOX_PATH, "u");
 
         qa.setSsdPrm(ssdPrm);
         qa.setSsiPrm(ssiPrm);

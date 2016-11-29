@@ -27,6 +27,7 @@ import eionet.gdem.http.CustomURI;
 import eionet.gdem.qa.engines.SaxonProcessor;
 import eionet.gdem.utils.cache.MemoryCache;
 import net.sf.saxon.s9api.*;
+import org.apache.commons.io.IOUtils;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
@@ -41,6 +42,7 @@ import java.net.MalformedURLException;
  */
 public class XslGenerator {
 
+    // TODO: Replace custom cache.
     public static MemoryCache MemCache = new MemoryCache(10000, 10);
 
     /**
@@ -69,10 +71,11 @@ public class XslGenerator {
      */
     private static byte[] makeDynamicXSL(String sourceURL, String xslFile) throws XMLConvException {
         byte[] result = null;
+        ByteArrayOutputStream os = null;
         try {
             CustomURI uri = new CustomURI(sourceURL);
             uri.getURL();
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            os = new ByteArrayOutputStream();
 
             Processor proc = SaxonProcessor.getProcessor();
             XsltCompiler comp = proc.newXsltCompiler();
@@ -101,6 +104,8 @@ public class XslGenerator {
             throw new XMLConvException("Error opening URL " + ioe.toString(), ioe);
         } catch (Exception e) {
             throw new XMLConvException("Error converting: " + e.toString(), e);
+        } finally {
+            IOUtils.closeQuietly(os);
         }
         return result;
     }

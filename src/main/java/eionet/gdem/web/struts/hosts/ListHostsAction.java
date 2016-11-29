@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-
+import eionet.gdem.Constants;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -38,7 +38,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dto.HostDto;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IHostDao;
@@ -62,7 +61,7 @@ public class ListHostsAction extends BaseAction {
         List result = new ArrayList();
 
         try {
-            if (checkPermission(request, Names.ACL_HOST_PATH, "v")) {
+            if (checkPermission(request, Constants.ACL_HOST_PATH, "v")) {
                 Vector list = hostDao.getHosts(null);
                 for (int i = 0; i < list.size(); i++) {
                     Hashtable host = (Hashtable) list.get(i);

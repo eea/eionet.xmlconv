@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-
+import eionet.gdem.Constants;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -20,7 +20,6 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import eionet.gdem.conversion.ConversionService;
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.CrFileDto;
@@ -45,7 +44,7 @@ public class SearchCRConversionAction extends Action {
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
-        String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
+        String ticket = (String) httpServletRequest.getSession().getAttribute(Constants.TICKET_ATT);
 
         ActionErrors errors = new ActionErrors();
         String idConv = null;

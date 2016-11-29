@@ -1,6 +1,6 @@
 package eionet.gdem.web.struts.config;
 
-import eionet.gdem.conversion.ssr.Names;
+import eionet.gdem.Constants;
 import eionet.gdem.dcm.conf.DcmProperties;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.SecurityUtil;
@@ -41,7 +41,7 @@ public class BaseXAction extends Action {
 
         try {
 
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_CONFIG_PATH, "u")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_CONFIG_PATH, "u")) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.autorization.config.update"));
                 httpServletRequest.getSession().setAttribute("dcm.errors", errors);
                 return actionMapping.findForward("success");

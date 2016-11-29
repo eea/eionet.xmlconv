@@ -23,7 +23,6 @@ package eionet.gdem.dcm.business;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
@@ -94,7 +93,7 @@ public class QAScriptManager {
                 String queryFolder = Properties.queriesFolder;
 
                 if (!Utils.isNullStr(qaScript.getFileName())) {
-                    qaScript.setFilePath(Names.QUERY_FOLDER + qaScript.getFileName());
+                    qaScript.setFilePath(Constants.QUERY_FOLDER + qaScript.getFileName());
                     if (!queryFolder.endsWith(File.separator)) {
                         queryFolder = queryFolder + File.separator;
                     }
@@ -152,7 +151,7 @@ public class QAScriptManager {
     public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
             String scriptType, String curFileName, FormFile file, String upperLimit, String url) throws DCMException {
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
             }
         } catch (DCMException e) {
@@ -213,7 +212,7 @@ public class QAScriptManager {
             String scriptType, String curFileName, String upperLimit, String url, String content, boolean updateContent)
             throws DCMException {
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
             }
         } catch (DCMException e) {
@@ -316,7 +315,7 @@ public class QAScriptManager {
             IOException, DCMException {
 
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
                 LOGGER.debug("You don't have permissions to update QA script!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
             }
@@ -348,7 +347,7 @@ public class QAScriptManager {
      */
     public void delete(String user, String scriptId) throws DCMException {
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "d")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "d")) {
                 LOGGER.debug("You don't have permissions to delete QA script!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_DELETE);
             }
@@ -403,7 +402,7 @@ public class QAScriptManager {
         // If remote file URL and local file are specified use local file
 
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "i")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "i")) {
                 LOGGER.debug("You don't have permissions to insert QA script!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_INSERT);
             }
@@ -467,7 +466,7 @@ public class QAScriptManager {
      */
     public void updateSchemaValidation(String user, String schemaId, boolean validate, boolean blocker) throws DCMException {
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_SCHEMA_PATH, "u")) {
                 LOGGER.debug("You don't have permissions to update XML Schema validation!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_UPDATE);
             }
@@ -499,7 +498,7 @@ public class QAScriptManager {
     public void replaceScriptFromRemoteFile(String user, String remoteUrl, String fileName) throws DCMException {
 
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
                 LOGGER.debug("You don't have permissions to update QA script!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
             }
@@ -557,7 +556,7 @@ public class QAScriptManager {
      */
     public void activateDeactivate(String user, String scriptId, boolean setActive) throws DCMException {
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
                 LOGGER.debug("You don't have permissions to activate or deactivate QA script!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
             }

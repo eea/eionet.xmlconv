@@ -35,6 +35,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import eionet.gdem.Constants;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.commons.collections.comparators.NullComparator;
@@ -46,7 +47,6 @@ import org.apache.struts.upload.FormFile;
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dto.ConversionDto;
@@ -100,7 +100,7 @@ public class SchemaManager {
         boolean hasOtherStuff = false;
 
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "d")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_SCHEMA_PATH, "d")) {
                 LOGGER.debug("You don't have permissions to delete schemas!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_DELETE);
             }
@@ -196,7 +196,7 @@ public class SchemaManager {
                         Stylesheet stl = new Stylesheet();
                         stl.setConvId((String) stylesheet.get("convert_id"));
                         stl.setType((String) stylesheet.get("content_type_out"));
-                        stl.setXsl(Names.XSL_FOLDER + (String) stylesheet.get("xsl"));
+                        stl.setXsl(Constants.XSL_FOLDER + (String) stylesheet.get("xsl"));
                         stl.setXslFileName((String) stylesheet.get("xsl"));
                         stl.setDescription((String) stylesheet.get("description"));
                         stl.setDdConv(false);
@@ -273,7 +273,7 @@ public class SchemaManager {
                         lastModified = Utils.getDateTime(new Date(f.lastModified()));
                     }
                     // DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(f.lastModified()));
-                    xslUrl = Names.XSL_FOLDER + (String) hash.get("xsl");
+                    xslUrl = Constants.XSL_FOLDER + (String) hash.get("xsl");
                     type = (String) hash.get("result_type");
                 } else {
                     xslUrl = (String) hash.get("xsl");
@@ -369,7 +369,7 @@ public class SchemaManager {
                     // get file last modified only if schemaId is known
                     if (schemaId != null) {
                         if (!Utils.isNullStr(qas.getFileName())) {
-                            qas.setFilePath(Names.QUERY_FOLDER + qas.getFileName());
+                            qas.setFilePath(Constants.QUERY_FOLDER + qas.getFileName());
                             String queryFolder = Properties.queriesFolder;
                             if (!queryFolder.endsWith(File.separator)) {
                                 queryFolder = queryFolder + File.separator;
@@ -424,7 +424,7 @@ public class SchemaManager {
             String dtdPublicId, Date expireDate, boolean blocker) throws DCMException {
 
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_SCHEMA_PATH, "u")) {
                 LOGGER.error("You don't have permissions to delete schemas!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_UPDATE);
             }
@@ -465,8 +465,8 @@ public class SchemaManager {
 
         try {
             elems = new ArrayList<RootElem>();
-            xsduPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_SCHEMA_PATH, "u");
-            xsddPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_SCHEMA_PATH, "d");
+            xsduPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_SCHEMA_PATH, "u");
+            xsddPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_SCHEMA_PATH, "d");
 
             se.setXsduPrm(xsduPrm);
             se.setXsddPrm(xsddPrm);
@@ -645,7 +645,7 @@ public class SchemaManager {
                 String xslUrl;
 
                 if (!xslFileName.startsWith(Properties.gdemURL + "/do/getStylesheet?id=")) {
-                    xslUrl = Properties.gdemURL + "/" + Names.XSL_FOLDER + xslFileName;
+                    xslUrl = Properties.gdemURL + "/" + Constants.XSL_FOLDER + xslFileName;
                 } else {
                     xslUrl = (String) hash.get("xsl");
                     ddConv = true;
@@ -685,9 +685,9 @@ public class SchemaManager {
 
         try {
 
-            ssiPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_SCHEMA_PATH, "i");
-            ssdPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_SCHEMA_PATH, "d");
-            ssuPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_SCHEMA_PATH, "u");
+            ssiPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_SCHEMA_PATH, "i");
+            ssdPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_SCHEMA_PATH, "d");
+            ssuPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_SCHEMA_PATH, "u");
 
             sc.setSsdPrm(ssdPrm);
             sc.setSsiPrm(ssiPrm);
@@ -722,7 +722,7 @@ public class SchemaManager {
             throws DCMException {
         String schemaID = null;
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "i")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_SCHEMA_PATH, "i")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_INSERT);
             }
         } catch (DCMException e) {
@@ -784,7 +784,7 @@ public class SchemaManager {
     public void addUplSchema(String user, InputStream fileInputStream, String fileName, String fkSchemaId) throws DCMException {
 
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "i")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_SCHEMA_PATH, "i")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_INSERT);
             }
         } catch (DCMException e) {
@@ -839,7 +839,7 @@ public class SchemaManager {
         int ret = 0;
 
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "d")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_SCHEMA_PATH, "d")) {
                 LOGGER.debug("You don't have permissions to delete schemas!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_DELETE);
             }
@@ -1042,7 +1042,7 @@ public class SchemaManager {
             throws DCMException {
 
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "u")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_SCHEMA_PATH, "u")) {
                 LOGGER.debug("You don't have permissions to update schemas!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_SCHEMA_UPDATE);
             }

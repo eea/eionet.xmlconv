@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-
+import eionet.gdem.Constants;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -33,7 +33,6 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
 
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.web.struts.BaseAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +57,7 @@ public class AddHostAction extends BaseAction {
         DynaValidatorForm hostForm = (DynaValidatorForm) actionForm;
         hostForm.getMap().clear();
         try {
-            if (!checkPermission(request, Names.ACL_HOST_PATH, "i")) {
+            if (!checkPermission(request, Constants.ACL_HOST_PATH, "i")) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.inoperm",
                         translate(map, request, "label.hosts")));
             }

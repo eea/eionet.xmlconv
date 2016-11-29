@@ -4,13 +4,11 @@
 package eionet.gdem.web.struts.conversion;
 
 import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
-
+import eionet.gdem.Constants;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -19,11 +17,9 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
-
 import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.utils.Utils;
@@ -43,7 +39,7 @@ public class Excel2XmlConversionAction extends Action {
             HttpServletResponse httpServletResponse) throws IOException {
         ActionErrors errors = new ActionErrors();
 
-        String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
+        String ticket = (String) httpServletRequest.getSession().getAttribute(Constants.TICKET_ATT);
 
         DynaValidatorForm cForm = (DynaValidatorForm) actionForm;
         String url = processFormStr((String) cForm.get("url"));
@@ -96,7 +92,7 @@ public class Excel2XmlConversionAction extends Action {
             LOGGER.error("Error testing conversion", e);
             HttpSession sess = httpServletRequest.getSession(true);
             sess.setAttribute("gdem.exception", new XMLConvException("Error testing conversion: " + e.getMessage()));
-            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/" + Names.ERROR_JSP);
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/" + Constants.ERROR_JSP);
             return null;
         }
         finally{

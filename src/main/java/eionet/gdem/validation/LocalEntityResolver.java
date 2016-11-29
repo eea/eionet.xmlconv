@@ -5,7 +5,6 @@ package eionet.gdem.validation;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
-
 import eionet.gdem.utils.Utils;
 
 /**
@@ -22,12 +21,12 @@ public class LocalEntityResolver implements EntityResolver {
 
     /**
      * Constructor
-     * @param _localSystemId System Id
-     * @param _localId Local Id
+     * @param localSystemId System Id
+     * @param localId Local Id
      */
-    public LocalEntityResolver(String _localSystemId, String _localId) {
-        localSystemId = _localSystemId;
-        localId = _localId;
+    public LocalEntityResolver(String localSystemId, String localId) {
+        this.localSystemId = localSystemId;
+        this.localId = localId;
     }
 
     /**

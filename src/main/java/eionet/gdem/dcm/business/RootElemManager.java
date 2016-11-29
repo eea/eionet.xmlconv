@@ -21,10 +21,7 @@
 
 package eionet.gdem.dcm.business;
 
-
-
-
-import eionet.gdem.conversion.ssr.Names;
+import eionet.gdem.Constants;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
@@ -54,7 +51,7 @@ public class RootElemManager {
     public void delete(String user, String elemId) throws DCMException {
 
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "d")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_SCHEMA_PATH, "d")) {
                 LOGGER.debug("You don't have permissions to delete root element!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_ELEMENT_DELETE);
             }
@@ -87,7 +84,7 @@ public class RootElemManager {
     public void add(String user, String schemaId, String elemName, String namespace) throws DCMException {
 
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_SCHEMA_PATH, "i")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_SCHEMA_PATH, "i")) {
                 LOGGER.debug("You don't have permissions to insert root elements!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_ELEMENT_INSERT);
             }

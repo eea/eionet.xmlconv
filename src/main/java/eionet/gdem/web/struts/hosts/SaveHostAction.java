@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-
+import eionet.gdem.Constants;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -33,7 +33,6 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
 
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.utils.Utils;
@@ -71,7 +70,7 @@ public class SaveHostAction extends BaseAction {
         try {
             if (hostId == null) { // Add new host
                 LOGGER.debug("ADDING NEW HOST !!!");
-                if (checkPermission(request, Names.ACL_HOST_PATH, "i")) {
+                if (checkPermission(request, Constants.ACL_HOST_PATH, "i")) {
                     hostDao.addHost(host, username, password);
                     hostForm.getMap().clear();
                     messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.inserted"));
@@ -81,7 +80,7 @@ public class SaveHostAction extends BaseAction {
                 }
             } else { // Update host
                 LOGGER.debug("UPDATE HOST !!!");
-                if (checkPermission(request, Names.ACL_HOST_PATH, "u")) {
+                if (checkPermission(request, Constants.ACL_HOST_PATH, "u")) {
                     hostDao.updateHost(hostId, host, username, password);
                     hostForm.getMap().clear();
                     messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.hosts.updated"));

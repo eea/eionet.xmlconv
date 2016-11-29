@@ -41,7 +41,6 @@ import org.apache.struts.action.ActionMessages;
 import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.business.ConvTypeManager;
 import eionet.gdem.dcm.business.QAScriptManager;
 import eionet.gdem.dcm.business.SchemaManager;
@@ -95,7 +94,7 @@ public class RunScriptAction extends Action {
                 saveErrors(httpServletRequest, errors);
                 return actionMapping.findForward("error");
             }
-            if (!Utils.isNullStr(scriptContent) && !SecurityUtil.hasPerm(userName, "/" + Names.ACL_QASANDBOX_PATH, "i")) {
+            if (!Utils.isNullStr(scriptContent) && !SecurityUtil.hasPerm(userName, "/" + Constants.ACL_QASANDBOX_PATH, "i")) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.autorization.qasandbox.execute"));
                 saveErrors(httpServletRequest, errors);
                 return actionMapping.findForward("error");

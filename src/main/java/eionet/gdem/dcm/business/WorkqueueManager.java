@@ -24,7 +24,6 @@ package eionet.gdem.dcm.business;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
@@ -100,7 +99,7 @@ public class WorkqueueManager {
     throws DCMException {
 
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_WQ_PATH, "i")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_WQ_PATH, "i")) {
                 LOGGER.debug("You don't have permissions jobs into workqueue!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
             }
@@ -139,7 +138,7 @@ public class WorkqueueManager {
 
         List<String> result = new ArrayList<String>();
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_WQ_PATH, "i")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_WQ_PATH, "i")) {
                 LOGGER.debug("You don't have permissions jobs into workqueue!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
             }

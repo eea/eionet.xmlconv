@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-
+import eionet.gdem.Constants;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -34,7 +34,6 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
 
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.conf.DcmProperties;
 import eionet.gdem.dcm.conf.LdapTest;
 import eionet.gdem.exceptions.DCMException;
@@ -69,7 +68,7 @@ public class LdapAction extends Action {
 
         try {
 
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_CONFIG_PATH, "u")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_CONFIG_PATH, "u")) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.autorization.config.update"));
                 httpServletRequest.getSession().setAttribute("dcm.errors", errors);
                 return actionMapping.findForward("success");

@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import eionet.gdem.conversion.ssr.Names;
+import eionet.gdem.Constants;
 import eionet.gdem.dcm.remote.XMLErrorResult;
 import eionet.gdem.web.struts.BaseAction;
 
@@ -59,7 +59,7 @@ public class BaseMethodAction extends BaseAction {
         String ticket = null;
         HttpSession httpSession = req.getSession(false);
         if (httpSession != null) {
-            ticket = (String) httpSession.getAttribute(Names.TICKET_ATT);
+            ticket = (String) httpSession.getAttribute(Constants.TICKET_ATT);
         }
 
         return ticket;

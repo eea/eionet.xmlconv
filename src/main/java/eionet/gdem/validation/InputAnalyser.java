@@ -74,19 +74,14 @@ public class InputAnalyser {
             stream = fileManager.getInputStream(srcUrl, null, true);
             return parseXML(stream);
         } catch (MalformedURLException mfe) {
-            // throw new XMLConvException("Bad URL : " + mfe.toString());
             throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED);
         } catch (IOException ioe) {
-            // throw new XMLConvException("Error opening URL " + ioe.toString());
             throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_ERROR);
         } catch (SAXException e) {
-            e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_XMLPARSING_ERROR);
         } catch (XMLConvException e) {
-            e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         } finally {
             IOUtils.closeQuietly(stream);

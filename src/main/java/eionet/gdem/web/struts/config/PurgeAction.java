@@ -24,8 +24,7 @@ package eionet.gdem.web.struts.config;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
+import eionet.gdem.Constants;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -33,8 +32,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
-
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.business.BackupManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.SecurityUtil;
@@ -66,7 +63,7 @@ public class PurgeAction extends Action {
 
         try {
 
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_QUERIES_PATH, "u")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.autorization.config.purge"));
                 httpServletRequest.getSession().setAttribute("dcm.errors", errors);
                 return actionMapping.findForward("success");

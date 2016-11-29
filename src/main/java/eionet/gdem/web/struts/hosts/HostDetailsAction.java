@@ -23,20 +23,16 @@ package eionet.gdem.web.struts.hosts;
 
 import java.util.Hashtable;
 import java.util.Vector;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
+import eionet.gdem.Constants;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
-
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.web.struts.BaseAction;
@@ -61,7 +57,7 @@ public class HostDetailsAction extends BaseAction {
         String hostId = (String) hostForm.get("id");
 
         try {
-            if (checkPermission(request, Names.ACL_HOST_PATH, "u")) {
+            if (checkPermission(request, Constants.ACL_HOST_PATH, "u")) {
                 Vector hosts = hostDao.getHosts(hostId);
 
                 if (hosts != null) {

@@ -23,12 +23,8 @@ package eionet.gdem.web.struts.stylesheet;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-
-
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -36,7 +32,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.DynaValidatorForm;
-
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dcm.XslGenerator;
@@ -50,7 +45,6 @@ import org.slf4j.LoggerFactory;
  * @author George Sofianos
  */
 public class GetStylesheetAction extends Action {
-
 
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(GetStylesheetAction.class);
@@ -75,26 +69,19 @@ public class GetStylesheetAction extends Action {
             int bufLen = 0;
             byte[] buf = new byte[1024];
 
-            // byteIn.re
-
             response.setContentType("text/xml");
             while ((bufLen = byteIn.read(buf)) != -1) {
                 response.getOutputStream().write(buf, 0, bufLen);
             }
-
             byteIn.close();
             return null;
 
         } catch (Exception ge) {
             LOGGER.error("Error getting stylesheet", ge);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.generation"));
-            // request.getSession().setAttribute("dcm.errors", errors);
             request.setAttribute("dcm.errors", errors);
             return actionMapping.findForward("fail");
         }
-
-        // return null;
-
     }
 
 }

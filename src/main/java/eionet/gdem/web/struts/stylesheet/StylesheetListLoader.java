@@ -23,13 +23,9 @@ package eionet.gdem.web.struts.stylesheet;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
-
-
-
-import eionet.gdem.conversion.ssr.Names;
+import eionet.gdem.Constants;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.business.StylesheetManager;
 import eionet.gdem.dto.Schema;
@@ -149,9 +145,9 @@ public class StylesheetListLoader {
 
     public static StylesheetListHolder loadStylesheetPermissions(String userName) throws Exception {
         StylesheetListHolder st = new StylesheetListHolder();
-        boolean ssiPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_STYLESHEETS_PATH, "i");
-        boolean ssdPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_STYLESHEETS_PATH, "d");
-        boolean convPrm = SecurityUtil.hasPerm(userName, "/" + Names.ACL_TESTCONVERSION_PATH, "x");
+        boolean ssiPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_STYLESHEETS_PATH, "i");
+        boolean ssdPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_STYLESHEETS_PATH, "d");
+        boolean convPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_TESTCONVERSION_PATH, "x");
         st.setSsdPrm(ssdPrm);
         st.setSsiPrm(ssiPrm);
         st.setConvPrm(convPrm);

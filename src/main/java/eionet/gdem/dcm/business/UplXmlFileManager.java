@@ -15,13 +15,13 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import eionet.gdem.Constants;
 import org.apache.commons.io.IOUtils;
 
 
 import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.Properties;
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.UplXmlFile;
 import eionet.gdem.exceptions.DCMException;
@@ -62,7 +62,7 @@ public class UplXmlFileManager {
     public void addUplXmlFile(String user, FormFile xmlfile, String title) throws DCMException {
 
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_XMLFILE_PATH, "i")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_XMLFILE_PATH, "i")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_XMLFILE_INSERT);
             }
         } catch (DCMException e) {
@@ -109,7 +109,7 @@ public class UplXmlFileManager {
         boolean hasOtherStuff = false;
 
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_XMLFILE_PATH, "d")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_XMLFILE_PATH, "d")) {
                 LOGGER.debug("You don't have permissions to delete xml files!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_XMLFILE_DELETE);
             }
@@ -162,7 +162,7 @@ public class UplXmlFileManager {
             throws DCMException {
 
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_XMLFILE_PATH, "u")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_XMLFILE_PATH, "u")) {
                 LOGGER.debug("You don't have permissions to update xml file!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_XMLFILE_UPDATE);
             }
@@ -208,7 +208,7 @@ public class UplXmlFileManager {
      */
     public void renameXmlFile(String user, String xmlFileId, String title, String curFileName, String newFileName) throws DCMException {
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_XMLFILE_PATH, "u")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_XMLFILE_PATH, "u")) {
                 LOGGER.debug("You don't have permissions to update xml file!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_XMLFILE_UPDATE);
             }
@@ -295,9 +295,9 @@ public class UplXmlFileManager {
 
         try {
 
-            ssiPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_XMLFILE_PATH, "i");
-            ssdPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_XMLFILE_PATH, "d");
-            ssuPrm = SecurityUtil.hasPerm(user_name, "/" + Names.ACL_XMLFILE_PATH, "u");
+            ssiPrm = SecurityUtil.hasPerm(user_name, "/" + Constants.ACL_XMLFILE_PATH, "i");
+            ssdPrm = SecurityUtil.hasPerm(user_name, "/" + Constants.ACL_XMLFILE_PATH, "d");
+            ssuPrm = SecurityUtil.hasPerm(user_name, "/" + Constants.ACL_XMLFILE_PATH, "u");
 
             xh.setSsdPrm(ssdPrm);
             xh.setSsiPrm(ssiPrm);

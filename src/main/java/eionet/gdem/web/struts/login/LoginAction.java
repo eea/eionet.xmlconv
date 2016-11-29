@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-
+import eionet.gdem.Constants;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -39,7 +39,6 @@ import org.apache.struts.validator.DynaValidatorForm;
 
 import eionet.acl.AppUser;
 
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
@@ -116,8 +115,8 @@ public class LoginAction extends Action {
             }
             // session.setAttribute(Names.USER_ATT, aclUser);
             // add object into session becouse of old bussines ligic
-            httpServletRequest.getSession().setAttribute(Names.USER_ATT, aclUser);
-            httpServletRequest.getSession().setAttribute(Names.TICKET_ATT, Utils.getEncodedAuthentication(username, password));
+            httpServletRequest.getSession().setAttribute(Constants.USER_ATT, aclUser);
+            httpServletRequest.getSession().setAttribute(Constants.TICKET_ATT, Utils.getEncodedAuthentication(username, password));
         } catch (Exception dire) {
             LOGGER.debug("Authentication failed " + dire.toString(), dire);
             throw new Exception("Authentication failed ");

@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 
-
+import eionet.gdem.Constants;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -22,7 +22,6 @@ import org.apache.struts.action.ActionMessages;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
@@ -43,7 +42,7 @@ public class TestConvAction extends Action {
 
         ActionErrors errors = new ActionErrors();
 
-        String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
+        String ticket = (String) httpServletRequest.getSession().getAttribute(Constants.TICKET_ATT);
 
         ConversionForm cForm = (ConversionForm) actionForm;
 
@@ -94,7 +93,7 @@ public class TestConvAction extends Action {
                 sess.setAttribute("gdem.exception", new XMLConvException("Error testing conversion."));
             }
 
-            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/" + Names.ERROR_JSP);
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/" + Constants.ERROR_JSP);
         }
         finally{
             if (methodResponse != null){

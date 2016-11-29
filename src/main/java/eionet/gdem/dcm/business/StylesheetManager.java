@@ -36,7 +36,6 @@ import org.apache.commons.io.FileUtils;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.ConvType;
 import eionet.gdem.dto.Stylesheet;
@@ -74,7 +73,7 @@ public class StylesheetManager {
     public void delete(String user, String stylesheetId) throws DCMException {
 
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "d")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_STYLESHEETS_PATH, "d")) {
                 LOGGER.debug("You don't have permissions to delete stylesheet!");
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_STYLEHEET_DELETE);
             }
@@ -141,7 +140,7 @@ public class StylesheetManager {
     public void add(Stylesheet stylesheet, String user) throws DCMException {
 
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "i")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_STYLESHEETS_PATH, "i")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_STYLEHEET_INSERT);
             }
         } catch (DCMException e) {
@@ -185,7 +184,7 @@ public class StylesheetManager {
                 stylesheet = styleSheetDao.getStylesheet(stylesheetId);
 
                 if (stylesheet != null && !Utils.isNullStr(stylesheet.getXslFileName())) {
-                    stylesheet.setXsl(Names.XSL_FOLDER + stylesheet.getXslFileName());
+                    stylesheet.setXsl(Constants.XSL_FOLDER + stylesheet.getXslFileName());
 
                     String xslText = null;
                     try {
@@ -295,7 +294,7 @@ public class StylesheetManager {
      */
     public void update(Stylesheet styleseet, String user, boolean updateContent) throws DCMException {
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Names.ACL_STYLESHEETS_PATH, "u")) {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_STYLESHEETS_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_STYLEHEET_UPDATE);
             }
         } catch (DCMException e) {

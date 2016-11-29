@@ -17,8 +17,8 @@
 package eionet.gdem.web;
 
 import eionet.acl.AppUser;
+import eionet.gdem.Constants;
 import eionet.gdem.Properties;
-import eionet.gdem.conversion.ssr.Names;
 import eionet.gdem.utils.SecurityUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -473,14 +473,14 @@ public class FileDownloadServlet extends HttpServlet {
 		String securityMessage = null;
 		try {
 			if (urlPath.contains(Properties.getStringProperty("log.file"))) {
-				AppUser aclUser = SecurityUtil.getUser(request, Names.USER_ATT);
-				if (aclUser == null || !SecurityUtil.hasPerm(aclUser.getUserName(), "/" + Names.ACL_LOGFILE_PATH, "v")) {
+				AppUser aclUser = SecurityUtil.getUser(request, Constants.USER_ATT);
+				if (aclUser == null || !SecurityUtil.hasPerm(aclUser.getUserName(), "/" + Constants.ACL_LOGFILE_PATH, "v")) {
 					securityMessage = "You don't have permissions to view log file: " + urlPath;
 				}
 			}
             if (urlPath.startsWith("/tmp")) {
-                AppUser aclUser = SecurityUtil.getUser(request, Names.USER_ATT);
-                if ( aclUser == null || !SecurityUtil.hasPerm(aclUser.getUserName(), "/" + Names.ACL_WQ_PATH, "v")) {
+                AppUser aclUser = SecurityUtil.getUser(request, Constants.USER_ATT);
+                if (aclUser == null || !SecurityUtil.hasPerm(aclUser.getUserName(), "/" + Constants.ACL_WQ_PATH, "v")) {
                     securityMessage = "You don't have permissions to view result file: " + urlPath;
                 }
             }
