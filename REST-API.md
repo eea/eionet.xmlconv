@@ -366,7 +366,18 @@ https://taskman.eionet.europa.eu/issues/29005 regarding the REST API of the xmlc
      "errorMessage"  : "QA Service Exception" 
     }
     ```
+* **ExecutionStatus Ids and Names:**
+  * **statusId:** 0 <br/>
+    **statusName:** Ready <br/>
 
+  * **statusId:** 3 <br/>
+    **statusName:** Not Found <br/>
+ 
+  * **statusId:** 2 <br/>
+    **statusName:** Failed <br/>
+ 
+  * **statusId:** 1 <br/>
+    **statusName:** Pending <br/>
 
 -- 
 ### 3.5 Get list of QA Scripts for a schema
