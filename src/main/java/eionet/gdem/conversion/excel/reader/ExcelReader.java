@@ -46,6 +46,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.NumberToTextConverter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -510,7 +511,7 @@ public class ExcelReader implements SourceReaderIF {
                         Date dateValue = cell.getDateCellValue();
                         value = Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
                     } else {
-                        value = formatter.formatCellValue(cell);
+                        value = NumberToTextConverter.toText(cell.getNumericCellValue());
                     }
                     break;
                 case HSSFCell.CELL_TYPE_STRING:

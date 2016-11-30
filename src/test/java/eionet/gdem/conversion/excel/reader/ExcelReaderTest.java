@@ -19,18 +19,12 @@
  */
 package eionet.gdem.conversion.excel.reader;
 
-import eionet.gdem.test.ApplicationTestContext;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.test.TestConstants;
-import junit.framework.TestCase;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import java.io.File;
-
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -39,8 +33,6 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Enriko Käsper
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {ApplicationTestContext.class})
 public class ExcelReaderTest {
 
     @Test
@@ -73,4 +65,70 @@ public class ExcelReaderTest {
         String value = excel.cellValueToString(cell, "xs:string");
         assertEquals("Trim this string", value);
     }
+
+    @Test
+    public void testThousantSeparator() throws XMLConvException {
+        File inFile = new File(getClass().getClassLoader().getResource(TestConstants.SEED_READER_XLS)
+                .getFile());
+
+        ExcelReader excel = new ExcelReader(false);
+        excel.initReader(inFile);
+
+        Workbook workbook = excel.getWorkbook();
+
+        //test thousant separator
+        Cell cell = workbook.getSheetAt(0).getRow(1).getCell(1);
+        String value = excel.cellValueToString(cell, "xs:string");
+        assertEquals("123123.21", value);
+    }
+
+    @Test
+    public void testIntegerParsing() throws XMLConvException {
+        File inFile = new File(getClass().getClassLoader().getResource(TestConstants.SEED_READER_XLS)
+                .getFile());
+
+        ExcelReader excel = new ExcelReader(false);
+        excel.initReader(inFile);
+
+        Workbook workbook = excel.getWorkbook();
+
+        //test thousant separator
+        Cell cell = workbook.getSheetAt(0).getRow(2).getCell(1);
+        String value = excel.cellValueToString(cell, "xs:string");
+        assertEquals("1", value);
+    }
+
+    @Test
+    public void testDecimalValue() throws XMLConvException {
+        File inFile = new File(getClass().getClassLoader().getResource(TestConstants.SEED_READER_XLS)
+                .getFile());
+
+        ExcelReader excel = new ExcelReader(false);
+        excel.initReader(inFile);
+
+        Workbook workbook = excel.getWorkbook();
+
+        //test thousant separator
+        Cell cell = workbook.getSheetAt(0).getRow(3).getCell(1);
+        String value = excel.cellValueToString(cell, "xs:string");
+        assertEquals("0.00001", value);
+    }
+
+    @Test
+    public void testGreekLocale() throws XMLConvException {
+        File inFile = new File(getClass().getClassLoader().getResource(TestConstants.SEED_READER_XLS)
+                .getFile());
+
+        ExcelReader excel = new ExcelReader(false);
+        excel.initReader(inFile);
+
+        Workbook workbook = excel.getWorkbook();
+
+        //test thousant separator
+        Cell cell = workbook.getSheetAt(0).getRow(4).getCell(1);
+        String value = excel.cellValueToString(cell, "xs:string");
+        assertEquals("123123.123", value);
+    }
+
+
 }

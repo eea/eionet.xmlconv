@@ -22,6 +22,7 @@ public class TestConstants {
     public static final String SEED_DATASET_UPLXML_XML = "seed-dataset-uplxml.xml";
 
     // SEED FILES for conversions
+    public static final String SEED_READER_XLS = "seed-reader.xls";
     public static final String SEED_RIVERS_XLS = "seed-rivers.xls";
     public static final String SEED_DATES_XLS = "seed-dates.xls";
     public static final String SEED_MULTIVALUES_XLS = "seed-multivalues.xls";
