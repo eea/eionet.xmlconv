@@ -6,13 +6,9 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.api.errors.EmptyParameterException;
 import eionet.gdem.api.qa.model.EnvelopeWrapper;
 import eionet.gdem.api.qa.service.QaService;
-import static eionet.gdem.qa.ListQueriesMethod.DEFAULT_CONTENT_TYPE_ID;
-import static eionet.gdem.qa.ListQueriesMethod.VALIDATION_UPPER_LIMIT;
-import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.test.ApplicationTestContext;
 import java.io.UnsupportedEncodingException;
 import java.util.Hashtable;
-import java.util.Vector;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import static org.hamcrest.CoreMatchers.is;
 import org.junit.Before;
@@ -26,7 +22,6 @@ import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -41,7 +36,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
  * @author Vasilis Skiadas<vs@eworx.gr>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
 @ContextConfiguration(classes = {ApplicationTestContext.class})
 public class QaControllerTest {
 
@@ -118,20 +112,24 @@ public class QaControllerTest {
 
         String jobid = "42";
         Hashtable<String, String> results = new Hashtable<String, String>();
-        results.put(Constants.RESULT_VALUE_PRM, "200");
+        results.put(Constants.RESULT_CODE_PRM, "0");
+        results.put("executionStatusName", "Ready");
+        results.put(Constants.RESULT_SCRIPTTITLE_PRM, "XML Schema validation");
+        results.put(Constants.RESULT_VALUE_PRM, "<div>some content</div>");
         results.put(Constants.RESULT_FEEDBACKSTATUS_PRM, "BLOCKER");
         results.put(Constants.RESULT_FEEDBACKMESSAGE_PRM, "Feedback Message");
         results.put(Constants.RESULT_METATYPE_PRM, "text/html");
-        results.put(Constants.RESULT_SCRIPTTITLE_PRM, "script title");
         when(qaServiceMock.getJobResults(any(String.class))).thenReturn(results);
 
         mockMvc.perform(get("/asynctasks/qajobs/{jobId}", jobid))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.executionStatus", is("200")))
+                .andExpect(jsonPath("$.executionStatus.statusId", is("0")))
+                .andExpect(jsonPath("$.executionStatus.statusName", is("Ready")))
+                .andExpect(jsonPath("$.scriptTitle", is("XML Schema validation")))
                 .andExpect(jsonPath("$.feedbackStatus", is("BLOCKER")))
                 .andExpect(jsonPath("$.feedbackMessage", is("Feedback Message")))
                 .andExpect(jsonPath("$.feedbackContentType", is("text/html")))
-                .andExpect(jsonPath("$.feedbackContent", is("script title")));
+                .andExpect(jsonPath("$.feedbackContent", is("<div>some content</div>")));
 
         ArgumentCaptor<String> jobIdCaptor = ArgumentCaptor.forClass(String.class);
         verify(qaServiceMock, times(1)).getJobResults(jobIdCaptor.capture());
