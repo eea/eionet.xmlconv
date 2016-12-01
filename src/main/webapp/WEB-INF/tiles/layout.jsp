@@ -26,9 +26,9 @@ response.setDateHeader("Expires", 0);
         </title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <!--  EEA central styles -->
-        <link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/print.css" media="print" />
-        <link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/handheld.css" media="handheld" />
-        <link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/print.css" media="print" />
+        <link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/handheld.css" media="handheld" />
+        <link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen" />
         <!--  local style -->
         <link rel="stylesheet" type="text/css" href="<c:url value="/css/main.css"/>" media="screen" />
         <link rel="shortcut icon" href="<c:url value="/images/favicon.ico"/>" type="image/x-icon" />

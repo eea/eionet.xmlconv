@@ -1,4 +1,5 @@
 <%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java"%>
+<%@ page import="eionet.gdem.Properties" %>
 <%@ page import="eionet.gdem.utils.SecurityUtil" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
@@ -31,11 +32,17 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
             <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
             <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode"><span>Switch to/from full screen mode</span></a>
             <a id="acronymlink" href="http://www.eionet.europa.eu/acronyms" title="Look up acronyms"><span>Acronyms</span></a>
-            <form action="http://search.eionet.europa.eu/search.jsp" method="get">
+            <form action="https://google.com/search" method="get">
                 <div id="freesrchform">
                     <label for="freesrchfld">Search</label>
-                    <input type="text" id="freesrchfld" name="query"/>
-                    <html:image styleId="freesrchbtn" page="/images/button_go.gif" alt="Go" title="Go"/>
+                    <input type="text" id="freesrchfld" name="q"
+                           onfocus="if (this.value == 'Search the site')
+                                                   this.value = '';"
+                           onblur="if (this.value == '')
+                                                   this.value = 'Search the site';"
+                           value="Search the site"/>
+                    <input type="hidden" name="sitesearch" value="<%=Properties.appHost%>" />
+                    <input id="freesrchbtn" type="image" src="<c:url value="/images/button_go.gif"/>" alt="Go"/>
                 </div>
             </form>
         </div>

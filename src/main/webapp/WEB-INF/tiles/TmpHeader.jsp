@@ -1,4 +1,5 @@
 <%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java"%>
+<%@ page import="eionet.gdem.Properties" %>
 <%@ page import="eionet.gdem.utils.SecurityUtil" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-nested.tld" prefix="nested" %>
@@ -25,9 +26,9 @@ response.setDateHeader("Expires", 0);
 <head>
 <title><tiles:getAsString name="title" ignore="true"/></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/print.css" media="print" />
-<link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/handheld.css" media="handheld" />
-<link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/print.css" media="print" />
+<link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/handheld.css" media="handheld" />
+<link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen" />
 <style type="text/css" media="screen">
 <!--
     @import url(<c:url value="/css/main.css"/>);
@@ -61,11 +62,17 @@ response.setDateHeader("Expires", 0);
             <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
             <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode"><span>Switch to/from full screen mode</span></a>
             <a id="acronymlink" href="http://www.eionet.europa.eu/acronyms" title="Look up acronyms"><span>Acronyms</span></a>
-            <form action="http://search.eionet.europa.eu/search.jsp" method="get">
+            <form action="https://google.com/search" method="get">
                 <div id="freesrchform">
                     <label for="freesrchfld">Search</label>
-                    <input type="text" id="freesrchfld" name="query"/>
-                    <html:image styleId="freesrchbtn" page="/images/button_go.gif" alt="Go"/>
+                    <input type="text" id="freesrchfld" name="q"
+                           onfocus="if (this.value == 'Search the site')
+                                                   this.value = '';"
+                           onblur="if (this.value == '')
+                                                   this.value = 'Search the site';"
+                           value="Search the site"/>
+                    <input type="hidden" name="sitesearch" value="<%=Properties.appHost%>" />
+                    <input id="freesrchbtn" type="image" src="<c:url value="/images/button_go.gif"/>" alt="Go"/>
                 </div>
             </form>
         </div>
