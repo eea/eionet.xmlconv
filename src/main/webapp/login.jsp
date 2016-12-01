@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<%@ page contentType="text/html" import="eionet.gdem.conversion.ssr.Names"%>
+<%@ page contentType="text/html" import="eionet.gdem.Constants"%>
 <%
 
-    String err = (String)request.getAttribute(Names.ERROR_ATT);
+    String err = (String)request.getAttribute(Constants.ERROR_ATT);
 
 %>
 
@@ -22,7 +22,7 @@
 </head>
 <body bgcolor="#f0f0f0" onload="setFocus()">
         <form name="f" action="main" method="post">
-            <input name="ACTION" type="hidden" value="<%=Names.LOGIN_ACTION%>" />
+            <input name="ACTION" type="hidden" value="<%=Constants.LOGIN_ACTION%>" />
             <% if (err!= null) { %>
                   <h4><%=err%></h4>
             <% }

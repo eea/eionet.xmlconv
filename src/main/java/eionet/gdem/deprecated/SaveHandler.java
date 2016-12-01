@@ -21,9 +21,10 @@
  * Original Code: Enriko Käsper (TietoEnator)
  */
 
-package eionet.gdem.conversion.ssr;
+package eionet.gdem.deprecated;
 
 import eionet.acl.AppUser;
+import eionet.gdem.Constants;
 import eionet.gdem.dcm.business.WorkqueueManager;
 import eionet.gdem.utils.SecurityUtil;
 import org.slf4j.Logger;
@@ -48,21 +49,21 @@ public class SaveHandler {
      * @param action Action
      */
     static void handleWorkqueue(HttpServletRequest req, String action) {
-        AppUser user = SecurityUtil.getUser(req, Names.USER_ATT);
+        AppUser user = SecurityUtil.getUser(req, Constants.USER_ATT);
         String user_name = null;
         if (user != null) {
             user_name = user.getUserName();
         }
 
 
-        if (action.equals(Names.WQ_DEL_ACTION)) {
+        if (action.equals(Constants.WQ_DEL_ACTION)) {
             try {
-                if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "d")) {
-                    req.setAttribute(Names.ERROR_ATT, "You don't have permissions to delete jobs!");
+                if (!SecurityUtil.hasPerm(user_name, "/" + Constants.ACL_WQ_PATH, "d")) {
+                    req.setAttribute(Constants.ERROR_ATT, "You don't have permissions to delete jobs!");
                     return;
                 }
             } catch (Exception e) {
-                req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
+                req.setAttribute(Constants.ERROR_ATT, "Cannot read permissions: " + e.toString());
                 return;
             }
 
@@ -78,16 +79,16 @@ public class SaveHandler {
             }
 
             if (err_buf.length() > 0) {
-                req.setAttribute(Names.ERROR_ATT, err_buf.toString());
+                req.setAttribute(Constants.ERROR_ATT, err_buf.toString());
             }
-        } else if (action.equals(Names.WQ_RESTART_ACTION)) {
+        } else if (action.equals(Constants.WQ_RESTART_ACTION)) {
             try {
-                if (!SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "u")) {
-                    req.setAttribute(Names.ERROR_ATT, "You don't have permissions to restart the jobs!");
+                if (!SecurityUtil.hasPerm(user_name, "/" + Constants.ACL_WQ_PATH, "u")) {
+                    req.setAttribute(Constants.ERROR_ATT, "You don't have permissions to restart the jobs!");
                     return;
                 }
             } catch (Exception e) {
-                req.setAttribute(Names.ERROR_ATT, "Cannot read permissions: " + e.toString());
+                req.setAttribute(Constants.ERROR_ATT, "Cannot read permissions: " + e.toString());
                 return;
             }
 
@@ -102,7 +103,7 @@ public class SaveHandler {
                 err_buf.append("Cannot restart jobs: " + e);
             }
             if (err_buf.length() > 0) {
-                req.setAttribute(Names.ERROR_ATT, err_buf.toString());
+                req.setAttribute(Constants.ERROR_ATT, err_buf.toString());
             }
         }
     }

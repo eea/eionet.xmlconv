@@ -6,7 +6,6 @@
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed"%>
 
 <%@page import="eionet.gdem.Constants"%>
-<%@page import="eionet.gdem.conversion.ssr.Names"%>
 
 <html:xhtml/>
 
@@ -51,7 +50,7 @@
                     <logic:iterate indexId="index" id="backup" name="qascript.history" type="BackupDto">
                     <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
                         <td align="center">
-                            <a  href="<bean:write name="webRoot"/>/<%=Names.QUERY_FOLDER%>/<%=Constants.BACKUP_FOLDER_NAME%>/<bean:write name="backup" property="fileName" />" title="<bean:write name="backup" property="fileName" />">
+                            <a  href="<bean:write name="webRoot"/>/<%=Constants.QUERY_FOLDER%>/<%=Constants.BACKUP_FOLDER_NAME%>/<bean:write name="backup" property="fileName" />" title="<bean:write name="backup" property="fileName" />">
                                 <bean:write name="backup" property="fileName" />
                             </a>
                         </td>

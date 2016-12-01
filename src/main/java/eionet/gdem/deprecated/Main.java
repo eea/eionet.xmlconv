@@ -21,7 +21,7 @@
  * Original Code: Enriko Käsper (TietoEnator)
  */
 
-package eionet.gdem.conversion.ssr;
+package eionet.gdem.deprecated;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,15 +35,17 @@ import javax.servlet.http.HttpSession;
 
 import eionet.acl.AppUser;
 
+import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
 
 /**
+ * XXX: Deprecated, need to refactor and remove.
  * Main Servlet.
  * @author Unknown
  * @author George Sofianos
  */
-public class Main extends HttpServlet implements Names {
+public class Main extends HttpServlet {
 
     protected HashMap apps;
     protected HashMap appClients; // holds ServiceClients (RPC clients )
@@ -53,7 +55,7 @@ public class Main extends HttpServlet implements Names {
     protected String authUser;
     protected String unauthUser;
     protected HttpSession session;
-    protected String index_jsp = INDEX_JSP;
+    protected String index_jsp = Constants.INDEX_JSP;
 
     private boolean userChanged = false;
 
@@ -64,7 +66,7 @@ public class Main extends HttpServlet implements Names {
      * @param req Servlet request
      */
     protected HttpSession getSession(HttpServletRequest req) {
-        session = (HttpSession) req.getAttribute(Names.SESS_ATT);
+        session = (HttpSession) req.getAttribute(Constants.SESS_ATT);
         return session;
     }
 
@@ -85,23 +87,23 @@ public class Main extends HttpServlet implements Names {
 
         index_jsp = getWelcomeFile();
 
-        if (action.equals(LOGOUT_ACTION)) {
+        if (action.equals(Constants.LOGOUT_ACTION)) {
             doLogout(req);
             userChanged = true;
         }
 
         // if login is going on, no user needed
-        if (action.equals(LOGIN_ACTION)) {
+        if (action.equals(Constants.LOGIN_ACTION)) {
             try {
                 doLogin(req, res);
             } catch (Exception e) {
                 // l ("exception in login");
-                handleError(req, res, "Error: " + e.toString(), LOGIN_ACTION);
+                handleError(req, res, "Error: " + e.toString(), Constants.LOGIN_ACTION);
                 return;
             }
         }
         // HttpSession needed as request attribtue as well
-        req.setAttribute(SESS_ATT, sess);
+        req.setAttribute(Constants.SESS_ATT, sess);
 
         // redirect to correct JSP
         dispatch(req, res, action);
@@ -145,14 +147,14 @@ public class Main extends HttpServlet implements Names {
             // if (!SecurityUtil.hasPerm(u,GDEM_SSAclName, "v"))//GDEM_readPermission))
             // throw new ServletException("Not allowed to use the Styelsheet Repository");
 
-            session.setAttribute(USER_ATT, aclUser);
-            session.setAttribute(TICKET_ATT, Utils.getEncodedAuthentication(u, p));
+            session.setAttribute(Constants.USER_ATT, aclUser);
+            session.setAttribute(Constants.TICKET_ATT, Utils.getEncodedAuthentication(u, p));
 
         } catch (Exception dire) {
 
-            session.setAttribute(USER_ATT, null);
+            session.setAttribute(Constants.USER_ATT, null);
             // session.setAttribute(Names.APPLICATIONS_ATT, null);
-            req.setAttribute(SESS_ATT, null);
+            req.setAttribute(Constants.SESS_ATT, null);
 
             // handleError(req, res,"Authentication failed " + dire.toString(), Names.ERROR_ACTION);
             throw new ServletException("Authentication failed " + dire.toString());
@@ -175,17 +177,17 @@ public class Main extends HttpServlet implements Names {
             throws ServletException, IOException {
 
         // req.setAttribute(ERROR_ATT, errMsg);
-        String jspName = ERROR_JSP; // default
-        if (action.equals(LOGIN_ACTION)) {
-            req.setAttribute(ERROR_ATT, errMsg);
-            jspName = LOGIN_JSP;
+        String jspName = Constants.ERROR_JSP; // default
+        if (action.equals(Constants.LOGIN_ACTION)) {
+            req.setAttribute(Constants.ERROR_ATT, errMsg);
+            jspName = Constants.LOGIN_JSP;
             req.getRequestDispatcher(jspName).forward(req, res);
         } else {
             HttpSession sess = req.getSession(true);
             Exception err = new Exception(errMsg);
             sess.setAttribute("gdem.exception", err);
             if (Utils.isNullStr(jspName))
-                jspName = Names.ERROR_JSP;
+                jspName = Constants.ERROR_JSP;
 
             // req.getRequestDispatcher(jspName).forward(req,res);
             res.sendRedirect(res.encodeRedirectURL(req.getContextPath() + "/" + jspName));
@@ -204,23 +206,23 @@ public class Main extends HttpServlet implements Names {
 
         String jspName = "do/qaScripts";
 
-        if (action.equals(LOGOUT_ACTION))
+        if (action.equals(Constants.LOGOUT_ACTION))
             jspName = index_jsp;
-        else if (action.equals(LOGIN_ACTION)) {
+        else if (action.equals(Constants.LOGIN_ACTION)) {
             // login has succeeded and we close login window
             res.setContentType("text/html");
             PrintWriter out = res.getWriter();
             out.print("<html><script>window.opener.location.reload(true);window.close()</script></html>");
             out.close();
-        } else if (action.equals(SHOW_TESTCONVERSION_ACTION))
-            jspName = TEST_CONVERSION_JSP;
-        else if (action.equals(SHOW_LISTCONVERSION_ACTION))
-            jspName = LIST_CONVERSION_JSP;
-        else if (action.equals(EXECUTE_TESTCONVERSION_ACTION))
-            jspName = TEST_CONVERSION_SERVLET;
-        else if (action.equals(WQ_DEL_ACTION) || action.equals(WQ_RESTART_ACTION)) {
+        } else if (action.equals(Constants.SHOW_TESTCONVERSION_ACTION))
+            jspName = Constants.TEST_CONVERSION_JSP;
+        else if (action.equals(Constants.SHOW_LISTCONVERSION_ACTION))
+            jspName = Constants.LIST_CONVERSION_JSP;
+        else if (action.equals(Constants.EXECUTE_TESTCONVERSION_ACTION))
+            jspName = Constants.TEST_CONVERSION_SERVLET;
+        else if (action.equals(Constants.WQ_DEL_ACTION) || action.equals(Constants.WQ_RESTART_ACTION)) {
             SaveHandler.handleWorkqueue(req, action);
-            jspName = LIST_WORKQUEUE_JSP;
+            jspName = Constants.LIST_WORKQUEUE_JSP;
         }
 
         res.sendRedirect(jspName);
@@ -238,9 +240,9 @@ public class Main extends HttpServlet implements Names {
         if (appClients != null)
             appClients.clear();
 
-        req.getSession().removeAttribute(USER_ATT);
-        req.getSession().removeAttribute(TICKET_ATT);
-        req.removeAttribute(SESS_ATT);
+        req.getSession().removeAttribute(Constants.USER_ATT);
+        req.getSession().removeAttribute(Constants.TICKET_ATT);
+        req.removeAttribute(Constants.SESS_ATT);
 
     }
 
@@ -250,7 +252,7 @@ public class Main extends HttpServlet implements Names {
      * @return True if user ?
      */
     private boolean guard(HttpSession sess) {
-        if (sess.getAttribute(USER_ATT) == null)
+        if (sess.getAttribute(Constants.USER_ATT) == null)
             return false;
         else
             return true;
@@ -272,12 +274,12 @@ public class Main extends HttpServlet implements Names {
         }
         if (welcomefile == null) {
             if (serviceInstalled(Properties.CONV_SERVICE)) {
-                welcomefile = INDEX_JSP;
+                welcomefile = Constants.INDEX_JSP;
             }
             if (serviceInstalled(Properties.QA_SERVICE)) {
-                welcomefile = QUERIESINDEX_JSP;
+                welcomefile = Constants.QUERIESINDEX_JSP;
             } else {
-                welcomefile = INDEX_JSP;
+                welcomefile = Constants.INDEX_JSP;
             }
 
         }

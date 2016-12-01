@@ -1,4 +1,4 @@
-<%@ page import="eionet.gdem.conversion.ssr.Names, eionet.gdem.utils.SecurityUtil,eionet.acl.AppUser, eionet.gdem.Properties" %>
+<%@ page import="eionet.gdem.Constants, eionet.gdem.utils.SecurityUtil,eionet.acl.AppUser, eionet.gdem.Properties" %>
 <%!
     //
     private boolean serviceInstalled(int service){
@@ -17,12 +17,12 @@
     }
 %>
 <%
-    AppUser user = SecurityUtil.getUser(request, Names.USER_ATT);
+    AppUser user = SecurityUtil.getUser(request, Constants.USER_ATT);
     String user_name=null;
     if (user!=null)
         user_name = user.getUserName();
-    String err = (String)request.getAttribute(Names.ERROR_ATT);
-  boolean hovPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_HOST_PATH, "v");
+    String err = (String)request.getAttribute(Constants.ERROR_ATT);
+  boolean hovPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Constants.ACL_HOST_PATH, "v");
 
 %>
 

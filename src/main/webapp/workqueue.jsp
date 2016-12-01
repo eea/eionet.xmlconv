@@ -62,7 +62,7 @@ function doDelete(){
     if (!confirm('Are you sure you want to delete the selected jobs?'))
         return false;
 
-    document.getElementById('ACTION').value='<%=Names.WQ_DEL_ACTION%>';
+    document.getElementById('ACTION').value='<%=Constants.WQ_DEL_ACTION%>';
     document.getElementById('jobs').submit();
 }
 function doRestart(){
@@ -70,7 +70,7 @@ function doRestart(){
         alert('No jobs selected!');
         return false;
     }
-    document.getElementById('ACTION').value='<%=Names.WQ_RESTART_ACTION%>';
+    document.getElementById('ACTION').value='<%=Constants.WQ_RESTART_ACTION%>';
     document.getElementById('jobs').submit();
 }
 // ]]>
@@ -79,10 +79,10 @@ function doRestart(){
 
 
         <%
-            boolean wqdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "d");
-            boolean wquPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "u");
-            boolean wqvPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_WQ_PATH, "v");
-            boolean logvPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_LOGFILE_PATH, "v");
+            boolean wqdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Constants.ACL_WQ_PATH, "d");
+            boolean wquPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Constants.ACL_WQ_PATH, "u");
+            boolean wqvPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Constants.ACL_WQ_PATH, "v");
+            boolean logvPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Constants.ACL_LOGFILE_PATH, "v");
 
             String[][] list = null;
             try{
@@ -266,7 +266,7 @@ function doRestart(){
                 <%}%>
                 <input class="form-element" type="button" name="selectAll" id="selectAll" value="Select All" onclick="toggleSelect('jobID'); return false"/>
             <%}%>
-                <input type="hidden" name="ACTION" id="ACTION" value="<%=Names.WQ_DEL_ACTION%>"/>
+                <input type="hidden" name="ACTION" id="ACTION" value="<%=Constants.WQ_DEL_ACTION%>"/>
                 <input type="hidden" name="ID" value="" />
             </div>
         </form>

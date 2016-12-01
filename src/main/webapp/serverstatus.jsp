@@ -20,7 +20,7 @@ response.setDateHeader("Expires", 0);
     <h1>Server Status</h1>
     
     <%
-        boolean wqdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Names.ACL_SERVERSTATUS_PATH, "v");
+        boolean wqdPrm = user!=null && SecurityUtil.hasPerm(user_name, "/" + Constants.ACL_SERVERSTATUS_PATH, "v");
      if ( wqdPrm == true){            %>
             
     <script type="text/javascript" src="<c:url value="/scripts/jquery-1.9.1.min.js" />"></script>

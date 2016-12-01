@@ -154,7 +154,7 @@
     </servlet>
     <servlet>
         <servlet-name>Main</servlet-name>
-        <servlet-class>eionet.gdem.conversion.ssr.Main</servlet-class>
+        <servlet-class>eionet.gdem.deprecated.Main</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>RpcRouter</servlet-name>
