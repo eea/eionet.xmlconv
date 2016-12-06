@@ -51,11 +51,6 @@ public class VtdContext implements IXmlCtx {
     }
 
     @Override
-    public XmlSerializer getSerializer() {
-        return null;
-    }
-
-    @Override
     public XPathQuery getQueryManager() {
         return null;
     }

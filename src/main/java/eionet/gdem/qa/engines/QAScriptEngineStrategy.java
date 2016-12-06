@@ -24,10 +24,6 @@ package eionet.gdem.qa.engines;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
-
-
-
-
 import eionet.gdem.XMLConvException;
 import eionet.gdem.qa.QAResultPostProcessor;
 import eionet.gdem.qa.XQEngineIF;
@@ -72,22 +68,14 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
         getResult(script, result);
         try {
             res = result.toString(DEFAULT_ENCODING);
-            if (LOGGER.isDebugEnabled()){
-                String logResult = res.length() > 299 ?  res.substring(0, 300) : res;
-                LOGGER.debug("RESULT: \n" + logResult);
-            }
-
         } catch (Exception e) {
-            LOGGER.error("==== CATCHED EXCEPTION " + e.toString());
+            LOGGER.error("Error while converting QA result" + e);
         }
-
         // add "red coloured warning" if script is expired
         if (script.getOutputType().equals(XQScript.SCRIPT_RESULTTYPE_HTML) && script.getSchema() != null) {
-
             QAResultPostProcessor postProcessor = new QAResultPostProcessor();
             res = postProcessor.processQAResult(res, script.getSchema());
         }
-
         return res;
     }
 

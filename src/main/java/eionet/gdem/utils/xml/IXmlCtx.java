@@ -86,12 +86,6 @@ public interface IXmlCtx {
     XmlUpdater getManager();
 
     /**
-     * Returns serializer.
-     * @return serializer
-     */
-    XmlSerializer getSerializer();
-
-    /**
      * Returns query manager.
      * @return query manager.
      */

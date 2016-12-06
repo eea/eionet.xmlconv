@@ -40,10 +40,6 @@ public class DomContext extends XmlCommon implements IXmlCtx {
         return new XmlManager(this);
     }
 
-    public XmlSerializer getSerializer() {
-        return new XmlSerialization(this);
-    }
-
     public DomXpath getQueryManager() {
         return new DomXpath(this);
     }

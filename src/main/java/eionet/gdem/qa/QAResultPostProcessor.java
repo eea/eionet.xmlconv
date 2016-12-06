@@ -20,26 +20,14 @@
 package eionet.gdem.qa;
 
 import java.io.IOException;
-import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import eionet.gdem.XMLConvException;
-import eionet.gdem.utils.xml.*;
-import eionet.gdem.utils.xml.dom.DomContext;
-import eionet.gdem.utils.xml.dom.XmlSerialization;
 import eionet.gdem.xml.VtdHandler;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.datadict.DataDictUtil;
 import eionet.gdem.dcm.BusinessConstants;
@@ -56,12 +44,9 @@ import eionet.gdem.utils.Utils;
  */
 public class QAResultPostProcessor {
 
-    /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(QAResultPostProcessor.class);
-
     private SchemaManager schemaManager = new SchemaManager();
-
-    private String warnMessage = null;
+    private String warnMessage;
 
     /**
      * Checks if the QA was made against expired schema. Adds a warning on top of the QA result if the result is HTML format.
@@ -78,13 +63,13 @@ public class QAResultPostProcessor {
             vdt.addWarningMessage(result, warnMessage, out);
         } else {
             try {
-                out.write(result.getBytes());
+                out.write(result.getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
                 throw new XMLConvException("Couldn't write to OutputStream: " + e.getMessage());
             }
         }
 
-        return new String(out.toByteArray());
+        return new String(out.toByteArray(), StandardCharsets.UTF_8);
     }
 
     /**
@@ -208,84 +193,6 @@ public class QAResultPostProcessor {
             }
         }
         return null;
-    }
-
-    /**
-     * Adds warning to result
-     * TODO: remove it in the future not in use any more since we use a new XML parser.
-     * @param htmlResult HTML result
-     * @param warnMessage warning message
-     * @return Processed result.
-     */
-    private String addExpWarning(String htmlResult, String warnMessage) {
-
-        try {
-            IXmlCtx ctx = new DomContext();
-            ctx.checkFromString(htmlResult);
-
-            NodeList divElements = ctx.getDocument().getElementsByTagName("div");
-            boolean foundFeedbackDiv = parseDivNodes(divElements, warnMessage);
-
-            // searching node is case insensitive in XPath - do it twice:
-            if (!foundFeedbackDiv) {
-                divElements = ctx.getDocument().getElementsByTagName("DIV");
-                foundFeedbackDiv = parseDivNodes(divElements, warnMessage);
-            }
-
-            if (!foundFeedbackDiv) {
-                return htmlResult;
-            } else {
-                XmlSerializer serializer = new XmlSerialization(ctx);
-                return serializer.serializeToString();
-            }
-        } catch (Exception e) {
-            LOGGER.error("addExpWarning() Error parsing HTML, returning original HTML: " + e.toString());
-        }
-
-        return htmlResult;
-    }
-
-    /**
-     * Parses div nodes and adds warning node to result
-     * @param divElements Div elements
-     * @param warnMessage Warning message
-     * @return true if feedbacktext class is found
-     * @throws XmlException If an error occurs.
-     */
-    private boolean parseDivNodes(NodeList divElements, String warnMessage) throws XmlException {
-        boolean feedBackDivFound = false;
-        try {
-            for (int i = 0; divElements != null && i < divElements.getLength(); i++) {
-                Node divNode = divElements.item(i);
-                Node classNode = divNode.getAttributes().getNamedItem("class");
-
-                if (classNode != null && classNode.getNodeValue().equalsIgnoreCase("feedbacktext")) {
-                    // found feedback div
-                    feedBackDivFound = true;
-
-                    Node firstChild = divNode.getFirstChild();
-                    Document doc = divNode.getOwnerDocument();
-
-                    Node warningNode =
-                        DocumentBuilderFactory
-                        .newInstance()
-                        .newDocumentBuilder()
-                        .parse(new InputSource(new StringReader("<div class=\"error-msg\">" + warnMessage + "</div>")))
-                        .getFirstChild();
-                    warningNode = doc.importNode(warningNode, true);
-                    if (firstChild == null) {
-                        divNode.appendChild(warningNode);
-                    } else {
-                        warningNode = divNode.insertBefore(warningNode, firstChild);
-                    }
-                    //
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.error("Error processing divNodes " + e);
-        }
-        return feedBackDivFound;
     }
 
     /**

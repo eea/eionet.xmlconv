@@ -2,7 +2,6 @@ package eionet.gdem.utils.xml.sax;
 
 import eionet.gdem.utils.xml.*;
 import eionet.gdem.utils.xml.dom.XmlManager;
-import eionet.gdem.utils.xml.dom.XmlSerialization;
 import org.apache.xerces.parsers.SAXParser;
 import org.w3c.dom.Document;
 import org.xml.sax.*;
@@ -152,11 +151,6 @@ public class SaxContext implements IXmlCtx {
     @Override
     public XmlUpdater getManager() {
         return new XmlManager(this);
-    }
-
-    @Override
-    public XmlSerializer getSerializer() {
-        return new XmlSerialization(this);
     }
 
     @Override
