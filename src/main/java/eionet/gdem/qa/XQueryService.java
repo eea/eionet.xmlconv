@@ -336,7 +336,7 @@ public class XQueryService extends RemoteService {
      * @return Result
      * @throws XMLConvException If an error occurs.
      */
-    private Hashtable result(int status, String[] jobData, HashMap scriptData, String jobId) throws XMLConvException {
+    protected Hashtable result(int status, String[] jobData, HashMap scriptData, String jobId) throws XMLConvException {
         Hashtable<String, String> h = new Hashtable<String, String>();
         int resultCode;
         String resultValue = "";
@@ -356,9 +356,9 @@ public class XQueryService extends RemoteService {
             if (status == Constants.XQ_READY) {
                 resultCode = Constants.JOB_READY;
             } else if (status == Constants.XQ_LIGHT_ERR) {
-                resultCode = Constants.JOB_LIGHT_ERROR;
+                resultCode = Constants.JOB_READY;
             } else if (status == Constants.XQ_FATAL_ERR) {
-                resultCode = Constants.JOB_FATAL_ERROR;
+                resultCode = Constants.JOB_READY;
             } else {
                 resultCode = -1; // not expected to reach here
             }

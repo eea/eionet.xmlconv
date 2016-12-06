@@ -3,21 +3,21 @@
  */
 package eionet.gdem.qa;
 
+import eionet.gdem.Constants;
 import eionet.gdem.services.db.dao.IQueryDao;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
-
-import org.dbunit.IDatabaseTester;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
@@ -154,4 +154,47 @@ public class XQueryServiceTest {
         listQaResult = qm.listQueries("http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1919");
         assertTrue(listQaResult.size()==1);
     }
+
+    @Test
+    public void testJobFatalError() throws Exception {
+        XQueryService xq = new XQueryService();
+        Hashtable table = xq.result(Constants.XQ_FATAL_ERR, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
+        assertEquals("Wrong result code", "0", table.get(Constants.RESULT_CODE_PRM));
+    }
+
+    @Test
+    public void testJobLightError() throws Exception {
+        XQueryService xq = new XQueryService();
+        Hashtable table = xq.result(Constants.XQ_LIGHT_ERR, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
+        assertEquals("Wrong result code", "0", table.get(Constants.RESULT_CODE_PRM));
+    }
+
+    @Test
+    public void testJobReady() throws Exception {
+        XQueryService xq = new XQueryService();
+        Hashtable table = xq.result(Constants.XQ_READY, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
+        assertEquals("Wrong result code", "0", table.get(Constants.RESULT_CODE_PRM));
+    }
+
+    @Test
+    public void testJobNotFound() throws Exception {
+        XQueryService xq = new XQueryService();
+        Hashtable table = xq.result(Constants.XQ_JOBNOTFOUND_ERR, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
+        assertEquals("Wrong result code", "3", table.get(Constants.RESULT_CODE_PRM));
+    }
+
+    @Test
+    public void testJobDownloading() throws Exception {
+        XQueryService xq = new XQueryService();
+        Hashtable table = xq.result(Constants.XQ_DOWNLOADING_SRC, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
+        assertEquals("Wrong result code", "1", table.get(Constants.RESULT_CODE_PRM));
+    }
+
+    @Test
+    public void testJobReceived() throws Exception {
+        XQueryService xq = new XQueryService();
+        Hashtable table = xq.result(Constants.XQ_RECEIVED, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
+        assertEquals("Wrong result code", "1", table.get(Constants.RESULT_CODE_PRM));
+    }
+
 }
