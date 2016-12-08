@@ -77,7 +77,8 @@
     </form-beans>
 
     <global-forwards>
-        <forward name="home" path="/do/stylesheetList" redirect="true" />
+        <!-- Redirect home to Spring -->
+        <forward name="home" path="/web/projects" redirect="true" />
         <forward name="loginForm" path="/login.jsp" redirect="true" />
         <forward name="error" path="/error.jsp" redirect="true" />
     </global-forwards>

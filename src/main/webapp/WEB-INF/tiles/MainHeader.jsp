@@ -67,6 +67,9 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
 
     <div id="leftcolumn" class="localnav">
         <ul>
+            <ed:menuItem action="/web/projects" title="Schemas">
+                <bean:message key="label.menu.projects"/>
+            </ed:menuItem>
             <ed:menuItem action="/do/uplSchemas" title="Schemas">
                 <bean:message key="label.menu.schemas"/>
             </ed:menuItem>

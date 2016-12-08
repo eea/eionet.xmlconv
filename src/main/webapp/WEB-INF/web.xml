@@ -137,6 +137,10 @@
         <servlet-name>springServlet</servlet-name>
         <url-pattern>/webapi/*</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>springServlet</servlet-name>
+        <url-pattern>/web/*</url-pattern>
+    </servlet-mapping>
     
     <!-- Struts Config -->
     <servlet>
