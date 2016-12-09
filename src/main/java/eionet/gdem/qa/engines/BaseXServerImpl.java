@@ -23,19 +23,20 @@ public class BaseXServerImpl extends QAScriptEngineStrategy {
 
     @Override
     protected void runQuery(XQScript script, OutputStream result) throws XMLConvException {
-        try (Reader queryReader = new FileReader(script.getScriptFileName())) {
+        try {
             int port = Integer.parseInt(Properties.basexServerPort);
             String input = null;
             if (!Utils.isNullStr(script.getScriptSource())) {
                 input = script.getScriptSource();
             } else if (!Utils.isNullStr(script.getScriptFileName())) {
-                try {
+                try (Reader queryReader = new FileReader(script.getScriptFileName())) {
                     input = new String(IOUtils.toByteArray(queryReader, "UTF-8"));
                 } catch (IOException e) {
                     LOGGER.error("Error while reading XQuery file: " + e);
-                    throw new XMLConvException("Error while reading XQuery file: " + script.getScriptFileName(), e);
+                    throw new XMLConvException("Error while reading XQuery file: " + script.getScriptFileName() + " : " + ExceptionUtils.getStackTrace(e), e);
                 }
-            } try (BaseXClient session = new BaseXClient(Properties.basexServerHost, port, Properties.basexServerUser, Properties.basexServerPassword)) {
+            }
+            try (BaseXClient session = new BaseXClient(Properties.basexServerHost, port, Properties.basexServerUser, Properties.basexServerPassword)) {
                 try (BaseXClient.Query query = session.query(input)) {
                     query.bind("$source_url", script.getSrcFileUrl());
                     //query.bind("$base_url", "http://" + Properties.appHost + Properties.contextPath);
@@ -52,9 +53,6 @@ public class BaseXServerImpl extends QAScriptEngineStrategy {
             }
         } catch (NumberFormatException e) {
             throw new XMLConvException("Wrong port number, please re-configure BaseX server connection parameters: " + e.getMessage(), e);
-        } catch (IOException e) {
-            LOGGER.error("Error while reading XQuery file: " + e);
-            throw new XMLConvException("Error while reading XQuery file: " + script.getScriptFileName() + " : " + ExceptionUtils.getStackTrace(e), e);
         }
     }
 }
