@@ -5,10 +5,12 @@ import eionet.gdem.Properties;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.Utils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Executes XQuery scripts using Client/Server BaseX architecture.
@@ -21,49 +23,38 @@ public class BaseXServerImpl extends QAScriptEngineStrategy {
 
     @Override
     protected void runQuery(XQScript script, OutputStream result) throws XMLConvException {
-        Reader queryReader = null;
-        try {
+        try (Reader queryReader = new FileReader(script.getScriptFileName())) {
             int port = Integer.parseInt(Properties.basexServerPort);
-            BaseXClient session = null;
-            try {
-                session = new BaseXClient(Properties.basexServerHost, port, Properties.basexServerUser, Properties.basexServerPassword);
-            } catch (IOException e) {
-                throw new XMLConvException("Error while connecting to BaseX server.", e);
-            }
             String input = null;
             if (!Utils.isNullStr(script.getScriptSource())) {
                 input = script.getScriptSource();
             } else if (!Utils.isNullStr(script.getScriptFileName())) {
                 try {
-                    queryReader = new FileReader(script.getScriptFileName());
                     input = new String(IOUtils.toByteArray(queryReader, "UTF-8"));
-                } catch (FileNotFoundException e) {
-                    throw new XMLConvException("Error while reading XQuery file: " + script.getScriptFileName(), e);
                 } catch (IOException e) {
+                    LOGGER.error("Error while reading XQuery file: " + e);
                     throw new XMLConvException("Error while reading XQuery file: " + script.getScriptFileName(), e);
                 }
-            }
-            BaseXClient.Query query = session.query(input);
-            query.bind("$source_url", script.getSrcFileUrl());
-            query.bind("$base_url", "http://" + Properties.appHost + Properties.contextPath);
-            while (query.more()) {
-                result.write(query.next().getBytes());
-            }
-            LOGGER.debug("Query: "+ query.info());
-            query.close();
-            session.close();
-        }  catch (NumberFormatException e) {
-            throw new XMLConvException("Wrong port number, please re-configure BaseX server connection parameters: " + e.getMessage(), e);
-        } catch (IOException e) {
-            throw new XMLConvException("Error while executing XQuery script: " + script.getScriptFileName(), e);
-        } finally {
-            try {
-                if (queryReader != null) {
-                    queryReader.close();
+            } try (BaseXClient session = new BaseXClient(Properties.basexServerHost, port, Properties.basexServerUser, Properties.basexServerPassword)) {
+                try (BaseXClient.Query query = session.query(input)) {
+                    query.bind("$source_url", script.getSrcFileUrl());
+                    //query.bind("$base_url", "http://" + Properties.appHost + Properties.contextPath);
+                    while (query.more()) {
+                        result.write(query.next().getBytes(StandardCharsets.UTF_8));
+                    }
+                    LOGGER.debug("Query: " + query.info());
+                } catch (IOException e) {
+                    throw new XMLConvException("Error while executing XQuery script: " + script.getScriptFileName() + " : " + ExceptionUtils.getStackTrace(e), e);
                 }
             } catch (IOException e) {
-                // do nothing
+                LOGGER.error("Error connecting to BaseX server: " + e);
+                throw new XMLConvException("Error while connecting to BaseX server.", e);
             }
+        } catch (NumberFormatException e) {
+            throw new XMLConvException("Wrong port number, please re-configure BaseX server connection parameters: " + e.getMessage(), e);
+        } catch (IOException e) {
+            LOGGER.error("Error while reading XQuery file: " + e);
+            throw new XMLConvException("Error while reading XQuery file: " + script.getScriptFileName() + " : " + ExceptionUtils.getStackTrace(e), e);
         }
     }
 }
