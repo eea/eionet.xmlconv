@@ -1,4 +1,4 @@
-package eionet.gdem.data.project;
+package eionet.gdem.data.projects;
 
 import java.util.List;
 

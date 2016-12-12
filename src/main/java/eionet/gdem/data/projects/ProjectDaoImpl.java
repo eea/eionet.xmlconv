@@ -1,4 +1,4 @@
-package eionet.gdem.data.project;
+package eionet.gdem.data.projects;
 
 import org.springframework.stereotype.Repository;
 
@@ -12,23 +12,15 @@ import java.util.List;
 public class ProjectDaoImpl implements ProjectDao {
 
     @PersistenceContext
-    private final EntityManager manager;
-
-    /**
-     * DI constructor
-     * @param manager Entity Manager
-     */
-    public ProjectDaoImpl(EntityManager manager) {
-        this.manager = manager;
-    }
+    private EntityManager manager;
 
     /**
      * Returns all projects
      * @return
      */
+    @Override
     public List<Project> getProjectList() {
-        manager.getTransaction().begin();
-        String query = "SELECT id FROM Project";
+        String query = "SELECT e FROM Project";
         Query query1 = manager.createQuery(query);
         return query1.getResultList();
     }
