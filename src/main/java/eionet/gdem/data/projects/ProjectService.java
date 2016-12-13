@@ -31,4 +31,22 @@ public class ProjectService {
     public List<Project> getAllProjects() {
         return dao.getProjectList();
     }
+
+    public void deleteById(Integer id) {
+        Project p = dao.read(id);
+        dao.delete(p);
+    }
+
+    public void insert(Project p) {
+        Project pr = dao.insert(p);
+    }
+
+    public Project update(Project p) {
+        Project pr = dao.update(p);
+        return pr;
+    }
+
+    public Project findById(Integer id) {
+        return dao.read(id);
+    }
 }

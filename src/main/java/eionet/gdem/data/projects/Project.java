@@ -16,6 +16,8 @@ public class Project {
     @Id
     private Integer id;
 
+    private String name;
+
     @OneToMany(mappedBy = "project")
     private List<Schema> schemata;
 
