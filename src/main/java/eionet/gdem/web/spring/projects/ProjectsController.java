@@ -4,13 +4,11 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.data.projects.Project;
 import eionet.gdem.data.projects.ProjectService;
 import eionet.gdem.utils.SecurityUtil;
-import org.basex.core.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,8 +47,4 @@ public class ProjectsController {
         return "projects";
     }
 
-    /*@ModelAttribute("user")
-    public User getUser(HttpServletRequest request) {
-        return (User) request.getAttribute("user");
-    }*/
 }
