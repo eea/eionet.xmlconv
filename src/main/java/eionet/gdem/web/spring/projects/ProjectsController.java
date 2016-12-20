@@ -42,6 +42,7 @@ public class ProjectsController {
         } catch (XMLConvException e) {
             // do nothing
         }
+        model.addAttribute("projects", projects);
         model.addAttribute("loginUrl", loginUrl);
         model.addAttribute("title", "Projects");
         return "projects";

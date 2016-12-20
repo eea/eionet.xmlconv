@@ -4,6 +4,16 @@
 <body th:include="~{fragments/layout-old :: layout(~{::div})}">
     <div>
         <h2>Projects</h2>
+        <table>
+            <thead>
+                <th>Name</th>
+            </thead>
+            <tbody>
+                <tr th:each="project, pos : ${projects}">
+                    <td><a th:text="${project.name}" th:href="@{/web/projects(id=${project.id})}"></a></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </body>
 </html>

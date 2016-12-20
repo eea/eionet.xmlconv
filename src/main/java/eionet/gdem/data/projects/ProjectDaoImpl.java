@@ -38,7 +38,7 @@ public class ProjectDaoImpl implements ProjectDao {
     @Override
     public List<Project> getProjectList() {
         String query = "SELECT id, name FROM Project";
-        Query query1 = manager.createQuery(query);
+        Query query1 = manager.createNativeQuery(query, Project.class);
         return query1.getResultList();
     }
 

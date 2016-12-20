@@ -24,4 +24,11 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private List<Script> scripts;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
