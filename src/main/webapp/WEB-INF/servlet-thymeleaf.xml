@@ -17,7 +17,7 @@
         <property name="prefix" value="/WEB-INF/view/"/>
         <property name="suffix" value=".html" />
         <property name="templateMode" value="HTML" />
-        <property name="cacheable" value="true" />
+        <property name="cacheable" value="false" />
     </bean>
 
     <bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">

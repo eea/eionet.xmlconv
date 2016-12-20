@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <body>
+    <div th:fragment="menu">
+        <div id="toolribbon">
+            <div id="lefttools">
+                <a id="eealink" href="http://www.eea.europa.eu/">EEA</a>
+                <a id="ewlink" href="http://ew.eea.europa.eu/">EnviroWindows</a>
+            </div>
+        <div id="righttools">
+            <a th:if="${#strings.isEmpty(session.user)}" id="loginlink" th:href="@{${loginUrl}}" title="Login">Login</a>
+            <a th:if="${not #strings.isEmpty(session.user)}" id="logoutlink" href="/do/logout" th:text="'Logout (' + ${session.user} + ')'"></a>
+            <a href="javascript:openWindow(applicationRoot+'/help/index.jsp','olinehelp');" title="Help">Online Help</a>
+            <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
+            <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode"><span>Switch to/from full screen mode</span></a>
+            <a id="acronymlink" href="http://www.eionet.europa.eu/acronyms" title="Look up acronyms"><span>Acronyms</span></a>
+            <form action="https://google.com/search" method="get">
+                <div id="freesrchform">
+                    <label for="freesrchfld">Search</label>
+                    <input type="text" id="freesrchfld" name="q"
+                           onfocus="if (this.value == 'Search the site')
+                                                   this.value = '';"
+                           onblur="if (this.value == '')
+                                                   this.value = 'Search the site';"
+                           value="Search the site"/>fragment
+                    <input type="hidden" name="sitesearch" value="<%=Properties.appHost%>" />
+                    <input id="freesrchbtn" type="image" src="/images/button_go.gif" />
+                </div>
+            </form>
+        </div>
+    </div> <!-- toolribbon -->
+
+    <div id="pagehead">
+        <a href="/"><img th:src="@{/images/eea-print-logo.gif}" alt="Logo" id="logo" /></a>
+        <div id="networktitle">Eionet</div>
+        <div id="sitetitle">XML Services</div>
+        <div id="sitetagline">Conversion and Quality Assessment Service</div>
+    </div> <!-- pagehead -->
+
+    <div id="menuribbon" th:insert="~{fragments/dropdownmenus-old :: dropdownmenus}">
+    </div> <!-- menuribbon -->
+
+    <div id="portal-breadcrumbs" class="breadcrumbtrail">
+        <div class="breadcrumbhead">You are here:</div>
+        <div class="breadcrumbitem eionetaccronym"><a href="http://www.eionet.europa.eu" title="European Environment Information and Observation Network (Eionet)">Eionet</a></div>
+    </div> <!-- breadcrumbtrail -->
+
+    <div id="leftcolumn" class="localnav">
+        <ul>
+            <li><a href="/web/projects">Projects</a></li>
+            <li><a href="/do/uplSchemas">Schemas</a></li>
+            <li><a href="/do/stylesheetList">Handcoded Stylesheets</a></li>
+            <li><a href="/do/generatedStylesheetList">Generated Stylesheets</a></li>
+            <li><a href="/do/listConvForm">Converter</a></li>
+            <li><a href="/do/validateXMLForm">Validate XML</a></li>
+            <li><a href="/workqueue.jsp">QA jobs</a></li>
+            <li><a href="/do/qaScripts">QA Scripts</a></li>
+            <li><a href="/do/qaSandboxForm">QA Sandbox</a></li>
+            <li><a href="/do/uplXmlFiles">XML Files</a></li>
+
+            <!--<ed:hasPermission username="username" acl="host" permission="v">
+                <li action="/do/hosts/list"  title="Hosts">
+                    <bean:message key="label.menu.hosts"/>
+                </li>
+            </ed:hasPermission>
+            <ed:hasPermission username="username" acl="config" permission="u">
+                <li action="/do/dbForm"  title="Edit application configurations">
+                    <bean:message key="label.menu.config"/>
+                </li>
+            </ed:hasPermission>
+            <ed:hasPermission username="username" acl="serverstatus" permission="v">
+                <li action="/serverstatus.jsp"  title="View the server status">
+                    <bean:message key="label.menu.serverstatus"/>
+                </li>
+            </ed:hasPermission>-->
+        </ul>
+    </div> <!-- leftcolumn -->
+    </div>
+</body>
+</html>

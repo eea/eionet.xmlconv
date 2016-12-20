@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:insert="~{fragments/header :: header}">
-
-</head>
-<body>
-    <div th:text="${title}">${title}</div>
-    <div th:insert="~{fragments/footer :: footer}"/>
+<head th:replace="~{fragments/head-old :: head}" />
+<body th:include="~{fragments/layout-old :: layout(~{::div})}">
+    <div>
+        <h2>Projects</h2>
+    </div>
 </body>
+</html>
