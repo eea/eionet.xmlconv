@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import java.util.List;
  *
  */
 @Controller
+@RequestMapping("/projects")
 public class ProjectsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectsController.class);
@@ -33,7 +35,7 @@ public class ProjectsController {
      * Projects Controller
      * @return Projects view.
      */
-    @RequestMapping("projects")
+    @RequestMapping
     public String test(HttpServletRequest request, Model model) {
         List<Project> projects = projectService.getAllProjects();
         String loginUrl = null;
@@ -46,6 +48,18 @@ public class ProjectsController {
         model.addAttribute("loginUrl", loginUrl);
         model.addAttribute("title", "Projects");
         return "projects";
+    }
+
+    @RequestMapping("/{id}")
+    public String getProject(@PathVariable Integer id, Model model) {
+        Project project = projectService.findById(id);
+        model.addAttribute("project", project);
+        return "project";
+    }
+
+    @RequestMapping("/new")
+    public String newProject() {
+        return "projects/new";
     }
 
 }
