@@ -14,7 +14,7 @@
         <env>local</env>
         <java_version>1.8</java_version>
         <checkstyle.config.location>${basedir}/docs/checkstyle.xml</checkstyle.config.location>
-        <spring.version>4.2.6.RELEASE</spring.version>
+        <spring.version>4.3.4.RELEASE</spring.version>
         <liquibase.changeLogFile>db/xmlconv-struct.xml</liquibase.changeLogFile>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>

@@ -10,7 +10,7 @@
             </thead>
             <tbody>
                 <tr th:each="project, pos : ${projects}">
-                    <td><a th:text="${project.name}" th:href="@{/web/projects(id=${project.id})}"></a></td>
+                    <td><a th:text="${project.name}" th:href="@{/web/projects/{id}(id=${project.id})}"></a></td>
                 </tr>
             </tbody>
         </table>

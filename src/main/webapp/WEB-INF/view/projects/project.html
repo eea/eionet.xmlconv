@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head-old :: head}" />
+<body th:include="~{fragments/layout-old :: layout(~{::div})}">
+<div>
+    <h2>Projects</h2>
+    <div>
+        <h3 th:text="${project.name}"></h3>
+    </div>
+</div>
+</body>
+</html>
