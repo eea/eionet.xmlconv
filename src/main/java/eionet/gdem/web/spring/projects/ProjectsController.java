@@ -35,8 +35,8 @@ public class ProjectsController {
      * @return Projects view.
      */
     @GetMapping
-    public String projectList(HttpServletRequest request, Model model) {
-        List<Project> projects = projectService.getAllProjects();
+    public String findAll(HttpServletRequest request, Model model) {
+        List<Project> projects = projectService.findAll();
         String loginUrl = null;
         try {
             loginUrl = SecurityUtil.getLoginURL(request);
@@ -50,29 +50,37 @@ public class ProjectsController {
     }
 
     @GetMapping("/{id}")
-    public String projectShow(@PathVariable Integer id, Model model) {
+    public String find(@PathVariable Integer id, Model model) {
         Project project = projectService.findById(id);
         model.addAttribute("project", project);
         return "projects/show";
     }
 
     @GetMapping("/new")
-    public String projectCreate(Model model) {
+    public String createForm(Model model) {
         Project project = new Project();
         model.addAttribute(project);
         return "projects/new";
     }
 
     @PostMapping("/new")
-    public String projectSave(@ModelAttribute Project project, Model model) {
+    public String createSubmit(@ModelAttribute Project project) {
         Project pr = projectService.insert(project);
-        model.addAttribute(pr);
-        return "projects/show";
+        return "redirect:projects/" + pr.getId();
     }
 
     @GetMapping("/{id}/edit")
-    public String projectEdit() {
+    public String editForm(@PathVariable Integer id, Model model) {
+        Project project = projectService.findById(id);
+        model.addAttribute(project);
         return "projects/edit";
+    }
+
+    @PostMapping("/edit")
+    public String editSubmit(@ModelAttribute Project project) {
+        //TODO Fix
+        project = projectService.update(project);
+        return "redirect:projects/" + project.getId();
     }
 
 }

@@ -28,12 +28,12 @@ public class ProjectService {
      * Get All Projects and their dependencies
      * @return Projects
      */
-    public List<Project> getAllProjects() {
-        return dao.getProjectList();
+    public List<Project> findAll() {
+        return dao.findAll();
     }
 
-    public void deleteById(Integer id) {
-        Project p = dao.read(id);
+    public void delete(Integer id) {
+        Project p = dao.findById(id);
         dao.delete(p);
     }
 
@@ -48,6 +48,6 @@ public class ProjectService {
     }
 
     public Project findById(Integer id) {
-        return dao.read(id);
+        return dao.findById(id);
     }
 }

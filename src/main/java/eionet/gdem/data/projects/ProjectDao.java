@@ -8,8 +8,8 @@ import java.util.List;
 public interface ProjectDao {
 
     Project insert(Project project);
-    Project read(Integer id);
+    Project findById(Integer id);
     Project update(Project project);
     void delete(Project project);
-    List<Project> getProjectList();
+    List<Project> findAll();
 }

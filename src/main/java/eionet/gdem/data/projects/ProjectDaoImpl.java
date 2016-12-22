@@ -21,7 +21,7 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
-    public Project read(Integer id) {
+    public Project findById(Integer id) {
        return manager.find(Project.class, id);
     }
 
@@ -36,7 +36,7 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
-    public List<Project> getProjectList() {
+    public List<Project> findAll() {
         String query = "SELECT e FROM Project e";
         Query query1 = manager.createQuery(query, Project.class);
         return query1.getResultList();
