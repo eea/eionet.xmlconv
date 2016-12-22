@@ -37,8 +37,9 @@ public class ProjectService {
         dao.delete(p);
     }
 
-    public void insert(Project p) {
+    public Project insert(Project p) {
         Project pr = dao.insert(p);
+        return pr;
     }
 
     public Project update(Project p) {
