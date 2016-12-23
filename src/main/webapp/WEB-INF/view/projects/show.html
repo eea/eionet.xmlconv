@@ -8,6 +8,8 @@
         <h3 th:text="${project.name}"></h3>
     </div>
     <a th:href="@{/web/projects/{id}/edit(id=${project.id})}">Edit</a>
+    <a th:href="@{/web/projects/{id}/schemata/add(id=${project.id})}">Add Schema</a>
+    <a th:href="@{/web/projects/{id}/scripts/add(id=${project.id})}">Add Script</a>
 </div>
 </body>
 </html>

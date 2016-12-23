@@ -3,6 +3,7 @@ package eionet.gdem.web.spring.projects;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.data.projects.Project;
 import eionet.gdem.data.projects.ProjectService;
+import eionet.gdem.data.schemata.Schema;
 import eionet.gdem.utils.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +12,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -25,6 +31,9 @@ public class ProjectsController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectsController.class);
 
     private ProjectService projectService;
+
+    @Autowired
+    private Validator validator;
 
     @Autowired
     ProjectsController(ProjectService projectService) {
@@ -79,14 +88,34 @@ public class ProjectsController {
     }
 
     @PostMapping("/{id}/edit")
-    public String editSubmit(@PathVariable Integer id, @ModelAttribute Project updatedProject, BindingResult result) {
+    public String editSubmit(@PathVariable Integer id, @ModelAttribute Project updatedProject, BindingResult result, RedirectAttributes redirectAttributes) {
+        Set<ConstraintViolation<Project>> errors = validator.validate(updatedProject);
+
         Project project = projectService.findById(id);
-        if (!result.hasErrors()) {
+        if (errors.size() > 0) {
+            List<String> messages = new ArrayList<>();
+            for (ConstraintViolation<Project> error : errors) {
+                messages.add(error.getMessage());
+            }
+            redirectAttributes.addFlashAttribute("messages", messages);
+            return "redirect:/web/projects/{id}/edit";
+        } else if (!result.hasErrors()) {
             project.setName(updatedProject.getName());
             Project pr = projectService.update(project);
-         }
-
-        return "redirect:/web/projects/" + id;
+        }
+        return "redirect:/web/projects/{id}";
     }
 
+    @GetMapping("/{id}/schemata/add")
+    public String addSchemaForm(@PathVariable Integer id, Model model) {
+        Schema schema = new Schema();
+        model.addAttribute("schema", schema);
+        model.addAttribute("id", id);
+        return "projects/schemata/add";
+    }
+
+    @PostMapping("/{id}/schemata/add")
+    public String addSchemaSubmit(@PathVariable Integer id, @ModelAttribute Schema schema, RedirectAttributes redirectAttributes) {
+        return "redirect:/web/projects/{id}";
+    }
 }

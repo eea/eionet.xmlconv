@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head-old :: head}" />
-<body th:include="~{fragments/layout-old :: layout(~{::form})}">
+<body th:include="~{fragments/layout-old :: layout(~{::div})}">
+<div>
+    <p th:each="message, pos : ${messages}" th:text="${message}"></p>
     <form action="#" th:action="@{/web/projects/{id}/edit(id=${id})}" th:object="${project}" method="post">
         <label>Project name: </label>
         <input type="text" th:field="*{name}"/>
         <button>Save</button>
     </form>
+</div>
 </body>
 </html>
