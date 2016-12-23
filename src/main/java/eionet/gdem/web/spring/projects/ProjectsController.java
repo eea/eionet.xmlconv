@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,21 +67,26 @@ public class ProjectsController {
     @PostMapping("/new")
     public String createSubmit(@ModelAttribute Project project) {
         Project pr = projectService.insert(project);
-        return "redirect:projects/" + pr.getId();
+        return "redirect:/web/projects/" + pr.getId();
     }
 
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Integer id, Model model) {
         Project project = projectService.findById(id);
-        model.addAttribute(project);
+        model.addAttribute("project", project);
+        model.addAttribute("id", id);
         return "projects/edit";
     }
 
-    @PostMapping("/edit")
-    public String editSubmit(@ModelAttribute Project project) {
-        //TODO Fix
-        project = projectService.update(project);
-        return "redirect:projects/" + project.getId();
+    @PostMapping("/{id}/edit")
+    public String editSubmit(@PathVariable Integer id, @ModelAttribute Project updatedProject, BindingResult result) {
+        Project project = projectService.findById(id);
+        if (!result.hasErrors()) {
+            project.setName(updatedProject.getName());
+            Project pr = projectService.update(project);
+         }
+
+        return "redirect:/web/projects/" + id;
     }
 
 }

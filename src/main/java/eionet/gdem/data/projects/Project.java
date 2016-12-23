@@ -4,6 +4,8 @@ import eionet.gdem.data.schemata.Schema;
 import eionet.gdem.data.scripts.Script;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -17,6 +19,8 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
+    @Size(min = 5, max = 50)
     private String name;
 
     @OneToMany(mappedBy = "project")
