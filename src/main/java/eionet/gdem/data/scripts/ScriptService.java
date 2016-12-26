@@ -22,7 +22,9 @@ public class ScriptService {
         this.dao = dao;
     }
 
-    public List<Script> getAllScripts() {
-        return dao.getAllScripts();
+    public List<Script> findAll() {
+        return dao.findAll();
     }
+
+
 }

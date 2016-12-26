@@ -7,5 +7,5 @@ import java.util.List;
  */
 public interface TransformationDao {
 
-    List<Transformation> getAllTransformations();
+    List<Transformation> findALl();
 }

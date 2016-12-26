@@ -16,8 +16,9 @@ public class ScriptDaoImpl implements ScriptDao {
     private EntityManager manager;
 
     @Override
-    public List<Script> getAllScripts() {
+    public List<Script> findAll() {
         String query = "SELECT id FROM Script";
         return manager.createQuery(query).getResultList();
     }
+
 }

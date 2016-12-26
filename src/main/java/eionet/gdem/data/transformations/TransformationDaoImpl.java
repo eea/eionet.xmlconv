@@ -17,8 +17,9 @@ public class TransformationDaoImpl implements TransformationDao {
 
 
     @Override
-    public List<Transformation> getAllTransformations() {
-        String query = "SELECT id FROM Transformation";
+    public List<Transformation> findALl() {
+        String query = "SELECT e FROM Transformation e";
         return manager.createQuery(query).getResultList();
     }
+
 }

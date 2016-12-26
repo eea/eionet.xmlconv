@@ -2,11 +2,12 @@ package eionet.gdem.data.projects;
 
 import eionet.gdem.data.schemata.Schema;
 import eionet.gdem.data.scripts.Script;
+import eionet.gdem.data.transformations.Transformation;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -23,11 +24,14 @@ public class Project {
     @Size(min = 5, max = 50)
     private String name;
 
-    @OneToMany(mappedBy = "project")
-    private List<Schema> schemata;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "project")
+    private Set<Schema> schemata;
 
-    @OneToMany(mappedBy = "project")
-    private List<Script> scripts;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "project")
+    private Set<Script> scripts;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "project")
+    private Set<Transformation> transformations;
 
     public Integer getId() {
         return id;
@@ -43,5 +47,29 @@ public class Project {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Schema> getSchemata() {
+        return schemata;
+    }
+
+    public void setSchemata(Set<Schema> schemata) {
+        this.schemata = schemata;
+    }
+
+    public Set<Script> getScripts() {
+        return scripts;
+    }
+
+    public void setScripts(Set<Script> scripts) {
+        this.scripts = scripts;
+    }
+
+    public Set<Transformation> getTransformations() {
+        return transformations;
+    }
+
+    public void setTransformations(Set<Transformation> transformations) {
+        this.transformations = transformations;
     }
 }

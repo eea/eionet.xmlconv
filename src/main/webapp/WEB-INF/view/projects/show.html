@@ -3,13 +3,65 @@
 <head th:replace="~{fragments/head-old :: head}" />
 <body th:include="~{fragments/layout-old :: layout(~{::div})}">
 <div>
-    <h2>Projects</h2>
-    <div>
-        <h3 th:text="${project.name}"></h3>
+  <h3 th:text="${project.name}"></h3>
+    <div class="column">
+      <ul class="tabs" data-tabs id="project-tabs">
+        <li class="tabs-title" is-active><a href="#project">Project information</a></li>
+        <li class="tabs-title"><a href="#schemata">Schemata</a></li>
+        <li class="tabs-title"><a href="#scripts">Scripts</a></li>
+        <li class="tabs-title"><a href="#transformations">Transformations</a></li>
+      </ul>
+      <div class="tabs-content" data-tabs-content="project-tabs">
+        <div class="tabs-panel" id="project">
+          <div>
+            <table>
+              <tbody>
+                <tr>
+                  <th>Name</th>
+                  <td th:text="${project.name}">Project Name</td>
+                </tr>
+                <tr>
+                  <th>Obligation</th>
+                  <td>Obligation Name</td>
+                </tr>
+                <tr>
+                  <th>Start date</th>
+                  <td>Start date</td>
+                </tr>
+                <tr>
+                  <th>Finish date</th>
+                  <td>Finish date</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <a th:href="@{/web/projects/{id}/validate(id=${project.id})}">Validate project</a>
+          <a th:href="@{/web/projects/{id}/delete(id=${project.id})}">Delete project</a>
+        </div>
+        <div class="tabs-panel" id="schemata">
+          <div th:each="schema : ${project.schemata}">
+            <p th:text="${schema}">Schema</p>
+          </div>
+          <a th:href="@{/web/projects/{id}/schemata/add(id=${project.id})}">Add Schema</a>
+        </div>
+        <div class="tabs-panel" id="scripts">
+          <div th:each="script : ${project.scripts}">
+            <p th:text="${script}">Scripts</p>
+          </div>
+          <a th:href="@{/web/projects/{id}/scripts/add(id=${project.id})}">Add Script</a>
+        </div>
+        <div class="tabs-panel" id="transformations">
+          <div th:each="transformation : ${project.transformations}">
+            <p th:text="${transformation}">Transformation</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <a th:href="@{/web/projects/{id}/edit(id=${project.id})}">Edit</a>
-    <a th:href="@{/web/projects/{id}/schemata/add(id=${project.id})}">Add Schema</a>
-    <a th:href="@{/web/projects/{id}/scripts/add(id=${project.id})}">Add Script</a>
+    <div class="column">
+      <ul>
+        <li><a th:href="@{/web/projects/{id}/edit(id=${project.id})}">Edit</a></li>
+      </ul>
+    </div>
 </div>
 </body>
 </html>

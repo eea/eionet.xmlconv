@@ -4,6 +4,12 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.data.projects.Project;
 import eionet.gdem.data.projects.ProjectService;
 import eionet.gdem.data.schemata.Schema;
+import eionet.gdem.data.schemata.SchemaLanguage;
+import eionet.gdem.data.schemata.SchemaService;
+import eionet.gdem.data.scripts.Script;
+import eionet.gdem.data.scripts.ScriptService;
+import eionet.gdem.data.transformations.Transformation;
+import eionet.gdem.data.transformations.TransformationService;
 import eionet.gdem.utils.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +38,21 @@ public class ProjectsController {
 
     private ProjectService projectService;
 
+    private SchemaService schemaService;
+
+    private ScriptService scriptService;
+
+    private TransformationService transformationService;
+
     @Autowired
     private Validator validator;
 
     @Autowired
-    ProjectsController(ProjectService projectService) {
+    ProjectsController(ProjectService projectService, SchemaService schemaService, ScriptService scriptService, TransformationService transformationService) {
         this.projectService = projectService;
+        this.schemaService = schemaService;
+        this.scriptService = scriptService;
+        this.transformationService = transformationService;
     }
 
     /**
@@ -111,11 +126,15 @@ public class ProjectsController {
         Schema schema = new Schema();
         model.addAttribute("schema", schema);
         model.addAttribute("id", id);
+        model.addAttribute("schemaLanguages", SchemaLanguage.getList());
         return "projects/schemata/add";
     }
 
-    @PostMapping("/{id}/schemata/add")
-    public String addSchemaSubmit(@PathVariable Integer id, @ModelAttribute Schema schema, RedirectAttributes redirectAttributes) {
+    @PostMapping("/{projectId}/schemata/add")
+    public String addSchemaSubmit(@PathVariable Integer projectId, @ModelAttribute Schema schema, RedirectAttributes redirectAttributes) {
+        Project pr = projectService.findById(projectId);
+        schema.setProject(pr);
+        schemaService.insert(schema);
         return "redirect:/web/projects/{id}";
     }
 }

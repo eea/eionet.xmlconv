@@ -3,19 +3,34 @@
 <head th:replace="~{fragments/head-old :: head}" />
 <body th:include="~{fragments/layout-old :: layout(~{::div})}">
     <div>
-        <h2>Projects</h2>
-        <table>
+      <div class="row">
+        <div class="columns">
+          <table>
             <thead>
-                <th>Name</th>
+              <th>Name</th>
+              <th>XSD</th>
+              <th>XSL</th>
+              <th>QA</th>
+              <th>Actions</th>
             </thead>
-            <tbody>
+              <tbody>
                 <tr th:each="project, pos : ${projects}">
-                    <td><a th:text="${project.name}" th:href="@{/web/projects/{id}(id=${project.id})}"></a></td>
+                  <td width="80%"><a th:text="${project.name}" th:href="@{/web/projects/{id}(id=${project.id})}"></a></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
                 </tr>
-            </tbody>
-        </table>
-        <a th:href="@{/web/projects/new}">Add</a>
-        <a th:href="@{/web/projects/import}">Import</a>
-    </div>
+              </tbody>
+          </table>
+        </div>
+        <div class="columns small-1">
+          <ul>
+            <li><a th:href="@{/web/projects/new}">Add</a></li>
+            <li><a th:href="@{/web/projects/import}">Import</a></li>
+          </ul>
+        </div>
+      </div>
+  </div>
 </body>
 </html>

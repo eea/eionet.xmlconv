@@ -6,5 +6,5 @@ import java.util.List;
  *
  */
 public interface ScriptDao {
-    List<Script> getAllScripts();
+    List<Script> findAll();
 }

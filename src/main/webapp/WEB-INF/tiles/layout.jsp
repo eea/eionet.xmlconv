@@ -29,7 +29,10 @@ response.setDateHeader("Expires", 0);
         <link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/print.css" media="print" />
         <link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/handheld.css" media="handheld" />
         <link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen" />
+        <%--<link rel="stylesheet" type="text/css" href="http://dd.eionet.europa.eu/css/eionet2007.css" media="screen" />--%>
+
         <!--  local style -->
+        <link rel="stylesheet" type="text/css" href="<c:url value="/css/foundation.css"/>" media="screen" />
         <link rel="stylesheet" type="text/css" href="<c:url value="/css/main.css"/>" media="screen" />
         <link rel="shortcut icon" href="<c:url value="/images/favicon.ico"/>" type="image/x-icon" />
         <!-- jQuery javascripts and css-->
@@ -40,7 +43,7 @@ response.setDateHeader("Expires", 0);
         <!-- local javascripts -->
         <script type="text/javascript" src="<c:url value="/scripts/admin.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/scripts/pageops.js"/>"></script>
-
+        <script type="text/javascript" src="<c:url value="/scripts/foundation.js"/>"></script>
         <tiles:insert attribute="specific_header" ignore="true"/>
     </head>
 

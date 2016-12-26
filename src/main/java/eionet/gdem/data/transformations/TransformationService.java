@@ -20,7 +20,8 @@ public class TransformationService {
         this.dao = dao;
     }
 
-    public List<Transformation> getAllTransformations() {
-        return dao.getAllTransformations();
+    public List<Transformation> findAll() {
+        return dao.findALl();
     }
+
 }

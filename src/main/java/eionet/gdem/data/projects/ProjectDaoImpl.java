@@ -20,9 +20,8 @@ public class ProjectDaoImpl implements ProjectDao {
         return project;
     }
 
-    @Override
     public Project findById(Integer id) {
-       return manager.find(Project.class, id);
+        return manager.find(Project.class, id);
     }
 
     @Override

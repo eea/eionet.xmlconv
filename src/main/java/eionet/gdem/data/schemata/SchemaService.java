@@ -3,6 +3,7 @@ package eionet.gdem.data.schemata;
 import eionet.gdem.data.projects.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
  *
  */
 @Service
+@Transactional
 public class SchemaService {
 
     private final SchemaDao dao;
@@ -40,7 +42,4 @@ public class SchemaService {
         return dao.update(p);
     }
 
-    public Schema findById(Integer id) {
-        return dao.findById(id);
-    }
 }

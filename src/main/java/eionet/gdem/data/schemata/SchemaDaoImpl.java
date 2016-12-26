@@ -16,7 +16,6 @@ public class SchemaDaoImpl implements SchemaDao {
     @PersistenceContext
     private EntityManager manager;
 
-
     @Override
     public Schema insert(Schema schema) {
        manager.persist(schema);
@@ -44,4 +43,5 @@ public class SchemaDaoImpl implements SchemaDao {
         Query query1 = manager.createQuery(query, Schema.class);
         return query1.getResultList();
     }
+
 }
