@@ -7,7 +7,7 @@ import javax.persistence.Converter;
 /**
  *
  */
-@Converter(autoApply=true)
+@Converter(autoApply = true)
 public class SchemaLanguageConverter implements AttributeConverter<SchemaLanguage, Integer> {
     @Override
     public Integer convertToDatabaseColumn(SchemaLanguage schemaLanguage) {

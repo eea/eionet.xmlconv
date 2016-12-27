@@ -42,4 +42,5 @@ public class SchemaService {
         return dao.update(p);
     }
 
+    public Schema findById(Integer id) { return dao.findById(id); }
 }

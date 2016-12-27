@@ -8,8 +8,10 @@ import eionet.gdem.data.schemata.SchemaLanguage;
 import eionet.gdem.data.schemata.SchemaService;
 import eionet.gdem.data.scripts.Script;
 import eionet.gdem.data.scripts.ScriptService;
+import eionet.gdem.data.scripts.ScriptType;
 import eionet.gdem.data.transformations.Transformation;
 import eionet.gdem.data.transformations.TransformationService;
+import eionet.gdem.data.transformations.TransformationType;
 import eionet.gdem.utils.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -135,6 +138,67 @@ public class ProjectsController {
         Project pr = projectService.findById(projectId);
         schema.setProject(pr);
         schemaService.insert(schema);
-        return "redirect:/web/projects/{id}";
+        return "redirect:/web/projects/{projectId}";
     }
+
+    @GetMapping("/{id}/scripts/add")
+    public String addSriptForm(@PathVariable Integer id, Model model) {
+        Script script = new Script();
+        model.addAttribute("script", script);
+        model.addAttribute("id", id);
+        model.addAttribute("scriptTypes", ScriptType.getMap());
+        return "projects/scripts/add";
+    }
+
+    @PostMapping("/{projectId}/scripts/add")
+    public String addScriptSubmit(@PathVariable Integer projectId, @ModelAttribute Script script, RedirectAttributes redirectAttributes) {
+        Project pr = projectService.findById(projectId);
+        script.setProject(pr);
+        script.setLastModified(LocalDateTime.now());
+        scriptService.insert(script);
+        return "redirect:/web/projects/{projectId}";
+    }
+
+    @GetMapping("/{id}/transformations/add")
+    public String addTransformationForm(@PathVariable Integer id, Model model) {
+        Transformation transformation = new Transformation();
+        model.addAttribute("transformation", transformation);
+        model.addAttribute("id", id);
+        model.addAttribute("transformationTypes", TransformationType.getMap());
+        return "projects/transformations/add";
+    }
+
+    @PostMapping("/{projectId}/transformations/add")
+    public String addTransformationSubmit(@PathVariable Integer projectId, @ModelAttribute Transformation transformation, RedirectAttributes redirectAttributes) {
+        Project pr = projectService.findById(projectId);
+        transformation.setProject(pr);
+        transformationService.insert(transformation);
+        return "redirect:/web/projects/{projectId}";
+    }
+
+    @GetMapping("/schemata/{id}/edit")
+    public String editSchemaForm(@PathVariable Integer id, Model model) {
+        Schema schema = schemaService.findById(id);
+        model.addAttribute("schema", schema);
+        return "projects/schemata/edit";
+    }
+
+    @PostMapping("/schemata/{id}/edit")
+    public String editSchemaSubmit(@PathVariable Integer id, @ModelAttribute Schema updatedSchema, BindingResult result, RedirectAttributes redirectAttributes) {
+        Set<ConstraintViolation<Schema>> errors = validator.validate(updatedSchema);
+
+        Schema schema = schemaService.findById(id);
+        if (errors.size() > 0) {
+            List<String> messages = new ArrayList<>();
+            for (ConstraintViolation<Schema> error : errors) {
+                messages.add(error.getMessage());
+            }
+            redirectAttributes.addFlashAttribute("messages", messages);
+            return "redirect:/web/projects/schema/{id}/edit";
+        } else if (!result.hasErrors()) {
+            Schema s = schemaService.update(schema);
+        }
+        return "redirect:/web/projects/schema/{id}/show";
+    }
+
 }

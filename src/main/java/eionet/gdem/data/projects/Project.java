@@ -7,7 +7,7 @@ import eionet.gdem.data.transformations.Transformation;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Set;
+import java.util.List;
 
 /**
  *
@@ -24,14 +24,14 @@ public class Project {
     @Size(min = 5, max = 50)
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "project")
-    private Set<Schema> schemata;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
+    private List<Schema> schemata;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "project")
-    private Set<Script> scripts;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
+    private List<Script> scripts;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "project")
-    private Set<Transformation> transformations;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
+    private List<Transformation> transformations;
 
     public Integer getId() {
         return id;
@@ -49,27 +49,27 @@ public class Project {
         this.name = name;
     }
 
-    public Set<Schema> getSchemata() {
+    public List<Schema> getSchemata() {
         return schemata;
     }
 
-    public void setSchemata(Set<Schema> schemata) {
+    public void setSchemata(List<Schema> schemata) {
         this.schemata = schemata;
     }
 
-    public Set<Script> getScripts() {
+    public List<Script> getScripts() {
         return scripts;
     }
 
-    public void setScripts(Set<Script> scripts) {
+    public void setScripts(List<Script> scripts) {
         this.scripts = scripts;
     }
 
-    public Set<Transformation> getTransformations() {
+    public List<Transformation> getTransformations() {
         return transformations;
     }
 
-    public void setTransformations(Set<Transformation> transformations) {
+    public void setTransformations(List<Transformation> transformations) {
         this.transformations = transformations;
     }
 }

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head-old :: head}" />
+<body th:include="~{fragments/layout-old :: layout(~{::form})}">
+<form action="#" th:action="@{/web/projects/{id}/scripts/add(id=${id})}" th:object="${script}" method="post">
+  <fieldset>
+    <legend>QA Script properties</legend>
+    <label>Script name
+      <input type="text" th:field="*{name}"/>
+    </label>
+    <label>Description:
+      <input type="text" th:field="*{description}"/>
+    </label>
+    <label>Script type:
+      <select th:field="*{type}">
+        <option th:each="option : ${scriptTypes}" th:value="${option.key}" th:text="${option.key.text}" th:selected="(*{type}?${option.key} == *{type}:false)"></option>
+      </select>
+    </label>
+    <label>Active:
+      <input type="checkbox" th:field="*{active}"/>
+    </label>
+  </fieldset>
+  <input type="submit" th:value="Save"/>
+  <input type="reset" th:value="Reset"/>
+</form>
+</body>
+</html>

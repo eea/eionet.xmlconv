@@ -35,31 +35,35 @@
               </tbody>
             </table>
           </div>
-          <a th:href="@{/web/projects/{id}/validate(id=${project.id})}">Validate project</a>
-          <a th:href="@{/web/projects/{id}/delete(id=${project.id})}">Delete project</a>
         </div>
         <div class="tabs-panel" id="schemata">
-          <div th:each="schema : ${project.schemata}">
-            <p th:text="${schema}">Schema</p>
+          <div th:each="s : ${project.schemata}">
+            <p th:text="${s.url}">Schema</p>
           </div>
           <a th:href="@{/web/projects/{id}/schemata/add(id=${project.id})}">Add Schema</a>
         </div>
         <div class="tabs-panel" id="scripts">
           <div th:each="script : ${project.scripts}">
-            <p th:text="${script}">Scripts</p>
+            <p th:text="${script.name}">Scripts</p>
           </div>
           <a th:href="@{/web/projects/{id}/scripts/add(id=${project.id})}">Add Script</a>
         </div>
         <div class="tabs-panel" id="transformations">
           <div th:each="transformation : ${project.transformations}">
-            <p th:text="${transformation}">Transformation</p>
+            <p th:text="${transformation.name}">Transformation</p>
           </div>
+          <a th:href="@{/web/projects/{id}/transformations/add(id=${project.id})}">Add Transformation</a>
         </div>
       </div>
     </div>
     <div class="column">
       <ul>
-        <li><a th:href="@{/web/projects/{id}/edit(id=${project.id})}">Edit</a></li>
+        <li><a th:href="@{/web/projects/add}">Add Project</a></li>
+        <li><a th:href="@{/web/projects/{id}/edit(id=${project.id})}">Edit Project</a></li>
+        <li><a th:href="@{/web/projects/{id}/export(id=${project.id})}">Export Project</a></li>
+        <li><a th:href="@{/web/projects/import}">Import Project</a></li>
+        <li><a th:href="@{/web/projects/{id}/validate(id=${project.id})}">Validate project</a></li>
+        <li><a th:href="@{/web/projects/{id}/delete(id=${project.id})}">Delete project</a></li>
       </ul>
     </div>
 </div>

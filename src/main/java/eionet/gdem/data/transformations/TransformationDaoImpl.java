@@ -17,9 +17,29 @@ public class TransformationDaoImpl implements TransformationDao {
 
 
     @Override
-    public List<Transformation> findALl() {
+    public List<Transformation> findAll() {
         String query = "SELECT e FROM Transformation e";
         return manager.createQuery(query).getResultList();
     }
 
+    @Override
+    public Transformation insert(Transformation transformation) {
+        manager.persist(transformation);
+        return transformation;
+    }
+
+    @Override
+    public Transformation findById(Integer id) {
+        return manager.find(Transformation.class, id);
+    }
+
+    @Override
+    public Transformation update(Transformation transformation) {
+        return manager.merge(transformation);
+    }
+
+    @Override
+    public void delete(Transformation transformation) {
+        manager.remove(transformation);
+    }
 }

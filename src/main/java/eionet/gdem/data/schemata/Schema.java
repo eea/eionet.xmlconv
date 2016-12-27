@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
  *
  */
 @Entity
-@Table
+@Table(name = "`Schema`")
 public class Schema {
 
     @Id

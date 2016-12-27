@@ -21,7 +21,19 @@ public class TransformationService {
     }
 
     public List<Transformation> findAll() {
-        return dao.findALl();
+        return dao.findAll();
     }
 
+    public void delete(Integer id) {
+        Transformation t = dao.findById(id);
+        dao.delete(t);
+    }
+
+    public Transformation insert(Transformation t) {
+        return dao.insert(t);
+    }
+
+    public Transformation update(Transformation t) {
+        return dao.update(t);
+    }
 }

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head-old :: head}" />
+<body th:include="~{fragments/layout-old :: layout(~{::div})}">
+<div>
+  <p th:each="message, pos : ${messages}" th:text="${message}"></p>
+  <form action="#" th:action="@{/web/projects/schema/{id}/edit(id=${id})}" th:object="${schema}" method="post">
+    <fieldset>
+      <legend>XML Schema properties</legend>
+      <label>Schema URL:
+        <input type="text" th:field="*{url}"/>
+      </label>
+      <label>Description:
+        <input type="text" th:field="*{description}"/>
+      </label>
+      <label>Schema language:
+        <select th:field="*{schemaLanguage}">
+          <option th:each="option : ${schemaLanguages}" th:value="${option}" th:text="${option}" th:selected="(*{schemaLanguage}?${option} == *{schemaLanguage.text}:false)"></option>
+        </select>
+      </label>
+      <label>Used for validation:
+        <input type="checkbox" th:field="*{validation}"/>
+      </label>
+      <label>Can block delivery:
+        <input type="checkbox" th:field="*{blocking}"/>
+      </label>
+      <label>Expire date:
+        <input type="text" th:field="*{expireDate}"/>
+      </label>
+    </fieldset>
+    <input type="submit" th:value="Save"/>
+    <input type="reset" th:value="Reset"/>
+  </form>
+</div>
+</body>
+</html>

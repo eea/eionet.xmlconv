@@ -48,6 +48,10 @@ public class ProjectService {
     }
 
     public Project findById(Integer id) {
-        return dao.findById(id);
+        Project pr = dao.findById(id);
+        pr.getSchemata().size();
+        pr.getScripts().size();
+        pr.getTransformations().size();
+        return pr;
     }
 }

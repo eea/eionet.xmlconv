@@ -15,6 +15,11 @@
         <property name="packagesToScan" value="eionet.gdem" />
         <property name="persistenceUnitName" value="CRM" />
         <property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
+        </property>
         <!--<property name="loadTimeWeaver">
             <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>
         </property>-->
