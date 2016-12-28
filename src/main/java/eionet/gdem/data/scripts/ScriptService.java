@@ -41,4 +41,5 @@ public class ScriptService {
         return dao.update(s);
     }
 
+    public Script findById(Integer id) { return dao.findById(id); }
 }

@@ -28,6 +28,8 @@ public class Transformation {
 
     private String localPath;
 
+    private String remotePath;
+
     private LocalDateTime lastModified;
 
     private boolean active;
@@ -94,5 +96,13 @@ public class Transformation {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getRemotePath() {
+        return this.remotePath;
+    }
+
+    public void setRemotePath(String remotePath) {
+        this.remotePath = remotePath;
     }
 }

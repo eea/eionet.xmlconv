@@ -1,10 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head-old :: head}" />
+<body th:include="~{fragments/layout-old :: layout(~{::div})}">
+<div>
+  <p th:each="message, pos : ${messages}" th:text="${message}"></p>
+  <form action="#" th:action="@{/web/projects/scripts/{id}/edit(id=${id})}" th:object="${script}" method="post">
+    <fieldset>
+      <legend>QA Script properties</legend>
+      <label>Schema URL:
+        <input type="text" th:field="*{name}"/>
+      </label>
+      <label>Description:
+        <input type="text" th:field="*{description}"/>
+      </label>
+      <label>Script type:
+        <select th:field="*{type}">
+          <option th:each="option : ${scriptTypes}" th:value="${option}" th:text="${option}" th:selected="(*{type}?${option} == *{type.text}:false)"></option>
+        </select>
+      </label>
+      <label>Active:
+        <input type="checkbox" th:field="*{active}"/>
+      </label>
+      <label>Remote URL:
+        <input type="text" th:field="*{remotePath}"/>
+      </label>
+    </fieldset>
+    <input type="submit" th:value="Save"/>
+    <input type="reset" th:value="Reset"/>
+  </form>
+</div>
 </body>
 </html>

@@ -1,10 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head-old :: head}" />
+<body th:include="~{fragments/layout-old :: layout(~{::div})}">
+<div>
+  <!--<p th:each="message, pos : ${messages}" th:text="${message}"></p>-->
+  <div class="row">
+    <div class="columns">
+      <h3>Transformation Information</h3>
+    </div>
+    <div class="columns small-1">
+      <ul class="dropdown menu" data-dropdown-menu>
+        <li>
+          <a href="#0">Operations</a>
+          <ul class="menu">
+            <li><a th:href="@{/web/projects/transformations/{id}/edit(id=${transformation.id})}">Edit Transformation</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="columns">
+      <table>
+        <tbody>
+        <tr>
+          <th>Transformation Name</th>
+          <td th:text="${transformation.name}"></td>
+        </tr>
+        <tr>
+          <th>Description</th>
+          <td th:text="${transformation.description}"></td>
+        </tr>
+        <tr>
+          <th>Transformation type</th>
+          <td th:text="${transformation.type.text}"></td>
+        </tr>
+        <tr>
+          <th>Active</th>
+          <td th:text="${transformation.active}"></td>
+        </tr>
+        <tr>
+          <th>Remote URL</th>
+          <td th:text="${transformation.remotePath}"></td>
+        </tr>
+        <tr>
+          <th>Last modified</th>
+          <td th:text="${transformation.lastModified}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 </body>
 </html>

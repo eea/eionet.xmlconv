@@ -28,6 +28,8 @@ public class Script {
 
     private String localPath;
 
+    private String remotePath;
+
     private LocalDateTime lastModified;
 
     private boolean active;
@@ -95,5 +97,13 @@ public class Script {
 
     public void setType(ScriptType type) {
         this.type = type;
+    }
+
+    public String getRemotePath() {
+        return this.remotePath;
+    }
+
+    public void setRemotePath(String remotePath) {
+        this.remotePath = remotePath;
     }
 }

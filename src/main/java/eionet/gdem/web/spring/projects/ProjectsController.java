@@ -19,11 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
+import javax.validation.Valid;
 import javax.validation.Validator;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -78,21 +80,21 @@ public class ProjectsController {
     }
 
     @GetMapping("/{id}")
-    public String find(@PathVariable Integer id, Model model) {
+    public String showProject(@PathVariable Integer id, Model model) {
         Project project = projectService.findById(id);
         model.addAttribute("project", project);
         return "projects/show";
     }
 
     @GetMapping("/new")
-    public String createForm(Model model) {
+    public String newProjectForm(Model model) {
         Project project = new Project();
         model.addAttribute(project);
         return "projects/new";
     }
 
     @PostMapping("/new")
-    public String createSubmit(@ModelAttribute Project project) {
+    public String newProjectSubmit(@ModelAttribute Project project) {
         Project pr = projectService.insert(project);
         return "redirect:/web/projects/" + pr.getId();
     }
@@ -176,29 +178,112 @@ public class ProjectsController {
         return "redirect:/web/projects/{projectId}";
     }
 
+    @GetMapping("/schemata/{id}")
+    public String showSchema(@PathVariable Integer id, Model model) {
+        Schema schema = schemaService.findById(id);
+        model.addAttribute("schema", schema);
+        return "projects/schemata/show";
+    }
+
     @GetMapping("/schemata/{id}/edit")
     public String editSchemaForm(@PathVariable Integer id, Model model) {
         Schema schema = schemaService.findById(id);
         model.addAttribute("schema", schema);
+        model.addAttribute("schemaLanguages", SchemaLanguage.getList());
         return "projects/schemata/edit";
     }
 
     @PostMapping("/schemata/{id}/edit")
-    public String editSchemaSubmit(@PathVariable Integer id, @ModelAttribute Schema updatedSchema, BindingResult result, RedirectAttributes redirectAttributes) {
-        Set<ConstraintViolation<Schema>> errors = validator.validate(updatedSchema);
-
+    public String editSchemaSubmit(@PathVariable Integer id, @Valid @ModelAttribute Schema updatedSchema, BindingResult result, RedirectAttributes redirectAttributes) {
         Schema schema = schemaService.findById(id);
-        if (errors.size() > 0) {
+        if (result.hasErrors()) {
             List<String> messages = new ArrayList<>();
-            for (ConstraintViolation<Schema> error : errors) {
-                messages.add(error.getMessage());
+            for (FieldError error: result.getFieldErrors()) {
+                messages.add(error.getDefaultMessage());
             }
             redirectAttributes.addFlashAttribute("messages", messages);
-            return "redirect:/web/projects/schema/{id}/edit";
+            return "redirect:/web/projects/schemata/{id}/edit";
         } else if (!result.hasErrors()) {
+            schema.setUrl(updatedSchema.getUrl());
+            schema.setDescription(updatedSchema.getDescription());
+            schema.setSchemaLanguage(updatedSchema.getSchemaLanguage());
+            schema.setValidation(updatedSchema.isValidation());
+            schema.setBlocking(updatedSchema.isBlocking());
             Schema s = schemaService.update(schema);
         }
-        return "redirect:/web/projects/schema/{id}/show";
+        return "redirect:/web/projects/schemata/{id}";
+    }
+
+    @GetMapping("/scripts/{id}")
+    public String showScript(@PathVariable Integer id, Model model) {
+        Script script = scriptService.findById(id);
+        model.addAttribute("script", script);
+        return "projects/scripts/show";
+    }
+
+    @GetMapping("/scripts/{id}/edit")
+    public String editScriptForm(@PathVariable Integer id, Model model) {
+        Script script = scriptService.findById(id);
+        model.addAttribute("script", script);
+        model.addAttribute("scriptType", ScriptType.getMap());
+        return "projects/scripts/edit";
+    }
+
+    @PostMapping("/scripts/{id}/edit")
+    public String editScriptSubmit(@PathVariable Integer id, @Valid @ModelAttribute Script updatedScript, BindingResult result, RedirectAttributes redirectAttributes) {
+        Script script = scriptService.findById(id);
+        if (result.hasErrors()) {
+            List<String> messages = new ArrayList<>();
+            for (FieldError error: result.getFieldErrors()) {
+                messages.add(error.getDefaultMessage());
+            }
+            redirectAttributes.addFlashAttribute("messages", messages);
+            return "redirect:/web/projects/scripts/{id}/edit";
+        } else if (!result.hasErrors()) {
+            script.setName(updatedScript.getName());
+            script.setDescription(updatedScript.getDescription());
+            script.setType(updatedScript.getType());
+            script.setActive(updatedScript.isActive());
+            script.setRemotePath(updatedScript.getRemotePath());
+            Script s = scriptService.update(script);
+        }
+        return "redirect:/web/projects/scripts/{id}";
+    }
+
+    @GetMapping("/transformations/{id}")
+    public String showTransformation(@PathVariable Integer id, Model model) {
+        Transformation transformation = transformationService.findById(id);
+        model.addAttribute("transformation", transformation);
+        return "projects/transformations/show";
+    }
+
+    @GetMapping("/transformations/{id}/edit")
+    public String editTransformationForm(@PathVariable Integer id, Model model) {
+        Transformation transformation = transformationService.findById(id);
+        model.addAttribute("transformation", transformation);
+        model.addAttribute("transformationTypes", TransformationType.getMap());
+        return "projects/transformations/edit";
+    }
+
+    @PostMapping("/transformations/{id}/edit")
+    public String editScriptSubmit(@PathVariable Integer id, @Valid @ModelAttribute Transformation updatedTransformation, BindingResult result, RedirectAttributes redirectAttributes) {
+        Transformation transformation = transformationService.findById(id);
+        if (result.hasErrors()) {
+            List<String> messages = new ArrayList<>();
+            for (FieldError error: result.getFieldErrors()) {
+                messages.add(error.getDefaultMessage());
+            }
+            redirectAttributes.addFlashAttribute("messages", messages);
+            return "redirect:/web/projects/transformations/{id}/edit";
+        } else if (!result.hasErrors()) {
+            transformation.setName(updatedTransformation.getName());
+            transformation.setDescription(updatedTransformation.getDescription());
+            transformation.setType(updatedTransformation.getType());
+            transformation.setActive(updatedTransformation.isActive());
+            transformation.setRemotePath(updatedTransformation.getRemotePath());
+            Transformation s = transformationService.update(transformation);
+        }
+        return "redirect:/web/projects/transformations/{id}";
     }
 
 }

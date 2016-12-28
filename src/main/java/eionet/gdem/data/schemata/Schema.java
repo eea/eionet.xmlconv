@@ -24,6 +24,7 @@ public class Schema {
 
     @Convert(converter = SchemaLanguageConverter.class)
     @Column(name = "schema_language")
+    @NotNull
     private SchemaLanguage schemaLanguage;
 
     private boolean validation;

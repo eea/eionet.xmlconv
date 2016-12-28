@@ -36,4 +36,6 @@ public class TransformationService {
     public Transformation update(Transformation t) {
         return dao.update(t);
     }
+
+    public Transformation findById(Integer id) { return dao.findById(id); }
 }
