@@ -13,7 +13,7 @@
         <li>
           <a href="#0">Operations</a>
           <ul class="menu">
-            <li><a th:href="@{/web/projects/schemata/{id}/edit(id=${schema.id})}">Edit Schema</a></li>
+            <li><a th:href="@{/web/projects/{projectId}/schemata/{id}/edit(projectId=${projectId}, id=${schema.id})}">Edit Schema</a></li>
           </ul>
         </li>
       </ul>

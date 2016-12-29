@@ -33,6 +33,17 @@
         <!--<property name="viewNames" value="*.html,*.xhtml" />-->
     </bean>
 
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/projects"/>
+            <bean class="eionet.gdem.web.spring.LoginInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
     <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
+    </bean>
 
 </beans>
