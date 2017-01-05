@@ -1,5 +1,6 @@
 package eionet.gdem.qa.engines;
 
+import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.Utils;
@@ -9,6 +10,7 @@ import org.basex.core.Context;
 import org.basex.core.MainOptions;
 import org.basex.core.cmd.Set;
 import org.basex.io.out.ArrayOutput;
+import org.basex.io.serial.SerializerOptions;
 import org.basex.query.QueryException;
 import org.basex.query.QueryProcessor;
 import org.basex.query.value.Value;
@@ -37,6 +39,7 @@ public class BaseXLocalImpl extends QAScriptEngineStrategy {
         QueryProcessor proc = null;
         try {
             new Set(MainOptions.INTPARSE, true).execute(context);
+            new Set(MainOptions.QUERYPATH, Properties.queriesFolder).execute(context);
 
             String scriptSource = null;
             if (!Utils.isNullStr(script.getScriptSource())) {
@@ -51,13 +54,32 @@ public class BaseXLocalImpl extends QAScriptEngineStrategy {
             }
             proc = new QueryProcessor( scriptSource, context);
             proc.bind("source_url", script.getOrigFileUrl(), "xs:string");
+            proc.bind("base_url", Properties.gdemURL + Properties.contextPath , "xs:string");
+
+            // same serialization options with saxon
+            SerializerOptions opts = new SerializerOptions();
+
+            opts.set(SerializerOptions.INDENT, "no");
+            opts.set(SerializerOptions.ENCODING, DEFAULT_ENCODING);
+            if (getOutputType().equals(HTML_CONTENT_TYPE)) {
+                opts.set(SerializerOptions.METHOD, XML_CONTENT_TYPE);
+            } else {
+                opts.set(SerializerOptions.METHOD, getOutputType());
+            }
+
+            if (getOutputType().equals(XML_CONTENT_TYPE)) {
+                opts.set(SerializerOptions.OMIT_XML_DECLARATION, "no");
+            } else {
+                opts.set(SerializerOptions.OMIT_XML_DECLARATION, "yes");
+            }
 
             Value res = proc.value();
 
-            ArrayOutput A = res.serialize();
-            result.write(A.buffer());
+            ArrayOutput A = res.serialize(opts);
+            result.write(A.toArray());
 
-            logger.debug("proc info: " + proc.info());
+            //logger.info("proc info: " + proc.info());
+            //logger.info( new String(A.buffer() , "UTF-8" ));
         } catch ( QueryException | IOException e) {
             logger.error("Error executing BaseX xquery script : " + e.getMessage());
             throw new XMLConvException(e.getMessage());
