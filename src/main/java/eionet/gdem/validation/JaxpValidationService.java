@@ -91,15 +91,13 @@ public class JaxpValidationService implements ValidationService {
         String[] catalogs = {Properties.catalogPath};
         resolver.setPreferPublic(true);
         resolver.setCatalogList(catalogs);
+        sf.setResourceResolver(resolver);
 
         String resultXML = "";
         try {
             Schema schema = sf.newSchema(new URL(schemaUrl));
             Validator validator = schema.newValidator();
             validator.setErrorHandler(errorHandler);
-            validator.setResourceResolver(resolver);
-            /*ByteArrayOutputStream out = new ByteArrayOutputStream();
-            Result result = new StreamResult(out);*/
             validator.validate(new StreamSource(srcStream));
             LOGGER.info("Validation completed");
             validationFeedback.setValidationErrors(getErrorList());

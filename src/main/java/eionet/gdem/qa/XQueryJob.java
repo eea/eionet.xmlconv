@@ -32,6 +32,8 @@ import java.util.Map;
 
 import eionet.gdem.XMLConvException;
 import eionet.gdem.logging.Markers;
+import eionet.gdem.validation.JaxpValidationService;
+import eionet.gdem.validation.ValidationService;
 import org.apache.commons.io.IOUtils;
 
 import eionet.gdem.Constants;
@@ -42,7 +44,6 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.validation.SaxValidationService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -105,12 +106,12 @@ public class XQueryJob implements Job, InterruptableJob {
                         scriptFile = StringUtils.substringBefore(scriptFile, " ");
                     }
                     LOGGER.info("** XML Validation Job starting, ID=" + jobId + " schema: " + scriptFile + " result will be stored to " + resultFile);
-                    SaxValidationService vs = new SaxValidationService();
+                    ValidationService vs = new JaxpValidationService();
                     String query = StringUtils.defaultIfEmpty(new URI(srcFile).getQuery(), "");
                     List<NameValuePair> params = URLEncodedUtils.parse(query, StandardCharsets.UTF_8);
                     for (NameValuePair param : params) {
                         if (Constants.TICKET_PARAM.equals(param.getName())) {
-                            vs.setTicket(param.getValue());
+                            //vs.setTicket(param.getValue());
                         }
                         if (Constants.SOURCE_URL_PARAM.equals(param.getName())) {
                             srcFile = param.getValue();

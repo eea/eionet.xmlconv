@@ -29,7 +29,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-
+import eionet.gdem.validation.JaxpValidationService;
+import eionet.gdem.validation.ValidationService;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -50,7 +51,6 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.validation.SaxValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,9 +115,8 @@ public class RunScriptAction extends Action {
             // out of here
             if (String.valueOf(Constants.JOB_VALIDATION).equals(scriptId)) {
                 try {
-                    SaxValidationService vs = new SaxValidationService();
-                    vs.setTrustedMode(false);
-
+                    ValidationService vs = new JaxpValidationService();
+                    //vs.setTrustedMode(false);
                     // result = vs.validateSchema(dataURL, xml_schema);
                     result = vs.validate(sourceUrl);
                 } catch (DCMException de) {
