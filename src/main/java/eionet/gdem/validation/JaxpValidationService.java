@@ -3,9 +3,11 @@ package eionet.gdem.validation;
 import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.BusinessConstants;
+import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.http.HttpFileManager;
+import eionet.gdem.qa.QAFeedbackType;
 import eionet.gdem.qa.QAResultPostProcessor;
 import org.apache.xerces.util.XMLCatalogResolver;
 import org.apache.xerces.xni.XMLResourceIdentifier;
@@ -42,6 +44,15 @@ public class JaxpValidationService implements ValidationService {
     private ValidationServiceFeedback validationFeedback = new ValidationServiceFeedback();
 
     private QAResultPostProcessor postProcessor = new QAResultPostProcessor();
+
+    private SchemaManager schemaManager = new SchemaManager();
+
+    private String warningMessage = null;
+
+    @Override
+    public String getWarningMessage() {
+        return warningMessage;
+    }
 
     @Override
     public List<ValidateDto> getErrorList() {
@@ -93,22 +104,34 @@ public class JaxpValidationService implements ValidationService {
         resolver.setCatalogList(catalogs);
         sf.setResourceResolver(resolver);
 
+        boolean isBlocker = false;
         String resultXML = "";
+
         try {
             Schema schema = sf.newSchema(new URL(schemaUrl));
             Validator validator = schema.newValidator();
             validator.setErrorHandler(errorHandler);
             validator.validate(new StreamSource(srcStream));
+
+            eionet.gdem.dto.Schema schemaObj = schemaManager.getSchema(schemaUrl);
+            if (schemaObj != null) {
+                isBlocker = schemaObj.isBlocker();
+            }
             LOGGER.info("Validation completed");
             validationFeedback.setValidationErrors(getErrorList());
-            resultXML = validationFeedback.formatFeedbackText(false);
+            resultXML = validationFeedback.formatFeedbackText(isBlocker);
             resultXML = postProcessor.processQAResult(resultXML, schemaUrl);
+            warningMessage = postProcessor.getWarningMessage(schemaUrl);
+
         } catch (SAXException e) {
             LOGGER.error("Error: ", e);
+            return validationFeedback.formatFeedbackText("Document is not well-formed: " + e.getMessage(), QAFeedbackType.BLOCKER, true);
         } catch (MalformedURLException e) {
             LOGGER.error("Error: ", e);
+            return validationFeedback.formatFeedbackText("The parser could not check the document. " + e.getMessage(), QAFeedbackType.BLOCKER, true);
         } catch (IOException e) {
             LOGGER.error("Error: ", e);
+            return validationFeedback.formatFeedbackText("The parser could not check the document. " + e.getMessage(), QAFeedbackType.BLOCKER, true);
         }
 
         return resultXML;

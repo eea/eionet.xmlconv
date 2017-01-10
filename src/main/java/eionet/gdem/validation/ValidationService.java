@@ -16,4 +16,5 @@ public interface ValidationService {
     public String validateSchema(String xml, String schema) throws DCMException;
     public String validateSchema(String sourceUrl, InputStream srcStream, String schema) throws DCMException, XMLConvException;
     public List<ValidateDto> getErrorList();
+    public String getWarningMessage();
 }

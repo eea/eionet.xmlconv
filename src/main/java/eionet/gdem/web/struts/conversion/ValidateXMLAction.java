@@ -76,17 +76,16 @@ public class ValidateXMLAction extends Action {
                 /*validatedSchema = v.getValidatedSchemaURL();
                 originalSchema = v.getOriginalSchema();
                 warningMessage = v.getWarningMessage();*/
-                validatedSchema = "";
-                originalSchema = "";
-                warningMessage = "";
-
+                validatedSchema = schema;
+                originalSchema = schema;
+                warningMessage = v.getWarningMessage();
             } catch (DCMException dcme) {
                 throw dcme;
             } catch (Exception e) {
                 throw new DCMException(BusinessConstants.EXCEPTION_VALIDATION_ERROR);
             }
             httpServletRequest.setAttribute("conversion.valid", valid);
-            httpServletRequest.setAttribute("conversion.originalSchema", originalSchema);
+            httpServletRequest.setAttribute("conversion.originalSchema", schema);
             if (!originalSchema.equals(validatedSchema)) {
                 httpServletRequest.setAttribute("conversion.validatedSchema", validatedSchema);
             }
