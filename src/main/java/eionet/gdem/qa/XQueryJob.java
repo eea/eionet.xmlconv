@@ -42,7 +42,7 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.validation.ValidationService;
+import eionet.gdem.validation.SaxValidationService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -105,7 +105,7 @@ public class XQueryJob implements Job, InterruptableJob {
                         scriptFile = StringUtils.substringBefore(scriptFile, " ");
                     }
                     LOGGER.info("** XML Validation Job starting, ID=" + jobId + " schema: " + scriptFile + " result will be stored to " + resultFile);
-                    ValidationService vs = new ValidationService();
+                    SaxValidationService vs = new SaxValidationService();
                     String query = StringUtils.defaultIfEmpty(new URI(srcFile).getQuery(), "");
                     List<NameValuePair> params = URLEncodedUtils.parse(query, StandardCharsets.UTF_8);
                     for (NameValuePair param : params) {

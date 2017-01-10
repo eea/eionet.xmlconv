@@ -97,7 +97,7 @@
             </Method>
         </Methods>
     </Service>
-    <Service Name="ValidationService" Provider="eionet.gdem.validation.ValidationService">
+    <Service Name="ValidationService" Provider="eionet.gdem.validation.SaxValidationService">
         <Methods>
             <Method Name="validate" Auth="false">
                 <Parameters>

@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import eionet.gdem.Constants;
+import eionet.gdem.validation.JaxpValidationService;
+import eionet.gdem.validation.ValidationService;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -20,7 +22,7 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.validation.ValidationService;
+import eionet.gdem.validation.SaxValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,18 +64,22 @@ public class ValidateXMLAction extends Action {
             String originalSchema = null;
             String warningMessage = null;
             try {
-                ValidationService v = new ValidationService();
-                v.setTrustedMode(false);
-                v.setTicket(ticket);
+                ValidationService v = new JaxpValidationService();
+                //v.setTrustedMode(false);
+                //v.setTicket(ticket);
                 if (schema == null) {
                     v.validate(url);
                 } else {
                     v.validateSchema(url, schema);
                 }
                 valid = v.getErrorList();
-                validatedSchema = v.getValidatedSchemaURL();
+                /*validatedSchema = v.getValidatedSchemaURL();
                 originalSchema = v.getOriginalSchema();
-                warningMessage = v.getWarningMessage();
+                warningMessage = v.getWarningMessage();*/
+                validatedSchema = "";
+                originalSchema = "";
+                warningMessage = "";
+
             } catch (DCMException dcme) {
                 throw dcme;
             } catch (Exception e) {

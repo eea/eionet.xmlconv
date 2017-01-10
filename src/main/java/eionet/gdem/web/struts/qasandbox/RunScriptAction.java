@@ -50,7 +50,7 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.validation.ValidationService;
+import eionet.gdem.validation.SaxValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,7 +115,7 @@ public class RunScriptAction extends Action {
             // out of here
             if (String.valueOf(Constants.JOB_VALIDATION).equals(scriptId)) {
                 try {
-                    ValidationService vs = new ValidationService();
+                    SaxValidationService vs = new SaxValidationService();
                     vs.setTrustedMode(false);
 
                     // result = vs.validateSchema(dataURL, xml_schema);
