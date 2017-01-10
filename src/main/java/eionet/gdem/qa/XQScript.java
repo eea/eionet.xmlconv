@@ -23,12 +23,12 @@
 
 package eionet.gdem.qa;
 
-import java.io.OutputStream;
-
 import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.qa.engines.*;
+
+import java.io.OutputStream;
 
 /**
  * Class for XQ script used by the workqueue XQTask and XQ sandbox.
@@ -145,7 +145,7 @@ public class XQScript {
                     engine = new FMEQueryEngine();
                 } else if (XQScript.SCRIPT_LANG_XQUERY3.equals(scriptType)) {
                     // XQUERY 3.0+
-                    engine = new BaseXServerImpl();
+                    engine = new BaseXLocalImpl();
                 } else {
                     // LEGACY XQUERY 1.0
                     engine = new SaxonImpl();

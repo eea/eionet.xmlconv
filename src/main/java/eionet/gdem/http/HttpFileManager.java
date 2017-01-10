@@ -83,7 +83,7 @@ public class HttpFileManager {
         }
         StringBuffer url = new StringBuffer();
         if (isTrustedMode && !Utils.isNullStr(ticket)) {
-                url.append(Properties.gdemURL);
+                url.append("http://localhost:8080");
                 url.append(Constants.GETSOURCE_URL);
                 url.append("?");
                 url.append(Constants.TICKET_PARAM);
