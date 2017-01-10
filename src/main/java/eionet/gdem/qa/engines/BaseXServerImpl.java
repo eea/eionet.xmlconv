@@ -39,7 +39,7 @@ public class BaseXServerImpl extends QAScriptEngineStrategy {
             try (BaseXClient session = new BaseXClient(Properties.basexServerHost, port, Properties.basexServerUser, Properties.basexServerPassword)) {
                 try (BaseXClient.Query query = session.query(input)) {
                     query.bind("$source_url", script.getSrcFileUrl());
-                    //query.bind("$base_url", "http://" + Properties.appHost + Properties.contextPath);
+                    query.bind("$base_url", Properties.gdemURL + Properties.contextPath, "xs:string");
                     while (query.more()) {
                         result.write(query.next().getBytes(StandardCharsets.UTF_8));
                     }
