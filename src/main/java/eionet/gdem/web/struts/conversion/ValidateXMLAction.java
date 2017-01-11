@@ -11,18 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import eionet.gdem.Constants;
 import eionet.gdem.validation.JaxpValidationService;
 import eionet.gdem.validation.ValidationService;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts.action.*;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.validation.SaxValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,11 +67,8 @@ public class ValidateXMLAction extends Action {
                     v.validateSchema(url, schema);
                 }
                 valid = v.getErrorList();
-                /*validatedSchema = v.getValidatedSchemaURL();
+                validatedSchema = v.getValidatedSchema();
                 originalSchema = v.getOriginalSchema();
-                warningMessage = v.getWarningMessage();*/
-                validatedSchema = schema;
-                originalSchema = schema;
                 warningMessage = v.getWarningMessage();
             } catch (DCMException dcme) {
                 throw dcme;
@@ -86,7 +77,7 @@ public class ValidateXMLAction extends Action {
             }
             httpServletRequest.setAttribute("conversion.valid", valid);
             httpServletRequest.setAttribute("conversion.originalSchema", schema);
-            if (!originalSchema.equals(validatedSchema)) {
+            if (!StringUtils.equals(originalSchema, validatedSchema)) {
                 httpServletRequest.setAttribute("conversion.validatedSchema", validatedSchema);
             }
             httpServletRequest.setAttribute("conversion.warningMessage", warningMessage);

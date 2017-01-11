@@ -12,20 +12,15 @@ import eionet.gdem.qa.QAResultPostProcessor;
 import org.apache.xerces.util.XMLCatalogResolver;
 import org.apache.xerces.xni.XMLResourceIdentifier;
 import org.apache.xerces.xni.parser.XMLInputSource;
-import org.apache.xml.utils.ListingErrorHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
-import javax.xml.transform.Result;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -45,9 +40,24 @@ public class JaxpValidationService implements ValidationService {
 
     private QAResultPostProcessor postProcessor = new QAResultPostProcessor();
 
+    private InputAnalyser inputAnalyser = new InputAnalyser();
+
     private SchemaManager schemaManager = new SchemaManager();
 
-    private String warningMessage = null;
+    private String originalSchema;
+    private String validatedSchema;
+
+    private String warningMessage;
+
+    @Override
+    public String getOriginalSchema() {
+        return this.originalSchema;
+    }
+
+    @Override
+    public String getValidatedSchema() {
+        return this.validatedSchema;
+    }
 
     @Override
     public String getWarningMessage() {
@@ -70,8 +80,7 @@ public class JaxpValidationService implements ValidationService {
         HttpFileManager fileManager = new HttpFileManager();
         InputStream is = null;
         try {
-            String ticket = "";
-            is = fileManager.getFileInputStream(xml, ticket, true);
+            is = fileManager.getFileInputStream(xml, null, true);
             return validateSchema(xml, is, schema);
         } catch (MalformedURLException mfe) {
             throw new DCMException(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED);
@@ -93,9 +102,15 @@ public class JaxpValidationService implements ValidationService {
 
     @Override
     public String validateSchema(String sourceUrl, InputStream srcStream, String schemaUrl) throws DCMException, XMLConvException {
-        InputAnalyser inputAnalyser = new InputAnalyser();
         inputAnalyser.parseXML(sourceUrl);
         schemaUrl = inputAnalyser.getSchemaOrDTD();
+        if (schemaUrl == null) {
+            return validationFeedback.formatFeedbackText("XML schema is missing, or it could not be detected.", QAFeedbackType.BLOCKER, true);
+        }
+        originalSchema = schemaUrl;
+        validatedSchema = schemaUrl;
+        validationFeedback.setSchema(originalSchema);
+
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
         CustomCatalogResolver resolver = new CustomCatalogResolver();
