@@ -9,6 +9,7 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.qa.QAFeedbackType;
 import eionet.gdem.qa.QAResultPostProcessor;
+import org.apache.commons.lang.StringUtils;
 import org.apache.xerces.util.XMLCatalogResolver;
 import org.apache.xerces.xni.XMLResourceIdentifier;
 import org.apache.xerces.xni.parser.XMLInputSource;
@@ -46,8 +47,10 @@ public class JaxpValidationService implements ValidationService {
 
     private String originalSchema;
     private String validatedSchema;
+    private String validatedSchemaURL;
 
     private String warningMessage;
+
 
     @Override
     public String getOriginalSchema() {
@@ -57,6 +60,11 @@ public class JaxpValidationService implements ValidationService {
     @Override
     public String getValidatedSchema() {
         return this.validatedSchema;
+    }
+
+    @Override
+    public String getValidatedSchemaURL() {
+        return this.validatedSchemaURL;
     }
 
     @Override
@@ -102,10 +110,23 @@ public class JaxpValidationService implements ValidationService {
 
     @Override
     public String validateSchema(String sourceUrl, InputStream srcStream, String schemaUrl) throws DCMException, XMLConvException {
-        inputAnalyser.parseXML(sourceUrl);
-        schemaUrl = inputAnalyser.getSchemaOrDTD();
-        if (schemaUrl == null) {
-            return validationFeedback.formatFeedbackText("XML schema is missing, or it could not be detected.", QAFeedbackType.BLOCKER, true);
+
+        String resultXML = "";
+        boolean isDTD = false;
+        boolean isBlocker = false;
+        String namespace = "";
+
+
+        if (StringUtils.isEmpty(schemaUrl)) {
+            inputAnalyser.parseXML(sourceUrl);
+            schemaUrl = inputAnalyser.getSchemaOrDTD();
+            namespace = inputAnalyser.getNamespace();
+        } else {
+            isDTD = schemaUrl.endsWith("dtd");
+        }
+
+        if (StringUtils.isEmpty(schemaUrl)) {
+            return validationFeedback.formatFeedbackText("Could not validate XML file. Unable to locate XML Schema reference.", QAFeedbackType.BLOCKER, true);
         }
         originalSchema = schemaUrl;
         validatedSchema = schemaUrl;
@@ -119,13 +140,24 @@ public class JaxpValidationService implements ValidationService {
         resolver.setCatalogList(catalogs);
         sf.setResourceResolver(resolver);
 
-        boolean isBlocker = false;
-        String resultXML = "";
+
+        String schemaFileName = schemaManager.getUplSchemaURL(schemaUrl);
+        if (!StringUtils.equals(schemaUrl, schemaFileName)) {
+            //XXX: replace file://
+            validatedSchema = "file:///".concat(Properties.schemaFolder).concat("/").concat(schemaFileName);
+            validatedSchemaURL = Properties.gdemURL.concat("/schema/").concat(schemaFileName);
+        }
 
         try {
-            Schema schema = sf.newSchema(new URL(schemaUrl));
+            Schema schema = sf.newSchema(new URL(validatedSchema));
             Validator validator = schema.newValidator();
             validator.setErrorHandler(errorHandler);
+
+            // make parser to validate
+            validator.setFeature("http://xml.org/sax/features/validation", true);
+            validator.setFeature("http://apache.org/xml/features/validation/schema", true);
+            validator.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
+            validator.setFeature("http://apache.org/xml/features/continue-after-fatal-error", false);
             validator.validate(new StreamSource(srcStream));
 
             eionet.gdem.dto.Schema schemaObj = schemaManager.getSchema(schemaUrl);

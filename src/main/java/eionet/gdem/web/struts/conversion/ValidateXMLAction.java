@@ -67,7 +67,7 @@ public class ValidateXMLAction extends Action {
                     v.validateSchema(url, schema);
                 }
                 valid = v.getErrorList();
-                validatedSchema = v.getValidatedSchema();
+                validatedSchema = v.getValidatedSchemaURL();
                 originalSchema = v.getOriginalSchema();
                 warningMessage = v.getWarningMessage();
             } catch (DCMException dcme) {

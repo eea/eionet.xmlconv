@@ -19,5 +19,6 @@ public interface ValidationService {
     public String getWarningMessage();
     public String getOriginalSchema();
     public String getValidatedSchema();
+    public String getValidatedSchemaURL();
 
 }

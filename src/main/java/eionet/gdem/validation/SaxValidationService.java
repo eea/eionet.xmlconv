@@ -62,7 +62,7 @@ import java.util.List;
  * @author Enriko Käsper, TripleDev
  * @author George Sofianos
  */
-
+//TODO: Not used any more, check if possible to remove it, or make it an implementation of ValidationService.
 public class SaxValidationService {
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(SaxValidationService.class);
@@ -77,11 +77,11 @@ public class SaxValidationService {
     private boolean trustedMode = true;
 
     /** Original URL of XML Schema. */
-    private String originalSchema = "";
+    private String originalSchema = null;
     /** System URL if Schema has cached copy in XMLCONV. */
-    private String validatedSchema = "";
+    private String validatedSchema = null;
     /** Public URL displayed for user. */
-    private String validatedSchemaURL = "";
+    private String validatedSchemaURL = null;
 
     /** Message displayed for user on web UI. */
     private String warningMessage = null;
@@ -143,7 +143,7 @@ public class SaxValidationService {
 
     /**
      * Validate XML. If schema is null, then read the schema or DTD from the header of XML. If schema or DTD is defined, then ignore
-     * the defined schema or DTD.
+     * the defined schema or DTD.schema
      *
      * @param srcStream XML file as InputStream to be validated.
      * @param schema XML Schema URL.
@@ -168,7 +168,7 @@ public class SaxValidationService {
             XMLReader reader = parser.getXMLReader();
 
             reader.setErrorHandler(errHandler);
-            /*XmlconvCatalogResolver catalogResolver = new XmlconvCatalogResolver();*/
+            XmlconvCatalogResolver catalogResolver = new XmlconvCatalogResolver();
             CustomCatalogResolver resolver = new CustomCatalogResolver();
             String[] catalogs = {Properties.catalogPath};
             resolver.setPreferPublic(true);
@@ -182,7 +182,7 @@ public class SaxValidationService {
 
             reader.setFeature("http://xml.org/sax/features/namespaces", true);
             reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-            reader.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
+            reader.setFeature("http://apache.org/xml/features/continue-after-fatal-error", false);
 
             InputAnalyser inputAnalyser = new InputAnalyser();
             inputAnalyser.parseXML(sourceUrl);
@@ -202,9 +202,9 @@ public class SaxValidationService {
                 if (!isDTD) {
                     if (Utils.isNullStr(namespace)) {
                         // XML file does not have default namespace
-                        //setNoNamespaceSchemaProperty(reader, schema);
+                        setNoNamespaceSchemaProperty(reader, schema);
                     } else {
-                        //setNamespaceSchemaProperty(reader, namespace, schema);
+                        setNamespaceSchemaProperty(reader, namespace, schema);
                     }
                 } else {
                     // validate against DTD
@@ -217,17 +217,18 @@ public class SaxValidationService {
             }
             // TODO: remove duplicate http client from resourceExists check.
             // if schema is not available, then do not parse the XML and throw error
-            /*if (!Utils.resourceExists(getValidatedSchema())) {
+            if (!Utils.resourceExists(getValidatedSchema())) {
                 return validationFeedback.formatFeedbackText("Failed to read schema document from the following URL: "
                         + getValidatedSchema(), QAFeedbackType.BLOCKER, isBlocker);
             }
             Schema schemaObj = schemaManager.getSchema(getOriginalSchema());
             if (schemaObj != null) {
                 isBlocker = schemaObj.isBlocker();
-            }*/
+            }
             validationFeedback.setSchema(getOriginalSchema());
             InputSource is = new InputSource(srcStream);
             reader.parse(is);
+
         } catch (SAXParseException se) {
             return validationFeedback.formatFeedbackText("Document is not well-formed. Column: " + se.getColumnNumber()
                     + "; line:" + se.getLineNumber() + "; " + se.getMessage(), QAFeedbackType.BLOCKER, isBlocker);
