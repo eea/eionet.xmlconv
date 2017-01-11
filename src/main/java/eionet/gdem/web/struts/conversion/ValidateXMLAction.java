@@ -76,7 +76,7 @@ public class ValidateXMLAction extends Action {
                 throw new DCMException(BusinessConstants.EXCEPTION_VALIDATION_ERROR);
             }
             httpServletRequest.setAttribute("conversion.valid", valid);
-            httpServletRequest.setAttribute("conversion.originalSchema", schema);
+            httpServletRequest.setAttribute("conversion.originalSchema", originalSchema);
             if (!StringUtils.equals(originalSchema, validatedSchema)) {
                 httpServletRequest.setAttribute("conversion.validatedSchema", validatedSchema);
             }

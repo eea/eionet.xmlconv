@@ -133,7 +133,7 @@ public class JaxpValidationService implements ValidationService {
                 isBlocker = schemaObj.isBlocker();
             }
             LOGGER.info("Validation completed");
-            validationFeedback.setValidationErrors(getErrorList());
+            validationFeedback.setValidationErrors(errorHandler.getErrors());
             resultXML = validationFeedback.formatFeedbackText(isBlocker);
             resultXML = postProcessor.processQAResult(resultXML, schemaUrl);
             warningMessage = postProcessor.getWarningMessage(schemaUrl);
