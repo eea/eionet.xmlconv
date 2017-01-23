@@ -53,7 +53,7 @@ public class BaseXLocalImpl extends QAScriptEngineStrategy {
                 }
             }
             proc = new QueryProcessor( scriptSource, context);
-            proc.bind("source_url", script.getOrigFileUrl(), "xs:string");
+            proc.bind("source_url", script.getSrcFileUrl(), "xs:string");
             proc.bind("base_url", Properties.gdemURL + Properties.contextPath , "xs:string");
 
             // same serialization options with saxon
