@@ -26,7 +26,7 @@ public class EntryPointUnauthorizedHandler implements AuthenticationEntryPoint {
         Gson gson = new Gson();
         LinkedHashMap<String, String> results = new LinkedHashMap<String, String>();
         results.put("httpStatusCode", HttpStatus.UNAUTHORIZED.toString());
-        results.put("errorMessage", "Access Denied");
+        results.put("errorMessage", "Access Denied from Entry Point Unauthorized Handler");
         out.write(gson.toJson(results));
         
     }

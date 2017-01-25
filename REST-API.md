@@ -509,9 +509,13 @@ Ideally we should expose an endpoint which whould accept a number of parameters 
 * **X-Auth-Token:** generated-token-goes-here
 
 ####  Server Side:
- Spring Security is configured to filter incoming URLS and perform security filtering on those under **/auth**<br>
- The back-end mechanism will inspect the Http-Request looking for the HTTP Header:  **X-Auth-Token**.<br>
- The validation mechanism then decodes the token and checks the following:<br>
+ Spring Security is configured to filter incoming URLS and perform security filtering on these partial URLS: <br>
+ - **/asynctasks**<br>
+ - **/qa** <br>
+The back-end mechanism will inspect the Http-Request looking for an HTTP Header in the following format: <br>
+**Authorization: Bearer <**token**>** <br>
+
+The validation mechanism then decodes the token and checks the following:<br>
  - If the claims: **iss , aud**  exist and also that they  match the values explicitly set in the application.<br>
  - If the claim : **exp** exists and that it is not before the current date, meaning that the token has expired.<br>
  - If the **Key** used to sign the Token, matches the explicitly set key in the application.<br>

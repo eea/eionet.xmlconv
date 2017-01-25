@@ -3,7 +3,6 @@ package eionet.gdem.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -51,7 +50,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
-  public AuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
+  public AuthenticationTokenFilter authenticationTokenFilterBean( ) throws Exception {
     AuthenticationTokenFilter authenticationTokenFilter = new AuthenticationTokenFilter();
     authenticationTokenFilter.setAuthenticationManager(authenticationManagerBean());
     return authenticationTokenFilter;
@@ -70,8 +69,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .sessionCreationPolicy(SessionCreationPolicy.NEVER)
         .and()
                   .authorizeRequests()
-        .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-        .antMatchers("/restapi/auth/**").authenticated();
+        .antMatchers("/*").permitAll();
 
     // Custom JWT based authentication
     httpSecurity

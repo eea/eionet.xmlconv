@@ -10,6 +10,7 @@ import java.security.SignatureException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,9 +20,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class TokenVerifier {
 
-    final String secret = "top-secret";
-    final String audience = "eea";
-    final String issuer = "eea";
+      @Value("${jwt.secret}")
+      private String secret;
+      
+      @Value("${jwt.audience}")
+      private String audience;
+      
+      @Value("${jwt.issuer}")
+      private String issuer;
+      
+      private static final String JWT_SUBJECT_CLAIM="sub";
 
     public String verify(String authToken) throws IOException , JWTException {
 
@@ -31,7 +39,7 @@ public class TokenVerifier {
             final Map<String, Object> claims = verifier.verify(authToken);
             for (Map.Entry<String, Object> entry : claims.entrySet()) {
                 String key = entry.getKey();
-                if (key == "sub") {
+                if (key == JWT_SUBJECT_CLAIM) {
                     username = entry.getValue().toString();
                 }
             }

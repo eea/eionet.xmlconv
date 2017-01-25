@@ -4,7 +4,7 @@ package eionet.gdem.security.errors;
  *
  * @author Vasilis Skiadas<vs@eworx.gr>
  */
-public class JWTException extends  RuntimeException {
+public class JWTException extends  Exception {
 
     public JWTException() {
     }

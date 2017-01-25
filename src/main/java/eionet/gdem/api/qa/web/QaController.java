@@ -104,21 +104,7 @@ public class QaController {
         return new ResponseEntity<LinkedHashMap<String, List<QaResultsWrapper>>>(jobsQaResults, HttpStatus.OK);
     }
 
-    /**
-     * Authorized Schedule of a Qa Job for an Envelope
-     *
-     */
-    @RequestMapping(value = "/auth/asynctasks/qajobs/batch", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<LinkedHashMap<String, List<QaResultsWrapper>>> SecuredScheduleQaRequestOnEnvelope(@RequestBody EnvelopeWrapper envelopeWrapper) throws XMLConvException, EmptyParameterException {
-
-        if (envelopeWrapper.getEnvelopeUrl() == null) {
-            throw new EmptyParameterException("envelopeUrl");
-        }
-        List<QaResultsWrapper> qaResults = qaService.scheduleJobs(envelopeWrapper.getEnvelopeUrl());
-        LinkedHashMap<String, List<QaResultsWrapper>> jobsQaResults = new LinkedHashMap<String, List<QaResultsWrapper>>();
-        jobsQaResults.put("jobs", qaResults);
-        return new ResponseEntity<LinkedHashMap<String, List<QaResultsWrapper>>>(jobsQaResults, HttpStatus.OK);
-    }
+ 
 
     /**
      * Get QA Job Status

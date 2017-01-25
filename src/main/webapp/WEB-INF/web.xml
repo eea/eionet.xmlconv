@@ -43,7 +43,7 @@
     <!-- Filter Mappings -->
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
-        <url-pattern>/restapi/auth/*</url-pattern>
+        <url-pattern>/restapi/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>CAS Filter</filter-name>
