@@ -506,7 +506,7 @@ Ideally we should expose an endpoint which whould accept a number of parameters 
 ####  Client Side:
   Each HTTP Request on a secured API endpoint should contain an **HTTP Header** with a **key-value** pair , as shown below:
   
-* **X-Auth-Token:** generated-token-goes-here
+* **Authorization: Bearer <**token**>** <br>
 
 ####  Server Side:
  Spring Security is configured to filter incoming URLS and perform security filtering on these partial URLS: <br>
@@ -538,7 +538,7 @@ The validation mechanism then decodes the token and checks the following:<br>
  
 * **URL**
 
-  /restapi/auth/asynctasks/qajobs/batch
+  /restapi/asynctasks/qajobs/batch
 
 * **Method:**
 
@@ -547,7 +547,7 @@ The validation mechanism then decodes the token and checks the following:<br>
 * **HTTP-Headers**
 
   * **Content-Type:** application/json
-  * **X-Auth-Token:** place-generated-token-here
+  * **Authorization: Bearer <**place token here**>** <br>
 
 *  **URL Params**
 
