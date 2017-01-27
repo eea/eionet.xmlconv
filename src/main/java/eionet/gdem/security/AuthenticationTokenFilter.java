@@ -57,7 +57,7 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
                 chain.doFilter(request, response);
             }
             String rawAuthenticationToken = httpRequest.getHeader(this.tokenHeader);
-            if (tokenHeader == null || !rawAuthenticationToken.startsWith(authenticationTokenSchema)) {
+            if (rawAuthenticationToken == null || !rawAuthenticationToken.startsWith(authenticationTokenSchema)) {
                 throw new JWTException("Missing or invalid Authorization header.");
             }
             String parsedAuthenticationToken = removeAuthenticationSchemaFromHeader(rawAuthenticationToken);
