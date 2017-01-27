@@ -16,6 +16,12 @@
         <option th:each="option : ${scriptTypes}" th:value="${option.key}" th:text="${option.key.text}" th:selected="(*{type}?${option.key} == *{type}:false)"></option>
       </select>
     </label>
+    <label>Linked Schemata:
+      <select multiple th:field="*{linkedSchemata}">
+        <option th:each="option : ${projectSchemata}" th:value="${option.id}" th:text="${option.url}"></option>
+        <!--th:selected="${#arrays.contains(*{linkedSchemata}, option.id)}?true:false"></option>-->
+      </select>
+    </label>
     <label>Active:
       <input type="checkbox" th:field="*{active}"/>
     </label>

@@ -1,9 +1,11 @@
 package eionet.gdem.data.scripts;
 
 import eionet.gdem.data.projects.Project;
+import eionet.gdem.data.schemata.Schema;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  *
@@ -29,6 +31,9 @@ public class Script {
     private String localPath;
 
     private String remotePath;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<Schema> linkedSchemata;
 
     private LocalDateTime lastModified;
 
@@ -105,5 +110,13 @@ public class Script {
 
     public void setRemotePath(String remotePath) {
         this.remotePath = remotePath;
+    }
+
+    public Set<Schema> getLinkedSchemata() {
+        return this.linkedSchemata;
+    }
+
+    public void setLinkedSchemata(Set<Schema> linkedSchemata) {
+        this.linkedSchemata = linkedSchemata;
     }
 }

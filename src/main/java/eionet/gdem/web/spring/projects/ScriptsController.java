@@ -65,6 +65,7 @@ public class ScriptsController {
         model.addAttribute("script", script);
         model.addAttribute("id", projectId);
         model.addAttribute("scriptTypes", ScriptType.getMap());
+        model.addAttribute("projectSchemata", schemaService.findByProjectId(projectId));
         return "projects/scripts/add";
     }
 
@@ -83,6 +84,7 @@ public class ScriptsController {
         model.addAttribute("script", script);
         model.addAttribute("projectId", projectId);
         model.addAttribute("scriptTypes", ScriptType.getMap());
+        model.addAttribute("projectSchemata", schemaService.findByProjectId(projectId));
         return "projects/scripts/edit";
     }
 
@@ -100,6 +102,7 @@ public class ScriptsController {
             script.setName(updatedScript.getName());
             script.setDescription(updatedScript.getDescription());
             script.setType(updatedScript.getType());
+            script.setLinkedSchemata(updatedScript.getLinkedSchemata());
             script.setActive(updatedScript.isActive());
             script.setRemotePath(updatedScript.getRemotePath());
             Script s = scriptService.update(script);

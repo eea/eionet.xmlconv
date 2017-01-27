@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -43,4 +44,6 @@ public class SchemaService {
     }
 
     public Schema findById(Integer id) { return dao.findById(id); }
+
+    public List<Schema> findByProjectId(Integer id) { return dao.findByProjectId(id); }
 }

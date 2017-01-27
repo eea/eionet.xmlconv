@@ -3,7 +3,10 @@ package eionet.gdem.data.projects;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -36,7 +39,7 @@ public class ProjectDaoImpl implements ProjectDao {
 
     @Override
     public List<Project> findAll() {
-        String query = "SELECT e FROM Project e";
+        String query = "SELECT DISTINCT e FROM Project e LEFT JOIN FETCH e.schemata LEFT JOIN FETCH e.transformations LEFT JOIN FETCH e.scripts";
         Query query1 = manager.createQuery(query, Project.class);
         return query1.getResultList();
     }

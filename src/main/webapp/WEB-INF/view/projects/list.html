@@ -16,10 +16,10 @@
               <tbody>
                 <tr th:each="project, pos : ${projects}">
                   <td width="80%"><a th:text="${project.name}" th:href="@{/web/projects/{id}(id=${project.id})}"></a></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td><span th:class="${project.schemata.size() > 0} ? 'xsd'"/></td>
+                  <td><span th:class="${project.schemata.size() > 0} ? 'xsl'"/></td>
+                  <td><span th:class="${project.schemata.size() > 0} ? 'qa'"/></td>
+                  <td><span class="actions"/></td>
                 </tr>
               </tbody>
           </table>

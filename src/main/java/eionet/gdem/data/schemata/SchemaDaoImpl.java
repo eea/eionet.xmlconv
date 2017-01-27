@@ -44,4 +44,10 @@ public class SchemaDaoImpl implements SchemaDao {
         return query1.getResultList();
     }
 
+    public List<Schema> findByProjectId(Integer id) {
+        Query q = manager.createQuery("SELECT e FROM Schema e WHERE e.project.id = :id", Schema.class);
+        q.setParameter("id", id);
+        return q.getResultList();
+    }
+
 }

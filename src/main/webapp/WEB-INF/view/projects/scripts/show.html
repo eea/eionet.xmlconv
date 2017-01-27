@@ -36,6 +36,10 @@
             <td th:text="${script.type.text}"></td>
           </tr>
           <tr>
+            <th>Linked Schemata</th>
+            <td><tr th:each="s : ${script.linkedSchemata}" th:text="${s.url}"></tr></td>
+          </tr>
+          <tr>
             <th>Active</th>
             <td th:text="${script.active}"></td>
           </tr>

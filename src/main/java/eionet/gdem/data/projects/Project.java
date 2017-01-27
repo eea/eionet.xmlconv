@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -25,13 +26,13 @@ public class Project {
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private List<Schema> schemata;
+    private Set<Schema> schemata;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private List<Script> scripts;
+    private Set<Script> scripts;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private List<Transformation> transformations;
+    private Set<Transformation> transformations;
 
     public Integer getId() {
         return id;
@@ -49,27 +50,27 @@ public class Project {
         this.name = name;
     }
 
-    public List<Schema> getSchemata() {
+    public Set<Schema> getSchemata() {
         return schemata;
     }
 
-    public void setSchemata(List<Schema> schemata) {
+    public void setSchemata(Set<Schema> schemata) {
         this.schemata = schemata;
     }
 
-    public List<Script> getScripts() {
+    public Set<Script> getScripts() {
         return scripts;
     }
 
-    public void setScripts(List<Script> scripts) {
+    public void setScripts(Set<Script> scripts) {
         this.scripts = scripts;
     }
 
-    public List<Transformation> getTransformations() {
+    public Set<Transformation> getTransformations() {
         return transformations;
     }
 
-    public void setTransformations(List<Transformation> transformations) {
+    public void setTransformations(Set<Transformation> transformations) {
         this.transformations = transformations;
     }
 }
