@@ -55,6 +55,7 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
             String requestURL = httpRequest.getRequestURL().toString();
             if (!requiresAuthentication(requestURL)) {
                 chain.doFilter(request, response);
+                return;
             }
             String rawAuthenticationToken = httpRequest.getHeader(this.tokenHeader);
             if (rawAuthenticationToken == null || !rawAuthenticationToken.startsWith(authenticationTokenSchema)) {
