@@ -1,8 +1,11 @@
 package eionet.gdem.services.projects.export;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
+import eionet.gdem.services.projects.export.gson.LocalDateAdapter;
 
-import java.util.Set;
+import java.time.LocalDate;
 
 /**
  * RFC 7159 JSON compatible processor.
@@ -19,11 +22,11 @@ public class ProjectMetadataProcessorJson implements ProjectMetadataProcessor {
     }
 
     @Override
-    public ProjectsMetadata deserialize(String data) {
+    public ProjectsMetadata[] deserialize(String data) {
 
         ProjectsMetadata metadata = new ProjectsMetadata();
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
 
-        return gson.fromJson(data, ProjectsMetadata.class);
+        return gson.fromJson(data, ProjectsMetadata[].class);
     }
 }

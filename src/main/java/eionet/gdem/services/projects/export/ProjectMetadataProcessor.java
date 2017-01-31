@@ -7,5 +7,5 @@ public interface ProjectMetadataProcessor {
 
     public String serialize(ProjectsMetadata metadata);
 
-    public ProjectsMetadata deserialize(String data);
+    public ProjectsMetadata[] deserialize(String data);
 }

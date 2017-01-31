@@ -12,6 +12,9 @@ import eionet.gdem.data.scripts.ScriptType;
 import eionet.gdem.data.transformations.Transformation;
 import eionet.gdem.data.transformations.TransformationService;
 import eionet.gdem.data.transformations.TransformationType;
+import eionet.gdem.services.projects.export.ProjectExporter;
+import eionet.gdem.services.projects.export.ProjectStorageService;
+import eionet.gdem.services.projects.export.gson.ProjectExporterGson;
 import eionet.gdem.utils.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,6 +120,16 @@ public class ProjectsController {
             Project pr = projectService.update(project);
         }
         return "redirect:/web/projects/{id}";
+    }
+
+    @GetMapping("/{id}/export")
+    public String export(@PathVariable Integer id, Model model) {
+        ProjectExporter projectExporter = new ProjectExporterGson();
+        Project project = projectService.findById(id);
+        projectExporter.export(project);
+        model.addAttribute("project", project);
+        model.addAttribute("id", id);
+        return "projects/show";
     }
 
 }

@@ -10,26 +10,20 @@ import java.util.List;
  */
 public class ProjectsMetadata {
 
-    @SerializedName("project")
-    private List<Project> projects;
+    private String name;
+    private String obligation;
+    private LocalDate startDate;
+    private LocalDate endDate;
+
+    @SerializedName("schemata")
+    private List<Schema> schemata;
+    @SerializedName("scripts")
+    private List<Script> scripts;
+    @SerializedName("transformations")
+    private List<Transformation> transformations;
 
     public ProjectsMetadata() {
         //
-    }
-
-    static class Project {
-        private String name;
-        private String obligation;
-        private LocalDate startDate;
-        private LocalDate endDate;
-
-        @SerializedName("schema")
-        private List<Schema> schemata;
-        @SerializedName("script")
-        private List<Script> scripts;
-        @SerializedName("transformation")
-        private List<Transformation> transformations;
-
     }
 
     static class Schema {
