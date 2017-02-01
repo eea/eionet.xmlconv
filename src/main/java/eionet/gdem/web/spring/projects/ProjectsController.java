@@ -15,6 +15,7 @@ import eionet.gdem.data.transformations.TransformationType;
 import eionet.gdem.services.projects.export.ProjectExporter;
 import eionet.gdem.services.projects.export.ProjectStorageService;
 import eionet.gdem.services.projects.export.gson.ProjectExporterGson;
+import eionet.gdem.services.projects.export.jackson.JacksonProjectExporter;
 import eionet.gdem.utils.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,7 +125,7 @@ public class ProjectsController {
 
     @GetMapping("/{id}/export")
     public String export(@PathVariable Integer id, Model model) {
-        ProjectExporter projectExporter = new ProjectExporterGson();
+        ProjectExporter projectExporter = new JacksonProjectExporter();
         Project project = projectService.findById(id);
         projectExporter.export(project);
         model.addAttribute("project", project);

@@ -1,5 +1,7 @@
 package eionet.gdem.data.scripts;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import eionet.gdem.data.projects.Project;
 import eionet.gdem.data.schemata.Schema;
 
@@ -12,6 +14,7 @@ import java.util.Set;
  */
 @Entity
 @Table
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Script {
 
     @Id

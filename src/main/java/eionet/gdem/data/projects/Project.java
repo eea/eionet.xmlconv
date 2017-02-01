@@ -1,5 +1,8 @@
 package eionet.gdem.data.projects;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import eionet.gdem.data.schemata.Schema;
 import eionet.gdem.data.scripts.Script;
 import eionet.gdem.data.transformations.Transformation;
@@ -15,6 +18,7 @@ import java.util.Set;
  */
 @Entity
 @Table
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Project {
 
     @Id
