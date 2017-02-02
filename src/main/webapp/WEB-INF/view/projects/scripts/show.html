@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <th>Linked Schemata</th>
-            <td><tr th:each="s : ${script.linkedSchemata}" th:text="${s.url}"></tr></td>
+            <td><ul><li th:each="s : ${script.linkedSchemata}" th:text="${s.url}"></li></ul></td>
           </tr>
           <tr>
             <th>Active</th>

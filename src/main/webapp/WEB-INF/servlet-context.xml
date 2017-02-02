@@ -9,7 +9,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
 	
-    <mvc:annotation-driven conversion-service="conversionService"/>
+    <mvc:annotation-driven />
 
     <context:component-scan base-package="eionet.gdem" />
 
@@ -18,14 +18,8 @@
         <property name="suffix" value=".jsp" />
     </bean>
 
-    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
-        <property name="registerDefaultFormatters" value="false" />
-        <property name="formatters">
-            <set>
-                <bean class="eionet.gdem.data.schemata.SchemaFormatter" />
-            </set>
-        </property>
-    </bean>
+    <!-- TODO: remove this context or add a conversion service to this context -->
+
     <!--<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
         <property name="prefix" value="/WEB-INF/" />

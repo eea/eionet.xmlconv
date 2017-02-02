@@ -20,7 +20,7 @@
       </label>
       <label>Linked Schemata:
         <select multiple="multiple" th:field="*{{linkedSchemata}}">
-          <option th:each="option : ${projectSchemata}" th:value="${option.id}" th:text="${option.url}">Selected Option</option>
+          <option th:each="option : ${projectSchemata}" th:value="${{option}}" th:text="${option.url}">Selected Option</option>
           <!--th:selected="${#arrays.contains(*{linkedSchemata}, option.id)}?true:false"></option>-->
         </select>
       </label>

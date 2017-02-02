@@ -11,7 +11,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
 	
-    <mvc:annotation-driven/>
+    <mvc:annotation-driven conversion-service="conversionService"/>
 
     <context:component-scan base-package="eionet.gdem" />
 
@@ -35,7 +35,7 @@
 
     <mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="/projects"/>
+            <mvc:mapping path="/projects/**"/>
             <bean class="eionet.gdem.web.spring.LoginInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
@@ -44,6 +44,16 @@
 
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
+    </bean>
+
+    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="registerDefaultFormatters" value="false" />
+        <property name="formatters">
+            <set>
+                <bean class="eionet.gdem.data.schemata.SchemaFormatter" />
+                <bean class="eionet.gdem.web.spring.formatters.LocalDateFormatter" />
+            </set>
+        </property>
     </bean>
 
 </beans>

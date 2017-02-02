@@ -17,20 +17,26 @@ import eionet.gdem.services.projects.export.ProjectStorageService;
 import eionet.gdem.services.projects.export.gson.ProjectExporterGson;
 import eionet.gdem.services.projects.export.jackson.JacksonProjectExporter;
 import eionet.gdem.utils.SecurityUtil;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import javax.validation.Validator;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +58,9 @@ public class ProjectsController {
     private ScriptService scriptService;
 
     private TransformationService transformationService;
+
+    @Autowired
+    private ProjectExporter projectExporter;
 
     @Autowired
     private Validator validator;
@@ -124,13 +133,19 @@ public class ProjectsController {
     }
 
     @GetMapping("/{id}/export")
-    public String export(@PathVariable Integer id, Model model) {
-        ProjectExporter projectExporter = new JacksonProjectExporter();
+    public void export(@PathVariable Integer id, Model model, HttpServletResponse response) {
+
         Project project = projectService.findById(id);
-        projectExporter.export(project);
-        model.addAttribute("project", project);
+        File responseFile = projectExporter.export(project);
+        try {
+            OutputStream out = response.getOutputStream();
+            FileCopyUtils.copy(FileCopyUtils.copyToByteArray(responseFile), out);
+        } catch (IOException e) {
+            LOGGER.error("Export failed: ", e);
+        }
+        /*model.addAttribute("project", project);
         model.addAttribute("id", id);
-        return "projects/show";
+        return "projects/show";*/
     }
 
 }

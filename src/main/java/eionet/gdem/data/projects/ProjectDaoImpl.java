@@ -24,7 +24,10 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     public Project findById(Integer id) {
-        return manager.find(Project.class, id);
+        String jpql = "SELECT e FROM Project e LEFT JOIN FETCH e.schemata LEFT JOIN FETCH e.transformations LEFT JOIN FETCH e.scripts as s LEFT JOIN FETCH s.linkedSchemata WHERE e.id = :id";
+        Query q = manager.createQuery(jpql, Project.class);
+        q.setParameter("id", id);
+        return (Project) q.getSingleResult();
     }
 
     @Override
