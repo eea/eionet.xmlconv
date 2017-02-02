@@ -72,6 +72,10 @@ https://taskman.eionet.europa.eu/issues/29005 regarding the REST API of the xmlc
 
   `POST`
   
+* **Authentication Required:** 
+   
+   JWT token, read more at: [4 Security](#4-security)
+
 * **Content-Type:** application/json
 
 *  **URL Params**
@@ -174,6 +178,11 @@ https://taskman.eionet.europa.eu/issues/29005 regarding the REST API of the xmlc
 
   `POST`
   
+* **Authentication Required:** 
+   
+   JWT token, read more at: [4 Security](#4-security)
+   
+  
 * **Content-Type:** application/json
 
 *  **URL Params**
@@ -248,6 +257,10 @@ https://taskman.eionet.europa.eu/issues/29005 regarding the REST API of the xmlc
 * **Method:**
 
   `POST`
+ 
+* **Authentication Required:** 
+   
+   JWT token, read more at: [4 Security](#4-security)
   
 * **Content-Type:** application/json
 
@@ -320,6 +333,10 @@ https://taskman.eionet.europa.eu/issues/29005 regarding the REST API of the xmlc
 * **Method:**
 
   `GET`
+
+* **Authentication Required:** 
+   
+   JWT token, read more at: [4 Security](#4-security)
   
 * **Content-Type:** none
 
@@ -389,6 +406,10 @@ https://taskman.eionet.europa.eu/issues/29005 regarding the REST API of the xmlc
 * **Method:**
 
   `GET`
+
+* **Authentication Required:** 
+   
+   none
   
 * **Content-Type:** none
 
@@ -511,7 +532,7 @@ Ideally we should expose an endpoint which whould accept a number of parameters 
 ####  Server Side:
  Spring Security is configured to filter incoming URLS and perform security filtering on these partial URLS: <br>
  - **/asynctasks**<br>
- - **/qa** <br>
+ - **/qajobs** <br>
 The back-end mechanism will inspect the Http-Request looking for an HTTP Header in the following format: <br>
 **Authorization: Bearer <**token**>** <br>
 
