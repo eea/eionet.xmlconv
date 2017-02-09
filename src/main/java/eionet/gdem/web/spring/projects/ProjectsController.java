@@ -1,23 +1,11 @@
 package eionet.gdem.web.spring.projects;
 
-import eionet.gdem.XMLConvException;
 import eionet.gdem.data.projects.Project;
 import eionet.gdem.data.projects.ProjectService;
-import eionet.gdem.data.schemata.Schema;
-import eionet.gdem.data.schemata.SchemaLanguage;
 import eionet.gdem.data.schemata.SchemaService;
-import eionet.gdem.data.scripts.Script;
 import eionet.gdem.data.scripts.ScriptService;
-import eionet.gdem.data.scripts.ScriptType;
-import eionet.gdem.data.transformations.Transformation;
 import eionet.gdem.data.transformations.TransformationService;
-import eionet.gdem.data.transformations.TransformationType;
 import eionet.gdem.services.projects.export.ProjectExporter;
-import eionet.gdem.services.projects.export.ProjectStorageService;
-import eionet.gdem.services.projects.export.gson.ProjectExporterGson;
-import eionet.gdem.services.projects.export.jackson.JacksonProjectExporter;
-import eionet.gdem.utils.SecurityUtil;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,19 +13,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
-import javax.validation.Valid;
 import javax.validation.Validator;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -132,20 +115,31 @@ public class ProjectsController {
         return "redirect:/web/projects/{id}";
     }
 
-    @GetMapping("/{id}/export")
+    @GetMapping(value = "/{id}/export", produces = "application/zip")
     public void export(@PathVariable Integer id, Model model, HttpServletResponse response) {
 
         Project project = projectService.findById(id);
         File responseFile = projectExporter.export(project);
-        try {
-            OutputStream out = response.getOutputStream();
-            FileCopyUtils.copy(FileCopyUtils.copyToByteArray(responseFile), out);
-        } catch (IOException e) {
-            LOGGER.error("Export failed: ", e);
+        if (responseFile.isFile()) {
+            try {
+                response.setHeader("Content-Disposition", "attachment; filename=" + responseFile.getName());
+                OutputStream out = response.getOutputStream();
+                FileCopyUtils.copy(FileCopyUtils.copyToByteArray(responseFile), out);
+            } catch (IOException e) {
+                LOGGER.error("Export failed: ", e);
+            }
+        } else {
+            LOGGER.error("Exported file not found");
+            return;
         }
         /*model.addAttribute("project", project);
         model.addAttribute("id", id);
         return "projects/show";*/
     }
 
+    @GetMapping(value = "/{id}/delete")
+    public String delete(@PathVariable Integer id, Model model) {
+        projectService.delete(id);
+        return "projects/list";
+    }
 }

@@ -1,5 +1,7 @@
 package eionet.gdem.data.scripts;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 

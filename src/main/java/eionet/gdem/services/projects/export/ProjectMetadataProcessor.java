@@ -1,11 +1,11 @@
 package eionet.gdem.services.projects.export;
 
+import java.io.IOException;
+
 /**
  *
+ *
  */
-public interface ProjectMetadataProcessor {
-
-    public String serialize(ProjectsMetadata metadata);
-
-    public ProjectsMetadata[] deserialize(String data);
+public interface ProjectMetadataProcessor<T> {
+    T deserialize(String data) throws IOException;
 }

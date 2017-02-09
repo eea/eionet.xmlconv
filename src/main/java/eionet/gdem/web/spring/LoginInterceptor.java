@@ -30,7 +30,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         } catch (XMLConvException e) {
             // do nothing
         }
-        modelAndView.addObject("loginUrl", loginUrl);
+        if (modelAndView != null) {
+            modelAndView.addObject("loginUrl", loginUrl);
+        }
     }
 
     @Override

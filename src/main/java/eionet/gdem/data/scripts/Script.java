@@ -1,6 +1,7 @@
 package eionet.gdem.data.scripts;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import eionet.gdem.data.projects.Project;
 import eionet.gdem.data.schemata.Schema;
@@ -41,7 +42,6 @@ public class Script {
     private LocalDateTime lastModified;
 
     private boolean active;
-
 
     public Integer getId() {
         return this.id;

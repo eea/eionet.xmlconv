@@ -1,9 +1,15 @@
 package eionet.gdem.services.projects.export;
 
+import eionet.gdem.Properties;
 import eionet.gdem.data.projects.Project;
+import eionet.gdem.data.projects.ProjectService;
+import eionet.gdem.services.projects.export.gson.GsonMetadata;
+import eionet.gdem.services.projects.export.jackson.JacksonMetadata;
+import eionet.gdem.services.projects.export.jackson.JacksonMetadataProcessor;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
@@ -16,7 +22,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -27,18 +32,33 @@ public class ProjectStorageService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectStorageService.class);
 
+
+    private ProjectService projectService;
+
+    @Autowired
+    ProjectStorageService(ProjectService projectService) {
+        this.projectService = projectService;
+    }
+
     public int importProject(ProjectImportWrapper fileWrapper) {
-        ProjectsMetadata[] projectMetadata = null;
+        JacksonMetadata[] metadata = null;
         try (ZipInputStream zin = new ZipInputStream(fileWrapper.getFile().getInputStream(), StandardCharsets.UTF_8)) {
             ZipEntry ze = zin.getNextEntry();
             while (ze != null) {
                 LOGGER.info(ze.getName());
                 if ("metadata.json".equals(ze.getName())) {
                     LOGGER.info("Found metadata, starting validation. ");
-                    ProjectMetadataProcessor processor = new ProjectMetadataProcessorJson();
+                    JacksonMetadataProcessor processor = new JacksonMetadataProcessor();
                     ByteArrayOutputStream metadataOutputStream = new ByteArrayOutputStream();
                     IOUtils.copy(zin, metadataOutputStream);
-                    projectMetadata = processor.deserialize(metadataOutputStream.toString(StandardCharsets.UTF_8.name()));
+                    metadata = processor.deserialize(metadataOutputStream.toString(StandardCharsets.UTF_8.name()));
+                    for (JacksonMetadata m : metadata) {
+                        Project p = new Project();
+                        //TODO: complete
+                        p.setId(m.getId());
+                        p.setName(m.getName());
+                        projectService.insert(p);
+                    }
                 }
                 ze = zin.getNextEntry();
             }
@@ -50,7 +70,7 @@ public class ProjectStorageService {
     }
 
     public File exportZip(Project project, String metadata) {
-        String projectDir = "/home/dev-gso/eea-run/eionet.xmlconv/projects/" + project.getId();
+        String projectDir = Properties.appRootFolder + "/projects/" + project.getId();
         Map<String, Object> env = new HashMap<>();
         env.put("create", "true");
         env.put("useTempFile", Boolean.TRUE);
@@ -65,10 +85,11 @@ public class ProjectStorageService {
             Path metadataPath = Files.createTempFile("metadata", "json");
             Files.write(metadataPath, metadata.getBytes(StandardCharsets.UTF_8));
             Files.copy(metadataPath, zipfs.getPath(root.toString(), "metadata.json"), StandardCopyOption.REPLACE_EXISTING);
+            return new File(uri.toString().substring(9));
         } catch (IOException e) {
-            LOGGER.error("Error while creating zip", e);
+            LOGGER.error("Failed to create export zip for project " + project.getId(), e);
         }
-        return new File(uri.getPath());
+        return null;
     }
 
     private static class CopyFileVisitor extends SimpleFileVisitor<Path> {

@@ -38,6 +38,7 @@ public class ProjectDaoImpl implements ProjectDao {
     @Override
     public void delete(Project project) {
         manager.remove(project);
+        manager.flush();
     }
 
     @Override

@@ -5,6 +5,7 @@ import eionet.gdem.data.projects.Project;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 
 /**
  *
@@ -31,9 +32,8 @@ public class Schema {
 
     private boolean blocking;
 
-    //TODO change to date
     @Column(name = "expire_date")
-    private String expireDate;
+    private LocalDate expireDate;
 
     @Column(name = "local_path")
     private String localPath;
@@ -81,11 +81,11 @@ public class Schema {
         this.blocking = blocking;
     }
 
-    public String getExpireDate() {
-        return expireDate;
+    public LocalDate getExpireDate() {
+        return this.expireDate;
     }
 
-    public void setExpireDate(String expireDate) {
+    public void setExpireDate(LocalDate expireDate) {
         this.expireDate = expireDate;
     }
 

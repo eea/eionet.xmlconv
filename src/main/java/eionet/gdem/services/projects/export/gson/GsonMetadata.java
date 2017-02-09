@@ -1,14 +1,13 @@
-package eionet.gdem.services.projects.export;
+package eionet.gdem.services.projects.export.gson;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.time.LocalDate;
 import java.util.List;
 
 /**
  *
  */
-public class ProjectsMetadata {
+public class GsonMetadata {
 
     private String name;
     private String obligation;
@@ -22,7 +21,7 @@ public class ProjectsMetadata {
     @SerializedName("transformations")
     private List<Transformation> transformations;
 
-    public ProjectsMetadata() {
+    public GsonMetadata() {
         //
     }
 
