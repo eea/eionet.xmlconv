@@ -3,6 +3,7 @@ package eionet.gdem.data.projects;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerator;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import eionet.gdem.data.obligations.Obligation;
 import eionet.gdem.data.schemata.Schema;
 import eionet.gdem.data.scripts.Script;
 import eionet.gdem.data.transformations.Transformation;
@@ -29,6 +30,9 @@ public class Project {
     @Size(min = 5, max = 50)
     private String name;
 
+    @OneToMany
+    private Set<Obligation> obligations;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
     private Set<Schema> schemata;
 
@@ -52,6 +56,14 @@ public class Project {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Obligation> getObligations() {
+        return this.obligations;
+    }
+
+    public void setObligations(Set<Obligation> obligations) {
+        this.obligations = obligations;
     }
 
     public Set<Schema> getSchemata() {

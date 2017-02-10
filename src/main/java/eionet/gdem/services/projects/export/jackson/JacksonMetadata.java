@@ -13,7 +13,7 @@ public class JacksonMetadata {
 
     private int id;
     private String name;
-    private String obligation;
+    private List<String> obligations;
     private LocalDate startDate;
     private LocalDate endDate;
     private List<Schema> schemata;
@@ -40,12 +40,12 @@ public class JacksonMetadata {
         this.name = name;
     }
 
-    public String getObligation() {
-        return obligation;
+    public List<String> getObligations() {
+        return this.obligations;
     }
 
-    public void setObligation(String obligation) {
-        this.obligation = obligation;
+    public void setObligations(List<String> obligations) {
+        this.obligations = obligations;
     }
 
     public LocalDate getStartDate() {

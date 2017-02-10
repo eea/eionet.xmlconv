@@ -54,9 +54,9 @@ public class ProjectStorageService {
                     metadata = processor.deserialize(metadataOutputStream.toString(StandardCharsets.UTF_8.name()));
                     for (JacksonMetadata m : metadata) {
                         Project p = new Project();
-                        //TODO: complete
                         p.setId(m.getId());
                         p.setName(m.getName());
+
                         projectService.insert(p);
                     }
                 }
