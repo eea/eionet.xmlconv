@@ -608,14 +608,9 @@
 
             <!-- Libraries for parsing RDF and executing SPARQL queries in SPARQL endpoints (Content Registry). -->
             <dependency>
-                <groupId>org.eclipse.rdf4j</groupId>
-                <artifactId>rdf4j-repository-sparql</artifactId>
-                <version>2.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.rdf4j</groupId>
-                <artifactId>rdf4j-rio</artifactId>
-                <version>2.2</version>
+                <groupId>org.openrdf.sesame</groupId>
+                <artifactId>sesame-repository-sparql</artifactId>
+                <version>4.1.2</version>
             </dependency>
 
             <!-- Metadata aggregator is used for analysing ODF files http://books.evc-cit.info/odf_utils/-->
