@@ -1,8 +1,15 @@
 package eionet.gdem.services.projects.export.jackson;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import eionet.gdem.data.obligations.Obligation;
+import eionet.gdem.data.schemata.Schema;
+import eionet.gdem.data.scripts.Script;
+import eionet.gdem.data.transformations.Transformation;
+
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -13,12 +20,10 @@ public class JacksonMetadata {
 
     private int id;
     private String name;
-    private List<String> obligations;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private List<Schema> schemata;
-    private List<Script> scripts;
-    private List<Transformation> transformations;
+    private List<ObligationMetadata> obligations;
+    private List<SchemaMetadata> schemata;
+    private List<ScriptMetadata> scripts;
+    private List<TransformationMetadata> transformations;
 
     public JacksonMetadata() {
         //
@@ -40,56 +45,137 @@ public class JacksonMetadata {
         this.name = name;
     }
 
-    public List<String> getObligations() {
+    public List<ObligationMetadata> getObligations() {
         return this.obligations;
     }
 
-    public void setObligations(List<String> obligations) {
+    public void setObligations(List<ObligationMetadata> obligations) {
         this.obligations = obligations;
     }
 
-    public LocalDate getStartDate() {
-        return startDate;
+    public Set<Obligation> getObligationsObj() {
+        Set<Obligation> tmp = new LinkedHashSet<>();
+        for (ObligationMetadata ob : this.obligations) {
+            Obligation obligation = new Obligation();
+            obligation.setId(ob.getId());
+            obligation.setActive(ob.isActive());
+            obligation.setUrl(ob.getUrl());
+            tmp.add(obligation);
+        }
+        return tmp;
     }
 
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
+    public Set<Schema> getSchemataObj() {
+        Set<Schema> tmp = new LinkedHashSet<>();
+        for (SchemaMetadata sc : this.schemata) {
+            Schema schema = new Schema();
+            schema.setId(sc.getId());
+            schema.setUrl(sc.getUrl());
+            schema.setBlocking(sc.isBlocking());
+            schema.setValidation(sc.isValidation());
+            schema.setDescription(sc.getDescription());
+            schema.setExpireDate(sc.getExpireDate());
+            /*schema.setSchemaLanguage(sc.);*/
+            tmp.add(schema);
+        }
+        return tmp;
     }
 
-    public LocalDate getEndDate() {
-        return endDate;
+    public Set<Script> getScriptsObj() {
+        Set<Script> tmp = new LinkedHashSet<>();
+        for (ScriptMetadata sc : this.scripts) {
+            Script script = new Script();
+            /*script.setId(sc.get);*/
+            script.setName(sc.getName());
+            script.setDescription(sc.getDescription());
+            script.setActive(sc.isActive());
+            /*script.setType(sc.getType());*/
+            /*script.setLastModified(sc.getModified());*/
+            /*script.setLinkedSchemata(sc.getLinkedSchemata());*/
+            /*script.setRemotePath(sc.get);*/
+            /*script.setLocalPath();*/
+            tmp.add(script);
+        }
+        return tmp;
     }
 
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
+    public Set<Transformation> getTransformationsObj() {
+        Set<Transformation> tmp = new LinkedHashSet<>();
+        for (TransformationMetadata tr : this.transformations) {
+            Transformation transformation = new Transformation();
+            transformation.setName(tr.getName());
+            /*transformation.setProject();*/
+            transformation.setActive(tr.isActive());
+            /*transformation.setLastModified(tr.getModified());*/
+            transformation.setDescription(tr.getDescription());
+            transformation.setRemotePath(tr.getRemoteurl());
+            /*transformation.setLocalPath(tr.get);*/
+            tmp.add(transformation);
+        }
+        return tmp;
     }
 
-    public List<Schema> getSchemata() {
+    public List<SchemaMetadata> getSchemata() {
         return schemata;
     }
 
-    public void setSchemata(List<Schema> schemata) {
+    public void setSchemata(List<SchemaMetadata> schemata) {
         this.schemata = schemata;
     }
 
-    public List<Script> getScripts() {
+    public List<ScriptMetadata> getScripts() {
         return scripts;
     }
 
-    public void setScripts(List<Script> scripts) {
+    public void setScripts(List<ScriptMetadata> scripts) {
         this.scripts = scripts;
     }
 
-    public List<Transformation> getTransformations() {
+    public List<TransformationMetadata> getTransformations() {
         return transformations;
     }
 
-    public void setTransformations(List<Transformation> transformations) {
+    public void setTransformations(List<TransformationMetadata> transformations) {
         this.transformations = transformations;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    static class Schema {
+    static class ObligationMetadata {
+        private int id;
+        private String url;
+        private boolean active;
+
+        public ObligationMetadata() {
+            //
+        }
+
+        public int getId() {
+            return this.id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getUrl() {
+            return this.url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public boolean isActive() {
+            return this.active;
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
+        }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class SchemaMetadata {
         private int id;
         private String url;
         private String description;
@@ -98,7 +184,7 @@ public class JacksonMetadata {
         private boolean blocking;
         private LocalDate expireDate;
 
-        public Schema() {
+        public SchemaMetadata() {
             //
         }
 
@@ -160,15 +246,15 @@ public class JacksonMetadata {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    static class Script {
+    static class ScriptMetadata {
         private String name;
         private String description;
         private String type;
-        private List<Schema> linkedSchemata;
+        private List<SchemaMetadata> linkedSchemata;
         private boolean active;
         private LocalDate modified;
 
-        public Script() {
+        public ScriptMetadata() {
             //
         }
 
@@ -197,11 +283,11 @@ public class JacksonMetadata {
         }
 
 
-        public List<Schema> getLinkedSchemata() {
+        public List<SchemaMetadata> getLinkedSchemata() {
             return linkedSchemata;
         }
 
-        public void setLinkedSchemata(List<Schema> linkedSchemata) {
+        public void setLinkedSchemata(List<SchemaMetadata> linkedSchemata) {
             this.linkedSchemata = linkedSchemata;
         }
 
@@ -223,7 +309,7 @@ public class JacksonMetadata {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    static class Transformation {
+    static class TransformationMetadata {
         private String name;
         private String description;
         private String type;
@@ -231,7 +317,7 @@ public class JacksonMetadata {
         private String remoteurl;
         private LocalDate modified;
 
-        public Transformation() {
+        public TransformationMetadata() {
             //
         }
 

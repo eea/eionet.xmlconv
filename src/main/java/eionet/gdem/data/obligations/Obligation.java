@@ -16,6 +16,7 @@ public class Obligation {
 
     private String url;
 
+    @Column(nullable = false, columnDefinition = "BIT default false")
     private boolean active;
 
     public String getUrl() {

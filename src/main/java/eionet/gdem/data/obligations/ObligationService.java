@@ -46,6 +46,4 @@ public class ObligationService {
 
     public Obligation findById(Integer id) { return dao.findById(id); }
 
-    /*public List<Obligation> findByProjectId(Integer id) { return dao.findByProjectId(id); }*/
-
 }

@@ -30,7 +30,7 @@ public class Project {
     @Size(min = 5, max = 50)
     private String name;
 
-    @OneToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private Set<Obligation> obligations;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")

@@ -56,7 +56,10 @@ public class ProjectStorageService {
                         Project p = new Project();
                         p.setId(m.getId());
                         p.setName(m.getName());
-
+                        p.setObligations(m.getObligationsObj());
+                        p.setSchemata(m.getSchemataObj());
+                        p.setScripts(m.getScriptsObj());
+                        p.setTransformations(m.getTransformationsObj());
                         projectService.insert(p);
                     }
                 }

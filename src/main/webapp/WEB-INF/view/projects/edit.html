@@ -7,6 +7,10 @@
     <form action="#" th:action="@{/web/projects/{id}/edit(id=${id})}" th:object="${project}" method="post">
         <label>Project name: </label>
         <input type="text" th:field="*{name}"/>
+        <label>Obligation: </label>
+        <select th:field="*{{obligations}}" multiple="multiple">
+            <option th:each="obligation : ${obligations}" th:value="${{obligation}}" th:text="${obligation.url}">Obligation URL</option>
+        </select>
         <button>Save</button>
     </form>
 </div>

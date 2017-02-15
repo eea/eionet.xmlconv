@@ -52,6 +52,7 @@
             <set>
                 <bean class="eionet.gdem.data.schemata.SchemaFormatter" />
                 <bean class="eionet.gdem.web.spring.formatters.LocalDateFormatter" />
+                <bean class="eionet.gdem.data.obligations.ObligationFormatter" />
             </set>
         </property>
     </bean>

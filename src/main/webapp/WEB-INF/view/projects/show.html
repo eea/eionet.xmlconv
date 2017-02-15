@@ -39,15 +39,7 @@
               </tr>
               <tr>
                 <th>Obligation</th>
-                <td>Obligation Name</td>
-              </tr>
-              <tr>
-                <th>Start date</th>
-                <td>Start date</td>
-              </tr>
-              <tr>
-                <th>Finish date</th>
-                <td>Finish date</td>
+                <td><ul><li th:each="obligation : ${project.obligations}" th:text="${obligation.url}">Obligation URL</li></ul></td>
               </tr>
             </tbody>
           </table>

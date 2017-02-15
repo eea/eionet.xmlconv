@@ -1,5 +1,7 @@
 package eionet.gdem.web.spring.projects;
 
+import eionet.gdem.data.obligations.Obligation;
+import eionet.gdem.data.obligations.ObligationService;
 import eionet.gdem.data.projects.Project;
 import eionet.gdem.data.projects.ProjectService;
 import eionet.gdem.data.schemata.SchemaService;
@@ -42,6 +44,8 @@ public class ProjectsController {
 
     private TransformationService transformationService;
 
+    private ObligationService obligationService;
+
     @Autowired
     private ProjectExporter projectExporter;
 
@@ -49,11 +53,12 @@ public class ProjectsController {
     private Validator validator;
 
     @Autowired
-    ProjectsController(ProjectService projectService, SchemaService schemaService, ScriptService scriptService, TransformationService transformationService) {
+    ProjectsController(ProjectService projectService, SchemaService schemaService, ScriptService scriptService, TransformationService transformationService, ObligationService obligationService) {
         this.projectService = projectService;
         this.schemaService = schemaService;
         this.scriptService = scriptService;
         this.transformationService = transformationService;
+        this.obligationService = obligationService;
     }
 
     /**
@@ -91,8 +96,10 @@ public class ProjectsController {
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Integer id, Model model) {
         Project project = projectService.findById(id);
+        List<Obligation> obligations = obligationService.findAll();
         model.addAttribute("project", project);
         model.addAttribute("id", id);
+        model.addAttribute("obligations", obligations);
         return "projects/edit";
     }
 
@@ -110,6 +117,7 @@ public class ProjectsController {
             return "redirect:/web/projects/{id}/edit";
         } else if (!result.hasErrors()) {
             project.setName(updatedProject.getName());
+            project.setObligations(updatedProject.getObligations());
             Project pr = projectService.update(project);
         }
         return "redirect:/web/projects/{id}";

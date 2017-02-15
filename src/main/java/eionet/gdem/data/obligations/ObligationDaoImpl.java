@@ -43,4 +43,5 @@ public class ObligationDaoImpl implements ObligationDao {
         Query q = manager.createQuery("SELECT e from Obligation e");
         return q.getResultList();
     }
+
 }
