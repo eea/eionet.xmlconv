@@ -9,18 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import eionet.gdem.Constants;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
+import eionet.gdem.validation.JaxpValidationService;
+import eionet.gdem.validation.ValidationService;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts.action.*;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.validation.ValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,9 +58,9 @@ public class ValidateXMLAction extends Action {
             String originalSchema = null;
             String warningMessage = null;
             try {
-                ValidationService v = new ValidationService();
-                v.setTrustedMode(false);
-                v.setTicket(ticket);
+                ValidationService v = new JaxpValidationService();
+                //v.setTrustedMode(false);
+                //v.setTicket(ticket);
                 if (schema == null) {
                     v.validate(url);
                 } else {
@@ -81,7 +77,7 @@ public class ValidateXMLAction extends Action {
             }
             httpServletRequest.setAttribute("conversion.valid", valid);
             httpServletRequest.setAttribute("conversion.originalSchema", originalSchema);
-            if (!originalSchema.equals(validatedSchema)) {
+            if (!StringUtils.equals(originalSchema, validatedSchema)) {
                 httpServletRequest.setAttribute("conversion.validatedSchema", validatedSchema);
             }
             httpServletRequest.setAttribute("conversion.warningMessage", warningMessage);

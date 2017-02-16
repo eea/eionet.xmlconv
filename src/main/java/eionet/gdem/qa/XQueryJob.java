@@ -24,7 +24,6 @@ package eionet.gdem.qa;
  */
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
@@ -33,14 +32,12 @@ import java.util.Map;
 
 import eionet.gdem.XMLConvException;
 import eionet.gdem.logging.Markers;
+import eionet.gdem.validation.JaxpValidationService;
+import eionet.gdem.validation.ValidationService;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-
-
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
-import eionet.gdem.conversion.datadict.DataDictUtil;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.services.GDEMServices;
@@ -48,6 +45,7 @@ import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.quartz.*;
@@ -109,12 +107,12 @@ public class XQueryJob implements Job, InterruptableJob {
                         scriptFile = StringUtils.substringBefore(scriptFile, " ");
                     }
                     LOGGER.info("** XML Validation Job starting, ID=" + jobId + " schema: " + scriptFile + " result will be stored to " + resultFile);
-                    ValidationService vs = new ValidationService();
+                    ValidationService vs = new JaxpValidationService();
                     String query = StringUtils.defaultIfEmpty(new URI(srcFile).getQuery(), "");
                     List<NameValuePair> params = URLEncodedUtils.parse(query, StandardCharsets.UTF_8);
                     for (NameValuePair param : params) {
                         if (Constants.TICKET_PARAM.equals(param.getName())) {
-                            vs.setTicket(param.getValue());
+                            //vs.setTicket(param.getValue());
                         }
                         if (Constants.SOURCE_URL_PARAM.equals(param.getName())) {
                             srcFile = param.getValue();
@@ -162,16 +160,16 @@ public class XQueryJob implements Job, InterruptableJob {
                 }
                 String[] xqParam = {Constants.XQ_SOURCE_PARAM_NAME + "=" + srcFile};
 
-                    if (scriptFile.contains(" ")) {
-                        scriptFile = StringUtils.substringBefore(scriptFile, " ");
-                    }
+                if (scriptFile.contains(" ")) {
+                    scriptFile = StringUtils.substringBefore(scriptFile, " ");
+                }
 
-                    XQScript xq = new XQScript(null, xqParam, contentType);
-                    xq.setScriptFileName(scriptFile);
-                    xq.setScriptType(scriptType);
-                    xq.setSrcFileUrl(srcFile);
-                    xq.setSchema(schema);
-                    xq.setJobId(this.jobId);
+                XQScript xq = new XQScript(null, xqParam, contentType);
+                xq.setScriptFileName(scriptFile);
+                xq.setScriptType(scriptType);
+                xq.setSrcFileUrl(srcFile);
+                xq.setSchema(schema);
+                xq.setJobId(this.jobId);
 
                     if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
                         if (query != null && query.containsKey(QaScriptView.URL)) {
@@ -182,21 +180,21 @@ public class XQueryJob implements Job, InterruptableJob {
                     LOGGER.info("** XQuery Job starts, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);
                 }
 
-                    FileOutputStream out = null;
-                    try {
-                        out = new FileOutputStream(new File(resultFile));
-                        xq.getResult(out);
-                        changeStatus(Constants.XQ_READY);
-                        LOGGER.info("Job ID=" + jobId + " finished.");
-                    } catch (XMLConvException e) {
-                        changeStatus(Constants.XQ_FATAL_ERR);
-                        StringBuilder errBuilder = new StringBuilder();
-                        errBuilder.append("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">Unexpected error occured!</span><h2>Unexpected error occured!</h2>");
-                        errBuilder.append(Utils.escapeXML(e.toString()));
-                        errBuilder.append("</div>");
-                        IOUtils.write(errBuilder.toString(), out, "UTF-8");
-                        LOGGER.error("XQueryJob ID=" + this.jobId + " exception: " , e);
-                    } finally {
+                FileOutputStream out = null;
+                try {
+                    out = new FileOutputStream(new File(resultFile));
+                    xq.getResult(out);
+                    changeStatus(Constants.XQ_READY);
+                    LOGGER.info("Job ID=" + jobId + " finished.");
+                } catch (XMLConvException e) {
+                    changeStatus(Constants.XQ_FATAL_ERR);
+                    StringBuilder errBuilder = new StringBuilder();
+                    errBuilder.append("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">Unexpected error occured!</span><h2>Unexpected error occured!</h2>");
+                    errBuilder.append(Utils.escapeXML(e.toString()));
+                    errBuilder.append("</div>");
+                    IOUtils.write(errBuilder.toString(), out, "UTF-8");
+                    LOGGER.error("XQueryJob ID=" + this.jobId + " exception: ", e);
+                } finally {
                         IOUtils.closeQuietly(out);
                 }
             }

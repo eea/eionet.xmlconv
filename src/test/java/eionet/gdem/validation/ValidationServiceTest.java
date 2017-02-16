@@ -23,7 +23,6 @@ package eionet.gdem.validation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.dbunit.IDatabaseTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,7 +67,7 @@ public class ValidationServiceTest {
      */
     @Test
     public void testValidateInvalidXML() throws Exception {
-        ValidationService validService = new ValidationService();
+        SaxValidationService validService = new SaxValidationService();
         String s =
                 validService.validateSchema(TestUtils.getSeedURL(TestConstants.SEED_GW_INVALID_XML, this), TestUtils.getSeedURL(TestConstants.SEED_GW_SCHEMA, this));
 
@@ -86,7 +85,7 @@ public class ValidationServiceTest {
      */
     @Test
     public void testValidateValidXML() throws Exception {
-        ValidationService validService = new ValidationService();
+        SaxValidationService validService = new SaxValidationService();
         String s =
                 validService.validateSchema(TestUtils.getSeedURL(TestConstants.SEED_GW_VALID_XML, this), TestUtils.getSeedURL(TestConstants.SEED_GW_SCHEMA, this));
 
@@ -107,7 +106,7 @@ public class ValidationServiceTest {
      */
     @Test
     public void testValidateValidXMLAgainstLocalSchema() throws Exception {
-        ValidationService validService = new ValidationService();
+        SaxValidationService validService = new SaxValidationService();
         String s = validService.validate(TestUtils.getSeedURL(TestConstants.SEED_GW_VALID_XML, this));
 
         // System.out.println(s);
@@ -127,7 +126,7 @@ public class ValidationServiceTest {
      */
     @Test
     public void testSetLocalSchema() throws Exception {
-        ValidationService validService = new ValidationService();
+        SaxValidationService validService = new SaxValidationService();
         validService.setLocalSchemaUrl("http://dd.eionet.europa.eu/GetSchema?id=TBL4564");
 
         assertTrue(validService.getValidatedSchema().endsWith(TestConstants.SEED_GW_SCHEMA));
@@ -147,7 +146,7 @@ public class ValidationServiceTest {
      */
     @Test
     public void testValidateValidXMLAgainstLocalDTD() throws Exception {
-        ValidationService validService = new ValidationService();
+        SaxValidationService validService = new SaxValidationService();
         String s = validService.validate(TestUtils.getSeedURL(TestConstants.SEED_XLIFF_XML, this));
 
         // System.out.println(s);
@@ -167,7 +166,7 @@ public class ValidationServiceTest {
      */
     @Test
     public void testXMLAgainstUnavailableSchema() throws Exception {
-        ValidationService validService = new ValidationService();
+        SaxValidationService validService = new SaxValidationService();
         String s =
                 validService.validateSchema(TestUtils.getSeedURL(TestConstants.SEED_XLIFF_XML, this), "https://svn.eionet.europa.eu/thereisnoschema");
 
@@ -184,7 +183,7 @@ public class ValidationServiceTest {
      */
     @Test
     public void testXMLAgainstBlockerSchema() throws Exception {
-        ValidationService validService = new ValidationService();
+        SaxValidationService validService = new SaxValidationService();
         String s =
                 validService.validateSchema(TestUtils.getSeedURL(TestConstants.SEED_GW_INVALID_XML, this), "http://dd.eionet.europa.eu/GetSchema?id=TBL111");
 
