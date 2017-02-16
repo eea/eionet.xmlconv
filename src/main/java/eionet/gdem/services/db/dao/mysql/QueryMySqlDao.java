@@ -1,5 +1,13 @@
 package eionet.gdem.services.db.dao.mysql;
 
+import eionet.gdem.Properties;
+import eionet.gdem.qa.QaScriptView;
+import eionet.gdem.services.db.dao.IQueryDao;
+import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -10,24 +18,17 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
-
-import eionet.gdem.Properties;
-import eionet.gdem.services.db.dao.IQueryDao;
-import eionet.gdem.utils.Utils;
-
 /**
  * Query MySQL Dao class.
+ *
  * @author Unknown
  * @author George Sofianos
  */
 @Repository("queryDao")
 public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
-    /** */
+    /**
+     *      */
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryMySqlDao.class);
 
     private static final String qListQueries = "SELECT " + QUERY_TABLE + "." + QUERY_ID_FLD + ", " + SHORT_NAME_FLD + ", "
@@ -40,6 +41,9 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
             + RESULT_TYPE_FLD + "=" + CONVTYPE_TABLE + "." + CONV_TYPE_FLD;
 
     private static final String qListQueriesBySchema = qListQueries + " WHERE " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + "= ?";
+
+    private static final String qListQueriesByActive = qListQueries + " WHERE " + QUERY_TABLE + "." + ACTIVE_FLD + "= ?";
+
     private static final String qQueryTextByFileName = "SELECT " + QUERY_FILE_FLD + " FROM " + QUERY_TABLE + " WHERE "
             + QUERY_FILE_FLD + "= ?";
     private static final String qQueryTextByID = "SELECT " + QUERY_FILE_FLD + " FROM " + QUERY_TABLE + " WHERE " + QUERY_ID_FLD
@@ -56,9 +60,9 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
     private static final String qQueryInfoByID = qQueryInfo + " WHERE " + QUERY_ID_FLD + "=?";
     private static final String qQueryInfoByFileName = qQueryInfo + " WHERE " + QUERY_FILE_FLD + "=?";
-    
+
     private static final String qQueryUpdateActive = "UPDATE " + QUERY_TABLE + " SET " + ACTIVE_FLD + "=? WHERE " + QUERY_ID_FLD + "=?" ;
-    
+
     private static final String qRemoveQuery = "DELETE FROM " + QUERY_TABLE + " WHERE " + QUERY_ID_FLD + "=?";
     private static final String qUpdateQuery = "UPDATE  " + QUERY_TABLE + " SET " + QUERY_FILE_FLD + "=?" + ", " + SHORT_NAME_FLD
             + "=?" + ", " + DESCR_FLD + "=?" + ", " + XSL_SCHEMA_ID_FLD + "=?" + ", " + RESULT_TYPE_FLD + "=?" + ", "
@@ -75,7 +79,9 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
     private static final String qCheckQueryFileByName = "SELECT COUNT(*) FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD + "=?";
 
     private static final String qCheckQueryFileByIdAndName = "SELECT COUNT(*) FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD
-            + "=?" + " and " + QUERY_ID_FLD + "=?";;
+            + "=?" + " and " + QUERY_ID_FLD + "=?";
+
+    ;
 
 
     /**
@@ -140,6 +146,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
     /**
      * Update query
+     *
      * @param query_id - id from database, used as a constraint
      * @param schema_id - schema id
      * @param short_name - db field for title
@@ -240,18 +247,18 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
             if (r.length > 0) {
                 h = new HashMap();
-                h.put("query_id", queryId);
-                h.put("schema_id", r[0][0]);
-                h.put("query", r[0][1]);
-                h.put("description", r[0][2]);
-                h.put("short_name", r[0][3]);
-                h.put("xml_schema", r[0][4]);
-                h.put("content_type", r[0][5]);
-                h.put("meta_type", r[0][6]);
-                h.put("script_type", r[0][7]);
-                h.put("upper_limit", r[0][8]);
-                h.put("url", r[0][9]);
-                h.put("is_active", r[0][10]);
+                h.put(QaScriptView.QUERY_ID, queryId);
+                h.put(QaScriptView.SCHEMA_ID, r[0][0]);
+                h.put(QaScriptView.QUERY, r[0][1]);
+                h.put(QaScriptView.DESCRIPTION, r[0][2]);
+                h.put(QaScriptView.SHORT_NAME, r[0][3]);
+                h.put(QaScriptView.XML_SCHEMA, r[0][4]);
+                h.put(QaScriptView.CONTENT_TYPE, r[0][5]);
+                h.put(QaScriptView.META_TYPE, r[0][6]);
+                h.put(QaScriptView.SCRIPT_TYPE, r[0][7]);
+                h.put(QaScriptView.UPPER_LIMIT, r[0][8]);
+                h.put(QaScriptView.URL, r[0][9]);
+                h.put(QaScriptView.IS_ACTIVE, r[0][10]);
             }
 
         } finally {
@@ -341,21 +348,71 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
             v = new Vector(r.length);
             for (int i = 0; i < r.length; i++) {
                 Hashtable h = new Hashtable();
-                h.put("query_id", r[i][0]);
-                h.put("short_name", r[i][1]);
-                h.put("query", r[i][2]);
-                h.put("description", r[i][3]);
-                h.put("schema_id", r[i][4]);
-                h.put("xml_schema", r[i][5]);
-                h.put("content_type_id", r[i][6]);
-                h.put("content_type_out", r[i][7]);
-                h.put("script_type", r[i][8]);
-                h.put("upper_limit", r[i][9]);
-                h.put("is_active", r[i][11]);
+                h.put(QaScriptView.QUERY_ID, r[i][0]);
+                h.put(QaScriptView.SHORT_NAME, r[i][1]);
+                h.put(QaScriptView.QUERY, r[i][2]);
+                h.put(QaScriptView.DESCRIPTION, r[i][3]);
+                h.put(QaScriptView.SCHEMA_ID, r[i][4]);
+                h.put(QaScriptView.XML_SCHEMA, r[i][5]);
+                h.put(QaScriptView.CONTENT_TYPE_ID, r[i][6]);
+                h.put(QaScriptView.CONTENT_TYPE_OUT, r[i][7]);
+                h.put(QaScriptView.SCRIPT_TYPE, r[i][8]);
+                h.put(QaScriptView.UPPER_LIMIT, r[i][9]);
+                h.put(QaScriptView.IS_ACTIVE, r[i][11]);
                 v.add(h);
             }
+        } finally {
+            closeAllResources(rs, pstmt, conn);
         }
-        finally {
+
+        return v;
+    }
+
+    @Override
+    public Vector listQueries(String xmlSchema, boolean active) throws SQLException {
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        boolean forSchema = xmlSchema != null;
+        Vector v = null;
+        String query = (forSchema) ? qListQueriesBySchema : qListQueriesByActive;
+
+        if (isDebugMode) {
+            LOGGER.debug("XMLSchema is " + xmlSchema);
+            LOGGER.debug("Query is " + query);
+        }
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(query);
+            if (forSchema) {
+                pstmt.setString(1, xmlSchema);
+            }
+            if (!forSchema) {
+                pstmt.setString(1, (active) ? "1" : "0");
+            }
+
+            rs = pstmt.executeQuery();
+            String[][] r = getResults(rs);
+            v = new Vector(r.length);
+            for (int i = 0; i < r.length; i++) {
+
+                Hashtable h = new Hashtable();
+                h.put(QaScriptView.QUERY_ID, r[i][0]);
+                h.put(QaScriptView.SHORT_NAME, r[i][1]);
+                h.put(QaScriptView.QUERY, r[i][2]);
+                h.put(QaScriptView.DESCRIPTION, r[i][3]);
+                h.put(QaScriptView.SCHEMA_ID, r[i][4]);
+                h.put(QaScriptView.XML_SCHEMA, r[i][5]);
+                h.put(QaScriptView.CONTENT_TYPE_ID, r[i][6]);
+                h.put(QaScriptView.CONTENT_TYPE, r[i][7]);
+                h.put(QaScriptView.SCRIPT_TYPE, r[i][8]);
+                h.put(QaScriptView.UPPER_LIMIT, r[i][9]);
+                h.put(QaScriptView.IS_ACTIVE, r[i][11]);
+                v.add(h);
+
+            }
+        } finally {
             closeAllResources(rs, pstmt, conn);
         }
 
@@ -418,19 +475,20 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
         }
 
     }
-    
+
     @Override
     public void activateQuery(String query_id) throws SQLException {
-         setQueryActivation(query_id, true);
+        setQueryActivation(query_id, true);
     }
-    
+
     @Override
     public void deactivateQuery(String query_id) throws SQLException {
-         setQueryActivation(query_id, false);
+        setQueryActivation(query_id, false);
     }
 
     /**
      * Sets query activation
+     *
      * @param query_id Query Id
      * @param set_active Active
      * @throws SQLException If an error occurs.
@@ -443,7 +501,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
         if (isDebugMode) {
             LOGGER.debug("Query is " + qQueryUpdateActive);
         }
-        
+
         try {
             conn = getConnection();
             pstmt = conn.prepareStatement(qQueryUpdateActive);

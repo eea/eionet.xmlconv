@@ -8,3 +8,7 @@
 /tmp
 /schema
 /bin/
+/nb-configuration.xml
+/nbactions.xml
+/testing.log
+/src/test/test.iml

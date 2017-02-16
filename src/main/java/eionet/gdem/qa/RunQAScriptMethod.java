@@ -1,31 +1,29 @@
 package eionet.gdem.qa;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Vector;
-
-import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.http.HttpFileManager;
-import org.apache.commons.io.IOUtils;
-
 import eionet.gdem.Constants;
-import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.remote.RemoteServiceMethod;
 import eionet.gdem.dto.Schema;
+import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.FeedbackAnalyzer;
 import eionet.gdem.validation.ValidationService;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Vector;
 
 /**
  * Implementation of run ad-hoc QA script methods.
@@ -123,12 +121,12 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                     HashMap hash = queryDao.getQueryInfo(scriptId);
                     String xqScript = "";
                     // If the script type is not FME, the script content is retrieved.
-                    if (!XQScript.SCRIPT_LANG_FME.equals((String) hash.get("script_type"))) {
+                    if (!XQScript.SCRIPT_LANG_FME.equals((String) hash.get(QaScriptView.SCRIPT_TYPE))) {
                         xqScript = queryDao.getQueryText(scriptId);
                     } else {
                         xqScript = XQScript.SCRIPT_LANG_FME; // Dummy value
                     }
-                    String schemaId = (String) hash.get("schema_id");
+                    String schemaId = (String) hash.get(QaScriptView.SCHEMA_ID);
                     Schema schema = null;
                     // check because ISchemaDao.getSchema(null) returns first schema
                     if (schemaId != null) {
@@ -140,17 +138,17 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                         LOGGER.error(errMess);
                         throw new XMLConvException(errMess, new Exception());
                     } else {
-                        if (!Utils.isNullStr((String) hash.get("meta_type"))) {
-                            contentType = (String) hash.get("meta_type");
+                        if (!Utils.isNullStr((String) hash.get(QaScriptView.META_TYPE))) {
+                            contentType = (String) hash.get(QaScriptView.META_TYPE);
                         }
                         LOGGER.debug("Script: " + xqScript);
-                        XQScript xq = new XQScript(xqScript, pars, (String) hash.get("content_type"));
-                        xq.setScriptType((String) hash.get("script_type"));
+                        XQScript xq = new XQScript(xqScript, pars, (String) hash.get(QaScriptView.CONTENT_TYPE));
+                        xq.setScriptType((String) hash.get(QaScriptView.SCRIPT_TYPE));
                         xq.setSrcFileUrl(fileUrl);
                         xq.setSchema(schema);
 
                         if (XQScript.SCRIPT_LANG_FME.equals(xq.getScriptType())) {
-                            xq.setScriptSource((String) hash.get("url"));
+                            xq.setScriptSource((String) hash.get(QaScriptView.URL));
                         }
 
                         strResult = xq.getResult();

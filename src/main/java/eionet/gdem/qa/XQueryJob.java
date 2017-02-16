@@ -24,18 +24,20 @@ package eionet.gdem.qa;
  */
 import java.io.File;
 import java.io.FileOutputStream;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
 import eionet.gdem.XMLConvException;
 import eionet.gdem.logging.Markers;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+
+
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.conversion.datadict.DataDictUtil;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.services.GDEMServices;
@@ -43,9 +45,6 @@ import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.ValidationService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,20 +131,21 @@ public class XQueryJob implements Job, InterruptableJob {
                 //boolean schemaExpired = false;
                 //boolean isNotLatestReleasedDDSchema = false;
 
-                if (query != null && query.containsKey("content_type")) {
-                    contentType = (String) query.get("content_type");
+                if (query != null && query.containsKey(QaScriptView.CONTENT_TYPE)) {
+                    contentType = (String) query.get(QaScriptView.CONTENT_TYPE);
                 }
                 // get script type if it comes from T_QUERY table
-                if (query != null && query.containsKey("script_type")) {
-                    scriptType = (String) query.get("script_type");
+                if (query != null && query.containsKey(QaScriptView.SCRIPT_TYPE)) {
+                    scriptType = (String) query.get(QaScriptView.SCRIPT_TYPE);
                 }
 
                 // stylesheet - to check if it is expired
-                if (query != null && query.containsKey("xml_schema")) {
+                if (query != null && query.containsKey(QaScriptView.XML_SCHEMA)) {
                     // set schema if exists:
-                    schema = getSchema((String) query.get("xml_schema"));
+                    schema = getSchema((String) query.get(QaScriptView.XML_SCHEMA));
                     //schemaExpired = (schema != null && schema.isExpired());
                     //isNotLatestReleasedDDSchema = DataDictUtil.isDDSchemaAndNotLatestReleased(schema.getSchema());
+
                 }
 
                 // get script type if it stored in filesystem and we have to guess it by file extension.
@@ -157,41 +157,41 @@ public class XQueryJob implements Job, InterruptableJob {
                 }
                 String[] xqParam = {Constants.XQ_SOURCE_PARAM_NAME + "=" + srcFile};
 
-                if (scriptFile.contains(" ")) {
-                    scriptFile = StringUtils.substringBefore(scriptFile, " ");
-                }
-
-                XQScript xq = new XQScript(null, xqParam, contentType);
-                xq.setScriptFileName(scriptFile);
-                xq.setScriptType(scriptType);
-                xq.setSrcFileUrl(srcFile);
-                xq.setSchema(schema);
-                xq.setJobId(this.jobId);
-
-                if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
-                    if (query != null && query.containsKey("url")) {
-                        xq.setScriptSource((String) query.get("url"));
+                    if (scriptFile.contains(" ")) {
+                        scriptFile = StringUtils.substringBefore(scriptFile, " ");
                     }
+
+                    XQScript xq = new XQScript(null, xqParam, contentType);
+                    xq.setScriptFileName(scriptFile);
+                    xq.setScriptType(scriptType);
+                    xq.setSrcFileUrl(srcFile);
+                    xq.setSchema(schema);
+                    xq.setJobId(this.jobId);
+
+                    if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
+                        if (query != null && query.containsKey(QaScriptView.URL)) {
+                            xq.setScriptSource((String) query.get(QaScriptView.URL));
+                        }
                     LOGGER.info("** FME Job starts, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);
                 } else {
                     LOGGER.info("** XQuery Job starts, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);
                 }
 
-                FileOutputStream out = null;
-                try {
-                    out = new FileOutputStream(new File(resultFile));
-                    xq.getResult(out);
-                    changeStatus(Constants.XQ_READY);
-                    LOGGER.info("Job ID=" + jobId + " finished.");
-                } catch (XMLConvException e) {
-                    changeStatus(Constants.XQ_FATAL_ERR);
-                    StringBuilder errBuilder = new StringBuilder();
-                    errBuilder.append("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">Unexpected error occured!</span><h2>Unexpected error occured!</h2>");
-                    errBuilder.append(Utils.escapeXML(e.toString()));
-                    errBuilder.append("</div>");
-                    IOUtils.write(errBuilder.toString(), out, "UTF-8");
-                    LOGGER.error("XQueryJob ID=" + this.jobId + " exception: ", e);
-                } finally {
+                    FileOutputStream out = null;
+                    try {
+                        out = new FileOutputStream(new File(resultFile));
+                        xq.getResult(out);
+                        changeStatus(Constants.XQ_READY);
+                        LOGGER.info("Job ID=" + jobId + " finished.");
+                    } catch (XMLConvException e) {
+                        changeStatus(Constants.XQ_FATAL_ERR);
+                        StringBuilder errBuilder = new StringBuilder();
+                        errBuilder.append("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">Unexpected error occured!</span><h2>Unexpected error occured!</h2>");
+                        errBuilder.append(Utils.escapeXML(e.toString()));
+                        errBuilder.append("</div>");
+                        IOUtils.write(errBuilder.toString(), out, "UTF-8");
+                        LOGGER.error("XQueryJob ID=" + this.jobId + " exception: " , e);
+                    } finally {
                         IOUtils.closeQuietly(out);
                 }
             }

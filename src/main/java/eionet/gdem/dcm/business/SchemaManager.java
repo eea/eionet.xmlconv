@@ -58,6 +58,7 @@ import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.dto.UplSchema;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
@@ -357,13 +358,13 @@ public class SchemaManager {
                 for (int j = 0; j < qascripts.size(); j++) {
                     HashMap qascript = (HashMap) qascripts.get(j);
                     QAScript qas = new QAScript();
-                    qas.setScriptId((String) qascript.get("query_id"));
-                    qas.setFileName((String) qascript.get("query"));
-                    qas.setDescription((String) qascript.get("description"));
-                    qas.setShortName((String) qascript.get("short_name"));
-                    qas.setScriptType((String) qascript.get("script_type"));
-                    qas.setResultType((String) qascript.get("result_type"));
-                    qas.setActive((String) qascript.get("is_active"));
+                    qas.setScriptId((String) qascript.get(QaScriptView.QUERY_ID));
+                    qas.setFileName((String) qascript.get(QaScriptView.QUERY));
+                    qas.setDescription((String) qascript.get(QaScriptView.DESCRIPTION));
+                    qas.setShortName((String) qascript.get(QaScriptView.SHORT_NAME));
+                    qas.setScriptType((String) qascript.get(QaScriptView.SCRIPT_TYPE));
+                    qas.setResultType((String) qascript.get(QaScriptView.RESULT_TYPE));
+                    qas.setActive((String) qascript.get(QaScriptView.IS_ACTIVE));
                     qases.add(qas);
 
                     // get file last modified only if schemaId is known

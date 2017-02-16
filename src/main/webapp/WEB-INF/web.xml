@@ -35,8 +35,17 @@
         <filter-name>CAS Filter</filter-name>
         <filter-class>eionet.gdem.cas.xmlconvCASFilter</filter-class>
     </filter>
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+
 
     <!-- Filter Mappings -->
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/restapi/*</url-pattern>
+    </filter-mapping>
     <filter-mapping>
         <filter-name>CAS Filter</filter-name>
         <url-pattern>/eionetCookieLogin/*</url-pattern>
@@ -126,7 +135,7 @@
     </listener>
     <!-- Spring MVC Dispatcher Servlet-->
     <servlet>
-        <servlet-name>JSPDispatcher</servlet-name>
+        <servlet-name>springServlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
@@ -135,8 +144,8 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>JSPDispatcher</servlet-name>
-        <url-pattern>/webapi/*</url-pattern>
+        <servlet-name>springServlet</servlet-name>
+        <url-pattern>/restapi/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -158,7 +167,7 @@
         <servlet-name>thymeleafDispatcher</servlet-name>
         <url-pattern>/web/*</url-pattern>
     </servlet-mapping>
-    
+
     <!-- Struts Config -->
     <servlet>
         <servlet-name>action</servlet-name>
