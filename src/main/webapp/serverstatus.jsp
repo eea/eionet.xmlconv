@@ -30,7 +30,7 @@ response.setDateHeader("Expires", 0);
     
     function fetchServerData () {
         var request = new XMLHttpRequest();
-        request.open('GET', '<c:url value="/webapi/serverstatus" />', true);
+        request.open('GET', '<c:url value="/restapi/serverstatus" />', true);
 
         request.onload = function() {
           if (request.status >= 200 && request.status < 400) {
