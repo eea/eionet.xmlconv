@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.http.HttpFileManager;
+import eionet.gdem.validation.JaxpValidationService;
 import org.apache.commons.io.IOUtils;
 
 import eionet.gdem.Constants;
