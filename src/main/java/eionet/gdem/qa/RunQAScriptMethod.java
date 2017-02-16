@@ -1,7 +1,6 @@
 package eionet.gdem.qa;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
@@ -10,6 +9,8 @@ import java.util.Vector;
 
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.http.HttpFileManager;
+import eionet.gdem.validation.JaxpValidationService;
+import eionet.gdem.validation.ValidationService;
 import org.apache.commons.io.IOUtils;
 
 import eionet.gdem.Constants;
@@ -23,7 +24,6 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.FeedbackAnalyzer;
-import eionet.gdem.validation.ValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,8 +112,8 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
         LOGGER.debug("==xmlconv== runQAScript: id=" + scriptId + " file_url=" + sourceUrl + "; ");
         try {
             if (scriptId.equals(String.valueOf(Constants.JOB_VALIDATION))) {
-                ValidationService vs = new ValidationService();
-                vs.setTicket(getTicket());
+                ValidationService vs = new JaxpValidationService();
+                //vs.setTicket(getTicket());
                 strResult = vs.validate(sourceUrl);
             } else {
                 fileUrl = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceUrl, isTrustedMode());

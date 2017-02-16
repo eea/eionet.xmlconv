@@ -45,7 +45,7 @@ public class ValidateXMLFormAction extends Action {
             httpServletRequest.setAttribute(StylesheetListLoader.CONVERSION_SCHEMAS_ATTR, StylesheetListLoader.getConversionSchemasList(httpServletRequest));
         } catch (DCMException e) {
             e.printStackTrace();
-            LOGGER.error("Serach CR Conversions error", e);
+            LOGGER.error("Search CR Conversions error", e);
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveMessages(httpServletRequest, errors);
         }
