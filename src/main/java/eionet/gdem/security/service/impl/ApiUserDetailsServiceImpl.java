@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  *
  * @author Vasilis Skiadas<vs@eworx.gr>
  */
-@Service
+@Service("apiuserdetailsservice")
 public class ApiUserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired

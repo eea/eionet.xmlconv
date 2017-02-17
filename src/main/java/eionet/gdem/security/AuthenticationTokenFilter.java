@@ -17,6 +17,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,6 +44,7 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
     private TokenVerifier verifier;
 
     @Autowired
+    @Qualifier("apiuserdetailsservice")
     private UserDetailsService userDetailsService;
 
     @Override

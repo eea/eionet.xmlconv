@@ -40,12 +40,12 @@
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
 
-
     <!-- Filter Mappings -->
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>*</url-pattern>
     </filter-mapping>
+
     <filter-mapping>
         <filter-name>CAS Filter</filter-name>
         <url-pattern>/eionetCookieLogin/*</url-pattern>

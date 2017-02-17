@@ -1,6 +1,7 @@
 package eionet.gdem.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -33,6 +34,7 @@ public class WebSecurityConfiguration {
     private EntryPointUnauthorizedHandler unauthorizedHandler;
 
     @Autowired
+    @Qualifier("apiuserdetailsservice")
     private UserDetailsService userDetailsService;
 
     @Autowired
@@ -85,20 +87,40 @@ public class WebSecurityConfiguration {
   @Configuration
   public static class WebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
+/*    @Autowired
+    private WebAuthenticationProvider authenticationProvider;*/
+
     @Override
     public void configure(WebSecurity web) throws Exception {
       web
-              /*.debug(true)*/
+              .debug(true)
               .ignoring().antMatchers("/restapi/*");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
       http
-              .antMatcher("/*")
+              .antMatcher("/**")
               .authorizeRequests()
-              .antMatchers("/*").permitAll();
+              .antMatchers("/web/**").permitAll()
+              .antMatchers("/web/projects/*").hasRole("v");
+      WebAuthenticationFilter webAuthenticationFilter = new WebAuthenticationFilter();
+      webAuthenticationFilter.setAuthenticationManager(authenticationManagerBean());
+      http.addFilter(webAuthenticationFilter);
     }
+
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+      return super.authenticationManagerBean();
+    }
+
+/*
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+      auth.authenticationProvider(authenticationProvider);
+    }
+*/
+
   }
 
 }
