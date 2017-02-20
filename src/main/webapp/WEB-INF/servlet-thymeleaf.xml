@@ -25,6 +25,12 @@
     <bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
         <property name="templateResolver" ref="templateResolver" />
         <property name="enableSpringELCompiler" value="true" />
+        <property name="dialects">
+            <set>
+                <!-- ADD Standard dialect -->
+                <bean class="eionet.gdem.web.tags.thymeleaf.CustomDialect"/>
+            </set>
+        </property>
     </bean>
 
     <bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
@@ -56,5 +62,15 @@
             </set>
         </property>
     </bean>
+
+
+
+    <bean id="springTemplateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
+        <property name="enableSpringELCompiler" value="true"/>
+        <property name="templateResolver" value=""
+
+    </bean>
+
+    <bean id=""
 
 </beans>

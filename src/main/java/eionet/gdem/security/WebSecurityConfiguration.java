@@ -3,6 +3,7 @@ package eionet.gdem.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class WebSecurityConfiguration {
 
   @Configuration
+  @ComponentScan
   @Order(1)
   public static class ApiSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
@@ -66,7 +68,7 @@ public class WebSecurityConfiguration {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
       httpSecurity
-              .antMatcher("/restapi/*")
+              .antMatcher("/restapi/**")
               .csrf()
               .disable()
               .exceptionHandling()
@@ -76,25 +78,29 @@ public class WebSecurityConfiguration {
               .sessionCreationPolicy(SessionCreationPolicy.NEVER)
               .and()
               .authorizeRequests()
-              .antMatchers("/restapi/*").permitAll();
+              .antMatchers("/restapi/**").permitAll();
 
       // Custom JWT based authentication
       httpSecurity
               .addFilter(authenticationTokenFilterBean());
     }
-  }
-
-  @Configuration
-  public static class WebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
-
-/*    @Autowired
-    private WebAuthenticationProvider authenticationProvider;*/
 
     @Override
     public void configure(WebSecurity web) throws Exception {
       web
-              .debug(true)
-              .ignoring().antMatchers("/restapi/*");
+              .debug(true);
+    }
+  }
+
+  @Configuration
+  @ComponentScan
+  public static class WebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+
+    @Bean
+    public WebPreAuthenticationFilter webPreAuthenticationFilterBean() throws Exception {
+      WebPreAuthenticationFilter webPreAuthenticationFilter = new WebPreAuthenticationFilter();
+      webPreAuthenticationFilter.setAuthenticationManager(authenticationManagerBean());
+      return webPreAuthenticationFilter;
     }
 
     @Override
@@ -104,9 +110,15 @@ public class WebSecurityConfiguration {
               .authorizeRequests()
               .antMatchers("/web/**").permitAll()
               .antMatchers("/web/projects/*").hasRole("v");
-      WebAuthenticationFilter webAuthenticationFilter = new WebAuthenticationFilter();
-      webAuthenticationFilter.setAuthenticationManager(authenticationManagerBean());
-      http.addFilter(webAuthenticationFilter);
+      /*WebAuthenticationFilter webAuthenticationFilter = new WebAuthenticationFilter();
+      webAuthenticationFilter.setAuthenticationManager(authenticationManagerBean());*/
+      http.addFilter(webPreAuthenticationFilterBean());
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+          web
+            .debug(true);
     }
 
     @Override
