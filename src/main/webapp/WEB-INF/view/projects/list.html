@@ -1,36 +1,34 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:perm="http://perm">
 <head th:replace="~{fragments/head-old :: head}" />
 <body th:include="~{fragments/layout-old :: layout(~{::div})}">
-    <div>
-      <div class="row">
-        <div class="columns">
-          <table>
-            <thead>
-              <th>Name</th>
-              <th>XSD</th>
-              <th>XSL</th>
-              <th>QA</th>
-              <th>Actions</th>
-            </thead>
-              <tbody>
-                <tr th:each="project, pos : ${projects}">
-                  <td width="80%"><a th:text="${project.name}" th:href="@{/web/projects/{id}(id=${project.id})}"></a></td>
-                  <td><span th:class="${project.schemata.size() > 0} ? 'xsd'"/></td>
-                  <td><span th:class="${project.schemata.size() > 0} ? 'xsl'"/></td>
-                  <td><span th:class="${project.schemata.size() > 0} ? 'qa'"/></td>
-                  <td><span class="actions"/></td>
-                </tr>
-              </tbody>
-          </table>
-        </div>
-        <div class="columns small-1">
-          <ul>
-            <li><a th:href="@{/web/projects/new}">Add</a></li>
-            <li><a th:href="@{/web/projects/import}">Import</a></li>
-          </ul>
-        </div>
-      </div>
+  <div class="row">
+    <div class="columns">
+      <table>
+        <thead>
+          <th>Name</th>
+          <th>XSD</th>
+          <th>XSL</th>
+          <th>QA</th>
+          <th>Actions</th>
+        </thead>
+        <tbody>
+          <tr th:each="project, pos : ${projects}">
+            <td width="80%"><a th:text="${project.name}" th:href="@{/web/projects/{id}(id=${project.id})}"></a></td>
+            <td><span th:class="${project.schemata.size() > 0} ? 'xsd'"/></td>
+            <td><span th:class="${project.schemata.size() > 0} ? 'xsl'"/></td>
+            <td><span th:class="${project.schemata.size() > 0} ? 'qa'"/></td>
+            <td><span class="actions"/></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="columns small-1">
+      <ul>
+        <li acl="projects" permission="i"><a th:href="@{/web/projects/new}">Add</a></li>
+        <li acl="projects" permission="i"><a th:href="@{/web/projects/import}">Import</a></li>
+      </ul>
+    </div>
   </div>
 </body>
 </html>
