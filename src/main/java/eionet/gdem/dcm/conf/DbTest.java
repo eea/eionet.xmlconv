@@ -48,7 +48,7 @@ public class DbTest {
      * @param psw Password
      * @throws Exception If an error occurs.
      */
-    public void tstDbParams(String url, String user, String psw) throws Exception {
+    public void tstDbParams(String url, String user, String psw) throws DCMException, SQLException {
 
         Connection con = null;
         Statement stmt = null;
