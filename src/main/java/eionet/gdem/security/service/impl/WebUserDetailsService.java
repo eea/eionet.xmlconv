@@ -1,5 +1,6 @@
 package eionet.gdem.security.service.impl;
 
+import eionet.gdem.security.model.WebUser;
 import eionet.gdem.utils.SecurityUtil;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,6 +16,8 @@ public class WebUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return null;
+        WebUser user = new WebUser();
+        user.setUser(s);
+        return user;
     }
 }
