@@ -2,7 +2,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 
 <%
 pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
@@ -17,7 +17,7 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
         <h1><bean:message key="label.login.message"/></h1>
 
         <%-- include Error display --%>
-        <tiles:insert definition="Error" />
+        <tiles:insertDefinition name="Error" />
 
             <html:form action="login" method="post" focus="username">
               <table class="datatable" style="width:300px">

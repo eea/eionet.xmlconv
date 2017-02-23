@@ -54,7 +54,7 @@ public class ListController {
     public String list(Model model) {
         ConversionForm form = new ConversionForm();
         model.addAttribute("form", form);
-        return "conversion/list";
+        return "/listConv.jsp";
     }
 
     @PostMapping

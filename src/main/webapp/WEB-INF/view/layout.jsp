@@ -1,9 +1,9 @@
 <%@ page buffer="100kb" pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <ed:breadcrumbs-push label="XML Services" url="/index.jsp" level="0"/>
@@ -46,25 +46,25 @@ response.setDateHeader("Expires", 0);
         <script type="text/javascript" src="<c:url value="/scripts/admin.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/scripts/pageops.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/scripts/foundation.js"/>"></script>
-        <tiles:insert attribute="specific_header" ignore="true"/>
+        <tiles:insertAttribute name="specific_header" ignore="true"/>
     </head>
 
     <body>
         <%-- include header --%>
-        <tiles:insert attribute="header"/>
+        <tiles:insertAttribute name="header"/>
 
         <%-- include Error display --%>
         <%-- move system-msg and error-msg below the  <h1> heading --%>
         <%-- tiles:insert definition="Error" /> --%>
 
         <%-- include body --%>
-        <tiles:insert attribute="body"/>
+        <tiles:insertAttribute name="body"/>
 
-        <tiles:useAttribute id="showFooter" name="showFooter"/>
+        <tiles:importAttribute name="showFooter"/>
         <%-- include footer --%>
-        <tiles:insert attribute="footer">
-            <tiles:put name="showFooter" beanName="showFooter" />
-        </tiles:insert>
+        <tiles:insertAttribute name="footer">
+            <tiles:putAttribute name="showFooter" />
+        </tiles:insertAttribute>
 
 
     </body>
