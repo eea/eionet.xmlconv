@@ -24,15 +24,13 @@ package eionet.gdem.web.struts;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.ActionMessages;
-import org.apache.struts.tiles.TilesRequestProcessor;
 
 /**
  * Request processor.
  * @author Unknown
  * @author George Sofianos
  */
-public class RequestProcessor extends TilesRequestProcessor {
+public class RequestProcessor /*extends ComposableRequestProcessor*/ {
     /**
      * Default constructor.
      */
@@ -46,7 +44,7 @@ public class RequestProcessor extends TilesRequestProcessor {
      * @param response Response
      * @return True if processed.
      */
-    public boolean processPreprocess(HttpServletRequest request, HttpServletResponse response) {
+/*    public boolean processPreprocess(HttpServletRequest request, HttpServletResponse response) {
         request.setAttribute("servletPath", request.getServletPath());
 
         // Remove messages from session and add to page context
@@ -64,7 +62,7 @@ public class RequestProcessor extends TilesRequestProcessor {
                 request.setAttribute("dcm.messages", messages);
         }
         return true;
-    }
+    }*/
     // TODO: Remove deprecated code
     // protected ActionForward processActionPerform(HttpServletRequest request, HttpServletResponse response, Action action,
     // ActionForm form, ActionMapping mapping) throws IOException, ServletException {

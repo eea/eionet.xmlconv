@@ -397,6 +397,29 @@
                 </configuration>
             </plugin>
 
+<!--
+            <plugin>
+                <groupId>org.jasig.mojo.jspc</groupId>
+                <artifactId>jspc-maven-plugin</artifactId>
+                <version>2.0.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jasig.mojo.jspc</groupId>
+                        <artifactId>jspc-compiler-tomcat8</artifactId>
+                        <version>2.0.2</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+-->
+
         </plugins>
 
         <!-- filtering corrupts the xsl files -->
@@ -444,12 +467,12 @@
                 <version>3.1.0</version>
                 <scope>provided</scope>
             </dependency>
-            <dependency>
+<!--            <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>jsp-api</artifactId>
                 <version>2.0</version>
                 <scope>provided</scope>
-            </dependency>
+            </dependency>-->
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>jstl</artifactId>
@@ -699,18 +722,18 @@
                         <artifactId>antlr</artifactId>
                     </exclusion>
                 </exclusions>
-
-            </dependency>
-            <dependency>
-                <groupId>org.apache.struts</groupId>
-                <artifactId>struts-el</artifactId>
-                <version>1.3.10</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.struts</groupId>
                 <artifactId>struts-extras</artifactId>
                 <version>1.3.10</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.struts</groupId>
+                <artifactId>struts-el</artifactId>
+                <version>1.3.10</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.struts</groupId>
                 <artifactId>struts-taglib</artifactId>
@@ -721,6 +744,17 @@
                 <artifactId>struts-tiles</artifactId>
                 <version>1.3.10</version>
             </dependency>
+
+<!--            <dependency>
+                <groupId>org.apache.struts</groupId>
+                <artifactId>struts2-core</artifactId>
+                <version>2.5.8</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.struts</groupId>
+                <artifactId>struts2-tiles-plugin</artifactId>
+                <version>2.5.8</version>
+            </dependency>-->
 
              <!-- Spring framework dependencies -->
             <dependency>
@@ -762,6 +796,19 @@
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-taglibs</artifactId>
                 <version>4.2.1.RELEASE</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>org.apache.tiles</groupId>
+                <artifactId>tiles-extras</artifactId>
+                <version>3.0.7</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>jboss</groupId>
+                        <artifactId>javassist</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>

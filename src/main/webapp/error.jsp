@@ -36,7 +36,7 @@
     <%
     if(e != null && e instanceof XMLConvException){
         %>
-            <p><%=((XMLConvException)e).getCauseMessage() %></p>
+            <p><%=((XMLConvException)e).getCause().getMessage()%></p>
         <%
     }
     %>
