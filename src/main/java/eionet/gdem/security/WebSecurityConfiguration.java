@@ -109,7 +109,11 @@ public class WebSecurityConfiguration {
               .antMatcher("/**")
               .authorizeRequests()
               .antMatchers("/web/**").permitAll()
-              .antMatchers("/web/projects/*").hasRole("v");
+              .antMatchers("/web/projects/*").hasRole("v")
+              .and()
+              .antMatcher("/RpcRouter/**")
+              .csrf()
+              .disable().authorizeRequests().antMatchers("/RpcRouter/**").permitAll();
       /*WebAuthenticationFilter webAuthenticationFilter = new WebAuthenticationFilter();
       webAuthenticationFilter.setAuthenticationManager(authenticationManagerBean());*/
       http.addFilter(webPreAuthenticationFilterBean());
