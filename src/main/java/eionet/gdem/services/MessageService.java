@@ -20,4 +20,9 @@ public class MessageService {
         String value = messageSource.getMessage(key, null, LocaleContextHolder.getLocale());
         return StringUtils.defaultIfEmpty(value, key);
     }
+
+    public String getMessage(String key, Object... strings) {
+        String value = messageSource.getMessage(key, strings, LocaleContextHolder.getLocale());
+        return StringUtils.defaultIfEmpty(value, key);
+    }
 }

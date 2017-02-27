@@ -3,59 +3,59 @@
         "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
         "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
 <tiles-definitions>
-    <definition name="MainFooter" template="/WEB-INF/view/MainFooter.jsp">
+    <definition name="MainFooter" template="/WEB-INF/view/old/MainFooter.jsp">
         <put-attribute name="showFooter" type="string" value="true" />
         <put-attribute name="environment" value="Data Conversion Module" />
         <put-attribute name="buildNo" value="20050614" />
     </definition>
-    <definition name="MainHeader" template="/WEB-INF/view/MainHeader.jsp" />
-    <definition name="TmpFooter" template="/WEB-INF/view/TmpFooter.jsp">
+    <definition name="MainHeader" template="/WEB-INF/view/old/MainHeader.jsp" />
+    <definition name="TmpFooter" template="/WEB-INF/view/old/TmpFooter.jsp">
         <put-attribute name="showFooter" type="string" value="true" />
     </definition>
-    <definition name="TmpHeader" template="/WEB-INF/view/TmpHeader.jsp">
+    <definition name="TmpHeader" template="/WEB-INF/view/old/TmpHeader.jsp">
         <put-attribute name="title" value="Xml Services" />
     </definition>
-    <definition name="Error" template="/WEB-INF/view/Error.jsp" />
-    <definition name="Login" template="/WEB-INF/view/Login.jsp" />
-    <definition name="Stylesheet" template="/WEB-INF/view/stylesheet/Stylesheet.jsp" />
-    <definition name="StylesheetHead" template="/WEB-INF/view/stylesheet/Stylesheet_head.jsp" />
-    <definition name="GeneratedStylesheet" template="/WEB-INF/view/stylesheet/GeneratedStylesheet.jsp" />
-    <definition name="schemaStylesheets" template="/WEB-INF/view/stylesheet/SchemaStylesheets.jsp" />
-    <definition name="editStylesheet" template="/WEB-INF/view/stylesheet/EditStylesheet.jsp" />
-    <definition name="viewStylesheet" template="/WEB-INF/view/stylesheet/ViewStylesheet.jsp" />
-    <definition name="addStylesheet" template="/WEB-INF/view/stylesheet/AddStylesheet.jsp" />
-    <definition name="schema" template="/WEB-INF/view/schema/Schema.jsp" />
-    <definition name="viewSchema" template="/WEB-INF/view/schema/ViewSchema.jsp" />
-    <definition name="listConversion" template="/WEB-INF/view/conversion/ListConversions.jsp" />
-    <definition name="uplSchema" template="/WEB-INF/view/schema/UplSchema.jsp" />
-    <definition name="addUplSchema" template="/WEB-INF/view/schema/AddUplSchema.jsp" />
-    <definition name="uplXmlFile" template="/WEB-INF/view/xmlfile/UplXmlFile.jsp" />
-    <definition name="addUplXmlFile" template="/WEB-INF/view/xmlfile/AddUplXmlFile.jsp" />
-    <definition name="editUplXmlFile" template="/WEB-INF/view/xmlfile/EditUplXmlFile.jsp" />
-    <definition name="renameUplXmlFile" template="/WEB-INF/view/xmlfile/RenameUplXmlFile.jsp" />
-    <definition name="excel2XmlConversion" template="/WEB-INF/view/conversion/Excel2XmlConversion.jsp" />
-    <definition name="json2XmlConversion" template="/WEB-INF/view/conversion/Json2Xml.jsp" />
-    <definition name="crConversion" template="/WEB-INF/view/conversion/CRConversion.jsp" />
-    <definition name="validateXML" template="/WEB-INF/view/conversion/ValidateXML.jsp" />
-    <definition name="qaScripts" template="/WEB-INF/view/qascript/QAScripts.jsp" />
-    <definition name="schemaQAScripts" template="/WEB-INF/view/qascript/SchemaQAScripts.jsp" />
-    <definition name="addQAScript" template="/WEB-INF/view/qascript/AddQAScript.jsp" />
-    <definition name="editQAScript" template="/WEB-INF/view/qascript/EditQAScript.jsp" />
-    <definition name="viewQAScript" template="/WEB-INF/view/qascript/ViewQAScript.jsp" />
-    <definition name="qaScriptHistory" template="/WEB-INF/view/qascript/QAScriptHistory.jsp" />
-    <definition name="syncUplSchema" template="/WEB-INF/view/schema/SyncUplSchema.jsp" />
-    <definition name="syncUplScript" template="/WEB-INF/view/qascript/SyncUplScript.jsp" />
-    <definition name="qaSandbox" template="/WEB-INF/view/qasandbox/QASandbox.jsp" />
-    <definition name="qaSandboxResult" template="/WEB-INF/view/qasandbox/QASandboxResult.jsp" />
-    <definition name="confLdap" template="/WEB-INF/view/config/Ldap.jsp" />
-    <definition name="confDb" template="/WEB-INF/view/config/Db.jsp" />
-    <definition name="system" template="/WEB-INF/view/config/System.jsp" />
-    <definition name="purge" template="/WEB-INF/view/config/Purge.jsp" />
-    <definition name="basexServer" template="/WEB-INF/view/config/BasexServer.jsp" />
-    <definition name="hosts" template="/WEB-INF/view/hosts/HostsList.jsp" />
-    <definition name="hostDetails" template="/WEB-INF/view/hosts/HostDetails.jsp" />
+    <definition name="Error" template="/WEB-INF/view/old/Error.jsp" />
+    <definition name="Login" template="/WEB-INF/view/old/Login.jsp" />
+    <definition name="Stylesheet" template="/WEB-INF/view/old/stylesheet/Stylesheet.jsp" />
+    <definition name="StylesheetHead" template="/WEB-INF/view/old/stylesheet/Stylesheet_head.jsp" />
+    <definition name="GeneratedStylesheet" template="/WEB-INF/view/old/stylesheet/GeneratedStylesheet.jsp" />
+    <definition name="schemaStylesheets" template="/WEB-INF/view/old/stylesheet/SchemaStylesheets.jsp" />
+    <definition name="editStylesheet" template="/WEB-INF/view/old/stylesheet/EditStylesheet.jsp" />
+    <definition name="viewStylesheet" template="/WEB-INF/view/old/stylesheet/ViewStylesheet.jsp" />
+    <definition name="addStylesheet" template="/WEB-INF/view/old/stylesheet/AddStylesheet.jsp" />
+    <definition name="schema" template="/WEB-INF/view/old/schema/Schema.jsp" />
+    <definition name="viewSchema" template="/WEB-INF/view/old/schema/ViewSchema.jsp" />
+    <definition name="listConversion" template="/WEB-INF/view/old/conversion/ListConversions.jsp" />
+    <definition name="uplSchema" template="/WEB-INF/view/old/schema/UplSchema.jsp" />
+    <definition name="addUplSchema" template="/WEB-INF/view/old/schema/AddUplSchema.jsp" />
+    <definition name="uplXmlFile" template="/WEB-INF/view/old/xmlfile/UplXmlFile.jsp" />
+    <definition name="addUplXmlFile" template="/WEB-INF/view/old/xmlfile/AddUplXmlFile.jsp" />
+    <definition name="editUplXmlFile" template="/WEB-INF/view/old/xmlfile/EditUplXmlFile.jsp" />
+    <definition name="renameUplXmlFile" template="/WEB-INF/view/old/xmlfile/RenameUplXmlFile.jsp" />
+    <definition name="excel2XmlConversion" template="/WEB-INF/view/old/conversion/Excel2XmlConversion.jsp" />
+    <definition name="json2XmlConversion" template="/WEB-INF/view/old/conversion/Json2Xml.jsp" />
+    <definition name="crConversion" template="/WEB-INF/view/old/conversion/CRConversion.jsp" />
+    <definition name="validateXML" template="/WEB-INF/view/old/conversion/ValidateXML.jsp" />
+    <definition name="qaScripts" template="/WEB-INF/view/old/qascript/QAScripts.jsp" />
+    <definition name="schemaQAScripts" template="/WEB-INF/view/old/qascript/SchemaQAScripts.jsp" />
+    <definition name="addQAScript" template="/WEB-INF/view/old/qascript/AddQAScript.jsp" />
+    <definition name="editQAScript" template="/WEB-INF/view/old/qascript/EditQAScript.jsp" />
+    <definition name="viewQAScript" template="/WEB-INF/view/old/qascript/ViewQAScript.jsp" />
+    <definition name="qaScriptHistory" template="/WEB-INF/view/old/qascript/QAScriptHistory.jsp" />
+    <definition name="syncUplSchema" template="/WEB-INF/view/old/schema/SyncUplSchema.jsp" />
+    <definition name="syncUplScript" template="/WEB-INF/view/old/qascript/SyncUplScript.jsp" />
+    <definition name="qaSandbox" template="/WEB-INF/view/old/qasandbox/QASandbox.jsp" />
+    <definition name="qaSandboxResult" template="/WEB-INF/view/old/qasandbox/QASandboxResult.jsp" />
+    <definition name="confLdap" template="/WEB-INF/view/old/config/Ldap.jsp" />
+    <definition name="confDb" template="/WEB-INF/view/old/config/Db.jsp" />
+    <definition name="system" template="/WEB-INF/view/old/config/System.jsp" />
+    <definition name="purge" template="/WEB-INF/view/old/config/Purge.jsp" />
+    <definition name="basexServer" template="/WEB-INF/view/old/config/BasexServer.jsp" />
+    <definition name="hosts" template="/WEB-INF/view/old/hosts/HostsList.jsp" />
+    <definition name="hostDetails" template="/WEB-INF/view/old/hosts/HostDetails.jsp" />
 
-    <definition name="base" template="/WEB-INF/view/layout.jsp">
+    <definition name="base" template="/WEB-INF/view/old/layout.jsp">
         <put-attribute name="title" value="label.gdem.title" />
         <put-attribute name="header" type="definition" value="MainHeader" />
         <put-attribute name="error" type="definition" value="Error" />
@@ -161,7 +161,7 @@
         <put-attribute name="body" type="definition" value="hostDetails" />
     </definition>
     <definition name="ConverterTabs"
-        template="/WEB-INF/view/conversion/ConverterTabs.jsp">
+        template="/WEB-INF/view/old/conversion/ConverterTabs.jsp">
         <put-attribute name="selectedTab" type="string" value="convertXML" />
     </definition>
     <definition name="/crConversion.jsp" extends="base">

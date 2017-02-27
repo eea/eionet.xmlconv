@@ -16,7 +16,7 @@
 <ed:breadcrumbs-push label="Hosts" level="1" />
 <ed:hasPermission username="username" acl="host" permission="i">
     <div id="operations">
-        <ul><li><html:link page="/do/hosts/add">Add host</html:link>	</li></ul>
+        <ul><li><html:link page="/old/hosts/add">Add host</html:link>	</li></ul>
     </div>
 </ed:hasPermission>
 
@@ -56,7 +56,7 @@
                         </ed:hasPermission>
                         <td>
                             <ed:hasPermission username="username" acl="host" permission="u">
-                                <html:link page="/do/hosts/edit" paramId="id" paramName="host" paramProperty="id" titleKey="label.hosts.edit">
+                                <html:link page="/old/hosts/edit" paramId="id" paramName="host" paramProperty="id" titleKey="label.hosts.edit">
                                     <bean:write name="host" property="hostname" />
                                 </html:link>
                             </ed:hasPermission>
