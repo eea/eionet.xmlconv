@@ -15,7 +15,7 @@
     <logic:equal value="true" name="schemas.uploaded" property="ssiPrm" >
         <div id="operations">
           <ul>
-           <li><a href="addUplSchemaForm"><bean:message key="label.uplSchema.add" /></a></li>
+           <li><a href="/old/schemas/add"><bean:message key="label.uplSchema.add" /></a></li>
             </ul>
         </div>
     </logic:equal>
