@@ -67,9 +67,57 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
 
     <div id="leftcolumn" class="localnav">
         <ul>
+            <li>New menu</li>
             <ed:menuItem action="/web/projects" title="Schemas">
                 <bean:message key="label.menu.projects"/>
             </ed:menuItem>
+            <ed:menuItem action="/old/schemas" title="Schemas">
+                <bean:message key="label.menu.schemas"/>
+            </ed:menuItem>
+            <ed:menuItem action="/old/conversions" title="Handcoded Stylesheets">
+                <bean:message key="label.menu.stylesheets"/>
+            </ed:menuItem>
+            <ed:menuItem action="/old/generatedConversions" title="Generated Stylesheets">
+                <bean:message key="label.menu.stylesheetsGenerated"/>
+            </ed:menuItem>
+            <ed:menuItem action="/old/converter" title="Converter">
+                <bean:message key="label.menu.converter"/>
+            </ed:menuItem>
+            <ed:menuItem action="/old/validation" title="Validate XML">
+                <bean:message key="label.conversion.tab.validation"/>
+            </ed:menuItem>
+            <ed:menuItem action="/old/workqueue" title="QA jobs">
+                <bean:message key="label.menu.QAJobs"/>
+            </ed:menuItem>
+            <ed:menuItem action="/old/qaScripts" title="QA Scripts">
+                <bean:message key="label.menu.queries"/>
+            </ed:menuItem>
+            <ed:menuItem action="/old/qaSandbox" title="QA Sandbox">
+                <bean:message key="label.menu.xqsendbox"/>
+            </ed:menuItem>
+            <ed:menuItem action="/old/xmlFiles" title="XML Files">
+                <bean:message key="label.menu.xmlfiles"/>
+            </ed:menuItem>
+            <ed:hasPermission username="username" acl="host" permission="v">
+                <ed:menuItem action="/old/hosts"  title="Hosts">
+                    <bean:message key="label.menu.hosts"/>
+                </ed:menuItem>
+            </ed:hasPermission>
+            <ed:hasPermission username="username" acl="config" permission="u">
+                <ed:menuItem action="/old/config/database"  title="Edit application configurations">
+                    <bean:message key="label.menu.config"/>
+                </ed:menuItem>
+            </ed:hasPermission>
+            <ed:hasPermission username="username" acl="serverstatus" permission="v">
+                <ed:menuItem action="/serverstatus.jsp"  title="View the server status">
+                    <bean:message key="label.menu.serverstatus"/>
+                </ed:menuItem>
+            </ed:hasPermission>
+        </ul>
+        <!-- To be removed after eveything is migrated -->
+        <hr />
+        <ul>
+            <li>Old Menu</li>
             <ed:menuItem action="/do/uplSchemas" title="Schemas">
                 <bean:message key="label.menu.schemas"/>
             </ed:menuItem>
