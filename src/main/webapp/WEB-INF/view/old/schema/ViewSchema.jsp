@@ -21,12 +21,12 @@
                 <span style="color: black; text-decoration: none;" title='<spring:message code="label.tab.title.schema"/>'><spring:message code="label.tab.title.schema" /></span>
             </li>
             <li>
-                <html:link page="/old/schemas/schemaStylesheets?schema=${schemaURL}" titleKey="label.tab.title.xsl" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                <html:link page="/old/schemas/conversions?schema=${schemaURL}" titleKey="label.tab.title.xsl" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
                     <spring:message code="label.tab.title.xsl" />
                 </html:link>
             </li>
             <li>
-                <html:link page="/old/schemas/schemaQAScripts?schemaId=${id}" titleKey="label.tab.title.scripts" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                <html:link page="/old/schemas/qaScripts?schemaId=${id}" titleKey="label.tab.title.scripts" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
                     <spring:message code="label.tab.title.scripts" />
                 </html:link>
             </li>
