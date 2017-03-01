@@ -17,13 +17,13 @@
     <logic:equal value="true"  name="stylesheet.permissions" property="ssiPrm" >
         <div id="operations">
             <ul>
-                <li><a href="addStylesheetForm"><bean:message key="label.stylesheet.add" /></a></li>
+                <li><a href="addStylesheetForm"><spring:message code="label.stylesheet.add" /></a></li>
             </ul>
         </div>
     </logic:equal>
 
     <h1 class="documentFirstHeading">
-        <bean:message key="label.stylesheet.handcoded"/>
+        <spring:message code="label.stylesheet.handcoded"/>
     </h1>
 
     <%-- include Error display --%>
@@ -48,10 +48,10 @@
                         <logic:equal value="true" name="stylesheet.permissions" property="ssdPrm" >
                             <th scope="col" class="scope-col"></th>
                         </logic:equal>
-                        <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.file"/></th>
-                        <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.title"/></th>
-                        <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.type"/></th>
-                        <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.modified"/></th>
+                        <th scope="col" class="scope-col"><spring:message code="label.table.stylesheet.file"/></th>
+                        <th scope="col" class="scope-col"><spring:message code="label.table.stylesheet.title"/></th>
+                        <th scope="col" class="scope-col"><spring:message code="label.table.stylesheet.type"/></th>
+                        <th scope="col" class="scope-col"><spring:message code="label.table.stylesheet.modified"/></th>
                         <th style="display:none"/>
                     </tr>
                 </thead>
@@ -65,7 +65,8 @@
                             </td>
                         </logic:equal>
                         <td>
-                            <html:link page="/do/stylesheetViewForm" paramId="stylesheetId" paramName="stylesheet" paramProperty="convId"  title="View stylesheet" >
+                            <%--paramId="stylesheetId" paramName="stylesheet" paramProperty="convId"--%>
+                            <html:link page="/old/conversions/${stylesheetId}" title="View stylesheet" >
                                 <bean:write name="stylesheet" property="xslFileName" />
                             </html:link>&#160;
                         </td>
@@ -88,14 +89,14 @@
             <logic:equal value="true"  name="stylesheet.permissions" property="ssdPrm" >
                 <br/>
                 <div class="boxbottombuttons">
-                       <input type="button"  class="button" value="<bean:message key="label.schema.delete"/>" onclick="return submitAction(1,'deleteStylesheet');" />
+                       <input type="button"  class="button" value="<spring:message code="label.schema.delete"/>" onclick="return submitAction(1,'deleteStylesheet');" />
                    </div>
                </logic:equal>
         </html:form>
     </logic:present>
     <logic:notPresent name="stylesheet.stylesheetListHolder" property="stylesheetList" >
         <div class="advice-msg">
-            <bean:message key="label.stylesheet.noHandCodedConversions"/>
+            <spring:message code="label.stylesheet.noHandCodedConversions"/>
         </div>
     </logic:notPresent>
 

@@ -2,15 +2,18 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed"%>
+
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
 <html:xhtml/>
 
 <ed:breadcrumbs-push label="Stylesheets" level="1" />
 
 <logic:present name="stylesheet.generatedListHolder">
     <h1 class="documentFirstHeading">
-        <bean:message key="label.stylesheet.generated"/>
+        <spring:message code="label.stylesheet.generated"/>
     </h1>
 
     <div class="visualClear">&nbsp;</div>
@@ -25,21 +28,22 @@
             <col style="width:43%"/>
             <thead>
                 <tr>
-                    <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.action"/></th>
-                    <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.table"/></th>
-                    <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.dataset"/></th>
-                    <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.datasetReleased"/></th>
-                    <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.xmlschema"/></th>
-                    <th scope="col" class="scope-col"><bean:message key="label.table.stylesheet.stylesheets"/></th>
+                    <th scope="col" class="scope-col"><spring:message code="label.table.stylesheet.action"/></th>
+                    <th scope="col" class="scope-col"><spring:message code="label.table.stylesheet.table"/></th>
+                    <th scope="col" class="scope-col"><spring:message code="label.table.stylesheet.dataset"/></th>
+                    <th scope="col" class="scope-col"><spring:message code="label.table.stylesheet.datasetReleased"/></th>
+                    <th scope="col" class="scope-col"><spring:message code="label.table.stylesheet.xmlschema"/></th>
+                    <th scope="col" class="scope-col"><spring:message code="label.table.stylesheet.stylesheets"/></th>
                 </tr>
             </thead>
             <tbody>
                 <logic:iterate indexId="index" id="schema" name="stylesheet.generatedListHolder" property="ddStylesheets" type="Schema">
                 <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
                     <td align="center">
-                        <html:link action="/schemaStylesheets" paramId="schema" paramName="schema" paramProperty="schema">
+                    <%--paramId="schema" paramName="schema" paramProperty="schema">--%>
+                        <a href="/old/schema/conversions?schema=${schema.schema}">
                             <html:img page="/images/properties.gif" altKey="label.table.stylesheet" title="view stylesheets" />
-                        </html:link>
+                        </a>
                     </td>
                     <td title="<bean:write name="schema" property="table"/>">
                         <bean:write name="schema" property="table" />

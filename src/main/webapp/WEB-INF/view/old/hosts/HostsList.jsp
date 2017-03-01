@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -16,12 +16,12 @@
 <ed:breadcrumbs-push label="Hosts" level="1" />
 <ed:hasPermission username="username" acl="host" permission="i">
     <div id="operations">
-        <ul><li><html:link page="/old/hosts/add">Add host</html:link>	</li></ul>
+        <ul><li><a href="/old/hosts/add">Add host</a></li></ul>
     </div>
 </ed:hasPermission>
 
 <h1 class="documentFirstHeading">
-    <bean:message key="label.hosts.title"/>
+    <spring:message code="label.hosts.title"/>
 </h1>
 
 <%-- include Error display --%>
@@ -41,8 +41,8 @@
                     <ed:hasPermission username="username" acl="host" permission="d">
                         <th scope="col">&nbsp;</th>
                     </ed:hasPermission>
-                    <th scope="col"><bean:message key="label.hosts.host"/></th>
-                    <th scope="col"><bean:message key="label.hosts.username"/></th>
+                    <th scope="col"><spring:message code="label.hosts.host"/></th>
+                    <th scope="col"><spring:message code="label.hosts.username"/></th>
                 </tr>
             </thead>
             <tbody>
@@ -55,10 +55,11 @@
                             </td>
                         </ed:hasPermission>
                         <td>
+                            <%--paramId="id" paramName="host" paramProperty="id" titleKey="label.hosts.edit"--%>
                             <ed:hasPermission username="username" acl="host" permission="u">
-                                <html:link page="/old/hosts/edit" paramId="id" paramName="host" paramProperty="id" titleKey="label.hosts.edit">
+                                <a href="old/hosts/edit">
                                     <bean:write name="host" property="hostname" />
-                                </html:link>
+                                </a>
                             </ed:hasPermission>
                         </td>
                         <td>
@@ -71,9 +72,9 @@
         <div class="boxbottombuttons">
             <ed:hasPermission username="username" acl="host" permission="d">
                 <html:submit styleClass="button" property="action">
-                    <bean:message key="label.delete"/>
+                    <spring:message code="label.delete"/>
                 </html:submit>
-                <!--input type="button"  class="button" value="<bean:message key="label.delete"/>" onclick="return submitAction(1,'/do/hosts/delete');" /-->
+                <!--input type="button"  class="button" value="<spring:message code="label.delete"/>" onclick="return submitAction(1,'/do/hosts/delete');" /-->
             </ed:hasPermission>
         </div>
     </div>

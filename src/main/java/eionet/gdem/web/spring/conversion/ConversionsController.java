@@ -35,17 +35,17 @@ import java.util.Vector;
  *
  */
 @Controller
-@RequestMapping("/conversion/list")
-public class ListController {
+@RequestMapping("/conversions")
+public class ConversionsController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConversionsController.class);
 
     private MessageService messageService;
 
     private IRootElemDao rootElemDao;
 
     @Autowired
-    ListController(MessageService messageService, IRootElemDao rootElemDao) {
+    public ConversionsController(MessageService messageService, IRootElemDao rootElemDao) {
         this.messageService = messageService;
         this.rootElemDao = rootElemDao;
     }
@@ -190,7 +190,7 @@ public class ListController {
             // comping back from convert page
             cForm.setConverted(false);
         }
-        return "redirect:/web/conversion/list";
+        return "redirect:/old/conversions";
     }
 
     /**

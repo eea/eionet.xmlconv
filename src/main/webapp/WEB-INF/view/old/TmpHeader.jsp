@@ -5,7 +5,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-nested.tld" prefix="nested" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-template.tld" prefix="template" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -98,45 +98,45 @@ response.setDateHeader("Expires", 0);
     <div id="leftcolumn" class="localnav">
         <ul>
             <ed:menuItem action="/do/uplSchemas" title="Schemas">
-                <bean:message key="label.menu.schemas"/>
+                <spring:message code="label.menu.schemas"/>
             </ed:menuItem>
             <ed:menuItem action="/do/stylesheetList" title="Handcoded Stylesheets">
-                <bean:message key="label.menu.stylesheets"/>
+                <spring:message code="label.menu.stylesheets"/>
             </ed:menuItem>
             <ed:menuItem action="/do/generatedStylesheetList" title="Generated Stylesheets">
-                <bean:message key="label.menu.stylesheetsGenerated"/>
+                <spring:message code="label.menu.stylesheetsGenerated"/>
             </ed:menuItem>
             <ed:menuItem action="/do/listConvForm" title="Converter">
-                <bean:message key="label.menu.converter"/>
+                <spring:message code="label.menu.converter"/>
             </ed:menuItem>
             <ed:menuItem action="/do/validateXMLForm" title="Validate XML">
-                <bean:message key="label.conversion.tab.validation"/>
+                <spring:message code="label.conversion.tab.validation"/>
             </ed:menuItem>
             <ed:menuItem action="/workqueue.jsp" title="QA jobs">
-                <bean:message key="label.menu.QAJobs"/>
+                <spring:message code="label.menu.QAJobs"/>
             </ed:menuItem>
             <ed:menuItem action="/do/qaScripts" title="QA Scripts">
-                <bean:message key="label.menu.queries"/>
+                <spring:message code="label.menu.queries"/>
             </ed:menuItem>
             <ed:menuItem action="/do/qaSandboxForm" title="QA Sandbox">
-                <bean:message key="label.menu.xqsendbox"/>
+                <spring:message code="label.menu.xqsendbox"/>
             </ed:menuItem>
             <ed:menuItem action="/do/uplXmlFiles" title="XML Files">
-                <bean:message key="label.menu.xmlfiles"/>
+                <spring:message code="label.menu.xmlfiles"/>
             </ed:menuItem>
             <ed:hasPermission username="username" acl="host" permission="v">
                 <ed:menuItem action="/do/hosts/list"  title="Hosts">
-                    <bean:message key="label.menu.hosts"/>
+                    <spring:message code="label.menu.hosts"/>
                 </ed:menuItem>
             </ed:hasPermission>
             <ed:hasPermission username="username" acl="config" permission="u">
                 <ed:menuItem action="/do/dbForm"  title="Edit application configurations">
-                    <bean:message key="label.menu.config"/>
+                    <spring:message code="label.menu.config"/>
                 </ed:menuItem>
             </ed:hasPermission>
             <ed:hasPermission username="username" acl="serverstatus" permission="v">
                 <ed:menuItem action="/serverstatus.jsp"  title="View the server status">
-                    <bean:message key="label.menu.serverstatus"/>
+                    <spring:message code="label.menu.serverstatus"/>
                 </ed:menuItem>
             </ed:hasPermission>
         </ul>

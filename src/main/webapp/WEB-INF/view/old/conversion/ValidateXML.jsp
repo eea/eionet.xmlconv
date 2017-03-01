@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties"%>
 <%@ page import="eionet.gdem.utils.Utils,java.util.Date" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
@@ -10,7 +10,7 @@
     <div style="width:100%;">
 
         <ed:breadcrumbs-push label="Validate XML" level="1" />
-        <h1><bean:message key="label.conversion.validate.title"/></h1>
+        <h1><spring:message code="label.conversion.validate.title"/></h1>
 
         <%-- include Error display --%>
         <tiles:insert definition="Error" />
@@ -20,34 +20,34 @@
     <logic:equal name="countErrors" value="0">
         <logic:notEmpty name="conversion.originalSchema">
             <div class="ok-msg">The file is valid XML (<%=Utils.getDateTime(new Date())%>)
-            <p><bean:message key="label.conversion.originalSchema" />&#160; <a
+            <p><spring:message code="label.conversion.originalSchema" />&#160; <a
                 href="<bean:write name="conversion.originalSchema"/>"><bean:write
                 name="conversion.originalSchema" /></a></p>
             <logic:present name="conversion.validatedSchema">
-                <p><bean:message key="label.conversion.validatedSchema" />&#160;
+                <p><spring:message code="label.conversion.validatedSchema" />&#160;
                 <a href="<bean:write name="conversion.validatedSchema"/>"><bean:write
                     name="conversion.validatedSchema" /></a></p>
             </logic:present></div>
         </logic:notEmpty>
         <logic:empty name="conversion.originalSchema">
             <div class="error-msg">Could not validate XML.
-            <p><bean:message key="label.conversion.schema.not.found" /></p>
+            <p><spring:message code="label.conversion.schema.not.found" /></p>
             </div>
         </logic:empty>
     </logic:equal>
     <logic:notEqual name="countErrors" value="0">
         <div class="error-msg">The file is not valid XML <logic:notEmpty
             name="conversion.originalSchema">
-            <p><bean:message key="label.conversion.originalSchema" />&#160; <a
+            <p><spring:message code="label.conversion.originalSchema" />&#160; <a
                 href="<bean:write name="conversion.originalSchema"/>"><bean:write
                 name="conversion.originalSchema" /></a></p>
             <logic:present name="conversion.validatedSchema">
-                <p><bean:message key="label.conversion.validatedSchema" />&#160;
+                <p><spring:message code="label.conversion.validatedSchema" />&#160;
                 <a href="<bean:write name="conversion.validatedSchema"/>"><bean:write
                     name="conversion.validatedSchema" /></a></p>
             </logic:present>
         </logic:notEmpty> <logic:empty name="conversion.originalSchema">
-            <p><bean:message key="label.conversion.schema.not.found" /></p>
+            <p><spring:message code="label.conversion.schema.not.found" /></p>
         </logic:empty></div>
     </logic:notEqual>
     <logic:notEmpty name="conversion.warningMessage">
@@ -62,7 +62,7 @@
             <table class="datatable">
                 <tr>
                  <th scope="col" class="scope-col">
-                    <bean:message key="label.conversion.url"/>
+                    <spring:message code="label.conversion.url"/>
                   </th>
                  </tr>
                  <tr>
@@ -72,12 +72,12 @@
                 </tr>
                 <tr>
                  <th scope="col" class="scope-col">
-                    <bean:message key="label.conversion.xmlSchema.optional"/>
+                    <spring:message code="label.conversion.xmlSchema.optional"/>
                   </th>
                  </tr>
                 <tr>
                   <td>
-                    <bean:message key="label.conversion.validate.note"/>
+                    <spring:message code="label.conversion.validate.note"/>
                   </td>
                 </tr>
                  <tr>
@@ -88,12 +88,12 @@
                 <logic:equal name="ValidationForm" property="showSchemaSelection" value="true">
                 <tr>
                  <th scope="col" class="scope-col">
-                    <bean:message key="label.conversion.xmlSchema"/>
+                    <spring:message code="label.conversion.xmlSchema"/>
                   </th>
                 </tr>
                 <tr>
                     <td>
-                        <bean:message key="label.conversion.selectSchema"/>
+                        <spring:message code="label.conversion.selectSchema"/>
                   </td>
                 </tr>
                 <tr>
@@ -109,7 +109,7 @@
                 <tr>
                   <td align="center">
                     <html:submit styleClass="button">
-                        <bean:message key="label.conversion.validate"/>
+                        <spring:message code="label.conversion.validate"/>
                     </html:submit>
                   </td>
             </tr>
@@ -125,10 +125,10 @@
                             <col/>
                             <thead>
                                 <tr>
-                                    <th scope="col"><span title="Error"><bean:message key="label.table.conversion.type"/></span></th>
-                                    <th scope="col"><span title="PositionLine"><bean:message key="label.table.conversion.line"/></span></th>
-                                    <th scope="col"><span title="PositionCol"><bean:message key="label.table.conversion.col"/></span></th>
-                                    <th scope="col"><span title="Message"><bean:message key="label.table.conversion.message"/></span></th>
+                                    <th scope="col"><span title="Error"><spring:message code="label.table.conversion.type"/></span></th>
+                                    <th scope="col"><span title="PositionLine"><spring:message code="label.table.conversion.line"/></span></th>
+                                    <th scope="col"><span title="PositionCol"><spring:message code="label.table.conversion.col"/></span></th>
+                                    <th scope="col"><span title="Message"><spring:message code="label.table.conversion.message"/></span></th>
                                 </tr>
                             </thead>
                             <tbody>

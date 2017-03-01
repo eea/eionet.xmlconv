@@ -13,11 +13,12 @@
     <div id="tabbedmenu">
         <ul>
             <li>
-                <html:link page="/do/viewQAScriptForm" paramId="scriptId" paramName="script_id" titleKey="label.qascript.tab.title" onclick="return submitTab(this);"     style="color: black; text-decoration: none;">
-                    <bean:message key="label.qascript.tab.title" />
+                <%--paramId="scriptId" paramName="script_id"--%>
+                <html:link page="/old/qaScripts/${scriptId}" titleKey="label.qascript.tab.title" onclick="return submitTab(this);"     style="color: black; text-decoration: none;">
+                    <spring:message code="label.qascript.tab.title" />
                 </html:link>
             </li>
-            <li id="currenttab"><span style="color: black; text-decoration: none;" title='<bean:message key="label.qascript.history"/>'><bean:message key="label.qascript.history" /></span></li>
+            <li id="currenttab"><span style="color: black; text-decoration: none;" title='<spring:message code="label.qascript.history"/>'><spring:message code="label.qascript.history" /></span></li>
         </ul>
     </div>
 
@@ -25,7 +26,7 @@
 
 
     <h1 class="documentFirstHeading">
-        <bean:message key="label.qascriptHistory.title"/>
+        <spring:message code="label.qascriptHistory.title"/>
     </h1>
 
     <%-- include Error display --%>
@@ -41,9 +42,9 @@
                 <col style="width:38%"/>
                 <thead>
                     <tr>
-                        <th scope="col" class="scope-col"><bean:message key="label.table.backup.filename"/></th>
-                        <th scope="col" class="scope-col"><bean:message key="label.table.backup.timestamp"/></th>
-                        <th scope="col" class="scope-col"><bean:message key="label.table.backup.user"/></th>
+                        <th scope="col" class="scope-col"><spring:message code="label.table.backup.filename"/></th>
+                        <th scope="col" class="scope-col"><spring:message code="label.table.backup.timestamp"/></th>
+                        <th scope="col" class="scope-col"><spring:message code="label.table.backup.user"/></th>
                     </tr>
                 </thead>
                 <tbody>

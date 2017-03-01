@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*"%>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
@@ -8,7 +8,7 @@
 <html:xhtml/>
 
         <ed:breadcrumbs-push label="Upload XML File" level="1" />
-        <h1><bean:message key="label.title.uplXmlFile.add"/></h1>
+        <h1><spring:message code="label.title.uplXmlFile.add"/></h1>
 
         <%-- include Error display --%>
         <tiles:insertDefinition name="Error" />
@@ -20,7 +20,7 @@
                 <tr class="zebraeven">
                     <td>
                     <label class="question required" for="fileXml">
-                        <bean:message key="label.uplXmlFile.xmlfile"/>
+                        <spring:message code="label.uplXmlFile.xmlfile"/>
                     </label>
                   </td>
                   <td>
@@ -30,7 +30,7 @@
                 <tr>
                     <td>
                     <label class="question" for="txtTitle">
-                        <bean:message key="label.uplXmlFile.title"/>
+                        <spring:message code="label.uplXmlFile.title"/>
                     </label>
                   </td>
                   <td>
@@ -44,10 +44,10 @@
                   <td>&nbsp;</td>
                   <td>
                     <html:submit styleClass="button">
-                        <bean:message key="label.uplXmlFile.upload"/>
+                        <spring:message code="label.uplXmlFile.upload"/>
                     </html:submit>
                     <html:cancel styleClass="button">
-                        <bean:message key="label.cancel"/>
+                        <spring:message code="label.cancel"/>
                     </html:cancel>
                   </td>
                 </tr>

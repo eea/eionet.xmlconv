@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties"%>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
@@ -13,7 +13,7 @@
         </tiles:insert>
 
         <ed:breadcrumbs-push label="Spreadsheet to XML" level="1" />
-        <h1><bean:message key="label.conversion.excel2xml.heading"/></h1>
+        <h1><spring:message code="label.conversion.excel2xml.heading"/></h1>
 
         <%-- include Error display --%>
         <tiles:insert definition="Error" />
@@ -22,12 +22,12 @@
         <table class="datatable">
             <tr>
                  <th scope="col" class="scope-col">
-                    <bean:message key="label.conversion.url"/>
+                    <spring:message code="label.conversion.url"/>
                   </th>
             </tr>
             <tr>
                 <td>
-                    <label for="inpUrl"><bean:message key="label.conversion.insertExcelUrl"/></label>
+                    <label for="inpUrl"><spring:message code="label.conversion.insertExcelUrl"/></label>
                 </td>
             </tr>
             <tr>
@@ -37,37 +37,37 @@
             </tr>
             <tr>
                  <th scope="col" class="scope-col">
-                    <bean:message key="label.conversion.sheets"/>
+                    <spring:message code="label.conversion.sheets"/>
                   </th>
             </tr>
             <tr>
                 <td>
-                    <bean:message key="label.conversion.excel.format"/>
+                    <spring:message code="label.conversion.excel.format"/>
                 </td>
             </tr>
             <tr>
                 <td>
                     <html:radio property="split" styleId="split1" value="all" onclick="sheet.disabled=true" />
-                    <label for="split1"><bean:message key="label.conversion.excel.allsheets"/></label>
+                    <label for="split1"><spring:message code="label.conversion.excel.allsheets"/></label>
                 </td>
             </tr>
             <tr>
                 <td>
                     <html:radio property="split"  styleId="split2" value="split" onclick="sheet.disabled=false"/>
-                    <label for="split2"><bean:message key="label.conversion.excel.sheetname"/></label>
+                    <label for="split2"><spring:message code="label.conversion.excel.sheetname"/></label>
                     <html:text property="sheet" onfocus="split[1].checked=true"/>
                 </td>
             </tr>
                 <tr>
                   <td>
                     <html:checkbox name="ExcelConversionForm" property="showConversionLog" styleId ="chkConversion" />
-                    <label for="chkConversion"><bean:message key="label.conversion.excel.showConversionLog"/></label>
+                    <label for="chkConversion"><spring:message code="label.conversion.excel.showConversionLog"/></label>
                   </td>
                 </tr>
                 <tr>
                   <td align="center">
                     <html:submit styleClass="button">
-                        <bean:message key="label.conversion.convert"/>
+                        <spring:message code="label.conversion.convert"/>
                     </html:submit>
                   </td>
                 </tr>
@@ -78,7 +78,7 @@
                 </logic:notEmpty>
                 <logic:empty name="ExcelConversionForm" property="conversionLog">
                     <tr>
-                        <td><bean:message key="label.conversion.excel.warning"/>
+                        <td><spring:message code="label.conversion.excel.warning"/>
                         </td>
                     </tr>
                 </logic:empty>

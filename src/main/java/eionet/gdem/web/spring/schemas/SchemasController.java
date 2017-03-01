@@ -7,9 +7,7 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.web.spring.SpringMessage;
 import eionet.gdem.web.spring.SpringMessages;
-import eionet.gdem.web.struts.schema.SchemaElemForm;
 import eionet.gdem.web.struts.schema.SchemaElemHolder;
 import eionet.gdem.web.struts.schema.UplSchemaHolder;
 import org.slf4j.Logger;
@@ -61,7 +59,7 @@ public class SchemasController {
         return "/uplSchema.jsp";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{schemaId}")
     public String show(@PathVariable String schemaId, Model model, HttpServletRequest request, HttpSession session) {
         SpringMessages errors = new SpringMessages();
 
@@ -103,6 +101,7 @@ public class SchemasController {
                     && !seHolder.getSchema().getSchema().startsWith(SecurityUtil.getUrlWithContextPath(request)));
             model.addAttribute("schema.rootElements", seHolder);
             model.addAttribute("stylesheet.outputtype", seHolder);
+            model.addAttribute("schemaForm", form);
         } catch (DCMException e) {
             LOGGER.error("Schema element form error", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
@@ -112,10 +111,62 @@ public class SchemasController {
         return "/viewSchema.jsp";
     }
 
+    @GetMapping("/{schemaId}/edit")
+    public String edit(@PathVariable String schemaId, Model model, HttpServletRequest request, HttpSession session) {
+        SpringMessages errors = new SpringMessages();
+
+        SchemaForm form = new SchemaForm();
+        /*String schemaId = httpServletRequest.getParameter("schemaId");*/
+        String user = (String) session.getAttribute("user");
+
+        /*if (schemaId == null || schemaId.trim().isEmpty()) {
+            schemaId = httpServletRequest.getParameter("schema");
+        }*/
+
+        try {
+            SchemaManager sm = new SchemaManager();
+            SchemaElemHolder seHolder = sm.getSchemaElems(user, schemaId);
+            if (seHolder == null || seHolder.getSchema() == null) {
+                throw new DCMException(BusinessConstants.EXCEPTION_SCHEMA_NOT_EXIST);
+            }
+            schemaId = seHolder.getSchema().getId();
+            form.setSchema(seHolder.getSchema().getSchema());
+            form.setDescription(seHolder.getSchema().getDescription());
+            form.setSchemaId(schemaId);
+            form.setDtdId(seHolder.getSchema().getDtdPublicId());
+            form.setElemName("");
+            form.setNamespace("");
+            form.setDoValidation(seHolder.getSchema().isDoValidation());
+            form.setBlocker(seHolder.getSchema().isBlocker());
+            form.setSchemaLang(seHolder.getSchema().getSchemaLang());
+            form.setDtd(seHolder.getSchema().getIsDTD());
+            String fileName = seHolder.getSchema().getUplSchemaFileName();
+            form.setExpireDateObj(seHolder.getSchema().getExpireDate());
+            if (seHolder.getSchema().getUplSchema() != null && !Utils.isNullStr(fileName)) {
+                form.setUplSchemaId(seHolder.getSchema().getUplSchema().getUplSchemaId());
+                form.setUplSchemaFileUrl(seHolder.getSchema().getUplSchema().getUplSchemaFileUrl());
+                form.setLastModified(seHolder.getSchema().getUplSchema().getLastModified());
+                form.setUplSchemaFileName(fileName);
+                form.setUplSchemaFileUrl(Properties.gdemURL + "/schema/" + fileName);
+            }
+            seHolder.setSchemaIdRemoteUrl(Utils.isURL(seHolder.getSchema().getSchema())
+                    && !seHolder.getSchema().getSchema().startsWith(SecurityUtil.getUrlWithContextPath(request)));
+            model.addAttribute("schema.rootElements", seHolder);
+            model.addAttribute("stylesheet.outputtype", seHolder);
+            model.addAttribute("schemaForm", form);
+        } catch (DCMException e) {
+            LOGGER.error("Schema element form error", e);
+            errors.add(messageService.getMessage(e.getErrorCode()));
+            return "/uplSchema.jsp";
+        }
+        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        return "/schema.jsp";
+    }
+
     @GetMapping("/add")
     public String add(Model model) {
         UploadSchemaForm form = new UploadSchemaForm();
-        model.addAttribute("form", form);
+        model.addAttribute("schemaForm", form);
         return "/addUplSchema.jsp";
     }
 

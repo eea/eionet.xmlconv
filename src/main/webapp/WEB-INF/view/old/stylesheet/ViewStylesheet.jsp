@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties"%>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
@@ -13,18 +13,19 @@
             <ul>
                 <li>
                     <a href="searchCR?conversionId=<bean:write name="stylesheetForm" property="stylesheetId" />&amp;schemaUrl=<bean:write name="stylesheetForm" property="schema" />">
-                        <bean:message key="label.stylesheet.run" />
+                        <spring:message code="label.stylesheet.run" />
                     </a>
                 </li>
                 <logic:equal value="true"  name="stylesheet.permissions" property="ssdPrm" >
                     <li>
-                        <html:link page="/do/stylesheetEditForm" paramId="stylesheetId" paramName="stylesheetForm" paramProperty="stylesheetId" title="edit stylesheet" >
-                            <bean:message key="label.stylesheet.edit" />
+                      <%--paramId="stylesheetId" paramName="stylesheetForm" paramProperty="stylesheetId"--%>
+                      <html:link page="/old/conversions/${stylesheetId}/edit"title="edit stylesheet" >
+                            <spring:message code="label.stylesheet.edit" />
                         </html:link>
                     </li>
                     <li>
                         <a href="deleteStylesheet?conversionId=<bean:write name="stylesheetForm" property="stylesheetId" />&amp;schema=<bean:write name="stylesheetForm" property="schema" />" title="delete stylesheet" onclick='return stylesheetDelete("<bean:write name="stylesheetForm" property="xsl" />");'>
-                            <bean:message key="label.stylesheet.delete" />
+                            <spring:message code="label.stylesheet.delete" />
                         </a>
                     </li>
                 </logic:equal>
@@ -32,7 +33,7 @@
         </div>
 
 
-        <h1><bean:message key="label.stylesheet.view"/></h1>
+        <h1><spring:message code="label.stylesheet.view"/></h1>
 
         <%-- include Error display --%>
         <tiles:insertDefinition name="Error" />
@@ -42,7 +43,7 @@
             <col class="entrycol"/>
             <tr>
                 <th scope="row" class="scope-row">
-                    <bean:message key="label.stylesheet.schema"/>
+                    <spring:message code="label.stylesheet.schema"/>
                 </th>
                   <td>
                     <logic:present name="stylesheetForm" property="schemas">
@@ -55,7 +56,7 @@
             </tr>
             <tr>
                 <th scope="row" class="scope-row">
-                    <bean:message key="label.stylesheet.outputtype"/>
+                    <spring:message code="label.stylesheet.outputtype"/>
                 </th>
               <td>
                 <bean:write name="stylesheetForm" property="outputtype" />
@@ -68,7 +69,7 @@
                 <bean:define id="depOn" name="stylesheetForm" property="dependsOn" scope="request" type="java.lang.String" />
                 <tr>
                 <th scope="row" class="scope-row">
-                        <bean:message key="label.stylesheet.dependsOn"/>
+                        <spring:message code="label.stylesheet.dependsOn"/>
                     </th>
                     <td>
                          <logic:iterate id="st" scope="request" name="stylesheetForm" property="existingStylesheets" type="Stylesheet">
@@ -86,7 +87,7 @@
 
             <tr>
                 <th scope="row" class="scope-row">
-                      <bean:message key="label.stylesheet.description"/>
+                      <spring:message code="label.stylesheet.description"/>
                 </th>
               <td>
                   <bean:write name="stylesheetForm" property="description"/>
@@ -94,18 +95,18 @@
             </tr>
             <tr>
                 <th scope="row" class="scope-row">
-                    <bean:message key="label.stylesheet.xslfile"/>
+                    <spring:message code="label.stylesheet.xslfile"/>
                 </th>
               <td>
                     <a  href="<bean:write name="webRoot"/>/<bean:write property="xsl" name="stylesheetForm"/>" title="<bean:write property="xsl" name="stylesheetForm"/>" class="link-xsl">
                                 <bean:write property="xslFileName" name="stylesheetForm"/>
                     </a>
-                    <span style="margin-left:10px">(<bean:message key="label.lastmodified"/>:
+                    <span style="margin-left:10px">(<spring:message code="label.lastmodified"/>:
                     <logic:present name="stylesheetForm" property="modified">
                         <bean:write property="modified" name="stylesheetForm"/>
                     </logic:present>
                     <logic:notPresent name="stylesheetForm" property="modified">
-                        <span style="color:red"><bean:message key="label.fileNotFound"/></span>
+                        <span style="color:red"><spring:message code="label.fileNotFound"/></span>
                     </logic:notPresent>
                     )</span>
               </td>

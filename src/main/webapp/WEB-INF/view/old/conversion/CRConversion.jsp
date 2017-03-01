@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
@@ -13,7 +13,7 @@
         </tiles:insert>
 
         <ed:breadcrumbs-push label="Search CR for XML files" level="1" />
-        <h1><bean:message key="label.conversion.crconversion.title"/></h1>
+        <h1><spring:message code="label.conversion.crconversion.title"/></h1>
 
         <%-- include Error display --%>
         <tiles:insert definition="Error" />
@@ -22,7 +22,7 @@
             <table class="formtable">
                 <tr>
                  <th scope="col" class="scope-col">
-                    <bean:message key="label.conversion.xmlSchema"/>
+                    <spring:message code="label.conversion.xmlSchema"/>
                   </th>
                 </tr>
                 <tr>
@@ -37,7 +37,7 @@
                 <tr>
                   <td align="center">
                     <html:submit styleClass="button">
-                        <bean:message key="label.conversion.searchXML"/>
+                        <spring:message code="label.conversion.searchXML"/>
                     </html:submit>
                   </td>
                 </tr>
@@ -53,7 +53,7 @@
             <table class="datatable">
                 <tr>
                  <th scope="col" class="scope-col">
-                    <bean:message key="label.conversion.CRxmlfiles"/> (<bean:write name="countfiles"/>)
+                    <spring:message code="label.conversion.CRxmlfiles"/> (<bean:write name="countfiles"/>)
                   </th>
                 </tr>
 
@@ -78,7 +78,7 @@
                      <logic:equal name="countfiles" value="0">
                          <tr>
                           <td>
-                                <bean:message key="label.conversion.noCRFiles"/>
+                                <spring:message code="label.conversion.noCRFiles"/>
                           </td>
                          </tr>
                         <tr>
@@ -95,7 +95,7 @@
                     </tr>
                     <tr>
                      <th scope="col" class="scope-col">
-                        <bean:message key="label.conversion.selectConversion"/>
+                        <spring:message code="label.conversion.selectConversion"/>
                       </th>
                     </tr>
 
@@ -122,11 +122,11 @@
                           <bean:size name="schema" id="count" property="stylesheets"/>
                           <logic:greaterThan name="count" value="0">
                             <html:submit styleClass="button">
-                                <bean:message key="label.conversion.convert"/>
+                                <spring:message code="label.conversion.convert"/>
                             </html:submit>
                         </logic:greaterThan>
                         <logic:equal name="count" value="0">
-                        <p style="color: red; font-weight: bold;"><bean:message key="label.conversion.noconversion"/></p>
+                        <p style="color: red; font-weight: bold;"><spring:message code="label.conversion.noconversion"/></p>
                        </logic:equal>
                   </td>
                 </tr>

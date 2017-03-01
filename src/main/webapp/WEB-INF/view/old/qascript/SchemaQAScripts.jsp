@@ -18,17 +18,17 @@
                 <div id="tabbedmenu">
                     <ul>
                         <li>
-                            <html:link page="/do/viewSchemaForm?schemaId=${schemaId}"   titleKey="label.tab.title.schema" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
-                                <bean:message key="label.tab.title.schema" />
+                            <html:link page="/old/schemas/${schemaId}" titleKey="label.tab.title.schema" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                                <spring:message code="label.tab.title.schema" />
                             </html:link>
                         </li>
                         <li>
-                            <html:link page="/do/schemaStylesheets?schema=${schemaUrl}"   titleKey="label.tab.title.xsl" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
-                                <bean:message key="label.tab.title.xsl" />
+                            <html:link page="/old/schemas/schemaStylesheets?schema=${schemaUrl}"   titleKey="label.tab.title.xsl" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                                <spring:message code="label.tab.title.xsl" />
                             </html:link>
                         </li>
                         <li id="currenttab">
-                            <span style="color: black; text-decoration: none;" title='<bean:message key="label.tab.title.scripts"/>'><bean:message key="label.tab.title.scripts" /></span>
+                            <span style="color: black; text-decoration: none;" title='<spring:message code="label.tab.title.scripts"/>'><spring:message code="label.tab.title.scripts" /></span>
                         </li>
                     </ul>
                 </div>
@@ -37,19 +37,20 @@
                         <logic:equal value="true"  name="qascript.permissions" property="ssiPrm" >
                                <li>
                                 <a href="addQAScriptForm?schemaId=<bean:write name="schema" property="id" />&amp;schema=<bean:write name="schema" property="schema" />">
-                                    <bean:message key="label.qascript.add" />
+                                    <spring:message code="label.qascript.add" />
                                 </a>
                             </li>
                         </logic:equal>
                         <li>
-                            <html:link page="/do/openQAServiceInSandbox" paramId="schemaId" paramName="schema" paramProperty="id" titleKey="label.qascript.runservice.title">
-                                   <bean:message key="label.qascript.runservice" />
+                            <%--paramId="schemaId" paramName="schema" paramProperty="id"--%>
+                            <html:link page="/old/qaSandbox/run/${schemaId}"titleKey="label.qascript.runservice.title">
+                                   <spring:message code="label.qascript.runservice" />
                             </html:link>
                         </li>
                     </ul>
                 </div>
             <h1 class="documentFirstHeading">
-                <bean:message key="label.schema.qascripts"/>&nbsp;<bean:write name="schema" property="schema" />
+                <spring:message code="label.schema.qascripts"/>&nbsp;<bean:write name="schema" property="schema" />
             </h1>
 
     </logic:iterate>
@@ -62,7 +63,7 @@
             <table class="formtable">
                 <tr>
                     <td style="width:510px">
-                        <label class="question" for="validatefield"><bean:message key="label.qascript.schema.validate"/></label>
+                        <label class="question" for="validatefield"><spring:message code="label.qascript.schema.validate"/></label>
                     </td>
                     <td style="width:40px">
                         <logic:equal value="true"  name="qascript.permissions" property="ssiPrm" >
@@ -75,7 +76,7 @@
                     <td rowspan="2" style="vertical-align:bottom">
                         <logic:equal value="true"  name="qascript.permissions" property="ssiPrm" >
                             <!-- save button -->
-                                   <input type="button"  class="button" value="<bean:message key="label.save"/>" onclick="return submitAction(1,'saveSchemaValidation');" />
+                                   <input type="button"  class="button" value="<spring:message code="label.save"/>" onclick="return submitAction(1,'saveSchemaValidation');" />
                             <input type="hidden" name="schemaId" value="${schemaId}" />
                             <input type="hidden" name="schema" value="${schemaUrl}" />
                         </logic:equal>
@@ -83,7 +84,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <label class="question" for="blockerValidation"><bean:message key="label.qascript.schema.isBlockerValidation"/></label>
+                        <label class="question" for="blockerValidation"><spring:message code="label.qascript.schema.isBlockerValidation"/></label>
                     </td>
                     <td>
                         <logic:equal value="true"  name="qascript.permissions" property="ssiPrm" >
@@ -114,11 +115,11 @@
                           <th scope="col">&#160;</th>
                     </logic:equal>
                       <th scope="col">&#160;</th>
-                      <th scope="col"><bean:message key="label.qascript.shortname"/></th>
-                      <th scope="col"><bean:message key="label.qascript.description"/></th>
-                      <th scope="col"><bean:message key="label.qascript.fileName"/></th>
-                      <th scope="col"><bean:message key="label.lastmodified"/></th>
-                      <th scope="col"><bean:message key="label.qascript.isActive"/></th>
+                      <th scope="col"><spring:message code="label.qascript.shortname"/></th>
+                      <th scope="col"><spring:message code="label.qascript.description"/></th>
+                      <th scope="col"><spring:message code="label.qascript.fileName"/></th>
+                      <th scope="col"><spring:message code="label.lastmodified"/></th>
+                      <th scope="col"><spring:message code="label.qascript.isActive"/></th>
                    </tr>
                 </thead>
                <tbody>
@@ -134,19 +135,20 @@
                         <logic:equal value="true"  name="qascript.permissions" property="qsuPrm" >
                             <%--  If scriptType is NOT 'FME' --%>
                             <logic:notEqual name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-                                <html:link page="/do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.label.qasandbox.editScript">
+                                <%--paramId="scriptId" paramName="qascript" paramProperty="scriptId"--%>
+                                <html:link page="/old/qaSandbox/edit/${scriptId}" titleKey="label.qasandbox.label.qasandbox.editScript">
                                     <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img>
                                 </html:link>
                             </logic:notEqual>
                             <%--  If scriptType is 'FME' --%>
                             <logic:equal name="qascript" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-                                <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=<bean:write name="schema" property="id"/>" title="<bean:message key="label.qascript.runservice.title" />">
+                                <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=<bean:write name="schema" property="id"/>" title="<spring:message code="label.qascript.runservice.title" />">
                                     <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img>
                                 </a>
                             </logic:equal>
                         </logic:equal>
                         <logic:notEqual value="true"  name="qascript.permissions" property="qsuPrm" >
-                            <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=<bean:write name="schema" property="id"/>" title="<bean:message key="label.qascript.runservice.title" />">
+                            <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=<bean:write name="schema" property="id"/>" title="<spring:message code="label.qascript.runservice.title" />">
                                 <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"></img>
                             </a>
                         </logic:notEqual>
@@ -177,7 +179,7 @@
                             <bean:write name="qascript" property="modified" />
                         </logic:notEqual>
                         <logic:equal value=""  name="qascript" property="modified" >
-                            <span style="color:red"><bean:message key="label.fileNotFound"/></span>
+                            <span style="color:red"><spring:message code="label.fileNotFound"/></span>
                         </logic:equal>
                     </logic:notEqual>
                     </td>
@@ -195,15 +197,15 @@
             </table>
                 <div class="boxbottombuttons">
                     <logic:equal value="true"  name="qascript.permissions" property="ssdPrm" >
-                           <input type="button"  class="button" value="<bean:message key="label.qascript.delete"/>" onclick="return submitAction(2,'deleteQAScript');" />
+                           <input type="button"  class="button" value="<spring:message code="label.qascript.delete"/>" onclick="return submitAction(2,'deleteQAScript');" />
                         <input type="hidden" name="schemaId" value="${schemaId}" />
                     </logic:equal>
                     <logic:equal value="true"  name="qascript.permissions" property="ssdPrm" >
-                           <input type="button"  class="button" value="<bean:message key="label.qascript.activate"/>" onclick="return submitAction(2,'activateQAScript');" />
+                           <input type="button"  class="button" value="<spring:message code="label.qascript.activate"/>" onclick="return submitAction(2,'activateQAScript');" />
                         <input type="hidden" name="schemaId" value="${schemaId}" />
                     </logic:equal>
                     <logic:equal value="true"  name="qascript.permissions" property="ssdPrm" >
-                           <input type="button"  class="button" value="<bean:message key="label.qascript.deactivate"/>" onclick="return submitAction(2,'deactivateQAScript');" />
+                           <input type="button"  class="button" value="<spring:message code="label.qascript.deactivate"/>" onclick="return submitAction(2,'deactivateQAScript');" />
                         <input type="hidden" name="schemaId" value="${schemaId}" />
                     </logic:equal>
                 </div>
@@ -212,7 +214,7 @@
             </logic:present>
             <logic:notPresent name="schema" scope="page" property="qascripts" >
                 <div class="advice-msg">
-                    <bean:message key="label.schema.noQAScripts"/>
+                    <spring:message code="label.schema.noQAScripts"/>
                 </div>
             </logic:notPresent>
     </logic:iterate>

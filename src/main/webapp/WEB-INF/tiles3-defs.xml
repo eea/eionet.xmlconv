@@ -54,6 +54,8 @@
     <definition name="basexServer" template="/WEB-INF/view/old/config/BasexServer.jsp" />
     <definition name="hosts" template="/WEB-INF/view/old/hosts/HostsList.jsp" />
     <definition name="hostDetails" template="/WEB-INF/view/old/hosts/HostDetails.jsp" />
+    <definition name="workqueue" template="/WEB-INF/view/old/workqueue.jsp" />
+
 
     <definition name="base" template="/WEB-INF/view/old/layout.jsp">
         <put-attribute name="title" value="label.gdem.title" />
@@ -220,6 +222,11 @@
     <definition name="/qaSandboxResult.jsp" extends="base">
         <put-attribute name="title" value="label.qasandboxresult.title" />
         <put-attribute name="body" type="definition" value="qaSandboxResult" />
+    </definition>
+
+    <definition name="/workqueue.jsp" extends="base">
+        <put-attribute name="title" value="label.qasandboxresult.title" />
+        <put-attribute name="body" type="definition" value="workqueue" />
     </definition>
 
 </tiles-definitions>

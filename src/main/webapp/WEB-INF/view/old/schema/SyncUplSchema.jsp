@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*"%>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
@@ -9,7 +9,7 @@
 
 
     <h1 class="documentFirstHeading">
-        <bean:message key="label.syncuplschema.title"/>
+        <spring:message code="label.syncuplschema.title"/>
     </h1>
 
     <%-- include Error display --%>
@@ -23,10 +23,10 @@
     <div>
        <logic:present name="user">
         <html:submit styleClass="button" property="action">
-            <bean:message key="label.uplSchema.updatecopy"/>
+            <spring:message code="label.uplSchema.updatecopy"/>
         </html:submit>
         <html:cancel styleClass="button">
-            <bean:message key="label.stylesheet.cancel"/>
+            <spring:message code="label.stylesheet.cancel"/>
         </html:cancel>
       </logic:present>
     </div>

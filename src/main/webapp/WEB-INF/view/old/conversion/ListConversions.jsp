@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties"%>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%--<%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>--%>
@@ -13,7 +13,7 @@
         </tiles:insertDefinition>
 
         <ed:breadcrumbs-push label="Convert XML" level="1" />
-        <h1><bean:message key="label.conversion.find"/></h1>
+        <h1><spring:message code="label.conversion.find"/></h1>
 
         <%-- include Error display --%>
         <tiles:insertDefinition name="Error" />
@@ -23,12 +23,12 @@
             <table class="datatable">
                 <tr>
                  <th scope="col" class="scope-col">
-                    <bean:message key="label.conversion.url"/>
+                    <spring:message code="label.conversion.url"/>
                   </th>
                  </tr>
                 <tr>
                   <td>
-                    <bean:message key="label.conversion.insertURL"/>
+                    <spring:message code="label.conversion.insertURL"/>
                   </td>
                 </tr>
                  <tr>
@@ -39,12 +39,12 @@
                 <logic:equal name="ConversionForm" property="showSchemaSelection" value="true">
                 <tr>
                  <th scope="col" class="scope-col">
-                    <bean:message key="label.conversion.xmlSchema"/>
+                    <spring:message code="label.conversion.xmlSchema"/>
                   </th>
                 </tr>
                 <tr>
                     <td>
-                        <bean:message key="label.conversion.selectSchema"/>
+                        <spring:message code="label.conversion.selectSchema"/>
                   </td>
                 </tr>
                 <tr>
@@ -60,7 +60,7 @@
                 <tr>
                   <td align="center">
                     <html:submit styleClass="button" property="searchAction">
-                        <bean:message key="label.conversion.list"/>
+                        <spring:message code="label.conversion.list"/>
                     </html:submit>
                   </td>
                 </tr>
@@ -69,7 +69,7 @@
                 <table class="datatable">
                  <tr>
                  <th scope="col" class="scope-col">
-                    <bean:message key="label.conversion.selectConversion"/>
+                    <spring:message code="label.conversion.selectConversion"/>
                   </th>
                 </tr>
                 <logic:notEmpty name="ConversionForm" property="schemas">
@@ -99,7 +99,7 @@
                 <tr>
                   <td align="center">
                     <html:submit styleClass="button" property="convertAction">
-                        <bean:message key="label.conversion.convert"/>
+                        <spring:message code="label.conversion.convert"/>
                     </html:submit>
                   </td>
                 </tr>
@@ -107,7 +107,7 @@
                 <logic:empty name="ConversionForm" property="schemas">
                     <tr>
                         <td>
-                            <bean:message key="label.conversion.noconversion"/>
+                            <spring:message code="label.conversion.noconversion"/>
                         </td>
                     </tr>
                 </logic:empty>

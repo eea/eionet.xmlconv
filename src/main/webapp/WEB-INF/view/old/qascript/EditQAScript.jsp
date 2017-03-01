@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties"%>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
@@ -11,17 +11,18 @@
     <div id="tabbedmenu">
         <ul>
 
-            <li id="currenttab"><span style="color: black; text-decoration: none;" title='<bean:message key="label.config.system"/>'><bean:message key="label.qascript.tab.title" /></span></li>
+            <li id="currenttab"><span style="color: black; text-decoration: none;" title='<spring:message code="label.config.system"/>'><spring:message code="label.qascript.tab.title" /></span></li>
             <li>
-                <html:link page="/do/qaScriptHistory"  paramId="script_id" paramName="QAScriptForm" paramProperty="scriptId"  titleKey="label.qascript.history"    style="color: black; text-decoration: none;">
-                    <bean:message key="label.qascript.history" />
-                </html:link>
+              <%--paramId="script_id" paramName="QAScriptForm" paramProperty="scriptId"  titleKey="label.qascript.history" --%>
+                <a href="/old/qaScripts/${QAScriptForm.scriptId}/history"style="color: black; text-decoration: none;">
+                    <spring:message code="label.qascript.history" />
+                </a>
             </li>
         </ul>
     </div>
         <ed:breadcrumbs-push label="Edit QA script" level="3" />
 
-        <h1><bean:message key="label.qascript.edit"/></h1>
+        <h1><spring:message code="label.qascript.edit"/></h1>
 
         <%-- include Error display --%>
         <tiles:insertDefinition name="Error" />
@@ -33,7 +34,7 @@
             <tr class="zebraeven">
                 <td>
                     <label class="question">
-                        <bean:message key="label.qascript.schema"/>
+                        <spring:message code="label.qascript.schema"/>
                     </label>
                 </td>
                   <td>
@@ -43,7 +44,7 @@
             <tr>
                 <td>
                     <label class="question" for="txtShortName">
-                        <bean:message key="label.qascript.shortname"/>
+                        <spring:message code="label.qascript.shortname"/>
                     </label>
                 </td>
               <td>
@@ -53,7 +54,7 @@
             <tr class="zebraeven">
                 <td>
                     <label class="question" for="txtDescription">
-                          <bean:message key="label.qascript.description"/>
+                          <spring:message code="label.qascript.description"/>
                       </label>
                 </td>
               <td>
@@ -63,7 +64,7 @@
             <tr>
                 <td>
                     <label class="question" for="selContentType">
-                          <bean:message key="label.qascript.resulttype"/>
+                          <spring:message code="label.qascript.resulttype"/>
                       </label>
                 </td>
                 <td>
@@ -75,7 +76,7 @@
             <tr class="zebraeven">
                 <td>
                     <label class="question" for="selScriptType">
-                        <bean:message key="label.qascript.scripttype"/>
+                        <spring:message code="label.qascript.scripttype"/>
                     </label>
                 </td>
                 <td>
@@ -88,7 +89,7 @@
             <tr>
                 <td>
                     <label class="question" for="txtUpperLimit">
-                          <bean:message key="label.qascript.upperlimit"/>
+                          <spring:message code="label.qascript.upperlimit"/>
                       </label>
                 </td>
                 <td>
@@ -99,7 +100,7 @@
             <tr class="zebraeven">
                 <td>
                     <label class="question" for="txtFile">
-                        <bean:message key="label.qascript.fileName"/>
+                        <spring:message code="label.qascript.fileName"/>
                      </label>
                 </td>
               <td>
@@ -108,12 +109,12 @@
                     <a  href="<bean:write name="webRoot"/>/<bean:write property="filePath" name="QAScriptForm"/>" title="<bean:write property="filePath" name="QAScriptForm"/>">
                         <bean:write property="fileName" name="QAScriptForm"/>
                     </a>
-                      &#160;&#160;&#160;&#160;&#160;&#160;(<bean:message key="label.lastmodified"/>:
+                      &#160;&#160;&#160;&#160;&#160;&#160;(<spring:message code="label.lastmodified"/>:
                       <logic:present name="QAScriptForm" property="modified">
                           <bean:write property="modified" name="QAScriptForm"/>
                       </logic:present>
                       <logic:notPresent name="QAScriptForm" property="modified">
-                          <span style="color:red"><bean:message key="label.fileNotFound"/></span>
+                          <span style="color:red"><spring:message code="label.fileNotFound"/></span>
                       </logic:notPresent>
                       )
                     </logic:notEqual>
@@ -130,7 +131,7 @@
                     <td>&#160;</td>
                   <td>
                     <html:submit styleClass="button" property="action">
-                        <bean:message key="label.qascript.upload"/>
+                        <spring:message code="label.qascript.upload"/>
                     </html:submit>
                     <html:file property="scriptFile" style="width:400px" size="64" />
                   </td>
@@ -140,7 +141,7 @@
             <tr>
                 <td>
                     <label class="question" for="txtUrl">
-                        <bean:message key="label.qascript.url"/>
+                        <spring:message code="label.qascript.url"/>
                      </label>
                 </td>
                 <td>
@@ -151,7 +152,7 @@
             <tr class="zebraeven">
                 <td>
                     <label class="question" for="isActive">
-                        <bean:message key="label.qascript.isActive"/>
+                        <spring:message code="label.qascript.isActive"/>
                     </label>
                 </td>
                 <td>
@@ -165,7 +166,7 @@
                     <td></td>
                     <td>
                         <logic:notEmpty  name="QAScriptForm" property="fileName">
-                            <input type="button"  class="button" value="<bean:message key="label.qascript.checkupdates"/>" onclick="return submitAction(1,'diffUplScripts');" />
+                            <input type="button"  class="button" value="<spring:message code="label.qascript.checkupdates"/>" onclick="return submitAction(1,'diffUplScripts');" />
                         </logic:notEmpty>
                     </td>
                 </tr>
@@ -176,7 +177,7 @@
                     <tr>
                           <td colspan="2">
                            <label class="question" for="txtUrl">
-                                <bean:message key="label.qascript.source"/>
+                                <spring:message code="label.qascript.source"/>
                             </label>
                             <html:textarea property="scriptContent" style="width: 98%;" rows="20" cols="55" styleId="txtFile"/>
                           </td>
@@ -186,7 +187,7 @@
                     <td>&#160;</td>
                       <td>
                         <html:submit styleClass="button" property="action">
-                            <bean:message key="label.qascript.save"/>
+                            <spring:message code="label.qascript.save"/>
                         </html:submit>
                         <html:hidden property="fileName" />
                         <html:hidden property="checksum" name="QAScriptForm" />

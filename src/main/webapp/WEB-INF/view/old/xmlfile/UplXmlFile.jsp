@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*"%>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
@@ -13,13 +13,13 @@
     <logic:equal name="xmlfiles.uploaded" value="true"  property="ssiPrm" >
         <div id="operations">
           <ul>
-              <li><a href="addUplXmlFileForm"><bean:message key="label.uplXmlFile.add" /></a></li>
+              <li><a href="addUplXmlFileForm"><spring:message code="label.uplXmlFile.add" /></a></li>
             </ul>
         </div>
     </logic:equal>
 
     <h1 class="documentFirstHeading">
-        <bean:message key="label.xmlfiles.uploaded"/>
+        <spring:message code="label.xmlfiles.uploaded"/>
     </h1>
 
     <%-- include Error display --%>
@@ -47,9 +47,9 @@
                         <logic:equal value="true"  name="xmlfiles.uploaded" property="ssuPrm" >
                             <th scope="col">&#160;</th>
                         </logic:equal>
-                        <th scope="col"><span title="XML File"><bean:message key="label.table.uplXmlFile.xmlfile"/></span></th>
-                        <th scope="col"><span title="Title"><bean:message key="label.table.uplXmlFile.title"/></span></th>
-                        <th scope="col"><span title="Last Modified"><bean:message key="label.lastmodified"/></span></th>
+                        <th scope="col"><span title="XML File"><spring:message code="label.table.uplXmlFile.xmlfile"/></span></th>
+                        <th scope="col"><span title="Title"><spring:message code="label.table.uplXmlFile.title"/></span></th>
+                        <th scope="col"><span title="Last Modified"><spring:message code="label.lastmodified"/></span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -64,7 +64,7 @@
                             <logic:equal value="true"  name="xmlfiles.uploaded" property="ssuPrm" >
                                 <td align="center" >
                                     <a href="editUplXmlFileForm?xmlfileId=<bean:write name="xmlfile" property="id" />">
-                                        <img src="<bean:write name="webRoot"/>/images/edit.gif" alt="<bean:message key="label.edit" />" title="edit XML file" /></a>
+                                        <img src="<bean:write name="webRoot"/>/images/edit.gif" alt="<spring:message code="label.edit" />" title="edit XML file" /></a>
                                 </td>
                             </logic:equal>
                             <td>
@@ -80,7 +80,7 @@
                                     <bean:write name="xmlfile" property="lastModified" />
                                 </logic:notEqual>
                                 <logic:equal value=""  name="xmlfile" property="lastModified" >
-                                    <span style="color:red"><bean:message key="label.fileNotFound"/></span>
+                                    <span style="color:red"><spring:message code="label.fileNotFound"/></span>
                                 </logic:equal>
                             </td>
                         </tr>
@@ -93,7 +93,7 @@
             </table>
             <div class="boxbottombuttons">
                 <logic:equal value="true"  name="xmlfiles.uploaded" property="ssdPrm" >
-                    <input type="button"  class="button" value="<bean:message key="label.delete"/>" onclick="return submitAction(1,'deleteUplXmlFile');" />
+                    <input type="button"  class="button" value="<spring:message code="label.delete"/>" onclick="return submitAction(1,'deleteUplXmlFile');" />
                     <input type="button"  class="button" value="Rename" onclick="return submitAction(1,'renameUplXmlFileForm');" />
                 </logic:equal>
             </div>
@@ -101,7 +101,7 @@
     </logic:present>
     <logic:notPresent name="xmlfiles.uploaded" property="xmlfiles" >
         <div class="advice-msg">
-            <bean:message key="label.uplXmlFile.noXmlFiles"/>
+            <spring:message code="label.uplXmlFile.noXmlFiles"/>
         </div>
     </logic:notPresent>
     <div class="visualClear">&nbsp;</div>

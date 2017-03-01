@@ -20,16 +20,16 @@
                 <div id="tabbedmenu">
                     <ul>
                         <li>
-                            <html:link page="/do/viewSchemaForm?schemaId=${id}"   titleKey="label.tab.title.schema" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
-                                <bean:message key="label.tab.title.schema" />
+                            <html:link page="/old/schemas/${id}" titleKey="label.tab.title.schema" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                                <spring:message code="label.tab.title.schema" />
                             </html:link>
                         </li>
                         <li id="currenttab">
-                            <span style="color: black; text-decoration: none;" title='<bean:message key="label.tab.title.xsl"/>'><bean:message key="label.tab.title.xsl" /></span>
+                            <span style="color: black; text-decoration: none;" title='<spring:message code="label.tab.title.xsl"/>'><spring:message code="label.tab.title.xsl" /></span>
                         </li>
                         <li>
-                            <html:link page="/do/schemaQAScripts?schemaId=${id}"   titleKey="label.tab.title.scripts" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
-                                <bean:message key="label.tab.title.scripts" />
+                            <html:link page="/old/schemas/${id}/qaScripts" titleKey="label.tab.title.scripts" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                                <spring:message code="label.tab.title.scripts" />
                             </html:link>
                         </li>
                     </ul>
@@ -37,13 +37,13 @@
                 <logic:equal value="true"  name="stylesheet.permissions" property="ssiPrm" >
                     <div id="operations">
                           <ul>
-                               <li><a href="addStylesheetForm?schema=<bean:write name="schema" property="schema" />"><bean:message key="label.stylesheet.add" /></a></li>
+                               <li><a href="addStylesheetForm?schema=<bean:write name="schema" property="schema" />"><spring:message code="label.stylesheet.add" /></a></li>
                         </ul>
                     </div>
                 </logic:equal>
             </logic:equal>
             <h1 class="documentFirstHeading">
-                <bean:message key="label.schema.stylesheets"/>&nbsp;<bean:write name="schema" property="schema" />
+                <spring:message code="label.schema.stylesheets"/>&nbsp;<bean:write name="schema" property="schema" />
             </h1>
 
     </logic:iterate>
@@ -70,10 +70,10 @@
                                       <th scope="col">&#160;</th>
                                 </logic:equal>
                                   <th scope="col">&#160;</th>
-                                <th scope="col"><bean:message key="label.table.stylesheet.type"/></th>
-                                <th scope="col"><bean:message key="label.table.stylesheet.description"/></th>
-                                <th scope="col"><bean:message key="label.table.stylesheet.stylesheet"/></th>
-                                <th scope="col"><bean:message key="label.table.stylesheet.modified"/></th>
+                                <th scope="col"><spring:message code="label.table.stylesheet.type"/></th>
+                                <th scope="col"><spring:message code="label.table.stylesheet.description"/></th>
+                                <th scope="col"><spring:message code="label.table.stylesheet.stylesheet"/></th>
+                                <th scope="col"><spring:message code="label.table.stylesheet.modified"/></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -122,7 +122,7 @@
                                                         <bean:write name="stylesheet" property="modified" />
                                             </logic:notEqual>
                                             <logic:equal value=""  name="stylesheet" property="modified" >
-                                                <span style="color:red"><bean:message key="label.fileNotFound"/></span>
+                                                <span style="color:red"><spring:message code="label.fileNotFound"/></span>
                                             </logic:equal>
                                         </logic:equal>
                                     </td>
@@ -136,7 +136,7 @@
                     </table>
                     <div class="boxbottombuttons">
                         <logic:equal value="true"  name="stylesheet.permissions" property="ssdPrm" >
-                               <input type="button"  class="button" value="<bean:message key="label.stylesheet.delete"/>" onclick="return submitAction(1,'deleteStylesheet');" />
+                               <input type="button"  class="button" value="<spring:message code="label.stylesheet.delete"/>" onclick="return submitAction(1,'deleteStylesheet');" />
                         </logic:equal>
 
                         <input type="hidden" name="schemaUrl" value="${schemaUrl}" />
@@ -144,7 +144,7 @@
             </logic:present>
             <logic:notPresent name="schema" scope="page" property="stylesheets" >
                 <div class="advice-msg">
-                    <bean:message key="label.schema.noStylesheets"/>
+                    <spring:message code="label.schema.noStylesheets"/>
                 </div>
             </logic:notPresent>
     </logic:iterate>

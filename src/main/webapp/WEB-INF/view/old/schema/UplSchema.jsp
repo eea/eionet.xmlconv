@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Constants"%>
 <%@ taglib uri="/WEB-INF/tlds/c.tld" prefix="c" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
@@ -15,13 +15,13 @@
     <logic:equal value="true" name="schemas.uploaded" property="ssiPrm" >
         <div id="operations">
           <ul>
-           <li><a href="/old/schemas/add"><bean:message key="label.uplSchema.add" /></a></li>
+           <li><a href="/old/schemas/add"><spring:message code="label.uplSchema.add" /></a></li>
             </ul>
         </div>
     </logic:equal>
 
     <h1 class="documentFirstHeading">
-        <bean:message key="label.schemas.uploaded"/>
+        <spring:message code="label.schemas.uploaded"/>
     </h1>
 
     <%-- include Error display --%>
@@ -44,8 +44,8 @@
                         <logic:equal value="true" name="schemas.uploaded" property="ssdPrm" >
                             <th scope="col"></th>
                         </logic:equal>
-                        <th scope="col"><span title="Schema"><bean:message key="label.table.uplSchema.schema"/></span></th>
-                        <th scope="col"><span title="Description"><bean:message key="label.table.uplSchema.description"/></span></th>
+                        <th scope="col"><span title="Schema"><spring:message code="label.table.uplSchema.schema"/></span></th>
+                        <th scope="col"><span title="Description"><spring:message code="label.table.uplSchema.description"/></span></th>
                         <th scope="col" title="Uploaded schemas">XSD</th>
                         <th scope="col" title="Stylesheets">XSL</th>
                         <th scope="col" title="QA scripts">QA</th>
@@ -61,7 +61,7 @@
                                 </td>
                             </logic:equal>
                             <td>
-                                <a href="viewSchemaForm?schemaId=<bean:write name="schema" property="id" />" title="view XML Schema properties">
+                                <a href="/old/schemas/${schema.id}" title="view XML Schema properties">
                                     <bean:write name="schema" property="schema"  />
                                 </a>
                             </td>
@@ -93,7 +93,7 @@
             </table>
             <logic:equal value="true" name="schemas.uploaded" property="ssdPrm" >
                 <div class="boxbottombuttons">
-                    <input type="button"  class="button" value="<bean:message key="label.schema.delete"/>" onclick="return submitAction(1,'deleteUplSchema?deleteSchema=true');" />
+                    <input type="button"  class="button" value="<spring:message code="label.schema.delete"/>" onclick="return submitAction(1,'deleteUplSchema?deleteSchema=true');" />
                 </div>
             </logic:equal>
         </html:form>
@@ -101,7 +101,7 @@
 
     <logic:notPresent name="schemas.uploaded" property="schemas" >
         <div class="advice-msg">
-            <bean:message key="label.uplSchema.noSchemas"/>
+            <spring:message code="label.uplSchema.noSchemas"/>
         </div>
     </logic:notPresent>
     <div class="visualClear">&nbsp;</div>

@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8"%>
 <%@ taglib uri="/WEB-INF/tlds/c.tld" prefix="c" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
         <script type="text/javascript">
             //<![CDATA[
@@ -77,7 +77,7 @@
 <script>
     $("#stylesheetForm").validate({
         messages: {
-            newSchemas: "<bean:message key='label.stylesheet.warning.noturl'/>"
+            newSchemas: "<spring:message code='label.stylesheet.warning.noturl'/>"
         },
         invalidHandler: function() {
             $("#stylesheetForm")[0].submit();

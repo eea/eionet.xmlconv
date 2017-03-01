@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*"%>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
@@ -19,7 +19,7 @@
                 <tr class="zebraeven">
                     <td>
                         <label class="question">
-                        <bean:message key="label.uplXmlFile.xmlfile"/>
+                        <spring:message code="label.uplXmlFile.xmlfile"/>
                     </label>
                   </td>
                   <td>
@@ -36,10 +36,10 @@
                   <td>&nbsp;</td>
                   <td>
                     <html:submit styleClass="button">
-                        <bean:message key="label.ok"/>
+                        <spring:message code="label.ok"/>
                     </html:submit>
                     <html:cancel styleClass="button">
-                        <bean:message key="label.cancel"/>
+                        <spring:message code="label.cancel"/>
                     </html:cancel>
                   </td>
                 </tr>

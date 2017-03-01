@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*"%>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
@@ -7,7 +7,7 @@
 
 <html:xhtml/>
         <ed:breadcrumbs-push label="Edit XML File" level="2" />
-        <h1><bean:message key="label.title.uplXmlFile.edit"/></h1>
+        <h1><spring:message code="label.title.uplXmlFile.edit"/></h1>
 
         <%-- include Error display --%>
         <tiles:insertDefinition name="Error" />
@@ -19,19 +19,19 @@
                 <tr class="zebraeven">
                     <td>
                         <label class="question">
-                        <bean:message key="label.uplXmlFile.xmlfile"/>
+                        <spring:message code="label.uplXmlFile.xmlfile"/>
                     </label>
                   </td>
                   <td>
                         <a  href="<bean:write name="EditUplXmlFileForm" property="xmlFilePath" /><bean:write name="EditUplXmlFileForm" property="xmlFileName" />" title="<bean:write name="EditUplXmlFileForm" property="xmlFileName" />">
                             <bean:write name="EditUplXmlFileForm" property="xmlFileName" />
                         </a>&#160;&#160;
-                        (<bean:message key="label.lastmodified"/>:
+                        (<spring:message code="label.lastmodified"/>:
                         <logic:present name="EditUplXmlFileForm" property="lastModified">
                             <bean:write property="lastModified" name="EditUplXmlFileForm"/>
                         </logic:present>
                         <logic:equal value=""  name="EditUplXmlFileForm" property="lastModified" >
-                            <span style="color:red"><bean:message key="label.fileNotFound"/></span>
+                            <span style="color:red"><spring:message code="label.fileNotFound"/></span>
                         </logic:equal>
                         )
                         <html:hidden  property="xmlfileId" />
@@ -48,7 +48,7 @@
                 <tr>
                     <td>
                         <label class="question" for="txtTitle">
-                        <bean:message key="label.uplXmlFile.title"/>
+                        <spring:message code="label.uplXmlFile.title"/>
                     </label>
                   </td>
                   <td>
@@ -62,10 +62,10 @@
                   <td>&nbsp;</td>
                   <td>
                     <html:submit styleClass="button">
-                        <bean:message key="label.ok"/>
+                        <spring:message code="label.ok"/>
                     </html:submit>
                     <html:cancel styleClass="button">
-                        <bean:message key="label.cancel"/>
+                        <spring:message code="label.cancel"/>
                     </html:cancel>
                   </td>
                 </tr>

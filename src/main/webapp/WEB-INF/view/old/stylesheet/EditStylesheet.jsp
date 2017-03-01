@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties"%>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
@@ -9,7 +9,7 @@
 <html:xhtml/>
 
         <ed:breadcrumbs-push label="Edit Stylesheet" level="3" />
-        <h1><bean:message key="label.stylesheet.edit"/></h1>
+        <h1><spring:message code="label.stylesheet.edit"/></h1>
 
         <%-- include Error display --%>
         <tiles:insertDefinition name="Error" />
@@ -21,7 +21,7 @@
             <tr>
                 <th scope="row" class="scope-row">
                     <label class="question">
-                        <bean:message key="label.stylesheet.schema"/>
+                        <spring:message code="label.stylesheet.schema"/>
                     </label>
                 </th>
                 <td>
@@ -50,7 +50,7 @@
             <tr>
                 <td>
                     <label class="question" for="selDDSchema">
-                        <bean:message key="label.stylesheet.selectDDSchema"/>
+                        <spring:message code="label.stylesheet.selectDDSchema"/>
                     </label>
               </td>
               <td>
@@ -76,7 +76,7 @@
             <tr>
                 <th scope="row" class="scope-row">
                     <label class="question" for="selOutputType">
-                        <bean:message key="label.stylesheet.outputtype"/>
+                        <spring:message code="label.stylesheet.outputtype"/>
                     </label>
                 </th>
                 <td>
@@ -104,7 +104,7 @@
                 <tr>
                     <th scope="row" class="scope-row">
                         <label class="question" for="selDependsOn">
-                            <bean:message key="label.stylesheet.dependsOn"/>
+                            <spring:message code="label.stylesheet.dependsOn"/>
                         </label>
                     </th>
                     <td>
@@ -138,7 +138,7 @@
             <tr>
                 <th scope="row" class="scope-row">
                     <label class="question" for="txtDescription">
-                          <bean:message key="label.stylesheet.description"/>
+                          <spring:message code="label.stylesheet.description"/>
                       </label>
                 </th>
               <td>
@@ -149,25 +149,25 @@
             <tr>
                 <th scope="row" class="scope-row">
                     <label class="question" for="txtXsl">
-                        <bean:message key="label.stylesheet.xslfile"/>
+                        <spring:message code="label.stylesheet.xslfile"/>
                      </label>
                 </th>
               <td>
                     <a  href="<bean:write name="webRoot"/>/<bean:write property="xsl" name="stylesheetForm"/>" title="<bean:write property="xsl" name="stylesheetForm"/>" class="link-xsl">
                                 <bean:write property="xslFileName" name="stylesheetForm"/>
                     </a>
-                    <span style="margin-left:10px">(<bean:message key="label.lastmodified"/>:
+                    <span style="margin-left:10px">(<spring:message code="label.lastmodified"/>:
                     <logic:present name="stylesheetForm" property="modified">
                         <bean:write property="modified" name="stylesheetForm"/>
                     </logic:present>
                     <logic:notPresent name="stylesheetForm" property="modified">
-                        <span style="color:red"><bean:message key="label.fileNotFound"/></span>
+                        <span style="color:red"><spring:message code="label.fileNotFound"/></span>
                     </logic:notPresent>
                     )</span>
                     <div>
                         <html:file property="xslfile" size="68" />
                         <html:submit styleClass="button" property="action">
-                            <bean:message key="label.stylesheet.upload"/>
+                            <spring:message code="label.stylesheet.upload"/>
                         </html:submit>
                     </div>
               </td>
@@ -182,7 +182,7 @@
                     <td>&#160;</td>
                       <td>
                         <html:submit styleClass="button" property="action">
-                            <bean:message key="label.stylesheet.save"/>
+                            <spring:message code="label.stylesheet.save"/>
                         </html:submit>
                         <html:hidden property="xslFileName" />
                         <html:hidden property="checksum" name="stylesheetForm" />

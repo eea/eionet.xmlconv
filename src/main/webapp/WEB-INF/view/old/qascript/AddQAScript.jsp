@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties"%>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
@@ -9,7 +9,7 @@
 
         <ed:breadcrumbs-push label="Add QA script" level="3" />
 
-        <h1><bean:message key="label.qascript.add"/></h1>
+        <h1><spring:message code="label.qascript.add"/></h1>
 
         <%-- include Error display --%>
         <tiles:insertDefinition name="Error" />
@@ -20,7 +20,7 @@
             <tr class="zebraeven">
                     <td>
                         <label class="question required" for="txtSchemaUrl">
-                            <bean:message key="label.qascript.schema"/>
+                            <spring:message code="label.qascript.schema"/>
                         </label>
                     </td>
                       <td>
@@ -30,7 +30,7 @@
             <tr>
                 <td>
                     <label class="question" for="txtShortName">
-                        <bean:message key="label.qascript.shortname"/>
+                        <spring:message code="label.qascript.shortname"/>
                     </label>
                 </td>
               <td>
@@ -40,7 +40,7 @@
             <tr class="zebraeven">
                 <td>
                     <label class="question" for="txtDescription">
-                          <bean:message key="label.qascript.description"/>
+                          <spring:message code="label.qascript.description"/>
                       </label>
                 </td>
               <td>
@@ -50,7 +50,7 @@
             <tr>
                 <td>
                     <label class="question" for="selContentType">
-                          <bean:message key="label.qascript.resulttype"/>
+                          <spring:message code="label.qascript.resulttype"/>
                       </label>
                 </td>
                 <td>
@@ -62,7 +62,7 @@
             <tr class="zebraeven">
                 <td>
                     <label class="question" for="selScriptType">
-                          <bean:message key="label.qascript.scripttype"/>
+                          <spring:message code="label.qascript.scripttype"/>
                       </label>
                 </td>
                 <td>
@@ -74,7 +74,7 @@
             <tr>
                 <td>
                     <label class="question required" for="txtUpperLimit">
-                          <bean:message key="label.qascript.upperlimit"/>
+                          <spring:message code="label.qascript.upperlimit"/>
                       </label>
                 </td>
                 <td>
@@ -85,7 +85,7 @@
             <tr class="zebraeven">
               <td>
                 <label class="question required">
-                    <bean:message key="label.qascript.tab.title"/>
+                    <spring:message code="label.qascript.tab.title"/>
                  </label>
                  <div style="font-size:75%"><i>Enter file or URL</i></div>
               </td>
@@ -103,7 +103,7 @@
                       <tr class="zebraeven">
                         <td>
                             <label class="question" for="txtFile">
-                                <bean:message key="label.qascript.fileName"/>
+                                <spring:message code="label.qascript.fileName"/>
                             </label>
                         </td>
                         <td>
@@ -113,7 +113,7 @@
                      <tr class="zebraeven">
                         <td>
                             <label class="question" for="txtUrl">
-                                <bean:message key="label.qascript.url"/>
+                                <spring:message code="label.qascript.url"/>
                             </label>
                         </td>
                         <td>
@@ -128,7 +128,7 @@
                 <td>&#160;</td>
               <td>
                 <html:submit styleClass="button" property="action">
-                    <bean:message key="label.save"/>
+                    <spring:message code="label.save"/>
                 </html:submit>
               </td>
             </tr>

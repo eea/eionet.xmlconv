@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
@@ -10,7 +10,7 @@
     <div style="width:100%;">
 
         <ed:breadcrumbs-push label="QA sandbox result" level="2" />
-        <h1><bean:message key="label.qasandboxresult.title"/></h1>
+        <h1><spring:message code="label.qasandboxresult.title"/></h1>
 
         <%-- include Error display --%>
         <tiles:insertDefinition name="Error" />
@@ -22,7 +22,7 @@
         <br/>
         <html:form action="/qaSandboxForm?reset=false" method="post">
             <html:submit styleClass="button" property="action" >
-                <bean:message key="label.qasandboxresult.back"/>
+                <spring:message code="label.qasandboxresult.back"/>
             </html:submit>
         </html:form>
 

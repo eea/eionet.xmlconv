@@ -14,7 +14,7 @@
 
     <ed:breadcrumbs-push label="Json to Xml" level="1" />
     <h1>
-        <bean:message key="label.conversion.json2xml.title" />
+        <spring:message code="label.conversion.json2xml.title" />
     </h1>
 
     <%-- include Error display --%>
@@ -23,7 +23,7 @@
     <form action="convertJson2Xml" method="get" id="json2XmlForm">
         <div>
             <label for="param">
-                <bean:message key="label.conversion.json2xml.source" />
+                <spring:message code="label.conversion.json2xml.source" />
             </label>
             <textarea name="json" id="param" rows="10" cols="100"></textarea>
             <input type="submit" class="button" value="Convert" />

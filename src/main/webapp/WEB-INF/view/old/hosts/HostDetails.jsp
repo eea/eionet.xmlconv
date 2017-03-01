@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -15,10 +15,10 @@
         <ed:breadcrumbs-push label="Host details" level="2" />
         <h1 class="documentFirstHeading">
             <logic:empty name="HostForm" property="id">
-                <bean:message key="label.hosts.add_title"/>
+                <spring:message code="label.hosts.add_title"/>
             </logic:empty>
             <logic:notEmpty name="HostForm" property="id">
-                <bean:message key="label.hosts.edit"/>
+                <spring:message code="label.hosts.edit"/>
             </logic:notEmpty>
         </h1>
 
@@ -32,7 +32,7 @@
                 <tr class="zebraeven">
                         <td>
                             <label class="question required" for="txtHost">
-                                <bean:message key="label.hosts.host"/>
+                                <spring:message code="label.hosts.host"/>
                             </label>
                         </td>
                         <td align="left">
@@ -42,7 +42,7 @@
                     <tr>
                         <td>
                             <label class="question required" for="txtUsername">
-                                <bean:message key="label.hosts.username"/>
+                                <spring:message code="label.hosts.username"/>
                             </label>
                         </td>
                         <td align="left">
@@ -52,7 +52,7 @@
                 <tr class="zebraeven">
                         <td>
                             <label class="question" for="txtPassword">
-                                <bean:message key="label.hosts.password"/>
+                                <spring:message code="label.hosts.password"/>
                             </label>
                         </td>
                         <td align="left">
@@ -65,7 +65,7 @@
                         <td>
                             <html:submit styleClass="button">Save</html:submit>
                             <html:cancel styleClass="button">
-                                <bean:message key="label.cancel"/>
+                                <spring:message code="label.cancel"/>
                             </html:cancel>
                         </td>
                     </tr>

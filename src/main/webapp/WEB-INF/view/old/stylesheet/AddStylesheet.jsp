@@ -9,7 +9,7 @@
 
 <html:xhtml/>
         <ed:breadcrumbs-push label="Add Stylesheet" level="3" />
-        <h1><bean:message key="label.stylesheet.add"/></h1>
+        <h1><spring:message code="label.stylesheet.add"/></h1>
 
         <%-- include Error display --%>
         <tiles:insertDefinition name="Error" />
@@ -21,7 +21,7 @@
                 <tr>
                     <th scope="row" class="scope-row">
                         <label class="question" for="txtSchemaUrl">
-                            <bean:message key="label.stylesheet.schema"/>
+                            <spring:message code="label.stylesheet.schema"/>
                         </label>
                     </th>
                     <td>
@@ -42,7 +42,7 @@
                     <tr>
                         <th scope="row" class="scope-row">
                             <label class="question" for="selOutputType">
-                                <bean:message key="label.stylesheet.outputtype"/>
+                                <spring:message code="label.stylesheet.outputtype"/>
                             </label>
                         </th>
                         <td>
@@ -64,7 +64,7 @@
                         <tr>
                             <th scope="row" class="scope-row">
                                 <label class="question" for="chkDepends">
-                                    <bean:message key="label.stylesheet.dependsOn"/>
+                                    <spring:message code="label.stylesheet.dependsOn"/>
                                 </label>
                             </th>
                             <td>
@@ -83,7 +83,7 @@
                     <tr>
                         <th scope="row" class="scope-row">
                             <label class="question" for="txtDescription">
-                                <bean:message key="label.stylesheet.description"/>
+                                <spring:message code="label.stylesheet.description"/>
                             </label>
                         </th>
                         <td>
@@ -93,7 +93,7 @@
                     <tr>
                         <th scope="row" class="scope-row">
                             <label class="question" for="fileXsl">
-                                <bean:message key="label.stylesheet.xslfile"/>
+                                <spring:message code="label.stylesheet.xslfile"/>
                             </label>
                         </th>
                         <td>
@@ -104,10 +104,10 @@
                         <td>&#160;</td>
                         <td>
                             <html:submit styleClass="button">
-                                <bean:message key="label.xsl.save"/>
+                                <spring:message code="label.xsl.save"/>
                             </html:submit>
                             <html:cancel styleClass="button">
-                                <bean:message key="label.stylesheet.cancel"/>
+                                <spring:message code="label.stylesheet.cancel"/>
                             </html:cancel>
                         </td>
                     </tr>

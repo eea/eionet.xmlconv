@@ -2,6 +2,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed"%>
 
@@ -17,44 +18,44 @@
 
         <ul>
             <li id="currenttab">
-                <span style="color: black; text-decoration: none;" title='<bean:message key="label.tab.title.schema"/>'><bean:message key="label.tab.title.schema" /></span>
+                <span style="color: black; text-decoration: none;" title='<spring:message code="label.tab.title.schema"/>'><spring:message code="label.tab.title.schema" /></span>
             </li>
             <li>
-                <html:link page="/do/schemaStylesheets?schema=${schemaURL}"   titleKey="label.tab.title.xsl" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
-                    <bean:message key="label.tab.title.xsl" />
+                <html:link page="/old/schemas/schemaStylesheets?schema=${schemaURL}" titleKey="label.tab.title.xsl" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                    <spring:message code="label.tab.title.xsl" />
                 </html:link>
             </li>
             <li>
-                <html:link page="/do/schemaQAScripts?schemaId=${id}"   titleKey="label.tab.title.scripts" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
-                    <bean:message key="label.tab.title.scripts" />
+                <html:link page="/old/schemas/schemaQAScripts?schemaId=${id}" titleKey="label.tab.title.scripts" onclick="return submitTab(this);"    style="color: black; text-decoration: none;">
+                    <spring:message code="label.tab.title.scripts" />
                 </html:link>
             </li>
         </ul>
     </div>
     </logic:notEmpty>
 
-    <h1><bean:message key="label.schema.view"/></h1>
+    <h1><spring:message code="label.schema.view"/></h1>
 
     <%-- include Error display --%>
     <tiles:insertDefinition name="Error" />
 
     <logic:notEmpty name="schemaForm" property="schema">
 
-        <logic:equal value="true"  name="schema.rootElements" scope="session" property="xsduPrm" >
+        <logic:equal value="true"  name="schema.rootElements" property="xsduPrm" >
             <div id="operations">
               <ul>
-                   <li><a href="schemaElemForm?schemaId=<bean:write name="schemaForm" property="schemaId" />"><bean:message key="label.schema.edit.button" /></a></li>
+                   <li><a href="${schemaForm.schemaId}/edit"><spring:message code="label.schema.edit.button" /></a></li>
             </ul>
             </div>
         </logic:equal>
 
-        <fieldset><legend><bean:message key="label.schema.fldset.properties"/></legend>
+        <fieldset><legend><spring:message code="label.schema.fldset.properties"/></legend>
           <table class="datatable">
            <col class="labelcol"/>
            <col class="entrycol"/>
             <tr>
                 <th scope="row" class="scope-row">
-                        <bean:message key="label.schema.url"/>
+                        <spring:message code="label.schema.url"/>
                  </th>
                   <td align="left">
                         <a href="<bean:write name="schemaForm" property="schema" />"><bean:write name="schemaForm" property="schema" /></a>
@@ -62,7 +63,7 @@
                 </tr>
                 <tr>
                     <th scope="row" class="scope-row">
-                        <bean:message key="label.schema.description"/>
+                        <spring:message code="label.schema.description"/>
                   </th>
                   <td align="left">
                     <bean:write name="schemaForm" property="description" />
@@ -70,7 +71,7 @@
                 </tr>
                 <tr>
                     <th scope="row" class="scope-row">
-                        <bean:message key="label.schema.language"/>
+                        <spring:message code="label.schema.language"/>
                   </th>
                   <td>
                     <bean:write name="schemaForm" property="schemaLang" />
@@ -78,7 +79,7 @@
                 </tr>
                 <tr>
                     <th scope="row" class="scope-row">
-                        <bean:message key="label.schema.dovalidation"/>
+                        <spring:message code="label.schema.dovalidation"/>
                       </th>
                   <td>
                         <bean:write name="schemaForm" property="doValidation" />
@@ -86,7 +87,7 @@
                 </tr>
                 <tr>
                     <th scope="row" class="scope-row">
-                        <bean:message key="label.schema.isBlockerValidation"/>
+                        <spring:message code="label.schema.isBlockerValidation"/>
                       </th>
                   <td>
                         <bean:write name="schemaForm" property="blocker" />
@@ -94,7 +95,7 @@
                 </tr>
                 <tr>
                     <th scope="row" class="scope-row">
-                        <bean:message key="label.schema.expireDate"/>
+                        <spring:message code="label.schema.expireDate"/>
                       </th>
                   <td>
                         <bean:write name="schemaForm" property="longExpireDate" />
@@ -103,7 +104,7 @@
                 <logic:equal value="true" name="schemaForm" property="dtd" >
                     <tr>
                         <th scope="row" class="scope-row">
-                            <bean:message key="label.elem.dtdid"/>
+                            <spring:message code="label.elem.dtdid"/>
                       </th>
                       <td align="left">
                             <bean:write name="schemaForm" property="dtdId" />
@@ -112,7 +113,7 @@
                 </logic:equal>
                 <tr>
                     <th scope="row" class="scope-row">
-                        <bean:message key="label.uplSchema.schemaFile"/>
+                        <spring:message code="label.uplSchema.schemaFile"/>
                   </th>
                   <td>
                       <logic:notEmpty  name="schemaForm" property="uplSchemaFileName">
@@ -120,26 +121,26 @@
                             <bean:write name="schemaForm" property="uplSchemaFileName" />
                         </a>&#160;
                         <logic:present name="schemaForm" property="lastModified">
-                            &#160;&#160;(<bean:message key="label.lastmodified"/>: <bean:write property="lastModified" name="schemaForm"/>)
+                            &#160;&#160;(<spring:message code="label.lastmodified"/>: <bean:write property="lastModified" name="schemaForm"/>)
                         </logic:present>
                       </logic:notEmpty>
                 </td>
                 </tr>
           </table>
         </fieldset>
-        <logic:equal name="schema.rootElements" scope="session" property="rootElemsPresent" value="true">
-            <fieldset><legend><bean:message key="label.schema.fldset.rootelems"/></legend>
+        <logic:equal name="schema.rootElements" property="rootElemsPresent" value="true">
+            <fieldset><legend><spring:message code="label.schema.fldset.rootelems"/></legend>
 
               <table class="datatable" width="80%">
                   <thead>
                     <tr>
-                        <th scope="col"><span title="Element name"><bean:message key="label.schema.table.element"/></span></th>
-                        <th scope="col"><span title="Namespace"><bean:message key="label.schema.table.namespace"/></span></th>
+                        <th scope="col"><span title="Element name"><spring:message code="label.schema.table.element"/></span></th>
+                        <th scope="col"><span title="Namespace"><spring:message code="label.schema.table.namespace"/></span></th>
                     </tr>
                    </thead>
                    <tbody>
-                        <logic:present name="schema.rootElements" scope="session" property="rootElem" >
-                            <logic:iterate indexId="index" id="elem" name="schema.rootElements" scope="session" property="rootElem" type="RootElem">
+                        <logic:present name="schema.rootElements" property="rootElem" >
+                            <logic:iterate indexId="index" id="elem" name="schema.rootElements" property="rootElem" type="RootElem">
                                 <tr <%=(index.intValue() % 2 == 1)? "class=\"zebraeven\"" : "" %>>
                                     <td>
                                         <bean:write name="elem" property="name" />

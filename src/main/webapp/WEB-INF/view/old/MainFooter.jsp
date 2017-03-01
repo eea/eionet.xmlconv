@@ -15,7 +15,7 @@ String a=request.getContextPath(); session.setAttribute("webRoot",a==null?"":a);
 
 <ed:breadcrumbs-list htmlid="portal-breadcrumbs" classStyle="breadcrumbitem" classStyleEnd="breadcrumbitemlast" delimiter="" />
 
-<tiles:importAttribute name="showFooter" />
+<%--<tiles:importAttribute name="showFooter" />--%>
 <logic:equal name="showFooter" value="true">
     <div id="pagefoot">
         <p>

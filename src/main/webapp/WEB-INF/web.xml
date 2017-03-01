@@ -273,14 +273,20 @@
         <servlet-name>downloadServlet</servlet-name>
         <url-pattern>/xsl/*</url-pattern>
     </servlet-mapping>
-    <error-page>
+<!--    <error-page>
         <error-code>500</error-code>
         <location>/error/500.jsp</location>
     </error-page>
     <error-page>
         <error-code>404</error-code>
         <location>/error/404.jsp</location>
+    </error-page>-->
+
+    <error-page>
+        <location>/web/error</location>
     </error-page>
+
+
     <jsp-config>
         <taglib>
             <taglib-uri>/WEB-INF/struts-bean.tld</taglib-uri>
