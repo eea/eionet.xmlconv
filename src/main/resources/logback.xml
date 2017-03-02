@@ -5,27 +5,12 @@
         </encoder>
     </appender>
 
-    <appender name="BACKUP" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${config.log.file}</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>backup.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <maxHistory>10</maxHistory>
-            <totalSizeCap>100MB</totalSizeCap>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>5MB</maxFileSize>
-        </triggeringPolicy>
-        <!-- encoders are assigned the type
-             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
-        <encoder>
-            <pattern>[${HOSTNAME}] [%-5p] %d{dd.MM.yy HH:mm:ss} - %c - %m%n</pattern>
-        </encoder>
-    </appender>
+    <!-- Development logging -->
+    <logger name="org.hibernate" level="trace" />
+    <logger name="org.springframework.web" level="trace" />
 
     <root level="info">
         <appender-ref ref="STDOUT" />
-        <appender-ref ref="BACKUP" />
     </root>
 
 </configuration>
