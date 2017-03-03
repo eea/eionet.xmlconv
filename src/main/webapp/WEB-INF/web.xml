@@ -188,6 +188,10 @@
         <servlet-name>JSPDispatcher</servlet-name>
         <url-pattern>/old/*</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>JSPDispatcher</servlet-name>
+        <url-pattern>/api/*</url-pattern>
+    </servlet-mapping>
 
 
 
@@ -236,10 +240,6 @@
     <servlet-mapping>
         <servlet-name>RpcRouter</servlet-name>
         <url-pattern>/RpcRouter</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>action</servlet-name>
-        <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>action</servlet-name>

@@ -36,7 +36,7 @@
     <definition name="excel2XmlConversion" template="/WEB-INF/view/old/conversion/Excel2XmlConversion.jsp" />
     <definition name="json2XmlConversion" template="/WEB-INF/view/old/conversion/Json2Xml.jsp" />
     <definition name="crConversion" template="/WEB-INF/view/old/conversion/CRConversion.jsp" />
-    <definition name="validateXML" template="/WEB-INF/view/old/conversion/ValidateXML.jsp" />
+    <definition name="validateXML" template="/WEB-INF/view/old/validation/validate.jsp" />
     <definition name="qaScripts" template="/WEB-INF/view/old/qascript/QAScripts.jsp" />
     <definition name="schemaQAScripts" template="/WEB-INF/view/old/qascript/SchemaQAScripts.jsp" />
     <definition name="addQAScript" template="/WEB-INF/view/old/qascript/AddQAScript.jsp" />

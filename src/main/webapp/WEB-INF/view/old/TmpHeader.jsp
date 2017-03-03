@@ -1,7 +1,7 @@
 <%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java"%>
 <%@ page import="eionet.gdem.Properties" %>
 <%@ page import="eionet.gdem.utils.SecurityUtil" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-nested.tld" prefix="nested" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-template.tld" prefix="template" %>

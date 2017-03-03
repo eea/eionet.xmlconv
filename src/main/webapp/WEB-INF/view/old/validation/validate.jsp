@@ -3,8 +3,8 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html:xhtml/>
     <div style="width:100%;">
@@ -58,7 +58,7 @@
 </logic:present>
 
 
-            <html:form action="/validateXML" method="post" >
+            <form:form action="/old/validation" method="post" modelAttribute="form">
             <table class="datatable">
                 <tr>
                  <th scope="col" class="scope-col">
@@ -67,7 +67,7 @@
                  </tr>
                  <tr>
                   <td>
-                    <html:text property="url"  style="width: 40em;" />
+                    <form:input path="xmlUrl" type="text" style="width: 40em;" />
                   </td>
                 </tr>
                 <tr>
@@ -82,10 +82,10 @@
                 </tr>
                  <tr>
                   <td>
-                    <html:text property="schemaUrl"  style="width: 40em;" />
+                    <input type="text" property="schemaUrl"  style="width: 40em;" />
                   </td>
                 </tr>
-                <logic:equal name="ValidationForm" property="showSchemaSelection" value="true">
+                <%--<logic:equal name="form" property="showSchemaSelection" value="true">--%>
                 <tr>
                  <th scope="col" class="scope-col">
                     <spring:message code="label.conversion.xmlSchema"/>
@@ -99,22 +99,22 @@
                 <tr>
                   <td>
 
-                    <html:select name="showSchemaSelection" property="schemaUrl"  size="10">
-                        <html:option value="">--</html:option>
-                        <html:options collection="conversion.schemas" property="schema" labelProperty="label" />
-                    </html:select>
+<%--                    <form:select path="showSchemaSelection" name="showSchemaSelection" property="schemaUrl"  size="10">
+                        <form:option value="">--</form:option>
+                        <form:options collection="conversion.schemas" property="schema" labelProperty="label" />
+                    </form:select>--%>
                   </td>
                 </tr>
-               </logic:equal>
+               <%--</logic:equal>--%>
                 <tr>
                   <td align="center">
-                    <html:submit styleClass="button">
+                    <input type="submit" styleClass="button">
                         <spring:message code="label.conversion.validate"/>
-                    </html:submit>
+                    </input>
                   </td>
             </tr>
         </table>
-    </html:form>
+    </form:form>
                 <logic:present name="conversion.valid" scope="request">
                     <bean:size id="countErrors" name="conversion.valid" />
                     <logic:notEqual name="countErrors" value="0">
