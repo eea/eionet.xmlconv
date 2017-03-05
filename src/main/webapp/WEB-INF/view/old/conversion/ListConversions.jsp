@@ -19,7 +19,7 @@
         <tiles:insertDefinition name="Error" />
 
 
-            <html:form action="/listConversionsByXML" method="get" >
+            <form:form action="/listConversionsByXML" method="get" >
             <table class="datatable">
                 <tr>
                  <th scope="col" class="scope-col">
@@ -113,5 +113,5 @@
                 </logic:empty>
               </table>
         </logic:notEmpty>
-    </html:form>
+    </form:form>
 </div>

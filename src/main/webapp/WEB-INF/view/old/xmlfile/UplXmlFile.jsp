@@ -28,7 +28,7 @@
     <div class="visualClear">&nbsp;</div>
 
     <logic:present name="xmlfiles.uploaded" property="xmlfiles" >
-        <html:form action="/deleteUplXmlFile" method="post">
+        <form:form action="/deleteUplXmlFile" method="post">
             <table class="datatable" width="100%">
                 <logic:equal value="true"  name="xmlfiles.uploaded" property="ssuPrm" >
                     <col style="width:5%"/>
@@ -97,7 +97,7 @@
                     <input type="button"  class="button" value="Rename" onclick="return submitAction(1,'renameUplXmlFileForm');" />
                 </logic:equal>
             </div>
-        </html:form>
+        </form:form>
     </logic:present>
     <logic:notPresent name="xmlfiles.uploaded" property="xmlfiles" >
         <div class="advice-msg">

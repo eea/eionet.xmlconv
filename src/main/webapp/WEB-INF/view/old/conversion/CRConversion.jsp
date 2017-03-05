@@ -18,7 +18,7 @@
         <%-- include Error display --%>
         <tiles:insert definition="Error" />
 
-            <html:form action="/searchCR" method="get">
+            <form:form action="/searchCR" method="get">
             <table class="formtable">
                 <tr>
                  <th scope="col" class="scope-col">
@@ -42,14 +42,14 @@
                   </td>
                 </tr>
                </table>
-            </html:form>
+            </form:form>
             <!--  Show XML files -->
             <logic:present name="ConversionForm" property="schema">
             <bean:define id="schema"  name="ConversionForm" property="schema" />
               <bean:size name="schema" id="countfiles" property="crfiles"/>
               <bean:define id="crfiles" name="schema" property="crfiles"/>
 
-            <html:form action="/testConversion" method="post" >
+            <form:form action="/testConversion" method="post" >
             <table class="datatable">
                 <tr>
                  <th scope="col" class="scope-col">
@@ -131,6 +131,6 @@
                   </td>
                 </tr>
             </table>
-        </html:form>
+        </form:form>
     </logic:present>
 </div>

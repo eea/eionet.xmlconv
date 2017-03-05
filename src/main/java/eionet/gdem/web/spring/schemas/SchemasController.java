@@ -48,6 +48,8 @@ public class SchemasController {
         try {
             SchemaManager sm = new SchemaManager();
             holder = sm.getAllSchemas(user);
+            SingleForm cForm = new SingleForm();
+            model.addAttribute("form", cForm);
             model.addAttribute("schemas.uploaded", holder);
 
         } catch (DCMException e) {

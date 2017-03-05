@@ -13,7 +13,7 @@
 
         <%-- include Error display --%>
         <tiles:insertDefinition name="Error" />
-        <html:form action="/addQAScript" method="post" enctype="multipart/form-data">
+        <form:form action="/addQAScript" method="post" enctype="multipart/form-data">
           <table class="formtable">
             <col class="labelcol"/>
             <col class="entrycol"/>
@@ -137,5 +137,5 @@
             <html:hidden property="schemaId" />
             <html:hidden property="fileName" />
         </div>
-    </html:form>
+    </form:form>
 

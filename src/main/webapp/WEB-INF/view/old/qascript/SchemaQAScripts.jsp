@@ -59,7 +59,7 @@
 
     <logic:iterate indexId="index" id="schema" name="schema.qascripts" property="qascripts" type="Schema">
         <div class="visualClear">&nbsp;</div>
-        <html:form action="/viewQAScriptForm" method="post">
+        <form:form action="/viewQAScriptForm" method="post">
             <table class="formtable">
                 <tr>
                     <td style="width:510px">
@@ -96,10 +96,10 @@
                     </td>
                 </tr>
             </table>
-        </html:form>
+        </form:form>
 
         <logic:present name="schema" scope="page" property="qascripts" >
-            <html:form action="/searchCR" method="post">
+            <form:form action="/searchCR" method="post">
             <table class="datatable" width="100%">
                 <logic:equal value="true"  name="qascript.permissions" property="ssdPrm" >
                     <col style="width:10px"/>
@@ -209,7 +209,7 @@
                         <input type="hidden" name="schemaId" value="${schemaId}" />
                     </logic:equal>
                 </div>
-            </html:form>
+            </form:form>
 
             </logic:present>
             <logic:notPresent name="schema" scope="page" property="qascripts" >

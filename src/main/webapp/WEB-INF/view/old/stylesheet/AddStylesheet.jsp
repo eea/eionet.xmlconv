@@ -14,7 +14,7 @@
         <%-- include Error display --%>
         <tiles:insertDefinition name="Error" />
 
-        <html:form action="/stylesheetAdd" method="post" enctype="multipart/form-data">
+        <form:form action="/stylesheetAdd" method="post" enctype="multipart/form-data">
             <table class="datatable" style="width:100%">
                 <col class="labelcol"/>
                 <col class="entrycol"/>
@@ -112,5 +112,5 @@
                         </td>
                     </tr>
                 </table>
-            </html:form>
+            </form:form>
 

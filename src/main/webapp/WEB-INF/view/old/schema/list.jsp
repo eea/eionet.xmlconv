@@ -6,6 +6,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html:xhtml/>
 
@@ -30,7 +31,7 @@
 
 
   <logic:present name="schemas.uploaded" property="schemas">
-    <html:form action="/deleteUplSchema" method="post">
+    <form:form commandName="form" action="/old/schemas/delete" method="post">
       <table class="datatable" width="100%">
         <logic:equal value="true" name="schemas.uploaded" property="ssdPrm">
           <col style="width:5%"/>
@@ -41,25 +42,25 @@
         <col style="width:20px"/>
         <col style="width:20px"/>
         <thead>
-        <tr>
-          <logic:equal value="true" name="schemas.uploaded" property="ssdPrm">
-            <th scope="col"></th>
-          </logic:equal>
-          <th scope="col"><span title="Schema"><spring:message code="label.table.uplSchema.schema"/></span></th>
-          <th scope="col"><span title="Description"><spring:message code="label.table.uplSchema.description"/></span>
-          </th>
-          <th scope="col" title="Uploaded schemas">XSD</th>
-          <th scope="col" title="Stylesheets">XSL</th>
-          <th scope="col" title="QA scripts">QA</th>
-        </tr>
+          <tr>
+            <logic:equal value="true" name="schemas.uploaded" property="ssdPrm">
+              <th scope="col"></th>
+            </logic:equal>
+            <th scope="col"><span title="Schema"><spring:message code="label.table.uplSchema.schema"/></span></th>
+            <th scope="col"><span title="Description"><spring:message code="label.table.uplSchema.description"/></span>
+            </th>
+            <th scope="col" title="Uploaded schemas">XSD</th>
+            <th scope="col" title="Stylesheets">XSL</th>
+            <th scope="col" title="QA scripts">QA</th>
+          </tr>
         </thead>
         <tbody>
         <logic:iterate indexId="index" id="schema" name="schemas.uploaded" property="schemas" type="Schema">
           <tr <%=(index.intValue() % 2 == 1) ? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
             <logic:equal value="true" name="schemas.uploaded" property="ssdPrm">
               <td align="center">
-                <bean:define id="schemaId" name="schema" property="id"/>
-                <html:radio property="schemaId" value="${schemaId}"/>
+                <%--<bean:define id="schemaId" name="schema" property="id"/>--%>
+                <form:radiobutton path="id" value="${schema.id}"/>
               </td>
             </logic:equal>
             <td>
@@ -98,11 +99,11 @@
       </table>
       <logic:equal value="true" name="schemas.uploaded" property="ssdPrm">
         <div class="boxbottombuttons">
-          <input type="button" class="button" value="<spring:message code="label.schema.delete"/>"
-                 onclick="return submitAction(1,'deleteUplSchema?deleteSchema=true');"/>
+          <input type="submit" class="button" value="<spring:message code="label.schema.delete"/>">
+                 <%--onclick="return submitAction(1,'deleteUplSchema?deleteSchema=true');"/>--%>
         </div>
       </logic:equal>
-    </html:form>
+    </form:form>
   </logic:present>
 
   <logic:notPresent name="schemas.uploaded" property="schemas">

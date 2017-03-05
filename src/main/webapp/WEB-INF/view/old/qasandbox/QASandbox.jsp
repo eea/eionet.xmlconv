@@ -89,7 +89,7 @@
   <%-- include Error display --%>
   <tiles:insertDefinition name="Error"/>
 
-  <html:form action="/executeSandboxAction" method="post">
+  <form:form action="/executeSandboxAction" method="post">
     <table class="formtable">
 
         <%-- List of XML schemas  --%>
@@ -123,10 +123,10 @@
         <td>&nbsp;</td>
       </tr>
     </table>
-  </html:form>
+  </form:form>
 
 
-  <html:form action="/executeSandboxAction" method="post">
+  <form:form action="/executeSandboxAction" method="post">
     <table class="formtable">
         <%-- CR XML files  --%>
       <bean:define id="schema" name="QASandboxForm" property="schema" type="Schema"/>
@@ -180,11 +180,11 @@
         </logic:equal>
       </logic:present>
     </table>
-  </html:form>
+  </form:form>
 
   <%-- Insert URL manually --%>
   <logic:notPresent name="schema" property="crfiles">
-    <html:form action="/executeSandboxAction" method="post">
+    <form:form action="/executeSandboxAction" method="post">
       <table class="formtable">
         <tr class="zebraeven">
           <td>
@@ -209,7 +209,7 @@
           <td>&nbsp;</td>
         </tr>
       </table>
-    </html:form>
+    </form:form>
     <logic:equal value="true" name="qascript.permissions" property="qsuPrm">
       <c:if test="${not(fn:contains(header['User-Agent'],'MSIE 9.0'))}">
         <button style="float:right;" id="clickable">Upload file</button>
@@ -294,7 +294,7 @@
       </c:if>
     </logic:equal>
   </logic:notPresent>
-  <html:form action="/executeSandboxAction" method="post">
+  <form:form action="/executeSandboxAction" method="post">
     <table class="formtable">
         <%-- QA script type & content --%>
       <logic:equal name="QASandboxForm" property="showScripts" value="false">
@@ -459,5 +459,5 @@
         </tr>
       </logic:equal>
     </table>
-  </html:form>
+  </form:form>
 </div>

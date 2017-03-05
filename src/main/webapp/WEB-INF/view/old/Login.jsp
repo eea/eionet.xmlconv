@@ -19,7 +19,7 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
         <%-- include Error display --%>
         <tiles:insertDefinition name="Error" />
 
-            <html:form action="login" method="post" focus="username">
+            <form:form action="login" method="post" focus="username">
               <table class="datatable" style="width:300px">
                 <col style="width:36%"/>
                 <col style="width:64%"/>
@@ -50,7 +50,7 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
                   </td>
                 </tr>
               </table>
-            </html:form>
+            </form:form>
 </td>
 </tr>
 </table>

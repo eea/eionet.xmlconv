@@ -11,7 +11,7 @@
 
 
 <logic:present name="schema.stylesheets">
-    <html:form action="/searchCR" method="post">
+    <form:form action="/searchCR" method="post">
 
        <bean:define id="schemaUrl" name="schema" scope="request" type="String"/>
     <logic:iterate indexId="index" id="schema" name="schema.stylesheets" property="handCodedStylesheets" type="Schema">
@@ -150,7 +150,7 @@
     </logic:iterate>
 
     <div class="visualClear">&nbsp;</div>
-    </html:form>
+    </form:form>
 </logic:present>
 
 

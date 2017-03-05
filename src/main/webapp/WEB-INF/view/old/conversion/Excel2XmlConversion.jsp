@@ -18,7 +18,7 @@
         <%-- include Error display --%>
         <tiles:insert definition="Error" />
 
-        <html:form action="/excel2XmlConversion" method="get" >
+        <form:form action="/excel2XmlConversion" method="get" >
         <table class="datatable">
             <tr>
                  <th scope="col" class="scope-col">
@@ -84,5 +84,5 @@
                 </logic:empty>
         </table>
       <!--/fieldset-->
-    </html:form>
+    </form:form>
 </div>

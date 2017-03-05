@@ -15,7 +15,7 @@
     <%-- include Error display --%>
     <tiles:insertDefinition name="Error" />
 
-    <html:form action="/syncUplScript" method="post">
+    <form:form action="/syncUplScript" method="post">
 
     <p>
         Do you want to store the remote script as a local copy?
@@ -41,7 +41,7 @@
           <html:hidden property="fileName" />
           <html:hidden property="url" />
     </div>
-    </html:form>
+    </form:form>
     <div class="visualClear">&nbsp;</div>
 
 

@@ -20,10 +20,10 @@
         </div>
         <br/>
         <br/>
-        <html:form action="/qaSandboxForm?reset=false" method="post">
+        <form:form action="/qaSandboxForm?reset=false" method="post">
             <html:submit styleClass="button" property="action" >
                 <spring:message code="label.qasandboxresult.back"/>
             </html:submit>
-        </html:form>
+        </form:form>
 
     </div>

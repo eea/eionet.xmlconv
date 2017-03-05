@@ -15,7 +15,7 @@
     <%-- include Error display --%>
     <tiles:insertDefinition name="Error" />
 
-    <html:form action="/syncUplSchema" method="post">
+    <form:form action="/syncUplSchema" method="post">
 
     <p>
         Do you want to store the remote schema as a cached copy?
@@ -41,7 +41,7 @@
           <html:hidden property="uplSchemaId" />
           <html:hidden property="uplSchemaFileName" />
     </div>
-    </html:form>
+    </form:form>
     <div class="visualClear">&nbsp;</div>
 
 

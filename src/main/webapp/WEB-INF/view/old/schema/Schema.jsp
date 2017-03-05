@@ -41,7 +41,7 @@
 <%-- include Error display --%>
 <tiles:insertDefinition name="Error"/>
 
-<html:form action="/schemaUpdate" method="post" enctype="multipart/form-data">
+<form:form action="/schemaUpdate" method="post" enctype="multipart/form-data">
   <fieldset>
     <legend><spring:message code="label.schema.fldset.properties"/></legend>
     <table class="formtable">
@@ -318,4 +318,4 @@
     <html:hidden property="uplSchemaId"/>
     <html:hidden property="schema"/>
   </div>
-</html:form>
+</form:form>

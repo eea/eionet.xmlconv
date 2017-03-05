@@ -14,7 +14,7 @@
         <%-- include Error display --%>
         <tiles:insertDefinition name="Error" />
 
-        <html:form action="/stylesheetEdit" method="post" enctype="multipart/form-data"  styleClass="cmxform">
+        <form:form action="/stylesheetEdit" method="post" enctype="multipart/form-data"  styleClass="cmxform">
           <table class="datatable" style="width:100%">
             <col class="labelcol"/>
             <col class="entrycol"/>
@@ -190,4 +190,4 @@
                 </tr>
             </logic:present>
           </table>
-        </html:form>
+        </form:form>

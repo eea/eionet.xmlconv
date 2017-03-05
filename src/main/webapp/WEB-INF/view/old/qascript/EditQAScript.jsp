@@ -27,7 +27,7 @@
         <%-- include Error display --%>
         <tiles:insertDefinition name="Error" />
 
-        <html:form action="/editQAScript" method="post" enctype="multipart/form-data">
+        <form:form action="/editQAScript" method="post" enctype="multipart/form-data">
           <table class="formtable">
             <col class="labelcol"/>
             <col class="entrycol"/>
@@ -207,6 +207,6 @@
             </tr-->
             </logic:present>
          </table>
-        </html:form>
+        </form:form>
 </div>
 

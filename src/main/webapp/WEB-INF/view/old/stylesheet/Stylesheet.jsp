@@ -33,7 +33,7 @@
 
 
     <logic:present name="stylesheet.stylesheetListHolder" property="stylesheetList" >
-        <html:form action="/deleteStylesheet" method="post">
+        <form:form action="/deleteStylesheet" method="post">
 
             <table id="tbl_stylesheets" class="display datatable" width="100%">
                 <logic:equal value="true" name="stylesheet.permissions" property="ssdPrm" >
@@ -92,7 +92,7 @@
                        <input type="button"  class="button" value="<spring:message code="label.schema.delete"/>" onclick="return submitAction(1,'deleteStylesheet');" />
                    </div>
                </logic:equal>
-        </html:form>
+        </form:form>
     </logic:present>
     <logic:notPresent name="stylesheet.stylesheetListHolder" property="stylesheetList" >
         <div class="advice-msg">

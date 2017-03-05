@@ -12,7 +12,7 @@
         <%-- include Error display --%>
         <tiles:insertDefinition name="Error" />
 
-            <html:form action="/renameUplXmlFile" method="post">
+            <form:form action="/renameUplXmlFile" method="post">
               <table class="formtable">
                 <col class="labelcol"/>
                 <col class="entrycol"/>
@@ -44,4 +44,4 @@
                   </td>
                 </tr>
               </table>
-            </html:form>
+            </form:form>

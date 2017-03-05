@@ -30,7 +30,7 @@
 <div class="visualClear">&nbsp;</div>
 
 <logic:present name="hosts.list">
-    <html:form action="/hosts/delete" method="post">
+    <form:form action="/hosts/delete" method="post">
     <div style="width:80%">
         <table class="datatable" width="100%">
             <col style="width:5%"/>
@@ -78,7 +78,7 @@
             </ed:hasPermission>
         </div>
     </div>
-    </html:form>
+    </form:form>
 </logic:present>
 
 <div class="visualClear">&nbsp;</div>
