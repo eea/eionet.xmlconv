@@ -106,6 +106,8 @@ public class Properties {
     public static final int HTTP_MANAGER_TOTAL;
     public static final int HTTP_MANAGER_ROUTE;
 
+    /** File transfering load balancer with extended timeout */
+    public static final String HTTP_TRANSFER_LOADBALANCER;
 
     /** conversion.xml file location, listing all available generated conversions. */
     public static String convFile = null;
@@ -224,6 +226,7 @@ public class Properties {
         HTTP_CONNECT_TIMEOUT = getIntProperty("http.connect.timeout");
         HTTP_MANAGER_TOTAL = getIntProperty("http.manager.total");
         HTTP_MANAGER_ROUTE = getIntProperty("http.manager.route");
+        HTTP_TRANSFER_LOADBALANCER = getStringProperty("http.transfer.loadbalancer");
 
         // DCM settings
         ddURL = getStringProperty("dd.url");
