@@ -1,5 +1,12 @@
 package eionet.gdem.services.db.dao.mysql;
 
+import eionet.gdem.Properties;
+import eionet.gdem.services.db.dao.IQueryDao;
+import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -9,15 +16,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
-
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
-
-import eionet.gdem.Properties;
-import eionet.gdem.services.db.dao.IQueryDao;
-import eionet.gdem.utils.Utils;
 
 /**
  * Query MySQL Dao class.

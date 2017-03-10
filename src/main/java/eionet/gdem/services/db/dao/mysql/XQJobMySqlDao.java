@@ -1,19 +1,17 @@
 package eionet.gdem.services.db.dao.mysql;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
-
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * XQ job MySQL Dao class.
@@ -35,7 +33,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     private static final String qXQFinishedJobs = qXQJobDataBase + " WHERE " + STATUS_FLD + ">=" + Constants.XQ_READY
             + " ORDER BY " + JOB_ID_FLD;
 
-    private static final String qStartXQJob = "INSERT INTO " + WQ_TABLE + " (" + URL_FLD + "," + XQ_FILE_FLD + ", "
+    private static final String qInsertXQJob = "INSERT INTO " + WQ_TABLE + " (" + URL_FLD + "," + XQ_FILE_FLD + ", "
             + RESULT_FILE_FLD + "," + STATUS_FLD + "," + XQ_ID_FLD + "," + TIMESTAMP_FLD + "," + XQ_TYPE_FLD + ") " + "VALUES (?,?,?,?,?,{fn now()},?)";
 
     // use LAST_INSERT_ID to avoid duplicates in extreme cases http://stackoverflow.com/a/17112962/3771458
@@ -43,6 +41,11 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
 
     private static final String qChangeJobStatus = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + INSTANCE + "= ?, " + TIMESTAMP_FLD
             + "= NOW() " + " WHERE " + JOB_ID_FLD + "= ?";
+
+    private static final String qProcessXQJob = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + INSTANCE + "= ?, " + TIMESTAMP_FLD
+            + "= NOW() , " + JOB_RETRY_COUNTER + " = " + JOB_RETRY_COUNTER + " + 1  WHERE " + JOB_ID_FLD + "= ?";
+
+    private static final String qXQJobRetries = "SELECT " + JOB_RETRY_COUNTER + " FROM " + WQ_TABLE + " WHERE " + JOB_ID_FLD + "= ?";
 
     private static final String qChangeFileJobsStatus = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + SRC_FILE_FLD
             + "= ? " + ", " + TIMESTAMP_FLD + "= NOW() " + " WHERE " + URL_FLD + "= ? " + " AND " + STATUS_FLD + "< ? ";
@@ -120,11 +123,11 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
         String[][] r = null;
 
         if (isDebugMode) {
-            LOGGER.debug("Query is " + qStartXQJob);
+            LOGGER.debug("Query is " + qInsertXQJob);
         }
         try {
             conn = getConnection();
-            pstmt = conn.prepareStatement(qStartXQJob);
+            pstmt = conn.prepareStatement(qInsertXQJob);
             pstmt.setString(1, url);
             pstmt.setString(2, xqFile);
             pstmt.setString(3, resultFile);
@@ -163,6 +166,49 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
         } finally {
             closeAllResources(null, pstmt, conn);
         }
+    }
+
+    @Override
+    public void processXQJob(String jobId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + qProcessXQJob);
+        }
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(qProcessXQJob);
+            pstmt.setInt(1, Constants.XQ_PROCESSING);
+            pstmt.setString(2, Properties.getHostname() );
+            pstmt.setInt(3, Integer.parseInt(jobId));
+            pstmt.executeUpdate();
+        } finally {
+            closeAllResources(null, pstmt, conn);
+        }
+    }
+
+    @Override
+    public int getJobRetries(String jobId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String[][] r = null;
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + qXQJobRetries);
+        }
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(qXQJobRetries);
+            pstmt.setInt(1, Integer.parseInt(jobId));
+            rs = pstmt.executeQuery();
+            r = getResults(rs);
+        } finally {
+            closeAllResources(null, pstmt, conn);
+        }
+
+        return Integer.parseInt(r[0][0]);
     }
 
     @Override

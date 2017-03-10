@@ -379,5 +379,15 @@
             ALTER TABLE T_XQJOBS MODIFY COLUMN URL varchar(2048) NULL;
         </sql>
     </changeSet>
+    <changeSet author="katsanas" id="rev-35">
+        <comment>
+            Added RETRY_COUNTER to Jobs table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="RETRY_COUNTER" defaultValueNumeric="0" type="INT UNSIGNED">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
