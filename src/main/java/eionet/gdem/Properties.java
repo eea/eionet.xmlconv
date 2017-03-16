@@ -189,6 +189,8 @@ public class Properties {
     /** Context path to be used in classes */
     public static String contextPath;
 
+    public static int heavyJobThreshhold;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -276,6 +278,7 @@ public class Properties {
         fmeTokenTimeunit = getStringProperty("fme.token.timeunit");
         fmeTimeout = getIntProperty("fme.timeout");
         fmeRetryHours = getIntProperty("fme.retry.hours");
+        heavyJobThreshhold = getIntProperty ("config.heavy.threshold");
     }
 
     /**

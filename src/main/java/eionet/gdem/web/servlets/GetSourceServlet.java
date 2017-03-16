@@ -35,7 +35,7 @@ public class GetSourceServlet extends HttpServlet {
             if ("ClientAbortException".equals(exception)) {
                 // do nothing
             } else {
-                LOGGER.error("Error: " + e);
+                LOGGER.error("Error: " , e);
             }
         } finally {
             manager.closeQuietly();

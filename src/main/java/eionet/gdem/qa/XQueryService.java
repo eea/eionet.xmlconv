@@ -23,19 +23,9 @@
 
 package eionet.gdem.qa;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Vector;
-
 import eionet.gdem.Constants;
-import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.http.HttpFileManager;
@@ -46,27 +36,32 @@ import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.FeedbackAnalyzer;
-
-import static eionet.gdem.Constants.JOB_VALIDATION;
-import static eionet.gdem.qa.ListQueriesMethod.DEFAULT_CONTENT_TYPE_ID;
-import static eionet.gdem.web.listeners.JobScheduler.getQuartzScheduler;
-import java.util.logging.Level;
-
-import static java.util.Objects.isNull;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.quartz.JobBuilder.newJob;
-
 import eionet.gdem.validation.InputAnalyser;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
-import static org.quartz.TriggerBuilder.newTrigger;
-import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.sql.SQLException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import static eionet.gdem.Constants.JOB_VALIDATION;
+import static eionet.gdem.qa.ListQueriesMethod.DEFAULT_CONTENT_TYPE_ID;
+import static eionet.gdem.web.listeners.JobScheduler.getQuartzHeavyScheduler;
+import static eionet.gdem.web.listeners.JobScheduler.getQuartzScheduler;
+import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.quartz.JobBuilder.newJob;
+import static org.quartz.TriggerBuilder.newTrigger;
 
 /**
  * QA Service Service Facade. The service is able to execute different QA related methods that are called through XML/RPC and HTTP
@@ -84,6 +79,8 @@ public class XQueryService extends RemoteService {
 
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(XQueryService.class);
+
+    private static final long heavyJobThreshhold = Properties.heavyJobThreshhold;
 
     /**
      * Default constructor.
@@ -179,20 +176,11 @@ public class XQueryService extends RemoteService {
 
         Vector queries = listQueries(schema);
 
-        try {
-            // get the trusted URL from source file adapter
-            file = HttpFileManager.getSourceUrlWithTicket(getTicket(), file, isTrustedMode());
-        } catch (Exception e) {
-            String err_mess = "File URL is incorrect";
-            LOGGER.error(err_mess + "; " + e.toString());
-            throw new XMLConvException(err_mess, e);
-        }
-
         if (!Utils.isNullVector(queries)) {
             for (int j = 0; j < queries.size(); j++) {
 
                 String query_id = String.valueOf( ( (Hashtable) queries.get(j)).get("query_id"));
-                newId = analyzeXMLFile( file, query_id , schema );
+                newId = analyzeXMLFile( origFile, query_id , schema );
 
                 Vector queryResult = new Vector();
                 queryResult.add(newId);
@@ -249,6 +237,7 @@ public class XQueryService extends RemoteService {
      */
     public String analyze(String sourceURL, String xqScript, String scriptType) throws XMLConvException {
         String xqFile = "";
+        String originalSourceURL = sourceURL;
 
         LOGGER.info("XML/RPC call for analyze xml with custom script: " + sourceURL);
         // save XQScript in a text file for the WQ
@@ -269,9 +258,11 @@ public class XQueryService extends RemoteService {
         try {
             // get the trusted URL from source file adapter
             sourceURL = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceURL, isTrustedMode());
+            long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());
+
             newId = xqJobDao.startXQJob(sourceURL, xqFile, resultFile, scriptType);
             //
-            scheduleJob(newId);
+            scheduleJob(newId, sourceSize, scriptType);
 
         } catch (SQLException sqe) {
             LOGGER.error("DB operation failed: " + sqe.toString());
@@ -434,6 +425,8 @@ public class XQueryService extends RemoteService {
 
         String jobId = "-1";
         HashMap query;
+        String originalSourceURL = sourceURL;
+
         try {
 
             if ( String.valueOf(Constants.JOB_VALIDATION).equals(scriptId )  ){ // Validation
@@ -498,10 +491,16 @@ public class XQueryService extends RemoteService {
             }
 
             sourceURL = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceURL, isTrustedMode());
+
+            long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());
+
             //save the job definition in the DB
             jobId = xqJobDao.startXQJob(sourceURL, queryFile, resultFile, queryId ,scriptType);
             //
-            scheduleJob(jobId);
+            LOGGER.debug( jobId + " : " + sourceURL + " size: " + sourceSize );
+
+            scheduleJob(jobId, sourceSize, scriptType);
+
 
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
@@ -518,13 +517,54 @@ public class XQueryService extends RemoteService {
     }
 
     /**
+     *  Reschedule a job with quartz
+     * @param JobID the id of the job
+     */
+    public void rescheduleJob(String JobID) throws SchedulerException, SQLException, XMLConvException {
+
+        String[] jobData = xqJobDao.getXQJobData(JobID);
+        String url = jobData[0];
+        if(url.indexOf(Constants.GETSOURCE_URL)>0 && url.indexOf(Constants.SOURCE_URL_PARAM)>0) {
+            int idx = url.indexOf(Constants.SOURCE_URL_PARAM);
+            url = url.substring(idx + Constants.SOURCE_URL_PARAM.length() + 1);
+        }
+
+        String scriptType = jobData[8];
+
+        long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), url, isTrustedMode());
+
+        JobDetail job1 = newJob(eionet.gdem.qa.XQueryJob.class)
+                .withIdentity(JobID, "XQueryJob")
+                .usingJobData("jobId", JobID )
+                .requestRecovery()
+                .build();
+
+        // Define a Trigger that will fire "now", and not repeat
+        Trigger trigger = newTrigger()
+                .startNow()
+                .build();
+
+        // Reschedule the job
+        // Heavy jobs go into a separate scheduler
+        if (sourceSize > heavyJobThreshhold && ! scriptType.equals( XQScript.SCRIPT_LANG_FME ) ) {
+            Scheduler quartzScheduler = getQuartzHeavyScheduler();
+            quartzScheduler.scheduleJob(job1, trigger);
+        }
+        else {
+            Scheduler quartzScheduler = getQuartzScheduler();
+            quartzScheduler.scheduleJob(job1, trigger);
+        }
+
+    }
+
+    /**
      *  Schedule a job with quartz
      * @param JobID the id of the job
      */
-    public void scheduleJob (String JobID) throws SchedulerException {
+    public void scheduleJob (String JobID, long sizeInBytes, String scriptType ) throws SchedulerException {
         // ** Schedule the job with quartz to execute as soon as possibly.
         // only the job_id is needed for the job to be executed
-        // Define sn anonymous job
+        // Define an anonymous job
         JobDetail job1 = newJob(eionet.gdem.qa.XQueryJob.class)
                 .withIdentity(JobID, "XQueryJob")
                 .usingJobData("jobId", JobID )
@@ -537,8 +577,16 @@ public class XQueryService extends RemoteService {
                 .build();
 
         // Schedule the job
-        Scheduler quartzScheduler = getQuartzScheduler();
-        quartzScheduler.scheduleJob(job1, trigger);
+        // Heavy jobs go into a separate scheduler
+        if (sizeInBytes > heavyJobThreshhold && ! scriptType.equals( XQScript.SCRIPT_LANG_FME) ) {
+            Scheduler quartzScheduler = getQuartzHeavyScheduler();
+            quartzScheduler.scheduleJob(job1, trigger);
+        }
+        else {
+            Scheduler quartzScheduler = getQuartzScheduler();
+            quartzScheduler.scheduleJob(job1, trigger);
+        }
+
     }
 
     /**

@@ -45,6 +45,8 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     private static final String qProcessXQJob = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + INSTANCE + "= ?, " + TIMESTAMP_FLD
             + "= NOW() , " + JOB_RETRY_COUNTER + " = " + JOB_RETRY_COUNTER + " + 1  WHERE " + JOB_ID_FLD + "= ?";
 
+    private static final String qMarkDeletedJob = "UPDATE " + WQ_TABLE + " SET " + JOB_RETRY_COUNTER + "= ?" + " WHERE " + JOB_ID_FLD + "= ?";
+
     private static final String qXQJobRetries = "SELECT " + JOB_RETRY_COUNTER + " FROM " + WQ_TABLE + " WHERE " + JOB_ID_FLD + "= ?";
 
     private static final String qChangeFileJobsStatus = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + SRC_FILE_FLD
@@ -182,6 +184,25 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             pstmt.setInt(1, Constants.XQ_PROCESSING);
             pstmt.setString(2, Properties.getHostname() );
             pstmt.setInt(3, Integer.parseInt(jobId));
+            pstmt.executeUpdate();
+        } finally {
+            closeAllResources(null, pstmt, conn);
+        }
+    }
+
+    @Override
+    public void markDeleted(String jobId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + qMarkDeletedJob);
+        }
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(qMarkDeletedJob);
+            pstmt.setInt(1, 1000);
+            pstmt.setInt(2, Integer.parseInt(jobId));
             pstmt.executeUpdate();
         } finally {
             closeAllResources(null, pstmt, conn);

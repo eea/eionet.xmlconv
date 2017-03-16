@@ -1,7 +1,7 @@
 package eionet.gdem.http;
 
 import eionet.gdem.Constants;
-import eionet.gdem.Properties;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.utils.Utils;
@@ -13,13 +13,15 @@ import org.apache.http.client.cache.CacheResponseStatus;
 import org.apache.http.client.cache.HttpCacheContext;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -74,6 +76,34 @@ public class HttpFileManager {
         response.setContentLengthLong(contentLength);
         response.setCharacterEncoding(contentEncoding);
         entity.writeTo(response.getOutputStream());
+    }
+
+    public static CloseableHttpResponse getHeaderResponse(String ticket, String url, boolean isTrustedMode) throws IOException, URISyntaxException, XMLConvException {
+        HttpHead httpHead = new HttpHead(url);
+
+        if (  ! Utils.isNullStr(ticket) && isTrustedMode ) {
+            httpHead.addHeader(HttpHeaders.AUTHORIZATION, " Basic " + ticket);
+        }
+
+        httpHead.addHeader(HttpHeaders.ACCEPT, "*/*");
+        CloseableHttpResponse response = HttpClientBuilder.create().disableContentCompression().build().execute(httpHead);
+
+        int statusCode = response.getStatusLine().getStatusCode();
+
+        if ( statusCode == 200)
+             return response;
+        else
+            throw new XMLConvException("Remote file status code not ok: " + statusCode);
+
+    }
+
+    public static long getSourceURLSize(String ticket, String url, boolean isTrustedMode) throws XMLConvException {
+        try {
+            return Long.parseLong(getHeaderResponse(ticket, url, isTrustedMode).getFirstHeader("Content-Length").getValue() );
+        } catch (Exception e) {
+            LOGGER.error( "ERROR Retrieving Content Length for " + url , e );
+            return -1;
+        }
     }
 
     public static String getSourceUrlWithTicket(String ticket, String sourceUrl, boolean isTrustedMode) throws URISyntaxException {
