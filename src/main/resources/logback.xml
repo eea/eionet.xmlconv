@@ -5,10 +5,6 @@
         </encoder>
     </appender>
 
-    <!-- Development logging -->
-    <logger name="org.hibernate" level="trace" />
-    <logger name="org.springframework.web" level="trace" />
-
     <root level="info">
         <appender-ref ref="STDOUT" />
     </root>
