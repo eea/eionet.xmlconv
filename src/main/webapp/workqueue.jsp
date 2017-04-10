@@ -19,12 +19,12 @@ response.setDateHeader("Expires", 0);
 
 <%@ include file="menu.jsp" %>
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"></link>
+<link rel="stylesheet" type="text/css" href="<c:url value="/scripts/DataTables/media/css/jquery.dataTables.min.css" />"></link>
+<link rel="stylesheet" type="text/css" href="<c:url value="/css/workqueue.css" />"></link>
 <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"></link>
 
-<script type="text/javascript" src="//code.jquery.com/jquery-1.12.4.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
-
+<script type="text/javascript" src="<c:url value="/scripts/jquery-1.9.1.min.js" />"></script>
+<script type="text/javascript" src="<c:url value="/scripts/DataTables/media/js/jquery.dataTables.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/scripts/workqueue.js" />"></script>
 
 <script type="text/javascript">
