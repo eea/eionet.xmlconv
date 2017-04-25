@@ -67,6 +67,22 @@ public class JobScheduler implements ServletContextListener {
             }
         }
     }
+
+    /** holds a clustered quartz scheduler shared amongst instances reserved for heavy jobs */
+    private static class QuartzHeavySchedulerHolder {
+        private static final Scheduler QUARTZ_HEAVY_SCHEDULER;
+        private static final String PROPERTIES_PATH = "quartz-heavy.properties";
+        static {
+            try {
+                StdSchedulerFactory sf = new StdSchedulerFactory();
+                sf.initialize(PROPERTIES_PATH);
+                QUARTZ_HEAVY_SCHEDULER = sf.getScheduler();
+                QUARTZ_HEAVY_SCHEDULER.start();
+            } catch (Exception e) {
+                throw new ExceptionInInitializerError(e);
+            }
+        }
+    }
     
     /** holds the in memory scheduled for private scheduling of each instance */
     private static class QuartzLocalSchedulerHolder {
@@ -86,6 +102,10 @@ public class JobScheduler implements ServletContextListener {
         
     public static Scheduler getQuartzScheduler() throws SchedulerException {
         return QuartzSchedulerHolder.QUARTZ_SCHEDULER;
+    }
+
+    public static Scheduler getQuartzHeavyScheduler() throws SchedulerException {
+        return QuartzHeavySchedulerHolder.QUARTZ_HEAVY_SCHEDULER;
     }
 
     private static Pair<Integer, JobDetail>[] intervalJobs;
@@ -145,17 +165,16 @@ public class JobScheduler implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        if (QuartzSchedulerHolder.QUARTZ_SCHEDULER != null) {
             try {
                 QuartzSchedulerHolder.QUARTZ_SCHEDULER.shutdown(false);
                 QuartzLocalSchedulerHolder.QUARTZ_LOCAL_SCHEDULER.shutdown(false);
+                QuartzHeavySchedulerHolder.QUARTZ_HEAVY_SCHEDULER.shutdown(false);
                 Thread.sleep(1000);
             } catch (SchedulerException e) {
                 LOGGER.error("Failed to shutdown the scheduler", e);
             } catch (InterruptedException e) {
                 LOGGER.error("Failed to shutdown the scheduler", e);
             }
-        }
     }
 
     /**
@@ -172,12 +191,13 @@ public class JobScheduler implements ServletContextListener {
         for (Pair<Integer, JobDetail> job : intervalJobs) {
 
             try {
+                getQuartzHeavyScheduler(); // initialize the heavy scheduler
                 scheduleIntervalJob(job.getLeft(), job.getRight());
                 LOGGER.debug(job.getRight().getKey().getName() + " scheduled, interval=" + job.getLeft());
             } catch (Exception e) {
                 if (!(e instanceof org.quartz.ObjectAlreadyExistsException))  {
                     LOGGER.error(Markers.FATAL, "Error when scheduling " + job.getRight().getKey().getName(), e);
-                }    
+                }
             }
         }
         try {
