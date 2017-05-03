@@ -36,7 +36,6 @@ import java.util.Vector;
 import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
-import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.http.HttpFileManager;
@@ -50,8 +49,9 @@ import eionet.gdem.utils.xml.FeedbackAnalyzer;
 
 import static eionet.gdem.Constants.JOB_VALIDATION;
 import static eionet.gdem.qa.ListQueriesMethod.DEFAULT_CONTENT_TYPE_ID;
+import static eionet.gdem.web.listeners.JobScheduler.getQuartzHeavyScheduler;
 import static eionet.gdem.web.listeners.JobScheduler.getQuartzScheduler;
-import java.util.logging.Level;
+
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -61,14 +61,10 @@ import eionet.gdem.validation.InputAnalyser;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
 import static org.quartz.TriggerBuilder.newTrigger;
-import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static org.quartz.JobBuilder.newJob;
-import static org.quartz.TriggerBuilder.newTrigger;
 
 /**
  * QA Service Service Facade. The service is able to execute different QA related methods that are called through XML/RPC and HTTP

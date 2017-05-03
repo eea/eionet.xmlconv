@@ -24,12 +24,17 @@ package eionet.gdem.qa;
  */
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.Schema;
+import eionet.gdem.logging.Markers;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.validation.JaxpValidationService;
+import eionet.gdem.validation.ValidationService;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
