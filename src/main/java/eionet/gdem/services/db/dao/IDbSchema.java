@@ -85,6 +85,7 @@ public interface IDbSchema {
     String UPPER_LIMIT_FLD = "UPPER_LIMIT";
     String QUERY_URL_FLD    = "URL";
     String ACTIVE_FLD = "ACTIVE";
+    String JOB_RETRY_COUNTER = "RETRY_COUNTER";
 
     /**
      * Field names in SCHEMA table.

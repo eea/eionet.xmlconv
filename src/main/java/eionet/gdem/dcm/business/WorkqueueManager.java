@@ -44,6 +44,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import static eionet.gdem.web.listeners.JobScheduler.getQuartzHeavyScheduler;
 import static eionet.gdem.web.listeners.JobScheduler.getQuartzScheduler;
 
 /**
@@ -281,12 +282,21 @@ public class WorkqueueManager {
                     }
                     // check if job is running
                     JobKey qJob = new JobKey(jobId, "XQueryJob");
-                    if ( "2".equals(jobData[3]) && getQuartzScheduler().checkExists(qJob)) {
-                        try {
-                            // try to interrupt running job
-                            getQuartzScheduler().interrupt(qJob);
-                        }catch (UnableToInterruptJobException e) {
-                            LOGGER.info("Job with ID: " + jobId + " is running and cannot be interrupted and thus cannot be restarted");
+                    if ( "2".equals(jobData[3]) ) {
+                        if ( getQuartzScheduler().checkExists(qJob)) {
+                            try {
+                                if (getQuartzScheduler().checkExists(qJob))
+                                    // try to interrupt running job
+                                    getQuartzScheduler().interrupt(qJob);
+                                else if (getQuartzHeavyScheduler().checkExists(qJob))
+                                    // try to interrupt running job
+                                    getQuartzHeavyScheduler().interrupt(qJob);
+                            }catch (UnableToInterruptJobException e) {
+                                LOGGER.info("Job with ID: " + jobId + " is running and cannot be interrupted and thus cannot be restarted");
+                                continue;
+                            }
+                        }
+                        else {
                             continue;
                         }
                     }
@@ -300,7 +310,7 @@ public class WorkqueueManager {
                 LOGGER.info("Jobs restarted: " + Utils.stringArray2String(jobIds, "," ));
                 for (String jobId : jobIds) {
                     // and reschedule each job
-                    xQueryService.scheduleJob(jobId);
+                    xQueryService.rescheduleJob(jobId);
                 }
             }
         }
@@ -326,11 +336,19 @@ public class WorkqueueManager {
                         }
 
                         JobKey qJob = new JobKey(jobId, "XQueryJob");
-                        if ( "2".equals(jobData[3]) && getQuartzScheduler().checkExists(qJob)) {
+                        if ( "2".equals(jobData[3]) ) {
                             try {
+
+                                if (getQuartzScheduler().checkExists(qJob))
                                 // try to interrupt running job
-                                getQuartzScheduler().interrupt(qJob);
+                                    getQuartzScheduler().interrupt(qJob);
+                                else if (getQuartzHeavyScheduler().checkExists(qJob))
+                                    // try to interrupt running job
+                                    getQuartzHeavyScheduler().interrupt(qJob);
                             }catch (UnableToInterruptJobException e) {
+
+                                GDEMServices.getDaoService().getXQJobDao().markDeleted(jobId);
+
                                 LOGGER.info("Job with ID: " + jobId + " is running and cannot be interrupted and thus cannot be deleted");
                                 continue;
                             }

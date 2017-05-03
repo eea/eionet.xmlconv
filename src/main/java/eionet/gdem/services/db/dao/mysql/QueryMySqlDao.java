@@ -20,15 +20,13 @@ import java.util.Vector;
 
 /**
  * Query MySQL Dao class.
- *
  * @author Unknown
  * @author George Sofianos
  */
 @Repository("queryDao")
 public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
-    /**
-     *      */
+    /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryMySqlDao.class);
 
     private static final String qListQueries = "SELECT " + QUERY_TABLE + "." + QUERY_ID_FLD + ", " + SHORT_NAME_FLD + ", "
@@ -60,9 +58,9 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
     private static final String qQueryInfoByID = qQueryInfo + " WHERE " + QUERY_ID_FLD + "=?";
     private static final String qQueryInfoByFileName = qQueryInfo + " WHERE " + QUERY_FILE_FLD + "=?";
-
+    
     private static final String qQueryUpdateActive = "UPDATE " + QUERY_TABLE + " SET " + ACTIVE_FLD + "=? WHERE " + QUERY_ID_FLD + "=?" ;
-
+    
     private static final String qRemoveQuery = "DELETE FROM " + QUERY_TABLE + " WHERE " + QUERY_ID_FLD + "=?";
     private static final String qUpdateQuery = "UPDATE  " + QUERY_TABLE + " SET " + QUERY_FILE_FLD + "=?" + ", " + SHORT_NAME_FLD
             + "=?" + ", " + DESCR_FLD + "=?" + ", " + XSL_SCHEMA_ID_FLD + "=?" + ", " + RESULT_TYPE_FLD + "=?" + ", "
@@ -79,9 +77,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
     private static final String qCheckQueryFileByName = "SELECT COUNT(*) FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD + "=?";
 
     private static final String qCheckQueryFileByIdAndName = "SELECT COUNT(*) FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD
-            + "=?" + " and " + QUERY_ID_FLD + "=?";
-
-    ;
+            + "=?" + " and " + QUERY_ID_FLD + "=?";;
 
 
     /**
@@ -146,7 +142,6 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
     /**
      * Update query
-     *
      * @param query_id - id from database, used as a constraint
      * @param schema_id - schema id
      * @param short_name - db field for title
@@ -475,20 +470,19 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
         }
 
     }
-
+    
     @Override
     public void activateQuery(String query_id) throws SQLException {
-        setQueryActivation(query_id, true);
+         setQueryActivation(query_id, true);
     }
-
+    
     @Override
     public void deactivateQuery(String query_id) throws SQLException {
-        setQueryActivation(query_id, false);
+         setQueryActivation(query_id, false);
     }
 
     /**
      * Sets query activation
-     *
      * @param query_id Query Id
      * @param set_active Active
      * @throws SQLException If an error occurs.
@@ -501,7 +495,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
         if (isDebugMode) {
             LOGGER.debug("Query is " + qQueryUpdateActive);
         }
-
+        
         try {
             conn = getConnection();
             pstmt = conn.prepareStatement(qQueryUpdateActive);

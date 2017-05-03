@@ -106,6 +106,8 @@ public class Properties {
     public static final int HTTP_MANAGER_TOTAL;
     public static final int HTTP_MANAGER_ROUTE;
 
+    /** File transfering load balancer with extended timeout */
+    public static final String HTTP_TRANSFER_LOADBALANCER;
 
     /** conversion.xml file location, listing all available generated conversions. */
     public static String convFile = null;
@@ -189,6 +191,8 @@ public class Properties {
     /** Context path to be used in classes */
     public static String contextPath;
 
+    public static int heavyJobThreshhold;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -224,6 +228,7 @@ public class Properties {
         HTTP_CONNECT_TIMEOUT = getIntProperty("http.connect.timeout");
         HTTP_MANAGER_TOTAL = getIntProperty("http.manager.total");
         HTTP_MANAGER_ROUTE = getIntProperty("http.manager.route");
+        HTTP_TRANSFER_LOADBALANCER = getStringProperty("http.transfer.loadbalancer");
 
         // DCM settings
         ddURL = getStringProperty("dd.url");
@@ -276,6 +281,7 @@ public class Properties {
         fmeTokenTimeunit = getStringProperty("fme.token.timeunit");
         fmeTimeout = getIntProperty("fme.timeout");
         fmeRetryHours = getIntProperty("fme.retry.hours");
+        heavyJobThreshhold = getIntProperty ("config.heavy.threshold");
     }
 
     /**

@@ -15,7 +15,7 @@
     <bean id="quartzHikariConfig" class="com.zaxxer.hikari.HikariConfig">
         <property name="poolName" value="quartzHikariCP" />
         <property name="minimumIdle" value="5"/>
-        <property name="maximumPoolSize" value="30"/>
+        <property name="maximumPoolSize" value="50"/>
         <property name="dataSourceClassName" value="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" />
         <property name="dataSourceProperties">
             <props>

@@ -2,6 +2,7 @@
 <%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ page import="eionet.gdem.Constants, eionet.gdem.services.GDEMServices, java.io.File"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%
 response.setHeader("Pragma", "No-cache");
@@ -16,8 +17,16 @@ response.setDateHeader("Expires", 0);
 </tiles:insert>
 
 
-
 <%@ include file="menu.jsp" %>
+
+<link rel="stylesheet" type="text/css" href="<c:url value="/scripts/DataTables/media/css/jquery.dataTables.min.css" />"></link>
+<link rel="stylesheet" type="text/css" href="<c:url value="/css/workqueue.css" />"></link>
+<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"></link>
+
+<script type="text/javascript" src="<c:url value="/scripts/jquery-1.9.1.min.js" />"></script>
+<script type="text/javascript" src="<c:url value="/scripts/DataTables/media/js/jquery.dataTables.min.js" />"></script>
+<script type="text/javascript" src="<c:url value="/scripts/workqueue.js" />"></script>
+
 <script type="text/javascript">
 // <![CDATA[
 
@@ -110,21 +119,54 @@ function doRestart(){
         %>
         <div id="main_table">
         <form id="jobs" action="main" method="post">
-            <table class="datatable" width="100%">
-                <col style="width:30px; text-align:right;"/>
+            <table id="workqueue_table" class="datatable" >
+                <col style="width:20px; text-align:right;">
                 <col style="width:50px; text-align:right;"/>
-                <col/>
+                <col style="width:550px; text-align:right;"/>
+                <col style="width:80px; text-align:right;"/>
                 <col style="width:100px"/>
                 <col style="width:100px"/>
                 <col style="width:100px"/>
-                <col style="width:100px"/>
+                <col style="width:120px"/>
                 <thead>
                     <tr>
-                        <th scope="col" class="scope-col" colspan="2">job ID</th>
+                        <th scope="col" class="scope-col"></th>
+                        <th scope="col" class="scope-col">Job Id</th>
                         <th scope="col" class="scope-col">Document URL</th>
                         <th scope="col" class="scope-col">XQuery script</th>
                         <th scope="col" class="scope-col">Job Result</th>
-                        <th scope="col" class="scope-col">status</th>
+                        <th scope="col" class="scope-col">
+                            <div class="dropdown-container">
+                                <div class="dropdown-button noselect">
+                                    <div>
+                                        <div class="dropdown-label">Status</div>
+                                    </div>
+                                    <i class="fa fa-filter"></i>
+                                </div>
+                                <div class="dropdown-content" style="display: none;">
+                                    <div class="dropdown-list">
+                                        <ul>
+                                            <li>
+                                                <input id="received" name="received" type="checkbox" checked="checked">
+                                                <label for="received">RECEIVED</label>
+                                            </li>
+                                            <li>
+                                                <input id="processing" name="processing" type="checkbox" checked="checked">
+                                                <label for="processing">PROCESSING</label>
+                                            </li>
+                                            <li>
+                                                <input id="ready" name="ready" type="checkbox" checked="checked">
+                                                <label for="ready">READY</label>
+                                            </li>
+                                            <li>
+                                                <input id="error" name="error" type="checkbox" checked="checked">
+                                                <label for="error">FATAL ERROR</label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
                         <th scope="col" class="scope-col">Started at</th>
                         <th scope="col" class="scope-col">Instance</th>
                     </tr>
@@ -194,8 +236,7 @@ function doRestart(){
                         url = url.substring(idx + Constants.SOURCE_URL_PARAM.length() + 1);
                     }
 
-
-                    String urlName = (url.length() > Constants.URL_TEXT_LEN ? url.substring(0, Constants.URL_TEXT_LEN) + "..." : url);
+                    String urlName = url;
 
         %>
                     <tr <% if (i % 2 != 0) %>class="zebraeven"<% else %>class="zebraodd"<%;%>>
@@ -214,7 +255,7 @@ function doRestart(){
                                     <%=jobId%>
                                 </td>
                             <%}%>
-                        <td>
+                        <td style="word-wrap:break-word;">
                             <a href="<%=url%>" rel="nofollow"><%=urlName%></a>
                         </td>
                       <td>

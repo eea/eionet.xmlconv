@@ -22,20 +22,6 @@ package eionet.gdem.qa;
  *
  * Original Code: Kaido Laine (TietoEnator)
  */
-import java.io.File;
-import java.io.FileOutputStream;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
-import eionet.gdem.XMLConvException;
-import eionet.gdem.logging.Markers;
-import eionet.gdem.validation.JaxpValidationService;
-import eionet.gdem.validation.ValidationService;
-import org.apache.commons.io.IOUtils;
-
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.SchemaManager;
@@ -44,13 +30,20 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.validation.ValidationService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * XQuery job in the workqueue. A task executing the XQuery task and storing the results of processing.
@@ -97,8 +90,14 @@ public class XQueryJob implements Job, InterruptableJob {
             schemaManager = new SchemaManager();
             initVariables();
             String srcFile = url;
-            // status to -processing
-            changeStatus(Constants.XQ_PROCESSING);
+            //
+            int jobRetries = getJobRetries();
+            if ( jobRetries >= 4) // break execution
+                throw new XMLConvException("Retry count reached");
+
+            // update the Job status on db
+            processJob();
+
             // Do validation
             if (queryID.equals(String.valueOf(Constants.JOB_VALIDATION))) {
                 try {
@@ -148,7 +147,6 @@ public class XQueryJob implements Job, InterruptableJob {
                     schema = getSchema((String) query.get(QaScriptView.XML_SCHEMA));
                     //schemaExpired = (schema != null && schema.isExpired());
                     //isNotLatestReleasedDDSchema = DataDictUtil.isDDSchemaAndNotLatestReleased(schema.getSchema());
-
                 }
 
                 // get script type if it stored in filesystem and we have to guess it by file extension.
@@ -261,6 +259,28 @@ public class XQueryJob implements Job, InterruptableJob {
     private void changeStatus(int status) throws Exception {
         try {
             xqJobDao.changeJobStatus(jobId, status);
+        } catch (Exception e) {
+            LOGGER.error("Database exception when changing job status. " + e.toString());
+            throw e;
+        }
+    }
+
+    private void processJob() throws SQLException {
+        try {
+            xqJobDao.processXQJob(jobId);
+        } catch (Exception e) {
+            LOGGER.error("Database exception when changing job status. " + e.toString());
+            throw e;
+        }
+    }
+
+    /**
+     * Get retry count for the job.
+     * @throws Exception Unable to store data into DB.
+     */
+    private int getJobRetries() throws Exception {
+        try {
+            return xqJobDao.getJobRetries(jobId);
         } catch (Exception e) {
             LOGGER.error("Database exception when changing job status. " + e.toString());
             throw e;

@@ -54,6 +54,30 @@ public interface IXQJobDao extends IDbSchema {
     void changeJobStatus(String jobId, int status) throws SQLException;
 
     /**
+     * Start processing a workqueue job.
+     * @param jobId Job Id
+     * @throws SQLException
+     *             DB error occurred.
+     */
+    void processXQJob(String jobId) throws SQLException;
+
+    /**
+     * Mark a job to not rerun in case of job recovery.
+     * @param jobId Job Id
+     * @throws SQLException
+     *             DB error occurred.
+     */
+    void markDeleted(String jobId) throws SQLException;
+
+    /**
+     * Changes the status of the job in the table also changes the time_stamp showing when the new task was started.
+     * @param jobId Job Id
+     * @throws SQLException
+     *             DB error occurred.
+     */
+    int getJobRetries(String jobId) throws SQLException;
+
+    /**
      * Changes the status of the jobs in the table and sets the downloaded file local src THe jobs should have the sam source url.
      * also changes the time_stamp showing when the new task was started
      * @param url URL
