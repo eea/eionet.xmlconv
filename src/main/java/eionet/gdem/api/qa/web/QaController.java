@@ -71,7 +71,7 @@ public class QaController {
      *
      */
     @RequestMapping(value = "/asynctasks/qajobs")
-    public ResponseEntity<HashMap<String,String>> scheduleQARequestOnFile(@RequestBody EnvelopeWrapper envelopeWrapper) throws XMLConvException, EmptyParameterException, UnsupportedEncodingException {
+    public ResponseEntity<HashMap<String, String>> scheduleQARequestOnFile(@RequestBody EnvelopeWrapper envelopeWrapper) throws XMLConvException, EmptyParameterException, UnsupportedEncodingException {
 
          if (envelopeWrapper.getSourceUrl() == null) {
             throw new EmptyParameterException("sourceUrl");
@@ -82,10 +82,10 @@ public class QaController {
         
         XQueryService xqueryService = new XQueryService();
           String jobId = xqueryService.analyzeXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId());
-          xqueryService.analyzeXMLFile(envelopeWrapper.getSourceUrl(),envelopeWrapper.getScriptId(),null);
-          LinkedHashMap<String,String> results = new LinkedHashMap<String,String>(); 
-          results.put("jobId",jobId);
-          return  new ResponseEntity<HashMap<String,String>>(results,HttpStatus.OK);
+          xqueryService.analyzeXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId(), null);
+          LinkedHashMap<String, String> results = new LinkedHashMap<String,String>();
+          results.put("jobId", jobId);
+          return  new ResponseEntity<HashMap<String, String>>(results, HttpStatus.OK);
     }
 
     /**
@@ -104,8 +104,6 @@ public class QaController {
         return new ResponseEntity<LinkedHashMap<String, List<QaResultsWrapper>>>(jobsQaResults, HttpStatus.OK);
     }
 
- 
-
     /**
      * Get QA Job Status
      *
@@ -115,11 +113,12 @@ public class QaController {
 
         Hashtable<String, String> results = qaService.getJobResults(jobId);
         LinkedHashMap<String, Object> jsonResults = new LinkedHashMap<String, Object>();
-        LinkedHashMap<String,String> executionStatusView = new LinkedHashMap<String,String>();
+        LinkedHashMap<String, String> executionStatusView = new LinkedHashMap<String,String>();
         executionStatusView.put("statusId", results.get(Constants.RESULT_CODE_PRM));
-        executionStatusView.put("statusName",results.get("executionStatusName"));
-        jsonResults.put("scriptTitle",results.get(Constants.RESULT_SCRIPTTITLE_PRM));
-        jsonResults.put("executionStatus",executionStatusView);
+        executionStatusView.put("statusName", results.get("executionStatusName"));
+        jsonResults.put(XQueryService.SCRIPT_ID, results.get(XQueryService.SCRIPT_ID));
+        jsonResults.put("scriptTitle", results.get(Constants.RESULT_SCRIPTTITLE_PRM));
+        jsonResults.put("executionStatus", executionStatusView);
         jsonResults.put("feedbackStatus", results.get(Constants.RESULT_FEEDBACKSTATUS_PRM));
         jsonResults.put("feedbackMessage", results.get(Constants.RESULT_FEEDBACKMESSAGE_PRM));
         jsonResults.put("feedbackContentType", results.get(Constants.RESULT_METATYPE_PRM));
@@ -132,15 +131,15 @@ public class QaController {
     * 
     **/
     @RequestMapping(value = "/qascripts", method = RequestMethod.GET)
-    public ResponseEntity<List<LinkedHashMap<String,String>>> listQaScripts(@RequestParam(value = "schema", required = false) String schema, @RequestParam(value = "active", required = false, defaultValue = "true") String active) throws XMLConvException, BadRequestException {
+    public ResponseEntity<List<LinkedHashMap<String, String>>> listQaScripts(@RequestParam(value = "schema", required = false) String schema, @RequestParam(value = "active", required = false, defaultValue = "true") String active) throws XMLConvException, BadRequestException {
 
         if (!ACTIVE_STATUS.contains(active)) {
             throw new BadRequestException("parameter active value must be one of :" + ACTIVE_STATUS.toString());
         }
 
-        List<LinkedHashMap<String,String>> results = qaService.listQAScripts(schema, active);
+        List<LinkedHashMap<String, String>> results = qaService.listQAScripts(schema, active);
        
-        return new ResponseEntity<List<LinkedHashMap<String,String>>>(results, HttpStatus.OK);
+        return new ResponseEntity<List<LinkedHashMap<String, String>>>(results, HttpStatus.OK);
     }
 
 

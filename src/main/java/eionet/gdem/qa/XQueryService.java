@@ -71,8 +71,11 @@ import org.slf4j.LoggerFactory;
  * POST and GET.
  *
  * @author Enriko Käsper
+ * @author George Sofianos
  */
 public class XQueryService extends RemoteService {
+
+    public static final String SCRIPT_ID = "scriptId";
 
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
     private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
@@ -352,6 +355,8 @@ public class XQueryService extends RemoteService {
         String feedbackStatus = Constants.XQ_FEEDBACKSTATUS_UNKNOWN;
         String feedbackMsg = "";
 
+        int xq_id = 0;
+
         if (status == Constants.XQ_RECEIVED || status == Constants.XQ_DOWNLOADING_SRC || status == Constants.XQ_PROCESSING) {
             resultCode = Constants.JOB_NOT_READY;
             resultValue = "*** Not ready ***";
@@ -368,9 +373,8 @@ public class XQueryService extends RemoteService {
             } else {
                 resultCode = -1; // not expected to reach here
             }
-
             try {
-                int xq_id = 0;
+
                 try {
                     xq_id = Integer.parseInt(jobData[5]);
                 } catch (NumberFormatException n) {
@@ -404,6 +408,7 @@ public class XQueryService extends RemoteService {
             h.put(Constants.RESULT_SCRIPTTITLE_PRM, script_title);
             h.put(Constants.RESULT_FEEDBACKSTATUS_PRM, feedbackStatus);
             h.put(Constants.RESULT_FEEDBACKMESSAGE_PRM, feedbackMsg);
+            h.put(XQueryService.SCRIPT_ID, Integer.toString(xq_id));
 
         } catch (Exception e) {
             String err_mess =

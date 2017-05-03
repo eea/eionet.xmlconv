@@ -359,6 +359,7 @@ https://taskman.eionet.europa.eu/issues/29005 regarding the REST API of the xmlc
   
    ```json
     {
+     "scriptId": "12",
      "scriptTitle": "Check obligation dependent QA/QC rules",
      "executionStatus": {
         "statusId": "0",
