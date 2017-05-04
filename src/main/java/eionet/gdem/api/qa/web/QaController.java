@@ -92,7 +92,7 @@ public class QaController {
      * Schedule a Qa Job for an Envelope
      *
      */
-    @RequestMapping(value = "/asynctasks/qajobs/batch", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/asynctasks/qajobs/batch", consumes = "application/json", produces = "application/json")
     public ResponseEntity<LinkedHashMap<String, List<QaResultsWrapper>>> scheduleQaRequestOnEnvelope(@RequestBody EnvelopeWrapper envelopeWrapper) throws XMLConvException, EmptyParameterException, JsonProcessingException {
 
         if (envelopeWrapper.getEnvelopeUrl() == null) {
@@ -108,7 +108,7 @@ public class QaController {
      * Get QA Job Status
      *
      */
-    @RequestMapping(value = "/asynctasks/qajobs/{jobId}", method = RequestMethod.GET)
+    @GetMapping(value = "/asynctasks/qajobs/{jobId}")
     public ResponseEntity<LinkedHashMap<String, Object>> getQAResultsForJob(@PathVariable String jobId) throws XMLConvException, JsonProcessingException {
 
         Hashtable<String, String> results = qaService.getJobResults(jobId);

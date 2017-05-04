@@ -135,16 +135,16 @@
     </listener>
     <!-- Spring MVC Dispatcher Servlet-->
     <servlet>
-        <servlet-name>springServlet</servlet-name>
+        <servlet-name>restServlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>/WEB-INF/servlet-context.xml</param-value>
+            <param-value>/WEB-INF/servlet-restapi.xml</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>springServlet</servlet-name>
+        <servlet-name>restServlet</servlet-name>
         <url-pattern>/restapi/*</url-pattern>
     </servlet-mapping>
 

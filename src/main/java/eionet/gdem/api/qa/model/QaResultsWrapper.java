@@ -21,6 +21,10 @@ public class QaResultsWrapper implements Serializable {
 
     private String fileUrl;
 
+    private String scriptId;
+
+    private String scriptTitle;
+
     public String getJobId() {
         return jobId;
     }
@@ -37,12 +41,30 @@ public class QaResultsWrapper implements Serializable {
         this.fileUrl = fileUrl;
     }
 
+    public String getScriptId() {
+        return this.scriptId;
+    }
+
+    public void setScriptId(String scriptId) {
+        this.scriptId = scriptId;
+    }
+
+    public String getScriptTitle() {
+        return this.scriptTitle;
+    }
+
+    public void setScriptTitle(String scriptTitle) {
+        this.scriptTitle = scriptTitle;
+    }
+
     public QaResultsWrapper() {
     }
 
-    public QaResultsWrapper(String jobId, String fileUrl) {
+    public QaResultsWrapper(String jobId, String fileUrl, String scriptId, String scriptTitle) {
         this.jobId = jobId;
         this.fileUrl = fileUrl;
+        this.scriptId = scriptId;
+        this.scriptTitle = scriptTitle;
     }
 
 }

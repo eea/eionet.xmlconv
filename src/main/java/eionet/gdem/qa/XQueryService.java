@@ -36,6 +36,8 @@ import java.util.Vector;
 import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
+import eionet.gdem.api.qa.service.QaService;
+import eionet.gdem.api.qa.service.impl.QaServiceImpl;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.http.HttpFileManager;
@@ -58,6 +60,8 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.quartz.JobBuilder.newJob;
 
 import eionet.gdem.validation.InputAnalyser;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -190,19 +194,26 @@ public class XQueryService extends RemoteService {
         }
         // get all possible xqueries from db
         String newId = "-1"; // should not be returned with value -1;
-        String file = origFile;
 
         Vector queries = listQueries(schema);
 
         if (!Utils.isNullVector(queries)) {
             for (int j = 0; j < queries.size(); j++) {
 
-                String query_id = String.valueOf( ( (Hashtable) queries.get(j)).get("query_id"));
-                newId = analyzeXMLFile( origFile, query_id , schema );
+                String scriptId = String.valueOf(((Hashtable) queries.get(j)).get("id"));
+                String scriptTitle = "";
+                if (scriptId != null && "-1".equals(scriptId)) {
+                    scriptTitle = "Schema Validation";
+                } else {
+                    scriptTitle = StringUtils.defaultIfEmpty(ConvertUtils.convert(((Hashtable) queries.get(j)).get("short_name")), "");
+                }
+                newId = analyzeXMLFile(origFile, scriptId, schema);
 
                 Vector queryResult = new Vector();
                 queryResult.add(newId);
                 queryResult.add(origFile);
+                queryResult.add(scriptId);
+                queryResult.add(scriptTitle);
                 result.add(queryResult);
             }
         }
@@ -449,9 +460,9 @@ public class XQueryService extends RemoteService {
 
         try {
 
-            if ( String.valueOf(Constants.JOB_VALIDATION).equals(scriptId )  ){ // Validation
+            if (String.valueOf(Constants.JOB_VALIDATION).equals(scriptId)) { // Validation
                 query = new HashMap();
-                if ( isEmpty(schema)){
+                if (isEmpty(schema)){
                     InputAnalyser analyser = new InputAnalyser();
                     try {
                         analyser.parseXML(sourceURL);
@@ -461,24 +472,24 @@ public class XQueryService extends RemoteService {
                         throw new XMLConvException("Could not extract schema");
                     }
                     //String schemaUrl = findSchemaFromXml(sourceUrl);
-                    query.put( QaScriptView.QUERY, schema);
+                    query.put(QaScriptView.QUERY, schema);
                 }
                 //else {
-                query.put(QaScriptView.QUERY , schema);
+                query.put(QaScriptView.QUERY, schema);
                     //Vector schemas = schemaDao.getSchemas(schema, false);
                 //}
-                query.put( QaScriptView.QUERY_ID , "-1");
-                query.put( QaScriptView.CONTENT_TYPE, DEFAULT_CONTENT_TYPE_ID);
-                query.put( QaScriptView.SCRIPT_TYPE, "xsd");
+                query.put(QaScriptView.QUERY_ID, "-1");
+                query.put(QaScriptView.CONTENT_TYPE, DEFAULT_CONTENT_TYPE_ID);
+                query.put(QaScriptView.SCRIPT_TYPE, "xsd");
 
             }
             else{
-                query = queryDao.getQueryInfo( scriptId);
+                query = queryDao.getQueryInfo(scriptId);
             }
-            if (isNull(  query ) ){
+            if (isNull(query)) {
                 throw new XMLConvException("Script ID does not exist");
             }
-            if ( "0".equals(query.get(QaScriptView.IS_ACTIVE) )){
+            if ("0".equals(query.get(QaScriptView.IS_ACTIVE))) {
                 throw new XMLConvException("Script is not active");
             }
             Vector outputTypes = convTypeDao.getConvTypes();
@@ -515,21 +526,21 @@ public class XQueryService extends RemoteService {
             long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());
 
             //save the job definition in the DB
-            jobId = xqJobDao.startXQJob(sourceURL, queryFile, resultFile, queryId ,scriptType);
+            jobId = xqJobDao.startXQJob(sourceURL, queryFile, resultFile, queryId, scriptType);
             //
-            LOGGER.debug( jobId + " : " + sourceURL + " size: " + sourceSize );
+            LOGGER.debug(jobId + " : " + sourceURL + " size: " + sourceSize);
 
             scheduleJob(jobId, sourceSize, scriptType);
 
 
         } catch (SQLException e) {
-            LOGGER.error("AnalyzeXMLFile:" , e);
+            LOGGER.error("AnalyzeXMLFile:", e);
             throw new XMLConvException(e.getMessage());
         } catch (SchedulerException e) {
-            LOGGER.error("AnalyzeXMLFile:" , e);
+            LOGGER.error("AnalyzeXMLFile:", e);
             throw new XMLConvException(e.getMessage());
         } catch (URISyntaxException e) {
-            LOGGER.error("AnalyzeXMLFile:" , e);
+            LOGGER.error("AnalyzeXMLFile:", e);
             throw new XMLConvException(e.getMessage());
         }
 
