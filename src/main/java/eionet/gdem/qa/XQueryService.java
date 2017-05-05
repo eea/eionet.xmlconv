@@ -201,12 +201,7 @@ public class XQueryService extends RemoteService {
             for (int j = 0; j < queries.size(); j++) {
 
                 String scriptId = String.valueOf(((Hashtable) queries.get(j)).get("id"));
-                String scriptTitle = "";
-                if (scriptId != null && "-1".equals(scriptId)) {
-                    scriptTitle = "Schema Validation";
-                } else {
-                    scriptTitle = StringUtils.defaultIfEmpty(ConvertUtils.convert(((Hashtable) queries.get(j)).get("short_name")), "");
-                }
+                String scriptTitle = StringUtils.defaultIfEmpty(ConvertUtils.convert(((Hashtable) queries.get(j)).get("name")), "");
                 newId = analyzeXMLFile(origFile, scriptId, schema);
 
                 Vector queryResult = new Vector();
