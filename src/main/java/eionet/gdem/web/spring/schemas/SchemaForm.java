@@ -3,10 +3,7 @@ package eionet.gdem.web.spring.schemas;
 
 import eionet.gdem.dto.Schema;
 import eionet.gdem.utils.Utils;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.upload.FormFile;
-import org.apache.struts.validator.ValidatorForm;
+import eionet.gdem.web.spring.FileUploadWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
@@ -35,7 +32,7 @@ public class SchemaForm {
 
     private String uplSchemaFileUrl;
 
-    private FormFile schemaFile;
+    private FileUploadWrapper schemaFile;
 
     private String lastModified;
 
@@ -89,7 +86,7 @@ public class SchemaForm {
         return schema;
     }
 
-    public FormFile getSchemaFile() {
+    public FileUploadWrapper getSchemaFile() {
         return schemaFile;
     }
 
@@ -125,7 +122,7 @@ public class SchemaForm {
         return dtd;
     }
 
-    public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
+/*    public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         schema = null;
         description = null;
         description = null;
@@ -139,7 +136,7 @@ public class SchemaForm {
         schemaFile = null;
         lastModified = null;
         expireDate = null;
-    }
+    }*/
 
     public void setDescription(String description) {
         this.description = description;
@@ -200,7 +197,7 @@ public class SchemaForm {
         this.schema = schema;
     }
 
-    public void setSchemaFile(FormFile schemaFile) {
+    public void setSchemaFile(FileUploadWrapper schemaFile) {
         this.schemaFile = schemaFile;
     }
 

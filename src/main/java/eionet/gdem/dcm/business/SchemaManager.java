@@ -36,13 +36,11 @@ import java.util.List;
 import java.util.Vector;
 
 import eionet.gdem.Constants;
+import eionet.gdem.web.spring.FileUploadWrapper;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.commons.collections.comparators.NullComparator;
 import org.apache.commons.io.IOUtils;
-
-
-import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ConversionService;
@@ -760,12 +758,13 @@ public class SchemaManager {
      * @param fkSchemaId XML Schema object ID.
      * @throws DCMException in case of IO or database errors.
      */
-    public void addUplSchema(String user, FormFile file, String fileName, String fkSchemaId) throws DCMException {
+    public void addUplSchema(String user, FileUploadWrapper file, String fileName, String fkSchemaId) throws DCMException {
 
         try {
-            InputStream fileInputStream = file.getInputStream();
+            InputStream fileInputStream = file.getFile().getInputStream();
             addUplSchema(user, fileInputStream, fileName, fkSchemaId);
-            file.destroy();
+            // TODO: Fix this
+            // file.destroy();
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
@@ -1015,13 +1014,14 @@ public class SchemaManager {
      * @param file new content of the XML Schema
      * @throws DCMException in case of IO or database error.
      */
-    public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, FormFile file)
+    public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, FileUploadWrapper file)
             throws DCMException {
 
         try {
-            InputStream fileInputStream = file.getInputStream();
+            InputStream fileInputStream = file.getFile().getInputStream();
             updateUplSchema(user, uplSchemaId, schemaId, fileName, fileInputStream);
-            file.destroy();
+            // TODO: Fix this
+            // file.destroy();
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {

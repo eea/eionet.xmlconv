@@ -1,7 +1,7 @@
 package eionet.gdem.web.spring.schemas;
 
 import eionet.gdem.dto.Schema;
-import org.apache.struts.upload.FormFile;
+import eionet.gdem.web.spring.FileUploadWrapper;
 
 public class UploadSchemaForm {
 
@@ -16,14 +16,14 @@ public class UploadSchemaForm {
 
     // T_UPL_SCHEMA
     private String uplSchemaId;
-    private FormFile schemaFile;
+    private FileUploadWrapper schemaFile;
     private String schemaFileName;
 
-    public FormFile getSchemaFile() {
+    public FileUploadWrapper getSchemaFile() {
         return schemaFile;
     }
 
-    public void setSchemaFile(FormFile schema) {
+    public void setSchemaFile(FileUploadWrapper schema) {
         this.schemaFile = schema;
     }
 

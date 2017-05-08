@@ -290,6 +290,9 @@
                     <compilerVersion>${java_version}</compilerVersion>
                     <source>${java_version}</source>
                     <target>${java_version}</target>
+                    <excludes>
+                        <exclude>**/struts/**</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
 
@@ -711,7 +714,7 @@
             </dependency>
 
             <!-- Struts dependencies -->
-            <dependency>
+            <!--<dependency>
                 <groupId>org.apache.struts</groupId>
                 <artifactId>struts-core</artifactId>
                 <version>1.3.10</version>
@@ -743,7 +746,7 @@
                 <groupId>org.apache.struts</groupId>
                 <artifactId>struts-tiles</artifactId>
                 <version>1.3.10</version>
-            </dependency>
+            </dependency>-->
 
 <!--            <dependency>
                 <groupId>org.apache.struts</groupId>

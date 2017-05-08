@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:ew="hasPerm">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:perm="hasPerm">
     <body>
     <div th:fragment="menu">
         <div id="toolribbon">
@@ -58,15 +58,15 @@
             <li><a href="/old/qaSandbox">QA Sandbox</a></li>
             <li><a href="/old/xmlFiles">XML Files</a></li>
 
-            <ew:hasPerm username="username" acl="host" permission="v">
+            <perm:hasPerm acl="host" permission="v">
                 <li><a href="/old/hosts/list" th:text="#{label.menu.hosts}"></a></li>
-            </ew:hasPerm>
-            <ew:hasPerm username="username" acl="config" permission="u">
+            </perm:hasPerm>
+            <perm:hasPerm acl="config" permission="u">
                 <li><a href="/old/config/database" th:text="#{label.menu.config}"></a></li>
-            </ew:hasPerm>
-            <ew:hasPerm username="username" acl="serverstatus" permission="v">
+            </perm:hasPerm>
+            <perm:hasPerm acl="serverstatus" permission="v">
                 <li><a href="/serverstatus.jsp" th:text="#{label.menu.serverstatus}"></a></li>
-            </ew:hasPerm>
+            </perm:hasPerm>
         </ul>
 
         <!-- To be removed after eveything is migrated -->
@@ -82,15 +82,15 @@
             <li><a href="/do/qaScripts" th:text="#{label.menu.queries}"></a></li>
             <li><a href="/do/qaSandboxForm" th:text="#{label.menu.xqsendbox}"></a></li>
             <li><a href="/do/uplXmlFiles" th:text="#{label.menu.xmlfiles}"></a></li>
-            <ew:hasPerm username="username" acl="host" permission="v">
+            <perm:hasPerm acl="host" permission="v">
                 <li><a href="/do/hosts/list" th:text="#{label.menu.hosts}"></a></li>
-            </ew:hasPerm>
-            <ew:hasPerm username="username" acl="config" permission="u">
+            </perm:hasPerm>
+            <perm:hasPerm acl="config" permission="u">
                 <li><a href="/do/dbForm" th:text="#{label.menu.config}"></a></li>
-            </ew:hasPerm>
-            <ew:hasPerm username="username" acl="serverstatus" permission="v">
+            </perm:hasPerm>
+            <perm:hasPerm acl="serverstatus" permission="v">
                 <li><a href="/serverstatus.jsp" th:text="#{label.menu.serverstatus}"></a></li>
-            </ew:hasPerm>
+            </perm:hasPerm>
         </ul>
     </div> <!-- leftcolumn -->
     </div>

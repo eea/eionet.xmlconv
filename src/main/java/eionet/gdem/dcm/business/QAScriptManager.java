@@ -33,11 +33,10 @@ import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.web.spring.FileUploadWrapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
-
-import org.apache.struts.upload.FormFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -150,7 +149,7 @@ public class QAScriptManager {
      * @throws DCMException if DB or file operation fails.
      */
     public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
-            String scriptType, String curFileName, FormFile file, String upperLimit, String url) throws DCMException {
+                       String scriptType, String curFileName, FileUploadWrapper file, String upperLimit, String url) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
@@ -168,7 +167,7 @@ public class QAScriptManager {
         }
 
         try {
-            String fileName = file.getFileName().trim();
+            String fileName = file.getFile().getName().trim();
             // upload file
             if (!Utils.isNullStr(fileName)) {
                 if (Utils.isNullStr(curFileName)) {
@@ -285,10 +284,10 @@ public class QAScriptManager {
      * @throws FileNotFoundException File is not found.
      * @throws IOException file store operations failed.
      */
-    public void storeQAScriptFile(FormFile file, String fileName) throws FileNotFoundException, IOException {
+    public void storeQAScriptFile(FileUploadWrapper file, String fileName) throws FileNotFoundException, IOException {
 
         OutputStream output = null;
-        InputStream in = file.getInputStream();
+        InputStream in = file.getFile().getInputStream();
         String filepath = Properties.queriesFolder + File.separator + fileName;
 
         try {
@@ -297,7 +296,8 @@ public class QAScriptManager {
         } finally {
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(output);
-            file.destroy();
+            // TODO: Fix this
+            // file.destroy();
         }
 
     }
@@ -397,7 +397,7 @@ public class QAScriptManager {
      * @throws DCMException If an error occurs.
      */
     public String add(String user, String shortName, String schemaId, String schema, String resultType, String description,
-            String scriptType, FormFile scriptFile, String upperLimit, String url) throws DCMException {
+            String scriptType, FileUploadWrapper scriptFile, String upperLimit, String url) throws DCMException {
 
         String scriptId = null;
         // If remote file URL and local file are specified use local file
@@ -414,11 +414,11 @@ public class QAScriptManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
-        boolean useLocalFile = !Utils.isNullStr(scriptFile.getFileName());
+        boolean useLocalFile = !Utils.isNullStr(scriptFile.getFile().getName());
         try {
             String fileName = "";
             if (useLocalFile) {
-                fileName = scriptFile.getFileName().trim();
+                fileName = scriptFile.getFile().getName().trim();
             } else {
                 fileName = StringUtils.substringAfterLast(url, "/");
             }

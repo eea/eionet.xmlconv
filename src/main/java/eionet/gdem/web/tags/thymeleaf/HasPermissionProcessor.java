@@ -20,7 +20,7 @@ import org.thymeleaf.templatemode.TemplateMode;
  *
  *
  */
-public class HasPermissionProcessor extends AbstractAttributeTagProcessor {
+public class HasPermissionProcessor extends AbstractElementTagProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HasPermissionProcessor.class);
     private static final String ELEM_NAME = "hasperm";
@@ -30,11 +30,11 @@ public class HasPermissionProcessor extends AbstractAttributeTagProcessor {
         super(
                 templateMode,
             dialectPrefix,
+            ELEM_NAME,
+            true,
             null,
             false,
-            "permission",
-            false,
-                PRECEDENCE, true);
+                PRECEDENCE);
     }
 /*
     @Override
@@ -56,7 +56,7 @@ public class HasPermissionProcessor extends AbstractAttributeTagProcessor {
     }*/
 
     @Override
-    protected void doProcess(ITemplateContext context, IProcessableElementTag tag, AttributeName attributeName, String attributeValue, IElementTagStructureHandler structureHandler) {
+    protected void doProcess(ITemplateContext context, IProcessableElementTag tag, IElementTagStructureHandler structureHandler) {
         IEngineConfiguration configuration = context.getConfiguration();
         IStandardExpressionParser parser = StandardExpressions.getExpressionParser(configuration);
         IAttribute aclPath = tag.getAttribute("acl");

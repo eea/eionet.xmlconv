@@ -37,7 +37,6 @@ import eionet.acl.AppUser;
 import edu.yale.its.tp.cas.client.filter.CASFilter;
 import eionet.acl.SignOnException;
 import eionet.gdem.XMLConvException;
-import eionet.gdem.web.struts.login.AfterCASLoginAction;
 
 /**
  * This is a class containing some utility methods for keeping security.
@@ -148,7 +147,7 @@ public final class SecurityUtil {
         String afterLoginUrl = getRealRequestURL(request);
         // store the current page in the session to be able to come back after login
         if (afterLoginUrl != null && !afterLoginUrl.contains("login"))
-            request.getSession().setAttribute(AfterCASLoginAction.AFTER_LOGIN_ATTR_NAME, afterLoginUrl);
+            request.getSession().setAttribute("afterLogin", afterLoginUrl);
 
         String casLoginUrl = request.getSession().getServletContext().getInitParameter(CASFilter.LOGIN_INIT_PARAM);
         if (casLoginUrl != null) {
