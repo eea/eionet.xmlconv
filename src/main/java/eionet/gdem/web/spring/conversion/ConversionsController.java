@@ -11,7 +11,7 @@ import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.spring.SpringMessages;
-import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
+import eionet.gdem.web.spring.stylesheet.StylesheetListLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +55,27 @@ public class ConversionsController {
         ConversionForm form = new ConversionForm();
         model.addAttribute("form", form);
         return "/listConv.jsp";
+    }
+
+    @GetMapping("/search")
+    public String searchXML(Model model) {
+        ConversionForm form = new ConversionForm();
+        model.addAttribute("form", form);
+        return "/crConversion.jsp";
+    }
+
+    @GetMapping("/excel2Xml")
+    public String excel2xml(Model model) {
+        ConversionForm form = new ConversionForm();
+        model.addAttribute("form", form);
+        return "/excel2XmlConv.jsp";
+    }
+
+    @GetMapping("/json2Xml")
+    public String json2xml(Model model) {
+        ConversionForm form = new ConversionForm();
+        model.addAttribute("form", form);
+        return "/json2Xml.jsp";
     }
 
     @PostMapping

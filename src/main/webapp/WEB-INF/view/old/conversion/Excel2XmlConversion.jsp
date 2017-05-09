@@ -1,88 +1,95 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties"%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-
-
+<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties" %>--%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<html:xhtml/>
+<%--<html:xhtml/>--%>
 <div style="width:100%;">
 
-        <tiles:insert definition="ConverterTabs">
-            <tiles:put name="selectedTab" value="excel2xml" />
-        </tiles:insert>
+  <tiles:insertDefinition name="ConverterTabs">
+    <tiles:putAttribute name="selectedTab" value="excel2xml"/>
+  </tiles:insertDefinition>
 
-        <ed:breadcrumbs-push label="Spreadsheet to XML" level="1" />
-        <h1><spring:message code="label.conversion.excel2xml.heading"/></h1>
+  <ed:breadcrumbs-push label="Spreadsheet to XML" level="1"/>
+  <h1><spring:message code="label.conversion.excel2xml.heading"/></h1>
 
-        <%-- include Error display --%>
-        <tiles:insert definition="Error" />
+  <%-- include Error display --%>
+  <tiles:insertDefinition name="Error"/>
 
-        <form:form action="/excel2XmlConversion" method="get" >
-        <table class="datatable">
-            <tr>
-                 <th scope="col" class="scope-col">
-                    <spring:message code="label.conversion.url"/>
-                  </th>
-            </tr>
-            <tr>
-                <td>
-                    <label for="inpUrl"><spring:message code="label.conversion.insertExcelUrl"/></label>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <html:text name="ExcelConversionForm" property="url" style="width: 45em;" styleId="inpUrl" size="200"/>
-                </td>
-            </tr>
-            <tr>
-                 <th scope="col" class="scope-col">
-                    <spring:message code="label.conversion.sheets"/>
-                  </th>
-            </tr>
-            <tr>
-                <td>
-                    <spring:message code="label.conversion.excel.format"/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <html:radio property="split" styleId="split1" value="all" onclick="sheet.disabled=true" />
-                    <label for="split1"><spring:message code="label.conversion.excel.allsheets"/></label>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <html:radio property="split"  styleId="split2" value="split" onclick="sheet.disabled=false"/>
-                    <label for="split2"><spring:message code="label.conversion.excel.sheetname"/></label>
-                    <html:text property="sheet" onfocus="split[1].checked=true"/>
-                </td>
-            </tr>
-                <tr>
-                  <td>
-                    <html:checkbox name="ExcelConversionForm" property="showConversionLog" styleId ="chkConversion" />
-                    <label for="chkConversion"><spring:message code="label.conversion.excel.showConversionLog"/></label>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="center">
-                    <html:submit styleClass="button">
-                        <spring:message code="label.conversion.convert"/>
-                    </html:submit>
-                  </td>
-                </tr>
-                <logic:notEmpty name="ExcelConversionForm" property="conversionLog">
-                    <tr>
-                      <td><bean:write name="ExcelConversionForm" property="conversionLog" filter="false"/></td>
-                    </tr>
-                </logic:notEmpty>
-                <logic:empty name="ExcelConversionForm" property="conversionLog">
-                    <tr>
-                        <td><spring:message code="label.conversion.excel.warning"/>
-                        </td>
-                    </tr>
-                </logic:empty>
-        </table>
-      <!--/fieldset-->
-    </form:form>
+  <form:form action="/excel2XmlConversion" method="get" modelAttribute="form">
+    <table class="datatable">
+      <tr>
+        <th scope="col" class="scope-col">
+          <spring:message code="label.conversion.url"/>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <label for="inpUrl"><spring:message code="label.conversion.insertExcelUrl"/></label>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <%--name="ExcelConversionForm" property="url" style="width: 45em;" styleId="inpUrl" size="200"/>--%>
+          <form:input id="inpUrl" path="${url}"/>
+        </td>
+      </tr>
+      <tr>
+        <th scope="col" class="scope-col">
+          <spring:message code="label.conversion.sheets"/>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <spring:message code="label.conversion.excel.format"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <%--styleId="split1" value="all" onclick="sheet.disabled=true" />--%>
+          <form:radiobutton path="${split}" id="split1" value="all"/>
+          <label for="split1"><spring:message code="label.conversion.excel.allsheets"/></label>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <%--styleId="split2" value="split" onclick="sheet.disabled=false"/>--%>
+          <form:radiobutton path="${split}" id="split2" value="split"/>
+          <label for="split2"><spring:message code="label.conversion.excel.sheetname"/></label>
+            <%--onfocus="split[1].checked=true"/>--%>
+          <form:input path="${sheet}"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <%--name="ExcelConversionForm" property="showConversionLog" styleId ="chkConversion" />--%>
+          <form:checkbox path="${showConversionLog}" id="chkConversion" value="true"/>
+          <label for="chkConversion"><spring:message code="label.conversion.excel.showConversionLog"/></label>
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <input type="submit" styleClass="button">
+          <spring:message code="label.conversion.convert"/>
+          </input>
+        </td>
+      </tr>
+      <c:choose>
+        <c:when test="${ExcelConversionForm.conversionLog}">
+          <tr>
+            <td><bean:write name="ExcelConversionForm" property="conversionLog" filter="false"/></td>
+          </tr>
+        </c:when>
+        <c:otherwise>
+          <tr>
+            <td><spring:message code="label.conversion.excel.warning"/>
+            </td>
+          </tr>
+        </c:otherwise>
+      </c:choose>
+    </table>
+    <!--/fieldset-->
+  </form:form>
 </div>

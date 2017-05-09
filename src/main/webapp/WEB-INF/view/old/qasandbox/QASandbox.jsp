@@ -1,5 +1,5 @@
 <%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties" %>--%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
@@ -103,8 +103,8 @@
       </tr>
       <tr>
         <td>
-          <%--<bean:define id="schemas" name="qascript.qascriptList" property="qascripts"/>--%>
-          <%--name="QASandboxForm" property="schemaUrl"--%>
+            <%--<bean:define id="schemas" name="qascript.qascriptList" property="qascripts"/>--%>
+            <%--name="QASandboxForm" property="schemaUrl"--%>
           <form:select path="schemaUrl" styleId="selSchema">
             <form:option value="">--</form:option>
             <form:options collection="schemas" property="schema" labelProperty="label"/>
@@ -114,7 +114,8 @@
       <tr>
         <td>
           <input type="submit" value="searchXML" styleClass="button" property="action" title="${searchXmlLabel}"/>
-          <input type="submit" value="searchScripts" styleClass="button" property="action" title="${searchScriptsLabel}"/>
+          <input type="submit" value="searchScripts" styleClass="button" property="action"
+                 title="${searchScriptsLabel}"/>
         </td>
       </tr>
       <tr>
@@ -126,9 +127,9 @@
 
   <form:form action="/executeSandboxAction" method="post" modelAttribute="QASandboxForm">
     <table class="formtable">
-      <%-- CR XML files  --%>
-      <%--<bean:define id="schema" name="QASandboxForm" property="schema" type="Schema"/>--%>
-      <%--name="schema" property="crfiles">--%>
+        <%-- CR XML files  --%>
+        <%--<bean:define id="schema" name="QASandboxForm" property="schema" type="Schema"/>--%>
+        <%--name="schema" property="crfiles">--%>
       <c:if test="${Schema.schema}">
         <%--<bean:size id="countfiles" name="schema" property="crfiles"/>
         <bean:define id="crfiles" name="schema" property="crfiles"/>--%>
@@ -142,7 +143,8 @@
         <c:if test="${countfiles > 0}">
           <tr>
             <td>
-              <form:select path="QASandboxForm.sourceUrl" name="QASandboxForm" property="sourceUrl" size="5" styleId="selXml">
+              <form:select path="QASandboxForm.sourceUrl" name="QASandboxForm" property="sourceUrl" size="5"
+                           styleId="selXml">
                 <form:option value="">--</form:option>
                 <form:options collection="crfiles" name="schema" property="url" labelProperty="label"/>
               </form:select>
@@ -150,7 +152,7 @@
           </tr>
           <tr>
             <td>
-              <form:input path="manualUrl" styleClass="button" property="action" title="label.qasandbox.manualUrl" />
+              <form:input path="manualUrl" styleClass="button" property="action" title="label.qasandbox.manualUrl"/>
             </td>
           </tr>
         </c:if>
@@ -180,7 +182,7 @@
   <%-- Insert URL manually --%>
   <%--notPresent name="schema" property="crfiles">--%>
   <c:if test="${!schema.crfiles}">
-    <form:form action="/executeSandboxAction" method="post"  modelAttribute="QASandboxForm">
+    <form:form action="/executeSandboxAction" method="post" modelAttribute="QASandboxForm">
       <table class="formtable">
         <tr class="zebraeven">
           <td>
@@ -191,13 +193,14 @@
         </tr>
         <tr>
           <td>
-            <%--styleId="txtSourceUrl" size="120" style="max-width: 780px;"/>--%>
-            ${sourceUrl}
+              <%--styleId="txtSourceUrl" size="120" style="max-width: 780px;"/>--%>
+              ${sourceUrl}
           </td>
         </tr>
         <tr>
           <td>
-            <input type="submit" value="extractSchema" styleClass="button" property="action" title="${extractSchemaLabel}"/>
+            <input type="submit" value="extractSchema" styleClass="button" property="action"
+                   title="${extractSchemaLabel}"/>
           </td>
         </tr>
         <tr>
@@ -206,7 +209,7 @@
       </table>
     </form:form>
 
-    <%--<logic:equal value="true" name="qascript.permissions" property="qsuPrm">--%>
+    <%--<c:if equal value="true" name="qascript.permissions" property="qsuPrm">--%>
     <c:if test="${qascript.permissions == 'qsuPrm'}">
       <c:if test="${not(fn:contains(header['User-Agent'],'MSIE 9.0'))}">
         <button style="float:right;" id="clickable">Upload file</button>
@@ -294,9 +297,9 @@
   <form:form action="/executeSandboxAction" method="post" modelAttribute="QASandboxForm">
     <table class="formtable">
         <%-- QA script type & content --%>
-      <%--<logic:equal name="QASandboxForm" property="showScripts" value="false">--%>
+        <%--<c:if equal name="QASandboxForm" property="showScripts" value="false">--%>
       <c:if test="${QASandboxForm.showScripts == false}">
-        <%--<logic:equal value="true" name="qascript.permissions" property="qsiPrm">--%>
+        <%--<c:if equal value="true" name="qascript.permissions" property="qsiPrm">--%>
         <c:if test="${qascript.permissions == 'qsiPrm'}">
           <tr>
             <td>&nbsp;</td>
@@ -313,14 +316,14 @@
               <label class="question" for="selScriptType">
                 <spring:message code="label.qasandbox.scriptType"/>
               </label>
-              <%--<logic:present name="QASandboxForm" property="scriptId">--%>
+                <%--<c:if present name="QASandboxForm" property="scriptId">--%>
               <c:if test="${QASandboxForm.scriptId}">
                 <form:select path="scriptType1" property="scriptType" styleId="selScriptType" disabled="false">
                   <form:options collection="qascript.scriptlangs" property="convType"/>
                 </form:select>
                 <form:hidden path="scriptType2" property="scriptType"/>
               </c:if>
-              <%--<logic:notPresent name="QASandboxForm" property="scriptId">--%>
+                <%--<c:if notPresent name="QASandboxForm" property="scriptId">--%>
               <c:if test="${!QASandboxForm.scriptId}">
                 <form:select path="scriptType3" property="scriptType" styleId="selScriptType">
                   <form:options collection="qascript.scriptlangs" property="convType"/>
@@ -337,7 +340,8 @@
           </tr>
           <tr>
             <td>
-              <form:textarea path="scriptContent" property="scriptContent" styleId="txtScriptContent" rows="20" cols="100"
+              <form:textarea path="scriptContent" property="scriptContent" styleId="txtScriptContent" rows="20"
+                             cols="100"
                              style="width:99%"/>
             </td>
           </tr>
@@ -346,31 +350,33 @@
           </tr>
           <tr>
             <td>
-              <%--  Execute script --%>
+                <%--  Execute script --%>
               <form:input path="QARunNow" styleClass="button" property="action" title="#{label.qasandbox.runNow}"/>
-              <%--  Add scripts to workqueue  --%>
-              <%--<logic:equal value="true" name="qascript.permissions" property="wqiPrm">--%>
+                <%--  Add scripts to workqueue  --%>
+                <%--<c:if equal value="true" name="qascript.permissions" property="wqiPrm">--%>
               <c:if test="${qascript.permissions == 'wqiPrm'}">
-                <form:input path="addToWorkqueue" styleClass="button" property="action" title="#{label.qasandbox.addToWorkqueue}"/>
+                <form:input path="addToWorkqueue" styleClass="button" property="action"
+                            title="#{label.qasandbox.addToWorkqueue}"/>
               </c:if>
-              <%--  Save content to file --%>
-              <%--<logic:equal value="true" name="qascript.permissions" property="wquPrm">--%>
-                <c:if test="${qascript.permissions == 'wquPrm'}">
-                  <%--<logic:equal name="QASandboxForm" property="showScripts" value="false">--%>
-                  <c:if test="${QASandboxForm.showScripts == 'false'}">
-                    <c:if test="${QASandboxForm.scriptId}">
-                      <c:if test="${QASandboxForm.scriptId == 0}">
-                        <form:input path="saveFile" styleClass="button" property="action" title="#{label.qasandbox.saveFile}" />
-                      </c:if>
+                <%--  Save content to file --%>
+                <%--<c:if equal value="true" name="qascript.permissions" property="wquPrm">--%>
+              <c:if test="${qascript.permissions == 'wquPrm'}">
+                <%--<c:if equal name="QASandboxForm" property="showScripts" value="false">--%>
+                <c:if test="${QASandboxForm.showScripts == 'false'}">
+                  <c:if test="${QASandboxForm.scriptId}">
+                    <c:if test="${QASandboxForm.scriptId == 0}">
+                      <form:input path="saveFile" styleClass="button" property="action"
+                                  title="#{label.qasandbox.saveFile}"/>
                     </c:if>
                   </c:if>
                 </c:if>
+              </c:if>
             </td>
           </tr>
         </c:if>
       </c:if>
 
-      <%-- List of available QA scripts --%>
+        <%-- List of available QA scripts --%>
       <c:if test="${QASandboxForm.showScripts == true}">
         <tr class="zebraeven">
           <td>
@@ -389,22 +395,23 @@
           <bean:define id="qascripts" name="schema" property="qascripts"/>--%>
 
           <c:if test="${countscripts == 0}">
-            <%--<logic:iterate id="qascript" name="schema" property="qascripts" type="QAScript">--%>
-            <c:forEach  items="${schema.qascripts}" var="qascript">
+            <%--<c:if iterate id="qascript" name="schema" property="qascripts" type="QAScript">--%>
+            <c:forEach items="${schema.qascripts}" var="qascript">
               <%--<bean:define id="listScriptId" name="qascript" property="scriptId" type="String"/>--%>
               <tr>
                 <td>
-                  <form:radiobutton path="scriptId" property="scriptId" value="${listScriptId}" styleId="rad_${listScriptId}"/>
+                  <form:radiobutton path="scriptId" property="scriptId" value="${listScriptId}"
+                                    styleId="rad_${listScriptId}"/>
                   <label class="question" for="rad_${listScriptId}">
-                    ${qascripts.shortName}
+                      ${qascripts.shortName}
                   </label>
                   <span> -
                     <%--paramId="scriptId" paramName="qascript" paramProperty="scriptId" --%>
                       <a href="/old/qaScripts/${scriptId}" titleKey="label.qascript.view">
-                        ${qascript.fileName}
+                          ${qascript.fileName}
                       </a>
                       (${qascripts.scriptType})
-                      <%--<logic:equal value="true" name="qascript.permissions" property="qsuPrm">--%>
+                      <%--<c:if equal value="true" name="qascript.permissions" property="qsuPrm">--%>
                       <c:if test="${qascript.permissions == 'qsuPrm'}">
                         <%--  If scriptType is NOT 'FME' --%>
                         <%--paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.editScriptTitle">--%>
@@ -424,8 +431,9 @@
         <c:if test="${schema.doValidation == true}">
           <tr>
             <td>
-              <form:radiobutton path="scriptId"  property="scriptId" value="-1" styleId="radioValidate"/>
-              <label class="question" for="radioValidate"><spring:message code="label.qasandbox.schemaValidation"/></label>
+              <form:radiobutton path="scriptId" property="scriptId" value="-1" styleId="radioValidate"/>
+              <label class="question" for="radioValidate"><spring:message
+                      code="label.qasandbox.schemaValidation"/></label>
             </td>
           </tr>
         </c:if>
@@ -445,11 +453,12 @@
 
         <tr>
           <td>
-            <%--  Execute script --%>
-            <form:input path="runNow" styleClass="button" property="action" title="#{label.qasandbox.runNow}" />
-            <%--  Add scripts to workqueue  --%>
+              <%--  Execute script --%>
+            <form:input path="runNow" styleClass="button" property="action" title="#{label.qasandbox.runNow}"/>
+              <%--  Add scripts to workqueue  --%>
             <c:if test="${qascript.permissions == 'wqiPrm'}">
-              <form:input path="addToWorkqueuee" styleClass="button" property="action" title="#{label.qasandbox.addToWorkqueue}" />
+              <form:input path="addToWorkqueuee" styleClass="button" property="action"
+                          title="#{label.qasandbox.addToWorkqueue}"/>
             </c:if>
           </td>
         </tr>

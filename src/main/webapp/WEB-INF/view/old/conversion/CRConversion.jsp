@@ -1,136 +1,143 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties"%>
+<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties" %>--%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-
-
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 
-<html:xhtml/>
-    <div style="width:100%;">
-        <tiles:insert definition="ConverterTabs">
-            <tiles:put name="selectedTab" value="searchXML" />
-        </tiles:insert>
+<%--<html:xhtml/>--%>
+<div style="width:100%;">
+  <tiles:insertDefinition name="ConverterTabs">
+    <tiles:putAttribute name="selectedTab" value="searchXML"/>
+  </tiles:insertDefinition>
 
-        <ed:breadcrumbs-push label="Search CR for XML files" level="1" />
-        <h1><spring:message code="label.conversion.crconversion.title"/></h1>
+  <ed:breadcrumbs-push label="Search CR for XML files" level="1"/>
+  <h1><spring:message code="label.conversion.crconversion.title"/></h1>
 
-        <%-- include Error display --%>
-        <tiles:insert definition="Error" />
+  <%-- include Error display --%>
+  <tiles:insertDefinition name="Error"/>
 
-            <form:form action="/searchCR" method="get">
-            <table class="formtable">
-                <tr>
-                 <th scope="col" class="scope-col">
-                    <spring:message code="label.conversion.xmlSchema"/>
-                  </th>
-                </tr>
-                <tr>
-                  <td>
-                    <html:select name="ConversionForm" property="schemaUrl"  size="10">
-                        <html:option value="">--</html:option>
-                        <html:options collection="conversion.schemas" property="schema" labelProperty="label" />
-                    </html:select>
+  <form:form action="/searchCR" method="get">
+    <table class="formtable">
+      <tr>
+        <th class="scope-col">
+          <spring:message code="label.conversion.xmlSchema"/>
+        </th>
+      </tr>
+      <tr>
+        <td>
+            <%--name="ConversionForm" property="schemaUrl"  size="10">--%>
+          <form:select path="schemaUrl">
+            <form:option value="">--</form:option>
+            <form:options collection="conversion.schemas" property="schema" labelProperty="label"/>
+          </form:select>
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <spring:message code="label.conversion.searchXML" var="searchXMLLabel"/>
+          <input type="submit" styleClass="button" title="${searchXMLLabel}"/>
+        </td>
+      </tr>
+    </table>
+  </form:form>
+  <!--  Show XML files -->
+  <c:if test="${ConversionForm.schema}">
+    <bean:define id="schema" name="ConversionForm" property="schema"/>
+    <bean:size name="schema" id="countfiles" property="crfiles"/>
+    <bean:define id="crfiles" name="schema" property="crfiles"/>
 
-                  </td>
-                </tr>
-                <tr>
-                  <td align="center">
-                    <html:submit styleClass="button">
-                        <spring:message code="label.conversion.searchXML"/>
-                    </html:submit>
-                  </td>
-                </tr>
-               </table>
-            </form:form>
-            <!--  Show XML files -->
-            <logic:present name="ConversionForm" property="schema">
-            <bean:define id="schema"  name="ConversionForm" property="schema" />
-              <bean:size name="schema" id="countfiles" property="crfiles"/>
-              <bean:define id="crfiles" name="schema" property="crfiles"/>
+    <form:form action="/testConversion" method="post">
+      <table class="datatable">
+        <tr>
+          <th scope="col" class="scope-col">
+            <spring:message code="label.conversion.CRxmlfiles"/> (${countfiles})
+          </th>
+        </tr>
 
-            <form:form action="/testConversion" method="post" >
-            <table class="datatable">
-                <tr>
-                 <th scope="col" class="scope-col">
-                    <spring:message code="label.conversion.CRxmlfiles"/> (<bean:write name="countfiles"/>)
-                  </th>
-                </tr>
-
-                          <bean:define id="selUrl" value="" type="String" />
-                          <logic:notEmpty name="converted.url" scope="session">
-                              <bean:define id="selUrl" name="converted.url" scope="session" type="String" />
-                         </logic:notEmpty>
+        <bean:define id="selUrl" value="" type="String"/>
+        <c:if test="${converted.url}" scope="session">
+          <bean:define id="selUrl" name="converted.url" scope="session" type="String"/>
+        </c:if>
 
 
-                          <logic:greaterThan name="countfiles" value="0">
+        <c:if test="${countfiles > 0}">
+          <tr>
+            <td>
+                <%--name="ConversionForm" property="url"  size="10">--%>
+              <form:select path="${url}">
+                <form:option value="">--</form:option>
+                <form:options collection="crfiles" property="url" labelProperty="label"/>
+              </form:select>
 
-                          <tr>
-                          <td>
-                            <html:select name="ConversionForm" property="url"  size="10">
-                                <html:option value="">--</html:option>
-                                <html:options collection="crfiles" property="url" labelProperty="label" />
-                            </html:select>
+            </td>
+          </tr>
+        </c:if>
+        <c:if test="${countfiles > 0}">
+          <tr>
+            <td>
+              <spring:message code="label.conversion.noCRFiles"/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input type="text" name="url" style="width: 30em;" value="${selUrl}"></input>
+            </td>
+          </tr>
+        </c:if>
+        <tr>
+          <td>
+              <%--name="ConversionForm" property="schemaUrl"/>--%>
+              <%--name="ConversionForm" property="errorForward" value="errorCR" />--%>
+            <form:hidden path="${schemaUrl}"/>
+            <form:hidden path="${errorForward}" value="errorCR"/>
+          </td>
+        </tr>
+        <tr>
+          <th class="scope-col">
+            <spring:message code="label.conversion.selectConversion"/>
+          </th>
+        </tr>
 
-                          </td>
-                         </tr>
-                        </logic:greaterThan>
-                     <logic:equal name="countfiles" value="0">
-                         <tr>
-                          <td>
-                                <spring:message code="label.conversion.noCRFiles"/>
-                          </td>
-                         </tr>
-                        <tr>
-                              <td>
-                                <input type="text" name="url" style="width: 30em;" value="<%=selUrl %>" ></input>
-                              </td>
-                        </tr>
-                    </logic:equal>
-                    <tr>
-                      <td>
-                            <html:hidden name="ConversionForm" property="schemaUrl"/>
-                            <html:hidden name="ConversionForm" property="errorForward" value="errorCR" />
-                      </td>
-                    </tr>
-                    <tr>
-                     <th scope="col" class="scope-col">
-                        <spring:message code="label.conversion.selectConversion"/>
-                      </th>
-                    </tr>
-
-                      <bean:define id="idConv" name="converted.conversionId" scope="session" type="String" />
-                      <logic:empty name="idConv">
-                          <bean:define id="idConv" name="ConversionForm" property="conversionId" scope="session" type="String" />
-                      </logic:empty>
-                <tr>
-                  <td align="left">
-                        <logic:iterate indexId="index" id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">
-                                <logic:equal name="stylesheet" property="convId" value="<%=idConv%>">
-                                    <input type="radio" checked="checked" name="conversionId" id="r_<bean:write name="stylesheet" property="convId" />" value="<bean:write name="stylesheet" property="convId" />" />
-                                </logic:equal>
-                                <logic:notEqual name="stylesheet" property="convId" value="<%=idConv%>">
-                                    <input type="radio" name="conversionId" id="r_<bean:write name="stylesheet" property="convId" />"  value="<bean:write name="stylesheet" property="convId" />" />
-                                </logic:notEqual>
-                                <label for="r_<bean:write name="stylesheet" property="convId" />"><bean:write name="stylesheet" property="type" />
-                                &nbsp;-&nbsp;<bean:write name="stylesheet" property="description" /></label><br/>
-                        </logic:iterate>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="center">
-                          <bean:size name="schema" id="count" property="stylesheets"/>
-                          <logic:greaterThan name="count" value="0">
-                            <html:submit styleClass="button">
-                                <spring:message code="label.conversion.convert"/>
-                            </html:submit>
-                        </logic:greaterThan>
-                        <logic:equal name="count" value="0">
-                        <p style="color: red; font-weight: bold;"><spring:message code="label.conversion.noconversion"/></p>
-                       </logic:equal>
-                  </td>
-                </tr>
-            </table>
-        </form:form>
-    </logic:present>
+        <bean:define id="idConv" name="converted.conversionId" scope="session" type="String"/>
+        <c:if test="${!idConv}">
+          <bean:define id="idConv" name="ConversionForm" property="conversionId" scope="session" type="String"/>
+        </c:if>
+        <tr>
+          <td align="left">
+              <%--id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">--%>
+            <c:forEach varStatus="index" items="${stylesheets}">
+              <%--name="stylesheet" property="convId" value="<%=idConv%>">--%>
+              <c:choose>
+                <c:when test="${stylesheet == convId}">
+                  <input type="radio" checked="checked" name="conversionId"
+                         id="r_<bean:write name="stylesheet" property="convId" />"
+                         value="<bean:write name="stylesheet" property="convId" />"/>
+                </c:when>
+                <c:otherwise>
+                  <input type="radio" name="conversionId" id="r_<bean:write name="stylesheet" property="convId" />"
+                         value="<bean:write name="stylesheet" property="convId" />"/>
+                </c:otherwise>
+              </c:choose>
+              <label for="r_<bean:write name="stylesheet" property="convId" />"><bean:write name="stylesheet"
+                                                                                            property="type"/>
+                &nbsp;-&nbsp;<bean:write name="stylesheet" property="description"/></label><br/>
+            </c:forEach>
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            <bean:size name="schema" id="count" property="stylesheets"/>
+            <c:if test="${count > 0}">
+              <spring:message code="label.conversion.convert" var="convertLabel"/>
+              <input type="submit" styleClass="button" title="${convertLabel}"/>
+            </c:if>
+            <c:if test="${count > 0}">
+              <p style="color: red; font-weight: bold;"><spring:message code="label.conversion.noconversion"/></p>
+            </c:if>
+          </td>
+        </tr>
+      </table>
+    </form:form>
+  </c:if>
 </div>

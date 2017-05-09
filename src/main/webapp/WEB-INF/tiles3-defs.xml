@@ -26,8 +26,8 @@
     <definition name="addStylesheet" template="/WEB-INF/view/old/stylesheet/AddStylesheet.jsp" />
     <definition name="schema" template="/WEB-INF/view/old/schema/Schema.jsp" />
     <definition name="viewSchema" template="/WEB-INF/view/old/schema/ViewSchema.jsp" />
-    <definition name="listConversion" template="/WEB-INF/view/old/conversion/ListConversions.jsp" />
-    <definition name="uplSchema" template="/WEB-INF/view/old/schema/UplSchema.jsp" />
+    <definition name="listConversion" template="/WEB-INF/view/old/conversion/list.jsp" />
+    <definition name="uplSchema" template="/WEB-INF/view/old/schema/list.jsp" />
     <definition name="addUplSchema" template="/WEB-INF/view/old/schema/AddUplSchema.jsp" />
     <definition name="uplXmlFile" template="/WEB-INF/view/old/xmlfile/UplXmlFile.jsp" />
     <definition name="addUplXmlFile" template="/WEB-INF/view/old/xmlfile/AddUplXmlFile.jsp" />

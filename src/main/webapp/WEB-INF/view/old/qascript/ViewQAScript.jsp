@@ -1,11 +1,9 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-
-
+<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties" %>--%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 
-<html:xhtml/>
+<%--<html:xhtml/>--%>
 
 <div style="width:100%;">
   <div id="tabbedmenu">
@@ -27,35 +25,36 @@
   <div id="operations">
     <ul>
       <li>
-        <logic:equal value="true" name="qascript.permissions" property="qsuPrm">
+        <c:if equal value="true" name="qascript.permissions" property="qsuPrm">
           <%--  If scriptType is NOT 'FME' --%>
-          <logic:notEqual name="QAScriptForm" property="scriptType"
+          <c:if notEqual name="QAScriptForm" property="scriptType"
                           value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-          <%--do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="QAScriptForm"
-          paramProperty="scriptId"--%>
-            <html:link page="/old/qaSandbox/${QAScriptForm.scriptId}" titleKey="label.qasandbox.label.qasandbox.editScript">
+            <%--do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="QAScriptForm"
+            paramProperty="scriptId"--%>
+            <html:link page="/old/qaSandbox/${QAScriptForm.scriptId}"
+                       titleKey="label.qasandbox.label.qasandbox.editScript">
               <spring:message code="label.qascript.run"/>
             </html:link>
-          </logic:notEqual>
+          </c:if notEqual>
           <%--  If scriptType is 'FME' --%>
-          <logic:equal name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+          <c:if equal name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
             <a href="openQAServiceInSandbox?scriptId=<bean:write name="QAScriptForm" property="scriptId" />&amp;schemaId=<bean:write name="QAScriptForm" property="schemaId" />"
                title="<spring:message code="label.qascript.runservice.title" />">
               <spring:message code="label.qascript.run"/>
             </a>
-          </logic:equal>
-        </logic:equal>
-        <logic:notEqual value="true" name="qascript.permissions" property="qsuPrm">
+          </c:if equal>
+        </c:if equal>
+        <c:if notEqual value="true" name="qascript.permissions" property="qsuPrm">
           <a href="openQAServiceInSandbox?scriptId=<bean:write name="QAScriptForm" property="scriptId" />&amp;schemaId=<bean:write name="QAScriptForm" property="schemaId" />"
              title="<spring:message code="label.qascript.runservice.title" />">
             <spring:message code="label.qascript.run"/>
           </a>
-        </logic:notEqual>
+        </c:if notEqual>
 
       </li>
-      <logic:equal value="true" name="qascript.permissions" property="ssdPrm">
+      <c:if equal value="true" name="qascript.permissions" property="ssdPrm">
         <li>
-          <%--paramId="scriptId" paramName="QAScriptForm" paramProperty="scriptId"--%>
+            <%--paramId="scriptId" paramName="QAScriptForm" paramProperty="scriptId"--%>
           <html:link page="/old/${QAScriptForm.scriptId}/edit" title="edit QA Script">
             <spring:message code="label.qascript.edit"/>
           </html:link>
@@ -67,7 +66,7 @@
             <spring:message code="label.qascript.delete"/>
           </a>
         </li>
-      </logic:equal>
+      </c:if equal>
     </ul>
   </div>
 
@@ -136,12 +135,12 @@
         <spring:message code="label.qascript.isActive"/>
       </th>
       <td>
-        <logic:equal name="QAScriptForm" property="active" value="true">
+        <c:if equal name="QAScriptForm" property="active" value="true">
           <input type="checkbox" checked="checked" disabled/>
-        </logic:equal>
-        <logic:notEqual name="QAScriptForm" property="active" value="true">
+        </c:if equal>
+        <c:if notEqual name="QAScriptForm" property="active" value="true">
           <input type="checkbox" disabled/>
-        </logic:notEqual>
+        </c:if notEqual>
       </td>
     </tr>
 
@@ -151,45 +150,45 @@
       </th>
       <td>
         <%--  If scriptType is 'FME' don't show the link to the local script file --%>
-        <logic:notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+        <c:if notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
           <a href="<bean:write name="webRoot"/>/<bean:write property="filePath" name="QAScriptForm"/>"
              title="<bean:write property="filePath" name="QAScriptForm"/>">
             <bean:write property="fileName" name="QAScriptForm"/>
           </a>
           &#160;&#160;&#160;&#160;&#160;&#160;(<spring:message code="label.lastmodified"/>:
-          <logic:present name="QAScriptForm" property="modified">
+          <c:if present name="QAScriptForm" property="modified">
             <bean:write property="modified" name="QAScriptForm"/>
-          </logic:present>
-          <logic:notPresent name="QAScriptForm" property="modified">
+          </c:if present>
+          <c:if notPresent name="QAScriptForm" property="modified">
             <span style="color:red"><spring:message code="label.fileNotFound"/></span>
-          </logic:notPresent>
+          </c:if notPresent>
           )
-        </logic:notEqual>
-        <logic:equal name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+        </c:if notEqual>
+        <c:if equal name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
           <bean:write property="fileName" name="QAScriptForm"/>
-        </logic:equal>
+        </c:if equal>
       </td>
     </tr>
     <%--  If scriptType is 'FME' don't show the link to the remote script file --%>
-    <logic:notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+    <c:if notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
       <tr>
         <th scope="row" class="scope-row"><bean:message
                 key="label.qascript.url"/></th>
         <td>
-          <logic:notEmpty name="QAScriptForm" property="url">
+          <c:if notEmpty name="QAScriptForm" property="url">
             <a href="<bean:write property="url" name="QAScriptForm"/>"
                title="<bean:write property="url" name="QAScriptForm"/>">View</a>
-          </logic:notEmpty>
+          </c:if notEmpty>
         </td>
       </tr>
-    </logic:notEqual>
+    </c:if notEqual>
 
   </table>
   <%--  If scriptType is 'FME' don't show the script content --%>
-  <logic:notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-    <logic:present name="QAScriptForm" property="fileName">
+  <c:if notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+    <c:if present name="QAScriptForm" property="fileName">
       <pre><bean:write name="QAScriptForm" property="scriptContent"/></pre>
-    </logic:present>
-  </logic:notEqual>
+    </c:if present>
+  </c:if notEqual>
 
 </div>
