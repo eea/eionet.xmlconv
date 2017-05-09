@@ -1,20 +1,16 @@
 <%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java"%>
 <%@ page import="eionet.gdem.Properties" %>
 <%@ page import="eionet.gdem.utils.SecurityUtil" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html"%>
-<%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
-<%
-pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
-%>
-<logic:present name="user">
-    <bean:define id="username" name="user" scope="session"/>
-</logic:present>
+<c:if test="${name == 'user'}">
+    <%--<bean:define id="username" name="user" scope="session"/>--%>
+</c:if>
 
 <div id="container">
 
@@ -24,12 +20,12 @@ pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
           <a id="ewlink" href="http://ew.eea.europa.eu/">EnviroWindows</a>
         </div>
         <div id="righttools">
-            <logic:notPresent name="user">
+            <c:if test="${name == 'user'}">
                 <a id="loginlink" href="<%=SecurityUtil.getLoginURL(request)%>" title="Login">Login</a>
-            </logic:notPresent>
-            <logic:present name="user">
-                <a id="logoutlink" href="<c:url value="/do/logout"/>" title="Logout">Logout <span>(<bean:write name="user" scope="session"/>)</span></a>
-            </logic:present>
+            </c:if>
+            <c:if test="${name == 'user'}">
+                <a id="logoutlink" href="<c:url value="/do/logout"/>" title="Logout">Logout <span>(${sessionScope['user']})</span></a>
+            </c:if>
             <a href="javascript:openWindow(applicationRoot+'/help/index.jsp','olinehelp');" title="Help">Online Help</a>
             <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
             <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode"><span>Switch to/from full screen mode</span></a>

@@ -1,8 +1,5 @@
 <%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java" %>
 <%@ page import="eionet.gdem.utils.Utils,java.util.Date" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean"%>
 
 <logic:present name="org.apache.struts.action.ACTION_MESSAGE">
     <div class="system-msg">

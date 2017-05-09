@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
+
 
 <script type="text/javascript" charset="utf-8" src="<c:url value="/scripts/DataTables/media/js/jquery.js" />"></script>
 <script type="text/javascript" charset="utf-8" src="<c:url value="/scripts/DataTables/media/js/jquery.dataTables.js" />"></script>

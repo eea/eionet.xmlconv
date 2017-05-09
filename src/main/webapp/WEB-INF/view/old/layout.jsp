@@ -1,16 +1,16 @@
 <%@ page buffer="100kb" pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 
 <ed:breadcrumbs-push label="XML Services" url="/index.jsp" level="0"/>
 
 <%
-pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
-
 String a=request.getContextPath();
 session.setAttribute("webRoot",a==null?"":a);
 response.setHeader("Pragma", "No-cache");
@@ -23,7 +23,7 @@ response.setDateHeader("Expires", 0);
     <head>
         <title>
             <tiles:importAttribute name="title" scope="request"/>
-            <bean:message name="title"/>
+            <spring:message code="${requestScope['title']}"/>
         </title>
         <sec:csrfMetaTags/>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

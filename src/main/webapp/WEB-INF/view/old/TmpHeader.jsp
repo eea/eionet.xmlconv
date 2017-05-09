@@ -2,18 +2,14 @@
 <%@ page import="eionet.gdem.Properties" %>
 <%@ page import="eionet.gdem.utils.SecurityUtil" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-nested.tld" prefix="nested" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-template.tld" prefix="template" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <ed:breadcrumbs-push label="XML Services" url="/index.jsp" level="0"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <%
-pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
 String a=request.getContextPath();
 session.setAttribute("webRoot",a==null?"":a);
 response.setHeader("Pragma", "No-cache");

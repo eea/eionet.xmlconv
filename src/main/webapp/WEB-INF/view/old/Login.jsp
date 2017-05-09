@@ -1,12 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
-<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %><%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 
-<%
-pageContext.setAttribute("org.apache.struts.globals.XHTML", "true", 1);
-%>
 <ed:breadcrumbs-push label="Login" level="1"/>
 
 <br/>
