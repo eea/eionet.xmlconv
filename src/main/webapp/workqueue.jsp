@@ -1,8 +1,8 @@
-<%@page contentType="text/html;charset=UTF-8"%>
-<%@ taglib uri="/WEB-INF/tlds/struts-tiles.tld" prefix="tiles"%>
-<%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ page import="eionet.gdem.Constants, eionet.gdem.services.GDEMServices, java.io.File"%>
+<%@page contentType="text/html;charset=UTF-8"%>
+<%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 
 <%
 response.setHeader("Pragma", "No-cache");
@@ -12,12 +12,12 @@ response.setDateHeader("Expires", 0);
 %>
 
 <ed:breadcrumbs-push label="Workqueue" level="1" />
-<tiles:insert definition="TmpHeader">
-    <tiles:put name="title" value="QA Jobs"/>
-</tiles:insert>
+<tiles:insertDefinition name="TmpHeader">
+    <tiles:putAttribute name="title" value="QA Jobs"/>
+</tiles:insertDefinition>
 
 
-<%@ include file="menu.jsp" %>
+<%--<%@ include file="menu.jsp" %>--%>
 
 <link rel="stylesheet" type="text/css" href="<c:url value="/scripts/DataTables/media/css/jquery.dataTables.min.css" />"></link>
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/workqueue.css" />"></link>
@@ -312,4 +312,4 @@ function doRestart(){
             </div>
         </form>
     </div>
-<tiles:insert definition="TmpFooter"/>
+<tiles:insertDefinition name="TmpFooter"/>

@@ -2,7 +2,7 @@
 <%--<%@ page import="eionet.gdem.utils.Utils,java.util.Date" %>--%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
+<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 
 <%--<html:xhtml/>--%>
@@ -13,7 +13,7 @@
 
   <%-- include Error display --%>
   <tiles:insertDefinition name="Error"/>
-  <c:if present name="conversion.valid" scope="request">
+  <c:if test="${requestScope['conversion.valid']}">
     <bean:size id="countErrors" name="conversion.valid"/>
 
     <c:if equal name="countErrors" value="0">

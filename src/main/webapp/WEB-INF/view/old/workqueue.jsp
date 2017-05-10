@@ -1,6 +1,6 @@
 <%@page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
+<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
 <%@ page import="eionet.gdem.Constants, eionet.gdem.services.GDEMServices, java.io.File" %>
 
 <%

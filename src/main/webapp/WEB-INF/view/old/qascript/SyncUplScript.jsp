@@ -3,7 +3,7 @@
 
 
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
+<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
 
 <ed:breadcrumbs-push label="Update QA script from original location" level="3"/>
 

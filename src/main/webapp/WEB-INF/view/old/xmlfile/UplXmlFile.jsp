@@ -1,20 +1,20 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/tlds/eurodyn.tld" prefix="ed" %>
+<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
 <%--<html:xhtml/>--%>
 
 <ed:breadcrumbs-push label="Uploaded XML files" level="1"/>
 
-<c:if present name="xmlfiles.uploaded">
+<c:if test="${xmlfiles.uploaded}">
 
-  <c:if equal name="xmlfiles.uploaded" value="true" property="ssiPrm">
+  <c:if test="${xmlfiles.uploaded == 'ssiPrm'}">
     <div id="operations">
       <ul>
         <li><a href="addUplXmlFileForm"><spring:message code="label.uplXmlFile.add"/></a></li>
       </ul>
     </div>
-  </c:if equal>
+  </c:if>
 
   <h1 class="documentFirstHeading">
     <spring:message code="label.xmlfiles.uploaded"/>
@@ -25,10 +25,10 @@
 
   <div class="visualClear">&nbsp;</div>
 
-  <c:if present name="xmlfiles.uploaded" property="xmlfiles">
+  <c:if test="${xmlfiles.uploaded == 'xmlfiles'}">
     <form:form action="/deleteUplXmlFile" method="post">
       <table class="datatable" width="100%">
-        <c:if equal value="true" name="xmlfiles.uploaded" property="ssuPrm">
+        <c:if test="${xmlfiles.uploaded == 'ssuPrm'}">
           <col style="width:5%"/>
         </c:if equal>
         <c:if equal value="true" name="xmlfiles.uploaded" property="ssuPrm">
