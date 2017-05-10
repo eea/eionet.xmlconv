@@ -4,12 +4,12 @@
 
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--<html:xhtml/>--%>
 
 <ed:breadcrumbs-push label="All QA Scripts" level="1"/>
 
-
-<c:if equal value="true" name="qascript.permissions" property="ssiPrm">
+<c:if test="${qascript.permissions == 'ssiPrm'}">
   <div id="operations">
     <ul>
       <li>
@@ -17,7 +17,7 @@
       </li>
     </ul>
   </div>
-</c:if equal>
+</c:if>
 
 <h1 class="documentFirstHeading">
   <spring:message code="label.qascript.title"/>
@@ -28,7 +28,7 @@
 
 <div class="visualClear">&nbsp;</div>
 
-<c:if present name="qascript.qascriptList" property="qascripts">
+<c:if test="${qascript.qascriptList == 'qascripts'}">
   <div style="width: 97%">
     <table class="datatable" width="100%">
       <col/>
@@ -40,25 +40,27 @@
       </tr>
       </thead>
       <tbody>
-      <c:if iterate indexId="index" id="schema" name="qascript.qascriptList" property="qascripts" type="Schema">
-        <tr <%=(index.intValue() % 2 == 1) ? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
+  <%--property="qascripts" type="Schema">--%>
+      <c:forEach varStatus="index" items="qascript.qascriptList.qascripts">
+        <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
           <td title="<bean:write name="schema" property="schema"/>">
             <html:link page="/old/schemas/${schema.id}/qaScripts" title="view QA scripts for this XML Schema">
               <bean:write name="schema" property="schema"/>
             </html:link>
           </td>
           <td>
-            <c:if present name="schema" property="qascripts">
-              <c:if iterate id="qascript" name="schema" scope="page" property="qascripts" type="QAScript">
+            <c:if test="${schema == 'qascripts'}">
+              <%--id="qascript" name="schema" scope="page" property="qascripts" type="QAScript">--%>
+              <c:forEach items="schema.qascripts">
                 <html:link page="/old/qaScripts/${schema.id}" titleKey="label.qascript.tab.title">
                   <bean:write name="qascript" property="shortName"/>
                 </html:link>
                 &#160;
-              </c:if iterate>
-            </c:if present>
+              </c:forEach>
+            </c:if>
           </td>
         </tr>
-      </c:if iterate>
+      </c:forEach>
       <tr>
         <td valign="top" colspan="3">
         </td>
@@ -69,7 +71,7 @@
 
   <div class="visualClear">&nbsp;</div>
 
-</c:if present>
+</c:if>
 
 
 

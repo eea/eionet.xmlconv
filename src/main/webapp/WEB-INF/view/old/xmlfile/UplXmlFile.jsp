@@ -2,6 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--<html:xhtml/>--%>
 
 <ed:breadcrumbs-push label="Uploaded XML files" level="1"/>
@@ -30,42 +31,43 @@
       <table class="datatable" width="100%">
         <c:if test="${xmlfiles.uploaded == 'ssuPrm'}">
           <col style="width:5%"/>
-        </c:if equal>
-        <c:if equal value="true" name="xmlfiles.uploaded" property="ssuPrm">
+        </c:if>
+        <c:if test="${xmlfiles.uploaded == 'ssuPrm'}">
           <col style="width:5%"/>
-        </c:if equal>
+        </c:if>
         <col style="width:30%"/>
         <col/>
         <col style="width:25%"/>
         <thead>
         <tr>
-          <c:if equal value="true" name="xmlfiles.uploaded" property="ssuPrm">
+          <c:if test="${xmlfiles.uploaded =='ssuPrm'}">
             <th scope="col">&#160;</th>
-          </c:if equal>
-          <c:if equal value="true" name="xmlfiles.uploaded" property="ssuPrm">
+          </c:if>
+          <c:if test="${xmlfiles.uploaded == 'ssuPrm'}">
             <th scope="col">&#160;</th>
-          </c:if equal>
+          </c:if>
           <th scope="col"><span title="XML File"><spring:message code="label.table.uplXmlFile.xmlfile"/></span></th>
           <th scope="col"><span title="Title"><spring:message code="label.table.uplXmlFile.title"/></span></th>
           <th scope="col"><span title="Last Modified"><spring:message code="label.lastmodified"/></span></th>
         </tr>
         </thead>
         <tbody>
-        <c:if iterate indexId="index" id="xmlfile" name="xmlfiles.uploaded" property="xmlfiles" type="UplXmlFile">
-          <tr <%=(index.intValue() % 2 == 1) ? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
-            <c:if equal value="true" name="xmlfiles.uploaded" property="ssdPrm">
+          <%--type="UplXmlFile"--%>
+        <c:forEach varStatus="index" items="xmlfiles.uploaded.xmlfiles">
+          <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
+            <c:if test="${xmlfiles.uploaded == 'ssdPrm'}">
               <td align="center">
                 <bean:define id="fileId" name="xmlfile" property="id"/>
                 <input type="radio" name="xmlfileId" value="${fileId}"/>
               </td>
-            </c:if equal>
-            <c:if equal value="true" name="xmlfiles.uploaded" property="ssuPrm">
+            </c:if>
+            <c:if test="${xmlfiles.uploaded == 'ssuPrm'}">
               <td align="center">
                 <a href="editUplXmlFileForm?xmlfileId=<bean:write name="xmlfile" property="id" />">
                   <img src="<bean:write name="webRoot"/>/images/edit.gif" alt="<spring:message code="label.edit" />"
                        title="edit XML file"/></a>
               </td>
-            </c:if equal>
+            </c:if>
             <td>
               <a href='<bean:write name="webRoot"/>/xmlfile/<bean:write name="xmlfile" property="fileName" />'
                  title="<bean:write name="xmlfile" property="fileName" />">
@@ -76,15 +78,18 @@
               <bean:write name="xmlfile" property="title"/>
             </td>
             <td>
-              <c:if notEqual value="" name="xmlfile" property="lastModified">
-                <bean:write name="xmlfile" property="lastModified"/>
-              </c:if notEqual>
-              <c:if equal value="" name="xmlfile" property="lastModified">
-                <span style="color:red"><spring:message code="label.fileNotFound"/></span>
-              </c:if equal>
+                <%--<c:if notEqual value="" name="xmlfile" property="lastModified">--%>
+              <c:choose>
+                <c:when test="${xmlfile != lastModified}">
+                  ${xmlfile.lastModified}
+                </c:when>
+                <c:otherwise>
+                  <span style="color:red"><spring:message code="label.fileNotFound"/></span>
+                </c:otherwise>
+              </c:choose>
             </td>
           </tr>
-        </c:if iterate>
+        </c:forEach>
         <tr>
           <td valign="top" colspan="4">
           </td>
@@ -92,22 +97,22 @@
         </tbody>
       </table>
       <div class="boxbottombuttons">
-        <c:if equal value="true" name="xmlfiles.uploaded" property="ssdPrm">
+        <c:if test="${xmlfiles.uploaded == 'ssdPrm'}">
           <input type="button" class="button" value="<spring:message code="label.delete"/>"
                  onclick="return submitAction(1,'deleteUplXmlFile');"/>
           <input type="button" class="button" value="Rename" onclick="return submitAction(1,'renameUplXmlFileForm');"/>
-        </c:if equal>
+        </c:if>
       </div>
     </form:form>
-  </c:if present>
-  <c:if notPresent name="xmlfiles.uploaded" property="xmlfiles">
+  </c:if>
+  <c:if test="${xmlfiles.uploaded != 'xmlfiles'}">
     <div class="advice-msg">
       <spring:message code="label.uplXmlFile.noXmlFiles"/>
     </div>
-  </c:if notPresent>
+  </c:if>
   <div class="visualClear">&nbsp;</div>
 
-</c:if present>
+</c:if>
 
 
 

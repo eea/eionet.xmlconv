@@ -70,34 +70,6 @@ public class ConversionsController {
         this.rootElemDao = rootElemDao;
     }
 
-    @GetMapping
-    public String list(Model model) {
-        ConversionForm form = new ConversionForm();
-        model.addAttribute("form", form);
-        return "/listConv.jsp";
-    }
-
-    @GetMapping("/search")
-    public String searchXML(Model model) {
-        ConversionForm form = new ConversionForm();
-        model.addAttribute("form", form);
-        return "/crConversion.jsp";
-    }
-
-    @GetMapping("/excel2Xml")
-    public String excel2xml(Model model) {
-        ConversionForm form = new ConversionForm();
-        model.addAttribute("form", form);
-        return "/excel2XmlConv.jsp";
-    }
-
-    @GetMapping("/json2Xml")
-    public String json2xml(Model model) {
-        ConversionForm form = new ConversionForm();
-        model.addAttribute("form", form);
-        return "/json2Xml.jsp";
-    }
-
     @GetMapping("/{id}")
     public String show(Model model, HttpServletRequest httpServletRequest) {
         StylesheetListHolder st = new StylesheetListHolder();

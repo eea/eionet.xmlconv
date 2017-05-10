@@ -21,10 +21,10 @@
     </div>
     <div id="righttools">
       <c:if test="${name == 'user'}">
-        <a id="loginlink" href="<%=SecurityUtil.getLoginURL(request)%>" title="Login">Login</a>
+        <a id="loginlink" href="<c:url value="${loginUrl}"/>" title="Login">Login</a>
       </c:if>
       <c:if test="${name == 'user'}">
-        <a id="logoutlink" href="<c:url value="/do/logout"/>" title="Logout">Logout
+        <a id="logoutlink" href="<c:url value="/logout"/>" title="Logout">Logout
           <span>(${sessionScope['user']})</span></a>
       </c:if>
       <a href="javascript:openWindow(applicationRoot+'/help/index.jsp','olinehelp');" title="Help">Online Help</a>
@@ -40,7 +40,7 @@
                  onblur="if (this.value == '')
                                                    this.value = 'Search the site';"
                  value="Search the site"/>
-          <input type="hidden" name="sitesearch" value="<%=Properties.appHost%>"/>
+          <input type="hidden" name="sitesearch" value="${appHost}"/>
           <input id="freesrchbtn" type="image" src="<c:url value="/images/button_go.gif"/>" alt="Go"/>
         </div>
       </form>
@@ -68,7 +68,7 @@
 
   <div id="leftcolumn" class="localnav">
     <ul>
-      <li>New menu</li>
+      <li>JSP menu</li>
       <ed:menuItem action="/web/projects" title="Schemas">
         <spring:message code="label.menu.projects"/>
       </ed:menuItem>

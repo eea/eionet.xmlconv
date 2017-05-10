@@ -1,7 +1,9 @@
 <%@page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-<%@ page import="eionet.gdem.Constants, eionet.gdem.services.GDEMServices, java.io.File" %>
+
 
 <%
   response.setHeader("Pragma", "No-cache");
@@ -11,12 +13,10 @@
 %>
 
 <ed:breadcrumbs-push label="Workqueue" level="1"/>
-<tiles:insertDefinition name="TmpHeader">
+<%--<tiles:insertDefinition name="TmpHeader">
   <tiles:putAttribute name="title" value="QA Jobs"/>
-</tiles:insertDefinition>
+</tiles:insertDefinition>--%>
 
-
-<%@ include file="menu.jsp" %>
 <script type="text/javascript">
     // <![CDATA[
 
@@ -61,7 +61,7 @@
         if (!confirm('Are you sure you want to delete the selected jobs?'))
             return false;
 
-        document.getElementById('ACTION').value = '<%=Constants.WQ_DEL_ACTION%>';
+        document.getElementById('ACTION').value = '${Constants.WQ_DEL_ACTION}';
         document.getElementById('jobs').submit();
     }
     function doRestart() {
@@ -69,46 +69,17 @@
             alert('No jobs selected!');
             return false;
         }
-        document.getElementById('ACTION').value = '<%=Constants.WQ_RESTART_ACTION%>';
+        document.getElementById('ACTION').value = '${Constants.WQ_RESTART_ACTION}';
         document.getElementById('jobs').submit();
     }
     // ]]>
 </script>
 
-
-<%
-  boolean wqdPrm = user != null && SecurityUtil.hasPerm(user_name, "/" + Constants.ACL_WQ_PATH, "d");
-  boolean wquPrm = user != null && SecurityUtil.hasPerm(user_name, "/" + Constants.ACL_WQ_PATH, "u");
-  boolean wqvPrm = user != null && SecurityUtil.hasPerm(user_name, "/" + Constants.ACL_WQ_PATH, "v");
-  boolean logvPrm = user != null && SecurityUtil.hasPerm(user_name, "/" + Constants.ACL_LOGFILE_PATH, "v");
-
-  String[][] list = null;
-  try {
-    eionet.gdem.services.db.dao.IXQJobDao jobDao = GDEMServices.getDaoService().getXQJobDao();
-    list = jobDao.getJobData();
-  } catch (Exception e) {
-    e.printStackTrace();
-  }
-  String tmpFolder = Constants.TMP_FOLDER;
-  String queriesFolder = Constants.QUERIES_FOLDER;
-%>
 <h1>Jobs</h1>
 
-<% if (err != null) {
-%>
-<div class="error-msg"><%=err%>
-</div>
-<%} %>
+<form:errors cssClass="error-msg" ></form:errors>
+
 <p>Currently there are following jobs in the queue...</p>
-<%
-  if (logvPrm) {
-%>
-<p>
-  <a href='log/xmlconv.log'>View log file</a>
-</p>
-<%
-  }
-%>
 <div id="main_table">
   <form id="jobs" action="main" method="post">
     <table class="datatable" width="100%">
@@ -131,149 +102,90 @@
       </tr>
       </thead>
       <tbody>
-      <%
-        eionet.gdem.services.db.dao.IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
-        for (int i = 0; i < list.length; i++) {
-          String jobId = list[i][0];
-          String url = list[i][1];
-          String xqLongFileName = list[i][2];
-          String xqFile = list[i][2].substring(list[i][2].lastIndexOf(File.separatorChar) + 1);
-          String resultFile = list[i][3].substring(list[i][3].lastIndexOf(File.separatorChar) + 1);
-          int status = Integer.parseInt(list[i][4]);
-          String timeStamp = list[i][5];
-          String xqStringID = list[i][6];
-          String instance = list[i][7];
 
-          int xqID = 0;
-          String scriptType = "";
-          try {
-            xqID = Integer.parseInt(xqStringID);
-            java.util.HashMap query = queryDao.getQueryInfo(xqStringID);
-            if (query != null) {
-              scriptType = (String) query.get("script_type");
-            }
-          } catch (NumberFormatException n) {
-            xqID = 0;
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-
-          String xqFileURL = "";
-          String xqText = "Show script";
-          if (xqID == Constants.JOB_VALIDATION) {
-            xqText = "Show XML Schema";
-            xqFileURL = xqLongFileName;
-          } else if (xqID == Constants.JOB_FROMSTRING) {
-            xqFileURL = tmpFolder + xqFile;
-          } else {
-            xqFileURL = queriesFolder + xqFile;
-          }
-
-
-          if (status == Constants.XQ_RECEIVED || status == Constants.XQ_DOWNLOADING_SRC || status == Constants.XQ_PROCESSING)
-            resultFile = null;
-
-          //TODO Status name, maybe better to move to some Java common class
-          String statusName = "-- Unknown --";
-
-          if (status == Constants.XQ_RECEIVED)
-            statusName = "JOB RECEIVED";
-          if (status == Constants.XQ_DOWNLOADING_SRC)
-            statusName = "DOWNLOADING SOURCE";
-          if (status == Constants.XQ_PROCESSING)
-            statusName = "PROCESSING";
-          if (status == Constants.XQ_READY)
-            statusName = "READY";
-          if (status == Constants.XQ_FATAL_ERR)
-            statusName = "FATAL ERROR";
-          if (status == Constants.XQ_LIGHT_ERR)
-            statusName = "RECOVERABLE ERROR";
-
-
-          if (url.indexOf(Constants.GETSOURCE_URL) > 0 && url.indexOf(Constants.SOURCE_URL_PARAM) > 0) {
-            int idx = url.indexOf(Constants.SOURCE_URL_PARAM);
-            url = url.substring(idx + Constants.SOURCE_URL_PARAM.length() + 1);
-          }
-
-
-          String urlName = (url.length() > Constants.URL_TEXT_LEN ? url.substring(0, Constants.URL_TEXT_LEN) + "..." : url);
-
-      %>
-      <tr <% if (i % 2 != 0) %>class="zebraeven" <% else %>class="zebraodd"<%;%>>
-        <%
-          if (wqdPrm || wquPrm) {
-        %>
+      <c:forEach items="${jobList}" varStatus="index">
+      <tr class="${i % 2 != 0 ? 'zebraeven' : 'zebraodd'}">
+        <c:choose>
+          <c:when test="${wqdPrm || wquPrm}">
+            <td>
+              <input type="checkbox" name="jobID" id="job_${jobId}" value="${jobId}"/>
+            </td>
+            <td>
+              <label for="job_${jobId}">${jobId}</label>
+            </td>
+          </c:when>
+          <c:otherwise>
+            <td/>
+            <td>${jobId}</td>
+          </c:otherwise>
+        </c:choose>
         <td>
-          <input type="checkbox" name="jobID" id="job_<%=jobId%>" value="<%=jobId%>"/>
+          <a href="${url}" rel="nofollow">${urlName}</a>
         </td>
         <td>
-          <label for="job_<%=jobId%>"><%=jobId%>
-          </label>
-        </td>
-        <%} else {%>
-        <td/>
-        <td>
-          <%=jobId%>
-        </td>
-        <%}%>
-        <td>
-          <a href="<%=url%>" rel="nofollow"><%=urlName%>
-          </a>
+          <%--<%if (!eionet.gdem.qa.XQScript.SCRIPT_LANG_FME.equals(scriptType)) {%>--%>
+          <c:choose>
+            <c:when test="${scriptType == 'fme'}">
+              <a href="${xqFileURL}" rel="nofollow">${xqText}</a>
+            </c:when>
+            <c:otherwise>
+              FME
+            </c:otherwise>
+          </c:choose>
         </td>
         <td>
-          <%if (!eionet.gdem.qa.XQScript.SCRIPT_LANG_FME.equals(scriptType)) {%>
-          <a href="<%=xqFileURL%>" rel="nofollow"><%=xqText%>
-          </a>
-          <%} else {%>
-          FME
-          <%}%>
+          <c:choose>
+            <c:when test="${resultFile}">
+              <c:choose>
+                <c:when test="${wqvPrm}">
+                  <a href="${tmpFolder + resultFile}" rel="nofollow">Job result</a>
+                </c:when>
+                <c:otherwise>
+                  <div title="Log in to see job result">Job result</div>
+                </c:otherwise>
+              </c:choose>
+            </c:when>
+            <c:otherwise>
+              *** Not ready ***
+            </c:otherwise>
+          </c:choose>
         </td>
         <td>
-          <% if (resultFile != null) {
-            if (wqvPrm) {%>
-          <a href="<%=tmpFolder + resultFile%>" rel="nofollow">Job result</a>
-          <% } else { %>
-          <div title="Log in to see job result">Job result</div>
-          <%
-              }
-            } else {
-              out.println("*** Not ready ***");
-            } %>
+          ${statusName}
         </td>
         <td>
-          <%=statusName%>
+          ${timeStamp}
         </td>
         <td>
-          <%=timeStamp%>
-        </td>
-        <td>
-          <% if (wqvPrm) { %>
-          <%=instance%>
-          <% } else { %>
-          <div title="Log in to see system info">-</div>
-          <% } %>
+          <c:choose>
+            <c:when test="${wqvPrm}">
+              ${instance}
+            </c:when>
+            <c:otherwise>
+              <div title="Log in to see system info">-</div>
+            </c:otherwise>
+          </c:choose>
         </td>
       </tr>
-      <%
-        }
-      %>
+      </c:forEach>
       </tbody>
     </table>
     <div id="hidden_elements">
-      <%
-        if (wqdPrm || wquPrm) {%>
-      <% if (wqdPrm) {%>
-      <input type="button" value="Delete" onclick="return doDelete();"/>
-      <%}%>
-      <% if (wquPrm) {%>
-      <input type="button" value="Restart" onclick="return doRestart();"/>
-      <%}%>
-      <input class="form-element" type="button" name="selectAll" id="selectAll" value="Select All"
-             onclick="toggleSelect('jobID'); return false"/>
-      <%}%>
-      <input type="hidden" name="ACTION" id="ACTION" value="<%=Constants.WQ_DEL_ACTION%>"/>
+      <c:if test="${wqdPrm || wquPrm}">
+        <c:if test="${wqdPrm}">
+          <input type="button" value="Delete" onclick="return doDelete();"/>
+        </c:if>
+        <c:if test="${wquPrm}">
+          <input type="button" value="Restart" onclick="return doRestart();"/>
+        </c:if>
+        <input class="form-element" type="button" name="selectAll" id="selectAll" value="Select All"
+               onclick="toggleSelect('jobID'); return false"/>
+      </c:if>
+      <input type="hidden" name="ACTION" id="ACTION" value="${Constants.WQ_DEL_ACTION}"/>
       <input type="hidden" name="ID" value=""/>
     </div>
   </form>
 </div>
+<%--
 <tiles:insertDefinition name="TmpFooter"/>
+--%>

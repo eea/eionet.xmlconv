@@ -56,7 +56,7 @@
         </tr>
 
         <bean:define id="selUrl" value="" type="String"/>
-        <c:if test="${converted.url}" scope="session">
+        <c:if test="${sessionScope['converted.url']}">
           <bean:define id="selUrl" name="converted.url" scope="session" type="String"/>
         </c:if>
 

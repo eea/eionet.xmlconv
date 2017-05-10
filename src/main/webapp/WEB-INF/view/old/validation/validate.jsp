@@ -4,6 +4,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%--<html:xhtml/>--%>
 <div style="width:100%;">
@@ -16,45 +17,49 @@
   <c:if test="${requestScope['conversion.valid']}">
     <bean:size id="countErrors" name="conversion.valid"/>
 
-    <c:if equal name="countErrors" value="0">
-      <c:if notEmpty name="conversion.originalSchema">
-        <div class="ok-msg">The file is valid XML (<%=Utils.getDateTime(new Date())%>)
+    <c:if test="${countErrors > 0}">
+      <c:if test="${conversion.originalSchema}">
+        <div class="ok-msg">The file is valid XML
           <p><spring:message code="label.conversion.originalSchema"/>&#160; <a
                   href="<bean:write name="conversion.originalSchema"/>"><bean:write
                   name="conversion.originalSchema"/></a></p>
-          <c:if present name="conversion.validatedSchema">
+          <c:if test="${conversion.validatedSchema}">
             <p><spring:message code="label.conversion.validatedSchema"/>&#160;
               <a href="<bean:write name="conversion.validatedSchema"/>"><bean:write
                       name="conversion.validatedSchema"/></a></p>
-          </c:if present></div>
-      </c:if notEmpty>
-      <c:if empty name="conversion.originalSchema">
+          </c:if></div>
+      </c:if>
+      <c:if test="${conversion.originalSchema}">
         <div class="error-msg">Could not validate XML.
           <p><spring:message code="label.conversion.schema.not.found"/></p>
         </div>
-      </c:if empty>
-    </c:if equal>
-    <c:if notEqual name="countErrors" value="0">
-      <div class="error-msg">The file is not valid XML <c:if notEmpty
-              name="conversion.originalSchema">
+      </c:if>
+    </c:if>
+    <c:if test="${countErrors != 0}">
+      <div class="error-msg">The file is not valid XML
+        <c:choose>
+        <c:when test="${conversion.originalSchema}">
         <p><spring:message code="label.conversion.originalSchema"/>&#160; <a
                 href="<bean:write name="conversion.originalSchema"/>"><bean:write
                 name="conversion.originalSchema"/></a></p>
-        <c:if present name="conversion.validatedSchema">
+        <c:if test="${conversion.validatedSchema}">
           <p><spring:message code="label.conversion.validatedSchema"/>&#160;
             <a href="<bean:write name="conversion.validatedSchema"/>"><bean:write
                     name="conversion.validatedSchema"/></a></p>
-        </c:if present>
-      </c:if notEmpty> <c:if empty name="conversion.originalSchema">
+        </c:if>
+      </c:when>
+        <c:otherwise>
         <p><spring:message code="label.conversion.schema.not.found"/></p>
-      </c:if empty></div>
-    </c:if notEqual>
-    <c:if notEmpty name="conversion.warningMessage">
+      </c:otherwise>
+        </c:choose>
+      </div>
+    </c:if>
+    <c:if test="${conversion.warningMessage}">
       <div class="error-msg">
         <bean:write name="conversion.warningMessage"/>
       </div>
-    </c:if notEmpty>
-  </c:if present>
+    </c:if>
+  </c:if>
 
 
   <form:form action="/old/validation" method="post" modelAttribute="form">
@@ -114,9 +119,9 @@
       </tr>
     </table>
   </form:form>
-  <c:if present name="conversion.valid" scope="request">
+  <c:if test="${requestScope['conversion.valid']}">
     <bean:size id="countErrors" name="conversion.valid"/>
-    <c:if notEqual name="countErrors" value="0">
+    <c:if test="${countErrors != 0}">
       <table class="datatable" align="center" width="100%">
         <col style="width:8%"/>
         <col style="width:8%"/>
@@ -131,9 +136,9 @@
         </tr>
         </thead>
         <tbody>
-        <c:if iterate indexId="index" id="valid" name="conversion.valid" scope="request" type="ValidateDto">
-          <tr <%=(index.intValue() % 2 == 1) ? "class=\"zebraeven\""
-                  : "class=\"zebraodd\""%>>
+      <%--id="valid" name="conversion.valid" scope="request" type="ValidateDto">--%>
+        <c:forEach varStatus="index" items="${conversion.valid}">
+          <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
             <td>
               <bean:write name="valid" property="type"/>
             </td>
@@ -147,9 +152,9 @@
               <bean:write name="valid" property="description"/>
             </td>
           </tr>
-        </c:if iterate>
+        </c:forEach>
         </tbody>
       </table>
-    </c:if notEqual>
-  </c:if present>
+    </c:if>
+  </c:if>
 </div>
