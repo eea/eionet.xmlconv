@@ -46,7 +46,7 @@ import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.services.db.dao.IStyleSheetDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.web.struts.stylesheet.ConvTypeHolder;
+import eionet.gdem.web.spring.stylesheet.ConvTypeHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

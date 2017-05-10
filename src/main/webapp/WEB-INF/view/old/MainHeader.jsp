@@ -1,6 +1,6 @@
-<%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java" %>
-<%@ page import="eionet.gdem.Properties" %>
-<%@ page import="eionet.gdem.utils.SecurityUtil" %>
+<%--<%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java" %>--%>
+<%--<%@ page import="eionet.gdem.Properties" %>
+<%@ page import="eionet.gdem.utils.SecurityUtil" %>--%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -106,53 +106,6 @@
       </ed:hasPermission>
       <ed:hasPermission username="username" acl="config" permission="u">
         <ed:menuItem action="/old/config/database" title="Edit application configurations">
-          <spring:message code="label.menu.config"/>
-        </ed:menuItem>
-      </ed:hasPermission>
-      <ed:hasPermission username="username" acl="serverstatus" permission="v">
-        <ed:menuItem action="/serverstatus.jsp" title="View the server status">
-          <spring:message code="label.menu.serverstatus"/>
-        </ed:menuItem>
-      </ed:hasPermission>
-    </ul>
-    <!-- To be removed after eveything is migrated -->
-    <hr/>
-    <ul>
-      <li>Old Menu</li>
-      <ed:menuItem action="/do/uplSchemas" title="Schemas">
-        <spring:message code="label.menu.schemas"/>
-      </ed:menuItem>
-      <ed:menuItem action="/do/stylesheetList" title="Handcoded Stylesheets">
-        <spring:message code="label.menu.stylesheets"/>
-      </ed:menuItem>
-      <ed:menuItem action="/do/generatedStylesheetList" title="Generated Stylesheets">
-        <spring:message code="label.menu.stylesheetsGenerated"/>
-      </ed:menuItem>
-      <ed:menuItem action="/do/listConvForm" title="Converter">
-        <spring:message code="label.menu.converter"/>
-      </ed:menuItem>
-      <ed:menuItem action="/do/validateXMLForm" title="Validate XML">
-        <spring:message code="label.conversion.tab.validation"/>
-      </ed:menuItem>
-      <ed:menuItem action="/workqueue.jsp" title="QA jobs">
-        <spring:message code="label.menu.QAJobs"/>
-      </ed:menuItem>
-      <ed:menuItem action="/do/qaScripts" title="QA Scripts">
-        <spring:message code="label.menu.queries"/>
-      </ed:menuItem>
-      <ed:menuItem action="/do/qaSandboxForm" title="QA Sandbox">
-        <spring:message code="label.menu.xqsendbox"/>
-      </ed:menuItem>
-      <ed:menuItem action="/do/uplXmlFiles" title="XML Files">
-        <spring:message code="label.menu.xmlfiles"/>
-      </ed:menuItem>
-      <ed:hasPermission username="username" acl="host" permission="v">
-        <ed:menuItem action="/do/hosts/list" title="Hosts">
-          <spring:message code="label.menu.hosts"/>
-        </ed:menuItem>
-      </ed:hasPermission>
-      <ed:hasPermission username="username" acl="config" permission="u">
-        <ed:menuItem action="/do/dbForm" title="Edit application configurations">
           <spring:message code="label.menu.config"/>
         </ed:menuItem>
       </ed:hasPermission>

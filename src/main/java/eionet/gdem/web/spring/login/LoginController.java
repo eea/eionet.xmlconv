@@ -50,9 +50,16 @@ public class LoginController {
 
         if (afterLogin != null && !afterLogin.toLowerCase().contains("/tiles/layout.jsp")) {
             //httpServletResponse.sendRedirect(afterLogin);
-            return null;
+            /*return null;*/
         }
 
+        return "redirect:" + afterLogin;
+    }
+
+    @GetMapping("/local")
+    public String local(Model model) {
+        // TODO add local login in case CAS is offline.
         return "/";
     }
+
 }

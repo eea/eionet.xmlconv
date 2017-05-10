@@ -373,9 +373,9 @@ public class XQueryService extends RemoteService {
             if (status == Constants.XQ_READY) {
                 resultCode = Constants.JOB_READY;
             } else if (status == Constants.XQ_LIGHT_ERR) {
-                resultCode = Constants.JOB_READY;
+                resultCode = Constants.JOB_LIGHT_ERROR;
             } else if (status == Constants.XQ_FATAL_ERR) {
-                resultCode = Constants.JOB_READY;
+                resultCode = Constants.JOB_FATAL_ERROR;
             } else {
                 resultCode = -1; // not expected to reach here
             }

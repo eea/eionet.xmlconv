@@ -27,10 +27,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.upload.FormFile;
+import eionet.gdem.web.spring.FileUploadWrapper;
 
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
@@ -40,12 +37,12 @@ import eionet.gdem.dto.Stylesheet;
  * @author Unknown
  * @author George Sofianos
  */
-public class StylesheetForm extends ActionForm {
+public class StylesheetForm {
 
     private String schema;
     private String outputtype;
     private String description;
-    private FormFile xslfile;
+    private FileUploadWrapper xslfile;
     private String schemaId;
     private String xsl;
     private String stylesheetId;
@@ -63,7 +60,7 @@ public class StylesheetForm extends ActionForm {
     /** List of stylesheets available for dependsOn attribute. */
     private List<Stylesheet> existingStylesheets;
 
-    @Override
+/*    @Override
     public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         return null;
     }
@@ -74,7 +71,7 @@ public class StylesheetForm extends ActionForm {
         outputtype = null;
         description = null;
         xslfile = null;
-    }
+    }*/
 
     public String getDescription() {
         return description;
@@ -100,11 +97,11 @@ public class StylesheetForm extends ActionForm {
         this.schema = schema;
     }
 
-    public FormFile getXslfile() {
+    public FileUploadWrapper getXslfile() {
         return xslfile;
     }
 
-    public void setXslfile(FormFile xslfile) {
+    public void setXslfile(FileUploadWrapper xslfile) {
         this.xslfile = xslfile;
     }
 

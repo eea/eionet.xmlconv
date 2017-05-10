@@ -68,30 +68,6 @@
                 <li><a href="/serverstatus.jsp" th:text="#{label.menu.serverstatus}"></a></li>
             </perm:hasPerm>
         </ul>
-
-        <!-- To be removed after eveything is migrated -->
-        <hr />
-        <ul>
-            <li>Old Menu</li>
-            <li><a href="/do/uplSchemas" th:text="#{label.menu.schemas}"></a></li>
-            <li><a href="/do/stylesheetList" th:text="#{label.menu.stylesheets}"></a></li>
-            <li><a href="/do/generatedStylesheetList" th:text="#{label.menu.stylesheetsGenerated}"></a></li>
-            <li><a href="/do/listConvForm" th:text="#{label.menu.converter}"></a></li>
-            <li><a href="/do/validateXMLForm" th:text="#{label.conversion.tab.validation}"></a></li>
-            <li><a href="/workqueue.jsp" th:text="#{label.menu.QAJobs}"></a></li>
-            <li><a href="/do/qaScripts" th:text="#{label.menu.queries}"></a></li>
-            <li><a href="/do/qaSandboxForm" th:text="#{label.menu.xqsendbox}"></a></li>
-            <li><a href="/do/uplXmlFiles" th:text="#{label.menu.xmlfiles}"></a></li>
-            <perm:hasPerm acl="host" permission="v">
-                <li><a href="/do/hosts/list" th:text="#{label.menu.hosts}"></a></li>
-            </perm:hasPerm>
-            <perm:hasPerm acl="config" permission="u">
-                <li><a href="/do/dbForm" th:text="#{label.menu.config}"></a></li>
-            </perm:hasPerm>
-            <perm:hasPerm acl="serverstatus" permission="v">
-                <li><a href="/serverstatus.jsp" th:text="#{label.menu.serverstatus}"></a></li>
-            </perm:hasPerm>
-        </ul>
     </div> <!-- leftcolumn -->
     </div>
 </body>

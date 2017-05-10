@@ -68,7 +68,7 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.web.struts.qascript.QAScriptListHolder;
 import eionet.gdem.web.spring.schemas.SchemaElemHolder;
 import eionet.gdem.web.spring.schemas.UplSchemaHolder;
-import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
+import eionet.gdem.web.spring.stylesheet.StylesheetListHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

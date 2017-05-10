@@ -25,9 +25,7 @@ import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 
 import eionet.gdem.utils.xml.sax.SaxContext;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
-
+import eionet.gdem.web.spring.SpringMessages;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.utils.xml.IXmlCtx;
 import org.slf4j.Logger;
@@ -39,9 +37,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author Enriko Käsper
  */
-public class AddEditStylehseetUtils {
+public class ConversionsUtils {
     /** */
-    private static final Logger LOGGER = LoggerFactory.getLogger(AddEditStylehseetUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConversionsUtils.class);
 
 
     /**
@@ -50,7 +48,7 @@ public class AddEditStylehseetUtils {
      * @param httpServletRequest HTTP servlet request object.
      * @return eionet.gdem.dto.Stylesheet object
      */
-    static Stylesheet convertFormToStylesheetDto(StylesheetForm form, HttpServletRequest httpServletRequest) {
+    public static Stylesheet convertFormToStylesheetDto(StylesheetForm form, HttpServletRequest httpServletRequest) {
 
         Stylesheet stylesheet = new Stylesheet();
         stylesheet.setConvId(form.getStylesheetId());
@@ -77,14 +75,16 @@ public class AddEditStylehseetUtils {
      * @param stylesheet Stylehseet dto
      * @param errors Struts ActionMessages
      */
-    static void validateXslFile(Stylesheet stylesheet, ActionMessages errors) {
+    public static void validateXslFile(Stylesheet stylesheet, SpringMessages errors) {
         try {
             IXmlCtx x = new SaxContext();
             x.setWellFormednessChecking();
             x.checkFromString(stylesheet.getXslContent());
         } catch (Exception e) {
             LOGGER.error("stylesheet not valid", e);
-            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("label.stylesheet.error.notvalid"));
+            // TODO change to use messaging service
+            //("label.stylesheet.error.notvalid")
+            errors.add("Stylesheet content is not valid");
         }
     }
 }

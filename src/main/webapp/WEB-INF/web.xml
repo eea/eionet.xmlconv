@@ -45,91 +45,15 @@
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>*</url-pattern>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>CAS Filter</filter-name>
+        <url-pattern>/web/login</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>CAS Filter</filter-name>
+        <url-pattern>/web/login/afterLogin</url-pattern>
+    </filter-mapping>
 
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/eionetCookieLogin/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/login</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/afterLogin</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/editUI</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/ldapForm</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/dbForm</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/basexForm</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/systemForm</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/purgeForm</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/addUplSchemaForm</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/addStylesheetForm</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/addQAScriptForm</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/addUplXmlFileForm</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/dbForm</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/ldapForm</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/hosts/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/editQAScriptForm</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/stylesheetEditForm</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/do/schemaElemForm</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CAS Filter</filter-name>
-        <url-pattern>/log/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>Set Character Encoding</filter-name>
-        <servlet-name>action</servlet-name>
-    </filter-mapping>
     <listener>
         <listener-class>eionet.gdem.web.listeners.JobScheduler</listener-class>
     </listener>
@@ -195,7 +119,7 @@
 
 
 
-    <!-- Struts Config -->
+    <!-- Struts Config
     <servlet>
         <servlet-name>action</servlet-name>
         <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
@@ -212,7 +136,7 @@
             <param-value>2</param-value>
         </init-param>
         <load-on-startup>2</load-on-startup>
-    </servlet>
+    </servlet>-->
     <servlet>
         <servlet-name>Main</servlet-name>
         <servlet-class>eionet.gdem.deprecated.Main</servlet-class>
@@ -241,10 +165,10 @@
         <servlet-name>RpcRouter</servlet-name>
         <url-pattern>/RpcRouter</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
+<!--    <servlet-mapping>
         <servlet-name>action</servlet-name>
         <url-pattern>/do/*</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>downloadServlet</servlet-name>
         <url-pattern>/queries/*</url-pattern>
@@ -289,6 +213,11 @@
 
     <jsp-config>
         <taglib>
+            <taglib-uri>/WEB-INF/eurodyn.tld</taglib-uri>
+            <taglib-location>/WEB-INF/tlds/eurodyn.tld</taglib-location>
+        </taglib>
+        <!--
+        <taglib>
             <taglib-uri>/WEB-INF/struts-bean.tld</taglib-uri>
             <taglib-location>/WEB-INF/tlds/struts-bean.tld</taglib-location>
         </taglib>
@@ -313,16 +242,12 @@
             <taglib-location>/WEB-INF/tlds/struts-template.tld</taglib-location>
         </taglib>
         <taglib>
-            <taglib-uri>/WEB-INF/eurodyn.tld</taglib-uri>
-            <taglib-location>/WEB-INF/tlds/eurodyn.tld</taglib-location>
-        </taglib>
-        <taglib>
             <taglib-uri>/WEB-INF/struts-html-el.tld</taglib-uri>
             <taglib-location>/WEB-INF/tlds/struts-html-el.tld</taglib-location>
         </taglib>
         <taglib>
             <taglib-uri>/WEB-INF/c.tld</taglib-uri>
             <taglib-location>/WEB-INF/tlds/c.tld</taglib-location>
-        </taglib>
+        </taglib>-->
     </jsp-config>
 </web-app>

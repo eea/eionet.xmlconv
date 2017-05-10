@@ -1,31 +1,28 @@
-<%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java" %>
-<%@ page import="eionet.gdem.utils.Utils,java.util.Date" %>
+<%--<%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java" %>
+<%@ page import="eionet.gdem.utils.Utils,java.util.Date" %>--%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:if present name="org.apache.struts.action.ACTION_MESSAGE">
-  <div class="system-msg">
-    <html:messages id="message" message="true">
-      <bean:write name="message" filter="false"/> (<%=Utils.getDateTime(new Date())%>)
-    </html:messages>
-  </div>
-</c:if present>
+<%--<c:if test="${errors}">--%>
+<c:forEach items="${errors}" varStatus="index" var="${i}">
+  <spring:message code="${i}" var="${tmpLabel}" />
+  <div class="system-msg" title="${tmpLabel}" />
+</c:forEach>
 
-<c:if present name="dcm.messages">
-  <div class="system-msg">
-    <html:messages id="message" name="dcm.messages">
-      <bean:write name="message" filter="false"/> (<%=Utils.getDateTime(new Date())%>)<br/>
-    </html:messages>
+<%--<c:if test="${dcm.messages}">--%>
+<c:forEach items="${dcm.messages}" varStatus="index" var="${i}">
+  <spring:message code="${i}" var="${tmpLabel}" />
+  <div class="system-msg" title="${tmpLabel}" />
+</c:forEach>
 
-  </div>
-</c:if present>
+<%--<c:if test="${dcm.errors}">--%>
+<c:forEach items="${dcm.errors}" varStatus="index" var="${i}">
+  <spring:message code="${i}" var="${tmpLabel}" />
+  <div class="error-msg" title="${tmpLabel}" />
+</c:forEach>
+<%--</c:if>--%>
 
-<c:if present name="dcm.errors">
-  <div class="error-msg">
-    <html:messages id="message" name="dcm.errors">
-      <bean:write name="message" filter="false"/>
-    </html:messages>
-  </div>
-</c:if present>
-
-<c:if present name="org.apache.struts.action.ERROR">
-  <div class="error-msg"><html:errors/></div>
-</c:if present>
+<%--<c:if test="${errors}">--%>
+<div class="error-msg"><form:errors/></div>
+<%--</c:if>--%>

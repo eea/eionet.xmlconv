@@ -55,7 +55,7 @@
 
 <%-- include Error display --%>
 <%-- move system-msg and error-msg below the  <h1> heading --%>
-<%-- tiles:insert definition="Error" /> --%>
+<tiles:insertDefinition name="Error" />
 
 <%-- include body --%>
 <tiles:insertAttribute name="body"/>
