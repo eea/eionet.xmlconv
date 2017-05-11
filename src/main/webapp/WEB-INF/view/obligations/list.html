@@ -12,7 +12,7 @@
           <th>Select</th>
         </thead>
         <tbody>
-          <form th:action="@{/web/obligations/delete}" th:method="post">
+          <form th:action="@{/obligations/delete}" th:method="post">
             <tr th:each="obligation, pos : ${obligations}">
               <td width="80%"><a th:text="${obligation.url}"></a></td>
               <td>Name</td>
@@ -25,7 +25,7 @@
     </div>
     <!--<div class="columns small-1">
       <ul>
-        <li><a th:href="@{/web/obligations/edit}">Edit</a></li>
+        <li><a th:href="@{/obligations/edit}">Edit</a></li>
         <li></li>
       </ul>
     </div>-->

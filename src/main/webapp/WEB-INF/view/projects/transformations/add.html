@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head-old :: head}" />
 <body th:include="~{fragments/layout-old :: layout(~{::form})}">
-<form action="#" th:action="@{/web/projects/{id}/transformations/add(id=${id})}" th:object="${transformation}" method="post">
+<form action="#" th:action="@{/projects/{id}/transformations/add(id=${id})}" th:object="${transformation}" method="post">
   <fieldset>
     <legend>Transformation properties</legend>
     <label>Transformation name

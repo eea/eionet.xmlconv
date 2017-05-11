@@ -4,7 +4,7 @@
 <body th:include="~{fragments/layout-old :: layout(~{::div})}">
 <div>
   <p th:each="message, pos : ${messages}" th:text="${message}"></p>
-  <form action="#" th:action="@{/web/projects/{projectId}/scripts/{id}/edit(projectId=${projectId}, id=${id})}" th:object="${script}" method="post">
+  <form action="#" th:action="@{/projects/{projectId}/scripts/{id}/edit(projectId=${projectId}, id=${id})}" th:object="${script}" method="post">
     <fieldset>
       <legend>QA Script properties</legend>
       <label>Schema URL:

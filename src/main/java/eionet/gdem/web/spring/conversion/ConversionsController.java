@@ -70,6 +70,22 @@ public class ConversionsController {
         this.rootElemDao = rootElemDao;
     }
 
+    @GetMapping
+    public String list(Model model, HttpServletRequest httpServletRequest) {
+
+        SpringMessages success = new SpringMessages();
+        SpringMessages errors = new SpringMessages();
+
+        try {
+            httpServletRequest.setAttribute(StylesheetListLoader.STYLESHEET_LIST_ATTR, StylesheetListLoader.getStylesheetList(httpServletRequest));
+        } catch (DCMException e) {
+            LOGGER.error("Error getting stylesheet list", e);
+            errors.add(messageService.getMessage("label.exception.unknown"));
+            model.addAttribute("errors", errors);
+        }
+        return "/stylesheetList.jsp";
+    }
+
     @GetMapping("/{id}")
     public String show(Model model, HttpServletRequest httpServletRequest) {
         StylesheetListHolder st = new StylesheetListHolder();

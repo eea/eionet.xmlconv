@@ -31,7 +31,7 @@ import java.util.Set;
  *
  */
 @Controller
-@RequestMapping("/projects")
+@RequestMapping({"/", "/projects"})
 public class ProjectsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectsController.class);

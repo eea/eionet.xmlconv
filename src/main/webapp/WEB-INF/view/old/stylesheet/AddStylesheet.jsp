@@ -1,10 +1,7 @@
 <%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties" %>--%>
-<%@ taglib uri="/WEB-INF/tlds/c.tld" prefix="c" %>
-
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-
 
 <%--<html:xhtml/>--%>
 <ed:breadcrumbs-push label="Add Stylesheet" level="3"/>
@@ -26,14 +23,16 @@
       <td>
         <div id="newSchemasContainer">
           <div class="newSchemaContainer">
-            <c:if present name="schema" scope="request">
-              <input type="url" name="newSchemas" value="<bean:write name="schema" scope="request"/>"
+            <c:choose>
+              <c:when test="${requestScope['schema']}">
+                <input type="url" name="newSchemas" value="<bean:write name="schema" scope="request"/>"
                      style="width:400px" class="newSchema" id="txtSchemaUrl"/>
-            </c:if present>
-            <c:if notPresent name="schema" scope="request">
-              <input type="url" name="newSchemas" maxlength="255" style="width:400px" class="newSchema"
-                     id="txtSchemaUrl"/>
-            </c:if notPresent>
+              </c:when>
+              <c:otherwise>
+                <input type="url" name="newSchemas" maxlength="255" style="width:400px" class="newSchema"
+                       id="txtSchemaUrl"/>
+              </c:otherwise>
+            </c:choose>
             <a href='#' class="delNewSchemaLink"><img style='border:0' src='<c:url value="/images/button_remove.gif" />'
                                                       alt='Remove'/></a><br/>
           </div>
@@ -49,20 +48,21 @@
       </th>
       <td>
         <select name="outputtype" style="width:100px;" id="selOutputType">
-          <c:if iterate id="opt" name="stylesheet.outputtype" scope="session" property="convTypes" type="ConvType">
+  <%--id="opt" name="stylesheet.outputtype" scope="session" property="convTypes" type="ConvType">--%>
+          <c:forEach  items="${stylesheet.outputtype}">
             <c:set var="selected">
-              <c:if equal name="opt" property="convType" value="HTML">selected="selected"</c:if equal>
+              <c:if test="${opt.convType == 'HTML'}">selected="selected"</c:if>
             </c:set>
             <option value="<bean:write name="opt" property="convType" />" ${selected} >
               <bean:write name="opt" property="convType"/>
             </option>
-          </c:if iterate>
+          </c:forEach>
         </select>
       </td>
     </tr>
 
-    <c:if present name="schemaInfo" scope="request">
-      <c:if equal name="schemaInfo" property="schemaLang" value="EXCEL">
+    <c:if test="${requestScope['schemaInfo']}">
+      <c:if test="${schemaInfo.schemaLang == 'EXCEL'}">
         <tr>
           <th scope="row" class="scope-row">
             <label class="question" for="chkDepends">
@@ -72,16 +72,17 @@
           <td>
             <select name="dependsOn" id="chkDepends">
               <option value="" selected="selected">--</option>
-              <c:if iterate id="st" scope="request" name="existingStylesheets">
+        <%--iterate id="st" scope="request" name="existingStylesheets">--%>
+              <c:forEach  items="${existingStylesheets}">
                 <option value="<bean:write name="st" property="convId" />">
                   <bean:write name="st" property="xslFileName"/>
                 </option>
-              </c:if iterate>
+              </c:forEach>
             </select>
           </td>
         </tr>
-      </c:if equal>
-    </c:if present>
+      </c:if>
+    </c:if>
     <tr>
       <th scope="row" class="scope-row">
         <label class="question" for="txtDescription">

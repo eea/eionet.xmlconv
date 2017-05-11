@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head-old :: head}" />
 <body th:include="~{fragments/layout-old :: layout(~{::form})}">
-<form action="#" th:action="@{/web/projects/{id}/schemata/add(id=${id})}" th:object="${schema}" method="post">
+<form action="#" th:action="@{/projects/{id}/schemata/add(id=${id})}" th:object="${schema}" method="post">
   <fieldset>
     <legend>XML Schema properties</legend>
     <label>Schema URL:

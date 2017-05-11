@@ -7,17 +7,17 @@
 <div style="width:100%;">
   <div id="tabbedmenu">
     <ul>
-      <li><a th:href="@{/web/config/database}" th:text="#{label.config.db}"></a></li>
-      <li><a th:href="@{/web/config/system}" th:text="#{label.config.system}"></a></li>
-      <li id="currenttab"><a th:href="@{/web/config/purge}" th:text="#{label.config.purge}"></a></li>
-      <li><a th:href="@{/web/config/ldap}" th:text="#{label.config.ldap}"></a></li>
-      <li><a th:href="@{/web/config/basex}" th:text="#{label.config.basexserver}"></a></li>
+      <li><a th:href="@{/config/database}" th:text="#{label.config.db}"></a></li>
+      <li><a th:href="@{/config/system}" th:text="#{label.config.system}"></a></li>
+      <li id="currenttab"><a th:href="@{/config/purge}" th:text="#{label.config.purge}"></a></li>
+      <li><a th:href="@{/config/ldap}" th:text="#{label.config.ldap}"></a></li>
+      <li><a th:href="@{/config/basex}" th:text="#{label.config.basexserver}"></a></li>
     </ul>
   </div>
   <div>
     <p th:each="message, pos : ${successMessages}" th:text="${message}"></p>
     <p th:each="message, pos : ${errorMessages}" th:text="${message}"></p>
-    <form action="#" th:action="@{/web/config/purge}" th:object="${form}" method="post">
+    <form action="#" th:action="@{/config/purge}" th:object="${form}" method="post">
       <fieldset>
         <legend th:text="#{label.config.basexserver.title}"></legend>
       </fieldset>

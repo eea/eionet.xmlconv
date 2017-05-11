@@ -17,14 +17,14 @@
                      delimiter=""/>
 
 <tiles:importAttribute name="showFooter" ignore="true"/>
-<c:if equal name="showFooter" value="true">
+<c:if test="${showFooter == true}">
   <div id="pagefoot">
     <p>
       <a href="http://www.eea.europa.eu" style="font-weight:bold">European Environment Agency</a>
       <br/>Kgs. Nytorv 6, DK-1050 Copenhagen K, Denmark - Phone: +45 3336 7100
     </p>
   </div>
-</c:if equal>
+</c:if>
 
 </body>
 </html>

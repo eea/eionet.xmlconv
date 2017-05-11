@@ -1,9 +1,8 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>
+<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>--%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
-
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%--<html:xhtml/>--%>
 
@@ -54,15 +53,17 @@
           </label>
         </td>
         <td align="left">
-          <c:if present name="user">
+          <c:choose>
+          <c:when test="${user}">
             <html:text property="schema" maxlength="255" style="width:500px" styleId="txtSchemaUrl"/>
-          </c:if present>
-          <c:if notPresent name="user">
+          </c:when>
+          <c:otherwise>
             <a href="<bean:write name="schemaForm" property="schema" />"
                title="<bean:write name="schemaForm" property="schema" />">
               <bean:write name="schemaForm" property="schema"/>
             </a>&#160;
-          </c:if notPresent>
+          </c:otherwise>
+          </c:choose>
         </td>
       </tr>
       <tr>
@@ -72,13 +73,15 @@
           </label>
         </td>
         <td align="left">
-          <c:if present name="user">
-            <html:textarea property="description" rows="2" cols="30" style="width:500px"
-                           styleId="txtDescription"/>
-          </c:if present>
-          <c:if notPresent name="user">
-            <bean:write name="schemaForm" property="description"/>
-          </c:if notPresent>
+          <c:choose>
+            <c:when test="${user}">
+              <html:textarea property="description" rows="2" cols="30" style="width:500px"
+                             styleId="txtDescription"/>
+            </c:when>
+            <c:otherwise>
+              <bean:write name="schemaForm" property="description"/>
+            </c:otherwise>
+          </c:choose>
         </td>
       </tr>
       <tr class="zebraeven">
@@ -88,14 +91,16 @@
           </label>
         </td>
         <td>
-          <c:if present name="user">
-            <html:select property="schemaLang" styleId="txtSchemaLang">
-              <html:options property="schemaLanguages"/>
-            </html:select>
-          </c:if present>
-          <c:if notPresent name="user">
-            <bean:write name="schemaForm" property="schemaLang"/>
-          </c:if notPresent>
+          <c:choose>
+            <c:when test="${user}">
+              <html:select property="schemaLang" styleId="txtSchemaLang">
+                <html:options property="schemaLanguages"/>
+              </html:select>
+            </c:when>
+            <c:otherwise>
+              <bean:write name="schemaForm" property="schemaLang"/>
+            </c:otherwise>
+          </c:choose>
         </td>
       </tr>
       <tr>
@@ -105,12 +110,14 @@
           </label>
         </td>
         <td>
-          <c:if present name="user">
-            <html:checkbox property="doValidation" styleId="txtValidation"/>
-          </c:if present>
-          <c:if notPresent name="user">
-            <bean:write name="schemaForm" property="doValidation"/>
-          </c:if notPresent>
+          <c:choose>
+            <c:when test="${user}">
+              <html:checkbox property="doValidation" styleId="txtValidation"/>
+            </c:when>
+            <c:otherwise>
+              <bean:write name="schemaForm" property="doValidation"/>
+            </c:otherwise>
+          </c:choose>
         </td>
       </tr>
       <tr>
@@ -120,12 +127,14 @@
           </label>
         </td>
         <td>
-          <c:if present name="user">
-            <html:checkbox property="blocker" styleId="txtBlockerValidation"/>
-          </c:if present>
-          <c:if notPresent name="user">
-            <bean:write name="schemaForm" property="blocker"/>
-          </c:if notPresent>
+          <c:choose>
+            <c:when test="${user}">
+              <html:checkbox property="blocker" styleId="txtBlockerValidation"/>
+            </c:when>
+            <c:otherwise>
+              <bean:write name="schemaForm" property="blocker"/>
+            </c:otherwise>
+          </c:choose>
         </td>
       </tr>
       <tr class="zebraeven">
@@ -138,7 +147,7 @@
           <html:text property="expireDate" styleId="txtExpireDate"/> (dd/MM/yyyy)
         </td>
       </tr>
-      <c:if equal value="true" name="schemaForm" property="dtd">
+      <c:if test="${schemaForm == 'dtd'}">
         <tr>
           <td>
             <label class="question" for="txtDtdId">
@@ -146,27 +155,29 @@
             </label>
           </td>
           <td align="left">
-            <c:if present name="user">
-              <html:text property="dtdId" maxlength="50" size="50" styleId="txtDtdId"/>
-            </c:if present>
-            <c:if notPresent name="user">
-              <bean:write name="schemaForm" property="dtdId"/>
-            </c:if notPresent>
+            <c:choose>
+              <c:when test="${user}">
+                <html:text property="dtdId" maxlength="50" size="50" styleId="txtDtdId"/>
+              </c:when>
+              <c:otherwise>
+                <bean:write name="schemaForm" property="dtdId"/>
+              </c:otherwise>
+            </c:choose>
           </td>
         </tr>
-      </c:if equal>
+      </c:if>
       <tr>
         <td></td>
         <td>
-          <c:if equal value="true" name="schema.rootElements" property="xsduPrm">
+          <c:if test="${schema.rootElements == 'xsduPrm'}">
             <input type="button" class="button" value="<spring:message code="label.schema.save"/>"
                    onclick="return submitAction(1,'schemaUpdate');"/>
             &nbsp;
-          </c:if equal>
-          <c:if equal value="true" name="schema.rootElements" property="xsddPrm">
+          </c:if>
+          <c:if test="${schema.rootElements == 'xsddPrm'}">
             <input type="button" class="button" value="<spring:message code="label.schema.delete"/>"
                    onclick="return submitAction(1,'deleteUplSchema?deleteSchema=true');"/>
-          </c:if equal>
+          </c:if>
         </td>
       </tr>
     </table>
@@ -183,52 +194,52 @@
           </label>
         </td>
         <td>
-          <c:if notEmpty name="schemaForm" property="uplSchemaFileName">
+          <c:if test="${schemaForm.uplSchemaFileName}">
             <a href="<bean:write name="schemaForm" property="uplSchemaFileUrl" />"
                title="<bean:write name="schemaForm" property="uplSchemaFileUrl" />">
               <bean:write name="schemaForm" property="uplSchemaFileName"/>
             </a>&#160;
-            <c:if present name="schemaForm" property="lastModified">
+            <c:if test="${schemaForm.lastModified}">
               &#160;&#160;(<spring:message code="label.lastmodified"/>: <bean:write property="lastModified"
                                                                                     name="schemaForm"/>)
-            </c:if present>
-          </c:if notEmpty>
+            </c:if>
+          </c:if>
         </td>
       </tr>
-      <c:if equal value="true" name="schema.rootElements" property="xsduPrm">
+      <c:if test="${schema.rootElements == 'xsduPrm'}">
         <tr>
           <td></td>
           <td>
             <html:file property="schemaFile" size="20" style="width:400px" styleId="txtSchemaFile"/>
           </td>
         </tr>
-      </c:if equal>
+      </c:if>
       <tr>
         <td></td>
         <td>
-          <c:if equal value="true" name="schema.rootElements" property="xsduPrm">
+          <c:if test="${schema.rootElements == 'xsduPrm'}">
             <input type="button" class="button" value="<spring:message code="label.uplSchema.upload"/>"
                    onclick="return submitAction(1,'editUplSchema');"/>
-          </c:if equal>
-          <c:if notEmpty name="schemaForm" property="uplSchemaFileName">
-            <c:if equal value="true" name="schema.rootElements" property="xsddPrm">
+          </c:if>
+          <c:if test="${schemaForm.uplSchemaFileName}">
+            <c:if test="${schema.rootElements == 'xsddPrm'}">
               <input type="button" class="button" value="<spring:message code="label.schema.deleteFile"/>"
                      onclick="return submitAction(1,'deleteUplSchema');"/>
-            </c:if equal>
-            <c:if equal value="true" name="schema.rootElements" property="xsduPrm">
-              <c:if equal value="true" name="schema.rootElements" property="schemaIdRemoteUrl">
+            </c:if>
+            <c:if test="${schema.rootElements == 'xsduPrm'}">
+              <c:if test="${schema.rootElements.schemaIdRemoteUrl}">
                 <input type="button" class="button"
                        value="<spring:message code="label.uplSchema.checkupdates"/>"
                        onclick="return submitAction(1,'diffUplSchemas');"/>
-              </c:if equal>
-            </c:if equal>
-          </c:if notEmpty>
-          <c:if empty name="schemaForm" property="uplSchemaFileName">
-            <c:if equal value="true" name="schema.rootElements" property="schemaIdRemoteUrl">
+              </c:if>
+            </c:if>
+          </c:if>
+          <c:if test="${!schemaForm.uplSchemaFileName}">
+            <c:if test="${schema.rootElements == schemaIdRemoteUrl}">
               <input type="button" class="button" value="<spring:message code="label.uplSchema.createcopy"/>"
                      onclick="return submitAction(1,'diffUplSchemas');"/>
-            </c:if equal>
-          </c:if empty>
+            </c:if>
+          </c:if>
         </td>
       </tr>
     </table>
@@ -236,7 +247,7 @@
   <fieldset>
     <legend><spring:message code="label.schema.fldset.rootelems"/></legend>
 
-    <c:if equal name="schema.rootElements" property="rootElemsPresent" value="true">
+    <c:if test="${schema.rootElements.rootElemsPresent == true}">
       <table class="datatable" width="80%">
         <thead>
         <tr>
@@ -244,23 +255,23 @@
           </th>
           <th scope="col"><span title="Namespace"><spring:message code="label.schema.table.namespace"/></span>
           </th>
-          <c:if equal value="true" name="schema.rootElements" property="xsduPrm">
+          <c:if test="${schema.rootElements == 'xsduPrm'}">
             <th scope="col"></th>
-          </c:if equal>
+          </c:if>
         </tr>
         </thead>
         <tbody>
-        <c:if present name="schema.rootElements" property="rootElem">
-          <c:if iterate indexId="index" id="elem" name="schema.rootElements" property="rootElem"
-                         type="RootElem">
-            <tr <%=(index.intValue() % 2 == 1) ? "class=\"zebraeven\"" : "" %>>
+        <c:if test="${schema.rootElements.rootElem}">
+          <%--id="elem" name="schema.rootElements" property="rootElem"          type="RootElem">--%>
+          <c:forEach varStatus="index" items="${schema.rootElements.rootElem}">
+            <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : ''}">
               <td>
                 <bean:write name="elem" property="name"/>
               </td>
               <td>
                 <bean:write name="elem" property="namespace"/>
               </td>
-              <c:if equal value="true" name="schema.rootElements" property="xsduPrm">
+              <c:if test="${schema.rootElements == 'xsduPrm'}">
                 <td align="center">
                   <a href="deleteElem?elemId=<bean:write name="elem" property="elemId" />"
                      onclick='return elementDelete("<bean:write name="elem" property="name"/>");'>
@@ -268,15 +279,15 @@
                               title="delete root element"/>
                   </a>
                 </td>
-              </c:if equal>
+              </c:if>
             </tr>
-          </c:if iterate>
-        </c:if present>
+          </c:forEach>
+        </c:if>
         </tbody>
       </table>
-    </c:if equal>
-    <c:if present name="user">
-      <c:if equal value="true" name="schema.rootElements" property="xsduPrm">
+    </c:if>
+    <c:if test="${user}">
+      <c:if test="${schema.rootElements == 'xsduPrm'}">
         <table class="formtable">
           <col class="labelcol"/>
           <col class="entrycol"/>
@@ -309,8 +320,8 @@
             </td>
           </tr>
         </table>
-      </c:if equal>
-    </c:if present>
+      </c:if>
+    </c:if>
   </fieldset>
   <div style="display:none">
     <html:hidden property="schemaId"/>

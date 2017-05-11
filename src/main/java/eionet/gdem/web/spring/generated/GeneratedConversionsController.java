@@ -3,7 +3,7 @@ package eionet.gdem.web.spring.generated;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.web.spring.SpringMessages;
-import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
+import eionet.gdem.web.spring.stylesheet.StylesheetListLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

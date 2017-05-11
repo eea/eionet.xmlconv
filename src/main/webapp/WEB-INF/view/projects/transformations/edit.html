@@ -4,7 +4,7 @@
 <body th:include="~{fragments/layout-old :: layout(~{::div})}">
 <div>
   <p th:each="message, pos : ${messages}" th:text="${message}"></p>
-  <form action="#" th:action="@{/web/projects/{projectId}/transformations/{id}/edit(projectId=${projectId}, id=${id})}" th:object="${transformation}" method="post">
+  <form action="#" th:action="@{/projects/{projectId}/transformations/{id}/edit(projectId=${projectId}, id=${id})}" th:object="${transformation}" method="post">
     <fieldset>
       <legend>Transformation properties</legend>
       <label>Schema URL:

@@ -1,16 +1,14 @@
 <%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties" %>--%>
-
-
 <%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%--<html:xhtml/>--%>
 
 <ed:breadcrumbs-push label="Stylesheets" level="1"/>
 
-<c:if present name="stylesheet.generatedListHolder">
+<c:if test="${stylesheet.generatedListHolder}">
   <h1 class="documentFirstHeading">
     <spring:message code="label.stylesheet.generated"/>
   </h1>
@@ -36,9 +34,10 @@
       </tr>
       </thead>
       <tbody>
-      <c:if iterate indexId="index" id="schema" name="stylesheet.generatedListHolder" property="ddStylesheets"
-                     type="Schema">
-        <tr <%=(index.intValue() % 2 == 1) ? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
+      <%--id="schema" name="stylesheet.generatedListHolder" property="ddStylesheets" type="Schema">--%>
+      <c:forEach varStatus="index" items="${stylesheet.generatedListHolder.ddStylesheets}">
+
+        <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
           <td align="center">
               <%--paramId="schema" paramName="schema" paramProperty="schema">--%>
             <a href="/old/schema/conversions?schema=${schema.schema}">
@@ -52,7 +51,7 @@
             <bean:write name="schema" property="dataset"/>
           </td>
           <td title="<bean:write name="schema" property="datasetReleased"/>">
-            <bean:write name="schema" property="datasetReleased" format="<%= Properties.dateFormatPattern%>"/>
+            <bean:write name="schema" property="datasetReleased" format="${Properties.dateFormatPattern}"/>
           </td>
           <td>
             <a href="<bean:write name="schema" property="schema" />"
@@ -61,15 +60,16 @@
             </a>
           </td>
           <td>
-            <c:if iterate id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">
+        <%--id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">--%>
+            <c:forEach items="${schema.stylesheets}">
               <a href="<bean:write name="stylesheet" property="xsl" />"
                  title="<bean:write name="stylesheet" property="description" />">
                 <bean:write name="stylesheet" property="description"/>
               </a>&#160;
-            </c:if iterate>
+            </c:forEach>
           </td>
         </tr>
-      </c:if iterate>
+      </c:forEach>
       <tr>
         <td valign="top" colspan="5">
         </td>
@@ -78,7 +78,7 @@
     </table>
   </div>
 
-</c:if present>
+</c:if>
 
 
 

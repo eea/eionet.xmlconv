@@ -14,7 +14,7 @@
         </thead>
         <tbody>
           <tr th:each="project, pos : ${projects}">
-            <td width="80%"><a th:text="${project.name}" th:href="@{/web/projects/{id}(id=${project.id})}"></a></td>
+            <td width="80%"><a th:text="${project.name}" th:href="@{/projects/{id}(id=${project.id})}"></a></td>
             <td><span th:class="${project.schemata.size() > 0} ? 'xsd'"/></td>
             <td><span th:class="${project.schemata.size() > 0} ? 'xsl'"/></td>
             <td><span th:class="${project.schemata.size() > 0} ? 'qa'"/></td>
@@ -25,8 +25,8 @@
     </div>
     <div class="columns small-1">
       <ul>
-        <li acl="projects" permission="i"><a th:href="@{/web/projects/new}">Add</a></li>
-        <li acl="projects" permission="i"><a th:href="@{/web/projects/import}">Import</a></li>
+        <li acl="projects" permission="i"><a th:href="@{/projects/new}">Add</a></li>
+        <li acl="projects" permission="i"><a th:href="@{/projects/import}">Import</a></li>
       </ul>
     </div>
   </div>

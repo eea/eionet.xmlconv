@@ -9,7 +9,7 @@
 
 <ed:breadcrumbs-push label="XML Schema or DTD" level="2"/>
 
-<c:if notEmpty name="schemaForm" property="schema">
+<c:if test="${schemaForm.schema}">
   <bean:define id="schemaURL" name="schemaForm" property="schema"/>
   <bean:define id="id" name="schemaForm" property="schemaId"/>
 
@@ -35,22 +35,22 @@
       </li>
     </ul>
   </div>
-</c:if notEmpty>
+</c:if>
 
 <h1><spring:message code="label.schema.view"/></h1>
 
 <%-- include Error display --%>
 <tiles:insertDefinition name="Error"/>
 
-<c:if notEmpty name="schemaForm" property="schema">
+<c:if test="${schemaForm.schema}">
 
-  <c:if equal value="true" name="schema.rootElements" property="xsduPrm">
+  <c:if test="${schema.rootElements == 'xsduPrm'}">
     <div id="operations">
       <ul>
         <li><a href="${schemaForm.schemaId}/edit"><spring:message code="label.schema.edit.button"/></a></li>
       </ul>
     </div>
-  </c:if equal>
+  </c:if>
 
   <fieldset>
     <legend><spring:message code="label.schema.fldset.properties"/></legend>
@@ -106,7 +106,7 @@
           <bean:write name="schemaForm" property="longExpireDate"/>
         </td>
       </tr>
-      <c:if equal value="true" name="schemaForm" property="dtd">
+      <c:if test="${schemaForm == 'dtd'}">
         <tr>
           <th scope="row" class="scope-row">
             <spring:message code="label.elem.dtdid"/>
@@ -115,26 +115,26 @@
             <bean:write name="schemaForm" property="dtdId"/>
           </td>
         </tr>
-      </c:if equal>
+      </c:if>
       <tr>
         <th scope="row" class="scope-row">
           <spring:message code="label.uplSchema.schemaFile"/>
         </th>
         <td>
-          <c:if notEmpty name="schemaForm" property="uplSchemaFileName">
+          <c:if test="${schemaForm.uplSchemaFileName}">
             <a href="<bean:write name="schemaForm" property="uplSchemaFileUrl" />">
               <bean:write name="schemaForm" property="uplSchemaFileName"/>
             </a>&#160;
-            <c:if present name="schemaForm" property="lastModified">
+            <c:if test="${schemaForm.lastModified}">
               &#160;&#160;(<spring:message code="label.lastmodified"/>: <bean:write property="lastModified"
                                                                                     name="schemaForm"/>)
-            </c:if present>
-          </c:if notEmpty>
+            </c:if>
+          </c:if>
         </td>
       </tr>
     </table>
   </fieldset>
-  <c:if equal name="schema.rootElements" property="rootElemsPresent" value="true">
+  <c:if test="${schema.rootElements.rootElemsPresent == true}">
     <fieldset>
       <legend><spring:message code="label.schema.fldset.rootelems"/></legend>
 
@@ -146,9 +146,10 @@
         </tr>
         </thead>
         <tbody>
-        <c:if present name="schema.rootElements" property="rootElem">
-          <c:if iterate indexId="index" id="elem" name="schema.rootElements" property="rootElem" type="RootElem">
-            <tr <%=(index.intValue() % 2 == 1) ? "class=\"zebraeven\"" : "" %>>
+        <c:if test="${schema.rootElements.rootElem}">
+          <%--id="elem" name="schema.rootElements" property="rootElem" type="RootElem">--%>
+          <c:forEach varStatus="index" items="${schema.rootElements.rootElem}">
+            <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : ''}">
               <td>
                 <bean:write name="elem" property="name"/>
               </td>
@@ -156,11 +157,11 @@
                 <bean:write name="elem" property="namespace"/>
               </td>
             </tr>
-          </c:if iterate>
-        </c:if present>
+          </c:forEach>
+        </c:if>
         </tbody>
       </table>
 
     </fieldset>
-  </c:if equal>
-</c:if notEmpty>
+  </c:if>
+</c:if>

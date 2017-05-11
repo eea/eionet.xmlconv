@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head-old :: head}" />
 <body th:include="~{fragments/layout-old :: layout(~{::form})}">
-<form action="#" th:action="@{/web/projects/{id}/scripts/add(id=${id})}" th:object="${script}" method="post">
+<form action="#" th:action="@{/projects/{id}/scripts/add(id=${id})}" th:object="${script}" method="post">
   <fieldset>
     <legend>QA Script properties</legend>
     <label>Script name

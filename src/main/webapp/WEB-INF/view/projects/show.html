@@ -10,12 +10,12 @@
         <li>
           <a href="#0">Operations</a>
           <ul class="menu">
-            <li><a th:href="@{/web/projects/add}">Add Project</a></li>
-            <li><a th:href="@{/web/projects/{id}/edit(id=${project.id})}">Edit Project</a></li>
-            <li><a th:href="@{/web/projects/{id}/export(id=${project.id})}">Export Project</a></li>
-            <li><a th:href="@{/web/projects/import}">Import Project</a></li>
-            <li><a th:href="@{/web/projects/{id}/validate(id=${project.id})}">Validate project</a></li>
-            <li><a th:href="@{/web/projects/{id}/delete(id=${project.id})}">Delete project</a></li>
+            <li><a th:href="@{/projects/add}">Add Project</a></li>
+            <li><a th:href="@{/projects/{id}/edit(id=${project.id})}">Edit Project</a></li>
+            <li><a th:href="@{/projects/{id}/export(id=${project.id})}">Export Project</a></li>
+            <li><a th:href="@{/projects/import}">Import Project</a></li>
+            <li><a th:href="@{/projects/{id}/validate(id=${project.id})}">Validate project</a></li>
+            <li><a th:href="@{/projects/{id}/delete(id=${project.id})}">Delete project</a></li>
           </ul>
         </li>
       </ul>
@@ -47,21 +47,21 @@
       </div>
       <div class="tabs-panel" id="schemata">
         <div th:each="s : ${project.schemata}">
-          <p><a th:href="@{/web/projects/{projectId}/schemata/{id}(projectId=${project.id}, id=${s.id})}" th:text="${s.url}">Schema</a></p>
+          <p><a th:href="@{/projects/{projectId}/schemata/{id}(projectId=${project.id}, id=${s.id})}" th:text="${s.url}">Schema</a></p>
         </div>
-        <a th:href="@{/web/projects/{id}/schemata/add(id=${project.id})}">Add Schema</a>
+        <a th:href="@{/projects/{id}/schemata/add(id=${project.id})}">Add Schema</a>
       </div>
       <div class="tabs-panel" id="scripts">
         <div th:each="s : ${project.scripts}">
-          <p><a th:href="@{/web/projects/{projectId}/scripts/{id}(projectId=${project.id}, id=${s.id})}" th:text="${s.name}">Scripts</a></p>
+          <p><a th:href="@{/projects/{projectId}/scripts/{id}(projectId=${project.id}, id=${s.id})}" th:text="${s.name}">Scripts</a></p>
         </div>
-        <a th:href="@{/web/projects/{id}/scripts/add(id=${project.id})}">Add Script</a>
+        <a th:href="@{/projects/{id}/scripts/add(id=${project.id})}">Add Script</a>
       </div>
       <div class="tabs-panel" id="transformations">
         <div th:each="t : ${project.transformations}">
-          <p><a th:href="@{/web/projects/{projectId}/transformations/{id}(projectId=${project.id}, id=${t.id})}" th:text="${t.name}">Transformation</p>
+          <p><a th:href="@{/projects/{projectId}/transformations/{id}(projectId=${project.id}, id=${t.id})}" th:text="${t.name}">Transformation</p>
         </div>
-        <a th:href="@{/web/projects/{id}/transformations/add(id=${project.id})}">Add Transformation</a>
+        <a th:href="@{/projects/{id}/transformations/add(id=${project.id})}">Add Transformation</a>
       </div>
     </div>
   </div>

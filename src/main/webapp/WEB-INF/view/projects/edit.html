@@ -4,7 +4,7 @@
 <body th:include="~{fragments/layout-old :: layout(~{::div})}">
 <div>
     <p th:each="message, pos : ${messages}" th:text="${message}"></p>
-    <form action="#" th:action="@{/web/projects/{id}/edit(id=${id})}" th:object="${project}" method="post">
+    <form action="#" th:action="@{/projects/{id}/edit(id=${id})}" th:object="${project}" method="post">
         <label>Project name: </label>
         <input type="text" th:field="*{name}"/>
         <label>Obligation: </label>
