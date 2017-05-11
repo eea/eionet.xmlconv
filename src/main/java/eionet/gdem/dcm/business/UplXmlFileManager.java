@@ -27,7 +27,7 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IUPLXmlFileDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.web.struts.xmlfile.UplXmlFileHolder;
+import eionet.gdem.web.spring.xmlfile.UplXmlFileHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

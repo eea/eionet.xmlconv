@@ -10,7 +10,7 @@ import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.SpringMessages;
-import eionet.gdem.web.struts.qascript.QAScriptListLoader;
+import eionet.gdem.web.spring.scripts.QAScriptListLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

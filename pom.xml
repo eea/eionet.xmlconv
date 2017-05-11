@@ -290,9 +290,6 @@
                     <compilerVersion>${java_version}</compilerVersion>
                     <source>${java_version}</source>
                     <target>${java_version}</target>
-                    <excludes>
-                        <exclude>**/struts/**</exclude>
-                    </excludes>
                 </configuration>
             </plugin>
 
@@ -970,18 +967,6 @@
                 <version>${spring.version}</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>struts</groupId>
-                <artifactId>strutstest</artifactId>
-                <version>2.1.4</version>
-                <scope>test</scope>
-            </dependency>
-            <!--<dependency>
-                <groupId>org.apache.struts</groupId>
-                <artifactId>struts2-junit-plugin</artifactId>
-                <version>2.5</version>
-                <scope>test</scope>
-            </dependency>-->
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>

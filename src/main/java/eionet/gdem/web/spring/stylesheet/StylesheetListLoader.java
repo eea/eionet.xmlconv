@@ -32,8 +32,8 @@ import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.utils.SecurityUtil;
-import eionet.gdem.web.struts.qascript.QAScriptListHolder;
-import eionet.gdem.web.struts.qascript.QAScriptListLoader;
+import eionet.gdem.web.spring.scripts.QAScriptListHolder;
+import eionet.gdem.web.spring.scripts.QAScriptListLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

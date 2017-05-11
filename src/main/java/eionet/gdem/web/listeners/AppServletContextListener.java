@@ -26,8 +26,8 @@ import java.util.List;
 import eionet.gdem.Properties;
 import eionet.gdem.dto.ConvType;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.web.struts.qascript.QAScriptListLoader;
-import eionet.gdem.web.struts.stylesheet.StylesheetListLoader;
+import eionet.gdem.web.spring.scripts.QAScriptListLoader;
+import eionet.gdem.web.spring.stylesheet.StylesheetListLoader;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.io.FileUtils;

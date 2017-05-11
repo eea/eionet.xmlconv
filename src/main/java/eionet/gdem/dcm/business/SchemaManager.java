@@ -65,7 +65,7 @@ import eionet.gdem.utils.HttpUtils;
 import eionet.gdem.utils.MultipartFileUpload;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.web.struts.qascript.QAScriptListHolder;
+import eionet.gdem.web.spring.scripts.QAScriptListHolder;
 import eionet.gdem.web.spring.schemas.SchemaElemHolder;
 import eionet.gdem.web.spring.schemas.UplSchemaHolder;
 import eionet.gdem.web.spring.stylesheet.StylesheetListHolder;
