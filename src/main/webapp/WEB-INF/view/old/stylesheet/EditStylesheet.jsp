@@ -1,7 +1,5 @@
 <%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties" %>--%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
-
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -25,8 +23,9 @@
         </label>
       </th>
       <td>
-        <c:if present name="stylesheetForm" property="schemas">
-          <c:if iterate indexId="index" id="relatedSchema" name="stylesheetForm" property="schemas" type="Schema">
+        <c:if test="${stylesheetForm.schemas}">
+          <%--id="relatedSchema" name="stylesheetForm" property="schemas" type="Schema">--%>
+          <c:forEach varStatus="index" items="stylsheetForm.schemas">
             <div class="schemaContainer">
               <a href="viewSchemaForm?schemaId=<bean:write name="relatedSchema" property="id" />"
                  title="view XML Schema properties"><bean:write name="relatedSchema" property="schema"/></a>
@@ -35,17 +34,18 @@
                                                                                         alt='Remove'/></a><br/>
               <input type="hidden" name="schemaIds" value="<bean:write name='relatedSchema' property='id'/>"/>
             </div>
-          </c:if iterate>
-        </c:if present>
+          </c:forEach>
+        </c:if>
         <div id="newSchemasContainer">
-          <c:if iterate id="newSchema" name="stylesheetForm" property="newSchemas">
+  <%--id="newSchema" name="stylesheetForm" property="newSchemas">--%>
+          <c:forEach items="${stylsheetForm.newSchemas}">
             <div class="newSchemaContainer">
               <input type="url" name="newSchemas" style="width:400px;" class="newSchema"
                      value="<bean:write name='newSchema'/>" id="schema_1"/>
               <a href='#' class="delNewSchemaLink"><img style='border:0'
                                                         src='<c:url value="/images/button_remove.gif"/>' alt='Remove'/></a><br/>
             </div>
-          </c:if iterate>
+          </c:forEach>
         </div>
         <br/>
         <jsp:include page="ManageStylesheetSchemas.jsp"/>
@@ -87,24 +87,27 @@
       <td>
         <bean:define id="oType" name="stylesheetForm" property="outputtype" type="java.lang.String"/>
         <select name="outputtype" style="width:100px" id="selOutputType">
-          <c:if iterate id="opt" name="stylesheet.outputtype" scope="session" property="convTypes" type="ConvType">
-            <c:if equal name="opt" property="convType" value="<%=oType%>">
-              <option selected="selected" value="<bean:write name="opt" property="convType" />">
-                <bean:write name="opt" property="convType"/>
-              </option>
-            </c:if equal>
-            <c:if notEqual name="opt" property="convType" value="<%=oType%>">
-              <option value="<bean:write name="opt" property="convType" />">
-                <bean:write name="opt" property="convType"/>
-              </option>
-            </c:if notEqual>
-          </c:if iterate>
+  <%--id="opt" name="stylesheet.outputtype" scope="session" property="convTypes" type="ConvType">--%>
+          <c:forEach items="${stylesheet.outputtype.convTypes}">
+            <c:choose>
+              <c:when test="${opt.convType == oType}">
+                <option selected="selected" value="<bean:write name="opt" property="convType" />">
+                  <bean:write name="opt" property="convType"/>
+                </option>
+              </c:when>
+              <c:otherwise>
+                <option value="<bean:write name="opt" property="convType" />">
+                  <bean:write name="opt" property="convType"/>
+                </option>
+              </c:otherwise>
+            </c:choose>
+          </c:forEach>
         </select>
       </td>
     </tr>
 
 
-    <c:if equal name="stylesheetForm" property="showDependsOnInfo" value="true">
+    <c:if test="${stylesheetForm.showDependsOnInfo == 'true'}">
       <bean:define id="depOn" name="stylesheetForm" property="dependsOn" scope="request" type="java.lang.String"/>
       <tr>
         <th scope="row" class="scope-row">
@@ -114,30 +117,34 @@
         </th>
         <td>
           <select name="dependsOn" id="selDependsOn">
-            <c:if empty name="stylesheetForm" property="dependsOn">
-              <option value="" selected="selected">--</option>
-            </c:if empty>
-            <c:if notEmpty name="stylesheetForm" property="dependsOn">
-              <option value="">--</option>
-            </c:if notEmpty>
-
-            <c:if iterate id="st" scope="request" name="stylesheetForm" property="existingStylesheets">
-              <c:if equal name="st" property="convId" value="<%=depOn %>">
-                <option value="<bean:write name="st" property="convId" />" selected="selected">
-                  <bean:write name="st" property="xslFileName"/>
-                </option>
-              </c:if equal>
-              <c:if notEqual name="st" property="convId" value="<%=depOn %>">
-                <option value="<bean:write name="st" property="convId" />">
-                  <bean:write name="st" property="xslFileName"/>
-                </option>
-              </c:if notEqual>
-            </c:if iterate>
+            <c:choose>
+              <c:when test="${stylesheetForm.dependsOn}">
+                <option value="" selected="selected">--</option>
+              </c:when>
+              <c:otherwise>
+                <option value="">--</option>
+              </c:otherwise>
+            </c:choose>
+      <%--id="st" scope="request" name="stylesheetForm" property="existingStylesheets">--%>
+            <c:forEach items="${stylesheetForm.existingStylesheets}">
+              <c:choose>
+                <c:when test="${st.convId == depOn}">
+                  <option value="<bean:write name="st" property="convId" />" selected="selected">
+                    <bean:write name="st" property="xslFileName"/>
+                  </option>
+                </c:when>
+                <c:otherwise>
+                  <option value="<bean:write name="st" property="convId" />">
+                    <bean:write name="st" property="xslFileName"/>
+                  </option>
+                </c:otherwise>
+              </c:choose>
+            </c:forEach>
           </select>
         </td>
       </tr>
 
-    </c:if equal>
+    </c:if>
 
 
     <tr>
@@ -163,13 +170,14 @@
           <bean:write property="xslFileName" name="stylesheetForm"/>
         </a>
         <span style="margin-left:10px">(<spring:message code="label.lastmodified"/>:
-                    <c:if present name="stylesheetForm" property="modified">
-                      <bean:write property="modified" name="stylesheetForm"/>
-                    </c:if present>
-                    <c:if notPresent name="stylesheetForm" property="modified">
-                      <span style="color:red"><spring:message code="label.fileNotFound"/></span>
-                    </c:if notPresent>
-                    )</span>
+                <c:choose>
+                  <c:when test="${stylesheetForm.modified}">
+                    <bean:write property="modified" name="stylesheetForm"/>
+                  </c:when>
+                  <c:otherwise>
+                    <span style="color:red"><spring:message code="label.fileNotFound"/></span>
+                  </c:otherwise>
+                </c:choose>)</span>
         <div>
           <html:file property="xslfile" size="68"/>
           <html:submit styleClass="button" property="action">
@@ -178,7 +186,7 @@
         </div>
       </td>
     </tr>
-    <c:if present name="stylesheetForm" property="xslFileName">
+    <c:if test="${stylesheetForm.xslFileName}">
       <tr>
         <td colspan="2">
           <html:textarea property="xslContent" style="width: 98%;" rows="20" cols="55" styleId="txtXsl"/>
@@ -194,6 +202,6 @@
           <html:hidden property="checksum" name="stylesheetForm"/>
         </td>
       </tr>
-    </c:if present>
+    </c:if>
   </table>
 </form:form>

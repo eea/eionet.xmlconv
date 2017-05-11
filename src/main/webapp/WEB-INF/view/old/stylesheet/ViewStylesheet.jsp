@@ -4,6 +4,7 @@
 
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%--<html:xhtml/>--%>
 
@@ -16,7 +17,7 @@
         <spring:message code="label.stylesheet.run"/>
       </a>
     </li>
-    <c:if equal value="true" name="stylesheet.permissions" property="ssdPrm">
+    <c:if test="${stylesheet.permissions == 'ssdPrm'}">
       <li>
           <%--paramId="stylesheetId" paramName="stylesheetForm" paramProperty="stylesheetId"--%>
         <html:link page="/old/conversions/${stylesheetId}/edit" title="edit stylesheet">
@@ -30,7 +31,7 @@
           <spring:message code="label.stylesheet.delete"/>
         </a>
       </li>
-    </c:if equal>
+    </c:if>
   </ul>
 </div>
 
@@ -48,13 +49,14 @@
       <spring:message code="label.stylesheet.schema"/>
     </th>
     <td>
-      <c:if present name="stylesheetForm" property="schemas">
-        <c:if iterate indexId="index" id="relatedSchema" name="stylesheetForm" property="schemas" type="Schema">
+      <c:if test="${stylesheetForm.schemas}">
+        <%--id="relatedSchema" name="stylesheetForm" property="schemas" type="Schema">--%>
+        <c:forEach varStatus="index" items="${stylesheetForm.schemas}">
           <a href="schemaStylesheets?schema=<bean:write name="relatedSchema" property="schema" />"
              title="view XML Schema stylesheets"><bean:write name="relatedSchema" property="schema"/></a>
           <br/>
-        </c:if iterate>
-      </c:if present>
+        </c:forEach>
+      </c:if>
     </td>
   </tr>
   <tr>
@@ -67,26 +69,26 @@
   </tr>
 
 
-  <c:if equal name="stylesheetForm" property="showDependsOnInfo" value="true">
-
+  <c:if test="${stylesheetForm.showDependsOnInfo == true}">
     <bean:define id="depOn" name="stylesheetForm" property="dependsOn" scope="request" type="java.lang.String"/>
     <tr>
       <th scope="row" class="scope-row">
         <spring:message code="label.stylesheet.dependsOn"/>
       </th>
       <td>
-        <c:if iterate id="st" scope="request" name="stylesheetForm" property="existingStylesheets" type="Stylesheet">
-          <c:if equal name="st" property="convId" value="<%=depOn %>">
+        <%--id="st" scope="request" name="stylesheetForm" property="existingStylesheets" type="Stylesheet">--%>
+        <c:forEach items="${stylesheetForm.existingStylesheets}">
+          <c:if test="${st.convId = depOn}">
             <a href="stylesheetViewForm?stylesheetId=<bean:write name="st" property="convId" />"
                title="Open depending stylesheet page">
               <bean:write name="st" property="xslFileName"/>
             </a>
-          </c:if equal>
-        </c:if iterate>
+          </c:if>
+        </c:forEach>
       </td>
     </tr>
 
-  </c:if equal>
+  </c:if>
 
 
   <tr>
@@ -107,16 +109,17 @@
         <bean:write property="xslFileName" name="stylesheetForm"/>
       </a>
       <span style="margin-left:10px">(<spring:message code="label.lastmodified"/>:
-                    <c:if present name="stylesheetForm" property="modified">
-                      <bean:write property="modified" name="stylesheetForm"/>
-                    </c:if present>
-                    <c:if notPresent name="stylesheetForm" property="modified">
-                      <span style="color:red"><spring:message code="label.fileNotFound"/></span>
-                    </c:if notPresent>
-                    )</span>
+          <c:choose>
+            <c:when test="${stylesheetForm.modified}">
+              <bean:write property="modified" name="stylesheetForm"/>
+            </c:when>
+            <c:otherwise>
+              <span style="color:red"><spring:message code="label.fileNotFound"/></span>
+            </c:otherwise>
+          </c:choose>)</span>
     </td>
   </tr>
 </table>
-<c:if present name="stylesheetForm" property="xslFileName">
+<c:if test="${stylesheetForm.xslFileName}">
   <pre><bean:write name="stylesheetForm" property="xslContent"/></pre>
-</c:if present>
+</c:if>

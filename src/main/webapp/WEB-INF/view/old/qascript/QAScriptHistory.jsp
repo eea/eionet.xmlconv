@@ -1,10 +1,8 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>
-
-
+<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>--%>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-
-<%@page import="eionet.gdem.Constants" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%--<%@page import="eionet.gdem.Constants" %>--%>
 
 <%--<html:xhtml/>--%>
 
@@ -36,7 +34,7 @@
 
   <div class="visualClear">&nbsp;</div>
 
-  <c:if present name="qascript.history">
+  <c:if test="${qascript.history}">
     <div style="width: 97%">
       <table class="datatable" width="100%">
         <col style="width:10%"/>
@@ -50,10 +48,11 @@
         </tr>
         </thead>
         <tbody>
-        <c:if iterate indexId="index" id="backup" name="qascript.history" type="BackupDto">
-          <tr <%=(index.intValue() % 2 == 1) ? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
+        <%--id="backup" name="qascript.history" type="BackupDto">--%>
+        <c:forEach varStatus="index" items="${qascript.history}">
+          <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
             <td align="center">
-              <a href="<bean:write name="webRoot"/>/<%=Constants.QUERY_FOLDER%>/<%=Constants.BACKUP_FOLDER_NAME%>/<bean:write name="backup" property="fileName" />"
+              <a href="<bean:write name="webRoot"/>/${Constants.QUERY_FOLDER}/${Constants.BACKUP_FOLDER_NAME}/<bean:write name="backup" property="fileName" />"
                  title="<bean:write name="backup" property="fileName" />">
                 <bean:write name="backup" property="fileName"/>
               </a>
@@ -65,7 +64,7 @@
               <bean:write name="backup" property="user"/>
             </td>
           </tr>
-        </c:if iterate>
+        </c:forEach>
         <tr>
           <td valign="top" colspan="3">
           </td>
@@ -74,7 +73,6 @@
       </table>
     </div>
     <div class="visualClear">&nbsp;</div>
-  </c:if present>
-
+  </c:if>
 
 </div>

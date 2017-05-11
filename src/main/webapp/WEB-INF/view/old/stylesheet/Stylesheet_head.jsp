@@ -31,22 +31,24 @@
 </style>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('#tbl_stylesheets').dataTable({
-            "bPaginate": false,
-            "aaSorting": []
-            ,
-            "aoColumnDefs": [
-                <c:if equal value="true" name="stylesheet.permissions" property="ssdPrm" >
-                {"bVisible": false, "aTargets": [5]}
-                , {"iDataSort": 5, "aTargets": [4]}
-                , {'bSortable': false, 'aTargets': [0]}
-                </c:if equal>
-                <c:if notEqual value="true" name="stylesheet.permissions" property="ssdPrm" >
-                {"bVisible": false, "aTargets": [4]}
-                , {"iDataSort": 4, "aTargets": [3]}
-                </c:if notEqual>
-            ]
-        });
+  $(document).ready(function () {
+    $('#tbl_stylesheets').dataTable({
+      "bPaginate": false,
+      "aaSorting": []
+      ,
+      "aoColumnDefs": [
+        <c:choose>
+        <c:when test="${stylesheet.permissions == 'ssdPrm'}">
+        {"bVisible": false, "aTargets": [5]}
+        , {"iDataSort": 5, "aTargets": [4]}
+        , {'bSortable': false, 'aTargets': [0]}
+        </c:when>
+        <c:otherwise>
+        {"bVisible": false, "aTargets": [4]}
+        , {"iDataSort": 4, "aTargets": [3]}
+        </c:otherwise>
+        </c:choose>
+      ]
     });
+  });
 </script>
