@@ -4,9 +4,9 @@
 <%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 
-<c:if present name="user">
+<c:if test="${user}">
   <bean:define id="username" name="user" scope="session"/>
-</c:if present>
+</c:if>
 
 <%--<html:xhtml/>--%>
 
@@ -28,7 +28,7 @@
 
 <div class="visualClear">&nbsp;</div>
 
-<c:if present name="hosts.list">
+<c:if test="${hosts.list}">
   <form:form action="/hosts/delete" method="post">
     <div style="width:80%">
       <table class="datatable" width="100%">
@@ -45,8 +45,9 @@
         </tr>
         </thead>
         <tbody>
-        <c:if iterate indexId="index" id="host" name="hosts.list">
-          <tr <%=(index.intValue() % 2 == 1) ? "class=\"zebraeven\"" : "class=\"zebraodd\"" %>>
+    <%--id="host" name="hosts.list">--%>
+        <c:forEach varStatus="index" items="hosts.list">
+          <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
             <ed:hasPermission username="username" acl="host" permission="d">
               <td>
                 <bean:define id="hostId" name="host" property="id"/>
@@ -65,7 +66,7 @@
               <bean:write name="host" property="username"/>
             </td>
           </tr>
-        </c:if iterate>
+        </c:forEach>
         </tbody>
       </table>
       <div class="boxbottombuttons">
@@ -79,6 +80,6 @@
       </div>
     </div>
   </form:form>
-</c:if present>
+</c:if>
 
 <div class="visualClear">&nbsp;</div>

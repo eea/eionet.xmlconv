@@ -19,6 +19,7 @@
   <c:otherwise>
     <spring:message code="label.hosts.add_title"/>
   </c:otherwise>
+</c:choose>
   </h1>
 
   <%-- include Error display --%>

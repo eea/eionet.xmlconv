@@ -1,9 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>
+<%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--<html:xhtml/>--%>
 
 <ed:breadcrumbs-push label="Schema QA scripts" level="2"/>
@@ -134,9 +131,9 @@
           </tr>
           </thead>
           <tbody>
-    <%--id="qascript" name="schema" scope="page" property="qascripts" type="QAScript">--%>
+            <%--id="qascript" name="schema" scope="page" property="qascripts" type="QAScript">--%>
           <c:forEach varStatus="index" items="${schema.qascripts}">
-            <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : 'zebraodd'}
+            <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
               <bean:define id="scriptId" name="qascript" property="scriptId"/>
               <c:if test="${qascript.permissions == 'ssdPrm'}">
                 <td align="center">
@@ -145,32 +142,32 @@
               </c:if>
               <td>
                 <c:choose>
-                <c:when test="${qascript.permissions == 'qsuPrm'}">
-                  <%--  If scriptType is NOT 'FME' --%>
-                  <c:if test="${!qascript.scriptType == eionet.gdem.qa.XQScript.SCRIPT_LANG_FME}">
-                    <%--paramId="scriptId" paramName="qascript" paramProperty="scriptId"--%>
-                    <html:link page="/old/qaSandbox/edit/${scriptId}"
-                               titleKey="label.qasandbox.label.qasandbox.editScript">
-                      <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run"
-                           title="Run this query in XQuery Sandbox"></img>
-                    </html:link>
-                  </c:if>
-                  <%--  If scriptType is 'FME' --%>
-                  <c:if test="${qascript.scriptType == eionet.gdem.qa.XQScript.SCRIPT_LANG_FME}">
+                  <c:when test="${qascript.permissions == 'qsuPrm'}">
+                    <%--  If scriptType is NOT 'FME' --%>
+                    <c:if test="${!qascript.scriptType == eionet.gdem.qa.XQScript.SCRIPT_LANG_FME}">
+                      <%--paramId="scriptId" paramName="qascript" paramProperty="scriptId"--%>
+                      <html:link page="/old/qaSandbox/edit/${scriptId}"
+                                 titleKey="label.qasandbox.label.qasandbox.editScript">
+                        <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run"
+                             title="Run this query in XQuery Sandbox"></img>
+                      </html:link>
+                    </c:if>
+                    <%--  If scriptType is 'FME' --%>
+                    <c:if test="${qascript.scriptType == eionet.gdem.qa.XQScript.SCRIPT_LANG_FME}">
+                      <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=<bean:write name="schema" property="id"/>"
+                         title="<spring:message code="label.qascript.runservice.title" />">
+                        <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run"
+                             title="Run this query in XQuery Sandbox"></img>
+                      </a>
+                    </c:if>
+                  </c:when>
+                  <c:otherwise>
                     <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=<bean:write name="schema" property="id"/>"
                        title="<spring:message code="label.qascript.runservice.title" />">
                       <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run"
                            title="Run this query in XQuery Sandbox"></img>
                     </a>
-                  </c:if>
-                </c:when>
-                <c:otherwise>
-                  <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=<bean:write name="schema" property="id"/>"
-                     title="<spring:message code="label.qascript.runservice.title" />">
-                    <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run"
-                         title="Run this query in XQuery Sandbox"></img>
-                  </a>
-                </c:otherwise>
+                  </c:otherwise>
                 </c:choose>
               </td>
               <td>
@@ -183,7 +180,7 @@
                 <bean:write name="qascript" property="description"/>
               </td>
               <td>
-                  <%--  If scriptType is 'FME' don't show the link to the local script file --%>
+                <%--  If scriptType is 'FME' don't show the link to the local script file --%>
                 <c:choose>
                   <c:when test="${qascript.scriptType == eionet.gdem.qa.XQScript.SCRIPT_LANG_FME}">
                     <bean:write name="qascript" property="fileName"/>
@@ -197,16 +194,17 @@
                 </c:choose>
               </td>
               <td>
-                  <%--  If scriptType is 'FME' don't show the script Last Modified Date --%>
-                <c:if test="${qascript.scriptType == eionet.gdem.qa.XQScript.SCRIPT_LANG_FME}">
-                        <c:choose>
-                          <c:when test="${qascript.modified}">
-                            <span style="color:red"><spring:message code="label.fileNotFound"/></span>
-                          </c:when>
-                          <c:otherwise>
-                            <bean:write name="qascript" property="modified"/>
-                          </c:otherwise>
-                        </c:choose>
+                <%--  If scriptType is 'FME' don't show the script Last Modified Date --%>
+                <c:if test="${qascript.scriptType == 'fme'}">
+                  <c:choose>
+                    <c:when test="${qascript.modified}">
+                      <span style="color:red"><spring:message code="label.fileNotFound"/></span>
+                    </c:when>
+                    <c:otherwise>
+                      <bean:write name="qascript" property="modified"/>
+                    </c:otherwise>
+                  </c:choose>
+               </c:if>
               </td>
               <td>
                 <c:choose>
