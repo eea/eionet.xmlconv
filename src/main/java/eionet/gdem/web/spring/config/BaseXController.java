@@ -68,6 +68,6 @@ public class BaseXController {
             errors.add(messageSource.getMessage("label.autorization.config.update", null, LocaleContextHolder.getLocale()));
         }
         redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        return "redirect:/web/config/basex";
+        return "redirect:/config/basex";
     }
 }

@@ -38,7 +38,7 @@ public class ProjectsImportController {
     @PostMapping
     public String importProjectSubmit(@ModelAttribute ProjectImportWrapper fileWrapper, BindingResult result, RedirectAttributes redirectAttributes) {
         Integer projectId = projectStorageService.importProject(fileWrapper);
-        return "redirect:/web/projects";
+        return "redirect:/projects";
     }
 
 }

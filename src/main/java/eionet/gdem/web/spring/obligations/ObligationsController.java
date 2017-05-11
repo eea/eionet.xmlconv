@@ -50,13 +50,13 @@ public class ObligationsController {
     @PostMapping("/new")
     public String addSubmit(@ModelAttribute Obligation obligation, BindingResult result, RedirectAttributes redirectAttributes) {
         obligationService.insert(obligation);
-        return "redirect:/web/obligations/list";
+        return "redirect:/obligations/list";
     }
 
     @PostMapping("/delete")
     public String delete(@ModelAttribute List<Obligation> deleteObligations, BindingResult result, RedirectAttributes redirectAttributes) {
         obligationService.deleteList(deleteObligations);
-        return "redirect:/web/obligations/list";
+        return "redirect:/obligations/list";
     }
 
 }

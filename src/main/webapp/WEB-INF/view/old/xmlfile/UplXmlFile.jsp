@@ -1,15 +1,12 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>--%>
+<%@ include file="/WEB-INF/view/old/taglibs.jsp"%>
 <%--<html:xhtml/>--%>
 
 <ed:breadcrumbs-push label="Uploaded XML files" level="1"/>
 
-<c:if test="${xmlfiles.uploaded}">
+<c:if test="${!empty xmlfiles}">
 
-  <c:if test="${xmlfiles.uploaded == 'ssiPrm'}">
+  <c:if test="${!xmlfiles.ssiPrm}">
     <div id="operations">
       <ul>
         <li><a href="addUplXmlFileForm"><spring:message code="label.uplXmlFile.add"/></a></li>
@@ -22,17 +19,17 @@
   </h1>
 
   <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+  <%--<tiles:insertDefinition name="Error"/>--%>
 
   <div class="visualClear">&nbsp;</div>
 
-  <c:if test="${xmlfiles.uploaded == 'xmlfiles'}">
-    <form:form action="/deleteUplXmlFile" method="post">
+  <c:if test="${!empty xmlfiles.xmlfiles}">
+    <form:form servletRelativeAction="true" action="/deleteUplXmlFile" method="post">
       <table class="datatable" width="100%">
-        <c:if test="${xmlfiles.uploaded == 'ssuPrm'}">
+        <c:if test="${xmlfiles.ssuPrm}">
           <col style="width:5%"/>
         </c:if>
-        <c:if test="${xmlfiles.uploaded == 'ssuPrm'}">
+        <c:if test="${xmlfiles.ssuPrm}">
           <col style="width:5%"/>
         </c:if>
         <col style="width:30%"/>
@@ -40,10 +37,10 @@
         <col style="width:25%"/>
         <thead>
         <tr>
-          <c:if test="${xmlfiles.uploaded =='ssuPrm'}">
+          <c:if test="${xmlfiles.ssuPrm}">
             <th scope="col">&#160;</th>
           </c:if>
-          <c:if test="${xmlfiles.uploaded == 'ssuPrm'}">
+          <c:if test="${xmlfiles.ssuPrm}">
             <th scope="col">&#160;</th>
           </c:if>
           <th scope="col"><span title="XML File"><spring:message code="label.table.uplXmlFile.xmlfile"/></span></th>
@@ -53,15 +50,15 @@
         </thead>
         <tbody>
           <%--type="UplXmlFile"--%>
-        <c:forEach varStatus="index" items="xmlfiles.uploaded.xmlfiles">
-          <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
-            <c:if test="${xmlfiles.uploaded == 'ssdPrm'}">
+        <c:forEach varStatus="i" items="xmlfiles.uploaded.xmlfiles">
+          <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
+            <c:if test="${xmlfiles.ssdPrm}">
               <td align="center">
                 <bean:define id="fileId" name="xmlfile" property="id"/>
                 <input type="radio" name="xmlfileId" value="${fileId}"/>
               </td>
             </c:if>
-            <c:if test="${xmlfiles.uploaded == 'ssuPrm'}">
+            <c:if test="${xmlfiles.ssuPrm}">
               <td align="center">
                 <a href="editUplXmlFileForm?xmlfileId=<bean:write name="xmlfile" property="id" />">
                   <img src="<bean:write name="webRoot"/>/images/edit.gif" alt="<spring:message code="label.edit" />"
@@ -97,7 +94,7 @@
         </tbody>
       </table>
       <div class="boxbottombuttons">
-        <c:if test="${xmlfiles.uploaded == 'ssdPrm'}">
+        <c:if test="${xmlfiles.ssdPrm}">
           <input type="button" class="button" value="<spring:message code="label.delete"/>"
                  onclick="return submitAction(1,'deleteUplXmlFile');"/>
           <input type="button" class="button" value="Rename" onclick="return submitAction(1,'renameUplXmlFileForm');"/>
@@ -105,7 +102,7 @@
       </div>
     </form:form>
   </c:if>
-  <c:if test="${xmlfiles.uploaded != 'xmlfiles'}">
+  <c:if test="${empty xmlfiles.xmlfiles}">
     <div class="advice-msg">
       <spring:message code="label.uplXmlFile.noXmlFiles"/>
     </div>

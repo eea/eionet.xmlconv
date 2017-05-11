@@ -72,7 +72,7 @@ public class TransformationsController {
         Project pr = projectService.findById(projectId);
         transformation.setProject(pr);
         transformationService.insert(transformation);
-        return "redirect:/web/projects/{projectId}";
+        return "redirect:/projects/{projectId}";
     }
 
     @GetMapping("/transformations/{id}/edit")
@@ -93,7 +93,7 @@ public class TransformationsController {
                 messages.add(error.getDefaultMessage());
             }
             redirectAttributes.addFlashAttribute("messages", messages);
-            return "redirect:/web/projects/{projectId}/transformations/{id}/edit";
+            return "redirect:/projects/{projectId}/transformations/{id}/edit";
         } else if (!result.hasErrors()) {
             transformation.setName(updatedTransformation.getName());
             transformation.setDescription(updatedTransformation.getDescription());
@@ -102,6 +102,6 @@ public class TransformationsController {
             transformation.setRemotePath(updatedTransformation.getRemotePath());
             Transformation s = transformationService.update(transformation);
         }
-        return "redirect:/web/projects/{projectId}/transformations/{id}";
+        return "redirect:/projects/{projectId}/transformations/{id}";
     }
 }

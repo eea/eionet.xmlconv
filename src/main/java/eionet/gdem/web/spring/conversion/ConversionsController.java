@@ -155,7 +155,7 @@ public class ConversionsController {
             LOGGER.error("Error getting stylesheet", ge);
             errors.add(messageService.getMessage("label.stylesheet.error.generation"));
             model.addAttribute("dcm.errors", errors);
-            return "redirect:/web/conversion/{id}";
+            return "redirect:/conversion/{id}";
         }
     }
 
@@ -279,7 +279,7 @@ public class ConversionsController {
                 // saveMessages(httpServletRequest, errors);
                 redirectAttributes.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
                 /*httpServletRequest.getSession().setAttribute("dcm.errors", errors);*/
-                return "redirect/web/conversion/list";
+                return "redirect:/conversion/list";
             } catch (Exception e) {
                 e.printStackTrace();
                 LOGGER.error("Error listing conversions", e);
@@ -287,7 +287,7 @@ public class ConversionsController {
                 // saveMessages(httpServletRequest, errors);
                 redirectAttributes.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
                 /*httpServletRequest.getSession().setAttribute("dcm.errors", errors);*/
-                return "redirect:/web/conversion/list";
+                return "redirect:/conversion/list";
             }
         } else {
             // comping back from convert page
@@ -316,9 +316,9 @@ public class ConversionsController {
         } catch (DCMException e) {
             LOGGER.error("Error deleting stylesheet", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
-            return "redirect:/web/conversion/list";
+            return "redirect:/conversion/list";
         }
-        return "redirect:/web/conversion/list";
+        return "redirect:/conversion/list";
     }
 
     @GetMapping("/edit/{id}")
@@ -400,11 +400,11 @@ public class ConversionsController {
         } catch (DCMException e) {
             LOGGER.error("Edit stylesheet error", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
-            return "redirect:/web/conversions/{id}";
+            return "redirect:/conversions/{id}";
         }
         //TODO why is it needed to update session attribute in each request
         httpServletRequest.getSession().setAttribute("stylesheet.outputtype", ctHolder);
-        return "redirect:/web/conversions/{id}";
+        return "redirect:/conversions/{id}";
     }
 
     @GetMapping("/schemaDelete")

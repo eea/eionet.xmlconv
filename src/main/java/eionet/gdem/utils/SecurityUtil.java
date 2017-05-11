@@ -158,7 +158,7 @@ public final class SecurityUtil {
             loginUrl.append("?service=");
             try {
                 // + request.getScheme() + "://" + SERVER_NAME + request.getContextPath() + "/login";
-                loginUrl.append(URLEncoder.encode(urlWithContextPath + "/web/login/afterLogin", "UTF-8"));
+                loginUrl.append(URLEncoder.encode(urlWithContextPath + "/login/afterLogin", "UTF-8"));
                 result = loginUrl.toString();
             } catch (UnsupportedEncodingException e) {
                 throw new XMLConvException(e.toString(), e);

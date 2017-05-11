@@ -108,8 +108,8 @@ public class WebSecurityConfiguration {
       http
               .antMatcher("/**")
               .authorizeRequests()
-              .antMatchers("/web/**").permitAll()
-              .antMatchers("/web/projects/*").hasRole("v")
+              .antMatchers("/**").permitAll()
+              .antMatchers("/projects/*").hasRole("v")
               .and()
               .antMatcher("/RpcRouter/**")
               .csrf()

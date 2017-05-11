@@ -77,7 +77,7 @@ public class ScriptsController {
         script.setProject(pr);
         script.setLastModified(LocalDateTime.now());
         scriptService.insert(script);
-        return "redirect:/web/projects/{projectId}";
+        return "redirect:/projects/{projectId}";
     }
 
     @GetMapping("/scripts/{id}/edit")
@@ -99,7 +99,7 @@ public class ScriptsController {
                 messages.add(error.getDefaultMessage());
             }
             redirectAttributes.addFlashAttribute("messages", messages);
-            return "redirect:/web/projects/{projectId}/scripts/{id}/edit";
+            return "redirect:/projects/{projectId}/scripts/{id}/edit";
         } else if (!result.hasErrors()) {
             script.setName(updatedScript.getName());
             script.setDescription(updatedScript.getDescription());
@@ -109,6 +109,6 @@ public class ScriptsController {
             script.setRemotePath(updatedScript.getRemotePath());
             Script s = scriptService.update(script);
         }
-        return "redirect:/web/projects/{projectId}/scripts/{id}";
+        return "redirect:/projects/{projectId}/scripts/{id}";
     }
 }

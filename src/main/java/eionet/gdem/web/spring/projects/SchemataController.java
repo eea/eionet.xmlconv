@@ -72,7 +72,7 @@ public class SchemataController {
         Project pr = projectService.findById(projectId);
         schema.setProject(pr);
         schemaService.insert(schema);
-        return "redirect:/web/projects/{projectId}";
+        return "redirect:/projects/{projectId}";
     }
 
     @GetMapping("/schemata/{id}/edit")
@@ -93,7 +93,7 @@ public class SchemataController {
                 messages.add(error.getDefaultMessage());
             }
             redirectAttributes.addFlashAttribute("messages", messages);
-            return "redirect:/web/projects/{projectId}/schemata/{id}/edit";
+            return "redirect:/projects/{projectId}/schemata/{id}/edit";
         } else if (!result.hasErrors()) {
             schema.setUrl(updatedSchema.getUrl());
             schema.setDescription(updatedSchema.getDescription());
@@ -102,6 +102,6 @@ public class SchemataController {
             schema.setBlocking(updatedSchema.isBlocking());
             Schema s = schemaService.update(schema);
         }
-        return "redirect:/web/projects/{projectId}/schemata/{id}";
+        return "redirect:/projects/{projectId}/schemata/{id}";
     }
 }

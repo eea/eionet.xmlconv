@@ -49,7 +49,7 @@ public class XmlFilesController {
             errors.add(messageService.getMessage(e.getErrorCode()));
         }
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        model.addAttribute("xmlfiles.uploaded", holder);
+        model.addAttribute("xmlfiles", holder);
         return "/uplXmlFile.jsp";
     }
 

@@ -35,7 +35,7 @@ public class SystemController {
     @PostMapping
     public String editSubmit(@ModelAttribute BaseXForm updatedModel, RedirectAttributes redirectAttributes, HttpSession session) {
 
-        return "redirect:/web/config/system";
+        return "redirect:/config/system";
     }
 
 }

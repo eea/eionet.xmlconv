@@ -80,7 +80,7 @@ public class DatabaseController {
         }
         redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, success);
-        return "redirect:/web/config/database";
+        return "redirect:/config/database";
     }
 
 }

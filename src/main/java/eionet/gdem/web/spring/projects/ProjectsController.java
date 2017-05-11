@@ -90,7 +90,7 @@ public class ProjectsController {
     @PostMapping("/new")
     public String newProjectSubmit(@ModelAttribute Project project) {
         Project pr = projectService.insert(project);
-        return "redirect:/web/projects/" + pr.getId();
+        return "redirect:/projects/" + pr.getId();
     }
 
     @GetMapping("/{id}/edit")
@@ -114,13 +114,13 @@ public class ProjectsController {
                 messages.add(error.getMessage());
             }
             redirectAttributes.addFlashAttribute("messages", messages);
-            return "redirect:/web/projects/{id}/edit";
+            return "redirect:/projects/{id}/edit";
         } else if (!result.hasErrors()) {
             project.setName(updatedProject.getName());
             project.setObligations(updatedProject.getObligations());
             Project pr = projectService.update(project);
         }
-        return "redirect:/web/projects/{id}";
+        return "redirect:/projects/{id}";
     }
 
     @GetMapping(value = "/{id}/export", produces = "application/zip")

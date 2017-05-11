@@ -37,7 +37,7 @@ public class LdapController {
         @PostMapping
         public String editSubmit(@ModelAttribute BaseXForm updatedModel, RedirectAttributes redirectAttributes, HttpSession session) {
 
-            return "redirect:/web/config/ldap";
+            return "redirect:/config/ldap";
         }
 
     }

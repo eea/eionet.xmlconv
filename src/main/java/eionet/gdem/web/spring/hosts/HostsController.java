@@ -145,7 +145,7 @@ public class HostsController {
         if (messages.size() > 0) {
             redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         }
-        return "redirect:/web/hosts/edit/{id}";
+        return "redirect:/hosts/edit/{id}";
     }
 
     @GetMapping("/add")
@@ -195,7 +195,7 @@ public class HostsController {
             redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         }
 
-        return "redirect:/web/hosts";
+        return "redirect:/hosts";
     }
 
 }
