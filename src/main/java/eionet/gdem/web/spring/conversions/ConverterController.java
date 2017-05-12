@@ -1,4 +1,4 @@
-package eionet.gdem.web.spring.conversion;
+package eionet.gdem.web.spring.conversions;
 
 import eionet.gdem.services.MessageService;
 import eionet.gdem.services.db.dao.IRootElemDao;

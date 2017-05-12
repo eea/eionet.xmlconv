@@ -1,17 +1,15 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>--%>
+<%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <%--<html:xhtml/>--%>
 
 <ed:breadcrumbs-push label="Stylesheets" level="1"/>
 
 
-<c:if test="${stylesheet.stylesheetListHolder}">
+<c:if test="${!empty conversions}">
 
-  <c:if test="${stylesheet.permissions =='ssiPrm'}">
+  <c:if test="${conversions.ssiPrm}">
     <div id="operations">
       <ul>
         <li><a href="addStylesheetForm"><spring:message code="label.stylesheet.add"/></a></li>
@@ -29,11 +27,11 @@
   <div class="visualClear">&nbsp;</div>
 
 
-  <c:if test="${stylesheet.stylesheetListHolder.stylesheetList}">
-    <form:form action="/deleteStylesheet" method="post">
+  <c:if test="${!empty conversions.stylesheetList}">
+    <form:form  r="/deleteStylesheet" method="post">
 
       <table id="tbl_stylesheets" class="display datatable" width="100%">
-        <c:if test="${stylesheet.permissions == 'ssdPrm'}">
+        <c:if test="${conversions.ssdPrm}">
           <col style="width:5%"/>
         </c:if>
         <col/>
@@ -42,7 +40,7 @@
         <col style="width:140px"/>
         <thead>
         <tr>
-          <c:if test="${stylesheet.permissions == 'ssdPrm'}">
+          <c:if test="${conversions.ssdPrm}">
             <th scope="col" class="scope-col"></th>
           </c:if>
           <th scope="col" class="scope-col"><spring:message code="label.table.stylesheet.file"/></th>
@@ -54,37 +52,35 @@
         </thead>
         <tbody>
       <%--id="stylesheet" name="stylesheet.stylesheetListHolder" property="stylesheetList"      type="Stylesheet">--%>
-        <c:forEach varStatus="index" items="stylesheet.stylesheetListHolder.stylesheetList">
-          <bean:define id="stylesheetId" name="stylesheet" property="convId"/>
-          <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
-            <c:if test="${stylesheet.permissions == 'ssdPrm'}">
+        <c:forEach varStatus="i" items="${conversions.stylesheetList}" var="conversion">
+          <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
+            <c:if test="${conversions.ssdPrm}">
               <td style="text-align:center">
-                <input type="radio" name="conversionId" value="${stylesheetId}"></input>
+                <input type="radio" name="conversionId" value="${conversion.convId}"></input>
               </td>
             </c:if>
             <td>
-                <%--paramId="stylesheetId" paramName="stylesheet" paramProperty="convId"--%>
-              <html:link page="/old/conversions/${stylesheetId}" title="View stylesheet">
-                <bean:write name="stylesheet" property="xslFileName"/>
-              </html:link>&#160;
+              <a href="/old/conversions/${conversion.convId}" title="View stylesheet">
+                ${conversion.xslFileName}
+              </a>&#160;
             </td>
             <td>
-              <bean:write name="stylesheet" property="description"/>
+              ${conversion.description}
             </td>
             <td>
-              <bean:write name="stylesheet" property="type"/>
+              ${conversion.type}
             </td>
             <td style="font-size:0.8em;">
-              <bean:write name="stylesheet" property="modified"/>
+              ${conversion.modified}
             </td>
             <td style="display:none">
-              <bean:write name="stylesheet" property="lastModifiedTime" format="yyyy-MM-dd HH:mm:ss"/>
+              <fmt:formatDate value="${conversion.lastModifiedTime}" pattern="yyyy-MM-dd HH:mm:ss" />
             </td>
           </tr>
         </c:forEach>
         </tbody>
       </table>
-      <c:if test="${stylesheet.permissions == 'ssdPrm'}">
+      <c:if test="${conversion.ssdPrm}">
         <br/>
         <div class="boxbottombuttons">
           <input type="button" class="button" value="<spring:message code="label.schema.delete"/>"
@@ -93,7 +89,7 @@
       </c:if>
     </form:form>
   </c:if>
-  <c:if test="${!stylesheet.stylesheetListHolder.stylesheetList}">
+  <c:if test="${!empty conversions.stylesheetList}">
     <div class="advice-msg">
       <spring:message code="label.stylesheet.noHandCodedConversions"/>
     </div>

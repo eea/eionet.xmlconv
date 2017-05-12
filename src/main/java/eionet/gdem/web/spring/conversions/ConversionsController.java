@@ -1,4 +1,4 @@
-package eionet.gdem.web.spring.conversion;
+package eionet.gdem.web.spring.conversions;
 
 import com.mysql.jdbc.StringUtils;
 import eionet.gdem.Properties;
@@ -11,7 +11,6 @@ import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.utils.Utils;
@@ -77,16 +76,16 @@ public class ConversionsController {
         SpringMessages errors = new SpringMessages();
 
         try {
-            httpServletRequest.setAttribute(StylesheetListLoader.STYLESHEET_LIST_ATTR, StylesheetListLoader.getStylesheetList(httpServletRequest));
+            model.addAttribute("conversions", StylesheetListLoader.getStylesheetList(httpServletRequest));
         } catch (DCMException e) {
             LOGGER.error("Error getting stylesheet list", e);
             errors.add(messageService.getMessage("label.exception.unknown"));
             model.addAttribute("errors", errors);
         }
-        return "/stylesheetList.jsp";
+        return "/conversions/list";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/unknown/{id}")
     public String show(Model model, HttpServletRequest httpServletRequest) {
         StylesheetListHolder st = new StylesheetListHolder();
         SpringMessages success = new SpringMessages();
@@ -101,7 +100,7 @@ public class ConversionsController {
         }
 
         if (schema == null || schema.equals("")) {
-            return "/";
+            return "/conversions/list";
         }
         httpServletRequest.setAttribute("schema", schema);
 
@@ -117,11 +116,11 @@ public class ConversionsController {
         model.addAttribute("errors", errors);
         model.addAttribute("success", success);
         // TODO FIX URL
-        return "";
+        return "/conversions/view";
     }
 
 
-    @GetMapping(value = "/stylsheet/{id}", produces = "text/xml")
+    @GetMapping(value = "/conversions/{id}", produces = "text/xml")
     public String getConversion(Model model, HttpServletResponse httpServletResponse) {
 
         SpringMessages success = new SpringMessages();
@@ -155,7 +154,7 @@ public class ConversionsController {
             LOGGER.error("Error getting stylesheet", ge);
             errors.add(messageService.getMessage("label.stylesheet.error.generation"));
             model.addAttribute("dcm.errors", errors);
-            return "redirect:/conversion/{id}";
+            return "redirect:/conversions/{id}";
         }
     }
 
@@ -279,7 +278,7 @@ public class ConversionsController {
                 // saveMessages(httpServletRequest, errors);
                 redirectAttributes.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
                 /*httpServletRequest.getSession().setAttribute("dcm.errors", errors);*/
-                return "redirect:/conversion/list";
+                return "redirect:/conversions";
             } catch (Exception e) {
                 e.printStackTrace();
                 LOGGER.error("Error listing conversions", e);
@@ -287,7 +286,7 @@ public class ConversionsController {
                 // saveMessages(httpServletRequest, errors);
                 redirectAttributes.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
                 /*httpServletRequest.getSession().setAttribute("dcm.errors", errors);*/
-                return "redirect:/conversion/list";
+                return "redirect:/conversions";
             }
         } else {
             // comping back from convert page
@@ -316,9 +315,9 @@ public class ConversionsController {
         } catch (DCMException e) {
             LOGGER.error("Error deleting stylesheet", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
-            return "redirect:/conversion/list";
+            return "redirect:/conversions";
         }
-        return "redirect:/conversion/list";
+        return "redirect:/conversions";
     }
 
     @GetMapping("/edit/{id}")
@@ -407,7 +406,7 @@ public class ConversionsController {
         return "redirect:/conversions/{id}";
     }
 
-    @GetMapping("/schemaDelete")
+    @GetMapping("/delete")
     public String schemaDelete(Model model, HttpServletRequest httpServletRequest) {
 
         SpringMessages success = new SpringMessages();
@@ -434,7 +433,7 @@ public class ConversionsController {
 
         model.addAttribute("errors", errors);
         model.addAttribute("messages", success);
-        return "";
+        return "/conversions/list";
     }
 
     @GetMapping("/type")
@@ -472,7 +471,7 @@ public class ConversionsController {
         httpServletRequest.getSession().setAttribute("stylesheet.outputtype", ctHolder);
         model.addAttribute("success", success);
         // todo fix url
-        return "";
+        return "/conversions/type";
     }
 
 
@@ -503,13 +502,13 @@ public class ConversionsController {
         if (xslFile == null) {
             errors.add(messageService.getMessage("label.stylesheet.validation"));
             model.addAttribute("errors", errors);
-            return "/conversions";
+            return "/conversions/list";
         }
         String description = form.getDescription();
         if (description == null || description.isEmpty()) {
             errors.add(messageService.getMessage("label.stylesheet.error.descriptionMissing"));
             model.addAttribute("errors", errors);
-            return "/conversions";
+            return "/conversions/list";
         }
         stylesheet.setXslFileName(xslFile.getFile().getName());
         try {
@@ -539,9 +538,9 @@ public class ConversionsController {
         model.addAttribute("errors", errors);
         model.addAttribute("success", success);
         if (!StringUtils.isNullOrEmpty(schema)) {
-            return "/do/schemaStylesheets?schema=" + schema;
+            return "/conversions/list?schema=" + schema;
         } else {
-            return "/conversions";
+            return "/conversions/list";
         }
     }
 

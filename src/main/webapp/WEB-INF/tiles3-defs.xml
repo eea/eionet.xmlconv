@@ -30,7 +30,6 @@
     </definition>
     <definition name="/conversions/list" extends="base">
         <put-attribute name="title" value="label.stylesheet.title" />
-        <put-attribute name="specific_header" value="StylesheetHead" />
         <put-attribute name="body" value="/WEB-INF/view/old/conversions/list.jsp" />
     </definition>
     <definition name="/conversions/generated" extends="base">
