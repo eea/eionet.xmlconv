@@ -24,7 +24,7 @@
 
 
   <c:if test="${!empty schemas.schemas}">
-    <form:form commandName="form" action="/old/schemas/delete" method="post">
+    <form:form servletRelativeAction="/old/schemas/delete" method="post" modelAttribute="form">
       <table class="datatable" width="100%">
         <c:if test="${schemas.ssdPrm}">
           <col style="width:5%"/>
@@ -99,7 +99,7 @@
     </form:form>
   </c:if>
 
-  <c:if test="${!empty schemas.schemas}">
+  <c:if test="${empty schemas.schemas}">
     <div class="advice-msg">
       <spring:message code="label.uplSchema.noSchemas"/>
     </div>

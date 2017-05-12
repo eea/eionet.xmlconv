@@ -1,11 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
-
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-
-<%--<html:xhtml/>--%>
+<%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <ed:breadcrumbs-push label="Upload Schema" level="2"/>
 <h1><spring:message code="label.title.uplSchema.add"/></h1>
@@ -13,7 +6,7 @@
 <%-- include Error display --%>
 <tiles:insertDefinition name="Error"/>
 
-<form:form action="/addUplSchema" method="post" enctype="multipart/form-data">
+<form:form servletRelativeAction="/old/schemas/add" method="post" enctype="multipart/form-data" modelAttribute="schemaForm">
   <table class="formtable">
     <col class="labelcol"/>
     <col class="entrycol"/>
@@ -24,7 +17,7 @@
         </label>
       </td>
       <td>
-        <html:text property="schemaUrl" maxlength="255" style="width:500px" styleId="txtSchemaUrl"/>
+        <form:input path="schemaUrl" maxlength="255" style="width:500px" id="txtSchemaUrl"/>
       </td>
     </tr>
     <tr>
@@ -34,7 +27,7 @@
         </label>
       </td>
       <td>
-        <html:textarea property="description" rows="2" cols="30" style="width:500px" styleId="txtDescription"/>
+        <form:textarea path="description" rows="2" cols="30" style="width:500px" id="txtDescription"/>
       </td>
     </tr>
     <tr class="zebraeven">
@@ -44,7 +37,7 @@
         </label>
       </td>
       <td>
-        <html:file property="schemaFile" size="50" style="width:500px" styleId="txtSchemaFile"/>
+        <input type="file" name="schemaFile" size="50" style="width:500px" id="txtSchemaFile"/>
       </td>
     </tr>
     <tr>
@@ -54,9 +47,9 @@
         </label>
       </td>
       <td>
-        <html:select property="schemaLang" styleId="txtSchemaLang" value="XSD">
-          <html:options property="schemaLanguages"/>
-        </html:select>
+        <form:select path="schemaLang" styleId="txtSchemaLang" value="XSD">
+          <form:options items="${schemaLanguages}"/>
+        </form:select>
       </td>
     </tr>
     <tr class="zebraeven">
@@ -66,7 +59,7 @@
         </label>
       </td>
       <td>
-        <html:checkbox property="doValidation" styleId="txtValidation"/>
+        <form:checkbox path="doValidation" id="txtValidation"/>
       </td>
     </tr>
     <tr>
@@ -76,7 +69,7 @@
         </label>
       </td>
       <td>
-        <html:checkbox property="blockerValidation" styleId="txtBlockerValidation"/>
+        <form:checkbox path="blockerValidation" id="txtBlockerValidation"/>
       </td>
     </tr>
     <tr>
@@ -85,12 +78,12 @@
     <tr>
       <td>&nbsp;</td>
       <td>
-        <html:submit styleClass="button">
+        <button type="submit" class="button" value="submit">
           <spring:message code="label.schema.save"/>
-        </html:submit>
-        <html:cancel styleClass="button">
+        </button>
+        <button type="submit" class="button" value="cancel">
           <spring:message code="label.cancel"/>
-        </html:cancel>
+        </button>
       </td>
     </tr>
   </table>

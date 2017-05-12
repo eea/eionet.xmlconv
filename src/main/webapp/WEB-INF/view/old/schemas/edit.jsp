@@ -1,7 +1,4 @@
-<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>--%>
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
-
-<%--<html:xhtml/>--%>
 
 <ed:breadcrumbs-push label="XML Schema or DTD" level="2"/>
 
@@ -27,12 +24,18 @@
 
 <h1><spring:message code="label.schema.view"/></h1>
 
+<%-- include Error display --%>
+<%--<tiles:insertDefinition name="Error"/>--%>
+
 <c:if test="${!empty schemaForm.schema}">
 
   <c:if test="${rootElements.xsduPrm}">
     <div id="operations">
       <ul>
-        <li><a href="/old/schemas/${schemaForm.schemaId}/edit"><spring:message code="label.schema.edit.button"/></a></li>
+        <li><a href="<spring:url value="/schemas/{id}/edit">
+          <spring:param name="id" value="${schemaForm.schemaId}"/>
+          </spring:url>"><spring:message code="label.schema.edit.button"/></a>
+        </li>
       </ul>
     </div>
   </c:if>
