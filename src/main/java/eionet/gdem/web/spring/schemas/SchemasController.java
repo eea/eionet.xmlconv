@@ -50,7 +50,7 @@ public class SchemasController {
             holder = sm.getAllSchemas(user);
             SingleForm cForm = new SingleForm();
             model.addAttribute("form", cForm);
-            model.addAttribute("schemas.uploaded", holder);
+            model.addAttribute("schemas", holder);
 
         } catch (DCMException e) {
             e.printStackTrace();
@@ -58,7 +58,7 @@ public class SchemasController {
             errors.add(messageService.getMessage(e.getErrorCode()));
         }
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        return "/uplSchema.jsp";
+        return "/schemas/list";
     }
 
     @GetMapping("/{schemaId}")
@@ -107,10 +107,10 @@ public class SchemasController {
         } catch (DCMException e) {
             LOGGER.error("Schema element form error", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
-            return "/uplSchema.jsp";
+            return "/schemas/list";
         }
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        return "/viewSchema.jsp";
+        return "/schemas/view";
     }
 
     @GetMapping("/{schemaId}/edit")
@@ -159,17 +159,17 @@ public class SchemasController {
         } catch (DCMException e) {
             LOGGER.error("Schema element form error", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
-            return "/uplSchema.jsp";
+            return "/schemas/list";
         }
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        return "/schema.jsp";
+        return "/schemas/view";
     }
 
     @GetMapping("/add")
     public String add(Model model) {
         UploadSchemaForm form = new UploadSchemaForm();
         model.addAttribute("schemaForm", form);
-        return "/addUplSchema.jsp";
+        return "/schemas/add";
     }
 
 

@@ -1,17 +1,13 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Constants" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Constants" %>--%>
+<%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <%--<html:xhtml/>--%>
 
 <ed:breadcrumbs-push label="XML Schemas" level="1"/>
 
-<c:if test="${schemas.uploaded}">
+<c:if test="${!empty schemas}">
 
-  <c:if test="${schemas.uploaded == 'ssiPrm'}">
+  <c:if test="${schemas.ssiPrm}">
     <div id="operations">
       <ul>
         <li><a href="/old/schemas/add"><spring:message code="label.uplSchema.add"/></a></li>
@@ -24,13 +20,13 @@
   </h1>
 
   <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+  <%--<tiles:insertDefinition name="Error"/>--%>
 
 
-  <c:if test="${schemas.uploaded.schemas}">
+  <c:if test="${!empty schemas.schemas}">
     <form:form commandName="form" action="/old/schemas/delete" method="post">
       <table class="datatable" width="100%">
-        <c:if test="${schemas.uploaded == 'ssdPrm'}">
+        <c:if test="${schemas.ssdPrm}">
           <col style="width:5%"/>
         </c:if>
         <col/>
@@ -40,7 +36,7 @@
         <col style="width:20px"/>
         <thead>
         <tr>
-          <c:if test="${schemas.uploaded == 'ssdPrm'}">
+          <c:if test="${schemas.ssdPrm}">
             <th scope="col"></th>
           </c:if>
           <th scope="col"><span title="Schema"><spring:message code="label.table.uplSchema.schema"/></span></th>
@@ -53,9 +49,9 @@
         </thead>
         <tbody>
           <%--indexId="index" id="schema" name="schemas.uploaded" property="schemas" type="Schema">--%>
-        <c:forEach items="schemas.uploaded.schemas" varStatus="index">
-          <tr class="${index.intValue() % 2 == 1 ? "class=\"zebraeven\"" : "class=\"zebraodd\""}">
-            <c:if test="${schemas.uploaded == 'ssdPrm'}">
+        <c:forEach items="${schemas.schemas}" var="schema" varStatus="i">
+          <tr class="${i.index % 2 == 1 ? "class=\"zebraeven\"" : "class=\"zebraodd\""}">
+            <c:if test="${schemas.ssdPrm}">
               <td align="center">
                   <%--<bean:define id="schemaId" name="schema" property="id"/>--%>
                 <form:radiobutton path="id" value="${schema.id}"/>
@@ -63,20 +59,19 @@
             </c:if>
             <td>
               <a href="/old/schemas/${schema.id}" title="view XML Schema properties">
-                <bean:write name="schema" property="schema"/>
+                ${schema.schema}
               </a>
             </td>
             <td>
-              <bean:write name="schema" property="description"/>
+              ${schema.description}
             </td>
             <td align="center">
-              <c:if test="${schema.uplSchemaFileName}">
-                <a href="<bean:write name="webRoot"/>/<%= Constants.SCHEMA_FOLDER%><bean:write name="schema" property="uplSchemaFileName" />"
-                   class="link-xsd" title="Open uploaded schema file"></a>
+              <c:if test="${!empty schema.uplSchemaFileName}">
+                <a href="${webRoot}/${Constants.SCHEMA_FOLDER}${schema.uplSchemaFileName}" class="link-xsd" title="Open uploaded schema file"></a>
               </c:if>
             </td>
             <td>
-              <c:if test="${schema.countStyleSheets > 0}">
+              <c:if test="${schema.countStylesheets > 0}">
                 <c:url var="stylesheetsUrl" value="schemaStylesheets">
                   <c:param name="schema">${schema.schema}</c:param>
                 </c:url>
@@ -86,7 +81,7 @@
               </c:if>
             </td>
             <td>
-                <%--<bean:write name="schema" property="id" />" title="View schema QA scripts (<bean:write name="schema" property="countQaScripts" />)"--%>
+              <%--<bean:write name="schema" property="id" />" title="View schema QA scripts (<bean:write name="schema" property="countQaScripts" />)"--%>
               <c:if test="${schema.countQaScripts > 0}">
                 <a href="/old/schemas/qaScripts?schemaId=${schema.id}" class="link-xquery"></a>
               </c:if>
@@ -95,7 +90,7 @@
         </c:forEach>
         </tbody>
       </table>
-      <c:if test="${schemas.uploaded == 'ssdPrm'}">
+      <c:if test="${schemas.ssdPrm}">
         <div class="boxbottombuttons">
           <input type="submit" class="button" value="<spring:message code="label.schema.delete"/>">
             <%--onclick="return submitAction(1,'deleteUplSchema?deleteSchema=true');"/>--%>
@@ -104,7 +99,7 @@
     </form:form>
   </c:if>
 
-  <c:if test="${!schemas.uploaded.schemas}">
+  <c:if test="${!empty schemas.schemas}">
     <div class="advice-msg">
       <spring:message code="label.uplSchema.noSchemas"/>
     </div>

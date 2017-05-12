@@ -1,12 +1,7 @@
 <%--<%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java" %>--%>
 <%--<%@ page import="eionet.gdem.Properties" %>
 <%@ page import="eionet.gdem.utils.SecurityUtil" %>--%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <c:if test="${name == 'user'}">
   <%--<bean:define id="username" name="user" scope="session"/>--%>
@@ -78,7 +73,7 @@
       <ed:menuItem action="/old/conversions" title="Handcoded Stylesheets">
         <spring:message code="label.menu.stylesheets"/>
       </ed:menuItem>
-      <ed:menuItem action="/old/generatedConversions" title="Generated Stylesheets">
+      <ed:menuItem action="/old/conversions/generated" title="Generated Stylesheets">
         <spring:message code="label.menu.stylesheetsGenerated"/>
       </ed:menuItem>
       <ed:menuItem action="/old/converter" title="Converter">
@@ -90,7 +85,7 @@
       <ed:menuItem action="/old/workqueue" title="QA jobs">
         <spring:message code="label.menu.QAJobs"/>
       </ed:menuItem>
-      <ed:menuItem action="/old/qaScripts" title="QA Scripts">
+      <ed:menuItem action="/old/scripts" title="QA Scripts">
         <spring:message code="label.menu.queries"/>
       </ed:menuItem>
       <ed:menuItem action="/old/qaSandbox" title="QA Sandbox">
@@ -110,7 +105,7 @@
         </ed:menuItem>
       </ed:hasPermission>
       <ed:hasPermission username="username" acl="serverstatus" permission="v">
-        <ed:menuItem action="/serverstatus.jsp" title="View the server status">
+        <ed:menuItem action="/old/serverstatus" title="View the server status">
           <spring:message code="label.menu.serverstatus"/>
         </ed:menuItem>
       </ed:hasPermission>

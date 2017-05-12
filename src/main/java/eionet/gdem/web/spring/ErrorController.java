@@ -45,7 +45,7 @@ public class ErrorController {
         }
         model.addAttribute("status", status);
         model.addAttribute("reason", message);
-        return "Error";
+        return "error/error";
     }
 
 

@@ -48,7 +48,7 @@
 
 <%-- include Error display --%>
 <%-- move system-msg and error-msg below the  <h1> heading --%>
-<tiles:insertDefinition name="Error" />
+<tiles:insertAttribute name="error" />
 
 <%-- include body --%>
 <tiles:insertAttribute name="body"/>
