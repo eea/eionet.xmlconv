@@ -1,4 +1,4 @@
-package eionet.gdem.web.spring.generated;
+package eionet.gdem.web.spring.conversions;
 
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.MessageService;
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  */
 @Controller
-@RequestMapping("/generatedConversions")
+@RequestMapping("/conversions/generated")
 public class GeneratedConversionsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneratedConversionsController.class);
@@ -36,16 +36,14 @@ public class GeneratedConversionsController {
         SpringMessages errors = new SpringMessages();
 
         try {
-            model.addAttribute(StylesheetListLoader.STYLESHEET_GENERATED_LIST_ATTR, StylesheetListLoader.getGeneratedList(request));
+            model.addAttribute("conversions", StylesheetListLoader.getGeneratedList(request));
         } catch (DCMException e) {
             e.printStackTrace();
             LOGGER.error("Error getting stylesheet list", e);
             errors.add(messageService.getMessage("label.exception.unknown"));
         }
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        return "/generatedStylesheetList.jsp";
+        return "/conversions/generated";
     }
-
-
 
 }

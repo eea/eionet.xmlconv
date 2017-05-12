@@ -1,9 +1,5 @@
-<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties"%>--%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%--<html:xhtml />--%>
+<%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
+
 <div style="width: 100%;">
   <tiles:insertDefinition name="ConverterTabs">
     <tiles:putAttribute name="selectedTab" value="json2xml"/>
@@ -17,7 +13,7 @@
   <%-- include Error display --%>
   <tiles:insertDefinition name="Error"/>
 
-  <form action="convertJson2Xml" method="get" id="json2XmlForm">
+  <form:form servletRelativeAction="json2xml" method="post">
     <div>
       <label for="param">
         <spring:message code="label.conversion.json2xml.source"/>
@@ -25,5 +21,5 @@
       <textarea name="json" id="param" rows="10" cols="100"></textarea>
       <input type="submit" class="button" value="Convert"/>
     </div>
-  </form>
+  </form:form>
 </div>

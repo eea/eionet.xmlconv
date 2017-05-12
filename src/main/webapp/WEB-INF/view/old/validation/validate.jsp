@@ -1,12 +1,5 @@
-<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties" %>--%>
-<%--<%@ page import="eionet.gdem.utils.Utils,java.util.Date" %>--%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-<%--<html:xhtml/>--%>
 <div style="width:100%;">
 
   <ed:breadcrumbs-push label="Validate XML" level="1"/>
@@ -62,7 +55,7 @@
   </c:if>
 
 
-  <form:form action="/old/validation" method="post" modelAttribute="form">
+  <form:form servletRelativeAction="/old/validation" method="post" modelAttribute="form">
     <table class="datatable">
       <tr>
         <th scope="col" class="scope-col">
@@ -113,7 +106,7 @@
       <tr>
         <td align="center">
           <input type="submit" styleClass="button">
-          <spring:message code="label.conversion.validate"/>
+            <spring:message code="label.conversion.validate"/>
           </input>
         </td>
       </tr>

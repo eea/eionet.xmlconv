@@ -49,12 +49,11 @@ public class ValidationController {
         ValidationForm form = new ValidationForm();
         model.addAttribute("form", form);
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        return "/validateXML.jsp";
+        return "/validation";
     }
 
     @PostMapping
     public String formSubmit(@ModelAttribute ValidationForm cForm, RedirectAttributes redirectAttributes, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
-
 
         String ticket = (String) session.getAttribute(Constants.TICKET_ATT);
         SpringMessages errors = new SpringMessages();

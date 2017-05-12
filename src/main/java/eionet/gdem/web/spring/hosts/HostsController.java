@@ -70,7 +70,7 @@ public class HostsController {
         return "/hosts/list.jsp";
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("/{id}/edit")
     public String edit(@PathVariable String id, Model model, HttpSession session) {
 
         HostForm hostForm = new HostForm();
@@ -103,7 +103,7 @@ public class HostsController {
         return "/hosts/details.jsp";
     }
 
-    @PostMapping("/edit/{id}")
+    @PostMapping("/{id}/edit/")
     public String editSubmit(@ModelAttribute HostForm updatedForm, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
 
         SpringMessages messages = new SpringMessages();

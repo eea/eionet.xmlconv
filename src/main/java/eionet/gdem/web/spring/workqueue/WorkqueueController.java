@@ -22,13 +22,13 @@ import java.io.File;
  */
 @Controller
 @RequestMapping("/workqueue")
-public class QAJobsController {
+public class WorkqueueController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(QAJobsController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkqueueController.class);
     private MessageService messageService;
 
     @Autowired
-    public QAJobsController(MessageService messageService) {
+    public WorkqueueController(MessageService messageService) {
         this.messageService = messageService;
     }
 
@@ -129,7 +129,7 @@ public class QAJobsController {
             String urlName = (url.length() > Constants.URL_TEXT_LEN ? url.substring(0, Constants.URL_TEXT_LEN) + "..." : url);
         }
         model.addAttribute("jobList", list);
-        return "/workqueue.jsp";
+        return "/workqueue";
     }
 
 }

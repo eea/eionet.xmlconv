@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -33,28 +35,34 @@ public class ConverterController {
     public String list(Model model) {
         ConversionForm form = new ConversionForm();
         model.addAttribute("form", form);
-        return "/listConv.jsp";
+        return "/converter/list";
     }
 
     @GetMapping("/search")
     public String searchXML(Model model) {
         ConversionForm form = new ConversionForm();
         model.addAttribute("form", form);
-        return "/crConversion.jsp";
+        return "/converter/search";
     }
 
-    @GetMapping("/excel2Xml")
+    @GetMapping("/excel2xml")
     public String excel2xml(Model model) {
         ConversionForm form = new ConversionForm();
         model.addAttribute("form", form);
-        return "/excel2XmlConv.jsp";
+        return "/converter/excel2xml";
     }
 
-    @GetMapping("/json2Xml")
+    @GetMapping("/json2xml")
     public String json2xml(Model model) {
         ConversionForm form = new ConversionForm();
         model.addAttribute("form", form);
-        return "/json2Xml.jsp";
+        return "/converter/json2xml";
+    }
+
+    @PostMapping("json2xml")
+    public String json2xmlSubmit(@ModelAttribute ConversionForm form) {
+
+        return "redirect:/old/converter/json2xml";
     }
 
 }

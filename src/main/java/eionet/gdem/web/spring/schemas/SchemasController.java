@@ -101,8 +101,7 @@ public class SchemasController {
             }
             seHolder.setSchemaIdRemoteUrl(Utils.isURL(seHolder.getSchema().getSchema())
                     && !seHolder.getSchema().getSchema().startsWith(SecurityUtil.getUrlWithContextPath(request)));
-            model.addAttribute("schema.rootElements", seHolder);
-            model.addAttribute("stylesheet.outputtype", seHolder);
+            model.addAttribute("rootElements", seHolder);
             model.addAttribute("schemaForm", form);
         } catch (DCMException e) {
             LOGGER.error("Schema element form error", e);

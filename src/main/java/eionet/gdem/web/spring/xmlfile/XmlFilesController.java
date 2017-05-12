@@ -50,14 +50,14 @@ public class XmlFilesController {
         }
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         model.addAttribute("xmlfiles", holder);
-        return "/uplXmlFile.jsp";
+        return "/xmlfiles/list";
     }
 
     @GetMapping("/add")
     public String add(Model model) {
         UplXmlFileForm form = new UplXmlFileForm();
         model.addAttribute("form", form);
-        return "/addUplXmlFile.jsp";
+        return "/xmlfiles/add";
     }
 
     @PostMapping("/add")

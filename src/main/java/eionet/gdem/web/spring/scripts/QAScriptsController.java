@@ -32,7 +32,7 @@ import java.util.List;
  *
  */
 @Controller
-@RequestMapping("/qaScripts")
+@RequestMapping("/scripts")
 public class QAScriptsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptsController.class);
@@ -57,7 +57,7 @@ public class QAScriptsController {
             errors.add(messageService.getMessage("label.exception.unknown"));
         }
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        return "/qaScripts.jsp";
+        return "/scripts/list";
     }
 
     @GetMapping("/{scriptId}")
@@ -106,13 +106,13 @@ public class QAScriptsController {
             LOGGER.error("QA Script form error", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
             model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "/qaScripts.jsp";
+            return "/scripts/list";
         }
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        return "/viewQAScript.jsp";
+        return "/scripts/view";
     }
 
-    @GetMapping("{id}/edit")
+    @GetMapping("/{id}/edit")
     public String edit(@PathVariable String id, Model model, HttpServletRequest request) {
 
         SpringMessages errors = new SpringMessages();
@@ -145,10 +145,10 @@ public class QAScriptsController {
             LOGGER.error("QA Script form error", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
             model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "/qaScripts.jsp";
+            return "/scripts/list";
         }
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        return "/editQAScript.jsp";
+        return "/scripts/edit";
     }
 
     @PostMapping
@@ -229,12 +229,12 @@ public class QAScriptsController {
 
         if (!errors.isEmpty()) {
             redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/old/qaScripts/{scriptId}/edit";
+            return "redirect:/old/scripts/{scriptId}/edit";
         }
 
         redirectAttributes.addFlashAttribute("dcm.messages", messages);
         redirectAttributes.addAttribute("schema", schema);
-        return "redirect:/old/qaScripts/{scriptId}";
+        return "redirect:/old/scripts/{scriptId}";
     }
 
     @GetMapping("/{id}/history")
@@ -259,7 +259,7 @@ public class QAScriptsController {
         }
         model.addAttribute("qascript.history", l);
         model.addAttribute("script_id", id);
-        return "/qaScriptHistory.jsp";
+        return "/scripts/history";
     }
 
 }
