@@ -21,8 +21,8 @@
     <spring:message code="label.stylesheet.handcoded"/>
   </h1>
 
-  <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+
+
 
   <div class="visualClear">&nbsp;</div>
 
@@ -60,7 +60,7 @@
               </td>
             </c:if>
             <td>
-              <a href="/old/conversions/${conversion.convId}" title="View stylesheet">
+              <a href="/conversions/${conversion.convId}" title="View stylesheet">
                 ${conversion.xslFileName}
               </a>&#160;
             </td>

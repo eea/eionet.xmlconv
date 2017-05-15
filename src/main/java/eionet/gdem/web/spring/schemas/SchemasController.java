@@ -32,7 +32,7 @@ import java.util.Date;
  *
  */
 @Controller
-@RequestMapping("/schemas")
+@RequestMapping({"", "/schemas"})
 public class SchemasController {
 
     private MessageService messageService;
@@ -194,18 +194,18 @@ public class SchemasController {
         /*errors = form.validate(actionMapping, httpServletRequest);*/
         if (errors.size() > 0) {
             redirectAttributes.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/old/schemas/list";
+            return "redirect:/schemas/list";
         }
         if (schema == null || schema.equals("")) {
             errors.add(messageService.getMessage("label.schema.validation"));
             redirectAttributes.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/old/schemas/list";
+            return "redirect:/schemas/list";
         }
 
         if (!(new SchemaUrlValidator().isValidUrlSet(schema))) {
             errors.add(messageService.getMessage("label.uplSchema.validation.urlFormat"));
             redirectAttributes.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/old/schemas/list";
+            return "redirect:/schemas/list";
         }
 
         String user = (String) session.getAttribute("user");
@@ -218,7 +218,7 @@ public class SchemasController {
                 String schemaTargetUrl = String.format("viewSchemaForm?schemaId=%s", schemaIdByUrl);
                 errors.add(messageService.getMessage("label.schema.url.exists", schemaTargetUrl));
                 redirectAttributes.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                return "redirect:/old/schemas/list";
+                return "redirect:/schemas/list";
             }
 
             sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdId, expireDate, blocker);
@@ -236,7 +236,7 @@ public class SchemasController {
         redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
 
-        return "redirect:/old/schemas/edit";
+        return "redirect:/schemas/edit";
     }
 
     @GetMapping("/add")
@@ -264,13 +264,13 @@ public class SchemasController {
         if ((schemaFile == null || schemaFile.getFile().getSize() == 0) && Utils.isNullStr(schemaUrl)) {
             errors.add(messageService.getMessage("label.uplSchema.validation"));
             redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/old/schemas/add";
+            return "redirect:/schemas/add";
         }
 
         if (!(new SchemaUrlValidator().isValidUrlSet(schemaUrl))) {
             errors.add(messageService.getMessage("label.uplSchema.validation.urlFormat"));
             redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/old/schemas/add";
+            return "redirect:/schemas/add";
         }
 
         try {
@@ -309,7 +309,7 @@ public class SchemasController {
         }
         redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
-        return "redirect:/old/schemas";
+        return "redirect:/schemas";
     }
 
     @PostMapping("/delete")
@@ -324,10 +324,10 @@ public class SchemasController {
         } catch (DCMException e) {
             LOGGER.error("Could not remove selected schemas", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
-            return "redirect:/old/schemas";
+            return "redirect:/schemas";
         }
         redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        return "redirect:/old/schemas";
+        return "redirect:/schemas";
     }
 
 

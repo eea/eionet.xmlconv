@@ -39,8 +39,8 @@
   <ed:breadcrumbs-push label="Purge" level="1"/>
   <h1><bean:message key="label.config.purge.title"/></h1>
 
-  <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+
+
 
   <html:form action="/purge" method="post">
     <table class="formtable">

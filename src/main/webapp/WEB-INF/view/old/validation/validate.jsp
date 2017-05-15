@@ -5,8 +5,8 @@
   <ed:breadcrumbs-push label="Validate XML" level="1"/>
   <h1><spring:message code="label.conversion.validate.title"/></h1>
 
-  <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+
+
   <c:if test="${requestScope['conversion.valid']}">
     <bean:size id="countErrors" name="conversion.valid"/>
 
@@ -55,7 +55,7 @@
   </c:if>
 
 
-  <form:form servletRelativeAction="/old/validation" method="post" modelAttribute="form">
+  <form:form servletRelativeAction="/validation" method="post" modelAttribute="form">
     <table class="datatable">
       <tr>
         <th scope="col" class="scope-col">

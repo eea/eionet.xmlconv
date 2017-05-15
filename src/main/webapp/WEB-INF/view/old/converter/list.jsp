@@ -8,8 +8,8 @@
   <ed:breadcrumbs-push label="Convert XML" level="1"/>
   <h1><spring:message code="label.conversion.find"/></h1>
 
-  <%-- include Error display --%>
-  <%--<tiles:insertDefinition name="Error"/>--%>
+
+
 
   <form:form action="/listConversionsByXML" method="get">
     <table class="datatable">

@@ -13,7 +13,7 @@
         <div id="tabbedmenu">
           <ul>
             <li>
-              <html:link page="/old/schemas/${id}" titleKey="label.tab.title.schema" onclick="return submitTab(this);"
+              <html:link page="/schemas/${id}" titleKey="label.tab.title.schema" onclick="return submitTab(this);"
                          style="color: black; text-decoration: none;">
                 <spring:message code="label.tab.title.schema"/>
               </html:link>
@@ -24,7 +24,7 @@
                       code="label.tab.title.xsl"/></span>
             </li>
             <li>
-              <html:link page="/old/schemas/${id}/qaScripts" titleKey="label.tab.title.scripts"
+              <html:link page="/schemas/${id}/qaScripts" titleKey="label.tab.title.scripts"
                          onclick="return submitTab(this);" style="color: black; text-decoration: none;">
                 <spring:message code="label.tab.title.scripts"/>
               </html:link>
@@ -46,8 +46,8 @@
 
     </c:forEach>
 
-    <%-- include Error display --%>
-    <tiles:insertDefinition name="Error"/>
+
+
     <%--id="schema" name="schema.stylesheets" property="handCodedStylesheets" type="Schema">--%>
     <c:forEach varStatus="index" items="schema.stylesheets.handCodedStylesheets">
       <div class="visualClear">&nbsp;</div>

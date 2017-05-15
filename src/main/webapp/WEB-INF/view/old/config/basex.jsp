@@ -38,8 +38,8 @@
   <ed:breadcrumbs-push label="BaseX Server configuration" level="1"/>
   <h1><bean:message key="label.config.basexserver.title"/></h1>
 
-  <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+
+
   <form:form servletRelativeAction="basex" method="post">
     <table class="formtable">
       <col style="width:25%"/>

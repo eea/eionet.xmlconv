@@ -9,8 +9,8 @@
   <ed:breadcrumbs-push label="Spreadsheet to XML" level="1"/>
   <h1><spring:message code="label.conversion.excel2xml.heading"/></h1>
 
-  <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+
+
 
   <form:form action="/excel2XmlConversion" method="get" modelAttribute="form">
     <table class="datatable">

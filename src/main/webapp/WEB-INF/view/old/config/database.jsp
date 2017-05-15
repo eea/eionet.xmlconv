@@ -39,8 +39,8 @@
   <ed:breadcrumbs-push label="DB configuration" level="1"/>
   <h1><bean:message key="label.config.db.admin"/></h1>
 
-  <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+
+
 
   <html:form action="/db" method="post">
     <table class="formtable">

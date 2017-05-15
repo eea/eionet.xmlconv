@@ -9,9 +9,6 @@
     <td align="center">
       <h1><spring:message code="label.login.message"/></h1>
 
-      <%-- include Error display --%>
-      <%--<tiles:insertDefinition name="Error"/>--%>
-
       <form:form action="login" method="post" focus="username" modelAttribute="loginForm">
         <table class="datatable" style="width:300px">
           <col style="width:36%"/>

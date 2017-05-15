@@ -292,7 +292,7 @@ public class ConversionsController {
             // comping back from convert page
             cForm.setConverted(false);
         }
-        return "redirect:/old/conversions";
+        return "redirect:/conversions";
     }
 
     @PostMapping("/delete/{id}")

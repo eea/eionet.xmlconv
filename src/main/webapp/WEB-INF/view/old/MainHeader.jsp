@@ -67,45 +67,45 @@
       <ed:menuItem action="/projects" title="Schemas">
         <spring:message code="label.menu.projects"/>
       </ed:menuItem>
-      <ed:menuItem action="/old/schemas" title="Schemas">
+      <ed:menuItem action="/schemas" title="Schemas">
         <spring:message code="label.menu.schemas"/>
       </ed:menuItem>
-      <ed:menuItem action="/old/conversions" title="Handcoded Stylesheets">
+      <ed:menuItem action="/conversions" title="Handcoded Stylesheets">
         <spring:message code="label.menu.stylesheets"/>
       </ed:menuItem>
-      <ed:menuItem action="/old/conversions/generated" title="Generated Stylesheets">
+      <ed:menuItem action="/conversions/generated" title="Generated Stylesheets">
         <spring:message code="label.menu.stylesheetsGenerated"/>
       </ed:menuItem>
-      <ed:menuItem action="/old/converter" title="Converter">
+      <ed:menuItem action="/converter" title="Converter">
         <spring:message code="label.menu.converter"/>
       </ed:menuItem>
-      <ed:menuItem action="/old/validation" title="Validate XML">
+      <ed:menuItem action="/validation" title="Validate XML">
         <spring:message code="label.conversion.tab.validation"/>
       </ed:menuItem>
-      <ed:menuItem action="/old/workqueue" title="QA jobs">
+      <ed:menuItem action="/workqueue" title="QA jobs">
         <spring:message code="label.menu.QAJobs"/>
       </ed:menuItem>
-      <ed:menuItem action="/old/scripts" title="QA Scripts">
+      <ed:menuItem action="/scripts" title="QA Scripts">
         <spring:message code="label.menu.queries"/>
       </ed:menuItem>
-      <ed:menuItem action="/old/qaSandbox" title="QA Sandbox">
+      <ed:menuItem action="/qaSandbox" title="QA Sandbox">
         <spring:message code="label.menu.xqsendbox"/>
       </ed:menuItem>
-      <ed:menuItem action="/old/xmlFiles" title="XML Files">
+      <ed:menuItem action="/xmlFiles" title="XML Files">
         <spring:message code="label.menu.xmlfiles"/>
       </ed:menuItem>
       <ed:hasPermission username="username" acl="host" permission="v">
-        <ed:menuItem action="/old/hosts" title="Hosts">
+        <ed:menuItem action="/hosts" title="Hosts">
           <spring:message code="label.menu.hosts"/>
         </ed:menuItem>
       </ed:hasPermission>
       <ed:hasPermission username="username" acl="config" permission="u">
-        <ed:menuItem action="/old/config/database" title="Edit application configurations">
+        <ed:menuItem action="/config/database" title="Edit application configurations">
           <spring:message code="label.menu.config"/>
         </ed:menuItem>
       </ed:hasPermission>
       <ed:hasPermission username="username" acl="serverstatus" permission="v">
-        <ed:menuItem action="/old/serverstatus" title="View the server status">
+        <ed:menuItem action="/serverstatus" title="View the server status">
           <spring:message code="label.menu.serverstatus"/>
         </ed:menuItem>
       </ed:hasPermission>

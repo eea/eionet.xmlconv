@@ -39,8 +39,8 @@
   <ed:breadcrumbs-push label="System configuration" level="1"/>
   <h1><bean:message key="label.config.system.admin"/></h1>
 
-  <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+
+
 
   <form:form servletRelativeAction="system" method="post">
     <table class="formtable">

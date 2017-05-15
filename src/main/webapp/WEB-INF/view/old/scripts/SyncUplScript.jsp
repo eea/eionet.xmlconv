@@ -6,8 +6,8 @@
   <spring:message code="label.syncuplscript.title"/>
 </h1>
 
-<%-- include Error display --%>
-<%--<tiles:insertDefinition name="Error"/>--%>
+
+
 
 <form:form action="/syncUplScript" method="post">
 

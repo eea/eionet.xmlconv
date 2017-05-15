@@ -7,7 +7,7 @@
   <div id="operations">
     <ul>
       <li>
-        <a href="/old/qaScripts/add"><spring:message code="label.qascript.add"/></a>
+        <a href="/qaScripts/add"><spring:message code="label.qascript.add"/></a>
       </li>
     </ul>
   </div>
@@ -17,8 +17,8 @@
   <spring:message code="label.qascript.title"/>
 </h1>
 
-<%-- include Error display --%>
-<%--<tiles:insertDefinition name="Error"/>--%>
+
+
 
 <div class="visualClear">&nbsp;</div>
 
@@ -38,7 +38,7 @@
       <c:forEach varStatus="index" items="${scripts.qascripts}" var="script">
         <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
           <td title="${script.schema}">
-            <a href="/old/schemas/${schema.id}/qaScripts" title="view QA scripts for this XML Schema">
+            <a href="/schemas/${schema.id}/qaScripts" title="view QA scripts for this XML Schema">
               ${script.schema}
             </a>
           </td>
@@ -46,7 +46,7 @@
             <c:if test="${schema == 'qascripts'}">
               <%--id="qascript" name="schema" scope="page" property="qascripts" type="QAScript">--%>
               <c:forEach items="schema.qascripts">
-                <a href="/old/qaScripts/${schema.id}" titleKey="label.qascript.tab.title">
+                <a href="/qaScripts/${schema.id}" titleKey="label.qascript.tab.title">
                   ${script.shortName}
                 </a>
                 &#160;

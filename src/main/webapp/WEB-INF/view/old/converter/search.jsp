@@ -8,8 +8,8 @@
   <ed:breadcrumbs-push label="Search CR for XML files" level="1"/>
   <h1><spring:message code="label.conversion.crconversion.title"/></h1>
 
-  <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+
+
 
   <form:form action="/searchCR" method="get">
     <table class="formtable">

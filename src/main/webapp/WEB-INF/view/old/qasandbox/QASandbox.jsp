@@ -81,8 +81,8 @@
   <ed:breadcrumbs-push label="QA sandbox" level="1"/>
   <h1><spring:message code="label.qasandbox.title"/></h1>
 
-  <%-- include Error display --%>
-  <%--<tiles:insertDefinition name="Error"/>--%>
+
+
 
   <form:form action="/executeSandboxAction" method="post" modelAttribute="QASandboxForm">
     <table class="formtable">
@@ -401,7 +401,7 @@
                   </label>
                   <span> -
                     <%--paramId="scriptId" paramName="qascript" paramProperty="scriptId" --%>
-                      <a href="/old/qaScripts/${scriptId}" titleKey="label.qascript.view">
+                      <a href="/qaScripts/${scriptId}" titleKey="label.qascript.view">
                           ${qascript.fileName}
                       </a>
                       (${qascripts.scriptType})
@@ -411,7 +411,7 @@
                         <%--paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.editScriptTitle">--%>
                         <%--value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">--%>
                         <c:if test="${qascript.scriptType == 'fme'}">
-                          <a href="/old/qasandbox/editQAScript/${scriptId}">
+                          <a href="/qasandbox/editQAScript/${scriptId}">
                             <spring:message code="label.qasandbox.editScript"/>
                           </a>
                         </c:if>
@@ -435,7 +435,7 @@
           <tr>
             <td>
                 <%--do/editQAScriptInSandbox?scriptId=0  titleKey="label.qasandbox.editScriptTitle"--%>
-              <a href="/old/qaSandbox/editQAScript/0">
+              <a href="/qaSandbox/editQAScript/0">
                 <spring:message code="label.qasandbox.writeScript"/>
               </a>
             </td>

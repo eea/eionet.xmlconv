@@ -3,8 +3,8 @@
 <ed:breadcrumbs-push label="Edit XML File" level="2"/>
 <h1>Rename XML file</h1>
 
-<%-- include Error display --%>
-<tiles:insertDefinition name="Error"/>
+
+
 
 <form:form action="/renameUplXmlFile" method="post">
   <table class="formtable">

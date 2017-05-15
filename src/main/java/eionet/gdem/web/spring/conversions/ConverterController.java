@@ -62,7 +62,7 @@ public class ConverterController {
     @PostMapping("json2xml")
     public String json2xmlSubmit(@ModelAttribute ConversionForm form) {
 
-        return "redirect:/old/converter/json2xml";
+        return "redirect:/converter/json2xml";
     }
 
 }

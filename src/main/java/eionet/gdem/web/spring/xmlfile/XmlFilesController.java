@@ -77,7 +77,7 @@ public class XmlFilesController {
         if (xmlfile == null || xmlfile.getFile() == null || xmlfile.getFile().getSize() == 0) {
             errors.add(messageService.getMessage("label.uplXmlFile.validation"));
             redirectAttributes.addFlashAttribute("dcm.errors", errors);
-            return "redirect:/old/xmlFiles/add";
+            return "redirect:/xmlFiles/add";
         }
 
         /*
@@ -98,6 +98,6 @@ public class XmlFilesController {
         redirectAttributes.addFlashAttribute("dcm.errors", errors);
         redirectAttributes.addFlashAttribute("dcm.messages", messages);
 
-        return "redirect:/old/xmlFiles";
+        return "redirect:/xmlFiles";
     }
 }

@@ -11,7 +11,7 @@
     <ul>
       <li>
         <%--paramId="scriptId" paramName="script_id"--%>
-        <html:link page="/old/qaScripts/${scriptId}" titleKey="label.qascript.tab.title"
+        <html:link page="/qaScripts/${scriptId}" titleKey="label.qascript.tab.title"
                    onclick="return submitTab(this);" style="color: black; text-decoration: none;">
           <spring:message code="label.qascript.tab.title"/>
         </html:link>
@@ -29,8 +29,8 @@
     <spring:message code="label.qascriptHistory.title"/>
   </h1>
 
-  <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+
+
 
   <div class="visualClear">&nbsp;</div>
 

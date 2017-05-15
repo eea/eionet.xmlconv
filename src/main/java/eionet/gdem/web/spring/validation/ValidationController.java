@@ -65,12 +65,12 @@ public class ValidationController {
         if (Utils.isNullStr(url)) {
             errors.add(messageService.getMessage("label.conversion.selectSource"));
             redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/old/validation";
+            return "redirect:/validation";
         }
         if (!Utils.isURL(url)) {
             errors.add(messageService.getMessage(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED));
             redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/old/validation";
+            return "redirect:/validation";
         }
 
         try {
@@ -107,9 +107,9 @@ public class ValidationController {
             LOGGER.error("Error validating xml", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
             redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/old/validation";
+            return "redirect:/validation";
         }
-        return "redirect:/old/validation";
+        return "redirect:/validation";
     }
 
 }

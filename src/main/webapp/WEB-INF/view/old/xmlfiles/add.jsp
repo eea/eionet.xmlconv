@@ -3,8 +3,8 @@
 <ed:breadcrumbs-push label="Upload XML File" level="1"/>
 <h1><spring:message code="label.title.uplXmlFile.add"/></h1>
 
-<%-- include Error display --%>
-<%--<tiles:insertDefinition name="Error"/>--%>
+
+
 
 <form:form action="/addUplXmlFile" method="post" enctype="multipart/form-data">
   <table class="formtable">

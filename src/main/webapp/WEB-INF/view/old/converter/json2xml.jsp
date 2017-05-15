@@ -10,8 +10,8 @@
     <spring:message code="label.conversion.json2xml.title"/>
   </h1>
 
-  <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+
+
 
   <form:form servletRelativeAction="json2xml" method="post">
     <div>

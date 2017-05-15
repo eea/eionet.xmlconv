@@ -10,7 +10,7 @@
   <c:if test="${schemas.ssiPrm}">
     <div id="operations">
       <ul>
-        <li><a href="/old/schemas/add"><spring:message code="label.uplSchema.add"/></a></li>
+        <li><a href="/schemas/add"><spring:message code="label.uplSchema.add"/></a></li>
       </ul>
     </div>
   </c:if>
@@ -19,12 +19,12 @@
     <spring:message code="label.schemas.uploaded"/>
   </h1>
 
-  <%-- include Error display --%>
-  <%--<tiles:insertDefinition name="Error"/>--%>
+
+
 
 
   <c:if test="${!empty schemas.schemas}">
-    <form:form servletRelativeAction="/old/schemas/delete" method="post" modelAttribute="form">
+    <form:form servletRelativeAction="/schemas/delete" method="post" modelAttribute="form">
       <table class="datatable" width="100%">
         <c:if test="${schemas.ssdPrm}">
           <col style="width:5%"/>
@@ -58,7 +58,7 @@
               </td>
             </c:if>
             <td>
-              <a href="/old/schemas/${schema.id}" title="view XML Schema properties">
+              <a href="/schemas/${schema.id}" title="view XML Schema properties">
                 ${schema.schema}
               </a>
             </td>
@@ -83,7 +83,7 @@
             <td>
               <%--<bean:write name="schema" property="id" />" title="View schema QA scripts (<bean:write name="schema" property="countQaScripts" />)"--%>
               <c:if test="${schema.countQaScripts > 0}">
-                <a href="/old/schemas/qaScripts?schemaId=${schema.id}" class="link-xquery"></a>
+                <a href="/schemas/qaScripts?schemaId=${schema.id}" class="link-xquery"></a>
               </c:if>
             </td>
           </tr>
@@ -92,7 +92,9 @@
       </table>
       <c:if test="${schemas.ssdPrm}">
         <div class="boxbottombuttons">
-          <input type="submit" class="button" value="<spring:message code="label.schema.delete"/>">
+          <button type="submit" class="button" name="action" value="delete">
+            <spring:message code="label.schema.delete"/>
+          </button>
             <%--onclick="return submitAction(1,'deleteUplSchema?deleteSchema=true');"/>--%>
         </div>
       </c:if>

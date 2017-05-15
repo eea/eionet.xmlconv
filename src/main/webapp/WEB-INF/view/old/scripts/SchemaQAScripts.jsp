@@ -15,13 +15,13 @@
     <div id="tabbedmenu">
       <ul>
         <li>
-          <html:link page="/old/schemas/${schemaId}" titleKey="label.tab.title.schema" onclick="return submitTab(this);"
+          <html:link page="/schemas/${schemaId}" titleKey="label.tab.title.schema" onclick="return submitTab(this);"
                      style="color: black; text-decoration: none;">
             <spring:message code="label.tab.title.schema"/>
           </html:link>
         </li>
         <li>
-          <html:link page="/old/schemas/schemaStylesheets?schema=${schemaUrl}" titleKey="label.tab.title.xsl"
+          <html:link page="/schemas/schemaStylesheets?schema=${schemaUrl}" titleKey="label.tab.title.xsl"
                      onclick="return submitTab(this);" style="color: black; text-decoration: none;">
             <spring:message code="label.tab.title.xsl"/>
           </html:link>
@@ -44,7 +44,7 @@
         </c:if>
         <li>
             <%--paramId="schemaId" paramName="schema" paramProperty="id"--%>
-          <html:link page="/old/qaSandbox/run/${schemaId}" titleKey="label.qascript.runservice.title">
+          <html:link page="/qaSandbox/run/${schemaId}" titleKey="label.qascript.runservice.title">
             <spring:message code="label.qascript.runservice"/>
           </html:link>
         </li>
@@ -55,8 +55,8 @@
     </h1>
 
   </c:forEach>
-  <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+
+
 
   <%--id="schema" name="schema.qascripts" property="qascripts" type="Schema">--%>
   <c:forEach varStatus="index" items="${schema.qascripts.qascripts}">
@@ -146,7 +146,7 @@
                     <%--  If scriptType is NOT 'FME' --%>
                     <c:if test="${!qascript.scriptType == eionet.gdem.qa.XQScript.SCRIPT_LANG_FME}">
                       <%--paramId="scriptId" paramName="qascript" paramProperty="scriptId"--%>
-                      <html:link page="/old/qaSandbox/edit/${scriptId}"
+                      <html:link page="/qaSandbox/edit/${scriptId}"
                                  titleKey="label.qasandbox.label.qasandbox.editScript">
                         <img src="<bean:write name="webRoot"/>/images/execute.gif" alt="Run"
                              title="Run this query in XQuery Sandbox"></img>

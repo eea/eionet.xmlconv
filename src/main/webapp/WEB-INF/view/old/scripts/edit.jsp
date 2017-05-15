@@ -9,7 +9,7 @@
               code="label.qascript.tab.title"/></span></li>
       <li>
         <%--paramId="script_id" paramName="QAScriptForm" paramProperty="scriptId"  titleKey="label.qascript.history" --%>
-        <a href="/old/qaScripts/${QAScriptForm.scriptId}/history" style="color: black; text-decoration: none;">
+        <a href="/qaScripts/${QAScriptForm.scriptId}/history" style="color: black; text-decoration: none;">
           <spring:message code="label.qascript.history"/>
         </a>
       </li>
@@ -19,8 +19,8 @@
 
   <h1><spring:message code="label.qascript.edit"/></h1>
 
-  <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+
+
 
   <form:form action="/editQAScript" method="post" enctype="multipart/form-data" modelAttribute="${QAScriptForm}">
     <table class="formtable">

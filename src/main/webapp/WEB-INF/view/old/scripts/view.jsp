@@ -10,7 +10,7 @@
       </li>
       <li>
         <%--paramId="script_id" paramName="QAScriptForm" paramProperty="scriptId"--%>
-        <a href="/old/qaScripts/${QAScriptForm.scriptId}/history" titleKey="label.qascript.history" style="color: black; text-decoration: none;">
+        <a href="/qaScripts/${QAScriptForm.scriptId}/history" titleKey="label.qascript.history" style="color: black; text-decoration: none;">
           <spring:message code="label.qascript.history"/>
         </a>
       </li>
@@ -26,7 +26,7 @@
           <c:if test="${QAScriptForm.scriptType != 'fme'}">
             <%--do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="QAScriptForm"
             paramProperty="scriptId"--%>
-            <html:link page="/old/qaSandbox/${QAScriptForm.scriptId}" titleKey="label.qasandbox.label.qasandbox.editScript">
+            <html:link page="/qaSandbox/${QAScriptForm.scriptId}" titleKey="label.qasandbox.label.qasandbox.editScript">
               <spring:message code="label.qascript.run"/>
             </html:link>
           </c:if>
@@ -49,7 +49,7 @@
       <c:if test="${qascript.ssdPrm}">
         <li>
             <%--paramId="scriptId" paramName="QAScriptForm" paramProperty="scriptId"--%>
-          <a href="/old/${QAScriptForm.scriptId}/edit" title="edit QA Script">
+          <a href="/${QAScriptForm.scriptId}/edit" title="edit QA Script">
             <spring:message code="label.qascript.edit"/>
           </a>
         </li>
@@ -65,8 +65,8 @@
 
   <h1><spring:message code="label.qascript.view"/></h1>
 
-  <%-- include Error display --%>
-  <%--<tiles:insertDefinition name="Error"/>--%>
+
+
 
   <table class="datatable">
     <col class="labelcol"/>

@@ -10,13 +10,13 @@
             key="label.tab.title.schema"/></span>
     </li>
     <li>
-      <a href="/old/conversions?schema=${schemaForm.schema}" titleKey="label.tab.title.xsl"
+      <a href="/conversions?schema=${schemaForm.schema}" titleKey="label.tab.title.xsl"
          onclick="return submitTab(this);" style="color: black; text-decoration: none;">
         <spring:message code="label.tab.title.xsl"/>
       </a>
     </li>
     <li>
-      <a href="/old/qaScripts?schemaId=${schemaForm.schemaId}" titleKey="label.tab.title.scripts"
+      <a href="/qaScripts?schemaId=${schemaForm.schemaId}" titleKey="label.tab.title.scripts"
          onclick="return submitTab(this);" style="color: black; text-decoration: none;">
         <spring:message code="label.tab.title.scripts"/>
       </a>
@@ -29,8 +29,8 @@
 
 <h1><spring:message code="label.schema.edit"/></h1>
 
-<%-- include Error display --%>
-<%--<tiles:insertDefinition name="Error"/>--%>
+
+
 
 <form:form action="/schemaUpdate" method="post" enctype="multipart/form-data">
   <fieldset>

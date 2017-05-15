@@ -229,12 +229,12 @@ public class QAScriptsController {
 
         if (!errors.isEmpty()) {
             redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/old/scripts/{scriptId}/edit";
+            return "redirect:/scripts/{scriptId}/edit";
         }
 
         redirectAttributes.addFlashAttribute("dcm.messages", messages);
         redirectAttributes.addAttribute("schema", schema);
-        return "redirect:/old/scripts/{scriptId}";
+        return "redirect:/scripts/{scriptId}";
     }
 
     @GetMapping("/{id}/history")

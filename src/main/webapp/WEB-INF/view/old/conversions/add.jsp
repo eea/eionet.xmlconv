@@ -3,8 +3,8 @@
 <ed:breadcrumbs-push label="Add Stylesheet" level="3"/>
 <h1><spring:message code="label.stylesheet.add"/></h1>
 
-<%-- include Error display --%>
-<tiles:insertDefinition name="Error"/>
+
+
 
 <form:form action="/stylesheetAdd" method="post" enctype="multipart/form-data">
   <table class="datatable" style="width:100%">

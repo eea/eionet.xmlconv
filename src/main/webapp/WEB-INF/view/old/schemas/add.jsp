@@ -3,10 +3,10 @@
 <ed:breadcrumbs-push label="Upload Schema" level="2"/>
 <h1><spring:message code="label.title.uplSchema.add"/></h1>
 
-<%-- include Error display --%>
-<tiles:insertDefinition name="Error"/>
 
-<form:form servletRelativeAction="/old/schemas/add" method="post" enctype="multipart/form-data" modelAttribute="schemaForm">
+
+
+<form:form servletRelativeAction="/schemas/add" method="post" enctype="multipart/form-data" modelAttribute="schemaForm">
   <table class="formtable">
     <col class="labelcol"/>
     <col class="entrycol"/>
@@ -48,7 +48,7 @@
       </td>
       <td>
         <form:select path="schemaLang" styleId="txtSchemaLang" value="XSD">
-          <form:options items="${schemaLanguages}"/>
+          <form:options items="${schemaForm.schemaLanguages}"/>
         </form:select>
       </td>
     </tr>

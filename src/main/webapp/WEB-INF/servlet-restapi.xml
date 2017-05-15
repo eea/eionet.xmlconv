@@ -11,6 +11,7 @@
 
     <!-- Configures the @Controller programming model -->
     <mvc:annotation-driven/>
+    <mvc:default-servlet-handler />
 
     <context:component-scan base-package="eionet.gdem" />
 

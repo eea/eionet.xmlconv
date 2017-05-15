@@ -12,7 +12,7 @@
     <c:if test="${stylesheet.ssdPrm}">
       <li>
           <%--paramId="stylesheetId" paramName="stylesheetForm" paramProperty="stylesheetId"--%>
-        <html:link page="/old/conversions/${stylesheetId}/edit" title="edit stylesheet">
+        <html:link page="/conversions/${stylesheetId}/edit" title="edit stylesheet">
           <spring:message code="label.stylesheet.edit"/>
         </html:link>
       </li>
@@ -28,8 +28,8 @@
 
 <h1><spring:message code="label.stylesheet.view"/></h1>
 
-<%-- include Error display --%>
-<%--<tiles:insertDefinition name="Error"/>--%>
+
+
 
 <table class="datatable">
   <col class="labelcol"/>

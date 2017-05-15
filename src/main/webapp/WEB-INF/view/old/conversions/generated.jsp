@@ -34,7 +34,7 @@
       <c:forEach varStatus="i" items="${conversions.ddStylesheets}" var="conversion">
         <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
           <td align="center">
-            <a href="/old/schema/${conversion.stylesheetSchemaId}/conversions">
+            <a href="/schema/${conversion.stylesheetSchemaId}/conversions">
               <html:img page="/images/properties.gif" altKey="label.table.stylesheet" title="view stylesheets"/>
             </a>
           </td>

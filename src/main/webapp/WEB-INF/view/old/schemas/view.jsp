@@ -14,11 +14,11 @@
                 code="label.tab.title.schema"/></span>
       </li>
       <li>
-        <a href="<spring:url value="/old/schemas/{id}/conversions"><spring:param name="id" value="${schemaForm.schemaId}"/></spring:url>"><spring:message
+        <a href="<spring:url value="/schemas/{id}/conversions"><spring:param name="id" value="${schemaForm.schemaId}"/></spring:url>"><spring:message
                 code="label.tab.title.xsl"/></a>
       </li>
       <li>
-        <a href="<spring:url value="/old/schemas/{id}/scripts"><spring:param name="id" value="${schemaForm.schemaId}"/></spring:url>"><spring:message
+        <a href="<spring:url value="/schemas/{id}/scripts"><spring:param name="id" value="${schemaForm.schemaId}"/></spring:url>"><spring:message
                 code="label.tab.title.scripts"/></a>
       </li>
     </ul>
@@ -32,7 +32,7 @@
   <c:if test="${rootElements.xsduPrm}">
     <div id="operations">
       <ul>
-        <li><a href="/old/schemas/${schemaForm.schemaId}/edit"><spring:message code="label.schema.edit.button"/></a></li>
+        <li><a href="/schemas/${schemaForm.schemaId}/edit"><spring:message code="label.schema.edit.button"/></a></li>
       </ul>
     </div>
   </c:if>

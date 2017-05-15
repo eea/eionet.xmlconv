@@ -4,8 +4,8 @@
 
 <h1><spring:message code="label.qascript.add"/></h1>
 
-<%-- include Error display --%>
-<tiles:insertDefinition name="Error"/>
+
+
 
 <form:form action="/addQAScript" method="post" enctype="multipart/form-data">
   <table class="formtable">

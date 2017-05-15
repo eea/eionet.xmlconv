@@ -7,8 +7,8 @@
   <spring:message code="label.syncuplschema.title"/>
 </h1>
 
-<%-- include Error display --%>
-<tiles:insertDefinition name="Error"/>
+
+
 
 <form:form action="/syncUplSchema" method="post">
 

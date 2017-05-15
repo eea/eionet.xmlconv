@@ -18,8 +18,8 @@
     <spring:message code="label.xmlfiles.uploaded"/>
   </h1>
 
-  <%-- include Error display --%>
-  <%--<tiles:insertDefinition name="Error"/>--%>
+
+
 
   <div class="visualClear">&nbsp;</div>
 

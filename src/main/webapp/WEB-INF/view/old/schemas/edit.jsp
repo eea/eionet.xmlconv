@@ -11,11 +11,11 @@
                 code="label.tab.title.schema"/></span>
       </li>
       <li>
-        <a href="<spring:url value="/old/schemas/{id}/conversions"><spring:param name="id" value="${schemaForm.schemaId}"/></spring:url>"><spring:message
+        <a href="<spring:url value="/schemas/{id}/conversions"><spring:param name="id" value="${schemaForm.schemaId}"/></spring:url>"><spring:message
                 code="label.tab.title.xsl"/></a>
       </li>
       <li>
-        <a href="<spring:url value="/old/schemas/{id}/scripts"><spring:param name="id" value="${schemaForm.schemaId}"/></spring:url>"><spring:message
+        <a href="<spring:url value="/schemas/{id}/scripts"><spring:param name="id" value="${schemaForm.schemaId}"/></spring:url>"><spring:message
                 code="label.tab.title.scripts"/></a>
       </li>
     </ul>
@@ -24,8 +24,8 @@
 
 <h1><spring:message code="label.schema.view"/></h1>
 
-<%-- include Error display --%>
-<%--<tiles:insertDefinition name="Error"/>--%>
+
+
 
 <c:if test="${!empty schemaForm.schema}">
 

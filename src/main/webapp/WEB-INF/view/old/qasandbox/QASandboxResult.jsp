@@ -5,8 +5,8 @@
   <ed:breadcrumbs-push label="QA sandbox result" level="2"/>
   <h1><spring:message code="label.qasandboxresult.title"/></h1>
 
-  <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+
+
 
   <div id="sanbox_result">
     <bean:write name="QASandboxForm" property="result" filter="false"/>

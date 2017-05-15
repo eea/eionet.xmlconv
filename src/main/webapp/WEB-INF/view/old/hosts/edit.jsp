@@ -16,8 +16,8 @@
 </c:choose>
   </h1>
 
-  <%-- include Error display --%>
-  <%--<tiles:insertDefinition name="Error"/>--%>
+
+
 
   <form:form action="/hosts/save" method="post" modelAttribute="form">
     <table class="formtable">
