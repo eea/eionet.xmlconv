@@ -9,5 +9,8 @@
 #Binary files
 *.png binary
 *.gif binary
+*.odt binary
 *.ods binary
 *.jpg binary
+*.mdb binary
+*.accdb binary
