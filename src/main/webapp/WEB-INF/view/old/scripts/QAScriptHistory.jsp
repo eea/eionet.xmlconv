@@ -50,7 +50,7 @@
         <tbody>
         <%--id="backup" name="qascript.history" type="BackupDto">--%>
         <c:forEach varStatus="index" items="${qascript.history}">
-          <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
+          <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
             <td align="center">
               <a href="<bean:write name="webRoot"/>/${Constants.QUERY_FOLDER}/${Constants.BACKUP_FOLDER_NAME}/<bean:write name="backup" property="fileName" />"
                  title="<bean:write name="backup" property="fileName" />">

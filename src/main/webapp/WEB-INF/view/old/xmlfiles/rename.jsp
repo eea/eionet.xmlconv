@@ -1,11 +1,5 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-
-<%--<html:xhtml/>--%>
 <ed:breadcrumbs-push label="Edit XML File" level="2"/>
 <h1>Rename XML file</h1>
 

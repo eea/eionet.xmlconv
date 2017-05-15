@@ -50,7 +50,7 @@ public class QAScriptsController {
         SpringMessages errors = new SpringMessages();
 
         try {
-            model.addAttribute(QAScriptListLoader.QASCRIPT_LIST_ATTR, QAScriptListLoader.getList(request));
+            model.addAttribute("scripts", QAScriptListLoader.getList(request));
         } catch (DCMException e) {
             e.printStackTrace();
             LOGGER.error("Error getting QA scripts list", e);

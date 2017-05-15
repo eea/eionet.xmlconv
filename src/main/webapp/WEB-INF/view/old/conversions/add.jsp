@@ -1,9 +1,5 @@
-<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties" %>--%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+<%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-<%--<html:xhtml/>--%>
 <ed:breadcrumbs-push label="Add Stylesheet" level="3"/>
 <h1><spring:message code="label.stylesheet.add"/></h1>
 

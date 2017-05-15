@@ -47,7 +47,7 @@
         <tbody>
     <%--id="host" name="hosts.list">--%>
         <c:forEach varStatus="index" items="hosts.list">
-          <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
+          <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
             <ed:hasPermission username="username" acl="host" permission="d">
               <td>
                 <bean:define id="hostId" name="host" property="id"/>

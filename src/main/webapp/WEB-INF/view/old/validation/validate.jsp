@@ -131,7 +131,7 @@
         <tbody>
       <%--id="valid" name="conversion.valid" scope="request" type="ValidateDto">--%>
         <c:forEach varStatus="index" items="${conversion.valid}">
-          <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
+          <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
             <td>
               <bean:write name="valid" property="type"/>
             </td>

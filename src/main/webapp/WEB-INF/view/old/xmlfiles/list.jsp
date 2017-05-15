@@ -50,25 +50,24 @@
         </thead>
         <tbody>
           <%--type="UplXmlFile"--%>
-        <c:forEach varStatus="i" items="xmlfiles.uploaded.xmlfiles">
+        <c:forEach varStatus="i" items="${xmlfiles.xmlfiles}" var="xmlfile">
           <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
             <c:if test="${xmlfiles.ssdPrm}">
               <td align="center">
-                <bean:define id="fileId" name="xmlfile" property="id"/>
+                ${xmlfile.id}
                 <input type="radio" name="xmlfileId" value="${fileId}"/>
               </td>
             </c:if>
             <c:if test="${xmlfiles.ssuPrm}">
               <td align="center">
-                <a href="editUplXmlFileForm?xmlfileId=<bean:write name="xmlfile" property="id" />">
-                  <img src="<bean:write name="webRoot"/>/images/edit.gif" alt="<spring:message code="label.edit" />"
+                <a href="xmlfiles/edit/${xmlfile.id}">
+                  <img src="${webRoot}/images/edit.gif" alt="<spring:message code="label.edit" />"
                        title="edit XML file"/></a>
               </td>
             </c:if>
             <td>
-              <a href='<bean:write name="webRoot"/>/xmlfile/<bean:write name="xmlfile" property="fileName" />'
-                 title="<bean:write name="xmlfile" property="fileName" />">
-                <bean:write name="xmlfile" property="fileName"/>
+              <a href='${webRoot}/xmlfile/${xmlfile.fileName}' title="${xmlfile.fileName}">
+                ${xmlfile.fileName}
               </a>
             </td>
             <td>

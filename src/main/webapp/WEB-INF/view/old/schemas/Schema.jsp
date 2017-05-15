@@ -264,7 +264,7 @@
         <c:if test="${schema.rootElements.rootElem}">
           <%--id="elem" name="schema.rootElements" property="rootElem"          type="RootElem">--%>
           <c:forEach varStatus="index" items="${schema.rootElements.rootElem}">
-            <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : ''}">
+            <tr class="${i.index % 2 == 1 ? 'zebraeven' : ''}">
               <td>
                 <bean:write name="elem" property="name"/>
               </td>

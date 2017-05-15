@@ -133,7 +133,7 @@
           <tbody>
             <%--id="qascript" name="schema" scope="page" property="qascripts" type="QAScript">--%>
           <c:forEach varStatus="index" items="${schema.qascripts}">
-            <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
+            <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
               <bean:define id="scriptId" name="qascript" property="scriptId"/>
               <c:if test="${qascript.permissions == 'ssdPrm'}">
                 <td align="center">

@@ -1,8 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--<html:xhtml/>--%>
+<%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <ed:breadcrumbs-push label="Schema stylesheets" level="2"/>
 
@@ -81,7 +77,7 @@
           <tbody>
           <%--id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">--%>
           <c:forEach varStatus="index" items="${schema.stylesheets}">
-            <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
+            <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
               <bean:define id="convId" name="stylesheet" property="convId"/>
               <c:if test="${stylesheet.permissions == 'ssdPrm'}">
                 <td align="center">

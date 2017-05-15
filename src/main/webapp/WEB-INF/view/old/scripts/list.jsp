@@ -1,19 +1,13 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
-
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--<html:xhtml/>--%>
+<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>--%>
+<%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <ed:breadcrumbs-push label="All QA Scripts" level="1"/>
 
-<c:if test="${qascript.permissions == 'ssiPrm'}">
+<c:if test="${qascript.ssiPrm}">
   <div id="operations">
     <ul>
       <li>
-        <html:link page="/old/qaScripts/add"><spring:message code="label.qascript.add"/></html:link>
+        <a href="/old/qaScripts/add"><spring:message code="label.qascript.add"/></a>
       </li>
     </ul>
   </div>
@@ -24,11 +18,11 @@
 </h1>
 
 <%-- include Error display --%>
-<tiles:insertDefinition name="Error"/>
+<%--<tiles:insertDefinition name="Error"/>--%>
 
 <div class="visualClear">&nbsp;</div>
 
-<c:if test="${qascript.qascriptList == 'qascripts'}">
+<c:if test="${!empty scripts.qascripts}">
   <div style="width: 97%">
     <table class="datatable" width="100%">
       <col/>
@@ -41,20 +35,20 @@
       </thead>
       <tbody>
   <%--property="qascripts" type="Schema">--%>
-      <c:forEach varStatus="index" items="qascript.qascriptList.qascripts">
-        <tr class="${index.intValue() % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
-          <td title="<bean:write name="schema" property="schema"/>">
-            <html:link page="/old/schemas/${schema.id}/qaScripts" title="view QA scripts for this XML Schema">
-              <bean:write name="schema" property="schema"/>
-            </html:link>
+      <c:forEach varStatus="index" items="${scripts.qascripts}" var="script">
+        <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
+          <td title="${script.schema}">
+            <a href="/old/schemas/${schema.id}/qaScripts" title="view QA scripts for this XML Schema">
+              ${script.schema}
+            </a>
           </td>
           <td>
             <c:if test="${schema == 'qascripts'}">
               <%--id="qascript" name="schema" scope="page" property="qascripts" type="QAScript">--%>
               <c:forEach items="schema.qascripts">
-                <html:link page="/old/qaScripts/${schema.id}" titleKey="label.qascript.tab.title">
-                  <bean:write name="qascript" property="shortName"/>
-                </html:link>
+                <a href="/old/qaScripts/${schema.id}" titleKey="label.qascript.tab.title">
+                  ${script.shortName}
+                </a>
                 &#160;
               </c:forEach>
             </c:if>
