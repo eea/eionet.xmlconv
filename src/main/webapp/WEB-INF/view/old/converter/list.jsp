@@ -1,10 +1,5 @@
-<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties" %>--%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-<%--<html:xhtml/>--%>
 <div style="width:100%;">
   <tiles:insertDefinition name="ConverterTabs">
     <tiles:putAttribute name="selectedTab" value="convertXML"/>
@@ -14,7 +9,7 @@
   <h1><spring:message code="label.conversion.find"/></h1>
 
   <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+  <%--<tiles:insertDefinition name="Error"/>--%>
 
   <form:form action="/listConversionsByXML" method="get">
     <table class="datatable">
@@ -48,9 +43,9 @@
         <tr>
           <td>
 
-            <form:select name="ConversionForm" property="schemaUrl" size="10">
+            <form:select name="ConversionForm" path="schemaUrl" size="10">
               <form:option value="">--</form:option>
-              <form:options collection="conversion.schemas" property="schema" labelProperty="label"/>
+              <form:options items="conversion.schemas" property="schema" labelProperty="label"/>
             </form:select>
           </td>
         </tr>
@@ -71,31 +66,26 @@
         </th>
       </tr>
       <c:forEach items="${ConversionForm.schemas}">
-        <bean:define id="idConv" name="converted.conversionId" scope="session" type="String"/>
-        <c:if test="${!idConv}">
-          <bean:define id="idConv" name="ConversionForm" property="conversionId" scope="session" type="String"/>
-        </c:if>
+        <%--<bean:define id="idConv" name="converted.conversionId" scope="session" type="String"/>--%>
+        <%--<bean:define id="idConv" name="ConversionForm" property="conversionId" scope="session" type="String"/>--%>
 
         <%--id="schema" name="ConversionForm" scope="session" property="schemas" type="Schema">--%>
-        <c:forEach varStatus="index" items="${ConversionForm.schemas}">
+        <c:forEach varStatus="i" items="${ConversionForm.schemas}" var="schema">
           <tr>
             <td align="left">
-              <strong><bean:write name="schema" property="schema"/></strong>
+              <strong>${schema.schema}</strong>
               <br/>
                 <%--id="stylesheet" name="schema" property="stylesheets" type="Stylesheet">--%>
-              <c:forEach varStatus="index" items="${schema.stylesheets}">
-                <c:if test="${stylesheet.convId == idConv}">
+              <c:forEach varStatus="v" items="${schema.stylesheets}" var="stylesheet">
+                <c:if test="${stylesheet.convId == ConversionForm.conversionId}">
                   <input type="radio" checked="checked" name="conversionId"
-                         id="r_<bean:write name="stylesheet" property="convId" />"
-                         value="<bean:write name="stylesheet" property="convId" />"/>
+                         id="r_${stylesheet.convId}"
+                         value="${stylesheet.convId}"/>
                 </c:if>
-                <c:if test="${stylesheet.convId != idconv}">
-                  <input type="radio" name="conversionId" id="r_<bean:write name="stylesheet" property="convId" />"
-                         value="<bean:write name="stylesheet" property="convId" />"/>
+                <c:if test="${stylesheet.convId != ConversionForm.conversionId}">
+                  <input type="radio" name="conversionId" id="r_${stylesheet.convId}" value="${stylesheet.convId}"/>
                 </c:if>
-                <label for="r_<bean:write name="stylesheet" property="convId" />"><bean:write name="stylesheet"
-                                                                                              property="type"/>
-                  &nbsp;-&nbsp;<bean:write name="stylesheet" property="description"/></label><br/>
+                <label for="r_${stylesheet.convId}">${stylesheet.type}&nbsp;-&nbsp;${stylesheet.description}</label><br/>
               </c:forEach>
             </td>
           </tr>
@@ -104,7 +94,7 @@
       <tr>
         <td align="center">
           <spring:message code="label.conversion.convert" var="convertLabel"/>
-          <input type="submit" styleClass="button" property="convertAction" title="${convertLabel}"/>
+          <button type="submit" class="button" name="action" value="convertAction" title="${convertLabel}"/>
         </td>
       </tr>
     </c:if>

@@ -1,10 +1,6 @@
-<%@page contentType="text/html;charset=UTF-8" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+<%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-
+<%-- TODO REMOVE SCRIPTLET --%>
 <%
   response.setHeader("Pragma", "No-cache");
   response.setHeader("Cache-Control", "no-cache");

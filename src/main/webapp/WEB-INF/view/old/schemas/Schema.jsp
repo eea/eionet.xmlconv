@@ -1,14 +1,6 @@
-<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>--%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-<%--<html:xhtml/>--%>
-
-<bean:define id="schemaURL" name="schemaForm" property="schema"/>
-<bean:define id="id" name="schemaForm" property="schemaId"/>
-
+<%-- TODO check if this file is still used--%>
 <div id="tabbedmenu">
 
   <ul>
@@ -18,16 +10,16 @@
             key="label.tab.title.schema"/></span>
     </li>
     <li>
-      <html:link page="/old/conversions?schema=${schemaURL}" titleKey="label.tab.title.xsl"
-                 onclick="return submitTab(this);" style="color: black; text-decoration: none;">
+      <a href="/old/conversions?schema=${schemaForm.schema}" titleKey="label.tab.title.xsl"
+         onclick="return submitTab(this);" style="color: black; text-decoration: none;">
         <spring:message code="label.tab.title.xsl"/>
-      </html:link>
+      </a>
     </li>
     <li>
-      <html:link page="/old/qaScripts?schemaId=${id}" titleKey="label.tab.title.scripts"
-                 onclick="return submitTab(this);" style="color: black; text-decoration: none;">
+      <a href="/old/qaScripts?schemaId=${schemaForm.schemaId}" titleKey="label.tab.title.scripts"
+         onclick="return submitTab(this);" style="color: black; text-decoration: none;">
         <spring:message code="label.tab.title.scripts"/>
-      </html:link>
+      </a>
     </li>
   </ul>
 </div>
@@ -38,7 +30,7 @@
 <h1><spring:message code="label.schema.edit"/></h1>
 
 <%-- include Error display --%>
-<tiles:insertDefinition name="Error"/>
+<%--<tiles:insertDefinition name="Error"/>--%>
 
 <form:form action="/schemaUpdate" method="post" enctype="multipart/form-data">
   <fieldset>
@@ -54,15 +46,12 @@
         </td>
         <td align="left">
           <c:choose>
-          <c:when test="${user}">
-            <html:text property="schema" maxlength="255" style="width:500px" styleId="txtSchemaUrl"/>
-          </c:when>
-          <c:otherwise>
-            <a href="<bean:write name="schemaForm" property="schema" />"
-               title="<bean:write name="schemaForm" property="schema" />">
-              <bean:write name="schemaForm" property="schema"/>
-            </a>&#160;
-          </c:otherwise>
+            <c:when test="${user}">
+              <html:text property="schema" maxlength="255" style="width:500px" styleId="txtSchemaUrl"/>
+            </c:when>
+            <c:otherwise>
+              <a href="${schemaForm.schema} title="${schemaForm.schema}">${schemaForm.schema}</a>&#160;
+            </c:otherwise>
           </c:choose>
         </td>
       </tr>
@@ -75,11 +64,10 @@
         <td align="left">
           <c:choose>
             <c:when test="${user}">
-              <html:textarea property="description" rows="2" cols="30" style="width:500px"
-                             styleId="txtDescription"/>
+              <form:textarea path="description" rows="2" cols="30" style="width:500px" id="txtDescription"/>
             </c:when>
             <c:otherwise>
-              <bean:write name="schemaForm" property="description"/>
+              ${schemaForm.description}
             </c:otherwise>
           </c:choose>
         </td>
@@ -93,12 +81,12 @@
         <td>
           <c:choose>
             <c:when test="${user}">
-              <html:select property="schemaLang" styleId="txtSchemaLang">
-                <html:options property="schemaLanguages"/>
-              </html:select>
+              <form:select path="schemaLang" id="txtSchemaLang">
+                <form:options items="schemaLanguages"/>
+              </form:select>
             </c:when>
             <c:otherwise>
-              <bean:write name="schemaForm" property="schemaLang"/>
+              ${schemaForm.schemaLang}
             </c:otherwise>
           </c:choose>
         </td>
@@ -112,10 +100,10 @@
         <td>
           <c:choose>
             <c:when test="${user}">
-              <html:checkbox property="doValidation" styleId="txtValidation"/>
+              <form:checkbox path="doValidation" id="txtValidation"/>
             </c:when>
             <c:otherwise>
-              <bean:write name="schemaForm" property="doValidation"/>
+              ${schemaForm.doValidation}
             </c:otherwise>
           </c:choose>
         </td>
@@ -129,10 +117,10 @@
         <td>
           <c:choose>
             <c:when test="${user}">
-              <html:checkbox property="blocker" styleId="txtBlockerValidation"/>
+              <form:checkbox path="blocker" id="txtBlockerValidation"/>
             </c:when>
             <c:otherwise>
-              <bean:write name="schemaForm" property="blocker"/>
+              ${schemaForm.blockerr}
             </c:otherwise>
           </c:choose>
         </td>
@@ -144,10 +132,10 @@
           </label>
         </td>
         <td>
-          <html:text property="expireDate" styleId="txtExpireDate"/> (dd/MM/yyyy)
+          <form:input path="expireDate" id="txtExpireDate"/> (dd/MM/yyyy)
         </td>
       </tr>
-      <c:if test="${schemaForm == 'dtd'}">
+      <c:if test="${schemaForm.dtd}">
         <tr>
           <td>
             <label class="question" for="txtDtdId">
@@ -157,10 +145,10 @@
           <td align="left">
             <c:choose>
               <c:when test="${user}">
-                <html:text property="dtdId" maxlength="50" size="50" styleId="txtDtdId"/>
+                <form:input path="dtdId" maxlength="50" size="50" id="txtDtdId"/>
               </c:when>
               <c:otherwise>
-                <bean:write name="schemaForm" property="dtdId"/>
+                ${schemaForm.dtdId}/>
               </c:otherwise>
             </c:choose>
           </td>
@@ -170,13 +158,15 @@
         <td></td>
         <td>
           <c:if test="${schema.rootElements == 'xsduPrm'}">
-            <input type="button" class="button" value="<spring:message code="label.schema.save"/>"
-                   onclick="return submitAction(1,'schemaUpdate');"/>
+            <button type="submit" class="button" class="button" name="action" value="schemaUpdate">
+              <spring:message code="label.schema.save"/>
+            </button>
             &nbsp;
           </c:if>
-          <c:if test="${schema.rootElements == 'xsddPrm'}">
-            <input type="button" class="button" value="<spring:message code="label.schema.delete"/>"
-                   onclick="return submitAction(1,'deleteUplSchema?deleteSchema=true');"/>
+          <c:if test="${rootElements.xsddPrm}">
+            <button type="submit" name="action" class="button" value="delete">
+              <spring:message code="label.schema.delete"/>"
+            </button>
           </c:if>
         </td>
       </tr>
@@ -195,18 +185,14 @@
         </td>
         <td>
           <c:if test="${schemaForm.uplSchemaFileName}">
-            <a href="<bean:write name="schemaForm" property="uplSchemaFileUrl" />"
-               title="<bean:write name="schemaForm" property="uplSchemaFileUrl" />">
-              <bean:write name="schemaForm" property="uplSchemaFileName"/>
-            </a>&#160;
+            <a href="${schemaForm.uplSchemaFileUrl} title="${schemaForm.uplSchemaFileUrl}">${schemaForm.uplSchemaFileUrl}</a>&#160;
             <c:if test="${schemaForm.lastModified}">
-              &#160;&#160;(<spring:message code="label.lastmodified"/>: <bean:write property="lastModified"
-                                                                                    name="schemaForm"/>)
+              &#160;&#160;(<spring:message code="label.lastmodified"/>: ${schemaForm.lastModified})
             </c:if>
           </c:if>
         </td>
       </tr>
-      <c:if test="${schema.rootElements == 'xsduPrm'}">
+      <c:if test="${rootElements.xsduPrm}">
         <tr>
           <td></td>
           <td>
@@ -217,27 +203,29 @@
       <tr>
         <td></td>
         <td>
-          <c:if test="${schema.rootElements == 'xsduPrm'}">
+          <c:if test="${rootElements.xsduPrm}">
             <input type="button" class="button" value="<spring:message code="label.uplSchema.upload"/>"
                    onclick="return submitAction(1,'editUplSchema');"/>
           </c:if>
           <c:if test="${schemaForm.uplSchemaFileName}">
-            <c:if test="${schema.rootElements == 'xsddPrm'}">
-              <input type="button" class="button" value="<spring:message code="label.schema.deleteFile"/>"
-                     onclick="return submitAction(1,'deleteUplSchema');"/>
+            <c:if test="${rootElements.xsddPrm}">
+              <button type="submit" name="action" value="delete">
+                  <spring:message code="label.schema.deleteFile"/>
+              </button>
             </c:if>
-            <c:if test="${schema.rootElements == 'xsduPrm'}">
-              <c:if test="${schema.rootElements.schemaIdRemoteUrl}">
-                <input type="button" class="button"
-                       value="<spring:message code="label.uplSchema.checkupdates"/>"
-                       onclick="return submitAction(1,'diffUplSchemas');"/>
+            <c:if test="${rootElements.xsduPrm}">
+              <c:if test="${rootElements.schemaIdRemoteUrl}">
+                <button type="submit" name="action" value="diff">
+                  <spring:message code="label.uplSchema.checkupdates"/>
+                </button>
               </c:if>
             </c:if>
           </c:if>
           <c:if test="${!schemaForm.uplSchemaFileName}">
-            <c:if test="${schema.rootElements == schemaIdRemoteUrl}">
-              <input type="button" class="button" value="<spring:message code="label.uplSchema.createcopy"/>"
-                     onclick="return submitAction(1,'diffUplSchemas');"/>
+            <c:if test="${rootElements.schemaIdRemoteUrl}">
+              <button type="submit" name="action" value="diff">
+                  <spring:message code="label.uplSchema.createcopy"/>
+              </button>
             </c:if>
           </c:if>
         </td>
@@ -255,7 +243,7 @@
           </th>
           <th scope="col"><span title="Namespace"><spring:message code="label.schema.table.namespace"/></span>
           </th>
-          <c:if test="${schema.rootElements == 'xsduPrm'}">
+          <c:if test="${rootElements.xsduPrm}">
             <th scope="col"></th>
           </c:if>
         </tr>
@@ -263,20 +251,19 @@
         <tbody>
         <c:if test="${schema.rootElements.rootElem}">
           <%--id="elem" name="schema.rootElements" property="rootElem"          type="RootElem">--%>
-          <c:forEach varStatus="index" items="${schema.rootElements.rootElem}">
+          <c:forEach varStatus="index" items="${rootElements}" var="elem">
             <tr class="${i.index % 2 == 1 ? 'zebraeven' : ''}">
               <td>
-                <bean:write name="elem" property="name"/>
+                ${elem.name}
               </td>
               <td>
-                <bean:write name="elem" property="namespace"/>
+                ${elem.namespace}
               </td>
-              <c:if test="${schema.rootElements == 'xsduPrm'}">
+              <c:if test="${rootElements.xsduPrm}">
                 <td align="center">
-                  <a href="deleteElem?elemId=<bean:write name="elem" property="elemId" />"
-                     onclick='return elementDelete("<bean:write name="elem" property="name"/>");'>
-                    <html:img page="/images/delete.gif" altKey="label.delete"
-                              title="delete root element"/>
+                  <%--onclick='return elementDelete("<bean:write name="elem" property="name"/>");'>--%>
+                  <a href="deleteElem?elemId=${elem.elemId}">
+                    <img src="/images/delete.gif" altKey="label.delete" title="delete root element"/>
                   </a>
                 </td>
               </c:if>
@@ -287,7 +274,7 @@
       </table>
     </c:if>
     <c:if test="${user}">
-      <c:if test="${schema.rootElements == 'xsduPrm'}">
+      <c:if test="${rootElements.xsduPrm}">
         <table class="formtable">
           <col class="labelcol"/>
           <col class="entrycol"/>
@@ -298,7 +285,7 @@
               </label>
             </td>
             <td>
-              <html:text property="elemName" maxlength="255" style="width:250px" styleId="txtElemName"/>
+              <form:input path="elemName" maxlength="255" style="width:250px" id="txtElemName"/>
             </td>
           </tr>
           <tr>
@@ -308,15 +295,15 @@
               </label>
             </td>
             <td>
-              <html:text property="namespace" maxlength="255" style="width:250px" styleId="txtNamespace"/>
+              <form:input path="namespace" maxlength="255" style="width:250px" id="txtNamespace"/>
             </td>
           </tr>
           <tr>
             <td>&nbsp;</td>
             <td>
-              <input type="button" class="button" style="width:50px"
-                     value="<spring:message code="label.element.add"/>"
-                     onclick="return submitAction(1,'elementAdd');"/>
+              <button type="submit" class="button" name="action" value="elementAdd">
+                <spring:message code="label.element.add"/>
+              </button>
             </td>
           </tr>
         </table>
@@ -324,9 +311,9 @@
     </c:if>
   </fieldset>
   <div style="display:none">
-    <html:hidden property="schemaId"/>
-    <html:hidden property="uplSchemaFileName"/>
-    <html:hidden property="uplSchemaId"/>
-    <html:hidden property="schema"/>
+    <form:hidden path="schemaId"/>
+    <form:hidden path="uplSchemaFileName"/>
+    <form:hidden path="uplSchemaId"/>
+    <form:hidden path="schema"/>
   </div>
 </form:form>

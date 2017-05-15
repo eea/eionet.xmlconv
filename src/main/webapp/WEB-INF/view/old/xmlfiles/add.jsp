@@ -1,17 +1,10 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
-
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-
-<%--<html:xhtml/>--%>
+<%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <ed:breadcrumbs-push label="Upload XML File" level="1"/>
 <h1><spring:message code="label.title.uplXmlFile.add"/></h1>
 
 <%-- include Error display --%>
-<tiles:insertDefinition name="Error"/>
+<%--<tiles:insertDefinition name="Error"/>--%>
 
 <form:form action="/addUplXmlFile" method="post" enctype="multipart/form-data">
   <table class="formtable">
@@ -24,7 +17,7 @@
         </label>
       </td>
       <td>
-        <html:file property="xmlfile" styleId="fileXml" size="68"/>
+        <input type="file" name="xmlfile" id="fileXml" size="68"/>
       </td>
     </tr>
     <tr>
@@ -34,7 +27,7 @@
         </label>
       </td>
       <td>
-        <html:text property="title" style="width:400px" styleId="txtTitle"/>
+        <form:input path="title" style="width:400px" styleId="txtTitle"/>
       </td>
     </tr>
     <tr>
@@ -43,12 +36,12 @@
     <tr>
       <td>&nbsp;</td>
       <td>
-        <html:submit styleClass="button">
+        <button type="submit" class="button" name="action" value="upload">
           <spring:message code="label.uplXmlFile.upload"/>
-        </html:submit>
-        <html:cancel styleClass="button">
+        </button>
+        <%--<html:cancel styleClass="button">
           <spring:message code="label.cancel"/>
-        </html:cancel>
+        </html:cancel>--%>
       </td>
     </tr>
   </table>

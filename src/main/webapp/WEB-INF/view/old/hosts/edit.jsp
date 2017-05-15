@@ -1,14 +1,8 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
+<%@include file="/WEB-INF/view/old/taglibs.jsp" %>
+
 <c:if test="${user}">
   <bean:define id="username" name="user" scope="session"/>
 </c:if>
-
-<%--<html:xhtml/>--%>
 
 <ed:breadcrumbs-push label="Host details" level="2"/>
 <h1 class="documentFirstHeading">
@@ -23,7 +17,7 @@
   </h1>
 
   <%-- include Error display --%>
-  <tiles:insertDefinition name="Error"/>
+  <%--<tiles:insertDefinition name="Error"/>--%>
 
   <form:form action="/hosts/save" method="post" modelAttribute="form">
     <table class="formtable">

@@ -1,8 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
+<%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <c:if test="${user}">
   <bean:define id="username" name="user" scope="session"/>
@@ -24,7 +20,7 @@
 </h1>
 
 <%-- include Error display --%>
-<tiles:insertDefinition name="Error"/>
+<%--<tiles:insertDefinition name="Error"/>--%>
 
 <div class="visualClear">&nbsp;</div>
 

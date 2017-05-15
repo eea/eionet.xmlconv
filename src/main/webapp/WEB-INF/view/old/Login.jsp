@@ -1,8 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
+<%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <ed:breadcrumbs-push label="Login" level="1"/>
 
@@ -14,7 +10,7 @@
       <h1><spring:message code="label.login.message"/></h1>
 
       <%-- include Error display --%>
-      <tiles:insertDefinition name="Error"/>
+      <%--<tiles:insertDefinition name="Error"/>--%>
 
       <form:form action="login" method="post" focus="username" modelAttribute="loginForm">
         <table class="datatable" style="width:300px">

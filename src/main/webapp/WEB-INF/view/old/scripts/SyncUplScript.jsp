@@ -1,19 +1,13 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
-
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+<%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <ed:breadcrumbs-push label="Update QA script from original location" level="3"/>
-
 
 <h1 class="documentFirstHeading">
   <spring:message code="label.syncuplscript.title"/>
 </h1>
 
 <%-- include Error display --%>
-<tiles:insertDefinition name="Error"/>
+<%--<tiles:insertDefinition name="Error"/>--%>
 
 <form:form action="/syncUplScript" method="post">
 
@@ -21,25 +15,25 @@
     Do you want to store the remote script as a local copy?
   </p>
   <div>
-    <c:if present name="user">
-      <html:submit styleClass="button" property="action">
+    <c:if test="${user}">
+      <button type="submit" class="button" name="action" value="update">
         <spring:message code="label.uplSchema.updatecopy"/>
-      </html:submit>
-      <html:cancel styleClass="button">
+      </button>
+      <%--<html:cancel styleClass="button">
         <spring:message code="label.cancel"/>
-      </html:cancel>
-    </c:if present>
+      </html:cancel>--%>
+    </c:if>
   </div>
   <p>
-    File downloaded from: <bean:write name="SyncUplScriptForm" property="url"/>
+    File downloaded from: ${SyncUplScriptForm.url}
   </p>
-  <pre><bean:write name="SyncUplScriptForm" property="scriptFile"/></pre>
+  <pre>${SyncUplScriptForm.scriptFile}</pre>
 
   <div style="display:none">
-    <html:hidden property="scriptId"/>
-    <html:hidden property="scriptFile"/>
-    <html:hidden property="fileName"/>
-    <html:hidden property="url"/>
+    <form:hidden path="scriptId"/>
+    <form:hidden path="scriptFile"/>
+    <form:hidden path="fileName"/>
+    <form:hidden path="url"/>
   </div>
 </form:form>
 <div class="visualClear">&nbsp;</div>

@@ -1,11 +1,4 @@
-<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties" %>--%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
-
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-
-<%--<html:xhtml/>--%>
+<%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <div style="width:100%;">
   <div id="tabbedmenu">
@@ -29,7 +22,7 @@
   <%-- include Error display --%>
   <tiles:insertDefinition name="Error"/>
 
-  <form:form action="/editQAScript" method="post" enctype="multipart/form-data">
+  <form:form action="/editQAScript" method="post" enctype="multipart/form-data" modelAttribute="${QAScriptForm}">
     <table class="formtable">
       <col class="labelcol"/>
       <col class="entrycol"/>
@@ -40,7 +33,7 @@
           </label>
         </td>
         <td>
-          <bean:write name="QAScriptForm" property="schema"/>
+          ${QAScriptForm.schema}
         </td>
       </tr>
       <tr>
@@ -50,7 +43,7 @@
           </label>
         </td>
         <td>
-          <html:text name="QAScriptForm" property="shortName" styleId="txtShortName" size="64"/>
+          <form:input name="QAScriptForm" path="shortName" id="txtShortName" size="64"/>
         </td>
       </tr>
       <tr class="zebraeven">
@@ -70,9 +63,9 @@
           </label>
         </td>
         <td>
-          <html:select name="QAScriptForm" property="resultType" styleId="selContentType">
-            <html:options collection="qascript.resulttypes" property="convType"/>
-          </html:select>
+          <form:select name="QAScriptForm" path="resultType" styleId="selContentType">
+            <form:options collection="qascript.resulttypes" property="convType"/>
+          </form:select>
         </td>
       </tr>
       <tr class="zebraeven">
@@ -82,10 +75,10 @@
           </label>
         </td>
         <td>
-          <html:select name="QAScriptForm" property="scriptType" styleId="selScriptType" disabled="false">
-            <html:options collection="qascript.scriptlangs" property="convType"/>
-          </html:select>
-          <html:hidden name="QAScriptForm" property="scriptType"/>
+          <form:select name="QAScriptForm" path="scriptType" styleId="selScriptType" disabled="false">
+            <form:options items="${qascript.scriptlangs}" property="convType"/>
+          </form:select>
+          <form:hidden path="QAScriptForm" property="scriptType"/>
         </td>
       </tr>
       <tr>
@@ -95,7 +88,7 @@
           </label>
         </td>
         <td>
-          <html:text styleId="txtUpperLimit" size="3" property="upperLimit"/>
+          <form:input id="txtUpperLimit" size="3" path="upperLimit"/>
         </td>
       </tr>
 
@@ -107,40 +100,40 @@
         </td>
         <td>
             <%--  If scriptType is 'FME' don't show the link to the local script file --%>
-          <c:if notEqual name="QAScriptForm" property="scriptType"
-                          value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-            <a href="<bean:write name="webRoot"/>/<bean:write property="filePath" name="QAScriptForm"/>"
-               title="<bean:write property="filePath" name="QAScriptForm"/>">
-              <bean:write property="fileName" name="QAScriptForm"/>
+          <c:if test="${QAScriptForm.scriptType == 'fme'}">
+            <a href="${webRoot}/${QAScriptForm.filePath}" title="${QAScriptForm.filePath}">
+                ${QAScriptForm.fileName}
             </a>
             &#160;&#160;&#160;&#160;&#160;&#160;(<spring:message code="label.lastmodified"/>:
-            <c:if present name="QAScriptForm" property="modified">
-              <bean:write property="modified" name="QAScriptForm"/>
-            </c:if present>
-            <c:if notPresent name="QAScriptForm" property="modified">
-              <span style="color:red"><spring:message code="label.fileNotFound"/></span>
-            </c:if notPresent>
+            <c:choose>
+              <c:when test="${QAScriptForm.modified}">
+                ${QAScriptForm.modified}
+              </c:when>
+              <c:otherwise>
+                <span style="color:red"><spring:message code="label.fileNotFound"/></span>
+              </c:otherwise>
+            </c:choose>
             )
-          </c:if notEqual>
+          </c:if>
             <%--  If scriptType is 'FME' don't show the link to the local script file --%>
-          <c:if equal name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
-            <bean:write property="fileName" name="QAScriptForm"/>
-          </c:if equal>
+          <c:if test="${QAScriptForm.scriptType == 'fme'}">
+            ${QAScriptForm.fileName}
+          </c:if>
         </td>
       </tr>
 
         <%--  If scriptType is 'FME' don't show the FileUpload --%>
-      <c:if notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+      <c:if test="${QAScriptForm.scriptType != 'fme'}">
         <tr class="zebraeven">
           <td>&#160;</td>
           <td>
-            <html:submit styleClass="button" property="action">
+            <button type="submit" class="button" name="action" value="upload">
               <spring:message code="label.qascript.upload"/>
-            </html:submit>
-            <html:file property="scriptFile" style="width:400px" size="64"/>
+            </button>
+            <input type="file" name="scriptFile" style="width:400px" size="64"/>
           </td>
         </tr>
-      </c:if notEqual>
+      </c:if>
 
       <tr>
         <td>
@@ -149,8 +142,7 @@
           </label>
         </td>
         <td>
-          <html:text styleId="txtUrl" property="url" size="107"/>
-
+          <form:input id="txtUrl" path="url" size="107"/>
         </td>
       </tr>
       <tr class="zebraeven">
@@ -160,45 +152,45 @@
           </label>
         </td>
         <td>
-          <html:checkbox name="QAScriptForm" property="active" styleId="isActive"/>
-          <html:hidden property="active" name="QAScriptForm" value="false"/>
+          <form:checkbox path="active" id="isActive"/>
+          <form:hidden path="active" value="false"/>
         </td>
       </tr>
         <%--  If scriptType is 'FME' don't show the 'Check for updates' --%>
-      <c:if notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+      <c:if test="${QAScriptForm.scriptType == 'fme'}">
         <tr>
           <td></td>
           <td>
-            <c:if notEmpty name="QAScriptForm" property="fileName">
-              <input type="button" class="button" value="<spring:message code="label.qascript.checkupdates"/>"
-                     onclick="return submitAction(1,'diffUplScripts');"/>
-            </c:if notEmpty>
+            <c:if test="${!empty QAScriptForm.fileName}">
+              <button type="submit" clas="button" name="action" value="diff">
+                <spring:message code="label.qascript.checkupdates"/>"
+              </button>
+            </c:if>
           </td>
         </tr>
-      </c:if notEqual>
-      <c:if present name="QAScriptForm" property="fileName">
-        <%--  If scriptType is 'FME' don't show the script content --%>
-        <c:if notEqual name="QAScriptForm" property="scriptType" value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">
+      </c:if>
+      <c:if test="${!empty QAScriptForm.fileName}">
+        <c:if test="${QAScriptForm.scriptType != 'fme'}">
           <tr>
             <td colspan="2">
               <label class="question" for="txtUrl">
                 <spring:message code="label.qascript.source"/>
               </label>
-              <html:textarea property="scriptContent" style="width: 98%;" rows="20" cols="55" styleId="txtFile"/>
+              <form:textarea path="scriptContent" style="width: 98%;" rows="20" cols="55" id="txtFile"/>
             </td>
           </tr>
-        </c:if notEqual>
+        </c:if>
         <tr>
           <td>&#160;</td>
           <td>
-            <html:submit styleClass="button" property="action">
+            <button type="submit" class="button" name="action" value="save">
               <spring:message code="label.qascript.save"/>
-            </html:submit>
-            <html:hidden property="fileName"/>
-            <html:hidden property="checksum" name="QAScriptForm"/>
-            <html:hidden property="scriptId" name="QAScriptForm"/>
-            <html:hidden property="schemaId" name="QAScriptForm"/>
-            <html:hidden property="active" name="QAScriptForm"/>
+            </button>
+            <form:hidden path="fileName"/>
+            <form:hidden path="checksum" name="QAScriptForm"/>
+            <form:hidden path="scriptId" name="QAScriptForm"/>
+            <form:hidden path="schemaId" name="QAScriptForm"/>
+            <form:hidden path="active" name="QAScriptForm"/>
           </td>
         </tr>
         <tr>
@@ -207,10 +199,10 @@
         <!-- tr>
         <td>&#160;</td>
         <td>
-        <html:file property="scriptFile" style="width:400px" size="64"/>
+        <input type="file" name="scriptFile" style="width:400px" size="64"/>
         </td>
         </tr-->
-      </c:if present>
+      </c:if>
     </table>
   </form:form>
 </div>

@@ -1,16 +1,11 @@
-<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
-
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+<%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <%--<html:xhtml/>--%>
 <ed:breadcrumbs-push label="Edit XML File" level="2"/>
 <h1><spring:message code="label.title.uplXmlFile.edit"/></h1>
 
 <%-- include Error display --%>
-<tiles:insertDefinition name="Error"/>
+<%--<tiles:insertDefinition name="Error"/>--%>
 
 <form:form action="/editUplXmlFile" method="post" enctype="multipart/form-data">
   <table class="formtable">
@@ -23,27 +18,27 @@
         </label>
       </td>
       <td>
-        <a href="<bean:write name="EditUplXmlFileForm" property="xmlFilePath" /><bean:write name="EditUplXmlFileForm" property="xmlFileName" />"
-           title="<bean:write name="EditUplXmlFileForm" property="xmlFileName" />">
-          <bean:write name="EditUplXmlFileForm" property="xmlFileName"/>
+        <a href="${EditUplXmlFileForm.xmlFilePath}${EditUplXmlFileForm.xmlFileName}" title="${EditUplXmlFileForm.xmlFileName}">
+          ${EditUplXmlFileForm.xmlFileName}
         </a>&#160;&#160;
         (<spring:message code="label.lastmodified"/>:
-        <c:if present name="EditUplXmlFileForm" property="lastModified">
-          <bean:write property="lastModified" name="EditUplXmlFileForm"/>
-        </c:if present>
-        <c:if equal value="" name="EditUplXmlFileForm" property="lastModified">
-          <span style="color:red"><spring:message code="label.fileNotFound"/></span>
-        </c:if equal>
-        )
-        <html:hidden property="xmlfileId"/>
-        <html:hidden property="xmlFileName"/>
+        <c:choose>
+          <c:when test="${EditUplXmlFileForm.lastModified}">
+            ${EditUplXmlFileForm.lastModified}
+          </c:when>
+          <c:otherwise>
+            <span style="color:red"><spring:message code="label.fileNotFound"/></span>
+          </c:otherwise>
+        </c:choose>)
+        <form:hidden path="xmlfileId"/>
+        <form:hidden path="xmlFileName"/>
       </td>
     </tr>
     <tr>
       <td>
       </td>
       <td>
-        <html:file property="xmlFile" styleId="fileXml" size="68"/>
+        <input type="file" name="xmlFile" styleId="fileXml" size="68"/>
       </td>
     </tr>
     <tr>
@@ -53,7 +48,7 @@
         </label>
       </td>
       <td>
-        <html:text property="title" style="width:400px" styleId="txtTitle"/>
+        <form:input path="title" style="width:400px" id="txtTitle"/>
       </td>
     </tr>
     <tr>
@@ -62,12 +57,12 @@
     <tr>
       <td>&nbsp;</td>
       <td>
-        <html:submit styleClass="button">
+        <button type="submit" name="action" value="ok">
           <spring:message code="label.ok"/>
-        </html:submit>
-        <html:cancel styleClass="button">
+        </button>
+        <%--<html:cancel styleClass="button">
           <spring:message code="label.cancel"/>
-        </html:cancel>
+        </html:cancel>--%>
       </td>
     </tr>
   </table>

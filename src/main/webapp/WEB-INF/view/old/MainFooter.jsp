@@ -1,11 +1,6 @@
-<%--<%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java" %>--%>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib prefix="tilesx" uri="http://tiles.apache.org/tags-tiles-extras" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
+<%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-
+<%-- TODO remove scriptlet --%>
 <%
   String a = request.getContextPath();
   session.setAttribute("webRoot", a == null ? "" : a);
@@ -18,7 +13,7 @@
                      delimiter=""/>
 
 <%--<tiles:importAttribute name="showFooter" />--%>
-<c:if test="${showFooter == true}">
+<c:if test="${showFooter}">
   <div id="pagefoot">
     <p>
       <a href="http://www.eea.europa.eu" style="font-weight:bold">European Environment Agency</a>
