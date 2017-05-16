@@ -1,7 +1,7 @@
 <%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties" %>--%>
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-<%--<html:xhtml/>--%>
+
 
 <ed:breadcrumbs-push label="Stylesheets" level="1"/>
 

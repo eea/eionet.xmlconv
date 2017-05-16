@@ -14,8 +14,8 @@ public class ExceptionHandlerAdvice {
 
     @ExceptionHandler(value = {RuntimeException.class})
     public ModelAndView exception(Exception exception, WebRequest request) {
-        ModelAndView modelAndView = new ModelAndView("error/error");
-        modelAndView.addObject("errorMessage", exception.getCause());
+        ModelAndView modelAndView = new ModelAndView("Error");
+        modelAndView.addObject("exceptionMessage", exception.getCause());
         return modelAndView;
     }
 }

@@ -12,9 +12,9 @@
     <c:if test="${stylesheet.ssdPrm}">
       <li>
           <%--paramId="stylesheetId" paramName="stylesheetForm" paramProperty="stylesheetId"--%>
-        <html:link page="/conversions/${stylesheetId}/edit" title="edit stylesheet">
+        <a href="/conversions/${stylesheetId}/edit" title="edit stylesheet">
           <spring:message code="label.stylesheet.edit"/>
-        </html:link>
+        </a>
       </li>
       <li>
         <a href="deleteStylesheet?conversionId=${stylesheetForm.stylesheetId}&amp;schema=${stylesheetForm.schema} title="delete stylesheet">

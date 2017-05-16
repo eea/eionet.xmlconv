@@ -1,13 +1,9 @@
 <%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-<%--<html:xhtml/>--%>
 <ed:breadcrumbs-push label="Edit XML File" level="2"/>
 <h1><spring:message code="label.title.uplXmlFile.edit"/></h1>
 
-
-
-
-<form:form action="/editUplXmlFile" method="post" enctype="multipart/form-data">
+<form:form servletRelativeAction="/xmlFiles/edit" method="post" enctype="multipart/form-data" modelAttribute="form">
   <table class="formtable">
     <col class="labelcol"/>
     <col class="entrycol"/>
@@ -18,13 +14,13 @@
         </label>
       </td>
       <td>
-        <a href="${EditUplXmlFileForm.xmlFilePath}${EditUplXmlFileForm.xmlFileName}" title="${EditUplXmlFileForm.xmlFileName}">
-          ${EditUplXmlFileForm.xmlFileName}
+        <a href="${form.xmlFilePath}${form.xmlFileName}" title="${form.xmlFileName}">
+            ${form.xmlFileName}
         </a>&#160;&#160;
         (<spring:message code="label.lastmodified"/>:
         <c:choose>
-          <c:when test="${EditUplXmlFileForm.lastModified}">
-            ${EditUplXmlFileForm.lastModified}
+          <c:when test="${!empty form.lastModified}">
+            ${form.lastModified}
           </c:when>
           <c:otherwise>
             <span style="color:red"><spring:message code="label.fileNotFound"/></span>
@@ -60,9 +56,9 @@
         <button type="submit" name="action" value="ok">
           <spring:message code="label.ok"/>
         </button>
-        <%--<html:cancel styleClass="button">
-          <spring:message code="label.cancel"/>
-        </html:cancel>--%>
+          <%--<html:cancel styleClass="button">
+            <spring:message code="label.cancel"/>
+          </html:cancel>--%>
       </td>
     </tr>
   </table>

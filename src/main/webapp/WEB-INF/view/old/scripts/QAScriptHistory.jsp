@@ -4,17 +4,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--<%@page import="eionet.gdem.Constants" %>--%>
 
-<%--<html:xhtml/>--%>
+
 
 <div style="width:100%;">
   <div id="tabbedmenu">
     <ul>
       <li>
         <%--paramId="scriptId" paramName="script_id"--%>
-        <html:link page="/qaScripts/${scriptId}" titleKey="label.qascript.tab.title"
+        <a href="/qaScripts/${scriptId}" titleKey="label.qascript.tab.title"
                    onclick="return submitTab(this);" style="color: black; text-decoration: none;">
           <spring:message code="label.qascript.tab.title"/>
-        </html:link>
+        </a>
       </li>
       <li id="currenttab"><span style="color: black; text-decoration: none;"
                                 title='<spring:message code="label.qascript.history"/>'><spring:message

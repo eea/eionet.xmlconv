@@ -1,15 +1,12 @@
-<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>--%>
-<%@ include file="/WEB-INF/view/old/taglibs.jsp"%>
-<%--<html:xhtml/>--%>
-
+<%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 <ed:breadcrumbs-push label="Uploaded XML files" level="1"/>
 
 <c:if test="${!empty xmlfiles}">
 
-  <c:if test="${!xmlfiles.ssiPrm}">
+  <c:if test="${xmlfiles.ssiPrm}">
     <div id="operations">
       <ul>
-        <li><a href="addUplXmlFileForm"><spring:message code="label.uplXmlFile.add"/></a></li>
+        <li><a href="/xmlFiles/add"><spring:message code="label.uplXmlFile.add"/></a></li>
       </ul>
     </div>
   </c:if>
@@ -19,12 +16,10 @@
   </h1>
 
 
-
-
   <div class="visualClear">&nbsp;</div>
 
   <c:if test="${!empty xmlfiles.xmlfiles}">
-    <form:form servletRelativeAction="xmlfile/deleteUplXmlFile" method="post">
+    <form:form servletRelativeAction="/xmlFiles/delete" method="post" modelAttribute="form">
       <table class="datatable" width="100%">
         <c:if test="${xmlfiles.ssuPrm}">
           <col style="width:5%"/>
@@ -54,29 +49,28 @@
           <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
             <c:if test="${xmlfiles.ssdPrm}">
               <td align="center">
-                ${xmlfile.id}
-                <input type="radio" name="xmlfileId" value="${fileId}"/>
+                <form:radiobutton path="id" value="${xmlfile.id}"/>
               </td>
             </c:if>
             <c:if test="${xmlfiles.ssuPrm}">
               <td align="center">
-                <a href="xmlfiles/edit/${xmlfile.id}">
-                  <img src="${webRoot}/images/edit.gif" alt="<spring:message code="label.edit" />"
+                <a href="xmlFiles/${xmlfile.id}/edit">
+                  <img src="/images/edit.gif" alt="<spring:message code="label.edit" />"
                        title="edit XML file"/></a>
               </td>
             </c:if>
             <td>
-              <a href='${webRoot}/xmlfile/${xmlfile.fileName}' title="${xmlfile.fileName}">
-                ${xmlfile.fileName}
+              <a href='/xmlfile/${xmlfile.fileName}' title="${xmlfile.fileName}">
+                  ${xmlfile.fileName}
               </a>
             </td>
             <td>
-              <bean:write name="xmlfile" property="title"/>
+              ${xmlfile.title}
             </td>
             <td>
                 <%--<c:if notEqual value="" name="xmlfile" property="lastModified">--%>
               <c:choose>
-                <c:when test="${xmlfile != lastModified}">
+                <c:when test="${!empty xmlfile.lastModified}">
                   ${xmlfile.lastModified}
                 </c:when>
                 <c:otherwise>
@@ -95,7 +89,7 @@
       <div class="boxbottombuttons">
         <c:if test="${xmlfiles.ssdPrm}">
           <button name="action" class="button" value="delete"><spring:message code="label.delete"/></button>
-          <button name="action" class="button" value="rename"><spring:message code="label.rename"/></button>
+          <%--<button name="action" class="button" value="rename"><spring:message code="label.rename"/></button>--%>
         </c:if>
       </div>
     </form:form>

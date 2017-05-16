@@ -25,7 +25,7 @@
       </tr>
       <tr>
         <td>
-            <%--<html:text property="url"  style="width: 40em;" />--%>
+            <%--<form:input property="url"  style="width: 40em;" />--%>
             ${url}
         </td>
       </tr>

@@ -14,8 +14,7 @@
       <c:if test="${conversion.originalSchema}">
         <div class="ok-msg">The file is valid XML
           <p><spring:message code="label.conversion.originalSchema"/>&#160; <a
-                  href="<bean:write name="conversion.originalSchema"/>"><bean:write
-                  name="conversion.originalSchema"/></a></p>
+                  href="${conversion.originalSchema}">${conversion.originalSchema}</a></p>
           <c:if test="${conversion.validatedSchema}">
             <p><spring:message code="label.conversion.validatedSchema"/>&#160;
               <a href="<bean:write name="conversion.validatedSchema"/>"><bean:write

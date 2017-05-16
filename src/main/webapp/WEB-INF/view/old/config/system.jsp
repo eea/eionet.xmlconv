@@ -6,38 +6,38 @@
   <div id="tabbedmenu">
     <ul>
       <li>
-        <html:link page="/do/dbForm" titleKey="label.config.db" onclick="return submitTab(this);"
+        <a href="/do/dbForm" titleKey="label.config.db" onclick="return submitTab(this);"
                    style="color: black; text-decoration: none;">
-          <bean:message key="label.config.db"/>
-        </html:link>
+          <spring:message code="label.config.db"/>
+        </a>
       </li>
       <li id="currenttab"><span style="color: black; text-decoration: none;"
-                                title='<bean:message key="label.config.system"/>'><bean:message
+                                title='<spring:message code="label.config.system"/>'><bean:message
               key="label.config.system"/></span></li>
       <li>
-        <html:link page="/do/purgeForm" titleKey="label.config.purge" onclick="return submitTab(this);"
+        <a href="/do/purgeForm" titleKey="label.config.purge" onclick="return submitTab(this);"
                    style="color: black; text-decoration: none;">
-          <bean:message key="label.config.purge"/>
-        </html:link>
+          <spring:message code="label.config.purge"/>
+        </a>
       </li>
       <li>
-        <html:link page="/do/ldapForm" titleKey="label.config.ldap" onclick="return submitTab(this);"
+        <a href="/do/ldapForm" titleKey="label.config.ldap" onclick="return submitTab(this);"
                    style="color: black; text-decoration: none;">
-          <bean:message key="label.config.ldap"/>
-        </html:link>
+          <spring:message code="label.config.ldap"/>
+        </a>
       </li>
       <li>
-        <html:link page="/do/basexForm" titleKey="label.config.basexserver" onclick="return submitTab(this);"
+        <a href="/do/basexForm" titleKey="label.config.basexserver" onclick="return submitTab(this);"
                    style="color: black; text-decoration: none;">
-          <bean:message key="label.config.basexserver"/>
-        </html:link>
+          <spring:message code="label.config.basexserver"/>
+        </a>
       </li>
     </ul>
   </div>
 
 
   <ed:breadcrumbs-push label="System configuration" level="1"/>
-  <h1><bean:message key="label.config.system.admin"/></h1>
+  <h1><spring:message code="label.config.system.admin"/></h1>
 
 
 
@@ -48,18 +48,18 @@
       <col style="width:75%"/>
       <tr>
         <td>
-          <label for="qaTimeout" class="question"><bean:message key="label.config.system.qa.timeout"/></label>
+          <label for="qaTimeout" class="question"><spring:message code="label.config.system.qa.timeout"/></label>
         </td>
         <td>
-          <html:text property="qaTimeout" maxlength="20" style="width: 30em;" styleId="qaTimeout"/>
+          <form:input property="qaTimeout" maxlength="20" style="width: 30em;" styleId="qaTimeout"/>
         </td>
       </tr>
       <tr>
         <td>
-          <label for="cmdXGawk" class="question"><bean:message key="label.config.system.qa.xgawk"/></label>
+          <label for="cmdXGawk" class="question"><spring:message code="label.config.system.qa.xgawk"/></label>
         </td>
         <td>
-          <html:text property="cmdXGawk" maxlength="255" style="width: 30em;" styleId="cmdXGawk"/>
+          <form:input property="cmdXGawk" maxlength="255" style="width: 30em;" styleId="cmdXGawk"/>
         </td>
       </tr>
       <tr>
@@ -68,7 +68,7 @@
       <tr>
         <td colspan="2" align="center">
           <html:submit styleClass="button">
-            <bean:message key="label.config.system.save"/>
+            <spring:message code="label.config.system.save"/>
           </html:submit>
         </td>
       </tr>

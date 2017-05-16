@@ -4,9 +4,7 @@
 <h1><spring:message code="label.title.uplXmlFile.add"/></h1>
 
 
-
-
-<form:form action="/addUplXmlFile" method="post" enctype="multipart/form-data">
+<form:form action="/xmlFiles/add" method="post" enctype="multipart/form-data" modelAttribute="form">
   <table class="formtable">
     <col class="labelcol"/>
     <col class="entrycol"/>
@@ -17,7 +15,7 @@
         </label>
       </td>
       <td>
-        <input type="file" name="xmlfile" id="fileXml" size="68"/>
+        <input type="file" name="xmlFile.file" id="fileXml" size="68"/>
       </td>
     </tr>
     <tr>
@@ -39,9 +37,9 @@
         <button type="submit" class="button" name="action" value="upload">
           <spring:message code="label.uplXmlFile.upload"/>
         </button>
-        <%--<html:cancel styleClass="button">
-          <spring:message code="label.cancel"/>
-        </html:cancel>--%>
+          <%--<html:cancel styleClass="button">
+            <spring:message code="label.cancel"/>
+          </html:cancel>--%>
       </td>
     </tr>
   </table>

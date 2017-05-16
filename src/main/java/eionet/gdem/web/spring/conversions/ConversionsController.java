@@ -441,12 +441,18 @@ public class ConversionsController {
 
 
     @GetMapping("/add")
-    public String add(Model model, HttpServletRequest httpServletRequest) {
+    public String add(Model model) {
+        StylesheetForm form = new StylesheetForm();
 
+        model.addAttribute("form", form);
+        return "/conversions/add";
+    }
+
+    @PostMapping("/add")
+    public String addSubmit(@ModelAttribute StylesheetForm form, Model model, HttpServletRequest httpServletRequest) {
         SpringMessages success = new SpringMessages();
         SpringMessages errors = new SpringMessages();
 
-        StylesheetForm form = new StylesheetForm();
         Stylesheet stylesheet = ConversionsUtils.convertFormToStylesheetDto(form, httpServletRequest);
 
         FileUploadWrapper xslFile = form.getXslfile();
@@ -467,21 +473,22 @@ public class ConversionsController {
         if (xslFile == null) {
             errors.add(messageService.getMessage("label.stylesheet.validation"));
             model.addAttribute("errors", errors);
-            return "/conversions/list";
+            return "redirect:/conversions/list";
         }
         String description = form.getDescription();
         if (description == null || description.isEmpty()) {
             errors.add(messageService.getMessage("label.stylesheet.error.descriptionMissing"));
             model.addAttribute("errors", errors);
-            return "/conversions/list";
+            return "redirect:/conversions/list";
         }
-        stylesheet.setXslFileName(xslFile.getFile().getName());
+        stylesheet.setXslFileName(xslFile.getFile().getOriginalFilename());
         try {
             // TODO FIX THIS: xslFile.getFileData()
             stylesheet.setXslContent(new String(xslFile.getFile().getBytes(), "UTF-8"));
         } catch (Exception e) {
             LOGGER.error("Error in edit stylesheet action when trying to load XSL file content from FormFile object", e);
             errors.add(messageService.getMessage(BusinessConstants.EXCEPTION_GENERAL));
+            return "redirect:/conversions/list";
         } finally {
             /*xslFile.destroy();*/
         }
@@ -503,9 +510,9 @@ public class ConversionsController {
         model.addAttribute("errors", errors);
         model.addAttribute("success", success);
         if (!StringUtils.isNullOrEmpty(schema)) {
-            return "/conversions/list?schema=" + schema;
+            return "redirect:/conversions/list?schema=" + schema;
         } else {
-            return "/conversions/list";
+            return "redirect:/conversions/list";
         }
     }
 

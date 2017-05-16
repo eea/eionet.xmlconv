@@ -1,18 +1,14 @@
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>--%>
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
-
-<%--<html:xhtml/>--%>
 
 <ed:breadcrumbs-push label="Stylesheets" level="1"/>
 
-
+<c:set var="permissions" scope="page" value="${sessionScope['stylesheet.permissions']}" />
 <c:if test="${!empty conversions}">
 
-  <c:if test="${conversions.ssiPrm}">
+  <c:if test="${permissions.ssiPrm}">
     <div id="operations">
       <ul>
-        <li><a href="addStylesheetForm"><spring:message code="label.stylesheet.add"/></a></li>
+        <li><a href="/conversions/add"><spring:message code="label.stylesheet.add"/></a></li>
       </ul>
     </div>
   </c:if>
@@ -22,16 +18,14 @@
   </h1>
 
 
-
-
   <div class="visualClear">&nbsp;</div>
 
 
   <c:if test="${!empty conversions.stylesheetList}">
-    <form:form  r="/deleteStylesheet" method="post">
+    <form:form r="/deleteStylesheet" method="post">
 
       <table id="tbl_stylesheets" class="display datatable" width="100%">
-        <c:if test="${conversions.ssdPrm}">
+        <c:if test="${permissions.ssdPrm}">
           <col style="width:5%"/>
         </c:if>
         <col/>
@@ -40,7 +34,7 @@
         <col style="width:140px"/>
         <thead>
         <tr>
-          <c:if test="${conversions.ssdPrm}">
+          <c:if test="${permissions.ssdPrm}">
             <th scope="col" class="scope-col"></th>
           </c:if>
           <th scope="col" class="scope-col"><spring:message code="label.table.stylesheet.file"/></th>
@@ -51,36 +45,36 @@
         </tr>
         </thead>
         <tbody>
-      <%--id="stylesheet" name="stylesheet.stylesheetListHolder" property="stylesheetList"      type="Stylesheet">--%>
+          <%--id="stylesheet" name="stylesheet.stylesheetListHolder" property="stylesheetList"      type="Stylesheet">--%>
         <c:forEach varStatus="i" items="${conversions.stylesheetList}" var="conversion">
           <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
-            <c:if test="${conversions.ssdPrm}">
+            <c:if test="${permissions.ssdPrm}">
               <td style="text-align:center">
                 <input type="radio" name="conversionId" value="${conversion.convId}"></input>
               </td>
             </c:if>
             <td>
               <a href="/conversions/${conversion.convId}" title="View stylesheet">
-                ${conversion.xslFileName}
+                  ${conversion.xslFileName}
               </a>&#160;
             </td>
             <td>
-              ${conversion.description}
+                ${conversion.description}
             </td>
             <td>
-              ${conversion.type}
+                ${conversion.type}
             </td>
             <td style="font-size:0.8em;">
-              ${conversion.modified}
+                ${conversion.modified}
             </td>
             <td style="display:none">
-              <fmt:formatDate value="${conversion.lastModifiedTime}" pattern="yyyy-MM-dd HH:mm:ss" />
+              <fmt:formatDate value="${conversion.lastModifiedTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
             </td>
           </tr>
         </c:forEach>
         </tbody>
       </table>
-      <c:if test="${conversion.ssdPrm}">
+      <c:if test="${permissions.ssdPrm}">
         <br/>
         <div class="boxbottombuttons">
           <input type="button" class="button" value="<spring:message code="label.schema.delete"/>"

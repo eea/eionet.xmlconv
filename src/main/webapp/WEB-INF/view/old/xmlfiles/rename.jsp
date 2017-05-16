@@ -17,10 +17,10 @@
         </label>
       </td>
       <td>
-        <html:text property="xmlFilePath" style="width:400px" styleId="txtTitle"/>
-        <html:hidden property="xmlfileId"/>
-        <html:hidden property="title"/>
-        <html:hidden property="xmlFileName"/>
+        <form:input property="xmlFilePath" style="width:400px" styleId="txtTitle"/>
+        <form:hidden path="xmlfileId"/>
+        <form:hidden path="title"/>
+        <form:hidden path="xmlFileName"/>
       </td>
     </tr>
     <tr>

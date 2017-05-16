@@ -1,18 +1,18 @@
 package eionet.gdem.web.spring.xmlfile;
 
+import eionet.gdem.dto.UplXmlFile;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.web.spring.FileUploadWrapper;
 import eionet.gdem.web.spring.SpringMessages;
+import eionet.gdem.web.spring.generic.SingleForm;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
@@ -50,22 +50,23 @@ public class XmlFilesController {
         }
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         model.addAttribute("xmlfiles", holder);
+        model.addAttribute("form", new SingleForm());
         return "/xmlfiles/list";
     }
 
     @GetMapping("/add")
     public String add(Model model) {
-        UplXmlFileForm form = new UplXmlFileForm();
+        XmlFileForm form = new XmlFileForm();
         model.addAttribute("form", form);
         return "/xmlfiles/add";
     }
 
     @PostMapping("/add")
-    public String addSubmit(@ModelAttribute UplXmlFileForm updatedForm, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String addSubmit(@ModelAttribute XmlFileForm updatedForm, HttpSession session, RedirectAttributes redirectAttributes) {
         SpringMessages messages = new SpringMessages();
         SpringMessages errors = new SpringMessages();
 
-        FileUploadWrapper xmlfile = updatedForm.getXmlfile();
+        FileUploadWrapper xmlfile = updatedForm.getXmlFile();
         String title = updatedForm.getTitle();
 
         String user = (String) session.getAttribute("user");
@@ -95,8 +96,55 @@ public class XmlFilesController {
             LOGGER.error("Error adding upload XML file", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
         }
-        redirectAttributes.addFlashAttribute("dcm.errors", errors);
-        redirectAttributes.addFlashAttribute("dcm.messages", messages);
+        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
+
+        return "redirect:/xmlFiles";
+    }
+
+    @GetMapping("/{fileId}/edit")
+    public String edit(@PathVariable String fileId, Model model) {
+        SpringMessages errors = new SpringMessages();
+
+        UplXmlFileManager fm = new UplXmlFileManager();
+        UplXmlFile file = null;
+        try {
+            file = fm.getUplXmlFileById(fileId);
+        } catch (DCMException e) {
+            LOGGER.error("File id not found: ", e);
+            errors.add(messageService.getMessage(e.getErrorCode()));
+            return "redirect:/xmlFiles";
+        }
+        // TODO fix this
+        XmlFileForm form = new XmlFileForm(file.getFileName(), "", file.getId(), file.getTitle(), file.getLastModified(), null);
+        model.addAttribute("form", form);
+        return "/xmlfiles/edit";
+    }
+
+    @PostMapping("/delete")
+    public String deleteSumbit(@ModelAttribute SingleForm singleForm, Model model, HttpSession httpSession, RedirectAttributes redirectAttributes) {
+
+        SpringMessages messages = new SpringMessages();
+        SpringMessages errors = new SpringMessages();
+
+        String xmlfileId = Integer.toString(singleForm.getId());
+        if (StringUtils.isEmpty(xmlfileId)) {
+            errors.add(messageService.getMessage("label.uplXmlFile.error.notSelected"));
+            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+            return "redirect:/xmlFiles";
+        }
+        String user_name = (String) httpSession.getAttribute("user");
+
+        try {
+            UplXmlFileManager fm = new UplXmlFileManager();
+            fm.deleteUplXmlFile(user_name, xmlfileId);
+            messages.add(messageService.getMessage("label.uplXmlFile.deleted"));
+        } catch (DCMException e) {
+            LOGGER.error("Error deleting XML file", e);
+            errors.add(messageService.getMessage(e.getErrorCode()));
+        }
+        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
 
         return "redirect:/xmlFiles";
     }

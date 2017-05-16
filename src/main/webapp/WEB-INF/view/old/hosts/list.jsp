@@ -4,7 +4,7 @@
   <bean:define id="username" name="user" scope="session"/>
 </c:if>--%>
 
-<%--<html:xhtml/>--%>
+
 
 <ed:breadcrumbs-push label="Hosts" level="1"/>
 <ed:hasPermission username="${sessionScope['user']}" acl="host" permission="i">

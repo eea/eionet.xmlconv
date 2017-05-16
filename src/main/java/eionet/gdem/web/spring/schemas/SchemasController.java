@@ -13,6 +13,7 @@ import eionet.gdem.web.spring.SpringMessage;
 import eionet.gdem.web.spring.SpringMessages;
 import eionet.gdem.web.spring.schemas.SchemaElemHolder;
 import eionet.gdem.web.spring.schemas.UplSchemaHolder;
+import eionet.gdem.web.spring.scripts.QAScriptForm;
 import eionet.gdem.web.spring.scripts.QAScriptListHolder;
 import eionet.gdem.web.spring.scripts.QAScriptListLoader;
 import eionet.gdem.web.spring.stylesheet.StylesheetListHolder;
@@ -281,7 +282,7 @@ public class SchemasController {
             String tmpSchemaUrl = "";
             // generate unique file name
             if (schemaFile != null) {
-                fileName = sm.generateUniqueSchemaFilename(user, Utils.extractExtension(schemaFile.getFile().getName(), "xsd"));
+                fileName = sm.generateUniqueSchemaFilename(user, Utils.extractExtension(schemaFile.getFile().getOriginalFilename(), "xsd"));
                 if (Utils.isNullStr(schemaUrl)) {
                     tmpSchemaUrl = Properties.gdemURL + "/schema/" + fileName;
                     schemaUrl = tmpSchemaUrl;
@@ -292,7 +293,7 @@ public class SchemasController {
             if (schemaFile != null && schemaFile.getFile().getSize() > 0) {
                 // Change the filename to schema-UniqueIDxsd
                 fileName =
-                        sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaID, Utils.extractExtension(schemaFile.getFile().getName()));
+                        sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaID, Utils.extractExtension(schemaFile.getFile().getOriginalFilename()));
                 // Add row to T_UPL_SCHEMA table
                 sm.addUplSchema(user, schemaFile, fileName, schemaID);
                 // Update T_SCHEMA table set
@@ -366,7 +367,8 @@ public class SchemasController {
             /*model.addAttribute("scripts", QAScriptListLoader.getList(httpServletRequest));
             httpServletRequest.setAttribute("schema.qascripts", st);*/
             model.addAttribute("scripts", st);
-            model.addAttribute("form", new SingleForm());
+            model.addAttribute("form", new SchemaForm());
+            model.addAttribute("scriptForm", new QAScriptForm());
         } catch (DCMException e) {
             LOGGER.error("Error getting schema QA scripts", e);
             errors.add(messageService.getMessage(e.getErrorCode()));

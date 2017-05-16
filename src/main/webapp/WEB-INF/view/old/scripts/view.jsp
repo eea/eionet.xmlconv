@@ -26,9 +26,9 @@
           <c:if test="${QAScriptForm.scriptType != 'fme'}">
             <%--do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="QAScriptForm"
             paramProperty="scriptId"--%>
-            <html:link page="/qaSandbox/${QAScriptForm.scriptId}" titleKey="label.qasandbox.label.qasandbox.editScript">
+            <a href="/qaSandbox/${QAScriptForm.scriptId}" titleKey="label.qasandbox.label.qasandbox.editScript">
               <spring:message code="label.qascript.run"/>
-            </html:link>
+            </a>
           </c:if>
           <%--  If scriptType is 'FME' --%>
           <c:if test="${QAScriptForm.scriptType == 'fme'}">

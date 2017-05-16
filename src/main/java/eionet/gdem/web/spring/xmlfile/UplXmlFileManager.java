@@ -64,7 +64,7 @@ public class UplXmlFileManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         try {
-            String fileName = xmlfile.getFile().getName();
+            String fileName = xmlfile.getFile().getOriginalFilename();
 
             if (fileExists(fileName)) {
                 throw new DCMException(BusinessConstants.EXCEPTION_XMLFILE_FILE_EXISTS);
@@ -165,7 +165,7 @@ public class UplXmlFileManager {
         }
 
         try {
-            String fileName = file.getFile().getName().trim();
+            String fileName = file.getFile().getOriginalFilename().trim();
             // upload file
             if (!Utils.isNullStr(fileName)) {
                 if (Utils.isNullStr(curFileName)) {

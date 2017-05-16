@@ -1,7 +1,7 @@
 <%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>--%>
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-<%--<html:xhtml/>--%>
+
 
 <ed:breadcrumbs-push label="XML Schema or DTD" level="2"/>
 

@@ -3,9 +3,9 @@
 
 <ed:breadcrumbs-push label="Schema QA scripts" level="2"/>
 
-<c:if test="${!empty scripts}">
+<c:set var="permissions" scope="page" value="${sessionScope['qascript.permissions']}" />
 
-  <c:set var="permissions" scope="page" value="${sessionScope['qascript.permissions']}" />
+<c:if test="${!empty scripts}">
 
   <%--<bean:define id="schemaId" name="schemaId" scope="request" type="String"/>--%>
   <%--id="schema" name="schema.qascripts" property="qascripts" type="Schema">--%>
@@ -64,7 +64,7 @@
           <td style="width:40px">
             <c:choose>
               <c:when test="${permissions.ssiPrm}">
-                <form:checkbox path="schema.doValidation" id="validatefield"/>
+                <form:checkbox path="doValidation" id="validatefield"/>
               </c:when>
               <c:otherwise>
                 ${schema.doValidation}
@@ -91,7 +91,7 @@
           <td>
             <c:choose>
               <c:when test="${scripts.ssiPrm}">
-                <form:checkbox path="schema.blocker" id="blockerValidation"/>
+                <form:checkbox path="blocker" id="blockerValidation"/>
               </c:when>
               <c:otherwise>
                 ${schema.blocker}
@@ -103,7 +103,7 @@
     </form:form>
 
     <c:if test="${!empty scripts.qascripts}">
-      <form:form action="/searchCR" method="post">
+      <form:form action="/searchCR" method="post" modelAttribute="scriptForm">
         <table class="datatable" width="100%">
           <c:if test="${permissions.ssdPrm}">
             <col style="width:10px"/>
@@ -163,7 +163,7 @@
                 </c:choose>
               </td>
               <td>
-                <a href="viewQAScriptForm?scriptId=${script.scriptId}" title="view QAScript properties">
+                <a href="/scripts/${script.scriptId}" title="View QAScript properties">
                   ${script.shortName}
                 </a>
               </td>
@@ -214,7 +214,7 @@
           <c:if test="${permissions.ssdPrm}">
             <%--onclick="return submitAction(2,'deleteQAScript');"/>--%>
             <button type="button" class="button" value="delete">
-              <spring:message code="label.qascript.delete"/>"
+              <spring:message code="label.qascript.delete"/>
             </button>
             <input type="hidden" name="schemaId" value="${schemaId}"/>
           </c:if>
@@ -236,7 +236,7 @@
       </form:form>
 
     </c:if>
-    <c:if test="${empty permissions.qascripts}">
+    <c:if test="${empty scripts.qascripts}">
       <div class="advice-msg">
         <spring:message code="label.schema.noQAScripts"/>
       </div>
