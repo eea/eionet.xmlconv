@@ -6,19 +6,19 @@
   <div id="tabbedmenu">
     <ul>
       <li>
-        <a href="/do/dbForm" titleKey="label.config.db" onclick="return submitTab(this);"
+        <a href="/config/database" titleKey="label.config.db" onclick="return submitTab(this);"
                    style="color: black; text-decoration: none;">
           <spring:message code="label.config.db"/>
         </a>
       </li>
       <li>
-        <a href="/do/systemForm" titleKey="label.config.system" onclick="return submitTab(this);"
+        <a href="/config/system" titleKey="label.config.system" onclick="return submitTab(this);"
                    style="color: black; text-decoration: none;">
           <spring:message code="label.config.system"/>
         </a>
       </li>
       <li>
-        <a href="/do/purgeForm" titleKey="label.config.purge" onclick="return submitTab(this);"
+        <a href="/config/purge" titleKey="label.config.purge" onclick="return submitTab(this);"
                    style="color: black; text-decoration: none;">
           <spring:message code="label.config.purge"/>
         </a>
@@ -27,7 +27,7 @@
                                 title="<spring:message code="label.config.ldap"/>"><bean:message
               key="label.config.ldap"/></span></li>
       <li>
-        <a href="/do/basexForm" titleKey="label.config.basexserver" onclick="return submitTab(this);"
+        <a href="/config/basex" titleKey="label.config.basexserver" onclick="return submitTab(this);"
                    style="color: black; text-decoration: none;">
           <spring:message code="label.config.basexserver"/>
         </a>
@@ -35,14 +35,10 @@
     </ul>
   </div>
 
-
   <ed:breadcrumbs-push label="LDAP configuration" level="1"/>
   <h1><spring:message code="label.config.ldap.admin"/></h1>
 
-
-
-
-  <html:form action="/ldap" method="post">
+  <form:form action="/ldap" method="post">
     <table class="formtable">
       <col style="width:26%"/>
       <col style="width:74%"/>
@@ -51,7 +47,7 @@
           <label class="question" for="url"><spring:message code="label.config.ldap.url"/></label>
         </td>
         <td>
-          <form:input property="url" maxlength="255" style="width: 30em;" styleId="url"/>
+          <form:input path="url" maxlength="255" style="width: 30em;" styleId="url"/>
         </td>
       </tr>
       <tr>
@@ -59,7 +55,7 @@
           <label class="question" for="context"><spring:message code="label.config.ldap.context"/></label>
         </td>
         <td>
-          <form:input property="context" maxlength="255" style="width: 30em;" styleId="context"/>
+          <form:input path="context" maxlength="255" style="width: 30em;" styleId="context"/>
         </td>
       </tr>
       <tr>
@@ -67,7 +63,7 @@
           <label class="question" for="userDir"><spring:message code="label.config.ldap.userDir"/></label>
         </td>
         <td>
-          <form:input property="userDir" maxlength="255" style="width: 30em;" styleId="userDir"/>
+          <form:input path="userDir" maxlength="255" style="width: 30em;" styleId="userDir"/>
         </td>
       </tr>
       <tr>
@@ -75,7 +71,7 @@
           <label class="question" for="attrUid"><spring:message code="label.config.ldap.attrUid"/></label>
         </td>
         <td>
-          <form:input property="attrUid" maxlength="255" style="width: 30em;" styleId="attrUid"/>
+          <form:input path="attrUid" maxlength="255" style="width: 30em;" styleId="attrUid"/>
         </td>
       </tr>
       <tr>
@@ -83,11 +79,11 @@
       </tr>
       <tr>
         <td colspan="2" align="center">
-          <html:submit styleClass="button">
+          <button type="submit" styleClass="button">
             <spring:message code="label.config.ldap.save"/>
-          </html:submit>
+          </button>
         </td>
       </tr>
     </table>
-  </html:form>
+  </form:form>
 </div>

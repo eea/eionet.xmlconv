@@ -18,7 +18,7 @@
         </label>
       </td>
       <td>
-        <form:input styleId="txtSchemaUrl" size="64" property="schema"/>
+        <form:input styleId="txtSchemaUrl" size="64" path="schema"/>
       </td>
     </tr>
     <tr>
@@ -28,7 +28,7 @@
         </label>
       </td>
       <td>
-        <form:input styleId="txtShortName" size="64" property="shortName"/>
+        <form:input styleId="txtShortName" size="64" path="shortName"/>
       </td>
     </tr>
     <tr class="zebraeven">
@@ -38,7 +38,7 @@
         </label>
       </td>
       <td>
-        <form:textarea rows="2" cols="30" styleId="txtDescription" property="description" style="width:400px"/>
+        <form:textarea rows="2" cols="30" styleId="txtDescription" path="description" style="width:400px"/>
       </td>
     </tr>
     <tr>
@@ -72,7 +72,7 @@
         </label>
       </td>
       <td>
-        <form:input styleId="txtUpperLimit" size="3" property="upperLimit"/>
+        <form:input styleId="txtUpperLimit" size="3" path="upperLimit"/>
       </td>
     </tr>
 
@@ -111,7 +111,7 @@
               </label>
             </td>
             <td>
-              <form:input styleId="txtUrl" property="url" style="width:680px"/>
+              <form:input styleId="txtUrl" path="url" style="width:680px"/>
             </td>
           </tr>
         </table>
@@ -121,9 +121,9 @@
     <tr>
       <td>&#160;</td>
       <td>
-        <html:submit styleClass="button" property="action">
+        <button type="submit" styleClass="button" property="action">
           <spring:message code="label.save"/>
-        </html:submit>
+        </button>
       </td>
     </tr>
   </table>

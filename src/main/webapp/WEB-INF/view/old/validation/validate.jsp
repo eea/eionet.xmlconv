@@ -17,8 +17,7 @@
                   href="${conversion.originalSchema}">${conversion.originalSchema}</a></p>
           <c:if test="${conversion.validatedSchema}">
             <p><spring:message code="label.conversion.validatedSchema"/>&#160;
-              <a href="<bean:write name="conversion.validatedSchema"/>"><bean:write
-                      name="conversion.validatedSchema"/></a></p>
+              <a href="${conversion.validatedSchema}">${conversion.validatedSchema}</a></p>
           </c:if></div>
       </c:if>
       <c:if test="${conversion.originalSchema}">

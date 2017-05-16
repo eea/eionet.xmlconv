@@ -47,7 +47,7 @@
         <td align="left">
           <c:choose>
             <c:when test="${user}">
-              <form:input property="schema" maxlength="255" style="width:500px" styleId="txtSchemaUrl"/>
+              <form:input path="schema" maxlength="255" style="width:500px" styleId="txtSchemaUrl"/>
             </c:when>
             <c:otherwise>
               <a href="${schemaForm.schema} title="${schemaForm.schema}">${schemaForm.schema}</a>&#160;

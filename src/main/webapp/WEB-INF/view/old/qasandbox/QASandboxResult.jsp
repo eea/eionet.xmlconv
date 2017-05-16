@@ -9,14 +9,15 @@
 
 
   <div id="sanbox_result">
-    <bean:write name="QASandboxForm" property="result" filter="false"/>
+    <%--filter="false"--%>
+    ${QASandboxForm.result}
   </div>
   <br/>
   <br/>
   <form:form action="/qaSandboxForm?reset=false" method="post">
-    <html:submit styleClass="button" property="action">
+    <button type="submit" styleClass="button" property="action">
       <spring:message code="label.qasandboxresult.back"/>
-    </html:submit>
+    </button>
   </form:form>
 
 </div>

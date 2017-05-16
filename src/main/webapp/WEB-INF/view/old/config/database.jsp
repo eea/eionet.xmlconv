@@ -1,6 +1,4 @@
-<%--<%@ page contentType="text/html; charset=UTF-8"%>--%>
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
-
 
 <div style="width:100%;">
   <div id="tabbedmenu">
@@ -9,40 +7,32 @@
                                 title='<spring:message code="label.config.db"/>'><bean:message
               key="label.config.db"/></span></li>
       <li>
-        <a href="/do/systemForm" titleKey="label.config.system" onclick="return submitTab(this);"
-                   style="color: black; text-decoration: none;">
+        <a href="/config/system" titleKey="label.config.system" style="color: black; text-decoration: none;">
           <spring:message code="label.config.system"/>
         </a>
       </li>
       <li>
-        <a href="/do/purgeForm" titleKey="label.config.purge" onclick="return submitTab(this);"
-                   style="color: black; text-decoration: none;">
+        <a href="/config/purge" titleKey="label.config.purge" style="color: black; text-decoration: none;">
           <spring:message code="label.config.purge"/>
         </a>
       </li>
       <li>
-        <a href="/do/ldapForm" titleKey="label.config.ldap" onclick="return submitTab(this);"
-                   style="color: black; text-decoration: none;">
+        <a href="/config/ldap" titleKey="label.config.ldap" style="color: black; text-decoration: none;">
           <spring:message code="label.config.ldap"/>
         </a>
       </li>
       <li>
-        <a href="/do/basexForm" titleKey="label.config.basexserver" onclick="return submitTab(this);"
-                   style="color: black; text-decoration: none;">
+        <a href="/config/basex" titleKey="label.config.basexserver" style="color: black; text-decoration: none;">
           <spring:message code="label.config.basexserver"/>
         </a>
       </li>
     </ul>
   </div>
 
-
   <ed:breadcrumbs-push label="DB configuration" level="1"/>
   <h1><spring:message code="label.config.db.admin"/></h1>
 
-
-
-
-  <html:form action="/db" method="post">
+  <form:form action="/db" method="post">
     <table class="formtable">
       <col style="width:25%"/>
       <col style="width:75%"/>
@@ -51,7 +41,7 @@
           <label class="question" for="dbUrl"><spring:message code="label.config.db.url"/></label>
         </td>
         <td>
-          <form:input property="dbUrl" maxlength="255" style="width: 30em;" styleId="dbUrl"/>
+          <form:input path="dbUrl" maxlength="255" style="width: 30em;" styleId="dbUrl"/>
         </td>
       </tr>
       <tr>
@@ -59,7 +49,7 @@
           <label class="question" for="user"><spring:message code="label.config.db.user"/></label>
         </td>
         <td>
-          <form:input property="user" maxlength="255" style="width: 30em;" styleId="user"/>
+          <form:input path="user" maxlength="255" style="width: 30em;" styleId="user"/>
         </td>
       </tr>
       <tr>
@@ -67,7 +57,7 @@
           <label class="question" for="password"><spring:message code="label.config.db.password"/></label>
         </td>
         <td>
-          <html:password property="password" maxlength="255" style="width: 30em;" styleId="password"/>
+          <form:password path="password" maxlength="255" style="width: 30em;" styleId="password"/>
         </td>
       </tr>
       <tr>
@@ -75,10 +65,12 @@
       </tr>
       <tr>
         <td colspan="2" align="center">
-          <html:submit styleClass="button"><spring:message code="label.config.db.update"/></html:submit>
+          <button type="submit" class="button">
+              <spring:message code="label.config.db.update"/>
+          </button>
         </td>
       </tr>
     </table>
-  </html:form>
+  </form:form>
 
 </div>

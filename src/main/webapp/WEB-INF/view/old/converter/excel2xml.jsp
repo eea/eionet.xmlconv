@@ -73,7 +73,8 @@
       <c:choose>
         <c:when test="${ExcelConversionForm.conversionLog}">
           <tr>
-            <td><bean:write name="ExcelConversionForm" property="conversionLog" filter="false"/></td>
+          <%--" filter="false"/>--%>
+            <td>${ExcelConversionForm.conversionLog}</td>
           </tr>
         </c:when>
         <c:otherwise>

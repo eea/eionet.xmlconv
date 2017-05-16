@@ -105,17 +105,15 @@
               <c:choose>
                 <c:when test="${stylesheet == convId}">
                   <input type="radio" checked="checked" name="conversionId"
-                         id="r_<bean:write name="stylesheet" property="convId" />"
-                         value="<bean:write name="stylesheet" property="convId" />"/>
+                         id="r_${stylesheet.convId}" value="${stylesheet.convId}"/>
                 </c:when>
                 <c:otherwise>
-                  <input type="radio" name="conversionId" id="r_<bean:write name="stylesheet" property="convId" />"
-                         value="<bean:write name="stylesheet" property="convId" />"/>
+                  <input type="radio" name="conversionId" id="r_${stylesheet.convId}"
+                         value="${stylesheet.convId}"/>
                 </c:otherwise>
               </c:choose>
-              <label for="r_<bean:write name="stylesheet" property="convId" />"><bean:write name="stylesheet"
-                                                                                            property="type"/>
-                &nbsp;-&nbsp;<bean:write name="stylesheet" property="description"/></label><br/>
+              <label for="r_${stylesheet.convId}">${stylesheet.type}
+                &nbsp;-&nbsp;${stylesheet.description}</label><br/>
             </c:forEach>
           </td>
         </tr>

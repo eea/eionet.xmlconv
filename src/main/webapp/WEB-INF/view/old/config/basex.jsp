@@ -6,26 +6,22 @@
   <div id="tabbedmenu">
     <ul>
       <li>
-        <a href="/do/dbForm" titleKey="label.config.db" onclick="return submitTab(this);"
-                   style="color: black; text-decoration: none;">
+        <a href="/config/database" titleKey="label.config.db" style="color: black; text-decoration: none;">
           <spring:message code="label.config.db"/>
         </a>
       </li>
       <li>
-        <a href="/do/systemForm" titleKey="label.config.system" onclick="return submitTab(this);"
-                   style="color: black; text-decoration: none;">
+        <a href="/config/system" titleKey="label.config.system" style="color: black; text-decoration: none;">
           <spring:message code="label.config.system"/>
         </a>
       </li>
       <li>
-        <a href="/do/purgeForm" titleKey="label.config.purge" onclick="return submitTab(this);"
-                   style="color: black; text-decoration: none;">
+        <a href="/config/purge" titleKey="label.config.purge" style="color: black; text-decoration: none;">
           <spring:message code="label.config.purge"/>
         </a>
       </li>
       <li>
-        <a href="/do/ldapForm" titleKey="label.config.ldap" onclick="return submitTab(this);"
-                   style="color: black; text-decoration: none;">
+        <a href="/config/ldap" titleKey="label.config.ldap" style="color: black; text-decoration: none;">
           <spring:message code="label.config.ldap"/>
         </a>
       </li>
@@ -38,8 +34,6 @@
   <ed:breadcrumbs-push label="BaseX Server configuration" level="1"/>
   <h1><spring:message code="label.config.basexserver.title"/></h1>
 
-
-
   <form:form servletRelativeAction="basex" method="post">
     <table class="formtable">
       <col style="width:25%"/>
@@ -49,7 +43,7 @@
           <label class="question" for="host"><spring:message code="label.config.basexserver.host"/></label>
         </td>
         <td>
-          <form:input property="host" maxlength="255" style="width: 30em;" styleId="host"/>
+          <form:input path="host" maxlength="255" style="width: 30em;" styleId="host"/>
         </td>
       </tr>
       <tr>
@@ -57,7 +51,7 @@
           <label class="question" for="port"><spring:message code="label.config.basexserver.port"/></label>
         </td>
         <td>
-          <form:input property="port" maxlength="255" style="width: 30em;" styleId="port"/>
+          <form:input path="port" maxlength="255" style="width: 30em;" styleId="port"/>
         </td>
       </tr>
       <tr>
@@ -65,7 +59,7 @@
           <label class="question" for="user"><spring:message code="label.config.basexserver.user"/></label>
         </td>
         <td>
-          <form:input property="user" maxlength="255" style="width: 30em;" styleId="user"/>
+          <form:input path="user" maxlength="255" style="width: 30em;" styleId="user"/>
         </td>
       </tr>
       <tr>
@@ -73,7 +67,7 @@
           <label class="question" for="password"><spring:message code="label.config.basexserver.password"/></label>
         </td>
         <td>
-          <html:password property="password" maxlength="255" style="width: 30em;" styleId="password"/>
+          <form:password path="password" maxlength="255" style="width: 30em;" styleId="password"/>
         </td>
       </tr>
       <tr>

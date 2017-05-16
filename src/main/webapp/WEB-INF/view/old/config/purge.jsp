@@ -42,7 +42,7 @@
 
 
 
-  <html:form action="/purge" method="post">
+  <form:form action="/purge" method="post">
     <table class="formtable">
       <col style="width:25%"/>
       <col style="width:75%"/>
@@ -51,7 +51,7 @@
           <label for="nofDays" class="question"><spring:message code="label.config.purge.nofdays"/></label>
         </td>
         <td>
-          <form:input property="nofDays" maxlength="10" style="width: 10em;" styleId="nofDays"/>
+          <form:input path="nofDays" maxlength="10" style="width: 10em;" styleId="nofDays"/>
         </td>
       </tr>
       <tr>
@@ -59,13 +59,13 @@
       </tr>
       <tr>
         <td colspan="2" align="center">
-          <html:submit styleClass="button">
+          <button type="submit" class="button">
             <spring:message code="label.config.purge.submit"/>
-          </html:submit>
+          </button>
         </td>
       </tr>
 
     </table>
-  </html:form>
+  </form:form>
 
 </div>

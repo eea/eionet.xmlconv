@@ -17,7 +17,7 @@
         </label>
       </td>
       <td>
-        <form:input property="xmlFilePath" style="width:400px" styleId="txtTitle"/>
+        <form:input path="xmlFilePath" style="width:400px" styleId="txtTitle"/>
         <form:hidden path="xmlfileId"/>
         <form:hidden path="title"/>
         <form:hidden path="xmlFileName"/>
@@ -29,12 +29,12 @@
     <tr>
       <td>&nbsp;</td>
       <td>
-        <html:submit styleClass="button">
+        <button type="submit" class="button">
           <spring:message code="label.ok"/>
-        </html:submit>
-        <html:cancel styleClass="button">
+        </button>
+        <%--<html:cancel styleClass="button">
           <spring:message code="label.cancel"/>
-        </html:cancel>
+        </html:cancel>--%>
       </td>
     </tr>
   </table>

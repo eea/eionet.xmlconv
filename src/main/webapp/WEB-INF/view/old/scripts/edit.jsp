@@ -53,7 +53,7 @@
           </label>
         </td>
         <td>
-          <form:textarea property="description" rows="2" cols="30" style="width:400px" styleId="txtDescription"/>
+          <form:textarea path="description" rows="2" cols="30" style="width:400px" styleId="txtDescription"/>
         </td>
       </tr>
       <tr>
