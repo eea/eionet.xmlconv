@@ -13,7 +13,9 @@ import eionet.gdem.web.spring.SpringMessage;
 import eionet.gdem.web.spring.SpringMessages;
 import eionet.gdem.web.spring.schemas.SchemaElemHolder;
 import eionet.gdem.web.spring.schemas.UplSchemaHolder;
+import eionet.gdem.web.spring.scripts.QAScriptListHolder;
 import eionet.gdem.web.spring.scripts.QAScriptListLoader;
+import eionet.gdem.web.spring.stylesheet.StylesheetListHolder;
 import eionet.gdem.web.spring.stylesheet.StylesheetListLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -330,5 +332,47 @@ public class SchemasController {
         return "redirect:/schemas";
     }
 
+    @GetMapping("/{schemaId}/conversions")
+    public String conversions(@PathVariable String schemaId, Model model) {
+        StylesheetListHolder st = null;
+        SpringMessages success = new SpringMessages();
+        SpringMessages errors = new SpringMessages();
+
+        try {
+            SchemaManager sm = new SchemaManager();
+            st = sm.getSchemaStylesheetsList(schemaId);
+            model.addAttribute("conversions", st);
+
+        } catch (DCMException e) {
+            LOGGER.error("Error getting stylesheet", e);
+            errors.add(messageService.getMessage(e.getErrorCode()));
+        }
+        model.addAttribute("schemaId", schemaId);
+        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        model.addAttribute(SpringMessages.SUCCESS_MESSAGES, success);
+        return "/schemas/conversions";
+    }
+
+    @GetMapping("/{schemaId}/scripts")
+    public String scripts(@PathVariable String schemaId, Model model, HttpServletRequest httpServletRequest) {
+        QAScriptListHolder st = null;
+
+        SpringMessages success = new SpringMessages();
+        SpringMessages errors = new SpringMessages();
+
+        try {
+            SchemaManager sm = new SchemaManager();
+            st = sm.getSchemasWithQAScripts(schemaId);
+            /*model.addAttribute("scripts", QAScriptListLoader.getList(httpServletRequest));
+            httpServletRequest.setAttribute("schema.qascripts", st);*/
+            model.addAttribute("scripts", st);
+            model.addAttribute("form", new SingleForm());
+        } catch (DCMException e) {
+            LOGGER.error("Error getting schema QA scripts", e);
+            errors.add(messageService.getMessage(e.getErrorCode()));
+        }
+        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        return "/schemas/scripts";
+    }
 
 }

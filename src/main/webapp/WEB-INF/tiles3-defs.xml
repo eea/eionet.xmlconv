@@ -68,6 +68,10 @@
         <put-attribute name="title" value="label.title.uplSchema.add" />
         <put-attribute name="body" value="/WEB-INF/view/old/schemas/edit.jsp" />
     </definition>
+    <definition name="/schemas/conversions" extends="base">
+        <put-attribute name="title" value="label.title.uplSchema.add" />
+        <put-attribute name="body" value="/WEB-INF/view/old/schemas/conversions.jsp" />
+    </definition>
     <definition name="/converter/list" extends="base">
         <put-attribute name="title" value="label.conversion.title" />
         <put-attribute name="body" value="/WEB-INF/view/old/converter/list.jsp" />
@@ -161,7 +165,7 @@
 
     <definition name="/schemas/scripts" extends="base">
         <put-attribute name="title" value="label.schemaQascripts.title" />
-        <put-attribute name="body" value="/WEB-INF/view/old/scripts/SchemaQAScripts.jsp" />
+        <put-attribute name="body" value="/WEB-INF/view/old/schemas/scripts.jsp" />
     </definition>
 
     <definition name="/schemas/sync" extends="base">

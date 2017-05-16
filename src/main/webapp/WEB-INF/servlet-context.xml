@@ -33,6 +33,13 @@
         <property name="preparerFactoryClass" value="org.springframework.web.servlet.view.tiles3.SpringBeanPreparerFactory"/>
     </bean>
 
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="eionet.gdem.web.spring.LoginInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
     <!-- TODO: remove this context or add a conversion service to this context -->
 
     <!--<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
@@ -47,5 +54,9 @@
             </list>
         </property>
     </bean>
+
+    <mvc:resources mapping="/css/**" location="resources/css/" />
+    <mvc:resources mapping="/js/**" location="resources/js/" />
+    <mvc:resources mapping="/images/**" location="resources/images/" />
 
 </beans>

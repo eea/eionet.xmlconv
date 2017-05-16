@@ -1,4 +1,4 @@
-<%@ page buffer="100kb" pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java" %>
+<%--<%@ page buffer="100kb" pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java" %>--%>
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <ed:breadcrumbs-push label="XML Services" url="/index.jsp" level="0"/>
@@ -32,13 +32,14 @@
   <link rel="shortcut icon" href="<c:url value="/images/favicon.ico"/>" type="image/x-icon"/>
   <!-- jQuery javascripts and css-->
   <link href="<c:url value="/css/smoothness/jquery-ui-1.10.3.min.css" />" rel="stylesheet" type="text/css"/>
-  <script type="text/javascript" src="<c:url value="/scripts/jquery-1.9.1.min.js" />"></script>
-  <script type="text/javascript" src="<c:url value="/scripts/jquery-ui-1.10.3.min.js" />"></script>
-  <script type="text/javascript" src="<c:url value="/scripts/jquery-validate-1.11.1.min.js" />"></script>
+  <%--<script type="text/javascript" src="<c:url value="/js/jquery-1.9.1.min.js" />"></script>--%>
+  <script type="text/javascript" src="<c:url value="/js/jquery.min.js" />"></script>
+  <script type="text/javascript" src="<c:url value="/js/jquery-ui-1.10.3.min.js" />"></script>
+  <script type="text/javascript" src="<c:url value="/js/jquery-validate-1.11.1.min.js" />"></script>
   <!-- local javascripts -->
-  <script type="text/javascript" src="<c:url value="/scripts/admin.js"/>"></script>
-  <script type="text/javascript" src="<c:url value="/scripts/pageops.js"/>"></script>
-  <script type="text/javascript" src="<c:url value="/scripts/foundation.js"/>"></script>
+  <script type="text/javascript" src="<c:url value="/js/admin.js"/>"></script>
+  <script type="text/javascript" src="<c:url value="/js/pageops.js"/>"></script>
+  <script type="text/javascript" src="<c:url value="/js/foundation.js"/>"></script>
   <tiles:insertAttribute name="specific_header" ignore="true"/>
 </head>
 

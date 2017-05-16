@@ -210,7 +210,7 @@
         <form action="/qasandbox/upload" id="my-dropzone" class="dropzone">
           <ul id="dropzone-previews" class="dropzone-previews"></ul>
         </form>
-        <script type="text/javascript" src="<c:url value="/scripts/dropzone.min.js"/>"></script>
+        <script type="text/javascript" src="<c:url value="/js/dropzone.min.js"/>"></script>
 
         <script id="mypreview" type="text/template">
           <li class="dz-preview dz-file-preview">

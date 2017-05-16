@@ -233,7 +233,7 @@ public class SchemaManager {
      * @return StylesheetListHolder object holding schema stylesheet and user permission information
      * @throws DCMException in case of database error occurs.
      */
-    public StylesheetListHolder getSchemaStylesheetsList(String schema) throws DCMException {
+    public StylesheetListHolder getSchemaStylesheetsList(String schemaId) throws DCMException {
         StylesheetListHolder st = new StylesheetListHolder();
 
         ArrayList<Schema> schemas;
@@ -242,7 +242,10 @@ public class SchemaManager {
 
             schemas = new ArrayList<Schema>();
 
-            String schemaId = schemaDao.getSchemaID(schema);
+            /*String schemaId = schemaDao.getSchemaID(schema);*/
+            HashMap<String, String> schemaMap = schemaDao.getSchema(schemaId);
+            String schema = schemaMap.get("xml_schema");
+
 
             if (schemaId == null) {
                 st.setHandcoded(false);

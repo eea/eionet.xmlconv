@@ -2,6 +2,7 @@ package eionet.gdem.web.spring.login;
 
 import eionet.acl.AppUser;
 import eionet.gdem.Constants;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.web.spring.scripts.QAScriptListLoader;
@@ -54,6 +55,20 @@ public class LoginController {
         }
 
         return "redirect:" + afterLogin;
+    }
+
+    @GetMapping("/logout")
+    public String logout(Model model, HttpServletRequest httpServletRequest) throws XMLConvException {
+        /*httpServletRequest.setCharacterEncoding("UTF-8");*/
+        AppUser user = SecurityUtil.getUser(httpServletRequest, Constants.USER_ATT);
+        QAScriptListLoader.clearPermissions(httpServletRequest);
+        httpServletRequest.getSession().invalidate();
+
+        String logoutURL = SecurityUtil.getLogoutURL(httpServletRequest);
+        if (logoutURL != null) {
+            return "redirect:" + logoutURL;
+        }
+        return "redirect:/";
     }
 
     @GetMapping("/local")

@@ -1,11 +1,4 @@
-<%--<%@ page pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java" %>--%>
-<%--<%@ page import="eionet.gdem.Properties" %>
-<%@ page import="eionet.gdem.utils.SecurityUtil" %>--%>
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
-
-<c:if test="${name == 'user'}">
-  <%--<bean:define id="username" name="user" scope="session"/>--%>
-</c:if>
 
 <div id="container">
 
@@ -15,13 +8,15 @@
       <a id="ewlink" href="http://ew.eea.europa.eu/">EnviroWindows</a>
     </div>
     <div id="righttools">
-      <c:if test="${name == 'user'}">
-        <a id="loginlink" href="<c:url value="${loginUrl}"/>" title="Login">Login</a>
-      </c:if>
-      <c:if test="${name == 'user'}">
-        <a id="logoutlink" href="<c:url value="/logout"/>" title="Logout">Logout
-          <span>(${sessionScope['user']})</span></a>
-      </c:if>
+      <c:choose>
+        <c:when test="${empty sessionScope['user']}">
+          <a id="loginlink" href="<c:url value="${loginUrl}"/>" title="Login">Login</a>
+        </c:when>
+        <c:otherwise>
+          <a id="logoutlink" href="<c:url value="/login/logout"/>" title="Logout">Logout
+            <span>(${sessionScope['user']})</span></a>
+        </c:otherwise>
+      </c:choose>
       <a href="javascript:openWindow(applicationRoot+'/help/index.jsp','olinehelp');" title="Help">Online Help</a>
       <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
       <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode"><span>Switch to/from full screen mode</span></a>

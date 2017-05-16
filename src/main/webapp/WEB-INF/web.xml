@@ -89,7 +89,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>thymeleafDispatcher</servlet-name>
-        <url-pattern>/projects/*</url-pattern>
+        <url-pattern>/new/*</url-pattern>
     </servlet-mapping>
 <!--    <servlet-mapping>
         <servlet-name>default</servlet-name>

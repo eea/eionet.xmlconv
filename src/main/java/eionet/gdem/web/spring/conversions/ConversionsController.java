@@ -85,41 +85,6 @@ public class ConversionsController {
         return "/conversions/list";
     }
 
-    @GetMapping("/unknown/{id}")
-    public String show(Model model, HttpServletRequest httpServletRequest) {
-        StylesheetListHolder st = new StylesheetListHolder();
-        SpringMessages success = new SpringMessages();
-        SpringMessages errors = new SpringMessages();
-
-        // TODO FIX THIS
-        String schema = null;
-        /*String schema = (String) df.get("schema");*/
-
-        if (schema == null || schema.equals("")) {
-            schema = (String) httpServletRequest.getAttribute("schema");
-        }
-
-        if (schema == null || schema.equals("")) {
-            return "/conversions/list";
-        }
-        httpServletRequest.setAttribute("schema", schema);
-
-        try {
-            SchemaManager sm = new SchemaManager();
-            st = sm.getSchemaStylesheetsList(schema);
-            httpServletRequest.setAttribute("schema.stylesheets", st);
-
-        } catch (DCMException e) {
-            LOGGER.error("Error getting stylesheet", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
-        }
-        model.addAttribute("errors", errors);
-        model.addAttribute("success", success);
-        // TODO FIX URL
-        return "/conversions/view";
-    }
-
-
     @GetMapping(value = "/conversions/{id}", produces = "text/xml")
     public String getConversion(Model model, HttpServletResponse httpServletResponse) {
 

@@ -40,7 +40,7 @@ public class Schema implements Serializable {
     /** XML Schema textual description. */
     private String description;
     /** List of related XSL stylesheets. */
-    private List stylesheets;
+    private List<Stylesheet> stylesheets;
     /** Is it XML Schema or DTD. */
     boolean isDTD = false;
     /** DTD public id. */
@@ -134,11 +134,11 @@ public class Schema implements Serializable {
         this.schema = schema;
     }
 
-    public List getStylesheets() {
+    public List<Stylesheet> getStylesheets() {
         return stylesheets;
     }
 
-    public void setStylesheets(List stylesheets) {
+    public void setStylesheets(List<Stylesheet> stylesheets) {
         this.stylesheets = stylesheets;
     }
 

@@ -1,7 +1,9 @@
 package eionet.gdem.web.spring;
 
+import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.utils.SecurityUtil;
+import org.springframework.security.web.util.UrlUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 

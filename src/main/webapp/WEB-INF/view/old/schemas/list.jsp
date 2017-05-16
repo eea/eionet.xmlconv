@@ -20,9 +20,6 @@
   </h1>
 
 
-
-
-
   <c:if test="${!empty schemas.schemas}">
     <form:form servletRelativeAction="/schemas/delete" method="post" modelAttribute="form">
       <table class="datatable" width="100%">
@@ -59,15 +56,16 @@
             </c:if>
             <td>
               <a href="/schemas/${schema.id}" title="view XML Schema properties">
-                ${schema.schema}
+                  ${schema.schema}
               </a>
             </td>
             <td>
-              ${schema.description}
+                ${schema.description}
             </td>
             <td align="center">
               <c:if test="${!empty schema.uplSchemaFileName}">
-                <a href="${webRoot}/${Constants.SCHEMA_FOLDER}${schema.uplSchemaFileName}" class="link-xsd" title="Open uploaded schema file"></a>
+                <a href="${webRoot}/${Constants.SCHEMA_FOLDER}${schema.uplSchemaFileName}" class="link-xsd"
+                   title="Open uploaded schema file"></a>
               </c:if>
             </td>
             <td>
@@ -81,7 +79,7 @@
               </c:if>
             </td>
             <td>
-              <%--<bean:write name="schema" property="id" />" title="View schema QA scripts (<bean:write name="schema" property="countQaScripts" />)"--%>
+                <%--<bean:write name="schema" property="id" />" title="View schema QA scripts (<bean:write name="schema" property="countQaScripts" />)"--%>
               <c:if test="${schema.countQaScripts > 0}">
                 <a href="/schemas/qaScripts?schemaId=${schema.id}" class="link-xquery"></a>
               </c:if>
