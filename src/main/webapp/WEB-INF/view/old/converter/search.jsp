@@ -8,10 +8,7 @@
   <ed:breadcrumbs-push label="Search CR for XML files" level="1"/>
   <h1><spring:message code="label.conversion.crconversion.title"/></h1>
 
-
-
-
-  <form:form action="/searchCR" method="get">
+  <form:form action="/searchCR" method="post" modelAttribute="conversionForm">
     <table class="formtable">
       <tr>
         <th class="scope-col">
@@ -20,7 +17,7 @@
       </tr>
       <tr>
         <td>
-            <%--name="ConversionForm" property="schemaUrl"  size="10">--%>
+            <%--name="conversionForm" property="schemaUrl"  size="10">--%>
           <form:select path="schemaUrl">
             <form:option value="">--</form:option>
             <form:options collection="conversion.schemas" property="schema" labelProperty="label"/>
@@ -30,18 +27,18 @@
       <tr>
         <td align="center">
           <spring:message code="label.conversion.searchXML" var="searchXMLLabel"/>
-          <input type="submit" styleClass="button" title="${searchXMLLabel}"/>
+          <button type="submit" styleClass="button" title="${searchXMLLabel}"/>
         </td>
       </tr>
     </table>
   </form:form>
   <!--  Show XML files -->
-  <c:if test="${ConversionForm.schema}">
-    <bean:define id="schema" name="ConversionForm" property="schema"/>
+  <c:if test="${conversionForm.schema}">
+<%--    <bean:define id="schema" name="conversionForm" property="schema"/>
     <bean:size name="schema" id="countfiles" property="crfiles"/>
-    <bean:define id="crfiles" name="schema" property="crfiles"/>
+    <bean:define id="crfiles" name="schema" property="crfiles"/>--%>
 
-    <form:form action="/testConversion" method="post">
+    <form:form action="/testConversion" method="post" modelAttribute="conversionForm">
       <table class="datatable">
         <tr>
           <th scope="col" class="scope-col">
@@ -49,17 +46,18 @@
           </th>
         </tr>
 
-        <bean:define id="selUrl" value="" type="String"/>
+        <%--<bean:define id="selUrl" value="" type="String"/>--%>
+        <%--<bean:define id="selUrl" name="converted.url" scope="session" type="String"/>--%>
         <c:if test="${sessionScope['converted.url']}">
-          <bean:define id="selUrl" name="converted.url" scope="session" type="String"/>
+          ${sessionScope['converter.url']} 
         </c:if>
 
 
         <c:if test="${countfiles > 0}">
           <tr>
             <td>
-                <%--name="ConversionForm" property="url"  size="10">--%>
-              <form:select path="${url}">
+                <%--name="conversionForm" property="url"  size="10">--%>
+              <form:select path="url">
                 <form:option value="">--</form:option>
                 <form:options collection="crfiles" property="url" labelProperty="label"/>
               </form:select>
@@ -81,10 +79,10 @@
         </c:if>
         <tr>
           <td>
-              <%--name="ConversionForm" property="schemaUrl"/>--%>
-              <%--name="ConversionForm" property="errorForward" value="errorCR" />--%>
-            <form:hidden path="${schemaUrl}"/>
-            <form:hidden path="${errorForward}" value="errorCR"/>
+              <%--name="conversionForm" property="schemaUrl"/>--%>
+              <%--name="conversionForm" property="errorForward" value="errorCR" />--%>
+            <form:hidden path="schemaUrl"/>
+            <form:hidden path="errorForward" value="errorCR"/>
           </td>
         </tr>
         <tr>
@@ -93,14 +91,14 @@
           </th>
         </tr>
 
-        <bean:define id="idConv" name="converted.conversionId" scope="session" type="String"/>
-        <c:if test="${!idConv}">
-          <bean:define id="idConv" name="ConversionForm" property="conversionId" scope="session" type="String"/>
-        </c:if>
+        <%--<bean:define id="idConv" name="converted.conversionId" scope="session" type="String"/>--%>
+        <%--<c:if test="${!idConv}">
+          <bean:define id="idConv" name="conversionForm" property="conversionId" scope="session" type="String"/>
+        </c:if>--%>
         <tr>
           <td align="left">
               <%--id="stylesheet" name="schema" scope="page" property="stylesheets" type="Stylesheet">--%>
-            <c:forEach varStatus="index" items="${stylesheets}">
+            <c:forEach varStatus="index" items="${schema.stylesheets}" var="stylesheet">
               <%--name="stylesheet" property="convId" value="<%=idConv%>">--%>
               <c:choose>
                 <c:when test="${stylesheet == convId}">
@@ -119,10 +117,11 @@
         </tr>
         <tr>
           <td align="center">
-            <bean:size name="schema" id="count" property="stylesheets"/>
-            <c:if test="${count > 0}">
+            <c:if test="${fn:length(conversionForm.schema.stylesheets) > 0}">
               <spring:message code="label.conversion.convert" var="convertLabel"/>
-              <input type="submit" styleClass="button" title="${convertLabel}"/>
+              <button type="submit" class="button" title="${convertLabel}">
+                  ${convertLabel}
+              </button>
             </c:if>
             <c:if test="${count > 0}">
               <p style="color: red; font-weight: bold;"><spring:message code="label.conversion.noconversion"/></p>

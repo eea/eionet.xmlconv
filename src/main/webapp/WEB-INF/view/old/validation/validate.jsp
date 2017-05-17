@@ -5,12 +5,9 @@
   <ed:breadcrumbs-push label="Validate XML" level="1"/>
   <h1><spring:message code="label.conversion.validate.title"/></h1>
 
-
-
   <c:if test="${requestScope['conversion.valid']}">
-    <bean:size id="countErrors" name="conversion.valid"/>
 
-    <c:if test="${countErrors > 0}">
+    <c:if test="${fn:length(conversion.valid) > 0}">
       <c:if test="${conversion.originalSchema}">
         <div class="ok-msg">The file is valid XML
           <p><spring:message code="label.conversion.originalSchema"/>&#160; <a
@@ -29,29 +26,27 @@
     <c:if test="${countErrors != 0}">
       <div class="error-msg">The file is not valid XML
         <c:choose>
-        <c:when test="${conversion.originalSchema}">
-        <p><spring:message code="label.conversion.originalSchema"/>&#160; <a
-                href="<bean:write name="conversion.originalSchema"/>"><bean:write
-                name="conversion.originalSchema"/></a></p>
-        <c:if test="${conversion.validatedSchema}">
-          <p><spring:message code="label.conversion.validatedSchema"/>&#160;
-            <a href="<bean:write name="conversion.validatedSchema"/>"><bean:write
-                    name="conversion.validatedSchema"/></a></p>
-        </c:if>
-      </c:when>
-        <c:otherwise>
-        <p><spring:message code="label.conversion.schema.not.found"/></p>
-      </c:otherwise>
+          <c:when test="${conversion.originalSchema}">
+            <p><spring:message code="label.conversion.originalSchema"/>&#160; <a
+                    href="${conversion.originalSchema}">
+              ${conversion.originalSchema}</a></p>
+            <c:if test="${conversion.validatedSchema}">
+              <p><spring:message code="label.conversion.validatedSchema"/>&#160;
+                <a href="${conversion.validatedSchema}">${conversion.validatedSchema}</a></p>
+            </c:if>
+          </c:when>
+          <c:otherwise>
+            <p><spring:message code="label.conversion.schema.not.found"/></p>
+          </c:otherwise>
         </c:choose>
       </div>
     </c:if>
     <c:if test="${conversion.warningMessage}">
       <div class="error-msg">
-        <bean:write name="conversion.warningMessage"/>
+        ${conversion.warningMessage}
       </div>
     </c:if>
   </c:if>
-
 
   <form:form servletRelativeAction="/validation" method="post" modelAttribute="form">
     <table class="datatable">
@@ -103,16 +98,16 @@
         <%--</c:if equal>--%>
       <tr>
         <td align="center">
-          <input type="submit" styleClass="button">
+          <button type="submit" class="button">
             <spring:message code="label.conversion.validate"/>
-          </input>
+          </button>
         </td>
       </tr>
     </table>
   </form:form>
   <c:if test="${requestScope['conversion.valid']}">
-    <bean:size id="countErrors" name="conversion.valid"/>
-    <c:if test="${countErrors != 0}">
+
+    <c:if test="${fn:length(conversion.valid) != 0}">
       <table class="datatable" align="center" width="100%">
         <col style="width:8%"/>
         <col style="width:8%"/>
@@ -127,20 +122,20 @@
         </tr>
         </thead>
         <tbody>
-      <%--id="valid" name="conversion.valid" scope="request" type="ValidateDto">--%>
-        <c:forEach varStatus="index" items="${conversion.valid}">
+          <%--id="valid" name="conversion.valid" scope="request" type="ValidateDto">--%>
+        <c:forEach varStatus="index" items="${conversion.valid}" var="valid">
           <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
             <td>
-              <bean:write name="valid" property="type"/>
+              ${valid.type}
             </td>
             <td>
-              <bean:write name="valid" property="line"/>
+              ${valid.line}
             </td>
             <td>
-              <bean:write name="valid" property="column"/>
+              ${valid.column}
             </td>
             <td>
-              <bean:write name="valid" property="description"/>
+              ${valid.description}
             </td>
           </tr>
         </c:forEach>

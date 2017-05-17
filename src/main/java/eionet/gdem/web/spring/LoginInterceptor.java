@@ -6,6 +6,7 @@ import eionet.gdem.utils.SecurityUtil;
 import org.springframework.security.web.util.UrlUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,14 +27,16 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        String loginUrl = null;
-        try {
-            loginUrl = SecurityUtil.getLoginURL(request);
-        } catch (XMLConvException e) {
-            // do nothing
-        }
-        if (modelAndView != null) {
-            modelAndView.addObject("loginUrl", loginUrl);
+        if (!(handler instanceof ResourceHttpRequestHandler)) {
+            String loginUrl = null;
+            try {
+                loginUrl = SecurityUtil.getLoginURL(request);
+            } catch (XMLConvException e) {
+                // do nothing
+            }
+            if (modelAndView != null) {
+                modelAndView.addObject("loginUrl", loginUrl);
+            }
         }
     }
 

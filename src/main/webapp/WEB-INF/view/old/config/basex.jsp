@@ -1,7 +1,5 @@
-<%--<%@ page contentType="text/html; charset=UTF-8"%>--%>
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-<%--<html:xhtml />--%>
 <div style="width:100%;">
   <div id="tabbedmenu">
     <ul>
@@ -25,16 +23,17 @@
           <spring:message code="label.config.ldap"/>
         </a>
       </li>
-      <li id="currenttab"><span style="color: black; text-decoration: none;"
-                                title='<spring:message code="label.config.basexserver"/>'><bean:message
-              key="label.config.basexserver"/></span></li>
+      <li id="currenttab">
+        <span style="color: black; text-decoration: none;" title='<spring:message code="label.config.basexserver"/>'>
+        <spring:message code="label.config.basexserver"/></span>
+      </li>
     </ul>
   </div>
 
   <ed:breadcrumbs-push label="BaseX Server configuration" level="1"/>
   <h1><spring:message code="label.config.basexserver.title"/></h1>
 
-  <form:form servletRelativeAction="basex" method="post">
+  <form:form servletRelativeAction="/config/basex" method="post">
     <table class="formtable">
       <col style="width:25%"/>
       <col style="width:75%"/>
@@ -75,8 +74,9 @@
       </tr>
       <tr>
         <td colspan="2" align="center">
-          <button class="button" name="action" value="submit"><bean:message
-                  key="label.config.basexserver.update"/></button>
+          <button class="button" name="action" value="submit">
+            <spring:message code="label.config.basexserver.update"/>
+          </button>
         </td>
       </tr>
     </table>

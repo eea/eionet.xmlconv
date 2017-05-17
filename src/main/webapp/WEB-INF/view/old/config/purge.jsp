@@ -6,43 +6,37 @@
   <div id="tabbedmenu">
     <ul>
       <li>
-        <a href="/do/dbForm" titleKey="label.config.db" onclick="return submitTab(this);"
-                   style="color: black; text-decoration: none;">
+        <a href="/config/database" title="label.config.db" style="color: black; text-decoration: none;">
           <spring:message code="label.config.db"/>
         </a>
       </li>
       <li>
-        <a href="/do/systemForm" titleKey="label.config.system" onclick="return submitTab(this);"
-                   style="color: black; text-decoration: none;">
+        <a href="/config/system" title="label.config.system" style="color: black; text-decoration: none;">
           <spring:message code="label.config.system"/>
         </a>
       </li>
-      <li id="currenttab"><span style="color: black; text-decoration: none;"
-                                title='<spring:message code="label.config.purge"/>'><bean:message
-              key="label.config.purge"/></span></li>
+      <li id="currenttab">
+        <spring:message code="label.config.purge" var="configPurge"/>
+        <span style="color: black; text-decoration: none;" title='${configPurge}'>
+          ${configPurge}</span>
+      </li>
       <li>
-        <a href="/do/ldapForm" titleKey="label.config.ldap" onclick="return submitTab(this);"
-                   style="color: black; text-decoration: none;">
+        <a href="/config/ldap" title="label.config.ldap" style="color: black; text-decoration: none;">
           <spring:message code="label.config.ldap"/>
         </a>
       </li>
       <li>
-        <a href="/do/basexForm" titleKey="label.config.basexserver" onclick="return submitTab(this);"
-                   style="color: black; text-decoration: none;">
+        <a href="/config/basex" title="label.config.basexserver" style="color: black; text-decoration: none;">
           <spring:message code="label.config.basexserver"/>
         </a>
       </li>
     </ul>
   </div>
 
-
   <ed:breadcrumbs-push label="Purge" level="1"/>
   <h1><spring:message code="label.config.purge.title"/></h1>
 
-
-
-
-  <form:form action="/purge" method="post">
+  <form:form action="/config/purge" method="post" modelAttribute="configPurge">
     <table class="formtable">
       <col style="width:25%"/>
       <col style="width:75%"/>

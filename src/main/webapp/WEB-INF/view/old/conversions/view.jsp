@@ -60,7 +60,7 @@
   </tr>
 
   <c:if test="${stylesheetForm.showDependsOnInfo == true}">
-    <bean:define id="depOn" name="stylesheetForm" property="dependsOn" scope="request" type="java.lang.String"/>
+    <%--<bean:define id="depOn" name="stylesheetForm" property="dependsOn" scope="request" type="java.lang.String"/>--%>
     <tr>
       <th scope="row" class="scope-row">
         <spring:message code="label.stylesheet.dependsOn"/>
@@ -68,7 +68,7 @@
       <td>
         <%--id="st" scope="request" name="stylesheetForm" property="existingStylesheets" type="Stylesheet">--%>
         <c:forEach items="${stylesheetForm.existingStylesheets}">
-          <c:if test="${st.convId = depOn}">
+          <c:if test="${st.convId = stylesheetForm.dependsOn}">
             <a href="stylesheetViewForm?stylesheetId=${st.convId}" title="Open depending stylesheet page">
               ${st.xslFileName}
             </a>

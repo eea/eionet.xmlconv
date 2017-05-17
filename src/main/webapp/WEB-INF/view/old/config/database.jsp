@@ -3,26 +3,28 @@
 <div style="width:100%;">
   <div id="tabbedmenu">
     <ul>
-      <li id="currenttab"><span style="color: black; text-decoration: none;"
-                                title='<spring:message code="label.config.db"/>'><bean:message
-              key="label.config.db"/></span></li>
+      <li id="currenttab">
+        <spring:message code="label.config.db" var="configDB"/>
+        <span style="color: black; text-decoration: none;" title='${configDB}'>
+          ${configDB}</span>
+      </li>
       <li>
-        <a href="/config/system" titleKey="label.config.system" style="color: black; text-decoration: none;">
+        <a href="/config/system" title="label.config.system" style="color: black; text-decoration: none;">
           <spring:message code="label.config.system"/>
         </a>
       </li>
       <li>
-        <a href="/config/purge" titleKey="label.config.purge" style="color: black; text-decoration: none;">
+        <a href="/config/purge" title="label.config.purge" style="color: black; text-decoration: none;">
           <spring:message code="label.config.purge"/>
         </a>
       </li>
       <li>
-        <a href="/config/ldap" titleKey="label.config.ldap" style="color: black; text-decoration: none;">
+        <a href="/config/ldap" title="label.config.ldap" style="color: black; text-decoration: none;">
           <spring:message code="label.config.ldap"/>
         </a>
       </li>
       <li>
-        <a href="/config/basex" titleKey="label.config.basexserver" style="color: black; text-decoration: none;">
+        <a href="/config/basex" title="label.config.basexserver" style="color: black; text-decoration: none;">
           <spring:message code="label.config.basexserver"/>
         </a>
       </li>
@@ -32,7 +34,7 @@
   <ed:breadcrumbs-push label="DB configuration" level="1"/>
   <h1><spring:message code="label.config.db.admin"/></h1>
 
-  <form:form action="/db" method="post">
+  <form:form servletRelativeAction="/config/db" method="post" modelAttribute="configDbForm">
     <table class="formtable">
       <col style="width:25%"/>
       <col style="width:75%"/>

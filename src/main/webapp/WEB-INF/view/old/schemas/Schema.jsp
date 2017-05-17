@@ -5,19 +5,18 @@
 
   <ul>
     <li id="currenttab">
-    <span style="color: black; text-decoration: none;"
-          title='<spring:message code="label.tab.title.schema"/>'><bean:message
-            key="label.tab.title.schema"/></span>
+      <spring:message code="label.tab.title.schema" var="schemaTab"/>
+      <span style="color: black; text-decoration: none;" title='${schemaTab}'>
+        ${schemaTab}
+      </span>
     </li>
     <li>
-      <a href="/conversions?schema=${schemaForm.schema}" titleKey="label.tab.title.xsl"
-         onclick="return submitTab(this);" style="color: black; text-decoration: none;">
+      <a href="/conversions?schema=${schemaForm.schema}" titleKey="label.tab.title.xsl" style="color: black; text-decoration: none;">
         <spring:message code="label.tab.title.xsl"/>
       </a>
     </li>
     <li>
-      <a href="/qaScripts?schemaId=${schemaForm.schemaId}" titleKey="label.tab.title.scripts"
-         onclick="return submitTab(this);" style="color: black; text-decoration: none;">
+      <a href="/qaScripts?schemaId=${schemaForm.schemaId}" titleKey="label.tab.title.scripts" style="color: black; text-decoration: none;">
         <spring:message code="label.tab.title.scripts"/>
       </a>
     </li>
@@ -25,14 +24,9 @@
 </div>
 
 <ed:breadcrumbs-push label="Edit XML Schema or DTD" level="2"/>
-
-
 <h1><spring:message code="label.schema.edit"/></h1>
 
-
-
-
-<form:form action="/schemaUpdate" method="post" enctype="multipart/form-data">
+<form:form servletRelativeAction="/schemas/update" method="post" enctype="multipart/form-data" modelAttribute="schemaForm">
   <fieldset>
     <legend><spring:message code="label.schema.fldset.properties"/></legend>
     <table class="formtable">
@@ -210,7 +204,7 @@
           <c:if test="${schemaForm.uplSchemaFileName}">
             <c:if test="${rootElements.xsddPrm}">
               <button type="submit" name="action" value="delete">
-                  <spring:message code="label.schema.deleteFile"/>
+                <spring:message code="label.schema.deleteFile"/>
               </button>
             </c:if>
             <c:if test="${rootElements.xsduPrm}">
@@ -224,7 +218,7 @@
           <c:if test="${!schemaForm.uplSchemaFileName}">
             <c:if test="${rootElements.schemaIdRemoteUrl}">
               <button type="submit" name="action" value="diff">
-                  <spring:message code="label.uplSchema.createcopy"/>
+                <spring:message code="label.uplSchema.createcopy"/>
               </button>
             </c:if>
           </c:if>
@@ -254,14 +248,14 @@
           <c:forEach varStatus="index" items="${rootElements}" var="elem">
             <tr class="${i.index % 2 == 1 ? 'zebraeven' : ''}">
               <td>
-                ${elem.name}
+                  ${elem.name}
               </td>
               <td>
-                ${elem.namespace}
+                  ${elem.namespace}
               </td>
               <c:if test="${rootElements.xsduPrm}">
                 <td align="center">
-                  <%--onclick='return elementDelete("<bean:write name="elem" property="name"/>");'>--%>
+                    <%--onclick='return elementDelete("<bean:write name="elem" property="name"/>");'>--%>
                   <a href="deleteElem?elemId=${elem.elemId}">
                     <img src="/images/delete.gif" altKey="label.delete" title="delete root element"/>
                   </a>

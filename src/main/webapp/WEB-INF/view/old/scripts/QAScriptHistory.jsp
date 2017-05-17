@@ -1,10 +1,4 @@
-<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>--%>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/eurodyn.tld" prefix="ed" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--<%@page import="eionet.gdem.Constants" %>--%>
-
-
+<%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <div style="width:100%;">
   <div id="tabbedmenu">
@@ -23,14 +17,9 @@
   </div>
 
   <ed:breadcrumbs-push label="QA Script History" level="3"/>
-
-
   <h1 class="documentFirstHeading">
     <spring:message code="label.qascriptHistory.title"/>
   </h1>
-
-
-
 
   <div class="visualClear">&nbsp;</div>
 
@@ -52,16 +41,16 @@
         <c:forEach varStatus="index" items="${qascript.history}">
           <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
             <td align="center">
-              <a href="<bean:write name="webRoot"/>/${Constants.QUERY_FOLDER}/${Constants.BACKUP_FOLDER_NAME}/<bean:write name="backup" property="fileName" />"
-                 title="<bean:write name="backup" property="fileName" />">
-                <bean:write name="backup" property="fileName"/>
+              <a href="${Constants.QUERY_FOLDER}/${Constants.BACKUP_FOLDER_NAME}/${backup.fileName}"
+                 title="${backup.fileName}">
+                ${backup.fileName}
               </a>
             </td>
             <td>
-              <bean:write name="backup" property="timestamp"/>
+              ${backup.timestamp}
             </td>
             <td>
-              <bean:write name="backup" property="user"/>
+              ${backup.user}
             </td>
           </tr>
         </c:forEach>

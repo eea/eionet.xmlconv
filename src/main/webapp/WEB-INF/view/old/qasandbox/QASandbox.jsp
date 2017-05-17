@@ -107,8 +107,8 @@
       </tr>
       <tr>
         <td>
-          <input type="submit" value="searchXML" styleClass="button" property="action" title="${searchXmlLabel}"/>
-          <input type="submit" value="searchScripts" styleClass="button" property="action"
+          <button type="submit" value="searchXML" styleClass="button" property="action" title="${searchXmlLabel}"/>
+          <button type="submit" value="searchScripts" styleClass="button" property="action"
                  title="${searchScriptsLabel}"/>
         </td>
       </tr>
@@ -193,7 +193,7 @@
         </tr>
         <tr>
           <td>
-            <input type="submit" value="extractSchema" styleClass="button" property="action"
+            <button type="submit" value="extractSchema" styleClass="button" property="action"
                    title="${extractSchemaLabel}"/>
           </td>
         </tr>

@@ -165,7 +165,7 @@ public final class SecurityUtil {
             }
         } else {
             // got to local login page
-            result = urlWithContextPath + "/do/login";
+            result = urlWithContextPath + "/login/local";
         }
 
         return result;

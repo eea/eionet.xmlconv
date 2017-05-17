@@ -19,7 +19,7 @@
         <spring:message code="label.conversion.json2xml.source"/>
       </label>
       <textarea name="json" id="param" rows="10" cols="100"></textarea>
-      <input type="submit" class="button" value="Convert"/>
+      <button type="submit" class="button" value="Convert"/>
     </div>
   </form:form>
 </div>

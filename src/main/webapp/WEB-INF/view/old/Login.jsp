@@ -34,7 +34,7 @@
           </tr>
           <tr>
             <td colspan="3" align="center">
-              <input type="submit" styleClass="button">
+              <button type="submit" styleClass="button">
                 <spring:message code="label.login.submit"/>
               </input>
             </td>

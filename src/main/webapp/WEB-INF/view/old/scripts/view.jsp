@@ -165,8 +165,9 @@
     <%--  If scriptType is 'FME' don't show the link to the remote script file --%>
     <c:if test="${QAScriptForm.scriptType != 'fme'}">
       <tr>
-        <th scope="row" class="scope-row"><bean:message
-                key="label.qascript.url"/></th>
+        <th scope="row" class="scope-row">
+          <spring:message code="label.qascript.url"/>
+        </th>
         <td>
           <c:if test="${!empty QAScriptForm.url}">
             <a href="${QAScriptForm.url} title="${QAScriptForm.url}">View</a>
