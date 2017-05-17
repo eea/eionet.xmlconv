@@ -81,7 +81,7 @@
             <td>
                 <%--<bean:write name="schema" property="id" />" title="View schema QA scripts (<bean:write name="schema" property="countQaScripts" />)"--%>
               <c:if test="${schema.countQaScripts > 0}">
-                <a href="/schemas/qaScripts?schemaId=${schema.id}" class="link-xquery"></a>
+                <a href="/schemas/${schema.id}/scripts" class="link-xquery"></a>
               </c:if>
             </td>
           </tr>

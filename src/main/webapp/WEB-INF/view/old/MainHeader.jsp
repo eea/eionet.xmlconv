@@ -13,7 +13,7 @@
           <a id="loginlink" href="<c:url value="${loginUrl}"/>" title="Login">Login</a>
         </c:when>
         <c:otherwise>
-          <a id="logoutlink" href="<c:url value="/login/logout"/>" title="Logout">Logout
+          <a id="logoutlink" href="/login/logout" title="Logout">Logout
             <span>(${sessionScope['user']})</span></a>
         </c:otherwise>
       </c:choose>
@@ -31,7 +31,7 @@
                                                    this.value = 'Search the site';"
                  value="Search the site"/>
           <input type="hidden" name="sitesearch" value="${appHost}"/>
-          <input id="freesrchbtn" type="image" src="<c:url value="/images/button_go.gif"/>" alt="Go"/>
+          <input id="freesrchbtn" type="image" src="/images/button_go.gif" alt="Go"/>
         </div>
       </form>
     </div>

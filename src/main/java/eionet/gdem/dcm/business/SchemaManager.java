@@ -268,7 +268,7 @@ public class SchemaManager {
                 boolean ddConv = false;
                 String xslUrl;
 
-                if (!xsl.startsWith(Properties.gdemURL + "/do/getStylesheet?id=")) {
+                if (!xsl.startsWith(Properties.gdemURL + "/conversions/")) {
 
                     File f = new File(Properties.xslFolder + File.separatorChar + xsl);
                     if (f != null && f.exists()) {
@@ -301,7 +301,7 @@ public class SchemaManager {
             schemas.add(sc);
             st.setHandCodedStylesheets(schemas);
         } catch (Exception e) {
-            LOGGER.debug("Errror getting schema stylesheets", e);
+            LOGGER.debug("Error getting schema stylesheets", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return st;

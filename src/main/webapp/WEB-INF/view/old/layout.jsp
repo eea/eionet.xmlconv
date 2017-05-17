@@ -27,19 +27,19 @@
   <%--<link rel="stylesheet" type="text/css" href="http://dd.eionet.europa.eu/css/eionet2007.css" media="screen" />--%>
 
   <!--  local style -->
-  <link rel="stylesheet" type="text/css" href="<c:url value="/css/foundation.css"/>" media="screen"/>
-  <link rel="stylesheet" type="text/css" href="<c:url value="/css/main.css"/>" media="screen"/>
-  <link rel="shortcut icon" href="<c:url value="/images/favicon.ico"/>" type="image/x-icon"/>
+  <link rel="stylesheet" type="text/css" href="/css/foundation.css" media="screen"/>
+  <link rel="stylesheet" type="text/css" href="/css/main.css" media="screen"/>
+  <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
   <!-- jQuery javascripts and css-->
-  <link href="<c:url value="/css/smoothness/jquery-ui-1.10.3.min.css" />" rel="stylesheet" type="text/css"/>
+  <link href="/css/smoothness/jquery-ui.css" rel="stylesheet" type="text/css"/>
   <%--<script type="text/javascript" src="<c:url value="/js/jquery-1.9.1.min.js" />"></script>--%>
-  <script type="text/javascript" src="<c:url value="/js/jquery.min.js" />"></script>
-  <script type="text/javascript" src="<c:url value="/js/jquery-ui-1.10.3.min.js" />"></script>
-  <script type="text/javascript" src="<c:url value="/js/jquery-validate-1.11.1.min.js" />"></script>
+  <script type="text/javascript" src="/js/jquery.min.js"></script>
+  <script type="text/javascript" src="/js/jquery-ui-1.10.3.min.js"></script>
+  <script type="text/javascript" src="/js/jquery-validate-1.11.1.min.js"></script>
   <!-- local javascripts -->
-  <script type="text/javascript" src="<c:url value="/js/admin.js"/>"></script>
-  <script type="text/javascript" src="<c:url value="/js/pageops.js"/>"></script>
-  <script type="text/javascript" src="<c:url value="/js/foundation.js"/>"></script>
+  <script type="text/javascript" src="/js/admin.js"></script>
+  <script type="text/javascript" src="/js/pageops.js"></script>
+  <script type="text/javascript" src="/js/foundation.js"></script>
   <tiles:insertAttribute name="specific_header" ignore="true"/>
 </head>
 
@@ -47,9 +47,8 @@
 <%-- include header --%>
 <tiles:insertAttribute name="header"/>
 
-
 <%-- move system-msg and error-msg below the  <h1> heading --%>
-<tiles:insertAttribute name="error" />
+<tiles:insertAttribute name="error"/>
 
 <%-- include body --%>
 <tiles:insertAttribute name="body"/>
