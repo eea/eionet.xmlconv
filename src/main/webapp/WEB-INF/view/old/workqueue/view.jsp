@@ -169,10 +169,14 @@
     <div id="hidden_elements">
       <c:if test="${wqdPrm || wquPrm}">
         <c:if test="${wqdPrm}">
-          <input type="button" value="Delete" onclick="return doDelete();"/>
+          <button type="submit" value="Delete">
+            Delete
+          </button>
         </c:if>
         <c:if test="${wquPrm}">
-          <input type="button" value="Restart" onclick="return doRestart();"/>
+          <button type="submit" value="Restart">
+            Restart
+          </button>
         </c:if>
         <input class="form-element" type="button" name="selectAll" id="selectAll" value="Select All"
                onclick="toggleSelect('jobID'); return false"/>

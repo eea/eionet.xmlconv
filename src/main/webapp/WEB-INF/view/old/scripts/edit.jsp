@@ -9,7 +9,7 @@
               code="label.qascript.tab.title"/></span></li>
       <li>
         <%--paramId="script_id" paramName="QAScriptForm" paramProperty="scriptId"  titleKey="label.qascript.history" --%>
-        <a href="/qaScripts/${QAScriptForm.scriptId}/history" style="color: black; text-decoration: none;">
+        <a href="/scripts/${QAScriptForm.scriptId}/history" style="color: black; text-decoration: none;">
           <spring:message code="label.qascript.history"/>
         </a>
       </li>

@@ -401,7 +401,7 @@
                   </label>
                   <span> -
                     <%--paramId="scriptId" paramName="qascript" paramProperty="scriptId" --%>
-                      <a href="/qaScripts/${scriptId}" titleKey="label.qascript.view">
+                      <a href="/scripts/${scriptId}" titleKey="label.qascript.view">
                           ${qascript.fileName}
                       </a>
                       (${qascripts.scriptType})

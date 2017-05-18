@@ -4,20 +4,17 @@
   <div id="tabbedmenu">
     <ul>
       <li>
-        <a href="/config/database" title="label.config.db" onclick="return submitTab(this);"
-                   style="color: black; text-decoration: none;">
+        <a href="/config/database" title="label.config.db" style="color: black; text-decoration: none;">
           <spring:message code="label.config.db"/>
         </a>
       </li>
       <li>
-        <a href="/config/system" title="label.config.system" onclick="return submitTab(this);"
-                   style="color: black; text-decoration: none;">
+        <a href="/config/system" title="label.config.system" style="color: black; text-decoration: none;">
           <spring:message code="label.config.system"/>
         </a>
       </li>
       <li>
-        <a href="/config/purge" title="label.config.purge" onclick="return submitTab(this);"
-                   style="color: black; text-decoration: none;">
+        <a href="/config/purge" title="label.config.purge" style="color: black; text-decoration: none;">
           <spring:message code="label.config.purge"/>
         </a>
       </li>

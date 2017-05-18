@@ -7,7 +7,7 @@
   <div id="operations">
     <ul>
       <li>
-        <a href="/qaScripts/add"><spring:message code="label.qascript.add"/></a>
+        <a href="/scripts/add"><spring:message code="label.qascript.add"/></a>
       </li>
     </ul>
   </div>
@@ -34,19 +34,18 @@
       </tr>
       </thead>
       <tbody>
-  <%--property="qascripts" type="Schema">--%>
-      <c:forEach varStatus="index" items="${scripts.qascripts}" var="script">
+      <c:forEach varStatus="i" items="${scripts.qascripts}" var="schema">
         <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
-          <td title="${script.schema}">
-            <a href="/schemas/${schema.id}/qaScripts" title="view QA scripts for this XML Schema">
-              ${script.schema}
+          <td title="${schema.schema}">
+            <a href="/schemas/${schema.id}/scripts" title="view QA scripts for this XML Schema">
+              ${schema.schema}
             </a>
           </td>
           <td>
-            <c:if test="${schema == 'qascripts'}">
+            <c:if test="${!empty schema.qascripts}">
               <%--id="qascript" name="schema" scope="page" property="qascripts" type="QAScript">--%>
-              <c:forEach items="schema.qascripts">
-                <a href="/qaScripts/${schema.id}" titleKey="label.qascript.tab.title">
+              <c:forEach items="${schema.qascripts}" var="script">
+                <a href="/script/${script.scriptId}" titleKey="label.qascript.tab.title">
                   ${script.shortName}
                 </a>
                 &#160;

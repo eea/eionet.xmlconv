@@ -5,8 +5,7 @@
     <ul>
       <li>
         <%--paramId="scriptId" paramName="script_id"--%>
-        <a href="/qaScripts/${scriptId}" titleKey="label.qascript.tab.title"
-                   onclick="return submitTab(this);" style="color: black; text-decoration: none;">
+        <a href="/scripts/${scriptId}" titleKey="label.qascript.tab.title" style="color: black; text-decoration: none;">
           <spring:message code="label.qascript.tab.title"/>
         </a>
       </li>

@@ -16,7 +16,7 @@
       </a>
     </li>
     <li>
-      <a href="/qaScripts?schemaId=${schemaForm.schemaId}" titleKey="label.tab.title.scripts" style="color: black; text-decoration: none;">
+      <a href="/schemas/${schemaForm.schemaId}" titleKey="label.tab.title.scripts" style="color: black; text-decoration: none;">
         <spring:message code="label.tab.title.scripts"/>
       </a>
     </li>
@@ -198,8 +198,9 @@
         <td></td>
         <td>
           <c:if test="${rootElements.xsduPrm}">
-            <input type="button" class="button" value="<spring:message code="label.uplSchema.upload"/>"
-                   onclick="return submitAction(1,'editUplSchema');"/>
+            <button type="submit" class="button" value="edit">
+              <spring:message code="label.uplSchema.upload"/>"
+            </button>
           </c:if>
           <c:if test="${schemaForm.uplSchemaFileName}">
             <c:if test="${rootElements.xsddPrm}">
