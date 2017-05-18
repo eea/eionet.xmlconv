@@ -6,8 +6,11 @@ import eionet.gdem.Properties;
 import eionet.gdem.dcm.conf.DbTest;
 import eionet.gdem.dcm.conf.DcmProperties;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.web.spring.SpringMessages;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -29,8 +32,13 @@ import java.sql.SQLException;
 @RequestMapping("/config/database")
 public class DatabaseController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseController.class);
+    private MessageService messageService;
+
     @Autowired
-    MessageSource messageSource;
+    public DatabaseController(MessageService messageService) {
+        this.messageService = messageService;
+    }
 
     @GetMapping
     public String edit(Model model) {
@@ -39,48 +47,46 @@ public class DatabaseController {
         form.setUser(Properties.dbUser);
         form.setPassword(Properties.dbPwd);
         model.addAttribute("form", form);
-        return "config/database";
+        return "/config/database";
     }
 
     @PostMapping
     public String editSubmit(@ModelAttribute DatabaseForm updatedModel, RedirectAttributes redirectAttributes, HttpSession session) {
 
         SpringMessages errors = new SpringMessages();
-        SpringMessages success = new SpringMessages();
+        SpringMessages messages = new SpringMessages();
 
-        String dbUrl = (String) updatedModel.getUrl();
-        String dbUser = (String) updatedModel.getUser();
-        String dbPwd = (String) updatedModel.getPassword();
+        String dbUrl = updatedModel.getUrl();
+        String dbUser = updatedModel.getUser();
+        String dbPwd = updatedModel.getPassword();
         String user = (String) session.getAttribute("user");
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_CONFIG_PATH, "u")) {
-                errors.add(messageSource.getMessage("label.autorization.config.update", null, LocaleContextHolder.getLocale()));
+                errors.add(messageService.getMessage("label.autorization.config.update", null, LocaleContextHolder.getLocale()));
+                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+                return "redirect:/config/database";
             } else {
                 if (dbUrl == null || dbUrl.equals("")) {
-                    errors.add(messageSource.getMessage("label.config.ldap.url.validation", null, LocaleContextHolder.getLocale()));
+                    errors.add(messageService.getMessage("label.config.ldap.url.validation", null, LocaleContextHolder.getLocale()));
+                    redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+                    return "redirect:/config/database";
                 } else {
                     DbTest dbTest = new DbTest();
                     dbTest.tstDbParams(dbUrl, dbUser, dbPwd);
 
                     DcmProperties dcmProp = new DcmProperties();
-
                     dcmProp.setDbParams(dbUrl, dbUser, dbPwd);
-                    success.add(messageSource.getMessage("label.editParam.db.saved", null, LocaleContextHolder.getLocale()));
                 }
-
             }
-            //TODO FIX messages
-        } catch (SignOnException e) {
-            errors.add(messageSource.getMessage("label.autorization.config.update", null, LocaleContextHolder.getLocale()));
-        } catch (DCMException e) {
-            errors.add(messageSource.getMessage("label.autorization.config.update", null, LocaleContextHolder.getLocale()));
-        } catch (SQLException e) {
-            errors.add(messageSource.getMessage("label.autorization.config.update", null, LocaleContextHolder.getLocale()));
+        } catch (SignOnException | SQLException | DCMException e) {
+            errors.add(messageService.getMessage("label.autorization.config.update", null, LocaleContextHolder.getLocale()));
+            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+            return "redirect:/config/database";
         }
+        messages.add(messageService.getMessage("label.editParam.db.saved", null, LocaleContextHolder.getLocale()));
         redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, success);
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/config/database";
     }
-
 }

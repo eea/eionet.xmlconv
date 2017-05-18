@@ -1,6 +1,4 @@
-<%--<%@ page contentType="text/html; charset=UTF-8"%>--%>
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
-
 
 <div style="width:100%;">
   <div id="tabbedmenu">
@@ -39,7 +37,7 @@
   <ed:breadcrumbs-push label="LDAP configuration" level="1"/>
   <h1><spring:message code="label.config.ldap.admin"/></h1>
 
-  <form:form action="/config/ldap" method="post" modelAttribute="configLdap">
+  <form:form action="/config/ldap" method="post" modelAttribute="form">
     <table class="formtable">
       <col style="width:26%"/>
       <col style="width:74%"/>
@@ -48,7 +46,7 @@
           <label class="question" for="url"><spring:message code="label.config.ldap.url"/></label>
         </td>
         <td>
-          <form:input path="url" maxlength="255" style="width: 30em;" styleId="url"/>
+          <form:input path="url" maxlength="255" style="width: 30em;" id="url"/>
         </td>
       </tr>
       <tr>
@@ -56,7 +54,7 @@
           <label class="question" for="context"><spring:message code="label.config.ldap.context"/></label>
         </td>
         <td>
-          <form:input path="context" maxlength="255" style="width: 30em;" styleId="context"/>
+          <form:input path="context" maxlength="255" style="width: 30em;" id="context"/>
         </td>
       </tr>
       <tr>
@@ -64,7 +62,7 @@
           <label class="question" for="userDir"><spring:message code="label.config.ldap.userDir"/></label>
         </td>
         <td>
-          <form:input path="userDir" maxlength="255" style="width: 30em;" styleId="userDir"/>
+          <form:input path="userDir" maxlength="255" style="width: 30em;" id="userDir"/>
         </td>
       </tr>
       <tr>
@@ -72,7 +70,7 @@
           <label class="question" for="attrUid"><spring:message code="label.config.ldap.attrUid"/></label>
         </td>
         <td>
-          <form:input path="attrUid" maxlength="255" style="width: 30em;" styleId="attrUid"/>
+          <form:input path="attrUid" maxlength="255" style="width: 30em;" id="attrUid"/>
         </td>
       </tr>
       <tr>

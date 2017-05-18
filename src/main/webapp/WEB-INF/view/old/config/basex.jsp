@@ -33,7 +33,7 @@
   <ed:breadcrumbs-push label="BaseX Server configuration" level="1"/>
   <h1><spring:message code="label.config.basexserver.title"/></h1>
 
-  <form:form servletRelativeAction="/config/basex" method="post">
+  <form:form servletRelativeAction="/config/basex" method="post" modelAttribute="form">
     <table class="formtable">
       <col style="width:25%"/>
       <col style="width:75%"/>
@@ -42,7 +42,7 @@
           <label class="question" for="host"><spring:message code="label.config.basexserver.host"/></label>
         </td>
         <td>
-          <form:input path="host" maxlength="255" style="width: 30em;" styleId="host"/>
+          <form:input path="host" maxlength="255" style="width: 30em;" id="host"/>
         </td>
       </tr>
       <tr>
@@ -50,7 +50,7 @@
           <label class="question" for="port"><spring:message code="label.config.basexserver.port"/></label>
         </td>
         <td>
-          <form:input path="port" maxlength="255" style="width: 30em;" styleId="port"/>
+          <form:input path="port" maxlength="255" style="width: 30em;" id="port"/>
         </td>
       </tr>
       <tr>
@@ -58,7 +58,7 @@
           <label class="question" for="user"><spring:message code="label.config.basexserver.user"/></label>
         </td>
         <td>
-          <form:input path="user" maxlength="255" style="width: 30em;" styleId="user"/>
+          <form:input path="user" maxlength="255" style="width: 30em;" id="user"/>
         </td>
       </tr>
       <tr>
@@ -66,7 +66,7 @@
           <label class="question" for="password"><spring:message code="label.config.basexserver.password"/></label>
         </td>
         <td>
-          <form:password path="password" maxlength="255" style="width: 30em;" styleId="password"/>
+          <form:password path="password" maxlength="255" style="width: 30em;" id="password"/>
         </td>
       </tr>
       <tr>

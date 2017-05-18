@@ -36,7 +36,7 @@
   <ed:breadcrumbs-push label="Purge" level="1"/>
   <h1><spring:message code="label.config.purge.title"/></h1>
 
-  <form:form action="/config/purge" method="post" modelAttribute="configPurge">
+  <form:form action="/config/purge" method="post" modelAttribute="form">
     <table class="formtable">
       <col style="width:25%"/>
       <col style="width:75%"/>

@@ -1,5 +1,7 @@
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
+<c:set var="username" value="${sessionScope['user']}" />
+
 <div id="container">
 
   <div id="toolribbon">
@@ -9,12 +11,12 @@
     </div>
     <div id="righttools">
       <c:choose>
-        <c:when test="${empty sessionScope['user']}">
+        <c:when test="${empty username}">
           <a id="loginlink" href="<c:url value="${loginUrl}"/>" title="Login">Login</a>
         </c:when>
         <c:otherwise>
           <a id="logoutlink" href="/login/logout" title="Logout">Logout
-            <span>(${sessionScope['user']})</span></a>
+            <span>(${username})</span></a>
         </c:otherwise>
       </c:choose>
       <a href="javascript:openWindow(applicationRoot+'/help/index.jsp','olinehelp');" title="Help">Online Help</a>
@@ -58,10 +60,10 @@
 
   <div id="leftcolumn" class="localnav">
     <ul>
-      <li>JSP menu</li>
+      <%--<li>JSP menu</li>
       <ed:menuItem action="/projects" title="Schemas">
         <spring:message code="label.menu.projects"/>
-      </ed:menuItem>
+      </ed:menuItem>--%>
       <ed:menuItem action="/schemas" title="Schemas">
         <spring:message code="label.menu.schemas"/>
       </ed:menuItem>

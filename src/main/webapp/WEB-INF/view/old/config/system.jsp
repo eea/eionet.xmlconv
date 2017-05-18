@@ -34,7 +34,7 @@
   <ed:breadcrumbs-push label="System configuration" level="1"/>
   <h1><spring:message code="label.config.system.admin"/></h1>
 
-  <form:form servletRelativeAction="/config/system" method="post" modelAttribute="configSystemForm">
+  <form:form servletRelativeAction="/config/system" method="post" modelAttribute="form">
     <table class="formtable">
       <col style="width:25%"/>
       <col style="width:75%"/>
@@ -43,7 +43,7 @@
           <label for="qaTimeout" class="question"><spring:message code="label.config.system.qa.timeout"/></label>
         </td>
         <td>
-          <form:input path="qaTimeout" maxlength="20" style="width: 30em;" styleId="qaTimeout"/>
+          <form:input path="qaTimeout" maxlength="20" style="width: 30em;" id="qaTimeout"/>
         </td>
       </tr>
       <tr>
@@ -51,7 +51,7 @@
           <label for="cmdXGawk" class="question"><spring:message code="label.config.system.qa.xgawk"/></label>
         </td>
         <td>
-          <form:input path="cmdXGawk" maxlength="255" style="width: 30em;" styleId="cmdXGawk"/>
+          <form:input path="cmdXGawk" maxlength="255" style="width: 30em;" id="cmdXGawk"/>
         </td>
       </tr>
       <tr>

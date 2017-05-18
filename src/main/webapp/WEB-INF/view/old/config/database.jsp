@@ -34,7 +34,7 @@
   <ed:breadcrumbs-push label="DB configuration" level="1"/>
   <h1><spring:message code="label.config.db.admin"/></h1>
 
-  <form:form servletRelativeAction="/config/db" method="post" modelAttribute="configDbForm">
+  <form:form servletRelativeAction="/config/database" method="post" modelAttribute="form">
     <table class="formtable">
       <col style="width:25%"/>
       <col style="width:75%"/>
@@ -43,7 +43,7 @@
           <label class="question" for="dbUrl"><spring:message code="label.config.db.url"/></label>
         </td>
         <td>
-          <form:input path="dbUrl" maxlength="255" style="width: 30em;" styleId="dbUrl"/>
+          <form:input path="url" maxlength="255" style="width: 30em;" id="dbUrl"/>
         </td>
       </tr>
       <tr>
@@ -59,7 +59,7 @@
           <label class="question" for="password"><spring:message code="label.config.db.password"/></label>
         </td>
         <td>
-          <form:password path="password" maxlength="255" style="width: 30em;" styleId="password"/>
+          <form:password showPassword="false" path="password" maxlength="255" style="width: 30em;" styleId="password"/>
         </td>
       </tr>
       <tr>
