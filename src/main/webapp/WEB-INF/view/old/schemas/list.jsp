@@ -1,7 +1,4 @@
-<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Constants" %>--%>
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
-
-
 
 <ed:breadcrumbs-push label="XML Schemas" level="1"/>
 
@@ -18,7 +15,6 @@
   <h1 class="documentFirstHeading">
     <spring:message code="label.schemas.uploaded"/>
   </h1>
-
 
   <c:if test="${!empty schemas.schemas}">
     <form:form servletRelativeAction="/schemas/delete" method="post" modelAttribute="form">
@@ -93,7 +89,6 @@
           <button type="submit" class="button" name="action" value="delete">
             <spring:message code="label.schema.delete"/>
           </button>
-            <%--onclick="return submitAction(1,'deleteUplSchema?deleteSchema=true');"/>--%>
         </div>
       </c:if>
     </form:form>

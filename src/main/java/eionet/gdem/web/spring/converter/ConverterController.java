@@ -1,12 +1,17 @@
-package eionet.gdem.web.spring.conversions;
+package eionet.gdem.web.spring.converter;
 
+import eionet.gdem.Constants;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.ConversionService;
+import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
+import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.dto.CrFileDto;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.qa.functions.Json;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.utils.Utils;
@@ -27,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -192,7 +198,22 @@ public class ConverterController {
     }
 
     @GetMapping("/search")
-    public String searchXML(@ModelAttribute ConversionForm cForm, HttpServletRequest httpServletRequest, Model model) {
+    public String searchXML(@ModelAttribute ConversionForm cForm, Model model, HttpServletRequest httpServletRequest) {
+        SpringMessages errors = new SpringMessages();
+
+        try {
+            model.addAttribute("schemas", StylesheetListLoader.getConversionSchemasList(httpServletRequest));
+        } catch (DCMException e) {
+            LOGGER.error("Serach CR Conversions error", e);
+            errors.add(messageService.getMessage(e.getErrorCode()));
+            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        }
+        model.addAttribute("conversionForm", cForm);
+        return "/converter/search";
+    }
+
+    @PostMapping("/search")
+    public String searchXMLSubmit(@ModelAttribute ConversionForm cForm, HttpServletRequest httpServletRequest, Model model, RedirectAttributes redirectAttributes) {
 
         /*String ticket = (String) httpServletRequest.getSession().getAttribute(Constants.TICKET_ATT);*/
         SpringMessages errors = new SpringMessages();
@@ -241,35 +262,114 @@ public class ConverterController {
         } catch (DCMException e) {
             LOGGER.error("Error searching XML files", e);
             errors.add(messageService.getMessage((e.getErrorCode())));
-            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
             return "redirect:/converter";
         } catch (Exception e) {
             LOGGER.error("Error searching XML files", e);
             errors.add(messageService.getMessage(BusinessConstants.EXCEPTION_GENERAL));
-            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
             return "redirect:/converter";
         }
-        model.addAttribute("conversionForm", cForm);
-        return "/converter/search";
+        redirectAttributes.addFlashAttribute("conversionForm", cForm);
+        return "redirect:/converter/search";
     }
 
     @GetMapping("/excel2xml")
     public String excel2xml(Model model) {
-        ConversionForm form = new ConversionForm();
-        model.addAttribute("conversionForm", form);
+        Excel2xmlForm form = new Excel2xmlForm();
+        form.setSplit("all");
+        model.addAttribute("form", form);
         return "/converter/excel2xml";
+    }
+
+    @PostMapping("/excel2xml")
+    public String excel2xmlSubmit(@ModelAttribute Excel2xmlForm form, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+
+        SpringMessages errors = new SpringMessages();
+
+        String ticket = (String) session.getAttribute(Constants.TICKET_ATT);
+
+        String url = processFormStr(form.getUrl());
+        String split = processFormStr(form.getSplit());
+        String sheet = processFormStr(form.getSheet());
+        Boolean showConversionLog = processFormBoolean(form.isConversionLog());
+        /*HttpMethodResponseWrapper methodResponse = null;*/
+
+        // get request parameters
+        try {
+            // parse request parameters
+            if (Utils.isNullStr(url)) {
+                errors.add(messageService.getMessage("label.conversion.insertExcelUrl"));
+                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+                return "redirect:/converter/excel2xml";
+            }
+            if (Utils.isNullStr(split)) {
+                errors.add(messageService.getMessage("label.conversion.insertSplit"));
+                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+                return "redirect:/converter/excel2xml";
+            }
+            if (split.equals("split") && Utils.isNullStr(sheet) && !showConversionLog) {
+                errors.add(messageService.getMessage("label.conversion.insertSheet"));
+                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+                return "redirect:/converter/excel2xml";
+            }
+            ConversionServiceIF cs = new ConversionService();
+            cs.setTicket(ticket);
+            if (!showConversionLog) {
+                /*methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
+                cs.setHttpResponse(methodResponse);*/
+            }
+            cs.setTrustedMode(true);
+            ConversionResultDto conversionResult = null;
+            // execute conversion
+            if (split.equals("split")) {
+                conversionResult = cs.convertDD_XML(url, true, sheet);
+            } else {
+                conversionResult = cs.convertDD_XML(url, false, null);
+            }
+            String conversionLog  = conversionResult.getConversionLogAsHtml();
+            if (!Utils.isNullStr(conversionLog)){
+                form.setConversionLog(true);
+            } else {
+                /*"conversionLog", "Conversion log not found!"*/
+                form.setConversionLog(false);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Error testing conversion", e);
+            errors.add(messageService.getMessage(e.getMessage()));
+            /*HttpSession sess = httpServletRequest.getSession(true);*/
+            /*session.setAttribute("gdem.exception", new XMLConvException("Error testing conversion: " + e.getMessage()));
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/" + Constants.ERROR_JSP);*/
+            return "redirect:/converter/excel2xml";
+        }
+        return "redirect:/converter/excel2xml";
     }
 
     @GetMapping("/json2xml")
     public String json2xml(Model model) {
-        ConversionForm form = new ConversionForm();
-        model.addAttribute("conversionForm", form);
+        Json2xmlForm form = new Json2xmlForm();
+        model.addAttribute("form", form);
         return "/converter/json2xml";
     }
 
     @PostMapping("json2xml")
-    public String json2xmlSubmit(@ModelAttribute ConversionForm form) {
+    public String json2xmlSubmit(@ModelAttribute Json2xmlForm form, RedirectAttributes redirectAttributes) {
 
+        String content = form.getContent();
+        String xml = null;
+        try {
+            if (content == null) {
+                throw new XMLConvException("Missing request parameter: ");
+            }
+        //TODO update JSON library.
+        xml = Json.jsonString2xml(content);
+
+        } catch (XMLConvException ge) {
+            LOGGER.error("Unable to convert JSON to XML. " + ge.toString());
+        } catch (Exception e) {
+            LOGGER.error("Unable to convert JSON to XML. ");
+        }
+        redirectAttributes.addFlashAttribute("xml", xml);
         return "redirect:/converter/json2xml";
     }
 
@@ -290,4 +390,31 @@ public class ConverterController {
         return schemasInCache.contains(oSchema);
     }
 
+
+    /**
+     * Process String
+     * @param arg Argument
+     * @return Result
+     */
+    private String processFormStr(String arg) {
+        String result = null;
+        if (arg != null) {
+            if (!arg.trim().equalsIgnoreCase("")) {
+                result = arg.trim();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Process Boolean
+     * @param arg Argument
+     * @return Result
+     */
+    private Boolean processFormBoolean(Boolean arg) {
+        if (arg == null) {
+            arg = false;
+        }
+        return arg;
+    }
 }

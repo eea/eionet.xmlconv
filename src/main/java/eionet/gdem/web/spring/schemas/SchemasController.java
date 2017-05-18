@@ -315,8 +315,50 @@ public class SchemasController {
         return "redirect:/schemas";
     }
 
-    @PostMapping("/delete")
+    @PostMapping
     public String delete(@ModelAttribute SingleForm form, RedirectAttributes redirectAttributes, HttpSession session) {
+        SpringMessages errors = new SpringMessages();
+        SpringMessages messages = new SpringMessages();
+
+        String schemaId = Integer.toString(form.getId());
+
+        String user_name = (String) session.getAttribute("user");
+
+        try {
+            SchemaManager sm = new SchemaManager();
+            int schemaDeleted = sm.deleteUplSchema(user_name, schemaId, true);
+            if (schemaDeleted == 2) {
+                messages.add(messageService.getMessage("label.uplSchema.deleted"));
+            }
+
+            if (schemaDeleted == 1 || schemaDeleted == 3) {
+                messages.add(messageService.getMessage("label.schema.deleted"));
+            }
+
+            if (schemaDeleted == 0 || schemaDeleted == 2) {
+                errors.add(messageService.getMessage("label.uplSchema.notdeleted"));
+            }
+            /*if (!deleteSchema) {
+                httpServletRequest.setAttribute("schemaId", schemaId);
+                forward = "success_deletefile";
+                // clear qascript list in cache
+                QAScriptListLoader.reloadList(httpServletRequest);
+                StylesheetListLoader.reloadStylesheetList(httpServletRequest);
+                StylesheetListLoader.reloadConversionSchemasList(httpServletRequest);
+            }*/
+        } catch (DCMException e) {
+            LOGGER.error("Error deleting root schema", e);
+            errors.add(messageService.getMessage(e.getErrorCode()));
+            return "redirect:/schemas";
+        }
+        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
+        return "redirect:/schemas";
+    }
+
+
+    @PostMapping("/unknown/delete")
+    public String deleteunknown(@ModelAttribute SingleForm form, RedirectAttributes redirectAttributes, HttpSession session) {
         SpringMessages errors = new SpringMessages();
 
         SchemaManager sm = new SchemaManager();

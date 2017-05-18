@@ -85,45 +85,6 @@ public class ConversionsController {
         return "/conversions/list";
     }
 
-    @GetMapping(value = "/conversions/{id}", produces = "text/xml")
-    public String getConversion(Model model, HttpServletResponse httpServletResponse) {
-
-        SpringMessages success = new SpringMessages();
-        SpringMessages errors = new SpringMessages();
-
-        String metaXSLFolder = Properties.metaXSLFolder;
-        String tableDefURL = Properties.ddURL;
-        /*DynaValidatorForm loginForm = (DynaValidatorForm) actionForm;
-        String id = (String) loginForm.get("id");
-        String convId = (String) loginForm.get("conv");*/
-
-        String id = "";
-        String convId = "";
-
-        try {
-            ConversionDto conv = Conversion.getConversionById(convId);
-            String format = metaXSLFolder + File.separatorChar + conv.getStylesheet();
-            String url = tableDefURL + "/GetTableDef?id=" + id;
-            ByteArrayInputStream byteIn = XslGenerator.convertXML(url, format);
-            int bufLen = 0;
-            byte[] buf = new byte[1024];
-
-            /*response.setContentType("text/xml");*/
-            while ((bufLen = byteIn.read(buf)) != -1) {
-                httpServletResponse.getOutputStream().write(buf, 0, bufLen);
-            }
-            byteIn.close();
-            return null;
-
-        } catch (Exception ge) {
-            LOGGER.error("Error getting stylesheet", ge);
-            errors.add(messageService.getMessage("label.stylesheet.error.generation"));
-            model.addAttribute("dcm.errors", errors);
-            return "redirect:/conversions/{id}";
-        }
-    }
-
-
     @PostMapping
     public String listSubmit(@ModelAttribute ConversionForm cForm, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
@@ -259,6 +220,122 @@ public class ConversionsController {
         }
         return "redirect:/conversions";
     }
+
+    @GetMapping("/{conversionId}")
+    public String view(@PathVariable String conversionId, Model model) {
+
+        SpringMessages errors = new SpringMessages();
+        StylesheetForm form = new StylesheetForm();
+
+        ConvTypeHolder types = new ConvTypeHolder();
+        StylesheetManager stylesheetManager = new StylesheetManager();
+
+        try {
+            Stylesheet stylesheet = stylesheetManager.getStylesheet(conversionId);
+
+            if (stylesheet == null) {
+                errors.add(HttpServletResponse.SC_NOT_FOUND);
+                return "redirect:/conversions";
+            }
+
+            form.setDescription(stylesheet.getDescription());
+            form.setOutputtype(stylesheet.getType());
+            form.setStylesheetId(stylesheet.getConvId());
+            form.setXsl(stylesheet.getXsl());
+            form.setXslContent(stylesheet.getXslContent());
+            form.setXslFileName(stylesheet.getXslFileName());
+            form.setModified(stylesheet.getModified());
+            form.setChecksum(stylesheet.getChecksum());
+            form.setSchemas(stylesheet.getSchemas());
+            // set empty string if dependsOn is null to avoid struts error in define tag:
+            // Define tag cannot set a null value
+            form.setDependsOn(stylesheet.getDependsOn() == null ? "" : stylesheet.getDependsOn());
+
+            if (stylesheet.getSchemas().size() > 0) {
+                //set first schema for Run Conversion link
+                form.setSchema(stylesheet.getSchemas().get(0).getSchema());
+                // check if any related schema has type=EXCEL, if yes, then depends on info should be visible
+                List<Schema> relatedSchemas = new ArrayList<Schema>(stylesheet.getSchemas());
+                CollectionUtils.filter(relatedSchemas, new BeanPredicate("schemaLang", new EqualPredicate("EXCEL")));
+                if (relatedSchemas.size() > 0) {
+                    form.setShowDependsOnInfo(true);
+                    List<Stylesheet> existingStylesheets = new ArrayList<Stylesheet>();
+                    for (Schema relatedSchema : relatedSchemas) {
+                        CollectionUtils.addAll(existingStylesheets, stylesheetManager.getSchemaStylesheets(relatedSchema.getId(),
+                                conversionId).toArray());
+                    }
+                    form.setExistingStylesheets(existingStylesheets);
+                }
+            }
+            types = stylesheetManager.getConvTypes();
+
+            /** FIXME - do we need the list of DD XML Schemas on the page
+             StylesheetListHolder stylesheetList = StylesheetListLoader.getGeneratedList(httpServletRequest);
+             List<Schema> schemas = stylesheetList.getDdStylesheets();
+             httpServletRequest.setAttribute("stylesheet.DDSchemas", schemas);
+             */
+
+
+            /*
+            String schemaId = schema.getSchemaId(stylesheet.getSchema());
+            if (!Utils.isNullStr(schemaId)) {
+                httpServletRequest.setAttribute("schemaInfo", schema.getSchema(schemaId));
+                httpServletRequest.setAttribute("existingStylesheets", stylesheetManager.getSchemaStylesheets(schemaId, stylesheetId));
+            }
+            */
+            //httpServletRequest.setAttribute(StylesheetListLoader.STYLESHEET_LIST_ATTR, StylesheetListLoader.getStylesheetList(httpServletRequest));
+
+        } catch (DCMException e) {
+            e.printStackTrace();
+            LOGGER.error("Edit stylesheet error", e);
+            errors.add(messageService.getMessage(e.getErrorCode()));
+            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        }
+
+        model.addAttribute("form", form);
+        model.addAttribute("types", types);
+        return "/conversions/view";
+    }
+
+    @GetMapping(value = "/conversions/unknown/{id}", produces = "text/xml")
+    public String getConversion(Model model, HttpServletResponse httpServletResponse) {
+
+        SpringMessages success = new SpringMessages();
+        SpringMessages errors = new SpringMessages();
+
+        String metaXSLFolder = Properties.metaXSLFolder;
+        String tableDefURL = Properties.ddURL;
+        /*DynaValidatorForm loginForm = (DynaValidatorForm) actionForm;
+        String id = (String) loginForm.get("id");
+        String convId = (String) loginForm.get("conv");*/
+
+        String id = "";
+        String convId = "";
+
+        try {
+            ConversionDto conv = Conversion.getConversionById(convId);
+            String format = metaXSLFolder + File.separatorChar + conv.getStylesheet();
+            String url = tableDefURL + "/GetTableDef?id=" + id;
+            ByteArrayInputStream byteIn = XslGenerator.convertXML(url, format);
+            int bufLen = 0;
+            byte[] buf = new byte[1024];
+
+            /*response.setContentType("text/xml");*/
+            while ((bufLen = byteIn.read(buf)) != -1) {
+                httpServletResponse.getOutputStream().write(buf, 0, bufLen);
+            }
+            byteIn.close();
+            return null;
+
+        } catch (Exception ge) {
+            LOGGER.error("Error getting stylesheet", ge);
+            errors.add(messageService.getMessage("label.stylesheet.error.generation"));
+            model.addAttribute("dcm.errors", errors);
+            return "redirect:/conversions/{id}";
+        }
+    }
+
+
 
     @PostMapping("/delete/{id}")
     public String delete(@ModelAttribute ConversionForm cForm, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {

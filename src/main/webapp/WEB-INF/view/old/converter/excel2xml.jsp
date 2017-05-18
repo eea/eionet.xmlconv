@@ -9,10 +9,7 @@
   <ed:breadcrumbs-push label="Spreadsheet to XML" level="1"/>
   <h1><spring:message code="label.conversion.excel2xml.heading"/></h1>
 
-
-
-
-  <form:form action="/excel2XmlConversion" method="get" modelAttribute="form">
+  <form:form servletRelativeAction="/converter/excel2xml" method="post" modelAttribute="form">
     <table class="datatable">
       <tr>
         <th scope="col" class="scope-col">
@@ -27,7 +24,7 @@
       <tr>
         <td>
             <%--name="ExcelConversionForm" property="url" style="width: 45em;" styleId="inpUrl" size="200"/>--%>
-          <form:input id="inpUrl" path="${url}"/>
+          <form:input id="inpUrl" path="url"/>
         </td>
       </tr>
       <tr>
@@ -43,38 +40,38 @@
       <tr>
         <td>
             <%--styleId="split1" value="all" onclick="sheet.disabled=true" />--%>
-          <form:radiobutton path="${split}" id="split1" value="all"/>
+          <form:radiobutton path="split" id="split1" value="all"/>
           <label for="split1"><spring:message code="label.conversion.excel.allsheets"/></label>
         </td>
       </tr>
       <tr>
         <td>
             <%--styleId="split2" value="split" onclick="sheet.disabled=false"/>--%>
-          <form:radiobutton path="${split}" id="split2" value="split"/>
+          <form:radiobutton path="split" id="split2" value="split"/>
           <label for="split2"><spring:message code="label.conversion.excel.sheetname"/></label>
             <%--onfocus="split[1].checked=true"/>--%>
-          <form:input path="${sheet}"/>
+          <form:input path="sheet"/>
         </td>
       </tr>
       <tr>
         <td>
             <%--name="ExcelConversionForm" property="showConversionLog" styleId ="chkConversion" />--%>
-          <form:checkbox path="${showConversionLog}" id="chkConversion" value="true"/>
+          <form:checkbox path="conversionLog" id="chkConversion" value="true"/>
           <label for="chkConversion"><spring:message code="label.conversion.excel.showConversionLog"/></label>
         </td>
       </tr>
       <tr>
         <td align="center">
-          <button type="submit" styleClass="button">
+          <button type="submit" class="button">
           <spring:message code="label.conversion.convert"/>
-          </input>
+          </button>
         </td>
       </tr>
       <c:choose>
-        <c:when test="${ExcelConversionForm.conversionLog}">
+        <c:when test="${form.conversionLog}">
           <tr>
           <%--" filter="false"/>--%>
-            <td>${ExcelConversionForm.conversionLog}</td>
+            <td>${form.conversionLog}</td>
           </tr>
         </c:when>
         <c:otherwise>

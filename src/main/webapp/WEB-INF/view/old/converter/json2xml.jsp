@@ -10,16 +10,19 @@
     <spring:message code="label.conversion.json2xml.title"/>
   </h1>
 
-
-
-
-  <form:form servletRelativeAction="json2xml" method="post">
+  <form:form servletRelativeAction="/converter/json2xml" method="post" modelAttribute="form">
     <div>
       <label for="param">
         <spring:message code="label.conversion.json2xml.source"/>
       </label>
-      <textarea name="json" id="param" rows="10" cols="100"></textarea>
-      <button type="submit" class="button" value="Convert"/>
+      <form:textarea path="content" id="param" rows="10" cols="100"></form:textarea>
+      <button type="submit" class="button">
+        Convert
+      </button>
     </div>
   </form:form>
+
+  <c:if test="${!empty xml}">
+    <pre><c:out value="${xml}"/></pre>
+  </c:if>
 </div>

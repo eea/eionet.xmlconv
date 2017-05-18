@@ -5,19 +5,20 @@
 <div id="operations">
   <ul>
     <li>
-      <a href="searchCR?conversionId=${stylesheetForm.stylesheetId}&amp;schemaUrl=${stylesheetForm.schema}">
+      <%--/&amp;schemaUrl=${form.schema}--%>
+      <a href="/converter/search/${form.stylesheetId}">
         <spring:message code="label.stylesheet.run"/>
       </a>
     </li>
-    <c:if test="${stylesheet.ssdPrm}">
+    <c:if test="${scopeSession['stylesheet.permissions'].ssdPrm}">
       <li>
-          <%--paramId="stylesheetId" paramName="stylesheetForm" paramProperty="stylesheetId"--%>
-        <a href="/conversions/${stylesheetId}/edit" title="edit stylesheet">
+        <a href="/conversions/${form.stylesheetId}/edit" title="edit stylesheet">
           <spring:message code="label.stylesheet.edit"/>
         </a>
       </li>
       <li>
-        <a href="deleteStylesheet?conversionId=${stylesheetForm.stylesheetId}&amp;schema=${stylesheetForm.schema} title="delete stylesheet">
+        <%--&amp;schema=${form.schema}--%>
+        <a href="/conversions/${form.stylesheetId}/delete" title="delete stylesheet">
           <spring:message code="label.stylesheet.delete"/>
         </a>
       </li>
@@ -25,11 +26,7 @@
   </ul>
 </div>
 
-
 <h1><spring:message code="label.stylesheet.view"/></h1>
-
-
-
 
 <table class="datatable">
   <col class="labelcol"/>
@@ -39,10 +36,9 @@
       <spring:message code="label.stylesheet.schema"/>
     </th>
     <td>
-      <c:if test="${stylesheetForm.schemas}">
-        <%--id="relatedSchema" name="stylesheetForm" property="schemas" type="Schema">--%>
-        <c:forEach varStatus="index" items="${stylesheetForm.schemas}" var="relatedSchema">
-          <a href="schemaStylesheets?schema=${relatedSchema.schema}" title="view XML Schema stylesheets">
+      <c:if test="${!empty form.schemas}">
+        <c:forEach varStatus="i" items="${form.schemas}" var="relatedSchema">
+          <a href="/schemas/${relatedSchema.id}/conversions" title="view XML Schema stylesheets">
             ${relatedSchema.schema}
           </a>
           <br/>
@@ -55,21 +51,19 @@
       <spring:message code="label.stylesheet.outputtype"/>
     </th>
     <td>
-      ${stylesheetForm.outputtype}
+      ${form.outputtype}
     </td>
   </tr>
 
-  <c:if test="${stylesheetForm.showDependsOnInfo == true}">
-    <%--<bean:define id="depOn" name="stylesheetForm" property="dependsOn" scope="request" type="java.lang.String"/>--%>
+  <c:if test="${form.showDependsOnInfo}">
     <tr>
       <th scope="row" class="scope-row">
         <spring:message code="label.stylesheet.dependsOn"/>
       </th>
       <td>
-        <%--id="st" scope="request" name="stylesheetForm" property="existingStylesheets" type="Stylesheet">--%>
-        <c:forEach items="${stylesheetForm.existingStylesheets}">
-          <c:if test="${st.convId = stylesheetForm.dependsOn}">
-            <a href="stylesheetViewForm?stylesheetId=${st.convId}" title="Open depending stylesheet page">
+        <c:forEach items="${form.existingStylesheets}" var="st">
+          <c:if test="${st.convId = form.dependsOn}">
+            <a href="/conversions/${st.convId}" title="Open depending stylesheet page">
               ${st.xslFileName}
             </a>
           </c:if>
@@ -85,7 +79,7 @@
       <spring:message code="label.stylesheet.description"/>
     </th>
     <td>
-      ${stylesheetForm.description}
+      ${form.description}
     </td>
   </tr>
   <tr>
@@ -93,13 +87,13 @@
       <spring:message code="label.stylesheet.xslfile"/>
     </th>
     <td>
-      <a href="${webRoot}/${stylesheetForm.xsl}" title="${stylesheetForm.xsl}" class="link-xsl">
-        ${stylesheetForm.xslFileName}
+      <a href="/${form.xsl}" title="${form.xsl}" class="link-xsl">
+        ${form.xslFileName}
       </a>
       <span style="margin-left:10px">(<spring:message code="label.lastmodified"/>:
           <c:choose>
-            <c:when test="${stylesheetForm.modified}">
-              ${stylesheetForm.modified}
+            <c:when test="${!empty form.modified}">
+              ${form.modified}
             </c:when>
             <c:otherwise>
               <span style="color:red"><spring:message code="label.fileNotFound"/></span>
@@ -108,6 +102,6 @@
     </td>
   </tr>
 </table>
-<c:if test="${stylesheetForm.xslFileName}">
-  <pre>${stylesheetForm.xslContent}</pre>
+<c:if test="${!empty form.xslFileName}">
+  <pre><c:out value="${form.xslContent}"/></pre>
 </c:if>
