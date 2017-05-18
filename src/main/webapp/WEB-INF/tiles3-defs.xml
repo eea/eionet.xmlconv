@@ -146,7 +146,7 @@
 
     <definition name="/scripts/history" extends="base">
         <put-attribute name="title" value="label.qascriptHistory.title" />
-        <put-attribute name="body" value="/WEB-INF/view/old/scripts/QAScriptHistory.jsp" />
+        <put-attribute name="body" value="/WEB-INF/view/old/scripts/history.jsp" />
     </definition>
 
     <definition name="/scripts/view" extends="base">

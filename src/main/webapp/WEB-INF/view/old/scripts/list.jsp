@@ -45,7 +45,7 @@
             <c:if test="${!empty schema.qascripts}">
               <%--id="qascript" name="schema" scope="page" property="qascripts" type="QAScript">--%>
               <c:forEach items="${schema.qascripts}" var="script">
-                <a href="/script/${script.scriptId}" titleKey="label.qascript.tab.title">
+                <a href="/scripts/${script.scriptId}" titleKey="label.qascript.tab.title">
                   ${script.shortName}
                 </a>
                 &#160;

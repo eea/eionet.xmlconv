@@ -241,24 +241,17 @@ public class QAScriptsController {
     public String history(@PathVariable String id, Model model) {
 
         SpringMessages errors = new SpringMessages();
-
         List<BackupDto> l = null;
-
-        /*String scriptId = httpServletRequest.getParameter(Constants.XQ_SCRIPT_ID_PARAM);*/
-
-
         try {
             BackupManager bm = new BackupManager();
             l = bm.getBackups(id);
-
         } catch (DCMException e) {
-            e.printStackTrace();
             LOGGER.error("Error getting history for QA scripts list", e);
             errors.add(messageService.getMessage("label.exception.unknown"));
             model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         }
-        model.addAttribute("qascript.history", l);
-        model.addAttribute("script_id", id);
+        model.addAttribute("history", l);
+        model.addAttribute("scriptId", id);
         return "/scripts/history";
     }
 
