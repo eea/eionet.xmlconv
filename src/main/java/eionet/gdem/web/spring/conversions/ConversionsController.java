@@ -536,14 +536,6 @@ public class ConversionsController {
         String user = (String) httpServletRequest.getSession().getAttribute("user");
         String schema = (form.getNewSchemas() == null || form.getNewSchemas().size() == 0) ? null : form.getNewSchemas().get(0);
         httpServletRequest.setAttribute("schema", schema);
-/*
-        if (isCancelled(httpServletRequest)) {
-            if (schema != null) {
-                return new ActionForward("/do/schemaStylesheets?schema=" + schema, true);
-            } else {
-                return actionMapping.findForward("list");
-            }
-        }*/
 
         // TODO FIX THIS:
         // || xslFile.getFileSize() == 0) {

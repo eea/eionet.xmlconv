@@ -37,15 +37,17 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             } catch (XMLConvException e) {
                 // do nothing
             }
-            if (modelAndView.getViewName().contains("redirect")) {
-                Map oldMap = RequestContextUtils.getInputFlashMap(request);
-                FlashMap newMap = RequestContextUtils.getOutputFlashMap(request);
-                if (oldMap != null) {
-                    newMap.putAll(oldMap);
+            if (modelAndView != null) {
+                if (modelAndView.getViewName().contains("redirect")){
+                    Map oldMap = RequestContextUtils.getInputFlashMap(request);
+                    FlashMap newMap = RequestContextUtils.getOutputFlashMap(request);
+                    if (oldMap != null) {
+                        newMap.putAll(oldMap);
+                    }
+                    newMap.put("loginUrl", loginUrl);
+                } else{
+                    modelAndView.addObject("loginUrl", loginUrl);
                 }
-                newMap.put("loginUrl", loginUrl);
-            } else {
-                modelAndView.addObject("loginUrl", loginUrl);
             }
         }
     }

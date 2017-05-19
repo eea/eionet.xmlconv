@@ -4,9 +4,9 @@
         "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
 <tiles-definitions>
     <definition name="MainFooter" template="/WEB-INF/view/old/MainFooter.jsp">
-        <put-attribute name="showFooter" type="string" value="true" />
-        <put-attribute name="environment" value="Data Conversion Module" />
-        <put-attribute name="buildNo" value="20050614" />
+        <put-attribute name="showFooter" type="string" value="true" cascade="true"/>
+        <!--<put-attribute name="environment" value="Data Conversion Module" />
+        <put -attribute name="buildNo" value="20050614" />-->
     </definition>
     <definition name="MainHeader" template="/WEB-INF/view/old/MainHeader.jsp" />
     <definition name="Error" template="/WEB-INF/view/old/Error.jsp" />
@@ -18,7 +18,7 @@
         <put-attribute name="header" type="definition" value="MainHeader" />
         <put-attribute name="error" type="definition" value="Error" cascade="true"/>
         <put-attribute name="body" type="definition" value=" " />
-        <put-attribute name="showFooter" type="string" value="true" />
+        <!--<put-attribute name="showFooter" type="string" value="true" />-->
         <put-attribute name="footer" type="definition" value="MainFooter" />
     </definition>
 
@@ -128,8 +128,11 @@
         <put-attribute name="title" value="label.hosts.title" />
         <put-attribute name="body" value="/WEB-INF/view/old/hosts/list.jsp" />
     </definition>
-    <definition name="/hosts/details" extends="base">
+    <definition name="/hosts/edit" extends="base">
         <put-attribute name="body" value="/WEB-INF/view/old/hosts/edit.jsp" />
+    </definition>
+    <definition name="/hosts/add" extends="base">
+        <put-attribute name="body" value="/WEB-INF/view/old/hosts/add.jsp" />
     </definition>
     <definition name="ConverterTabs" template="/WEB-INF/view/old/converter/tabs.jsp">
         <put-attribute name="selectedTab" type="string" value="convertXML" />

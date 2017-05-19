@@ -1,5 +1,6 @@
 package eionet.gdem.web.spring.hosts;
 
+import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
 import eionet.gdem.dto.HostDto;
 import eionet.gdem.services.MessageService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -46,7 +48,7 @@ public class HostsController {
         List result = new ArrayList();
         String user = (String) session.getAttribute("user");
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_HOST_PATH, "v")) {
+            if (SecurityUtil.hasPerm(user, "/host", "v")) {
                 Vector list = hostDao.getHosts(null);
                 for (int i = 0; i < list.size(); i++) {
                     Hashtable host = (Hashtable) list.get(i);
@@ -59,15 +61,16 @@ public class HostsController {
             } else {
                 errors.add(messageService.getMessage("error.vnoperm", "label.hosts"));
             }
-        } catch (Exception e) {
-            LOGGER.error("", e);
+        } catch (SignOnException | SQLException e) {
+            LOGGER.error("Access denied", e);
             errors.add(messageService.getMessage("label.exception.unknown"));
         }
-
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        model.addAttribute("hosts.list", result);
+        model.addAttribute("hosts", result);
+        HostForm form = new HostForm();
 
-        return "/hosts/list.jsp";
+        model.addAttribute("form", form);
+        return "/hosts/list";
     }
 
     @GetMapping("/{id}/edit")
@@ -77,7 +80,7 @@ public class HostsController {
         String user = (String) session.getAttribute("user");
         SpringMessages errors = new SpringMessages();
         try {
-            if (!SecurityUtil.hasPerm(user, Constants.ACL_HOST_PATH, "u")) {
+            if (SecurityUtil.hasPerm(user, "/host", "u")) {
                 Vector hosts = hostDao.getHosts(id);
 
                 if (hosts != null) {
@@ -100,7 +103,7 @@ public class HostsController {
             model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         }
         model.addAttribute("form", hostForm);
-        return "/hosts/details.jsp";
+        return "/hosts/edit";
     }
 
     @PostMapping("/{id}/edit/")
@@ -117,35 +120,19 @@ public class HostsController {
         String user = (String) session.getAttribute("user");
 
         try {
-            if (hostId == null) { // Add new host
-                LOGGER.debug("ADDING NEW HOST !!!");
-                if (!SecurityUtil.hasPerm(user, Constants.ACL_HOST_PATH, "i")) {
-                    hostDao.addHost(host, username, password);
-                    messages.add(messageService.getMessage("label.hosts.inserted"));
-                } else {
-                    errors.add(messageService.getMessage("error.inoperm"));
-                }
-            } else { // Update host
-                LOGGER.debug("UPDATE HOST !!!");
-                if (!SecurityUtil.hasPerm(user, Constants.ACL_HOST_PATH, "u")) {
-                    hostDao.updateHost(hostId, host, username, password);
-                    messages.add(messageService.getMessage("label.hosts.updated"));
-                } else {
-                    errors.add(messageService.getMessage("error.unoperm", "label.hosts"));
-                }
+            if (SecurityUtil.hasPerm(user, "/host", "u")) {
+                hostDao.updateHost(hostId, host, username, password);
+                messages.add(messageService.getMessage("label.hosts.updated"));
+            } else {
+                errors.add(messageService.getMessage("error.unoperm", "label.hosts"));
             }
-        } catch (Exception e) {
-            LOGGER.error("", e);
+        } catch (SignOnException | SQLException e) {
+            LOGGER.error("Access denied", e);
             errors.add(messageService.getMessage("label.exception.unknown"));
         }
-
-        if (errors.size() > 0) {
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        }
-        if (messages.size() > 0) {
-            redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
-        }
-        return "redirect:/hosts/edit/{id}";
+        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
+        return "redirect:/hosts/{id}/edit";
     }
 
     @GetMapping("/add")
@@ -155,18 +142,44 @@ public class HostsController {
         HostForm form = new HostForm();
 
         try {
-            if (!SecurityUtil.hasPerm(user, Constants.ACL_HOST_PATH, "i")) {
+            if (!SecurityUtil.hasPerm(user, "/host", "i")) {
                 errors.add(messageService.getMessage("error.inoperm", "label.hosts"));
             }
-        } catch (Exception e) {
-            LOGGER.error("", e);
+        } catch (SignOnException e) {
+            LOGGER.error("Access denied", e);
             errors.add(messageService.getMessage("label.exception.unknown"));
         }
-        if (errors.size() > 0) {
-            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        }
+
+        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         model.addAttribute("form", form);
-        return "hosts/add";
+        return "/hosts/add";
+    }
+
+    @PostMapping("/add")
+    public String addSubmit(@ModelAttribute HostForm form, HttpSession session, RedirectAttributes redirectAttributes) {
+        SpringMessages messages = new SpringMessages();
+        SpringMessages errors = new SpringMessages();
+
+        String host = form.getHost();
+        String username = form.getUsername();
+        String password = form.getPassword();
+
+        String user = (String) session.getAttribute("user");
+
+        try {
+            if (SecurityUtil.hasPerm(user, "/host", "i")) {
+                hostDao.addHost(host, username, password);
+                messages.add(messageService.getMessage("label.hosts.inserted"));
+            } else {
+                errors.add(messageService.getMessage("error.inoperm"));
+            }
+        } catch (SignOnException | SQLException e) {
+            LOGGER.error("Access denied");
+            errors.add(messageService.getMessage("error.inoperm"));
+        }
+
+        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        return "redirect:/hosts";
     }
 
     @PostMapping("/delete")
@@ -177,7 +190,7 @@ public class HostsController {
         String user = (String) session.getAttribute("user");
 
         try {
-            if (!SecurityUtil.hasPerm(user, Constants.ACL_HOST_PATH, "d")) {
+            if (SecurityUtil.hasPerm(user, "/host", "d")) {
                 hostDao.removeHost(form.getId());
                 messages.add(messageService.getMessage("label.hosts.deleted"));
             } else {
@@ -188,13 +201,8 @@ public class HostsController {
             errors.add(messageService.getMessage("label.exception.unknown"));
         }
 
-        if (errors.size() > 0) {
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        }
-        if (messages.size() > 0) {
-            redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
-        }
-
+        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/hosts";
     }
 

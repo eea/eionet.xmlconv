@@ -35,7 +35,7 @@ import java.util.Date;
  *
  */
 @Controller
-@RequestMapping({"", "/schemas"})
+@RequestMapping("/schemas")
 public class SchemasController {
 
     private MessageService messageService;

@@ -1,19 +1,19 @@
 <%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-<ed:breadcrumbs-push label="Host details" level="2"/>
+<ed:breadcrumbs-push label="Add Host" level="2"/>
 <h1 class="documentFirstHeading">
 
-  <c:choose>
+  <%--<c:choose>
     <c:when test="${HostForm.id}">
       <spring:message code="label.hosts.edit"/>
     </c:when>
     <c:otherwise>
       <spring:message code="label.hosts.add_title"/>
     </c:otherwise>
-  </c:choose>
+  </c:choose>--%>
 </h1>
 
-<form:form action="/hosts/save" method="post" modelAttribute="form">
+<form:form action="/hosts/add" method="post" modelAttribute="form">
   <table class="formtable">
     <col class="labelcol"/>
     <col class="entrycol"/>

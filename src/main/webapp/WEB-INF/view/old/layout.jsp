@@ -24,10 +24,10 @@
   <link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/print.css" media="print"/>
   <link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/handheld.css" media="handheld"/>
   <link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen"/>
-  <%--<link rel="stylesheet" type="text/css" href="http://dd.eionet.europa.eu/css/eionet2007.css" media="screen" />--%>
+  <link rel="stylesheet" type="text/css" href="http://dd.eionet.europa.eu/css/eionet2007.css" media="screen" />
 
   <!--  local style -->
-  <link rel="stylesheet" type="text/css" href="/css/foundation.css" media="screen"/>
+  <%--<link rel="stylesheet" type="text/css" href="/css/foundation.css" media="screen"/>--%>
   <link rel="stylesheet" type="text/css" href="/css/main.css" media="screen"/>
   <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
   <!-- jQuery javascripts and css-->
@@ -39,27 +39,15 @@
   <!-- local javascripts -->
   <script type="text/javascript" src="/js/admin.js"></script>
   <script type="text/javascript" src="/js/pageops.js"></script>
-  <script type="text/javascript" src="/js/foundation.js"></script>
+  <%--<script type="text/javascript" src="/js/foundation.js"></script>--%>
   <tiles:insertAttribute name="specific_header" ignore="true"/>
 </head>
 
 <body>
-<%-- include header --%>
-<tiles:insertAttribute name="header"/>
-
-<%-- move system-msg and error-msg below the  <h1> heading --%>
-<tiles:insertAttribute name="error"/>
-
-<%-- include body --%>
-<tiles:insertAttribute name="body"/>
-
-<tiles:importAttribute name="showFooter"/>
-<%-- include footer --%>
-<tiles:insertAttribute name="footer">
-  <tiles:putAttribute name="showFooter"/>
-</tiles:insertAttribute>
-
-
+  <tiles:insertAttribute name="header"/>
+  <tiles:insertAttribute name="error"/>
+  <tiles:insertAttribute name="body"/>
+  <tiles:insertAttribute name="footer"/>
 </body>
 
 </html>

@@ -1,18 +1,12 @@
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-<%-- TODO remove scriptlet --%>
-<%
-  String a = request.getContextPath();
-  session.setAttribute("webRoot", a == null ? "" : a);
-%>
-
 </div> <!-- workarea -->
 </div> <!-- container -->
 
 <ed:breadcrumbs-list htmlid="portal-breadcrumbs" classStyle="breadcrumbitem" classStyleEnd="breadcrumbitemlast"
                      delimiter=""/>
 
-<%--<tiles:importAttribute name="showFooter" />--%>
+<tiles:importAttribute name="showFooter" />
 <c:if test="${showFooter}">
   <div id="pagefoot">
     <p>
