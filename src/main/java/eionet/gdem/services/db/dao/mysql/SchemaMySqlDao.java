@@ -20,6 +20,7 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.stereotype.Repository;
 
 import eionet.gdem.dto.Schema;
+import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.Utils;
 
@@ -474,14 +475,14 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 
             for (int i = 0; i < r.length; i++) {
                 HashMap h = new HashMap();
-                h.put("query_id", r[i][0]);
-                h.put("query", r[i][1]);
-                h.put("description", r[i][2]);
-                h.put("short_name", r[i][3]);
-                h.put("script_type", r[i][4]);
-                h.put("result_type", r[i][5]);
-                h.put("upper_limit", r[i][6]);
-                h.put("is_active", r[i][7]);
+                h.put(QaScriptView.QUERY_ID, r[i][0]);
+                h.put(QaScriptView.QUERY, r[i][1]);
+                h.put(QaScriptView.DESCRIPTION, r[i][2]);
+                h.put(QaScriptView.SHORT_NAME, r[i][3]);
+                h.put(QaScriptView.SCRIPT_TYPE, r[i][4]);
+                h.put(QaScriptView.RESULT_TYPE, r[i][5]);
+                h.put(QaScriptView.UPPER_LIMIT, r[i][6]);
+                h.put(QaScriptView.IS_ACTIVE, r[i][7]);
                 v.add(h);
             }
         } finally {

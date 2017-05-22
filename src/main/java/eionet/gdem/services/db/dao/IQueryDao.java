@@ -78,6 +78,8 @@ public interface IQueryDao extends IDbSchema {
      * @throws SQLException If an error occurs.
      */
     Vector listQueries(String xmlSchema) throws SQLException;
+    
+    Vector listQueries(String xmlSchema, boolean active) throws SQLException;
 
     /**
      * Checks query file

@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head-old :: head}" />
+<body th:include="~{fragments/layout-old :: layout(~{::div})}">
+<div class="error-msg" th:text="${reason}"></div>
+
+</body>
+</html>

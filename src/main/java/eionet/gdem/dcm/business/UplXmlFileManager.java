@@ -16,10 +16,8 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import eionet.gdem.Constants;
+import eionet.gdem.web.spring.FileUploadWrapper;
 import org.apache.commons.io.IOUtils;
-
-
-import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
@@ -29,7 +27,7 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IUPLXmlFileDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.web.struts.xmlfile.UplXmlFileHolder;
+import eionet.gdem.web.spring.xmlfile.UplXmlFileHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +57,7 @@ public class UplXmlFileManager {
      * @throws DCMException
      *             If the database or file storing operation fails
      */
-    public void addUplXmlFile(String user, FormFile xmlfile, String title) throws DCMException {
+    public void addUplXmlFile(String user, FileUploadWrapper xmlfile, String title) throws DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_XMLFILE_PATH, "i")) {
@@ -72,14 +70,15 @@ public class UplXmlFileManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         try {
-            String fileName = xmlfile.getFileName();
+            String fileName = xmlfile.getFile().getName();
 
             if (fileExists(fileName)) {
                 throw new DCMException(BusinessConstants.EXCEPTION_XMLFILE_FILE_EXISTS);
             }
             // write XML file into filesystem
             storeXmlFile(xmlfile, fileName);
-            xmlfile.destroy();
+            // TODO: Fix this
+            // xmlfile.destroy();
 
             // store metadata in DB
             uplXmlFileDao.addUplXmlFile(fileName, title);
@@ -158,7 +157,7 @@ public class UplXmlFileManager {
      *             If database or file deleting operation fails
      */
 
-    public void updateUplXmlFile(String user, String xmlFileId, String title, String curFileName, FormFile file)
+    public void updateUplXmlFile(String user, String xmlFileId, String title, String curFileName, FileUploadWrapper file)
             throws DCMException {
 
         try {
@@ -174,7 +173,7 @@ public class UplXmlFileManager {
         }
 
         try {
-            String fileName = file.getFileName().trim();
+            String fileName = file.getFile().getName().trim();
             // upload file
             if (!Utils.isNullStr(fileName)) {
                 if (Utils.isNullStr(curFileName)) {
@@ -185,7 +184,8 @@ public class UplXmlFileManager {
                 }
                 // write XML file into filesystem
                 storeXmlFile(file, curFileName);
-                file.destroy();
+                // TODO: Fix this
+                // file.destroy();
             }
             // update metadata in DB
             uplXmlFileDao.updateUplXmlFile(xmlFileId, title, curFileName);
@@ -374,10 +374,10 @@ public class UplXmlFileManager {
      * @throws FileNotFoundException File not found
      * @throws IOException IO Exception
      */
-    public void storeXmlFile(FormFile file, String fileName) throws FileNotFoundException, IOException {
+    public void storeXmlFile(FileUploadWrapper file, String fileName) throws FileNotFoundException, IOException {
 
         OutputStream output = null;
-        InputStream in = file.getInputStream();
+        InputStream in = file.getFile().getInputStream();
         String filepath = Properties.xmlfileFolder + File.separator + fileName;
 
         try {
@@ -386,7 +386,8 @@ public class UplXmlFileManager {
         } finally {
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(output);
-            file.destroy();
+            // TODO: FIX THIS
+            // file.destroy();
         }
 
     }

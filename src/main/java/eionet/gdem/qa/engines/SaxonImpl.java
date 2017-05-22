@@ -88,7 +88,7 @@ public class SaxonImpl extends QAScriptEngineStrategy {
             XQueryExecutable exp = comp.compile(queryReader);
             XQueryEvaluator ev = exp.load();
             ev.setExternalVariable(new QName("source_url"), new XdmAtomicValue(script.getSrcFileUrl()));
-            ev.setExternalVariable(new QName("base_url"), new XdmAtomicValue(Properties.gdemURL + Properties.contextPath));
+            //ev.setExternalVariable(new QName("base_url"), new XdmAtomicValue("http://" + Properties.appHost + Properties.contextPath));
             XdmValue val = ev.evaluate();
             proc.writeXdmValue(val, out);
         } catch (SaxonApiException e) {

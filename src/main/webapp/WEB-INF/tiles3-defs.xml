@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+    <definition name="MainFooter" template="/WEB-INF/view/old/MainFooter.jsp">
+        <put-attribute name="showFooter" type="string" value="true" cascade="true"/>
+        <!--<put-attribute name="environment" value="Data Conversion Module" />
+        <put -attribute name="buildNo" value="20050614" />-->
+    </definition>
+    <definition name="MainHeader" template="/WEB-INF/view/old/MainHeader.jsp" />
+    <definition name="Error" template="/WEB-INF/view/old/Error.jsp" />
+    <!--<definition name="error/error" template="/WEB-INF/view/error/error.jsp" />-->
+    <definition name="error/error" template="/WEB-INF/view/old/Error.jsp" />
+
+    <definition name="base" template="/WEB-INF/view/old/layout.jsp">
+        <put-attribute name="title" value="label.gdem.title" />
+        <put-attribute name="header" type="definition" value="MainHeader" />
+        <put-attribute name="error" type="definition" value="Error" cascade="true"/>
+        <put-attribute name="body" type="definition" value=" " />
+        <!--<put-attribute name="showFooter" type="string" value="true" />-->
+        <put-attribute name="footer" type="definition" value="MainFooter" />
+    </definition>
+
+    <definition name="/test.jsp" extends="base">
+        <put-attribute name="body" value="Error" />
+    </definition>
+    <definition name="/Login" extends="base">
+        <put-attribute name="title" value="label.login.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/Login.jsp" />
+    </definition>
+    <definition name="/conversions/list" extends="base">
+        <put-attribute name="title" value="label.stylesheet.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/conversions/list.jsp" />
+    </definition>
+    <definition name="/conversions/generated" extends="base">
+        <put-attribute name="title" value="label.stylesheet.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/conversions/generated.jsp" />
+    </definition>
+    <definition name="/conversions/schemaConversions" extends="base">
+        <put-attribute name="body" value="/WEB-INF/view/old/conversions/SchemaStylesheets.jsp" />
+    </definition>
+    <definition name="/conversions/add" extends="base">
+        <put-attribute name="title" value="label.stylesheet.add" />
+        <put-attribute name="body" value="/WEB-INF/view/old/conversions/add.jsp" />
+    </definition>
+    <definition name="/conversions/edit" extends="base">
+        <put-attribute name="body" value="/WEB-INF/view/old/conversions/edit.jsp" />
+    </definition>
+    <definition name="/conversions/view" extends="base">
+        <put-attribute name="body" value="/WEB-INF/view/old/conversions/view.jsp" />
+    </definition>
+    <definition name="/schemas/unknown" extends="base">
+        <put-attribute name="body" value="/WEB-INF/view/old/schemas/Schema.jsp" />
+    </definition>
+    <definition name="/schemas/list" extends="base">
+        <put-attribute name="title" value="label.schemas.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/schemas/list.jsp" />
+    </definition>
+    <definition name="/schemas/add" extends="base">
+        <put-attribute name="title" value="label.title.uplSchema.add" />
+        <put-attribute name="body" value="/WEB-INF/view/old/schemas/add.jsp" />
+    </definition>
+    <definition name="/schemas/view" extends="base">
+        <put-attribute name="title" value="label.title.uplSchema.add" />
+        <put-attribute name="body" value="/WEB-INF/view/old/schemas/view.jsp" />
+    </definition>
+    <definition name="/schemas/edit" extends="base">
+        <put-attribute name="title" value="label.title.uplSchema.add" />
+        <put-attribute name="body" value="/WEB-INF/view/old/schemas/edit.jsp" />
+    </definition>
+    <definition name="/schemas/conversions" extends="base">
+        <put-attribute name="title" value="label.title.uplSchema.add" />
+        <put-attribute name="body" value="/WEB-INF/view/old/schemas/conversions.jsp" />
+    </definition>
+    <definition name="/converter/list" extends="base">
+        <put-attribute name="title" value="label.conversion.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/converter/list.jsp" />
+    </definition>
+    <definition name="/converter/search" extends="base">
+        <put-attribute name="title" value="label.conversion.crconversion.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/converter/search.jsp" />
+    </definition>
+    <definition name="/converter/excel2xml" extends="base">
+        <put-attribute name="title" value="label.conversion.excel2xml.heading" />
+        <put-attribute name="body" value="/WEB-INF/view/old/converter/excel2xml.jsp" />
+    </definition>
+    <definition name="/converter/json2xml" extends="base">
+        <put-attribute name="title" value="label.conversion.json2xml.heading" />
+        <put-attribute name="body" value="/WEB-INF/view/old/converter/json2xml.jsp" />
+    </definition>
+
+    <definition name="/xmlfiles/list" extends="base">
+        <put-attribute name="title" value="label.xmlfiles.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/xmlfiles/list.jsp" />
+    </definition>
+    <definition name="/xmlfiles/add" extends="base">
+        <put-attribute name="title" value="label.title.uplXmlFile.add" />
+        <put-attribute name="body" value="/WEB-INF/view/old/xmlfiles/add.jsp" />
+    </definition>
+    <definition name="/xmlfiles/edit" extends="base">
+        <put-attribute name="body" value="/WEB-INF/view/old/xmlfiles/edit.jsp" />
+    </definition>
+    <definition name="/xmlfiles/rename" extends="base">
+        <put-attribute name="body" value="/WEB-INF/view/old/xmlfiles/rename.jsp" />
+    </definition>
+    <definition name="/config/ldap" extends="base">
+        <put-attribute name="title" value="label.config.ldap.admin" />
+        <put-attribute name="body" value="/WEB-INF/view/old/config/ldap.jsp" />
+    </definition>
+    <definition name="/config/database" extends="base">
+        <put-attribute name="title" value="label.config.db.admin" />
+        <put-attribute name="body" value="/WEB-INF/view/old/config/database.jsp" />
+    </definition>
+    <definition name="/config/basex" extends="base">
+        <put-attribute name="title" value="label.config.basexserver.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/config/basex.jsp" />
+    </definition>
+    <definition name="/config/system" extends="base">
+        <put-attribute name="title" value="label.config.system.admin" />
+        <put-attribute name="body" value="/WEB-INF/view/old/config/system.jsp" />
+    </definition>
+    <definition name="/config/purge" extends="base">
+        <put-attribute name="title" value="label.config.purge" />
+        <put-attribute name="body" value="/WEB-INF/view/old/config/purge.jsp" />
+    </definition>
+    <definition name="/hosts/list" extends="base">
+        <put-attribute name="title" value="label.hosts.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/hosts/list.jsp" />
+    </definition>
+    <definition name="/hosts/edit" extends="base">
+        <put-attribute name="body" value="/WEB-INF/view/old/hosts/edit.jsp" />
+    </definition>
+    <definition name="/hosts/add" extends="base">
+        <put-attribute name="body" value="/WEB-INF/view/old/hosts/add.jsp" />
+    </definition>
+    <definition name="ConverterTabs" template="/WEB-INF/view/old/converter/tabs.jsp">
+        <put-attribute name="selectedTab" type="string" value="convertXML" />
+    </definition>
+    <definition name="/validation" extends="base">
+        <put-attribute name="title" value="label.conversion.validate.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/validation/validate.jsp" />
+    </definition>
+
+    <definition name="/scripts/list" extends="base">
+        <put-attribute name="title" value="label.qascript.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/scripts/list.jsp" />
+    </definition>
+
+    <definition name="/scripts/history" extends="base">
+        <put-attribute name="title" value="label.qascriptHistory.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/scripts/history.jsp" />
+    </definition>
+
+    <definition name="/scripts/view" extends="base">
+        <put-attribute name="title" value="label.qascriptView.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/scripts/view.jsp" />
+    </definition>
+
+    <definition name="/scripts/edit" extends="base">
+        <put-attribute name="title" value="label.qascriptEdit.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/scripts/edit.jsp" />
+    </definition>
+
+    <definition name="/scripts/add" extends="base">
+        <put-attribute name="title" value="label.qascriptAdd.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/scripts/add.jsp" />
+    </definition>
+
+    <definition name="/schemas/scripts" extends="base">
+        <put-attribute name="title" value="label.schemaQascripts.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/schemas/scripts.jsp" />
+    </definition>
+
+    <definition name="/schemas/sync" extends="base">
+        <put-attribute name="title" value="label.syncuplschema.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/schemas/SyncUplSchema.jsp" />
+    </definition>
+    <definition name="/scripts/sync" extends="base">
+        <put-attribute name="title" value="label.syncuplscript.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/scripts/SyncUplScript.jsp" />
+    </definition>
+
+    <definition name="/qaSandbox/view" extends="base">
+        <put-attribute name="title" value="label.qasandbox.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/qasandbox/QASandbox.jsp" />
+    </definition>
+
+    <definition name="/qaSandbox/result" extends="base">
+        <put-attribute name="title" value="label.qasandboxresult.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/qasandbox/QASandboxResult.jsp" />
+    </definition>
+
+    <definition name="/workqueue" extends="base">
+        <put-attribute name="title" value="label.qasandboxresult.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/workqueue/view.jsp" />
+    </definition>
+
+</tiles-definitions>

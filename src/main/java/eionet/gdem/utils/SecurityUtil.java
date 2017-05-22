@@ -37,7 +37,7 @@ import eionet.acl.AppUser;
 import edu.yale.its.tp.cas.client.filter.CASFilter;
 import eionet.acl.SignOnException;
 import eionet.gdem.XMLConvException;
-import eionet.gdem.web.struts.login.AfterCASLoginAction;
+import org.springframework.web.util.UrlPathHelper;
 
 /**
  * This is a class containing some utility methods for keeping security.
@@ -145,10 +145,11 @@ public final class SecurityUtil {
         String urlWithContextPath = getUrlWithContextPath(request);
         String result = "login";
 
-        String afterLoginUrl = getRealRequestURL(request);
+        /*String afterLoginUrl = getRealRequestURL(request);*/
+        String afterLoginUrl = new UrlPathHelper().getPathWithinApplication(request);
         // store the current page in the session to be able to come back after login
         if (afterLoginUrl != null && !afterLoginUrl.contains("login"))
-            request.getSession().setAttribute(AfterCASLoginAction.AFTER_LOGIN_ATTR_NAME, afterLoginUrl);
+            request.getSession().setAttribute("afterLogin", afterLoginUrl);
 
         String casLoginUrl = request.getSession().getServletContext().getInitParameter(CASFilter.LOGIN_INIT_PARAM);
         if (casLoginUrl != null) {
@@ -157,14 +158,14 @@ public final class SecurityUtil {
             loginUrl.append("?service=");
             try {
                 // + request.getScheme() + "://" + SERVER_NAME + request.getContextPath() + "/login";
-                loginUrl.append(URLEncoder.encode(urlWithContextPath + "/do/afterLogin", "UTF-8"));
+                loginUrl.append(URLEncoder.encode(urlWithContextPath + "/login/afterLogin", "UTF-8"));
                 result = loginUrl.toString();
             } catch (UnsupportedEncodingException e) {
                 throw new XMLConvException(e.toString(), e);
             }
         } else {
             // got to local login page
-            result = urlWithContextPath + "/do/login";
+            result = urlWithContextPath + "/login/local";
         }
 
         return result;

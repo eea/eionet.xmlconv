@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?><envelope released="false" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://cdr.eionet.europa.eu/schemas/envelope-metadata.xsd">
+    <title>WISE-SoE: Water Quality</title>
+    <description></description>
+    <date>2015-11-18T18:14:25Z</date>
+    <coverage>http://rod.eionet.europa.eu/spatial/16</coverage>
+    <countrycode>GR</countrycode>
+    <obligation>http://rod.eionet.europa.eu/obligations/714</obligation>
+    <link>http://cdrtest.eionet.europa.eu/gr/colvjazdw/envvkyrww</link>
+    <year>2015</year>
+    <endyear></endyear>
+    <partofyear>Whole Year</partofyear>
+    <file name="AggDataByWaterBody_SampleTestFile_20151111_AggregatedDataByWaterBody.xml" type="text/xml" schema="http://dd.eionet.europa.eu/GetSchema?id=1234" title="Converted from - AggDataByWaterBody_SampleTestFile_20151111.xls" restricted="no" link="http://cdrtest.eionet.europa.eu/gr/sample.xml" uploaded="2015-11-18T17:13:47Z"/>
+</envelope>

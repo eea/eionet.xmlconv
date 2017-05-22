@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head-old :: head}" />
+<body th:include="~{fragments/layout-old :: layout(~{::div})}">
+<div>
+  <!--<p th:each="message, pos : ${messages}" th:text="${message}"></p>-->
+  <div class="row">
+    <div class="columns">
+      <h3>Script Information</h3>
+    </div>
+    <div class="columns small-1">
+      <ul class="dropdown menu" data-dropdown-menu>
+        <li>
+          <a href="#0">Operations</a>
+          <ul class="menu">
+            <li><a th:href="@{/projects/{projectId}/scripts/{id}/edit(projectId=${projectId}, id=${script.id})}">Edit Script</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="columns">
+      <table>
+        <tbody>
+          <tr>
+            <th>Script Name</th>
+            <td th:text="${script.name}"></td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td th:text="${script.description}"></td>
+          </tr>
+          <tr>
+            <th>Script type</th>
+            <td th:text="${script.type.text}"></td>
+          </tr>
+          <tr>
+            <th>Linked Schemata</th>
+            <td><ul><li th:each="s : ${script.linkedSchemata}" th:text="${s.url}"></li></ul></td>
+          </tr>
+          <tr>
+            <th>Active</th>
+            <td th:text="${script.active}"></td>
+          </tr>
+          <tr>
+            <th>Last modified</th>
+            <td th:text="${script.lastModified}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

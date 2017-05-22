@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body th:fragment="layout(workarea)">
+    <div id="container">
+      <div th:replace="~{fragments/menu-old :: menu}"/>
+      <div id="workarea" th:insert="${workarea}"/>
+    </div>
+    <div th:replace="~{fragments/footer-old :: footer}"/>
+    <div th:replace="~{fragments/scripts-old :: scripts}"/>
+</body>
+</html>

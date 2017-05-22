@@ -1,6 +1,7 @@
 package eionet.gdem.services.db.dao.mysql;
 
 import eionet.gdem.Properties;
+import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
@@ -38,6 +39,9 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
             + RESULT_TYPE_FLD + "=" + CONVTYPE_TABLE + "." + CONV_TYPE_FLD;
 
     private static final String qListQueriesBySchema = qListQueries + " WHERE " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + "= ?";
+
+    private static final String qListQueriesByActive = qListQueries + " WHERE " + QUERY_TABLE + "." + ACTIVE_FLD + "= ?";
+
     private static final String qQueryTextByFileName = "SELECT " + QUERY_FILE_FLD + " FROM " + QUERY_TABLE + " WHERE "
             + QUERY_FILE_FLD + "= ?";
     private static final String qQueryTextByID = "SELECT " + QUERY_FILE_FLD + " FROM " + QUERY_TABLE + " WHERE " + QUERY_ID_FLD
@@ -238,18 +242,18 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
             if (r.length > 0) {
                 h = new HashMap();
-                h.put("query_id", queryId);
-                h.put("schema_id", r[0][0]);
-                h.put("query", r[0][1]);
-                h.put("description", r[0][2]);
-                h.put("short_name", r[0][3]);
-                h.put("xml_schema", r[0][4]);
-                h.put("content_type", r[0][5]);
-                h.put("meta_type", r[0][6]);
-                h.put("script_type", r[0][7]);
-                h.put("upper_limit", r[0][8]);
-                h.put("url", r[0][9]);
-                h.put("is_active", r[0][10]);
+                h.put(QaScriptView.QUERY_ID, queryId);
+                h.put(QaScriptView.SCHEMA_ID, r[0][0]);
+                h.put(QaScriptView.QUERY, r[0][1]);
+                h.put(QaScriptView.DESCRIPTION, r[0][2]);
+                h.put(QaScriptView.SHORT_NAME, r[0][3]);
+                h.put(QaScriptView.XML_SCHEMA, r[0][4]);
+                h.put(QaScriptView.CONTENT_TYPE, r[0][5]);
+                h.put(QaScriptView.META_TYPE, r[0][6]);
+                h.put(QaScriptView.SCRIPT_TYPE, r[0][7]);
+                h.put(QaScriptView.UPPER_LIMIT, r[0][8]);
+                h.put(QaScriptView.URL, r[0][9]);
+                h.put(QaScriptView.IS_ACTIVE, r[0][10]);
             }
 
         } finally {
@@ -339,21 +343,71 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
             v = new Vector(r.length);
             for (int i = 0; i < r.length; i++) {
                 Hashtable h = new Hashtable();
-                h.put("query_id", r[i][0]);
-                h.put("short_name", r[i][1]);
-                h.put("query", r[i][2]);
-                h.put("description", r[i][3]);
-                h.put("schema_id", r[i][4]);
-                h.put("xml_schema", r[i][5]);
-                h.put("content_type_id", r[i][6]);
-                h.put("content_type_out", r[i][7]);
-                h.put("script_type", r[i][8]);
-                h.put("upper_limit", r[i][9]);
-                h.put("is_active", r[i][11]);
+                h.put(QaScriptView.QUERY_ID, r[i][0]);
+                h.put(QaScriptView.SHORT_NAME, r[i][1]);
+                h.put(QaScriptView.QUERY, r[i][2]);
+                h.put(QaScriptView.DESCRIPTION, r[i][3]);
+                h.put(QaScriptView.SCHEMA_ID, r[i][4]);
+                h.put(QaScriptView.XML_SCHEMA, r[i][5]);
+                h.put(QaScriptView.CONTENT_TYPE_ID, r[i][6]);
+                h.put(QaScriptView.CONTENT_TYPE_OUT, r[i][7]);
+                h.put(QaScriptView.SCRIPT_TYPE, r[i][8]);
+                h.put(QaScriptView.UPPER_LIMIT, r[i][9]);
+                h.put(QaScriptView.IS_ACTIVE, r[i][11]);
                 v.add(h);
             }
+        } finally {
+            closeAllResources(rs, pstmt, conn);
         }
-        finally {
+
+        return v;
+    }
+
+    @Override
+    public Vector listQueries(String xmlSchema, boolean active) throws SQLException {
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        boolean forSchema = xmlSchema != null;
+        Vector v = null;
+        String query = (forSchema) ? qListQueriesBySchema : qListQueriesByActive;
+
+        if (isDebugMode) {
+            LOGGER.debug("XMLSchema is " + xmlSchema);
+            LOGGER.debug("Query is " + query);
+        }
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(query);
+            if (forSchema) {
+                pstmt.setString(1, xmlSchema);
+            }
+            if (!forSchema) {
+                pstmt.setString(1, (active) ? "1" : "0");
+            }
+
+            rs = pstmt.executeQuery();
+            String[][] r = getResults(rs);
+            v = new Vector(r.length);
+            for (int i = 0; i < r.length; i++) {
+
+                Hashtable h = new Hashtable();
+                h.put(QaScriptView.QUERY_ID, r[i][0]);
+                h.put(QaScriptView.SHORT_NAME, r[i][1]);
+                h.put(QaScriptView.QUERY, r[i][2]);
+                h.put(QaScriptView.DESCRIPTION, r[i][3]);
+                h.put(QaScriptView.SCHEMA_ID, r[i][4]);
+                h.put(QaScriptView.XML_SCHEMA, r[i][5]);
+                h.put(QaScriptView.CONTENT_TYPE_ID, r[i][6]);
+                h.put(QaScriptView.CONTENT_TYPE, r[i][7]);
+                h.put(QaScriptView.SCRIPT_TYPE, r[i][8]);
+                h.put(QaScriptView.UPPER_LIMIT, r[i][9]);
+                h.put(QaScriptView.IS_ACTIVE, r[i][11]);
+                v.add(h);
+
+            }
+        } finally {
             closeAllResources(rs, pstmt, conn);
         }
 

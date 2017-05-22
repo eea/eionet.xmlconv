@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head-old :: head}" />
+<body th:include="~{fragments/layout-old :: layout(~{::div})}">
+
+<!-- replace deprecated tab menu -->
+<div style="width:100%;">
+  <div id="tabbedmenu">
+    <ul>
+      <li><a th:href="@{/config/database}" th:text="#{label.config.db}"></a></li>
+      <li><a th:href="@{/config/system}" th:text="#{label.config.system}"></a></li>
+      <li><a th:href="@{/config/purge}" th:text="#{label.config.purge}"></a></li>
+      <li id="currenttab"><a th:href="@{/config/ldap}" th:text="#{label.config.ldap}"></a></li>
+      <li><a th:href="@{/config/basex}" th:text="#{label.config.basexserver}"></a></li>
+    </ul>
+  </div>
+  <div>
+    <p th:each="message, pos : ${successMessages}" th:text="${message}"></p>
+    <p th:each="message, pos : ${errorMessages}" th:text="${message}"></p>
+    <form action="#" th:action="@{/config/ldap}" th:object="${form}" method="post">
+      <fieldset>
+        <legend th:text="#{label.config.ldap.admin}"></legend>
+      </fieldset>
+      <label class="question" for="url" th:text="#{label.config.ldap.url}"></label>
+      <input th:value="*{url}" type="text" id="url" name="url"/>
+      <label class="question" th:text="#{label.config.ldap.context}"></label>
+      <input th:value="*{context}" type="text" id="context" name="context"/>
+      <label class="question" th:text="#{label.config.ldap.userDir}"></label>
+      <input th:value="*{userDir}" type="text" id="userDir" name="userDir"/>
+      <label class="question" th:text="#{label.config.ldap.attrUid}"></label>
+      <input th:value="*{attrUid}" type="text" id="attrUid" name="attrUid"/>
+      <input type="submit" th:value="#{label.config.ldap.save}"/>
+      <input type="reset" th:value="Reset"/>
+    </form>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head-old :: head}" />
+<body th:include="~{fragments/layout-old :: layout(~{::form})}">
+  <form action="#" th:action="@{/projects/new}" th:object="${project}" method="post">
+    <label>Project name: </label>
+    <input type="text" th:field="*{name}"/>
+    <button>Save</button>
+  </form>
+</body>
+</html>

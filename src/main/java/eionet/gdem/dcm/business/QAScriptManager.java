@@ -26,17 +26,17 @@ import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.web.spring.FileUploadWrapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
-
-import org.apache.struts.upload.FormFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,17 +78,17 @@ public class QAScriptManager {
                     scriptData = new HashMap<String, String>();
                 }
 
-                qaScript.setScriptId((String) scriptData.get("query_id"));
-                qaScript.setSchemaId((String) scriptData.get("schema_id"));
-                qaScript.setSchema((String) scriptData.get("xml_schema"));
-                qaScript.setDescription((String) scriptData.get("description"));
-                qaScript.setShortName((String) scriptData.get("short_name"));
-                qaScript.setResultType((String) scriptData.get("content_type"));
-                qaScript.setScriptType((String) scriptData.get("script_type"));
-                qaScript.setFileName((String) scriptData.get("query"));
-                qaScript.setUpperLimit((String) scriptData.get("upper_limit"));
-                qaScript.setUrl((String) scriptData.get("url"));
-                qaScript.setActive((String) scriptData.get("is_active"));
+                qaScript.setScriptId((String) scriptData.get(QaScriptView.QUERY_ID));
+                qaScript.setSchemaId((String) scriptData.get(QaScriptView.SCHEMA_ID));
+                qaScript.setSchema((String) scriptData.get(QaScriptView.XML_SCHEMA));
+                qaScript.setDescription((String) scriptData.get(QaScriptView.DESCRIPTION));
+                qaScript.setShortName((String) scriptData.get(QaScriptView.SHORT_NAME));
+                qaScript.setResultType((String) scriptData.get(QaScriptView.CONTENT_TYPE));
+                qaScript.setScriptType((String) scriptData.get(QaScriptView.SCRIPT_TYPE));
+                qaScript.setFileName((String) scriptData.get(QaScriptView.QUERY));
+                qaScript.setUpperLimit((String) scriptData.get(QaScriptView.UPPER_LIMIT));
+                qaScript.setUrl((String) scriptData.get(QaScriptView.URL));
+                qaScript.setActive((String) scriptData.get(QaScriptView.IS_ACTIVE));
 
                 String queryFolder = Properties.queriesFolder;
 
@@ -149,7 +149,7 @@ public class QAScriptManager {
      * @throws DCMException if DB or file operation fails.
      */
     public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
-            String scriptType, String curFileName, FormFile file, String upperLimit, String url) throws DCMException {
+                       String scriptType, String curFileName, FileUploadWrapper file, String upperLimit, String url) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
@@ -167,7 +167,7 @@ public class QAScriptManager {
         }
 
         try {
-            String fileName = file.getFileName().trim();
+            String fileName = file.getFile().getName().trim();
             // upload file
             if (!Utils.isNullStr(fileName)) {
                 if (Utils.isNullStr(curFileName)) {
@@ -284,10 +284,10 @@ public class QAScriptManager {
      * @throws FileNotFoundException File is not found.
      * @throws IOException file store operations failed.
      */
-    public void storeQAScriptFile(FormFile file, String fileName) throws FileNotFoundException, IOException {
+    public void storeQAScriptFile(FileUploadWrapper file, String fileName) throws FileNotFoundException, IOException {
 
         OutputStream output = null;
-        InputStream in = file.getInputStream();
+        InputStream in = file.getFile().getInputStream();
         String filepath = Properties.queriesFolder + File.separator + fileName;
 
         try {
@@ -296,7 +296,8 @@ public class QAScriptManager {
         } finally {
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(output);
-            file.destroy();
+            // TODO: Fix this
+            // file.destroy();
         }
 
     }
@@ -365,7 +366,7 @@ public class QAScriptManager {
 
         try {
             HashMap hash = queryDao.getQueryInfo(scriptId);
-            String fileName = (String) hash.get("query");
+            String fileName = (String) hash.get(QaScriptView.QUERY);
 
             String queriesFolder = Properties.queriesFolder;
             if (!queriesFolder.endsWith(File.separator)) {
@@ -396,7 +397,7 @@ public class QAScriptManager {
      * @throws DCMException If an error occurs.
      */
     public String add(String user, String shortName, String schemaId, String schema, String resultType, String description,
-            String scriptType, FormFile scriptFile, String upperLimit, String url) throws DCMException {
+            String scriptType, FileUploadWrapper scriptFile, String upperLimit, String url) throws DCMException {
 
         String scriptId = null;
         // If remote file URL and local file are specified use local file
@@ -413,11 +414,11 @@ public class QAScriptManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
-        boolean useLocalFile = !Utils.isNullStr(scriptFile.getFileName());
+        boolean useLocalFile = !Utils.isNullStr(scriptFile.getFile().getName());
         try {
             String fileName = "";
             if (useLocalFile) {
-                fileName = scriptFile.getFileName().trim();
+                fileName = scriptFile.getFile().getName().trim();
             } else {
                 fileName = StringUtils.substringAfterLast(url, "/");
             }

@@ -138,18 +138,18 @@ public class XQueryJob implements Job, InterruptableJob {
                 //boolean schemaExpired = false;
                 //boolean isNotLatestReleasedDDSchema = false;
 
-                if (query != null && query.containsKey("content_type")) {
-                    contentType = (String) query.get("content_type");
+                if (query != null && query.containsKey(QaScriptView.CONTENT_TYPE)) {
+                    contentType = (String) query.get(QaScriptView.CONTENT_TYPE);
                 }
                 // get script type if it comes from T_QUERY table
-                if (query != null && query.containsKey("script_type")) {
-                    scriptType = (String) query.get("script_type");
+                if (query != null && query.containsKey(QaScriptView.SCRIPT_TYPE)) {
+                    scriptType = (String) query.get(QaScriptView.SCRIPT_TYPE);
                 }
 
                 // stylesheet - to check if it is expired
-                if (query != null && query.containsKey("xml_schema")) {
+                if (query != null && query.containsKey(QaScriptView.XML_SCHEMA)) {
                     // set schema if exists:
-                    schema = getSchema((String) query.get("xml_schema"));
+                    schema = getSchema((String) query.get(QaScriptView.XML_SCHEMA));
                     //schemaExpired = (schema != null && schema.isExpired());
                     //isNotLatestReleasedDDSchema = DataDictUtil.isDDSchemaAndNotLatestReleased(schema.getSchema());
                 }
@@ -174,10 +174,10 @@ public class XQueryJob implements Job, InterruptableJob {
                 xq.setSchema(schema);
                 xq.setJobId(this.jobId);
 
-                if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
-                    if (query != null && query.containsKey("url")) {
-                        xq.setScriptSource((String) query.get("url"));
-                    }
+                    if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
+                        if (query != null && query.containsKey(QaScriptView.URL)) {
+                            xq.setScriptSource((String) query.get(QaScriptView.URL));
+                        }
                     LOGGER.info("** FME Job starts, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);
                 } else {
                     LOGGER.info("** XQuery Job starts, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head-old :: head}" />
+<body th:include="~{fragments/layout-old :: layout(~{::div})}">
+<div>
+  <div class="row">
+    <div class="columns">
+      <table>
+        <thead>
+          <th>URL</th>
+          <th>Name</th>
+          <th>Select</th>
+        </thead>
+        <tbody>
+          <form th:action="@{/obligations/delete}" th:method="post">
+            <tr th:each="obligation, pos : ${obligations}">
+              <td width="80%"><a th:text="${obligation.url}"></a></td>
+              <td>Name</td>
+              <td><input th:name="${obligation.id}" type="checkbox"></td></td>
+            </tr>
+            <button>Delete</button>
+          </form>
+        </tbody>
+      </table>
+    </div>
+    <!--<div class="columns small-1">
+      <ul>
+        <li><a th:href="@{/obligations/edit}">Edit</a></li>
+        <li></li>
+      </ul>
+    </div>-->
+  </div>
+</div>
+</body>
+</html>

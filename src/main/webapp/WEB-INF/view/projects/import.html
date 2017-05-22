@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head-old :: head}" />
+<body th:include="~{fragments/layout-old :: layout(~{::div})}">
+<div>
+  <p th:each="message, pos : ${messages}" ></p>
+  <form action="#" th:action="@{/projects/import}" th:object="${fileWrapper}" enctype="multipart/form-data" method="post">
+    <label>Project name: </label>
+    <input type="file" name="file" />
+    <input type="submit" th:value="Upload"/>
+  </form>
+</div>
+</body>
+</html>

@@ -1,3 +1,4 @@
+<%--
 <%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN" "http://www.w3.org/TR/REC-html40/frame.dtd">
@@ -21,3 +22,4 @@
         </noframes>
     </frameset>
 </html>
+--%>

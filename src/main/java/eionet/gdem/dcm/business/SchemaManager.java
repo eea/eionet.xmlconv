@@ -36,13 +36,11 @@ import java.util.List;
 import java.util.Vector;
 
 import eionet.gdem.Constants;
+import eionet.gdem.web.spring.FileUploadWrapper;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.commons.collections.comparators.NullComparator;
 import org.apache.commons.io.IOUtils;
-
-
-import org.apache.struts.upload.FormFile;
 
 import eionet.gdem.Properties;
 import eionet.gdem.conversion.ConversionService;
@@ -58,6 +56,7 @@ import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.dto.UplSchema;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
@@ -66,10 +65,10 @@ import eionet.gdem.utils.HttpUtils;
 import eionet.gdem.utils.MultipartFileUpload;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.web.struts.qascript.QAScriptListHolder;
-import eionet.gdem.web.struts.schema.SchemaElemHolder;
-import eionet.gdem.web.struts.schema.UplSchemaHolder;
-import eionet.gdem.web.struts.stylesheet.StylesheetListHolder;
+import eionet.gdem.web.spring.scripts.QAScriptListHolder;
+import eionet.gdem.web.spring.schemas.SchemaElemHolder;
+import eionet.gdem.web.spring.schemas.UplSchemaHolder;
+import eionet.gdem.web.spring.stylesheet.StylesheetListHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -234,7 +233,7 @@ public class SchemaManager {
      * @return StylesheetListHolder object holding schema stylesheet and user permission information
      * @throws DCMException in case of database error occurs.
      */
-    public StylesheetListHolder getSchemaStylesheetsList(String schema) throws DCMException {
+    public StylesheetListHolder getSchemaStylesheetsList(String schemaId) throws DCMException {
         StylesheetListHolder st = new StylesheetListHolder();
 
         ArrayList<Schema> schemas;
@@ -243,7 +242,10 @@ public class SchemaManager {
 
             schemas = new ArrayList<Schema>();
 
-            String schemaId = schemaDao.getSchemaID(schema);
+            /*String schemaId = schemaDao.getSchemaID(schema);*/
+            HashMap<String, String> schemaMap = schemaDao.getSchema(schemaId);
+            String schema = schemaMap.get("xml_schema");
+
 
             if (schemaId == null) {
                 st.setHandcoded(false);
@@ -266,7 +268,7 @@ public class SchemaManager {
                 boolean ddConv = false;
                 String xslUrl;
 
-                if (!xsl.startsWith(Properties.gdemURL + "/do/getStylesheet?id=")) {
+                if (!xsl.startsWith(Properties.gdemURL + "/conversions/")) {
 
                     File f = new File(Properties.xslFolder + File.separatorChar + xsl);
                     if (f != null && f.exists()) {
@@ -299,7 +301,7 @@ public class SchemaManager {
             schemas.add(sc);
             st.setHandCodedStylesheets(schemas);
         } catch (Exception e) {
-            LOGGER.debug("Errror getting schema stylesheets", e);
+            LOGGER.debug("Error getting schema stylesheets", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return st;
@@ -357,13 +359,13 @@ public class SchemaManager {
                 for (int j = 0; j < qascripts.size(); j++) {
                     HashMap qascript = (HashMap) qascripts.get(j);
                     QAScript qas = new QAScript();
-                    qas.setScriptId((String) qascript.get("query_id"));
-                    qas.setFileName((String) qascript.get("query"));
-                    qas.setDescription((String) qascript.get("description"));
-                    qas.setShortName((String) qascript.get("short_name"));
-                    qas.setScriptType((String) qascript.get("script_type"));
-                    qas.setResultType((String) qascript.get("result_type"));
-                    qas.setActive((String) qascript.get("is_active"));
+                    qas.setScriptId((String) qascript.get(QaScriptView.QUERY_ID));
+                    qas.setFileName((String) qascript.get(QaScriptView.QUERY));
+                    qas.setDescription((String) qascript.get(QaScriptView.DESCRIPTION));
+                    qas.setShortName((String) qascript.get(QaScriptView.SHORT_NAME));
+                    qas.setScriptType((String) qascript.get(QaScriptView.SCRIPT_TYPE));
+                    qas.setResultType((String) qascript.get(QaScriptView.RESULT_TYPE));
+                    qas.setActive((String) qascript.get(QaScriptView.IS_ACTIVE));
                     qases.add(qas);
 
                     // get file last modified only if schemaId is known
@@ -759,12 +761,13 @@ public class SchemaManager {
      * @param fkSchemaId XML Schema object ID.
      * @throws DCMException in case of IO or database errors.
      */
-    public void addUplSchema(String user, FormFile file, String fileName, String fkSchemaId) throws DCMException {
+    public void addUplSchema(String user, FileUploadWrapper file, String fileName, String fkSchemaId) throws DCMException {
 
         try {
-            InputStream fileInputStream = file.getInputStream();
+            InputStream fileInputStream = file.getFile().getInputStream();
             addUplSchema(user, fileInputStream, fileName, fkSchemaId);
-            file.destroy();
+            // TODO: Fix this
+            // file.destroy();
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
@@ -1014,13 +1017,14 @@ public class SchemaManager {
      * @param file new content of the XML Schema
      * @throws DCMException in case of IO or database error.
      */
-    public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, FormFile file)
+    public void updateUplSchema(String user, String uplSchemaId, String schemaId, String fileName, FileUploadWrapper file)
             throws DCMException {
 
         try {
-            InputStream fileInputStream = file.getInputStream();
+            InputStream fileInputStream = file.getFile().getInputStream();
             updateUplSchema(user, uplSchemaId, schemaId, fileName, fileInputStream);
-            file.destroy();
+            // TODO: Fix this
+            // file.destroy();
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
