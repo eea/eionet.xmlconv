@@ -9,9 +9,6 @@
 %>
 
 <ed:breadcrumbs-push label="Workqueue" level="1"/>
-<%--<tiles:insertDefinition name="TmpHeader">
-  <tiles:putAttribute name="title" value="QA Jobs"/>
-</tiles:insertDefinition>--%>
 
 <script type="text/javascript">
     // <![CDATA[
@@ -77,7 +74,7 @@
 
 <p>Currently there are following jobs in the queue...</p>
 <div id="main_table">
-  <form id="jobs" action="main" method="post">
+  <form:form id="jobs" servletRelativeAction="/workqueue/actions" method="post" modelAttribute="form">
     <table class="datatable" width="100%">
       <col style="width:30px; text-align:right;"/>
       <col style="width:50px; text-align:right;"/>
@@ -99,93 +96,92 @@
       </thead>
       <tbody>
 
-      <c:forEach items="${jobList}" varStatus="index">
-      <tr class="${i % 2 != 0 ? 'zebraeven' : 'zebraodd'}">
-        <c:choose>
-          <c:when test="${wqdPrm || wquPrm}">
-            <td>
-              <input type="checkbox" name="jobID" id="job_${jobId}" value="${jobId}"/>
-            </td>
-            <td>
-              <label for="job_${jobId}">${jobId}</label>
-            </td>
-          </c:when>
-          <c:otherwise>
-            <td/>
-            <td>${jobId}</td>
-          </c:otherwise>
-        </c:choose>
-        <td>
-          <a href="${url}" rel="nofollow">${urlName}</a>
-        </td>
-        <td>
-          <%--<%if (!eionet.gdem.qa.XQScript.SCRIPT_LANG_FME.equals(scriptType)) {%>--%>
+      <c:forEach items="${jobList}" varStatus="i" var="job">
+        <tr class="${i.index % 2 == 1 ? 'zebraodd' : 'zebraeven'}">
           <c:choose>
-            <c:when test="${scriptType == 'fme'}">
-              <a href="${xqFileURL}" rel="nofollow">${xqText}</a>
+            <c:when test="${permissions.wqdPrm || permissions.wquPrm}">
+              <td>
+                <form:checkbox path="jobs" id="job_${job.jobId}" value="${job.jobId}"/>
+              </td>
+              <td>
+                <label for="job_${job.jobId}">${job.jobId}</label>
+              </td>
             </c:when>
             <c:otherwise>
-              FME
+              <td/>
+              <td>${job.jobId}</td>
             </c:otherwise>
           </c:choose>
-        </td>
-        <td>
-          <c:choose>
-            <c:when test="${resultFile}">
-              <c:choose>
-                <c:when test="${wqvPrm}">
-                  <a href="${tmpFolder + resultFile}" rel="nofollow">Job result</a>
+          <td>
+            <a href="${job.url}" rel="nofollow"><%--${job.urlName}--%></a>
+          </td>
+          <td>
+              <%--<c:choose>
+                <c:when test="${job.scriptType != 'fme'}">
+                  <a href="${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
                 </c:when>
                 <c:otherwise>
-                  <div title="Log in to see job result">Job result</div>
+                  FME
                 </c:otherwise>
-              </c:choose>
-            </c:when>
-            <c:otherwise>
-              *** Not ready ***
-            </c:otherwise>
-          </c:choose>
-        </td>
-        <td>
-          ${statusName}
-        </td>
-        <td>
-          ${timeStamp}
-        </td>
-        <td>
-          <c:choose>
-            <c:when test="${wqvPrm}">
-              ${instance}
-            </c:when>
-            <c:otherwise>
-              <div title="Log in to see system info">-</div>
-            </c:otherwise>
-          </c:choose>
-        </td>
-      </tr>
+              </c:choose>--%>
+          </td>
+          <td>
+            <c:choose>
+              <c:when test="${!empty job.resultFile}">
+                <c:choose>
+                  <c:when test="${wqvPrm}">
+                    <a href="${'tmp' + job.resultFile}" rel="nofollow">Job result</a>
+                  </c:when>
+                  <c:otherwise>
+                    <div title="Log in to see job result">Job result</div>
+                  </c:otherwise>
+                </c:choose>
+              </c:when>
+              <c:otherwise>
+                *** Not ready ***
+              </c:otherwise>
+            </c:choose>
+          </td>
+          <td>
+              <%--${job.statusName}--%>
+          </td>
+          <td>
+              <%--${job.jobTimestamp}--%>
+          </td>
+          <td>
+            <c:choose>
+              <c:when test="${permissions.wqvPrm}">
+                <%--${job.instance}--%>
+              </c:when>
+              <c:otherwise>
+                <div title="Log in to see system info">-</div>
+              </c:otherwise>
+            </c:choose>
+          </td>
+        </tr>
       </c:forEach>
       </tbody>
     </table>
     <div id="hidden_elements">
-      <c:if test="${wqdPrm || wquPrm}">
-        <c:if test="${wqdPrm}">
-          <button type="submit" value="Delete">
+      <c:if test="${permissions.wqdPrm || permissions.wquPrm}">
+        <c:if test="${permissions.wqdPrm}">
+          <button type="submit" name="action" value="delete">
             Delete
           </button>
         </c:if>
-        <c:if test="${wquPrm}">
-          <button type="submit" value="Restart">
+        <c:if test="${permissions.wquPrm}">
+          <button type="submit" name="action" value="restart">
             Restart
           </button>
         </c:if>
-        <input class="form-element" type="button" name="selectAll" id="selectAll" value="Select All"
-               onclick="toggleSelect('jobID'); return false"/>
+        <%--<input class="form-element" type="button" name="selectAll" id="selectAll" value="Select All"
+               onclick="toggleSelect('jobID'); return false"/>--%>
+        <button type="button" class="form-element" name="selectAll" id="selectAll" onclick="toggleSelect('jobID'); return false">
+          Select All
+        </button>
       </c:if>
-      <input type="hidden" name="ACTION" id="ACTION" value="${Constants.WQ_DEL_ACTION}"/>
+      <input type="hidden" name="ACTION" id="ACTION" value="delete" />
       <input type="hidden" name="ID" value=""/>
     </div>
-  </form>
+  </form:form>
 </div>
-<%--
-<tiles:insertDefinition name="TmpFooter"/>
---%>

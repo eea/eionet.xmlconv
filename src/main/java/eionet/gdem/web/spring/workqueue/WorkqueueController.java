@@ -2,19 +2,26 @@ package eionet.gdem.web.spring.workqueue;
 
 import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
+import eionet.gdem.XMLConvException;
+import eionet.gdem.dcm.business.WorkqueueManager;
+import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
+import eionet.gdem.web.spring.SpringMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -35,13 +42,15 @@ public class WorkqueueController {
     @GetMapping
     public String list(Model model, HttpServletRequest httpServletRequest) {
 
-        String userName = (String) httpServletRequest.getSession().getAttribute("user");
+        WorkqueueForm form = new WorkqueueForm();
 
+
+        String userName = (String) httpServletRequest.getSession().getAttribute("user");
+        boolean wqdPrm = false;
+        boolean wquPrm = false;
+        boolean wqvPrm = false;
+        boolean logvPrm = false;
         try {
-            boolean wqdPrm;
-            boolean wquPrm;
-            boolean wqvPrm;
-            boolean logvPrm;
             if (userName != null) {
                 wqdPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_WQ_PATH, "d");
                 wquPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_WQ_PATH, "u");
@@ -62,8 +71,13 @@ public class WorkqueueController {
         String tmpFolder = Constants.TMP_FOLDER;
         String queriesFolder = Constants.QUERIES_FOLDER;
 
+
+        List<WorkqueueJob> jobsList = new ArrayList<>();
+
+        // XXX: Refactor soon
         eionet.gdem.services.db.dao.IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
         for (int i = 0; i < list.length; i++) {
+            WorkqueueJob job = new WorkqueueJob();
             String jobId = list[i][0];
             String url = list[i][1];
             String xqLongFileName = list[i][2];
@@ -74,6 +88,16 @@ public class WorkqueueController {
             String xqStringID = list[i][6];
             String instance = list[i][7];
 
+            job.setJobId(jobId);
+            job.setUrl(url);
+            //job.setxqLongFileName
+            job.setScriptFile(xqFile);
+            job.setResultFile(resultFile);
+            job.setStatus(status);
+            //job.setJobTimestamp(timeStamp);
+            //job.setxqId
+            //job.setinstance
+            //job.setscriptType
             int xqID = 0;
             String scriptType = "";
             try {
@@ -127,9 +151,77 @@ public class WorkqueueController {
 
 
             String urlName = (url.length() > Constants.URL_TEXT_LEN ? url.substring(0, Constants.URL_TEXT_LEN) + "..." : url);
+
+            jobsList.add(job);
         }
-        model.addAttribute("jobList", list);
+        WorkqueuePermissions permissions = new WorkqueuePermissions();
+        permissions.setWqdPrm(wqdPrm);
+        permissions.setWquPrm(wquPrm);
+        permissions.setWqvPrm(wqvPrm);
+        permissions.setLogvPrm(logvPrm);
+
+        model.addAttribute("permissions", permissions);
+        model.addAttribute("jobList", jobsList);
+        model.addAttribute("form", form);
         return "/workqueue";
+    }
+
+    @PostMapping("/actions")
+    public String actions(@ModelAttribute WorkqueueForm form, @RequestParam String action, HttpSession session, RedirectAttributes redirectAttributes) {
+
+        SpringMessages errors = new SpringMessages();
+        SpringMessages messages = new SpringMessages();
+
+        WorkqueueManager workqueueManager = new WorkqueueManager();
+
+        String user = (String) session.getAttribute("user");
+
+        List<String> jobs = form.getJobs();
+
+        if ("delete".equals(action)) {
+            try {
+                if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_WQ_PATH, "d")) {
+                    LOGGER.error("Access denied for qa job delete action");
+                    errors.add("You don't have permissions to delete jobs!");
+                    return "redirect:/workqueue";
+                }
+            } catch (SignOnException e) {
+                LOGGER.error("Error while reading permissions", e);
+                errors.add("Error while reading permissions");
+                return "redirect:/workqueue";
+            }
+
+            try {
+                workqueueManager.deleteJobs(jobs.toArray(new String[0]));
+            } catch (XMLConvException e) {
+                LOGGER.error("Could not delete jobs!" + e.getMessage());
+                errors.add("Cannot delete job: " + e.toString());
+            }
+
+        } else if ("restart".equals(action)) {
+            try {
+                if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_WQ_PATH, "u")) {
+                    LOGGER.error("Access denied for qa job restart action");
+                    errors.add("You don't have permissions to restart the jobs!");
+                    return "redirect:/workqueue";
+                }
+            } catch (SignOnException e) {
+                LOGGER.error("Error while reading permissions", e);
+                errors.add("Error while reading permissions");
+                return "redirect:/workqueue";
+            }
+
+            try {
+                workqueueManager.restartJobs(jobs.toArray(new String[0]));
+            } catch (XMLConvException e) {
+                LOGGER.error("Could not restart jobs!" + e.getMessage());
+                errors.add("Error while reading permissions");
+                return "redirect:/workqueue";
+            }
+        }
+        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
+        return "redirect:/workqueue";
     }
 
 }
