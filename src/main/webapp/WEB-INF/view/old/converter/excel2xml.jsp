@@ -39,25 +39,15 @@
       </tr>
       <tr>
         <td>
-            <%--styleId="split1" value="all" onclick="sheet.disabled=true" />--%>
           <form:radiobutton path="split" id="split1" value="all"/>
           <label for="split1"><spring:message code="label.conversion.excel.allsheets"/></label>
         </td>
       </tr>
       <tr>
         <td>
-            <%--styleId="split2" value="split" onclick="sheet.disabled=false"/>--%>
           <form:radiobutton path="split" id="split2" value="split"/>
           <label for="split2"><spring:message code="label.conversion.excel.sheetname"/></label>
-            <%--onfocus="split[1].checked=true"/>--%>
           <form:input path="sheet"/>
-        </td>
-      </tr>
-      <tr>
-        <td>
-            <%--name="ExcelConversionForm" property="showConversionLog" styleId ="chkConversion" />--%>
-          <form:checkbox path="conversionLog" id="chkConversion" value="true"/>
-          <label for="chkConversion"><spring:message code="label.conversion.excel.showConversionLog"/></label>
         </td>
       </tr>
       <tr>
@@ -67,17 +57,29 @@
           </button>
         </td>
       </tr>
+
+      <c:if test="${!empty conversionLinks}">
+        <tr>
+          <th>Num</th>
+          <th>Link</th>
+        </tr>
+        <c:forEach items="${conversionLinks}" var="conversionLink" varStatus="i">
+          <tr>
+            <td>${i.index}</td>
+            <td><a href="${conversionLink}" target="_blank">${conversionLink}</a></td>
+          </tr>
+        </c:forEach>
+      </c:if>
+
       <c:choose>
         <c:when test="${form.conversionLog}">
           <tr>
-          <%--" filter="false"/>--%>
-            <td>${form.conversionLog}</td>
+            <td>${conversionLog}</td>
           </tr>
         </c:when>
         <c:otherwise>
           <tr>
-            <td><spring:message code="label.conversion.excel.warning"/>
-            </td>
+            <td><spring:message code="label.conversion.excel.warning"/></td>
           </tr>
         </c:otherwise>
       </c:choose>

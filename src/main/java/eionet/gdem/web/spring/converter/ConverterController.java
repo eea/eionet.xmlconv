@@ -1,12 +1,14 @@
 package eionet.gdem.web.spring.converter;
 
 import eionet.gdem.Constants;
+import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dto.ConversionResultDto;
+import eionet.gdem.dto.ConvertedFileDto;
 import eionet.gdem.dto.CrFileDto;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
@@ -15,6 +17,7 @@ import eionet.gdem.qa.functions.Json;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.utils.cdr.UrlUtils;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.spring.SpringMessages;
 import eionet.gdem.web.spring.conversions.ConversionForm;
@@ -275,10 +278,13 @@ public class ConverterController {
     }
 
     @GetMapping("/excel2xml")
-    public String excel2xml(Model model) {
-        Excel2xmlForm form = new Excel2xmlForm();
-        form.setSplit("all");
+    public String excel2xml(@ModelAttribute("form") Excel2xmlForm form, @ModelAttribute("conversionLog") String conversionLog, Model model) {
+        if (form != null) {
+            form.setSplit("all");
+        }
         model.addAttribute("form", form);
+        model.addAttribute("conversionLog", conversionLog);
+        model.addAttribute("conversionLinks", model.asMap().get("conversionLinks"));
         return "/converter/excel2xml";
     }
 
@@ -293,7 +299,6 @@ public class ConverterController {
         String split = processFormStr(form.getSplit());
         String sheet = processFormStr(form.getSheet());
         Boolean showConversionLog = processFormBoolean(form.isConversionLog());
-        /*HttpMethodResponseWrapper methodResponse = null;*/
 
         // get request parameters
         try {
@@ -315,31 +320,32 @@ public class ConverterController {
             }
             ConversionServiceIF cs = new ConversionService();
             cs.setTicket(ticket);
-            if (!showConversionLog) {
-                /*methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
-                cs.setHttpResponse(methodResponse);*/
-            }
             cs.setTrustedMode(true);
             ConversionResultDto conversionResult = null;
             // execute conversion
             if (split.equals("split")) {
                 conversionResult = cs.convertDD_XML(url, true, sheet);
             } else {
-                conversionResult = cs.convertDD_XML(url, false, null);
+                conversionResult = cs.convertDD_XML(url, true, null);
             }
+            List<String> conversionLinks = new ArrayList<>();
+            for (ConvertedFileDto dto : conversionResult.getConvertedFiles()) {
+                conversionLinks.add("//" + Properties.appHost + "/" + Properties.contextPath + "/tmp/" + UrlUtils.getFileName(dto.getFilePath()));
+            }
+            redirectAttributes.addFlashAttribute("conversionLinks", conversionLinks);
             String conversionLog  = conversionResult.getConversionLogAsHtml();
             if (!Utils.isNullStr(conversionLog)){
                 form.setConversionLog(true);
+                redirectAttributes.addFlashAttribute("conversionLog", conversionLog);
             } else {
-                /*"conversionLog", "Conversion log not found!"*/
                 form.setConversionLog(false);
             }
-        } catch (Exception e) {
+
+
+            redirectAttributes.addFlashAttribute("form", form);
+        } catch (XMLConvException e) {
             LOGGER.error("Error testing conversion", e);
             errors.add(messageService.getMessage(e.getMessage()));
-            /*HttpSession sess = httpServletRequest.getSession(true);*/
-            /*session.setAttribute("gdem.exception", new XMLConvException("Error testing conversion: " + e.getMessage()));
-            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/" + Constants.ERROR_JSP);*/
             return "redirect:/converter/excel2xml";
         }
         return "redirect:/converter/excel2xml";
