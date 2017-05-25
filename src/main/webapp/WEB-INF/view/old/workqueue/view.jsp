@@ -113,24 +113,24 @@
             </c:otherwise>
           </c:choose>
           <td>
-            <a href="${job.url}" rel="nofollow"><%--${job.urlName}--%></a>
+            <a href="${job.url}" rel="nofollow">${job.url}</a>
           </td>
           <td>
-              <%--<c:choose>
+              <c:choose>
                 <c:when test="${job.scriptType != 'fme'}">
                   <a href="${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
                 </c:when>
                 <c:otherwise>
-                  FME
+                  ${job.scriptType}
                 </c:otherwise>
-              </c:choose>--%>
+              </c:choose>
           </td>
           <td>
             <c:choose>
               <c:when test="${!empty job.resultFile}">
                 <c:choose>
-                  <c:when test="${wqvPrm}">
-                    <a href="${'tmp' + job.resultFile}" rel="nofollow">Job result</a>
+                  <c:when test="${permissions.wqvPrm}">
+                    <a href="${'tmp'}/${job.resultFile}" rel="nofollow">Job result</a>
                   </c:when>
                   <c:otherwise>
                     <div title="Log in to see job result">Job result</div>
@@ -143,15 +143,15 @@
             </c:choose>
           </td>
           <td>
-              <%--${job.statusName}--%>
+              ${job.statusName}
           </td>
           <td>
-              <%--${job.jobTimestamp}--%>
+              ${job.timestamp}
           </td>
           <td>
             <c:choose>
               <c:when test="${permissions.wqvPrm}">
-                <%--${job.instance}--%>
+                ${job.instance}
               </c:when>
               <c:otherwise>
                 <div title="Log in to see system info">-</div>

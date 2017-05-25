@@ -72,12 +72,12 @@ public class WorkqueueController {
         String queriesFolder = Constants.QUERIES_FOLDER;
 
 
-        List<WorkqueueJob> jobsList = new ArrayList<>();
+        List<JobMetadata> jobsList = new ArrayList<>();
 
         // XXX: Refactor soon
         eionet.gdem.services.db.dao.IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
         for (int i = 0; i < list.length; i++) {
-            WorkqueueJob job = new WorkqueueJob();
+            JobMetadata job = new JobMetadata();
             String jobId = list[i][0];
             String url = list[i][1];
             String xqLongFileName = list[i][2];
@@ -89,15 +89,14 @@ public class WorkqueueController {
             String instance = list[i][7];
 
             job.setJobId(jobId);
-            job.setUrl(url);
-            //job.setxqLongFileName
+            /*job.setUrl(url);*/
+            job.setFileName(xqLongFileName);
             job.setScriptFile(xqFile);
-            job.setResultFile(resultFile);
+
             job.setStatus(status);
-            //job.setJobTimestamp(timeStamp);
-            //job.setxqId
-            //job.setinstance
-            //job.setscriptType
+            job.setTimestamp(timeStamp);
+            job.setScriptId(xqStringID);
+            job.setInstance(instance);
             int xqID = 0;
             String scriptType = "";
             try {
@@ -111,6 +110,7 @@ public class WorkqueueController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            job.setScriptType(scriptType);
 
             String xqFileURL = "";
             String xqText = "Show script";
@@ -126,6 +126,7 @@ public class WorkqueueController {
 
             if (status == Constants.XQ_RECEIVED || status == Constants.XQ_DOWNLOADING_SRC || status == Constants.XQ_PROCESSING)
                 resultFile = null;
+            job.setResultFile(resultFile);
 
             //TODO Status name, maybe better to move to some Java common class
             String statusName = "-- Unknown --";
@@ -143,14 +144,13 @@ public class WorkqueueController {
             if (status == Constants.XQ_LIGHT_ERR)
                 statusName = "RECOVERABLE ERROR";
 
-
+            job.setStatusName(statusName);
             if (url.indexOf(Constants.GETSOURCE_URL) > 0 && url.indexOf(Constants.SOURCE_URL_PARAM) > 0) {
                 int idx = url.indexOf(Constants.SOURCE_URL_PARAM);
                 url = url.substring(idx + Constants.SOURCE_URL_PARAM.length() + 1);
             }
-
-
             String urlName = (url.length() > Constants.URL_TEXT_LEN ? url.substring(0, Constants.URL_TEXT_LEN) + "..." : url);
+            job.setUrl(urlName);
 
             jobsList.add(job);
         }
