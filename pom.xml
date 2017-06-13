@@ -628,7 +628,7 @@
             <dependency>
                 <groupId>org.basex</groupId>
                 <artifactId>basex</artifactId>
-                <version>8.4.3</version>
+                <version>8.4.4</version>
             </dependency>
 
             <!-- jsoup HTML parser library @ http://jsoup.org/ -->
