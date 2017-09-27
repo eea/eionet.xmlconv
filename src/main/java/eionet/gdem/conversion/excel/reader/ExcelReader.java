@@ -392,7 +392,7 @@ public class ExcelReader implements SourceReaderIF {
             schemaCell = schemaRow.getCell(0);
             String val = schemaCell.getRichStringCellValue().toString();
 
-            if (val.startsWith("http://") && val.toLowerCase().indexOf("/getschema") > 0 && Utils.isURL(val)) {
+            if (val.startsWith("http://") && Utils.isURL(val)) {
                 return val;
             }
         }
