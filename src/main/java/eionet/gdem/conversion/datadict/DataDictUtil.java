@@ -63,23 +63,35 @@ public class DataDictUtil {
     public static String getInstanceUrl(String schema_url) throws XMLConvException {
 
         try {
+            if (schema_url != null) {
+                if (schema_url.toLowerCase().contains("/getschema")) {
+                    // throws Exception, if not correct URL
+                    URL schemaURL = new URL(schema_url);
 
-            // throws Exception, if not correct URL
-            URL schemaURL = new URL(schema_url);
+                    String id = getSchemaIdParamFromUrl(schema_url);
 
-            String id = getSchemaIdParamFromUrl(schema_url);
+                    String type = id.substring(0, 3);
+                    id = id.substring(3);
 
-            String type = id.substring(0, 3);
-            id = id.substring(3);
+                    int path_idx = schema_url.toLowerCase().indexOf(SCHEMA_SERVLET.toLowerCase());
+                    String path = schema_url.substring(0, path_idx);
 
-            int path_idx = schema_url.toLowerCase().indexOf(SCHEMA_SERVLET.toLowerCase());
-            String path = schema_url.substring(0, path_idx);
+                    String instance_url = path + INSTANCE_SERVLET + "?id=" + id + "&type=" + type.toLowerCase();
 
-            String instance_url = path + INSTANCE_SERVLET + "?id=" + id + "&type=" + type.toLowerCase();
-
-            // throws Exception, if not correct URL
-            URL instanceURL = new URL(instance_url);
-            return instance_url;
+                    // throws Exception, if not correct URL
+                    URL instanceURL = new URL(instance_url);
+                    return instance_url;
+                } else if (schema_url.contains("/dataset/")) {
+                    int index = schema_url.lastIndexOf("/");
+                    String instanceURL = "";
+                    if (index > -1) {
+                        instanceURL = schema_url.substring(0, index) + "/dataset-instance.xml";
+                    }
+                    URL x = new URL(instanceURL);
+                    return instanceURL;
+                }
+            }
+            throw new MalformedURLException("Could not parse URL");
         } catch (MalformedURLException e) {
             throw new XMLConvException("Error getting Instance file URL: " + e.toString() + " - " + schema_url);
         } catch (Exception e) {
