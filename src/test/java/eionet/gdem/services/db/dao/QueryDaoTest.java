@@ -21,6 +21,7 @@
 
 package eionet.gdem.services.db.dao;
 
+import eionet.gdem.qa.QaScriptView;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -101,16 +102,16 @@ public class QueryDaoTest {
         // get the query Object BY query ID
         HashMap query = queryDao.getQueryInfo(queryId);
 
-        assertEquals(query.get("schema_id"), schemaID);
-        assertEquals(query.get("query"), queryFileName);
-        assertEquals(query.get("description"), description);
-        assertEquals(query.get("schema_id"), schemaID);
-        assertEquals(query.get("short_name"), shortName);
-        assertEquals(query.get("content_type"), content_type);
-        assertEquals(query.get("script_type"), script_type);
-        assertEquals(query.get("upper_limit"), upperLimit);
-        assertEquals(query.get("url"), url);
-        assertEquals(query.get("is_active"), "1");
+        assertEquals(query.get(QaScriptView.SCHEMA_ID), schemaID);
+        assertEquals(query.get(QaScriptView.QUERY), queryFileName);
+        assertEquals(query.get(QaScriptView.DESCRIPTION), description);
+        assertEquals(query.get(QaScriptView.SCHEMA_ID), schemaID);
+        assertEquals(query.get(QaScriptView.SHORT_NAME), shortName);
+        assertEquals(query.get(QaScriptView.CONTENT_TYPE), content_type);
+        assertEquals(query.get(QaScriptView.SCRIPT_TYPE), script_type);
+        assertEquals(query.get(QaScriptView.UPPER_LIMIT), upperLimit);
+        assertEquals(query.get(QaScriptView.URL), url);
+        assertEquals(query.get(QaScriptView.IS_ACTIVE), "1");
         // check boolean methods
         assertTrue(queryDao.checkQueryFile(queryFileName));
         assertTrue(queryDao.checkQueryFile(queryId, queryFileName));
@@ -120,18 +121,18 @@ public class QueryDaoTest {
 
         // Get query by ID and test if all upadted fields are in DB
         query = queryDao.getQueryInfo(queryId);
-        assertEquals(query.get("description"), description + "UPD");
-        assertEquals(query.get("short_name"), shortName + "UPD");
+        assertEquals(query.get(QaScriptView.DESCRIPTION), description + "UPD");
+        assertEquals(query.get(QaScriptView.SHORT_NAME), shortName + "UPD");
 
         //deactivate QA Script in order to 
         queryDao.deactivateQuery(queryId);
         query = queryDao.getQueryInfo(queryId);
-        assertEquals(query.get("is_active"), "0");
+        assertEquals(query.get(QaScriptView.IS_ACTIVE), "0");
         
         //reactivate QA Script in order to 
         queryDao.activateQuery(queryId);
         query = queryDao.getQueryInfo(queryId);
-        assertEquals(query.get("is_active"), "1");
+        assertEquals(query.get(QaScriptView.IS_ACTIVE), "1");
         
         // delete inserted query
         queryDao.removeQuery(queryId);

@@ -55,10 +55,10 @@ public class ListQueriesMethodTest {
         assertTrue(v.size() == 1);
         Hashtable ht = (Hashtable) v.get(0);
 
-        assertEquals(ht.get(ListQueriesMethod.KEY_TYPE), "xsd");
-        assertEquals(ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_ID), "HTML");
-        assertEquals(ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_OUT), ListQueriesMethod.DEFAULT_QA_CONTENT_TYPE);
-        assertEquals(ht.get(ListQueriesMethod.KEY_UPPER_LIMIT), String.valueOf(ListQueriesMethod.VALIDATION_UPPER_LIMIT));
+        assertEquals(ht.get(QaScriptView.TYPE), "xsd");
+        assertEquals(ht.get(QaScriptView.CONTENT_TYPE_ID), "HTML");
+        assertEquals(ht.get(QaScriptView.CONTENT_TYPE_OUT), ListQueriesMethod.DEFAULT_QA_CONTENT_TYPE);
+        assertEquals(ht.get(QaScriptView.UPPER_LIMIT), String.valueOf(ListQueriesMethod.VALIDATION_UPPER_LIMIT));
     }
 
     @Test
@@ -71,10 +71,10 @@ public class ListQueriesMethodTest {
 
         Hashtable ht = (Hashtable) v.get(0);
 
-        assertEquals(ht.get(ListQueriesMethod.KEY_TYPE), Constants.QA_TYPE_XQUERY);
-        assertEquals(ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_ID), "HTML");
-        assertEquals(ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_OUT), ListQueriesMethod.DEFAULT_QA_CONTENT_TYPE);
-        assertEquals(ht.get(ListQueriesMethod.KEY_UPPER_LIMIT), "20");
+        assertEquals(ht.get(QaScriptView.TYPE), Constants.QA_TYPE_XQUERY);
+        assertEquals(ht.get(QaScriptView.CONTENT_TYPE_ID), "HTML");
+        assertEquals(ht.get(QaScriptView.CONTENT_TYPE_OUT), ListQueriesMethod.DEFAULT_QA_CONTENT_TYPE);
+        assertEquals(ht.get(QaScriptView.UPPER_LIMIT), "20");
     }
 
     @Test

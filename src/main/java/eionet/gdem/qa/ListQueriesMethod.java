@@ -15,7 +15,11 @@ import eionet.gdem.services.db.dao.IConvTypeDao;
 import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.ISchemaDao;
 import eionet.gdem.utils.Utils;
-import java.util.Map;
+
+import java.io.File;
+import java.util.*;
+
+import static eionet.gdem.qa.ScriptStatus.getActiveStatusList;
 
 /**
  * Implementation of listQueries and listQAScripts methods.
@@ -90,16 +94,16 @@ public class ListQueriesMethod extends RemoteServiceMethod {
                     if (!Utils.isNullStr(validate)) {
                         if (validate.equals("1")) {
                             Hashtable ht = new Hashtable();
-                            ht.put(KEY_QUERY_ID, String.valueOf(Constants.JOB_VALIDATION));
-                            ht.put(KEY_SHORT_NAME, "XML Schema Validation");
-                            ht.put(KEY_QUERY, h.get("xml_schema"));
-                            ht.put(KEY_DESCRIPTION, h.get("description"));
-                            ht.put(KEY_SCHEMA_ID, h.get("schema_id"));
-                            ht.put(KEY_XML_SCHEMA, h.get("xml_schema"));
-                            ht.put(KEY_CONTENT_TYPE_ID, DEFAULT_CONTENT_TYPE_ID);
-                            ht.put(KEY_CONTENT_TYPE_OUT, contentType);
-                            ht.put(KEY_TYPE, ((String) h.get("schema_lang")).toLowerCase());
-                            ht.put(KEY_UPPER_LIMIT, String.valueOf(VALIDATION_UPPER_LIMIT));
+                            ht.put(QaScriptView.QUERY_ID, String.valueOf(Constants.JOB_VALIDATION));
+                            ht.put(QaScriptView.SHORT_NAME, "XML Schema Validation");
+                            ht.put(QaScriptView.QUERY, h.get("xml_schema"));
+                            ht.put(QaScriptView.DESCRIPTION, h.get("description"));
+                            ht.put(QaScriptView.SCHEMA_ID, h.get("schema_id"));
+                            ht.put(QaScriptView.XML_SCHEMA, h.get("xml_schema"));
+                            ht.put(QaScriptView.CONTENT_TYPE_ID, DEFAULT_CONTENT_TYPE_ID);
+                            ht.put(QaScriptView.CONTENT_TYPE_OUT, contentType);
+                            ht.put(QaScriptView.TYPE, ((String) h.get("schema_lang")).toLowerCase());
+                            ht.put(QaScriptView.UPPER_LIMIT, String.valueOf(VALIDATION_UPPER_LIMIT));
                             v.add(ht);
                         }
                     }
@@ -159,12 +163,17 @@ public class ListQueriesMethod extends RemoteServiceMethod {
 
             for (int i = 0; i < queries.size(); i++) {
                 HashMap hQueries = (HashMap) queries.get(i);
-                if (!isActive(hQueries)) continue;
-                String queryId = (String) hQueries.get("query_id");
-                String queryFile = (String) hQueries.get("query");
-                String queryDescription = (String) hQueries.get("descripton");
-                String queryName = (String) hQueries.get("short_name");
-                String queryUpperLimit = (String) hQueries.get("upper_limit");
+                if (!isActive(hQueries)) {
+                    continue;
+                }
+                String queryId = (String) hQueries.get(QaScriptView.QUERY_ID);
+                String queryFile = (String) hQueries.get(QaScriptView.QUERY);
+                String queryDescription = (String) hQueries.get(QaScriptView.DESCRIPTION);
+                System.out.println(" query description is :" +queryDescription);
+                String queryName = (String) hQueries.get(QaScriptView.SHORT_NAME);
+                System.out.println("queryName is "+queryName);
+                String queryUpperLimit = (String) hQueries.get(QaScriptView.UPPER_LIMIT);
+                
                 if (Utils.isNullStr(queryDescription)) {
                     if (Utils.isNullStr(queryName)) {
                         queryDescription = "Quality Assurance script";
@@ -192,6 +201,90 @@ public class ListQueriesMethod extends RemoteServiceMethod {
         }
 
         return result;
+    }
+
+    /*
+    * List all possible QA scripts (XQueries, XML Schemas, DTD, XSLT?) for this XML Schema , according
+    * to the active status passed. If schema is null, then all possible QA scripts are returned.
+    **/
+    public Vector listQAScripts(String schema, String active) throws XMLConvException {
+
+        if (!getActiveStatusList().contains(active)) {
+            throw new XMLConvException("wrong query active value " + active);
+        }
+
+        Vector v = new Vector();
+        if (schema != null && schema.equals("")) {
+            schema = null;
+        }
+
+        try {
+            // Get schemas that has to be validated
+            if (active.equals("true") || active.equals("all")) {
+
+                Vector schemas = schemaDao.getSchemas(schema, false);
+                Hashtable convType = convTypeDao.getConvType(DEFAULT_CONTENT_TYPE_ID);
+                String contentType
+                        = (convType != null && convType.containsKey("content_type")) ? (String) convType.get("content_type")
+                        : DEFAULT_QA_CONTENT_TYPE;
+
+                if (schemas != null) {
+                    for (int i = 0; i < schemas.size(); i++) {
+                        HashMap h = (HashMap) schemas.get(i);
+                        String validate = (String) h.get("validate");
+                        if (!Utils.isNullStr(validate)) {
+                            if (validate.equals("1")) {
+
+                                Hashtable ht = new Hashtable();
+                                ht.put(QaScriptView.IS_ACTIVE,"1");
+                                ht.put(QaScriptView.QUERY_ID, String.valueOf(Constants.JOB_VALIDATION));
+                                ht.put(QaScriptView.SHORT_NAME, "XML Schema Validation");
+                                ht.put(QaScriptView.QUERY, h.get("xml_schema"));
+                                ht.put(QaScriptView.DESCRIPTION, h.get("description"));
+                                ht.put(QaScriptView.SCHEMA_ID, h.get("schema_id"));
+                                ht.put(QaScriptView.XML_SCHEMA, h.get("xml_schema"));
+                                ht.put(QaScriptView.CONTENT_TYPE_ID, DEFAULT_CONTENT_TYPE_ID);
+                                ht.put(QaScriptView.CONTENT_TYPE, contentType);
+                                ht.put(QaScriptView.TYPE, ((String) h.get("schema_lang")).toLowerCase());
+                                ht.put(QaScriptView.UPPER_LIMIT, String.valueOf(VALIDATION_UPPER_LIMIT));
+                                v.add(ht);
+
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Get XQueries
+            Vector queries;
+            switch (active) {
+
+                case "true":
+                    queries = queryDao.listQueries(schema, true);
+                    break;
+                case "false":
+                    queries = queryDao.listQueries(schema, false);
+                    break;
+                default:
+                    // when active ->all 
+                    queries = queryDao.listQueries(schema);
+
+            }
+            if (queries != null) {
+                for (int i = 0; i < queries.size(); i++) {
+                    Hashtable ht = (Hashtable) queries.get(i);
+                    ht.put(KEY_TYPE, Constants.QA_TYPE_XQUERY);
+                    // return full URL of XQuerys
+                    ht.put(KEY_QUERY, Properties.gdemURL + "/" + Constants.QUERIES_FOLDER + (String) ht.get("query"));
+                    v.add(ht);
+                }
+            }
+
+        } catch (Exception e) {
+            throw new XMLConvException("Error getting data from the DB " + e.toString(), e);
+        }
+        return v;
+
     }
 
     /**

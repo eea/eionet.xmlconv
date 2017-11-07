@@ -123,12 +123,12 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                     HashMap hash = queryDao.getQueryInfo(scriptId);
                     String xqScript = "";
                     // If the script type is not FME, the script content is retrieved.
-                    if (!XQScript.SCRIPT_LANG_FME.equals((String) hash.get("script_type"))) {
+                    if (!XQScript.SCRIPT_LANG_FME.equals((String) hash.get(QaScriptView.SCRIPT_TYPE))) {
                         xqScript = queryDao.getQueryText(scriptId);
                     } else {
                         xqScript = XQScript.SCRIPT_LANG_FME; // Dummy value
                     }
-                    String schemaId = (String) hash.get("schema_id");
+                    String schemaId = (String) hash.get(QaScriptView.SCHEMA_ID);
                     Schema schema = null;
                     // check because ISchemaDao.getSchema(null) returns first schema
                     if (schemaId != null) {
@@ -140,17 +140,17 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                         LOGGER.error(errMess);
                         throw new XMLConvException(errMess, new Exception());
                     } else {
-                        if (!Utils.isNullStr((String) hash.get("meta_type"))) {
-                            contentType = (String) hash.get("meta_type");
+                        if (!Utils.isNullStr((String) hash.get(QaScriptView.META_TYPE))) {
+                            contentType = (String) hash.get(QaScriptView.META_TYPE);
                         }
                         LOGGER.debug("Script: " + xqScript);
-                        XQScript xq = new XQScript(xqScript, pars, (String) hash.get("content_type"));
-                        xq.setScriptType((String) hash.get("script_type"));
+                        XQScript xq = new XQScript(xqScript, pars, (String) hash.get(QaScriptView.CONTENT_TYPE));
+                        xq.setScriptType((String) hash.get(QaScriptView.SCRIPT_TYPE));
                         xq.setSrcFileUrl(fileUrl);
                         xq.setSchema(schema);
 
                         if (XQScript.SCRIPT_LANG_FME.equals(xq.getScriptType())) {
-                            xq.setScriptSource((String) hash.get("url"));
+                            xq.setScriptSource((String) hash.get(QaScriptView.URL));
                         }
 
                         strResult = xq.getResult();

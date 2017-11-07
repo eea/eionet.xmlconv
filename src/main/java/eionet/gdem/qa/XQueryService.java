@@ -114,6 +114,18 @@ public class XQueryService extends RemoteService {
     }
 
     /**
+     * List all XQueries and their modification times for this namespace returns also XML Schema validation.
+     * @param schema Schema
+     * @param active filter by active status
+     * @throws XMLConvException If an error occurs.
+     */
+    public Vector listQAScripts(String schema, String active) throws XMLConvException {
+        ListQueriesMethod method = new ListQueriesMethod();
+        Vector v = method.listQAScripts(schema, active);
+        return v;
+    }
+
+    /**
      * Request from XML/RPC client Stores the source files and starts a job in the workqueue.
      *
      * @param files - Structure with XMLschemas as a keys and values are list of XML Files
@@ -179,8 +191,8 @@ public class XQueryService extends RemoteService {
         if (!Utils.isNullVector(queries)) {
             for (int j = 0; j < queries.size(); j++) {
 
-                String query_id = String.valueOf( ( (Hashtable) queries.get(j)).get("query_id"));
-                newId = analyzeXMLFile( origFile, query_id , schema );
+                String query_id = String.valueOf( ( (Hashtable) queries.get(j)).get( QaScriptView.QUERY_ID ));
+                newId = analyzeXMLFile( file, query_id , schema );
 
                 Vector queryResult = new Vector();
                 queryResult.add(newId);
@@ -365,8 +377,8 @@ public class XQueryService extends RemoteService {
                     metatype = "text/html";
                     script_title = "XML Schema validation";
                 } else if (xq_id > 0) {
-                    metatype = (String) scriptData.get("meta_type");
-                    script_title = (String) scriptData.get("short_name");
+                    metatype = (String) scriptData.get(QaScriptView.META_TYPE);
+                    script_title = (String) scriptData.get(QaScriptView.SHORT_NAME);
                 }
 
                 resultValue = Utils.readStrFromFile(jobData[2]);
@@ -441,15 +453,15 @@ public class XQueryService extends RemoteService {
                         throw new XMLConvException("Could not extract schema");
                     }
                     //String schemaUrl = findSchemaFromXml(sourceUrl);
-                    query.put("query", schema);
+                    query.put( QaScriptView.QUERY, schema);
                 }
                 //else {
-                query.put("query", schema);
+                query.put(QaScriptView.QUERY , schema);
                     //Vector schemas = schemaDao.getSchemas(schema, false);
                 //}
-                query.put("query_id", "-1");
-                query.put("content_type_id", DEFAULT_CONTENT_TYPE_ID);
-                query.put("script_type", "xsd");
+                query.put( QaScriptView.QUERY_ID , "-1");
+                query.put( QaScriptView.CONTENT_TYPE, DEFAULT_CONTENT_TYPE_ID);
+                query.put( QaScriptView.SCRIPT_TYPE, "xsd");
 
             }
             else{
@@ -458,15 +470,15 @@ public class XQueryService extends RemoteService {
             if (isNull(  query ) ){
                 throw new XMLConvException("Script ID does not exist");
             }
-            if ( "0".equals(query.get("is_active") )){
+            if ( "0".equals(query.get(QaScriptView.IS_ACTIVE) )){
                 throw new XMLConvException("Script is not active");
             }
             Vector outputTypes = convTypeDao.getConvTypes();
 
-            String query_id = String.valueOf(query.get("query_id"));
-            String queryFile = (String) query.get("query");
-            String contentType = (String) query.get("content_type_id");
-            String scriptType = (String) query.get("script_type");
+            String query_id = String.valueOf(query.get(QaScriptView.QUERY_ID));
+            String queryFile = (String) query.get(QaScriptView.QUERY);
+            String contentType = (String) query.get(QaScriptView.CONTENT_TYPE_ID);
+            String scriptType = (String) query.get(QaScriptView.SCRIPT_TYPE);
             String fileExtension = getExtension(outputTypes, contentType);
             String resultFile =
                     Properties.tmpFolder + File.separatorChar + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "."

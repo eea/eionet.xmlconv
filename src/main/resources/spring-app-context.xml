@@ -28,4 +28,5 @@
 
     <bean id="springApplicationContext" class="eionet.gdem.SpringApplicationContext"/>
 
+    <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver"/>
 </beans>
