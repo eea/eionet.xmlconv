@@ -22,10 +22,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import static eionet.gdem.qa.ScriptStatus.getActiveStatusList;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.io.OutputStream;
+import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,25 +54,36 @@ public class QaController {
     }
 
     @RequestMapping(value = "/fileupload/qajobs", method = RequestMethod.POST )
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile uploadfile) throws IOException {
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile uploadfile) throws IOException, XMLConvException {
 
         if (uploadfile.isEmpty()) {
             return new ResponseEntity("please select a file!", HttpStatus.OK);
         }
 
+        //Upload the file in the way UplXmlFileManager.storeXmlFile() does it.
+        OutputStream output = null;
+        InputStream in = uploadfile.getInputStream();
+        String filepath = eionet.gdem.Properties.xmlfileFolder + File.separator + uploadfile.getOriginalFilename();
+      
+       
+       String fileURL = "http://"+eionet.gdem.Properties.appHost+"/xmlfile/"+uploadfile.getOriginalFilename();
+
         try {
-
-            byte[] bytes = uploadfile.getBytes();
-            Path path = Paths.get(UPLOADED_FOLDER + uploadfile.getOriginalFilename());
-            Files.write(path, bytes);
-
-        } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            output = new FileOutputStream(filepath);
+            IOUtils.copy(in, output);
+        } finally {
+            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(output);
         }
-
-        return new ResponseEntity("Successfully uploaded - "
-                + uploadfile.getOriginalFilename(), new HttpHeaders(), HttpStatus.OK);
-
+        
+         Vector results = qaService.runQaScript(fileURL, "-1");
+         
+        LinkedHashMap<String, String> jsonResults = new LinkedHashMap<String, String>();
+        jsonResults.put("feedbackStatus", ConvertByteArrayToString((byte[]) results.get(2)));
+        jsonResults.put("feedbackMessage", ConvertByteArrayToString((byte[]) results.get(3)));
+        jsonResults.put("feedbackContentType", results.get(0).toString());
+        jsonResults.put("feedbackContent", ConvertByteArrayToString((byte[]) results.get(1)));
+        return new ResponseEntity<HashMap<String, String>>(jsonResults, HttpStatus.OK);
     }
 
     
