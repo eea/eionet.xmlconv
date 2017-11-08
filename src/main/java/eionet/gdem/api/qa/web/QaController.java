@@ -64,9 +64,7 @@ public class QaController {
         OutputStream output = null;
         InputStream in = uploadfile.getInputStream();
         String filepath = eionet.gdem.Properties.xmlfileFolder + File.separator + uploadfile.getOriginalFilename();
-      
-       
-       String fileURL = "http://"+eionet.gdem.Properties.appHost+"/xmlfile/"+uploadfile.getOriginalFilename();
+        String fileURL = "http://"+eionet.gdem.Properties.appHost+"/xmlfile/"+uploadfile.getOriginalFilename();
 
         try {
             output = new FileOutputStream(filepath);
