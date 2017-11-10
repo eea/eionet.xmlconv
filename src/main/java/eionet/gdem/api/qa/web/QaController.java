@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import org.apache.commons.io.IOUtils;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -53,7 +52,11 @@ public class QaController {
         this.qaService = qaService;
     }
 
-    @RequestMapping(value = "/fileupload/qajobs", method = RequestMethod.POST )
+    /**
+     * Upload of an xml file and synchronous QA on the file
+     *
+     */
+    @RequestMapping(value = "/fileupload/qajobs", method = RequestMethod.POST)
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile uploadfile) throws IOException, XMLConvException {
 
         if (uploadfile.isEmpty()) {
@@ -64,18 +67,21 @@ public class QaController {
         OutputStream output = null;
         InputStream in = uploadfile.getInputStream();
         String filepath = eionet.gdem.Properties.xmlfileFolder + File.separator + uploadfile.getOriginalFilename();
-        String fileURL = "http://"+eionet.gdem.Properties.appHost+"/xmlfile/"+uploadfile.getOriginalFilename();
+        String fileURL = "http://" + eionet.gdem.Properties.appHost + "/xmlfile/" + uploadfile.getOriginalFilename();
 
         try {
             output = new FileOutputStream(filepath);
             IOUtils.copy(in, output);
+        } catch (Exception ex) {
+            throw new XMLConvException(ex.getMessage());
+
         } finally {
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(output);
         }
-        
-         Vector results = qaService.runQaScript(fileURL, "-1");
-         
+        //we set scriptId=-1 to perform only xml validation for now
+        Vector results = qaService.runQaScript(fileURL, "-1");
+
         LinkedHashMap<String, String> jsonResults = new LinkedHashMap<String, String>();
         jsonResults.put("feedbackStatus", ConvertByteArrayToString((byte[]) results.get(2)));
         jsonResults.put("feedbackMessage", ConvertByteArrayToString((byte[]) results.get(3)));
