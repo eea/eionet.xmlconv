@@ -293,6 +293,6 @@ public class ListQueriesMethod extends RemoteServiceMethod {
      * @return True if script is active.
      */
     private boolean isActive(Map query){
-        return query.get("is_active").equals("1");
+        return query.get(QaScriptView.IS_ACTIVE).equals("1");
     }
 }
