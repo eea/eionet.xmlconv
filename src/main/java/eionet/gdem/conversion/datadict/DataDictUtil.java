@@ -38,6 +38,7 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XPathQuery;
 import eionet.gdem.utils.xml.dom.DomContext;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -283,15 +284,24 @@ public class DataDictUtil {
             return dataset;
         }
 
-        String id = getSchemaIdParamFromUrl(xmlSchema);
+        if (xmlSchema.contains("/schema-dst-")) {
+            String id = StringUtils.substringBefore(StringUtils.substringAfter(xmlSchema, "/schema-dst-"), ".");
+            dataset = getDatasetReleaseInfo("dst", id);
+        } else if (xmlSchema.contains("/schema-tbl-")) {
+            String id = StringUtils.substringBefore(StringUtils.substringAfter(xmlSchema, "/schema-tbl-"), ".");
+            dataset = getDatasetReleaseInfo("tbl", id);
+        } else {
+            String id = getSchemaIdParamFromUrl(xmlSchema);
 
-        if (id.length() > 4 && (id.startsWith(DD_XMLInstance.DST_TYPE) || id.startsWith(DD_XMLInstance.TBL_TYPE))) {
+            if (id.length() > 4 && (id.startsWith(DD_XMLInstance.DST_TYPE) || id.startsWith(DD_XMLInstance.TBL_TYPE))) {
 
-            String type = id.substring(0, 3);
-            String dsId = id.substring(3);
-            dataset = getDatasetReleaseInfo(type.toLowerCase(), dsId);
+                String type = id.substring(0, 3);
+                String dsId = id.substring(3);
+                dataset = getDatasetReleaseInfo(type.toLowerCase(), dsId);
+            }
         }
         return dataset;
+
     }
 
     /**
