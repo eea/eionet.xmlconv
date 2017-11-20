@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,20 +58,25 @@ public class QaController {
      *
      */
     @RequestMapping(value = "/fileupload/qajobs", method = RequestMethod.POST)
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile uploadfile) throws IOException, XMLConvException {
+    public String uploadFile(@RequestParam("file") MultipartFile uploadfile, HttpServletRequest request) throws IOException, XMLConvException {
 
         if (uploadfile.isEmpty()) {
-            return new ResponseEntity("please select a file!", HttpStatus.OK);
+            return "please select a file!";
         }
 
+        String scriptId = request.getHeader("scriptId");
+        if (scriptId==null) {
+            scriptId = "-1";
+        }
         //Upload the file in the way UplXmlFileManager.storeXmlFile() does it.
         OutputStream output = null;
         InputStream in = uploadfile.getInputStream();
-        String filepath = eionet.gdem.Properties.xmlfileFolder + File.separator + uploadfile.getOriginalFilename();
-        String fileURL = "http://" + eionet.gdem.Properties.appHost + "/xmlfile/" + uploadfile.getOriginalFilename();
+        String tmpdir = eionet.gdem.Properties.appRootFolder + File.separator + "tmpfile"+File.separator + uploadfile.getOriginalFilename();
+
+        String fileURL = "http://" + eionet.gdem.Properties.appHost + "/tmpfile/" + uploadfile.getOriginalFilename();
 
         try {
-            output = new FileOutputStream(filepath);
+            output = new FileOutputStream(tmpdir);
             IOUtils.copy(in, output);
         } catch (Exception ex) {
             throw new XMLConvException(ex.getMessage());
@@ -80,14 +86,14 @@ public class QaController {
             IOUtils.closeQuietly(output);
         }
         //we set scriptId=-1 to perform only xml validation for now
-        Vector results = qaService.runQaScript(fileURL, "-1");
+        Vector results = qaService.runQaScript(fileURL, scriptId);
 
         LinkedHashMap<String, String> jsonResults = new LinkedHashMap<String, String>();
         jsonResults.put("feedbackStatus", ConvertByteArrayToString((byte[]) results.get(2)));
         jsonResults.put("feedbackMessage", ConvertByteArrayToString((byte[]) results.get(3)));
         jsonResults.put("feedbackContentType", results.get(0).toString());
         jsonResults.put("feedbackContent", ConvertByteArrayToString((byte[]) results.get(1)));
-        return new ResponseEntity<HashMap<String, String>>(jsonResults, HttpStatus.OK);
+        return ConvertByteArrayToString((byte[]) results.get(1));
     }
 
     
