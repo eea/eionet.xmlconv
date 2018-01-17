@@ -9,6 +9,7 @@ import eionet.gdem.api.qa.model.EnvelopeWrapper;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.qa.XQueryService;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static eionet.gdem.qa.ScriptStatus.getActiveStatusList;
@@ -45,13 +48,61 @@ public class QaController {
     private static final List<String> ACTIVE_STATUS
             = getActiveStatusList();
 
-        private static String UPLOADED_FOLDER = "/home/dev-vs/workspace/github.com/eea/xmlconv-old-version-branch06112017/eionet.xmlconv/";
-
-    
     @Autowired
     public QaController(QaService qaService) {
         this.qaService = qaService;
     }
+
+
+    /**
+     * Method specific for Habitats Directive - allows uploading two files for QA checks
+     * @param file1
+     * @param file2
+     * @param request
+     * @return
+     * @throws XMLConvException
+     * @throws IOException
+     */
+    @RequestMapping(value = "/fileupload/multiple", method = RequestMethod.POST)
+    public String uploadFiles(@RequestParam("file1") MultipartFile file1, @RequestParam("file2") MultipartFile file2, HttpServletRequest request) throws XMLConvException, IOException {
+
+        if (file1.isEmpty() || file2.isEmpty()) {
+            throw new XMLConvException("Some files are missing");
+        }
+
+        String scriptId = request.getHeader("scriptId");
+        if (scriptId==null) {
+            scriptId = "-1";
+        }
+
+        String parentdir = eionet.gdem.Properties.appRootFolder + "/tmpfile/";
+        // todo fix uuid
+        String uuid = "randomstring";
+        String tmpdir = parentdir + uuid;
+        if (Files.exists(Paths.get(tmpdir))) {
+            FileUtils.cleanDirectory(new File(tmpdir));
+        }
+
+        Files.createDirectories(Paths.get(tmpdir));
+
+        File dest1 = new File(tmpdir + "/" + file1.getOriginalFilename());
+        File dest2 = new File(tmpdir + "/" + file2.getOriginalFilename());
+        FileUtils.copyInputStreamToFile(file1.getInputStream(), dest1);
+        FileUtils.copyInputStreamToFile(file2.getInputStream(), dest2);
+
+        String fileURL = "http://" + eionet.gdem.Properties.appHost + "/tmpfile/" + uuid + "/" + dest1.getName();
+
+        //we set scriptId=-1 to perform only xml validation for now
+        Vector results = qaService.runQaScript(fileURL, scriptId);
+
+        LinkedHashMap<String, String> jsonResults = new LinkedHashMap<String, String>();
+        jsonResults.put("feedbackStatus", ConvertByteArrayToString((byte[]) results.get(2)));
+        jsonResults.put("feedbackMessage", ConvertByteArrayToString((byte[]) results.get(3)));
+        jsonResults.put("feedbackContentType", results.get(0).toString());
+        jsonResults.put("feedbackContent", ConvertByteArrayToString((byte[]) results.get(1)));
+        return ConvertByteArrayToString((byte[]) results.get(1));
+    }
+
 
     /**
      * Upload of an xml file and synchronous QA on the file
