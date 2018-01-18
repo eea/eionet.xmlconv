@@ -10,6 +10,7 @@ import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.qa.XQueryService;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,9 +65,9 @@ public class QaController {
      * @throws IOException
      */
     @RequestMapping(value = "/fileupload/multiple", method = RequestMethod.POST)
-    public String uploadFiles(@RequestParam("file1") MultipartFile file1, @RequestParam("file2") MultipartFile file2, HttpServletRequest request) throws XMLConvException, IOException {
+    public String uploadFiles(@RequestParam("report") MultipartFile report, @RequestParam("checklist") MultipartFile checklist, HttpServletRequest request) throws XMLConvException, IOException {
 
-        if (file1.isEmpty() || file2.isEmpty()) {
+        if (report.isEmpty() || checklist.isEmpty()) {
             throw new XMLConvException("Some files are missing");
         }
 
@@ -76,8 +77,9 @@ public class QaController {
         }
 
         String parentdir = eionet.gdem.Properties.appRootFolder + "/tmpfile/";
-        // todo fix uuid
-        String uuid = "randomstring";
+        String country = StringUtils.substringBefore(report.getOriginalFilename(), "_");
+//        String uuid = "df-" + System.currentTimeMillis() + "-" + UUID.randomUUID();
+        String uuid = "habitats-df-" + country;
         String tmpdir = parentdir + uuid;
         if (Files.exists(Paths.get(tmpdir))) {
             FileUtils.cleanDirectory(new File(tmpdir));
@@ -85,10 +87,10 @@ public class QaController {
 
         Files.createDirectories(Paths.get(tmpdir));
 
-        File dest1 = new File(tmpdir + "/" + file1.getOriginalFilename());
-        File dest2 = new File(tmpdir + "/" + file2.getOriginalFilename());
-        FileUtils.copyInputStreamToFile(file1.getInputStream(), dest1);
-        FileUtils.copyInputStreamToFile(file2.getInputStream(), dest2);
+        File dest1 = new File(tmpdir + "/" + report.getOriginalFilename());
+        File dest2 = new File(tmpdir + "/" + checklist.getOriginalFilename());
+        FileUtils.copyInputStreamToFile(report.getInputStream(), dest1);
+        FileUtils.copyInputStreamToFile(checklist.getInputStream(), dest2);
 
         String fileURL = "http://" + eionet.gdem.Properties.appHost + "/tmpfile/" + uuid + "/" + dest1.getName();
 
