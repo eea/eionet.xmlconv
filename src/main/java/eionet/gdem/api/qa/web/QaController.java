@@ -27,12 +27,8 @@ import java.util.*;
 
 import static eionet.gdem.qa.ScriptStatus.getActiveStatusList;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.io.IOUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -57,18 +53,18 @@ public class QaController {
 
     /**
      * Method specific for Habitats Directive - allows uploading two files for QA checks
-     * @param file1
-     * @param file2
+     * @param report
+     * @param checklist
      * @param request
      * @return
      * @throws XMLConvException
      * @throws IOException
      */
-    @RequestMapping(value = "/fileupload/multiple", method = RequestMethod.POST)
-    public String uploadFiles(@RequestParam("report") MultipartFile report, @RequestParam("checklist") MultipartFile checklist, HttpServletRequest request) throws XMLConvException, IOException {
+    @RequestMapping(value = "/dataflows/nature", method = RequestMethod.POST)
+    public String uploadFiles(@RequestParam("report") MultipartFile report, @RequestParam(value= "checklist", required = false) MultipartFile checklist, HttpServletRequest request) throws XMLConvException, IOException {
 
-        if (report.isEmpty() || checklist.isEmpty()) {
-            throw new XMLConvException("Some files are missing");
+        if (report.isEmpty()) {
+            throw new XMLConvException("Report file is mandatory");
         }
 
         String scriptId = request.getHeader("scriptId");
@@ -84,14 +80,15 @@ public class QaController {
         if (Files.exists(Paths.get(tmpdir))) {
             FileUtils.cleanDirectory(new File(tmpdir));
         }
-
         Files.createDirectories(Paths.get(tmpdir));
 
         File dest1 = new File(tmpdir + "/" + report.getOriginalFilename());
-        File dest2 = new File(tmpdir + "/" + checklist.getOriginalFilename());
         FileUtils.copyInputStreamToFile(report.getInputStream(), dest1);
-        FileUtils.copyInputStreamToFile(checklist.getInputStream(), dest2);
 
+        if (checklist != null && !checklist.isEmpty()) {
+            File dest2 = new File(tmpdir + "/" + checklist.getOriginalFilename());
+            FileUtils.copyInputStreamToFile(checklist.getInputStream(), dest2);
+        }
         String fileURL = "http://" + eionet.gdem.Properties.appHost + "/tmpfile/" + uuid + "/" + dest1.getName();
 
         //we set scriptId=-1 to perform only xml validation for now
@@ -105,51 +102,6 @@ public class QaController {
         return ConvertByteArrayToString((byte[]) results.get(1));
     }
 
-
-    /**
-     * Upload of an xml file and synchronous QA on the file
-     *
-     */
-    @RequestMapping(value = "/fileupload/qajobs", method = RequestMethod.POST)
-    public String uploadFile(@RequestParam("file") MultipartFile uploadfile, HttpServletRequest request) throws IOException, XMLConvException {
-
-        if (uploadfile.isEmpty()) {
-            return "please select a file!";
-        }
-
-        String scriptId = request.getHeader("scriptId");
-        if (scriptId==null) {
-            scriptId = "-1";
-        }
-        //Upload the file in the way UplXmlFileManager.storeXmlFile() does it.
-        OutputStream output = null;
-        InputStream in = uploadfile.getInputStream();
-        String tmpdir = eionet.gdem.Properties.appRootFolder + File.separator + "tmpfile"+File.separator + uploadfile.getOriginalFilename();
-
-        String fileURL = "http://" + eionet.gdem.Properties.appHost + "/tmpfile/" + uploadfile.getOriginalFilename();
-
-        try {
-            output = new FileOutputStream(tmpdir);
-            IOUtils.copy(in, output);
-        } catch (Exception ex) {
-            throw new XMLConvException(ex.getMessage());
-
-        } finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(output);
-        }
-        //we set scriptId=-1 to perform only xml validation for now
-        Vector results = qaService.runQaScript(fileURL, scriptId);
-
-        LinkedHashMap<String, String> jsonResults = new LinkedHashMap<String, String>();
-        jsonResults.put("feedbackStatus", ConvertByteArrayToString((byte[]) results.get(2)));
-        jsonResults.put("feedbackMessage", ConvertByteArrayToString((byte[]) results.get(3)));
-        jsonResults.put("feedbackContentType", results.get(0).toString());
-        jsonResults.put("feedbackContent", ConvertByteArrayToString((byte[]) results.get(1)));
-        return ConvertByteArrayToString((byte[]) results.get(1));
-    }
-
-    
     /**
      * Synchronous QA for a single file
      *
