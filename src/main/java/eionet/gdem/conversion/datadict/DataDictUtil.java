@@ -27,10 +27,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-
-
-
 import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.business.DDServiceClient;
@@ -82,7 +78,13 @@ public class DataDictUtil {
                     // throws Exception, if not correct URL
                     URL instanceURL = new URL(instance_url);
                     return instance_url;
-                } else if (schema_url.contains("/dataset/")) {
+                } else if (schema_url.contains("/schema-tbl-")) {
+                    int index = schema_url.lastIndexOf("/");
+                    String id = StringUtils.substringBefore(StringUtils.substringAfter(schema_url, "/schema-tbl-"), ".");
+                    String instanceURL = schema_url.substring(0, index) + "/table-" + id + "-instance.xml";
+                    URL x = new URL(instanceURL);
+                    return instanceURL;
+                } else if (schema_url.contains("/schema-dst-")) {
                     int index = schema_url.lastIndexOf("/");
                     String instanceURL = "";
                     if (index > -1) {
