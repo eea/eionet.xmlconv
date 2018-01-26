@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -255,7 +256,7 @@ public class SchemasController {
         SpringMessages errors = new SpringMessages();
         SpringMessages messages = new SpringMessages();
 
-        FileUploadWrapper schemaFile = form.getSchemaFile();
+        MultipartFile schemaFile = form.getSchemaFile();
         String desc = form.getDescription();
         String schemaUrl = form.getSchemaUrl();
         boolean doValidation = form.isDoValidation();
@@ -264,7 +265,7 @@ public class SchemasController {
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
 
-        if ((schemaFile == null || schemaFile.getFile().getSize() == 0) && Utils.isNullStr(schemaUrl)) {
+        if ((schemaFile == null || schemaFile.getSize() == 0) && Utils.isNullStr(schemaUrl)) {
             errors.add(messageService.getMessage("label.uplSchema.validation"));
             redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
             return "redirect:/schemas/add";
@@ -282,7 +283,7 @@ public class SchemasController {
             String tmpSchemaUrl = "";
             // generate unique file name
             if (schemaFile != null) {
-                fileName = sm.generateUniqueSchemaFilename(user, Utils.extractExtension(schemaFile.getFile().getOriginalFilename(), "xsd"));
+                fileName = sm.generateUniqueSchemaFilename(user, Utils.extractExtension(schemaFile.getOriginalFilename(), "xsd"));
                 if (Utils.isNullStr(schemaUrl)) {
                     tmpSchemaUrl = Properties.gdemURL + "/schema/" + fileName;
                     schemaUrl = tmpSchemaUrl;
@@ -290,10 +291,10 @@ public class SchemasController {
             }
             // Add row to T_SCHEMA table
             String schemaID = sm.addSchema(user, schemaUrl, desc, schemaLang, doValidation, blocker);
-            if (schemaFile != null && schemaFile.getFile().getSize() > 0) {
+            if (schemaFile != null && schemaFile.getSize() > 0) {
                 // Change the filename to schema-UniqueIDxsd
                 fileName =
-                        sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaID, Utils.extractExtension(schemaFile.getFile().getOriginalFilename()));
+                        sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaID, Utils.extractExtension(schemaFile.getOriginalFilename()));
                 // Add row to T_UPL_SCHEMA table
                 sm.addUplSchema(user, schemaFile, fileName, schemaID);
                 // Update T_SCHEMA table set
@@ -315,8 +316,8 @@ public class SchemasController {
         return "redirect:/schemas";
     }
 
-    @PostMapping
-    public String delete(@ModelAttribute SingleForm form, RedirectAttributes redirectAttributes, HttpSession session) {
+    @PostMapping("/actions")
+    public String delete(@ModelAttribute SingleForm form, @RequestParam String action, RedirectAttributes redirectAttributes, HttpSession session) {
         SpringMessages errors = new SpringMessages();
         SpringMessages messages = new SpringMessages();
 
@@ -326,17 +327,19 @@ public class SchemasController {
 
         try {
             SchemaManager sm = new SchemaManager();
-            int schemaDeleted = sm.deleteUplSchema(user_name, schemaId, true);
-            if (schemaDeleted == 2) {
-                messages.add(messageService.getMessage("label.uplSchema.deleted"));
-            }
+            if ("delete".equals(action)) {
+                int schemaDeleted = sm.deleteUplSchema(user_name, schemaId, true);
+                if (schemaDeleted == 2) {
+                    messages.add(messageService.getMessage("label.uplSchema.deleted"));
+                }
 
-            if (schemaDeleted == 1 || schemaDeleted == 3) {
-                messages.add(messageService.getMessage("label.schema.deleted"));
-            }
+                if (schemaDeleted == 1 || schemaDeleted == 3) {
+                    messages.add(messageService.getMessage("label.schema.deleted"));
+                }
 
-            if (schemaDeleted == 0 || schemaDeleted == 2) {
-                errors.add(messageService.getMessage("label.uplSchema.notdeleted"));
+                if (schemaDeleted == 0 || schemaDeleted == 2) {
+                    errors.add(messageService.getMessage("label.uplSchema.notdeleted"));
+                }
             }
             /*if (!deleteSchema) {
                 httpServletRequest.setAttribute("schemaId", schemaId);
@@ -396,6 +399,12 @@ public class SchemasController {
         return "/schemas/conversions";
     }
 
+    @GetMapping("/{schemaId}/conversions/add")
+    public String conversionsAdd(@PathVariable String schemaId, Model model) {
+        // TODO: complete this
+        return "/conversions/add";
+    }
+
     @GetMapping("/{schemaId}/scripts")
     public String scripts(@PathVariable String schemaId, Model model, HttpServletRequest httpServletRequest) {
         QAScriptListHolder st = null;
@@ -417,6 +426,31 @@ public class SchemasController {
         }
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         return "/schemas/scripts";
+    }
+
+    @GetMapping("/{schemaId}/scripts/add")
+    public String scriptsAdd(@PathVariable String schemaId, Model model) {
+        /*SchemaManager sm = new SchemaManager();
+        schemasService.schemaUrl(schemaId);
+        QAScriptForm form = new QAScriptForm();
+        String schemaUrl = "";
+        /*try {
+            schemaUrl = sm.getSchemaUrl(schemaId);
+
+        } catch (DCMException e) {
+            LOGGER.error("Error while finding schema", e);
+        }
+
+        schemaUrl = schemasService.schemaUrl(schemaId);
+
+        form.setSchemaId(schemaId);
+        form.setSchema(schemaUrl);
+
+        // TODO fix this
+        model.addAttribute("resulttypes", SpringEventListeners.loadConvTypes(XQScript.SCRIPT_RESULTTYPES));
+        model.addAttribute("scriptlangs", SpringEventListeners.loadConvTypes(XQScript.SCRIPT_LANGS));
+        model.addAttribute("form", form);*/
+        return "/scripts/add";
     }
 
 }

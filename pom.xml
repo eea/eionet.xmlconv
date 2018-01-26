@@ -952,6 +952,40 @@
                 <version>2.6.2</version>
                 <type>jar</type>
             </dependency>
+
+            <!-- JS / CSS dependencies -->
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>foundation</artifactId>
+                <version>6.4.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>jquery</artifactId>
+                <version>3.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>jquery-ui</artifactId>
+                <version>1.12.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>jquery-validation</artifactId>
+                <version>1.17.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>dropzone</artifactId>
+                <version>5.2.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>webjars-locator</artifactId>
+                <version>0.30</version>
+            </dependency>
+
         </dependencies>
 
 

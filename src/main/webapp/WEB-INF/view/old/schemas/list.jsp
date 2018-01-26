@@ -17,7 +17,7 @@
   </h1>
 
   <c:if test="${!empty schemas.schemas}">
-    <form:form servletRelativeAction="/schemas/delete" method="post" modelAttribute="form">
+    <form:form servletRelativeAction="/schemas/actions" method="post" modelAttribute="form">
       <table class="datatable" width="100%">
         <c:if test="${schemas.ssdPrm}">
           <col style="width:5%"/>

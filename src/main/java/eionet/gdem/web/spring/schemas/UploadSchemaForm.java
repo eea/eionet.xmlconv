@@ -1,7 +1,7 @@
 package eionet.gdem.web.spring.schemas;
 
 import eionet.gdem.dto.Schema;
-import eionet.gdem.web.spring.FileUploadWrapper;
+import org.springframework.web.multipart.MultipartFile;
 
 public class UploadSchemaForm {
 
@@ -16,14 +16,14 @@ public class UploadSchemaForm {
 
     // T_UPL_SCHEMA
     private String uplSchemaId;
-    private FileUploadWrapper schemaFile;
+    private MultipartFile schemaFile;
     private String schemaFileName;
 
-    public FileUploadWrapper getSchemaFile() {
+    public MultipartFile getSchemaFile() {
         return schemaFile;
     }
 
-    public void setSchemaFile(FileUploadWrapper schema) {
+    public void setSchemaFile(MultipartFile schema) {
         this.schemaFile = schema;
     }
 

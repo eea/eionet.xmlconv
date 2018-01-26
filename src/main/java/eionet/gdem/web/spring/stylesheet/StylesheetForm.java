@@ -24,13 +24,10 @@ package eionet.gdem.web.spring.stylesheet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
-import eionet.gdem.web.spring.FileUploadWrapper;
-
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Stylesheet form class.
@@ -42,7 +39,7 @@ public class StylesheetForm {
     private String schema;
     private String outputtype;
     private String description;
-    private FileUploadWrapper xslfile;
+    private MultipartFile xslfile;
     private String schemaId;
     private String xsl;
     private String stylesheetId;
@@ -97,11 +94,11 @@ public class StylesheetForm {
         this.schema = schema;
     }
 
-    public FileUploadWrapper getXslfile() {
+    public MultipartFile getXslfile() {
         return xslfile;
     }
 
-    public void setXslfile(FileUploadWrapper xslfile) {
+    public void setXslfile(MultipartFile xslfile) {
         this.xslfile = xslfile;
     }
 

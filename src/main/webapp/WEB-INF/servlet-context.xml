@@ -60,6 +60,9 @@
         </property>
     </bean>
 
+    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/">
+        <mvc:resource-chain resource-cache="false" />
+    </mvc:resources>
     <mvc:resources mapping="/css/**" location="resources/css/" />
     <mvc:resources mapping="/js/**" location="resources/js/" />
     <mvc:resources mapping="/images/**" location="resources/images/" />

@@ -102,7 +102,7 @@
         </ed:menuItem>
       </ed:hasPermission>
       <ed:hasPermission username="username" acl="serverstatus" permission="v">
-        <ed:menuItem action="/serverstatus" title="View the server status">
+        <ed:menuItem action="/webstatus" title="View the server status">
           <spring:message code="label.menu.serverstatus"/>
         </ed:menuItem>
       </ed:hasPermission>

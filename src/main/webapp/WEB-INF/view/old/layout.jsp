@@ -31,11 +31,10 @@
   <link rel="stylesheet" type="text/css" href="/css/main.css" media="screen"/>
   <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
   <!-- jQuery javascripts and css-->
-  <link href="/css/smoothness/jquery-ui.css" rel="stylesheet" type="text/css"/>
-  <%--<script type="text/javascript" src="<c:url value="/js/jquery-1.9.1.min.js" />"></script>--%>
-  <script type="text/javascript" src="/js/jquery.min.js"></script>
-  <script type="text/javascript" src="/js/jquery-ui-1.10.3.min.js"></script>
-  <script type="text/javascript" src="/js/jquery-validate-1.11.1.min.js"></script>
+  <link href="/webjars/jquery-ui/jquery-ui.css" rel="stylesheet" type="text/css"/>
+  <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/webjars/jquery-ui/jquery-ui.js"></script>
+  <script type="text/javascript" src="/webjars/jquery-validation/jquery.validate.js"></script>
   <!-- local javascripts -->
   <script type="text/javascript" src="/js/admin.js"></script>
   <script type="text/javascript" src="/js/pageops.js"></script>

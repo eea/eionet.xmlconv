@@ -1,6 +1,5 @@
 package eionet.gdem.web.spring.conversions;
 
-import com.mysql.jdbc.StringUtils;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.Conversion;
@@ -15,7 +14,6 @@ import eionet.gdem.services.MessageService;
 import eionet.gdem.services.db.dao.IRootElemDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.InputAnalyser;
-import eionet.gdem.web.spring.FileUploadWrapper;
 import eionet.gdem.web.spring.SpringMessages;
 import eionet.gdem.web.spring.schemas.SchemaForm;
 import eionet.gdem.web.spring.stylesheet.ConvTypeHolder;
@@ -26,6 +24,7 @@ import eionet.gdem.web.spring.stylesheet.StylesheetListLoader;
 import org.apache.commons.beanutils.BeanPredicate;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.functors.EqualPredicate;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +35,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,7 +52,7 @@ import java.util.Vector;
  *
  *
  */
-@Controller
+@Controller("webConversions")
 @RequestMapping("/conversions")
 public class ConversionsController {
 
@@ -198,7 +197,6 @@ public class ConversionsController {
                 cForm.setSearchAction(null);
                 cForm.setAction("search");
             } catch (DCMException e) {
-                e.printStackTrace();
                 LOGGER.error("Error listing conversions", e);
                 errors.add(messageService.getMessage(e.getErrorCode()));
                 // saveMessages(httpServletRequest, errors);
@@ -206,7 +204,6 @@ public class ConversionsController {
                 /*httpServletRequest.getSession().setAttribute("dcm.errors", errors);*/
                 return "redirect:/conversions";
             } catch (Exception e) {
-                e.printStackTrace();
                 LOGGER.error("Error listing conversions", e);
                 errors.add(messageService.getMessage(BusinessConstants.EXCEPTION_GENERAL));
                 // saveMessages(httpServletRequest, errors);
@@ -286,7 +283,6 @@ public class ConversionsController {
             //httpServletRequest.setAttribute(StylesheetListLoader.STYLESHEET_LIST_ATTR, StylesheetListLoader.getStylesheetList(httpServletRequest));
 
         } catch (DCMException e) {
-            e.printStackTrace();
             LOGGER.error("Edit stylesheet error", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
             model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
@@ -316,15 +312,16 @@ public class ConversionsController {
             ConversionDto conv = Conversion.getConversionById(convId);
             String format = metaXSLFolder + File.separatorChar + conv.getStylesheet();
             String url = tableDefURL + "/GetTableDef?id=" + id;
-            ByteArrayInputStream byteIn = XslGenerator.convertXML(url, format);
+            //TODO: Fix this
+            /*ByteArrayInputStream byteIn = XslGenerator.convertXML(url, format);*/
             int bufLen = 0;
             byte[] buf = new byte[1024];
 
             /*response.setContentType("text/xml");*/
-            while ((bufLen = byteIn.read(buf)) != -1) {
+            /*while ((bufLen = byteIn.read(buf)) != -1) {
                 httpServletResponse.getOutputStream().write(buf, 0, bufLen);
             }
-            byteIn.close();
+            byteIn.close();*/
             return null;
 
         } catch (Exception ge) {
@@ -532,7 +529,7 @@ public class ConversionsController {
 
         Stylesheet stylesheet = ConversionsUtils.convertFormToStylesheetDto(form, httpServletRequest);
 
-        FileUploadWrapper xslFile = form.getXslfile();
+        MultipartFile xslFile = form.getXslfile();
         String user = (String) httpServletRequest.getSession().getAttribute("user");
         String schema = (form.getNewSchemas() == null || form.getNewSchemas().size() == 0) ? null : form.getNewSchemas().get(0);
         httpServletRequest.setAttribute("schema", schema);
@@ -550,10 +547,10 @@ public class ConversionsController {
             model.addAttribute("errors", errors);
             return "redirect:/conversions/list";
         }
-        stylesheet.setXslFileName(xslFile.getFile().getOriginalFilename());
+        stylesheet.setXslFileName(xslFile.getOriginalFilename());
         try {
             // TODO FIX THIS: xslFile.getFileData()
-            stylesheet.setXslContent(new String(xslFile.getFile().getBytes(), "UTF-8"));
+            stylesheet.setXslContent(new String(xslFile.getBytes(), "UTF-8"));
         } catch (Exception e) {
             LOGGER.error("Error in edit stylesheet action when trying to load XSL file content from FormFile object", e);
             errors.add(messageService.getMessage(BusinessConstants.EXCEPTION_GENERAL));
@@ -578,7 +575,7 @@ public class ConversionsController {
         }
         model.addAttribute("errors", errors);
         model.addAttribute("success", success);
-        if (!StringUtils.isNullOrEmpty(schema)) {
+        if (!StringUtils.isEmpty(schema)) {
             return "redirect:/conversions/list?schema=" + schema;
         } else {
             return "redirect:/conversions/list";

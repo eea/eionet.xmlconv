@@ -71,6 +71,7 @@ import eionet.gdem.web.spring.schemas.UplSchemaHolder;
 import eionet.gdem.web.spring.stylesheet.StylesheetListHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Business logic for managing XML schemas in XMLCONV.
@@ -761,10 +762,10 @@ public class SchemaManager {
      * @param fkSchemaId XML Schema object ID.
      * @throws DCMException in case of IO or database errors.
      */
-    public void addUplSchema(String user, FileUploadWrapper file, String fileName, String fkSchemaId) throws DCMException {
+    public void addUplSchema(String user, MultipartFile file, String fileName, String fkSchemaId) throws DCMException {
 
         try {
-            InputStream fileInputStream = file.getFile().getInputStream();
+            InputStream fileInputStream = file.getInputStream();
             addUplSchema(user, fileInputStream, fileName, fkSchemaId);
             // TODO: Fix this
             // file.destroy();

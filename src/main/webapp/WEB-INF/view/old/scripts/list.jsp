@@ -3,7 +3,9 @@
 
 <ed:breadcrumbs-push label="All QA Scripts" level="1"/>
 
-<c:if test="${qascript.ssiPrm}">
+<c:set var="permissions" scope="page" value="${sessionScope['qascript.permissions']}" />
+
+<c:if test="${permissions.ssiPrm}">
   <div id="operations">
     <ul>
       <li>

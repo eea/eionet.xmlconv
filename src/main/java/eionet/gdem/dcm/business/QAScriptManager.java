@@ -39,6 +39,7 @@ import org.apache.commons.lang.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.sql.SQLException;
@@ -149,7 +150,7 @@ public class QAScriptManager {
      * @throws DCMException if DB or file operation fails.
      */
     public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
-                       String scriptType, String curFileName, FileUploadWrapper file, String upperLimit, String url) throws DCMException {
+                       String scriptType, String curFileName, MultipartFile file, String upperLimit, String url) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
@@ -167,7 +168,7 @@ public class QAScriptManager {
         }
 
         try {
-            String fileName = file.getFile().getName().trim();
+            String fileName = file.getName().trim();
             // upload file
             if (!Utils.isNullStr(fileName)) {
                 if (Utils.isNullStr(curFileName)) {
@@ -186,7 +187,6 @@ public class QAScriptManager {
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
-            e.printStackTrace();
             LOGGER.error("Error updating QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
@@ -284,10 +284,10 @@ public class QAScriptManager {
      * @throws FileNotFoundException File is not found.
      * @throws IOException file store operations failed.
      */
-    public void storeQAScriptFile(FileUploadWrapper file, String fileName) throws FileNotFoundException, IOException {
+    public void storeQAScriptFile(MultipartFile file, String fileName) throws FileNotFoundException, IOException {
 
         OutputStream output = null;
-        InputStream in = file.getFile().getInputStream();
+        InputStream in = file.getInputStream();
         String filepath = Properties.queriesFolder + File.separator + fileName;
 
         try {
@@ -397,7 +397,7 @@ public class QAScriptManager {
      * @throws DCMException If an error occurs.
      */
     public String add(String user, String shortName, String schemaId, String schema, String resultType, String description,
-            String scriptType, FileUploadWrapper scriptFile, String upperLimit, String url) throws DCMException {
+                      String scriptType, MultipartFile scriptFile, String upperLimit, String url) throws DCMException {
 
         String scriptId = null;
         // If remote file URL and local file are specified use local file
@@ -414,11 +414,11 @@ public class QAScriptManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
-        boolean useLocalFile = !Utils.isNullStr(scriptFile.getFile().getName());
+        boolean useLocalFile = !Utils.isNullStr(scriptFile.getName());
         try {
             String fileName = "";
             if (useLocalFile) {
-                fileName = scriptFile.getFile().getName().trim();
+                fileName = scriptFile.getName().trim();
             } else {
                 fileName = StringUtils.substringAfterLast(url, "/");
             }

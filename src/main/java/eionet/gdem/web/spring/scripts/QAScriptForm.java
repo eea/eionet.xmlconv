@@ -1,6 +1,7 @@
 package eionet.gdem.web.spring.scripts;
 
 import eionet.gdem.web.spring.FileUploadWrapper;
+import org.springframework.web.multipart.MultipartFile;
 
 public class QAScriptForm {
     private String scriptId;
@@ -14,7 +15,7 @@ public class QAScriptForm {
     private String modified;
     private String checksum;
     private String scriptContent;
-    private FileUploadWrapper scriptFile;
+    private MultipartFile scriptFile;
     private String schema;
     private String upperLimit;
     private String url;
@@ -108,11 +109,11 @@ public class QAScriptForm {
         this.scriptContent = scriptContent;
     }
 
-    public FileUploadWrapper getScriptFile() {
+    public MultipartFile getScriptFile() {
         return this.scriptFile;
     }
 
-    public void setScriptFile(FileUploadWrapper scriptFile) {
+    public void setScriptFile(MultipartFile scriptFile) {
         this.scriptFile = scriptFile;
     }
 

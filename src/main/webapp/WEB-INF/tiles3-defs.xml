@@ -50,9 +50,6 @@
     <definition name="/conversions/view" extends="base">
         <put-attribute name="body" value="/WEB-INF/view/old/conversions/view.jsp" />
     </definition>
-    <definition name="/schemas/unknown" extends="base">
-        <put-attribute name="body" value="/WEB-INF/view/old/schemas/Schema.jsp" />
-    </definition>
     <definition name="/schemas/list" extends="base">
         <put-attribute name="title" value="label.schemas.title" />
         <put-attribute name="body" value="/WEB-INF/view/old/schemas/list.jsp" />
@@ -194,6 +191,12 @@
     <definition name="/workqueue" extends="base">
         <put-attribute name="title" value="label.qasandboxresult.title" />
         <put-attribute name="body" value="/WEB-INF/view/old/workqueue/view.jsp" />
+    </definition>
+
+    <definition name="/webstatus" extends="base">
+        <!--todo fix title-->
+        <put-attribute name="title" value="label.qasandboxresult.title" />
+        <put-attribute name="body" value="/WEB-INF/view/old/serverstatus/view.jsp" />
     </definition>
 
 </tiles-definitions>

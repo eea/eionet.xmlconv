@@ -24,7 +24,7 @@
         }
 
         $(document).on('click', '#addSchema', function () {
-            if ($(".newSchemaContainer").size() == 1 && $(".newSchemaContainer").is(":hidden")) {
+            if ($(".newSchemaContainer").length == 1 && $(".newSchemaContainer").is(":hidden")) {
                 $(".newSchemaContainer").show();
                 $(".newSchemaContainer > input").focus();
             }
@@ -42,7 +42,7 @@
             }
         });
         $(document).on('click', '.delNewSchemaLink', function () {
-            if ($(".newSchemaContainer").size() > 1) {
+            if ($(".newSchemaContainer").length > 1) {
                 $(this).parent().remove();
             }
             else {
@@ -56,7 +56,7 @@
 
         initAutoComplete($("#txtSchemaUrl"));
         initAutoComplete($("#schema_1"));
-        if ($(".newSchemaContainer").size() == 1 && $("#txtSchemaUrl").size() == 0) {
+        if ($(".newSchemaContainer").length == 1 && $("#txtSchemaUrl").length == 0) {
             $(".newSchemaContainer").hide();
         }
 
