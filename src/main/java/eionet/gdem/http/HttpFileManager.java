@@ -74,7 +74,7 @@ public class HttpFileManager {
         // set response properties
         response.setContentType(contentType);
         response.setContentLengthLong(contentLength);
-        response.setCharacterEncoding(contentEncoding);
+        /*response.setCharacterEncoding(contentEncoding);*/
         entity.writeTo(response.getOutputStream());
     }
 

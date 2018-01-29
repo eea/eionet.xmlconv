@@ -9,6 +9,8 @@ import eionet.gdem.api.qa.model.EnvelopeWrapper;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.qa.XQueryService;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +21,15 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static eionet.gdem.qa.ScriptStatus.getActiveStatusList;
+import java.io.File;
+import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -40,6 +48,58 @@ public class QaController {
     @Autowired
     public QaController(QaService qaService) {
         this.qaService = qaService;
+    }
+
+
+    /**
+     * Method specific for Habitats Directive - allows uploading two files for QA checks
+     * @param report
+     * @param checklist
+     * @param request
+     * @return
+     * @throws XMLConvException
+     * @throws IOException
+     */
+    @RequestMapping(value = "/dataflows/nature", method = RequestMethod.POST)
+    public String uploadFiles(@RequestParam("report") MultipartFile report, @RequestParam(value= "checklist", required = false) MultipartFile checklist, HttpServletRequest request) throws XMLConvException, IOException {
+
+        if (report.isEmpty()) {
+            throw new XMLConvException("Report file is mandatory");
+        }
+
+        String scriptId = request.getHeader("scriptId");
+        if (scriptId==null) {
+            scriptId = "-1";
+        }
+
+        String parentdir = eionet.gdem.Properties.appRootFolder + "/tmpfile/";
+        String country = StringUtils.substringBefore(report.getOriginalFilename(), "_");
+//        String uuid = "df-" + System.currentTimeMillis() + "-" + UUID.randomUUID();
+        String uuid = "habitats-df-" + country;
+        String tmpdir = parentdir + uuid;
+        if (Files.exists(Paths.get(tmpdir))) {
+            FileUtils.cleanDirectory(new File(tmpdir));
+        }
+        Files.createDirectories(Paths.get(tmpdir));
+
+        File dest1 = new File(tmpdir + "/" + report.getOriginalFilename());
+        FileUtils.copyInputStreamToFile(report.getInputStream(), dest1);
+
+        if (checklist != null && !checklist.isEmpty()) {
+            File dest2 = new File(tmpdir + "/" + checklist.getOriginalFilename());
+            FileUtils.copyInputStreamToFile(checklist.getInputStream(), dest2);
+        }
+        String fileURL = "http://" + eionet.gdem.Properties.appHost + "/tmpfile/" + uuid + "/" + dest1.getName();
+
+        //we set scriptId=-1 to perform only xml validation for now
+        Vector results = qaService.runQaScript(fileURL, scriptId);
+
+        LinkedHashMap<String, String> jsonResults = new LinkedHashMap<String, String>();
+        jsonResults.put("feedbackStatus", ConvertByteArrayToString((byte[]) results.get(2)));
+        jsonResults.put("feedbackMessage", ConvertByteArrayToString((byte[]) results.get(3)));
+        jsonResults.put("feedbackContentType", results.get(0).toString());
+        jsonResults.put("feedbackContent", ConvertByteArrayToString((byte[]) results.get(1)));
+        return ConvertByteArrayToString((byte[]) results.get(1));
     }
 
     /**
@@ -71,7 +131,7 @@ public class QaController {
      *
      */
     @RequestMapping(value = "/asynctasks/qajobs")
-    public ResponseEntity<HashMap<String, String>> scheduleQARequestOnFile(@RequestBody EnvelopeWrapper envelopeWrapper) throws XMLConvException, EmptyParameterException, UnsupportedEncodingException {
+    public ResponseEntity<HashMap<String,String>> scheduleQARequestOnFile(@RequestBody EnvelopeWrapper envelopeWrapper) throws XMLConvException, EmptyParameterException, UnsupportedEncodingException {
 
          if (envelopeWrapper.getSourceUrl() == null) {
             throw new EmptyParameterException("sourceUrl");
@@ -82,17 +142,17 @@ public class QaController {
         
         XQueryService xqueryService = new XQueryService();
           String jobId = xqueryService.analyzeXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId());
-          xqueryService.analyzeXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId(), null);
-          LinkedHashMap<String, String> results = new LinkedHashMap<String,String>();
-          results.put("jobId", jobId);
-          return  new ResponseEntity<HashMap<String, String>>(results, HttpStatus.OK);
+          xqueryService.analyzeXMLFile(envelopeWrapper.getSourceUrl(),envelopeWrapper.getScriptId(),null);
+          LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
+          results.put("jobId",jobId);
+          return  new ResponseEntity<HashMap<String,String>>(results,HttpStatus.OK);
     }
 
     /**
      * Schedule a Qa Job for an Envelope
      *
      */
-    @PostMapping(value = "/asynctasks/qajobs/batch", consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/asynctasks/qajobs/batch", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<LinkedHashMap<String, List<QaResultsWrapper>>> scheduleQaRequestOnEnvelope(@RequestBody EnvelopeWrapper envelopeWrapper) throws XMLConvException, EmptyParameterException, JsonProcessingException {
 
         if (envelopeWrapper.getEnvelopeUrl() == null) {
@@ -104,21 +164,22 @@ public class QaController {
         return new ResponseEntity<LinkedHashMap<String, List<QaResultsWrapper>>>(jobsQaResults, HttpStatus.OK);
     }
 
+
+
     /**
      * Get QA Job Status
      *
      */
-    @GetMapping(value = "/asynctasks/qajobs/{jobId}")
+    @RequestMapping(value = "/asynctasks/qajobs/{jobId}", method = RequestMethod.GET)
     public ResponseEntity<LinkedHashMap<String, Object>> getQAResultsForJob(@PathVariable String jobId) throws XMLConvException, JsonProcessingException {
 
         Hashtable<String, String> results = qaService.getJobResults(jobId);
         LinkedHashMap<String, Object> jsonResults = new LinkedHashMap<String, Object>();
-        LinkedHashMap<String, String> executionStatusView = new LinkedHashMap<String,String>();
+        LinkedHashMap<String,String> executionStatusView = new LinkedHashMap<String,String>();
         executionStatusView.put("statusId", results.get(Constants.RESULT_CODE_PRM));
-        executionStatusView.put("statusName", results.get("executionStatusName"));
-        jsonResults.put(XQueryService.SCRIPT_ID, results.get(XQueryService.SCRIPT_ID));
-        jsonResults.put("scriptTitle", results.get(Constants.RESULT_SCRIPTTITLE_PRM));
-        jsonResults.put("executionStatus", executionStatusView);
+        executionStatusView.put("statusName",results.get("executionStatusName"));
+        jsonResults.put("scriptTitle",results.get(Constants.RESULT_SCRIPTTITLE_PRM));
+        jsonResults.put("executionStatus",executionStatusView);
         jsonResults.put("feedbackStatus", results.get(Constants.RESULT_FEEDBACKSTATUS_PRM));
         jsonResults.put("feedbackMessage", results.get(Constants.RESULT_FEEDBACKMESSAGE_PRM));
         jsonResults.put("feedbackContentType", results.get(Constants.RESULT_METATYPE_PRM));
@@ -131,15 +192,15 @@ public class QaController {
     * 
     **/
     @RequestMapping(value = "/qascripts", method = RequestMethod.GET)
-    public ResponseEntity<List<LinkedHashMap<String, String>>> listQaScripts(@RequestParam(value = "schema", required = false) String schema, @RequestParam(value = "active", required = false, defaultValue = "true") String active) throws XMLConvException, BadRequestException {
+    public ResponseEntity<List<LinkedHashMap<String,String>>> listQaScripts(@RequestParam(value = "schema", required = false) String schema, @RequestParam(value = "active", required = false, defaultValue = "true") String active) throws XMLConvException, BadRequestException {
 
         if (!ACTIVE_STATUS.contains(active)) {
             throw new BadRequestException("parameter active value must be one of :" + ACTIVE_STATUS.toString());
         }
 
-        List<LinkedHashMap<String, String>> results = qaService.listQAScripts(schema, active);
+        List<LinkedHashMap<String,String>> results = qaService.listQAScripts(schema, active);
        
-        return new ResponseEntity<List<LinkedHashMap<String, String>>>(results, HttpStatus.OK);
+        return new ResponseEntity<List<LinkedHashMap<String,String>>>(results, HttpStatus.OK);
     }
 
 

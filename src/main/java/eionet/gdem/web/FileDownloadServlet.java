@@ -472,7 +472,7 @@ public class FileDownloadServlet extends HttpServlet {
 
 		String securityMessage = null;
 		try {
-            if (urlPath.startsWith("/tmp")) {
+            if (urlPath.startsWith("/tmp/")) {
                 AppUser aclUser = SecurityUtil.getUser(request, Constants.USER_ATT);
                 if (aclUser == null || !SecurityUtil.hasPerm(aclUser.getUserName(), "/" + Constants.ACL_WQ_PATH, "v")) {
                     securityMessage = "You don't have permissions to view result file: " + urlPath;

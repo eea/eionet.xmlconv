@@ -356,7 +356,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
                 h.put(QaScriptView.IS_ACTIVE, r[i][11]);
                 v.add(h);
             }
-        } finally {
+        }  finally {
             closeAllResources(rs, pstmt, conn);
         }
 

@@ -480,7 +480,6 @@
                 <version>8.0.43</version>
                 <scope>provided</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.taglibs</groupId>
                 <artifactId>taglibs-standard-impl</artifactId>
@@ -660,7 +659,19 @@
             <dependency>
                 <groupId>org.basex</groupId>
                 <artifactId>basex</artifactId>
-                <version>8.4.3</version>
+                <version>8.4.4</version>
+            </dependency>
+            <!-- extra basex libraries
+                TODO be careful when upgrading -->
+            <dependency>
+                <groupId>org.basex</groupId>
+                <artifactId>basex-api</artifactId>
+                <version>8.4.4</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vividsolutions</groupId>
+                <artifactId>jts</artifactId>
+                <version>1.13</version>
             </dependency>
 
             <!-- jsoup HTML parser library @ http://jsoup.org/ -->

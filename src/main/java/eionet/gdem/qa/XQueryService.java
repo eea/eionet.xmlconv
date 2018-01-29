@@ -23,21 +23,9 @@
 
 package eionet.gdem.qa;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Vector;
-
 import eionet.gdem.Constants;
-import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
-import eionet.gdem.api.qa.service.QaService;
-import eionet.gdem.api.qa.service.impl.QaServiceImpl;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.business.SchemaManager;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.http.HttpFileManager;
@@ -48,38 +36,40 @@ import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.services.db.dao.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.FeedbackAnalyzer;
+import eionet.gdem.validation.InputAnalyser;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.sql.SQLException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Vector;
 
 import static eionet.gdem.Constants.JOB_VALIDATION;
 import static eionet.gdem.qa.ListQueriesMethod.DEFAULT_CONTENT_TYPE_ID;
 import static eionet.gdem.web.listeners.JobScheduler.getQuartzHeavyScheduler;
 import static eionet.gdem.web.listeners.JobScheduler.getQuartzScheduler;
-
-
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.quartz.JobBuilder.newJob;
-
-import eionet.gdem.validation.InputAnalyser;
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
 import static org.quartz.TriggerBuilder.newTrigger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * QA Service Service Facade. The service is able to execute different QA related methods that are called through XML/RPC and HTTP
  * POST and GET.
  *
  * @author Enriko Käsper
- * @author George Sofianos
  */
 public class XQueryService extends RemoteService {
-
-    public static final String SCRIPT_ID = "scriptId";
 
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
     private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
@@ -194,21 +184,19 @@ public class XQueryService extends RemoteService {
         }
         // get all possible xqueries from db
         String newId = "-1"; // should not be returned with value -1;
+        String file = origFile;
 
         Vector queries = listQueries(schema);
 
         if (!Utils.isNullVector(queries)) {
             for (int j = 0; j < queries.size(); j++) {
 
-                String scriptId = String.valueOf(((Hashtable) queries.get(j)).get("id"));
-                String scriptTitle = StringUtils.defaultIfEmpty(ConvertUtils.convert(((Hashtable) queries.get(j)).get("name")), "");
-                newId = analyzeXMLFile(origFile, scriptId, schema);
+                String query_id = String.valueOf( ( (Hashtable) queries.get(j)).get( QaScriptView.QUERY_ID ));
+                newId = analyzeXMLFile( file, query_id , schema );
 
                 Vector queryResult = new Vector();
                 queryResult.add(newId);
                 queryResult.add(origFile);
-                queryResult.add(scriptId);
-                queryResult.add(scriptTitle);
                 result.add(queryResult);
             }
         }
@@ -361,8 +349,6 @@ public class XQueryService extends RemoteService {
         String feedbackStatus = Constants.XQ_FEEDBACKSTATUS_UNKNOWN;
         String feedbackMsg = "";
 
-        int xq_id = 0;
-
         if (status == Constants.XQ_RECEIVED || status == Constants.XQ_DOWNLOADING_SRC || status == Constants.XQ_PROCESSING) {
             resultCode = Constants.JOB_NOT_READY;
             resultValue = "*** Not ready ***";
@@ -373,14 +359,15 @@ public class XQueryService extends RemoteService {
             if (status == Constants.XQ_READY) {
                 resultCode = Constants.JOB_READY;
             } else if (status == Constants.XQ_LIGHT_ERR) {
-                resultCode = Constants.JOB_LIGHT_ERROR;
+                resultCode = Constants.JOB_READY;
             } else if (status == Constants.XQ_FATAL_ERR) {
-                resultCode = Constants.JOB_FATAL_ERROR;
+                resultCode = Constants.JOB_READY;
             } else {
                 resultCode = -1; // not expected to reach here
             }
-            try {
 
+            try {
+                int xq_id = 0;
                 try {
                     xq_id = Integer.parseInt(jobData[5]);
                 } catch (NumberFormatException n) {
@@ -414,7 +401,6 @@ public class XQueryService extends RemoteService {
             h.put(Constants.RESULT_SCRIPTTITLE_PRM, script_title);
             h.put(Constants.RESULT_FEEDBACKSTATUS_PRM, feedbackStatus);
             h.put(Constants.RESULT_FEEDBACKMESSAGE_PRM, feedbackMsg);
-            h.put(XQueryService.SCRIPT_ID, Integer.toString(xq_id));
 
         } catch (Exception e) {
             String err_mess =
@@ -455,9 +441,9 @@ public class XQueryService extends RemoteService {
 
         try {
 
-            if (String.valueOf(Constants.JOB_VALIDATION).equals(scriptId)) { // Validation
+            if ( String.valueOf(Constants.JOB_VALIDATION).equals(scriptId )  ){ // Validation
                 query = new HashMap();
-                if (isEmpty(schema)){
+                if ( isEmpty(schema)){
                     InputAnalyser analyser = new InputAnalyser();
                     try {
                         analyser.parseXML(sourceURL);
@@ -467,24 +453,24 @@ public class XQueryService extends RemoteService {
                         throw new XMLConvException("Could not extract schema");
                     }
                     //String schemaUrl = findSchemaFromXml(sourceUrl);
-                    query.put(QaScriptView.QUERY, schema);
+                    query.put( QaScriptView.QUERY, schema);
                 }
                 //else {
-                query.put(QaScriptView.QUERY, schema);
+                query.put(QaScriptView.QUERY , schema);
                     //Vector schemas = schemaDao.getSchemas(schema, false);
                 //}
-                query.put(QaScriptView.QUERY_ID, "-1");
-                query.put(QaScriptView.CONTENT_TYPE, DEFAULT_CONTENT_TYPE_ID);
-                query.put(QaScriptView.SCRIPT_TYPE, "xsd");
+                query.put( QaScriptView.QUERY_ID , "-1");
+                query.put( QaScriptView.CONTENT_TYPE, DEFAULT_CONTENT_TYPE_ID);
+                query.put( QaScriptView.SCRIPT_TYPE, "xsd");
 
             }
             else{
-                query = queryDao.getQueryInfo(scriptId);
+                query = queryDao.getQueryInfo( scriptId);
             }
-            if (isNull(query)) {
+            if (isNull(  query ) ){
                 throw new XMLConvException("Script ID does not exist");
             }
-            if ("0".equals(query.get(QaScriptView.IS_ACTIVE))) {
+            if ( "0".equals(query.get(QaScriptView.IS_ACTIVE) )){
                 throw new XMLConvException("Script is not active");
             }
             Vector outputTypes = convTypeDao.getConvTypes();
@@ -521,21 +507,21 @@ public class XQueryService extends RemoteService {
             long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());
 
             //save the job definition in the DB
-            jobId = xqJobDao.startXQJob(sourceURL, queryFile, resultFile, queryId, scriptType);
+            jobId = xqJobDao.startXQJob(sourceURL, queryFile, resultFile, queryId ,scriptType);
             //
-            LOGGER.debug(jobId + " : " + sourceURL + " size: " + sourceSize);
+            LOGGER.debug( jobId + " : " + sourceURL + " size: " + sourceSize );
 
             scheduleJob(jobId, sourceSize, scriptType);
 
 
         } catch (SQLException e) {
-            LOGGER.error("AnalyzeXMLFile:", e);
+            LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
         } catch (SchedulerException e) {
-            LOGGER.error("AnalyzeXMLFile:", e);
+            LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
         } catch (URISyntaxException e) {
-            LOGGER.error("AnalyzeXMLFile:", e);
+            LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
         }
 

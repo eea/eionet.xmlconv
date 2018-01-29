@@ -62,7 +62,7 @@ public class BaseXLocalImpl extends QAScriptEngineStrategy {
             opts.set(SerializerOptions.INDENT, "no");
             opts.set(SerializerOptions.ENCODING, DEFAULT_ENCODING);
             if (getOutputType().equals(HTML_CONTENT_TYPE)) {
-                opts.set(SerializerOptions.METHOD, XML_CONTENT_TYPE);
+                opts.set(SerializerOptions.METHOD, HTML_CONTENT_TYPE);
             } else {
                 opts.set(SerializerOptions.METHOD, getOutputType());
             }

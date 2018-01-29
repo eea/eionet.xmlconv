@@ -286,13 +286,9 @@ https://taskman.eionet.europa.eu/issues/29005 regarding the REST API of the xmlc
     "jobs": [
         {
             "jobId": 123,
-            "scriptId": "2",
-            "scriptTitle": "Example title",
             "fileUrl": "http://some.file.url.1" 
         }, {
             "jobId": 456,
-            "scriptId": "3",
-            "scriptTitle": "Example title",
             "fileUrl": "http://some.file.url.2" 
         }
     ]
@@ -363,7 +359,6 @@ https://taskman.eionet.europa.eu/issues/29005 regarding the REST API of the xmlc
   
    ```json
     {
-     "scriptId": "12",
      "scriptTitle": "Check obligation dependent QA/QC rules",
      "executionStatus": {
         "statusId": "0",

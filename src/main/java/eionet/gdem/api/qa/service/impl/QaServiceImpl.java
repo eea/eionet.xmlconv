@@ -81,8 +81,6 @@ public class QaServiceImpl implements QaService {
                 QaResultsWrapper qaResult = new QaResultsWrapper();
                 qaResult.setJobId(KeyValuePair.get(0));
                 qaResult.setFileUrl(KeyValuePair.get(1));
-                qaResult.setScriptId(KeyValuePair.get(2));
-                qaResult.setScriptTitle(KeyValuePair.get(3));
                 results.add(qaResult);
             }
 
