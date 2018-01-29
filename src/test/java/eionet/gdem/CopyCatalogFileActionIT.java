@@ -1,9 +1,8 @@
 package eionet.gdem;
 
+import eionet.gdem.configuration.CopyCatalogFileAction;
 import eionet.gdem.test.ApplicationTestContext;
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -11,10 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.File;
 import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 /**
  * @author George Sofianos

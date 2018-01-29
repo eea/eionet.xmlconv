@@ -1,10 +1,8 @@
 package eionet.gdem.web.spring.hosts;
 
 import eionet.acl.SignOnException;
-import eionet.gdem.Constants;
 import eionet.gdem.dto.HostDto;
 import eionet.gdem.services.MessageService;
-import eionet.gdem.services.db.dao.IHostDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.web.spring.SpringMessages;
 import org.slf4j.Logger;

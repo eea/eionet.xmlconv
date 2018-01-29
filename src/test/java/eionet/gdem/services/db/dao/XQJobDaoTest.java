@@ -24,7 +24,7 @@ package eionet.gdem.services.db.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.dbunit.IDatabaseTester;
+import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

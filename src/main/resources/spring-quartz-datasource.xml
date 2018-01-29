@@ -16,15 +16,15 @@
         <property name="poolName" value="quartzHikariCP" />
         <property name="minimumIdle" value="5"/>
         <property name="maximumPoolSize" value="50"/>
-        <property name="dataSourceClassName" value="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" />
+        <property name="dataSourceClassName" value="org.mariadb.jdbc.MariaDbDataSource" />
         <property name="dataSourceProperties">
             <props>
                 <prop key="url">${quartz.db.url}</prop>
                 <prop key="user">${quartz.db.user}</prop>
                 <prop key="password">${quartz.db.pwd}</prop>
-                <prop key="cachePrepStmts">true</prop>
-                <prop key="prepStmtCacheSize">250</prop>
-                <prop key="prepStmtCacheSqlLimit">2048</prop>
+                <!--<prop key="cachePrepStmts">true</prop>-->
+                <!--<prop key="prepStmtCacheSize">250</prop>-->
+                <!--<prop key="prepStmtCacheSqlLimit">2048</prop>-->
             </props>
         </property>
     </bean>

@@ -4,7 +4,7 @@
 
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="appConfigDefinitionProvider" class="eionet.propertyplaceholderresolver.ConfigurationDefinitionProviderImpl">
+    <bean id="appConfigDefinitionProvider" primary="false" class="eionet.propertyplaceholderresolver.ConfigurationDefinitionProviderImpl">
         <constructor-arg index="0">
             <array>
                 <value>env.properties</value>
@@ -13,24 +13,24 @@
                 <value>eionetdir.properties</value>
                 <value>CatalogManager.properties</value>
                 <value>fme.properties</value>
-                <value>ApplicationResources.properties</value>
+                <value>messages.properties</value>
                 <value>cache.properties</value>
                 <value>http.properties</value>
             </array>
         </constructor-arg>
     </bean>
     
-    <bean id="configurationPropertyResolver" class="eionet.propertyplaceholderresolver.ConfigurationPropertyResolverImpl">
+    <bean id="configurationPropertyResolver" primary="false" class="eionet.propertyplaceholderresolver.ConfigurationPropertyResolverImpl">
         <constructor-arg ref="appConfigDefinitionProvider" />
     </bean>
     
-    <bean id="configurationPostProcessor" class="eionet.propertyplaceholderresolver.spring.EionetPlaceholderConfigurer">
+    <bean id="configurationPostProcessor" primary="false" class="eionet.propertyplaceholderresolver.spring.EionetPlaceholderConfigurer">
         <constructor-arg ref="configurationPropertyResolver" />
     </bean>
     
-    <bean id="catalogCopyManager" class="eionet.gdem.CopyCatalogFileAction" depends-on="configurationPostProcessor"/>
+    <bean id="catalogCopyManager" class="eionet.gdem.configuration.CopyCatalogFileAction" depends-on="configurationPostProcessor"/>
     
-    <bean id="copyAclFiles" class="eionet.gdem.acl.CopyAclFiles" depends-on="configurationPostProcessor"/>
+    <bean id="copyAclFiles" class="eionet.gdem.configuration.CopyAclFiles" depends-on="configurationPostProcessor"/>
     
     <bean id="aclProperties" class="eionet.acl.AclProperties">
         <property name="ownerPermission" value="${owner.permission}" />

@@ -1,7 +1,7 @@
 package eionet.gdem.quartz;
 
 import eionet.gdem.SpringApplicationContext;
-import eionet.gdem.services.db.dao.mysql.MySqlBaseDao;
+import eionet.gdem.database.MySqlBaseDao;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;

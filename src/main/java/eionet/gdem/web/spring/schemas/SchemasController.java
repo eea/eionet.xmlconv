@@ -2,17 +2,11 @@ package eionet.gdem.web.spring.schemas;
 
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.dcm.business.SchemaManager;
-import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.web.spring.FileUploadWrapper;
-import eionet.gdem.web.spring.SpringMessage;
 import eionet.gdem.web.spring.SpringMessages;
-import eionet.gdem.web.spring.schemas.SchemaElemHolder;
-import eionet.gdem.web.spring.schemas.UplSchemaHolder;
 import eionet.gdem.web.spring.scripts.QAScriptForm;
 import eionet.gdem.web.spring.scripts.QAScriptListHolder;
 import eionet.gdem.web.spring.scripts.QAScriptListLoader;
@@ -444,7 +438,6 @@ public class SchemasController {
         schemaUrl = schemasService.schemaUrl(schemaId);
 
         form.setSchemaId(schemaId);
-        form.setSchema(schemaUrl);
 
         // TODO fix this
         model.addAttribute("resulttypes", SpringEventListeners.loadConvTypes(XQScript.SCRIPT_RESULTTYPES));

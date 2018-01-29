@@ -9,7 +9,7 @@ import static org.junit.Assert.assertNull;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.dbunit.IDatabaseTester;
+import eionet.gdem.web.spring.schemas.SchemaManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

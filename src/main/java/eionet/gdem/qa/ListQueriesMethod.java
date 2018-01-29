@@ -11,12 +11,10 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.remote.RemoteServiceMethod;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.db.dao.IConvTypeDao;
-import eionet.gdem.services.db.dao.IQueryDao;
-import eionet.gdem.services.db.dao.ISchemaDao;
+import eionet.gdem.web.spring.conversions.IConvTypeDao;
+import eionet.gdem.web.spring.schemas.ISchemaDao;
 import eionet.gdem.utils.Utils;
 
-import java.io.File;
 import java.util.*;
 
 import static eionet.gdem.qa.ScriptStatus.getActiveStatusList;

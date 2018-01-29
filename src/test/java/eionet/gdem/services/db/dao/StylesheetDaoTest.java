@@ -31,10 +31,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+import eionet.gdem.web.spring.conversions.IStyleSheetDao;
+import eionet.gdem.web.spring.schemas.ISchemaDao;
 import org.apache.commons.beanutils.BeanPredicate;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.functors.EqualPredicate;
-import org.dbunit.IDatabaseTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

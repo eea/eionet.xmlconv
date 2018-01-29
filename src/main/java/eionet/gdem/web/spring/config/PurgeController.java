@@ -2,7 +2,7 @@ package eionet.gdem.web.spring.config;
 
 import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
-import eionet.gdem.dcm.business.BackupManager;
+import eionet.gdem.web.spring.scripts.BackupManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
@@ -10,7 +10,6 @@ import eionet.gdem.web.spring.SpringMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

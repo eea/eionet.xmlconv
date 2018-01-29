@@ -28,7 +28,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Calendar;
 import java.util.List;
 
-import org.dbunit.IDatabaseTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +37,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
-import eionet.gdem.dcm.business.WorkqueueManager;
+import eionet.gdem.web.spring.workqueue.WorkqueueManager;
 import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;

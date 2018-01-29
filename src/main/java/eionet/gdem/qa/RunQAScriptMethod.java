@@ -1,7 +1,6 @@
 package eionet.gdem.qa;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
@@ -16,12 +15,11 @@ import org.apache.commons.io.IOUtils;
 import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
-import eionet.gdem.dcm.business.SchemaManager;
+import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.remote.RemoteServiceMethod;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.db.dao.IQueryDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.FeedbackAnalyzer;
 import eionet.gdem.validation.ValidationService;

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-<!--
-     You can run this change log on your database as many times as you want, it will ignore the
-     changes that are already applied. It also means that you can't modify an existing revision.
-     Always add to the end.
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <!--
+         You can run this change log on your database as many times as you want, it will ignore the
+         changes that are already applied. It also means that you can't modify an existing revision.
+         Always add to the end.
 
-     Use the maven goals: liquibase:update and liquibase:status
-     Potentially with -Dliquibase.dropFirst=true
-     $Id$
- -->
+         Use the maven goals: liquibase:update and liquibase:status
+         Potentially with -Dliquibase.dropFirst=true
+         $Id$
+     -->
     <changeSet author="kasperen" id="rev-1">
         <createTable tableName="T_BACKUP">
             <column autoIncrement="true" name="BACKUP_ID" type="INT">
@@ -289,7 +289,7 @@
             </column>
         </createTable>
         <modifySql dbms="mysql">
-             <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+            <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
         </modifySql>
     </changeSet>
     <changeSet author="kasperen" id="rev-25">
@@ -299,9 +299,9 @@
             </not>
         </preConditions>
         <addForeignKeyConstraint baseColumnNames="STYLESHEET_ID" baseTableName="T_STYLESHEET_SCHEMA"
-        constraintName="FK_STYLESHEET_SCHEMA_ID" deferrable="false" initiallyDeferred="false"
-        onDelete="CASCADE" onUpdate="CASCADE"
-        referencedColumnNames="CONVERT_ID" referencedTableName="T_STYLESHEET" referencesUniqueColumn="false"/>
+                                 constraintName="FK_STYLESHEET_SCHEMA_ID" deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="CONVERT_ID" referencedTableName="T_STYLESHEET" referencesUniqueColumn="false"/>
     </changeSet>
     <changeSet author="kasperen" id="rev-26">
         <preConditions onFail="MARK_RAN">
@@ -310,9 +310,9 @@
             </not>
         </preConditions>
         <addForeignKeyConstraint baseColumnNames="SCHEMA_ID" baseTableName="T_STYLESHEET_SCHEMA"
-        constraintName="FK_SCHEMA_STYLESHEET_ID" deferrable="false" initiallyDeferred="false"
-        onDelete="CASCADE" onUpdate="CASCADE"
-        referencedColumnNames="SCHEMA_ID" referencedTableName="T_SCHEMA" referencesUniqueColumn="false"/>
+                                 constraintName="FK_SCHEMA_STYLESHEET_ID" deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="SCHEMA_ID" referencedTableName="T_SCHEMA" referencesUniqueColumn="false"/>
     </changeSet>
     <changeSet author="kasperen" id="rev-27">
         <preConditions onFail="MARK_RAN">
@@ -393,27 +393,14 @@
         </createTable>
     </changeSet>
     <changeSet author="katsanas" id="rev-36">
-      <comment>
-        Added RETRY_COUNTER to Jobs table
-      </comment>
-      <addColumn tableName="T_XQJOBS">
-        <column name="RETRY_COUNTER" defaultValueNumeric="0" type="INT UNSIGNED">
-          <constraints nullable="true"/>
-        </column>
-      </addColumn>
-    </changeSet>
-      <changeSet author="vskiadas" id="rev-36">
-        <comment> Table for Storing the Users of the XMLCONV-rest api and their authorities
+        <comment>
+            Added RETRY_COUNTER to Jobs table
         </comment>
-        <createTable tableName="T_API_USER">
-            <column autoIncrement="true" name="ID" type="BIGINT">
-                <constraints nullable="false" primaryKey="true"/>
+        <addColumn tableName="T_XQJOBS">
+            <column name="RETRY_COUNTER" defaultValueNumeric="0" type="INT UNSIGNED">
+                <constraints nullable="true"/>
             </column>
-            <column name="USERNAME" type="VARCHAR(255)"/>
-            <column name="EMAIL" type="VARCHAR(255)"/>
-            <column name="ENABLED" type="BOOLEAN"/>
-            <column name="AUTHORITIES" type="VARCHAR(255)"/>
-        </createTable>
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

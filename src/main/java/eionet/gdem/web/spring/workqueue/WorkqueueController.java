@@ -3,8 +3,7 @@ package eionet.gdem.web.spring.workqueue;
 import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
-import eionet.gdem.dcm.business.WorkqueueManager;
-import eionet.gdem.dto.WorkqueueJob;
+import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
@@ -63,7 +62,7 @@ public class WorkqueueController {
 
         String[][] list = null;
         try {
-            eionet.gdem.services.db.dao.IXQJobDao jobDao = GDEMServices.getDaoService().getXQJobDao();
+            IXQJobDao jobDao = GDEMServices.getDaoService().getXQJobDao();
             list = jobDao.getJobData();
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,7 +74,7 @@ public class WorkqueueController {
         List<JobMetadata> jobsList = new ArrayList<>();
 
         // XXX: Refactor soon
-        eionet.gdem.services.db.dao.IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
+        IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
         for (int i = 0; i < list.length; i++) {
             JobMetadata job = new JobMetadata();
             String jobId = list[i][0];

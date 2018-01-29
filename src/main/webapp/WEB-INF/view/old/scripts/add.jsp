@@ -4,10 +4,7 @@
 
 <h1><spring:message code="label.qascript.add"/></h1>
 
-
-
-
-<form:form action="/addQAScript" method="post" enctype="multipart/form-data">
+<form:form servletRelativeAction="/old/scripts/add" method="post" enctype="multipart/form-data" modelAttribute="form">
   <table class="formtable">
     <col class="labelcol"/>
     <col class="entrycol"/>
@@ -18,7 +15,7 @@
         </label>
       </td>
       <td>
-        <form:input styleId="txtSchemaUrl" size="64" path="schema"/>
+        <form:input id="txtSchemaUrl" size="64" path="schema"/>
       </td>
     </tr>
     <tr>
@@ -28,7 +25,7 @@
         </label>
       </td>
       <td>
-        <form:input styleId="txtShortName" size="64" path="shortName"/>
+        <form:input id="txtShortName" size="64" path="shortName"/>
       </td>
     </tr>
     <tr class="zebraeven">
@@ -48,9 +45,9 @@
         </label>
       </td>
       <td>
-        <html:select name="QAScriptForm" property="resultType" styleId="selContentType">
-          <html:options collection="qascript.resulttypes" property="convType"/>
-        </html:select>
+        <form:select path="resultType" id="selContentType">
+          <form:options items="${resulttypes}" itemLabel="convType" itemValue="convType"/>
+        </form:select>
       </td>
     </tr>
     <tr class="zebraeven">
@@ -60,9 +57,9 @@
         </label>
       </td>
       <td>
-        <html:select name="QAScriptForm" property="scriptType" styleId="selScriptType">
-          <html:options collection="qascript.scriptlangs" property="convType"/>
-        </html:select>
+        <form:select path="scriptType" id="selScriptType">
+          <form:options items="${scriptlangs}" itemLabel="convType" itemValue="convType"/>
+        </form:select>
       </td>
     </tr>
     <tr>
@@ -72,7 +69,7 @@
         </label>
       </td>
       <td>
-        <form:input styleId="txtUpperLimit" size="3" path="upperLimit"/>
+        <form:input id="txtUpperLimit" size="3" path="upperLimit"/>
       </td>
     </tr>
 
@@ -101,7 +98,7 @@
               </label>
             </td>
             <td>
-              <html:file property="scriptFile" styleId="txtFile" style="width:400px" size="64"/>
+              <input type="file" name="scriptFile" id="txtFile" style="width:400px" size="64"/>
             </td>
           </tr>
           <tr class="zebraeven">

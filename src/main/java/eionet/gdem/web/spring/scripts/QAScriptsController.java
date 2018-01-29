@@ -1,8 +1,7 @@
 package eionet.gdem.web.spring.scripts;
 
 import eionet.gdem.Constants;
-import eionet.gdem.dcm.business.BackupManager;
-import eionet.gdem.dcm.business.QAScriptManager;
+import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
@@ -12,7 +11,6 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.web.listeners.AppServletContextListener;
 import eionet.gdem.web.spring.SpringMessages;
 import eionet.gdem.web.spring.schemas.SchemaForm;
-import eionet.gdem.web.spring.scripts.QAScriptListLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

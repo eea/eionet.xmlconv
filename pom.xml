@@ -6,7 +6,7 @@
     <artifactId>xmlconv</artifactId>
     <packaging>war</packaging>
     <prerequisites>
-        <maven>3.0.3</maven>
+        <maven>3.3.9</maven>
     </prerequisites>
 
     <properties>
@@ -14,10 +14,12 @@
         <env>local</env>
         <java_version>1.8</java_version>
         <checkstyle.config.location>${basedir}/docs/checkstyle.xml</checkstyle.config.location>
-        <spring.version>4.3.4.RELEASE</spring.version>
+        <spring.version>4.3.11.RELEASE</spring.version>
         <spring-security-version>4.2.1.RELEASE</spring-security-version>
         <liquibase.changeLogFile>db/xmlconv-struct.xml</liquibase.changeLogFile>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <thymeleaf.version>3.0.7.RELEASE</thymeleaf.version>
+        <thymeleaf-layout-dialect.version>2.1.1</thymeleaf-layout-dialect.version>
     </properties>
 
     <version>2.1-SNAPSHOT</version>
@@ -91,7 +93,7 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.17.1</version>
+                <version>0.22.1</version>
                 <extensions>true</extensions>
                 <configuration>
                     <filter>${valid.images}</filter>
@@ -235,22 +237,29 @@
                 <executions>
                     <execution>
                         <id>copy-local-properties</id>
-                        <phase>prepare-package</phase>
+                        <phase>compile</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <copy file="${basedir}/${env}.properties"
                                       toFile="${project.build.directory}/classes/env.properties" />
-                            </tasks>
+                                <copy todir="${project.build.directory}/classes/acl">
+                                    <fileset dir="acl" />
+                                </copy>
+                                <copy file="${basedir}/db/xmlconv-struct.xml"
+                                      toFile="${project.build.directory}/classes/db/xmlconv-struct.xml" />
+                                <copy file="${basedir}/db/quartz-liquibase.xml"
+                                      toFile="${project.build.directory}/classes/db/quartz-liquibase.xml" />
+                            </target>
                         </configuration>
                     </execution>
                     <execution>
                         <id>pre-test</id>
                         <phase>process-test-resources</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <mkdir dir="${project.build.directory}/test-classes/xsl" />
                                 <mkdir dir="${project.build.directory}/test-classes/tmp" />
                                 <mkdir dir="${project.build.directory}/test-classes/queries" />
@@ -270,7 +279,7 @@
                                 <copy todir="${project.build.directory}/test-classes/db">
                                     <fileset dir="db" />
                                 </copy>
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
@@ -471,15 +480,22 @@
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-el-api</artifactId>
-                <version>8.0.43</version>
+                <version>8.5.20</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-servlet-api</artifactId>
-                <version>8.0.43</version>
+                <version>8.5.20</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-jsp-api</artifactId>
+                <version>8.5.20</version>
+                <scope>provided</scope>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.taglibs</groupId>
                 <artifactId>taglibs-standard-impl</artifactId>
@@ -797,10 +813,15 @@
 
 
             <!-- Database dependencies -->
+            <!--<dependency>-->
+                <!--<groupId>mysql</groupId>-->
+                <!--<artifactId>mysql-connector-java</artifactId>-->
+                <!--<version>5.1.39</version>-->
+            <!--</dependency>-->
             <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>5.1.39</version>
+                <groupId>org.mariadb.jdbc</groupId>
+                <artifactId>mariadb-java-client</artifactId>
+                <version>2.1.2</version>
             </dependency>
             <dependency>
                 <groupId>org.liquibase</groupId>
@@ -814,13 +835,29 @@
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>5.2.5.Final</version>
+                <artifactId>hibernate-core</artifactId>
+                <version>5.2.11.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>5.3.4.Final</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq</artifactId>
+                <version>3.9.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-meta</artifactId>
+                <version>3.9.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen</artifactId>
+                <version>3.9.2</version>
             </dependency>
 
             <!-- LOGGING
@@ -843,7 +880,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.1.7</version>
+                <version>1.1.11</version>
             </dependency>
             <!-- Intercepts logging from log4j and redirects it to slf4j -->
             <dependency>
@@ -962,6 +999,13 @@
                 <artifactId>gson</artifactId>
                 <version>2.6.2</version>
                 <type>jar</type>
+            </dependency>
+
+            <!-- Model Mapping libraries -->
+            <dependency>
+                <groupId>org.modelmapper</groupId>
+                <artifactId>modelmapper</artifactId>
+                <version>1.1.0</version>
             </dependency>
 
             <!-- JS / CSS dependencies -->

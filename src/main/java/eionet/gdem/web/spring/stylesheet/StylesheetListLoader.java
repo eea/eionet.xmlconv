@@ -26,8 +26,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import eionet.gdem.Constants;
-import eionet.gdem.dcm.business.SchemaManager;
-import eionet.gdem.dcm.business.StylesheetManager;
+import eionet.gdem.web.spring.schemas.SchemaManager;
+import eionet.gdem.web.spring.conversions.StylesheetManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;

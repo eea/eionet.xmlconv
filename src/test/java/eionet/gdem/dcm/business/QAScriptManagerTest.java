@@ -6,8 +6,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
+import eionet.gdem.qa.QAScriptManager;
+import eionet.gdem.web.spring.schemas.SchemaManager;
 import org.apache.commons.io.FileUtils;
-import org.dbunit.IDatabaseTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -15,12 +15,12 @@ import java.util.Vector;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.Conversion;
-import eionet.gdem.dcm.business.DDServiceClient;
+import eionet.gdem.datadict.DDServiceClient;
 import eionet.gdem.dcm.remote.RemoteServiceMethod;
 import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.dto.DDDatasetTable;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.db.dao.IConvTypeDao;
+import eionet.gdem.web.spring.conversions.IConvTypeDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

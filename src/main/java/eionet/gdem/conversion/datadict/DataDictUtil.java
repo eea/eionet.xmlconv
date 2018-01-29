@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
-import eionet.gdem.dcm.business.DDServiceClient;
+import eionet.gdem.datadict.DDServiceClient;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XPathQuery;

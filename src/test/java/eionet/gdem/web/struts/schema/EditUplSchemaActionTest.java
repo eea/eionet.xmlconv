@@ -9,12 +9,11 @@ import java.util.Hashtable;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
-import org.dbunit.IDatabaseTester;
 import org.springframework.beans.factory.annotation.Autowired;
 import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.db.dao.IUPLSchemaDao;
+import eionet.gdem.web.spring.schemas.IUPLSchemaDao;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;

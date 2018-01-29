@@ -27,7 +27,7 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import eionet.gdem.dcm.business.DDServiceClient;
+import eionet.gdem.datadict.DDServiceClient;
 import eionet.gdem.dto.DDDatasetTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.dbunit.IDatabaseTester;
+import eionet.gdem.web.spring.schemas.IUPLSchemaDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import eionet.gdem.dcm.business.SchemaManager;
+import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;

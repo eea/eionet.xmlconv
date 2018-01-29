@@ -3,7 +3,7 @@ package eionet.gdem.validation;
 import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.dcm.business.SchemaManager;
+import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.http.HttpFileManager;

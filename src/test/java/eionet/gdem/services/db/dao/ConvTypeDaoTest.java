@@ -7,10 +7,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import eionet.gdem.web.spring.conversions.IConvTypeDao;
 import org.apache.commons.beanutils.BeanPredicate;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.functors.EqualPredicate;
-import org.dbunit.IDatabaseTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

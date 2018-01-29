@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 
-import org.dbunit.IDatabaseTester;
+import eionet.gdem.web.spring.scripts.BackupManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -12,9 +12,11 @@
 
 	
     <mvc:annotation-driven conversion-service="conversionService"/>
-    <mvc:default-servlet-handler />
+    <!--<mvc:default-servlet-handler />-->
 
-    <context:component-scan base-package="eionet.gdem" />
+    <context:component-scan base-package="eionet.gdem.web">
+        <context:exclude-filter type="regex" expression="eionet\.gdem\.web\.spring\..*"/>
+    </context:component-scan>
 
     <bean id="templateResolver" class="org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver">
         <property name="prefix" value="/WEB-INF/view/"/>
@@ -46,7 +48,7 @@
         </mvc:interceptor>
     </mvc:interceptors>
 
-    <tx:annotation-driven transaction-manager="transactionManager" />
+    <tx:annotation-driven transaction-manager="txManager" />
 
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
@@ -66,9 +68,16 @@
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basenames">
             <list>
-                <value>ApplicationResources</value>
+                <value>messages</value>
             </list>
         </property>
     </bean>
+
+    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/">
+        <mvc:resource-chain resource-cache="false" />
+    </mvc:resources>
+    <mvc:resources mapping="/css/**" location="resources/css/" />
+    <mvc:resources mapping="/js/**" location="resources/js/" />
+    <mvc:resources mapping="/images/**" location="resources/images/" />
 
 </beans>

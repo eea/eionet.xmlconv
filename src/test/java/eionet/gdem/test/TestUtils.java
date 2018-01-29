@@ -4,7 +4,7 @@
 package eionet.gdem.test;
 
 import eionet.gdem.Properties;
-import eionet.gdem.dcm.business.DDServiceClient;
+import eionet.gdem.datadict.DDServiceClient;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.test.mocks.MockActionMapping;
 import eionet.gdem.test.mocks.MockServletMultipartRequest;

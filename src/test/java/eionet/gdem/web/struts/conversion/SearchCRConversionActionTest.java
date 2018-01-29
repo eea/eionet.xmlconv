@@ -9,7 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import servletunit.struts.MockStrutsTestCase;
 import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.dcm.business.CrServiceSparqlClient;
+import eionet.gdem.contreg.CrServiceSparqlClient;
 import eionet.gdem.dto.CrFileDto;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
