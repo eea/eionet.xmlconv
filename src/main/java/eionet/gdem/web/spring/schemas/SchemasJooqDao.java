@@ -13,7 +13,7 @@ import static org.jooq.impl.DSL.table;
  *
  */
 @Repository
-public class SchemasJooqDao implements SchemasDao {
+public class SchemasJooqDao {
 
     private DSLContext create;
     private JdbcTemplate jdbcTemplate;
@@ -25,8 +25,7 @@ public class SchemasJooqDao implements SchemasDao {
     }
 
 
-    @Override
-    public String schemaUrl(String schemaId) {
+    public String getSchemaUrl(String schemaId) {
                  String schema = (String) create
                 .select(field(SchemaMySqlDao.XML_SCHEMA_FLD))
                 .from(table(SchemaMySqlDao.SCHEMA_TABLE))

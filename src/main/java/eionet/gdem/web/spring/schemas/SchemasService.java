@@ -12,14 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class SchemasService {
 
-    private SchemasDao schemasDao;
+    private SchemasJooqDao schemasDao;
 
     @Autowired
-    public SchemasService(SchemasDao schemasDao) {
+    public SchemasService(SchemasJooqDao schemasDao) {
         this.schemasDao = schemasDao;
     }
 
-    public String schemaUrl(String schemaId) {
-        return schemasDao.schemaUrl(schemaId);
+    public String getSchemaUrl(String schemaId) {
+        return schemasDao.getSchemaUrl(schemaId);
     }
 }

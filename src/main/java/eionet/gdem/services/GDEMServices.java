@@ -23,8 +23,6 @@
 
 package eionet.gdem.services;
 
-import eionet.gdem.services.db.dao.DCMDaoFactory;
-
 /**
  * Container class for GDEM Services e.g. DBService
  * @author Unknown

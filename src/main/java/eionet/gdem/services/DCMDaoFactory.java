@@ -1,7 +1,6 @@
-package eionet.gdem.services.db.dao;
+package eionet.gdem.services;
 
 import eionet.gdem.qa.IQueryDao;
-import eionet.gdem.services.db.dao.mysql.MySqlDaoFactory;
 import eionet.gdem.web.spring.conversions.IConvTypeDao;
 import eionet.gdem.web.spring.conversions.IStyleSheetDao;
 import eionet.gdem.web.spring.hosts.IHostDao;

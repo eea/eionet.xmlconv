@@ -38,17 +38,17 @@
         </label>
       </th>
       <td>
-        <select name="outputtype" style="width:100px;" id="selOutputType">
-            <%--id="opt" name="stylesheet.outputtype" scope="session" property="convTypes" type="ConvType">--%>
-          <c:forEach items="${sessionScope['stylesheet.outputtype']}" var="opt">
-            <c:set var="selected">
-              <c:if test="${opt.convType == 'HTML'}">selected="selected"</c:if>
-            </c:set>
-            <option value="${opt.convType}" ${selected}>
-              ${opt.convType}
-            </option>
-          </c:forEach>
-        </select>
+        <form:select path="outputtype" style="width:100px;" id="selOutputType">
+          <form:options items="${outputtypes}"/>
+          <%--<c:forEach items="" var="opt">--%>
+            <%--<c:set var="selected">--%>
+              <%--<c:if test="${opt.convType == 'HTML'}">selected="selected"</c:if>--%>
+            <%--</c:set>--%>
+            <%--<option value="${opt.convType}" ${selected}>--%>
+              <%--${opt.convType}--%>
+            <%--</option>--%>
+          <%--</c:forEach>--%>
+        </form:select>
       </td>
     </tr>
 

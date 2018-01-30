@@ -7,9 +7,11 @@ import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.SpringMessages;
+import eionet.gdem.web.spring.conversions.StylesheetManager;
 import eionet.gdem.web.spring.scripts.QAScriptForm;
 import eionet.gdem.web.spring.scripts.QAScriptListHolder;
 import eionet.gdem.web.spring.scripts.QAScriptListLoader;
+import eionet.gdem.web.spring.stylesheet.StylesheetForm;
 import eionet.gdem.web.spring.stylesheet.StylesheetListHolder;
 import eionet.gdem.web.spring.stylesheet.StylesheetListLoader;
 import org.slf4j.Logger;
@@ -34,11 +36,13 @@ import java.util.Date;
 public class SchemasController {
 
     private MessageService messageService;
+    private SchemasService schemasService;
     private static final Logger LOGGER = LoggerFactory.getLogger(SchemasController.class);
 
     @Autowired
-    public SchemasController(MessageService messageService) {
+    public SchemasController(MessageService messageService, SchemasService schemasService) {
         this.messageService = messageService;
+        this.schemasService = schemasService;
     }
 
     @GetMapping
@@ -164,8 +168,8 @@ public class SchemasController {
         return "/schemas/edit";
     }
 
-    @PostMapping("/{id}/edit")
-    public String editSubmit(@PathVariable String id, @ModelAttribute SchemaForm form, HttpServletRequest httpServletRequest, HttpSession session, RedirectAttributes redirectAttributes) {
+    @PostMapping(path = "/actions", params = {"update"})
+    public String editSubmit(@ModelAttribute SchemaForm form, HttpServletRequest httpServletRequest, HttpSession session, RedirectAttributes redirectAttributes) {
         SpringMessages errors = new SpringMessages();
         SpringMessages messages = new SpringMessages();
 
@@ -222,7 +226,7 @@ public class SchemasController {
             sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdId, expireDate, blocker);
 
             messages.add(messageService.getMessage("label.schema.updated"));
-            redirectAttributes.addAttribute("schema", schema);
+//            redirectAttributes.addFlashAttribute("schema", schema);
             // clear qascript list in cache
             QAScriptListLoader.reloadList(httpServletRequest);
             StylesheetListLoader.reloadStylesheetList(httpServletRequest);
@@ -234,7 +238,7 @@ public class SchemasController {
         redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
 
-        return "redirect:/schemas/edit";
+        return "redirect:/schemas/" + schemaId + "/edit";
     }
 
     @GetMapping("/add")
@@ -310,30 +314,28 @@ public class SchemasController {
         return "redirect:/schemas";
     }
 
-    @PostMapping("/actions")
-    public String delete(@ModelAttribute SingleForm form, @RequestParam String action, RedirectAttributes redirectAttributes, HttpSession session) {
+    @PostMapping(path = "/actions", params = {"delete"})
+    public String delete(@ModelAttribute SchemaForm form, RedirectAttributes redirectAttributes, HttpSession session) {
         SpringMessages errors = new SpringMessages();
         SpringMessages messages = new SpringMessages();
 
-        String schemaId = Integer.toString(form.getId());
+        String schemaId = form.getSchemaId();
 
         String user_name = (String) session.getAttribute("user");
 
         try {
             SchemaManager sm = new SchemaManager();
-            if ("delete".equals(action)) {
-                int schemaDeleted = sm.deleteUplSchema(user_name, schemaId, true);
-                if (schemaDeleted == 2) {
-                    messages.add(messageService.getMessage("label.uplSchema.deleted"));
-                }
+            int schemaDeleted = sm.deleteUplSchema(user_name, schemaId, true);
+            if (schemaDeleted == 2) {
+                messages.add(messageService.getMessage("label.uplSchema.deleted"));
+            }
 
-                if (schemaDeleted == 1 || schemaDeleted == 3) {
-                    messages.add(messageService.getMessage("label.schema.deleted"));
-                }
+            if (schemaDeleted == 1 || schemaDeleted == 3) {
+                messages.add(messageService.getMessage("label.schema.deleted"));
+            }
 
-                if (schemaDeleted == 0 || schemaDeleted == 2) {
-                    errors.add(messageService.getMessage("label.uplSchema.notdeleted"));
-                }
+            if (schemaDeleted == 0 || schemaDeleted == 2) {
+                errors.add(messageService.getMessage("label.uplSchema.notdeleted"));
             }
             /*if (!deleteSchema) {
                 httpServletRequest.setAttribute("schemaId", schemaId);
@@ -354,6 +356,7 @@ public class SchemasController {
     }
 
 
+    /* todo find out if we can remove this*/
     @PostMapping("/unknown/delete")
     public String deleteunknown(@ModelAttribute SingleForm form, RedirectAttributes redirectAttributes, HttpSession session) {
         SpringMessages errors = new SpringMessages();
@@ -373,12 +376,14 @@ public class SchemasController {
     }
 
     @GetMapping("/{schemaId}/conversions")
-    public String conversions(@PathVariable String schemaId, Model model) {
+    public String conversions(@PathVariable String schemaId, Model model, HttpSession session) {
         StylesheetListHolder st = null;
+        String schemaUrl = null;
         SpringMessages success = new SpringMessages();
         SpringMessages errors = new SpringMessages();
 
         try {
+            schemaUrl = schemasService.getSchemaUrl(schemaId);
             SchemaManager sm = new SchemaManager();
             st = sm.getSchemaStylesheetsList(schemaId);
             model.addAttribute("conversions", st);
@@ -388,14 +393,18 @@ public class SchemasController {
             errors.add(messageService.getMessage(e.getErrorCode()));
         }
         model.addAttribute("schemaId", schemaId);
+        model.addAttribute("schemaUrl", schemaUrl);
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         model.addAttribute(SpringMessages.SUCCESS_MESSAGES, success);
         return "/schemas/conversions";
     }
 
     @GetMapping("/{schemaId}/conversions/add")
-    public String conversionsAdd(@PathVariable String schemaId, Model model) {
-        // TODO: complete this
+    public String conversionsAdd(@PathVariable String schemaId, Model model) throws DCMException {
+        StylesheetForm form = new StylesheetForm();
+        StylesheetManager stylesheetManager = new StylesheetManager();
+        model.addAttribute("outputtypes", stylesheetManager.getConvTypes());
+        model.addAttribute("form", form);
         return "/conversions/add";
     }
 

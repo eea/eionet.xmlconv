@@ -2,6 +2,8 @@
 
 <ed:breadcrumbs-push label="Schema stylesheets" level="2"/>
 
+<c:set var="permissions" scope="page" value="${sessionScope['stylesheet.permissions']}" />
+
 <c:if test="${!empty conversions.handCodedStylesheets}">
   <form:form action="/searchCR" method="post">
 
@@ -29,7 +31,7 @@
             </li>
           </ul>
         </div>
-        <c:if test="${conversions.ssiPrm}">
+        <c:if test="${permissions.ssiPrm}">
           <div id="operations">
             <ul>
               <li>
@@ -42,7 +44,7 @@
         </c:if>
       </c:if>
       <h1 class="documentFirstHeading">
-        <spring:message code="label.schema.stylesheets"/>&nbsp;${schema.schema}
+        <spring:message code="label.schema.stylesheets"/>&nbsp;${schemaUrl}
       </h1>
 
     </c:forEach>
@@ -53,7 +55,7 @@
 
       <c:if test="${!empty schema.stylesheets}">
         <table class="datatable" width="100%">
-          <c:if test="${conversions.ssdPrm}">
+          <c:if test="${permissions.ssdPrm}">
             <col style="width:10px"/>
           </c:if>
           <col style="width:10px"/>
@@ -63,7 +65,7 @@
           <col/>
           <thead>
           <tr>
-            <c:if test="${conversions.ssdPrm}">
+            <c:if test="${permissions.ssdPrm}">
               <th scope="col">&#160;</th>
             </c:if>
             <th scope="col">&#160;</th>
@@ -78,7 +80,7 @@
           <c:forEach varStatus="i" items="${schema.stylesheets}" var="stylesheet">
             <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
               <%--<bean:define id="convId" name="stylesheet" property="convId"/>--%>
-              <c:if test="${conversions.ssdPrm}">
+              <c:if test="${permissions.ssdPrm}">
                 <td align="center">
                   <input type="radio" name="conversionId" value="${stylesheet.convId}"/>
                 </td>
@@ -138,7 +140,7 @@
           </tbody>
         </table>
         <div class="boxbottombuttons">
-          <c:if test="${conversions.ssdPrm}">
+          <c:if test="${permissions.ssdPrm}">
             <button type="submit" class="button" value="delete">
               <spring:message code="label.stylesheet.delete"/>
             </button>
