@@ -24,7 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import eionet.gdem.Properties;
-import eionet.gdem.dto.ConvType;
+import eionet.gdem.web.spring.conversions.ConvType;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.web.spring.scripts.QAScriptListLoader;
 import eionet.gdem.web.spring.stylesheet.StylesheetListLoader;

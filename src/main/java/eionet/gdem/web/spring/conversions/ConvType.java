@@ -19,8 +19,9 @@
  *    Original code: Istvan Alfeldi (ED)
  */
 
-package eionet.gdem.dto;
+package eionet.gdem.web.spring.conversions;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 
 /**

@@ -34,13 +34,13 @@
     </table>
   </form:form>
   <!--  Show XML files -->
-  <c:if test="${!empty conversionForm.schema}">
-<%--    <bean:define id="schema" name="conversionForm" property="schema"/>
+  <c:if test="${!empty form.schema}">
+<%--    <bean:define id="schema" name="form" property="schema"/>
     <bean:size name="schema" id="countfiles" property="crfiles"/>
     <bean:define id="crfiles" name="schema" property="crfiles"/>--%>
-    <c:set var="countfiles" value="${fn:length(conversionForm.schemas)}" />
+    <c:set var="countfiles" value="${fn:length(form.schemas)}" />
 
-    <form:form action="/testConversion" method="post" modelAttribute="conversionForm">
+    <form:form action="/testConversion" method="post" modelAttribute="form">
       <table class="datatable">
         <tr>
           <th scope="col" class="scope-col">
@@ -57,7 +57,7 @@
         <c:if test="${countfiles > 0}">
           <tr>
             <td>
-                <%--name="conversionForm" property="url"  size="10">--%>
+                <%--name="form" property="url"  size="10">--%>
               <form:select path="url">
                 <form:option value="">--</form:option>
                 <form:options items="crfiles" property="url" itemLabel="url"/>
@@ -79,8 +79,8 @@
         </c:if>
         <tr>
           <td>
-              <%--name="conversionForm" property="schemaUrl"/>--%>
-              <%--name="conversionForm" property="errorForward" value="errorCR" />--%>
+              <%--name="form" property="schemaUrl"/>--%>
+              <%--name="form" property="errorForward" value="errorCR" />--%>
             <form:hidden path="schemaUrl"/>
             <%--<form:hidden path="errorForward" value="errorCR"/>--%>
           </td>
@@ -93,7 +93,7 @@
 
         <%--<bean:define id="idConv" name="converted.conversionId" scope="session" type="String"/>--%>
         <%--<c:if test="${!idConv}">
-          <bean:define id="idConv" name="conversionForm" property="conversionId" scope="session" type="String"/>
+          <bean:define id="idConv" name="form" property="conversionId" scope="session" type="String"/>
         </c:if>--%>
         <tr>
           <td align="left">
@@ -117,7 +117,7 @@
         </tr>
         <tr>
           <td align="center">
-            <c:if test="${fn:length(conversionForm.schema.stylesheets) > 0}">
+            <c:if test="${fn:length(form.schema.stylesheets) > 0}">
               <spring:message code="label.conversion.convert" var="convertLabel"/>
               <button type="submit" class="button" title="${convertLabel}">
                   ${convertLabel}

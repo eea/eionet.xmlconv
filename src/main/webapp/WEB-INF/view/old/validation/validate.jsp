@@ -49,61 +49,58 @@
   </c:if>
 
   <form:form servletRelativeAction="/validation" method="post" modelAttribute="form">
-    <table class="datatable">
-      <tr>
-        <th scope="col" class="scope-col">
-          <spring:message code="label.conversion.url"/>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <form:input path="xmlUrl" type="text" style="width: 40em;"/>
-        </td>
-      </tr>
-      <tr>
-        <th scope="col" class="scope-col">
-          <spring:message code="label.conversion.xmlSchema.optional"/>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <spring:message code="label.conversion.validate.note"/>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <input type="text" property="schemaUrl" style="width: 40em;"/>
-        </td>
-      </tr>
-        <%--<c:if equal name="form" property="showSchemaSelection" value="true">--%>
-      <tr>
-        <th scope="col" class="scope-col">
-          <spring:message code="label.conversion.xmlSchema"/>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <spring:message code="label.conversion.selectSchema"/>
-        </td>
-      </tr>
-      <tr>
-        <td>
+    <fieldset class="fieldset">
+      <div class="row">
+        <div class="columns small-4">
+          <label><spring:message code="label.conversion.url"/></label>
+        </div>
+        <div class="columns small-8">
+          <form:input path="xmlUrl" type="text" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="columns small-12">
+          <label><spring:message code="label.conversion.xmlSchema.optional"/></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="columns small-12">
+          <label><spring:message code="label.conversion.validate.note"/></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="columns small-12">
+          <input type="text" property="schemaUrl" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="columns small-12">
+          <label><spring:message code="label.conversion.xmlSchema"/></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="columns small-12">
+          <label><spring:message code="label.conversion.selectSchema"/></label>
+        </div>
+      </div>
+        <%--
+        <tr>
+          <td>
 
-            <%--                    <form:select path="showSchemaSelection" name="showSchemaSelection" property="schemaUrl"  size="10">
-                                    <form:option value="">--</form:option>
-                                    <form:options collection="conversion.schemas" property="schema" labelProperty="label" />
-                                </form:select>--%>
-        </td>
-      </tr>
-        <%--</c:if equal>--%>
-      <tr>
-        <td align="center">
-          <button type="submit" class="button">
-            <spring:message code="label.conversion.validate"/>
-          </button>
-        </td>
-      </tr>
-    </table>
+                                  <form:select path="showSchemaSelection" name="showSchemaSelection" property="schemaUrl"  size="10">
+                                      <form:option value="">--</form:option>
+                                      <form:options collection="conversion.schemas" property="schema" labelProperty="label" />
+                                  </form:select>
+          </td>
+        </tr>--%>
+    </fieldset>
+    <div class="row">
+      <div class="columns small-4">
+        <button type="submit" class="button">
+          <spring:message code="label.conversion.validate"/>
+        </button>
+      </div>
+    </div>
   </form:form>
   <c:if test="${requestScope['conversion.valid']}">
 
@@ -122,21 +119,13 @@
         </tr>
         </thead>
         <tbody>
-          <%--id="valid" name="conversion.valid" scope="request" type="ValidateDto">--%>
         <c:forEach varStatus="index" items="${conversion.valid}" var="valid">
-          <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
-            <td>
-              ${valid.type}
-            </td>
-            <td>
-              ${valid.line}
-            </td>
-            <td>
-              ${valid.column}
-            </td>
-            <td>
-              ${valid.description}
-            </td>
+          <%--class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">--%>
+          <tr>
+            <td>${valid.type}</td>
+            <td>${valid.line}</td>
+            <td>${valid.column}</td>
+            <td>${valid.description}</td>
           </tr>
         </c:forEach>
         </tbody>

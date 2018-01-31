@@ -8,7 +8,7 @@ import eionet.gdem.web.spring.conversions.ConvTypeManager;
 import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
-import eionet.gdem.dto.ConvType;
+import eionet.gdem.web.spring.conversions.ConvType;
 import eionet.gdem.dto.CrFileDto;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.dto.Schema;

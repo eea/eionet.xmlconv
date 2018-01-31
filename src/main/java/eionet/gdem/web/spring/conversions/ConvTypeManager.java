@@ -22,12 +22,7 @@
 package eionet.gdem.web.spring.conversions;
 
 import java.util.Hashtable;
-
-
-
-
 import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.dto.ConvType;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
 import org.slf4j.Logger;

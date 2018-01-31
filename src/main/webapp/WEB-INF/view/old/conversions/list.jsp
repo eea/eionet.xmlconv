@@ -16,13 +16,10 @@
   <h1 class="documentFirstHeading">
     <spring:message code="label.stylesheet.handcoded"/>
   </h1>
-
-
   <div class="visualClear">&nbsp;</div>
 
-
   <c:if test="${!empty conversions.stylesheetList}">
-    <form:form r="/deleteStylesheet" method="post">
+    <form:form servletRelativeAction="/conversions" method="post">
 
       <table id="tbl_stylesheets" class="display datatable" width="100%">
         <c:if test="${permissions.ssdPrm}">
@@ -84,7 +81,7 @@
       </c:if>
     </form:form>
   </c:if>
-  <c:if test="${!empty conversions.stylesheetList}">
+  <c:if test="${empty conversions.stylesheetList}">
     <div class="advice-msg">
       <spring:message code="label.stylesheet.noHandCodedConversions"/>
     </div>

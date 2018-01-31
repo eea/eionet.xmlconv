@@ -3,6 +3,7 @@ package eionet.gdem.web.spring.conversions;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.Conversion;
+import eionet.gdem.web.spring.SpringMessage;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.dto.Schema;
@@ -55,9 +56,7 @@ import java.util.Vector;
 public class ConversionsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConversionsController.class);
-
     private MessageService messageService;
-
     private IRootElemDao rootElemDao;
 
     @Autowired
@@ -80,140 +79,6 @@ public class ConversionsController {
             model.addAttribute("errors", errors);
         }
         return "/conversions/list";
-    }
-
-    @PostMapping
-    public String listSubmit(@ModelAttribute ConversionForm cForm, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
-
-        SpringMessages success = new SpringMessages();
-        SpringMessages errors = new SpringMessages();
-
-        ArrayList<Schema> schemas = new ArrayList<Schema>();
-        ArrayList stylesheets = null;
-
-        // default action forward
-        String actionForward = "success";
-        String idConv = null;
-
-        String schema = cForm.getSchemaUrl();
-        String url = cForm.getUrl();
-
-        // get request parameters
-
-        // forward to convert action
-        if (httpServletRequest.getParameter("convertAction") != null && !cForm.isConverted()) {
-            cForm.setConvertAction(null);
-            cForm.setConverted(true);
-            cForm.setAction("convert");
-            actionForward = "convert";
-        }
-        // search conversions and display the selection on the form
-        else if (httpServletRequest.getParameter("searchAction") != null) {
-            // search available conversions
-            try {
-                SchemaManager sm = new SchemaManager();
-                // ConversionService cs = new ConversionService();
-                // list conversions by selected schema
-                if (!Utils.isNullStr(schema)) {
-                    if (!schemaExists(httpServletRequest, schema)) {
-                        throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-                    }
-                    stylesheets = sm.getSchemaStylesheets(schema);
-                    Schema oSchema = new Schema();
-                    oSchema.setSchema(schema);
-                    oSchema.setStylesheets(stylesheets);
-                    schemas.add(oSchema);
-                    // store schema info in the form bean
-                    cForm.setSchemas(schemas);
-                    cForm.setInsertedUrl(null);
-                }
-                // sniff schema declaration from the header of XML file
-                // if the xml url is stored in the session already, then use XML Schema information from the session
-                else {
-                    if (!Utils.isNullStr(url) && !url.equals(cForm.getInsertedUrl())) {
-                        cForm.setInsertedUrl(url);
-                        InputAnalyser analyser = new InputAnalyser();
-                        try {
-                            analyser.parseXML(url);
-                        } catch (DCMException e) {
-                            errors.add(messageService.getMessage(e.getErrorCode()));
-                        } catch (Exception e) {
-                            errors.add(messageService.getMessage(e.getMessage()));
-                        }
-                        // schema or dtd found from header
-                        String schemaOrDTD = analyser.getSchemaOrDTD();
-                        if (schemaOrDTD != null) {
-                            stylesheets = sm.getSchemaStylesheets(schemaOrDTD);
-                            Schema oSchema = new Schema();
-                            oSchema.setSchema(schemaOrDTD);
-                            oSchema.setStylesheets(stylesheets);
-                            schemas.add(oSchema);
-                            cForm.setSchemas(schemas);
-                        }
-                        // did not find schema or dtd from xml header
-                        // compare root elements
-                        else {
-                            String root_elem = analyser.getRootElement();
-                            String namespace = analyser.getNamespace();
-                            Vector matchedSchemas = rootElemDao.getRootElemMatching(root_elem, namespace);
-                            for (int k = 0; k < matchedSchemas.size(); k++) {
-                                HashMap schemaHash = (HashMap) matchedSchemas.get(k);
-                                String schema_name = (String) schemaHash.get("xml_schema");
-                                stylesheets = sm.getSchemaStylesheets(schema_name);
-                                Schema oSchema = new Schema();
-                                oSchema.setSchema(schema_name);
-                                oSchema.setStylesheets(stylesheets);
-                                schemas.add(oSchema);
-                            }
-                            cForm.setSchemas(schemas);
-                        }
-                        // no schemas found from the header, show schema selection on the form
-                        if (cForm.getSchemas() == null || cForm.getSchemas().size() == 0) {
-                            cForm.setShowSchemaSelection(true);
-                        } else {
-                            cForm.setShowSchemaSelection(false);
-                        }
-
-                    }
-                }
-                if (cForm.getSchemas() == null || cForm.getSchemas().size() == 0) {
-                    cForm.setShowSchemaSelection(true);
-                } else {
-                    // set default conversion ID
-                    if (idConv == null && cForm.getSchemas().get(0).getStylesheets().size() > 0) {
-                        idConv = ((Stylesheet) (cForm.getSchemas().get(0).getStylesheets().get(0))).getConvId();
-                    }
-                }
-                if (idConv == null) {
-                    idConv = "-1";
-                }
-                if (!cForm.isConverted()) {
-                    httpServletRequest.getSession().setAttribute("converted.url", "");
-                    httpServletRequest.getSession().setAttribute("converted.conversionId", "");
-                }
-                cForm.setConversionId(idConv);
-                cForm.setSearchAction(null);
-                cForm.setAction("search");
-            } catch (DCMException e) {
-                LOGGER.error("Error listing conversions", e);
-                errors.add(messageService.getMessage(e.getErrorCode()));
-                // saveMessages(httpServletRequest, errors);
-                redirectAttributes.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                /*httpServletRequest.getSession().setAttribute("dcm.errors", errors);*/
-                return "redirect:/conversions";
-            } catch (Exception e) {
-                LOGGER.error("Error listing conversions", e);
-                errors.add(messageService.getMessage(BusinessConstants.EXCEPTION_GENERAL));
-                // saveMessages(httpServletRequest, errors);
-                redirectAttributes.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                /*httpServletRequest.getSession().setAttribute("dcm.errors", errors);*/
-                return "redirect:/conversions";
-            }
-        } else {
-            // comping back from convert page
-            cForm.setConverted(false);
-        }
-        return "redirect:/conversions";
     }
 
     @GetMapping("/{conversionId}")
@@ -513,21 +378,25 @@ public class ConversionsController {
 
 
     @GetMapping("/add")
-    public String add(Model model) {
+    public String add(Model model) throws DCMException {
+        SchemaManager sm = new SchemaManager();
         StylesheetForm form = new StylesheetForm();
-
+        StylesheetManager stylesheetManager = new StylesheetManager();
+        model.addAttribute("outputtypes", stylesheetManager.getConvTypes());
         model.addAttribute("form", form);
         return "/conversions/add";
     }
 
     @PostMapping("/add")
-    public String addSubmit(@ModelAttribute StylesheetForm form, Model model, HttpServletRequest httpServletRequest) {
+    public String addSubmit(@ModelAttribute StylesheetForm form, Model model, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
         SpringMessages success = new SpringMessages();
         SpringMessages errors = new SpringMessages();
 
         Stylesheet stylesheet = ConversionsUtils.convertFormToStylesheetDto(form, httpServletRequest);
 
         MultipartFile xslFile = form.getXslfile();
+        //todo fix
+        String schemaId = form.getSchemaId();
         String user = (String) httpServletRequest.getSession().getAttribute("user");
         String schema = (form.getNewSchemas() == null || form.getNewSchemas().size() == 0) ? null : form.getNewSchemas().get(0);
         httpServletRequest.setAttribute("schema", schema);
@@ -571,12 +440,12 @@ public class ConversionsController {
                 errors.add(messageService.getMessage(e.getErrorCode()));
             }
         }
-        model.addAttribute("errors", errors);
-        model.addAttribute("success", success);
-        if (!StringUtils.isEmpty(schema)) {
-            return "redirect:/conversions/list?schema=" + schema;
+        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, success);
+        if (!StringUtils.isEmpty(schemaId)) {
+            return "redirect:/schemas/" + schemaId + "/conversions";
         } else {
-            return "redirect:/conversions/list";
+            return "redirect:/conversions/";
         }
     }
 

@@ -21,16 +21,18 @@
 
 package eionet.gdem.web.spring.stylesheet;
 
+import eionet.gdem.web.spring.conversions.ConvType;
+
 import java.util.List;
 
 public class ConvTypeHolder {
 
-    private List convTypes;
+    private List<ConvType> convTypes;
 
     public ConvTypeHolder() {
     }
 
-    public List getConvTypes() {
+    public List<ConvType> getConvTypes() {
         return convTypes;
     }
 

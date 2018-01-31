@@ -70,9 +70,9 @@
         <put-attribute name="title" value="label.title.uplSchema.add" />
         <put-attribute name="body" value="/WEB-INF/view/old/schemas/conversions.jsp" />
     </definition>
-    <definition name="/converter/list" extends="base">
+    <definition name="/converter/convert" extends="base">
         <put-attribute name="title" value="label.conversion.title" />
-        <put-attribute name="body" value="/WEB-INF/view/old/converter/list.jsp" />
+        <put-attribute name="body" value="/WEB-INF/view/old/converter/convert.jsp" />
     </definition>
     <definition name="/converter/search" extends="base">
         <put-attribute name="title" value="label.conversion.crconversion.title" />

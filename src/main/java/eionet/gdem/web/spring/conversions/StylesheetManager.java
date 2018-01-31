@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import eionet.gdem.SpringApplicationContext;
 import org.apache.commons.io.FileUtils;
 
 
@@ -37,7 +38,6 @@ import org.apache.commons.io.FileUtils;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.dto.ConvType;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
@@ -121,12 +121,10 @@ public class StylesheetManager {
             }
             ctHolder.setConvTypes(convs);
         } catch (Exception e) {
-            e.printStackTrace();
             LOGGER.error("Error getting conv types", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return ctHolder;
-
     }
 
     /**
