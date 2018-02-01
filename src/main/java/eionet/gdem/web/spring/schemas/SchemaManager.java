@@ -933,7 +933,7 @@ public class SchemaManager {
 
                 for (ConversionDto ddConv : ddStylesheets) {
                     String convId = ddConv.getConvId();
-                    String xslUrl = Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv=" + convId;
+                    String xslUrl = Properties.gdemURL + "/conversions/generated/" + tblId + "?conv=" + convId;
 
                     Stylesheet stl = new Stylesheet();
                     stl.setType(ddConv.getResultType());

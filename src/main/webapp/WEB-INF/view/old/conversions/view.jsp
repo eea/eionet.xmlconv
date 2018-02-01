@@ -2,22 +2,23 @@
 
 <ed:breadcrumbs-push label="View stylesheet" level="3"/>
 
+<c:set var="permissions" scope="page" value="${sessionScope['stylesheet.permissions']}"/>
+
 <div id="operations">
   <ul>
     <li>
-      <%--/&amp;schemaUrl=${form.schema}--%>
-      <a href="/converter/search/${form.stylesheetId}">
+      <a href="/converter/search?${form.schema}">
         <spring:message code="label.stylesheet.run"/>
       </a>
     </li>
-    <c:if test="${scopeSession['stylesheet.permissions'].ssdPrm}">
+    <c:if test="${permissions.ssdPrm}">
       <li>
         <a href="/conversions/${form.stylesheetId}/edit" title="edit stylesheet">
           <spring:message code="label.stylesheet.edit"/>
         </a>
       </li>
       <li>
-        <%--&amp;schema=${form.schema}--%>
+          <%--&amp;schema=${form.schema}--%>
         <a href="/conversions/${form.stylesheetId}/delete" title="delete stylesheet">
           <spring:message code="label.stylesheet.delete"/>
         </a>
@@ -39,7 +40,7 @@
       <c:if test="${!empty form.schemas}">
         <c:forEach varStatus="i" items="${form.schemas}" var="relatedSchema">
           <a href="/schemas/${relatedSchema.id}/conversions" title="view XML Schema stylesheets">
-            ${relatedSchema.schema}
+              ${relatedSchema.schema}
           </a>
           <br/>
         </c:forEach>
@@ -64,7 +65,7 @@
         <c:forEach items="${form.existingStylesheets}" var="st">
           <c:if test="${st.convId = form.dependsOn}">
             <a href="/conversions/${st.convId}" title="Open depending stylesheet page">
-              ${st.xslFileName}
+                ${st.xslFileName}
             </a>
           </c:if>
         </c:forEach>

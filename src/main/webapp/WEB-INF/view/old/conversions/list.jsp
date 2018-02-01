@@ -74,7 +74,7 @@
       <c:if test="${permissions.ssdPrm}">
         <br/>
         <div class="boxbottombuttons">
-          <button type="submit" class="button" value="delete">
+          <button type="submit" class="button" name="delete">
             <spring:message code="label.schema.delete"/>
           </button>
         </div>

@@ -1,8 +1,6 @@
 <%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties" %>--%>
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-
-
 <ed:breadcrumbs-push label="Stylesheets" level="1"/>
 
 <c:if test="${!empty conversions}">
@@ -35,7 +33,7 @@
         <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
           <td align="center">
             <a href="/schema/${conversion.stylesheetSchemaId}/conversions">
-              <html:img page="/images/properties.gif" altKey="label.table.stylesheet" title="view stylesheets"/>
+              <img src="/images/properties.gif" altKey="label.table.stylesheet" title="view stylesheets"/>
             </a>
           </td>
           <td title="${conversion.table}">
@@ -45,7 +43,7 @@
               ${conversion.dataset}
           </td>
           <td title="${conversion.datasetReleased}">
-              <fmt:formatDate value="${conversion.datasetReleased}" pattern="${Properties.dateFormatPattern}"/>
+              <fmt:formatDate value="${conversion.datasetReleased}" pattern="dd MMM yyyy" />
           </td>
           <td>
             <a href="${conversion.schema}" title="${conversion.schema}">${conversion.id}</a>

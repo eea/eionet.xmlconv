@@ -200,7 +200,7 @@ public class ListConversionsMethod extends RemoteServiceMethod {
         }
         Hashtable<String, String> h = getMapFromConversionObject(conversionObject);
         h.put(KEY_CONVERT_ID, "DD_TBL" + tblId + "_CONV" + conversionObject.getConvId());
-        h.put(KEY_XSL, Properties.gdemURL + "/do/getStylesheet?id=" + tblId + "&conv=" + conversionObject.getConvId());
+        h.put(KEY_XSL, Properties.gdemURL + "/conversions/generated/" + tblId + "?conv=" + conversionObject.getConvId());
         h.put(KEY_XML_SCHEMA, schemaUrl == null ? "" : schemaUrl);
 
         return h;

@@ -3,10 +3,7 @@
 <ed:breadcrumbs-push label="Edit Stylesheet" level="3"/>
 <h1><spring:message code="label.stylesheet.edit"/></h1>
 
-
-
-
-<form:form action="/stylesheetEdit" method="post" enctype="multipart/form-data" styleClass="cmxform">
+<form:form servletRelativeAction="/conversions" method="post" enctype="multipart/form-data" styleClass="cmxform">
   <table class="datatable" style="width:100%">
     <col class="labelcol"/>
     <col class="entrycol"/>
@@ -17,34 +14,33 @@
         </label>
       </th>
       <td>
-        <c:if test="${stylesheetForm.schemas}">
-          <%--id="relatedSchema" name="stylesheetForm" property="schemas" type="Schema">--%>
-          <c:forEach varStatus="index" items="stylsheetForm.schemas" var="relatedSchema">
+        <c:if test="${!empty form.schemas}">
+          <%--id="relatedSchema" name="form" property="schemas" type="Schema">--%>
+          <c:forEach varStatus="index" items="${form.schemas}" var="relatedSchema">
             <div class="schemaContainer">
-              <a href="viewSchemaForm?schemaId=${relatedSchema.id} title="view XML Schema properties">
+              <a href="viewSchemaForm?schemaId=${relatedSchema.id}" title="view XML Schema properties">
                 ${relatedSchema.schema}
               </a>
               <a href='#' class="delSchemaLink" title="Delete XML Schema relation">
-                <img style='border:0' src='<c:url value="/images/button_remove.gif" />' alt='Remove'/>
+                <img style='border:0' src="/images/button_remove.gif" alt='Remove'/>
               </a><br/>
               <input type="hidden" name="schemaIds" value="${relatedSchema.id}">
             </div>
           </c:forEach>
         </c:if>
         <div id="newSchemasContainer">
-  <%--id="newSchema" name="stylesheetForm" property="newSchemas">--%>
-          <c:forEach items="${stylsheetForm.newSchemas}" var="newSchema">
+          <c:forEach items="${form.newSchemas}" var="newSchema">
             <div class="newSchemaContainer">
-              <input type="url" name="newSchemas" style="width:400px;" class="newSchema" value="${newSchema.schema_1}">
+              <input type="url" name="newSchemas" style="width:400px;" class="newSchema" value="${newSchema}">
               <a href='#' class="delNewSchemaLink">
-                <img style='border:0' src='<c:url value="/images/button_remove.gif"/>' alt='Remove'/>
+                <img style='border:0' src="/images/button_remove.gif" alt='Remove'/>
               </a><br/>
             </div>
           </c:forEach>
         </div>
         <br/>
-        <%-- TODO CHECK FOR REMOVAL --%>
-        <jsp:include page="ManageStylesheetSchemas.jsp"/>
+        <%--&lt;%&ndash; TODO CHECK FOR REMOVAL &ndash;%&gt;--%>
+        <%--<jsp:include page="ManageStylesheetSchemas.jsp"/>--%>
       </td>
     </tr>
       <%-- /*
@@ -82,9 +78,9 @@
       </th>
       <td>
         <select name="outputtype" style="width:100px" id="selOutputType">
-          <c:forEach items="${stylesheet.outputtype.convTypes}" var="opt">
+          <c:forEach items="${outputtypes.convTypes}" var="opt">
             <c:choose>
-              <c:when test="${opt.convType == stylesheetForm.outputtype}">
+              <c:when test="${opt.convType == form.outputtype}">
                 <option selected="selected" value="${opt.convType}">
                   ${opt.convType}
                 </option>
@@ -100,8 +96,8 @@
       </td>
     </tr>
 
-    <c:if test="${stylesheetForm.showDependsOnInfo == 'true'}">
-      <%--<bean:define id="depOn" name="stylesheetForm" property="dependsOn" scope="request" type="java.lang.String"/>--%>
+    <c:if test="${form.showDependsOnInfo}">
+      <%--<bean:define id="depOn" name="form" property="dependsOn" scope="request" type="java.lang.String"/>--%>
       <tr>
         <th scope="row" class="scope-row">
           <label class="question" for="selDependsOn">
@@ -111,15 +107,15 @@
         <td>
           <select name="dependsOn" id="selDependsOn">
             <c:choose>
-              <c:when test="${stylesheetForm.dependsOn}">
+              <c:when test="${form.dependsOn}">
                 <option value="" selected="selected">--</option>
               </c:when>
               <c:otherwise>
                 <option value="">--</option>
               </c:otherwise>
             </c:choose>
-      <%--id="st" scope="request" name="stylesheetForm" property="existingStylesheets">--%>
-            <c:forEach items="${stylesheetForm.existingStylesheets}">
+      <%--id="st" scope="request" name="form" property="existingStylesheets">--%>
+            <c:forEach items="${form.existingStylesheets}">
               <c:choose>
                 <c:when test="${st.convId == depOn}">
                   <option value="${st.convId}" selected="selected">
@@ -147,7 +143,7 @@
         </label>
       </th>
       <td>
-        <form:input path="description" style="width:500px" styleId="txtDescription"/>
+        <form:input path="description" type="text" style="width:500px" styleId="txtDescription"/>
         <form:hidden path="stylesheetId"/>
       </td>
     </tr>
@@ -163,8 +159,8 @@
         </a>
         <span style="margin-left:10px">(<spring:message code="label.lastmodified"/>:
                 <c:choose>
-                  <c:when test="${stylesheetForm.modified}">
-                    ${stylesheetForm.modified}
+                  <c:when test="${form.modified}">
+                    ${form.modified}
                   </c:when>
                   <c:otherwise>
                     <span style="color:red"><spring:message code="label.fileNotFound"/></span>
@@ -178,7 +174,7 @@
         </div>
       </td>
     </tr>
-    <c:if test="${stylesheetForm.xslFileName}">
+    <c:if test="${form.xslFileName}">
       <tr>
         <td colspan="2">
           <form:textarea path="xslContent" style="width: 98%;" rows="20" cols="55" id="txtXsl"/>
@@ -187,11 +183,11 @@
       <tr>
         <td>&#160;</td>
         <td>
-          <button type="submit" name="action" value="save">
+          <button type="submit" name="save">
             <spring:message code="label.stylesheet.save"/>
           </button>
           <form:hidden path="xslFileName"/>
-          <form:hidden path="checksum" name="stylesheetForm"/>
+          <form:hidden path="checksum" name="form"/>
         </td>
       </tr>
     </c:if>

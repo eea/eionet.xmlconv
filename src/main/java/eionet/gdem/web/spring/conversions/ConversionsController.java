@@ -1,18 +1,13 @@
 package eionet.gdem.web.spring.conversions;
 
-import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.dcm.Conversion;
-import eionet.gdem.web.spring.SpringMessage;
 import eionet.gdem.web.spring.schemas.SchemaManager;
-import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.web.spring.schemas.IRootElemDao;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.spring.SpringMessages;
 import eionet.gdem.web.spring.schemas.SchemaForm;
 import eionet.gdem.web.spring.stylesheet.ConvTypeHolder;
@@ -36,16 +31,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
-
 
 /**
  *
@@ -156,48 +146,7 @@ public class ConversionsController {
         return "/conversions/view";
     }
 
-    @GetMapping(value = "/conversions/unknown/{id}", produces = "text/xml")
-    public String getConversion(Model model, HttpServletResponse httpServletResponse) {
-
-        SpringMessages success = new SpringMessages();
-        SpringMessages errors = new SpringMessages();
-
-        String metaXSLFolder = Properties.metaXSLFolder;
-        String tableDefURL = Properties.ddURL;
-        /*DynaValidatorForm loginForm = (DynaValidatorForm) actionForm;
-        String id = (String) loginForm.get("id");
-        String convId = (String) loginForm.get("conv");*/
-
-        String id = "";
-        String convId = "";
-
-        try {
-            ConversionDto conv = Conversion.getConversionById(convId);
-            String format = metaXSLFolder + File.separatorChar + conv.getStylesheet();
-            String url = tableDefURL + "/GetTableDef?id=" + id;
-            //TODO: Fix this
-            /*ByteArrayInputStream byteIn = XslGenerator.convertXML(url, format);*/
-            int bufLen = 0;
-            byte[] buf = new byte[1024];
-
-            /*response.setContentType("text/xml");*/
-            /*while ((bufLen = byteIn.read(buf)) != -1) {
-                httpServletResponse.getOutputStream().write(buf, 0, bufLen);
-            }
-            byteIn.close();*/
-            return null;
-
-        } catch (Exception ge) {
-            LOGGER.error("Error getting stylesheet", ge);
-            errors.add(messageService.getMessage("label.stylesheet.error.generation"));
-            model.addAttribute("dcm.errors", errors);
-            return "redirect:/conversions/{id}";
-        }
-    }
-
-
-
-    @PostMapping("/delete/{id}")
+    @PostMapping(params = "delete")
     public String delete(@ModelAttribute ConversionForm cForm, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
         SpringMessages success = new SpringMessages();
@@ -222,33 +171,24 @@ public class ConversionsController {
         return "redirect:/conversions";
     }
 
-    @GetMapping("/edit/{id}")
-    public String edit(@PathVariable String id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    @GetMapping("/{id}/edit")
+    public String edit(@PathVariable String id, Model model) {
 
         SpringMessages success = new SpringMessages();
         SpringMessages errors = new SpringMessages();
 
         StylesheetForm form = new StylesheetForm();
-        String stylesheetId = httpServletRequest.getParameter("stylesheetId");
-
-        if (stylesheetId == null || stylesheetId.equals("")) {
-            stylesheetId = (String) httpServletRequest.getAttribute("stylesheetId");
-        }
 
         ConvTypeHolder ctHolder = new ConvTypeHolder();
         StylesheetManager stylesheetManager = new StylesheetManager();
 
         try {
-            Stylesheet stylesheet = stylesheetManager.getStylesheet(stylesheetId);
+            Stylesheet stylesheet = stylesheetManager.getStylesheet(id);
 
             if (stylesheet == null) {
-                try {
-                    httpServletResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
-                }
-                catch (IOException ex) {
-                    LOGGER.error("Failed to set 404 response status", ex);
-                }
-                /*return actionMapping.findForward(null);*/
+                LOGGER.error("not found");
+                errors.add(messageService.getMessage("not found"));
+                return "redirect:/conversions";
             }
 
             form.setDescription(stylesheet.getDescription());
@@ -274,14 +214,14 @@ public class ConversionsController {
                     form.setShowDependsOnInfo(true);
                     List<Stylesheet> existingStylesheets = new ArrayList<Stylesheet>();
                     for (Schema relatedSchema : relatedSchemas) {
-                        CollectionUtils.addAll(existingStylesheets, stylesheetManager.getSchemaStylesheets(relatedSchema.getId(),
-                                stylesheetId).toArray());
+                        CollectionUtils.addAll(existingStylesheets, stylesheetManager.getSchemaStylesheets(relatedSchema.getId(), id).toArray());
                     }
                     form.setExistingStylesheets(existingStylesheets);
                 }
             }
             ctHolder = stylesheetManager.getConvTypes();
-
+            model.addAttribute("form", form);
+            model.addAttribute("outputtypes", ctHolder);
             /** FIXME - do we need the list of DD XML Schemas on the page
              StylesheetListHolder stylesheetList = StylesheetListLoader.getGeneratedList(httpServletRequest);
              List<Schema> schemas = stylesheetList.getDdStylesheets();
@@ -303,9 +243,9 @@ public class ConversionsController {
             errors.add(messageService.getMessage(e.getErrorCode()));
             return "redirect:/conversions/{id}";
         }
-        //TODO why is it needed to update session attribute in each request
-        httpServletRequest.getSession().setAttribute("stylesheet.outputtype", ctHolder);
-        return "redirect:/conversions/{id}";
+//        //TODO why is it needed to update session attribute in each request
+//        httpServletRequest.getSession().setAttribute("stylesheet.outputtype", ctHolder);
+        return "/conversions/edit";
     }
 
     @GetMapping("/delete")
@@ -387,7 +327,7 @@ public class ConversionsController {
         return "/conversions/add";
     }
 
-    @PostMapping("/add")
+    @PostMapping(params = "add")
     public String addSubmit(@ModelAttribute StylesheetForm form, Model model, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
         SpringMessages success = new SpringMessages();
         SpringMessages errors = new SpringMessages();

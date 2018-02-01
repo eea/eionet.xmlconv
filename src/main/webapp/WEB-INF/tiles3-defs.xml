@@ -37,9 +37,9 @@
         <put-attribute name="title" value="label.stylesheet.title" />
         <put-attribute name="body" value="/WEB-INF/view/old/conversions/generated.jsp" />
     </definition>
-    <definition name="/conversions/schemaConversions" extends="base">
-        <put-attribute name="body" value="/WEB-INF/view/old/conversions/SchemaStylesheets.jsp" />
-    </definition>
+    <!--<definition name="/conversions/schemaConversions" extends="base">-->
+        <!--<put-attribute name="body" value="/WEB-INF/view/old/conversions/SchemaStylesheets.jsp" />-->
+    <!--</definition>-->
     <definition name="/conversions/add" extends="base">
         <put-attribute name="title" value="label.stylesheet.add" />
         <put-attribute name="body" value="/WEB-INF/view/old/conversions/add.jsp" />
