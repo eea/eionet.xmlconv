@@ -1,12 +1,12 @@
 <%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-<%-- TODO REMOVE SCRIPTLET --%>
-<%
-  response.setHeader("Pragma", "No-cache");
-  response.setHeader("Cache-Control", "no-cache");
-  response.setHeader("Cache-Control", "no-store");
-  response.setDateHeader("Expires", 0);
-%>
+<%--&lt;%&ndash; TODO REMOVE SCRIPTLET &ndash;%&gt;--%>
+<%--<%--%>
+  <%--response.setHeader("Pragma", "No-cache");--%>
+  <%--response.setHeader("Cache-Control", "no-cache");--%>
+  <%--response.setHeader("Cache-Control", "no-store");--%>
+  <%--response.setDateHeader("Expires", 0);--%>
+<%--%>--%>
 
 <ed:breadcrumbs-push label="Workqueue" level="1"/>
 
@@ -165,18 +165,18 @@
     <div id="hidden_elements">
       <c:if test="${permissions.wqdPrm || permissions.wquPrm}">
         <c:if test="${permissions.wqdPrm}">
-          <button type="submit" name="action" value="delete">
+          <button class="button" type="submit" name="delete">
             Delete
           </button>
         </c:if>
         <c:if test="${permissions.wquPrm}">
-          <button type="submit" name="action" value="restart">
+          <button class="button" type="submit" name="restart">
             Restart
           </button>
         </c:if>
         <%--<input class="form-element" type="button" name="selectAll" id="selectAll" value="Select All"
                onclick="toggleSelect('jobID'); return false"/>--%>
-        <button type="button" class="form-element" name="selectAll" id="selectAll" onclick="toggleSelect('jobID'); return false">
+        <button class="button" type="button" class="form-element" name="selectAll" id="selectAll" onclick="toggleSelect('jobID'); return false">
           Select All
         </button>
       </c:if>

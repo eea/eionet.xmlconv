@@ -15,7 +15,6 @@
     <spring:message code="label.xmlfiles.uploaded"/>
   </h1>
 
-
   <div class="visualClear">&nbsp;</div>
 
   <c:if test="${!empty xmlfiles.xmlfiles}">
@@ -55,8 +54,8 @@
             <c:if test="${xmlfiles.ssuPrm}">
               <td align="center">
                 <a href="xmlFiles/${xmlfile.id}/edit">
-                  <img src="/images/edit.gif" alt="<spring:message code="label.edit" />"
-                       title="edit XML file"/></a>
+                  <img src="/images/edit.gif" alt="<spring:message code="label.edit" />" title="edit XML file"/>
+                </a>
               </td>
             </c:if>
             <td>
@@ -99,7 +98,7 @@
       <spring:message code="label.uplXmlFile.noXmlFiles"/>
     </div>
   </c:if>
-  <div class="visualClear">&nbsp;</div>
+  <%--<div class="visualClear">&nbsp;</div>--%>
 
 </c:if>
 

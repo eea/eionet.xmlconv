@@ -3,7 +3,7 @@
 <ed:breadcrumbs-push label="Add Stylesheet" level="3"/>
 <%--<h1><spring:message code="label.stylesheet.add"/></h1>--%>
 
-<form:form servletRelativeAction="/conversions/add" method="post" enctype="multipart/form-data" modelAttribute="form">
+<form:form servletRelativeAction="/conversions" method="post" enctype="multipart/form-data" modelAttribute="form">
   <fieldset class="fieldset">
     <legend><spring:message code="label.stylesheet.add"/></legend>
     <div class="row">
@@ -84,7 +84,7 @@
       <label class=""></label>
     </div>
     <div class="columns small-8">
-      <button type="submit" class="button" value="save">
+      <button type="submit" class="button" name="add" value="save">
         <spring:message code="label.xsl.save"/>
       </button>
         <%--<html:cancel styleClass="button">

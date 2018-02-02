@@ -1,4 +1,3 @@
-<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*,eionet.gdem.Properties" %>--%>
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <ed:breadcrumbs-push label="Stylesheets" level="1"/>
@@ -32,7 +31,7 @@
       <c:forEach varStatus="i" items="${conversions.ddStylesheets}" var="conversion">
         <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
           <td align="center">
-            <a href="/schema/${conversion.stylesheetSchemaId}/conversions">
+            <a href="/conversions/generated?schemaUrl=${conversion.schema}">
               <img src="/images/properties.gif" altKey="label.table.stylesheet" title="view stylesheets"/>
             </a>
           </td>

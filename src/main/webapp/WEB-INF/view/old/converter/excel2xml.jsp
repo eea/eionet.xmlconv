@@ -7,58 +7,47 @@
   </tiles:insertDefinition>
 
   <ed:breadcrumbs-push label="Spreadsheet to XML" level="1"/>
-  <h1><spring:message code="label.conversion.excel2xml.heading"/></h1>
 
   <form:form servletRelativeAction="/converter/excel2xml" method="post" modelAttribute="form">
-    <table class="datatable">
-      <tr>
-        <th scope="col" class="scope-col">
-          <spring:message code="label.conversion.url"/>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <label for="inpUrl"><spring:message code="label.conversion.insertExcelUrl"/></label>
-        </td>
-      </tr>
-      <tr>
-        <td>
-            <%--name="ExcelConversionForm" property="url" style="width: 45em;" styleId="inpUrl" size="200"/>--%>
-          <form:input id="inpUrl" path="url"/>
-        </td>
-      </tr>
-      <tr>
-        <th scope="col" class="scope-col">
-          <spring:message code="label.conversion.sheets"/>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <spring:message code="label.conversion.excel.format"/>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <form:radiobutton path="split" id="split1" value="all"/>
-          <label for="split1"><spring:message code="label.conversion.excel.allsheets"/></label>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <form:radiobutton path="split" id="split2" value="split"/>
+    <fieldset class="fieldset">
+      <legend><spring:message code="label.conversion.excel2xml.heading"/></legend>
+      <div class="row">
+        <spring:message code="label.conversion.url"/>
+      </div>
+      <div class="row">
+        <label for="inpUrl"><spring:message code="label.conversion.insertExcelUrl"/></label>
+      </div>
+      <div class="row">
+          <%--name="ExcelConversionForm" property="url" style="width: 45em;" styleId="inpUrl" size="200"/>--%>
+        <form:input id="inpUrl" path="url"/>
+      </div>
+      <div class="row">
+        <spring:message code="label.conversion.sheets"/>
+      </div>
+      <div class="row">
+        <spring:message code="label.conversion.excel.format"/>
+      </div>
+      <div class="row">
+        <input type="radio" path="split" id="split1" value="all">
+        <label for="split1"><spring:message code="label.conversion.excel.allsheets"/></label>
+      </div>
+      <div class="row">
+        <div class="columns small-4">
           <label for="split2"><spring:message code="label.conversion.excel.sheetname"/></label>
+          <form:radiobutton path="split" id="split2" value="split"/>
+        </div>
+        <div class="columns small-8">
           <form:input path="sheet"/>
-        </td>
-      </tr>
-      <tr>
-        <td align="center">
-          <button type="submit" class="button">
+        </div>
+      </div>
+      <div class="row">
+        <button type="submit" class="button">
           <spring:message code="label.conversion.convert"/>
-          </button>
-        </td>
-      </tr>
+        </button>
+      </div>
 
       <c:if test="${!empty conversionLinks}">
+        <table>
         <tr>
           <th>Num</th>
           <th>Link</th>
@@ -69,6 +58,7 @@
             <td><a href="${conversionLink}" target="_blank">${conversionLink}</a></td>
           </tr>
         </c:forEach>
+        </table>
       </c:if>
 
       <c:choose>
@@ -83,7 +73,6 @@
           </tr>
         </c:otherwise>
       </c:choose>
-    </table>
-    <!--/fieldset-->
+    </fieldset>
   </form:form>
 </div>

@@ -2,7 +2,7 @@ package eionet.gdem.web.spring.remoteapi;
 
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
-import eionet.gdem.qa.functions.Json;
+import eionet.gdem.utils.json.Json;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;

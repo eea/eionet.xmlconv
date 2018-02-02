@@ -402,6 +402,9 @@ public class SchemasController {
     @GetMapping("/{schemaId}/conversions/add")
     public String conversionsAdd(@PathVariable String schemaId, Model model) throws DCMException {
         StylesheetForm form = new StylesheetForm();
+        SchemaManager sm = new SchemaManager();
+        String schemaUrl = sm.getSchema(schemaId).getSchema();
+        form.setSchema(schemaUrl);
         StylesheetManager stylesheetManager = new StylesheetManager();
         model.addAttribute("outputtypes", stylesheetManager.getConvTypes());
         model.addAttribute("form", form);

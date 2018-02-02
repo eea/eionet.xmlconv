@@ -19,7 +19,7 @@
  *        Enriko Käsper
  */
 
-package eionet.gdem.qa.functions;
+package eionet.gdem.utils.json;
 
 import org.apache.http.HttpStatus;
 

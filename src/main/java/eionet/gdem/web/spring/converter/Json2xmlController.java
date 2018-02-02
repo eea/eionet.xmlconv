@@ -1,7 +1,7 @@
 package eionet.gdem.web.spring.converter;
 
 import eionet.gdem.XMLConvException;
-import eionet.gdem.qa.functions.Json;
+import eionet.gdem.utils.json.Json;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.web.spring.schemas.IRootElemDao;
 import org.slf4j.Logger;

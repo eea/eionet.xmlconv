@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -77,28 +78,8 @@ public class GeneratedConversionsController {
         }
     }
 
-    @GetMapping(value = "/generated/{id}")
-    @ResponseBody
-    public String show(@PathVariable String id) {
-
-//        SpringMessages success = new SpringMessages();
-//        SpringMessages errors = new SpringMessages();
-//
-//        String metaXSLFolder = Properties.metaXSLFolder;
-//        String tableDefURL = Properties.ddURL;
-//
-//        try {
-//            ConversionDto conv = Conversion.getConversionById(convId);
-//            String format = metaXSLFolder + File.separatorChar + conv.getStylesheet();
-//            String url = tableDefURL + "/GetTableDef?id=" + id;
-//            return IOUtils.toByteArray(XslGenerator.convertXML(url, format));
-//        } catch (Exception ge) {
-//            LOGGER.error("Error getting stylesheet", ge);
-//            errors.add(messageService.getMessage("label.stylesheet.error.generation"));
-////            model.addAttribute("dcm.errors", errors);
-//            return null;
-            return "/conversions";
-//        }
+    @GetMapping(value = "/generated", params = { "schemaUrl" })
+    public String view(@ModelAttribute String schemaUrl) {
+        return "/conversions/view";
     }
-
 }

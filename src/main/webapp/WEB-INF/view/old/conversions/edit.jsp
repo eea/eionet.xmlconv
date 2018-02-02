@@ -168,7 +168,7 @@
                 </c:choose>)</span>
         <div>
           <input type="file" name="xslfile" size="68"/>
-          <button type="submit" class="button" name="action" value="upload">
+          <button type="submit" class="button" name="upload">
             <spring:message code="label.stylesheet.upload"/>
           </button>
         </div>
