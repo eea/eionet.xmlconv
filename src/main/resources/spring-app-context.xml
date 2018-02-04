@@ -37,7 +37,7 @@
 
     <!-- TESTING JOOQ LIBRARY - REMOVE ALL FOLLOWING STATEMENTS IF WE WONT NEED JOOQ -->
 
-    <bean id="transactionAwareDataSource"
+    <bean id="transactionAwareDataSource" primary="false"
           class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
         <constructor-arg ref="dataSource" />
     </bean>

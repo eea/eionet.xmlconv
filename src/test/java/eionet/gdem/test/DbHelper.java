@@ -8,8 +8,6 @@ import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-import com.mysql.fabric.xmlrpc.base.Data;
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSourceFactory;
 import liquibase.database.Database;
 import org.dbunit.*;
 import org.dbunit.database.DatabaseConfig;

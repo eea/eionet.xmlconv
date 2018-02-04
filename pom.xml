@@ -274,7 +274,7 @@
                                 <copy todir="${project.build.directory}/test-classes/acl">
                                     <fileset dir="acl" />
                                 </copy>
-                                <copy file="${basedir}/${env}.properties"
+                                <copy file="${basedir}/jenkins.properties"
                                       toFile="${project.build.directory}/test-classes/env.properties" />
                                 <copy todir="${project.build.directory}/test-classes/db">
                                     <fileset dir="db" />
@@ -495,6 +495,19 @@
                 <version>8.5.20</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-el-api</artifactId>
+                <version>8.5.20</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-jasper-el</artifactId>
+                <version>8.5.20</version>
+                <scope>test</scope>
+            </dependency>
+
 
             <dependency>
                 <groupId>org.apache.taglibs</groupId>

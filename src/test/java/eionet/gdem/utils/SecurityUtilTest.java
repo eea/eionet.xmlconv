@@ -4,12 +4,12 @@
 package eionet.gdem.utils;
 
 import eionet.gdem.test.ApplicationTestContext;
+import eionet.gdem.web.spring.login.LoginController;
 import junit.framework.TestCase;
 import edu.yale.its.tp.cas.client.filter.CASFilter;
 import eionet.gdem.test.mocks.MockHttpSession;
 import eionet.gdem.test.mocks.MockServletContext;
 import eionet.gdem.test.mocks.MockServletRequest;
-import eionet.gdem.web.struts.login.AfterCASLoginAction;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -120,7 +120,7 @@ public class SecurityUtilTest {
         String url = SecurityUtil.getLoginURL(req);
         assertEquals("http://testserver/context/do/login", url);
         assertEquals("http://testserver/context/servlet?id=222",
-                (String) session.getAttribute(AfterCASLoginAction.AFTER_LOGIN_ATTR_NAME));
+                (String) session.getAttribute(LoginController.AFTER_LOGIN_ATTR_NAME));
 
     }
 
@@ -147,7 +147,7 @@ public class SecurityUtilTest {
         String url = SecurityUtil.getLoginURL(req);
         assertEquals("http://ssoserver/login?service=http%3A%2F%2Ftestserver%2Fcontext%2Fdo%2FafterLogin", url);
         assertEquals("http://testserver/context/servlet?id=222",
-                (String) session.getAttribute(AfterCASLoginAction.AFTER_LOGIN_ATTR_NAME));
+                (String) session.getAttribute(LoginController.AFTER_LOGIN_ATTR_NAME));
 
     }
 

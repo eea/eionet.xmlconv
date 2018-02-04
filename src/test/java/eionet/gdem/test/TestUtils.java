@@ -6,12 +6,9 @@ package eionet.gdem.test;
 import eionet.gdem.Properties;
 import eionet.gdem.datadict.DDServiceClient;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.test.mocks.MockActionMapping;
 import eionet.gdem.test.mocks.MockServletMultipartRequest;
 import eionet.gdem.test.mocks.MockServletRequest;
 import eionet.gdem.test.mocks.MockServletResponse;
-import eionet.gdem.web.struts.BaseAction;
-import org.apache.struts.action.ActionMapping;
 import org.junit.Ignore;
 
 import java.io.File;
@@ -91,7 +88,8 @@ public class TestUtils {
      * @return MockServletResponse
      * @throws Exception
      */
-    public static MockServletResponse executeAction(BaseAction action, Map paramsMap) throws Exception {
+    // todo remove or fix
+/*    public static MockServletResponse executeAction(BaseAction action, Map paramsMap) throws Exception {
         // Create the mock objects
         MockServletRequest request = new MockServletRequest();
         ActionMapping actionMap = new MockActionMapping();
@@ -102,7 +100,7 @@ public class TestUtils {
         action.execute(actionMap, null, request, response);
 
         return response;
-    }
+    }*/
 
     /**
      * Method for executing Struts action.execute() methods with multipart request The method returns MockServletResponse object and
@@ -119,20 +117,21 @@ public class TestUtils {
      * @return
      * @throws Exception
      */
-    public static MockServletResponse executeActionMultipart(BaseAction action, Map paramsMap, String fileItemParam,
-            String uploadFile, String fileContentType) throws Exception {
-
-        // Create the mock objects
-        MockServletMultipartRequest request = new MockServletMultipartRequest();
-        ActionMapping actionMap = new MockActionMapping();
-        MockServletResponse response = new MockServletResponse();
-
-        request.setParameterMap(paramsMap);
-        request.writeFile(fileItemParam, uploadFile, fileContentType);
-        action.execute(actionMap, null, request, response);
-
-        return response;
-    }
+    // todo remove or fix
+//    public static MockServletResponse executeActionMultipart(BaseAction action, Map paramsMap, String fileItemParam,
+//            String uploadFile, String fileContentType) throws Exception {
+//
+//        // Create the mock objects
+//        MockServletMultipartRequest request = new MockServletMultipartRequest();
+//        ActionMapping actionMap = new MockActionMapping();
+//        MockServletResponse response = new MockServletResponse();
+//
+//        request.setParameterMap(paramsMap);
+//        request.writeFile(fileItemParam, uploadFile, fileContentType);
+//        action.execute(actionMap, null, request, response);
+//
+//        return response;
+//    }
 
     // conversion service checks if the dataset is the latest released verison
     // otherwise conversion fails
