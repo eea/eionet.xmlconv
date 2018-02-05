@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -43,24 +42,24 @@ public class ValidationController {
     }
 
     @GetMapping
-    public String form(Model model) {
+    public String form(@ModelAttribute(name = "form") ValidationForm form, Model model) {
 
         SpringMessages errors = new SpringMessages();
-        ValidationForm form = new ValidationForm();
         model.addAttribute("form", form);
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         return "/validation";
     }
 
     @PostMapping
-    public String formSubmit(@ModelAttribute ValidationForm cForm, RedirectAttributes redirectAttributes, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+    public String formSubmit(@ModelAttribute(name = "form") ValidationForm form, RedirectAttributes redirectAttributes, HttpSession session) {
 
         String ticket = (String) session.getAttribute(Constants.TICKET_ATT);
         SpringMessages errors = new SpringMessages();
 
+        String url = form.getXmlUrl();
+        String schema = form.getSchemaUrl();
 
-        String url = cForm.getXmlUrl();
-        String schema = cForm.getSchemaUrl();
+        redirectAttributes.addFlashAttribute("form", form);
 
         if (Utils.isNullStr(url)) {
             errors.add(messageService.getMessage("label.conversion.selectSource"));
@@ -74,38 +73,32 @@ public class ValidationController {
         }
 
         try {
-            List<ValidateDto> valid;
+            List<ValidateDto> validationErrors;
             String validatedSchema = null;
             String originalSchema = null;
             String warningMessage = null;
-            try {
-                ValidationService v = new JaxpValidationService();
-                //v.setTrustedMode(false);
-                //v.setTicket(ticket);
-                if (schema == null) {
-                    v.validate(url);
-                } else {
-                    v.validateSchema(url, schema);
-                }
-                valid = v.getErrorList();
-                validatedSchema = v.getValidatedSchemaURL();
-                originalSchema = v.getOriginalSchema();
-                warningMessage = v.getWarningMessage();
-            } catch (DCMException dcme) {
-                throw dcme;
-            } catch (Exception e) {
-                throw new DCMException(BusinessConstants.EXCEPTION_VALIDATION_ERROR);
+
+            ValidationService v = new JaxpValidationService();
+            //v.setTrustedMode(false);
+            //v.setTicket(ticket);
+            if (schema == null) {
+                v.validate(url);
+            } else {
+                v.validateSchema(url, schema);
             }
-            request.setAttribute("conversion.valid", valid);
-            request.setAttribute("conversion.originalSchema", originalSchema);
+            validationErrors = v.getErrorList();
+            validatedSchema = v.getValidatedSchemaURL();
+            originalSchema = v.getOriginalSchema();
+            warningMessage = v.getWarningMessage();
+            redirectAttributes.addFlashAttribute("validationErrors", validationErrors);
+            redirectAttributes.addFlashAttribute("originalSchema", originalSchema);
             if (!StringUtils.equals(originalSchema, validatedSchema)) {
-                request.setAttribute("conversion.validatedSchema", validatedSchema);
+                redirectAttributes.addFlashAttribute("validatedSchema", validatedSchema);
             }
-            request.setAttribute("conversion.warningMessage", warningMessage);
+            redirectAttributes.addFlashAttribute("warningMessage", warningMessage);
         } catch (DCMException e) {
-            e.printStackTrace();
             LOGGER.error("Error validating xml", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
+            errors.add(messageService.getMessage(BusinessConstants.EXCEPTION_VALIDATION_ERROR));
             redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
             return "redirect:/validation";
         }

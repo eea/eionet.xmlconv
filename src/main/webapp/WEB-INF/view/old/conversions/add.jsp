@@ -13,7 +13,8 @@
         </label>
       </div>
       <div class="columns small-8">
-        <form:input path="schema" type="url" name="newSchemas" value="${schema}" class="newSchema" id="txtSchemaUrl"/>
+        <%--value="${schema}" class="newSchema" --%>
+        <form:input path="newSchemas[0]" type="url" id="txtSchemaUrl"/>
       </div>
     </div>
 
