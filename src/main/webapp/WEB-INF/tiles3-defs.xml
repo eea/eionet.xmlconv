@@ -134,6 +134,9 @@
     <definition name="ConverterTabs" template="/WEB-INF/view/old/converter/tabs.jsp">
         <put-attribute name="selectedTab" type="string" value="convertXML" />
     </definition>
+    <definition name="ConfigTabs" template="/WEB-INF/view/old/config/tabs.jsp">
+        <put-attribute name="selectedTab" type="string" value="basex" />
+    </definition>
     <definition name="/validation" extends="base">
         <put-attribute name="title" value="label.conversion.validate.title" />
         <put-attribute name="body" value="/WEB-INF/view/old/validation/validate.jsp" />

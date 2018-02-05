@@ -1,62 +1,42 @@
 <%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-<ed:breadcrumbs-push label="Host details" level="2"/>
-<h1 class="documentFirstHeading">
+<ed:breadcrumbs-push label="Edit Host" level="2"/>
 
-  <c:choose>
-    <c:when test="${HostForm.id}">
-      <spring:message code="label.hosts.edit"/>
-    </c:when>
-    <c:otherwise>
-      <spring:message code="label.hosts.add_title"/>
-    </c:otherwise>
-  </c:choose>
-</h1>
-
-<form:form action="/hosts/save" method="post" modelAttribute="form">
-  <table class="formtable">
-    <col class="labelcol"/>
-    <col class="entrycol"/>
-    <tr class="zebraeven">
-      <td>
+<form:form action="/hosts" method="post" modelAttribute="form">
+  <fieldset class="fieldset">
+    <legend><spring:message code="label.hosts.edit"/></legend>
+    <div class="row">
+      <div class="columns small-4">
         <label class="question required" for="txtHost">
           <spring:message code="label.hosts.host"/>
         </label>
-      </td>
-      <td align="left">
+      </div>
+      <div class="columns small-8">
         <form:input path="host" id="txtHost"/>
-      </td>
-    </tr>
-    <tr>
-      <td>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-4">
         <label class="question required" for="txtUsername">
           <spring:message code="label.hosts.username"/>
         </label>
-      </td>
-      <td align="left">
+      </div>
+      <div class="columns small-8">
         <form:input path="username" id="txtUsername"/>
-      </td>
-    </tr>
-    <tr class="zebraeven">
-      <td>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-4">
         <label class="question" for="txtPassword">
           <spring:message code="label.hosts.password"/>
         </label>
-      </td>
-      <td align="left">
+      </div>
+      <div class="columns small-8">
         <form:input path="password" id="txtPassword"/>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2">&#160;</td>
-    </tr>
-    <tr>
-      <td>&#160;</td>
-      <td>
-        <button type="submit" class="button" title="Save">
-          Save
-        </button>
-      </td>
-    </tr>
-  </table>
+      </div>
+    </div>
+    <button type="submit" class="button" name="update" title="Save">
+      <spring:message code="label.save"/>
+    </button>
+  </fieldset>
 </form:form>

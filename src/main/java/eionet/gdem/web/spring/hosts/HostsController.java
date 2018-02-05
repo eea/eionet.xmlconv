@@ -1,10 +1,10 @@
 package eionet.gdem.web.spring.hosts;
 
 import eionet.acl.SignOnException;
-import eionet.gdem.dto.HostDto;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.web.spring.SpringMessages;
+import eionet.gdem.web.spring.generic.SingleForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class HostsController {
 
         SpringMessages errors = new SpringMessages();
 
-        List result = new ArrayList();
+        List hosts = new ArrayList();
         String user = (String) session.getAttribute("user");
         try {
             if (SecurityUtil.hasPerm(user, "/host", "v")) {
@@ -54,7 +53,7 @@ public class HostsController {
                     h.setId((String) host.get("host_id"));
                     h.setHostname((String) host.get("host_name"));
                     h.setUsername((String) host.get("user_name"));
-                    result.add(h);
+                    hosts.add(h);
                 }
             } else {
                 errors.add(messageService.getMessage("error.vnoperm", "label.hosts"));
@@ -64,9 +63,8 @@ public class HostsController {
             errors.add(messageService.getMessage("label.exception.unknown"));
         }
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        model.addAttribute("hosts", result);
-        HostForm form = new HostForm();
-
+        model.addAttribute("hosts", hosts);
+        SingleForm form = new SingleForm();
         model.addAttribute("form", form);
         return "/hosts/list";
     }
@@ -77,35 +75,35 @@ public class HostsController {
         HostForm hostForm = new HostForm();
         String user = (String) session.getAttribute("user");
         SpringMessages errors = new SpringMessages();
+
         try {
             if (SecurityUtil.hasPerm(user, "/host", "u")) {
                 Vector hosts = hostDao.getHosts(id);
 
                 if (hosts != null) {
                     Hashtable host = (Hashtable) hosts.get(0);
-                    hostForm.setId((String)host.get("host_id"));
-                    hostForm.setHost((String)host.get("host_name"));
-                    hostForm.setUsername((String)host.get("user_name"));
-                    hostForm.setPassword((String)host.get("pwd"));
+                    hostForm.setId((String) host.get("host_id"));
+                    hostForm.setHost((String) host.get("host_name"));
+                    hostForm.setUsername((String) host.get("user_name"));
+                    hostForm.setPassword((String) host.get("pwd"));
                 }
             } else {
+                // todo fix
                 errors.add(messageService.getMessage("error.unoperm", "label.hosts"));
             }
-        } catch (Exception e) {
-            LOGGER.error("", e);
-            errors.add(messageService.getMessage("label.exception.unknown"));
+        } catch (SQLException | SignOnException e) {
+            LOGGER.error("Error: ", e);
         }
 
         if (errors.size() > 0) {
-            // request.getSession().setAttribute("dcm.errors", errors);
             model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         }
         model.addAttribute("form", hostForm);
         return "/hosts/edit";
     }
 
-    @PostMapping("/{id}/edit/")
-    public String editSubmit(@ModelAttribute HostForm updatedForm, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
+    @PostMapping(params = {"update"})
+    public String editSubmit(@ModelAttribute("form") HostForm updatedForm, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
 
         SpringMessages messages = new SpringMessages();
         SpringMessages errors = new SpringMessages();
@@ -125,12 +123,12 @@ public class HostsController {
                 errors.add(messageService.getMessage("error.unoperm", "label.hosts"));
             }
         } catch (SignOnException | SQLException e) {
-            LOGGER.error("Access denied", e);
+            LOGGER.error("Error: ", e);
             errors.add(messageService.getMessage("label.exception.unknown"));
         }
         redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
-        return "redirect:/hosts/{id}/edit";
+        return "redirect:/hosts" + hostId;
     }
 
     @GetMapping("/add")
@@ -153,8 +151,8 @@ public class HostsController {
         return "/hosts/add";
     }
 
-    @PostMapping("/add")
-    public String addSubmit(@ModelAttribute HostForm form, HttpSession session, RedirectAttributes redirectAttributes) {
+    @PostMapping(params = {"add"})
+    public String addSubmit(@ModelAttribute("form") HostForm form, HttpSession session, RedirectAttributes redirectAttributes) {
         SpringMessages messages = new SpringMessages();
         SpringMessages errors = new SpringMessages();
 
@@ -176,16 +174,18 @@ public class HostsController {
             errors.add(messageService.getMessage("error.inoperm"));
         }
 
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         return "redirect:/hosts";
     }
 
-    @PostMapping("/delete")
-    public String delete(@ModelAttribute HostForm form, RedirectAttributes redirectAttributes, HttpSession session) {
+    @PostMapping(params = {"/delete"})
+    public String delete(@ModelAttribute("form") HostForm form, RedirectAttributes redirectAttributes, HttpSession session) {
         SpringMessages errors = new SpringMessages();
         SpringMessages messages = new SpringMessages();
 
         String user = (String) session.getAttribute("user");
+
 
         try {
             if (SecurityUtil.hasPerm(user, "/host", "d")) {
@@ -194,11 +194,10 @@ public class HostsController {
             } else {
                 errors.add(messageService.getMessage("error.dnoperm", "label.hosts"));
             }
-        } catch (Exception e) {
+        } catch (SignOnException | SQLException e) {
             LOGGER.error("", e);
             errors.add(messageService.getMessage("label.exception.unknown"));
         }
-
         redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/hosts";

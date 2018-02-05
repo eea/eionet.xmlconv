@@ -1,7 +1,8 @@
-package eionet.gdem.dto;
+package eionet.gdem.web.spring.hosts;
 
 /**
  * Host Data transfer object.
+ *
  */
 public class HostDto {
 
