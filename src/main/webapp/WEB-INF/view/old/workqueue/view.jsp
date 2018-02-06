@@ -75,7 +75,7 @@
 <p>Currently there are following jobs in the queue...</p>
 <div id="main_table">
   <form:form id="jobs" servletRelativeAction="/workqueue/actions" method="post" modelAttribute="form">
-    <table class="datatable" width="100%">
+    <table class="datatable results" width="100%">
       <col style="width:30px; text-align:right;"/>
       <col style="width:50px; text-align:right;"/>
       <col/>

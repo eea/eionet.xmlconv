@@ -13,7 +13,7 @@
 <c:if test="${!empty hosts}">
   <form:form servletRelativeAction="/hosts" method="post" modelAttribute="form">
     <div style="width:80%">
-      <table class="datatable" width="100%">
+      <table class="datatable results" width="100%">
         <col style="width:5%"/>
         <col style="width:47%"/>
         <col style="width:47%"/>

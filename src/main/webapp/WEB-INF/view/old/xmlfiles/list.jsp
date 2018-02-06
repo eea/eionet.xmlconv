@@ -19,7 +19,7 @@
 
   <c:if test="${!empty xmlfiles.xmlfiles}">
     <form:form servletRelativeAction="/xmlFiles/delete" method="post" modelAttribute="form">
-      <table class="datatable" width="100%">
+      <table class="datatable results" width="100%">
         <c:if test="${xmlfiles.ssuPrm}">
           <col style="width:5%"/>
         </c:if>

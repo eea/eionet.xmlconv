@@ -26,7 +26,7 @@
 
 <c:if test="${!empty scripts.qascripts}">
   <div style="width: 97%">
-    <table class="datatable" width="100%">
+    <table class="datatable results" width="100%">
       <col/>
       <col/>
       <thead>

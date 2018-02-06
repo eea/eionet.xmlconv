@@ -192,7 +192,7 @@
     <legend><spring:message code="label.schema.fldset.rootelems"/></legend>
 
     <c:if test="${schema.rootElements.rootElemsPresent == true}">
-      <table class="datatable" width="80%">
+      <table class="datatable results" width="80%">
         <thead>
         <tr>
           <th scope="col"><span title="Element name"><spring:message code="label.schema.table.element"/></span>

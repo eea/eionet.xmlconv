@@ -4,21 +4,13 @@
 
 <c:if test="${!empty schemas}">
 
-  <c:if test="${schemas.ssiPrm}">
-    <div id="operations">
-      <ul>
-        <li><a href="/schemas/add"><spring:message code="label.uplSchema.add"/></a></li>
-      </ul>
-    </div>
-  </c:if>
-
   <h1 class="documentFirstHeading">
     <spring:message code="label.schemas.uploaded"/>
   </h1>
 
   <c:if test="${!empty schemas.schemas}">
     <form:form servletRelativeAction="/schemas/actions" method="post" modelAttribute="form">
-      <table class="datatable" width="100%">
+      <table class="datatable results" width="100%">
         <c:if test="${schemas.ssdPrm}">
           <col style="width:5%"/>
         </c:if>
@@ -33,8 +25,7 @@
             <th scope="col"></th>
           </c:if>
           <th scope="col"><span title="Schema"><spring:message code="label.table.uplSchema.schema"/></span></th>
-          <th scope="col"><span title="Description"><spring:message code="label.table.uplSchema.description"/></span>
-          </th>
+          <th scope="col"><span title="Description"><spring:message code="label.table.uplSchema.description"/></span></th>
           <th scope="col" title="Uploaded schemas">XSD</th>
           <th scope="col" title="Stylesheets">XSL</th>
           <th scope="col" title="QA scripts">QA</th>
@@ -46,7 +37,6 @@
           <tr class="${i.index % 2 == 1 ? "class=\"zebraeven\"" : "class=\"zebraodd\""}">
             <c:if test="${schemas.ssdPrm}">
               <td align="center">
-                  <%--<bean:define id="schemaId" name="schema" property="id"/>--%>
                 <form:radiobutton path="id" value="${schema.id}"/>
               </td>
             </c:if>
@@ -84,13 +74,20 @@
         </c:forEach>
         </tbody>
       </table>
-      <c:if test="${schemas.ssdPrm}">
-        <div class="boxbottombuttons">
+
+      <div class="row">
+        <c:if test="${schemas.ssiPrm}">
+          <a href="/schemas/add" type="button" class="button">
+            <spring:message code="label.uplSchema.add"/>
+          </a>
+        </c:if>
+        <c:if test="${schemas.ssdPrm}">
           <button type="submit" class="button" name="action" value="delete">
             <spring:message code="label.schema.delete"/>
           </button>
-        </div>
-      </c:if>
+        </c:if>
+      </div>
+
     </form:form>
   </c:if>
 
@@ -100,7 +97,6 @@
     </div>
   </c:if>
   <div class="visualClear">&nbsp;</div>
-
 
 </c:if>
 

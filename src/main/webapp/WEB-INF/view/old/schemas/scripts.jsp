@@ -1,9 +1,12 @@
-<%--<%@ page contentType="text/html; charset=UTF-8" import="eionet.gdem.dto.*" %>--%>
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <ed:breadcrumbs-push label="Schema QA scripts" level="2"/>
 
 <c:set var="permissions" scope="page" value="${sessionScope['qascript.permissions']}" />
+
+<tiles:insertDefinition name="SchemaTabs">
+  <tiles:putAttribute name="selectedTab" value="scripts"/>
+</tiles:insertDefinition>
 
 <c:if test="${!empty scripts}">
 
@@ -11,25 +14,7 @@
   <%--id="schema" name="schema.qascripts" property="qascripts" type="Schema">--%>
   <c:forEach varStatus="i" items="${scripts.qascripts}" var="schema">
     <%--<bean:define id="schemaUrl" name="schema" property="schema"/>--%>
-    <div id="tabbedmenu">
-      <ul>
-        <li>
-          <a href="/schemas/${schema.id}" titleKey="label.tab.title.schema" style="color: black; text-decoration: none;">
-            <spring:message code="label.tab.title.schema"/>
-          </a>
-        </li>
-        <li>
-          <a href="/schemas/${schema.id}/conversions" titleKey="label.tab.title.xsl" style="color: black; text-decoration: none;">
-            <spring:message code="label.tab.title.xsl"/>
-          </a>
-        </li>
-        <li id="currenttab">
-          <span style="color: black; text-decoration: none;"
-                title='<spring:message code="label.tab.title.scripts"/>'><spring:message
-                  code="label.tab.title.scripts"/></span>
-        </li>
-      </ul>
-    </div>
+
     <div id="operations">
       <ul>
         <c:if test="${permissions.ssiPrm}">
@@ -104,7 +89,7 @@
 
     <c:if test="${!empty scripts.qascripts}">
       <form:form action="/searchCR" method="post" modelAttribute="scriptForm">
-        <table class="datatable" width="100%">
+        <table class="datatable results" width="100%">
           <c:if test="${permissions.ssdPrm}">
             <col style="width:10px"/>
           </c:if>

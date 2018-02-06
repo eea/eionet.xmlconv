@@ -4,7 +4,7 @@
 <h1><spring:message code="label.stylesheet.edit"/></h1>
 
 <form:form servletRelativeAction="/conversions" method="post" enctype="multipart/form-data" styleClass="cmxform">
-  <table class="datatable" style="width:100%">
+  <table class="datatable results" style="width:100%">
     <col class="labelcol"/>
     <col class="entrycol"/>
     <tr>

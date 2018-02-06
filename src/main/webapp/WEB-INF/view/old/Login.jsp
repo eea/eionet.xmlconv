@@ -10,7 +10,7 @@
       <h1><spring:message code="label.login.message"/></h1>
 
       <form:form action="login" method="post" focus="username" modelAttribute="loginForm">
-        <table class="datatable" style="width:300px">
+        <table class="datatable results" style="width:300px">
           <col style="width:36%"/>
           <col style="width:64%"/>
           <tr>

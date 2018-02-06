@@ -68,7 +68,7 @@
 
 
 
-  <table class="datatable">
+  <table class="datatable results">
     <col class="labelcol"/>
     <col class="entrycol"/>
     <tr>

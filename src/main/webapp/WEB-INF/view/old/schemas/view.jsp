@@ -5,27 +5,15 @@
 
 <ed:breadcrumbs-push label="XML Schema or DTD" level="2"/>
 
-<c:if test="${!empty schemaForm.schema}">
-  <div id="tabbedmenu">
-    <ul>
-      <li id="currenttab">
-        <span style="color: black; text-decoration: none;"
-              title='<spring:message code="label.tab.title.schema"/>'><spring:message
-                code="label.tab.title.schema"/></span>
-      </li>
-      <li>
-        <a href="<spring:url value="/schemas/{id}/conversions"><spring:param name="id" value="${schemaForm.schemaId}"/></spring:url>"><spring:message
-                code="label.tab.title.xsl"/></a>
-      </li>
-      <li>
-        <a href="<spring:url value="/schemas/{id}/scripts"><spring:param name="id" value="${schemaForm.schemaId}"/></spring:url>"><spring:message
-                code="label.tab.title.scripts"/></a>
-      </li>
-    </ul>
-  </div>
-</c:if>
+<tiles:insertDefinition name="SchemaTabs">
+  <tiles:putAttribute name="selectedTab" value="schema"/>
+</tiles:insertDefinition>
 
-<h1><spring:message code="label.schema.view"/></h1>
+<%--<c:if test="${!empty schemaForm.schema}">--%>
+
+<%--</c:if>--%>
+
+<%--<h1><spring:message code="label.schema.view"/></h1>--%>
 
 <c:if test="${!empty schemaForm.schema}">
 
@@ -37,9 +25,8 @@
     </div>
   </c:if>
 
-  <fieldset>
-    <legend><spring:message code="label.schema.fldset.properties"/></legend>
-    <table class="datatable">
+    <table class="datatable results">
+      <caption><spring:message code="label.schema.fldset.properties"/></caption>
       <col class="labelcol"/>
       <col class="entrycol"/>
       <tr>
@@ -116,12 +103,13 @@
         </td>
       </tr>
     </table>
-  </fieldset>
+  <%--</fieldset>--%>
+
   <c:if test="${rootElements.rootElemsPresent}">
     <fieldset>
       <legend><spring:message code="label.schema.fldset.rootelems"/></legend>
 
-      <table class="datatable" width="80%">
+      <table class="datatable results" width="80%">
         <thead>
         <tr>
           <th scope="col"><span title="Element name"><spring:message code="label.schema.table.element"/></span></th>

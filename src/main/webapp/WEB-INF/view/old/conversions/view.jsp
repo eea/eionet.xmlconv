@@ -29,7 +29,7 @@
 
 <h1><spring:message code="label.stylesheet.view"/></h1>
 
-<table class="datatable">
+<table class="datatable results">
   <col class="labelcol"/>
   <col class="entrycol"/>
   <tr>

@@ -21,7 +21,7 @@
   <c:if test="${!empty conversions.stylesheetList}">
     <form:form servletRelativeAction="/conversions" method="post">
 
-      <table id="tbl_stylesheets" class="display datatable" width="100%">
+      <table id="tbl_stylesheets" class="display datatable results" width="100%">
         <c:if test="${permissions.ssdPrm}">
           <col style="width:5%"/>
         </c:if>

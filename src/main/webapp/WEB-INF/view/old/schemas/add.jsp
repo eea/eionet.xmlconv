@@ -3,9 +3,6 @@
 <ed:breadcrumbs-push label="Upload Schema" level="2"/>
 <h1><spring:message code="label.title.uplSchema.add"/></h1>
 
-
-
-
 <form:form servletRelativeAction="/schemas/add" method="post" enctype="multipart/form-data" modelAttribute="schemaForm">
   <table class="formtable">
     <col class="labelcol"/>

@@ -137,6 +137,9 @@
     <definition name="ConfigTabs" template="/WEB-INF/view/old/config/tabs.jsp">
         <put-attribute name="selectedTab" type="string" value="basex" />
     </definition>
+    <definition name="SchemaTabs" template="/WEB-INF/view/old/schemas/tabs.jsp">
+        <put-attribute name="selectedTab" type="string" value="schema" />
+    </definition>
     <definition name="/validation" extends="base">
         <put-attribute name="title" value="label.conversion.validate.title" />
         <put-attribute name="body" value="/WEB-INF/view/old/validation/validate.jsp" />

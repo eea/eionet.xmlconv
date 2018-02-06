@@ -110,7 +110,7 @@
     </div>
   </form:form>
   <c:if test="${!empty validationErrors}">
-    <table class="datatable" align="center" width="100%">
+    <table class="datatable results" align="center" width="100%">
       <col style="width:8%"/>
       <col style="width:8%"/>
       <col style="width:8%"/>

@@ -4,6 +4,10 @@
 
 <c:set var="permissions" scope="page" value="${sessionScope['stylesheet.permissions']}" />
 
+<tiles:insertDefinition name="SchemaTabs">
+  <tiles:putAttribute name="selectedTab" value="conversions"/>
+</tiles:insertDefinition>
+
 <c:if test="${!empty conversions.handCodedStylesheets}">
   <form:form action="/searchCR" method="post">
 
@@ -12,25 +16,6 @@
     <c:forEach varStatus="index" items="${conversions.handCodedStylesheets}" var="conversion">
       <c:if test="${conversions.handcoded}">
         <%--<bean:define id="id" name="schema" property="id"/>--%>
-        <div id="tabbedmenu">
-          <ul>
-            <li>
-              <a href="/schemas/${schemaId}" titleKey="label.tab.title.schema" style="color: black; text-decoration: none;">
-                <spring:message code="label.tab.title.schema"/>
-              </a>
-            </li>
-            <li id="currenttab">
-              <span style="color: black; text-decoration: none;"
-                    title='<spring:message code="label.tab.title.xsl"/>'><spring:message
-                      code="label.tab.title.xsl"/></span>
-            </li>
-            <li>
-              <a href="/schemas/${schemaId}/scripts" titleKey="label.tab.title.scripts" style="color: black; text-decoration: none;">
-                <spring:message code="label.tab.title.scripts"/>
-              </a>
-            </li>
-          </ul>
-        </div>
         <c:if test="${permissions.ssiPrm}">
           <div id="operations">
             <ul>
@@ -54,7 +39,7 @@
       <div class="visualClear">&nbsp;</div>
 
       <c:if test="${!empty schema.stylesheets}">
-        <table class="datatable" width="100%">
+        <table class="datatable results" width="100%">
           <c:if test="${permissions.ssdPrm}">
             <col style="width:10px"/>
           </c:if>

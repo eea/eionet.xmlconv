@@ -77,7 +77,7 @@
   // ]]>
 </script>
 
-<table id="t_serverStatus" class="datatable">
+<table id="t_serverStatus" class="datatable results">
   <thead>
   <tr>
     <th>Instance Name</th>
