@@ -32,21 +32,22 @@
         </li>
       </ul>
     </div>
-    <h1 class="documentFirstHeading">
-      <spring:message code="label.schema.qascripts"/>&nbsp;${schema.schema}
-    </h1>
+    <%--<h1 class="documentFirstHeading">--%>
+
+    <%--</h1>--%>
 
   </c:forEach>
 
   <c:forEach varStatus="i" items="${scripts.qascripts}" var="schema">
     <div class="visualClear">&nbsp;</div>
-    <form:form action="/viewQAScriptForm" method="post" modelAttribute="form">
-      <table class="formtable">
-        <tr>
-          <td style="width:510px">
+    <form:form action="/schemas/actions" method="post" modelAttribute="schemaForm">
+      <fieldset class="fieldset">
+        <legend><spring:message code="label.schema.qascripts"/>&nbsp;${schema.schema}</legend>
+        <div class="row">
+          <div class="columns small-4">
             <label class="question" for="validatefield"><spring:message code="label.qascript.schema.validate"/></label>
-          </td>
-          <td style="width:40px">
+          </div>
+          <div class="columns small-6">
             <c:choose>
               <c:when test="${permissions.ssiPrm}">
                 <form:checkbox path="doValidation" id="validatefield"/>
@@ -55,25 +56,24 @@
                 ${schema.doValidation}
               </c:otherwise>
             </c:choose>
-          </td>
-          <td rowspan="2" style="vertical-align:bottom">
+          </div>
+          <div class="columns small-2">
             <c:if test="${permissions.ssiPrm}">
-              <!-- save button -->
-              <%--onclick="return submitAction(1,'saveSchemaValidation');"/>--%>
-              <button type="submit" class="button" value="save">
-                  <spring:message code="label.save"/>
+              <button type="submit" class="button" name="save" value="save">
+                <spring:message code="label.save"/>
               </button>
               <input type="hidden" name="schemaId" value="${schema.id}"/>
               <input type="hidden" name="schema" value="${schema.schema}"/>
             </c:if>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <label class="question" for="blockerValidation"><spring:message
-                    code="label.qascript.schema.isBlockerValidation"/></label>
-          </td>
-          <td>
+          </div>
+        </div>
+        <div class="row">
+          <div class="columns small-4">
+            <label class="question" for="blockerValidation">
+              <spring:message code="label.qascript.schema.isBlockerValidation"/>
+            </label>
+          </div>
+          <div class="columns small-8">
             <c:choose>
               <c:when test="${scripts.ssiPrm}">
                 <form:checkbox path="blocker" id="blockerValidation"/>
@@ -82,9 +82,9 @@
                 ${schema.blocker}
               </c:otherwise>
             </c:choose>
-          </td>
-        </tr>
-      </table>
+          </div>
+        </div>
+      </fieldset>
     </form:form>
 
     <c:if test="${!empty scripts.qascripts}">

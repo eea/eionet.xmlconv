@@ -1,197 +1,160 @@
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-<div id="tabbedmenu">
-
-  <ul>
-    <li id="currenttab">
-      <spring:message code="label.tab.title.schema" var="schemaTab"/>
-      <span style="color: black; text-decoration: none;" title='${schemaTab}'>
-        ${schemaTab}
-      </span>
-    </li>
-    <li>
-      <a href="/schemas/${schemaForm.schemaId}/conversions" titleKey="label.tab.title.xsl"
-         style="color: black; text-decoration: none;">
-        <spring:message code="label.tab.title.xsl"/>
-      </a>
-    </li>
-    <li>
-      <a href="/schemas/${schemaForm.schemaId}/scripts" titleKey="label.tab.title.scripts"
-         style="color: black; text-decoration: none;">
-        <spring:message code="label.tab.title.scripts"/>
-      </a>
-    </li>
-  </ul>
-</div>
+<tiles:insertDefinition name="SchemaTabs">
+  <tiles:putAttribute name="selectedTab" value="schema"/>
+</tiles:insertDefinition>
 
 <ed:breadcrumbs-push label="Edit XML Schema or DTD" level="2"/>
 <h1><spring:message code="label.schema.edit"/></h1>
 
 <form:form servletRelativeAction="/schemas/actions" method="post" enctype="multipart/form-data"
            modelAttribute="schemaForm">
-  <fieldset>
+  <fieldset class="fieldset">
     <legend><spring:message code="label.schema.fldset.properties"/></legend>
-    <table class="formtable">
-      <col class="labelcol"/>
-      <col class="entrycol"/>
-      <tr class="zebraeven">
-        <td>
-          <label class="question required" for="txtSchemaUrl">
-            <spring:message code="label.schema.url"/>
+    <div class="row">
+      <div class="columns small-4">
+        <label class="question required" for="txtSchemaUrl">
+          <spring:message code="label.schema.url"/>
+        </label>
+      </div>
+      <div class="columns small-8">
+        <form:input path="schema" maxlength="255" style="width:500px" styleId="txtSchemaUrl"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-4">
+        <label class="question" for="txtDescription">
+          <spring:message code="label.schema.description"/>
+        </label>
+      </div>
+      <div class="columns small-8">
+        <form:textarea path="description" rows="2" cols="30" style="width:500px" id="txtDescription"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-4">
+        <label class="question" for="txtSchemaLang">
+          <spring:message code="label.schema.language"/>
+        </label>
+      </div>
+      <div class="columns small-8">
+        <form:select path="schemaLang" id="txtSchemaLang">
+          <form:options items="${schemaForm.schemaLanguages}"/>
+        </form:select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-4">
+        <label class="question" for="txtValidation">
+          <spring:message code="label.schema.dovalidation"/>
+        </label>
+      </div>
+      <div class="columns small-8">
+        <form:checkbox path="doValidation" id="txtValidation"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-4">
+        <label class="question" for="txtBlockerValidation">
+          <spring:message code="label.schema.isBlockerValidation"/>
+        </label>
+      </div>
+      <div class="columns small-8">
+        <form:checkbox path="blocker" id="txtBlockerValidation"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-4">
+        <label class="question" for="txtExpireDate">
+          <spring:message code="label.schema.expireDate"/>
+        </label>
+      </div>
+      <div class="columns small-8">
+        <form:input path="expireDate" id="txtExpireDate"/> (dd/MM/yyyy)
+      </div>
+    </div>
+    <c:if test="${schemaForm.dtd}">
+      <div class="row">
+        <div class="columns small-4">
+          <label class="question" for="txtDtdId">
+            <spring:message code="label.elem.dtdid"/>
           </label>
-        </td>
-        <td align="left">
-          <form:input path="schema" maxlength="255" style="width:500px" styleId="txtSchemaUrl"/>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label class="question" for="txtDescription">
-            <spring:message code="label.schema.description"/>
-          </label>
-        </td>
-        <td align="left">
-          <form:textarea path="description" rows="2" cols="30" style="width:500px" id="txtDescription"/>
-        </td>
-      </tr>
-      <tr class="zebraeven">
-        <td>
-          <label class="question" for="txtSchemaLang">
-            <spring:message code="label.schema.language"/>
-          </label>
-        </td>
-        <td>
-          <form:select path="schemaLang" id="txtSchemaLang">
-            <form:options items="${schemaForm.schemaLanguages}"/>
-          </form:select>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label class="question" for="txtValidation">
-            <spring:message code="label.schema.dovalidation"/>
-          </label>
-        </td>
-        <td>
-          <form:checkbox path="doValidation" id="txtValidation"/>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label class="question" for="txtBlockerValidation">
-            <spring:message code="label.schema.isBlockerValidation"/>
-          </label>
-        </td>
-        <td>
-          <form:checkbox path="blocker" id="txtBlockerValidation"/>
-        </td>
-      </tr>
-      <tr class="zebraeven">
-        <td>
-          <label class="question" for="txtExpireDate">
-            <spring:message code="label.schema.expireDate"/>
-          </label>
-        </td>
-        <td>
-          <form:input path="expireDate" id="txtExpireDate"/> (dd/MM/yyyy)
-        </td>
-      </tr>
-      <c:if test="${schemaForm.dtd}">
-        <tr>
-          <td>
-            <label class="question" for="txtDtdId">
-              <spring:message code="label.elem.dtdid"/>
-            </label>
-          </td>
-          <td align="left">
-            <form:input path="dtdId" maxlength="50" size="50" id="txtDtdId"/>
-          </td>
-        </tr>
-      </c:if>
-      <tr>
-        <td></td>
-        <td>
-          <c:if test="${rootElements.xsduPrm}">
-            <button type="submit" class="button" name="update">
-              <spring:message code="label.schema.save"/>
-            </button>
-            &nbsp;
-          </c:if>
-          <c:if test="${rootElements.xsddPrm}">
-            <button type="submit" class="button" name="delete">
-              <spring:message code="label.schema.delete"/>
-            </button>
-          </c:if>
-        </td>
-      </tr>
-    </table>
+        </div>
+        <div class="columns small-8">
+          <form:input path="dtdId" maxlength="50" size="50" id="txtDtdId"/>
+        </div>
+      </div>
+    </c:if>
   </fieldset>
-  <fieldset>
+  <c:if test="${rootElements.xsduPrm}">
+    <button type="submit" class="button" name="update">
+      <spring:message code="label.schema.save"/>
+    </button>
+    &nbsp;
+  </c:if>
+  <c:if test="${rootElements.xsddPrm}">
+    <button type="submit" class="button" name="delete">
+      <spring:message code="label.schema.delete"/>
+    </button>
+  </c:if>
+
+  <fieldset class="fieldset">
     <legend><spring:message code="label.schema.fldset.localfile"/></legend>
-    <table class="formtable">
-      <col class="labelcol"/>
-      <col class="entrycol"/>
-      <tr class="zebraeven">
-        <td>
-          <label class="question" for="txtSchemaFile">
-            <spring:message code="label.uplSchema.schemaFile"/>
-          </label>
-        </td>
-        <td>
-          <c:if test="${!empty schemaForm.uplSchemaFileName}">
-            <a href="${schemaForm.uplSchemaFileUrl}"
-               title="${schemaForm.uplSchemaFileUrl}">${schemaForm.uplSchemaFileUrl}</a>&#160;
-            <c:if test="${schemaForm.lastModified}">
-              &#160;&#160;(<spring:message code="label.lastmodified"/>: ${schemaForm.lastModified})
-            </c:if>
+    <div class="row">
+      <div class="columns small-4">
+        <label class="question" for="txtSchemaFile">
+          <spring:message code="label.uplSchema.schemaFile"/>
+        </label>
+      </div>
+      <div class="columns small-8">
+        <c:if test="${!empty schemaForm.uplSchemaFileName}">
+          <a href="${schemaForm.uplSchemaFileUrl}"
+             title="${schemaForm.uplSchemaFileUrl}">${schemaForm.uplSchemaFileUrl}</a>&#160;
+          <c:if test="${schemaForm.lastModified}">
+            &#160;&#160;(<spring:message code="label.lastmodified"/>: ${schemaForm.lastModified})
           </c:if>
-        </td>
-      </tr>
-      <c:if test="${rootElements.xsduPrm}">
-        <tr>
-          <td></td>
-          <td>
-            <html:file property="schemaFile" size="20" style="width:400px" styleId="txtSchemaFile"/>
-          </td>
-        </tr>
+        </c:if>
+      </div>
+    </div>
+    <c:if test="${rootElements.xsduPrm}">
+      <div class="row">
+        <input type="file" name="schemaFile" size="20" style="width:400px" styleId="txtSchemaFile"/>
+      </div>
+    </c:if>
+    <c:if test="${rootElements.xsduPrm}">
+      <button type="submit" class="button" value="edit">
+        <spring:message code="label.uplSchema.upload"/>
+      </button>
+    </c:if>
+    <c:if test="${schemaForm.uplSchemaFileName}">
+      <c:if test="${rootElements.xsddPrm}">
+        <button type="submit" name="action" value="delete">
+          <spring:message code="label.schema.deleteFile"/>
+        </button>
       </c:if>
-      <tr>
-        <td></td>
-        <td>
-          <c:if test="${rootElements.xsduPrm}">
-            <button type="submit" class="button" value="edit">
-              <spring:message code="label.uplSchema.upload"/>
-            </button>
-          </c:if>
-          <c:if test="${schemaForm.uplSchemaFileName}">
-            <c:if test="${rootElements.xsddPrm}">
-              <button type="submit" name="action" value="delete">
-                <spring:message code="label.schema.deleteFile"/>
-              </button>
-            </c:if>
-            <c:if test="${rootElements.xsduPrm}">
-              <c:if test="${rootElements.schemaIdRemoteUrl}">
-                <button type="submit" name="action" value="diff">
-                  <spring:message code="label.uplSchema.checkupdates"/>
-                </button>
-              </c:if>
-            </c:if>
-          </c:if>
-          <c:if test="${!schemaForm.uplSchemaFileName}">
-            <c:if test="${rootElements.schemaIdRemoteUrl}">
-              <button type="submit" name="action" value="diff">
-                <spring:message code="label.uplSchema.createcopy"/>
-              </button>
-            </c:if>
-          </c:if>
-        </td>
-      </tr>
-    </table>
+      <c:if test="${rootElements.xsduPrm}">
+        <c:if test="${rootElements.schemaIdRemoteUrl}">
+          <button type="submit" name="action" value="diff">
+            <spring:message code="label.uplSchema.checkupdates"/>
+          </button>
+        </c:if>
+      </c:if>
+    </c:if>
+    <c:if test="${!schemaForm.uplSchemaFileName}">
+      <c:if test="${rootElements.schemaIdRemoteUrl}">
+        <button type="submit" name="action" value="diff">
+          <spring:message code="label.uplSchema.createcopy"/>
+        </button>
+      </c:if>
+    </c:if>
   </fieldset>
+
+  <%--TODO fix all ifs and UI--%>
+
   <fieldset>
     <legend><spring:message code="label.schema.fldset.rootelems"/></legend>
 
-    <c:if test="${schema.rootElements.rootElemsPresent == true}">
+    <%--<c:if test="${!empty rootElements.rootElem}">--%>
       <table class="datatable results" width="80%">
         <thead>
         <tr>
@@ -205,9 +168,8 @@
         </tr>
         </thead>
         <tbody>
-        <c:if test="${schema.rootElements.rootElem}">
-          <%--id="elem" name="schema.rootElements" property="rootElem"          type="RootElem">--%>
-          <c:forEach varStatus="index" items="${rootElements}" var="elem">
+        <%--<c:if test="${rootElements.rootElem}">--%>
+          <c:forEach varStatus="index" items="${rootElements.rootElem}" var="elem">
             <tr class="${i.index % 2 == 1 ? 'zebraeven' : ''}">
               <td>
                   ${elem.name}
@@ -225,12 +187,13 @@
               </c:if>
             </tr>
           </c:forEach>
-        </c:if>
+        <%--</c:if>--%>
         </tbody>
       </table>
-    </c:if>
-    <c:if test="${user}">
-      <c:if test="${rootElements.xsduPrm}">
+    <%--</c:if>--%>
+
+    <%--<c:if test="${user}">--%>
+      <%--<c:if test="${rootElements.xsduPrm}">--%>
         <table class="formtable">
           <col class="labelcol"/>
           <col class="entrycol"/>
@@ -263,8 +226,8 @@
             </td>
           </tr>
         </table>
-      </c:if>
-    </c:if>
+      <%--</c:if>--%>
+    <%--</c:if>--%>
   </fieldset>
   <div style="display:none">
     <form:hidden path="schemaId"/>

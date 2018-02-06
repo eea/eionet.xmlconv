@@ -50,7 +50,8 @@
             </td>
             <td align="center">
               <c:if test="${!empty schema.uplSchemaFileName}">
-                <a href="${webRoot}/schemas/${schema.uplSchemaFileName}" class="link-xsd"
+                <%--${webRoot}--%>
+                <a href="/schema/${schema.uplSchemaFileName}" class="link-xsd"
                    title="Open uploaded schema file"></a>
               </c:if>
             </td>

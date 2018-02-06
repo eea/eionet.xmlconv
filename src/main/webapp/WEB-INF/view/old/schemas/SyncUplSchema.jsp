@@ -1,7 +1,7 @@
 <%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <ed:breadcrumbs-push label="Update XML schema cached copy" level="3"/>
-
+<%--TODO find out if we can remove this file--%>
 
 <h1 class="documentFirstHeading">
   <spring:message code="label.syncuplschema.title"/>

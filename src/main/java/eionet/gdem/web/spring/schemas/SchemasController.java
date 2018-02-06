@@ -7,12 +7,7 @@ import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.SpringMessages;
-import eionet.gdem.web.spring.conversions.StylesheetManager;
-import eionet.gdem.web.spring.scripts.QAScriptForm;
-import eionet.gdem.web.spring.scripts.QAScriptListHolder;
 import eionet.gdem.web.spring.scripts.QAScriptListLoader;
-import eionet.gdem.web.spring.stylesheet.StylesheetForm;
-import eionet.gdem.web.spring.stylesheet.StylesheetListHolder;
 import eionet.gdem.web.spring.stylesheet.StylesheetListLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
@@ -108,6 +102,7 @@ public class SchemasController {
                     && !seHolder.getSchema().getSchema().startsWith(SecurityUtil.getUrlWithContextPath(request)));
             model.addAttribute("rootElements", seHolder);
             model.addAttribute("schemaForm", form);
+            model.addAttribute("schemaId", schemaId);
         } catch (DCMException e) {
             LOGGER.error("Schema element form error", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
@@ -157,6 +152,7 @@ public class SchemasController {
             }
             seHolder.setSchemaIdRemoteUrl(Utils.isURL(seHolder.getSchema().getSchema())
                     && !seHolder.getSchema().getSchema().startsWith(SecurityUtil.getUrlWithContextPath(request)));
+            model.addAttribute("schemaId", schemaId);
             model.addAttribute("rootElements", seHolder);
             model.addAttribute("schemaForm", form);
         } catch (DCMException e) {
@@ -373,89 +369,6 @@ public class SchemasController {
         }
         redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         return "redirect:/schemas";
-    }
-
-    @GetMapping("/{schemaId}/conversions")
-    public String conversions(@PathVariable String schemaId, Model model, HttpSession session) {
-        StylesheetListHolder st = null;
-        String schemaUrl = null;
-        SpringMessages success = new SpringMessages();
-        SpringMessages errors = new SpringMessages();
-
-        try {
-            schemaUrl = schemasService.getSchemaUrl(schemaId);
-            SchemaManager sm = new SchemaManager();
-            st = sm.getSchemaStylesheetsList(schemaId);
-            model.addAttribute("conversions", st);
-
-        } catch (DCMException e) {
-            LOGGER.error("Error getting stylesheet", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
-        }
-        model.addAttribute("schemaId", schemaId);
-        model.addAttribute("schemaUrl", schemaUrl);
-        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        model.addAttribute(SpringMessages.SUCCESS_MESSAGES, success);
-        return "/schemas/conversions";
-    }
-
-    @GetMapping("/{schemaId}/conversions/add")
-    public String conversionsAdd(@PathVariable String schemaId, Model model) throws DCMException {
-        StylesheetForm form = new StylesheetForm();
-        SchemaManager sm = new SchemaManager();
-        String schemaUrl = sm.getSchema(schemaId).getSchema();
-        form.setSchema(schemaUrl);
-        StylesheetManager stylesheetManager = new StylesheetManager();
-        model.addAttribute("outputtypes", stylesheetManager.getConvTypes());
-        model.addAttribute("form", form);
-        return "/conversions/add";
-    }
-
-    @GetMapping("/{schemaId}/scripts")
-    public String scripts(@PathVariable String schemaId, Model model, HttpServletRequest httpServletRequest) {
-        QAScriptListHolder st = null;
-
-        SpringMessages success = new SpringMessages();
-        SpringMessages errors = new SpringMessages();
-
-        try {
-            SchemaManager sm = new SchemaManager();
-            st = sm.getSchemasWithQAScripts(schemaId);
-            /*model.addAttribute("scripts", QAScriptListLoader.getList(httpServletRequest));
-            httpServletRequest.setAttribute("schema.qascripts", st);*/
-            model.addAttribute("scripts", st);
-            model.addAttribute("form", new SchemaForm());
-            model.addAttribute("scriptForm", new QAScriptForm());
-        } catch (DCMException e) {
-            LOGGER.error("Error getting schema QA scripts", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
-        }
-        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        return "/schemas/scripts";
-    }
-
-    @GetMapping("/{schemaId}/scripts/add")
-    public String scriptsAdd(@PathVariable String schemaId, Model model) {
-        /*SchemaManager sm = new SchemaManager();
-        schemasService.schemaUrl(schemaId);
-        QAScriptForm form = new QAScriptForm();
-        String schemaUrl = "";
-        /*try {
-            schemaUrl = sm.getSchemaUrl(schemaId);
-
-        } catch (DCMException e) {
-            LOGGER.error("Error while finding schema", e);
-        }
-
-        schemaUrl = schemasService.schemaUrl(schemaId);
-
-        form.setSchemaId(schemaId);
-
-        // TODO fix this
-        model.addAttribute("resulttypes", SpringEventListeners.loadConvTypes(XQScript.SCRIPT_RESULTTYPES));
-        model.addAttribute("scriptlangs", SpringEventListeners.loadConvTypes(XQScript.SCRIPT_LANGS));
-        model.addAttribute("form", form);*/
-        return "/scripts/add";
     }
 
 }
