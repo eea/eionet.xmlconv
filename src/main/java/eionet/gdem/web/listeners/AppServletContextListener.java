@@ -135,13 +135,10 @@ public class AppServletContextListener implements ApplicationListener {
             Properties.contextPath = context.getContextPath();
             cleanDirectories();
             checkFolders();
-            context.setAttribute("qascript.resulttypes",
-                    loadConvTypes(XQScript.SCRIPT_RESULTTYPES));
+            context.setAttribute("qascript.resulttypes", loadConvTypes(XQScript.SCRIPT_RESULTTYPES));
             context.setAttribute("qascript.scriptlangs", loadConvTypes(XQScript.SCRIPT_LANGS));
-            context.setAttribute(QAScriptListLoader.QASCRIPT_PERMISSIONS_ATTR,
-                    QAScriptListLoader.loadQAScriptPermissions(null));
-            context.setAttribute(StylesheetListLoader.STYLESHEET_PERMISSIONS_ATTR,
-                    StylesheetListLoader.loadStylesheetPermissions(null));
+            context.setAttribute(QAScriptListLoader.QASCRIPT_PERMISSIONS_ATTR, QAScriptListLoader.loadQAScriptPermissions(null));
+            context.setAttribute(StylesheetListLoader.STYLESHEET_PERMISSIONS_ATTR, StylesheetListLoader.loadStylesheetPermissions(null));
 
         } catch (Exception e1) {
             LOGGER.error("An exception occured while creating context" + e1);

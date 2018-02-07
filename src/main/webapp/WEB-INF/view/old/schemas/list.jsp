@@ -9,7 +9,7 @@
   </h1>
 
   <c:if test="${!empty schemas.schemas}">
-    <form:form servletRelativeAction="/schemas/actions" method="post" modelAttribute="form">
+    <form:form servletRelativeAction="/schemas" method="post" modelAttribute="form">
       <table class="datatable results" width="100%">
         <c:if test="${schemas.ssdPrm}">
           <col style="width:5%"/>
@@ -83,7 +83,7 @@
           </a>
         </c:if>
         <c:if test="${schemas.ssdPrm}">
-          <button type="submit" class="button" name="action" value="delete">
+          <button type="submit" class="button" name="delete">
             <spring:message code="label.schema.delete"/>
           </button>
         </c:if>

@@ -15,6 +15,7 @@ import eionet.gdem.web.spring.FileUploadWrapper;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.sql.SQLException;
@@ -49,7 +50,7 @@ public class UplXmlFileManager {
      * @throws DCMException
      *             If the database or file storing operation fails
      */
-    public void addUplXmlFile(String user, FileUploadWrapper xmlfile, String title) throws DCMException {
+    public void addUplXmlFile(String user, MultipartFile xmlfile, String title) throws DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_XMLFILE_PATH, "i")) {
@@ -62,7 +63,7 @@ public class UplXmlFileManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         try {
-            String fileName = xmlfile.getFile().getOriginalFilename();
+            String fileName = xmlfile.getOriginalFilename();
 
             if (fileExists(fileName)) {
                 throw new DCMException(BusinessConstants.EXCEPTION_XMLFILE_FILE_EXISTS);
@@ -147,7 +148,7 @@ public class UplXmlFileManager {
      *             If database or file deleting operation fails
      */
 
-    public void updateUplXmlFile(String user, String xmlFileId, String title, String curFileName, FileUploadWrapper file)
+    public void updateUplXmlFile(String user, String xmlFileId, String title, String curFileName, MultipartFile file)
             throws DCMException {
 
         try {
@@ -163,17 +164,19 @@ public class UplXmlFileManager {
         }
 
         try {
-            String fileName = file.getFile().getOriginalFilename().trim();
-            // upload file
-            if (!Utils.isNullStr(fileName)) {
-                if (Utils.isNullStr(curFileName)) {
-                    // check if file exists
-                    if (fileExists(fileName)) {
-                        throw new DCMException(BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS);
+            if (file != null && file.getSize() > 0) {
+                String fileName = file.getOriginalFilename().trim();
+                // upload file
+                if (!Utils.isNullStr(fileName)) {
+                    if (Utils.isNullStr(curFileName)) {
+                        // check if file exists
+                        if (fileExists(fileName)) {
+                            throw new DCMException(BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS);
+                        }
                     }
+                    // write XML file into filesystem
+                    storeXmlFile(file, curFileName);
                 }
-                // write XML file into filesystem
-                storeXmlFile(file, curFileName);
             }
             // update metadata in DB
             uplXmlFileDao.updateUplXmlFile(xmlFileId, title, curFileName);
@@ -362,10 +365,10 @@ public class UplXmlFileManager {
      * @throws FileNotFoundException File not found
      * @throws IOException IO Exception
      */
-    public void storeXmlFile(FileUploadWrapper file, String fileName) throws FileNotFoundException, IOException {
+    public void storeXmlFile(MultipartFile file, String fileName) throws FileNotFoundException, IOException {
 
         OutputStream output = null;
-        InputStream in = file.getFile().getInputStream();
+        InputStream in = file.getInputStream();
         String filepath = Properties.xmlfileFolder + File.separator + fileName;
 
         try {

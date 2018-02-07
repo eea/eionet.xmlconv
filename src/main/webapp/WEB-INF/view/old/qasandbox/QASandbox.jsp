@@ -400,12 +400,10 @@
                       ${qascripts.shortName}
                   </label>
                   <span> -
-                    <%--paramId="scriptId" paramName="qascript" paramProperty="scriptId" --%>
-                      <a href="/scripts/${scriptId}" titleKey="label.qascript.view">
+                      <a href="/scripts/${scriptId}" title="label.qascript.view">
                           ${qascript.fileName}
                       </a>
                       (${qascripts.scriptType})
-                      <%--<c:if equal value="true" name="qascript.permissions" property="qsuPrm">--%>
                       <c:if test="${qascript.permissions == 'qsuPrm'}">
                         <%--  If scriptType is NOT 'FME' --%>
                         <%--paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.editScriptTitle">--%>

@@ -2,7 +2,7 @@
 
 <ed:breadcrumbs-push label="Schema QA scripts" level="2"/>
 
-<c:set var="permissions" scope="page" value="${sessionScope['qascript.permissions']}" />
+<c:set var="permissions" scope="page" value="${sessionScope['qascript.permissions']}"/>
 
 <tiles:insertDefinition name="SchemaTabs">
   <tiles:putAttribute name="selectedTab" value="scripts"/>
@@ -15,23 +15,7 @@
   <c:forEach varStatus="i" items="${scripts.qascripts}" var="schema">
     <%--<bean:define id="schemaUrl" name="schema" property="schema"/>--%>
 
-    <div id="operations">
-      <ul>
-        <c:if test="${permissions.ssiPrm}">
-          <li>
-            <a href="/schemas/${schemaId}/scripts/add">
-              <spring:message code="label.qascript.add"/>
-            </a>
-          </li>
-        </c:if>
-        <li>
-            <%--paramId="schemaId" paramName="schema" paramProperty="id"--%>
-          <a href="/qaSandbox/run/${schemaId}" titleKey="label.qascript.runservice.title">
-            <spring:message code="label.qascript.runservice"/>
-          </a>
-        </li>
-      </ul>
-    </div>
+
     <%--<h1 class="documentFirstHeading">--%>
 
     <%--</h1>--%>
@@ -40,7 +24,7 @@
 
   <c:forEach varStatus="i" items="${scripts.qascripts}" var="schema">
     <div class="visualClear">&nbsp;</div>
-    <form:form action="/schemas/actions" method="post" modelAttribute="schemaForm">
+    <form:form action="/schemas" method="post" modelAttribute="schemaForm">
       <fieldset class="fieldset">
         <legend><spring:message code="label.schema.qascripts"/>&nbsp;${schema.schema}</legend>
         <div class="row">
@@ -114,8 +98,8 @@
           <tbody>
 
           <c:forEach varStatus="i" items="${schema.qascripts}" var="script">
+            <c:set var="scriptId" value="${script.scriptId}"/>
             <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
-              <%--<bean:define id="scriptId" name="qascript" property="scriptId"/>--%>
               <c:if test="${permissions.ssdPrm}">
                 <td align="center">
                   <form:radiobutton path="scriptId" value="${script.scriptId}"/>
@@ -124,17 +108,17 @@
               <td>
                 <c:choose>
                   <c:when test="${permissions.qsuPrm}">
-                    <%--  If scriptType is NOT 'FME' --%>
                     <c:choose>
                       <c:when test="${script.scriptType != 'fme'}">
-                        <a href="/qaSandbox/edit/${scriptId}" titleKey="label.qasandbox.label.qasandbox.editScript">
-                          <img src="/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox" />
+                        <a href="/qaSandbox/edit/${scriptId}" title="label.qasandbox.label.qasandbox.editScript">
+                          <img src="/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"/>
                         </a>
                       </c:when>
                       <c:otherwise>
-                        <spring:message code="label.qascript.runservice.title" var="title" />
-                        <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=${schema.id}" title="${title}">
-                          <img src="/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox" />
+                        <spring:message code="label.qascript.runservice.title" var="title"/>
+                        <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=${schema.id}"
+                           title="${title}">
+                          <img src="/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"/>
                         </a>
                       </c:otherwise>
                     </c:choose>
@@ -142,44 +126,41 @@
                   <c:otherwise>
                     <spring:message code="label.qascript.runservice.title" var="title"/>
                     <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=${schema.id}" title="${title}">
-                      <img src="/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox" />
+                      <img src="/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"/>
                     </a>
                   </c:otherwise>
                 </c:choose>
               </td>
               <td>
-                <a href="/scripts/${script.scriptId}" title="View QAScript properties">
-                  ${script.shortName}
-                </a>
+                <a href="/scripts/${script.scriptId}" title="View QAScript properties">${script.shortName}</a>
               </td>
               <td>
-                ${script.description}
+                  ${script.description}
               </td>
               <td>
-                <%--  If scriptType is 'FME' don't show the link to the local script file --%>
+                  <%--  If scriptType is 'FME' don't show the link to the local script file --%>
                 <c:choose>
                   <c:when test="${script.scriptType == 'fme'}">
                     ${script.fileName}
                   </c:when>
                   <c:otherwise>
-                    <a href="${script.filePath}" title="open QA script file">
-                      ${script.fileName}
+                    <a href="/${script.filePath}" title="open QA script file">
+                        ${script.fileName}
                     </a>
                   </c:otherwise>
                 </c:choose>
               </td>
               <td>
-                <%--  If scriptType is 'FME' don't show the script Last Modified Date --%>
-                <c:if test="${script.scriptType == 'fme'}">
-                  <c:choose>
-                    <c:when test="${script.modified}">
+                <c:choose>
+                  <c:when test="${empty script.modified}">
+                    <c:if test="${script.scriptType != 'fme'}">
                       <span style="color:red"><spring:message code="label.fileNotFound"/></span>
-                    </c:when>
-                    <c:otherwise>
-                      ${script.modified}
-                    </c:otherwise>
-                  </c:choose>
-               </c:if>
+                    </c:if>
+                  </c:when>
+                  <c:otherwise>
+                    ${script.modified}
+                  </c:otherwise>
+                </c:choose>
               </td>
               <td>
                 <c:choose>
@@ -196,27 +177,34 @@
           </tbody>
         </table>
         <div class="boxbottombuttons">
-          <c:if test="${permissions.ssdPrm}">
-            <%--onclick="return submitAction(2,'deleteQAScript');"/>--%>
-            <button type="button" class="button" value="delete">
-              <spring:message code="label.qascript.delete"/>
-            </button>
-            <input type="hidden" name="schemaId" value="${schemaId}"/>
+          <c:if test="${permissions.ssiPrm}">
+            <a class="button" href="/schemas/${schemaId}/scripts/add">
+              <spring:message code="label.qascript.add"/>
+            </a>
           </c:if>
-          <c:if test="${permissions.ssdPrm}">
-            <%--onclick="return submitAction(2,'activateQAScript');"/>--%>
-            <button type="button" class="button" value="active">
-              <spring:message code="label.qascript.activate"/>
-            </button>
-            <input type="hidden" name="schemaId" value="${schemaId}"/>
-          </c:if>
-          <c:if test="${permissions.ssdPrm}">
-            <%--onclick="return submitAction(2,'deactivateQAScript');"/>--%>
-            <button type="submit" class="button" value="deactivate">
-              <spring:message code="label.qascript.deactivate"/>
-            </button>
-            <input type="hidden" name="schemaId" value="${schemaId}"/>
-          </c:if>
+            <%--paramId="schemaId" paramName="schema" paramProperty="id"--%>
+          <a class="button" href="/qaSandbox/run/${schemaId}" title="label.qascript.runservice.title">
+            <spring:message code="label.qascript.runservice"/>
+          </a>
+        </div>
+        <c:if test="${permissions.ssdPrm}">
+          <button type="button" class="button" name="delete">
+            <spring:message code="label.qascript.delete"/>
+          </button>
+          <input type="hidden" name="schemaId" value="${schemaId}"/>
+        </c:if>
+        <c:if test="${permissions.ssdPrm}">
+          <button type="button" class="button" name="activate">
+            <spring:message code="label.qascript.activate"/>
+          </button>
+          <input type="hidden" name="schemaId" value="${schemaId}"/>
+        </c:if>
+        <c:if test="${permissions.ssdPrm}">
+          <button type="submit" class="button" name="deactivate">
+            <spring:message code="label.qascript.deactivate"/>
+          </button>
+          <input type="hidden" name="schemaId" value="${schemaId}"/>
+        </c:if>
         </div>
       </form:form>
 

@@ -100,10 +100,9 @@ public class QAScriptsController {
             form.setActive(qaScript.isActive());
 
             model.addAttribute("QAScriptForm", form);
-            model.addAttribute(QAScriptListLoader.QASCRIPT_LIST_ATTR, QAScriptListLoader.getList(request));
+            model.addAttribute("scripts", QAScriptListLoader.getList(request));
 
         } catch (DCMException e) {
-            e.printStackTrace();
             LOGGER.error("QA Script form error", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
             model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
@@ -139,10 +138,9 @@ public class QAScriptsController {
             form.setActive(qaScript.isActive());
 
             model.addAttribute("QAScriptForm", form);
-            model.addAttribute(QAScriptListLoader.QASCRIPT_LIST_ATTR, QAScriptListLoader.getList(request));
+            model.addAttribute("scripts", QAScriptListLoader.getList(request));
 
         } catch (DCMException e) {
-            e.printStackTrace();
             LOGGER.error("QA Script form error", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
             model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);

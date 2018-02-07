@@ -65,7 +65,7 @@ public class SchemasConversionsController {
         form.setSchema(schemaUrl);
         StylesheetManager stylesheetManager = new StylesheetManager();
         model.addAttribute("outputtypes", stylesheetManager.getConvTypes());
-        model.addAttribute("conversionForm", form);
+        model.addAttribute("form", form);
         model.addAttribute("schemaId", schemaId);
         return "/conversions/add";
     }

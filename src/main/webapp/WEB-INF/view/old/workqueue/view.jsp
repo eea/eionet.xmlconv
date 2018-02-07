@@ -1,18 +1,9 @@
 <%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-<%--&lt;%&ndash; TODO REMOVE SCRIPTLET &ndash;%&gt;--%>
-<%--<%--%>
-  <%--response.setHeader("Pragma", "No-cache");--%>
-  <%--response.setHeader("Cache-Control", "no-cache");--%>
-  <%--response.setHeader("Cache-Control", "no-store");--%>
-  <%--response.setDateHeader("Expires", 0);--%>
-<%--%>--%>
-
 <ed:breadcrumbs-push label="Workqueue" level="1"/>
 
 <script type="text/javascript">
     // <![CDATA[
-
     var elementName = "jobID";
     isSelected = false;
 
@@ -85,11 +76,11 @@
       <col style="width:100px"/>
       <thead>
       <tr>
-        <th scope="col" class="scope-col" colspan="2">job ID</th>
+        <th scope="col" class="scope-col" colspan="2">Job ID</th>
         <th scope="col" class="scope-col">Document URL</th>
         <th scope="col" class="scope-col">XQuery script</th>
         <th scope="col" class="scope-col">Job Result</th>
-        <th scope="col" class="scope-col">status</th>
+        <th scope="col" class="scope-col">Status</th>
         <th scope="col" class="scope-col">Started at</th>
         <th scope="col" class="scope-col">Instance</th>
       </tr>
@@ -118,7 +109,7 @@
           <td>
               <c:choose>
                 <c:when test="${job.scriptType != 'fme'}">
-                  <a href="${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
+                  <a href="/queries/${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
                 </c:when>
                 <c:otherwise>
                   ${job.scriptType}
@@ -176,7 +167,8 @@
         </c:if>
         <%--<input class="form-element" type="button" name="selectAll" id="selectAll" value="Select All"
                onclick="toggleSelect('jobID'); return false"/>--%>
-        <button class="button" type="button" class="form-element" name="selectAll" id="selectAll" onclick="toggleSelect('jobID'); return false">
+        <%--onclick="toggleSelect('jobID'); return false"--%>
+        <button class="button" type="button" id="selectAll">
           Select All
         </button>
       </c:if>
@@ -185,3 +177,8 @@
     </div>
   </form:form>
 </div>
+<script>
+    $("#selectAll").click(function () {
+        $('input:checkbox').not(this).prop('checked', this.checked);
+    });
+</script>

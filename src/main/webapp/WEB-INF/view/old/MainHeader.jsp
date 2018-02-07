@@ -19,19 +19,18 @@
             <span>(${username})</span></a>
         </c:otherwise>
       </c:choose>
-      <a href="javascript:openWindow(applicationRoot+'/help/index.jsp','olinehelp');" title="Help">Online Help</a>
-      <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
-      <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode"><span>Switch to/from full screen mode</span></a>
+      <%--<a href="javascript:openWindow(applicationRoot+'/help/index.jsp','olinehelp');" title="Help">Online Help</a>--%>
+      <%--<a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>--%>
+      <%--<a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode"><span>Switch to/from full screen mode</span></a>--%>
       <a id="acronymlink" href="http://www.eionet.europa.eu/acronyms" title="Look up acronyms"><span>Acronyms</span></a>
       <form action="https://google.com/search" method="get">
         <div id="freesrchform">
-          <label for="freesrchfld">Search</label>
-          <input type="text" id="freesrchfld" name="q"
-                 onfocus="if (this.value == 'Search the site')
-                                                   this.value = '';"
-                 onblur="if (this.value == '')
-                                                   this.value = 'Search the site';"
-                 value="Search the site"/>
+          <label class="simple" for="freesrchfld">Search</label>
+          <%--onfocus="if (this.value == 'Search the site')--%>
+          <%--this.value = '';"--%>
+          <%--onblur="if (this.value == '')--%>
+          <%--this.value = 'Search the site';"--%>
+          <input type="text" id="freesrchfld" name="q" placeholder="Search the site" />
           <input type="hidden" name="sitesearch" value="${appHost}"/>
           <input id="freesrchbtn" type="image" src="/images/button_go.gif" alt="Go"/>
         </div>
@@ -40,11 +39,10 @@
   </div> <!-- toolribbon -->
 
   <div id="pagehead">
-    <c:url value="/images/eea-print-logo.gif" var="logoUrl"/>
-    <a href="/"><img src="${logoUrl}" alt="Logo" id="logo"/></a>
+    <a href="/"><img src="/images/eea-print-logo.gif" alt="Logo" id="logo"/></a>
     <div id="networktitle">Eionet</div>
-    <div id="sitetitle">XML Services</div>
-    <div id="sitetagline">Conversion and Quality Assessment Service</div>
+    <div id="sitetitle">Conversion and Quality Assessment Service</div>
+    <div id="sitetagline"></div>
   </div> <!-- pagehead -->
 
   <div id="menuribbon">

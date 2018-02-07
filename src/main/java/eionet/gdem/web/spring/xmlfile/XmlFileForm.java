@@ -4,6 +4,7 @@
 package eionet.gdem.web.spring.xmlfile;
 
 import eionet.gdem.web.spring.FileUploadWrapper;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * XML File form.
@@ -17,13 +18,13 @@ public class XmlFileForm {
     private String xmlfileId;
     private String title;
     private String lastModified;
-    private FileUploadWrapper xmlFile;
+    private MultipartFile xmlFile;
 
     public XmlFileForm() {
 
     }
 
-    public XmlFileForm(String xmlFileName, String xmlFilePath, String xmlfileId, String title, String lastModified, FileUploadWrapper xmlFile) {
+    public XmlFileForm(String xmlFileName, String xmlFilePath, String xmlfileId, String title, String lastModified, MultipartFile xmlFile) {
         this.xmlFileName = xmlFileName;
         this.xmlFilePath = xmlFilePath;
         this.xmlfileId = xmlfileId;
@@ -32,11 +33,11 @@ public class XmlFileForm {
         this.xmlFile = xmlFile;
     }
 
-    public FileUploadWrapper getXmlFile() {
+    public MultipartFile getXmlFile() {
         return xmlFile;
     }
 
-    public void setXmlFile(FileUploadWrapper xmlFile) {
+    public void setXmlFile(MultipartFile xmlFile) {
         this.xmlFile = xmlFile;
     }
 

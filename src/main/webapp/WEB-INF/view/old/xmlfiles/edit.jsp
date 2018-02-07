@@ -3,18 +3,26 @@
 <ed:breadcrumbs-push label="Edit XML File" level="2"/>
 <h1><spring:message code="label.title.uplXmlFile.edit"/></h1>
 
-<form:form servletRelativeAction="/xmlFiles/edit" method="post" enctype="multipart/form-data" modelAttribute="form">
-  <table class="formtable">
-    <col class="labelcol"/>
-    <col class="entrycol"/>
-    <tr class="zebraeven">
-      <td>
+<form:form servletRelativeAction="/xmlFiles" method="post" enctype="multipart/form-data" modelAttribute="form">
+  <fieldset class="fieldset">
+    <div class="row">
+      <div class="columns small-4">
+        <label class="question" for="txtTitle">
+          <spring:message code="label.uplXmlFile.title"/>
+        </label>
+      </div>
+      <div class="columns small-8">
+        <form:input path="title" style="width:400px" id="txtTitle"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-4">
         <label class="question">
           <spring:message code="label.uplXmlFile.xmlfile"/>
         </label>
-      </td>
-      <td>
-        <a href="${form.xmlFilePath}${form.xmlFileName}" title="${form.xmlFileName}">
+      </div>
+      <div class="columns small-8">
+        <a href="/xmlfile/${form.xmlFileName}" title="${form.xmlFileName}">
             ${form.xmlFileName}
         </a>&#160;&#160;
         (<spring:message code="label.lastmodified"/>:
@@ -28,38 +36,16 @@
         </c:choose>)
         <form:hidden path="xmlfileId"/>
         <form:hidden path="xmlFileName"/>
-      </td>
-    </tr>
-    <tr>
-      <td>
-      </td>
-      <td>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-4"></div>
+      <div class="columns small-8">
         <input type="file" name="xmlFile" styleId="fileXml" size="68"/>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label class="question" for="txtTitle">
-          <spring:message code="label.uplXmlFile.title"/>
-        </label>
-      </td>
-      <td>
-        <form:input path="title" style="width:400px" id="txtTitle"/>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2">&nbsp;</td>
-    </tr>
-    <tr>
-      <td>&nbsp;</td>
-      <td>
-        <button type="submit" name="action" value="ok">
-          <spring:message code="label.ok"/>
-        </button>
-          <%--<html:cancel styleClass="button">
-            <spring:message code="label.cancel"/>
-          </html:cancel>--%>
-      </td>
-    </tr>
-  </table>
+      </div>
+    </div>
+  </fieldset>
+  <button class="button" type="submit" name="update">
+    <spring:message code="label.ok"/>
+  </button>
 </form:form>

@@ -3,12 +3,10 @@
 <div style="width:100%;">
   <div id="tabbedmenu">
     <ul>
-
-      <li id="currenttab"><span style="color: black; text-decoration: none;"
-                                title='<spring:message code="label.config.system"/>'><spring:message
-              code="label.qascript.tab.title"/></span></li>
+      <li id="currenttab"><span style="color: black; text-decoration: none;"> </span>
+        <spring:message code="label.qascript.tab.title"/>
+      </li>
       <li>
-        <%--paramId="script_id" paramName="QAScriptForm" paramProperty="scriptId"  titleKey="label.qascript.history" --%>
         <a href="/scripts/${QAScriptForm.scriptId}/history" style="color: black; text-decoration: none;">
           <spring:message code="label.qascript.history"/>
         </a>
@@ -17,88 +15,88 @@
   </div>
   <ed:breadcrumbs-push label="Edit QA script" level="3"/>
 
-  <h1><spring:message code="label.qascript.edit"/></h1>
+  <%--<h1><spring:message code="label.qascript.edit"/></h1>--%>
 
-
-
-
-  <form:form action="/editQAScript" method="post" enctype="multipart/form-data" modelAttribute="${QAScriptForm}">
-    <table class="formtable">
-      <col class="labelcol"/>
-      <col class="entrycol"/>
-      <tr class="zebraeven">
-        <td>
+  <form:form action="/scripts" method="post" enctype="multipart/form-data" modelAttribute="QAScriptForm">
+    <fieldset class="fieldset">
+      <legend><spring:message code="label.qascript.edit"/></legend>
+      <div class="row">
+        <div class="columns small-4">
           <label class="question">
             <spring:message code="label.qascript.schema"/>
           </label>
-        </td>
-        <td>
-          ${QAScriptForm.schema}
-        </td>
-      </tr>
-      <tr>
-        <td>
+        </div>
+        <div class="columns small-8">
+            ${QAScriptForm.schema}
+        </div>
+      </div>
+      <div class="row">
+        <div class="columns small-4">
           <label class="question" for="txtShortName">
             <spring:message code="label.qascript.shortname"/>
           </label>
-        </td>
-        <td>
+        </div>
+        <div class="columns small-8">
           <form:input name="QAScriptForm" path="shortName" id="txtShortName" size="64"/>
-        </td>
-      </tr>
-      <tr class="zebraeven">
-        <td>
+        </div>
+      </div>
+      <div class="row">
+        <div class="columns small-4">
           <label class="question" for="txtDescription">
             <spring:message code="label.qascript.description"/>
           </label>
-        </td>
-        <td>
+        </div>
+        <div class="columns small-8">
           <form:textarea path="description" rows="2" cols="30" style="width:400px" styleId="txtDescription"/>
-        </td>
-      </tr>
-      <tr>
-        <td>
+        </div>
+      </div>
+      <div class="row">
+        <div class="columns small-4">
           <label class="question" for="selContentType">
             <spring:message code="label.qascript.resulttype"/>
           </label>
-        </td>
-        <td>
+        </div>
+        <div class="columns small-8">
           <form:select name="QAScriptForm" path="resultType" styleId="selContentType">
             <form:options collection="qascript.resulttypes" property="convType"/>
           </form:select>
-        </td>
-      </tr>
-      <tr class="zebraeven">
-        <td>
+        </div>
+      </div>
+      <div class="row">
+        <div class="columns small-4">
           <label class="question" for="selScriptType">
             <spring:message code="label.qascript.scripttype"/>
           </label>
-        </td>
-        <td>
+        </div>
+        <div class="columns small-8">
           <form:select name="QAScriptForm" path="scriptType" styleId="selScriptType" disabled="false">
             <form:options items="${qascript.scriptlangs}" property="convType"/>
           </form:select>
-          <form:hidden path="QAScriptForm" property="scriptType"/>
-        </td>
-      </tr>
-      <tr>
-        <td>
+          <form:hidden path="scriptType"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="columns small-4">
           <label class="question" for="txtUpperLimit">
             <spring:message code="label.qascript.upperlimit"/>
           </label>
-        </td>
-        <td>
+        </div>
+        <div class="columns small-8">
           <form:input id="txtUpperLimit" size="3" path="upperLimit"/>
-        </td>
-      </tr>
+        </div>
+      </div>
+    </fieldset>
 
-      <tr class="zebraeven">
-        <td>
+    <fieldset class="fieldset">
+      <legend>Script file properties</legend>
+
+      <div class="row">
+        <div class="columns small-4">
           <label class="question" for="txtFile">
             <spring:message code="label.qascript.fileName"/>
           </label>
-        </td>
-        <td>
+        </div>
+        <div class="columns small-8">
             <%--  If scriptType is 'FME' don't show the link to the local script file --%>
           <c:if test="${QAScriptForm.scriptType == 'fme'}">
             <a href="${webRoot}/${QAScriptForm.filePath}" title="${QAScriptForm.filePath}">
@@ -119,91 +117,82 @@
           <c:if test="${QAScriptForm.scriptType == 'fme'}">
             ${QAScriptForm.fileName}
           </c:if>
-        </td>
-      </tr>
-
+        </div>
+      </div>
         <%--  If scriptType is 'FME' don't show the FileUpload --%>
       <c:if test="${QAScriptForm.scriptType != 'fme'}">
-        <tr class="zebraeven">
-          <td>&#160;</td>
-          <td>
+        <div class="row">
+          <div class="columns small-4">
+            &#160;
+          </div>
+          <div class="columns small-8">
             <button type="submit" class="button" name="action" value="upload">
               <spring:message code="label.qascript.upload"/>
             </button>
             <input type="file" name="scriptFile" style="width:400px" size="64"/>
-          </td>
-        </tr>
+          </div>
+        </div>
       </c:if>
 
-      <tr>
-        <td>
+      <div class="row">
+        <div class="columns small-4">
           <label class="question" for="txtUrl">
             <spring:message code="label.qascript.url"/>
           </label>
-        </td>
-        <td>
+        </div>
+        <div class="columns small-8">
           <form:input id="txtUrl" path="url" size="107"/>
-        </td>
-      </tr>
-      <tr class="zebraeven">
-        <td>
+        </div>
+      </div>
+      <div class="row">
+        <div class="columns small-4">
           <label class="question" for="isActive">
             <spring:message code="label.qascript.isActive"/>
           </label>
-        </td>
-        <td>
+        </div>
+        <div class="columns small-8">
           <form:checkbox path="active" id="isActive"/>
-          <form:hidden path="active" value="false"/>
-        </td>
-      </tr>
+          <%--<form:hidden path="active" value="false"/>--%>
+        </div>
+      </div>
+
         <%--  If scriptType is 'FME' don't show the 'Check for updates' --%>
       <c:if test="${QAScriptForm.scriptType == 'fme'}">
-        <tr>
-          <td></td>
-          <td>
+        <div class="row">
+          <div class="columns small-4">
+
+          </div>
+          <div class="columns small-8">
             <c:if test="${!empty QAScriptForm.fileName}">
-              <button type="submit" clas="button" name="action" value="diff">
+              <button type="submit" clas="button" name="diff">
                 <spring:message code="label.qascript.checkupdates"/>"
               </button>
             </c:if>
-          </td>
-        </tr>
+          </div>
+        </div>
       </c:if>
       <c:if test="${!empty QAScriptForm.fileName}">
         <c:if test="${QAScriptForm.scriptType != 'fme'}">
-          <tr>
-            <td colspan="2">
-              <label class="question" for="txtUrl">
-                <spring:message code="label.qascript.source"/>
-              </label>
-              <form:textarea path="scriptContent" style="width: 98%;" rows="20" cols="55" id="txtFile"/>
-            </td>
-          </tr>
+          <div class="row">
+            <label class="question" for="txtUrl">
+              <spring:message code="label.qascript.source"/>
+            </label>
+            <form:textarea path="scriptContent" style="width: 98%;" rows="20" cols="55" id="txtFile"/>
+          </div>
         </c:if>
-        <tr>
-          <td>&#160;</td>
-          <td>
-            <button type="submit" class="button" name="action" value="save">
-              <spring:message code="label.qascript.save"/>
-            </button>
-            <form:hidden path="fileName"/>
-            <form:hidden path="checksum" name="QAScriptForm"/>
-            <form:hidden path="scriptId" name="QAScriptForm"/>
-            <form:hidden path="schemaId" name="QAScriptForm"/>
-            <form:hidden path="active" name="QAScriptForm"/>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2">&#160;</td>
-        </tr>
-        <!-- tr>
-        <td>&#160;</td>
-        <td>
-        <input type="file" name="scriptFile" style="width:400px" size="64"/>
-        </td>
-        </tr-->
+
+        <button type="submit" class="button" name="action" value="save">
+          <spring:message code="label.qascript.save"/>
+        </button>
+        <form:hidden path="fileName"/>
+        <form:hidden path="checksum" />
+        <form:hidden path="scriptId" />
+        <form:hidden path="schemaId" />
+        <%--<form:hidden path="active" />--%>
+
+        <%--<input type="file" name="scriptFile" style="width:400px" size="64"/>--%>
       </c:if>
-    </table>
+    </fieldset>
   </form:form>
 </div>
 

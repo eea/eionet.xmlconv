@@ -7,6 +7,7 @@ import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.SpringMessages;
+import eionet.gdem.web.spring.generic.SingleForm;
 import eionet.gdem.web.spring.scripts.QAScriptListLoader;
 import eionet.gdem.web.spring.stylesheet.StylesheetListLoader;
 import org.slf4j.Logger;
@@ -164,7 +165,7 @@ public class SchemasController {
         return "/schemas/edit";
     }
 
-    @PostMapping(path = "/actions", params = {"update"})
+    @PostMapping(params = {"update"})
     public String editSubmit(@ModelAttribute SchemaForm form, HttpServletRequest httpServletRequest, HttpSession session, RedirectAttributes redirectAttributes) {
         SpringMessages errors = new SpringMessages();
         SpringMessages messages = new SpringMessages();
@@ -310,12 +311,12 @@ public class SchemasController {
         return "redirect:/schemas";
     }
 
-    @PostMapping(path = "/actions", params = {"delete"})
-    public String delete(@ModelAttribute SchemaForm form, RedirectAttributes redirectAttributes, HttpSession session) {
+    @PostMapping(params = {"delete"})
+    public String delete(@ModelAttribute SingleForm form, RedirectAttributes redirectAttributes, HttpSession session) {
         SpringMessages errors = new SpringMessages();
         SpringMessages messages = new SpringMessages();
 
-        String schemaId = form.getSchemaId();
+        String schemaId = form.getId();
 
         String user_name = (String) session.getAttribute("user");
 
@@ -359,7 +360,7 @@ public class SchemasController {
 
         SchemaManager sm = new SchemaManager();
         String user = (String) session.getAttribute("user");
-        String id = Integer.toString(form.getId());
+        String id = form.getId();
         try {
             sm.deleteUplSchema(user, id, true);
         } catch (DCMException e) {

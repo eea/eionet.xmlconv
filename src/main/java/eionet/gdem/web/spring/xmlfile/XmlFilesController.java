@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
@@ -61,12 +62,12 @@ public class XmlFilesController {
         return "/xmlfiles/add";
     }
 
-    @PostMapping("/add")
+    @PostMapping(params = {"add"})
     public String addSubmit(@ModelAttribute XmlFileForm updatedForm, HttpSession session, RedirectAttributes redirectAttributes) {
         SpringMessages messages = new SpringMessages();
         SpringMessages errors = new SpringMessages();
 
-        FileUploadWrapper xmlfile = updatedForm.getXmlFile();
+        MultipartFile xmlfile = updatedForm.getXmlFile();
         String title = updatedForm.getTitle();
 
         String user = (String) session.getAttribute("user");
@@ -75,7 +76,7 @@ public class XmlFilesController {
             return actionMapping.findForward("success");
         }*/
 
-        if (xmlfile == null || xmlfile.getFile() == null || xmlfile.getFile().getSize() == 0) {
+        if (xmlfile == null || xmlfile.getSize() == 0) {
             errors.add(messageService.getMessage("label.uplXmlFile.validation"));
             redirectAttributes.addFlashAttribute("dcm.errors", errors);
             return "redirect:/xmlFiles/add";
@@ -121,13 +122,39 @@ public class XmlFilesController {
         return "/xmlfiles/edit";
     }
 
-    @PostMapping("/delete")
-    public String deleteSumbit(@ModelAttribute SingleForm singleForm, Model model, HttpSession httpSession, RedirectAttributes redirectAttributes) {
+    @PostMapping(params = {"update"})
+    public String editSubmit(@ModelAttribute("form") XmlFileForm updatedForm, @RequestParam(required = false) MultipartFile xmlFile, HttpSession session, RedirectAttributes redirectAttributes) {
+        SpringMessages messages = new SpringMessages();
+        SpringMessages errors = new SpringMessages();
+
+        MultipartFile xmlfile = updatedForm.getXmlFile();
+        String title = updatedForm.getTitle();
+        String xmlFileId = updatedForm.getXmlfileId();
+        String fileName = updatedForm.getXmlFileName();
+
+        String user = (String) session.getAttribute("user");
+
+        try {
+            UplXmlFileManager fm = new UplXmlFileManager();
+            fm.updateUplXmlFile(user, xmlFileId, title, fileName, xmlfile);
+            messages.add(messageService.getMessage("label.uplXmlFile.updated"));
+        } catch (DCMException e) {
+            LOGGER.error("Error updating XML file", e);
+            errors.add(messageService.getMessage(e.getErrorCode()));
+        }
+        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
+
+        return "redirect:/xmlFiles";
+    }
+
+    @PostMapping(params = {"delete"})
+    public String deleteSumbit(@ModelAttribute("form") SingleForm singleForm, Model model, HttpSession httpSession, RedirectAttributes redirectAttributes) {
 
         SpringMessages messages = new SpringMessages();
         SpringMessages errors = new SpringMessages();
 
-        String xmlfileId = Integer.toString(singleForm.getId());
+        String xmlfileId = singleForm.getId();
         if (StringUtils.isEmpty(xmlfileId)) {
             errors.add(messageService.getMessage("label.uplXmlFile.error.notSelected"));
             redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);

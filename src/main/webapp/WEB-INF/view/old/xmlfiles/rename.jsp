@@ -3,9 +3,6 @@
 <ed:breadcrumbs-push label="Edit XML File" level="2"/>
 <h1>Rename XML file</h1>
 
-
-
-
 <form:form action="/renameUplXmlFile" method="post">
   <table class="formtable">
     <col class="labelcol"/>

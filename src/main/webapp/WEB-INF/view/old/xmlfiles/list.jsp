@@ -18,7 +18,7 @@
   <div class="visualClear">&nbsp;</div>
 
   <c:if test="${!empty xmlfiles.xmlfiles}">
-    <form:form servletRelativeAction="/xmlFiles/delete" method="post" modelAttribute="form">
+    <form:form servletRelativeAction="/xmlFiles" method="post" modelAttribute="form">
       <table class="datatable results" width="100%">
         <c:if test="${xmlfiles.ssuPrm}">
           <col style="width:5%"/>
@@ -87,8 +87,9 @@
       </table>
       <div class="boxbottombuttons">
         <c:if test="${xmlfiles.ssdPrm}">
-          <button name="action" class="button" value="delete"><spring:message code="label.delete"/></button>
-          <%--<button name="action" class="button" value="rename"><spring:message code="label.rename"/></button>--%>
+          <button class="button" type="submit" name="delete">
+            <spring:message code="label.delete"/>
+          </button>
         </c:if>
       </div>
     </form:form>
@@ -98,7 +99,6 @@
       <spring:message code="label.uplXmlFile.noXmlFiles"/>
     </div>
   </c:if>
-  <%--<div class="visualClear">&nbsp;</div>--%>
 
 </c:if>
 

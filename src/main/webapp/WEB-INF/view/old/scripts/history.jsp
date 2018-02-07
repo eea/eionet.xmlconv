@@ -4,7 +4,7 @@
   <div id="tabbedmenu">
     <ul>
       <li>
-        <a href="/scripts/${scriptId}" titleKey="label.qascript.tab.title" style="color: black; text-decoration: none;">
+        <a href="/scripts/${scriptId}" title="label.qascript.tab.title" style="color: black; text-decoration: none;">
           <spring:message code="label.qascript.tab.title"/>
         </a>
       </li>

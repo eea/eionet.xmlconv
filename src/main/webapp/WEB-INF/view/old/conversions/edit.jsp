@@ -3,23 +3,21 @@
 <ed:breadcrumbs-push label="Edit Stylesheet" level="3"/>
 <h1><spring:message code="label.stylesheet.edit"/></h1>
 
-<form:form servletRelativeAction="/conversions" method="post" enctype="multipart/form-data" styleClass="cmxform">
-  <table class="datatable results" style="width:100%">
-    <col class="labelcol"/>
-    <col class="entrycol"/>
-    <tr>
-      <th scope="row" class="scope-row">
+<form:form servletRelativeAction="/conversions" method="post" enctype="multipart/form-data" modelAttribute="form">
+  <fieldset class="fieldset">
+    <legend><spring:message code="label.stylesheet.edit"/></legend>
+    <div class="row">
+      <div class="columns small-4">
         <label class="question">
           <spring:message code="label.stylesheet.schema"/>
         </label>
-      </th>
-      <td>
+      </div>
+      <div class="columns small-8">
         <c:if test="${!empty form.schemas}">
-          <%--id="relatedSchema" name="form" property="schemas" type="Schema">--%>
           <c:forEach varStatus="index" items="${form.schemas}" var="relatedSchema">
             <div class="schemaContainer">
-              <a href="viewSchemaForm?schemaId=${relatedSchema.id}" title="view XML Schema properties">
-                ${relatedSchema.schema}
+              <a href="/schemas/${relatedSchema.id}" title="view XML Schema properties">
+                  ${relatedSchema.schema}
               </a>
               <a href='#' class="delSchemaLink" title="Delete XML Schema relation">
                 <img style='border:0' src="/images/button_remove.gif" alt='Remove'/>
@@ -39,72 +37,71 @@
           </c:forEach>
         </div>
         <br/>
-        <%--&lt;%&ndash; TODO CHECK FOR REMOVAL &ndash;%&gt;--%>
-        <%--<jsp:include page="ManageStylesheetSchemas.jsp"/>--%>
-      </td>
-    </tr>
+          <%--&lt;%&ndash; TODO CHECK FOR REMOVAL &ndash;%&gt;--%>
+          <%--<jsp:include page="ManageStylesheetSchemas.jsp"/>--%>
+      </div>
+    </div>
       <%-- /*
-      <tr>
-          <td>
-              <label class="question" for="selDDSchema">
-                  <spring:message code="label.stylesheet.selectDDSchema"/>
-              </label>
-        </td>
-        <td>
-            <select name="xmlSchema"  size="10" onchange="setSchema()" style="width:98%" id="selDDSchema">
-                  <option selected="selected" value="">
-                      --
-                  </option>
-                  <c:if iterate id="schema" name="stylesheet.DDSchemas"  type="Schema">
-                      <option value="<bean:write name="schema" property="schema" />">
-                          <bean:write name="schema" property="schema" />
-                          <c:if notEqual name="schema" property="table" value="">
-                              &nbsp;-&nbsp;
-                              <bean:write name="schema" property="table" />&nbsp;(
-                              <bean:write name="schema" property="dataset" /> -
-                              <bean:write name="schema" property="datasetReleased" format="<%= Properties.dateFormatPattern%>" />)
-                          </c:if notEqual>
-                      </option>
-                  </c:if iterate>
-              </select>
-             </td>
-          </tr>
-          */ --%>
     <tr>
-      <th scope="row" class="scope-row">
+        <td>
+            <label class="question" for="selDDSchema">
+                <spring:message code="label.stylesheet.selectDDSchema"/>
+            </label>
+      </td>
+      <td>
+          <select name="xmlSchema"  size="10" onchange="setSchema()" style="width:98%" id="selDDSchema">
+                <option selected="selected" value="">
+                    --
+                </option>
+                <c:if iterate id="schema" name="stylesheet.DDSchemas"  type="Schema">
+                    <option value="<bean:write name="schema" property="schema" />">
+                        <bean:write name="schema" property="schema" />
+                        <c:if notEqual name="schema" property="table" value="">
+                            &nbsp;-&nbsp;
+                            <bean:write name="schema" property="table" />&nbsp;(
+                            <bean:write name="schema" property="dataset" /> -
+                            <bean:write name="schema" property="datasetReleased" format="<%= Properties.dateFormatPattern%>" />)
+                        </c:if notEqual>
+                    </option>
+                </c:if iterate>
+            </select>
+           </td>
+        </tr>
+        */ --%>
+    <div class="row">
+      <div class="columns small-4">
         <label class="question" for="selOutputType">
           <spring:message code="label.stylesheet.outputtype"/>
         </label>
-      </th>
-      <td>
+      </div>
+      <div class="columns small-8">
         <select name="outputtype" style="width:100px" id="selOutputType">
           <c:forEach items="${outputtypes.convTypes}" var="opt">
             <c:choose>
               <c:when test="${opt.convType == form.outputtype}">
                 <option selected="selected" value="${opt.convType}">
-                  ${opt.convType}
+                    ${opt.convType}
                 </option>
               </c:when>
               <c:otherwise>
                 <option value="${opt.convType}">
-                  ${opt.convType}
+                    ${opt.convType}
                 </option>
               </c:otherwise>
             </c:choose>
           </c:forEach>
         </select>
-      </td>
-    </tr>
-
+      </div>
+    </div>
     <c:if test="${form.showDependsOnInfo}">
       <%--<bean:define id="depOn" name="form" property="dependsOn" scope="request" type="java.lang.String"/>--%>
-      <tr>
-        <th scope="row" class="scope-row">
+      <div class="row">
+        <div class="columns small-4">
           <label class="question" for="selDependsOn">
             <spring:message code="label.stylesheet.dependsOn"/>
           </label>
-        </th>
-        <td>
+        </div>
+        <div class="columns small-8">
           <select name="dependsOn" id="selDependsOn">
             <c:choose>
               <c:when test="${form.dependsOn}">
@@ -114,52 +111,50 @@
                 <option value="">--</option>
               </c:otherwise>
             </c:choose>
-      <%--id="st" scope="request" name="form" property="existingStylesheets">--%>
+              <%--id="st" scope="request" name="form" property="existingStylesheets">--%>
             <c:forEach items="${form.existingStylesheets}">
               <c:choose>
                 <c:when test="${st.convId == depOn}">
                   <option value="${st.convId}" selected="selected">
-                    ${st.xslFileName}
+                      ${st.xslFileName}
                   </option>
                 </c:when>
                 <c:otherwise>
                   <option value="${st.convId}">
-                    ${st.xslFileName}
+                      ${st.xslFileName}
                   </option>
                 </c:otherwise>
               </c:choose>
             </c:forEach>
           </select>
-        </td>
-      </tr>
-
+        </div>
+      </div>
     </c:if>
 
-
-    <tr>
-      <th scope="row" class="scope-row">
+    <div class="row">
+      <div class="columns small-4">
         <label class="question" for="txtDescription">
           <spring:message code="label.stylesheet.description"/>
         </label>
-      </th>
-      <td>
+      </div>
+      <div class="columns small-8">
         <form:input path="description" type="text" style="width:500px" styleId="txtDescription"/>
         <form:hidden path="stylesheetId"/>
-      </td>
-    </tr>
-    <tr>
-      <th scope="row" class="scope-row">
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-4">
         <label class="question" for="txtXsl">
           <spring:message code="label.stylesheet.xslfile"/>
         </label>
-      </th>
-      <td>
+      </div>
+      <div class="columns small-8">
         <a href="${webRoot}/${xsl.stylesheetForm}" title="${xsl.stylesheetForm}" class="link-xsl">
-          ${xslFileName.stylesheetForm}
+            ${xslFileName.stylesheetForm}
         </a>
         <span style="margin-left:10px">(<spring:message code="label.lastmodified"/>:
                 <c:choose>
-                  <c:when test="${form.modified}">
+                  <c:when test="${!empty form.modified}">
                     ${form.modified}
                   </c:when>
                   <c:otherwise>
@@ -172,24 +167,24 @@
             <spring:message code="label.stylesheet.upload"/>
           </button>
         </div>
-      </td>
-    </tr>
+      </div>
+    </div>
     <c:if test="${form.xslFileName}">
-      <tr>
-        <td colspan="2">
-          <form:textarea path="xslContent" style="width: 98%;" rows="20" cols="55" id="txtXsl"/>
-        </td>
-      </tr>
-      <tr>
-        <td>&#160;</td>
-        <td>
+      <div class="row">
+        <form:textarea path="xslContent" style="width: 98%;" rows="20" cols="55" id="txtXsl"/>
+      </div>
+      <div class="row">
+        <div class="columns small-4">
+          &#160;
+        </div>
+        <div class="columns small-8">
           <button type="submit" name="save">
             <spring:message code="label.stylesheet.save"/>
           </button>
           <form:hidden path="xslFileName"/>
           <form:hidden path="checksum" name="form"/>
-        </td>
-      </tr>
+        </div>
+      </div>
     </c:if>
-  </table>
+  </fieldset>
 </form:form>

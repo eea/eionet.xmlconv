@@ -98,9 +98,9 @@
     <definition name="/xmlfiles/edit" extends="base">
         <put-attribute name="body" value="/WEB-INF/view/old/xmlfiles/edit.jsp" />
     </definition>
-    <definition name="/xmlfiles/rename" extends="base">
-        <put-attribute name="body" value="/WEB-INF/view/old/xmlfiles/rename.jsp" />
-    </definition>
+    <!--<definition name="/xmlfiles/rename" extends="base">-->
+        <!--<put-attribute name="body" value="/WEB-INF/view/old/xmlfiles/rename.jsp" />-->
+    <!--</definition>-->
     <definition name="/config/ldap" extends="base">
         <put-attribute name="title" value="label.config.ldap.admin" />
         <put-attribute name="body" value="/WEB-INF/view/old/config/ldap.jsp" />
@@ -195,7 +195,7 @@
     </definition>
 
     <definition name="/workqueue" extends="base">
-        <put-attribute name="title" value="label.qasandboxresult.title" />
+        <put-attribute name="title" value="label.workqueue.title" />
         <put-attribute name="body" value="/WEB-INF/view/old/workqueue/view.jsp" />
     </definition>
 
