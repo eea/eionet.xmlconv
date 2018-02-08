@@ -31,6 +31,8 @@ public class ErrorController {
     public String error(HttpServletRequest request, Model model) {
         Integer status = (Integer) request.getAttribute("javax.servlet.error.status_code");
         String url = (String) request.getAttribute("javax.servlet.forward.request_uri");
+        String errorMessage = (String) request.getAttribute("javax.servlet.error.message");
+
         String message = "";
         switch (status) {
             case 404:
@@ -40,12 +42,12 @@ public class ErrorController {
                 message = messageService.getMessage("label.error.500");
                 break;
             default:
-                message = "Unknown error";
+                message = errorMessage;
                 break;
         }
         model.addAttribute("status", status);
         model.addAttribute("reason", message);
-        return "error/error";
+        return "Error";
     }
 
 

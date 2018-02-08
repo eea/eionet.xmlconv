@@ -204,7 +204,7 @@
   <c:if test="${QASandboxForm.showScripts == false}">
     <c:if test="${permissions.qsiPrm}">
       <fieldset class="fieldset">
-        <legend><spring:message code="label.qasandbox.qaScript"/></legend>
+      <legend><spring:message code="label.qasandbox.qaScript"/></legend>
       <div class="row">
         <label class="question" for="selScriptType">
           <spring:message code="label.qasandbox.scriptType"/>
@@ -342,11 +342,11 @@
     </div>
     <div class="row">
       <form:button name="runNow" class="button">
-        <spring:message code="label.qasandbox.runNow" />
+        <spring:message code="label.qasandbox.runNow"/>
       </form:button>
       <c:if test="${permissions.wqiPrm}">
         <form:button name="addToWorkqueuee" class="button">
-          <spring:message code="label.qasandbox.addToWorkqueue" />
+          <spring:message code="label.qasandbox.addToWorkqueue"/>
         </form:button>
       </c:if>
     </div>

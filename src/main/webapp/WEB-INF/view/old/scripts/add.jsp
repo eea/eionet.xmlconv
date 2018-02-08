@@ -2,7 +2,7 @@
 
 <ed:breadcrumbs-push label="Add QA script" level="3"/>
 
-<form:form servletRelativeAction="/old/scripts/add" method="post" enctype="multipart/form-data" modelAttribute="form">
+<form:form servletRelativeAction="/scripts" method="post" enctype="multipart/form-data" modelAttribute="form">
   <fieldset class="fieldset">
     <legend><spring:message code="label.qascript.add"/></legend>
     <div class="row">
@@ -103,7 +103,7 @@
       &#160;
     </div>
     <div class="columns small-8">
-      <button type="submit" class="button">
+      <button type="submit" name="add" class="button">
         <spring:message code="label.save"/>
       </button>
     </div>
