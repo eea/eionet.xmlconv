@@ -15,7 +15,7 @@
   <br/>
   <br/>
   <form:form action="/qaSandboxForm?reset=false" method="post">
-    <button type="submit" styleClass="button" property="action">
+    <button type="submit" class="button" property="action">
       <spring:message code="label.qasandboxresult.back"/>
     </button>
   </form:form>

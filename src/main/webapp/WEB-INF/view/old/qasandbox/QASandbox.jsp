@@ -1,8 +1,6 @@
 <%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
-<spring:message code="label.qasandbox.extractSchema" var="extractSchemaLabel"/>
-<spring:message code="label.qasandbox.searchXML" var="searchXmlLabel"/>
-<spring:message code="label.qasandbox.findScripts" var="searchScriptsLabel"/>
+<c:set var="scriptlangs" scope="page" value="${applicationScope['qascript.scriptlangs']}"/>
 
 <style>
   .dropzone .dz-preview .dz-progress {
@@ -75,331 +73,236 @@
     }
   }
 </style>
-<%--<form:xhtml/>--%>
-<div style="width:100%;">
 
-  <ed:breadcrumbs-push label="QA sandbox" level="1"/>
-  <h1><spring:message code="label.qasandbox.title"/></h1>
+<c:set var="permissions" scope="page" value="${sessionScope['qascript.permissions']}"/>
+<ed:breadcrumbs-push label="QA sandbox" level="1"/>
+<%--<h1><spring:message code="label.qasandbox.title"/></h1>--%>
 
+<form:form servletRelativeAction="/qaSandbox" method="post" modelAttribute="QASandboxForm">
+  <fieldset class="fieldset">
+    <legend><spring:message code="label.qasandbox.title"/></legend>
 
+    <div class="row">
+      <div class="columns small-4">
+        <label class="question" for="selSchema">
+          <spring:message code="label.qasandbox.xmlSchema"/>
+        </label>
+      </div>
+      <div class="columns small-8">
+        <form:select path="schemaUrl" styleId="selSchema">
+          <form:option value="">--</form:option>
+          <form:options items="${scripts.qascripts}" itemValue="schema" itemLabel="label"/>
+        </form:select>
+      </div>
+    </div>
+    <div class="row">
+      <button type="submit" name="searchXML" class="button">
+        <spring:message code="label.qasandbox.searchXML"/>
+      </button>
+      <button type="submit" name="searchScripts" class="button">
+        <spring:message code="label.qasandbox.findScripts"/>
+      </button>
+    </div>
 
-
-  <form:form action="/executeSandboxAction" method="post" modelAttribute="QASandboxForm">
-    <table class="formtable">
-
-        <%-- List of XML schemas  --%>
-      <tr class="zebraeven">
-        <td>
-          <label class="question" for="selSchema">
-            <spring:message code="label.qasandbox.xmlSchema"/>
-          </label>
-        </td>
-      </tr>
-      <tr>
-        <td>
-            <%--<bean:define id="schemas" name="qascript.qascriptList" property="qascripts"/>--%>
-            <%--name="QASandboxForm" property="schemaUrl"--%>
-          <form:select path="schemaUrl" styleId="selSchema">
-            <form:option value="">--</form:option>
-            <form:options collection="schemas" property="schema" labelProperty="label"/>
-          </form:select>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <button type="submit" value="searchXML" styleClass="button" property="action" title="${searchXmlLabel}"/>
-          <button type="submit" value="searchScripts" styleClass="button" property="action"
-                 title="${searchScriptsLabel}"/>
-        </td>
-      </tr>
-      <tr>
-        <td>&nbsp;</td>
-      </tr>
-    </table>
-  </form:form>
-
-
-  <form:form action="/executeSandboxAction" method="post" modelAttribute="QASandboxForm">
-    <table class="formtable">
-        <%-- CR XML files  --%>
-        <%--<bean:define id="schema" name="QASandboxForm" property="schema" type="Schema"/>--%>
-        <%--name="schema" property="crfiles">--%>
-      <c:if test="${Schema.schema}">
+      <%-- CR XML files  --%>
+    <c:set var="schema" value="${QASandboxForm.schema}"/>
+    <c:choose>
+      <c:when test="${!empty schema.crfiles}">
         <%--<bean:size id="countfiles" name="schema" property="crfiles"/>
         <bean:define id="crfiles" name="schema" property="crfiles"/>--%>
-        <tr class="zebraeven">
-          <td>
-            <label class="question" for="selXml">
-              <spring:message code="label.qasandbox.CRxmlfiles"/> (${countfiles})
-            </label>
-          </td>
-        </tr>
+        <div class="row">
+          <label class="question" for="selXml">
+            <spring:message code="label.qasandbox.CRxmlfiles"/> (${countfiles})
+          </label>
+        </div>
+
         <c:if test="${countfiles > 0}">
-          <tr>
-            <td>
-              <form:select path="QASandboxForm.sourceUrl" name="QASandboxForm" property="sourceUrl" size="5"
-                           styleId="selXml">
+          <div class="row">
+            <div class="columns small-4">
+              <form:select path="sourceUrl" size="5" styleId="selXml">
                 <form:option value="">--</form:option>
-                <form:options collection="crfiles" name="schema" property="url" labelProperty="label"/>
+                <form:options items="${crfiles}" name="schema" itemValue="url" itemLabel="label"/>
               </form:select>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <form:input path="manualUrl" styleClass="button" property="action" title="label.qasandbox.manualUrl"/>
-            </td>
-          </tr>
+            </div>
+            <div class="columns small-8">
+              <button name="manualUrl" class="button">
+                <spring:message code="label.qasandbox.manualUrl"/>
+              </button>
+            </div>
+          </div>
         </c:if>
+
         <c:if test="${countfiles = 0}">
-          <tr class="zebraeven">
-            <td>
+          <div class="row">
+            <div class="columns small-4">
               <label class="question" for="txtSourceUrl">
                 <spring:message code="label.qasandbox.sourceUrl"/>
               </label>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <form:label path="sourceUrl" property="sourceUrl" styleId="txtSourceUrl" size="120"/>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <form:input path="action" styleClass="button" property="action" title="${extractSchemaLabel}"/>
-            </td>
-          </tr>
+            </div>
+            <div class="columns small-8">
+              <form:input type="text" path="sourceUrl" styleId="txtSourceUrl" size="120"/>
+            </div>
+          </div>
+          <div class="row">
+            <form:button name="extractSchema" class="button">
+              <spring:message code="label.qasandbox.extractSchema"/>
+            </form:button>
+          </div>
         </c:if>
-      </c:if>
-    </table>
-  </form:form>
+      </c:when>
+      <c:otherwise>
+        <%--<fieldset class="fieldset">--%>
 
-  <%-- Insert URL manually --%>
-  <%--notPresent name="schema" property="crfiles">--%>
-  <c:if test="${!schema.crfiles}">
-    <form:form action="/executeSandboxAction" method="post" modelAttribute="QASandboxForm">
-      <table class="formtable">
-        <tr class="zebraeven">
-          <td>
+        <div class="row">
+          <div class="columns small-4">
             <label class="question" for="txtSourceUrl">
               <spring:message code="label.qasandbox.sourceUrl"/>
             </label>
-          </td>
-        </tr>
-        <tr>
-          <td>
-              <%--styleId="txtSourceUrl" size="120" style="max-width: 780px;"/>--%>
-              ${sourceUrl}
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <button type="submit" value="extractSchema" styleClass="button" property="action"
-                   title="${extractSchemaLabel}"/>
-          </td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-        </tr>
-      </table>
-    </form:form>
+          </div>
+          <div class="columns small-8">
+            <form:input type="text" path="sourceUrl" styleId="txtSourceUrl" size="120" style="max-width: 780px;"/>
+          </div>
+        </div>
+        <div class="row">
+          <button type="submit" name="extractSchema" class="button">
+            <spring:message code="label.qasandbox.extractSchema"/>
+          </button>
+        </div>
 
-    <%--<c:if equal value="true" name="qascript.permissions" property="qsuPrm">--%>
-    <c:if test="${qascript.permissions == 'qsuPrm'}">
-      <c:if test="${not(fn:contains(header['User-Agent'],'MSIE 9.0'))}">
-        <button style="float:right;" id="clickable">Upload file</button>
-        <form action="/qasandbox/upload" id="my-dropzone" class="dropzone">
-          <ul id="dropzone-previews" class="dropzone-previews"></ul>
-        </form>
-        <script type="text/javascript" src="<c:url value="/js/dropzone.min.js"/>"></script>
+        <div class="row">
+          <div class="columns small-4">
 
-        <script id="mypreview" type="text/template">
-          <li class="dz-preview dz-file-preview">
-            <div class="dz-details">
-              <div class="dz-filename">
-                <span data-dz-name></span>
-                <span>(<span data-dz-size></span>)</span>
-                <div style="float:right">
-                  <button class="dz-remove-button" style="margin-left:5px" type="button" data-dz-remove>Remove</button>
-                  <button class="dz-select-button" style="margin-left:5px" type="button">Select</button>
-                </div>
-              </div>
-              <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
-            </div>
-            <div class="dz-success-mark"><span>✔</span></div>
-            <div class="dz-error-mark"><span>✘</span></div>
-            <div class="dz-error-message"><span data-dz-errormessage></span></div>
-          </li>
-        </script>
+          </div>
+          <div class="columns small-8">
 
-        <script type="text/javascript">
-            $.ajaxSetup({cache: false});
-            $(document).on('click', '.dz-filename span', function (event) {
-                for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
-                    if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).text()) {
-                        $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
-                    }
-                }
-            });
-            $(document).on('click', '.dz-select-button', function (event) {
-                for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
-                    if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).parent().parent().children(':first').text()) {
-                        $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
-                    }
-                }
-            });
-            var ctx = '${pageContext.request.contextPath}';
-            Dropzone.options.myDropzone = {
-                dictDefaultMessage: "",
-                url: ctx + "/qasandbox/upload",
-                clickable: "#clickable",
-                acceptedFiles: ".xml, .gml",
-                maxFiles: "5",
-                maxFilesize: "300",
-                createImageThumbnails: "false",
-                addRemoveLinks: "false",
-                previewsContainer: "#dropzone-previews",
-                previewTemplate: document.getElementById("mypreview").innerHTML,
-                init: function () {
-                    $.getJSON(ctx + "/qasandbox/action?command=getFiles", function (data) {
-                        if (data.Data.length != 0) {
-                            $.each(data.Data, function (index, val) {
-                                var mockFile = {name: val.name, size: val.size, url: val.url};
-                                Dropzone.forElement("#my-dropzone").emit("addedfile", mockFile);
-                                Dropzone.forElement("#my-dropzone").emit("complete", mockFile);
-                                Dropzone.forElement("#my-dropzone").files.push(mockFile);
-                            });
-                        }
-                    });
-                    this.on("success", function (file, responseText) {
-                        $("#txtSourceUrl").val(responseText.url)
-                        var mockFile = {name: file.name, size: file.size, url: responseText.url};
-                        Dropzone.forElement("#my-dropzone").files.push(mockFile);
-                    });
-                    this.on("uploadprogress", function (file, progress, bytesSent) {
-                        //console.log("Progress :" + progress);
-                        //$('.dz-upload').text(Math.round(progress) + "%")
-                    });
-                    this.on("removedfile", function (file) {
-                        $.get(ctx + "/qasandbox/action", {command: "deleteFile", filename: file.name});
-                    });
-                }
-            };
-        </script>
-      </c:if>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="columns small-4">
+
+          </div>
+          <div class="columns small-8">
+
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="columns small-4">
+
+          </div>
+          <div class="columns small-8">
+
+          </div>
+        </div>
+      </c:otherwise>
+    </c:choose>
+  </fieldset>
+
+
+  <%-- QA script type & content --%>
+  <c:if test="${QASandboxForm.showScripts == false}">
+    <c:if test="${permissions.qsiPrm}">
+      <fieldset class="fieldset">
+        <legend><spring:message code="label.qasandbox.qaScript"/></legend>
+      <div class="row">
+        <label class="question" for="selScriptType">
+          <spring:message code="label.qasandbox.scriptType"/>
+        </label>
+        <c:choose>
+          <c:when test="${!empty QASandboxForm.scriptId}">
+            <form:select path="scriptType" styleId="selScriptType" disabled="false">
+              <form:options items="${scriptlangs}" itemValue="convType" itemLabel="convType"/>
+            </form:select>
+            <%--<form:hidden path="scriptType" property="scriptType"/>--%>
+          </c:when>
+          <c:otherwise>
+            <form:select path="scriptType" property="scriptType" styleId="selScriptType">
+              <form:options items="${scriptlangs}" itemValue="convType" itemLabel="convType"/>
+            </form:select>
+          </c:otherwise>
+        </c:choose>
+      </div>
+      <div class="row">
+        <label class="question" for="txtScriptContent">
+          <spring:message code="label.qasandbox.scriptContent"/>
+        </label>
+      </div>
+      <div class="row">
+        <form:textarea path="scriptContent" styleId="txtScriptContent" rows="8" cols="100" style="width:99%"/>
+      </div>
+      <div class="row">
+        &nbsp;
+      </div>
+      <div class="row">
+        <button name="QARunNow" class="button">
+          <spring:message code="label.qasandbox.runNow"/>
+        </button>
+        <c:if test="${permissions.wqiPrm}">
+          <button name="addToWorkqueue" class="button">
+            <spring:message code="label.qasandbox.addToWorkqueue"/>
+          </button>
+        </c:if>
+          <%--  Save content to file --%>
+        <c:if test="${permissions.wquPrm}">
+          <c:if test="${QASandboxForm.showScripts == false}">
+            <c:if test="${QASandboxForm.scriptId}">
+              <c:if test="${QASandboxForm.scriptId == 0}">
+                <form:button name="saveFile" class="button">
+                  <spring:message code="label.qasandbox.saveFile"/>
+                </form:button>
+              </c:if>
+            </c:if>
+          </c:if>
+        </c:if>
+      </div>
+
     </c:if>
   </c:if>
-  <form:form action="/executeSandboxAction" method="post" modelAttribute="QASandboxForm">
-    <table class="formtable">
-        <%-- QA script type & content --%>
-        <%--<c:if equal name="QASandboxForm" property="showScripts" value="false">--%>
-      <c:if test="${QASandboxForm.showScripts == false}">
-        <%--<c:if equal value="true" name="qascript.permissions" property="qsiPrm">--%>
-        <c:if test="${qascript.permissions == 'qsiPrm'}">
-          <tr>
-            <td>&nbsp;</td>
-          </tr>
-          <tr class="zebraeven">
-            <td>
-              <label class="question">
-                <spring:message code="label.qasandbox.qaScript"/>
-              </label>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="question" for="selScriptType">
-                <spring:message code="label.qasandbox.scriptType"/>
-              </label>
-                <%--<c:if present name="QASandboxForm" property="scriptId">--%>
-              <c:if test="${QASandboxForm.scriptId}">
-                <form:select path="scriptType1" property="scriptType" styleId="selScriptType" disabled="false">
-                  <form:options collection="qascript.scriptlangs" property="convType"/>
-                </form:select>
-                <form:hidden path="scriptType2" property="scriptType"/>
-              </c:if>
-                <%--<c:if notPresent name="QASandboxForm" property="scriptId">--%>
-              <c:if test="${!QASandboxForm.scriptId}">
-                <form:select path="scriptType3" property="scriptType" styleId="selScriptType">
-                  <form:options collection="qascript.scriptlangs" property="convType"/>
-                </form:select>
-              </c:if>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label class="question" for="txtScriptContent">
-                <spring:message code="label.qasandbox.scriptContent"/>
-              </label>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <form:textarea path="scriptContent" property="scriptContent" styleId="txtScriptContent" rows="20"
-                             cols="100"
-                             style="width:99%"/>
-            </td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td>
-                <%--  Execute script --%>
-              <form:input path="QARunNow" styleClass="button" property="action" title="#{label.qasandbox.runNow}"/>
-                <%--  Add scripts to workqueue  --%>
-                <%--<c:if equal value="true" name="qascript.permissions" property="wqiPrm">--%>
-              <c:if test="${qascript.permissions == 'wqiPrm'}">
-                <form:input path="addToWorkqueue" styleClass="button" property="action"
-                            title="#{label.qasandbox.addToWorkqueue}"/>
-              </c:if>
-                <%--  Save content to file --%>
-                <%--<c:if equal value="true" name="qascript.permissions" property="wquPrm">--%>
-              <c:if test="${qascript.permissions == 'wquPrm'}">
-                <%--<c:if equal name="QASandboxForm" property="showScripts" value="false">--%>
-                <c:if test="${QASandboxForm.showScripts == 'false'}">
-                  <c:if test="${QASandboxForm.scriptId}">
-                    <c:if test="${QASandboxForm.scriptId == 0}">
-                      <form:input path="saveFile" styleClass="button" property="action"
-                                  title="#{label.qasandbox.saveFile}"/>
-                    </c:if>
-                  </c:if>
-                </c:if>
-              </c:if>
-            </td>
-          </tr>
-        </c:if>
-      </c:if>
 
-        <%-- List of available QA scripts --%>
-      <c:if test="${QASandboxForm.showScripts == true}">
-        <tr class="zebraeven">
-          <td>
-            <label class="question">
-              <spring:message code="label.qasandbox.qaScripts"/>
+  <%-- List of available QA scripts --%>
+  <c:if test="${QASandboxForm.showScripts == true}">
+    <div class="row">
+      <label class="question">
+        <spring:message code="label.qasandbox.qaScripts"/>
+      </label>
+    </div>
+
+    <div class="row">
+      <div class="columns small-4">
+
+      </div>
+      <div class="columns small-8">
+
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-4">
+
+      </div>
+      <div class="columns small-8">
+
+      </div>
+    </div>
+
+    <c:if test="${QASandboxForm.scriptsPresent == false}">
+      <div class="row">
+        <spring:message code="label.qasandbox.noScripts"/>
+      </div>
+    </c:if>
+
+    <c:set var="scripts" value="${schema.qascripts}"/>
+    <c:if test="${!empty schema.qascripts}">
+      <c:if test="${countscripts == 0}">
+        <c:forEach items="${schema.qascripts}" var="qascript">
+          <c:set var="listScriptId" value="${qascript.scriptId}"/>
+          <div class="row">
+            <form:radiobutton path="scriptId" property="scriptId" value="${listScriptId}"
+                              styleId="rad_${listScriptId}"/>
+            <label class="question" for="rad_${listScriptId}">
+                ${qascripts.shortName}
             </label>
-          </td>
-        </tr>
-        <c:if test="${QASandboxForm.scriptsPresent == false}">
-          <tr>
-            <td><spring:message code="label.qasandbox.noScripts"/></td>
-          </tr>
-        </c:if>
-        <c:if test="${schema.qascripts}">
-          <%--<bean:size id="countscripts" name="schema" property="qascripts"/>
-          <bean:define id="qascripts" name="schema" property="qascripts"/>--%>
-
-          <c:if test="${countscripts == 0}">
-            <%--<c:if iterate id="qascript" name="schema" property="qascripts" type="QAScript">--%>
-            <c:forEach items="${schema.qascripts}" var="qascript">
-              <%--<bean:define id="listScriptId" name="qascript" property="scriptId" type="String"/>--%>
-              <tr>
-                <td>
-                  <form:radiobutton path="scriptId" property="scriptId" value="${listScriptId}"
-                                    styleId="rad_${listScriptId}"/>
-                  <label class="question" for="rad_${listScriptId}">
-                      ${qascripts.shortName}
-                  </label>
-                  <span> -
+            <span> -
                       <a href="/scripts/${scriptId}" title="label.qascript.view">
                           ${qascript.fileName}
                       </a>
@@ -415,46 +318,124 @@
                         </c:if>
                       </c:if>
                   </span>
-                </td>
-              </tr>
-            </c:forEach>
-          </c:if>
-        </c:if>
-        <c:if test="${schema.doValidation == true}">
-          <tr>
-            <td>
-              <form:radiobutton path="scriptId" property="scriptId" value="-1" styleId="radioValidate"/>
-              <label class="question" for="radioValidate"><spring:message
-                      code="label.qasandbox.schemaValidation"/></label>
-            </td>
-          </tr>
-        </c:if>
-        <c:if test="${qascript.permissions == 'qsiPrm'}">
-          <tr>
-            <td>
-                <%--do/editQAScriptInSandbox?scriptId=0  titleKey="label.qasandbox.editScriptTitle"--%>
-              <a href="/qaSandbox/editQAScript/0">
-                <spring:message code="label.qasandbox.writeScript"/>
-              </a>
-            </td>
-          </tr>
-        </c:if>
-        <tr>
-          <td>&nbsp;</td>
-        </tr>
-
-        <tr>
-          <td>
-              <%--  Execute script --%>
-            <form:input path="runNow" styleClass="button" property="action" title="#{label.qasandbox.runNow}"/>
-              <%--  Add scripts to workqueue  --%>
-            <c:if test="${qascript.permissions == 'wqiPrm'}">
-              <form:input path="addToWorkqueuee" styleClass="button" property="action"
-                          title="#{label.qasandbox.addToWorkqueue}"/>
-            </c:if>
-          </td>
-        </tr>
+          </div>
+        </c:forEach>
       </c:if>
-    </table>
-  </form:form>
-</div>
+    </c:if>
+    <c:if test="${schema.doValidation == true}">
+      <div class="row">
+        <form:radiobutton path="scriptId" property="scriptId" value="-1" styleId="radioValidate"/>
+        <label class="question" for="radioValidate"><spring:message
+                code="label.qasandbox.schemaValidation"/></label>
+      </div>
+    </c:if>
+    <c:if test="${permissions.qsiPrm}">
+      <div class="row">
+          <%--do/editQAScriptInSandbox?scriptId=0  titleKey="label.qasandbox.editScriptTitle"--%>
+        <a href="/qaSandbox/editQAScript/0">
+          <spring:message code="label.qasandbox.writeScript"/>
+        </a>
+      </div>
+    </c:if>
+    <div class="row">
+      &nbsp;
+    </div>
+    <div class="row">
+      <form:button name="runNow" class="button">
+        <spring:message code="label.qasandbox.runNow" />
+      </form:button>
+      <c:if test="${permissions.wqiPrm}">
+        <form:button name="addToWorkqueuee" class="button">
+          <spring:message code="label.qasandbox.addToWorkqueue" />
+        </form:button>
+      </c:if>
+    </div>
+  </c:if>
+
+  </div>
+  </fieldset>
+</form:form>
+
+<c:if test="${permissions.qsuPrm}">
+  <c:if test="${not(fn:contains(header['User-Agent'],'MSIE 9.0'))}">
+    <button style="float:right;" id="clickable">Upload file</button>
+    <form action="/qasandbox/upload" id="my-dropzone" class="dropzone">
+      <ul id="dropzone-previews" class="dropzone-previews"></ul>
+    </form>
+    <script type="text/javascript" src="<c:url value="/js/dropzone.min.js"/>"></script>
+
+    <script id="mypreview" type="text/template">
+      <li class="dz-preview dz-file-preview">
+        <div class="dz-details">
+          <div class="dz-filename">
+            <span data-dz-name></span>
+            <span>(<span data-dz-size></span>)</span>
+            <div style="float:right">
+              <button class="dz-remove-button" style="margin-left:5px" type="button" data-dz-remove>Remove</button>
+              <button class="dz-select-button" style="margin-left:5px" type="button">Select</button>
+            </div>
+          </div>
+          <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+        </div>
+        <div class="dz-success-mark"><span>✔</span></div>
+        <div class="dz-error-mark"><span>✘</span></div>
+        <div class="dz-error-message"><span data-dz-errormessage></span></div>
+      </li>
+    </script>
+
+    <script type="text/javascript">
+      $.ajaxSetup({cache: false});
+      $(document).on('click', '.dz-filename span', function (event) {
+        for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
+          if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).text()) {
+            $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
+          }
+        }
+      });
+      $(document).on('click', '.dz-select-button', function (event) {
+        for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
+          if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).parent().parent().children(':first').text()) {
+            $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
+          }
+        }
+      });
+      var ctx = '${pageContext.request.contextPath}';
+      Dropzone.options.myDropzone = {
+        dictDefaultMessage: "",
+        url: ctx + "/qasandbox/upload",
+        clickable: "#clickable",
+        acceptedFiles: ".xml, .gml",
+        maxFiles: "5",
+        maxFilesize: "300",
+        createImageThumbnails: "false",
+        addRemoveLinks: "false",
+        previewsContainer: "#dropzone-previews",
+        previewTemplate: document.getElementById("mypreview").innerHTML,
+        init: function () {
+          $.getJSON(ctx + "/qasandbox/action?command=getFiles", function (data) {
+            if (data.Data.length != 0) {
+              $.each(data.Data, function (index, val) {
+                var mockFile = {name: val.name, size: val.size, url: val.url};
+                Dropzone.forElement("#my-dropzone").emit("addedfile", mockFile);
+                Dropzone.forElement("#my-dropzone").emit("complete", mockFile);
+                Dropzone.forElement("#my-dropzone").files.push(mockFile);
+              });
+            }
+          });
+          this.on("success", function (file, responseText) {
+            $("#txtSourceUrl").val(responseText.url)
+            var mockFile = {name: file.name, size: file.size, url: responseText.url};
+            Dropzone.forElement("#my-dropzone").files.push(mockFile);
+          });
+          this.on("uploadprogress", function (file, progress, bytesSent) {
+            //console.log("Progress :" + progress);
+            //$('.dz-upload').text(Math.round(progress) + "%")
+          });
+          this.on("removedfile", function (file) {
+            $.get(ctx + "/qasandbox/action", {command: "deleteFile", filename: file.name});
+          });
+        }
+      };
+    </script>
+  </c:if>
+</c:if>
