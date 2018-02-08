@@ -11,7 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <env>local</env>
+        <env>default</env>
         <java_version>1.8</java_version>
         <checkstyle.config.location>${basedir}/docs/checkstyle.xml</checkstyle.config.location>
         <spring.version>4.3.11.RELEASE</spring.version>
