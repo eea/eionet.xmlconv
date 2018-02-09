@@ -379,7 +379,17 @@
             ALTER TABLE T_XQJOBS MODIFY COLUMN URL varchar(2048) NULL;
         </sql>
     </changeSet>
-    <changeSet author="vskiadas" id="rev-35">
+    <changeSet author="katsanas" id="rev-35">
+        <comment>
+            Added RETRY_COUNTER to Jobs table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="RETRY_COUNTER" defaultValueNumeric="0" type="INT UNSIGNED">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="vskiadas" id="rev-36">
         <comment> Table for Storing the Users of the XMLCONV-rest api and their authorities
         </comment>
         <createTable tableName="T_API_USER">
@@ -392,15 +402,6 @@
             <column name="AUTHORITIES" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="katsanas" id="rev-36">
-        <comment>
-            Added RETRY_COUNTER to Jobs table
-        </comment>
-        <addColumn tableName="T_XQJOBS">
-            <column name="RETRY_COUNTER" defaultValueNumeric="0" type="INT UNSIGNED">
-                <constraints nullable="true"/>
-            </column>
-        </addColumn>
-    </changeSet>
+
 
 </databaseChangeLog>

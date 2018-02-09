@@ -61,6 +61,8 @@
         </property>
     </bean>
 
+    <bean id="messageService" class="eionet.gdem.services.MessageService"/>
+
     <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/">
         <mvc:resource-chain resource-cache="false" />
     </mvc:resources>
