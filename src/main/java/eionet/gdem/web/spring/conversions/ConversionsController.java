@@ -168,6 +168,8 @@ public class ConversionsController {
             errors.add(messageService.getMessage(e.getErrorCode()));
             return "redirect:/conversions";
         }
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, success);
+        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         return "redirect:/conversions";
     }
 
@@ -188,6 +190,7 @@ public class ConversionsController {
             if (stylesheet == null) {
                 LOGGER.error("not found");
                 errors.add(messageService.getMessage("not found"));
+                model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
                 return "redirect:/conversions";
             }
 
@@ -241,8 +244,11 @@ public class ConversionsController {
         } catch (DCMException e) {
             LOGGER.error("Edit stylesheet error", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
+            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
             return "redirect:/conversions/{id}";
         }
+        model.addAttribute(SpringMessages.SUCCESS_MESSAGES, success);
+
 //        //TODO why is it needed to update session attribute in each request
 //        httpServletRequest.getSession().setAttribute("stylesheet.outputtype", ctHolder);
         return "/conversions/edit";
@@ -264,17 +270,14 @@ public class ConversionsController {
             sm.deleteSchemaStylesheets(user_name, schemaId);
             StylesheetListLoader.reloadStylesheetList(httpServletRequest);
             StylesheetListLoader.reloadConversionSchemasList(httpServletRequest);
-
-
             success.add(messageService.getMessage("label.stylesheets.deleted"));
         } catch (DCMException e) {
             LOGGER.error("Error deleting schema", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
         }
-        // saveErrors(httpServletRequest, errors);
 
-        model.addAttribute("errors", errors);
-        model.addAttribute("messages", success);
+        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        model.addAttribute(SpringMessages.SUCCESS_MESSAGES, success);
         return "/conversions/list";
     }
 
@@ -339,7 +342,7 @@ public class ConversionsController {
         String schemaId = form.getSchemaId();
         String user = (String) httpServletRequest.getSession().getAttribute("user");
         String schema = (form.getNewSchemas() == null || form.getNewSchemas().size() == 0) ? null : form.getNewSchemas().get(0);
-        httpServletRequest.setAttribute("schema", schema);
+        redirectAttributes.addFlashAttribute("schema", schema);
 
         // TODO FIX THIS:
         // || xslFile.getFileSize() == 0) {
