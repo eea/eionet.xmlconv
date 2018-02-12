@@ -1,8 +1,11 @@
 package eionet.gdem.web.spring.conversions;
 
+import eionet.gdem.cache.CacheManagerUtil;
+import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.WebContextConfig;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -10,7 +13,9 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -32,7 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(loader = AnnotationConfigWebContextLoader.class, classes = {WebContextConfig.class})
+//loader = AnnotationConfigWebContextLoader.class,
+@ContextConfiguration(classes = {WebContextConfig.class, ApplicationTestContext.class})
 @Ignore
 public class ConversionsControllerTest {
 

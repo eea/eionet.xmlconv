@@ -263,7 +263,7 @@ public class QAScriptsController {
         return "redirect:/scripts/{scriptId}";
     }
 
-    @PostMapping(params = {"/add"})
+    @PostMapping(params = {"add"})
     public String addSubmit(@ModelAttribute("form") QAScriptForm form, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
 
         SpringMessages errors = new SpringMessages();
@@ -360,9 +360,9 @@ public class QAScriptsController {
         }
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         if (schemaId != null) {
-            return "redirect:/old/schemas/" + schemaId + "/scripts";
+            return "redirect:/schemas/" + schemaId + "/scripts";
         }
-        return "redirect:/old/scripts";
+        return "redirect:/scripts";
     }
 
     @PostMapping(params = {"delete"})

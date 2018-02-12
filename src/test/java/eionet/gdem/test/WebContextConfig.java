@@ -9,9 +9,11 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  * Default location of @WebAppConfiguration is /src/main/webapp
  */
 //@Configuration
-@ImportResource({"classpath:spring-app-context.xml",
-        "classpath:test-datasource-context.xml", "classpath:test-runtime.xml", "classpath:test-spring-jpa.xml",
-        "/WEB-INF/servlet-context.xml", "/WEB-INF/servlet-restapi.xml"})
+@ImportResource({"/WEB-INF/servlet-context.xml"})
+/*,
+        "classpath:spring-app-context.xml, classpath:test-datasource-context.xml", "classpath:test-runtime.xml", "classpath:test-spring-jpa.xml",
+        "/WEB-INF/servlet-context.xml", "/WEB-INF/servlet-restapi.xml"
+        */
 //"/WEB-INF/servlet-thymeleaf.xml"
 public class WebContextConfig {
 }

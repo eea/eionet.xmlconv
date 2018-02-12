@@ -9,7 +9,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
 	
-    <mvc:annotation-driven />
+    <mvc:annotation-driven validator="globalValidator"/>
     <mvc:default-servlet-handler />
 
     <context:component-scan base-package="eionet.gdem.web.spring">
@@ -19,6 +19,10 @@
         <property name="prefix" value="/WEB-INF/view/" />
         <property name="suffix" value=".jsp" />
     </bean>-->
+
+    <bean id="globalValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="validationMessageSource" ref="messageSource" />
+    </bean>
 
     <bean id="jspViewResolver" class="org.springframework.web.servlet.view.tiles3.TilesViewResolver">
 <!--        <property name="prefix" value="/WEB-INF/view/" />

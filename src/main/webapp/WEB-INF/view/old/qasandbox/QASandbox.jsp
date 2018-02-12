@@ -78,7 +78,7 @@
 <ed:breadcrumbs-push label="QA sandbox" level="1"/>
 <%--<h1><spring:message code="label.qasandbox.title"/></h1>--%>
 
-<form:form servletRelativeAction="/qaSandbox" method="post" modelAttribute="QASandboxForm">
+<form:form servletRelativeAction="/qaSandbox" method="post" modelAttribute="form">
   <fieldset class="fieldset">
     <legend><spring:message code="label.qasandbox.title"/></legend>
 
@@ -96,7 +96,7 @@
       </div>
     </div>
     <div class="row">
-      <button type="submit" name="searchXML" class="button">
+      <button type="submit" name="searchCR" class="button">
         <spring:message code="label.qasandbox.searchXML"/>
       </button>
       <button type="submit" name="searchScripts" class="button">
@@ -210,7 +210,7 @@
           <spring:message code="label.qasandbox.scriptType"/>
         </label>
         <c:choose>
-          <c:when test="${!empty QASandboxForm.scriptId}">
+          <c:when test="${!empty form.scriptId}">
             <form:select path="scriptType" styleId="selScriptType" disabled="false">
               <form:options items="${scriptlangs}" itemValue="convType" itemLabel="convType"/>
             </form:select>
@@ -245,9 +245,9 @@
         </c:if>
           <%--  Save content to file --%>
         <c:if test="${permissions.wquPrm}">
-          <c:if test="${QASandboxForm.showScripts == false}">
-            <c:if test="${QASandboxForm.scriptId}">
-              <c:if test="${QASandboxForm.scriptId == 0}">
+          <c:if test="${form.showScripts == false}">
+            <c:if test="${form.scriptId}">
+              <c:if test="${form.scriptId == 0}">
                 <form:button name="saveFile" class="button">
                   <spring:message code="label.qasandbox.saveFile"/>
                 </form:button>
@@ -261,7 +261,7 @@
   </c:if>
 
   <%-- List of available QA scripts --%>
-  <c:if test="${QASandboxForm.showScripts == true}">
+  <c:if test="${form.showScripts == true}">
     <div class="row">
       <label class="question">
         <spring:message code="label.qasandbox.qaScripts"/>
@@ -285,7 +285,7 @@
       </div>
     </div>
 
-    <c:if test="${QASandboxForm.scriptsPresent == false}">
+    <c:if test="${form.scriptsPresent == false}">
       <div class="row">
         <spring:message code="label.qasandbox.noScripts"/>
       </div>

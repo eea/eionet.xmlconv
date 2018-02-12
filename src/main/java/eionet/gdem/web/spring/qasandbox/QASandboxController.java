@@ -28,12 +28,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -99,7 +101,7 @@ public class QASandboxController {
             LOGGER.error("QA Sandbox form error", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
         }
-        model.addAttribute("QASandboxForm", cForm);
+        model.addAttribute("form", cForm);
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         return "/qaSandbox/view";
     }
@@ -131,7 +133,7 @@ public class QASandboxController {
     }*/
 
     @PostMapping(params = {"searchScripts"})
-    public String find(@ModelAttribute QASandboxForm cForm, RedirectAttributes redirectAttributes) {
+    public String find(@ModelAttribute("form") QASandboxForm cForm, RedirectAttributes redirectAttributes) {
 
         SpringMessages errors = new SpringMessages();
 
@@ -180,7 +182,7 @@ public class QASandboxController {
     }
 
     @PostMapping("/addToWorkqueue")
-    public String addToWorkQueue(@ModelAttribute QASandboxForm cForm, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String addToWorkQueue(@ModelAttribute("form") QASandboxForm cForm, RedirectAttributes redirectAttributes, HttpSession session) {
 
         SpringMessages messages = new SpringMessages();
         SpringMessages errors = new SpringMessages();
@@ -360,7 +362,7 @@ public class QASandboxController {
 
     }
 
-    @PostMapping(params = {"/runScript"})
+    @PostMapping(params = {"runScript"})
     public String runQAScript(@ModelAttribute("form") QASandboxForm cForm, RedirectAttributes redirectAttributes, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
 
         SpringMessages errors = new SpringMessages();
@@ -542,8 +544,8 @@ public class QASandboxController {
         return "redirect:/qaSandbox";
     }
 
-    @PostMapping(params = {"/searchCR"})
-    public String searchCR(@ModelAttribute("form") QASandboxForm cForm, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    @PostMapping(params = {"searchCR"})
+    public String searchCR(@ModelAttribute("form") @Valid QASandboxForm cForm, HttpServletRequest request, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         SpringMessages errors = new SpringMessages();
         String schemaUrl = null;
