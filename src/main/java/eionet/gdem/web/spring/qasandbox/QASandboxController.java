@@ -582,8 +582,7 @@ public class QASandboxController {
             redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
             return "redirect:/qaSandbox";
         }
-
-        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        redirectAttributes.addFlashAttribute("form", cForm);
         return "redirect:/qaSandbox";
     }
 

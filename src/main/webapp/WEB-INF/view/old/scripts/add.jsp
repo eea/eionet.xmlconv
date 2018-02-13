@@ -3,6 +3,7 @@
 <ed:breadcrumbs-push label="Add QA script" level="3"/>
 
 <form:form servletRelativeAction="/scripts" method="post" enctype="multipart/form-data" modelAttribute="form">
+  <form:errors path="*" cssClass="error-msg" element="div"/>
   <fieldset class="fieldset">
     <legend><spring:message code="label.qascript.add"/></legend>
     <div class="row">
