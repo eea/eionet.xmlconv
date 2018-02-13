@@ -1,9 +1,5 @@
-/*
- * Created on 20.11.2007
- */
 package eionet.gdem.web.spring.xmlfile;
 
-import eionet.gdem.web.spring.FileUploadWrapper;
 import org.springframework.web.multipart.MultipartFile;
 
 /**

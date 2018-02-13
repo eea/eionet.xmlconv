@@ -174,12 +174,16 @@ public class UplXmlFileManager {
                             throw new DCMException(BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS);
                         }
                     }
+                    // todo remove previous file
+                    //
                     // write XML file into filesystem
-                    storeXmlFile(file, curFileName);
+                    storeXmlFile(file, fileName);
+                    uplXmlFileDao.updateUplXmlFile(xmlFileId, title, fileName);
                 }
+            } else {
+                // update metadata in DB
+                uplXmlFileDao.updateUplXmlFile(xmlFileId, title, curFileName);
             }
-            // update metadata in DB
-            uplXmlFileDao.updateUplXmlFile(xmlFileId, title, curFileName);
 
         } catch (Exception e) {
             LOGGER.error("Error updating uploaded XML file", e);

@@ -12,11 +12,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 /**
  *
@@ -35,8 +37,9 @@ public class XmlFilesController {
     }
 
     @GetMapping
-    public String list(Model model, HttpSession session) {
+    public String list(@ModelAttribute("form") SingleForm singleForm, Model model, HttpSession session) {
         SpringMessages errors = new SpringMessages();
+
         UplXmlFileHolder holder = null;
 
         String user = (String) session.getAttribute("user");
@@ -45,25 +48,25 @@ public class XmlFilesController {
             uplXmlFileManager = new UplXmlFileManager();
             holder = uplXmlFileManager.getUplXmlFiles(user);
         } catch (DCMException e) {
-            e.printStackTrace();
             LOGGER.error("Uploaded XML file form error", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
+            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+            return "/xmlfiles/list";
         }
-        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         model.addAttribute("xmlfiles", holder);
-        model.addAttribute("form", new SingleForm());
+        model.addAttribute("form", singleForm);
         return "/xmlfiles/list";
     }
 
     @GetMapping("/add")
-    public String add(Model model) {
-        XmlFileForm form = new XmlFileForm();
-        model.addAttribute("form", form);
+    public String add(@ModelAttribute("form") XmlFileForm xmlFileForm, Model model) {
+        model.addAttribute("form", xmlFileForm);
         return "/xmlfiles/add";
     }
 
     @PostMapping(params = {"add"})
-    public String addSubmit(@ModelAttribute XmlFileForm updatedForm, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String addSubmit(@ModelAttribute("form") @Valid XmlFileForm updatedForm, HttpSession session,
+                            Model model, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         SpringMessages messages = new SpringMessages();
         SpringMessages errors = new SpringMessages();
 
@@ -71,23 +74,10 @@ public class XmlFilesController {
         String title = updatedForm.getTitle();
 
         String user = (String) session.getAttribute("user");
-
-        /*if (isCancelled(httpServletRequest)) {
-            return actionMapping.findForward("success");
-        }*/
-
-        if (xmlfile == null || xmlfile.getSize() == 0) {
-            errors.add(messageService.getMessage("label.uplXmlFile.validation"));
-            redirectAttributes.addFlashAttribute("dcm.errors", errors);
-            return "redirect:/xmlFiles/add";
+        new XmlFileValidator().validate(updatedForm, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/xmlfiles/add";
         }
-
-        /*
-         * IXmlCtx x = new XmlContext(); try { x.setWellFormednessChecking(); x.checkFromInputStream(new
-         * ByteArrayInputStream(xmlfile.getFileData())); } catch (Exception e) { errors.add(ActionMessages.GLOBAL_MESSAGE, new
-         * ActionMessage("label.uplXmlFile.error.notvalid")); httpServletRequest.getSession().setAttribute("dcm.errors", errors);
-         * return actionMapping.findForward("fail"); }
-         */
 
         try {
             UplXmlFileManager fm = new UplXmlFileManager();
@@ -96,15 +86,15 @@ public class XmlFilesController {
         } catch (DCMException e) {
             LOGGER.error("Error adding upload XML file", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
+            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+            return "/xmlfiles/add";
         }
-        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
-
         return "redirect:/xmlFiles";
     }
 
     @GetMapping("/{fileId}/edit")
-    public String edit(@PathVariable String fileId, Model model) {
+    public String edit(@ModelAttribute("form") XmlFileForm xmlFileForm, @PathVariable String fileId, Model model) {
         SpringMessages errors = new SpringMessages();
 
         UplXmlFileManager fm = new UplXmlFileManager();
@@ -116,14 +106,18 @@ public class XmlFilesController {
             errors.add(messageService.getMessage(e.getErrorCode()));
             return "redirect:/xmlFiles";
         }
-        // TODO fix this
-        XmlFileForm form = new XmlFileForm(file.getFileName(), "", file.getId(), file.getTitle(), file.getLastModified(), null);
-        model.addAttribute("form", form);
+        xmlFileForm.setTitle(file.getTitle());
+        xmlFileForm.setXmlFileName(file.getFileName());
+        xmlFileForm.setLastModified(file.getLastModified());
+        xmlFileForm.setXmlfileId(file.getId());
+        xmlFileForm.setXmlFilePath("");
+        model.addAttribute("form", xmlFileForm);
         return "/xmlfiles/edit";
     }
 
     @PostMapping(params = {"update"})
-    public String editSubmit(@ModelAttribute("form") XmlFileForm updatedForm, @RequestParam(required = false) MultipartFile xmlFile, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String editSubmit(@ModelAttribute("form") XmlFileForm updatedForm, @RequestParam(required = false) MultipartFile xmlFile,
+                             Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         SpringMessages messages = new SpringMessages();
         SpringMessages errors = new SpringMessages();
 
@@ -141,15 +135,16 @@ public class XmlFilesController {
         } catch (DCMException e) {
             LOGGER.error("Error updating XML file", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
+            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+            return "/xmlfiles/edit";
         }
-        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
-
         return "redirect:/xmlFiles";
     }
 
     @PostMapping(params = {"delete"})
-    public String deleteSumbit(@ModelAttribute("form") SingleForm singleForm, Model model, HttpSession httpSession, RedirectAttributes redirectAttributes) {
+    public String deleteSumbit(@ModelAttribute("form") SingleForm singleForm, Model model, HttpSession httpSession,
+                               BindingResult result, RedirectAttributes redirectAttributes) {
 
         SpringMessages messages = new SpringMessages();
         SpringMessages errors = new SpringMessages();
@@ -157,8 +152,8 @@ public class XmlFilesController {
         String xmlfileId = singleForm.getId();
         if (StringUtils.isEmpty(xmlfileId)) {
             errors.add(messageService.getMessage("label.uplXmlFile.error.notSelected"));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/xmlFiles";
+            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+            return "/xmlfiles/list";
         }
         String user_name = (String) httpSession.getAttribute("user");
 
@@ -169,10 +164,10 @@ public class XmlFilesController {
         } catch (DCMException e) {
             LOGGER.error("Error deleting XML file", e);
             errors.add(messageService.getMessage(e.getErrorCode()));
+            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+            return "/xmlfiles/list";
         }
-        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
-
         return "redirect:/xmlFiles";
     }
 }
