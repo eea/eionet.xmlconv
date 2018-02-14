@@ -77,6 +77,7 @@
         <mvc:resource-chain resource-cache="false" />
     </mvc:resources>
     <mvc:resources mapping="/css/**" location="resources/css/" />
+    <mvc:resources mapping="/fonts/**" location="resources/fonts/" />
     <mvc:resources mapping="/js/**" location="resources/js/" />
     <mvc:resources mapping="/images/**" location="resources/images/" />
 

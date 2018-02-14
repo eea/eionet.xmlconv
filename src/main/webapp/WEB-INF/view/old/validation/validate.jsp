@@ -7,12 +7,12 @@
   <c:if test="${requestScope['validationErrors'] != null}">
     <c:if test="${warningMessage}">
       <div class="error-msg">
-          ${warningMessage}
+        <strong>${warningMessage}</strong>
       </div>
     </c:if>
     <c:choose>
       <c:when test="${fn:length(validationErrors) eq 0 and !empty originalSchema}">
-        <div class="ok-msg">The file is valid XML
+        <div class="system-msg"><strong>The file is valid XML</strong>
           <c:choose>
             <c:when test="${!empty validatedSchema}">
               <p>
@@ -29,7 +29,7 @@
         </div>
       </c:when>
       <c:otherwise>
-        <div class="error-msg">The file is not valid XML
+        <div class="error-msg"><strong>The file is not valid XML</strong>
           <c:choose>
             <c:when test="${!empty originalSchema}">
               <c:choose>
@@ -46,7 +46,7 @@
               </c:choose>
             </c:when>
             <c:otherwise>
-              <div class="error-msg">Could not validate XML.
+              <div class="error-msg"><strong>Could not validate XML.</strong>
                 <p><spring:message code="label.conversion.schema.not.found"/></p>
               </div>
             </c:otherwise>

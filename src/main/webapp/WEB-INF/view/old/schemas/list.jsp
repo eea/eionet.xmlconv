@@ -57,10 +57,7 @@
             </td>
             <td>
               <c:if test="${schema.countStylesheets > 0}">
-                <c:url var="stylesheetsUrl" value="schemaStylesheets">
-                  <c:param name="schema">${schema.schema}</c:param>
-                </c:url>
-                <a href="${stylesheetsUrl}"
+                <a href="/schemas/${schema.id}/conversions"
                    title="View schema stylesheets (${schema.countStylesheets})"
                    class="link-xsl"></a>
               </c:if>

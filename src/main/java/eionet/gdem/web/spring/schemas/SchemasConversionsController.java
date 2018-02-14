@@ -12,9 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 
 /**
  *
@@ -58,14 +60,13 @@ public class SchemasConversionsController {
     }
 
     @GetMapping("/{schemaId}/conversions/add")
-    public String conversionsAdd(@PathVariable String schemaId, Model model) throws DCMException {
-        StylesheetForm form = new StylesheetForm();
+    public String conversionsAdd(@ModelAttribute("form") StylesheetForm stylesheetForm, @PathVariable String schemaId, Model model) throws DCMException {
         SchemaManager sm = new SchemaManager();
-        String schemaUrl = sm.getSchema(schemaId).getSchema();
-        form.setSchema(schemaUrl);
+        String[] schemas = {sm.getSchema(schemaId).getSchema()};
+        stylesheetForm.setNewSchemas(schemas);
         StylesheetManager stylesheetManager = new StylesheetManager();
         model.addAttribute("outputtypes", stylesheetManager.getConvTypes());
-        model.addAttribute("form", form);
+        model.addAttribute("form", stylesheetForm);
         model.addAttribute("schemaId", schemaId);
         return "/conversions/add";
     }

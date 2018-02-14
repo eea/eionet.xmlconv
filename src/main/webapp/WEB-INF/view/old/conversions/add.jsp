@@ -4,6 +4,7 @@
 <%--<h1><spring:message code="label.stylesheet.add"/></h1>--%>
 
 <form:form servletRelativeAction="/conversions" method="post" enctype="multipart/form-data" modelAttribute="form">
+  <form:errors path="*" cssClass="error-msg" element="div" />
   <fieldset class="fieldset">
     <legend><spring:message code="label.stylesheet.add"/></legend>
     <div class="row">
@@ -14,7 +15,8 @@
       </div>
       <div class="columns small-8">
         <%--value="${schema}" class="newSchema" --%>
-        <form:input path="newSchemas[0]" type="url" id="txtSchemaUrl"/>
+        <%--<form:input path="newSchemas[0]" type="url" id="txtSchemaUrl" />--%>
+          <form:input path="newSchemas[0]" type="url" id="txtSchemaUrl" />
       </div>
     </div>
 
@@ -85,12 +87,9 @@
       <label class=""></label>
     </div>
     <div class="columns small-8">
-      <button type="submit" class="button" name="add" value="save">
+      <button type="submit" class="button" name="add">
         <spring:message code="label.xsl.save"/>
       </button>
-        <%--<html:cancel styleClass="button">
-          <spring:message code="label.stylesheet.cancel"/>
-        </html:cancel>--%>
     </div>
   </div>
   </fieldset>

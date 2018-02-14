@@ -4,6 +4,7 @@
 <h1><spring:message code="label.stylesheet.edit"/></h1>
 
 <form:form servletRelativeAction="/conversions" method="post" enctype="multipart/form-data" modelAttribute="form">
+  <form:errors path="*" cssClass="error-msg" element="div" />
   <fieldset class="fieldset">
     <legend><spring:message code="label.stylesheet.edit"/></legend>
     <div class="row">
@@ -14,19 +15,19 @@
       </div>
       <div class="columns small-8">
         <c:if test="${!empty form.schemas}">
-          <c:forEach varStatus="index" items="${form.schemas}" var="relatedSchema">
+          <c:forEach varStatus="index" items="${form.schemas}" var="schema">
             <div class="schemaContainer">
-              <a href="/schemas/${relatedSchema.id}" title="view XML Schema properties">
-                  ${relatedSchema.schema}
+              <a href="/schemas/${schema.id}" title="View XML Schema properties">
+                  ${schema.schema}
               </a>
-              <a href='#' class="delSchemaLink" title="Delete XML Schema relation">
+              <%--<a href='#' class="delSchemaLink" title="Delete XML Schema relation">
                 <img style='border:0' src="/images/button_remove.gif" alt='Remove'/>
               </a><br/>
-              <input type="hidden" name="schemaIds" value="${relatedSchema.id}">
+              <input type="hidden" name="schemaIds" value="${relatedSchema.id}">--%>
             </div>
           </c:forEach>
         </c:if>
-        <div id="newSchemasContainer">
+        <%--<div id="newSchemasContainer">
           <c:forEach items="${form.newSchemas}" var="newSchema">
             <div class="newSchemaContainer">
               <input type="url" name="newSchemas" style="width:400px;" class="newSchema" value="${newSchema}">
@@ -35,7 +36,7 @@
               </a><br/>
             </div>
           </c:forEach>
-        </div>
+        </div>--%>
         <br/>
           <%--&lt;%&ndash; TODO CHECK FOR REMOVAL &ndash;%&gt;--%>
           <%--<jsp:include page="ManageStylesheetSchemas.jsp"/>--%>
@@ -142,6 +143,9 @@
         <form:hidden path="stylesheetId"/>
       </div>
     </div>
+  </fieldset>
+  <fieldset class="fieldset">
+    <legend>XSL file properties</legend>
     <div class="row">
       <div class="columns small-4">
         <label class="question" for="txtXsl">
@@ -169,22 +173,18 @@
         </div>
       </div>
     </div>
-    <c:if test="${form.xslFileName}">
+    <c:if test="${!empty form.xslFileName}">
       <div class="row">
-        <form:textarea path="xslContent" style="width: 98%;" rows="20" cols="55" id="txtXsl"/>
-      </div>
-      <div class="row">
-        <div class="columns small-4">
-          &#160;
-        </div>
-        <div class="columns small-8">
-          <button type="submit" name="save">
-            <spring:message code="label.stylesheet.save"/>
-          </button>
-          <form:hidden path="xslFileName"/>
-          <form:hidden path="checksum" name="form"/>
-        </div>
+        <%--style="width: 98%;" rows="20" cols="55" id="txtXsl"--%>
+        <form:textarea rows="10" path="xslContent" />
       </div>
     </c:if>
   </fieldset>
+  <div class="row">
+    <button type="submit" class="button" name="save">
+      <spring:message code="label.stylesheet.save"/>
+    </button>
+    <form:hidden path="xslFileName"/>
+    <form:hidden path="checksum" name="form"/>
+  </div>
 </form:form>

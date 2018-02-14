@@ -21,12 +21,15 @@
   <sec:csrfMetaTags/>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <!--  EEA central styles -->
-  <link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/print.css" media="print"/>
-  <link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/handheld.css" media="handheld"/>
-  <link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen"/>
-  <%--<link rel="stylesheet" type="text/css" href="http://dd.eionet.europa.eu/css/eionet2007.css" media="screen" />--%>
-  <link rel="stylesheet" type="text/css" href="/css/xmlconv.css" media="screen" />
+  <%--<link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/print.css" media="print"/>--%>
+  <%--<link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/handheld.css" media="handheld"/>--%>
+  <%--<link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen"/>--%>
+
+  <link rel="stylesheet" type="text/css" href="/css/print.css" media="print"/>
+  <link rel="stylesheet" type="text/css" href="/css/handheld.css" media="handheld"/>
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" media="screen"/>
   <!--  local style -->
+  <link rel="stylesheet" type="text/css" href="/css/xmlconv.css" media="screen" />
   <link rel="stylesheet" type="text/css" href="/webjars/foundation/6.4.2/dist/css/foundation.css" media="screen"/>
   <link rel="stylesheet" type="text/css" href="/css/main.css" media="screen"/>
   <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>

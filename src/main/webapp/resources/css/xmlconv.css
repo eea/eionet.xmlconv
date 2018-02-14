@@ -4,7 +4,7 @@
     src: url('../fonts/eea.eot') format('embedded-opentype'),
     url('../fonts/eea.woff2') format('woff2'),
     url('../fonts/eea.ttf') format('truetype'),
-    url('../fonts/eea.wof') format('woff'),
+    url('../fonts/eea.woff') format('woff'),
     url('../fonts/eea.svg') format('svg');
     font-weight: normal;
     font-style: normal;
@@ -1026,7 +1026,7 @@ ul.messages li {
 }
 
 .error-msg {
-    background: #FBD7D7;
+    /*background: #FBD7D7;*/
     color: #893030;
     border-color: #893030;
 }
@@ -1041,7 +1041,7 @@ ul.messages li {
 }
 
 .system-msg {
-    background: #e9ebf2;
+    /*background: #e9ebf2;*/
     border-color: #606A82;
     color: #606A82;
 }
@@ -1057,7 +1057,7 @@ ul.messages li {
 
 .caution-msg,
 .warning-msg {
-    background: #FFEED0;
+    /*background: #FFEED0;*/
     color: #8c6328;
     border-color: #8c6328;
 }

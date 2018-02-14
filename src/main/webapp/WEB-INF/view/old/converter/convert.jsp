@@ -17,7 +17,7 @@
         <spring:message code="label.conversion.insertURL"/>
       </div>
       <div class="row">
-        <form:input path="url" />
+        <form:input path="url"/>
       </div>
 
       <c:if test="${form.showSchemaSelection}">
@@ -30,7 +30,7 @@
         <div class="row">
           <form:select path="schemaUrl" size="10">
             <form:option value="">--</form:option>
-            <form:options items="conversion.schemas" path="schema" labelProperty="label"/>
+            <form:options items="schemasList" path="schema" labelProperty="label"/>
           </form:select>
         </div>
       </c:if>
@@ -39,47 +39,45 @@
           <spring:message code="label.conversion.list"/>
         </button>
       </div>
-    <c:if test="${!empty form.action}">
-      <div class="row">
-        <spring:message code="label.conversion.selectConversion"/>
-      </div>
 
-      <%--id="idConv"--%>
-      <%--<c:set var="conversionUrl" value="${sessionscope['conversionUrl']}"/>--%>
-      <%--<c:set var="conversionId" value="${sessionscope['conversionId']}"/>--%>
+      <c:if test="${!empty form.action}">
+        <c:forEach items="${form.schemas}" var="schema">
+          <c:choose>
+            <c:when test="${!empty schema.stylesheets}">
+              <div class="row">
+                <spring:message code="label.conversion.selectConversion"/>
+              </div>
+              <div class="row">
+                <strong>${schema.schema}</strong>
+                <br/>
+                <c:forEach varStatus="v" items="${schema.stylesheets}" var="stylesheet">
+                  <c:choose>
+                    <c:when test="${v.index == 1}">
+                      <input type="radio" checked="checked" name="conversionId" id="r_${stylesheet.convId}"
+                             value="${stylesheet.convId}"/>
+                    </c:when>
+                    <c:otherwise>
+                      <input type="radio" name="conversionId" id="r_${stylesheet.convId}" value="${stylesheet.convId}"/>
+                    </c:otherwise>
+                  </c:choose>
+                  <label for="r_${stylesheet.convId}">${stylesheet.type}&nbsp;-&nbsp;${stylesheet.description}</label><br/>
+                </c:forEach>
 
-      <%--id="schema" name="conversionForm" scope="session" property="schemas" type="Schema">--%>
-      <c:forEach items="${form.schemas}" var="schema">
+              </div>
+            </c:when>
+            <c:otherwise>
+              <div class="row">
+                <spring:message code="label.conversion.noconversion"/>
+              </div>
+            </c:otherwise>
+          </c:choose>
+        </c:forEach>
         <div class="row">
-          <strong>${schema.schema}</strong>
-          <br/>
-
-            <%--id="stylesheet" name="schema" property="stylesheets" type="Stylesheet">--%>
-          <c:forEach varStatus="v" items="${schema.stylesheets}" var="stylesheet">
-            <c:if test="${stylesheet.convId == form.conversionId}">
-              <input type="radio" checked="checked" name="conversionId"
-                     id="r_${stylesheet.convId}"
-                     value="${stylesheet.convId}"/>
-            </c:if>
-            <c:if test="${stylesheet.convId != form.conversionId}">
-              <input type="radio" name="conversionId" id="r_${stylesheet.convId}" value="${stylesheet.convId}"/>
-            </c:if>
-            <label for="r_${stylesheet.convId}">${stylesheet.type}&nbsp;-&nbsp;${stylesheet.description}</label><br/>
-          </c:forEach>
-
-        </div>
-      </c:forEach>
-      <div class="row">
-        <button type="submit" class="button" name="convert">
-          <spring:message code="label.conversion.convert"/>
-        </button>
-      </div>
-      <c:if test="${empty form.schemas}">
-        <div class="row">
-          <spring:message code="label.conversion.noconversion"/>
+          <button type="submit" class="button" name="convert">
+            <spring:message code="label.conversion.convert"/>
+          </button>
         </div>
       </c:if>
-    </c:if>
     </fieldset>
   </form:form>
 </div>
