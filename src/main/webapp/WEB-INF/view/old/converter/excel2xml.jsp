@@ -28,7 +28,7 @@
         <spring:message code="label.conversion.excel.format"/>
       </div>
       <div class="row">
-        <form:radiobutton path="split" id="split1" value="all" />
+        <form:radiobutton path="split" id="split1" value="all"/>
         <label for="split1"><spring:message code="label.conversion.excel.allsheets"/></label>
       </div>
       <div class="row">
@@ -48,16 +48,18 @@
 
       <c:if test="${!empty conversionLinks}">
         <table class="datatable results">
-          <tr>
-            <th>Num</th>
-            <th>Link</th>
-          </tr>
+          <thead>
+          <th>Num</th>
+          <th>Link</th>
+          </thead>
+          <tbody>
           <c:forEach items="${conversionLinks}" var="conversionLink" varStatus="i">
             <tr>
-              <td>${i.index}</td>
+              <td>${i.index + 1}</td>
               <td><a href="${conversionLink}" target="_blank">${conversionLink}</a></td>
             </tr>
           </c:forEach>
+          </tbody>
         </table>
         <c:choose>
           <c:when test="${form.conversionLog}">

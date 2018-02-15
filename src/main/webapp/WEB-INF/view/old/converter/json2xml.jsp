@@ -8,6 +8,7 @@
   <ed:breadcrumbs-push label="Json to Xml" level="1"/>
 
   <form:form servletRelativeAction="/converter/json2xml" method="post" modelAttribute="form">
+    <form:errors path="*" cssClass="error-msg" element="div"/>
     <fieldset>
       <legend><spring:message code="label.conversion.json2xml.title"/></legend>
       <div class="row">

@@ -88,6 +88,7 @@ public class Excel2xmlController {
             }
             List<String> conversionLinks = new ArrayList<>();
             for (ConvertedFileDto dto : conversionResult.getConvertedFiles()) {
+                // TODO add an utility
                 conversionLinks.add("//" + Properties.appHost + "/" + Properties.contextPath + "/tmp/" + UrlUtils.getFileName(dto.getFilePath()));
             }
             model.addAttribute("conversionLinks", conversionLinks);
