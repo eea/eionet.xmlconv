@@ -1,10 +1,13 @@
 package eionet.gdem.web.spring.hosts;
 
+import javax.validation.constraints.NotNull;
+
 /**
  *
  */
 public class HostForm {
 
+    @NotNull
     private String id;
     private String host;
     private String username;

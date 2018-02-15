@@ -50,25 +50,22 @@ public class SearchController {
 
 
     @GetMapping("/search")
-    public String searchXML(@ModelAttribute ConversionForm cForm, Model model, HttpServletRequest httpServletRequest) {
-        SpringMessages errors = new SpringMessages();
-
+    public String searchXML(@ModelAttribute("form") ConversionForm cForm, Model model, HttpServletRequest httpServletRequest) {
         try {
-            model.addAttribute("schemas", StylesheetListLoader.getConversionSchemasList(httpServletRequest));
+            cForm.setSchemas(StylesheetListLoader.getConversionSchemasList(httpServletRequest));
         } catch (DCMException e) {
-            LOGGER.error("Serach CR Conversions error", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
-            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+            throw new RuntimeException(messageService.getMessage(e.getErrorCode()));
         }
         model.addAttribute("form", cForm);
         return "/converter/search";
     }
 
     @PostMapping("/search")
-    public String searchXMLSubmit(@ModelAttribute ConversionForm cForm, HttpServletRequest httpServletRequest, Model model, RedirectAttributes redirectAttributes) {
+    public String searchXMLSubmit(@ModelAttribute("form") ConversionForm cForm, HttpServletRequest httpServletRequest,
+                                  Model model, RedirectAttributes redirectAttributes) {
 
         /*String ticket = (String) httpServletRequest.getSession().getAttribute(Constants.TICKET_ATT);*/
-        SpringMessages errors = new SpringMessages();
+
         String idConv = null;
         Schema oSchema = null;
 
@@ -114,16 +111,14 @@ public class SearchController {
 //                httpServletRequest.getSession().setAttribute("converted.conversionId", "");
             }
         } catch (DCMException e) {
-            LOGGER.error("Error searching XML files", e);
-            errors.add(messageService.getMessage((e.getErrorCode())));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/converter";
-        } catch (Exception e) {
+            throw new RuntimeException("Error searching XML files");
+        }
+/*        } catch (Exception e) {
             LOGGER.error("Error searching XML files", e);
             errors.add(messageService.getMessage(BusinessConstants.EXCEPTION_GENERAL));
             redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
             return "redirect:/converter";
-        }
+        }*/
         redirectAttributes.addFlashAttribute("form", cForm);
         return "redirect:/converter/search";
     }

@@ -9,6 +9,7 @@
   <ed:breadcrumbs-push label="Spreadsheet to XML" level="1"/>
 
   <form:form servletRelativeAction="/converter/excel2xml" method="post" modelAttribute="form">
+    <form:errors path="*" cssClass="error-msg" element="div"/>
     <fieldset class="fieldset">
       <legend><spring:message code="label.conversion.excel2xml.heading"/></legend>
       <div class="row">
@@ -18,7 +19,6 @@
         <label for="inpUrl"><spring:message code="label.conversion.insertExcelUrl"/></label>
       </div>
       <div class="row">
-          <%--name="ExcelConversionForm" property="url" style="width: 45em;" styleId="inpUrl" size="200"/>--%>
         <form:input id="inpUrl" path="url"/>
       </div>
       <div class="row">
@@ -28,7 +28,7 @@
         <spring:message code="label.conversion.excel.format"/>
       </div>
       <div class="row">
-        <input type="radio" path="split" id="split1" value="all">
+        <form:radiobutton path="split" id="split1" value="all" />
         <label for="split1"><spring:message code="label.conversion.excel.allsheets"/></label>
       </div>
       <div class="row">
@@ -47,32 +47,31 @@
       </div>
 
       <c:if test="${!empty conversionLinks}">
-        <table>
-        <tr>
-          <th>Num</th>
-          <th>Link</th>
-        </tr>
-        <c:forEach items="${conversionLinks}" var="conversionLink" varStatus="i">
+        <table class="datatable results">
           <tr>
-            <td>${i.index}</td>
-            <td><a href="${conversionLink}" target="_blank">${conversionLink}</a></td>
+            <th>Num</th>
+            <th>Link</th>
           </tr>
-        </c:forEach>
+          <c:forEach items="${conversionLinks}" var="conversionLink" varStatus="i">
+            <tr>
+              <td>${i.index}</td>
+              <td><a href="${conversionLink}" target="_blank">${conversionLink}</a></td>
+            </tr>
+          </c:forEach>
         </table>
+        <c:choose>
+          <c:when test="${form.conversionLog}">
+            <tr>
+              <td>${conversionLog}</td>
+            </tr>
+          </c:when>
+          <c:otherwise>
+            <tr>
+              <td><spring:message code="label.conversion.excel.warning"/></td>
+            </tr>
+          </c:otherwise>
+        </c:choose>
       </c:if>
-
-      <c:choose>
-        <c:when test="${form.conversionLog}">
-          <tr>
-            <td>${conversionLog}</td>
-          </tr>
-        </c:when>
-        <c:otherwise>
-          <tr>
-            <td><spring:message code="label.conversion.excel.warning"/></td>
-          </tr>
-        </c:otherwise>
-      </c:choose>
     </fieldset>
   </form:form>
 </div>

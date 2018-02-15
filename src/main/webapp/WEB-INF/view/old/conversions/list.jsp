@@ -3,13 +3,20 @@
 <ed:breadcrumbs-push label="Stylesheets" level="1"/>
 
 <c:set var="permissions" scope="page" value="${sessionScope['stylesheet.permissions']}"/>
+
+<c:if test="${permissions.ssiPrm}">
+  <div id="operations">
+    <ul>
+      <li><a href="/conversions/add"><spring:message code="label.stylesheet.add"/></a></li>
+    </ul>
+  </div>
+</c:if>
+
 <c:if test="${!empty conversions}">
 
   <h1 class="documentFirstHeading">
     <spring:message code="label.stylesheet.handcoded"/>
   </h1>
-
-  <%--<div class="visualClear">&nbsp;</div>--%>
 
   <c:choose>
     <c:when test="${empty conversions.stylesheetList}">
@@ -19,6 +26,7 @@
     </c:when>
     <c:otherwise>
       <form:form servletRelativeAction="/conversions" method="post">
+        <form:errors path="*" cssClass="error-msg" element="div" />
 
         <table id="tbl_stylesheets" class="display datatable results" width="100%">
           <c:if test="${permissions.ssdPrm}">
@@ -84,11 +92,5 @@
       </form:form>
     </c:otherwise>
   </c:choose>
-
-  <c:if test="${permissions.ssiPrm}">
-    <a class="button" href="/conversions/add"><spring:message code="label.stylesheet.add"/></a>
-  </c:if>
-
-  <div class="visualClear">&nbsp;</div>
 
 </c:if>

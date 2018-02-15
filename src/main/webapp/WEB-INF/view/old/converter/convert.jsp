@@ -48,21 +48,41 @@
                 <spring:message code="label.conversion.selectConversion"/>
               </div>
               <div class="row">
-                <strong>${schema.schema}</strong>
-                <br/>
-                <c:forEach varStatus="v" items="${schema.stylesheets}" var="stylesheet">
-                  <c:choose>
-                    <c:when test="${v.index == 1}">
-                      <input type="radio" checked="checked" name="conversionId" id="r_${stylesheet.convId}"
-                             value="${stylesheet.convId}"/>
-                    </c:when>
-                    <c:otherwise>
-                      <input type="radio" name="conversionId" id="r_${stylesheet.convId}" value="${stylesheet.convId}"/>
-                    </c:otherwise>
-                  </c:choose>
-                  <label for="r_${stylesheet.convId}">${stylesheet.type}&nbsp;-&nbsp;${stylesheet.description}</label><br/>
-                </c:forEach>
-
+                <table class="datatable results">
+                  <col width="5%"/>
+                  <col width="25%" />
+                  <col width="40%" />
+                  <col width="20%" />
+                  <caption><strong>${schema.schema}</strong></caption>
+                  <thead>
+                    <th></th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Stylesheet</th>
+                  </thead>
+                  <tbody>
+                  <c:forEach varStatus="v" items="${schema.stylesheets}" var="stylesheet">
+                    <tr>
+                      <td>
+                        <c:choose>
+                          <c:when test="${v.index == 1}">
+                            <input type="radio" checked="checked" name="conversionId" id="r_${stylesheet.convId}"
+                                   value="${stylesheet.convId}"/>
+                          </c:when>
+                          <c:otherwise>
+                            <input type="radio" name="conversionId" id="r_${stylesheet.convId}" value="${stylesheet.convId}"/>
+                          </c:otherwise>
+                        </c:choose>
+                      </td>
+                      <td>${stylesheet.type}</td>
+                      <td>
+                        <label for="r_${stylesheet.convId}">${stylesheet.description}</label><br/>
+                      </td>
+                      <td><a href="/xsl/${stylesheet.xslFileName}">${stylesheet.xslFileName}</a></td>
+                    </tr>
+                  </c:forEach>
+                  </tbody>
+                </table>
               </div>
             </c:when>
             <c:otherwise>

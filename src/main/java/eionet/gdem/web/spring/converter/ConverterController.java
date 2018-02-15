@@ -1,6 +1,11 @@
 package eionet.gdem.web.spring.converter;
 
+import eionet.gdem.Constants;
+import eionet.gdem.XMLConvException;
+import eionet.gdem.conversion.ConversionService;
+import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.dcm.BusinessConstants;
+import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.dto.Stylesheet;
@@ -18,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,17 +63,33 @@ public class ConverterController {
     }
 
     @PostMapping(params = "convert")
-    public String convert(@ModelAttribute("form") ConversionForm cForm, HttpServletRequest httpServletRequest, Model model, RedirectAttributes redirectAttributes) {
-        SpringMessages errors = new SpringMessages();
+    public String convert(@ModelAttribute("form") ConversionForm cForm, HttpSession httpSession, HttpServletResponse httpServletResponse,
+                          BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 
-        //TODO make conversions work
-        if ("convertAction".equals(cForm.getAction()) && !cForm.isConverted()) {
-            cForm.setConvertAction(null);
-            cForm.setConverted(true);
-            cForm.setAction("convert");
+        String ticket = (String) httpSession.getAttribute(Constants.TICKET_ATT);
+        String url = cForm.getUrl();
+        String convert_id = cForm.getConversionId();
+
+        new ConverterValidator().validate(cForm, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/converter/convert";
         }
-        model.addAttribute("form", cForm);
-        return "/converter/convert";
+        httpSession.setAttribute("converted.url", url);
+        httpSession.setAttribute("converted.conversionId", convert_id);
+
+        // TODO refactor it to spring mvc
+        HttpMethodResponseWrapper methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
+        // get request parameters
+        try {
+            ConversionServiceIF cs = new ConversionService();
+            // set up the servlet outputstream form converter
+            cs.setHttpResponse(methodResponse);
+            cs.setTicket(ticket);
+            cs.convert(url, convert_id);
+        } catch (XMLConvException e) {
+            throw new RuntimeException("Error testing conversion: " + e.getMessage());
+        }
+        return null;
     }
 
     @PostMapping(params = "search")
@@ -183,8 +207,10 @@ public class ConverterController {
 //            // comping back from convert page
 //            cForm.setConverted(false);
 //        }
-        redirectAttributes.addFlashAttribute("form", cForm);
-        return "redirect:/converter";
+        model.addAttribute("form", cForm);
+        return "/converter/convert";
+        /*redirectAttributes.addFlashAttribute("form", cForm);
+        return "redirect:/converter";*/
     }
 
     /**

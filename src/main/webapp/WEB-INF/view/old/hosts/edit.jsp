@@ -12,7 +12,7 @@
         </label>
       </div>
       <div class="columns small-8">
-        <form:input path="host" id="txtHost"/>
+        <form:input path="host" type="url" id="txtHost"/>
       </div>
     </div>
     <div class="row">
@@ -39,4 +39,5 @@
       <spring:message code="label.save"/>
     </button>
   </fieldset>
+  <form:hidden path="id" />
 </form:form>

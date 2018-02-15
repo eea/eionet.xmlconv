@@ -8,6 +8,18 @@
   <tiles:putAttribute name="selectedTab" value="scripts"/>
 </tiles:insertDefinition>
 
+<c:if test="${permissions.ssiPrm}">
+  <div id="operations">
+    <ul>
+      <li><a href="/schemas/${schemaId}/scripts/add"><spring:message code="label.qascript.add"/></a></li>
+      <li><a href="/qaSandbox/run/${schemaId}" title="label.qascript.runservice.title"><spring:message code="label.qascript.runservice"/></a></li>
+    </ul>
+  </div>
+</c:if>
+
+<%--paramId="schemaId" paramName="schema" paramProperty="id"--%>
+
+
 <c:if test="${!empty scripts}">
 
   <%--<bean:define id="schemaId" name="schemaId" scope="request" type="String"/>--%>
@@ -176,17 +188,9 @@
           </c:forEach>
           </tbody>
         </table>
-        <div class="boxbottombuttons">
-          <c:if test="${permissions.ssiPrm}">
-            <a class="button" href="/schemas/${schemaId}/scripts/add">
-              <spring:message code="label.qascript.add"/>
-            </a>
-          </c:if>
-            <%--paramId="schemaId" paramName="schema" paramProperty="id"--%>
-          <a class="button" href="/qaSandbox/run/${schemaId}" title="label.qascript.runservice.title">
-            <spring:message code="label.qascript.runservice"/>
-          </a>
-        </div>
+        <%--<div class="boxbottombuttons">--%>
+          <%----%>
+        <%--</div>--%>
         <c:if test="${permissions.ssdPrm}">
           <button type="button" class="button" name="delete">
             <spring:message code="label.qascript.delete"/>

@@ -4,15 +4,22 @@
 
 <ed:breadcrumbs-push label="Hosts" level="1"/>
 
+<ed:hasPermission username="username" acl="host" permission="i">
+  <div id="operations">
+    <ul>
+      <li><a href="/hosts/add"><spring:message code="label.hosts.add" /></a></li>
+    </ul>
+  </div>
+
+</ed:hasPermission>
+
 <h1 class="documentFirstHeading">
   <spring:message code="label.hosts.title"/>
 </h1>
 
-<div class="visualClear">&nbsp;</div>
-
 <c:if test="${!empty hosts}">
   <form:form servletRelativeAction="/hosts" method="post" modelAttribute="form">
-    <div style="width:80%">
+    <div>
       <table class="datatable results" width="100%">
         <col style="width:5%"/>
         <col style="width:47%"/>
@@ -35,8 +42,9 @@
               </td>
             </ed:hasPermission>
             <td>
+              <spring:message code="label.hosts.edit" var="title"/>
               <ed:hasPermission username="username" acl="host" permission="u">
-                <a href="/hosts/${host.id}/edit" title="label.hosts.edit">
+                <a href="/hosts/${host.id}/edit" title="${title}">
                   ${host.hostname}
                 </a>
               </ed:hasPermission>
@@ -49,11 +57,6 @@
         </tbody>
       </table>
       <div class="boxbottombuttons">
-        <ed:hasPermission username="username" acl="host" permission="i">
-          <a href="/hosts/add" class="button">
-            <spring:message code="label.hosts.add" />
-          </a>
-        </ed:hasPermission>
         <ed:hasPermission username="username" acl="host" permission="d">
           <button type="submit" class="button" name="delete">
             <spring:message code="label.delete"/>

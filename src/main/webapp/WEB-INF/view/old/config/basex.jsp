@@ -7,6 +7,8 @@
 
   <ed:breadcrumbs-push label="BaseX Server configuration" level="1"/>
 
+  <div class="warning-msg">This feature is currently disabled - Local BaseX is being used</div>
+
   <form:form servletRelativeAction="/config/basex" method="post" modelAttribute="form">
     <fieldset class="fieldset">
       <legend><spring:message code="label.config.basexserver.title"/></legend>

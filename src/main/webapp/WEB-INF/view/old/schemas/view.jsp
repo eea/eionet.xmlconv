@@ -12,6 +12,14 @@
 
 <%--<h1><spring:message code="label.schema.view"/></h1>--%>
 
+<c:if test="${rootElements.xsduPrm}">
+  <div id="operations">
+    <ul>
+      <li><a href="/schemas/${schemaForm.schemaId}/edit"><spring:message code="label.schema.edit.button"/></a></li>
+    </ul>
+  </div>
+</c:if>
+
 <c:if test="${!empty schemaForm.schema}">
 
     <table class="datatable results">
@@ -124,9 +132,4 @@
 
     </fieldset>
   </c:if>
-</c:if>
-<c:if test="${rootElements.xsduPrm}">
-  <a class="button" href="/schemas/${schemaForm.schemaId}/edit">
-    <spring:message code="label.schema.edit.button"/>
-  </a>
 </c:if>

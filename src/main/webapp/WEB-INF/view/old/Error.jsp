@@ -2,7 +2,7 @@
 
 <c:choose>
   <c:when test="${!empty exceptionMessage}">
-    <div class="error-msg">500 - ${exceptionMessage}</div>
+    <div class="error-msg">${status} - ${exceptionMessage}</div>
   </c:when>
   <c:otherwise>
     <div class="error-msg">${status} - ${reason}</div>

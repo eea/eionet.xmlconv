@@ -2,6 +2,14 @@
 
 <ed:breadcrumbs-push label="XML Schemas" level="1"/>
 
+<c:if test="${schemas.ssiPrm}">
+  <div id="operations">
+    <ul>
+      <li><a href="/schemas/add"><spring:message code="label.uplSchema.add"/></a></li>
+    </ul>
+  </div>
+</c:if>
+
 <c:if test="${!empty schemas}">
 
   <h1 class="documentFirstHeading">
@@ -74,11 +82,6 @@
       </table>
 
       <div class="row">
-        <c:if test="${schemas.ssiPrm}">
-          <a href="/schemas/add" type="button" class="button">
-            <spring:message code="label.uplSchema.add"/>
-          </a>
-        </c:if>
         <c:if test="${schemas.ssdPrm}">
           <button type="submit" class="button" name="delete">
             <spring:message code="label.schema.delete"/>
@@ -94,7 +97,6 @@
       <spring:message code="label.uplSchema.noSchemas"/>
     </div>
   </c:if>
-  <div class="visualClear">&nbsp;</div>
 
 </c:if>
 

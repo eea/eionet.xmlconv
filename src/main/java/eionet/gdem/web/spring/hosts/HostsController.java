@@ -8,11 +8,13 @@ import eionet.gdem.web.spring.generic.SingleForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -40,8 +42,6 @@ public class HostsController {
     @GetMapping
     public String list(Model model, HttpSession session) {
 
-        SpringMessages errors = new SpringMessages();
-
         List hosts = new ArrayList();
         String user = (String) session.getAttribute("user");
         try {
@@ -56,13 +56,12 @@ public class HostsController {
                     hosts.add(h);
                 }
             } else {
-                errors.add(messageService.getMessage("error.vnoperm", "label.hosts"));
+                throw new AccessDeniedException(messageService.getMessage("error.vnoperm", "label.hosts"));
             }
         } catch (SignOnException | SQLException e) {
             LOGGER.error("Access denied", e);
-            errors.add(messageService.getMessage("label.exception.unknown"));
+            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
-        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         model.addAttribute("hosts", hosts);
         SingleForm form = new SingleForm();
         model.addAttribute("form", form);
@@ -88,11 +87,11 @@ public class HostsController {
                     hostForm.setPassword((String) host.get("pwd"));
                 }
             } else {
-                // todo fix
-                errors.add(messageService.getMessage("error.unoperm", "label.hosts"));
+                throw new AccessDeniedException(messageService.getMessage("error.unoperm", "label.hosts"));
             }
         } catch (SQLException | SignOnException e) {
             LOGGER.error("Error: ", e);
+            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
 
         if (errors.size() > 0) {
@@ -103,10 +102,9 @@ public class HostsController {
     }
 
     @PostMapping(params = {"update"})
-    public String editSubmit(@ModelAttribute("form") HostForm updatedForm, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String editSubmit(@ModelAttribute("form") @Valid HostForm updatedForm, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
 
         SpringMessages messages = new SpringMessages();
-        SpringMessages errors = new SpringMessages();
 
         String hostId = updatedForm.getId();
         String host = updatedForm.getHost();
@@ -120,33 +118,30 @@ public class HostsController {
                 hostDao.updateHost(hostId, host, username, password);
                 messages.add(messageService.getMessage("label.hosts.updated"));
             } else {
-                errors.add(messageService.getMessage("error.unoperm", "label.hosts"));
+                throw new AccessDeniedException(messageService.getMessage("error.unoperm", "label.hosts"));
             }
         } catch (SignOnException | SQLException e) {
-            LOGGER.error("Error: ", e);
-            errors.add(messageService.getMessage("label.exception.unknown"));
+            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
-        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
-        return "redirect:/hosts" + hostId;
+        return "redirect:/hosts/" + hostId;
     }
 
     @GetMapping("/add")
     public String add(Model model, HttpSession session) {
-        SpringMessages errors = new SpringMessages();
+
         String user = (String) session.getAttribute("user");
         HostForm form = new HostForm();
 
         try {
             if (!SecurityUtil.hasPerm(user, "/host", "i")) {
-                errors.add(messageService.getMessage("error.inoperm", "label.hosts"));
+                throw new AccessDeniedException(messageService.getMessage("error.inoperm", "label.hosts"));
             }
         } catch (SignOnException e) {
             LOGGER.error("Access denied", e);
-            errors.add(messageService.getMessage("label.exception.unknown"));
+            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
 
-        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         model.addAttribute("form", form);
         return "/hosts/add";
     }
@@ -154,7 +149,6 @@ public class HostsController {
     @PostMapping(params = {"add"})
     public String addSubmit(@ModelAttribute("form") HostForm form, HttpSession session, RedirectAttributes redirectAttributes) {
         SpringMessages messages = new SpringMessages();
-        SpringMessages errors = new SpringMessages();
 
         String host = form.getHost();
         String username = form.getUsername();
@@ -167,21 +161,20 @@ public class HostsController {
                 hostDao.addHost(host, username, password);
                 messages.add(messageService.getMessage("label.hosts.inserted"));
             } else {
-                errors.add(messageService.getMessage("error.inoperm"));
+                throw new AccessDeniedException(messageService.getMessage("error.inoperm"));
             }
         } catch (SignOnException | SQLException e) {
             LOGGER.error("Access denied");
-            errors.add(messageService.getMessage("error.inoperm"));
+            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
 
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
-        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         return "redirect:/hosts";
     }
 
     @PostMapping(params = {"/delete"})
     public String delete(@ModelAttribute("form") HostForm form, RedirectAttributes redirectAttributes, HttpSession session) {
-        SpringMessages errors = new SpringMessages();
+
         SpringMessages messages = new SpringMessages();
 
         String user = (String) session.getAttribute("user");
@@ -192,13 +185,13 @@ public class HostsController {
                 hostDao.removeHost(form.getId());
                 messages.add(messageService.getMessage("label.hosts.deleted"));
             } else {
-                errors.add(messageService.getMessage("error.dnoperm", "label.hosts"));
+                throw new AccessDeniedException(messageService.getMessage("error.dnoperm", "label.hosts"));
             }
         } catch (SignOnException | SQLException e) {
             LOGGER.error("", e);
-            errors.add(messageService.getMessage("label.exception.unknown"));
+            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
-        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/hosts";
     }
