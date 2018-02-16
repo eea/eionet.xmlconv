@@ -1,5 +1,6 @@
 package eionet.gdem.web.spring.qasandbox;
 
+import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
@@ -23,15 +24,19 @@ import eionet.gdem.validation.ValidationService;
 import eionet.gdem.web.spring.SpringMessages;
 import eionet.gdem.web.spring.scripts.QAScriptListHolder;
 import eionet.gdem.web.spring.scripts.QAScriptListLoader;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.management.RuntimeErrorException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -60,17 +65,9 @@ public class QASandboxController {
     @GetMapping
     public String index(@ModelAttribute("form") QASandboxForm cForm, Model model, @RequestParam(required = false) String schemaId, HttpServletRequest request) {
         SpringMessages errors = new SpringMessages();
-//        QASandboxForm form = new QASandboxForm();
 
-/*        boolean resetForm = true;
+        cForm.setAction("");
 
-        if (httpServletRequest.getParameter("reset") != null) {
-            resetForm = !"false".equals(httpServletRequest.getParameter("reset"));
-        }
-        if (resetForm) {
-            cForm.resetAll(actionMapping, httpServletRequest);
-        }
-*/
         try {
             if (!Utils.isNullStr(schemaId)) {
                 cForm.setShowScripts(true);
@@ -95,55 +92,62 @@ public class QASandboxController {
                     cForm.setScriptId(cForm.getSchema().getQascripts().get(0).getScriptId());
                 }
             }
-
             model.addAttribute("scripts", QAScriptListLoader.getList(request));
         } catch (DCMException e) {
             LOGGER.error("QA Sandbox form error", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
+            throw new RuntimeException(messageService.getMessage(e.getErrorCode()));
         }
         model.addAttribute("form", cForm);
-        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         return "/qaSandbox/view";
     }
 
-/*    @GetMapping("/openQAService")
-    public String openQAService(@ModelAttribute QASandboxForm cForm, HttpServletRequest request) {
+    @GetMapping("/openQAService")
+    public String openQAService(@ModelAttribute QASandboxForm cForm, HttpServletRequest httpServletRequest) {
 
         SpringMessages errors = new SpringMessages();
-        String schemaIdParam = null;
-        if (request.getParameter("schemaId") != null) {
-            schemaIdParam = request.getParameter("schemaId");
-        }
-        if (Utils.isNullStr(schemaIdParam)) {
 
-            errors.add(messageService.getMessage("error.qasandbox.missingSchemaId"));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
-        }
+        String schemaId = cForm.getSchemaId();
 
         try {
+            httpServletRequest.setAttribute(QAScriptListLoader.QASCRIPT_LIST_ATTR, QAScriptListLoader.getList(httpServletRequest));
+            cForm.setShowScripts(true);
+            cForm.setSourceUrl("");
 
+            SchemaManager sm = new SchemaManager();
+            QAScriptListHolder qascripts = sm.getSchemasWithQAScripts(schemaId);
+            Schema schema = null;
+
+            if (qascripts == null || qascripts.getQascripts() == null || qascripts.getQascripts().size() == 0) {
+                schema = new Schema();
+            } else {
+                schema = qascripts.getQascripts().get(0);
+                cForm.setSchemaId(schema.getId());
+                cForm.setSchemaUrl(schema.getSchema());
+            }
+            cForm.setSchema(schema);
+            if (Utils.isNullList(cForm.getSchema().getQascripts()) && cForm.getSchema().isDoValidation()) {
+                cForm.setScriptId("-1");
+            } else if (!Utils.isNullList(cForm.getSchema().getQascripts()) && cForm.getSchema().getQascripts().size() == 1
+                    && !cForm.getSchema().isDoValidation()) {
+                cForm.setScriptId(cForm.getSchema().getQascripts().get(0).getScriptId());
+            }
         } catch (DCMException e) {
-            LOGGER.error("QA Sandbox form error error", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
+            throw new RuntimeException("QA Sandbox form error error");
         }
+        return "/qaSandbox/view";
+    }
 
-        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        return "redirect:/qaSandbox";
-    }*/
-
-    @PostMapping(params = {"searchScripts"})
-    public String find(@ModelAttribute("form") QASandboxForm cForm, RedirectAttributes redirectAttributes) {
+    @PostMapping(params = {"findScripts"})
+    public String find(@ModelAttribute("form") QASandboxForm cForm, Model model, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         SpringMessages errors = new SpringMessages();
 
         String schemaUrl = cForm.getSchemaUrl();
         Schema schema = cForm.getSchema();
 
-        if (Utils.isNullStr(schemaUrl)) {
-            errors.add(messageService.getMessage("error.qasandbox.missingSchemaUrl"));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
+        new QASandboxValidator().validate(cForm, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/qaSandbox/view";
         }
         try {
             // cForm.setScriptId(null);
@@ -172,17 +176,14 @@ public class QASandboxController {
                 }
             }
         } catch (DCMException e) {
-            LOGGER.error("Error searching XML files", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
+            throw new RuntimeException("Error searching XML files: " + e.getErrorCode());
         }
 
-        return "redirect:/qaSandbox";
+        return "/qaSandbox/view";
     }
 
-    @PostMapping("/addToWorkqueue")
-    public String addToWorkQueue(@ModelAttribute("form") QASandboxForm cForm, RedirectAttributes redirectAttributes, HttpSession session) {
+    @PostMapping(params = {"addToWorkqueue"})
+    public String addToWorkQueue(@ModelAttribute("form") QASandboxForm cForm, BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpSession session) {
 
         SpringMessages messages = new SpringMessages();
         SpringMessages errors = new SpringMessages();
@@ -192,28 +193,14 @@ public class QASandboxController {
         String scriptType = cForm.getScriptType();
         String schemaUrl = cForm.getSchemaUrl();
 
-        if (Utils.isNullStr(sourceUrl)) {
-            errors.add(messageService.getMessage("error.qasandbox.missingUrl"));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
+        String userName = (String) session.getAttribute("user");
+
+        new QASandboxValidator().validate(cForm, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/qaSandbox/view";
         }
-        if (Utils.isNullStr(content) && !cForm.isShowScripts()) {
-            errors.add(messageService.getMessage("error.qasandbox.missingContent"));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
-        }
-        if (Utils.isNullStr(schemaUrl) && cForm.isShowScripts()) {
-            errors.add(messageService.getMessage("error.qasandbox.error.qasandbox.missingSchemaUrl"));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
-        }
-        if (!Utils.isURL(sourceUrl)) {
-            errors.add(messageService.getMessage("error.qasandbox.notUrl"));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
-        }
+
         try {
-            String userName = (String) session.getAttribute("user");
             WorkqueueManager workqueueManager = new WorkqueueManager();
             if (cForm.isShowScripts()) {
                 List<String> jobIds = workqueueManager.addSchemaScriptsToWorkqueue(userName, sourceUrl, schemaUrl);
@@ -223,17 +210,10 @@ public class QASandboxController {
                 messages.add(messageService.getMessage("message.qasandbox.jobAdded", jobId));
             }
         } catch (DCMException e) {
-            LOGGER.error("Error saving script content", e);
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
-        } catch (Exception e) {
-            LOGGER.error("Error saving script content", e);
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
+            throw new RuntimeException("Error saving script content");
         }
-
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
-        return "redirect:/qaSandbox";
+        return "/qaSandbox/view";
     }
 
     @GetMapping("/edit/{scriptId}")
@@ -253,14 +233,9 @@ public class QASandboxController {
         if (httpServletRequest.getParameter("reset") != null) {
             reset = "true".equals(httpServletRequest.getParameter("reset"));
         }*/
-        /*if (Utils.isNullStr(scriptId)) {
-            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.qasandbox.missingId"));
-            saveErrors(httpServletRequest, errors);
-            return actionMapping.findForward("error");
-        }*/
 
         try {
-            request.setAttribute(QAScriptListLoader.QASCRIPT_LIST_ATTR, QAScriptListLoader.getList(request));
+            model.addAttribute("scripts", QAScriptListLoader.getList(request));
             // reset field values
             /*if (reset) {
                 cForm.setSourceUrl("");
@@ -296,9 +271,7 @@ public class QASandboxController {
                 cForm.setSchema(schema);
             }
         } catch (DCMException e) {
-            e.printStackTrace();
-            LOGGER.error("QA Sandbox form error", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
+            throw new RuntimeException(messageService.getMessage(e.getErrorCode()));
         }
 
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
@@ -306,36 +279,30 @@ public class QASandboxController {
     }
 
     @PostMapping(params = {"extractSchema"})
-    public String extract(@ModelAttribute("form") QASandboxForm cForm, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+    public String extract(@ModelAttribute("form") QASandboxForm cForm, Model model,
+                          BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
         SpringMessages errors = new SpringMessages();
         Schema oSchema = cForm.getSchema();
         String sourceUrl = cForm.getSourceUrl();
-
-        if (Utils.isNullStr(sourceUrl)) {
-            errors.add(messageService.getMessage("error.qasandbox.missingUrl"));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
-        }
-        if (!Utils.isURL(sourceUrl)) {
-            errors.add(messageService.getMessage("error.qasandbox.notUrl"));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
-        }
-
         String schemaUrl = null;
+        cForm.setAction("extractSchema");
+        new QASandboxValidator().validate(cForm, bindingResult);
+
         try {
             if (!Utils.isNullStr(sourceUrl)) {
                 schemaUrl = findSchemaFromXml(sourceUrl);
                 if (!Utils.isURL(schemaUrl)) {
-                    errors.add(messageService.getMessage("error.qasandbox.schemaNotFound"));
-                    redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                    return "redirect:/qaSandbox";
+                    bindingResult.reject("error.qasandbox.schemaNotFound");
+                    return "/qaSandbox/view";
                 }
                 if (schemaExists(request, schemaUrl)) {
                     cForm.setSchemaUrl(schemaUrl);
                 } else if (!Utils.isNullStr(schemaUrl)) {
-                    if (oSchema == null) {
+                    bindingResult.reject(messageService.getMessage("error.qasandbox.noSchemaScripts", schemaUrl));
+                    return "/qaSandbox/view";
+
+                   /* if (oSchema == null) {
                         oSchema = new Schema();
                     }
 
@@ -346,24 +313,21 @@ public class QASandboxController {
                     cForm.setShowScripts(true);
                     cForm.setSchema(oSchema);
 
-                    errors.add(messageService.getMessage("error.qasandbox.noSchemaScripts", schemaUrl));
-                    redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                    redirectAttributes.addFlashAttribute("form", cForm);
-                    return "redirect:/qaSandbox";
+                    errors.add();
+                    model.addAttribute("form", cForm);
+                    return "/qaSandbox/view";*/
                 }
             }
         } catch (DCMException e) {
-            LOGGER.error("Error extracting schema from XML file", e);
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
+            throw new RuntimeException("Error extracting schema from XML file");
         }
-
-        return "redirect:/qaSandbox";
-
+        model.addAttribute("form", cForm);
+        return "forward:/qaSandbox";
     }
 
     @PostMapping(params = {"runScript"})
-    public String runQAScript(@ModelAttribute("form") QASandboxForm cForm, RedirectAttributes redirectAttributes, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+    public String runQAScript(@ModelAttribute("form") QASandboxForm cForm, BindingResult bindingResult, RedirectAttributes redirectAttributes,
+                              HttpSession session, HttpServletRequest request, HttpServletResponse response) {
 
         SpringMessages errors = new SpringMessages();
         cForm.setResult(null);
@@ -375,30 +339,8 @@ public class QASandboxController {
         String userName = (String) session.getAttribute("user");
 
         try {
-            if (showScripts && Utils.isNullStr(scriptId)) {
-                errors.add(messageService.getMessage("error.qasandbox.missingId"));
-                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                return "redirect:/qaSandbox";
-            }
-            if (!showScripts && Utils.isNullStr(scriptContent)) {
-                errors.add(messageService.getMessage("error.qasandbox.missingContent"));
-                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                return "redirect:/qaSandbox";
-            }
             if (!Utils.isNullStr(scriptContent) && !SecurityUtil.hasPerm(userName, "/" + Constants.ACL_QASANDBOX_PATH, "i")) {
-                errors.add(messageService.getMessage("label.autorization.qasandbox.execute"));
-                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                return "redirect:/qaSandbox";
-            }
-            if (Utils.isNullStr(sourceUrl)) {
-                errors.add(messageService.getMessage("error.qasandbox.missingUrl"));
-                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                return "redirect:/qaSandbox";
-            }
-            if (!Utils.isURL(sourceUrl)) {
-                errors.add(messageService.getMessage("error.qasandbox.notUrl"));
-                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                return "redirect:/qaSandbox";
+                throw new AccessDeniedException(messageService.getMessage("label.autorization.qasandbox.execute"));
             }
             String result = null;
 
@@ -414,7 +356,7 @@ public class QASandboxController {
                     result = de.getMessage();
                 }
                 cForm.setResult(result);
-                return "redirect:/qaSandbox";
+                return "/qaSandbox/view";
             }
 
             QAScript qascript = null;
@@ -445,10 +387,10 @@ public class QASandboxController {
                 // read scriptContent from file
                 try {
                     scriptContent = Utils.readStrFromFile(Properties.queriesFolder + File.separator + qascript.getFileName());
-                } catch (Exception e) {
-                    errors.add(messageService.getMessage("error.qasandbox.fileNotFound"));
-                    redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                    return "redirect:/qaSandbox";
+                } catch (IOException e) {
+                    bindingResult.reject("error.qasandbox.fileNotFound");
+                    /*redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+                    return "redirect:/qaSandbox";*/
                 }
             }
 
@@ -474,78 +416,53 @@ public class QASandboxController {
 
             OutputStream output = null;
             try {
-                // XXX: REPLACE ASAP
+                /*// XXX: REPLACE ASAP
                 // write the result directly to servlet outputstream
-                if (!outputContentType.startsWith("text/html")) {
-                    response.setContentType(outputContentType);
-                    response.setCharacterEncoding("utf-8");
-                    output = response.getOutputStream();
-                    xq.getResult(output);
-                    // TODO: remove flush and close
-                    output.flush();
-                    output.close();
-                    return null;
-                } else {
+                if (!outputContentType.startsWith("text/html")) {*/
+                response.setContentType(outputContentType);
+                response.setCharacterEncoding("utf-8");
+                output = response.getOutputStream();
+                xq.getResult(output);
+
+                /*} else {
                     result = xq.getResult();
                     cForm.setResult(result);
-                }
+                }*/
             } catch (XMLConvException ge) {
-                result = ge.getMessage();
-                if (output == null) {
-                    cForm.setResult(result);
-                    return "redirect:/qaSandbox";
-                } else {
-                    output.write(result.getBytes(StandardCharsets.UTF_8));
-                    // TODO: remove flush and close
-                    output.flush();
-                    output.close();
-                    return null;
-                }
+                throw new RuntimeException("Exception:" + ge.getMessage());
             }
-        } catch (Exception e) {
-            LOGGER.error("Error executing QA script", e);
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
+        } catch (IOException | DCMException | SignOnException e) {
+            throw new RuntimeException("Exception:" + e.getMessage());
         }
-        return "redirect:/qaSandbox";
+        return null;
     }
 
-    @PostMapping("/save/{scriptId}")
-    public String save(@ModelAttribute("form") QASandboxForm cForm, RedirectAttributes redirectAttributes, HttpSession session) {
+    @PostMapping(value = "/scripts", params = {"save"})
+    public String save(@ModelAttribute("form") QASandboxForm cForm, Model model,
+                       RedirectAttributes redirectAttributes, HttpSession session) {
 
         SpringMessages messages = new SpringMessages();
         SpringMessages errors = new SpringMessages();
         String scriptId = cForm.getScriptId();
         String content = cForm.getScriptContent();
 
-        if (Utils.isNullStr(scriptId)) {
-            errors.add(messageService.getMessage("error.qasandbox.missingId"));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
-        }
-        if (Utils.isNullStr(content)) {
-            errors.add(messageService.getMessage("error.qasandbox.missingContent"));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
-        }
-        try {
-            String userName = (String) session.getAttribute("user");
+        String userName = (String) session.getAttribute("user");
 
+        try {
             QAScriptManager qm = new QAScriptManager();
             qm.storeQAScriptFromString(userName, scriptId, content);
             messages.add(messageService.getMessage("message.qasandbox.contentSaved"));
         } catch (DCMException | IOException e) {
-            LOGGER.error("Error saving script content", e);
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
+            throw new RuntimeException("Error saving script content");
         }
-
-        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        return "redirect:/qaSandbox";
+        model.addAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
+        return "/qaSandbox/view";
+//        return "redirect:/qaSandbox";
     }
 
     @PostMapping(params = {"searchCR"})
-    public String searchCR(@ModelAttribute("form") @Valid QASandboxForm cForm, HttpServletRequest request, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String searchCR(@ModelAttribute("form") @Valid QASandboxForm cForm, Model model,
+                           HttpServletRequest request, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         SpringMessages errors = new SpringMessages();
         String schemaUrl = null;
@@ -578,12 +495,10 @@ public class QASandboxController {
                 }
             }
         } catch (DCMException e) {
-            LOGGER.error("Error searching XML files", e);
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/qaSandbox";
+            throw new RuntimeException("Error searching XML files");
         }
-        redirectAttributes.addFlashAttribute("form", cForm);
-        return "redirect:/qaSandbox";
+        model.addAttribute("form", cForm);
+        return "/qaSandbox/view";
     }
 
     /**

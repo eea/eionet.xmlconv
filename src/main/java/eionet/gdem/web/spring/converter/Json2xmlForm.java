@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 public class Json2xmlForm {
 
-    @NotEmpty(message = "label.conversion.json2xml.empty")
+    @NotEmpty(message = "{label.conversion.json2xml.empty}")
     private String content;
 
     public String getContent() {

@@ -11,19 +11,28 @@ public class QASandboxForm {
     private Schema schema;
     private boolean showScripts;
     private String result;
+    private String action;
 
-/*   public void resetAll(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
-        super.reset(actionMapping, httpServletRequest);
-        scriptId = null;
-        schemaId = null;
-        sourceUrl = null;
-        scriptContent = null;
-        scriptType = null;
-        schema = new Schema();
-        schemaUrl = null;
-        showScripts = false;
-        result = null;
-    }*/
+    public String getAction() {
+        return this.action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    /*   public void resetAll(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
+            super.reset(actionMapping, httpServletRequest);
+            scriptId = null;
+            schemaId = null;
+            sourceUrl = null;
+            scriptContent = null;
+            scriptType = null;
+            schema = new Schema();
+            schemaUrl = null;
+            showScripts = false;
+            result = null;
+        }*/
     public QASandboxForm() {
         this.schema = new Schema();
     }

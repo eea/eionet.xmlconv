@@ -1145,6 +1145,10 @@ select {
     background: #fff;
     cursor: pointer;
 }
+/* Fix for https://github.com/zurb/foundation-sites/issues/5326 */
+select[size] {
+    height: auto;
+}
 
 /* @group styles that aren't in the central style sheet */
 

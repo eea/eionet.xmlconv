@@ -99,18 +99,6 @@ public class QAScriptsController {
 
         QAScriptForm form = new QAScriptForm();
 
-        /*String scriptId = httpServletRequest.getParameter("scriptId");
-
-        if (scriptId == null || scriptId.equals("")) {
-            scriptId = (String) httpServletRequest.getAttribute("scriptId");
-        } else {
-            httpServletRequest.getSession().setAttribute("scriptId", scriptId);
-        }
-        if (scriptId == null || scriptId.equals("")) {
-            scriptId = (String) httpServletRequest.getSession().getAttribute("scriptId");
-        }*/
-
-
         try {
             QAScriptManager qm = new QAScriptManager();
             QAScript qaScript = qm.getQAScript(scriptId);
@@ -130,14 +118,11 @@ public class QAScriptsController {
             form.setUrl(qaScript.getUrl());
             form.setActive(qaScript.isActive());
 
-            model.addAttribute("QAScriptForm", form);
+            model.addAttribute("form", form);
             model.addAttribute("scripts", QAScriptListLoader.getList(request));
 
         } catch (DCMException e) {
-            LOGGER.error("QA Script form error", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
-            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "/scripts/list";
+            throw new RuntimeException("QA Script form error: " + e.getErrorCode());
         }
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         return "/scripts/view";

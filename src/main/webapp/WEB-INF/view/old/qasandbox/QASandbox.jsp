@@ -79,6 +79,7 @@
 <%--<h1><spring:message code="label.qasandbox.title"/></h1>--%>
 
 <form:form servletRelativeAction="/qaSandbox" method="post" modelAttribute="form">
+  <form:errors path="*" cssStyle="" element="div" />
   <fieldset class="fieldset">
     <legend><spring:message code="label.qasandbox.title"/></legend>
 
@@ -99,56 +100,61 @@
       <button type="submit" name="searchCR" class="button">
         <spring:message code="label.qasandbox.searchXML"/>
       </button>
-      <button type="submit" name="searchScripts" class="button">
+      <button type="submit" name="findScripts" class="button">
         <spring:message code="label.qasandbox.findScripts"/>
       </button>
     </div>
 
       <%-- CR XML files  --%>
-    <c:set var="schema" value="${QASandboxForm.schema}"/>
+    <c:set var="schema" value="${form.schema}"/>
+    <c:set var="countfiles" value="${fn:length(schema.crfiles)}"/>
+
     <c:choose>
-      <c:when test="${!empty schema.crfiles}">
-        <%--<bean:size id="countfiles" name="schema" property="crfiles"/>
-        <bean:define id="crfiles" name="schema" property="crfiles"/>--%>
+      <c:when test="${schema.crfiles != null}">
         <div class="row">
           <label class="question" for="selXml">
             <spring:message code="label.qasandbox.CRxmlfiles"/> (${countfiles})
           </label>
         </div>
 
-        <c:if test="${countfiles > 0}">
-          <div class="row">
-            <div class="columns small-4">
-              <form:select path="sourceUrl" size="5" styleId="selXml">
-                <form:option value="">--</form:option>
-                <form:options items="${crfiles}" name="schema" itemValue="url" itemLabel="label"/>
-              </form:select>
+        <c:choose>
+          <c:when test="${countfiles > 0}">
+            <div class="row">
+              <div class="columns small-4">
+                <form:select path="sourceUrl" id="selXml" size="10">
+                  <form:option value="">--</form:option>
+                  <form:options items="${schema.crfiles}" name="schema" itemValue="url" itemLabel="label"/>
+                </form:select>
+              </div>
+              <div class="columns small-8">
+                <button name="extractSchema" class="button">
+                  <spring:message code="label.qasandbox.extractSchema"/>
+                </button>
+                <button name="manualUrl" class="button">
+                  <spring:message code="label.qasandbox.manualUrl"/>
+                </button>
+              </div>
             </div>
-            <div class="columns small-8">
-              <button name="manualUrl" class="button">
-                <spring:message code="label.qasandbox.manualUrl"/>
+          </c:when>
+          <c:otherwise>
+            <div class="row">
+              <div class="columns small-4">
+                <label class="question" for="txtSourceUrl">
+                  <spring:message code="label.qasandbox.sourceUrl"/>
+                </label>
+              </div>
+              <div class="columns small-8">
+                <form:input type="text" path="sourceUrl" styleId="txtSourceUrl" size="120"/>
+              </div>
+            </div>
+            <div class="row">
+              <button name="extractSchema" class="button">
+                <spring:message code="label.qasandbox.extractSchema"/>
               </button>
             </div>
-          </div>
-        </c:if>
+          </c:otherwise>
+        </c:choose>
 
-        <c:if test="${countfiles = 0}">
-          <div class="row">
-            <div class="columns small-4">
-              <label class="question" for="txtSourceUrl">
-                <spring:message code="label.qasandbox.sourceUrl"/>
-              </label>
-            </div>
-            <div class="columns small-8">
-              <form:input type="text" path="sourceUrl" styleId="txtSourceUrl" size="120"/>
-            </div>
-          </div>
-          <div class="row">
-            <form:button name="extractSchema" class="button">
-              <spring:message code="label.qasandbox.extractSchema"/>
-            </form:button>
-          </div>
-        </c:if>
       </c:when>
       <c:otherwise>
         <%--<fieldset class="fieldset">--%>
@@ -201,7 +207,7 @@
 
 
   <%-- QA script type & content --%>
-  <c:if test="${QASandboxForm.showScripts == false}">
+  <c:if test="${form.showScripts}">
     <c:if test="${permissions.qsiPrm}">
       <fieldset class="fieldset">
       <legend><spring:message code="label.qasandbox.qaScript"/></legend>
@@ -245,12 +251,12 @@
         </c:if>
           <%--  Save content to file --%>
         <c:if test="${permissions.wquPrm}">
-          <c:if test="${form.showScripts == false}">
-            <c:if test="${form.scriptId}">
-              <c:if test="${form.scriptId == 0}">
-                <form:button name="saveFile" class="button">
+          <c:if test="${!form.showScripts}">
+            <c:if test="${form.scriptId = 0}">
+              <c:if test="${form.scriptId != 0}">
+                <button name="saveFile" class="button">
                   <spring:message code="label.qasandbox.saveFile"/>
-                </form:button>
+                </button>
               </c:if>
             </c:if>
           </c:if>
@@ -261,7 +267,7 @@
   </c:if>
 
   <%-- List of available QA scripts --%>
-  <c:if test="${form.showScripts == true}">
+  <c:if test="${form.showScripts}">
     <div class="row">
       <label class="question">
         <spring:message code="label.qasandbox.qaScripts"/>
@@ -285,7 +291,7 @@
       </div>
     </div>
 
-    <c:if test="${form.scriptsPresent == false}">
+    <c:if test="${!form.scriptsPresent}">
       <div class="row">
         <spring:message code="label.qasandbox.noScripts"/>
       </div>
@@ -293,12 +299,12 @@
 
     <c:set var="scripts" value="${schema.qascripts}"/>
     <c:if test="${!empty schema.qascripts}">
-      <c:if test="${countscripts == 0}">
+      <c:set var="countscripts" value="${fn:length(scripts)}" />
+      <c:if test="${countscripts > 0}">
         <c:forEach items="${schema.qascripts}" var="qascript">
           <c:set var="listScriptId" value="${qascript.scriptId}"/>
           <div class="row">
-            <form:radiobutton path="scriptId" property="scriptId" value="${listScriptId}"
-                              styleId="rad_${listScriptId}"/>
+            <form:radiobutton path="scriptId" property="scriptId" value="${listScriptId}" styleId="rad_${listScriptId}"/>
             <label class="question" for="rad_${listScriptId}">
                 ${qascripts.shortName}
             </label>
@@ -306,12 +312,12 @@
                       <a href="/scripts/${scriptId}" title="label.qascript.view">
                           ${qascript.fileName}
                       </a>
-                      (${qascripts.scriptType})
-                      <c:if test="${qascript.permissions == 'qsuPrm'}">
+                      (${qascript.scriptType})
+                      <c:if test="${permissions.qsuPrm}">
                         <%--  If scriptType is NOT 'FME' --%>
                         <%--paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.editScriptTitle">--%>
                         <%--value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">--%>
-                        <c:if test="${qascript.scriptType == 'fme'}">
+                        <c:if test="${qascript.scriptType != 'fme'}">
                           <a href="/qasandbox/editQAScript/${scriptId}">
                             <spring:message code="label.qasandbox.editScript"/>
                           </a>
@@ -322,17 +328,16 @@
         </c:forEach>
       </c:if>
     </c:if>
-    <c:if test="${schema.doValidation == true}">
+    <c:if test="${schema.doValidation}">
       <div class="row">
         <form:radiobutton path="scriptId" property="scriptId" value="-1" styleId="radioValidate"/>
-        <label class="question" for="radioValidate"><spring:message
-                code="label.qasandbox.schemaValidation"/></label>
+        <label class="question" for="radioValidate"><spring:message code="label.qasandbox.schemaValidation"/></label>
       </div>
     </c:if>
     <c:if test="${permissions.qsiPrm}">
       <div class="row">
           <%--do/editQAScriptInSandbox?scriptId=0  titleKey="label.qasandbox.editScriptTitle"--%>
-        <a href="/qaSandbox/editQAScript/0">
+        <a href="/qaSandbox/scripts/0/edit">
           <spring:message code="label.qasandbox.writeScript"/>
         </a>
       </div>
@@ -341,13 +346,13 @@
       &nbsp;
     </div>
     <div class="row">
-      <form:button name="runNow" class="button">
+      <button name="runScript" class="button">
         <spring:message code="label.qasandbox.runNow"/>
-      </form:button>
+      </button>
       <c:if test="${permissions.wqiPrm}">
-        <form:button name="addToWorkqueuee" class="button">
+        <button name="addToWorkqueuee" class="button">
           <spring:message code="label.qasandbox.addToWorkqueue"/>
-        </form:button>
+        </button>
       </c:if>
     </div>
   </c:if>
@@ -356,7 +361,8 @@
   </fieldset>
 </form:form>
 
-<c:if test="${permissions.qsuPrm}">
+<%--TODO FIX asap--%>
+<c:if test="${permissions.qsuPrm == 'a'}">
   <c:if test="${not(fn:contains(header['User-Agent'],'MSIE 9.0'))}">
     <button style="float:right;" id="clickable">Upload file</button>
     <form action="/qasandbox/upload" id="my-dropzone" class="dropzone">
