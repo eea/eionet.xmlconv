@@ -18,6 +18,7 @@
   <%--<h1><spring:message code="label.qascript.edit"/></h1>--%>
 
   <form:form action="/scripts" method="post" enctype="multipart/form-data" modelAttribute="QAScriptForm">
+    <form:errors path="*" cssClass="error-msg" element="div"/>
     <fieldset class="fieldset">
       <legend><spring:message code="label.qascript.edit"/></legend>
       <div class="row">

@@ -8,7 +8,8 @@
 <h1><spring:message code="label.schema.edit"/></h1>
 
 <form:form servletRelativeAction="/schemas/actions" method="post" enctype="multipart/form-data"
-           modelAttribute="schemaForm">
+           modelAttribute="form">
+  <form:errors path="*" cssClass="error-msg" element="div"/>
   <fieldset class="fieldset">
     <legend><spring:message code="label.schema.fldset.properties"/></legend>
     <div class="row">
@@ -73,7 +74,7 @@
         <form:input path="expireDate" id="txtExpireDate"/> (dd/MM/yyyy)
       </div>
     </div>
-    <c:if test="${schemaForm.dtd}">
+    <c:if test="${form.dtd}">
       <div class="row">
         <div class="columns small-4">
           <label class="question" for="txtDtdId">
@@ -107,11 +108,11 @@
         </label>
       </div>
       <div class="columns small-8">
-        <c:if test="${!empty schemaForm.uplSchemaFileName}">
-          <a href="${schemaForm.uplSchemaFileUrl}"
-             title="${schemaForm.uplSchemaFileUrl}">${schemaForm.uplSchemaFileUrl}</a>&#160;
-          <c:if test="${schemaForm.lastModified}">
-            &#160;&#160;(<spring:message code="label.lastmodified"/>: ${schemaForm.lastModified})
+        <c:if test="${!empty form.uplSchemaFileName}">
+          <a href="${form.uplSchemaFileUrl}"
+             title="${form.uplSchemaFileUrl}">${form.uplSchemaFileUrl}</a>&#160;
+          <c:if test="${form.lastModified}">
+            &#160;&#160;(<spring:message code="label.lastmodified"/>: ${form.lastModified})
           </c:if>
         </c:if>
       </div>
@@ -126,7 +127,7 @@
         <spring:message code="label.uplSchema.upload"/>
       </button>
     </c:if>
-    <c:if test="${schemaForm.uplSchemaFileName}">
+    <c:if test="${form.uplSchemaFileName}">
       <c:if test="${rootElements.xsddPrm}">
         <button type="submit" name="action" value="delete">
           <spring:message code="label.schema.deleteFile"/>
@@ -140,7 +141,7 @@
         </c:if>
       </c:if>
     </c:if>
-    <c:if test="${!schemaForm.uplSchemaFileName}">
+    <c:if test="${!form.uplSchemaFileName}">
       <c:if test="${rootElements.schemaIdRemoteUrl}">
         <button type="submit" name="action" value="diff">
           <spring:message code="label.uplSchema.createcopy"/>

@@ -37,6 +37,7 @@
   <c:forEach varStatus="i" items="${scripts.qascripts}" var="schema">
     <div class="visualClear">&nbsp;</div>
     <form:form action="/schemas" method="post" modelAttribute="schemaForm">
+      <form:errors path="*" cssClass="error-msg" element="div"/>
       <fieldset class="fieldset">
         <legend><spring:message code="label.schema.qascripts"/>&nbsp;${schema.schema}</legend>
         <div class="row">
@@ -85,6 +86,7 @@
 
     <c:if test="${!empty scripts.qascripts}">
       <form:form action="/searchCR" method="post" modelAttribute="scriptForm">
+        <form:errors path="*" cssClass="error-msg" element="div"/>
         <table class="datatable results" width="100%">
           <c:if test="${permissions.ssdPrm}">
             <col style="width:10px"/>

@@ -7,6 +7,7 @@
 <ed:breadcrumbs-push label="DB configuration" level="1"/>
 
 <form:form servletRelativeAction="/config/database" method="post" modelAttribute="form">
+  <form:errors path="*" cssClass="error-msg" element="div"/>
   <fieldset class="fieldset">
     <legend><spring:message code="label.config.db.admin"/></legend>
     <div class="row">

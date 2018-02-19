@@ -11,6 +11,7 @@
 
 
 <form:form action="/syncUplSchema" method="post">
+  <form:errors path="*" cssClass="error-msg" element="div"/>
 
   <p>
     Do you want to store the remote schema as a cached copy?

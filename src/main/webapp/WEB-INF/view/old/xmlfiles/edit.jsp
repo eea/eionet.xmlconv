@@ -4,6 +4,7 @@
 <h1><spring:message code="label.title.uplXmlFile.edit"/></h1>
 
 <form:form servletRelativeAction="/xmlFiles" method="post" enctype="multipart/form-data" modelAttribute="form">
+  <form:errors path="*" cssClass="error-msg" element="div"/>
   <fieldset class="fieldset">
     <div class="row">
       <div class="columns small-4">

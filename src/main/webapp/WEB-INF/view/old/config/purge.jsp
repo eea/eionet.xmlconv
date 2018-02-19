@@ -10,6 +10,7 @@
   <ed:breadcrumbs-push label="Purge" level="1"/>
 
   <form:form action="/config/purge" method="post" modelAttribute="form">
+    <form:errors path="*" cssClass="error-msg" element="div"/>
     <fieldset class="fieldset">
       <legend><spring:message code="label.config.purge.title"/></legend>
       <div class="row">

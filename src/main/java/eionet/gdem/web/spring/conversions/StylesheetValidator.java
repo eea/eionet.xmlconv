@@ -28,7 +28,7 @@ public class StylesheetValidator implements Validator {
         String description = stylesheetForm.getDescription();
 
         if (xslFile == null || xslFile.getSize() == 0) {
-            errors.rejectValue("xslFile", "label.stylesheet.validation");
+            errors.rejectValue("xslfile", "label.stylesheet.validation");
         }
         if (description == null || description.isEmpty()) {
             errors.rejectValue("description","label.stylesheet.error.descriptionMissing");

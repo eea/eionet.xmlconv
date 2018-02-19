@@ -56,7 +56,7 @@ public class HostsController {
                     hosts.add(h);
                 }
             } else {
-                throw new AccessDeniedException(messageService.getMessage("error.vnoperm", "label.hosts"));
+                throw new AccessDeniedException(messageService.getMessageInt("error.vnoperm", "label.hosts"));
             }
         } catch (SignOnException | SQLException e) {
             LOGGER.error("Access denied", e);

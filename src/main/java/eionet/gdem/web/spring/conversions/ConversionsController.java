@@ -360,10 +360,7 @@ public class ConversionsController {
         try {
             stylesheet.setXslContent(new String(xslFile.getBytes(), "UTF-8"));
         } catch (IOException e) {
-            LOGGER.error("File reading error: ", e);
-            errors.add(messageService.getMessage("File reading error"));
-            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "/conversions/add";
+            throw new RuntimeException("File reading error: " + e.getMessage());
         } finally {
             /*xslFile.destroy();*/
         }
@@ -374,7 +371,7 @@ public class ConversionsController {
             x.checkFromString(stylesheet.getXslContent());
         } catch (XmlException e) {
             LOGGER.error("Add stylesheet error", e);
-            bindingResult.rejectValue("xslFile", "Invalid XSL file");
+            bindingResult.rejectValue("xslfile", "Invalid XSL file");
         }
 
         if (errors.isEmpty()) {

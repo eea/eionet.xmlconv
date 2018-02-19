@@ -8,6 +8,7 @@
   <ed:breadcrumbs-push label="LDAP configuration" level="1"/>
 
   <form:form action="/config/ldap" method="post" modelAttribute="form">
+    <form:errors path="*" cssClass="error-msg" element="div"/>
     <fieldset class="fieldset">
       <legend><spring:message code="label.config.ldap.admin"/></legend>
       <div class="row">

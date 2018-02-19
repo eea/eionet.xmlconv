@@ -57,6 +57,7 @@
   </c:if>
 
   <form:form servletRelativeAction="/validation" method="post" modelAttribute="form">
+    <form:errors path="*" cssClass="error-msg" element="div"/>
     <fieldset class="fieldset">
       <legend><spring:message code="label.conversion.validate.title"/></legend>
       <div class="row">

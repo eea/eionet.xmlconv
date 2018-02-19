@@ -6,6 +6,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  *
@@ -24,5 +27,14 @@ public class MessageService {
     public String getMessage(String key, Object... strings) {
         String value = messageSource.getMessage(key, strings, LocaleContextHolder.getLocale());
         return StringUtils.defaultIfEmpty(value, key);
+    }
+
+    public String getMessageInt(String key, Object... strings) {
+        List<String> params = new ArrayList<>();
+        for (Object s: strings) {
+            String val = messageSource.getMessage((String) s, null, LocaleContextHolder.getLocale());
+            params.add(val);
+        }
+        return getMessage(key, params.toArray());
     }
 }

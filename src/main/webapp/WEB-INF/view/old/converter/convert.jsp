@@ -8,6 +8,7 @@
   <ed:breadcrumbs-push label="Convert XML" level="1"/>
 
   <form:form servletRelativeAction="/converter" method="post" modelAttribute="form">
+    <form:errors path="*" cssClass="error-msg" element="div"/>
     <fieldset class="fieldset">
       <legend><spring:message code="label.conversion.find"/></legend>
       <div class="row">

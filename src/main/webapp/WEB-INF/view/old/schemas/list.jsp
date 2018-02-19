@@ -18,6 +18,7 @@
 
   <c:if test="${!empty schemas.schemas}">
     <form:form servletRelativeAction="/schemas" method="post" modelAttribute="form">
+      <form:errors path="*" cssClass="error-msg" element="div"/>
       <table class="datatable results" width="100%">
         <c:if test="${schemas.ssdPrm}">
           <col style="width:5%"/>

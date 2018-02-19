@@ -8,6 +8,7 @@
   <ed:breadcrumbs-push label="System configuration" level="1"/>
 
   <form:form servletRelativeAction="/config/system" method="post" modelAttribute="form">
+    <form:errors path="*" cssClass="error-msg" element="div"/>
     <fieldset class="fieldset">
       <legend><spring:message code="label.config.system.admin"/></legend>
       <div class="row">

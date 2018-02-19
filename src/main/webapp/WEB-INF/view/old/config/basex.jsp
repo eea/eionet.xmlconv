@@ -10,6 +10,7 @@
   <div class="warning-msg">This feature is currently disabled - Local BaseX is being used</div>
 
   <form:form servletRelativeAction="/config/basex" method="post" modelAttribute="form">
+    <form:errors path="*" cssClass="error-msg" element="div"/>
     <fieldset class="fieldset">
       <legend><spring:message code="label.config.basexserver.title"/></legend>
       <div class="row">

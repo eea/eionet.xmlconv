@@ -6,21 +6,17 @@
   <tiles:putAttribute name="selectedTab" value="schema"/>
 </tiles:insertDefinition>
 
-<%--<c:if test="${!empty schemaForm.schema}">--%>
-
-<%--</c:if>--%>
-
-<%--<h1><spring:message code="label.schema.view"/></h1>--%>
+<h1><spring:message code="label.schema.view"/></h1>
 
 <c:if test="${rootElements.xsduPrm}">
   <div id="operations">
     <ul>
-      <li><a href="/schemas/${schemaForm.schemaId}/edit"><spring:message code="label.schema.edit.button"/></a></li>
+      <li><a href="/schemas/${form.schemaId}/edit"><spring:message code="label.schema.edit.button"/></a></li>
     </ul>
   </div>
 </c:if>
 
-<c:if test="${!empty schemaForm.schema}">
+<c:if test="${!empty form.schema}">
 
     <table class="datatable results">
       <caption><spring:message code="label.schema.fldset.properties"/></caption>
@@ -31,7 +27,7 @@
           <spring:message code="label.schema.url"/>
         </th>
         <td align="left">
-          <a href="${schemaForm.schema}">${schemaForm.schema}</a>
+          <a href="${form.schema}">${form.schema}</a>
         </td>
       </tr>
       <tr>
@@ -39,7 +35,7 @@
           <spring:message code="label.schema.description"/>
         </th>
         <td align="left">
-            ${schemaForm.description}
+            ${form.description}
         </td>
       </tr>
       <tr>
@@ -47,7 +43,7 @@
           <spring:message code="label.schema.language"/>
         </th>
         <td>
-            ${schemaForm.schemaLang}
+            ${form.schemaLang}
         </td>
       </tr>
       <tr>
@@ -55,7 +51,7 @@
           <spring:message code="label.schema.dovalidation"/>
         </th>
         <td>
-            ${schemaForm.doValidation}
+            ${form.doValidation}
         </td>
       </tr>
       <tr>
@@ -63,7 +59,7 @@
           <spring:message code="label.schema.isBlockerValidation"/>
         </th>
         <td>
-            ${schemaForm.blocker}
+            ${form.blocker}
         </td>
       </tr>
       <tr>
@@ -71,16 +67,16 @@
           <spring:message code="label.schema.expireDate"/>
         </th>
         <td>
-            ${schemaForm.longExpireDate}
+            ${form.longExpireDate}
         </td>
       </tr>
-      <c:if test="${schemaForm.dtd}">
+      <c:if test="${form.dtd}">
         <tr>
           <th scope="row" class="scope-row">
             <spring:message code="label.elem.dtdid"/>
           </th>
           <td align="left">
-              ${schemaForm.dtdId}
+              ${form.dtdId}
           </td>
         </tr>
       </c:if>
@@ -89,12 +85,12 @@
           <spring:message code="label.uplSchema.schemaFile"/>
         </th>
         <td>
-          <c:if test="${!empty schemaForm.uplSchemaFileName}">
-            <a href="${schemaForm.uplSchemaFileUrl}">
-                ${schemaForm.uplSchemaFileName}
+          <c:if test="${!empty form.uplSchemaFileName}">
+            <a href="${form.uplSchemaFileUrl}">
+                ${form.uplSchemaFileName}
             </a>&#160;
-            <c:if test="${!empty schemaForm.lastModified}">
-              &#160;&#160;(<spring:message code="label.lastmodified"/>: ${schemaForm.lastModified})
+            <c:if test="${!empty form.lastModified}">
+              &#160;&#160;(<spring:message code="label.lastmodified"/>: ${form.lastModified})
             </c:if>
           </c:if>
         </td>
@@ -116,7 +112,7 @@
         <tbody>
         <c:if test="${!empty rootElements.rootElem}">
           <%--id="elem" name="schema.rootElements" property="rootElem" type="RootElem">--%>
-          <c:forEach varStatus="i" items="${schema.rootElements.rootElem}" var="elem">
+          <c:forEach varStatus="i" items="${rootElements.rootElem}" var="elem">
             <tr class="${i.index % 2 == 1 ? 'zebraeven' : ''}">
               <td>
                   ${elem.name}

@@ -3,6 +3,7 @@
 <ed:breadcrumbs-push label="Add Host" level="2"/>
 
 <form:form action="/hosts" method="post" modelAttribute="form">
+  <form:errors path="*" cssClass="error-msg" element="div"/>
   <fieldset class="fieldset">
     <legend><spring:message code="label.hosts.add_title"/></legend>
     <div class="row">

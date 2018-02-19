@@ -10,6 +10,7 @@
 
 <c:if test="${!empty conversions.handCodedStylesheets}">
   <form:form action="/searchCR" method="post">
+    <form:errors path="*" cssClass="error-msg" element="div"/>
 
     <%--<bean:define id="schemaUrl" name="schema" scope="request" type="String"/>--%>
     <%--id="schema" name="schema.stylesheets" property="handCodedStylesheets" type="Schema">--%>
