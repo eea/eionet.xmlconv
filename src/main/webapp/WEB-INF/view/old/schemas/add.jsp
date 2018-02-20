@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <ed:breadcrumbs-push label="Upload Schema" level="2"/>
-<%--<h1><spring:message code="label.title.uplSchema.add"/></h1>--%>
+<h1><spring:message code="label.title.uplSchema.add"/></h1>
 
 <form:form servletRelativeAction="/schemas/add" method="post" enctype="multipart/form-data" modelAttribute="form">
   <form:errors path="*" cssClass="error-msg" element="div"/>
@@ -45,7 +45,7 @@
       </div>
       <div class="columns small-8">
         <form:select path="schemaLang" styleId="txtSchemaLang" value="XSD">
-          <form:options items="${schemaForm.schemaLanguages}"/>
+          <form:options items="${form.schemaLanguages}"/>
         </form:select>
       </div>
     </div>

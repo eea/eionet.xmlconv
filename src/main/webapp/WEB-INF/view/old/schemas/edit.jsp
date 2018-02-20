@@ -7,7 +7,7 @@
 <ed:breadcrumbs-push label="Edit XML Schema or DTD" level="2"/>
 <h1><spring:message code="label.schema.edit"/></h1>
 
-<form:form servletRelativeAction="/schemas/actions" method="post" enctype="multipart/form-data"
+<form:form servletRelativeAction="/schemas" method="post" enctype="multipart/form-data"
            modelAttribute="form">
   <form:errors path="*" cssClass="error-msg" element="div"/>
   <fieldset class="fieldset">
@@ -40,7 +40,7 @@
       </div>
       <div class="columns small-8">
         <form:select path="schemaLang" id="txtSchemaLang">
-          <form:options items="${schemaForm.schemaLanguages}"/>
+          <form:options items="${form.schemaLanguages}"/>
         </form:select>
       </div>
     </div>

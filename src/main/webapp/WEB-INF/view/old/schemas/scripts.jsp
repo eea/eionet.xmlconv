@@ -11,8 +11,10 @@
 <c:if test="${permissions.ssiPrm}">
   <div id="operations">
     <ul>
-      <li><a href="/schemas/${schemaId}/scripts/add"><spring:message code="label.qascript.add"/></a></li>
-      <li><a href="/qaSandbox/run/${schemaId}" title="label.qascript.runservice.title"><spring:message code="label.qascript.runservice"/></a></li>
+      <spring:message code="label.qascript.runservice.title" var="title"/>
+      <li><a href="/schemas/${schemaId}/scripts/add" title="${title}"><spring:message code="label.qascript.add"/></a></li>
+      <spring:message code="label.qascript.runservice.title" var="title"/>
+      <li><a href="/qaSandbox/run/${schemaId}" title="${title}"><spring:message code="label.qascript.runservice"/></a></li>
     </ul>
   </div>
 </c:if>
@@ -56,7 +58,7 @@
           </div>
           <div class="columns small-2">
             <c:if test="${permissions.ssiPrm}">
-              <button type="submit" class="button" name="save" value="save">
+              <button type="submit" class="button" name="update" value="save">
                 <spring:message code="label.save"/>
               </button>
               <input type="hidden" name="schemaId" value="${schema.id}"/>
@@ -84,7 +86,7 @@
       </fieldset>
     </form:form>
 
-    <c:if test="${!empty scripts.qascripts}">
+    <c:if test="${!empty schema.qascripts}">
       <form:form action="/searchCR" method="post" modelAttribute="scriptForm">
         <form:errors path="*" cssClass="error-msg" element="div"/>
         <table class="datatable results" width="100%">
@@ -190,27 +192,20 @@
           </c:forEach>
           </tbody>
         </table>
-        <%--<div class="boxbottombuttons">--%>
-          <%----%>
-        <%--</div>--%>
         <c:if test="${permissions.ssdPrm}">
           <button type="button" class="button" name="delete">
             <spring:message code="label.qascript.delete"/>
           </button>
           <input type="hidden" name="schemaId" value="${schemaId}"/>
-        </c:if>
-        <c:if test="${permissions.ssdPrm}">
           <button type="button" class="button" name="activate">
             <spring:message code="label.qascript.activate"/>
           </button>
           <input type="hidden" name="schemaId" value="${schemaId}"/>
-        </c:if>
-        <c:if test="${permissions.ssdPrm}">
           <button type="submit" class="button" name="deactivate">
             <spring:message code="label.qascript.deactivate"/>
           </button>
           <input type="hidden" name="schemaId" value="${schemaId}"/>
-        </c:if>
+          </c:if>
         </div>
       </form:form>
 
@@ -222,5 +217,4 @@
     </c:if>
   </c:forEach>
 
-  <div class="visualClear">&nbsp;</div>
 </c:if>

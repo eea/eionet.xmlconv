@@ -4,6 +4,7 @@ package eionet.gdem.web.spring.schemas;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.FileUploadWrapper;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
@@ -32,7 +33,7 @@ public class SchemaForm {
 
     private String uplSchemaFileUrl;
 
-    private FileUploadWrapper schemaFile;
+    private MultipartFile schemaFile;
 
     private String lastModified;
 
@@ -86,7 +87,7 @@ public class SchemaForm {
         return schema;
     }
 
-    public FileUploadWrapper getSchemaFile() {
+    public MultipartFile getSchemaFile() {
         return schemaFile;
     }
 
@@ -197,7 +198,7 @@ public class SchemaForm {
         this.schema = schema;
     }
 
-    public void setSchemaFile(FileUploadWrapper schemaFile) {
+    public void setSchemaFile(MultipartFile schemaFile) {
         this.schemaFile = schemaFile;
     }
 

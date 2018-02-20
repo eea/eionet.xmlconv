@@ -42,30 +42,24 @@ public class SchemasController {
     }
 
     @GetMapping
-    public String list(Model model, HttpSession session) {
-        UplSchemaHolder holder = null;
-        SpringMessages errors = new SpringMessages();
+    public String list(@ModelAttribute("form") SingleForm form, Model model, HttpSession session) {
 
         String user = (String) session.getAttribute("user");
 
         try {
             SchemaManager sm = new SchemaManager();
-            holder = sm.getAllSchemas(user);
-            SingleForm cForm = new SingleForm();
-            model.addAttribute("form", cForm);
+            UplSchemaHolder holder = sm.getAllSchemas(user);
+            model.addAttribute("form", form);
             model.addAttribute("schemas", holder);
         } catch (DCMException e) {
-            LOGGER.error("Upload schema form error", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
+            throw new RuntimeException("Upload schema form error: " + e.getErrorCode());
         }
-        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         return "/schemas/list";
     }
 
 
     @GetMapping("/add")
-    public String add(@ModelAttribute("form") UploadSchemaForm form, Model model) {
-        model.addAttribute("form", form);
+    public String add(@ModelAttribute("form") UploadSchemaForm form) {
         return "/schemas/add";
     }
 
@@ -74,6 +68,8 @@ public class SchemasController {
                             BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         SpringMessages messages = new SpringMessages();
+
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
 
         MultipartFile schemaFile = form.getSchemaFile();
         String desc = form.getDescription();
@@ -86,8 +82,6 @@ public class SchemasController {
         if (bindingResult.hasErrors()) {
             return "/schemas/add";
         }
-
-        String user = (String) httpServletRequest.getSession().getAttribute("user");
 
         try {
             SchemaManager sm = new SchemaManager();
@@ -119,7 +113,7 @@ public class SchemasController {
             StylesheetListLoader.reloadStylesheetList(httpServletRequest);
             StylesheetListLoader.reloadConversionSchemasList(httpServletRequest);
         } catch (DCMException e) {
-            throw new RuntimeException("Error adding upload schema: " + e.getErrorCode());
+            throw new RuntimeException("Error adding upload schema: " + messageService.getMessage(e.getErrorCode()));
         }
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/schemas";
@@ -216,7 +210,7 @@ public class SchemasController {
     }
 
     @PostMapping(params = {"update"})
-    public String editSubmit(@ModelAttribute SchemaForm form, HttpServletRequest httpServletRequest,
+    public String editSubmit(@ModelAttribute("form") SchemaForm form, @ModelAttribute SchemaElemHolder seHolder, HttpServletRequest httpServletRequest,
                              BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes) {
         SpringMessages messages = new SpringMessages();
 

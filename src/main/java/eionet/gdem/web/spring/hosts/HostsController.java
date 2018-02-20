@@ -40,9 +40,9 @@ public class HostsController {
     }
 
     @GetMapping
-    public String list(Model model, HttpSession session) {
+    public String list(@ModelAttribute("form") SingleForm form, Model model, HttpSession session) {
 
-        List hosts = new ArrayList();
+        List<HostDto> hosts = new ArrayList();
         String user = (String) session.getAttribute("user");
         try {
             if (SecurityUtil.hasPerm(user, "/host", "v")) {
@@ -63,8 +63,6 @@ public class HostsController {
             throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
         model.addAttribute("hosts", hosts);
-        SingleForm form = new SingleForm();
-        model.addAttribute("form", form);
         return "/hosts/list";
     }
 

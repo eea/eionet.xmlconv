@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,34 +43,22 @@ public class ValidationController {
     }
 
     @GetMapping
-    public String form(@ModelAttribute(name = "form") ValidationForm form, Model model) {
-
-        SpringMessages errors = new SpringMessages();
-        model.addAttribute("form", form);
-        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+    public String form(@ModelAttribute("form") ValidationForm form) {
         return "/validation";
     }
 
     @PostMapping
-    public String formSubmit(@ModelAttribute(name = "form") ValidationForm form, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String formSubmit(@ModelAttribute("form") ValidationForm form, BindingResult bindingResult, Model model) {
 
-        String ticket = (String) session.getAttribute(Constants.TICKET_ATT);
+//        String ticket = (String) session.getAttribute(Constants.TICKET_ATT);
         SpringMessages errors = new SpringMessages();
 
         String url = form.getXmlUrl();
         String schema = form.getSchemaUrl();
 
-        redirectAttributes.addFlashAttribute("form", form);
-
-        if (Utils.isNullStr(url)) {
-            errors.add(messageService.getMessage("label.conversion.selectSource"));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/validation";
-        }
-        if (!Utils.isURL(url)) {
-            errors.add(messageService.getMessage(BusinessConstants.EXCEPTION_CONVERT_URL_MALFORMED));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/validation";
+        new ValidationFormValidator().validate(form, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/validation";
         }
 
         try {
@@ -79,8 +68,6 @@ public class ValidationController {
             String warningMessage = null;
 
             ValidationService v = new JaxpValidationService();
-            //v.setTrustedMode(false);
-            //v.setTicket(ticket);
             if (schema == null) {
                 v.validate(url);
             } else {
@@ -90,19 +77,16 @@ public class ValidationController {
             validatedSchema = v.getValidatedSchemaURL();
             originalSchema = v.getOriginalSchema();
             warningMessage = v.getWarningMessage();
-            redirectAttributes.addFlashAttribute("validationErrors", validationErrors);
-            redirectAttributes.addFlashAttribute("originalSchema", originalSchema);
+            model.addAttribute("validationErrors", validationErrors);
+            model.addAttribute("originalSchema", originalSchema);
             if (!StringUtils.equals(originalSchema, validatedSchema)) {
-                redirectAttributes.addFlashAttribute("validatedSchema", validatedSchema);
+                model.addAttribute("validatedSchema", validatedSchema);
             }
-            redirectAttributes.addFlashAttribute("warningMessage", warningMessage);
+            model.addAttribute("warningMessage", warningMessage);
         } catch (DCMException e) {
-            LOGGER.error("Error validating xml", e);
-            errors.add(messageService.getMessage(BusinessConstants.EXCEPTION_VALIDATION_ERROR));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/validation";
+            throw new RuntimeException("Error validating xml: " + messageService.getMessage(e.getErrorCode()));
         }
-        return "redirect:/validation";
+        return "/validation";
     }
 
 }

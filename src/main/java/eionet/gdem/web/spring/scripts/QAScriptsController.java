@@ -31,6 +31,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -52,23 +53,16 @@ public class QAScriptsController {
 
     @GetMapping
     public String list(Model model, HttpServletRequest request) {
-
-        SpringMessages errors = new SpringMessages();
-
         try {
             model.addAttribute("scripts", QAScriptListLoader.getList(request));
         } catch (DCMException e) {
-            LOGGER.error("Error getting QA scripts list", e);
-            errors.add(messageService.getMessage("label.exception.unknown"));
+            throw new RuntimeException("Error getting QA scripts list: " + messageService.getMessage(e.getErrorCode()));
         }
-        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         return "/scripts/list";
     }
 
     @GetMapping("/add")
-    public String add(@ModelAttribute QAScriptForm form, Model model) {
-        model.addAttribute("form", form);
-        // todo fix this
+    public String add(@ModelAttribute("form") QAScriptForm form, Model model) {
         model.addAttribute("resulttypes", AppServletContextListener.loadConvTypes(XQScript.SCRIPT_RESULTTYPES));
         model.addAttribute("scriptlangs", AppServletContextListener.loadConvTypes(XQScript.SCRIPT_LANGS));
         return "/scripts/add";
@@ -83,9 +77,7 @@ public class QAScriptsController {
             BackupManager bm = new BackupManager();
             l = bm.getBackups(id);
         } catch (DCMException e) {
-            LOGGER.error("Error getting history for QA scripts list", e);
-            errors.add(messageService.getMessage("label.exception.unknown"));
-            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+            throw new RuntimeException("Error getting history for QA scripts list: " + messageService.getMessage(e.getErrorCode()));
         }
         model.addAttribute("history", l);
         model.addAttribute("scriptId", id);
@@ -93,11 +85,7 @@ public class QAScriptsController {
     }
 
     @GetMapping("/{scriptId}")
-    public String show(@PathVariable String scriptId, Model model, HttpServletRequest request) {
-
-        SpringMessages errors = new SpringMessages();
-
-        QAScriptForm form = new QAScriptForm();
+    public String show(@PathVariable String scriptId, @ModelAttribute("form") QAScriptForm form, Model model, HttpServletRequest request) {
 
         try {
             QAScriptManager qm = new QAScriptManager();
@@ -118,22 +106,16 @@ public class QAScriptsController {
             form.setUrl(qaScript.getUrl());
             form.setActive(qaScript.isActive());
 
-            model.addAttribute("form", form);
             model.addAttribute("scripts", QAScriptListLoader.getList(request));
-
         } catch (DCMException e) {
-            throw new RuntimeException("QA Script form error: " + e.getErrorCode());
+            throw new RuntimeException("QA Script form error: " + messageService.getMessage(e.getErrorCode()));
         }
-        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         return "/scripts/view";
     }
 
     @GetMapping("/{id}/edit")
-    public String edit(@PathVariable String id, Model model, HttpServletRequest request) {
+    public String edit(@PathVariable String id, @ModelAttribute("form") QAScriptForm form, Model model, HttpServletRequest request) {
 
-        SpringMessages errors = new SpringMessages();
-
-        QAScriptForm form = new QAScriptForm();
         try {
             QAScriptManager qm = new QAScriptManager();
             QAScript qaScript = qm.getQAScript(id);
@@ -153,24 +135,21 @@ public class QAScriptsController {
             form.setUrl(qaScript.getUrl());
             form.setActive(qaScript.isActive());
 
-            model.addAttribute("QAScriptForm", form);
             model.addAttribute("scripts", QAScriptListLoader.getList(request));
 
         } catch (DCMException e) {
-            LOGGER.error("QA Script form error", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
-            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "/scripts/list";
+            throw new RuntimeException("QA Script form error: " + messageService.getMessage(e.getErrorCode()));
         }
-        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         return "/scripts/edit";
     }
 
     @PostMapping(params = {"update"})
-    public String editSubmit(@ModelAttribute QAScriptForm form, RedirectAttributes redirectAttributes, HttpSession session, HttpServletRequest request) {
+    public String editSubmit(@ModelAttribute("form") QAScriptForm form,
+                             BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
-        SpringMessages errors = new SpringMessages();
         SpringMessages messages = new SpringMessages();
+
+        String user = (String) request.getSession().getAttribute("user");
 
         String scriptId = form.getScriptId();
         String schemaId = form.getSchemaId();
@@ -188,14 +167,6 @@ public class QAScriptsController {
 
         boolean updateContent = false;
         String newChecksum = null;
-
-        String user = (String) session.getAttribute("user");
-
-        /*httpServletRequest.setAttribute("scriptId", scriptId);*/
-
-        /*if (isCancelled(httpServletRequest)) {
-            return findForward(actionMapping, "success", scriptId);
-        }*/
 
         if (!Utils.isNullStr(curFileName) && !Utils.isNullStr(scriptContent)
                 && scriptContent.indexOf(Constants.FILEREAD_EXCEPTION) == -1) {
@@ -216,39 +187,25 @@ public class QAScriptsController {
             updateContent = !checksum.equals(newChecksum);
         }
 
-        // Zip result type can only be selected for FME scripts
-        if (!XQScript.SCRIPT_LANG_FME.equals(scriptType) && XQScript.SCRIPT_RESULTTYPE_ZIP.equals(resultType)) {
-            errors.add(messageService.getMessage("label.qascript.zip.validation"));
+        new QAScriptValidator().validate(form, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/scripts/edit";
         }
 
-        // upper limit between 0 and 10Gb
-        if (upperLimit == null || !Utils.isNum(upperLimit) || Integer.parseInt(upperLimit) <= 0
-                || Integer.parseInt(upperLimit) > 10000) {
-            errors.add(messageService.getMessage("label.qascript.upperlimit.validation"));
-        }
-
-        if (errors.isEmpty()) {
-            try {
-                QAScriptManager qm = new QAScriptManager();
-                qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, upperLimit,
-                        url, scriptContent, updateContent);
-                messages.add(messageService.getMessage("label.qascript.updated"));
-                qm.activateDeactivate(user, scriptId, active);
-                // clear qascript list in cache
-                QAScriptListLoader.reloadList(request);
-            } catch (DCMException e) {
-                LOGGER.error("Edit QA script error", e);
-                errors.add(messageService.getMessage(e.getErrorCode()));
-            }
-        }
-
-        if (!errors.isEmpty()) {
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/scripts/{scriptId}/edit";
+        try {
+            QAScriptManager qm = new QAScriptManager();
+            qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, upperLimit,
+                    url, scriptContent, updateContent);
+            qm.activateDeactivate(user, scriptId, active);
+            // clear qascript list in cache
+            QAScriptListLoader.reloadList(request);
+            messages.add(messageService.getMessage("label.qascript.updated"));
+        } catch (DCMException e) {
+            throw new RuntimeException("Edit QA script error: " + messageService.getMessage(e.getErrorCode()));
         }
 
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
-        redirectAttributes.addFlashAttribute("schema", schema);
+//        redirectAttributes.addFlashAttribute("schema", schema);
         return "redirect:/scripts/{scriptId}";
     }
 
@@ -277,16 +234,15 @@ public class QAScriptsController {
             String fileName = StringUtils.substringAfterLast(url, "/");
             try {
                 if (qam.fileExists(fileName)) {
-                    errors.add(messageService.getMessage(BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS));
-                    model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+                    bindingResult.rejectValue("fileName", BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS);
                     return "/scripts/add";
                 }
                 qam.replaceScriptFromRemoteFile(user, url, fileName);
                 form.setFileName(fileName);
-            } catch (Exception e) {
-                errors.add(messageService.getMessage("label.qascript.download.error"));
-                model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                return "/scripts/add";
+            } catch (SQLException e) {
+                throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
+            } catch (DCMException e) {
+                throw new RuntimeException(messageService.getMessage("label.qascript.download.error"));
             }
         }
 
@@ -302,10 +258,7 @@ public class QAScriptsController {
             // clear qascript list in cache
             QAScriptListLoader.reloadList(httpServletRequest);
         } catch (DCMException e) {
-            LOGGER.error("Add QA Script error", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
-            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "scripts/add";
+            throw new RuntimeException("Add QA Script error: " + messageService.getMessage(e.getErrorCode()));
         }
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         if (schemaId != null) {
@@ -315,47 +268,43 @@ public class QAScriptsController {
     }
 
     @PostMapping(params = {"delete"})
-    public String delete(@ModelAttribute QAScriptForm scriptForm, @ModelAttribute SchemaForm schemaForm, @RequestParam String action, @RequestParam String schemaId, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String delete(@ModelAttribute QAScriptForm scriptForm, @ModelAttribute SchemaForm schemaForm,
+                         @RequestParam String action, @RequestParam String schemaId,
+                         BindingResult bindingResult, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
-        SpringMessages errors = new SpringMessages();
         SpringMessages messages = new SpringMessages();
 
-        String user = (String) session.getAttribute("user");
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
         String scriptId = scriptForm.getScriptId();
 
-            /*if (scriptId == null || scriptId.length() == 0) {
-                scriptId = form.getScriptId();
-            }*/
-            /*String schemaId = form.getSchemaId();
-            if (schemaId == null || schemaId.length() == 0) {
-                schemaId = httpServletRequest.getParameter("schemaId");
-            }*/
+        new QAScriptValidator().validate(scriptForm, bindingResult);
 
-        /*httpServletRequest.setAttribute("schemaId", httpServletRequest.getParameter("schemaId"));*/
+        if (bindingResult.hasErrors()) {
+            return "/schemas/scripts";
+        }
 
         try {
             QAScriptManager qaScriptManager = new QAScriptManager();
             qaScriptManager.delete(user, scriptId);
             messages.add(messageService.getMessage("label.qascript.deleted"));
             // clear qascript list in cache
-            /*QAScriptListLoader.reloadList(httpServletRequest);*/
+            QAScriptListLoader.reloadList(httpServletRequest);
         } catch (DCMException e) {
-            LOGGER.error("Error deleting QA script", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
+            throw new RuntimeException("Error deleting QA script: " + messageService.getMessage(e.getErrorCode()));
         }
 
-        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/schemas/" + schemaId + "/scripts";
     }
 
     @PostMapping(params = {"activate"})
-    public String activate(@ModelAttribute QAScriptForm scriptForm, @ModelAttribute SchemaForm schemaForm, @RequestParam String action, @RequestParam String schemaId, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String activate(@ModelAttribute QAScriptForm scriptForm, @ModelAttribute SchemaForm schemaForm,
+                           @RequestParam String action, @RequestParam String schemaId,
+                           HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
-        SpringMessages errors = new SpringMessages();
         SpringMessages messages = new SpringMessages();
 
-        String user = (String) session.getAttribute("user");
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
         String scriptId = scriptForm.getScriptId();
 
         try {
@@ -363,23 +312,22 @@ public class QAScriptsController {
             qaScriptManager.activateDeactivate(user, scriptId, true);
             messages.add(messageService.getMessage("label.qascript.activated"));
             // clear qascript list in cache
-            /*QAScriptListLoader.reloadList(httpServletRequest);*/
+            QAScriptListLoader.reloadList(httpServletRequest);
         } catch (DCMException e) {
-            LOGGER.error("Error activating QA script", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
+            throw new RuntimeException("Error activating QA script: " + messageService.getMessage(e.getErrorCode()));
         }
-        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/schemas/" + schemaId + "/scripts";
     }
 
     @PostMapping(params = {"deactivate"})
-    public String deactivate(@ModelAttribute QAScriptForm scriptForm, @ModelAttribute SchemaForm schemaForm, @RequestParam String action, @RequestParam String schemaId, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String deactivate(@ModelAttribute QAScriptForm scriptForm, @ModelAttribute SchemaForm schemaForm,
+                             @RequestParam String action, @RequestParam String schemaId,
+                             HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
-        SpringMessages errors = new SpringMessages();
         SpringMessages messages = new SpringMessages();
 
-        String user = (String) session.getAttribute("user");
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
         String scriptId = scriptForm.getScriptId();
 
         try {
@@ -387,23 +335,23 @@ public class QAScriptsController {
             qaScriptManager.activateDeactivate(user, scriptId, false);
             messages.add(messageService.getMessage("label.qascript.deactivated"));
             // clear qascript list in cache
-            /*QAScriptListLoader.reloadList(httpServletRequest);*/
+            QAScriptListLoader.reloadList(httpServletRequest);
         } catch (DCMException e) {
-            LOGGER.error("Error deactivating QA script", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
+            throw new RuntimeException("Error deactivating QA script: " + messageService.getMessage(e.getErrorCode()));
         }
-        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/schemas/" + schemaId + "/scripts";
     }
 
     @PostMapping(params = {"toggleSchemaValidation"})
-    public String toggleSchemaValidation(@ModelAttribute QAScriptForm scriptForm, @ModelAttribute SchemaForm schemaForm, @RequestParam String action, @RequestParam String schemaId, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String toggleSchemaValidation(@ModelAttribute QAScriptForm scriptForm, @ModelAttribute SchemaForm schemaForm,
+                                         @RequestParam String action, @RequestParam String schemaId,
+                                         HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
-        SpringMessages errors = new SpringMessages();
         SpringMessages messages = new SpringMessages();
 
-        String user = (String) session.getAttribute("user");
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
         String scriptId = scriptForm.getScriptId();
 
         /*String schemaId = schemaForm.getSchemaId();*/
@@ -417,10 +365,8 @@ public class QAScriptsController {
             qaScriptManager.updateSchemaValidation(user, schemaId, validate, blocker);
             messages.add(messageService.getMessage("label.qascript.validation.updated"));
         } catch (DCMException e) {
-            LOGGER.error("Error updating schema validation", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
+            throw new RuntimeException("Error updating schema validation: " + messageService.getMessage(e.getErrorCode()));
         }
-        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/schemas/" + schemaId + "/scripts";
     }

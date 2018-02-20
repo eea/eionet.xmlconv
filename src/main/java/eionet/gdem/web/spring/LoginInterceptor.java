@@ -30,6 +30,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        // TODO Fix login on pages with error
         if (!(handler instanceof ResourceHttpRequestHandler)) {
             String loginUrl = null;
             try {

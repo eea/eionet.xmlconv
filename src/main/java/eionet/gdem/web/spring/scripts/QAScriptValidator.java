@@ -28,42 +28,56 @@ public class QAScriptValidator implements Validator {
         String url = form.getUrl();
         String upperLimit = form.getUpperLimit();
         MultipartFile scriptFile = form.getScriptFile();
+        String action = form.getAction();
 
-        // FME script type validations
-        if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
-            if (url == null || url.equals("")) {
-                errors.rejectValue("scriptType", "label.qascript.fme.url.validation");
-//                errors.add(messageService.getMessage());
-//                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            }
-            // Other script type validations
-        } else {
-            if ((scriptFile == null || scriptFile.getSize() == 0) && Utils.isNullStr(url)) {
-                errors.rejectValue("scriptFile", "label.qascript.file.validation");
-//                errors.add(messageService.getMessage());
-//                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        if ("add".equals(action)) {
+            // FME script type validations
+            if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
+                if (url == null || url.equals("")) {
+                    errors.rejectValue("scriptType", "label.qascript.fme.url.validation");
+                    //                errors.add(messageService.getMessage());
+                    //                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+                }
+                // Other script type validations
+            } else {
+                if ((scriptFile == null || scriptFile.getSize() == 0) && Utils.isNullStr(url)) {
+                    errors.rejectValue("scriptFile", "label.qascript.file.validation");
+                    //                errors.add(messageService.getMessage());
+                    //                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+                }
+
+                // Zip result type can only be selected for FME scripts
+                if (XQScript.SCRIPT_RESULTTYPE_ZIP.equals(resultType)) {
+                    errors.rejectValue("resultType", "label.qascript.zip.validation");
+                    //                errors.add(messageService.getMessage());
+                    //                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+                }
             }
 
+            if (schema == null || schema.equals("")) {
+                errors.rejectValue("schema", "label.qascript.schema.validation");
+                //            errors.add(messageService.getMessage());
+                //            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+            }
+
+            // upper limit between 0 and 10Gb
+            if (upperLimit == null || !Utils.isNum(upperLimit) || Integer.parseInt(upperLimit) <= 0
+                    || Integer.parseInt(upperLimit) > 10000) {
+                errors.rejectValue("upperLimit", "label.qascript.upperlimit.validation");
+                //            errors.add(messageService.getMessage());
+                //            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+            }
+        } else if ("update".equals(action)) {
             // Zip result type can only be selected for FME scripts
-            if (XQScript.SCRIPT_RESULTTYPE_ZIP.equals(resultType)) {
-                errors.rejectValue("resultType", "label.qascript.zip.validation");
-//                errors.add(messageService.getMessage());
-//                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+            if (!XQScript.SCRIPT_LANG_FME.equals(scriptType) && XQScript.SCRIPT_RESULTTYPE_ZIP.equals(resultType)) {
+                errors.rejectValue("scriptType", "label.qascript.zip.validation");
             }
-        }
 
-        if (schema == null || schema.equals("")) {
-            errors.rejectValue("schema", "label.qascript.schema.validation");
-//            errors.add(messageService.getMessage());
-//            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-        }
-
-        // upper limit between 0 and 10Gb
-        if (upperLimit == null || !Utils.isNum(upperLimit) || Integer.parseInt(upperLimit) <= 0
-                || Integer.parseInt(upperLimit) > 10000) {
-            errors.rejectValue("upperLimit", "label.qascript.upperlimit.validation");
-//            errors.add(messageService.getMessage());
-//            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+            // upper limit between 0 and 10Gb
+            if (upperLimit == null || !Utils.isNum(upperLimit) || Integer.parseInt(upperLimit) <= 0
+                    || Integer.parseInt(upperLimit) > 10000) {
+                errors.rejectValue("upperLimit", "label.qascript.upperlimit.validation");
+            }
         }
     }
 }

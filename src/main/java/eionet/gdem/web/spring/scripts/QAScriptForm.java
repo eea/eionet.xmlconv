@@ -20,6 +20,15 @@ public class QAScriptForm {
     private String upperLimit;
     private String url;
     private boolean active;
+    private String action;
+
+    public String getAction() {
+        return this.action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
 
     public boolean getActive() {
         return active;
