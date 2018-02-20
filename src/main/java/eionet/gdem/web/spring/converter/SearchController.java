@@ -119,8 +119,8 @@ public class SearchController {
             redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
             return "redirect:/converter";
         }*/
-        redirectAttributes.addFlashAttribute("form", cForm);
-        return "redirect:/converter/search";
+        model.addAttribute("form", cForm);
+        return "/converter/search";
     }
 
     /**

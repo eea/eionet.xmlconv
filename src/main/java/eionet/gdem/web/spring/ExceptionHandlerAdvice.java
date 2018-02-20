@@ -1,5 +1,6 @@
 package eionet.gdem.web.spring;
 
+import eionet.gdem.exceptions.PathNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
@@ -22,7 +23,6 @@ public class ExceptionHandlerAdvice {
     private final String EXCEPTION_MESSAGE = "exceptionMessage";
 
     @ExceptionHandler(value = {RuntimeException.class})
-//    , WebRequest request
     public ModelAndView exception(Exception exception) {
         ModelAndView modelAndView = new ModelAndView("Error");
         modelAndView.addObject(EXCEPTION_STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -58,6 +58,14 @@ public class ExceptionHandlerAdvice {
         ModelAndView modelAndView = new ModelAndView("Error");
         modelAndView.setStatus(HttpStatus.UNAUTHORIZED);
         modelAndView.addObject(EXCEPTION_STATUS, HttpStatus.UNAUTHORIZED.value());
+        modelAndView.addObject(EXCEPTION_MESSAGE, exception.getMessage());
+        return modelAndView;
+    }
+    @ExceptionHandler(PathNotFoundException.class)
+    public ModelAndView pathNotFound(Exception exception) {
+        ModelAndView modelAndView = new ModelAndView("Error");
+        modelAndView.setStatus(HttpStatus.NOT_FOUND);
+        modelAndView.addObject(EXCEPTION_STATUS, HttpStatus.NOT_FOUND.value());
         modelAndView.addObject(EXCEPTION_MESSAGE, exception.getMessage());
         return modelAndView;
     }

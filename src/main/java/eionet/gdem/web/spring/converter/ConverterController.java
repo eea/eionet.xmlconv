@@ -57,8 +57,7 @@ public class ConverterController {
     }
 
     @GetMapping
-    public String list(@ModelAttribute("form") ConversionForm form, Model model) {
-        model.addAttribute("form", form);
+    public String list(@ModelAttribute("form") ConversionForm form) {
         return "/converter/convert";
     }
 
@@ -74,8 +73,8 @@ public class ConverterController {
         if (bindingResult.hasErrors()) {
             return "/converter/convert";
         }
-        httpSession.setAttribute("converted.url", url);
-        httpSession.setAttribute("converted.conversionId", convert_id);
+//        httpSession.setAttribute("converted.url", url);
+//        httpSession.setAttribute("converted.conversionId", convert_id);
 
         // TODO refactor it to spring mvc
         HttpMethodResponseWrapper methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
@@ -127,8 +126,13 @@ public class ConverterController {
             else {
                 if (!Utils.isNullStr(url) && !url.equals(cForm.getInsertedUrl())) {
                     cForm.setInsertedUrl(url);
-                    InputAnalyser analyser = new InputAnalyser();
-                    analyser.parseXML(url);
+                    InputAnalyser analyser = null;
+                    try {
+                        analyser = new InputAnalyser();
+                        analyser.parseXML(url);
+                    } catch (DCMException e) {
+                        throw new RuntimeException(messageService.getMessage(e.getErrorCode()));
+                    }
                     // schema or dtd found from header
                     String schemaOrDTD = analyser.getSchemaOrDTD();
                     if (schemaOrDTD != null) {
@@ -186,31 +190,12 @@ public class ConverterController {
 
             redirectAttributes.addFlashAttribute("schemasList", StylesheetListLoader.getConversionSchemasList(httpServletRequest));
         } catch (DCMException e) {
-            LOGGER.error("Error listing conversions", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
-            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "/converter/convert";
+            throw new RuntimeException("Error listing conversions: " + messageService.getMessage(e.getErrorCode()));
         } catch (SQLException e) {
-            LOGGER.error("Error listing conversions", e);
-            errors.add(messageService.getMessage(e.getMessage()));
-            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "/converter/convert";
+            throw new RuntimeException("Error listing conversions: " + e.getMessage());
         }
-            /*} catch (Exception e) {
-                LOGGER.error("Error listing conversions", e);
-                errors.add(messageService.getMessage(BusinessConstants.EXCEPTION_GENERAL));
-                // saveMessages(httpServletRequest, errors);
-                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                return "redirect:/converter";
-            }*/
-//        } else {
-//            // comping back from convert page
-//            cForm.setConverted(false);
-//        }
         model.addAttribute("form", cForm);
         return "/converter/convert";
-        /*redirectAttributes.addFlashAttribute("form", cForm);
-        return "redirect:/converter";*/
     }
 
     /**

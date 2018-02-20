@@ -1,5 +1,6 @@
 package eionet.gdem.web.spring.conversions;
 
+import eionet.gdem.exceptions.PathNotFoundException;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlException;
 import eionet.gdem.utils.xml.sax.SaxContext;
@@ -60,16 +61,10 @@ public class ConversionsController {
 
     @GetMapping
     public String list(Model model, HttpServletRequest httpServletRequest) {
-
-        SpringMessages success = new SpringMessages();
-        SpringMessages errors = new SpringMessages();
-
         try {
             model.addAttribute("conversions", StylesheetListLoader.getStylesheetList(httpServletRequest));
         } catch (DCMException e) {
-            LOGGER.error("Error getting stylesheet list", e);
-            errors.add(messageService.getMessage("label.exception.unknown"));
-            model.addAttribute("errors", errors);
+            throw new RuntimeException("Error getting stylesheet list: " + messageService.getMessage(e.getErrorCode()));
         }
         return "/conversions/list";
     }
@@ -87,8 +82,7 @@ public class ConversionsController {
             Stylesheet stylesheet = stylesheetManager.getStylesheet(conversionId);
 
             if (stylesheet == null) {
-                errors.add(HttpServletResponse.SC_NOT_FOUND);
-                return "redirect:/conversions";
+                throw new PathNotFoundException("Conversion does not exist");
             }
 
             form.setDescription(stylesheet.getDescription());
@@ -139,9 +133,7 @@ public class ConversionsController {
             //httpServletRequest.setAttribute(StylesheetListLoader.STYLESHEET_LIST_ATTR, StylesheetListLoader.getStylesheetList(httpServletRequest));
 
         } catch (DCMException e) {
-            LOGGER.error("Edit stylesheet error", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
-            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+            throw new RuntimeException("Edit stylesheet error: " + messageService.getMessage(e.getErrorCode()));
         }
 
         model.addAttribute("form", form);
@@ -154,7 +146,6 @@ public class ConversionsController {
                          HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
         SpringMessages success = new SpringMessages();
-        SpringMessages errors = new SpringMessages();
 
         String userName = (String) httpServletRequest.getSession().getAttribute("user");
 
@@ -165,10 +156,7 @@ public class ConversionsController {
             StylesheetListLoader.reloadConversionSchemasList(httpServletRequest);
             success.add(messageService.getMessage("label.stylesheet.deleted"));
         } catch (DCMException e) {
-            LOGGER.error("Error deleting stylesheet", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/conversions";
+            throw new RuntimeException("Error deleting stylesheet: " + messageService.getMessage(e.getErrorCode()));
         }
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, success);
         return "redirect:/conversions";
@@ -179,7 +167,6 @@ public class ConversionsController {
                          HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
         SpringMessages success = new SpringMessages();
-        SpringMessages errors = new SpringMessages();
 
         String userName = (String) httpServletRequest.getSession().getAttribute("user");
 
@@ -192,10 +179,7 @@ public class ConversionsController {
             StylesheetListLoader.reloadConversionSchemasList(httpServletRequest);
             success.add(messageService.getMessage("label.stylesheet.deleted"));
         } catch (DCMException e) {
-            LOGGER.error("Error deleting stylesheet", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/conversions";
+            throw new RuntimeException("Error deleting stylesheet: " + messageService.getMessage(e.getErrorCode()));
         }
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, success);
         return "redirect:/conversions";
@@ -216,10 +200,7 @@ public class ConversionsController {
             Stylesheet stylesheet = stylesheetManager.getStylesheet(id);
 
             if (stylesheet == null) {
-                LOGGER.error("not found");
-                errors.add(messageService.getMessage("not found"));
-                model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                return "redirect:/conversions";
+                throw new PathNotFoundException("Conversion does not exist");
             }
 
             form.setDescription(stylesheet.getDescription());
@@ -270,15 +251,9 @@ public class ConversionsController {
             //httpServletRequest.setAttribute(StylesheetListLoader.STYLESHEET_LIST_ATTR, StylesheetListLoader.getStylesheetList(httpServletRequest));
 
         } catch (DCMException e) {
-            LOGGER.error("Edit stylesheet error", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
-            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/conversions/{id}";
+            throw new RuntimeException("Edit stylesheet error: " + messageService.getMessage(e.getErrorCode()));
         }
         model.addAttribute(SpringMessages.SUCCESS_MESSAGES, success);
-
-//        //TODO why is it needed to update session attribute in each request
-//        httpServletRequest.getSession().setAttribute("stylesheet.outputtype", ctHolder);
         return "/conversions/edit";
     }
 
@@ -322,12 +297,10 @@ public class ConversionsController {
 
 
     @GetMapping("/add")
-    public String add(Model model) throws DCMException {
-        SchemaManager sm = new SchemaManager();
-        StylesheetForm form = new StylesheetForm();
+    public String add(@ModelAttribute("form") StylesheetForm form, Model model) throws DCMException {
+//        SchemaManager sm = new SchemaManager();
         StylesheetManager stylesheetManager = new StylesheetManager();
         model.addAttribute("outputtypes", stylesheetManager.getConvTypes());
-        model.addAttribute("form", form);
         return "/conversions/add";
     }
 
@@ -335,7 +308,6 @@ public class ConversionsController {
     public String addSubmit(@ModelAttribute("form") StylesheetForm form, Model model, HttpServletRequest httpServletRequest,
                             BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         SpringMessages success = new SpringMessages();
-        SpringMessages errors = new SpringMessages();
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
 
@@ -374,20 +346,19 @@ public class ConversionsController {
             bindingResult.rejectValue("xslfile", "Invalid XSL file");
         }
 
-        if (errors.isEmpty()) {
-            try {
-                StylesheetManager stylesheetManager = new StylesheetManager();
-                // stylesheetManager.add(user, schema, xslFile, type, desc, dependsOn);
-                stylesheetManager.add(stylesheet, user);
-                success.add(messageService.getMessage("label.stylesheet.inserted"));
-                StylesheetListLoader.reloadStylesheetList(httpServletRequest);
-                StylesheetListLoader.reloadConversionSchemasList(httpServletRequest);
-            } catch (DCMException e) {
-                LOGGER.error("Add stylesheet error", e);
-                errors.add(messageService.getMessage(e.getErrorCode()));
-                model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                return "/conversions/add";
-            }
+        if (bindingResult.hasErrors()) {
+            return "/conversions/add";
+        }
+
+        try {
+            StylesheetManager stylesheetManager = new StylesheetManager();
+            // stylesheetManager.add(user, schema, xslFile, type, desc, dependsOn);
+            stylesheetManager.add(stylesheet, user);
+            success.add(messageService.getMessage("label.stylesheet.inserted"));
+            StylesheetListLoader.reloadStylesheetList(httpServletRequest);
+            StylesheetListLoader.reloadConversionSchemasList(httpServletRequest);
+        } catch (DCMException e) {
+            throw new RuntimeException("Add stylesheet error: " + messageService.getMessage(e.getErrorCode()));
         }
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, success);
         if (!StringUtils.isEmpty(schemaId)) {
