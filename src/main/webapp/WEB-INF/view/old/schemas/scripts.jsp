@@ -38,7 +38,7 @@
 
   <c:forEach varStatus="i" items="${scripts.qascripts}" var="schema">
     <div class="visualClear">&nbsp;</div>
-    <form:form action="/schemas" method="post" modelAttribute="schemaForm">
+    <form:form servletRelativeAction="/schemas" method="post" modelAttribute="schemaForm">
       <form:errors path="*" cssClass="error-msg" element="div"/>
       <fieldset class="fieldset">
         <legend><spring:message code="label.schema.qascripts"/>&nbsp;${schema.schema}</legend>
@@ -87,7 +87,7 @@
     </form:form>
 
     <c:if test="${!empty schema.qascripts}">
-      <form:form action="/searchCR" method="post" modelAttribute="scriptForm">
+      <form:form servletRelativeAction="/scripts" method="post" modelAttribute="scriptForm">
         <form:errors path="*" cssClass="error-msg" element="div"/>
         <table class="datatable results" width="100%">
           <c:if test="${permissions.ssdPrm}">
@@ -193,11 +193,11 @@
           </tbody>
         </table>
         <c:if test="${permissions.ssdPrm}">
-          <button type="button" class="button" name="delete">
+          <button class="button" name="delete">
             <spring:message code="label.qascript.delete"/>
           </button>
           <input type="hidden" name="schemaId" value="${schemaId}"/>
-          <button type="button" class="button" name="activate">
+          <button class="button" name="activate">
             <spring:message code="label.qascript.activate"/>
           </button>
           <input type="hidden" name="schemaId" value="${schemaId}"/>

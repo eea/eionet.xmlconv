@@ -269,8 +269,8 @@ public class QAScriptsController {
 
     @PostMapping(params = {"delete"})
     public String delete(@ModelAttribute("scriptForm") QAScriptForm scriptForm, @ModelAttribute("schemaForm") SchemaForm schemaForm,
-                         @RequestParam String action, @RequestParam String schemaId,
-                         BindingResult bindingResult, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
+                         @RequestParam String schemaId, BindingResult bindingResult, HttpServletRequest httpServletRequest,
+                         RedirectAttributes redirectAttributes) {
 
         SpringMessages messages = new SpringMessages();
 
@@ -299,8 +299,7 @@ public class QAScriptsController {
 
     @PostMapping(params = {"activate"})
     public String activate(@ModelAttribute("scriptForm") QAScriptForm scriptForm, @ModelAttribute("schemaForm") SchemaForm schemaForm,
-                           @RequestParam String action, @RequestParam String schemaId,
-                           HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
+                           @RequestParam String schemaId, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
         SpringMessages messages = new SpringMessages();
 
@@ -322,8 +321,7 @@ public class QAScriptsController {
 
     @PostMapping(params = {"deactivate"})
     public String deactivate(@ModelAttribute("scriptForm") QAScriptForm scriptForm, @ModelAttribute("schemaForm") SchemaForm schemaForm,
-                             @RequestParam String action, @RequestParam String schemaId,
-                             HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
+                             @RequestParam String schemaId, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
         SpringMessages messages = new SpringMessages();
 
@@ -346,8 +344,7 @@ public class QAScriptsController {
 
     @PostMapping(params = {"toggleSchemaValidation"})
     public String toggleSchemaValidation(@ModelAttribute("scriptForm") QAScriptForm scriptForm, @ModelAttribute("schemaForm") SchemaForm schemaForm,
-                                         @RequestParam String action, @RequestParam String schemaId,
-                                         HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
+                                         @RequestParam String schemaId, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
         SpringMessages messages = new SpringMessages();
 

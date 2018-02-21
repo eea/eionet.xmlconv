@@ -144,7 +144,7 @@
           <a href="/${form.filePath}" title="${form.filePath}">${form.fileName}</a>
           &#160;&#160;&#160;&#160;&#160;&#160;(<spring:message code="label.lastmodified"/>:
           <c:choose>
-            <c:when test="${form.modified}">
+            <c:when test="${!empty form.modified}">
               ${form.modified}
             </c:when>
             <c:otherwise>

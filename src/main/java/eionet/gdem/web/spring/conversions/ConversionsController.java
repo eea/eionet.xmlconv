@@ -29,6 +29,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,6 +60,22 @@ public class ConversionsController {
         this.rootElemDao = rootElemDao;
     }
 
+    /**
+     * Helper method to keep model attributes in every request
+     * This also works on error pages.
+     */
+    @ModelAttribute
+    public void init(Model model) {
+        ConvTypeHolder ctHolder = null;
+        StylesheetManager stylesheetManager = new StylesheetManager();
+        try {
+            ctHolder = stylesheetManager.getConvTypes();
+        } catch (DCMException e) {
+            throw new RuntimeException("Error: " + messageService.getMessage(e.getErrorCode()));
+        }
+        model.addAttribute("outputtypes", ctHolder);
+    }
+
     @GetMapping
     public String list(Model model, HttpServletRequest httpServletRequest) {
         try {
@@ -72,9 +89,6 @@ public class ConversionsController {
     @GetMapping("/{conversionId}")
     public String view(@ModelAttribute("form") StylesheetForm form, @PathVariable String conversionId, Model model) {
 
-        SpringMessages errors = new SpringMessages();
-
-        ConvTypeHolder types = new ConvTypeHolder();
         StylesheetManager stylesheetManager = new StylesheetManager();
 
         try {
@@ -113,7 +127,6 @@ public class ConversionsController {
                     form.setExistingStylesheets(existingStylesheets);
                 }
             }
-            types = stylesheetManager.getConvTypes();
 
             /** FIXME - do we need the list of DD XML Schemas on the page
              StylesheetListHolder stylesheetList = StylesheetListLoader.getGeneratedList(httpServletRequest);
@@ -135,7 +148,6 @@ public class ConversionsController {
             throw new RuntimeException("Edit stylesheet error: " + messageService.getMessage(e.getErrorCode()));
         }
 
-        model.addAttribute("types", types);
         return "/conversions/view";
     }
 
@@ -184,14 +196,8 @@ public class ConversionsController {
     }
 
     @GetMapping("/{id}/edit")
-    public String edit(@PathVariable String id, Model model) {
+    public String edit(@ModelAttribute("form") StylesheetForm form, @PathVariable String id) {
 
-        SpringMessages success = new SpringMessages();
-        SpringMessages errors = new SpringMessages();
-
-        StylesheetForm form = new StylesheetForm();
-
-        ConvTypeHolder ctHolder = new ConvTypeHolder();
         StylesheetManager stylesheetManager = new StylesheetManager();
 
         try {
@@ -229,9 +235,7 @@ public class ConversionsController {
                     form.setExistingStylesheets(existingStylesheets);
                 }
             }
-            ctHolder = stylesheetManager.getConvTypes();
-            model.addAttribute("form", form);
-            model.addAttribute("outputtypes", ctHolder);
+
             /** FIXME - do we need the list of DD XML Schemas on the page
              StylesheetListHolder stylesheetList = StylesheetListLoader.getGeneratedList(httpServletRequest);
              List<Schema> schemas = stylesheetList.getDdStylesheets();
@@ -251,7 +255,6 @@ public class ConversionsController {
         } catch (DCMException e) {
             throw new RuntimeException("Edit stylesheet error: " + messageService.getMessage(e.getErrorCode()));
         }
-        model.addAttribute(SpringMessages.SUCCESS_MESSAGES, success);
         return "/conversions/edit";
     }
 
@@ -261,13 +264,11 @@ public class ConversionsController {
         SpringMessages success = new SpringMessages();
         SpringMessages errors = new SpringMessages();
 
-        ConvTypeHolder ctHolder = new ConvTypeHolder();
         String schema = httpServletRequest.getParameter("schema");
         httpServletRequest.setAttribute("schema", schema);
 
         try {
             StylesheetManager sm = new StylesheetManager();
-            ctHolder = sm.getConvTypes();
             SchemaManager schemaMan = new SchemaManager();
 
             StylesheetListHolder stylesheetList = StylesheetListLoader.getGeneratedList(httpServletRequest);
@@ -287,7 +288,6 @@ public class ConversionsController {
             errors.add(messageService.getMessage(e.getErrorCode()));
             model.addAttribute("errors", errors);
         }
-        httpServletRequest.getSession().setAttribute("stylesheet.outputtype", ctHolder);
         model.addAttribute("success", success);
         // todo fix url
         return "/conversions/type";
@@ -295,22 +295,19 @@ public class ConversionsController {
 
 
     @GetMapping("/add")
-    public String add(@ModelAttribute("form") StylesheetForm form, Model model) throws DCMException {
-//        SchemaManager sm = new SchemaManager();
-        StylesheetManager stylesheetManager = new StylesheetManager();
-        model.addAttribute("outputtypes", stylesheetManager.getConvTypes());
+    public String add(@ModelAttribute("form") StylesheetForm form) {
         return "/conversions/add";
     }
 
     @PostMapping(params = "add")
-    public String addSubmit(@ModelAttribute("form") StylesheetForm form, Model model, HttpServletRequest httpServletRequest,
-                            BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String addSubmit(@ModelAttribute("form") StylesheetForm form, BindingResult formResult,
+                            Model model, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
         SpringMessages success = new SpringMessages();
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
 
-        new StylesheetValidator().validate(form, bindingResult);
-        if (bindingResult.hasErrors()) {
+        new StylesheetValidator().validate(form, formResult);
+        if (formResult.hasErrors()) {
             return "/conversions/add";
         }
 
@@ -341,10 +338,10 @@ public class ConversionsController {
             x.checkFromString(stylesheet.getXslContent());
         } catch (XmlException e) {
             LOGGER.error("Add stylesheet error", e);
-            bindingResult.rejectValue("xslfile", "Invalid XSL file");
+            formResult.rejectValue("xslfile", "Invalid XSL file: " + e.getMessage());
         }
 
-        if (bindingResult.hasErrors()) {
+        if (formResult.hasErrors()) {
             return "/conversions/add";
         }
 

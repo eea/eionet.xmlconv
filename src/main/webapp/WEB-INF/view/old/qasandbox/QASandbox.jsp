@@ -79,7 +79,7 @@
 <%--<h1><spring:message code="label.qasandbox.title"/></h1>--%>
 
 <form:form servletRelativeAction="/qaSandbox" method="post" modelAttribute="form">
-  <form:errors path="*" cssStyle="" element="div" />
+  <form:errors path="*" cssClass="error-msg" element="div" />
   <fieldset class="fieldset">
     <legend><spring:message code="label.qasandbox.title"/></legend>
 

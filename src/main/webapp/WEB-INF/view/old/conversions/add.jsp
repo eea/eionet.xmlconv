@@ -67,7 +67,7 @@
         </label>
       </div>
       <div class="columns small-8">
-        <input type="text" name="description" id="txtDescription"/>
+        <form:input  path="description" id="txtDescription"/>
       </div>
     </div>
 

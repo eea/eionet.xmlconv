@@ -61,8 +61,6 @@
 
 <h1>Jobs</h1>
 
-<form:errors cssClass="error-msg" ></form:errors>
-
 <p>Currently there are following jobs in the queue...</p>
 <div id="main_table">
   <form:form id="jobs" servletRelativeAction="/workqueue" method="post" modelAttribute="form">
