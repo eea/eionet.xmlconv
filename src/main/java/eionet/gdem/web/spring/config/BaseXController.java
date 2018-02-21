@@ -14,12 +14,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Locale;
 
@@ -40,18 +43,24 @@ public class BaseXController {
     }
 
     @GetMapping
-    public String edit(Model model) {
-        BaseXForm form = new BaseXForm();
+    public String edit(@ModelAttribute("form") BaseXForm form, HttpServletRequest httpServletRequest) {
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
+        try {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_CONFIG_PATH, "u")) {
+                throw new AccessDeniedException(messageService.getMessage("label.autorization.config.update"));
+            }
+        } catch (SignOnException e) {
+            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
+        }
         form.setHost(Properties.basexServerHost);
         form.setPort(Properties.basexServerPort);
         form.setPassword(Properties.basexServerPassword);
         form.setUser(Properties.basexServerUser);
-        model.addAttribute("form", form);
         return "/config/basex";
     }
 
     @PostMapping
-    public String editSubmit(@ModelAttribute BaseXForm form, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String editSubmit(@ModelAttribute("form") BaseXForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpSession session) {
 
         SpringMessages errors = new SpringMessages();
         SpringMessages messages = new SpringMessages();
@@ -66,20 +75,22 @@ public class BaseXController {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_CONFIG_PATH, "u")) {
                 errors.add(messageService.getMessage("label.autorization.config.update", null, LocaleContextHolder.getLocale()));
                 return "redirect:/config/basex";
-            } else {
-                DcmProperties dcmProp = new DcmProperties();
-                dcmProp.setBasexParams(host, port, basexUser, password);
             }
-        } catch (DCMException e) {
-            errors.add(messageService.getMessage("label.exception.unknown", null, LocaleContextHolder.getLocale()));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/config/basex";
         } catch (SignOnException e) {
-            errors.add(messageService.getMessage("label.autorization.config.update", null, LocaleContextHolder.getLocale()));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/config/basex";
+            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
-        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+
+        new BaseXFormValidator().validate(form, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/config/basex";
+        }
+
+        try {
+            DcmProperties dcmProp = new DcmProperties();
+            dcmProp.setBasexParams(host, port, basexUser, password);
+        } catch (DCMException e) {
+            throw new RuntimeException("Unknown error: " + messageService.getMessage(e.getErrorCode()));
+        }
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/config/basex";
     }

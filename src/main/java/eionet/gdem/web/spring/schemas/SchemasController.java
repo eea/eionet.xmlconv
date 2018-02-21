@@ -254,7 +254,7 @@ public class SchemasController {
     }
 
     @PostMapping(params = {"delete"})
-    public String delete(@ModelAttribute SingleForm form, RedirectAttributes redirectAttributes, HttpServletRequest httpServletRequest) {
+    public String delete(@ModelAttribute("form") SingleForm form, RedirectAttributes redirectAttributes, HttpServletRequest httpServletRequest) {
         SpringMessages messages = new SpringMessages();
 
         String schemaId = form.getId();

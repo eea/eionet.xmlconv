@@ -79,7 +79,7 @@ public class GeneratedConversionsController {
     }
 
     @GetMapping(value = "/generated", params = { "schemaUrl" })
-    public String view(@ModelAttribute String schemaUrl) {
+    public String view(@ModelAttribute("schemaUrl") String schemaUrl) {
         return "/conversions/view";
     }
 }

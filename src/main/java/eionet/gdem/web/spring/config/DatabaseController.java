@@ -12,16 +12,16 @@ import eionet.gdem.web.spring.SpringMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 
@@ -41,51 +41,57 @@ public class DatabaseController {
     }
 
     @GetMapping
-    public String edit(Model model) {
-        DatabaseForm form = new DatabaseForm();
+    public String edit(@ModelAttribute("form") DatabaseForm form, HttpServletRequest httpServletRequest) {
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
+
+        try {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_CONFIG_PATH, "u")) {
+                throw new AccessDeniedException(messageService.getMessage("label.autorization.config.update"));
+            }
+        } catch (SignOnException e) {
+            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
+        }
         form.setUrl(Properties.dbUrl);
         form.setUser(Properties.dbUser);
         form.setPassword(Properties.dbPwd);
-        model.addAttribute("form", form);
         return "/config/database";
     }
 
     @PostMapping
-    public String editSubmit(@ModelAttribute DatabaseForm updatedModel, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String editSubmit(@ModelAttribute("form") DatabaseForm form,
+                             BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpSession session) {
 
-        SpringMessages errors = new SpringMessages();
         SpringMessages messages = new SpringMessages();
 
-        String dbUrl = updatedModel.getUrl();
-        String dbUser = updatedModel.getUser();
-        String dbPwd = updatedModel.getPassword();
+        String dbUrl = form.getUrl();
+        String dbUser = form.getUser();
+        String dbPwd = form.getPassword();
         String user = (String) session.getAttribute("user");
+
+        new DatabaseFormValidator().validate(form, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/config/database";
+        }
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_CONFIG_PATH, "u")) {
-                errors.add(messageService.getMessage("label.autorization.config.update", null, LocaleContextHolder.getLocale()));
-                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                return "redirect:/config/database";
-            } else {
-                if (dbUrl == null || dbUrl.equals("")) {
-                    errors.add(messageService.getMessage("label.config.ldap.url.validation", null, LocaleContextHolder.getLocale()));
-                    redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                    return "redirect:/config/database";
-                } else {
-                    DbTest dbTest = new DbTest();
-                    dbTest.tstDbParams(dbUrl, dbUser, dbPwd);
-
-                    DcmProperties dcmProp = new DcmProperties();
-                    dcmProp.setDbParams(dbUrl, dbUser, dbPwd);
-                }
+                throw new AccessDeniedException(messageService.getMessage("label.autorization.config.update"));
             }
-        } catch (SignOnException | SQLException | DCMException e) {
-            errors.add(messageService.getMessage("label.autorization.config.update", null, LocaleContextHolder.getLocale()));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/config/database";
+        } catch (SignOnException e1) {
+            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
-        messages.add(messageService.getMessage("label.editParam.db.saved", null, LocaleContextHolder.getLocale()));
-        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+
+        try {
+            DbTest dbTest = new DbTest();
+            dbTest.tstDbParams(dbUrl, dbUser, dbPwd);
+            DcmProperties dcmProp = new DcmProperties();
+            dcmProp.setDbParams(dbUrl, dbUser, dbPwd);
+        } catch (SQLException e) {
+            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
+        } catch (DCMException e) {
+            throw new RuntimeException(messageService.getMessage(e.getErrorCode()));
+        }
+        messages.add(messageService.getMessage("label.editParam.db.saved"));
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/config/database";
     }

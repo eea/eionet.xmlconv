@@ -87,7 +87,7 @@ public class LoginController {
     }
 
     @PostMapping("/local")
-    public String localSubmit(@ModelAttribute LoginForm form, Model model, RedirectAttributes redirectAttributes, HttpSession httpSession) {
+    public String localSubmit(@ModelAttribute("form") LoginForm form, RedirectAttributes redirectAttributes, HttpSession httpSession) {
 
         SpringMessages errors = new SpringMessages();
 

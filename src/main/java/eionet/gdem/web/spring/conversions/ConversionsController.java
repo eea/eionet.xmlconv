@@ -70,10 +70,9 @@ public class ConversionsController {
     }
 
     @GetMapping("/{conversionId}")
-    public String view(@PathVariable String conversionId, Model model) {
+    public String view(@ModelAttribute("form") StylesheetForm form, @PathVariable String conversionId, Model model) {
 
         SpringMessages errors = new SpringMessages();
-        StylesheetForm form = new StylesheetForm();
 
         ConvTypeHolder types = new ConvTypeHolder();
         StylesheetManager stylesheetManager = new StylesheetManager();
@@ -136,7 +135,6 @@ public class ConversionsController {
             throw new RuntimeException("Edit stylesheet error: " + messageService.getMessage(e.getErrorCode()));
         }
 
-        model.addAttribute("form", form);
         model.addAttribute("types", types);
         return "/conversions/view";
     }
@@ -163,7 +161,7 @@ public class ConversionsController {
     }
 
     @PostMapping(params = "delete")
-    public String deleteSubmit(@ModelAttribute ConversionForm cForm, Model model,
+    public String deleteSubmit(@ModelAttribute("form") ConversionForm cForm, Model model,
                          HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
         SpringMessages success = new SpringMessages();

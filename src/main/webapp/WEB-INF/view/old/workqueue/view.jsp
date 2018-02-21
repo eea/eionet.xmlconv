@@ -65,7 +65,7 @@
 
 <p>Currently there are following jobs in the queue...</p>
 <div id="main_table">
-  <form:form id="jobs" servletRelativeAction="/workqueue/actions" method="post" modelAttribute="form">
+  <form:form id="jobs" servletRelativeAction="/workqueue" method="post" modelAttribute="form">
     <form:errors path="*" cssClass="error-msg" element="div"/>
     <table class="datatable results" width="100%">
       <col style="width:30px; text-align:right;"/>

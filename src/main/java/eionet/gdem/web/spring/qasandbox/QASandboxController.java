@@ -102,7 +102,7 @@ public class QASandboxController {
     }
 
     @GetMapping("/openQAService")
-    public String openQAService(@ModelAttribute QASandboxForm cForm, HttpServletRequest httpServletRequest) {
+    public String openQAService(@ModelAttribute("form") QASandboxForm cForm, HttpServletRequest httpServletRequest) {
 
         SpringMessages errors = new SpringMessages();
 

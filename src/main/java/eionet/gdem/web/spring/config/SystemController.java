@@ -13,14 +13,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -39,45 +42,46 @@ public class SystemController {
     }
 
     @GetMapping
-    public String edit(Model model) {
-        SystemForm form = new SystemForm();
+    public String edit(@ModelAttribute("form") SystemForm form, HttpServletRequest httpServletRequest) {
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
+        try {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_CONFIG_PATH, "u")) {
+                throw new AccessDeniedException(messageService.getMessage("label.autorization.config.update"));
+            }
+        } catch (SignOnException e) {
+            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
+        }
         form.setCmdXGawk(Properties.xgawkCommand);
         form.setQaTimeout(Properties.qaTimeout);
-        model.addAttribute("form", form);
         return "/config/system";
     }
 
     @PostMapping
-    public String editSubmit(@ModelAttribute SystemForm form, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String editSubmit(@ModelAttribute("form") SystemForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpSession session) {
         SpringMessages errors = new SpringMessages();
         SpringMessages messages = new SpringMessages();
 
         String cmdXGawk = form.getCmdXGawk();
         Long qaTimeout = form.getQaTimeout();
         String user = (String) session.getAttribute("user");
+        try {
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_CONFIG_PATH, "u")) {
+                throw new AccessDeniedException(messageService.getMessage(("label.autorization.config.update")));
+            }
+        } catch (SignOnException e) {
+            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
+        }
+
+        new SystemFormValidator().validate(form, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/config/system";
+        }
 
         try {
-
-            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_CONFIG_PATH, "u")) {
-                errors.add(messageService.getMessage(("label.autorization.config.update")));
-                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                return "redirect:/config/system";
-            }
-            if (qaTimeout == null || "".equals(qaTimeout.toString()) || qaTimeout <= 0) {
-                errors.add(messageService.getMessage(("label.config.system.qatimeout.validation")));
-                redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                return "redirect:/config/system";
-            }
-
             DcmProperties dcmProp = new DcmProperties();
-
             dcmProp.setSystemParams(qaTimeout, cmdXGawk);
-
-        } catch (SignOnException | DCMException e) {
-            LOGGER.error("SystemAction error", e);
-            errors.add(messageService.getMessage(e.getMessage()));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/config/system";
+        } catch (DCMException e) {
+            throw new RuntimeException("Unknown error: " + messageService.getMessage(e.getErrorCode()));
         }
 
         messages.add(messageService.getMessage(("label.editParam.system.saved")));

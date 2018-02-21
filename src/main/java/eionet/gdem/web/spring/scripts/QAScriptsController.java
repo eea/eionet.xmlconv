@@ -268,7 +268,7 @@ public class QAScriptsController {
     }
 
     @PostMapping(params = {"delete"})
-    public String delete(@ModelAttribute QAScriptForm scriptForm, @ModelAttribute SchemaForm schemaForm,
+    public String delete(@ModelAttribute("scriptForm") QAScriptForm scriptForm, @ModelAttribute("schemaForm") SchemaForm schemaForm,
                          @RequestParam String action, @RequestParam String schemaId,
                          BindingResult bindingResult, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
@@ -298,7 +298,7 @@ public class QAScriptsController {
     }
 
     @PostMapping(params = {"activate"})
-    public String activate(@ModelAttribute QAScriptForm scriptForm, @ModelAttribute SchemaForm schemaForm,
+    public String activate(@ModelAttribute("scriptForm") QAScriptForm scriptForm, @ModelAttribute("schemaForm") SchemaForm schemaForm,
                            @RequestParam String action, @RequestParam String schemaId,
                            HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
@@ -321,7 +321,7 @@ public class QAScriptsController {
     }
 
     @PostMapping(params = {"deactivate"})
-    public String deactivate(@ModelAttribute QAScriptForm scriptForm, @ModelAttribute SchemaForm schemaForm,
+    public String deactivate(@ModelAttribute("scriptForm") QAScriptForm scriptForm, @ModelAttribute("schemaForm") SchemaForm schemaForm,
                              @RequestParam String action, @RequestParam String schemaId,
                              HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
@@ -345,7 +345,7 @@ public class QAScriptsController {
     }
 
     @PostMapping(params = {"toggleSchemaValidation"})
-    public String toggleSchemaValidation(@ModelAttribute QAScriptForm scriptForm, @ModelAttribute SchemaForm schemaForm,
+    public String toggleSchemaValidation(@ModelAttribute("scriptForm") QAScriptForm scriptForm, @ModelAttribute("schemaForm") SchemaForm schemaForm,
                                          @RequestParam String action, @RequestParam String schemaId,
                                          HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
