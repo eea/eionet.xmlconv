@@ -80,6 +80,7 @@
 
 <form:form servletRelativeAction="/qaSandbox" method="post" modelAttribute="form">
   <form:errors path="*" cssClass="error-msg" element="div" />
+  <form:hidden path="showScripts" />
   <fieldset class="fieldset">
     <legend><spring:message code="label.qasandbox.title"/></legend>
 
@@ -306,7 +307,7 @@
           <div class="row">
             <form:radiobutton path="scriptId" property="scriptId" value="${listScriptId}" styleId="rad_${listScriptId}"/>
             <label class="question" for="rad_${listScriptId}">
-                ${qascripts.shortName}
+                ${qascript.shortName}
             </label>
             <span> -
                       <a href="/scripts/${scriptId}" title="label.qascript.view">

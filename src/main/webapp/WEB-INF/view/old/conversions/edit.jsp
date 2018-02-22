@@ -153,7 +153,7 @@
         </label>
       </div>
       <div class="columns small-8">
-        <a href="${webRoot}/${xsl.stylesheetForm}" title="${xsl.stylesheetForm}" class="link-xsl">
+        <a href="/${xsl.stylesheetForm}" title="${xsl.stylesheetForm}" class="link-xsl">
             ${xslFileName.stylesheetForm}
         </a>
         <span style="margin-left:10px">(<spring:message code="label.lastmodified"/>:

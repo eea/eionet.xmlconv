@@ -17,7 +17,7 @@
   </p>
   <div>
     <c:if test="${user}">
-      <button type="submit" class="button" name="action" value="update">
+      <button type="submit" class="button" name="update">
         <spring:message code="label.uplSchema.updatecopy"/>
       </button>
       <%--<html:cancel styleClass="button">

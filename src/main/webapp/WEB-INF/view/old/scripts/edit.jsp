@@ -7,7 +7,7 @@
         <spring:message code="label.qascript.tab.title"/>
       </li>
       <li>
-        <a href="/scripts/${QAScriptForm.scriptId}/history" style="color: black; text-decoration: none;">
+        <a href="/scripts/${form.scriptId}/history" style="color: black; text-decoration: none;">
           <spring:message code="label.qascript.history"/>
         </a>
       </li>
@@ -17,7 +17,7 @@
 
   <%--<h1><spring:message code="label.qascript.edit"/></h1>--%>
 
-  <form:form action="/scripts" method="post" enctype="multipart/form-data" modelAttribute="QAScriptForm">
+  <form:form action="/scripts" method="post" enctype="multipart/form-data" modelAttribute="form">
     <form:errors path="*" cssClass="error-msg" element="div"/>
     <fieldset class="fieldset">
       <legend><spring:message code="label.qascript.edit"/></legend>
@@ -28,7 +28,7 @@
           </label>
         </div>
         <div class="columns small-8">
-            ${QAScriptForm.schema}
+            ${form.schema}
         </div>
       </div>
       <div class="row">
@@ -38,7 +38,7 @@
           </label>
         </div>
         <div class="columns small-8">
-          <form:input name="QAScriptForm" path="shortName" id="txtShortName" size="64"/>
+          <form:input name="form" path="shortName" id="txtShortName" size="64"/>
         </div>
       </div>
       <div class="row">
@@ -58,8 +58,8 @@
           </label>
         </div>
         <div class="columns small-8">
-          <form:select name="QAScriptForm" path="resultType" styleId="selContentType">
-            <form:options collection="qascript.resulttypes" property="convType"/>
+          <form:select name="form" path="resultType" styleId="selContentType">
+            <form:options items="${resulttypes}" itemValue="convType" itemLabel="convType"/>
           </form:select>
         </div>
       </div>
@@ -70,8 +70,8 @@
           </label>
         </div>
         <div class="columns small-8">
-          <form:select name="QAScriptForm" path="scriptType" styleId="selScriptType" disabled="false">
-            <form:options items="${qascript.scriptlangs}" property="convType"/>
+          <form:select name="form" path="scriptType" styleId="selScriptType" disabled="false">
+            <form:options items="${scriptlangs}" itemValue="convType" itemLabel="convType"/>
           </form:select>
           <form:hidden path="scriptType"/>
         </div>
@@ -99,14 +99,14 @@
         </div>
         <div class="columns small-8">
             <%--  If scriptType is 'FME' don't show the link to the local script file --%>
-          <c:if test="${QAScriptForm.scriptType == 'fme'}">
-            <a href="${webRoot}/${QAScriptForm.filePath}" title="${QAScriptForm.filePath}">
-                ${QAScriptForm.fileName}
+          <c:if test="${form.scriptType == 'fme'}">
+            <a href="/${form.filePath}" title="${form.filePath}">
+                ${form.fileName}
             </a>
             &#160;&#160;&#160;&#160;&#160;&#160;(<spring:message code="label.lastmodified"/>:
             <c:choose>
-              <c:when test="${QAScriptForm.modified}">
-                ${QAScriptForm.modified}
+              <c:when test="${form.modified}">
+                ${form.modified}
               </c:when>
               <c:otherwise>
                 <span style="color:red"><spring:message code="label.fileNotFound"/></span>
@@ -115,19 +115,19 @@
             )
           </c:if>
             <%--  If scriptType is 'FME' don't show the link to the local script file --%>
-          <c:if test="${QAScriptForm.scriptType == 'fme'}">
-            ${QAScriptForm.fileName}
+          <c:if test="${form.scriptType == 'fme'}">
+            ${form.fileName}
           </c:if>
         </div>
       </div>
         <%--  If scriptType is 'FME' don't show the FileUpload --%>
-      <c:if test="${QAScriptForm.scriptType != 'fme'}">
+      <c:if test="${form.scriptType != 'fme'}">
         <div class="row">
           <div class="columns small-4">
             &#160;
           </div>
           <div class="columns small-8">
-            <button type="submit" class="button" name="action" value="upload">
+            <button type="submit" class="button" name="upload">
               <spring:message code="label.qascript.upload"/>
             </button>
             <input type="file" name="scriptFile" style="width:400px" size="64"/>
@@ -158,13 +158,13 @@
       </div>
 
         <%--  If scriptType is 'FME' don't show the 'Check for updates' --%>
-      <c:if test="${QAScriptForm.scriptType == 'fme'}">
+      <c:if test="${form.scriptType == 'fme'}">
         <div class="row">
           <div class="columns small-4">
 
           </div>
           <div class="columns small-8">
-            <c:if test="${!empty QAScriptForm.fileName}">
+            <c:if test="${!empty form.fileName}">
               <button type="submit" clas="button" name="diff">
                 <spring:message code="label.qascript.checkupdates"/>"
               </button>
@@ -172,8 +172,8 @@
           </div>
         </div>
       </c:if>
-      <c:if test="${!empty QAScriptForm.fileName}">
-        <c:if test="${QAScriptForm.scriptType != 'fme'}">
+      <c:if test="${!empty form.fileName}">
+        <c:if test="${form.scriptType != 'fme'}">
           <div class="row">
             <label class="question" for="txtUrl">
               <spring:message code="label.qascript.source"/>
@@ -182,7 +182,7 @@
           </div>
         </c:if>
 
-        <button type="submit" class="button" name="action" value="save">
+        <button type="submit" class="button" name="save">
           <spring:message code="label.qascript.save"/>
         </button>
         <form:hidden path="fileName"/>

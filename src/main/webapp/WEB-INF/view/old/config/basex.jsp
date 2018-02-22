@@ -46,7 +46,7 @@
         </div>
       </div>
     </fieldset>
-    <button class="button" name="action" value="submit">
+    <button class="button" name="update">
       <spring:message code="label.config.basexserver.update"/>
     </button>
 

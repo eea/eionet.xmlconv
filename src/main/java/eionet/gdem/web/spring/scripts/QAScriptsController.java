@@ -51,6 +51,12 @@ public class QAScriptsController {
         this.messageService = messageService;
     }
 
+    @ModelAttribute
+    public void init(Model model) {
+        model.addAttribute("resulttypes", AppServletContextListener.loadConvTypes(XQScript.SCRIPT_RESULTTYPES));
+        model.addAttribute("scriptlangs", AppServletContextListener.loadConvTypes(XQScript.SCRIPT_LANGS));
+    }
+
     @GetMapping
     public String list(Model model, HttpServletRequest request) {
         try {
@@ -63,8 +69,6 @@ public class QAScriptsController {
 
     @GetMapping("/add")
     public String add(@ModelAttribute("form") QAScriptForm form, Model model) {
-        model.addAttribute("resulttypes", AppServletContextListener.loadConvTypes(XQScript.SCRIPT_RESULTTYPES));
-        model.addAttribute("scriptlangs", AppServletContextListener.loadConvTypes(XQScript.SCRIPT_LANGS));
         return "/scripts/add";
     }
 
@@ -268,14 +272,14 @@ public class QAScriptsController {
     }
 
     @PostMapping(params = {"delete"})
-    public String delete(@ModelAttribute("scriptForm") QAScriptForm scriptForm, @ModelAttribute("schemaForm") SchemaForm schemaForm,
-                         @RequestParam String schemaId, BindingResult bindingResult, HttpServletRequest httpServletRequest,
-                         RedirectAttributes redirectAttributes) {
+    public String delete(@ModelAttribute("scriptForm") QAScriptForm scriptForm, BindingResult bindingResult,
+                         HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
         SpringMessages messages = new SpringMessages();
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
         String scriptId = scriptForm.getScriptId();
+        String schemaId = scriptForm.getSchemaId();
 
         new QAScriptValidator().validate(scriptForm, bindingResult);
 

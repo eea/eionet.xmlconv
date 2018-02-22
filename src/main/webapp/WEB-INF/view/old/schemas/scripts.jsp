@@ -196,18 +196,16 @@
           <button class="button" name="delete">
             <spring:message code="label.qascript.delete"/>
           </button>
-          <input type="hidden" name="schemaId" value="${schemaId}"/>
+          <form:hidden path="schemaId" value="${schemaId}"/>
           <button class="button" name="activate">
             <spring:message code="label.qascript.activate"/>
           </button>
-          <input type="hidden" name="schemaId" value="${schemaId}"/>
           <button type="submit" class="button" name="deactivate">
             <spring:message code="label.qascript.deactivate"/>
           </button>
-          <input type="hidden" name="schemaId" value="${schemaId}"/>
-          </c:if>
-        </div>
-      </form:form>
+        </c:if>
+      </div>
+    </form:form>
 
     </c:if>
     <c:if test="${empty scripts.qascripts}">

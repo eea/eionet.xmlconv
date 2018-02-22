@@ -317,6 +317,47 @@ public class QASandboxController {
                     model.addAttribute("form", cForm);
                     return "/qaSandbox/view";*/
                 }
+
+
+//                String schemaUrl = cForm.getSchemaUrl();
+                Schema schema = cForm.getSchema();
+
+                new QASandboxValidator().validate(cForm, bindingResult);
+                if (bindingResult.hasErrors()) {
+                    return "/qaSandbox/view";
+                }
+                try {
+                    // cForm.setScriptId(null);
+
+                    SchemaManager sm = new SchemaManager();
+                    String schemaId = sm.getSchemaId(schemaUrl);
+                    QAScriptListHolder qaScripts = sm.getSchemasWithQAScripts(schemaId);
+
+                    if (qaScripts != null && !Utils.isNullList(qaScripts.getQascripts())) {
+                        Schema newSchema = qaScripts.getQascripts().get(0);
+                        if (schema == null || !schema.equals(newSchema)) {
+                            cForm.setSchema(newSchema);
+                        } else {
+                            schema.setDoValidation(newSchema.isDoValidation());
+                            schema.setQascripts(newSchema.getQascripts());
+                            cForm.setSchema(schema);
+                        }
+                    }
+                    cForm.setShowScripts(true);
+                    if (Utils.isNullStr(cForm.getScriptId())) {
+                        if (Utils.isNullList(cForm.getSchema().getQascripts()) && cForm.getSchema().isDoValidation()) {
+                            cForm.setScriptId("-1");
+                        } else if (!Utils.isNullList(cForm.getSchema().getQascripts()) && cForm.getSchema().getQascripts().size() == 1
+                                && !cForm.getSchema().isDoValidation()) {
+                            cForm.setScriptId(cForm.getSchema().getQascripts().get(0).getScriptId());
+                        }
+                    }
+                } catch (DCMException e) {
+                    throw new RuntimeException("Error searching XML files: " + e.getErrorCode());
+                }
+
+                return "/qaSandbox/view";
+
             }
         } catch (DCMException e) {
             throw new RuntimeException("Error extracting schema from XML file");
@@ -499,15 +540,22 @@ public class QASandboxController {
         return "/qaSandbox/view";
     }
 
-    /**
-     * check if schema passed as request parameter exists in the list of schemas stored in the session. If there is no schema list
-     * in the session, then create it
-     *
-     * @param httpServletRequest Request
-     * @param schema             Schema
-     * @return True if schema exists.
-     * @throws DCMException If an error occurs.
-     */
+    @PostMapping(params = {"manualUrl"})
+    public String manualUrl(@ModelAttribute("form") QASandboxForm cForm, Model model,
+                           HttpServletRequest request, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        Schema schema = cForm.getSchema();
+        schema.setCrfiles(null);
+        return "/qaSandbox/view";
+    }
+        /**
+         * check if schema passed as request parameter exists in the list of schemas stored in the session. If there is no schema list
+         * in the session, then create it
+         *
+         * @param httpServletRequest Request
+         * @param schema             Schema
+         * @return True if schema exists.
+         * @throws DCMException If an error occurs.
+         */
     private boolean schemaExists(HttpServletRequest httpServletRequest, String schema) throws DCMException {
         QAScriptListHolder schemasInSession = QAScriptListLoader.getList(httpServletRequest);
         Schema oSchema = new Schema();

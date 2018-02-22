@@ -129,13 +129,13 @@
     </c:if>
     <c:if test="${form.uplSchemaFileName}">
       <c:if test="${rootElements.xsddPrm}">
-        <button type="submit" name="action" value="delete">
+        <button type="submit" name="delete">
           <spring:message code="label.schema.deleteFile"/>
         </button>
       </c:if>
       <c:if test="${rootElements.xsduPrm}">
         <c:if test="${rootElements.schemaIdRemoteUrl}">
-          <button type="submit" name="action" value="diff">
+          <button type="submit" name="diff">
             <spring:message code="label.uplSchema.checkupdates"/>
           </button>
         </c:if>
@@ -143,7 +143,7 @@
     </c:if>
     <c:if test="${!form.uplSchemaFileName}">
       <c:if test="${rootElements.schemaIdRemoteUrl}">
-        <button type="submit" name="action" value="diff">
+        <button type="submit" name="diff">
           <spring:message code="label.uplSchema.createcopy"/>
         </button>
       </c:if>
@@ -221,7 +221,7 @@
           <tr>
             <td>&nbsp;</td>
             <td>
-              <button type="submit" class="button" name="action" value="elementAdd">
+              <button type="submit" class="button" name="elementAdd">
                 <spring:message code="label.element.add"/>
               </button>
             </td>

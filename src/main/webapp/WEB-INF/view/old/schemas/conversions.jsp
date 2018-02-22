@@ -91,7 +91,7 @@
               <td>
                 <c:choose>
                   <c:when test="${!stylesheet.ddConv}">
-                    <a href="${webRoot}/${stylesheet.xsl}" class="link-xsl">
+                    <a href="/${stylesheet.xsl}" class="link-xsl">
                       ${stylesheet.xslFileName}
                     </a>&#160;
                   </c:when>
