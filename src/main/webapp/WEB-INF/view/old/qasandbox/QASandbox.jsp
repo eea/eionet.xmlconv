@@ -208,7 +208,7 @@
 
 
   <%-- QA script type & content --%>
-  <c:if test="${form.showScripts}">
+  <c:if test="${!form.showScripts}">
     <c:if test="${permissions.qsiPrm}">
       <fieldset class="fieldset">
       <legend><spring:message code="label.qasandbox.qaScript"/></legend>
@@ -242,7 +242,7 @@
         &nbsp;
       </div>
       <div class="row">
-        <button name="QARunNow" class="button">
+        <button name="runScript" class="button">
           <spring:message code="label.qasandbox.runNow"/>
         </button>
         <c:if test="${permissions.wqiPrm}">
@@ -253,8 +253,8 @@
           <%--  Save content to file --%>
         <c:if test="${permissions.wquPrm}">
           <c:if test="${!form.showScripts}">
-            <c:if test="${form.scriptId = 0}">
-              <c:if test="${form.scriptId != 0}">
+            <c:if test="${form.scriptId = '0'}">
+              <c:if test="${form.scriptId != '0'}">
                 <button name="saveFile" class="button">
                   <spring:message code="label.qasandbox.saveFile"/>
                 </button>
@@ -351,7 +351,7 @@
         <spring:message code="label.qasandbox.runNow"/>
       </button>
       <c:if test="${permissions.wqiPrm}">
-        <button name="addToWorkqueuee" class="button">
+        <button name="addToWorkqueue" class="button">
           <spring:message code="label.qasandbox.addToWorkqueue"/>
         </button>
       </c:if>

@@ -219,7 +219,7 @@ public class QASandboxController {
             throw new RuntimeException("Error saving script content");
         }
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
-        return "/qaSandbox/view";
+        return "redirect:/qaSandbox";
     }
 
     @GetMapping("/edit/{scriptId}")
