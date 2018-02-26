@@ -18,7 +18,7 @@
           <label for="nofDays" class="question"><spring:message code="label.config.purge.nofdays"/></label>
         </div>
         <div class="columns small-8">
-          <form:input path="nofDays" maxlength="10" style="width: 10em;" styleId="nofDays"/>
+          <form:input path="nofDays" maxlength="10" style="width: 10em;" id="nofDays"/>
         </div>
       </div>
     </fieldset>

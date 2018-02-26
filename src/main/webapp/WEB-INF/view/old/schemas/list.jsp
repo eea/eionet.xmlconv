@@ -46,7 +46,7 @@
           <tr class="${i.index % 2 == 1 ? "class=\"zebraeven\"" : "class=\"zebraodd\""}">
             <c:if test="${schemas.ssdPrm}">
               <td align="center">
-                <form:radiobutton path="id" value="${schema.id}"/>
+                <form:radiobutton path="schemaId" value="${schema.id}"/>
               </td>
             </c:if>
             <td>

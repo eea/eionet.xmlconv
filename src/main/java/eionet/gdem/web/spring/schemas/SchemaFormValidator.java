@@ -1,5 +1,6 @@
 package eionet.gdem.web.spring.schemas;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -29,4 +30,14 @@ public class SchemaFormValidator implements Validator {
             errors.rejectValue("schema", "label.uplSchema.validation.urlFormat");
         }
     }
+
+    public void validateDelete(Object o, Errors errors) {
+        SchemaForm form = (SchemaForm) o;
+        String schemaId = form.getSchemaId();
+
+        if (StringUtils.isEmpty(schemaId)) {
+            errors.rejectValue("schemaId", "label.uplSchema.error.emptyid");
+        }
+    }
+
 }

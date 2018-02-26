@@ -33,7 +33,7 @@
         </label>
       </div>
       <div class="columns small-8">
-        <form:textarea rows="2" cols="30" styleId="txtDescription" path="description" style="width:400px"/>
+        <form:textarea rows="2" cols="30" id="txtDescription" path="description" style="width:400px"/>
       </div>
     </div>
     <div class="row">
@@ -94,7 +94,7 @@
         </label>
       </div>
       <div class="columns small-8">
-        <form:input styleId="txtUrl" path="url" style="width:680px"/>
+        <form:input id="txtUrl" path="url" style="width:680px"/>
       </div>
     </div>
   </fieldset>

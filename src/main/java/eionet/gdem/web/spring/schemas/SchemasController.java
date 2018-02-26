@@ -41,19 +41,22 @@ public class SchemasController {
         this.schemasService = schemasService;
     }
 
-    @GetMapping
-    public String list(@ModelAttribute("form") SingleForm form, Model model, HttpSession session) {
+    @ModelAttribute
+    public void init(Model model, HttpSession session) {
 
         String user = (String) session.getAttribute("user");
 
         try {
             SchemaManager sm = new SchemaManager();
             UplSchemaHolder holder = sm.getAllSchemas(user);
-            model.addAttribute("form", form);
             model.addAttribute("schemas", holder);
         } catch (DCMException e) {
-            throw new RuntimeException("Upload schema form error: " + e.getErrorCode());
+            throw new RuntimeException("Could not retrieve schema list: " + messageService.getMessage(e.getErrorCode()));
         }
+    }
+
+    @GetMapping
+    public String list(@ModelAttribute("form") SchemaForm form) {
         return "/schemas/list";
     }
 
@@ -120,11 +123,10 @@ public class SchemasController {
     }
 
     @GetMapping("/{schemaId}")
-    public String view(@PathVariable String schemaId, @ModelAttribute("form") SchemaForm schemaForm,
+    public String view(@PathVariable String schemaId, @ModelAttribute("form") SchemaForm form,
                        Model model, HttpServletRequest request, HttpSession session) {
         SpringMessages errors = new SpringMessages();
 
-        SchemaForm form = new SchemaForm();
         String user = (String) session.getAttribute("user");
 
         try {
@@ -145,7 +147,7 @@ public class SchemasController {
             form.setSchemaLang(seHolder.getSchema().getSchemaLang());
             form.setDtd(seHolder.getSchema().getIsDTD());
             String fileName = seHolder.getSchema().getUplSchemaFileName();
-            form.setExpireDateObj(seHolder.getSchema().getExpireDate());
+            form.setExpireDate(seHolder.getSchema().getExpireDate());
             if (seHolder.getSchema().getUplSchema() != null && !Utils.isNullStr(fileName)) {
                 form.setUplSchemaId(seHolder.getSchema().getUplSchema().getUplSchemaId());
                 form.setUplSchemaFileUrl(seHolder.getSchema().getUplSchema().getUplSchemaFileUrl());
@@ -156,7 +158,6 @@ public class SchemasController {
             seHolder.setSchemaIdRemoteUrl(Utils.isURL(seHolder.getSchema().getSchema())
                     && !seHolder.getSchema().getSchema().startsWith(SecurityUtil.getUrlWithContextPath(request)));
             model.addAttribute("rootElements", seHolder);
-            model.addAttribute("form", form);
             model.addAttribute("schemaId", schemaId);
         } catch (DCMException e) {
             throw new RuntimeException("Schema element form error: " + e.getErrorCode());
@@ -189,7 +190,7 @@ public class SchemasController {
             form.setSchemaLang(seHolder.getSchema().getSchemaLang());
             form.setDtd(seHolder.getSchema().getIsDTD());
             String fileName = seHolder.getSchema().getUplSchemaFileName();
-            form.setExpireDateObj(seHolder.getSchema().getExpireDate());
+            form.setExpireDate(seHolder.getSchema().getExpireDate());
             if (seHolder.getSchema().getUplSchema() != null && !Utils.isNullStr(fileName)) {
                 form.setUplSchemaId(seHolder.getSchema().getUplSchema().getUplSchemaId());
                 form.setUplSchemaFileUrl(seHolder.getSchema().getUplSchema().getUplSchemaFileUrl());
@@ -210,7 +211,7 @@ public class SchemasController {
     }
 
     @PostMapping(params = {"update"})
-    public String editSubmit(@ModelAttribute("form") SchemaForm form, @ModelAttribute SchemaElemHolder seHolder, HttpServletRequest httpServletRequest,
+    public String editSubmit(@ModelAttribute("form") SchemaForm form, HttpServletRequest httpServletRequest,
                              BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes) {
         SpringMessages messages = new SpringMessages();
 
@@ -220,7 +221,7 @@ public class SchemasController {
         String dtdId = form.getDtdId();
         String schemaLang = form.getSchemaLang();
         boolean doValidation = form.isDoValidation();
-        Date expireDate = form.getExpireDateObj();
+        Date expireDate = form.getExpireDate();
         boolean blocker = form.isBlocker();
 
         new SchemaFormValidator().validate(form, bindingResult);
@@ -233,7 +234,6 @@ public class SchemasController {
         try {
             SchemaManager sm = new SchemaManager();
             String schemaIdByUrl = sm.getSchemaId(schema);
-
             if (schemaIdByUrl != null && !schemaIdByUrl.equals(schemaId)) {
                 String schemaTargetUrl = String.format("viewSchemaForm?schemaId=%s", schemaIdByUrl);
                 bindingResult.reject(messageService.getMessage("label.schema.url.exists", schemaTargetUrl));
@@ -254,11 +254,17 @@ public class SchemasController {
     }
 
     @PostMapping(params = {"delete"})
-    public String delete(@ModelAttribute("form") SingleForm form, RedirectAttributes redirectAttributes, HttpServletRequest httpServletRequest) {
+    public String delete(@ModelAttribute("form") SchemaForm form,
+                         BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpServletRequest httpServletRequest) {
         SpringMessages messages = new SpringMessages();
 
-        String schemaId = form.getId();
+        String schemaId = form.getSchemaId();
         String user_name = (String) httpServletRequest.getSession().getAttribute("user");
+
+        new SchemaFormValidator().validateDelete(form, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/schemas/list";
+        }
 
         try {
             SchemaManager sm = new SchemaManager();

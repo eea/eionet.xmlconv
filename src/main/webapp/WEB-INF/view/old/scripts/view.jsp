@@ -22,41 +22,37 @@
   <div id="operations">
     <ul>
       <li>
-        <c:if test="${permissions.qsuPrm}">
-          <%--  If scriptType is NOT 'FME' --%>
-          <c:if test="${form.scriptType != 'fme'}">
-            <%--do/editQAScriptInSandbox?reset=true" paramId="scriptId" paramName="form"
-            paramProperty="scriptId"--%>
-            <a href="/qaSandbox/${form.scriptId}" title="label.qasandbox.label.qasandbox.editScript">
+        <c:choose>
+          <c:when test="${permissions.qsuPrm}">
+            <c:choose>
+              <c:when test="${form.scriptType != 'fme'}">
+                <a href="/qaSandbox/${form.scriptId}/edit" title="label.qasandbox.label.qasandbox.editScript">
+                  <spring:message code="label.qascript.run"/>
+                </a>
+              </c:when>
+              <c:otherwise>
+                <spring:message code="label.qascript.runservice.title" var="title"/>
+                <a href="/qaSandbox?schemaId=${form.schemaId}" title="${title}">
+                  <spring:message code="label.qascript.run"/>
+                </a>
+              </c:otherwise>
+            </c:choose>
+          </c:when>
+          <c:otherwise>
+            <a href="/qaSandbox?schemaId=${form.schemaId}" title="${title}">
               <spring:message code="label.qascript.run"/>
             </a>
-          </c:if>
-          <%--  If scriptType is 'FME' --%>
-          <c:if test="${form.scriptType == 'fme'}">
-            <spring:message code="label.qascript.runservice.title" var="title"/>
-            <a href="openQAServiceInSandbox?scriptId=${form.scriptId}&amp;schemaId=${form.schemaId}"
-               title="${title}">
-              <spring:message code="label.qascript.run"/>
-            </a>
-          </c:if>
-        </c:if>
-        <c:if test="${!permissions.qsuPrm}">
-          <a href="openQAServiceInSandbox?scriptId=${form.scriptId}&amp;schemaId=${form.schemaId}"
-             title="${title}">
-            <spring:message code="label.qascript.run"/>
-          </a>
-        </c:if>
-
+          </c:otherwise>
+        </c:choose>
       </li>
       <c:if test="${permissions.ssdPrm}">
         <li>
-          <a href="${form.scriptId}/edit" title="edit QA Script">
+          <a href="/scripts/${form.scriptId}/edit" title="edit QA Script">
             <spring:message code="label.qascript.edit"/>
           </a>
         </li>
         <li>
-          <a href="deleteQAScript?scriptId=${form.scriptId}&amp;schemaId=${form.schemaId}"
-             title="delete QA script">
+          <a href="/scripts/${form.scriptId}/delete" title="delete QA script" onclick="return confirm('Are you sure you want to delete this script?')">
             <spring:message code="label.qascript.delete"/>
           </a>
         </li>

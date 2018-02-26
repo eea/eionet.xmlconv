@@ -44,7 +44,7 @@
         </label>
       </div>
       <div class="columns small-8">
-        <form:select path="schemaLang" styleId="txtSchemaLang" value="XSD">
+        <form:select path="schemaLang" id="txtSchemaLang" value="XSD">
           <form:options items="${form.schemaLanguages}"/>
         </form:select>
       </div>

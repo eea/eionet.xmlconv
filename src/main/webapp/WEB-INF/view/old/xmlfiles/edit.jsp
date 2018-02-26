@@ -42,7 +42,7 @@
     <div class="row">
       <div class="columns small-4"></div>
       <div class="columns small-8">
-        <input type="file" name="xmlFile" styleId="fileXml" size="68"/>
+        <input type="file" name="xmlFile" id="fileXml" size="68"/>
       </div>
     </div>
   </fieldset>

@@ -142,7 +142,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>TmpUploadServlet</servlet-name>
-        <url-pattern>/qasandbox/upload</url-pattern>
+        <url-pattern>/qaSandbox/upload</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>downloadServlet</servlet-name>

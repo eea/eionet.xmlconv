@@ -139,7 +139,7 @@
         </label>
       </div>
       <div class="columns small-8">
-        <form:input path="description" type="text" style="width:500px" styleId="txtDescription"/>
+        <form:input path="description" type="text" style="width:500px" id="txtDescription"/>
         <form:hidden path="stylesheetId"/>
       </div>
     </div>

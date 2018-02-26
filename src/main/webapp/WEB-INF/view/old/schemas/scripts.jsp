@@ -14,7 +14,7 @@
       <spring:message code="label.qascript.runservice.title" var="title"/>
       <li><a href="/schemas/${schemaId}/scripts/add" title="${title}"><spring:message code="label.qascript.add"/></a></li>
       <spring:message code="label.qascript.runservice.title" var="title"/>
-      <li><a href="/qaSandbox/run/${schemaId}" title="${title}"><spring:message code="label.qascript.runservice"/></a></li>
+      <li><a href="/qaSandbox?schemaId=${schemaId}" title="${title}"><spring:message code="label.qascript.runservice"/></a></li>
     </ul>
   </div>
 </c:if>
@@ -37,7 +37,6 @@
   </c:forEach>
 
   <c:forEach varStatus="i" items="${scripts.qascripts}" var="schema">
-    <div class="visualClear">&nbsp;</div>
     <form:form servletRelativeAction="/schemas" method="post" modelAttribute="schemaForm">
       <form:errors path="*" cssClass="error-msg" element="div"/>
       <fieldset class="fieldset">
@@ -58,7 +57,7 @@
           </div>
           <div class="columns small-2">
             <c:if test="${permissions.ssiPrm}">
-              <button type="submit" class="button" name="update" value="save">
+              <button type="submit" class="button" name="update">
                 <spring:message code="label.save"/>
               </button>
               <input type="hidden" name="schemaId" value="${schema.id}"/>
@@ -126,22 +125,21 @@
                   <c:when test="${permissions.qsuPrm}">
                     <c:choose>
                       <c:when test="${script.scriptType != 'fme'}">
-                        <a href="/qaSandbox/edit/${scriptId}" title="label.qasandbox.label.qasandbox.editScript">
+                        <a href="/qaSandbox/${scriptId}/edit" title="label.qasandbox.label.qasandbox.editScript">
                           <img src="/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"/>
                         </a>
                       </c:when>
                       <c:otherwise>
                         <spring:message code="label.qascript.runservice.title" var="title"/>
-                        <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=${schema.id}"
-                           title="${title}">
-                          <img src="/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"/>
+                        <a href="/qaSandbox?scriptId=${scriptId}&amp;schemaId=${schema.id}" title="${title}">
+                          <img src="/images/execute.gif" width="100%" alt="Run" title="Run this query in XQuery Sandbox"/>
                         </a>
                       </c:otherwise>
                     </c:choose>
                   </c:when>
                   <c:otherwise>
                     <spring:message code="label.qascript.runservice.title" var="title"/>
-                    <a href="openQAServiceInSandbox?scriptId=${scriptId}&amp;schemaId=${schema.id}" title="${title}">
+                    <a href="/qaSandbox?scriptId=${scriptId}&amp;schemaId=${schema.id}" title="${title}">
                       <img src="/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"/>
                     </a>
                   </c:otherwise>

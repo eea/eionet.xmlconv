@@ -42,7 +42,8 @@
           <label class="question" for="password"><spring:message code="label.config.basexserver.password"/></label>
         </div>
         <div class="columns small-8">
-          <form:password path="password" maxlength="255" style="width: 30em;" id="password"/>
+          <%-- change this to false when ready --%>
+          <form:password showPassword="true" path="password" maxlength="255" style="width: 30em;" id="password"/>
         </div>
       </div>
     </fieldset>

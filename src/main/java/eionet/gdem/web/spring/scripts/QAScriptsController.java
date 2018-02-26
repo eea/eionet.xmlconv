@@ -191,7 +191,7 @@ public class QAScriptsController {
             updateContent = !checksum.equals(newChecksum);
         }
 
-        new QAScriptValidator().validate(form, bindingResult);
+        new QAScriptValidator().validateUpdate(form, bindingResult);
         if (bindingResult.hasErrors()) {
             return "/scripts/edit";
         }
@@ -232,7 +232,7 @@ public class QAScriptsController {
         String upperLimit = form.getUpperLimit();
         MultipartFile scriptFile = form.getScriptFile();
 
-        // if URL is filled download from the remote source
+/*        // if URL is filled download from the remote source
         if (!Utils.isNullStr(url)) {
             QAScriptManager qam = new QAScriptManager();
             String fileName = StringUtils.substringAfterLast(url, "/");
@@ -248,9 +248,8 @@ public class QAScriptsController {
             } catch (DCMException e) {
                 throw new RuntimeException(messageService.getMessage("label.qascript.download.error"));
             }
-        }
-
-        new QAScriptValidator().validate(form, bindingResult);
+        }*/
+        new QAScriptValidator().validateAdd(form, bindingResult);
         if (bindingResult.hasErrors()) {
             return "/scripts/add";
         }
@@ -268,6 +267,26 @@ public class QAScriptsController {
         if (schemaId != null) {
             return "redirect:/schemas/" + schemaId + "/scripts";
         }
+        return "redirect:/scripts";
+    }
+
+    @GetMapping("/{scriptId}/delete")
+    public String delete1(@PathVariable String scriptId, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
+
+        SpringMessages messages = new SpringMessages();
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
+
+        try {
+            QAScriptManager qaScriptManager = new QAScriptManager();
+            qaScriptManager.delete(user, scriptId);
+            messages.add(messageService.getMessage("label.qascript.deleted"));
+            // clear qascript list in cache
+            QAScriptListLoader.reloadList(httpServletRequest);
+        } catch (DCMException e) {
+            throw new RuntimeException("Error deleting QA script: " + messageService.getMessage(e.getErrorCode()));
+        }
+
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/scripts";
     }
 

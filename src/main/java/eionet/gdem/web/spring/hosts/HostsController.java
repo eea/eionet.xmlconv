@@ -4,7 +4,6 @@ import eionet.acl.SignOnException;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.web.spring.SpringMessages;
-import eionet.gdem.web.spring.generic.SingleForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,7 @@ public class HostsController {
     }
 
     @GetMapping
-    public String list(@ModelAttribute("form") SingleForm form, Model model, HttpSession session) {
+    public String list(@ModelAttribute("form") HostForm form, Model model, HttpSession session) {
 
         List<HostDto> hosts = new ArrayList();
         String user = (String) session.getAttribute("user");
@@ -170,7 +169,7 @@ public class HostsController {
         return "redirect:/hosts";
     }
 
-    @PostMapping(params = {"/delete"})
+    @PostMapping(params = {"delete"})
     public String delete(@ModelAttribute("form") HostForm form, RedirectAttributes redirectAttributes, HttpSession session) {
 
         SpringMessages messages = new SpringMessages();

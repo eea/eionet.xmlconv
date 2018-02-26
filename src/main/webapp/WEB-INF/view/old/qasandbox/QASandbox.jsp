@@ -49,34 +49,121 @@
   .dz-details {
     margin-top: 10px;
   }
-
-  #clickable {
-    margin-top: -85px;
-  }
-
-  @media screen and (-webkit-min-device-pixel-ratio: 0) {
+  /*
     #clickable {
-      margin-top: -62px;
+      margin-top: -85px;
     }
-  }
 
-  @media screen and (-moz-os-version: windows-xp), screen and (-moz-os-version: windows-vista), screen and (-moz-os-version: windows-win7), screen and (-moz-os-version: windows-win8), screen and (-moz-os-version: windows-win10) {
-    #clickable {
-      margin-top: -72px;
+    @media screen and (-webkit-min-device-pixel-ratio: 0) {
+      #clickable {
+        margin-top: -62px;
+      }
     }
-  }
 
-  @media screen and (min-width: 0\0
-  ) {
-    #clickable {
-      margin-top: -67px;
+    @media screen and (-moz-os-version: windows-xp), screen and (-moz-os-version: windows-vista), screen and (-moz-os-version: windows-win7), screen and (-moz-os-version: windows-win8), screen and (-moz-os-version: windows-win10) {
+      #clickable {
+        margin-top: -72px;
+      }
     }
-  }
+
+    @media screen and (min-width: 0\0
+    ) {
+      #clickable {
+        margin-top: -67px;
+      }
+    }*/
 </style>
 
 <c:set var="permissions" scope="page" value="${sessionScope['qascript.permissions']}"/>
 <ed:breadcrumbs-push label="QA sandbox" level="1"/>
 <%--<h1><spring:message code="label.qasandbox.title"/></h1>--%>
+
+<c:if test="${permissions.qsuPrm}">
+  <c:if test="${not(fn:contains(header['User-Agent'],'MSIE 9.0'))}">
+    <div class="row">
+    <%--style="float:right;" --%>
+    <button class="button" id="clickable">Upload file</button>
+    <form action="/qaSandbox/upload" id="my-dropzone" class="dropzone">
+      <ul id="dropzone-previews" class="dropzone-previews"></ul>
+    </form>
+    </div>
+    <script type="text/javascript" src="<c:url value="/js/dropzone.min.js"/>"></script>
+
+    <script id="mypreview" type="text/template">
+      <li class="dz-preview dz-file-preview">
+        <div class="dz-details">
+          <div class="dz-filename">
+            <span data-dz-name></span>
+            <span>(<span data-dz-size></span>)</span>
+            <div style="float:right">
+              <button class="dz-remove-button" style="margin-left:5px" type="button" data-dz-remove>Remove</button>
+              <button class="dz-select-button" style="margin-left:5px" type="button">Select</button>
+            </div>
+          </div>
+          <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+        </div>
+        <div class="dz-success-mark"><span>✔</span></div>
+        <div class="dz-error-mark"><span>✘</span></div>
+        <div class="dz-error-message"><span data-dz-errormessage></span></div>
+      </li>
+    </script>
+
+    <script type="text/javascript">
+      $.ajaxSetup({cache: false});
+      $(document).on('click', '.dz-filename span', function (event) {
+        for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
+          if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).text()) {
+            $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
+          }
+        }
+      });
+      $(document).on('click', '.dz-select-button', function (event) {
+        for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
+          if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).parent().parent().children(':first').text()) {
+            $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
+          }
+        }
+      });
+      var ctx = '${pageContext.request.contextPath}';
+      Dropzone.options.myDropzone = {
+        dictDefaultMessage: "",
+        url: ctx + "/qaSandbox/upload",
+        clickable: "#clickable",
+        acceptedFiles: ".xml, .gml",
+        maxFiles: "5",
+        maxFilesize: "300",
+        createImageThumbnails: "false",
+        addRemoveLinks: "false",
+        previewsContainer: "#dropzone-previews",
+        previewTemplate: document.getElementById("mypreview").innerHTML,
+        init: function () {
+          $.getJSON(ctx + "/qaSandbox/action?command=getFiles", function (data) {
+            if (data.Data.length != 0) {
+              $.each(data.Data, function (index, val) {
+                var mockFile = {name: val.name, size: val.size, url: val.url};
+                Dropzone.forElement("#my-dropzone").emit("addedfile", mockFile);
+                Dropzone.forElement("#my-dropzone").emit("complete", mockFile);
+                Dropzone.forElement("#my-dropzone").files.push(mockFile);
+              });
+            }
+          });
+          this.on("success", function (file, responseText) {
+            $("#txtSourceUrl").val(responseText.url)
+            var mockFile = {name: file.name, size: file.size, url: responseText.url};
+            Dropzone.forElement("#my-dropzone").files.push(mockFile);
+          });
+          this.on("uploadprogress", function (file, progress, bytesSent) {
+            //console.log("Progress :" + progress);
+            //$('.dz-upload').text(Math.round(progress) + "%")
+          });
+          this.on("removedfile", function (file) {
+            $.get(ctx + "/qaSandbox/action", {command: "deleteFile", filename: file.name});
+          });
+        }
+      };
+    </script>
+  </c:if>
+</c:if>
 
 <form:form servletRelativeAction="/qaSandbox" method="post" modelAttribute="form">
   <form:errors path="*" cssClass="error-msg" element="div" />
@@ -91,7 +178,7 @@
         </label>
       </div>
       <div class="columns small-8">
-        <form:select path="schemaUrl" styleId="selSchema">
+        <form:select path="schemaUrl" id="selSchema">
           <form:option value="">--</form:option>
           <form:options items="${scripts.qascripts}" itemValue="schema" itemLabel="label"/>
         </form:select>
@@ -145,7 +232,7 @@
                 </label>
               </div>
               <div class="columns small-8">
-                <form:input type="text" path="sourceUrl" styleId="txtSourceUrl" size="120"/>
+                <form:input type="text" path="sourceUrl" id="txtSourceUrl" size="120"/>
               </div>
             </div>
             <div class="row">
@@ -167,7 +254,7 @@
             </label>
           </div>
           <div class="columns small-8">
-            <form:input type="text" path="sourceUrl" styleId="txtSourceUrl" size="120" style="max-width: 780px;"/>
+            <form:input type="text" path="sourceUrl" id="txtSourceUrl" size="120" style="max-width: 780px;"/>
           </div>
         </div>
         <div class="row">
@@ -218,13 +305,13 @@
         </label>
         <c:choose>
           <c:when test="${!empty form.scriptId}">
-            <form:select path="scriptType" styleId="selScriptType" disabled="false">
+            <form:select path="scriptType" id="selScriptType" disabled="false">
               <form:options items="${scriptlangs}" itemValue="convType" itemLabel="convType"/>
             </form:select>
             <%--<form:hidden path="scriptType" property="scriptType"/>--%>
           </c:when>
           <c:otherwise>
-            <form:select path="scriptType" property="scriptType" styleId="selScriptType">
+            <form:select path="scriptType" id="selScriptType" property="scriptType">
               <form:options items="${scriptlangs}" itemValue="convType" itemLabel="convType"/>
             </form:select>
           </c:otherwise>
@@ -236,7 +323,7 @@
         </label>
       </div>
       <div class="row">
-        <form:textarea path="scriptContent" styleId="txtScriptContent" rows="8" cols="100" style="width:99%"/>
+        <form:textarea path="scriptContent" id="txtScriptContent" rows="8" cols="100" style="width:99%"/>
       </div>
       <div class="row">
         &nbsp;
@@ -303,42 +390,39 @@
       <c:set var="countscripts" value="${fn:length(scripts)}" />
       <c:if test="${countscripts > 0}">
         <c:forEach items="${schema.qascripts}" var="qascript">
-          <c:set var="listScriptId" value="${qascript.scriptId}"/>
+          <c:set var="scriptId" value="${qascript.scriptId}"/>
           <div class="row">
-            <form:radiobutton path="scriptId" property="scriptId" value="${listScriptId}" styleId="rad_${listScriptId}"/>
-            <label class="question" for="rad_${listScriptId}">
+            <form:radiobutton path="scriptId" property="scriptId" value="${scriptId}" id="rad_${scriptId}"/>
+            <label class="question" for="rad_${scriptId}">
                 ${qascript.shortName}
             </label>
             <span> -
-                      <a href="/scripts/${scriptId}" title="label.qascript.view">
-                          ${qascript.fileName}
-                      </a>
-                      (${qascript.scriptType})
-                      <c:if test="${permissions.qsuPrm}">
-                        <%--  If scriptType is NOT 'FME' --%>
-                        <%--paramId="scriptId" paramName="qascript" paramProperty="scriptId" titleKey="label.qasandbox.editScriptTitle">--%>
-                        <%--value="<%=eionet.gdem.qa.XQScript.SCRIPT_LANG_FME%>">--%>
-                        <c:if test="${qascript.scriptType != 'fme'}">
-                          <a href="/qasandbox/editQAScript/${scriptId}">
-                            <spring:message code="label.qasandbox.editScript"/>
-                          </a>
-                        </c:if>
-                      </c:if>
-                  </span>
+                <a href="/scripts/${scriptId}" title="label.qascript.view">
+                    ${qascript.fileName}
+                </a>
+                (${qascript.scriptType})
+                <c:if test="${permissions.qsuPrm}">
+                  <%--  If scriptType is NOT 'FME' --%>
+                  <c:if test="${qascript.scriptType != 'fme'}">
+                    <a href="/qaSandbox/${scriptId}/edit">
+                      <spring:message code="label.qasandbox.editScript"/>
+                    </a>
+                  </c:if>
+                </c:if>
+            </span>
           </div>
         </c:forEach>
       </c:if>
     </c:if>
     <c:if test="${schema.doValidation}">
       <div class="row">
-        <form:radiobutton path="scriptId" property="scriptId" value="-1" styleId="radioValidate"/>
+        <form:radiobutton path="scriptId" property="scriptId" value="-1" id="radioValidate"/>
         <label class="question" for="radioValidate"><spring:message code="label.qasandbox.schemaValidation"/></label>
       </div>
     </c:if>
     <c:if test="${permissions.qsiPrm}">
       <div class="row">
-          <%--do/editQAScriptInSandbox?scriptId=0  titleKey="label.qasandbox.editScriptTitle"--%>
-        <a href="/qaSandbox/scripts/0/edit">
+        <a href="/qaSandbox/0/edit">
           <spring:message code="label.qasandbox.writeScript"/>
         </a>
       </div>
@@ -361,88 +445,3 @@
   </div>
   </fieldset>
 </form:form>
-
-<%--TODO FIX asap--%>
-<c:if test="${permissions.qsuPrm == 'a'}">
-  <c:if test="${not(fn:contains(header['User-Agent'],'MSIE 9.0'))}">
-    <button style="float:right;" id="clickable">Upload file</button>
-    <form action="/qasandbox/upload" id="my-dropzone" class="dropzone">
-      <ul id="dropzone-previews" class="dropzone-previews"></ul>
-    </form>
-    <script type="text/javascript" src="<c:url value="/js/dropzone.min.js"/>"></script>
-
-    <script id="mypreview" type="text/template">
-      <li class="dz-preview dz-file-preview">
-        <div class="dz-details">
-          <div class="dz-filename">
-            <span data-dz-name></span>
-            <span>(<span data-dz-size></span>)</span>
-            <div style="float:right">
-              <button class="dz-remove-button" style="margin-left:5px" type="button" data-dz-remove>Remove</button>
-              <button class="dz-select-button" style="margin-left:5px" type="button">Select</button>
-            </div>
-          </div>
-          <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
-        </div>
-        <div class="dz-success-mark"><span>✔</span></div>
-        <div class="dz-error-mark"><span>✘</span></div>
-        <div class="dz-error-message"><span data-dz-errormessage></span></div>
-      </li>
-    </script>
-
-    <script type="text/javascript">
-      $.ajaxSetup({cache: false});
-      $(document).on('click', '.dz-filename span', function (event) {
-        for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
-          if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).text()) {
-            $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
-          }
-        }
-      });
-      $(document).on('click', '.dz-select-button', function (event) {
-        for (var index = 0; index < Dropzone.forElement("#my-dropzone").files.length; index++) {
-          if (Dropzone.forElement("#my-dropzone").files[index].name == $(this).parent().parent().children(':first').text()) {
-            $("#txtSourceUrl").val(Dropzone.forElement("#my-dropzone").files[index].url)
-          }
-        }
-      });
-      var ctx = '${pageContext.request.contextPath}';
-      Dropzone.options.myDropzone = {
-        dictDefaultMessage: "",
-        url: ctx + "/qasandbox/upload",
-        clickable: "#clickable",
-        acceptedFiles: ".xml, .gml",
-        maxFiles: "5",
-        maxFilesize: "300",
-        createImageThumbnails: "false",
-        addRemoveLinks: "false",
-        previewsContainer: "#dropzone-previews",
-        previewTemplate: document.getElementById("mypreview").innerHTML,
-        init: function () {
-          $.getJSON(ctx + "/qasandbox/action?command=getFiles", function (data) {
-            if (data.Data.length != 0) {
-              $.each(data.Data, function (index, val) {
-                var mockFile = {name: val.name, size: val.size, url: val.url};
-                Dropzone.forElement("#my-dropzone").emit("addedfile", mockFile);
-                Dropzone.forElement("#my-dropzone").emit("complete", mockFile);
-                Dropzone.forElement("#my-dropzone").files.push(mockFile);
-              });
-            }
-          });
-          this.on("success", function (file, responseText) {
-            $("#txtSourceUrl").val(responseText.url)
-            var mockFile = {name: file.name, size: file.size, url: responseText.url};
-            Dropzone.forElement("#my-dropzone").files.push(mockFile);
-          });
-          this.on("uploadprogress", function (file, progress, bytesSent) {
-            //console.log("Progress :" + progress);
-            //$('.dz-upload').text(Math.round(progress) + "%")
-          });
-          this.on("removedfile", function (file) {
-            $.get(ctx + "/qasandbox/action", {command: "deleteFile", filename: file.name});
-          });
-        }
-      };
-    </script>
-  </c:if>
-</c:if>

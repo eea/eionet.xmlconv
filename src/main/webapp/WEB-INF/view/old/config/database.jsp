@@ -23,7 +23,7 @@
         <label class="question" for="user"><spring:message code="label.config.db.user"/></label>
       </div>
       <div class="columns small-8">
-        <form:input path="user" maxlength="255" style="width: 30em;" styleId="user"/>
+        <form:input path="user" maxlength="255" style="width: 30em;" id="user"/>
       </div>
     </div>
     <div class="row">
@@ -31,7 +31,8 @@
         <label class="question" for="password"><spring:message code="label.config.db.password"/></label>
       </div>
       <div class="columns small-8">
-        <form:password showPassword="false" path="password" maxlength="255" style="width: 30em;" styleId="password"/>
+        <%-- change this to false when ready --%>
+        <form:password showPassword="true" path="password" maxlength="255" style="width: 30em;" id="password"/>
       </div>
     </div>
   </fieldset>

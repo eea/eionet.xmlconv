@@ -62,11 +62,11 @@
         <put-attribute name="body" value="/WEB-INF/view/old/schemas/add.jsp" />
     </definition>
     <definition name="/schemas/view" extends="base">
-        <put-attribute name="title" value="label.title.uplSchema.add" />
+        <put-attribute name="title" value="label.title.uplSchema.view" />
         <put-attribute name="body" value="/WEB-INF/view/old/schemas/view.jsp" />
     </definition>
     <definition name="/schemas/edit" extends="base">
-        <put-attribute name="title" value="label.title.uplSchema.add" />
+        <put-attribute name="title" value="label.title.uplSchema.edit" />
         <put-attribute name="body" value="/WEB-INF/view/old/schemas/edit.jsp" />
     </definition>
     <definition name="/schemas/conversions" extends="base">

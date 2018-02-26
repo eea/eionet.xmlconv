@@ -17,6 +17,44 @@ public class QASandboxValidator implements Validator {
 
     @Override
     public void validate(Object o, Errors errors) {
+
+    }
+
+    public void validateSaveScript(Object o, Errors errors) {
+        QASandboxForm cForm = (QASandboxForm) o;
+
+        String scriptId = cForm.getScriptId();
+        String content = cForm.getScriptContent();
+        if (Utils.isNullStr(scriptId)) {
+            errors.rejectValue("scriptId", "error.qasandbox.missingId");
+        }
+        if (Utils.isNullStr(content)) {
+            errors.rejectValue("content", "error.qasandbox.missingContent");
+        }
+    }
+
+    public void validateExtract(Object o, Errors errors) {
+        QASandboxForm cForm = (QASandboxForm) o;
+
+        String sourceUrl = cForm.getSourceUrl();
+        if (Utils.isNullStr(sourceUrl)) {
+            errors.rejectValue("sourceUrl", "error.qasandbox.missingUrl");
+        }
+        if (!Utils.isURL(sourceUrl)) {
+            errors.rejectValue("sourceUrl", "error.qasandbox.notUrl");
+        }
+    }
+
+    public void validateFind(Object o, Errors errors) {
+        QASandboxForm cForm = (QASandboxForm) o;
+        String schemaUrl = cForm.getSchemaUrl();
+
+        if (Utils.isNullStr(schemaUrl)) {
+            errors.rejectValue("schemaUrl", "error.qasandbox.missingSchemaUrl");
+        }
+    }
+
+    public void validateWorkQueue(Object o, Errors errors) {
         QASandboxForm cForm = (QASandboxForm) o;
 
         String sourceUrl = cForm.getSourceUrl();
@@ -29,58 +67,53 @@ public class QASandboxValidator implements Validator {
         boolean showScripts = cForm.isShowScripts();
         String action = cForm.getAction();
 
-        if ("findScripts".equals(action)) {
-            if (Utils.isNullStr(schemaUrl)) {
-                errors.rejectValue("schemaUrl", "error.qasandbox.missingSchemaUrl");
-            }
-        } else if ("extractSchema".equals(action)) {
-            if (Utils.isNullStr(sourceUrl)) {
-                errors.rejectValue("sourceUrl", "error.qasandbox.missingUrl");
-            }
-            if (!Utils.isURL(sourceUrl)) {
-                errors.rejectValue("sourceUrl", "error.qasandbox.notUrl");
-            }
-        } else if ("addToWorkqueue".equals(action)) {
-            if (Utils.isNullStr(sourceUrl)) {
-                errors.rejectValue("sourceUrl", "error.qasandbox.missingUrl");
-            }
-            if (Utils.isNullStr(content) && !cForm.isShowScripts()) {
-                errors.rejectValue("content", "error.qasandbox.missingContent");
-            }
-            if (Utils.isNullStr(schemaUrl) && cForm.isShowScripts()) {
-                errors.rejectValue("schemaUrl", "error.qasandbox.error.qasandbox.missingSchemaUrl");
-            }
-            if (!Utils.isURL(sourceUrl)) {
-                errors.rejectValue("sourceUrl", "error.qasandbox.notUrl");
-            }
-        } else if ("runScript".equals(action)) {
-            if (showScripts && Utils.isNullStr(scriptId)) {
-                errors.rejectValue("scriptId", "error.qasandbox.missingId");
-            }
-            if (!showScripts && Utils.isNullStr(scriptContent)) {
-                errors.rejectValue("scriptContent", "error.qasandbox.missingContent");
-            }
-            if (Utils.isNullStr(sourceUrl)) {
-                errors.rejectValue("sourceUrl", "error.qasandbox.missingUrl");
-            }
-            if (!Utils.isURL(sourceUrl)) {
-                errors.rejectValue("sourceUrl", "error.qasandbox.notUrl");
-            }
-        } else if ("editScript".equals(action)) {
-            if (Utils.isNullStr(scriptId)) {
-                errors.rejectValue("scriptId", "error.qasandbox.missingId");
-            }
-        } else if ("saveScript".equals(action)) {
-            if (Utils.isNullStr(scriptId)) {
-                errors.rejectValue("scriptId", "error.qasandbox.missingId");
-            }
-            if (Utils.isNullStr(content)) {
-                errors.rejectValue("content", "error.qasandbox.missingContent");
-            }
-        } else if ("openQA".equals(action)) {
-            if (Utils.isNullStr(schemaId)) {
-                errors.rejectValue("schemaId", "error.qasandbox.missingSchemaId");
-            }
+        if (Utils.isNullStr(sourceUrl)) {
+            errors.rejectValue("sourceUrl", "error.qasandbox.missingUrl");
+        }
+        if (Utils.isNullStr(content) && !cForm.isShowScripts()) {
+            errors.rejectValue("content", "error.qasandbox.missingContent");
+        }
+        if (Utils.isNullStr(schemaUrl) && cForm.isShowScripts()) {
+            errors.rejectValue("schemaUrl", "error.qasandbox.error.qasandbox.missingSchemaUrl");
+        }
+        if (!Utils.isURL(sourceUrl)) {
+            errors.rejectValue("sourceUrl", "error.qasandbox.notUrl");
+        }
+    }
+
+    public void validateRunScript(Object o, Errors errors) {
+        QASandboxForm cForm = (QASandboxForm) o;
+
+        String sourceUrl = cForm.getSourceUrl();
+        String content = cForm.getScriptContent();
+        String scriptType = cForm.getScriptType();
+        String schemaUrl = cForm.getSchemaUrl();
+        String scriptId = cForm.getScriptId();
+        String schemaId = cForm.getSchemaId();
+        String scriptContent = cForm.getScriptContent();
+        boolean showScripts = cForm.isShowScripts();
+        String action = cForm.getAction();
+
+        if (showScripts && Utils.isNullStr(scriptId)) {
+            errors.rejectValue("scriptId", "error.qasandbox.missingId");
+        }
+        if (!showScripts && Utils.isNullStr(scriptContent)) {
+            errors.rejectValue("scriptContent", "error.qasandbox.missingContent");
+        }
+        if (Utils.isNullStr(sourceUrl)) {
+            errors.rejectValue("sourceUrl", "error.qasandbox.missingUrl");
+        }
+        if (!Utils.isURL(sourceUrl)) {
+            errors.rejectValue("sourceUrl", "error.qasandbox.notUrl");
+        }
+    }
+
+    public void validateEdit(Object o, Errors errors) {
+        QASandboxForm cForm = (QASandboxForm) o;
+
+        String scriptId = cForm.getScriptId();
+        if (Utils.isNullStr(scriptId)) {
+            errors.rejectValue("scriptId", "error.qasandbox.missingId");
         }
     }
 }

@@ -81,14 +81,13 @@ public class WebSecurityConfiguration {
               .antMatchers("/restapi/**").permitAll();
 
       // Custom JWT based authentication
-      httpSecurity
-              .addFilter(authenticationTokenFilterBean());
+      httpSecurity.addFilter(authenticationTokenFilterBean());
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-      web
-              .debug(true);
+      //Enable this for debugging
+      web.debug(false);
     }
   }
 
@@ -121,8 +120,8 @@ public class WebSecurityConfiguration {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-          web
-            .debug(true);
+        //Enable this for debugging
+        web.debug(false);
     }
 
     @Override

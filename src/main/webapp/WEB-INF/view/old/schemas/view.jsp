@@ -67,7 +67,7 @@
           <spring:message code="label.schema.expireDate"/>
         </th>
         <td>
-            ${form.longExpireDate}
+            ${form.expireDate}
         </td>
       </tr>
       <c:if test="${form.dtd}">

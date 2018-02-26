@@ -13,7 +13,7 @@
         </label>
       </div>
       <div class="columns small-8">
-        <form:input path="title" style="width:400px" styleId="txtTitle"/>
+        <form:input path="title" style="width:400px" id="txtTitle"/>
       </div>
     </div>
     <div class="row">

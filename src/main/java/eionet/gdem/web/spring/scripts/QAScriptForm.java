@@ -1,6 +1,5 @@
 package eionet.gdem.web.spring.scripts;
 
-import eionet.gdem.web.spring.FileUploadWrapper;
 import org.springframework.web.multipart.MultipartFile;
 
 public class QAScriptForm {
@@ -20,14 +19,9 @@ public class QAScriptForm {
     private String upperLimit;
     private String url;
     private boolean active;
-    private String action;
 
-    public String getAction() {
-        return this.action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
+    public QAScriptForm() {
+        upperLimit = "10";
     }
 
     public boolean getActive() {

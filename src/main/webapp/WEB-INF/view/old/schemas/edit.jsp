@@ -7,8 +7,7 @@
 <ed:breadcrumbs-push label="Edit XML Schema or DTD" level="2"/>
 <h1><spring:message code="label.schema.edit"/></h1>
 
-<form:form servletRelativeAction="/schemas" method="post" enctype="multipart/form-data"
-           modelAttribute="form">
+<form:form servletRelativeAction="/schemas" method="post" enctype="multipart/form-data" modelAttribute="form">
   <form:errors path="*" cssClass="error-msg" element="div"/>
   <fieldset class="fieldset">
     <legend><spring:message code="label.schema.fldset.properties"/></legend>
@@ -19,7 +18,7 @@
         </label>
       </div>
       <div class="columns small-8">
-        <form:input path="schema" maxlength="255" style="width:500px" styleId="txtSchemaUrl"/>
+        <form:input path="schema" maxlength="255" style="width:500px" id="txtSchemaUrl"/>
       </div>
     </div>
     <div class="row">
@@ -71,7 +70,7 @@
         </label>
       </div>
       <div class="columns small-8">
-        <form:input path="expireDate" id="txtExpireDate"/> (dd/MM/yyyy)
+        <form:input path="expireDate" type="date" id="txtExpireDate"/>
       </div>
     </div>
     <c:if test="${form.dtd}">
@@ -109,8 +108,7 @@
       </div>
       <div class="columns small-8">
         <c:if test="${!empty form.uplSchemaFileName}">
-          <a href="${form.uplSchemaFileUrl}"
-             title="${form.uplSchemaFileUrl}">${form.uplSchemaFileUrl}</a>&#160;
+          <a href="${form.uplSchemaFileUrl}" title="${form.uplSchemaFileUrl}">${form.uplSchemaFileUrl}</a>&#160;
           <c:if test="${form.lastModified}">
             &#160;&#160;(<spring:message code="label.lastmodified"/>: ${form.lastModified})
           </c:if>
@@ -119,7 +117,7 @@
     </div>
     <c:if test="${rootElements.xsduPrm}">
       <div class="row">
-        <input type="file" name="schemaFile" size="20" style="width:400px" styleId="txtSchemaFile"/>
+        <input type="file" name="schemaFile" size="20" style="width:400px" id="txtSchemaFile"/>
       </div>
     </c:if>
     <c:if test="${rootElements.xsduPrm}">

@@ -148,7 +148,7 @@
                             </build>
                             <run>
                                 <env>
-                                    <CATALINA_OPTS>-Dconfig.gdem.url=http://localhost:8080 -Dapp.home=/opt/xmlconv -Dapp.host=localhost:8080 -Dconfig.log.file=/opt/xmlconv/log/xmlconv.log -Dconfig.db.jdbcurl=jdbc:mysql://mysql:3306/xmlconv -Dconfig.db.driver=com.mysql.jdbc.Driver -Dconfig.db.user=testuser -Dconfig.db.password=testpassword -Dbasexserver.host=basex -Dbasexserver.port=1984 -Dbasexserver.user=admin -Dbasexserver.password=admin -Dfme_user=fme_user -Dfme_password=fme_password -Dquartz.db.url=jdbc:mysql://mysql:3306/quartz?createDatabaseIfNotExist=true -Dquartz.db.user=root -Dquartz.db.pwd=12345</CATALINA_OPTS>
+                                    <CATALINA_OPTS>-Dconfig.gdem.url=http://localhost:8080 -Dapp.home=/opt/xmlconv -Dapp.host=localhost:8080 -Dconfig.db.jdbcurl=jdbc:mysql://mysql:3306/xmlconv -Dconfig.db.driver=com.mysql.jdbc.Driver -Dconfig.db.user=testuser -Dconfig.db.password=testpassword -Dbasexserver.host=basex -Dbasexserver.port=1984 -Dbasexserver.user=admin -Dbasexserver.password=admin -Dfme_user=fme_user -Dfme_password=fme_password -Dquartz.db.url=jdbc:mysql://mysql:3306/quartz?createDatabaseIfNotExist=true -Dquartz.db.user=root -Dquartz.db.pwd=12345</CATALINA_OPTS>
                                     <JAVA_OPTS>-Xmx3072m</JAVA_OPTS>
                                 </env>
                                 <ports>

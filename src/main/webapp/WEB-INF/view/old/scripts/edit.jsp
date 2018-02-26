@@ -48,7 +48,7 @@
           </label>
         </div>
         <div class="columns small-8">
-          <form:textarea path="description" rows="2" cols="30" style="width:400px" styleId="txtDescription"/>
+          <form:textarea path="description" rows="2" cols="30" style="width:400px" id="txtDescription"/>
         </div>
       </div>
       <div class="row">
@@ -58,7 +58,7 @@
           </label>
         </div>
         <div class="columns small-8">
-          <form:select name="form" path="resultType" styleId="selContentType">
+          <form:select name="form" path="resultType" id="selContentType">
             <form:options items="${resulttypes}" itemValue="convType" itemLabel="convType"/>
           </form:select>
         </div>
@@ -70,7 +70,7 @@
           </label>
         </div>
         <div class="columns small-8">
-          <form:select name="form" path="scriptType" styleId="selScriptType" disabled="false">
+          <form:select name="form" path="scriptType" id="selScriptType" disabled="false">
             <form:options items="${scriptlangs}" itemValue="convType" itemLabel="convType"/>
           </form:select>
           <form:hidden path="scriptType"/>

@@ -85,8 +85,7 @@ public class QASandboxController {
             try {
                 qascripts = sm.getSchemasWithQAScripts(schemaId);
             } catch (DCMException e) {
-                LOGGER.error("QA Sandbox form error", e);
-                throw new RuntimeException(messageService.getMessage(e.getErrorCode()));
+                throw new RuntimeException("QA Sandbox form error: " + messageService.getMessage(e.getErrorCode()));
             }
             Schema schema = null;
 
@@ -109,49 +108,13 @@ public class QASandboxController {
         return "/qaSandbox/view";
     }
 
-    @GetMapping("/openQAService")
-    public String openQAService(@ModelAttribute("form") QASandboxForm cForm) {
-
-        String schemaId = cForm.getSchemaId();
-
-
-        cForm.setShowScripts(true);
-        cForm.setSourceUrl("");
-
-        SchemaManager sm = new SchemaManager();
-        QAScriptListHolder qascripts = null;
-        try {
-            qascripts = sm.getSchemasWithQAScripts(schemaId);
-        } catch (DCMException e) {
-            throw new RuntimeException("QA Sandbox form error error");
-        }
-        Schema schema = null;
-
-        if (qascripts == null || qascripts.getQascripts() == null || qascripts.getQascripts().size() == 0) {
-            schema = new Schema();
-        } else {
-            schema = qascripts.getQascripts().get(0);
-            cForm.setSchemaId(schema.getId());
-            cForm.setSchemaUrl(schema.getSchema());
-        }
-        cForm.setSchema(schema);
-        if (Utils.isNullList(cForm.getSchema().getQascripts()) && cForm.getSchema().isDoValidation()) {
-            cForm.setScriptId("-1");
-        } else if (!Utils.isNullList(cForm.getSchema().getQascripts()) && cForm.getSchema().getQascripts().size() == 1
-                && !cForm.getSchema().isDoValidation()) {
-            cForm.setScriptId(cForm.getSchema().getQascripts().get(0).getScriptId());
-        }
-
-        return "/qaSandbox/view";
-    }
-
     @PostMapping(params = {"findScripts"})
     public String find(@ModelAttribute("form") QASandboxForm cForm, BindingResult bindingResult) {
 
         String schemaUrl = cForm.getSchemaUrl();
         Schema schema = cForm.getSchema();
 
-        new QASandboxValidator().validate(cForm, bindingResult);
+        new QASandboxValidator().validateFind(cForm, bindingResult);
         if (bindingResult.hasErrors()) {
             return "/qaSandbox/view";
         }
@@ -201,7 +164,7 @@ public class QASandboxController {
 
         String userName = (String) session.getAttribute("user");
 
-        new QASandboxValidator().validate(cForm, bindingResult);
+        new QASandboxValidator().validateWorkQueue(cForm, bindingResult);
         if (bindingResult.hasErrors()) {
             return "/qaSandbox/view";
         }
@@ -222,28 +185,9 @@ public class QASandboxController {
         return "redirect:/qaSandbox";
     }
 
-    @GetMapping("/edit/{scriptId}")
-    public String edit(@ModelAttribute("form") QASandboxForm cForm, @PathVariable String scriptId) {
+    @GetMapping("/{scriptId}/edit")
+    public String edit(@ModelAttribute("form") QASandboxForm cForm, BindingResult bindingResult, @PathVariable String scriptId) {
 
-        /*String scriptIdParam = null;
-        if (httpServletRequest.getParameter("scriptId") != null) {
-            scriptIdParam = httpServletRequest.getParameter("scriptId");
-        }
-        boolean reset = false;
-        // request comes from Schema Queries page
-        if (httpServletRequest.getParameter("reset") != null) {
-            reset = "true".equals(httpServletRequest.getParameter("reset"));
-        }*/
-
-        // reset field values
-        /*if (reset) {
-            cForm.setSourceUrl("");
-            if (cForm.getSchema() != null) {
-                Schema schema = cForm.getSchema();
-                schema.setCrfiles(null);
-                cForm.setSchema(schema);
-            }
-        }*/
         cForm.setShowScripts(false);
 
         // write a new script
@@ -274,6 +218,7 @@ public class QASandboxController {
             schema.setId(script.getSchemaId());
             cForm.setSchema(schema);
         }
+        new QASandboxValidator().validateEdit(cForm, bindingResult);
         return "/qaSandbox/view";
     }
 
@@ -285,8 +230,11 @@ public class QASandboxController {
         Schema oSchema = cForm.getSchema();
         String sourceUrl = cForm.getSourceUrl();
         String schemaUrl = null;
-        cForm.setAction("extractSchema");
-        new QASandboxValidator().validate(cForm, bindingResult);
+
+        new QASandboxValidator().validateExtract(cForm, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/qaSandbox/view";
+        }
 
         try {
             if (!Utils.isNullStr(sourceUrl)) {
@@ -298,8 +246,7 @@ public class QASandboxController {
                 if (schemaExists(request, schemaUrl)) {
                     cForm.setSchemaUrl(schemaUrl);
                 } else if (!Utils.isNullStr(schemaUrl)) {
-//                    errors.add(messageService.getMessage("error.qasandbox.noSchemaScripts") + ": " + schemaUrl);
-                    bindingResult.reject("error.qasandbox.noSchemaScripts");
+                    bindingResult.reject("error.qasandbox.noSchemaScripts", new String[]{schemaUrl}, null);
                     return "/qaSandbox/view";
 
                    /* if (oSchema == null) {
@@ -322,7 +269,7 @@ public class QASandboxController {
 //                String schemaUrl = cForm.getSchemaUrl();
                 Schema schema = cForm.getSchema();
 
-                new QASandboxValidator().validate(cForm, bindingResult);
+                new QASandboxValidator().validateExtract(cForm, bindingResult);
                 if (bindingResult.hasErrors()) {
                     return "/qaSandbox/view";
                 }
@@ -378,6 +325,11 @@ public class QASandboxController {
         boolean showScripts = cForm.isShowScripts();
         String userName = (String) session.getAttribute("user");
 
+        new QASandboxValidator().validateRunScript(cForm, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/qaSandbox/view";
+        }
+
         try {
             if (!Utils.isNullStr(scriptContent) && !SecurityUtil.hasPerm(userName, "/" + Constants.ACL_QASANDBOX_PATH, "i")) {
                 throw new AccessDeniedException(messageService.getMessage("label.autorization.qasandbox.execute"));
@@ -429,8 +381,7 @@ public class QASandboxController {
                     scriptContent = Utils.readStrFromFile(Properties.queriesFolder + File.separator + qascript.getFileName());
                 } catch (IOException e) {
                     bindingResult.reject("error.qasandbox.fileNotFound");
-                    /*redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-                    return "redirect:/qaSandbox";*/
+                    return "/qaSandbox/view";
                 }
             }
 
@@ -478,7 +429,7 @@ public class QASandboxController {
     }
 
     @PostMapping(value = "/scripts", params = {"save"})
-    public String save(@ModelAttribute("form") QASandboxForm cForm, Model model,
+    public String save(@ModelAttribute("form") QASandboxForm cForm, Model model, BindingResult bindingResult,
                        RedirectAttributes redirectAttributes, HttpSession session) {
 
         SpringMessages messages = new SpringMessages();
@@ -487,6 +438,11 @@ public class QASandboxController {
         String content = cForm.getScriptContent();
 
         String userName = (String) session.getAttribute("user");
+
+        new QASandboxValidator().validateSaveScript(cForm, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/qaSandbox/view";
+        }
 
         try {
             QAScriptManager qm = new QAScriptManager();
@@ -497,7 +453,6 @@ public class QASandboxController {
         }
         model.addAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "/qaSandbox/view";
-//        return "redirect:/qaSandbox";
     }
 
     @PostMapping(params = {"searchCR"})

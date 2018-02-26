@@ -2,11 +2,8 @@ package eionet.gdem.web.spring.schemas;
 
 
 import eionet.gdem.dto.Schema;
-import eionet.gdem.utils.Utils;
-import eionet.gdem.web.spring.FileUploadWrapper;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -21,8 +18,17 @@ public class SchemaForm {
     private boolean doValidation = false;
     private String schemaLang;
     private boolean dtd = false;
-    private String expireDate;
-    private Date expireDateObj;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date expireDate;
+
+    public Date getExpireDate() {
+        return this.expireDate;
+    }
+
+    public void setExpireDate(Date expireDate) {
+        this.expireDate = expireDate;
+    }
+
     /**
      * Block file submission if Schema validation fails. The flag used in QA service.
      */
@@ -53,26 +59,6 @@ public class SchemaForm {
 
     public String getElemName() {
         return elemName;
-    }
-
-    public String getExpireDate() {
-        return expireDate;
-    }
-
-    /**
-     * Returns date
-     * @return date
-     */
-    public String getLongExpireDate() {
-        if (expireDateObj == null) {
-            return "";
-        }
-
-        return Utils.getDate(expireDateObj);
-    }
-
-    public Date getExpireDateObj() {
-        return expireDateObj;
     }
 
     public String getLastModified() {
@@ -157,33 +143,6 @@ public class SchemaForm {
 
     public void setElemName(String elemName) {
         this.elemName = elemName;
-    }
-
-    /**
-     * Sets expire date
-     * @param expireDate Expire date
-     */
-    public void setExpireDateObj(Date expireDate) {
-        this.expireDateObj = expireDate;
-        this.expireDate = Utils.getFormat(expireDate, "dd/MM/yyyy");
-    }
-
-    /**
-     * Sets expire date
-     * @param strExpireDate Expire date
-     * @throws ParseException If an error occurs.
-     */
-    public void setExpireDate(String strExpireDate) throws ParseException {
-        this.expireDate = strExpireDate;
-        if (Utils.isNullStr(strExpireDate)) {
-            expireDateObj = null;
-        } else {
-            try {
-                this.expireDateObj = Utils.parseDate(strExpireDate, "dd/MM/yyyy");
-            } catch (Exception e) {
-                // invalid date, validator should catch this
-            }
-        }
     }
 
     public void setLastModified(String lastModified) {

@@ -433,8 +433,6 @@ public class QAScriptManager {
                     schemaId = schemaDao.addSchema(schema, null);
                 }
             }
-
-            scriptId = queryDao.addQuery(schemaId, shortName, fileName, description, resultType, scriptType, upperLimit, url);
             if (useLocalFile) {
                 storeQAScriptFile(scriptFile, fileName);
             } else {
@@ -443,6 +441,8 @@ public class QAScriptManager {
                     replaceScriptFromRemoteFile(user, url, fileName);
                 }
             }
+            // XXX - make sure script database entry AND local file is added
+            scriptId = queryDao.addQuery(schemaId, shortName, fileName, description, resultType, scriptType, upperLimit, url);
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
