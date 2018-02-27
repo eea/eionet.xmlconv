@@ -873,39 +873,36 @@
                 <version>3.9.2</version>
             </dependency>
 
-            <!-- LOGGING
+            <!-- Logging dependencies -->
             <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>1.2</version>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>2.10.0</version>
             </dependency>
+            <!-- Graylog dependency -->
             <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.13</version>
-            </dependency>-->
+                <groupId>biz.paluch.logging</groupId>
+                <artifactId>logstash-gelf</artifactId>
+                <version>1.11.2</version>
+            </dependency>
+
             <!-- slf4j is needed for dbunit -->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.21</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>1.1.11</version>
+                <version>1.7.25</version>
             </dependency>
             <!-- Intercepts logging from log4j and redirects it to slf4j -->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>log4j-over-slf4j</artifactId>
-                <version>1.7.21</version>
+                <version>1.7.25</version>
             </dependency>
             <!-- Intercepts logging from apache commons logging and redirects it to slf4j -->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
-                <version>1.7.21</version>
+                <version>1.7.25</version>
             </dependency>
 
             <dependency>

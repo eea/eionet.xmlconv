@@ -1,0 +1,17 @@
+<Configuration>
+  <Appenders>
+    <Console name="console">
+      <PatternLayout>
+        <Pattern>[%d{yyyy-MM-dd HH:mm:ss}] %p - %c:%L - %m%n</Pattern>
+      </PatternLayout>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <logger name="eionet" level="info"/>
+    <logger name="org.springframework.web" level="info"/>
+    <logger name="org.hibernate" level="info" />
+    <Root level="INFO">
+      <AppenderRef ref="console" />
+    </Root>
+  </Loggers>
+</Configuration>

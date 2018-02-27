@@ -167,7 +167,7 @@ public class WorkqueueController {
     }
 
     @PostMapping(params = "delete")
-    public String delete(@ModelAttribute("form") WorkqueueForm form, @RequestParam String action, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String delete(@ModelAttribute("form") WorkqueueForm form, HttpSession session, RedirectAttributes redirectAttributes) {
 
         String user = (String) session.getAttribute("user");
         try {
@@ -190,7 +190,7 @@ public class WorkqueueController {
     }
 
     @PostMapping
-    public String restart(@ModelAttribute("form") WorkqueueForm form, @RequestParam String action, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String restart(@ModelAttribute("form") WorkqueueForm form, HttpSession session, RedirectAttributes redirectAttributes) {
 
         SpringMessages messages = new SpringMessages();
 
