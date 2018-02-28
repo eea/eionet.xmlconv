@@ -18,7 +18,7 @@
       <div class="row">
         <form:select path="schemaUrl">
           <form:option value="">--</form:option>
-          <form:options items="${form.schemas}" itemValue="schema" itemLabel="schema"/>
+          <form:options items="${schemas}" itemValue="schema" itemLabel="schema"/>
         </form:select>
       </div>
       <div class="row">
@@ -31,7 +31,7 @@
   </form:form>
   <!--  Show XML files -->
   <c:if test="${!empty form.schema}">
-    <c:set var="countfiles" value="${fn:length(form.schemas)}"/>
+    <c:set var="countfiles" value="${fn:length(schemas)}"/>
     <c:set var="crfiles" value="${form.schema.crfiles}"/>
 
     <form:form servletRelativeAction="/converter" method="post" modelAttribute="form">
@@ -44,7 +44,7 @@
         <c:choose>
           <c:when test="${countfiles > 0}">
             <div class="row">
-              <form:select path="url">
+              <form:select path="schemaUrl">
                 <form:option value="">--</form:option>
                 <form:options items="${crfiles}" itemValue="url" itemLabel="url"/>
               </form:select>
@@ -55,7 +55,7 @@
               <spring:message code="label.conversion.noCRFiles"/>
             </div>
             <div class="row">
-              <form:input type="text" path="url" style="width: 30em;"/>
+              <form:input type="text" path="schemaUrl" />
             </div>
           </c:otherwise>
         </c:choose>

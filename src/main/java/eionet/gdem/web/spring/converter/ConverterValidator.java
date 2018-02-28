@@ -33,4 +33,13 @@ public class ConverterValidator implements Validator {
             errors.rejectValue("url", "label.conversion.url.malformed");
         }
     }
+
+    public void validateFind(Object o, Errors errors) {
+        ConversionForm cForm = (ConversionForm) o;
+
+        String url = cForm.getUrl();
+        if (Utils.isNullStr(url)) {
+            errors.rejectValue("url","label.conversion.selectSource");
+        }
+    }
 }

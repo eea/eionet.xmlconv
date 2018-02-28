@@ -73,10 +73,7 @@ public class ConverterController {
         if (bindingResult.hasErrors()) {
             return "/converter/convert";
         }
-//        httpSession.setAttribute("converted.url", url);
-//        httpSession.setAttribute("converted.conversionId", convert_id);
 
-        // TODO refactor it to spring mvc
         HttpMethodResponseWrapper methodResponse = new HttpMethodResponseWrapper(httpServletResponse);
         // get request parameters
         try {
@@ -92,7 +89,8 @@ public class ConverterController {
     }
 
     @PostMapping(params = "search")
-    public String search(@ModelAttribute("form") ConversionForm cForm, HttpServletRequest httpServletRequest, Model model, RedirectAttributes redirectAttributes) {
+    public String search(@ModelAttribute("form") ConversionForm cForm, HttpServletRequest httpServletRequest, Model model,
+                         BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         //String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
         SpringMessages errors = new SpringMessages();
 
@@ -103,6 +101,10 @@ public class ConverterController {
         String schema = cForm.getSchemaUrl();
         String url = cForm.getUrl();
 
+        new ConverterValidator().validateFind(cForm, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/converter/convert";
+        }
         try {
             SchemaManager sm = new SchemaManager();
             // ConversionService cs = new ConversionService();

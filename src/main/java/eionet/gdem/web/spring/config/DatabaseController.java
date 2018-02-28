@@ -58,7 +58,7 @@ public class DatabaseController {
     }
 
     @PostMapping
-    public String editSubmit(@ModelAttribute("form") DatabaseForm form,
+    public String submit(@ModelAttribute("form") DatabaseForm form,
                              BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpSession session) {
 
         SpringMessages messages = new SpringMessages();

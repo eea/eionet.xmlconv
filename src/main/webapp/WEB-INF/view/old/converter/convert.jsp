@@ -36,7 +36,7 @@
         </div>
       </c:if>
       <div class="row">
-        <button type="submit" name="search" class="button">
+        <button type="submit" name="find" class="button">
           <spring:message code="label.conversion.list"/>
         </button>
       </div>

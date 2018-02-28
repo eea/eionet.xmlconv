@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,26 +50,31 @@ public class SearchController {
         this.rootElemDao = rootElemDao;
     }
 
-
-    @GetMapping("/search")
-    public String searchXML(@ModelAttribute("form") ConversionForm cForm, Model model, HttpServletRequest httpServletRequest) {
+    @ModelAttribute
+    public void init(Model model, HttpServletRequest httpServletRequest) {
         try {
-            cForm.setSchemas(StylesheetListLoader.getConversionSchemasList(httpServletRequest));
+            model.addAttribute("schemas", StylesheetListLoader.getConversionSchemasList(httpServletRequest));
         } catch (DCMException e) {
             throw new RuntimeException(messageService.getMessage(e.getErrorCode()));
         }
-        model.addAttribute("form", cForm);
+    }
+
+    @GetMapping("/search")
+    public String searchXML(@ModelAttribute("form") SearchForm cForm) {
         return "/converter/search";
     }
 
     @PostMapping("/search")
-    public String searchXMLSubmit(@ModelAttribute("form") ConversionForm cForm, HttpServletRequest httpServletRequest,
+    public String searchXMLSubmit(@ModelAttribute("form") @Valid SearchForm cForm, BindingResult bindingResult, HttpServletRequest httpServletRequest,
                                   Model model, RedirectAttributes redirectAttributes) {
 
+        if (bindingResult.hasErrors()) {
+            return "/converter/search";
+        }
         /*String ticket = (String) httpServletRequest.getSession().getAttribute(Constants.TICKET_ATT);*/
 
         String idConv = null;
-        Schema oSchema = null;
+        Schema schema = new Schema();
 
         // request comes from SchemaStyleheets pagew
         /*if (httpServletRequest.getParameter("conversionId") != null) {
@@ -75,51 +82,38 @@ public class SearchController {
             httpServletRequest.getSession().setAttribute("converted.conversionId", idConv);
         }*/
 
-        String schema = cForm.getSchemaUrl();
-        oSchema = cForm.getSchema();
+        String schemaUrl = cForm.getSchemaUrl();
 
         try {
             SchemaManager sm = new SchemaManager();
             ConversionService cs = new ConversionService();
             // use the Schema data from the session, if schema is the same
             // otherwise load the data from database and search CR
-            if (!Utils.isNullStr(schema) && (oSchema == null || !oSchema.getSchema().equals(schema))) {
-                if (!schemaExists(httpServletRequest, schema)) {
+            if (!Utils.isNullStr(schemaUrl) && (schema == null || !schema.getSchema().equals(schema))) {
+                if (!schemaExists(httpServletRequest, schemaUrl)) {
                     throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
                 }
                 ArrayList stylesheets = null;
                 List<CrFileDto> crfiles = null;
-                stylesheets = sm.getSchemaStylesheets(schema);
-                crfiles = sm.getCRFiles(schema);
-                oSchema = new Schema();
-                oSchema.setSchema(schema);
-                oSchema.setStylesheets(stylesheets);
-                oSchema.setCrfiles(crfiles);
+                stylesheets = sm.getSchemaStylesheets(schemaUrl);
+                crfiles = sm.getCRFiles(schemaUrl);
 
-                if (idConv == null && oSchema.getStylesheets().size() > 0) {
-                    idConv = ((Stylesheet) (oSchema.getStylesheets().get(0))).getConvId();
+                schema.setSchema(schemaUrl);
+                schema.setStylesheets(stylesheets);
+                schema.setCrfiles(crfiles);
+
+                if (idConv == null && schema.getStylesheets().size() > 0) {
+                    idConv = ((Stylesheet) (schema.getStylesheets().get(0))).getConvId();
                 }
                 if (idConv == null) {
                     idConv = "-1";
                 }
-                cForm.setSchema(oSchema);
-                cForm.setConversionId(idConv);
-
-//                httpServletRequest.getSession().setAttribute("conversionUrl", "");
-//                httpServletRequest.getSession().setAttribute("conversionId", "");
-//                redirectAttributes.addFlashAttribute("converted.url", "");
-//                httpServletRequest.getSession().setAttribute("converted.conversionId", "");
+/*                cForm.setSchema(oSchema);
+                cForm.setConversionId(idConv);*/
             }
         } catch (DCMException e) {
             throw new RuntimeException("Error searching XML files");
         }
-/*        } catch (Exception e) {
-            LOGGER.error("Error searching XML files", e);
-            errors.add(messageService.getMessage(BusinessConstants.EXCEPTION_GENERAL));
-            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "redirect:/converter";
-        }*/
-        model.addAttribute("form", cForm);
         return "/converter/search";
     }
 
