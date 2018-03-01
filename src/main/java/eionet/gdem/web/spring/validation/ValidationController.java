@@ -48,7 +48,7 @@ public class ValidationController {
     }
 
     @PostMapping
-    public String formSubmit(@ModelAttribute("form") ValidationForm form, BindingResult bindingResult, Model model) {
+    public String submit(@ModelAttribute("form") ValidationForm form, BindingResult bindingResult, Model model) {
 
 //        String ticket = (String) session.getAttribute(Constants.TICKET_ATT);
         SpringMessages errors = new SpringMessages();

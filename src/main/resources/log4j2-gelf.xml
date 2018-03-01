@@ -5,7 +5,7 @@
         <Pattern>[%d{yyyy-MM-dd HH:mm:ss}] %p - %c:%L - %m%n</Pattern>
       </PatternLayout>
     </Console>
-    <Gelf name="gelf" host="tcp:localhost" extractStackTrace="true" filterStackTrace="true" includeFullMdc="true">
+    <Gelf name="gelf" host="tcp:graylog.graylog" port="12201" extractStackTrace="true" filterStackTrace="true" includeFullMdc="true">
       <Field name="Application" literal="XMLCONV"/>
       <Field name="Timestamp" pattern="%d{dd MMM yyyy HH:mm:ss,SSS}" />
       <Field name="SimpleClassName" pattern="%C{1}" />

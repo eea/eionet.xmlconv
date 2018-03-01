@@ -64,6 +64,10 @@ public class TestUtils {
         return Properties.getStringProperty("test.httpd.url").concat(seedName);
     }
 
+    public static String getLocalURL(String filename) {
+        return Properties.getStringProperty("test.httpd.url").concat(filename);
+    }
+
     /**
      * Construct path from seed file name.
      *

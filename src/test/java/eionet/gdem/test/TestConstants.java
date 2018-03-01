@@ -67,4 +67,8 @@ public class TestConstants {
     // USER PROPERTIES
     public final static String TEST_USER = "tester";
     public final static String TEST_ADMIN_USER = "roug";
+    public static final String ADMIN_USER = "roug";
+    public static final String NORMAL_USER = "test";
+
+    public static final String SESSION_USER = "user";
 }

@@ -99,7 +99,7 @@ public class HostsController {
     }
 
     @PostMapping(params = {"update"})
-    public String editSubmit(@ModelAttribute("form") @Valid HostForm updatedForm, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String update(@ModelAttribute("form") @Valid HostForm updatedForm, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
 
         SpringMessages messages = new SpringMessages();
 
@@ -125,21 +125,17 @@ public class HostsController {
     }
 
     @GetMapping("/add")
-    public String add(Model model, HttpSession session) {
+    public String add(@ModelAttribute("form") HostForm hostForm, HttpSession session) {
 
         String user = (String) session.getAttribute("user");
-        HostForm form = new HostForm();
 
         try {
             if (!SecurityUtil.hasPerm(user, "/host", "i")) {
                 throw new AccessDeniedException(messageService.getMessage("error.inoperm", "label.hosts"));
             }
         } catch (SignOnException e) {
-            LOGGER.error("Access denied", e);
             throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
-
-        model.addAttribute("form", form);
         return "/hosts/add";
     }
 
@@ -161,7 +157,6 @@ public class HostsController {
                 throw new AccessDeniedException(messageService.getMessage("error.inoperm"));
             }
         } catch (SignOnException | SQLException e) {
-            LOGGER.error("Access denied");
             throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
 
@@ -185,7 +180,6 @@ public class HostsController {
                 throw new AccessDeniedException(messageService.getMessage("error.dnoperm", "label.hosts"));
             }
         } catch (SignOnException | SQLException e) {
-            LOGGER.error("", e);
             throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
 

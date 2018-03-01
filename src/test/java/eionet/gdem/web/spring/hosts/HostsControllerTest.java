@@ -1,21 +1,17 @@
-package eionet.gdem.web.spring.xmlfile;
+package eionet.gdem.web.spring.hosts;
 
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.WebContextConfig;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -23,6 +19,7 @@ import javax.sql.DataSource;
 
 import static eionet.gdem.test.TestConstants.ADMIN_USER;
 import static eionet.gdem.test.TestConstants.SESSION_USER;
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -37,7 +34,7 @@ import static org.hamcrest.Matchers.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = {WebContextConfig.class, ApplicationTestContext.class})
-public class XmlFilesControllerTest {
+public class HostsControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -53,58 +50,58 @@ public class XmlFilesControllerTest {
         DbHelper.setUpDatabase(dataSource, TestConstants.SEED_DATASET_UPLXML_XML);
     }
 
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
-
     @Test
     public void list() throws Exception {
-        mockMvc.perform(get("/xmlFiles"))
-                .andExpect(view().name("/xmlfiles/list"))
-                .andExpect(model().attributeExists("xmlfiles", "form"));
-    }
-
-    @Test
-    public void add() throws Exception {
-        mockMvc.perform(get("/xmlFiles/add"))
-                .andExpect(view().name("/xmlfiles/add"))
-                .andExpect(model().attributeExists("form"));
-    }
-
-    @Test
-    public void upload() throws Exception {
-        MockMultipartFile file = new MockMultipartFile("test", "test.xml", "application/xml", "test".getBytes());
-        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/xmlFiles")
-                .file(file).param("add", "").param("form", ""))
+        mockMvc.perform(get("/hosts").sessionAttr(SESSION_USER, ADMIN_USER))
                 .andExpect(status().isOk());
     }
 
     @Test
+    public void listDenied() throws Exception {
+        mockMvc.perform(get("/hosts"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     public void edit() throws Exception {
-        mockMvc.perform(get("/xmlFiles/1/edit"))
-            .andExpect(model().attributeExists("form"))
-            .andExpect(model().attribute("form", hasProperty("title", is("Boundaries of EU  countries"))))
-            .andExpect(model().attribute("form", hasProperty("xmlFileName", is("seed-ozone-station.xml"))));
+        mockMvc.perform(get("/hosts/1/edit").sessionAttr(SESSION_USER, ADMIN_USER))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void update() throws Exception {
-        mockMvc.perform(post("/xmlFiles")
+        mockMvc.perform(post("/hosts").sessionAttr(SESSION_USER, ADMIN_USER))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void add() throws Exception {
+        mockMvc.perform(get("/hosts/add").sessionAttr(SESSION_USER, ADMIN_USER))
+                .andExpect(model().attributeExists("form"))
+                .andExpect(model().attribute("form", hasProperty("host")))
+                .andExpect(model().attribute("form", hasProperty("username")))
+                .andExpect(model().attribute("form", hasProperty("password")))
+                .andExpect(view().name("/hosts/add"));
+    }
+
+    @Test
+    public void addSubmit() throws Exception {
+        mockMvc.perform(post("/hosts")
                 .sessionAttr(SESSION_USER, ADMIN_USER)
-                .param("update", "")
-                .param("xmlfileId", "1")
-                .param("title", "test")
-                .param("xmlFileName", "testName")
-                .param("xmlFilePath", "testtest.xml"))
-                .andExpect(view().name("redirect:/xmlFiles"));
+                .param("add", "")
+                .param("host", "test")
+                .param("username", "testuser")
+                .param("password", "testpass"))
+                .andExpect(model().hasNoErrors())
+                .andExpect(view().name("redirect:/hosts"));
     }
 
     @Test
     public void delete() throws Exception {
-        mockMvc.perform(post("/xmlFiles")
+        mockMvc.perform(post("/hosts")
                 .sessionAttr(SESSION_USER, ADMIN_USER)
                 .param("delete", "")
-                .param("xmlfileId", "1"))
-                .andExpect(view().name("redirect:/xmlFiles"));
+                .param("id", "1"))
+                .andExpect(view().name("redirect:/hosts"));
     }
-
 }

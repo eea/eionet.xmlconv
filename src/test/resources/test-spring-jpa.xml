@@ -17,7 +17,8 @@
         <property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
         <property name="jpaProperties">
             <props>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <!-- TODO: Helper for database - migrate to liquibase before deploying to production -->
+                <!--<prop key="hibernate.hbm2ddl.auto">update</prop>-->
             </props>
         </property>
         <!--<property name="loadTimeWeaver">

@@ -49,7 +49,7 @@
           <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
             <c:if test="${xmlfiles.ssdPrm}">
               <td align="center">
-                <form:radiobutton path="id" value="${xmlfile.id}"/>
+                <form:radiobutton path="xmlfileId" value="${xmlfile.id}"/>
               </td>
             </c:if>
             <c:if test="${xmlfiles.ssuPrm}">

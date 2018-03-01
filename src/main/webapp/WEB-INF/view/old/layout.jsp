@@ -30,7 +30,7 @@
   <link rel="stylesheet" type="text/css" href="/css/screen.css" media="screen"/>--%>
   <!--  local style -->
   <link rel="stylesheet" type="text/css" href="/css/xmlconv.css" media="screen" />
-  <link rel="stylesheet" type="text/css" href="/webjars/foundation/6.4.2/dist/css/foundation.css" media="screen"/>
+  <link rel="stylesheet" type="text/css" href="/webjars/foundation/dist/css/foundation.min.css" media="screen"/>
   <link rel="stylesheet" type="text/css" href="/css/main.css" media="screen"/>
   <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
   <!-- jQuery javascripts and css-->

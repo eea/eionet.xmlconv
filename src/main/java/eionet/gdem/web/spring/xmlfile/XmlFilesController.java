@@ -37,7 +37,7 @@ public class XmlFilesController {
     }
 
     @GetMapping
-    public String list(@ModelAttribute("form") SingleForm singleForm, Model model, HttpSession session) {
+    public String list(@ModelAttribute("form") XmlFileForm xmlFileForm, Model model, HttpSession session) {
         SpringMessages errors = new SpringMessages();
 
         UplXmlFileHolder holder = null;
@@ -54,7 +54,7 @@ public class XmlFilesController {
             return "/xmlfiles/list";
         }
         model.addAttribute("xmlfiles", holder);
-        model.addAttribute("form", singleForm);
+        model.addAttribute("form", xmlFileForm);
         return "/xmlfiles/list";
     }
 
@@ -116,56 +116,55 @@ public class XmlFilesController {
     }
 
     @PostMapping(params = {"update"})
-    public String editSubmit(@ModelAttribute("form") XmlFileForm updatedForm, @RequestParam(required = false) MultipartFile xmlFile,
+    public String editSubmit(@ModelAttribute("form") XmlFileForm updatedForm, BindingResult bindingResult, @RequestParam(required = false) MultipartFile xmlFile,
                              Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         SpringMessages messages = new SpringMessages();
         SpringMessages errors = new SpringMessages();
+
+        String user = (String) session.getAttribute("user");
 
         MultipartFile xmlfile = updatedForm.getXmlFile();
         String title = updatedForm.getTitle();
         String xmlFileId = updatedForm.getXmlfileId();
         String fileName = updatedForm.getXmlFileName();
 
-        String user = (String) session.getAttribute("user");
+        new XmlFileValidator().validateUpdate(updatedForm, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/xmlfiles/edit";
+        }
 
         try {
             UplXmlFileManager fm = new UplXmlFileManager();
             fm.updateUplXmlFile(user, xmlFileId, title, fileName, xmlfile);
             messages.add(messageService.getMessage("label.uplXmlFile.updated"));
         } catch (DCMException e) {
-            LOGGER.error("Error updating XML file", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
-            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "/xmlfiles/edit";
+            throw new RuntimeException("Error updating XML file" + messageService.getMessage(e.getErrorCode()));
         }
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/xmlFiles";
     }
 
     @PostMapping(params = {"delete"})
-    public String deleteSumbit(@ModelAttribute("form") SingleForm singleForm, Model model, HttpSession httpSession,
-                               BindingResult result, RedirectAttributes redirectAttributes) {
+    public String deleteSumbit(@ModelAttribute("form") XmlFileForm xmlFileForm, BindingResult bindingResult,
+                               Model model, HttpSession httpSession, RedirectAttributes redirectAttributes) {
 
         SpringMessages messages = new SpringMessages();
         SpringMessages errors = new SpringMessages();
 
-        String xmlfileId = singleForm.getId();
-        if (StringUtils.isEmpty(xmlfileId)) {
-            errors.add(messageService.getMessage("label.uplXmlFile.error.notSelected"));
-            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        String user_name = (String) httpSession.getAttribute("user");
+
+        String xmlfileId = xmlFileForm.getXmlfileId();
+        new XmlFileValidator().validateDelete(xmlFileForm, bindingResult);
+        if (bindingResult.hasErrors()) {
             return "/xmlfiles/list";
         }
-        String user_name = (String) httpSession.getAttribute("user");
 
         try {
             UplXmlFileManager fm = new UplXmlFileManager();
             fm.deleteUplXmlFile(user_name, xmlfileId);
             messages.add(messageService.getMessage("label.uplXmlFile.deleted"));
         } catch (DCMException e) {
-            LOGGER.error("Error deleting XML file", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
-            model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
-            return "/xmlfiles/list";
+            throw new RuntimeException("Error deleting XML file" + messageService.getMessage(e.getErrorCode()));
         }
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/xmlFiles";
