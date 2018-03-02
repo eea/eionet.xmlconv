@@ -4,19 +4,18 @@
 
 <c:set var="permissions" scope="page" value="${sessionScope['stylesheet.permissions']}" />
 
-<tiles:insertDefinition name="SchemaTabs">
-  <tiles:putAttribute name="selectedTab" value="conversions"/>
-</tiles:insertDefinition>
+<c:if test="${!empty conversions}">
+  <tiles:insertDefinition name="SchemaTabs">
+    <tiles:putAttribute name="selectedTab" value="conversions"/>
+  </tiles:insertDefinition>
+</c:if>
 
 <c:if test="${!empty conversions.handCodedStylesheets}">
   <form:form action="/searchCR" method="post">
     <form:errors path="*" cssClass="error-msg" element="div"/>
 
-    <%--<bean:define id="schemaUrl" name="schema" scope="request" type="String"/>--%>
-    <%--id="schema" name="schema.stylesheets" property="handCodedStylesheets" type="Schema">--%>
     <c:forEach varStatus="index" items="${conversions.handCodedStylesheets}" var="conversion">
       <c:if test="${conversions.handcoded}">
-        <%--<bean:define id="id" name="schema" property="id"/>--%>
         <c:if test="${permissions.ssiPrm}">
           <div id="operations">
             <ul>

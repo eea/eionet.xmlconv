@@ -7,6 +7,8 @@ import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.web.spring.SpringMessages;
+import eionet.gdem.web.spring.schemas.SchemaManager;
+import eionet.gdem.web.spring.stylesheet.StylesheetListHolder;
 import eionet.gdem.web.spring.stylesheet.StylesheetListLoader;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -40,18 +42,14 @@ public class GeneratedConversionsController {
         this.messageService = messageService;
     }
 
-    @GetMapping(value = "/generated")
+    @GetMapping("/generated")
     public String list(Model model, HttpServletRequest request) {
-
-        SpringMessages errors = new SpringMessages();
 
         try {
             model.addAttribute("conversions", StylesheetListLoader.getGeneratedList(request));
         } catch (DCMException e) {
-            LOGGER.error("Error getting stylesheet list", e);
-            errors.add(messageService.getMessage("label.exception.unknown"));
+            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
-        model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         return "/conversions/generated";
     }
 
@@ -79,7 +77,18 @@ public class GeneratedConversionsController {
     }
 
     @GetMapping(value = "/generated", params = { "schemaUrl" })
-    public String view(@ModelAttribute("schemaUrl") String schemaUrl) {
-        return "/conversions/view";
+    public String view(@ModelAttribute("schemaUrl") String schemaUrl, Model model) {
+
+        // TODO fix this - not working
+        SchemaManager sm = new SchemaManager();
+        StylesheetListHolder st = null;
+        try {
+            st = sm.getSchemaStylesheetsList(schemaUrl);
+        } catch (DCMException e) {
+            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
+        }
+        model.addAttribute("conversions", st);
+
+        return "/schemas/conversions";
     }
 }

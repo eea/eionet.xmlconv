@@ -1,26 +1,16 @@
 <Configuration>
   <Appenders>
-    <Console name="console">
-      <PatternLayout>
-        <Pattern>[%d{yyyy-MM-dd HH:mm:ss}] %p - %c:%L - %m%n</Pattern>
-      </PatternLayout>
-    </Console>
-    <Gelf name="gelf" host="tcp:graylog.graylog" port="12201" extractStackTrace="true" filterStackTrace="true" includeFullMdc="true">
+    <Gelf name="gelf" host="tcp:graylog.graylog" port="12201" extractStackTrace="true" filterStackTrace="true">
       <Field name="Application" literal="XMLCONV"/>
-      <Field name="Timestamp" pattern="%d{dd MMM yyyy HH:mm:ss,SSS}" />
-      <Field name="SimpleClassName" pattern="%C{1}" />
-      <Field name="ClassName" pattern="%C"/>
-      <Field name="LogLevel" pattern="%p"/>
-      <Field name="Location" pattern="%l" />
+      <Field name="SourceClassName" pattern="%C:%L" />
     </Gelf>
   </Appenders>
   <Loggers>
     <logger name="eionet" level="info"/>
     <logger name="org.springframework.web" level="info"/>
     <logger name="org.hibernate" level="info" />
-    <Root level="INFO">
+    <Root level="info">
       <AppenderRef ref="gelf" />
-      <AppenderRef ref="console" />
     </Root>
   </Loggers>
 </Configuration>
