@@ -7,7 +7,7 @@
 
   <ed:breadcrumbs-push label="Search CR for XML files" level="1"/>
 
-  <form:form action="/converter/search" method="post" modelAttribute="form">
+  <form:form action="/converter/search" method="post" modelAttribute="searchForm">
     <form:errors path="*" cssClass="error-msg" element="div"/>
     <fieldset class="fieldset">
       <legend><spring:message code="label.conversion.crconversion.title"/></legend>
@@ -30,9 +30,9 @@
     </fieldset>
   </form:form>
   <!--  Show XML files -->
-  <c:if test="${!empty form.schema}">
+  <c:if test="${!empty searchForm.schema}">
     <c:set var="countfiles" value="${fn:length(schemas)}"/>
-    <c:set var="crfiles" value="${form.schema.crfiles}"/>
+    <c:set var="crfiles" value="${searchForm.schema.crfiles}"/>
 
     <form:form servletRelativeAction="/converter" method="post" modelAttribute="form">
       <form:errors path="*" cssClass="error-msg" element="div"/>
@@ -44,7 +44,7 @@
         <c:choose>
           <c:when test="${countfiles > 0}">
             <div class="row">
-              <form:select path="schemaUrl">
+              <form:select path="url">
                 <form:option value="">--</form:option>
                 <form:options items="${crfiles}" itemValue="url" itemLabel="url"/>
               </form:select>
@@ -55,13 +55,13 @@
               <spring:message code="label.conversion.noCRFiles"/>
             </div>
             <div class="row">
-              <form:input type="text" path="schemaUrl" />
+              <form:input type="text" path="url" />
             </div>
           </c:otherwise>
         </c:choose>
 
         <c:choose>
-          <c:when test="${!empty form.schema.stylesheets}">
+          <c:when test="${!empty searchForm.schema.stylesheets}">
             <div class="row">
               <spring:message code="label.conversion.selectConversion"/>
             </div>
@@ -77,17 +77,15 @@
                 <th>Description</th>
                 </thead>
                 <tbody>
-                <c:forEach varStatus="i" items="${form.schema.stylesheets}" var="stylesheet">
+                <c:forEach varStatus="i" items="${searchForm.schema.stylesheets}" var="stylesheet">
                 <tr>
                   <td>
                     <c:choose>
                       <c:when test="${stylesheet == convId}">
-                        <input type="radio" checked="checked" name="conversionId" id="r_${stylesheet.convId}"
-                               value="${stylesheet.convId}"/>
+                        <input type="radio" name="conversionId" id="r_${stylesheet.convId}" value="${stylesheet.convId}" checked="checked" />
                       </c:when>
                       <c:otherwise>
-                        <input type="radio" name="conversionId" id="r_${stylesheet.convId}"
-                               value="${stylesheet.convId}"/>
+                        <input type="radio" name="conversionId" id="r_${stylesheet.convId}" value="${stylesheet.convId}" />
                       </c:otherwise>
                     </c:choose>
                   </td>

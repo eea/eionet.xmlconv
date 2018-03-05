@@ -6,38 +6,27 @@
   <spring:message code="label.syncuplscript.title"/>
 </h1>
 
-
-
-
-<form:form action="/syncUplScript" method="post">
+<form:form servletRelativeAction="/scripts/sync" method="post" modelAttribute="form">
   <form:errors path="*" cssClass="error-msg" element="div"/>
 
-  <p>
-    Do you want to store the remote script as a local copy?
-  </p>
+  <p>Do you want to store the remote script as a local copy?</p>
   <div>
-    <c:if test="${user}">
-      <button type="submit" class="button" name="update">
-        <spring:message code="label.uplSchema.updatecopy"/>
-      </button>
-      <%--<html:cancel styleClass="button">
-        <spring:message code="label.cancel"/>
-      </html:cancel>--%>
-    </c:if>
+    <button type="submit" class="button" name="action" value="update">
+      <spring:message code="label.uplSchema.updatecopy"/>
+    </button>
+    <button type="submit" class="button" name="action" value="cancel">
+      <spring:message code="label.cancel"/>
+    </button>
   </div>
-  <p>
-    File downloaded from: ${SyncUplScriptForm.url}
-  </p>
-  <pre>${SyncUplScriptForm.scriptFile}</pre>
+  <p>File downloaded from: ${form.url}</p>
+  <pre>${form.scriptFile}</pre>
 
-  <div style="display:none">
-    <form:hidden path="scriptId"/>
-    <form:hidden path="scriptFile"/>
-    <form:hidden path="fileName"/>
-    <form:hidden path="url"/>
-  </div>
+  <form:hidden path="scriptId"/>
+  <form:hidden path="scriptFile"/>
+  <form:hidden path="fileName"/>
+  <form:hidden path="url"/>
 </form:form>
-<div class="visualClear">&nbsp;</div>
+
 
 
 

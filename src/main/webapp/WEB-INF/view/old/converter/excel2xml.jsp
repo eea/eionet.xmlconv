@@ -19,10 +19,7 @@
         <label for="inpUrl"><spring:message code="label.conversion.insertExcelUrl"/></label>
       </div>
       <div class="row">
-        <form:input id="inpUrl" path="url"/>
-      </div>
-      <div class="row">
-        <spring:message code="label.conversion.sheets"/>
+        <form:input id="inpUrl" type="url" path="url"/>
       </div>
       <div class="row">
         <spring:message code="label.conversion.excel.format"/>
@@ -33,8 +30,8 @@
       </div>
       <div class="row">
         <div class="columns small-4">
-          <label for="split2"><spring:message code="label.conversion.excel.sheetname"/></label>
           <form:radiobutton path="split" id="split2" value="split"/>
+          <label for="split2"><spring:message code="label.conversion.excel.sheetname"/></label>
         </div>
         <div class="columns small-8">
           <form:input path="sheet"/>

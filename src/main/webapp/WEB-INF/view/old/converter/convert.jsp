@@ -67,8 +67,7 @@
                       <td>
                         <c:choose>
                           <c:when test="${v.index == 1}">
-                            <input type="radio" checked="checked" name="conversionId" id="r_${stylesheet.convId}"
-                                   value="${stylesheet.convId}"/>
+                            <input type="radio" name="conversionId" id="r_${stylesheet.convId}" value="${stylesheet.convId}" checked="checked" />
                           </c:when>
                           <c:otherwise>
                             <input type="radio" name="conversionId" id="r_${stylesheet.convId}" value="${stylesheet.convId}"/>
@@ -93,11 +92,13 @@
             </c:otherwise>
           </c:choose>
         </c:forEach>
-        <div class="row">
-          <button type="submit" class="button" name="convert">
-            <spring:message code="label.conversion.convert"/>
-          </button>
-        </div>
+        <c:if test="${!empty schema.stylesheets}">
+          <div class="row">
+            <button type="submit" class="button" name="convert">
+              <spring:message code="label.conversion.convert"/>
+            </button>
+          </div>
+        </c:if>
       </c:if>
     </fieldset>
   </form:form>

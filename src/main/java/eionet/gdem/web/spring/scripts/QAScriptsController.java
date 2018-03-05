@@ -1,6 +1,7 @@
 package eionet.gdem.web.spring.scripts;
 
 import eionet.gdem.Constants;
+import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.dto.BackupDto;
@@ -31,6 +32,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -71,6 +74,64 @@ public class QAScriptsController {
     public String add(@ModelAttribute("form") QAScriptForm form, Model model) {
         return "/scripts/add";
     }
+
+    @PostMapping(params = {"add"})
+    public String addSubmit(@ModelAttribute("form") @Valid QAScriptForm form, HttpSession session,
+                            Model model, BindingResult bindingResult, RedirectAttributes redirectAttributes,
+                            HttpServletRequest httpServletRequest) {
+
+        SpringMessages errors = new SpringMessages();
+        SpringMessages messages = new SpringMessages();
+
+        String user = (String) session.getAttribute("user");
+        String schemaId = form.getSchemaId();
+        String shortName = form.getShortName();
+        String desc = form.getDescription();
+        String schema = form.getSchema();
+        String resultType = form.getResultType();
+        String scriptType = form.getScriptType();
+        String url = form.getUrl();
+        String upperLimit = form.getUpperLimit();
+        MultipartFile scriptFile = form.getScriptFile();
+
+/*        // if URL is filled download from the remote source
+        if (!Utils.isNullStr(url)) {
+            QAScriptManager qam = new QAScriptManager();
+            String fileName = StringUtils.substringAfterLast(url, "/");
+            try {
+                if (qam.fileExists(fileName)) {
+                    bindingResult.rejectValue("fileName", BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS);
+                    return "/scripts/add";
+                }
+                qam.replaceScriptFromRemoteFile(user, url, fileName);
+                form.setFileName(fileName);
+            } catch (SQLException e) {
+                throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
+            } catch (DCMException e) {
+                throw new RuntimeException(messageService.getMessage("label.qascript.download.error"));
+            }
+        }*/
+        new QAScriptValidator().validateAdd(form, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/scripts/add";
+        }
+
+        try {
+            QAScriptManager qaScriptManager = new QAScriptManager();
+            qaScriptManager.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit, url);
+            messages.add(messageService.getMessage("label.qascript.inserted"));
+            // clear qascript list in cache
+            QAScriptListLoader.reloadList(httpServletRequest);
+        } catch (DCMException e) {
+            throw new RuntimeException("Add QA Script error: " + messageService.getMessage(e.getErrorCode()));
+        }
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
+        if (!StringUtils.isEmpty(schemaId)) {
+            return "redirect:/schemas/" + schemaId + "/scripts";
+        }
+        return "redirect:/scripts";
+    }
+
 
     @GetMapping("/{id}/history")
     public String history(@PathVariable String id, Model model) {
@@ -210,64 +271,7 @@ public class QAScriptsController {
 
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
 //        redirectAttributes.addFlashAttribute("schema", schema);
-        return "redirect:/scripts/{scriptId}";
-    }
-
-    @PostMapping(params = {"add"})
-    public String addSubmit(@ModelAttribute("form") @Valid QAScriptForm form, HttpSession session,
-                            Model model, BindingResult bindingResult, RedirectAttributes redirectAttributes,
-                            HttpServletRequest httpServletRequest) {
-
-        SpringMessages errors = new SpringMessages();
-        SpringMessages messages = new SpringMessages();
-
-        String user = (String) session.getAttribute("user");
-        String schemaId = form.getSchemaId();
-        String shortName = form.getShortName();
-        String desc = form.getDescription();
-        String schema = form.getSchema();
-        String resultType = form.getResultType();
-        String scriptType = form.getScriptType();
-        String url = form.getUrl();
-        String upperLimit = form.getUpperLimit();
-        MultipartFile scriptFile = form.getScriptFile();
-
-/*        // if URL is filled download from the remote source
-        if (!Utils.isNullStr(url)) {
-            QAScriptManager qam = new QAScriptManager();
-            String fileName = StringUtils.substringAfterLast(url, "/");
-            try {
-                if (qam.fileExists(fileName)) {
-                    bindingResult.rejectValue("fileName", BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS);
-                    return "/scripts/add";
-                }
-                qam.replaceScriptFromRemoteFile(user, url, fileName);
-                form.setFileName(fileName);
-            } catch (SQLException e) {
-                throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
-            } catch (DCMException e) {
-                throw new RuntimeException(messageService.getMessage("label.qascript.download.error"));
-            }
-        }*/
-        new QAScriptValidator().validateAdd(form, bindingResult);
-        if (bindingResult.hasErrors()) {
-            return "/scripts/add";
-        }
-
-        try {
-            QAScriptManager qaScriptManager = new QAScriptManager();
-            qaScriptManager.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit, url);
-            messages.add(messageService.getMessage("label.qascript.inserted"));
-            // clear qascript list in cache
-            QAScriptListLoader.reloadList(httpServletRequest);
-        } catch (DCMException e) {
-            throw new RuntimeException("Add QA Script error: " + messageService.getMessage(e.getErrorCode()));
-        }
-        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
-        if (schemaId != null) {
-            return "redirect:/schemas/" + schemaId + "/scripts";
-        }
-        return "redirect:/scripts";
+        return "redirect:/scripts/" + scriptId;
     }
 
     @GetMapping("/{scriptId}/delete")

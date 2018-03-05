@@ -24,7 +24,7 @@ public class ConverterValidator implements Validator {
         String convert_id = cForm.getConversionId();
 
         if (Utils.isNullStr(convert_id)) {
-            errors.rejectValue("convert_id", "label.conversion.noconversionselected");
+            errors.rejectValue("conversionId", "label.conversion.noconversionselected");
         }
         if (Utils.isNullStr(url)) {
             errors.rejectValue("url","label.conversion.selectSource");

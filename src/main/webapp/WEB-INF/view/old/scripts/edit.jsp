@@ -158,15 +158,15 @@
       </div>
 
         <%--  If scriptType is 'FME' don't show the 'Check for updates' --%>
-      <c:if test="${form.scriptType == 'fme'}">
+      <c:if test="${form.scriptType != 'fme'}">
         <div class="row">
           <div class="columns small-4">
 
           </div>
           <div class="columns small-8">
             <c:if test="${!empty form.fileName}">
-              <button type="submit" clas="button" name="diff">
-                <spring:message code="label.qascript.checkupdates"/>"
+              <button type="submit" class="button" name="diff">
+                <spring:message code="label.qascript.checkupdates"/>
               </button>
             </c:if>
           </div>
@@ -182,7 +182,7 @@
           </div>
         </c:if>
 
-        <button type="submit" class="button" name="save">
+        <button type="submit" class="button" name="update">
           <spring:message code="label.qascript.save"/>
         </button>
         <form:hidden path="fileName"/>

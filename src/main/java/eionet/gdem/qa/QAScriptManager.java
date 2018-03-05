@@ -572,7 +572,6 @@ public class QAScriptManager {
         
         try {
             if (setActive){
-                System.out.println(this.getClass().toString() + " : "+ scriptId);
                 queryDao.activateQuery(scriptId);
             }
             else {
@@ -582,8 +581,6 @@ public class QAScriptManager {
             LOGGER.error("Error setting activation status for QA script.", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
-        
-        
 
     }
 

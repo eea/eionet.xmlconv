@@ -60,12 +60,12 @@ public class SearchController {
     }
 
     @GetMapping("/search")
-    public String searchXML(@ModelAttribute("form") SearchForm cForm) {
+    public String searchXML(@ModelAttribute("searchForm") SearchForm cForm) {
         return "/converter/search";
     }
 
     @PostMapping("/search")
-    public String searchXMLSubmit(@ModelAttribute("form") @Valid SearchForm cForm, BindingResult bindingResult, HttpServletRequest httpServletRequest,
+    public String searchXMLSubmit(@ModelAttribute("searchForm") @Valid SearchForm cForm, BindingResult bindingResult, HttpServletRequest httpServletRequest,
                                   Model model, RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
@@ -89,7 +89,9 @@ public class SearchController {
             ConversionService cs = new ConversionService();
             // use the Schema data from the session, if schema is the same
             // otherwise load the data from database and search CR
-            if (!Utils.isNullStr(schemaUrl) && (schema == null || !schema.getSchema().equals(schema))) {
+
+            // && (schema == null || !schema.getSchema().equals(schema)))
+            if (!Utils.isNullStr(schemaUrl)) {
                 if (!schemaExists(httpServletRequest, schemaUrl)) {
                     throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
                 }
@@ -108,12 +110,13 @@ public class SearchController {
                 if (idConv == null) {
                     idConv = "-1";
                 }
-/*                cForm.setSchema(oSchema);
-                cForm.setConversionId(idConv);*/
+                cForm.setSchema(schema);
+//                cForm.setConversionId(idConv);
             }
         } catch (DCMException e) {
             throw new RuntimeException("Error searching XML files");
         }
+        model.addAttribute("form", new ConversionForm());
         return "/converter/search";
     }
 

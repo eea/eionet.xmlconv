@@ -88,8 +88,8 @@ public class ConverterController {
         return null;
     }
 
-    @PostMapping(params = "search")
-    public String search(@ModelAttribute("form") ConversionForm cForm, HttpServletRequest httpServletRequest, Model model,
+    @PostMapping(params = "find")
+    public String find(@ModelAttribute("form") ConversionForm cForm, HttpServletRequest httpServletRequest, Model model,
                          BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         //String ticket = (String) httpServletRequest.getSession().getAttribute(Names.TICKET_ATT);
         SpringMessages errors = new SpringMessages();
@@ -188,7 +188,7 @@ public class ConverterController {
             }
             cForm.setConversionId(idConv);
             cForm.setSearchAction(null);
-            cForm.setAction("search");
+            cForm.setAction("find");
 
             redirectAttributes.addFlashAttribute("schemasList", StylesheetListLoader.getConversionSchemasList(httpServletRequest));
         } catch (DCMException e) {
