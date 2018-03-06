@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -167,7 +168,10 @@ public class WorkqueueController {
     }
 
     @PostMapping(params = "delete")
-    public String delete(@ModelAttribute("form") WorkqueueForm form, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String delete(@ModelAttribute("form") WorkqueueForm form, BindingResult bindingResult,
+                         HttpSession session, RedirectAttributes redirectAttributes) {
+
+        SpringMessages messages = new SpringMessages();
 
         String user = (String) session.getAttribute("user");
         try {
@@ -178,19 +182,27 @@ public class WorkqueueController {
             throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
 
+        new WorkqueueFormValidator().validate(form, bindingResult);
+        if (bindingResult.hasErrors()) {
+            // todo improve this
+            return "redirect:/workqueue";
+        }
+
         List<String> jobs = form.getJobs();
 
         try {
             WorkqueueManager workqueueManager = new WorkqueueManager();
             workqueueManager.deleteJobs(jobs.toArray(new String[0]));
+            messages.add(messageService.getMessage("label.workqueue.jobdeleted"));
         } catch (XMLConvException e) {
             throw new RuntimeException("Could not delete jobs! " + e.getMessage());
         }
-        return "/workqueue";
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
+        return "redirect:/workqueue";
     }
 
-    @PostMapping
-    public String restart(@ModelAttribute("form") WorkqueueForm form, HttpSession session, RedirectAttributes redirectAttributes) {
+    @PostMapping(params = "restart")
+    public String restart(@ModelAttribute("form") WorkqueueForm form, BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes) {
 
         SpringMessages messages = new SpringMessages();
 
@@ -203,11 +215,18 @@ public class WorkqueueController {
             throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
 
+        new WorkqueueFormValidator().validate(form, bindingResult);
+        if (bindingResult.hasErrors()) {
+            // todo improve this
+            return "redirect:/workqueue";
+        }
+
         List<String> jobs = form.getJobs();
 
         try {
             WorkqueueManager workqueueManager = new WorkqueueManager();
             workqueueManager.restartJobs(jobs.toArray(new String[0]));
+            messages.add(messageService.getMessage("label.workqueue.jobrestarted"));
         } catch (XMLConvException e) {
             throw new RuntimeException("Could not restart jobs! " + e.getMessage());
         }

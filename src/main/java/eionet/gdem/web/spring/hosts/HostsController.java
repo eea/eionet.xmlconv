@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
@@ -58,7 +59,6 @@ public class HostsController {
                 throw new AccessDeniedException(messageService.getMessageInt("error.vnoperm", "label.hosts"));
             }
         } catch (SignOnException | SQLException e) {
-            LOGGER.error("Access denied", e);
             throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
         model.addAttribute("hosts", hosts);
@@ -66,9 +66,8 @@ public class HostsController {
     }
 
     @GetMapping("/{id}/edit")
-    public String edit(@PathVariable String id, Model model, HttpSession session) {
+    public String edit(@PathVariable String id, @ModelAttribute("form") HostForm hostForm, Model model, HttpSession session) {
 
-        HostForm hostForm = new HostForm();
         String user = (String) session.getAttribute("user");
         SpringMessages errors = new SpringMessages();
 
@@ -87,19 +86,18 @@ public class HostsController {
                 throw new AccessDeniedException(messageService.getMessage("error.unoperm", "label.hosts"));
             }
         } catch (SQLException | SignOnException e) {
-            LOGGER.error("Error: ", e);
             throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
 
         if (errors.size() > 0) {
             model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         }
-        model.addAttribute("form", hostForm);
         return "/hosts/edit";
     }
 
     @PostMapping(params = {"update"})
-    public String update(@ModelAttribute("form") @Valid HostForm updatedForm, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String update(@ModelAttribute("form") @Valid HostForm updatedForm, BindingResult bindingResult,
+                         Model model, RedirectAttributes redirectAttributes, HttpSession session) {
 
         SpringMessages messages = new SpringMessages();
 
@@ -109,6 +107,11 @@ public class HostsController {
         String password = updatedForm.getPassword();
 
         String user = (String) session.getAttribute("user");
+
+        new HostsFormValidator().validate(updatedForm, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/hosts/edit";
+        }
 
         try {
             if (SecurityUtil.hasPerm(user, "/host", "u")) {
@@ -140,7 +143,8 @@ public class HostsController {
     }
 
     @PostMapping(params = {"add"})
-    public String addSubmit(@ModelAttribute("form") HostForm form, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String addSubmit(@ModelAttribute("form") HostForm form, BindingResult bindingResult,
+                            HttpSession session, RedirectAttributes redirectAttributes) {
         SpringMessages messages = new SpringMessages();
 
         String host = form.getHost();
@@ -148,6 +152,11 @@ public class HostsController {
         String password = form.getPassword();
 
         String user = (String) session.getAttribute("user");
+
+        new HostsFormValidator().validate(form, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/hosts/add";
+        }
 
         try {
             if (SecurityUtil.hasPerm(user, "/host", "i")) {
@@ -165,12 +174,18 @@ public class HostsController {
     }
 
     @PostMapping(params = {"delete"})
-    public String delete(@ModelAttribute("form") HostForm form, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String delete(@ModelAttribute("form") @Valid HostForm form, BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes, HttpSession session) {
 
         SpringMessages messages = new SpringMessages();
 
         String user = (String) session.getAttribute("user");
 
+        if (bindingResult.hasErrors()) {
+            messages.add(messageService.getMessage("label.hosts.error.nohostselected"));
+            redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, messages);
+            return "redirect:/hosts";
+        }
 
         try {
             if (SecurityUtil.hasPerm(user, "/host", "d")) {

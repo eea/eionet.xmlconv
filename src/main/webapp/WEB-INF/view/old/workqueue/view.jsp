@@ -155,12 +155,12 @@
     <div id="hidden_elements">
       <c:if test="${permissions.wqdPrm || permissions.wquPrm}">
         <c:if test="${permissions.wqdPrm}">
-          <button class="button" type="submit" name="delete">
+          <button class="button" type="submit" name="delete" onclick="return confirm('Are you sure you want to delete the selected jobs?')">
             Delete
           </button>
         </c:if>
         <c:if test="${permissions.wquPrm}">
-          <button class="button" type="submit" name="restart">
+          <button class="button" type="submit" name="restart" onclick="return confirm('Are you sure you want to restart the selected jobs?')">
             Restart
           </button>
         </c:if>

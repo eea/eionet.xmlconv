@@ -13,7 +13,7 @@
         </label>
       </div>
       <div class="columns small-8">
-        <form:input path="host" type="url" id="txtHost"/>
+        <form:input path="host" id="txtHost"/>
       </div>
     </div>
     <div class="row">

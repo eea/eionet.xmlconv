@@ -121,7 +121,7 @@
       </div>
     </c:if>
     <c:if test="${rootElements.xsduPrm}">
-      <button type="submit" class="button" value="edit">
+      <button type="submit" class="button" name="update">
         <spring:message code="label.uplSchema.upload"/>
       </button>
     </c:if>

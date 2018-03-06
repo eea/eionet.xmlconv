@@ -209,7 +209,7 @@ public class QAScriptsController {
     }
 
     @PostMapping(params = {"update"})
-    public String editSubmit(@ModelAttribute("form") QAScriptForm form,
+    public String update(@ModelAttribute("form") QAScriptForm form,
                              BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
         SpringMessages messages = new SpringMessages();
@@ -275,7 +275,7 @@ public class QAScriptsController {
     }
 
     @GetMapping("/{scriptId}/delete")
-    public String delete1(@PathVariable String scriptId, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
+    public String deleteGet(@PathVariable String scriptId, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
         SpringMessages messages = new SpringMessages();
         String user = (String) httpServletRequest.getSession().getAttribute("user");
@@ -295,7 +295,7 @@ public class QAScriptsController {
     }
 
     @PostMapping(params = {"delete"})
-    public String delete(@ModelAttribute("scriptForm") QAScriptForm scriptForm, BindingResult bindingResult,
+    public String deletePost(@ModelAttribute("scriptForm") QAScriptForm scriptForm, BindingResult bindingResult,
                          HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
         SpringMessages messages = new SpringMessages();
