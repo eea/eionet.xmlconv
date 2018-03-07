@@ -14,7 +14,13 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="eionet.gdem" />
         <property name="persistenceUnitName" value="CRM" />
-        <property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" >
+                <property name="showSql" value="true"/>
+                <property name="generateDdl" value="false" />
+                <property name="databasePlatform" value="org.hibernate.dialect.MySQL55Dialect" />
+            </bean>
+        </property>
         <property name="jpaProperties">
             <props>
                 <!-- TODO: Helper for database - migrate to liquibase before deploying to production -->
@@ -25,13 +31,8 @@
             <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>
         </property>-->
     </bean>
-    <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" >
-        <property name="showSql" value="true"/>
-        <property name="generateDdl" value="false" />
-        <property name="databasePlatform" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
-    </bean>
 
-    <bean id="transactionManager" primary="false" class="org.springframework.orm.jpa.JpaTransactionManager" >
+    <bean id="transactionManager" primary="true" class="org.springframework.orm.jpa.JpaTransactionManager" >
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
         <!--<property name="dataSource" ref="dataSource"/>-->
     </bean>

@@ -19,29 +19,26 @@
     <!--</context:component-scan>-->
 
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-        <property name="dataSource" ref="dataSource"></property>
+        <property name="dataSource" ref="transactionAwareDataSource"></property>
     </bean>
 
     <bean id="namedParameterJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
-        <constructor-arg ref="dataSource"/>
+        <constructor-arg ref="transactionAwareDataSource"/>
     </bean>
 
-    <bean id="txManager" primary="true" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <bean id="transactionAwareDataSource" primary="true" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+        <constructor-arg ref="dataSource" />
+    </bean>
+
+    <bean id="transactionManager" primary="true" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
     <!--<bean id="springApplicationContext" class="eionet.gdem.SpringApplicationContext"/>-->
 
-    <bean id="validator"
-          class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
     <!-- TESTING JOOQ LIBRARY - REMOVE ALL FOLLOWING STATEMENTS IF WE WONT NEED JOOQ -->
-
-    <bean id="transactionAwareDataSource" primary="false"
-          class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
-        <constructor-arg ref="dataSource" />
-    </bean>
-
     <bean class="org.jooq.impl.DataSourceConnectionProvider" name="connectionProvider">
         <constructor-arg ref="transactionAwareDataSource" />
     </bean>
@@ -50,8 +47,6 @@
     <bean id="dsl" class="org.jooq.impl.DefaultDSLContext">
         <constructor-arg ref="config" />
     </bean>
-
-    <!--<bean id="exceptionTranslator" class="org.jooq.example.spring.exception.ExceptionTranslator" />-->
 
     <!-- Invoking an internal, package-private constructor for the example
          Implement your own Configuration for more reliable behaviour -->
@@ -78,6 +73,12 @@
                 <value>messages</value>
             </list>
         </property>
+    </bean>
+
+    <!-- Runs on Tomcat startup. -->
+    <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
+        <property name="dataSource" ref="transactionAwareDataSource" />
+        <property name="changeLog" value="classpath:db/xmlconv-struct.xml" />
     </bean>
 
 </beans>
