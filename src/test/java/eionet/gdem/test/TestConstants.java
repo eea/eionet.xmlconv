@@ -20,6 +20,7 @@ public class TestConstants {
     public static final String SEED_DATASET_UPL_SCHEMAS_XML = "seed-dataset-upl_schemas.xml";
     public static final String SEED_DATASET_QA_XML = "seed-dataset-qa.xml";
     public static final String SEED_DATASET_UPLXML_XML = "seed-dataset-uplxml.xml";
+    public static final String SEED_DATASET_QAJOBS_XML = "seed-dataset-qajobs.xml";
 
     // SEED FILES for conversions
     public static final String SEED_READER_XLS = "seed-reader.xls";
@@ -52,6 +53,9 @@ public class TestConstants {
     public final static String SEED_FEEDBACKANALYZE_TEST  = "seed-feedback-error.html";
     public static final String SEED_XSLSCRIPT_TEST = "seed-art17-general.xsl";
 
+    // TEST URL
+    public static final String TEST_XSD = "http://test.dev/test.xsd";
+
     // TEST RESULT PROPERTIES
     public final static String HTML_CONTENTYPE_RESULT = "text/html;charset=UTF-8";
     public final static String TEXT_CONTENTYPE_RESULT = "text/plain";
@@ -71,4 +75,6 @@ public class TestConstants {
     public static final String NORMAL_USER = "test";
 
     public static final String SESSION_USER = "user";
+
+
 }

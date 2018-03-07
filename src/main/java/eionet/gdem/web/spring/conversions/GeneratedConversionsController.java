@@ -57,9 +57,6 @@ public class GeneratedConversionsController {
     @ResponseBody
     public byte[] getConversion(@PathVariable String id, @RequestParam(value = "conv", required = false) String convId) {
 
-        SpringMessages success = new SpringMessages();
-        SpringMessages errors = new SpringMessages();
-
         String metaXSLFolder = Properties.metaXSLFolder;
         String tableDefURL = Properties.ddURL;
 
@@ -69,15 +66,15 @@ public class GeneratedConversionsController {
             String url = tableDefURL + "/GetTableDef?id=" + id;
             return IOUtils.toByteArray(XslGenerator.convertXML(url, format));
         } catch (Exception ge) {
-            LOGGER.error("Error getting stylesheet", ge);
-            errors.add(messageService.getMessage("label.stylesheet.error.generation"));
+            LOGGER.error("", ge);
+//            errors.add(messageService.getMessage("label.stylesheet.error.generation"));
 //            model.addAttribute("dcm.errors", errors);
             return null;
         }
     }
 
     @GetMapping(value = "/generated", params = { "schemaUrl" })
-    public String view(@ModelAttribute("schemaUrl") String schemaUrl, Model model) {
+    public String show(@ModelAttribute("schemaUrl") String schemaUrl, Model model) {
 
         // TODO fix this - not working
         SchemaManager sm = new SchemaManager();

@@ -18,6 +18,12 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.sql.DataSource;
 
 import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.hamcrest.Matchers.*;
 
 /**
  *
@@ -43,10 +49,21 @@ public class Json2xmlControllerTest {
     }
 
     @Test
-    public void json2xml() {
+    public void json2xml() throws Exception {
+        mockMvc.perform(get("/converter/json2xml"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("form"))
+                .andExpect(model().attribute("form", instanceOf(Json2xmlForm.class)));
     }
 
     @Test
-    public void json2xmlSubmit() {
+    public void json2xmlSubmit() throws Exception {
+        mockMvc.perform(post("/converter/json2xml"))
+                .andExpect(model().hasErrors())
+                .andExpect(view().name("/converter/json2xml"));
+
+        mockMvc.perform(post("/converter/json2xml")
+                .param("content", "{'test':'test'}"))
+                .andExpect(view().name("/converter/json2xml"));
     }
 }

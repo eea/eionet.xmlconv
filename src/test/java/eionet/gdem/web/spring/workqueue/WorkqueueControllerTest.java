@@ -18,6 +18,12 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.sql.DataSource;
 
 import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.hamcrest.Matchers.*;
 
 /**
  *
@@ -40,18 +46,32 @@ public class WorkqueueControllerTest {
     @Before
     public void setup() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        DbHelper.setUpDatabase(dataSource, TestConstants.SEED_DATASET_UPLXML_XML);
+        DbHelper.setUpDatabase(dataSource, TestConstants.SEED_DATASET_QAJOBS_XML);
     }
 
     @Test
-    public void list() {
+    public void list() throws Exception {
+        mockMvc.perform(get("/workqueue"))
+                .andExpect(model().attributeExists("permissions"))
+                .andExpect(model().attributeExists("jobList"))
+                .andExpect(model().attribute("form", instanceOf(WorkqueueForm.class)));
     }
 
     @Test
-    public void delete() {
+    public void delete() throws Exception {
+        mockMvc.perform(post("/workqueue")
+                .param("delete", "")
+                .param("jobs", new String[]{"1"}))
+                .andExpect(model().hasNoErrors())
+                .andExpect(view().name("redirect:/workqueue"));
     }
 
     @Test
-    public void restart() {
+    public void restart() throws Exception {
+        mockMvc.perform(post("/workqueue")
+                .param("restart", "")
+                .param("jobs", new String[]{"1"}))
+                .andExpect(model().hasNoErrors())
+                .andExpect(view().name("redirect:/workqueue"));
     }
 }

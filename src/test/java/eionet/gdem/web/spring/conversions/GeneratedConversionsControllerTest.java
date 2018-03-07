@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,6 +19,12 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.sql.DataSource;
 
 import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.hamcrest.Matchers.*;
 
 /**
  *
@@ -25,7 +32,10 @@ import static org.junit.Assert.*;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {WebContextConfig.class, ApplicationTestContext.class})
+@ContextHierarchy({
+        @ContextConfiguration(classes = ApplicationTestContext.class),
+        @ContextConfiguration(classes = WebContextConfig.class)
+})
 public class GeneratedConversionsControllerTest {
 
     @Autowired
@@ -43,14 +53,24 @@ public class GeneratedConversionsControllerTest {
     }
 
     @Test
-    public void list() {
+    public void list() throws Exception {
+        mockMvc.perform(get("/conversions/generated"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("conversions"))
+                .andExpect(view().name("/conversions/generated"));
     }
 
     @Test
-    public void getConversion() {
+    public void getConversion() throws Exception {
+        mockMvc.perform(get("/conversions/generated/1"))
+                .andExpect(model().hasNoErrors());
     }
 
     @Test
-    public void view() {
+    public void show() throws Exception {
+        mockMvc.perform(get("/conversions/generated")
+                .param("schemaUrl", TestConstants.TEST_XSD))
+                .andExpect(model().attributeExists("conversions"))
+                .andExpect(view().name("/schemas/conversions"));
     }
 }

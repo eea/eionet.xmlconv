@@ -18,6 +18,12 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.sql.DataSource;
 
 import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.hamcrest.Matchers.*;
 
 /**
  *
@@ -43,10 +49,17 @@ public class SearchControllerTest {
     }
 
     @Test
-    public void searchXML() {
+    public void searchXML() throws Exception {
+        mockMvc.perform(get("/converter/search"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("searchForm"));
     }
 
     @Test
-    public void searchXMLSubmit() {
+    public void searchXMLSubmit() throws Exception {
+        mockMvc.perform(post("/converter/search").param("schemaUrl", "http://test.dev/test.xsd"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/converter/search"))
+                .andExpect(model().attributeExists("form"));
     }
 }

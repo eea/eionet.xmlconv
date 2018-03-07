@@ -18,6 +18,12 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.sql.DataSource;
 
 import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.hamcrest.Matchers.*;
 
 /**
  *
@@ -43,6 +49,9 @@ public class ServerStatusControllerTest {
     }
 
     @Test
-    public void status() {
+    public void status() throws Exception {
+        mockMvc.perform(get("/webstatus"))
+                .andExpect(model().attributeExists("status"))
+                .andExpect(view().name("/webstatus"));
     }
 }

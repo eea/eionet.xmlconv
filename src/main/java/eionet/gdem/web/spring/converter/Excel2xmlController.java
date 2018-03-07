@@ -54,7 +54,6 @@ public class Excel2xmlController {
         }
         model.addAttribute("form", form);
         model.addAttribute("conversionLog", conversionLog);
-        model.addAttribute("conversionLinks", model.asMap().get("conversionLinks"));
         return "/converter/excel2xml";
     }
 

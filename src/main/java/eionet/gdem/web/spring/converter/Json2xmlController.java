@@ -38,12 +38,11 @@ public class Json2xmlController {
     }
 
     @GetMapping("/json2xml")
-    public String json2xml(@ModelAttribute("form") Json2xmlForm form, Model model) {
-        model.addAttribute("form", form);
+    public String json2xml(@ModelAttribute("form") Json2xmlForm form) {
         return "/converter/json2xml";
     }
 
-    @PostMapping("json2xml")
+    @PostMapping("/json2xml")
     public String json2xmlSubmit(@ModelAttribute("form") @Valid Json2xmlForm form, BindingResult bindingResult, Model model) {
 
         String content = form.getContent();
