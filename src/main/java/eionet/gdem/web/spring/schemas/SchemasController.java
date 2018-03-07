@@ -1,5 +1,6 @@
 package eionet.gdem.web.spring.schemas;
 
+import eionet.acl.SignOnException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
@@ -13,12 +14,14 @@ import eionet.gdem.web.spring.stylesheet.StylesheetListLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
@@ -74,6 +77,14 @@ public class SchemasController {
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
 
+        try {
+            if (!SecurityUtil.hasPerm(user, "/schema", "i")) {
+                throw new AccessDeniedException(messageService.getMessage("error.inoperm", "label.schemas.title"));
+            }
+        } catch (SignOnException e) {
+            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
+        }
+
         MultipartFile schemaFile = form.getSchemaFile();
         String desc = form.getDescription();
         String schemaUrl = form.getSchemaUrl();
@@ -123,7 +134,7 @@ public class SchemasController {
     }
 
     @GetMapping("/{schemaId}")
-    public String view(@PathVariable String schemaId, @ModelAttribute("form") SchemaForm form,
+    public String show(@PathVariable String schemaId, @ModelAttribute("form") SchemaForm form,
                        Model model, HttpServletRequest request, HttpSession session) {
         SpringMessages errors = new SpringMessages();
 

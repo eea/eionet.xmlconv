@@ -47,12 +47,13 @@ public class HostsControllerTest {
     @Before
     public void setup() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        DbHelper.setUpDatabase(dataSource, TestConstants.SEED_DATASET_UPLXML_XML);
+        DbHelper.setUpDatabase(dataSource, TestConstants.SEED_DATASET_HOSTS_XML);
     }
 
     @Test
     public void list() throws Exception {
         mockMvc.perform(get("/hosts").sessionAttr(SESSION_USER, ADMIN_USER))
+                .andExpect(view().name("/hosts/list"))
                 .andExpect(status().isOk());
     }
 
@@ -65,6 +66,11 @@ public class HostsControllerTest {
     @Test
     public void edit() throws Exception {
         mockMvc.perform(get("/hosts/1/edit").sessionAttr(SESSION_USER, ADMIN_USER))
+                .andExpect(model().attributeExists("form"))
+                .andExpect(model().attribute("form", hasProperty("host")))
+                .andExpect(model().attribute("form", hasProperty("username")))
+                .andExpect(model().attribute("form", hasProperty("password")))
+                .andExpect(view().name("/hosts/edit"))
                 .andExpect(status().isOk());
     }
 
