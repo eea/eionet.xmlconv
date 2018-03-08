@@ -133,7 +133,7 @@ public class QaControllerTest {
 
         ArgumentCaptor<String> jobIdCaptor = ArgumentCaptor.forClass(String.class);
         verify(qaServiceMock, times(1)).getJobResults(jobIdCaptor.capture());
-        assertTrue(EqualsBuilder.reflectionEquals(jobIdCaptor.getValue(), jobid));
+        assertTrue(jobIdCaptor.getValue().equals(jobid));
     }
 
     @Test

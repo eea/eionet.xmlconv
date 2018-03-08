@@ -37,8 +37,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-//loader = AnnotationConfigWebContextLoader.class,
-@ContextConfiguration(classes = {WebContextConfig.class, ApplicationTestContext.class})
+@ContextHierarchy({
+        @ContextConfiguration(classes = ApplicationTestContext.class),
+        @ContextConfiguration(classes = WebContextConfig.class)
+})
 @Ignore
 public class ConversionsControllerTest {
 

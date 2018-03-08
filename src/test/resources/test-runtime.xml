@@ -53,6 +53,6 @@
         <constructor-arg index="0" ref="aclProperties" />
     </bean>
 
-    <!--<bean id="cacheManager" class="eionet.gdem.cache.CacheManagerUtil" init-method="initializeCacheManager" destroy-method="destroyCacheManager"/>-->
+    <bean id="cacheManager" class="eionet.gdem.cache.CacheManagerUtil" init-method="initializeCacheManager" destroy-method="destroyCacheManager"/>
 
 </beans>

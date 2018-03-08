@@ -40,7 +40,6 @@ public class ConversionServiceTest {
      */
     @Before
     public void setUp() throws Exception {
-        DbHelper.setUpConnectionProperties();
         TestUtils.setUpProperties(this);
         TestUtils.setUpReleasedDataset();
     }

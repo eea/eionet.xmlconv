@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-  <T_XQJOBS job_id="1" url="http://test.dev/test.xml" xq_file="test.xq" />
-  <T_XQJOBS job_id="2" url="http://test.dev/test.xml" xq_file="test.xq" />
+  <T_XQJOBS job_id="1" url="http://test.dev/test.xml" xq_file="test.xq" result_file="test.html" n_status="0" />
+  <T_XQJOBS job_id="2" url="http://test.dev/test.xml" xq_file="test.xq" result_file="test.html" n_status="0" />
 </dataset>

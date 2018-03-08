@@ -11,7 +11,7 @@
     <!--<context:component-scan base-package="eionet.gdem" />-->
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
+        <property name="dataSource" ref="transactionAwareDataSource"/>
         <property name="packagesToScan" value="eionet.gdem" />
         <property name="persistenceUnitName" value="CRM" />
         <property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
@@ -28,14 +28,13 @@
     <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" >
         <property name="showSql" value="true"/>
         <property name="generateDdl" value="false" />
-        <property name="databasePlatform" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
+        <property name="databasePlatform" value="org.hibernate.dialect.MySQL55Dialect" />
     </bean>
 
-    <bean id="transactionManager" primary="false" class="org.springframework.orm.jpa.JpaTransactionManager" >
+    <bean id="transactionManager" primary="true" class="org.springframework.orm.jpa.JpaTransactionManager" >
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
-        <!--<property name="dataSource" ref="dataSource"/>-->
     </bean>
 
-    <tx:annotation-driven transaction-manager="transactionManager" />
+    <tx:annotation-driven />
 
 </beans>

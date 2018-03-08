@@ -37,7 +37,6 @@ import static org.hamcrest.Matchers.*;
         @ContextConfiguration(classes = ApplicationTestContext.class),
         @ContextConfiguration(classes = WebContextConfig.class)
 })
-//@ContextConfiguration(classes = {WebContextConfig.class, ApplicationTestContext.class})
 public class Excel2xmlControllerTest {
 
     @Autowired

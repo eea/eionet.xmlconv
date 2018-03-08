@@ -65,22 +65,28 @@ public final class CacheManagerUtil {
      * Cache manager initializer. Used by Spring DI.
      */
     public void initializeCacheManager() {
-        Configuration cacheManagerConfig = new Configuration()
-                .diskStore(new DiskStoreConfiguration()
-                .path(Properties.CACHE_TEMP_DIR));
-        cacheManager = new CacheManager(cacheManagerConfig);
-        Cache appCache = new Cache(new CacheConfiguration(APPLICATION_CACHE, 10000)
-                .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
-                .eternal(true));
-        cacheManager.addCache(appCache);
-        Cache httpCache = new Cache(new CacheConfiguration()
-                .name(HTTP_CACHE)
-                .maxEntriesLocalHeap(1)
-                .maxBytesLocalDisk(Properties.CACHE_HTTP_SIZE, MemoryUnit.MEGABYTES)
-                .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
-                .diskExpiryThreadIntervalSeconds(Properties.CACHE_HTTP_EXPIRY)
-                .persistence(new PersistenceConfiguration().strategy(PersistenceConfiguration.Strategy.LOCALTEMPSWAP)));
-        cacheManager.addCache(httpCache);
+        if (cacheManager == null) {
+            synchronized (CacheManager.class) {
+                if (cacheManager == null) {
+                    Configuration cacheManagerConfig = new Configuration()
+                            .diskStore(new DiskStoreConfiguration()
+                                    .path(Properties.CACHE_TEMP_DIR));
+                    cacheManager = new CacheManager(cacheManagerConfig);
+                    Cache appCache = new Cache(new CacheConfiguration(APPLICATION_CACHE, 10000)
+                            .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
+                            .eternal(true));
+                    cacheManager.addCache(appCache);
+                    Cache httpCache = new Cache(new CacheConfiguration()
+                            .name(HTTP_CACHE)
+                            .maxEntriesLocalHeap(1)
+                            .maxBytesLocalDisk(Properties.CACHE_HTTP_SIZE, MemoryUnit.MEGABYTES)
+                            .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
+                            .diskExpiryThreadIntervalSeconds(Properties.CACHE_HTTP_EXPIRY)
+                            .persistence(new PersistenceConfiguration().strategy(PersistenceConfiguration.Strategy.LOCALTEMPSWAP)));
+                    cacheManager.addCache(httpCache);
+                }
+            }
+        }
     }
 
     /**

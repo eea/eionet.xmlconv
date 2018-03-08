@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,6 +18,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.sql.DataSource;
 
+import static eionet.gdem.test.TestConstants.ADMIN_USER;
+import static eionet.gdem.test.TestConstants.SESSION_USER;
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -31,7 +34,10 @@ import static org.hamcrest.Matchers.*;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {WebContextConfig.class, ApplicationTestContext.class})
+@ContextHierarchy({
+        @ContextConfiguration(classes = ApplicationTestContext.class),
+        @ContextConfiguration(classes = WebContextConfig.class)
+})
 public class WorkqueueControllerTest {
 
 
@@ -62,6 +68,11 @@ public class WorkqueueControllerTest {
         mockMvc.perform(post("/workqueue")
                 .param("delete", "")
                 .param("jobs", new String[]{"1"}))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(post("/workqueue").sessionAttr(SESSION_USER, ADMIN_USER)
+                .param("delete", "")
+                .param("jobs", new String[]{"1"}))
                 .andExpect(model().hasNoErrors())
                 .andExpect(view().name("redirect:/workqueue"));
     }
@@ -69,6 +80,11 @@ public class WorkqueueControllerTest {
     @Test
     public void restart() throws Exception {
         mockMvc.perform(post("/workqueue")
+                    .param("restart", "")
+                    .param("jobs", new String[]{"1"}))
+                    .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(post("/workqueue").sessionAttr(SESSION_USER, ADMIN_USER)
                 .param("restart", "")
                 .param("jobs", new String[]{"1"}))
                 .andExpect(model().hasNoErrors())

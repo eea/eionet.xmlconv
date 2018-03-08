@@ -43,55 +43,6 @@ public class DbHelper {
         IDataSet dataSet =
                 new FlatXmlDataSetBuilder().build(new File(db.getClass().getClassLoader().getResource(dataset).getFile()));
         DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
+        connection.close();
     }
-    public static void setUpDefaultDatabaseTester(IDatabaseTester databaseTester, String dataset) throws Exception {
-
-        // Needed for backward compatibility.
-        //DbHelper.setUpConnectionProperties();
-        /*IDatabaseConnection connection = databaseTester.getConnection();
-        DatabaseConfig config = connection.getConfig();
-        //config.setProperty(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS, Boolean.TRUE);
-        config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new MySqlDataTypeFactory());
-
-        databaseTester.getConnection().getConfig().setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new MySqlDataTypeFactory());
-        IDataSet dataSet =
-                new FlatXmlDataSetBuilder().build(new File(databaseTester.getClass().getClassLoader().getResource(dataset).getFile()));
-        databaseTester.setDataSet(dataSet);
-
-        databaseTester.setSetUpOperation(DatabaseOperation.CLEAN_INSERT);
-        databaseTester.setTearDownOperation(DatabaseOperation.NONE);
-        databaseTester.onSetup();*/
-
-    }
-
-    private static void setUpSpringContextWithDatabaseTester(String dataset) throws Exception {
-
-        // read the application context file
-        //ClassPathXmlApplicationContext ctx =
-        //        new ClassPathXmlApplicationContext("/test-spring-app-context.xml", "/test-datasource-context.xml");
-        // instantiate spring database tester from the application context
-        //IDatabaseTester databaseTester = (IDatabaseTester) ctx.getBean("databaseTester");
-        //setUpDatabase(db, dataset);
-
-    }
-
-    public static void setUpConnectionProperties() {
-        //GDEMServices.setTestConnection(true);
-        //System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_DRIVER_CLASS, Properties.dbDriver);
-        //System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL, Properties.dbUrl);
-        //System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_USERNAME, Properties.dbUser);
-        //System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD, Properties.dbPwd);
-    }
-
-    //public static void setUpDatabase(Object obj, String dataset) throws Exception {
-
-        //GDEMServices.setTestConnection(true);
-        //AbstractDatabaseTester databaseTester =
-        //        new JdbcDatabaseTester(Properties.dbDriver, Properties.dbUrl, Properties.dbUser, Properties.dbPwd);
-
-        //IDataSet dataSet = new FlatXmlDataSet(obj.getClass().getClassLoader().getResourceAsStream(dataset));
-        //databaseTester.setDataSet(dataSet);
-        //databaseTester.onSetup();
-
-//    }
 }

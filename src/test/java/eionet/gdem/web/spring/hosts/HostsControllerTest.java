@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,7 +34,10 @@ import static org.hamcrest.Matchers.*;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {WebContextConfig.class, ApplicationTestContext.class})
+@ContextHierarchy({
+        @ContextConfiguration(classes = ApplicationTestContext.class),
+        @ContextConfiguration(classes = WebContextConfig.class)
+})
 public class HostsControllerTest {
 
     @Autowired
@@ -76,8 +80,14 @@ public class HostsControllerTest {
 
     @Test
     public void update() throws Exception {
-        mockMvc.perform(post("/hosts").sessionAttr(SESSION_USER, ADMIN_USER))
-                .andExpect(status().isOk());
+        mockMvc.perform(post("/hosts").sessionAttr(SESSION_USER, ADMIN_USER)
+                .param("update", "")
+                .param("id", "1")
+                .param("host", "http://updated.dev")
+                .param("username", "updated")
+                .param("password", "updated"))
+                .andExpect(model().hasNoErrors())
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test

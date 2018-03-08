@@ -25,8 +25,8 @@ import org.springframework.context.annotation.ImportResource;
  *        Enriko Käsper
  */
 //@Configuration
-@ImportResource({"classpath:test-spring-app-context.xml", "classpath:test-runtime.xml"})
-//, "classpath:test-spring-jpa.xml"
+@ImportResource({"classpath:test-spring-app-context.xml", "classpath:test-runtime.xml",
+        "classpath:spring-datasource-context.xml", "classpath:spring-quartz-datasource.xml"})
 public class ApplicationTestContext {
 
 }

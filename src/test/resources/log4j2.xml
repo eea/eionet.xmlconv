@@ -10,7 +10,7 @@
     <!--<logger name="eionet" level="info"/>-->
     <!--<logger name="org.springframework.web" level="trace"/>-->
     <!--<logger name="org.hibernate" level="trace" />-->
-    <Root level="DEBUG">
+    <Root level="INFO">
       <AppenderRef ref="console" />
     </Root>
   </Loggers>

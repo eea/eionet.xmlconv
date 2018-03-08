@@ -15,6 +15,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -67,12 +69,11 @@ public class SchemaManagerDBTest{
         // count schemas stored in data file
         int countSchemas = schemas.getSchemas().size();
 
-        // todo fix
-//        MockFormFile file = new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA).getFile());
         String fileName = sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaId, "xsd");
-        // add schema int db and upoload schema file
 
-//        sm.addUplSchema(user, file, fileName, schemaId);
+        MockMultipartFile file = new MockMultipartFile("schemaFile", fileName, MediaType.APPLICATION_XML_VALUE, getClass().getClassLoader().getResource(TestConstants.SEED_GENERALREPORT_SCHEMA).getFile().getBytes());
+        // add schema int db and upoload schema file
+        sm.addUplSchema(user, file, fileName, schemaId);
 
         // count schemas
         UplSchemaHolder schemas2 = sm.getAllSchemas(user);

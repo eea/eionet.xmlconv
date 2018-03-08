@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,7 +39,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {WebContextConfig.class, ApplicationTestContext.class})
+@ContextHierarchy({
+        @ContextConfiguration(classes = ApplicationTestContext.class),
+        @ContextConfiguration(classes = WebContextConfig.class)
+})
 public class SchemasControllerTest {
 
     @Autowired
@@ -66,8 +70,9 @@ public class SchemasControllerTest {
     @Test
     public void add() throws Exception {
         mockMvc.perform(get("/schemas/add"))
-                .andExpect(view().name("/schemas/add"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("form", instanceOf(UploadSchemaForm.class)))
+                .andExpect(view().name("/schemas/add"));
     }
 
     @Test
@@ -75,12 +80,12 @@ public class SchemasControllerTest {
         mockMvc.perform(post("/schemas/add")
                 .sessionAttr(SESSION_USER, ADMIN_USER)
                 .param("schemaUrl", "http://test.gr/test.xsd"))
-                    .andExpect(view().name("redirect:/schemas"));
+                .andExpect(view().name("redirect:/schemas"));
     }
 
     @Test
     public void addSubmitFileUpload() throws Exception {
-        MockMultipartFile file = new MockMultipartFile("schemaFile", "test", MediaType.APPLICATION_XML_VALUE, "test".getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile file = new MockMultipartFile("schemaFile", "test.xsd", MediaType.APPLICATION_XML_VALUE, "test".getBytes(StandardCharsets.UTF_8));
 
         mockMvc.perform(MockMvcRequestBuilders.fileUpload("/schemas/add")
                 .file(file)
@@ -93,7 +98,7 @@ public class SchemasControllerTest {
 
     @Test
     public void addSubmitFileUploadNoPermissions() throws Exception {
-        MockMultipartFile file = new MockMultipartFile("schemaFile", "test", MediaType.APPLICATION_XML_VALUE, "test".getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile file = new MockMultipartFile("schemaFile", "test.xsd", MediaType.APPLICATION_XML_VALUE, "test".getBytes(StandardCharsets.UTF_8));
 
         mockMvc.perform(MockMvcRequestBuilders.fileUpload("/schemas/add")
                 .file(file)
@@ -184,8 +189,8 @@ public class SchemasControllerTest {
                 .sessionAttr(SESSION_USER, ADMIN_USER)
                 .param("delete", "")
                 .param("schemaId","1"))
-                    .andExpect(model().hasNoErrors())
-                    .andExpect(view().name("redirect:/schemas"));
+                .andExpect(model().hasNoErrors())
+                .andExpect(view().name("redirect:/schemas"));
     }
 
     @Test
@@ -193,7 +198,7 @@ public class SchemasControllerTest {
         mockMvc.perform(post("/schemas")
                 .param("delete", "")
                 .param("schemaId","1"))
-                    .andExpect(model().hasNoErrors())
-                    .andExpect(view().name("Error"));
+                .andExpect(model().hasNoErrors())
+                .andExpect(view().name("Error"));
     }
 }

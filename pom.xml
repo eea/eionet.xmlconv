@@ -107,9 +107,6 @@
                                 </ports>
                                 <env>
                                     <MYSQL_ROOT_PASSWORD>12345</MYSQL_ROOT_PASSWORD>
-                                    <MYSQL_DATABASE>xmlconv</MYSQL_DATABASE>
-                                    <MYSQL_USER>testuser</MYSQL_USER>
-                                    <MYSQL_PASSWORD>testpassword</MYSQL_PASSWORD>
                                 </env>
                                 <wait>
                                     <tcp>
@@ -842,8 +839,8 @@
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>5.2.11.Final</version>
+                <artifactId>hibernate-hikaricp</artifactId>
+                <version>5.2.14.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>

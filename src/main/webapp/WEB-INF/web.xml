@@ -19,7 +19,6 @@
             classpath:spring-datasource-context.xml
             classpath:spring-runtime.xml
             classpath:spring-quartz-datasource.xml
-            classpath:spring-jpa.xml
         </param-value>
     </context-param>
 

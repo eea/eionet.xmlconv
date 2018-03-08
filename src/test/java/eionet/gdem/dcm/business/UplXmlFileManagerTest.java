@@ -32,6 +32,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -78,11 +80,9 @@ public class UplXmlFileManagerTest{
         UplXmlFileManager xm = new UplXmlFileManager();
 
         UplXmlFileHolder holder1 = xm.getUplXmlFiles(user);
-// todo fix
-//        MockFormFile xmlFile = new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_XLIFF_XML).getFile());
-        // add xml
 
-//        xm.addUplXmlFile(user, xmlFile, title);
+        MockMultipartFile xmlFile = new MockMultipartFile("xmlFile", "test.xml", MediaType.APPLICATION_XML_VALUE, getClass().getClassLoader().getResource(TestConstants.SEED_XLIFF_XML).getFile().getBytes()) ;
+        xm.addUplXmlFile(user, xmlFile, title);
 
         UplXmlFileHolder holder2 = xm.getUplXmlFiles(user);
 
@@ -101,14 +101,13 @@ public class UplXmlFileManagerTest{
 
         String user = TestConstants.TEST_ADMIN_USER;
 
-        // todo fix
-//        MockFormFile xmlFile = new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_OZONE_STATION_XML).getFile());
+        MockMultipartFile xmlFile = new MockMultipartFile("xmlFile", "test.xml", MediaType.APPLICATION_XML_VALUE, getClass().getClassLoader().getResource(TestConstants.SEED_OZONE_STATION_XML).getFile().getBytes());
 
         UplXmlFileManager xm = new UplXmlFileManager();
 
         try {
 
-//            xm.addUplXmlFile(user, xmlFile, "title");
+            xm.addUplXmlFile(user, xmlFile, "title");
             throw new DCMException("fix");
         } catch (DCMException e) {
             dcmException = e;

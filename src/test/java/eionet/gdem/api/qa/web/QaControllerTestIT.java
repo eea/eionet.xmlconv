@@ -3,6 +3,8 @@ package eionet.gdem.api.qa.web;
 import com.google.gson.Gson;
 import eionet.gdem.test.ApplicationTestContext;
 import java.util.HashMap;
+
+import eionet.gdem.test.TestUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -92,7 +94,7 @@ public class QaControllerTestIT {
         MockHttpServletRequestBuilder request = post("/asynctasks/qajobs");
         request.contentType(MediaType.APPLICATION_JSON);
         HashMap<String, String> requestBody = new HashMap<String, String>();
-        requestBody.put("sourceUrl", "http://converterstest.eionet.europa.eu/xmlfile/aqd-labels.xml");
+        requestBody.put("sourceUrl", TestUtils.getLocalURL("xmlfile/sample-dev.xml"));
         requestBody.put("scriptId", "-1");
         request.content(new Gson().toJson(requestBody));
         mockMvc.perform(request).andExpect(status().isOk());

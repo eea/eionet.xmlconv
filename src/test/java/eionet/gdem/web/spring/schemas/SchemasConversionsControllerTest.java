@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,7 +37,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {WebContextConfig.class, ApplicationTestContext.class})
+@ContextHierarchy({
+        @ContextConfiguration(classes = ApplicationTestContext.class),
+        @ContextConfiguration(classes = WebContextConfig.class)
+})
 public class SchemasConversionsControllerTest {
 
     @Autowired
@@ -50,23 +54,22 @@ public class SchemasConversionsControllerTest {
     @Before
     public void setup() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        DbHelper.setUpDatabase(dataSource, TestConstants.SEED_DATASET_UPLXML_XML);
+        DbHelper.setUpDatabase(dataSource, TestConstants.SEED_DATASET_CONVERSIONS_XML);
     }
 
     @Test
     public void conversions() throws Exception {
         mockMvc.perform(get("/schemas/1/conversions"))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("schemaId", "1"))
-                .andExpect(model().attribute("schemaUrl", "http://dd.eionet.europa.eu/GetSchema?id=TBL4564"))
-                .andExpect(view().name("/schemas/conversions"));
+            .andExpect(status().isOk())
+            .andExpect(model().attribute("schemaId", "1"))
+            .andExpect(view().name("/schemas/conversions"));
     }
 
     @Test
     public void conversionsAdd() throws Exception {
         mockMvc.perform(get("/schemas/1/conversions/add").sessionAttr(SESSION_USER, ADMIN_USER))
-                .andExpect(model().attribute("form", instanceOf(StylesheetForm.class)))
-                .andExpect(model().attributeExists("outputtypes", "schemaId"))
-                .andExpect(view().name("/conversions/add"));
+            .andExpect(model().attribute("form", instanceOf(StylesheetForm.class)))
+            .andExpect(model().attributeExists("outputtypes", "schemaId"))
+            .andExpect(view().name("/conversions/add"));
     }
 }

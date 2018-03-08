@@ -9,11 +9,14 @@ import java.io.File;
 import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.web.spring.scripts.QAScriptListHolder;
+import net.xqj.basex.bin.M;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -48,7 +51,7 @@ public class QAScriptManagerTest {
 
     /**
      * The method adds QA Script into DB, then it edits the properties and finally deletes the added schema. After each operation it
-     * scheks the properties values.
+     * checks the properties values.
      *
      * @throws Exception
      */
@@ -65,15 +68,10 @@ public class QAScriptManagerTest {
         String upperLimit = "100";
         String url = "http://url.srcippt.com";
 
-        String user = TestConstants.TEST_ADMIN_USER;
-
         QAScriptManager qm = new QAScriptManager();
 
-        // todo fix
-//        MockFormFile scriptFile = new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_QASCRIPT_XQUERY).getFile());
-        // add qa script into db and upload schema file
-        String scriptId = "";
-//        String scriptId = qm.add(user, shortName, schemaId, schema, resultType, description, scriptType, scriptFile, upperLimit, url);
+        MockMultipartFile scriptFile = new MockMultipartFile("file", queryFileName, MediaType.APPLICATION_XML_VALUE, getClass().getClassLoader().getResource(queryFileName).getFile().getBytes());
+        String scriptId = qm.add(TestConstants.ADMIN_USER, shortName, schemaId, schema, resultType, description, scriptType, scriptFile, upperLimit, url);
 
         // query script by id and compare fields
         QAScript qascript = qm.getQAScript(scriptId);
@@ -229,14 +227,10 @@ public class QAScriptManagerTest {
         //delete test file if exists
         FileUtils.deleteQuietly(new File(Properties.queriesFolder + File.separator + TestConstants.SEED_QASCRIPT_XQUERY2));
 
-        // todo fix
-//        MockFormFile scriptFile = new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_QASCRIPT_XQUERY2).getFile());
+        MockMultipartFile scriptFile = new MockMultipartFile("scriptFile", fileName, MediaType.APPLICATION_XML_VALUE, getClass().getClassLoader().getResource(fileName).getFile().getBytes());
 
         QAScriptManager qm = new QAScriptManager();
-
-        // update qa script properties
-
-//        qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, scriptFile, upperLimit, url);
+        qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, scriptFile, upperLimit, url);
 
         // query script by id and compare fields
         QAScript qascript = qm.getQAScript(scriptId);

@@ -10,9 +10,9 @@ import java.util.Vector;
 
 import javax.sql.DataSource;
 
-import eionet.gdem.SpringApplicationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
@@ -27,20 +27,8 @@ public abstract class MySqlBaseDao {
 
     protected static boolean isDebugMode = LOGGER.isDebugEnabled();
 
-    /**
-     * DataSourceHolder Class with a static DATASOURCE to remove need for synchronized methods (Initialization-on-demand holder idiom)
-     *
-     */
-    private static class DataSourceHolder {
-        private static final DataSource DATASOURCE;
-        static {
-            try {
-                DATASOURCE = (DataSource) SpringApplicationContext.getBean("dataSource");
-            } catch (Exception e) {
-                throw new ExceptionInInitializerError(e);
-            }
-        }
-    }
+    @Autowired
+    private DataSource dataSource;
 
     /**
      * Returns new database connection.
@@ -48,8 +36,8 @@ public abstract class MySqlBaseDao {
      * @return Get a connection from the DataSourceHolder Class (Initialization-on-demand holder idiom)
      * @throws SQLException If an error occurs.
      */
-    public static Connection getConnection() throws SQLException {
-        return DataSourceHolder.DATASOURCE.getConnection();
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 
     /**
