@@ -113,6 +113,10 @@ public class HttpFileManager {
         }
         StringBuffer url = new StringBuffer();
         if (isTrustedMode && !Utils.isNullStr(ticket)) {
+            /**
+             * XXX: the purpose of the next line is to bypass any load balancer. Load balancers can have small timeouts which
+             * can result in broken http transfers. We obviously need a better solution.
+             */
                 url.append("http://localhost:8080");
                 url.append(Constants.GETSOURCE_URL);
                 url.append("?");

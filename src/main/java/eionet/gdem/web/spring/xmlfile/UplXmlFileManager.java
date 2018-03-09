@@ -66,6 +66,7 @@ public class UplXmlFileManager {
             String fileName = xmlfile.getOriginalFilename();
 
             if (fileExists(fileName)) {
+                LOGGER.error("Error adding XML file - already exists");
                 throw new DCMException(BusinessConstants.EXCEPTION_XMLFILE_FILE_EXISTS);
             }
             // write XML file into filesystem

@@ -2,14 +2,15 @@
   <Appenders>
     <Console name="console">
       <PatternLayout>
-        <Pattern>[%d{yyyy-MM-dd HH:mm:ss}] %p - %c:%L - %m%n</Pattern>
+        <!-- Simple pattern logback style -->
+        <Pattern>%highlight{[%d{yyyy-MM-dd HH:mm:ss}] %p - %c:%L - %m%n}{STYLE=Logback}</Pattern>
+
+        <!-- Spring Boot like pattern -->
+        <!--<Pattern>%style{[}{blue}%style{%d{yyyy-MM-dd HH:mm:ss.SSS}}{bright,green}%style{]}{blue} - %highlight{%5p}{STYLE=LogBack} %style{-&#45;&#45;}{bright,magenta} %style{%-70.70logger}{bright,cyan} : %m - (%c{0}.java:%line)%n</Pattern>-->
       </PatternLayout>
     </Console>
   </Appenders>
   <Loggers>
-    <!--<logger name="eionet" level="info"/>-->
-    <!--<logger name="org.springframework.web" level="trace"/>-->
-    <!--<logger name="org.hibernate" level="trace" />-->
     <Root level="INFO">
       <AppenderRef ref="console" />
     </Root>

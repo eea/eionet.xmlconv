@@ -13,7 +13,9 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -53,6 +55,8 @@ public class XQueryServiceTest {
         DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_QA_XML);
     }
 
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
     /**
      * Tests that the added QA job contains the qa account data for QA engine

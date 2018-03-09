@@ -113,7 +113,8 @@ public class QAScriptsControllerTest {
             .param("update", "")
             .param("scriptId","25")
             .param("schemaId", "62")
-            .param("shortName", "test"))
+            .param("shortName", "test")
+            .param("fileName", "sum-oz_info_1920_1.xql"))
             .andExpect(model().hasNoErrors())
             .andExpect(status().is3xxRedirection());
     }

@@ -95,7 +95,7 @@ public class XmlFilesControllerTest {
         mockMvc.perform(post("/xmlFiles")
                 .sessionAttr(SESSION_USER, ADMIN_USER)
                 .param("update", "")
-                .param("xmlfileId", "1")
+                .param("xmlfileId", "3")
                 .param("title", "test")
                 .param("xmlFileName", "testName")
                 .param("xmlFilePath", "testtest.xml"))
@@ -107,7 +107,7 @@ public class XmlFilesControllerTest {
         mockMvc.perform(post("/xmlFiles")
                 .sessionAttr(SESSION_USER, ADMIN_USER)
                 .param("delete", "")
-                .param("xmlfileId", "1"))
+                .param("xmlfileId", "3"))
                 .andExpect(view().name("redirect:/xmlFiles"));
     }
 

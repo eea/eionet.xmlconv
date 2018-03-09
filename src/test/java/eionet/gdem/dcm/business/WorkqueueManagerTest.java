@@ -72,7 +72,7 @@ public class WorkqueueManagerTest {
     public void testAddQAScriptToWorkqueue() throws Exception {
 
         String user = TestConstants.TEST_ADMIN_USER;
-        String sourceUrl = "http://test.eu/test.xml";
+        String sourceUrl = TestUtils.getLocalURL("xmlfile/sample-dev.xml");
         String scriptType = XQScript.SCRIPT_LANG_XQUERY1;
         String scriptContent =
                 "xquery version \"1.0\";\n let $numbers := (1,2,3,4) "
@@ -100,7 +100,7 @@ public class WorkqueueManagerTest {
     public void testAddSchemaScriptsToWorkqueue() throws Exception {
 
         String user = TestConstants.TEST_ADMIN_USER;
-        String sourceUrl = "http://test.eu/test.xml";
+        String sourceUrl = TestUtils.getLocalURL("xmlfile/sample-dev.xml");
         String schemaUrl = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/species.xsd";
 
         WorkqueueManager wqm = new WorkqueueManager();

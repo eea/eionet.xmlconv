@@ -188,7 +188,7 @@ public class SchemasControllerTest {
         mockMvc.perform(post("/schemas")
                 .sessionAttr(SESSION_USER, ADMIN_USER)
                 .param("delete", "")
-                .param("schemaId","1"))
+                .param("schemaId","7"))
                 .andExpect(model().hasNoErrors())
                 .andExpect(view().name("redirect:/schemas"));
     }
@@ -197,7 +197,7 @@ public class SchemasControllerTest {
     public void deleteNoPermissions() throws Exception {
         mockMvc.perform(post("/schemas")
                 .param("delete", "")
-                .param("schemaId","1"))
+                .param("schemaId","7"))
                 .andExpect(model().hasNoErrors())
                 .andExpect(view().name("Error"));
     }

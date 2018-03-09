@@ -116,11 +116,14 @@ public final class SecurityUtil {
      */
     public static String getLoginURL(HttpServletRequest request) throws XMLConvException {
 
+        /**
+         * XXX: TODO This executes on every request. Check if there is a more efficient solution
+         */
+
         String urlWithContextPath = getUrlWithContextPath(request);
         String result = "login";
 
-        /*String afterLoginUrl = getRealRequestURL(request);*/
-        String afterLoginUrl = new UrlPathHelper().getPathWithinApplication(request);
+        String afterLoginUrl = getRealRequestURL(request);
         // store the current page in the session to be able to come back after login
         if (afterLoginUrl != null && !afterLoginUrl.contains("login"))
             request.getSession().setAttribute("afterLogin", afterLoginUrl);
@@ -211,12 +214,12 @@ public final class SecurityUtil {
         while (tmpRequest instanceof HttpServletRequestWrapper) {
             tmpRequest = (HttpServletRequest) ((HttpServletRequestWrapper) tmpRequest).getRequest();
         }
-        StringBuffer url = tmpRequest.getRequestURL();
+        String url = new UrlPathHelper().getPathWithinApplication(request);
 
-        if (tmpRequest.getQueryString() != null)
-            url.append("?").append(tmpRequest.getQueryString());
-
-        return url.toString();
+        if (tmpRequest.getQueryString() != null) {
+            url = url + "?" + tmpRequest.getQueryString();
+        }
+        return url;
     }
 }
 

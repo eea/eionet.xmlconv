@@ -27,7 +27,8 @@ public class TestUtils {
      * @param obj
      */
     public static void setUpProperties(Object obj) {
-        GDEMServices.setTestConnection(true);
+        // Fix Mock Dataset or remove completely.
+        // GDEMServices.setTestConnection(true);
         Properties.metaXSLFolder = Properties.appRootFolder + "/dcm";
         Properties.convFile = Properties.metaXSLFolder + "/conversions.xml";
     }

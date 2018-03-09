@@ -28,6 +28,7 @@ import static org.junit.Assert.assertTrue;
 
 import eionet.gdem.web.spring.xmlfile.UplXmlFileHolder;
 import eionet.gdem.web.spring.xmlfile.UplXmlFileManager;
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,21 +72,17 @@ public class UplXmlFileManagerTest{
      * @throws Exception
      */
     @Test
-    public void testAddXml() throws Exception {
+    public void testAddXml1() throws Exception {
 
         String title = "XLIFF xml file";
-
         String user = TestConstants.TEST_ADMIN_USER;
-
         UplXmlFileManager xm = new UplXmlFileManager();
-
         UplXmlFileHolder holder1 = xm.getUplXmlFiles(user);
 
-        MockMultipartFile xmlFile = new MockMultipartFile("xmlFile", "test.xml", MediaType.APPLICATION_XML_VALUE, getClass().getClassLoader().getResource(TestConstants.SEED_XLIFF_XML).getFile().getBytes()) ;
+        MockMultipartFile xmlFile = new MockMultipartFile("xmlFile", "test-service.xml", MediaType.APPLICATION_XML_VALUE, IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_XLIFF_XML)));
         xm.addUplXmlFile(user, xmlFile, title);
 
         UplXmlFileHolder holder2 = xm.getUplXmlFiles(user);
-
         assertEquals(holder1.getXmlfiles().size() + 1, holder2.getXmlfiles().size());
 
     }
@@ -96,12 +93,12 @@ public class UplXmlFileManagerTest{
      * @throws Exception
      */
     @Test
-    public void testAddDuplicateXml() throws Exception {
+    public void testAddXml2() throws Exception {
         Exception dcmException = null;
 
         String user = TestConstants.TEST_ADMIN_USER;
 
-        MockMultipartFile xmlFile = new MockMultipartFile("xmlFile", "test.xml", MediaType.APPLICATION_XML_VALUE, getClass().getClassLoader().getResource(TestConstants.SEED_OZONE_STATION_XML).getFile().getBytes());
+        MockMultipartFile xmlFile = new MockMultipartFile("xmlFile", "test-service.xml", MediaType.APPLICATION_XML_VALUE, IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(TestConstants.SEED_XLIFF_XML)));
 
         UplXmlFileManager xm = new UplXmlFileManager();
 
@@ -155,14 +152,11 @@ public class UplXmlFileManagerTest{
 
         String user = TestConstants.TEST_ADMIN_USER;
 
-        // todo fix
-//        MockFormFile xmlFile = new MockFormFile(getClass().getClassLoader().getResource(TestConstants.SEED_XLIFF2_XML).getFile());
-
+        MockMultipartFile xmlFile = new MockMultipartFile("xmlFile", curFileName, MediaType.APPLICATION_XML_VALUE, getClass().getClassLoader().getResource(TestConstants.SEED_XLIFF2_XML).getFile().getBytes()) ;
         UplXmlFileManager xm = new UplXmlFileManager();
 
         // update xml file properties
-
-//        xm.updateUplXmlFile(user, xmlFileId, title, curFileName, xmlFile);
+        xm.updateUplXmlFile(user, xmlFileId, title, curFileName, xmlFile);
 
         // query xml file by id and compare fields
         UplXmlFile xmlfile = xm.getUplXmlFileById(xmlFileId);

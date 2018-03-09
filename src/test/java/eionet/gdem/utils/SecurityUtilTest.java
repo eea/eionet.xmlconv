@@ -12,11 +12,10 @@ import eionet.gdem.test.mocks.MockServletContext;
 import eionet.gdem.test.mocks.MockServletRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import static org.junit.Assert.assertEquals;
-
 /**
  * This class tests teh different methods in SecurityUtil class. Ttested methods are: getLoginUrl(), getLogoutUrl,
  * getUrlWithContextPath()
@@ -105,22 +104,23 @@ public class SecurityUtilTest {
      */
     @Test
     public void testGetLoginUrlLocal() throws Exception {
+        MockHttpServletRequest req = new MockHttpServletRequest();
         MockServletContext context = new MockServletContext();
         MockHttpSession session = new MockHttpSession();
-        MockServletRequest req = new MockServletRequest();
         session.setServletContext(context);
         req.setSession(session);
         req.setServerName("testserver");
         req.setServerPort(80);
         req.setScheme("http");
         req.setContextPath("/context");
-        req.setRequestURL("http://testserver/context/servlet");
+        req.setRequestURI("/servlet");
         req.setQueryString("id=222");
 
         String url = SecurityUtil.getLoginURL(req);
-        assertEquals("http://testserver/context/do/login", url);
-        assertEquals("http://testserver/context/servlet?id=222",
-                (String) session.getAttribute(LoginController.AFTER_LOGIN_ATTR_NAME));
+        String afterLoginUrl = (String) session.getAttribute(LoginController.AFTER_LOGIN_ATTR_NAME);
+        assertEquals("http://testserver/context/login/local", url);
+        assertEquals("/servlet?id=222", afterLoginUrl);
+
 
     }
 
@@ -133,7 +133,7 @@ public class SecurityUtilTest {
     public void testGetLoginUrlSSO() throws Exception {
         MockServletContext context = new MockServletContext();
         MockHttpSession session = new MockHttpSession();
-        MockServletRequest req = new MockServletRequest();
+        MockHttpServletRequest req = new MockHttpServletRequest();
         context.setInitParameter(CASFilter.LOGIN_INIT_PARAM, "http://ssoserver/login");
         session.setServletContext(context);
         req.setSession(session);
@@ -141,13 +141,14 @@ public class SecurityUtilTest {
         req.setServerPort(80);
         req.setScheme("http");
         req.setContextPath("/context");
-        req.setRequestURL("http://testserver/context/servlet");
+        req.setRequestURI("/servlet");
         req.setQueryString("id=222");
 
         String url = SecurityUtil.getLoginURL(req);
-        assertEquals("http://ssoserver/login?service=http%3A%2F%2Ftestserver%2Fcontext%2Fdo%2FafterLogin", url);
-        assertEquals("http://testserver/context/servlet?id=222",
-                (String) session.getAttribute(LoginController.AFTER_LOGIN_ATTR_NAME));
+        String afterLoginUrl = (String) session.getAttribute(LoginController.AFTER_LOGIN_ATTR_NAME);
+        assertEquals("http://ssoserver/login?service=http%3A%2F%2Ftestserver%2Fcontext%2Flogin%2FafterLogin", url);
+        assertEquals("/servlet?id=222", afterLoginUrl);
+
 
     }
 

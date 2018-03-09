@@ -4,6 +4,7 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
+import eionet.gdem.test.TestUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -11,6 +12,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -42,7 +44,7 @@ public class HttpFileManagerTest {
 
     @Test
     public void testFileInputStream() throws IOException, URISyntaxException {
-        InputStream in = manager.getFileInputStream(Properties.gdemURL.concat("/dropdownmenus.txt"), null, false);
+        InputStream in = manager.getFileInputStream(TestUtils.getLocalURL("xmlfile/sample-dev.xml"), null, false);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         IOUtils.copy(in, out);
         assertTrue("Empty file:", out.size() > 0);
@@ -51,8 +53,8 @@ public class HttpFileManagerTest {
     @Test
     public void testHttpResponse() throws IOException, URISyntaxException {
         MockHttpServletResponse httpResponse = new MockHttpServletResponse();
-        manager.getHttpResponse(httpResponse, null, TestConstants.NETWORK_FILE_TO_TEST);
-        assertEquals("text/plain", httpResponse.getContentType());
+        manager.getHttpResponse(httpResponse, null, TestUtils.getLocalURL("xmlfile/sample-dev.xml"));
+        assertEquals(MediaType.APPLICATION_XML_VALUE, httpResponse.getContentType());
         assertTrue(httpResponse.getContentLength() > 0);
         assertTrue(httpResponse.getContentAsString().length() > 0);
     }
@@ -62,7 +64,7 @@ public class HttpFileManagerTest {
         String url = "http://trustedurl.com";
         String ticket = "ticketValue";
 
-        assertEquals(Properties.gdemURL + Constants.GETSOURCE_URL + "?ticket=" + ticket + "&source_url=" + url,
+        assertEquals("http://localhost:8080" + Constants.GETSOURCE_URL + "?ticket=" + ticket + "&source_url=" + url,
                 HttpFileManager.getSourceUrlWithTicket(ticket, url, true));
         assertEquals(url, HttpFileManager.getSourceUrlWithTicket(null, url, false));
     }

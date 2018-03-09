@@ -27,6 +27,8 @@ import eionet.gdem.test.ApplicationTestContext;
 import junit.framework.TestCase;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -42,6 +44,10 @@ import static org.junit.Assert.*;
 @ContextConfiguration(classes = { ApplicationTestContext.class })
 public class DataDictUtilTest {
 
+    @Before
+    public void setUp() {
+        TestUtils.setUpProperties(this);
+    }
     /**
      * Tests convert method - validate the result file and metadata( content type and file name)
      */
@@ -79,7 +85,10 @@ public class DataDictUtilTest {
         String url = DataDictUtil.getContainerSchemaUrl("http://dd.eionet.europa.eu/GetSchema?id=TBL4948");
         assertEquals("http://dd.eionet.europa.eu/GetContainerSchema?id=TBL4948", url);
     }
+
     @Test
+//    @Ignore
+    // TODO FIX
     public void testMultivalueElementsDefs() throws Exception {
         String schemaUrl = TestUtils.getSeedURL(TestConstants.SEED_GW_SCHEMA, this);
 

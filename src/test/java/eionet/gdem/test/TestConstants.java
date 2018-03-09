@@ -54,9 +54,6 @@ public class TestConstants {
     public final static String SEED_FEEDBACKANALYZE_TEST  = "seed-feedback-error.html";
     public static final String SEED_XSLSCRIPT_TEST = "seed-art17-general.xsl";
 
-    // TEST URL
-    public static final String TEST_XSD = "http://test.dev/test.xsd";
-
     // TEST RESULT PROPERTIES
     public final static String HTML_CONTENTYPE_RESULT = "text/html;charset=UTF-8";
     public final static String TEXT_CONTENTYPE_RESULT = "text/plain";
@@ -67,7 +64,6 @@ public class TestConstants {
     public final static String OZ_HTML_FILENAME_RESULT = "seed-ozone-station.html";
     public final static String OZ_SQL_FILENAME_RESULT = "seed-ozone-station.sql";
     public final static String STRCONTENT_RESULT = "Conversion works!";
-    public final static String NETWORK_FILE_TO_TEST = Properties.gdemURL + "/dropdownmenus.txt";
 
     // USER PROPERTIES
     public final static String TEST_USER = "tester";

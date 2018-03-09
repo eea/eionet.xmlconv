@@ -687,6 +687,12 @@
                 <groupId>org.basex</groupId>
                 <artifactId>basex-api</artifactId>
                 <version>8.4.4</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-simple</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.vividsolutions</groupId>
@@ -870,6 +876,11 @@
                 <artifactId>log4j-core</artifactId>
                 <version>2.10.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>2.10.0</version>
+            </dependency>
             <!-- Graylog dependency -->
             <dependency>
                 <groupId>biz.paluch.logging</groupId>
@@ -884,11 +895,12 @@
                 <version>1.7.25</version>
             </dependency>
             <!-- Intercepts logging from log4j and redirects it to slf4j -->
-            <dependency>
+            <!-- Remove if not needed any more-->
+<!--            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>log4j-over-slf4j</artifactId>
                 <version>1.7.25</version>
-            </dependency>
+            </dependency>-->
             <!-- Intercepts logging from apache commons logging and redirects it to slf4j -->
             <dependency>
                 <groupId>org.slf4j</groupId>

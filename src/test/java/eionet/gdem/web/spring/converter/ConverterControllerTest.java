@@ -7,7 +7,9 @@ import eionet.gdem.test.TestUtils;
 import eionet.gdem.test.WebContextConfig;
 import eionet.gdem.web.spring.conversions.ConversionForm;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -48,10 +50,13 @@ public class ConverterControllerTest {
 
     private MockMvc mockMvc;
 
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
+
     @Before
     public void setup() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        DbHelper.setUpDatabase(dataSource, TestConstants.SEED_DATASET_UPLXML_XML);
+        DbHelper.setUpDatabase(dataSource, TestConstants.SEED_DATASET_UPL_SCHEMAS_XML);
     }
 
     @Test

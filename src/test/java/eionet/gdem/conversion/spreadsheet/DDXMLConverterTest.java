@@ -29,7 +29,9 @@ import static org.junit.Assert.assertTrue;
 
 import eionet.gdem.utils.xml.tiny.TinyTreeContext;
 import eionet.gdem.utils.xml.tiny.TinyTreeXpath;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -40,6 +42,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
 public class DDXMLConverterTest {
+
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
     /**
      * Test DD schema verification method
@@ -128,8 +133,7 @@ public class DDXMLConverterTest {
         dataset.put("isLatestReleased", "true");
         converter.setDataset(dataset);
 
-        ConversionResultDto conversionResult =
-            converter.convertDD_XML_split(null, null);
+        ConversionResultDto conversionResult = converter.convertDD_XML_split(null, null);
         assertTestConvertDD_MultipleValuesresults(conversionResult);
 
     }
