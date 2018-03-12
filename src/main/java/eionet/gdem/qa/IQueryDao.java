@@ -78,6 +78,11 @@ public interface IQueryDao {
      * @throws SQLException If an error occurs.
      */
     Vector listQueries(String xmlSchema) throws SQLException;
+
+    /*
+        Quick fix for #93299
+     */
+    Vector listQueriesOld(String xmlSchema) throws SQLException;
     
     Vector listQueries(String xmlSchema, boolean active) throws SQLException;
 

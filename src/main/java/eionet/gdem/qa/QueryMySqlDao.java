@@ -345,6 +345,58 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
         return qText;
     }
 
+    /**
+     * Temporary fix for #93299 - this DAO works with the old XML-RPC api.
+     * TODO: refactor database layer and remove vectors from daos
+     * @param xmlSchema
+     * @return
+     * @throws SQLException
+     */
+    @Override
+    public Vector listQueriesOld(String xmlSchema) throws SQLException {
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        boolean forSchema = xmlSchema != null;
+        Vector v = null;
+        String query = (forSchema) ? qListQueriesBySchema : qListQueries;
+
+        if (isDebugMode) {
+            LOGGER.debug("XMLSchema is " + xmlSchema);
+            LOGGER.debug("Query is " + query);
+        }
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(query);
+            if (forSchema) {
+                pstmt.setString(1, xmlSchema);
+            }
+            rs = pstmt.executeQuery();
+            String[][] r = getResults(rs);
+            v = new Vector(r.length);
+            for (int i = 0; i < r.length; i++) {
+                Hashtable h = new Hashtable();
+                h.put(ListQueriesMethod.KEY_QUERY_ID, r[i][0]);
+                h.put(ListQueriesMethod.KEY_SHORT_NAME, r[i][1]);
+                h.put(ListQueriesMethod.KEY_QUERY, r[i][2]);
+                h.put(ListQueriesMethod.KEY_DESCRIPTION, r[i][3]);
+                h.put(ListQueriesMethod.KEY_SCHEMA_ID, r[i][4]);
+                h.put(ListQueriesMethod.KEY_XML_SCHEMA, r[i][5]);
+                h.put(ListQueriesMethod.KEY_CONTENT_TYPE_ID, r[i][6]);
+                h.put(ListQueriesMethod.KEY_CONTENT_TYPE_OUT, r[i][7]);
+                h.put(ListQueriesMethod.KEY_TYPE, r[i][8]);
+                h.put(ListQueriesMethod.KEY_UPPER_LIMIT, r[i][9]);
+                h.put(QaScriptView.IS_ACTIVE, r[i][11]);
+                v.add(h);
+            }
+        }  finally {
+            closeAllResources(rs, pstmt, conn);
+        }
+
+        return v;
+    }
+
     @Override
     public Vector listQueries(String xmlSchema) throws SQLException {
 

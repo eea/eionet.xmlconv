@@ -190,7 +190,7 @@ public class XQueryService extends RemoteService {
         if (!Utils.isNullVector(queries)) {
             for (int j = 0; j < queries.size(); j++) {
 
-                String query_id = String.valueOf( ( (Hashtable) queries.get(j)).get( QaScriptView.QUERY_ID ));
+                String query_id = String.valueOf( ( (Hashtable) queries.get(j)).get( ListQueriesMethod.KEY_QUERY_ID ));
                 newId = analyzeXMLFile( file, query_id , schema );
 
                 Vector queryResult = new Vector();

@@ -92,23 +92,23 @@ public class ListQueriesMethod extends RemoteServiceMethod {
                     if (!Utils.isNullStr(validate)) {
                         if (validate.equals("1")) {
                             Hashtable ht = new Hashtable();
-                            ht.put(QaScriptView.QUERY_ID, String.valueOf(Constants.JOB_VALIDATION));
-                            ht.put(QaScriptView.SHORT_NAME, "XML Schema Validation");
-                            ht.put(QaScriptView.QUERY, h.get("xml_schema"));
-                            ht.put(QaScriptView.DESCRIPTION, h.get("description"));
-                            ht.put(QaScriptView.SCHEMA_ID, h.get("schema_id"));
-                            ht.put(QaScriptView.XML_SCHEMA, h.get("xml_schema"));
-                            ht.put(QaScriptView.CONTENT_TYPE_ID, DEFAULT_CONTENT_TYPE_ID);
-                            ht.put(QaScriptView.CONTENT_TYPE_OUT, contentType);
-                            ht.put(QaScriptView.TYPE, ((String) h.get("schema_lang")).toLowerCase());
-                            ht.put(QaScriptView.UPPER_LIMIT, String.valueOf(VALIDATION_UPPER_LIMIT));
+                            ht.put(KEY_QUERY_ID, String.valueOf(Constants.JOB_VALIDATION));
+                            ht.put(KEY_SHORT_NAME, "XML Schema Validation");
+                            ht.put(KEY_QUERY, h.get("xml_schema"));
+                            ht.put(KEY_DESCRIPTION, h.get("description"));
+                            ht.put(KEY_SCHEMA_ID, h.get("schema_id"));
+                            ht.put(KEY_XML_SCHEMA, h.get("xml_schema"));
+                            ht.put(KEY_CONTENT_TYPE_ID, DEFAULT_CONTENT_TYPE_ID);
+                            ht.put(KEY_CONTENT_TYPE_OUT, contentType);
+                            ht.put(KEY_TYPE, ((String) h.get("schema_lang")).toLowerCase());
+                            ht.put(KEY_UPPER_LIMIT, String.valueOf(VALIDATION_UPPER_LIMIT));
                             v.add(ht);
                         }
                     }
                 }
             }
             // Get XQueries
-            Vector queries = queryDao.listQueries(schema);
+            Vector queries = queryDao.listQueriesOld(schema);
             if (queries != null) {
                 for (int i = 0; i < queries.size(); i++) {
                     Hashtable ht = (Hashtable) queries.get(i);
@@ -167,9 +167,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
                 String queryId = (String) hQueries.get(QaScriptView.QUERY_ID);
                 String queryFile = (String) hQueries.get(QaScriptView.QUERY);
                 String queryDescription = (String) hQueries.get(QaScriptView.DESCRIPTION);
-                System.out.println(" query description is :" +queryDescription);
                 String queryName = (String) hQueries.get(QaScriptView.SHORT_NAME);
-                System.out.println("queryName is "+queryName);
                 String queryUpperLimit = (String) hQueries.get(QaScriptView.UPPER_LIMIT);
                 
                 if (Utils.isNullStr(queryDescription)) {

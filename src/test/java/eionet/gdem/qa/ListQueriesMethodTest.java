@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import eionet.gdem.XMLConvException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,10 +55,10 @@ public class ListQueriesMethodTest {
         assertTrue(v.size() == 1);
         Hashtable ht = (Hashtable) v.get(0);
 
-        assertEquals(ht.get(QaScriptView.TYPE), "xsd");
-        assertEquals(ht.get(QaScriptView.CONTENT_TYPE_ID), "HTML");
-        assertEquals(ht.get(QaScriptView.CONTENT_TYPE_OUT), ListQueriesMethod.DEFAULT_QA_CONTENT_TYPE);
-        assertEquals(ht.get(QaScriptView.UPPER_LIMIT), String.valueOf(ListQueriesMethod.VALIDATION_UPPER_LIMIT));
+        assertEquals(ht.get(ListQueriesMethod.KEY_TYPE), "xsd");
+        assertEquals(ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_ID), "HTML");
+        assertEquals(ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_OUT), ListQueriesMethod.DEFAULT_QA_CONTENT_TYPE);
+        assertEquals(ht.get(ListQueriesMethod.KEY_UPPER_LIMIT), String.valueOf(ListQueriesMethod.VALIDATION_UPPER_LIMIT));
     }
 
     @Test
@@ -70,10 +71,10 @@ public class ListQueriesMethodTest {
 
         Hashtable ht = (Hashtable) v.get(0);
 
-        assertEquals(ht.get(QaScriptView.TYPE), Constants.QA_TYPE_XQUERY);
-        assertEquals(ht.get(QaScriptView.CONTENT_TYPE_ID), "HTML");
-        assertEquals(ht.get(QaScriptView.CONTENT_TYPE_OUT), ListQueriesMethod.DEFAULT_QA_CONTENT_TYPE);
-        assertEquals(ht.get(QaScriptView.UPPER_LIMIT), "20");
+        assertEquals(ht.get(ListQueriesMethod.KEY_TYPE), Constants.QA_TYPE_XQUERY);
+        assertEquals(ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_ID), "HTML");
+        assertEquals(ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_OUT), ListQueriesMethod.DEFAULT_QA_CONTENT_TYPE);
+        assertEquals(ht.get(ListQueriesMethod.KEY_UPPER_LIMIT), "20");
     }
 
     @Test
@@ -85,6 +86,24 @@ public class ListQueriesMethodTest {
         Vector v = qas.listQueries(null);
         assertTrue(v.size() > 10);
 
+    }
+
+
+    @Test
+    public void testListQAScriptsKeys() throws XMLConvException {
+        ListQueriesMethod qas = new ListQueriesMethod();
+        Vector listQaResult = qas.listQueries("http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd");
+        Hashtable ht = (Hashtable) listQaResult.get(0);
+        assertTrue(ht.containsKey(ListQueriesMethod.KEY_QUERY_ID));
+        assertTrue(ht.containsKey(ListQueriesMethod.KEY_SHORT_NAME));
+        assertTrue(ht.containsKey(ListQueriesMethod.KEY_QUERY));
+        assertTrue(ht.containsKey(ListQueriesMethod.KEY_DESCRIPTION));
+        assertTrue(ht.containsKey(ListQueriesMethod.KEY_SCHEMA_ID));
+        assertTrue(ht.containsKey(ListQueriesMethod.KEY_XML_SCHEMA));
+        assertTrue(ht.containsKey(ListQueriesMethod.KEY_CONTENT_TYPE_ID));
+        assertTrue(ht.containsKey(ListQueriesMethod.KEY_CONTENT_TYPE_OUT));
+        assertTrue(ht.containsKey(ListQueriesMethod.KEY_TYPE));
+        assertTrue(ht.containsKey(ListQueriesMethod.KEY_UPPER_LIMIT));
     }
 
 }
