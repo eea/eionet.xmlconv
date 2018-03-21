@@ -78,6 +78,12 @@ public class QAScriptValidator implements Validator {
             errors.rejectValue("scriptType", "label.qascript.zip.validation");
         }
 
+        if (!XQScript.SCRIPT_LANG_XQUERY3.equals(scriptType) && !XQScript.SCRIPT_LANG_XQUERY1.equals(scriptType)
+                && !XQScript.SCRIPT_LANG_FME.equals(scriptType) && !XQScript.SCRIPT_LANG_XGAWK.equals(scriptType)
+                && !XQScript.SCRIPT_LANG_XSL.equals(scriptType)) {
+            errors.rejectValue("scriptType", "label.qascript.error.wrongtype");
+        }
+
         // upper limit between 0 and 10Gb
         if (upperLimit == null || !Utils.isNum(upperLimit) || Integer.parseInt(upperLimit) <= 0
                 || Integer.parseInt(upperLimit) > 10000) {

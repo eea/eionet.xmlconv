@@ -208,6 +208,49 @@ public class QAScriptsController {
         return "/scripts/edit";
     }
 
+    @PostMapping(params = {"upload"})
+    public String upload(@ModelAttribute("form") QAScriptForm form,
+                         BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+
+        SpringMessages messages = new SpringMessages();
+
+        String scriptId = form.getScriptId();
+        String schemaId = form.getSchemaId();
+        String shortName = form.getShortName();
+        String desc = form.getDescription();
+        String schema = form.getSchema();
+        String resultType = form.getResultType();
+        String scriptType = form.getScriptType();
+        String curFileName = form.getFileName();
+        MultipartFile content = form.getScriptFile();
+        String upperLimit = form.getUpperLimit();
+        String url = form.getUrl();
+
+
+        String user = (String) request.getSession().getAttribute("user");
+
+        new QAScriptValidator().validateUpdate(form, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/scripts/edit";
+        }
+
+        try {
+            QAScriptManager qm = new QAScriptManager();
+            qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, content, upperLimit, url);
+
+            messages.add(messageService.getMessage("label.qascript.updated"));
+
+            // clear qascript list in cache
+            QAScriptListLoader.reloadList(request);
+        } catch (DCMException e) {
+            throw new RuntimeException("Edit QA script error: " + messageService.getMessage(e.getErrorCode()));
+        }
+
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
+        return "redirect:/scripts/" + scriptId;
+//        httpServletRequest.setAttribute("schema", schema);
+    }
+
     @PostMapping(params = {"update"})
     public String update(@ModelAttribute("form") QAScriptForm form,
                              BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpServletRequest request) {

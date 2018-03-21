@@ -1,5 +1,6 @@
 package eionet.gdem.web.spring.scripts;
 
+import eionet.gdem.qa.XQScript;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
@@ -107,6 +108,22 @@ public class QAScriptsControllerTest {
     }
 
     @Test
+    public void upload() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("scriptFile", "test.xq", "application/xml", "1 + 1".getBytes());
+        mockMvc.perform(fileUpload("/scripts")
+                .file(file)
+                .sessionAttr(SESSION_USER, ADMIN_USER)
+                .param("upload", "")
+                .param("schema", "http://localhost/not_existing2.xsd")
+                .param("schemaId", "88")
+                .param("shortName", "test")
+                .param("scriptId", "54")
+                .param("fileName", "previous.xq")
+                .param("scriptType", XQScript.SCRIPT_LANG_XQUERY3))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
     public void update() throws Exception {
         mockMvc.perform(post("/scripts")
             .sessionAttr(SESSION_USER, ADMIN_USER)
@@ -114,6 +131,7 @@ public class QAScriptsControllerTest {
             .param("scriptId","25")
             .param("schemaId", "62")
             .param("shortName", "test")
+            .param("scriptType", XQScript.SCRIPT_LANG_XQUERY3)
             .param("fileName", "sum-oz_info_1920_1.xql"))
             .andExpect(model().hasNoErrors())
             .andExpect(status().is3xxRedirection());

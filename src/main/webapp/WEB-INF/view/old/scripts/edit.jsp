@@ -73,7 +73,6 @@
           <form:select name="form" path="scriptType" id="selScriptType" disabled="false">
             <form:options items="${scriptlangs}" itemValue="convType" itemLabel="convType"/>
           </form:select>
-          <form:hidden path="scriptType"/>
         </div>
       </div>
       <div class="row">
