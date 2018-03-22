@@ -46,7 +46,7 @@ public class QueueMonitoringController {
         this.queueJobsService = queueJobsService;
     }
 
-    @GetMapping
+    @RequestMapping
     public ResponseEntity action(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, SQLException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

@@ -42,7 +42,7 @@ public class ConversionApiController {
         this.messageService = messageService;
     }
 
-    @GetMapping("/convert")
+    @RequestMapping("/convert")
     public ResponseEntity action(HttpServletRequest request, HttpServletResponse response) throws ServletException, XMLConvException {
         String convertId = null;
         String url = null;

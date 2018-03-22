@@ -11,7 +11,7 @@
 </c:if>
 
 <c:if test="${!empty conversions.handCodedStylesheets}">
-  <form:form action="/searchCR" method="post">
+  <form:form servletRelativeAction="/schemas/${schemaId}/conversions" method="post" modelAttribute="form">
     <form:errors path="*" cssClass="error-msg" element="div"/>
 
     <c:forEach varStatus="index" items="${conversions.handCodedStylesheets}" var="conversion">
@@ -67,7 +67,7 @@
               <%--<bean:define id="convId" name="stylesheet" property="convId"/>--%>
               <c:if test="${permissions.ssdPrm}">
                 <td align="center">
-                  <input type="radio" name="conversionId" value="${stylesheet.convId}"/>
+                  <form:radiobutton path="conversionId" value="${stylesheet.convId}"/>
                 </td>
               </c:if>
               <td>
@@ -126,7 +126,7 @@
         </table>
         <div class="boxbottombuttons">
           <c:if test="${permissions.ssdPrm}">
-            <button type="submit" class="button" value="delete">
+            <button type="submit" class="button" name="delete" onclick="return confirm('Are you sure you want to delete this conversion?')">
               <spring:message code="label.stylesheet.delete"/>
             </button>
           </c:if>

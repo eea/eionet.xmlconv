@@ -49,7 +49,7 @@ public class QAScriptsApiController {
         this.messageService = messageService;
     }
 
-    @GetMapping
+    @RequestMapping
     public ResponseEntity action(HttpServletRequest request, HttpServletResponse response) throws ServletException, XMLConvException, URISyntaxException {
         String scriptId = null;
         String url = null;

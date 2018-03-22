@@ -36,7 +36,7 @@ public class ConversionsListApiController {
     protected static final String SCHEMA_PARAM_NAME = "schema";
 
 
-    @GetMapping
+    @RequestMapping
     public ResponseEntity listConversions(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // create custom HttpServletResponseWrapper
         HttpMethodResponseWrapper methodResponse = new HttpMethodResponseWrapper(response);

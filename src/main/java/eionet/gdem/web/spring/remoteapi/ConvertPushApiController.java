@@ -5,7 +5,6 @@ import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.services.MessageService;
-import eionet.gdem.utils.MultipartFileUpload;
 import eionet.gdem.utils.Utils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -13,9 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -41,38 +42,27 @@ public class ConvertPushApiController {
     /** File name or URL of the file original location. */
     public static final String FILE_NAME_PARAM_NAME = "file_name";
 
-    @GetMapping
-    public ResponseEntity push(HttpServletRequest request, HttpServletResponse response) throws ServletException, XMLConvException {
+    @RequestMapping
+    public ResponseEntity push(@RequestParam(CONVERT_FILE_PARAM_NAME) MultipartFile multipartFile, @RequestParam(value = FILE_NAME_PARAM_NAME, required = false) String fileName,
+                               @RequestParam(CONVERT_ID_PARAM_NAME) String convertId, Model model,
+                               HttpServletRequest request, HttpServletResponse response) throws ServletException, XMLConvException {
         InputStream fileInput = null;
         Map params = null;
 
         // create custom HttpServletResponseWrapper
         HttpMethodResponseWrapper methodResponse = new HttpMethodResponseWrapper(response);
-        String convertId = null;
-        String fileName = null;
 
-        // parse multipart form data
-        MultipartFileUpload fu = new MultipartFileUpload(false);
-        fu.processMultiPartRequest(request);
-        params = fu.getRequestParams();
-
-        // get convert_id parameter
-        if (params.containsKey(CONVERT_ID_PARAM_NAME)) {
-            convertId = (String) params.get(CONVERT_ID_PARAM_NAME);
-        }
         if (Utils.isNullStr(convertId)) {
             throw new XMLConvException(CONVERT_ID_PARAM_NAME + " parameter is missing from request.");
         }
 
         try {
-            // get the file as inputstream from request
-            fileInput = fu.getFileAsInputStream(CONVERT_FILE_PARAM_NAME);
-            // get file name from parameter, if this is not provided then use real file name from multipart content.
-            if (params.containsKey(FILE_NAME_PARAM_NAME)) {
-                fileName = (String) params.get(FILE_NAME_PARAM_NAME);
-            } else {
-                fileName = fu.getFileName(CONVERT_FILE_PARAM_NAME);
+            fileInput = multipartFile.getInputStream();
+
+            if (fileName == null) {
+                fileName = multipartFile.getOriginalFilename();
             }
+
             // XXX: Convert to Spring ResponseEntity
             // call ConversionService
             ConversionServiceIF cs = new ConversionService();

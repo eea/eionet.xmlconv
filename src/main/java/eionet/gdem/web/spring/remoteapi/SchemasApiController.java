@@ -37,7 +37,7 @@ public class SchemasApiController {
         this.messageService = messageService;
     }
 
-    @GetMapping
+    @RequestMapping
     public ResponseEntity action(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // create custom HttpServletResponseWrapper
         HttpMethodResponseWrapper methodResponse = new HttpMethodResponseWrapper(response);

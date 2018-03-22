@@ -40,7 +40,7 @@ public class Json2XmlController {
         this.messageService = messageService;
     }
 
-    @GetMapping
+    @RequestMapping
     public ResponseEntity action(HttpServletRequest request, HttpServletResponse response) throws ServletException, XMLConvException, IOException {
         String jsonParam = null;
 
