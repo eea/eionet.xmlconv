@@ -5,6 +5,7 @@ import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.WebContextConfig;
+import eionet.gdem.web.spring.stylesheet.StylesheetForm;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -13,6 +14,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
@@ -27,8 +29,12 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.sql.DataSource;
 
+import static eionet.gdem.test.TestConstants.ADMIN_USER;
+import static eionet.gdem.test.TestConstants.SESSION_USER;
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.hamcrest.Matchers.*;
 
 
 
@@ -41,7 +47,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         @ContextConfiguration(classes = ApplicationTestContext.class),
         @ContextConfiguration(classes = WebContextConfig.class)
 })
-@Ignore
 public class ConversionsControllerTest {
 
     @Autowired
@@ -73,14 +78,14 @@ public class ConversionsControllerTest {
     public void viewIT() throws Exception {
         mockMvc.perform(get("/conversions/{id}", 1))
                 .andExpect(view().name("/conversions/view"))
-                .andExpect(model().attributeExists("form"))
-                .andExpect(model().attributeExists("types"));
+                .andExpect(model().attribute("form", instanceOf(StylesheetForm.class)))
+                .andExpect(model().attributeExists("outputtypes"));
     }
 
     @Test
     public void conversionMissing() throws Exception {
         mockMvc.perform(get("/conversions/{id}", 999))
-                .andExpect(view().name("redirect:/conversions"));
+                .andExpect(view().name("Error"));
     }
 
 /*    @Test
@@ -113,6 +118,31 @@ public class ConversionsControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void upload() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("xslFile", "test.xsl", "application/xml", "1 + 1".getBytes());
+        mockMvc.perform(fileUpload("/conversions")
+                .file(file)
+                .sessionAttr(SESSION_USER, ADMIN_USER)
+                .param("upload", "")
+                .param("outputtype", "HTML")
+                .param("stylesheetId", "183")
+                .param("description", "test")
+                .param("xslFileName", "test"))
+                .andExpect(status().is3xxRedirection());
+    }
 
+    @Test
+    public void save() throws Exception {
+        mockMvc.perform(post("/conversions")
+                .sessionAttr(SESSION_USER, ADMIN_USER)
+                .param("save", "")
+                .param("outputtype", "HTML")
+                .param("stylesheetId", "183")
+                .param("description", "test")
+                .param("xslContent", "1 + 1")
+                .param("xslFileName", "test"))
+                .andExpect(status().is3xxRedirection());
+    }
 
 }

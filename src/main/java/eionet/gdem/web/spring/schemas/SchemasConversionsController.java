@@ -80,7 +80,7 @@ public class SchemasConversionsController {
     }
 
     @PostMapping(value = "/{schemaId}/conversions", params = {"delete"})
-    public String conversionActions(@PathVariable String schemaId, @ModelAttribute("form") ConversionForm cForm, Model model,
+    public String conversionDelete(@PathVariable String schemaId, @ModelAttribute("form") ConversionForm cForm, Model model,
                                     HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
         SpringMessages success = new SpringMessages();

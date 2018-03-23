@@ -1,5 +1,7 @@
 package eionet.gdem.web.spring.conversions;
 
+import eionet.gdem.Constants;
+import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.PathNotFoundException;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlException;
@@ -39,6 +41,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -256,6 +259,126 @@ public class ConversionsController {
             throw new RuntimeException("Edit stylesheet error: " + messageService.getMessage(e.getErrorCode()));
         }
         return "/conversions/edit";
+    }
+
+    @PostMapping(params = {"upload"})
+    public String upload(@ModelAttribute("form") StylesheetForm form, BindingResult formResult,
+                         Model model, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
+        SpringMessages messages = new SpringMessages();
+        SpringMessages errors = new SpringMessages();
+
+        Stylesheet stylesheet = ConversionsUtils.convertFormToStylesheetDto(form, httpServletRequest);
+
+        MultipartFile xslFile = form.getXslfile();
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
+        boolean updateContent = false;
+
+        httpServletRequest.setAttribute("stylesheetId", stylesheet.getConvId());
+
+/*        if (isCancelled(httpServletRequest)) {
+            return findForward(actionMapping, "success", stylesheet.getConvId());
+        }*/
+        String description = form.getDescription();
+        if (description == null || description.isEmpty()) {
+            formResult.reject("label.stylesheet.error.descriptionMissing");
+        }
+        if (xslFile != null && xslFile.getSize() != 0) {
+            if (StringUtils.isEmpty(stylesheet.getXslFileName())) {
+                stylesheet.setXslFileName(xslFile.getOriginalFilename());
+            }
+            try {
+                stylesheet.setXslContent(new String(xslFile.getBytes(), StandardCharsets.UTF_8));
+            } catch (Exception e) {
+                throw new RuntimeException("Error in edit stylesheet action when trying to load XSL file content from FormFile object", e);
+            }
+
+            ConversionsUtils.validateXslFile(stylesheet, errors);
+            updateContent = true;
+        }
+
+        if (errors.isEmpty()) {
+            try {
+                StylesheetManager stylesheetManager = new StylesheetManager();
+                // stylesheetManager.update(user, stylesheetId, schema, xslFile, curFileName, type, desc, dependsOn);
+                stylesheetManager.update(stylesheet, user, updateContent);
+                if (updateContent) {
+                    messages.add(messageService.getMessage("label.stylesheet.updated"));
+                } else {
+                    messages.add(messageService.getMessage("label.stylesheet.updated.notuploaded"));
+                }
+                StylesheetListLoader.reloadStylesheetList(httpServletRequest);
+            } catch (DCMException e) {
+                throw new RuntimeException("Edit stylesheet error", e);
+            }
+        }
+
+        /*if (!errors.isEmpty()) {
+            saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("fail");
+        }*/
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
+        return "redirect:/conversions/" + stylesheet.getConvId();
+    }
+
+    @PostMapping(params = {"save"})
+    public String save(@ModelAttribute("form") StylesheetForm form, BindingResult formResult,
+                       Model model, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
+
+        SpringMessages messages = new SpringMessages();
+        SpringMessages errors = new SpringMessages();
+
+        Stylesheet stylesheet = ConversionsUtils.convertFormToStylesheetDto(form, httpServletRequest);
+
+        String user = (String) httpServletRequest.getSession().getAttribute("user");
+        String oldFileChecksum = form.getChecksum();
+        boolean updateContent = false;
+        String newChecksum = null;
+
+        httpServletRequest.setAttribute("stylesheetId", stylesheet.getConvId());
+
+/*        if (isCancelled(httpServletRequest)) {
+            return findForward(actionMapping, "success", stylesheet.getConvId());
+        }*/
+        String description = form.getDescription();
+        if (description == null || description.isEmpty()) {
+            formResult.reject("label.stylesheet.error.descriptionMissing");
+        }
+        if (!Utils.isNullStr(stylesheet.getXslFileName()) && !Utils.isNullStr(stylesheet.getXslContent())
+                && stylesheet.getXslContent().indexOf(Constants.FILEREAD_EXCEPTION) == -1) {
+
+            // compare checksums
+            try {
+                newChecksum = Utils.getChecksumFromString(stylesheet.getXslContent());
+            } catch (Exception e) {
+                LOGGER.error("unable to create checksum");
+            }
+
+            updateContent = StringUtils.isEmpty(oldFileChecksum) || !oldFileChecksum.equals(newChecksum);
+
+            if (updateContent) {
+                ConversionsUtils.validateXslFile(stylesheet, errors);
+            }
+        }
+
+        if (errors.isEmpty()) {
+            try {
+                StylesheetManager stylesheetManager = new StylesheetManager();
+                // st.updateContent(user, stylesheetId, schema, xslFileName, type, desc, xslContent, updateContent, dependsOn);
+                stylesheetManager.update(stylesheet, user, updateContent);
+                messages.add(messageService.getMessage("label.stylesheet.updated"));
+                StylesheetListLoader.reloadStylesheetList(httpServletRequest);
+            } catch (DCMException e) {
+                throw new RuntimeException("Edit stylesheet error", e);
+            }
+        }
+
+        /*if (!errors.isEmpty()) {
+            saveErrors(httpServletRequest, errors);
+            return actionMapping.findForward("fail");
+        }*/
+        redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
+        return "redirect:/conversions/" + stylesheet.getConvId();
+
     }
 
     @GetMapping("/type")
