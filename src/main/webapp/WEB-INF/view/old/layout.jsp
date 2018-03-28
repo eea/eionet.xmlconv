@@ -1,18 +1,10 @@
-<%--<%@ page buffer="100kb" pageEncoding="utf-8" contentType="text/html; charset=utf-8" language="java" %>--%>
+<%@ page buffer="100kb" pageEncoding="utf-8" contentType="text/html; charset=utf-8" %>
 <%@ include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <ed:breadcrumbs-push label="XML Services" url="/index.jsp" level="0"/>
 
-<%--<%
-  String a = request.getContextPath();
-  session.setAttribute("webRoot", a == null ? "" : a);
-  response.setHeader("Pragma", "No-cache");
-  response.setHeader("Cache-Control", "no-cache");
-  response.setHeader("Cache-Control", "no-store");
-  response.setDateHeader("Expires", 0);
-%>--%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
   <title>
     <tiles:importAttribute name="title" scope="request"/>
