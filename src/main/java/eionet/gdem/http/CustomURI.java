@@ -1,5 +1,7 @@
 package eionet.gdem.http;
 
+import eionet.gdem.XMLConvException;
+
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -25,7 +27,15 @@ public class CustomURI {
         return uri;
     }
 
-    public URL getURL() throws MalformedURLException {
+    public String getHttpURL() throws XMLConvException {
+        try {
+            return uri.toURL().toString();
+        } catch (MalformedURLException e) {
+            throw new XMLConvException("Error in URL", e);
+        }
+    }
+
+    public URL getRawURL() throws MalformedURLException {
         URL temp = null;
         try {
             temp = uri.toURL();
@@ -34,4 +44,5 @@ public class CustomURI {
         }
         return temp;
     }
+
 }

@@ -72,7 +72,9 @@ public class XslGenerator {
         ByteArrayOutputStream os = null;
         try {
             CustomURI uri = new CustomURI(sourceURL);
-            uri.getURL();
+            String parsedURL = uri.getHttpURL();
+            uri.getRawURL();
+
             os = new ByteArrayOutputStream();
 
             Processor proc = SaxonProcessor.getProcessor();
@@ -83,7 +85,7 @@ public class XslGenerator {
 
             XsltExecutable exp = comp.compile(transformerSource);
             // TODO: Maybe replace this with HTTP file manager to take advantage of the file cache.
-            XdmNode source = proc.newDocumentBuilder().build(new StreamSource(sourceURL));
+            XdmNode source = proc.newDocumentBuilder().build(new StreamSource(parsedURL));
             Serializer ser = proc.newSerializer(os);
             ser.setOutputProperty(Serializer.Property.METHOD, "html");
             ser.setOutputProperty(Serializer.Property.INDENT, "yes");

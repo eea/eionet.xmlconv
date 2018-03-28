@@ -23,8 +23,8 @@
     </context-param>
 
     <filter>
-        <filter-name>Set Character Encoding</filter-name>
-        <filter-class>eionet.gdem.web.filters.SetCharacterEncodingFilter</filter-class>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
         <init-param>
             <param-name>encoding</param-name>
             <param-value>UTF-8</param-value>
@@ -51,6 +51,10 @@
     <filter-mapping>
         <filter-name>CAS Filter</filter-name>
         <url-pattern>/login/afterLogin</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>*</url-pattern>
     </filter-mapping>
 
     <listener>

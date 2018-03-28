@@ -2,6 +2,7 @@ package eionet.gdem.http;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
@@ -43,7 +44,7 @@ public class HttpFileManagerTest {
     }
 
     @Test
-    public void testFileInputStream() throws IOException, URISyntaxException {
+    public void testFileInputStream() throws IOException, URISyntaxException, XMLConvException {
         InputStream in = manager.getFileInputStream(TestUtils.getLocalURL("xmlfile/sample-dev.xml"), null, false);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         IOUtils.copy(in, out);
@@ -51,7 +52,7 @@ public class HttpFileManagerTest {
     }
 
     @Test
-    public void testHttpResponse() throws IOException, URISyntaxException {
+    public void testHttpResponse() throws IOException, URISyntaxException, XMLConvException {
         MockHttpServletResponse httpResponse = new MockHttpServletResponse();
         manager.getHttpResponse(httpResponse, null, TestUtils.getLocalURL("xmlfile/sample-dev.xml"));
         assertEquals(MediaType.APPLICATION_XML_VALUE, httpResponse.getContentType());
@@ -60,7 +61,7 @@ public class HttpFileManagerTest {
     }
 
     @Test
-    public void buildSourceFileUrlWithTicket() throws IOException, URISyntaxException {
+    public void buildSourceFileUrlWithTicket() throws IOException, URISyntaxException, XMLConvException {
         String url = "http://trustedurl.com";
         String ticket = "ticketValue";
 
@@ -70,7 +71,7 @@ public class HttpFileManagerTest {
     }
 
     @Test
-    public void testFileProxyUrl() throws IOException, URISyntaxException {
+    public void testFileProxyUrl() throws IOException, URISyntaxException, XMLConvException {
         exception.expect(URISyntaxException.class);
         String fileUrl = "http://trustedurl.com";
         String url = Properties.gdemURL + Constants.GETSOURCE_URL + "&source_url=" + fileUrl;

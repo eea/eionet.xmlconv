@@ -98,7 +98,6 @@ public class ConvertDDXMLMethod extends RemoteServiceMethod {
         HttpFileManager fileManager = new HttpFileManager();
         InputStream sourceStream = null;
         try {
-            URL url = new CustomURI(sourceUrl).getURL();
             sourceStream = fileManager.getFileInputStream(sourceUrl, getTicket(), isTrustedMode());
 
             file = new File(CustomFileUtils.saveFileInLocalStorage(sourceStream, "tmp"));

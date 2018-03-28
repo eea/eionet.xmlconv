@@ -51,8 +51,10 @@ public class HttpFileManager {
      * @throws IOException When an IO error occurs.
      * @throws URISyntaxException When the URL provided isn't a valid URI.
      */
-    public void getHttpResponse(HttpServletResponse response, String ticket, String url) throws IOException, URISyntaxException {
-        HttpEntity entity = getFileEntity(url, ticket);
+    public void getHttpResponse(HttpServletResponse response, String ticket, String url) throws IOException, URISyntaxException, XMLConvException {
+        CustomURI customURI = new CustomURI(url);
+        String parsedURL = customURI.getHttpURL();
+        HttpEntity entity = getFileEntity(parsedURL, ticket);
 
         String contentType = null;
         Header contentTypeHeader = entity.getContentType();
@@ -106,8 +108,9 @@ public class HttpFileManager {
         }
     }
 
-    public static String getSourceUrlWithTicket(String ticket, String sourceUrl, boolean isTrustedMode) throws URISyntaxException {
+    public static String getSourceUrlWithTicket(String ticket, String sourceUrl, boolean isTrustedMode) throws URISyntaxException, XMLConvException {
         CustomURI uri = new CustomURI(sourceUrl);
+        String parsedURL = uri.getHttpURL();
         if (Utils.isNullStr(ticket) && isTrustedMode) {
             ticket = getHostCredentials(uri.getHost());
         }
@@ -126,9 +129,9 @@ public class HttpFileManager {
                 url.append("&");
                 url.append(Constants.SOURCE_URL_PARAM);
                 url.append("=");
-                url.append(sourceUrl);
+                url.append(parsedURL);
         } else {
-            url.append(sourceUrl);
+            url.append(parsedURL);
         }
         return url.toString();
     }
@@ -145,7 +148,7 @@ public class HttpFileManager {
      */
     public InputStream getInputStream(String srcUrl, String ticket, boolean isTrustedMode) throws IOException, URISyntaxException {
         CustomURI customURL = new CustomURI(srcUrl);
-        URL url = customURL.getURL();
+        URL url = customURL.getRawURL();
         URLConnection uc = url.openConnection();
 
         if (ticket == null && isTrustedMode) {
@@ -170,12 +173,13 @@ public class HttpFileManager {
      * @throws IOException When an IO error occurs.
      * @throws URISyntaxException When the URL provided isn't a valid URI.
      */
-    public InputStream getFileInputStream(String url, String ticket, boolean isTrustedMode) throws IOException, URISyntaxException {
+    public InputStream getFileInputStream(String url, String ticket, boolean isTrustedMode) throws IOException, URISyntaxException, XMLConvException {
         CustomURI customURL = new CustomURI(url);
+        String parsedUrl = customURL.getHttpURL();
         if (ticket == null && isTrustedMode) {
             ticket = getHostCredentials(customURL.getHost());
         }
-        HttpEntity entity = getFileEntity(url, ticket);
+        HttpEntity entity = getFileEntity(parsedUrl, ticket);
         if (entity != null) {
             return entity.getContent();
         }
