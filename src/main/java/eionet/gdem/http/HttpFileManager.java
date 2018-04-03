@@ -16,6 +16,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -182,6 +183,19 @@ public class HttpFileManager {
         HttpEntity entity = getFileEntity(parsedUrl, ticket);
         if (entity != null) {
             return entity.getContent();
+        }
+        return null;
+    }
+
+    public byte[] getFileByteArray(String url, String ticket, boolean isTrustedMode) throws URISyntaxException, XMLConvException, IOException {
+        CustomURI customURL = new CustomURI(url);
+        String parsedUrl = customURL.getHttpURL();
+        if (ticket == null && isTrustedMode) {
+            ticket = getHostCredentials(customURL.getHost());
+        }
+        HttpEntity entity = getFileEntity(parsedUrl, ticket);
+        if (entity != null) {
+            return EntityUtils.toByteArray(entity);
         }
         return null;
     }

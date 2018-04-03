@@ -10,6 +10,7 @@ import java.util.Map;
 
 import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.utils.cdr.UrlUtils;
+import eionet.gdem.utils.xml.XMLUtils;
 import eionet.gdem.utils.xml.sax.SaxContext;
 import org.apache.commons.io.IOUtils;
 
@@ -36,6 +37,7 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.ZipUtil;
 import eionet.gdem.utils.xml.IXmlCtx;
 import eionet.gdem.utils.xml.XmlException;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,6 +117,12 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
                 cnvFileName = Utils.isNullStr(UrlUtils.getFileNameNoExtension(sourceURL)) ? DEFAULT_FILE_NAME : UrlUtils.getFileNameNoExtension(sourceURL);
 
                 conversionParameters = UrlUtils.getCdrParams(sourceURL);
+                String envelopeUrl = conversionParameters.get("envelopeurl");
+                if (!StringUtils.isBlank(envelopeUrl)) {
+                    byte[] xml = fileManager.getFileByteArray(envelopeUrl + "/xml", getTicket(), isTrustedMode());
+                    String acceptable = XMLUtils.getXpathText(xml, "/envelope/@acceptable");
+                    conversionParameters.put("acceptable", acceptable);
+                }
                 // override default CDR parameters if they are set up externally.
                 if (externalParameters != null) {
                     conversionParameters.putAll(externalParameters);

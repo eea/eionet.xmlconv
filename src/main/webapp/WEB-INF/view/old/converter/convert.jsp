@@ -91,14 +91,12 @@
               </div>
             </c:otherwise>
           </c:choose>
-        </c:forEach>
-        <c:if test="${!empty schema.stylesheets}">
           <div class="row">
             <button type="submit" class="button" name="convert">
               <spring:message code="label.conversion.convert"/>
             </button>
           </div>
-        </c:if>
+        </c:forEach>
       </c:if>
     </fieldset>
   </form:form>
