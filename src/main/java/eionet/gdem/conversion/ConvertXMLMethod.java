@@ -5,6 +5,7 @@ package eionet.gdem.conversion;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -118,10 +119,14 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
 
                 conversionParameters = UrlUtils.getCdrParams(sourceURL);
                 String envelopeUrl = conversionParameters.get("envelopeurl");
-                if (!StringUtils.isBlank(envelopeUrl)) {
-                    byte[] xml = fileManager.getFileByteArray(envelopeUrl + "/xml", getTicket(), isTrustedMode());
-                    String acceptable = XMLUtils.getXpathText(xml, "/envelope/@acceptable");
-                    conversionParameters.put("acceptable", acceptable);
+                try {
+                    if (!StringUtils.isBlank(envelopeUrl)) {
+                        byte[] xml = fileManager.getFileByteArray(envelopeUrl + "/xml", getTicket(), isTrustedMode());
+                        String acceptable = XMLUtils.getXpathText(xml, "/envelope/@acceptable");
+                        conversionParameters.put("acceptable", acceptable);
+                    }
+                } catch (IOException | XMLConvException | URISyntaxException ex) {
+                    // ignore
                 }
                 // override default CDR parameters if they are set up externally.
                 if (externalParameters != null) {
