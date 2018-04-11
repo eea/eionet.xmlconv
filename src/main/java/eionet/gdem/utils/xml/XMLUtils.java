@@ -13,12 +13,13 @@ public class XMLUtils {
     public static String getXpathText(byte[] xml, String xpath) {
         VTDGen vg = new VTDGen();
         try {
-        vg.setDoc(xml);
-        vg.parse(true);
-        VTDNav vn = vg.getNav();
-        AutoPilot ap = new AutoPilot(vn);
-        ap.selectXPath(xpath);
-        return ap.evalXPathToString();
+            vg.setDoc(xml);
+            vg.parse(true);
+            VTDNav vn = vg.getNav();
+            AutoPilot ap = new AutoPilot(vn);
+            ap.selectXPath(xpath);
+            String result = ap.evalXPathToString();
+            return result;
         } catch (XPathParseException e) {
             // do nothing
         } catch (EncodingException e) {

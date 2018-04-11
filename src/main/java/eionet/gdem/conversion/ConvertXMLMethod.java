@@ -123,7 +123,9 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
                     if (!StringUtils.isBlank(envelopeUrl)) {
                         byte[] xml = fileManager.getFileByteArray(envelopeUrl + "/xml", getTicket(), isTrustedMode());
                         String acceptable = XMLUtils.getXpathText(xml, "/envelope/@acceptable");
+                        String submissionDate = XMLUtils.getXpathText(xml, "/envelope/date/text()");
                         conversionParameters.put("acceptable", acceptable);
+                        conversionParameters.put("submissionDate", submissionDate);
                     }
                 } catch (IOException | XMLConvException | URISyntaxException ex) {
                     // ignore
