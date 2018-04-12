@@ -1,5 +1,6 @@
 package eionet.gdem.web.spring.schemas;
 
+import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.web.spring.SpringMessages;
@@ -22,7 +23,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 
 /**
  *
@@ -67,15 +67,28 @@ public class SchemasConversionsController {
         return "/schemas/conversions";
     }
 
+
     @GetMapping("/{schemaId}/conversions/add")
-    public String conversionsAdd(@ModelAttribute("form") StylesheetForm stylesheetForm, @PathVariable String schemaId, Model model) throws DCMException {
-        SchemaManager sm = new SchemaManager();
-        String[] schemas = {sm.getSchema(schemaId).getSchema()};
-        stylesheetForm.setNewSchemas(schemas);
-        StylesheetManager stylesheetManager = new StylesheetManager();
-        model.addAttribute("outputtypes", stylesheetManager.getConvTypes());
-        model.addAttribute("form", stylesheetForm);
-        model.addAttribute("schemaId", schemaId);
+    public String conversionsAdd(@ModelAttribute("form") StylesheetForm stylesheetForm, @PathVariable String schemaId, Model model,
+                                 HttpServletRequest httpServletRequest) throws DCMException {
+
+        SchemaManager schemaMan = new SchemaManager();
+        Schema schema = schemaMan.getSchema(schemaId);
+        String schemaUrl = schema.getSchema();
+        model.addAttribute("schemaUrl", schemaUrl);
+
+        try {
+            StylesheetManager sm = new StylesheetManager();
+            /*StylesheetListHolder stylesheetList = StylesheetListLoader.getGeneratedList(httpServletRequest);*/
+            /*List<Schema> schemas = stylesheetList.getDdStylesheets();
+            httpServletRequest.setAttribute("stylesheet.DDSchemas", schemas);*/
+
+            model.addAttribute("schemaInfo", schema);
+            model.addAttribute("existingStylesheets", sm.getSchemaStylesheets(schemaId, null));
+            model.addAttribute("outputtypes", sm.getConvTypes());
+        } catch (DCMException e) {
+            throw new RuntimeException(messageService.getMessage(e.getErrorCode()));
+        }
         return "/conversions/add";
     }
 

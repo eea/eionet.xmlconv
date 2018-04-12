@@ -14,32 +14,26 @@
         </label>
       </div>
       <div class="columns small-8">
-        <c:if test="${!empty form.schemas}">
-          <c:forEach varStatus="index" items="${form.schemas}" var="schema">
-            <div class="schemaContainer">
-              <a href="/schemas/${schema.id}" title="View XML Schema properties">
-                  ${schema.schema}
-              </a>
-              <%--<a href='#' class="delSchemaLink" title="Delete XML Schema relation">
-                <img style='border:0' src="/images/button_remove.gif" alt='Remove'/>
-              </a><br/>
-              <input type="hidden" name="schemaIds" value="${relatedSchema.id}">--%>
-            </div>
-          </c:forEach>
-        </c:if>
-        <%--<div id="newSchemasContainer">
-          <c:forEach items="${form.newSchemas}" var="newSchema">
-            <div class="newSchemaContainer">
-              <input type="url" name="newSchemas" style="width:400px;" class="newSchema" value="${newSchema}">
-              <a href='#' class="delNewSchemaLink">
-                <img style='border:0' src="/images/button_remove.gif" alt='Remove'/>
-              </a><br/>
-            </div>
-          </c:forEach>
-        </div>--%>
+          <c:if test="${!empty form.schemas}">
+            <c:forEach varStatus="index" items="${form.schemas}" var="relatedSchema">
+            <%--<logic:iterate indexId="index" id="relatedSchema" name="stylesheetForm" property="schemas" type="Schema">--%>
+              <div class="schemaContainer">
+                <a href="/schemas/?schemaId=${relatedSchema.id}" title="view XML Schema properties">${relatedSchema.schema}</a>
+                <a href='#' class="delSchemaLink" title="Delete XML Schema relation"><img style='border:0' src='<c:url value="/images/button_remove.gif" />' alt='Remove' /></a><br/>
+                <input type="hidden" name="schemaIds" value="${relatedSchema.id}"/>
+              </div>
+            </c:forEach>
+          </c:if>
+          <div id="newSchemasContainer">
+            <c:forEach varStatus="index" items="${form.newSchemas}" var="newSchema">
+              <div class="newSchemaContainer">
+                <input type="url" name="newSchemas" style="width:400px;" class="newSchema" value="${newSchema}" id="schema_1"/>
+                <a href='#' class="delNewSchemaLink"><img style='border:0' src='<c:url value="/images/button_remove.gif"/>' alt='Remove' /></a><br/>
+              </div>
+            </c:forEach>
+          </div>
         <br/>
-          <%--&lt;%&ndash; TODO CHECK FOR REMOVAL &ndash;%&gt;--%>
-          <%--<jsp:include page="ManageStylesheetSchemas.jsp"/>--%>
+        <jsp:include page="ManageStylesheetSchemas.jsp"/>
       </div>
     </div>
       <%-- /*

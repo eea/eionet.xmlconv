@@ -275,9 +275,6 @@ public class ConversionsController {
 
         httpServletRequest.setAttribute("stylesheetId", stylesheet.getConvId());
 
-/*        if (isCancelled(httpServletRequest)) {
-            return findForward(actionMapping, "success", stylesheet.getConvId());
-        }*/
         String description = form.getDescription();
         if (description == null || description.isEmpty()) {
             formResult.reject("label.stylesheet.error.descriptionMissing");
@@ -312,10 +309,6 @@ public class ConversionsController {
             }
         }
 
-        /*if (!errors.isEmpty()) {
-            saveErrors(httpServletRequest, errors);
-            return actionMapping.findForward("fail");
-        }*/
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/conversions/" + stylesheet.getConvId();
     }
@@ -336,9 +329,6 @@ public class ConversionsController {
 
         httpServletRequest.setAttribute("stylesheetId", stylesheet.getConvId());
 
-/*        if (isCancelled(httpServletRequest)) {
-            return findForward(actionMapping, "success", stylesheet.getConvId());
-        }*/
         String description = form.getDescription();
         if (description == null || description.isEmpty()) {
             formResult.reject("label.stylesheet.error.descriptionMissing");
@@ -372,50 +362,10 @@ public class ConversionsController {
             }
         }
 
-        /*if (!errors.isEmpty()) {
-            saveErrors(httpServletRequest, errors);
-            return actionMapping.findForward("fail");
-        }*/
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/conversions/" + stylesheet.getConvId();
 
     }
-
-    @GetMapping("/type")
-    public String type(Model model, HttpServletRequest httpServletRequest) {
-
-        SpringMessages success = new SpringMessages();
-        SpringMessages errors = new SpringMessages();
-
-        String schema = httpServletRequest.getParameter("schema");
-        httpServletRequest.setAttribute("schema", schema);
-
-        try {
-            StylesheetManager sm = new StylesheetManager();
-            SchemaManager schemaMan = new SchemaManager();
-
-            StylesheetListHolder stylesheetList = StylesheetListLoader.getGeneratedList(httpServletRequest);
-            List<Schema> schemas = stylesheetList.getDdStylesheets();
-            httpServletRequest.setAttribute("stylesheet.DDSchemas", schemas);
-
-            if (!Utils.isNullStr(schema)) {
-                String schemaId = schemaMan.getSchemaId(schema);
-                if (schemaId != null) {
-                    httpServletRequest.setAttribute("schemaInfo", schemaMan.getSchema(schemaId));
-                    httpServletRequest.setAttribute("existingStylesheets", sm.getSchemaStylesheets(schemaId, null));
-                }
-            }
-
-        } catch (DCMException e) {
-            LOGGER.error("Error getting conv types", e);
-            errors.add(messageService.getMessage(e.getErrorCode()));
-            model.addAttribute("errors", errors);
-        }
-        model.addAttribute("success", success);
-        // todo fix url
-        return "/conversions/type";
-    }
-
 
     @GetMapping("/add")
     public String add(@ModelAttribute("form") StylesheetForm form) {

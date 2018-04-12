@@ -69,7 +69,7 @@ public class SchemasConversionsControllerTest {
     public void conversionsAdd() throws Exception {
         mockMvc.perform(get("/schemas/1/conversions/add").sessionAttr(SESSION_USER, ADMIN_USER))
             .andExpect(model().attribute("form", instanceOf(StylesheetForm.class)))
-            .andExpect(model().attributeExists("outputtypes", "schemaId"))
+            .andExpect(model().attributeExists("outputtypes"))
             .andExpect(view().name("/conversions/add"));
     }
 }

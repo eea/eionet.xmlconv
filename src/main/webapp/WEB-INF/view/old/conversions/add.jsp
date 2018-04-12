@@ -14,9 +14,20 @@
         </label>
       </div>
       <div class="columns small-8">
-        <%--value="${schema}" class="newSchema" --%>
-        <%--<form:input path="newSchemas[0]" type="url" id="txtSchemaUrl" />--%>
-          <form:input path="newSchemas[0]" type="url" id="txtSchemaUrl" />
+        <div id="newSchemasContainer">
+          <div class="newSchemaContainer">
+            <c:choose>
+              <c:when test="${!empty schemaUrl}">
+                <input type="url" name="newSchemas" value="${schemaUrl}" class="newSchema" id="txtSchemaUrl"/>
+              </c:when>
+              <c:otherwise>
+                <input type="url" name="newSchemas" maxlength="255" class="newSchema" id="txtSchemaUrl"/>
+              </c:otherwise>
+            </c:choose>
+            <a href='#' class="delNewSchemaLink"><img style='border:0' src='<c:url value="/images/button_remove.gif" />' alt='Remove' /></a><br/>
+          </div>
+        </div>
+        <jsp:include page="ManageStylesheetSchemas.jsp"/>
       </div>
     </div>
 
@@ -37,7 +48,7 @@
       </div>
     </div>
 
-    <c:if test="${schemaInfo}">
+    <c:if test="${!empty schemaInfo}">
       <c:if test="${schemaInfo.schemaLang == 'EXCEL'}">
         <div class="row">
           <div class="columns small-4">
@@ -48,7 +59,6 @@
           <div class="columns small-4">
             <select name="dependsOn" id="chkDepends">
               <option value="" selected="selected">--</option>
-                <%--iterate id="st" scope="request" name="existingStylesheets">--%>
               <c:forEach items="${existingStylesheets}" var="st">
                 <option value="${st.convId}">
                     ${st.xslFileName}
