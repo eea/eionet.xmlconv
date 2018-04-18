@@ -319,6 +319,7 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
+                    <reportFormat>xml</reportFormat>
                     <systemPropertyVariables>
                         <docker.host.address>${docker.host.address}</docker.host.address>
                     </systemPropertyVariables>
