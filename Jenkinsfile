@@ -6,6 +6,7 @@ pipeline {
   }
   options {
     buildDiscarder(logRotator(numToKeepStr: '4', artifactNumToKeepStr: '2'))
+    timeout(time: 60, unit: 'MINUTES')
   }
   stages {
     stage('Static analysis') {
