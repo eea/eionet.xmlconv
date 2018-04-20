@@ -10,7 +10,7 @@ pipeline {
   stages {
     stage('Static analysis') {
       steps {
-        sh 'mvn clean -B -V -Pcobertura verify pmd:pmd pmd:cpd findbugs:findbugs checkstyle:checkstyle'
+        sh 'mvn clean -B -V -Pcobertura verify cobertura:cobertura pmd:pmd pmd:cpd findbugs:findbugs checkstyle:checkstyle'
       }
       post {
         always {

@@ -1,4 +1,3 @@
-[![Build Status](https://ci.eionet.europa.eu/job/eionet.xmlconv/job/master/badge/icon)](https://ci.eionet.europa.eu/job/eionet.xmlconv/job/master/)
 ## QA and Converters (XMLCONV) software
 
 ### Prerequisites
