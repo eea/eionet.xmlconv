@@ -10,6 +10,7 @@ import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.qa.XQueryService;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -220,6 +221,7 @@ public class QaController {
            HashMap<String, String> errorResult = new HashMap<String, String>();
         errorResult.put("httpStatusCode", HttpStatus.INTERNAL_SERVER_ERROR.toString());
         errorResult.put("errorMessage", exception.getMessage());
+        errorResult.put("errorDescription", String.valueOf(ExceptionUtils.getRootCause(exception)));
         return new ResponseEntity<HashMap<String, String>>(errorResult, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
