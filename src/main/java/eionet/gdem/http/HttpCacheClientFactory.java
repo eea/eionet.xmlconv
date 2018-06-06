@@ -38,6 +38,7 @@ public final class HttpCacheClientFactory {
                     .setDefaultRequestConfig(requestConfig)
                     .setConnectionManager(HttpConnectionManagerFactory.getInstance())
                     .setRetryHandler(new StandardHttpRequestRetryHandler())
+                    .useSystemProperties()
                     .build();
         }
         return client;
