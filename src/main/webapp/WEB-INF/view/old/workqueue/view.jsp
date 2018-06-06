@@ -2,6 +2,9 @@
 
 <ed:breadcrumbs-push label="Workqueue" level="1"/>
 
+<script type="text/javascript" src="/js/DataTables/media/js/jquery.dataTables.min.js" ></script>
+<script type="text/javascript" src="/js/workqueue.js"></script>
+
 <script type="text/javascript">
     // <![CDATA[
     var elementName = "jobID";
@@ -65,7 +68,7 @@
 <div id="main_table">
   <form:form id="jobs" servletRelativeAction="/workqueue" method="post" modelAttribute="form">
     <form:errors path="*" cssClass="error-msg" element="div"/>
-    <table class="datatable results" width="100%">
+    <table id="workqueue_table" class="datatable results" width="100%">
       <col style="width:30px; text-align:right;"/>
       <col style="width:50px; text-align:right;"/>
       <col/>
