@@ -29,7 +29,15 @@
 }
 
 .fa-filter {
-    color: #5f646f;
+    color: #ffffff;
+}
+
+.fa-filter::after {
+    color: #ffffff;
+}
+
+.fa-filter::before {
+    color: #ffffff;
 }
 
 .dataTables_filter{

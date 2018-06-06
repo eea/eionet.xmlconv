@@ -2,64 +2,72 @@
 
 <ed:breadcrumbs-push label="Workqueue" level="1"/>
 
-<script type="text/javascript" src="/js/DataTables/media/js/jquery.dataTables.min.js" ></script>
+<link rel="stylesheet" type="text/css" href="/js/DataTables/media/css/jquery.dataTables.min.css"></link>
+<link rel="stylesheet" type="text/css" href="/js/workqueue.css"></link>
+<link rel="stylesheet" type="text/css" href="/webjars/font-awesome/web-fonts-with-css/css/fontawesome-all.css"></link>
+
+<script type="text/javascript" src="/js/DataTables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/js/workqueue.js"></script>
 
+
 <script type="text/javascript">
-    // <![CDATA[
-    var elementName = "jobID";
-    isSelected = false;
+  // <![CDATA[
+  var elementName = "jobID";
+  isSelected = false;
 
-    function toggleSelect() {
-        elems = document.getElementsByTagName("input");
+  function toggleSelect() {
+    elems = document.getElementsByTagName("input");
 
-        if (isSelected == false) {
-            for (i = 0; i < elems.length; i++)
-                if (elems[i].value && elementName == elems[i].name) {
-                    elems[i].checked = true;
-                }
-            isSelected = true;
-            document.getElementById("selectAll").value = "Deselect All";
-            return isSelected;
+    if (isSelected == false) {
+      for (i = 0; i < elems.length; i++)
+        if (elems[i].value && elementName == elems[i].name) {
+          elems[i].checked = true;
         }
-        else {
-            for (i = 0; i < elems.length; i++)
-                elems[i].checked = false;
-            isSelected = false;
-            document.getElementById("selectAll").value = "Select All";
-            return isSelected;
-        }
+      isSelected = true;
+      document.getElementById("selectAll").value = "Deselect All";
+      return isSelected;
     }
+    else {
+      for (i = 0; i < elems.length; i++)
+        elems[i].checked = false;
+      isSelected = false;
+      document.getElementById("selectAll").value = "Select All";
+      return isSelected;
+    }
+  }
 
-    function countSelected() {
-        var j = 0;
-        elems = document.getElementsByTagName("input");
-        for (i = 0; i < elems.length; i++)
-            if (elems[i].checked == true && elementName == elems[i].name) {
-                j++;
-            }
-        return j;
-    }
-    function doDelete() {
-        if (countSelected() == 0) {
-            alert('No jobs selected!');
-            return false;
-        }
-        if (!confirm('Are you sure you want to delete the selected jobs?'))
-            return false;
+  function countSelected() {
+    var j = 0;
+    elems = document.getElementsByTagName("input");
+    for (i = 0; i < elems.length; i++)
+      if (elems[i].checked == true && elementName == elems[i].name) {
+        j++;
+      }
+    return j;
+  }
 
-        document.getElementById('ACTION').value = '${Constants.WQ_DEL_ACTION}';
-        document.getElementById('jobs').submit();
+  function doDelete() {
+    if (countSelected() == 0) {
+      alert('No jobs selected!');
+      return false;
     }
-    function doRestart() {
-        if (countSelected() == 0) {
-            alert('No jobs selected!');
-            return false;
-        }
-        document.getElementById('ACTION').value = '${Constants.WQ_RESTART_ACTION}';
-        document.getElementById('jobs').submit();
+    if (!confirm('Are you sure you want to delete the selected jobs?'))
+      return false;
+
+    document.getElementById('ACTION').value = '${Constants.WQ_DEL_ACTION}';
+    document.getElementById('jobs').submit();
+  }
+
+  function doRestart() {
+    if (countSelected() == 0) {
+      alert('No jobs selected!');
+      return false;
     }
-    // ]]>
+    document.getElementById('ACTION').value = '${Constants.WQ_RESTART_ACTION}';
+    document.getElementById('jobs').submit();
+  }
+
+  // ]]>
 </script>
 
 <h1>Jobs</h1>
@@ -82,7 +90,35 @@
         <th scope="col" class="scope-col">Document URL</th>
         <th scope="col" class="scope-col">XQuery script</th>
         <th scope="col" class="scope-col">Job Result</th>
-        <th scope="col" class="scope-col">Status</th>
+        <th scope="col" class="scope-col">
+          <div class="dropdown-container">
+            <div class="dropdown-button noselect">
+              <span class="dropdown-label">Status<i class="fas fa-filter"></i></span>
+            </div>
+            <div class="dropdown-content" style="display: none;">
+              <div class="dropdown-list">
+                <ul>
+                  <li>
+                    <input id="received" name="received" type="checkbox" checked="checked">
+                    <label for="received">RECEIVED</label>
+                  </li>
+                  <li>
+                    <input id="processing" name="processing" type="checkbox" checked="checked">
+                    <label for="processing">PROCESSING</label>
+                  </li>
+                  <li>
+                    <input id="ready" name="ready" type="checkbox" checked="checked">
+                    <label for="ready">READY</label>
+                  </li>
+                  <li>
+                    <input id="error" name="error" type="checkbox" checked="checked">
+                    <label for="error">FATAL ERROR</label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </th>
         <th scope="col" class="scope-col">Started at</th>
         <th scope="col" class="scope-col">Instance</th>
       </tr>
@@ -109,14 +145,14 @@
             <a href="${job.url}" rel="nofollow">${job.url}</a>
           </td>
           <td>
-              <c:choose>
-                <c:when test="${job.scriptType != 'fme'}">
-                  <a href="/queries/${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
-                </c:when>
-                <c:otherwise>
-                  ${job.scriptType}
-                </c:otherwise>
-              </c:choose>
+            <c:choose>
+              <c:when test="${job.scriptType != 'fme'}">
+                <a href="/queries/${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
+              </c:when>
+              <c:otherwise>
+                ${job.scriptType}
+              </c:otherwise>
+            </c:choose>
           </td>
           <td>
             <c:choose>
@@ -158,12 +194,14 @@
     <div id="hidden_elements">
       <c:if test="${permissions.wqdPrm || permissions.wquPrm}">
         <c:if test="${permissions.wqdPrm}">
-          <button class="button" type="submit" name="delete" onclick="return confirm('Are you sure you want to delete the selected jobs?')">
+          <button class="button" type="submit" name="delete"
+                  onclick="return confirm('Are you sure you want to delete the selected jobs?')">
             Delete
           </button>
         </c:if>
         <c:if test="${permissions.wquPrm}">
-          <button class="button" type="submit" name="restart" onclick="return confirm('Are you sure you want to restart the selected jobs?')">
+          <button class="button" type="submit" name="restart"
+                  onclick="return confirm('Are you sure you want to restart the selected jobs?')">
             Restart
           </button>
         </c:if>
@@ -174,13 +212,13 @@
           Select All
         </button>
       </c:if>
-      <input type="hidden" name="ACTION" id="ACTION" value="delete" />
+      <input type="hidden" name="ACTION" id="ACTION" value="delete"/>
       <input type="hidden" name="ID" value=""/>
     </div>
   </form:form>
 </div>
 <script>
-    $("#selectAll").click(function () {
-        $('input:checkbox').not(this).prop('checked', this.checked);
-    });
+  $("#selectAll").click(function () {
+    $('input:checkbox').not(this).prop('checked', this.checked);
+  });
 </script>
