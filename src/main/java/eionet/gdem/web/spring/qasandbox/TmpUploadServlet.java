@@ -27,7 +27,7 @@ import java.util.List;
  * @author George Sofianos
  */
 
-@MultipartConfig(fileSizeThreshold=1024*1024, maxFileSize=1024*1024*5, maxRequestSize=1024*1024*5*5)
+@MultipartConfig(fileSizeThreshold=1024*1024, maxFileSize=1024*1024*5*5, maxRequestSize=1024*1024*5*5)
 public class TmpUploadServlet extends HttpServlet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TmpUploadServlet.class);

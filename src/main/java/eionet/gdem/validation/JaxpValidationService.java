@@ -139,6 +139,7 @@ public class JaxpValidationService implements ValidationService {
         resolver.setPreferPublic(true);
         resolver.setCatalogList(catalogs);
         sf.setResourceResolver(resolver);
+        sf.setErrorHandler(errorHandler);
 
 
         String schemaFileName = schemaManager.getUplSchemaURL(schemaUrl);
@@ -150,6 +151,10 @@ public class JaxpValidationService implements ValidationService {
 
         try {
             Schema schema = sf.newSchema(new URL(validatedSchema));
+            if (errorHandler.getErrors() != null && errorHandler.getErrors().size() > 0) {
+                validationFeedback.setValidationErrors(errorHandler.getErrors());
+                return validationFeedback.formatFeedbackText("Document is not well-formed: ", QAFeedbackType.BLOCKER, true);
+            }
             Validator validator = schema.newValidator();
             validator.setErrorHandler(errorHandler);
 
@@ -171,7 +176,7 @@ public class JaxpValidationService implements ValidationService {
             warningMessage = postProcessor.getWarningMessage(schemaUrl);
 
         } catch (SAXException e) {
-            LOGGER.error("Error: ", e);
+            LOGGER.info("Document is not well-formed: " + e.getMessage());
             return validationFeedback.formatFeedbackText("Document is not well-formed: " + e.getMessage(), QAFeedbackType.BLOCKER, true);
         } catch (MalformedURLException e) {
             LOGGER.error("Error: ", e);

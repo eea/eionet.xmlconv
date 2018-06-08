@@ -85,8 +85,8 @@
         <load-on-startup>3</load-on-startup>
         <multipart-config>
             <location>/tmp</location>
-            <max-file-size>5242880</max-file-size><!--5MB-->
-            <max-request-size>20971520</max-request-size><!--20MB-->
+            <max-file-size>52428800</max-file-size><!--50MB-->
+            <max-request-size>52428800</max-request-size><!--50MB-->
             <file-size-threshold>0</file-size-threshold>
         </multipart-config>
     </servlet>
@@ -118,8 +118,8 @@
         <load-on-startup>2</load-on-startup>
         <multipart-config>
             <location>/tmp</location>
-            <max-file-size>5242880</max-file-size><!--5MB-->
-            <max-request-size>20971520</max-request-size><!--20MB-->
+            <max-file-size>52428800</max-file-size><!--50MB-->
+            <max-request-size>52428800</max-request-size><!--50MB-->
             <file-size-threshold>0</file-size-threshold>
         </multipart-config>
     </servlet>
