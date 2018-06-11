@@ -13,9 +13,9 @@
   <sec:csrfMetaTags/>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <!--  EEA central styles -->
-  <link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/print.css" media="print"/>
-  <link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/handheld.css" media="handheld"/>
-  <link rel="stylesheet" type="text/css" href="//www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen"/>
+  <link rel="stylesheet" type="text/css" href="https://www.eionet.europa.eu/styles/eionet2007/print.css" media="print"/>
+  <link rel="stylesheet" type="text/css" href="https://www.eionet.europa.eu/styles/eionet2007/handheld.css" media="handheld"/>
+  <link rel="stylesheet" type="text/css" href="https://www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen"/>
 
 <%--  <link rel="stylesheet" type="text/css" href="/css/print.css" media="print"/>
   <link rel="stylesheet" type="text/css" href="/css/handheld.css" media="handheld"/>
