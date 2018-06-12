@@ -23,6 +23,7 @@
 
 package eionet.gdem;
 
+import edu.yale.its.tp.cas.client.filter.CASFilter;
 import eionet.propertyplaceholderresolver.CircularReferenceException;
 import eionet.propertyplaceholderresolver.ConfigurationPropertyResolver;
 import eionet.propertyplaceholderresolver.UnresolvedPropertyException;
@@ -193,6 +194,8 @@ public class Properties {
 
     public static int heavyJobThreshhold;
 
+    public static final String SSO_LOGIN_URL;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -282,6 +285,8 @@ public class Properties {
         fmeTimeout = getIntProperty("fme.timeout");
         fmeRetryHours = getIntProperty("fme.retry.hours");
         heavyJobThreshhold = getIntProperty ("config.heavy.threshold");
+
+        SSO_LOGIN_URL = getStringProperty(CASFilter.LOGIN_INIT_PARAM);
     }
 
     /**

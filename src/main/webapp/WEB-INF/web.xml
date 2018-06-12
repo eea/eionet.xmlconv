@@ -3,10 +3,6 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://java.sun.com/xml/ns/j2ee/web-app_3_1.xsd"
          version="3.1">
     <display-name>Conversion and Quality Assessment Service</display-name>
-    <context-param>
-        <param-name>edu.yale.its.tp.cas.client.filter.loginUrl</param-name>
-        <param-value>https://sso.eionet.europa.eu/login</param-value>
-    </context-param>
     <!-- Spring configuration -->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

@@ -10,6 +10,7 @@ import eionet.acl.AccessController;
 import eionet.acl.AppUser;
 import edu.yale.its.tp.cas.client.filter.CASFilter;
 import eionet.acl.SignOnException;
+import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import org.springframework.web.util.UrlPathHelper;
 
@@ -128,10 +129,9 @@ public final class SecurityUtil {
         if (afterLoginUrl != null && !afterLoginUrl.contains("login"))
             request.getSession().setAttribute("afterLogin", afterLoginUrl);
 
-        String casLoginUrl = request.getSession().getServletContext().getInitParameter(CASFilter.LOGIN_INIT_PARAM);
-        if (casLoginUrl != null) {
+        if (Properties.SSO_LOGIN_URL != null) {
 
-            StringBuffer loginUrl = new StringBuffer(casLoginUrl);
+            StringBuffer loginUrl = new StringBuffer(Properties.SSO_LOGIN_URL);
             loginUrl.append("?service=");
             try {
                 // + request.getScheme() + "://" + SERVER_NAME + request.getContextPath() + "/login";
