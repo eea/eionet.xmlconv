@@ -143,10 +143,6 @@
         <servlet-name>TmpUploadServlet</servlet-name>
         <url-pattern>/qaSandbox/upload</url-pattern>
     </servlet-mapping>
-    <servlet>
-        <servlet-name>downloadServlet</servlet-name>
-        <servlet-class>eionet.gdem.web.FileDownloadServlet</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>Main</servlet-name>
         <url-pattern>/main</url-pattern>
@@ -154,34 +150,6 @@
     <servlet-mapping>
         <servlet-name>RpcRouter</servlet-name>
         <url-pattern>/RpcRouter</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>downloadServlet</servlet-name>
-        <url-pattern>/queries/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>downloadServlet</servlet-name>
-        <url-pattern>/schema/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>downloadServlet</servlet-name>
-        <url-pattern>/tmp/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>downloadServlet</servlet-name>
-        <url-pattern>/log/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>downloadServlet</servlet-name>
-        <url-pattern>/xmlfile/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>downloadServlet</servlet-name>
-        <url-pattern>/tmpfile/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>downloadServlet</servlet-name>
-        <url-pattern>/xsl/*</url-pattern>
     </servlet-mapping>
 <!--    <error-page>
         <error-code>500</error-code>
