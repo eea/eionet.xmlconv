@@ -122,6 +122,7 @@ public class WebSecurityConfiguration {
     public void configure(WebSecurity web) throws Exception {
         //Enable this for debugging
         web.debug(false);
+        web.ignoring().antMatchers("/css/**").antMatchers("/js/**").antMatchers("/images/**");
     }
 
     @Override

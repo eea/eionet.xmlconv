@@ -1,4 +1,4 @@
-package eionet.gdem.web.spring;
+package eionet.gdem.web.spring.interceptors;
 
 import eionet.gdem.XMLConvException;
 import eionet.gdem.utils.SecurityUtil;

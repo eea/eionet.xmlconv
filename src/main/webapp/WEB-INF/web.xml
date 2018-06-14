@@ -175,4 +175,12 @@
             <taglib-location>/WEB-INF/eurodyn.tld</taglib-location>
         </taglib>
     </jsp-config>
+    <mime-mapping>
+        <extension>xq</extension>
+        <mime-type>text/plain</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xquery</extension>
+        <mime-type>text/plain</mime-type>
+    </mime-mapping>
 </web-app>

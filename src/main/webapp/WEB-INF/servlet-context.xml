@@ -41,7 +41,7 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
-            <bean class="eionet.gdem.web.spring.LoginInterceptor"/>
+            <bean class="eionet.gdem.web.spring.interceptors.LoginInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
 
@@ -74,5 +74,9 @@
     <mvc:resources mapping="/fonts/**" location="resources/fonts/" />
     <mvc:resources mapping="/js/**" location="resources/js/" />
     <mvc:resources mapping="/images/**" location="resources/images/" />
+
+    <mvc:interceptors>
+        <bean class="eionet.gdem.web.spring.interceptors.StaticCacheInterceptor" />
+    </mvc:interceptors>
 
 </beans>

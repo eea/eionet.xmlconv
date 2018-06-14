@@ -154,7 +154,7 @@ public abstract class FileServlet extends HttpServlet {
      * @return The client cache expire time in seconds (not milliseconds!).
      */
     protected long getExpireTime(HttpServletRequest request, File file) {
-        return DEFAULT_EXPIRE_TIME_IN_SECONDS;
+        return 0l;
     }
 
     /**
@@ -292,7 +292,7 @@ public abstract class FileServlet extends HttpServlet {
      * @since 2.2
      */
     public static void setNoCacheHeaders(HttpServletResponse response) {
-        response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
+        response.setHeader("Cache-Control", "no-cache,must-revalidate");
         response.setDateHeader("Expires", 0);
         response.setHeader("Pragma", "no-cache"); // Backwards compatibility for HTTP 1.0.
     }

@@ -44,7 +44,7 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/projects/**"/>
-            <bean class="eionet.gdem.web.spring.LoginInterceptor"/>
+            <bean class="eionet.gdem.web.spring.interceptors.LoginInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
 
