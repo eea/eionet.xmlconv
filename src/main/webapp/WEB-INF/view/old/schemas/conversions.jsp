@@ -72,7 +72,7 @@
               </c:if>
               <td>
                 <a href="searchCR?conversionId=${stylesheet.convId}&amp;schemaUrl=${stylesheet.convId}">
-                  <img src="/images/execute.gif" alt="Run" title="Run conversion" /></a>
+                  <img src="<c:url value='/static/images/execute.gif'/>" alt="Run" title="Run conversion" /></a>
               </td>
               <td align="center">
                 <c:if test="${!stylesheet.ddConv}">

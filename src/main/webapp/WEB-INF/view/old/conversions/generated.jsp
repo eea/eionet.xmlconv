@@ -32,7 +32,7 @@
         <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
           <td align="center">
             <a href="/conversions/generated?schemaUrl=${conversion.schema}">
-              <img src="/images/properties.gif" altKey="label.table.stylesheet" title="view stylesheets"/>
+              <img src="<c:url value='/static/images/properties.gif'/>" altKey="label.table.stylesheet" title="view stylesheets"/>
             </a>
           </td>
           <td title="${conversion.table}">

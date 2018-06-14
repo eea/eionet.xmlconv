@@ -154,7 +154,7 @@ public abstract class FileServlet extends HttpServlet {
      * @return The client cache expire time in seconds (not milliseconds!).
      */
     protected long getExpireTime(HttpServletRequest request, File file) {
-        return 0l;
+        return DEFAULT_EXPIRE_TIME_IN_SECONDS;
     }
 
     /**
@@ -261,7 +261,7 @@ public abstract class FileServlet extends HttpServlet {
      * <p>Set the cache headers. If the <code>expires</code> argument is larger than 0 seconds, then the following headers
      * will be set:
      * <ul>
-     * <li><code>Cache-Control: public,max-age=[expiration time in seconds],must-revalidate</code></li>
+     * <li><code>Cache-Control: public,no-cache,max-age=[expiration time in seconds],must-revalidate</code></li>
      * <li><code>Expires: [expiration date of now plus expiration time in seconds]</code></li>
      * </ul>
      * <p>Else the method will delegate to {@link #setNoCacheHeaders(HttpServletResponse)}.
@@ -271,7 +271,7 @@ public abstract class FileServlet extends HttpServlet {
      */
     public static void setCacheHeaders(HttpServletResponse response, long expires) {
         if (expires > 0) {
-            response.setHeader("Cache-Control", "public,max-age=" + expires + ",must-revalidate");
+            response.setHeader("Cache-Control", "public,no-cache,max-age=" + expires + ",must-revalidate");
             response.setDateHeader("Expires", System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(expires));
             response.setHeader("Pragma", ""); // Explicitly set pragma to prevent container from overriding it.
         }
@@ -292,7 +292,7 @@ public abstract class FileServlet extends HttpServlet {
      * @since 2.2
      */
     public static void setNoCacheHeaders(HttpServletResponse response) {
-        response.setHeader("Cache-Control", "no-cache,must-revalidate");
+        response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
         response.setDateHeader("Expires", 0);
         response.setHeader("Pragma", "no-cache"); // Backwards compatibility for HTTP 1.0.
     }
@@ -376,6 +376,9 @@ public abstract class FileServlet extends HttpServlet {
      */
     private String setContentHeaders(HttpServletRequest request, HttpServletResponse response, Resource resource, List<Range> ranges) {
         String contentType = getContentType(request, resource.file);
+        if (contentType.startsWith("text")) {
+            contentType += ";charset=UTF-8";
+        }
         String filename = getAttachmentName(request, resource.file);
         boolean attachment = isAttachment(request, contentType);
         response.setHeader("Content-Disposition", formatContentDispositionHeader(filename, attachment));

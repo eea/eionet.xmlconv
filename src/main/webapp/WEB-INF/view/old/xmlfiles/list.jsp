@@ -55,7 +55,7 @@
             <c:if test="${xmlfiles.ssuPrm}">
               <td align="center">
                 <a href="xmlFiles/${xmlfile.id}/edit">
-                  <img src="/images/edit.gif" alt="<spring:message code="label.edit" />" title="edit XML file"/>
+                  <img src="<c:url value='/static/images/edit.gif'/>" alt="<spring:message code="label.edit" />" title="edit XML file"/>
                 </a>
               </td>
             </c:if>

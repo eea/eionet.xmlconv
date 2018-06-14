@@ -180,7 +180,7 @@
                 <td align="center">
                     <%--onclick='return elementDelete("<bean:write name="elem" property="name"/>");'>--%>
                   <a href="deleteElem?elemId=${elem.elemId}">
-                    <img src="/images/delete.gif" altKey="label.delete" title="delete root element"/>
+                    <img src="<c:url value='/images/delete.gif'/>" altKey="label.delete" title="delete root element"/>
                   </a>
                 </td>
               </c:if>

@@ -2,12 +2,12 @@
 
 <ed:breadcrumbs-push label="Workqueue" level="1"/>
 
-<link rel="stylesheet" type="text/css" href="/js/DataTables/media/css/jquery.dataTables.min.css"></link>
-<link rel="stylesheet" type="text/css" href="/js/workqueue.css"></link>
-<link rel="stylesheet" type="text/css" href="/webjars/font-awesome/web-fonts-with-css/css/fontawesome-all.css"></link>
+<link rel="stylesheet" type="text/css" href="<c:url value='/static/js/DataTables/media/css/jquery.dataTables.min.css'/>"></link>
+<link rel="stylesheet" type="text/css" href="<c:url value='/static/js/workqueue.css'/>"></link>
+<link rel="stylesheet" type="text/css" href="<c:url value='/static/webjars/font-awesome/web-fonts-with-css/css/fontawesome-all.css'/>"></link>
 
-<script type="text/javascript" src="/js/DataTables/media/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="/js/workqueue.js"></script>
+<script type="text/javascript" src="<c:url value='/static/js/DataTables/media/js/jquery.dataTables.min.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/static/js/workqueue.js'/>"></script>
 
 
 <script type="text/javascript">

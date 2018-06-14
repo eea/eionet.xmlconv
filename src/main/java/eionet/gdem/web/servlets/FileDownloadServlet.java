@@ -12,7 +12,7 @@ import java.net.URLDecoder;
 /**
  *
  */
-@WebServlet(value = {"/xmlfile/*", "/queries/*", "/schema/*", "/tmp/*", "/log/*", "/tmpfile/*", "/xsl/*"})
+@WebServlet(value = {"/xmlfile/*", "/queries/*", "/schema/*", "/tmp/*", "/tmpfile/*", "/xsl/*"})
 public class FileDownloadServlet extends FileServlet {
     @Override
     protected File getFile(HttpServletRequest request) throws IllegalArgumentException {

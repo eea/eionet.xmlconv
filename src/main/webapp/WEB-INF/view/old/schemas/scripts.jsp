@@ -126,13 +126,13 @@
                     <c:choose>
                       <c:when test="${script.scriptType != 'fme'}">
                         <a href="/qaSandbox/${scriptId}/edit" title="label.qasandbox.label.qasandbox.editScript">
-                          <img src="/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"/>
+                          <img src="<c:url value='/static/images/execute.gif'/>" alt="Run" title="Run this query in XQuery Sandbox"/>
                         </a>
                       </c:when>
                       <c:otherwise>
                         <spring:message code="label.qascript.runservice.title" var="title"/>
                         <a href="/qaSandbox?scriptId=${scriptId}&amp;schemaId=${schema.id}" title="${title}">
-                          <img src="/images/execute.gif" width="100%" alt="Run" title="Run this query in XQuery Sandbox"/>
+                          <img src="<c:url value='/static/images/execute.gif'/>" width="100%" alt="Run" title="Run this query in XQuery Sandbox"/>
                         </a>
                       </c:otherwise>
                     </c:choose>
@@ -140,7 +140,7 @@
                   <c:otherwise>
                     <spring:message code="label.qascript.runservice.title" var="title"/>
                     <a href="/qaSandbox?scriptId=${scriptId}&amp;schemaId=${schema.id}" title="${title}">
-                      <img src="/images/execute.gif" alt="Run" title="Run this query in XQuery Sandbox"/>
+                      <img src="<c:url value='/static/images/execute.gif'/>" alt="Run" title="Run this query in XQuery Sandbox"/>
                     </a>
                   </c:otherwise>
                 </c:choose>

@@ -32,14 +32,14 @@
           <%--this.value = 'Search the site';"--%>
           <input type="text" id="freesrchfld" name="q" placeholder="Search the site" />
           <input type="hidden" name="sitesearch" value="${appHost}"/>
-          <input id="freesrchbtn" type="image" src="/images/button_go.gif" alt="Go"/>
+          <input id="freesrchbtn" type="image" src="<c:url value='/static/images/button_go.gif'/>" alt="Go"/>
         </div>
       </form>
     </div>
   </div> <!-- toolribbon -->
 
   <div id="pagehead">
-    <a href="/"><img src="/images/eea-print-logo.gif" alt="Logo" id="logo"/></a>
+    <a href="/"><img src="<c:url value='/static/images/eea-print-logo.gif'/>" alt="Logo" id="logo"/></a>
     <div id="networktitle">Eionet</div>
     <div id="sitetitle">Conversion and Quality Assessment Service</div>
     <div id="sitetagline"></div>

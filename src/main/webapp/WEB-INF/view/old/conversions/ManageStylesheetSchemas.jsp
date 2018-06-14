@@ -68,7 +68,7 @@
 <div style="display: none">
   <div id="newSchemaPrototype">
     <input type="url" style="width: 400px;" class="newSchema"/>
-    <a href='#' class="delNewSchemaLink"><img style='border: 0' src='<c:url value="/images/button_remove.gif" />'
+    <a href='#' class="delNewSchemaLink"><img style='border: 0' src='<c:url value="/static/images/button_remove.gif" />'
                                               alt='Remove'/></a>
     <br/>
   </div>

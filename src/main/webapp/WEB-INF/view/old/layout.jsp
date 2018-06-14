@@ -21,19 +21,19 @@
   <link rel="stylesheet" type="text/css" href="/css/handheld.css" media="handheld"/>
   <link rel="stylesheet" type="text/css" href="/css/screen.css" media="screen"/>--%>
   <!--  local style -->
-  <link rel="stylesheet" type="text/css" href="/css/xmlconv.css" media="screen" />
-  <link rel="stylesheet" type="text/css" href="/webjars/foundation/dist/css/foundation.min.css" media="screen"/>
-  <link rel="stylesheet" type="text/css" href="/css/main.css" media="screen"/>
-  <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
+  <link rel="stylesheet" type="text/css" href="<c:url value='/static/css/xmlconv.css'/>" media="screen" />
+  <link rel="stylesheet" type="text/css" href="<c:url value='/static/webjars/foundation/dist/css/foundation.min.css'/>" media="screen"/>
+  <link rel="stylesheet" type="text/css" href="<c:url value='/static/css/main.css'/>" media="screen"/>
+  <link rel="shortcut icon" href="<c:url value='/static/images/favicon.ico'/>" type="image/x-icon"/>
   <!-- jQuery javascripts and css-->
-  <link href="/webjars/jquery-ui/jquery-ui.css" rel="stylesheet" type="text/css"/>
-  <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
-  <script type="text/javascript" src="/webjars/jquery-ui/jquery-ui.js"></script>
-  <script type="text/javascript" src="/webjars/jquery-validation/jquery.validate.js"></script>
+  <link href="<c:url value='/static/webjars/jquery-ui/jquery-ui.css'/>" rel="stylesheet" type="text/css"/>
+  <script type="text/javascript" src="<c:url value='/static/webjars/jquery/jquery.min.js'/>"></script>
+  <script type="text/javascript" src="<c:url value='/static/webjars/jquery-ui/jquery-ui.js'/>"></script>
+  <script type="text/javascript" src="<c:url value='/static/webjars/jquery-validation/jquery.validate.js'/>"></script>
   <!-- local javascripts -->
-  <script type="text/javascript" src="/js/admin.js"></script>
-  <script type="text/javascript" src="/js/pageops.js"></script>
-  <%--<script type="text/javascript" src="/js/foundation.js"></script>--%>
+  <script type="text/javascript" src="<c:url value='/static/js/admin.js'/>"></script>
+  <script type="text/javascript" src="<c:url value='/static/js/pageops.js'/>"></script>
+  <%--<script type="text/javascript" src="/static/js/foundation.js"></script>--%>
   <tiles:insertAttribute name="specific_header" ignore="true"/>
 </head>
 

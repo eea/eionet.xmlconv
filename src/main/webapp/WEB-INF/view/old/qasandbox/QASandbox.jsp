@@ -87,7 +87,7 @@
       <ul id="dropzone-previews" class="dropzone-previews"></ul>
     </form>
     </div>
-    <script type="text/javascript" src="<c:url value="/js/dropzone.min.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/static/js/dropzone.min.js'/>"></script>
 
     <script id="mypreview" type="text/template">
       <li class="dz-preview dz-file-preview">
