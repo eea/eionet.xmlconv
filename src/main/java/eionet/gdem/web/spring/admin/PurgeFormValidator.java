@@ -1,6 +1,5 @@
-package eionet.gdem.web.spring.config;
+package eionet.gdem.web.spring.admin;
 
-import eionet.gdem.web.spring.SpringMessages;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -19,7 +18,7 @@ public class PurgeFormValidator implements Validator {
         PurgeForm form = (PurgeForm) o;
         Integer nofDays = Integer.parseInt(form.getNofDays());
         if (nofDays == null || "".equals(nofDays.toString()) || nofDays <= 0) {
-            errors.rejectValue("nofDays", "label.config.purge.validation");
+            errors.rejectValue("nofDays", "label.admin.purge.validation");
         }
     }
 }

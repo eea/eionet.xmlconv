@@ -1,4 +1,4 @@
-package eionet.gdem.web.spring.config;
+package eionet.gdem.web.spring.admin;
 
 /**
  *

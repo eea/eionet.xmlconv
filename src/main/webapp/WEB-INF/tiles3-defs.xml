@@ -101,28 +101,9 @@
     <definition name="/xmlfiles/edit" extends="base">
         <put-attribute name="body" value="/WEB-INF/view/old/xmlfiles/edit.jsp" />
     </definition>
-    <!--<definition name="/xmlfiles/rename" extends="base">-->
-        <!--<put-attribute name="body" value="/WEB-INF/view/old/xmlfiles/rename.jsp" />-->
-    <!--</definition>-->
-    <definition name="/config/ldap" extends="base">
-        <put-attribute name="title" value="label.config.ldap.admin" />
-        <put-attribute name="body" value="/WEB-INF/view/old/config/ldap.jsp" />
-    </definition>
-    <definition name="/config/database" extends="base">
-        <put-attribute name="title" value="label.config.db.admin" />
-        <put-attribute name="body" value="/WEB-INF/view/old/config/database.jsp" />
-    </definition>
-    <definition name="/config/basex" extends="base">
-        <put-attribute name="title" value="label.config.basexserver.title" />
-        <put-attribute name="body" value="/WEB-INF/view/old/config/basex.jsp" />
-    </definition>
-    <definition name="/config/system" extends="base">
-        <put-attribute name="title" value="label.config.system.admin" />
-        <put-attribute name="body" value="/WEB-INF/view/old/config/system.jsp" />
-    </definition>
-    <definition name="/config/purge" extends="base">
-        <put-attribute name="title" value="label.config.purge" />
-        <put-attribute name="body" value="/WEB-INF/view/old/config/purge.jsp" />
+    <definition name="/admin/purge" extends="base">
+        <put-attribute name="title" value="label.admin.purge" />
+        <put-attribute name="body" value="/WEB-INF/view/old/admin/purge.jsp" />
     </definition>
     <definition name="/hosts/list" extends="base">
         <put-attribute name="title" value="label.hosts.title" />
@@ -137,8 +118,8 @@
     <definition name="ConverterTabs" template="/WEB-INF/view/old/converter/tabs.jsp">
         <put-attribute name="selectedTab" type="string" value="convertXML" />
     </definition>
-    <definition name="ConfigTabs" template="/WEB-INF/view/old/config/tabs.jsp">
-        <put-attribute name="selectedTab" type="string" value="basex" />
+    <definition name="AdminTabs" template="/WEB-INF/view/old/admin/tabs.jsp">
+        <put-attribute name="selectedTab" type="string" value="purge" />
     </definition>
     <definition name="SchemaTabs" template="/WEB-INF/view/old/schemas/tabs.jsp">
         <put-attribute name="selectedTab" type="string" value="schema" />

@@ -21,10 +21,16 @@ public class BaseXServerImpl extends QAScriptEngineStrategy {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseXServerImpl.class);
 
+    /** Temporary fields, remove class if not needed **/
+    private String basexServerPort;
+    private String basexServerHost;
+    private String basexServerUser;
+    private String basexServerPassword;
+
     @Override
     protected void runQuery(XQScript script, OutputStream result) throws XMLConvException {
         try {
-            int port = Integer.parseInt(Properties.basexServerPort);
+            int port = Integer.parseInt(basexServerPort);
             String input = null;
             if (!Utils.isNullStr(script.getScriptSource())) {
                 input = script.getScriptSource();
@@ -36,7 +42,7 @@ public class BaseXServerImpl extends QAScriptEngineStrategy {
                     throw new XMLConvException("Error while reading XQuery file: " + script.getScriptFileName() + " : " + ExceptionUtils.getStackTrace(e), e);
                 }
             }
-            try (BaseXClient session = new BaseXClient(Properties.basexServerHost, port, Properties.basexServerUser, Properties.basexServerPassword)) {
+            try (BaseXClient session = new BaseXClient(basexServerHost, port, basexServerUser, basexServerPassword)) {
                 try (BaseXClient.Query query = session.query(input)) {
                     query.bind("$source_url", script.getSrcFileUrl());
                     query.bind("$base_url", Properties.gdemURL + Properties.contextPath, "xs:string");

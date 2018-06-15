@@ -95,8 +95,8 @@
         </ed:menuItem>
       </ed:hasPermission>
       <ed:hasPermission username="username" acl="config" permission="u">
-        <ed:menuItem action="/config/database" title="Edit application configurations">
-          <spring:message code="label.menu.config"/>
+        <ed:menuItem action="/admin/purge" title="Administration tools">
+          <spring:message code="label.menu.admintools"/>
         </ed:menuItem>
       </ed:hasPermission>
       <ed:hasPermission username="username" acl="serverstatus" permission="v">

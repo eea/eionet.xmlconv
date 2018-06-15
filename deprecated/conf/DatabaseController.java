@@ -54,7 +54,7 @@ public class DatabaseController {
         form.setUrl(Properties.dbUrl);
         form.setUser(Properties.dbUser);
         form.setPassword(Properties.dbPwd);
-        return "/config/database";
+        return "/WEB-INF/view/config/database.html";
     }
 
     @PostMapping
@@ -70,7 +70,7 @@ public class DatabaseController {
 
         new DatabaseFormValidator().validate(form, bindingResult);
         if (bindingResult.hasErrors()) {
-            return "/config/database";
+            return "/WEB-INF/view/config/database.html";
         }
 
         try {

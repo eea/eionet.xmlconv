@@ -1,21 +1,17 @@
-package eionet.gdem.web.spring.config;
+package eionet.gdem.web.spring.admin;
 
 import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
-import eionet.gdem.Properties;
-import eionet.gdem.dcm.conf.DcmProperties;
+import eionet.gdem.web.spring.scripts.BackupManager;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
-import eionet.gdem.web.spring.SpringMessage;
 import eionet.gdem.web.spring.SpringMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,19 +26,19 @@ import javax.servlet.http.HttpSession;
  *
  */
 @Controller
-@RequestMapping("/config/system")
-public class SystemController {
+@RequestMapping("/admin/purge")
+public class PurgeController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SystemController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PurgeController.class);
     private MessageService messageService;
 
     @Autowired
-    public SystemController(MessageService messageService) {
+    public PurgeController(MessageService messageService) {
         this.messageService = messageService;
     }
 
     @GetMapping
-    public String edit(@ModelAttribute("form") SystemForm form, HttpServletRequest httpServletRequest) {
+    public String edit(@ModelAttribute("form") PurgeForm purgeForm, HttpServletRequest httpServletRequest) {
         String user = (String) httpServletRequest.getSession().getAttribute("user");
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_CONFIG_PATH, "u")) {
@@ -51,43 +47,42 @@ public class SystemController {
         } catch (SignOnException e) {
             throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
-        form.setCmdXGawk(Properties.xgawkCommand);
-        form.setQaTimeout(Properties.qaTimeout);
-        return "/config/system";
+        return "/admin/purge";
     }
 
     @PostMapping
-    public String editSubmit(@ModelAttribute("form") SystemForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpSession session) {
-        SpringMessages errors = new SpringMessages();
+    public String editSubmit(@ModelAttribute("form") PurgeForm form,
+                             BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes) {
+
         SpringMessages messages = new SpringMessages();
 
-        String cmdXGawk = form.getCmdXGawk();
-        Long qaTimeout = form.getQaTimeout();
+        Integer nofDays = Integer.parseInt(form.getNofDays());
+
         String user = (String) session.getAttribute("user");
         try {
-            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_CONFIG_PATH, "u")) {
-                throw new AccessDeniedException(messageService.getMessage(("label.autorization.config.update")));
+            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
+                throw new AccessDeniedException(messageService.getMessage("label.autorization.config.purge"));
             }
         } catch (SignOnException e) {
             throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
         }
 
-        new SystemFormValidator().validate(form, bindingResult);
+        new PurgeFormValidator().validate(form, bindingResult);
         if (bindingResult.hasErrors()) {
-            return "/config/system";
+            return "/admin/purge";
         }
-
+        int deleted = 0;
         try {
-            DcmProperties dcmProp = new DcmProperties();
-            dcmProp.setSystemParams(qaTimeout, cmdXGawk);
+            BackupManager bm = new BackupManager();
+            deleted = bm.purgeBackup(nofDays);
         } catch (DCMException e) {
             throw new RuntimeException("Unknown error: " + messageService.getMessage(e.getErrorCode()));
         }
+        String[] numbers = {String.valueOf(nofDays.intValue()), String.valueOf(deleted)};
 
-        messages.add(messageService.getMessage(("label.editParam.system.saved")));
-        redirectAttributes.addFlashAttribute(SpringMessages.ERROR_MESSAGES, errors);
+        messages.add(messageService.getMessage("label.admin.purge.successful", numbers));
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
-        return "redirect:/config/system";
+        return "redirect:/admin/purge";
     }
 
 }

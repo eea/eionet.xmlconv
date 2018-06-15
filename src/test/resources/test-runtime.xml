@@ -14,7 +14,6 @@
                 <value>env.properties</value>
                 <value>acl.properties</value>
                 <value>gdem.properties</value>
-                <value>eionetdir.properties</value>
                 <value>CatalogManager.properties</value>
                 <value>fme.properties</value>
                 <value>messages.properties</value>

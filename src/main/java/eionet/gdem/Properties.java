@@ -35,8 +35,7 @@ import java.util.ResourceBundle;
 
 /**
  * Several settings and properties for XMLCONV application.
- * @author Unknown
- * @author George Sofianos
+ *
  */
 public class Properties {
 
@@ -87,15 +86,6 @@ public class Properties {
     /** DB connection password. */
     public static String dbPwd = null;
 
-    /** BaseX Server Host */
-    public static String basexServerHost = null;
-    /** BaseX Server Port */
-    public static String basexServerPort = null;
-    /** BaseX Server User */
-    public static String basexServerUser = null;
-    /** BaseX Server Password */
-    public static String basexServerPassword = null;
-
     /** Cache Configuration */
     public static final String CACHE_TEMP_DIR;
     public static final long CACHE_HTTP_SIZE;
@@ -124,15 +114,6 @@ public class Properties {
     public static String invServName = null;
     /** Content Registry SPARQL endpoint URL. */
     public static String crSparqlEndpoint = null;
-
-    /** LDAP url. */
-    public static String ldapUrl = null;
-    /** LDAP context. */
-    public static String ldapContext = null;
-    /** LDAP user directory. */
-    public static String ldapUserDir = null;
-    /** LDAP UID attribute. */
-    public static String ldapAttrUid = null;
 
     /** FME host. */
     public static String fmeHost = null;
@@ -176,15 +157,6 @@ public class Properties {
     /** period for updating DD dataset tables data in seconds, default 1hour=3600sec */
     public static int ddTablesUpdateInterval = 3600;
 
-    /** Resource bundle for gdem properties. */
-    private static ResourceBundle props;
-    /** Resource bundle for LDAP properties. */
-    private static ResourceBundle ldapProps;
-    /** Resource bundle for FME properties. */
-    private static ResourceBundle fmeProps;
-    /** Resource bundle for Messages. */
-    private static ResourceBundle applicationResources;
-
     /** Date pattern used for displaying date values on UI. */
     public static String dateFormatPattern = "dd MMM yyyy";
     /** Time pattern used for displaying time values on UI. */
@@ -215,12 +187,6 @@ public class Properties {
         dbUrl = getStringProperty("db.url");
         dbUser = getStringProperty("db.user");
         dbPwd = getStringProperty("db.pwd");
-
-        // BaseX server connection settings
-        basexServerHost = getStringProperty("basexserver.host");
-        basexServerPort = getStringProperty("basexserver.port");
-        basexServerUser = getStringProperty("basexserver.user");
-        basexServerPassword = getStringProperty("basexserver.password");
 
         CACHE_TEMP_DIR = getStringProperty("cache.temp.dir");
         CACHE_HTTP_SIZE = getLongProperty("cache.http.size");
@@ -270,11 +236,6 @@ public class Properties {
         hostname = getStringProperty("config.hostname") == null ? "hostname_not_set" : getStringProperty("config.hostname");
         isRancher = getIntProperty("config.isRancher");
         rancherMetadataUrl = getStringProperty("rancher.metadata.url");
-
-        ldapUrl = getStringProperty("ldap.url");
-        ldapContext = getStringProperty("ldap.context");
-        ldapUserDir = getStringProperty("ldap.user.dir");
-        ldapAttrUid = getStringProperty("ldap.attr.uid");
 
         fmeHost = getStringProperty("fme.host");
         fmePort = getStringProperty("fme.port");
