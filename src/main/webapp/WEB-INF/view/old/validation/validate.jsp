@@ -80,7 +80,7 @@
       </div>
       <div class="row">
         <div class="columns small-12">
-          <input type="text" property="schemaUrl" />
+          <form:input path="schemaUrl" type="text" />
         </div>
       </div>
 <%--      <div class="row">
