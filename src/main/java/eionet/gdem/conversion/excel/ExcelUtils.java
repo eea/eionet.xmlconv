@@ -25,6 +25,7 @@ package eionet.gdem.conversion.excel;
 
 import java.io.InputStream;
 
+import eionet.gdem.conversion.excel.reader.ExcelStreamingReader;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -63,6 +64,14 @@ public class ExcelUtils {
      */
     public static SourceReaderIF getExcelReader() {
         return new ExcelReader(false);
+    }
+
+    /**
+     * Returns a valid ExcelReaderIF
+     * @return ExcelStreamingReader (Streaming excel reader)
+     */
+    public static SourceReaderIF getExcelStreamingReader() {
+        return new ExcelStreamingReader();
     }
 
     /**

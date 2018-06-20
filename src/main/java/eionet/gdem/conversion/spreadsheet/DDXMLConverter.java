@@ -24,10 +24,7 @@
 
 package eionet.gdem.conversion.spreadsheet;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Map;
 
 import javax.xml.parsers.SAXParser;
@@ -36,6 +33,8 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.commons.io.IOUtils;
 
 
+import org.apache.poi.POIXMLDocument;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.XMLReader;
@@ -105,35 +104,44 @@ public abstract class DDXMLConverter {
      */
     public static DDXMLConverter getConverter(File inFile, ConversionResultDto resultObject, String sheetParam) throws XMLConvException {
         DDXMLConverter converter = null;
+
         try {
-            converter = new Excel2XML();
-            converter.initConverter(inFile);
-            LOGGER.debug("Excel 2003 or older document");
+
+            // For .xls
+            boolean isXls = POIFSFileSystem.hasPOIFSHeader(new BufferedInputStream( new FileInputStream(inFile) ));
+            if ( isXls ) {
+                converter = new Excel2XML();
+                converter.initConverter(inFile);
+                LOGGER.debug("Excel 2003 or older document");
+            }
         } catch (Exception e) {
             LOGGER.debug("Excel 2003 or older document failed: " + e.getMessage());
         }
-        if (!converter.isInitialized()) {
-            try {
-                converter = new Excel20072XML();
+
+        try {
+
+            // For .xlsx
+            boolean isXlsx = POIXMLDocument.hasOOXMLHeader(new BufferedInputStream( new FileInputStream(inFile) ));
+            if ( isXlsx ) {
+                converter = new Excel2XMLStreamingConverter();
                 converter.initConverter(inFile);
                 LOGGER.debug("Excel 2007 document");
-            } catch (Exception e) {
-                LOGGER.debug("Excel 2007 document failed: " + e.getMessage());
             }
+        } catch (Exception e) {
+            LOGGER.debug("Excel 2007 document failed: " + e.getMessage());
         }
 
-        if (!converter.isInitialized()) {
-            // If it is a zip file, then it is OpenDocument
-            try {
-                if (OpenDocumentUtils.isSpreadsheetFile(new FileInputStream(inFile))) {
-                    converter = new Ods2Xml();
-                    converter.initConverter(inFile);
-                    LOGGER.debug("OpenDocument spreadsheet");
-                }
-            } catch (Exception e) {
-                LOGGER.debug("OpenDocument spreadsheet failed", e);
+        // If it is a zip file, then it is OpenDocument
+        try {
+            if (OpenDocumentUtils.isSpreadsheetFile(new FileInputStream(inFile))) {
+                converter = new Ods2Xml();
+                converter.initConverter(inFile);
+                LOGGER.debug("OpenDocument spreadsheet");
             }
+        } catch (Exception e) {
+            LOGGER.debug("OpenDocument spreadsheet failed", e);
         }
+        
         if (converter == null || !converter.isInitialized()) {
             LOGGER.error("Could not detect the format of source file. "
                     + "Converter waits MS Excel or OpenDocument Spreadsheet file.");
