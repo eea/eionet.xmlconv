@@ -30,7 +30,7 @@ import static java.util.Objects.isNull;
  */
 public class BaseXLocalImpl extends QAScriptEngineStrategy {
 
-    private static final Logger logger = LoggerFactory.getLogger(BaseXLocalImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseXLocalImpl.class);
 
     @Override
     protected void runQuery(XQScript script, OutputStream result) throws XMLConvException {
@@ -40,6 +40,7 @@ public class BaseXLocalImpl extends QAScriptEngineStrategy {
         try {
             new Set(MainOptions.INTPARSE, true).execute(context);
             new Set(MainOptions.QUERYPATH, Properties.queriesFolder).execute(context);
+            new Set(MainOptions.MAINMEM, true).execute(context);
 
             String scriptSource = null;
             if (!Utils.isNullStr(script.getScriptSource())) {
@@ -48,11 +49,11 @@ public class BaseXLocalImpl extends QAScriptEngineStrategy {
                 try (Reader queryReader = new FileReader(script.getScriptFileName())) {
                     scriptSource = new String(IOUtils.toByteArray(queryReader, "UTF-8"));
                 } catch (IOException e) {
-                    logger.error("Error while reading XQuery file: " + e);
+                    LOGGER.error("Error while reading XQuery file: " + e);
                     throw new XMLConvException("Error while reading XQuery file: " + script.getScriptFileName() + " : " + ExceptionUtils.getStackTrace(e), e);
                 }
             }
-            proc = new QueryProcessor( scriptSource, context);
+            proc = new QueryProcessor(scriptSource, context);
             proc.bind("source_url", script.getSrcFileUrl(), "xs:string");
             proc.bind("base_url", Properties.gdemURL + Properties.contextPath , "xs:string");
 
@@ -80,8 +81,8 @@ public class BaseXLocalImpl extends QAScriptEngineStrategy {
 
             //logger.info("proc info: " + proc.info());
             //logger.info( new String(A.buffer() , "UTF-8" ));
-        } catch ( QueryException | IOException e) {
-            logger.error("Error executing BaseX xquery script : " + e.getMessage());
+        } catch (QueryException | IOException e) {
+            LOGGER.error("Error executing BaseX xquery script : " + e.getMessage());
             throw new XMLConvException(e.getMessage());
         } finally {
             if (!isNull(proc))  {
